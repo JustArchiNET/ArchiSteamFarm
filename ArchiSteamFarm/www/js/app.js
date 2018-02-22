@@ -340,6 +340,7 @@ function generateConfigHTML(prefix) {
         success: function (data) {
             var obj = data['Result'],
                 objBody = obj['Body'],
+                boxHeaderHTML = '',
                 boxBodyHTML = '',
                 textBoxes = '',
                 checkBoxes = '',
@@ -391,18 +392,128 @@ function generateConfigHTML(prefix) {
                     + '<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">' + checkBoxes + textAreas + '</div>';
             }
 
-            var boxHeaderHTML = prefix === 'Changer' ? '<div class="box-header with-border">'
-                + '<h3 class="box-title"></h3>'
-                + '<div class="box-tools pull-right">'
-                + '<div class="btn-group">'
-                + '<button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown" aria-expanded="false">'
-                + 'Change bot '
-                + '<span class="fas fa-caret-down"></span>'
-                + '</button>'
-                + '<ul class="dropdown-menu scrollable-menu" role="menu" id="botsDropDown"></ul>'
-                + '</div>'
-                + '</div>'
-                + '</div>' : '';
+            if (prefix === 'Changer') {
+                boxHeaderHTML = '<div class="box-header with-border">'
+                    + '<h3 class="box-title"></h3>'
+                    + '<div class="box-tools pull-right">'
+                    + '<div class="btn-group">'
+                    + '<button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown" aria-expanded="false">'
+                    + 'Change bot '
+                    + '<span class="fas fa-caret-down"></span>'
+                    + '</button>'
+                    + '<ul class="dropdown-menu scrollable-menu" role="menu" id="botsDropDown"></ul>'
+                    + '</div>'
+                    + '</div>'
+                    + '</div>';
+            } else if (prefix === 'Generator') {
+                boxHeaderHTML = '<div class="box-header with-border">'
+                    + '<h3 class="box-title"></h3>'
+                    + '<div class="box-tools pull-right">'
+                    + '<div class="btn-group">'
+                    + '<button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown" aria-expanded="false">'
+                    + 'Change mode '
+                    + '<span class="fas fa-caret-down"></span>'
+                    + '</button>'
+                    + '<ul class="dropdown-menu scrollable-menu" role="menu" id="modeDropDown"></ul>'
+                    + '</div>'
+                    + '</div>'
+                    + '</div>';
+            }
+
+            $('#config' + prefix + 'Tab').html(boxHeaderHTML + '<div class="box-body">' + boxBodyHTML + '</div>');
+
+            createClickFunction();
+        }
+    });
+}
+
+function generateASFConfigHTML(prefix) {
+    $('#config' + prefix + 'Tab').empty(); // Clear page content first
+
+    $.ajax({
+        url: '/Api/Type/ArchiSteamFarm.GlobalConfig',
+        type: 'GET',
+        success: function (data) {
+            var obj = data['Result'],
+                objBody = obj['Body'],
+                boxHeaderHTML = '',
+                boxBodyHTML = '',
+                textBoxes = '',
+                checkBoxes = '',
+                numberBoxes = '',
+                defaultBoxes = '',
+                textAreas = '';
+
+            for (var key in objBody) {
+                if (objBody.hasOwnProperty(key)) {
+                    var value = objBody[key],
+                        noSpaceKey = key.replace(/([A-Z])/g, ' $1').trim(),
+                        readableKey = noSpaceKey.replace(/([A-Z])\s(?=[A-Z])/g, '$1');
+
+                    switch (value) {
+                        case 'System.Boolean':
+                            checkBoxes += '<div class="">'
+                                + '<button title="Toggle ' + key + '" type="button" data-type="' + value + '" class="btn btn-box-tool text-grey" id="' + prefix + key + '"><i id="ico' + prefix + key + '" class="fas fa-toggle-on fa-2x fa-fw fa-rotate-180"></i></button>'
+                                + readableKey
+                                + '</div>';
+                            break;
+                        case 'System.String':
+                            textBoxes += '<div class="form-group-config">'
+                                + '<label for="' + prefix + key + '">' + readableKey + '</label>'
+                                + '<input type="text" id="' + prefix + key + '" class="form-control" data-type="' + value + '">'
+                                + '</div>';
+                            break;
+                        case 'System.Byte':
+                            numberBoxes += '<div class="form-group-config">'
+                                + '<label for="' + prefix + key + '">' + readableKey + '</label>'
+                                + '<input type="number" id="' + prefix + key + '" class="form-control" data-type="' + value + '">'
+                                + '</div>';
+                            break;
+                        case 'System.Collections.Generic.HashSet`1[System.String]':
+                            textAreas += '<div class="form-group-config">'
+                                + '<label for="' + prefix + key + '">' + readableKey + '</label>'
+                                + '<textarea id="' + prefix + key + '" class="form-control" data-type="' + value + '" rows="3"></textarea>'
+                                + '</div>';
+                            break;
+                        default:
+                            defaultBoxes += '<div class="form-group-config">'
+                                + '<label for="' + prefix + key + '">' + readableKey + '</label>'
+                                + '<input type="text" id="' + prefix + key + '" class="form-control" data-type="' + value + '">'
+                                + '</div>';
+                    }
+                }
+
+                boxBodyHTML = '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">' + numberBoxes + '</div>'
+                    + '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">' + checkBoxes + defaultBoxes + textBoxes + textAreas + '</div>';
+            }
+
+            if (prefix === 'Changer') {
+                boxHeaderHTML = '<div class="box-header with-border">'
+                    + '<h3 class="box-title"></h3>'
+                    + '<div class="box-tools pull-right">'
+                    + '<div class="btn-group">'
+                    + '<button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown" aria-expanded="false">'
+                    + 'Change bot '
+                    + '<span class="fas fa-caret-down"></span>'
+                    + '</button>'
+                    + '<ul class="dropdown-menu scrollable-menu" role="menu" id="botsDropDown"></ul>'
+                    + '</div>'
+                    + '</div>'
+                    + '</div>';
+            } else if (prefix === 'Generator') {
+                boxHeaderHTML = '<div class="box-header with-border">'
+                    + '<h3 class="box-title"></h3>'
+                    + '<div class="box-tools pull-right">'
+                    + '<div class="btn-group">'
+                    + '<button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown" aria-expanded="false">'
+                    + 'Change mode '
+                    + '<span class="fas fa-caret-down"></span>'
+                    + '</button>'
+                    + '<ul class="dropdown-menu scrollable-menu" role="menu" id="modeDropDown"></ul>'
+                    + '</div>'
+                    + '</div>'
+                    + '</div>';
+            }
 
             $('#config' + prefix + 'Tab').html(boxHeaderHTML + '<div class="box-body">' + boxBodyHTML + '</div>');
 
@@ -489,9 +600,11 @@ function loadConfigValuesForBot(botName) {
     });
 }
 
-function loadDefaultConfigValues() {
+function loadDefaultConfigValues(mode) {
+    var namespace = mode === 'ASF' ? 'ArchiSteamFarm.GlobalConfig' : 'ArchiSteamFarm.BotConfig';
+
     $.ajax({
-        url: '/Api/Structure/ArchiSteamFarm.BotConfig',
+        url: '/Api/Structure/' + namespace,
         type: 'GET',
         success: function (data) {
             var BotConfig = data['Result'];
@@ -535,6 +648,8 @@ function loadDefaultConfigValues() {
                     }
                 }
             }
+
+            loadModeDropDown(mode);
         }
     });
 }
@@ -571,6 +686,7 @@ function prepareBotConfigForSaving() {
                     }
                     break;
                 case 'System.Collections.Generic.HashSet`1[System.UInt32]':
+                    if ($keyValue === '') continue;
                     var items = $keyValue.split(',');
                     if (items.map(Number) !== value) BotConfig[key] = items.map(Number);
                     break;
@@ -650,6 +766,7 @@ function prepareGeneratorConfigForSaving() {
                     }
                     break;
                 case 'System.Collections.Generic.HashSet`1[System.UInt32]':
+                    if ($keyValue === '') continue;
                     var items = $keyValue.split(',');
                     if (items.map(Number) !== value) BotConfig[key] = items.map(Number);
                     break;
@@ -687,6 +804,71 @@ function prepareGeneratorConfigForSaving() {
     
     downloadObjectAsJson(botName, BotConfig);
     $('#GeneratorName').val('');
+}
+
+function prepareGeneratorASFConfigForSaving() {
+    var botName = $('#GeneratorName').val(),
+        BotConfig = globalDefaultConfig;
+
+    for (var key in BotConfig) {
+        if (BotConfig.hasOwnProperty(key)) {
+            var value = BotConfig[key],
+                $key = $('#Generator' + key),
+                keyObj = $key[0];
+
+            if (typeof keyObj === 'undefined') continue;
+
+            var inputType = keyObj.dataset.type,
+                $keyValue = $key.val();
+
+            switch (inputType) {
+                case 'System.Boolean':
+                    var $keyState = $('#icoGenerator' + key).hasClass('fa-rotate-180') ? false : true;
+                    if ($keyState !== value) BotConfig[key] = $keyState;
+                    break;
+
+                case 'System.String':
+                    if ($keyValue === '') $keyValue = null;
+                    if ($keyValue !== value) BotConfig[key] = $keyValue;
+                    break;
+                case 'System.UInt64':
+                    if ($keyValue !== BotConfig['s_' + key]) {
+                        delete BotConfig[key];
+                        BotConfig['s_' + key] = $keyValue;
+                    }
+                    break;
+                case 'System.Collections.Generic.HashSet`1[System.UInt32]':
+                    if ($keyValue === '') continue;
+                    var items = $keyValue.split(',');
+                    if (items.map(Number) !== value) BotConfig[key] = items.map(Number);
+                    break;
+
+                case 'System.Collections.Generic.HashSet`1[System.String]':
+                    var ipcprefix = [],
+                        lines = $key.val().split('\n');
+
+                    for (var i = 0; i < lines.length; i++) {
+                        if (lines[i] !== '') ipcprefix.push(lines[i]);
+                    }
+
+                    if (ipcprefix !== value) BotConfig[key] = ipcprefix;
+                    break;
+
+                default:
+                    if (typeof value === 'object') {
+                        var objItems = $keyValue.split(',');
+                        if (objItems.map(Number) !== value) BotConfig[key] = objItems.map(Number);
+                    } else if (typeof value === 'number') {
+                        var number = Number($keyValue);
+                        if (number !== value) BotConfig[key] = number;
+                    } else {
+                        if ($keyValue !== value) BotConfig[key] = $keyValue;
+                    }
+            }
+        }
+    }
+
+    downloadObjectAsJson(botName, BotConfig);
 }
 
 function downloadObjectAsJson(exportName, exportObj) {
@@ -744,6 +926,42 @@ function loadBotsDropDown(botName) {
             $('#botsDropDown').html(botsDropDownHTML);
         }
     });
+}
+
+function loadModeDropDown(mode) {
+    var botsDropDownHTML = '';
+
+    if (mode === 'ASF') {
+        botsDropDownHTML = '<li><a href="javascript:void(0)" onclick="loadPageContentGenerator(\'Bot\');">Bot</a></li>';
+    } else if (mode === 'Bot') {
+        botsDropDownHTML = '<li><a href="javascript:void(0)" onclick="loadPageContentGenerator(\'ASF\');">ASF</a></li>';
+    }
+
+    $('.box-title').html('Current mode: <b>' + mode + '</b>');
+    $('#modeDropDown').html(botsDropDownHTML);
+}
+
+function loadPageContentGenerator(namespace) {
+    if (namespace === 'Bot') {
+        generateConfigHTML('Generator');
+        $('#GeneratorName').prop('disabled', false);
+        $('#GeneratorName').prop('value', '');
+        $("#downloadButton").unbind();
+        $("#downloadButton").click(function () { prepareGeneratorConfigForSaving(); });
+    } else if (namespace === 'ASF') {
+        generateASFConfigHTML('Generator');
+        $('#GeneratorName').prop('disabled', true);
+        $('#GeneratorName').prop('value', 'ASF');
+        $("#downloadButton").unbind();
+        $("#downloadButton").click(function () { prepareGeneratorASFConfigForSaving(); });
+    }
+    
+    $('#configGeneratorTab').ready(function () {
+        loadDefaultConfigValues(namespace);
+    });
+    $('#downloadButton').show();
+    $('#downloadDiv').show();
+    $('#saveButton').hide();
 }
 //#endregion Config Page
 

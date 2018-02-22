@@ -109,13 +109,12 @@
 
                     <div class="box-footer">
                         <div class="input-group pull-right">
-                            <button type="submit" class="btn btn-default" id="saveButton"><i class="far fa-save"></i> Save</button>
+                            <button class="btn btn-default" id="saveButton"><i class="far fa-save"></i> Save</button>
                             <div class ="input-group pull-right" id="downloadDiv">
-                                <span class="input-group-addon" id="label-botname">Name</span>
-                                <input type="text" class="form-control" id="GeneratorName" aria-describedby="label-botname">
-                                <div class="input-group-btn">
-                                    <button type="submit" class="btn btn-default" id="downloadButton"><i class="fas fa-cloud-download-alt"></i> Download</button>
-                                </div>
+                                <input type="text" class="form-control" placeholder="Name" id="GeneratorName">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" id="downloadButton"><i class="fas fa-cloud-download-alt"></i> Download</button>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -168,13 +167,8 @@
             });
 
             $('#generatorTabButton').click(function (e) {
-                generateConfigHTML('Generator');
-                $('#configGeneratorTab').ready(function () {
-                    loadDefaultConfigValues();
-                });
-                $('#downloadButton').show();
-                $('#downloadDiv').show();
-                $('#saveButton').hide();
+                loadPageContentGenerator('Bot');
+
                 e.preventDefault();
             });
 
