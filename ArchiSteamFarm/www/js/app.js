@@ -328,23 +328,26 @@ function sendCommand() {
 //}
 //#endregion New stuff
 
-var globalBotConfig = {};
+var globalBotConfig = {},
+    globalDefaultConfig = {};
 
 function generateConfigHTML(prefix) {
-    $("#config" + prefix + "Tab").empty(); // Clear page content first
+    $('#config' + prefix + 'Tab').empty(); // Clear page content first
 
     $.ajax({
-        url: "/Api/Type/ArchiSteamFarm.BotConfig",
-        type: "GET",
+        url: '/Api/Type/ArchiSteamFarm.BotConfig',
+        type: 'GET',
         success: function (data) {
-            var obj = data["Result"],
-                objBody = obj["Body"],
+            var obj = data['Result'],
+                objBody = obj['Body'],
                 boxBodyHTML = '',
                 textBoxes = '',
                 checkBoxes = '',
                 numberBoxes = '',
                 defaultBoxes = '',
                 textAreas = '';
+
+            var nameBoxHTML = prefix === 'Generator' ? '<div class="form-group-config"><label for="GeneratorName">Name</label><input type="text" id="GeneratorName" class="form-control"></div>' : '';
 
             for (var key in objBody) {
                 if (objBody.hasOwnProperty(key)) {
@@ -385,7 +388,7 @@ function generateConfigHTML(prefix) {
                     }
                 }
 
-                boxBodyHTML = '<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">' + defaultBoxes + '</div>'
+                boxBodyHTML = '<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">' + nameBoxHTML + defaultBoxes + '</div>'
                     + '<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">' + textBoxes + numberBoxes + '</div>'
                     + '<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">' + checkBoxes + textAreas + '</div>';
             }
@@ -416,7 +419,7 @@ function createClickFunction() {
     for (i = 0; i < myNodeList.length; i++) {
         var myID = myNodeList[i].id;
 
-        $('#' + myID).bind("click", function () {
+        $('#' + myID).bind('click', function () {
             var $key = $('#' + this.id);
 
             if ($key.hasClass('text-grey')) {
@@ -436,10 +439,10 @@ function createClickFunction() {
 
 function loadConfigValuesForBot(botName) {
     $.ajax({
-        url: "/Api/Bot/" + encodeURIComponent(botName),
-        type: "GET",
+        url: '/Api/Bot/' + encodeURIComponent(botName),
+        type: 'GET',
         success: function (data) {
-            var obj = data["Result"],
+            var obj = data['Result'],
                 objBot = obj[0],
                 BotConfig = objBot.BotConfig;
 
@@ -484,6 +487,56 @@ function loadConfigValuesForBot(botName) {
             }
             
             loadBotsDropDown(botName);
+        }
+    });
+}
+
+function loadDefaultConfigValues() {
+    $.ajax({
+        url: '/Api/Structure/ArchiSteamFarm.BotConfig',
+        type: 'GET',
+        success: function (data) {
+            var BotConfig = data['Result'];
+
+            globalDefaultConfig = BotConfig;
+
+            for (var key in BotConfig) {
+                if (BotConfig.hasOwnProperty(key)) {
+                    var value = BotConfig[key],
+                        $key = $('#Generator' + key),
+                        keyObj = $key[0];
+
+                    if (typeof keyObj === 'undefined') continue;
+
+                    var inputType = keyObj.dataset.type;
+
+                    switch (inputType) {
+                        case 'System.Boolean':
+                            if (value) {
+                                $key.removeClass('text-grey');
+                                $key.addClass('text-olive');
+                                $('#icoGenerator' + key).removeClass('fa-rotate-180');
+                            } else {
+                                $key.removeClass('text-olive');
+                                $key.addClass('text-grey');
+                                $('#icoGenerator' + key).addClass('fa-rotate-180');
+                            }
+                            break;
+                        case 'System.UInt64':
+                            $key.val(BotConfig['s_' + key]);
+                            break;
+                        case 'System.Collections.Generic.Dictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
+                            $key.text(''); // Reset textarea before filling
+
+                            for (var steamID64 in value) {
+                                if (value.hasOwnProperty(steamID64)) $key.append(steamID64 + ':' + value[steamID64] + '\n');
+                            }
+                            break;
+                        default:
+                            $key.val(value);
+                    }
+                }
+            }
         }
     });
 }
@@ -556,6 +609,94 @@ function prepareBotConfigForSaving() {
     }
 
     saveConfig(botName, { BotConfig });
+}
+
+function prepareGeneratorConfigForSaving() {
+    var botName = $('#GeneratorName').val(),
+        BotConfig = globalDefaultConfig;
+
+    if (botName === '') {
+        swal({
+            title: 'Error!',
+            text: 'You need to enter a name',
+            type: 'error'
+        });
+        return false;
+    }
+
+    for (var key in BotConfig) {
+        if (BotConfig.hasOwnProperty(key)) {
+            var value = BotConfig[key],
+                $key = $('#Generator' + key),
+                keyObj = $key[0];
+
+            if (typeof keyObj === 'undefined') continue;
+
+            var inputType = keyObj.dataset.type,
+                $keyValue = $key.val();
+
+            switch (inputType) {
+                case 'System.Boolean':
+                    var $keyState = $('#icoGenerator' + key).hasClass('fa-rotate-180') ? false : true;
+                    if ($keyState !== value) BotConfig[key] = $keyState;
+                    break;
+
+                case 'System.String':
+                    if ($keyValue === '') $keyValue = null;
+                    if ($keyValue !== value) BotConfig[key] = $keyValue;
+                    break;
+                case 'System.UInt64':
+                    if ($keyValue !== BotConfig['s_' + key]) {
+                        delete BotConfig[key];
+                        BotConfig['s_' + key] = $keyValue;
+                    }
+                    break;
+                case 'System.Collections.Generic.HashSet`1[System.UInt32]':
+                    var items = $keyValue.split(',');
+                    if (items.map(Number) !== value) BotConfig[key] = items.map(Number);
+                    break;
+
+                case 'System.Collections.Generic.Dictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
+                    var steamUserPermissions = {},
+                        permissions = [],
+                        lines = $key.val().split('\n');
+
+                    for (var i = 0; i < lines.length; i++) {
+                        if (lines[i] !== '') permissions.push(lines[i].split(':'));
+                    }
+
+                    for (var j = 0; j < permissions.length; j++) {
+                        var obj = permissions[j];
+                        steamUserPermissions[obj[0]] = parseInt(obj[1]);
+                    }
+
+                    if (steamUserPermissions !== value) BotConfig[key] = steamUserPermissions;
+                    break;
+
+                default:
+                    if (typeof value === 'object') {
+                        var objItems = $keyValue.split(',');
+                        if (objItems.map(Number) !== value) BotConfig[key] = objItems.map(Number);
+                    } else if (typeof value === 'number') {
+                        var number = Number($keyValue);
+                        if (number !== value) BotConfig[key] = number;
+                    } else {
+                        if ($keyValue !== value) BotConfig[key] = $keyValue;
+                    }
+            }
+        }
+    }
+    
+    downloadObjectAsJson(botName, BotConfig);
+}
+
+function downloadObjectAsJson(exportName, exportObj) {
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
+    var downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", exportName + ".json");
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
 }
 
 function saveConfig(botName, config) {

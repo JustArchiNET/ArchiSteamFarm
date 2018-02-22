@@ -104,17 +104,14 @@
                     </ul>
                     <div class="tab-content no-padding">
                         <div class="tab-pane active" id="configChangerTab"></div>
-                        <div class="tab-pane" id="configGeneratorTab">
-                            <div class="callout callout-info margin">
-                                <h4><i class="icon fas fa-info"></i> Not implemented</h4>
-                                <p>This feature has not been implemented yet.</p>
-                            </div>
-                        </div>
+                        <div class="tab-pane" id="configGeneratorTab"></div>
                     </div>
 
                     <div class="box-footer">
-                        <button type="submit" class="btn btn-default pull-right" id="saveButton"><i class="far fa-save"></i> Save</button>
-                        <button type="submit" class="btn btn-default pull-right" id="downloadButton" disabled><i class="fas fa-cloud-download-alt"></i> Download</button>
+                        <div class="input-group pull-right">
+                            <button type="submit" class="btn btn-default pull-right" id="saveButton"><i class="far fa-save"></i> Save</button>
+                            <button type="submit" class="btn btn-default pull-right" id="downloadButton"><i class="fas fa-cloud-download-alt"></i> Download</button>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -150,41 +147,62 @@
 
             $('#configChangerTab').ready(function () {
                 $('#downloadButton').hide();
-                generateConfigChangerHTML();
+                generateConfigHTML('Changer');
 
                 $.ajax({
-                    url: "/Api/Bot/ASF",
-                    type: "GET",
+                    url: '/Api/Bot/ASF',
+                    type: 'GET',
                     success: function (data) {
-                        var json = data["Result"];
+                        var json = data['Result'];
                         loadConfigValuesForBot(json[0].BotName);
                     }
                 });
             });
 
             $('#generatorTabButton').click(function (e) {
+                generateConfigHTML('Generator');
+                $('#configGeneratorTab').ready(function () {
+                    loadDefaultConfigValues();
+                });
                 $('#downloadButton').show();
                 $('#saveButton').hide();
                 e.preventDefault();
             });
 
             $('#changerTabButton').click(function (e) {
+                generateConfigHTML('Changer');
+                $('#configChangerTab').ready(function () {
+                    $.ajax({
+                        url: '/Api/Bot/ASF',
+                        type: 'GET',
+                        success: function (data) {
+                            var json = data['Result'];
+                            loadConfigValuesForBot(json[0].BotName);
+                        }
+                    });
+                });
                 $('#downloadButton').hide();
                 $('#saveButton').show();
                 e.preventDefault();
             });
 
-            $("#saveButton").click(function (e) {
+            $('#saveButton').click(function (e) {
                 swal({
-                    title: "Are you sure?",
-                    text: "The config will be updated and the bot will be restarted!",
-                    type: "warning",
+                    title: 'Are you sure?',
+                    text: 'The config will be updated and the bot will be restarted!',
+                    type: 'warning',
                     showCancelButton: true,
-                    confirmButtonClass: "btn-danger",
-                    confirmButtonText: "Yes, update config!",
+                    confirmButtonClass: 'btn-danger',
+                    confirmButtonText: 'Yes, update config!',
                     closeOnConfirm: false,
                     showLoaderOnConfirm: true
                 }, function () { prepareBotConfigForSaving(); });
+
+                e.preventDefault();
+            });
+
+            $('#downloadButton').click(function (e) {
+                prepareGeneratorConfigForSaving();
 
                 e.preventDefault();
             });
