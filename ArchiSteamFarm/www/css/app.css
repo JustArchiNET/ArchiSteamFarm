@@ -184,10 +184,10 @@ button.bot-resumed:hover {
 }
 
 @media (min-width: 1200px) {
-    .sweet-alert {
-        width: 700px;
+    .swal-wide {
+        width: 700px !important;
     }
     #gamesToRedeemInBackground {
-        height: 250px;
+        height: 250px !important;
     }
 } 
