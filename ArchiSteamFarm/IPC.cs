@@ -524,9 +524,9 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			await bot.AddGamesToRedeemInBackground(jsonRequest.GamesToRedeemInBackground).ConfigureAwait(false);
+			await bot.ValidateAndAddGamesToRedeemInBackground(jsonRequest.GamesToRedeemInBackground).ConfigureAwait(false);
 
-			await ResponseJsonObject(request, response, new GenericResponse(true, "OK")).ConfigureAwait(false);
+			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", jsonRequest.GamesToRedeemInBackground)).ConfigureAwait(false);
 			return true;
 		}
 

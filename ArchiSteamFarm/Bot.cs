@@ -307,19 +307,6 @@ namespace ArchiSteamFarm {
 			return await BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false);
 		}
 
-		internal async Task AddGamesToRedeemInBackground(IReadOnlyDictionary<string, string> gamesToRedeemInBackground) {
-			if ((gamesToRedeemInBackground == null) || (gamesToRedeemInBackground.Count == 0)) {
-				ArchiLogger.LogNullError(nameof(gamesToRedeemInBackground));
-				return;
-			}
-
-			await BotDatabase.AddGamesToRedeemInBackground(gamesToRedeemInBackground).ConfigureAwait(false);
-
-			if (BotDatabase.HasGamesToRedeemInBackground && (GamesRedeemerInBackgroundTimer == null) && IsConnectedAndLoggedOn) {
-				RedeemGamesInBackground().Forget();
-			}
-		}
-
 		internal async Task<bool> DeleteAllRelatedFiles() {
 			try {
 				await BotDatabase.MakeReadOnly().ConfigureAwait(false);
@@ -691,20 +678,15 @@ namespace ArchiSteamFarm {
 							continue;
 						}
 
-						string game = string.Join(" ", parsedArgs.Take(parsedArgs.Length - 1));
 						string key = parsedArgs[parsedArgs.Length - 1];
-
-						if (!IsValidCdKey(key)) {
-							ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, key));
-							continue;
-						}
+						string game = string.Join(' ', parsedArgs.Take(parsedArgs.Length - 1));
 
 						gamesToRedeemInBackground[key] = game;
 					}
 				}
 
 				if (gamesToRedeemInBackground.Count > 0) {
-					await AddGamesToRedeemInBackground(gamesToRedeemInBackground).ConfigureAwait(false);
+					await ValidateAndAddGamesToRedeemInBackground(gamesToRedeemInBackground).ConfigureAwait(false);
 				}
 
 				File.Delete(filePath);
@@ -1177,6 +1159,49 @@ namespace ArchiSteamFarm {
 
 			if (!skipShutdownEvent) {
 				Events.OnBotShutdown().Forget();
+			}
+		}
+
+		internal async Task ValidateAndAddGamesToRedeemInBackground(Dictionary<string, string> gamesToRedeemInBackground) {
+			if ((gamesToRedeemInBackground == null) || (gamesToRedeemInBackground.Count == 0)) {
+				ArchiLogger.LogNullError(nameof(gamesToRedeemInBackground));
+				return;
+			}
+
+			HashSet<string> invalidGames = new HashSet<string>();
+
+			foreach (KeyValuePair<string, string> game in gamesToRedeemInBackground) {
+				bool invalid = false;
+
+				if (!IsValidCdKey(game.Key)) {
+					invalid = true;
+					ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, game.Key));
+				}
+
+				if (string.IsNullOrEmpty(game.Value)) {
+					invalid = true;
+					ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, game.Value));
+				}
+
+				if (invalid) {
+					invalidGames.Add(game.Key);
+				}
+			}
+
+			if (invalidGames.Count > 0) {
+				foreach (string invalidGame in invalidGames) {
+					gamesToRedeemInBackground.Remove(invalidGame);
+				}
+
+				if (gamesToRedeemInBackground.Count == 0) {
+					return;
+				}
+			}
+
+			await BotDatabase.AddGamesToRedeemInBackground(gamesToRedeemInBackground).ConfigureAwait(false);
+
+			if (BotDatabase.HasGamesToRedeemInBackground && (GamesRedeemerInBackgroundTimer == null) && IsConnectedAndLoggedOn) {
+				RedeemGamesInBackground().Forget();
 			}
 		}
 
@@ -2289,8 +2314,6 @@ namespace ArchiSteamFarm {
 				GamesRedeemerInBackgroundTimer = null;
 			}
 
-			ArchiLogger.LogGenericDebug("Started!");
-
 			while (IsConnectedAndLoggedOn && BotDatabase.HasGamesToRedeemInBackground) {
 				KeyValuePair<string, string> game = BotDatabase.GetGameToRedeemInBackground();
 				if (string.IsNullOrEmpty(game.Key) || string.IsNullOrEmpty(game.Value)) {
@@ -2298,15 +2321,10 @@ namespace ArchiSteamFarm {
 					break;
 				}
 
-				ArchiLogger.LogGenericDebug("Received game: " + game.Key + " | " + game.Value);
-
 				ArchiHandler.PurchaseResponseCallback result = await ArchiHandler.RedeemKey(game.Key).ConfigureAwait(false);
 				if (result == null) {
-					ArchiLogger.LogGenericDebug("AH timed out");
 					continue;
 				}
-
-				ArchiLogger.LogGenericDebug("AH received result: " + result.PurchaseResultDetail);
 
 				if (result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) {
 					// If it's a wallet code, we try to redeem it first, then handle the inner result as our primary one
@@ -2346,24 +2364,19 @@ namespace ArchiSteamFarm {
 				}
 
 				if (rateLimited) {
-					ArchiLogger.LogGenericDebug("Rate limited, we'll resume soon");
 					break;
 				}
 
-				ArchiLogger.LogGenericDebug("Removing this game from DB");
 				await BotDatabase.RemoveGameToRedeemInBackground(game.Key).ConfigureAwait(false);
 
 				if (shouldKeep) {
 					try {
-						ArchiLogger.LogGenericDebug("Writing output of this game to the list of unused games");
 						await File.AppendAllTextAsync(KeysToRedeemAlreadyOwnedFilePath, game.Value + "\t" + game.Key + " (" + result.PurchaseResultDetail + ")" + Environment.NewLine).ConfigureAwait(false);
 					} catch (Exception e) {
 						ArchiLogger.LogGenericException(e);
 						await BotDatabase.AddGameToRedeemInBackground(game.Key, game.Value).ConfigureAwait(false); // Failsafe
 						break;
 					}
-				} else {
-					ArchiLogger.LogGenericDebug("Not writing output of this game to the list of unused games");
 				}
 
 				// Add some delay before next redeem attempt
@@ -2371,7 +2384,6 @@ namespace ArchiSteamFarm {
 			}
 
 			if (BotDatabase.HasGamesToRedeemInBackground) {
-				ArchiLogger.LogGenericDebug("We have more games to redeem, setting up timer to resume in 30 min");
 				GamesRedeemerInBackgroundTimer = new Timer(
 					async e => await RedeemGamesInBackground().ConfigureAwait(false),
 					null,
@@ -2379,8 +2391,6 @@ namespace ArchiSteamFarm {
 					Timeout.InfiniteTimeSpan // Period
 				);
 			}
-
-			ArchiLogger.LogGenericDebug("We're done this round");
 		}
 
 		private async Task ResetGamesPlayed() {
