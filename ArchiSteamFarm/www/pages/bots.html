@@ -162,6 +162,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/humanize-duration/3.12.1/humanize-duration.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
     <script src="../js/app.js"></script>
     <script>
         $(function () {
@@ -315,7 +316,7 @@
             });
 
             $('#deselectAllBots').click(function () {
-                $(".ui-selectee").each(function () {
+                $(".ui-selected").each(function () {
                     $(this).removeClass('ui-selected');
                 });
             });
@@ -740,13 +741,7 @@
                                 + '</div>'
                                 + '</div>');
 
-                            if (totalTimeRemaining.length === 8) {
-                                totalTimeRemaining = new Date('1970-01-01T' + totalTimeRemaining + 'Z').getTime();
-                            } else if (totalTimeRemaining.length === 11) {
-                                var days = totalTimeRemaining.substr(0, 2);
-                                var hours = totalTimeRemaining.substr(3, totalTimeRemaining.length);
-                                totalTimeRemaining = new Date('1970-01-' + days + 'T' + hours + 'Z').getTime();
-                            }
+                            totalTimeRemaining = moment.duration(totalTimeRemaining).asMilliseconds();
 
                             $('#totalGamesRemaining').text(totalGamesRemaining);
                             $('#totalTimeRemaining').text(humanizeDuration(totalTimeRemaining));
