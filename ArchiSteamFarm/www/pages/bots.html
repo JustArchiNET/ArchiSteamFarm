@@ -173,6 +173,40 @@
                 tmpShowKeyButton = get('showKeyButton'),
                 tmpMultiSelect = get('multiSelect'),
                 currentlySelectedBots = [];
+
+            $(document).delegate('#gamesToRedeemInBackground', 'keydown', function (e) {
+                var keyCode = e.keyCode || e.which;
+
+                if (keyCode == 9) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    var start = this.selectionStart;
+                    var end = this.selectionEnd;
+                    
+                    $(this).val($(this).val().substring(0, start) // set textarea value to: text before caret + tab + text after caret
+                        + "\t"
+                        + $(this).val().substring(end));
+                    
+                    this.selectionStart = this.selectionEnd = start + 1; // put caret at right position again
+                }
+            });
+
+            $(document).delegate('#delimeter', 'keydown', function (e) {
+                var keyCode = e.keyCode || e.which;
+
+                if (keyCode == 9) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    var start = this.selectionStart;
+                    var end = this.selectionEnd;
+                    
+                    $(this).val($(this).val().substring(0, start) // set textarea value to: text before caret + tab + text after caret
+                        + "\t"
+                        + $(this).val().substring(end));
+                    
+                    this.selectionStart = this.selectionEnd = start + 1; // put caret at right position again
+                }
+            });
             
             $('.box-tools').ready(function () { // Load state of checkboxes
                 if (tmpHideOnlineBots === 'true') {
