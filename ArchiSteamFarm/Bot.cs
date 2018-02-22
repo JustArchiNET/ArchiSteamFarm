@@ -1188,12 +1188,14 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			foreach (string invalidGame in invalidGames) {
-				gamesToRedeemInBackground.Remove(invalidGame);
-			}
+			if (invalidGames.Count > 0) {
+				foreach (string invalidGame in invalidGames) {
+					gamesToRedeemInBackground.Remove(invalidGame);
+				}
 
-			if (gamesToRedeemInBackground.Count == 0) {
-				return;
+				if (gamesToRedeemInBackground.Count == 0) {
+					return;
+				}
 			}
 
 			await BotDatabase.AddGamesToRedeemInBackground(gamesToRedeemInBackground).ConfigureAwait(false);
