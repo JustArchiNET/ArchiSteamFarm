@@ -150,29 +150,28 @@
             startWebSocket();
 
             function startWebSocket() {
-                if (!"WebSocket" in window) window.alert('Please use a modern browser to properly view ASF GUI!')
+                if (!'WebSocket' in window) window.alert('Please use a modern browser to properly view ASF GUI!')
 
                 var loc = window.location,
-                    new_uri = (loc.protocol === "https:") ? "wss:" : "ws:";
+                    new_uri = (loc.protocol === 'https:') ? 'wss:' : 'ws:';
 
-                new_uri += "//" + loc.host + "/Api/Log?password=" + encodeURIComponent(IPCPassword);
+                new_uri += '//' + loc.host + '/Api/Log?password=' + encodeURIComponent(IPCPassword);
                 ws = new WebSocket(new_uri);
                 $('.overlay').remove();
-                $('.box-content-log').text(""); //Clear log
+                $('.box-content-log').text(''); // Clear log
 
                 ws.onmessage = function (evt) {
-                    var msg = JSON.parse(evt.data)["Result"] + "\n";
+                    var msg = JSON.parse(evt.data)['Result'] + '\n';
                     $('.box-content-log').append(msg);
-                    $(".box-content-log").stop().animate({ scrollTop: $(".box-content-log")[0].scrollHeight }, 1000);
+                    $('.box-content-log').stop().animate({ scrollTop: $('.box-content-log')[0].scrollHeight }, 1000);
                 };
 
                 ws.onclose = function (event) {
-                    if (event.code !== 1000) {
-                        // code 1000 means that the connection was closed normally
+                    if (event.code !== 1000) { // Code 1000 means that the connection was closed normally
                         swal({
-                            title: "Error!",
+                            title: 'Error!',
                             text: event.code + ' - ' + event.reason,
-                            type: "error"
+                            type: 'error'
                         }, function () { swal.close(); });
                     }
                 }

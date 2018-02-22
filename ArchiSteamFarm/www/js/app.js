@@ -19,26 +19,26 @@ function store(name, val) {
 
 function getIPCPassword() {
     swal({
-        title: "IPC password required",
-        text: "Please enter the correct IPC password:",
-        type: "input",
+        title: 'IPC password required',
+        text: 'Please enter the correct IPC password:',
+        type: 'input',
         showCancelButton: true,
         closeOnConfirm: false,
-        inputPlaceholder: "Type your password",
-        inputType: "password"
+        inputPlaceholder: 'Type your password',
+        inputType: 'password'
     }, function (typedPassword) {
         if (typedPassword === false) return false;
 
-        if (typedPassword === "") {
-            swal.showInputError("You need to enter a valid password!");
+        if (typedPassword === '') {
+            swal.showInputError('You need to enter a valid password!');
             return false;
         }
 
         store('IPCPassword', typedPassword);
         swal({
-            title: "Success!",
-            text: "Your IPC password has been saved.",
-            type: "success"
+            title: 'Success!',
+            text: 'Your IPC password has been saved.',
+            type: 'success'
         }, function () { location.reload(); });
     });
 }
@@ -50,14 +50,14 @@ if (IPCPassword) $.ajaxSetup({ beforeSend: function (jqXHR) { jqXHR.setRequestHe
 //#region Footer
 $('.main-footer').ready(function () {
     $.ajax({
-        url: "/Api/ASF",
-        type: "GET",
+        url: '/Api/ASF',
+        type: 'GET',
         statusCode: { 401: function () { getIPCPassword(); } },
         success: function (data) {
-            var obj = data["Result"].Version,
+            var obj = data['Result'].Version,
                 version = obj.Major + '.' + obj.Minor + '.' + obj.Build + '.' + obj.Revision;
             
-            $("#version").html('<b>Version</b> ' + version);
+            $('#version').html('<b>Version</b> ' + version);
             $('#changelog').attr('href', 'https://github.com/JustArchi/ArchiSteamFarm/releases/tag/' + version);
         }
     });
@@ -72,10 +72,10 @@ $('.bot-status').ready(function () {
             offlineBots = 0;
 
         $.ajax({
-            url: "/Api/Bot/ASF",
-            type: "GET",
+            url: '/Api/Bot/ASF',
+            type: 'GET',
             success: function (data) {
-                var json = data["Result"];
+                var json = data['Result'];
 
                 for (var i = 0; i < json.length; i++) {
                     var obj = json[i],
@@ -85,7 +85,7 @@ $('.bot-status').ready(function () {
                     if (KeepRunning === false) {
                         offlineBots++;
                     } else {
-                        if (TimeRemaining === "00:00:00") {
+                        if (TimeRemaining === '00:00:00') {
                             idleBots++;
                         } else {
                             activeBots++;
@@ -93,9 +93,9 @@ $('.bot-status').ready(function () {
                     }
                 }
 
-                $("#offlineBots").text(offlineBots);
-                $("#idleBots").text(idleBots);
-                $("#activeBots").text(activeBots);
+                $('#offlineBots').text(offlineBots);
+                $('#idleBots').text(idleBots);
+                $('#activeBots').text(activeBots);
             }
         });
     }
@@ -109,9 +109,9 @@ $('.bot-status').ready(function () {
 $('.info-overview').ready(function () {
     function displayRAMUsage() {
         $.ajax({
-            url: "/Api/ASF",
-            type: "GET",
-            success: function (data) { $("#ramUsage").html((data["Result"].MemoryUsage / 1024).toFixed(2) + " MB"); }
+            url: '/Api/ASF',
+            type: 'GET',
+            success: function (data) { $('#ramUsage').html((data['Result'].MemoryUsage / 1024).toFixed(2) + ' MB'); }
         });
     }
 
@@ -120,9 +120,9 @@ $('.info-overview').ready(function () {
     
     function displayUptime() {
         $.ajax({
-            url: "/Api/ASF",
-            type: "GET",
-            success: function (data) { $("#uptime").html(uptimeToString(data["Result"].ProcessStartTime)); }
+            url: '/Api/ASF',
+            type: 'GET',
+            success: function (data) { $('#uptime').html(uptimeToString(data['Result'].ProcessStartTime)); }
         });
     }
 
@@ -146,22 +146,22 @@ function uptimeToString(startTime) {
     hours = (hours < 10 ? '0' : '') + hours;
     mins = (mins < 10 ? '0' : '') + mins;
 
-    return days + "d " + hours + "h " + mins + "m";
+    return days + 'd ' + hours + 'h ' + mins + 'm';
 }
 //#endregion ASF Information
 
 //#region Command Page
 var $cmdInput = $('#commandInput');
-function fillCommand(cmd) { $cmdInput.val(cmd); }
-function fillBots(bot) { $cmdInput.val($cmdInput.val() + ' ' + bot); }
+function fillCommand(cmd) { $cmdInput.val(cmd + ' '); }
+function fillBots(bot) { $cmdInput.val($cmdInput.val() + bot); }
 
 function getDateAndTime() {
     var currentdate = new Date();
     return ('0' + currentdate.getDate()).slice(-2) + '.'
         + ('0' + (currentdate.getMonth() + 1)).slice(-2) + '.'
-        + currentdate.getFullYear() + " @ "
-        + ('0' + currentdate.getHours()).slice(-2) + ":"
-        + ('0' + currentdate.getMinutes()).slice(-2) + ":"
+        + currentdate.getFullYear() + ' @ '
+        + ('0' + currentdate.getHours()).slice(-2) + ':'
+        + ('0' + currentdate.getMinutes()).slice(-2) + ':'
         + ('0' + currentdate.getSeconds()).slice(-2);
 }
 
@@ -169,41 +169,41 @@ function logCommand(state, cmd) {
     var tmpAutoClear = get('autoClear');
 
     if (state) {
-        $("#commandSent").val(getDateAndTime() + ' Command sent: ' + cmd);
+        $('#commandSent').val(getDateAndTime() + ' Command sent: ' + cmd);
     } else {
         if (tmpAutoClear === 'false') {
-            $(".box-content-command").append('\n' + getDateAndTime() + ' Response received: ' + cmd + '\n');
+            $('.box-content-command').append('\n' + getDateAndTime() + ' Response received: ' + cmd + '\n');
         } else {
-            $(".box-content-command").text(getDateAndTime() + ' Response received: ' + cmd);
+            $('.box-content-command').text(getDateAndTime() + ' Response received: ' + cmd);
         }
     }
 }
 
 function sendCommand() {
     var command = $cmdInput.val(),
-        requestURL = "/Api/Command/" + command,
+        requestURL = '/Api/Command/' + command,
         tmpAutoClear = get('autoClear');
 
-    if (command === "") return;
+    if (command === '') return;
 
     logCommand(true, command);
 
     if (tmpAutoClear === 'false') {
-        if ($(".box-content-command").text() === '') {
-            $(".box-content-command").append(getDateAndTime() + ' Waiting for response...' + '\n');
+        if ($('.box-content-command').text() === '') {
+            $('.box-content-command').append(getDateAndTime() + ' Waiting for response...' + '\n');
         } else {
-            $(".box-content-command").append('\n' + getDateAndTime() + ' Waiting for response...' + '\n');
+            $('.box-content-command').append('\n' + getDateAndTime() + ' Waiting for response...' + '\n');
         }
 
     } else {
-        $(".box-content-command").text(getDateAndTime() + ' Waiting for response...');
+        $('.box-content-command').text(getDateAndTime() + ' Waiting for response...');
     }
 
-    $(".box-content-command").append('<div class="overlay"><i class="fas fa-sync fa-spin" style="color:white"></i></div>');
+    $('.box-content-command').append('<div class="overlay"><i class="fas fa-sync fa-spin" style="color:white"></i></div>');
 
     $.ajax({
         url: requestURL,
-        type: "GET",
+        type: 'GET',
         success: function (data) {
             $('.overlay').remove();
             logCommand(false, data['Result']);
@@ -218,7 +218,7 @@ function sendCommand() {
 }
 //#endregion Command Page
 
-//#region Config Changer Page
+//#region Config Page
 
 //#region New stuff
 //const cachedTypeDefinitions = new Map();
@@ -328,14 +328,18 @@ function sendCommand() {
 //}
 //#endregion New stuff
 
-function generateConfigChangerHTML() {
+var globalBotConfig = {};
+
+function generateConfigHTML(prefix) {
+    $("#config" + prefix + "Tab").empty(); // Clear page content first
+
     $.ajax({
         url: "/Api/Type/ArchiSteamFarm.BotConfig",
         type: "GET",
         success: function (data) {
             var obj = data["Result"],
                 objBody = obj["Body"],
-                boxBodyHTML = "",
+                boxBodyHTML = '',
                 textBoxes = '',
                 checkBoxes = '',
                 numberBoxes = '',
@@ -351,32 +355,32 @@ function generateConfigChangerHTML() {
                     switch (value) {
                         case 'System.Boolean':
                             checkBoxes += '<div class="">'
-                                + '<button title="Toggle ' + key + '" type="button" data-type="' + value + '" class="btn btn-box-tool text-grey" id="' + key + '"><i id="ico' + key + '" class="fas fa-toggle-on fa-2x fa-fw fa-rotate-180"></i></button>'
+                                + '<button title="Toggle ' + key + '" type="button" data-type="' + value + '" class="btn btn-box-tool text-grey" id="' + prefix + key + '"><i id="ico' + prefix + key + '" class="fas fa-toggle-on fa-2x fa-fw fa-rotate-180"></i></button>'
                                 + readableKey
                                 + '</div>';
                             break;
                         case 'System.String':
                             textBoxes += '<div class="form-group-config">'
-                                + '<label for="' + key + '">' + readableKey + '</label>'
-                                + '<input type="text" id="' + key + '" class="form-control" data-type="' + value + '">'
+                                + '<label for="' + prefix + key + '">' + readableKey + '</label>'
+                                + '<input type="text" id="' + prefix + key + '" class="form-control" data-type="' + value + '">'
                                 + '</div>';
                             break;
                         case 'System.Byte':
                             numberBoxes += '<div class="form-group-config">'
-                                + '<label for="' + key + '">' + readableKey + '</label>'
-                                + '<input type="number" id="' + key + '" class="form-control" data-type="' + value + '">'
+                                + '<label for="' + prefix + key + '">' + readableKey + '</label>'
+                                + '<input type="number" id="' + prefix + key + '" class="form-control" data-type="' + value + '">'
                                 + '</div>';
                             break;
                         case 'System.Collections.Generic.Dictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
                             textAreas += '<div class="form-group-config">'
-                                + '<label for="' + key + '">' + readableKey + '</label>'
-                                + '<textarea id="' + key + '" class="form-control" data-type="' + value + '" rows="3"></textarea>'
+                                + '<label for="' + prefix + key + '">' + readableKey + '</label>'
+                                + '<textarea id="' + prefix + key + '" class="form-control" data-type="' + value + '" rows="3"></textarea>'
                                 + '</div>';
                             break;
                         default:
                             defaultBoxes += '<div class="form-group-config">'
-                                + '<label for="' + key + '">' + readableKey + '</label>'
-                                + '<input type="text" id="' + key + '" class="form-control" data-type="' + value + '">'
+                                + '<label for="' + prefix + key + '">' + readableKey + '</label>'
+                                + '<input type="text" id="' + prefix + key + '" class="form-control" data-type="' + value + '">'
                                 + '</div>';
                     }
                 }
@@ -386,22 +390,21 @@ function generateConfigChangerHTML() {
                     + '<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">' + checkBoxes + textAreas + '</div>';
             }
 
-            $('#configChangerTab').html('<div class="box-header with-border">'
+            var boxHeaderHTML = prefix === 'Changer' ? '<div class="box-header with-border">'
                 + '<h3 class="box-title"></h3>'
                 + '<div class="box-tools pull-right">'
                 + '<div class="btn-group">'
                 + '<button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown" aria-expanded="false">'
-                + 'Change Bot '
+                + 'Change bot '
                 + '<span class="fas fa-caret-down"></span>'
                 + '</button>'
                 + '<ul class="dropdown-menu scrollable-menu" role="menu" id="botsDropDown"></ul>'
                 + '</div>'
                 + '</div>'
-                + '</div>'
-                + '<div class="box-body">'
-                + boxBodyHTML
-                + '</div>');
-            
+                + '</div>' : '';
+
+            $('#config' + prefix + 'Tab').html(boxHeaderHTML + '<div class="box-body">' + boxBodyHTML + '</div>');
+
             createClickFunction();
         }
     });
@@ -431,8 +434,6 @@ function createClickFunction() {
     }
 }
 
-var globalBotConfig = {};
-
 function loadConfigValuesForBot(botName) {
     $.ajax({
         url: "/Api/Bot/" + encodeURIComponent(botName),
@@ -447,7 +448,7 @@ function loadConfigValuesForBot(botName) {
             for (var key in BotConfig) {
                 if (BotConfig.hasOwnProperty(key)) {
                     var value = BotConfig[key],
-                        $key = $('#' + key),
+                        $key = $('#Changer' + key),
                         keyObj = $key[0];
 
                     if (typeof keyObj === 'undefined') continue;
@@ -459,11 +460,11 @@ function loadConfigValuesForBot(botName) {
                             if (value) {
                                 $key.removeClass('text-grey');
                                 $key.addClass('text-olive');
-                                $('#ico' + key).removeClass('fa-rotate-180');
+                                $('#icoChanger' + key).removeClass('fa-rotate-180');
                             } else {
                                 $key.removeClass('text-olive');
                                 $key.addClass('text-grey');
-                                $('#ico' + key).addClass('fa-rotate-180');
+                                $('#icoChanger' + key).addClass('fa-rotate-180');
                             }
                             break;
                         case 'System.UInt64':
@@ -488,13 +489,13 @@ function loadConfigValuesForBot(botName) {
 }
 
 function prepareBotConfigForSaving() {
-    var botName = $("#saveButton").data("BotName"),
+    var botName = $('#saveButton').data('BotName'),
         BotConfig = globalBotConfig;
 
     for (var key in BotConfig) {
         if (BotConfig.hasOwnProperty(key)) {
             var value = BotConfig[key],
-                $key = $('#' + key),
+                $key = $('#Changer' + key),
                 keyObj = $key[0];
 
             if (typeof keyObj === 'undefined') continue;
@@ -504,7 +505,7 @@ function prepareBotConfigForSaving() {
 
             switch (inputType) {
                 case 'System.Boolean':
-                    var $keyState = $('#ico' + key).hasClass('fa-rotate-180') ? false : true;
+                    var $keyState = $('#icoChanger' + key).hasClass('fa-rotate-180') ? false : true;
                     if ($keyState !== value) BotConfig[key] = $keyState;
                     break;
 
@@ -559,22 +560,22 @@ function prepareBotConfigForSaving() {
 
 function saveConfig(botName, config) {
     $.ajax({
-        url: "/Api/Bot/" + encodeURIComponent(botName),
-        type: "POST",
+        url: '/Api/Bot/' + encodeURIComponent(botName),
+        type: 'POST',
         data: JSON.stringify(config),
-        contentType: "application/json",
+        contentType: 'application/json',
         success: function (data) {
             swal({
-                title: "Success!",
-                text: "<" + botName + "> and its config file got updated.",
-                type: "success"
+                title: 'Success!',
+                text: '<' + botName + '> and its config file got updated.',
+                type: 'success'
             }, function () { location.reload(); });
         },
         error: function (jqXHR, textStatus, errorThrown) {
             swal({
-                title: "Error!",
+                title: 'Error!',
                 text: jqXHR.status + ' - ' + errorThrown,
-                type: "error"
+                type: 'error'
             }, function () { location.reload(); });
         }
     });
@@ -584,10 +585,10 @@ function loadBotsDropDown(botName) {
     var botsDropDownHTML = '';
 
     $.ajax({
-        url: "/Api/Bot/ASF",
-        type: "GET",
+        url: '/Api/Bot/ASF',
+        type: 'GET',
         success: function (data) {
-            var obj = data["Result"];
+            var obj = data['Result'];
 
             for (var i = 0; i < obj.length; i++) {
                 var currentBot = obj[i],
@@ -598,13 +599,13 @@ function loadBotsDropDown(botName) {
                 botsDropDownHTML += '<li><a href="javascript:void(0)" onclick="loadConfigValuesForBot(\'' + currentBotName + '\')">' + currentBotName + '</a></li>';
             }
 
-            $(".box-title").html("Currently editing: <b>" + botName + "</b>");
-            $("#saveButton").data("BotName", botName);
-            $("#botsDropDown").html(botsDropDownHTML);
+            $('.box-title').html('Currently editing: <b>' + botName + '</b>');
+            $('#saveButton').data('BotName', botName);
+            $('#botsDropDown').html(botsDropDownHTML);
         }
     });
 }
-//#endregion Config Changer Page
+//#endregion Config Page
 
 //#region Layout
 $(function () {
@@ -634,19 +635,19 @@ $(function () {
 
     function changeSetting() {
         swal({
-            title: "Are you sure?",
-            text: "Your IPC password will be reset!",
-            type: "warning",
+            title: 'Are you sure?',
+            text: 'Your IPC password will be reset!',
+            type: 'warning',
             showCancelButton: true,
-            confirmButtonClass: "btn-danger",
-            confirmButtonText: "Yes, reset it!",
+            confirmButtonClass: 'btn-danger',
+            confirmButtonText: 'Yes, reset it!',
             closeOnConfirm: false
         }, function () {
-            store('IPCPassword', "");
+            store('IPCPassword', '');
             swal({
-                title: "Success!",
-                text: "Your IPC password has been reset.",
-                type: "success"
+                title: 'Success!',
+                text: 'Your IPC password has been reset.',
+                type: 'success'
             }, function () { location.reload(); });
         });
     }
