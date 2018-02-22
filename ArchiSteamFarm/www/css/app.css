@@ -181,3 +181,12 @@ button.bot-resumed:hover {
     height: 100px;
     font-size: 18px;
 }
+
+@media (min-width: 1200px) {
+    .sweet-alert {
+        width: 700px;
+    }
+    #gamesToRedeemInBackground {
+        height: 250px;
+    }
+} 
