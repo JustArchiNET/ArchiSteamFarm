@@ -19,7 +19,7 @@
     <link rel="icon" href="../favicon.png" type="image/png">
     <link rel="shortcut icon" href="../favicon.ico" type="img/x-icon">
 </head>
-<body class="hold-transition skin-blue sidebar-mini fixed">
+<body class="hidden hold-transition skin-blue sidebar-mini fixed">
     <div class="wrapper">
         <header class="main-header">
             <!-- Logo -->
@@ -162,6 +162,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/humanize-duration/3.12.1/humanize-duration.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
     <script src="../js/app.js"></script>
     <script>
         $(function () {
@@ -173,6 +174,40 @@
                 tmpShowKeyButton = get('showKeyButton'),
                 tmpMultiSelect = get('multiSelect'),
                 currentlySelectedBots = [];
+
+            $(document).delegate('#gamesToRedeemInBackground', 'keydown', function (e) {
+                var keyCode = e.keyCode || e.which;
+
+                if (keyCode == 9) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    var start = this.selectionStart;
+                    var end = this.selectionEnd;
+                    
+                    $(this).val($(this).val().substring(0, start) // set textarea value to: text before caret + tab + text after caret
+                        + "\t"
+                        + $(this).val().substring(end));
+                    
+                    this.selectionStart = this.selectionEnd = start + 1; // put caret at right position again
+                }
+            });
+
+            $(document).delegate('#delimeter', 'keydown', function (e) {
+                var keyCode = e.keyCode || e.which;
+
+                if (keyCode == 9) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    var start = this.selectionStart;
+                    var end = this.selectionEnd;
+                    
+                    $(this).val($(this).val().substring(0, start) // set textarea value to: text before caret + tab + text after caret
+                        + "\t"
+                        + $(this).val().substring(end));
+                    
+                    this.selectionStart = this.selectionEnd = start + 1; // put caret at right position again
+                }
+            });
             
             $('.box-tools').ready(function () { // Load state of checkboxes
                 if (tmpHideOnlineBots === 'true') {
@@ -281,7 +316,7 @@
             });
 
             $('#deselectAllBots').click(function () {
-                $(".ui-selectee").each(function () {
+                $(".ui-selected").each(function () {
                     $(this).removeClass('ui-selected');
                 });
             });
@@ -325,10 +360,15 @@
                 var tmpHideOnlineBots = get('hideOnlineBots'),
                     tmpHideOfflineBots = get('hideOfflineBots'),
                     tmpShowDeleteButton = get('showDeleteButton'),
+                    tmpDelimeter = get('delimeter'),
                     tmpShowKeyButton = get('showKeyButton');
                 
                 $('#totalBotOverview').empty(); // Clear page content
                 $('#botRow').empty(); // Clear page content
+
+                if (!tmpDelimeter) {
+                    tmpDelimeter = '\t';
+                }
 
                 $.ajax({
                     url: '/Api/Bot/ASF',
@@ -430,7 +470,7 @@
                                             allGamesHTML = '<p class="text-center no-margin">Bot is currently being used.</p>';
                                         }
 
-                                        TimeRemaining = new Date('1970-01-01T' + TimeRemaining + 'Z').getTime();
+                                        TimeRemaining = moment.duration(TimeRemaining).asMilliseconds();
 
                                         boxBodyHTML = '<div class="box-body" id="' + BotName + '">'
                                             + '<div class="row">'
@@ -478,7 +518,6 @@
                             })
                                 .on('expanded.boxwidget', function (BotName) {
                                     var botCarousel = $('.games-carousel-' + BotName);
-
                                     
                                     if ($(botCarousel).hasClass('slick-initialized')) { // Check if Slick was already initialized
                                         $(botCarousel).slick('slickPlay'); // Slick is set up, so just resume the animation
@@ -607,9 +646,10 @@
                                             + '<textarea id="gamesToRedeemInBackground"></textarea>'
                                             + '<div class="input-group">'
                                             + '<span class="input-group-addon" id="delimeter-text">Delimeter</span>'
-                                            + '<input type="text" class="form-control" id="delimeter" value="\t" aria-describedby="delimeter-text">'
+                                            + '<input type="text" class="form-control" id="delimeter" value="' + tmpDelimeter + '" aria-describedby="delimeter-text">'
                                             + '</div>',
                                             html: true,
+                                            customClass: 'swal-wide',
                                             showCancelButton: true,
                                             confirmButtonClass: 'btn-success',
                                             confirmButtonText: 'Add keys!',
@@ -621,17 +661,16 @@
                                                 return false;
                                             }
                                             var val = $('#gamesToRedeemInBackground').val();
-                                            if (val === '') return false;
-
-                                            $('.overlay').remove();
 
                                             var _gamesToRedeemInBackground = {},
                                                 gamesAndKeys = [],
                                                 lines = val.split('\n'),
-                                                delimeter = $('#delimeter').val();
+                                                currentDelimeter = $('#delimeter').val();
+
+                                            store('delimeter', currentDelimeter);
 
                                             for (var i = 0; i < lines.length; i++) {
-                                                if (lines[i] !== '') gamesAndKeys.push(lines[i].split(delimeter));
+                                                if (lines[i] !== '') gamesAndKeys.push(lines[i].split(currentDelimeter));
                                             }
 
                                             for (var j = 0; j < gamesAndKeys.length; j++) {
@@ -647,9 +686,12 @@
                                                 data: JSON.stringify(ajaxData),
                                                 contentType: 'application/json',
                                                 success: function (data) {
+                                                    var obj = data['Result'],
+                                                        gamesAdded = Object.keys(obj).length;
+
                                                     swal({
                                                         title: 'Success!',
-                                                        text: lines.length + ' Keys have been added to <' + BotName + '> background redeemer.',
+                                                        text: gamesAdded + ' Keys have been added to <' + BotName + '> background redeemer.',
                                                         type: 'success'
                                                     }, function () { location.reload(); });
                                                 },
@@ -661,12 +703,14 @@
                                                     }, function () { location.reload(); });
                                                 }
                                             });
+
+                                            $('.overlay').remove();
                                         });
                                         break;
                                 }
                             })
                         }
-                        
+
                         if (farmingIsActive) { // Add info boxes if at least one bot is farming
                             $('#totalBotOverview').html('<div class="col-md-4 col-sm-4 col-xs-12">'
                                 + '<div class="info-box bot-info-box">'
@@ -696,7 +740,7 @@
                                 + '</div>'
                                 + '</div>');
 
-                            totalTimeRemaining = new Date('1970-01-01T' + totalTimeRemaining + 'Z').getTime();
+                            totalTimeRemaining = moment.duration(totalTimeRemaining).asMilliseconds();
 
                             $('#totalGamesRemaining').text(totalGamesRemaining);
                             $('#totalTimeRemaining').text(humanizeDuration(totalTimeRemaining));
