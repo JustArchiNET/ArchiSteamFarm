@@ -470,7 +470,7 @@
                                             allGamesHTML = '<p class="text-center no-margin">Bot is currently being used.</p>';
                                         }
 
-                                        TimeRemaining = new Date('1970-01-01T' + TimeRemaining + 'Z').getTime();
+                                        TimeRemaining = moment.duration(TimeRemaining).asMilliseconds();
 
                                         boxBodyHTML = '<div class="box-body" id="' + BotName + '">'
                                             + '<div class="row">'
@@ -518,7 +518,6 @@
                             })
                                 .on('expanded.boxwidget', function (BotName) {
                                     var botCarousel = $('.games-carousel-' + BotName);
-
                                     
                                     if ($(botCarousel).hasClass('slick-initialized')) { // Check if Slick was already initialized
                                         $(botCarousel).slick('slickPlay'); // Slick is set up, so just resume the animation
