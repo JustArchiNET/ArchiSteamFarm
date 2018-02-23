@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>ArchiSteamFarm | Config</title>
+    <title>ASF | Config Generator</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.css">
@@ -58,7 +58,10 @@
                         </a>
                     </li>
                     <li><a href="log.html"><i class="far fa-file-alt fa-fw"></i> <span>Log</span></a></li>
-                    <li class="active"><a href="config.html"><i class="fas fa-cogs fa-fw"></i> <span>Config</span></a></li>
+
+                    <li class="header">CONFIG</li>
+                    <li><a href="changer.html"><i class="far fa-edit fa-fw"></i> <span>Changer</span></a></li>
+                    <li class="active"><a href="generator.html"><i class="far fa-copy fa-fw"></i> <span>Generator</span></a></li>
 
                     <li class="header">INFORMATION</li>
                     <li class="info-overview">
@@ -85,36 +88,38 @@
             <!-- Content Header -->
             <section class="content-header">
                 <h1>
-                    Config
+                    Generator
                     <small>Control Panel</small>
                 </h1>
                 <ol class="breadcrumb">
-                    <li><i class="fas fa-home"></i> Home</li>
-                    <li class="active"><i class="fas fa-cogs"></i> Config</li>
+                    <li><i class="fas fa-cogs"></i> Config</li>
+                    <li class="active"><i class="far fa-copy"></i> Generator</li>
                 </ol>
             </section>
 
             <!-- Content Body -->
             <section class="content container-fluid">
-                <div class="nav-tabs-custom">
-                    <ul class="nav nav-tabs">
-                        <li class="active"><a href="#configChangerTab" data-toggle="tab" aria-expanded="true" id="changerTabButton"><i class="far fa-edit"></i> Changer</a></li>
-                        <li class="pull-right"><a href="#configGeneratorTab" data-toggle="tab" aria-expanded="false" id="generatorTabButton"><i class="far fa-copy"></i> Generator</a></li>
-                    </ul>
-                    <div class="tab-content no-padding">
-                        <div class="tab-pane active" id="configChangerTab"></div>
-                        <div class="tab-pane" id="configGeneratorTab"></div>
+                <div class="box">
+                    <div class="box-header with-border">
+                        <i class="far fa-copy"></i>
+                        <h3 class="box-title">Current mode:</h3>
+                        <div class="box-tools pull-right">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                    Change mode
+                                    <span class="fas fa-caret-down"></span>
+                                </button>
+                                <ul class="dropdown-menu scrollable-menu" role="menu" id="modeDropDown"></ul>
+                            </div>
+                        </div>
                     </div>
-
+                    <div class="box-body">
+                        <div class="box-content-config"></div>
+                    </div>
                     <div class="box-footer">
                         <div class="input-group pull-right">
-                            <button class="btn btn-default" id="saveButton"><i class="far fa-save"></i> Save</button>
-                            <div class ="input-group pull-right" id="downloadDiv">
-                                <input type="text" class="form-control" placeholder="Name" id="GeneratorName">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button" id="downloadButton"><i class="fas fa-cloud-download-alt"></i> Download</button>
-                                </span>
-                            </div>
+                            <input type="text" class="form-control" placeholder="Name" id="GeneratorName">
+                            <button class="btn btn-default" type="button" id="downloadButton"><i class="fas fa-cloud-download-alt"></i> Download</button>
                         </div>
                     </div>
                 </div>
@@ -149,63 +154,12 @@
         $(function () {
             'use strict';
 
-            $('#configChangerTab').ready(function () {
-                $('#downloadButton').hide();
-                $('#downloadDiv').hide();
-                
-                generateConfigHTML('Changer');
-
-                $.ajax({
-                    url: '/Api/Bot/ASF',
-                    type: 'GET',
-                    success: function (data) {
-                        var json = data['Result'];
-                        loadConfigValuesForBot(json[0].BotName);
-                    }
-                });
-            });
-
-            $('#generatorTabButton').click(function (e) {
-                loadPageContentGenerator('Bot');
-
-                e.preventDefault();
-            });
-
-            $('#changerTabButton').click(function (e) {
-                generateConfigHTML('Changer');
-                $('#configChangerTab').ready(function () {
-                    $.ajax({
-                        url: '/Api/Bot/ASF',
-                        type: 'GET',
-                        success: function (data) {
-                            var json = data['Result'];
-                            loadConfigValuesForBot(json[0].BotName);
-                        }
-                    });
-                });
-                $('#downloadButton').hide();
-                $('#downloadDiv').hide();
-                $('#saveButton').show();
-                e.preventDefault();
-            });
-
-            $('#saveButton').click(function (e) {
-                swal({
-                    title: 'Are you sure?',
-                    text: 'The config will be updated and the bot will be restarted!',
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonClass: 'btn-danger',
-                    confirmButtonText: 'Yes, update config!',
-                    closeOnConfirm: false,
-                    showLoaderOnConfirm: true
-                }, function () { prepareBotConfigForSaving(); });
-
-                e.preventDefault();
+            $('.box-content-config').ready(function () {                
+                loadPageContentGenerator();
             });
 
             $('#downloadButton').click(function (e) {
-                prepareGeneratorConfigForSaving();
+                prepareConfigForDownload();
 
                 e.preventDefault();
             });
