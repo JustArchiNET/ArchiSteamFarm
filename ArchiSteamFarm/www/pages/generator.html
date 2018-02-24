@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>ASF | Log</title>
+    <title>ASF | Config Generator</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.css">
@@ -57,11 +57,11 @@
                             </span>
                         </a>
                     </li>
-                    <li class="active"><a href="log.html"><i class="far fa-file-alt fa-fw"></i> <span>Log</span></a></li>
+                    <li><a href="log.html"><i class="far fa-file-alt fa-fw"></i> <span>Log</span></a></li>
 
                     <li class="header">CONFIG</li>
                     <li><a href="changer.html"><i class="far fa-edit fa-fw"></i> <span>Changer</span></a></li>
-                    <li><a href="generator.html"><i class="far fa-copy fa-fw"></i> <span>Generator</span></a></li>
+                    <li class="active"><a href="generator.html"><i class="far fa-copy fa-fw"></i> <span>Generator</span></a></li>
 
                     <li class="header">INFORMATION</li>
                     <li class="info-overview">
@@ -88,12 +88,12 @@
             <!-- Content Header -->
             <section class="content-header">
                 <h1>
-                    Log
+                    Generator
                     <small>Control Panel</small>
                 </h1>
                 <ol class="breadcrumb">
-                    <li><i class="fas fa-home"></i> Home</li>
-                    <li class="active"><i class="far fa-file-alt"></i> Log</li>
+                    <li><i class="fas fa-cogs"></i> Config</li>
+                    <li class="active"><i class="far fa-copy"></i> Generator</li>
                 </ol>
             </section>
 
@@ -101,15 +101,29 @@
             <section class="content container-fluid">
                 <div class="box">
                     <div class="box-header with-border">
-                        <i class="far fa-file-alt"></i>
-                        <h3 class="box-title">Log</h3>
+                        <i class="far fa-copy"></i>
+                        <h3 class="box-title">Current mode:</h3>
                         <div class="box-tools pull-right">
-                            <button title="Toggle auto scroll" type="button" class="btn btn-box-tool text-olive" id="toggleAutoScroll"><i class="fas fa-toggle-on fa-2x"></i></button>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                    Change mode
+                                    <span class="fas fa-caret-down"></span>
+                                </button>
+                                <ul class="dropdown-menu scrollable-menu" role="menu" id="modeDropDown"></ul>
+                            </div>
                         </div>
                     </div>
                     <div class="box-body">
-                        <div class="box-content-log">
-                            <div class="overlay"><i class="fas fa-sync fa-spin" style="color:white"></i></div>
+                        <div class="box-content-config"></div>
+                    </div>
+                    <div class="box-footer">
+                        <div class="input-group pull-right">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Name" id="GeneratorName">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" id="downloadButton"><i class="fas fa-cloud-download-alt"></i> Download</button>
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -137,7 +151,6 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/interact.js/1.2.9/interact.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/js/adminlte.min.js"></script>
     <script src="../js/app.js"></script>
@@ -145,100 +158,15 @@
         $(function () {
             'use strict';
 
-            var lastScrollPosition = 0,
-                ws;
-
-            startWebSocket();
-
-            function startWebSocket() {
-                if (!'WebSocket' in window) window.alert('Please use a modern browser to properly view ASF GUI!')
-
-                var loc = window.location,
-                    new_uri = (loc.protocol === 'https:') ? 'wss:' : 'ws:';
-
-                new_uri += '//' + loc.host + '/Api/Log?password=' + encodeURIComponent(IPCPassword);
-                ws = new WebSocket(new_uri);
-                $('.overlay').remove();
-                $('.box-content-log').text(''); // Clear log
-
-                ws.onmessage = function (evt) {
-                    var msg = JSON.parse(evt.data)['Result'] + '\n';
-                    $('.box-content-log').append(msg);
-                    $('.box-content-log').stop().animate({ scrollTop: $('.box-content-log')[0].scrollHeight }, 1000);
-                };
-
-                ws.onclose = function (event) {
-                    if (event.code !== 1000) { // Code 1000 means that the connection was closed normally
-                        swal({
-                            title: 'Error!',
-                            text: event.code + ' - ' + event.reason,
-                            type: 'error'
-                        }, function () { swal.close(); });
-                    }
-                }
-
-                window.onbeforeunload = function () { ws.close() };
-            }
-
-            $('#toggleAutoScroll').click(function () {
-                if (ws.readyState === ws.CLOSED) {
-                    startWebSocket();
-                    $('#toggleAutoScroll').removeClass('text-grey');
-                    $('#toggleAutoScroll').addClass('text-olive');
-                    $('#toggleAutoScroll').html('<i class="fas fa-toggle-on fa-2x"></i>');
-                    $('#toggleAutoScroll').blur();
-                } else if (ws.readyState === ws.OPEN) {
-                    ws.close();
-                    $('#toggleAutoScroll').removeClass('text-olive');
-                    $('#toggleAutoScroll').addClass('text-grey');
-                    $('#toggleAutoScroll').html('<i class="fas fa-toggle-on fa-2x fa-rotate-180"></i>');
-                    $('#toggleAutoScroll').blur();
-                }
+            $('.box-content-config').ready(function () {                
+                loadPageContentGenerator();
             });
 
-            $('.box-content-log').on('scroll', function () {
-                var newScrollPosition = $(this).scrollTop();
+            $('#downloadButton').click(function (e) {
+                prepareConfigForDownload();
 
-                if (newScrollPosition < lastScrollPosition) {
-                    if (ws.readyState === ws.OPEN) {
-                        ws.close();
-                        $('#toggleAutoScroll').removeClass('text-olive');
-                        $('#toggleAutoScroll').addClass('text-grey');
-                        $('#toggleAutoScroll').html('<i class="fas fa-toggle-on fa-2x fa-rotate-180"></i>');
-                        $('#toggleAutoScroll').blur();
-                    }
-                }
-
-                lastScrollPosition = newScrollPosition;
+                e.preventDefault();
             });
-
-            $('.box-content-log').ready(function () {
-                var tmpHeight = get('logHeight');
-
-                if (isNaN(tmpHeight)) {
-                    $('.box-content-log').css('height', 400 + 'px');
-                } else {
-                    $('.box-content-log').css('height', tmpHeight + 'px');
-                }
-            });
-
-            interact('.box-content-log')
-                .resizable({
-                    edges: { left: false, right: false, bottom: true, top: false },
-                    restrictEdges: {
-                        outer: 'parent',
-                        endOnly: true,
-                    },
-                    inertia: true,
-                })
-                .on('resizemove', function (event) {
-                    var target = event.target;
-                    target.style.height = event.rect.height + 'px';
-                })
-                .on('resizeend', function (event) {
-                    var currentHeight = parseInt(event.target.style.height, 10);
-                    store('logHeight', currentHeight);
-                });
         })
     </script>
 </body>

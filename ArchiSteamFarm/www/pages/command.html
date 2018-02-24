@@ -3,21 +3,20 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>ArchiSteamFarm | Command</title>
+    <title>ASF | Command</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/AdminLTE.min.css">
     <link rel="stylesheet" href="../css/_all-skins.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-    <!--Change font-awesome to cdnjs once available-->
-    <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script> <!--Change font-awesome to cdnjs once available-->
     <link rel="stylesheet" href="../css/app.css">
     <link rel="stylesheet" href="../css/_nightmode.min.css">
     <link rel="icon" href="../favicon.png" type="image/png">
     <link rel="shortcut icon" href="../favicon.ico" type="img/x-icon">
 </head>
-<body class="hidden hold-transition skin-blue sidebar-mini fixed">
+<body class="hold-transition skin-blue sidebar-mini fixed">
     <div class="wrapper">
         <header class="main-header">
             <!-- Logo -->
@@ -59,7 +58,10 @@
                         </a>
                     </li>
                     <li><a href="log.html"><i class="far fa-file-alt fa-fw"></i> <span>Log</span></a></li>
-                    <li><a href="config.html"><i class="fas fa-cogs fa-fw"></i> <span>Config</span></a></li>
+
+                    <li class="header">CONFIG</li>
+                    <li><a href="changer.html"><i class="far fa-edit fa-fw"></i> <span>Changer</span></a></li>
+                    <li><a href="generator.html"><i class="far fa-copy fa-fw"></i> <span>Generator</span></a></li>
 
                     <li class="header">INFORMATION</li>
                     <li class="info-overview">
@@ -98,9 +100,8 @@
             <!-- Content Body -->
             <section class="content container-fluid">
                 <div class="box">
-                    <div class="box-header">
+                    <div class="box-header with-border">
                         <i class="fas fa-laptop"></i>
-
                         <h3 class="box-title">Command</h3>
                         <div class="box-tools pull-right">
                             <div class="btn-group">
