@@ -116,7 +116,7 @@ namespace ArchiSteamFarm {
 					}
 
 					amountsToReceive.Add(itemAmountsToReceive.TryGetValue(item.ClassID, out uint amount) ? amount : 0);
-					itemAmountsToReceive[item.ClassID] = amount + 1; // We're getting one, so we have one more
+					itemAmountsToReceive[item.ClassID] = ++amount; // We're getting one, so we have one more
 				}
 			}
 
