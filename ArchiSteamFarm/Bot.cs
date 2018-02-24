@@ -135,6 +135,7 @@ namespace ArchiSteamFarm {
 		private byte HeartBeatFailures;
 		private uint ItemsCount;
 		private EResult LastLogOnResult;
+		private DateTime LastLogonSessionReplaced = DateTime.MinValue;
 		private ulong LibraryLockedBySteamID;
 		private bool LootingAllowed = true;
 		private bool LootingScheduled;
@@ -1972,9 +1973,16 @@ namespace ArchiSteamFarm {
 
 			switch (callback.Result) {
 				case EResult.LogonSessionReplaced:
-					ArchiLogger.LogGenericError(Strings.BotLogonSessionReplaced);
-					Stop();
-					return;
+					DateTime now = DateTime.UtcNow;
+
+					if (now.Subtract(LastLogonSessionReplaced).TotalHours < 1) {
+						ArchiLogger.LogGenericError(Strings.BotLogonSessionReplaced);
+						Stop();
+						return;
+					}
+
+					LastLogonSessionReplaced = now;
+					break;
 			}
 
 			ReconnectOnUserInitiated = true;
