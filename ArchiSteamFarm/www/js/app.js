@@ -499,6 +499,15 @@ function loadConfigValues(botName) {
                         case 'System.UInt64':
                             $key.val(config['s_' + key]);
                             break;
+
+                        case 'System.Collections.Generic.HashSet`1[System.String]':
+                            $key.text(''); // Reset textarea before filling
+
+                            for (var ipcPrefix in value) {
+                                if (value.hasOwnProperty(ipcPrefix)) $key.append(value[ipcPrefix] + '\n');
+                            }
+                            break;
+                            
                         case 'System.Collections.Generic.Dictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
                             $key.text(''); // Reset textarea before filling
 
