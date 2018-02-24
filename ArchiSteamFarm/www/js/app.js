@@ -577,7 +577,11 @@ function prepareConfigForSaving() {
                     break;
 
                 case 'System.String':
-                    if ($keyValue === '') $keyValue = null;
+                    if ($keyValue === '') {
+                        $keyValue = null;
+                        break;
+                    }
+
                     if ($keyValue !== value) config[key] = $keyValue;
                     break;
 
