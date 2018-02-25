@@ -576,7 +576,7 @@ namespace ArchiSteamFarm {
 
 			Dictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)> result = new Dictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)>();
 
-			foreach (SteamApps.PICSProductInfoCallback.PICSProductInfo productInfo in productInfoResultSet.Results.SelectMany(productInfoResult => productInfoResult.Packages).Select(productInfoPackages => productInfoPackages.Value)) {
+			foreach (SteamApps.PICSProductInfoCallback.PICSProductInfo productInfo in productInfoResultSet.Results.SelectMany(productInfoResult => productInfoResult.Packages).Where(productInfoPackages => productInfoPackages.Key != 0).Select(productInfoPackages => productInfoPackages.Value)) {
 				if (productInfo.KeyValues == KeyValue.Invalid) {
 					ArchiLogger.LogNullError(nameof(productInfo));
 					return null;
@@ -1929,7 +1929,7 @@ namespace ArchiSteamFarm {
 			bool refreshData = !BotConfig.IdleRefundableGames || (BotConfig.FarmingOrder == BotConfig.EFarmingOrder.RedeemDateTimesAscending) || (BotConfig.FarmingOrder == BotConfig.EFarmingOrder.RedeemDateTimesDescending);
 			Dictionary<uint, uint> packagesToRefresh = new Dictionary<uint, uint>();
 
-			foreach (SteamApps.LicenseListCallback.License license in callback.LicenseList) {
+			foreach (SteamApps.LicenseListCallback.License license in callback.LicenseList.Where(license => license.PackageID != 0)) {
 				OwnedPackageIDs[license.PackageID] = (license.PaymentMethod, license.TimeCreated);
 
 				if (!refreshData) {
