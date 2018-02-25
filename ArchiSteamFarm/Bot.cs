@@ -388,11 +388,7 @@ namespace ArchiSteamFarm {
 
 			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfoResultSet = null;
 
-			for (byte i = 0; (i < WebBrowser.MaxTries) && (productInfoResultSet == null); i++) {
-				if (!IsConnectedAndLoggedOn) {
-					return (optimisticDiscovery ? appID : 0, DateTime.MinValue);
-				}
-
+			for (byte i = 0; (i < WebBrowser.MaxTries) && (productInfoResultSet == null) && IsConnectedAndLoggedOn; i++) {
 				await PICSSemaphore.WaitAsync().ConfigureAwait(false);
 
 				try {
@@ -562,11 +558,7 @@ namespace ArchiSteamFarm {
 
 			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfoResultSet = null;
 
-			for (byte i = 0; (i < WebBrowser.MaxTries) && (productInfoResultSet == null); i++) {
-				if (!IsConnectedAndLoggedOn) {
-					return null;
-				}
-
+			for (byte i = 0; (i < WebBrowser.MaxTries) && (productInfoResultSet == null) && IsConnectedAndLoggedOn; i++) {
 				await PICSSemaphore.WaitAsync().ConfigureAwait(false);
 
 				try {
