@@ -1565,11 +1565,15 @@ namespace ArchiSteamFarm {
 
 			switch (method) {
 				case EPaymentMethod.ActivationCode:
-				case EPaymentMethod.Complimentary:
+				case EPaymentMethod.Complimentary: // This is also a flag
 				case EPaymentMethod.GuestPass:
 				case EPaymentMethod.HardwarePromo:
 					return false;
 				default:
+					if (method.HasFlag(EPaymentMethod.Complimentary)) {
+						return false;
+					}
+
 					return true;
 			}
 		}
