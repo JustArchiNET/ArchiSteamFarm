@@ -30,6 +30,7 @@ using System.Reflection;
 using System.Resources;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
+using Newtonsoft.Json;
 using NLog;
 using NLog.Targets;
 using SteamKit2;
@@ -260,6 +261,10 @@ namespace ArchiSteamFarm {
 				await Task.Delay(5 * 1000).ConfigureAwait(false);
 				await Exit(1).ConfigureAwait(false);
 				return;
+			}
+
+			if (Debugging.IsUserDebugging) {
+				ASF.ArchiLogger.LogGenericDebug(nameof(GlobalConfig) + ": " + JsonConvert.SerializeObject(GlobalConfig, Formatting.Indented));
 			}
 
 			if (GlobalConfig.BackgroundGCPeriod > 0) {

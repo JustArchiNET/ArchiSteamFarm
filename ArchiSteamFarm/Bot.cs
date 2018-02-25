@@ -167,6 +167,10 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			if (Debugging.IsUserDebugging) {
+				ArchiLogger.LogGenericDebug(nameof(BotConfig) + ": " + JsonConvert.SerializeObject(BotConfig, Formatting.Indented));
+			}
+
 			BotDatabase = BotDatabase.Load(DatabaseFilePath);
 			if (BotDatabase == null) {
 				ArchiLogger.LogGenericError(string.Format(Strings.ErrorDatabaseInvalid, DatabaseFilePath));
