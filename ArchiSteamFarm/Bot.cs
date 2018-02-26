@@ -678,9 +678,9 @@ namespace ArchiSteamFarm {
 						}
 
 						string key = parsedArgs[parsedArgs.Length - 1];
-						string game = string.Join(' ', parsedArgs.Take(parsedArgs.Length - 1));
+						string name = string.Join(' ', parsedArgs.Take(parsedArgs.Length - 1));
 
-						gamesToRedeemInBackground[key] = game;
+						gamesToRedeemInBackground[key] = name;
 					}
 				}
 
