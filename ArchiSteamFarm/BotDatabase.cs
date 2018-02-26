@@ -118,11 +118,11 @@ namespace ArchiSteamFarm {
 			}
 
 			lock (GamesToRedeemInBackground) {
-				if (!GamesToRedeemInBackground.Contains(key)) {
+				if (GamesToRedeemInBackground.Contains(key)) {
 					return;
 				}
 
-				GamesToRedeemInBackground.Remove(key);
+				GamesToRedeemInBackground.Add(key, game);
 			}
 
 			await Save().ConfigureAwait(false);
