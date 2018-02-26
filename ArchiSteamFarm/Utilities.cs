@@ -21,11 +21,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Net;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Humanizer;
@@ -34,10 +32,6 @@ using Humanizer.Localisation;
 namespace ArchiSteamFarm {
 	internal static class Utilities {
 		private static readonly Random Random = new Random();
-
-		[SuppressMessage("ReSharper", "UnusedParameter.Global")]
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		internal static void Forget(this object obj) { }
 
 		internal static string GetArgsString(string[] args, byte argsToSkip, string delimiter = " ") {
 			if ((args == null) || (args.Length < argsToSkip) || string.IsNullOrEmpty(delimiter)) {
@@ -79,6 +73,36 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static uint GetUnixTime() => (uint) DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+		internal static void InBackground(Action action, bool longRunning = false) {
+			if (action == null) {
+				ASF.ArchiLogger.LogNullError(nameof(action));
+				return;
+			}
+
+			TaskCreationOptions options = TaskCreationOptions.DenyChildAttach;
+
+			if (longRunning) {
+				options |= TaskCreationOptions.LongRunning | TaskCreationOptions.PreferFairness;
+			}
+
+			Task.Factory.StartNew(action, options);
+		}
+
+		internal static void InBackground<T>(Func<T> function, bool longRunning = false) {
+			if (function == null) {
+				ASF.ArchiLogger.LogNullError(nameof(function));
+				return;
+			}
+
+			TaskCreationOptions options = TaskCreationOptions.DenyChildAttach;
+
+			if (longRunning) {
+				options |= TaskCreationOptions.LongRunning | TaskCreationOptions.PreferFairness;
+			}
+
+			Task.Factory.StartNew(function, options);
+		}
 
 		internal static bool IsValidHexadecimalString(string text) {
 			if (string.IsNullOrEmpty(text)) {
@@ -143,36 +167,6 @@ namespace ArchiSteamFarm {
 
 			Console.WriteLine();
 			return result.ToString();
-		}
-
-		internal static void StartBackgroundAction(Action action, bool longRunning = true) {
-			if (action == null) {
-				ASF.ArchiLogger.LogNullError(nameof(action));
-				return;
-			}
-
-			TaskCreationOptions options = TaskCreationOptions.DenyChildAttach;
-
-			if (longRunning) {
-				options |= TaskCreationOptions.LongRunning | TaskCreationOptions.PreferFairness;
-			}
-
-			Task.Factory.StartNew(action, options).Forget();
-		}
-
-		internal static void StartBackgroundFunction(Func<Task> function, bool longRunning = true) {
-			if (function == null) {
-				ASF.ArchiLogger.LogNullError(nameof(function));
-				return;
-			}
-
-			TaskCreationOptions options = TaskCreationOptions.DenyChildAttach;
-
-			if (longRunning) {
-				options |= TaskCreationOptions.LongRunning | TaskCreationOptions.PreferFairness;
-			}
-
-			Task.Factory.StartNew(function, options).Forget();
 		}
 
 		internal static IEnumerable<T> ToEnumerable<T>(this T item) {

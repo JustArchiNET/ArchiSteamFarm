@@ -101,7 +101,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			StopFarming().Forget();
+			Utilities.InBackground(StopFarming);
 		}
 
 		internal async Task OnNewGameAdded() {
@@ -255,7 +255,7 @@ namespace ArchiSteamFarm {
 				}
 
 				KeepFarming = NowFarming = true;
-				Utilities.StartBackgroundFunction(Farm);
+				Utilities.InBackground(Farm, true);
 			} finally {
 				FarmingInitializationSemaphore.Release();
 			}

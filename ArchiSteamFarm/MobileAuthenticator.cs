@@ -199,10 +199,10 @@ namespace ArchiSteamFarm {
 				if (Program.GlobalConfig.ConfirmationsLimiterDelay == 0) {
 					ConfirmationsSemaphore.Release();
 				} else {
-					Task.Run(async () => {
+					Utilities.InBackground(async () => {
 						await Task.Delay(Program.GlobalConfig.ConfirmationsLimiterDelay * 1000).ConfigureAwait(false);
 						ConfirmationsSemaphore.Release();
-					}).Forget();
+					});
 				}
 			}
 		}

@@ -1157,7 +1157,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!skipShutdownEvent) {
-				Events.OnBotShutdown().Forget();
+				Utilities.InBackground(Events.OnBotShutdown);
 			}
 		}
 
@@ -1208,7 +1208,7 @@ namespace ArchiSteamFarm {
 			await BotDatabase.AddGamesToRedeemInBackground(gamesToRedeemInBackground).ConfigureAwait(false);
 
 			if (BotDatabase.HasGamesToRedeemInBackground && (GamesRedeemerInBackgroundTimer == null) && IsConnectedAndLoggedOn) {
-				RedeemGamesInBackground().Forget();
+				Utilities.InBackground(RedeemGamesInBackground);
 			}
 		}
 
@@ -1264,7 +1264,7 @@ namespace ArchiSteamFarm {
 				Stop();
 			} else {
 				// Stop() will most likely block due to fuckup, don't wait for it
-				Task.Run(() => Stop()).Forget();
+				Utilities.InBackground(() => Stop());
 			}
 
 			Bots.TryRemove(BotName, out _);
@@ -1352,7 +1352,10 @@ namespace ArchiSteamFarm {
 				}
 
 				HeartBeatFailures = 0;
-				Statistics?.OnHeartBeat().Forget();
+
+				if (Statistics != null) {
+					Utilities.InBackground(Statistics.OnHeartBeat);
+				}
 			} catch (Exception e) {
 				ArchiLogger.LogGenericDebuggingException(e);
 
@@ -1363,7 +1366,7 @@ namespace ArchiSteamFarm {
 				if (++HeartBeatFailures >= (byte) Math.Ceiling(Program.GlobalConfig.ConnectionTimeout / 10.0)) {
 					HeartBeatFailures = byte.MaxValue;
 					ArchiLogger.LogGenericWarning(Strings.BotConnectionLost);
-					Connect(true).Forget();
+					Utilities.InBackground(() => Connect(true));
 				}
 			}
 		}
@@ -1505,7 +1508,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Start
-			Start().Forget();
+			Utilities.InBackground(Start);
 		}
 
 		private static bool IsAllowedToExecuteCommands(ulong steamID) {
@@ -1607,10 +1610,10 @@ namespace ArchiSteamFarm {
 			}
 
 			await GiftsSemaphore.WaitAsync().ConfigureAwait(false);
-			Task.Run(async () => {
+			Utilities.InBackground(async () => {
 				await Task.Delay(Program.GlobalConfig.GiftsLimiterDelay * 1000).ConfigureAwait(false);
 				GiftsSemaphore.Release();
-			}).Forget();
+			});
 		}
 
 		private static async Task LimitLoginRequestsAsync() {
@@ -1619,10 +1622,10 @@ namespace ArchiSteamFarm {
 			}
 
 			await LoginSemaphore.WaitAsync().ConfigureAwait(false);
-			Task.Run(async () => {
+			Utilities.InBackground(async () => {
 				await Task.Delay(Program.GlobalConfig.LoginLimiterDelay * 1000).ConfigureAwait(false);
 				LoginSemaphore.Release();
-			}).Forget();
+			});
 		}
 
 		private void OnChatInvite(SteamFriends.ChatInviteCallback callback) {
@@ -2097,7 +2100,7 @@ namespace ArchiSteamFarm {
 					}
 
 					if (BotDatabase.HasGamesToRedeemInBackground) {
-						RedeemGamesInBackground().Forget();
+						Utilities.InBackground(RedeemGamesInBackground);
 					}
 
 					ArchiHandler.RequestItemAnnouncements();
@@ -2105,15 +2108,20 @@ namespace ArchiSteamFarm {
 					// Sometimes Steam won't send us our own PersonaStateCallback, so request it explicitly
 					RequestPersonaStateUpdate();
 
-					ArchiWebHandler.HasValidApiKey().Forget(); // This will pre-cache API key for eventual further usage
-					InitializeFamilySharing().Forget();
-					Statistics?.OnLoggedOn().Forget();
+					// This will pre-cache API key for eventual further usage
+					Utilities.InBackground(ArchiWebHandler.HasValidApiKey);
+
+					Utilities.InBackground(InitializeFamilySharing);
+
+					if (Statistics != null) {
+						Utilities.InBackground(Statistics.OnLoggedOn);
+					}
 
 					if (BotConfig.SteamMasterClanID != 0) {
-						Task.Run(async () => {
+						Utilities.InBackground(async () => {
 							await ArchiWebHandler.JoinGroup(BotConfig.SteamMasterClanID).ConfigureAwait(false);
 							JoinMasterChat();
-						}).Forget();
+						});
 					}
 
 					if (!BotConfig.FarmOffline) {
@@ -2239,7 +2247,10 @@ namespace ArchiSteamFarm {
 				}
 
 				AvatarHash = avatarHash;
-				Statistics?.OnPersonaState(callback.Name, avatarHash).Forget();
+
+				if (Statistics != null) {
+					Utilities.InBackground(() => Statistics.OnPersonaState(callback.Name, avatarHash));
+				}
 			} else if ((callback.FriendID == LibraryLockedBySteamID) && (callback.GameID == 0)) {
 				LibraryLockedBySteamID = 0;
 				await CheckOccupationStatus().ConfigureAwait(false);
@@ -2305,10 +2316,10 @@ namespace ArchiSteamFarm {
 						ItemsCount = notification.Value;
 
 						if (newItems) {
-							CardsFarmer.OnNewItemsNotification().Forget();
+							Utilities.InBackground(CardsFarmer.OnNewItemsNotification);
 
 							if (BotConfig.DismissInventoryNotifications) {
-								ArchiWebHandler.MarkInventory().Forget();
+								Utilities.InBackground(ArchiWebHandler.MarkInventory);
 							}
 						}
 
@@ -2318,7 +2329,7 @@ namespace ArchiSteamFarm {
 						TradesCount = notification.Value;
 
 						if (newTrades) {
-							Trading.OnNewTrade().Forget();
+							Utilities.InBackground(Trading.OnNewTrade);
 						}
 
 						break;
@@ -3005,10 +3016,10 @@ namespace ArchiSteamFarm {
 			}
 
 			// Schedule the task after some time so user can receive response
-			Task.Run(async () => {
+			Utilities.InBackground(async () => {
 				await Task.Delay(1000).ConfigureAwait(false);
 				await Program.Exit().ConfigureAwait(false);
-			}).Forget();
+			});
 
 			return FormatStaticResponse(Strings.Done);
 		}
@@ -3031,7 +3042,7 @@ namespace ArchiSteamFarm {
 				await CardsFarmer.StopFarming().ConfigureAwait(false);
 			}
 
-			CardsFarmer.StartFarming().Forget();
+			Utilities.InBackground(CardsFarmer.StartFarming);
 
 			return FormatBotResponse(Strings.Done);
 		}
@@ -3474,10 +3485,10 @@ namespace ArchiSteamFarm {
 			}
 
 			// Schedule the task after some time so user can receive response
-			Task.Run(async () => {
+			Utilities.InBackground(async () => {
 				await Task.Delay(1000).ConfigureAwait(false);
 				SteamFriends.LeaveChat(chatID);
-			}).Forget();
+			});
 
 			return FormatBotResponse(Strings.Done);
 		}
@@ -4330,10 +4341,10 @@ namespace ArchiSteamFarm {
 			}
 
 			// Schedule the task after some time so user can receive response
-			Task.Run(async () => {
+			Utilities.InBackground(async () => {
 				await Task.Delay(1000).ConfigureAwait(false);
 				await Program.Restart().ConfigureAwait(false);
-			}).Forget();
+			});
 
 			return FormatStaticResponse(Strings.Done);
 		}
@@ -4362,7 +4373,7 @@ namespace ArchiSteamFarm {
 			}
 
 			StopFamilySharingInactivityTimer();
-			CardsFarmer.Resume(true).Forget();
+			Utilities.InBackground(() => CardsFarmer.Resume(true));
 			return FormatBotResponse(Strings.BotAutomaticIdlingNowResumed);
 		}
 
@@ -4412,7 +4423,7 @@ namespace ArchiSteamFarm {
 			}
 
 			SkipFirstShutdown = true;
-			Start().Forget();
+			Utilities.InBackground(Start);
 			return FormatBotResponse(Strings.Done);
 		}
 
@@ -4934,7 +4945,7 @@ namespace ArchiSteamFarm {
 		private async Task Start() {
 			if (!KeepRunning) {
 				KeepRunning = true;
-				Utilities.StartBackgroundAction(HandleCallbacks);
+				Utilities.InBackground(HandleCallbacks, true);
 				ArchiLogger.LogGenericInfo(Strings.Starting);
 			}
 

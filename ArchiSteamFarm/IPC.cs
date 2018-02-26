@@ -119,7 +119,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.InitHistoryLogger();
-			Utilities.StartBackgroundFunction(HandleRequests);
+			Utilities.InBackground(HandleRequests, true);
 			ASF.ArchiLogger.LogGenericInfo(Strings.IPCReady);
 		}
 
@@ -802,7 +802,7 @@ namespace ArchiSteamFarm {
 						return;
 					}
 
-					Utilities.StartBackgroundFunction(() => HandleRequest(context), false);
+					Utilities.InBackground(() => HandleRequest(context));
 				}
 			} catch (ObjectDisposedException e) {
 				ASF.ArchiLogger.LogGenericDebuggingException(e);

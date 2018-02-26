@@ -478,10 +478,10 @@ namespace ArchiSteamFarm {
 				if (Program.GlobalConfig.InventoryLimiterDelay == 0) {
 					InventorySemaphore.Release();
 				} else {
-					Task.Run(async () => {
+					Utilities.InBackground(async () => {
 						await Task.Delay(Program.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
 						InventorySemaphore.Release();
-					}).Forget();
+					});
 				}
 			}
 		}
@@ -941,10 +941,10 @@ namespace ArchiSteamFarm {
 				if (Program.GlobalConfig.InventoryLimiterDelay == 0) {
 					InventorySemaphore.Release();
 				} else {
-					Task.Run(async () => {
+					Utilities.InBackground(async () => {
 						await Task.Delay(Program.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
 						InventorySemaphore.Release();
-					}).Forget();
+					});
 				}
 			}
 		}
