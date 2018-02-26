@@ -95,7 +95,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		public IEnumerator<T> GetEnumerator() => new ConcurrentEnumerator<T>(BackingCollection, CollectionSemaphore);
+		public IEnumerator<T> GetEnumerator() => new ConcurrentEnumerator(BackingCollection, CollectionSemaphore);
 
 		public void IntersectWith(IEnumerable<T> other) {
 			CollectionSemaphore.Wait();
@@ -212,6 +212,30 @@ namespace ArchiSteamFarm {
 			} finally {
 				CollectionSemaphore.Release();
 			}
+		}
+
+		private sealed class ConcurrentEnumerator : IEnumerator<T> {
+			public T Current => Enumerator.Current;
+
+			private readonly IEnumerator<T> Enumerator;
+			private readonly SemaphoreSlim SemaphoreSlim;
+
+			object IEnumerator.Current => Current;
+
+			internal ConcurrentEnumerator(IReadOnlyCollection<T> collection, SemaphoreSlim semaphoreSlim) {
+				if ((collection == null) || (semaphoreSlim == null)) {
+					throw new ArgumentNullException(nameof(collection) + " || " + nameof(semaphoreSlim));
+				}
+
+				SemaphoreSlim = semaphoreSlim;
+				semaphoreSlim.Wait();
+
+				Enumerator = collection.GetEnumerator();
+			}
+
+			public void Dispose() => SemaphoreSlim.Release();
+			public bool MoveNext() => Enumerator.MoveNext();
+			public void Reset() => Enumerator.Reset();
 		}
 	}
 }
