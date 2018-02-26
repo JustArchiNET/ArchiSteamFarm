@@ -25,6 +25,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Humanizer;
 using Humanizer.Localisation;
@@ -83,10 +84,10 @@ namespace ArchiSteamFarm {
 			TaskCreationOptions options = TaskCreationOptions.DenyChildAttach;
 
 			if (longRunning) {
-				options |= TaskCreationOptions.LongRunning;
+				options |= TaskCreationOptions.LongRunning | TaskCreationOptions.PreferFairness;
 			}
 
-			Task.Factory.StartNew(action, options);
+			Task.Factory.StartNew(action, CancellationToken.None, options, TaskScheduler.Default);
 		}
 
 		internal static void InBackground<T>(Func<T> function, bool longRunning = false) {
@@ -98,10 +99,10 @@ namespace ArchiSteamFarm {
 			TaskCreationOptions options = TaskCreationOptions.DenyChildAttach;
 
 			if (longRunning) {
-				options |= TaskCreationOptions.LongRunning;
+				options |= TaskCreationOptions.LongRunning | TaskCreationOptions.PreferFairness;
 			}
 
-			Task.Factory.StartNew(function, options);
+			Task.Factory.StartNew(function, CancellationToken.None, options, TaskScheduler.Default);
 		}
 
 		internal static bool IsValidHexadecimalString(string text) {
