@@ -859,7 +859,9 @@ namespace ArchiSteamFarm {
 
 					authorized = password == Program.GlobalConfig.IPCPassword;
 
-					if (!authorized) {
+					if (authorized) {
+						FailedAuthorizations.Remove(ipAddress, out _);
+					} else {
 						if (FailedAuthorizations.TryGetValue(ipAddress, out attempts)) {
 							FailedAuthorizations[ipAddress] = ++attempts;
 						} else {
