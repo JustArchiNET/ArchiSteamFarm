@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -1046,7 +1047,7 @@ namespace ArchiSteamFarm {
 		private sealed class GamesToRedeemInBackgroundRequest {
 #pragma warning disable 649
 			[JsonProperty(Required = Required.Always)]
-			internal readonly SortedDictionary<string, string> GamesToRedeemInBackground;
+			internal readonly OrderedDictionary GamesToRedeemInBackground;
 #pragma warning restore 649
 
 			// Deserialized from JSON

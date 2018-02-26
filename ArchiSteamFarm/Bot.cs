@@ -20,8 +20,10 @@
 //  limitations under the License.
 
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -659,7 +661,7 @@ namespace ArchiSteamFarm {
 			}
 
 			try {
-				SortedDictionary<string, string> gamesToRedeemInBackground = new SortedDictionary<string, string>();
+				OrderedDictionary gamesToRedeemInBackground = new OrderedDictionary();
 
 				using (StreamReader reader = new StreamReader(filePath)) {
 					string line;
@@ -1159,35 +1161,43 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task ValidateAndAddGamesToRedeemInBackground(SortedDictionary<string, string> gamesToRedeemInBackground) {
+		internal async Task ValidateAndAddGamesToRedeemInBackground(OrderedDictionary gamesToRedeemInBackground) {
 			if ((gamesToRedeemInBackground == null) || (gamesToRedeemInBackground.Count == 0)) {
 				ArchiLogger.LogNullError(nameof(gamesToRedeemInBackground));
 				return;
 			}
 
-			HashSet<string> invalidGames = new HashSet<string>();
+			HashSet<object> invalidKeys = new HashSet<object>();
 
-			foreach (KeyValuePair<string, string> game in gamesToRedeemInBackground) {
+			foreach (DictionaryEntry game in gamesToRedeemInBackground) {
 				bool invalid = false;
 
-				if (!IsValidCdKey(game.Key)) {
+				string key = game.Key as string;
+				if (string.IsNullOrEmpty(key)) {
 					invalid = true;
-					ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, game.Key));
+					ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, nameof(key)));
+				} else if (!IsValidCdKey(key)) {
+					invalid = true;
+					ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, key));
 				}
 
-				if (string.IsNullOrEmpty(game.Value)) {
+				string name = game.Value as string;
+				if (string.IsNullOrEmpty(name)) {
 					invalid = true;
-					ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, game.Value));
+					ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, nameof(name)));
+				} else if (string.IsNullOrEmpty(name)) {
+					invalid = true;
+					ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, name));
 				}
 
 				if (invalid) {
-					invalidGames.Add(game.Key);
+					invalidKeys.Add(game.Key);
 				}
 			}
 
-			if (invalidGames.Count > 0) {
-				foreach (string invalidGame in invalidGames) {
-					gamesToRedeemInBackground.Remove(invalidGame);
+			if (invalidKeys.Count > 0) {
+				foreach (string invalidKey in invalidKeys) {
+					gamesToRedeemInBackground.Remove(invalidKey);
 				}
 
 				if (gamesToRedeemInBackground.Count == 0) {
@@ -2323,9 +2333,9 @@ namespace ArchiSteamFarm {
 			}
 
 			while (IsConnectedAndLoggedOn && BotDatabase.HasGamesToRedeemInBackground) {
-				KeyValuePair<string, string> game = BotDatabase.GetGameToRedeemInBackground();
-				if (string.IsNullOrEmpty(game.Key) || string.IsNullOrEmpty(game.Value)) {
-					ArchiLogger.LogNullError(nameof(game.Key) + " || " + nameof(game.Value));
+				(string Key, string Name) game = BotDatabase.GetGameToRedeemInBackground();
+				if (string.IsNullOrEmpty(game.Key) || string.IsNullOrEmpty(game.Name)) {
+					ArchiLogger.LogNullError(nameof(game.Key) + " || " + nameof(game.Name));
 					break;
 				}
 
@@ -2379,10 +2389,10 @@ namespace ArchiSteamFarm {
 
 				if (shouldKeep) {
 					try {
-						await File.AppendAllTextAsync(KeysToRedeemAlreadyOwnedFilePath, game.Value + "\t" + game.Key + " (" + result.PurchaseResultDetail + ")" + Environment.NewLine).ConfigureAwait(false);
+						await File.AppendAllTextAsync(KeysToRedeemAlreadyOwnedFilePath, game.Name + "\t" + game.Key + " [" + result.PurchaseResultDetail + "]" + Environment.NewLine).ConfigureAwait(false);
 					} catch (Exception e) {
 						ArchiLogger.LogGenericException(e);
-						await BotDatabase.AddGameToRedeemInBackground(game.Key, game.Value).ConfigureAwait(false); // Failsafe
+						await BotDatabase.AddGameToRedeemInBackground(game.Key, game.Name).ConfigureAwait(false); // Failsafe
 						break;
 					}
 				}
