@@ -83,7 +83,7 @@ namespace ArchiSteamFarm {
 			TaskCreationOptions options = TaskCreationOptions.DenyChildAttach;
 
 			if (longRunning) {
-				options |= TaskCreationOptions.LongRunning | TaskCreationOptions.PreferFairness;
+				options |= TaskCreationOptions.LongRunning;
 			}
 
 			Task.Factory.StartNew(action, options);
@@ -98,7 +98,7 @@ namespace ArchiSteamFarm {
 			TaskCreationOptions options = TaskCreationOptions.DenyChildAttach;
 
 			if (longRunning) {
-				options |= TaskCreationOptions.LongRunning | TaskCreationOptions.PreferFairness;
+				options |= TaskCreationOptions.LongRunning;
 			}
 
 			Task.Factory.StartNew(function, options);
