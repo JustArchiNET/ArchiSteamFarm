@@ -20,6 +20,7 @@
 //  limitations under the License.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -38,9 +39,13 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	internal static class IPC {
+		private const byte FailedAuthorizationsCooldown = 1; // In hours
+		private const byte MaxFailedAuthorizationAttempts = 5;
+
 		internal static bool IsRunning => IsHandlingRequests || IsListening;
 
 		private static readonly ConcurrentHashSet<WebSocket> ActiveLogWebSockets = new ConcurrentHashSet<WebSocket>();
+		private static readonly SemaphoreSlim AuthorizationSemaphore = new SemaphoreSlim(1, 1);
 
 		private static readonly HashSet<string> CompressableContentTypes = new HashSet<string> {
 			"application/javascript",
@@ -49,6 +54,8 @@ namespace ArchiSteamFarm {
 			"text/html",
 			"text/plain"
 		};
+
+		private static readonly ConcurrentDictionary<IPAddress, byte> FailedAuthorizations = new ConcurrentDictionary<IPAddress, byte>();
 
 		private static readonly Dictionary<string, string> MimeTypes = new Dictionary<string, string>(8) {
 			{ ".css", "text/css" },
@@ -72,6 +79,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		private static Timer ClearFailedAuthorizationsTimer;
 		private static HistoryTarget HistoryTarget;
 		private static HttpListener HttpListener;
 		private static bool IsHandlingRequests;
@@ -118,6 +126,15 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			if (ClearFailedAuthorizationsTimer == null) {
+				ClearFailedAuthorizationsTimer = new Timer(
+					e => FailedAuthorizations.Clear(),
+					null,
+					TimeSpan.FromHours(FailedAuthorizationsCooldown), // Delay
+					TimeSpan.FromHours(FailedAuthorizationsCooldown) // Period
+				);
+			}
+
 			Logging.InitHistoryLogger();
 			Utilities.InBackground(HandleRequests, true);
 			ASF.ArchiLogger.LogGenericInfo(Strings.IPCReady);
@@ -126,6 +143,11 @@ namespace ArchiSteamFarm {
 		internal static void Stop() {
 			if (!IsListening) {
 				return;
+			}
+
+			if (ClearFailedAuthorizationsTimer != null) {
+				ClearFailedAuthorizationsTimer.Dispose();
+				ClearFailedAuthorizationsTimer = null;
 			}
 
 			// We must set HttpListener to null before stopping it, so HandleRequests() knows that exception is expected
@@ -410,7 +432,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (Program.GlobalConfig.SteamOwnerID == 0) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(Program.GlobalConfig.SteamOwnerID))), HttpStatusCode.Forbidden).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(Program.GlobalConfig.SteamOwnerID))), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
@@ -747,16 +769,8 @@ namespace ArchiSteamFarm {
 				bool handled;
 
 				if ((context.Request.Url.Segments.Length >= 2) && context.Request.Url.Segments[1].Equals("Api/")) {
-					if (!string.IsNullOrEmpty(Program.GlobalConfig.IPCPassword)) {
-						string password = context.Request.Headers.Get("Authentication");
-						if (string.IsNullOrEmpty(password)) {
-							password = context.Request.QueryString.Get("password");
-						}
-
-						if (password != Program.GlobalConfig.IPCPassword) {
-							await ResponseStatusCode(context.Request, context.Response, HttpStatusCode.Unauthorized).ConfigureAwait(false);
-							return;
-						}
+					if (!await IsAuthorized(context).ConfigureAwait(false)) {
+						return;
 					}
 
 					handled = await HandleApi(context, context.Request.Url.Segments, 2).ConfigureAwait(false);
@@ -809,6 +823,67 @@ namespace ArchiSteamFarm {
 			} finally {
 				IsHandlingRequests = false;
 			}
+		}
+
+		private static async Task<bool> IsAuthorized(HttpListenerContext context) {
+			if (string.IsNullOrEmpty(Program.GlobalConfig.IPCPassword)) {
+				return true;
+			}
+
+			IPAddress ipAddress = context.Request.RemoteEndPoint?.Address;
+
+			bool authorized;
+
+			if (ipAddress != null) {
+				if (FailedAuthorizations.TryGetValue(ipAddress, out byte attempts)) {
+					if (attempts >= MaxFailedAuthorizationAttempts) {
+						await ResponseStatusCode(context.Request, context.Response, HttpStatusCode.Forbidden).ConfigureAwait(false);
+						return false;
+					}
+				}
+
+				await AuthorizationSemaphore.WaitAsync().ConfigureAwait(false);
+
+				try {
+					if (FailedAuthorizations.TryGetValue(ipAddress, out attempts)) {
+						if (attempts >= MaxFailedAuthorizationAttempts) {
+							await ResponseStatusCode(context.Request, context.Response, HttpStatusCode.Forbidden).ConfigureAwait(false);
+							return false;
+						}
+					}
+
+					string password = context.Request.Headers.Get("Authentication");
+					if (string.IsNullOrEmpty(password)) {
+						password = context.Request.QueryString.Get("password");
+					}
+
+					authorized = password == Program.GlobalConfig.IPCPassword;
+
+					if (!authorized) {
+						if (FailedAuthorizations.TryGetValue(ipAddress, out attempts)) {
+							FailedAuthorizations[ipAddress] = ++attempts;
+						} else {
+							FailedAuthorizations[ipAddress] = 1;
+						}
+					}
+				} finally {
+					AuthorizationSemaphore.Release();
+				}
+			} else {
+				string password = context.Request.Headers.Get("Authentication");
+				if (string.IsNullOrEmpty(password)) {
+					password = context.Request.QueryString.Get("password");
+				}
+
+				authorized = password == Program.GlobalConfig.IPCPassword;
+			}
+
+			if (authorized) {
+				return true;
+			}
+
+			await ResponseStatusCode(context.Request, context.Response, HttpStatusCode.Unauthorized).ConfigureAwait(false);
+			return false;
 		}
 
 		private static async void OnNewHistoryEntry(object sender, HistoryTarget.NewHistoryEntryArgs newHistoryEntryArgs) {
