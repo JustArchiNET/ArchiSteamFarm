@@ -1046,7 +1046,7 @@ namespace ArchiSteamFarm {
 		private sealed class GamesToRedeemInBackgroundRequest {
 #pragma warning disable 649
 			[JsonProperty(Required = Required.Always)]
-			internal readonly Dictionary<string, string> GamesToRedeemInBackground;
+			internal readonly SortedDictionary<string, string> GamesToRedeemInBackground;
 #pragma warning restore 649
 
 			// Deserialized from JSON

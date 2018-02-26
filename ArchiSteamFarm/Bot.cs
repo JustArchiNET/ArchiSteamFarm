@@ -659,7 +659,7 @@ namespace ArchiSteamFarm {
 			}
 
 			try {
-				Dictionary<string, string> gamesToRedeemInBackground = new Dictionary<string, string>();
+				SortedDictionary<string, string> gamesToRedeemInBackground = new SortedDictionary<string, string>();
 
 				using (StreamReader reader = new StreamReader(filePath)) {
 					string line;
@@ -1159,7 +1159,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task ValidateAndAddGamesToRedeemInBackground(Dictionary<string, string> gamesToRedeemInBackground) {
+		internal async Task ValidateAndAddGamesToRedeemInBackground(SortedDictionary<string, string> gamesToRedeemInBackground) {
 			if ((gamesToRedeemInBackground == null) || (gamesToRedeemInBackground.Count == 0)) {
 				ArchiLogger.LogNullError(nameof(gamesToRedeemInBackground));
 				return;
