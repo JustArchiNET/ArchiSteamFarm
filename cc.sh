@@ -8,6 +8,7 @@ CONFIGURATION="Release"
 OUT="out/source"
 
 CLEAN=0
+PULL=1
 SHARED_COMPILATION=1
 TEST=1
 
@@ -18,9 +19,10 @@ for ARG in "$@"; do
 		release|Release) CONFIGURATION="Release" ;;
 		debug|Debug) CONFIGURATION="Debug" ;;
 		--clean) CLEAN=1 ;;
+		--no-pull) PULL=0 ;;
 		--no-shared-compilation) SHARED_COMPILATION=0 ;;
 		--no-test) TEST=0 ;;
-		*) echo "Usage: $0 [--clean] [--no-shared-compilation] [--no-test] [debug/release]"; exit 1
+		*) echo "Usage: $0 [--clean] [--no-pull] [--no-shared-compilation] [--no-test] [debug/release]"; exit 1
 	esac
 done
 
@@ -33,7 +35,7 @@ fi
 
 dotnet --info
 
-if [[ -d ".git" ]] && hash git 2>/dev/null; then
+if [[ "$PULL" -eq 1 && -d ".git" ]] && hash git 2>/dev/null; then
 	git pull || true
 fi
 
