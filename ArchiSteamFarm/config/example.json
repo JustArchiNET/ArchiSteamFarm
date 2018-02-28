@@ -10,6 +10,7 @@
 	"GamesPlayedWhileIdle": [],
 	"HandleOfflineMessages": false,
 	"HoursUntilCardDrops": 3,
+	"IdlePriorityQueueOnly": false,
 	"IdleRefundableGames": true,
 	"IsBotAccount": false,
 	"LootableTypes": [

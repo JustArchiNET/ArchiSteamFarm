@@ -69,6 +69,9 @@ namespace ArchiSteamFarm {
 		internal readonly byte HoursUntilCardDrops = 3;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly bool IdlePriorityQueueOnly;
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool IdleRefundableGames = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]

@@ -363,8 +363,8 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				if (GlobalConfig.SalesBlacklist.Contains(appID) || Program.GlobalConfig.Blacklist.Contains(appID) || Bot.IsBlacklistedFromIdling(appID)) {
-					// We have this appID blacklisted, so skip it
+				if (GlobalConfig.SalesBlacklist.Contains(appID) || Program.GlobalConfig.Blacklist.Contains(appID) || Bot.IsBlacklistedFromIdling(appID) || (Bot.BotConfig.IdlePriorityQueueOnly && !Bot.IsPriorityIdling(appID))) {
+					// We're configured to ignore this appID, so skip it
 					continue;
 				}
 
