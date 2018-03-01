@@ -20,6 +20,7 @@ while read FILE; do
 done < <(find "$OUTPUT" -mindepth 1 -maxdepth 1)
 
 git reset
+git add -A .
 git add -A -f "$OUTPUT"
 git commit -m "WebConfigGenerator build"
 git push
