@@ -43,6 +43,7 @@ namespace ArchiSteamFarm {
 		internal const ushort CallbackSleep = 500; // In miliseconds
 		internal const byte MinPlayingBlockedTTL = 60; // Delay in seconds added when account was occupied during our disconnect, to not disconnect other Steam client session too soon
 
+		private const char DefaultBackgroundKeysRedeemerSeparator = '\t';
 		private const byte FamilySharingInactivityMinutes = 5;
 		private const byte LoginCooldownInMinutes = 25; // Captcha disappears after around 20 minutes, so we make it 25
 		private const uint LoginID = GlobalConfig.DefaultIPCPort; // This must be the same for all ASF bots and all ASF processes
@@ -671,7 +672,7 @@ namespace ArchiSteamFarm {
 							continue;
 						}
 
-						string[] parsedArgs = line.Split('\t', StringSplitOptions.RemoveEmptyEntries);
+						string[] parsedArgs = line.Split(DefaultBackgroundKeysRedeemerSeparator, StringSplitOptions.RemoveEmptyEntries);
 						if (parsedArgs.Length < 2) {
 							ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, line));
 							continue;
@@ -2400,7 +2401,7 @@ namespace ArchiSteamFarm {
 
 				if (shouldKeep) {
 					try {
-						await File.AppendAllTextAsync(KeysToRedeemAlreadyOwnedFilePath, game.Name + "\t" + game.Key + " [" + result.PurchaseResultDetail + "]" + Environment.NewLine).ConfigureAwait(false);
+						await File.AppendAllTextAsync(KeysToRedeemAlreadyOwnedFilePath, game.Name + " [" + result.PurchaseResultDetail + "]" + DefaultBackgroundKeysRedeemerSeparator + game.Key + Environment.NewLine).ConfigureAwait(false);
 					} catch (Exception e) {
 						ArchiLogger.LogGenericException(e);
 						await BotDatabase.AddGameToRedeemInBackground(game.Key, game.Name).ConfigureAwait(false); // Failsafe
