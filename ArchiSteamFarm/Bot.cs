@@ -2401,7 +2401,7 @@ namespace ArchiSteamFarm {
 
 				if (shouldKeep) {
 					try {
-						await File.AppendAllTextAsync(KeysToRedeemAlreadyOwnedFilePath, game.Name + " [" + result.PurchaseResultDetail + "]" + DefaultBackgroundKeysRedeemerSeparator + game.Key + Environment.NewLine).ConfigureAwait(false);
+						await File.AppendAllTextAsync(KeysToRedeemAlreadyOwnedFilePath, game.Name + DefaultBackgroundKeysRedeemerSeparator + "[" + result.PurchaseResultDetail + "]" + DefaultBackgroundKeysRedeemerSeparator + game.Key + Environment.NewLine).ConfigureAwait(false);
 					} catch (Exception e) {
 						ArchiLogger.LogGenericException(e);
 						await BotDatabase.AddGameToRedeemInBackground(game.Key, game.Name).ConfigureAwait(false); // Failsafe
