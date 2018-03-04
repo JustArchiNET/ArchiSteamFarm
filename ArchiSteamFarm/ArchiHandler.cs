@@ -106,6 +106,8 @@ namespace ArchiSteamFarm {
 
 			ClientMsgProtobuf<CMsgClientGamesPlayed> request = new ClientMsgProtobuf<CMsgClientGamesPlayed>(EMsg.ClientGamesPlayed);
 
+			byte maxGamesCount = MaxGamesPlayedConcurrently;
+
 			if (!string.IsNullOrEmpty(gameName)) {
 				// If we have custom name to display, we must workaround the Steam network fuckup and send request on clean non-playing session
 				// This ensures that custom name will in fact display properly
@@ -119,12 +121,14 @@ namespace ArchiSteamFarm {
 						ModID = uint.MaxValue
 					}
 				});
+
+				maxGamesCount++;
 			}
 
 			foreach (uint gameID in gameIDs.Where(gameID => gameID != 0)) {
 				request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed { game_id = new GameID(gameID) });
 
-				if (request.Body.games_played.Count >= MaxGamesPlayedConcurrently) {
+				if (request.Body.games_played.Count >= maxGamesCount) {
 					break;
 				}
 			}
