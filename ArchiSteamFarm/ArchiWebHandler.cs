@@ -1378,7 +1378,7 @@ namespace ArchiSteamFarm {
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new Dictionary<string, string>(2) { { "pin", parentalPin } };
 
-			return await UrlPostRetryWithSession(SteamCommunityURL, request, data, SteamCommunityURL).ConfigureAwait(false);
+			return await UrlPostRetryWithSession(SteamCommunityURL, request, data, SteamCommunityURL, waitForInitialization: false).ConfigureAwait(false);
 		}
 
 		private async Task<bool> UnlockParentalStoreAccount(string parentalPin) {
@@ -1392,7 +1392,7 @@ namespace ArchiSteamFarm {
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new Dictionary<string, string>(2) { { "pin", parentalPin } };
 
-			return await UrlPostRetryWithSession(SteamStoreURL, request, data, SteamStoreURL).ConfigureAwait(false);
+			return await UrlPostRetryWithSession(SteamStoreURL, request, data, SteamStoreURL, waitForInitialization: false).ConfigureAwait(false);
 		}
 
 		private async Task<HtmlDocument> UrlGetToHtmlDocumentRetryWithSession(string host, string request, byte maxTries = WebBrowser.MaxTries) {
@@ -1571,7 +1571,7 @@ namespace ArchiSteamFarm {
 			return false;
 		}
 
-		private async Task<bool> UrlPostRetryWithSession(string host, string request, Dictionary<string, string> data = null, string referer = null, bool includeSessionInData = true, byte maxTries = WebBrowser.MaxTries) {
+		private async Task<bool> UrlPostRetryWithSession(string host, string request, Dictionary<string, string> data = null, string referer = null, bool includeSessionInData = true, bool waitForInitialization = true, byte maxTries = WebBrowser.MaxTries) {
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
 				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
 				return false;
@@ -1583,18 +1583,20 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			// If session refresh is already in progress, wait for it
-			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
-			SessionSemaphore.Release();
+			if (waitForInitialization) {
+				// If session refresh is already in progress, wait for it
+				await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+				SessionSemaphore.Release();
 
-			for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
-			}
+				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
 
-			if (SteamID == 0) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
-				return false;
+				if (SteamID == 0) {
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					return false;
+				}
 			}
 
 			if (includeSessionInData) {
@@ -1622,7 +1624,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (await RefreshSession(host).ConfigureAwait(false)) {
-				return await UrlPostRetryWithSession(host, request, data, referer, includeSessionInData, --maxTries).ConfigureAwait(false);
+				return await UrlPostRetryWithSession(host, request, data, referer, includeSessionInData, waitForInitialization, --maxTries).ConfigureAwait(false);
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
