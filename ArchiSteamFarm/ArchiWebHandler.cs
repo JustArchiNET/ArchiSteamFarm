@@ -1353,12 +1353,12 @@ namespace ArchiSteamFarm {
 
 			Bot.ArchiLogger.LogGenericInfo(Strings.UnlockingParentalAccount);
 
-			if (!await UnlockParentalCommunityAccount(parentalPin).ConfigureAwait(false)) {
+			if (!await UnlockParentalAccountForService(SteamCommunityURL, parentalPin).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return false;
 			}
 
-			if (!await UnlockParentalStoreAccount(parentalPin).ConfigureAwait(false)) {
+			if (!await UnlockParentalAccountForService(SteamStoreURL, parentalPin).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return false;
 			}
@@ -1367,32 +1367,28 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		private async Task<bool> UnlockParentalCommunityAccount(string parentalPin) {
-			if (string.IsNullOrEmpty(parentalPin)) {
-				Bot.ArchiLogger.LogNullError(nameof(parentalPin));
+		private async Task<bool> UnlockParentalAccountForService(string serviceURL, string parentalPin) {
+			if (string.IsNullOrEmpty(serviceURL) || string.IsNullOrEmpty(parentalPin)) {
+				Bot.ArchiLogger.LogNullError(nameof(serviceURL) + " || " + nameof(parentalPin));
 				return false;
 			}
 
+			// This request doesn't go through UrlPostRetryWithSession as we have no access to session refresh capability (this is in fact session initialization)
 			const string request = "/parental/ajaxunlock";
 
-			// Extra entry for sessionID
-			Dictionary<string, string> data = new Dictionary<string, string>(2) { { "pin", parentalPin } };
-
-			return await UrlPostRetryWithSession(SteamCommunityURL, request, data, SteamCommunityURL, waitForInitialization: false).ConfigureAwait(false);
-		}
-
-		private async Task<bool> UnlockParentalStoreAccount(string parentalPin) {
-			if (string.IsNullOrEmpty(parentalPin)) {
-				Bot.ArchiLogger.LogNullError(nameof(parentalPin));
+			string sessionID = WebBrowser.CookieContainer.GetCookieValue(serviceURL, "sessionid");
+			if (string.IsNullOrEmpty(sessionID)) {
+				Bot.ArchiLogger.LogNullError(nameof(sessionID));
 				return false;
 			}
 
-			const string request = "/parental/ajaxunlock";
+			Dictionary<string, string> data = new Dictionary<string, string>(2) {
+				{ "pin", parentalPin },
+				{ "sessionid", sessionID }
+			};
 
-			// Extra entry for sessionID
-			Dictionary<string, string> data = new Dictionary<string, string>(2) { { "pin", parentalPin } };
-
-			return await UrlPostRetryWithSession(SteamStoreURL, request, data, SteamStoreURL, waitForInitialization: false).ConfigureAwait(false);
+			WebBrowser.BasicResponse response = await WebBrowser.UrlPostRetry(serviceURL + request, data, serviceURL).ConfigureAwait(false);
+			return (response != null) && !IsSessionExpiredUri(response.FinalUri);
 		}
 
 		private async Task<HtmlDocument> UrlGetToHtmlDocumentRetryWithSession(string host, string request, byte maxTries = WebBrowser.MaxTries) {
@@ -1571,7 +1567,7 @@ namespace ArchiSteamFarm {
 			return false;
 		}
 
-		private async Task<bool> UrlPostRetryWithSession(string host, string request, Dictionary<string, string> data = null, string referer = null, bool includeSessionInData = true, bool waitForInitialization = true, byte maxTries = WebBrowser.MaxTries) {
+		private async Task<bool> UrlPostRetryWithSession(string host, string request, Dictionary<string, string> data = null, string referer = null, bool includeSessionInData = true, byte maxTries = WebBrowser.MaxTries) {
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
 				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
 				return false;
@@ -1583,20 +1579,18 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (waitForInitialization) {
-				// If session refresh is already in progress, wait for it
-				await SessionSemaphore.WaitAsync().ConfigureAwait(false);
-				SessionSemaphore.Release();
+			// If session refresh is already in progress, wait for it
+			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+			SessionSemaphore.Release();
 
-				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
-					await Task.Delay(1000).ConfigureAwait(false);
-				}
+			for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+				await Task.Delay(1000).ConfigureAwait(false);
+			}
 
-				if (SteamID == 0) {
-					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
-					return false;
-				}
+			if (SteamID == 0) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				return false;
 			}
 
 			if (includeSessionInData) {
@@ -1624,7 +1618,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (await RefreshSession(host).ConfigureAwait(false)) {
-				return await UrlPostRetryWithSession(host, request, data, referer, includeSessionInData, waitForInitialization, --maxTries).ConfigureAwait(false);
+				return await UrlPostRetryWithSession(host, request, data, referer, includeSessionInData, --maxTries).ConfigureAwait(false);
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
