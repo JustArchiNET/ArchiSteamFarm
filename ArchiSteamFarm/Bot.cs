@@ -138,7 +138,7 @@ namespace ArchiSteamFarm {
 		private byte HeartBeatFailures;
 		private uint ItemsCount;
 		private EResult LastLogOnResult;
-		private DateTime LastLogonSessionReplaced = DateTime.MinValue;
+		private DateTime LastLogonSessionReplaced;
 		private ulong LibraryLockedBySteamID;
 		private bool LootingAllowed = true;
 		private bool LootingScheduled;
