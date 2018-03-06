@@ -1,5 +1,14 @@
 //#region Utils
-if (typeof jQuery === 'undefined') throw new Error('ASF App requires jQuery');
+var IPCPassword = get('IPCPassword'),
+    IsAuthorized = get('IsAuthorized');
+
+if (IPCPassword) {
+    $.ajaxSetup({
+        beforeSend: function (jqXHR) {
+            jqXHR.setRequestHeader('Authentication', IPCPassword);
+        }
+    });
+}
 
 function get(name) {
     if (typeof Storage !== 'undefined') {
@@ -42,9 +51,6 @@ function getIPCPassword() {
         }, function () { location.reload(); });
     });
 }
-
-var IPCPassword = get('IPCPassword');
-if (IPCPassword) $.ajaxSetup({ beforeSend: function (jqXHR) { jqXHR.setRequestHeader('Authentication', IPCPassword); } });
 //#endregion Utils
 
 //#region Footer
@@ -52,8 +58,28 @@ $('.main-footer').ready(function () {
     $.ajax({
         url: '/Api/ASF',
         type: 'GET',
-        statusCode: { 401: function () { getIPCPassword(); } },
+        statusCode: {
+            401: function () {
+                IsAuthorized = false;
+                store('IsAuthorized', IsAuthorized);
+                getIPCPassword();
+            },
+            403: function () {
+                IsAuthorized = false;
+                store('IsAuthorized', IsAuthorized);
+                $('.box').before('<div class="callout callout-warning">'
+                    + '<h4>IPC access forbidden!</h4>'
+                    + '<p>You failed to authenticate properly too many times, try again in an hour.</p>'
+                    + '</div>');
+            },
+            200: function () {
+                IsAuthorized = true;
+                store('IsAuthorized', IsAuthorized);
+            }
+        },
         success: function (data) {
+            //store('IsAuthorized', true);
+
             var obj = data['Result'].Version,
                 version = obj.Major + '.' + obj.Minor + '.' + obj.Build + '.' + obj.Revision;
             
@@ -65,65 +91,98 @@ $('.main-footer').ready(function () {
 //#endregion Footer
 
 //#region Bot Status Buttons
-$('.bot-status').ready(function () {
-    function displayBotStatus() {
+function displayBotStatus() {
+    $('.bot-status').ready(function () {
         var activeBots = 0,
             idleBots = 0,
             offlineBots = 0;
 
-        $.ajax({
-            url: '/Api/Bot/ASF',
-            type: 'GET',
-            success: function (data) {
-                var json = data['Result'];
+        if (IsAuthorized === 'true') {
+            $.ajax({
+                url: '/Api/Bot/ASF',
+                type: 'GET',
+                statusCode: {
+                    401: function () {
+                        IsAuthorized = false;
+                    },
+                    200: function () {
+                        IsAuthorized = true;
+                    }
+                },
+                success: function (data) {
+                    var json = data['Result'];
 
-                for (var i = 0; i < json.length; i++) {
-                    var obj = json[i],
-                        KeepRunning = obj.KeepRunning,
-                        TimeRemaining = obj.CardsFarmer.TimeRemaining;
+                    for (var i = 0; i < json.length; i++) {
+                        var obj = json[i],
+                            KeepRunning = obj.KeepRunning,
+                            TimeRemaining = obj.CardsFarmer.TimeRemaining;
 
-                    if (KeepRunning === false) {
-                        offlineBots++;
-                    } else {
-                        if (TimeRemaining === '00:00:00') {
-                            idleBots++;
+                        if (KeepRunning === false) {
+                            offlineBots++;
                         } else {
-                            activeBots++;
+                            if (TimeRemaining === '00:00:00') {
+                                idleBots++;
+                            } else {
+                                activeBots++;
+                            }
                         }
                     }
+
+                    $('#offlineBots').text(offlineBots);
+                    $('#idleBots').text(idleBots);
+                    $('#activeBots').text(activeBots);
                 }
+            });
+        }
+    });
+}
 
-                $('#offlineBots').text(offlineBots);
-                $('#idleBots').text(idleBots);
-                $('#activeBots').text(activeBots);
-            }
-        });
-    }
-
+displayBotStatus();
+window.setInterval(function () {
+    
     displayBotStatus();
-    window.setInterval(function () { displayBotStatus(); }, 5000);
-});
+}, 5000);
 //#endregion Bot Status Buttons
 
 //#region ASF Information
 $('.info-overview').ready(function () {
     function displayRAMUsage() {
-        $.ajax({
-            url: '/Api/ASF',
-            type: 'GET',
-            success: function (data) { $('#ramUsage').html((data['Result'].MemoryUsage / 1024).toFixed(2) + ' MB'); }
-        });
+        if (IsAuthorized === 'true') {
+            $.ajax({
+                url: '/Api/ASF',
+                type: 'GET',
+                statusCode: {
+                    401: function () {
+                        IsAuthorized = false;
+                    },
+                    200: function () {
+                        IsAuthorized = true;
+                    }
+                },
+                success: function (data) { $('#ramUsage').html((data['Result'].MemoryUsage / 1024).toFixed(2) + ' MB'); }
+            });
+        }
     }
 
     displayRAMUsage();
     window.setInterval(function () { displayRAMUsage(); }, 10000);
     
     function displayUptime() {
-        $.ajax({
-            url: '/Api/ASF',
-            type: 'GET',
-            success: function (data) { $('#uptime').html(uptimeToString(data['Result'].ProcessStartTime)); }
-        });
+        if (IsAuthorized === 'true') {
+            $.ajax({
+                url: '/Api/ASF',
+                type: 'GET',
+                statusCode: {
+                    401: function () {
+                        IsAuthorized = false;
+                    },
+                    200: function () {
+                        IsAuthorized = true;
+                    }
+                },
+                success: function (data) { $('#uptime').html(uptimeToString(data['Result'].ProcessStartTime)); }
+            });
+        }
     }
 
     displayUptime();
@@ -181,7 +240,7 @@ function logCommand(state, cmd) {
 
 function sendCommand() {
     var command = $cmdInput.val(),
-        requestURL = '/Api/Command/' + command,
+        requestURL = '/Api/Command/' + command, 
         tmpAutoClear = get('autoClear');
 
     if (command === '') return;
@@ -201,19 +260,28 @@ function sendCommand() {
 
     $('.box-content-command').append('<div class="overlay"><i class="fas fa-sync fa-spin" style="color:white"></i></div>');
 
-    $.ajax({
-        url: requestURL,
-        type: 'GET',
-        success: function (data) {
-            $('.overlay').remove();
-            logCommand(false, data['Result']);
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            $('.overlay').remove();
-            logCommand(false, jqXHR.status + ' - ' + errorThrown);
-        }
-    });
-
+    if (IsAuthorized === 'true') {
+        $.ajax({
+            url: requestURL,
+            type: 'GET',
+            statusCode: {
+                401: function () {
+                    IsAuthorized = false;
+                },
+                200: function () {
+                    IsAuthorized = true;
+                }
+            },
+            success: function (data) {
+                $('.overlay').remove();
+                logCommand(false, data['Result']);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $('.overlay').remove();
+                logCommand(false, jqXHR.status + ' - ' + errorThrown);
+            }
+        });
+    }
     if (tmpAutoClear !== 'false') $cmdInput.val('');
 }
 //#endregion Command Page
@@ -918,6 +986,8 @@ $(function () {
             closeOnConfirm: false
         }, function () {
             store('IPCPassword', '');
+            IsAuthorized = false;
+            store('IsAuthorized', IsAuthorized);
             swal({
                 title: 'Success!',
                 text: 'Your IPC password has been reset.',
