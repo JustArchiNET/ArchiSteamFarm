@@ -912,7 +912,7 @@ namespace ArchiSteamFarm {
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new Dictionary<string, string>(2) { { "action", "join" } };
 
-			return await UrlPostRetryWithSession(SteamCommunityURL, request, data).ConfigureAwait(false);
+			return await UrlPostRetryWithSession(SteamCommunityURL, request, data, session: ESession.CamelCase).ConfigureAwait(false);
 		}
 
 		internal async Task MarkInventory() {
@@ -1374,16 +1374,7 @@ namespace ArchiSteamFarm {
 			// This request doesn't go through UrlPostRetryWithSession as we have no access to session refresh capability (this is in fact session initialization)
 			const string request = "/parental/ajaxunlock";
 
-			string sessionID = WebBrowser.CookieContainer.GetCookieValue(serviceURL, "sessionid");
-			if (string.IsNullOrEmpty(sessionID)) {
-				Bot.ArchiLogger.LogNullError(nameof(sessionID));
-				return false;
-			}
-
-			Dictionary<string, string> data = new Dictionary<string, string>(2) {
-				{ "pin", parentalPin },
-				{ "sessionid", sessionID }
-			};
+			Dictionary<string, string> data = new Dictionary<string, string>(1) { { "pin", parentalPin } };
 
 			WebBrowser.BasicResponse response = await WebBrowser.UrlPostRetry(serviceURL + request, data, serviceURL).ConfigureAwait(false);
 			return (response != null) && !IsSessionExpiredUri(response.FinalUri);
@@ -1565,7 +1556,7 @@ namespace ArchiSteamFarm {
 			return false;
 		}
 
-		private async Task<bool> UrlPostRetryWithSession(string host, string request, Dictionary<string, string> data = null, string referer = null, bool includeSessionInData = true, byte maxTries = WebBrowser.MaxTries) {
+		private async Task<bool> UrlPostRetryWithSession(string host, string request, Dictionary<string, string> data = null, string referer = null, ESession session = ESession.Lowercase, byte maxTries = WebBrowser.MaxTries) {
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
 				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
 				return false;
@@ -1591,7 +1582,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (includeSessionInData) {
+			if (session != ESession.None) {
 				string sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
 
 				if (string.IsNullOrEmpty(sessionID)) {
@@ -1599,10 +1590,24 @@ namespace ArchiSteamFarm {
 					return false;
 				}
 
+				string sessionName;
+
+				switch (session) {
+					case ESession.CamelCase:
+						sessionName = "sessionID";
+						break;
+					case ESession.Lowercase:
+						sessionName = "sessionid";
+						break;
+					default:
+						Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(session), session));
+						return false;
+				}
+
 				if (data != null) {
-					data["sessionid"] = sessionID;
+					data[sessionName] = sessionID;
 				} else {
-					data = new Dictionary<string, string>(1) { { "sessionid", sessionID } };
+					data = new Dictionary<string, string>(1) { { sessionName, sessionID } };
 				}
 			}
 
@@ -1616,7 +1621,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (await RefreshSession(host).ConfigureAwait(false)) {
-				return await UrlPostRetryWithSession(host, request, data, referer, includeSessionInData, --maxTries).ConfigureAwait(false);
+				return await UrlPostRetryWithSession(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1624,7 +1629,7 @@ namespace ArchiSteamFarm {
 			return false;
 		}
 
-		private async Task<HtmlDocument> UrlPostToHtmlDocumentRetryWithSession(string host, string request, Dictionary<string, string> data = null, string referer = null, bool includeSessionInData = true, byte maxTries = WebBrowser.MaxTries) {
+		private async Task<HtmlDocument> UrlPostToHtmlDocumentRetryWithSession(string host, string request, Dictionary<string, string> data = null, string referer = null, ESession session = ESession.Lowercase, byte maxTries = WebBrowser.MaxTries) {
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
 				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
 				return null;
@@ -1650,7 +1655,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (includeSessionInData) {
+			if (session != ESession.None) {
 				string sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
 
 				if (string.IsNullOrEmpty(sessionID)) {
@@ -1658,10 +1663,24 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
+				string sessionName;
+
+				switch (session) {
+					case ESession.CamelCase:
+						sessionName = "sessionID";
+						break;
+					case ESession.Lowercase:
+						sessionName = "sessionid";
+						break;
+					default:
+						Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(session), session));
+						return null;
+				}
+
 				if (data != null) {
-					data["sessionid"] = sessionID;
+					data[sessionName] = sessionID;
 				} else {
-					data = new Dictionary<string, string>(1) { { "sessionid", sessionID } };
+					data = new Dictionary<string, string>(1) { { sessionName, sessionID } };
 				}
 			}
 
@@ -1675,7 +1694,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (await RefreshSession(host).ConfigureAwait(false)) {
-				return await UrlPostToHtmlDocumentRetryWithSession(host, request, data, referer, includeSessionInData, --maxTries).ConfigureAwait(false);
+				return await UrlPostToHtmlDocumentRetryWithSession(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1683,7 +1702,7 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		private async Task<T> UrlPostToObjectRetryWithSession<T>(string host, string request, Dictionary<string, string> data = null, string referer = null, bool includeSessionInData = true, byte maxTries = WebBrowser.MaxTries) {
+		private async Task<T> UrlPostToObjectRetryWithSession<T>(string host, string request, Dictionary<string, string> data = null, string referer = null, ESession session = ESession.Lowercase, byte maxTries = WebBrowser.MaxTries) {
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
 				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
 				return default;
@@ -1709,7 +1728,7 @@ namespace ArchiSteamFarm {
 				return default;
 			}
 
-			if (includeSessionInData) {
+			if (session != ESession.None) {
 				string sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
 
 				if (string.IsNullOrEmpty(sessionID)) {
@@ -1717,10 +1736,24 @@ namespace ArchiSteamFarm {
 					return default;
 				}
 
+				string sessionName;
+
+				switch (session) {
+					case ESession.CamelCase:
+						sessionName = "sessionID";
+						break;
+					case ESession.Lowercase:
+						sessionName = "sessionid";
+						break;
+					default:
+						Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(session), session));
+						return default;
+				}
+
 				if (data != null) {
-					data["sessionid"] = sessionID;
+					data[sessionName] = sessionID;
 				} else {
-					data = new Dictionary<string, string>(1) { { "sessionid", sessionID } };
+					data = new Dictionary<string, string>(1) { { sessionName, sessionID } };
 				}
 			}
 
@@ -1734,7 +1767,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (await RefreshSession(host).ConfigureAwait(false)) {
-				return await UrlPostToObjectRetryWithSession<T>(host, request, data, referer, includeSessionInData, --maxTries).ConfigureAwait(false);
+				return await UrlPostToObjectRetryWithSession<T>(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1742,7 +1775,7 @@ namespace ArchiSteamFarm {
 			return default;
 		}
 
-		private async Task<T> UrlPostToObjectRetryWithSession<T>(string host, string request, List<KeyValuePair<string, string>> data = null, string referer = null, bool includeSessionInData = true, byte maxTries = WebBrowser.MaxTries) {
+		private async Task<T> UrlPostToObjectRetryWithSession<T>(string host, string request, List<KeyValuePair<string, string>> data = null, string referer = null, ESession session = ESession.Lowercase, byte maxTries = WebBrowser.MaxTries) {
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
 				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
 				return default;
@@ -1768,7 +1801,7 @@ namespace ArchiSteamFarm {
 				return default;
 			}
 
-			if (includeSessionInData) {
+			if (session != ESession.None) {
 				string sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
 
 				if (string.IsNullOrEmpty(sessionID)) {
@@ -1776,7 +1809,21 @@ namespace ArchiSteamFarm {
 					return default;
 				}
 
-				KeyValuePair<string, string> sessionValue = new KeyValuePair<string, string>("sessionid", sessionID);
+				string sessionName;
+
+				switch (session) {
+					case ESession.CamelCase:
+						sessionName = "sessionID";
+						break;
+					case ESession.Lowercase:
+						sessionName = "sessionid";
+						break;
+					default:
+						Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(session), session));
+						return default;
+				}
+
+				KeyValuePair<string, string> sessionValue = new KeyValuePair<string, string>(sessionName, sessionID);
 
 				if (data != null) {
 					data.Remove(sessionValue);
@@ -1796,12 +1843,18 @@ namespace ArchiSteamFarm {
 			}
 
 			if (await RefreshSession(host).ConfigureAwait(false)) {
-				return await UrlPostToObjectRetryWithSession<T>(host, request, data, referer, includeSessionInData, --maxTries).ConfigureAwait(false);
+				return await UrlPostToObjectRetryWithSession<T>(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 			Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 			return default;
+		}
+
+		private enum ESession : byte {
+			None,
+			Lowercase,
+			CamelCase
 		}
 
 		private enum ESteamApiKeyState : byte {

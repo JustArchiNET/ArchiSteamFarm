@@ -36,13 +36,13 @@ Paste here
 
 ### Global ASF.json config
 
-```
+```json
 Paste here
 ```
 
 ### BotName.json config of all affected bot instances (if more than one)
 
-```
+```json
 Paste here
 Ensure that config has hidden/redacted SteamLogin and SteamPassword properties.
 ```
