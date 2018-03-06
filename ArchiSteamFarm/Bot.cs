@@ -4019,7 +4019,7 @@ namespace ArchiSteamFarm {
 			StringBuilder gameName = new StringBuilder();
 
 			foreach (string game in games) {
-				if (!uint.TryParse(game, out uint gameID)) {
+				if (!uint.TryParse(game, out uint gameID) || (gameID == 0)) {
 					gameName.Append((gameName.Length > 0 ? " " : "") + game);
 					continue;
 				}

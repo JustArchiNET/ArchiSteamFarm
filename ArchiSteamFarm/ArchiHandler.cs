@@ -122,6 +122,7 @@ namespace ArchiSteamFarm {
 					}
 				});
 
+				// Max games count is affected by valid AppIDs only, therefore gameName alone doesn't need exclusive slot
 				maxGamesCount++;
 			}
 
