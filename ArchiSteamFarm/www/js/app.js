@@ -26,7 +26,7 @@ function store(name, val) {
     }
 }
 
-function getIPCPassword() {
+function tryToAuthorize() {
     swal({
         title: 'IPC password required',
         text: 'Please enter the correct IPC password:',
@@ -35,15 +35,15 @@ function getIPCPassword() {
         closeOnConfirm: false,
         inputPlaceholder: 'Type your password',
         inputType: 'password'
-    }, function (typedPassword) {
-        if (typedPassword === false) return false;
+    }, function (newPwd) {
+        if (newPwd === false) return false;
 
-        if (typedPassword === '') {
+        if (newPwd === '') {
             swal.showInputError('You need to enter a valid password!');
             return false;
         }
 
-        store('IPCPassword', typedPassword);
+        store('IPCPassword', newPwd);
         swal({
             title: 'Success!',
             text: 'Your IPC password has been saved.',
@@ -62,7 +62,7 @@ $('.main-footer').ready(function () {
             401: function () {
                 IsAuthorized = false;
                 store('IsAuthorized', IsAuthorized);
-                getIPCPassword();
+                tryToAuthorize();
             },
             403: function () {
                 IsAuthorized = false;
@@ -78,13 +78,11 @@ $('.main-footer').ready(function () {
             }
         },
         success: function (data) {
-            //store('IsAuthorized', true);
-
-            var obj = data['Result'].Version,
-                version = obj.Major + '.' + obj.Minor + '.' + obj.Build + '.' + obj.Revision;
+            var version = data['Result'].Version,
+                versionNr = version.Major + '.' + version.Minor + '.' + version.Build + '.' + version.Revision;
             
-            $('#version').html('<b>Version</b> ' + version);
-            $('#changelog').attr('href', 'https://github.com/JustArchi/ArchiSteamFarm/releases/tag/' + version);
+            $('#version').html('<b>Version</b> ' + versionNr);
+            $('#changelog').attr('href', 'https://github.com/JustArchi/ArchiSteamFarm/releases/tag/' + versionNr);
         }
     });
 });
@@ -92,102 +90,117 @@ $('.main-footer').ready(function () {
 
 //#region Bot Status Buttons
 function displayBotStatus() {
+    var IsAuthorized = get('IsAuthorized');
+
+    if (IsAuthorized !== 'true') {
+        return;
+    }
+
     $('.bot-status').ready(function () {
         var activeBots = 0,
             idleBots = 0,
             offlineBots = 0;
 
-        if (IsAuthorized === 'true') {
-            $.ajax({
-                url: '/Api/Bot/ASF',
-                type: 'GET',
-                statusCode: {
-                    401: function () {
-                        IsAuthorized = false;
-                    },
-                    200: function () {
-                        IsAuthorized = true;
-                    }
+        $.ajax({
+            url: '/Api/Bot/ASF',
+            type: 'GET',
+            statusCode: {
+                401: function () {
+                    IsAuthorized = false;
+                    store('IsAuthorized', IsAuthorized);
+                    tryToAuthorize();
                 },
-                success: function (data) {
-                    var json = data['Result'];
+                200: function () {
+                    IsAuthorized = true;
+                    store('IsAuthorized', IsAuthorized);
+                }
+            },
+            success: function (data) {
+                var json = data['Result'];
 
-                    for (var i = 0; i < json.length; i++) {
-                        var obj = json[i],
-                            KeepRunning = obj.KeepRunning,
-                            TimeRemaining = obj.CardsFarmer.TimeRemaining;
+                for (var i = 0; i < json.length; i++) {
+                    var obj = json[i],
+                        KeepRunning = obj.KeepRunning,
+                        TimeRemaining = obj.CardsFarmer.TimeRemaining;
 
-                        if (KeepRunning === false) {
-                            offlineBots++;
+                    if (KeepRunning === false) {
+                        offlineBots++;
+                    } else {
+                        if (TimeRemaining === '00:00:00') {
+                            idleBots++;
                         } else {
-                            if (TimeRemaining === '00:00:00') {
-                                idleBots++;
-                            } else {
-                                activeBots++;
-                            }
+                            activeBots++;
                         }
                     }
-
-                    $('#offlineBots').text(offlineBots);
-                    $('#idleBots').text(idleBots);
-                    $('#activeBots').text(activeBots);
                 }
-            });
-        }
+
+                $('#offlineBots').text(offlineBots);
+                $('#idleBots').text(idleBots);
+                $('#activeBots').text(activeBots);
+            }
+        });
     });
 }
 
 displayBotStatus();
-window.setInterval(function () {
-    
-    displayBotStatus();
-}, 5000);
+window.setInterval(function () { displayBotStatus(); }, 5000);
 //#endregion Bot Status Buttons
 
 //#region ASF Information
-$('.info-overview').ready(function () {
-    function displayRAMUsage() {
-        if (IsAuthorized === 'true') {
-            $.ajax({
-                url: '/Api/ASF',
-                type: 'GET',
-                statusCode: {
-                    401: function () {
-                        IsAuthorized = false;
-                    },
-                    200: function () {
-                        IsAuthorized = true;
-                    }
-                },
-                success: function (data) { $('#ramUsage').html((data['Result'].MemoryUsage / 1024).toFixed(2) + ' MB'); }
-            });
-        }
+function displayRAMUsage() {
+    var IsAuthorized = get('IsAuthorized');
+
+    if (IsAuthorized !== 'true') {
+        return;
     }
 
-    displayRAMUsage();
-    window.setInterval(function () { displayRAMUsage(); }, 10000);
-    
-    function displayUptime() {
-        if (IsAuthorized === 'true') {
-            $.ajax({
-                url: '/Api/ASF',
-                type: 'GET',
-                statusCode: {
-                    401: function () {
-                        IsAuthorized = false;
-                    },
-                    200: function () {
-                        IsAuthorized = true;
-                    }
+    $('.info-overview').ready(function () {
+        $.ajax({
+            url: '/Api/ASF',
+            type: 'GET',
+            statusCode: {
+                401: function () {
+                    IsAuthorized = false;
+                    store('IsAuthorized', IsAuthorized);
+                    tryToAuthorize();
                 },
-                success: function (data) { $('#uptime').html(uptimeToString(data['Result'].ProcessStartTime)); }
-            });
-        }
+                200: function () {
+                    IsAuthorized = true;
+                    store('IsAuthorized', IsAuthorized);
+                }
+            },
+            success: function (data) { $('#ramUsage').html((data['Result'].MemoryUsage / 1024).toFixed(2) + ' MB'); }
+        });
+    });
+}
+
+displayRAMUsage();
+window.setInterval(function () { displayRAMUsage(); }, 10000);
+
+function displayUptime() {
+    if (IsAuthorized !== 'true') {
+        return;
     }
 
-    displayUptime();
-    window.setInterval(function () { displayUptime(); }, 60000);
-});
+    $('.info-overview').ready(function () {
+        $.ajax({
+            url: '/Api/ASF',
+            type: 'GET',
+            statusCode: {
+                401: function () {
+                    //IsAuthorized = false;
+                },
+                200: function () {
+                    //IsAuthorized = true;
+                }
+            },
+            success: function (data) { $('#uptime').html(uptimeToString(data['Result'].ProcessStartTime)); }
+        });
+    });
+}
+
+displayUptime();
+window.setInterval(function () { displayUptime(); }, 60000);
 
 function uptimeToString(startTime) {
     var processStartTime = new Date(startTime),
@@ -245,6 +258,12 @@ function sendCommand() {
 
     if (command === '') return;
 
+    var IsAuthorized = get('IsAuthorized');
+
+    if (IsAuthorized !== 'true') {
+        return;
+    }
+
     logCommand(true, command);
 
     if (tmpAutoClear === 'false') {
@@ -259,29 +278,31 @@ function sendCommand() {
     }
 
     $('.box-content-command').append('<div class="overlay"><i class="fas fa-sync fa-spin" style="color:white"></i></div>');
-
-    if (IsAuthorized === 'true') {
-        $.ajax({
-            url: requestURL,
-            type: 'GET',
-            statusCode: {
-                401: function () {
-                    IsAuthorized = false;
-                },
-                200: function () {
-                    IsAuthorized = true;
-                }
+    
+    $.ajax({
+        url: requestURL,
+        type: 'GET',
+        statusCode: {
+            401: function () {
+                IsAuthorized = false;
+                store('IsAuthorized', IsAuthorized);
+                tryToAuthorize();
             },
-            success: function (data) {
-                $('.overlay').remove();
-                logCommand(false, data['Result']);
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                $('.overlay').remove();
-                logCommand(false, jqXHR.status + ' - ' + errorThrown);
+            200: function () {
+                IsAuthorized = true;
+                store('IsAuthorized', IsAuthorized);
             }
-        });
-    }
+        },
+        success: function (data) {
+            $('.overlay').remove();
+            logCommand(false, data['Result']);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            $('.overlay').remove();
+            logCommand(false, jqXHR.status + ' - ' + errorThrown);
+        }
+    });
+
     if (tmpAutoClear !== 'false') $cmdInput.val('');
 }
 //#endregion Command Page
@@ -398,9 +419,26 @@ function generateConfigHTML(mode) {
     var namespace = mode === 'ASF' ? 'ArchiSteamFarm.GlobalConfig' : 'ArchiSteamFarm.BotConfig';
     $('.box-content-config').empty(); // Clear page content first
 
+    var IsAuthorized = get('IsAuthorized');
+
+    if (IsAuthorized !== 'true') {
+        return;
+    }
+
     $.ajax({
         url: '/Api/Type/' + namespace,
         type: 'GET',
+        statusCode: {
+            401: function () {
+                IsAuthorized = false;
+                store('IsAuthorized', IsAuthorized);
+                tryToAuthorize();
+            },
+            200: function () {
+                IsAuthorized = true;
+                store('IsAuthorized', IsAuthorized);
+            }
+        },
         success: function (data) {
             var obj = data['Result'],
                 config = obj['Body'],
@@ -533,9 +571,26 @@ function loadPageContentChanger(botName) {
 function loadConfigValues(botName) {
     var requestURL = botName === 'ASF' ? '/Api/ASF' : '/Api/Bot/' + encodeURIComponent(botName);
 
+    var IsAuthorized = get('IsAuthorized');
+
+    if (IsAuthorized !== 'true') {
+        return;
+    }
+
     $.ajax({
         url: requestURL,
         type: 'GET',
+        statusCode: {
+            401: function () {
+                IsAuthorized = false;
+                store('IsAuthorized', IsAuthorized);
+                tryToAuthorize();
+            },
+            200: function () {
+                IsAuthorized = true;
+                store('IsAuthorized', IsAuthorized);
+            }
+        },
         success: function (data) {
             var objResult = data['Result'],
                 config = botName === 'ASF' ? objResult.GlobalConfig : objResult[0].BotConfig;
@@ -597,9 +652,26 @@ function loadConfigValues(botName) {
 function loadValuesForBotsDropDown(botName) {
     var botsDropDownHTML = '';
 
+    var IsAuthorized = get('IsAuthorized');
+
+    if (IsAuthorized !== 'true') {
+        return;
+    }
+
     $.ajax({
         url: '/Api/Bot/ASF',
         type: 'GET',
+        statusCode: {
+            401: function () {
+                IsAuthorized = false;
+                store('IsAuthorized', IsAuthorized);
+                tryToAuthorize();
+            },
+            200: function () {
+                IsAuthorized = true;
+                store('IsAuthorized', IsAuthorized);
+            }
+        },
         success: function (data) {
             var obj = data['Result'];
 
@@ -719,11 +791,28 @@ function prepareConfigForSaving() {
 function saveConfig(botName, config) {
     var requestURL = botName === 'ASF' ? '/Api/ASF' : '/Api/Bot/' + encodeURIComponent(botName);
 
+    var IsAuthorized = get('IsAuthorized');
+
+    if (IsAuthorized !== 'true') {
+        return;
+    }
+
     $.ajax({
         url: requestURL,
         type: 'POST',
         data: JSON.stringify(config, null, "\t"),
         contentType: 'application/json',
+        statusCode: {
+            401: function () {
+                IsAuthorized = false;
+                store('IsAuthorized', IsAuthorized);
+                tryToAuthorize();
+            },
+            200: function () {
+                IsAuthorized = true;
+                store('IsAuthorized', IsAuthorized);
+            }
+        },
         success: function (data) {
             swal({
                 title: 'Success!',
@@ -768,9 +857,26 @@ function loadPageContentGenerator(mode) {
 function loadDefaultConfigValues(mode) {
     var namespace = mode === 'ASF' ? 'ArchiSteamFarm.GlobalConfig' : 'ArchiSteamFarm.BotConfig';
 
+    var IsAuthorized = get('IsAuthorized');
+
+    if (IsAuthorized !== 'true') {
+        return;
+    }
+
     $.ajax({
         url: '/Api/Structure/' + namespace,
         type: 'GET',
+        statusCode: {
+            401: function () {
+                IsAuthorized = false;
+                store('IsAuthorized', IsAuthorized);
+                tryToAuthorize();
+            },
+            200: function () {
+                IsAuthorized = true;
+                store('IsAuthorized', IsAuthorized);
+            }
+        },
         success: function (data) {
             var config = data['Result'];
 

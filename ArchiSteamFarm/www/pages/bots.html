@@ -20,6 +20,7 @@
 </head>
 <body class="hold-transition skin-blue sidebar-mini fixed">
     <div class="wrapper">
+        <!-- Header -->
         <header class="main-header">
             <!-- Logo -->
             <a href="javascript:void(0)" class="logo">
@@ -27,7 +28,6 @@
                 <span class="logo-lg"><b>Archi</b>SteamFarm</span>
             </a>
 
-            <!-- Header -->
             <nav class="navbar navbar-static-top" role="navigation">
                 <!-- Left Sidebar Toggle Button-->
                 <a href="javascript:void(0)" class="sidebar-toggle" id="leftSidebar" data-toggle="push-menu" role="button">
@@ -85,8 +85,8 @@
             </section>
         </aside>
 
+        <!-- Content -->
         <div class="content-wrapper">
-            <!-- Content Header -->
             <section class="content-header">
                 <h1>
                     Bots
@@ -371,9 +371,26 @@
                     tmpDelimeter = '\t';
                 }
 
+                var IsAuthorized = get('IsAuthorized');
+
+                if (IsAuthorized !== 'true') {
+                    return;
+                }
+
                 $.ajax({
                     url: '/Api/Bot/ASF',
                     type: 'GET',
+                    statusCode: {
+                        401: function () {
+                            IsAuthorized = false;
+                            store('IsAuthorized', IsAuthorized);
+                            tryToAuthorize();
+                        },
+                        200: function () {
+                            IsAuthorized = true;
+                            store('IsAuthorized', IsAuthorized);
+                        }
+                    },
                     success: function (data) {
                         var json = data['Result'],
                             steamAvatarBaseURL = 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/',
@@ -546,9 +563,27 @@
                                 switch (cmd) {
                                     case 'startBot':
                                         $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
+
+                                        var IsAuthorized = get('IsAuthorized');
+
+                                        if (IsAuthorized !== 'true') {
+                                            return;
+                                        }
+
                                         $.ajax({
                                             url: '/Api/Command/start ' + encodeURIComponent(BotName),
                                             type: 'GET',
+                                            statusCode: {
+                                                401: function () {
+                                                    IsAuthorized = false;
+                                                    store('IsAuthorized', IsAuthorized);
+                                                    tryToAuthorize();
+                                                },
+                                                200: function () {
+                                                    IsAuthorized = true;
+                                                    store('IsAuthorized', IsAuthorized);
+                                                }
+                                            },
                                             success: function (data) {
                                                 $('.overlay').remove();
                                                 swal({
@@ -562,9 +597,27 @@
 
                                     case 'stopBot':
                                         $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
+
+                                        var IsAuthorized = get('IsAuthorized');
+
+                                        if (IsAuthorized !== 'true') {
+                                            return;
+                                        }
+
                                         $.ajax({
                                             url: '/Api/Command/stop ' + encodeURIComponent(BotName),
                                             type: 'GET',
+                                            statusCode: {
+                                                401: function () {
+                                                    IsAuthorized = false;
+                                                    store('IsAuthorized', IsAuthorized);
+                                                    tryToAuthorize();
+                                                },
+                                                200: function () {
+                                                    IsAuthorized = true;
+                                                    store('IsAuthorized', IsAuthorized);
+                                                }
+                                            },
                                             success: function (data) {
                                                 $('.overlay').remove();
                                                 swal({
@@ -578,9 +631,27 @@
 
                                     case 'pauseBot':
                                         $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
+
+                                        var IsAuthorized = get('IsAuthorized');
+
+                                        if (IsAuthorized !== 'true') {
+                                            return;
+                                        }
+
                                         $.ajax({
                                             url: '/Api/Command/pause ' + encodeURIComponent(BotName),
                                             type: 'GET',
+                                            statusCode: {
+                                                401: function () {
+                                                    IsAuthorized = false;
+                                                    store('IsAuthorized', IsAuthorized);
+                                                    tryToAuthorize();
+                                                },
+                                                200: function () {
+                                                    IsAuthorized = true;
+                                                    store('IsAuthorized', IsAuthorized);
+                                                }
+                                            },
                                             success: function (data) {
                                                 $('.overlay').remove();
                                                 swal({
@@ -594,9 +665,27 @@
 
                                     case 'resumeBot':
                                         $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
+
+                                        var IsAuthorized = get('IsAuthorized');
+
+                                        if (IsAuthorized !== 'true') {
+                                            return;
+                                        }
+
                                         $.ajax({
                                             url: '/Api/Command/resume ' + encodeURIComponent(BotName),
                                             type: 'GET',
+                                            statusCode: {
+                                                401: function () {
+                                                    IsAuthorized = false;
+                                                    store('IsAuthorized', IsAuthorized);
+                                                    tryToAuthorize();
+                                                },
+                                                200: function () {
+                                                    IsAuthorized = true;
+                                                    store('IsAuthorized', IsAuthorized);
+                                                }
+                                            },
                                             success: function (data) {
                                                 $('.overlay').remove();
                                                 swal({
@@ -621,9 +710,27 @@
                                             showLoaderOnConfirm: true
                                         }, function (isConfirm) {
                                             if (isConfirm) {
+
+                                                var IsAuthorized = get('IsAuthorized');
+
+                                                if (IsAuthorized !== 'true') {
+                                                    return;
+                                                }
+
                                                 $.ajax({
                                                     url: '/Api/Bot/' + encodeURIComponent(BotName),
                                                     type: 'DELETE',
+                                                    statusCode: {
+                                                        401: function () {
+                                                            IsAuthorized = false;
+                                                            store('IsAuthorized', IsAuthorized);
+                                                            tryToAuthorize();
+                                                        },
+                                                        200: function () {
+                                                            IsAuthorized = true;
+                                                            store('IsAuthorized', IsAuthorized);
+                                                        }
+                                                    },
                                                     success: function (data) {
                                                         $('.overlay').remove();
                                                         swal({
@@ -679,13 +786,30 @@
                                                 _gamesToRedeemInBackground[obj[1]] = obj[0];
                                             }
 
-                                            var ajaxData = { GamesToRedeemInBackground: _gamesToRedeemInBackground};
+                                            var ajaxData = { GamesToRedeemInBackground: _gamesToRedeemInBackground };
+
+                                            var IsAuthorized = get('IsAuthorized');
+
+                                            if (IsAuthorized !== 'true') {
+                                                return;
+                                            }
 
                                             $.ajax({
                                                 url: '/Api/GamesToRedeemInBackground/' + encodeURIComponent(BotName),
                                                 type: 'POST',
                                                 data: JSON.stringify(ajaxData, null, "\t"),
                                                 contentType: 'application/json',
+                                                statusCode: {
+                                                    401: function () {
+                                                        IsAuthorized = false;
+                                                        store('IsAuthorized', IsAuthorized);
+                                                        tryToAuthorize();
+                                                    },
+                                                    200: function () {
+                                                        IsAuthorized = true;
+                                                        store('IsAuthorized', IsAuthorized);
+                                                    }
+                                                },
                                                 success: function (data) {
                                                     var obj = data['Result'],
                                                         gamesAdded = Object.keys(obj).length;
