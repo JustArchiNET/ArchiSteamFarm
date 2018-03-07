@@ -239,7 +239,7 @@ namespace ArchiSteamFarm.Json {
 					}
 
 					// Normally this should be reported, but under some specific fuckups we might actually receive this one
-					_Type = EType.Other;
+					_Type = EType.Generic;
 					return _Type;
 				}
 			}
@@ -324,11 +324,12 @@ namespace ArchiSteamFarm.Json {
 			// Deserialized from JSON
 			private ConfirmationDetails() { }
 
+			// REF: Internal documentation
 			internal enum EType : byte {
 				Unknown,
+				Generic,
 				Trade,
-				Market,
-				Other
+				Market
 			}
 		}
 
