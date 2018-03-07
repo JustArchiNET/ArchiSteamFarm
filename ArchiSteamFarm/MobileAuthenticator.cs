@@ -106,7 +106,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string confirmationHash = GenerateConfirmationKey(time, "conf");
+			string confirmationHash = GenerateConfirmationHash(time, "conf");
 			if (string.IsNullOrEmpty(confirmationHash)) {
 				Bot.ArchiLogger.LogNullError(nameof(confirmationHash));
 				return null;
@@ -128,7 +128,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string confirmationHash = GenerateConfirmationKey(time, "conf");
+			string confirmationHash = GenerateConfirmationHash(time, "conf");
 			if (string.IsNullOrEmpty(confirmationHash)) {
 				Bot.ArchiLogger.LogNullError(nameof(confirmationHash));
 				return null;
@@ -147,44 +147,42 @@ namespace ArchiSteamFarm {
 				HashSet<Confirmation> result = new HashSet<Confirmation>();
 
 				foreach (HtmlNode confirmationNode in confirmationNodes) {
-					string idString = confirmationNode.GetAttributeValue("data-confid", null);
-					if (string.IsNullOrEmpty(idString)) {
-						Bot.ArchiLogger.LogNullError(nameof(idString));
+					string idText = confirmationNode.GetAttributeValue("data-confid", null);
+					if (string.IsNullOrEmpty(idText)) {
+						Bot.ArchiLogger.LogNullError(nameof(idText));
 						return null;
 					}
 
-					if (!ulong.TryParse(idString, out ulong id) || (id == 0)) {
+					if (!ulong.TryParse(idText, out ulong id) || (id == 0)) {
 						Bot.ArchiLogger.LogNullError(nameof(id));
 						return null;
 					}
 
-					string keyString = confirmationNode.GetAttributeValue("data-key", null);
-					if (string.IsNullOrEmpty(keyString)) {
-						Bot.ArchiLogger.LogNullError(nameof(keyString));
+					string keyText = confirmationNode.GetAttributeValue("data-key", null);
+					if (string.IsNullOrEmpty(keyText)) {
+						Bot.ArchiLogger.LogNullError(nameof(keyText));
 						return null;
 					}
 
-					if (!ulong.TryParse(keyString, out ulong key) || (key == 0)) {
+					if (!ulong.TryParse(keyText, out ulong key) || (key == 0)) {
 						Bot.ArchiLogger.LogNullError(nameof(key));
 						return null;
 					}
 
-					HtmlNode descriptionNode = confirmationNode.SelectSingleNode(".//div[@class='mobileconf_list_entry_description']/div");
-					if (descriptionNode == null) {
-						Bot.ArchiLogger.LogNullError(nameof(descriptionNode));
+					string typeText = confirmationNode.GetAttributeValue("data-type", null);
+					if (string.IsNullOrEmpty(typeText)) {
+						Bot.ArchiLogger.LogNullError(nameof(typeText));
 						return null;
 					}
 
-					Steam.ConfirmationDetails.EType type;
+					if (!Enum.TryParse(typeText, out Steam.ConfirmationDetails.EType type) || (type == Steam.ConfirmationDetails.EType.Unknown)) {
+						Bot.ArchiLogger.LogNullError(nameof(type));
+						return null;
+					}
 
-					string description = descriptionNode.InnerText;
-					if (description.StartsWith("Sell ", StringComparison.Ordinal)) {
-						type = Steam.ConfirmationDetails.EType.Market;
-					} else if (description.StartsWith("Trade ", StringComparison.Ordinal) || description.Equals("Error loading trade details")) {
-						type = Steam.ConfirmationDetails.EType.Trade;
-					} else {
-						Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(description), description));
-						type = Steam.ConfirmationDetails.EType.Other;
+					if (!Enum.IsDefined(typeof(Steam.ConfirmationDetails.EType), type)) {
+						Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(type), type));
+						return null;
 					}
 
 					if ((acceptedType != Steam.ConfirmationDetails.EType.Unknown) && (acceptedType != type)) {
@@ -224,7 +222,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string confirmationHash = GenerateConfirmationKey(time, "conf");
+			string confirmationHash = GenerateConfirmationHash(time, "conf");
 			if (string.IsNullOrEmpty(confirmationHash)) {
 				Bot.ArchiLogger.LogNullError(nameof(confirmationHash));
 				return false;
@@ -256,7 +254,7 @@ namespace ArchiSteamFarm {
 
 		internal void Init(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
-		private string GenerateConfirmationKey(uint time, string tag = null) {
+		private string GenerateConfirmationHash(uint time, string tag = null) {
 			if (time == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(time));
 				return null;
