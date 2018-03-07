@@ -178,9 +178,9 @@ namespace ArchiSteamFarm {
 					Steam.ConfirmationDetails.EType type;
 
 					string description = descriptionNode.InnerText;
-					if (description.StartsWith("Sell - ", StringComparison.Ordinal)) {
+					if (description.StartsWith("Sell ", StringComparison.Ordinal)) {
 						type = Steam.ConfirmationDetails.EType.Market;
-					} else if (description.StartsWith("Trade with ", StringComparison.Ordinal) || description.Equals("Error loading trade details")) {
+					} else if (description.StartsWith("Trade ", StringComparison.Ordinal) || description.Equals("Error loading trade details")) {
 						type = Steam.ConfirmationDetails.EType.Trade;
 					} else {
 						Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(description), description));
