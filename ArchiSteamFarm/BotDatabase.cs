@@ -111,23 +111,6 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task AddGameToRedeemInBackground(string key, string name) {
-			if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(name)) {
-				ASF.ArchiLogger.LogNullError(nameof(key) + " || " + nameof(name));
-				return;
-			}
-
-			lock (GamesToRedeemInBackground) {
-				if (GamesToRedeemInBackground.Contains(key)) {
-					return;
-				}
-
-				GamesToRedeemInBackground.Add(key, name);
-			}
-
-			await Save().ConfigureAwait(false);
-		}
-
 		internal async Task AddIdlingBlacklistedAppIDs(IReadOnlyCollection<uint> appIDs) {
 			if ((appIDs == null) || (appIDs.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(appIDs));

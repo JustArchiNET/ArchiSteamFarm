@@ -50,6 +50,7 @@ namespace ArchiSteamFarm {
 		private const ushort MaxSteamMessageLength = 2048;
 		private const byte MaxTwoFactorCodeFailures = 3;
 		private const byte MinHeartBeatTTL = GlobalConfig.DefaultConnectionTimeout; // Assume client is responsive for at least that amount of seconds
+		private const byte RedeemCooldownInHours = 1; // 1 hour since first redeem attempt
 
 		internal static readonly ConcurrentDictionary<string, Bot> Bots = new ConcurrentDictionary<string, Bot>();
 
@@ -102,6 +103,7 @@ namespace ArchiSteamFarm {
 		private bool IsAccountLocked => AccountFlags.HasFlag(EAccountFlags.Lockdown);
 		private string KeysToRedeemAlreadyOwnedFilePath => KeysToRedeemFilePath + SharedInfo.KeysOwnedExtension;
 		private string KeysToRedeemFilePath => BotPath + SharedInfo.KeysExtension;
+		private string KeysToRedeemRedeemedFilePath => KeysToRedeemFilePath + SharedInfo.KeysRedeemedExtension;
 		private string MobileAuthenticatorFilePath => BotPath + SharedInfo.MobileAuthenticatorExtension;
 		private string SentryFilePath => BotPath + SharedInfo.SentryHashExtension;
 
@@ -316,9 +318,9 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> DeleteAllRelatedFiles() {
-			try {
-				await BotDatabase.MakeReadOnly().ConfigureAwait(false);
+			await BotDatabase.MakeReadOnly().ConfigureAwait(false);
 
+			try {
 				if (File.Exists(ConfigFilePath)) {
 					File.Delete(ConfigFilePath);
 				}
@@ -333,6 +335,10 @@ namespace ArchiSteamFarm {
 
 				if (File.Exists(KeysToRedeemAlreadyOwnedFilePath)) {
 					File.Delete(KeysToRedeemAlreadyOwnedFilePath);
+				}
+
+				if (File.Exists(KeysToRedeemRedeemedFilePath)) {
+					File.Delete(KeysToRedeemRedeemedFilePath);
 				}
 
 				if (File.Exists(MobileAuthenticatorFilePath)) {
@@ -2344,6 +2350,8 @@ namespace ArchiSteamFarm {
 				GamesRedeemerInBackgroundTimer = null;
 			}
 
+			ArchiLogger.LogGenericInfo(Strings.Starting);
+
 			while (IsConnectedAndLoggedOn && BotDatabase.HasGamesToRedeemInBackground) {
 				(string Key, string Name) game = BotDatabase.GetGameToRedeemInBackground();
 				if (string.IsNullOrEmpty(game.Key) || string.IsNullOrEmpty(game.Name)) {
@@ -2369,8 +2377,10 @@ namespace ArchiSteamFarm {
 					}
 				}
 
+				ArchiLogger.LogGenericDebug(string.Format(Strings.BotRedeem, game.Key, result.Result + "/" + result.PurchaseResultDetail));
+
 				bool rateLimited = false;
-				bool shouldKeep = false;
+				bool redeemed = false;
 
 				switch (result.PurchaseResultDetail) {
 					case EPurchaseResultDetail.AccountLocked:
@@ -2379,11 +2389,11 @@ namespace ArchiSteamFarm {
 					case EPurchaseResultDetail.DoesNotOwnRequiredApp:
 					case EPurchaseResultDetail.RestrictedCountry:
 					case EPurchaseResultDetail.Timeout:
-						shouldKeep = true;
 						break;
 					case EPurchaseResultDetail.BadActivationCode:
 					case EPurchaseResultDetail.DuplicateActivationCode:
 					case EPurchaseResultDetail.NoDetail: // OK
+						redeemed = true;
 						break;
 					case EPurchaseResultDetail.RateLimited:
 						rateLimited = true;
@@ -2399,28 +2409,29 @@ namespace ArchiSteamFarm {
 
 				await BotDatabase.RemoveGameToRedeemInBackground(game.Key).ConfigureAwait(false);
 
-				if (shouldKeep) {
-					try {
-						await File.AppendAllTextAsync(KeysToRedeemAlreadyOwnedFilePath, game.Name + DefaultBackgroundKeysRedeemerSeparator + "[" + result.PurchaseResultDetail + "]" + DefaultBackgroundKeysRedeemerSeparator + game.Key + Environment.NewLine).ConfigureAwait(false);
-					} catch (Exception e) {
-						ArchiLogger.LogGenericException(e);
-						await BotDatabase.AddGameToRedeemInBackground(game.Key, game.Name).ConfigureAwait(false); // Failsafe
-						break;
-					}
-				}
+				string logEntry = game.Name + DefaultBackgroundKeysRedeemerSeparator + "[" + result.PurchaseResultDetail + "]" + DefaultBackgroundKeysRedeemerSeparator + game.Key;
 
-				// Add some delay before next redeem attempt
-				await Task.Delay(Program.GlobalConfig.LoginLimiterDelay * 500).ConfigureAwait(false);
+				try {
+					await File.AppendAllTextAsync(redeemed ? KeysToRedeemRedeemedFilePath : KeysToRedeemAlreadyOwnedFilePath, logEntry + Environment.NewLine).ConfigureAwait(false);
+				} catch (Exception e) {
+					ArchiLogger.LogGenericException(e);
+					ArchiLogger.LogGenericError(string.Format(Strings.Content, logEntry));
+					break;
+				}
 			}
 
 			if (BotDatabase.HasGamesToRedeemInBackground) {
+				ArchiLogger.LogGenericInfo(string.Format(Strings.BotRateLimitExceeded, TimeSpan.FromHours(RedeemCooldownInHours).ToHumanReadable()));
+
 				GamesRedeemerInBackgroundTimer = new Timer(
 					async e => await RedeemGamesInBackground().ConfigureAwait(false),
 					null,
-					TimeSpan.FromHours(1), // Delay
+					TimeSpan.FromHours(RedeemCooldownInHours), // Delay
 					Timeout.InfiniteTimeSpan // Period
 				);
 			}
+
+			ArchiLogger.LogGenericInfo(Strings.Done);
 		}
 
 		private async Task ResetGamesPlayed() {
