@@ -916,7 +916,8 @@ $(function () {
                 type: 'success'
             }, function () {
                 store('IPCPassword', '');
-                location.reload();
+                //location.reload();
+                window.location.replace('../index.html');
             });
         });
     }
