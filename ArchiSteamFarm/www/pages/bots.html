@@ -371,26 +371,26 @@
                     tmpDelimeter = '\t';
                 }
 
-                var IsAuthorized = get('IsAuthorized');
+                //var IsAuthorized = get('IsAuthorized');
 
-                if (IsAuthorized !== 'true') {
-                    return;
-                }
+                //if (IsAuthorized !== 'true') {
+                //    return;
+                //}
 
                 $.ajax({
                     url: '/Api/Bot/ASF',
                     type: 'GET',
-                    statusCode: {
-                        401: function () {
-                            IsAuthorized = false;
-                            store('IsAuthorized', IsAuthorized);
-                            tryToAuthorize();
-                        },
-                        200: function () {
-                            IsAuthorized = true;
-                            store('IsAuthorized', IsAuthorized);
-                        }
-                    },
+                    //statusCode: {
+                    //    401: function () {
+                    //        IsAuthorized = false;
+                    //        store('IsAuthorized', IsAuthorized);
+                    //        tryToAuthorize();
+                    //    },
+                    //    200: function () {
+                    //        IsAuthorized = true;
+                    //        store('IsAuthorized', IsAuthorized);
+                    //    }
+                    //},
                     success: function (data) {
                         var json = data['Result'],
                             steamAvatarBaseURL = 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/',
@@ -564,26 +564,26 @@
                                     case 'startBot':
                                         $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
 
-                                        var IsAuthorized = get('IsAuthorized');
+                                        //var IsAuthorized = get('IsAuthorized');
 
-                                        if (IsAuthorized !== 'true') {
-                                            return;
-                                        }
+                                        //if (IsAuthorized !== 'true') {
+                                        //    return;
+                                        //}
 
                                         $.ajax({
                                             url: '/Api/Command/start ' + encodeURIComponent(BotName),
                                             type: 'GET',
-                                            statusCode: {
-                                                401: function () {
-                                                    IsAuthorized = false;
-                                                    store('IsAuthorized', IsAuthorized);
-                                                    tryToAuthorize();
-                                                },
-                                                200: function () {
-                                                    IsAuthorized = true;
-                                                    store('IsAuthorized', IsAuthorized);
-                                                }
-                                            },
+                                            //statusCode: {
+                                            //    401: function () {
+                                            //        IsAuthorized = false;
+                                            //        store('IsAuthorized', IsAuthorized);
+                                            //        tryToAuthorize();
+                                            //    },
+                                            //    200: function () {
+                                            //        IsAuthorized = true;
+                                            //        store('IsAuthorized', IsAuthorized);
+                                            //    }
+                                            //},
                                             success: function (data) {
                                                 $('.overlay').remove();
                                                 swal({
@@ -598,26 +598,26 @@
                                     case 'stopBot':
                                         $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
 
-                                        var IsAuthorized = get('IsAuthorized');
+                                        //var IsAuthorized = get('IsAuthorized');
 
-                                        if (IsAuthorized !== 'true') {
-                                            return;
-                                        }
+                                        //if (IsAuthorized !== 'true') {
+                                        //    return;
+                                        //}
 
                                         $.ajax({
                                             url: '/Api/Command/stop ' + encodeURIComponent(BotName),
                                             type: 'GET',
-                                            statusCode: {
-                                                401: function () {
-                                                    IsAuthorized = false;
-                                                    store('IsAuthorized', IsAuthorized);
-                                                    tryToAuthorize();
-                                                },
-                                                200: function () {
-                                                    IsAuthorized = true;
-                                                    store('IsAuthorized', IsAuthorized);
-                                                }
-                                            },
+                                            //statusCode: {
+                                            //    401: function () {
+                                            //        IsAuthorized = false;
+                                            //        store('IsAuthorized', IsAuthorized);
+                                            //        tryToAuthorize();
+                                            //    },
+                                            //    200: function () {
+                                            //        IsAuthorized = true;
+                                            //        store('IsAuthorized', IsAuthorized);
+                                            //    }
+                                            //},
                                             success: function (data) {
                                                 $('.overlay').remove();
                                                 swal({
@@ -632,26 +632,26 @@
                                     case 'pauseBot':
                                         $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
 
-                                        var IsAuthorized = get('IsAuthorized');
+                                        //var IsAuthorized = get('IsAuthorized');
 
-                                        if (IsAuthorized !== 'true') {
-                                            return;
-                                        }
+                                        //if (IsAuthorized !== 'true') {
+                                        //    return;
+                                        //}
 
                                         $.ajax({
                                             url: '/Api/Command/pause ' + encodeURIComponent(BotName),
                                             type: 'GET',
-                                            statusCode: {
-                                                401: function () {
-                                                    IsAuthorized = false;
-                                                    store('IsAuthorized', IsAuthorized);
-                                                    tryToAuthorize();
-                                                },
-                                                200: function () {
-                                                    IsAuthorized = true;
-                                                    store('IsAuthorized', IsAuthorized);
-                                                }
-                                            },
+                                            //statusCode: {
+                                            //    401: function () {
+                                            //        IsAuthorized = false;
+                                            //        store('IsAuthorized', IsAuthorized);
+                                            //        tryToAuthorize();
+                                            //    },
+                                            //    200: function () {
+                                            //        IsAuthorized = true;
+                                            //        store('IsAuthorized', IsAuthorized);
+                                            //    }
+                                            //},
                                             success: function (data) {
                                                 $('.overlay').remove();
                                                 swal({
@@ -666,26 +666,26 @@
                                     case 'resumeBot':
                                         $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
 
-                                        var IsAuthorized = get('IsAuthorized');
+                                        //var IsAuthorized = get('IsAuthorized');
 
-                                        if (IsAuthorized !== 'true') {
-                                            return;
-                                        }
+                                        //if (IsAuthorized !== 'true') {
+                                        //    return;
+                                        //}
 
                                         $.ajax({
                                             url: '/Api/Command/resume ' + encodeURIComponent(BotName),
                                             type: 'GET',
-                                            statusCode: {
-                                                401: function () {
-                                                    IsAuthorized = false;
-                                                    store('IsAuthorized', IsAuthorized);
-                                                    tryToAuthorize();
-                                                },
-                                                200: function () {
-                                                    IsAuthorized = true;
-                                                    store('IsAuthorized', IsAuthorized);
-                                                }
-                                            },
+                                            //statusCode: {
+                                            //    401: function () {
+                                            //        IsAuthorized = false;
+                                            //        store('IsAuthorized', IsAuthorized);
+                                            //        tryToAuthorize();
+                                            //    },
+                                            //    200: function () {
+                                            //        IsAuthorized = true;
+                                            //        store('IsAuthorized', IsAuthorized);
+                                            //    }
+                                            //},
                                             success: function (data) {
                                                 $('.overlay').remove();
                                                 swal({
@@ -711,26 +711,26 @@
                                         }, function (isConfirm) {
                                             if (isConfirm) {
 
-                                                var IsAuthorized = get('IsAuthorized');
+                                                //var IsAuthorized = get('IsAuthorized');
 
-                                                if (IsAuthorized !== 'true') {
-                                                    return;
-                                                }
+                                                //if (IsAuthorized !== 'true') {
+                                                //    return;
+                                                //}
 
                                                 $.ajax({
                                                     url: '/Api/Bot/' + encodeURIComponent(BotName),
                                                     type: 'DELETE',
-                                                    statusCode: {
-                                                        401: function () {
-                                                            IsAuthorized = false;
-                                                            store('IsAuthorized', IsAuthorized);
-                                                            tryToAuthorize();
-                                                        },
-                                                        200: function () {
-                                                            IsAuthorized = true;
-                                                            store('IsAuthorized', IsAuthorized);
-                                                        }
-                                                    },
+                                                    //statusCode: {
+                                                    //    401: function () {
+                                                    //        IsAuthorized = false;
+                                                    //        store('IsAuthorized', IsAuthorized);
+                                                    //        tryToAuthorize();
+                                                    //    },
+                                                    //    200: function () {
+                                                    //        IsAuthorized = true;
+                                                    //        store('IsAuthorized', IsAuthorized);
+                                                    //    }
+                                                    //},
                                                     success: function (data) {
                                                         $('.overlay').remove();
                                                         swal({
@@ -788,28 +788,28 @@
 
                                             var ajaxData = { GamesToRedeemInBackground: _gamesToRedeemInBackground };
 
-                                            var IsAuthorized = get('IsAuthorized');
+                                            //var IsAuthorized = get('IsAuthorized');
 
-                                            if (IsAuthorized !== 'true') {
-                                                return;
-                                            }
+                                            //if (IsAuthorized !== 'true') {
+                                            //    return;
+                                            //}
 
                                             $.ajax({
                                                 url: '/Api/GamesToRedeemInBackground/' + encodeURIComponent(BotName),
                                                 type: 'POST',
                                                 data: JSON.stringify(ajaxData, null, "\t"),
                                                 contentType: 'application/json',
-                                                statusCode: {
-                                                    401: function () {
-                                                        IsAuthorized = false;
-                                                        store('IsAuthorized', IsAuthorized);
-                                                        tryToAuthorize();
-                                                    },
-                                                    200: function () {
-                                                        IsAuthorized = true;
-                                                        store('IsAuthorized', IsAuthorized);
-                                                    }
-                                                },
+                                                //statusCode: {
+                                                //    401: function () {
+                                                //        IsAuthorized = false;
+                                                //        store('IsAuthorized', IsAuthorized);
+                                                //        tryToAuthorize();
+                                                //    },
+                                                //    200: function () {
+                                                //        IsAuthorized = true;
+                                                //        store('IsAuthorized', IsAuthorized);
+                                                //    }
+                                                //},
                                                 success: function (data) {
                                                     var obj = data['Result'],
                                                         gamesAdded = Object.keys(obj).length;

@@ -154,26 +154,26 @@
             'use strict';
 
             $('.box-content-config').ready(function () {
-                var IsAuthorized = get('IsAuthorized');
+                //var IsAuthorized = get('IsAuthorized');
 
-                if (IsAuthorized !== 'true') {
-                    return;
-                }
+                //if (IsAuthorized !== 'true') {
+                //    return;
+                //}
 
                 $.ajax({
                     url: '/Api/Bot/ASF',
                     type: 'GET',
-                    statusCode: {
-                        401: function () {
-                            IsAuthorized = false;
-                            store('IsAuthorized', IsAuthorized);
-                            tryToAuthorize();
-                        },
-                        200: function () {
-                            IsAuthorized = true;
-                            store('IsAuthorized', IsAuthorized);
-                        }
-                    },
+                    //statusCode: {
+                    //    401: function () {
+                    //        IsAuthorized = false;
+                    //        store('IsAuthorized', IsAuthorized);
+                    //        tryToAuthorize();
+                    //    },
+                    //    200: function () {
+                    //        IsAuthorized = true;
+                    //        store('IsAuthorized', IsAuthorized);
+                    //    }
+                    //},
                     success: function (data) {
                         var json = data['Result'];
                         loadPageContentChanger(json[0].BotName);

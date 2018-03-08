@@ -341,26 +341,25 @@
 
                 $botsDropDown.append('<li><a href="javascript:void(0)" onclick="fillBots(\'ASF\')">ASF</a></li>'); // Fill with default value
 
-                var IsAuthorized = get('IsAuthorized');
+                //var IsAuthorized = get('IsAuthorized');
 
-                if (IsAuthorized !== 'true') {
-                    return;
-                }
+                //if (IsAuthorized !== 'true') {
+                //    return;
+                //}
 
                 $.ajax({ // Fill drop down with all bots + ASF
                     url: '/Api/Bot/ASF',
                     type: 'GET',
-                    statusCode: {
-                        401: function () {
-                            IsAuthorized = false;
-                            store('IsAuthorized', IsAuthorized);
-                            tryToAuthorize();
-                        },
-                        200: function () {
-                            IsAuthorized = true;
-                            store('IsAuthorized', IsAuthorized);
-                        }
-                    },
+                    //statusCode: {
+                    //    401: function () {
+                    //        store('IsAuthorized', false);
+                    //        window.location.replace('../index.html');
+                    //    },
+                    //    403: function () {
+                    //        store('IsAuthorized', false);
+                    //        window.location.replace('../index.html');
+                    //    }
+                    //},
                     success: function (data) {
                         var json = data['Result'];
 
