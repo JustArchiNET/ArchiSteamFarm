@@ -40,7 +40,7 @@ function store(name, val) {
 //#endregion Utils
 
 //#region Footer
-//$('.main-footer').ready(function () {
+$('.main-footer').ready(function () {
     $.ajax({
         url: '/Api/ASF',
         type: 'GET',
@@ -52,12 +52,12 @@ function store(name, val) {
             $('#changelog').attr('href', 'https://github.com/JustArchi/ArchiSteamFarm/releases/tag/' + versionNr);
         }
     });
-//});
+});
 //#endregion Footer
 
 //#region Bot Status Buttons
 function displayBotStatus() {
-    //$('.bot-status').ready(function () {
+    $('.bot-status').ready(function () {
         var activeBots = 0,
             idleBots = 0,
             offlineBots = 0;
@@ -89,7 +89,7 @@ function displayBotStatus() {
                 $('#activeBots').text(activeBots);
             }
         });
-    //});
+    });
 }
 
 displayBotStatus();
@@ -98,26 +98,26 @@ window.setInterval(function () { displayBotStatus(); }, 5000);
 
 //#region ASF Information
 function displayRAMUsage() {
-    //$('.info-overview').ready(function () {
+    $('.info-overview').ready(function () {
         $.ajax({
             url: '/Api/ASF',
             type: 'GET',
             success: function (data) { $('#ramUsage').html((data['Result'].MemoryUsage / 1024).toFixed(2) + ' MB'); }
         });
-    //});
+    });
 }
 
 displayRAMUsage();
 window.setInterval(function () { displayRAMUsage(); }, 10000);
 
 function displayUptime() {
-    //$('.info-overview').ready(function () {
+    $('.info-overview').ready(function () {
         $.ajax({
             url: '/Api/ASF',
             type: 'GET',
             success: function (data) { $('#uptime').html(uptimeToString(data['Result'].ProcessStartTime)); }
         });
-    //});
+    });
 }
 
 displayUptime();
@@ -915,9 +915,8 @@ $(function () {
                 text: 'Your IPC password has been reset.',
                 type: 'success'
             }, function () {
-                store('IPCPassword', '');
-                //location.reload();
                 window.location.replace('../index.html');
+                store('IPCPassword', '');
             });
         });
     }

@@ -90,6 +90,10 @@
             $(function () {
                 'use strict';
 
+                $(document).keypress(function (e) {
+                    if (e.which == 13) $('#TryToAuth').click();
+                });
+
                 $('#TryToAuth').click(function () {
                     var newPwd = $('#IPCPassword').val();
 
