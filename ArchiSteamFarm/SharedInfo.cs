@@ -52,8 +52,8 @@ namespace ArchiSteamFarm {
 		internal const string GlobalConfigFileName = ASF + ConfigExtension;
 		internal const string GlobalDatabaseFileName = ASF + DatabaseExtension;
 		internal const string KeysExtension = ".keys";
-		internal const string KeysOwnedExtension = ".owned";
-		internal const string KeysRedeemedExtension = ".redeemed";
+		internal const string KeysUnusedExtension = ".unused";
+		internal const string KeysUsedExtension = ".used";
 		internal const string LogFile = "log.txt";
 		internal const string MobileAuthenticatorExtension = ".maFile";
 		internal const string SentryHashExtension = ".bin";

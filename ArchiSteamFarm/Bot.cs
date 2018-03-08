@@ -101,9 +101,9 @@ namespace ArchiSteamFarm {
 		private string ConfigFilePath => BotPath + SharedInfo.ConfigExtension;
 		private string DatabaseFilePath => BotPath + SharedInfo.DatabaseExtension;
 		private bool IsAccountLocked => AccountFlags.HasFlag(EAccountFlags.Lockdown);
-		private string KeysToRedeemAlreadyOwnedFilePath => KeysToRedeemFilePath + SharedInfo.KeysOwnedExtension;
 		private string KeysToRedeemFilePath => BotPath + SharedInfo.KeysExtension;
-		private string KeysToRedeemRedeemedFilePath => KeysToRedeemFilePath + SharedInfo.KeysRedeemedExtension;
+		private string KeysToRedeemUnusedFilePath => KeysToRedeemFilePath + SharedInfo.KeysUnusedExtension;
+		private string KeysToRedeemUsedFilePath => KeysToRedeemFilePath + SharedInfo.KeysUsedExtension;
 		private string MobileAuthenticatorFilePath => BotPath + SharedInfo.MobileAuthenticatorExtension;
 		private string SentryFilePath => BotPath + SharedInfo.SentryHashExtension;
 
@@ -333,12 +333,12 @@ namespace ArchiSteamFarm {
 					File.Delete(KeysToRedeemFilePath);
 				}
 
-				if (File.Exists(KeysToRedeemAlreadyOwnedFilePath)) {
-					File.Delete(KeysToRedeemAlreadyOwnedFilePath);
+				if (File.Exists(KeysToRedeemUnusedFilePath)) {
+					File.Delete(KeysToRedeemUnusedFilePath);
 				}
 
-				if (File.Exists(KeysToRedeemRedeemedFilePath)) {
-					File.Delete(KeysToRedeemRedeemedFilePath);
+				if (File.Exists(KeysToRedeemUsedFilePath)) {
+					File.Delete(KeysToRedeemUsedFilePath);
 				}
 
 				if (File.Exists(MobileAuthenticatorFilePath)) {
@@ -2412,7 +2412,7 @@ namespace ArchiSteamFarm {
 				string logEntry = game.Name + DefaultBackgroundKeysRedeemerSeparator + "[" + result.PurchaseResultDetail + "]" + DefaultBackgroundKeysRedeemerSeparator + game.Key;
 
 				try {
-					await File.AppendAllTextAsync(redeemed ? KeysToRedeemRedeemedFilePath : KeysToRedeemAlreadyOwnedFilePath, logEntry + Environment.NewLine).ConfigureAwait(false);
+					await File.AppendAllTextAsync(redeemed ? KeysToRedeemUsedFilePath : KeysToRedeemUnusedFilePath, logEntry + Environment.NewLine).ConfigureAwait(false);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericException(e);
 					ArchiLogger.LogGenericError(string.Format(Strings.Content, logEntry));
