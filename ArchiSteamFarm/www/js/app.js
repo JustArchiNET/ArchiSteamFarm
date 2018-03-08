@@ -1,6 +1,13 @@
 //#region Utils
 var IPCPassword = get('IPCPassword');
-    //IsAuthorized = get('IsAuthorized');
+
+if (IPCPassword) {
+    $.ajaxSetup({
+        beforeSend: function (jqXHR) {
+            jqXHR.setRequestHeader('Authentication', IPCPassword);
+        }
+    });
+}
 
 $.ajaxSetup({
     statusCode: {
@@ -14,14 +21,6 @@ $.ajaxSetup({
         }
     }
 });
-
-if (IPCPassword) {
-    $.ajaxSetup({
-        beforeSend: function (jqXHR) {
-            jqXHR.setRequestHeader('Authentication', IPCPassword);
-        }
-    });
-}
 
 function get(name) {
     if (typeof Storage !== 'undefined') {
@@ -38,36 +37,10 @@ function store(name, val) {
         window.alert('Please use a modern browser to properly view ASF GUI!');
     }
 }
-
-//function tryToAuthorize() {
-//    swal({
-//        title: 'IPC password required',
-//        text: 'Please enter the correct IPC password:',
-//        type: 'input',
-//        showCancelButton: true,
-//        closeOnConfirm: false,
-//        inputPlaceholder: 'Type your password',
-//        inputType: 'password'
-//    }, function (newPwd) {
-//        if (newPwd === false) return false;
-
-//        if (newPwd === '') {
-//            swal.showInputError('You need to enter a valid password!');
-//            return false;
-//        }
-
-//        store('IPCPassword', newPwd);
-//        swal({
-//            title: 'Success!',
-//            text: 'Your IPC password has been saved.',
-//            type: 'success'
-//        }, function () { location.reload(); });
-//    });
-//}
 //#endregion Utils
 
 //#region Footer
-$('.main-footer').ready(function () {
+//$('.main-footer').ready(function () {
     $.ajax({
         url: '/Api/ASF',
         type: 'GET',
@@ -79,17 +52,11 @@ $('.main-footer').ready(function () {
             $('#changelog').attr('href', 'https://github.com/JustArchi/ArchiSteamFarm/releases/tag/' + versionNr);
         }
     });
-});
+//});
 //#endregion Footer
 
 //#region Bot Status Buttons
 function displayBotStatus() {
-    //var IsAuthorized = get('IsAuthorized');
-
-    //if (IsAuthorized !== 'true') {
-    //    return;
-    //}
-
     //$('.bot-status').ready(function () {
         var activeBots = 0,
             idleBots = 0,
@@ -98,16 +65,6 @@ function displayBotStatus() {
         $.ajax({
             url: '/Api/Bot/ASF',
             type: 'GET',
-            //statusCode: {
-            //    401: function () {
-            //        store('IsAuthorized', false);
-            //        window.location.replace('../index.html');
-            //    },
-            //    403: function () {
-            //        store('IsAuthorized', false);
-            //        window.location.replace('../index.html');
-            //    }
-            //},
             success: function (data) {
                 var json = data['Result'];
 
@@ -141,26 +98,10 @@ window.setInterval(function () { displayBotStatus(); }, 5000);
 
 //#region ASF Information
 function displayRAMUsage() {
-    //var IsAuthorized = get('IsAuthorized');
-
-    //if (IsAuthorized !== 'true') {
-    //    return;
-    //}
-
     //$('.info-overview').ready(function () {
         $.ajax({
             url: '/Api/ASF',
             type: 'GET',
-            //statusCode: {
-            //    401: function () {
-            //        store('IsAuthorized', false);
-            //        window.location.replace('../index.html');
-            //    },
-            //    403: function () {
-            //        store('IsAuthorized', false);
-            //        window.location.replace('../index.html');
-            //    }
-            //},
             success: function (data) { $('#ramUsage').html((data['Result'].MemoryUsage / 1024).toFixed(2) + ' MB'); }
         });
     //});
@@ -170,24 +111,10 @@ displayRAMUsage();
 window.setInterval(function () { displayRAMUsage(); }, 10000);
 
 function displayUptime() {
-    //if (IsAuthorized !== 'true') {
-    //    return;
-    //}
-
     //$('.info-overview').ready(function () {
         $.ajax({
             url: '/Api/ASF',
             type: 'GET',
-            //statusCode: {
-            //    401: function () {
-            //        store('IsAuthorized', false);
-            //        window.location.replace('../index.html');
-            //    },
-            //    403: function () {
-            //        store('IsAuthorized', false);
-            //        window.location.replace('../index.html');
-            //    }
-            //},
             success: function (data) { $('#uptime').html(uptimeToString(data['Result'].ProcessStartTime)); }
         });
     //});
@@ -252,12 +179,6 @@ function sendCommand() {
 
     if (command === '') return;
 
-    //var IsAuthorized = get('IsAuthorized');
-
-    //if (IsAuthorized !== 'true') {
-    //    return;
-    //}
-
     logCommand(true, command);
 
     if (tmpAutoClear === 'false') {
@@ -276,16 +197,6 @@ function sendCommand() {
     $.ajax({
         url: requestURL,
         type: 'GET',
-        //statusCode: {
-        //    401: function () {
-        //        store('IsAuthorized', false);
-        //        window.location.replace('../index.html');
-        //    },
-        //    403: function () {
-        //        store('IsAuthorized', false);
-        //        window.location.replace('../index.html');
-        //    }
-        //},
         success: function (data) {
             $('.overlay').remove();
             logCommand(false, data['Result']);
@@ -412,25 +323,9 @@ function generateConfigHTML(mode) {
     var namespace = mode === 'ASF' ? 'ArchiSteamFarm.GlobalConfig' : 'ArchiSteamFarm.BotConfig';
     $('.box-content-config').empty(); // Clear page content first
 
-    //var IsAuthorized = get('IsAuthorized');
-
-    //if (IsAuthorized !== 'true') {
-    //    return;
-    //}
-
     $.ajax({
         url: '/Api/Type/' + namespace,
         type: 'GET',
-        //statusCode: {
-        //    401: function () {
-        //        store('IsAuthorized', false);
-        //        window.location.replace('../index.html');
-        //    },
-        //    403: function () {
-        //        store('IsAuthorized', false);
-        //        window.location.replace('../index.html');
-        //    }
-        //},
         success: function (data) {
             var obj = data['Result'],
                 config = obj['Body'],
@@ -563,25 +458,9 @@ function loadPageContentChanger(botName) {
 function loadConfigValues(botName) {
     var requestURL = botName === 'ASF' ? '/Api/ASF' : '/Api/Bot/' + encodeURIComponent(botName);
 
-    //var IsAuthorized = get('IsAuthorized');
-
-    //if (IsAuthorized !== 'true') {
-    //    return;
-    //}
-
     $.ajax({
         url: requestURL,
         type: 'GET',
-        //statusCode: {
-        //    401: function () {
-        //        store('IsAuthorized', false);
-        //        window.location.replace('../index.html');
-        //    },
-        //    403: function () {
-        //        store('IsAuthorized', false);
-        //        window.location.replace('../index.html');
-        //    }
-        //},
         success: function (data) {
             var objResult = data['Result'],
                 config = botName === 'ASF' ? objResult.GlobalConfig : objResult[0].BotConfig;
@@ -643,25 +522,9 @@ function loadConfigValues(botName) {
 function loadValuesForBotsDropDown(botName) {
     var botsDropDownHTML = '';
 
-    //var IsAuthorized = get('IsAuthorized');
-
-    //if (IsAuthorized !== 'true') {
-    //    return;
-    //}
-
     $.ajax({
         url: '/Api/Bot/ASF',
         type: 'GET',
-        //statusCode: {
-        //    401: function () {
-        //        store('IsAuthorized', false);
-        //        window.location.replace('../index.html');
-        //    },
-        //    403: function () {
-        //        store('IsAuthorized', false);
-        //        window.location.replace('../index.html');
-        //    }
-        //},
         success: function (data) {
             var obj = data['Result'];
 
@@ -781,27 +644,11 @@ function prepareConfigForSaving() {
 function saveConfig(botName, config) {
     var requestURL = botName === 'ASF' ? '/Api/ASF' : '/Api/Bot/' + encodeURIComponent(botName);
 
-    //var IsAuthorized = get('IsAuthorized');
-
-    //if (IsAuthorized !== 'true') {
-    //    return;
-    //}
-
     $.ajax({
         url: requestURL,
         type: 'POST',
         data: JSON.stringify(config, null, "\t"),
         contentType: 'application/json',
-        //statusCode: {
-        //    401: function () {
-        //        store('IsAuthorized', false);
-        //        window.location.replace('../index.html');
-        //    },
-        //    403: function () {
-        //        store('IsAuthorized', false);
-        //        window.location.replace('../index.html');
-        //    }
-        //},
         success: function (data) {
             swal({
                 title: 'Success!',
@@ -846,25 +693,9 @@ function loadPageContentGenerator(mode) {
 function loadDefaultConfigValues(mode) {
     var namespace = mode === 'ASF' ? 'ArchiSteamFarm.GlobalConfig' : 'ArchiSteamFarm.BotConfig';
 
-    //var IsAuthorized = get('IsAuthorized');
-
-    //if (IsAuthorized !== 'true') {
-    //    return;
-    //}
-
     $.ajax({
         url: '/Api/Structure/' + namespace,
         type: 'GET',
-        //statusCode: {
-        //    401: function () {
-        //        store('IsAuthorized', false);
-        //        window.location.replace('../index.html');
-        //    },
-        //    403: function () {
-        //        store('IsAuthorized', false);
-        //        window.location.replace('../index.html');
-        //    }
-        //},
         success: function (data) {
             var config = data['Result'];
 
@@ -1079,13 +910,14 @@ $(function () {
             confirmButtonText: 'Yes, reset it!',
             closeOnConfirm: false
         }, function () {
-            store('IPCPassword', '');
-            //store('IsAuthorized', IsAuthorized);
             swal({
                 title: 'Success!',
                 text: 'Your IPC password has been reset.',
                 type: 'success'
-            }, function () { location.reload(); });
+            }, function () {
+                store('IPCPassword', '');
+                location.reload();
+            });
         });
     }
 
