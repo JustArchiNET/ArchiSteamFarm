@@ -156,7 +156,7 @@
                 var loc = window.location,
                     new_uri = (loc.protocol === 'https:') ? 'wss:' : 'ws:';
 
-                new_uri += '//' + loc.host + '/Api/Log?password=' + encodeURIComponent(IPCPassword);
+                new_uri += '//' + loc.host + '/Api/Log?password=' + encodeURIComponent(tmpIPCPassword);
                 ws = new WebSocket(new_uri);
                 $('.overlay').remove();
                 $('.box-content-log').text(''); // Clear log
