@@ -811,12 +811,12 @@ namespace ArchiSteamFarm {
 				return 0;
 			}
 
-			if (ushort.TryParse(match.Value, out ushort cardsRemaining) && (cardsRemaining != 0)) {
-				return cardsRemaining;
+			if (!ushort.TryParse(match.Value, out ushort cardsRemaining) || (cardsRemaining == 0)) {
+				Bot.ArchiLogger.LogNullError(nameof(cardsRemaining));
+				return null;
 			}
 
-			Bot.ArchiLogger.LogNullError(nameof(cardsRemaining));
-			return null;
+			return cardsRemaining;
 		}
 
 		private async Task<bool?> IsAnythingToFarm() {

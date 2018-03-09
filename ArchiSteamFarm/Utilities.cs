@@ -40,8 +40,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string result = string.Join(delimiter, GetArgs(args, argsToSkip));
-			return result;
+			return string.Join(delimiter, GetArgs(args, argsToSkip));
 		}
 
 		internal static string GetCookieValue(this CookieContainer cookieContainer, string url, string name) {
@@ -60,7 +59,7 @@ namespace ArchiSteamFarm {
 			}
 
 			CookieCollection cookies = cookieContainer.GetCookies(uri);
-			return cookies.Count != 0 ? (from Cookie cookie in cookies where cookie.Name.Equals(name) select cookie.Value).FirstOrDefault() : null;
+			return cookies.Count > 0 ? (from Cookie cookie in cookies where cookie.Name.Equals(name) select cookie.Value).FirstOrDefault() : null;
 		}
 
 		internal static string GetUnifiedName(this Type type) {

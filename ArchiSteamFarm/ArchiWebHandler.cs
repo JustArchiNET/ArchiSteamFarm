@@ -133,15 +133,15 @@ namespace ArchiSteamFarm {
 			return await UrlPostRetryWithSession(SteamStoreURL, request, data).ConfigureAwait(false);
 		}
 
-		internal async Task DeclineTradeOffer(ulong tradeID) {
+		internal async Task<bool> DeclineTradeOffer(ulong tradeID) {
 			if (tradeID == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(tradeID));
-				return;
+				return false;
 			}
 
 			string steamApiKey = await GetApiKey().ConfigureAwait(false);
 			if (string.IsNullOrEmpty(steamApiKey)) {
-				return;
+				return false;
 			}
 
 			KeyValue response = null;
@@ -165,7 +165,10 @@ namespace ArchiSteamFarm {
 
 			if (response == null) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				return false;
 			}
+
+			return true;
 		}
 
 		internal async Task<HashSet<uint>> GenerateNewDiscoveryQueue() {
@@ -587,12 +590,18 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			if (response != null) {
-				return response["server_time"].AsUnsignedInteger();
+			if (response == null) {
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				return 0;
 			}
 
-			Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-			return 0;
+			uint result = response["server_time"].AsUnsignedInteger();
+			if (result == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(result));
+				return 0;
+			}
+
+			return result;
 		}
 
 		internal async Task<HtmlDocument> GetSteamAwardsPage() {
@@ -639,12 +648,12 @@ namespace ArchiSteamFarm {
 
 			text = text.Substring(0, index);
 
-			if (byte.TryParse(text, out byte result)) {
-				return result;
+			if (!byte.TryParse(text, out byte result)) {
+				Bot.ArchiLogger.LogNullError(nameof(result));
+				return null;
 			}
 
-			Bot.ArchiLogger.LogNullError(nameof(result));
-			return null;
+			return result;
 		}
 
 		internal async Task<byte?> GetTradeHoldDurationForUser(ulong steamID, string tradeToken = null) {
@@ -1168,17 +1177,12 @@ namespace ArchiSteamFarm {
 			}
 
 			text = text.Substring(keyIndex);
-			if (text.Length != 32) {
+			if ((text.Length != 32) || !Utilities.IsValidHexadecimalString(text)) {
 				Bot.ArchiLogger.LogNullError(nameof(text));
 				return (ESteamApiKeyState.Error, null);
 			}
 
-			if (Utilities.IsValidHexadecimalString(text)) {
-				return (ESteamApiKeyState.Registered, text);
-			}
-
-			Bot.ArchiLogger.LogNullError(nameof(text));
-			return (ESteamApiKeyState.Error, null);
+			return (ESteamApiKeyState.Registered, text);
 		}
 
 		private static uint GetAppIDFromMarketHashName(string hashName) {
@@ -1232,9 +1236,9 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			// Notice: checked doesn't have a value - null is lack of attribute, "" is attribute existing
 			string state = htmlNode.GetAttributeValue("checked", null);
 
+			// Notice: checked doesn't have a value - null is lack of attribute, "" is attribute existing
 			return state != null;
 		}
 
@@ -1244,8 +1248,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			bool result = uri.AbsolutePath.StartsWith("/login", StringComparison.Ordinal) || uri.Host.Equals("lostauth");
-			return result;
+			return uri.AbsolutePath.StartsWith("/login", StringComparison.Ordinal) || uri.Host.Equals("lostauth");
 		}
 
 		private static bool ParseItems(Dictionary<ulong, (uint AppID, Steam.Asset.EType Type)> descriptions, IReadOnlyCollection<KeyValue> input, ICollection<Steam.Asset> output) {
@@ -1415,13 +1418,13 @@ namespace ArchiSteamFarm {
 				return response.Content;
 			}
 
-			if (await RefreshSession(host).ConfigureAwait(false)) {
-				return await UrlGetToHtmlDocumentRetryWithSession(host, request, --maxTries).ConfigureAwait(false);
+			if (!await RefreshSession(host).ConfigureAwait(false)) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				return null;
 			}
 
-			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-			Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
-			return null;
+			return await UrlGetToHtmlDocumentRetryWithSession(host, request, --maxTries).ConfigureAwait(false);
 		}
 
 		private async Task<T> UrlGetToObjectRetryWithSession<T>(string host, string request, byte maxTries = WebBrowser.MaxTries) {
@@ -1459,13 +1462,13 @@ namespace ArchiSteamFarm {
 				return response.Content;
 			}
 
-			if (await RefreshSession(host).ConfigureAwait(false)) {
-				return await UrlGetToObjectRetryWithSession<T>(host, request, --maxTries).ConfigureAwait(false);
+			if (!await RefreshSession(host).ConfigureAwait(false)) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				return default;
 			}
 
-			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-			Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
-			return default;
+			return await UrlGetToObjectRetryWithSession<T>(host, request, --maxTries).ConfigureAwait(false);
 		}
 
 		private async Task<XmlDocument> UrlGetToXmlDocumentRetryWithSession(string host, string request, byte maxTries = WebBrowser.MaxTries) {
@@ -1503,13 +1506,13 @@ namespace ArchiSteamFarm {
 				return response.Content;
 			}
 
-			if (await RefreshSession(host).ConfigureAwait(false)) {
-				return await UrlGetToXmlDocumentRetryWithSession(host, request, --maxTries).ConfigureAwait(false);
+			if (!await RefreshSession(host).ConfigureAwait(false)) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				return null;
 			}
 
-			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-			Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
-			return null;
+			return await UrlGetToXmlDocumentRetryWithSession(host, request, --maxTries).ConfigureAwait(false);
 		}
 
 		private async Task<bool> UrlHeadRetryWithSession(string host, string request, byte maxTries = WebBrowser.MaxTries) {
@@ -1547,13 +1550,13 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			if (await RefreshSession(host).ConfigureAwait(false)) {
-				return await UrlHeadRetryWithSession(host, request, --maxTries).ConfigureAwait(false);
+			if (!await RefreshSession(host).ConfigureAwait(false)) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				return false;
 			}
 
-			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-			Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
-			return false;
+			return await UrlHeadRetryWithSession(host, request, --maxTries).ConfigureAwait(false);
 		}
 
 		private async Task<bool> UrlPostRetryWithSession(string host, string request, Dictionary<string, string> data = null, string referer = null, ESession session = ESession.Lowercase, byte maxTries = WebBrowser.MaxTries) {
@@ -1620,13 +1623,13 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			if (await RefreshSession(host).ConfigureAwait(false)) {
-				return await UrlPostRetryWithSession(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
+			if (!await RefreshSession(host).ConfigureAwait(false)) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				return false;
 			}
 
-			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-			Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
-			return false;
+			return await UrlPostRetryWithSession(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
 		}
 
 		private async Task<HtmlDocument> UrlPostToHtmlDocumentRetryWithSession(string host, string request, Dictionary<string, string> data = null, string referer = null, ESession session = ESession.Lowercase, byte maxTries = WebBrowser.MaxTries) {
@@ -1693,13 +1696,13 @@ namespace ArchiSteamFarm {
 				return response.Content;
 			}
 
-			if (await RefreshSession(host).ConfigureAwait(false)) {
-				return await UrlPostToHtmlDocumentRetryWithSession(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
+			if (!await RefreshSession(host).ConfigureAwait(false)) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				return null;
 			}
 
-			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-			Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
-			return null;
+			return await UrlPostToHtmlDocumentRetryWithSession(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
 		}
 
 		private async Task<T> UrlPostToObjectRetryWithSession<T>(string host, string request, Dictionary<string, string> data = null, string referer = null, ESession session = ESession.Lowercase, byte maxTries = WebBrowser.MaxTries) {
@@ -1766,13 +1769,13 @@ namespace ArchiSteamFarm {
 				return response.Content;
 			}
 
-			if (await RefreshSession(host).ConfigureAwait(false)) {
-				return await UrlPostToObjectRetryWithSession<T>(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
+			if (!await RefreshSession(host).ConfigureAwait(false)) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				return default;
 			}
 
-			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-			Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
-			return default;
+			return await UrlPostToObjectRetryWithSession<T>(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
 		}
 
 		private async Task<T> UrlPostToObjectRetryWithSession<T>(string host, string request, List<KeyValuePair<string, string>> data = null, string referer = null, ESession session = ESession.Lowercase, byte maxTries = WebBrowser.MaxTries) {
@@ -1842,13 +1845,13 @@ namespace ArchiSteamFarm {
 				return response.Content;
 			}
 
-			if (await RefreshSession(host).ConfigureAwait(false)) {
-				return await UrlPostToObjectRetryWithSession<T>(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
+			if (!await RefreshSession(host).ConfigureAwait(false)) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				return default;
 			}
 
-			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-			Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
-			return default;
+			return await UrlPostToObjectRetryWithSession<T>(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
 		}
 
 		private enum ESession : byte {

@@ -170,8 +170,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			GlobalConfig result = globalConfig;
-			return result;
+			return globalConfig;
 		}
 
 		internal static async Task<bool> Write(string filePath, GlobalConfig globalConfig) {

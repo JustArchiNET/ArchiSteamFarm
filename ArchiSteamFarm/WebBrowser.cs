@@ -102,13 +102,13 @@ namespace ArchiSteamFarm {
 				response = await UrlGetToBinaryWithProgress(request, referer).ConfigureAwait(false);
 			}
 
-			if (response != null) {
-				return response;
+			if (response == null) {
+				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxTries));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+				return null;
 			}
 
-			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxTries));
-			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
-			return null;
+			return response;
 		}
 
 		internal async Task<HtmlDocumentResponse> UrlGetToHtmlDocumentRetry(string request, string referer = null) {
@@ -186,13 +186,13 @@ namespace ArchiSteamFarm {
 				response = await UrlHead(request, referer).ConfigureAwait(false);
 			}
 
-			if (response != null) {
-				return response;
+			if (response == null) {
+				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxTries));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+				return null;
 			}
 
-			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxTries));
-			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
-			return null;
+			return response;
 		}
 
 		internal async Task<BasicResponse> UrlPost(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null) {
@@ -218,13 +218,13 @@ namespace ArchiSteamFarm {
 				response = await UrlPost(request, data, referer).ConfigureAwait(false);
 			}
 
-			if (response != null) {
-				return response;
+			if (response == null) {
+				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxTries));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+				return null;
 			}
 
-			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxTries));
-			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
-			return null;
+			return response;
 		}
 
 		internal async Task<HtmlDocumentResponse> UrlPostToHtmlDocumentRetry(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null) {
@@ -330,8 +330,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			HttpResponseMessage response = await UrlRequest(new Uri(request), HttpMethod.Get, null, referer, httpCompletionOptions).ConfigureAwait(false);
-			return response;
+			return await UrlRequest(new Uri(request), HttpMethod.Get, null, referer, httpCompletionOptions).ConfigureAwait(false);
 		}
 
 		private async Task<StringResponse> UrlGetToString(string request, string referer = null) {
@@ -357,13 +356,13 @@ namespace ArchiSteamFarm {
 				response = await UrlGetToString(request, referer).ConfigureAwait(false);
 			}
 
-			if (response != null) {
-				return response;
+			if (response == null) {
+				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxTries));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+				return null;
 			}
 
-			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxTries));
-			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
-			return null;
+			return response;
 		}
 
 		private async Task<BasicResponse> UrlHead(string request, string referer = null) {
@@ -383,8 +382,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			HttpResponseMessage response = await UrlRequest(new Uri(request), HttpMethod.Head, null, referer).ConfigureAwait(false);
-			return response;
+			return await UrlRequest(new Uri(request), HttpMethod.Head, null, referer).ConfigureAwait(false);
 		}
 
 		private async Task<HttpResponseMessage> UrlPostToHttp(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null) {
@@ -393,8 +391,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			HttpResponseMessage response = await UrlRequest(new Uri(request), HttpMethod.Post, data, referer).ConfigureAwait(false);
-			return response;
+			return await UrlRequest(new Uri(request), HttpMethod.Post, data, referer).ConfigureAwait(false);
 		}
 
 		private async Task<StringResponse> UrlPostToString(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null) {
@@ -420,13 +417,13 @@ namespace ArchiSteamFarm {
 				response = await UrlPostToString(request, data, referer).ConfigureAwait(false);
 			}
 
-			if (response != null) {
-				return response;
+			if (response == null) {
+				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxTries));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+				return null;
 			}
 
-			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxTries));
-			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
-			return null;
+			return response;
 		}
 
 		private async Task<HttpResponseMessage> UrlRequest(Uri requestUri, HttpMethod httpMethod, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, byte maxRedirections = MaxTries) {
@@ -493,13 +490,12 @@ namespace ArchiSteamFarm {
 			}
 
 			using (response) {
-				if (!Debugging.IsDebugBuild) {
-					return null;
+				if (Debugging.IsDebugBuild) {
+					ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, requestUri));
+					ArchiLogger.LogGenericDebug(string.Format(Strings.StatusCode, response.StatusCode));
+					ArchiLogger.LogGenericDebug(string.Format(Strings.Content, await response.Content.ReadAsStringAsync().ConfigureAwait(false)));
 				}
 
-				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, requestUri));
-				ArchiLogger.LogGenericDebug(string.Format(Strings.StatusCode, response.StatusCode));
-				ArchiLogger.LogGenericDebug(string.Format(Strings.Content, await response.Content.ReadAsStringAsync().ConfigureAwait(false)));
 				return null;
 			}
 		}

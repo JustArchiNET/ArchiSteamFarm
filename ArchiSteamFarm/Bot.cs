@@ -357,12 +357,12 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static string FormatBotResponse(string response, string botName) {
-			if (!string.IsNullOrEmpty(response) && !string.IsNullOrEmpty(botName)) {
-				return Environment.NewLine + "<" + botName + "> " + response;
+			if (string.IsNullOrEmpty(response) || string.IsNullOrEmpty(botName)) {
+				ASF.ArchiLogger.LogNullError(nameof(response) + " || " + nameof(botName));
+				return null;
 			}
 
-			ASF.ArchiLogger.LogNullError(nameof(response) + " || " + nameof(botName));
-			return null;
+			return Environment.NewLine + "<" + botName + "> " + response;
 		}
 
 		internal async Task<(uint PlayableAppID, DateTime IgnoredUntil)> GetAppDataForIdling(uint appID, float hoursPlayed, bool allowRecursiveDiscovery = true, bool optimisticDiscovery = true) {
@@ -639,8 +639,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			byte? result = await ArchiWebHandler.GetTradeHoldDurationForTrade(tradeID).ConfigureAwait(false);
-			return result;
+			return await ArchiWebHandler.GetTradeHoldDurationForTrade(tradeID).ConfigureAwait(false);
 		}
 
 		internal async Task IdleGame(CardsFarmer.Game game) {
@@ -729,8 +728,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			bool result = BotDatabase.IsBlacklistedFromIdling(appID);
-			return result;
+			return BotDatabase.IsBlacklistedFromIdling(appID);
 		}
 
 		internal bool IsBlacklistedFromTrades(ulong steamID) {
@@ -739,8 +737,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			bool result = BotDatabase.IsBlacklistedFromTrades(steamID);
-			return result;
+			return BotDatabase.IsBlacklistedFromTrades(steamID);
 		}
 
 		internal bool IsMaster(ulong steamID) {
@@ -762,8 +759,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			bool result = BotDatabase.IsPriorityIdling(appID);
-			return result;
+			return BotDatabase.IsPriorityIdling(appID);
 		}
 
 		internal async Task LootIfNeeded() {
@@ -1283,32 +1279,32 @@ namespace ArchiSteamFarm {
 		}
 
 		private string FormatBotResponse(string response) {
-			if (!string.IsNullOrEmpty(response)) {
-				return Environment.NewLine + "<" + BotName + "> " + response;
+			if (string.IsNullOrEmpty(response)) {
+				ASF.ArchiLogger.LogNullError(nameof(response));
+				return null;
 			}
 
-			ASF.ArchiLogger.LogNullError(nameof(response));
-			return null;
+			return Environment.NewLine + "<" + BotName + "> " + response;
 		}
 
 		private static string FormatStaticResponse(string response) {
-			if (!string.IsNullOrEmpty(response)) {
-				return Environment.NewLine + response;
+			if (string.IsNullOrEmpty(response)) {
+				ASF.ArchiLogger.LogNullError(nameof(response));
+				return null;
 			}
 
-			ASF.ArchiLogger.LogNullError(nameof(response));
-			return null;
+			return Environment.NewLine + response;
 		}
 
 		private ulong GetFirstSteamMasterID() => BotConfig.SteamUserPermissions.Where(kv => (kv.Key != 0) && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderByDescending(steamID => steamID != CachedSteamID).ThenBy(steamID => steamID).FirstOrDefault();
 
 		private BotConfig.EPermission GetSteamUserPermission(ulong steamID) {
-			if (steamID != 0) {
-				return BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EPermission permission) ? permission : BotConfig.EPermission.None;
+			if (steamID == 0) {
+				ArchiLogger.LogNullError(nameof(steamID));
+				return BotConfig.EPermission.None;
 			}
 
-			ArchiLogger.LogNullError(nameof(steamID));
-			return BotConfig.EPermission.None;
+			return BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EPermission permission) ? permission : BotConfig.EPermission.None;
 		}
 
 		private void HandleCallbacks() {
@@ -1460,8 +1456,7 @@ namespace ArchiSteamFarm {
 				SetUserInput(ASF.EUserInputType.Password, steamPassword);
 			}
 
-			const bool result = true;
-			return result;
+			return true;
 		}
 
 		private void InitModules() {
@@ -1525,8 +1520,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// This should have reference to lowest permission for command execution
-			bool result = Bots.Values.Any(bot => bot.IsFamilySharing(steamID));
-			return result;
+			return Bots.Values.Any(bot => bot.IsFamilySharing(steamID));
 		}
 
 		private bool IsFamilySharing(ulong steamID) {
@@ -1543,12 +1537,12 @@ namespace ArchiSteamFarm {
 		}
 
 		private bool IsMasterClanID(ulong steamID) {
-			if (steamID != 0) {
-				return steamID == BotConfig.SteamMasterClanID;
+			if (steamID == 0) {
+				ArchiLogger.LogNullError(nameof(steamID));
+				return false;
 			}
 
-			ArchiLogger.LogNullError(nameof(steamID));
-			return false;
+			return steamID == BotConfig.SteamMasterClanID;
 		}
 
 		private bool IsOperator(ulong steamID) {
@@ -1565,12 +1559,12 @@ namespace ArchiSteamFarm {
 		}
 
 		private static bool IsOwner(ulong steamID) {
-			if (steamID != 0) {
-				return (steamID == Program.GlobalConfig.SteamOwnerID) || (Debugging.IsDebugBuild && (steamID == SharedInfo.ArchiSteamID));
+			if (steamID == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID));
+				return false;
 			}
 
-			ASF.ArchiLogger.LogNullError(nameof(steamID));
-			return false;
+			return (steamID == Program.GlobalConfig.SteamOwnerID) || (Debugging.IsDebugBuild && (steamID == SharedInfo.ArchiSteamID));
 		}
 
 		private static bool IsRefundable(EPaymentMethod method) {
@@ -1595,12 +1589,12 @@ namespace ArchiSteamFarm {
 		}
 
 		private static bool IsValidCdKey(string key) {
-			if (!string.IsNullOrEmpty(key)) {
-				return Regex.IsMatch(key, @"^[0-9A-Z]{4,7}-[0-9A-Z]{4,7}-[0-9A-Z]{4,7}(?:(?:-[0-9A-Z]{4,7})?(?:-[0-9A-Z]{4,7}))?$", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+			if (string.IsNullOrEmpty(key)) {
+				ASF.ArchiLogger.LogNullError(nameof(key));
+				return false;
 			}
 
-			ASF.ArchiLogger.LogNullError(nameof(key));
-			return false;
+			return Regex.IsMatch(key, @"^[0-9A-Z]{4,7}-[0-9A-Z]{4,7}-[0-9A-Z]{4,7}(?:(?:-[0-9A-Z]{4,7})?(?:-[0-9A-Z]{4,7}))?$", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 		}
 
 		private void JoinMasterChat() {
@@ -3055,7 +3049,6 @@ namespace ArchiSteamFarm {
 			}
 
 			Utilities.InBackground(CardsFarmer.StartFarming);
-
 			return FormatBotResponse(Strings.Done);
 		}
 
@@ -3091,12 +3084,12 @@ namespace ArchiSteamFarm {
 		}
 
 		private string ResponseHelp(ulong steamID) {
-			if (steamID != 0) {
-				return IsFamilySharing(steamID) ? FormatBotResponse("https://github.com/" + SharedInfo.GithubRepo + "/wiki/Commands") : null;
+			if (steamID == 0) {
+				ArchiLogger.LogNullError(nameof(steamID));
+				return null;
 			}
 
-			ArchiLogger.LogNullError(nameof(steamID));
-			return null;
+			return IsFamilySharing(steamID) ? FormatBotResponse("https://github.com/" + SharedInfo.GithubRepo + "/wiki/Commands") : null;
 		}
 
 		private string ResponseIdleBlacklist(ulong steamID) {
@@ -4771,12 +4764,12 @@ namespace ArchiSteamFarm {
 		}
 
 		private string ResponseUnknown(ulong steamID) {
-			if (steamID != 0) {
-				return IsOperator(steamID) ? FormatBotResponse(Strings.UnknownCommand) : null;
+			if (steamID == 0) {
+				ArchiLogger.LogNullError(nameof(steamID));
+				return null;
 			}
 
-			ArchiLogger.LogNullError(nameof(steamID));
-			return null;
+			return IsOperator(steamID) ? FormatBotResponse(Strings.UnknownCommand) : null;
 		}
 
 		private async Task<string> ResponseUnpackBoosters(ulong steamID) {
@@ -4862,12 +4855,12 @@ namespace ArchiSteamFarm {
 		}
 
 		private string ResponseVersion(ulong steamID) {
-			if (steamID != 0) {
-				return IsOperator(steamID) ? FormatBotResponse(string.Format(Strings.BotVersion, SharedInfo.ASF, SharedInfo.Version)) : null;
+			if (steamID == 0) {
+				ArchiLogger.LogNullError(nameof(steamID));
+				return null;
 			}
 
-			ArchiLogger.LogNullError(nameof(steamID));
-			return null;
+			return IsOperator(steamID) ? FormatBotResponse(string.Format(Strings.BotVersion, SharedInfo.ASF, SharedInfo.Version)) : null;
 		}
 
 		private async Task SendMessageToChannel(ulong steamID, string message) {

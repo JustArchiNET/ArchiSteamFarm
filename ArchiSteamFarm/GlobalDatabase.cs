@@ -54,7 +54,6 @@ namespace ArchiSteamFarm {
 			}
 
 			FilePath = filePath;
-			Save().Wait();
 		}
 
 		// This constructor is used only by deserializer
@@ -75,8 +74,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			HashSet<uint> result = new HashSet<uint>(PackagesData.Where(package => (package.Value.AppIDs != null) && package.Value.AppIDs.Contains(appID)).Select(package => package.Key));
-			return result;
+			return new HashSet<uint>(PackagesData.Where(package => (package.Value.AppIDs != null) && package.Value.AppIDs.Contains(appID)).Select(package => package.Key));
 		}
 
 		internal static GlobalDatabase Load(string filePath) {
