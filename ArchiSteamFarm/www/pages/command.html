@@ -229,8 +229,10 @@
             });
 
             $(document).keypress(function (e) {
-                if (e.which == 13 && $cmdInput.val() !== "") $('#sendCommand').click();
-                e.preventDefault();
+                if (e.which == 13 && $cmdInput.val() !== "") {
+                    $('#sendCommand').click();
+                    e.preventDefault();
+                }
             });
             
             $('.box-tools').ready(function () {
