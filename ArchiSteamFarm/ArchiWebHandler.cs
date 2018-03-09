@@ -38,8 +38,6 @@ using Formatting = Newtonsoft.Json.Formatting;
 
 namespace ArchiSteamFarm {
 	internal sealed class ArchiWebHandler : IDisposable {
-		internal const byte MinSessionTTL = GlobalConfig.DefaultConnectionTimeout / 6; // Assume session is valid for at least that amount of seconds
-
 		private const string IEconService = "IEconService";
 		private const string IPlayerService = "IPlayerService";
 		private const string ISteamUserAuth = "ISteamUserAuth";
