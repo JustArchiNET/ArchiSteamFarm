@@ -99,8 +99,7 @@ namespace ArchiSteamFarm {
 			Bot.ArchiLogger.LogGenericTrace(text);
 
 			// It'd make more sense to check against "Come back tomorrow", but it might not cover out-of-the-event queue
-			bool result = text.StartsWith("You can get ", StringComparison.Ordinal);
-			return result;
+			return text.StartsWith("You can get ", StringComparison.Ordinal);
 		}
 
 		private async Task VoteForSteamAwards() {

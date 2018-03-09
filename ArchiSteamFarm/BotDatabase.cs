@@ -68,7 +68,6 @@ namespace ArchiSteamFarm {
 			}
 
 			FilePath = filePath;
-			Save().Wait();
 		}
 
 		// This constructor is used only by deserializer
@@ -165,8 +164,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			bool result = IdlingBlacklistedAppIDs.Contains(appID);
-			return result;
+			return IdlingBlacklistedAppIDs.Contains(appID);
 		}
 
 		internal bool IsBlacklistedFromTrades(ulong steamID) {
@@ -175,8 +173,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			bool result = BlacklistedFromTradesSteamIDs.Contains(steamID);
-			return result;
+			return BlacklistedFromTradesSteamIDs.Contains(steamID);
 		}
 
 		internal bool IsPriorityIdling(uint appID) {
@@ -185,8 +182,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			bool result = IdlingPriorityAppIDs.Contains(appID);
-			return result;
+			return IdlingPriorityAppIDs.Contains(appID);
 		}
 
 		internal static BotDatabase Load(string filePath) {

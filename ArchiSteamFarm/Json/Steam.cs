@@ -209,12 +209,12 @@ namespace ArchiSteamFarm.Json {
 					}
 
 					id = id.Substring(index);
-					if (ulong.TryParse(id, out _TradeOfferID) && (_TradeOfferID != 0)) {
-						return _TradeOfferID;
+					if (!ulong.TryParse(id, out _TradeOfferID) || (_TradeOfferID == 0)) {
+						ASF.ArchiLogger.LogNullError(nameof(_TradeOfferID));
+						return 0;
 					}
 
-					ASF.ArchiLogger.LogNullError(nameof(_TradeOfferID));
-					return 0;
+					return _TradeOfferID;
 				}
 			}
 
@@ -292,12 +292,12 @@ namespace ArchiSteamFarm.Json {
 						return 0;
 					}
 
-					if (uint.TryParse(miniProfile, out _OtherSteamID3) && (_OtherSteamID3 != 0)) {
-						return _OtherSteamID3;
+					if (!uint.TryParse(miniProfile, out _OtherSteamID3) || (_OtherSteamID3 == 0)) {
+						ASF.ArchiLogger.LogNullError(nameof(_OtherSteamID3));
+						return 0;
 					}
 
-					ASF.ArchiLogger.LogNullError(nameof(_OtherSteamID3));
-					return 0;
+					return _OtherSteamID3;
 				}
 			}
 
@@ -554,8 +554,7 @@ namespace ArchiSteamFarm.Json {
 					return false;
 				}
 
-				bool result = ItemsToGive.All(item => (item.AppID == Asset.SteamAppID) && (item.ContextID == Asset.SteamCommunityContextID) && acceptedTypes.Contains(item.Type));
-				return result;
+				return ItemsToGive.All(item => (item.AppID == Asset.SteamAppID) && (item.ContextID == Asset.SteamCommunityContextID) && acceptedTypes.Contains(item.Type));
 			}
 
 			[SuppressMessage("ReSharper", "UnusedMember.Global")]

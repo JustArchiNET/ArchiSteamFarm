@@ -81,12 +81,12 @@ namespace ArchiSteamFarm {
 
 		internal async Task<string> GenerateToken() {
 			uint time = await GetSteamTime().ConfigureAwait(false);
-			if (time != 0) {
-				return GenerateTokenForTime(time);
+			if (time == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(time));
+				return null;
 			}
 
-			Bot.ArchiLogger.LogNullError(nameof(time));
-			return null;
+			return GenerateTokenForTime(time);
 		}
 
 		internal async Task<Steam.ConfirmationDetails> GetConfirmationDetails(Confirmation confirmation) {
