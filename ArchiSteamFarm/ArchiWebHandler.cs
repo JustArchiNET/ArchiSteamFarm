@@ -1450,7 +1450,7 @@ namespace ArchiSteamFarm {
 				return default;
 			}
 
-			WebBrowser.ObjectResponse<T> response = await WebBrowser.UrlGetToObjectRetry<T>(host + request).ConfigureAwait(false);
+			WebBrowser.ObjectResponse<T> response = await WebBrowser.UrlGetToJsonObjectRetry<T>(host + request).ConfigureAwait(false);
 			if (response == null) {
 				return default;
 			}
@@ -1757,7 +1757,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			WebBrowser.ObjectResponse<T> response = await WebBrowser.UrlPostToObjectRetry<T>(host + request, data, referer).ConfigureAwait(false);
+			WebBrowser.ObjectResponse<T> response = await WebBrowser.UrlPostToJsonObjectRetry<T>(host + request, data, referer).ConfigureAwait(false);
 			if (response == null) {
 				return default;
 			}
@@ -1833,7 +1833,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			WebBrowser.ObjectResponse<T> response = await WebBrowser.UrlPostToObjectRetry<T>(host + request, data, referer).ConfigureAwait(false);
+			WebBrowser.ObjectResponse<T> response = await WebBrowser.UrlPostToJsonObjectRetry<T>(host + request, data, referer).ConfigureAwait(false);
 			if (response == null) {
 				return default;
 			}

@@ -121,7 +121,7 @@ namespace ArchiSteamFarm {
 			return response != null ? new HtmlDocumentResponse(response) : null;
 		}
 
-		internal async Task<ObjectResponse<T>> UrlGetToObjectRetry<T>(string request, string referer = null) {
+		internal async Task<ObjectResponse<T>> UrlGetToJsonObjectRetry<T>(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				ArchiLogger.LogNullError(nameof(request));
 				return null;
@@ -237,7 +237,7 @@ namespace ArchiSteamFarm {
 			return response != null ? new HtmlDocumentResponse(response) : null;
 		}
 
-		internal async Task<ObjectResponse<T>> UrlPostToObjectRetry<T>(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null) {
+		internal async Task<ObjectResponse<T>> UrlPostToJsonObjectRetry<T>(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				ArchiLogger.LogNullError(nameof(request));
 				return null;
