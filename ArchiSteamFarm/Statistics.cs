@@ -72,7 +72,7 @@ namespace ArchiSteamFarm {
 				};
 
 				// We don't need retry logic here
-				if (await Program.WebBrowser.UrlPost(request, data).ConfigureAwait(false) != null) {
+				if (await Program.WebBrowser.UrlPost(request, data, maxTries: 1).ConfigureAwait(false) != null) {
 					LastHeartBeat = DateTime.UtcNow;
 				}
 			} finally {
@@ -131,7 +131,7 @@ namespace ArchiSteamFarm {
 				};
 
 				// We don't need retry logic here
-				if (await Program.WebBrowser.UrlPost(request, data).ConfigureAwait(false) != null) {
+				if (await Program.WebBrowser.UrlPost(request, data, maxTries: 1).ConfigureAwait(false) != null) {
 					LastAnnouncementCheck = DateTime.UtcNow;
 					ShouldSendHeartBeats = true;
 				}
