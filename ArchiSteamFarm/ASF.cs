@@ -92,7 +92,7 @@ namespace ArchiSteamFarm {
 
 			if (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable) {
 				WebBrowser.ObjectResponse<GitHub.ReleaseResponse> objectResponse = await Program.WebBrowser.UrlGetToJsonObjectRetry<GitHub.ReleaseResponse>(releaseURL).ConfigureAwait(false);
-				if (objectResponse == null) {
+				if (objectResponse?.Content == null) {
 					ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
 					return null;
 				}
@@ -100,7 +100,7 @@ namespace ArchiSteamFarm {
 				releaseResponse = objectResponse.Content;
 			} else {
 				WebBrowser.ObjectResponse<List<GitHub.ReleaseResponse>> objectResponse = await Program.WebBrowser.UrlGetToJsonObjectRetry<List<GitHub.ReleaseResponse>>(releaseURL).ConfigureAwait(false);
-				if ((objectResponse == null) || (objectResponse.Content.Count == 0)) {
+				if ((objectResponse?.Content == null) || (objectResponse.Content.Count == 0)) {
 					ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
 					return null;
 				}
@@ -155,7 +155,7 @@ namespace ArchiSteamFarm {
 			ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateDownloadingNewVersion, newVersion, binaryAsset.Size / 1024 / 1024));
 
 			WebBrowser.BinaryResponse response = await Program.WebBrowser.UrlGetToBinaryWithProgressRetry(binaryAsset.DownloadURL).ConfigureAwait(false);
-			if (response == null) {
+			if (response?.Content == null) {
 				return null;
 			}
 

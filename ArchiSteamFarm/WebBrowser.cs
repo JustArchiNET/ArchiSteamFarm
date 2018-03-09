@@ -129,7 +129,7 @@ namespace ArchiSteamFarm {
 
 			StringResponse response = await UrlGetToStringRetry(request, referer).ConfigureAwait(false);
 
-			if (response == null) {
+			if (string.IsNullOrEmpty(response?.Content)) {
 				return null;
 			}
 
@@ -158,7 +158,7 @@ namespace ArchiSteamFarm {
 
 			StringResponse response = await UrlGetToStringRetry(request, referer).ConfigureAwait(false);
 
-			if (response == null) {
+			if (string.IsNullOrEmpty(response?.Content)) {
 				return null;
 			}
 
@@ -245,7 +245,7 @@ namespace ArchiSteamFarm {
 
 			StringResponse response = await UrlPostToStringRetry(request, data, referer).ConfigureAwait(false);
 
-			if (response == null) {
+			if (string.IsNullOrEmpty(response?.Content)) {
 				return null;
 			}
 
