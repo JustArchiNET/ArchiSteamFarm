@@ -215,10 +215,10 @@
             $('.box-content-log').ready(function () {
                 var tmpLogHeight = get('logHeight');
 
-                if (isNaN(tmpLogHeight)) {
-                    $('.box-content-log').css('height', 400 + 'px');
-                } else {
+                if (tmpLogHeight) {
                     $('.box-content-log').css('height', tmpLogHeight + 'px');
+                } else {
+                    $('.box-content-log').css('height', 400 + 'px');
                 }
             });
 

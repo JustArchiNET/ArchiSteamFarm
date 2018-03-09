@@ -174,12 +174,9 @@
             'use strict';
 
             var $chkAutoClear = $('#chkAutoClear'),
-                $iconAutoClear = $('#iconAutoClear'),
                 $commandInput = $('#commandInput'),
                 $cmdsDropDownBox = $('#cmdsDropDownBox'),
                 $botsDropDownBox = $('#botsDropDownBox'),
-                $iconCmdsDropDownBox = $('#iconCmdsDropDownBox'),
-                $iconBotsDropDownBox = $('#iconBotsDropDownBox'),
                 $botsDropDown = $("#botsDropDown"),
                 $commandsDropDown = $("#commandsDropDown");
             
@@ -241,19 +238,19 @@
                 if (tmpAutoClear === 'false') {
                     $chkAutoClear.removeClass('text-olive');
                     $chkAutoClear.addClass('text-grey');
-                    $iconAutoClear.addClass('fa-rotate-180');
+                    $('#iconAutoClear').addClass('fa-rotate-180');
                 }
             });
 
             $chkAutoClear.click(function () {
-                if ($iconAutoClear.hasClass('fa-rotate-180')) {
-                    $iconAutoClear.removeClass('fa-rotate-180');
+                if ($('#iconAutoClear').hasClass('fa-rotate-180')) {
+                    $('#iconAutoClear').removeClass('fa-rotate-180');
                     $chkAutoClear.removeClass('text-grey');
                     $chkAutoClear.addClass('text-olive');
                     $chkAutoClear.blur();
                     store('autoClear', true);
                 } else {
-                    $iconAutoClear.addClass('fa-rotate-180');
+                    $('#iconAutoClear').addClass('fa-rotate-180');
                     $chkAutoClear.removeClass('text-olive');
                     $chkAutoClear.addClass('text-grey');
                     $chkAutoClear.blur();
@@ -265,27 +262,26 @@
             $('.box-content-command').ready(function () {
                 var tmpCommandHeight = get('commandHeight');
 
-                if (isNaN(tmpCommandHeight)) {
-                    $('.box-content-command').css('height', 400 + 'px');
-                } else {
+                if (tmpCommandHeight) {
                     $('.box-content-command').css('height', tmpCommandHeight + 'px');
 
                     if (tmpCommandHeight > 475) {
                         $cmdsDropDownBox.addClass('dropup');
                         $botsDropDownBox.addClass('dropup');
-                        $iconCmdsDropDownBox.removeClass('fa-caret-down');
-                        $iconCmdsDropDownBox.addClass('fa-caret-up');
-                        $iconBotsDropDownBox.removeClass('fa-caret-down');
-                        $iconBotsDropDownBox.addClass('fa-caret-up');
-
+                        $('#iconCmdsDropDownBox').removeClass('fa-caret-down');
+                        $('#iconCmdsDropDownBox').addClass('fa-caret-up');
+                        $('#iconBotsDropDownBox').removeClass('fa-caret-down');
+                        $('#iconBotsDropDownBox').addClass('fa-caret-up');
                     } else {
                         $cmdsDropDownBox.removeClass('dropup');
                         $botsDropDownBox.removeClass('dropup');
-                        $iconCmdsDropDownBox.removeClass('fa-caret-up');
-                        $iconCmdsDropDownBox.addClass('fa-caret-down');
-                        $iconBotsDropDownBox.removeClass('fa-caret-up');
-                        $iconBotsDropDownBox.addClass('fa-caret-down');
+                        $('#iconCmdsDropDownBox').removeClass('fa-caret-up');
+                        $('#iconCmdsDropDownBox').addClass('fa-caret-down');
+                        $('#iconBotsDropDownBox').removeClass('fa-caret-up');
+                        $('#iconBotsDropDownBox').addClass('fa-caret-down');
                     }
+                } else {
+                    $('.box-content-command').css('height', 400 + 'px');
                 }
             });
 
@@ -309,18 +305,17 @@
                     if (currentHeight > 475) {
                         $cmdsDropDownBox.addClass('dropup');
                         $botsDropDownBox.addClass('dropup');
-                        $iconCmdsDropDownBox.removeClass('fa-caret-down');
-                        $iconCmdsDropDownBox.addClass('fa-caret-up');
-                        $iconBotsDropDownBox.removeClass('fa-caret-down');
-                        $iconBotsDropDownBox.addClass('fa-caret-up');
-                        
+                        $('#iconCmdsDropDownBox').removeClass('fa-caret-down');
+                        $('#iconCmdsDropDownBox').addClass('fa-caret-up');
+                        $('#iconBotsDropDownBox').removeClass('fa-caret-down');
+                        $('#iconBotsDropDownBox').addClass('fa-caret-up');
                     } else {
                         $cmdsDropDownBox.removeClass('dropup');
                         $botsDropDownBox.removeClass('dropup');
-                        $iconCmdsDropDownBox.removeClass('fa-caret-up');
-                        $iconCmdsDropDownBox.addClass('fa-caret-down');
-                        $iconBotsDropDownBox.removeClass('fa-caret-up');
-                        $iconBotsDropDownBox.addClass('fa-caret-down');
+                        $('#iconCmdsDropDownBox').removeClass('fa-caret-up');
+                        $('#iconCmdsDropDownBox').addClass('fa-caret-down');
+                        $('#iconBotsDropDownBox').removeClass('fa-caret-up');
+                        $('#iconBotsDropDownBox').addClass('fa-caret-down');
                     }
                 });
 
