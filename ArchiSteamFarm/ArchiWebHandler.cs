@@ -316,7 +316,7 @@ namespace ArchiSteamFarm {
 
 			string request = "/mobileconf/details/" + confirmation.ID + "?l=english&p=" + deviceID + "&a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&t=" + time + "&m=android&tag=conf";
 
-			Steam.ConfirmationDetails response = await UrlGetToObjectRetryWithSession<Steam.ConfirmationDetails>(SteamCommunityURL, request).ConfigureAwait(false);
+			Steam.ConfirmationDetails response = await UrlGetToJsonObjectRetryWithSession<Steam.ConfirmationDetails>(SteamCommunityURL, request).ConfigureAwait(false);
 			if (response?.Success != true) {
 				return null;
 			}
@@ -396,7 +396,7 @@ namespace ArchiSteamFarm {
 
 			try {
 				while (true) {
-					Steam.InventoryResponse response = await UrlGetToObjectRetryWithSession<Steam.InventoryResponse>(SteamCommunityURL, request + (startAssetID > 0 ? "&start_assetid=" + startAssetID : "")).ConfigureAwait(false);
+					Steam.InventoryResponse response = await UrlGetToJsonObjectRetryWithSession<Steam.InventoryResponse>(SteamCommunityURL, request + (startAssetID > 0 ? "&start_assetid=" + startAssetID : "")).ConfigureAwait(false);
 
 					if (response == null) {
 						return null;
@@ -762,7 +762,7 @@ namespace ArchiSteamFarm {
 
 			string request = "/mobileconf/ajaxop?op=" + (accept ? "allow" : "cancel") + "&p=" + deviceID + "&a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&t=" + time + "&m=android&tag=conf&cid=" + confirmationID + "&ck=" + confirmationKey;
 
-			Steam.ConfirmationResponse response = await UrlGetToObjectRetryWithSession<Steam.ConfirmationResponse>(SteamCommunityURL, request).ConfigureAwait(false);
+			Steam.ConfirmationResponse response = await UrlGetToJsonObjectRetryWithSession<Steam.ConfirmationResponse>(SteamCommunityURL, request).ConfigureAwait(false);
 			return response?.Success;
 		}
 
@@ -1427,7 +1427,7 @@ namespace ArchiSteamFarm {
 			return await UrlGetToHtmlDocumentRetryWithSession(host, request, --maxTries).ConfigureAwait(false);
 		}
 
-		private async Task<T> UrlGetToObjectRetryWithSession<T>(string host, string request, byte maxTries = WebBrowser.MaxTries) {
+		private async Task<T> UrlGetToJsonObjectRetryWithSession<T>(string host, string request, byte maxTries = WebBrowser.MaxTries) {
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
 				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
 				return default;
@@ -1468,7 +1468,7 @@ namespace ArchiSteamFarm {
 				return default;
 			}
 
-			return await UrlGetToObjectRetryWithSession<T>(host, request, --maxTries).ConfigureAwait(false);
+			return await UrlGetToJsonObjectRetryWithSession<T>(host, request, --maxTries).ConfigureAwait(false);
 		}
 
 		private async Task<XmlDocument> UrlGetToXmlDocumentRetryWithSession(string host, string request, byte maxTries = WebBrowser.MaxTries) {
