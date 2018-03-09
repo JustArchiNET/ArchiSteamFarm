@@ -177,7 +177,7 @@ namespace ArchiSteamFarm {
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new Dictionary<string, string>(2) { { "queuetype", "0" } };
 
-			Steam.NewDiscoveryQueueResponse output = await UrlPostToObjectRetryWithSession<Steam.NewDiscoveryQueueResponse>(SteamStoreURL, request, data).ConfigureAwait(false);
+			Steam.NewDiscoveryQueueResponse output = await UrlPostToJsonObjectRetryWithSession<Steam.NewDiscoveryQueueResponse>(SteamStoreURL, request, data).ConfigureAwait(false);
 			return output?.Queue;
 		}
 
@@ -790,7 +790,7 @@ namespace ArchiSteamFarm {
 				data.Add(new KeyValuePair<string, string>("ck[]", confirmation.Key.ToString()));
 			}
 
-			Steam.ConfirmationResponse response = await UrlPostToObjectRetryWithSession<Steam.ConfirmationResponse>(SteamCommunityURL, request, data).ConfigureAwait(false);
+			Steam.ConfirmationResponse response = await UrlPostToJsonObjectRetryWithSession<Steam.ConfirmationResponse>(SteamCommunityURL, request, data).ConfigureAwait(false);
 			return response?.Success;
 		}
 
@@ -978,7 +978,7 @@ namespace ArchiSteamFarm {
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new Dictionary<string, string>(2) { { "wallet_code", key } };
 
-			Steam.RedeemWalletResponse response = await UrlPostToObjectRetryWithSession<Steam.RedeemWalletResponse>(SteamStoreURL, request, data).ConfigureAwait(false);
+			Steam.RedeemWalletResponse response = await UrlPostToJsonObjectRetryWithSession<Steam.RedeemWalletResponse>(SteamStoreURL, request, data).ConfigureAwait(false);
 			if (response == null) {
 				return null;
 			}
@@ -1058,7 +1058,7 @@ namespace ArchiSteamFarm {
 				{ "communityitemid", itemID.ToString() }
 			};
 
-			Steam.GenericResponse response = await UrlPostToObjectRetryWithSession<Steam.GenericResponse>(SteamCommunityURL, request, data).ConfigureAwait(false);
+			Steam.GenericResponse response = await UrlPostToJsonObjectRetryWithSession<Steam.GenericResponse>(SteamCommunityURL, request, data).ConfigureAwait(false);
 			return response?.Result == EResult.OK;
 		}
 
@@ -1705,7 +1705,7 @@ namespace ArchiSteamFarm {
 			return await UrlPostToHtmlDocumentRetryWithSession(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
 		}
 
-		private async Task<T> UrlPostToObjectRetryWithSession<T>(string host, string request, Dictionary<string, string> data = null, string referer = null, ESession session = ESession.Lowercase, byte maxTries = WebBrowser.MaxTries) {
+		private async Task<T> UrlPostToJsonObjectRetryWithSession<T>(string host, string request, Dictionary<string, string> data = null, string referer = null, ESession session = ESession.Lowercase, byte maxTries = WebBrowser.MaxTries) {
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
 				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
 				return default;
@@ -1775,10 +1775,10 @@ namespace ArchiSteamFarm {
 				return default;
 			}
 
-			return await UrlPostToObjectRetryWithSession<T>(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
+			return await UrlPostToJsonObjectRetryWithSession<T>(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
 		}
 
-		private async Task<T> UrlPostToObjectRetryWithSession<T>(string host, string request, List<KeyValuePair<string, string>> data = null, string referer = null, ESession session = ESession.Lowercase, byte maxTries = WebBrowser.MaxTries) {
+		private async Task<T> UrlPostToJsonObjectRetryWithSession<T>(string host, string request, List<KeyValuePair<string, string>> data = null, string referer = null, ESession session = ESession.Lowercase, byte maxTries = WebBrowser.MaxTries) {
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
 				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
 				return default;
@@ -1851,7 +1851,7 @@ namespace ArchiSteamFarm {
 				return default;
 			}
 
-			return await UrlPostToObjectRetryWithSession<T>(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
+			return await UrlPostToJsonObjectRetryWithSession<T>(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
 		}
 
 		private enum ESession : byte {
