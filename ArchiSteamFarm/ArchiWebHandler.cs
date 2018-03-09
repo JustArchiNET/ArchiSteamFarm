@@ -986,16 +986,16 @@ namespace ArchiSteamFarm {
 			return (response.Result, response.PurchaseResultDetail);
 		}
 
-		internal async Task<bool> SendTradeOffer(IReadOnlyCollection<Steam.Asset> inventory, ulong partnerID, string token = null) {
-			if ((inventory == null) || (inventory.Count == 0) || (partnerID == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(inventory) + " || " + nameof(inventory.Count) + " || " + nameof(partnerID));
+		internal async Task<bool> SendTradeOffer(ulong partnerID, IReadOnlyCollection<Steam.Asset> itemsToGive, string token = null) {
+			if ((partnerID == 0) || (itemsToGive == null) || (itemsToGive.Count == 0)) {
+				Bot.ArchiLogger.LogNullError(nameof(partnerID) + " || " + nameof(itemsToGive));
 				return false;
 			}
 
 			Steam.TradeOfferRequest singleTrade = new Steam.TradeOfferRequest();
 			HashSet<Steam.TradeOfferRequest> trades = new HashSet<Steam.TradeOfferRequest> { singleTrade };
 
-			foreach (Steam.Asset item in inventory) {
+			foreach (Steam.Asset itemToGive in itemsToGive) {
 				if (singleTrade.ItemsToGive.Assets.Count >= Trading.MaxItemsPerTrade) {
 					if (trades.Count >= Trading.MaxTradesPerAccount) {
 						break;
@@ -1005,7 +1005,7 @@ namespace ArchiSteamFarm {
 					trades.Add(singleTrade);
 				}
 
-				singleTrade.ItemsToGive.Assets.Add(item);
+				singleTrade.ItemsToGive.Assets.Add(itemToGive);
 			}
 
 			const string request = "/tradeoffer/new/send";

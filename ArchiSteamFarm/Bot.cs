@@ -2719,7 +2719,7 @@ namespace ArchiSteamFarm {
 					return FormatBotResponse(Strings.BotLootingFailed);
 				}
 
-				if (!await ArchiWebHandler.SendTradeOffer(inventory, targetSteamMasterID, BotConfig.SteamTradeToken).ConfigureAwait(false)) {
+				if (!await ArchiWebHandler.SendTradeOffer(targetSteamMasterID, inventory, BotConfig.SteamTradeToken).ConfigureAwait(false)) {
 					return FormatBotResponse(Strings.BotLootingFailed);
 				}
 
@@ -3584,7 +3584,7 @@ namespace ArchiSteamFarm {
 					return FormatBotResponse(Strings.BotLootingFailed);
 				}
 
-				if (!await ArchiWebHandler.SendTradeOffer(inventory, targetSteamMasterID, BotConfig.SteamTradeToken).ConfigureAwait(false)) {
+				if (!await ArchiWebHandler.SendTradeOffer(targetSteamMasterID, inventory, BotConfig.SteamTradeToken).ConfigureAwait(false)) {
 					return FormatBotResponse(Strings.BotLootingFailed);
 				}
 
@@ -4714,7 +4714,7 @@ namespace ArchiSteamFarm {
 					return FormatBotResponse(Strings.BotLootingFailed);
 				}
 
-				if (!await ArchiWebHandler.SendTradeOffer(inventory, targetBot.CachedSteamID, tradeToken).ConfigureAwait(false)) {
+				if (!await ArchiWebHandler.SendTradeOffer(targetBot.CachedSteamID, inventory, tradeToken).ConfigureAwait(false)) {
 					return FormatBotResponse(Strings.BotLootingFailed);
 				}
 
