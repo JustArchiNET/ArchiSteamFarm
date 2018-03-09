@@ -96,7 +96,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			for (byte i = 0; i < MaxTries; i++) {
+			for (byte i = 0; i < maxTries; i++) {
 				const byte printPercentage = 10;
 				const byte maxBatches = 99 / printPercentage;
 
@@ -149,7 +149,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxTries));
+			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
 			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 			return null;
 		}
