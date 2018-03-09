@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/AdminLTE.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
-    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">-->
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">--> <!--Implement properly-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
     <link rel="stylesheet" href="../css/_all-skins.min.css">
     <link rel="stylesheet" href="../css/app.css">
@@ -162,7 +162,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/js/adminlte.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
-    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>-->
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>--> <!--Implement properly-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/humanize-duration/3.12.1/humanize-duration.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
     <script src="../js/app.js"></script>
@@ -170,11 +170,13 @@
         $(function () {
             'use strict';
 
+            store('CurrentPage', 'pages/bots.html');
+
             var tmpHideOnlineBots = get('hideOnlineBots'),
                 tmpHideOfflineBots = get('hideOfflineBots'),
                 tmpShowDeleteButton = get('showDeleteButton'),
                 tmpShowKeyButton = get('showKeyButton'),
-                tmpMultiSelect = get('multiSelect'),
+                //tmpMultiSelect = get('multiSelect'), // Implement properly
                 currentlySelectedBots = [];
 
             $(document).delegate('#gamesToRedeemInBackground', 'keydown', function (e) {
@@ -278,32 +280,34 @@
                 loadPageContent();
             });
 
-            $('#chkMultiSelect').click(function () {
-                if ($('#iconMultiSelect').hasClass('fa-square')) {
-                    $('#iconMultiSelect').removeClass('fa-square');
-                    $('#iconMultiSelect').addClass('fa-check-square');
-                    $('#botRow').selectable();
-                    store('multiSelect', true);
-                } else {
-                    $('#iconMultiSelect').removeClass('fa-check-square');
-                    $('#iconMultiSelect').addClass('fa-square');
-                    $('#botRow').selectable('destroy');
-                    store('multiSelect', false);
-                }
-                $('#chkMultiSelect').blur();
-            });
+            //Implement properly
 
-            $('#selectAllBots').click(function () {
-                $(".ui-widget-content").each(function () {
-                    $(this).addClass('ui-selected');
-                });
-            });
+            //$('#chkMultiSelect').click(function () {
+            //    if ($('#iconMultiSelect').hasClass('fa-square')) {
+            //        $('#iconMultiSelect').removeClass('fa-square');
+            //        $('#iconMultiSelect').addClass('fa-check-square');
+            //        $('#botRow').selectable();
+            //        store('multiSelect', true);
+            //    } else {
+            //        $('#iconMultiSelect').removeClass('fa-check-square');
+            //        $('#iconMultiSelect').addClass('fa-square');
+            //        $('#botRow').selectable('destroy');
+            //        store('multiSelect', false);
+            //    }
+            //    $('#chkMultiSelect').blur();
+            //});
 
-            $('#deselectAllBots').click(function () {
-                $(".ui-selected").each(function () {
-                    $(this).removeClass('ui-selected');
-                });
-            });
+            //$('#selectAllBots').click(function () {
+            //    $(".ui-widget-content").each(function () {
+            //        $(this).addClass('ui-selected');
+            //    });
+            //});
+
+            //$('#deselectAllBots').click(function () {
+            //    $(".ui-selected").each(function () {
+            //        $(this).removeClass('ui-selected');
+            //    });
+            //});
 
             $('#btnRefreshContent').click(function () {
                 $('#btnRefreshContent').blur();

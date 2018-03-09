@@ -16,6 +16,14 @@
     <script>
         'use strict';
 
+        var tmpIsAuthorized = get('IsAuthorized'),
+            tmpLastPage = get('CurrentPage'),
+            redirectPage = 'pages/command.html';
+
+        if (tmpLastPage) {
+            redirectPage = tmpLastPage;
+        }
+
         function store(name, val) {
             if (typeof Storage !== 'undefined') {
                 localStorage.setItem(name, val);
@@ -31,10 +39,9 @@
                 window.alert('Please use a modern browser to properly view ASF GUI!');
             }
         }
-
-        var tmpIsAuthorized = get('IsAuthorized');
+        
         if (tmpIsAuthorized === 'true') {
-            window.location.replace('pages/command.html');
+            window.location.replace(redirectPage);
         } else {
             $.ajax({
                 url: '/Api/ASF',
@@ -53,7 +60,7 @@
                     },
                     200: function () {
                         store('IsAuthorized', true);
-                        window.location.replace('pages/command.html');
+                        window.location.replace(redirectPage);
                     }
                 }
             });
@@ -145,7 +152,7 @@
                                     title: 'Success!',
                                     text: 'Your IPC password has been saved.',
                                     type: 'success'
-                                }, function () { window.location.replace('pages/command.html'); });
+                                }, function () { window.location.replace(redirectPage); });
                             }
                         }
                     });
