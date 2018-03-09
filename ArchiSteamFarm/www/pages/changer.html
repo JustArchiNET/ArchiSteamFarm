@@ -157,6 +157,7 @@
                 $.ajax({
                     url: '/Api/Bot/ASF',
                     type: 'GET',
+                    async: false,
                     success: function (data) {
                         var json = data['Result'];
                         loadPageContentChanger(json[0].BotName);

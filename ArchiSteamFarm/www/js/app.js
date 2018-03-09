@@ -1,10 +1,10 @@
 //#region Utils
-var IPCPassword = get('IPCPassword');
+const tmpIPCPassword = get('IPCPassword');
 
-if (IPCPassword) {
+if (tmpIPCPassword) {
     $.ajaxSetup({
         beforeSend: function (jqXHR) {
-            jqXHR.setRequestHeader('Authentication', IPCPassword);
+            jqXHR.setRequestHeader('Authentication', tmpIPCPassword);
         }
     });
 }
@@ -12,10 +12,12 @@ if (IPCPassword) {
 $.ajaxSetup({
     statusCode: {
         401: function () {
+            store('IPCPassword', '');
             store('IsAuthorized', false);
             window.location.replace('../index.html');
         },
         403: function () {
+            store('IPCPassword', '');
             store('IsAuthorized', false);
             window.location.replace('../index.html');
         }
@@ -326,6 +328,7 @@ function generateConfigHTML(mode) {
     $.ajax({
         url: '/Api/Type/' + namespace,
         type: 'GET',
+        async: false,
         success: function (data) {
             var obj = data['Result'],
                 config = obj['Body'],
@@ -874,7 +877,7 @@ function downloadObjectAsJson(exportName, exportObj) {
 }
 //#endregion Config Page
 
-//#region Layout
+//#region Right Sidebar
 $(function () {
     'use strict';
 
@@ -898,27 +901,6 @@ $(function () {
         $('[data-skin="' + cls + '"]').addClass('btn-badge-active');
         store('skin', cls);
         return false;
-    }
-
-    function changeSetting() {
-        swal({
-            title: 'Are you sure?',
-            text: 'Your IPC password will be reset!',
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonClass: 'btn-danger',
-            confirmButtonText: 'Yes, reset it!',
-            closeOnConfirm: false
-        }, function () {
-            swal({
-                title: 'Success!',
-                text: 'Your IPC password has been reset.',
-                type: 'success'
-            }, function () {
-                window.location.replace('../index.html');
-                store('IPCPassword', '');
-            });
-        });
     }
 
     function changeBoxed(savedLayout) {
@@ -998,7 +980,6 @@ $(function () {
         $('[data-skin]').on('click', function (e) { changeSkin($(this).data('skin')); });
         $('#toggleBoxed').on('click', function () { toggleBoxed(); });
         $('#toggleNightmode').on('click', function () { toggleNightmode(); });
-        $('[data-general]').on('click', function () { changeSetting(); });
         $('#leftSidebar').on('click', function () {
             if ($('body').hasClass('sidebar-collapse')) {
                 store('leftSidebarState', 'normal');
@@ -1014,16 +995,8 @@ $(function () {
     // Layout options
     $layoutSettings.append(
         '<h4 class="control-sidebar-heading">'
-        + 'General Settings'
+        + 'Layout'
         + '</h4>'
-        // Reset IPC Password
-        + '<div class="form-group">'
-        + '<label class="control-sidebar-subheading">'
-        + '<a href="javascript:void(0)" class="text-red pull-right" data-general="resetIPCPassword"><i class="far fa-trash-alt"></i></a>'
-        + '<i class="fas fa-lock fa-fw"></i> Reset IPC Password'
-        + '</label>'
-        + '<p>Deletes the currently set IPC password</p>'
-        + '</div>'
         // Boxed Layout
         + '<div class="form-group hidden-xs hidden-sm">'
         + '<label class="control-sidebar-subheading">'
@@ -1075,4 +1048,4 @@ $(function () {
 
     setup();
 });
-//#endregion Layout
+//#endregion Right Sidebar

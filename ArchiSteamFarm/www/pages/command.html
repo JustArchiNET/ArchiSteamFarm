@@ -263,14 +263,14 @@
             });
             
             $('.box-content-command').ready(function () {
-                var tmpHeight = get('commandHeight');
+                var tmpCommandHeight = get('commandHeight');
 
-                if (isNaN(tmpHeight)) {
+                if (isNaN(tmpCommandHeight)) {
                     $('.box-content-command').css('height', 400 + 'px');
                 } else {
-                    $('.box-content-command').css('height', tmpHeight + 'px');
+                    $('.box-content-command').css('height', tmpCommandHeight + 'px');
 
-                    if (tmpHeight > 475) {
+                    if (tmpCommandHeight > 475) {
                         $cmdsDropDownBox.addClass('dropup');
                         $botsDropDownBox.addClass('dropup');
                         $iconCmdsDropDownBox.removeClass('fa-caret-down');

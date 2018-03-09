@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <title>ASF | Authentication</title>
@@ -32,30 +32,32 @@
             }
         }
 
-        var IsAuthorized = get('IsAuthorized');
-        if (IsAuthorized === 'true') {
+        var tmpIsAuthorized = get('IsAuthorized');
+        if (tmpIsAuthorized === 'true') {
             window.location.replace('pages/command.html');
-        }
-
-        $.ajax({
-            url: '/Api/ASF',
-            type: 'GET',
-            statusCode: {
-                401: function () {
-                    store('IsAuthorized', false);
-                },
-                403: function () {
-                    store('IsAuthorized', false);
-                    $('.lockscreen-name').remove();
-                    $('.lockscreen-item').remove();
-                    $('.help-block').text('You failed to authenticate properly too many times, try again in an hour.');
-                },
-                200: function () {
-                    store('IsAuthorized', true);
-                    window.location.replace('pages/command.html');
+        } else {
+            $.ajax({
+                url: '/Api/ASF',
+                type: 'GET',
+                statusCode: {
+                    401: function () {
+                        store('IsAuthorized', false);
+                        store('IPCPassword', '');
+                    },
+                    403: function () {
+                        store('IsAuthorized', false);
+                        store('IPCPassword', '');
+                        $('.lockscreen-name').remove();
+                        $('.lockscreen-item').remove();
+                        $('.help-block').text('You failed to authenticate properly too many times, try again in an hour.');
+                    },
+                    200: function () {
+                        store('IsAuthorized', true);
+                        window.location.replace('pages/command.html');
+                    }
                 }
-            }
-        });
+            });
+        }
     </script>
 </head>
 <body class="hold-transition lockscreen">
