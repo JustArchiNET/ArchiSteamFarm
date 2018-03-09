@@ -1,5 +1,28 @@
 //#region Utils
-if (typeof jQuery === 'undefined') throw new Error('ASF App requires jQuery');
+const tmpIPCPassword = get('IPCPassword');
+
+if (tmpIPCPassword) {
+    $.ajaxSetup({
+        beforeSend: function (jqXHR) {
+            jqXHR.setRequestHeader('Authentication', tmpIPCPassword);
+        }
+    });
+}
+
+$.ajaxSetup({
+    statusCode: {
+        401: function () {
+            store('IPCPassword', '');
+            store('IsAuthorized', false);
+            window.location.replace('../index.html');
+        },
+        403: function () {
+            store('IPCPassword', '');
+            store('IsAuthorized', false);
+            window.location.replace('../index.html');
+        }
+    }
+});
 
 function get(name) {
     if (typeof Storage !== 'undefined') {
@@ -16,35 +39,6 @@ function store(name, val) {
         window.alert('Please use a modern browser to properly view ASF GUI!');
     }
 }
-
-function getIPCPassword() {
-    swal({
-        title: 'IPC password required',
-        text: 'Please enter the correct IPC password:',
-        type: 'input',
-        showCancelButton: true,
-        closeOnConfirm: false,
-        inputPlaceholder: 'Type your password',
-        inputType: 'password'
-    }, function (typedPassword) {
-        if (typedPassword === false) return false;
-
-        if (typedPassword === '') {
-            swal.showInputError('You need to enter a valid password!');
-            return false;
-        }
-
-        store('IPCPassword', typedPassword);
-        swal({
-            title: 'Success!',
-            text: 'Your IPC password has been saved.',
-            type: 'success'
-        }, function () { location.reload(); });
-    });
-}
-
-var IPCPassword = get('IPCPassword');
-if (IPCPassword) $.ajaxSetup({ beforeSend: function (jqXHR) { jqXHR.setRequestHeader('Authentication', IPCPassword); } });
 //#endregion Utils
 
 //#region Footer
@@ -52,21 +46,20 @@ $('.main-footer').ready(function () {
     $.ajax({
         url: '/Api/ASF',
         type: 'GET',
-        statusCode: { 401: function () { getIPCPassword(); } },
         success: function (data) {
-            var obj = data['Result'].Version,
-                version = obj.Major + '.' + obj.Minor + '.' + obj.Build + '.' + obj.Revision;
+            var version = data['Result'].Version,
+                versionNr = version.Major + '.' + version.Minor + '.' + version.Build + '.' + version.Revision;
             
-            $('#version').html('<b>Version</b> ' + version);
-            $('#changelog').attr('href', 'https://github.com/JustArchi/ArchiSteamFarm/releases/tag/' + version);
+            $('#version').html('<b>Version</b> ' + versionNr);
+            $('#changelog').attr('href', 'https://github.com/JustArchi/ArchiSteamFarm/releases/tag/' + versionNr);
         }
     });
 });
 //#endregion Footer
 
 //#region Bot Status Buttons
-$('.bot-status').ready(function () {
-    function displayBotStatus() {
+function displayBotStatus() {
+    $('.bot-status').ready(function () {
         var activeBots = 0,
             idleBots = 0,
             offlineBots = 0;
@@ -98,37 +91,39 @@ $('.bot-status').ready(function () {
                 $('#activeBots').text(activeBots);
             }
         });
-    }
+    });
+}
 
-    displayBotStatus();
-    window.setInterval(function () { displayBotStatus(); }, 5000);
-});
+displayBotStatus();
+window.setInterval(function () { displayBotStatus(); }, 5000);
 //#endregion Bot Status Buttons
 
 //#region ASF Information
-$('.info-overview').ready(function () {
-    function displayRAMUsage() {
+function displayRAMUsage() {
+    $('.info-overview').ready(function () {
         $.ajax({
             url: '/Api/ASF',
             type: 'GET',
             success: function (data) { $('#ramUsage').html((data['Result'].MemoryUsage / 1024).toFixed(2) + ' MB'); }
         });
-    }
+    });
+}
 
-    displayRAMUsage();
-    window.setInterval(function () { displayRAMUsage(); }, 10000);
-    
-    function displayUptime() {
+displayRAMUsage();
+window.setInterval(function () { displayRAMUsage(); }, 10000);
+
+function displayUptime() {
+    $('.info-overview').ready(function () {
         $.ajax({
             url: '/Api/ASF',
             type: 'GET',
             success: function (data) { $('#uptime').html(uptimeToString(data['Result'].ProcessStartTime)); }
         });
-    }
+    });
+}
 
-    displayUptime();
-    window.setInterval(function () { displayUptime(); }, 60000);
-});
+displayUptime();
+window.setInterval(function () { displayUptime(); }, 60000);
 
 function uptimeToString(startTime) {
     var processStartTime = new Date(startTime),
@@ -181,7 +176,7 @@ function logCommand(state, cmd) {
 
 function sendCommand() {
     var command = $cmdInput.val(),
-        requestURL = '/Api/Command/' + command,
+        requestURL = '/Api/Command/' + command, 
         tmpAutoClear = get('autoClear');
 
     if (command === '') return;
@@ -200,7 +195,7 @@ function sendCommand() {
     }
 
     $('.box-content-command').append('<div class="overlay"><i class="fas fa-sync fa-spin" style="color:white"></i></div>');
-
+    
     $.ajax({
         url: requestURL,
         type: 'GET',
@@ -333,6 +328,7 @@ function generateConfigHTML(mode) {
     $.ajax({
         url: '/Api/Type/' + namespace,
         type: 'GET',
+        async: false,
         success: function (data) {
             var obj = data['Result'],
                 config = obj['Body'],
@@ -881,7 +877,7 @@ function downloadObjectAsJson(exportName, exportObj) {
 }
 //#endregion Config Page
 
-//#region Layout
+//#region Right Sidebar
 $(function () {
     'use strict';
 
@@ -905,25 +901,6 @@ $(function () {
         $('[data-skin="' + cls + '"]').addClass('btn-badge-active');
         store('skin', cls);
         return false;
-    }
-
-    function changeSetting() {
-        swal({
-            title: 'Are you sure?',
-            text: 'Your IPC password will be reset!',
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonClass: 'btn-danger',
-            confirmButtonText: 'Yes, reset it!',
-            closeOnConfirm: false
-        }, function () {
-            store('IPCPassword', '');
-            swal({
-                title: 'Success!',
-                text: 'Your IPC password has been reset.',
-                type: 'success'
-            }, function () { location.reload(); });
-        });
     }
 
     function changeBoxed(savedLayout) {
@@ -1003,7 +980,6 @@ $(function () {
         $('[data-skin]').on('click', function (e) { changeSkin($(this).data('skin')); });
         $('#toggleBoxed').on('click', function () { toggleBoxed(); });
         $('#toggleNightmode').on('click', function () { toggleNightmode(); });
-        $('[data-general]').on('click', function () { changeSetting(); });
         $('#leftSidebar').on('click', function () {
             if ($('body').hasClass('sidebar-collapse')) {
                 store('leftSidebarState', 'normal');
@@ -1019,16 +995,8 @@ $(function () {
     // Layout options
     $layoutSettings.append(
         '<h4 class="control-sidebar-heading">'
-        + 'General Settings'
+        + 'Layout'
         + '</h4>'
-        // Reset IPC Password
-        + '<div class="form-group">'
-        + '<label class="control-sidebar-subheading">'
-        + '<a href="javascript:void(0)" class="text-red pull-right" data-general="resetIPCPassword"><i class="far fa-trash-alt"></i></a>'
-        + '<i class="fas fa-lock fa-fw"></i> Reset IPC Password'
-        + '</label>'
-        + '<p>Deletes the currently set IPC password</p>'
-        + '</div>'
         // Boxed Layout
         + '<div class="form-group hidden-xs hidden-sm">'
         + '<label class="control-sidebar-subheading">'
@@ -1080,4 +1048,4 @@ $(function () {
 
     setup();
 });
-//#endregion Layout
+//#endregion Right Sidebar

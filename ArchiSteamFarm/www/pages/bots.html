@@ -1,25 +1,26 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
+    <title>ASF | Bots</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>ASF | Bots</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script> <!--Change to cdnjs once available-->
+    <link rel="icon" href="../favicon.png" type="image/png">
+    <link rel="shortcut icon" href="../favicon.ico" type="img/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/AdminLTE.min.css">
-    <link rel="stylesheet" href="../css/_all-skins.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-    <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script> <!--Change font-awesome to cdnjs once available-->
+    <link rel="stylesheet" href="../css/_all-skins.min.css">
     <link rel="stylesheet" href="../css/app.css">
     <link rel="stylesheet" href="../css/_nightmode.min.css">
-    <link rel="icon" href="../favicon.png" type="image/png">
-    <link rel="shortcut icon" href="../favicon.ico" type="img/x-icon">
 </head>
 <body class="hold-transition skin-blue sidebar-mini fixed">
     <div class="wrapper">
+        <!-- Header -->
         <header class="main-header">
             <!-- Logo -->
             <a href="javascript:void(0)" class="logo">
@@ -27,7 +28,6 @@
                 <span class="logo-lg"><b>Archi</b>SteamFarm</span>
             </a>
 
-            <!-- Header -->
             <nav class="navbar navbar-static-top" role="navigation">
                 <!-- Left Sidebar Toggle Button-->
                 <a href="javascript:void(0)" class="sidebar-toggle" id="leftSidebar" data-toggle="push-menu" role="button">
@@ -85,8 +85,8 @@
             </section>
         </aside>
 
+        <!-- Content -->
         <div class="content-wrapper">
-            <!-- Content Header -->
             <section class="content-header">
                 <h1>
                     Bots
@@ -114,7 +114,8 @@
                                     <li><button title="Toggle offline bots" type="button" class="btn btn-box-tool text-grey" id="chkHideOfflineBots"><i id="iconHideOfflineBots" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>Offline bots</li>
                                 </ul>
                             </div>
-                            <button title="Toggle multi select" type="button" class="btn btn-box-tool" id="chkMultiSelect" data-widget="collapse"><i id="iconMultiSelect" class="far fa-square"></i></button>
+                            <!--Implement properly-->
+                            <!--<button title="Toggle multi select" type="button" class="btn btn-box-tool" id="chkMultiSelect" data-widget="collapse"><i id="iconMultiSelect" class="far fa-square"></i></button>-->
                             <button type="button" class="btn btn-box-tool" id="btnRefreshContent"><i class="fas fa-sync"></i></button>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
@@ -161,7 +162,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/js/adminlte.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/humanize-duration/3.12.1/humanize-duration.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
     <script src="../js/app.js"></script>
@@ -237,32 +238,14 @@
                     $('#iconShowKeyButton').removeClass('fa-rotate-180');
                 }
 
-                if (tmpMultiSelect === 'true') {
-                    $('#iconMultiSelect').removeClass('fa-square');
-                    $('#iconMultiSelect').addClass('fa-check-square');
-                    $('#headerBox').removeClass('collapsed-box');
-                    $('#headerBox').removeClass('expanded-box');
-                    $('#botRow').selectable({
-                        //stop: function () {
-                        //    //$(".ui-selected", this).each(function () {
-                        //    //    var index = $("#selectable li").index(this);
-                        //    //    result.append(" #" + (index + 1));
-                        //    //});
-                        //},
-                        //selecting: function (event, ui) {
-                        //    //$(ui.selecting).addClass('box-solid');
-                        //},
-                        //unselecting: function (event, ui) {
-                        //    //$(ui.unselecting).removeClass('box-solid');
-                        //},
-                        //selected: function (event, ui) {
-                        //    //$(ui.selected).addClass('box-solid');
-                        //},
-                        //unselected: function (event, ui) {
-                        //    //$(ui.unselected).removeClass('box-solid');
-                        //}
-                    });
-                }
+                // Implement properly
+                //if (tmpMultiSelect === 'true') {
+                //    $('#iconMultiSelect').removeClass('fa-square');
+                //    $('#iconMultiSelect').addClass('fa-check-square');
+                //    $('#headerBox').removeClass('collapsed-box');
+                //    $('#headerBox').removeClass('expanded-box');
+                //    $('#botRow').selectable();
+                //}
             });
 
             $('#chkHideOnlineBots').click(function () {
@@ -546,6 +529,7 @@
                                 switch (cmd) {
                                     case 'startBot':
                                         $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
+
                                         $.ajax({
                                             url: '/Api/Command/start ' + encodeURIComponent(BotName),
                                             type: 'GET',
@@ -562,6 +546,7 @@
 
                                     case 'stopBot':
                                         $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
+
                                         $.ajax({
                                             url: '/Api/Command/stop ' + encodeURIComponent(BotName),
                                             type: 'GET',
@@ -578,6 +563,7 @@
 
                                     case 'pauseBot':
                                         $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
+
                                         $.ajax({
                                             url: '/Api/Command/pause ' + encodeURIComponent(BotName),
                                             type: 'GET',
@@ -594,6 +580,7 @@
 
                                     case 'resumeBot':
                                         $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
+
                                         $.ajax({
                                             url: '/Api/Command/resume ' + encodeURIComponent(BotName),
                                             type: 'GET',
@@ -679,7 +666,7 @@
                                                 _gamesToRedeemInBackground[obj[1]] = obj[0];
                                             }
 
-                                            var ajaxData = { GamesToRedeemInBackground: _gamesToRedeemInBackground};
+                                            var ajaxData = { GamesToRedeemInBackground: _gamesToRedeemInBackground };
 
                                             $.ajax({
                                                 url: '/Api/GamesToRedeemInBackground/' + encodeURIComponent(BotName),
