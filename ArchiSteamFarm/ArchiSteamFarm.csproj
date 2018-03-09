@@ -41,7 +41,7 @@
     <PackageReference Include="ILLink.Tasks" Version="0.1.4-preview-1317495" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.5.0-preview1-26216-02" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
-    <PackageReference Include="NLog" Version="4.5.0-rc06" />
+    <PackageReference Include="NLog" Version="4.5.0-rc07" />
     <PackageReference Include="protobuf-net" Version="2.3.7" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.5.0-preview1-26216-02" />
   </ItemGroup>
