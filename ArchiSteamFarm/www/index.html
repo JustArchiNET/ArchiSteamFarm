@@ -93,9 +93,11 @@
                 'use strict';
 
                 $(document).keypress(function (e) {
-                    if (e.which == 13) {
-                        $('#TryToAuth').click();
+                    var keyCode = e.keyCode || e.which;
+
+                    if (keyCode == 13) {
                         e.preventDefault();
+                        $('#TryToAuth').click();
                     }
                 });
 

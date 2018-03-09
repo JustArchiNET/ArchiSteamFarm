@@ -216,6 +216,7 @@
                 e.preventDefault();
             });
 
+            //#region Merge to one function
             $(document).keydown(function (e) {
                 if (e.which == 38 && $commandInput.is(':focus')) {
                     if (prevCommand.length > keyCount) keyCount++;
@@ -229,11 +230,14 @@
             });
 
             $(document).keypress(function (e) {
-                if (e.which == 13 && $cmdInput.val() !== "") {
-                    $('#sendCommand').click();
+                var keyCode = e.keyCode || e.which;
+
+                if (keyCode == 13 && $cmdInput.val() !== "") {
                     e.preventDefault();
+                    $('#sendCommand').click();
                 }
             });
+            //#endregion Merge to one function
             
             $('.box-tools').ready(function () {
                 var tmpAutoClear = get('autoClear');
