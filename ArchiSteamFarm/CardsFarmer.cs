@@ -38,6 +38,7 @@ namespace ArchiSteamFarm {
 		internal const byte DaysForRefund = 14; // In how many days since payment we're allowed to refund
 		internal const byte HoursForRefund = 2; // Up to how many hours we're allowed to play for refund
 
+		private const byte ExtraFarmingDelaySeconds = 10; // In seconds, how much time to add on top of FarmingDelay (helps fighting misc time differences of Steam network)
 		private const byte HoursToIgnore = 24; // How many hours we ignore unreleased appIDs and don't bother checking them again
 
 		private static readonly ConcurrentDictionary<uint, DateTime> IgnoredAppIDs = new ConcurrentDictionary<uint, DateTime>(); // Reserved for unreleased games
@@ -688,7 +689,7 @@ namespace ArchiSteamFarm {
 				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.StillIdling, game.AppID, game.GameName));
 
 				DateTime startFarmingPeriod = DateTime.UtcNow;
-				if (await FarmingResetSemaphore.WaitAsync(Program.GlobalConfig.FarmingDelay * 60 * 1000 + ArchiWebHandler.MinSessionTTL * 1000).ConfigureAwait(false)) {
+				if (await FarmingResetSemaphore.WaitAsync(Program.GlobalConfig.FarmingDelay * 60 * 1000 + ExtraFarmingDelaySeconds * 1000).ConfigureAwait(false)) {
 					success = KeepFarming;
 				}
 
@@ -728,7 +729,7 @@ namespace ArchiSteamFarm {
 				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.StillIdlingList, string.Join(", ", games.Select(game => game.AppID))));
 
 				DateTime startFarmingPeriod = DateTime.UtcNow;
-				if (await FarmingResetSemaphore.WaitAsync(Program.GlobalConfig.FarmingDelay * 60 * 1000 + ArchiWebHandler.MinSessionTTL * 1000).ConfigureAwait(false)) {
+				if (await FarmingResetSemaphore.WaitAsync(Program.GlobalConfig.FarmingDelay * 60 * 1000 + ExtraFarmingDelaySeconds * 1000).ConfigureAwait(false)) {
 					success = KeepFarming;
 				}
 
