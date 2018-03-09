@@ -94,6 +94,7 @@
 
                 $(document).keypress(function (e) {
                     if (e.which == 13) $('#TryToAuth').click();
+                    e.preventDefault();
                 });
 
                 $('#TryToAuth').click(function () {
