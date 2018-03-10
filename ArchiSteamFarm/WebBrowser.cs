@@ -149,8 +149,11 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
-			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+			if (maxTries > 1) {
+				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+			}
+
 			return null;
 		}
 
@@ -231,8 +234,11 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
-			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+			if (maxTries > 1) {
+				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+			}
+
 			return null;
 		}
 
@@ -252,8 +258,11 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
-			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+			if (maxTries > 1) {
+				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+			}
+
 			return null;
 		}
 
@@ -412,8 +421,11 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
-			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+			if (maxTries > 1) {
+				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+			}
+
 			return null;
 		}
 
@@ -433,8 +445,11 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
-			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+			if (maxTries > 1) {
+				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+			}
+
 			return null;
 		}
 
