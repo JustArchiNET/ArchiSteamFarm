@@ -2353,6 +2353,8 @@ namespace ArchiSteamFarm {
 					break;
 				}
 
+				await LimitGiftsRequestsAsync().ConfigureAwait(false);
+
 				ArchiHandler.PurchaseResponseCallback result = await ArchiHandler.RedeemKey(game.Key).ConfigureAwait(false);
 				if (result == null) {
 					continue;
