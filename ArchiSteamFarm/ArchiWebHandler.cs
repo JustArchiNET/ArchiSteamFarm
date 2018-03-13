@@ -1425,7 +1425,7 @@ namespace ArchiSteamFarm {
 			return await UrlGetToHtmlDocumentWithSession(host, request, --maxTries).ConfigureAwait(false);
 		}
 
-		private async Task<T> UrlGetToJsonObjectWithSession<T>(string host, string request, byte maxTries = WebBrowser.MaxTries) {
+		private async Task<T> UrlGetToJsonObjectWithSession<T>(string host, string request, byte maxTries = WebBrowser.MaxTries) where T : class {
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
 				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
 				return default;
@@ -1630,7 +1630,7 @@ namespace ArchiSteamFarm {
 			return await UrlPostToHtmlDocumentWithSession(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
 		}
 
-		private async Task<T> UrlPostToJsonObjectWithSession<T>(string host, string request, Dictionary<string, string> data = null, string referer = null, ESession session = ESession.Lowercase, byte maxTries = WebBrowser.MaxTries) {
+		private async Task<T> UrlPostToJsonObjectWithSession<T>(string host, string request, Dictionary<string, string> data = null, string referer = null, ESession session = ESession.Lowercase, byte maxTries = WebBrowser.MaxTries) where T : class {
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
 				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
 				return default;
@@ -1703,7 +1703,7 @@ namespace ArchiSteamFarm {
 			return await UrlPostToJsonObjectWithSession<T>(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
 		}
 
-		private async Task<T> UrlPostToJsonObjectWithSession<T>(string host, string request, List<KeyValuePair<string, string>> data = null, string referer = null, ESession session = ESession.Lowercase, byte maxTries = WebBrowser.MaxTries) {
+		private async Task<T> UrlPostToJsonObjectWithSession<T>(string host, string request, List<KeyValuePair<string, string>> data = null, string referer = null, ESession session = ESession.Lowercase, byte maxTries = WebBrowser.MaxTries) where T : class {
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
 				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
 				return default;
