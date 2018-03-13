@@ -145,7 +145,7 @@ function uptimeToString(startTime) {
 }
 //#endregion ASF Information
 
-//#region Command Page
+//#region Commands Page
 var $cmdInput = $('#commandInput');
 function fillCommand(cmd) { $cmdInput.val(cmd + ' '); }
 function fillBots(bot) { $cmdInput.val($cmdInput.val() + bot); }
@@ -167,9 +167,9 @@ function logCommand(state, cmd) {
         $('#commandSent').val(getDateAndTime() + ' Command sent: ' + cmd);
     } else {
         if (tmpAutoClear === 'false') {
-            $('.box-content-command').append('\n' + getDateAndTime() + ' Response received: ' + cmd + '\n');
+            $('.box-content-commands').append('\n' + getDateAndTime() + ' Response received: ' + cmd + '\n');
         } else {
-            $('.box-content-command').text(getDateAndTime() + ' Response received: ' + cmd);
+            $('.box-content-commands').text(getDateAndTime() + ' Response received: ' + cmd);
         }
     }
 }
@@ -184,17 +184,17 @@ function sendCommand() {
     logCommand(true, command);
 
     if (tmpAutoClear === 'false') {
-        if ($('.box-content-command').text() === '') {
-            $('.box-content-command').append(getDateAndTime() + ' Waiting for response...' + '\n');
+        if ($('.box-content-commands').text() === '') {
+            $('.box-content-commands').append(getDateAndTime() + ' Waiting for response...' + '\n');
         } else {
-            $('.box-content-command').append('\n' + getDateAndTime() + ' Waiting for response...' + '\n');
+            $('.box-content-commands').append('\n' + getDateAndTime() + ' Waiting for response...' + '\n');
         }
 
     } else {
-        $('.box-content-command').text(getDateAndTime() + ' Waiting for response...');
+        $('.box-content-commands').text(getDateAndTime() + ' Waiting for response...');
     }
 
-    $('.box-content-command').append('<div class="overlay"><i class="fas fa-sync fa-spin" style="color:white"></i></div>');
+    $('.box-content-commands').append('<div class="overlay"><i class="fas fa-sync fa-spin" style="color:white"></i></div>');
     
     $.ajax({
         url: requestURL,
@@ -211,7 +211,7 @@ function sendCommand() {
 
     if (tmpAutoClear !== 'false') $cmdInput.val('');
 }
-//#endregion Command Page
+//#endregion Commands Page
 
 //#region Global Config Utils
 //#region Spicy parsing helper by Mole
@@ -962,11 +962,26 @@ $(function () {
         }
     }
 
+    function loadLocales(language) {
+        var i18n = $.i18n();
+
+        i18n.locale = language;
+        i18n.load('../locale/' + i18n.locale + '.json', i18n.locale).done(
+            function () {
+                $('[data-i18n]').i18n();
+            }
+        );
+
+        language = (language == 'en') ? '' : language;
+        store('language', language);
+    }
+
     function setup() {
         var tmpSkin = get('skin'),
             tmpLayoutState = get('layoutState'),
             tmpNightmodeState = get('nightmodeState'),
-            tmpLeftSidebarState = get('leftSidebarState');
+            tmpLeftSidebarState = get('leftSidebarState'),
+            tmpLanguage = get('language');
 
         if (tmpSkin && $.inArray(tmpSkin, mySkins)) changeSkin(tmpSkin);            
         if (tmpLeftSidebarState) {
@@ -977,15 +992,36 @@ $(function () {
         if (tmpLayoutState) changeBoxed(tmpLayoutState);
         if (tmpNightmodeState) changeNightmode(tmpNightmodeState);
 
-        $('[data-skin]').on('click', function (e) { changeSkin($(this).data('skin')); });
-        $('#toggleBoxed').on('click', function () { toggleBoxed(); });
-        $('#toggleNightmode').on('click', function () { toggleNightmode(); });
-        $('#leftSidebar').on('click', function () {
+        if (tmpLanguage) {
+            loadLocales(tmpLanguage);
+            $('#language option[value=' + tmpLanguage + ']').attr('selected', 'selected');
+        }
+
+        $('[data-skin]').on('click', function (e) {
+            e.preventDefault();
+            changeSkin($(this).data('skin'));
+        });
+        $('#toggleBoxed').on('click', function (e) {
+            e.preventDefault();
+            toggleBoxed();
+        });
+        $('#toggleNightmode').on('click', function (e) {
+            e.preventDefault();
+            toggleNightmode();
+        });
+        $('#leftSidebar').on('click', function (e) {
+            e.preventDefault();
             if ($('body').hasClass('sidebar-collapse')) {
                 store('leftSidebarState', 'normal');
             } else {
                 store('leftSidebarState', 'sidebar-collapse');
             }
+        });
+
+        $('#language').on('change keyup', function (e) {
+            e.preventDefault();
+            var language = $('#language option:selected').val();
+            loadLocales(language);
         });
     }
 
@@ -1013,6 +1049,14 @@ $(function () {
         + '</label>'
         + '<p>Toggle the nightmode</p>'
         + '</div>'
+        // Language
+        + '<h4 class="control-sidebar-heading">'
+        + 'Language'
+        + '</h4>'
+        + '<select class="form-control" id="language">'
+        + '<option value="en">English</option>'
+        + '<option value="de">German</option>'
+        + '</select>'
     );
     
     var $skinsList = $('<ul />', { 'class': 'list-unstyled clearfix' });

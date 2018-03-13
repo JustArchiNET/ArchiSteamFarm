@@ -1,0 +1,20 @@
+{
+  "bots": "Bots",
+  "bots-title": "ASF | Bots",
+  "changer": "Konfig Wechsler",
+  "changer-title": "ASF | Konfig Wechsler",
+  "commands": "Befehle",
+  "commands-title": "ASF | Befehle",
+  "generator": "Konfig Generator",
+  "generator-title": "ASF | Konfig Generator",
+  "global-changelog": "Änderungshistorie",
+  "global-config": "Konfig",
+  "global-control-panel": "Kontrollpanel",
+  "global-home": "Zuhause",
+  "global-information": "Informationen",
+  "global-ram-usage": "RAM Auslastung",
+  "global-uptime": "Laufzeit",
+  "global-version": "Version",
+  "log": "Protokoll",
+  "log-title": "ASF | Protokoll"
+}
