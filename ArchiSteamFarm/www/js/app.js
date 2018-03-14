@@ -50,7 +50,7 @@ $('.main-footer').ready(function () {
             var version = data['Result'].Version,
                 versionNr = version.Major + '.' + version.Minor + '.' + version.Build + '.' + version.Revision;
             
-            $('#version').html('<b>Version</b> ' + versionNr);
+            $('#version').text(versionNr);
             $('#changelog').attr('href', 'https://github.com/JustArchi/ArchiSteamFarm/releases/tag/' + versionNr);
         }
     });
@@ -1031,7 +1031,7 @@ $(function () {
     // Layout options
     $layoutSettings.append(
         '<h4 class="control-sidebar-heading">'
-        + 'Layout'
+        + '<span data-i18n="global-layout">Layout</span>'
         + '</h4>'
         // Boxed Layout
         + '<div class="form-group hidden-xs hidden-sm">'
@@ -1045,7 +1045,7 @@ $(function () {
         + '<div class="form-group">'
         + '<label class="control-sidebar-subheading">'
         + '<button title="Toggle nightmode" type="button" class="btn btn-box-tool pull-right text-grey" id="toggleNightmode"><i id="iconNightmode" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>'
-        + '<i class="fas fa-moon fa-fw"></i> Nightmode'
+        + '<i class="fas fa-moon fa-fw"></i> <span data-i18n="global-nightmode">Nightmode</span>'
         + '</label>'
         + '<p>Toggle the nightmode</p>'
         + '</div>'
@@ -1055,6 +1055,7 @@ $(function () {
         + '</h4>'
         + '<select class="form-control" id="language">'
         + '<option value="en">English</option>'
+        + '<option value="dk">Danish</option>'
         + '<option value="de">German</option>'
         + '</select>'
     );

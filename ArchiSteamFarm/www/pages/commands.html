@@ -46,10 +46,10 @@
             <section class="sidebar">
                 <ul class="sidebar-menu" data-widget="tree">
                     <li class="header" data-i18n="global-home">Home</li>
-                    <li class="active"><a href="commands.html"><i class="fas fa-laptop fa-fw"></i> <span data-i18n="commands">Commands</span></a></li>
+                    <li class="active"><a href="commands.html"><i class="fas fa-laptop fa-fw"></i> <span data-i18n="global-commands">Commands</span></a></li>
                     <li>
                         <a href="bots.html">
-                            <i class="fas fa-users fa-fw"></i> <span data-i18n="bots">Bots</span>
+                            <i class="fas fa-users fa-fw"></i> <span data-i18n="global-bots">Bots</span>
                             <span class="pull-right-container bot-status">
                                 <small class="label pull-right bg-gray" id="offlineBots">0</small>
                                 <small class="label pull-right bg-yellow" id="idleBots">0</small>
@@ -57,11 +57,11 @@
                             </span>
                         </a>
                     </li>
-                    <li><a href="log.html"><i class="far fa-file-alt fa-fw"></i> <span data-i18n="log">Log</span></a></li>
+                    <li><a href="log.html"><i class="far fa-file-alt fa-fw"></i> <span data-i18n="global-log">Log</span></a></li>
 
                     <li class="header" data-i18n="global-config">Config</li>
-                    <li><a href="changer.html"><i class="far fa-edit fa-fw"></i> <span data-i18n="changer">Changer</span></a></li>
-                    <li><a href="generator.html"><i class="far fa-copy fa-fw"></i> <span data-i18n="generator">Generator</span></a></li>
+                    <li><a href="changer.html"><i class="far fa-edit fa-fw"></i> <span data-i18n="global-changer">Changer</span></a></li>
+                    <li><a href="generator.html"><i class="far fa-copy fa-fw"></i> <span data-i18n="global-generator">Generator</span></a></li>
 
                     <li class="header" data-i18n="global-information">Information</li>
                     <li class="info-overview">
@@ -88,12 +88,12 @@
         <div class="content-wrapper">
             <section class="content-header">
                 <h1>
-                    <span data-i18n="commands">Commands</span>
+                    <span data-i18n="global-commands">Commands</span>
                     <small data-i18n="global-control-panel">Control Panel</small>
                 </h1>
                 <ol class="breadcrumb">
                     <li><i class="fas fa-home"></i> <span data-i18n="global-home">Home</span></li>
-                    <li class="active"><i class="fas fa-laptop"></i> <span data-i18n="commands">Commands</span></li>
+                    <li class="active"><i class="fas fa-laptop"></i> <span data-i18n="global-commands">Commands</span></li>
                 </ol>
             </section>
 
@@ -102,7 +102,7 @@
                 <div class="box">
                     <div class="box-header with-border">
                         <i class="fas fa-laptop"></i>
-                        <h3 class="box-title" data-i18n="commands">Commands</h3>
+                        <h3 class="box-title" data-i18n="global-commands">Commands</h3>
                         <div class="box-tools pull-right">
                             <div class="btn-group">
                                 <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
@@ -122,14 +122,14 @@
                         <div class="input-group">
                             <div class="input-group-btn hidden-xs" id="cmdsDropDownBox">
                                 <button title="Show all commands" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                    <span data-i18n="commands">Commands</span>
+                                    <span data-i18n="global-commands">Commands</span>
                                     <span class="fas fa-caret-down" id="iconCmdsDropDownBox"></span>
                                 </button>
                                 <ul class="dropdown-menu scrollable-menu" id="commandsDropDown"></ul>
                             </div>
                             <div class="input-group-btn hidden-xs" id="botsDropDownBox">
                                 <button title="Show all bots" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                    <span data-i18n="bots">Bots</span>
+                                    <span data-i18n="global-bots">Bots</span>
                                     <span class="fas fa-caret-down" id="iconBotsDropDownBox"></span>
                                 </button>
                                 <ul class="dropdown-menu scrollable-menu" id="botsDropDown"></ul>
@@ -146,10 +146,10 @@
 
         <!-- Footer -->
         <footer class="main-footer">
-            <div class="pull-right" id="version"><b><span data-i18n="global-version">Version</span></b> 0.0.0.0</div>
+            <div class="pull-right"><strong data-i18n="global-version">Version</strong> <span id="version">0.0.0.0</span></div>
             <strong>
-                <a href="https://github.com/JustArchi/ArchiSteamFarm">GitHub</a> -
-                <a href="https://github.com/JustArchi/ArchiSteamFarm/wiki">Wiki</a> -
+                <a href="https://github.com/JustArchi/ArchiSteamFarm"><span data-i18n="global-github">GitHub</span></a> -
+                <a href="https://github.com/JustArchi/ArchiSteamFarm/wiki"><span data-i18n="global-wiki">Wiki</span></a> -
                 <a href="https://github.com/JustArchi/ArchiSteamFarm/commits/master" id="changelog"><span data-i18n="global-changelog">Changelog</span></a>
             </strong>
         </footer>
