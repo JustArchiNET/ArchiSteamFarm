@@ -543,7 +543,7 @@
 
                                         $.ajax({
                                             url: '/Api/Command/start ' + encodeURIComponent(BotName),
-                                            type: 'GET',
+                                            type: 'POST',
                                             success: function (data) {
                                                 $('.overlay').remove();
                                                 swal({
@@ -560,7 +560,7 @@
 
                                         $.ajax({
                                             url: '/Api/Command/stop ' + encodeURIComponent(BotName),
-                                            type: 'GET',
+                                            type: 'POST',
                                             success: function (data) {
                                                 $('.overlay').remove();
                                                 swal({
@@ -577,7 +577,7 @@
 
                                         $.ajax({
                                             url: '/Api/Command/pause ' + encodeURIComponent(BotName),
-                                            type: 'GET',
+                                            type: 'POST',
                                             success: function (data) {
                                                 $('.overlay').remove();
                                                 swal({
@@ -594,7 +594,7 @@
 
                                         $.ajax({
                                             url: '/Api/Command/resume ' + encodeURIComponent(BotName),
-                                            type: 'GET',
+                                            type: 'POST',
                                             success: function (data) {
                                                 $('.overlay').remove();
                                                 swal({

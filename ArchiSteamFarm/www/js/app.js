@@ -198,7 +198,7 @@ function sendCommand() {
     
     $.ajax({
         url: requestURL,
-        type: 'GET',
+        type: 'POST',
         success: function (data) {
             $('.overlay').remove();
             logCommand(false, data['Result']);
@@ -963,17 +963,61 @@ $(function () {
     }
 
     function loadLocales(language) {
-        var i18n = $.i18n();
+        var i18n = $.i18n(),
+            langCode = (language === 'strings') ? 'us' : language.substr(language.length - 2).toLowerCase();
 
         i18n.locale = language;
-        i18n.load('../locale/' + i18n.locale + '.json', i18n.locale).done(
+        i18n.load('../locale/' + language + '.json', i18n.locale).done(
             function () {
                 $('[data-i18n]').i18n();
             }
         );
-
-        language = (language == 'en') ? '' : language;
+    
         store('language', language);
+        $('#currentLanguage').attr({
+            alt: langCode,
+            src: '../img/flags/' + langCode + '.gif'
+        });
+    }
+
+    const defaultLocale = 'strings';
+    const nameRegex = /\.\/(\S+)\.json/i;
+
+    function getLocale(validLocales) {
+        const language = navigator.language || navigator.userLanguage; // If the browser doesn't support this, it will not support other page elements as well
+        if (!language) return defaultLocale; // If the browser doesn't provide the language - return default locale
+        if (language.length !== 2) return validLocales.includes(language) ? language : defaultLocale; // If the language is in `xx-XX` format, check if it's valid
+        if (validLocales.includes(`${language}-${language.toUpperCase()}`)) return `${language}-${language.toUpperCase()}`; // If the language is two letter code, check if corresponding 5 letter code is a valid locale
+
+        const languageRegex = new RegExp(`${language}\-\\\S\\\S`); // Create a regex to match `xx-**` where `*` is a wildcard
+
+        for (const validLocale of validLocales) {
+            if (languageRegex.test(validLocale)) return validLocale; // Check if the locale matches the regex, if so, return it
+        }
+
+        return defaultLocale; // If no match found, return default locale
+    }
+
+    var availableLanguages = [];
+
+    function loadAllLanguages() {
+        $.ajax({
+            url: '/Api/WWW/Directory/locale',
+            type: 'GET',
+            async: false,
+            success: function (data) {
+                var obj = data['Result'];
+
+                availableLanguages = [];
+
+                for (var prop in obj) {
+                    if (obj.hasOwnProperty(prop)) {
+                        var language = obj[prop];
+                        availableLanguages.push(language.substr(0, language.length - 5));
+                    }
+                }
+            }
+        });
     }
 
     function setup() {
@@ -984,44 +1028,39 @@ $(function () {
             tmpLanguage = get('language');
 
         if (tmpSkin && $.inArray(tmpSkin, mySkins)) changeSkin(tmpSkin);            
-        if (tmpLeftSidebarState) {
-            if (tmpLeftSidebarState === 'sidebar-collapse') {
-                $('body').addClass('sidebar-collapse');
-            }
+        if (tmpLeftSidebarState === 'sidebar-collapse') {
+            $('body').addClass('sidebar-collapse');
         } 
         if (tmpLayoutState) changeBoxed(tmpLayoutState);
         if (tmpNightmodeState) changeNightmode(tmpNightmodeState);
 
-        if (tmpLanguage) {
-            loadLocales(tmpLanguage);
-            $('#language option[value=' + tmpLanguage + ']').attr('selected', 'selected');
-        }
+        var myLocal = (tmpLanguage) ? tmpLanguage : getLocale(availableLanguages);
+        loadLocales(myLocal);
 
         $('[data-skin]').on('click', function (e) {
             e.preventDefault();
             changeSkin($(this).data('skin'));
         });
+
         $('#toggleBoxed').on('click', function (e) {
             e.preventDefault();
             toggleBoxed();
         });
+
         $('#toggleNightmode').on('click', function (e) {
             e.preventDefault();
             toggleNightmode();
         });
+
         $('#leftSidebar').on('click', function (e) {
             e.preventDefault();
-            if ($('body').hasClass('sidebar-collapse')) {
-                store('leftSidebarState', 'normal');
-            } else {
-                store('leftSidebarState', 'sidebar-collapse');
-            }
+            var state = $('body').hasClass('sidebar-collapse') ? 'normal' : 'sidebar-collapse';
+            store('leftSidebarState', state);
         });
 
-        $('#language').on('change keyup', function (e) {
+        $('.language').on('click', function (e) {
             e.preventDefault();
-            var language = $('#language option:selected').val();
-            loadLocales(language);
+            loadLocales($(this).data('locale'));
         });
     }
 
@@ -1030,9 +1069,7 @@ $(function () {
 
     // Layout options
     $layoutSettings.append(
-        '<h4 class="control-sidebar-heading">'
-        + '<span data-i18n="global-layout">Layout</span>'
-        + '</h4>'
+        '<h4 class="control-sidebar-heading" data-i18n="global-layout">Layout</h4>'
         // Boxed Layout
         + '<div class="form-group hidden-xs hidden-sm">'
         + '<label class="control-sidebar-subheading">'
@@ -1049,45 +1086,56 @@ $(function () {
         + '</label>'
         + '<p>Toggle the nightmode</p>'
         + '</div>'
-        // Language
-        + '<h4 class="control-sidebar-heading">'
-        + 'Language'
-        + '</h4>'
-        + '<select class="form-control" id="language">'
-        + '<option value="en">English</option>'
-        + '<option value="dk">Danish</option>'
-        + '<option value="de">German</option>'
-        + '</select>'
     );
     
     var $skinsList = $('<ul />', { 'class': 'list-unstyled clearfix' });
     
     var $skinBlue = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-blue" class="clearfix full-opacity-hover btn btn-badge bg-blue"></a>');
+        .append('<button data-skin="skin-blue" class="clearfix full-opacity-hover btn btn-badge bg-blue"></button>');
     $skinsList.append($skinBlue);
     var $skinBlack = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-black" class="clearfix full-opacity-hover btn btn-badge bg-black"></a>');
+        .append('<button data-skin="skin-black" class="clearfix full-opacity-hover btn btn-badge bg-black"></button>');
     $skinsList.append($skinBlack);
     var $skinPurple = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-purple" class="clearfix full-opacity-hover btn btn-badge bg-purple"></a>');
+        .append('<button data-skin="skin-purple" class="clearfix full-opacity-hover btn btn-badge bg-purple"></button>');
     $skinsList.append($skinPurple);
     var $skinGreen = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-green" class="clearfix full-opacity-hover btn btn-badge bg-green"></a>');
+        .append('<button data-skin="skin-green" class="clearfix full-opacity-hover btn btn-badge bg-green"></button>');
     $skinsList.append($skinGreen);
     var $skinRed = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-red" class="clearfix full-opacity-hover btn btn-badge bg-red"></a>');
+        .append('<button data-skin="skin-red" class="clearfix full-opacity-hover btn btn-badge bg-red"></button>');
     $skinsList.append($skinRed);
     var $skinYellow = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-yellow" class="clearfix full-opacity-hover btn btn-badge bg-yellow"></a>');
+        .append('<button data-skin="skin-yellow" class="clearfix full-opacity-hover btn btn-badge bg-yellow"></button>');
     $skinsList.append($skinYellow);
     var $skinTeal = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-teal" class="clearfix full-opacity-hover btn btn-badge bg-teal"></a>');
+        .append('<button data-skin="skin-teal" class="clearfix full-opacity-hover btn btn-badge bg-teal"></button>');
     $skinsList.append($skinTeal);
 
-    var $skinsListLight = $('<ul />', { 'class': 'list-unstyled clearfix' });
-
-    $layoutSettings.append('<h4 class="control-sidebar-heading">Skins</h4>');
+    $layoutSettings.append('<h4 class="control-sidebar-heading" data-i18n="global-skins">Skins</h4>');
     $layoutSettings.append($skinsList);
+
+    var $languagesList = $('<div />', { 'class': 'collapse', 'id': 'languages' });
+
+    loadAllLanguages();
+
+    for (var i in availableLanguages) {
+        var language = availableLanguages[i],
+            langCode = (language === 'strings') ? 'us' : language.substr(language.length - 2).toLowerCase();
+
+        $languagesList.append('<button title="Change language" type="button" class="btn btn-box-tool language" data-locale="' + language + '"><img src="../img/flags/' + langCode + '.gif" alt="' + langCode + '"></button>');
+    }
+
+    $layoutSettings.append('<h4 class="control-sidebar-heading" data-i18n="global-language">Language</h4>'
+        + '<div class="form-group">'
+        + '<label class="control-sidebar-subheading">'
+        + '<button title="Change language" type="button" class="btn btn-box-tool pull-right" data-toggle="collapse" data-target="#languages"><i class="fas fa-plus"></i></button>'
+        + '</label>'
+        + '<p>Current: <img id="currentLanguage" src="../img/flags/us.gif" alt="us"></p>'
+        + '</div>'
+    );
+
+    $layoutSettings.append($languagesList);
 
     $('#control-right-sidebar').after($layoutSettings);
 

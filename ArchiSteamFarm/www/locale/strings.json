@@ -13,12 +13,14 @@
   "global-github": "GitHub",
   "global-home": "Home",
   "global-information": "Information",
+  "global-language": "Language",
+  "global-layout": "Layout",
   "global-log": "Log",
+  "global-nightmode": "Nightmode",
   "global-ram-usage": "RAM Usage",
+  "global-skins": "Skins",
   "global-uptime": "Uptime",
   "global-version": "Version",
   "global-wiki": "Wiki",
-  "global-layout": "Layout",
-  "global-nightmode": "Nightmode",
   "log-title": "ASF | Log"
 }
