@@ -2347,22 +2347,22 @@ namespace ArchiSteamFarm {
 			ArchiLogger.LogGenericInfo(Strings.Starting);
 
 			while (IsConnectedAndLoggedOn && BotDatabase.HasGamesToRedeemInBackground) {
-				(string Key, string Name) game = BotDatabase.GetGameToRedeemInBackground();
-				if (string.IsNullOrEmpty(game.Key) || string.IsNullOrEmpty(game.Name)) {
-					ArchiLogger.LogNullError(nameof(game.Key) + " || " + nameof(game.Name));
+				(string key, string name) = BotDatabase.GetGameToRedeemInBackground();
+				if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(name)) {
+					ArchiLogger.LogNullError(nameof(key) + " || " + nameof(name));
 					break;
 				}
 
 				await LimitGiftsRequestsAsync().ConfigureAwait(false);
 
-				ArchiHandler.PurchaseResponseCallback result = await ArchiHandler.RedeemKey(game.Key).ConfigureAwait(false);
+				ArchiHandler.PurchaseResponseCallback result = await ArchiHandler.RedeemKey(key).ConfigureAwait(false);
 				if (result == null) {
 					continue;
 				}
 
 				if (result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) {
 					// If it's a wallet code, we try to redeem it first, then handle the inner result as our primary one
-					(EResult Result, EPurchaseResultDetail? PurchaseResult)? walletResult = await ArchiWebHandler.RedeemWalletKey(game.Key).ConfigureAwait(false);
+					(EResult Result, EPurchaseResultDetail? PurchaseResult)? walletResult = await ArchiWebHandler.RedeemWalletKey(key).ConfigureAwait(false);
 
 					if (walletResult != null) {
 						result.Result = walletResult.Value.Result;
@@ -2373,7 +2373,7 @@ namespace ArchiSteamFarm {
 					}
 				}
 
-				ArchiLogger.LogGenericDebug(string.Format(Strings.BotRedeem, game.Key, result.Result + "/" + result.PurchaseResultDetail));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail));
 
 				bool rateLimited = false;
 				bool redeemed = false;
@@ -2403,9 +2403,9 @@ namespace ArchiSteamFarm {
 					break;
 				}
 
-				await BotDatabase.RemoveGameToRedeemInBackground(game.Key).ConfigureAwait(false);
+				await BotDatabase.RemoveGameToRedeemInBackground(key).ConfigureAwait(false);
 
-				string logEntry = game.Name + DefaultBackgroundKeysRedeemerSeparator + "[" + result.PurchaseResultDetail + "]" + DefaultBackgroundKeysRedeemerSeparator + game.Key;
+				string logEntry = name + DefaultBackgroundKeysRedeemerSeparator + "[" + result.PurchaseResultDetail + "]" + DefaultBackgroundKeysRedeemerSeparator + key;
 
 				try {
 					await File.AppendAllTextAsync(redeemed ? KeysToRedeemUsedFilePath : KeysToRedeemUnusedFilePath, logEntry + Environment.NewLine).ConfigureAwait(false);

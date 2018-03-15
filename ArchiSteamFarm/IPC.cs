@@ -183,6 +183,8 @@ namespace ArchiSteamFarm {
 					return await HandleApiStructure(context.Request, context.Response, arguments, ++argumentsIndex).ConfigureAwait(false);
 				case "Type/":
 					return await HandleApiType(context.Request, context.Response, arguments, ++argumentsIndex).ConfigureAwait(false);
+				case "WWW/":
+					return await HandleApiWWW(context.Request, context.Response, arguments, ++argumentsIndex).ConfigureAwait(false);
 				default:
 					return false;
 			}
@@ -221,7 +223,7 @@ namespace ArchiSteamFarm {
 
 			ASFResponse asfResponse = new ASFResponse(Program.GlobalConfig, memoryUsage, processStartTime, SharedInfo.Version);
 
-			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", asfResponse)).ConfigureAwait(false);
+			await ResponseJsonObject(request, response, new GenericResponse<ASFResponse>(true, "OK", asfResponse)).ConfigureAwait(false);
 			return true;
 		}
 
@@ -234,7 +236,7 @@ namespace ArchiSteamFarm {
 			const string requiredContentType = "application/json";
 
 			if (request.ContentType != requiredContentType) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, nameof(request.ContentType) + " must be declared as " + requiredContentType), HttpStatusCode.NotAcceptable).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse<object>(false, nameof(request.ContentType) + " must be declared as " + requiredContentType), HttpStatusCode.NotAcceptable).ConfigureAwait(false);
 				return true;
 			}
 
@@ -244,7 +246,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (string.IsNullOrEmpty(body)) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(body))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse<object>(false, string.Format(Strings.ErrorIsEmpty, nameof(body))), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
@@ -253,23 +255,23 @@ namespace ArchiSteamFarm {
 			try {
 				jsonRequest = JsonConvert.DeserializeObject<ASFRequest>(body);
 			} catch (Exception e) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorParsingObject, nameof(jsonRequest)) + Environment.NewLine + e), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse<object>(false, string.Format(Strings.ErrorParsingObject, nameof(jsonRequest)) + Environment.NewLine + e), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
 			if (jsonRequest == null) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorObjectIsNull, nameof(jsonRequest))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse<object>(false, string.Format(Strings.ErrorObjectIsNull, nameof(jsonRequest))), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
 			string filePath = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName);
 
 			if (!await GlobalConfig.Write(filePath, jsonRequest.GlobalConfig).ConfigureAwait(false)) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, "Writing global config failed, check ASF log for details"), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse<object>(false, "Writing global config failed, check ASF log for details"), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
-			await ResponseJsonObject(request, response, new GenericResponse(true, "OK")).ConfigureAwait(false);
+			await ResponseJsonObject(request, response, new GenericResponse<object>(true, "OK")).ConfigureAwait(false);
 			return true;
 		}
 
@@ -302,11 +304,11 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string botNames = WebUtility.UrlDecode(arguments[argumentsIndex]);
+			string argument = WebUtility.UrlDecode(string.Join("", arguments.Skip(argumentsIndex)));
 
-			HashSet<Bot> bots = Bot.GetBots(botNames);
+			HashSet<Bot> bots = Bot.GetBots(argument);
 			if ((bots == null) || (bots.Count == 0)) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse<object>(false, string.Format(Strings.BotNotFound, argument)), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
@@ -327,11 +329,11 @@ namespace ArchiSteamFarm {
 			}
 
 			if (results.Any(result => !result)) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, "Removing one or more files failed, check ASF log for details"), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse<object>(false, "Removing one or more files failed, check ASF log for details"), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
-			await ResponseJsonObject(request, response, new GenericResponse(true, "OK")).ConfigureAwait(false);
+			await ResponseJsonObject(request, response, new GenericResponse<object>(true, "OK")).ConfigureAwait(false);
 			return true;
 		}
 
@@ -345,15 +347,15 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string botNames = WebUtility.UrlDecode(arguments[argumentsIndex]);
+			string argument = WebUtility.UrlDecode(string.Join("", arguments.Skip(argumentsIndex)));
 
-			HashSet<Bot> bots = Bot.GetBots(botNames);
+			HashSet<Bot> bots = Bot.GetBots(argument);
 			if ((bots == null) || (bots.Count == 0)) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse<HashSet<Bot>>(false, string.Format(Strings.BotNotFound, argument)), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
-			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", bots)).ConfigureAwait(false);
+			await ResponseJsonObject(request, response, new GenericResponse<HashSet<Bot>>(true, "OK", bots)).ConfigureAwait(false);
 			return true;
 		}
 
@@ -370,7 +372,7 @@ namespace ArchiSteamFarm {
 			const string requiredContentType = "application/json";
 
 			if (request.ContentType != requiredContentType) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, nameof(request.ContentType) + " must be declared as " + requiredContentType), HttpStatusCode.NotAcceptable).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse<object>(false, nameof(request.ContentType) + " must be declared as " + requiredContentType), HttpStatusCode.NotAcceptable).ConfigureAwait(false);
 				return true;
 			}
 
@@ -380,7 +382,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (string.IsNullOrEmpty(body)) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(body))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse<object>(false, string.Format(Strings.ErrorIsEmpty, nameof(body))), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
@@ -389,12 +391,12 @@ namespace ArchiSteamFarm {
 			try {
 				jsonRequest = JsonConvert.DeserializeObject<BotRequest>(body);
 			} catch (Exception e) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorParsingObject, nameof(jsonRequest)) + Environment.NewLine + e), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse<object>(false, string.Format(Strings.ErrorParsingObject, nameof(jsonRequest)) + Environment.NewLine + e), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
 			if (jsonRequest == null) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorObjectIsNull, nameof(jsonRequest))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse<object>(false, string.Format(Strings.ErrorObjectIsNull, nameof(jsonRequest))), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
@@ -417,11 +419,11 @@ namespace ArchiSteamFarm {
 			string filePath = Path.Combine(SharedInfo.ConfigDirectory, botName + SharedInfo.ConfigExtension);
 
 			if (!await BotConfig.Write(filePath, jsonRequest.BotConfig).ConfigureAwait(false)) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, "Writing bot config failed, check ASF log for details"), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse<object>(false, "Writing bot config failed, check ASF log for details"), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
-			await ResponseJsonObject(request, response, new GenericResponse(true, "OK")).ConfigureAwait(false);
+			await ResponseJsonObject(request, response, new GenericResponse<object>(true, "OK")).ConfigureAwait(false);
 			return true;
 		}
 
@@ -432,22 +434,20 @@ namespace ArchiSteamFarm {
 			}
 
 			if (Program.GlobalConfig.SteamOwnerID == 0) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(Program.GlobalConfig.SteamOwnerID))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse<string>(false, string.Format(Strings.ErrorIsEmpty, nameof(Program.GlobalConfig.SteamOwnerID))), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
 			switch (request.HttpMethod) {
-				case HttpMethods.Get:
-					return await HandleApiCommandGeneric(request, response, arguments, argumentsIndex).ConfigureAwait(false);
 				case HttpMethods.Post:
-					return await HandleApiCommandGeneric(request, response, arguments, argumentsIndex).ConfigureAwait(false);
+					return await HandleApiCommandPost(request, response, arguments, argumentsIndex).ConfigureAwait(false);
 				default:
 					await ResponseStatusCode(request, response, HttpStatusCode.MethodNotAllowed).ConfigureAwait(false);
 					return true;
 			}
 		}
 
-		private static async Task<bool> HandleApiCommandGeneric(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+		private static async Task<bool> HandleApiCommandPost(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
 			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
 				return false;
@@ -457,25 +457,25 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string command = WebUtility.UrlDecode(arguments[argumentsIndex]);
-			if (string.IsNullOrEmpty(command)) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(command))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+			string argument = WebUtility.UrlDecode(string.Join("", arguments.Skip(argumentsIndex)));
+			if (string.IsNullOrEmpty(argument)) {
+				await ResponseJsonObject(request, response, new GenericResponse<string>(false, string.Format(Strings.ErrorIsEmpty, nameof(argument))), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
 			Bot targetBot = Bot.Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value).FirstOrDefault();
 			if (targetBot == null) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, Strings.ErrorNoBotsDefined), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse<string>(false, Strings.ErrorNoBotsDefined), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
-			if (command[0] != '!') {
-				command = "!" + command;
+			if (argument[0] != '!') {
+				argument = "!" + argument;
 			}
 
-			string content = await targetBot.Response(Program.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
+			string content = await targetBot.Response(Program.GlobalConfig.SteamOwnerID, argument).ConfigureAwait(false);
 
-			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", content)).ConfigureAwait(false);
+			await ResponseJsonObject(request, response, new GenericResponse<string>(true, "OK", content)).ConfigureAwait(false);
 			return true;
 		}
 
@@ -504,17 +504,17 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string botName = WebUtility.UrlDecode(arguments[argumentsIndex]);
+			string argument = WebUtility.UrlDecode(string.Join("", arguments.Skip(argumentsIndex)));
 
-			if (!Bot.Bots.TryGetValue(botName, out Bot bot)) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.BotNotFound, botName)), HttpStatusCode.BadRequest).ConfigureAwait(false);
+			if (!Bot.Bots.TryGetValue(argument, out Bot bot)) {
+				await ResponseJsonObject(request, response, new GenericResponse<OrderedDictionary>(false, string.Format(Strings.BotNotFound, argument)), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
 			const string requiredContentType = "application/json";
 
 			if (request.ContentType != requiredContentType) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, nameof(request.ContentType) + " must be declared as " + requiredContentType), HttpStatusCode.NotAcceptable).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse<OrderedDictionary>(false, nameof(request.ContentType) + " must be declared as " + requiredContentType), HttpStatusCode.NotAcceptable).ConfigureAwait(false);
 				return true;
 			}
 
@@ -524,7 +524,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (string.IsNullOrEmpty(body)) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(body))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse<OrderedDictionary>(false, string.Format(Strings.ErrorIsEmpty, nameof(body))), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
@@ -533,23 +533,23 @@ namespace ArchiSteamFarm {
 			try {
 				jsonRequest = JsonConvert.DeserializeObject<GamesToRedeemInBackgroundRequest>(body);
 			} catch (Exception e) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorParsingObject, nameof(jsonRequest)) + Environment.NewLine + e), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse<OrderedDictionary>(false, string.Format(Strings.ErrorParsingObject, nameof(jsonRequest)) + Environment.NewLine + e), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
 			if (jsonRequest == null) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorObjectIsNull, nameof(jsonRequest))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse<OrderedDictionary>(false, string.Format(Strings.ErrorObjectIsNull, nameof(jsonRequest))), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
 			if (jsonRequest.GamesToRedeemInBackground.Count == 0) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(jsonRequest.GamesToRedeemInBackground))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse<OrderedDictionary>(false, string.Format(Strings.ErrorIsEmpty, nameof(jsonRequest.GamesToRedeemInBackground))), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
 			await bot.ValidateAndAddGamesToRedeemInBackground(jsonRequest.GamesToRedeemInBackground).ConfigureAwait(false);
 
-			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", jsonRequest.GamesToRedeemInBackground)).ConfigureAwait(false);
+			await ResponseJsonObject(request, response, new GenericResponse<OrderedDictionary>(true, "OK", jsonRequest.GamesToRedeemInBackground)).ConfigureAwait(false);
 			return true;
 		}
 
@@ -637,11 +637,11 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string argument = WebUtility.UrlDecode(arguments[argumentsIndex]);
+			string argument = WebUtility.UrlDecode(string.Join("", arguments.Skip(argumentsIndex)));
 			Type targetType = Type.GetType(argument);
 
 			if (targetType == null) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(argument))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse<object>(false, string.Format(Strings.ErrorIsInvalid, nameof(argument))), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
@@ -650,16 +650,16 @@ namespace ArchiSteamFarm {
 			try {
 				obj = Activator.CreateInstance(targetType, true);
 			} catch (Exception e) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorParsingObject, targetType) + Environment.NewLine + e), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse<object>(false, string.Format(Strings.ErrorParsingObject, targetType) + Environment.NewLine + e), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
 			if (obj == null) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorParsingObject, targetType)), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse<object>(false, string.Format(Strings.ErrorParsingObject, targetType)), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
-			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", obj)).ConfigureAwait(false);
+			await ResponseJsonObject(request, response, new GenericResponse<object>(true, "OK", obj)).ConfigureAwait(false);
 			return true;
 		}
 
@@ -688,11 +688,11 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string argument = WebUtility.UrlDecode(arguments[argumentsIndex]);
+			string argument = WebUtility.UrlDecode(string.Join("", arguments.Skip(argumentsIndex)));
 			Type targetType = Type.GetType(argument);
 
 			if (targetType == null) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(argument))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse<TypeResponse>(false, string.Format(Strings.ErrorIsInvalid, nameof(argument))), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
@@ -721,7 +721,73 @@ namespace ArchiSteamFarm {
 
 			TypeResponse.TypeProperties properties = new TypeResponse.TypeProperties(baseType, customAttributes.Count > 0 ? customAttributes : null, underlyingType);
 
-			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", new TypeResponse(body, properties))).ConfigureAwait(false);
+			await ResponseJsonObject(request, response, new GenericResponse<TypeResponse>(true, "OK", new TypeResponse(body, properties))).ConfigureAwait(false);
+			return true;
+		}
+
+		private static async Task<bool> HandleApiWWW(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			if (arguments.Length <= argumentsIndex) {
+				return false;
+			}
+
+			switch (arguments[argumentsIndex]) {
+				case "Directory/":
+					return await HandleApiWWWDirectory(request, response, arguments, ++argumentsIndex).ConfigureAwait(false);
+				default:
+					return false;
+			}
+		}
+
+		private static async Task<bool> HandleApiWWWDirectory(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			switch (request.HttpMethod) {
+				case HttpMethods.Get:
+					return await HandleApiWWWDirectoryGet(request, response, arguments, argumentsIndex).ConfigureAwait(false);
+				default:
+					await ResponseStatusCode(request, response, HttpStatusCode.MethodNotAllowed).ConfigureAwait(false);
+					return true;
+			}
+		}
+
+		private static async Task<bool> HandleApiWWWDirectoryGet(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			if (arguments.Length <= argumentsIndex) {
+				return false;
+			}
+
+			string argument = WebUtility.UrlDecode(string.Join("", arguments.Skip(argumentsIndex)));
+
+			string directory = Path.Combine(SharedInfo.WebsiteDirectory, argument);
+			if (!Directory.Exists(directory)) {
+				await ResponseJsonObject(request, response, new GenericResponse<HashSet<string>>(false, string.Format(Strings.ErrorIsInvalid, nameof(directory))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			string[] files;
+
+			try {
+				files = Directory.GetFiles(directory);
+			} catch (Exception e) {
+				await ResponseJsonObject(request, response, new GenericResponse<HashSet<string>>(false, string.Format(Strings.ErrorParsingObject, nameof(files)) + Environment.NewLine + e), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			HashSet<string> result = new HashSet<string>(files.Select(Path.GetFileName));
+
+			await ResponseJsonObject(request, response, new GenericResponse<HashSet<string>>(true, "OK", result)).ConfigureAwait(false);
 			return true;
 		}
 
@@ -898,7 +964,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			string json = JsonConvert.SerializeObject(new GenericResponse(true, "OK", newHistoryEntryArgs.Message));
+			string json = JsonConvert.SerializeObject(new GenericResponse<string>(true, "OK", newHistoryEntryArgs.Message));
 			await Task.WhenAll(ActiveLogWebSockets.Where(webSocket => webSocket.State == WebSocketState.Open).Select(webSocket => PostLoggedJsonUpdate(webSocket, json))).ConfigureAwait(false);
 		}
 
@@ -929,7 +995,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			string response = JsonConvert.SerializeObject(new GenericResponse(true, "OK", loggedMessage));
+			string response = JsonConvert.SerializeObject(new GenericResponse<string>(true, "OK", loggedMessage));
 			await PostLoggedJsonUpdate(webSocket, response).ConfigureAwait(false);
 		}
 
@@ -1131,17 +1197,17 @@ namespace ArchiSteamFarm {
 			private GamesToRedeemInBackgroundRequest() { }
 		}
 
-		private sealed class GenericResponse {
+		private sealed class GenericResponse<T> where T : class {
 			[JsonProperty]
 			private readonly string Message;
 
 			[JsonProperty]
-			private readonly object Result;
+			private readonly T Result;
 
 			[JsonProperty]
 			private readonly bool Success;
 
-			internal GenericResponse(bool success, string message = null, object result = null) {
+			internal GenericResponse(bool success, string message = null, T result = null) {
 				Success = success;
 				Message = message;
 				Result = result;
