@@ -2,7 +2,7 @@
 	"AutoRestart": true,
 	"BackgroundGCPeriod": 0,
 	"Blacklist": [],
-	"CommandPrefix": ".",
+	"CommandPrefix": "!",
 	"ConfirmationsLimiterDelay": 10,
 	"ConnectionTimeout": 60,
 	"CurrentCulture": null,

@@ -901,11 +901,6 @@ namespace ArchiSteamFarm {
 
 			if (!string.IsNullOrEmpty(Program.GlobalConfig.CommandPrefix)) {
 				if (!message.StartsWith(Program.GlobalConfig.CommandPrefix, StringComparison.Ordinal)) {
-					// TODO: Remove deprecation in future versions
-					if ((message[0] == '!') && IsOperator(steamID)) {
-						return "DEPRECATED: ! was replaced with " + Program.GlobalConfig.CommandPrefix + " (GlobalConfig.CommandPrefix)";
-					}
-
 					return null;
 				}
 
