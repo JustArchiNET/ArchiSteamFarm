@@ -183,6 +183,8 @@ namespace ArchiSteamFarm {
 					return await HandleApiStructure(context.Request, context.Response, arguments, ++argumentsIndex).ConfigureAwait(false);
 				case "Type/":
 					return await HandleApiType(context.Request, context.Response, arguments, ++argumentsIndex).ConfigureAwait(false);
+				case "WWW/":
+					return await HandleApiWWW(context.Request, context.Response, arguments, ++argumentsIndex).ConfigureAwait(false);
 				default:
 					return false;
 			}
@@ -722,6 +724,72 @@ namespace ArchiSteamFarm {
 			TypeResponse.TypeProperties properties = new TypeResponse.TypeProperties(baseType, customAttributes.Count > 0 ? customAttributes : null, underlyingType);
 
 			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", new TypeResponse(body, properties))).ConfigureAwait(false);
+			return true;
+		}
+
+		private static async Task<bool> HandleApiWWW(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			if (arguments.Length <= argumentsIndex) {
+				return false;
+			}
+
+			switch (arguments[argumentsIndex]) {
+				case "Directory/":
+					return await HandleApiWWWDirectory(request, response, arguments, ++argumentsIndex).ConfigureAwait(false);
+				default:
+					return false;
+			}
+		}
+
+		private static async Task<bool> HandleApiWWWDirectory(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			switch (request.HttpMethod) {
+				case HttpMethods.Get:
+					return await HandleApiWWWDirectoryGet(request, response, arguments, argumentsIndex).ConfigureAwait(false);
+				default:
+					await ResponseStatusCode(request, response, HttpStatusCode.MethodNotAllowed).ConfigureAwait(false);
+					return true;
+			}
+		}
+
+		private static async Task<bool> HandleApiWWWDirectoryGet(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			if (arguments.Length <= argumentsIndex) {
+				return false;
+			}
+
+			string argument = WebUtility.UrlDecode(string.Join("", arguments.Skip(argumentsIndex)));
+
+			string directory = Path.Combine(SharedInfo.WebsiteDirectory, argument);
+			if (!Directory.Exists(directory)) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(directory))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			string[] files;
+
+			try {
+				files = Directory.GetFiles(directory);
+			} catch (Exception e) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorParsingObject, nameof(files)) + Environment.NewLine + e), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			HashSet<string> result = new HashSet<string>(files.Select(Path.GetFileName));
+
+			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", result)).ConfigureAwait(false);
 			return true;
 		}
 
