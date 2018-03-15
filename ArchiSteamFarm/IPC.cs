@@ -469,8 +469,8 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			if (argument[0] != '!') {
-				argument = "!" + argument;
+			if (!string.IsNullOrEmpty(Program.GlobalConfig.CommandPrefix) && !argument.StartsWith(Program.GlobalConfig.CommandPrefix, StringComparison.Ordinal)) {
+				argument = Program.GlobalConfig.CommandPrefix + argument;
 			}
 
 			string content = await targetBot.Response(Program.GlobalConfig.SteamOwnerID, argument).ConfigureAwait(false);
