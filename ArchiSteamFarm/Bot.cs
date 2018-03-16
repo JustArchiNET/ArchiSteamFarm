@@ -1723,7 +1723,7 @@ namespace ArchiSteamFarm {
 
 			Regex regex = new Regex(@"[^\u0000-\u007F]+", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
-			string username = regex.Replace(BotConfig.SteamLogin, "").Trim();
+			string username = regex.Replace(BotConfig.SteamLogin, "").Replace(" ", "");
 
 			string password = BotConfig.SteamPassword;
 			if (!string.IsNullOrEmpty(password)) {

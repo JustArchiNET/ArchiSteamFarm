@@ -756,11 +756,11 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			CurrentGamesFarming.UnionWith(games);
+			CurrentGamesFarming.ReplaceWith(games);
 
-			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.NowIdlingList, string.Join(", ", CurrentGamesFarming.Select(game => game.AppID))));
+			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.NowIdlingList, string.Join(", ", games.Select(game => game.AppID))));
 
-			bool result = await FarmHours(CurrentGamesFarming).ConfigureAwait(false);
+			bool result = await FarmHours(games).ConfigureAwait(false);
 			CurrentGamesFarming.Clear();
 			return result;
 		}
