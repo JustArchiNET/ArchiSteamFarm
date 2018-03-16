@@ -1495,7 +1495,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			WebBrowser.XmlResponse response = await WebBrowser.UrlGetToXml(host + request).ConfigureAwait(false);
+			WebBrowser.XmlDocumentResponse response = await WebBrowser.UrlGetToXmlDocument(host + request).ConfigureAwait(false);
 			if (response == null) {
 				return null;
 			}
