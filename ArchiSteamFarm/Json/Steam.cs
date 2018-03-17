@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using ArchiSteamFarm.Localization;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using SteamKit2;
@@ -155,10 +156,16 @@ namespace ArchiSteamFarm.Json {
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		internal sealed class ConfirmationDetails {
+		internal class BooleanResponse {
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
 			internal readonly bool Success;
 
+			// Deserialized from JSON
+			protected BooleanResponse() { }
+		}
+
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		internal sealed class ConfirmationDetails : BooleanResponse {
 			internal ulong OtherSteamID64 {
 				get {
 					if (_OtherSteamID64 != 0) {
@@ -334,25 +341,16 @@ namespace ArchiSteamFarm.Json {
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		internal sealed class ConfirmationResponse {
-			[JsonProperty(PropertyName = "success", Required = Required.Always)]
-			internal readonly bool Success;
-
-			// Deserialized from JSON
-			private ConfirmationResponse() { }
-		}
-
-		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		internal sealed class GenericResponse {
+		internal class EResultResponse {
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
 			internal readonly EResult Result;
 
 			// Deserialized from JSON
-			private GenericResponse() { }
+			protected EResultResponse() { }
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		internal sealed class InventoryResponse {
+		internal sealed class InventoryResponse : NonZeroResponse {
 			[JsonProperty(PropertyName = "assets", Required = Required.DisallowNull)]
 			internal readonly HashSet<Asset> Assets;
 
@@ -367,7 +365,6 @@ namespace ArchiSteamFarm.Json {
 
 			internal ulong LastAssetID { get; private set; }
 			internal bool MoreItems { get; private set; }
-			internal bool Success { get; private set; }
 
 			[JsonProperty(PropertyName = "last_assetid", Required = Required.DisallowNull)]
 			private string LastAssetIDString {
@@ -389,11 +386,6 @@ namespace ArchiSteamFarm.Json {
 			[JsonProperty(PropertyName = "more_items", Required = Required.DisallowNull)]
 			private byte MoreItemsNumber {
 				set => MoreItems = value > 0;
-			}
-
-			[JsonProperty(PropertyName = "success", Required = Required.Always)]
-			private byte SuccessNumber {
-				set => Success = value > 0;
 			}
 
 			// Deserialized from JSON
@@ -449,12 +441,34 @@ namespace ArchiSteamFarm.Json {
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		internal sealed class RedeemWalletResponse {
-			[JsonProperty(PropertyName = "detail", Required = Required.DisallowNull)]
-			internal readonly EPurchaseResultDetail? PurchaseResultDetail;
+		internal class NonZeroResponse {
+			internal bool Success { get; private set; }
 
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
-			internal readonly EResult Result;
+			private byte SuccessNumber {
+				set {
+					switch (value) {
+						case 0:
+							Success = false;
+							break;
+						case 1:
+							Success = true;
+							break;
+						default:
+							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(value), value));
+							return;
+					}
+				}
+			}
+
+			// Deserialized from JSON
+			protected NonZeroResponse() { }
+		}
+
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		internal sealed class RedeemWalletResponse : EResultResponse {
+			[JsonProperty(PropertyName = "detail", Required = Required.DisallowNull)]
+			internal readonly EPurchaseResultDetail? PurchaseResultDetail;
 
 			// Deserialized from JSON
 			private RedeemWalletResponse() { }
