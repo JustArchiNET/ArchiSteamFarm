@@ -980,7 +980,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task PostLoggedJsonUpdate(WebSocket webSocket, SemaphoreSlim sendSemaphore, string json) {
 			if ((webSocket == null) || (sendSemaphore == null) || string.IsNullOrEmpty(json)) {
-				ASF.ArchiLogger.LogNullError(nameof(webSocket) + " || " + nameof(json));
+				ASF.ArchiLogger.LogNullError(nameof(webSocket) + " || " + nameof(sendSemaphore) + " || " + nameof(json));
 				return;
 			}
 
@@ -1007,7 +1007,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task PostLoggedMessageUpdate(WebSocket webSocket, SemaphoreSlim sendSemaphore, string loggedMessage) {
 			if ((webSocket == null) || (sendSemaphore == null) || string.IsNullOrEmpty(loggedMessage)) {
-				ASF.ArchiLogger.LogNullError(nameof(webSocket) + " || " + nameof(loggedMessage));
+				ASF.ArchiLogger.LogNullError(nameof(webSocket) + " || " + nameof(sendSemaphore) + " || " + nameof(loggedMessage));
 				return;
 			}
 
