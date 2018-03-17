@@ -345,21 +345,21 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				string appIDString = appIDNode.GetAttributeValue("id", null);
-				if (string.IsNullOrEmpty(appIDString)) {
-					Bot.ArchiLogger.LogNullError(nameof(appIDString));
+				string appIDText = appIDNode.GetAttributeValue("id", null);
+				if (string.IsNullOrEmpty(appIDText)) {
+					Bot.ArchiLogger.LogNullError(nameof(appIDText));
 					continue;
 				}
 
-				string[] appIDSplitted = appIDString.Split('_');
+				string[] appIDSplitted = appIDText.Split('_');
 				if (appIDSplitted.Length < 5) {
 					Bot.ArchiLogger.LogNullError(nameof(appIDSplitted));
 					continue;
 				}
 
-				appIDString = appIDSplitted[4];
+				appIDText = appIDSplitted[4];
 
-				if (!uint.TryParse(appIDString, out uint appID) || (appID == 0)) {
+				if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
 					Bot.ArchiLogger.LogNullError(nameof(appID));
 					continue;
 				}
@@ -459,14 +459,14 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				string hoursString = timeNode.InnerText;
-				if (string.IsNullOrEmpty(hoursString)) {
-					Bot.ArchiLogger.LogNullError(nameof(hoursString));
+				string hoursText = timeNode.InnerText;
+				if (string.IsNullOrEmpty(hoursText)) {
+					Bot.ArchiLogger.LogNullError(nameof(hoursText));
 					continue;
 				}
 
 				float hours = 0.0F;
-				Match hoursMatch = Regex.Match(hoursString, @"[0-9\.,]+");
+				Match hoursMatch = Regex.Match(hoursText, @"[0-9\.,]+");
 
 				// This might fail if we have exactly 0.0 hours played, as it's not printed in that case - that's fine
 				if (hoursMatch.Success) {
@@ -517,26 +517,26 @@ namespace ArchiSteamFarm {
 				HtmlNode levelNode = htmlNode.SelectSingleNode(".//div[@class='badge_info_description']/div[2]");
 				if (levelNode != null) {
 					// There is no levelNode if we didn't craft that badge yet (level 0)
-					string levelString = levelNode.InnerText;
-					if (string.IsNullOrEmpty(levelString)) {
-						Bot.ArchiLogger.LogNullError(nameof(levelString));
+					string levelText = levelNode.InnerText;
+					if (string.IsNullOrEmpty(levelText)) {
+						Bot.ArchiLogger.LogNullError(nameof(levelText));
 						continue;
 					}
 
-					int levelIndex = levelString.IndexOf("Level ", StringComparison.OrdinalIgnoreCase);
+					int levelIndex = levelText.IndexOf("Level ", StringComparison.OrdinalIgnoreCase);
 					if (levelIndex < 0) {
 						Bot.ArchiLogger.LogNullError(nameof(levelIndex));
 						continue;
 					}
 
 					levelIndex += 6;
-					if (levelString.Length <= levelIndex) {
+					if (levelText.Length <= levelIndex) {
 						Bot.ArchiLogger.LogNullError(nameof(levelIndex));
 						continue;
 					}
 
-					levelString = levelString.Substring(levelIndex, 1);
-					if (!byte.TryParse(levelString, out badgeLevel) || (badgeLevel == 0) || (badgeLevel > 5)) {
+					levelText = levelText.Substring(levelIndex, 1);
+					if (!byte.TryParse(levelText, out badgeLevel) || (badgeLevel == 0) || (badgeLevel > 5)) {
 						Bot.ArchiLogger.LogNullError(nameof(badgeLevel));
 						continue;
 					}

@@ -487,9 +487,9 @@ namespace ArchiSteamFarm {
 					return (appID, DateTime.MinValue);
 				}
 
-				string[] dlcAppIDsString = listOfDlc.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-				foreach (string dlcAppIDString in dlcAppIDsString) {
-					if (!uint.TryParse(dlcAppIDString, out uint dlcAppID) || (dlcAppID == 0)) {
+				string[] dlcAppIDsTexts = listOfDlc.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+				foreach (string dlcAppIDsText in dlcAppIDsTexts) {
+					if (!uint.TryParse(dlcAppIDsText, out uint dlcAppID) || (dlcAppID == 0)) {
 						ArchiLogger.LogNullError(nameof(dlcAppID));
 						break;
 					}
