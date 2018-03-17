@@ -132,7 +132,7 @@ notifications:
     {
     	"avatar_url": "https://www.appveyor.com/assets/img/appveyor-logo-256.png",
     	"username": "AppVeyor",
-    	"content": "[{{projectName}}:{{branch}}] {{commitMessage}} - {{committerName}} ({{commitId}}) | {{buildUrl}}/artifacts | **{{status}}**"
+    	"content": "[{{projectName}}:{{branch}}] {{commitMessage}} by {{committerName}} ({{commitId}}) | {{buildUrl}} | **{{status}}**"
     }
   on_build_success: true
   on_build_failure: true
