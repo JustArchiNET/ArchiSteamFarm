@@ -1100,7 +1100,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			await ResponseString(request, response, json, "text/json", statusCode).ConfigureAwait(false);
+			await ResponseString(request, response, json, "application/json", statusCode).ConfigureAwait(false);
 		}
 
 		private static async Task ResponseJsonObject(HttpListenerRequest request, HttpListenerResponse response, object obj, HttpStatusCode statusCode = HttpStatusCode.OK) {
