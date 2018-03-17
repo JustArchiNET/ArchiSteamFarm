@@ -1,26 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
-    <LangVersion>latest</LangVersion>
-    <ErrorReport>none</ErrorReport>
     <ApplicationIcon>ASF.ico</ApplicationIcon>
-    <Copyright>Copyright © ArchiSteamFarm 2015-2017</Copyright>
-    <Description>ASF is an application that allows you to farm steam cards using multiple steam accounts simultaneously.</Description>
     <Authors>JustArchi</Authors>
     <Company>JustArchi</Company>
+    <Copyright>Copyright © ArchiSteamFarm 2015-2018</Copyright>
+    <Description>ASF is an application that allows you to farm steam cards using multiple steam accounts simultaneously.</Description>
+    <ErrorReport>none</ErrorReport>
+    <LangVersion>latest</LangVersion>
+    <NoWarn />
+    <OutputType>Exe</OutputType>
+    <PackageIconUrl>https://github.com/JustArchi/ArchiSteamFarm/raw/master/resources/ASF.ico</PackageIconUrl>
     <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/JustArchi/ArchiSteamFarm</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/JustArchi/ArchiSteamFarm.git</RepositoryUrl>
-    <PackageIconUrl>https://github.com/JustArchi/ArchiSteamFarm/raw/master/resources/ASF.ico</PackageIconUrl>
     <RepositoryType>Git</RepositoryType>
-    <NoWarn />
+    <RepositoryUrl>https://github.com/JustArchi/ArchiSteamFarm.git</RepositoryUrl>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
   </PropertyGroup>

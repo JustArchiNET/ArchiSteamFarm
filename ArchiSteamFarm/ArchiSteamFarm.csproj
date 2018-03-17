@@ -1,32 +1,32 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
-    <AssemblyVersion>3.1.1.7</AssemblyVersion>
-    <FileVersion>3.1.1.7</FileVersion>
-    <LangVersion>latest</LangVersion>
-    <ErrorReport>none</ErrorReport>
     <ApplicationIcon>ASF.ico</ApplicationIcon>
-    <Copyright>Copyright © ArchiSteamFarm 2015-2017</Copyright>
-    <RuntimeIdentifiers>win-x64;linux-x64;linux-arm;osx-x64</RuntimeIdentifiers>
-    <Description>ASF is an application that allows you to farm steam cards using multiple steam accounts simultaneously.</Description>
+    <AssemblyVersion>3.1.1.7</AssemblyVersion>
     <Authors>JustArchi</Authors>
     <Company>JustArchi</Company>
+    <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
+    <Copyright>Copyright © ArchiSteamFarm 2015-2018</Copyright>
+    <CrossGenDuringPublish>false</CrossGenDuringPublish>
+    <Description>ASF is an application that allows you to farm steam cards using multiple steam accounts simultaneously.</Description>
+    <ErrorReport>none</ErrorReport>
+    <FileVersion>3.1.1.7</FileVersion>
+    <LangVersion>latest</LangVersion>
+    <NoWarn />
+    <OutputType>Exe</OutputType>
+    <PackageIconUrl>https://github.com/JustArchi/ArchiSteamFarm/raw/master/resources/ASF.ico</PackageIconUrl>
     <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/JustArchi/ArchiSteamFarm</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/JustArchi/ArchiSteamFarm.git</RepositoryUrl>
-    <PackageIconUrl>https://github.com/JustArchi/ArchiSteamFarm/raw/master/resources/ASF.ico</PackageIconUrl>
     <RepositoryType>Git</RepositoryType>
-    <NoWarn />
+    <RepositoryUrl>https://github.com/JustArchi/ArchiSteamFarm.git</RepositoryUrl>
+    <RuntimeIdentifiers>win-x64;linux-x64;linux-arm;osx-x64</RuntimeIdentifiers>
     <ServerGarbageCollection>false</ServerGarbageCollection>
-    <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
-    <CrossGenDuringPublish>false</CrossGenDuringPublish>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
   </PropertyGroup>
@@ -58,9 +58,9 @@
 
   <ItemGroup>
     <Compile Update="Localization\Strings.Designer.cs">
-      <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Strings.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
   </ItemGroup>
 
