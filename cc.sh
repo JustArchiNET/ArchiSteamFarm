@@ -45,7 +45,7 @@ if [[ ! -f "$SOLUTION" ]]; then
 fi
 
 SETUP_FLAGS=(-c "$CONFIGURATION" -o "$OUT")
-BUILD_FLAGS=(--no-restore '/nologo' '/p:LinkDuringPublish=false')
+BUILD_FLAGS=(--no-restore '/nologo')
 
 if [[ "$SHARED_COMPILATION" -eq 0 ]]; then
 	BUILD_FLAGS+=('/p:UseSharedCompilation=false')
