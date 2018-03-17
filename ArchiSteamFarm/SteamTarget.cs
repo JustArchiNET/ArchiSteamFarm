@@ -42,13 +42,10 @@ namespace ArchiSteamFarm {
 		[RequiredParameter]
 		public ulong SteamID { get; set; }
 
-		// This constructor is intentionally public, as NLog uses it for creating targets
+		// This parameterless(!) constructor is intentionally public, as NLog uses it for creating targets
 		// It must stay like this as we want to have our targets defined in our NLog.config
-		// Keeping date in default layout also doesn't make much sense, so we remove it by default
-		public SteamTarget(string name = null) {
-			Name = name;
-			Layout = "${level:uppercase=true}|${logger}|${message}";
-		}
+		// Keeping date in default layout also doesn't make much sense (Steam offers that), so we remove it by default
+		public SteamTarget() => Layout = "${level:uppercase=true}|${logger}|${message}";
 
 		protected override async void Write(LogEventInfo logEvent) {
 			if (logEvent == null) {

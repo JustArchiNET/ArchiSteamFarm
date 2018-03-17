@@ -31,6 +31,11 @@ namespace ArchiSteamFarm {
 		internal byte MaxCount {
 			get => _MaxCount;
 			set {
+				if (value == 0) {
+					ASF.ArchiLogger.LogNullError(nameof(value));
+					return;
+				}
+
 				_MaxCount = value;
 
 				while ((BackingQueue.Count > MaxCount) && BackingQueue.TryDequeue(out _)) { }
