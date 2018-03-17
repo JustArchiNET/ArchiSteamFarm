@@ -19,7 +19,8 @@ group: travis_latest
 mono: none
 
 # ASF requires .NET Core 2.0+
-dotnet: 2.1.101
+# TODO: Change me to 2.1.101+ once https://github.com/travis-ci/travis-build/pull/1340 is merged
+dotnet: 2.1.4
 
 env:
   global:
