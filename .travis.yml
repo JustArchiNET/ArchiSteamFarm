@@ -19,7 +19,7 @@ group: travis_latest
 mono: none
 
 # ASF requires .NET Core 2.0+
-dotnet: 2.1.4
+dotnet: 2.1.101
 
 env:
   global:
@@ -36,6 +36,7 @@ before_script:
         ulimit -n 1024
     fi
 
+    dotnet --info
     dotnet restore
 
 script:
@@ -47,11 +48,12 @@ script:
 
     publish() {
         if [ "$1" = 'generic' ]; then
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" --no-restore /nologo "/p:ASFVariant=$1" /p:LinkDuringPublish=false
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" --no-restore /nologo "/p:ASFVariant=$1"
         else
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" -r "$1" --no-restore /nologo "/p:ASFVariant=$1" /p:LinkDuringPublish=false
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" -r "$1" --no-restore /nologo "/p:ASFVariant=$1"
         fi
 
+        # If we include any helper scripts for this variant, copy them to output directory
         if [ -d "ArchiSteamFarm/scripts/${1}" ]; then
             cp "ArchiSteamFarm/scripts/${1}/"* "ArchiSteamFarm/out/${1}"
         fi
@@ -73,4 +75,4 @@ matrix:
       sudo: false
     - os: osx
       # Ref: https://docs.travis-ci.com/user/reference/osx/
-      osx_image: xcode9.2
+      osx_image: xcode9.3beta

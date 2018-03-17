@@ -38,7 +38,7 @@
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.7.1" />
     <PackageReference Include="Humanizer" Version="2.2.0" />
-    <PackageReference Include="ILLink.Tasks" Version="0.1.4-preview-1317495" />
+    <PackageReference Include="ILLink.Tasks" Version="0.1.5-preview-1461378" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.5.0-preview1-26216-02" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
     <PackageReference Include="NLog" Version="4.5.0-rc07" />
