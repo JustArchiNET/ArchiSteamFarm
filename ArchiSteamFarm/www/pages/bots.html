@@ -124,6 +124,7 @@
                                 <ul class="dropdown-menu" role="menu">
                                     <li><button title="Toggle key button" type="button" class="btn btn-box-tool text-grey" id="chkShowKeyButton"><i id="iconShowKeyButton" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>Show key button</li>
                                     <li><button title="Toggle delete button" type="button" class="btn btn-box-tool text-grey" id="chkShowDeleteButton"><i id="iconShowDeleteButton" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>Show delete button</li>
+                                    <li><button title="Toggle simple farming info" type="button" class="btn btn-box-tool text-grey" id="chkSimpleFarmingInfo"><i id="iconSimpleFarmingInfo" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>Simple farming info</li>
                                 </ul>
                             </div>
                         </div>
@@ -183,6 +184,7 @@
                 tmpHideOfflineBots = get('hideOfflineBots'),
                 tmpShowDeleteButton = get('showDeleteButton'),
                 tmpShowKeyButton = get('showKeyButton'),
+                tmpSimpleFarmingInfo = get('simpleFarmingInfo'),
                 //tmpMultiSelect = get('multiSelect'), // Implement properly
                 currentlySelectedBots = [];
 
@@ -247,6 +249,18 @@
                     $('#iconShowKeyButton').removeClass('fa-rotate-180');
                 }
 
+                if (tmpShowKeyButton === 'true') {
+                    $('#chkShowKeyButton').removeClass('text-grey');
+                    $('#chkShowKeyButton').addClass('text-olive');
+                    $('#iconShowKeyButton').removeClass('fa-rotate-180');
+                }
+
+                if (tmpSimpleFarmingInfo === 'true') {
+                    $('#chkSimpleFarmingInfo').removeClass('text-grey');
+                    $('#chkSimpleFarmingInfo').addClass('text-olive');
+                    $('#iconSimpleFarmingInfo').removeClass('fa-rotate-180');
+                }
+
                 // Implement properly
                 //if (tmpMultiSelect === 'true') {
                 //    $('#iconMultiSelect').removeClass('fa-square');
@@ -255,6 +269,21 @@
                 //    $('#headerBox').removeClass('expanded-box');
                 //    $('#botRow').selectable();
                 //}
+            });
+
+            $('#chkSimpleFarmingInfo').click(function () {
+                if ($('#iconSimpleFarmingInfo').hasClass('fa-rotate-180')) {
+                    $('#iconSimpleFarmingInfo').removeClass('fa-rotate-180');
+                    $('#chkSimpleFarmingInfo').removeClass('text-grey');
+                    $('#chkSimpleFarmingInfo').addClass('text-olive');
+                    store('simpleFarmingInfo', true);
+                } else {
+                    $('#iconSimpleFarmingInfo').addClass('fa-rotate-180');
+                    $('#chkSimpleFarmingInfo').removeClass('text-olive');
+                    $('#chkSimpleFarmingInfo').addClass('text-grey');
+                    store('simpleFarmingInfo', false);
+                }
+                loadPageContent();
             });
 
             $('#chkHideOnlineBots').click(function () {
@@ -356,7 +385,8 @@
                     tmpHideOfflineBots = get('hideOfflineBots'),
                     tmpShowDeleteButton = get('showDeleteButton'),
                     tmpDelimeter = get('delimeter'),
-                    tmpShowKeyButton = get('showKeyButton');
+                    tmpShowKeyButton = get('showKeyButton'),
+                    tmpSimpleFarmingInfo = get('simpleFarmingInfo');
                 
                 $('#totalBotOverview').empty(); // Clear page content
                 $('#botRow').empty(); // Clear page content
@@ -420,8 +450,8 @@
                                     if (TimeRemaining !== '00:00:00') { // Bot is farming
                                         var GamesToFarm = obj.CardsFarmer.GamesToFarm,
                                             CurrentGamesFarming = obj.CardsFarmer.CurrentGamesFarming,
-                                            allGamesRemainingName = [],
                                             allGamesFarmingAppID = [],
+                                            allGamesFarmingName = [],
                                             allCardsRemaining = 0;
 
                                         farmingIsActive = true; // At least one bot is farming
@@ -430,11 +460,11 @@
                                         for (var j = 0; j < GamesToFarm.length; j++) {
                                             totalCardsRemaining = totalCardsRemaining + GamesToFarm[j].CardsRemaining;
                                             allCardsRemaining = allCardsRemaining + GamesToFarm[j].CardsRemaining;
-                                            allGamesRemainingName.push(GamesToFarm[j].GameName);
                                         }
 
                                         for (var k = 0; k < CurrentGamesFarming.length; k++) {
                                             allGamesFarmingAppID.push(CurrentGamesFarming[k].AppID);
+                                            allGamesFarmingName.push(CurrentGamesFarming[k].GameName);
                                         }
 
                                         if (totalTimeRemaining < TimeRemaining) totalTimeRemaining = TimeRemaining;
@@ -447,18 +477,22 @@
                                             if (Paused) {
                                                 allGamesHTML = '<p class="text-center no-margin">Bot is paused.</p>';
                                             } else {
-                                                if (allGamesFarmingAppID.length === 1) {
-                                                    var value = allGamesFarmingAppID;
-                                                    allGamesHTML = '<img src="' + steamGameBaseURL + value[0] + '/header.jpg" alt="" class="img-responsive">'; // ToDo: Fill alt="" with gameName
-                                                } else { // Multiple game farming is active
-                                                    allGamesHTML = '<div class="games-carousel-' + BotName + '">';
+                                                if (tmpSimpleFarmingInfo === 'true') {
+                                                    allGamesHTML = '<p class="text-center no-margin">' + allGamesFarmingName.join(", ") + '</p>';
+                                                } else {
+                                                    if (allGamesFarmingAppID.length === 1) {
+                                                        var value = allGamesFarmingAppID;
+                                                        allGamesHTML = '<img src="' + steamGameBaseURL + value[0] + '/header.jpg" alt="" class="img-responsive">'; // ToDo: Fill alt="" with gameName
+                                                    } else { // Multiple game farming is active
+                                                        allGamesHTML = '<div class="games-carousel-' + BotName + '">';
 
-                                                    for (var appID in allGamesFarmingAppID) {
-                                                        var value = allGamesFarmingAppID[appID];
-                                                        allGamesHTML += '<div class="game-box" style="max-height: 215px;"><img src="' + steamGameBaseURL + value + '/header.jpg" alt="" class="img-responsive"></div>'; // ToDo: Fill alt="" with gameName
+                                                        for (var appID in allGamesFarmingAppID) {
+                                                            var value = allGamesFarmingAppID[appID];
+                                                            allGamesHTML += '<div class="game-box" style="max-height: 215px;"><img src="' + steamGameBaseURL + value + '/header.jpg" alt="" class="img-responsive"></div>'; // ToDo: Fill alt="" with gameName
+                                                        }
+
+                                                        allGamesHTML += '</div>';
                                                     }
-
-                                                    allGamesHTML += '</div>';
                                                 }
                                             }
                                         } else {
