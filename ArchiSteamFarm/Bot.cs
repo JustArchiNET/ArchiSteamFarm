@@ -487,9 +487,9 @@ namespace ArchiSteamFarm {
 					return (appID, DateTime.MinValue);
 				}
 
-				string[] dlcAppIDsString = listOfDlc.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-				foreach (string dlcAppIDString in dlcAppIDsString) {
-					if (!uint.TryParse(dlcAppIDString, out uint dlcAppID) || (dlcAppID == 0)) {
+				string[] dlcAppIDsTexts = listOfDlc.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+				foreach (string dlcAppIDsText in dlcAppIDsTexts) {
+					if (!uint.TryParse(dlcAppIDsText, out uint dlcAppID) || (dlcAppID == 0)) {
 						ArchiLogger.LogNullError(nameof(dlcAppID));
 						break;
 					}
@@ -899,8 +899,12 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (message[0] != '!') {
-				return null;
+			if (!string.IsNullOrEmpty(Program.GlobalConfig.CommandPrefix)) {
+				if (!message.StartsWith(Program.GlobalConfig.CommandPrefix, StringComparison.Ordinal)) {
+					return null;
+				}
+
+				message = message.Substring(Program.GlobalConfig.CommandPrefix.Length);
 			}
 
 			string[] args = message.Split((char[]) null, StringSplitOptions.RemoveEmptyEntries);
@@ -911,94 +915,94 @@ namespace ArchiSteamFarm {
 					return null;
 				case 1:
 					switch (args[0].ToUpperInvariant()) {
-						case "!2FA":
+						case "2FA":
 							return await Response2FA(steamID).ConfigureAwait(false);
-						case "!2FANO":
+						case "2FANO":
 							return await Response2FAConfirm(steamID, false).ConfigureAwait(false);
-						case "!2FAOK":
+						case "2FAOK":
 							return await Response2FAConfirm(steamID, true).ConfigureAwait(false);
-						case "!BL":
+						case "BL":
 							return ResponseBlacklist(steamID);
-						case "!EXIT":
+						case "EXIT":
 							return ResponseExit(steamID);
-						case "!FARM":
+						case "FARM":
 							return await ResponseFarm(steamID).ConfigureAwait(false);
-						case "!HELP":
+						case "HELP":
 							return ResponseHelp(steamID);
-						case "!IB":
+						case "IB":
 							return ResponseIdleBlacklist(steamID);
-						case "!IQ":
+						case "IQ":
 							return ResponseIdleQueue(steamID);
-						case "!LEAVE":
+						case "LEAVE":
 							if (chatID != 0) {
 								return ResponseLeave(steamID, chatID);
 							}
 
 							goto default;
-						case "!LOOT":
+						case "LOOT":
 							return await ResponseLoot(steamID).ConfigureAwait(false);
-						case "!LOOT&":
+						case "LOOT&":
 							return ResponseLootSwitch(steamID);
-						case "!PASSWORD":
+						case "PASSWORD":
 							return ResponsePassword(steamID);
-						case "!PAUSE":
+						case "PAUSE":
 							return await ResponsePause(steamID, true).ConfigureAwait(false);
-						case "!PAUSE~":
+						case "PAUSE~":
 							return await ResponsePause(steamID, false).ConfigureAwait(false);
-						case "!REJOINCHAT":
+						case "REJOINCHAT":
 							return ResponseRejoinChat(steamID);
-						case "!RESUME":
+						case "RESUME":
 							return ResponseResume(steamID);
-						case "!RESTART":
+						case "RESTART":
 							return ResponseRestart(steamID);
-						case "!SA":
+						case "SA":
 							return await ResponseStatus(steamID, SharedInfo.ASF).ConfigureAwait(false);
-						case "!STATS":
+						case "STATS":
 							return ResponseStats(steamID);
-						case "!STATUS":
+						case "STATUS":
 							return ResponseStatus(steamID).Response;
-						case "!STOP":
+						case "STOP":
 							return ResponseStop(steamID);
-						case "!UNPACK":
+						case "UNPACK":
 							return await ResponseUnpackBoosters(steamID).ConfigureAwait(false);
-						case "!UPDATE":
+						case "UPDATE":
 							return await ResponseUpdate(steamID).ConfigureAwait(false);
-						case "!VERSION":
+						case "VERSION":
 							return ResponseVersion(steamID);
 						default:
 							return ResponseUnknown(steamID);
 					}
 				default:
 					switch (args[0].ToUpperInvariant()) {
-						case "!2FA":
+						case "2FA":
 							return await Response2FA(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
-						case "!2FANO":
+						case "2FANO":
 							return await Response2FAConfirm(steamID, Utilities.GetArgsString(args, 1, ","), false).ConfigureAwait(false);
-						case "!2FAOK":
+						case "2FAOK":
 							return await Response2FAConfirm(steamID, Utilities.GetArgsString(args, 1, ","), true).ConfigureAwait(false);
-						case "!ADDLICENSE":
+						case "ADDLICENSE":
 							if (args.Length > 2) {
 								return await ResponseAddLicense(steamID, args[1], Utilities.GetArgsString(args, 2, ",")).ConfigureAwait(false);
 							}
 
 							return await ResponseAddLicense(steamID, args[1]).ConfigureAwait(false);
-						case "!BL":
+						case "BL":
 							return await ResponseBlacklist(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
-						case "!BLADD":
+						case "BLADD":
 							if (args.Length > 2) {
 								return await ResponseBlacklistAdd(steamID, args[1], Utilities.GetArgsString(args, 2, ",")).ConfigureAwait(false);
 							}
 
 							return await ResponseBlacklistAdd(steamID, args[1]).ConfigureAwait(false);
-						case "!BLRM":
+						case "BLRM":
 							if (args.Length > 2) {
 								return await ResponseBlacklistRemove(steamID, args[1], Utilities.GetArgsString(args, 2, ",")).ConfigureAwait(false);
 							}
 
 							return await ResponseBlacklistRemove(steamID, args[1]).ConfigureAwait(false);
-						case "!FARM":
+						case "FARM":
 							return await ResponseFarm(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
-						case "!INPUT":
+						case "INPUT":
 							if (args.Length > 3) {
 								return await ResponseInput(steamID, args[1], args[2], Utilities.GetArgsString(args, 3)).ConfigureAwait(false);
 							}
@@ -1008,43 +1012,43 @@ namespace ArchiSteamFarm {
 							}
 
 							goto default;
-						case "!IB":
+						case "IB":
 							return await ResponseIdleBlacklist(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
-						case "!IBADD":
+						case "IBADD":
 							if (args.Length > 2) {
 								return await ResponseIdleBlacklistAdd(steamID, args[1], Utilities.GetArgsString(args, 2, ",")).ConfigureAwait(false);
 							}
 
 							return await ResponseIdleBlacklistAdd(steamID, args[1]).ConfigureAwait(false);
-						case "!IBRM":
+						case "IBRM":
 							if (args.Length > 2) {
 								return await ResponseIdleBlacklistRemove(steamID, args[1], Utilities.GetArgsString(args, 2, ",")).ConfigureAwait(false);
 							}
 
 							return await ResponseIdleBlacklistRemove(steamID, args[1]).ConfigureAwait(false);
-						case "!IQ":
+						case "IQ":
 							return await ResponseIdleQueue(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
-						case "!IQADD":
+						case "IQADD":
 							if (args.Length > 2) {
 								return await ResponseIdleQueueAdd(steamID, args[1], Utilities.GetArgsString(args, 2, ",")).ConfigureAwait(false);
 							}
 
 							return await ResponseIdleQueueAdd(steamID, args[1]).ConfigureAwait(false);
-						case "!IQRM":
+						case "IQRM":
 							if (args.Length > 2) {
 								return await ResponseIdleQueueRemove(steamID, args[1], Utilities.GetArgsString(args, 2, ",")).ConfigureAwait(false);
 							}
 
 							return await ResponseIdleQueueRemove(steamID, args[1]).ConfigureAwait(false);
-						case "!LEAVE":
+						case "LEAVE":
 							if (chatID > 0) {
 								return await ResponseLeave(steamID, Utilities.GetArgsString(args, 1, ","), chatID).ConfigureAwait(false);
 							}
 
 							goto default;
-						case "!LOOT":
+						case "LOOT":
 							return await ResponseLoot(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
-						case "!LOOT^":
+						case "LOOT^":
 							if (args.Length > 3) {
 								return await ResponseAdvancedLoot(steamID, args[1], args[2], Utilities.GetArgsString(args, 3, ",")).ConfigureAwait(false);
 							}
@@ -1054,49 +1058,49 @@ namespace ArchiSteamFarm {
 							}
 
 							goto default;
-						case "!LOOT&":
+						case "LOOT&":
 							return await ResponseLootSwitch(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
-						case "!NICKNAME":
+						case "NICKNAME":
 							if (args.Length > 2) {
 								return await ResponseNickname(steamID, args[1], Utilities.GetArgsString(args, 2)).ConfigureAwait(false);
 							}
 
 							return ResponseNickname(steamID, args[1]);
-						case "!OA":
+						case "OA":
 							return await ResponseOwns(steamID, SharedInfo.ASF, Utilities.GetArgsString(args, 1)).ConfigureAwait(false);
-						case "!OWNS":
+						case "OWNS":
 							if (args.Length > 2) {
 								return await ResponseOwns(steamID, args[1], Utilities.GetArgsString(args, 2)).ConfigureAwait(false);
 							}
 
 							return (await ResponseOwns(steamID, args[1]).ConfigureAwait(false)).Response;
-						case "!PASSWORD":
+						case "PASSWORD":
 							return await ResponsePassword(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
-						case "!PAUSE":
+						case "PAUSE":
 							return await ResponsePause(steamID, Utilities.GetArgsString(args, 1, ","), true).ConfigureAwait(false);
-						case "!PAUSE~":
+						case "PAUSE~":
 							return await ResponsePause(steamID, Utilities.GetArgsString(args, 1, ","), false).ConfigureAwait(false);
-						case "!PAUSE&":
+						case "PAUSE&":
 							if (args.Length > 2) {
 								return await ResponsePause(steamID, args[1], true, Utilities.GetArgsString(args, 2, ",")).ConfigureAwait(false);
 							}
 
 							return await ResponsePause(steamID, true, args[1]).ConfigureAwait(false);
-						case "!PLAY":
+						case "PLAY":
 							if (args.Length > 2) {
 								return await ResponsePlay(steamID, args[1], Utilities.GetArgsString(args, 2, ",")).ConfigureAwait(false);
 							}
 
 							return await ResponsePlay(steamID, args[1]).ConfigureAwait(false);
-						case "!R":
-						case "!REDEEM":
+						case "R":
+						case "REDEEM":
 							if (args.Length > 2) {
 								return await ResponseRedeem(steamID, args[1], Utilities.GetArgsString(args, 2, ",")).ConfigureAwait(false);
 							}
 
 							return await ResponseRedeem(steamID, args[1]).ConfigureAwait(false);
-						case "!R^":
-						case "!REDEEM^":
+						case "R^":
+						case "REDEEM^":
 							if (args.Length > 3) {
 								return await ResponseAdvancedRedeem(steamID, args[1], args[2], Utilities.GetArgsString(args, 3, ",")).ConfigureAwait(false);
 							}
@@ -1106,17 +1110,17 @@ namespace ArchiSteamFarm {
 							}
 
 							goto default;
-						case "!REJOINCHAT":
+						case "REJOINCHAT":
 							return await ResponseRejoinChat(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
-						case "!RESUME":
+						case "RESUME":
 							return await ResponseResume(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
-						case "!START":
+						case "START":
 							return await ResponseStart(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
-						case "!STATUS":
+						case "STATUS":
 							return await ResponseStatus(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
-						case "!STOP":
+						case "STOP":
 							return await ResponseStop(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
-						case "!TRANSFER":
+						case "TRANSFER":
 							if (args.Length > 3) {
 								return await ResponseTransfer(steamID, args[1], args[2], Utilities.GetArgsString(args, 3, ",")).ConfigureAwait(false);
 							}
@@ -1126,7 +1130,7 @@ namespace ArchiSteamFarm {
 							}
 
 							goto default;
-						case "!UNPACK":
+						case "UNPACK":
 							return await ResponseUnpackBoosters(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
 						default:
 							return ResponseUnknown(steamID);
@@ -1719,7 +1723,7 @@ namespace ArchiSteamFarm {
 
 			Regex regex = new Regex(@"[^\u0000-\u007F]+", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
-			string username = regex.Replace(BotConfig.SteamLogin, "").Trim();
+			string username = regex.Replace(BotConfig.SteamLogin, "").Replace(" ", "");
 
 			string password = BotConfig.SteamPassword;
 			if (!string.IsNullOrEmpty(password)) {

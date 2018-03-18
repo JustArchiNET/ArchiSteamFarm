@@ -8,6 +8,7 @@ CONFIGURATION="Release"
 OUT="out/source"
 
 CLEAN=0
+LINK_DURING_PUBLISH=1
 PULL=1
 SHARED_COMPILATION=1
 TEST=1
@@ -19,10 +20,11 @@ for ARG in "$@"; do
 		release|Release) CONFIGURATION="Release" ;;
 		debug|Debug) CONFIGURATION="Debug" ;;
 		--clean) CLEAN=1 ;;
+		--no-link-during-publish) LINK_DURING_PUBLISH=0 ;;
 		--no-pull) PULL=0 ;;
 		--no-shared-compilation) SHARED_COMPILATION=0 ;;
 		--no-test) TEST=0 ;;
-		*) echo "Usage: $0 [--clean] [--no-pull] [--no-shared-compilation] [--no-test] [debug/release]"; exit 1
+		*) echo "Usage: $0 [--clean] [--no-link-during-publish] [--no-pull] [--no-shared-compilation] [--no-test] [debug/release]"; exit 1
 	esac
 done
 
@@ -45,7 +47,11 @@ if [[ ! -f "$SOLUTION" ]]; then
 fi
 
 SETUP_FLAGS=(-c "$CONFIGURATION" -o "$OUT")
-BUILD_FLAGS=(--no-restore '/nologo' '/p:LinkDuringPublish=false')
+BUILD_FLAGS=(--no-restore '/nologo')
+
+if [[ "$LINK_DURING_PUBLISH" -eq 0 ]]; then
+	BUILD_FLAGS+=('/p:LinkDuringPublish=false')
+fi
 
 if [[ "$SHARED_COMPILATION" -eq 0 ]]; then
 	BUILD_FLAGS+=('/p:UseSharedCompilation=false')

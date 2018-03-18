@@ -2,7 +2,7 @@ FROM microsoft/dotnet:2.0-sdk AS build-env
 WORKDIR /app
 COPY . ./
 RUN dotnet --info && \
-    dotnet publish ArchiSteamFarm -c Release -o out /nologo /p:ASFVariant=generic /p:LinkDuringPublish=false && \
+    dotnet publish ArchiSteamFarm -c Release -o out /nologo /p:ASFVariant=generic && \
     cp "ArchiSteamFarm/scripts/generic/ArchiSteamFarm-Service.sh" "ArchiSteamFarm/out/ArchiSteamFarm-Service.sh"
 
 FROM microsoft/dotnet:2.0-runtime

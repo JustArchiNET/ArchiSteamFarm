@@ -113,7 +113,7 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		private void ReplaceWith(IEnumerable<T> other) {
+		internal void ReplaceWith(IEnumerable<T> other) {
 			BackingCollection.Clear();
 			foreach (T item in other) {
 				BackingCollection[item] = true;

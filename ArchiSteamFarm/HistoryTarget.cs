@@ -51,9 +51,12 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		// This constructor is intentionally public, as NLog uses it for creating targets
+		// This parameterless(!) constructor is intentionally public, as NLog uses it for creating targets
 		// It must stay like this as we want to have our targets defined in our NLog.config
-		public HistoryTarget(string name = null) => Name = name;
+		[SuppressMessage("ReSharper", "UnusedMember.Global")]
+		public HistoryTarget() { }
+
+		internal HistoryTarget(string name = null) => Name = name;
 
 		protected override void Write(LogEventInfo logEvent) {
 			if (logEvent == null) {

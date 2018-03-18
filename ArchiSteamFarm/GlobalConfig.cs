@@ -49,6 +49,9 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly HashSet<uint> Blacklist = new HashSet<uint>();
 
+		[JsonProperty]
+		internal readonly string CommandPrefix = "!";
+
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte ConfirmationsLimiterDelay = 10;
 

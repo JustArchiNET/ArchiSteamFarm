@@ -44,7 +44,7 @@ namespace ArchiSteamFarm {
 
 		internal static bool IsRunning => IsHandlingRequests || IsListening;
 
-		private static readonly ConcurrentHashSet<WebSocket> ActiveLogWebSockets = new ConcurrentHashSet<WebSocket>();
+		private static readonly ConcurrentDictionary<WebSocket, SemaphoreSlim> ActiveLogWebSockets = new ConcurrentDictionary<WebSocket, SemaphoreSlim>();
 		private static readonly SemaphoreSlim AuthorizationSemaphore = new SemaphoreSlim(1, 1);
 
 		private static readonly HashSet<string> CompressableContentTypes = new HashSet<string> {
@@ -469,8 +469,8 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			if (argument[0] != '!') {
-				argument = "!" + argument;
+			if (!string.IsNullOrEmpty(Program.GlobalConfig.CommandPrefix) && !argument.StartsWith(Program.GlobalConfig.CommandPrefix, StringComparison.Ordinal)) {
+				argument = Program.GlobalConfig.CommandPrefix + argument;
 			}
 
 			string content = await targetBot.Response(Program.GlobalConfig.SteamOwnerID, argument).ConfigureAwait(false);
@@ -582,12 +582,16 @@ namespace ArchiSteamFarm {
 			try {
 				HttpListenerWebSocketContext webSocketContext = await context.AcceptWebSocketAsync(null).ConfigureAwait(false);
 
-				ActiveLogWebSockets.Add(webSocketContext.WebSocket);
+				SemaphoreSlim sendSemaphore = new SemaphoreSlim(1, 1);
+				if (!ActiveLogWebSockets.TryAdd(webSocketContext.WebSocket, sendSemaphore)) {
+					sendSemaphore.Dispose();
+					return true;
+				}
 
 				try {
 					// Push initial history if available
 					if (HistoryTarget != null) {
-						await Task.WhenAll(HistoryTarget.ArchivedMessages.Select(archivedMessage => PostLoggedMessageUpdate(webSocketContext.WebSocket, archivedMessage))).ConfigureAwait(false);
+						await Task.WhenAll(HistoryTarget.ArchivedMessages.Select(archivedMessage => PostLoggedMessageUpdate(webSocketContext.WebSocket, sendSemaphore, archivedMessage))).ConfigureAwait(false);
 					}
 
 					while (webSocketContext.WebSocket.State == WebSocketState.Open) {
@@ -602,9 +606,15 @@ namespace ArchiSteamFarm {
 						break;
 					}
 				} finally {
-					ActiveLogWebSockets.Remove(webSocketContext.WebSocket);
+					if (ActiveLogWebSockets.TryRemove(webSocketContext.WebSocket, out SemaphoreSlim closedSemaphore)) {
+						await closedSemaphore.WaitAsync().ConfigureAwait(false); // Ensure that our semaphore is truly closed by now
+						closedSemaphore.Dispose();
+					}
 				}
 
+				return true;
+			} catch (HttpListenerException e) {
+				ASF.ArchiLogger.LogGenericDebuggingException(e);
 				return true;
 			} catch (WebSocketException e) {
 				ASF.ArchiLogger.LogGenericDebuggingException(e);
@@ -965,12 +975,12 @@ namespace ArchiSteamFarm {
 			}
 
 			string json = JsonConvert.SerializeObject(new GenericResponse<string>(true, "OK", newHistoryEntryArgs.Message));
-			await Task.WhenAll(ActiveLogWebSockets.Where(webSocket => webSocket.State == WebSocketState.Open).Select(webSocket => PostLoggedJsonUpdate(webSocket, json))).ConfigureAwait(false);
+			await Task.WhenAll(ActiveLogWebSockets.Where(kv => kv.Key.State == WebSocketState.Open).Select(kv => PostLoggedJsonUpdate(kv.Key, kv.Value, json))).ConfigureAwait(false);
 		}
 
-		private static async Task PostLoggedJsonUpdate(WebSocket webSocket, string json) {
-			if ((webSocket == null) || string.IsNullOrEmpty(json)) {
-				ASF.ArchiLogger.LogNullError(nameof(webSocket) + " || " + nameof(json));
+		private static async Task PostLoggedJsonUpdate(WebSocket webSocket, SemaphoreSlim sendSemaphore, string json) {
+			if ((webSocket == null) || (sendSemaphore == null) || string.IsNullOrEmpty(json)) {
+				ASF.ArchiLogger.LogNullError(nameof(webSocket) + " || " + nameof(sendSemaphore) + " || " + nameof(json));
 				return;
 			}
 
@@ -978,16 +988,26 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			await sendSemaphore.WaitAsync().ConfigureAwait(false);
+
 			try {
+				if (webSocket.State != WebSocketState.Open) {
+					return;
+				}
+
 				await webSocket.SendAsync(Encoding.UTF8.GetBytes(json), WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
+			} catch (HttpListenerException e) {
+				ASF.ArchiLogger.LogGenericDebuggingException(e);
 			} catch (WebSocketException e) {
 				ASF.ArchiLogger.LogGenericDebuggingException(e);
+			} finally {
+				sendSemaphore.Release();
 			}
 		}
 
-		private static async Task PostLoggedMessageUpdate(WebSocket webSocket, string loggedMessage) {
-			if ((webSocket == null) || string.IsNullOrEmpty(loggedMessage)) {
-				ASF.ArchiLogger.LogNullError(nameof(webSocket) + " || " + nameof(loggedMessage));
+		private static async Task PostLoggedMessageUpdate(WebSocket webSocket, SemaphoreSlim sendSemaphore, string loggedMessage) {
+			if ((webSocket == null) || (sendSemaphore == null) || string.IsNullOrEmpty(loggedMessage)) {
+				ASF.ArchiLogger.LogNullError(nameof(webSocket) + " || " + nameof(sendSemaphore) + " || " + nameof(loggedMessage));
 				return;
 			}
 
@@ -996,7 +1016,7 @@ namespace ArchiSteamFarm {
 			}
 
 			string response = JsonConvert.SerializeObject(new GenericResponse<string>(true, "OK", loggedMessage));
-			await PostLoggedJsonUpdate(webSocket, response).ConfigureAwait(false);
+			await PostLoggedJsonUpdate(webSocket, sendSemaphore, response).ConfigureAwait(false);
 		}
 
 		private static async Task ResponseBase(HttpListenerRequest request, HttpListenerResponse response, byte[] content, HttpStatusCode statusCode = HttpStatusCode.OK) {
@@ -1080,7 +1100,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			await ResponseString(request, response, json, "text/json", statusCode).ConfigureAwait(false);
+			await ResponseString(request, response, json, "application/json", statusCode).ConfigureAwait(false);
 		}
 
 		private static async Task ResponseJsonObject(HttpListenerRequest request, HttpListenerResponse response, object obj, HttpStatusCode statusCode = HttpStatusCode.OK) {

@@ -760,7 +760,7 @@ namespace ArchiSteamFarm {
 
 			string request = "/mobileconf/ajaxop?op=" + (accept ? "allow" : "cancel") + "&p=" + deviceID + "&a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&t=" + time + "&m=android&tag=conf&cid=" + confirmationID + "&ck=" + confirmationKey;
 
-			Steam.ConfirmationResponse response = await UrlGetToJsonObjectWithSession<Steam.ConfirmationResponse>(SteamCommunityURL, request).ConfigureAwait(false);
+			Steam.BooleanResponse response = await UrlGetToJsonObjectWithSession<Steam.BooleanResponse>(SteamCommunityURL, request).ConfigureAwait(false);
 			return response?.Success;
 		}
 
@@ -788,7 +788,7 @@ namespace ArchiSteamFarm {
 				data.Add(new KeyValuePair<string, string>("ck[]", confirmation.Key.ToString()));
 			}
 
-			Steam.ConfirmationResponse response = await UrlPostToJsonObjectWithSession<Steam.ConfirmationResponse>(SteamCommunityURL, request, data).ConfigureAwait(false);
+			Steam.BooleanResponse response = await UrlPostToJsonObjectWithSession<Steam.BooleanResponse>(SteamCommunityURL, request, data).ConfigureAwait(false);
 			return response?.Success;
 		}
 
@@ -1056,7 +1056,7 @@ namespace ArchiSteamFarm {
 				{ "communityitemid", itemID.ToString() }
 			};
 
-			Steam.GenericResponse response = await UrlPostToJsonObjectWithSession<Steam.GenericResponse>(SteamCommunityURL, request, data).ConfigureAwait(false);
+			Steam.EResultResponse response = await UrlPostToJsonObjectWithSession<Steam.EResultResponse>(SteamCommunityURL, request, data).ConfigureAwait(false);
 			return response?.Result == EResult.OK;
 		}
 
@@ -1495,7 +1495,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			WebBrowser.XmlResponse response = await WebBrowser.UrlGetToXml(host + request).ConfigureAwait(false);
+			WebBrowser.XmlDocumentResponse response = await WebBrowser.UrlGetToXmlDocument(host + request).ConfigureAwait(false);
 			if (response == null) {
 				return null;
 			}

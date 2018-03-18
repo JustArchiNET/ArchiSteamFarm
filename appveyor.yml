@@ -5,7 +5,9 @@ branches:
   only:
   - master
 skip_branch_with_pr: true
-image: Visual Studio 2017
+image:
+- Visual Studio 2017
+- Visual Studio 2017 Preview
 configuration: Release
 platform: Any CPU
 clone_depth: 10
@@ -16,7 +18,7 @@ environment:
 matrix:
   fast_finish: true
 before_build:
-- ps: >-
+- pwsh: >-
     Set-StrictMode -Version Latest
 
     $ErrorActionPreference = 'Stop'
@@ -28,7 +30,7 @@ before_build:
 
     dotnet restore
 build_script:
-- ps: >-
+- pwsh: >-
     Set-StrictMode -Version Latest
 
     $ErrorActionPreference = 'Stop'
@@ -38,7 +40,7 @@ build_script:
 
     dotnet build -c "$env:CONFIGURATION" -o 'out\source' --no-restore /nologo
 test_script:
-- ps: >-
+- pwsh: >-
     Set-StrictMode -Version Latest
 
     $ErrorActionPreference = 'Stop'
@@ -48,7 +50,7 @@ test_script:
 
     dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" -o 'out\source' --no-build --no-restore
 after_test:
-- ps: >-
+- pwsh: >-
     Set-StrictMode -Version Latest
 
     $ErrorActionPreference = 'Stop'
@@ -66,9 +68,9 @@ after_test:
         Set-Location -Path "$env:APPVEYOR_BUILD_FOLDER"
 
         if ($Variant -eq 'generic') {
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$Variant" --no-restore /nologo "/p:ASFVariant=$Variant" /p:LinkDuringPublish=false
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$Variant" --no-restore /nologo "/p:ASFVariant=$Variant"
         } else {
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$Variant" -r "$Variant" --no-restore /nologo "/p:ASFVariant=$Variant" /p:LinkDuringPublish=false
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$Variant" -r "$Variant" --no-restore /nologo "/p:ASFVariant=$Variant"
         }
 
         # If we include any helper scripts for this variant, copy them to output directory
@@ -83,19 +85,22 @@ after_test:
             Copy-Item 'resources\ASF.ico' -Destination "ArchiSteamFarm\out\$Variant\ArchiSteamFarm.ico"
         }
 
+        $zipArgs = '-mx=1'
+
         if ($env:APPVEYOR_REPO_TAG -eq 'true') {
             # Update link in Changelog.html accordingly
             if (Test-Path -Path "ArchiSteamFarm\out\$Variant\Changelog.html" -PathType Leaf) {
                 (Get-Content -Path "ArchiSteamFarm\out\$Variant\Changelog.html").Replace('ArchiSteamFarm/commits/master', "ArchiSteamFarm/releases/tag/$env:APPVEYOR_REPO_TAG_NAME") | Set-Content -Path "ArchiSteamFarm\out\$Variant\Changelog.html"
             }
-        
-            $zipArgs = '-mx=9', '-mfb=257', '-mpass=15'
-        } else {
-            $zipArgs = '-mx=1'
+
+            if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq 'Visual Studio 2017') {
+                $zipArgs = '-mx=9', '-mfb=257', '-mpass=15'
+            }
         }
 
         7z a -bd -tzip -mm=Deflate64 $zipArgs "ArchiSteamFarm\out\ASF-$Variant.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$Variant\*"
-        Push-AppveyorArtifact "ArchiSteamFarm\out\ASF-$Variant.zip" -FileName "ASF-$Variant.zip" -DeploymentName "ASF-$Variant.zip"
+        # TODO: Change me to Push-AppveyorArtifact once https://github.com/appveyor/ci/issues/2183 is fixed
+        appveyor PushArtifact "ArchiSteamFarm\out\ASF-$Variant.zip" -FileName "ASF-$Variant.zip" -DeploymentName "ASF-$Variant.zip"
     }
 
     foreach ($variant in $env:VARIANTS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
@@ -107,7 +112,7 @@ deploy:
 - provider: GitHub
   tag: $(appveyor_repo_tag_name)
   release: ArchiSteamFarm V$(appveyor_repo_tag_name)
-  description: '**NOTICE: Pre-releases are experimental versions that often contain unpatched bugs, work-in-progress features or rewritten implementations. If you don''t consider yourself advanced user, please download **[latest stable release](https://github.com/JustArchi/ArchiSteamFarm/releases/latest)** instead. Pre-release versions are dedicated to users who know how to report bugs, deal with issues and give feedback - no technical support will be given. Check out ASF **[release cycle](https://github.com/JustArchi/ArchiSteamFarm/wiki/Release-cycle)** if you''d like to learn more.**\n\n---\n\nThis is automated AppVeyor GitHub deployment, human-readable changelog should be available soon. In the meantime please refer to **[GitHub commits](https://github.com/JustArchi/ArchiSteamFarm/commits/$(appveyor_repo_tag_name))**.\n\n---\n\nASF is available for free. If you''re grateful for what we''re doing, please consider donating. Developing ASF requires massive amount of time and knowledge, especially when it comes to Steam (and its problems). Even 1$ is highly appreciated and shows that you care. Thank you!\n\n [![Patreon support](https://img.shields.io/badge/Patreon-support-yellow.svg)](https://www.patreon.com/JustArchi) [![Paypal.me donate](https://img.shields.io/badge/Paypal.me-donate-yellow.svg)](https://www.paypal.me/JustArchi/1usd) [![Paypal donate](https://img.shields.io/badge/Paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HD2P2P3WGS5Y4) [![Bitcoin donate](https://img.shields.io/badge/Bitcoin-donate-yellow.svg)](https://blockchain.info/payment_request?address=1Archi6M1r5b41Rvn1SY2FfJAzsrEUT7aT) [![Steam donate](https://img.shields.io/badge/Steam-donate-yellow.svg)](https://steamcommunity.com/tradeoffer/new/?partner=46697991&token=0ix2Ruv_)'
+  description: '**NOTICE: Pre-releases are experimental versions that often contain unpatched bugs, work-in-progress features or rewritten implementations. If you don''t consider yourself advanced user, please download **[latest stable release](https://github.com/JustArchi/ArchiSteamFarm/releases/latest)** instead. Pre-release versions are dedicated to users who know how to report bugs, deal with issues and give feedback - no technical support will be given. Check out ASF **[release cycle](https://github.com/JustArchi/ArchiSteamFarm/wiki/Release-cycle)** if you''d like to learn more.**\n\n---\n\nThis is automated AppVeyor GitHub deployment, human-readable changelog should be available soon. In the meantime please refer to **[GitHub commits](https://github.com/JustArchi/ArchiSteamFarm/commits/$(appveyor_repo_tag_name))**.\n\n---\n\nASF is available for free. If you''re grateful for what we''re doing, please consider donating. Developing ASF requires massive amount of time and knowledge, especially when it comes to Steam (and its problems). Even $1 is highly appreciated and shows that you care. Thank you!\n\n [![Patreon support](https://img.shields.io/badge/Patreon-support-yellow.svg)](https://www.patreon.com/JustArchi) [![Paypal.me donate](https://img.shields.io/badge/Paypal.me-donate-yellow.svg)](https://www.paypal.me/JustArchi/5usd) [![Paypal donate](https://img.shields.io/badge/Paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HD2P2P3WGS5Y4) [![Bitcoin donate](https://img.shields.io/badge/Bitcoin-donate-yellow.svg)](https://blockchain.info/payment_request?address=1Archi6M1r5b41Rvn1SY2FfJAzsrEUT7aT) [![Steam donate](https://img.shields.io/badge/Steam-donate-yellow.svg)](https://steamcommunity.com/tradeoffer/new/?partner=46697991&token=0ix2Ruv_)'
   auth_token:
     secure: QC5gIDMvSpd43EG6qW8d1E3ZHiVU4aR7pbKQonXstjj/JtAABf5S1IbtoY4OsnOR
   artifact: /.*/
@@ -117,6 +122,7 @@ deploy:
   on:
     branch: master
     configuration: Release
+    appveyor_build_worker_image: Visual Studio 2017
     appveyor_repo_tag: true
 notifications:
 - provider: Webhook
@@ -127,7 +133,7 @@ notifications:
     {
     	"avatar_url": "https://www.appveyor.com/assets/img/appveyor-logo-256.png",
     	"username": "AppVeyor",
-    	"content": "[{{projectName}}:{{branch}}] {{commitMessage}} - {{committerName}} ({{commitId}}) | {{buildUrl}}/artifacts | **{{status}}**"
+    	"content": "[{{projectName}}:{{branch}}] {{commitMessage}} by {{committerName}} ({{commitId}}) | {{buildUrl}} | **{{status}}**"
     }
   on_build_success: true
   on_build_failure: true

@@ -195,7 +195,7 @@ namespace ArchiSteamFarm {
 			return new ObjectResponse<T>(response, obj);
 		}
 
-		internal async Task<XmlResponse> UrlGetToXml(string request, string referer = null, byte maxTries = MaxTries) {
+		internal async Task<XmlDocumentResponse> UrlGetToXmlDocument(string request, string referer = null, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
 				return null;
@@ -215,7 +215,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			return new XmlResponse(response, xmlDocument);
+			return new XmlDocumentResponse(response, xmlDocument);
 		}
 
 		internal async Task<BasicResponse> UrlHead(string request, string referer = null, byte maxTries = MaxTries) {
@@ -521,10 +521,10 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal sealed class XmlResponse : BasicResponse {
+		internal sealed class XmlDocumentResponse : BasicResponse {
 			internal readonly XmlDocument Content;
 
-			internal XmlResponse(StringResponse stringResponse, XmlDocument content) : base(stringResponse) {
+			internal XmlDocumentResponse(StringResponse stringResponse, XmlDocument content) : base(stringResponse) {
 				if (stringResponse == null) {
 					throw new ArgumentNullException(nameof(stringResponse));
 				}
