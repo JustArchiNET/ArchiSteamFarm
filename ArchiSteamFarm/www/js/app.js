@@ -967,7 +967,7 @@ $(function () {
             langCode = (language === 'strings') ? 'us' : language.substr(language.length - 2).toLowerCase();
 
         i18n.locale = language;
-        i18n.load('../locale/' + language + '.json', i18n.locale).done(
+        i18n.load('../locale/' + i18n.locale + '.json', i18n.locale).done(
             function () {
                 $('[data-i18n]').i18n();
             }

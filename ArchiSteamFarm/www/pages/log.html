@@ -167,11 +167,14 @@
 
                 new_uri += '//' + loc.host + '/Api/Log?password=' + encodeURIComponent(tmpIPCPassword);
                 ws = new WebSocket(new_uri);
-                $('.overlay').remove();
-                $('.box-content-log').text(''); // Clear log
 
-                ws.onmessage = function (evt) {
-                    var msg = JSON.parse(evt.data)['Result'] + '\n';
+                ws.onopen = function (event) {
+                    $('.overlay').remove();
+                    $('.box-content-log').text(''); // Clear log
+                };
+
+                ws.onmessage = function (event) {
+                    var msg = JSON.parse(event.data)['Result'] + '\n';
                     $('.box-content-log').append(msg);
                     $('.box-content-log').stop().animate({ scrollTop: $('.box-content-log')[0].scrollHeight }, 1000);
                 };
@@ -180,7 +183,7 @@
                     if (event.code !== 1000) { // Code 1000 means that the connection was closed normally
                         swal({
                             title: 'Error!',
-                            text: event.code + ' - ' + event.reason,
+                            text: 'Event code: ' + event.code,
                             type: 'error'
                         }, function () { swal.close(); });
                     }
