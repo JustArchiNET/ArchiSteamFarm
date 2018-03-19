@@ -964,12 +964,40 @@ $(function () {
 
     function loadLocales(language) {
         var i18n = $.i18n(),
-            langCode = (language === 'strings') ? 'us' : language.substr(language.length - 2).toLowerCase();
+            langCode = (language === 'strings') ? 'us' : language.substr(language.length - 2).toLowerCase(),
+            translationFile;
 
         i18n.locale = language;
-        i18n.load('../locale/' + i18n.locale + '.json', i18n.locale).done(
-            function () {
-                $('[data-i18n]').i18n();
+        translationFile = '../locale/' + i18n.locale + '.json';
+        i18n.load(translationFile, i18n.locale).done(
+            function () {                
+                var missing = 0,
+                    totalSize = 0;
+                
+                $.getJSON(translationFile, function (obj) {
+                    for (var prop in obj) {
+                        if (obj.hasOwnProperty(prop)) {
+                            totalSize++;
+                            if (obj[prop]) {
+                                $('[data-i18n="' + prop + '"]').i18n();
+                            } else {
+                                missing++;
+                            }
+                        }
+                    }
+
+                    if (missing > 0) {
+                        var percentage = missing * 100 / totalSize;
+                        $('#languageInfo').html('<div class="alert alert-warning alert-dismissible">'
+                            + '<button title="Never show again" type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>'
+                            + percentage.toFixed(0) + '% of this language is not translated! Help us <a href="https://github.com/JustArchi/ArchiSteamFarm/wiki/Localization">here</a>.'
+                            + '</div>');
+                    } else {
+                        $('#languageInfo').text('');
+                    }
+
+                    $('#languages').collapse('hide');
+                });
             }
         );
     
@@ -1074,9 +1102,9 @@ $(function () {
         + '<div class="form-group hidden-xs hidden-sm">'
         + '<label class="control-sidebar-subheading">'
         + '<button title="Toggle boxed layout" type="button" class="btn btn-box-tool pull-right text-grey" id="toggleBoxed"><i id="iconBoxed" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>'
-        + '<i class="far fa-square fa-fw"></i> Boxed Layout'
+        + '<i class="far fa-square fa-fw"></i> <span data-i18n="global-boxed">Boxed Layout</span>'
         + '</label>'
-        + '<p>Toggle the boxed layout</p>'
+        + '<p data-i18n="global-boxed-description">Toggle the boxed layout</p>'
         + '</div>'
         // Nightmode
         + '<div class="form-group">'
@@ -1084,31 +1112,31 @@ $(function () {
         + '<button title="Toggle nightmode" type="button" class="btn btn-box-tool pull-right text-grey" id="toggleNightmode"><i id="iconNightmode" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>'
         + '<i class="fas fa-moon fa-fw"></i> <span data-i18n="global-nightmode">Nightmode</span>'
         + '</label>'
-        + '<p>Toggle the nightmode</p>'
+        + '<p data-i18n="global-nightmode-description">Toggle the nightmode</p>'
         + '</div>'
     );
     
-    var $skinsList = $('<ul />', { 'class': 'list-unstyled clearfix' });
+    var $skinsList = $('<ul />', { 'class': 'list-unstyled clearfix text-center' });
     
-    var $skinBlue = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
+    var $skinBlue = $('<li />', { style: 'float:left; width: 14%;' })
         .append('<button data-skin="skin-blue" class="clearfix full-opacity-hover btn btn-badge bg-blue"></button>');
     $skinsList.append($skinBlue);
-    var $skinBlack = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
+    var $skinBlack = $('<li />', { style: 'float:left; width: 14%;' })
         .append('<button data-skin="skin-black" class="clearfix full-opacity-hover btn btn-badge bg-black"></button>');
     $skinsList.append($skinBlack);
-    var $skinPurple = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
+    var $skinPurple = $('<li />', { style: 'float:left; width: 14%;' })
         .append('<button data-skin="skin-purple" class="clearfix full-opacity-hover btn btn-badge bg-purple"></button>');
     $skinsList.append($skinPurple);
-    var $skinGreen = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
+    var $skinGreen = $('<li />', { style: 'float:left; width: 14%;' })
         .append('<button data-skin="skin-green" class="clearfix full-opacity-hover btn btn-badge bg-green"></button>');
     $skinsList.append($skinGreen);
-    var $skinRed = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
+    var $skinRed = $('<li />', { style: 'float:left; width: 14%;' })
         .append('<button data-skin="skin-red" class="clearfix full-opacity-hover btn btn-badge bg-red"></button>');
     $skinsList.append($skinRed);
-    var $skinYellow = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
+    var $skinYellow = $('<li />', { style: 'float:left; width: 14%;' })
         .append('<button data-skin="skin-yellow" class="clearfix full-opacity-hover btn btn-badge bg-yellow"></button>');
     $skinsList.append($skinYellow);
-    var $skinTeal = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
+    var $skinTeal = $('<li />', { style: 'float:left; width: 14%;' })
         .append('<button data-skin="skin-teal" class="clearfix full-opacity-hover btn btn-badge bg-teal"></button>');
     $skinsList.append($skinTeal);
 
@@ -1127,11 +1155,12 @@ $(function () {
     }
 
     $layoutSettings.append('<h4 class="control-sidebar-heading" data-i18n="global-language">Language</h4>'
+        + '<div id="languageInfo"></div>'
         + '<div class="form-group">'
         + '<label class="control-sidebar-subheading">'
-        + '<button title="Change language" type="button" class="btn btn-box-tool pull-right" data-toggle="collapse" data-target="#languages"><i class="fas fa-plus"></i></button>'
+        + '<button title="Change language" type="button" class="btn btn-box-tool pull-right" data-toggle="collapse" data-target="#languages">Change <i class="fas fa-caret-down"></i></button>'
+        + '<img id="currentLanguage" src="../img/flags/us.gif" alt="us">'
         + '</label>'
-        + '<p>Current: <img id="currentLanguage" src="../img/flags/us.gif" alt="us"></p>'
         + '</div>'
     );
 
