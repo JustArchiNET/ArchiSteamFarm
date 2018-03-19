@@ -32,7 +32,7 @@
                 <!-- Left Sidebar Toggle Button-->
                 <a href="javascript:void(0)" class="sidebar-toggle" id="leftSidebar" data-toggle="push-menu" role="button">
                     <i class="fas fa-bars"></i>
-                    <span class="sr-only">Toggle navigation</span>
+                    <span class="sr-only" data-i18n="global-navigation">Toggle navigation</span>
                 </a>
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
@@ -42,15 +42,16 @@
                 </div>
             </nav>
         </header>
+
         <!-- Left Sidebar -->
         <aside class="main-sidebar">
             <section class="sidebar">
                 <ul class="sidebar-menu" data-widget="tree">
-                    <li class="header">HOME</li>
-                    <li><a href="commands.html"><i class="fas fa-laptop fa-fw"></i> <span>Commands</span></a></li>
+                    <li class="header" data-i18n="global-home">Home</li>
+                    <li><a href="commands.html"><i class="fas fa-laptop fa-fw"></i> <span data-i18n="global-commands">Commands</span></a></li>
                     <li class="active">
                         <a href="bots.html">
-                            <i class="fas fa-users fa-fw"></i> <span>Bots</span>
+                            <i class="fas fa-users fa-fw"></i> <span data-i18n="global-bots">Bots</span>
                             <span class="pull-right-container bot-status">
                                 <small class="label pull-right bg-gray" id="offlineBots">0</small>
                                 <small class="label pull-right bg-yellow" id="idleBots">0</small>
@@ -58,16 +59,16 @@
                             </span>
                         </a>
                     </li>
-                    <li><a href="log.html"><i class="far fa-file-alt fa-fw"></i> <span>Log</span></a></li>
+                    <li><a href="log.html"><i class="far fa-file-alt fa-fw"></i> <span data-i18n="global-log">Log</span></a></li>
 
-                    <li class="header">CONFIG</li>
-                    <li><a href="changer.html"><i class="far fa-edit fa-fw"></i> <span>Changer</span></a></li>
-                    <li><a href="generator.html"><i class="far fa-copy fa-fw"></i> <span>Generator</span></a></li>
+                    <li class="header" data-i18n="global-config">Config</li>
+                    <li><a href="changer.html"><i class="far fa-edit fa-fw"></i> <span data-i18n="global-changer">Changer</span></a></li>
+                    <li><a href="generator.html"><i class="far fa-copy fa-fw"></i> <span data-i18n="global-generator">Generator</span></a></li>
 
-                    <li class="header">INFORMATION</li>
+                    <li class="header" data-i18n="global-information">Information</li>
                     <li class="info-overview">
                         <a>
-                            <i class="fas fa-tachometer-alt fa-fw"></i> <span>RAM Usage</span>
+                            <i class="fas fa-tachometer-alt fa-fw"></i> <span data-i18n="global-ram-usage">RAM Usage</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="ramUsage">0.00 MB</small>
                             </span>
@@ -75,7 +76,7 @@
                     </li>
                     <li class="info-overview">
                         <a>
-                            <i class="far fa-clock fa-fw"></i> <span>Uptime</span>
+                            <i class="far fa-clock fa-fw"></i> <span data-i18n="global-uptime">Uptime</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="uptime">0d 0h 0m</small>
                             </span>
@@ -89,12 +90,12 @@
         <div class="content-wrapper">
             <section class="content-header">
                 <h1>
-                    Bots
-                    <small>Control Panel</small>
+                    <span data-i18n="global-bots">Bots</span>
+                    <small data-i18n="global-control-panel">Control Panel</small>
                 </h1>
                 <ol class="breadcrumb">
-                    <li><i class="fas fa-home"></i> Home</li>
-                    <li class="active"><i class="fas fa-users"></i> Bots</li>
+                    <li><i class="fas fa-home"></i> <span data-i18n="global-home">Home</span></li>
+                    <li class="active"><i class="fas fa-users"></i> <span data-i18n="global-bots">Bots</span></li>
                 </ol>
             </section>
 
@@ -103,36 +104,37 @@
                 <div class="box collapsed-box" id="headerBox">
                     <div class="box-header with-border">
                         <i class="fas fa-users"></i>
-                        <h3 class="box-title">Bots</h3>
+                        <h3 class="box-title" data-i18n="global-bots">Bots</h3>
                         <div class="box-tools pull-right">
                             <div class="btn-group">
                                 <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
-                                    Hide bots <span class="fas fa-caret-down"></span>
+                                    <span data-i18n="bots-hide">Hide bots</span> <span class="fas fa-caret-down"></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><button title="Toggle online bots" type="button" class="btn btn-box-tool text-grey" id="chkHideOnlineBots"><i id="iconHideOnlineBots" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>Online bots</li>
-                                    <li><button title="Toggle offline bots" type="button" class="btn btn-box-tool text-grey" id="chkHideOfflineBots"><i id="iconHideOfflineBots" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>Offline bots</li>
+                                    <li><button title="Toggle online bots" type="button" class="btn btn-box-tool text-grey" id="chkHideOnlineBots"><i id="iconHideOnlineBots" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-hide-online">Online bots</span></li>
+                                    <li><button title="Toggle offline bots" type="button" class="btn btn-box-tool text-grey" id="chkHideOfflineBots"><i id="iconHideOfflineBots" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-hide-offline">Offline bots</span></li>
                                 </ul>
                             </div>
                             <!--Implement properly-->
                             <!--<button title="Toggle multi select" type="button" class="btn btn-box-tool" id="chkMultiSelect" data-widget="collapse"><i id="iconMultiSelect" class="far fa-square"></i></button>-->
-                            <button type="button" class="btn btn-box-tool" id="btnRefreshContent"><i class="fas fa-sync"></i></button>
+                            <button title="Refresh content" type="button" class="btn btn-box-tool" id="btnRefreshContent"><i class="fas fa-sync"></i></button>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
                                     <i class="fas fa-wrench"></i>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><button title="Toggle key button" type="button" class="btn btn-box-tool text-grey" id="chkShowKeyButton"><i id="iconShowKeyButton" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>Show key button</li>
-                                    <li><button title="Toggle delete button" type="button" class="btn btn-box-tool text-grey" id="chkShowDeleteButton"><i id="iconShowDeleteButton" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>Show delete button</li>
-                                    <li><button title="Toggle simple farming info" type="button" class="btn btn-box-tool text-grey" id="chkSimpleFarmingInfo"><i id="iconSimpleFarmingInfo" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>Simple farming info</li>
+                                    <li><button title="Toggle key button" type="button" class="btn btn-box-tool text-grey" id="chkShowKeyButton"><i id="iconShowKeyButton" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-key">Show key button</span></li>
+                                    <li><button title="Toggle delete button" type="button" class="btn btn-box-tool text-grey" id="chkShowDeleteButton"><i id="iconShowDeleteButton" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-delete">Show delete button</span></li>
+                                    <li><button title="Toggle simple farming info" type="button" class="btn btn-box-tool text-grey" id="chkSimpleFarmingInfo"><i id="iconSimpleFarmingInfo" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-simple">Simple farming info</span></li>
                                 </ul>
                             </div>
                         </div>
                     </div>
-                    <div class="box-body">
+                    <!--Implement properly-->
+                    <!--<div class="box-body">
                         <button title="Select all bots" type="button" class="btn btn-default" id="selectAllBots"><i class="fas fa-th"></i> Select all</button>
                         <button title="Deselect all bots" type="button" class="btn btn-default" id="deselectAllBots"><i class="fas fa-th"></i> Deselect all</button>
-                    </div>
+                    </div>-->
                 </div>
                 <div class="row" id="totalBotOverview"></div>
                 <div class="row" id="botRow"></div>
@@ -141,11 +143,11 @@
 
         <!-- Footer -->
         <footer class="main-footer">
-            <div class="pull-right" id="version"><b>Version</b> 0.0.0.0</div>
+            <div class="pull-right"><strong data-i18n="global-version">Version</strong> <span id="version">0.0.0.0</span></div>
             <strong>
-                <a href="https://github.com/JustArchi/ArchiSteamFarm">GitHub</a> -
-                <a href="https://github.com/JustArchi/ArchiSteamFarm/wiki">Wiki</a> -
-                <a href="https://github.com/JustArchi/ArchiSteamFarm/commits/master" id="changelog">Changelog</a>
+                <a href="https://github.com/JustArchi/ArchiSteamFarm"><span data-i18n="global-github">GitHub</span></a> -
+                <a href="https://github.com/JustArchi/ArchiSteamFarm/wiki"><span data-i18n="global-wiki">Wiki</span></a> -
+                <a href="https://github.com/JustArchi/ArchiSteamFarm/commits/master" id="changelog"><span data-i18n="global-changelog">Changelog</span></a>
             </strong>
         </footer>
 

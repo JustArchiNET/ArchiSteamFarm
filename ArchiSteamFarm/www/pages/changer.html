@@ -30,7 +30,7 @@
                 <!-- Left Sidebar Toggle Button-->
                 <a href="javascript:void(0)" class="sidebar-toggle" id="leftSidebar" data-toggle="push-menu" role="button">
                     <i class="fas fa-bars"></i>
-                    <span class="sr-only">Toggle navigation</span>
+                    <span class="sr-only" data-i18n="global-navigation">Toggle navigation</span>
                 </a>
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
@@ -45,11 +45,11 @@
         <aside class="main-sidebar">
             <section class="sidebar">
                 <ul class="sidebar-menu" data-widget="tree">
-                    <li class="header">HOME</li>
-                    <li><a href="commands.html"><i class="fas fa-laptop fa-fw"></i> <span>Commands</span></a></li>
+                    <li class="header" data-i18n="global-home">Home</li>
+                    <li><a href="commands.html"><i class="fas fa-laptop fa-fw"></i> <span data-i18n="global-commands">Commands</span></a></li>
                     <li>
                         <a href="bots.html">
-                            <i class="fas fa-users fa-fw"></i> <span>Bots</span>
+                            <i class="fas fa-users fa-fw"></i> <span data-i18n="global-bots">Bots</span>
                             <span class="pull-right-container bot-status">
                                 <small class="label pull-right bg-gray" id="offlineBots">0</small>
                                 <small class="label pull-right bg-yellow" id="idleBots">0</small>
@@ -57,16 +57,16 @@
                             </span>
                         </a>
                     </li>
-                    <li><a href="log.html"><i class="far fa-file-alt fa-fw"></i> <span>Log</span></a></li>
+                    <li><a href="log.html"><i class="far fa-file-alt fa-fw"></i> <span data-i18n="global-log">Log</span></a></li>
 
-                    <li class="header">CONFIG</li>
-                    <li class="active"><a href="changer.html"><i class="far fa-edit fa-fw"></i> <span>Changer</span></a></li>
-                    <li><a href="generator.html"><i class="far fa-copy fa-fw"></i> <span>Generator</span></a></li>
+                    <li class="header" data-i18n="global-config">Config</li>
+                    <li class="active"><a href="changer.html"><i class="far fa-edit fa-fw"></i> <span data-i18n="global-changer">Changer</span></a></li>
+                    <li><a href="generator.html"><i class="far fa-copy fa-fw"></i> <span data-i18n="global-generator">Generator</span></a></li>
 
-                    <li class="header">INFORMATION</li>
+                    <li class="header" data-i18n="global-information">Information</li>
                     <li class="info-overview">
                         <a>
-                            <i class="fas fa-tachometer-alt fa-fw"></i> <span>RAM Usage</span>
+                            <i class="fas fa-tachometer-alt fa-fw"></i> <span data-i18n="global-ram-usage">RAM Usage</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="ramUsage">0.00 MB</small>
                             </span>
@@ -74,7 +74,7 @@
                     </li>
                     <li class="info-overview">
                         <a>
-                            <i class="far fa-clock fa-fw"></i> <span>Uptime</span>
+                            <i class="far fa-clock fa-fw"></i> <span data-i18n="global-uptime">Uptime</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="uptime">0d 0h 0m</small>
                             </span>
@@ -88,12 +88,12 @@
         <div class="content-wrapper">
             <section class="content-header">
                 <h1>
-                    Changer
-                    <small>Control Panel</small>
+                    <span data-i18n="global-changer">Changer</span>
+                    <small data-i18n="global-control-panel">Control Panel</small>
                 </h1>
                 <ol class="breadcrumb">
-                    <li><i class="fas fa-cogs"></i> Config</li>
-                    <li class="active"><i class="far fa-edit"></i> Changer</li>
+                    <li><i class="fas fa-cogs"></i> <span data-i18n="global-config">Config</span></li>
+                    <li class="active"><i class="far fa-edit"></i> <span data-i18n="global-changer">Changer</span></li>
                 </ol>
             </section>
 
@@ -102,11 +102,11 @@
                 <div class="box">
                     <div class="box-header with-border">
                         <i class="far fa-edit"></i>
-                        <h3 class="box-title">Currently editing:</h3>
+                        <h3 class="box-title" data-i18n="changer-current">Currently editing:</h3>
                         <div class="box-tools pull-right">
                             <div class="btn-group">
                                 <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                    Change bot
+                                    <span data-i18n="changer-change">Change bot</span>
                                     <span class="fas fa-caret-down"></span>
                                 </button>
                                 <ul class="dropdown-menu scrollable-menu" role="menu" id="botsDropDown"></ul>
@@ -118,7 +118,9 @@
                     </div>
                     <div class="box-footer">
                         <div class="input-group pull-right">
-                            <button class="btn btn-default" id="saveButton"><i class="fas fa-save"></i> Save</button>
+                            <button class="btn btn-default" id="saveButton">
+                                <i class="fas fa-save"></i> <span data-i18n="changer-save">Save</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -127,11 +129,11 @@
 
         <!-- Footer -->
         <footer class="main-footer">
-            <div class="pull-right" id="version"><b>Version</b> 0.0.0.0</div>
+            <div class="pull-right"><strong data-i18n="global-version">Version</strong> <span id="version">0.0.0.0</span></div>
             <strong>
-                <a href="https://github.com/JustArchi/ArchiSteamFarm">GitHub</a> -
-                <a href="https://github.com/JustArchi/ArchiSteamFarm/wiki">Wiki</a> -
-                <a href="https://github.com/JustArchi/ArchiSteamFarm/commits/master" id="changelog">Changelog</a>
+                <a href="https://github.com/JustArchi/ArchiSteamFarm"><span data-i18n="global-github">GitHub</span></a> -
+                <a href="https://github.com/JustArchi/ArchiSteamFarm/wiki"><span data-i18n="global-wiki">Wiki</span></a> -
+                <a href="https://github.com/JustArchi/ArchiSteamFarm/commits/master" id="changelog"><span data-i18n="global-changelog">Changelog</span></a>
             </strong>
         </footer>
 

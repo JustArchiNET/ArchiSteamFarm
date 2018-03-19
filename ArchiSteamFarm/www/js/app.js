@@ -1158,7 +1158,7 @@ $(function () {
         + '<div id="languageInfo"></div>'
         + '<div class="form-group">'
         + '<label class="control-sidebar-subheading">'
-        + '<button title="Change language" type="button" class="btn btn-box-tool pull-right" data-toggle="collapse" data-target="#languages">Change <i class="fas fa-caret-down"></i></button>'
+        + '<button title="Change language" type="button" class="btn btn-box-tool pull-right" data-toggle="collapse" data-target="#languages"><span data-i18n="global-change">Change</span> <i class="fas fa-caret-down"></i></button>'
         + '<img id="currentLanguage" src="../img/flags/us.gif" alt="us">'
         + '</label>'
         + '</div>'
