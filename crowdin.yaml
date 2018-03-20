@@ -4,3 +4,5 @@ files:
     translation: /ArchiSteamFarm/Localization/Strings.%locale%.resx
   - source: /docs/WebConfigGenerator/src/locale/strings.json
     translation: /docs/WebConfigGenerator/src/locale/%locale%.json
+  - source: /ArchiSteamFarm/www/locale/strings.json
+    translation: /ArchiSteamFarm/www/locale/%locale%.json

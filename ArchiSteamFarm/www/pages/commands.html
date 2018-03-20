@@ -1,9 +1,9 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>ASF | Command</title>
+    <title data-i18n="commands-title">ASF | Commands</title>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script> <!--Change to cdnjs once available-->
     <link rel="icon" href="../favicon.png" type="image/png">
@@ -30,7 +30,7 @@
                 <!-- Left Sidebar Toggle Button-->
                 <a href="javascript:void(0)" class="sidebar-toggle" id="leftSidebar" data-toggle="push-menu" role="button">
                     <i class="fas fa-bars"></i>
-                    <span class="sr-only">Toggle navigation</span>
+                    <span class="sr-only" data-i18n="global-navigation">Toggle navigation</span>
                 </a>
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
@@ -45,11 +45,11 @@
         <aside class="main-sidebar">
             <section class="sidebar">
                 <ul class="sidebar-menu" data-widget="tree">
-                    <li class="header">HOME</li>
-                    <li class="active"><a href="command.html"><i class="fas fa-laptop fa-fw"></i> <span>Command</span></a></li>
+                    <li class="header" data-i18n="global-home">Home</li>
+                    <li class="active"><a href="commands.html"><i class="fas fa-laptop fa-fw"></i> <span data-i18n="global-commands">Commands</span></a></li>
                     <li>
                         <a href="bots.html">
-                            <i class="fas fa-users fa-fw"></i> <span>Bots</span>
+                            <i class="fas fa-users fa-fw"></i> <span data-i18n="global-bots">Bots</span>
                             <span class="pull-right-container bot-status">
                                 <small class="label pull-right bg-gray" id="offlineBots">0</small>
                                 <small class="label pull-right bg-yellow" id="idleBots">0</small>
@@ -57,16 +57,16 @@
                             </span>
                         </a>
                     </li>
-                    <li><a href="log.html"><i class="far fa-file-alt fa-fw"></i> <span>Log</span></a></li>
+                    <li><a href="log.html"><i class="far fa-file-alt fa-fw"></i> <span data-i18n="global-log">Log</span></a></li>
 
-                    <li class="header">CONFIG</li>
-                    <li><a href="changer.html"><i class="far fa-edit fa-fw"></i> <span>Changer</span></a></li>
-                    <li><a href="generator.html"><i class="far fa-copy fa-fw"></i> <span>Generator</span></a></li>
+                    <li class="header" data-i18n="global-config">Config</li>
+                    <li><a href="changer.html"><i class="far fa-edit fa-fw"></i> <span data-i18n="global-changer">Changer</span></a></li>
+                    <li><a href="generator.html"><i class="far fa-copy fa-fw"></i> <span data-i18n="global-generator">Generator</span></a></li>
 
-                    <li class="header">INFORMATION</li>
+                    <li class="header" data-i18n="global-information">Information</li>
                     <li class="info-overview">
                         <a>
-                            <i class="fas fa-tachometer-alt fa-fw"></i> <span>RAM Usage</span>
+                            <i class="fas fa-tachometer-alt fa-fw"></i> <span data-i18n="global-ram-usage">RAM Usage</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="ramUsage">0.00 MB</small>
                             </span>
@@ -74,7 +74,7 @@
                     </li>
                     <li class="info-overview">
                         <a>
-                            <i class="far fa-clock fa-fw"></i> <span>Uptime</span>
+                            <i class="far fa-clock fa-fw"></i> <span data-i18n="global-uptime">Uptime</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="uptime">0d 0h 0m</small>
                             </span>
@@ -88,12 +88,12 @@
         <div class="content-wrapper">
             <section class="content-header">
                 <h1>
-                    Command
-                    <small>Control Panel</small>
+                    <span data-i18n="global-commands">Commands</span>
+                    <small data-i18n="global-control-panel">Control Panel</small>
                 </h1>
                 <ol class="breadcrumb">
-                    <li><i class="fas fa-home"></i> Home</li>
-                    <li class="active"><i class="fas fa-laptop"></i> Command</li>
+                    <li><i class="fas fa-home"></i> <span data-i18n="global-home">Home</span></li>
+                    <li class="active"><i class="fas fa-laptop"></i> <span data-i18n="global-commands">Commands</span></li>
                 </ol>
             </section>
 
@@ -102,34 +102,34 @@
                 <div class="box">
                     <div class="box-header with-border">
                         <i class="fas fa-laptop"></i>
-                        <h3 class="box-title">Command</h3>
+                        <h3 class="box-title" data-i18n="global-commands">Commands</h3>
                         <div class="box-tools pull-right">
                             <div class="btn-group">
                                 <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
                                     <i class="fas fa-wrench"></i>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><button title="Toggle auto clear" type="button" class="btn btn-box-tool text-olive" id="chkAutoClear"><i id="iconAutoClear" class="fas fa-toggle-on fa-2x"></i></button>Auto clear</li>
+                                    <li><button title="Toggle auto clear" type="button" class="btn btn-box-tool text-olive" id="chkAutoClear"><i id="iconAutoClear" class="fas fa-toggle-on fa-2x"></i></button><span data-i18n="command-auto-clear">Auto clear</span></li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                     <div class="box-body">
-                        <div class="box-content-command"></div>
+                        <div class="box-content-commands"></div>
                         <input type="text" class="form-control" id="commandSent" disabled>
                     </div>
                     <div class="box-footer">
                         <div class="input-group">
                             <div class="input-group-btn hidden-xs" id="cmdsDropDownBox">
                                 <button title="Show all commands" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                    Commands
+                                    <span data-i18n="global-commands">Commands</span>
                                     <span class="fas fa-caret-down" id="iconCmdsDropDownBox"></span>
                                 </button>
                                 <ul class="dropdown-menu scrollable-menu" id="commandsDropDown"></ul>
                             </div>
                             <div class="input-group-btn hidden-xs" id="botsDropDownBox">
                                 <button title="Show all bots" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                    Bots
+                                    <span data-i18n="global-bots">Bots</span>
                                     <span class="fas fa-caret-down" id="iconBotsDropDownBox"></span>
                                 </button>
                                 <ul class="dropdown-menu scrollable-menu" id="botsDropDown"></ul>
@@ -146,11 +146,11 @@
 
         <!-- Footer -->
         <footer class="main-footer">
-            <div class="pull-right" id="version"><b>Version</b> 0.0.0.0</div>
+            <div class="pull-right"><strong data-i18n="global-version">Version</strong> <span id="version">0.0.0.0</span></div>
             <strong>
-                <a href="https://github.com/JustArchi/ArchiSteamFarm">GitHub</a> -
-                <a href="https://github.com/JustArchi/ArchiSteamFarm/wiki">Wiki</a> -
-                <a href="https://github.com/JustArchi/ArchiSteamFarm/commits/master" id="changelog">Changelog</a>
+                <a href="https://github.com/JustArchi/ArchiSteamFarm"><span data-i18n="global-github">GitHub</span></a> -
+                <a href="https://github.com/JustArchi/ArchiSteamFarm/wiki"><span data-i18n="global-wiki">Wiki</span></a> -
+                <a href="https://github.com/JustArchi/ArchiSteamFarm/commits/master" id="changelog"><span data-i18n="global-changelog">Changelog</span></a>
             </strong>
         </footer>
 
@@ -168,10 +168,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/interact.js/1.2.9/interact.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/js/adminlte.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.messagestore.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.fallbacks.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.language.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.parser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.emitter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.emitter.bidi.min.js"></script>
     <script src="../js/app.js"></script>
     <script>
         $(function () {
             'use strict';
+
+            store('CurrentPage', 'pages/commands.html');
 
             var $chkAutoClear = $('#chkAutoClear'),
                 $commandInput = $('#commandInput'),
@@ -266,11 +275,11 @@
                 return false;
             });
             
-            $('.box-content-command').ready(function () {
+            $('.box-content-commands').ready(function () {
                 var tmpCommandHeight = get('commandHeight');
 
                 if (tmpCommandHeight) {
-                    $('.box-content-command').css('height', tmpCommandHeight + 'px');
+                    $('.box-content-commands').css('height', tmpCommandHeight + 'px');
 
                     if (tmpCommandHeight > 475) {
                         $cmdsDropDownBox.addClass('dropup');
@@ -288,11 +297,11 @@
                         $('#iconBotsDropDownBox').addClass('fa-caret-down');
                     }
                 } else {
-                    $('.box-content-command').css('height', 400 + 'px');
+                    $('.box-content-commands').css('height', 400 + 'px');
                 }
             });
 
-            interact('.box-content-command')
+            interact('.box-content-commands')
                 .resizable({
                     edges: { left: false, right: false, bottom: true, top: false },
                     restrictEdges: {

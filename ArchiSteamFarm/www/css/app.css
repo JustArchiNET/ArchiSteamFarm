@@ -14,7 +14,7 @@
     overflow-x: hidden;
 }
 
-.box-content-command {
+.box-content-commands {
     width: auto;
     height: 400px;
     padding: 6px 12px;
@@ -190,4 +190,7 @@ button.bot-resumed:hover {
     #gamesToRedeemInBackground {
         height: 250px !important;
     }
+}
+.sidebar-menu li.header {
+    text-transform: uppercase;
 }

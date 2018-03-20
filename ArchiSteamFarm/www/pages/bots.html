@@ -1,9 +1,9 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>ASF | Bots</title>
+    <title data-i18n="bots-title">ASF | Bots</title>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script> <!--Change to cdnjs once available-->
     <link rel="icon" href="../favicon.png" type="image/png">
@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/AdminLTE.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
-    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">-->
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">--> <!--Implement properly-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
     <link rel="stylesheet" href="../css/_all-skins.min.css">
     <link rel="stylesheet" href="../css/app.css">
@@ -32,7 +32,7 @@
                 <!-- Left Sidebar Toggle Button-->
                 <a href="javascript:void(0)" class="sidebar-toggle" id="leftSidebar" data-toggle="push-menu" role="button">
                     <i class="fas fa-bars"></i>
-                    <span class="sr-only">Toggle navigation</span>
+                    <span class="sr-only" data-i18n="global-navigation">Toggle navigation</span>
                 </a>
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
@@ -42,15 +42,16 @@
                 </div>
             </nav>
         </header>
+
         <!-- Left Sidebar -->
         <aside class="main-sidebar">
             <section class="sidebar">
                 <ul class="sidebar-menu" data-widget="tree">
-                    <li class="header">HOME</li>
-                    <li><a href="command.html"><i class="fas fa-laptop fa-fw"></i> <span>Command</span></a></li>
+                    <li class="header" data-i18n="global-home">Home</li>
+                    <li><a href="commands.html"><i class="fas fa-laptop fa-fw"></i> <span data-i18n="global-commands">Commands</span></a></li>
                     <li class="active">
                         <a href="bots.html">
-                            <i class="fas fa-users fa-fw"></i> <span>Bots</span>
+                            <i class="fas fa-users fa-fw"></i> <span data-i18n="global-bots">Bots</span>
                             <span class="pull-right-container bot-status">
                                 <small class="label pull-right bg-gray" id="offlineBots">0</small>
                                 <small class="label pull-right bg-yellow" id="idleBots">0</small>
@@ -58,16 +59,16 @@
                             </span>
                         </a>
                     </li>
-                    <li><a href="log.html"><i class="far fa-file-alt fa-fw"></i> <span>Log</span></a></li>
+                    <li><a href="log.html"><i class="far fa-file-alt fa-fw"></i> <span data-i18n="global-log">Log</span></a></li>
 
-                    <li class="header">CONFIG</li>
-                    <li><a href="changer.html"><i class="far fa-edit fa-fw"></i> <span>Changer</span></a></li>
-                    <li><a href="generator.html"><i class="far fa-copy fa-fw"></i> <span>Generator</span></a></li>
+                    <li class="header" data-i18n="global-config">Config</li>
+                    <li><a href="changer.html"><i class="far fa-edit fa-fw"></i> <span data-i18n="global-changer">Changer</span></a></li>
+                    <li><a href="generator.html"><i class="far fa-copy fa-fw"></i> <span data-i18n="global-generator">Generator</span></a></li>
 
-                    <li class="header">INFORMATION</li>
+                    <li class="header" data-i18n="global-information">Information</li>
                     <li class="info-overview">
                         <a>
-                            <i class="fas fa-tachometer-alt fa-fw"></i> <span>RAM Usage</span>
+                            <i class="fas fa-tachometer-alt fa-fw"></i> <span data-i18n="global-ram-usage">RAM Usage</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="ramUsage">0.00 MB</small>
                             </span>
@@ -75,7 +76,7 @@
                     </li>
                     <li class="info-overview">
                         <a>
-                            <i class="far fa-clock fa-fw"></i> <span>Uptime</span>
+                            <i class="far fa-clock fa-fw"></i> <span data-i18n="global-uptime">Uptime</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="uptime">0d 0h 0m</small>
                             </span>
@@ -89,12 +90,12 @@
         <div class="content-wrapper">
             <section class="content-header">
                 <h1>
-                    Bots
-                    <small>Control Panel</small>
+                    <span data-i18n="global-bots">Bots</span>
+                    <small data-i18n="global-control-panel">Control Panel</small>
                 </h1>
                 <ol class="breadcrumb">
-                    <li><i class="fas fa-home"></i> Home</li>
-                    <li class="active"><i class="fas fa-users"></i> Bots</li>
+                    <li><i class="fas fa-home"></i> <span data-i18n="global-home">Home</span></li>
+                    <li class="active"><i class="fas fa-users"></i> <span data-i18n="global-bots">Bots</span></li>
                 </ol>
             </section>
 
@@ -103,35 +104,37 @@
                 <div class="box collapsed-box" id="headerBox">
                     <div class="box-header with-border">
                         <i class="fas fa-users"></i>
-                        <h3 class="box-title">Bots</h3>
+                        <h3 class="box-title" data-i18n="global-bots">Bots</h3>
                         <div class="box-tools pull-right">
                             <div class="btn-group">
                                 <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
-                                    Hide bots <span class="fas fa-caret-down"></span>
+                                    <span data-i18n="bots-hide">Hide bots</span> <span class="fas fa-caret-down"></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><button title="Toggle online bots" type="button" class="btn btn-box-tool text-grey" id="chkHideOnlineBots"><i id="iconHideOnlineBots" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>Online bots</li>
-                                    <li><button title="Toggle offline bots" type="button" class="btn btn-box-tool text-grey" id="chkHideOfflineBots"><i id="iconHideOfflineBots" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>Offline bots</li>
+                                    <li><button title="Toggle online bots" type="button" class="btn btn-box-tool text-grey" id="chkHideOnlineBots"><i id="iconHideOnlineBots" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-hide-online">Online bots</span></li>
+                                    <li><button title="Toggle offline bots" type="button" class="btn btn-box-tool text-grey" id="chkHideOfflineBots"><i id="iconHideOfflineBots" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-hide-offline">Offline bots</span></li>
                                 </ul>
                             </div>
                             <!--Implement properly-->
                             <!--<button title="Toggle multi select" type="button" class="btn btn-box-tool" id="chkMultiSelect" data-widget="collapse"><i id="iconMultiSelect" class="far fa-square"></i></button>-->
-                            <button type="button" class="btn btn-box-tool" id="btnRefreshContent"><i class="fas fa-sync"></i></button>
+                            <button title="Refresh content" type="button" class="btn btn-box-tool" id="btnRefreshContent"><i class="fas fa-sync"></i></button>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
                                     <i class="fas fa-wrench"></i>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><button title="Toggle key button" type="button" class="btn btn-box-tool text-grey" id="chkShowKeyButton"><i id="iconShowKeyButton" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>Show key button</li>
-                                    <li><button title="Toggle delete button" type="button" class="btn btn-box-tool text-grey" id="chkShowDeleteButton"><i id="iconShowDeleteButton" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>Show delete button</li>
+                                    <li><button title="Toggle key button" type="button" class="btn btn-box-tool text-grey" id="chkShowKeyButton"><i id="iconShowKeyButton" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-key">Show key button</span></li>
+                                    <li><button title="Toggle delete button" type="button" class="btn btn-box-tool text-grey" id="chkShowDeleteButton"><i id="iconShowDeleteButton" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-delete">Show delete button</span></li>
+                                    <li><button title="Toggle simple farming info" type="button" class="btn btn-box-tool text-grey" id="chkSimpleFarmingInfo"><i id="iconSimpleFarmingInfo" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-simple">Simple farming info</span></li>
                                 </ul>
                             </div>
                         </div>
                     </div>
-                    <div class="box-body">
+                    <!--Implement properly-->
+                    <!--<div class="box-body">
                         <button title="Select all bots" type="button" class="btn btn-default" id="selectAllBots"><i class="fas fa-th"></i> Select all</button>
                         <button title="Deselect all bots" type="button" class="btn btn-default" id="deselectAllBots"><i class="fas fa-th"></i> Deselect all</button>
-                    </div>
+                    </div>-->
                 </div>
                 <div class="row" id="totalBotOverview"></div>
                 <div class="row" id="botRow"></div>
@@ -140,11 +143,11 @@
 
         <!-- Footer -->
         <footer class="main-footer">
-            <div class="pull-right" id="version"><b>Version</b> 0.0.0.0</div>
+            <div class="pull-right"><strong data-i18n="global-version">Version</strong> <span id="version">0.0.0.0</span></div>
             <strong>
-                <a href="https://github.com/JustArchi/ArchiSteamFarm">GitHub</a> -
-                <a href="https://github.com/JustArchi/ArchiSteamFarm/wiki">Wiki</a> -
-                <a href="https://github.com/JustArchi/ArchiSteamFarm/commits/master" id="changelog">Changelog</a>
+                <a href="https://github.com/JustArchi/ArchiSteamFarm"><span data-i18n="global-github">GitHub</span></a> -
+                <a href="https://github.com/JustArchi/ArchiSteamFarm/wiki"><span data-i18n="global-wiki">Wiki</span></a> -
+                <a href="https://github.com/JustArchi/ArchiSteamFarm/commits/master" id="changelog"><span data-i18n="global-changelog">Changelog</span></a>
             </strong>
         </footer>
 
@@ -162,19 +165,29 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/js/adminlte.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
-    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>-->
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>--> <!--Implement properly-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/humanize-duration/3.12.1/humanize-duration.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.messagestore.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.fallbacks.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.language.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.parser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.emitter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.emitter.bidi.min.js"></script>
     <script src="../js/app.js"></script>
     <script>
         $(function () {
             'use strict';
 
+            store('CurrentPage', 'pages/bots.html');
+
             var tmpHideOnlineBots = get('hideOnlineBots'),
                 tmpHideOfflineBots = get('hideOfflineBots'),
                 tmpShowDeleteButton = get('showDeleteButton'),
                 tmpShowKeyButton = get('showKeyButton'),
-                tmpMultiSelect = get('multiSelect'),
+                tmpSimpleFarmingInfo = get('simpleFarmingInfo'),
+                //tmpMultiSelect = get('multiSelect'), // Implement properly
                 currentlySelectedBots = [];
 
             $(document).delegate('#gamesToRedeemInBackground', 'keydown', function (e) {
@@ -238,6 +251,18 @@
                     $('#iconShowKeyButton').removeClass('fa-rotate-180');
                 }
 
+                if (tmpShowKeyButton === 'true') {
+                    $('#chkShowKeyButton').removeClass('text-grey');
+                    $('#chkShowKeyButton').addClass('text-olive');
+                    $('#iconShowKeyButton').removeClass('fa-rotate-180');
+                }
+
+                if (tmpSimpleFarmingInfo === 'true') {
+                    $('#chkSimpleFarmingInfo').removeClass('text-grey');
+                    $('#chkSimpleFarmingInfo').addClass('text-olive');
+                    $('#iconSimpleFarmingInfo').removeClass('fa-rotate-180');
+                }
+
                 // Implement properly
                 //if (tmpMultiSelect === 'true') {
                 //    $('#iconMultiSelect').removeClass('fa-square');
@@ -246,6 +271,21 @@
                 //    $('#headerBox').removeClass('expanded-box');
                 //    $('#botRow').selectable();
                 //}
+            });
+
+            $('#chkSimpleFarmingInfo').click(function () {
+                if ($('#iconSimpleFarmingInfo').hasClass('fa-rotate-180')) {
+                    $('#iconSimpleFarmingInfo').removeClass('fa-rotate-180');
+                    $('#chkSimpleFarmingInfo').removeClass('text-grey');
+                    $('#chkSimpleFarmingInfo').addClass('text-olive');
+                    store('simpleFarmingInfo', true);
+                } else {
+                    $('#iconSimpleFarmingInfo').addClass('fa-rotate-180');
+                    $('#chkSimpleFarmingInfo').removeClass('text-olive');
+                    $('#chkSimpleFarmingInfo').addClass('text-grey');
+                    store('simpleFarmingInfo', false);
+                }
+                loadPageContent();
             });
 
             $('#chkHideOnlineBots').click(function () {
@@ -278,32 +318,34 @@
                 loadPageContent();
             });
 
-            $('#chkMultiSelect').click(function () {
-                if ($('#iconMultiSelect').hasClass('fa-square')) {
-                    $('#iconMultiSelect').removeClass('fa-square');
-                    $('#iconMultiSelect').addClass('fa-check-square');
-                    $('#botRow').selectable();
-                    store('multiSelect', true);
-                } else {
-                    $('#iconMultiSelect').removeClass('fa-check-square');
-                    $('#iconMultiSelect').addClass('fa-square');
-                    $('#botRow').selectable('destroy');
-                    store('multiSelect', false);
-                }
-                $('#chkMultiSelect').blur();
-            });
+            //Implement properly
 
-            $('#selectAllBots').click(function () {
-                $(".ui-widget-content").each(function () {
-                    $(this).addClass('ui-selected');
-                });
-            });
+            //$('#chkMultiSelect').click(function () {
+            //    if ($('#iconMultiSelect').hasClass('fa-square')) {
+            //        $('#iconMultiSelect').removeClass('fa-square');
+            //        $('#iconMultiSelect').addClass('fa-check-square');
+            //        $('#botRow').selectable();
+            //        store('multiSelect', true);
+            //    } else {
+            //        $('#iconMultiSelect').removeClass('fa-check-square');
+            //        $('#iconMultiSelect').addClass('fa-square');
+            //        $('#botRow').selectable('destroy');
+            //        store('multiSelect', false);
+            //    }
+            //    $('#chkMultiSelect').blur();
+            //});
 
-            $('#deselectAllBots').click(function () {
-                $(".ui-selected").each(function () {
-                    $(this).removeClass('ui-selected');
-                });
-            });
+            //$('#selectAllBots').click(function () {
+            //    $(".ui-widget-content").each(function () {
+            //        $(this).addClass('ui-selected');
+            //    });
+            //});
+
+            //$('#deselectAllBots').click(function () {
+            //    $(".ui-selected").each(function () {
+            //        $(this).removeClass('ui-selected');
+            //    });
+            //});
 
             $('#btnRefreshContent').click(function () {
                 $('#btnRefreshContent').blur();
@@ -345,7 +387,8 @@
                     tmpHideOfflineBots = get('hideOfflineBots'),
                     tmpShowDeleteButton = get('showDeleteButton'),
                     tmpDelimeter = get('delimeter'),
-                    tmpShowKeyButton = get('showKeyButton');
+                    tmpShowKeyButton = get('showKeyButton'),
+                    tmpSimpleFarmingInfo = get('simpleFarmingInfo');
                 
                 $('#totalBotOverview').empty(); // Clear page content
                 $('#botRow').empty(); // Clear page content
@@ -409,8 +452,8 @@
                                     if (TimeRemaining !== '00:00:00') { // Bot is farming
                                         var GamesToFarm = obj.CardsFarmer.GamesToFarm,
                                             CurrentGamesFarming = obj.CardsFarmer.CurrentGamesFarming,
-                                            allGamesRemainingName = [],
                                             allGamesFarmingAppID = [],
+                                            allGamesFarmingName = [],
                                             allCardsRemaining = 0;
 
                                         farmingIsActive = true; // At least one bot is farming
@@ -419,11 +462,11 @@
                                         for (var j = 0; j < GamesToFarm.length; j++) {
                                             totalCardsRemaining = totalCardsRemaining + GamesToFarm[j].CardsRemaining;
                                             allCardsRemaining = allCardsRemaining + GamesToFarm[j].CardsRemaining;
-                                            allGamesRemainingName.push(GamesToFarm[j].GameName);
                                         }
 
                                         for (var k = 0; k < CurrentGamesFarming.length; k++) {
                                             allGamesFarmingAppID.push(CurrentGamesFarming[k].AppID);
+                                            allGamesFarmingName.push(CurrentGamesFarming[k].GameName);
                                         }
 
                                         if (totalTimeRemaining < TimeRemaining) totalTimeRemaining = TimeRemaining;
@@ -436,18 +479,22 @@
                                             if (Paused) {
                                                 allGamesHTML = '<p class="text-center no-margin">Bot is paused.</p>';
                                             } else {
-                                                if (allGamesFarmingAppID.length === 1) {
-                                                    var value = allGamesFarmingAppID;
-                                                    allGamesHTML = '<img src="' + steamGameBaseURL + value[0] + '/header.jpg" alt="" class="img-responsive">'; // ToDo: Fill alt="" with gameName
-                                                } else { // Multiple game farming is active
-                                                    allGamesHTML = '<div class="games-carousel-' + BotName + '">';
+                                                if (tmpSimpleFarmingInfo === 'true') {
+                                                    allGamesHTML = '<p class="text-center no-margin">' + allGamesFarmingName.join(", ") + '</p>';
+                                                } else {
+                                                    if (allGamesFarmingAppID.length === 1) {
+                                                        var value = allGamesFarmingAppID;
+                                                        allGamesHTML = '<img src="' + steamGameBaseURL + value[0] + '/header.jpg" alt="" class="img-responsive">'; // ToDo: Fill alt="" with gameName
+                                                    } else { // Multiple game farming is active
+                                                        allGamesHTML = '<div class="games-carousel-' + BotName + '">';
 
-                                                    for (var appID in allGamesFarmingAppID) {
-                                                        var value = allGamesFarmingAppID[appID];
-                                                        allGamesHTML += '<div class="game-box" style="max-height: 215px;"><img src="' + steamGameBaseURL + value + '/header.jpg" alt="" class="img-responsive"></div>'; // ToDo: Fill alt="" with gameName
+                                                        for (var appID in allGamesFarmingAppID) {
+                                                            var value = allGamesFarmingAppID[appID];
+                                                            allGamesHTML += '<div class="game-box" style="max-height: 215px;"><img src="' + steamGameBaseURL + value + '/header.jpg" alt="" class="img-responsive"></div>'; // ToDo: Fill alt="" with gameName
+                                                        }
+
+                                                        allGamesHTML += '</div>';
                                                     }
-
-                                                    allGamesHTML += '</div>';
                                                 }
                                             }
                                         } else {
@@ -532,7 +579,7 @@
 
                                         $.ajax({
                                             url: '/Api/Command/start ' + encodeURIComponent(BotName),
-                                            type: 'GET',
+                                            type: 'POST',
                                             success: function (data) {
                                                 $('.overlay').remove();
                                                 swal({
@@ -549,7 +596,7 @@
 
                                         $.ajax({
                                             url: '/Api/Command/stop ' + encodeURIComponent(BotName),
-                                            type: 'GET',
+                                            type: 'POST',
                                             success: function (data) {
                                                 $('.overlay').remove();
                                                 swal({
@@ -566,7 +613,7 @@
 
                                         $.ajax({
                                             url: '/Api/Command/pause ' + encodeURIComponent(BotName),
-                                            type: 'GET',
+                                            type: 'POST',
                                             success: function (data) {
                                                 $('.overlay').remove();
                                                 swal({
@@ -583,7 +630,7 @@
 
                                         $.ajax({
                                             url: '/Api/Command/resume ' + encodeURIComponent(BotName),
-                                            type: 'GET',
+                                            type: 'POST',
                                             success: function (data) {
                                                 $('.overlay').remove();
                                                 swal({
