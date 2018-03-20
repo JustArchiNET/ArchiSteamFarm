@@ -1035,14 +1035,15 @@ $(function () {
             async: false,
             success: function (data) {
                 var obj = data['Result'];
+                const languageRegex = new RegExp("strings.[a-z]{2}-[A-Z]{2}.json|strings.json");
 
                 availableLanguages = [];
 
                 for (var prop in obj) {
                     if (obj.hasOwnProperty(prop)) {
                         var language = obj[prop];
-                        if (language === 'README.md') continue;
-                        availableLanguages.push(language.substr(0, language.length - 5));
+                        if (languageRegex.test(language))
+                            availableLanguages.push(language.substr(0, language.length - 5));
                     }
                 }
             }
