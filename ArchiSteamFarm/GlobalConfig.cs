@@ -36,6 +36,8 @@ namespace ArchiSteamFarm {
 		internal const ushort DefaultIPCPort = 1242;
 		internal const byte DefaultLoginLimiterDelay = 10;
 
+		private const ProtocolTypes DefaultSteamProtocols = ProtocolTypes.Tcp | ProtocolTypes.Udp;
+
 		internal static readonly HashSet<uint> SalesBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900, 762800 }; // Steam Summer/Winter sales
 
 		private static readonly SemaphoreSlim WriteSemaphore = new SemaphoreSlim(1, 1);
@@ -110,7 +112,7 @@ namespace ArchiSteamFarm {
 		internal ulong SteamOwnerID { get; private set; }
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal ProtocolTypes SteamProtocols { get; private set; } = ProtocolTypes.Tcp;
+		internal ProtocolTypes SteamProtocols { get; private set; } = DefaultSteamProtocols;
 
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamOwnerID), Required = Required.DisallowNull)]
 		private string SSteamOwnerID {
@@ -151,8 +153,8 @@ namespace ArchiSteamFarm {
 
 			// User might not know what he's doing
 			// Ensure that he can't screw core ASF variables
-			if (globalConfig.MaxFarmingTime == 0) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.MaxFarmingTime), globalConfig.MaxFarmingTime));
+			if (globalConfig.ConnectionTimeout == 0) {
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.ConnectionTimeout), globalConfig.ConnectionTimeout));
 				return null;
 			}
 
@@ -161,15 +163,20 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (globalConfig.ConnectionTimeout == 0) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.ConnectionTimeout), globalConfig.ConnectionTimeout));
+			if (globalConfig.MaxFarmingTime == 0) {
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.MaxFarmingTime), globalConfig.MaxFarmingTime));
+				return null;
+			}
+
+			if (globalConfig.SteamProtocols == 0) {
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.SteamProtocols), globalConfig.SteamProtocols));
 				return null;
 			}
 
 			if (globalConfig.SteamProtocols.HasFlag(ProtocolTypes.WebSocket) && !OS.SupportsWebSockets()) {
 				globalConfig.SteamProtocols &= ~ProtocolTypes.WebSocket;
 				if (globalConfig.SteamProtocols == 0) {
-					globalConfig.SteamProtocols = ProtocolTypes.Tcp;
+					globalConfig.SteamProtocols = DefaultSteamProtocols;
 				}
 			}
 
