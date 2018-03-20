@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <ApplicationIcon>ASF.ico</ApplicationIcon>
-    <AssemblyVersion>3.1.1.7</AssemblyVersion>
+    <AssemblyVersion>3.1.1.8</AssemblyVersion>
     <Authors>JustArchi</Authors>
     <Company>JustArchi</Company>
     <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
@@ -10,7 +10,7 @@
     <CrossGenDuringPublish>false</CrossGenDuringPublish>
     <Description>ASF is an application that allows you to farm steam cards using multiple steam accounts simultaneously.</Description>
     <ErrorReport>none</ErrorReport>
-    <FileVersion>3.1.1.7</FileVersion>
+    <FileVersion>3.1.1.8</FileVersion>
     <LangVersion>latest</LangVersion>
     <NoWarn />
     <OutputType>Exe</OutputType>
