@@ -1041,6 +1041,7 @@ $(function () {
                 for (var prop in obj) {
                     if (obj.hasOwnProperty(prop)) {
                         var language = obj[prop];
+                        if (language === 'README.md') continue;
                         availableLanguages.push(language.substr(0, language.length - 5));
                     }
                 }
