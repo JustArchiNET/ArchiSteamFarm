@@ -427,10 +427,10 @@ function createClickFunction() {
 }
 //#endregion Global Config Utils
 
-//#region Config Changer
+//#region Config Editor
 var globalConfig = {};
 
-function loadPageContentChanger(botName) {
+function loadPageContentEditor(botName) {
     if (botName === 'ASF') {
         generateConfigHTML('ASF');
     } else {
@@ -532,7 +532,7 @@ function loadValuesForBotsDropDown(botName) {
             var obj = data['Result'];
 
             if (botName !== 'ASF') {
-                botsDropDownHTML += '<li><a href="javascript:void(0)" onclick="loadPageContentChanger(\'ASF\')">ASF</a></li>';
+                botsDropDownHTML += '<li><a href="javascript:void(0)" onclick="loadPageContentEditor(\'ASF\')">ASF</a></li>';
             }
 
             for (var i = 0; i < obj.length; i++) {
@@ -541,7 +541,7 @@ function loadValuesForBotsDropDown(botName) {
 
                 if (botName === currentBotName) continue;
 
-                botsDropDownHTML += '<li><a href="javascript:void(0)" onclick="loadPageContentChanger(\'' + currentBotName + '\')">' + currentBotName + '</a></li>';
+                botsDropDownHTML += '<li><a href="javascript:void(0)" onclick="loadPageContentEditor(\'' + currentBotName + '\')">' + currentBotName + '</a></li>';
             }
 
             $('.box-title').html('Currently editing: <b>' + botName + '</b>');
@@ -668,7 +668,7 @@ function saveConfig(botName, config) {
         }
     });
 }
-//#endregion Config Changer
+//#endregion Config Editor
 
 //#region Config Generator
 var globalDefaultConfig = {};

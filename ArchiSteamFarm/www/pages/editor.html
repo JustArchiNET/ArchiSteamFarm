@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title data-i18n="changer-title">ASF | Config Changer</title>
+    <title data-i18n="editor-title">ASF | Config Editor</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -60,7 +60,7 @@
                     <li><a href="log.html"><i class="far fa-file-alt fa-fw"></i> <span data-i18n="global-log">Log</span></a></li>
 
                     <li class="header" data-i18n="global-config">Config</li>
-                    <li class="active"><a href="changer.html"><i class="far fa-edit fa-fw"></i> <span data-i18n="global-changer">Changer</span></a></li>
+                    <li class="active"><a href="editor.html"><i class="far fa-edit fa-fw"></i> <span data-i18n="global-editor">Editor</span></a></li>
                     <li><a href="generator.html"><i class="far fa-copy fa-fw"></i> <span data-i18n="global-generator">Generator</span></a></li>
 
                     <li class="header" data-i18n="global-information">Information</li>
@@ -88,12 +88,12 @@
         <div class="content-wrapper">
             <section class="content-header">
                 <h1>
-                    <span data-i18n="global-changer">Changer</span>
+                    <span data-i18n="global-editor">Editor</span>
                     <small data-i18n="global-control-panel">Control Panel</small>
                 </h1>
                 <ol class="breadcrumb">
                     <li><i class="fas fa-cogs"></i> <span data-i18n="global-config">Config</span></li>
-                    <li class="active"><i class="far fa-edit"></i> <span data-i18n="global-changer">Changer</span></li>
+                    <li class="active"><i class="far fa-edit"></i> <span data-i18n="global-editor">Editor</span></li>
                 </ol>
             </section>
 
@@ -102,11 +102,11 @@
                 <div class="box">
                     <div class="box-header with-border">
                         <i class="far fa-edit"></i>
-                        <h3 class="box-title" data-i18n="changer-current">Currently editing:</h3>
+                        <h3 class="box-title" data-i18n="editor-current">Currently editing:</h3>
                         <div class="box-tools pull-right">
                             <div class="btn-group">
                                 <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                    <span data-i18n="changer-change">Change bot</span>
+                                    <span data-i18n="editor-change">Change bot</span>
                                     <span class="fas fa-caret-down"></span>
                                 </button>
                                 <ul class="dropdown-menu scrollable-menu" role="menu" id="botsDropDown"></ul>
@@ -119,7 +119,7 @@
                     <div class="box-footer">
                         <div class="input-group pull-right">
                             <button class="btn btn-default" id="saveButton">
-                                <i class="fas fa-save"></i> <span data-i18n="changer-save">Save</span>
+                                <i class="fas fa-save"></i> <span data-i18n="editor-save">Save</span>
                             </button>
                         </div>
                     </div>
@@ -162,7 +162,7 @@
         $(function () {
             'use strict';
 
-            store('CurrentPage', 'pages/changer.html');
+            store('CurrentPage', 'pages/editor.html');
 
             $('.box-content-config').ready(function () {
                 $.ajax({
@@ -171,7 +171,7 @@
                     async: false,
                     success: function (data) {
                         var json = data['Result'];
-                        loadPageContentChanger(json[0].BotName);
+                        loadPageContentEditor(json[0].BotName);
                     }
                 });
             });
