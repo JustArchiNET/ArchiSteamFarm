@@ -134,75 +134,64 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			await ConfirmationsSemaphore.WaitAsync().ConfigureAwait(false);
+			await LimitConfirmationsRequestsAsync().ConfigureAwait(false);
 
-			try {
-				HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetConfirmations(DeviceID, confirmationHash, time).ConfigureAwait(false);
+			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetConfirmations(DeviceID, confirmationHash, time).ConfigureAwait(false);
 
-				HtmlNodeCollection confirmationNodes = htmlDocument?.DocumentNode.SelectNodes("//div[@class='mobileconf_list_entry']");
-				if (confirmationNodes == null) {
+			HtmlNodeCollection confirmationNodes = htmlDocument?.DocumentNode.SelectNodes("//div[@class='mobileconf_list_entry']");
+			if (confirmationNodes == null) {
+				return null;
+			}
+
+			HashSet<Confirmation> result = new HashSet<Confirmation>();
+
+			foreach (HtmlNode confirmationNode in confirmationNodes) {
+				string idText = confirmationNode.GetAttributeValue("data-confid", null);
+				if (string.IsNullOrEmpty(idText)) {
+					Bot.ArchiLogger.LogNullError(nameof(idText));
 					return null;
 				}
 
-				HashSet<Confirmation> result = new HashSet<Confirmation>();
-
-				foreach (HtmlNode confirmationNode in confirmationNodes) {
-					string idText = confirmationNode.GetAttributeValue("data-confid", null);
-					if (string.IsNullOrEmpty(idText)) {
-						Bot.ArchiLogger.LogNullError(nameof(idText));
-						return null;
-					}
-
-					if (!ulong.TryParse(idText, out ulong id) || (id == 0)) {
-						Bot.ArchiLogger.LogNullError(nameof(id));
-						return null;
-					}
-
-					string keyText = confirmationNode.GetAttributeValue("data-key", null);
-					if (string.IsNullOrEmpty(keyText)) {
-						Bot.ArchiLogger.LogNullError(nameof(keyText));
-						return null;
-					}
-
-					if (!ulong.TryParse(keyText, out ulong key) || (key == 0)) {
-						Bot.ArchiLogger.LogNullError(nameof(key));
-						return null;
-					}
-
-					string typeText = confirmationNode.GetAttributeValue("data-type", null);
-					if (string.IsNullOrEmpty(typeText)) {
-						Bot.ArchiLogger.LogNullError(nameof(typeText));
-						return null;
-					}
-
-					if (!Enum.TryParse(typeText, out Steam.ConfirmationDetails.EType type) || (type == Steam.ConfirmationDetails.EType.Unknown)) {
-						Bot.ArchiLogger.LogNullError(nameof(type));
-						return null;
-					}
-
-					if (!Enum.IsDefined(typeof(Steam.ConfirmationDetails.EType), type)) {
-						Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(type), type));
-						return null;
-					}
-
-					if ((acceptedType != Steam.ConfirmationDetails.EType.Unknown) && (acceptedType != type)) {
-						continue;
-					}
-
-					result.Add(new Confirmation(id, key));
+				if (!ulong.TryParse(idText, out ulong id) || (id == 0)) {
+					Bot.ArchiLogger.LogNullError(nameof(id));
+					return null;
 				}
 
-				return result;
-			} finally {
-				if (Program.GlobalConfig.ConfirmationsLimiterDelay == 0) {
-					ConfirmationsSemaphore.Release();
-				} else {
-					Utilities.InBackground(async () => {
-						await Task.Delay(Program.GlobalConfig.ConfirmationsLimiterDelay * 1000).ConfigureAwait(false);
-						ConfirmationsSemaphore.Release();
-					});
+				string keyText = confirmationNode.GetAttributeValue("data-key", null);
+				if (string.IsNullOrEmpty(keyText)) {
+					Bot.ArchiLogger.LogNullError(nameof(keyText));
+					return null;
 				}
+
+				if (!ulong.TryParse(keyText, out ulong key) || (key == 0)) {
+					Bot.ArchiLogger.LogNullError(nameof(key));
+					return null;
+				}
+
+				string typeText = confirmationNode.GetAttributeValue("data-type", null);
+				if (string.IsNullOrEmpty(typeText)) {
+					Bot.ArchiLogger.LogNullError(nameof(typeText));
+					return null;
+				}
+
+				if (!Enum.TryParse(typeText, out Steam.ConfirmationDetails.EType type) || (type == Steam.ConfirmationDetails.EType.Unknown)) {
+					Bot.ArchiLogger.LogNullError(nameof(type));
+					return null;
+				}
+
+				if (!Enum.IsDefined(typeof(Steam.ConfirmationDetails.EType), type)) {
+					Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(type), type));
+					return null;
+				}
+
+				if ((acceptedType != Steam.ConfirmationDetails.EType.Unknown) && (acceptedType != type)) {
+					continue;
+				}
+
+				result.Add(new Confirmation(id, key));
 			}
+
+			return result;
 		}
 
 		internal async Task<bool> HandleConfirmations(IReadOnlyCollection<Confirmation> confirmations, bool accept) {
@@ -370,6 +359,18 @@ namespace ArchiSteamFarm {
 			} finally {
 				TimeSemaphore.Release();
 			}
+		}
+
+		private static async Task LimitConfirmationsRequestsAsync() {
+			if (Program.GlobalConfig.ConfirmationsLimiterDelay == 0) {
+				return;
+			}
+
+			await ConfirmationsSemaphore.WaitAsync().ConfigureAwait(false);
+			Utilities.InBackground(async () => {
+				await Task.Delay(Program.GlobalConfig.ConfirmationsLimiterDelay * 1000).ConfigureAwait(false);
+				ConfirmationsSemaphore.Release();
+			});
 		}
 
 		internal sealed class Confirmation {
