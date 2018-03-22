@@ -59,38 +59,36 @@ $('.main-footer').ready(function () {
 
 //#region Bot Status Buttons
 function displayBotStatus() {
-    $('.bot-status').ready(function () {
-        var activeBots = 0,
-            idleBots = 0,
-            offlineBots = 0;
+    var offline = 0,
+        online = 0,
+        farming = 0;
 
-        $.ajax({
-            url: '/Api/Bot/ASF',
-            type: 'GET',
-            success: function (data) {
-                var json = data['Result'];
+    $.ajax({
+        url: '/Api/Bot/ASF',
+        type: 'GET',
+        success: function (data) {
+            var json = data['Result'];
 
-                for (var i = 0; i < json.length; i++) {
-                    var obj = json[i],
-                        KeepRunning = obj.KeepRunning,
-                        TimeRemaining = obj.CardsFarmer.TimeRemaining;
+            for (var i = 0; i < json.length; i++) {
+                var obj = json[i],
+                    KeepRunning = obj.KeepRunning,
+                    TimeRemaining = obj.CardsFarmer.TimeRemaining;
 
-                    if (KeepRunning === false) {
-                        offlineBots++;
+                if (KeepRunning === false) {
+                    offline++;
+                } else {
+                    if (TimeRemaining === '00:00:00') {
+                        online++;
                     } else {
-                        if (TimeRemaining === '00:00:00') {
-                            idleBots++;
-                        } else {
-                            activeBots++;
-                        }
+                        farming++;
                     }
                 }
-
-                $('#offlineBots').text(offlineBots);
-                $('#idleBots').text(idleBots);
-                $('#activeBots').text(activeBots);
             }
-        });
+
+            $('#offlineBots').text(offline);
+            $('#onlineBots').text(online);
+            $('#farmingBots').text(farming);
+        }
     });
 }
 
