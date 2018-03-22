@@ -431,7 +431,7 @@
 
                                         if (IsPlayingPossible) {
                                             if (Paused) {
-                                                allGamesHTML = '<p class="text-center no-margin">Bot is paused.</p>';
+                                                allGamesHTML = '<p class="text-center no-margin">' + $.i18n('bots-paused') + '</p>';
                                             } else {
                                                 if (tmpSimpleFarmingInfo === 'true') {
                                                     allGamesHTML = '<p class="text-center no-margin">' + allGamesFarmingName.join(", ") + '</p>';
@@ -452,7 +452,7 @@
                                                 }
                                             }
                                         } else {
-                                            allGamesHTML = '<p class="text-center no-margin">Bot is currently being used.</p>';
+                                            allGamesHTML = '<p class="text-center no-margin">' + $.i18n('bots-in-use') + '</p>';
                                         }
 
                                         TimeRemaining = moment.duration(TimeRemaining).asMilliseconds();
@@ -527,18 +527,22 @@
                                     cmd = $(this).data('command'),
                                     $botBox = $('#bot-box-' + BotName);
 
+                                if (typeof cmd === 'undefined') {
+                                    return;
+                                }
+
+                                $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
+
                                 switch (cmd) {
                                     case 'startBot':
-                                        $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
-
                                         $.ajax({
                                             url: '/Api/Command/start ' + encodeURIComponent(BotName),
                                             type: 'POST',
                                             success: function (data) {
                                                 $('.overlay').remove();
                                                 swal({
-                                                    title: 'Success!',
-                                                    text: '<' + BotName + '> has been started.',
+                                                    title: $.i18n('global-success-title'),
+                                                    text: $.i18n('bots-start-success', BotName),
                                                     type: 'success'
                                                 }, function () { location.reload(); });
                                             }
@@ -546,16 +550,14 @@
                                         break;
 
                                     case 'stopBot':
-                                        $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
-
                                         $.ajax({
                                             url: '/Api/Command/stop ' + encodeURIComponent(BotName),
                                             type: 'POST',
                                             success: function (data) {
                                                 $('.overlay').remove();
                                                 swal({
-                                                    title: 'Success!',
-                                                    text: '<' + BotName + '> has been stopped.',
+                                                    title: $.i18n('global-success-title'),
+                                                    text: $.i18n('bots-stop-success', BotName),
                                                     type: 'success'
                                                 }, function () { location.reload(); });
                                             }
@@ -563,16 +565,14 @@
                                         break;
 
                                     case 'pauseBot':
-                                        $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
-
                                         $.ajax({
                                             url: '/Api/Command/pause ' + encodeURIComponent(BotName),
                                             type: 'POST',
                                             success: function (data) {
                                                 $('.overlay').remove();
                                                 swal({
-                                                    title: 'Success!',
-                                                    text: '<' + BotName + '> has been paused.',
+                                                    title: $.i18n('global-success-title'),
+                                                    text: $.i18n('bots-pause-success', BotName),
                                                     type: 'success'
                                                 }, function () { location.reload(); });
                                             }
@@ -580,16 +580,14 @@
                                         break;
 
                                     case 'resumeBot':
-                                        $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
-
                                         $.ajax({
                                             url: '/Api/Command/resume ' + encodeURIComponent(BotName),
                                             type: 'POST',
                                             success: function (data) {
                                                 $('.overlay').remove();
                                                 swal({
-                                                    title: 'Success!',
-                                                    text: '<' + BotName + '> has been resumed.',
+                                                    title: $.i18n('global-success-title'),
+                                                    text: $.i18n('bots-resume-success', BotName),
                                                     type: 'success'
                                                 }, function () { location.reload(); });
                                             }
@@ -597,14 +595,13 @@
                                         break;
 
                                     case 'deleteBot':
-                                        $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
                                         swal({
-                                            title: 'Are you sure?',
-                                            text: 'You will not be able to recover any bot files!',
+                                            title: $.i18n('global-question-title'),
+                                            text: $.i18n('bots-recover-files'),
                                             type: 'warning',
                                             showCancelButton: true,
                                             confirmButtonClass: 'btn-danger',
-                                            confirmButtonText: 'Yes, delete bot!',
+                                            confirmButtonText: $.i18n('bots-confirm-delete'),
                                             closeOnConfirm: false,
                                             showLoaderOnConfirm: true
                                         }, function (isConfirm) {
@@ -615,8 +612,8 @@
                                                     success: function (data) {
                                                         $('.overlay').remove();
                                                         swal({
-                                                            title: 'Success!',
-                                                            text: '<' + BotName + '> and all related files have been deleted.',
+                                                            title: $.i18n('global-success-title'),
+                                                            text: $.i18n('bots-delete-success', BotName),
                                                             type: 'success'
                                                         }, function () { location.reload(); });
                                                     }
@@ -628,20 +625,19 @@
                                         break;
 
                                     case 'redeemGames':
-                                        $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
                                         swal({
-                                            title: 'Enter keys!',
-                                            text: '<p class="lead text-muted" style="display: block;">Syntax: gameName{Delimeter}cd-key</p>'
+                                            title: $.i18n('bots-redeem-title'),
+                                            text: '<p class="lead text-muted" style="display: block;">' + $.i18n('bots-syntax') + '</p>'
                                             + '<textarea id="gamesToRedeemInBackground"></textarea>'
                                             + '<div class="input-group">'
-                                            + '<span class="input-group-addon" id="delimeter-text">Delimeter</span>'
+                                            + '<span class="input-group-addon" id="delimeter-text">' + $.i18n('bots-delimeter') + '</span>'
                                             + '<input type="text" class="form-control" id="delimeter" value="' + tmpDelimeter + '" aria-describedby="delimeter-text">'
                                             + '</div>',
                                             html: true,
                                             customClass: 'swal-wide',
                                             showCancelButton: true,
                                             confirmButtonClass: 'btn-success',
-                                            confirmButtonText: 'Add keys!',
+                                            confirmButtonText: $.i18n('bots-redeem-button'),
                                             closeOnConfirm: false,
                                             showLoaderOnConfirm: true
                                         }, function (isConfirm) {
@@ -679,14 +675,14 @@
                                                         gamesAdded = Object.keys(obj).length;
 
                                                     swal({
-                                                        title: 'Success!',
-                                                        text: gamesAdded + ' Keys have been added to <' + BotName + '> background redeemer.',
+                                                        title: $.i18n('global-success-title'),
+                                                        text: $.i18n('bots-redeem-confirm', gamesAdded, BotName),
                                                         type: 'success'
                                                     }, function () { location.reload(); });
                                                 },
                                                 error: function (jqXHR, textStatus, errorThrown) {
                                                     swal({
-                                                        title: 'Error!',
+                                                        title: $.i18n('global-error-title'),
                                                         text: jqXHR.status + ' - ' + errorThrown,
                                                         type: 'error'
                                                     }, function () { location.reload(); });
@@ -705,7 +701,7 @@
                                 + '<div class="info-box bot-info-box">'
                                 + '<span class="info-box-icon bg-purple bots-info-box-icon"><i class="fas fa-gamepad"></i></span>'
                                 + '<div class="info-box-content bot-info-box-content">'
-                                + '<span class="info-box-text">Games Remaining</span>'
+                                + '<span class="info-box-text">' + $.i18n('bots-infobox-games') + '</span>'
                                 + '<span class="info-box-number" id="totalGamesRemaining"></span>'
                                 + '</div>'
                                 + '</div>'
@@ -714,7 +710,7 @@
                                 + '<div class="info-box bot-info-box">'
                                 + '<span class="info-box-icon bg-green bots-info-box-icon"><i class="far fa-clock"></i></span>'
                                 + '<div class="info-box-content bot-info-box-content">'
-                                + '<span class="info-box-text">Time Remaining</span>'
+                                + '<span class="info-box-text">' + $.i18n('bots-infobox-time') + '</span>'
                                 + '<span class="info-box-number" id="totalTimeRemaining"></span>'
                                 + '</div>'
                                 + '</div>'
@@ -723,7 +719,7 @@
                                 + '<div class="info-box bot-info-box">'
                                 + '<span class="info-box-icon bg-aqua bots-info-box-icon"><i class="far fa-clone"></i></span>'
                                 + '<div class="info-box-content bot-info-box-content">'
-                                + '<span class="info-box-text">Cards Remaining</span>'
+                                + '<span class="info-box-text">' + $.i18n('bots-infobox-cards') + '</span>'
                                 + '<span class="info-box-number" id="totalCardsRemaining"></span>'
                                 + '</div>'
                                 + '</div>'

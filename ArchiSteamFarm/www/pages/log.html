@@ -184,8 +184,8 @@
                 ws.onclose = function (event) {
                     if (event.code !== 1000) { // Code 1000 means that the connection was closed normally
                         swal({
-                            title: 'Error!',
-                            text: 'Event code: ' + event.code,
+                            title: $.i18n('global-error-title'),
+                            text: $.i18n('log-event-code', event.code),
                             type: 'error'
                         }, function () { swal.close(); });
                     }

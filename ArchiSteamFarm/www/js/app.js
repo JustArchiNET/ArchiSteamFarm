@@ -146,14 +146,16 @@ function logCommand(state, cmd) {
     var tmpAutoClear = get('autoClear');
 
     if (state) {
-        $('#commandSent').val(getDateAndTime() + ' Command sent: ' + cmd);
+        $('#commandSent').val($.i18n('commands-sent', getDateAndTime(), cmd));
         return;
     } 
 
+    var response = $.i18n('commands-response', getDateAndTime(), cmd);
+
     if (tmpAutoClear === 'false') {
-        $('.box-content-commands').append('\n' + getDateAndTime() + ' Response received: ' + cmd + '\n');
+        $('.box-content-commands').append('\n' + response + '\n');
     } else {
-        $('.box-content-commands').text(getDateAndTime() + ' Response received: ' + cmd);
+        $('.box-content-commands').text(response);
     }
 }
 
@@ -166,15 +168,16 @@ function sendCommand() {
 
     logCommand(true, command);
 
+    var response = $.i18n('commands-waiting', getDateAndTime());
+
     if (tmpAutoClear === 'false') {
         if ($('.box-content-commands').text() === '') {
-            $('.box-content-commands').append(getDateAndTime() + ' Waiting for response...' + '\n');
+            $('.box-content-commands').append(response + '\n');
         } else {
-            $('.box-content-commands').append('\n' + getDateAndTime() + ' Waiting for response...' + '\n');
+            $('.box-content-commands').append('\n' + response + '\n');
         }
-
     } else {
-        $('.box-content-commands').text(getDateAndTime() + ' Waiting for response...');
+        $('.box-content-commands').text(response);
     }
 
     $('.box-content-commands').append('<div class="overlay"><i class="fas fa-sync fa-spin" style="color:white"></i></div>');
@@ -316,12 +319,12 @@ function loadPageContentEditor(botName) {
     $("#saveButton").unbind();
     $("#saveButton").click(function (e) {
         swal({
-            title: 'Are you sure?',
-            text: 'The config will be updated and <' + botName + '> will be restarted!',
+            title: $.i18n('global-question-title'),
+            text: $.i18n('editor-update', botName),
             type: 'warning',
             showCancelButton: true,
             confirmButtonClass: 'btn-danger',
-            confirmButtonText: 'Yes, update config!',
+            confirmButtonText: $.i18n('editor-update-confirm'),
             closeOnConfirm: false,
             showLoaderOnConfirm: true
         }, function () { prepareConfigForSaving(botName); });
@@ -420,7 +423,7 @@ function loadValuesForBotsDropDown(botName) {
                 botsDropDownHTML += '<li><a href="javascript:void(0)" onclick="loadPageContentEditor(\'' + currentBotName + '\')">' + currentBotName + '</a></li>';
             }
 
-            $('.box-title').html('Currently editing: <b>' + botName + '</b>');
+            $('.box-title').html($.i18n('editor-current-bot', botName));
             $('#saveButton').data('BotName', botName);
             $('#botsDropDown').html(botsDropDownHTML);
         }
@@ -530,14 +533,14 @@ function saveConfig(botName, config) {
         contentType: 'application/json',
         success: function (data) {
             swal({
-                title: 'Success!',
-                text: '<' + botName + '> and its config file got updated.',
+                title: $.i18n('global-success-title'),
+                text: $.i18n('editor-save-confirm', botName),
                 type: 'success'
             }, function () { location.reload(); });
         },
         error: function (jqXHR, textStatus, errorThrown) {
             swal({
-                title: 'Error!',
+                title: $.i18n('global-error-title'),
                 text: jqXHR.status + ' - ' + errorThrown,
                 type: 'error'
             }, function () { location.reload(); });
@@ -634,7 +637,7 @@ function loadValuesForModeDropDown(mode) {
         botsDropDownHTML = '<li><a href="javascript:void(0)" onclick="loadPageContentGenerator(\'ASF\');">ASF</a></li>';
     }
 
-    $('.box-title').html('Current mode: <b>' + mode + '</b>');
+    $('.box-title').html($.i18n('generator-current-bot', mode));
     $('#modeDropDown').html(botsDropDownHTML);
 }
 
@@ -646,8 +649,8 @@ function prepareConfigForDownload(mode) {
 
         if (botName === '') {
             swal({
-                title: 'Error!',
-                text: 'You need to enter a name',
+                title: $.i18n('global-error-title'),
+                text: $.i18n('generator-name'),
                 type: 'error'
             });
             return false;
@@ -849,10 +852,10 @@ $(function () {
         });
 
         if (tmpLangMissing > 0) {
-            var percentage = tmpLangMissing * 100 / tmpLangTotal;
+            var percentage = (tmpLangMissing * 100 / tmpLangTotal).toFixed(0);
             $('#languageInfo').html('<div class="alert alert-warning alert-dismissible">'
                 + '<button title="Never show again" type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>'
-                + percentage.toFixed(0) + '% of this language is not translated! Help us <a href="https://github.com/JustArchi/ArchiSteamFarm/wiki/Localization">here</a>.'
+                + $.i18n('global-language-info', percentage)
                 + '</div>');
         } else {
             $('#languageInfo').text('');
