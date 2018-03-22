@@ -42,18 +42,16 @@ function store(name, val) {
 //#endregion Utils
 
 //#region Footer
-$('.main-footer').ready(function () {
-    $.ajax({
-        url: '/Api/ASF',
-        type: 'GET',
-        success: function (data) {
-            var version = data['Result'].Version,
-                versionNr = version.Major + '.' + version.Minor + '.' + version.Build + '.' + version.Revision;
+$.ajax({
+    url: '/Api/ASF',
+    type: 'GET',
+    success: function (data) {
+        var ver = data['Result'].Version,
+            verNr = ver.Major + '.' + ver.Minor + '.' + ver.Build + '.' + ver.Revision;
             
-            $('#version').text(versionNr);
-            $('#changelog').attr('href', 'https://github.com/JustArchi/ArchiSteamFarm/releases/tag/' + versionNr);
-        }
-    });
+        $('#version').text(verNr);
+        $('#changelog').attr('href', 'https://github.com/JustArchi/ArchiSteamFarm/releases/tag/' + verNr);
+    }
 });
 //#endregion Footer
 
@@ -98,12 +96,15 @@ window.setInterval(function () { displayBotStatus(); }, 5000);
 
 //#region ASF Information
 function displayRAMUsage() {
-    $('.info-overview').ready(function () {
-        $.ajax({
-            url: '/Api/ASF',
-            type: 'GET',
-            success: function (data) { $('#ramUsage').html((data['Result'].MemoryUsage / 1024).toFixed(2) + ' MB'); }
-        });
+    $.ajax({
+        url: '/Api/ASF',
+        type: 'GET',
+        success: function (data) {
+            var mem = data['Result'].MemoryUsage,
+                memMB = (mem / 1024).toFixed(2);
+
+            $('#ramUsage').html(memMB + ' MB');
+        }
     });
 }
 
@@ -111,36 +112,35 @@ displayRAMUsage();
 window.setInterval(function () { displayRAMUsage(); }, 10000);
 
 function displayUptime() {
-    $('.info-overview').ready(function () {
-        $.ajax({
-            url: '/Api/ASF',
-            type: 'GET',
-            success: function (data) { $('#uptime').html(uptimeToString(data['Result'].ProcessStartTime)); }
-        });
+    $.ajax({
+        url: '/Api/ASF',
+        type: 'GET',
+        success: function (data) {
+            var pst = data['Result'].ProcessStartTime,
+                start = new Date(pst),
+                now = new Date(),
+                diff = now.getTime() - start.getTime();
+
+            var d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            diff -= d * (1000 * 60 * 60 * 24);
+
+            var h = Math.floor(diff / (1000 * 60 * 60));
+            diff -= h * (1000 * 60 * 60);
+
+            var m = Math.floor(diff / (1000 * 60));
+
+            h = (h < 10 ? '0' : '') + h;
+            m = (m < 10 ? '0' : '') + m;
+
+            up = d + 'd ' + h + 'h ' + m + 'm';
+
+            $('#uptime').html(up);
+        }
     });
 }
 
 displayUptime();
 window.setInterval(function () { displayUptime(); }, 60000);
-
-function uptimeToString(startTime) {
-    var processStartTime = new Date(startTime),
-        currentDate = new Date(),
-        diff = currentDate.getTime() - processStartTime.getTime();
-
-    var days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    diff -= days * (1000 * 60 * 60 * 24);
-
-    var hours = Math.floor(diff / (1000 * 60 * 60));
-    diff -= hours * (1000 * 60 * 60);
-
-    var mins = Math.floor(diff / (1000 * 60));
-
-    hours = (hours < 10 ? '0' : '') + hours;
-    mins = (mins < 10 ? '0' : '') + mins;
-
-    return days + 'd ' + hours + 'h ' + mins + 'm';
-}
 //#endregion ASF Information
 
 //#region Commands Page
@@ -149,13 +149,13 @@ function fillCommand(cmd) { $cmdInput.val(cmd + ' '); }
 function fillBots(bot) { $cmdInput.val($cmdInput.val() + bot); }
 
 function getDateAndTime() {
-    var currentdate = new Date();
-    return ('0' + currentdate.getDate()).slice(-2) + '.'
-        + ('0' + (currentdate.getMonth() + 1)).slice(-2) + '.'
-        + currentdate.getFullYear() + ' @ '
-        + ('0' + currentdate.getHours()).slice(-2) + ':'
-        + ('0' + currentdate.getMinutes()).slice(-2) + ':'
-        + ('0' + currentdate.getSeconds()).slice(-2);
+    var date = new Date();
+    return ('0' + date.getDate()).slice(-2) + '.'
+        + ('0' + (date.getMonth() + 1)).slice(-2) + '.'
+        + date.getFullYear() + ' @ '
+        + ('0' + date.getHours()).slice(-2) + ':'
+        + ('0' + date.getMinutes()).slice(-2) + ':'
+        + ('0' + date.getSeconds()).slice(-2);
 }
 
 function logCommand(state, cmd) {
@@ -163,12 +163,13 @@ function logCommand(state, cmd) {
 
     if (state) {
         $('#commandSent').val(getDateAndTime() + ' Command sent: ' + cmd);
+        return;
+    } 
+
+    if (tmpAutoClear === 'false') {
+        $('.box-content-commands').append('\n' + getDateAndTime() + ' Response received: ' + cmd + '\n');
     } else {
-        if (tmpAutoClear === 'false') {
-            $('.box-content-commands').append('\n' + getDateAndTime() + ' Response received: ' + cmd + '\n');
-        } else {
-            $('.box-content-commands').text(getDateAndTime() + ' Response received: ' + cmd);
-        }
+        $('.box-content-commands').text(getDateAndTime() + ' Response received: ' + cmd);
     }
 }
 
