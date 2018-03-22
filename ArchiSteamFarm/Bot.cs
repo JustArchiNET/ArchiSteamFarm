@@ -1718,12 +1718,11 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			// Steam login - ASCII characters only, no spaces
-			// Steam password - ASCII characters only, can contain spaces
+			// Steam login, password - ASCII characters only, can contain spaces
 
 			Regex regex = new Regex(@"[^\u0000-\u007F]+", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
-			string username = regex.Replace(BotConfig.SteamLogin, "").Replace(" ", "");
+			string username = regex.Replace(BotConfig.SteamLogin, "");
 
 			string password = BotConfig.SteamPassword;
 			if (!string.IsNullOrEmpty(password)) {
