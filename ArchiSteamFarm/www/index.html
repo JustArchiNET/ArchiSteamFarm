@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/AdminLTE.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="../js/utils.js"></script>
     <script>
         'use strict';
 
@@ -22,22 +23,6 @@
 
         if (tmpLastPage) {
             redirectPage = tmpLastPage;
-        }
-
-        function store(name, val) {
-            if (typeof Storage !== 'undefined') {
-                localStorage.setItem(name, val);
-            } else {
-                window.alert('Please use a modern browser to properly view ASF GUI!');
-            }
-        }
-
-        function get(name) {
-            if (typeof Storage !== 'undefined') {
-                return localStorage.getItem(name);
-            } else {
-                window.alert('Please use a modern browser to properly view ASF GUI!');
-            }
         }
         
         if (tmpIsAuthorized === 'true') {
@@ -76,11 +61,11 @@
 
         <div class="lockscreen-item">
             <div class="lockscreen-image">
-                <img src="favicon.png" alt="User Image">
+                <img src="favicon.png" alt="ASF">
             </div>
             <form class="lockscreen-credentials">
                 <div class="input-group">
-                    <input type="password" id="IPCPassword" class="form-control" placeholder="Type your password">
+                    <input type="password" id="IPCPassword" class="form-control" placeholder="Type your password...">
 
                     <div class="input-group-btn">
                         <button type="button" id="TryToAuth" class="btn"><i class="fa fa-arrow-right text-muted"></i></button>
