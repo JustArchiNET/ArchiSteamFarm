@@ -838,7 +838,7 @@ $(function () {
         }
     }
 
-    function setup() {
+    function loadLayout() {
         var tmpSkin = get('skin'),
             tmpLayoutState = get('layoutState'),
             tmpNightmodeState = get('nightmodeState'),
@@ -958,6 +958,6 @@ $(function () {
 
     $('#control-right-sidebar').after($layoutSettings);
 
-    setup();
+    loadLayout();
 });
 //#endregion Right Sidebar
