@@ -27,8 +27,7 @@
 
         var tmpIsAuthorized = get('IsAuthorized'),
             tmpLastPage = get('CurrentPage'),
-            redirectPage = 'pages/commands.html',
-            tmpLanguage = get('language');
+            redirectPage = 'pages/commands.html';
 
         if (tmpLastPage) {
             redirectPage = tmpLastPage;
@@ -37,9 +36,6 @@
         if (tmpIsAuthorized === 'true') {
             window.location.replace(redirectPage);
         }
-
-        var myLocal = (tmpLanguage) ? tmpLanguage : getLocale(availableLanguages);
-        loadLocales(myLocal);
 
         $.ajax({
             url: '/Api/ASF',

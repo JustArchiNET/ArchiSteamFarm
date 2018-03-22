@@ -1,5 +1,8 @@
-const defaultLocale = 'strings';
-const nameRegex = /\.\/(\S+)\.json/i;
+const defaultLocale = 'strings',
+    nameRegex = /\.\/(\S+)\.json/i;
+var availableLanguages = [],
+    tmpLanguage = get('language'),
+    myLocal = (tmpLanguage) ? tmpLanguage : getLocale(availableLanguages);
 
 function getLocale(validLocales) {
     const language = navigator.language || navigator.userLanguage; // If the browser doesn't support this, it will not support other page elements as well
@@ -19,15 +22,14 @@ function getLocale(validLocales) {
 function loadLocales(language) {
     var i18n = $.i18n(),
         langCode = (language === 'strings') ? 'us' : language.substr(language.length - 2).toLowerCase(),
-        translationFile;
+        translationFile,
+        missing = 0,
+        totalSize = 0;
 
     i18n.locale = language;
     translationFile = '../locale/' + i18n.locale + '.json';
     i18n.load(translationFile, i18n.locale).done(
         function () {
-            var missing = 0,
-                totalSize = 0;
-
             $.getJSON(translationFile, function (obj) {
                 for (var prop in obj) {
                     if (obj.hasOwnProperty(prop)) {
@@ -39,30 +41,16 @@ function loadLocales(language) {
                         }
                     }
                 }
-
-                if (missing > 0) {
-                    var percentage = missing * 100 / totalSize;
-                    $('#languageInfo').html('<div class="alert alert-warning alert-dismissible">'
-                        + '<button title="Never show again" type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>'
-                        + percentage.toFixed(0) + '% of this language is not translated! Help us <a href="https://github.com/JustArchi/ArchiSteamFarm/wiki/Localization">here</a>.'
-                        + '</div>');
-                } else {
-                    $('#languageInfo').text('');
-                }
-
-                $('#languages').collapse('hide');
+                
+                store('langMissing', missing);
+                store('langTotal', totalSize);
             });
         }
     );
 
     store('language', language);
-    $('#currentLanguage').attr({
-        alt: langCode,
-        src: '../img/flags/' + langCode + '.gif'
-    });
+    store('langCode', langCode);
 }
-
-var availableLanguages = [];
 
 function loadAllLanguages() {
     $.ajax({
@@ -85,3 +73,5 @@ function loadAllLanguages() {
         }
     });
 }
+
+loadLocales(myLocal);

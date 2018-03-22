@@ -838,12 +838,34 @@ $(function () {
         }
     }
 
+    function loadLanguageHTML() {
+        var tmpLangCode = get('langCode'),
+            tmpLangMissing = get('langMissing'),
+            tmpLangTotal = get('langTotal');
+
+        $('#currentLanguage').attr({
+            alt: tmpLangCode,
+            src: '../img/flags/' + tmpLangCode + '.gif'
+        });
+
+        if (tmpLangMissing > 0) {
+            var percentage = tmpLangMissing * 100 / tmpLangTotal;
+            $('#languageInfo').html('<div class="alert alert-warning alert-dismissible">'
+                + '<button title="Never show again" type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>'
+                + percentage.toFixed(0) + '% of this language is not translated! Help us <a href="https://github.com/JustArchi/ArchiSteamFarm/wiki/Localization">here</a>.'
+                + '</div>');
+        } else {
+            $('#languageInfo').text('');
+        }
+
+        $('#languages').collapse('hide');
+    }
+
     function loadLayout() {
         var tmpSkin = get('skin'),
             tmpLayoutState = get('layoutState'),
             tmpNightmodeState = get('nightmodeState'),
-            tmpLeftSidebarState = get('leftSidebarState'),
-            tmpLanguage = get('language');
+            tmpLeftSidebarState = get('leftSidebarState');
 
         if (tmpSkin && $.inArray(tmpSkin, mySkins)) changeSkin(tmpSkin);            
         if (tmpLeftSidebarState === 'sidebar-collapse') {
@@ -852,8 +874,7 @@ $(function () {
         if (tmpLayoutState) changeBoxed(tmpLayoutState);
         if (tmpNightmodeState) changeNightmode(tmpNightmodeState);
 
-        var myLocal = (tmpLanguage) ? tmpLanguage : getLocale(availableLanguages);
-        loadLocales(myLocal);
+        loadLanguageHTML();
 
         $('[data-skin]').on('click', function (e) {
             e.preventDefault();
@@ -879,6 +900,7 @@ $(function () {
         $('.language').on('click', function (e) {
             e.preventDefault();
             loadLocales($(this).data('locale'));
+            loadLanguageHTML();
         });
     }
 
