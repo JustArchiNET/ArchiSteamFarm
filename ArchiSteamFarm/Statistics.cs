@@ -69,8 +69,8 @@ namespace ArchiSteamFarm {
 
 				const string request = URL + "/Api/HeartBeat";
 				Dictionary<string, string> data = new Dictionary<string, string>(2) {
-					{ "Guid", Program.GlobalDatabase.Guid.ToString("N") },
-					{ "SteamID", Bot.CachedSteamID.ToString() }
+					{ "SteamID", Bot.CachedSteamID.ToString() },
+					{ "Guid", Program.GlobalDatabase.Guid.ToString("N") }
 				};
 
 				// We don't need retry logic here
@@ -128,14 +128,14 @@ namespace ArchiSteamFarm {
 
 				const string request = URL + "/Api/Announce";
 				Dictionary<string, string> data = new Dictionary<string, string>(9) {
+					{ "SteamID", Bot.CachedSteamID.ToString() },
+					{ "Guid", Program.GlobalDatabase.Guid.ToString("N") },
+					{ "Nickname", nickname ?? "" },
 					{ "AvatarHash", avatarHash ?? "" },
 					{ "GamesCount", inventory.Select(item => item.RealAppID).Distinct().Count().ToString() },
-					{ "Guid", Program.GlobalDatabase.Guid.ToString("N") },
 					{ "ItemsCount", inventory.Count.ToString() },
 					{ "MatchableTypes", JsonConvert.SerializeObject(acceptedMatchableTypes) },
 					{ "MatchEverything", Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) ? "1" : "0" },
-					{ "Nickname", nickname ?? "" },
-					{ "SteamID", Bot.CachedSteamID.ToString() },
 					{ "TradeToken", tradeToken }
 				};
 
