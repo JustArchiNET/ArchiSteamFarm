@@ -1989,6 +1989,10 @@ namespace ArchiSteamFarm {
 			ArchiLogger.LogGenericInfo(string.Format(Strings.BotLoggedOff, callback.Result));
 
 			switch (callback.Result) {
+				case EResult.LoggedInElsewhere:
+					// This result directly indicates that playing was blocked when we got (forcefully) disconnected
+					PlayingWasBlocked = true;
+					break;
 				case EResult.LogonSessionReplaced:
 					DateTime now = DateTime.UtcNow;
 
