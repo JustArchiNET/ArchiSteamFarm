@@ -87,7 +87,7 @@
     <None Update="config\minimal.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Content Include="www\**">
+    <Content Include="www\**" Exclude="**\README.md">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
