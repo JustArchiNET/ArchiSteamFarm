@@ -1,10 +1,10 @@
 # ArchiSteamFarm
 
-[![Build status (Windows)](https://img.shields.io/appveyor/ci/JustArchi/ArchiSteamFarm/master.svg?label=Windows&maxAge=60)](https://ci.appveyor.com/project/JustArchi/ArchiSteamFarm)
-[![Build status (Unix)](https://img.shields.io/travis/JustArchi/ArchiSteamFarm/master.svg?label=Unix&maxAge=60)](https://travis-ci.org/JustArchi/ArchiSteamFarm)
-[![Build status (Docker)](https://img.shields.io/docker/build/justarchi/archisteamfarm.svg?label=Docker&maxAge=60)](https://hub.docker.com/r/justarchi/archisteamfarm)
+[![Build status (Windows)](https://img.shields.io/appveyor/ci/JustArchi/ArchiSteamFarm/master.svg?label=Windows&maxAge=600)](https://ci.appveyor.com/project/JustArchi/ArchiSteamFarm)
+[![Build status (Unix)](https://img.shields.io/travis/JustArchi/ArchiSteamFarm/master.svg?label=Unix&maxAge=600)](https://travis-ci.org/JustArchi/ArchiSteamFarm)
+[![Build status (Docker)](https://img.shields.io/docker/build/justarchi/archisteamfarm.svg?label=Docker&maxAge=600)](https://hub.docker.com/r/justarchi/archisteamfarm)
 [![License](https://img.shields.io/github/license/JustArchi/ArchiSteamFarm.svg?label=License&maxAge=86400)](https://github.com/JustArchi/ArchiSteamFarm/blob/master/LICENSE-2.0.txt)
-[![GitHub release](https://img.shields.io/github/release/JustArchi/ArchiSteamFarm.svg?label=Latest&maxAge=60)](https://github.com/JustArchi/ArchiSteamFarm/releases/latest)
+[![GitHub release](https://img.shields.io/github/release/JustArchi/ArchiSteamFarm.svg?label=Latest&maxAge=600)](https://github.com/JustArchi/ArchiSteamFarm/releases/latest)
 [![Github downloads](https://img.shields.io/github/downloads/JustArchi/ArchiSteamFarm/latest/total.svg?label=Downloads&maxAge=3600)](https://github.com/JustArchi/ArchiSteamFarm/releases/latest)
 [![Crowdin](https://d322cqt584bo4o.cloudfront.net/archisteamfarm/localized.svg)](https://crowdin.com/project/archisteamfarm)
 
