@@ -36,12 +36,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.7.1" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.7.2" />
     <PackageReference Include="Humanizer" Version="2.2.0" />
     <PackageReference Include="ILLink.Tasks" Version="0.1.5-preview-1461378" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.5.0-preview1-26216-02" />
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
-    <PackageReference Include="NLog" Version="4.5.0-rc07" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="NLog" Version="4.5.0" />
     <PackageReference Include="protobuf-net" Version="2.3.7" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.5.0-preview1-26216-02" />
   </ItemGroup>
