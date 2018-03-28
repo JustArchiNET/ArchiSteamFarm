@@ -3,8 +3,8 @@
 [![Build status (Windows)](https://img.shields.io/appveyor/ci/JustArchi/ArchiSteamFarm/master.svg?label=Windows&maxAge=600)](https://ci.appveyor.com/project/JustArchi/ArchiSteamFarm)
 [![Build status (Unix)](https://img.shields.io/travis/JustArchi/ArchiSteamFarm/master.svg?label=Unix&maxAge=600)](https://travis-ci.org/JustArchi/ArchiSteamFarm)
 [![Build status (Docker)](https://img.shields.io/docker/build/justarchi/archisteamfarm.svg?label=Docker&maxAge=600)](https://hub.docker.com/r/justarchi/archisteamfarm)
-[![License](https://img.shields.io/github/license/JustArchi/ArchiSteamFarm.svg?label=License&maxAge=2592000)](https://github.com/JustArchi/ArchiSteamFarm/blob/master/LICENSE-2.0.txt)
 [![Github last commit date](https://img.shields.io/github/last-commit/JustArchi/ArchiSteamFarm.svg?label=Updated&maxAge=600)](https://github.com/JustArchi/ArchiSteamFarm/commits)
+[![License](https://img.shields.io/github/license/JustArchi/ArchiSteamFarm.svg?label=License&maxAge=2592000)](https://github.com/JustArchi/ArchiSteamFarm/blob/master/LICENSE-2.0.txt)
 [![Localization](https://d322cqt584bo4o.cloudfront.net/archisteamfarm/localized.svg)](https://crowdin.com/project/archisteamfarm)
 
 [![GitHub latest release version](https://img.shields.io/github/release/JustArchi/ArchiSteamFarm.svg?label=Latest&maxAge=600)](https://github.com/JustArchi/ArchiSteamFarm/releases/latest)
@@ -13,15 +13,16 @@
 
 [![GitHub next release version](https://img.shields.io/github/release/JustArchi/ArchiSteamFarm/all.svg?label=Next&maxAge=600)](https://github.com/JustArchi/ArchiSteamFarm/releases)
 [![GitHub next release date](https://img.shields.io/github/release-date-pre/JustArchi/ArchiSteamFarm.svg?label=Released&maxAge=600)](https://github.com/JustArchi/ArchiSteamFarm/releases)
-[![Github next release downloads](https://img.shields.io/github/downloads-pre/JustArchi/ArchiSteamFarm/latest/total.svg?label=Downloads&maxAge=600)](https://github.com/JustArchi/ArchiSteamFarm/releases/latest)
+[![Github next release downloads](https://img.shields.io/github/downloads-pre/JustArchi/ArchiSteamFarm/latest/total.svg?label=Downloads&maxAge=600)](https://github.com/JustArchi/ArchiSteamFarm/releases)
 
 [![ConfigGenerator status](https://img.shields.io/website-up-down-green-red/https/justarchi.github.io/ArchiSteamFarm.svg?label=ConfigGenerator&maxAge=3600)](https://justarchi.github.io/ArchiSteamFarm)
 [![Statistics status](https://img.shields.io/website-up-down-green-red/https/asf.justarchi.net.svg?label=Statistics&maxAge=3600)](https://asf.justarchi.net)
 [![Steam group](https://img.shields.io/badge/Steam-group-yellowgreen.svg)](https://steamcommunity.com/groups/ascfarm)
 [![Discord](https://img.shields.io/discord/267292556709068800.svg?label=Discord&maxAge=3600)](https://discord.gg/hSQgt8j)
+[![Wiki](https://img.shields.io/badge/Read-wiki-cc5490.svg)](https://github.com/JustArchi/ArchiSteamFarm/wiki)
 
 [![Patreon support](https://img.shields.io/badge/Patreon-support-yellow.svg)](https://www.patreon.com/JustArchi)
-[![Paypal.me donate](https://img.shields.io/badge/Paypal.me-donate-yellow.svg)](https://www.paypal.me/JustArchi/1usd)
+[![Paypal.me donate](https://img.shields.io/badge/Paypal.me-donate-yellow.svg)](https://www.paypal.me/JustArchi/5usd)
 [![Paypal donate](https://img.shields.io/badge/Paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HD2P2P3WGS5Y4)
 [![Bitcoin donate](https://img.shields.io/badge/Bitcoin-donate-yellow.svg)](https://blockchain.info/payment_request?address=1Archi6M1r5b41Rvn1SY2FfJAzsrEUT7aT)
 [![Steam donate](https://img.shields.io/badge/Steam-donate-yellow.svg)](https://steamcommunity.com/tradeoffer/new/?partner=46697991&token=0ix2Ruv_)
