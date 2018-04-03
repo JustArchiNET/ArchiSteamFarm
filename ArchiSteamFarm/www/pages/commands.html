@@ -109,7 +109,7 @@
                                     <i class="fas fa-wrench"></i>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><button title="Toggle auto clear" type="button" class="btn btn-box-tool text-olive" id="chkAutoClear"><i id="iconAutoClear" class="fas fa-toggle-on fa-2x"></i></button><span data-i18n="commands-auto-clear">Auto clear</span></li>
+                                    <li><button data-i18n="title-commands-auto-clear" title="Toggle auto clear" type="button" class="btn btn-box-tool text-olive" id="chkAutoClear"><i id="iconAutoClear" class="fas fa-toggle-on fa-2x"></i></button><span data-i18n="commands-auto-clear">Auto clear</span></li>
                                 </ul>
                             </div>
                         </div>
@@ -121,22 +121,22 @@
                     <div class="box-footer">
                         <div class="input-group">
                             <div class="input-group-btn hidden-xs" id="cmdsDropDownBox">
-                                <button title="Show all commands" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                <button data-i18n="title-commands-show-all-commands" title="Show all commands" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                     <span data-i18n="global-commands">Commands</span>
                                     <span class="fas fa-caret-down" id="iconCmdsDropDownBox"></span>
                                 </button>
                                 <ul class="dropdown-menu scrollable-menu" id="commandsDropDown"></ul>
                             </div>
                             <div class="input-group-btn hidden-xs" id="botsDropDownBox">
-                                <button title="Show all bots" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                <button data-i18n="title-commands-show-all-bots" title="Show all bots" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                     <span data-i18n="global-bots">Bots</span>
                                     <span class="fas fa-caret-down" id="iconBotsDropDownBox"></span>
                                 </button>
                                 <ul class="dropdown-menu scrollable-menu" id="botsDropDown"></ul>
                             </div>
-                            <input id="commandInput" type="text" class="form-control" placeholder="Type command...">
+                            <input id="commandInput" type="text" class="form-control" data-i18n="placeholder-commands" placeholder="Type command...">
                             <div class="input-group-btn">
-                                <button title="Send command" type="button" class="btn btn-default" id="sendCommand"><i class="far fa-paper-plane"></i></button>
+                                <button data-i18n="title-commands-send" title="Send command" type="button" class="btn btn-default" id="sendCommand"><i class="far fa-paper-plane"></i></button>
                             </div>
                         </div>
                     </div>
@@ -347,7 +347,7 @@
                                 $commandInput.attr('placeholder', myCommands[this.id]); // ToDo: Find a better solution for where to display description
                             })
                             .mouseleave(function () {
-                                $commandInput.attr('placeholder', 'Type command...');
+                                $commandInput.attr('placeholder', $.i18n('placeholder-commands'));
                             });
                     }
                 }

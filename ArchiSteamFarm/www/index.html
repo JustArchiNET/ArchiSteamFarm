@@ -22,42 +22,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.emitter.bidi.min.js"></script>
     <script src="../js/utils.js"></script>
     <script src="../js/i18n.js"></script>
-    <script>
-        'use strict';
-
-        var tmpIsAuthorized = get('IsAuthorized'),
-            tmpLastPage = get('CurrentPage'),
-            redirectPage = 'pages/commands.html';
-
-        if (tmpLastPage) {
-            redirectPage = tmpLastPage;
-        }
-        
-        if (tmpIsAuthorized === 'true') {
-            window.location.replace(redirectPage);
-        }
-
-        $.ajax({
-            url: '/Api/ASF',
-            type: 'GET',
-            statusCode: {
-                401: function () {
-                    store('IsAuthorized', false);
-                    store('IPCPassword', '');
-                },
-                403: function () {
-                    store('IsAuthorized', false);
-                    store('IPCPassword', '');
-                    $('.lockscreen-name, .lockscreen-item').remove();
-                    $('.help-block').text($.i18n('auth-ipc-403'));
-                },
-                200: function () {
-                    store('IsAuthorized', true);
-                    window.location.replace(redirectPage);
-                }
-            }
-        });
-    </script>
 </head>
 <body class="hold-transition lockscreen">
     <div class="lockscreen-wrapper">
@@ -68,11 +32,11 @@
 
         <div class="lockscreen-item">
             <div class="lockscreen-image">
-                <img src="favicon.png" alt="ASF">
+                <img src="img/favicon.png" alt="ASF">
             </div>
             <form class="lockscreen-credentials">
                 <div class="input-group">
-                    <input type="password" id="IPCPassword" class="form-control" placeholder="Type your password...">
+                    <input type="password" id="IPCPassword" class="form-control" data-i18n="placeholder-auth" placeholder="Type your password...">
 
                     <div class="input-group-btn">
                         <button type="button" id="TryToAuth" class="btn"><i class="fa fa-arrow-right text-muted"></i></button>
@@ -90,6 +54,40 @@
     <script>
             $(function () {
                 'use strict';
+
+                var tmpIsAuthorized = get('IsAuthorized'),
+                    tmpLastPage = get('CurrentPage'),
+                    redirectPage = 'pages/commands.html';
+
+                if (tmpLastPage) {
+                    redirectPage = tmpLastPage;
+                }
+
+                if (tmpIsAuthorized === 'true') {
+                    window.location.replace(redirectPage);
+                } else {
+                    $.ajax({
+                        url: '/Api/ASF',
+                        type: 'GET',
+                        statusCode: {
+                            401: function () {
+                                store('IsAuthorized', false);
+                                store('IPCPassword', '');
+                            },
+                            403: function () {
+                                store('IsAuthorized', false);
+                                store('IPCPassword', '');
+                                $('.lockscreen-name, .lockscreen-item').remove();
+                                var res = $.i18n('auth-ipc-403');
+                                $('.help-block').text(res);
+                            },
+                            200: function () {
+                                store('IsAuthorized', true);
+                                window.location.replace(redirectPage);
+                            }
+                        }
+                    });
+                }
 
                 $(document).keypress(function (e) {
                     var keyCode = e.keyCode || e.which;

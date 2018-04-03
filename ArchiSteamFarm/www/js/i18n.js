@@ -35,7 +35,14 @@ function loadLocales(language) {
                     if (obj.hasOwnProperty(prop)) {
                         totalSize++;
                         if (obj[prop]) {
-                            $('[data-i18n="' + prop + '"]').i18n();
+                            if (prop.substring(0, 12) === 'placeholder-') {
+                                $('[data-i18n="' + prop + '"]').attr("placeholder", $.i18n(prop));
+                            } else if (prop.substring(0, 6) === 'title-') {
+                                $('[data-i18n="' + prop + '"]').attr("title", $.i18n(prop));
+                            } else {
+                                $('[data-i18n="' + prop + '"]').i18n();
+                            }
+
                         } else {
                             missing++;
                         }

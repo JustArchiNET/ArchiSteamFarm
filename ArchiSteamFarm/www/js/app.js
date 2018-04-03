@@ -854,7 +854,7 @@ $(function () {
         if (tmpLangMissing > 0) {
             var percentage = (tmpLangMissing * 100 / tmpLangTotal).toFixed(0);
             $('#languageInfo').html('<div class="alert alert-warning alert-dismissible">'
-                + '<button title="Never show again" type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>'
+                + '<button data-i18n="title-global-never" title="Never show again" type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>'
                 + $.i18n('global-language-info', percentage)
                 + '</div>');
         } else {
@@ -916,7 +916,7 @@ $(function () {
         // Boxed Layout
         + '<div class="form-group hidden-xs hidden-sm">'
         + '<label class="control-sidebar-subheading">'
-        + '<button title="Toggle boxed layout" type="button" class="btn btn-box-tool pull-right text-grey" id="toggleBoxed"><i id="iconBoxed" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>'
+        + '<button data-i18n="title-global-boxed" title="Toggle boxed layout" type="button" class="btn btn-box-tool pull-right text-grey" id="toggleBoxed"><i id="iconBoxed" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>'
         + '<i class="far fa-square fa-fw"></i> <span data-i18n="global-boxed">Boxed Layout</span>'
         + '</label>'
         + '<p data-i18n="global-boxed-description">Toggle the boxed layout</p>'
@@ -924,7 +924,7 @@ $(function () {
         // Nightmode
         + '<div class="form-group">'
         + '<label class="control-sidebar-subheading">'
-        + '<button title="Toggle nightmode" type="button" class="btn btn-box-tool pull-right text-grey" id="toggleNightmode"><i id="iconNightmode" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>'
+        + '<button data-i18n="title-global-nightmode" title="Toggle nightmode" type="button" class="btn btn-box-tool pull-right text-grey" id="toggleNightmode"><i id="iconNightmode" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>'
         + '<i class="fas fa-moon fa-fw"></i> <span data-i18n="global-nightmode">Nightmode</span>'
         + '</label>'
         + '<p data-i18n="global-nightmode-description">Toggle the nightmode</p>'
@@ -966,14 +966,14 @@ $(function () {
         var language = availableLanguages[i],
             langCode = (language === 'strings') ? 'us' : language.substr(language.length - 2).toLowerCase();
 
-        $languagesList.append('<button title="Change language" type="button" class="btn btn-box-tool language" data-locale="' + language + '"><img src="../img/flags/' + langCode + '.gif" alt="' + langCode + '"></button>');
+        $languagesList.append('<button data-i18n="title-global-language" title="Change language" type="button" class="btn btn-box-tool language" data-locale="' + language + '"><img src="../img/flags/' + langCode + '.gif" alt="' + langCode + '"></button>');
     }
 
     $layoutSettings.append('<h4 class="control-sidebar-heading" data-i18n="global-language">Language</h4>'
         + '<div id="languageInfo"></div>'
         + '<div class="form-group">'
         + '<label class="control-sidebar-subheading">'
-        + '<button title="Change language" type="button" class="btn btn-box-tool pull-right" data-toggle="collapse" data-target="#languages"><span data-i18n="global-change">Change</span> <i class="fas fa-caret-down"></i></button>'
+        + '<button data-i18n="title-global-language" title="Change language" type="button" class="btn btn-box-tool pull-right" data-toggle="collapse" data-target="#languages"><span data-i18n="global-change">Change</span> <i class="fas fa-caret-down"></i></button>'
         + '<img id="currentLanguage" src="../img/flags/us.gif" alt="us">'
         + '</label>'
         + '</div>'
