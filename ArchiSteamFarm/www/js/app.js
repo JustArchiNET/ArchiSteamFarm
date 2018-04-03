@@ -852,14 +852,16 @@ $(function () {
         });
 
         if (tmpLangMissing > 0) {
-            var percentage = (tmpLangMissing * 100 / tmpLangTotal).toFixed(0);
+            var percentage = (tmpLangMissing * 100 / tmpLangTotal).toFixed(0),
+                //infoText = $.i18n('global-language-info', percentage); //Fix this
+                infoText = percentage + "% of this language is not translated!";
             $('#languageInfo').html('<div class="alert alert-warning alert-dismissible">'
                 + '<button data-i18n="title-global-never" title="Never show again" type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>'
-                + $.i18n('global-language-info', percentage)
+                + infoText
                 + '</div>');
         } else {
             $('#languageInfo').text('');
-        }
+        }        
 
         $('#languages').collapse('hide');
     }
