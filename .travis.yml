@@ -19,7 +19,7 @@ group: travis_latest
 mono: none
 
 # ASF requires .NET Core 2.0+
-dotnet: 2.1.103
+dotnet: 2.1.104
 
 env:
   global:
