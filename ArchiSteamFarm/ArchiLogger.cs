@@ -22,6 +22,7 @@
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using NLog;
 
@@ -37,7 +38,7 @@ namespace ArchiSteamFarm {
 			Logger = LogManager.GetLogger(name);
 		}
 
-		internal void LogFatalException(Exception exception, [CallerMemberName] string previousMethodName = null) {
+		internal async Task LogFatalException(Exception exception, [CallerMemberName] string previousMethodName = null) {
 			if (exception == null) {
 				LogNullError(nameof(exception));
 				return;
@@ -50,11 +51,37 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			// Otherwise, if we run into fatal exception before logging module is even initialized, write exception to classic log file
-			File.WriteAllText(SharedInfo.LogFile, string.Format(DateTime.Now + Strings.ErrorEarlyFatalExceptionInfo + Environment.NewLine, SharedInfo.Version));
+			// Otherwise, we ran into fatal exception before logging module could even get initialized, so activate fallback logging that involved file and console
+
+			string message = string.Format(DateTime.Now + Strings.ErrorEarlyFatalExceptionInfo + Environment.NewLine, SharedInfo.Version);
+
+			try {
+				await File.WriteAllTextAsync(SharedInfo.LogFile, message).ConfigureAwait(false);
+			} catch {
+				// Ignored, we can't do anything with this
+			}
+
+			try {
+				Console.WriteLine(message);
+			} catch {
+				// Ignored, we can't do anything with this
+			}
 
 			while (true) {
-				File.AppendAllText(SharedInfo.LogFile, string.Format(Strings.ErrorEarlyFatalExceptionPrint, previousMethodName, exception.Message, exception.StackTrace));
+				message = string.Format(Strings.ErrorEarlyFatalExceptionPrint, previousMethodName, exception.Message, exception.StackTrace);
+
+				try {
+					await File.AppendAllTextAsync(SharedInfo.LogFile, message).ConfigureAwait(false);
+				} catch {
+					// Ignored, we can't do anything with this
+				}
+
+				try {
+					Console.WriteLine(message);
+				} catch {
+					// Ignored, we can't do anything with this
+				}
+
 				if (exception.InnerException != null) {
 					exception = exception.InnerException;
 					continue;

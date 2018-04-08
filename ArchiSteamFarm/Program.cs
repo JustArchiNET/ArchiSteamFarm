@@ -402,17 +402,17 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ASF.ArchiLogger.LogFatalException((Exception) e.ExceptionObject);
+			await ASF.ArchiLogger.LogFatalException((Exception) e.ExceptionObject).ConfigureAwait(false);
 			await Exit(1).ConfigureAwait(false);
 		}
 
-		private static void OnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e) {
+		private static async void OnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e) {
 			if (e?.Exception == null) {
 				ASF.ArchiLogger.LogNullError(nameof(e) + " || " + nameof(e.Exception));
 				return;
 			}
 
-			ASF.ArchiLogger.LogFatalException(e.Exception);
+			await ASF.ArchiLogger.LogFatalException(e.Exception).ConfigureAwait(false);
 
 			// Normally we should abort the application here, but many tasks are in fact failing in SK2 code which we can't easily fix
 			// Thanks Valve.
