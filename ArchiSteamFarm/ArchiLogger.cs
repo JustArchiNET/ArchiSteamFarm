@@ -51,7 +51,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			// Otherwise, we ran into fatal exception before logging module could even get initialized, so activate fallback logging that involved file and console
+			// Otherwise, we ran into fatal exception before logging module could even get initialized, so activate fallback logging that involves file and console
 
 			string message = string.Format(DateTime.Now + Strings.ErrorEarlyFatalExceptionInfo + Environment.NewLine, SharedInfo.Version);
 
