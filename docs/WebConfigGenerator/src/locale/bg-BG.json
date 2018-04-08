@@ -2,7 +2,7 @@
     "app.name": "ASF генератор за конфигуриране",
     "button.advanced": "Превключване на разширени настройки",
     "button.download": "Изтегляне",
-    "home.topic": "",
+    "home.topic": "ASF Генератор на настройките е малка програма-инструмент, написан на JavaScript, която Ви помага да създадете вашите ASF конфигурационни файлове. След свалянето, го преместете до <var>config</var> вътре в главната директория на ASF. За пълната документация се обърнете към <a href=\"https://github.com/JustArchi/ArchiSteamFarm/wiki/Configuration\" target=\"_blank\" rel=\"noopener\">Wiki</a>. Надяваме се, че нашата програмка ще бъде полезна за Вас.",
     "link.asf": "ASF",
     "link.bot": "Бот",
     "link.home": "Начало",

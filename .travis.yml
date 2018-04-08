@@ -19,7 +19,7 @@ group: travis_latest
 mono: none
 
 # ASF requires .NET Core 2.0+
-dotnet: 2.1.101
+dotnet: 2.1.104
 
 env:
   global:
@@ -50,7 +50,7 @@ script:
         if [ "$1" = 'generic' ]; then
             dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" --no-restore /nologo "/p:ASFVariant=$1"
         else
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" -r "$1" --no-restore /nologo "/p:ASFVariant=$1"
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" -r "$1" --no-restore /nologo "/p:ASFVariant=$1" "/p:CrossGenDuringPublish=false"
         fi
 
         # If we include any helper scripts for this variant, copy them to output directory
