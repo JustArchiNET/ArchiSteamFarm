@@ -1192,9 +1192,6 @@ namespace ArchiSteamFarm {
 				if (string.IsNullOrEmpty(name)) {
 					invalid = true;
 					ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, nameof(name)));
-				} else if (string.IsNullOrEmpty(name)) {
-					invalid = true;
-					ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, name));
 				}
 
 				if (invalid) {
