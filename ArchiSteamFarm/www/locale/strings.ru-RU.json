@@ -30,14 +30,14 @@
   "global-information": "Информация",
   "global-language": "Язык",
   "global-layout": "Разметка",
-  "global-log": "Лог",
+  "global-log": "Журнал",
   "global-navigation": "Переключатель панели навигации",
   "global-nightmode": "Ночной режим",
-  "global-nightmode-description": "Переключить ночной режим",
+  "global-nightmode-description": "Переключатель ночного режима",
   "global-ram-usage": "Использование ОЗУ",
-  "global-skins": "Оболочки",
+  "global-skins": "Оформление",
   "global-uptime": "Время работы",
   "global-version": "Версия",
   "global-wiki": "Вики",
-  "log-title": "ASF | Лог"
+  "log-title": "ASF | Журнал"
 }
