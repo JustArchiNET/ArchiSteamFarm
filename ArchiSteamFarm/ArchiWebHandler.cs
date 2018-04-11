@@ -1262,8 +1262,6 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			ASF.ArchiLogger.LogGenericDebug("Value: " + privacyResponse.Settings.Inventory);
-
 			switch (privacyResponse.Settings.Inventory) {
 				case Steam.PrivacyResponse.PrivacySettings.EPrivacySetting.FriendsOnly:
 				case Steam.PrivacyResponse.PrivacySettings.EPrivacySetting.Private:
