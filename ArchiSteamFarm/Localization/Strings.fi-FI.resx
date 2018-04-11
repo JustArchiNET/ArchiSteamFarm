@@ -224,10 +224,6 @@ StackTrace:
   <data name="Starting" xml:space="preserve">
     <value>Käynnistetään...</value>
   </data>
-  <data name="StatusCode" xml:space="preserve">
-    <value>Tilannekoodi: {0}</value>
-    <comment>{0} will be replaced by status code number/name</comment>
-  </data>
   <data name="Success" xml:space="preserve">
     <value>Valmis!</value>
   </data>

@@ -222,10 +222,6 @@
   <data name="Starting" xml:space="preserve">
     <value>Стартиране...</value>
   </data>
-  <data name="StatusCode" xml:space="preserve">
-    <value>Статус код: {0}</value>
-    <comment>{0} will be replaced by status code number/name</comment>
-  </data>
   <data name="Success" xml:space="preserve">
     <value>Успешно!</value>
   </data>
