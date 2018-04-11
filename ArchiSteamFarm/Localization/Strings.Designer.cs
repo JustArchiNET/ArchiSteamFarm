@@ -1180,15 +1180,6 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Status code: {0}.
-        /// </summary>
-        internal static string StatusCode {
-            get {
-                return ResourceManager.GetString("StatusCode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Still idling: {0} ({1}).
         /// </summary>
         internal static string StillIdling {

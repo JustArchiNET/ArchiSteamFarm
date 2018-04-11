@@ -366,11 +366,23 @@ namespace ArchiSteamFarm {
 			}
 
 			if (response == null) {
+				if (Debugging.IsUserDebugging) {
+					ArchiLogger.LogGenericDebug("null <- " + httpMethod + " " + requestUri);
+				}
+
 				return null;
+			}
+
+			if (Debugging.IsUserDebugging) {
+				ArchiLogger.LogGenericDebug(response.StatusCode + " <- " + httpMethod + " " + requestUri);
 			}
 
 			if (response.IsSuccessStatusCode) {
 				return response;
+			}
+
+			if (Debugging.IsUserDebugging) {
+				ArchiLogger.LogGenericDebug(string.Format(Strings.Content, await response.Content.ReadAsStringAsync().ConfigureAwait(false)));
 			}
 
 			// WARNING: We still have undisposed response by now, make sure to dispose it ASAP if we're not returning it!
@@ -398,15 +410,8 @@ namespace ArchiSteamFarm {
 				return await InternalRequest(redirectUri, httpMethod, data, referer, httpCompletionOption, --maxRedirections).ConfigureAwait(false);
 			}
 
-			using (response) {
-				if (Debugging.IsUserDebugging) {
-					ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, requestUri));
-					ArchiLogger.LogGenericDebug(string.Format(Strings.StatusCode, response.StatusCode));
-					ArchiLogger.LogGenericDebug(string.Format(Strings.Content, await response.Content.ReadAsStringAsync().ConfigureAwait(false)));
-				}
-
-				return null;
-			}
+			response.Dispose();
+			return null;
 		}
 
 		private async Task<StringResponse> UrlGetToString(string request, string referer = null, byte maxTries = MaxTries) {
