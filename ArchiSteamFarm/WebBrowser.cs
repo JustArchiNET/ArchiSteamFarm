@@ -353,6 +353,10 @@ namespace ArchiSteamFarm {
 					request.Headers.Referrer = new Uri(referer);
 				}
 
+				if (Debugging.IsUserDebugging) {
+					ArchiLogger.LogGenericDebug(httpMethod + " " + requestUri);
+				}
+
 				try {
 					response = await HttpClient.SendAsync(request, httpCompletionOption).ConfigureAwait(false);
 				} catch (Exception e) {
@@ -395,7 +399,7 @@ namespace ArchiSteamFarm {
 			}
 
 			using (response) {
-				if (Debugging.IsDebugBuild) {
+				if (Debugging.IsUserDebugging) {
 					ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, requestUri));
 					ArchiLogger.LogGenericDebug(string.Format(Strings.StatusCode, response.StatusCode));
 					ArchiLogger.LogGenericDebug(string.Format(Strings.Content, await response.Content.ReadAsStringAsync().ConfigureAwait(false)));

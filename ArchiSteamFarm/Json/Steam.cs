@@ -466,6 +466,31 @@ namespace ArchiSteamFarm.Json {
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		internal sealed class PrivacyResponse {
+			[JsonProperty(PropertyName = "PrivacySettings", Required = Required.Always)]
+			internal readonly PrivacySettings Settings;
+
+			// Deserialized from JSON
+			private PrivacyResponse() { }
+
+			internal sealed class PrivacySettings {
+				[JsonProperty(PropertyName = "PrivacyInventory", Required = Required.Always)]
+				internal readonly EPrivacySetting Inventory;
+
+				// Deserialized from JSON
+				private PrivacySettings() { }
+
+				[SuppressMessage("ReSharper", "UnusedMember.Global")]
+				internal enum EPrivacySetting : byte {
+					Unknown,
+					Private,
+					FriendsOnly,
+					Public
+				}
+			}
+		}
+
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class RedeemWalletResponse : EResultResponse {
 			[JsonProperty(PropertyName = "detail", Required = Required.DisallowNull)]
 			internal readonly EPurchaseResultDetail? PurchaseResultDetail;

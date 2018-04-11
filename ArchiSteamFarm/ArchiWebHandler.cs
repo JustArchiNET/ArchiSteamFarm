@@ -1229,15 +1229,51 @@ namespace ArchiSteamFarm {
 			const string request = "/my/edit/settings?l=english";
 			HtmlDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
 
-			HtmlNode htmlNode = htmlDocument?.DocumentNode.SelectSingleNode("//input[@id='inventoryPrivacySetting_public']");
-			if (htmlNode == null) {
+			if (htmlDocument == null) {
 				return null;
 			}
 
-			string state = htmlNode.GetAttributeValue("checked", null);
+			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@data-component='ProfilePrivacySettings']/@data-privacysettings");
+			if (htmlNode == null) {
+				Bot.ArchiLogger.LogNullError(nameof(htmlNode));
+				return null;
+			}
 
-			// Notice: checked doesn't have a value - null is lack of attribute, "" is attribute existing
-			return state != null;
+			string json = htmlNode.GetAttributeValue("data-privacysettings", null);
+			if (string.IsNullOrEmpty(json)) {
+				Bot.ArchiLogger.LogNullError(nameof(json));
+				return null;
+			}
+
+			// This json is encoded as html attribute, don't forget to decode it
+			json = WebUtility.HtmlDecode(json);
+
+			Steam.PrivacyResponse privacyResponse;
+
+			try {
+				privacyResponse = JsonConvert.DeserializeObject<Steam.PrivacyResponse>(json);
+			} catch (JsonException e) {
+				Bot.ArchiLogger.LogGenericException(e);
+				return null;
+			}
+
+			if (privacyResponse == null) {
+				Bot.ArchiLogger.LogNullError(nameof(privacyResponse));
+				return null;
+			}
+
+			ASF.ArchiLogger.LogGenericDebug("Value: " + privacyResponse.Settings.Inventory);
+
+			switch (privacyResponse.Settings.Inventory) {
+				case Steam.PrivacyResponse.PrivacySettings.EPrivacySetting.FriendsOnly:
+				case Steam.PrivacyResponse.PrivacySettings.EPrivacySetting.Private:
+					return false;
+				case Steam.PrivacyResponse.PrivacySettings.EPrivacySetting.Public:
+					return true;
+				default:
+					Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(privacyResponse.Settings.Inventory), privacyResponse.Settings.Inventory));
+					return null;
+			}
 		}
 
 		private static bool IsSessionExpiredUri(Uri uri) {
