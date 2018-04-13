@@ -53,6 +53,12 @@ namespace ArchiSteamFarm {
 
 		private static readonly SemaphoreSlim InventorySemaphore = new SemaphoreSlim(1, 1);
 
+		private static readonly Dictionary<string, SemaphoreSlim> WebLimitingSemaphores = new Dictionary<string, SemaphoreSlim>(3) {
+			{ SteamCommunityURL, new SemaphoreSlim(1, 1) },
+			{ SteamStoreURL, new SemaphoreSlim(1, 1) },
+			{ WebAPI.DefaultBaseAddress.Host, new SemaphoreSlim(1, 1) }
+		};
+
 		private readonly SemaphoreSlim ApiKeySemaphore = new SemaphoreSlim(1, 1);
 		private readonly Bot Bot;
 		private readonly SemaphoreSlim PublicInventorySemaphore = new SemaphoreSlim(1, 1);
@@ -148,11 +154,16 @@ namespace ArchiSteamFarm {
 					iEconService.Timeout = WebBrowser.Timeout;
 
 					try {
-						response = await iEconService.DeclineTradeOffer(
-							tradeofferid: tradeID.ToString(),
-							method: WebRequestMethods.Http.Post,
-							secure: true
-						);
+						response = await WebLimitRequest(WebAPI.DefaultBaseAddress.Host,
+#pragma warning disable ConfigureAwaitChecker // CAC001
+							// ReSharper disable once AccessToDisposedClosure
+							async () => await iEconService.DeclineTradeOffer(
+								tradeofferid: tradeID.ToString(),
+								method: WebRequestMethods.Http.Post,
+								secure: true
+							)
+#pragma warning restore ConfigureAwaitChecker // CAC001
+						).ConfigureAwait(false);
 					} catch (TaskCanceledException e) {
 						Bot.ArchiLogger.LogGenericDebuggingException(e);
 					} catch (Exception e) {
@@ -191,13 +202,18 @@ namespace ArchiSteamFarm {
 					iEconService.Timeout = WebBrowser.Timeout;
 
 					try {
-						response = await iEconService.GetTradeOffers(
-							active_only: 1,
-							get_descriptions: 1,
-							get_received_offers: 1,
-							secure: true,
-							time_historical_cutoff: uint.MaxValue
-						);
+						response = await WebLimitRequest(WebAPI.DefaultBaseAddress.Host,
+#pragma warning disable ConfigureAwaitChecker // CAC001
+							// ReSharper disable once AccessToDisposedClosure
+							async () => await iEconService.GetTradeOffers(
+								active_only: 1,
+								get_descriptions: 1,
+								get_received_offers: 1,
+								secure: true,
+								time_historical_cutoff: uint.MaxValue
+							)
+#pragma warning restore ConfigureAwaitChecker // CAC001
+						).ConfigureAwait(false);
 					} catch (TaskCanceledException e) {
 						Bot.ArchiLogger.LogGenericDebuggingException(e);
 					} catch (Exception e) {
@@ -537,11 +553,16 @@ namespace ArchiSteamFarm {
 					iPlayerService.Timeout = WebBrowser.Timeout;
 
 					try {
-						response = await iPlayerService.GetOwnedGames(
-							steamid: steamID,
-							include_appinfo: 1,
-							secure: true
-						);
+						response = await WebLimitRequest(WebAPI.DefaultBaseAddress.Host,
+#pragma warning disable ConfigureAwaitChecker // CAC001
+							// ReSharper disable once AccessToDisposedClosure
+							async () => await iPlayerService.GetOwnedGames(
+								steamid: steamID,
+								include_appinfo: 1,
+								secure: true
+							)
+#pragma warning restore ConfigureAwaitChecker // CAC001
+						).ConfigureAwait(false);
 					} catch (TaskCanceledException e) {
 						Bot.ArchiLogger.LogGenericDebuggingException(e);
 					} catch (Exception e) {
@@ -576,10 +597,15 @@ namespace ArchiSteamFarm {
 					iTwoFactorService.Timeout = WebBrowser.Timeout;
 
 					try {
-						response = await iTwoFactorService.QueryTime(
-							method: WebRequestMethods.Http.Post,
-							secure: true
-						);
+						response = await WebLimitRequest(WebAPI.DefaultBaseAddress.Host,
+#pragma warning disable ConfigureAwaitChecker // CAC001
+							// ReSharper disable once AccessToDisposedClosure
+							async () => await iTwoFactorService.QueryTime(
+								method: WebRequestMethods.Http.Post,
+								secure: true
+							)
+#pragma warning restore ConfigureAwaitChecker // CAC001
+						).ConfigureAwait(false);
 					} catch (TaskCanceledException e) {
 						Bot.ArchiLogger.LogGenericDebuggingException(e);
 					} catch (Exception e) {
@@ -671,11 +697,16 @@ namespace ArchiSteamFarm {
 					iEconService.Timeout = WebBrowser.Timeout;
 
 					try {
-						response = await iEconService.GetTradeHoldDurations(
-							secure: true,
-							steamid_target: steamID,
-							trade_offer_access_token: tradeToken ?? "" // TODO: Change me once https://github.com/SteamRE/SteamKit/pull/522 is merged
-						);
+						response = await WebLimitRequest(WebAPI.DefaultBaseAddress.Host,
+#pragma warning disable ConfigureAwaitChecker // CAC001
+							// ReSharper disable once AccessToDisposedClosure
+							async () => await iEconService.GetTradeHoldDurations(
+								secure: true,
+								steamid_target: steamID,
+								trade_offer_access_token: tradeToken ?? "" // TODO: Change me once https://github.com/SteamRE/SteamKit/pull/522 is merged
+							)
+#pragma warning restore ConfigureAwaitChecker // CAC001
+						).ConfigureAwait(false);
 					} catch (TaskCanceledException e) {
 						Bot.ArchiLogger.LogGenericDebuggingException(e);
 					} catch (Exception e) {
@@ -850,18 +881,23 @@ namespace ArchiSteamFarm {
 			// Do the magic
 			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.LoggingIn, ISteamUserAuth));
 
-			KeyValue authResult = null;
+			KeyValue response = null;
 			using (dynamic iSteamUserAuth = WebAPI.GetAsyncInterface(ISteamUserAuth)) {
 				iSteamUserAuth.Timeout = WebBrowser.Timeout;
 
 				try {
-					authResult = await iSteamUserAuth.AuthenticateUser(
-						steamid: steamID,
-						sessionkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedSessionKey, 0, cryptedSessionKey.Length)),
-						encrypted_loginkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedLoginKey, 0, cryptedLoginKey.Length)),
-						method: WebRequestMethods.Http.Post,
-						secure: true
-					);
+					response = await WebLimitRequest(WebAPI.DefaultBaseAddress.Host,
+#pragma warning disable ConfigureAwaitChecker // CAC001
+						// ReSharper disable once AccessToDisposedClosure
+						async () => await iSteamUserAuth.AuthenticateUser(
+							steamid: steamID,
+							sessionkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedSessionKey, 0, cryptedSessionKey.Length)),
+							encrypted_loginkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedLoginKey, 0, cryptedLoginKey.Length)),
+							method: WebRequestMethods.Http.Post,
+							secure: true
+						)
+#pragma warning restore ConfigureAwaitChecker // CAC001
+					).ConfigureAwait(false);
 				} catch (TaskCanceledException e) {
 					Bot.ArchiLogger.LogGenericDebuggingException(e);
 				} catch (Exception e) {
@@ -869,17 +905,17 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			if (authResult == null) {
+			if (response == null) {
 				return false;
 			}
 
-			string steamLogin = authResult["token"].Value;
+			string steamLogin = response["token"].Value;
 			if (string.IsNullOrEmpty(steamLogin)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamLogin));
 				return false;
 			}
 
-			string steamLoginSecure = authResult["tokensecure"].Value;
+			string steamLoginSecure = response["tokensecure"].Value;
 			if (string.IsNullOrEmpty(steamLoginSecure)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamLoginSecure));
 				return false;
@@ -1411,7 +1447,7 @@ namespace ArchiSteamFarm {
 
 			Dictionary<string, string> data = new Dictionary<string, string>(1) { { "pin", parentalPin } };
 
-			WebBrowser.BasicResponse response = await WebBrowser.UrlPost(serviceURL + request, data, serviceURL).ConfigureAwait(false);
+			WebBrowser.BasicResponse response = await WebLimitRequest(serviceURL, async () => await WebBrowser.UrlPost(serviceURL + request, data, serviceURL).ConfigureAwait(false)).ConfigureAwait(false);
 			return (response != null) && !IsSessionExpiredUri(response.FinalUri);
 		}
 
@@ -1441,7 +1477,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			WebBrowser.HtmlDocumentResponse response = await WebBrowser.UrlGetToHtmlDocument(host + request).ConfigureAwait(false);
+			WebBrowser.HtmlDocumentResponse response = await WebLimitRequest(host, async () => await WebBrowser.UrlGetToHtmlDocument(host + request).ConfigureAwait(false)).ConfigureAwait(false);
 			if (response == null) {
 				return null;
 			}
@@ -1485,7 +1521,7 @@ namespace ArchiSteamFarm {
 				return default;
 			}
 
-			WebBrowser.ObjectResponse<T> response = await WebBrowser.UrlGetToJsonObject<T>(host + request).ConfigureAwait(false);
+			WebBrowser.ObjectResponse<T> response = await WebLimitRequest(host, async () => await WebBrowser.UrlGetToJsonObject<T>(host + request).ConfigureAwait(false)).ConfigureAwait(false);
 			if (response == null) {
 				return default;
 			}
@@ -1529,7 +1565,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			WebBrowser.XmlDocumentResponse response = await WebBrowser.UrlGetToXmlDocument(host + request).ConfigureAwait(false);
+			WebBrowser.XmlDocumentResponse response = await WebLimitRequest(host, async () => await WebBrowser.UrlGetToXmlDocument(host + request).ConfigureAwait(false)).ConfigureAwait(false);
 			if (response == null) {
 				return null;
 			}
@@ -1573,7 +1609,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			WebBrowser.BasicResponse response = await WebBrowser.UrlHead(host + request).ConfigureAwait(false);
+			WebBrowser.BasicResponse response = await WebLimitRequest(host, async () => await WebBrowser.UrlHead(host + request).ConfigureAwait(false)).ConfigureAwait(false);
 			if (response == null) {
 				return false;
 			}
@@ -1646,7 +1682,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			WebBrowser.HtmlDocumentResponse response = await WebBrowser.UrlPostToHtmlDocument(host + request, data, referer).ConfigureAwait(false);
+			WebBrowser.HtmlDocumentResponse response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToHtmlDocument(host + request, data, referer).ConfigureAwait(false)).ConfigureAwait(false);
 			if (response == null) {
 				return null;
 			}
@@ -1719,7 +1755,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			WebBrowser.ObjectResponse<T> response = await WebBrowser.UrlPostToJsonObject<T>(host + request, data, referer).ConfigureAwait(false);
+			WebBrowser.ObjectResponse<T> response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToJsonObject<T>(host + request, data, referer).ConfigureAwait(false)).ConfigureAwait(false);
 			if (response == null) {
 				return default;
 			}
@@ -1795,7 +1831,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			WebBrowser.ObjectResponse<T> response = await WebBrowser.UrlPostToJsonObject<T>(host + request, data, referer).ConfigureAwait(false);
+			WebBrowser.ObjectResponse<T> response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToJsonObject<T>(host + request, data, referer).ConfigureAwait(false)).ConfigureAwait(false);
 			if (response == null) {
 				return default;
 			}
@@ -1868,7 +1904,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			WebBrowser.BasicResponse response = await WebBrowser.UrlPost(host + request, data, referer).ConfigureAwait(false);
+			WebBrowser.BasicResponse response = await WebLimitRequest(host, async () => await WebBrowser.UrlPost(host + request, data, referer).ConfigureAwait(false)).ConfigureAwait(false);
 			if (response == null) {
 				return false;
 			}
@@ -1884,6 +1920,33 @@ namespace ArchiSteamFarm {
 			}
 
 			return await UrlPostWithSession(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
+		}
+
+		private static async Task<T> WebLimitRequest<T>(string service, Func<Task<T>> function) {
+			if (string.IsNullOrEmpty(service) || (function == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(service) + " || " + nameof(function));
+				return default;
+			}
+
+			if (Program.GlobalConfig.WebLimiterDelay == 0) {
+				return await function().ConfigureAwait(false);
+			}
+
+			if (!WebLimitingSemaphores.TryGetValue(service, out SemaphoreSlim semaphore)) {
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(service), service));
+				return default;
+			}
+
+			await semaphore.WaitAsync().ConfigureAwait(false);
+
+			Task<T> task = function();
+
+			Utilities.InBackground(async () => {
+				await Task.WhenAll(task, Task.Delay(Program.GlobalConfig.WebLimiterDelay)).ConfigureAwait(false);
+				semaphore.Release();
+			});
+
+			return await task.ConfigureAwait(false);
 		}
 
 		private enum ESession : byte {

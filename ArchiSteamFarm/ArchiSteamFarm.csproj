@@ -35,6 +35,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="1.0.1" />
     <PackageReference Include="HtmlAgilityPack" Version="1.7.4" />
     <PackageReference Include="Humanizer" Version="2.2.0" />
     <PackageReference Include="ILLink.Tasks" Version="0.1.5-preview-1461378" />

@@ -109,6 +109,9 @@ namespace ArchiSteamFarm {
 		internal readonly byte UpdatePeriod = 24;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly ushort WebLimiterDelay = 200;
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		internal ulong SteamOwnerID { get; private set; }
 
 		[JsonProperty(Required = Required.DisallowNull)]

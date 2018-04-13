@@ -381,10 +381,6 @@ namespace ArchiSteamFarm {
 				return response;
 			}
 
-			if (Debugging.IsUserDebugging) {
-				ArchiLogger.LogGenericDebug(string.Format(Strings.Content, await response.Content.ReadAsStringAsync().ConfigureAwait(false)));
-			}
-
 			// WARNING: We still have undisposed response by now, make sure to dispose it ASAP if we're not returning it!
 			if ((response.StatusCode >= HttpStatusCode.Ambiguous) && (response.StatusCode < HttpStatusCode.BadRequest) && (maxRedirections > 0)) {
 				Uri redirectUri = response.Headers.Location;
@@ -410,8 +406,13 @@ namespace ArchiSteamFarm {
 				return await InternalRequest(redirectUri, httpMethod, data, referer, httpCompletionOption, --maxRedirections).ConfigureAwait(false);
 			}
 
-			response.Dispose();
-			return null;
+			using (response) {
+				if (Debugging.IsUserDebugging) {
+					ArchiLogger.LogGenericDebug(string.Format(Strings.Content, await response.Content.ReadAsStringAsync().ConfigureAwait(false)));
+				}
+
+				return null;
+			}
 		}
 
 		private async Task<StringResponse> UrlGetToString(string request, string referer = null, byte maxTries = MaxTries) {

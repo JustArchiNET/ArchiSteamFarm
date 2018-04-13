@@ -598,7 +598,7 @@ namespace ArchiSteamFarm {
 						WebSocketReceiveResult result = await webSocketContext.WebSocket.ReceiveAsync(new byte[0], CancellationToken.None).ConfigureAwait(false);
 
 						if (result.MessageType != WebSocketMessageType.Close) {
-							await webSocketContext.WebSocket.CloseAsync(WebSocketCloseStatus.InvalidMessageType, "You're not supposed to be sending any message but Close!", CancellationToken.None);
+							await webSocketContext.WebSocket.CloseAsync(WebSocketCloseStatus.InvalidMessageType, "You're not supposed to be sending any message but Close!", CancellationToken.None).ConfigureAwait(false);
 							break;
 						}
 

@@ -24,5 +24,6 @@
 	"SteamOwnerID": 0,
 	"SteamProtocols": 3,
 	"UpdateChannel": 1,
-	"UpdatePeriod": 24
+	"UpdatePeriod": 24,
+	"WebLimiterDelay": 200
 }
