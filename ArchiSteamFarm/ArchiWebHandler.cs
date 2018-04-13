@@ -1934,7 +1934,7 @@ namespace ArchiSteamFarm {
 
 			if (!WebLimitingSemaphores.TryGetValue(service, out SemaphoreSlim semaphore)) {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(service), service));
-				return default;
+				return await function().ConfigureAwait(false);
 			}
 
 			await semaphore.WaitAsync().ConfigureAwait(false);
