@@ -32,10 +32,10 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	internal sealed class WebBrowser : IDisposable {
+		internal const byte MaxConnections = 10; // Defines maximum number of connections per ServicePoint. Be careful, as it also defines maximum number of sockets in CLOSE_WAIT state
 		internal const byte MaxTries = 5; // Defines maximum number of recommended tries for a single request
 
 		private const byte ExtendedTimeoutMultiplier = 10; // Defines multiplier of timeout for WebBrowsers dealing with huge data (ASF update)
-		private const byte MaxConnections = 10; // Defines maximum number of connections per ServicePoint. Be careful, as it also defines maximum number of sockets in CLOSE_WAIT state
 		private const byte MaxIdleTime = 15; // Defines in seconds, how long socket is allowed to stay in CLOSE_WAIT state after there are no connections to it
 
 		internal readonly CookieContainer CookieContainer = new CookieContainer();

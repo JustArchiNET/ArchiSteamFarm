@@ -53,10 +53,10 @@ namespace ArchiSteamFarm {
 
 		private static readonly SemaphoreSlim InventorySemaphore = new SemaphoreSlim(1, 1);
 
-		private static readonly Dictionary<string, SemaphoreSlim> WebLimitingSemaphores = new Dictionary<string, SemaphoreSlim>(3) {
-			{ SteamCommunityURL, new SemaphoreSlim(1, 1) },
-			{ SteamStoreURL, new SemaphoreSlim(1, 1) },
-			{ WebAPI.DefaultBaseAddress.Host, new SemaphoreSlim(1, 1) }
+		private static readonly Dictionary<string, (SemaphoreSlim RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)> WebLimitingSemaphores = new Dictionary<string, (SemaphoreSlim RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)>(3) {
+			{ SteamCommunityURL, (new SemaphoreSlim(1, 1), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+			{ SteamStoreURL, (new SemaphoreSlim(1, 1), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+			{ WebAPI.DefaultBaseAddress.Host, (new SemaphoreSlim(1, 1), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) }
 		};
 
 		private readonly SemaphoreSlim ApiKeySemaphore = new SemaphoreSlim(1, 1);
@@ -1932,21 +1932,28 @@ namespace ArchiSteamFarm {
 				return await function().ConfigureAwait(false);
 			}
 
-			if (!WebLimitingSemaphores.TryGetValue(service, out SemaphoreSlim semaphore)) {
+			if (!WebLimitingSemaphores.TryGetValue(service, out (SemaphoreSlim RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore) limiters)) {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(service), service));
 				return await function().ConfigureAwait(false);
 			}
 
-			await semaphore.WaitAsync().ConfigureAwait(false);
+			// Sending a request affects both - number of requests as well as open connections
+			await limiters.RateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
+			await limiters.OpenConnectionsSemaphore.WaitAsync().ConfigureAwait(false);
 
-			Task<T> task = function();
-
+			// We release rate-limiter semaphore regardless of our task completion, since we use that one only to guarantee rate-limiting of their creation
 			Utilities.InBackground(async () => {
-				await Task.WhenAll(task, Task.Delay(Program.GlobalConfig.WebLimiterDelay)).ConfigureAwait(false);
-				semaphore.Release();
+				await Task.Delay(Program.GlobalConfig.WebLimiterDelay).ConfigureAwait(false);
+				limiters.RateLimitingSemaphore.Release();
 			});
 
-			return await task.ConfigureAwait(false);
+			// However, we release open connections semaphore only once we're indeed done sending a particular request
+
+			try {
+				return await function().ConfigureAwait(false);
+			} finally {
+				limiters.OpenConnectionsSemaphore.Release();
+			}
 		}
 
 		private enum ESession : byte {
