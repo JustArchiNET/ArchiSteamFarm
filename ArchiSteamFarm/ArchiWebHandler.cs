@@ -1177,7 +1177,7 @@ namespace ArchiSteamFarm {
 				return (ESteamApiKeyState.Error, null);
 			}
 
-			if (title.Contains("Access Denied")) {
+			if (title.Contains("Access Denied") || title.Contains("Validated email address required")) {
 				return (ESteamApiKeyState.AccessDenied, null);
 			}
 
