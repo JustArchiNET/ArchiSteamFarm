@@ -192,7 +192,6 @@ namespace ArchiSteamFarm {
 			ASF.ArchiLogger.LogGenericInfo("ASF V" + SharedInfo.Version + " (" + SharedInfo.ModuleVersion + ")");
 
 			await InitGlobalConfigAndLanguage().ConfigureAwait(false);
-			await InitGlobalDatabaseAndServices().ConfigureAwait(false);
 
 			// Parse post-init args
 			if (args != null) {
@@ -201,9 +200,11 @@ namespace ArchiSteamFarm {
 
 			OS.Init(SystemRequired);
 
-			await ASF.CheckAndUpdateProgram().ConfigureAwait(false);
+			await InitGlobalDatabaseAndServices().ConfigureAwait(false);
 
+			await ASF.CheckAndUpdateProgram().ConfigureAwait(false);
 			await ASF.InitBots().ConfigureAwait(false);
+
 			ASF.InitEvents();
 		}
 
