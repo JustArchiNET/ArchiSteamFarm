@@ -16,6 +16,8 @@ environment:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   VARIANTS: generic win-x64 linux-x64 linux-arm osx-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
 matrix:
+  allow_failures:
+    - image: Visual Studio 2017 Preview
   fast_finish: true
 before_build:
 - pwsh: >-
