@@ -657,4 +657,5 @@ StackTrace :
   <data name="BotRefreshingPackagesData" xml:space="preserve">
     <value>Actualisation des données des paquets...</value>
   </data>
+  
 </root>

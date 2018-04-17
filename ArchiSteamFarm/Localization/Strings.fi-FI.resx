@@ -653,4 +653,5 @@ StackTrace:
   <data name="BotRefreshingPackagesData" xml:space="preserve">
     <value>Päivitetään pakettien tietoja...</value>
   </data>
+  
 </root>
