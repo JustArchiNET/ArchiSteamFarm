@@ -81,6 +81,9 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte InventoryLimiterDelay = 3;
 
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly bool IPC;
+
 		[JsonProperty]
 		internal readonly string IPCPassword;
 

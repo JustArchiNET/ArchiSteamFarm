@@ -511,7 +511,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task RestartOrExit() {
-			if (!Program.ServiceMode && Program.GlobalConfig.AutoRestart) {
+			if (Program.RestartAllowed && Program.GlobalConfig.AutoRestart) {
 				ArchiLogger.LogGenericInfo(Strings.Restarting);
 				await Task.Delay(5000).ConfigureAwait(false);
 				await Program.Restart().ConfigureAwait(false);

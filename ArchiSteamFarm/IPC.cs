@@ -110,6 +110,10 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			if (IsListening) {
+				return;
+			}
+
 			HttpListener = new HttpListener { IgnoreWriteExceptions = true };
 
 			try {
@@ -141,6 +145,11 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void Stop() {
+			if (!HttpListener.IsSupported) {
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningFailedWithError, "!HttpListener.IsSupported"));
+				return;
+			}
+
 			if (!IsListening) {
 				return;
 			}

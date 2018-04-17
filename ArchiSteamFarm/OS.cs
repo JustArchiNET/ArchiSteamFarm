@@ -27,11 +27,11 @@ using ArchiSteamFarm.Localization;
 
 namespace ArchiSteamFarm {
 	internal static class OS {
-		internal static void Init(bool service) {
+		internal static void Init(bool systemRequired) {
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
 				DisableQuickEditMode();
 
-				if (service) {
+				if (systemRequired) {
 					KeepWindowsSystemActive();
 				}
 			}

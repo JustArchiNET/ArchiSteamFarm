@@ -1387,6 +1387,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Usage of {0} is deprecated and will be removed in future versions of the program. Please use {1} instead..
+        /// </summary>
+        internal static string WarningDeprecated {
+            get {
+                return ResourceManager.GetString("WarningDeprecated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Failed!.
         /// </summary>
         internal static string WarningFailed {

@@ -10,4 +10,4 @@ LABEL maintainer="JustArchi <JustArchi@JustArchi.net>"
 EXPOSE 1242
 WORKDIR /app
 COPY --from=build-env /app/ArchiSteamFarm/out ./
-ENTRYPOINT ["./ArchiSteamFarm.sh", "--service"]
+ENTRYPOINT ["./ArchiSteamFarm.sh", "--no-restart", "--process-required", "--system-required"]
