@@ -58,6 +58,7 @@ namespace ArchiSteamFarm {
 		private static readonly TaskCompletionSource<byte> ShutdownResetEvent = new TaskCompletionSource<byte>();
 
 		private static bool ShutdownSequenceInitialized;
+		private static bool SystemRequired;
 
 		internal static async Task Exit(byte exitCode = 0) {
 			if (exitCode != 0) {
@@ -197,6 +198,8 @@ namespace ArchiSteamFarm {
 			if (args != null) {
 				ParsePostInitArgs(args);
 			}
+
+			OS.Init(SystemRequired);
 
 			await ASF.CheckAndUpdateProgram().ConfigureAwait(false);
 
@@ -429,7 +432,6 @@ namespace ArchiSteamFarm {
 			}
 
 			bool cryptKeyNext = false;
-			bool systemRequired = false;
 
 			foreach (string arg in args) {
 				switch (arg) {
@@ -456,10 +458,10 @@ namespace ArchiSteamFarm {
 						ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, "--service", "--no-restart --process-required --system-required"));
 						RestartAllowed = false;
 						ProcessRequired = true;
-						systemRequired = true;
+						SystemRequired = true;
 						break;
 					case "--system-required" when !cryptKeyNext:
-						systemRequired = true;
+						SystemRequired = true;
 						break;
 					default:
 						if (cryptKeyNext) {
@@ -472,8 +474,6 @@ namespace ArchiSteamFarm {
 						break;
 				}
 			}
-
-			OS.Init(systemRequired);
 		}
 
 		private static void ParsePreInitArgs(IReadOnlyCollection<string> args) {
