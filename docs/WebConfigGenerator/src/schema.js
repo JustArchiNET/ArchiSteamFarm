@@ -1,7 +1,7 @@
 import Validators from './validators';
 
 export default {
-    'V3.1.2.1+': {
+    'V3.1.2.2+': {
         asf: [
             {
                 legend: 'schema.basic',
@@ -87,6 +87,12 @@ export default {
                 legend: 'schema.remote_access',
                 advanced: true,
                 fields: [
+                    {
+                        label: 'IPC',
+                        field: 'IPC',
+                        defaultValue: false,
+                        type: 'InputCheckbox'
+                    },
                     {
                         label: 'IPCPassword',
                         field: 'IPCPassword',
