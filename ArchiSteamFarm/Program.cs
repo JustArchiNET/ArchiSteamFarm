@@ -449,6 +449,8 @@ namespace ArchiSteamFarm {
 						// TODO: Deprecate further in the next version
 						ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, "--server", "GlobalConfig.IPC"));
 
+						ProcessRequired = true;
+
 						if (GlobalConfig.IPCPrefixes.Count > 0) {
 							IPC.Start(GlobalConfig.IPCPrefixes);
 						}
