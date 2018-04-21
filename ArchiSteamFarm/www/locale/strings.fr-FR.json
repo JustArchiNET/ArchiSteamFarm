@@ -5,10 +5,10 @@
   "bots-hide-online": "Bots en ligne",
   "bots-key": "",
   "bots-simple": "Information de base concernant le farming",
-  "bots-title": "",
-  "command-auto-clear": "",
+  "bots-title": "ASF | Bots",
+  "command-auto-clear": "Effacer automatiquement",
   "commands-title": "",
-  "editor-change": "",
+  "editor-change": "Changer de bot",
   "editor-current": "En train d'éditer :",
   "editor-save": "Sauvegarder",
   "editor-title": "",
@@ -30,8 +30,8 @@
   "global-information": "Information",
   "global-language": "Langue",
   "global-layout": "Mise en page",
-  "global-log": "",
-  "global-navigation": "",
+  "global-log": "Log",
+  "global-navigation": "Activer navigation",
   "global-nightmode": "Mode nuit",
   "global-nightmode-description": "Activer\/désactiver le nightmode",
   "global-ram-usage": "Utilisation de la RAM",
@@ -39,5 +39,5 @@
   "global-uptime": "Temps d'activité",
   "global-version": "Version",
   "global-wiki": "Wiki",
-  "log-title": ""
+  "log-title": "ASF | Log"
 }

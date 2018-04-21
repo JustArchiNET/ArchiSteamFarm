@@ -34,10 +34,10 @@
   "global-navigation": "",
   "global-nightmode": "",
   "global-nightmode-description": "",
-  "global-ram-usage": "",
-  "global-skins": "",
-  "global-uptime": "",
-  "global-version": "",
-  "global-wiki": "",
+  "global-ram-usage": "Bộ nhớ RAM dùng",
+  "global-skins": "Giao diện",
+  "global-uptime": "Thời gian hoạt động",
+  "global-version": "Phiên bản",
+  "global-wiki": "Wiki",
   "log-title": ""
 }

@@ -661,4 +661,8 @@ StackTrace:
     <value>Korzystanie z {0} jest przestarzałe i zostanie usunięte w przyszłych wersjach programu. Zamiast tego skorzystaj z {1}.</value>
     <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
   </data>
+  <data name="BotAcceptedDonationTrade" xml:space="preserve">
+    <value>Zaakceptowano ofertę darowizny: {0}</value>
+    <comment>{0} will be replaced by trade's ID (number)</comment>
+  </data>
 </root>

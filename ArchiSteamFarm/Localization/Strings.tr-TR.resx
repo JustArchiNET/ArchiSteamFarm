@@ -657,5 +657,9 @@ Yığın izleme:
   <data name="BotRefreshingPackagesData" xml:space="preserve">
     <value>Paket verileri yenileniyor...</value>
   </data>
+  <data name="WarningDeprecated" xml:space="preserve">
+    <value>{0} kullanımı kullanımdan kaldırıldı ve programın gelecekteki sürümlerinde kaldırılacaktır. Bunun yerine {1} kullanın.</value>
+    <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
+  </data>
   
 </root>

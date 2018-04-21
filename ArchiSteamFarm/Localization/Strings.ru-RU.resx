@@ -657,5 +657,9 @@
   <data name="BotRefreshingPackagesData" xml:space="preserve">
     <value>Обновление данных о пакетах...</value>
   </data>
+  <data name="WarningDeprecated" xml:space="preserve">
+    <value>Параметр {0} является устаревшим и будет удален в следующих версиях программы. Пожалуйста, используйте {1} вместо него.</value>
+    <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
+  </data>
   
 </root>

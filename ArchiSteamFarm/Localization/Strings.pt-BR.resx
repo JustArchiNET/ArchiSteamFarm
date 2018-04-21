@@ -657,5 +657,9 @@ StackTrace:
   <data name="BotRefreshingPackagesData" xml:space="preserve">
     <value>Atualizando dados dos pacotes...</value>
   </data>
+  <data name="WarningDeprecated" xml:space="preserve">
+    <value>O uso de {0} está obsoleto e será removido em versões futuras do programa. Por favor, use {1}.</value>
+    <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
+  </data>
   
 </root>
