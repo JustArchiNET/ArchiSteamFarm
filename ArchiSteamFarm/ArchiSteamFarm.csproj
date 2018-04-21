@@ -36,7 +36,7 @@
 
   <ItemGroup>
     <PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="1.0.1" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.8.0" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.8.1" />
     <PackageReference Include="Humanizer" Version="2.2.0" />
     <PackageReference Include="ILLink.Tasks" Version="0.1.5-preview-1461378" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
