@@ -1885,18 +1885,24 @@ namespace ArchiSteamFarm {
 			}
 
 			foreach (SteamFriends.FriendsListCallback.Friend friend in callback.FriendList.Where(friend => friend.Relationship == EFriendRelationship.RequestRecipient)) {
-				if (friend.SteamID.AccountType == EAccountType.Clan) {
-					if (IsMasterClanID(friend.SteamID)) {
+				switch (friend.SteamID.AccountType) {
+					case EAccountType.Clan when IsMasterClanID(friend.SteamID):
 						ArchiHandler.AcceptClanInvite(friend.SteamID, true);
-					} else if (BotConfig.IsBotAccount) {
-						ArchiHandler.AcceptClanInvite(friend.SteamID, false);
-					}
-				} else {
-					if (IsFamilySharing(friend.SteamID)) {
-						SteamFriends.AddFriend(friend.SteamID);
-					} else if (BotConfig.IsBotAccount) {
-						SteamFriends.RemoveFriend(friend.SteamID);
-					}
+						break;
+					case EAccountType.Clan:
+						if (BotConfig.IsBotAccount) {
+							ArchiHandler.AcceptClanInvite(friend.SteamID, false);
+						}
+
+						break;
+					default:
+						if (IsFamilySharing(friend.SteamID)) {
+							SteamFriends.AddFriend(friend.SteamID);
+						} else if (BotConfig.IsBotAccount) {
+							SteamFriends.RemoveFriend(friend.SteamID);
+						}
+
+						break;
 				}
 			}
 		}

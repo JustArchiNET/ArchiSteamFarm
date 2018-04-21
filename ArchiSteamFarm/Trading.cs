@@ -239,28 +239,28 @@ namespace ArchiSteamFarm {
 			}
 
 			// Check if it's donation trade
-			if (tradeOffer.ItemsToGive.Count == 0) {
-				// If it's steam fuckup, temporarily ignore it, otherwise react accordingly, depending on our preference
-				if (tradeOffer.ItemsToReceive.Count == 0) {
+			switch (tradeOffer.ItemsToGive.Count) {
+				case 0 when tradeOffer.ItemsToReceive.Count == 0:
+					// If it's steam fuckup, temporarily ignore it
 					return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedTemporarily);
-				}
+				case 0:
+					// Otherwise react accordingly, depending on our preference
+					bool acceptDonations = Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.AcceptDonations);
+					bool acceptBotTrades = !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.DontAcceptBotTrades);
 
-				bool acceptDonations = Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.AcceptDonations);
-				bool acceptBotTrades = !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.DontAcceptBotTrades);
+					// If we accept donations and bot trades, accept it right away
+					if (acceptDonations && acceptBotTrades) {
+						return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.AcceptedWithoutItemLose);
+					}
 
-				// If we accept donations and bot trades, accept it right away
-				if (acceptDonations && acceptBotTrades) {
-					return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.AcceptedWithoutItemLose);
-				}
+					// If we don't accept donations, neither bot trades, deny it right away
+					if (!acceptDonations && !acceptBotTrades) {
+						return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedPermanently);
+					}
 
-				// If we don't accept donations, neither bot trades, deny it right away
-				if (!acceptDonations && !acceptBotTrades) {
-					return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedPermanently);
-				}
-
-				// Otherwise we either accept donations but not bot trades, or we accept bot trades but not donations
-				bool isBotTrade = (tradeOffer.OtherSteamID64 != 0) && Bot.Bots.Values.Any(bot => bot.CachedSteamID == tradeOffer.OtherSteamID64);
-				return new ParseTradeResult(tradeOffer.TradeOfferID, (acceptDonations && !isBotTrade) || (acceptBotTrades && isBotTrade) ? ParseTradeResult.EResult.AcceptedWithoutItemLose : ParseTradeResult.EResult.RejectedPermanently);
+					// Otherwise we either accept donations but not bot trades, or we accept bot trades but not donations
+					bool isBotTrade = (tradeOffer.OtherSteamID64 != 0) && Bot.Bots.Values.Any(bot => bot.CachedSteamID == tradeOffer.OtherSteamID64);
+					return new ParseTradeResult(tradeOffer.TradeOfferID, (acceptDonations && !isBotTrade) || (acceptBotTrades && isBotTrade) ? ParseTradeResult.EResult.AcceptedWithoutItemLose : ParseTradeResult.EResult.RejectedPermanently);
 			}
 
 			// If we don't have SteamTradeMatcher enabled, this is the end for us

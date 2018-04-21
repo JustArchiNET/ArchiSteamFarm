@@ -74,7 +74,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			return new HashSet<uint>(PackagesData.Where(package => (package.Value.AppIDs != null) && package.Value.AppIDs.Contains(appID)).Select(package => package.Key));
+			return new HashSet<uint>(PackagesData.Where(package => package.Value.AppIDs?.Contains(appID) == true).Select(package => package.Key));
 		}
 
 		internal static GlobalDatabase Load(string filePath) {
