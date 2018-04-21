@@ -89,14 +89,14 @@ namespace ArchiSteamFarm {
 			Dictionary<(Steam.Asset.EType Type, uint AppID), List<uint>> itemAmountToGivePerGame = new Dictionary<(Steam.Asset.EType Type, uint AppID), List<uint>>();
 			Dictionary<ulong, uint> itemAmountsToGive = new Dictionary<ulong, uint>(itemAmounts);
 			foreach (Steam.Asset item in itemsToGive) {
-				for (uint i = 0; i < item.Amount; i++) {
-					if (!itemAmountToGivePerGame.TryGetValue((item.Type, item.RealAppID), out List<uint> amountsToGive)) {
-						amountsToGive = new List<uint>();
-						itemAmountToGivePerGame[(item.Type, item.RealAppID)] = amountsToGive;
-					}
+				if (!itemAmountToGivePerGame.TryGetValue((item.Type, item.RealAppID), out List<uint> amountsToGive)) {
+					amountsToGive = new List<uint>();
+					itemAmountToGivePerGame[(item.Type, item.RealAppID)] = amountsToGive;
+				}
 
+				for (uint i = 0; i < item.Amount; i++) {
 					amountsToGive.Add(itemAmountsToGive.TryGetValue(item.ClassID, out uint amount) ? amount : 0);
-					itemAmountsToGive[item.ClassID] = amount - 1; // We're giving one, so we have one less
+					itemAmountsToGive[item.ClassID] = --amount; // We're giving one, so we have one less
 				}
 			}
 
@@ -109,12 +109,12 @@ namespace ArchiSteamFarm {
 			Dictionary<(Steam.Asset.EType Type, uint AppID), List<uint>> itemAmountToReceivePerGame = new Dictionary<(Steam.Asset.EType Type, uint AppID), List<uint>>();
 			Dictionary<ulong, uint> itemAmountsToReceive = new Dictionary<ulong, uint>(itemAmounts);
 			foreach (Steam.Asset item in itemsToReceive) {
-				for (uint i = 0; i < item.Amount; i++) {
-					if (!itemAmountToReceivePerGame.TryGetValue((item.Type, item.RealAppID), out List<uint> amountsToReceive)) {
-						amountsToReceive = new List<uint>();
-						itemAmountToReceivePerGame[(item.Type, item.RealAppID)] = amountsToReceive;
-					}
+				if (!itemAmountToReceivePerGame.TryGetValue((item.Type, item.RealAppID), out List<uint> amountsToReceive)) {
+					amountsToReceive = new List<uint>();
+					itemAmountToReceivePerGame[(item.Type, item.RealAppID)] = amountsToReceive;
+				}
 
+				for (uint i = 0; i < item.Amount; i++) {
 					amountsToReceive.Add(itemAmountsToReceive.TryGetValue(item.ClassID, out uint amount) ? amount : 0);
 					itemAmountsToReceive[item.ClassID] = ++amount; // We're getting one, so we have one more
 				}
