@@ -190,8 +190,9 @@ namespace ArchiSteamFarm {
 				case ParseTradeResult.EResult.AcceptedWithItemLose:
 				case ParseTradeResult.EResult.AcceptedWithoutItemLose:
 					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.AcceptingTrade, tradeOffer.TradeOfferID));
+
 					if (await Bot.ArchiWebHandler.AcceptTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false)) {
-						if (tradeOffer.ItemsToReceive.Count > tradeOffer.ItemsToGive.Count) {
+						if (tradeOffer.ItemsToReceive.Sum(item => item.Amount) > tradeOffer.ItemsToGive.Sum(item => item.Amount)) {
 							Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.BotAcceptedDonationTrade, tradeOffer.TradeOfferID));
 						}
 					}
