@@ -79,6 +79,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Accepted donation trade: {0}.
+        /// </summary>
+        internal static string BotAcceptedDonationTrade {
+            get {
+                return ResourceManager.GetString("BotAcceptedDonationTrade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Accepting gift: {0}....
         /// </summary>
         internal static string BotAcceptingGift {
