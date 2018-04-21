@@ -96,7 +96,7 @@ namespace ArchiSteamFarm {
 
 				for (uint i = 0; i < item.Amount; i++) {
 					amountsToGive.Add(itemAmountsToGive.TryGetValue(item.ClassID, out uint amount) ? amount : 0);
-					itemAmountsToGive[item.ClassID] = amount - 1; // We're giving one, so we have one less
+					itemAmountsToGive[item.ClassID] = --amount; // We're giving one, so we have one less
 				}
 			}
 
@@ -116,7 +116,7 @@ namespace ArchiSteamFarm {
 
 				for (uint i = 0; i < item.Amount; i++) {
 					amountsToReceive.Add(itemAmountsToReceive.TryGetValue(item.ClassID, out uint amount) ? amount : 0);
-					itemAmountsToReceive[item.ClassID] = amount + 1; // We're getting one, so we have one more
+					itemAmountsToReceive[item.ClassID] = ++amount; // We're getting one, so we have one more
 				}
 			}
 
