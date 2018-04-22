@@ -661,5 +661,8 @@
     <value>Параметр {0} является устаревшим и будет удален в следующих версиях программы. Пожалуйста, используйте {1} вместо него.</value>
     <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
   </data>
-  
+  <data name="BotAcceptedDonationTrade" xml:space="preserve">
+    <value>Принято пожертвование в обмене: {0}</value>
+    <comment>{0} will be replaced by trade's ID (number)</comment>
+  </data>
 </root>

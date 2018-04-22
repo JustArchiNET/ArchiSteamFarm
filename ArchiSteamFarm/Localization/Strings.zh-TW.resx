@@ -658,5 +658,8 @@
     <value>{0} 的用法已棄用，並且將在未來的版本中移除，請改用 {1}。</value>
     <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
   </data>
-  
+  <data name="BotAcceptedDonationTrade" xml:space="preserve">
+    <value>接受的捐贈交易: {0}</value>
+    <comment>{0} will be replaced by trade's ID (number)</comment>
+  </data>
 </root>
