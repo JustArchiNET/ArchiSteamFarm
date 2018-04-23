@@ -2234,14 +2234,14 @@ namespace ArchiSteamFarm {
 		}
 
 		private void OnOfflineMessage(ArchiHandler.OfflineMessageCallback callback) {
-			if (callback?.Steam3IDs == null) {
-				ArchiLogger.LogNullError(nameof(callback) + " || " + nameof(callback.Steam3IDs));
+			if (callback?.SteamIDs == null) {
+				ArchiLogger.LogNullError(nameof(callback) + " || " + nameof(callback.SteamIDs));
 				return;
 			}
 
 			// Ignore event if we don't have any messages considering any of our permitted users
 			// This allows us to skip marking offline messages as read when there is no need to ask for them
-			if ((callback.OfflineMessagesCount == 0) || (callback.Steam3IDs.Count == 0) || !BotConfig.HandleOfflineMessages || !callback.Steam3IDs.Any(steam3ID => IsAllowedToExecuteCommands(new SteamID(steam3ID, EUniverse.Public, EAccountType.Individual)))) {
+			if ((callback.OfflineMessagesCount == 0) || (callback.SteamIDs.Count == 0) || !BotConfig.HandleOfflineMessages || !callback.SteamIDs.Any(IsAllowedToExecuteCommands)) {
 				return;
 			}
 

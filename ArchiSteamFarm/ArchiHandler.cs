@@ -268,7 +268,7 @@ namespace ArchiSteamFarm {
 
 		internal sealed class OfflineMessageCallback : CallbackMsg {
 			internal readonly uint OfflineMessagesCount;
-			internal readonly HashSet<uint> Steam3IDs;
+			internal readonly HashSet<ulong> SteamIDs;
 
 			internal OfflineMessageCallback(JobID jobID, CMsgClientOfflineMessageNotification msg) {
 				if ((jobID == null) || (msg == null)) {
@@ -282,7 +282,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				Steam3IDs = new HashSet<uint>(msg.friends_with_offline_messages);
+				SteamIDs = new HashSet<ulong>(msg.friends_with_offline_messages.Select(steam3ID => new SteamID(steam3ID, EUniverse.Public, EAccountType.Individual).ConvertToUInt64()));
 			}
 		}
 
