@@ -430,18 +430,6 @@ export default {
                     },
                     {
                         type: 'InputCheckbox',
-                        label: 'IdlePriorityQueueOnly',
-                        field: 'IdlePriorityQueueOnly',
-                        defaultValue: false
-                    },
-                    {
-                        type: 'InputCheckbox',
-                        label: 'IdleRefundableGames',
-                        field: 'IdleRefundableGames',
-                        defaultValue: true
-                    },
-                    {
-                        type: 'InputCheckbox',
                         label: 'FarmOffline',
                         field: 'FarmOffline',
                         defaultValue: false
@@ -451,6 +439,18 @@ export default {
                         label: 'HandleOfflineMessages',
                         field: 'HandleOfflineMessages',
                         defaultValue: false
+                    },
+                    {
+                        type: 'InputCheckbox',
+                        label: 'IdlePriorityQueueOnly',
+                        field: 'IdlePriorityQueueOnly',
+                        defaultValue: false
+                    },
+                    {
+                        type: 'InputCheckbox',
+                        label: 'IdleRefundableGames',
+                        field: 'IdleRefundableGames',
+                        defaultValue: true
                     },
                     {
                         type: 'InputCheckbox',
