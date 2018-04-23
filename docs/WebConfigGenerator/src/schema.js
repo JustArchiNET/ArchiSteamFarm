@@ -17,33 +17,9 @@ export default {
                 ]
             },
             {
-                legend: 'schema.misc',
+                legend: 'schema.trading',
                 advanced: true,
                 fields: [
-                    {
-                        field: 'CommandPrefix',
-                        label: 'CommandPrefix',
-                        type: 'InputText',
-                        placeholder: '!'
-                    },
-                    {
-                        type: 'InputCheckbox',
-                        field: 'Statistics',
-                        label: 'Statistics',
-                        defaultValue: true
-                    },
-                    {
-                        label: 'Blacklist',
-                        field: 'Blacklist',
-                        type: 'InputSet',
-                        validator: Validators.uint
-                    },
-                    {
-                        label: 'CurrentCulture',
-                        field: 'CurrentCulture',
-                        type: 'InputText',
-                        placeholder: 'en-US'
-                    },
                     {
                         label: 'MaxTradeHoldDuration',
                         field: 'MaxTradeHoldDuration',
@@ -54,7 +30,7 @@ export default {
                 ]
             },
             {
-                legend: 'schema.updates',
+                legend: 'schema.customization',
                 advanced: true,
                 fields: [
                     {
@@ -64,22 +40,28 @@ export default {
                         defaultValue: true
                     },
                     {
-                        label: 'UpdateChannel',
-                        field: 'UpdateChannel',
-                        type: 'InputSelect',
-                        options: [
-                            { value: 0, name: 'None' },
-                            { value: 1, name: 'Stable' },
-                            { value: 2, name: 'Experimental' }
-                        ],
-                        defaultValue: 1
+                        label: 'Blacklist',
+                        field: 'Blacklist',
+                        type: 'InputSet',
+                        validator: Validators.uint
                     },
                     {
-                        label: 'UpdatePeriod',
-                        field: 'UpdatePeriod',
-                        type: 'InputNumber',
-                        placeholder: 24,
-                        validator: Validators.byte
+                        field: 'CommandPrefix',
+                        label: 'CommandPrefix',
+                        type: 'InputText',
+                        placeholder: '!'
+                    },
+                    {
+                        label: 'CurrentCulture',
+                        field: 'CurrentCulture',
+                        type: 'InputText',
+                        placeholder: 'en-US'
+                    },
+                    {
+                        type: 'InputCheckbox',
+                        field: 'Statistics',
+                        label: 'Statistics',
+                        defaultValue: true
                     }
                 ]
             },
@@ -87,6 +69,12 @@ export default {
                 legend: 'schema.remote_access',
                 advanced: true,
                 fields: [
+                    {
+                        label: 'Headless',
+                        field: 'Headless',
+                        defaultValue: false,
+                        type: 'InputCheckbox'
+                    },
                     {
                         label: 'IPC',
                         field: 'IPC',
@@ -103,12 +91,6 @@ export default {
                         label: 'IPCPrefixes',
                         field: 'IPCPrefixes',
                         type: 'InputSet'
-                    },
-                    {
-                        label: 'Headless',
-                        field: 'Headless',
-                        defaultValue: false,
-                        type: 'InputCheckbox'
                     }
                 ]
             },
@@ -116,6 +98,13 @@ export default {
                 legend: 'schema.connection',
                 advanced: true,
                 fields: [
+                    {
+                        label: 'ConnectionTimeout',
+                        field: 'ConnectionTimeout',
+                        placeholder: 60,
+                        type: 'InputNumber',
+                        validator: Validators.byte
+                    },
                     {
                         type: 'InputFlag',
                         label: 'SteamProtocols',
@@ -128,13 +117,6 @@ export default {
                         ],
                         defaultValue: 0,
                         advanced: true
-                    },
-                    {
-                        label: 'ConnectionTimeout',
-                        field: 'ConnectionTimeout',
-                        placeholder: 60,
-                        type: 'InputNumber',
-                        validator: Validators.byte
                     }
                 ]
             },
@@ -211,6 +193,30 @@ export default {
                 ]
             },
             {
+                legend: 'schema.updates',
+                advanced: true,
+                fields: [
+                    {
+                        label: 'UpdateChannel',
+                        field: 'UpdateChannel',
+                        type: 'InputSelect',
+                        options: [
+                            { value: 0, name: 'None' },
+                            { value: 1, name: 'Stable' },
+                            { value: 2, name: 'Experimental' }
+                        ],
+                        defaultValue: 1
+                    },
+                    {
+                        label: 'UpdatePeriod',
+                        field: 'UpdatePeriod',
+                        type: 'InputNumber',
+                        placeholder: 24,
+                        validator: Validators.byte
+                    }
+                ]
+            },
+            {
                 legend: 'schema.advanced',
                 advanced: true,
                 fields: [
@@ -260,6 +266,21 @@ export default {
                         defaultValue: false
                     },
                     {
+                        type: 'InputCheckbox',
+                        label: 'Paused',
+                        field: 'Paused',
+                        defaultValue: false,
+                        advanced: true
+                    },
+                    {
+                        type: 'InputText',
+                        label: 'SteamParentalPIN',
+                        field: 'SteamParentalPIN',
+                        placeholder: 0,
+                        validator: Validators.parentalPIN,
+                        advanced: true
+                    },
+                    {
                         type: 'InputFlag',
                         label: 'BotBehaviour',
                         field: 'BotBehaviour',
@@ -270,37 +291,6 @@ export default {
                         ],
                         defaultValue: 0,
                         advanced: true
-                    },
-                    {
-                        type: 'InputCheckbox',
-                        label: 'Paused',
-                        field: 'Paused',
-                        defaultValue: false,
-                        advanced: true
-                    }
-                ]
-            },
-            {
-                legend: 'schema.security',
-                advanced: true,
-                fields: [
-                    {
-                        type: 'InputSelect',
-                        label: 'PasswordFormat',
-                        field: 'PasswordFormat',
-                        options: [
-                            { value: 0, name: 'PlainText' },
-                            { value: 1, name: 'AES' },
-                            { value: 2, name: 'ProtectedDataForCurrentUser' }
-                        ],
-                        defaultValue: 0
-                    },
-                    {
-                        type: 'InputCheckbox',
-                        label: 'UseLoginKeys',
-                        field: 'UseLoginKeys',
-                        defaultValue: true,
-                        advanced: true
                     }
                 ]
             },
@@ -308,6 +298,13 @@ export default {
                 legend: 'schema.access',
                 advanced: true,
                 fields: [
+                    {
+                        type: 'InputText',
+                        label: 'SteamMasterClanID',
+                        field: 's_SteamMasterClanID',
+                        placeholder: 0,
+                        validator: Validators.masterClan
+                    },
                     {
                         type: 'InputMap',
                         label: 'SteamUserPermissions',
@@ -321,25 +318,6 @@ export default {
                         ],
                         defaultValue: 0,
                         keyValidator: Validators.steamid
-                    },
-                    {
-                        type: 'InputText',
-                        label: 'SteamParentalPIN',
-                        field: 'SteamParentalPIN',
-                        placeholder: 0,
-                        validator: Validators.parentalPIN
-                    }
-                ]
-            },
-            {
-                legend: 'schema.community',
-                advanced: true,
-                fields: [
-                    {
-                        type: 'InputCheckbox',
-                        label: 'HandleOfflineMessages',
-                        field: 'HandleOfflineMessages',
-                        defaultValue: false
                     }
                 ]
             },
@@ -347,6 +325,12 @@ export default {
                 legend: 'schema.trading',
                 advanced: true,
                 fields: [
+                    {
+                        type: 'InputCheckbox',
+                        label: 'AcceptGifts',
+                        field: 'AcceptGifts',
+                        defaultValue: false
+                    },
                     {
                         type: 'InputText',
                         label: 'SteamTradeToken',
@@ -395,18 +379,6 @@ export default {
                             { value: 6, name: 'SteamGems' }
                         ],
                         defaultValue: 0
-                    },
-                    {
-                        type: 'InputCheckbox',
-                        label: 'AcceptGifts',
-                        field: 'AcceptGifts',
-                        defaultValue: false
-                    },
-                    {
-                        type: 'InputCheckbox',
-                        label: 'DismissInventoryNotifications',
-                        field: 'DismissInventoryNotifications',
-                        defaultValue: false
                     }
                 ]
             },
@@ -414,6 +386,13 @@ export default {
                 legend: 'schema.farming',
                 advanced: true,
                 fields: [
+                    {
+                        label: 'HoursUntilCardDrops',
+                        field: 'HoursUntilCardDrops',
+                        type: 'InputNumber',
+                        placeholder: 3,
+                        validator: Validators.byte
+                    },
                     {
                         type: 'InputSelect',
                         label: 'FarmingOrder',
@@ -469,6 +448,12 @@ export default {
                     },
                     {
                         type: 'InputCheckbox',
+                        label: 'HandleOfflineMessages',
+                        field: 'HandleOfflineMessages',
+                        defaultValue: false
+                    },
+                    {
+                        type: 'InputCheckbox',
                         label: 'SendOnFarmingFinished',
                         field: 'SendOnFarmingFinished',
                         defaultValue: false
@@ -486,11 +471,22 @@ export default {
                 advanced: true,
                 fields: [
                     {
-                        type: 'InputText',
-                        label: 'SteamMasterClanID',
-                        field: 's_SteamMasterClanID',
-                        placeholder: 0,
-                        validator: Validators.masterClan
+                        type: 'InputCheckbox',
+                        label: 'DismissInventoryNotifications',
+                        field: 'DismissInventoryNotifications',
+                        defaultValue: false
+                    },
+                    {
+                        type: 'InputFlag',
+                        label: 'RedeemingPreferences',
+                        field: 'RedeemingPreferences',
+                        values: [
+                            { value: 0, name: 'None' },
+                            { value: 1, name: 'Forwarding' },
+                            { value: 2, name: 'Distributing' },
+                            { value: 4, name: 'KeepMissingGames' }
+                        ],
+                        defaultValue: 0
                     },
                     {
                         type: 'InputSet',
@@ -507,37 +503,6 @@ export default {
                         type: 'InputText',
                         label: 'CustomGamePlayedWhileIdle',
                         field: 'CustomGamePlayedWhileIdle'
-                    }
-                ]
-            },
-            {
-                legend: 'schema.misc',
-                advanced: true,
-                fields: [
-                    {
-                        type: 'InputFlag',
-                        label: 'RedeemingPreferences',
-                        field: 'RedeemingPreferences',
-                        values: [
-                            { value: 0, name: 'None' },
-                            { value: 1, name: 'Forwarding' },
-                            { value: 2, name: 'Distributing' },
-                            { value: 4, name: 'KeepMissingGames' }
-                        ],
-                        defaultValue: 0
-                    }
-                ]
-            },
-            {
-                legend: 'schema.performance',
-                advanced: true,
-                fields: [
-                    {
-                        label: 'HoursUntilCardDrops',
-                        field: 'HoursUntilCardDrops',
-                        type: 'InputNumber',
-                        placeholder: 3,
-                        validator: Validators.byte
                     }
                 ]
             }
