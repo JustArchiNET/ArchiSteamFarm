@@ -1,7 +1,7 @@
 import Validators from './validators';
 
 export default {
-    'V3.1.2.2+': {
+    'V3.1.2.3+': {
         asf: [
             {
                 legend: 'schema.basic',
@@ -260,10 +260,16 @@ export default {
                         defaultValue: false
                     },
                     {
-                        type: 'InputCheckbox',
-                        label: 'IsBotAccount',
-                        field: 'IsBotAccount',
-                        defaultValue: false
+                        type: 'InputFlag',
+                        label: 'BotBehaviour',
+                        field: 'BotBehaviour',
+                        values: [
+                            { value: 0, name: 'None' },
+                            { value: 1, name: 'RejectInvalidFriendInvites' },
+                            { value: 2, name: 'RejectInvalidTrades' }
+                        ],
+                        defaultValue: 0,
+                        advanced: true
                     },
                     {
                         type: 'InputCheckbox',
