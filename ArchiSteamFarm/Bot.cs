@@ -1890,7 +1890,7 @@ namespace ArchiSteamFarm {
 						ArchiHandler.AcknowledgeClanInvite(friend.SteamID, true);
 						break;
 					case EAccountType.Clan:
-						if (BotConfig.IsBotAccount) {
+						if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidFriendInvites)) {
 							ArchiHandler.AcknowledgeClanInvite(friend.SteamID, false);
 						}
 
@@ -1898,7 +1898,7 @@ namespace ArchiSteamFarm {
 					default:
 						if (IsFamilySharing(friend.SteamID)) {
 							SteamFriends.AddFriend(friend.SteamID);
-						} else if (BotConfig.IsBotAccount) {
+						} else if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidFriendInvites)) {
 							SteamFriends.RemoveFriend(friend.SteamID);
 						}
 

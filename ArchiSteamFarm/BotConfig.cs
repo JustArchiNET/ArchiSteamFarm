@@ -74,9 +74,6 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool IdleRefundableGames = true;
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool IsBotAccount;
-
 		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
 		internal readonly HashSet<Steam.Asset.EType> LootableTypes = new HashSet<Steam.Asset.EType> {
 			Steam.Asset.EType.BoosterPack,
@@ -117,6 +114,9 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool UseLoginKeys = true;
 
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal EBotBehaviour BotBehaviour { get; private set; } = EBotBehaviour.None;
+
 		[JsonProperty]
 		internal string SteamLogin { get; set; }
 
@@ -130,6 +130,19 @@ namespace ArchiSteamFarm {
 		internal string SteamPassword { get; set; }
 
 		private bool ShouldSerializeSensitiveDetails = true;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		private bool IsBotAccount {
+			set {
+				// TODO: Deprecate further in the next version
+				ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, nameof(IsBotAccount), nameof(BotBehaviour)));
+
+				if (value) {
+					BotBehaviour |= EBotBehaviour.RejectInvalidFriendInvites;
+					BotBehaviour |= EBotBehaviour.RejectInvalidTrades;
+				}
+			}
+		}
 
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamMasterClanID), Required = Required.DisallowNull)]
 		private string SSteamMasterClanID {
@@ -222,6 +235,13 @@ namespace ArchiSteamFarm {
 			}
 
 			return true;
+		}
+
+		[Flags]
+		internal enum EBotBehaviour : byte {
+			None = 0,
+			RejectInvalidFriendInvites = 1,
+			RejectInvalidTrades = 2
 		}
 
 		internal enum EFarmingOrder : byte {
