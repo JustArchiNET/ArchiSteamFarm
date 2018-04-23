@@ -656,6 +656,12 @@ StackTrace:
   <data name="BotRefreshingPackagesData" xml:space="preserve">
     <value>Aktualisiere Paket-Daten...</value>
   </data>
-  
-  
+  <data name="WarningDeprecated" xml:space="preserve">
+    <value>Verwendung von {0} ist veraltet und wird in zukünftigen Versionen des Programms entfernt. Bitte verwende stattdessen {1}.</value>
+    <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
+  </data>
+  <data name="BotAcceptedDonationTrade" xml:space="preserve">
+    <value>Akzeptierter Geschenk-Handel: {0}</value>
+    <comment>{0} will be replaced by trade's ID (number)</comment>
+  </data>
 </root>
