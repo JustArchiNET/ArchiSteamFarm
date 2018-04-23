@@ -19,17 +19,14 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-using System.Diagnostics.CodeAnalysis;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
 	internal static class Debugging {
 #if DEBUG
-		[SuppressMessage("ReSharper", "ConvertToConstant.Global")]
-		internal static readonly bool IsDebugBuild = true;
+		internal static bool IsDebugBuild => true;
 #else
-		[SuppressMessage("ReSharper", "ConvertToConstant.Global")]
-		internal static readonly bool IsDebugBuild = false;
+		internal static bool IsDebugBuild => false;
 #endif
 
 		internal static bool IsUserDebugging => IsDebugBuild || Program.GlobalConfig.Debug;

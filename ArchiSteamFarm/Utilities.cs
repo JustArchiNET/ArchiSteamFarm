@@ -32,6 +32,7 @@ using Humanizer.Localisation;
 
 namespace ArchiSteamFarm {
 	internal static class Utilities {
+		// Normally we wouldn't need to use this singleton, but we want to ensure decent randomness across entire program's lifetime
 		private static readonly Random Random = new Random();
 
 		internal static string GetArgsString(string[] args, byte argsToSkip, string delimiter = " ") {

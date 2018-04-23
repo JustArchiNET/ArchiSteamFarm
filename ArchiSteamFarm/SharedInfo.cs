@@ -20,7 +20,6 @@
 //  limitations under the License.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace ArchiSteamFarm {
@@ -64,11 +63,9 @@ namespace ArchiSteamFarm {
 
 		private const string SourceVariant = "source";
 
-		[SuppressMessage("ReSharper", "ConvertToConstant.Global")]
-		internal static readonly bool IsCustomBuild = Variant == SourceVariant;
-
-		internal static readonly Guid ModuleVersion = Assembly.GetEntryAssembly().ManifestModule.ModuleVersionId;
-		internal static readonly string PublicIdentifier = AssemblyName + (IsCustomBuild ? "-custom" : "");
-		internal static readonly Version Version = Assembly.GetEntryAssembly().GetName().Version;
+		internal static bool IsCustomBuild => Variant == SourceVariant;
+		internal static Guid ModuleVersion => Assembly.GetEntryAssembly().ManifestModule.ModuleVersionId;
+		internal static string PublicIdentifier => AssemblyName + (IsCustomBuild ? "-custom" : "");
+		internal static Version Version => Assembly.GetEntryAssembly().GetName().Version;
 	}
 }
