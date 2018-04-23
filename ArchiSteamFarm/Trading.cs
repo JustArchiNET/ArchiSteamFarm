@@ -275,8 +275,8 @@ namespace ArchiSteamFarm {
 				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedPermanently);
 			}
 
-			// Decline trade if it's not fair games/types exchange or if we're requested to handle any not-accepted item type
-			if (!tradeOffer.IsFairTypesExchange() || !tradeOffer.IsValidSteamItemsRequest(Bot.BotConfig.MatchableTypes)) {
+			// Decline trade if we're requested to handle any not-accepted item type or if it's not fair games/types exchange
+			if (!tradeOffer.IsValidSteamItemsRequest(Bot.BotConfig.MatchableTypes) || !tradeOffer.IsFairTypesExchange()) {
 				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedPermanently);
 			}
 
