@@ -74,7 +74,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal void AcceptClanInvite(ulong clanID, bool accept) {
+		internal void AcknowledgeClanInvite(ulong clanID, bool acceptInvite) {
 			if (clanID == 0) {
 				ArchiLogger.LogNullError(nameof(clanID));
 				return;
@@ -84,10 +84,10 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ClientMsg<CMsgClientClanInviteAction> request = new ClientMsg<CMsgClientClanInviteAction> {
+			ClientMsg<CMsgClientAcknowledgeClanInvite> request = new ClientMsg<CMsgClientAcknowledgeClanInvite> {
 				Body = {
 					ClanID = clanID,
-					AcceptInvite = accept
+					AcceptInvite = acceptInvite
 				}
 			};
 

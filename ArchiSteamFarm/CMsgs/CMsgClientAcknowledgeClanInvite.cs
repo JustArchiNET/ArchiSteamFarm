@@ -24,7 +24,7 @@ using SteamKit2;
 using SteamKit2.Internal;
 
 namespace ArchiSteamFarm.CMsgs {
-	internal sealed class CMsgClientClanInviteAction : ISteamSerializableMessage {
+	internal sealed class CMsgClientAcknowledgeClanInvite : ISteamSerializableMessage {
 		internal bool AcceptInvite { private get; set; }
 		internal ulong ClanID { private get; set; }
 

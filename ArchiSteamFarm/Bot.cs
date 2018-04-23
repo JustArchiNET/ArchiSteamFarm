@@ -1887,11 +1887,11 @@ namespace ArchiSteamFarm {
 			foreach (SteamFriends.FriendsListCallback.Friend friend in callback.FriendList.Where(friend => friend.Relationship == EFriendRelationship.RequestRecipient)) {
 				switch (friend.SteamID.AccountType) {
 					case EAccountType.Clan when IsMasterClanID(friend.SteamID):
-						ArchiHandler.AcceptClanInvite(friend.SteamID, true);
+						ArchiHandler.AcknowledgeClanInvite(friend.SteamID, true);
 						break;
 					case EAccountType.Clan:
 						if (BotConfig.IsBotAccount) {
-							ArchiHandler.AcceptClanInvite(friend.SteamID, false);
+							ArchiHandler.AcknowledgeClanInvite(friend.SteamID, false);
 						}
 
 						break;
