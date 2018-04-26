@@ -26,7 +26,6 @@ using NLog;
 using NLog.Targets;
 
 namespace ArchiSteamFarm {
-	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 	[Target(TargetName)]
 	internal sealed class HistoryTarget : TargetWithLayout {
 		internal const string TargetName = "History";
@@ -53,10 +52,10 @@ namespace ArchiSteamFarm {
 
 		// This parameterless(!) constructor is intentionally public, as NLog uses it for creating targets
 		// It must stay like this as we want to have our targets defined in our NLog.config
-		[SuppressMessage("ReSharper", "UnusedMember.Global")]
+		[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 		public HistoryTarget() { }
 
-		internal HistoryTarget(string name = null) => Name = name;
+		internal HistoryTarget(string name) : this() => Name = name;
 
 		protected override void Write(LogEventInfo logEvent) {
 			if (logEvent == null) {
