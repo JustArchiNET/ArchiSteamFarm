@@ -502,7 +502,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Rate limit exceeded; we will retry after {0} of cooldown....
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Rate limit exceeded, we will retry after {0} of cooldown....
         /// </summary>
         internal static string BotRateLimitExceeded {
             get {
