@@ -24,30 +24,30 @@
 </template>
 
 <script>
-    import { each } from 'lodash';
-    import Config from './mixin/Config.vue';
+  import { each } from 'lodash';
+  import Config from './mixin/Config.vue';
 
-    export default {
-        name: 'BotConfig',
-        mixins: [Config],
-        data() { return { type: 'bot' }; },
-        computed: { filename() { return `${this.model.name}.json`; } },
-        methods: {
-            processModelToJSON(originalModel) {
-                const model = { ...originalModel }; // Need to clone that so we don't destroy `model.name`
+  export default {
+    name: 'BotConfig',
+    mixins: [Config],
+    data() { return { type: 'bot' }; },
+    computed: { filename() { return `${this.model.name}.json`; } },
+    methods: {
+      processModelToJSON(originalModel) {
+        const model = { ...originalModel }; // Need to clone that so we don't destroy `model.name`
 
-                if (model.GamesPlayedWhileIdle && model.GamesPlayedWhileIdle.length) {
-                    model.GamesPlayedWhileIdle = model.GamesPlayedWhileIdle.map(value => parseInt(value, 10)).filter(value => !isNaN(value) && value > 0);
-                }
-
-                each(model, (value, key) => {
-                    if (typeof value === 'string' && value === '') delete model[key];
-                });
-
-                if (model.name) delete model.name;
-
-                return model;
-            }
+        if (model.GamesPlayedWhileIdle && model.GamesPlayedWhileIdle.length) {
+          model.GamesPlayedWhileIdle = model.GamesPlayedWhileIdle.map(value => parseInt(value, 10)).filter(value => !isNaN(value) && value > 0);
         }
-    };
+
+        each(model, (value, key) => {
+          if (typeof value === 'string' && value === '') delete model[key];
+        });
+
+        if (model.name) delete model.name;
+
+        return model;
+      }
+    }
+  };
 </script>

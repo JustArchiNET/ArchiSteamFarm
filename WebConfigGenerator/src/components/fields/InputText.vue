@@ -11,21 +11,21 @@
 </template>
 
 <script>
-    import Input from '../mixin/Input.vue';
+  import Input from '../mixin/Input.vue';
 
-    export default {
-        mixins: [Input],
-        name: 'InputText',
-        computed: {
-            errors() {
-                return this.validate(this.value);
-            },
-            valid() {
-                return this.errors.length === 0;
-            },
-            invalid() {
-                return this.errors.length !== 0;
-            }
-        }
-    };
+  export default {
+    mixins: [Input],
+    name: 'InputText',
+    computed: {
+      errors() {
+        return this.validate(this.value);
+      },
+      valid() {
+        return this.errors.length === 0;
+      },
+      invalid() {
+        return this.errors.length !== 0;
+      }
+    }
+  };
 </script>

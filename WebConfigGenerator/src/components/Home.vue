@@ -5,10 +5,10 @@
 </template>
 
 <script>
-    export default {};
+  export default {};
 </script>
 
-<style>
+<style lang="scss">
     .text-justify {
         text-align: justify;
     }
