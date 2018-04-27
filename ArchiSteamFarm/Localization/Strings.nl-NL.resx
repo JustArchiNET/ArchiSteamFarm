@@ -349,7 +349,7 @@ StackTrace:
     <value>Dit verzoek wordt genegeerd. Permanente pauze staat aan!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
-    <value>We hebben niets om te farmen op dit account!</value>
+    <value>Er is niets om te farmen op dit account!</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
     <value>Nu aan het farmen: {0} ({1})</value>
