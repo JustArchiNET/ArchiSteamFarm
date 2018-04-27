@@ -1,0 +1,1 @@
+WebConfigGenerator/dist/service-worker.js
