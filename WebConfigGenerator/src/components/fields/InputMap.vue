@@ -27,7 +27,7 @@
             </div>
             <div class="col col-2">
                 <div class="form-input">
-                    <button class="button outline w100" @click.prevent="addElement">{{ $t("static.add") }}</button>
+                    <button class="button outline w100" @click.prevent="addElement">{{ $t('static.add') }}</button>
                 </div>
             </div>
         </div>
@@ -40,75 +40,75 @@
 </template>
 
 <script>
-    import { each } from 'lodash';
-    import Input from '../mixin/Input.vue';
+  import { each } from 'lodash';
+  import Input from '../mixin/Input.vue';
 
-    export default {
-        mixins: [Input],
-        name: 'InputMap',
-        computed: {
-            keyErrors() {
-                if (!this.schema.keyValidator) return [];
-                return this.validate(this.mapKey, this.schema.keyValidator);
-            },
-            keyInvalid() {
-                return this.keyErrors.length !== 0;
-            },
-            valueErrors() {
-                if (!this.schema.valueValidator) return [];
-                return this.validate(this.mapValue, this.schema.valueValidator);
-            },
-            valueInvalid() {
-                return this.valueErrors.length !== 0;
-            }
-        },
-        data() {
-            return {
-                items: {}, // Vue doesn't work well with Maps...
-                mapKey: this.schema.defaultKey,
-                mapValue: this.schema.defaultValue
-            };
-        },
-        methods: {
-            addElement() {
-                if (!this.mapValue && this.mapValue !== 0 || !this.mapKey && this.mapKey !== 0) return;
+  export default {
+    mixins: [Input],
+    name: 'InputMap',
+    computed: {
+      keyErrors() {
+        if (!this.schema.keyValidator) return [];
+        return this.validate(this.mapKey, this.schema.keyValidator);
+      },
+      keyInvalid() {
+        return this.keyErrors.length !== 0;
+      },
+      valueErrors() {
+        if (!this.schema.valueValidator) return [];
+        return this.validate(this.mapValue, this.schema.valueValidator);
+      },
+      valueInvalid() {
+        return this.valueErrors.length !== 0;
+      }
+    },
+    data() {
+      return {
+        items: {}, // Vue doesn't work well with Maps...
+        mapKey: this.schema.defaultKey,
+        mapValue: this.schema.defaultValue
+      };
+    },
+    methods: {
+      addElement() {
+        if (!this.mapValue && this.mapValue !== 0 || !this.mapKey && this.mapKey !== 0) return;
 
-                if (this.hasErrors()) return;
+        if (this.hasErrors()) return;
 
-                this.items[this.mapKey] = this.mapValue;
-                this.mapValue = this.schema.defaultValue;
-                this.mapKey = this.schema.defaultKey;
-                this.$emit('update', this.items, this.schema.field);
-            },
-            removeElement(key) {
-                this.$delete(this.items, key);
-                this.$emit('update', this.items, this.schema.field);
-            },
-            resolveOption(toResolve, options) {
-                if (!options) return toResolve;
+        this.items[this.mapKey] = this.mapValue;
+        this.mapValue = this.schema.defaultValue;
+        this.mapKey = this.schema.defaultKey;
+        this.$emit('update', this.items, this.schema.field);
+      },
+      removeElement(key) {
+        this.$delete(this.items, key);
+        this.$emit('update', this.items, this.schema.field);
+      },
+      resolveOption(toResolve, options) {
+        if (!options) return toResolve;
 
-                options.forEach(({ value, name }) => {
-                    if (toResolve === value) toResolve = name;
-                });
+        options.forEach(({ value, name }) => {
+          if (toResolve === value) toResolve = name;
+        });
 
-                return toResolve;
-            },
-            hasErrors() {
-                const invalid = this.keyInvalid || this.valueInvalid;
-                if (!invalid) return false;
+        return toResolve;
+      },
+      hasErrors() {
+        const invalid = this.keyInvalid || this.valueInvalid;
+        if (!invalid) return false;
 
-                const fields = [];
-                if (this.keyInvalid) each(this.$el.getElementsByClassName('map-key'), field => fields.push(field));
-                if (this.valueInvalid) each(this.$el.getElementsByClassName('map-value'), field => fields.push(field));
+        const fields = [];
+        if (this.keyInvalid) each(this.$el.getElementsByClassName('map-key'), field => fields.push(field));
+        if (this.valueInvalid) each(this.$el.getElementsByClassName('map-value'), field => fields.push(field));
 
-                clearTimeout(this.shakeTimeout);
-                each(fields, field => { field.classList.add('shake'); });
-                this.shakeTimeout = setTimeout(() => { each(fields, field => { field.classList.remove('shake'); }); }, 500);
+        clearTimeout(this.shakeTimeout);
+        each(fields, field => { field.classList.add('shake'); });
+        this.shakeTimeout = setTimeout(() => { each(fields, field => { field.classList.remove('shake'); }); }, 500);
 
-                return true;
-            }
-        }
-    };
+        return true;
+      }
+    }
+  };
 </script>
 
 <style lang="scss">

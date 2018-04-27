@@ -16,7 +16,7 @@
             </div>
             <div class="col col-2">
                 <div class="form-input">
-                    <button class="button outline w100" @click.prevent="addElement">{{ $t("static.add") }}</button>
+                    <button class="button outline w100" @click.prevent="addElement">{{ $t('static.add') }}</button>
                 </div>
             </div>
         </div>
@@ -28,39 +28,39 @@
 </template>
 
 <script>
-    import Input from '../mixin/Input.vue';
+  import Input from '../mixin/Input.vue';
 
-    export default {
-        mixins: [Input],
-        name: 'InputFlag',
-        data() {
-            return {
-                items: [], // Vue doesn't work well with Sets...
-                flagValue: this.schema.defaultValue
-            };
-        },
-        methods: {
-            addElement() {
-                if (!this.flagValue && this.flagValue !== 0) return;
-                if (!this.items.includes(this.flagValue)) this.items.push(this.flagValue);
-                this.flagValue = this.schema.defaultValue;
-                this.value = this.items.reduce((el, sum) => { return el + sum; });
-            },
-            removeElement(index) {
-                this.items.splice(index, 1);
-                this.value = this.items.reduce((el, sum) => { return el + sum; });
-            },
-            resolveOption(toResolve, options) {
-                if (!options) return toResolve;
+  export default {
+    mixins: [Input],
+    name: 'InputFlag',
+    data() {
+      return {
+        items: [], // Vue doesn't work well with Sets...
+        flagValue: this.schema.defaultValue
+      };
+    },
+    methods: {
+      addElement() {
+        if (!this.flagValue && this.flagValue !== 0) return;
+        if (!this.items.includes(this.flagValue)) this.items.push(this.flagValue);
+        this.flagValue = this.schema.defaultValue;
+        this.value = this.items.reduce((el, sum) => { return el + sum; });
+      },
+      removeElement(index) {
+        this.items.splice(index, 1);
+        this.value = this.items.reduce((el, sum) => { return el + sum; });
+      },
+      resolveOption(toResolve, options) {
+        if (!options) return toResolve;
 
-                options.forEach(({ value, name }) => {
-                    if (toResolve === value) toResolve = name;
-                });
+        options.forEach(({ value, name }) => {
+          if (toResolve === value) toResolve = name;
+        });
 
-                return toResolve;
-            }
-        }
-    };
+        return toResolve;
+      }
+    }
+  };
 </script>
 
 <style lang="scss">

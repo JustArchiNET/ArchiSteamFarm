@@ -19,7 +19,7 @@
             </div>
             <div class="col col-2">
                 <div class="form-input">
-                    <button class="button outline w100" @click.prevent="addElement">{{ $t("static.add") }}</button>
+                    <button class="button outline w100" @click.prevent="addElement">{{ $t('static.add') }}</button>
                 </div>
             </div>
         </div>
@@ -31,61 +31,61 @@
 </template>
 
 <script>
-    import { each } from 'lodash';
-    import Input from '../mixin/Input.vue';
+  import { each } from 'lodash';
+  import Input from '../mixin/Input.vue';
 
-    export default {
-        mixins: [Input],
-        name: 'InputSet',
-        computed: {
-            errors() {
-                return this.schema.values ? [] : this.validate(this.setValue);
-            },
-            invalid() {
-                return this.errors.length !== 0;
-            }
-        },
-        data() {
-            return {
-                items: [], // Vue doesn't work well with Sets...
-                setValue: this.schema.defaultValue
-            };
-        },
-        methods: {
-            addElement() {
-                if (!this.setValue && this.setValue !== 0) return;
-                if (this.hasErrors()) return;
-                if (!this.items.includes(this.setValue)) this.items.push(this.setValue);
-                this.setValue = this.schema.defaultValue;
-                this.$emit('update', this.items, this.schema.field);
-            },
-            removeElement(index) {
-                this.items.splice(index, 1);
-                this.$emit('update', this.items, this.schema.field);
-            },
-            resolveOption(toResolve, options) {
-                if (!options) return toResolve;
+  export default {
+    mixins: [Input],
+    name: 'InputSet',
+    computed: {
+      errors() {
+        return this.schema.values ? [] : this.validate(this.setValue);
+      },
+      invalid() {
+        return this.errors.length !== 0;
+      }
+    },
+    data() {
+      return {
+        items: [], // Vue doesn't work well with Sets...
+        setValue: this.schema.defaultValue
+      };
+    },
+    methods: {
+      addElement() {
+        if (!this.setValue && this.setValue !== 0) return;
+        if (this.hasErrors()) return;
+        if (!this.items.includes(this.setValue)) this.items.push(this.setValue);
+        this.setValue = this.schema.defaultValue;
+        this.$emit('update', this.items, this.schema.field);
+      },
+      removeElement(index) {
+        this.items.splice(index, 1);
+        this.$emit('update', this.items, this.schema.field);
+      },
+      resolveOption(toResolve, options) {
+        if (!options) return toResolve;
 
-                options.forEach(({ value, name }) => {
-                    if (toResolve === value) toResolve = name;
-                });
+        options.forEach(({ value, name }) => {
+          if (toResolve === value) toResolve = name;
+        });
 
-                return toResolve;
-            },
-            hasErrors() {
-                if (!this.invalid) return false;
+        return toResolve;
+      },
+      hasErrors() {
+        if (!this.invalid) return false;
 
-                const fields = [];
-                each(this.$el.getElementsByClassName('set-value'), field => fields.push(field));
+        const fields = [];
+        each(this.$el.getElementsByClassName('set-value'), field => fields.push(field));
 
-                clearTimeout(this.shakeTimeout);
-                each(fields, field => { field.classList.add('shake'); });
-                this.shakeTimeout = setTimeout(() => { each(fields, field => { field.classList.remove('shake'); }); }, 500);
+        clearTimeout(this.shakeTimeout);
+        each(fields, field => { field.classList.add('shake'); });
+        this.shakeTimeout = setTimeout(() => { each(fields, field => { field.classList.remove('shake'); }); }, 500);
 
-                return true;
-            }
-        }
-    };
+        return true;
+      }
+    }
+  };
 </script>
 
 <style lang="scss">

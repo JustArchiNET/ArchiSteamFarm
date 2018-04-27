@@ -2,15 +2,15 @@
     <div id="app">
         <div class="head">
             <a href="#" class="logo">
-                <img src="static/logo.png" alt="asf logo">
+                <img src="./assets/logo.png" alt="asf logo">
             </a>
             <h1 class="text-center" v-html="$t('app.name')"></h1>
         </div>
         <div class="menu">
             <ul>
-                <li><a href="#" :class="{ active: $route.path === '/' }" v-html="$t('link.home')"></a></li>
-                <li><a href="#asf" :class="{ active: $route.path === '/asf' }" v-html="$t('link.asf')"></a></li>
-                <li><a href="#bot" :class="{ active: $route.path === '/bot' }" v-html="$t('link.bot')"></a></li>
+                <li><router-link :to="{ name: 'home' }" active-class="active" v-html="$t('link.home')" exact></router-link></li>
+                <li><router-link :to="{ name: 'asf-config' }" active-class="active" v-html="$t('link.asf')"></router-link></li>
+                <li><router-link :to="{ name: 'bot-config' }" active-class="active" v-html="$t('link.bot')"></router-link></li>
             </ul>
         </div>
 

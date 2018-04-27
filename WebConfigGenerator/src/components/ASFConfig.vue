@@ -24,25 +24,25 @@
 </template>
 
 <script>
-    import { each } from 'lodash';
-    import Config from './mixin/Config.vue';
+  import { each } from 'lodash';
+  import Config from './mixin/Config.vue';
 
-    export default {
-        name: 'ASFConfig',
-        mixins: [Config],
-        data() { return { type: 'asf', filename: 'ASF.json' }; },
-        methods: {
-            processModelToJSON(model) {
-                if (model.Blacklist && model.Blacklist.length) {
-                    model.Blacklist = model.Blacklist.map(item => parseInt(item, 10)).filter(item => !isNaN(item) && item > 0);
-                }
-
-                each(model, (value, key) => {
-                    if (typeof value === 'string' && value === '') delete model[key];
-                });
-
-                return model;
-            }
+  export default {
+    name: 'ASFConfig',
+    mixins: [Config],
+    data() { return { type: 'asf', filename: 'ASF.json' }; },
+    methods: {
+      processModelToJSON(model) {
+        if (model.Blacklist && model.Blacklist.length) {
+          model.Blacklist = model.Blacklist.map(item => parseInt(item, 10)).filter(item => !isNaN(item) && item > 0);
         }
-    };
+
+        each(model, (value, key) => {
+          if (typeof value === 'string' && value === '') delete model[key];
+        });
+
+        return model;
+      }
+    }
+  };
 </script>

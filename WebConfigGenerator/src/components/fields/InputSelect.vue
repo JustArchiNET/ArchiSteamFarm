@@ -12,10 +12,10 @@
 </template>
 
 <script>
-    import Input from '../mixin/Input.vue';
+  import Input from '../mixin/Input.vue';
 
-    export default {
-        mixins: [Input],
-        name: 'InputSelect'
-    };
+  export default {
+    mixins: [Input],
+    name: 'InputSelect'
+  };
 </script>

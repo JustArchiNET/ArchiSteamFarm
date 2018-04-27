@@ -10,12 +10,12 @@
 </template>
 
 <script>
-    import Input from '../mixin/Input.vue';
+  import Input from '../mixin/Input.vue';
 
-    export default {
-        mixins: [Input],
-        name: 'InputCheckbox'
-    };
+  export default {
+    mixins: [Input],
+    name: 'InputCheckbox'
+  };
 </script>
 
 <style lang="scss">
