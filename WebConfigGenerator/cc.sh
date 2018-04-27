@@ -3,7 +3,7 @@ set -eu
 
 OUTPUT="dist" # Relative to script directory
 TARGET="../docs" # Relative to script directory
-SRC="WebConfigGenerator" # Path between $OUTPUT and $TARGET
+SRC="../WebConfigGenerator" # Path between $OUTPUT and $TARGET
 
 cd "$(dirname "$(readlink -f "$0")")"
 
