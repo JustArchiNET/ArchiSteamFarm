@@ -7,8 +7,6 @@ SRC="WebConfigGenerator" # Path between $OUTPUT and $TARGET
 
 cd "$(dirname "$(readlink -f "$0")")"
 
-cd "$SRC_DIR"
-
 git pull
 
 npm install
