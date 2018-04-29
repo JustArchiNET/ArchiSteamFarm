@@ -1937,21 +1937,22 @@ namespace ArchiSteamFarm {
 				return await function().ConfigureAwait(false);
 			}
 
-			// Sending a request affects both - number of requests as well as open connections
-			await limiters.RateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
+			// Sending a request opens a new connection
 			await limiters.OpenConnectionsSemaphore.WaitAsync().ConfigureAwait(false);
 
-			// We release rate-limiter semaphore regardless of our task completion, since we use that one only to guarantee rate-limiting of their creation
-			Utilities.InBackground(async () => {
-				await Task.Delay(Program.GlobalConfig.WebLimiterDelay).ConfigureAwait(false);
-				limiters.RateLimitingSemaphore.Release();
-			});
-
-			// However, we release open connections semaphore only once we're indeed done sending a particular request
-
 			try {
+				// It also increases number of requests
+				await limiters.RateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
+
+				// We release rate-limiter semaphore regardless of our task completion, since we use that one only to guarantee rate-limiting of their creation
+				Utilities.InBackground(async () => {
+					await Task.Delay(Program.GlobalConfig.WebLimiterDelay).ConfigureAwait(false);
+					limiters.RateLimitingSemaphore.Release();
+				});
+
 				return await function().ConfigureAwait(false);
 			} finally {
+				// We release open connections semaphore only once we're indeed done sending a particular request
 				limiters.OpenConnectionsSemaphore.Release();
 			}
 		}
