@@ -122,7 +122,7 @@ namespace ArchiSteamFarm {
 			}
 
 			[Flags]
-			internal enum EUnixPermission {
+			internal enum EUnixPermission : ushort {
 				OtherExecute = 0x1,
 				OtherRead = 0x4,
 				GroupExecute = 0x8,
