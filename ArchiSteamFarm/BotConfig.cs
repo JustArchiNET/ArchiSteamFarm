@@ -140,6 +140,7 @@ namespace ArchiSteamFarm {
 				if (value) {
 					BotBehaviour |= EBotBehaviour.RejectInvalidFriendInvites;
 					BotBehaviour |= EBotBehaviour.RejectInvalidTrades;
+					BotBehaviour |= EBotBehaviour.RejectInvalidGroupInvites;
 				}
 			}
 		}
@@ -241,7 +242,8 @@ namespace ArchiSteamFarm {
 		internal enum EBotBehaviour : byte {
 			None = 0,
 			RejectInvalidFriendInvites = 1,
-			RejectInvalidTrades = 2
+			RejectInvalidTrades = 2,
+			RejectInvalidGroupInvites = 4
 		}
 
 		internal enum EFarmingOrder : byte {

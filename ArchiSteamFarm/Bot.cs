@@ -1890,7 +1890,7 @@ namespace ArchiSteamFarm {
 						ArchiHandler.AcknowledgeClanInvite(friend.SteamID, true);
 						break;
 					case EAccountType.Clan:
-						if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidFriendInvites)) {
+						if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidGroupInvites)) {
 							ArchiHandler.AcknowledgeClanInvite(friend.SteamID, false);
 						}
 
