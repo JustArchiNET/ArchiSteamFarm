@@ -1,7 +1,7 @@
 import Validators from './validators';
 
 export default {
-    'V3.1.2.3+': {
+    'V3.1.2.4+': {
         asf: [
             {
                 legend: 'schema.basic',
@@ -287,7 +287,8 @@ export default {
                         values: [
                             { value: 0, name: 'None' },
                             { value: 1, name: 'RejectInvalidFriendInvites' },
-                            { value: 2, name: 'RejectInvalidTrades' }
+                            { value: 2, name: 'RejectInvalidTrades' },
+                            { value: 4, name: 'RejectInvalidGroupInvites' }
                         ],
                         defaultValue: 0,
                         advanced: true
