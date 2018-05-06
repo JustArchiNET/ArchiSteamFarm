@@ -505,7 +505,10 @@ Trazo de pila:
     <value>Ya posees: {0} | {1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
-  
+  <data name="BotRateLimitExceeded" xml:space="preserve">
+    <value>Cuota excedida; se reintentará en {0} luego del tiempo de espera...</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
+  </data>
   <data name="BotReconnecting" xml:space="preserve">
     <value>Reconectando...</value>
   </data>
@@ -653,6 +656,12 @@ Trazo de pila:
   <data name="BotRefreshingPackagesData" xml:space="preserve">
     <value>Actualizando datos de los paquetes...</value>
   </data>
-  
-  
+  <data name="WarningDeprecated" xml:space="preserve">
+    <value>Uso de {0} está desaprobado y se quitará en versiones futuras del programa. Utilice en su lugar {1}.</value>
+    <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
+  </data>
+  <data name="BotAcceptedDonationTrade" xml:space="preserve">
+    <value>Aceptar Intercambios de donación: {0}</value>
+    <comment>{0} will be replaced by trade's ID (number)</comment>
+  </data>
 </root>
