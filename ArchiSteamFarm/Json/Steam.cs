@@ -332,11 +332,14 @@ namespace ArchiSteamFarm.Json {
 			private ConfirmationDetails() { }
 
 			// REF: Internal documentation
+			[SuppressMessage("ReSharper", "UnusedMember.Global")]
 			internal enum EType : byte {
 				Unknown,
 				Generic,
 				Trade,
-				Market
+				Market,
+				// We're missing information about definition of number 4 type
+				ChangePhoneNumber = 5
 			}
 		}
 
