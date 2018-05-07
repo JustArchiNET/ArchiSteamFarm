@@ -31,20 +31,25 @@ Now that you read and understood our notice, remove it entirely so it won't clut
 ### Full log.txt recorded during reproducing the problem
 
 ```
-Paste here
+Paste here, in-between triple backtick tags
+
+Ensure that your log was NOT recorded in Debug mode, as it might contain sensitive information that should not be shared, as stated on the wiki
 ```
 
 ### Global ASF.json config
 
 ```json
-Paste here
+Paste here, in-between triple backtick tags
+
+Ensure that config has hidden/redacted potentially-sensitive properties, such as: IPCPassword, IPCPrefixes (optionally), SteamOwnerID (optionally)
 ```
 
 ### BotName.json config of all affected bot instances (if more than one)
 
 ```json
-Paste here
-Ensure that config has hidden/redacted SteamLogin and SteamPassword properties.
+Paste here, in-between triple backtick tags
+
+Ensure that config has hidden/redacted potentially-sensitive properties, such as: SteamLogin, SteamParentalPIN, SteamPassword, SteamMasterClanID (optionally), SteamTradeToken (optionally), SteamUserPermissions (only steamIDs, optionally)
 ```
 
 ### Additional info
