@@ -7,7 +7,7 @@ call crowdin -b master --identity tools\\crowdin-cli\\crowdin_identity.yml downl
 git reset
 
 cd wiki
-git reset
+git pull
 git add -A "locale\*.md"
 git commit -m "Translations update"
 cd ..
