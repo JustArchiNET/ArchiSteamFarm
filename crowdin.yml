@@ -14,7 +14,7 @@
   },
   {
     "source": "/wiki/*.md",
-    "translation": "/wiki/locale/%file_name%-%locale%.%file_extension%",
+    "translation": "/wiki/locale/_%locale%-%original_file_name%",
     "ignore": [ "/**/_*.md" ]
   }
 ]
