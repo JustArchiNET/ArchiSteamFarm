@@ -1,8 +1,0 @@
-"preserve_hierarchy": true
-files:
-  - source: /ArchiSteamFarm/Localization/Strings.resx
-    translation: /ArchiSteamFarm/Localization/Strings.%locale%.resx
-  - source: /ArchiSteamFarm/www/locale/strings.json
-    translation: /ArchiSteamFarm/www/locale/strings.%locale%.json
-  - source: /WebConfigGenerator/src/locale/strings.json
-    translation: /WebConfigGenerator/src/locale/%locale%.json

@@ -19,7 +19,7 @@ out
 ArchiSteamFarm/out
 
 # Ignore crowdin CLI secret
-tools/crowdin-cli/crowdin_identity.yaml
+tools/crowdin-cli/crowdin_identity.yml
 
 #################
 ## Visual Studio
