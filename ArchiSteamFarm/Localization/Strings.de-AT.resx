@@ -505,7 +505,10 @@ StackTrace:
     <value>Bereits im Besitz: {0} | {1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
-  
+  <data name="BotRateLimitExceeded" xml:space="preserve">
+    <value>Anfragenlimit überschritten, wir versuchen es nach {0} Wartezeit erneut...</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
+  </data>
   <data name="BotReconnecting" xml:space="preserve">
     <value>Verbinde erneut...</value>
   </data>
