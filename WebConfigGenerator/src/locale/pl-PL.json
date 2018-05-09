@@ -17,9 +17,9 @@
     "schema.customization": "Dostosowywanie",
     "schema.farming": "Farmienie",
     "schema.generic.steamid64": "Twój identyfikator SteamID64",
-    "schema.performance": "Wydajność",
+    "schema.performance": "",
     "schema.remote_access": "Dostęp zdalny",
-    "schema.security": "Zabezpieczenia",
+    "schema.security": "",
     "schema.trading": "",
     "schema.updates": "Aktualizacje",
     "static.add": "Dodaj"

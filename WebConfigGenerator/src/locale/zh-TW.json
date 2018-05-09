@@ -17,10 +17,10 @@
     "schema.customization": "自訂",
     "schema.farming": "掛卡",
     "schema.generic.steamid64": "您的 SteamID64",
-    "schema.performance": "性能",
+    "schema.performance": "",
     "schema.remote_access": "遠端存取",
-    "schema.security": "安全性",
-    "schema.trading": "交易",
+    "schema.security": "",
+    "schema.trading": "",
     "schema.updates": "更新",
     "static.add": "新增"
 }
