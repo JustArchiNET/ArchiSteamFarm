@@ -270,6 +270,8 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			globalConfig.ShouldSerializeSensitiveDetails = false;
+
 			// User might not know what he's doing
 			// Ensure that he can't screw core ASF variables
 			if (globalConfig.ConnectionTimeout == 0) {
