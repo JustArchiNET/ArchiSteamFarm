@@ -42,14 +42,10 @@ namespace ArchiSteamFarm {
 		private const string IPlayerService = "IPlayerService";
 		private const string ISteamUserAuth = "ISteamUserAuth";
 		private const string ITwoFactorService = "ITwoFactorService";
-
-		// We must use HTTPS for SteamCommunity, as http would make certain POST requests failing (trades)
 		private const string SteamCommunityHost = "steamcommunity.com";
 		private const string SteamCommunityURL = "https://" + SteamCommunityHost;
-
-		// We could (and should) use HTTPS for SteamStore, but that would make certain POST requests failing
 		private const string SteamStoreHost = "store.steampowered.com";
-		private const string SteamStoreURL = "http://" + SteamStoreHost;
+		private const string SteamStoreURL = "https://" + SteamStoreHost;
 
 		private static readonly SemaphoreSlim InventorySemaphore = new SemaphoreSlim(1, 1);
 
