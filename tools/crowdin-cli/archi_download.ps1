@@ -14,7 +14,7 @@ git add -A "locale\*.md"
 git commit -m "Translations update"
 Pop-Location
 
-git add -A "ArchiSteamFarm\Localization\*.resx" "ArchiSteamFarm\www\locale\*.json" "WebConfigGenerator\src\locale\*.json" "wiki\locale\*.md"
+git add -A "ArchiSteamFarm\Localization\*.resx" "ArchiSteamFarm\www\locale\*.json" "WebConfigGenerator\src\locale\*.json" "wiki"
 git commit -m "Translations update"
 
 git push --recurse-submodules=on-demand
