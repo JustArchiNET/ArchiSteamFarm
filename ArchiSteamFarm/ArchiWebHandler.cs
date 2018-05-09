@@ -76,7 +76,7 @@ namespace ArchiSteamFarm {
 
 		internal ArchiWebHandler(Bot bot) {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
-			WebBrowser = new WebBrowser(bot.ArchiLogger);
+			WebBrowser = new WebBrowser(bot.ArchiLogger, Program.GlobalConfig.WebProxy);
 		}
 
 		public void Dispose() {

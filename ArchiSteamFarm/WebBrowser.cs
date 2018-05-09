@@ -45,7 +45,7 @@ namespace ArchiSteamFarm {
 		private readonly ArchiLogger ArchiLogger;
 		private readonly HttpClient HttpClient;
 
-		internal WebBrowser(ArchiLogger archiLogger, bool extendedTimeout = false) {
+		internal WebBrowser(ArchiLogger archiLogger, IWebProxy webProxy = null, bool extendedTimeout = false) {
 			ArchiLogger = archiLogger ?? throw new ArgumentNullException(nameof(archiLogger));
 
 			HttpClientHandler httpClientHandler = new HttpClientHandler {
@@ -53,7 +53,8 @@ namespace ArchiSteamFarm {
 				AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
 				CookieContainer = CookieContainer,
 				MaxConnectionsPerServer = MaxConnections,
-				UseProxy = false
+				Proxy = webProxy,
+				UseProxy = webProxy != null
 			};
 
 			HttpClient = new HttpClient(httpClientHandler) { Timeout = TimeSpan.FromSeconds(extendedTimeout ? ExtendedTimeoutMultiplier * Program.GlobalConfig.ConnectionTimeout : Program.GlobalConfig.ConnectionTimeout) };

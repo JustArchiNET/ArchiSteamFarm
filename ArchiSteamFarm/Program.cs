@@ -346,7 +346,7 @@ namespace ArchiSteamFarm {
 			}
 
 			WebBrowser.Init();
-			WebBrowser = new WebBrowser(ASF.ArchiLogger, true);
+			WebBrowser = new WebBrowser(ASF.ArchiLogger, GlobalConfig.WebProxy, true);
 
 			if (GlobalConfig.IPC && (GlobalConfig.IPCPrefixes.Count > 0)) {
 				IPC.Start(GlobalConfig.IPCPrefixes);

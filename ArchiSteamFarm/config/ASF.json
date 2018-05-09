@@ -26,5 +26,8 @@
 	"SteamProtocols": 3,
 	"UpdateChannel": 1,
 	"UpdatePeriod": 24,
-	"WebLimiterDelay": 200
+	"WebLimiterDelay": 200,
+	"WebProxy": null,
+	"WebProxyPassword": null,
+	"WebProxyUsername": null
 }

@@ -273,6 +273,16 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
+			if (jsonRequest.KeepSensitiveDetails) {
+				if (string.IsNullOrEmpty(jsonRequest.GlobalConfig.WebProxyPassword) && !string.IsNullOrEmpty(Program.GlobalConfig.WebProxyPassword)) {
+					jsonRequest.GlobalConfig.WebProxyPassword = Program.GlobalConfig.WebProxyPassword;
+				}
+
+				if (string.IsNullOrEmpty(jsonRequest.GlobalConfig.WebProxyUsername) && !string.IsNullOrEmpty(Program.GlobalConfig.WebProxyUsername)) {
+					jsonRequest.GlobalConfig.WebProxyUsername = Program.GlobalConfig.WebProxyUsername;
+				}
+			}
+
 			string filePath = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName);
 
 			if (!await GlobalConfig.Write(filePath, jsonRequest.GlobalConfig).ConfigureAwait(false)) {
@@ -412,15 +422,15 @@ namespace ArchiSteamFarm {
 			string botName = WebUtility.UrlDecode(arguments[argumentsIndex]);
 
 			if (jsonRequest.KeepSensitiveDetails && Bot.Bots.TryGetValue(botName, out Bot bot)) {
-				if (string.IsNullOrEmpty(jsonRequest.BotConfig.SteamLogin)) {
+				if (string.IsNullOrEmpty(jsonRequest.BotConfig.SteamLogin) && !string.IsNullOrEmpty(bot.BotConfig.SteamLogin)) {
 					jsonRequest.BotConfig.SteamLogin = bot.BotConfig.SteamLogin;
 				}
 
-				if (string.IsNullOrEmpty(jsonRequest.BotConfig.SteamParentalPIN)) {
+				if (string.IsNullOrEmpty(jsonRequest.BotConfig.SteamParentalPIN) && !string.IsNullOrEmpty(bot.BotConfig.SteamParentalPIN)) {
 					jsonRequest.BotConfig.SteamParentalPIN = bot.BotConfig.SteamParentalPIN;
 				}
 
-				if (string.IsNullOrEmpty(jsonRequest.BotConfig.SteamPassword)) {
+				if (string.IsNullOrEmpty(jsonRequest.BotConfig.SteamPassword) && !string.IsNullOrEmpty(bot.BotConfig.SteamPassword)) {
 					jsonRequest.BotConfig.SteamPassword = bot.BotConfig.SteamPassword;
 				}
 			}
@@ -1171,6 +1181,9 @@ namespace ArchiSteamFarm {
 			[JsonProperty(Required = Required.Always)]
 			internal readonly GlobalConfig GlobalConfig;
 #pragma warning restore 649
+
+			[JsonProperty(Required = Required.DisallowNull)]
+			internal readonly bool KeepSensitiveDetails = true;
 
 			// Deserialized from JSON
 			private ASFRequest() { }
