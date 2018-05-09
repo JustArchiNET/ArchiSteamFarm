@@ -125,7 +125,7 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty]
 		internal string WebProxyPassword {
-			get => WebProxyCredentials.Password;
+			get => WebProxyCredentials?.Password;
 			set {
 				if (string.IsNullOrEmpty(value)) {
 					if (WebProxyCredentials == null) {
@@ -160,7 +160,7 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty]
 		internal string WebProxyUsername {
-			get => WebProxyCredentials.UserName;
+			get => WebProxyCredentials?.UserName;
 			set {
 				if (string.IsNullOrEmpty(value)) {
 					if (WebProxyCredentials == null) {
