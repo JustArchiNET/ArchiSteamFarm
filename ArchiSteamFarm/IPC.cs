@@ -277,10 +277,6 @@ namespace ArchiSteamFarm {
 				if (string.IsNullOrEmpty(jsonRequest.GlobalConfig.WebProxyPassword) && !string.IsNullOrEmpty(Program.GlobalConfig.WebProxyPassword)) {
 					jsonRequest.GlobalConfig.WebProxyPassword = Program.GlobalConfig.WebProxyPassword;
 				}
-
-				if (string.IsNullOrEmpty(jsonRequest.GlobalConfig.WebProxyUsername) && !string.IsNullOrEmpty(Program.GlobalConfig.WebProxyUsername)) {
-					jsonRequest.GlobalConfig.WebProxyUsername = Program.GlobalConfig.WebProxyUsername;
-				}
 			}
 
 			string filePath = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName);
