@@ -20,7 +20,7 @@
     "schema.performance": "Wydajność",
     "schema.remote_access": "Dostęp zdalny",
     "schema.security": "Zabezpieczenia",
-    "schema.trading": "Handel",
+    "schema.trading": "",
     "schema.updates": "Aktualizacje",
     "static.add": "Dodaj"
 }
