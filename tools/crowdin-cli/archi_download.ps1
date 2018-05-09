@@ -1,23 +1,18 @@
-@echo off
-pushd %~dp0
-cd ..\\..
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
+$ProgressPreference = 'SilentlyContinue'
 
-cd wiki
-git reset --hard
-git clean -fd
-git pull
-cd ..
+Set-Location $PSScriptRoot
+Set-Location ..\\..
 
-call crowdin -b master --identity tools\\crowdin-cli\\crowdin_identity.yml upload sources
-
-call crowdin -b master --identity tools\\crowdin-cli\\crowdin_identity.yml download
+crowdin -b master --identity tools\\crowdin-cli\\crowdin_identity.yml download
 git reset
 
-cd wiki
+Push-Location -Path wiki
 git pull
 git add -A "locale\*.md"
 git commit -m "Translations update"
-cd ..
+Pop-Location
 
 git add -A "ArchiSteamFarm\Localization\*.resx" "ArchiSteamFarm\www\locale\*.json" "WebConfigGenerator\src\locale\*.json" "wiki\locale\*.md"
 git commit -m "Translations update"

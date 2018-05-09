@@ -32,8 +32,8 @@ This tool is being used by ASF developers for synchronization of strings/transla
 
 ## Usage
 
-- `archi_upload.bat` for pushing strings to Crowdin (when any `*Strings.resx` file gets modified).
+- `archi_upload.ps1` for pushing strings to Crowdin.
 
-- `archi_download.bat` for downloading translations from Crowdin (typically last commit before release).
+- `archi_download.ps1` for downloading translations from Crowdin (typically last commit before release).
 
-- `archi_sync.bat` for upload + download (tree sync, e.g. when modifying/removing original strings).
+- `archi_sync.ps1` for upload + download (tree sync).
