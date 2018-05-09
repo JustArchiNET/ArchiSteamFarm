@@ -1,7 +1,7 @@
 import Validators from './validators';
 
 export default {
-    'V3.1.2.4+': {
+    'V3.1.2.5+': {
         asf: [
             {
                 legend: 'schema.basic',
@@ -117,6 +117,24 @@ export default {
                         ],
                         defaultValue: 0,
                         advanced: true
+                    },
+                    {
+                        label: 'WebProxy',
+                        field: 'WebProxy',
+                        placeholder: '',
+                        type: 'InputText'
+                    },
+                    {
+                        label: 'WebProxyPassword',
+                        field: 'WebProxyPassword',
+                        placeholder: '',
+                        type: 'InputPassword'
+                    },
+                    {
+                        label: 'WebProxyUsername',
+                        field: 'WebProxyUsername',
+                        placeholder: '',
+                        type: 'InputText'
                     }
                 ]
             },
