@@ -42,7 +42,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="NLog" Version="4.5.4" />
     <PackageReference Include="protobuf-net" Version="2.3.7" />
-    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.5.0-preview2-26406-04" />
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.5.0-rc1" />
   </ItemGroup>
 
   <ItemGroup>

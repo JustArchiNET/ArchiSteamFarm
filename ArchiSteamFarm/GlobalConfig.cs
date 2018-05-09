@@ -243,7 +243,6 @@ namespace ArchiSteamFarm {
 		}
 
 		public bool ShouldSerializeWebProxyPassword() => ShouldSerializeSensitiveDetails;
-
 		public bool ShouldSerializeWebProxyUsername() => ShouldSerializeSensitiveDetails;
 
 		internal static GlobalConfig Load(string filePath) {
