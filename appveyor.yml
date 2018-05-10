@@ -29,8 +29,6 @@ before_build:
 
 
     dotnet --info
-
-    dotnet restore
 build_script:
 - pwsh: >-
     Set-StrictMode -Version Latest
@@ -40,7 +38,7 @@ build_script:
     $ProgressPreference = 'SilentlyContinue'
 
 
-    dotnet build -c "$env:CONFIGURATION" -o 'out\source' --no-restore /nologo
+    dotnet build -c "$env:CONFIGURATION" -o 'out\source' /nologo
 test_script:
 - pwsh: >-
     Set-StrictMode -Version Latest
@@ -50,7 +48,7 @@ test_script:
     $ProgressPreference = 'SilentlyContinue'
 
 
-    dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" -o 'out\source' --no-build --no-restore
+    dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" -o 'out\source'
 after_test:
 - pwsh: >-
     Set-StrictMode -Version Latest
@@ -70,9 +68,9 @@ after_test:
         Set-Location -Path "$env:APPVEYOR_BUILD_FOLDER"
 
         if ($Variant -eq 'generic') {
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$Variant" --no-restore /nologo "/p:ASFVariant=$Variant"
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$Variant" /nologo "/p:ASFVariant=$Variant"
         } else {
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$Variant" -r "$Variant" --no-restore /nologo "/p:ASFVariant=$Variant" "/p:CrossGenDuringPublish=false"
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$Variant" -r "$Variant" /nologo "/p:ASFVariant=$Variant" "/p:CrossGenDuringPublish=false"
         }
 
         # If we include any helper scripts for this variant, copy them to output directory
