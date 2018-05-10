@@ -16,6 +16,8 @@ If my issue is not meeting contributing guidelines specified above, especially i
 Now that you read and understood our notice, remove everything up to this point so it won't clutter the issue and fill the template below with your details.
 -->
 
+## Feature request
+
 ### Purpose
 
 <!-- Purpose of the feature request - if it solves some problem, precise what in particular. If it benefits the program in some other way, precise in particular why. Present the underlying reason why this feature request makes sense. -->

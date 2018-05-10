@@ -16,6 +16,8 @@ If my issue is not meeting contributing guidelines specified above, especially i
 Now that you read and understood our notice, remove everything up to this point so it won't clutter the issue and fill the template below with your details.
 -->
 
+## Bug report
+
 ### Description
 
 <!-- Short explanation what you were going to do. -->
