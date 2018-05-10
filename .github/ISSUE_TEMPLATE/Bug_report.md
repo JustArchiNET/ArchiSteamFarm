@@ -4,6 +4,18 @@ about: Unexpected program behaviour that needs code correction
 
 ---
 
+<!--
+I fully read and understood contributing guidelines of ASF available under https://github.com/JustArchi/ArchiSteamFarm/blob/master/.github/CONTRIBUTING.md, especially the point that GITHUB IS NOT A TECHNICAL SUPPORT - IT'S THE PLACE ONLY FOR ASF BUGS AND SUGGESTIONS.
+
+I admit that THIS IS NOT A QUESTION OR TECHNICAL ISSUE - I fully understand that ASF GitHub is ONLY for ASF development purpose. I strongly believe that the bug I'm reporting here affects majority of ASF users and that it's not a result of technical difficulty I'm experiencing that is explained in the FAQ or other place of the wiki.
+
+If my issue is not meeting contributing guidelines specified above, especially if it's a question or technical issue that is not related to ASF development in any way, please close it immediately - I won't complain.
+-->
+
+<!--
+Now that you read and understood our notice, remove everything up to this point so it won't clutter the issue and fill the template below with your details.
+-->
+
 ### Description
 
 <!-- Short explanation what you were going to do. -->
