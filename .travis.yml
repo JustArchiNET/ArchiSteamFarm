@@ -15,11 +15,9 @@ branches:
 # Use latest images for building
 group: travis_latest
 
-# This is .NET Core project, we're not building with Mono
+# ASF is based on .NET Core platform
+dotnet: 2.1.105
 mono: none
-
-# ASF requires .NET Core 2.0+
-dotnet: 2.1.104
 
 env:
   global:
@@ -37,20 +35,19 @@ before_script:
     fi
 
     dotnet --info
-    dotnet restore
 
 script:
   - |
     set -e
 
-    dotnet build -c "$CONFIGURATION" -o 'out/source' --no-restore /nologo
-    dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -o 'out/source' --no-build --no-restore
+    dotnet build -c "$CONFIGURATION" -o 'out/source' /nologo
+    dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -o 'out/source'
 
     publish() {
         if [ "$1" = 'generic' ]; then
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" --no-restore /nologo "/p:ASFVariant=$1"
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" /nologo "/p:ASFVariant=$1"
         else
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" -r "$1" --no-restore /nologo "/p:ASFVariant=$1" "/p:CrossGenDuringPublish=false"
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" -r "$1" /nologo "/p:ASFVariant=$1" "/p:CrossGenDuringPublish=false"
         fi
 
         # If we include any helper scripts for this variant, copy them to output directory
@@ -75,4 +72,4 @@ matrix:
       sudo: false
     - os: osx
       # Ref: https://docs.travis-ci.com/user/reference/osx/
-      osx_image: xcode9.3beta
+      osx_image: xcode9.3
