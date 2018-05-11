@@ -41,7 +41,7 @@ namespace ArchiSteamFarm {
 		private static FileSystemWatcher FileSystemWatcher;
 
 		internal static async Task<Version> CheckAndUpdateProgram(bool updateOverride = false) {
-			if (SharedInfo.IsCustomBuild || (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None)) {
+			if (!SharedInfo.BuildInfo.CanUpdate || (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None)) {
 				return null;
 			}
 
@@ -139,7 +139,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			const string targetFile = SharedInfo.ASF + "-" + SharedInfo.Variant + ".zip";
+			string targetFile = SharedInfo.ASF + "-" + SharedInfo.BuildInfo.Variant + ".zip";
 			GitHub.ReleaseResponse.Asset binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => asset.Name.Equals(targetFile, StringComparison.OrdinalIgnoreCase));
 
 			if (binaryAsset == null) {
@@ -168,7 +168,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (IsUnixVariant(SharedInfo.Variant)) {
+			if (OS.IsUnix) {
 				string executable = Path.Combine(targetDirectory, SharedInfo.AssemblyName);
 				if (File.Exists(executable)) {
 					OS.UnixSetFileAccessExecutable(executable);
@@ -210,22 +210,6 @@ namespace ArchiSteamFarm {
 			FileSystemWatcher.Renamed += OnRenamed;
 
 			FileSystemWatcher.EnableRaisingEvents = true;
-		}
-
-		private static bool IsUnixVariant(string variant) {
-			if (string.IsNullOrEmpty(variant)) {
-				ArchiLogger.LogNullError(nameof(variant));
-				return false;
-			}
-
-			switch (variant) {
-				case "linux-arm":
-				case "linux-x64":
-				case "osx-x64":
-					return true;
-				default:
-					return false;
-			}
 		}
 
 		private static bool IsValidBotName(string botName) {
