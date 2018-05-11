@@ -38,7 +38,7 @@ build_script:
     $ProgressPreference = 'SilentlyContinue'
 
 
-    dotnet build -c "$env:CONFIGURATION" -o 'out\source' /nologo
+    dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -o 'out\source' /nologo
 test_script:
 - pwsh: >-
     Set-StrictMode -Version Latest

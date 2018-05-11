@@ -67,7 +67,7 @@ namespace ArchiSteamFarm {
 			internal static readonly bool CanUpdate = true;
 			internal static readonly string Variant = "linux-x64";
 #elif ASF_VARIANT_OSX_X64
-			internal static readonly CanUpdate = true;
+			internal static readonly bool CanUpdate = true;
 			internal static readonly string Variant = "osx-x64";
 #elif ASF_VARIANT_WIN_X64
 			internal static readonly bool CanUpdate = true;

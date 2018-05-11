@@ -40,7 +40,7 @@ script:
   - |
     set -e
 
-    dotnet build -c "$CONFIGURATION" -o 'out/source' /nologo
+    dotnet build ArchiSteamFarm -c "$CONFIGURATION" -o 'out/source' /nologo
     dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -o 'out/source'
 
     publish() {
