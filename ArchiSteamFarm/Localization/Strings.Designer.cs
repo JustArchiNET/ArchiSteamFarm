@@ -1468,6 +1468,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Workaround for {0} bug has been triggered..
+        /// </summary>
+        internal static string WarningWorkaroundTriggered {
+            get {
+                return ResourceManager.GetString("WarningWorkaroundTriggered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu It looks like it&apos;s your first launch of the program, welcome!.
         /// </summary>
         internal static string Welcome {
