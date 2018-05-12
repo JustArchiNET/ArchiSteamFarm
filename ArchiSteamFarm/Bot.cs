@@ -687,8 +687,8 @@ namespace ArchiSteamFarm {
 							continue;
 						}
 
+						string name = parsedArgs[0];
 						string key = parsedArgs[parsedArgs.Length - 1];
-						string name = string.Join(' ', parsedArgs.Take(parsedArgs.Length - 1));
 
 						gamesToRedeemInBackground[key] = name;
 					}
@@ -2423,7 +2423,7 @@ namespace ArchiSteamFarm {
 
 				await BotDatabase.RemoveGameToRedeemInBackground(key).ConfigureAwait(false);
 
-				string logEntry = name + DefaultBackgroundKeysRedeemerSeparator + "[" + result.PurchaseResultDetail + "]" + DefaultBackgroundKeysRedeemerSeparator + key;
+				string logEntry = name + DefaultBackgroundKeysRedeemerSeparator + "[" + result.PurchaseResultDetail + "]" + DefaultBackgroundKeysRedeemerSeparator + string.Join("", result.Items) + DefaultBackgroundKeysRedeemerSeparator + key;
 
 				try {
 					await File.AppendAllTextAsync(redeemed ? KeysToRedeemUsedFilePath : KeysToRedeemUnusedFilePath, logEntry + Environment.NewLine).ConfigureAwait(false);
