@@ -665,4 +665,8 @@ StackTrace:
     <value>Zaakceptowano ofertę darowizny: {0}</value>
     <comment>{0} will be replaced by trade's ID (number)</comment>
   </data>
+  <data name="WarningWorkaroundTriggered" xml:space="preserve">
+    <value>Obejście błędu {0} zostało aktywowane.</value>
+    <comment>{0} will be replaced by the bug's name provided by ASF</comment>
+  </data>
 </root>

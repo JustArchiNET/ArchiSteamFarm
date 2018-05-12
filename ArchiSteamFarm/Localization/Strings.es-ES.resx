@@ -664,4 +664,5 @@ Trazo de pila:
     <value>Aceptar Intercambios de donación: {0}</value>
     <comment>{0} will be replaced by trade's ID (number)</comment>
   </data>
+  
 </root>

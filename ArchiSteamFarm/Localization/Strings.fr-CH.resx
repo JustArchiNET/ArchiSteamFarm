@@ -665,4 +665,5 @@ StackTrace :
     <value>Don accepté: {0}</value>
     <comment>{0} will be replaced by trade's ID (number)</comment>
   </data>
+  
 </root>

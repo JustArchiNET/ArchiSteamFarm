@@ -253,7 +253,7 @@ StackTrace:
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>Por favor, insira o código atual gerado pelo autenticador móvel do Steam: </value>
+    <value>Por favor, insira o código gerado pelo autenticador móvel do Steam: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
@@ -269,7 +269,7 @@ StackTrace:
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>Por favor, insira a sua senha Steam: </value>
+    <value>Por favor, insira a sua senha do Steam: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
@@ -514,11 +514,11 @@ StackTrace:
     <value>Reconectando...</value>
   </data>
   <data name="BotRedeem" xml:space="preserve">
-    <value>Chave: {0} | Estado: {1}</value>
+    <value>Código: {0} | Estado: {1}</value>
     <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string</comment>
   </data>
   <data name="BotRedeemWithItems" xml:space="preserve">
-    <value>Chave: {0} | Estado: {1} | Itens: {2}</value>
+    <value>Código: {0} | Estado: {1} | Itens: {2}</value>
     <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string, {2} will be replaced by list of key-value pairs, separated by a comma</comment>
   </data>
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
@@ -598,7 +598,7 @@ StackTrace:
     <value>Por favor, consulte a nossa seção de política de privacidade na wiki caso esteja preocupado com o que o ASF está de fato fazendo!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>Parece que é a sua primeira vez abrindo o programa, bem-vindo(a)!</value>
+    <value>Parece que é a sua primeira vez iniciando o ASF, boas-vindas!</value>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>O valor de CurrentCulture fornecido é inválido, o ASF continuará executando com o valor padrão!</value>
@@ -665,4 +665,5 @@ StackTrace:
     <value>Doação aceita: {0}</value>
     <comment>{0} will be replaced by trade's ID (number)</comment>
   </data>
+  
 </root>
