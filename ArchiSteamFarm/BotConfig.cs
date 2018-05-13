@@ -162,7 +162,7 @@ namespace ArchiSteamFarm {
 		public bool ShouldSerializeSteamParentalPIN() => ShouldSerializeSensitiveDetails;
 		public bool ShouldSerializeSteamPassword() => ShouldSerializeSensitiveDetails;
 
-		internal static BotConfig Load(string filePath) {
+		internal static async Task<BotConfig> Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(filePath));
 				return null;
@@ -175,7 +175,7 @@ namespace ArchiSteamFarm {
 			BotConfig botConfig;
 
 			try {
-				botConfig = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(filePath));
+				botConfig = JsonConvert.DeserializeObject<BotConfig>(await File.ReadAllTextAsync(filePath).ConfigureAwait(false));
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 				return null;

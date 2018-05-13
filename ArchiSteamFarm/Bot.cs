@@ -154,9 +154,9 @@ namespace ArchiSteamFarm {
 		private string TwoFactorCode;
 		private byte TwoFactorCodeFailures;
 
-		private Bot(string botName) {
-			if (string.IsNullOrEmpty(botName)) {
-				throw new ArgumentNullException(nameof(botName));
+		private Bot(string botName, BotConfig botConfig, BotDatabase botDatabase) {
+			if (string.IsNullOrEmpty(botName) || (botConfig == null) || (botDatabase == null)) {
+				throw new ArgumentNullException(nameof(botName) + " || " + nameof(botConfig) + " || " + nameof(botDatabase));
 			}
 
 			if (Bots.ContainsKey(botName)) {
@@ -164,23 +164,10 @@ namespace ArchiSteamFarm {
 			}
 
 			BotName = botName;
+			BotConfig = botConfig;
+			BotDatabase = botDatabase;
+
 			ArchiLogger = new ArchiLogger(botName);
-
-			BotConfig = BotConfig.Load(ConfigFilePath);
-			if (BotConfig == null) {
-				ArchiLogger.LogGenericError(string.Format(Strings.ErrorBotConfigInvalid, ConfigFilePath));
-				return;
-			}
-
-			if (Debugging.IsUserDebugging) {
-				ArchiLogger.LogGenericDebug(nameof(BotConfig) + ": " + JsonConvert.SerializeObject(BotConfig, Formatting.Indented));
-			}
-
-			BotDatabase = BotDatabase.Load(DatabaseFilePath);
-			if (BotDatabase == null) {
-				ArchiLogger.LogGenericError(string.Format(Strings.ErrorDatabaseInvalid, DatabaseFilePath));
-				return;
-			}
 
 			// Register bot as available for ASF
 			if (!Bots.TryAdd(botName, this)) {
@@ -785,7 +772,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			BotConfig botConfig = BotConfig.Load(ConfigFilePath);
+			BotConfig botConfig = await BotConfig.Load(ConfigFilePath).ConfigureAwait(false);
 
 			if (botConfig == null) {
 				Destroy();
@@ -877,6 +864,28 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			string botPath = Path.Combine(SharedInfo.ConfigDirectory, botName);
+			string configFilePath = botPath + SharedInfo.ConfigExtension;
+
+			BotConfig botConfig = await BotConfig.Load(botPath + SharedInfo.ConfigExtension).ConfigureAwait(false);
+			if (botConfig == null) {
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorBotConfigInvalid, configFilePath));
+				return;
+			}
+
+			if (Debugging.IsUserDebugging) {
+				ASF.ArchiLogger.LogGenericDebug(botName + ": " + JsonConvert.SerializeObject(botConfig, Formatting.Indented));
+			}
+
+			string databaseFilePath = botPath + SharedInfo.DatabaseExtension;
+
+			BotDatabase botDatabase = await BotDatabase.Load(databaseFilePath).ConfigureAwait(false);
+			if (botDatabase == null) {
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorDatabaseInvalid, databaseFilePath));
+				return;
+			}
+
+			Bot bot;
 			await BotsSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
@@ -884,11 +893,12 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				Bot bot = new Bot(botName);
-				bot.InitStart();
+				bot = new Bot(botName, botConfig, botDatabase);
 			} finally {
 				BotsSemaphore.Release();
 			}
+
+			bot.InitStart();
 		}
 
 		internal void RequestPersonaStateUpdate() {
@@ -1391,7 +1401,7 @@ namespace ArchiSteamFarm {
 			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorConverting);
 
 			try {
-				MobileAuthenticator authenticator = JsonConvert.DeserializeObject<MobileAuthenticator>(File.ReadAllText(maFilePath));
+				MobileAuthenticator authenticator = JsonConvert.DeserializeObject<MobileAuthenticator>(await File.ReadAllTextAsync(maFilePath).ConfigureAwait(false));
 				await BotDatabase.SetMobileAuthenticator(authenticator).ConfigureAwait(false);
 				File.Delete(maFilePath);
 			} catch (Exception e) {
@@ -1509,10 +1519,6 @@ namespace ArchiSteamFarm {
 		}
 
 		private void InitStart() {
-			if ((BotConfig == null) || (BotDatabase == null)) {
-				return;
-			}
-
 			if (!BotConfig.Enabled) {
 				ArchiLogger.LogGenericInfo(Strings.BotInstanceNotStartingBecauseDisabled);
 				return;
@@ -1697,10 +1703,16 @@ namespace ArchiSteamFarm {
 
 			if (File.Exists(SentryFilePath)) {
 				try {
-					byte[] sentryFileContent = File.ReadAllBytes(SentryFilePath);
+					byte[] sentryFileContent = await File.ReadAllBytesAsync(SentryFilePath).ConfigureAwait(false);
 					sentryFileHash = SteamKit2.CryptoHelper.SHAHash(sentryFileContent);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericException(e);
+
+					try {
+						File.Delete(SentryFilePath);
+					} catch {
+						// Ignored, we can only try to delete faulted file at best
+					}
 				}
 			}
 
@@ -2216,6 +2228,13 @@ namespace ArchiSteamFarm {
 				}
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
+
+				try {
+					File.Delete(SentryFilePath);
+				} catch {
+					// Ignored, we can only try to delete faulted file at best
+				}
+
 				return;
 			}
 

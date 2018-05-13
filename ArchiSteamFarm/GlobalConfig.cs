@@ -244,7 +244,7 @@ namespace ArchiSteamFarm {
 
 		public bool ShouldSerializeWebProxyPassword() => ShouldSerializeSensitiveDetails;
 
-		internal static GlobalConfig Load(string filePath) {
+		internal static async Task<GlobalConfig> Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(filePath));
 				return null;
@@ -257,7 +257,7 @@ namespace ArchiSteamFarm {
 			GlobalConfig globalConfig;
 
 			try {
-				globalConfig = JsonConvert.DeserializeObject<GlobalConfig>(File.ReadAllText(filePath));
+				globalConfig = JsonConvert.DeserializeObject<GlobalConfig>(await File.ReadAllTextAsync(filePath).ConfigureAwait(false));
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 				return null;

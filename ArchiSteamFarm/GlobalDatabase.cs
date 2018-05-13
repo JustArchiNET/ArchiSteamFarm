@@ -77,7 +77,7 @@ namespace ArchiSteamFarm {
 			return new HashSet<uint>(PackagesData.Where(package => package.Value.AppIDs?.Contains(appID) == true).Select(package => package.Key));
 		}
 
-		internal static GlobalDatabase Load(string filePath) {
+		internal static async Task<GlobalDatabase> Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(filePath));
 				return null;
@@ -90,7 +90,7 @@ namespace ArchiSteamFarm {
 			GlobalDatabase globalDatabase;
 
 			try {
-				globalDatabase = JsonConvert.DeserializeObject<GlobalDatabase>(File.ReadAllText(filePath));
+				globalDatabase = JsonConvert.DeserializeObject<GlobalDatabase>(await File.ReadAllTextAsync(filePath).ConfigureAwait(false));
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 				return null;
