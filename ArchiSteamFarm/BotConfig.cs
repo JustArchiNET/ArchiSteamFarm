@@ -129,19 +129,16 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		internal string SteamPassword { get; set; }
 
+		private bool DeprecatedConfig;
 		private bool ShouldSerializeSensitiveDetails = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		[SuppressMessage("ReSharper", "ValueParameterNotUsed")]
 		private bool IsBotAccount {
 			set {
 				// TODO: Deprecate further in the next version
-				ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, nameof(IsBotAccount), nameof(BotBehaviour)));
-
-				if (value) {
-					BotBehaviour |= EBotBehaviour.RejectInvalidFriendInvites;
-					BotBehaviour |= EBotBehaviour.RejectInvalidTrades;
-					BotBehaviour |= EBotBehaviour.RejectInvalidGroupInvites;
-				}
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningDeprecated, nameof(IsBotAccount), nameof(BotBehaviour)));
+				DeprecatedConfig = true;
 			}
 		}
 
@@ -183,6 +180,10 @@ namespace ArchiSteamFarm {
 
 			if (botConfig == null) {
 				ASF.ArchiLogger.LogNullError(nameof(botConfig));
+				return null;
+			}
+
+			if (botConfig.DeprecatedConfig) {
 				return null;
 			}
 

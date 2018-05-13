@@ -447,21 +447,13 @@ namespace ArchiSteamFarm {
 						break;
 					case "--server" when !cryptKeyNext:
 						// TODO: Deprecate further in the next version
-						ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, "--server", "GlobalConfig.IPC"));
-
-						ProcessRequired = true;
-
-						if (GlobalConfig.IPCPrefixes.Count > 0) {
-							IPC.Start(GlobalConfig.IPCPrefixes);
-						}
-
+						ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningDeprecated, "--server", "GlobalConfig.IPC"));
+						Environment.Exit(1);
 						break;
 					case "--service" when !cryptKeyNext:
 						// TODO: Deprecate further in the next version
-						ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, "--service", "--no-restart --process-required --system-required"));
-						RestartAllowed = false;
-						ProcessRequired = true;
-						SystemRequired = true;
+						ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningDeprecated, "--service", "--no-restart --process-required --system-required"));
+						Environment.Exit(1);
 						break;
 					case "--system-required" when !cryptKeyNext:
 						SystemRequired = true;
