@@ -53,7 +53,7 @@ namespace ArchiSteamFarm {
 
 			// Otherwise, we ran into fatal exception before logging module could even get initialized, so activate fallback logging that involves file and console
 
-			string message = string.Format(DateTime.Now + Strings.ErrorEarlyFatalExceptionInfo + Environment.NewLine, SharedInfo.Version);
+			string message = string.Format(DateTime.Now + " " + Strings.ErrorEarlyFatalExceptionInfo + Environment.NewLine, SharedInfo.Version);
 
 			try {
 				await File.WriteAllTextAsync(SharedInfo.LogFile, message).ConfigureAwait(false);

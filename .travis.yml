@@ -41,7 +41,7 @@ script:
     set -e
 
     dotnet build ArchiSteamFarm -c "$CONFIGURATION" -o 'out/source' /nologo
-    dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -o 'out/source'
+    dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -o 'out/source' /nologo
 
     publish() {
         if [ "$1" = 'generic' ]; then

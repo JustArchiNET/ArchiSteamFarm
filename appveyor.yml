@@ -48,7 +48,7 @@ test_script:
     $ProgressPreference = 'SilentlyContinue'
 
 
-    dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" -o 'out\source'
+    dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" -o 'out\source' /nologo
 after_test:
 - pwsh: >-
     Set-StrictMode -Version Latest
