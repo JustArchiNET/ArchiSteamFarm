@@ -35,13 +35,23 @@ namespace ArchiSteamFarm {
 		// Normally we wouldn't need to use this singleton, but we want to ensure decent randomness across entire program's lifetime
 		private static readonly Random Random = new Random();
 
-		internal static string GetArgsString(string[] args, byte argsToSkip, string delimiter = " ") {
-			if ((args == null) || (args.Length < argsToSkip) || string.IsNullOrEmpty(delimiter)) {
-				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(delimiter));
+		internal static string GetArgsAsText(string[] args, byte argsToSkip, string delimiter) {
+			if ((args == null) || (args.Length <= argsToSkip) || string.IsNullOrEmpty(delimiter)) {
+				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(argsToSkip) + " || " + nameof(delimiter));
 				return null;
 			}
 
-			return string.Join(delimiter, GetArgs(args, argsToSkip));
+			return string.Join(delimiter, args.Skip(argsToSkip));
+		}
+
+		internal static string GetArgsAsText(string text, byte argsToSkip) {
+			if (string.IsNullOrEmpty(text)) {
+				ASF.ArchiLogger.LogNullError(nameof(text));
+				return null;
+			}
+
+			string[] args = text.Split((char[]) null, argsToSkip + 1, StringSplitOptions.RemoveEmptyEntries);
+			return args[args.Length - 1];
 		}
 
 		internal static string GetCookieValue(this CookieContainer cookieContainer, string url, string name) {
@@ -175,21 +185,5 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static string ToHumanReadable(this TimeSpan timeSpan) => timeSpan.Humanize(3, maxUnit: TimeUnit.Year, minUnit: TimeUnit.Second);
-
-		private static string[] GetArgs(string[] args, byte argsToSkip) {
-			if ((args == null) || (args.Length < argsToSkip)) {
-				ASF.ArchiLogger.LogNullError(nameof(args));
-				return null;
-			}
-
-			byte argsToCopy = (byte) (args.Length - argsToSkip);
-			string[] result = new string[argsToCopy];
-
-			if (argsToCopy > 0) {
-				Array.Copy(args, argsToSkip, result, 0, argsToCopy);
-			}
-
-			return result;
-		}
 	}
 }
