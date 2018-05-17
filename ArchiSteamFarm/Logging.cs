@@ -125,8 +125,8 @@ namespace ArchiSteamFarm {
 
 			bool reconfig = false;
 
-			foreach (LoggingRule rule in ConsoleLoggingRules) {
-				if (LogManager.Configuration.LoggingRules.Remove(rule)) {
+			foreach (LoggingRule consoleLoggingRule in ConsoleLoggingRules) {
+				if (LogManager.Configuration.LoggingRules.Remove(consoleLoggingRule)) {
 					reconfig = true;
 				}
 			}
