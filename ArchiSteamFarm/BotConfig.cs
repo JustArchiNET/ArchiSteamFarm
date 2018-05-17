@@ -41,6 +41,9 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool AutoSteamSaleEvent;
 
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly EBotBehaviour BotBehaviour = EBotBehaviour.None;
+
 		[JsonProperty]
 		internal readonly string CustomGamePlayedWhileFarming;
 
@@ -114,9 +117,6 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool UseLoginKeys = true;
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal EBotBehaviour BotBehaviour { get; private set; } = EBotBehaviour.None;
-
 		[JsonProperty]
 		internal string SteamLogin { get; set; }
 
@@ -129,18 +129,7 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		internal string SteamPassword { get; set; }
 
-		private bool DeprecatedConfig;
 		private bool ShouldSerializeSensitiveDetails = true;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		[SuppressMessage("ReSharper", "ValueParameterNotUsed")]
-		private bool IsBotAccount {
-			set {
-				// TODO: Deprecate further in the next version
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningDeprecated, nameof(IsBotAccount), nameof(BotBehaviour)));
-				DeprecatedConfig = true;
-			}
-		}
 
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamMasterClanID), Required = Required.DisallowNull)]
 		private string SSteamMasterClanID {
@@ -180,10 +169,6 @@ namespace ArchiSteamFarm {
 
 			if (botConfig == null) {
 				ASF.ArchiLogger.LogNullError(nameof(botConfig));
-				return null;
-			}
-
-			if (botConfig.DeprecatedConfig) {
 				return null;
 			}
 
