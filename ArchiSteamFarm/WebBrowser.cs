@@ -267,6 +267,26 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
+		internal async Task<HtmlDocumentResponse> UrlPostMultipartFormToHtmlDocument(string request, IEnumerable<KeyValuePair<string, string>> data, byte maxTries = MaxTries) {
+			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
+				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
+				return null;
+			}
+
+			MultipartFormDataContent content = new MultipartFormDataContent();
+			foreach (KeyValuePair<string, string> kvp in data) {
+				content.Add(new StringContent(kvp.Value), kvp.Key);
+			}
+
+			HttpResponseMessage responseHttp = await HttpClient.PostAsync(request, content).ConfigureAwait(false);
+			if (!responseHttp.IsSuccessStatusCode) {
+				return null;
+			}
+
+			StringResponse response = new StringResponse(responseHttp, await responseHttp.Content.ReadAsStringAsync().ConfigureAwait(false));
+			return new HtmlDocumentResponse(response);
+		}
+
 		internal async Task<HtmlDocumentResponse> UrlPostToHtmlDocument(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));

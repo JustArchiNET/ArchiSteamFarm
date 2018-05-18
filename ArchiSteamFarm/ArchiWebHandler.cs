@@ -133,6 +133,36 @@ namespace ArchiSteamFarm {
 			return await UrlPostWithSession(SteamStoreURL, request, data).ConfigureAwait(false);
 		}
 
+		internal async Task<bool> ChangePrivacySettings(Steam.PrivacyResponse privacySettings) {
+			string request = GetAbsoluteProfileURL() + "/ajaxsetprivacy/";
+
+			// We have to do this because Steam uses the same numbers for settings except comments, they have their special numbers, fuck Steam
+			string commentPermission = privacySettings.Comments == Steam.PrivacyResponse.PrivacySettings.EPrivacySetting.Public ? "1" : (privacySettings.Comments == Steam.PrivacyResponse.PrivacySettings.EPrivacySetting.FriendsOnly ? "0" : "2");
+			Dictionary<string, string> data = new Dictionary<string, string>(3) {
+				{ "Privacy", JsonConvert.SerializeObject(privacySettings.Settings) },
+				{ "eCommentPermission", commentPermission }
+			};
+
+			HtmlDocument response = await UrlPostMultipartFormToHtmlDocumentWithSession(SteamCommunityURL, request, data).ConfigureAwait(false);
+			if (string.IsNullOrEmpty(response?.ParsedText)) {
+				return false;
+			}
+
+			try {
+				dynamic responseJson = JsonConvert.DeserializeObject(response.ParsedText);
+				if ((int?) responseJson.success != 1) {
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.Content, response));
+					return false;
+				}
+			} catch (Exception ex) {
+				Bot.ArchiLogger.LogGenericDebuggingException(ex);
+				return false;
+			}
+
+			return true;
+		}
+
 		internal async Task<bool> DeclineTradeOffer(ulong tradeID) {
 			if (tradeID == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(tradeID));
@@ -1671,6 +1701,85 @@ namespace ArchiSteamFarm {
 			}
 
 			return true;
+		}
+
+		private async Task<HtmlDocument> UrlPostMultipartFormToHtmlDocumentWithSession(string host, string request, Dictionary<string, string> data = null, ESession session = ESession.Lowercase, byte maxTries = WebBrowser.MaxTries) {
+			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
+				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
+				return default;
+			}
+
+			if (maxTries == 0) {
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				return default;
+			}
+
+			// If session refresh is already in progress, wait for it
+			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+			SessionSemaphore.Release();
+
+			for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+				await Task.Delay(1000).ConfigureAwait(false);
+			}
+
+			if (SteamID == 0) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				return default;
+			}
+
+			if (session != ESession.None) {
+				string sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
+
+				if (string.IsNullOrEmpty(sessionID)) {
+					Bot.ArchiLogger.LogNullError(nameof(sessionID));
+					return default;
+				}
+
+				string sessionName;
+
+				switch (session) {
+					case ESession.CamelCase:
+						sessionName = "sessionID";
+						break;
+					case ESession.Lowercase:
+						sessionName = "sessionid";
+						break;
+					default:
+						Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(session), session));
+						return default;
+				}
+
+				if (data != null) {
+					data[sessionName] = sessionID;
+				} else {
+					data = new Dictionary<string, string>(1) { { sessionName, sessionID } };
+				}
+			}
+
+			WebBrowser.HtmlDocumentResponse response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostMultipartFormToHtmlDocument(host + request, data).ConfigureAwait(false)).ConfigureAwait(false);
+			if (response == null) {
+				return null;
+			}
+
+			if (IsSessionExpiredUri(response.FinalUri)) {
+				if (await RefreshSession(host).ConfigureAwait(false)) {
+					return await UrlPostMultipartFormToHtmlDocumentWithSession(host, request, maxTries: --maxTries).ConfigureAwait(false);
+				}
+
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				return null;
+			}
+
+			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
+			if (IsProfileUri(response.FinalUri)) {
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
+				return await UrlPostMultipartFormToHtmlDocumentWithSession(host, request, maxTries: --maxTries).ConfigureAwait(false);
+			}
+
+			return await UrlPostMultipartFormToHtmlDocumentWithSession(host, request, data, session, --maxTries).ConfigureAwait(false);
 		}
 
 		private async Task<HtmlDocument> UrlPostToHtmlDocumentWithSession(string host, string request, Dictionary<string, string> data = null, string referer = null, ESession session = ESession.Lowercase, byte maxTries = WebBrowser.MaxTries) {

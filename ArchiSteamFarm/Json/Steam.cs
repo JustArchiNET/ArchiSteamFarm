@@ -471,17 +471,26 @@ namespace ArchiSteamFarm.Json {
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class PrivacyResponse {
 			[JsonProperty(PropertyName = "PrivacySettings", Required = Required.Always)]
-			internal readonly PrivacySettings Settings;
+			internal PrivacySettings Settings;
 
-			// Deserialized from JSON
-			private PrivacyResponse() { }
+			[JsonProperty(PropertyName = "eCommentPermission", Required = Required.Always)]
+			internal PrivacySettings.EPrivacySetting Comments;
 
 			internal sealed class PrivacySettings {
 				[JsonProperty(PropertyName = "PrivacyInventory", Required = Required.Always)]
-				internal readonly EPrivacySetting Inventory;
+				internal EPrivacySetting Inventory;
 
-				// Deserialized from JSON
-				private PrivacySettings() { }
+				[JsonProperty(PropertyName = "PrivacyProfile", Required = Required.Always)]
+				internal EPrivacySetting Profile;
+
+				[JsonProperty(PropertyName = "PrivacyInventoryGifts", Required = Required.Always)]
+				internal EPrivacySetting InventoryGifts;
+
+				[JsonProperty(PropertyName = "PrivacyOwnedGames", Required = Required.Always)]
+				internal EPrivacySetting OwnedGames;
+
+				[JsonProperty(PropertyName = "PrivacyPlaytime", Required = Required.Always)]
+				internal EPrivacySetting Playtime;
 
 				[SuppressMessage("ReSharper", "UnusedMember.Global")]
 				internal enum EPrivacySetting : byte {

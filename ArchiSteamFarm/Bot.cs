@@ -1112,6 +1112,12 @@ namespace ArchiSteamFarm {
 							}
 
 							return await ResponsePlay(steamID, args[1]).ConfigureAwait(false);
+						case "PRIVACY":
+							if (args.Length > 2) {
+								return await ResponsePrivacy(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
+							}
+
+							return await ResponsePrivacy(steamID, args[1]).ConfigureAwait(false);
 						case "R":
 						case "REDEEM":
 							if (args.Length > 2) {
@@ -4095,6 +4101,98 @@ namespace ArchiSteamFarm {
 			}
 
 			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponsePlay(steamID, targetGameIDs));
+			ICollection<string> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<string>(bots.Count);
+					foreach (Task<string> task in tasks) {
+						results.Add(await task.ConfigureAwait(false));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+
+			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+			return responses.Count > 0 ? string.Join("", responses) : null;
+		}
+
+		private async Task<string> ResponsePrivacy(ulong steamID, string privacySettingsText) {
+			if ((steamID == 0) || string.IsNullOrEmpty(privacySettingsText)) {
+				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(privacySettingsText));
+				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return null;
+			}
+
+			if (!IsConnectedAndLoggedOn) {
+				return FormatBotResponse(Strings.BotNotConnected);
+			}
+
+			if (privacySettingsText.Length != 6) { // There are only 6 privacy settings
+				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(privacySettingsText)));
+			}
+
+			foreach (char digit in privacySettingsText) {
+				if ((digit < '1') || (digit > '3')) { // They can be set from 1 to 3 
+					return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(privacySettingsText)));
+				}
+			}
+
+			// Converting digits to enum
+			Steam.PrivacyResponse privacySettings = new Steam.PrivacyResponse {
+				Comments = (Steam.PrivacyResponse.PrivacySettings.EPrivacySetting) byte.Parse(privacySettingsText[5].ToString()),
+				Settings = new Steam.PrivacyResponse.PrivacySettings {
+					Inventory = (Steam.PrivacyResponse.PrivacySettings.EPrivacySetting) byte.Parse(privacySettingsText[3].ToString()),
+					InventoryGifts = (Steam.PrivacyResponse.PrivacySettings.EPrivacySetting) byte.Parse(privacySettingsText[4].ToString()),
+					OwnedGames = (Steam.PrivacyResponse.PrivacySettings.EPrivacySetting) byte.Parse(privacySettingsText[1].ToString()),
+					Playtime = (Steam.PrivacyResponse.PrivacySettings.EPrivacySetting) byte.Parse(privacySettingsText[2].ToString()),
+					Profile = (Steam.PrivacyResponse.PrivacySettings.EPrivacySetting) byte.Parse(privacySettingsText[0].ToString())
+				}
+			};
+
+			// These can't be set to friends only, only public/private
+			if (privacySettings.Settings.Playtime == Steam.PrivacyResponse.PrivacySettings.EPrivacySetting.FriendsOnly) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(privacySettings.Settings.Playtime)));
+			}
+
+			if (privacySettings.Settings.InventoryGifts == Steam.PrivacyResponse.PrivacySettings.EPrivacySetting.FriendsOnly) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(privacySettings.Settings.InventoryGifts)));
+			}
+
+			// Some settings depends on the other settings, so we should check that parent setting is not more restrictive than its child
+			if ((privacySettings.Settings.Profile < privacySettings.Settings.Inventory) || (privacySettings.Settings.Profile < privacySettings.Settings.OwnedGames) || (privacySettings.Settings.Profile < privacySettings.Comments)) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(privacySettings.Settings.Profile)));
+			}
+
+			if (privacySettings.Settings.Inventory < privacySettings.Settings.InventoryGifts) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(privacySettings.Settings.InventoryGifts)));
+			}
+
+			if (privacySettings.Settings.OwnedGames < privacySettings.Settings.Playtime) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(privacySettings.Settings.Playtime)));
+			}
+
+			return FormatBotResponse(await ArchiWebHandler.ChangePrivacySettings(privacySettings).ConfigureAwait(false) ? Strings.Success : Strings.WarningFailed);
+		}
+
+		private async Task<string> ResponsePrivacy(ulong steamID, string botNames, string privacySettingsText) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(privacySettingsText)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames) + " || " + nameof(privacySettingsText));
+				return null;
+			}
+
+			HashSet<Bot> bots = GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
+			}
+
+			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponsePrivacy(steamID, privacySettingsText));
 			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
