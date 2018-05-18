@@ -874,7 +874,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (Debugging.IsUserDebugging) {
-				ASF.ArchiLogger.LogGenericDebug(botName + ": " + JsonConvert.SerializeObject(botConfig, Formatting.Indented));
+				ASF.ArchiLogger.LogGenericDebug(configFilePath + ": " + JsonConvert.SerializeObject(botConfig, Formatting.Indented));
 			}
 
 			string databaseFilePath = botPath + SharedInfo.DatabaseExtension;
@@ -883,6 +883,10 @@ namespace ArchiSteamFarm {
 			if (botDatabase == null) {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorDatabaseInvalid, databaseFilePath));
 				return;
+			}
+
+			if (Debugging.IsUserDebugging) {
+				ASF.ArchiLogger.LogGenericDebug(databaseFilePath + ": " + JsonConvert.SerializeObject(botDatabase, Formatting.Indented));
 			}
 
 			Bot bot;

@@ -250,7 +250,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (Debugging.IsUserDebugging) {
-				ASF.ArchiLogger.LogGenericDebug(SharedInfo.ASF + ": " + JsonConvert.SerializeObject(GlobalConfig, Formatting.Indented));
+				ASF.ArchiLogger.LogGenericDebug(SharedInfo.GlobalConfigFileName + ": " + JsonConvert.SerializeObject(GlobalConfig, Formatting.Indented));
 			}
 
 			if (GlobalConfig.BackgroundGCPeriod > 0) {
@@ -324,6 +324,10 @@ namespace ArchiSteamFarm {
 				await Task.Delay(5 * 1000).ConfigureAwait(false);
 				await Exit(1).ConfigureAwait(false);
 				return;
+			}
+
+			if (Debugging.IsUserDebugging) {
+				ASF.ArchiLogger.LogGenericDebug(SharedInfo.GlobalDatabaseFileName + ": " + JsonConvert.SerializeObject(GlobalDatabase, Formatting.Indented));
 			}
 
 			// If debugging is on, we prepare debug directory prior to running
