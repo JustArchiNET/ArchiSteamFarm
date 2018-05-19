@@ -155,7 +155,7 @@ namespace ArchiSteamFarm {
 
 			Dictionary<string, string> data = new Dictionary<string, string>(3) {
 				{ "Privacy", JsonConvert.SerializeObject(privacySettings.Settings) },
-				{ "eCommentPermission", commentPermission.ToString() }
+				{ "eCommentPermission", ((int) commentPermission).ToString() }
 			};
 
 			Steam.NonZeroResponse response = await UrlPostToJsonObjectWithSession<Steam.NonZeroResponse>(SteamCommunityURL, request, data).ConfigureAwait(false);
