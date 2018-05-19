@@ -471,7 +471,7 @@ namespace ArchiSteamFarm.Json {
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class PrivacyResponse {
 			[JsonProperty(PropertyName = "PrivacySettings", Required = Required.Always)]
-			internal PrivacySettings Settings;
+			internal readonly PrivacySettings Settings;
 
 			[JsonProperty(PropertyName = "eCommentPermission", Required = Required.Always)]
 			internal PrivacySettings.EPrivacySetting Comments;

@@ -267,24 +267,32 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		internal async Task<HtmlDocumentResponse> UrlPostMultipartFormToHtmlDocument(string request, IEnumerable<KeyValuePair<string, string>> data, byte maxTries = MaxTries) {
+		internal async Task<ObjectResponse<T>> UrlPostMultipartFormToJsonObject<T>(string request, IReadOnlyCollection<KeyValuePair<string, string>> data, string referer = null, byte maxTries = MaxTries) where T : class {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
 				return null;
 			}
 
-			MultipartFormDataContent content = new MultipartFormDataContent();
-			foreach (KeyValuePair<string, string> kvp in data) {
-				content.Add(new StringContent(kvp.Value), kvp.Key);
-			}
-
-			HttpResponseMessage responseHttp = await HttpClient.PostAsync(request, content).ConfigureAwait(false);
-			if (!responseHttp.IsSuccessStatusCode) {
+			StringResponse response = await UrlPostToString(request, data, referer, maxTries, true).ConfigureAwait(false);
+			if (string.IsNullOrEmpty(response?.Content)) {
 				return null;
 			}
 
-			StringResponse response = new StringResponse(responseHttp, await responseHttp.Content.ReadAsStringAsync().ConfigureAwait(false));
-			return new HtmlDocumentResponse(response);
+			T obj;
+
+			try {
+				obj = JsonConvert.DeserializeObject<T>(response.Content);
+			} catch (JsonException e) {
+				ArchiLogger.LogGenericException(e);
+
+				if (Debugging.IsUserDebugging) {
+					ArchiLogger.LogGenericDebug(string.Format(Strings.Content, response.Content));
+				}
+
+				return null;
+			}
+
+			return new ObjectResponse<T>(response, obj);
 		}
 
 		internal async Task<HtmlDocumentResponse> UrlPostToHtmlDocument(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, byte maxTries = MaxTries) {
@@ -343,16 +351,16 @@ namespace ArchiSteamFarm {
 			return await InternalRequest(new Uri(request), HttpMethod.Head, null, referer).ConfigureAwait(false);
 		}
 
-		private async Task<HttpResponseMessage> InternalPost(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null) {
+		private async Task<HttpResponseMessage> InternalPost(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, bool multipartFormData = false) {
 			if (string.IsNullOrEmpty(request)) {
 				ArchiLogger.LogNullError(nameof(request));
 				return null;
 			}
 
-			return await InternalRequest(new Uri(request), HttpMethod.Post, data, referer).ConfigureAwait(false);
+			return await InternalRequest(new Uri(request), HttpMethod.Post, data, referer, multipartFormData: multipartFormData).ConfigureAwait(false);
 		}
 
-		private async Task<HttpResponseMessage> InternalRequest(Uri requestUri, HttpMethod httpMethod, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, byte maxRedirections = MaxTries) {
+		private async Task<HttpResponseMessage> InternalRequest(Uri requestUri, HttpMethod httpMethod, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, byte maxRedirections = MaxTries, bool multipartFormData = false) {
 			if ((requestUri == null) || (httpMethod == null)) {
 				ArchiLogger.LogNullError(nameof(requestUri) + " || " + nameof(httpMethod));
 				return null;
@@ -363,7 +371,16 @@ namespace ArchiSteamFarm {
 			using (HttpRequestMessage request = new HttpRequestMessage(httpMethod, requestUri)) {
 				if (data != null) {
 					try {
-						request.Content = new FormUrlEncodedContent(data);
+						if (!multipartFormData) {
+							request.Content = new FormUrlEncodedContent(data);
+						} else {
+							MultipartFormDataContent content = new MultipartFormDataContent();
+							foreach (KeyValuePair<string, string> kvp in data) {
+								content.Add(new StringContent(kvp.Value), kvp.Key);
+							}
+
+							request.Content = content;
+						}
 					} catch (UriFormatException e) {
 						ArchiLogger.LogGenericException(e);
 						return null;
@@ -460,14 +477,14 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		private async Task<StringResponse> UrlPostToString(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, byte maxTries = MaxTries) {
+		private async Task<StringResponse> UrlPostToString(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, byte maxTries = MaxTries, bool multipartFormData = false) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
 				return null;
 			}
 
 			for (byte i = 0; i < maxTries; i++) {
-				using (HttpResponseMessage response = await InternalPost(request, data, referer).ConfigureAwait(false)) {
+				using (HttpResponseMessage response = await InternalPost(request, data, referer, multipartFormData).ConfigureAwait(false)) {
 					if (response == null) {
 						continue;
 					}
