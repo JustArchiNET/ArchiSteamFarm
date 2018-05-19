@@ -29,6 +29,10 @@ before_build:
 
 
     dotnet --info
+
+    if ($LastExitCode -ne 0) {
+        throw "Command failed."
+    }
 build_script:
 - pwsh: >-
     Set-StrictMode -Version Latest
@@ -39,6 +43,10 @@ build_script:
 
 
     dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -o 'out\source' /nologo
+
+    if ($LastExitCode -ne 0) {
+        throw "Command failed."
+    }
 test_script:
 - pwsh: >-
     Set-StrictMode -Version Latest
@@ -49,6 +57,10 @@ test_script:
 
 
     dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" -o 'out\source' /nologo
+
+    if ($LastExitCode -ne 0) {
+        throw "Command failed."
+    }
 after_test:
 - pwsh: >-
     Set-StrictMode -Version Latest
@@ -73,6 +85,10 @@ after_test:
             dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$Variant" -r "$Variant" /nologo "/p:ASFVariant=$Variant" "/p:CrossGenDuringPublish=false"
         }
 
+        if ($LastExitCode -ne 0) {
+            throw "Command failed."
+        }
+
         # If we include any helper scripts for this variant, copy them to output directory
         if (Test-Path -Path "ArchiSteamFarm\scripts\$Variant" -PathType Container) {
             Copy-Item "ArchiSteamFarm\scripts\$Variant\*" -Destination "ArchiSteamFarm\out\$Variant"
@@ -81,6 +97,10 @@ after_test:
         # Until https://github.com/dotnet/cli/issues/3267 happens, we'll hack dotnet binary icon on Windows and include .ico file on other platforms
         if (Test-Path -Path "ArchiSteamFarm\out\$Variant\ArchiSteamFarm.exe" -PathType Leaf) {
             tools\rcedit\rcedit-x64.exe "ArchiSteamFarm\out\$Variant\ArchiSteamFarm.exe" --set-icon 'resources\ASF.ico'
+
+            if ($LastExitCode -ne 0) {
+                throw "Command failed."
+            }
         } else {
             Copy-Item 'resources\ASF.ico' -Destination "ArchiSteamFarm\out\$Variant\ArchiSteamFarm.ico"
         }
@@ -99,8 +119,17 @@ after_test:
         }
 
         7z a -bd -tzip -mm=Deflate64 $zipArgs "ArchiSteamFarm\out\ASF-$Variant.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$Variant\*"
+
+        if ($LastExitCode -ne 0) {
+            throw "Command failed."
+        }
+
         # TODO: Change me to Push-AppveyorArtifact once https://github.com/appveyor/ci/issues/2183 is fixed
         appveyor PushArtifact "ArchiSteamFarm\out\ASF-$Variant.zip" -FileName "ASF-$Variant.zip" -DeploymentName "ASF-$Variant.zip"
+
+        if ($LastExitCode -ne 0) {
+            throw "Command failed."
+        }
     }
 
     foreach ($variant in $env:VARIANTS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
