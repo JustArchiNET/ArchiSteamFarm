@@ -4149,13 +4149,13 @@ namespace ArchiSteamFarm {
 			Steam.UserPrivacy.ECommentPermission comments = Steam.UserPrivacy.ECommentPermission.Private;
 
 			// Converting digits to enum
-			for (byte digit = 0; digit < privacySettingsArgs.Length; digit++) {
-				if (!Enum.TryParse(privacySettingsArgs[digit], true, out Steam.UserPrivacy.PrivacySettings.EPrivacySetting privacySetting) || (privacySetting == Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Unknown) || !Enum.IsDefined(typeof(Steam.UserPrivacy.PrivacySettings.EPrivacySetting), privacySetting)) {
+			for (byte index = 0; index < privacySettingsArgs.Length; index++) {
+				if (!Enum.TryParse(privacySettingsArgs[index], true, out Steam.UserPrivacy.PrivacySettings.EPrivacySetting privacySetting) || (privacySetting == Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Unknown) || !Enum.IsDefined(typeof(Steam.UserPrivacy.PrivacySettings.EPrivacySetting), privacySetting)) {
 					return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(privacySettingsArgs)));
 				}
 
 				// Child setting can't be less restrictive than its parent
-				switch (digit) {
+				switch (index) {
 					case 0: // Profile
 						profile = privacySetting;
 						break;
