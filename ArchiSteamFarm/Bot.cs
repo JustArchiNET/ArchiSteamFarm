@@ -4159,35 +4159,35 @@ namespace ArchiSteamFarm {
 					case 0: // Profile
 						profile = privacySetting;
 						break;
-					case 1: // OwnedGames, parent of Profile
+					case 1: // OwnedGames, child of Profile
 						if (profile < privacySetting) {
 							return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(ownedGames)));
 						}
 
 						ownedGames = privacySetting;
 						break;
-					case 2: // Playtime, parent of OwnedGames
+					case 2: // Playtime, child of OwnedGames
 						if (ownedGames < privacySetting) {
 							return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(playtime)));
 						}
 
 						playtime = privacySetting;
 						break;
-					case 3: // Inventory, parent of Profile
+					case 3: // Inventory, child of Profile
 						if (profile < privacySetting) {
 							return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(inventory)));
 						}
 
 						inventory = privacySetting;
 						break;
-					case 4: // InventoryGifts, parent of Inventory
+					case 4: // InventoryGifts, child of Inventory
 						if (inventory < privacySetting) {
 							return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(inventoryGifts)));
 						}
 
 						inventoryGifts = privacySetting;
 						break;
-					case 5: // Comments, parent of Profile
+					case 5: // Comments, child of Profile
 						if (profile < privacySetting) {
 							return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(comments)));
 						}
