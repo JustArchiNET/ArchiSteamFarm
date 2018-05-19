@@ -4210,8 +4210,8 @@ namespace ArchiSteamFarm {
 
 						break;
 					default:
-						ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(digit), digit));
-						return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(digit)));
+						ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(index), index));
+						return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(index)));
 				}
 			}
 
