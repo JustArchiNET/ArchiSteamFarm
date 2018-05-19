@@ -133,6 +133,44 @@ namespace ArchiSteamFarm {
 			return await UrlPostWithSession(SteamStoreURL, request, data).ConfigureAwait(false);
 		}
 
+		internal async Task<bool> ChangePrivacySettings(Steam.PrivacyResponse privacySettings) {
+			string request = GetAbsoluteProfileURL() + "/ajaxsetprivacy";
+
+			// We have to do this because Steam uses the same numbers for settings except comments, this has its special numbers, fuck Steam
+			Steam.PrivacyResponse.ECommentPermission commentPermission;
+			switch (privacySettings.Comments) {
+				case Steam.PrivacyResponse.PrivacySettings.EPrivacySetting.Public:
+					commentPermission = Steam.PrivacyResponse.ECommentPermission.Public;
+					break;
+				case Steam.PrivacyResponse.PrivacySettings.EPrivacySetting.FriendsOnly:
+					commentPermission = Steam.PrivacyResponse.ECommentPermission.FriendsOnly;
+					break;
+				case Steam.PrivacyResponse.PrivacySettings.EPrivacySetting.Private:
+					commentPermission = Steam.PrivacyResponse.ECommentPermission.Private;
+					break;
+				default:
+					Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, nameof(commentPermission)));
+					return false;
+			}
+
+			Dictionary<string, string> data = new Dictionary<string, string>(3) {
+				{ "Privacy", JsonConvert.SerializeObject(privacySettings.Settings) },
+				{ "eCommentPermission", ((int) commentPermission).ToString() }
+			};
+
+			Steam.NonZeroResponse response = await UrlPostToJsonObjectWithSession<Steam.NonZeroResponse>(SteamCommunityURL, request, data).ConfigureAwait(false);
+			if (response == null) {
+				return false;
+			}
+
+			if (!response.Success) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				return false;
+			}
+
+			return true;
+		}
+
 		internal async Task<bool> DeclineTradeOffer(ulong tradeID) {
 			if (tradeID == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(tradeID));
