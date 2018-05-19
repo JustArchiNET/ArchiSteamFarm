@@ -1114,7 +1114,7 @@ namespace ArchiSteamFarm {
 							return await ResponsePlay(steamID, args[1]).ConfigureAwait(false);
 						case "PRIVACY":
 							if (args.Length > 2) {
-								return await ResponsePrivacy(steamID, args[1], Utilities.GetArgsAsText(message, 2)).ConfigureAwait(false);
+								return await ResponsePrivacy(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
 							}
 
 							return await ResponsePrivacy(steamID, args[1]).ConfigureAwait(false);
@@ -4134,69 +4134,89 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
-			if (privacySettingsText.Length != 6) { // There are only 6 privacy settings
-				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(privacySettingsText)));
+			string[] privacySettingsArgs = privacySettingsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+			// There are only 6 privacy settings
+			if (privacySettingsArgs.Length > 6) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(privacySettingsArgs)));
 			}
 
-			Steam.PrivacyResponse.PrivacySettings.EPrivacySetting profile = Steam.PrivacyResponse.PrivacySettings.EPrivacySetting.Unknown;
-			Steam.PrivacyResponse.PrivacySettings.EPrivacySetting ownedGames = Steam.PrivacyResponse.PrivacySettings.EPrivacySetting.Unknown;
-			Steam.PrivacyResponse.PrivacySettings.EPrivacySetting playtime = Steam.PrivacyResponse.PrivacySettings.EPrivacySetting.Unknown;
-			Steam.PrivacyResponse.PrivacySettings.EPrivacySetting inventory = Steam.PrivacyResponse.PrivacySettings.EPrivacySetting.Unknown;
-			Steam.PrivacyResponse.PrivacySettings.EPrivacySetting inventoryGifts = Steam.PrivacyResponse.PrivacySettings.EPrivacySetting.Unknown;
-			Steam.PrivacyResponse.PrivacySettings.EPrivacySetting comments = Steam.PrivacyResponse.PrivacySettings.EPrivacySetting.Unknown;
+			Steam.UserPrivacy.PrivacySettings.EPrivacySetting profile = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
+			Steam.UserPrivacy.PrivacySettings.EPrivacySetting ownedGames = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
+			Steam.UserPrivacy.PrivacySettings.EPrivacySetting playtime = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
+			Steam.UserPrivacy.PrivacySettings.EPrivacySetting inventory = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
+			Steam.UserPrivacy.PrivacySettings.EPrivacySetting inventoryGifts = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
+			Steam.UserPrivacy.ECommentPermission comments = Steam.UserPrivacy.ECommentPermission.Private;
 
 			// Converting digits to enum
-			for (int digitPostition = 0; digitPostition < 6; digitPostition++) {
-				if (!Enum.TryParse(privacySettingsText[digitPostition].ToString(), true, out Steam.PrivacyResponse.PrivacySettings.EPrivacySetting privacySetting) || (privacySetting == Steam.PrivacyResponse.PrivacySettings.EPrivacySetting.Unknown) || !Enum.IsDefined(typeof(Steam.PrivacyResponse.PrivacySettings.EPrivacySetting), privacySetting)) {
-					return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(privacySettingsText)));
+			for (byte digit = 0; digit < privacySettingsArgs.Length; digit++) {
+				if (!Enum.TryParse(privacySettingsArgs[digit], true, out Steam.UserPrivacy.PrivacySettings.EPrivacySetting privacySetting) || (privacySetting == Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Unknown) || !Enum.IsDefined(typeof(Steam.UserPrivacy.PrivacySettings.EPrivacySetting), privacySetting)) {
+					return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(privacySettingsArgs)));
 				}
 
 				// Child setting can't be less restrictive than its parent
-				switch (digitPostition) {
-					case 0:
+				switch (digit) {
+					case 0: // Profile
 						profile = privacySetting;
 						break;
-					case 1:
+					case 1: // OwnedGames, parent of Profile
 						if (profile < privacySetting) {
-							return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(profile)));
+							return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(ownedGames)));
 						}
 
 						ownedGames = privacySetting;
 						break;
-					case 2:
+					case 2: // Playtime, parent of OwnedGames
 						if (ownedGames < privacySetting) {
 							return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(playtime)));
 						}
 
 						playtime = privacySetting;
 						break;
-					case 3:
+					case 3: // Inventory, parent of Profile
 						if (profile < privacySetting) {
-							return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(profile)));
+							return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(inventory)));
 						}
 
 						inventory = privacySetting;
 						break;
-					case 4:
+					case 4: // InventoryGifts, parent of Inventory
 						if (inventory < privacySetting) {
 							return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(inventoryGifts)));
 						}
 
 						inventoryGifts = privacySetting;
 						break;
-					case 5:
+					case 5: // Comments, parent of Profile
 						if (profile < privacySetting) {
-							return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(profile)));
+							return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(comments)));
 						}
 
-						comments = privacySetting;
+						// Comments use different numbers than everything else, but we want to have this command consistent for end-user, so we'll map them
+						switch (privacySetting) {
+							case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.FriendsOnly:
+								comments = Steam.UserPrivacy.ECommentPermission.FriendsOnly;
+								break;
+							case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private:
+								comments = Steam.UserPrivacy.ECommentPermission.Private;
+								break;
+							case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Public:
+								comments = Steam.UserPrivacy.ECommentPermission.Public;
+								break;
+							default:
+								ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(privacySetting), privacySetting));
+								return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(privacySetting)));
+						}
+
 						break;
+					default:
+						ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(digit), digit));
+						return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(digit)));
 				}
 			}
 
-			Steam.PrivacyResponse privacySettings = new Steam.PrivacyResponse(profile, ownedGames, playtime, inventory, inventoryGifts, comments);
-
-			return FormatBotResponse(await ArchiWebHandler.ChangePrivacySettings(privacySettings).ConfigureAwait(false) ? Strings.Success : Strings.WarningFailed);
+			Steam.UserPrivacy userPrivacy = new Steam.UserPrivacy(new Steam.UserPrivacy.PrivacySettings(profile, ownedGames, playtime, inventory, inventoryGifts), comments);
+			return FormatBotResponse(await ArchiWebHandler.ChangePrivacySettings(userPrivacy).ConfigureAwait(false) ? Strings.Success : Strings.WarningFailed);
 		}
 
 		private async Task<string> ResponsePrivacy(ulong steamID, string botNames, string privacySettingsText) {

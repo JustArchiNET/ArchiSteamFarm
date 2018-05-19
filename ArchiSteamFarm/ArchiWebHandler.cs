@@ -119,6 +119,28 @@ namespace ArchiSteamFarm {
 			return htmlDocument?.DocumentNode.SelectSingleNode("//div[@class='add_free_content_success_area']") != null;
 		}
 
+		internal async Task<bool> ChangePrivacySettings(Steam.UserPrivacy userPrivacy) {
+			string request = GetAbsoluteProfileURL() + "/ajaxsetprivacy";
+
+			// Extra entry for sessionID
+			Dictionary<string, string> data = new Dictionary<string, string>(3) {
+				{ "eCommentPermission", ((byte) userPrivacy.CommentPermission).ToString() },
+				{ "Privacy", JsonConvert.SerializeObject(userPrivacy.Settings) }
+			};
+
+			Steam.NumberResponse response = await UrlPostToJsonObjectWithSession<Steam.NumberResponse>(SteamCommunityURL, request, data).ConfigureAwait(false);
+			if (response == null) {
+				return false;
+			}
+
+			if (!response.Success) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				return false;
+			}
+
+			return true;
+		}
+
 		internal async Task<bool> ClearFromDiscoveryQueue(uint appID) {
 			if (appID == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(appID));
@@ -131,44 +153,6 @@ namespace ArchiSteamFarm {
 			Dictionary<string, string> data = new Dictionary<string, string>(2) { { "appid_to_clear_from_queue", appID.ToString() } };
 
 			return await UrlPostWithSession(SteamStoreURL, request, data).ConfigureAwait(false);
-		}
-
-		internal async Task<bool> ChangePrivacySettings(Steam.PrivacyResponse privacySettings) {
-			string request = GetAbsoluteProfileURL() + "/ajaxsetprivacy";
-
-			// We have to do this because Steam uses the same numbers for settings except comments, this has its special numbers, fuck Steam
-			Steam.PrivacyResponse.ECommentPermission commentPermission;
-			switch (privacySettings.Comments) {
-				case Steam.PrivacyResponse.PrivacySettings.EPrivacySetting.Public:
-					commentPermission = Steam.PrivacyResponse.ECommentPermission.Public;
-					break;
-				case Steam.PrivacyResponse.PrivacySettings.EPrivacySetting.FriendsOnly:
-					commentPermission = Steam.PrivacyResponse.ECommentPermission.FriendsOnly;
-					break;
-				case Steam.PrivacyResponse.PrivacySettings.EPrivacySetting.Private:
-					commentPermission = Steam.PrivacyResponse.ECommentPermission.Private;
-					break;
-				default:
-					Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, nameof(commentPermission)));
-					return false;
-			}
-
-			Dictionary<string, string> data = new Dictionary<string, string>(3) {
-				{ "Privacy", JsonConvert.SerializeObject(privacySettings.Settings) },
-				{ "eCommentPermission", ((int) commentPermission).ToString() }
-			};
-
-			Steam.NonZeroResponse response = await UrlPostToJsonObjectWithSession<Steam.NonZeroResponse>(SteamCommunityURL, request, data).ConfigureAwait(false);
-			if (response == null) {
-				return false;
-			}
-
-			if (!response.Success) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				return false;
-			}
-
-			return true;
 		}
 
 		internal async Task<bool> DeclineTradeOffer(ulong tradeID) {
@@ -1318,28 +1302,28 @@ namespace ArchiSteamFarm {
 			// This json is encoded as html attribute, don't forget to decode it
 			json = WebUtility.HtmlDecode(json);
 
-			Steam.PrivacyResponse privacyResponse;
+			Steam.UserPrivacy userPrivacy;
 
 			try {
-				privacyResponse = JsonConvert.DeserializeObject<Steam.PrivacyResponse>(json);
+				userPrivacy = JsonConvert.DeserializeObject<Steam.UserPrivacy>(json);
 			} catch (JsonException e) {
 				Bot.ArchiLogger.LogGenericException(e);
 				return null;
 			}
 
-			if (privacyResponse == null) {
-				Bot.ArchiLogger.LogNullError(nameof(privacyResponse));
+			if (userPrivacy == null) {
+				Bot.ArchiLogger.LogNullError(nameof(userPrivacy));
 				return null;
 			}
 
-			switch (privacyResponse.Settings.Inventory) {
-				case Steam.PrivacyResponse.PrivacySettings.EPrivacySetting.FriendsOnly:
-				case Steam.PrivacyResponse.PrivacySettings.EPrivacySetting.Private:
+			switch (userPrivacy.Settings.Inventory) {
+				case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.FriendsOnly:
+				case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private:
 					return false;
-				case Steam.PrivacyResponse.PrivacySettings.EPrivacySetting.Public:
+				case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Public:
 					return true;
 				default:
-					Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(privacyResponse.Settings.Inventory), privacyResponse.Settings.Inventory));
+					Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(userPrivacy.Settings.Inventory), userPrivacy.Settings.Inventory));
 					return null;
 			}
 		}
