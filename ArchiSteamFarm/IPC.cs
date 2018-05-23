@@ -837,7 +837,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string filePath = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.WebsiteDirectory) + Path.DirectorySeparatorChar + absolutePath.Replace("/", Path.DirectorySeparatorChar.ToString());
+			string filePath = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.WebsiteDirectory) + Path.DirectorySeparatorChar + absolutePath.Replace('/', Path.DirectorySeparatorChar);
 			if (Directory.Exists(filePath)) {
 				filePath = Path.Combine(filePath, "index.html");
 			}
