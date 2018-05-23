@@ -657,7 +657,16 @@ StackTrace:
   <data name="BotRefreshingPackagesData" xml:space="preserve">
     <value>Đang làm mới các gói dữ liệu...</value>
   </data>
-  
-  
-  
+  <data name="WarningDeprecated" xml:space="preserve">
+    <value>Việc sử dụng {0} bị vô hiệu hoá và sẽ bị loại bỏ trong các phiên bản tương lai của chương trình. Xin vui lòng sử dụng {1} thay thế.</value>
+    <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
+  </data>
+  <data name="BotAcceptedDonationTrade" xml:space="preserve">
+    <value>Chấp nhận giao dịch tài trợ: {0}</value>
+    <comment>{0} will be replaced by trade's ID (number)</comment>
+  </data>
+  <data name="WarningWorkaroundTriggered" xml:space="preserve">
+    <value>Giải pháp cho lỗi {0} đã được kích hoạt.</value>
+    <comment>{0} will be replaced by the bug's name provided by ASF</comment>
+  </data>
 </root>

@@ -662,5 +662,8 @@
     <value>接受的捐贈交易: {0}</value>
     <comment>{0} will be replaced by trade's ID (number)</comment>
   </data>
-  
+  <data name="WarningWorkaroundTriggered" xml:space="preserve">
+    <value>已觸發 {0} 錯誤的解決方法。</value>
+    <comment>{0} will be replaced by the bug's name provided by ASF</comment>
+  </data>
 </root>
