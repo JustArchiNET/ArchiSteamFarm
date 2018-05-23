@@ -795,7 +795,7 @@ namespace ArchiSteamFarm {
 
 			string argument = WebUtility.UrlDecode(string.Join("", arguments.Skip(argumentsIndex)));
 
-			string directory = Path.Combine(SharedInfo.WebsiteDirectory, argument);
+			string directory = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.WebsiteDirectory, argument);
 			if (!Directory.Exists(directory)) {
 				await ResponseJsonObject(request, response, new GenericResponse<HashSet<string>>(false, string.Format(Strings.ErrorIsInvalid, nameof(directory))), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
@@ -837,7 +837,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string filePath = SharedInfo.WebsiteDirectory + Path.DirectorySeparatorChar + absolutePath.Replace("/", Path.DirectorySeparatorChar.ToString());
+			string filePath = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.WebsiteDirectory) + Path.DirectorySeparatorChar + absolutePath.Replace("/", Path.DirectorySeparatorChar.ToString());
 			if (Directory.Exists(filePath)) {
 				filePath = Path.Combine(filePath, "index.html");
 			}

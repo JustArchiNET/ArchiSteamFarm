@@ -21,6 +21,7 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Reflection;
 
 namespace ArchiSteamFarm {
@@ -48,6 +49,7 @@ namespace ArchiSteamFarm {
 		internal const string UpdateDirectory = "_old";
 		internal const string WebsiteDirectory = "www";
 
+		internal static string HomeDirectory => Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 		internal static Guid ModuleVersion => Assembly.GetEntryAssembly().ManifestModule.ModuleVersionId;
 		internal static string PublicIdentifier => AssemblyName + (BuildInfo.IsCustomBuild ? "-custom" : "");
 		internal static Version Version => Assembly.GetEntryAssembly().GetName().Version;

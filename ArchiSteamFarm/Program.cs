@@ -209,24 +209,21 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void InitCore(IReadOnlyCollection<string> args) {
-			string homeDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-			if (!string.IsNullOrEmpty(homeDirectory)) {
-				Directory.SetCurrentDirectory(homeDirectory);
+			Directory.SetCurrentDirectory(SharedInfo.HomeDirectory);
 
-				// Allow loading configs from source tree if it's a debug build
-				if (Debugging.IsDebugBuild) {
-					// Common structure is bin/(x64/)Debug/ArchiSteamFarm.exe, so we allow up to 4 directories up
-					for (byte i = 0; i < 4; i++) {
-						Directory.SetCurrentDirectory("..");
-						if (Directory.Exists(SharedInfo.ConfigDirectory)) {
-							break;
-						}
+			// Allow loading configs from source tree if it's a debug build
+			if (Debugging.IsDebugBuild) {
+				// Common structure is bin/(x64/)Debug/ArchiSteamFarm.exe, so we allow up to 4 directories up
+				for (byte i = 0; i < 4; i++) {
+					Directory.SetCurrentDirectory("..");
+					if (Directory.Exists(SharedInfo.ConfigDirectory)) {
+						break;
 					}
+				}
 
-					// If config directory doesn't exist after our adjustment, abort all of that
-					if (!Directory.Exists(SharedInfo.ConfigDirectory)) {
-						Directory.SetCurrentDirectory(homeDirectory);
-					}
+				// If config directory doesn't exist after our adjustment, abort all of that
+				if (!Directory.Exists(SharedInfo.ConfigDirectory)) {
+					Directory.SetCurrentDirectory(SharedInfo.HomeDirectory);
 				}
 			}
 
