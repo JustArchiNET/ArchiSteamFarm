@@ -1,4 +1,4 @@
-//#region Utils
+//#region Setup
 const tmpIPCPassword = get('IPCPassword');
 
 if (tmpIPCPassword) {
@@ -23,74 +23,54 @@ $.ajaxSetup({
         }
     }
 });
-
-function get(name) {
-    if (typeof Storage !== 'undefined') {
-        return localStorage.getItem(name);
-    } else {
-        window.alert('Please use a modern browser to properly view ASF GUI!');
-    }
-}
-
-function store(name, val) {
-    if (typeof Storage !== 'undefined') {
-        localStorage.setItem(name, val);
-    } else {
-        window.alert('Please use a modern browser to properly view ASF GUI!');
-    }
-}
-//#endregion Utils
+//#endregion Setup
 
 //#region Footer
-$('.main-footer').ready(function () {
-    $.ajax({
-        url: '/Api/ASF',
-        type: 'GET',
-        success: function (data) {
-            var version = data['Result'].Version,
-                versionNr = version.Major + '.' + version.Minor + '.' + version.Build + '.' + version.Revision;
+$.ajax({
+    url: '/Api/ASF',
+    type: 'GET',
+    success: function (data) {
+        var ver = data['Result'].Version,
+            verNr = ver.Major + '.' + ver.Minor + '.' + ver.Build + '.' + ver.Revision;
             
-            $('#version').text(versionNr);
-            $('#changelog').attr('href', 'https://github.com/JustArchi/ArchiSteamFarm/releases/tag/' + versionNr);
-        }
-    });
+        $('#version').text(verNr);
+        $('#changelog').attr('href', 'https://github.com/JustArchi/ArchiSteamFarm/releases/tag/' + verNr);
+    }
 });
 //#endregion Footer
 
 //#region Bot Status Buttons
 function displayBotStatus() {
-    $('.bot-status').ready(function () {
-        var activeBots = 0,
-            idleBots = 0,
-            offlineBots = 0;
+    var offline = 0,
+        online = 0,
+        farming = 0;
 
-        $.ajax({
-            url: '/Api/Bot/ASF',
-            type: 'GET',
-            success: function (data) {
-                var json = data['Result'];
+    $.ajax({
+        url: '/Api/Bot/ASF',
+        type: 'GET',
+        success: function (data) {
+            var json = data['Result'];
 
-                for (var i = 0; i < json.length; i++) {
-                    var obj = json[i],
-                        KeepRunning = obj.KeepRunning,
-                        TimeRemaining = obj.CardsFarmer.TimeRemaining;
+            for (var i = 0; i < json.length; i++) {
+                var obj = json[i],
+                    KeepRunning = obj.KeepRunning,
+                    TimeRemaining = obj.CardsFarmer.TimeRemaining;
 
-                    if (KeepRunning === false) {
-                        offlineBots++;
+                if (KeepRunning === false) {
+                    offline++;
+                } else {
+                    if (TimeRemaining === '00:00:00') {
+                        online++;
                     } else {
-                        if (TimeRemaining === '00:00:00') {
-                            idleBots++;
-                        } else {
-                            activeBots++;
-                        }
+                        farming++;
                     }
                 }
-
-                $('#offlineBots').text(offlineBots);
-                $('#idleBots').text(idleBots);
-                $('#activeBots').text(activeBots);
             }
-        });
+
+            $('#offlineBots').text(offline);
+            $('#onlineBots').text(online);
+            $('#farmingBots').text(farming);
+        }
     });
 }
 
@@ -100,12 +80,15 @@ window.setInterval(function () { displayBotStatus(); }, 5000);
 
 //#region ASF Information
 function displayRAMUsage() {
-    $('.info-overview').ready(function () {
-        $.ajax({
-            url: '/Api/ASF',
-            type: 'GET',
-            success: function (data) { $('#ramUsage').html((data['Result'].MemoryUsage / 1024).toFixed(2) + ' MB'); }
-        });
+    $.ajax({
+        url: '/Api/ASF',
+        type: 'GET',
+        success: function (data) {
+            var mem = data['Result'].MemoryUsage,
+                memMB = (mem / 1024).toFixed(2);
+
+            $('#ramUsage').html(memMB + ' MB');
+        }
     });
 }
 
@@ -113,36 +96,35 @@ displayRAMUsage();
 window.setInterval(function () { displayRAMUsage(); }, 10000);
 
 function displayUptime() {
-    $('.info-overview').ready(function () {
-        $.ajax({
-            url: '/Api/ASF',
-            type: 'GET',
-            success: function (data) { $('#uptime').html(uptimeToString(data['Result'].ProcessStartTime)); }
-        });
+    $.ajax({
+        url: '/Api/ASF',
+        type: 'GET',
+        success: function (data) {
+            var pst = data['Result'].ProcessStartTime,
+                start = new Date(pst),
+                now = new Date(),
+                diff = now.getTime() - start.getTime();
+
+            var d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            diff -= d * (1000 * 60 * 60 * 24);
+
+            var h = Math.floor(diff / (1000 * 60 * 60));
+            diff -= h * (1000 * 60 * 60);
+
+            var m = Math.floor(diff / (1000 * 60));
+
+            h = (h < 10 ? '0' : '') + h;
+            m = (m < 10 ? '0' : '') + m;
+
+            up = d + 'd ' + h + 'h ' + m + 'm';
+
+            $('#uptime').html(up);
+        }
     });
 }
 
 displayUptime();
 window.setInterval(function () { displayUptime(); }, 60000);
-
-function uptimeToString(startTime) {
-    var processStartTime = new Date(startTime),
-        currentDate = new Date(),
-        diff = currentDate.getTime() - processStartTime.getTime();
-
-    var days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    diff -= days * (1000 * 60 * 60 * 24);
-
-    var hours = Math.floor(diff / (1000 * 60 * 60));
-    diff -= hours * (1000 * 60 * 60);
-
-    var mins = Math.floor(diff / (1000 * 60));
-
-    hours = (hours < 10 ? '0' : '') + hours;
-    mins = (mins < 10 ? '0' : '') + mins;
-
-    return days + 'd ' + hours + 'h ' + mins + 'm';
-}
 //#endregion ASF Information
 
 //#region Commands Page
@@ -151,26 +133,29 @@ function fillCommand(cmd) { $cmdInput.val(cmd + ' '); }
 function fillBots(bot) { $cmdInput.val($cmdInput.val() + bot); }
 
 function getDateAndTime() {
-    var currentdate = new Date();
-    return ('0' + currentdate.getDate()).slice(-2) + '.'
-        + ('0' + (currentdate.getMonth() + 1)).slice(-2) + '.'
-        + currentdate.getFullYear() + ' @ '
-        + ('0' + currentdate.getHours()).slice(-2) + ':'
-        + ('0' + currentdate.getMinutes()).slice(-2) + ':'
-        + ('0' + currentdate.getSeconds()).slice(-2);
+    var date = new Date();
+    return ('0' + date.getDate()).slice(-2) + '.'
+        + ('0' + (date.getMonth() + 1)).slice(-2) + '.'
+        + date.getFullYear() + ' @ '
+        + ('0' + date.getHours()).slice(-2) + ':'
+        + ('0' + date.getMinutes()).slice(-2) + ':'
+        + ('0' + date.getSeconds()).slice(-2);
 }
 
 function logCommand(state, cmd) {
     var tmpAutoClear = get('autoClear');
 
     if (state) {
-        $('#commandSent').val(getDateAndTime() + ' Command sent: ' + cmd);
+        $('#commandSent').val($.i18n('commands-sent', getDateAndTime(), cmd));
+        return;
+    } 
+
+    var response = $.i18n('commands-response', getDateAndTime(), cmd);
+
+    if (tmpAutoClear === 'false') {
+        $('.box-content-commands').append('\n' + response + '\n');
     } else {
-        if (tmpAutoClear === 'false') {
-            $('.box-content-commands').append('\n' + getDateAndTime() + ' Response received: ' + cmd + '\n');
-        } else {
-            $('.box-content-commands').text(getDateAndTime() + ' Response received: ' + cmd);
-        }
+        $('.box-content-commands').text(response);
     }
 }
 
@@ -183,15 +168,16 @@ function sendCommand() {
 
     logCommand(true, command);
 
+    var response = $.i18n('commands-waiting', getDateAndTime());
+
     if (tmpAutoClear === 'false') {
         if ($('.box-content-commands').text() === '') {
-            $('.box-content-commands').append(getDateAndTime() + ' Waiting for response...' + '\n');
+            $('.box-content-commands').append(response + '\n');
         } else {
-            $('.box-content-commands').append('\n' + getDateAndTime() + ' Waiting for response...' + '\n');
+            $('.box-content-commands').append('\n' + response + '\n');
         }
-
     } else {
-        $('.box-content-commands').text(getDateAndTime() + ' Waiting for response...');
+        $('.box-content-commands').text(response);
     }
 
     $('.box-content-commands').append('<div class="overlay"><i class="fas fa-sync fa-spin" style="color:white"></i></div>');
@@ -214,113 +200,6 @@ function sendCommand() {
 //#endregion Commands Page
 
 //#region Global Config Utils
-//#region Spicy parsing helper by Mole
-//const cachedTypeDefinitions = new Map();
-//const cachedStructureDefinitions = new Map();
-
-//function request(method, url, data) {
-//    return new Promise((resolve, reject) => {
-//        $.ajax(url, { method, data })
-//            .done(resolve)
-//            .fail(reject);
-//    });
-//}
-
-//function extract(key) {
-//    return obj => obj[key];
-//}
-
-//const API = {
-//    get: (endpoint, data) => request('GET', `/Api/${endpoint}`, data).then(extract('Result')),
-//    post: (endpoint, data) => request('POST', `/Api/${endpoint}`, data).then(extract('Result'))
-//};
-
-//const subtypeRegex = /\[[^\]]+\]/g;
-
-//function resolveSubtypes(type) {
-//    return type.match(subtypeRegex).map(subtype => subtype.slice(1, subtype.length - 1));
-//}
-
-//async function getStructureDefinition(type) {
-//    if (cachedStructureDefinitions.has(type)) return cachedStructureDefinitions.get(type);
-
-//    const structureDefinition = API.get(`Structure/${encodeURIComponent(type)}`);
-//    cachedStructureDefinitions.set(type, structureDefinition);
-
-//    return structureDefinition;
-//}
-
-//async function getTypeDefinition(type) {
-//    if (cachedTypeDefinitions.has(type)) return cachedTypeDefinitions.get(type);
-
-//    const typeDefinition = API.get(`Type/${encodeURIComponent(type)}`);
-//    cachedTypeDefinitions.set(type, typeDefinition);
-
-//    return typeDefinition;
-//}
-
-//async function resolveType(type) {
-//    switch (type.split('`')[0]) {
-//        case 'System.Boolean':
-//            return { type: 'boolean' };
-//        case 'System.String':
-//            return { type: 'string' };
-//        case 'System.Byte':
-//            return { type: 'smallNumber' };
-//        case 'System.UInt32':
-//            return { type: 'number' };
-//        case 'System.Collections.Generic.HashSet':
-//            const [subtype] = resolveSubtypes(type);
-//            return { type: 'hashSet', values: await resolveType(subtype) };
-//        case 'System.UInt64':
-//            return { type: 'bigNumber' };
-//        case 'System.Collections.Generic.Dictionary':
-//            const subtypes = resolveSubtypes(type);
-//            return { type: 'dictionary', key: await resolveType(subtypes[0]), value: await resolveType(subtypes[1]) };
-//        default: // Complex type
-//            return unwindType(type);
-//    }
-//}
-
-//async function unwindObject(type, typeDefinition) {
-//    const resolvedStructure = {
-//        type: 'object',
-//        body: {}
-//    };
-
-//    const [structureDefinition, resolvedTypes] = await Promise.all([
-//        getStructureDefinition(type),
-//        Promise.all(Object.keys(typeDefinition.Body).map(async param => ({ param, type: await resolveType(typeDefinition.Body[param]) })))
-//    ]);
-
-//    for (const { param, type } of resolvedTypes) {
-//        const paramName = typeDefinition.Body[param] !== 'System.UInt64' ? param : `s_${param}`;
-
-//        resolvedStructure.body[param] = {
-//            defaultValue: structureDefinition[param],
-//            paramName,
-//            ...type
-//        };
-//    }
-
-//    return resolvedStructure;
-//}
-
-//async function unwindType(type) {
-//    if (type === 'ArchiSteamFarm.BotConfig') getStructureDefinition(type); // Dirty trick, but 30% is 30%
-//    const typeDefinition = await getTypeDefinition(type);
-
-//    switch (typeDefinition.Properties.BaseType) {
-//        case 'System.Object':
-//            return unwindObject(type, typeDefinition);
-//        case 'System.Enum':
-//            return { type: (typeDefinition.Properties.CustomAttributes || []).includes('System.FlagsAttribute') ? 'flag' : 'enum', values: typeDefinition.Body };
-//        default:
-//            const structureDefinition = await getStructureDefinition(type);
-//            return { type: 'unknown', typeDefinition, structureDefinition };
-//    }
-//}
-//#endregion Spicy parsing helper by Mole
 function generateConfigHTML(mode) {
     var namespace = mode === 'ASF' ? 'ArchiSteamFarm.GlobalConfig' : 'ArchiSteamFarm.BotConfig';
     $('.box-content-config').empty(); // Clear page content first
@@ -440,12 +319,12 @@ function loadPageContentEditor(botName) {
     $("#saveButton").unbind();
     $("#saveButton").click(function (e) {
         swal({
-            title: 'Are you sure?',
-            text: 'The config will be updated and <' + botName + '> will be restarted!',
+            title: $.i18n('global-question-title'),
+            text: $.i18n('editor-update', botName),
             type: 'warning',
             showCancelButton: true,
             confirmButtonClass: 'btn-danger',
-            confirmButtonText: 'Yes, update config!',
+            confirmButtonText: $.i18n('editor-update-confirm'),
             closeOnConfirm: false,
             showLoaderOnConfirm: true
         }, function () { prepareConfigForSaving(botName); });
@@ -544,7 +423,7 @@ function loadValuesForBotsDropDown(botName) {
                 botsDropDownHTML += '<li><a href="javascript:void(0)" onclick="loadPageContentEditor(\'' + currentBotName + '\')">' + currentBotName + '</a></li>';
             }
 
-            $('.box-title').html('Currently editing: <b>' + botName + '</b>');
+            $('.box-title').html($.i18n('editor-current-bot', botName));
             $('#saveButton').data('BotName', botName);
             $('#botsDropDown').html(botsDropDownHTML);
         }
@@ -654,14 +533,14 @@ function saveConfig(botName, config) {
         contentType: 'application/json',
         success: function (data) {
             swal({
-                title: 'Success!',
-                text: '<' + botName + '> and its config file got updated.',
+                title: $.i18n('global-success-title'),
+                text: $.i18n('editor-save-confirm', botName),
                 type: 'success'
             }, function () { location.reload(); });
         },
         error: function (jqXHR, textStatus, errorThrown) {
             swal({
-                title: 'Error!',
+                title: $.i18n('global-error-title'),
                 text: jqXHR.status + ' - ' + errorThrown,
                 type: 'error'
             }, function () { location.reload(); });
@@ -758,7 +637,7 @@ function loadValuesForModeDropDown(mode) {
         botsDropDownHTML = '<li><a href="javascript:void(0)" onclick="loadPageContentGenerator(\'ASF\');">ASF</a></li>';
     }
 
-    $('.box-title').html('Current mode: <b>' + mode + '</b>');
+    $('.box-title').html($.i18n('generator-current-bot', mode));
     $('#modeDropDown').html(botsDropDownHTML);
 }
 
@@ -770,8 +649,8 @@ function prepareConfigForDownload(mode) {
 
         if (botName === '') {
             swal({
-                title: 'Error!',
-                text: 'You need to enter a name',
+                title: $.i18n('global-error-title'),
+                text: $.i18n('generator-name'),
                 type: 'error'
             });
             return false;
@@ -962,100 +841,36 @@ $(function () {
         }
     }
 
-    function loadLocales(language) {
-        var i18n = $.i18n(),
-            langCode = (language === 'strings') ? 'us' : language.substr(language.length - 2).toLowerCase(),
-            translationFile;
+    function loadLanguageHTML() {
+        var tmpLangCode = get('langCode'),
+            tmpLangMissing = get('langMissing'),
+            tmpLangTotal = get('langTotal');
 
-        i18n.locale = language;
-        translationFile = '../locale/' + i18n.locale + '.json';
-        i18n.load(translationFile, i18n.locale).done(
-            function () {                
-                var missing = 0,
-                    totalSize = 0;
-                
-                $.getJSON(translationFile, function (obj) {
-                    for (var prop in obj) {
-                        if (obj.hasOwnProperty(prop)) {
-                            totalSize++;
-                            if (obj[prop]) {
-                                $('[data-i18n="' + prop + '"]').i18n();
-                            } else {
-                                missing++;
-                            }
-                        }
-                    }
-
-                    if (missing > 0) {
-                        var percentage = missing * 100 / totalSize;
-                        $('#languageInfo').html('<div class="alert alert-warning alert-dismissible">'
-                            + '<button title="Never show again" type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>'
-                            + percentage.toFixed(0) + '% of this language is not translated! Help us <a href="https://github.com/JustArchi/ArchiSteamFarm/wiki/Localization">here</a>.'
-                            + '</div>');
-                    } else {
-                        $('#languageInfo').text('');
-                    }
-
-                    $('#languages').collapse('hide');
-                });
-            }
-        );
-    
-        store('language', language);
         $('#currentLanguage').attr({
-            alt: langCode,
-            src: '../img/flags/' + langCode + '.gif'
+            alt: tmpLangCode,
+            src: '../img/flags/' + tmpLangCode + '.gif'
         });
+
+        if (tmpLangMissing > 0) {
+            var percentage = (tmpLangMissing * 100 / tmpLangTotal).toFixed(0),
+                //infoText = $.i18n('global-language-info', percentage); //Fix this
+                infoText = percentage + "% of this language is not translated!";
+            $('#languageInfo').html('<div class="alert alert-warning alert-dismissible">'
+                + '<button data-i18n="title-global-never" title="Never show again" type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>'
+                + infoText
+                + '</div>');
+        } else {
+            $('#languageInfo').text('');
+        }        
+
+        $('#languages').collapse('hide');
     }
 
-    const defaultLocale = 'strings';
-    const nameRegex = /\.\/(\S+)\.json/i;
-
-    function getLocale(validLocales) {
-        const language = navigator.language || navigator.userLanguage; // If the browser doesn't support this, it will not support other page elements as well
-        if (!language) return defaultLocale; // If the browser doesn't provide the language - return default locale
-        if (language.length !== 2) return validLocales.includes(language) ? language : defaultLocale; // If the language is in `xx-XX` format, check if it's valid
-        if (validLocales.includes(`${language}-${language.toUpperCase()}`)) return `${language}-${language.toUpperCase()}`; // If the language is two letter code, check if corresponding 5 letter code is a valid locale
-
-        const languageRegex = new RegExp(`${language}\-\\\S\\\S`); // Create a regex to match `xx-**` where `*` is a wildcard
-
-        for (const validLocale of validLocales) {
-            if (languageRegex.test(validLocale)) return validLocale; // Check if the locale matches the regex, if so, return it
-        }
-
-        return defaultLocale; // If no match found, return default locale
-    }
-
-    var availableLanguages = [];
-
-    function loadAllLanguages() {
-        $.ajax({
-            url: '/Api/WWW/Directory/locale',
-            type: 'GET',
-            async: false,
-            success: function (data) {
-                var obj = data['Result'];
-                const languageRegex = new RegExp("strings(.[a-z]{2}-[A-Z]{2})?.json");
-
-                availableLanguages = [];
-
-                for (var prop in obj) {
-                    if (obj.hasOwnProperty(prop)) {
-                        var language = obj[prop];
-                        if (languageRegex.test(language))
-                            availableLanguages.push(language.substr(0, language.length - 5));
-                    }
-                }
-            }
-        });
-    }
-
-    function setup() {
+    function loadLayout() {
         var tmpSkin = get('skin'),
             tmpLayoutState = get('layoutState'),
             tmpNightmodeState = get('nightmodeState'),
-            tmpLeftSidebarState = get('leftSidebarState'),
-            tmpLanguage = get('language');
+            tmpLeftSidebarState = get('leftSidebarState');
 
         if (tmpSkin && $.inArray(tmpSkin, mySkins)) changeSkin(tmpSkin);            
         if (tmpLeftSidebarState === 'sidebar-collapse') {
@@ -1064,8 +879,7 @@ $(function () {
         if (tmpLayoutState) changeBoxed(tmpLayoutState);
         if (tmpNightmodeState) changeNightmode(tmpNightmodeState);
 
-        var myLocal = (tmpLanguage) ? tmpLanguage : getLocale(availableLanguages);
-        loadLocales(myLocal);
+        loadLanguageHTML();
 
         $('[data-skin]').on('click', function (e) {
             e.preventDefault();
@@ -1091,6 +905,7 @@ $(function () {
         $('.language').on('click', function (e) {
             e.preventDefault();
             loadLocales($(this).data('locale'));
+            loadLanguageHTML();
         });
     }
 
@@ -1103,7 +918,7 @@ $(function () {
         // Boxed Layout
         + '<div class="form-group hidden-xs hidden-sm">'
         + '<label class="control-sidebar-subheading">'
-        + '<button title="Toggle boxed layout" type="button" class="btn btn-box-tool pull-right text-grey" id="toggleBoxed"><i id="iconBoxed" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>'
+        + '<button data-i18n="title-global-boxed" title="Toggle boxed layout" type="button" class="btn btn-box-tool pull-right text-grey" id="toggleBoxed"><i id="iconBoxed" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>'
         + '<i class="far fa-square fa-fw"></i> <span data-i18n="global-boxed">Boxed Layout</span>'
         + '</label>'
         + '<p data-i18n="global-boxed-description">Toggle the boxed layout</p>'
@@ -1111,7 +926,7 @@ $(function () {
         // Nightmode
         + '<div class="form-group">'
         + '<label class="control-sidebar-subheading">'
-        + '<button title="Toggle nightmode" type="button" class="btn btn-box-tool pull-right text-grey" id="toggleNightmode"><i id="iconNightmode" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>'
+        + '<button data-i18n="title-global-nightmode" title="Toggle nightmode" type="button" class="btn btn-box-tool pull-right text-grey" id="toggleNightmode"><i id="iconNightmode" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>'
         + '<i class="fas fa-moon fa-fw"></i> <span data-i18n="global-nightmode">Nightmode</span>'
         + '</label>'
         + '<p data-i18n="global-nightmode-description">Toggle the nightmode</p>'
@@ -1153,14 +968,14 @@ $(function () {
         var language = availableLanguages[i],
             langCode = (language === 'strings') ? 'us' : language.substr(language.length - 2).toLowerCase();
 
-        $languagesList.append('<button title="Change language" type="button" class="btn btn-box-tool language" data-locale="' + language + '"><img src="../img/flags/' + langCode + '.gif" alt="' + langCode + '"></button>');
+        $languagesList.append('<button data-i18n="title-global-language" title="Change language" type="button" class="btn btn-box-tool language" data-locale="' + language + '"><img src="../img/flags/' + langCode + '.gif" alt="' + langCode + '"></button>');
     }
 
     $layoutSettings.append('<h4 class="control-sidebar-heading" data-i18n="global-language">Language</h4>'
         + '<div id="languageInfo"></div>'
         + '<div class="form-group">'
         + '<label class="control-sidebar-subheading">'
-        + '<button title="Change language" type="button" class="btn btn-box-tool pull-right" data-toggle="collapse" data-target="#languages"><span data-i18n="global-change">Change</span> <i class="fas fa-caret-down"></i></button>'
+        + '<button data-i18n="title-global-language" title="Change language" type="button" class="btn btn-box-tool pull-right" data-toggle="collapse" data-target="#languages"><span data-i18n="global-change">Change</span> <i class="fas fa-caret-down"></i></button>'
         + '<img id="currentLanguage" src="../img/flags/us.gif" alt="us">'
         + '</label>'
         + '</div>'
@@ -1170,6 +985,6 @@ $(function () {
 
     $('#control-right-sidebar').after($layoutSettings);
 
-    setup();
+    loadLayout();
 });
 //#endregion Right Sidebar

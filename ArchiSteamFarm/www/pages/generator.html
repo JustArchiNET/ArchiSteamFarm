@@ -6,8 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script> <!--Change to cdnjs once available-->
-    <link rel="icon" href="../favicon.png" type="image/png">
-    <link rel="shortcut icon" href="../favicon.ico" type="img/x-icon">
+    <link rel="icon" href="../img/favicon.png" type="image/png">
+    <link rel="shortcut icon" href="../img/favicon.ico" type="img/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/AdminLTE.min.css">
@@ -52,8 +52,8 @@
                             <i class="fas fa-users fa-fw"></i> <span data-i18n="global-bots">Bots</span>
                             <span class="pull-right-container bot-status">
                                 <small class="label pull-right bg-gray" id="offlineBots">0</small>
-                                <small class="label pull-right bg-yellow" id="idleBots">0</small>
-                                <small class="label pull-right bg-olive" id="activeBots">0</small>
+                                <small class="label pull-right bg-yellow" id="onlineBots">0</small>
+                                <small class="label pull-right bg-olive" id="farmingBots">0</small>
                             </span>
                         </a>
                     </li>
@@ -119,7 +119,7 @@
                     <div class="box-footer">
                         <div class="input-group pull-right">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Name" id="GeneratorName">
+                                <input type="text" class="form-control" data-i18n="placeholder-generator" placeholder="Name" id="GeneratorName">
                                 <span class="input-group-btn">
                                     <button class="btn btn-default" type="button" id="downloadButton">
                                         <i class="fas fa-cloud-download-alt"></i> <span data-i18n="generator-download">Download</span>
@@ -136,9 +136,9 @@
         <footer class="main-footer">
             <div class="pull-right"><strong data-i18n="global-version">Version</strong> <span id="version">0.0.0.0</span></div>
             <strong>
-                <a href="https://github.com/JustArchi/ArchiSteamFarm">GitHub</a> -
-                <a href="https://github.com/JustArchi/ArchiSteamFarm/wiki"><span data-i18n="global-wiki">Wiki</span></a> -
-                <a href="https://github.com/JustArchi/ArchiSteamFarm/commits/master" id="changelog"><span data-i18n="global-changelog">Changelog</span></a>
+                <a target="_blank" href="https://github.com/JustArchi/ArchiSteamFarm">GitHub</a> -
+                <a target="_blank" href="https://github.com/JustArchi/ArchiSteamFarm/wiki"><span data-i18n="global-wiki">Wiki</span></a> -
+                <a target="_blank" href="https://github.com/JustArchi/ArchiSteamFarm/commits/master" id="changelog"><span data-i18n="global-changelog">Changelog</span></a>
             </strong>
         </footer>
 
@@ -162,6 +162,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.parser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.emitter.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.emitter.bidi.min.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/i18n.js"></script>
     <script src="../js/app.js"></script>
     <script>
         $(function () {
