@@ -42,7 +42,7 @@ build_script:
     $ProgressPreference = 'SilentlyContinue'
 
 
-    dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -o 'out\source' /nologo
+    dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -o 'out\source' /nologo "/p:ASFVariant=generic"
 
     if ($LastExitCode -ne 0) {
         throw "Command failed."
