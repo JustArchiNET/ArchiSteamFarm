@@ -42,16 +42,18 @@ namespace ArchiSteamFarm {
 		private const string IPlayerService = "IPlayerService";
 		private const string ISteamUserAuth = "ISteamUserAuth";
 		private const string ITwoFactorService = "ITwoFactorService";
-
-		// We must use HTTPS for SteamCommunity, as http would make certain POST requests failing (trades)
 		private const string SteamCommunityHost = "steamcommunity.com";
 		private const string SteamCommunityURL = "https://" + SteamCommunityHost;
-
-		// We could (and should) use HTTPS for SteamStore, but that would make certain POST requests failing
 		private const string SteamStoreHost = "store.steampowered.com";
-		private const string SteamStoreURL = "http://" + SteamStoreHost;
+		private const string SteamStoreURL = "https://" + SteamStoreHost;
 
 		private static readonly SemaphoreSlim InventorySemaphore = new SemaphoreSlim(1, 1);
+
+		private static readonly Dictionary<string, (SemaphoreSlim RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)> WebLimitingSemaphores = new Dictionary<string, (SemaphoreSlim RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)>(3) {
+			{ SteamCommunityURL, (new SemaphoreSlim(1, 1), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+			{ SteamStoreURL, (new SemaphoreSlim(1, 1), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+			{ WebAPI.DefaultBaseAddress.Host, (new SemaphoreSlim(1, 1), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) }
+		};
 
 		private readonly SemaphoreSlim ApiKeySemaphore = new SemaphoreSlim(1, 1);
 		private readonly Bot Bot;
@@ -70,7 +72,7 @@ namespace ArchiSteamFarm {
 
 		internal ArchiWebHandler(Bot bot) {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
-			WebBrowser = new WebBrowser(bot.ArchiLogger);
+			WebBrowser = new WebBrowser(bot.ArchiLogger, Program.GlobalConfig.WebProxy);
 		}
 
 		public void Dispose() {
@@ -117,6 +119,39 @@ namespace ArchiSteamFarm {
 			return htmlDocument?.DocumentNode.SelectSingleNode("//div[@class='add_free_content_success_area']") != null;
 		}
 
+		internal async Task<bool> ChangePrivacySettings(Steam.UserPrivacy userPrivacy) {
+			if (userPrivacy == null) {
+				Bot.ArchiLogger.LogNullError(nameof(userPrivacy));
+				return false;
+			}
+
+			string profileURL = await GetAbsoluteProfileURL().ConfigureAwait(false);
+			if (string.IsNullOrEmpty(profileURL)) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				return false;
+			}
+
+			string request = profileURL + "/ajaxsetprivacy";
+
+			// Extra entry for sessionID
+			Dictionary<string, string> data = new Dictionary<string, string>(3) {
+				{ "eCommentPermission", ((byte) userPrivacy.CommentPermission).ToString() },
+				{ "Privacy", JsonConvert.SerializeObject(userPrivacy.Settings) }
+			};
+
+			Steam.NumberResponse response = await UrlPostToJsonObjectWithSession<Steam.NumberResponse>(SteamCommunityURL, request, data).ConfigureAwait(false);
+			if (response == null) {
+				return false;
+			}
+
+			if (!response.Success) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				return false;
+			}
+
+			return true;
+		}
+
 		internal async Task<bool> ClearFromDiscoveryQueue(uint appID) {
 			if (appID == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(appID));
@@ -148,11 +183,16 @@ namespace ArchiSteamFarm {
 					iEconService.Timeout = WebBrowser.Timeout;
 
 					try {
-						response = await iEconService.DeclineTradeOffer(
-							tradeofferid: tradeID.ToString(),
-							method: WebRequestMethods.Http.Post,
-							secure: true
-						);
+						response = await WebLimitRequest(WebAPI.DefaultBaseAddress.Host,
+#pragma warning disable ConfigureAwaitChecker // CAC001
+							// ReSharper disable once AccessToDisposedClosure
+							async () => await iEconService.DeclineTradeOffer(
+								tradeofferid: tradeID.ToString(),
+								method: WebRequestMethods.Http.Post,
+								secure: true
+							)
+#pragma warning restore ConfigureAwaitChecker // CAC001
+						).ConfigureAwait(false);
 					} catch (TaskCanceledException e) {
 						Bot.ArchiLogger.LogGenericDebuggingException(e);
 					} catch (Exception e) {
@@ -191,13 +231,18 @@ namespace ArchiSteamFarm {
 					iEconService.Timeout = WebBrowser.Timeout;
 
 					try {
-						response = await iEconService.GetTradeOffers(
-							active_only: 1,
-							get_descriptions: 1,
-							get_received_offers: 1,
-							secure: true,
-							time_historical_cutoff: uint.MaxValue
-						);
+						response = await WebLimitRequest(WebAPI.DefaultBaseAddress.Host,
+#pragma warning disable ConfigureAwaitChecker // CAC001
+							// ReSharper disable once AccessToDisposedClosure
+							async () => await iEconService.GetTradeOffers(
+								active_only: 1,
+								get_descriptions: 1,
+								get_received_offers: 1,
+								secure: true,
+								time_historical_cutoff: uint.MaxValue
+							)
+#pragma warning restore ConfigureAwaitChecker // CAC001
+						).ConfigureAwait(false);
 					} catch (TaskCanceledException e) {
 						Bot.ArchiLogger.LogGenericDebuggingException(e);
 					} catch (Exception e) {
@@ -537,11 +582,16 @@ namespace ArchiSteamFarm {
 					iPlayerService.Timeout = WebBrowser.Timeout;
 
 					try {
-						response = await iPlayerService.GetOwnedGames(
-							steamid: steamID,
-							include_appinfo: 1,
-							secure: true
-						);
+						response = await WebLimitRequest(WebAPI.DefaultBaseAddress.Host,
+#pragma warning disable ConfigureAwaitChecker // CAC001
+							// ReSharper disable once AccessToDisposedClosure
+							async () => await iPlayerService.GetOwnedGames(
+								steamid: steamID,
+								include_appinfo: 1,
+								secure: true
+							)
+#pragma warning restore ConfigureAwaitChecker // CAC001
+						).ConfigureAwait(false);
 					} catch (TaskCanceledException e) {
 						Bot.ArchiLogger.LogGenericDebuggingException(e);
 					} catch (Exception e) {
@@ -576,10 +626,15 @@ namespace ArchiSteamFarm {
 					iTwoFactorService.Timeout = WebBrowser.Timeout;
 
 					try {
-						response = await iTwoFactorService.QueryTime(
-							method: WebRequestMethods.Http.Post,
-							secure: true
-						);
+						response = await WebLimitRequest(WebAPI.DefaultBaseAddress.Host,
+#pragma warning disable ConfigureAwaitChecker // CAC001
+							// ReSharper disable once AccessToDisposedClosure
+							async () => await iTwoFactorService.QueryTime(
+								method: WebRequestMethods.Http.Post,
+								secure: true
+							)
+#pragma warning restore ConfigureAwaitChecker // CAC001
+						).ConfigureAwait(false);
 					} catch (TaskCanceledException e) {
 						Bot.ArchiLogger.LogGenericDebuggingException(e);
 					} catch (Exception e) {
@@ -671,11 +726,16 @@ namespace ArchiSteamFarm {
 					iEconService.Timeout = WebBrowser.Timeout;
 
 					try {
-						response = await iEconService.GetTradeHoldDurations(
-							secure: true,
-							steamid_target: steamID,
-							trade_offer_access_token: tradeToken ?? "" // TODO: Change me once https://github.com/SteamRE/SteamKit/pull/522 is merged
-						);
+						response = await WebLimitRequest(WebAPI.DefaultBaseAddress.Host,
+#pragma warning disable ConfigureAwaitChecker // CAC001
+							// ReSharper disable once AccessToDisposedClosure
+							async () => await iEconService.GetTradeHoldDurations(
+								secure: true,
+								steamid_target: steamID,
+								trade_offer_access_token: tradeToken ?? "" // TODO: Change me once https://github.com/SteamRE/SteamKit/pull/522 is merged
+							)
+#pragma warning restore ConfigureAwaitChecker // CAC001
+						).ConfigureAwait(false);
 					} catch (TaskCanceledException e) {
 						Bot.ArchiLogger.LogGenericDebuggingException(e);
 					} catch (Exception e) {
@@ -850,18 +910,23 @@ namespace ArchiSteamFarm {
 			// Do the magic
 			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.LoggingIn, ISteamUserAuth));
 
-			KeyValue authResult = null;
+			KeyValue response = null;
 			using (dynamic iSteamUserAuth = WebAPI.GetAsyncInterface(ISteamUserAuth)) {
 				iSteamUserAuth.Timeout = WebBrowser.Timeout;
 
 				try {
-					authResult = await iSteamUserAuth.AuthenticateUser(
-						steamid: steamID,
-						sessionkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedSessionKey, 0, cryptedSessionKey.Length)),
-						encrypted_loginkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedLoginKey, 0, cryptedLoginKey.Length)),
-						method: WebRequestMethods.Http.Post,
-						secure: true
-					);
+					response = await WebLimitRequest(WebAPI.DefaultBaseAddress.Host,
+#pragma warning disable ConfigureAwaitChecker // CAC001
+						// ReSharper disable once AccessToDisposedClosure
+						async () => await iSteamUserAuth.AuthenticateUser(
+							steamid: steamID,
+							sessionkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedSessionKey, 0, cryptedSessionKey.Length)),
+							encrypted_loginkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedLoginKey, 0, cryptedLoginKey.Length)),
+							method: WebRequestMethods.Http.Post,
+							secure: true
+						)
+#pragma warning restore ConfigureAwaitChecker // CAC001
+					).ConfigureAwait(false);
 				} catch (TaskCanceledException e) {
 					Bot.ArchiLogger.LogGenericDebuggingException(e);
 				} catch (Exception e) {
@@ -869,17 +934,17 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			if (authResult == null) {
+			if (response == null) {
 				return false;
 			}
 
-			string steamLogin = authResult["token"].Value;
+			string steamLogin = response["token"].Value;
 			if (string.IsNullOrEmpty(steamLogin)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamLogin));
 				return false;
 			}
 
-			string steamLoginSecure = authResult["tokensecure"].Value;
+			string steamLoginSecure = response["tokensecure"].Value;
 			if (string.IsNullOrEmpty(steamLoginSecure)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamLoginSecure));
 				return false;
@@ -1048,7 +1113,13 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string request = GetAbsoluteProfileURL() + "/ajaxunpackbooster";
+			string profileURL = await GetAbsoluteProfileURL().ConfigureAwait(false);
+			if (string.IsNullOrEmpty(profileURL)) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				return false;
+			}
+
+			string request = profileURL + "/ajaxunpackbooster";
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new Dictionary<string, string>(3) {
@@ -1060,7 +1131,20 @@ namespace ArchiSteamFarm {
 			return response?.Result == EResult.OK;
 		}
 
-		private string GetAbsoluteProfileURL() => !string.IsNullOrEmpty(VanityURL) ? "/id/" + VanityURL : "/profiles/" + SteamID;
+		private async Task<string> GetAbsoluteProfileURL() {
+			if (SteamID == 0) {
+				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+
+				if (SteamID == 0) {
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					return null;
+				}
+			}
+
+			return string.IsNullOrEmpty(VanityURL) ? "/profiles/" + SteamID : "/id/" + VanityURL;
+		}
 
 		private async Task<string> GetApiKey() {
 			if (CachedApiKey != null) {
@@ -1141,7 +1225,7 @@ namespace ArchiSteamFarm {
 				return (ESteamApiKeyState.Error, null);
 			}
 
-			if (title.Contains("Access Denied")) {
+			if (title.Contains("Access Denied") || title.Contains("Validated email address required")) {
 				return (ESteamApiKeyState.AccessDenied, null);
 			}
 
@@ -1229,15 +1313,64 @@ namespace ArchiSteamFarm {
 			const string request = "/my/edit/settings?l=english";
 			HtmlDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
 
-			HtmlNode htmlNode = htmlDocument?.DocumentNode.SelectSingleNode("//input[@id='inventoryPrivacySetting_public']");
-			if (htmlNode == null) {
+			if (htmlDocument == null) {
 				return null;
 			}
 
-			string state = htmlNode.GetAttributeValue("checked", null);
+			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@data-component='ProfilePrivacySettings']/@data-privacysettings");
+			if (htmlNode == null) {
+				Bot.ArchiLogger.LogNullError(nameof(htmlNode));
+				return null;
+			}
 
-			// Notice: checked doesn't have a value - null is lack of attribute, "" is attribute existing
-			return state != null;
+			string json = htmlNode.GetAttributeValue("data-privacysettings", null);
+			if (string.IsNullOrEmpty(json)) {
+				Bot.ArchiLogger.LogNullError(nameof(json));
+				return null;
+			}
+
+			// This json is encoded as html attribute, don't forget to decode it
+			json = WebUtility.HtmlDecode(json);
+
+			Steam.UserPrivacy userPrivacy;
+
+			try {
+				userPrivacy = JsonConvert.DeserializeObject<Steam.UserPrivacy>(json);
+			} catch (JsonException e) {
+				Bot.ArchiLogger.LogGenericException(e);
+				return null;
+			}
+
+			if (userPrivacy == null) {
+				Bot.ArchiLogger.LogNullError(nameof(userPrivacy));
+				return null;
+			}
+
+			switch (userPrivacy.Settings.Inventory) {
+				case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.FriendsOnly:
+				case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private:
+					return false;
+				case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Public:
+					return true;
+				default:
+					Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(userPrivacy.Settings.Inventory), userPrivacy.Settings.Inventory));
+					return null;
+			}
+		}
+
+		private async Task<bool> IsProfileUri(Uri uri) {
+			if (uri == null) {
+				ASF.ArchiLogger.LogNullError(nameof(uri));
+				return false;
+			}
+
+			string profileURL = await GetAbsoluteProfileURL().ConfigureAwait(false);
+			if (string.IsNullOrEmpty(profileURL)) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				return false;
+			}
+
+			return uri.AbsolutePath.Equals(profileURL);
 		}
 
 		private static bool IsSessionExpiredUri(Uri uri) {
@@ -1366,19 +1499,36 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		private async Task<bool> UnlockParentalAccountForService(string serviceURL, string parentalPin) {
+		private async Task<bool> UnlockParentalAccountForService(string serviceURL, string parentalPin, byte maxTries = WebBrowser.MaxTries) {
 			if (string.IsNullOrEmpty(serviceURL) || string.IsNullOrEmpty(parentalPin)) {
 				Bot.ArchiLogger.LogNullError(nameof(serviceURL) + " || " + nameof(parentalPin));
 				return false;
 			}
 
-			// This request doesn't go through UrlPostRetryWithSession as we have no access to session refresh capability (this is in fact session initialization)
 			const string request = "/parental/ajaxunlock";
+
+			if (maxTries == 0) {
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, serviceURL + request));
+				return false;
+			}
 
 			Dictionary<string, string> data = new Dictionary<string, string>(1) { { "pin", parentalPin } };
 
-			WebBrowser.BasicResponse response = await WebBrowser.UrlPost(serviceURL + request, data, serviceURL).ConfigureAwait(false);
-			return (response != null) && !IsSessionExpiredUri(response.FinalUri);
+			// This request doesn't go through UrlPostRetryWithSession as we have no access to session refresh capability (this is in fact session initialization)
+			WebBrowser.BasicResponse response = await WebLimitRequest(serviceURL, async () => await WebBrowser.UrlPost(serviceURL + request, data, serviceURL).ConfigureAwait(false)).ConfigureAwait(false);
+			if ((response == null) || IsSessionExpiredUri(response.FinalUri)) {
+				// There is no session refresh capability at this stage
+				return false;
+			}
+
+			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
+			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
+				return await UnlockParentalAccountForService(serviceURL, parentalPin, --maxTries).ConfigureAwait(false);
+			}
+
+			return true;
 		}
 
 		private async Task<HtmlDocument> UrlGetToHtmlDocumentWithSession(string host, string request, byte maxTries = WebBrowser.MaxTries) {
@@ -1397,32 +1547,40 @@ namespace ArchiSteamFarm {
 			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
 			SessionSemaphore.Release();
 
-			for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
-			}
-
 			if (SteamID == 0) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
-				return null;
+				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+
+				if (SteamID == 0) {
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					return null;
+				}
 			}
 
-			WebBrowser.HtmlDocumentResponse response = await WebBrowser.UrlGetToHtmlDocument(host + request).ConfigureAwait(false);
+			WebBrowser.HtmlDocumentResponse response = await WebLimitRequest(host, async () => await WebBrowser.UrlGetToHtmlDocument(host + request).ConfigureAwait(false)).ConfigureAwait(false);
 			if (response == null) {
 				return null;
 			}
 
-			if (!IsSessionExpiredUri(response.FinalUri)) {
-				return response.Content;
-			}
+			if (IsSessionExpiredUri(response.FinalUri)) {
+				if (await RefreshSession(host).ConfigureAwait(false)) {
+					return await UrlGetToHtmlDocumentWithSession(host, request, --maxTries).ConfigureAwait(false);
+				}
 
-			if (!await RefreshSession(host).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 				return null;
 			}
 
-			return await UrlGetToHtmlDocumentWithSession(host, request, --maxTries).ConfigureAwait(false);
+			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
+			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
+				return await UrlGetToHtmlDocumentWithSession(host, request, --maxTries).ConfigureAwait(false);
+			}
+
+			return response.Content;
 		}
 
 		private async Task<T> UrlGetToJsonObjectWithSession<T>(string host, string request, byte maxTries = WebBrowser.MaxTries) where T : class {
@@ -1441,32 +1599,40 @@ namespace ArchiSteamFarm {
 			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
 			SessionSemaphore.Release();
 
-			for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
-			}
-
 			if (SteamID == 0) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
-				return default;
+				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+
+				if (SteamID == 0) {
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					return default;
+				}
 			}
 
-			WebBrowser.ObjectResponse<T> response = await WebBrowser.UrlGetToJsonObject<T>(host + request).ConfigureAwait(false);
+			WebBrowser.ObjectResponse<T> response = await WebLimitRequest(host, async () => await WebBrowser.UrlGetToJsonObject<T>(host + request).ConfigureAwait(false)).ConfigureAwait(false);
 			if (response == null) {
 				return default;
 			}
 
-			if (!IsSessionExpiredUri(response.FinalUri)) {
-				return response.Content;
-			}
+			if (IsSessionExpiredUri(response.FinalUri)) {
+				if (await RefreshSession(host).ConfigureAwait(false)) {
+					return await UrlGetToJsonObjectWithSession<T>(host, request, --maxTries).ConfigureAwait(false);
+				}
 
-			if (!await RefreshSession(host).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
-				return default;
+				return null;
 			}
 
-			return await UrlGetToJsonObjectWithSession<T>(host, request, --maxTries).ConfigureAwait(false);
+			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
+			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
+				return await UrlGetToJsonObjectWithSession<T>(host, request, --maxTries).ConfigureAwait(false);
+			}
+
+			return response.Content;
 		}
 
 		private async Task<XmlDocument> UrlGetToXmlDocumentWithSession(string host, string request, byte maxTries = WebBrowser.MaxTries) {
@@ -1485,32 +1651,40 @@ namespace ArchiSteamFarm {
 			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
 			SessionSemaphore.Release();
 
-			for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
-			}
-
 			if (SteamID == 0) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
-				return null;
+				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+
+				if (SteamID == 0) {
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					return null;
+				}
 			}
 
-			WebBrowser.XmlDocumentResponse response = await WebBrowser.UrlGetToXmlDocument(host + request).ConfigureAwait(false);
+			WebBrowser.XmlDocumentResponse response = await WebLimitRequest(host, async () => await WebBrowser.UrlGetToXmlDocument(host + request).ConfigureAwait(false)).ConfigureAwait(false);
 			if (response == null) {
 				return null;
 			}
 
-			if (!IsSessionExpiredUri(response.FinalUri)) {
-				return response.Content;
-			}
+			if (IsSessionExpiredUri(response.FinalUri)) {
+				if (await RefreshSession(host).ConfigureAwait(false)) {
+					return await UrlGetToXmlDocumentWithSession(host, request, --maxTries).ConfigureAwait(false);
+				}
 
-			if (!await RefreshSession(host).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 				return null;
 			}
 
-			return await UrlGetToXmlDocumentWithSession(host, request, --maxTries).ConfigureAwait(false);
+			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
+			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
+				return await UrlGetToXmlDocumentWithSession(host, request, --maxTries).ConfigureAwait(false);
+			}
+
+			return response.Content;
 		}
 
 		private async Task<bool> UrlHeadWithSession(string host, string request, byte maxTries = WebBrowser.MaxTries) {
@@ -1529,32 +1703,40 @@ namespace ArchiSteamFarm {
 			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
 			SessionSemaphore.Release();
 
-			for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
-			}
-
 			if (SteamID == 0) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
-				return false;
+				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+
+				if (SteamID == 0) {
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					return false;
+				}
 			}
 
-			WebBrowser.BasicResponse response = await WebBrowser.UrlHead(host + request).ConfigureAwait(false);
+			WebBrowser.BasicResponse response = await WebLimitRequest(host, async () => await WebBrowser.UrlHead(host + request).ConfigureAwait(false)).ConfigureAwait(false);
 			if (response == null) {
 				return false;
 			}
 
-			if (!IsSessionExpiredUri(response.FinalUri)) {
-				return true;
-			}
+			if (IsSessionExpiredUri(response.FinalUri)) {
+				if (await RefreshSession(host).ConfigureAwait(false)) {
+					return await UrlHeadWithSession(host, request, --maxTries).ConfigureAwait(false);
+				}
 
-			if (!await RefreshSession(host).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 				return false;
 			}
 
-			return await UrlHeadWithSession(host, request, --maxTries).ConfigureAwait(false);
+			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
+			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
+				return await UrlHeadWithSession(host, request, --maxTries).ConfigureAwait(false);
+			}
+
+			return true;
 		}
 
 		private async Task<HtmlDocument> UrlPostToHtmlDocumentWithSession(string host, string request, Dictionary<string, string> data = null, string referer = null, ESession session = ESession.Lowercase, byte maxTries = WebBrowser.MaxTries) {
@@ -1573,14 +1755,16 @@ namespace ArchiSteamFarm {
 			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
 			SessionSemaphore.Release();
 
-			for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
-			}
-
 			if (SteamID == 0) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
-				return null;
+				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+
+				if (SteamID == 0) {
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					return null;
+				}
 			}
 
 			if (session != ESession.None) {
@@ -1612,48 +1796,56 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			WebBrowser.HtmlDocumentResponse response = await WebBrowser.UrlPostToHtmlDocument(host + request, data, referer).ConfigureAwait(false);
+			WebBrowser.HtmlDocumentResponse response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToHtmlDocument(host + request, data, referer).ConfigureAwait(false)).ConfigureAwait(false);
 			if (response == null) {
 				return null;
 			}
 
-			if (!IsSessionExpiredUri(response.FinalUri)) {
-				return response.Content;
-			}
+			if (IsSessionExpiredUri(response.FinalUri)) {
+				if (await RefreshSession(host).ConfigureAwait(false)) {
+					return await UrlPostToHtmlDocumentWithSession(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
+				}
 
-			if (!await RefreshSession(host).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 				return null;
 			}
 
-			return await UrlPostToHtmlDocumentWithSession(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
+			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
+			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
+				return await UrlPostToHtmlDocumentWithSession(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
+			}
+
+			return response.Content;
 		}
 
 		private async Task<T> UrlPostToJsonObjectWithSession<T>(string host, string request, Dictionary<string, string> data = null, string referer = null, ESession session = ESession.Lowercase, byte maxTries = WebBrowser.MaxTries) where T : class {
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
 				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
-				return default;
+				return null;
 			}
 
 			if (maxTries == 0) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
 				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
-				return default;
+				return null;
 			}
 
 			// If session refresh is already in progress, wait for it
 			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
 			SessionSemaphore.Release();
 
-			for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
-			}
-
 			if (SteamID == 0) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
-				return default;
+				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+
+				if (SteamID == 0) {
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					return null;
+				}
 			}
 
 			if (session != ESession.None) {
@@ -1661,7 +1853,7 @@ namespace ArchiSteamFarm {
 
 				if (string.IsNullOrEmpty(sessionID)) {
 					Bot.ArchiLogger.LogNullError(nameof(sessionID));
-					return default;
+					return null;
 				}
 
 				string sessionName;
@@ -1675,7 +1867,7 @@ namespace ArchiSteamFarm {
 						break;
 					default:
 						Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(session), session));
-						return default;
+						return null;
 				}
 
 				if (data != null) {
@@ -1685,48 +1877,56 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			WebBrowser.ObjectResponse<T> response = await WebBrowser.UrlPostToJsonObject<T>(host + request, data, referer).ConfigureAwait(false);
+			WebBrowser.ObjectResponse<T> response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToJsonObject<T>(host + request, data, referer).ConfigureAwait(false)).ConfigureAwait(false);
 			if (response == null) {
-				return default;
+				return null;
 			}
 
-			if (!IsSessionExpiredUri(response.FinalUri)) {
-				return response.Content;
-			}
+			if (IsSessionExpiredUri(response.FinalUri)) {
+				if (await RefreshSession(host).ConfigureAwait(false)) {
+					return await UrlPostToJsonObjectWithSession<T>(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
+				}
 
-			if (!await RefreshSession(host).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
-				return default;
+				return null;
 			}
 
-			return await UrlPostToJsonObjectWithSession<T>(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
+			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
+			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
+				return await UrlPostToJsonObjectWithSession<T>(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
+			}
+
+			return response.Content;
 		}
 
 		private async Task<T> UrlPostToJsonObjectWithSession<T>(string host, string request, List<KeyValuePair<string, string>> data = null, string referer = null, ESession session = ESession.Lowercase, byte maxTries = WebBrowser.MaxTries) where T : class {
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
 				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
-				return default;
+				return null;
 			}
 
 			if (maxTries == 0) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
 				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
-				return default;
+				return null;
 			}
 
 			// If session refresh is already in progress, wait for it
 			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
 			SessionSemaphore.Release();
 
-			for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
-			}
-
 			if (SteamID == 0) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
-				return default;
+				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+
+				if (SteamID == 0) {
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					return null;
+				}
 			}
 
 			if (session != ESession.None) {
@@ -1734,7 +1934,7 @@ namespace ArchiSteamFarm {
 
 				if (string.IsNullOrEmpty(sessionID)) {
 					Bot.ArchiLogger.LogNullError(nameof(sessionID));
-					return default;
+					return null;
 				}
 
 				string sessionName;
@@ -1748,7 +1948,7 @@ namespace ArchiSteamFarm {
 						break;
 					default:
 						Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(session), session));
-						return default;
+						return null;
 				}
 
 				KeyValuePair<string, string> sessionValue = new KeyValuePair<string, string>(sessionName, sessionID);
@@ -1761,22 +1961,28 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			WebBrowser.ObjectResponse<T> response = await WebBrowser.UrlPostToJsonObject<T>(host + request, data, referer).ConfigureAwait(false);
+			WebBrowser.ObjectResponse<T> response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToJsonObject<T>(host + request, data, referer).ConfigureAwait(false)).ConfigureAwait(false);
 			if (response == null) {
-				return default;
+				return null;
 			}
 
-			if (!IsSessionExpiredUri(response.FinalUri)) {
-				return response.Content;
-			}
+			if (IsSessionExpiredUri(response.FinalUri)) {
+				if (await RefreshSession(host).ConfigureAwait(false)) {
+					return await UrlPostToJsonObjectWithSession<T>(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
+				}
 
-			if (!await RefreshSession(host).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
-				return default;
+				return null;
 			}
 
-			return await UrlPostToJsonObjectWithSession<T>(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
+			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
+			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
+				return await UrlPostToJsonObjectWithSession<T>(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
+			}
+
+			return response.Content;
 		}
 
 		private async Task<bool> UrlPostWithSession(string host, string request, Dictionary<string, string> data = null, string referer = null, ESession session = ESession.Lowercase, byte maxTries = WebBrowser.MaxTries) {
@@ -1795,14 +2001,16 @@ namespace ArchiSteamFarm {
 			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
 			SessionSemaphore.Release();
 
-			for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
-			}
-
 			if (SteamID == 0) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
-				return false;
+				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+
+				if (SteamID == 0) {
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					return false;
+				}
 			}
 
 			if (session != ESession.None) {
@@ -1834,22 +2042,63 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			WebBrowser.BasicResponse response = await WebBrowser.UrlPost(host + request, data, referer).ConfigureAwait(false);
+			WebBrowser.BasicResponse response = await WebLimitRequest(host, async () => await WebBrowser.UrlPost(host + request, data, referer).ConfigureAwait(false)).ConfigureAwait(false);
 			if (response == null) {
 				return false;
 			}
 
-			if (!IsSessionExpiredUri(response.FinalUri)) {
-				return true;
-			}
+			if (IsSessionExpiredUri(response.FinalUri)) {
+				if (await RefreshSession(host).ConfigureAwait(false)) {
+					return await UrlPostWithSession(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
+				}
 
-			if (!await RefreshSession(host).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 				return false;
 			}
 
-			return await UrlPostWithSession(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
+			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
+			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
+				return await UrlPostWithSession(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
+			}
+
+			return true;
+		}
+
+		private static async Task<T> WebLimitRequest<T>(string service, Func<Task<T>> function) {
+			if (string.IsNullOrEmpty(service) || (function == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(service) + " || " + nameof(function));
+				return default;
+			}
+
+			if (Program.GlobalConfig.WebLimiterDelay == 0) {
+				return await function().ConfigureAwait(false);
+			}
+
+			if (!WebLimitingSemaphores.TryGetValue(service, out (SemaphoreSlim RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore) limiters)) {
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(service), service));
+				return await function().ConfigureAwait(false);
+			}
+
+			// Sending a request opens a new connection
+			await limiters.OpenConnectionsSemaphore.WaitAsync().ConfigureAwait(false);
+
+			try {
+				// It also increases number of requests
+				await limiters.RateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
+
+				// We release rate-limiter semaphore regardless of our task completion, since we use that one only to guarantee rate-limiting of their creation
+				Utilities.InBackground(async () => {
+					await Task.Delay(Program.GlobalConfig.WebLimiterDelay).ConfigureAwait(false);
+					limiters.RateLimitingSemaphore.Release();
+				});
+
+				return await function().ConfigureAwait(false);
+			} finally {
+				// We release open connections semaphore only once we're indeed done sending a particular request
+				limiters.OpenConnectionsSemaphore.Release();
+			}
 		}
 
 		private enum ESession : byte {

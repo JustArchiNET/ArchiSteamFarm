@@ -222,10 +222,6 @@
   <data name="Starting" xml:space="preserve">
     <value>正在启动...</value>
   </data>
-  <data name="StatusCode" xml:space="preserve">
-    <value>状态代码： {0}。</value>
-    <comment>{0} will be replaced by status code number/name</comment>
-  </data>
   <data name="Success" xml:space="preserve">
     <value>成功！</value>
   </data>
@@ -657,5 +653,17 @@
   </data>
   <data name="BotRefreshingPackagesData" xml:space="preserve">
     <value>正在刷新游戏包数据...</value>
+  </data>
+  <data name="WarningDeprecated" xml:space="preserve">
+    <value>{0} 用法已弃用，并将在程序的未来版本中被移除。请改用 {1}。</value>
+    <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
+  </data>
+  <data name="BotAcceptedDonationTrade" xml:space="preserve">
+    <value>已接受捐赠交易︰{0}</value>
+    <comment>{0} will be replaced by trade's ID (number)</comment>
+  </data>
+  <data name="WarningWorkaroundTriggered" xml:space="preserve">
+    <value>{0} 漏洞的解决措施已触发</value>
+    <comment>{0} will be replaced by the bug's name provided by ASF</comment>
   </data>
 </root>

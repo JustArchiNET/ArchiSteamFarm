@@ -41,6 +41,9 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool AutoSteamSaleEvent;
 
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly EBotBehaviour BotBehaviour = EBotBehaviour.None;
+
 		[JsonProperty]
 		internal readonly string CustomGamePlayedWhileFarming;
 
@@ -73,9 +76,6 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool IdleRefundableGames = true;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool IsBotAccount;
 
 		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
 		internal readonly HashSet<Steam.Asset.EType> LootableTypes = new HashSet<Steam.Asset.EType> {
@@ -148,7 +148,7 @@ namespace ArchiSteamFarm {
 		public bool ShouldSerializeSteamParentalPIN() => ShouldSerializeSensitiveDetails;
 		public bool ShouldSerializeSteamPassword() => ShouldSerializeSensitiveDetails;
 
-		internal static BotConfig Load(string filePath) {
+		internal static async Task<BotConfig> Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(filePath));
 				return null;
@@ -161,7 +161,7 @@ namespace ArchiSteamFarm {
 			BotConfig botConfig;
 
 			try {
-				botConfig = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(filePath));
+				botConfig = JsonConvert.DeserializeObject<BotConfig>(await File.ReadAllTextAsync(filePath).ConfigureAwait(false));
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 				return null;
@@ -222,6 +222,14 @@ namespace ArchiSteamFarm {
 			}
 
 			return true;
+		}
+
+		[Flags]
+		internal enum EBotBehaviour : byte {
+			None = 0,
+			RejectInvalidFriendInvites = 1,
+			RejectInvalidTrades = 2,
+			RejectInvalidGroupInvites = 4
 		}
 
 		internal enum EFarmingOrder : byte {

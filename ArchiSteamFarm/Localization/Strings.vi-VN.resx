@@ -225,10 +225,6 @@ StackTrace:
   <data name="Starting" xml:space="preserve">
     <value>Bắt đầu...</value>
   </data>
-  <data name="StatusCode" xml:space="preserve">
-    <value>Mã trạng thái: {0}</value>
-    <comment>{0} will be replaced by status code number/name</comment>
-  </data>
   <data name="Success" xml:space="preserve">
     <value>Hoàn tất!</value>
   </data>
@@ -511,7 +507,7 @@ StackTrace:
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>Vượt quá số lượng giới hạn; chúng tôi sẽ thử lại sau {0} đếm ngược...</value>
+    <value>Vượt quá số lượng giới hạn, chúng tôi sẽ thử lại sau {0} đếm ngược...</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
@@ -660,5 +656,17 @@ StackTrace:
   </data>
   <data name="BotRefreshingPackagesData" xml:space="preserve">
     <value>Đang làm mới các gói dữ liệu...</value>
+  </data>
+  <data name="WarningDeprecated" xml:space="preserve">
+    <value>Việc sử dụng {0} bị vô hiệu hoá và sẽ bị loại bỏ trong các phiên bản tương lai của chương trình. Xin vui lòng sử dụng {1} thay thế.</value>
+    <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
+  </data>
+  <data name="BotAcceptedDonationTrade" xml:space="preserve">
+    <value>Chấp nhận giao dịch tài trợ: {0}</value>
+    <comment>{0} will be replaced by trade's ID (number)</comment>
+  </data>
+  <data name="WarningWorkaroundTriggered" xml:space="preserve">
+    <value>Giải pháp cho lỗi {0} đã được kích hoạt.</value>
+    <comment>{0} will be replaced by the bug's name provided by ASF</comment>
   </data>
 </root>

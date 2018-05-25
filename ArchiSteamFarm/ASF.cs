@@ -41,7 +41,7 @@ namespace ArchiSteamFarm {
 		private static FileSystemWatcher FileSystemWatcher;
 
 		internal static async Task<Version> CheckAndUpdateProgram(bool updateOverride = false) {
-			if (SharedInfo.IsCustomBuild || (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None)) {
+			if (!SharedInfo.BuildInfo.CanUpdate || (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None)) {
 				return null;
 			}
 
@@ -139,7 +139,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			const string targetFile = SharedInfo.ASF + "-" + SharedInfo.Variant + ".zip";
+			string targetFile = SharedInfo.ASF + "-" + SharedInfo.BuildInfo.Variant + ".zip";
 			GitHub.ReleaseResponse.Asset binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => asset.Name.Equals(targetFile, StringComparison.OrdinalIgnoreCase));
 
 			if (binaryAsset == null) {
@@ -168,7 +168,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (IsUnixVariant(SharedInfo.Variant)) {
+			if (OS.IsUnix) {
 				string executable = Path.Combine(targetDirectory, SharedInfo.AssemblyName);
 				if (File.Exists(executable)) {
 					OS.UnixSetFileAccessExecutable(executable);
@@ -188,8 +188,23 @@ namespace ArchiSteamFarm {
 			// Before attempting to connect, initialize our configuration
 			await Bot.InitializeSteamConfiguration(Program.GlobalConfig.SteamProtocols, Program.GlobalDatabase.CellID, Program.GlobalDatabase.ServerListProvider).ConfigureAwait(false);
 
-			foreach (string botName in Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*" + SharedInfo.ConfigExtension).Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).OrderBy(botName => botName)) {
-				await Bot.RegisterBot(botName).ConfigureAwait(false);
+			try {
+				IEnumerable<Task> tasks = Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*" + SharedInfo.ConfigExtension).Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).OrderBy(botName => botName).Select(Bot.RegisterBot);
+
+				switch (Program.GlobalConfig.OptimizationMode) {
+					case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+						foreach (Task task in tasks) {
+							await task.ConfigureAwait(false);
+						}
+
+						break;
+					default:
+						await Task.WhenAll(tasks).ConfigureAwait(false);
+						break;
+				}
+			} catch (Exception e) {
+				ArchiLogger.LogGenericException(e);
+				return;
 			}
 
 			if (Bot.Bots.Count == 0) {
@@ -210,22 +225,6 @@ namespace ArchiSteamFarm {
 			FileSystemWatcher.Renamed += OnRenamed;
 
 			FileSystemWatcher.EnableRaisingEvents = true;
-		}
-
-		private static bool IsUnixVariant(string variant) {
-			if (string.IsNullOrEmpty(variant)) {
-				ArchiLogger.LogNullError(nameof(variant));
-				return false;
-			}
-
-			switch (variant) {
-				case "linux-arm":
-				case "linux-x64":
-				case "osx-x64":
-					return true;
-				default:
-					return false;
-			}
 		}
 
 		private static bool IsValidBotName(string botName) {
@@ -511,7 +510,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task RestartOrExit() {
-			if (!Program.ServiceMode && Program.GlobalConfig.AutoRestart) {
+			if (Program.RestartAllowed && Program.GlobalConfig.AutoRestart) {
 				ArchiLogger.LogGenericInfo(Strings.Restarting);
 				await Task.Delay(5000).ConfigureAwait(false);
 				await Program.Restart().ConfigureAwait(false);

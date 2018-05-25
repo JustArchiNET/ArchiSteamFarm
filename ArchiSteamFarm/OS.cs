@@ -27,11 +27,13 @@ using ArchiSteamFarm.Localization;
 
 namespace ArchiSteamFarm {
 	internal static class OS {
-		internal static void Init(bool service) {
+		internal static bool IsUnix => RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+
+		internal static void Init(bool systemRequired) {
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
 				DisableQuickEditMode();
 
-				if (service) {
+				if (systemRequired) {
 					KeepWindowsSystemActive();
 				}
 			}
@@ -122,7 +124,7 @@ namespace ArchiSteamFarm {
 			}
 
 			[Flags]
-			internal enum EUnixPermission {
+			internal enum EUnixPermission : ushort {
 				OtherExecute = 0x1,
 				OtherRead = 0x4,
 				GroupExecute = 0x8,

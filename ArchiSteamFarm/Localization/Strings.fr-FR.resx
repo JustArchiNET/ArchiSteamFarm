@@ -122,7 +122,7 @@
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF recherchera automatiquement de nouvelles mises à jour toutes les {0} heures.</value>
+    <value>ASF recherchera automatiquement de nouvelles mises à jour toutes les {0}.</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
   </data>
   <data name="Content" xml:space="preserve">
@@ -224,10 +224,6 @@ StackTrace :
   </data>
   <data name="Starting" xml:space="preserve">
     <value>Démarrage...</value>
-  </data>
-  <data name="StatusCode" xml:space="preserve">
-    <value>Code de statut : {0}</value>
-    <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
     <value>Succès !</value>
@@ -511,7 +507,7 @@ StackTrace :
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>Tentatives trop nombreuses ; nouvelle tentative après {0} minutes d'attente...</value>
+    <value>Tentatives trop nombreuses ; nouvelle tentative dans {0}...</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
@@ -661,4 +657,13 @@ StackTrace :
   <data name="BotRefreshingPackagesData" xml:space="preserve">
     <value>Actualisation des données des paquets...</value>
   </data>
+  <data name="WarningDeprecated" xml:space="preserve">
+    <value>L'Utilisation de {0} est désapprouvée et sera supprimée dans les prochaines versions du programme. Utilisez plutôt {1}.</value>
+    <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
+  </data>
+  <data name="BotAcceptedDonationTrade" xml:space="preserve">
+    <value>Don accepté: {0}</value>
+    <comment>{0} will be replaced by trade's ID (number)</comment>
+  </data>
+  
 </root>

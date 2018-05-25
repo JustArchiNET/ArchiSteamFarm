@@ -178,10 +178,6 @@
   <data name="Starting" xml:space="preserve">
     <value>جاري بدء التشغيل...</value>
   </data>
-  <data name="StatusCode" xml:space="preserve">
-    <value>رمز الحالة: {0}</value>
-    <comment>{0} will be replaced by status code number/name</comment>
-  </data>
   <data name="Success" xml:space="preserve">
     <value>تم بنجاح!</value>
   </data>
@@ -217,6 +213,9 @@
   <data name="Done" xml:space="preserve">
     <value>تم الانتهاء!</value>
   </data>
+  
+  
+  
   
   
   

@@ -1,0 +1,24 @@
+"preserve_hierarchy": true
+"files": [
+  {
+    "source": "/ArchiSteamFarm/Localization/Strings.resx",
+    "translation": "/ArchiSteamFarm/Localization/Strings.%locale%.resx"
+  },
+  {
+    "source": "/ArchiSteamFarm/www/locale/strings.json",
+    "translation": "/ArchiSteamFarm/www/locale/strings.%locale%.json"
+  },
+  {
+    "source": "/WebConfigGenerator/src/locale/strings.json",
+    "translation": "/WebConfigGenerator/src/locale/%locale%.json"
+  },
+  {
+    "source": "/wiki/*.md",
+    "translation": "/wiki/locale/%locale%/%file_name%-%locale%.%file_extension%",
+    "ignore": [ "/**/_*.md" ]
+  },
+  {
+    "source": "/wiki/_Sidebar.md",
+    "translation": "/wiki/locale/%locale%/_Sidebar.md"
+  }
+]

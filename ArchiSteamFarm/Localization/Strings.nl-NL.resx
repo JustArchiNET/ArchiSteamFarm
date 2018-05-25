@@ -224,10 +224,6 @@ StackTrace:
   <data name="Starting" xml:space="preserve">
     <value>Starten...</value>
   </data>
-  <data name="StatusCode" xml:space="preserve">
-    <value>Statuscode: {0}</value>
-    <comment>{0} will be replaced by status code number/name</comment>
-  </data>
   <data name="Success" xml:space="preserve">
     <value>Succesvol!</value>
   </data>
@@ -353,7 +349,7 @@ StackTrace:
     <value>Dit verzoek wordt genegeerd. Permanente pauze staat aan!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
-    <value>We hebben niets om te farmen op dit account!</value>
+    <value>Er is niets om te farmen op dit account!</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
     <value>Nu aan het farmen: {0} ({1})</value>
@@ -511,7 +507,7 @@ StackTrace:
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>Aanvraaglimiet overschreden; we zullen het over {0} opnieuw proberen...</value>
+    <value>Aanvraaglimiet overschreden, we zullen het na een cooldown van {0} opnieuw proberen...</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
@@ -660,5 +656,17 @@ StackTrace:
   </data>
   <data name="BotRefreshingPackagesData" xml:space="preserve">
     <value>Pakketgegevens vernieuwen...</value>
+  </data>
+  <data name="WarningDeprecated" xml:space="preserve">
+    <value>Het gebruik van {0} is verouderd en zal in toekomstige versies van het programma worden verwijderd. Gebruik in plaats daarvan {1}.</value>
+    <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
+  </data>
+  <data name="BotAcceptedDonationTrade" xml:space="preserve">
+    <value>Donatieaanbod geaccepteerd: {0}</value>
+    <comment>{0} will be replaced by trade's ID (number)</comment>
+  </data>
+  <data name="WarningWorkaroundTriggered" xml:space="preserve">
+    <value>Tijdelijke oplossing voor {0} bug is geactiveerd.</value>
+    <comment>{0} will be replaced by the bug's name provided by ASF</comment>
   </data>
 </root>

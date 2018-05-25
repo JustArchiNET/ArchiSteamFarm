@@ -1,6 +1,7 @@
 {
 	"AcceptGifts": false,
 	"AutoSteamSaleEvent": false,
+	"BotBehaviour": 0,
 	"CustomGamePlayedWhileFarming": null,
 	"CustomGamePlayedWhileIdle": null,
 	"DismissInventoryNotifications": false,
@@ -12,7 +13,6 @@
 	"HoursUntilCardDrops": 3,
 	"IdlePriorityQueueOnly": false,
 	"IdleRefundableGames": true,
-	"IsBotAccount": false,
 	"LootableTypes": [
 		1,
 		3,

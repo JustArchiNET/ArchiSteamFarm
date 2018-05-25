@@ -1,8 +1,8 @@
 {
-  "bots-delete": "Entfernen-Schaltfläche anzeigen",
+  "bots-delete": "Schaltfläche \"Löschen\" anzeigen",
   "bots-hide": "Bots ausblenden",
   "bots-hide-offline": "Offline Bots",
-  "bots-hide-online": "Verbundene Bots",
+  "bots-hide-online": "Online Bots",
   "bots-key": "Schlüssel-Schaltfläche anzeigen",
   "bots-simple": "Einfache Sammel-Information",
   "bots-title": "ASF | Bots",
@@ -17,8 +17,8 @@
   "generator-download": "Herunterladen",
   "generator-title": "ASF | Config Generator",
   "global-bots": "Bots",
-  "global-boxed": "Kombinierte Anordnung",
-  "global-boxed-description": "Kombinierte Anordnung umschalten",
+  "global-boxed": "Kompakte Anordnung",
+  "global-boxed-description": "Kompakte Anordnung umschalten",
   "global-change": "Änderung",
   "global-changelog": "Änderungsprotokoll",
   "global-commands": "Befehle",
@@ -35,9 +35,9 @@
   "global-nightmode": "Nachtmodus",
   "global-nightmode-description": "Nachtmodus umschalten",
   "global-ram-usage": "RAM-Nutzung",
-  "global-skins": "Oberflächen",
-  "global-uptime": "Laufzeit",
+  "global-skins": "Designs",
+  "global-uptime": "Betriebszeit",
   "global-version": "Version",
   "global-wiki": "Wiki",
-  "log-title": "ASF | Verlauf"
+  "log-title": "ASF | Protokoll"
 }

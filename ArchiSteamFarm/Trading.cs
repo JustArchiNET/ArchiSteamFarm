@@ -89,14 +89,14 @@ namespace ArchiSteamFarm {
 			Dictionary<(Steam.Asset.EType Type, uint AppID), List<uint>> itemAmountToGivePerGame = new Dictionary<(Steam.Asset.EType Type, uint AppID), List<uint>>();
 			Dictionary<ulong, uint> itemAmountsToGive = new Dictionary<ulong, uint>(itemAmounts);
 			foreach (Steam.Asset item in itemsToGive) {
-				for (uint i = 0; i < item.Amount; i++) {
-					if (!itemAmountToGivePerGame.TryGetValue((item.Type, item.RealAppID), out List<uint> amountsToGive)) {
-						amountsToGive = new List<uint>();
-						itemAmountToGivePerGame[(item.Type, item.RealAppID)] = amountsToGive;
-					}
+				if (!itemAmountToGivePerGame.TryGetValue((item.Type, item.RealAppID), out List<uint> amountsToGive)) {
+					amountsToGive = new List<uint>();
+					itemAmountToGivePerGame[(item.Type, item.RealAppID)] = amountsToGive;
+				}
 
+				for (uint i = 0; i < item.Amount; i++) {
 					amountsToGive.Add(itemAmountsToGive.TryGetValue(item.ClassID, out uint amount) ? amount : 0);
-					itemAmountsToGive[item.ClassID] = amount - 1; // We're giving one, so we have one less
+					itemAmountsToGive[item.ClassID] = --amount; // We're giving one, so we have one less
 				}
 			}
 
@@ -109,12 +109,12 @@ namespace ArchiSteamFarm {
 			Dictionary<(Steam.Asset.EType Type, uint AppID), List<uint>> itemAmountToReceivePerGame = new Dictionary<(Steam.Asset.EType Type, uint AppID), List<uint>>();
 			Dictionary<ulong, uint> itemAmountsToReceive = new Dictionary<ulong, uint>(itemAmounts);
 			foreach (Steam.Asset item in itemsToReceive) {
-				for (uint i = 0; i < item.Amount; i++) {
-					if (!itemAmountToReceivePerGame.TryGetValue((item.Type, item.RealAppID), out List<uint> amountsToReceive)) {
-						amountsToReceive = new List<uint>();
-						itemAmountToReceivePerGame[(item.Type, item.RealAppID)] = amountsToReceive;
-					}
+				if (!itemAmountToReceivePerGame.TryGetValue((item.Type, item.RealAppID), out List<uint> amountsToReceive)) {
+					amountsToReceive = new List<uint>();
+					itemAmountToReceivePerGame[(item.Type, item.RealAppID)] = amountsToReceive;
+				}
 
+				for (uint i = 0; i < item.Amount; i++) {
 					amountsToReceive.Add(itemAmountsToReceive.TryGetValue(item.ClassID, out uint amount) ? amount : 0);
 					itemAmountsToReceive[item.ClassID] = ++amount; // We're getting one, so we have one more
 				}
@@ -190,12 +190,18 @@ namespace ArchiSteamFarm {
 				case ParseTradeResult.EResult.AcceptedWithItemLose:
 				case ParseTradeResult.EResult.AcceptedWithoutItemLose:
 					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.AcceptingTrade, tradeOffer.TradeOfferID));
-					await Bot.ArchiWebHandler.AcceptTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false);
+
+					if (await Bot.ArchiWebHandler.AcceptTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false)) {
+						if (tradeOffer.ItemsToReceive.Sum(item => item.Amount) > tradeOffer.ItemsToGive.Sum(item => item.Amount)) {
+							Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.BotAcceptedDonationTrade, tradeOffer.TradeOfferID));
+						}
+					}
+
 					break;
 				case ParseTradeResult.EResult.RejectedPermanently:
 				case ParseTradeResult.EResult.RejectedTemporarily:
 					if (result.Result == ParseTradeResult.EResult.RejectedPermanently) {
-						if (Bot.BotConfig.IsBotAccount) {
+						if (Bot.BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidTrades)) {
 							goto case ParseTradeResult.EResult.RejectedAndBlacklisted;
 						}
 
@@ -235,28 +241,28 @@ namespace ArchiSteamFarm {
 			}
 
 			// Check if it's donation trade
-			if (tradeOffer.ItemsToGive.Count == 0) {
-				// If it's steam fuckup, temporarily ignore it, otherwise react accordingly, depending on our preference
-				if (tradeOffer.ItemsToReceive.Count == 0) {
+			switch (tradeOffer.ItemsToGive.Count) {
+				case 0 when tradeOffer.ItemsToReceive.Count == 0:
+					// If it's steam fuckup, temporarily ignore it
 					return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedTemporarily);
-				}
+				case 0:
+					// Otherwise react accordingly, depending on our preference
+					bool acceptDonations = Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.AcceptDonations);
+					bool acceptBotTrades = !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.DontAcceptBotTrades);
 
-				bool acceptDonations = Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.AcceptDonations);
-				bool acceptBotTrades = !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.DontAcceptBotTrades);
+					// If we accept donations and bot trades, accept it right away
+					if (acceptDonations && acceptBotTrades) {
+						return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.AcceptedWithoutItemLose);
+					}
 
-				// If we accept donations and bot trades, accept it right away
-				if (acceptDonations && acceptBotTrades) {
-					return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.AcceptedWithoutItemLose);
-				}
+					// If we don't accept donations, neither bot trades, deny it right away
+					if (!acceptDonations && !acceptBotTrades) {
+						return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedPermanently);
+					}
 
-				// If we don't accept donations, neither bot trades, deny it right away
-				if (!acceptDonations && !acceptBotTrades) {
-					return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedPermanently);
-				}
-
-				// Otherwise we either accept donations but not bot trades, or we accept bot trades but not donations
-				bool isBotTrade = (tradeOffer.OtherSteamID64 != 0) && Bot.Bots.Values.Any(bot => bot.CachedSteamID == tradeOffer.OtherSteamID64);
-				return new ParseTradeResult(tradeOffer.TradeOfferID, (acceptDonations && !isBotTrade) || (acceptBotTrades && isBotTrade) ? ParseTradeResult.EResult.AcceptedWithoutItemLose : ParseTradeResult.EResult.RejectedPermanently);
+					// Otherwise we either accept donations but not bot trades, or we accept bot trades but not donations
+					bool isBotTrade = (tradeOffer.OtherSteamID64 != 0) && Bot.Bots.Values.Any(bot => bot.CachedSteamID == tradeOffer.OtherSteamID64);
+					return new ParseTradeResult(tradeOffer.TradeOfferID, (acceptDonations && !isBotTrade) || (acceptBotTrades && isBotTrade) ? ParseTradeResult.EResult.AcceptedWithoutItemLose : ParseTradeResult.EResult.RejectedPermanently);
 			}
 
 			// If we don't have SteamTradeMatcher enabled, this is the end for us
@@ -269,8 +275,8 @@ namespace ArchiSteamFarm {
 				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedPermanently);
 			}
 
-			// Decline trade if it's not fair games/types exchange or if we're requested to handle any not-accepted item type
-			if (!tradeOffer.IsFairTypesExchange() || !tradeOffer.IsValidSteamItemsRequest(Bot.BotConfig.MatchableTypes)) {
+			// Decline trade if we're requested to handle any not-accepted item type or if it's not fair games/types exchange
+			if (!tradeOffer.IsValidSteamItemsRequest(Bot.BotConfig.MatchableTypes) || !tradeOffer.IsFairTypesExchange()) {
 				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedPermanently);
 			}
 
@@ -316,7 +322,7 @@ namespace ArchiSteamFarm {
 			bool accept = IsTradeNeutralOrBetter(inventory, tradeOffer.ItemsToGive, tradeOffer.ItemsToReceive);
 
 			// Even if trade is not neutral+ for us right now, it might be in the future, unless we're bot account where we assume that inventory doesn't change
-			return new ParseTradeResult(tradeOffer.TradeOfferID, accept ? ParseTradeResult.EResult.AcceptedWithItemLose : (Bot.BotConfig.IsBotAccount ? ParseTradeResult.EResult.RejectedPermanently : ParseTradeResult.EResult.RejectedTemporarily));
+			return new ParseTradeResult(tradeOffer.TradeOfferID, accept ? ParseTradeResult.EResult.AcceptedWithItemLose : (Bot.BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidTrades) ? ParseTradeResult.EResult.RejectedPermanently : ParseTradeResult.EResult.RejectedTemporarily));
 		}
 
 		private sealed class ParseTradeResult {

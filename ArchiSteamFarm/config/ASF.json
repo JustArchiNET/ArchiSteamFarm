@@ -12,6 +12,7 @@
 	"Headless": false,
 	"IdleFarmingPeriod": 8,
 	"InventoryLimiterDelay": 3,
+	"IPC": false,
 	"IPCPassword": null,
 	"IPCPrefixes": [
 		"http://127.0.0.1:1242/"
@@ -24,5 +25,9 @@
 	"SteamOwnerID": 0,
 	"SteamProtocols": 3,
 	"UpdateChannel": 1,
-	"UpdatePeriod": 24
+	"UpdatePeriod": 24,
+	"WebLimiterDelay": 200,
+	"WebProxy": null,
+	"WebProxyPassword": null,
+	"WebProxyUsername": null
 }

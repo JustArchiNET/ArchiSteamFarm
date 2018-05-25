@@ -161,7 +161,6 @@
   <data name="Starting" xml:space="preserve">
     <value>Starter...</value>
   </data>
-  
   <data name="Success" xml:space="preserve">
     <value>Suksess!</value>
   </data>
@@ -315,6 +314,9 @@
     <value>Initialiserer {0}...</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
+  
+  
+  
   
   
   

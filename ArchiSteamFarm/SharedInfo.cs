@@ -21,24 +21,11 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Reflection;
 
 namespace ArchiSteamFarm {
 	internal static class SharedInfo {
-#if ASF_VARIANT_GENERIC
-		internal const string Variant = "generic";
-#elif ASF_VARIANT_LINUX_ARM
-		internal const string Variant = "linux-arm";
-#elif ASF_VARIANT_LINUX_X64
-		internal const string Variant = "linux-x64";
-#elif ASF_VARIANT_OSX_X64
-		internal const string Variant = "osx-x64";
-#elif ASF_VARIANT_WIN_X64
-		internal const string Variant = "win-x64";
-#else
-		internal const string Variant = SourceVariant;
-#endif
-
 		internal const ulong ArchiSteamID = 76561198006963719;
 		internal const string ASF = nameof(ASF);
 		internal const ulong ASFGroupSteamID = 103582791440160998;
@@ -62,13 +49,39 @@ namespace ArchiSteamFarm {
 		internal const string UpdateDirectory = "_old";
 		internal const string WebsiteDirectory = "www";
 
-		private const string SourceVariant = "source";
+		internal static string HomeDirectory => Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+		internal static Guid ModuleVersion => Assembly.GetEntryAssembly().ManifestModule.ModuleVersionId;
+		internal static string PublicIdentifier => AssemblyName + (BuildInfo.IsCustomBuild ? "-custom" : "");
+		internal static Version Version => Assembly.GetEntryAssembly().GetName().Version;
 
 		[SuppressMessage("ReSharper", "ConvertToConstant.Global")]
-		internal static readonly bool IsCustomBuild = Variant == SourceVariant;
+		internal static class BuildInfo {
+#if ASF_VARIANT_DOCKER
+			internal static readonly bool CanUpdate = false;
+			internal static readonly string Variant = "docker";
+#elif ASF_VARIANT_GENERIC
+			internal static readonly bool CanUpdate = true;
+			internal static readonly string Variant = "generic";
+#elif ASF_VARIANT_LINUX_ARM
+			internal static readonly bool CanUpdate = true;
+			internal static readonly string Variant = "linux-arm";
+#elif ASF_VARIANT_LINUX_X64
+			internal static readonly bool CanUpdate = true;
+			internal static readonly string Variant = "linux-x64";
+#elif ASF_VARIANT_OSX_X64
+			internal static readonly bool CanUpdate = true;
+			internal static readonly string Variant = "osx-x64";
+#elif ASF_VARIANT_WIN_X64
+			internal static readonly bool CanUpdate = true;
+			internal static readonly string Variant = "win-x64";
+#else
+			internal static readonly bool CanUpdate = false;
+			internal static readonly string Variant = SourceVariant;
+#endif
 
-		internal static readonly Guid ModuleVersion = Assembly.GetEntryAssembly().ManifestModule.ModuleVersionId;
-		internal static readonly string PublicIdentifier = AssemblyName + (IsCustomBuild ? "-custom" : "");
-		internal static readonly Version Version = Assembly.GetEntryAssembly().GetName().Version;
+			private const string SourceVariant = "source";
+
+			internal static bool IsCustomBuild => Variant == SourceVariant;
+		}
 	}
 }

@@ -154,9 +154,9 @@ namespace ArchiSteamFarm {
 		private string TwoFactorCode;
 		private byte TwoFactorCodeFailures;
 
-		private Bot(string botName) {
-			if (string.IsNullOrEmpty(botName)) {
-				throw new ArgumentNullException(nameof(botName));
+		private Bot(string botName, BotConfig botConfig, BotDatabase botDatabase) {
+			if (string.IsNullOrEmpty(botName) || (botConfig == null) || (botDatabase == null)) {
+				throw new ArgumentNullException(nameof(botName) + " || " + nameof(botConfig) + " || " + nameof(botDatabase));
 			}
 
 			if (Bots.ContainsKey(botName)) {
@@ -164,23 +164,10 @@ namespace ArchiSteamFarm {
 			}
 
 			BotName = botName;
+			BotConfig = botConfig;
+			BotDatabase = botDatabase;
+
 			ArchiLogger = new ArchiLogger(botName);
-
-			BotConfig = BotConfig.Load(ConfigFilePath);
-			if (BotConfig == null) {
-				ArchiLogger.LogGenericError(string.Format(Strings.ErrorBotConfigInvalid, ConfigFilePath));
-				return;
-			}
-
-			if (Debugging.IsUserDebugging) {
-				ArchiLogger.LogGenericDebug(nameof(BotConfig) + ": " + JsonConvert.SerializeObject(BotConfig, Formatting.Indented));
-			}
-
-			BotDatabase = BotDatabase.Load(DatabaseFilePath);
-			if (BotDatabase == null) {
-				ArchiLogger.LogGenericError(string.Format(Strings.ErrorDatabaseInvalid, DatabaseFilePath));
-				return;
-			}
 
 			// Register bot as available for ASF
 			if (!Bots.TryAdd(botName, this)) {
@@ -405,7 +392,9 @@ namespace ArchiSteamFarm {
 				await PICSSemaphore.WaitAsync().ConfigureAwait(false);
 
 				try {
+#pragma warning disable ConfigureAwaitChecker // CAC001
 					productInfoResultSet = await SteamApps.PICSGetProductInfo(appID, null, false);
+#pragma warning restore ConfigureAwaitChecker // CAC001
 				} catch (Exception e) {
 					ArchiLogger.LogGenericWarningException(e);
 				} finally {
@@ -575,7 +564,9 @@ namespace ArchiSteamFarm {
 				await PICSSemaphore.WaitAsync().ConfigureAwait(false);
 
 				try {
+#pragma warning disable ConfigureAwaitChecker // CAC001
 					productInfoResultSet = await SteamApps.PICSGetProductInfo(Enumerable.Empty<uint>(), packageIDs);
+#pragma warning restore ConfigureAwaitChecker // CAC001
 				} catch (Exception e) {
 					ArchiLogger.LogGenericWarningException(e);
 				} finally {
@@ -683,8 +674,8 @@ namespace ArchiSteamFarm {
 							continue;
 						}
 
+						string name = parsedArgs[0];
 						string key = parsedArgs[parsedArgs.Length - 1];
-						string name = string.Join(' ', parsedArgs.Take(parsedArgs.Length - 1));
 
 						gamesToRedeemInBackground[key] = name;
 					}
@@ -781,7 +772,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			BotConfig botConfig = BotConfig.Load(ConfigFilePath);
+			BotConfig botConfig = await BotConfig.Load(ConfigFilePath).ConfigureAwait(false);
 
 			if (botConfig == null) {
 				Destroy();
@@ -841,7 +832,9 @@ namespace ArchiSteamFarm {
 			SteamUser.WebAPIUserNonceCallback callback;
 
 			try {
+#pragma warning disable ConfigureAwaitChecker // CAC001
 				callback = await SteamUser.RequestWebAPIUserNonce();
+#pragma warning restore ConfigureAwaitChecker // CAC001
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
 				await Connect(true).ConfigureAwait(false);
@@ -871,6 +864,32 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			string botPath = Path.Combine(SharedInfo.ConfigDirectory, botName);
+			string configFilePath = botPath + SharedInfo.ConfigExtension;
+
+			BotConfig botConfig = await BotConfig.Load(botPath + SharedInfo.ConfigExtension).ConfigureAwait(false);
+			if (botConfig == null) {
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorBotConfigInvalid, configFilePath));
+				return;
+			}
+
+			if (Debugging.IsUserDebugging) {
+				ASF.ArchiLogger.LogGenericDebug(configFilePath + ": " + JsonConvert.SerializeObject(botConfig, Formatting.Indented));
+			}
+
+			string databaseFilePath = botPath + SharedInfo.DatabaseExtension;
+
+			BotDatabase botDatabase = await BotDatabase.Load(databaseFilePath).ConfigureAwait(false);
+			if (botDatabase == null) {
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorDatabaseInvalid, databaseFilePath));
+				return;
+			}
+
+			if (Debugging.IsUserDebugging) {
+				ASF.ArchiLogger.LogGenericDebug(databaseFilePath + ": " + JsonConvert.SerializeObject(botDatabase, Formatting.Indented));
+			}
+
+			Bot bot;
 			await BotsSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
@@ -878,11 +897,12 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				Bot bot = new Bot(botName);
-				bot.InitStart();
+				bot = new Bot(botName, botConfig, botDatabase);
 			} finally {
 				BotsSemaphore.Release();
 			}
+
+			bot.InitStart();
 		}
 
 		internal void RequestPersonaStateUpdate() {
@@ -957,6 +977,8 @@ namespace ArchiSteamFarm {
 							return ResponseRestart(steamID);
 						case "SA":
 							return await ResponseStatus(steamID, SharedInfo.ASF).ConfigureAwait(false);
+						case "START":
+							return ResponseStart(steamID);
 						case "STATS":
 							return ResponseStats(steamID);
 						case "STATUS":
@@ -975,36 +997,36 @@ namespace ArchiSteamFarm {
 				default:
 					switch (args[0].ToUpperInvariant()) {
 						case "2FA":
-							return await Response2FA(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
+							return await Response2FA(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "2FANO":
-							return await Response2FAConfirm(steamID, Utilities.GetArgsString(args, 1, ","), false).ConfigureAwait(false);
+							return await Response2FAConfirm(steamID, Utilities.GetArgsAsText(args, 1, ","), false).ConfigureAwait(false);
 						case "2FAOK":
-							return await Response2FAConfirm(steamID, Utilities.GetArgsString(args, 1, ","), true).ConfigureAwait(false);
+							return await Response2FAConfirm(steamID, Utilities.GetArgsAsText(args, 1, ","), true).ConfigureAwait(false);
 						case "ADDLICENSE":
 							if (args.Length > 2) {
-								return await ResponseAddLicense(steamID, args[1], Utilities.GetArgsString(args, 2, ",")).ConfigureAwait(false);
+								return await ResponseAddLicense(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
 							}
 
 							return await ResponseAddLicense(steamID, args[1]).ConfigureAwait(false);
 						case "BL":
-							return await ResponseBlacklist(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
+							return await ResponseBlacklist(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "BLADD":
 							if (args.Length > 2) {
-								return await ResponseBlacklistAdd(steamID, args[1], Utilities.GetArgsString(args, 2, ",")).ConfigureAwait(false);
+								return await ResponseBlacklistAdd(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
 							}
 
 							return await ResponseBlacklistAdd(steamID, args[1]).ConfigureAwait(false);
 						case "BLRM":
 							if (args.Length > 2) {
-								return await ResponseBlacklistRemove(steamID, args[1], Utilities.GetArgsString(args, 2, ",")).ConfigureAwait(false);
+								return await ResponseBlacklistRemove(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
 							}
 
 							return await ResponseBlacklistRemove(steamID, args[1]).ConfigureAwait(false);
 						case "FARM":
-							return await ResponseFarm(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
+							return await ResponseFarm(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "INPUT":
 							if (args.Length > 3) {
-								return await ResponseInput(steamID, args[1], args[2], Utilities.GetArgsString(args, 3)).ConfigureAwait(false);
+								return await ResponseInput(steamID, args[1], args[2], Utilities.GetArgsAsText(message, 3)).ConfigureAwait(false);
 							}
 
 							if (args.Length > 2) {
@@ -1013,44 +1035,44 @@ namespace ArchiSteamFarm {
 
 							goto default;
 						case "IB":
-							return await ResponseIdleBlacklist(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
+							return await ResponseIdleBlacklist(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "IBADD":
 							if (args.Length > 2) {
-								return await ResponseIdleBlacklistAdd(steamID, args[1], Utilities.GetArgsString(args, 2, ",")).ConfigureAwait(false);
+								return await ResponseIdleBlacklistAdd(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
 							}
 
 							return await ResponseIdleBlacklistAdd(steamID, args[1]).ConfigureAwait(false);
 						case "IBRM":
 							if (args.Length > 2) {
-								return await ResponseIdleBlacklistRemove(steamID, args[1], Utilities.GetArgsString(args, 2, ",")).ConfigureAwait(false);
+								return await ResponseIdleBlacklistRemove(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
 							}
 
 							return await ResponseIdleBlacklistRemove(steamID, args[1]).ConfigureAwait(false);
 						case "IQ":
-							return await ResponseIdleQueue(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
+							return await ResponseIdleQueue(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "IQADD":
 							if (args.Length > 2) {
-								return await ResponseIdleQueueAdd(steamID, args[1], Utilities.GetArgsString(args, 2, ",")).ConfigureAwait(false);
+								return await ResponseIdleQueueAdd(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
 							}
 
 							return await ResponseIdleQueueAdd(steamID, args[1]).ConfigureAwait(false);
 						case "IQRM":
 							if (args.Length > 2) {
-								return await ResponseIdleQueueRemove(steamID, args[1], Utilities.GetArgsString(args, 2, ",")).ConfigureAwait(false);
+								return await ResponseIdleQueueRemove(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
 							}
 
 							return await ResponseIdleQueueRemove(steamID, args[1]).ConfigureAwait(false);
 						case "LEAVE":
 							if (chatID > 0) {
-								return await ResponseLeave(steamID, Utilities.GetArgsString(args, 1, ","), chatID).ConfigureAwait(false);
+								return await ResponseLeave(steamID, Utilities.GetArgsAsText(args, 1, ","), chatID).ConfigureAwait(false);
 							}
 
 							goto default;
 						case "LOOT":
-							return await ResponseLoot(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
+							return await ResponseLoot(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "LOOT^":
 							if (args.Length > 3) {
-								return await ResponseAdvancedLoot(steamID, args[1], args[2], Utilities.GetArgsString(args, 3, ",")).ConfigureAwait(false);
+								return await ResponseAdvancedLoot(steamID, args[1], args[2], Utilities.GetArgsAsText(args, 3, ",")).ConfigureAwait(false);
 							}
 
 							if (args.Length > 2) {
@@ -1059,50 +1081,56 @@ namespace ArchiSteamFarm {
 
 							goto default;
 						case "LOOT&":
-							return await ResponseLootSwitch(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
+							return await ResponseLootSwitch(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "NICKNAME":
 							if (args.Length > 2) {
-								return await ResponseNickname(steamID, args[1], Utilities.GetArgsString(args, 2)).ConfigureAwait(false);
+								return await ResponseNickname(steamID, args[1], Utilities.GetArgsAsText(message, 2)).ConfigureAwait(false);
 							}
 
 							return ResponseNickname(steamID, args[1]);
 						case "OA":
-							return await ResponseOwns(steamID, SharedInfo.ASF, Utilities.GetArgsString(args, 1)).ConfigureAwait(false);
+							return await ResponseOwns(steamID, SharedInfo.ASF, Utilities.GetArgsAsText(message, 1)).ConfigureAwait(false);
 						case "OWNS":
 							if (args.Length > 2) {
-								return await ResponseOwns(steamID, args[1], Utilities.GetArgsString(args, 2)).ConfigureAwait(false);
+								return await ResponseOwns(steamID, args[1], Utilities.GetArgsAsText(message, 2)).ConfigureAwait(false);
 							}
 
 							return (await ResponseOwns(steamID, args[1]).ConfigureAwait(false)).Response;
 						case "PASSWORD":
-							return await ResponsePassword(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
+							return await ResponsePassword(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "PAUSE":
-							return await ResponsePause(steamID, Utilities.GetArgsString(args, 1, ","), true).ConfigureAwait(false);
+							return await ResponsePause(steamID, Utilities.GetArgsAsText(args, 1, ","), true).ConfigureAwait(false);
 						case "PAUSE~":
-							return await ResponsePause(steamID, Utilities.GetArgsString(args, 1, ","), false).ConfigureAwait(false);
+							return await ResponsePause(steamID, Utilities.GetArgsAsText(args, 1, ","), false).ConfigureAwait(false);
 						case "PAUSE&":
 							if (args.Length > 2) {
-								return await ResponsePause(steamID, args[1], true, Utilities.GetArgsString(args, 2, ",")).ConfigureAwait(false);
+								return await ResponsePause(steamID, args[1], true, Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
 							}
 
 							return await ResponsePause(steamID, true, args[1]).ConfigureAwait(false);
 						case "PLAY":
 							if (args.Length > 2) {
-								return await ResponsePlay(steamID, args[1], Utilities.GetArgsString(args, 2, ",")).ConfigureAwait(false);
+								return await ResponsePlay(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
 							}
 
 							return await ResponsePlay(steamID, args[1]).ConfigureAwait(false);
+						case "PRIVACY":
+							if (args.Length > 2) {
+								return await ResponsePrivacy(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
+							}
+
+							return await ResponsePrivacy(steamID, args[1]).ConfigureAwait(false);
 						case "R":
 						case "REDEEM":
 							if (args.Length > 2) {
-								return await ResponseRedeem(steamID, args[1], Utilities.GetArgsString(args, 2, ",")).ConfigureAwait(false);
+								return await ResponseRedeem(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
 							}
 
 							return await ResponseRedeem(steamID, args[1]).ConfigureAwait(false);
 						case "R^":
 						case "REDEEM^":
 							if (args.Length > 3) {
-								return await ResponseAdvancedRedeem(steamID, args[1], args[2], Utilities.GetArgsString(args, 3, ",")).ConfigureAwait(false);
+								return await ResponseAdvancedRedeem(steamID, args[1], args[2], Utilities.GetArgsAsText(args, 3, ",")).ConfigureAwait(false);
 							}
 
 							if (args.Length > 2) {
@@ -1111,18 +1139,18 @@ namespace ArchiSteamFarm {
 
 							goto default;
 						case "REJOINCHAT":
-							return await ResponseRejoinChat(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
+							return await ResponseRejoinChat(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "RESUME":
-							return await ResponseResume(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
+							return await ResponseResume(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "START":
-							return await ResponseStart(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
+							return await ResponseStart(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "STATUS":
-							return await ResponseStatus(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
+							return await ResponseStatus(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "STOP":
-							return await ResponseStop(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
+							return await ResponseStop(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "TRANSFER":
 							if (args.Length > 3) {
-								return await ResponseTransfer(steamID, args[1], args[2], Utilities.GetArgsString(args, 3, ",")).ConfigureAwait(false);
+								return await ResponseTransfer(steamID, args[1], args[2], Utilities.GetArgsAsText(args, 3, ",")).ConfigureAwait(false);
 							}
 
 							if (args.Length > 2) {
@@ -1131,7 +1159,7 @@ namespace ArchiSteamFarm {
 
 							goto default;
 						case "UNPACK":
-							return await ResponseUnpackBoosters(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
+							return await ResponseUnpackBoosters(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						default:
 							return ResponseUnknown(steamID);
 					}
@@ -1192,9 +1220,6 @@ namespace ArchiSteamFarm {
 				if (string.IsNullOrEmpty(name)) {
 					invalid = true;
 					ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, nameof(name)));
-				} else if (string.IsNullOrEmpty(name)) {
-					invalid = true;
-					ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, name));
 				}
 
 				if (invalid) {
@@ -1355,7 +1380,9 @@ namespace ArchiSteamFarm {
 
 			try {
 				if (DateTime.UtcNow.Subtract(ArchiHandler.LastPacketReceived).TotalSeconds > MinHeartBeatTTL) {
+#pragma warning disable ConfigureAwaitChecker // CAC001
 					await SteamFriends.RequestProfileInfo(SteamClient.SteamID);
+#pragma warning restore ConfigureAwaitChecker // CAC001
 				}
 
 				HeartBeatFailures = 0;
@@ -1386,7 +1413,7 @@ namespace ArchiSteamFarm {
 			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorConverting);
 
 			try {
-				MobileAuthenticator authenticator = JsonConvert.DeserializeObject<MobileAuthenticator>(File.ReadAllText(maFilePath));
+				MobileAuthenticator authenticator = JsonConvert.DeserializeObject<MobileAuthenticator>(await File.ReadAllTextAsync(maFilePath).ConfigureAwait(false));
 				await BotDatabase.SetMobileAuthenticator(authenticator).ConfigureAwait(false);
 				File.Delete(maFilePath);
 			} catch (Exception e) {
@@ -1504,10 +1531,6 @@ namespace ArchiSteamFarm {
 		}
 
 		private void InitStart() {
-			if ((BotConfig == null) || (BotDatabase == null)) {
-				return;
-			}
-
 			if (!BotConfig.Enabled) {
 				ArchiLogger.LogGenericInfo(Strings.BotInstanceNotStartingBecauseDisabled);
 				return;
@@ -1692,10 +1715,16 @@ namespace ArchiSteamFarm {
 
 			if (File.Exists(SentryFilePath)) {
 				try {
-					byte[] sentryFileContent = File.ReadAllBytes(SentryFilePath);
+					byte[] sentryFileContent = await File.ReadAllBytesAsync(SentryFilePath).ConfigureAwait(false);
 					sentryFileHash = SteamKit2.CryptoHelper.SHAHash(sentryFileContent);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericException(e);
+
+					try {
+						File.Delete(SentryFilePath);
+					} catch {
+						// Ignored, we can only try to delete faulted file at best
+					}
 				}
 			}
 
@@ -1880,18 +1909,24 @@ namespace ArchiSteamFarm {
 			}
 
 			foreach (SteamFriends.FriendsListCallback.Friend friend in callback.FriendList.Where(friend => friend.Relationship == EFriendRelationship.RequestRecipient)) {
-				if (friend.SteamID.AccountType == EAccountType.Clan) {
-					if (IsMasterClanID(friend.SteamID)) {
-						ArchiHandler.AcceptClanInvite(friend.SteamID, true);
-					} else if (BotConfig.IsBotAccount) {
-						ArchiHandler.AcceptClanInvite(friend.SteamID, false);
-					}
-				} else {
-					if (IsFamilySharing(friend.SteamID)) {
-						SteamFriends.AddFriend(friend.SteamID);
-					} else if (BotConfig.IsBotAccount) {
-						SteamFriends.RemoveFriend(friend.SteamID);
-					}
+				switch (friend.SteamID.AccountType) {
+					case EAccountType.Clan when IsMasterClanID(friend.SteamID):
+						ArchiHandler.AcknowledgeClanInvite(friend.SteamID, true);
+						break;
+					case EAccountType.Clan:
+						if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidGroupInvites)) {
+							ArchiHandler.AcknowledgeClanInvite(friend.SteamID, false);
+						}
+
+						break;
+					default:
+						if (IsFamilySharing(friend.SteamID)) {
+							SteamFriends.AddFriend(friend.SteamID);
+						} else if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidFriendInvites)) {
+							SteamFriends.RemoveFriend(friend.SteamID);
+						}
+
+						break;
 				}
 			}
 		}
@@ -2205,6 +2240,13 @@ namespace ArchiSteamFarm {
 				}
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
+
+				try {
+					File.Delete(SentryFilePath);
+				} catch {
+					// Ignored, we can only try to delete faulted file at best
+				}
+
 				return;
 			}
 
@@ -2223,14 +2265,14 @@ namespace ArchiSteamFarm {
 		}
 
 		private void OnOfflineMessage(ArchiHandler.OfflineMessageCallback callback) {
-			if (callback?.Steam3IDs == null) {
-				ArchiLogger.LogNullError(nameof(callback) + " || " + nameof(callback.Steam3IDs));
+			if (callback?.SteamIDs == null) {
+				ArchiLogger.LogNullError(nameof(callback) + " || " + nameof(callback.SteamIDs));
 				return;
 			}
 
 			// Ignore event if we don't have any messages considering any of our permitted users
 			// This allows us to skip marking offline messages as read when there is no need to ask for them
-			if ((callback.OfflineMessagesCount == 0) || (callback.Steam3IDs.Count == 0) || !BotConfig.HandleOfflineMessages || !callback.Steam3IDs.Any(steam3ID => IsAllowedToExecuteCommands(new SteamID(steam3ID, EUniverse.Public, EAccountType.Individual)))) {
+			if ((callback.OfflineMessagesCount == 0) || (callback.SteamIDs.Count == 0) || !BotConfig.HandleOfflineMessages || !callback.SteamIDs.Any(IsAllowedToExecuteCommands)) {
 				return;
 			}
 
@@ -2412,7 +2454,7 @@ namespace ArchiSteamFarm {
 
 				await BotDatabase.RemoveGameToRedeemInBackground(key).ConfigureAwait(false);
 
-				string logEntry = name + DefaultBackgroundKeysRedeemerSeparator + "[" + result.PurchaseResultDetail + "]" + DefaultBackgroundKeysRedeemerSeparator + key;
+				string logEntry = name + DefaultBackgroundKeysRedeemerSeparator + "[" + result.PurchaseResultDetail + "]" + DefaultBackgroundKeysRedeemerSeparator + string.Join("", result.Items) + DefaultBackgroundKeysRedeemerSeparator + key;
 
 				try {
 					await File.AppendAllTextAsync(redeemed ? KeysToRedeemUsedFilePath : KeysToRedeemUnusedFilePath, logEntry + Environment.NewLine).ConfigureAwait(false);
@@ -2576,7 +2618,9 @@ namespace ArchiSteamFarm {
 				SteamApps.FreeLicenseCallback callback;
 
 				try {
+#pragma warning disable ConfigureAwaitChecker // CAC001
 					callback = await SteamApps.RequestFreeLicense(gameID);
+#pragma warning restore ConfigureAwaitChecker // CAC001
 				} catch (Exception e) {
 					ArchiLogger.LogGenericWarningException(e);
 					response.Append(FormatBotResponse(string.Format(Strings.BotAddLicense, gameID, EResult.Timeout)));
@@ -4059,6 +4103,136 @@ namespace ArchiSteamFarm {
 			}
 
 			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponsePlay(steamID, targetGameIDs));
+			ICollection<string> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<string>(bots.Count);
+					foreach (Task<string> task in tasks) {
+						results.Add(await task.ConfigureAwait(false));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+
+			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+			return responses.Count > 0 ? string.Join("", responses) : null;
+		}
+
+		private async Task<string> ResponsePrivacy(ulong steamID, string privacySettingsText) {
+			if ((steamID == 0) || string.IsNullOrEmpty(privacySettingsText)) {
+				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(privacySettingsText));
+				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return null;
+			}
+
+			if (!IsConnectedAndLoggedOn) {
+				return FormatBotResponse(Strings.BotNotConnected);
+			}
+
+			string[] privacySettingsArgs = privacySettingsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+			// There are only 6 privacy settings
+			if (privacySettingsArgs.Length > 6) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(privacySettingsArgs)));
+			}
+
+			Steam.UserPrivacy.PrivacySettings.EPrivacySetting profile = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
+			Steam.UserPrivacy.PrivacySettings.EPrivacySetting ownedGames = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
+			Steam.UserPrivacy.PrivacySettings.EPrivacySetting playtime = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
+			Steam.UserPrivacy.PrivacySettings.EPrivacySetting inventory = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
+			Steam.UserPrivacy.PrivacySettings.EPrivacySetting inventoryGifts = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
+			Steam.UserPrivacy.ECommentPermission comments = Steam.UserPrivacy.ECommentPermission.Private;
+
+			// Converting digits to enum
+			for (byte index = 0; index < privacySettingsArgs.Length; index++) {
+				if (!Enum.TryParse(privacySettingsArgs[index], true, out Steam.UserPrivacy.PrivacySettings.EPrivacySetting privacySetting) || (privacySetting == Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Unknown) || !Enum.IsDefined(typeof(Steam.UserPrivacy.PrivacySettings.EPrivacySetting), privacySetting)) {
+					return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(privacySettingsArgs)));
+				}
+
+				// Child setting can't be less restrictive than its parent
+				switch (index) {
+					case 0: // Profile
+						profile = privacySetting;
+						break;
+					case 1: // OwnedGames, child of Profile
+						if (profile < privacySetting) {
+							return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(ownedGames)));
+						}
+
+						ownedGames = privacySetting;
+						break;
+					case 2: // Playtime, child of OwnedGames
+						if (ownedGames < privacySetting) {
+							return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(playtime)));
+						}
+
+						playtime = privacySetting;
+						break;
+					case 3: // Inventory, child of Profile
+						if (profile < privacySetting) {
+							return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(inventory)));
+						}
+
+						inventory = privacySetting;
+						break;
+					case 4: // InventoryGifts, child of Inventory
+						if (inventory < privacySetting) {
+							return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(inventoryGifts)));
+						}
+
+						inventoryGifts = privacySetting;
+						break;
+					case 5: // Comments, child of Profile
+						if (profile < privacySetting) {
+							return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(comments)));
+						}
+
+						// Comments use different numbers than everything else, but we want to have this command consistent for end-user, so we'll map them
+						switch (privacySetting) {
+							case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.FriendsOnly:
+								comments = Steam.UserPrivacy.ECommentPermission.FriendsOnly;
+								break;
+							case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private:
+								comments = Steam.UserPrivacy.ECommentPermission.Private;
+								break;
+							case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Public:
+								comments = Steam.UserPrivacy.ECommentPermission.Public;
+								break;
+							default:
+								ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(privacySetting), privacySetting));
+								return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(privacySetting)));
+						}
+
+						break;
+					default:
+						ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(index), index));
+						return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(index)));
+				}
+			}
+
+			Steam.UserPrivacy userPrivacy = new Steam.UserPrivacy(new Steam.UserPrivacy.PrivacySettings(profile, ownedGames, playtime, inventory, inventoryGifts), comments);
+			return FormatBotResponse(await ArchiWebHandler.ChangePrivacySettings(userPrivacy).ConfigureAwait(false) ? Strings.Success : Strings.WarningFailed);
+		}
+
+		private async Task<string> ResponsePrivacy(ulong steamID, string botNames, string privacySettingsText) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(privacySettingsText)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames) + " || " + nameof(privacySettingsText));
+				return null;
+			}
+
+			HashSet<Bot> bots = GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
+			}
+
+			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponsePrivacy(steamID, privacySettingsText));
 			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {

@@ -58,12 +58,10 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			ConfigurationItemFactory.Default.ParseMessageTemplates = false;
 			LoggingConfiguration config = new LoggingConfiguration();
 
-			ColoredConsoleTarget coloredConsoleTarget = new ColoredConsoleTarget("ColoredConsole") {
-				DetectConsoleAvailable = false,
-				Layout = GeneralLayout
-			};
+			ColoredConsoleTarget coloredConsoleTarget = new ColoredConsoleTarget("ColoredConsole") { Layout = GeneralLayout };
 
 			config.AddTarget(coloredConsoleTarget);
 			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, coloredConsoleTarget));
@@ -106,11 +104,16 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			bool reconfig = false;
+
 			foreach (LoggingRule consoleLoggingRule in ConsoleLoggingRules.Where(consoleLoggingRule => !LogManager.Configuration.LoggingRules.Contains(consoleLoggingRule))) {
 				LogManager.Configuration.LoggingRules.Add(consoleLoggingRule);
+				reconfig = true;
 			}
 
-			LogManager.ReconfigExistingLoggers();
+			if (reconfig) {
+				LogManager.ReconfigExistingLoggers();
+			}
 		}
 
 		internal static void OnUserInputStart() {
@@ -120,15 +123,22 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			bool reconfig = false;
+
 			foreach (LoggingRule consoleLoggingRule in ConsoleLoggingRules) {
-				LogManager.Configuration.LoggingRules.Remove(consoleLoggingRule);
+				if (LogManager.Configuration.LoggingRules.Remove(consoleLoggingRule)) {
+					reconfig = true;
+				}
 			}
 
-			LogManager.ReconfigExistingLoggers();
+			if (reconfig) {
+				LogManager.ReconfigExistingLoggers();
+			}
 		}
 
 		private static void InitConsoleLoggers() {
 			ConsoleLoggingRules.Clear();
+
 			foreach (LoggingRule loggingRule in LogManager.Configuration.LoggingRules.Where(loggingRule => loggingRule.Targets.Any(target => target is ColoredConsoleTarget || target is ConsoleTarget))) {
 				ConsoleLoggingRules.Add(loggingRule);
 			}
@@ -147,6 +157,7 @@ namespace ArchiSteamFarm {
 			}
 
 			HistoryTarget historyTarget = (HistoryTarget) LogManager.Configuration.AllTargets.FirstOrDefault(target => target is HistoryTarget);
+
 			if (historyTarget != null) {
 				IPC.OnNewHistoryTarget(historyTarget);
 			}

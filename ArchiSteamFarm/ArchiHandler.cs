@@ -74,7 +74,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal void AcceptClanInvite(ulong clanID, bool accept) {
+		internal void AcknowledgeClanInvite(ulong clanID, bool acceptInvite) {
 			if (clanID == 0) {
 				ArchiLogger.LogNullError(nameof(clanID));
 				return;
@@ -84,10 +84,10 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ClientMsg<CMsgClientClanInviteAction> request = new ClientMsg<CMsgClientClanInviteAction> {
+			ClientMsg<CMsgClientAcknowledgeClanInvite> request = new ClientMsg<CMsgClientAcknowledgeClanInvite> {
 				Body = {
 					ClanID = clanID,
-					AcceptInvite = accept
+					AcceptInvite = acceptInvite
 				}
 			};
 
@@ -155,7 +155,9 @@ namespace ArchiSteamFarm {
 			Client.Send(request);
 
 			try {
+#pragma warning disable ConfigureAwaitChecker // CAC001
 				return await new AsyncJob<RedeemGuestPassResponseCallback>(Client, request.SourceJobID);
+#pragma warning restore ConfigureAwaitChecker // CAC001
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 				return null;
@@ -180,7 +182,9 @@ namespace ArchiSteamFarm {
 			Client.Send(request);
 
 			try {
+#pragma warning disable ConfigureAwaitChecker // CAC001
 				return await new AsyncJob<PurchaseResponseCallback>(Client, request.SourceJobID);
+#pragma warning restore ConfigureAwaitChecker // CAC001
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 				return null;
@@ -264,7 +268,7 @@ namespace ArchiSteamFarm {
 
 		internal sealed class OfflineMessageCallback : CallbackMsg {
 			internal readonly uint OfflineMessagesCount;
-			internal readonly HashSet<uint> Steam3IDs;
+			internal readonly HashSet<ulong> SteamIDs;
 
 			internal OfflineMessageCallback(JobID jobID, CMsgClientOfflineMessageNotification msg) {
 				if ((jobID == null) || (msg == null)) {
@@ -278,7 +282,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				Steam3IDs = new HashSet<uint>(msg.friends_with_offline_messages);
+				SteamIDs = new HashSet<ulong>(msg.friends_with_offline_messages.Select(steam3ID => new SteamID(steam3ID, EUniverse.Public, EAccountType.Individual).ConvertToUInt64()));
 			}
 		}
 

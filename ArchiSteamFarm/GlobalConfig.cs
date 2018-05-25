@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
@@ -81,6 +82,9 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte InventoryLimiterDelay = 3;
 
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly bool IPC;
+
 		[JsonProperty]
 		internal readonly string IPCPassword;
 
@@ -109,10 +113,88 @@ namespace ArchiSteamFarm {
 		internal readonly byte UpdatePeriod = 24;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly ushort WebLimiterDelay = 200;
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		internal ulong SteamOwnerID { get; private set; }
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal ProtocolTypes SteamProtocols { get; private set; } = DefaultSteamProtocols;
+
+		internal WebProxy WebProxy { get; private set; }
+
+		[JsonProperty]
+		internal string WebProxyPassword {
+			get => WebProxyCredentials?.Password;
+			set {
+				if (string.IsNullOrEmpty(value)) {
+					if (WebProxyCredentials == null) {
+						return;
+					}
+
+					WebProxyCredentials.Password = null;
+
+					if (!string.IsNullOrEmpty(WebProxyCredentials.UserName)) {
+						return;
+					}
+
+					WebProxyCredentials = null;
+					if (WebProxy != null) {
+						WebProxy.Credentials = null;
+					}
+
+					return;
+				}
+
+				if (WebProxyCredentials == null) {
+					WebProxyCredentials = new NetworkCredential();
+				}
+
+				WebProxyCredentials.Password = value;
+
+				if ((WebProxy != null) && (WebProxy.Credentials != WebProxyCredentials)) {
+					WebProxy.Credentials = WebProxyCredentials;
+				}
+			}
+		}
+
+		[JsonProperty]
+		internal string WebProxyUsername {
+			get => WebProxyCredentials?.UserName;
+			set {
+				if (string.IsNullOrEmpty(value)) {
+					if (WebProxyCredentials == null) {
+						return;
+					}
+
+					WebProxyCredentials.UserName = null;
+
+					if (!string.IsNullOrEmpty(WebProxyCredentials.Password)) {
+						return;
+					}
+
+					WebProxyCredentials = null;
+					if (WebProxy != null) {
+						WebProxy.Credentials = null;
+					}
+
+					return;
+				}
+
+				if (WebProxyCredentials == null) {
+					WebProxyCredentials = new NetworkCredential();
+				}
+
+				WebProxyCredentials.UserName = value;
+
+				if ((WebProxy != null) && (WebProxy.Credentials != WebProxyCredentials)) {
+					WebProxy.Credentials = WebProxyCredentials;
+				}
+			}
+		}
+
+		private bool ShouldSerializeSensitiveDetails = true;
+		private NetworkCredential WebProxyCredentials;
 
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamOwnerID), Required = Required.DisallowNull)]
 		private string SSteamOwnerID {
@@ -127,7 +209,42 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static GlobalConfig Load(string filePath) {
+		[JsonProperty(PropertyName = nameof(WebProxy))]
+		private string WebProxyText {
+			get => WebProxy?.Address.OriginalString;
+			set {
+				if (string.IsNullOrEmpty(value)) {
+					if (WebProxy != null) {
+						WebProxy = null;
+					}
+
+					return;
+				}
+
+				Uri uri;
+
+				try {
+					uri = new Uri(value);
+				} catch (UriFormatException e) {
+					ASF.ArchiLogger.LogGenericException(e);
+					return;
+				}
+
+				if (WebProxy == null) {
+					WebProxy = new WebProxy { BypassProxyOnLocal = true };
+				}
+
+				WebProxy.Address = uri;
+
+				if ((WebProxyCredentials != null) && (WebProxy.Credentials != WebProxyCredentials)) {
+					WebProxy.Credentials = WebProxyCredentials;
+				}
+			}
+		}
+
+		public bool ShouldSerializeWebProxyPassword() => ShouldSerializeSensitiveDetails;
+
+		internal static async Task<GlobalConfig> Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(filePath));
 				return null;
@@ -140,7 +257,7 @@ namespace ArchiSteamFarm {
 			GlobalConfig globalConfig;
 
 			try {
-				globalConfig = JsonConvert.DeserializeObject<GlobalConfig>(File.ReadAllText(filePath));
+				globalConfig = JsonConvert.DeserializeObject<GlobalConfig>(await File.ReadAllTextAsync(filePath).ConfigureAwait(false));
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 				return null;
@@ -150,6 +267,8 @@ namespace ArchiSteamFarm {
 				ASF.ArchiLogger.LogNullError(nameof(globalConfig));
 				return null;
 			}
+
+			globalConfig.ShouldSerializeSensitiveDetails = false;
 
 			// User might not know what he's doing
 			// Ensure that he can't screw core ASF variables

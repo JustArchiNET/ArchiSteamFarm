@@ -17,7 +17,6 @@ PARSE_ARG() {
 	BINARY_ARGS+=("$1")
 
 	case "$1" in
-		--cryptkey|--server|--service) ;;
 		--path) PATH_NEXT=1 ;;
 		--path=*) cd "$(echo "$1" | cut -d '=' -f 2-)" ;;
 		*)

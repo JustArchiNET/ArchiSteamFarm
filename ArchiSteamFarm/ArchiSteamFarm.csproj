@@ -2,15 +2,15 @@
 
   <PropertyGroup>
     <ApplicationIcon>ASF.ico</ApplicationIcon>
-    <AssemblyVersion>3.1.1.9</AssemblyVersion>
+    <AssemblyVersion>3.1.3.3</AssemblyVersion>
     <Authors>JustArchi</Authors>
     <Company>JustArchi</Company>
     <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
     <Copyright>Copyright © ArchiSteamFarm 2015-2018</Copyright>
     <Description>ASF is an application that allows you to farm steam cards using multiple steam accounts simultaneously.</Description>
     <ErrorReport>none</ErrorReport>
-    <FileVersion>3.1.1.9</FileVersion>
-    <LangVersion>latest</LangVersion>
+    <FileVersion>3.1.3.3</FileVersion>
+    <LangVersion>7.2</LangVersion>
     <NoWarn />
     <OutputType>Exe</OutputType>
     <PackageIconUrl>https://github.com/JustArchi/ArchiSteamFarm/raw/master/resources/ASF.ico</PackageIconUrl>
@@ -35,14 +35,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.7.2" />
+    <PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="1.0.1" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.8.2" />
     <PackageReference Include="Humanizer" Version="2.2.0" />
     <PackageReference Include="ILLink.Tasks" Version="0.1.5-preview-1461378" />
-    <PackageReference Include="Microsoft.Win32.Registry" Version="4.5.0-preview1-26216-02" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="NLog" Version="4.5.0" />
-    <PackageReference Include="protobuf-net" Version="2.3.7" />
-    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.5.0-preview1-26216-02" />
+    <PackageReference Include="NLog" Version="4.5.4" />
+    <PackageReference Include="protobuf-net" Version="2.3.8-alpha1" />
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.5.0-rc1" />
   </ItemGroup>
 
   <ItemGroup>

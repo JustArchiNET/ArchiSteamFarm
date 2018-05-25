@@ -171,6 +171,25 @@
     <value>कुड नॉट प्रोसीड विद एन अपडेट बिकॉज़ डेट वर्ज़न डोज'नॉट इंक्ल्यूड एनी एसेट्स!</value>
   </data>
   
+  <data name="Exiting" xml:space="preserve">
+    <value>बंद हो रहा है|</value>
+  </data>
+  <data name="WarningFailed" xml:space="preserve">
+    <value>असफल|</value>
+  </data>
+  
+  
+  
+  
+  
+  
+  
+  <data name="Restarting" xml:space="preserve">
+    <value>रिस्टार्ट हो रहा है...</value>
+  </data>
+  <data name="Starting" xml:space="preserve">
+    <value>शुरू हो रहा है|</value>
+  </data>
   
   
   
@@ -189,6 +208,9 @@
   
   
   
+  <data name="BotAlreadyStopped" xml:space="preserve">
+    <value>यह वाला बॉट पहले से ही बंद कर दिया गया है!</value>
+  </data>
   
   
   
@@ -196,19 +218,13 @@
   
   
   
+  <data name="Done" xml:space="preserve">
+    <value>हो गया|</value>
+  </data>
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="IdlingFinished" xml:space="preserve">
+    <value>काम समाप्त!</value>
+  </data>
   
   
   

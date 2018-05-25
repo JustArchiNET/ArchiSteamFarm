@@ -16,6 +16,8 @@ environment:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   VARIANTS: generic win-x64 linux-x64 linux-arm osx-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
 matrix:
+  allow_failures:
+    - image: Visual Studio 2017 Preview
   fast_finish: true
 before_build:
 - pwsh: >-
@@ -28,7 +30,9 @@ before_build:
 
     dotnet --info
 
-    dotnet restore
+    if ($LastExitCode -ne 0) {
+        throw "Command failed."
+    }
 build_script:
 - pwsh: >-
     Set-StrictMode -Version Latest
@@ -38,7 +42,11 @@ build_script:
     $ProgressPreference = 'SilentlyContinue'
 
 
-    dotnet build -c "$env:CONFIGURATION" -o 'out\source' --no-restore /nologo
+    dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -o 'out\source' /nologo
+
+    if ($LastExitCode -ne 0) {
+        throw "Command failed."
+    }
 test_script:
 - pwsh: >-
     Set-StrictMode -Version Latest
@@ -48,7 +56,11 @@ test_script:
     $ProgressPreference = 'SilentlyContinue'
 
 
-    dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" -o 'out\source' --no-build --no-restore
+    dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" -o 'out\source' /nologo
+
+    if ($LastExitCode -ne 0) {
+        throw "Command failed."
+    }
 after_test:
 - pwsh: >-
     Set-StrictMode -Version Latest
@@ -68,9 +80,13 @@ after_test:
         Set-Location -Path "$env:APPVEYOR_BUILD_FOLDER"
 
         if ($Variant -eq 'generic') {
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$Variant" --no-restore /nologo "/p:ASFVariant=$Variant"
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$Variant" /nologo "/p:ASFVariant=$Variant"
         } else {
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$Variant" -r "$Variant" --no-restore /nologo "/p:ASFVariant=$Variant" "/p:CrossGenDuringPublish=false"
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$Variant" -r "$Variant" /nologo "/p:ASFVariant=$Variant" "/p:CrossGenDuringPublish=false"
+        }
+
+        if ($LastExitCode -ne 0) {
+            throw "Command failed."
         }
 
         # If we include any helper scripts for this variant, copy them to output directory
@@ -81,6 +97,10 @@ after_test:
         # Until https://github.com/dotnet/cli/issues/3267 happens, we'll hack dotnet binary icon on Windows and include .ico file on other platforms
         if (Test-Path -Path "ArchiSteamFarm\out\$Variant\ArchiSteamFarm.exe" -PathType Leaf) {
             tools\rcedit\rcedit-x64.exe "ArchiSteamFarm\out\$Variant\ArchiSteamFarm.exe" --set-icon 'resources\ASF.ico'
+
+            if ($LastExitCode -ne 0) {
+                throw "Command failed."
+            }
         } else {
             Copy-Item 'resources\ASF.ico' -Destination "ArchiSteamFarm\out\$Variant\ArchiSteamFarm.ico"
         }
@@ -99,8 +119,17 @@ after_test:
         }
 
         7z a -bd -tzip -mm=Deflate64 $zipArgs "ArchiSteamFarm\out\ASF-$Variant.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$Variant\*"
+
+        if ($LastExitCode -ne 0) {
+            throw "Command failed."
+        }
+
         # TODO: Change me to Push-AppveyorArtifact once https://github.com/appveyor/ci/issues/2183 is fixed
         appveyor PushArtifact "ArchiSteamFarm\out\ASF-$Variant.zip" -FileName "ASF-$Variant.zip" -DeploymentName "ASF-$Variant.zip"
+
+        if ($LastExitCode -ne 0) {
+            throw "Command failed."
+        }
     }
 
     foreach ($variant in $env:VARIANTS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {

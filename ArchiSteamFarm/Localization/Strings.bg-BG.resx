@@ -222,10 +222,6 @@
   <data name="Starting" xml:space="preserve">
     <value>Стартиране...</value>
   </data>
-  <data name="StatusCode" xml:space="preserve">
-    <value>Статус код: {0}</value>
-    <comment>{0} will be replaced by status code number/name</comment>
-  </data>
   <data name="Success" xml:space="preserve">
     <value>Успешно!</value>
   </data>
@@ -508,7 +504,7 @@
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>Ограничението надвишено; Ще повторим след {0} на "отброяване"...</value>
+    <value>Ограничението надвишено, ще повторим след {0} на "отброяване"...</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
@@ -657,5 +653,17 @@
   </data>
   <data name="BotRefreshingPackagesData" xml:space="preserve">
     <value>Обновяване на пакети данни...</value>
+  </data>
+  <data name="WarningDeprecated" xml:space="preserve">
+    <value>Използването на {0} е непрепоръчително и ще бъде премахнато в бъдещи версии на програмата. Моля, използвайте {1} вместо това.</value>
+    <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
+  </data>
+  <data name="BotAcceptedDonationTrade" xml:space="preserve">
+    <value>Приети дарения: {0}</value>
+    <comment>{0} will be replaced by trade's ID (number)</comment>
+  </data>
+  <data name="WarningWorkaroundTriggered" xml:space="preserve">
+    <value>Заобикалянето на {0} бъг е задействано.</value>
+    <comment>{0} will be replaced by the bug's name provided by ASF</comment>
   </data>
 </root>

@@ -79,6 +79,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Accepted donation trade: {0}.
+        /// </summary>
+        internal static string BotAcceptedDonationTrade {
+            get {
+                return ResourceManager.GetString("BotAcceptedDonationTrade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Accepting gift: {0}....
         /// </summary>
         internal static string BotAcceptingGift {
@@ -493,7 +502,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Rate limit exceeded; we will retry after {0} of cooldown....
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Rate limit exceeded, we will retry after {0} of cooldown....
         /// </summary>
         internal static string BotRateLimitExceeded {
             get {
@@ -1180,15 +1189,6 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Status code: {0}.
-        /// </summary>
-        internal static string StatusCode {
-            get {
-                return ResourceManager.GetString("StatusCode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Still idling: {0} ({1}).
         /// </summary>
         internal static string StillIdling {
@@ -1396,6 +1396,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Usage of {0} is deprecated and will be removed in future versions of the program. Please use {1} instead..
+        /// </summary>
+        internal static string WarningDeprecated {
+            get {
+                return ResourceManager.GetString("WarningDeprecated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Failed!.
         /// </summary>
         internal static string WarningFailed {
@@ -1455,6 +1464,15 @@ namespace ArchiSteamFarm.Localization {
         internal static string WarningUnknownValuePleaseReport {
             get {
                 return ResourceManager.GetString("WarningUnknownValuePleaseReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Workaround for {0} bug has been triggered..
+        /// </summary>
+        internal static string WarningWorkaroundTriggered {
+            get {
+                return ResourceManager.GetString("WarningWorkaroundTriggered", resourceCulture);
             }
         }
         

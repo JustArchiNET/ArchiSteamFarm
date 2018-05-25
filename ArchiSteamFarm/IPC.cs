@@ -110,6 +110,10 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			if (IsListening) {
+				return;
+			}
+
 			HttpListener = new HttpListener { IgnoreWriteExceptions = true };
 
 			try {
@@ -141,6 +145,11 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void Stop() {
+			if (!HttpListener.IsSupported) {
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningFailedWithError, "!HttpListener.IsSupported"));
+				return;
+			}
+
 			if (!IsListening) {
 				return;
 			}
@@ -262,6 +271,12 @@ namespace ArchiSteamFarm {
 			if (jsonRequest == null) {
 				await ResponseJsonObject(request, response, new GenericResponse<object>(false, string.Format(Strings.ErrorObjectIsNull, nameof(jsonRequest))), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
+			}
+
+			if (jsonRequest.KeepSensitiveDetails) {
+				if (string.IsNullOrEmpty(jsonRequest.GlobalConfig.WebProxyPassword) && !string.IsNullOrEmpty(Program.GlobalConfig.WebProxyPassword)) {
+					jsonRequest.GlobalConfig.WebProxyPassword = Program.GlobalConfig.WebProxyPassword;
+				}
 			}
 
 			string filePath = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName);
@@ -403,15 +418,15 @@ namespace ArchiSteamFarm {
 			string botName = WebUtility.UrlDecode(arguments[argumentsIndex]);
 
 			if (jsonRequest.KeepSensitiveDetails && Bot.Bots.TryGetValue(botName, out Bot bot)) {
-				if (string.IsNullOrEmpty(jsonRequest.BotConfig.SteamLogin)) {
+				if (string.IsNullOrEmpty(jsonRequest.BotConfig.SteamLogin) && !string.IsNullOrEmpty(bot.BotConfig.SteamLogin)) {
 					jsonRequest.BotConfig.SteamLogin = bot.BotConfig.SteamLogin;
 				}
 
-				if (string.IsNullOrEmpty(jsonRequest.BotConfig.SteamParentalPIN)) {
+				if (string.IsNullOrEmpty(jsonRequest.BotConfig.SteamParentalPIN) && !string.IsNullOrEmpty(bot.BotConfig.SteamParentalPIN)) {
 					jsonRequest.BotConfig.SteamParentalPIN = bot.BotConfig.SteamParentalPIN;
 				}
 
-				if (string.IsNullOrEmpty(jsonRequest.BotConfig.SteamPassword)) {
+				if (string.IsNullOrEmpty(jsonRequest.BotConfig.SteamPassword) && !string.IsNullOrEmpty(bot.BotConfig.SteamPassword)) {
 					jsonRequest.BotConfig.SteamPassword = bot.BotConfig.SteamPassword;
 				}
 			}
@@ -598,7 +613,7 @@ namespace ArchiSteamFarm {
 						WebSocketReceiveResult result = await webSocketContext.WebSocket.ReceiveAsync(new byte[0], CancellationToken.None).ConfigureAwait(false);
 
 						if (result.MessageType != WebSocketMessageType.Close) {
-							await webSocketContext.WebSocket.CloseAsync(WebSocketCloseStatus.InvalidMessageType, "You're not supposed to be sending any message but Close!", CancellationToken.None);
+							await webSocketContext.WebSocket.CloseAsync(WebSocketCloseStatus.InvalidMessageType, "You're not supposed to be sending any message but Close!", CancellationToken.None).ConfigureAwait(false);
 							break;
 						}
 
@@ -780,7 +795,7 @@ namespace ArchiSteamFarm {
 
 			string argument = WebUtility.UrlDecode(string.Join("", arguments.Skip(argumentsIndex)));
 
-			string directory = Path.Combine(SharedInfo.WebsiteDirectory, argument);
+			string directory = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.WebsiteDirectory, argument);
 			if (!Directory.Exists(directory)) {
 				await ResponseJsonObject(request, response, new GenericResponse<HashSet<string>>(false, string.Format(Strings.ErrorIsInvalid, nameof(directory))), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
@@ -822,7 +837,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string filePath = SharedInfo.WebsiteDirectory + Path.DirectorySeparatorChar + absolutePath.Replace("/", Path.DirectorySeparatorChar.ToString());
+			string filePath = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.WebsiteDirectory) + Path.DirectorySeparatorChar + absolutePath.Replace('/', Path.DirectorySeparatorChar);
 			if (Directory.Exists(filePath)) {
 				filePath = Path.Combine(filePath, "index.html");
 			}
@@ -1162,6 +1177,9 @@ namespace ArchiSteamFarm {
 			[JsonProperty(Required = Required.Always)]
 			internal readonly GlobalConfig GlobalConfig;
 #pragma warning restore 649
+
+			[JsonProperty(Required = Required.DisallowNull)]
+			internal readonly bool KeepSensitiveDetails = true;
 
 			// Deserialized from JSON
 			private ASFRequest() { }

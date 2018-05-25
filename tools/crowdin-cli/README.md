@@ -15,7 +15,7 @@ This tool is being used by ASF developers for synchronization of strings/transla
 
 ## Before you begin
 
-- Make sure that your `crowdin_identity.yaml` file exists - this is the file with login credentials that is not being committed to GitHub. If it doesn't exist yet (e.g. because you've just cloned the repo), create it from `crowdin_identity_example.yaml` and fill `api_key` that can be found **[here](http://l10n.asf.justarchi.net/project/archisteamfarm/settings#api)**.
+- Make sure that your `crowdin_identity.yml` file exists - this is the file with login credentials that is not being committed to GitHub. If it doesn't exist yet (e.g. because you've just cloned the repo), create it from `crowdin_identity_example.yml` and fill `api_key` that can be found **[here](http://l10n.asf.justarchi.net/project/archisteamfarm/settings#api)**.
 
 - Ensure that `crowdin` command is recognized by your OS.
 
@@ -32,8 +32,8 @@ This tool is being used by ASF developers for synchronization of strings/transla
 
 ## Usage
 
-- `archi_upload.bat` for pushing strings to Crowdin (when any `*Strings.resx` file gets modified).
+- `archi_upload.ps1` for pushing strings to Crowdin.
 
-- `archi_download.bat` for downloading translations from Crowdin (typically last commit before release).
+- `archi_download.ps1` for downloading translations from Crowdin (typically last commit before release).
 
-- `archi_sync.bat` for upload + download (tree sync, e.g. when modifying/removing original strings).
+- `archi_sync.ps1` for upload + download (tree sync).
