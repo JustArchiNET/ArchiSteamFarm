@@ -977,6 +977,8 @@ namespace ArchiSteamFarm {
 							return ResponseRestart(steamID);
 						case "SA":
 							return await ResponseStatus(steamID, SharedInfo.ASF).ConfigureAwait(false);
+						case "START":
+							return ResponseStart(steamID);
 						case "STATS":
 							return ResponseStats(steamID);
 						case "STATUS":
