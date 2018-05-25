@@ -137,9 +137,9 @@
         <footer class="main-footer">
             <div class="pull-right"><strong data-i18n="global-version">Version</strong> <span id="version">0.0.0.0</span></div>
             <strong>
-                <a href="https://github.com/JustArchi/ArchiSteamFarm">GitHub</a> -
-                <a href="https://github.com/JustArchi/ArchiSteamFarm/wiki"><span data-i18n="global-wiki">Wiki</span></a> -
-                <a href="https://github.com/JustArchi/ArchiSteamFarm/commits/master" id="changelog"><span data-i18n="global-changelog">Changelog</span></a>
+                <a target="_blank" href="https://github.com/JustArchi/ArchiSteamFarm">GitHub</a> -
+                <a target="_blank" href="https://github.com/JustArchi/ArchiSteamFarm/wiki"><span data-i18n="global-wiki">Wiki</span></a> -
+                <a target="_blank" href="https://github.com/JustArchi/ArchiSteamFarm/commits/master" id="changelog"><span data-i18n="global-changelog">Changelog</span></a>
             </strong>
         </footer>
 
@@ -376,6 +376,7 @@
                                 Paused = obj.CardsFarmer.Paused,
                                 boxColorHTML = '',
                                 avatarHTML = '',
+                                profileHTML = '',
                                 startOrStopHTML = '',
                                 pauseOrResumeHTML = '',
                                 expandBoxHTML = '',
@@ -391,6 +392,7 @@
 
                             if (KeepRunning === false) { // Bot is offline
                                 if (tmpHideOfflineBots === 'true') continue;
+                                profileHTML = '<img src="' + avatarHTML + '">';
                                 boxColorHTML = 'box-gray';
                                 startOrStopHTML = '<button title="Start <' + BotName + '>" type="button" class="btn btn-box-tool bot-stopped" data-command="startBot"><i class="fas fa-power-off"></i></button>';
                             } else { // Bot is idling
@@ -403,6 +405,10 @@
                                 if (SteamID === 0) { // Bot is not connected to steam
                                     boxColorHTML = 'box-danger';
                                 } else { // Bot is connected to steam
+                                    profileHTML = '<a href="https://steamcommunity.com/profiles/' + obj.s_SteamID + '" target="_blank">'
+                                        + '<img src="' + avatarHTML + '">'
+                                        + '</a>';
+
                                     if (TimeRemaining !== '00:00:00') { // Bot is farming
                                         var GamesToFarm = obj.CardsFarmer.GamesToFarm,
                                             CurrentGamesFarming = obj.CardsFarmer.CurrentGamesFarming,
@@ -481,7 +487,9 @@
                             $('#botRow').append('<div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">'
                                 + '<div class="box ' + boxColorHTML + ' collapsed-box" id="bot-box-' + BotName + '">'
                                 + '<div class="box-header with-border botHeader ui-widget-content">'
-                                + '<img src="' + avatarHTML + '">'
+								+ profileHTML
+                                //+ '<img src="' + avatarHTML + '">'
+								//+ 
                                 + '<h3 class="box-title botTitle">' + BotName + '</h3>'
                                 + '<div class="box-tools pull-right botTools" id="' + BotName + '">'
                                 + startOrStopHTML
