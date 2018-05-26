@@ -151,9 +151,10 @@ function logCommand(state, cmd) {
     } 
 
     var response = $.i18n('commands-response', getDateAndTime(), cmd);
-
+	
     if (tmpAutoClear === 'false') {
-        $('.box-content-commands').append('\n' + response + '\n');
+		var oldText = $('.box-content-commands').text();
+		$('.box-content-commands').text(oldText + '\n' + response + '\n');
     } else {
         $('.box-content-commands').text(response);
     }
