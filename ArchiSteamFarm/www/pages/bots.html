@@ -389,10 +389,11 @@
                             } else {
                                 avatarHTML = steamAvatarBaseURL + 'fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb.jpg';
                             }
+							
+							profileHTML = '<img src="' + avatarHTML + '">';
 
                             if (KeepRunning === false) { // Bot is offline
                                 if (tmpHideOfflineBots === 'true') continue;
-                                profileHTML = '<img src="' + avatarHTML + '">';
                                 boxColorHTML = 'box-gray';
                                 startOrStopHTML = '<button title="Start <' + BotName + '>" type="button" class="btn btn-box-tool bot-stopped" data-command="startBot"><i class="fas fa-power-off"></i></button>';
                             } else { // Bot is idling
