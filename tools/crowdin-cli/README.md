@@ -1,7 +1,7 @@
 Crowdin CLI
 ===================
 
-**[Latest release](https://crowdin.com/downloads/crowdin-cli.zip)**
+**[Latest release](https://downloads.crowdin.com/cli/v2/crowdin-cli.zip)**
 
 **[Source](https://github.com/crowdin/crowdin-cli-2)**
 
