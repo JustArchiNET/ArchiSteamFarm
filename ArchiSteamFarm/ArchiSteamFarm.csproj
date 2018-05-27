@@ -36,23 +36,17 @@
 
   <ItemGroup>
     <PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="1.0.1" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.8.2" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.8.4" />
     <PackageReference Include="Humanizer" Version="2.2.0" />
     <PackageReference Include="ILLink.Tasks" Version="0.1.5-preview-1461378" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="NLog" Version="4.5.5" />
-    <PackageReference Include="protobuf-net" Version="2.3.8-alpha1" />
+    <PackageReference Include="SteamKit2" Version="2.1.0-Beta.1" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.5.0-rc1" />
   </ItemGroup>
 
   <ItemGroup>
     <LinkerRootDescriptors Include="rootDescriptor.xml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="SteamKit2">
-      <HintPath>lib\SteamKit2.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>
