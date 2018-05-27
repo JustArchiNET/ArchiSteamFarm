@@ -151,9 +151,10 @@ function logCommand(state, cmd) {
     } 
 
     var response = $.i18n('commands-response', getDateAndTime(), cmd);
-
+	
     if (tmpAutoClear === 'false') {
-        $('.box-content-commands').append('\n' + response + '\n');
+		var oldText = $('.box-content-commands').text();
+		$('.box-content-commands').text(oldText + '\n' + response + '\n');
     } else {
         $('.box-content-commands').text(response);
     }
@@ -191,7 +192,7 @@ function sendCommand() {
         },
         error: function (jqXHR, textStatus, errorThrown) {
             $('.overlay').remove();
-            logCommand(false, jqXHR.status + ' - ' + errorThrown);
+            logCommand(false, jqXHR.status + ' ' + errorThrown + ' - ' + jqXHR.responseJSON['Message']);
         }
     });
 
@@ -541,7 +542,7 @@ function saveConfig(botName, config) {
         error: function (jqXHR, textStatus, errorThrown) {
             swal({
                 title: $.i18n('global-error-title'),
-                text: jqXHR.status + ' - ' + errorThrown,
+                text: jqXHR.status + ' ' + errorThrown + ' - ' + jqXHR.responseJSON['Message'],
                 type: 'error'
             }, function () { location.reload(); });
         }
