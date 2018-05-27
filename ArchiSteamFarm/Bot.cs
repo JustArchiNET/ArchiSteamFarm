@@ -2387,6 +2387,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
 		private async Task RedeemGamesInBackground() {
 			if (GamesRedeemerInBackgroundTimer != null) {
 				GamesRedeemerInBackgroundTimer.Dispose();

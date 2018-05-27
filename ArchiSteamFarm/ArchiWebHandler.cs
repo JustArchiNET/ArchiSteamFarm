@@ -1131,8 +1131,8 @@ namespace ArchiSteamFarm {
 			return response?.Result == EResult.OK;
 		}
 
-		private async Task<string> GetAbsoluteProfileURL() {
-			if (SteamID == 0) {
+		private async Task<string> GetAbsoluteProfileURL(bool waitForInitialization = true) {
+			if (waitForInitialization && (SteamID == 0)) {
 				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
@@ -1358,13 +1358,13 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async Task<bool> IsProfileUri(Uri uri) {
+		private async Task<bool> IsProfileUri(Uri uri, bool waitForInitialization = true) {
 			if (uri == null) {
 				ASF.ArchiLogger.LogNullError(nameof(uri));
 				return false;
 			}
 
-			string profileURL = await GetAbsoluteProfileURL().ConfigureAwait(false);
+			string profileURL = await GetAbsoluteProfileURL(waitForInitialization).ConfigureAwait(false);
 			if (string.IsNullOrEmpty(profileURL)) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return false;
@@ -1523,7 +1523,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
-			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
+			if (await IsProfileUri(response.FinalUri, false).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
 				return await UnlockParentalAccountForService(serviceURL, parentalPin, --maxTries).ConfigureAwait(false);
 			}

@@ -26,7 +26,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Resources;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
