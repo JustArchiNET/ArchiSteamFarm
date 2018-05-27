@@ -690,7 +690,7 @@
                                                 error: function (jqXHR, textStatus, errorThrown) {
                                                     swal({
                                                         title: $.i18n('global-error-title'),
-                                                        text: jqXHR.status + ' - ' + errorThrown,
+                                                        text: jqXHR.status + ' ' + errorThrown + ' - ' + jqXHR.responseJSON['Message'],
                                                         type: 'error'
                                                     }, function () { location.reload(); });
                                                 }
