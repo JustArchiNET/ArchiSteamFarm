@@ -41,7 +41,7 @@ Feel free to remove our notice and fill the template below with your details.
 ```
 Paste here, in-between triple backtick tags
 
-Ensure that your log was NOT recorded in Debug mode, as it might contain sensitive information that should not be shared publically, as stated on the wiki.
+Ensure that your log was NOT recorded in Debug mode, as it might contain sensitive information that should not be shared publicly, as stated on the wiki.
 ```
 
 ### Global ASF.json config
