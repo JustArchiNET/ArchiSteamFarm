@@ -199,7 +199,7 @@
                 }
             });
 
-            $(document).delegate('#delimeter', 'keydown', function (e) {
+            $(document).delegate('#delimiter', 'keydown', function (e) {
                 var keyCode = e.keyCode || e.which;
 
                 if (keyCode == 9) {
@@ -340,15 +340,15 @@
                 var tmpHideOnlineBots = get('hideOnlineBots'),
                     tmpHideOfflineBots = get('hideOfflineBots'),
                     tmpShowDeleteButton = get('showDeleteButton'),
-                    tmpDelimeter = get('delimeter'),
+                    tmpDelimiter = get('delimiter'),
                     tmpShowKeyButton = get('showKeyButton'),
                     tmpSimpleFarmingInfo = get('simpleFarmingInfo');
                 
                 $('#totalBotOverview').empty(); // Clear page content
                 $('#botRow').empty(); // Clear page content
 
-                if (!tmpDelimeter) {
-                    tmpDelimeter = '\t';
+                if (!tmpDelimiter) {
+                    tmpDelimiter = '\t';
                 }
 
                 $.ajax({
@@ -637,8 +637,8 @@
                                             text: '<p class="lead text-muted" style="display: block;">' + $.i18n('bots-syntax') + '</p>'
                                             + '<textarea id="gamesToRedeemInBackground"></textarea>'
                                             + '<div class="input-group">'
-                                            + '<span class="input-group-addon" id="delimeter-text">' + $.i18n('bots-delimeter') + '</span>'
-                                            + '<input type="text" class="form-control" id="delimeter" value="' + tmpDelimeter + '" aria-describedby="delimeter-text">'
+                                            + '<span class="input-group-addon" id="delimiter-text">' + $.i18n('bots-delimiter') + '</span>'
+                                            + '<input type="text" class="form-control" id="delimiter" value="' + tmpDelimiter + '" aria-describedby="delimiter-text">'
                                             + '</div>',
                                             html: true,
                                             customClass: 'swal-wide',
@@ -657,12 +657,12 @@
                                             var _gamesToRedeemInBackground = {},
                                                 gamesAndKeys = [],
                                                 lines = val.split('\n'),
-                                                currentDelimeter = $('#delimeter').val();
+                                                currentDelimiter = $('#delimiter').val();
 
-                                            store('delimeter', currentDelimeter);
+                                            store('delimiter', currentdelimiter);
 
                                             for (var i = 0; i < lines.length; i++) {
-                                                if (lines[i] !== '') gamesAndKeys.push(lines[i].split(currentDelimeter));
+                                                if (lines[i] !== '') gamesAndKeys.push(lines[i].split(currentDelimiter));
                                             }
 
                                             for (var j = 0; j < gamesAndKeys.length; j++) {
