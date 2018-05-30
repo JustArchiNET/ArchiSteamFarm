@@ -80,7 +80,8 @@ after_test:
         Set-Location -Path "$env:APPVEYOR_BUILD_FOLDER"
 
         if ($Variant -eq 'generic') {
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$Variant" /nologo "/p:ASFVariant=$Variant"
+            # TODO: Workaround https://github.com/mono/linker/issues/286 until it's resolved
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$Variant" /nologo "/p:ASFVariant=$Variant" "/p:LinkDuringPublish=false"
         } else {
             dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$Variant" -r "$Variant" /nologo "/p:ASFVariant=$Variant" "/p:CrossGenDuringPublish=false"
         }

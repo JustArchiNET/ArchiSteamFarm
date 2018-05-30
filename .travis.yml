@@ -45,7 +45,8 @@ script:
 
     publish() {
         if [ "$1" = 'generic' ]; then
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" /nologo "/p:ASFVariant=$1"
+            # TODO: Workaround https://github.com/mono/linker/issues/286 until it's resolved
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" /nologo "/p:ASFVariant=$1" "/p:LinkDuringPublish=false"
         else
             dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" -r "$1" /nologo "/p:ASFVariant=$1" "/p:CrossGenDuringPublish=false"
         fi
