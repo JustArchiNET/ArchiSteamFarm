@@ -531,7 +531,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<Dictionary<uint, string>> GetMyOwnedGames() {
-			const string request = "/my/games/?xml=1";
+			const string request = "/my/games?xml=1";
 
 			XmlDocument response = await UrlGetToXmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
 
