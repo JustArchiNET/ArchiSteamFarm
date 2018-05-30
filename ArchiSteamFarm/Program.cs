@@ -250,6 +250,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (GlobalConfig.BackgroundGCPeriod > 0) {
+				ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, nameof(GlobalConfig.BackgroundGCPeriod), "COMPlus_GCLatencyLevel=0"));
 				Hacks.EnableBackgroundGC(GlobalConfig.BackgroundGCPeriod);
 			}
 
