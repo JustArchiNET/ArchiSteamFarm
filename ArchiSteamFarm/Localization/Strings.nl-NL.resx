@@ -583,7 +583,7 @@ StackTrace:
     <value>Stoppen...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>Je bot configuratie is ongeldig. Controleer de inhoud van {0} en probeer het opnieuw!</value>
+    <value>Je bot-configuratie is ongeldig. Controleer de inhoud van {0} en probeer het opnieuw!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
