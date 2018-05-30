@@ -548,7 +548,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				if (!uint.TryParse(appNode.InnerText, out uint appID)) {
+				if (!uint.TryParse(appNode.InnerText, out uint appID) || (appID == 0)) {
 					Bot.ArchiLogger.LogNullError(nameof(appID));
 					return null;
 				}
