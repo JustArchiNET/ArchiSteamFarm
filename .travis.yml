@@ -17,7 +17,7 @@ group: travis_latest
 
 # ASF is based on .NET Core platform
 # TODO: Change me to 2.1 once https://github.com/travis-ci/travis-build/pull/1396 is merged
-dotnet: 2.1.300-preview2-008533
+dotnet: 2.1.300
 mono: none
 
 env:
