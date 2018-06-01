@@ -3970,8 +3970,8 @@ namespace ArchiSteamFarm {
 
 			await CardsFarmer.Pause(sticky).ConfigureAwait(false);
 
-			if (BotConfig.GamesPlayedWhileIdle.Count > 0) {
-				// In this case we must also stop GamesPlayedWhileIdle
+			if (!sticky && (BotConfig.GamesPlayedWhileIdle.Count > 0)) {
+				// We want to let family sharing users access our library, and in this case we must also stop GamesPlayedWhileIdle
 				// We add extra delay because OnFarmingStopped() also executes PlayGames()
 				// Despite of proper order on our end, Steam network might not respect it
 				await Task.Delay(CallbackSleep).ConfigureAwait(false);
