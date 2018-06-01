@@ -40,7 +40,7 @@ script:
   - |
     set -e
 
-    dotnet build ArchiSteamFarm -c "$CONFIGURATION" -o 'out/source' /nologo "/p:ASFVariant=generic"
+    dotnet build ArchiSteamFarm -c "$CONFIGURATION" -o 'out/source' /nologo
     dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -o 'out/source' /nologo
 
     publish() {

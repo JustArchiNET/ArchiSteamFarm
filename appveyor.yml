@@ -31,7 +31,7 @@ before_build:
     dotnet --info
 
     if ($LastExitCode -ne 0) {
-        throw "Command failed."
+        throw "Last command failed."
     }
 build_script:
 - pwsh: >-
@@ -42,10 +42,10 @@ build_script:
     $ProgressPreference = 'SilentlyContinue'
 
 
-    dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -o 'out\source' /nologo "/p:ASFVariant=generic"
+    dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -o 'out\source' /nologo
 
     if ($LastExitCode -ne 0) {
-        throw "Command failed."
+        throw "Last command failed."
     }
 test_script:
 - pwsh: >-
@@ -59,7 +59,7 @@ test_script:
     dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" -o 'out\source' /nologo
 
     if ($LastExitCode -ne 0) {
-        throw "Command failed."
+        throw "Last command failed."
     }
 after_test:
 - pwsh: >-
@@ -86,7 +86,7 @@ after_test:
         }
 
         if ($LastExitCode -ne 0) {
-            throw "Command failed."
+            throw "Last command failed."
         }
 
         # If we include any helper scripts for this variant, copy them to output directory
@@ -99,7 +99,7 @@ after_test:
             tools\rcedit\rcedit-x64.exe "ArchiSteamFarm\out\$Variant\ArchiSteamFarm.exe" --set-icon 'resources\ASF.ico'
 
             if ($LastExitCode -ne 0) {
-                throw "Command failed."
+                throw "Last command failed."
             }
         } else {
             Copy-Item 'resources\ASF.ico' -Destination "ArchiSteamFarm\out\$Variant\ArchiSteamFarm.ico"
@@ -121,14 +121,14 @@ after_test:
         7z a -bd -tzip -mm=Deflate64 $zipArgs "ArchiSteamFarm\out\ASF-$Variant.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$Variant\*"
 
         if ($LastExitCode -ne 0) {
-            throw "Command failed."
+            throw "Last command failed."
         }
 
         # TODO: Change me to Push-AppveyorArtifact once https://github.com/appveyor/ci/issues/2183 is fixed
         appveyor PushArtifact "ArchiSteamFarm\out\ASF-$Variant.zip" -FileName "ASF-$Variant.zip" -DeploymentName "ASF-$Variant.zip"
 
         if ($LastExitCode -ne 0) {
-            throw "Command failed."
+            throw "Last command failed."
         }
     }
 

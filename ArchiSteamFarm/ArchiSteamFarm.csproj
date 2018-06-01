@@ -49,6 +49,11 @@
     <LinkerRootDescriptors Include="rootDescriptor.xml" />
   </ItemGroup>
 
+  <!-- Workaround for https://github.com/Microsoft/msbuild/issues/3350 -->
+  <ItemGroup>
+    <CoreCompileCache Include="$(DefineConstants)" />
+  </ItemGroup>
+
   <ItemGroup>
     <Compile Update="Localization\Strings.Designer.cs">
       <AutoGen>True</AutoGen>
