@@ -1245,12 +1245,13 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task CheckFamilySharingInactivity() {
+			StopFamilySharingInactivityTimer();
+
 			if (!IsPlayingPossible) {
 				return;
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.BotAutomaticIdlingPauseTimeout);
-			StopFamilySharingInactivityTimer();
 
 			if (!await CardsFarmer.Resume(false).ConfigureAwait(false)) {
 				await ResetGamesPlayed().ConfigureAwait(false);
