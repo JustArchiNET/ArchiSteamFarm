@@ -60,6 +60,7 @@ script:
     for variant in $VARIANTS; do
         publish "$variant" &
     done
+
     wait
 
 matrix:
