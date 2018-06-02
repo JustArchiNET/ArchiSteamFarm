@@ -4283,8 +4283,11 @@ namespace ArchiSteamFarm {
 				string key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null; // Initial key
 
 				while (!string.IsNullOrEmpty(key)) {
+					string startingKey = key;
+
 					using (IEnumerator<Bot> botsEnumerator = Bots.Where(bot => (bot.Value != this) && !rateLimitedBots.Contains(bot.Value) && bot.Value.IsConnectedAndLoggedOn && bot.Value.IsOperator(steamID)).OrderBy(bot => bot.Key).Select(bot => bot.Value).GetEnumerator()) {
 						Bot currentBot = this;
+
 						while (!string.IsNullOrEmpty(key) && (currentBot != null)) {
 							if (redeemFlags.HasFlag(ERedeemFlags.Validate) && !IsValidCdKey(key)) {
 								key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null; // Next key
@@ -4428,11 +4431,11 @@ namespace ArchiSteamFarm {
 								currentBot = botsEnumerator.MoveNext() ? botsEnumerator.Current : null;
 							}
 						}
+					}
 
-						if (currentBot == null) {
-							// We ran out of bots to try for this key, so change it
-							key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null; // Next key
-						}
+					if (key == startingKey) {
+						// We ran out of bots to try for this key, so change it to avoid infinite loop
+						key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null; // Next key
 					}
 				}
 			}
