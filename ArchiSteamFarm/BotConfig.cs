@@ -161,7 +161,7 @@ namespace ArchiSteamFarm {
 			BotConfig botConfig;
 
 			try {
-				botConfig = JsonConvert.DeserializeObject<BotConfig>(await File.ReadAllTextAsync(filePath).ConfigureAwait(false));
+				botConfig = JsonConvert.DeserializeObject<BotConfig>(await RuntimeCompatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false));
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 				return null;
@@ -207,7 +207,7 @@ namespace ArchiSteamFarm {
 			await WriteSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+				await RuntimeCompatibility.File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
 				if (File.Exists(filePath)) {
 					File.Replace(newFilePath, filePath, null);

@@ -1245,12 +1245,13 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task CheckFamilySharingInactivity() {
+			StopFamilySharingInactivityTimer();
+
 			if (!IsPlayingPossible) {
 				return;
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.BotAutomaticIdlingPauseTimeout);
-			StopFamilySharingInactivityTimer();
 
 			if (!await CardsFarmer.Resume(false).ConfigureAwait(false)) {
 				await ResetGamesPlayed().ConfigureAwait(false);
@@ -1413,7 +1414,7 @@ namespace ArchiSteamFarm {
 			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorConverting);
 
 			try {
-				MobileAuthenticator authenticator = JsonConvert.DeserializeObject<MobileAuthenticator>(await File.ReadAllTextAsync(maFilePath).ConfigureAwait(false));
+				MobileAuthenticator authenticator = JsonConvert.DeserializeObject<MobileAuthenticator>(await RuntimeCompatibility.File.ReadAllTextAsync(maFilePath).ConfigureAwait(false));
 				await BotDatabase.SetMobileAuthenticator(authenticator).ConfigureAwait(false);
 				File.Delete(maFilePath);
 			} catch (Exception e) {
@@ -1715,7 +1716,7 @@ namespace ArchiSteamFarm {
 
 			if (File.Exists(SentryFilePath)) {
 				try {
-					byte[] sentryFileContent = await File.ReadAllBytesAsync(SentryFilePath).ConfigureAwait(false);
+					byte[] sentryFileContent = await RuntimeCompatibility.File.ReadAllBytesAsync(SentryFilePath).ConfigureAwait(false);
 					sentryFileHash = SteamKit2.CryptoHelper.SHAHash(sentryFileContent);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericException(e);
@@ -2458,7 +2459,7 @@ namespace ArchiSteamFarm {
 				string logEntry = name + DefaultBackgroundKeysRedeemerSeparator + "[" + result.PurchaseResultDetail + "]" + ((result.Items != null) && (result.Items.Count > 0) ? DefaultBackgroundKeysRedeemerSeparator + string.Join("", result.Items) : "") + DefaultBackgroundKeysRedeemerSeparator + key;
 
 				try {
-					await File.AppendAllTextAsync(redeemed ? KeysToRedeemUsedFilePath : KeysToRedeemUnusedFilePath, logEntry + Environment.NewLine).ConfigureAwait(false);
+					await RuntimeCompatibility.File.AppendAllTextAsync(redeemed ? KeysToRedeemUsedFilePath : KeysToRedeemUnusedFilePath, logEntry + Environment.NewLine).ConfigureAwait(false);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericException(e);
 					ArchiLogger.LogGenericError(string.Format(Strings.Content, logEntry));
@@ -3970,8 +3971,8 @@ namespace ArchiSteamFarm {
 
 			await CardsFarmer.Pause(sticky).ConfigureAwait(false);
 
-			if (BotConfig.GamesPlayedWhileIdle.Count > 0) {
-				// In this case we must also stop GamesPlayedWhileIdle
+			if (!sticky && (BotConfig.GamesPlayedWhileIdle.Count > 0)) {
+				// We want to let family sharing users access our library, and in this case we must also stop GamesPlayedWhileIdle
 				// We add extra delay because OnFarmingStopped() also executes PlayGames()
 				// Despite of proper order on our end, Steam network might not respect it
 				await Task.Delay(CallbackSleep).ConfigureAwait(false);
@@ -4282,8 +4283,11 @@ namespace ArchiSteamFarm {
 				string key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null; // Initial key
 
 				while (!string.IsNullOrEmpty(key)) {
+					string startingKey = key;
+
 					using (IEnumerator<Bot> botsEnumerator = Bots.Where(bot => (bot.Value != this) && !rateLimitedBots.Contains(bot.Value) && bot.Value.IsConnectedAndLoggedOn && bot.Value.IsOperator(steamID)).OrderBy(bot => bot.Key).Select(bot => bot.Value).GetEnumerator()) {
 						Bot currentBot = this;
+
 						while (!string.IsNullOrEmpty(key) && (currentBot != null)) {
 							if (redeemFlags.HasFlag(ERedeemFlags.Validate) && !IsValidCdKey(key)) {
 								key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null; // Next key
@@ -4427,11 +4431,11 @@ namespace ArchiSteamFarm {
 								currentBot = botsEnumerator.MoveNext() ? botsEnumerator.Current : null;
 							}
 						}
+					}
 
-						if (currentBot == null) {
-							// We ran out of bots to try for this key, so change it
-							key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null; // Next key
-						}
+					if (key == startingKey) {
+						// We ran out of bots to try for this key, so change it to avoid infinite loop
+						key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null; // Next key
 					}
 				}
 			}

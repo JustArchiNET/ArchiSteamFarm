@@ -951,7 +951,7 @@ namespace ArchiSteamFarm {
 					authorized = password == Program.GlobalConfig.IPCPassword;
 
 					if (authorized) {
-						FailedAuthorizations.Remove(ipAddress, out _);
+						FailedAuthorizations.TryRemove(ipAddress, out _);
 					} else {
 						if (FailedAuthorizations.TryGetValue(ipAddress, out attempts)) {
 							FailedAuthorizations[ipAddress] = ++attempts;
@@ -1095,7 +1095,7 @@ namespace ArchiSteamFarm {
 			try {
 				response.ContentType = MimeTypes.TryGetValue(Path.GetExtension(filePath), out string mimeType) ? mimeType : "application/octet-stream";
 
-				byte[] content = await File.ReadAllBytesAsync(filePath).ConfigureAwait(false);
+				byte[] content = await RuntimeCompatibility.File.ReadAllBytesAsync(filePath).ConfigureAwait(false);
 				await ResponseBase(request, response, content).ConfigureAwait(false);
 			} catch (FileNotFoundException) {
 				await ResponseStatusCode(request, response, HttpStatusCode.NotFound).ConfigureAwait(false);

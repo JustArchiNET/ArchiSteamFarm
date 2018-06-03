@@ -1,8 +1,9 @@
 FROM microsoft/dotnet:2.1-sdk AS build-env
+ENV NET_CORE_VERSION netcoreapp2.1
 WORKDIR /app
 COPY . ./
 RUN dotnet --info && \
-    dotnet publish ArchiSteamFarm -c Release -o out /nologo /p:ASFVariant=generic && \
+    dotnet publish ArchiSteamFarm -c Release -f "$NET_CORE_VERSION" -o out /nologo /p:ASFVariant=generic && \
     cp "ArchiSteamFarm/scripts/generic/ArchiSteamFarm-Service.sh" "ArchiSteamFarm/out/ArchiSteamFarm-Service.sh"
 
 FROM microsoft/dotnet:2.1-runtime-stretch-slim-arm32v7

@@ -62,6 +62,9 @@ namespace ArchiSteamFarm {
 #elif ASF_VARIANT_GENERIC
 			internal static readonly bool CanUpdate = true;
 			internal static readonly string Variant = "generic";
+#elif ASF_VARIANT_GENERIC_NETF
+			internal static readonly bool CanUpdate = true;
+			internal static readonly string Variant = "generic-netf";
 #elif ASF_VARIANT_LINUX_ARM
 			internal static readonly bool CanUpdate = true;
 			internal static readonly string Variant = "linux-arm";
