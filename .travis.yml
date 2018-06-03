@@ -25,8 +25,7 @@ env:
     - DOTNET_CLI_TELEMETRY_OPTOUT: 1
     - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
     - NET_CORE_VERSION: netcoreapp2.0
-    - NET_FRAMEWORK_VERSION: net471
-    - VARIANTS="generic generic-netf linux-arm linux-x64 osx-x64 win-x64" # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
+    - VARIANTS="generic linux-arm linux-x64 osx-x64 win-x64" # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
 
 before_script:
   - |
@@ -42,19 +41,14 @@ script:
   - |
     set -e
 
-    dotnet build ArchiSteamFarm -c "$CONFIGURATION" -o 'out/source' /nologo
-    dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -o 'out/source' /nologo
+    dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/source' /nologo
+    dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/source' /nologo
 
     publish() {
-        case "$1" in
-            *-netf) targetFramework=$NET_FRAMEWORK_VERSION ;;
-            *) targetFramework=$NET_CORE_VERSION
-        esac
-
         if [ "$1" = 'generic' ]; then
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$targetFramework" -o "out/${1}" /nologo "/p:ASFVariant=$1"
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" /nologo "/p:ASFVariant=$1"
         else
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$targetFramework" -o "out/${1}" -r "$1" /nologo "/p:ASFVariant=$1" "/p:CrossGenDuringPublish=false"
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" -r "$1" /nologo "/p:ASFVariant=$1" "/p:CrossGenDuringPublish=false"
         fi
 
         # If we include any helper scripts for this variant, copy them to output directory

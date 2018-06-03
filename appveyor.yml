@@ -87,7 +87,7 @@ after_test:
             $TargetFramework = $env:NET_CORE_VERSION
         }
 
-        if ($Variant -eq 'generic') {
+        if ($Variant -like 'generic*') {
             dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$TargetFramework" -o "out\$Variant" /nologo "/p:ASFVariant=$Variant"
         } else {
             dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$TargetFramework" -o "out\$Variant" -r "$Variant" /nologo "/p:ASFVariant=$Variant" "/p:CrossGenDuringPublish=false"

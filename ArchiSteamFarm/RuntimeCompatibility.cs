@@ -20,15 +20,17 @@
 //  limitations under the License.
 
 #if NET471
-using System;
 using System.Net.WebSockets;
 using System.Threading;
 #endif
 
+using System;
 using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal static class RuntimeCompatibility {
+		internal static bool IsRunningOnMono => Type.GetType("Mono.Runtime") != null;
+
 #if NET471
 		internal static async Task<WebSocketReceiveResult> ReceiveAsync(this WebSocket webSocket, byte[] buffer, CancellationToken cancellationToken) => await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken).ConfigureAwait(false);
 
