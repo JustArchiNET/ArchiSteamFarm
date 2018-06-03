@@ -6,6 +6,7 @@ TESTS_PROJECT="${MAIN_PROJECT}.Tests"
 SOLUTION="${MAIN_PROJECT}.sln"
 CONFIGURATION="Release"
 OUT="out/source"
+TARGET_FRAMEWORK="netcoreapp2.1"
 
 CLEAN=0
 LINK_DURING_PUBLISH=1
@@ -52,7 +53,7 @@ if [[ ! -f "$SOLUTION" ]]; then
 	exit 1
 fi
 
-DOTNET_FLAGS=(-c "$CONFIGURATION" -o "$OUT" '/nologo')
+DOTNET_FLAGS=(-c "$CONFIGURATION" -f "$TARGET_FRAMEWORK" -o "$OUT" '/nologo')
 
 if [[ "$LINK_DURING_PUBLISH" -eq 0 ]]; then
 	DOTNET_FLAGS+=('/p:LinkDuringPublish=false')
