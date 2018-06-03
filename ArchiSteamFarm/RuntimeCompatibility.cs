@@ -80,21 +80,18 @@ namespace ArchiSteamFarm {
 		internal static class Path {
 			internal static string GetRelativePath(string relativeTo, string path) {
 #if NET471
-				Uri fromUri = new Uri(relativeTo);
-				Uri toUri = new Uri(path);
-
-				if (fromUri.Scheme != toUri.Scheme) {
-					return path;
+				// This is a very silly implementation
+				if (!path.StartsWith(relativeTo, StringComparison.OrdinalIgnoreCase)) {
+					throw new NotImplementedException();
 				}
 
-				Uri relativeUri = fromUri.MakeRelativeUri(toUri);
-				string relativePath = Uri.UnescapeDataString(relativeUri.ToString());
+				string result = path.Substring(relativeTo.Length);
 
-				if (toUri.Scheme.Equals("file", StringComparison.InvariantCultureIgnoreCase)) {
-					relativePath = relativePath.Replace(System.IO.Path.AltDirectorySeparatorChar, System.IO.Path.DirectorySeparatorChar);
+				if ((result[0] == System.IO.Path.DirectorySeparatorChar) || (result[0] == System.IO.Path.AltDirectorySeparatorChar)) {
+					return result.Substring(1);
 				}
 
-				return relativePath;
+				return result;
 #else
 				return System.IO.Path.GetRelativePath(relativeTo, path);
 #endif
