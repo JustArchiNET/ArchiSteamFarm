@@ -24,7 +24,7 @@ env:
     - CONFIGURATION: Release
     - DOTNET_CLI_TELEMETRY_OPTOUT: 1
     - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-    - NET_CORE_VERSION: netcoreapp2.0
+    - NET_CORE_VERSION: netcoreapp2.1
     - VARIANTS="generic linux-arm linux-x64 osx-x64 win-x64" # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
 
 before_script:
