@@ -20,7 +20,7 @@
     <RepositoryUrl>https://github.com/JustArchi/ArchiSteamFarm.git</RepositoryUrl>
     <RuntimeIdentifiers>linux-arm;linux-x64;osx-x64;win-x64</RuntimeIdentifiers>
     <ServerGarbageCollection>false</ServerGarbageCollection>
-    <TargetFrameworks>netcoreapp2.0;net471</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.0;net472</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
@@ -30,7 +30,7 @@
     <WarningsAsErrors />
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net471'">
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net472'">
     <LinkDuringPublish>false</LinkDuringPublish>
   </PropertyGroup>
 

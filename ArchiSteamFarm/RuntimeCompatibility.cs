@@ -22,7 +22,7 @@
 using System;
 using System.Threading.Tasks;
 
-#if NET471
+#if NET472
 using System.Net.WebSockets;
 using System.Threading;
 #endif
@@ -31,7 +31,7 @@ namespace ArchiSteamFarm {
 	internal static class RuntimeCompatibility {
 		internal static bool IsRunningOnMono => Type.GetType("Mono.Runtime") != null;
 
-#if NET471
+#if NET472
 		internal static async Task<WebSocketReceiveResult> ReceiveAsync(this WebSocket webSocket, byte[] buffer, CancellationToken cancellationToken) => await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken).ConfigureAwait(false);
 
 		internal static async Task SendAsync(this WebSocket webSocket, byte[] buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) {
@@ -44,7 +44,7 @@ namespace ArchiSteamFarm {
 		internal static class File {
 #pragma warning disable 1998
 			internal static async Task AppendAllTextAsync(string path, string contents) {
-#if NET471
+#if NET472
 				System.IO.File.AppendAllText(path, contents);
 #else
 				await System.IO.File.AppendAllTextAsync(path, contents).ConfigureAwait(false);
@@ -52,7 +52,7 @@ namespace ArchiSteamFarm {
 			}
 
 			internal static async Task<byte[]> ReadAllBytesAsync(string path) {
-#if NET471
+#if NET472
 				return System.IO.File.ReadAllBytes(path);
 #else
 				return await System.IO.File.ReadAllBytesAsync(path).ConfigureAwait(false);
@@ -60,7 +60,7 @@ namespace ArchiSteamFarm {
 			}
 
 			internal static async Task<string> ReadAllTextAsync(string path) {
-#if NET471
+#if NET472
 				return System.IO.File.ReadAllText(path);
 #else
 				return await System.IO.File.ReadAllTextAsync(path).ConfigureAwait(false);
@@ -68,7 +68,7 @@ namespace ArchiSteamFarm {
 			}
 
 			internal static async Task WriteAllTextAsync(string path, string contents) {
-#if NET471
+#if NET472
 				System.IO.File.WriteAllText(path, contents);
 #else
 				await System.IO.File.WriteAllTextAsync(path, contents).ConfigureAwait(false);
@@ -79,7 +79,7 @@ namespace ArchiSteamFarm {
 
 		internal static class Path {
 			internal static string GetRelativePath(string relativeTo, string path) {
-#if NET471
+#if NET472
 				// This is a very silly implementation
 				if (!path.StartsWith(relativeTo, StringComparison.OrdinalIgnoreCase)) {
 					throw new NotImplementedException();
