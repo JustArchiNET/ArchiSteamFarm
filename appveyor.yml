@@ -16,7 +16,8 @@ environment:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   NET_CORE_VERSION: netcoreapp2.0
   NET_FRAMEWORK_VERSION: net471
-  VARIANTS: generic generic-netf linux-arm linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
+  SINGLE_VARIANTS: generic-netf # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
+  VARIANTS: generic linux-arm linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
 matrix:
   allow_failures:
     - image: Visual Studio 2017 Preview
@@ -147,6 +148,11 @@ after_test:
     }
 
     Get-Job | Receive-Job -AutoRemoveJob -Wait
+
+    foreach ($variant in $env:SINGLE_VARIANTS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
+        Start-Job -Name "$variant" -ScriptBlock $PublishBlock -ArgumentList "$variant"
+        Get-Job | Receive-Job -AutoRemoveJob -Wait
+    }
 deploy:
 - provider: GitHub
   tag: $(appveyor_repo_tag_name)
