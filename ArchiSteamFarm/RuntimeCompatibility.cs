@@ -19,13 +19,13 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
+using System;
+using System.Threading.Tasks;
+
 #if NET471
 using System.Net.WebSockets;
 using System.Threading;
 #endif
-
-using System;
-using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal static class RuntimeCompatibility {
