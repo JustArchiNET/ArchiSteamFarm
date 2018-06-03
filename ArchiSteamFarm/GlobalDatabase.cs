@@ -90,7 +90,7 @@ namespace ArchiSteamFarm {
 			GlobalDatabase globalDatabase;
 
 			try {
-				globalDatabase = JsonConvert.DeserializeObject<GlobalDatabase>(await File.ReadAllTextAsync(filePath).ConfigureAwait(false));
+				globalDatabase = JsonConvert.DeserializeObject<GlobalDatabase>(await RuntimeCompatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false));
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 				return null;
@@ -159,7 +159,7 @@ namespace ArchiSteamFarm {
 
 			try {
 				// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
-				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+				await RuntimeCompatibility.File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
 				if (File.Exists(FilePath)) {
 					File.Replace(newFilePath, FilePath, null);

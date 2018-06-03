@@ -56,7 +56,7 @@ namespace ArchiSteamFarm {
 			string message = string.Format(DateTime.Now + " " + Strings.ErrorEarlyFatalExceptionInfo + Environment.NewLine, SharedInfo.Version);
 
 			try {
-				await File.WriteAllTextAsync(SharedInfo.LogFile, message).ConfigureAwait(false);
+				await RuntimeCompatibility.File.WriteAllTextAsync(SharedInfo.LogFile, message).ConfigureAwait(false);
 			} catch {
 				// Ignored, we can't do anything with this
 			}
@@ -71,7 +71,7 @@ namespace ArchiSteamFarm {
 				message = string.Format(Strings.ErrorEarlyFatalExceptionPrint, previousMethodName, exception.Message, exception.StackTrace);
 
 				try {
-					await File.AppendAllTextAsync(SharedInfo.LogFile, message).ConfigureAwait(false);
+					await RuntimeCompatibility.File.AppendAllTextAsync(SharedInfo.LogFile, message).ConfigureAwait(false);
 				} catch {
 					// Ignored, we can't do anything with this
 				}

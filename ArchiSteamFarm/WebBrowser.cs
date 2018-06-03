@@ -75,8 +75,10 @@ namespace ArchiSteamFarm {
 			// Don't use Expect100Continue, we're sure about our POSTs, save some TCP packets
 			ServicePointManager.Expect100Continue = false;
 
+#if !NET471
 			// Reuse ports if possible
 			ServicePointManager.ReusePort = true;
+#endif
 		}
 
 		internal static HtmlDocument StringToHtmlDocument(string html) {
