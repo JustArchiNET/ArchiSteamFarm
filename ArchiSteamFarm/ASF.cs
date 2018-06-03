@@ -548,7 +548,7 @@ namespace ArchiSteamFarm {
 			string runtimesDirectory = Path.Combine(targetDirectory, "runtimes");
 			if (Directory.Exists(runtimesDirectory)) {
 				foreach (string file in Directory.EnumerateFiles(runtimesDirectory, "*", SearchOption.AllDirectories)) {
-					string directory = Path.Combine(backupDirectory, Path.GetDirectoryName(Path.GetRelativePath(targetDirectory, file)));
+					string directory = Path.Combine(backupDirectory, Path.GetDirectoryName(RuntimeCompatibility.Path.GetRelativePath(targetDirectory, file)));
 					Directory.CreateDirectory(directory);
 
 					string target = Path.Combine(directory, Path.GetFileName(file));

@@ -52,10 +52,13 @@ namespace ArchiSteamFarm {
 				AllowAutoRedirect = false, // This must be false if we want to handle custom redirection schemes such as "steammobile"
 				AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
 				CookieContainer = CookieContainer,
-				MaxConnectionsPerServer = MaxConnections,
 				Proxy = webProxy,
 				UseProxy = webProxy != null
 			};
+
+			if (!RuntimeCompatibility.IsRunningOnMono) {
+				httpClientHandler.MaxConnectionsPerServer = MaxConnections;
+			}
 
 			HttpClient = new HttpClient(httpClientHandler) { Timeout = TimeSpan.FromSeconds(extendedTimeout ? ExtendedTimeoutMultiplier * Program.GlobalConfig.ConnectionTimeout : Program.GlobalConfig.ConnectionTimeout) };
 
@@ -76,7 +79,9 @@ namespace ArchiSteamFarm {
 			ServicePointManager.Expect100Continue = false;
 
 			// Reuse ports if possible
-			ServicePointManager.ReusePort = true;
+			if (!RuntimeCompatibility.IsRunningOnMono) {
+				ServicePointManager.ReusePort = true;
+			}
 		}
 
 		internal static HtmlDocument StringToHtmlDocument(string html) {

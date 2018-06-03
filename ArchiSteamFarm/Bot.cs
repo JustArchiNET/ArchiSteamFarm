@@ -1414,7 +1414,7 @@ namespace ArchiSteamFarm {
 			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorConverting);
 
 			try {
-				MobileAuthenticator authenticator = JsonConvert.DeserializeObject<MobileAuthenticator>(await File.ReadAllTextAsync(maFilePath).ConfigureAwait(false));
+				MobileAuthenticator authenticator = JsonConvert.DeserializeObject<MobileAuthenticator>(await RuntimeCompatibility.File.ReadAllTextAsync(maFilePath).ConfigureAwait(false));
 				await BotDatabase.SetMobileAuthenticator(authenticator).ConfigureAwait(false);
 				File.Delete(maFilePath);
 			} catch (Exception e) {
@@ -1716,7 +1716,7 @@ namespace ArchiSteamFarm {
 
 			if (File.Exists(SentryFilePath)) {
 				try {
-					byte[] sentryFileContent = await File.ReadAllBytesAsync(SentryFilePath).ConfigureAwait(false);
+					byte[] sentryFileContent = await RuntimeCompatibility.File.ReadAllBytesAsync(SentryFilePath).ConfigureAwait(false);
 					sentryFileHash = SteamKit2.CryptoHelper.SHAHash(sentryFileContent);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericException(e);
@@ -2459,7 +2459,7 @@ namespace ArchiSteamFarm {
 				string logEntry = name + DefaultBackgroundKeysRedeemerSeparator + "[" + result.PurchaseResultDetail + "]" + ((result.Items != null) && (result.Items.Count > 0) ? DefaultBackgroundKeysRedeemerSeparator + string.Join("", result.Items) : "") + DefaultBackgroundKeysRedeemerSeparator + key;
 
 				try {
-					await File.AppendAllTextAsync(redeemed ? KeysToRedeemUsedFilePath : KeysToRedeemUnusedFilePath, logEntry + Environment.NewLine).ConfigureAwait(false);
+					await RuntimeCompatibility.File.AppendAllTextAsync(redeemed ? KeysToRedeemUsedFilePath : KeysToRedeemUnusedFilePath, logEntry + Environment.NewLine).ConfigureAwait(false);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericException(e);
 					ArchiLogger.LogGenericError(string.Format(Strings.Content, logEntry));
