@@ -90,7 +90,7 @@ after_test:
             $targetFramework = $env:NET_CORE_VERSION
         }
 
-        if ($Variant -like 'generic*') {
+        if ($variant -like 'generic*') {
             # TODO: Workaround https://github.com/mono/linker/issues/286 until it's resolved
             dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" /nologo "/p:ASFVariant=$Variant" "/p:LinkDuringPublish=false"
         } else {
