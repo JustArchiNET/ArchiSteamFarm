@@ -16,7 +16,7 @@ branches:
 group: travis_latest
 
 # ASF is based on .NET Core platform
-dotnet: 2.1.105
+dotnet: 2.1.300
 mono: none
 
 env:
@@ -24,7 +24,7 @@ env:
     - CONFIGURATION: Release
     - DOTNET_CLI_TELEMETRY_OPTOUT: 1
     - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-    - NET_CORE_VERSION: netcoreapp2.0
+    - NET_CORE_VERSION: netcoreapp2.1
     - VARIANTS="generic linux-arm linux-x64 osx-x64 win-x64" # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
 
 before_script:
@@ -46,7 +46,8 @@ script:
 
     publish() {
         if [ "$1" = 'generic' ]; then
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" /nologo "/p:ASFVariant=$1"
+            # TODO: Workaround https://github.com/mono/linker/issues/286 until it's resolved
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" /nologo "/p:ASFVariant=$1" "/p:LinkDuringPublish=false"
         else
             dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" -r "$1" /nologo "/p:ASFVariant=$1" "/p:CrossGenDuringPublish=false"
         fi
@@ -60,6 +61,7 @@ script:
     for variant in $VARIANTS; do
         publish "$variant" &
     done
+
     wait
 
 matrix:
