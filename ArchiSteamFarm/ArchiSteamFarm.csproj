@@ -30,6 +30,10 @@
     <WarningsAsErrors />
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net471'">
+    <LinkDuringPublish>false</LinkDuringPublish>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(ASFVariant)' != ''">
     <DefineConstants>$(DefineConstants);ASF_VARIANT_$(ASFVariant.Replace('-', '_').ToUpperInvariant())</DefineConstants>
   </PropertyGroup>
