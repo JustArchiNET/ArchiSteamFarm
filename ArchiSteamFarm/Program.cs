@@ -188,7 +188,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task InitASF(IReadOnlyCollection<string> args) {
-			ASF.ArchiLogger.LogGenericInfo(SharedInfo.PublicIdentifier + " V" + SharedInfo.Version + " (" + SharedInfo.ModuleVersion + ")");
+			ASF.ArchiLogger.LogGenericInfo(SharedInfo.PublicIdentifier + " V" + SharedInfo.Version + " (" + SharedInfo.BuildInfo.Variant + "/" + SharedInfo.ModuleVersion + ")");
 
 			await InitGlobalConfigAndLanguage().ConfigureAwait(false);
 
