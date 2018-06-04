@@ -755,11 +755,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (resultInSeconds == 0) {
-				return 0;
-			}
-
-			return (byte) (resultInSeconds / 86400);
+			return resultInSeconds == 0 ? (byte?) 0 : (byte) (resultInSeconds / 86400);
 		}
 
 		internal async Task<string> GetTradeToken() {
@@ -1042,11 +1038,7 @@ namespace ArchiSteamFarm {
 			Dictionary<string, string> data = new Dictionary<string, string>(2) { { "wallet_code", key } };
 
 			Steam.RedeemWalletResponse response = await UrlPostToJsonObjectWithSession<Steam.RedeemWalletResponse>(SteamStoreURL, request, data).ConfigureAwait(false);
-			if (response == null) {
-				return null;
-			}
-
-			return (response.Result, response.PurchaseResultDetail);
+			return response == null ? ((EResult Result, EPurchaseResultDetail? PurchaseResult)?) null : (response.Result, response.PurchaseResultDetail);
 		}
 
 		internal async Task<bool> SendTradeOffer(ulong partnerID, IReadOnlyCollection<Steam.Asset> itemsToGive, string token = null) {
@@ -1274,11 +1266,7 @@ namespace ArchiSteamFarm {
 			}
 
 			int index = hashName.IndexOf('-');
-			if (index <= 0) {
-				return 0;
-			}
-
-			return uint.TryParse(hashName.Substring(0, index), out uint appID) ? appID : 0;
+			return (index > 0) && uint.TryParse(hashName.Substring(0, index), out uint appID) && (appID != 0) ? appID : 0;
 		}
 
 		private static Steam.Asset.EType GetItemType(string name) {

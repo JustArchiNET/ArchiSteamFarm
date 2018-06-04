@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -1042,31 +1043,10 @@ namespace ArchiSteamFarm {
 				PlayableAppID = appID;
 			}
 
-			public bool Equals(Game other) {
-				if (other == null) {
-					return false;
-				}
+			[SuppressMessage("ReSharper", "PossibleUnintendedReferenceComparison")]
+			public bool Equals(Game other) => (other != null) && ((other == this) || (AppID == other.AppID));
 
-				// ReSharper disable once PossibleUnintendedReferenceComparison - we indeed want to compare those two by reference
-				if (other == this) {
-					return true;
-				}
-
-				return AppID == other.AppID;
-			}
-
-			public override bool Equals(object obj) {
-				if (obj == null) {
-					return false;
-				}
-
-				if (obj == this) {
-					return true;
-				}
-
-				return obj is Game game && Equals(game);
-			}
-
+			public override bool Equals(object obj) => (obj != null) && ((obj == this) || (obj is Game game && Equals(game)));
 			public override int GetHashCode() => (int) (AppID - 1 - int.MaxValue);
 		}
 	}

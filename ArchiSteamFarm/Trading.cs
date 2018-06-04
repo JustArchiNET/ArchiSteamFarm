@@ -78,11 +78,7 @@ namespace ArchiSteamFarm {
 			// This has to be done as we might have multiple items of given ClassID with multiple amounts
 			Dictionary<ulong, uint> itemAmounts = new Dictionary<ulong, uint>();
 			foreach (Steam.Asset item in inventory) {
-				if (itemAmounts.TryGetValue(item.ClassID, out uint amount)) {
-					itemAmounts[item.ClassID] = amount + item.Amount;
-				} else {
-					itemAmounts[item.ClassID] = item.Amount;
-				}
+				itemAmounts[item.ClassID] = itemAmounts.TryGetValue(item.ClassID, out uint amount) ? amount + item.Amount : item.Amount;
 			}
 
 			// Calculate our value of items to give on per-game basis

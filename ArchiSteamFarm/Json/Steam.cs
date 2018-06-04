@@ -523,11 +523,7 @@ namespace ArchiSteamFarm.Json {
 						itemsPerType = new Dictionary<Asset.EType, uint> { [item.Type] = item.Amount };
 						itemsToGivePerGame[item.RealAppID] = itemsPerType;
 					} else {
-						if (itemsPerType.TryGetValue(item.Type, out uint amount)) {
-							itemsPerType[item.Type] = amount + item.Amount;
-						} else {
-							itemsPerType[item.Type] = item.Amount;
-						}
+						itemsPerType[item.Type] = itemsPerType.TryGetValue(item.Type, out uint amount) ? amount + item.Amount : item.Amount;
 					}
 				}
 
@@ -538,11 +534,7 @@ namespace ArchiSteamFarm.Json {
 
 						itemsToReceivePerGame[item.RealAppID] = itemsPerType;
 					} else {
-						if (itemsPerType.TryGetValue(item.Type, out uint amount)) {
-							itemsPerType[item.Type] = amount + item.Amount;
-						} else {
-							itemsPerType[item.Type] = item.Amount;
-						}
+						itemsPerType[item.Type] = itemsPerType.TryGetValue(item.Type, out uint amount) ? amount + item.Amount : item.Amount;
 					}
 				}
 

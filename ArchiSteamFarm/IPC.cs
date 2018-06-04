@@ -953,11 +953,7 @@ namespace ArchiSteamFarm {
 					if (authorized) {
 						FailedAuthorizations.TryRemove(ipAddress, out _);
 					} else {
-						if (FailedAuthorizations.TryGetValue(ipAddress, out attempts)) {
-							FailedAuthorizations[ipAddress] = ++attempts;
-						} else {
-							FailedAuthorizations[ipAddress] = 1;
-						}
+						FailedAuthorizations[ipAddress] = FailedAuthorizations.TryGetValue(ipAddress, out attempts) ? ++attempts : (byte) 1;
 					}
 				} finally {
 					AuthorizationSemaphore.Release();

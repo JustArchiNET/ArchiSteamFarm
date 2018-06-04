@@ -492,11 +492,7 @@ namespace ArchiSteamFarm {
 				return (appID, DateTime.MinValue);
 			}
 
-			if (!productInfoResultSet.Complete || productInfoResultSet.Failed) {
-				return (optimisticDiscovery ? appID : 0, DateTime.MinValue);
-			}
-
-			return (appID, DateTime.MinValue);
+			return ((productInfoResultSet.Complete && !productInfoResultSet.Failed) || optimisticDiscovery ? appID : 0, DateTime.MinValue);
 		}
 
 		internal static HashSet<Bot> GetBots(string args) {
@@ -737,11 +733,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (IsOwner(steamID)) {
-				return true;
-			}
-
-			return GetSteamUserPermission(steamID) >= BotConfig.EPermission.Master;
+			return IsOwner(steamID) || (GetSteamUserPermission(steamID) >= BotConfig.EPermission.Master);
 		}
 
 		internal bool IsPriorityIdling(uint appID) {
@@ -1557,11 +1549,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (IsOwner(steamID)) {
-				return true;
-			}
-
-			return SteamFamilySharingIDs.Contains(steamID) || (GetSteamUserPermission(steamID) >= BotConfig.EPermission.FamilySharing);
+			return IsOwner(steamID) || SteamFamilySharingIDs.Contains(steamID) || (GetSteamUserPermission(steamID) >= BotConfig.EPermission.FamilySharing);
 		}
 
 		private bool IsMasterClanID(ulong steamID) {
@@ -1579,11 +1567,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (IsOwner(steamID)) {
-				return true;
-			}
-
-			return GetSteamUserPermission(steamID) >= BotConfig.EPermission.Operator;
+			return IsOwner(steamID) || (GetSteamUserPermission(steamID) >= BotConfig.EPermission.Operator);
 		}
 
 		private static bool IsOwner(ulong steamID) {
@@ -3798,13 +3782,7 @@ namespace ArchiSteamFarm {
 
 			await LimitGiftsRequestsAsync().ConfigureAwait(false);
 
-			Dictionary<uint, string> ownedGames;
-			if (await ArchiWebHandler.HasValidApiKey().ConfigureAwait(false)) {
-				ownedGames = await ArchiWebHandler.GetOwnedGames(CachedSteamID).ConfigureAwait(false);
-			} else {
-				ownedGames = await ArchiWebHandler.GetMyOwnedGames().ConfigureAwait(false);
-			}
-
+			Dictionary<uint, string> ownedGames = await ArchiWebHandler.HasValidApiKey().ConfigureAwait(false) ? await ArchiWebHandler.GetOwnedGames(CachedSteamID).ConfigureAwait(false) : await ArchiWebHandler.GetMyOwnedGames().ConfigureAwait(false);
 			if ((ownedGames == null) || (ownedGames.Count == 0)) {
 				return (FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(ownedGames))), null);
 			}
@@ -3884,11 +3862,7 @@ namespace ArchiSteamFarm {
 
 			Dictionary<uint, ushort> ownedGameCounts = new Dictionary<uint, ushort>();
 			foreach (uint gameID in validResults.Where(validResult => (validResult.OwnedGameIDs != null) && (validResult.OwnedGameIDs.Count > 0)).SelectMany(validResult => validResult.OwnedGameIDs)) {
-				if (ownedGameCounts.TryGetValue(gameID, out ushort count)) {
-					ownedGameCounts[gameID] = ++count;
-				} else {
-					ownedGameCounts[gameID] = 1;
-				}
+				ownedGameCounts[gameID] = ownedGameCounts.TryGetValue(gameID, out ushort count) ? ++count : (ushort) 1;
 			}
 
 			IEnumerable<string> extraResponses = ownedGameCounts.Select(kv => FormatStaticResponse(string.Format(Strings.BotOwnsOverviewPerGame, kv.Value, validResults.Count, kv.Key)));

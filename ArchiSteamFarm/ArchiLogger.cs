@@ -20,7 +20,6 @@
 //  limitations under the License.
 
 using System;
-using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;

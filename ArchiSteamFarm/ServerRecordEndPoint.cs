@@ -46,18 +46,7 @@ namespace ArchiSteamFarm {
 
 		private ServerRecordEndPoint() { }
 
-		public override bool Equals(object obj) {
-			if (obj == null) {
-				return false;
-			}
-
-			if (obj == this) {
-				return true;
-			}
-
-			return obj is ServerRecordEndPoint serverRecord && Equals(serverRecord);
-		}
-
+		public override bool Equals(object obj) => (obj != null) && ((obj == this) || (obj is ServerRecordEndPoint serverRecord && Equals(serverRecord)));
 		public override int GetHashCode() => (Host, Port, ProtocolTypes).GetHashCode();
 
 		private bool Equals(ServerRecordEndPoint other) => string.Equals(Host, other.Host) && (Port == other.Port) && (ProtocolTypes == other.ProtocolTypes);
