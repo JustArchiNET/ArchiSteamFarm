@@ -1,6 +1,5 @@
 {
 	"AutoRestart": true,
-	"BackgroundGCPeriod": 0,
 	"Blacklist": [],
 	"CommandPrefix": "!",
 	"ConfirmationsLimiterDelay": 10,
