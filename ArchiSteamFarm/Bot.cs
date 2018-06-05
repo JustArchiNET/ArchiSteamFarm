@@ -477,6 +477,7 @@ namespace ArchiSteamFarm {
 				}
 
 				string[] dlcAppIDsTexts = listOfDlc.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
 				foreach (string dlcAppIDsText in dlcAppIDsTexts) {
 					if (!uint.TryParse(dlcAppIDsText, out uint dlcAppID) || (dlcAppID == 0)) {
 						ArchiLogger.LogNullError(nameof(dlcAppID));
@@ -2549,7 +2550,8 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.WarningFailed);
 			}
 
-			return FormatBotResponse(Strings.Success);
+			string response = FormatBotResponse(Strings.Success);
+			return response;
 		}
 
 		private static async Task<string> Response2FAConfirm(ulong steamID, string botNames, bool confirm) {
@@ -2648,17 +2650,18 @@ namespace ArchiSteamFarm {
 
 			string[] gameIDs = targetGameIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
+			if (gameIDs.Length == 0) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(gameIDs)));
+			}
+
 			HashSet<uint> gamesToRedeem = new HashSet<uint>();
+
 			foreach (string game in gameIDs) {
 				if (!uint.TryParse(game, out uint gameID) || (gameID == 0)) {
 					return FormatBotResponse(string.Format(Strings.ErrorParsingObject, nameof(gameID)));
 				}
 
 				gamesToRedeem.Add(gameID);
-			}
-
-			if (gamesToRedeem.Count == 0) {
-				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(gamesToRedeem)));
 			}
 
 			return await ResponseAddLicense(steamID, gamesToRedeem).ConfigureAwait(false);
@@ -2817,9 +2820,14 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			string[] flags = options.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+			if (flags.Length == 0) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(flags)));
+			}
+
 			ERedeemFlags redeemFlags = ERedeemFlags.None;
 
-			string[] flags = options.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 			foreach (string flag in flags) {
 				switch (flag.ToUpperInvariant()) {
 					case "FD":
@@ -2942,17 +2950,18 @@ namespace ArchiSteamFarm {
 
 			string[] targets = targetSteamIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
+			if (targets.Length == 0) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(targets)));
+			}
+
 			HashSet<ulong> targetIDs = new HashSet<ulong>();
+
 			foreach (string target in targets) {
 				if (!ulong.TryParse(target, out ulong targetID) || (targetID == 0)) {
 					return FormatBotResponse(string.Format(Strings.ErrorParsingObject, nameof(targetID)));
 				}
 
 				targetIDs.Add(targetID);
-			}
-
-			if (targetIDs.Count == 0) {
-				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(targetIDs)));
 			}
 
 			await BotDatabase.AddBlacklistedFromTradesSteamIDs(targetIDs).ConfigureAwait(false);
@@ -3002,17 +3011,18 @@ namespace ArchiSteamFarm {
 
 			string[] targets = targetSteamIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
+			if (targets.Length == 0) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(targets)));
+			}
+
 			HashSet<ulong> targetIDs = new HashSet<ulong>();
+
 			foreach (string target in targets) {
 				if (!ulong.TryParse(target, out ulong targetID) || (targetID == 0)) {
 					return FormatBotResponse(string.Format(Strings.ErrorParsingObject, nameof(targetID)));
 				}
 
 				targetIDs.Add(targetID);
-			}
-
-			if (targetIDs.Count == 0) {
-				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(targetIDs)));
 			}
 
 			await BotDatabase.RemoveBlacklistedFromTradesSteamIDs(targetIDs).ConfigureAwait(false);
@@ -3188,17 +3198,18 @@ namespace ArchiSteamFarm {
 
 			string[] targets = targetAppIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
+			if (targets.Length == 0) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(targets)));
+			}
+
 			HashSet<uint> appIDs = new HashSet<uint>();
+
 			foreach (string target in targets) {
 				if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
 					return FormatBotResponse(string.Format(Strings.ErrorParsingObject, nameof(appID)));
 				}
 
 				appIDs.Add(appID);
-			}
-
-			if (appIDs.Count == 0) {
-				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(appIDs)));
 			}
 
 			await BotDatabase.AddIdlingBlacklistedAppIDs(appIDs).ConfigureAwait(false);
@@ -3248,17 +3259,18 @@ namespace ArchiSteamFarm {
 
 			string[] targets = targetAppIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
+			if (targets.Length == 0) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(targets)));
+			}
+
 			HashSet<uint> appIDs = new HashSet<uint>();
+
 			foreach (string target in targets) {
 				if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
 					return FormatBotResponse(string.Format(Strings.ErrorParsingObject, nameof(appID)));
 				}
 
 				appIDs.Add(appID);
-			}
-
-			if (appIDs.Count == 0) {
-				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(appIDs)));
 			}
 
 			await BotDatabase.RemoveIdlingBlacklistedAppIDs(appIDs).ConfigureAwait(false);
@@ -3353,17 +3365,18 @@ namespace ArchiSteamFarm {
 
 			string[] targets = targetAppIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
+			if (targets.Length == 0) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(targets)));
+			}
+
 			HashSet<uint> appIDs = new HashSet<uint>();
+
 			foreach (string target in targets) {
 				if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
 					return FormatBotResponse(string.Format(Strings.ErrorParsingObject, nameof(appID)));
 				}
 
 				appIDs.Add(appID);
-			}
-
-			if (appIDs.Count == 0) {
-				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(appIDs)));
 			}
 
 			await BotDatabase.AddIdlingPriorityAppIDs(appIDs).ConfigureAwait(false);
@@ -3413,17 +3426,18 @@ namespace ArchiSteamFarm {
 
 			string[] targets = targetAppIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
+			if (targets.Length == 0) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(targets)));
+			}
+
 			HashSet<uint> appIDs = new HashSet<uint>();
+
 			foreach (string target in targets) {
 				if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
 					return FormatBotResponse(string.Format(Strings.ErrorParsingObject, nameof(appID)));
 				}
 
 				appIDs.Add(appID);
-			}
-
-			if (appIDs.Count == 0) {
-				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(appIDs)));
 			}
 
 			await BotDatabase.RemoveIdlingPriorityAppIDs(appIDs).ConfigureAwait(false);
@@ -3798,6 +3812,10 @@ namespace ArchiSteamFarm {
 			} else {
 				string[] games = query.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
+				if (games.Length == 0) {
+					return (FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(games))), null);
+				}
+
 				foreach (string game in games) {
 					// Check if this is gameID
 					if (uint.TryParse(game, out uint gameID) && (gameID != 0)) {
@@ -3879,7 +3897,12 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			return !string.IsNullOrEmpty(BotConfig.SteamPassword) ? FormatBotResponse(string.Format(Strings.BotEncryptedPassword, CryptoHelper.ECryptoMethod.AES, CryptoHelper.Encrypt(CryptoHelper.ECryptoMethod.AES, BotConfig.SteamPassword))) + FormatBotResponse(string.Format(Strings.BotEncryptedPassword, CryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser, CryptoHelper.Encrypt(CryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser, BotConfig.SteamPassword))) : FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(BotConfig.SteamPassword)));
+			if (string.IsNullOrEmpty(BotConfig.SteamPassword)) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(BotConfig.SteamPassword)));
+			}
+
+			string response = FormatBotResponse(string.Format(Strings.BotEncryptedPassword, CryptoHelper.ECryptoMethod.AES, CryptoHelper.Encrypt(CryptoHelper.ECryptoMethod.AES, BotConfig.SteamPassword))) + FormatBotResponse(string.Format(Strings.BotEncryptedPassword, CryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser, CryptoHelper.Encrypt(CryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser, BotConfig.SteamPassword)));
+			return response;
 		}
 
 		private static async Task<string> ResponsePassword(ulong steamID, string botNames) {
@@ -4114,6 +4137,10 @@ namespace ArchiSteamFarm {
 
 			string[] privacySettingsArgs = privacySettingsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
+			if (privacySettingsArgs.Length == 0) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(privacySettingsArgs)));
+			}
+
 			// There are only 6 privacy settings
 			if (privacySettingsArgs.Length > 6) {
 				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(privacySettingsArgs)));
@@ -4229,9 +4256,9 @@ namespace ArchiSteamFarm {
 		}
 
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
-		private async Task<string> ResponseRedeem(ulong steamID, string keys, ERedeemFlags redeemFlags = ERedeemFlags.None) {
-			if ((steamID == 0) || string.IsNullOrEmpty(keys)) {
-				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(keys));
+		private async Task<string> ResponseRedeem(ulong steamID, string keysText, ERedeemFlags redeemFlags = ERedeemFlags.None) {
+			if ((steamID == 0) || string.IsNullOrEmpty(keysText)) {
+				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(keysText));
 				return null;
 			}
 
@@ -4243,16 +4270,22 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
+			string[] keys = keysText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+			if (keys.Length == 0) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(keys)));
+			}
+
 			bool forward = !redeemFlags.HasFlag(ERedeemFlags.SkipForwarding) && (redeemFlags.HasFlag(ERedeemFlags.ForceForwarding) || BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.Forwarding));
 			bool distribute = !redeemFlags.HasFlag(ERedeemFlags.SkipDistributing) && (redeemFlags.HasFlag(ERedeemFlags.ForceDistributing) || BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.Distributing));
 			bool keepMissingGames = !redeemFlags.HasFlag(ERedeemFlags.SkipKeepMissingGames) && (redeemFlags.HasFlag(ERedeemFlags.ForceKeepMissingGames) || BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.KeepMissingGames));
 
+			HashSet<string> pendingKeys = new HashSet<string>();
+			HashSet<string> unusedKeys = new HashSet<string>(pendingKeys);
+
 			StringBuilder response = new StringBuilder();
 
-			HashSet<string> keysList = new HashSet<string>(keys.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries));
-			HashSet<string> unusedKeys = new HashSet<string>(keysList);
-
-			using (HashSet<string>.Enumerator keysEnumerator = keysList.GetEnumerator()) {
+			using (HashSet<string>.Enumerator keysEnumerator = pendingKeys.GetEnumerator()) {
 				HashSet<Bot> rateLimitedBots = new HashSet<Bot>();
 				string key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null; // Initial key
 
@@ -4798,9 +4831,14 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotSendingTradeToYourself);
 			}
 
+			string[] modes = mode.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+			if (modes.Length == 0) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(modes)));
+			}
+
 			HashSet<Steam.Asset.EType> transferTypes = new HashSet<Steam.Asset.EType>();
 
-			string[] modes = mode.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 			foreach (string singleMode in modes) {
 				switch (singleMode.ToUpper()) {
 					case "A":
