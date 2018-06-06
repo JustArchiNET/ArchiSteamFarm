@@ -93,10 +93,10 @@
   "title-commands-auto-clear": "",
   "title-commands-send": "",
   "title-commands-show-all-bots": "",
-  "title-commands-show-all-commands": "",
+  "title-commands-show-all-commands": "Показати всі команди",
   "title-global-boxed": "",
-  "title-global-language": "",
-  "title-global-never": "",
+  "title-global-language": "Змінити мову",
+  "title-global-never": "Не показувати знову",
   "title-global-nightmode": "",
   "title-log-auto-scroll": ""
 }
