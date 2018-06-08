@@ -2546,12 +2546,8 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNoASFAuthenticator);
 			}
 
-			if (!await AcceptConfirmations(confirm).ConfigureAwait(false)) {
-				return FormatBotResponse(Strings.WarningFailed);
-			}
-
-			string response = FormatBotResponse(Strings.Success);
-			return response;
+			bool result = await AcceptConfirmations(confirm).ConfigureAwait(false);
+			return FormatBotResponse(result ? Strings.Success : Strings.WarningFailed);
 		}
 
 		private static async Task<string> Response2FAConfirm(ulong steamID, string botNames, bool confirm) {
