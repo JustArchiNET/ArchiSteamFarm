@@ -4276,8 +4276,8 @@ namespace ArchiSteamFarm {
 			bool distribute = !redeemFlags.HasFlag(ERedeemFlags.SkipDistributing) && (redeemFlags.HasFlag(ERedeemFlags.ForceDistributing) || BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.Distributing));
 			bool keepMissingGames = !redeemFlags.HasFlag(ERedeemFlags.SkipKeepMissingGames) && (redeemFlags.HasFlag(ERedeemFlags.ForceKeepMissingGames) || BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.KeepMissingGames));
 
-			HashSet<string> pendingKeys = new HashSet<string>(keys);
-			HashSet<string> unusedKeys = new HashSet<string>(pendingKeys);
+			HashSet<string> pendingKeys = keys.ToHashSet();
+			HashSet<string> unusedKeys = pendingKeys.ToHashSet();
 
 			StringBuilder response = new StringBuilder();
 
@@ -4742,7 +4742,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			HashSet<Bot> botsRunning = new HashSet<Bot>(validResults.Where(result => result.Bot.KeepRunning).Select(result => result.Bot));
+			HashSet<Bot> botsRunning = validResults.Where(result => result.Bot.KeepRunning).Select(result => result.Bot).ToHashSet();
 
 			string extraResponse = string.Format(Strings.BotStatusOverview, botsRunning.Count, validResults.Count, botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarm.Count), botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining)));
 			return string.Join("", validResults.Select(result => result.Response)) + FormatStaticResponse(extraResponse);

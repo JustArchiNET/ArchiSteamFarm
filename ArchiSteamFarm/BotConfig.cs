@@ -188,7 +188,7 @@ namespace ArchiSteamFarm {
 
 			ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningTooManyGamesToPlay, ArchiHandler.MaxGamesPlayedConcurrently, nameof(botConfig.GamesPlayedWhileIdle)));
 
-			HashSet<uint> validGames = new HashSet<uint>(botConfig.GamesPlayedWhileIdle.Take(ArchiHandler.MaxGamesPlayedConcurrently));
+			HashSet<uint> validGames = botConfig.GamesPlayedWhileIdle.Take(ArchiHandler.MaxGamesPlayedConcurrently).ToHashSet();
 			botConfig.GamesPlayedWhileIdle.IntersectWith(validGames);
 			botConfig.GamesPlayedWhileIdle.TrimExcess();
 

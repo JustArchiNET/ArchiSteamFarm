@@ -722,7 +722,7 @@ namespace ArchiSteamFarm {
 			}
 
 			string baseType = targetType.BaseType?.GetUnifiedName();
-			HashSet<string> customAttributes = new HashSet<string>(targetType.CustomAttributes.Select(attribute => attribute.AttributeType.GetUnifiedName()));
+			HashSet<string> customAttributes = targetType.CustomAttributes.Select(attribute => attribute.AttributeType.GetUnifiedName()).ToHashSet();
 			string underlyingType = null;
 
 			Dictionary<string, string> body = new Dictionary<string, string>();
@@ -810,7 +810,7 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			HashSet<string> result = new HashSet<string>(files.Select(Path.GetFileName));
+			HashSet<string> result = files.Select(Path.GetFileName).ToHashSet();
 
 			await ResponseJsonObject(request, response, new GenericResponse<HashSet<string>>(true, "OK", result)).ConfigureAwait(false);
 			return true;

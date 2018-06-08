@@ -282,7 +282,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				SteamIDs = new HashSet<ulong>(msg.friends_with_offline_messages.Select(steam3ID => new SteamID(steam3ID, EUniverse.Public, EAccountType.Individual).ConvertToUInt64()));
+				SteamIDs = msg.friends_with_offline_messages.Select(steam3ID => new SteamID(steam3ID, EUniverse.Public, EAccountType.Individual).ConvertToUInt64()).ToHashSet();
 			}
 		}
 

@@ -74,7 +74,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			return new HashSet<uint>(PackagesData.Where(package => package.Value.AppIDs?.Contains(appID) == true).Select(package => package.Key));
+			return PackagesData.Where(package => package.Value.AppIDs?.Contains(appID) == true).Select(package => package.Key).ToHashSet();
 		}
 
 		internal static async Task<GlobalDatabase> Load(string filePath) {
@@ -114,7 +114,7 @@ namespace ArchiSteamFarm {
 			await PackagesRefreshSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				HashSet<uint> packageIDs = new HashSet<uint>(packages.Where(package => (package.Key != 0) && (!PackagesData.TryGetValue(package.Key, out (uint ChangeNumber, HashSet<uint> _) packageData) || (packageData.ChangeNumber < package.Value))).Select(package => package.Key));
+				HashSet<uint> packageIDs = packages.Where(package => (package.Key != 0) && (!PackagesData.TryGetValue(package.Key, out (uint ChangeNumber, HashSet<uint> _) packageData) || (packageData.ChangeNumber < package.Value))).Select(package => package.Key).ToHashSet();
 
 				if (packageIDs.Count == 0) {
 					return;

@@ -274,7 +274,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			HashSet<DictionaryEntry> defaultStringObjects = new HashSet<DictionaryEntry>(defaultResourceSet.Cast<DictionaryEntry>());
+			HashSet<DictionaryEntry> defaultStringObjects = defaultResourceSet.Cast<DictionaryEntry>().ToHashSet();
 			if (defaultStringObjects.Count == 0) {
 				ASF.ArchiLogger.LogNullError(nameof(defaultStringObjects));
 				return;
@@ -286,10 +286,10 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			HashSet<DictionaryEntry> currentStringObjects = new HashSet<DictionaryEntry>(currentResourceSet.Cast<DictionaryEntry>());
+			HashSet<DictionaryEntry> currentStringObjects = currentResourceSet.Cast<DictionaryEntry>().ToHashSet();
 			if (currentStringObjects.Count >= defaultStringObjects.Count) {
 				// Either we have 100% finished translation, or we're missing it entirely and using en-US
-				HashSet<DictionaryEntry> testStringObjects = new HashSet<DictionaryEntry>(currentStringObjects);
+				HashSet<DictionaryEntry> testStringObjects = currentStringObjects.ToHashSet();
 				testStringObjects.ExceptWith(defaultStringObjects);
 
 				// If we got 0 as final result, this is the missing language

@@ -104,7 +104,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				HashSet<Steam.Asset.EType> acceptedMatchableTypes = new HashSet<Steam.Asset.EType>(Bot.BotConfig.MatchableTypes.Where(type => AcceptedMatchableTypes.Contains(type)));
+				HashSet<Steam.Asset.EType> acceptedMatchableTypes = Bot.BotConfig.MatchableTypes.Where(type => AcceptedMatchableTypes.Contains(type)).ToHashSet();
 				if (acceptedMatchableTypes.Count == 0) {
 					LastAnnouncementCheck = DateTime.UtcNow;
 					ShouldSendHeartBeats = false;

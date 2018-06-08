@@ -593,7 +593,7 @@ namespace ArchiSteamFarm {
 					while (GamesToFarm.Count > 0) {
 						// Initially we're going to farm games that passed our HoursUntilCardDrops
 						// This block is almost identical to Simple algorithm, we just copy appropriate items from GamesToFarm into innerGamesToFarm
-						HashSet<Game> innerGamesToFarm = new HashSet<Game>(GamesToFarm.Where(game => game.HoursPlayed >= Bot.BotConfig.HoursUntilCardDrops));
+						HashSet<Game> innerGamesToFarm = GamesToFarm.Where(game => game.HoursPlayed >= Bot.BotConfig.HoursUntilCardDrops).ToHashSet();
 
 						while (innerGamesToFarm.Count > 0) {
 							Game game = innerGamesToFarm.First();
