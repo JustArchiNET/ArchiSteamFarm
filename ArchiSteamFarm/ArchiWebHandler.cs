@@ -111,8 +111,8 @@ namespace ArchiSteamFarm {
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new Dictionary<string, string>(3) {
-				{ "subid", subID.ToString() },
-				{ "action", "add_to_cart" }
+				{ "action", "add_to_cart" },
+				{ "subid", subID.ToString() }
 			};
 
 			HtmlDocument htmlDocument = await UrlPostToHtmlDocumentWithSession(SteamStoreURL, request, data).ConfigureAwait(false);
@@ -830,12 +830,12 @@ namespace ArchiSteamFarm {
 
 			// Extra entry for sessionID
 			List<KeyValuePair<string, string>> data = new List<KeyValuePair<string, string>>(8 + confirmations.Count * 2) {
-				new KeyValuePair<string, string>("op", accept ? "allow" : "cancel"),
-				new KeyValuePair<string, string>("p", deviceID),
 				new KeyValuePair<string, string>("a", SteamID.ToString()),
 				new KeyValuePair<string, string>("k", confirmationHash),
-				new KeyValuePair<string, string>("t", time.ToString()),
 				new KeyValuePair<string, string>("m", "android"),
+				new KeyValuePair<string, string>("op", accept ? "allow" : "cancel"),
+				new KeyValuePair<string, string>("p", deviceID),
+				new KeyValuePair<string, string>("t", time.ToString()),
 				new KeyValuePair<string, string>("tag", "conf")
 			};
 
@@ -1092,8 +1092,8 @@ namespace ArchiSteamFarm {
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new Dictionary<string, string>(3) {
-				{ "voteid", voteID.ToString() },
-				{ "appid", appID.ToString() }
+				{ "appid", appID.ToString() },
+				{ "voteid", voteID.ToString() }
 			};
 
 			return await UrlPostWithSession(SteamStoreURL, request, data).ConfigureAwait(false);
@@ -1457,8 +1457,8 @@ namespace ArchiSteamFarm {
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new Dictionary<string, string>(4) {
-				{ "domain", "localhost" },
 				{ "agreeToTerms", "agreed" },
+				{ "domain", "localhost" },
 				{ "Submit", "Register" }
 			};
 
