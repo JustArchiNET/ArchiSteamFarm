@@ -679,11 +679,6 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			if (obj == null) {
-				await ResponseJsonObject(request, response, new GenericResponse<object>(false, string.Format(Strings.ErrorParsingObject, targetType)), HttpStatusCode.BadRequest).ConfigureAwait(false);
-				return true;
-			}
-
 			await ResponseJsonObject(request, response, new GenericResponse<object>(true, "OK", obj)).ConfigureAwait(false);
 			return true;
 		}
