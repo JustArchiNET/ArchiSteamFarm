@@ -755,7 +755,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			return resultInSeconds == 0 ? (byte?) 0 : (byte) (resultInSeconds / 86400);
+			return resultInSeconds == 0 ? (byte) 0 : (byte) (resultInSeconds / 86400);
 		}
 
 		internal async Task<string> GetTradeToken() {
