@@ -1068,11 +1068,11 @@ namespace ArchiSteamFarm {
 
 			// Extra entry for sessionID
 			foreach (Dictionary<string, string> data in trades.Select(trade => new Dictionary<string, string>(6) {
-				{ "serverid", "1" },
-				{ "partner", partnerID.ToString() },
-				{ "tradeoffermessage", "Sent by " + SharedInfo.PublicIdentifier + "/" + SharedInfo.Version },
 				{ "json_tradeoffer", JsonConvert.SerializeObject(trade) },
-				{ "trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : new JObject { { "trade_offer_access_token", token } }.ToString(Formatting.None) }
+				{ "partner", partnerID.ToString() },
+				{ "serverid", "1" },
+				{ "trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : new JObject { { "trade_offer_access_token", token } }.ToString(Formatting.None) },
+				{ "tradeoffermessage", "Sent by " + SharedInfo.PublicIdentifier + "/" + SharedInfo.Version }
 			})) {
 				if (!await UrlPostWithSession(SteamCommunityURL, request, data, referer).ConfigureAwait(false)) {
 					return false;
