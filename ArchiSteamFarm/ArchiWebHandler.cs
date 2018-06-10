@@ -357,7 +357,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string request = "/mobileconf/details/" + confirmation.ID + "?l=english&p=" + deviceID + "&a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&t=" + time + "&m=android&tag=conf";
+			string request = "/mobileconf/details/" + confirmation.ID + "?a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&l=english&m=android&p=" + WebUtility.UrlEncode(deviceID) + "&t=" + time + "&tag=conf";
 
 			Steam.ConfirmationDetails response = await UrlGetToJsonObjectWithSession<Steam.ConfirmationDetails>(SteamCommunityURL, request).ConfigureAwait(false);
 			if (response?.Success != true) {
@@ -374,7 +374,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string request = "/mobileconf/conf?l=english&p=" + deviceID + "&a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&t=" + time + "&m=android&tag=conf";
+			string request = "/mobileconf/conf?a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&l=english&m=android&p=" + WebUtility.UrlEncode(deviceID) + "&t=" + time + "&tag=conf";
 			return await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
 		}
 
@@ -384,7 +384,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<HashSet<ulong>> GetFamilySharingSteamIDs() {
-			const string request = "/account/managedevices";
+			const string request = "/account/managedevices?l=english";
 			HtmlDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamStoreURL, request).ConfigureAwait(false);
 
 			HtmlNodeCollection htmlNodes = htmlDocument?.DocumentNode.SelectNodes("(//table[@class='accountTable'])[last()]//a/@data-miniprofile");
@@ -432,7 +432,7 @@ namespace ArchiSteamFarm {
 			HashSet<Steam.Asset> result = new HashSet<Steam.Asset>();
 
 			// 5000 is maximum allowed count per single request
-			string request = "/inventory/" + SteamID + "/" + appID + "/" + contextID + "?l=english&count=5000";
+			string request = "/inventory/" + SteamID + "/" + appID + "/" + contextID + "?count=5000&l=english";
 			ulong startAssetID = 0;
 
 			await InventorySemaphore.WaitAsync().ConfigureAwait(false);
@@ -531,7 +531,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<Dictionary<uint, string>> GetMyOwnedGames() {
-			const string request = "/my/games?xml=1";
+			const string request = "/my/games?l=english&xml=1";
 
 			XmlDocument response = await UrlGetToXmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
 
@@ -814,7 +814,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string request = "/mobileconf/ajaxop?op=" + (accept ? "allow" : "cancel") + "&p=" + deviceID + "&a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&t=" + time + "&m=android&tag=conf&cid=" + confirmationID + "&ck=" + confirmationKey;
+			string request = "/mobileconf/ajaxop?a=" + SteamID + "&cid=" + confirmationID + "&ck=" + confirmationKey + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&l=english&m=android&op=" + (accept ? "allow" : "cancel") + "&p=" + WebUtility.UrlEncode(deviceID) + "&t=" + time + "&tag=conf";
 
 			Steam.BooleanResponse response = await UrlGetToJsonObjectWithSession<Steam.BooleanResponse>(SteamCommunityURL, request).ConfigureAwait(false);
 			return response?.Success;
