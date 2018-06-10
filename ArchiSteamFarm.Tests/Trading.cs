@@ -195,6 +195,11 @@ namespace ArchiSteamFarm.Tests {
 		private static bool AcceptsTrade(IReadOnlyCollection<Steam.Asset> inventory, IReadOnlyCollection<Steam.Asset> itemsToGive, IReadOnlyCollection<Steam.Asset> itemsToReceive) {
 			Type trading = typeof(ArchiSteamFarm.Trading);
 			MethodInfo method = trading.GetMethod("IsTradeNeutralOrBetter", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
+
+			if (method == null) {
+				throw new ArgumentNullException(nameof(method));
+			}
+
 			return (bool) method.Invoke(null, new object[] { inventory, itemsToGive, itemsToReceive });
 		}
 

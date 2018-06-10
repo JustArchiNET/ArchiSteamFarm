@@ -15,7 +15,7 @@
     <PackageProjectUrl>https://github.com/JustArchi/ArchiSteamFarm</PackageProjectUrl>
     <RepositoryType>Git</RepositoryType>
     <RepositoryUrl>https://github.com/JustArchi/ArchiSteamFarm.git</RepositoryUrl>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFrameworks>netcoreapp2.1;net472</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
