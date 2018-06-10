@@ -9,7 +9,7 @@
     <ErrorReport>none</ErrorReport>
     <LangVersion>latest</LangVersion>
     <NoWarn />
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <PackageIconUrl>https://github.com/JustArchi/ArchiSteamFarm/raw/master/resources/ASF.ico</PackageIconUrl>
     <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/JustArchi/ArchiSteamFarm</PackageProjectUrl>
