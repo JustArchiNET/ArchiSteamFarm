@@ -37,7 +37,7 @@
   <ItemGroup>
     <PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="1.0.1" />
     <PackageReference Include="HtmlAgilityPack" Version="1.8.4" />
-    <PackageReference Include="Humanizer" Version="2.2.0" />
+    <PackageReference Include="Humanizer" Version="2.3.3" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="NLog" Version="4.5.6" />
     <PackageReference Include="SteamKit2" Version="2.1.0-Beta.1" />
