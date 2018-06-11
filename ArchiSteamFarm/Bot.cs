@@ -222,6 +222,7 @@ namespace ArchiSteamFarm {
 			CallbackManager.Subscribe<ArchiHandler.PlayingSessionStateCallback>(OnPlayingSessionState);
 			CallbackManager.Subscribe<ArchiHandler.SharedLibraryLockStatusCallback>(OnSharedLibraryLockStatus);
 			CallbackManager.Subscribe<ArchiHandler.UserNotificationsCallback>(OnUserNotifications);
+			CallbackManager.Subscribe<ArchiHandler.VanityURLChangedCallback>(OnVanityURLChangedCallback);
 
 			ArchiWebHandler = new ArchiWebHandler(this);
 			CardsFarmer = new CardsFarmer(this);
@@ -2122,7 +2123,9 @@ namespace ArchiSteamFarm {
 						SetUserInput(ASF.EUserInputType.SteamParentalPIN, steamParentalPIN);
 					}
 
-					if (!await ArchiWebHandler.Init(callback.ClientSteamID, SteamClient.Universe, callback.WebAPIUserNonce, BotConfig.SteamParentalPIN, callback.VanityURL).ConfigureAwait(false)) {
+					ArchiWebHandler.OnVanityURLChanged(callback.VanityURL);
+
+					if (!await ArchiWebHandler.Init(callback.ClientSteamID, SteamClient.Universe, callback.WebAPIUserNonce, BotConfig.SteamParentalPIN).ConfigureAwait(false)) {
 						if (!await RefreshSession().ConfigureAwait(false)) {
 							break;
 						}
@@ -2371,6 +2374,15 @@ namespace ArchiSteamFarm {
 						break;
 				}
 			}
+		}
+
+		private void OnVanityURLChangedCallback(ArchiHandler.VanityURLChangedCallback callback) {
+			if (callback == null) {
+				ArchiLogger.LogNullError(nameof(callback));
+				return;
+			}
+
+			ArchiWebHandler.OnVanityURLChanged(callback.VanityURL);
 		}
 
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
