@@ -1846,7 +1846,7 @@ namespace ArchiSteamFarm {
 			// We should never ever get friend message in the first place when we're using FarmOffline
 			// But due to Valve's fuckups, everything is possible, and this case must be checked too
 			// Additionally, we might even make use of that if user didn't enable HandleOfflineMessages
-			if (!IsAllowedToExecuteCommands(callback.Sender) || (BotConfig.FarmOffline && BotConfig.HandleOfflineMessages)) {
+			if (!IsAllowedToExecuteCommands(callback.Sender) || ((BotConfig.OnlineStatus == EPersonaState.Offline) && BotConfig.HandleOfflineMessages)) {
 				return;
 			}
 
@@ -2156,8 +2156,8 @@ namespace ArchiSteamFarm {
 						});
 					}
 
-					if (!BotConfig.FarmOffline) {
-						SteamFriends.SetPersonaState(EPersonaState.Online);
+					if (BotConfig.OnlineStatus != EPersonaState.Offline) {
+						SteamFriends.SetPersonaState(BotConfig.OnlineStatus);
 					}
 
 					break;

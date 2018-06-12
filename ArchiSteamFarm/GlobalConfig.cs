@@ -285,7 +285,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if ((globalConfig.SteamProtocols == 0) || (globalConfig.SteamProtocols > ProtocolTypes.All)) {
+			if ((globalConfig.SteamProtocols <= 0) || (globalConfig.SteamProtocols > ProtocolTypes.All)) {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.SteamProtocols), globalConfig.SteamProtocols));
 				return null;
 			}

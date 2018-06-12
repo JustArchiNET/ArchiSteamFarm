@@ -7,7 +7,6 @@
 	"DismissInventoryNotifications": false,
 	"Enabled": false,
 	"FarmingOrder": 0,
-	"FarmOffline": false,
 	"GamesPlayedWhileIdle": [],
 	"HandleOfflineMessages": false,
 	"HoursUntilCardDrops": 3,
@@ -21,6 +20,7 @@
 	"MatchableTypes": [
 		5
 	],
+	"OnlineStatus": 1,
 	"PasswordFormat": 0,
 	"Paused": false,
 	"RedeemingPreferences": 0,

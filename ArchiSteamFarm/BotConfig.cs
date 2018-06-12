@@ -29,6 +29,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
 using Newtonsoft.Json;
+using SteamKit2;
 
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
@@ -58,9 +59,6 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly EFarmingOrder FarmingOrder = EFarmingOrder.Unordered;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool FarmOffline;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly HashSet<uint> GamesPlayedWhileIdle = new HashSet<uint>();
@@ -117,6 +115,8 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool UseLoginKeys = true;
 
+		internal EPersonaState OnlineStatus { get; private set; } = EPersonaState.Online;
+
 		[JsonProperty]
 		internal string SteamLogin { get; set; }
 
@@ -130,6 +130,17 @@ namespace ArchiSteamFarm {
 		internal string SteamPassword { get; set; }
 
 		private bool ShouldSerializeSensitiveDetails = true;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		private bool FarmOffline {
+			set {
+				ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, nameof(FarmOffline), nameof(OnlineStatus)));
+
+				if (value) {
+					OnlineStatus = EPersonaState.Offline;
+				}
+			}
+		}
 
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamMasterClanID), Required = Required.DisallowNull)]
 		private string SSteamMasterClanID {
@@ -182,15 +193,19 @@ namespace ArchiSteamFarm {
 
 			// User might not know what he's doing
 			// Ensure that he can't screw core ASF variables
-			if (botConfig.GamesPlayedWhileIdle.Count <= ArchiHandler.MaxGamesPlayedConcurrently) {
-				return botConfig;
+			// TODO: Change me to >= EPersonaState.Max with next SK2 release
+			if ((botConfig.OnlineStatus < EPersonaState.Offline) || (botConfig.OnlineStatus > EPersonaState.Max)) {
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.OnlineStatus), botConfig.OnlineStatus));
+				return null;
 			}
 
-			ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningTooManyGamesToPlay, ArchiHandler.MaxGamesPlayedConcurrently, nameof(botConfig.GamesPlayedWhileIdle)));
+			if (botConfig.GamesPlayedWhileIdle.Count > ArchiHandler.MaxGamesPlayedConcurrently) {
+				ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningTooManyGamesToPlay, ArchiHandler.MaxGamesPlayedConcurrently, nameof(botConfig.GamesPlayedWhileIdle)));
 
-			HashSet<uint> validGames = botConfig.GamesPlayedWhileIdle.Take(ArchiHandler.MaxGamesPlayedConcurrently).ToHashSet();
-			botConfig.GamesPlayedWhileIdle.IntersectWith(validGames);
-			botConfig.GamesPlayedWhileIdle.TrimExcess();
+				HashSet<uint> validGames = botConfig.GamesPlayedWhileIdle.Take(ArchiHandler.MaxGamesPlayedConcurrently).ToHashSet();
+				botConfig.GamesPlayedWhileIdle.IntersectWith(validGames);
+				botConfig.GamesPlayedWhileIdle.TrimExcess();
+			}
 
 			return botConfig;
 		}
