@@ -115,6 +115,7 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool UseLoginKeys = true;
 
+		[JsonProperty(Required = Required.DisallowNull)]
 		internal EPersonaState OnlineStatus { get; private set; } = EPersonaState.Online;
 
 		[JsonProperty]
