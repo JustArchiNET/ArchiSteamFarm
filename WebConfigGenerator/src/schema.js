@@ -1,7 +1,7 @@
 import Validators from './validators';
 
 export default {
-    'V3.2.0.0+': {
+    'V3.2.0.1+': {
         asf: [
             {
                 legend: 'schema.basic',
@@ -441,10 +441,20 @@ export default {
                         defaultValue: false
                     },
                     {
-                        type: 'InputCheckbox',
-                        label: 'FarmOffline',
-                        field: 'FarmOffline',
-                        defaultValue: false
+                        type: 'InputSelect',
+                        label: 'OnlineStatus',
+                        field: 'OnlineStatus',
+                        options: [
+                            { value: 0, name: 'Offline' },
+                            { value: 1, name: 'Online' },
+                            { value: 2, name: 'Busy' },
+                            { value: 3, name: 'Away' },
+                            { value: 4, name: 'Snooze' },
+                            { value: 5, name: 'LookingToTrade' },
+                            { value: 6, name: 'LookingToPlay' },
+                            { value: 7, name: 'Invisible' }
+                        ],
+                        defaultValue: 1
                     },
                     {
                         type: 'InputCheckbox',
