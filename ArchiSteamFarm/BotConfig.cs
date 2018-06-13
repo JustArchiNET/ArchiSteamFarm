@@ -194,8 +194,7 @@ namespace ArchiSteamFarm {
 
 			// User might not know what he's doing
 			// Ensure that he can't screw core ASF variables
-			// TODO: Change me to >= EPersonaState.Max with next SK2 release
-			if ((botConfig.OnlineStatus < EPersonaState.Offline) || (botConfig.OnlineStatus > EPersonaState.Max)) {
+			if ((botConfig.OnlineStatus < EPersonaState.Offline) || (botConfig.OnlineStatus >= EPersonaState.Max)) {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.OnlineStatus), botConfig.OnlineStatus));
 				return null;
 			}
