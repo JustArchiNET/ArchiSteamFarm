@@ -154,8 +154,7 @@ after_test:
     }
 
     foreach ($variant in $env:SINGLE_VARIANTS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
-        Start-Job -Name "$variant" -ScriptBlock $PublishBlock -ArgumentList "$variant"
-        Get-Job | Receive-Job -AutoRemoveJob -Wait
+        Start-Job -Name "$variant" -ScriptBlock $PublishBlock -ArgumentList "$variant" | Receive-Job -AutoRemoveJob -Wait
     }
 
     foreach ($variant in $env:VARIANTS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
