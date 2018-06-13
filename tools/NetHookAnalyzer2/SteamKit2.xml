@@ -3204,14 +3204,14 @@
             Gets the <see cref="T:SteamKit2.SteamID"/> of the clan that posted this state update.
             </summary>
         </member>
-        <member name="P:SteamKit2.SteamFriends.ClanStateCallback.StatusFlags">
-            <summary>
-            Gets the status flags.
-            </summary>
-        </member>
         <member name="P:SteamKit2.SteamFriends.ClanStateCallback.AccountFlags">
             <summary>
             Gets the account flags.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamFriends.ClanStateCallback.ChatRoomPrivate">
+            <summary>
+            Gets the privacy of the chat room.
             </summary>
         </member>
         <member name="P:SteamKit2.SteamFriends.ClanStateCallback.ClanName">
@@ -7753,6 +7753,21 @@
             A string Steam2 "STEAM_" representation of this SteamID, or a Steam3 representation.
             </returns>
         </member>
+        <member name="M:SteamKit2.SteamID.ToChatID">
+            <summary>
+            Converts this clan ID to a chat ID.
+            </summary>
+            <returns>The Chat ID for this clan's group chat.</returns>
+            <exception cref="T:System.InvalidOperationException">This SteamID is not a clan ID.</exception>
+        </member>
+        <member name="M:SteamKit2.SteamID.TryGetClanID(SteamKit2.SteamID@)">
+            <summary>
+            Converts this chat ID to a clan ID.
+            This can be used to get the group that a group chat is associated with.
+            </summary>
+            <returns><c>true</c> if this chat ID represents a group chat, <c>false</c> otherwise.</returns>\
+            <param name="groupID">If the method returned <c>true</c>, then this is the group that this chat is associated with. Otherwise, this is <c>null</c>.</param>
+        </member>
         <member name="M:SteamKit2.SteamID.ToString">
             <summary>
             Returns a <see cref="T:System.String"/> that represents this instance.
@@ -8066,6 +8081,18 @@
             </summary>
             <returns>The public key.</returns>
             <param name="eUniverse">The universe.</param>
+        </member>
+        <member name="T:SteamKit2.SimpleConsoleDebugListener">
+            <summary>
+            A debug listener that writes debug output to the system console.
+            </summary>
+        </member>
+        <member name="M:SteamKit2.SimpleConsoleDebugListener.WriteLine(System.String,System.String)">
+            <summary>
+            Called when the DebugLog wishes to inform listeners of debug spew.
+            </summary>
+            <param name="category">The category of the message.</param>
+            <param name="msg">The message to log.</param>
         </member>
         <member name="T:SteamKit2.DateUtils">
             <summary>
