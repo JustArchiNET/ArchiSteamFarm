@@ -30,16 +30,29 @@ using ArchiSteamFarm.CMsgs;
 using ArchiSteamFarm.Localization;
 using SteamKit2;
 using SteamKit2.Internal;
+using SteamKit2.Unified.Internal;
 
 namespace ArchiSteamFarm {
 	internal sealed class ArchiHandler : ClientMsgHandler {
 		internal const byte MaxGamesPlayedConcurrently = 32; // This is limit introduced by Steam Network
 
 		private readonly ArchiLogger ArchiLogger;
+		private readonly SteamUnifiedMessages.UnifiedService<IChatRoom> UnifiedChatRoomService;
+		private readonly SteamUnifiedMessages.UnifiedService<IFriendMessages> UnifiedFriendMessagesService;
+		private readonly SteamUnifiedMessages.UnifiedService<IPlayer> UnifiedPlayerService;
 
 		internal DateTime LastPacketReceived { get; private set; }
 
-		internal ArchiHandler(ArchiLogger archiLogger) => ArchiLogger = archiLogger ?? throw new ArgumentNullException(nameof(archiLogger));
+		internal ArchiHandler(ArchiLogger archiLogger, SteamUnifiedMessages steamUnifiedMessages) {
+			if ((archiLogger == null) || (steamUnifiedMessages == null)) {
+				throw new ArgumentNullException(nameof(archiLogger) + " || " + nameof(steamUnifiedMessages));
+			}
+
+			ArchiLogger = archiLogger;
+			UnifiedChatRoomService = steamUnifiedMessages.CreateService<IChatRoom>();
+			UnifiedFriendMessagesService = steamUnifiedMessages.CreateService<IFriendMessages>();
+			UnifiedPlayerService = steamUnifiedMessages.CreateService<IPlayer>();
+		}
 
 		public override void HandleMsg(IPacketMsg packetMsg) {
 			if (packetMsg == null) {
@@ -92,6 +105,72 @@ namespace ArchiSteamFarm {
 			};
 
 			Client.Send(request);
+		}
+
+		internal async Task<bool> AddFriend(ulong steamID) {
+			if (steamID == 0) {
+				ArchiLogger.LogNullError(nameof(steamID));
+				return false;
+			}
+
+			CPlayer_AddFriend_Request request = new CPlayer_AddFriend_Request { steamid = steamID };
+
+			SteamUnifiedMessages.ServiceMethodResponse response;
+
+			try {
+#pragma warning disable ConfigureAwaitChecker
+				response = await UnifiedPlayerService.SendMessage(x => x.AddFriend(request));
+#pragma warning restore ConfigureAwaitChecker
+			} catch (Exception e) {
+				ArchiLogger.LogGenericWarningException(e);
+				return false;
+			}
+
+			return response.Result == EResult.OK;
+		}
+
+		internal async Task<HashSet<ulong>> GetMyChatGroupIDs() {
+			CChatRoom_GetMyChatRoomGroups_Request request = new CChatRoom_GetMyChatRoomGroups_Request();
+
+			SteamUnifiedMessages.ServiceMethodResponse response;
+
+			try {
+#pragma warning disable ConfigureAwaitChecker
+				response = await UnifiedChatRoomService.SendMessage(x => x.GetMyChatRoomGroups(request));
+#pragma warning restore ConfigureAwaitChecker
+			} catch (Exception e) {
+				ArchiLogger.LogGenericWarningException(e);
+				return null;
+			}
+
+			if (response.Result != EResult.OK) {
+				return null;
+			}
+
+			CChatRoom_GetMyChatRoomGroups_Response body = response.GetDeserializedResponse<CChatRoom_GetMyChatRoomGroups_Response>();
+			return body.chat_room_groups.Select(chatRoom => chatRoom.group_summary.chat_group_id).ToHashSet();
+		}
+
+		internal async Task<bool> JoinChatRoomGroup(ulong chatGroupID) {
+			if (chatGroupID == 0) {
+				ArchiLogger.LogNullError(nameof(chatGroupID));
+				return false;
+			}
+
+			CChatRoom_JoinChatRoomGroup_Request request = new CChatRoom_JoinChatRoomGroup_Request { chat_group_id = chatGroupID };
+
+			SteamUnifiedMessages.ServiceMethodResponse response;
+
+			try {
+#pragma warning disable ConfigureAwaitChecker
+				response = await UnifiedChatRoomService.SendMessage(x => x.JoinChatRoomGroup(request));
+#pragma warning restore ConfigureAwaitChecker
+			} catch (Exception e) {
+				ArchiLogger.LogGenericWarningException(e);
+				return false;
+			}
+
+			return response.Result == EResult.OK;
 		}
 
 		internal async Task PlayGames(IEnumerable<uint> gameIDs, string gameName = null) {
@@ -191,9 +270,83 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal async Task<bool> RemoveFriend(ulong steamID) {
+			if (steamID == 0) {
+				ArchiLogger.LogNullError(nameof(steamID));
+				return false;
+			}
+
+			CPlayer_RemoveFriend_Request request = new CPlayer_RemoveFriend_Request { steamid = steamID };
+
+			SteamUnifiedMessages.ServiceMethodResponse response;
+
+			try {
+#pragma warning disable ConfigureAwaitChecker
+				response = await UnifiedPlayerService.SendMessage(x => x.RemoveFriend(request));
+#pragma warning restore ConfigureAwaitChecker
+			} catch (Exception e) {
+				ArchiLogger.LogGenericWarningException(e);
+				return false;
+			}
+
+			return response.Result == EResult.OK;
+		}
+
 		internal void RequestItemAnnouncements() {
 			ClientMsgProtobuf<CMsgClientRequestItemAnnouncements> request = new ClientMsgProtobuf<CMsgClientRequestItemAnnouncements>(EMsg.ClientRequestItemAnnouncements);
 			Client.Send(request);
+		}
+
+		internal async Task<bool> SendMessage(ulong steamID, string message) {
+			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
+				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(message));
+				return false;
+			}
+
+			CFriendMessages_SendMessage_Request request = new CFriendMessages_SendMessage_Request {
+				chat_entry_type = (int) EChatEntryType.ChatMsg,
+				message = message,
+				steamid = steamID
+			};
+
+			SteamUnifiedMessages.ServiceMethodResponse response;
+
+			try {
+#pragma warning disable ConfigureAwaitChecker
+				response = await UnifiedFriendMessagesService.SendMessage(x => x.SendMessage(request));
+#pragma warning restore ConfigureAwaitChecker
+			} catch (Exception e) {
+				ArchiLogger.LogGenericWarningException(e);
+				return false;
+			}
+
+			return response.Result == EResult.OK;
+		}
+
+		internal async Task<bool> SendMessage(ulong chatGroupID, ulong chatID, string message) {
+			if ((chatGroupID == 0) || (chatID == 0) || string.IsNullOrEmpty(message)) {
+				ArchiLogger.LogNullError(nameof(chatGroupID) + " || " + nameof(chatID) + " || " + nameof(message));
+				return false;
+			}
+
+			CChatRoom_SendChatMessage_Request request = new CChatRoom_SendChatMessage_Request {
+				chat_group_id = chatGroupID,
+				chat_id = chatID,
+				message = message
+			};
+
+			SteamUnifiedMessages.ServiceMethodResponse response;
+
+			try {
+#pragma warning disable ConfigureAwaitChecker
+				response = await UnifiedChatRoomService.SendMessage(x => x.SendChatMessage(request));
+#pragma warning restore ConfigureAwaitChecker
+			} catch (Exception e) {
+				ArchiLogger.LogGenericWarningException(e);
+				return false;
+			}
+
+			return response.Result == EResult.OK;
 		}
 
 		internal void SetCurrentMode(uint chatMode) {

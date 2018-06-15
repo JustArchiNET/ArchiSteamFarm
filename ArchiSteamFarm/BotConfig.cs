@@ -119,6 +119,9 @@ namespace ArchiSteamFarm {
 		internal string SteamLogin { get; set; }
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		internal ulong SteamMasterChatGroupID { get; private set; }
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		internal ulong SteamMasterClanID { get; private set; }
 
 		[JsonProperty]
@@ -137,6 +140,19 @@ namespace ArchiSteamFarm {
 				if (value) {
 					OnlineStatus = EPersonaState.Offline;
 				}
+			}
+		}
+
+		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamMasterChatGroupID), Required = Required.DisallowNull)]
+		private string SSteamMasterChatGroupID {
+			get => SteamMasterChatGroupID.ToString();
+			set {
+				if (string.IsNullOrEmpty(value) || !ulong.TryParse(value, out ulong result)) {
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(SSteamMasterChatGroupID)));
+					return;
+				}
+
+				SteamMasterChatGroupID = result;
 			}
 		}
 
