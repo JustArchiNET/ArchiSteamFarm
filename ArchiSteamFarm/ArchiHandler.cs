@@ -50,9 +50,6 @@ namespace ArchiSteamFarm {
 			LastPacketReceived = DateTime.UtcNow;
 
 			switch (packetMsg.MsgType) {
-				case EMsg.ClientFSOfflineMessageNotification:
-					HandleFSOfflineMessageNotification(packetMsg);
-					break;
 				case EMsg.ClientItemAnnouncements:
 					HandleItemAnnouncements(packetMsg);
 					break;
@@ -199,14 +196,14 @@ namespace ArchiSteamFarm {
 			Client.Send(request);
 		}
 
-		private void HandleFSOfflineMessageNotification(IPacketMsg packetMsg) {
-			if (packetMsg == null) {
-				ArchiLogger.LogNullError(nameof(packetMsg));
+		internal void SetCurrentMode(uint chatMode) {
+			if (chatMode == 0) {
+				ArchiLogger.LogNullError(nameof(chatMode));
 				return;
 			}
 
-			ClientMsgProtobuf<CMsgClientOfflineMessageNotification> response = new ClientMsgProtobuf<CMsgClientOfflineMessageNotification>(packetMsg);
-			Client.PostCallback(new OfflineMessageCallback(packetMsg.TargetJobID, response.Body));
+			ClientMsgProtobuf<CMsgClientUIMode> request = new ClientMsgProtobuf<CMsgClientUIMode>(EMsg.ClientCurrentUIMode) { Body = { chat_mode = chatMode } };
+			Client.Send(request);
 		}
 
 		private void HandleItemAnnouncements(IPacketMsg packetMsg) {
@@ -277,26 +274,6 @@ namespace ArchiSteamFarm {
 
 			ClientMsgProtobuf<CMsgClientVanityURLChangedNotification> response = new ClientMsgProtobuf<CMsgClientVanityURLChangedNotification>(packetMsg);
 			Client.PostCallback(new VanityURLChangedCallback(packetMsg.TargetJobID, response.Body));
-		}
-
-		internal sealed class OfflineMessageCallback : CallbackMsg {
-			internal readonly uint OfflineMessagesCount;
-			internal readonly HashSet<ulong> SteamIDs;
-
-			internal OfflineMessageCallback(JobID jobID, CMsgClientOfflineMessageNotification msg) {
-				if ((jobID == null) || (msg == null)) {
-					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
-				}
-
-				JobID = jobID;
-				OfflineMessagesCount = msg.offline_messages;
-
-				if (msg.friends_with_offline_messages == null) {
-					return;
-				}
-
-				SteamIDs = msg.friends_with_offline_messages.Select(steam3ID => new SteamID(steam3ID, EUniverse.Public, EAccountType.Individual).ConvertToUInt64()).ToHashSet();
-			}
 		}
 
 		internal sealed class PlayingSessionStateCallback : CallbackMsg {

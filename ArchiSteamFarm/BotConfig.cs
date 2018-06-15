@@ -64,9 +64,6 @@ namespace ArchiSteamFarm {
 		internal readonly HashSet<uint> GamesPlayedWhileIdle = new HashSet<uint>();
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool HandleOfflineMessages;
-
-		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte HoursUntilCardDrops = 3;
 
 		[JsonProperty(Required = Required.DisallowNull)]

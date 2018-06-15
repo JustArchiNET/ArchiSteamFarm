@@ -21,6 +21,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading.Tasks;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
@@ -40,6 +41,18 @@ namespace ArchiSteamFarm {
 		[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
 		[RequiredParameter]
+		public ulong ChatGroupID { get; set; }
+
+		// This is NLog config property, it must have public get() and set() capabilities
+		[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
+		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
+		[RequiredParameter]
+		public ulong ChatID { get; set; }
+
+		// This is NLog config property, it must have public get() and set() capabilities
+		[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
+		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
+		[RequiredParameter]
 		public ulong SteamID { get; set; }
 
 		// This parameterless(!) constructor is intentionally public, as NLog uses it for creating targets
@@ -47,7 +60,7 @@ namespace ArchiSteamFarm {
 		// Keeping date in default layout also doesn't make much sense (Steam offers that), so we remove it by default
 		public SteamTarget() => Layout = "${level:uppercase=true}|${logger}|${message}";
 
-		protected override async void Write(LogEventInfo logEvent) {
+		protected override void Write(LogEventInfo logEvent) {
 			if (logEvent == null) {
 				ASF.ArchiLogger.LogNullError(nameof(logEvent));
 				return;
@@ -55,29 +68,69 @@ namespace ArchiSteamFarm {
 
 			base.Write(logEvent);
 
-			if (SteamID == 0) {
+			bool groupMessage = (ChatGroupID != 0) && (ChatID != 0);
+			bool privateMessage = SteamID != 0;
+
+			if (!groupMessage && !privateMessage) {
 				return;
 			}
 
-			Bot bot;
-			if (string.IsNullOrEmpty(BotName)) {
-				bot = Bot.Bots.Values.FirstOrDefault(targetBot => targetBot.IsConnectedAndLoggedOn && (targetBot.CachedSteamID != SteamID));
-				if (bot == null) {
-					return;
-				}
-			} else {
+			string message = Layout.Render(logEvent);
+
+			if (string.IsNullOrEmpty(message)) {
+				return;
+			}
+
+			Bot bot = null;
+
+			if (!string.IsNullOrEmpty(BotName)) {
 				if (!Bot.Bots.TryGetValue(BotName, out bot)) {
 					return;
 				}
 
-				if (!bot.IsConnectedAndLoggedOn || (bot.CachedSteamID == SteamID)) {
+				if (!bot.IsConnectedAndLoggedOn) {
 					return;
 				}
 			}
 
-			string message = Layout.Render(logEvent);
+			if (groupMessage) {
+				Utilities.InBackground(() => SendGroupMessage(message, bot));
+			}
+
+			if (privateMessage && ((bot == null) || (bot.CachedSteamID != SteamID))) {
+				Utilities.InBackground(() => SendPrivateMessage(message, bot));
+			}
+		}
+
+		private async Task SendGroupMessage(string message, Bot bot = null) {
 			if (string.IsNullOrEmpty(message)) {
+				ASF.ArchiLogger.LogNullError(nameof(message));
 				return;
+			}
+
+			if (bot == null) {
+				bot = Bot.Bots.Values.FirstOrDefault(targetBot => targetBot.IsConnectedAndLoggedOn);
+
+				if (bot == null) {
+					return;
+				}
+			}
+
+			await bot.SendMessage(ChatGroupID, ChatID, message).ConfigureAwait(false);
+		}
+
+		private async Task SendPrivateMessage(string message, Bot bot = null) {
+			if (string.IsNullOrEmpty(message)) {
+				ASF.ArchiLogger.LogNullError(nameof(message));
+				return;
+			}
+
+			if (bot == null) {
+				bot = Bot.Bots.Values.FirstOrDefault(targetBot => targetBot.IsConnectedAndLoggedOn && (targetBot.CachedSteamID != SteamID));
+
+				if (bot == null) {
+					return;
+				}
 			}
 
 			await bot.SendMessage(SteamID, message).ConfigureAwait(false);

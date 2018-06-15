@@ -8,7 +8,6 @@
 	"Enabled": false,
 	"FarmingOrder": 0,
 	"GamesPlayedWhileIdle": [],
-	"HandleOfflineMessages": false,
 	"HoursUntilCardDrops": 3,
 	"IdlePriorityQueueOnly": false,
 	"IdleRefundableGames": true,
