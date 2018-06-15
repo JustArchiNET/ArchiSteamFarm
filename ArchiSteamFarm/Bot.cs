@@ -1345,7 +1345,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			return "<" + SharedInfo.ASF + ">" + response;
+			return "<" + SharedInfo.ASF + "> " + response;
 		}
 
 		private ulong GetFirstSteamMasterID() => BotConfig.SteamUserPermissions.Where(kv => (kv.Key != 0) && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderByDescending(steamID => steamID != CachedSteamID).ThenBy(steamID => steamID).FirstOrDefault();
