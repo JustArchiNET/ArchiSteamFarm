@@ -1161,9 +1161,11 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (!new SteamID(steamID).IsIndividualAccount) {
+			if (!IsConnectedAndLoggedOn || !new SteamID(steamID).IsIndividualAccount) {
 				return false;
 			}
+
+			ArchiLogger.LogGenericTrace(steamID + "/" + CachedSteamID + ": " + message);
 
 			for (int i = 0; i < message.Length; i += MaxSteamMessageLength - 2) {
 				if (i > 0) {
@@ -1202,6 +1204,12 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogNullError(nameof(chatGroupID) + " || " + nameof(chatID) + " || " + nameof(message));
 				return false;
 			}
+
+			if (!IsConnectedAndLoggedOn) {
+				return false;
+			}
+
+			ArchiLogger.LogGenericTrace(chatGroupID + "-" + chatID + "/" + CachedSteamID + ": " + message);
 
 			for (int i = 0; i < message.Length; i += MaxSteamMessageLength - 2) {
 				if (i > 0) {
