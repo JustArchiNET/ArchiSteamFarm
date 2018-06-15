@@ -37,7 +37,7 @@ namespace ArchiSteamFarm {
 		internal const ushort DefaultIPCPort = 1242;
 		internal const byte DefaultLoginLimiterDelay = 10;
 
-		internal static readonly HashSet<uint> SalesBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900, 762800 }; // Steam Summer/Winter sales
+		internal static readonly HashSet<uint> SalesBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900, 762800, 876740 }; // Steam Summer/Winter sales
 
 		private static readonly SemaphoreSlim WriteSemaphore = new SemaphoreSlim(1, 1);
 

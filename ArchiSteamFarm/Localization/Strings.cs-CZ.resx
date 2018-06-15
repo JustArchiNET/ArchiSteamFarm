@@ -506,7 +506,10 @@ StackTrace:
     <value>Již je ve vlastnictví: {0} | {1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
-  
+  <data name="BotRateLimitExceeded" xml:space="preserve">
+    <value>Limit byl překročen, další pokus bude proveden za {0}...</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
+  </data>
   <data name="BotReconnecting" xml:space="preserve">
     <value>Opětovné připojování...</value>
   </data>
@@ -654,7 +657,16 @@ StackTrace:
   <data name="BotRefreshingPackagesData" xml:space="preserve">
     <value>Obnovuji informace o baličku...</value>
   </data>
-  
-  
-  
+  <data name="WarningDeprecated" xml:space="preserve">
+    <value>Použití {0} je zastaralé a bude vymazané v budoucích verzích programu. Prosím použijte {1} místo toho.</value>
+    <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
+  </data>
+  <data name="BotAcceptedDonationTrade" xml:space="preserve">
+    <value>Přijatý dar: {0}</value>
+    <comment>{0} will be replaced by trade's ID (number)</comment>
+  </data>
+  <data name="WarningWorkaroundTriggered" xml:space="preserve">
+    <value>Řešení pro chybu {0} bylo spuštěno.</value>
+    <comment>{0} will be replaced by the bug's name provided by ASF</comment>
+  </data>
 </root>
