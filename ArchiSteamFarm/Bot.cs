@@ -2318,8 +2318,6 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ASF.ArchiLogger.LogGenericDebug(callback.MethodName);
-
 			switch (callback.MethodName) {
 				case "ChatRoomClient.NotifyIncomingChatMessage#1":
 					await OnIncomingChatMessage((CChatRoom_IncomingChatMessage_Notification) callback.Body).ConfigureAwait(false);
