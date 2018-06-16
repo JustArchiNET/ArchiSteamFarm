@@ -52,11 +52,12 @@ namespace ArchiSteamFarm {
 		internal readonly ConcurrentSortedHashSet<Game> GamesToFarm = new ConcurrentSortedHashSet<Game>();
 
 		[JsonProperty]
-		internal TimeSpan TimeRemaining => new TimeSpan(
-			Bot.BotConfig.HoursUntilCardDrops > 0 ? (ushort) Math.Ceiling(GamesToFarm.Count / (float) ArchiHandler.MaxGamesPlayedConcurrently) * Bot.BotConfig.HoursUntilCardDrops : 0,
-			30 * GamesToFarm.Sum(game => game.CardsRemaining),
-			0
-		);
+		internal TimeSpan TimeRemaining =>
+			new TimeSpan(
+				Bot.BotConfig.HoursUntilCardDrops > 0 ? (ushort) Math.Ceiling(GamesToFarm.Count / (float) ArchiHandler.MaxGamesPlayedConcurrently) * Bot.BotConfig.HoursUntilCardDrops : 0,
+				30 * GamesToFarm.Sum(game => game.CardsRemaining),
+				0
+			);
 
 		private readonly Bot Bot;
 		private readonly SemaphoreSlim EventSemaphore = new SemaphoreSlim(1, 1);

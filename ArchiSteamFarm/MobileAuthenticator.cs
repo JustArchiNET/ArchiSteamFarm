@@ -367,10 +367,12 @@ namespace ArchiSteamFarm {
 			}
 
 			await ConfirmationsSemaphore.WaitAsync().ConfigureAwait(false);
-			Utilities.InBackground(async () => {
-				await Task.Delay(Program.GlobalConfig.ConfirmationsLimiterDelay * 1000).ConfigureAwait(false);
-				ConfirmationsSemaphore.Release();
-			});
+			Utilities.InBackground(
+				async () => {
+					await Task.Delay(Program.GlobalConfig.ConfirmationsLimiterDelay * 1000).ConfigureAwait(false);
+					ConfirmationsSemaphore.Release();
+				}
+			);
 		}
 
 		internal sealed class Confirmation {
