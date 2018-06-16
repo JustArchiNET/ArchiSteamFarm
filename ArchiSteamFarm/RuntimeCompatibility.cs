@@ -73,7 +73,7 @@ namespace ArchiSteamFarm {
 			internal static string GetRelativePath(string relativeTo, string path) {
 #if NET472
 				// This is a very silly implementation
-				if (!path.StartsWith(relativeTo, StringComparison.OrdinalIgnoreCase)) {
+				if (!path.StartsWith(relativeTo, StringComparison.Ordinal)) {
 					throw new NotImplementedException();
 				}
 
