@@ -182,7 +182,7 @@ namespace ArchiSteamFarm {
 			// Initialize
 			SteamClient = new SteamClient(SteamConfiguration);
 
-			if ((Debugging.IsDebugBuild || Program.GlobalConfig.Debug) && Directory.Exists(SharedInfo.DebugDirectory)) {
+			if (Debugging.IsUserDebugging && Directory.Exists(SharedInfo.DebugDirectory)) {
 				string debugListenerPath = Path.Combine(SharedInfo.DebugDirectory, botName);
 
 				try {

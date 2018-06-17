@@ -328,12 +328,9 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			// If debugging is on, we prepare debug directory prior to running
 			if (Debugging.IsUserDebugging) {
 				ASF.ArchiLogger.LogGenericDebug(SharedInfo.GlobalDatabaseFileName + ": " + JsonConvert.SerializeObject(GlobalDatabase, Formatting.Indented));
-			}
-
-			// If debugging is on, we prepare debug directory prior to running
-			if (Debugging.IsDebugBuild || GlobalConfig.Debug) {
 				Logging.EnableTraceLogging();
 
 				if (Directory.Exists(SharedInfo.DebugDirectory)) {
