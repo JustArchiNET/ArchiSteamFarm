@@ -2312,18 +2312,18 @@ namespace ArchiSteamFarm {
 			await CheckOccupationStatus().ConfigureAwait(false);
 		}
 
-		private async void OnServiceMethod(SteamUnifiedMessages.ServiceMethodNotification callback) {
-			if (callback == null) {
-				ArchiLogger.LogNullError(nameof(callback));
+		private async void OnServiceMethod(SteamUnifiedMessages.ServiceMethodNotification notification) {
+			if (notification == null) {
+				ArchiLogger.LogNullError(nameof(notification));
 				return;
 			}
 
-			switch (callback.MethodName) {
+			switch (notification.MethodName) {
 				case "ChatRoomClient.NotifyIncomingChatMessage#1":
-					await OnIncomingChatMessage((CChatRoom_IncomingChatMessage_Notification) callback.Body).ConfigureAwait(false);
+					await OnIncomingChatMessage((CChatRoom_IncomingChatMessage_Notification) notification.Body).ConfigureAwait(false);
 					break;
 				case "FriendMessagesClient.IncomingMessage#1":
-					await OnIncomingMessage((CFriendMessages_IncomingMessage_Notification) callback.Body).ConfigureAwait(false);
+					await OnIncomingMessage((CFriendMessages_IncomingMessage_Notification) notification.Body).ConfigureAwait(false);
 					break;
 			}
 		}
