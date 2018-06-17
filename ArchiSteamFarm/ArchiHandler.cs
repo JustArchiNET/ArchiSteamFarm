@@ -193,13 +193,15 @@ namespace ArchiSteamFarm {
 				Client.Send(request);
 				await Task.Delay(Bot.CallbackSleep).ConfigureAwait(false);
 
-				request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed {
-					game_extra_info = gameName,
-					game_id = new GameID {
-						AppType = GameID.GameType.Shortcut,
-						ModID = uint.MaxValue
+				request.Body.games_played.Add(
+					new CMsgClientGamesPlayed.GamePlayed {
+						game_extra_info = gameName,
+						game_id = new GameID {
+							AppType = GameID.GameType.Shortcut,
+							ModID = uint.MaxValue
+						}
 					}
-				});
+				);
 
 				// Max games count is affected by valid AppIDs only, therefore gameName alone doesn't need exclusive slot
 				maxGamesCount++;

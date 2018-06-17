@@ -31,12 +31,6 @@ namespace ArchiSteamFarm {
 	internal static class RuntimeCompatibility {
 		internal static bool IsRunningOnMono => Type.GetType("Mono.Runtime") != null;
 
-#if NET472
-		internal static async Task<WebSocketReceiveResult> ReceiveAsync(this WebSocket webSocket, byte[] buffer, CancellationToken cancellationToken) => await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken).ConfigureAwait(false);
-		internal static async Task SendAsync(this WebSocket webSocket, byte[] buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) => await webSocket.SendAsync(new ArraySegment<byte>(buffer), messageType, endOfMessage, cancellationToken).ConfigureAwait(false);
-		internal static string[] Split(this string text, char separator, StringSplitOptions options = StringSplitOptions.None) => text.Split(new[] { separator }, options);
-#endif
-
 #pragma warning disable 1998
 		internal static class File {
 			internal static async Task AppendAllTextAsync(string path, string contents) =>
@@ -72,8 +66,7 @@ namespace ArchiSteamFarm {
 		internal static class Path {
 			internal static string GetRelativePath(string relativeTo, string path) {
 #if NET472
-				// This is a very silly implementation
-				if (!path.StartsWith(relativeTo, StringComparison.OrdinalIgnoreCase)) {
+				if (!path.StartsWith(relativeTo, StringComparison.Ordinal)) {
 					throw new NotImplementedException();
 				}
 
@@ -86,5 +79,11 @@ namespace ArchiSteamFarm {
 #endif
 			}
 		}
+
+#if NET472
+		internal static async Task<WebSocketReceiveResult> ReceiveAsync(this WebSocket webSocket, byte[] buffer, CancellationToken cancellationToken) => await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken).ConfigureAwait(false);
+		internal static async Task SendAsync(this WebSocket webSocket, byte[] buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) => await webSocket.SendAsync(new ArraySegment<byte>(buffer), messageType, endOfMessage, cancellationToken).ConfigureAwait(false);
+		internal static string[] Split(this string text, char separator, StringSplitOptions options = StringSplitOptions.None) => text.Split(new[] { separator }, options);
+#endif
 	}
 }

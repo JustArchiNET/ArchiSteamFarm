@@ -1666,10 +1666,12 @@ namespace ArchiSteamFarm {
 			}
 
 			await GiftsSemaphore.WaitAsync().ConfigureAwait(false);
-			Utilities.InBackground(async () => {
-				await Task.Delay(Program.GlobalConfig.GiftsLimiterDelay * 1000).ConfigureAwait(false);
-				GiftsSemaphore.Release();
-			});
+			Utilities.InBackground(
+				async () => {
+					await Task.Delay(Program.GlobalConfig.GiftsLimiterDelay * 1000).ConfigureAwait(false);
+					GiftsSemaphore.Release();
+				}
+			);
 		}
 
 		private static async Task LimitLoginRequestsAsync() {
@@ -1678,10 +1680,12 @@ namespace ArchiSteamFarm {
 			}
 
 			await LoginSemaphore.WaitAsync().ConfigureAwait(false);
-			Utilities.InBackground(async () => {
-				await Task.Delay(Program.GlobalConfig.LoginLimiterDelay * 1000).ConfigureAwait(false);
-				LoginSemaphore.Release();
-			});
+			Utilities.InBackground(
+				async () => {
+					await Task.Delay(Program.GlobalConfig.LoginLimiterDelay * 1000).ConfigureAwait(false);
+					LoginSemaphore.Release();
+				}
+			);
 		}
 
 		private void OnChatInvite(SteamFriends.ChatInviteCallback callback) {
@@ -1778,17 +1782,19 @@ namespace ArchiSteamFarm {
 
 			InitConnectionFailureTimer();
 
-			SteamUser.LogOn(new SteamUser.LogOnDetails {
-				AuthCode = AuthCode,
-				CellID = Program.GlobalDatabase.CellID,
-				LoginID = LoginID,
-				LoginKey = loginKey,
-				Password = password,
-				SentryFileHash = sentryFileHash,
-				ShouldRememberPassword = BotConfig.UseLoginKeys,
-				TwoFactorCode = TwoFactorCode,
-				Username = username
-			});
+			SteamUser.LogOn(
+				new SteamUser.LogOnDetails {
+					AuthCode = AuthCode,
+					CellID = Program.GlobalDatabase.CellID,
+					LoginID = LoginID,
+					LoginKey = loginKey,
+					Password = password,
+					SentryFileHash = sentryFileHash,
+					ShouldRememberPassword = BotConfig.UseLoginKeys,
+					TwoFactorCode = TwoFactorCode,
+					Username = username
+				}
+			);
 		}
 
 		private async void OnDisconnected(SteamClient.DisconnectedCallback callback) {
@@ -2257,17 +2263,19 @@ namespace ArchiSteamFarm {
 			}
 
 			// Inform the steam servers that we're accepting this sentry file
-			SteamUser.SendMachineAuthResponse(new SteamUser.MachineAuthDetails {
-				JobID = callback.JobID,
-				FileName = callback.FileName,
-				BytesWritten = callback.BytesToWrite,
-				FileSize = fileSize,
-				Offset = callback.Offset,
-				Result = EResult.OK,
-				LastError = 0,
-				OneTimePassword = callback.OneTimePassword,
-				SentryFileHash = sentryHash
-			});
+			SteamUser.SendMachineAuthResponse(
+				new SteamUser.MachineAuthDetails {
+					JobID = callback.JobID,
+					FileName = callback.FileName,
+					BytesWritten = callback.BytesToWrite,
+					FileSize = fileSize,
+					Offset = callback.Offset,
+					Result = EResult.OK,
+					LastError = 0,
+					OneTimePassword = callback.OneTimePassword,
+					SentryFileHash = sentryHash
+				}
+			);
 		}
 
 		private async void OnPersonaState(SteamFriends.PersonaStateCallback callback) {
@@ -3097,10 +3105,12 @@ namespace ArchiSteamFarm {
 			}
 
 			// Schedule the task after some time so user can receive response
-			Utilities.InBackground(async () => {
-				await Task.Delay(1000).ConfigureAwait(false);
-				await Program.Exit().ConfigureAwait(false);
-			});
+			Utilities.InBackground(
+				async () => {
+					await Task.Delay(1000).ConfigureAwait(false);
+					await Program.Exit().ConfigureAwait(false);
+				}
+			);
 
 			return FormatStaticResponse(Strings.Done);
 		}
@@ -4468,10 +4478,12 @@ namespace ArchiSteamFarm {
 			}
 
 			// Schedule the task after some time so user can receive response
-			Utilities.InBackground(async () => {
-				await Task.Delay(1000).ConfigureAwait(false);
-				await Program.Restart().ConfigureAwait(false);
-			});
+			Utilities.InBackground(
+				async () => {
+					await Task.Delay(1000).ConfigureAwait(false);
+					await Program.Restart().ConfigureAwait(false);
+				}
+			);
 
 			return FormatStaticResponse(Strings.Done);
 		}

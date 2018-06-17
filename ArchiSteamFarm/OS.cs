@@ -27,6 +27,7 @@ using ArchiSteamFarm.Localization;
 namespace ArchiSteamFarm {
 	internal static class OS {
 		internal static bool IsUnix => RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+		internal static string Variant => RuntimeInformation.OSDescription.Trim();
 
 		internal static void Init(bool systemRequired) {
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {

@@ -183,7 +183,8 @@ namespace ArchiSteamFarm {
 					iEconService.Timeout = WebBrowser.Timeout;
 
 					try {
-						response = await WebLimitRequest(WebAPI.DefaultBaseAddress.Host,
+						response = await WebLimitRequest(
+							WebAPI.DefaultBaseAddress.Host,
 #pragma warning disable ConfigureAwaitChecker // CAC001
 							// ReSharper disable once AccessToDisposedClosure
 							async () => await iEconService.DeclineTradeOffer(
@@ -231,7 +232,8 @@ namespace ArchiSteamFarm {
 					iEconService.Timeout = WebBrowser.Timeout;
 
 					try {
-						response = await WebLimitRequest(WebAPI.DefaultBaseAddress.Host,
+						response = await WebLimitRequest(
+							WebAPI.DefaultBaseAddress.Host,
 #pragma warning disable ConfigureAwaitChecker // CAC001
 							// ReSharper disable once AccessToDisposedClosure
 							async () => await iEconService.GetTradeOffers(
@@ -522,10 +524,12 @@ namespace ArchiSteamFarm {
 				if (Program.GlobalConfig.InventoryLimiterDelay == 0) {
 					InventorySemaphore.Release();
 				} else {
-					Utilities.InBackground(async () => {
-						await Task.Delay(Program.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
-						InventorySemaphore.Release();
-					});
+					Utilities.InBackground(
+						async () => {
+							await Task.Delay(Program.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
+							InventorySemaphore.Release();
+						}
+					);
 				}
 			}
 		}
@@ -582,7 +586,8 @@ namespace ArchiSteamFarm {
 					iPlayerService.Timeout = WebBrowser.Timeout;
 
 					try {
-						response = await WebLimitRequest(WebAPI.DefaultBaseAddress.Host,
+						response = await WebLimitRequest(
+							WebAPI.DefaultBaseAddress.Host,
 #pragma warning disable ConfigureAwaitChecker // CAC001
 							// ReSharper disable once AccessToDisposedClosure
 							async () => await iPlayerService.GetOwnedGames(
@@ -626,7 +631,8 @@ namespace ArchiSteamFarm {
 					iTwoFactorService.Timeout = WebBrowser.Timeout;
 
 					try {
-						response = await WebLimitRequest(WebAPI.DefaultBaseAddress.Host,
+						response = await WebLimitRequest(
+							WebAPI.DefaultBaseAddress.Host,
 #pragma warning disable ConfigureAwaitChecker // CAC001
 							// ReSharper disable once AccessToDisposedClosure
 							async () => await iTwoFactorService.QueryTime(
@@ -726,7 +732,8 @@ namespace ArchiSteamFarm {
 					iEconService.Timeout = WebBrowser.Timeout;
 
 					try {
-						response = await WebLimitRequest(WebAPI.DefaultBaseAddress.Host,
+						response = await WebLimitRequest(
+							WebAPI.DefaultBaseAddress.Host,
 #pragma warning disable ConfigureAwaitChecker // CAC001
 							// ReSharper disable once AccessToDisposedClosure
 							async () => await iEconService.GetTradeHoldDurations(
@@ -907,7 +914,8 @@ namespace ArchiSteamFarm {
 				iSteamUserAuth.Timeout = WebBrowser.Timeout;
 
 				try {
-					response = await WebLimitRequest(WebAPI.DefaultBaseAddress.Host,
+					response = await WebLimitRequest(
+						WebAPI.DefaultBaseAddress.Host,
 #pragma warning disable ConfigureAwaitChecker // CAC001
 						// ReSharper disable once AccessToDisposedClosure
 						async () => await iSteamUserAuth.AuthenticateUser(
@@ -1003,10 +1011,12 @@ namespace ArchiSteamFarm {
 				if (Program.GlobalConfig.InventoryLimiterDelay == 0) {
 					InventorySemaphore.Release();
 				} else {
-					Utilities.InBackground(async () => {
-						await Task.Delay(Program.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
-						InventorySemaphore.Release();
-					});
+					Utilities.InBackground(
+						async () => {
+							await Task.Delay(Program.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
+							InventorySemaphore.Release();
+						}
+					);
 				}
 			}
 		}
@@ -1065,13 +1075,15 @@ namespace ArchiSteamFarm {
 			const string referer = SteamCommunityURL + "/tradeoffer/new";
 
 			// Extra entry for sessionID
-			foreach (Dictionary<string, string> data in trades.Select(trade => new Dictionary<string, string>(6) {
-				{ "json_tradeoffer", JsonConvert.SerializeObject(trade) },
-				{ "partner", partnerID.ToString() },
-				{ "serverid", "1" },
-				{ "trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : new JObject { { "trade_offer_access_token", token } }.ToString(Formatting.None) },
-				{ "tradeoffermessage", "Sent by " + SharedInfo.PublicIdentifier + "/" + SharedInfo.Version }
-			})) {
+			foreach (Dictionary<string, string> data in trades.Select(
+				trade => new Dictionary<string, string>(6) {
+					{ "json_tradeoffer", JsonConvert.SerializeObject(trade) },
+					{ "partner", partnerID.ToString() },
+					{ "serverid", "1" },
+					{ "trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : new JObject { { "trade_offer_access_token", token } }.ToString(Formatting.None) },
+					{ "tradeoffermessage", "Sent by " + SharedInfo.PublicIdentifier + "/" + SharedInfo.Version }
+				}
+			)) {
 				if (!await UrlPostWithSession(SteamCommunityURL, request, data, referer).ConfigureAwait(false)) {
 					return false;
 				}
@@ -2075,10 +2087,12 @@ namespace ArchiSteamFarm {
 				await limiters.RateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
 
 				// We release rate-limiter semaphore regardless of our task completion, since we use that one only to guarantee rate-limiting of their creation
-				Utilities.InBackground(async () => {
-					await Task.Delay(Program.GlobalConfig.WebLimiterDelay).ConfigureAwait(false);
-					limiters.RateLimitingSemaphore.Release();
-				});
+				Utilities.InBackground(
+					async () => {
+						await Task.Delay(Program.GlobalConfig.WebLimiterDelay).ConfigureAwait(false);
+						limiters.RateLimitingSemaphore.Release();
+					}
+				);
 
 				return await function().ConfigureAwait(false);
 			} finally {
