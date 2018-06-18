@@ -5015,19 +5015,10 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
 			}
 
-			IEnumerable<Task<bool>> tasks = inventory.Select(item => ArchiWebHandler.UnpackBooster(item.RealAppID, item.AssetID));
-
 			// It'd make sense here to actually check return code of ArchiWebHandler.UnpackBooster(), but it lies most of the time | https://github.com/JustArchi/ArchiSteamFarm/issues/704
-			switch (Program.GlobalConfig.OptimizationMode) {
-				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					foreach (Task<bool> task in tasks) {
-						await task.ConfigureAwait(false);
-					}
-
-					break;
-				default:
-					await Task.WhenAll(tasks).ConfigureAwait(false);
-					break;
+			// It'd also make sense to run all of this in parallel, but it seems that Steam has a lot of problems with inventory-related parallel requests | https://steamcommunity.com/groups/ascfarm/discussions/1/3559414588264550284/
+			foreach (Steam.Asset item in inventory) {
+				await ArchiWebHandler.UnpackBooster(item.RealAppID, item.AssetID).ConfigureAwait(false);
 			}
 
 			return FormatBotResponse(Strings.Done);
