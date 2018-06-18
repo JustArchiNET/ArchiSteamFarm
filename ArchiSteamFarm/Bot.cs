@@ -48,7 +48,7 @@ namespace ArchiSteamFarm {
 		private const byte FamilySharingInactivityMinutes = 5;
 		private const byte LoginCooldownInMinutes = 25; // Captcha disappears after around 20 minutes, so we make it 25
 		private const uint LoginID = GlobalConfig.DefaultIPCPort; // This must be the same for all ASF bots and all ASF processes
-		private const ushort MaxSteamMessageLength = 2048;
+		private const ushort MaxMessageLength = 5000;
 		private const byte MaxTwoFactorCodeFailures = 3;
 		private const byte MinHeartBeatTTL = GlobalConfig.DefaultConnectionTimeout; // Assume client is responsive for at least that amount of seconds
 		private const byte RedeemCooldownInHours = 1; // 1 hour since first redeem attempt
@@ -1159,12 +1159,8 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogGenericTrace(steamID + "/" + CachedSteamID + ": " + message);
 
-			for (int i = 0; i < message.Length; i += MaxSteamMessageLength - 2) {
-				if (i > 0) {
-					await Task.Delay(CallbackSleep).ConfigureAwait(false);
-				}
-
-				string messagePart = "/code " + (i > 0 ? "…" : "") + message.Substring(i, Math.Min(MaxSteamMessageLength - 8, message.Length - i)) + (MaxSteamMessageLength - 8 < message.Length - i ? "…" : "");
+			for (int i = 0; i < message.Length; i += MaxMessageLength - 6) {
+				string messagePart = "/me " + (i > 0 ? "…" : "") + message.Substring(i, Math.Min(MaxMessageLength - 6, message.Length - i)) + (MaxMessageLength - 6 < message.Length - i ? "…" : "");
 
 				if (!await ArchiHandler.SendMessage(steamID, messagePart).ConfigureAwait(false)) {
 					return false;
@@ -1186,12 +1182,8 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogGenericTrace(chatGroupID + "-" + chatID + "/" + CachedSteamID + ": " + message);
 
-			for (int i = 0; i < message.Length; i += MaxSteamMessageLength - 2) {
-				if (i > 0) {
-					await Task.Delay(CallbackSleep).ConfigureAwait(false);
-				}
-
-				string messagePart = "/code " + (i > 0 ? "…" : "") + message.Substring(i, Math.Min(MaxSteamMessageLength - 8, message.Length - i)) + (MaxSteamMessageLength - 8 < message.Length - i ? "…" : "");
+			for (int i = 0; i < message.Length; i += MaxMessageLength - 6) {
+				string messagePart = "/me " + (i > 0 ? "…" : "") + message.Substring(i, Math.Min(MaxMessageLength - 6, message.Length - i)) + (MaxMessageLength - 6 < message.Length - i ? "…" : "");
 
 				if (!await ArchiHandler.SendMessage(chatGroupID, chatID, messagePart).ConfigureAwait(false)) {
 					return false;
