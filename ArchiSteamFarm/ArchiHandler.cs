@@ -87,6 +87,67 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal async Task<bool> AckChatMessage(ulong chatGroupID, ulong chatID, uint timestamp) {
+			if ((chatGroupID == 0) || (chatID == 0) || (timestamp == 0)) {
+				ArchiLogger.LogNullError(nameof(chatGroupID) + " || " + nameof(chatID) + " || " + nameof(timestamp));
+				return false;
+			}
+
+			CChatRoom_AckChatMessage_Notification request = new CChatRoom_AckChatMessage_Notification {
+				chat_group_id = chatGroupID,
+				chat_id = chatID,
+				timestamp = timestamp
+			};
+
+			SteamUnifiedMessages.ServiceMethodResponse response;
+
+			try {
+#pragma warning disable ConfigureAwaitChecker
+				response = await UnifiedChatRoomService.SendMessage(x => x.AckChatMessage(request));
+#pragma warning restore ConfigureAwaitChecker
+			} catch (Exception e) {
+				ArchiLogger.LogGenericWarningException(e);
+				return false;
+			}
+
+			if (response == null) {
+				ArchiLogger.LogNullError(nameof(response));
+				return false;
+			}
+
+			return true;
+		}
+
+		internal async Task<bool> AckMessage(ulong steamID, uint timestamp) {
+			if ((steamID == 0) || (timestamp == 0)) {
+				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(timestamp));
+				return false;
+			}
+
+			CFriendMessages_AckMessage_Notification request = new CFriendMessages_AckMessage_Notification {
+				steamid_partner = steamID,
+				timestamp = timestamp
+			};
+
+			SteamUnifiedMessages.ServiceMethodResponse response;
+
+			try {
+#pragma warning disable ConfigureAwaitChecker
+				response = await UnifiedFriendMessagesService.SendMessage(x => x.AckMessage(request));
+#pragma warning restore ConfigureAwaitChecker
+			} catch (Exception e) {
+				ArchiLogger.LogGenericWarningException(e);
+				return false;
+			}
+
+			if (response == null) {
+				ArchiLogger.LogNullError(nameof(response));
+				return false;
+			}
+
+			return true;
+		}
+
 		internal void AcknowledgeClanInvite(ulong clanID, bool acceptInvite) {
 			if (clanID == 0) {
 				ArchiLogger.LogNullError(nameof(clanID));
@@ -126,6 +187,11 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
+			if (response == null) {
+				ArchiLogger.LogNullError(nameof(response));
+				return false;
+			}
+
 			return response.Result == EResult.OK;
 		}
 
@@ -140,6 +206,11 @@ namespace ArchiSteamFarm {
 #pragma warning restore ConfigureAwaitChecker
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
+				return null;
+			}
+
+			if (response == null) {
+				ArchiLogger.LogNullError(nameof(response));
 				return null;
 			}
 
@@ -167,6 +238,11 @@ namespace ArchiSteamFarm {
 #pragma warning restore ConfigureAwaitChecker
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
+				return false;
+			}
+
+			if (response == null) {
+				ArchiLogger.LogNullError(nameof(response));
 				return false;
 			}
 
@@ -291,6 +367,11 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
+			if (response == null) {
+				ArchiLogger.LogNullError(nameof(response));
+				return false;
+			}
+
 			return response.Result == EResult.OK;
 		}
 
@@ -322,6 +403,11 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
+			if (response == null) {
+				ArchiLogger.LogNullError(nameof(response));
+				return false;
+			}
+
 			return response.Result == EResult.OK;
 		}
 
@@ -345,6 +431,11 @@ namespace ArchiSteamFarm {
 #pragma warning restore ConfigureAwaitChecker
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
+				return false;
+			}
+
+			if (response == null) {
+				ArchiLogger.LogNullError(nameof(response));
 				return false;
 			}
 
