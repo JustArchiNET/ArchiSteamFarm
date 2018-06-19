@@ -255,7 +255,8 @@ namespace ArchiSteamFarm {
 			RejectInvalidFriendInvites = 1,
 			RejectInvalidTrades = 2,
 			RejectInvalidGroupInvites = 4,
-			DismissInventoryNotifications = 8
+			DismissInventoryNotifications = 8,
+			MarkReceivedMessagesAsRead = 16
 		}
 
 		internal enum EFarmingOrder : byte {

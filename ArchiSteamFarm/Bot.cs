@@ -1942,6 +1942,10 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			if ((notification.steamid_sender != CachedSteamID) && BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkReceivedMessagesAsRead)) {
+				Utilities.InBackground(() => ArchiHandler.AckChatMessage(notification.chat_group_id, notification.chat_id, notification.timestamp));
+			}
+
 			if (string.IsNullOrWhiteSpace(notification.message)) {
 				return;
 			}
@@ -1956,11 +1960,24 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (((EChatEntryType) notification.chat_entry_type != EChatEntryType.ChatMsg) || string.IsNullOrWhiteSpace(notification.message)) {
+			if ((EChatEntryType) notification.chat_entry_type != EChatEntryType.ChatMsg) {
+				return;
+			}
+
+			if (!notification.local_echo && BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkReceivedMessagesAsRead)) {
+				Utilities.InBackground(() => ArchiHandler.AckMessage(notification.steamid_friend, notification.rtime32_server_timestamp));
+			}
+
+			if (string.IsNullOrWhiteSpace(notification.message)) {
 				return;
 			}
 
 			ArchiLogger.LogGenericTrace(notification.steamid_friend + ": " + notification.message);
+
+			if (notification.local_echo) {
+				return;
+			}
+
 			await HandleMessage(notification.steamid_friend, notification.message).ConfigureAwait(false);
 		}
 
