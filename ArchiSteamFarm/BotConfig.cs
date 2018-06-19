@@ -42,17 +42,11 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool AutoSteamSaleEvent;
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly EBotBehaviour BotBehaviour = EBotBehaviour.None;
-
 		[JsonProperty]
 		internal readonly string CustomGamePlayedWhileFarming;
 
 		[JsonProperty]
 		internal readonly string CustomGamePlayedWhileIdle;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool DismissInventoryNotifications;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool Enabled;
@@ -116,6 +110,9 @@ namespace ArchiSteamFarm {
 		internal readonly bool UseLoginKeys = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		internal EBotBehaviour BotBehaviour { get; private set; } = EBotBehaviour.None;
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		internal EPersonaState OnlineStatus { get; private set; } = EPersonaState.Online;
 
 		[JsonProperty]
@@ -133,12 +130,12 @@ namespace ArchiSteamFarm {
 		private bool ShouldSerializeSensitiveDetails = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		private bool FarmOffline {
+		private bool DismissInventoryNotifications {
 			set {
-				ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, nameof(FarmOffline), nameof(OnlineStatus)));
+				ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, nameof(DismissInventoryNotifications), nameof(BotBehaviour)));
 
 				if (value) {
-					OnlineStatus = EPersonaState.Offline;
+					BotBehaviour |= EBotBehaviour.DismissInventoryNotifications;
 				}
 			}
 		}
@@ -244,7 +241,8 @@ namespace ArchiSteamFarm {
 			None = 0,
 			RejectInvalidFriendInvites = 1,
 			RejectInvalidTrades = 2,
-			RejectInvalidGroupInvites = 4
+			RejectInvalidGroupInvites = 4,
+			DismissInventoryNotifications = 8
 		}
 
 		internal enum EFarmingOrder : byte {

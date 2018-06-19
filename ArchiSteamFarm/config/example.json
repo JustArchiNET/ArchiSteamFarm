@@ -4,7 +4,6 @@
 	"BotBehaviour": 0,
 	"CustomGamePlayedWhileFarming": null,
 	"CustomGamePlayedWhileIdle": null,
-	"DismissInventoryNotifications": false,
 	"Enabled": false,
 	"FarmingOrder": 0,
 	"GamesPlayedWhileIdle": [],

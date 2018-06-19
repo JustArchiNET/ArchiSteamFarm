@@ -45,9 +45,6 @@ namespace ArchiSteamFarm {
 		internal readonly bool AutoRestart = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte BackgroundGCPeriod;
-
-		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly HashSet<uint> Blacklist = new HashSet<uint>();
 
 		[JsonProperty]

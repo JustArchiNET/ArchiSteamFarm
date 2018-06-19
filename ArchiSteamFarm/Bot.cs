@@ -2367,7 +2367,7 @@ namespace ArchiSteamFarm {
 						if (newItems) {
 							Utilities.InBackground(CardsFarmer.OnNewItemsNotification);
 
-							if (BotConfig.DismissInventoryNotifications) {
+							if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.DismissInventoryNotifications)) {
 								Utilities.InBackground(ArchiWebHandler.MarkInventory);
 							}
 						}

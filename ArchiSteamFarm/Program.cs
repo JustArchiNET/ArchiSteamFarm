@@ -254,11 +254,6 @@ namespace ArchiSteamFarm {
 				ASF.ArchiLogger.LogGenericDebug(SharedInfo.GlobalConfigFileName + ": " + JsonConvert.SerializeObject(GlobalConfig, Formatting.Indented));
 			}
 
-			if (GlobalConfig.BackgroundGCPeriod > 0) {
-				ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, nameof(GlobalConfig.BackgroundGCPeriod), "COMPlus_GCLatencyLevel=0"));
-				Hacks.EnableBackgroundGC(GlobalConfig.BackgroundGCPeriod);
-			}
-
 			if (!string.IsNullOrEmpty(GlobalConfig.CurrentCulture)) {
 				try {
 					// GetCultureInfo() would be better but we can't use it for specifying neutral cultures such as "en"
