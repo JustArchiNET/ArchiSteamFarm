@@ -103,7 +103,7 @@ namespace ArchiSteamFarm {
 
 			try {
 #pragma warning disable ConfigureAwaitChecker
-				response = await UnifiedChatRoomService.SendMessage(x => x.AckChatMessage(request));
+				response = await UnifiedChatRoomService.SendMessage(x => x.AckChatMessage(request), true);
 #pragma warning restore ConfigureAwaitChecker
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
@@ -133,7 +133,7 @@ namespace ArchiSteamFarm {
 
 			try {
 #pragma warning disable ConfigureAwaitChecker
-				response = await UnifiedFriendMessagesService.SendMessage(x => x.AckMessage(request));
+				response = await UnifiedFriendMessagesService.SendMessage(x => x.AckMessage(request), true);
 #pragma warning restore ConfigureAwaitChecker
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
