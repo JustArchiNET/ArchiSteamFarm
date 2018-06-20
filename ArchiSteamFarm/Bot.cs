@@ -2618,8 +2618,14 @@ namespace ArchiSteamFarm {
 			}
 
 			StringBuilder response = new StringBuilder();
+
 			foreach (uint gameID in gameIDs) {
 				await LimitGiftsRequestsAsync().ConfigureAwait(false);
+
+				if (await ArchiWebHandler.AddFreeLicense(gameID).ConfigureAwait(false)) {
+					response.Append(FormatBotResponse(string.Format(Strings.BotAddLicenseWithItems, gameID, EResult.OK, "sub/" + gameID)));
+					continue;
+				}
 
 				SteamApps.FreeLicenseCallback callback;
 
@@ -2638,15 +2644,7 @@ namespace ArchiSteamFarm {
 					break;
 				}
 
-				if (callback.GrantedApps.Count > 0) {
-					response.Append(FormatBotResponse(string.Format(Strings.BotAddLicenseWithItems, gameID, callback.Result, string.Join(", ", callback.GrantedApps))));
-				} else if (callback.GrantedPackages.Count > 0) {
-					response.Append(FormatBotResponse(string.Format(Strings.BotAddLicenseWithItems, gameID, callback.Result, string.Join(", ", callback.GrantedPackages))));
-				} else if (await ArchiWebHandler.AddFreeLicense(gameID).ConfigureAwait(false)) {
-					response.Append(FormatBotResponse(string.Format(Strings.BotAddLicenseWithItems, gameID, EResult.OK, gameID)));
-				} else {
-					response.Append(FormatBotResponse(string.Format(Strings.BotAddLicense, gameID, EResult.AccessDenied)));
-				}
+				response.Append(FormatBotResponse((callback.GrantedApps.Count > 0) || (callback.GrantedPackages.Count > 0) ? string.Format(Strings.BotAddLicenseWithItems, gameID, callback.Result, string.Join(", ", callback.GrantedApps.Select(appID => "app/" + appID).Union(callback.GrantedPackages.Select(subID => "sub/" + subID)))) : string.Format(Strings.BotAddLicense, gameID, callback.Result)));
 			}
 
 			return response.Length > 0 ? response.ToString() : null;
