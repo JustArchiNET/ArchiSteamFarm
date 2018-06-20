@@ -207,11 +207,7 @@ namespace ArchiSteamFarm {
 			CallbackManager.Subscribe<SteamApps.LicenseListCallback>(OnLicenseList);
 
 			SteamFriends = SteamClient.GetHandler<SteamFriends>();
-			CallbackManager.Subscribe<SteamFriends.ChatInviteCallback>(OnChatInvite);
-			CallbackManager.Subscribe<SteamFriends.ChatMsgCallback>(OnChatMsg);
 			CallbackManager.Subscribe<SteamFriends.FriendsListCallback>(OnFriendsList);
-			CallbackManager.Subscribe<SteamFriends.FriendMsgCallback>(OnFriendMsg);
-			CallbackManager.Subscribe<SteamFriends.FriendMsgEchoCallback>(OnFriendMsgEcho);
 			CallbackManager.Subscribe<SteamFriends.PersonaStateCallback>(OnPersonaState);
 
 			CallbackManager.Subscribe<SteamUnifiedMessages.ServiceMethodNotification>(OnServiceMethod);
@@ -1680,26 +1676,6 @@ namespace ArchiSteamFarm {
 			);
 		}
 
-		private void OnChatInvite(SteamFriends.ChatInviteCallback callback) {
-			if ((callback?.ChatRoomID == null) || (callback.PatronID == null)) {
-				ArchiLogger.LogNullError(nameof(callback) + " || " + nameof(callback.ChatRoomID) + " || " + nameof(callback.PatronID));
-				return;
-			}
-
-			// TODO: This callback should not be used anymore
-			ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(callback), callback.GetType()));
-		}
-
-		private void OnChatMsg(SteamFriends.ChatMsgCallback callback) {
-			if (callback == null) {
-				ArchiLogger.LogNullError(nameof(callback));
-				return;
-			}
-
-			// TODO: This callback should not be used anymore
-			ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(callback), callback.GetType()));
-		}
-
 		private async void OnConnected(SteamClient.ConnectedCallback callback) {
 			if (callback == null) {
 				ArchiLogger.LogNullError(nameof(callback));
@@ -1851,26 +1827,6 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogGenericInfo(Strings.BotReconnecting);
 			await Connect().ConfigureAwait(false);
-		}
-
-		private void OnFriendMsg(SteamFriends.FriendMsgCallback callback) {
-			if (callback?.Sender == null) {
-				ArchiLogger.LogNullError(nameof(callback) + " || " + nameof(callback.Sender));
-				return;
-			}
-
-			// TODO: This callback should not be used anymore
-			ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(callback), callback.GetType()));
-		}
-
-		private void OnFriendMsgEcho(SteamFriends.FriendMsgEchoCallback callback) {
-			if (callback?.Recipient == null) {
-				ArchiLogger.LogNullError(nameof(callback) + " || " + nameof(callback.Recipient));
-				return;
-			}
-
-			// TODO: This callback should not be used anymore
-			ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(callback), callback.GetType()));
 		}
 
 		private async void OnFriendsList(SteamFriends.FriendsListCallback callback) {
