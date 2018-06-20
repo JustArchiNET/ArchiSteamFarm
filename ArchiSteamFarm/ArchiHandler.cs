@@ -87,10 +87,10 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task<bool> AckChatMessage(ulong chatGroupID, ulong chatID, uint timestamp) {
+		internal void AckChatMessage(ulong chatGroupID, ulong chatID, uint timestamp) {
 			if ((chatGroupID == 0) || (chatID == 0) || (timestamp == 0)) {
 				ArchiLogger.LogNullError(nameof(chatGroupID) + " || " + nameof(chatID) + " || " + nameof(timestamp));
-				return false;
+				return;
 			}
 
 			CChatRoom_AckChatMessage_Notification request = new CChatRoom_AckChatMessage_Notification {
@@ -99,29 +99,15 @@ namespace ArchiSteamFarm {
 				timestamp = timestamp
 			};
 
-			SteamUnifiedMessages.ServiceMethodResponse response;
-
-			try {
-#pragma warning disable ConfigureAwaitChecker
-				response = await UnifiedChatRoomService.SendMessage(x => x.AckChatMessage(request), true);
-#pragma warning restore ConfigureAwaitChecker
-			} catch (Exception e) {
-				ArchiLogger.LogGenericWarningException(e);
-				return false;
-			}
-
-			if (response == null) {
-				ArchiLogger.LogNullError(nameof(response));
-				return false;
-			}
-
-			return true;
+#pragma warning disable CS4014 // This AsyncJob does not return a response
+			UnifiedChatRoomService.SendMessage(x => x.AckChatMessage(request), true);
+#pragma warning restore CS4014 // This AsyncJob does not return a response
 		}
 
-		internal async Task<bool> AckMessage(ulong steamID, uint timestamp) {
+		internal void AckMessage(ulong steamID, uint timestamp) {
 			if ((steamID == 0) || (timestamp == 0)) {
 				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(timestamp));
-				return false;
+				return;
 			}
 
 			CFriendMessages_AckMessage_Notification request = new CFriendMessages_AckMessage_Notification {
@@ -129,23 +115,9 @@ namespace ArchiSteamFarm {
 				timestamp = timestamp
 			};
 
-			SteamUnifiedMessages.ServiceMethodResponse response;
-
-			try {
-#pragma warning disable ConfigureAwaitChecker
-				response = await UnifiedFriendMessagesService.SendMessage(x => x.AckMessage(request), true);
-#pragma warning restore ConfigureAwaitChecker
-			} catch (Exception e) {
-				ArchiLogger.LogGenericWarningException(e);
-				return false;
-			}
-
-			if (response == null) {
-				ArchiLogger.LogNullError(nameof(response));
-				return false;
-			}
-
-			return true;
+#pragma warning disable CS4014 // This AsyncJob does not return a response
+			UnifiedFriendMessagesService.SendMessage(x => x.AckMessage(request), true);
+#pragma warning restore CS4014 // This AsyncJob does not return a response
 		}
 
 		internal void AcknowledgeClanInvite(ulong clanID, bool acceptInvite) {
