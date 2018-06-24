@@ -418,10 +418,7 @@ namespace ArchiSteamFarm {
 			}
 
 			await ASF.ArchiLogger.LogFatalException(e.Exception).ConfigureAwait(false);
-
-			// Normally we should abort the application here, but many tasks are in fact failing in SK2 code which we can't easily fix
-			// Thanks Valve.
-			e.SetObserved();
+			await Exit(1).ConfigureAwait(false);
 		}
 
 		private static void ParsePostInitArgs(IReadOnlyCollection<string> args) {

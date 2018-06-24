@@ -244,7 +244,7 @@ namespace ArchiSteamFarm {
 
 			const string requiredContentType = "application/json";
 
-			if (request.ContentType != requiredContentType) {
+			if (string.IsNullOrEmpty(request.ContentType) || ((request.ContentType != requiredContentType) && !request.ContentType.StartsWith(requiredContentType + ";", StringComparison.Ordinal))) {
 				await ResponseJsonObject(request, response, new GenericResponse<object>(false, nameof(request.ContentType) + " must be declared as " + requiredContentType), HttpStatusCode.NotAcceptable).ConfigureAwait(false);
 				return true;
 			}
@@ -386,7 +386,7 @@ namespace ArchiSteamFarm {
 
 			const string requiredContentType = "application/json";
 
-			if (request.ContentType != requiredContentType) {
+			if (string.IsNullOrEmpty(request.ContentType) || ((request.ContentType != requiredContentType) && !request.ContentType.StartsWith(requiredContentType + ";", StringComparison.Ordinal))) {
 				await ResponseJsonObject(request, response, new GenericResponse<object>(false, nameof(request.ContentType) + " must be declared as " + requiredContentType), HttpStatusCode.NotAcceptable).ConfigureAwait(false);
 				return true;
 			}
@@ -528,7 +528,7 @@ namespace ArchiSteamFarm {
 
 			const string requiredContentType = "application/json";
 
-			if (request.ContentType != requiredContentType) {
+			if (string.IsNullOrEmpty(request.ContentType) || ((request.ContentType != requiredContentType) && !request.ContentType.StartsWith(requiredContentType + ";", StringComparison.Ordinal))) {
 				await ResponseJsonObject(request, response, new GenericResponse<OrderedDictionary>(false, nameof(request.ContentType) + " must be declared as " + requiredContentType), HttpStatusCode.NotAcceptable).ConfigureAwait(false);
 				return true;
 			}
