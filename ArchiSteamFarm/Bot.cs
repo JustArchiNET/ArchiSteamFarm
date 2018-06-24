@@ -2759,25 +2759,31 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotSendingTradeToYourself);
 			}
 
-			HashSet<Steam.Asset> inventory = await ArchiWebHandler.GetMyInventory(true, appID, contextID).ConfigureAwait(false);
-			if ((inventory == null) || (inventory.Count == 0)) {
-			    return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
-			}
+			await LootingSemaphore.WaitAsync().ConfigureAwait(false);
 
-			if (!await ArchiWebHandler.MarkSentTrades().ConfigureAwait(false)) {
-			    return FormatBotResponse(Strings.BotLootingFailed);
-			}
+			try {
+				HashSet<Steam.Asset> inventory = await ArchiWebHandler.GetMyInventory(true, appID, contextID).ConfigureAwait(false);
+				if ((inventory == null) || (inventory.Count == 0)) {
+					return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
+				}
 
-			if (!await ArchiWebHandler.SendTradeOffer(targetSteamMasterID, inventory, BotConfig.SteamTradeToken).ConfigureAwait(false)) {
-			    return FormatBotResponse(Strings.BotLootingFailed);
-			}
+				if (!await ArchiWebHandler.MarkSentTrades().ConfigureAwait(false)) {
+					return FormatBotResponse(Strings.BotLootingFailed);
+				}
 
-			if (HasMobileAuthenticator) {
-			    // Give Steam network some time to generate confirmations
-			    await Task.Delay(3000).ConfigureAwait(false);
-			    if (!await AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, targetSteamMasterID).ConfigureAwait(false)) {
-				return FormatBotResponse(Strings.BotLootingFailed);
-			    }
+				if (!await ArchiWebHandler.SendTradeOffer(targetSteamMasterID, inventory, BotConfig.SteamTradeToken).ConfigureAwait(false)) {
+					return FormatBotResponse(Strings.BotLootingFailed);
+				}
+
+				if (HasMobileAuthenticator) {
+					// Give Steam network some time to generate confirmations
+					await Task.Delay(3000).ConfigureAwait(false);
+					if (!await AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, targetSteamMasterID).ConfigureAwait(false)) {
+						return FormatBotResponse(Strings.BotLootingFailed);
+					}
+				}
+			} finally {
+				LootingSemaphore.Release();
 			}
 
 			return FormatBotResponse(Strings.BotLootingSuccess);
@@ -2795,110 +2801,6 @@ namespace ArchiSteamFarm {
 			}
 
 			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseAdvancedLoot(steamID, appID, contextID));
-			ICollection<string> results;
-
-			switch (Program.GlobalConfig.OptimizationMode) {
-				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					results = new List<string>(bots.Count);
-					foreach (Task<string> task in tasks) {
-						results.Add(await task.ConfigureAwait(false));
-					}
-
-					break;
-				default:
-					results = await Task.WhenAll(tasks).ConfigureAwait(false);
-					break;
-			}
-
-			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
-			return responses.Count > 0 ? string.Join("", responses) : null;
-		}
-
-
-		private async Task<string> ResponseLootByRealAppIDs(ulong steamID, string targetRealAppIDs) {
-		        if ((steamID == 0) || string.IsNullOrEmpty(targetRealAppIDs)){
-			        ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(targetRealAppIDs));
-				return null;
-			}
-
-			if (!IsMaster(steamID)) {
-				return null;
-			}
-
-			if (!IsConnectedAndLoggedOn) {
-				return FormatBotResponse(Strings.BotNotConnected);
-			}
-
-			string[] appIDTexts = targetRealAppIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-	                if (appIDTexts.Length == 0) {
-				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(appIDTexts)));
-			}
-
-			HashSet<uint> realAppIDs = new HashSet<uint>();
-
-	                foreach (string appIDText in appIDTexts){
-			    if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
-				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(appID)));
-			    }
-
-			    realAppIDs.Add(appID);
-			}
-
-			if (!LootingAllowed) {
-				return FormatBotResponse(Strings.BotLootingTemporarilyDisabled);
-			}
-
-			if (BotConfig.LootableTypes.Count == 0) {
-				return FormatBotResponse(Strings.BotLootingNoLootableTypes);
-			}
-
-			ulong targetSteamMasterID = GetFirstSteamMasterID();
-			if (targetSteamMasterID == 0) {
-				return FormatBotResponse(Strings.BotLootingMasterNotDefined);
-			}
-
-			if (targetSteamMasterID == CachedSteamID) {
-				return FormatBotResponse(Strings.BotSendingTradeToYourself);
-			}
-
-			HashSet<Steam.Asset> inventory = await ArchiWebHandler.GetMyInventory(true, wantedRealAppIDs: realAppIDs).ConfigureAwait(false);
-			if ((inventory == null) || (inventory.Count == 0)) {
-			    return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
-			}
-
-			if (!await ArchiWebHandler.MarkSentTrades().ConfigureAwait(false)) {
-			    return FormatBotResponse(Strings.BotLootingFailed);
-			}
-
-			if (!await ArchiWebHandler.SendTradeOffer(targetSteamMasterID, inventory, BotConfig.SteamTradeToken).ConfigureAwait(false)) {
-			    return FormatBotResponse(Strings.BotLootingFailed);
-			}
-
-			if (HasMobileAuthenticator) {
-			    // Give Steam network some time to generate confirmations
-			    await Task.Delay(3000).ConfigureAwait(false);
-			    if (!await AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, targetSteamMasterID).ConfigureAwait(false)) {
-				return FormatBotResponse(Strings.BotLootingFailed);
-			    }
-			}
-
-			return FormatBotResponse(Strings.BotLootingSuccess);
-		}
-
-
-		private static async Task<string> ResponseLootByRealAppIDs(ulong steamID, string botNames, string realappID) {
-		        if ((steamID == 0) || string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(realappID)) {
-			        ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames) + " || " + nameof(realappID));
-				return null;
-			}
-
-			HashSet<Bot> bots = GetBots(botNames);
-			if ((bots == null) || (bots.Count == 0)) {
-				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
-			}
-
-			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseLootByRealAppIDs(steamID, realappID));
 			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
@@ -3779,6 +3681,114 @@ namespace ArchiSteamFarm {
 			}
 
 			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseLoot(steamID));
+			ICollection<string> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<string>(bots.Count);
+					foreach (Task<string> task in tasks) {
+						results.Add(await task.ConfigureAwait(false));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+
+			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+			return responses.Count > 0 ? string.Join("", responses) : null;
+		}
+
+		private async Task<string> ResponseLootByRealAppIDs(ulong steamID, string targetRealAppIDs) {
+			if ((steamID == 0) || string.IsNullOrEmpty(targetRealAppIDs)) {
+				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(targetRealAppIDs));
+				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return null;
+			}
+
+			if (!IsConnectedAndLoggedOn) {
+				return FormatBotResponse(Strings.BotNotConnected);
+			}
+
+			string[] appIDTexts = targetRealAppIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+			if (appIDTexts.Length == 0) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(appIDTexts)));
+			}
+
+			HashSet<uint> realAppIDs = new HashSet<uint>();
+
+			foreach (string appIDText in appIDTexts) {
+				if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
+					return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(appID)));
+				}
+
+				realAppIDs.Add(appID);
+			}
+
+			if (!LootingAllowed) {
+				return FormatBotResponse(Strings.BotLootingTemporarilyDisabled);
+			}
+
+			if (BotConfig.LootableTypes.Count == 0) {
+				return FormatBotResponse(Strings.BotLootingNoLootableTypes);
+			}
+
+			ulong targetSteamMasterID = GetFirstSteamMasterID();
+			if (targetSteamMasterID == 0) {
+				return FormatBotResponse(Strings.BotLootingMasterNotDefined);
+			}
+
+			if (targetSteamMasterID == CachedSteamID) {
+				return FormatBotResponse(Strings.BotSendingTradeToYourself);
+			}
+
+			await LootingSemaphore.WaitAsync().ConfigureAwait(false);
+
+			try {
+				HashSet<Steam.Asset> inventory = await ArchiWebHandler.GetMyInventory(true, wantedRealAppIDs: realAppIDs).ConfigureAwait(false);
+				if ((inventory == null) || (inventory.Count == 0)) {
+					return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
+				}
+
+				if (!await ArchiWebHandler.MarkSentTrades().ConfigureAwait(false)) {
+					return FormatBotResponse(Strings.BotLootingFailed);
+				}
+
+				if (!await ArchiWebHandler.SendTradeOffer(targetSteamMasterID, inventory, BotConfig.SteamTradeToken).ConfigureAwait(false)) {
+					return FormatBotResponse(Strings.BotLootingFailed);
+				}
+
+				if (HasMobileAuthenticator) {
+					// Give Steam network some time to generate confirmations
+					await Task.Delay(3000).ConfigureAwait(false);
+					if (!await AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, targetSteamMasterID).ConfigureAwait(false)) {
+						return FormatBotResponse(Strings.BotLootingFailed);
+					}
+				}
+			} finally {
+				LootingSemaphore.Release();
+			}
+
+			return FormatBotResponse(Strings.BotLootingSuccess);
+		}
+
+		private static async Task<string> ResponseLootByRealAppIDs(ulong steamID, string botNames, string realappID) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(realappID)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames) + " || " + nameof(realappID));
+				return null;
+			}
+
+			HashSet<Bot> bots = GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
+			}
+
+			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseLootByRealAppIDs(steamID, realappID));
 			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
