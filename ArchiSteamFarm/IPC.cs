@@ -609,16 +609,14 @@ namespace ArchiSteamFarm {
 						await Task.WhenAll(HistoryTarget.ArchivedMessages.Select(archivedMessage => PostLoggedMessageUpdate(webSocketContext.WebSocket, sendSemaphore, archivedMessage))).ConfigureAwait(false);
 					}
 
-					while (webSocketContext.WebSocket.State == WebSocketState.Open) {
+					if (webSocketContext.WebSocket.State == WebSocketState.Open) {
 						WebSocketReceiveResult result = await webSocketContext.WebSocket.ReceiveAsync(new byte[0], CancellationToken.None).ConfigureAwait(false);
 
 						if (result.MessageType != WebSocketMessageType.Close) {
 							await webSocketContext.WebSocket.CloseAsync(WebSocketCloseStatus.InvalidMessageType, "You're not supposed to be sending any message but Close!", CancellationToken.None).ConfigureAwait(false);
-							break;
+						} else {
+							await webSocketContext.WebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None).ConfigureAwait(false);
 						}
-
-						await webSocketContext.WebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None).ConfigureAwait(false);
-						break;
 					}
 				} finally {
 					if (ActiveLogWebSockets.TryRemove(webSocketContext.WebSocket, out SemaphoreSlim closedSemaphore)) {
