@@ -2759,43 +2759,25 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotSendingTradeToYourself);
 			}
 
-			lock (LootingSemaphore) {
-				if (LootingScheduled) {
-					return FormatBotResponse(Strings.Done);
-				}
-
-				LootingScheduled = true;
+			HashSet<Steam.Asset> inventory = await ArchiWebHandler.GetMyInventory(true, appID, contextID).ConfigureAwait(false);
+			if ((inventory == null) || (inventory.Count == 0)) {
+			    return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
 			}
 
-			await LootingSemaphore.WaitAsync().ConfigureAwait(false);
+			if (!await ArchiWebHandler.MarkSentTrades().ConfigureAwait(false)) {
+			    return FormatBotResponse(Strings.BotLootingFailed);
+			}
 
-			try {
-				lock (LootingSemaphore) {
-					LootingScheduled = false;
-				}
+			if (!await ArchiWebHandler.SendTradeOffer(targetSteamMasterID, inventory, BotConfig.SteamTradeToken).ConfigureAwait(false)) {
+			    return FormatBotResponse(Strings.BotLootingFailed);
+			}
 
-				HashSet<Steam.Asset> inventory = await ArchiWebHandler.GetMyInventory(true, appID, contextID).ConfigureAwait(false);
-				if ((inventory == null) || (inventory.Count == 0)) {
-					return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
-				}
-
-				if (!await ArchiWebHandler.MarkSentTrades().ConfigureAwait(false)) {
-					return FormatBotResponse(Strings.BotLootingFailed);
-				}
-
-				if (!await ArchiWebHandler.SendTradeOffer(targetSteamMasterID, inventory, BotConfig.SteamTradeToken).ConfigureAwait(false)) {
-					return FormatBotResponse(Strings.BotLootingFailed);
-				}
-
-				if (HasMobileAuthenticator) {
-					// Give Steam network some time to generate confirmations
-					await Task.Delay(3000).ConfigureAwait(false);
-					if (!await AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, targetSteamMasterID).ConfigureAwait(false)) {
-						return FormatBotResponse(Strings.BotLootingFailed);
-					}
-				}
-			} finally {
-				LootingSemaphore.Release();
+			if (HasMobileAuthenticator) {
+			    // Give Steam network some time to generate confirmations
+			    await Task.Delay(3000).ConfigureAwait(false);
+			    if (!await AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, targetSteamMasterID).ConfigureAwait(false)) {
+				return FormatBotResponse(Strings.BotLootingFailed);
+			    }
 			}
 
 			return FormatBotResponse(Strings.BotLootingSuccess);
