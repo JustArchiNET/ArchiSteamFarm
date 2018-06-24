@@ -2610,7 +2610,7 @@ namespace ArchiSteamFarm {
 				await LimitGiftsRequestsAsync().ConfigureAwait(false);
 
 				if (await ArchiWebHandler.AddFreeLicense(gameID).ConfigureAwait(false)) {
-					response.Append(FormatBotResponse(string.Format(Strings.BotAddLicenseWithItems, gameID, EResult.OK, "sub/" + gameID)));
+					response.AppendLine(FormatBotResponse(string.Format(Strings.BotAddLicenseWithItems, gameID, EResult.OK, "sub/" + gameID)));
 					continue;
 				}
 
@@ -3730,7 +3730,7 @@ namespace ArchiSteamFarm {
 			}
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
-			return responses.Count > 0 ? string.Join("", responses) : null;
+			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 
 		private string ResponseLootSwitch(ulong steamID) {
