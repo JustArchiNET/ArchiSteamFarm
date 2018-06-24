@@ -2213,7 +2213,7 @@ namespace ArchiSteamFarm {
 			}
 
 			string loginKey = callback.LoginKey;
-			if (!string.IsNullOrEmpty(loginKey) && (BotConfig.PasswordFormat != CryptoHelper.ECryptoMethod.PlainText)) {
+			if (BotConfig.PasswordFormat != CryptoHelper.ECryptoMethod.PlainText) {
 				loginKey = CryptoHelper.Encrypt(BotConfig.PasswordFormat, loginKey);
 			}
 
