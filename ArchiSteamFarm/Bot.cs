@@ -1908,12 +1908,19 @@ namespace ArchiSteamFarm {
 				Utilities.InBackground(() => ArchiHandler.AckChatMessage(notification.chat_group_id, notification.chat_id, notification.timestamp));
 			}
 
-			if (string.IsNullOrWhiteSpace(notification.message)) {
+			string message;
+
+			// Prefer to use message without bbcode, but only if it's available
+			if (!string.IsNullOrEmpty(notification.message_no_bbcode)) {
+				message = notification.message_no_bbcode;
+			} else if (!string.IsNullOrEmpty(notification.message)) {
+				message = notification.message;
+			} else {
 				return;
 			}
 
-			ArchiLogger.LogChatMessage(false, notification.message, notification.chat_group_id, notification.chat_id, notification.steamid_sender);
-			await HandleMessage(notification.chat_group_id, notification.chat_id, notification.steamid_sender, notification.message).ConfigureAwait(false);
+			ArchiLogger.LogChatMessage(false, message, notification.chat_group_id, notification.chat_id, notification.steamid_sender);
+			await HandleMessage(notification.chat_group_id, notification.chat_id, notification.steamid_sender, message).ConfigureAwait(false);
 		}
 
 		private async Task OnIncomingMessage(CFriendMessages_IncomingMessage_Notification notification) {
@@ -1930,17 +1937,24 @@ namespace ArchiSteamFarm {
 				Utilities.InBackground(() => ArchiHandler.AckMessage(notification.steamid_friend, notification.rtime32_server_timestamp));
 			}
 
-			if (string.IsNullOrWhiteSpace(notification.message)) {
+			string message;
+
+			// Prefer to use message without bbcode, but only if it's available
+			if (!string.IsNullOrEmpty(notification.message_no_bbcode)) {
+				message = notification.message_no_bbcode;
+			} else if (!string.IsNullOrEmpty(notification.message)) {
+				message = notification.message;
+			} else {
 				return;
 			}
 
-			ArchiLogger.LogChatMessage(notification.local_echo, notification.message, steamID: notification.steamid_friend);
+			ArchiLogger.LogChatMessage(notification.local_echo, message, steamID: notification.steamid_friend);
 
 			if (notification.local_echo) {
 				return;
 			}
 
-			await HandleMessage(notification.steamid_friend, notification.message).ConfigureAwait(false);
+			await HandleMessage(notification.steamid_friend, message).ConfigureAwait(false);
 		}
 
 		private async void OnLicenseList(SteamApps.LicenseListCallback callback) {
