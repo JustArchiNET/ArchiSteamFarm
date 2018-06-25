@@ -1159,7 +1159,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			ArchiLogger.LogGenericTrace(steamID + "/" + CachedSteamID + ": " + message);
+			ArchiLogger.LogChatMessage(true, message, steamID: steamID);
 
 			for (int i = 0; i < message.Length; i += MaxMessageLength - 6) {
 				string messagePart = "/me " + (i > 0 ? "…" : "") + message.Substring(i, Math.Min(MaxMessageLength - 6, message.Length - i)) + (MaxMessageLength - 6 < message.Length - i ? "…" : "");
@@ -1182,7 +1182,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			ArchiLogger.LogGenericTrace(chatGroupID + "-" + chatID + "/" + CachedSteamID + ": " + message);
+			ArchiLogger.LogChatMessage(true, message, chatGroupID, chatID);
 
 			for (int i = 0; i < message.Length; i += MaxMessageLength - 6) {
 				string messagePart = "/me " + (i > 0 ? "…" : "") + message.Substring(i, Math.Min(MaxMessageLength - 6, message.Length - i)) + (MaxMessageLength - 6 < message.Length - i ? "…" : "");
@@ -1912,7 +1912,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ArchiLogger.LogGenericTrace(notification.chat_group_id + "-" + notification.chat_id + "/" + notification.steamid_sender + ": " + notification.message);
+			ArchiLogger.LogChatMessage(false, notification.message, notification.chat_group_id, notification.chat_id, notification.steamid_sender);
 			await HandleMessage(notification.chat_group_id, notification.chat_id, notification.steamid_sender, notification.message).ConfigureAwait(false);
 		}
 
@@ -1934,7 +1934,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ArchiLogger.LogGenericTrace(notification.steamid_friend + ": " + notification.message);
+			ArchiLogger.LogChatMessage(notification.local_echo, notification.message, steamID: notification.steamid_friend);
 
 			if (notification.local_echo) {
 				return;

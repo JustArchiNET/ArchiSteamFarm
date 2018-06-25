@@ -21,6 +21,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using NLog;
@@ -35,6 +36,34 @@ namespace ArchiSteamFarm {
 			}
 
 			Logger = LogManager.GetLogger(name);
+		}
+
+		internal void LogChatMessage(bool echo, string message, ulong chatGroupID = 0, ulong chatID = 0, ulong steamID = 0, [CallerMemberName] string previousMethodName = null) {
+			if (string.IsNullOrEmpty(message) || (((chatGroupID == 0) || (chatID == 0)) && (steamID == 0))) {
+				LogNullError(nameof(message) + " || " + "((" + nameof(chatGroupID) + " || " + nameof(chatID) + ") && " + nameof(steamID) + ")");
+				return;
+			}
+
+			StringBuilder loggedMessage = new StringBuilder(previousMethodName + "() " + message + " " + (echo ? "->" : "<-") + " ");
+
+			if ((chatGroupID != 0) && (chatID != 0)) {
+				loggedMessage.Append(chatGroupID + "-" + chatID);
+
+				if (steamID != 0) {
+					loggedMessage.Append("/" + steamID);
+				}
+			} else if (steamID != 0) {
+				loggedMessage.Append(steamID);
+			}
+
+			LogEventInfo logEventInfo = new LogEventInfo(LogLevel.Trace, Logger.Name, loggedMessage.ToString());
+			logEventInfo.Properties["Echo"] = echo;
+			logEventInfo.Properties["Message"] = message;
+			logEventInfo.Properties["ChatGroupID"] = chatGroupID;
+			logEventInfo.Properties["ChatID"] = chatID;
+			logEventInfo.Properties["SteamID"] = steamID;
+
+			Logger.Log(logEventInfo);
 		}
 
 		internal async Task LogFatalException(Exception exception, [CallerMemberName] string previousMethodName = null) {
