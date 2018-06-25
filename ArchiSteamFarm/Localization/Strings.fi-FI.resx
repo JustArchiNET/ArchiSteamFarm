@@ -458,9 +458,7 @@ StackTrace:
     <value>Kirjauduttu ulos Steamista: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  <data name="BotLoggedOn" xml:space="preserve">
-    <value>Onnistuneesti kirjauduttu sisään!</value>
-  </data>
+  
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Kirjaudutaan sisään...</value>
   </data>

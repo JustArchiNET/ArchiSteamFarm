@@ -456,9 +456,7 @@
     <value>已從 Steam 登出：{0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  <data name="BotLoggedOn" xml:space="preserve">
-    <value>已成功登入！</value>
-  </data>
+  
   <data name="BotLoggingIn" xml:space="preserve">
     <value>登入中...</value>
   </data>

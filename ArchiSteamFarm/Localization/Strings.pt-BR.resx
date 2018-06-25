@@ -459,9 +459,7 @@ StackTrace:
     <value>Sessão finalizada: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  <data name="BotLoggedOn" xml:space="preserve">
-    <value>Sessão iniciada com sucesso!</value>
-  </data>
+  
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Iniciando sessão...</value>
   </data>

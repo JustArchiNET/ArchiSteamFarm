@@ -459,9 +459,7 @@ StackTrace:
     <value>Đã đăng xuất khỏi Steam: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  <data name="BotLoggedOn" xml:space="preserve">
-    <value>Đăng nhập thành công!</value>
-  </data>
+  
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Đang đăng nhập...</value>
   </data>
