@@ -459,9 +459,7 @@ StackTrace:
     <value>Steam에서 로그아웃: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  <data name="BotLoggedOn" xml:space="preserve">
-    <value>로그인 성공!</value>
-  </data>
+  
   <data name="BotLoggingIn" xml:space="preserve">
     <value>로그인 중...</value>
   </data>

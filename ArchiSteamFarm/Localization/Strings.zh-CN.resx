@@ -456,9 +456,7 @@
     <value>退出Steam登录︰ {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  <data name="BotLoggedOn" xml:space="preserve">
-    <value>登录成功！</value>
-  </data>
+  
   <data name="BotLoggingIn" xml:space="preserve">
     <value>登录中……</value>
   </data>

@@ -459,9 +459,7 @@ StackTrace:
     <value>Odhlášeno ze Steamu: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  <data name="BotLoggedOn" xml:space="preserve">
-    <value>Přihlášení proběhlo úspěšně!</value>
-  </data>
+  
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Přihlašování...</value>
   </data>

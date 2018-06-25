@@ -459,9 +459,7 @@ StackTrace:
     <value>Uitgelogd op Steam: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  <data name="BotLoggedOn" xml:space="preserve">
-    <value>Succesvol ingelogd!</value>
-  </data>
+  
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Inloggen...</value>
   </data>

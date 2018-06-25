@@ -349,7 +349,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Successfully logged on!.
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Successfully logged on as {0}..
         /// </summary>
         internal static string BotLoggedOn {
             get {

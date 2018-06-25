@@ -460,9 +460,7 @@ inválidas, abortando!</value>
     <value>Desconectado da Steam: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  <data name="BotLoggedOn" xml:space="preserve">
-    <value>Login bem sucedido!</value>
-  </data>
+  
   <data name="BotLoggingIn" xml:space="preserve">
     <value>A iniciar sessão...</value>
   </data>

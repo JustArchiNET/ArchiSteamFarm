@@ -385,9 +385,7 @@ StackTrace:
     <value>Odjavljen sa Steam-a: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  <data name="BotLoggedOn" xml:space="preserve">
-    <value>Uspešno ulogovanje!</value>
-  </data>
+  
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Prijavljivanje...</value>
   </data>

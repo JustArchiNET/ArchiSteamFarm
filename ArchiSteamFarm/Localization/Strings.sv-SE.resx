@@ -460,9 +460,7 @@ StackTrace:
     <value>Utloggad från Steam: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  <data name="BotLoggedOn" xml:space="preserve">
-    <value>Lyckad inloggning!</value>
-  </data>
+  
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Loggar in...</value>
   </data>
