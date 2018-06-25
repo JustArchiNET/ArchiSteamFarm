@@ -2087,7 +2087,10 @@ namespace ArchiSteamFarm {
 
 					break;
 				case EResult.OK:
-					ArchiLogger.LogGenericInfo(Strings.BotLoggedOn);
+					AccountFlags = callback.AccountFlags;
+					CachedSteamID = callback.ClientSteamID;
+
+					ArchiLogger.LogGenericInfo(string.Format(Strings.BotLoggedOn, CachedSteamID + (!string.IsNullOrEmpty(callback.VanityURL) ? "/" + callback.VanityURL : "")));
 
 					// Old status for these doesn't matter, we'll update them if needed
 					LibraryLockedBySteamID = TwoFactorCodeFailures = 0;
@@ -2101,9 +2104,6 @@ namespace ArchiSteamFarm {
 							Timeout.InfiniteTimeSpan // Period
 						);
 					}
-
-					AccountFlags = callback.AccountFlags;
-					CachedSteamID = callback.ClientSteamID;
 
 					if (IsAccountLimited) {
 						ArchiLogger.LogGenericWarning(Strings.BotAccountLimited);
