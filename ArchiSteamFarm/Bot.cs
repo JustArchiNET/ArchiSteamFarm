@@ -2107,7 +2107,6 @@ namespace ArchiSteamFarm {
 
 					if (IsAccountLimited) {
 						ArchiLogger.LogGenericWarning(Strings.BotAccountLimited);
-						ArchiLogger.LogGenericDebug("LimitedUser? " + callback.AccountFlags.HasFlag(EAccountFlags.LimitedUser) + " | LimitedUserForce? " + callback.AccountFlags.HasFlag(EAccountFlags.LimitedUserForce) + " | AccountFlags: " + callback.AccountFlags);
 					}
 
 					if (IsAccountLocked) {
