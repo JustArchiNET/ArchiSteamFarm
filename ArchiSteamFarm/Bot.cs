@@ -84,6 +84,7 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		private readonly CardsFarmer CardsFarmer;
 
+		private readonly SemaphoreSlim GamesRedeemerInBackgroundSemaphore = new SemaphoreSlim(1, 1);
 		private readonly ConcurrentHashSet<ulong> HandledGifts = new ConcurrentHashSet<ulong>();
 		private readonly Timer HeartBeatTimer;
 		private readonly SemaphoreSlim InitializationSemaphore = new SemaphoreSlim(1, 1);
@@ -245,6 +246,7 @@ namespace ArchiSteamFarm {
 		public void Dispose() {
 			// Those are objects that are always being created if constructor doesn't throw exception
 			CallbackSemaphore.Dispose();
+			GamesRedeemerInBackgroundSemaphore.Dispose();
 			InitializationSemaphore.Dispose();
 			LootingSemaphore.Dispose();
 			PICSSemaphore.Dispose();
@@ -1239,7 +1241,7 @@ namespace ArchiSteamFarm {
 
 			await BotDatabase.AddGamesToRedeemInBackground(gamesToRedeemInBackground).ConfigureAwait(false);
 
-			if (BotDatabase.HasGamesToRedeemInBackground && (GamesRedeemerInBackgroundTimer == null) && IsConnectedAndLoggedOn) {
+			if ((GamesRedeemerInBackgroundTimer == null) && BotDatabase.HasGamesToRedeemInBackground && IsConnectedAndLoggedOn) {
 				Utilities.InBackground(RedeemGamesInBackground);
 			}
 		}
@@ -2143,7 +2145,7 @@ namespace ArchiSteamFarm {
 						}
 					}
 
-					if (BotDatabase.HasGamesToRedeemInBackground) {
+					if ((GamesRedeemerInBackgroundTimer == null) && BotDatabase.HasGamesToRedeemInBackground) {
 						Utilities.InBackground(RedeemGamesInBackground);
 					}
 
@@ -2403,95 +2405,103 @@ namespace ArchiSteamFarm {
 
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
 		private async Task RedeemGamesInBackground() {
-			if (GamesRedeemerInBackgroundTimer != null) {
-				GamesRedeemerInBackgroundTimer.Dispose();
-				GamesRedeemerInBackgroundTimer = null;
+			if (!await GamesRedeemerInBackgroundSemaphore.WaitAsync(0).ConfigureAwait(false)) {
+				return;
 			}
 
-			ArchiLogger.LogGenericInfo(Strings.Starting);
-
-			while (IsConnectedAndLoggedOn && BotDatabase.HasGamesToRedeemInBackground) {
-				(string key, string name) = BotDatabase.GetGameToRedeemInBackground();
-				if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(name)) {
-					ArchiLogger.LogNullError(nameof(key) + " || " + nameof(name));
-					break;
+			try {
+				if (GamesRedeemerInBackgroundTimer != null) {
+					GamesRedeemerInBackgroundTimer.Dispose();
+					GamesRedeemerInBackgroundTimer = null;
 				}
 
-				await LimitGiftsRequestsAsync().ConfigureAwait(false);
+				ArchiLogger.LogGenericInfo(Strings.Starting);
 
-				ArchiHandler.PurchaseResponseCallback result = await ArchiHandler.RedeemKey(key).ConfigureAwait(false);
-				if (result == null) {
-					continue;
-				}
+				while (IsConnectedAndLoggedOn && BotDatabase.HasGamesToRedeemInBackground) {
+					(string key, string name) = BotDatabase.GetGameToRedeemInBackground();
+					if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(name)) {
+						ArchiLogger.LogNullError(nameof(key) + " || " + nameof(name));
+						break;
+					}
 
-				if (result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) {
-					// If it's a wallet code, we try to redeem it first, then handle the inner result as our primary one
-					(EResult Result, EPurchaseResultDetail? PurchaseResult)? walletResult = await ArchiWebHandler.RedeemWalletKey(key).ConfigureAwait(false);
+					await LimitGiftsRequestsAsync().ConfigureAwait(false);
 
-					if (walletResult != null) {
-						result.Result = walletResult.Value.Result;
-						result.PurchaseResultDetail = walletResult.Value.PurchaseResult.GetValueOrDefault(walletResult.Value.Result == EResult.OK ? EPurchaseResultDetail.NoDetail : EPurchaseResultDetail.BadActivationCode); // BadActivationCode is our smart guess in this case
-					} else {
-						result.Result = EResult.Timeout;
-						result.PurchaseResultDetail = EPurchaseResultDetail.Timeout;
+					ArchiHandler.PurchaseResponseCallback result = await ArchiHandler.RedeemKey(key).ConfigureAwait(false);
+					if (result == null) {
+						continue;
+					}
+
+					if (result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) {
+						// If it's a wallet code, we try to redeem it first, then handle the inner result as our primary one
+						(EResult Result, EPurchaseResultDetail? PurchaseResult)? walletResult = await ArchiWebHandler.RedeemWalletKey(key).ConfigureAwait(false);
+
+						if (walletResult != null) {
+							result.Result = walletResult.Value.Result;
+							result.PurchaseResultDetail = walletResult.Value.PurchaseResult.GetValueOrDefault(walletResult.Value.Result == EResult.OK ? EPurchaseResultDetail.NoDetail : EPurchaseResultDetail.BadActivationCode); // BadActivationCode is our smart guess in this case
+						} else {
+							result.Result = EResult.Timeout;
+							result.PurchaseResultDetail = EPurchaseResultDetail.Timeout;
+						}
+					}
+
+					ArchiLogger.LogGenericDebug(string.Format(Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail));
+
+					bool rateLimited = false;
+					bool redeemed = false;
+
+					switch (result.PurchaseResultDetail) {
+						case EPurchaseResultDetail.AccountLocked:
+						case EPurchaseResultDetail.AlreadyPurchased:
+						case EPurchaseResultDetail.CannotRedeemCodeFromClient:
+						case EPurchaseResultDetail.DoesNotOwnRequiredApp:
+						case EPurchaseResultDetail.RestrictedCountry:
+						case EPurchaseResultDetail.Timeout:
+							break;
+						case EPurchaseResultDetail.BadActivationCode:
+						case EPurchaseResultDetail.DuplicateActivationCode:
+						case EPurchaseResultDetail.NoDetail: // OK
+							redeemed = true;
+							break;
+						case EPurchaseResultDetail.RateLimited:
+							rateLimited = true;
+							break;
+						default:
+							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.PurchaseResultDetail), result.PurchaseResultDetail));
+							break;
+					}
+
+					if (rateLimited) {
+						break;
+					}
+
+					await BotDatabase.RemoveGameToRedeemInBackground(key).ConfigureAwait(false);
+
+					string logEntry = name + DefaultBackgroundKeysRedeemerSeparator + "[" + result.PurchaseResultDetail + "]" + ((result.Items != null) && (result.Items.Count > 0) ? DefaultBackgroundKeysRedeemerSeparator + string.Join("", result.Items) : "") + DefaultBackgroundKeysRedeemerSeparator + key;
+
+					try {
+						await RuntimeCompatibility.File.AppendAllTextAsync(redeemed ? KeysToRedeemUsedFilePath : KeysToRedeemUnusedFilePath, logEntry + Environment.NewLine).ConfigureAwait(false);
+					} catch (Exception e) {
+						ArchiLogger.LogGenericException(e);
+						ArchiLogger.LogGenericError(string.Format(Strings.Content, logEntry));
+						break;
 					}
 				}
 
-				ArchiLogger.LogGenericDebug(string.Format(Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail));
+				if (BotDatabase.HasGamesToRedeemInBackground) {
+					ArchiLogger.LogGenericInfo(string.Format(Strings.BotRateLimitExceeded, TimeSpan.FromHours(RedeemCooldownInHours).ToHumanReadable()));
 
-				bool rateLimited = false;
-				bool redeemed = false;
-
-				switch (result.PurchaseResultDetail) {
-					case EPurchaseResultDetail.AccountLocked:
-					case EPurchaseResultDetail.AlreadyPurchased:
-					case EPurchaseResultDetail.CannotRedeemCodeFromClient:
-					case EPurchaseResultDetail.DoesNotOwnRequiredApp:
-					case EPurchaseResultDetail.RestrictedCountry:
-					case EPurchaseResultDetail.Timeout:
-						break;
-					case EPurchaseResultDetail.BadActivationCode:
-					case EPurchaseResultDetail.DuplicateActivationCode:
-					case EPurchaseResultDetail.NoDetail: // OK
-						redeemed = true;
-						break;
-					case EPurchaseResultDetail.RateLimited:
-						rateLimited = true;
-						break;
-					default:
-						ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.PurchaseResultDetail), result.PurchaseResultDetail));
-						break;
+					GamesRedeemerInBackgroundTimer = new Timer(
+						async e => await RedeemGamesInBackground().ConfigureAwait(false),
+						null,
+						TimeSpan.FromHours(RedeemCooldownInHours), // Delay
+						Timeout.InfiniteTimeSpan // Period
+					);
 				}
 
-				if (rateLimited) {
-					break;
-				}
-
-				await BotDatabase.RemoveGameToRedeemInBackground(key).ConfigureAwait(false);
-
-				string logEntry = name + DefaultBackgroundKeysRedeemerSeparator + "[" + result.PurchaseResultDetail + "]" + ((result.Items != null) && (result.Items.Count > 0) ? DefaultBackgroundKeysRedeemerSeparator + string.Join("", result.Items) : "") + DefaultBackgroundKeysRedeemerSeparator + key;
-
-				try {
-					await RuntimeCompatibility.File.AppendAllTextAsync(redeemed ? KeysToRedeemUsedFilePath : KeysToRedeemUnusedFilePath, logEntry + Environment.NewLine).ConfigureAwait(false);
-				} catch (Exception e) {
-					ArchiLogger.LogGenericException(e);
-					ArchiLogger.LogGenericError(string.Format(Strings.Content, logEntry));
-					break;
-				}
+				ArchiLogger.LogGenericInfo(Strings.Done);
+			} finally {
+				GamesRedeemerInBackgroundSemaphore.Release();
 			}
-
-			if (BotDatabase.HasGamesToRedeemInBackground) {
-				ArchiLogger.LogGenericInfo(string.Format(Strings.BotRateLimitExceeded, TimeSpan.FromHours(RedeemCooldownInHours).ToHumanReadable()));
-
-				GamesRedeemerInBackgroundTimer = new Timer(
-					async e => await RedeemGamesInBackground().ConfigureAwait(false),
-					null,
-					TimeSpan.FromHours(RedeemCooldownInHours), // Delay
-					Timeout.InfiniteTimeSpan // Period
-				);
-			}
-
-			ArchiLogger.LogGenericInfo(Strings.Done);
 		}
 
 		private async Task ResetGamesPlayed() {
