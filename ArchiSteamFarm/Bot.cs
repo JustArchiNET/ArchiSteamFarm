@@ -2772,7 +2772,7 @@ namespace ArchiSteamFarm {
 			await LootingSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				HashSet<Steam.Asset> inventory = await ArchiWebHandler.GetMyInventory(true, appID, contextID).ConfigureAwait(false);
+				HashSet<Steam.Asset> inventory = await ArchiWebHandler.GetInventory(CachedSteamID, appID, contextID, true).ConfigureAwait(false);
 				if ((inventory == null) || (inventory.Count == 0)) {
 					return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
 				}
@@ -3652,7 +3652,7 @@ namespace ArchiSteamFarm {
 					LootingScheduled = false;
 				}
 
-				HashSet<Steam.Asset> inventory = await ArchiWebHandler.GetMyInventory(true, wantedTypes: BotConfig.LootableTypes).ConfigureAwait(false);
+				HashSet<Steam.Asset> inventory = await ArchiWebHandler.GetInventory(CachedSteamID, tradable: true, wantedTypes: BotConfig.LootableTypes).ConfigureAwait(false);
 				if ((inventory == null) || (inventory.Count == 0)) {
 					return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
 				}
@@ -3760,7 +3760,7 @@ namespace ArchiSteamFarm {
 			await LootingSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				HashSet<Steam.Asset> inventory = await ArchiWebHandler.GetMyInventory(true, wantedRealAppIDs: realAppIDs).ConfigureAwait(false);
+				HashSet<Steam.Asset> inventory = await ArchiWebHandler.GetInventory(CachedSteamID, tradable: true, wantedRealAppIDs: realAppIDs).ConfigureAwait(false);
 				if ((inventory == null) || (inventory.Count == 0)) {
 					return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
 				}
@@ -5030,7 +5030,7 @@ namespace ArchiSteamFarm {
 					LootingScheduled = false;
 				}
 
-				HashSet<Steam.Asset> inventory = await ArchiWebHandler.GetMyInventory(true, wantedTypes: transferTypes).ConfigureAwait(false);
+				HashSet<Steam.Asset> inventory = await ArchiWebHandler.GetInventory(CachedSteamID, tradable: true, wantedTypes: transferTypes).ConfigureAwait(false);
 				if ((inventory == null) || (inventory.Count == 0)) {
 					return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
 				}
@@ -5120,7 +5120,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
-			HashSet<Steam.Asset> inventory = await ArchiWebHandler.GetMyInventory(false, wantedTypes: new HashSet<Steam.Asset.EType> { Steam.Asset.EType.BoosterPack }).ConfigureAwait(false);
+			HashSet<Steam.Asset> inventory = await ArchiWebHandler.GetInventory(CachedSteamID, wantedTypes: new HashSet<Steam.Asset.EType> { Steam.Asset.EType.BoosterPack }).ConfigureAwait(false);
 			if ((inventory == null) || (inventory.Count == 0)) {
 				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
 			}

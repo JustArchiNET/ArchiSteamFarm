@@ -359,6 +359,17 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			if (SteamID == 0) {
+				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+
+				if (SteamID == 0) {
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					return null;
+				}
+			}
+
 			string request = "/mobileconf/details/" + confirmation.ID + "?a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&l=english&m=android&p=" + WebUtility.UrlEncode(deviceID) + "&t=" + time + "&tag=conf";
 
 			Steam.ConfirmationDetails response = await UrlGetToJsonObjectWithSession<Steam.ConfirmationDetails>(SteamCommunityURL, request).ConfigureAwait(false);
@@ -374,6 +385,17 @@ namespace ArchiSteamFarm {
 			if (string.IsNullOrEmpty(deviceID) || string.IsNullOrEmpty(confirmationHash) || (time == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time));
 				return null;
+			}
+
+			if (SteamID == 0) {
+				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+
+				if (SteamID == 0) {
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					return null;
+				}
 			}
 
 			string request = "/mobileconf/conf?a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&l=english&m=android&p=" + WebUtility.UrlEncode(deviceID) + "&t=" + time + "&tag=conf";
@@ -425,16 +447,31 @@ namespace ArchiSteamFarm {
 		}
 
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
-		internal async Task<HashSet<Steam.Asset>> GetMyInventory(bool tradableOnly = false, uint appID = Steam.Asset.SteamAppID, byte contextID = Steam.Asset.SteamCommunityContextID, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<uint> wantedRealAppIDs = null) {
+		internal async Task<HashSet<Steam.Asset>> GetInventory(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, byte contextID = Steam.Asset.SteamCommunityContextID, bool? tradable = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<uint> wantedRealAppIDs = null) {
 			if ((appID == 0) || (contextID == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
 				return null;
 			}
 
+			if (steamID == 0) {
+				if (SteamID == 0) {
+					for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+						await Task.Delay(1000).ConfigureAwait(false);
+					}
+
+					if (SteamID == 0) {
+						Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+						return null;
+					}
+				}
+
+				steamID = SteamID;
+			}
+
 			HashSet<Steam.Asset> result = new HashSet<Steam.Asset>();
 
 			// 5000 is maximum allowed count per single request
-			string request = "/inventory/" + SteamID + "/" + appID + "/" + contextID + "?count=5000&l=english";
+			string request = "/inventory/" + steamID + "/" + appID + "/" + contextID + "?count=5000&l=english";
 			ulong startAssetID = 0;
 
 			await InventorySemaphore.WaitAsync().ConfigureAwait(false);
@@ -462,7 +499,7 @@ namespace ArchiSteamFarm {
 						return null;
 					}
 
-					Dictionary<ulong, (uint RealAppID, Steam.Asset.EType Type, bool Tradable)> descriptionMap = new Dictionary<ulong, (uint RealAppID, Steam.Asset.EType Type, bool Tradable)>();
+					Dictionary<ulong, (bool Tradable, Steam.Asset.EType Type, uint RealAppID)> descriptionMap = new Dictionary<ulong, (bool Tradable, Steam.Asset.EType Type, uint RealAppID)>();
 					foreach (Steam.InventoryResponse.Description description in response.Descriptions.Where(description => description != null)) {
 						if (description.ClassID == 0) {
 							Bot.ArchiLogger.LogNullError(nameof(description.ClassID));
@@ -471,6 +508,12 @@ namespace ArchiSteamFarm {
 
 						if (descriptionMap.ContainsKey(description.ClassID)) {
 							continue;
+						}
+
+						Steam.Asset.EType type = Steam.Asset.EType.Unknown;
+
+						if (!string.IsNullOrEmpty(description.Type)) {
+							type = GetItemType(description.Type);
 						}
 
 						uint realAppID = 0;
@@ -483,27 +526,17 @@ namespace ArchiSteamFarm {
 							realAppID = description.AppID;
 						}
 
-						Steam.Asset.EType type = Steam.Asset.EType.Unknown;
-
-						if (!string.IsNullOrEmpty(description.Type)) {
-							type = GetItemType(description.Type);
-						}
-
-						descriptionMap[description.ClassID] = (realAppID, type, description.Tradable);
+						descriptionMap[description.ClassID] = (description.Tradable, type, realAppID);
 					}
 
 					foreach (Steam.Asset asset in response.Assets.Where(asset => asset != null)) {
-						if (descriptionMap.TryGetValue(asset.ClassID, out (uint RealAppID, Steam.Asset.EType Type, bool Tradable) description)) {
-							if (tradableOnly && !description.Tradable) {
+						if (descriptionMap.TryGetValue(asset.ClassID, out (bool Tradable, Steam.Asset.EType Type, uint RealAppID) description)) {
+							if ((tradable.HasValue && (description.Tradable != tradable.Value)) || (wantedTypes?.Contains(description.Type) == false) || (wantedRealAppIDs?.Contains(description.RealAppID) == false)) {
 								continue;
 							}
 
 							asset.RealAppID = description.RealAppID;
 							asset.Type = description.Type;
-						}
-
-						if ((wantedTypes?.Contains(asset.Type) == false) || (wantedRealAppIDs?.Contains(asset.RealAppID) == false)) {
-							continue;
 						}
 
 						result.Add(asset);
@@ -821,6 +854,17 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			if (SteamID == 0) {
+				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+
+				if (SteamID == 0) {
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					return null;
+				}
+			}
+
 			string request = "/mobileconf/ajaxop?a=" + SteamID + "&cid=" + confirmationID + "&ck=" + confirmationKey + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&l=english&m=android&op=" + (accept ? "allow" : "cancel") + "&p=" + WebUtility.UrlEncode(deviceID) + "&t=" + time + "&tag=conf";
 
 			Steam.BooleanResponse response = await UrlGetToJsonObjectWithSession<Steam.BooleanResponse>(SteamCommunityURL, request).ConfigureAwait(false);
@@ -831,6 +875,17 @@ namespace ArchiSteamFarm {
 			if (string.IsNullOrEmpty(deviceID) || string.IsNullOrEmpty(confirmationHash) || (time == 0) || (confirmations == null) || (confirmations.Count == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time) + " || " + nameof(confirmations));
 				return null;
+			}
+
+			if (SteamID == 0) {
+				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+
+				if (SteamID == 0) {
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					return null;
+				}
 			}
 
 			const string request = "/mobileconf/multiajaxop";

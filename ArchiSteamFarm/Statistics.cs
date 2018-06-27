@@ -111,7 +111,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetMyInventory(true, wantedTypes: acceptedMatchableTypes).ConfigureAwait(false);
+				HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetInventory(Bot.CachedSteamID, tradable: true, wantedTypes: acceptedMatchableTypes).ConfigureAwait(false);
 
 				// This is actually inventory failure, so we'll stop sending heartbeats but not record it as valid check
 				if (inventory == null) {
