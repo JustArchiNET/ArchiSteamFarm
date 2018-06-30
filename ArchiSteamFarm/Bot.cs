@@ -2373,6 +2373,7 @@ namespace ArchiSteamFarm {
 						ItemsCount = notification.Value;
 
 						if (newItems) {
+							ArchiLogger.LogGenericTrace(nameof(ArchiHandler.UserNotificationsCallback.EUserNotification.Items));
 							Utilities.InBackground(CardsFarmer.OnNewItemsNotification);
 
 							if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.DismissInventoryNotifications)) {
@@ -2386,6 +2387,7 @@ namespace ArchiSteamFarm {
 						TradesCount = notification.Value;
 
 						if (newTrades) {
+							ArchiLogger.LogGenericTrace(nameof(ArchiHandler.UserNotificationsCallback.EUserNotification.Trading));
 							Utilities.InBackground(Trading.OnNewTrade);
 						}
 
