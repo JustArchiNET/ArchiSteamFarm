@@ -1161,18 +1161,22 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogChatMessage(true, message, steamID: steamID);
 
+			const ushort maxMessageLength = MaxMessageLength - 6; // 4 characters for /me (with space) and 2 for 2x optional …
+
 			// Steam escapes \ and [ characters
 			message = message.Replace("\\", "\\\\").Replace("[", "\\[");
 
-			for (int i = 0; i < message.Length; i += MaxMessageLength - 6) {
-				string messagePart = "/me " + (i > 0 ? "…" : "") + message.Substring(i, Math.Min(MaxMessageLength - 6, message.Length - i)) + (MaxMessageLength - 6 < message.Length - i ? "…" : "");
+			for (int i = 0; i < message.Length; i += maxMessageLength) {
+				string messagePart = message.Substring(i, Math.Min(maxMessageLength, message.Length - i));
 
 				// If our message ends with \ but second last character isn't \ then we can't split it right there
-				if ((messagePart[messagePart.Length - 1] == '\\') && (messagePart[messagePart.Length - 2] != '\\')) {
+				if ((messagePart.Length >= maxMessageLength) && (messagePart[messagePart.Length - 1] == '\\') && (messagePart[messagePart.Length - 2] != '\\')) {
 					// Instead, we'll cut this message one char short and include the rest in next iteration
 					messagePart = messagePart.Remove(messagePart.Length - 1);
 					i--;
 				}
+
+				messagePart = "/me " + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
 
 				if (!await ArchiHandler.SendMessage(steamID, messagePart).ConfigureAwait(false)) {
 					return false;
@@ -1194,18 +1198,22 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogChatMessage(true, message, chatGroupID, chatID);
 
+			const ushort maxMessageLength = MaxMessageLength - 6; // 4 characters for /me (with space) and 2 for 2x optional …
+
 			// Steam escapes \ and [ characters
 			message = message.Replace("\\", "\\\\").Replace("[", "\\[");
 
-			for (int i = 0; i < message.Length; i += MaxMessageLength - 6) {
-				string messagePart = "/me " + (i > 0 ? "…" : "") + message.Substring(i, Math.Min(MaxMessageLength - 6, message.Length - i)) + (MaxMessageLength - 6 < message.Length - i ? "…" : "");
+			for (int i = 0; i < message.Length; i += maxMessageLength) {
+				string messagePart = message.Substring(i, Math.Min(maxMessageLength, message.Length - i));
 
 				// If our message ends with \ but second last character isn't \ then we can't split it right there
-				if ((messagePart[messagePart.Length - 1] == '\\') && (messagePart[messagePart.Length - 2] != '\\')) {
+				if ((messagePart.Length >= maxMessageLength) && (messagePart[messagePart.Length - 1] == '\\') && (messagePart[messagePart.Length - 2] != '\\')) {
 					// Instead, we'll cut this message one char short and include the rest in next iteration
 					messagePart = messagePart.Remove(messagePart.Length - 1);
 					i--;
 				}
+
+				messagePart = "/me " + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
 
 				if (!await ArchiHandler.SendMessage(chatGroupID, chatID, messagePart).ConfigureAwait(false)) {
 					return false;
