@@ -92,9 +92,9 @@ after_test:
         if ($variant -like 'generic*') {
             # TODO: Workaround https://github.com/mono/linker/issues/286 until it's resolved
             # Don't forget to remove it from docker files too
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" /nologo "/p:ASFVariant=$variant" "/p:LinkDuringPublish=false"
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" --no-restore /nologo "/p:ASFVariant=$variant" "/p:LinkDuringPublish=false"
         } else {
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" -r "$variant" /nologo "/p:ASFVariant=$variant" "/p:CrossGenDuringPublish=false"
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" -r "$variant" --no-restore /nologo "/p:ASFVariant=$variant" "/p:CrossGenDuringPublish=false"
         }
 
         if ($LastExitCode -ne 0) {
@@ -154,6 +154,8 @@ after_test:
             throw "Last command failed."
         }
     }
+
+    dotnet restore ArchiSteamFarm
 
     foreach ($variant in $env:VARIANTS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
         Start-Job -Name "$variant" -ScriptBlock $PublishBlock -ArgumentList "$variant"
