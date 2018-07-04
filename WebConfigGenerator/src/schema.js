@@ -299,7 +299,8 @@ export default {
                             { value: 0, name: 'None' },
                             { value: 1, name: 'RejectInvalidFriendInvites' },
                             { value: 2, name: 'RejectInvalidTrades' },
-                            { value: 4, name: 'RejectInvalidGroupInvites' }
+                            { value: 4, name: 'RejectInvalidGroupInvites' },
+                            { value: 8, name: 'DismissInventoryNotifications' }
                         ],
                         defaultValue: 0,
                         advanced: true
@@ -819,8 +820,7 @@ export default {
                             { value: 0, name: 'None' },
                             { value: 1, name: 'RejectInvalidFriendInvites' },
                             { value: 2, name: 'RejectInvalidTrades' },
-                            { value: 4, name: 'RejectInvalidGroupInvites' },
-                            { value: 8, name: 'DismissInventoryNotifications' }
+                            { value: 4, name: 'RejectInvalidGroupInvites' }
                         ],
                         defaultValue: 0,
                         advanced: true
