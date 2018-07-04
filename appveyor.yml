@@ -155,8 +155,7 @@ after_test:
         }
     }
 
-    # Dotnet restore doesn't work well when called multiple times in parallel
-    # Instead, we'll call it once for all dependencies and use --no-restore in our publish blocks
+    # Restore of packages doesn't work well when called multiple times in parallel, so instead we'll call it once for all dependencies and skip during our publish blocks
     dotnet restore ArchiSteamFarm
 
     foreach ($variant in $env:VARIANTS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
