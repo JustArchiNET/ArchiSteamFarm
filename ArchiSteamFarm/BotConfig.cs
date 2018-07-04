@@ -51,7 +51,7 @@ namespace ArchiSteamFarm {
 		internal readonly bool Enabled;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly EFarmingOrder FarmingOrder = EFarmingOrder.Unordered;
+		internal readonly HashSet<EFarmingOrder> FarmingOrders = new HashSet<EFarmingOrder>();
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly HashSet<uint> GamesPlayedWhileIdle = new HashSet<uint>();
@@ -139,6 +139,20 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		[JsonProperty(Required = Required.DisallowNull)]
+		private EFarmingOrder FarmingOrder {
+			set {
+				ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, nameof(FarmingOrder), nameof(FarmingOrders)));
+
+				if (!Enum.IsDefined(typeof(EFarmingOrder), value)) {
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(FarmingOrder), value));
+					return;
+				}
+
+				FarmingOrders.Add(value);
+			}
+		}
+
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamMasterClanID), Required = Required.DisallowNull)]
 		private string SSteamMasterClanID {
 			get => SteamMasterClanID.ToString();
@@ -185,9 +199,11 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Enum.IsDefined(typeof(EFarmingOrder), botConfig.FarmingOrder)) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.FarmingOrder), botConfig.FarmingOrder));
-				return null;
+			foreach (EFarmingOrder farmingOrder in botConfig.FarmingOrders) {
+				if (!Enum.IsDefined(typeof(EFarmingOrder), farmingOrder)) {
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.FarmingOrders), farmingOrder));
+					return null;
+				}
 			}
 
 			if (botConfig.GamesPlayedWhileIdle.Count > ArchiHandler.MaxGamesPlayedConcurrently) {

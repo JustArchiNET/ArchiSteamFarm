@@ -5,7 +5,7 @@
 	"CustomGamePlayedWhileFarming": null,
 	"CustomGamePlayedWhileIdle": null,
 	"Enabled": false,
-	"FarmingOrder": 0,
+	"FarmingOrders": [],
 	"GamesPlayedWhileIdle": [],
 	"HandleOfflineMessages": false,
 	"HoursUntilCardDrops": 3,

@@ -374,8 +374,7 @@ export default {
                             { value: 4, name: 'ProfileBackground' },
                             { value: 5, name: 'TradingCard' },
                             { value: 6, name: 'SteamGems' }
-                        ],
-                        defaultValue: 0
+                        ]
                     },
                     {
                         type: 'InputSet',
@@ -389,8 +388,7 @@ export default {
                             { value: 4, name: 'ProfileBackground' },
                             { value: 5, name: 'TradingCard' },
                             { value: 6, name: 'SteamGems' }
-                        ],
-                        defaultValue: 0
+                        ]
                     }
                 ]
             },
@@ -406,10 +404,10 @@ export default {
                         validator: Validators.byte
                     },
                     {
-                        type: 'InputSelect',
-                        label: 'FarmingOrder',
-                        field: 'FarmingOrder',
-                        options: [
+                        type: 'InputSet',
+                        label: 'FarmingOrders',
+                        field: 'FarmingOrders',
+                        values: [
                             { value: 0, name: 'Unordered' },
                             { value: 1, name: 'AppIDsAscending' },
                             { value: 2, name: 'AppIDsDescending' },
@@ -424,8 +422,7 @@ export default {
                             { value: 11, name: 'BadgeLevelsDescending' },
                             { value: 12, name: 'RedeemDateTimesAscending' },
                             { value: 13, name: 'RedeemDateTimesDescending' }
-                        ],
-                        defaultValue: 0
+                        ]
                     },
                     {
                         type: 'InputNumber',
