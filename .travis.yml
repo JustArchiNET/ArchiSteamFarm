@@ -48,9 +48,9 @@ script:
         if [ "$1" = 'generic' ]; then
             # TODO: Workaround https://github.com/mono/linker/issues/286 until it's resolved
             # Don't forget to remove it from docker files too
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" /nologo "/p:ASFVariant=$1" "/p:LinkDuringPublish=false"
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" --no-restore /nologo "/p:ASFVariant=$1" "/p:LinkDuringPublish=false"
         else
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" -r "$1" /nologo "/p:ASFVariant=$1" "/p:CrossGenDuringPublish=false"
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" -r "$1" --no-restore /nologo "/p:ASFVariant=$1" "/p:CrossGenDuringPublish=false"
         fi
 
         # If we include any helper scripts for this variant, copy them to output directory
@@ -58,6 +58,10 @@ script:
             cp "ArchiSteamFarm/scripts/${1}/"* "ArchiSteamFarm/out/${1}"
         fi
     }
+
+    # Dotnet restore doesn't work well when called multiple times in parallel
+    # Instead, we'll call it once for all dependencies and use --no-restore in our publish blocks
+    dotnet restore ArchiSteamFarm
 
     for variant in $VARIANTS; do
         publish "$variant" &
