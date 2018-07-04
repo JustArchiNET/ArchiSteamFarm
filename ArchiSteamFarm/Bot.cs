@@ -552,6 +552,8 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
+		internal async Task<HashSet<uint>> GetMarketableAppIDs() => await ArchiWebHandler.GetAppList().ConfigureAwait(false);
+
 		internal async Task<Dictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)>> GetPackagesData(IReadOnlyCollection<uint> packageIDs) {
 			if ((packageIDs == null) || (packageIDs.Count == 0)) {
 				ArchiLogger.LogNullError(nameof(packageIDs));

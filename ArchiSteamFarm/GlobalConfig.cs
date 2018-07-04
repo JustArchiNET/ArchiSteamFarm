@@ -263,10 +263,6 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			globalConfig.ShouldSerializeSensitiveDetails = false;
-
-			// User might not know what he's doing
-			// Ensure that he can't screw core ASF variables
 			if (globalConfig.ConnectionTimeout == 0) {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.ConnectionTimeout), globalConfig.ConnectionTimeout));
 				return null;
@@ -282,11 +278,22 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			if (!Enum.IsDefined(typeof(EOptimizationMode), globalConfig.OptimizationMode)) {
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.OptimizationMode), globalConfig.OptimizationMode));
+				return null;
+			}
+
 			if ((globalConfig.SteamProtocols <= 0) || (globalConfig.SteamProtocols > ProtocolTypes.All)) {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.SteamProtocols), globalConfig.SteamProtocols));
 				return null;
 			}
 
+			if (!Enum.IsDefined(typeof(EUpdateChannel), globalConfig.UpdateChannel)) {
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.UpdateChannel), globalConfig.UpdateChannel));
+				return null;
+			}
+
+			globalConfig.ShouldSerializeSensitiveDetails = false;
 			return globalConfig;
 		}
 

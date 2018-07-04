@@ -894,7 +894,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ShouldResumeFarming = true;
-			SortGamesToFarm();
+			await SortGamesToFarm().ConfigureAwait(false);
 			return true;
 		}
 
@@ -928,7 +928,7 @@ namespace ArchiSteamFarm {
 			return game.CardsRemaining > 0;
 		}
 
-		private void SortGamesToFarm() {
+		private async Task SortGamesToFarm() {
 			// Put priority idling appIDs on top
 			IOrderedEnumerable<Game> gamesToFarm = GamesToFarm.OrderByDescending(game => Bot.IsPriorityIdling(game.AppID));
 
@@ -952,6 +952,25 @@ namespace ArchiSteamFarm {
 					break;
 				case BotConfig.EFarmingOrder.CardDropsDescending:
 					gamesToFarm = gamesToFarm.ThenByDescending(game => game.CardsRemaining);
+					break;
+				case BotConfig.EFarmingOrder.MarketableAscending:
+				case BotConfig.EFarmingOrder.MarketableDescending:
+					HashSet<uint> marketableAppIDs = await Bot.GetMarketableAppIDs().ConfigureAwait(false);
+
+					if ((marketableAppIDs != null) && (marketableAppIDs.Count > 0)) {
+						switch (Bot.BotConfig.FarmingOrder) {
+							case BotConfig.EFarmingOrder.MarketableAscending:
+								gamesToFarm = gamesToFarm.ThenBy(game => marketableAppIDs.Contains(game.AppID));
+								break;
+							case BotConfig.EFarmingOrder.MarketableDescending:
+								gamesToFarm = gamesToFarm.ThenByDescending(game => marketableAppIDs.Contains(game.AppID));
+								break;
+							default:
+								Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(Bot.BotConfig.FarmingOrder)));
+								return;
+						}
+					}
+
 					break;
 				case BotConfig.EFarmingOrder.HoursAscending:
 					gamesToFarm = gamesToFarm.ThenBy(game => game.HoursPlayed);

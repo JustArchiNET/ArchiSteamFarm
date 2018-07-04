@@ -40,6 +40,7 @@ namespace ArchiSteamFarm {
 	internal sealed class ArchiWebHandler : IDisposable {
 		private const string IEconService = "IEconService";
 		private const string IPlayerService = "IPlayerService";
+		private const string ISteamApps = "ISteamApps";
 		private const string ISteamUserAuth = "ISteamUserAuth";
 		private const string ITwoFactorService = "ITwoFactorService";
 		private const string SteamCommunityHost = "steamcommunity.com";
@@ -188,9 +189,9 @@ namespace ArchiSteamFarm {
 #pragma warning disable ConfigureAwaitChecker // CAC001
 							// ReSharper disable once AccessToDisposedClosure
 							async () => await iEconService.DeclineTradeOffer(
-								tradeofferid: tradeID.ToString(),
 								method: WebRequestMethods.Http.Post,
-								secure: true
+								secure: true,
+								tradeofferid: tradeID.ToString()
 							)
 #pragma warning restore ConfigureAwaitChecker // CAC001
 						).ConfigureAwait(false);
@@ -338,6 +339,55 @@ namespace ArchiSteamFarm {
 				}
 
 				result.Add(tradeOffer);
+			}
+
+			return result;
+		}
+
+		internal async Task<HashSet<uint>> GetAppList() {
+			KeyValue response = null;
+			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
+				using (dynamic iSteamApps = WebAPI.GetAsyncInterface(ISteamApps)) {
+					iSteamApps.Timeout = WebBrowser.Timeout;
+
+					try {
+						response = await WebLimitRequest(
+							WebAPI.DefaultBaseAddress.Host,
+#pragma warning disable ConfigureAwaitChecker // CAC001
+							// ReSharper disable once AccessToDisposedClosure
+							async () => await iSteamApps.GetAppList2(secure: true)
+#pragma warning restore ConfigureAwaitChecker // CAC001
+						).ConfigureAwait(false);
+					} catch (TaskCanceledException e) {
+						Bot.ArchiLogger.LogGenericDebuggingException(e);
+					} catch (Exception e) {
+						Bot.ArchiLogger.LogGenericWarningException(e);
+					}
+				}
+			}
+
+			if (response == null) {
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				return null;
+			}
+
+			List<KeyValue> apps = response["applist"]["apps"].Children;
+			if ((apps == null) || (apps.Count == 0)) {
+				Bot.ArchiLogger.LogNullError(nameof(apps));
+				return null;
+			}
+
+			HashSet<uint> result = new HashSet<uint>(apps.Count);
+
+			foreach (KeyValue app in apps) {
+				uint appID = app["appid"].AsUnsignedInteger();
+
+				if (appID == 0) {
+					Bot.ArchiLogger.LogNullError(nameof(appID));
+					return null;
+				}
+
+				result.Add(appID);
 			}
 
 			return result;
@@ -624,9 +674,9 @@ namespace ArchiSteamFarm {
 #pragma warning disable ConfigureAwaitChecker // CAC001
 							// ReSharper disable once AccessToDisposedClosure
 							async () => await iPlayerService.GetOwnedGames(
-								steamid: steamID,
 								include_appinfo: 1,
-								secure: true
+								secure: true,
+								steamid: steamID
 							)
 #pragma warning restore ConfigureAwaitChecker // CAC001
 						).ConfigureAwait(false);
@@ -974,11 +1024,11 @@ namespace ArchiSteamFarm {
 #pragma warning disable ConfigureAwaitChecker // CAC001
 						// ReSharper disable once AccessToDisposedClosure
 						async () => await iSteamUserAuth.AuthenticateUser(
-							steamid: steamID,
-							sessionkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedSessionKey, 0, cryptedSessionKey.Length)),
 							encrypted_loginkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedLoginKey, 0, cryptedLoginKey.Length)),
 							method: WebRequestMethods.Http.Post,
-							secure: true
+							secure: true,
+							sessionkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedSessionKey, 0, cryptedSessionKey.Length)),
+							steamid: steamID
 						)
 #pragma warning restore ConfigureAwaitChecker // CAC001
 					).ConfigureAwait(false);
