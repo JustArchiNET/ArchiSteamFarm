@@ -59,7 +59,6 @@ script:
         fi
     }
 
-    # Restore of packages doesn't work well when called multiple times in parallel, so instead we'll call it once for all dependencies and skip during our publish blocks
     dotnet restore ArchiSteamFarm
 
     for variant in $VARIANTS; do
