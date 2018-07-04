@@ -966,7 +966,7 @@ namespace ArchiSteamFarm {
 								gamesToFarm = gamesToFarm.ThenByDescending(game => marketableAppIDs.Contains(game.AppID));
 								break;
 							default:
-								Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(Bot.BotConfig.FarmingOrder)));
+								Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(Bot.BotConfig.FarmingOrder), Bot.BotConfig.FarmingOrder));
 								return;
 						}
 					}
@@ -1018,13 +1018,13 @@ namespace ArchiSteamFarm {
 							gamesToFarm = gamesToFarm.ThenByDescending(game => redeemDates[game.AppID]);
 							break;
 						default:
-							Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(Bot.BotConfig.FarmingOrder)));
+							Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(Bot.BotConfig.FarmingOrder), Bot.BotConfig.FarmingOrder));
 							return;
 					}
 
 					break;
 				default:
-					Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(Bot.BotConfig.FarmingOrder)));
+					Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(Bot.BotConfig.FarmingOrder), Bot.BotConfig.FarmingOrder));
 					return;
 			}
 
