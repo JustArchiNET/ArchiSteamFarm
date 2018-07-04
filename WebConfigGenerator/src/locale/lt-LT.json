@@ -8,7 +8,7 @@
     "link.home": "Pradžia",
     "schema.access": "Prieiga",
     "schema.advanced": "Papildoma",
-    "schema.basic": "Pagrindinis",
+    "schema.basic": "Paprastas",
     "schema.bot.SteamLogin.description": "Jūsų Steam paskyros prisijungimo vardas",
     "schema.bot.SteamPassword.description": "Jūsų Steam paskyros slaptažodis",
     "schema.bot.name": "Pavadinimas",
