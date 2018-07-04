@@ -16,7 +16,7 @@ branches:
 group: travis_latest
 
 # ASF is based on .NET Core platform
-dotnet: 2.1.300
+dotnet: 2.1.301
 mono: none
 
 env:
@@ -70,10 +70,11 @@ matrix:
   fast_finish: true
   include:
     # We're building ASF with dotnet on latest versions of Linux and OS X
+    # Sadly, travis is still missing https://github.com/travis-ci/travis-ci/issues/8922
     - os: linux
       # Ref: https://docs.travis-ci.com/user/reference/trusty/
       dist: trusty
       sudo: false
     - os: osx
       # Ref: https://docs.travis-ci.com/user/reference/osx/
-      osx_image: xcode9.3
+      osx_image: xcode9.4
