@@ -191,7 +191,7 @@ namespace ArchiSteamFarm {
 							async () => await iEconService.DeclineTradeOffer(
 								method: WebRequestMethods.Http.Post,
 								secure: true,
-								tradeofferid: tradeID.ToString()
+								tradeofferid: tradeID
 							)
 #pragma warning restore ConfigureAwaitChecker // CAC001
 						).ConfigureAwait(false);
