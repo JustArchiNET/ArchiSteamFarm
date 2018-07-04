@@ -280,10 +280,6 @@ StackTrace:
     <value>Λήφθηκε άγνωστη τιμή για το {0}, παρακαλούμε αναφέρετέ το: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
-  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Η συλλογή περισσότερων από {0} παιχνιδιών ταυτόχρονα δεν είναι δυνατή, μόνο οι πρώτες {0} καταχρήσεις από το {1} θα χρησιμοποιηθούν!</value>
-    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
   <data name="IPCReady" xml:space="preserve">
     <value>Ο διακομιστής IPC είναι έτοιμος!</value>
   </data>

@@ -16,7 +16,7 @@ branches:
 group: travis_latest
 
 # ASF is based on .NET Core platform
-dotnet: 2.1.300
+dotnet: 2.1.301
 mono: none
 
 env:
@@ -48,9 +48,9 @@ script:
         if [ "$1" = 'generic' ]; then
             # TODO: Workaround https://github.com/mono/linker/issues/286 until it's resolved
             # Don't forget to remove it from docker files too
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" /nologo "/p:ASFVariant=$1" "/p:LinkDuringPublish=false"
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" --no-restore /nologo "/p:ASFVariant=$1" "/p:LinkDuringPublish=false"
         else
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" -r "$1" /nologo "/p:ASFVariant=$1" "/p:CrossGenDuringPublish=false"
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" -r "$1" --no-restore /nologo "/p:ASFVariant=$1" "/p:CrossGenDuringPublish=false"
         fi
 
         # If we include any helper scripts for this variant, copy them to output directory
@@ -58,6 +58,8 @@ script:
             cp "ArchiSteamFarm/scripts/${1}/"* "ArchiSteamFarm/out/${1}"
         fi
     }
+
+    dotnet restore ArchiSteamFarm
 
     for variant in $VARIANTS; do
         publish "$variant" &
@@ -70,10 +72,11 @@ matrix:
   fast_finish: true
   include:
     # We're building ASF with dotnet on latest versions of Linux and OS X
+    # Sadly, travis is still missing https://github.com/travis-ci/travis-ci/issues/8922
     - os: linux
       # Ref: https://docs.travis-ci.com/user/reference/trusty/
       dist: trusty
       sudo: false
     - os: osx
       # Ref: https://docs.travis-ci.com/user/reference/osx/
-      osx_image: xcode9.3
+      osx_image: xcode9.4

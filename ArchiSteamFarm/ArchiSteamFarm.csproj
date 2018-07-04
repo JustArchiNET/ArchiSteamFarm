@@ -2,14 +2,15 @@
 
   <PropertyGroup>
     <ApplicationIcon>ASF.ico</ApplicationIcon>
-    <AssemblyVersion>3.2.0.3</AssemblyVersion>
+    <AssemblyVersion>3.2.0.4</AssemblyVersion>
     <Authors>JustArchi</Authors>
     <Company>JustArchi</Company>
     <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
     <Copyright>Copyright © ArchiSteamFarm 2015-2018</Copyright>
+    <DefaultItemExcludes>$(DefaultItemExcludes);debug/**;out/**</DefaultItemExcludes>
     <Description>ASF is an application that allows you to farm steam cards using multiple steam accounts simultaneously.</Description>
     <ErrorReport>none</ErrorReport>
-    <FileVersion>3.2.0.3</FileVersion>
+    <FileVersion>3.2.0.4</FileVersion>
     <LangVersion>latest</LangVersion>
     <NoWarn />
     <OutputType>Exe</OutputType>
@@ -37,7 +38,7 @@
   <ItemGroup>
     <PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="1.0.1" />
     <PackageReference Include="HtmlAgilityPack" Version="1.8.4" />
-    <PackageReference Include="Humanizer" Version="2.3.3" />
+    <PackageReference Include="Humanizer" Version="2.4.2" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="NLog" Version="4.5.6" />
     <PackageReference Include="protobuf-net" Version="2.3.12" />

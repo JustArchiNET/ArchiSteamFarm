@@ -23,7 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Json;
@@ -52,7 +51,7 @@ namespace ArchiSteamFarm {
 		internal readonly bool Enabled;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly EFarmingOrder FarmingOrder = EFarmingOrder.Unordered;
+		internal readonly HashSet<EFarmingOrder> FarmingOrders = new HashSet<EFarmingOrder>();
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly HashSet<uint> GamesPlayedWhileIdle = new HashSet<uint>();
@@ -75,6 +74,9 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
 		internal readonly HashSet<Steam.Asset.EType> MatchableTypes = new HashSet<Steam.Asset.EType> { Steam.Asset.EType.TradingCard };
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly EPersonaState OnlineStatus = EPersonaState.Online;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly CryptoHelper.ECryptoMethod PasswordFormat = CryptoHelper.ECryptoMethod.PlainText;
@@ -109,9 +111,6 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal EBotBehaviour BotBehaviour { get; private set; } = EBotBehaviour.None;
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal EPersonaState OnlineStatus { get; private set; } = EPersonaState.Online;
-
 		[JsonProperty]
 		internal string SteamLogin { get; set; }
 
@@ -137,6 +136,20 @@ namespace ArchiSteamFarm {
 				if (value) {
 					BotBehaviour |= EBotBehaviour.DismissInventoryNotifications;
 				}
+			}
+		}
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		private EFarmingOrder FarmingOrder {
+			set {
+				ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, nameof(FarmingOrder), nameof(FarmingOrders)));
+
+				if (!Enum.IsDefined(typeof(EFarmingOrder), value)) {
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(FarmingOrder), value));
+					return;
+				}
+
+				FarmingOrders.Add(value);
 			}
 		}
 
@@ -194,7 +207,63 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			botConfig.ShouldSerializeSensitiveDetails = false;
+			if (botConfig.BotBehaviour > EBotBehaviour.All) {
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.BotBehaviour), botConfig.BotBehaviour));
+				return null;
+			}
+
+			foreach (EFarmingOrder farmingOrder in botConfig.FarmingOrders) {
+				if (!Enum.IsDefined(typeof(EFarmingOrder), farmingOrder)) {
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.FarmingOrders), farmingOrder));
+					return null;
+				}
+			}
+
+			if (botConfig.GamesPlayedWhileIdle.Count > ArchiHandler.MaxGamesPlayedConcurrently) {
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.GamesPlayedWhileIdle), botConfig.GamesPlayedWhileIdle.Count + " > " + ArchiHandler.MaxGamesPlayedConcurrently));
+				return null;
+			}
+
+			foreach (Steam.Asset.EType lootableType in botConfig.LootableTypes) {
+				if (!Enum.IsDefined(typeof(Steam.Asset.EType), lootableType)) {
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.LootableTypes), lootableType));
+					return null;
+				}
+			}
+
+			foreach (Steam.Asset.EType matchableType in botConfig.MatchableTypes) {
+				if (!Enum.IsDefined(typeof(Steam.Asset.EType), matchableType)) {
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.MatchableTypes), matchableType));
+					return null;
+				}
+			}
+
+			if ((botConfig.OnlineStatus < EPersonaState.Offline) || (botConfig.OnlineStatus >= EPersonaState.Max)) {
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.OnlineStatus), botConfig.OnlineStatus));
+				return null;
+			}
+
+			if (!Enum.IsDefined(typeof(CryptoHelper.ECryptoMethod), botConfig.PasswordFormat)) {
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.PasswordFormat), botConfig.PasswordFormat));
+				return null;
+			}
+
+			if (botConfig.RedeemingPreferences > ERedeemingPreferences.All) {
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.RedeemingPreferences), botConfig.RedeemingPreferences));
+				return null;
+			}
+
+			foreach (EPermission permission in botConfig.SteamUserPermissions.Values) {
+				if (!Enum.IsDefined(typeof(EPermission), permission)) {
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.SteamUserPermissions), permission));
+					return null;
+				}
+			}
+
+			if (botConfig.TradingPreferences > ETradingPreferences.All) {
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.TradingPreferences), botConfig.TradingPreferences));
+				return null;
+			}
 
 			// Support encrypted passwords
 			if ((botConfig.PasswordFormat != CryptoHelper.ECryptoMethod.PlainText) && !string.IsNullOrEmpty(botConfig.SteamPassword)) {
@@ -202,21 +271,7 @@ namespace ArchiSteamFarm {
 				botConfig.SteamPassword = CryptoHelper.Decrypt(botConfig.PasswordFormat, botConfig.SteamPassword);
 			}
 
-			// User might not know what he's doing
-			// Ensure that he can't screw core ASF variables
-			if ((botConfig.OnlineStatus < EPersonaState.Offline) || (botConfig.OnlineStatus >= EPersonaState.Max)) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.OnlineStatus), botConfig.OnlineStatus));
-				return null;
-			}
-
-			if (botConfig.GamesPlayedWhileIdle.Count > ArchiHandler.MaxGamesPlayedConcurrently) {
-				ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningTooManyGamesToPlay, ArchiHandler.MaxGamesPlayedConcurrently, nameof(botConfig.GamesPlayedWhileIdle)));
-
-				HashSet<uint> validGames = botConfig.GamesPlayedWhileIdle.Take(ArchiHandler.MaxGamesPlayedConcurrently).ToHashSet();
-				botConfig.GamesPlayedWhileIdle.IntersectWith(validGames);
-				botConfig.GamesPlayedWhileIdle.TrimExcess();
-			}
-
+			botConfig.ShouldSerializeSensitiveDetails = false;
 			return botConfig;
 		}
 
@@ -256,7 +311,8 @@ namespace ArchiSteamFarm {
 			RejectInvalidTrades = 2,
 			RejectInvalidGroupInvites = 4,
 			DismissInventoryNotifications = 8,
-			MarkReceivedMessagesAsRead = 16
+			MarkReceivedMessagesAsRead = 16,
+			All = RejectInvalidFriendInvites | RejectInvalidTrades | RejectInvalidGroupInvites | DismissInventoryNotifications | MarkReceivedMessagesAsRead
 		}
 
 		internal enum EFarmingOrder : byte {
@@ -273,7 +329,9 @@ namespace ArchiSteamFarm {
 			BadgeLevelsAscending,
 			BadgeLevelsDescending,
 			RedeemDateTimesAscending,
-			RedeemDateTimesDescending
+			RedeemDateTimesDescending,
+			MarketableAscending,
+			MarketableDescending
 		}
 
 		internal enum EPermission : byte {
@@ -288,7 +346,8 @@ namespace ArchiSteamFarm {
 			None = 0,
 			Forwarding = 1,
 			Distributing = 2,
-			KeepMissingGames = 4
+			KeepMissingGames = 4,
+			All = Forwarding | Distributing | KeepMissingGames
 		}
 
 		[Flags]
@@ -297,7 +356,8 @@ namespace ArchiSteamFarm {
 			AcceptDonations = 1,
 			SteamTradeMatcher = 2,
 			MatchEverything = 4,
-			DontAcceptBotTrades = 8
+			DontAcceptBotTrades = 8,
+			All = AcceptDonations | SteamTradeMatcher | MatchEverything | DontAcceptBotTrades
 		}
 	}
 }
