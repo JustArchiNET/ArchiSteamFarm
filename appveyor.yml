@@ -32,6 +32,7 @@ before_build:
 
     dotnet --info
 
+
     if ($LastExitCode -ne 0) {
         throw "Last command failed."
     }
@@ -46,6 +47,7 @@ build_script:
 
     dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -o 'out\source' /nologo
 
+
     if ($LastExitCode -ne 0) {
         throw "Last command failed."
     }
@@ -59,6 +61,7 @@ test_script:
 
 
     dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -o 'out\source' /nologo
+
 
     if ($LastExitCode -ne 0) {
         throw "Last command failed."
@@ -162,6 +165,7 @@ after_test:
     foreach ($variant in $env:VARIANTS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
         Start-Job -Name "$variant" -ScriptBlock $PublishBlock -ArgumentList "$variant"
     }
+
 
     Get-Job | Receive-Job -AutoRemoveJob -Wait
 deploy:
