@@ -16,8 +16,7 @@ environment:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   NET_CORE_VERSION: netcoreapp2.1
   NET_FRAMEWORK_VERSION: net472
-  SINGLE_VARIANTS: generic-netf # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
-  VARIANTS: generic linux-arm linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
+  VARIANTS: generic generic-netf linux-arm linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
 matrix:
   allow_failures:
     - image: Visual Studio 2017 Preview
@@ -151,10 +150,6 @@ after_test:
         if ($LastExitCode -ne 0) {
             throw "Last command failed."
         }
-    }
-
-    foreach ($variant in $env:SINGLE_VARIANTS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
-        Start-Job -Name "$variant" -ScriptBlock $PublishBlock -ArgumentList "$variant" | Receive-Job -AutoRemoveJob -Wait
     }
 
     foreach ($variant in $env:VARIANTS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
