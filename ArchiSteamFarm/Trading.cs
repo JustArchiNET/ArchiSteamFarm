@@ -78,11 +78,7 @@ namespace ArchiSteamFarm {
 			// This has to be done as we might have multiple items of given ClassID with multiple amounts
 			Dictionary<ulong, uint> itemAmounts = new Dictionary<ulong, uint>();
 			foreach (Steam.Asset item in inventory) {
-				if (itemAmounts.TryGetValue(item.ClassID, out uint amount)) {
-					itemAmounts[item.ClassID] = amount + item.Amount;
-				} else {
-					itemAmounts[item.ClassID] = item.Amount;
-				}
+				itemAmounts[item.ClassID] = itemAmounts.TryGetValue(item.ClassID, out uint amount) ? amount + item.Amount : item.Amount;
 			}
 
 			// Calculate our value of items to give on per-game basis
@@ -155,7 +151,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (Bot.HasMobileAuthenticator) {
-				HashSet<ulong> acceptedWithItemLoseTradeIDs = new HashSet<ulong>(results.Where(result => (result != null) && (result.Result == ParseTradeResult.EResult.AcceptedWithItemLose)).Select(result => result.TradeID));
+				HashSet<ulong> acceptedWithItemLoseTradeIDs = results.Where(result => (result != null) && (result.Result == ParseTradeResult.EResult.AcceptedWithItemLose)).Select(result => result.TradeID).ToHashSet();
 				if (acceptedWithItemLoseTradeIDs.Count > 0) {
 					// Give Steam network some time to generate confirmations
 					await Task.Delay(3000).ConfigureAwait(false);
@@ -312,7 +308,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Now check if it's worth for us to do the trade
-			HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetMyInventory(false, wantedTypes: types, wantedRealAppIDs: appIDs).ConfigureAwait(false);
+			HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetInventory(Bot.CachedSteamID, wantedTypes: types, wantedRealAppIDs: appIDs).ConfigureAwait(false);
 			if ((inventory == null) || (inventory.Count == 0)) {
 				// If we can't check our inventory when not using MatchEverything, this is a temporary failure
 				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));

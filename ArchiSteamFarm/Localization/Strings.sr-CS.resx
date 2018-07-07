@@ -241,10 +241,6 @@ StackTrace:
     <value>Dobijena nepoznata vrednost za {0}, molimo prijavite ovo: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
-  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Igranje više od {0} igrica u isto vreme nije moguće, samo prvih {0} unosa od {1} će biti korišćeno!</value>
-    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
   
   
   
@@ -385,9 +381,7 @@ StackTrace:
     <value>Odjavljen sa Steam-a: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  <data name="BotLoggedOn" xml:space="preserve">
-    <value>Uspešno ulogovanje!</value>
-  </data>
+  
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Prijavljivanje...</value>
   </data>

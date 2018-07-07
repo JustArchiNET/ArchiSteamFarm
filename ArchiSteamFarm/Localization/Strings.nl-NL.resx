@@ -280,10 +280,6 @@ StackTrace:
     <value>Onbekende waarde ontvangen voor {0}, graag dit melden: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
-  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Het gelijktijdig spelen van meer dan {0} spellen is niet mogelijk, alleen de eerste {0} spellen van {1} worden gespeeld!</value>
-    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
   <data name="IPCReady" xml:space="preserve">
     <value>IPC server gereed!</value>
   </data>
@@ -460,7 +456,8 @@ StackTrace:
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
   <data name="BotLoggedOn" xml:space="preserve">
-    <value>Succesvol ingelogd!</value>
+    <value>Succesvol ingelogd als {0}.</value>
+    <comment>{0} will be replaced by steam ID (number)</comment>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Inloggen...</value>

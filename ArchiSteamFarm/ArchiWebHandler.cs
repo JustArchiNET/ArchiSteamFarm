@@ -40,6 +40,7 @@ namespace ArchiSteamFarm {
 	internal sealed class ArchiWebHandler : IDisposable {
 		private const string IEconService = "IEconService";
 		private const string IPlayerService = "IPlayerService";
+		private const string ISteamApps = "ISteamApps";
 		private const string ISteamUserAuth = "ISteamUserAuth";
 		private const string ITwoFactorService = "ITwoFactorService";
 		private const string SteamCommunityHost = "steamcommunity.com";
@@ -111,8 +112,8 @@ namespace ArchiSteamFarm {
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new Dictionary<string, string>(3) {
-				{ "subid", subID.ToString() },
-				{ "action", "add_to_cart" }
+				{ "action", "add_to_cart" },
+				{ "subid", subID.ToString() }
 			};
 
 			HtmlDocument htmlDocument = await UrlPostToHtmlDocumentWithSession(SteamStoreURL, request, data).ConfigureAwait(false);
@@ -183,13 +184,14 @@ namespace ArchiSteamFarm {
 					iEconService.Timeout = WebBrowser.Timeout;
 
 					try {
-						response = await WebLimitRequest(WebAPI.DefaultBaseAddress.Host,
+						response = await WebLimitRequest(
+							WebAPI.DefaultBaseAddress.Host,
 #pragma warning disable ConfigureAwaitChecker // CAC001
 							// ReSharper disable once AccessToDisposedClosure
 							async () => await iEconService.DeclineTradeOffer(
-								tradeofferid: tradeID.ToString(),
 								method: WebRequestMethods.Http.Post,
-								secure: true
+								secure: true,
+								tradeofferid: tradeID
 							)
 #pragma warning restore ConfigureAwaitChecker // CAC001
 						).ConfigureAwait(false);
@@ -231,7 +233,8 @@ namespace ArchiSteamFarm {
 					iEconService.Timeout = WebBrowser.Timeout;
 
 					try {
-						response = await WebLimitRequest(WebAPI.DefaultBaseAddress.Host,
+						response = await WebLimitRequest(
+							WebAPI.DefaultBaseAddress.Host,
 #pragma warning disable ConfigureAwaitChecker // CAC001
 							// ReSharper disable once AccessToDisposedClosure
 							async () => await iEconService.GetTradeOffers(
@@ -341,6 +344,55 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
+		internal async Task<HashSet<uint>> GetAppList() {
+			KeyValue response = null;
+			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
+				using (dynamic iSteamApps = WebAPI.GetAsyncInterface(ISteamApps)) {
+					iSteamApps.Timeout = WebBrowser.Timeout;
+
+					try {
+						response = await WebLimitRequest(
+							WebAPI.DefaultBaseAddress.Host,
+#pragma warning disable ConfigureAwaitChecker // CAC001
+							// ReSharper disable once AccessToDisposedClosure
+							async () => await iSteamApps.GetAppList2(secure: true)
+#pragma warning restore ConfigureAwaitChecker // CAC001
+						).ConfigureAwait(false);
+					} catch (TaskCanceledException e) {
+						Bot.ArchiLogger.LogGenericDebuggingException(e);
+					} catch (Exception e) {
+						Bot.ArchiLogger.LogGenericWarningException(e);
+					}
+				}
+			}
+
+			if (response == null) {
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				return null;
+			}
+
+			List<KeyValue> apps = response["applist"]["apps"].Children;
+			if ((apps == null) || (apps.Count == 0)) {
+				Bot.ArchiLogger.LogNullError(nameof(apps));
+				return null;
+			}
+
+			HashSet<uint> result = new HashSet<uint>(apps.Count);
+
+			foreach (KeyValue app in apps) {
+				uint appID = app["appid"].AsUnsignedInteger();
+
+				if (appID == 0) {
+					Bot.ArchiLogger.LogNullError(nameof(appID));
+					return null;
+				}
+
+				result.Add(appID);
+			}
+
+			return result;
+		}
+
 		internal async Task<HtmlDocument> GetBadgePage(byte page) {
 			if (page == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(page));
@@ -357,7 +409,18 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string request = "/mobileconf/details/" + confirmation.ID + "?l=english&p=" + deviceID + "&a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&t=" + time + "&m=android&tag=conf";
+			if (SteamID == 0) {
+				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+
+				if (SteamID == 0) {
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					return null;
+				}
+			}
+
+			string request = "/mobileconf/details/" + confirmation.ID + "?a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&l=english&m=android&p=" + WebUtility.UrlEncode(deviceID) + "&t=" + time + "&tag=conf";
 
 			Steam.ConfirmationDetails response = await UrlGetToJsonObjectWithSession<Steam.ConfirmationDetails>(SteamCommunityURL, request).ConfigureAwait(false);
 			if (response?.Success != true) {
@@ -374,7 +437,18 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string request = "/mobileconf/conf?l=english&p=" + deviceID + "&a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&t=" + time + "&m=android&tag=conf";
+			if (SteamID == 0) {
+				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+
+				if (SteamID == 0) {
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					return null;
+				}
+			}
+
+			string request = "/mobileconf/conf?a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&l=english&m=android&p=" + WebUtility.UrlEncode(deviceID) + "&t=" + time + "&tag=conf";
 			return await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
 		}
 
@@ -384,7 +458,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<HashSet<ulong>> GetFamilySharingSteamIDs() {
-			const string request = "/account/managedevices";
+			const string request = "/account/managedevices?l=english";
 			HtmlDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamStoreURL, request).ConfigureAwait(false);
 
 			HtmlNodeCollection htmlNodes = htmlDocument?.DocumentNode.SelectNodes("(//table[@class='accountTable'])[last()]//a/@data-miniprofile");
@@ -423,16 +497,31 @@ namespace ArchiSteamFarm {
 		}
 
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
-		internal async Task<HashSet<Steam.Asset>> GetMyInventory(bool tradableOnly = false, uint appID = Steam.Asset.SteamAppID, byte contextID = Steam.Asset.SteamCommunityContextID, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<uint> wantedRealAppIDs = null) {
+		internal async Task<HashSet<Steam.Asset>> GetInventory(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, byte contextID = Steam.Asset.SteamCommunityContextID, bool? tradable = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<uint> wantedRealAppIDs = null) {
 			if ((appID == 0) || (contextID == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
 				return null;
 			}
 
+			if (steamID == 0) {
+				if (SteamID == 0) {
+					for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+						await Task.Delay(1000).ConfigureAwait(false);
+					}
+
+					if (SteamID == 0) {
+						Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+						return null;
+					}
+				}
+
+				steamID = SteamID;
+			}
+
 			HashSet<Steam.Asset> result = new HashSet<Steam.Asset>();
 
 			// 5000 is maximum allowed count per single request
-			string request = "/inventory/" + SteamID + "/" + appID + "/" + contextID + "?l=english&count=5000";
+			string request = "/inventory/" + steamID + "/" + appID + "/" + contextID + "?count=5000&l=english";
 			ulong startAssetID = 0;
 
 			await InventorySemaphore.WaitAsync().ConfigureAwait(false);
@@ -460,7 +549,7 @@ namespace ArchiSteamFarm {
 						return null;
 					}
 
-					Dictionary<ulong, (uint RealAppID, Steam.Asset.EType Type, bool Tradable)> descriptionMap = new Dictionary<ulong, (uint RealAppID, Steam.Asset.EType Type, bool Tradable)>();
+					Dictionary<ulong, (bool Tradable, Steam.Asset.EType Type, uint RealAppID)> descriptionMap = new Dictionary<ulong, (bool Tradable, Steam.Asset.EType Type, uint RealAppID)>();
 					foreach (Steam.InventoryResponse.Description description in response.Descriptions.Where(description => description != null)) {
 						if (description.ClassID == 0) {
 							Bot.ArchiLogger.LogNullError(nameof(description.ClassID));
@@ -469,6 +558,12 @@ namespace ArchiSteamFarm {
 
 						if (descriptionMap.ContainsKey(description.ClassID)) {
 							continue;
+						}
+
+						Steam.Asset.EType type = Steam.Asset.EType.Unknown;
+
+						if (!string.IsNullOrEmpty(description.Type)) {
+							type = GetItemType(description.Type);
 						}
 
 						uint realAppID = 0;
@@ -481,27 +576,17 @@ namespace ArchiSteamFarm {
 							realAppID = description.AppID;
 						}
 
-						Steam.Asset.EType type = Steam.Asset.EType.Unknown;
-
-						if (!string.IsNullOrEmpty(description.Type)) {
-							type = GetItemType(description.Type);
-						}
-
-						descriptionMap[description.ClassID] = (realAppID, type, description.Tradable);
+						descriptionMap[description.ClassID] = (description.Tradable, type, realAppID);
 					}
 
 					foreach (Steam.Asset asset in response.Assets.Where(asset => asset != null)) {
-						if (descriptionMap.TryGetValue(asset.ClassID, out (uint RealAppID, Steam.Asset.EType Type, bool Tradable) description)) {
-							if (tradableOnly && !description.Tradable) {
+						if (descriptionMap.TryGetValue(asset.ClassID, out (bool Tradable, Steam.Asset.EType Type, uint RealAppID) description)) {
+							if ((tradable.HasValue && (description.Tradable != tradable.Value)) || (wantedTypes?.Contains(description.Type) == false) || (wantedRealAppIDs?.Contains(description.RealAppID) == false)) {
 								continue;
 							}
 
 							asset.RealAppID = description.RealAppID;
 							asset.Type = description.Type;
-						}
-
-						if ((wantedTypes?.Contains(asset.Type) == false) || (wantedRealAppIDs?.Contains(asset.RealAppID) == false)) {
-							continue;
 						}
 
 						result.Add(asset);
@@ -522,16 +607,18 @@ namespace ArchiSteamFarm {
 				if (Program.GlobalConfig.InventoryLimiterDelay == 0) {
 					InventorySemaphore.Release();
 				} else {
-					Utilities.InBackground(async () => {
-						await Task.Delay(Program.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
-						InventorySemaphore.Release();
-					});
+					Utilities.InBackground(
+						async () => {
+							await Task.Delay(Program.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
+							InventorySemaphore.Release();
+						}
+					);
 				}
 			}
 		}
 
 		internal async Task<Dictionary<uint, string>> GetMyOwnedGames() {
-			const string request = "/my/games?xml=1";
+			const string request = "/my/games?l=english&xml=1";
 
 			XmlDocument response = await UrlGetToXmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
 
@@ -582,13 +669,14 @@ namespace ArchiSteamFarm {
 					iPlayerService.Timeout = WebBrowser.Timeout;
 
 					try {
-						response = await WebLimitRequest(WebAPI.DefaultBaseAddress.Host,
+						response = await WebLimitRequest(
+							WebAPI.DefaultBaseAddress.Host,
 #pragma warning disable ConfigureAwaitChecker // CAC001
 							// ReSharper disable once AccessToDisposedClosure
 							async () => await iPlayerService.GetOwnedGames(
-								steamid: steamID,
 								include_appinfo: 1,
-								secure: true
+								secure: true,
+								steamid: steamID
 							)
 #pragma warning restore ConfigureAwaitChecker // CAC001
 						).ConfigureAwait(false);
@@ -626,7 +714,8 @@ namespace ArchiSteamFarm {
 					iTwoFactorService.Timeout = WebBrowser.Timeout;
 
 					try {
-						response = await WebLimitRequest(WebAPI.DefaultBaseAddress.Host,
+						response = await WebLimitRequest(
+							WebAPI.DefaultBaseAddress.Host,
 #pragma warning disable ConfigureAwaitChecker // CAC001
 							// ReSharper disable once AccessToDisposedClosure
 							async () => await iTwoFactorService.QueryTime(
@@ -726,7 +815,8 @@ namespace ArchiSteamFarm {
 					iEconService.Timeout = WebBrowser.Timeout;
 
 					try {
-						response = await WebLimitRequest(WebAPI.DefaultBaseAddress.Host,
+						response = await WebLimitRequest(
+							WebAPI.DefaultBaseAddress.Host,
 #pragma warning disable ConfigureAwaitChecker // CAC001
 							// ReSharper disable once AccessToDisposedClosure
 							async () => await iEconService.GetTradeHoldDurations(
@@ -755,11 +845,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (resultInSeconds == 0) {
-				return 0;
-			}
-
-			return (byte) (resultInSeconds / 86400);
+			return resultInSeconds == 0 ? (byte) 0 : (byte) (resultInSeconds / 86400);
 		}
 
 		internal async Task<string> GetTradeToken() {
@@ -818,7 +904,18 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string request = "/mobileconf/ajaxop?op=" + (accept ? "allow" : "cancel") + "&p=" + deviceID + "&a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&t=" + time + "&m=android&tag=conf&cid=" + confirmationID + "&ck=" + confirmationKey;
+			if (SteamID == 0) {
+				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+
+				if (SteamID == 0) {
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					return null;
+				}
+			}
+
+			string request = "/mobileconf/ajaxop?a=" + SteamID + "&cid=" + confirmationID + "&ck=" + confirmationKey + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&l=english&m=android&op=" + (accept ? "allow" : "cancel") + "&p=" + WebUtility.UrlEncode(deviceID) + "&t=" + time + "&tag=conf";
 
 			Steam.BooleanResponse response = await UrlGetToJsonObjectWithSession<Steam.BooleanResponse>(SteamCommunityURL, request).ConfigureAwait(false);
 			return response?.Success;
@@ -830,16 +927,27 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			if (SteamID == 0) {
+				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+
+				if (SteamID == 0) {
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					return null;
+				}
+			}
+
 			const string request = "/mobileconf/multiajaxop";
 
 			// Extra entry for sessionID
 			List<KeyValuePair<string, string>> data = new List<KeyValuePair<string, string>>(8 + confirmations.Count * 2) {
-				new KeyValuePair<string, string>("op", accept ? "allow" : "cancel"),
-				new KeyValuePair<string, string>("p", deviceID),
 				new KeyValuePair<string, string>("a", SteamID.ToString()),
 				new KeyValuePair<string, string>("k", confirmationHash),
-				new KeyValuePair<string, string>("t", time.ToString()),
 				new KeyValuePair<string, string>("m", "android"),
+				new KeyValuePair<string, string>("op", accept ? "allow" : "cancel"),
+				new KeyValuePair<string, string>("p", deviceID),
+				new KeyValuePair<string, string>("t", time.ToString()),
 				new KeyValuePair<string, string>("tag", "conf")
 			};
 
@@ -879,14 +987,10 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> HasValidApiKey() => !string.IsNullOrEmpty(await GetApiKey().ConfigureAwait(false));
 
-		internal async Task<bool> Init(ulong steamID, EUniverse universe, string webAPIUserNonce, string parentalPin, string vanityURL = null) {
+		internal async Task<bool> Init(ulong steamID, EUniverse universe, string webAPIUserNonce, string parentalPin) {
 			if ((steamID == 0) || (universe == EUniverse.Invalid) || string.IsNullOrEmpty(webAPIUserNonce) || string.IsNullOrEmpty(parentalPin)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(universe) + " || " + nameof(webAPIUserNonce) + " || " + nameof(parentalPin));
 				return false;
-			}
-
-			if (!string.IsNullOrEmpty(vanityURL)) {
-				VanityURL = vanityURL;
 			}
 
 			string sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(steamID.ToString()));
@@ -915,15 +1019,16 @@ namespace ArchiSteamFarm {
 				iSteamUserAuth.Timeout = WebBrowser.Timeout;
 
 				try {
-					response = await WebLimitRequest(WebAPI.DefaultBaseAddress.Host,
+					response = await WebLimitRequest(
+						WebAPI.DefaultBaseAddress.Host,
 #pragma warning disable ConfigureAwaitChecker // CAC001
 						// ReSharper disable once AccessToDisposedClosure
 						async () => await iSteamUserAuth.AuthenticateUser(
-							steamid: steamID,
-							sessionkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedSessionKey, 0, cryptedSessionKey.Length)),
 							encrypted_loginkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedLoginKey, 0, cryptedLoginKey.Length)),
 							method: WebRequestMethods.Http.Post,
-							secure: true
+							secure: true,
+							sessionkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedSessionKey, 0, cryptedSessionKey.Length)),
+							steamid: steamID
 						)
 #pragma warning restore ConfigureAwaitChecker // CAC001
 					).ConfigureAwait(false);
@@ -1011,10 +1116,12 @@ namespace ArchiSteamFarm {
 				if (Program.GlobalConfig.InventoryLimiterDelay == 0) {
 					InventorySemaphore.Release();
 				} else {
-					Utilities.InBackground(async () => {
-						await Task.Delay(Program.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
-						InventorySemaphore.Release();
-					});
+					Utilities.InBackground(
+						async () => {
+							await Task.Delay(Program.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
+							InventorySemaphore.Release();
+						}
+					);
 				}
 			}
 		}
@@ -1030,6 +1137,8 @@ namespace ArchiSteamFarm {
 			SteamID = 0;
 		}
 
+		internal void OnVanityURLChanged(string vanityURL = null) => VanityURL = string.IsNullOrEmpty(vanityURL) ? null : vanityURL;
+
 		internal async Task<(EResult Result, EPurchaseResultDetail? PurchaseResult)?> RedeemWalletKey(string key) {
 			if (string.IsNullOrEmpty(key)) {
 				Bot.ArchiLogger.LogNullError(nameof(key));
@@ -1042,11 +1151,7 @@ namespace ArchiSteamFarm {
 			Dictionary<string, string> data = new Dictionary<string, string>(2) { { "wallet_code", key } };
 
 			Steam.RedeemWalletResponse response = await UrlPostToJsonObjectWithSession<Steam.RedeemWalletResponse>(SteamStoreURL, request, data).ConfigureAwait(false);
-			if (response == null) {
-				return null;
-			}
-
-			return (response.Result, response.PurchaseResultDetail);
+			return response == null ? ((EResult Result, EPurchaseResultDetail? PurchaseResult)?) null : (response.Result, response.PurchaseResultDetail);
 		}
 
 		internal async Task<bool> SendTradeOffer(ulong partnerID, IReadOnlyCollection<Steam.Asset> itemsToGive, string token = null) {
@@ -1075,13 +1180,15 @@ namespace ArchiSteamFarm {
 			const string referer = SteamCommunityURL + "/tradeoffer/new";
 
 			// Extra entry for sessionID
-			foreach (Dictionary<string, string> data in trades.Select(trade => new Dictionary<string, string>(6) {
-				{ "serverid", "1" },
-				{ "partner", partnerID.ToString() },
-				{ "tradeoffermessage", "Sent by " + SharedInfo.PublicIdentifier + "/" + SharedInfo.Version },
-				{ "json_tradeoffer", JsonConvert.SerializeObject(trade) },
-				{ "trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : new JObject { { "trade_offer_access_token", token } }.ToString(Formatting.None) }
-			})) {
+			foreach (Dictionary<string, string> data in trades.Select(
+				trade => new Dictionary<string, string>(6) {
+					{ "json_tradeoffer", JsonConvert.SerializeObject(trade) },
+					{ "partner", partnerID.ToString() },
+					{ "serverid", "1" },
+					{ "trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : new JObject { { "trade_offer_access_token", token } }.ToString(Formatting.None) },
+					{ "tradeoffermessage", "Sent by " + SharedInfo.PublicIdentifier + "/" + SharedInfo.Version }
+				}
+			)) {
 				if (!await UrlPostWithSession(SteamCommunityURL, request, data, referer).ConfigureAwait(false)) {
 					return false;
 				}
@@ -1100,8 +1207,8 @@ namespace ArchiSteamFarm {
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new Dictionary<string, string>(3) {
-				{ "voteid", voteID.ToString() },
-				{ "appid", appID.ToString() }
+				{ "appid", appID.ToString() },
+				{ "voteid", voteID.ToString() }
 			};
 
 			return await UrlPostWithSession(SteamStoreURL, request, data).ConfigureAwait(false);
@@ -1274,11 +1381,7 @@ namespace ArchiSteamFarm {
 			}
 
 			int index = hashName.IndexOf('-');
-			if (index <= 0) {
-				return 0;
-			}
-
-			return uint.TryParse(hashName.Substring(0, index), out uint appID) ? appID : 0;
+			return (index > 0) && uint.TryParse(hashName.Substring(0, index), out uint appID) && (appID != 0) ? appID : 0;
 		}
 
 		private static Steam.Asset.EType GetItemType(string name) {
@@ -1469,8 +1572,8 @@ namespace ArchiSteamFarm {
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new Dictionary<string, string>(4) {
-				{ "domain", "localhost" },
 				{ "agreeToTerms", "agreed" },
+				{ "domain", "localhost" },
 				{ "Submit", "Register" }
 			};
 
@@ -2089,10 +2192,12 @@ namespace ArchiSteamFarm {
 				await limiters.RateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
 
 				// We release rate-limiter semaphore regardless of our task completion, since we use that one only to guarantee rate-limiting of their creation
-				Utilities.InBackground(async () => {
-					await Task.Delay(Program.GlobalConfig.WebLimiterDelay).ConfigureAwait(false);
-					limiters.RateLimitingSemaphore.Release();
-				});
+				Utilities.InBackground(
+					async () => {
+						await Task.Delay(Program.GlobalConfig.WebLimiterDelay).ConfigureAwait(false);
+						limiters.RateLimitingSemaphore.Release();
+					}
+				);
 
 				return await function().ConfigureAwait(false);
 			} finally {

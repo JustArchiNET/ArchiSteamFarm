@@ -1,6 +1,5 @@
 {
 	"AutoRestart": true,
-	"BackgroundGCPeriod": 0,
 	"Blacklist": [],
 	"CommandPrefix": "!",
 	"ConfirmationsLimiterDelay": 10,
@@ -23,7 +22,7 @@
 	"OptimizationMode": 0,
 	"Statistics": true,
 	"SteamOwnerID": 0,
-	"SteamProtocols": 3,
+	"SteamProtocols": 7,
 	"UpdateChannel": 1,
 	"UpdatePeriod": 24,
 	"WebLimiterDelay": 200,

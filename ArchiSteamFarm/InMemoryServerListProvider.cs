@@ -39,7 +39,7 @@ namespace ArchiSteamFarm {
 				return Task.CompletedTask;
 			}
 
-			HashSet<ServerRecordEndPoint> newServerRecords = new HashSet<ServerRecordEndPoint>(endpoints.Select(ep => new ServerRecordEndPoint(ep.GetHost(), (ushort) ep.GetPort(), ep.ProtocolTypes)));
+			HashSet<ServerRecordEndPoint> newServerRecords = endpoints.Select(ep => new ServerRecordEndPoint(ep.GetHost(), (ushort) ep.GetPort(), ep.ProtocolTypes)).ToHashSet();
 
 			if (!ServerRecords.ReplaceIfNeededWith(newServerRecords)) {
 				return Task.CompletedTask;

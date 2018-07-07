@@ -20,7 +20,6 @@
 //  limitations under the License.
 
 using System;
-using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
@@ -53,7 +52,7 @@ namespace ArchiSteamFarm {
 
 			// Otherwise, we ran into fatal exception before logging module could even get initialized, so activate fallback logging that involves file and console
 
-			string message = string.Format(DateTime.Now + " " + Strings.ErrorEarlyFatalExceptionInfo + Environment.NewLine, SharedInfo.Version);
+			string message = string.Format(DateTime.Now + " " + Strings.ErrorEarlyFatalExceptionInfo, SharedInfo.Version) + Environment.NewLine;
 
 			try {
 				await RuntimeCompatibility.File.WriteAllTextAsync(SharedInfo.LogFile, message).ConfigureAwait(false);
@@ -62,13 +61,13 @@ namespace ArchiSteamFarm {
 			}
 
 			try {
-				Console.WriteLine(message);
+				Console.Write(message);
 			} catch {
 				// Ignored, we can't do anything with this
 			}
 
 			while (true) {
-				message = string.Format(Strings.ErrorEarlyFatalExceptionPrint, previousMethodName, exception.Message, exception.StackTrace);
+				message = string.Format(Strings.ErrorEarlyFatalExceptionPrint, previousMethodName, exception.Message, exception.StackTrace) + Environment.NewLine;
 
 				try {
 					await RuntimeCompatibility.File.AppendAllTextAsync(SharedInfo.LogFile, message).ConfigureAwait(false);
@@ -77,7 +76,7 @@ namespace ArchiSteamFarm {
 				}
 
 				try {
-					Console.WriteLine(message);
+					Console.Write(message);
 				} catch {
 					// Ignored, we can't do anything with this
 				}

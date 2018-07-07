@@ -14,10 +14,9 @@ clone_depth: 10
 environment:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-  NET_CORE_VERSION: netcoreapp2.0
+  NET_CORE_VERSION: netcoreapp2.1
   NET_FRAMEWORK_VERSION: net472
-  SINGLE_VARIANTS: generic-netf # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
-  VARIANTS: generic linux-arm linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
+  VARIANTS: generic generic-netf linux-arm linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
 matrix:
   allow_failures:
     - image: Visual Studio 2017 Preview
@@ -33,6 +32,7 @@ before_build:
 
     dotnet --info
 
+
     if ($LastExitCode -ne 0) {
         throw "Last command failed."
     }
@@ -47,6 +47,7 @@ build_script:
 
     dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -o 'out\source' /nologo
 
+
     if ($LastExitCode -ne 0) {
         throw "Last command failed."
     }
@@ -60,6 +61,7 @@ test_script:
 
 
     dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -o 'out\source' /nologo
+
 
     if ($LastExitCode -ne 0) {
         throw "Last command failed."
@@ -91,9 +93,11 @@ after_test:
         }
 
         if ($variant -like 'generic*') {
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" /nologo "/p:ASFVariant=$variant"
+            # TODO: Workaround https://github.com/mono/linker/issues/286 until it's resolved
+            # Don't forget to remove it from docker files too
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" --no-restore /nologo "/p:ASFVariant=$variant" "/p:LinkDuringPublish=false"
         } else {
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" -r "$variant" /nologo "/p:ASFVariant=$variant" "/p:CrossGenDuringPublish=false"
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" -r "$variant" --no-restore /nologo "/p:ASFVariant=$variant" "/p:CrossGenDuringPublish=false"
         }
 
         if ($LastExitCode -ne 0) {
@@ -105,8 +109,8 @@ after_test:
             Copy-Item "ArchiSteamFarm\scripts\$variant\*" -Destination "ArchiSteamFarm\out\$variant"
         }
 
+        # Until https://github.com/dotnet/cli/issues/3267 happens, we'll hack dotnet binary icon on Windows and include .ico file on other platforms
         if ($targetFramework -eq "$env:NET_CORE_VERSION") {
-            # Until https://github.com/dotnet/cli/issues/3267 happens, we'll hack dotnet binary icon on Windows and include .ico file on other platforms
             if (Test-Path -Path "ArchiSteamFarm\out\$variant\ArchiSteamFarm.exe" -PathType Leaf) {
                 tools\rcedit\rcedit-x64.exe "ArchiSteamFarm\out\$variant\ArchiSteamFarm.exe" --set-icon 'resources\ASF.ico'
 
@@ -118,12 +122,17 @@ after_test:
             }
         }
 
+        # By default use fastest compression
+        $compressionArgs = '-mx=1'
+
+        # Include extra logic for builds marked for release
         if ($env:APPVEYOR_REPO_TAG -eq 'true') {
             # Update link in Changelog.html accordingly
             if (Test-Path -Path "ArchiSteamFarm\out\$variant\Changelog.html" -PathType Leaf) {
                 (Get-Content -Path "ArchiSteamFarm\out\$variant\Changelog.html").Replace('ArchiSteamFarm/commits/master', "ArchiSteamFarm/releases/tag/$env:APPVEYOR_REPO_TAG_NAME") | Set-Content -Path "ArchiSteamFarm\out\$variant\Changelog.html"
             }
 
+            # If this build is going to be deployed further, prefer maximum compression
             if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq 'Visual Studio 2017') {
                 $compressionArgs = '-mx=9', '-mpass=15'
 
@@ -133,8 +142,6 @@ after_test:
                     $compressionArgs += '-mfb=258'
                 }
             }
-        } else {
-            $compressionArgs = '-mx=1'
         }
 
         7z a -bd -tzip "-mm=$compressionMethod" $compressionArgs "ArchiSteamFarm\out\ASF-$variant.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$variant\*"
@@ -151,14 +158,14 @@ after_test:
         }
     }
 
-    foreach ($variant in $env:SINGLE_VARIANTS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
-        Start-Job -Name "$variant" -ScriptBlock $PublishBlock -ArgumentList "$variant"
-        Get-Job | Receive-Job -AutoRemoveJob -Wait
-    }
+
+    dotnet restore ArchiSteamFarm
+
 
     foreach ($variant in $env:VARIANTS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
         Start-Job -Name "$variant" -ScriptBlock $PublishBlock -ArgumentList "$variant"
     }
+
 
     Get-Job | Receive-Job -AutoRemoveJob -Wait
 deploy:

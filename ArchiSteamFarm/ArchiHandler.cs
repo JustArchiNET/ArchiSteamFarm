@@ -71,6 +71,9 @@ namespace ArchiSteamFarm {
 				case EMsg.ClientUserNotifications:
 					HandleUserNotifications(packetMsg);
 					break;
+				case EMsg.ClientVanityURLChangedNotification:
+					HandleVanityURLChangedNotification(packetMsg);
+					break;
 			}
 		}
 
@@ -114,13 +117,15 @@ namespace ArchiSteamFarm {
 				Client.Send(request);
 				await Task.Delay(Bot.CallbackSleep).ConfigureAwait(false);
 
-				request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed {
-					game_extra_info = gameName,
-					game_id = new GameID {
-						AppType = GameID.GameType.Shortcut,
-						ModID = uint.MaxValue
+				request.Body.games_played.Add(
+					new CMsgClientGamesPlayed.GamePlayed {
+						game_extra_info = gameName,
+						game_id = new GameID {
+							AppType = GameID.GameType.Shortcut,
+							ModID = uint.MaxValue
+						}
 					}
-				});
+				);
 
 				// Max games count is affected by valid AppIDs only, therefore gameName alone doesn't need exclusive slot
 				maxGamesCount++;
@@ -266,6 +271,16 @@ namespace ArchiSteamFarm {
 			Client.PostCallback(new UserNotificationsCallback(packetMsg.TargetJobID, response.Body));
 		}
 
+		private void HandleVanityURLChangedNotification(IPacketMsg packetMsg) {
+			if (packetMsg == null) {
+				ArchiLogger.LogNullError(nameof(packetMsg));
+				return;
+			}
+
+			ClientMsgProtobuf<CMsgClientVanityURLChangedNotification> response = new ClientMsgProtobuf<CMsgClientVanityURLChangedNotification>(packetMsg);
+			Client.PostCallback(new VanityURLChangedCallback(packetMsg.TargetJobID, response.Body));
+		}
+
 		internal sealed class OfflineMessageCallback : CallbackMsg {
 			internal readonly uint OfflineMessagesCount;
 			internal readonly HashSet<ulong> SteamIDs;
@@ -282,7 +297,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				SteamIDs = new HashSet<ulong>(msg.friends_with_offline_messages.Select(steam3ID => new SteamID(steam3ID, EUniverse.Public, EAccountType.Individual).ConvertToUInt64()));
+				SteamIDs = msg.friends_with_offline_messages.Select(steam3ID => new SteamID(steam3ID, EUniverse.Public, EAccountType.Individual).ConvertToUInt64()).ToHashSet();
 			}
 		}
 
@@ -453,6 +468,19 @@ namespace ArchiSteamFarm {
 				Chat,
 				HelpRequestReplies,
 				AccountAlerts
+			}
+		}
+
+		internal sealed class VanityURLChangedCallback : CallbackMsg {
+			internal readonly string VanityURL;
+
+			internal VanityURLChangedCallback(JobID jobID, CMsgClientVanityURLChangedNotification msg) {
+				if ((jobID == null) || (msg == null)) {
+					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
+				}
+
+				JobID = jobID;
+				VanityURL = msg.vanity_url;
 			}
 		}
 	}

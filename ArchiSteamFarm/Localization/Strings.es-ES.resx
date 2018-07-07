@@ -279,10 +279,6 @@ Trazo de pila:
     <value>Recibido valor desconocido para {0}. Por favor, informa de ello: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
-  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>¡No es posible ejecutar más de {0} juegos a la vez, sólo se usarán las primeras {0} entradas de {1}!</value>
-    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
   <data name="IPCReady" xml:space="preserve">
     <value>¡Servidor IPC listo!</value>
   </data>
@@ -458,9 +454,7 @@ Trazo de pila:
     <value>Sesión de Steam cerrada: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  <data name="BotLoggedOn" xml:space="preserve">
-    <value>¡Sesión de Steam iniciada exitosamente!</value>
-  </data>
+  
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Iniciando sesión...</value>
   </data>

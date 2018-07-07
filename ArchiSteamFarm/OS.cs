@@ -21,13 +21,13 @@
 
 using System;
 using System.IO;
-using System.Net.WebSockets;
 using System.Runtime.InteropServices;
 using ArchiSteamFarm.Localization;
 
 namespace ArchiSteamFarm {
 	internal static class OS {
 		internal static bool IsUnix => RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+		internal static string Variant => RuntimeInformation.OSDescription.Trim();
 
 		internal static void Init(bool systemRequired) {
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
@@ -36,17 +36,6 @@ namespace ArchiSteamFarm {
 				if (systemRequired) {
 					KeepWindowsSystemActive();
 				}
-			}
-		}
-
-		// TODO: We should really get rid of this once https://github.com/SteamRE/SteamKit/issues/455 or https://github.com/dotnet/corefx/issues/9503 is solved
-		internal static bool SupportsWebSockets() {
-			try {
-				using (new ClientWebSocket()) {
-					return true;
-				}
-			} catch (PlatformNotSupportedException) {
-				return false;
 			}
 		}
 

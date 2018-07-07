@@ -277,10 +277,6 @@
     <value>收到的{0} 为未知值，请报告此值：{1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
-  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>目前无法同时挂 {0} 个以上的游戏，只有 {1} 里面的前 {0} 个游戏可用！</value>
-    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
   <data name="IPCReady" xml:space="preserve">
     <value>IPC 服务已就绪 ！</value>
   </data>
@@ -456,9 +452,7 @@
     <value>退出Steam登录︰ {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  <data name="BotLoggedOn" xml:space="preserve">
-    <value>登录成功！</value>
-  </data>
+  
   <data name="BotLoggingIn" xml:space="preserve">
     <value>登录中……</value>
   </data>

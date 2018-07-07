@@ -277,10 +277,6 @@
     <value>收到未知的值為 {0}，請回報此問題︰ {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
-  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>不能同時玩超過 {0} 個遊戲，只有 {1} 中的前 {0} 個遊戲可用！</value>
-    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
   <data name="IPCReady" xml:space="preserve">
     <value>IPC 伺服器已就緒！</value>
   </data>
@@ -456,9 +452,7 @@
     <value>已從 Steam 登出：{0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  <data name="BotLoggedOn" xml:space="preserve">
-    <value>已成功登入！</value>
-  </data>
+  
   <data name="BotLoggingIn" xml:space="preserve">
     <value>登入中...</value>
   </data>

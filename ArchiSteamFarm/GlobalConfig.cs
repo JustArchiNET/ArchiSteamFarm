@@ -37,17 +37,12 @@ namespace ArchiSteamFarm {
 		internal const ushort DefaultIPCPort = 1242;
 		internal const byte DefaultLoginLimiterDelay = 10;
 
-		private const ProtocolTypes DefaultSteamProtocols = ProtocolTypes.Tcp | ProtocolTypes.Udp;
-
-		internal static readonly HashSet<uint> SalesBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900, 762800 }; // Steam Summer/Winter sales
+		internal static readonly HashSet<uint> SalesBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900, 762800, 876740 }; // Steam Summer/Winter sales
 
 		private static readonly SemaphoreSlim WriteSemaphore = new SemaphoreSlim(1, 1);
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool AutoRestart = true;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte BackgroundGCPeriod;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly HashSet<uint> Blacklist = new HashSet<uint>();
@@ -119,7 +114,7 @@ namespace ArchiSteamFarm {
 		internal ulong SteamOwnerID { get; private set; }
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal ProtocolTypes SteamProtocols { get; private set; } = DefaultSteamProtocols;
+		internal ProtocolTypes SteamProtocols { get; private set; } = ProtocolTypes.All;
 
 		internal WebProxy WebProxy { get; private set; }
 
@@ -268,10 +263,6 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			globalConfig.ShouldSerializeSensitiveDetails = false;
-
-			// User might not know what he's doing
-			// Ensure that he can't screw core ASF variables
 			if (globalConfig.ConnectionTimeout == 0) {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.ConnectionTimeout), globalConfig.ConnectionTimeout));
 				return null;
@@ -287,18 +278,22 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (globalConfig.SteamProtocols == 0) {
+			if (!Enum.IsDefined(typeof(EOptimizationMode), globalConfig.OptimizationMode)) {
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.OptimizationMode), globalConfig.OptimizationMode));
+				return null;
+			}
+
+			if ((globalConfig.SteamProtocols <= 0) || (globalConfig.SteamProtocols > ProtocolTypes.All)) {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.SteamProtocols), globalConfig.SteamProtocols));
 				return null;
 			}
 
-			if (globalConfig.SteamProtocols.HasFlag(ProtocolTypes.WebSocket) && !OS.SupportsWebSockets()) {
-				globalConfig.SteamProtocols &= ~ProtocolTypes.WebSocket;
-				if (globalConfig.SteamProtocols == 0) {
-					globalConfig.SteamProtocols = DefaultSteamProtocols;
-				}
+			if (!Enum.IsDefined(typeof(EUpdateChannel), globalConfig.UpdateChannel)) {
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.UpdateChannel), globalConfig.UpdateChannel));
+				return null;
 			}
 
+			globalConfig.ShouldSerializeSensitiveDetails = false;
 			return globalConfig;
 		}
 
