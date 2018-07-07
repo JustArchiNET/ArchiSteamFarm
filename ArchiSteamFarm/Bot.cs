@@ -943,6 +943,8 @@ namespace ArchiSteamFarm {
 							return ResponseBlacklist(steamID);
 						case "EXIT":
 							return ResponseExit(steamID);
+                        case "EXPLORE":
+                            return await ResponseExplore(steamID).ConfigureAwait(false);
 						case "FARM":
 							return await ResponseFarm(steamID).ConfigureAwait(false);
 						case "HELP":
@@ -1017,9 +1019,11 @@ namespace ArchiSteamFarm {
 						case "BLRM":
 							if (args.Length > 2) {
 								return await ResponseBlacklistRemove(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
-							}
+                            }
 
-							return await ResponseBlacklistRemove(steamID, args[1]).ConfigureAwait(false);
+                            return await ResponseBlacklistRemove(steamID, args[1]).ConfigureAwait(false);
+                        case "EXPLORE":
+                            return await ResponseExplore(steamID, args[1]).ConfigureAwait(false);
 						case "FARM":
 							return await ResponseFarm(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "INPUT":
@@ -1519,10 +1523,8 @@ namespace ArchiSteamFarm {
 				SteamSaleEvent.Dispose();
 				SteamSaleEvent = null;
 			}
-
-			if (BotConfig.AutoSteamSaleEvent) {
-				SteamSaleEvent = new SteamSaleEvent(this);
-			}
+            
+			SteamSaleEvent = new SteamSaleEvent(this);
 		}
 
 		private async Task InitPermanentConnectionFailure() {
@@ -3104,6 +3106,59 @@ namespace ArchiSteamFarm {
 
 			return FormatStaticResponse(Strings.Done);
 		}
+
+		private async Task<string> ResponseExplore(ulong steamID){
+				if(!IsMaster(steamID)){
+					return null;
+				}
+
+				if (!IsConnectedAndLoggedOn)
+				{
+					return FormatBotResponse(Strings.BotNotConnected);
+				}
+
+				if (SteamSaleEvent == null) {
+					return FormatBotResponse(nameof(SteamSaleEvent));
+				}
+
+				if(await SteamSaleEvent.ExploreDiscoveryQueue().ConfigureAwait(false)){
+					return FormatBotResponse(Strings.DoneClearingDiscoveryQueue);
+				}
+				else {
+					return FormatBotResponse("Failed to clear discovery queue.");
+				}
+		}
+
+        private async Task<string> ResponseExplore(ulong steamID, string botNames) {
+            if(steamID == 0 || string.IsNullOrEmpty(botNames)) {
+                ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
+                return null;
+            }
+
+			HashSet<Bot> bots = GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
+			}
+			
+			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseExplore(steamID));
+			ICollection<string> results;
+
+			switch(Program.GlobalConfig.OptimizationMode){
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<string>(bots.Count);
+					foreach(Task<string> task in tasks){
+						results.Add(await task.ConfigureAwait(false));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+
+			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+			return responses.Count > 0 ? string.Join("", responses) : null;
+        }
 
 		private async Task<string> ResponseFarm(ulong steamID) {
 			if (steamID == 0) {
