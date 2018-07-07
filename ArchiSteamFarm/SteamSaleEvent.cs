@@ -36,19 +36,21 @@ namespace ArchiSteamFarm {
 		internal SteamSaleEvent(Bot bot) {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
-			SaleEventTimer = new Timer(
-				async e => await Task.WhenAll(ExploreDiscoveryQueue(), VoteForSteamAwards()).ConfigureAwait(false),
-				null,
-				TimeSpan.FromMinutes(1) + TimeSpan.FromSeconds(Program.LoadBalancingDelay * Bot.Bots.Count), // Delay
-				TimeSpan.FromHours(6.1) // Period
-			);
+            if (bot.BotConfig.AutoSteamSaleEvent) {
+                SaleEventTimer = new Timer(
+                    async e => await Task.WhenAll(ExploreDiscoveryQueue(), VoteForSteamAwards()).ConfigureAwait(false),
+                    null,
+                    TimeSpan.FromMinutes(1) + TimeSpan.FromSeconds(Program.LoadBalancingDelay * Bot.Bots.Count), // Delay
+                    TimeSpan.FromHours(6.1) // Period
+                );
+            }
 		}
 
 		public void Dispose() => SaleEventTimer.Dispose();
 
-		private async Task ExploreDiscoveryQueue() {
+		internal async Task<bool> ExploreDiscoveryQueue() {
 			if (!Bot.IsConnectedAndLoggedOn) {
-				return;
+				return false;
 			}
 
 			Bot.ArchiLogger.LogGenericTrace(Strings.Starting);
@@ -69,13 +71,14 @@ namespace ArchiSteamFarm {
 					}
 
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					return;
+					return false;
 				}
 
 				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.DoneClearingDiscoveryQueue, i));
 			}
 
 			Bot.ArchiLogger.LogGenericTrace(Strings.Done);
+            return true;
 		}
 
 		private async Task<bool?> IsDiscoveryQueueAvailable() {
