@@ -541,8 +541,7 @@ namespace ArchiSteamFarm {
 						}
 					}
 				}
-				else if (botName.ToUpperInvariant().StartsWith("R!"))
-				{
+				else if (botName.StartsWith("R!", StringComparison.OrdinalIgnoreCase)) {
 					List<Bot> regexMatches = Bots.Where(kvp => Regex.Match(kvp.Key, botName, RegexOptions.IgnoreCase).Success).Select(kvp => kvp.Value).ToList();
 					result.UnionWith(regexMatches);
 				}
