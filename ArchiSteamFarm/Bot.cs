@@ -540,9 +540,8 @@ namespace ArchiSteamFarm {
 							continue;
 						}
 					}
-				}
-				else if (botName.StartsWith("R!", StringComparison.OrdinalIgnoreCase)) {
-					List<Bot> regexMatches = Bots.Where(kvp => Regex.Match(kvp.Key, botName, RegexOptions.IgnoreCase).Success).Select(kvp => kvp.Value).ToList();
+				} else if (botName.StartsWith("r!", StringComparison.OrdinalIgnoreCase)) {
+					IEnumerable<Bot> regexMatches = Bots.Where(kvp => Regex.Match(kvp.Key, botName, RegexOptions.IgnoreCase).Success).Select(kvp => kvp.Value);
 					result.UnionWith(regexMatches);
 				}
 
