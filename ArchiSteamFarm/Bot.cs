@@ -541,9 +541,12 @@ namespace ArchiSteamFarm {
 						}
 					}
 				}
+				else if (botName.ToUpperInvariant().StartsWith("R!"))
+				{
+					List<Bot> regexMatches = Bots.Where(kvp => Regex.Match(kvp.Key, botName, RegexOptions.IgnoreCase).Success).Select(kvp => kvp.Value).ToList();
+					result.UnionWith(regexMatches);
+				}
 
-				List<Bot> regexMatches = Bots.Where(kvp => Regex.Match(kvp.Key, botName, RegexOptions.IgnoreCase).Success).Select(kvp => kvp.Value).ToList();
-                result.UnionWith(regexMatches);
 
 				if (!Bots.TryGetValue(botName, out Bot targetBot)) {
 					continue;
@@ -1168,7 +1171,7 @@ namespace ArchiSteamFarm {
 						case "UNPACK":
 							return await ResponseUnpackBoosters(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						default:
-                            return ResponseUnknown(steamID);
+							return ResponseUnknown(steamID);
 					}
 			}
 		}
