@@ -545,7 +545,7 @@ namespace ArchiSteamFarm {
 					IEnumerable<Bot> regexMatches = Bots.Where(kvp => Regex.Match(kvp.Key, botPattern, RegexOptions.IgnoreCase).Success).Select(kvp => kvp.Value);
 					result.UnionWith(regexMatches);
 				}
-				
+
 				if (!Bots.TryGetValue(botName, out Bot targetBot)) {
 					continue;
 				}
