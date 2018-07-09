@@ -45,7 +45,6 @@
     height: auto;
     max-height: 220px;
     overflow-x: hidden;
-    top:-220px;
 }
 
 button.bot-stopped {
