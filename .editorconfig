@@ -61,12 +61,12 @@ dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
 dotnet_style_predefined_type_for_member_access = true:suggestion
 
 # PascalCase for naming everything but parameters
-dotnet_naming_rule.public_members_must_be_capitalized.symbols = all_symbols
+dotnet_naming_rule.all_members_must_be_capitalized.symbols = all_symbols
 dotnet_naming_symbols.all_symbols.applicable_kinds = class,struct,interface,enum,property,method,field,event,delegate
 dotnet_naming_symbols.all_symbols.applicable_accessibilities = *
-dotnet_naming_rule.public_members_must_be_capitalized.style = all_symbols
+dotnet_naming_rule.all_members_must_be_capitalized.style = all_symbols
 dotnet_naming_style.all_symbols.capitalization = pascal_case
-dotnet_naming_rule.public_members_must_be_capitalized.severity = warning
+dotnet_naming_rule.all_members_must_be_capitalized.severity = warning
 
 # camelCase for naming parameters
 dotnet_naming_rule.parameters_must_be_camel_case.symbols = params
