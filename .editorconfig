@@ -8,7 +8,6 @@ trim_trailing_whitespace = true:suggestion
 [*.cs]
 csharp_prefer_braces = true:suggestion
 csharp_new_line_before_open_brace = none:suggestion
-csharp_new_line_before_open_brace = false:suggestion
 csharp_new_line_before_else = false:suggestion
 csharp_new_line_before_catch = false:suggestion
 csharp_new_line_before_finally = false:suggestion
