@@ -2,7 +2,7 @@ root = true
 
 [*]
 indent_style = tab:suggestion
-insert_final_newline = true
+insert_final_newline = true:suggestion
 trim_trailing_whitespace = true:suggestion
 
 [*.cs]
