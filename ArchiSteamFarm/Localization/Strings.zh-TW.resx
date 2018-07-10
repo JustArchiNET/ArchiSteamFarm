@@ -444,10 +444,7 @@
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>無法啟動這個帳號，因為它在設定檔中被禁用！</value>
   </data>
-  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>連續收到 {0} 次 TwoFactorCodeMismatch 錯誤代碼，這通常是代表 ASF 二階段驗證失敗，程序即將中止！</value>
-    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
-  </data>
+  
   <data name="BotLoggedOff" xml:space="preserve">
     <value>已從 Steam 登出：{0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
