@@ -448,14 +448,17 @@ Yığın izleme:
     <value>Bu bot örneğini yapılandırma dosyasında devre dışı bırakıldığından başlatamıyoruz!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>TwoFactorCodeMismatch hata kodu üst üste {0} defa alındı, bu hemen hemen her zaman geçersiz ASF 2FD kimlik bilgilerini gösterir, iptal edildi!</value>
+    <value>Üst üste TwoFactorCodeMismatch hata kodu {0} alındı. 2FA kimlik bilgileriniz artık geçerli değil veya senin saatiniz eşitlenmemiş, iptal ediliyor!</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Steam'den çıkış yapıldı: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  
+  <data name="BotLoggedOn" xml:space="preserve">
+    <value>{0} olarak başarıyla oturum açıldı.</value>
+    <comment>{0} will be replaced by steam ID (number)</comment>
+  </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Giriş yapılıyor...</value>
   </data>
@@ -598,7 +601,7 @@ Yığın izleme:
     <value>Sağlanan CurrentCulture geçersiz, ASF varsayılan ile çalışmaya devam edecek!</value>
   </data>
   <data name="TranslationIncomplete" xml:space="preserve">
-    <value>ASF tercih ettiğiniz {0} kültürünü kullanmaya çalışacak, ancak o dildeki çeviri yalnızca {1} oranında tamamlandı. Diliniz için ASF çevirisini geliştirmemize belki de yardımcı olabilirsiniz?</value>
+    <value>ASF tercih ettiğiniz {0} kültürünü kullanmaya çalışacak, ancak bu dildeki çeviri yalnızca {1} oranında tamamlanmış. Diliniz için ASF çevirisini geliştirmemize belki de yardımcı olabilirsiniz?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
   <data name="IdlingGameNotPossible" xml:space="preserve">

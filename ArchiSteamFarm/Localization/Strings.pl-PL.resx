@@ -448,7 +448,7 @@ StackTrace:
     <value>Ten bot nie zostanie uruchomiony, ponieważ został wyłączony w pliku konfiguracyjnym!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Otrzymano błąd TwoFactorCodeMismatch {0} razy pod rząd, to niemal zawsze oznacza nieprawidłowe dane uwierzytelniające mobilnego tokena ASF 2FA, anulowanie!</value>
+    <value>Otrzymano błąd TwoFactorCodeMismatch {0} razy pod rząd. To oznacza, że twoje dane 2FA nie są już dłużej prawidłowe, albo twój zegar nie jest zsynchronizowany, anulowanie!</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
