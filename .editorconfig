@@ -46,7 +46,6 @@ csharp_space_between_method_call_empty_parameter_list_parentheses = false:sugges
 dotnet_sort_system_directives_first = true:suggestion
 
 dotnet_style_require_accessibility_modifiers = always:suggestion
-dotnet_style_readonly_field = true:suggestion
 dotnet_style_qualification_for_field = false:suggestion
 dotnet_style_qualification_for_property = false:suggestion
 dotnet_style_qualification_for_method = false:suggestion
