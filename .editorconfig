@@ -6,8 +6,15 @@ insert_final_newline = true
 trim_trailing_whitespace = true:suggestion
 
 [*.cs]
-csharp_new_line_before_open_brace = none:suggestion
 csharp_prefer_braces = true:suggestion
+csharp_new_line_before_open_brace = none:suggestion
+csharp_new_line_before_open_brace = false:suggestion
+csharp_new_line_before_else = false:suggestion
+csharp_new_line_before_catch = false:suggestion
+csharp_new_line_before_finally = false:suggestion
+csharp_new_line_before_members_in_object_initializers = false:suggestion
+csharp_new_line_before_members_in_anonymous_types = false:suggestion
+csharp_new_line_between_query_expression_clauses = false:suggestion
 
 csharp_style_var_for_built_in_types = false:suggestion
 csharp_style_var_when_type_is_apparent = false:suggestion
