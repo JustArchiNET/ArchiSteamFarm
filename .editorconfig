@@ -30,17 +30,17 @@ dotnet_style_readonly_field = false:suggestion
 dotnet_style_prefer_auto_properties = true:suggestion
 
 # PascalCase for naming everything but parameters
-dotnet_naming_rule.public_members_must_be_capitalized.symbols   = all_symbols
-dotnet_naming_symbols.all_symbols.applicable_kinds           	= class,struct,interface,enum,property,method,field,event,delegate
-dotnet_naming_symbols.all_symbols.applicable_accessibilities 	= *
-dotnet_naming_rule.public_members_must_be_capitalized.style     = all_symbols
-dotnet_naming_style.all_symbols.capitalization 					= pascal_case
-dotnet_naming_rule.public_members_must_be_capitalized.severity  = warning
+dotnet_naming_rule.public_members_must_be_capitalized.symbols	= all_symbols
+dotnet_naming_symbols.all_symbols.applicable_kinds				= class,struct,interface,enum,property,method,field,event,delegate
+dotnet_naming_symbols.all_symbols.applicable_accessibilities	= *
+dotnet_naming_rule.public_members_must_be_capitalized.style		= all_symbols
+dotnet_naming_style.all_symbols.capitalization					= pascal_case
+dotnet_naming_rule.public_members_must_be_capitalized.severity	= warning
 
 # camelCase for naming parameters
-dotnet_naming_rule.parameters_must_be_camel_case.symbols   		= params
-dotnet_naming_symbols.params.applicable_kinds           		= parameter
-dotnet_naming_symbols.params.applicable_accessibilities 		= *
-dotnet_naming_rule.parameters_must_be_camel_case.style     		= params
-dotnet_naming_style.params.capitalization 						= camel_case
-dotnet_naming_rule.parameters_must_be_camel_case.severity  		= warning
+dotnet_naming_rule.parameters_must_be_camel_case.symbols		= params
+dotnet_naming_symbols.params.applicable_kinds					= parameter
+dotnet_naming_symbols.params.applicable_accessibilities			= *
+dotnet_naming_rule.parameters_must_be_camel_case.style			= params
+dotnet_naming_style.params.capitalization						= camel_case
+dotnet_naming_rule.parameters_must_be_camel_case.severity		= warning
