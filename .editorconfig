@@ -66,7 +66,7 @@ dotnet_naming_symbols.all_symbols.applicable_kinds = class,struct,interface,enum
 dotnet_naming_symbols.all_symbols.applicable_accessibilities = *
 dotnet_naming_rule.all_members_must_be_capitalized.style = all_symbols
 dotnet_naming_style.all_symbols.capitalization = pascal_case
-dotnet_naming_rule.all_members_must_be_capitalized.severity = warning
+dotnet_naming_rule.all_members_must_be_capitalized.severity = suggestion
 
 # camelCase for naming parameters
 dotnet_naming_rule.parameters_must_be_camel_case.symbols = params
@@ -74,4 +74,4 @@ dotnet_naming_symbols.params.applicable_kinds = parameter
 dotnet_naming_symbols.params.applicable_accessibilities = *
 dotnet_naming_rule.parameters_must_be_camel_case.style = params
 dotnet_naming_style.params.capitalization = camel_case
-dotnet_naming_rule.parameters_must_be_camel_case.severity = warning
+dotnet_naming_rule.parameters_must_be_camel_case.severity = suggestion
