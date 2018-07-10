@@ -7,6 +7,7 @@ trim_trailing_whitespace = true:suggestion
 
 [*.cs]
 csharp_new_line_before_open_brace = none:suggestion
+csharp_prefer_braces = true:suggestion
 
 csharp_style_var_for_built_in_types = false:suggestion
 csharp_style_var_when_type_is_apparent = false:suggestion
@@ -18,17 +19,41 @@ csharp_style_expression_bodied_operators = true:suggestion
 csharp_style_expression_bodied_properties = true:suggestion
 csharp_style_expression_bodied_indexers = true:suggestion
 csharp_style_expression_bodied_accessors = true:suggestion
+
 csharp_style_pattern_matching_over_as_with_null_check = false:suggestion
 
-csharp_prefer_braces = true:suggestion
 csharp_preferred_modifier_order = public,private,protected,internal,new,abstract,virtual,sealed,override,static,readonly,extern,unsafe,volatile,async
 
 csharp_preserve_single_line_statements = false:suggestion
+csharp_preserve_single_line_blocks = true:suggestion
+
+csharp_indent_case_contents = true:suggestion
+csharp_indent_switch_labels = true:suggestion
+
+csharp_space_after_cast = false:suggestion
+csharp_space_after_keywords_in_control_flow_statements = true:suggestion
+csharp_space_between_method_declaration_parameter_list_parentheses = false:suggestion
+csharp_space_between_method_call_parameter_list_parentheses = false:suggestion
+csharp_space_between_parentheses = false:suggestion
+csharp_space_before_colon_in_inheritance_clause = true:suggestion
+csharp_space_after_colon_in_inheritance_clause = true:suggestion
+csharp_space_around_binary_operators = before_and_after:suggestion
+csharp_space_between_method_declaration_empty_parameter_list_parentheses = false:suggestion
+csharp_space_between_method_call_name_and_opening_parenthesis = false:suggestion
+csharp_space_between_method_call_empty_parameter_list_parentheses = false:suggestion
+
 
 dotnet_sort_system_directives_first = true:suggestion
+
 dotnet_style_require_accessibility_modifiers = always:suggestion
 dotnet_style_readonly_field = true:suggestion
+dotnet_style_qualification_for_field = false:suggestion
+dotnet_style_qualification_for_property = false:suggestion
+dotnet_style_qualification_for_method = false:suggestion
+dotnet_style_qualification_for_event = false:suggestion
 dotnet_style_prefer_auto_properties = true:suggestion
+dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
+dotnet_style_predefined_type_for_member_access = true:suggestion
 
 # PascalCase for naming everything but parameters
 dotnet_naming_rule.public_members_must_be_capitalized.symbols = all_symbols
