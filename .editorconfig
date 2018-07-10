@@ -1,10 +1,11 @@
 root = true
 
-[*.cs]
+[*]
 indent_style = tab:warning
 insert_final_newline = true
 trim_trailing_whitespace = true:suggestion
 
+[*.cs]
 csharp_new_line_before_open_brace = none:suggestion
 
 csharp_style_var_for_built_in_types = false:suggestion
@@ -26,7 +27,7 @@ csharp_preserve_single_line_statements = false:suggestion
 
 dotnet_sort_system_directives_first = true:suggestion
 dotnet_style_require_accessibility_modifiers = always:suggestion
-dotnet_style_readonly_field = false:suggestion
+dotnet_style_readonly_field = true:suggestion
 dotnet_style_prefer_auto_properties = true:suggestion
 
 # PascalCase for naming everything but parameters
