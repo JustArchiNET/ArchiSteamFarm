@@ -22,7 +22,7 @@ csharp_style_expression_bodied_accessors = when_on_single_line:suggestion
 
 csharp_style_pattern_matching_over_as_with_null_check = false:suggestion
 
-csharp_preferred_modifier_order = public,private,protected,internal,new,abstract,virtual,sealed,override,static,readonly,extern,unsafe,volatile,async
+csharp_preferred_modifier_order = public,private,protected,internal,new,abstract,virtual,sealed,override,static,readonly,extern,unsafe,volatile,async:suggestion
 
 csharp_preserve_single_line_statements = false:suggestion
 csharp_preserve_single_line_blocks = true:suggestion
