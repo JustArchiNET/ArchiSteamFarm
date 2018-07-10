@@ -22,6 +22,7 @@
     <RuntimeIdentifiers>linux-arm;linux-x64;osx-x64;win-x64</RuntimeIdentifiers>
     <ServerGarbageCollection>false</ServerGarbageCollection>
     <TargetFrameworks>netcoreapp2.1;netcoreapp2.0;net472</TargetFrameworks>
+    <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
