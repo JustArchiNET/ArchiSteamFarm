@@ -1,7 +1,7 @@
 root = true
 
 [*]
-indent_style = tab:warning
+indent_style = tab:suggestion
 insert_final_newline = true
 trim_trailing_whitespace = true:suggestion
 
