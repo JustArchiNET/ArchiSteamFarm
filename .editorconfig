@@ -1,9 +1,9 @@
 root = true
 
 [*]
-indent_style = tab:suggestion
-insert_final_newline = true:suggestion
-trim_trailing_whitespace = true:suggestion
+indent_style = tab
+insert_final_newline = true
+trim_trailing_whitespace = true
 
 [*.cs]
 csharp_prefer_braces = true:suggestion
