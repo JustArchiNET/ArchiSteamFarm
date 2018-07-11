@@ -89,7 +89,7 @@ after_test:
             $compressionMethod = 'Deflate' # This depends on what ZipArchive supports on given platform
             $targetFramework = $env:NET_FRAMEWORK_VERSION
         } elseif ($variant -eq 'linux-arm') {
-            # Temporary workaround for https://github.com/dotnet/coreclr/issues/18486
+            # TODO: Temporary workaround for https://github.com/dotnet/coreclr/issues/18486
             Write-Warning -Message "$variant is still targetting $env:NET_CORE_FALLBACK_VERSION, ensure to correct this once https://github.com/dotnet/coreclr/issues/18486 is resolved" -WarningAction Continue
             $compressionMethod = 'Deflate64' # This depends on what ZipArchive supports on given platform
             $targetFramework = $env:NET_CORE_FALLBACK_VERSION
@@ -156,8 +156,7 @@ after_test:
             throw "Last command failed."
         }
 
-        # TODO: Change me to Push-AppveyorArtifact once https://github.com/appveyor/ci/issues/2183 is fixed
-        appveyor PushArtifact "ArchiSteamFarm\out\ASF-$variant.zip" -FileName "ASF-$variant.zip" -DeploymentName "ASF-$variant.zip"
+        Push-AppveyorArtifact "ArchiSteamFarm\out\ASF-$variant.zip" -FileName "ASF-$variant.zip" -DeploymentName "ASF-$variant.zip"
 
         if ($LastExitCode -ne 0) {
             throw "Last command failed."
