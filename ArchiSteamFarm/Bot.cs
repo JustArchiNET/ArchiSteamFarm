@@ -395,9 +395,7 @@ namespace ArchiSteamFarm {
 				await PICSSemaphore.WaitAsync().ConfigureAwait(false);
 
 				try {
-#pragma warning disable ConfigureAwaitChecker // CAC001
 					productInfoResultSet = await SteamApps.PICSGetProductInfo(appID, null, false);
-#pragma warning restore ConfigureAwaitChecker // CAC001
 				} catch (Exception e) {
 					ArchiLogger.LogGenericWarningException(e);
 				} finally {
@@ -570,9 +568,7 @@ namespace ArchiSteamFarm {
 				await PICSSemaphore.WaitAsync().ConfigureAwait(false);
 
 				try {
-#pragma warning disable ConfigureAwaitChecker // CAC001
 					productInfoResultSet = await SteamApps.PICSGetProductInfo(Enumerable.Empty<uint>(), packageIDs);
-#pragma warning restore ConfigureAwaitChecker // CAC001
 				} catch (Exception e) {
 					ArchiLogger.LogGenericWarningException(e);
 				} finally {
@@ -834,9 +830,7 @@ namespace ArchiSteamFarm {
 			SteamUser.WebAPIUserNonceCallback callback;
 
 			try {
-#pragma warning disable ConfigureAwaitChecker // CAC001
 				callback = await SteamUser.RequestWebAPIUserNonce();
-#pragma warning restore ConfigureAwaitChecker // CAC001
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
 				await Connect(true).ConfigureAwait(false);
@@ -1389,9 +1383,7 @@ namespace ArchiSteamFarm {
 
 			try {
 				if (DateTime.UtcNow.Subtract(ArchiHandler.LastPacketReceived).TotalSeconds > MinHeartBeatTTL) {
-#pragma warning disable ConfigureAwaitChecker // CAC001
 					await SteamFriends.RequestProfileInfo(SteamClient.SteamID);
-#pragma warning restore ConfigureAwaitChecker // CAC001
 				}
 
 				HeartBeatFailures = 0;
@@ -2654,9 +2646,7 @@ namespace ArchiSteamFarm {
 				SteamApps.FreeLicenseCallback callback;
 
 				try {
-#pragma warning disable ConfigureAwaitChecker // CAC001
 					callback = await SteamApps.RequestFreeLicense(gameID);
-#pragma warning restore ConfigureAwaitChecker // CAC001
 				} catch (Exception e) {
 					ArchiLogger.LogGenericWarningException(e);
 					response.Append(FormatBotResponse(string.Format(Strings.BotAddLicense, gameID, EResult.Timeout)));
