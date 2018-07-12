@@ -284,9 +284,7 @@ namespace ArchiSteamFarm {
 			Client.Send(request);
 
 			try {
-#pragma warning disable ConfigureAwaitChecker // CAC001
 				return await new AsyncJob<RedeemGuestPassResponseCallback>(Client, request.SourceJobID);
-#pragma warning restore ConfigureAwaitChecker // CAC001
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 				return null;
@@ -311,9 +309,7 @@ namespace ArchiSteamFarm {
 			Client.Send(request);
 
 			try {
-#pragma warning disable ConfigureAwaitChecker // CAC001
 				return await new AsyncJob<PurchaseResponseCallback>(Client, request.SourceJobID);
-#pragma warning restore ConfigureAwaitChecker // CAC001
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 				return null;

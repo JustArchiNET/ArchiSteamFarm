@@ -14,6 +14,7 @@ clone_depth: 10
 environment:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  NET_CORE_FALLBACK_VERSION: netcoreapp2.0
   NET_CORE_VERSION: netcoreapp2.1
   NET_FRAMEWORK_VERSION: net472
   VARIANTS: generic generic-netf linux-arm linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
@@ -87,6 +88,11 @@ after_test:
         if ($variant -like '*-netf') {
             $compressionMethod = 'Deflate' # This depends on what ZipArchive supports on given platform
             $targetFramework = $env:NET_FRAMEWORK_VERSION
+        } elseif ($variant -eq 'linux-arm') {
+            # TODO: Temporary workaround for https://github.com/dotnet/coreclr/issues/18486
+            Write-Warning -Message "$variant is still targetting $env:NET_CORE_FALLBACK_VERSION, ensure to correct this once https://github.com/dotnet/coreclr/issues/18486 is resolved" -WarningAction Continue
+            $compressionMethod = 'Deflate64' # This depends on what ZipArchive supports on given platform
+            $targetFramework = $env:NET_CORE_FALLBACK_VERSION
         } else {
             $compressionMethod = 'Deflate64' # This depends on what ZipArchive supports on given platform
             $targetFramework = $env:NET_CORE_VERSION
@@ -152,10 +158,6 @@ after_test:
 
         # TODO: Change me to Push-AppveyorArtifact once https://github.com/appveyor/ci/issues/2183 is fixed
         appveyor PushArtifact "ArchiSteamFarm\out\ASF-$variant.zip" -FileName "ASF-$variant.zip" -DeploymentName "ASF-$variant.zip"
-
-        if ($LastExitCode -ne 0) {
-            throw "Last command failed."
-        }
     }
 
 

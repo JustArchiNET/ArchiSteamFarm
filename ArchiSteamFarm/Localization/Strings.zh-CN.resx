@@ -445,7 +445,7 @@
     <value>不会启动该帐号，因为配置文件中禁用了它！</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>服务器返回 TwoFactorCodeMismatch 错误代码 {0} 次，您的两步验证凭据可能是无效的，程序将中止操作。</value>
+    <value>连续收到 TwoFactorCodeMismatch 错误码 {0} 次。要么是你的两步验证凭据不再有效，要么是你的时钟失去同步，正在中止！</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">

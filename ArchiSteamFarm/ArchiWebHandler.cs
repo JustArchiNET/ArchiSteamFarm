@@ -186,14 +186,12 @@ namespace ArchiSteamFarm {
 					try {
 						response = await WebLimitRequest(
 							WebAPI.DefaultBaseAddress.Host,
-#pragma warning disable ConfigureAwaitChecker // CAC001
 							// ReSharper disable once AccessToDisposedClosure
 							async () => await iEconService.DeclineTradeOffer(
 								method: WebRequestMethods.Http.Post,
 								secure: true,
 								tradeofferid: tradeID
 							)
-#pragma warning restore ConfigureAwaitChecker // CAC001
 						).ConfigureAwait(false);
 					} catch (TaskCanceledException e) {
 						Bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -235,7 +233,6 @@ namespace ArchiSteamFarm {
 					try {
 						response = await WebLimitRequest(
 							WebAPI.DefaultBaseAddress.Host,
-#pragma warning disable ConfigureAwaitChecker // CAC001
 							// ReSharper disable once AccessToDisposedClosure
 							async () => await iEconService.GetTradeOffers(
 								active_only: 1,
@@ -244,7 +241,6 @@ namespace ArchiSteamFarm {
 								secure: true,
 								time_historical_cutoff: uint.MaxValue
 							)
-#pragma warning restore ConfigureAwaitChecker // CAC001
 						).ConfigureAwait(false);
 					} catch (TaskCanceledException e) {
 						Bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -353,10 +349,8 @@ namespace ArchiSteamFarm {
 					try {
 						response = await WebLimitRequest(
 							WebAPI.DefaultBaseAddress.Host,
-#pragma warning disable ConfigureAwaitChecker // CAC001
 							// ReSharper disable once AccessToDisposedClosure
 							async () => await iSteamApps.GetAppList2(secure: true)
-#pragma warning restore ConfigureAwaitChecker // CAC001
 						).ConfigureAwait(false);
 					} catch (TaskCanceledException e) {
 						Bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -671,14 +665,12 @@ namespace ArchiSteamFarm {
 					try {
 						response = await WebLimitRequest(
 							WebAPI.DefaultBaseAddress.Host,
-#pragma warning disable ConfigureAwaitChecker // CAC001
 							// ReSharper disable once AccessToDisposedClosure
 							async () => await iPlayerService.GetOwnedGames(
 								include_appinfo: 1,
 								secure: true,
 								steamid: steamID
 							)
-#pragma warning restore ConfigureAwaitChecker // CAC001
 						).ConfigureAwait(false);
 					} catch (TaskCanceledException e) {
 						Bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -716,13 +708,11 @@ namespace ArchiSteamFarm {
 					try {
 						response = await WebLimitRequest(
 							WebAPI.DefaultBaseAddress.Host,
-#pragma warning disable ConfigureAwaitChecker // CAC001
 							// ReSharper disable once AccessToDisposedClosure
 							async () => await iTwoFactorService.QueryTime(
 								method: WebRequestMethods.Http.Post,
 								secure: true
 							)
-#pragma warning restore ConfigureAwaitChecker // CAC001
 						).ConfigureAwait(false);
 					} catch (TaskCanceledException e) {
 						Bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -817,14 +807,12 @@ namespace ArchiSteamFarm {
 					try {
 						response = await WebLimitRequest(
 							WebAPI.DefaultBaseAddress.Host,
-#pragma warning disable ConfigureAwaitChecker // CAC001
 							// ReSharper disable once AccessToDisposedClosure
 							async () => await iEconService.GetTradeHoldDurations(
 								secure: true,
 								steamid_target: steamID,
 								trade_offer_access_token: tradeToken ?? "" // TODO: Change me once https://github.com/SteamRE/SteamKit/pull/522 is merged
 							)
-#pragma warning restore ConfigureAwaitChecker // CAC001
 						).ConfigureAwait(false);
 					} catch (TaskCanceledException e) {
 						Bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -1021,7 +1009,6 @@ namespace ArchiSteamFarm {
 				try {
 					response = await WebLimitRequest(
 						WebAPI.DefaultBaseAddress.Host,
-#pragma warning disable ConfigureAwaitChecker // CAC001
 						// ReSharper disable once AccessToDisposedClosure
 						async () => await iSteamUserAuth.AuthenticateUser(
 							encrypted_loginkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedLoginKey, 0, cryptedLoginKey.Length)),
@@ -1030,7 +1017,6 @@ namespace ArchiSteamFarm {
 							sessionkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedSessionKey, 0, cryptedSessionKey.Length)),
 							steamid: steamID
 						)
-#pragma warning restore ConfigureAwaitChecker // CAC001
 					).ConfigureAwait(false);
 				} catch (TaskCanceledException e) {
 					Bot.ArchiLogger.LogGenericDebuggingException(e);

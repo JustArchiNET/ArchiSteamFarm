@@ -448,7 +448,7 @@ StackTrace:
     <value>Este bot não será iniciado, pois está desativado no arquivo de configurações!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Código de erro TwoFactorCodeMismatch recebido {0} vezes seguidas, isso quase sempre indica que as credenciais do ASF 2FA são inválidas, abortando!</value>
+    <value>Erro TwoFactorCodeMismatch recebido {0} vezes seguidas. Suas credencias 2FA não são válidas ou seu relógio está fora de sincronia. Abortando!</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">

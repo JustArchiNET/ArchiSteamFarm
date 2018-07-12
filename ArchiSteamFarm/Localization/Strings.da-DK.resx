@@ -446,10 +446,7 @@ StackTrace:
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>Starter ikke denne bot instans fordi den er slået fra i konfigurationsfilen!</value>
   </data>
-  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Modtaget TwoFactorCodeMismatch fejl kode {0} i streg, dette indikerer næsten altid ugyldig ASF 2FA legitimationsoplysninger, afbryder!</value>
-    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
-  </data>
+  
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Loggede af fra Steam: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>

@@ -446,15 +446,15 @@ StackTrace:
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>Bot-Instanz nicht gestartet, weil diese in der Konfigurations-Datei deaktiviert ist!</value>
   </data>
-  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Der Fehler "TwoFactorCodeMismatch" ist {0} Mal in Folge aufgetreten. Dies weißt fast immer auf ungültige ASF 2FA Anmeldedaten hin. Vorgang wird abgebrochen!</value>
-    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
-  </data>
+  
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Von Steam abgemeldet: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  
+  <data name="BotLoggedOn" xml:space="preserve">
+    <value>Erfolgreich angemeldet als {0}.</value>
+    <comment>{0} will be replaced by steam ID (number)</comment>
+  </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Anmeldung erfolgt...</value>
   </data>
