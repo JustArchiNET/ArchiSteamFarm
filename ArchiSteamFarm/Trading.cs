@@ -68,7 +68,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static bool IsTradeNeutralOrBetter(IReadOnlyCollection<Steam.Asset> inventory, IReadOnlyCollection<Steam.Asset> itemsToGive, IReadOnlyCollection<Steam.Asset> itemsToReceive) {
+		private static bool IsTradeNeutralOrBetter(IReadOnlyCollection<Steam.Asset> inventory, IReadOnlyCollection<Steam.Asset> itemsToGive, IReadOnlyCollection<Steam.Asset> itemsToReceive, bool CrossSetUnmarketable = false) {
 			if ((inventory == null) || (inventory.Count == 0) || (itemsToGive == null) || (itemsToGive.Count == 0) || (itemsToReceive == null) || (itemsToReceive.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(inventory) + " || " + nameof(itemsToGive) + " || " + nameof(itemsToReceive));
 				return false;
@@ -83,49 +83,94 @@ namespace ArchiSteamFarm {
 
 			// Calculate our value of items to give on per-game basis
 			Dictionary<(Steam.Asset.EType Type, uint AppID), List<uint>> itemAmountToGivePerGame = new Dictionary<(Steam.Asset.EType Type, uint AppID), List<uint>>();
-			Dictionary<ulong, uint> itemAmountsToGive = new Dictionary<ulong, uint>(itemAmounts);
+            Dictionary<Steam.Asset.EType , List<uint>> itemAmountToGiveUnmarketable = new Dictionary<Steam.Asset.EType, List<uint>>();
+            Dictionary<ulong, uint> itemAmountsToGive = new Dictionary<ulong, uint>(itemAmounts);
 			foreach (Steam.Asset item in itemsToGive) {
-				if (!itemAmountToGivePerGame.TryGetValue((item.Type, item.RealAppID), out List<uint> amountsToGive)) {
-					amountsToGive = new List<uint>();
-					itemAmountToGivePerGame[(item.Type, item.RealAppID)] = amountsToGive;
-				}
+                if (CrossSetUnmarketable && !item.Marketable) {
+                    if (!itemAmountToGiveUnmarketable.TryGetValue(item.Type, out List<uint> amountsToGive)) {
+					    amountsToGive = new List<uint>();
+                        itemAmountToGiveUnmarketable[item.Type] = amountsToGive;
+				    }
 
-				for (uint i = 0; i < item.Amount; i++) {
-					amountsToGive.Add(itemAmountsToGive.TryGetValue(item.ClassID, out uint amount) ? amount : 0);
-					itemAmountsToGive[item.ClassID] = --amount; // We're giving one, so we have one less
-				}
+                    for (uint i = 0; i < item.Amount; i++)
+                    {
+                        amountsToGive.Add(itemAmountsToGive.TryGetValue(item.ClassID, out uint amount) ? amount : 0);
+                        itemAmountsToGive[item.ClassID] = --amount; // We're giving one, so we have one less
+                    }
+                } else { 
+				    if (!itemAmountToGivePerGame.TryGetValue((item.Type, item.RealAppID), out List<uint> amountsToGive)) {
+					    amountsToGive = new List<uint>();
+					    itemAmountToGivePerGame[(item.Type, item.RealAppID)] = amountsToGive;
+				    }
+
+				    for (uint i = 0; i < item.Amount; i++) {
+					    amountsToGive.Add(itemAmountsToGive.TryGetValue(item.ClassID, out uint amount) ? amount : 0);
+					    itemAmountsToGive[item.ClassID] = --amount; // We're giving one, so we have one less
+				    }
+                }
 			}
 
 			// Sort all the lists of amounts to give on per-game basis ascending
 			foreach (List<uint> amountsToGive in itemAmountToGivePerGame.Values) {
 				amountsToGive.Sort();
 			}
+            if (CrossSetUnmarketable) { 
+                foreach (List<uint> amountsToGive in itemAmountToGiveUnmarketable.Values) {
+				    amountsToGive.Sort();
+			    }
+            }
 
 			// Calculate our value of items to receive on per-game basis
 			Dictionary<(Steam.Asset.EType Type, uint AppID), List<uint>> itemAmountToReceivePerGame = new Dictionary<(Steam.Asset.EType Type, uint AppID), List<uint>>();
-			Dictionary<ulong, uint> itemAmountsToReceive = new Dictionary<ulong, uint>(itemAmounts);
+            Dictionary<Steam.Asset.EType, List<uint>> itemAmountToReceiveUnmarketable = new Dictionary<Steam.Asset.EType, List<uint>>();
+            Dictionary<ulong, uint> itemAmountsToReceive = new Dictionary<ulong, uint>(itemAmounts);
 			foreach (Steam.Asset item in itemsToReceive) {
-				if (!itemAmountToReceivePerGame.TryGetValue((item.Type, item.RealAppID), out List<uint> amountsToReceive)) {
-					amountsToReceive = new List<uint>();
-					itemAmountToReceivePerGame[(item.Type, item.RealAppID)] = amountsToReceive;
-				}
+                if (CrossSetUnmarketable && !item.Marketable) {
+                    if (!itemAmountToReceiveUnmarketable.TryGetValue(item.Type, out List<uint> amountsToReceive))
+                    {
+                        amountsToReceive = new List<uint>();
+                        itemAmountToReceiveUnmarketable[item.Type] = amountsToReceive;
+                    }
 
-				for (uint i = 0; i < item.Amount; i++) {
-					amountsToReceive.Add(itemAmountsToReceive.TryGetValue(item.ClassID, out uint amount) ? amount : 0);
-					itemAmountsToReceive[item.ClassID] = ++amount; // We're getting one, so we have one more
-				}
+                    for (uint i = 0; i < item.Amount; i++)
+                    {
+                        amountsToReceive.Add(itemAmountsToReceive.TryGetValue(item.ClassID, out uint amount) ? amount : 0);
+                        itemAmountsToReceive[item.ClassID] = ++amount; // We're getting one, so we have one more
+                    }
+                } else {
+				    if (!itemAmountToReceivePerGame.TryGetValue((item.Type, item.RealAppID), out List<uint> amountsToReceive)) {
+					    amountsToReceive = new List<uint>();
+					    itemAmountToReceivePerGame[(item.Type, item.RealAppID)] = amountsToReceive;
+				    }
+
+				    for (uint i = 0; i < item.Amount; i++) {
+					    amountsToReceive.Add(itemAmountsToReceive.TryGetValue(item.ClassID, out uint amount) ? amount : 0);
+					    itemAmountsToReceive[item.ClassID] = ++amount; // We're getting one, so we have one more
+				    }
+                 }
 			}
 
 			// Sort all the lists of amounts to receive on per-game basis ascending
 			foreach (List<uint> amountsToReceive in itemAmountToReceivePerGame.Values) {
 				amountsToReceive.Sort();
 			}
+            if (CrossSetUnmarketable) { 
+                foreach (List<uint> amountsToReceive in itemAmountToReceiveUnmarketable.Values) {
+				    amountsToReceive.Sort();
+			    }
+            }
 
-			// Calculate final neutrality result
-			// This is quite complex operation of taking minimum difference from all differences on per-game basis
-			// When calculating per-game difference, we sum only amounts at proper indexes, because user might be overpaying
-			int difference = itemAmountToGivePerGame.Min(kv => kv.Value.Select((t, i) => (int) (t - itemAmountToReceivePerGame[kv.Key][i])).Sum());
-			return difference > 0;
+            // Calculate final neutrality result
+            // This is quite complex operation of taking minimum difference from all differences on per-game basis
+            // When calculating per-game difference, we sum only amounts at proper indexes, because user might be overpaying            
+            int difference = int.MaxValue;
+            if (itemAmountToGivePerGame.Count>0) { 
+			    difference = itemAmountToGivePerGame.Min(kv => kv.Value.Select((t, i) => (int) (t - itemAmountToReceivePerGame[kv.Key][i])).Sum());
+            }
+            if (CrossSetUnmarketable && itemAmountToGiveUnmarketable.Count>0) { 
+                difference = Math.Min(difference, itemAmountToGiveUnmarketable.Min(kv => kv.Value.Select((t, i) => (int)(t - itemAmountToReceiveUnmarketable[kv.Key][i])).Sum()));
+            }
+            return difference > 0;
 		}
 
 		private async Task ParseActiveTrades() {
@@ -272,7 +317,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Decline trade if we're requested to handle any not-accepted item type or if it's not fair games/types exchange
-			if (!tradeOffer.IsValidSteamItemsRequest(Bot.BotConfig.MatchableTypes) || !tradeOffer.IsFairTypesExchange()) {
+			if (!tradeOffer.IsValidSteamItemsRequest(Bot.BotConfig.MatchableTypes) || !tradeOffer.IsFairTypesExchange(Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.CrossSetUnmarketable))) {
 				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedPermanently);
 			}
 
@@ -306,6 +351,13 @@ namespace ArchiSteamFarm {
 				appIDs.Add(item.RealAppID);
 				types.Add(item.Type);
 			}
+            //if we allow cross-set trading of unmarketable items, we need also inventory with appids of items to receive
+            if (Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.CrossSetUnmarketable)) { 
+			    foreach (Steam.Asset item in tradeOffer.ItemsToReceive) {
+				    appIDs.Add(item.RealAppID);
+				    types.Add(item.Type);
+			    }
+            }
 
 			// Now check if it's worth for us to do the trade
 			HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetInventory(Bot.CachedSteamID, wantedTypes: types, wantedRealAppIDs: appIDs).ConfigureAwait(false);
@@ -315,7 +367,7 @@ namespace ArchiSteamFarm {
 				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedTemporarily);
 			}
 
-			bool accept = IsTradeNeutralOrBetter(inventory, tradeOffer.ItemsToGive, tradeOffer.ItemsToReceive);
+			bool accept = IsTradeNeutralOrBetter(inventory, tradeOffer.ItemsToGive, tradeOffer.ItemsToReceive, Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.CrossSetUnmarketable));
 
 			// Even if trade is not neutral+ for us right now, it might be in the future, unless we're bot account where we assume that inventory doesn't change
 			return new ParseTradeResult(tradeOffer.TradeOfferID, accept ? ParseTradeResult.EResult.AcceptedWithItemLose : (Bot.BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidTrades) ? ParseTradeResult.EResult.RejectedPermanently : ParseTradeResult.EResult.RejectedTemporarily));

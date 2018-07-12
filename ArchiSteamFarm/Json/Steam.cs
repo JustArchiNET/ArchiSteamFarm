@@ -44,6 +44,7 @@ namespace ArchiSteamFarm.Json {
 			internal ulong ClassID { get; private set; }
 			internal ulong ContextID { get; private set; }
 			internal uint RealAppID { get; set; }
+            internal bool Marketable { get; set; }
 			internal EType Type { get; set; }
 
 			[JsonProperty(PropertyName = "amount", Required = Required.Always)]
@@ -128,7 +129,7 @@ namespace ArchiSteamFarm.Json {
 			}
 
 			// Constructed from trades being received
-			internal Asset(uint appID, ulong contextID, ulong classID, uint amount, uint realAppID, EType type = EType.Unknown) {
+			internal Asset(uint appID, ulong contextID, ulong classID, uint amount, uint realAppID, EType type = EType.Unknown, bool marketable = false) {
 				if ((appID == 0) || (contextID == 0) || (classID == 0) || (amount == 0) || (realAppID == 0)) {
 					throw new ArgumentNullException(nameof(classID) + " || " + nameof(contextID) + " || " + nameof(classID) + " || " + nameof(amount) + " || " + nameof(realAppID));
 				}
@@ -138,6 +139,7 @@ namespace ArchiSteamFarm.Json {
 				ClassID = classID;
 				Amount = amount;
 				RealAppID = realAppID;
+                Marketable = marketable;
 				Type = type;
 			}
 
@@ -405,10 +407,11 @@ namespace ArchiSteamFarm.Json {
 				[JsonProperty(PropertyName = "type", Required = Required.Always)]
 				internal readonly string Type;
 
-				internal ulong ClassID { get; private set; }
+                internal ulong ClassID { get; private set; }
 				internal bool Tradable { get; private set; }
+                internal bool Marketable { get; private set; }
 
-				[JsonProperty(PropertyName = "classid", Required = Required.Always)]
+                [JsonProperty(PropertyName = "classid", Required = Required.Always)]
 				private string ClassIDText {
 					set {
 						if (string.IsNullOrEmpty(value)) {
@@ -430,8 +433,14 @@ namespace ArchiSteamFarm.Json {
 					set => Tradable = value > 0;
 				}
 
-				// Deserialized from JSON
-				private Description() { }
+                [JsonProperty(PropertyName = "marketable", Required = Required.Always)]
+                private byte MarketableNumber
+                {
+                    set => Marketable = value > 0;
+                }
+
+                // Deserialized from JSON
+                private Description() { }
 			}
 		}
 
@@ -516,26 +525,46 @@ namespace ArchiSteamFarm.Json {
 				State = state;
 			}
 
-			internal bool IsFairTypesExchange() {
+			internal bool IsFairTypesExchange(bool CrossSetUnmarketable = false) {
 				Dictionary<uint, Dictionary<Asset.EType, uint>> itemsToGivePerGame = new Dictionary<uint, Dictionary<Asset.EType, uint>>();
-				foreach (Asset item in ItemsToGive) {
-					if (!itemsToGivePerGame.TryGetValue(item.RealAppID, out Dictionary<Asset.EType, uint> itemsPerType)) {
-						itemsPerType = new Dictionary<Asset.EType, uint> { [item.Type] = item.Amount };
-						itemsToGivePerGame[item.RealAppID] = itemsPerType;
-					} else {
-						itemsPerType[item.Type] = itemsPerType.TryGetValue(item.Type, out uint amount) ? amount + item.Amount : item.Amount;
-					}
+                Dictionary<Asset.EType, uint> itemsToGiveUnmarketable = new Dictionary<Asset.EType, uint>();
+
+                foreach (Asset item in ItemsToGive) {
+                    if (CrossSetUnmarketable && !item.Marketable) {
+                        if (!itemsToGiveUnmarketable.TryGetValue(item.Type, out uint itemsPerTypeUnmarketable)) {
+                            itemsToGiveUnmarketable[item.Type] = item.Amount;
+                        } else {
+                            itemsToGiveUnmarketable[item.Type] = itemsPerTypeUnmarketable + item.Amount;
+                        }
+                    } else {
+                        if (!itemsToGivePerGame.TryGetValue(item.RealAppID, out Dictionary<Asset.EType, uint> itemsPerType)) {
+                            itemsPerType = new Dictionary<Asset.EType, uint> { [item.Type] = item.Amount };
+                            itemsToGivePerGame[item.RealAppID] = itemsPerType;
+                        } else {
+                            itemsPerType[item.Type] = itemsPerType.TryGetValue(item.Type, out uint amount) ? amount + item.Amount : item.Amount;
+                        }
+                    }
 				}
 
 				Dictionary<uint, Dictionary<Asset.EType, uint>> itemsToReceivePerGame = new Dictionary<uint, Dictionary<Asset.EType, uint>>();
-				foreach (Asset item in ItemsToReceive) {
-					if (!itemsToReceivePerGame.TryGetValue(item.RealAppID, out Dictionary<Asset.EType, uint> itemsPerType)) {
-						itemsPerType = new Dictionary<Asset.EType, uint> { { item.Type, item.Amount } };
+                Dictionary<Asset.EType, uint> itemsToReceiveUnmarketable = new Dictionary<Asset.EType, uint>();
 
-						itemsToReceivePerGame[item.RealAppID] = itemsPerType;
-					} else {
-						itemsPerType[item.Type] = itemsPerType.TryGetValue(item.Type, out uint amount) ? amount + item.Amount : item.Amount;
-					}
+                foreach (Asset item in ItemsToReceive) {
+                    if (CrossSetUnmarketable && !item.Marketable) {
+                        if (!itemsToReceiveUnmarketable.TryGetValue(item.Type, out uint itemsPerTypeUnmarketable)) {
+                            itemsToReceiveUnmarketable[item.Type] = item.Amount;
+                        } else {
+                            itemsToReceiveUnmarketable[item.Type] = itemsPerTypeUnmarketable + item.Amount;
+                        }    
+                    } else { 
+					    if (!itemsToReceivePerGame.TryGetValue(item.RealAppID, out Dictionary<Asset.EType, uint> itemsPerType)) {
+						    itemsPerType = new Dictionary<Asset.EType, uint> { { item.Type, item.Amount } };
+
+						    itemsToReceivePerGame[item.RealAppID] = itemsPerType;
+					    } else {
+						    itemsPerType[item.Type] = itemsPerType.TryGetValue(item.Type, out uint amount) ? amount + item.Amount : item.Amount;
+					    }
+                    }
 				}
 
 				// Ensure that amount of items to give is at least amount of items to receive (per game and per type)
@@ -554,6 +583,17 @@ namespace ArchiSteamFarm.Json {
 						}
 					}
 				}
+                if (CrossSetUnmarketable) { 
+                    foreach (KeyValuePair<Asset.EType, uint> itemsPerTypeUnmarketable in itemsToGiveUnmarketable) {
+						if (!itemsToReceiveUnmarketable.TryGetValue(itemsPerTypeUnmarketable.Key, out uint otherAmountUnmarketable)) {
+							return false;
+						}
+
+						if (itemsPerTypeUnmarketable.Value > otherAmountUnmarketable) {
+							return false;
+						}
+					}
+                }
 
 				return true;
 			}

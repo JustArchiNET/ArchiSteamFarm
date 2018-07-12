@@ -255,7 +255,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			Dictionary<ulong, (uint AppID, Steam.Asset.EType Type)> descriptions = new Dictionary<ulong, (uint AppID, Steam.Asset.EType Type)>();
+			Dictionary<ulong, (uint AppID, Steam.Asset.EType Type, bool Marketable)> descriptions = new Dictionary<ulong, (uint AppID, Steam.Asset.EType Type, bool Marketable)>();
 			foreach (KeyValue description in response["descriptions"].Children) {
 				ulong classID = description["classid"].AsUnsignedLong();
 				if (classID == 0) {
@@ -285,7 +285,9 @@ namespace ArchiSteamFarm {
 					type = GetItemType(descriptionType);
 				}
 
-				descriptions[classID] = (appID, type);
+                bool Marketable = description["marketable"].AsBoolean();
+
+                descriptions[classID] = (appID, type, Marketable);
 			}
 
 			HashSet<Steam.TradeOffer> result = new HashSet<Steam.TradeOffer>();
@@ -543,7 +545,7 @@ namespace ArchiSteamFarm {
 						return null;
 					}
 
-					Dictionary<ulong, (bool Tradable, Steam.Asset.EType Type, uint RealAppID)> descriptionMap = new Dictionary<ulong, (bool Tradable, Steam.Asset.EType Type, uint RealAppID)>();
+					Dictionary<ulong, (bool Tradable, bool Marketable, Steam.Asset.EType Type, uint RealAppID)> descriptionMap = new Dictionary<ulong, (bool Tradable, bool Marketable, Steam.Asset.EType Type, uint RealAppID)>();
 					foreach (Steam.InventoryResponse.Description description in response.Descriptions.Where(description => description != null)) {
 						if (description.ClassID == 0) {
 							Bot.ArchiLogger.LogNullError(nameof(description.ClassID));
@@ -570,17 +572,18 @@ namespace ArchiSteamFarm {
 							realAppID = description.AppID;
 						}
 
-						descriptionMap[description.ClassID] = (description.Tradable, type, realAppID);
+						descriptionMap[description.ClassID] = (description.Tradable, description.Marketable, type, realAppID);
 					}
 
 					foreach (Steam.Asset asset in response.Assets.Where(asset => asset != null)) {
-						if (descriptionMap.TryGetValue(asset.ClassID, out (bool Tradable, Steam.Asset.EType Type, uint RealAppID) description)) {
+						if (descriptionMap.TryGetValue(asset.ClassID, out (bool Tradable, bool Marketable, Steam.Asset.EType Type, uint RealAppID) description)) {
 							if ((tradable.HasValue && (description.Tradable != tradable.Value)) || (wantedTypes?.Contains(description.Type) == false) || (wantedRealAppIDs?.Contains(description.RealAppID) == false)) {
 								continue;
 							}
 
 							asset.RealAppID = description.RealAppID;
-							asset.Type = description.Type;
+                            asset.Marketable = description.Marketable;
+                            asset.Type = description.Type;
 						}
 
 						result.Add(asset);
@@ -1471,7 +1474,7 @@ namespace ArchiSteamFarm {
 			return uri.AbsolutePath.StartsWith("/login", StringComparison.Ordinal) || uri.Host.Equals("lostauth");
 		}
 
-		private static bool ParseItems(Dictionary<ulong, (uint AppID, Steam.Asset.EType Type)> descriptions, IReadOnlyCollection<KeyValue> input, ICollection<Steam.Asset> output) {
+		private static bool ParseItems(Dictionary<ulong, (uint AppID, Steam.Asset.EType Type, bool Marketable)> descriptions, IReadOnlyCollection<KeyValue> input, ICollection<Steam.Asset> output) {
 			if ((descriptions == null) || (input == null) || (input.Count == 0) || (output == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(descriptions) + " || " + nameof(input) + " || " + nameof(output));
 				return false;
@@ -1504,13 +1507,15 @@ namespace ArchiSteamFarm {
 
 				uint realAppID = appID;
 				Steam.Asset.EType type = Steam.Asset.EType.Unknown;
+                bool Marketable = false;
 
-				if (descriptions.TryGetValue(classID, out (uint AppID, Steam.Asset.EType Type) description)) {
+                if (descriptions.TryGetValue(classID, out (uint AppID, Steam.Asset.EType Type, bool Marketable) description)) {
 					realAppID = description.AppID;
 					type = description.Type;
-				}
+                    Marketable = description.Marketable;
+                }
 
-				Steam.Asset steamAsset = new Steam.Asset(appID, contextID, classID, amount, realAppID, type);
+				Steam.Asset steamAsset = new Steam.Asset(appID, contextID, classID, amount, realAppID, type, Marketable);
 				output.Add(steamAsset);
 			}
 
