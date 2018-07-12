@@ -16,7 +16,7 @@ branches:
 group: travis_latest
 
 # ASF is based on .NET Core platform
-dotnet: 2.1.301
+dotnet: 2.1.302
 mono: none
 
 env:

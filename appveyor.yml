@@ -14,8 +14,8 @@ clone_depth: 10
 environment:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-  NET_CORE_VERSION: netcoreapp2.1
   NET_CORE_FALLBACK_VERSION: netcoreapp2.0
+  NET_CORE_VERSION: netcoreapp2.1
   NET_FRAMEWORK_VERSION: net472
   VARIANTS: generic generic-netf linux-arm linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
 matrix:
