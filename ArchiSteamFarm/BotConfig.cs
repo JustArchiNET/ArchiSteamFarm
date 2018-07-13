@@ -343,7 +343,8 @@ namespace ArchiSteamFarm {
 			SteamTradeMatcher = 2,
 			MatchEverything = 4,
 			DontAcceptBotTrades = 8,
-			All = AcceptDonations | SteamTradeMatcher | MatchEverything | DontAcceptBotTrades
-		}
+            CrossSetUnmarketable = 16,
+			All = AcceptDonations | SteamTradeMatcher | MatchEverything | DontAcceptBotTrades | CrossSetUnmarketable
+        }
 	}
 }
