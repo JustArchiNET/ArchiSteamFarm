@@ -22,6 +22,7 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace ArchiSteamFarm {
@@ -33,7 +34,10 @@ namespace ArchiSteamFarm {
 
 		public bool Add(T item) => BackingCollection.TryAdd(item, true);
 		public void Clear() => BackingCollection.Clear();
+
+		[SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
 		public bool Contains(T item) => BackingCollection.ContainsKey(item);
+
 		public void CopyTo(T[] array, int arrayIndex) => BackingCollection.Keys.CopyTo(array, arrayIndex);
 
 		public void ExceptWith(IEnumerable<T> other) {
@@ -68,6 +72,8 @@ namespace ArchiSteamFarm {
 
 		public bool IsSupersetOf(IEnumerable<T> other) => other.AsParallel().All(Contains);
 		public bool Overlaps(IEnumerable<T> other) => other.AsParallel().Any(Contains);
+
+		[SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
 		public bool Remove(T item) => BackingCollection.TryRemove(item, out _);
 
 		public bool SetEquals(IEnumerable<T> other) {
@@ -95,7 +101,9 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		[SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
 		void ICollection<T>.Add(T item) => Add(item);
+
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 		// We use Count() and not Any() because we must ensure full loop pass

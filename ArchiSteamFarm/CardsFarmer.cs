@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -51,11 +52,12 @@ namespace ArchiSteamFarm {
 		internal readonly ConcurrentSortedHashSet<Game> GamesToFarm = new ConcurrentSortedHashSet<Game>();
 
 		[JsonProperty]
-		internal TimeSpan TimeRemaining => new TimeSpan(
-			Bot.BotConfig.HoursUntilCardDrops > 0 ? (ushort) Math.Ceiling(GamesToFarm.Count / (float) ArchiHandler.MaxGamesPlayedConcurrently) * Bot.BotConfig.HoursUntilCardDrops : 0,
-			30 * GamesToFarm.Sum(game => game.CardsRemaining),
-			0
-		);
+		internal TimeSpan TimeRemaining =>
+			new TimeSpan(
+				Bot.BotConfig.HoursUntilCardDrops > 0 ? (ushort) Math.Ceiling(GamesToFarm.Count / (float) ArchiHandler.MaxGamesPlayedConcurrently) * Bot.BotConfig.HoursUntilCardDrops : 0,
+				30 * GamesToFarm.Sum(game => game.CardsRemaining),
+				0
+			);
 
 		private readonly Bot Bot;
 		private readonly SemaphoreSlim EventSemaphore = new SemaphoreSlim(1, 1);
@@ -592,7 +594,7 @@ namespace ArchiSteamFarm {
 					while (GamesToFarm.Count > 0) {
 						// Initially we're going to farm games that passed our HoursUntilCardDrops
 						// This block is almost identical to Simple algorithm, we just copy appropriate items from GamesToFarm into innerGamesToFarm
-						HashSet<Game> innerGamesToFarm = new HashSet<Game>(GamesToFarm.Where(game => game.HoursPlayed >= Bot.BotConfig.HoursUntilCardDrops));
+						HashSet<Game> innerGamesToFarm = GamesToFarm.Where(game => game.HoursPlayed >= Bot.BotConfig.HoursUntilCardDrops).ToHashSet();
 
 						while (innerGamesToFarm.Count > 0) {
 							Game game = innerGamesToFarm.First();
@@ -892,7 +894,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ShouldResumeFarming = true;
-			SortGamesToFarm();
+			await SortGamesToFarm().ConfigureAwait(false);
 			return true;
 		}
 
@@ -926,85 +928,106 @@ namespace ArchiSteamFarm {
 			return game.CardsRemaining > 0;
 		}
 
-		private void SortGamesToFarm() {
+		private async Task SortGamesToFarm() {
 			// Put priority idling appIDs on top
 			IOrderedEnumerable<Game> gamesToFarm = GamesToFarm.OrderByDescending(game => Bot.IsPriorityIdling(game.AppID));
 
-			switch (Bot.BotConfig.FarmingOrder) {
-				case BotConfig.EFarmingOrder.Unordered:
-					break;
-				case BotConfig.EFarmingOrder.AppIDsAscending:
-					gamesToFarm = gamesToFarm.ThenBy(game => game.AppID);
-					break;
-				case BotConfig.EFarmingOrder.AppIDsDescending:
-					gamesToFarm = gamesToFarm.ThenByDescending(game => game.AppID);
-					break;
-				case BotConfig.EFarmingOrder.BadgeLevelsAscending:
-					gamesToFarm = gamesToFarm.ThenBy(game => game.BadgeLevel);
-					break;
-				case BotConfig.EFarmingOrder.BadgeLevelsDescending:
-					gamesToFarm = gamesToFarm.ThenByDescending(game => game.BadgeLevel);
-					break;
-				case BotConfig.EFarmingOrder.CardDropsAscending:
-					gamesToFarm = gamesToFarm.ThenBy(game => game.CardsRemaining);
-					break;
-				case BotConfig.EFarmingOrder.CardDropsDescending:
-					gamesToFarm = gamesToFarm.ThenByDescending(game => game.CardsRemaining);
-					break;
-				case BotConfig.EFarmingOrder.HoursAscending:
-					gamesToFarm = gamesToFarm.ThenBy(game => game.HoursPlayed);
-					break;
-				case BotConfig.EFarmingOrder.HoursDescending:
-					gamesToFarm = gamesToFarm.ThenByDescending(game => game.HoursPlayed);
-					break;
-				case BotConfig.EFarmingOrder.NamesAscending:
-					gamesToFarm = gamesToFarm.ThenBy(game => game.GameName);
-					break;
-				case BotConfig.EFarmingOrder.NamesDescending:
-					gamesToFarm = gamesToFarm.ThenByDescending(game => game.GameName);
-					break;
-				case BotConfig.EFarmingOrder.Random:
-					gamesToFarm = gamesToFarm.ThenBy(game => Utilities.RandomNext());
-					break;
-				case BotConfig.EFarmingOrder.RedeemDateTimesAscending:
-				case BotConfig.EFarmingOrder.RedeemDateTimesDescending:
-					Dictionary<uint, DateTime> redeemDates = new Dictionary<uint, DateTime>(GamesToFarm.Count);
+			foreach (BotConfig.EFarmingOrder farmingOrder in Bot.BotConfig.FarmingOrders) {
+				switch (farmingOrder) {
+					case BotConfig.EFarmingOrder.Unordered:
+						break;
+					case BotConfig.EFarmingOrder.AppIDsAscending:
+						gamesToFarm = gamesToFarm.ThenBy(game => game.AppID);
+						break;
+					case BotConfig.EFarmingOrder.AppIDsDescending:
+						gamesToFarm = gamesToFarm.ThenByDescending(game => game.AppID);
+						break;
+					case BotConfig.EFarmingOrder.BadgeLevelsAscending:
+						gamesToFarm = gamesToFarm.ThenBy(game => game.BadgeLevel);
+						break;
+					case BotConfig.EFarmingOrder.BadgeLevelsDescending:
+						gamesToFarm = gamesToFarm.ThenByDescending(game => game.BadgeLevel);
+						break;
+					case BotConfig.EFarmingOrder.CardDropsAscending:
+						gamesToFarm = gamesToFarm.ThenBy(game => game.CardsRemaining);
+						break;
+					case BotConfig.EFarmingOrder.CardDropsDescending:
+						gamesToFarm = gamesToFarm.ThenByDescending(game => game.CardsRemaining);
+						break;
+					case BotConfig.EFarmingOrder.MarketableAscending:
+					case BotConfig.EFarmingOrder.MarketableDescending:
+						HashSet<uint> marketableAppIDs = await Bot.GetMarketableAppIDs().ConfigureAwait(false);
 
-					foreach (Game game in GamesToFarm) {
-						DateTime redeemDate = DateTime.MinValue;
-						HashSet<uint> packageIDs = Program.GlobalDatabase.GetPackageIDs(game.AppID);
-
-						if (packageIDs != null) {
-							foreach (uint packageID in packageIDs) {
-								if (!Bot.OwnedPackageIDs.TryGetValue(packageID, out (EPaymentMethod PaymentMethod, DateTime TimeCreated) packageData)) {
-									continue;
-								}
-
-								if (packageData.TimeCreated > redeemDate) {
-									redeemDate = packageData.TimeCreated;
-								}
+						if ((marketableAppIDs != null) && (marketableAppIDs.Count > 0)) {
+							switch (farmingOrder) {
+								case BotConfig.EFarmingOrder.MarketableAscending:
+									gamesToFarm = gamesToFarm.ThenBy(game => marketableAppIDs.Contains(game.AppID));
+									break;
+								case BotConfig.EFarmingOrder.MarketableDescending:
+									gamesToFarm = gamesToFarm.ThenByDescending(game => marketableAppIDs.Contains(game.AppID));
+									break;
+								default:
+									Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(farmingOrder), farmingOrder));
+									return;
 							}
 						}
 
-						redeemDates[game.AppID] = redeemDate;
-					}
+						break;
+					case BotConfig.EFarmingOrder.HoursAscending:
+						gamesToFarm = gamesToFarm.ThenBy(game => game.HoursPlayed);
+						break;
+					case BotConfig.EFarmingOrder.HoursDescending:
+						gamesToFarm = gamesToFarm.ThenByDescending(game => game.HoursPlayed);
+						break;
+					case BotConfig.EFarmingOrder.NamesAscending:
+						gamesToFarm = gamesToFarm.ThenBy(game => game.GameName);
+						break;
+					case BotConfig.EFarmingOrder.NamesDescending:
+						gamesToFarm = gamesToFarm.ThenByDescending(game => game.GameName);
+						break;
+					case BotConfig.EFarmingOrder.Random:
+						gamesToFarm = gamesToFarm.ThenBy(game => Utilities.RandomNext());
+						break;
+					case BotConfig.EFarmingOrder.RedeemDateTimesAscending:
+					case BotConfig.EFarmingOrder.RedeemDateTimesDescending:
+						Dictionary<uint, DateTime> redeemDates = new Dictionary<uint, DateTime>(GamesToFarm.Count);
 
-					switch (Bot.BotConfig.FarmingOrder) {
-						case BotConfig.EFarmingOrder.RedeemDateTimesAscending:
-							gamesToFarm = gamesToFarm.ThenBy(game => redeemDates[game.AppID]);
-							break;
-						case BotConfig.EFarmingOrder.RedeemDateTimesDescending:
-							gamesToFarm = gamesToFarm.ThenByDescending(game => redeemDates[game.AppID]);
-							break;
-						default:
-							Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(Bot.BotConfig.FarmingOrder)));
-							return;
-					}
+						foreach (Game game in GamesToFarm) {
+							DateTime redeemDate = DateTime.MinValue;
+							HashSet<uint> packageIDs = Program.GlobalDatabase.GetPackageIDs(game.AppID);
 
-					break;
-				default:
-					Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(Bot.BotConfig.FarmingOrder)));
-					return;
+							if (packageIDs != null) {
+								foreach (uint packageID in packageIDs) {
+									if (!Bot.OwnedPackageIDs.TryGetValue(packageID, out (EPaymentMethod PaymentMethod, DateTime TimeCreated) packageData)) {
+										continue;
+									}
+
+									if (packageData.TimeCreated > redeemDate) {
+										redeemDate = packageData.TimeCreated;
+									}
+								}
+							}
+
+							redeemDates[game.AppID] = redeemDate;
+						}
+
+						switch (farmingOrder) {
+							case BotConfig.EFarmingOrder.RedeemDateTimesAscending:
+								gamesToFarm = gamesToFarm.ThenBy(game => redeemDates[game.AppID]);
+								break;
+							case BotConfig.EFarmingOrder.RedeemDateTimesDescending:
+								gamesToFarm = gamesToFarm.ThenByDescending(game => redeemDates[game.AppID]);
+								break;
+							default:
+								Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(farmingOrder), farmingOrder));
+								return;
+						}
+
+						break;
+					default:
+						Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(farmingOrder), farmingOrder));
+						return;
+				}
 			}
 
 			// We must call ToList() here as we can't replace items while enumerating
@@ -1042,31 +1065,10 @@ namespace ArchiSteamFarm {
 				PlayableAppID = appID;
 			}
 
-			public bool Equals(Game other) {
-				if (other == null) {
-					return false;
-				}
+			[SuppressMessage("ReSharper", "PossibleUnintendedReferenceComparison")]
+			public bool Equals(Game other) => (other != null) && ((other == this) || (AppID == other.AppID));
 
-				// ReSharper disable once PossibleUnintendedReferenceComparison - we indeed want to compare those two by reference
-				if (other == this) {
-					return true;
-				}
-
-				return AppID == other.AppID;
-			}
-
-			public override bool Equals(object obj) {
-				if (obj == null) {
-					return false;
-				}
-
-				if (obj == this) {
-					return true;
-				}
-
-				return obj is Game game && Equals(game);
-			}
-
+			public override bool Equals(object obj) => (obj != null) && ((obj == this) || (obj is Game game && Equals(game)));
 			public override int GetHashCode() => (int) (AppID - 1 - int.MaxValue);
 		}
 	}

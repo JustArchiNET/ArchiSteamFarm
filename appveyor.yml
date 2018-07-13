@@ -14,7 +14,10 @@ clone_depth: 10
 environment:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-  VARIANTS: generic win-x64 linux-x64 linux-arm osx-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
+  NET_CORE_FALLBACK_VERSION: netcoreapp2.0
+  NET_CORE_VERSION: netcoreapp2.1
+  NET_FRAMEWORK_VERSION: net472
+  VARIANTS: generic generic-netf linux-arm linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
 matrix:
   allow_failures:
     - image: Visual Studio 2017 Preview
@@ -30,8 +33,9 @@ before_build:
 
     dotnet --info
 
+
     if ($LastExitCode -ne 0) {
-        throw "Command failed."
+        throw "Last command failed."
     }
 build_script:
 - pwsh: >-
@@ -42,10 +46,11 @@ build_script:
     $ProgressPreference = 'SilentlyContinue'
 
 
-    dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -o 'out\source' /nologo "/p:ASFVariant=generic"
+    dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -o 'out\source' /nologo
+
 
     if ($LastExitCode -ne 0) {
-        throw "Command failed."
+        throw "Last command failed."
     }
 test_script:
 - pwsh: >-
@@ -56,10 +61,11 @@ test_script:
     $ProgressPreference = 'SilentlyContinue'
 
 
-    dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" -o 'out\source' /nologo
+    dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -o 'out\source' /nologo
+
 
     if ($LastExitCode -ne 0) {
-        throw "Command failed."
+        throw "Last command failed."
     }
 after_test:
 - pwsh: >-
@@ -71,7 +77,7 @@ after_test:
 
 
     $PublishBlock = {
-        param($Variant)
+        param($variant)
 
         Set-StrictMode -Version Latest
         $ErrorActionPreference = 'Stop'
@@ -79,69 +85,96 @@ after_test:
 
         Set-Location -Path "$env:APPVEYOR_BUILD_FOLDER"
 
-        if ($Variant -eq 'generic') {
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$Variant" /nologo "/p:ASFVariant=$Variant"
+        if ($variant -like '*-netf') {
+            $compressionMethod = 'Deflate' # This depends on what ZipArchive supports on given platform
+            $targetFramework = $env:NET_FRAMEWORK_VERSION
+        } elseif ($variant -eq 'linux-arm') {
+            # TODO: Temporary workaround for https://github.com/dotnet/coreclr/issues/18486
+            Write-Warning -Message "$variant is still targetting $env:NET_CORE_FALLBACK_VERSION, ensure to correct this once https://github.com/dotnet/coreclr/issues/18486 is resolved" -WarningAction Continue
+            $compressionMethod = 'Deflate64' # This depends on what ZipArchive supports on given platform
+            $targetFramework = $env:NET_CORE_FALLBACK_VERSION
         } else {
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$Variant" -r "$Variant" /nologo "/p:ASFVariant=$Variant" "/p:CrossGenDuringPublish=false"
+            $compressionMethod = 'Deflate64' # This depends on what ZipArchive supports on given platform
+            $targetFramework = $env:NET_CORE_VERSION
+        }
+
+        if ($variant -like 'generic*') {
+            # TODO: Workaround https://github.com/mono/linker/issues/286 until it's resolved
+            # Don't forget to remove it from docker files too
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" --no-restore /nologo "/p:ASFVariant=$variant" "/p:LinkDuringPublish=false"
+        } else {
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" -r "$variant" --no-restore /nologo "/p:ASFVariant=$variant" "/p:CrossGenDuringPublish=false"
         }
 
         if ($LastExitCode -ne 0) {
-            throw "Command failed."
+            throw "Last command failed."
         }
 
         # If we include any helper scripts for this variant, copy them to output directory
-        if (Test-Path -Path "ArchiSteamFarm\scripts\$Variant" -PathType Container) {
-            Copy-Item "ArchiSteamFarm\scripts\$Variant\*" -Destination "ArchiSteamFarm\out\$Variant"
+        if (Test-Path -Path "ArchiSteamFarm\scripts\$variant" -PathType Container) {
+            Copy-Item "ArchiSteamFarm\scripts\$variant\*" -Destination "ArchiSteamFarm\out\$variant"
         }
 
         # Until https://github.com/dotnet/cli/issues/3267 happens, we'll hack dotnet binary icon on Windows and include .ico file on other platforms
-        if (Test-Path -Path "ArchiSteamFarm\out\$Variant\ArchiSteamFarm.exe" -PathType Leaf) {
-            tools\rcedit\rcedit-x64.exe "ArchiSteamFarm\out\$Variant\ArchiSteamFarm.exe" --set-icon 'resources\ASF.ico'
+        if ($targetFramework -eq "$env:NET_CORE_VERSION") {
+            if (Test-Path -Path "ArchiSteamFarm\out\$variant\ArchiSteamFarm.exe" -PathType Leaf) {
+                tools\rcedit\rcedit-x64.exe "ArchiSteamFarm\out\$variant\ArchiSteamFarm.exe" --set-icon 'resources\ASF.ico'
 
-            if ($LastExitCode -ne 0) {
-                throw "Command failed."
+                if ($LastExitCode -ne 0) {
+                    throw "Last command failed."
+                }
+            } else {
+                Copy-Item 'resources\ASF.ico' -Destination "ArchiSteamFarm\out\$variant\ArchiSteamFarm.ico"
             }
-        } else {
-            Copy-Item 'resources\ASF.ico' -Destination "ArchiSteamFarm\out\$Variant\ArchiSteamFarm.ico"
         }
 
-        $zipArgs = '-mx=1'
+        # By default use fastest compression
+        $compressionArgs = '-mx=1'
 
+        # Include extra logic for builds marked for release
         if ($env:APPVEYOR_REPO_TAG -eq 'true') {
             # Update link in Changelog.html accordingly
-            if (Test-Path -Path "ArchiSteamFarm\out\$Variant\Changelog.html" -PathType Leaf) {
-                (Get-Content -Path "ArchiSteamFarm\out\$Variant\Changelog.html").Replace('ArchiSteamFarm/commits/master', "ArchiSteamFarm/releases/tag/$env:APPVEYOR_REPO_TAG_NAME") | Set-Content -Path "ArchiSteamFarm\out\$Variant\Changelog.html"
+            if (Test-Path -Path "ArchiSteamFarm\out\$variant\Changelog.html" -PathType Leaf) {
+                (Get-Content -Path "ArchiSteamFarm\out\$variant\Changelog.html").Replace('ArchiSteamFarm/commits/master', "ArchiSteamFarm/releases/tag/$env:APPVEYOR_REPO_TAG_NAME") | Set-Content -Path "ArchiSteamFarm\out\$variant\Changelog.html"
             }
 
+            # If this build is going to be deployed further, prefer maximum compression
             if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq 'Visual Studio 2017') {
-                $zipArgs = '-mx=9', '-mfb=257', '-mpass=15'
+                $compressionArgs = '-mx=9', '-mpass=15'
+
+                if ($compressionMethod -eq 'Deflate64') {
+                    $compressionArgs += '-mfb=257'
+                } else {
+                    $compressionArgs += '-mfb=258'
+                }
             }
         }
 
-        7z a -bd -tzip -mm=Deflate64 $zipArgs "ArchiSteamFarm\out\ASF-$Variant.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$Variant\*"
+        7z a -bd -tzip "-mm=$compressionMethod" $compressionArgs "ArchiSteamFarm\out\ASF-$variant.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$variant\*"
 
         if ($LastExitCode -ne 0) {
-            throw "Command failed."
+            throw "Last command failed."
         }
 
         # TODO: Change me to Push-AppveyorArtifact once https://github.com/appveyor/ci/issues/2183 is fixed
-        appveyor PushArtifact "ArchiSteamFarm\out\ASF-$Variant.zip" -FileName "ASF-$Variant.zip" -DeploymentName "ASF-$Variant.zip"
-
-        if ($LastExitCode -ne 0) {
-            throw "Command failed."
-        }
+        appveyor PushArtifact "ArchiSteamFarm\out\ASF-$variant.zip" -FileName "ASF-$variant.zip" -DeploymentName "ASF-$variant.zip"
     }
+
+
+    dotnet restore ArchiSteamFarm
+
 
     foreach ($variant in $env:VARIANTS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
         Start-Job -Name "$variant" -ScriptBlock $PublishBlock -ArgumentList "$variant"
     }
+
 
     Get-Job | Receive-Job -AutoRemoveJob -Wait
 deploy:
 - provider: GitHub
   tag: $(appveyor_repo_tag_name)
   release: ArchiSteamFarm V$(appveyor_repo_tag_name)
-  description: '**NOTICE: Pre-releases are experimental versions that often contain unpatched bugs, work-in-progress features or rewritten implementations. If you don''t consider yourself advanced user, please download **[latest stable release](https://github.com/JustArchi/ArchiSteamFarm/releases/latest)** instead. Pre-release versions are dedicated to users who know how to report bugs, deal with issues and give feedback - no technical support will be given. Check out ASF **[release cycle](https://github.com/JustArchi/ArchiSteamFarm/wiki/Release-cycle)** if you''d like to learn more.**\n\n---\n\nThis is automated AppVeyor GitHub deployment, human-readable changelog should be available soon. In the meantime please refer to **[GitHub commits](https://github.com/JustArchi/ArchiSteamFarm/commits/$(appveyor_repo_tag_name))**.\n\n---\n\nASF is available for free. If you''re grateful for what we''re doing, please consider donating. Developing ASF requires massive amount of time and knowledge, especially when it comes to Steam (and its problems). Even $1 is highly appreciated and shows that you care. Thank you!\n\n [![Patreon support](https://img.shields.io/badge/Patreon-support-yellow.svg)](https://www.patreon.com/JustArchi) [![Paypal.me donate](https://img.shields.io/badge/Paypal.me-donate-yellow.svg)](https://www.paypal.me/JustArchi/5usd) [![Paypal donate](https://img.shields.io/badge/Paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HD2P2P3WGS5Y4) [![Bitcoin donate](https://img.shields.io/badge/Bitcoin-donate-yellow.svg)](https://blockchain.info/payment_request?address=1Archi6M1r5b41Rvn1SY2FfJAzsrEUT7aT) [![Steam donate](https://img.shields.io/badge/Steam-donate-yellow.svg)](https://steamcommunity.com/tradeoffer/new/?partner=46697991&token=0ix2Ruv_)'
+  description: '**NOTICE: Pre-releases are experimental versions that often contain unpatched bugs, work-in-progress features or rewritten implementations. If you don''t consider yourself advanced user, please download **[latest stable release](https://github.com/JustArchi/ArchiSteamFarm/releases/latest)** instead. Pre-release versions are dedicated to users who know how to report bugs, deal with issues and give feedback - no technical support will be given. Check out ASF **[release cycle](https://github.com/JustArchi/ArchiSteamFarm/wiki/Release-cycle)** if you''d like to learn more.**\n\n---\n\nThis is automated AppVeyor GitHub deployment, human-readable changelog should be available soon. In the meantime please refer to **[GitHub commits](https://github.com/JustArchi/ArchiSteamFarm/commits/$(appveyor_repo_tag_name))**.\n\n---\n\nASF is available for free. If you''re grateful for what we''re doing, please consider donating. Developing ASF requires massive amount of time and knowledge, especially when it comes to Steam (and its problems). Even $1 is highly appreciated and shows that you care. Thank you!\n\n [![Patreon support](https://img.shields.io/badge/Patreon-support-yellow.svg)](https://www.patreon.com/JustArchi) [![Paypal.me donate](https://img.shields.io/badge/Paypal.me-donate-yellow.svg)](https://www.paypal.me/JustArchi/5eur) [![Paypal donate](https://img.shields.io/badge/Paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HD2P2P3WGS5Y4) [![Bitcoin donate](https://img.shields.io/badge/Bitcoin-donate-yellow.svg)](https://blockchain.info/payment_request?address=1Archi6M1r5b41Rvn1SY2FfJAzsrEUT7aT) [![Steam donate](https://img.shields.io/badge/Steam-donate-yellow.svg)](https://steamcommunity.com/tradeoffer/new/?partner=46697991&token=0ix2Ruv_)'
   auth_token:
     secure: QC5gIDMvSpd43EG6qW8d1E3ZHiVU4aR7pbKQonXstjj/JtAABf5S1IbtoY4OsnOR
   artifact: /.*/

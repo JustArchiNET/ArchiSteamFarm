@@ -1,8 +1,8 @@
 {
-    "app.name": "ASF 설정 생성기",
+    "app.name": "ASF | 환경설정 생성기",
     "button.advanced": "고급 설정 보이기",
     "button.download": "다운로드",
-    "home.topic": "ASF 설정 생성기는 ASF 설정 파일을 만들 수 있도록 JavaScript로 작성된 작은 유틸리티 도구입니다. 생성된 설정 파일을 다운로드한 후, ASF 주 경로 안에 있는 <var>config<var> 폴더 안에 넣어주세요. 더 많은 정보를 보고 싶다면<a href=\"https://github.com/JustArchi/ArchiSteamFarm/wiki/Configuration\" target=\"_blank\" rel=\"noopener\"> 위키</a>를 참고해주세요. 저희 도구가 당신에게 유용하길 바랍니다.",
+    "home.topic": "ASF 환경설정 생성기는 ASF 환경설정 파일을 만들어 주는 JavaScript로 작성된 작은 유틸리티 도구입니다. 생성된 설정 파일을 다운로드한 후, ASF 주 경로 안에 있는 <var>config<var> 폴더 안에 넣어주세요. 더 많은 정보를 보고 싶다면 <a href=\"https://github.com/JustArchi/ArchiSteamFarm/wiki/Configuration-ko-KR\" target=\"_blank\" rel=\"noopener\">위키</a>를 참고해주세요. 이 도구가 당신에게 유용하길 바랍니다.",
     "link.asf": "ASF",
     "link.bot": "봇",
     "link.home": "홈",

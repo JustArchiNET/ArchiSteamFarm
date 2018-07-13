@@ -280,10 +280,6 @@ StackTrace:
     <value>Prijatá neznáma hodnota {0}, hodnota na nahlásenie: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
-  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Hranie viac ako {0} hier naraz nie je možné, bude použitých iba prvých {0} položiek z {1}!</value>
-    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
   <data name="IPCReady" xml:space="preserve">
     <value>IPC server pripravený!</value>
   </data>
@@ -451,17 +447,12 @@ StackTrace:
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>Tento bot nebude spustený, pretože je zakázaný v konfiguračnom súbore!</value>
   </data>
-  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Chyba TwoFactorCodeMismatch sa vyskytla {0}-krát za sebou, čo väčšinou znamená neplatné ASF 2FA údaje, ukončovanie!</value>
-    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
-  </data>
+  
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Odhlásené zo služby Steam: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  <data name="BotLoggedOn" xml:space="preserve">
-    <value>Prihlásenie úspešné!</value>
-  </data>
+  
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Prihlasovanie...</value>
   </data>
@@ -506,7 +497,10 @@ StackTrace:
     <value>Už vlastní: {0} | {1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
-  
+  <data name="BotRateLimitExceeded" xml:space="preserve">
+    <value>Limit prekročený, ďalší pokus bude vykonaný o {0}...</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
+  </data>
   <data name="BotReconnecting" xml:space="preserve">
     <value>Znovupripájanie...</value>
   </data>
@@ -654,7 +648,16 @@ StackTrace:
   <data name="BotRefreshingPackagesData" xml:space="preserve">
     <value>Znovunačítanie dát o balíčkoch...</value>
   </data>
-  
-  
-  
+  <data name="WarningDeprecated" xml:space="preserve">
+    <value>Použitie {0} je zastarané a bude vymazané v niektorej z budúcich verzií programu. Namiesto toho môžeš použiť {1}.</value>
+    <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
+  </data>
+  <data name="BotAcceptedDonationTrade" xml:space="preserve">
+    <value>Prijatý dar: {0}</value>
+    <comment>{0} will be replaced by trade's ID (number)</comment>
+  </data>
+  <data name="WarningWorkaroundTriggered" xml:space="preserve">
+    <value>Riešenie pre obídenie chyby {0} bolo spustené.</value>
+    <comment>{0} will be replaced by the bug's name provided by ASF</comment>
+  </data>
 </root>

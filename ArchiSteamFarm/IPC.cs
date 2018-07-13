@@ -244,7 +244,7 @@ namespace ArchiSteamFarm {
 
 			const string requiredContentType = "application/json";
 
-			if (request.ContentType != requiredContentType) {
+			if (string.IsNullOrEmpty(request.ContentType) || ((request.ContentType != requiredContentType) && !request.ContentType.StartsWith(requiredContentType + ";", StringComparison.Ordinal))) {
 				await ResponseJsonObject(request, response, new GenericResponse<object>(false, nameof(request.ContentType) + " must be declared as " + requiredContentType), HttpStatusCode.NotAcceptable).ConfigureAwait(false);
 				return true;
 			}
@@ -386,7 +386,7 @@ namespace ArchiSteamFarm {
 
 			const string requiredContentType = "application/json";
 
-			if (request.ContentType != requiredContentType) {
+			if (string.IsNullOrEmpty(request.ContentType) || ((request.ContentType != requiredContentType) && !request.ContentType.StartsWith(requiredContentType + ";", StringComparison.Ordinal))) {
 				await ResponseJsonObject(request, response, new GenericResponse<object>(false, nameof(request.ContentType) + " must be declared as " + requiredContentType), HttpStatusCode.NotAcceptable).ConfigureAwait(false);
 				return true;
 			}
@@ -528,7 +528,7 @@ namespace ArchiSteamFarm {
 
 			const string requiredContentType = "application/json";
 
-			if (request.ContentType != requiredContentType) {
+			if (string.IsNullOrEmpty(request.ContentType) || ((request.ContentType != requiredContentType) && !request.ContentType.StartsWith(requiredContentType + ";", StringComparison.Ordinal))) {
 				await ResponseJsonObject(request, response, new GenericResponse<OrderedDictionary>(false, nameof(request.ContentType) + " must be declared as " + requiredContentType), HttpStatusCode.NotAcceptable).ConfigureAwait(false);
 				return true;
 			}
@@ -679,11 +679,6 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			if (obj == null) {
-				await ResponseJsonObject(request, response, new GenericResponse<object>(false, string.Format(Strings.ErrorParsingObject, targetType)), HttpStatusCode.BadRequest).ConfigureAwait(false);
-				return true;
-			}
-
 			await ResponseJsonObject(request, response, new GenericResponse<object>(true, "OK", obj)).ConfigureAwait(false);
 			return true;
 		}
@@ -722,7 +717,7 @@ namespace ArchiSteamFarm {
 			}
 
 			string baseType = targetType.BaseType?.GetUnifiedName();
-			HashSet<string> customAttributes = new HashSet<string>(targetType.CustomAttributes.Select(attribute => attribute.AttributeType.GetUnifiedName()));
+			HashSet<string> customAttributes = targetType.CustomAttributes.Select(attribute => attribute.AttributeType.GetUnifiedName()).ToHashSet();
 			string underlyingType = null;
 
 			Dictionary<string, string> body = new Dictionary<string, string>();
@@ -810,7 +805,7 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			HashSet<string> result = new HashSet<string>(files.Select(Path.GetFileName));
+			HashSet<string> result = files.Select(Path.GetFileName).ToHashSet();
 
 			await ResponseJsonObject(request, response, new GenericResponse<HashSet<string>>(true, "OK", result)).ConfigureAwait(false);
 			return true;
@@ -951,13 +946,9 @@ namespace ArchiSteamFarm {
 					authorized = password == Program.GlobalConfig.IPCPassword;
 
 					if (authorized) {
-						FailedAuthorizations.Remove(ipAddress, out _);
+						FailedAuthorizations.TryRemove(ipAddress, out _);
 					} else {
-						if (FailedAuthorizations.TryGetValue(ipAddress, out attempts)) {
-							FailedAuthorizations[ipAddress] = ++attempts;
-						} else {
-							FailedAuthorizations[ipAddress] = 1;
-						}
+						FailedAuthorizations[ipAddress] = FailedAuthorizations.TryGetValue(ipAddress, out attempts) ? ++attempts : (byte) 1;
 					}
 				} finally {
 					AuthorizationSemaphore.Release();
@@ -1095,7 +1086,7 @@ namespace ArchiSteamFarm {
 			try {
 				response.ContentType = MimeTypes.TryGetValue(Path.GetExtension(filePath), out string mimeType) ? mimeType : "application/octet-stream";
 
-				byte[] content = await File.ReadAllBytesAsync(filePath).ConfigureAwait(false);
+				byte[] content = await RuntimeCompatibility.File.ReadAllBytesAsync(filePath).ConfigureAwait(false);
 				await ResponseBase(request, response, content).ConfigureAwait(false);
 			} catch (FileNotFoundException) {
 				await ResponseStatusCode(request, response, HttpStatusCode.NotFound).ConfigureAwait(false);

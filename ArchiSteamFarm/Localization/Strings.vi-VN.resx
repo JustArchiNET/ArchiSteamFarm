@@ -280,10 +280,6 @@ StackTrace:
     <value>Nhận được giá trị không rõ cho {0}, xin vui lòng báo cáo điều này: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
-  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Chơi nhiều hơn {0} trò chơi trong cùng một lúc là không thể, chỉ {0} trò chơi đầu tiên trong {1} sẽ được sử dụng!</value>
-    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
   <data name="IPCReady" xml:space="preserve">
     <value>Máy chủ IPC đã sẵn sàng!</value>
   </data>
@@ -451,17 +447,12 @@ StackTrace:
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>Không chạy bot này bởi vì nó đã bị vô hiệu hóa trong tập tin cấu hình!</value>
   </data>
-  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Nhận được mã lỗi TwoFactorCodeMismatch {0} lần trong một lúc, điều này hầu như luôn luôn bởi vì chứng chỉ 2FA ASF không hợp lệ, đang bãi bỏ!</value>
-    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
-  </data>
+  
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Đã đăng xuất khỏi Steam: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  <data name="BotLoggedOn" xml:space="preserve">
-    <value>Đăng nhập thành công!</value>
-  </data>
+  
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Đang đăng nhập...</value>
   </data>

@@ -280,10 +280,6 @@ StackTrace:
     <value>התקבל ערך לא ידוע עבור {0}, אנא דווח על זה: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
-  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>הפעלת יותר מ {0} משחקים בו זמנית אינה אפשרית, רק {0} ההזנות הראשונות {1} יהיו בשימוש!</value>
-    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
   <data name="IPCReady" xml:space="preserve">
     <value>שרת IPC מוכן!</value>
   </data>
@@ -451,17 +447,12 @@ StackTrace:
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>לא מריץ את הבוט הזה כי הוא אינו מופעל בקובץ ההגדרה!</value>
   </data>
-  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>קיבל קוד שגיאה {0} TwoFactorCodeMismatch פעמים ברציפות, זה כמעט תמיד מציין אישורי ASF 2FA לא חוקיים, הפלה!</value>
-    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
-  </data>
+  
   <data name="BotLoggedOff" xml:space="preserve">
     <value>ניתוק מסטים: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  <data name="BotLoggedOn" xml:space="preserve">
-    <value>התחבר בהצלחה!</value>
-  </data>
+  
   <data name="BotLoggingIn" xml:space="preserve">
     <value>מתחבר...</value>
   </data>

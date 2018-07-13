@@ -279,10 +279,6 @@ StackTrace:
     <value>Unbekannten Wert für {0} erhalten, bitte melde folgendes: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
-  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Das Spielen von mehr als {0} Spielen gleichzeitig ist nicht möglich, nur die ersten {0} Einträge von {1} werden verwendet!</value>
-    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
   <data name="IPCReady" xml:space="preserve">
     <value>IPC-Server bereit!</value>
   </data>
@@ -316,14 +312,14 @@ StackTrace:
     <value>Überprüfe andere Abzeichenseiten...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>Gewählter Sammel-Algorithmus: {0}</value>
+    <value>Gewählter Sammelalgorithmus: {0}</value>
     <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
     <value>Erledigt!</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
-    <value>Wir haben noch insgesamt bei {0} Spiel(en) ({1} Karte[n]) etwas zu sammeln (~{2} verbleibend)...</value>
+    <value>Wir haben insgesamt noch bei {0} Spiel(en) ({1} Karte[n]) Etwas zu sammeln (~{2} verbleibend)...</value>
     <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
   </data>
   <data name="IdlingFinished" xml:space="preserve">
@@ -338,7 +334,7 @@ StackTrace:
     <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="IdlingStatusForGame" xml:space="preserve">
-    <value>Status zum Sammeln von {0} ({1}): {2} Karte(en) verbleibend</value>
+    <value>Status zum Sammeln von {0} ({1}): {2} Karte(n) verbleibend</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle</comment>
   </data>
   <data name="IdlingStopped" xml:space="preserve">
@@ -450,16 +446,14 @@ StackTrace:
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>Bot-Instanz nicht gestartet, weil diese in der Konfigurations-Datei deaktiviert ist!</value>
   </data>
-  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Der Fehler "TwoFactorCodeMismatch" ist {0} Mal in Folge aufgetreten. Dies weißt fast immer auf ungültige ASF 2FA Anmeldedaten hin. Vorgang wird abgebrochen!</value>
-    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
-  </data>
+  
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Von Steam abgemeldet: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
   <data name="BotLoggedOn" xml:space="preserve">
-    <value>Erfolgreich angemeldet!</value>
+    <value>Erfolgreich angemeldet als {0}.</value>
+    <comment>{0} will be replaced by steam ID (number)</comment>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Anmeldung erfolgt...</value>

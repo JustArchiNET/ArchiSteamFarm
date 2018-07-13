@@ -280,10 +280,6 @@ Yığın izleme:
     <value>{0} için bilinmeyen değer alındı, lütfen bunu bildirin: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
-  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Eşzamanlı olarak {0} oyundan fazlasını oynamak mümkün değildir, yalnızca {1} yapılandırmasından ilk {0} girdisi kullanılacaktır!</value>
-    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
   <data name="IPCReady" xml:space="preserve">
     <value>IPC sunucusu hazır!</value>
   </data>
@@ -452,7 +448,7 @@ Yığın izleme:
     <value>Bu bot örneğini yapılandırma dosyasında devre dışı bırakıldığından başlatamıyoruz!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>TwoFactorCodeMismatch hata kodu üst üste {0} defa alındı, bu hemen hemen her zaman geçersiz ASF 2FD kimlik bilgilerini gösterir, iptal edildi!</value>
+    <value>Üst üste TwoFactorCodeMismatch hata kodu {0} alındı. 2FA kimlik bilgileriniz artık geçerli değil veya senin saatiniz eşitlenmemiş, iptal ediliyor!</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
@@ -460,7 +456,8 @@ Yığın izleme:
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
   <data name="BotLoggedOn" xml:space="preserve">
-    <value>Başarıyla giriş yapıldı!</value>
+    <value>{0} olarak başarıyla oturum açıldı.</value>
+    <comment>{0} will be replaced by steam ID (number)</comment>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Giriş yapılıyor...</value>
@@ -604,7 +601,7 @@ Yığın izleme:
     <value>Sağlanan CurrentCulture geçersiz, ASF varsayılan ile çalışmaya devam edecek!</value>
   </data>
   <data name="TranslationIncomplete" xml:space="preserve">
-    <value>ASF tercih ettiğiniz {0} kültürünü kullanmaya çalışacak, ancak o dildeki çeviri yalnızca {1} oranında tamamlandı. Diliniz için ASF çevirisini geliştirmemize belki de yardımcı olabilirsiniz?</value>
+    <value>ASF tercih ettiğiniz {0} kültürünü kullanmaya çalışacak, ancak bu dildeki çeviri yalnızca {1} oranında tamamlanmış. Diliniz için ASF çevirisini geliştirmemize belki de yardımcı olabilirsiniz?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
   <data name="IdlingGameNotPossible" xml:space="preserve">
@@ -658,7 +655,7 @@ Yığın izleme:
     <value>Paket verileri yenileniyor...</value>
   </data>
   <data name="WarningDeprecated" xml:space="preserve">
-    <value>{0} kullanımı kullanımdan kaldırıldı ve programın gelecekteki sürümlerinde kaldırılacaktır. Bunun yerine {1} kullanın.</value>
+    <value>{0} kullanımı önerilmiyor ve programın gelecekteki sürümlerinde kaldırılacak. Bunun yerine {1} kullanın.</value>
     <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
   </data>
   <data name="BotAcceptedDonationTrade" xml:space="preserve">

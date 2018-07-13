@@ -280,10 +280,6 @@ StackTrace:
     <value>Onbekende waarde ontvangen voor {0}, graag dit melden: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
-  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Het gelijktijdig spelen van meer dan {0} spellen is niet mogelijk, alleen de eerste {0} spellen van {1} worden gespeeld!</value>
-    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
   <data name="IPCReady" xml:space="preserve">
     <value>IPC server gereed!</value>
   </data>
@@ -451,16 +447,14 @@ StackTrace:
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>Deze bot wordt niet gestart omdat hij uitgeschakeld is in het configuratiebestand!</value>
   </data>
-  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>TwoFactorCodeMisMatch foutmelding {0} keer op rij ontvangen. Dit betekent meestal de verkeerde ASF 2FA login informatie. Proces wordt afgebroken!</value>
-    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
-  </data>
+  
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Uitgelogd op Steam: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
   <data name="BotLoggedOn" xml:space="preserve">
-    <value>Succesvol ingelogd!</value>
+    <value>Succesvol ingelogd als {0}.</value>
+    <comment>{0} will be replaced by steam ID (number)</comment>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Inloggen...</value>
@@ -583,7 +577,7 @@ StackTrace:
     <value>Stoppen...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>Je bot configuratie is ongeldig. Controleer de inhoud van {0} en probeer het opnieuw!</value>
+    <value>Je bot-configuratie is ongeldig. Controleer de inhoud van {0} en probeer het opnieuw!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">

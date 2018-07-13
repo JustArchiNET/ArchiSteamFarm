@@ -280,10 +280,6 @@ StackTrace:
     <value>Otrzymano nieznaną wartość dla {0}, proszę zgłoś to do developerów: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
-  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Uruchomienie więcej niż {0} gier naraz nie jest możliwe, jedynie pierwsze {0} gier z {1} zostanie użytych!</value>
-    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
   <data name="IPCReady" xml:space="preserve">
     <value>Serwer IPC jest gotowy!</value>
   </data>
@@ -452,7 +448,7 @@ StackTrace:
     <value>Ten bot nie zostanie uruchomiony, ponieważ został wyłączony w pliku konfiguracyjnym!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Otrzymano błąd TwoFactorCodeMismatch {0} razy pod rząd, to niemal zawsze oznacza nieprawidłowe dane uwierzytelniające mobilnego tokena ASF 2FA, anulowanie!</value>
+    <value>Otrzymano błąd TwoFactorCodeMismatch {0} razy pod rząd. To oznacza, że twoje dane 2FA nie są już dłużej prawidłowe, albo twój zegar nie jest zsynchronizowany, anulowanie!</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
@@ -460,7 +456,8 @@ StackTrace:
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
   <data name="BotLoggedOn" xml:space="preserve">
-    <value>Zalogowano pomyślnie!</value>
+    <value>Pomyślnie zalogowano jako {0}.</value>
+    <comment>{0} will be replaced by steam ID (number)</comment>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Logowanie...</value>

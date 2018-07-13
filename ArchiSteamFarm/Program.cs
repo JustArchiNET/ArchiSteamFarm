@@ -137,6 +137,11 @@ namespace ArchiSteamFarm {
 			}
 
 			string executableName = Path.GetFileNameWithoutExtension(ProcessFileName);
+			if (string.IsNullOrEmpty(executableName)) {
+				ASF.ArchiLogger.LogNullError(nameof(executableName));
+				return;
+			}
+
 			IEnumerable<string> arguments = Environment.GetCommandLineArgs().Skip(executableName.Equals(SharedInfo.AssemblyName) ? 1 : 0);
 
 			try {
@@ -188,7 +193,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task InitASF(IReadOnlyCollection<string> args) {
-			ASF.ArchiLogger.LogGenericInfo(SharedInfo.PublicIdentifier + " V" + SharedInfo.Version + " (" + SharedInfo.ModuleVersion + ")");
+			ASF.ArchiLogger.LogGenericInfo(SharedInfo.PublicIdentifier + " V" + SharedInfo.Version + " (" + SharedInfo.BuildInfo.Variant + "/" + SharedInfo.ModuleVersion + " | " + OS.Variant + ")");
 
 			await InitGlobalConfigAndLanguage().ConfigureAwait(false);
 
@@ -249,10 +254,6 @@ namespace ArchiSteamFarm {
 				ASF.ArchiLogger.LogGenericDebug(SharedInfo.GlobalConfigFileName + ": " + JsonConvert.SerializeObject(GlobalConfig, Formatting.Indented));
 			}
 
-			if (GlobalConfig.BackgroundGCPeriod > 0) {
-				Hacks.EnableBackgroundGC(GlobalConfig.BackgroundGCPeriod);
-			}
-
 			if (!string.IsNullOrEmpty(GlobalConfig.CurrentCulture)) {
 				try {
 					// GetCultureInfo() would be better but we can't use it for specifying neutral cultures such as "en"
@@ -273,7 +274,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			HashSet<DictionaryEntry> defaultStringObjects = new HashSet<DictionaryEntry>(defaultResourceSet.Cast<DictionaryEntry>());
+			HashSet<DictionaryEntry> defaultStringObjects = defaultResourceSet.Cast<DictionaryEntry>().ToHashSet();
 			if (defaultStringObjects.Count == 0) {
 				ASF.ArchiLogger.LogNullError(nameof(defaultStringObjects));
 				return;
@@ -285,10 +286,10 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			HashSet<DictionaryEntry> currentStringObjects = new HashSet<DictionaryEntry>(currentResourceSet.Cast<DictionaryEntry>());
+			HashSet<DictionaryEntry> currentStringObjects = currentResourceSet.Cast<DictionaryEntry>().ToHashSet();
 			if (currentStringObjects.Count >= defaultStringObjects.Count) {
 				// Either we have 100% finished translation, or we're missing it entirely and using en-US
-				HashSet<DictionaryEntry> testStringObjects = new HashSet<DictionaryEntry>(currentStringObjects);
+				HashSet<DictionaryEntry> testStringObjects = currentStringObjects.ToHashSet();
 				testStringObjects.ExceptWith(defaultStringObjects);
 
 				// If we got 0 as final result, this is the missing language

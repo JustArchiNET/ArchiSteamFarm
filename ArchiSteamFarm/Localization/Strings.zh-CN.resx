@@ -277,10 +277,6 @@
     <value>收到的{0} 为未知值，请报告此值：{1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
-  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>目前无法同时挂 {0} 个以上的游戏，只有 {1} 里面的前 {0} 个游戏可用！</value>
-    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
   <data name="IPCReady" xml:space="preserve">
     <value>IPC 服务已就绪 ！</value>
   </data>
@@ -449,16 +445,14 @@
     <value>不会启动该帐号，因为配置文件中禁用了它！</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>服务器返回 TwoFactorCodeMismatch 错误代码 {0} 次，您的两步验证凭据可能是无效的，程序将中止操作。</value>
+    <value>连续收到 TwoFactorCodeMismatch 错误码 {0} 次。要么是你的两步验证凭据不再有效，要么是你的时钟失去同步，正在中止！</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
     <value>退出Steam登录︰ {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  <data name="BotLoggedOn" xml:space="preserve">
-    <value>登录成功！</value>
-  </data>
+  
   <data name="BotLoggingIn" xml:space="preserve">
     <value>登录中……</value>
   </data>

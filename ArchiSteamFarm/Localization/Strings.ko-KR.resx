@@ -280,10 +280,6 @@ StackTrace:
     <value>{0}의 알 수 없는 값을 받았습니다. 이것을 보고 바랍니다: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
-  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>동시에 {0}개 이상의 게임들을 플레이하는 것은 불가능합니다. {1}에 의해 단지 {0}개의 항목만 사용될 것입니다!</value>
-    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
   <data name="IPCReady" xml:space="preserve">
     <value>IPC 서버 준비 완료!</value>
   </data>
@@ -451,17 +447,12 @@ StackTrace:
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>이 봇 인스턴스는 설정 파일에서 비활성화되어 있기에 시작하지 않습니다!</value>
   </data>
-  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>TwoFactorCodeMismatch 오류 코드를 연속으로 {0}번 받았고, 이는 대부분 ASF 2FA 인증이 잘못되었음을 나타냅니다. 중단합니다!</value>
-    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
-  </data>
+  
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Steam에서 로그아웃: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  <data name="BotLoggedOn" xml:space="preserve">
-    <value>로그인 성공!</value>
-  </data>
+  
   <data name="BotLoggingIn" xml:space="preserve">
     <value>로그인 중...</value>
   </data>

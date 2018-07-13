@@ -279,10 +279,6 @@ StackTrace:
     <value>Modtog ukendt værdi for {0}, venligst rapportér dette: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
-  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Spille mere end {0} spil samtidigt er ikke muligt, kun første {0} poster fra {1} vil blive brugt!</value>
-    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
   <data name="IPCReady" xml:space="preserve">
     <value>IPC serveren er klar!</value>
   </data>
@@ -450,17 +446,12 @@ StackTrace:
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>Starter ikke denne bot instans fordi den er slået fra i konfigurationsfilen!</value>
   </data>
-  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Modtaget TwoFactorCodeMismatch fejl kode {0} i streg, dette indikerer næsten altid ugyldig ASF 2FA legitimationsoplysninger, afbryder!</value>
-    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
-  </data>
+  
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Loggede af fra Steam: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  <data name="BotLoggedOn" xml:space="preserve">
-    <value>Loggede ind successfuldt!</value>
-  </data>
+  
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Logger ind...</value>
   </data>

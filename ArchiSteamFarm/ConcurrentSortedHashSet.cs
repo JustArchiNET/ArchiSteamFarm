@@ -22,6 +22,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
 namespace ArchiSteamFarm {
@@ -197,7 +198,9 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		[SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
 		void ICollection<T>.Add(T item) => Add(item);
+
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 		internal void ReplaceWith(IEnumerable<T> other) {

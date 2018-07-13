@@ -145,7 +145,7 @@ StackTrace:
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>Saindo com um código de erro não-nulo!</value>
+    <value>Saindo com um código de erro diferente de zero!</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
     <value>Erro de solicitação: {0}</value>
@@ -181,13 +181,13 @@ StackTrace:
     <value>Não foi possível verificar a última versão!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
-    <value>Não foi possível prosseguir com a atualização porque não há nenhum recurso relacionado a versão atualmente em execução! Atualização automática para esta versão não é possível.</value>
+    <value>Não foi possível prosseguir com a atualização porque não há nenhum recurso relacionado a versão em execução! Atualização automática indisponível.</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Não foi possível prosseguir com a atualização pois esta versão não inclui nenhum arquivo!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>O pedido de entrada do usuário foi recebido, mas o processo está sendo executado no modo não-interativo!</value>
+    <value>Recebemos um pedido de entrada do usuário, mas o processo está sendo executado no modo headless!</value>
   </data>
   <data name="Exiting" xml:space="preserve">
     <value>Saindo...</value>
@@ -279,10 +279,6 @@ StackTrace:
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Valor desconhecido recebido para {0}. Por favor, relate isto: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
-  </data>
-  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Não é possível jogar mais de {0} jogos ao mesmo tempo, apenas os primeiros {0} jogos de {1} serão usados!</value>
-    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
   <data name="IPCReady" xml:space="preserve">
     <value>Servidor IPC pronto!</value>
@@ -452,7 +448,7 @@ StackTrace:
     <value>Este bot não será iniciado, pois está desativado no arquivo de configurações!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Código de erro TwoFactorCodeMismatch recebido {0} vezes seguidas, isso quase sempre indica que as credenciais do ASF 2FA são inválidas, abortando!</value>
+    <value>Erro TwoFactorCodeMismatch recebido {0} vezes seguidas. Suas credencias 2FA não são válidas ou seu relógio está fora de sincronia. Abortando!</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
@@ -460,7 +456,8 @@ StackTrace:
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
   <data name="BotLoggedOn" xml:space="preserve">
-    <value>Sessão iniciada com sucesso!</value>
+    <value>Sessão iniciada com sucesso como {0}.</value>
+    <comment>{0} will be replaced by steam ID (number)</comment>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Iniciando sessão...</value>
@@ -507,7 +504,7 @@ StackTrace:
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>Muitas tentativas de ativação, tentaremos novamente após {0}...</value>
+    <value>Limite de tráfego excedido, tentaremos novamente após um intevalo de {0}...</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
@@ -636,7 +633,7 @@ StackTrace:
     <value>Acesso negado!</value>
   </data>
   <data name="WarningPreReleaseVersion" xml:space="preserve">
-    <value>Você está usando uma versão que é mais nova que a última lançada para o seu canal de atualizações. Por favor, tenha em mente que versões não finalizadas são dedicadas a usuários que sabem como informar bugs, lidar com problemas e dar feedback - nenhum apoio técnico será dado.</value>
+    <value>Você está usando uma versão que é mais nova que a última lançada para o seu canal de atualizações. Por favor, tenha em mente que versões de pré-lançamento são dedicadas a usuários que sabem como relatar bugs, lidar com problemas e dar feedback - nenhum apoio técnico será fornecido.</value>
   </data>
   <data name="BotStats" xml:space="preserve">
     <value>Uso de memória atual: {0} MB.</value>
@@ -658,12 +655,15 @@ StackTrace:
     <value>Atualizando dados dos pacotes...</value>
   </data>
   <data name="WarningDeprecated" xml:space="preserve">
-    <value>O uso de {0} está obsoleto e será removido em versões futuras do programa. Por favor, use {1}.</value>
+    <value>O uso de {0} está obsoleto e será removido em versões futuras do programa. Ao invés disso, use {1}.</value>
     <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
   </data>
   <data name="BotAcceptedDonationTrade" xml:space="preserve">
     <value>Doação aceita: {0}</value>
     <comment>{0} will be replaced by trade's ID (number)</comment>
   </data>
-  
+  <data name="WarningWorkaroundTriggered" xml:space="preserve">
+    <value>Solução para o erro {0} ativada.</value>
+    <comment>{0} will be replaced by the bug's name provided by ASF</comment>
+  </data>
 </root>

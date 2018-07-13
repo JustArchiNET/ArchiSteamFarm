@@ -74,7 +74,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			return new HashSet<uint>(PackagesData.Where(package => package.Value.AppIDs?.Contains(appID) == true).Select(package => package.Key));
+			return PackagesData.Where(package => package.Value.AppIDs?.Contains(appID) == true).Select(package => package.Key).ToHashSet();
 		}
 
 		internal static async Task<GlobalDatabase> Load(string filePath) {
@@ -90,7 +90,7 @@ namespace ArchiSteamFarm {
 			GlobalDatabase globalDatabase;
 
 			try {
-				globalDatabase = JsonConvert.DeserializeObject<GlobalDatabase>(await File.ReadAllTextAsync(filePath).ConfigureAwait(false));
+				globalDatabase = JsonConvert.DeserializeObject<GlobalDatabase>(await RuntimeCompatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false));
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 				return null;
@@ -114,7 +114,7 @@ namespace ArchiSteamFarm {
 			await PackagesRefreshSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				HashSet<uint> packageIDs = new HashSet<uint>(packages.Where(package => (package.Key != 0) && (!PackagesData.TryGetValue(package.Key, out (uint ChangeNumber, HashSet<uint> _) packageData) || (packageData.ChangeNumber < package.Value))).Select(package => package.Key));
+				HashSet<uint> packageIDs = packages.Where(package => (package.Key != 0) && (!PackagesData.TryGetValue(package.Key, out (uint ChangeNumber, HashSet<uint> _) packageData) || (packageData.ChangeNumber < package.Value))).Select(package => package.Key).ToHashSet();
 
 				if (packageIDs.Count == 0) {
 					return;
@@ -159,7 +159,7 @@ namespace ArchiSteamFarm {
 
 			try {
 				// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
-				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+				await RuntimeCompatibility.File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
 				if (File.Exists(FilePath)) {
 					File.Replace(newFilePath, FilePath, null);

@@ -331,7 +331,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Received TwoFactorCodeMismatch error code {0} times in a row, this almost always indicates invalid ASF 2FA credentials, aborting!.
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Received TwoFactorCodeMismatch error code {0} times in a row. Either your 2FA credentials are no longer valid, or your clock is out of sync, aborting!.
         /// </summary>
         internal static string BotInvalidAuthenticatorDuringLogin {
             get {
@@ -349,7 +349,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Successfully logged on!.
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Successfully logged on as {0}..
         /// </summary>
         internal static string BotLoggedOn {
             get {
@@ -1446,15 +1446,6 @@ namespace ArchiSteamFarm.Localization {
         internal static string WarningPrivacyPolicy {
             get {
                 return ResourceManager.GetString("WarningPrivacyPolicy", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Playing more than {0} games concurrently is not possible, only first {0} entries from {1} will be used!.
-        /// </summary>
-        internal static string WarningTooManyGamesToPlay {
-            get {
-                return ResourceManager.GetString("WarningTooManyGamesToPlay", resourceCulture);
             }
         }
         

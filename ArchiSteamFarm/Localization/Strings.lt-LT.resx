@@ -134,7 +134,7 @@
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} susidūrė su lemtinga išimties klaida, prieš pagrindinio įrašymo modulio inicializacija!</value>
+    <value>ASF V{0} susidūrė su lemtinga išimties klaida prieš įsijungiant registravimo moduliui!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
@@ -145,11 +145,11 @@
     <value>Išeinama su ne-nuliniu klaidos kodu!</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
-    <value>Užklausa nepavyko: {0}</value>
+    <value>Užklausa nutrūksta: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Pagrindinė konfigūracija negalėjo būti įkelta, įsitikinkite, kad {0} egzistuoja ir yra galiojantis! Sekite steigimo vadovą vikipedijoje jei esate supainioti.</value>
+    <value>Pagrindinė konfigūracija negalėjo būti įkelta, įsitikinkite, kad {0} egzistuoja ir yra galiojantis! Sekite nustatymo vadovą Wiki, jei esate nesuprantate.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
@@ -160,14 +160,14 @@
     <value>Atsisakoma vykdyti šią funkciją dėl netinkamo įrenginio ID, ASF 2FA!</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>Jokių botų nėra apibrėžta. Ar pamiršote sukonfigūruoti savo ASF?</value>
+    <value>Jokių botų nėra sukurta. Ar pamiršote sukonfigūruoti ASF?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} yra tuščias!</value>
+    <value>{0} yra negaliojantis!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
-    <value>Apdorojanti {0} nepavyko!</value>
+    <value>Apdorojimas {0} nepavyko!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
@@ -178,13 +178,13 @@
     <value>Nepavyko patikrinti naujausios versijos!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
-    <value>Nebuvo galima tęsti naujinimo, nes nėra jokio objekto, kuris yra susijęs su šiuo metu įdiegta versija! Automatinis naujinimas į tą versija yra neįmanoma.</value>
+    <value>Nebuvo galima tęsti naujinimo, nes nėra jokio objekto, kuris yra susijęs su šiuo metu įdiegta versija! Automatinis naujinimas į tą versija yra neįmanomas.</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>Nebuvo galima tęsti su atnaujinimu, nes ta versija neapima jokios informacijos!</value>
+    <value>Nebuvo galima tęsti su atnaujinimu, nes ta versija neapima jokių failų!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Gautas prašymas reikalaujantis naudotojo įvesties, bet procesas veikia "headless" mode!</value>
+    <value>Gautas prašymas reikalaujantis naudotojo įvesties, bet procesas veikia "headless" režime!</value>
   </data>
   <data name="Exiting" xml:space="preserve">
     <value>Stabdoma...</value>
@@ -193,17 +193,17 @@
     <value>Nepavyko!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>Pagrindinis konfiguracijos failas buvo pakeistas!</value>
+    <value>Pagrindinis konfigūracijos failas buvo pakeistas!</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>Pagrindinis konfiguracijos failas buvo pašalintas!</value>
+    <value>Pagrindinis konfigūracijos failas buvo pašalintas!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
     <value>Ignoruojami mainai: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
-    <value>Prisijungima prie {0}...</value>
+    <value>Prisijungiama prie {0}...</value>
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
@@ -232,21 +232,21 @@
     <value>Ieškoma naujos versijos...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Atsiunčiama nauja versija: {0} ({1} MB)... Kol laukiate, apsvarstykite, gal norite paaukoti jei vertinate daromą darbą! :)</value>
+    <value>Atsiunčiama nauja versija: {0} ({1} MB)... Kol laukiate, apsvarstykite, gal norite paaukoti, jei vertinate mūsų įdirbį! :)</value>
     <comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Naujinimo procesas baigtas!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>Nauja ASF versija yra galima! Apsvarstyti atsinaujinti!</value>
+    <value>Nauja ASF versija yra galima! Apsvarstykite atsinaujinti!</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>Vietinė versija: {0} | Versija serveryje: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
-    <value>Prašome įvesti savo mobilaus autentikatoriaus prietaiso ID (įskaitant "Android:"): </value>
+    <value>Prašome įvesti savo mobilaus autentifikavimo prietaiso ID (įskaitant "Android:"): </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
@@ -277,22 +277,18 @@
     <value>Gauta nežinoma reikšmė, {0}, prašome pranešti apie tai: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
-  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Žaisti daugiau negu {0} žaidimų vienu metu yra neįmanoma, bus naudojamas tik pirmasis {0} įrašas iš {1}!</value>
-    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
   <data name="IPCReady" xml:space="preserve">
     <value>IPC serveris paruoštas!</value>
   </data>
   <data name="IPCStarting" xml:space="preserve">
-    <value>Paleidžiamas IPC serveris {0}...</value>
+    <value>Paleidžiamas IPC serveris ant {0}...</value>
     <comment>{0} will be replaced by IPC hostname</comment>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Šis botas jau sustabdytas!</value>
   </data>
   <data name="BotNotFound" xml:space="preserve">
-    <value>Nepavyko rasti jokio "boto" pavadinimo {0}!</value>
+    <value>Nepavyko rasti jokio "boto" pavadinto {0}!</value>
     <comment>{0} will be replaced by bot's name query (string)</comment>
   </data>
   <data name="BotStatusOverview" xml:space="preserve">
@@ -308,10 +304,10 @@
     <comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to idle, {2} will be replaced by total number of cards to idle, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
   </data>
   <data name="CheckingFirstBadgePage" xml:space="preserve">
-    <value>Tikrinamas pirmasis pasiekimų puslapis...</value>
+    <value>Tikrinamas pirmasis ženklelių puslapis...</value>
   </data>
   <data name="CheckingOtherBadgePages" xml:space="preserve">
-    <value>Tikrinami kiti pasiekimų puslapiai...</value>
+    <value>Tikrinamas kiti ženklelių puslapiai...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
     <value>Pasirinktas kortelių rinkimo algoritmas: {0}</value>
@@ -346,7 +342,7 @@
     <value>Šis prašymas ignoruojamas, nes lipni pauzė yra įjungta!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
-    <value>Mes neturime jokių kortelių surinkimui šioje paskyroje!</value>
+    <value>Mes neturime nieko, ką galima surinkti šioje paskyroje!</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
     <value>Dabar renkama: {0} ({1})</value>
@@ -379,7 +375,7 @@
     <value>Nežinoma komanda!</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
-    <value>Nepavyko gauti pasiekimų informacijos, bandysime dar kartą vėliau!</value>
+    <value>Nepavyko gauti ženklelių informacijos, bandysime dar kartą vėliau!</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
     <value>Nepavyko patikrinti kortelių statuso: {0} ({1}), bandysime dar kartą vėliau!</value>
@@ -448,16 +444,14 @@
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>Nepradedama ši boto instancija, nes ji išjungta konfigūracijos faile!</value>
   </data>
-  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Gautas TwoFactorCodeMismatch klaidos kodas {0} kartus iš eilės, tai beveik visada parodo neteisingus ASF 2FA kredencialus, sustabdoma!</value>
-    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
-  </data>
+  
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Atsijungta nuo Steam: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
   <data name="BotLoggedOn" xml:space="preserve">
-    <value>Sėkmingai prisijungta!</value>
+    <value>Sėkmingai prisijungta kaip {0}.</value>
+    <comment>{0} will be replaced by steam ID (number)</comment>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Prisijungiama...</value>
@@ -466,34 +460,34 @@
     <value>Ši paskyra atrodo, kad yra naudojama su kitu ASF atveju, tai yra neapibrėžtas elgesys, atsisakoma laikyti ją įjungta!</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
-    <value>Mainai nepavyko!</value>
+    <value>Mainų pasiūlymas nepavyko!</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Mainai nebuvo išsiųsti, nes nėra apibrėžto jokio vartotojo su pagrindinėmis prieigomis!</value>
+    <value>Mainai nebuvo išsiųsti, nes nėra apibrėžto jokio vartotojo su šeimininko leidimais!</value>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>Jūs neturite jokių kortelių grobio tipų nustatytų!</value>
+    <value>Jūs neturite jokių nustatytų galimų paimti daiktų tipų !</value>
   </data>
   <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Kortelių grobis išjungtas!</value>
+    <value>Daiktų paėmimas išjungtas!</value>
   </data>
   <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Kortelių grobis įjungtas!</value>
+    <value>Daiktų paėmimas įjungtas!</value>
   </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Mainai išsiųsti sėkmingai!</value>
   </data>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Kortelių grobis laikinai išjungtas!</value>
+    <value>Daiktų paėmimas laikinai išjungtas!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
-    <value>Jūs negalite mainyti su savimi!</value>
+    <value>Jūs negalite siūsti mainų prašymo saui!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Šis botas neturi ASF 2FA įjungto! Ar jūs pamiršote importuoti savo autentifikatorių kaip ASF 2FA?</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
-    <value>Šis boto atvejis nėra prijungtas!</value>
+    <value>Šis botas nėra prijungtas!</value>
   </data>
   <data name="BotNotOwnedYet" xml:space="preserve">
     <value>Dar neturi: {0}</value>
@@ -504,7 +498,7 @@
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>Dažnumo limitas viršytas, bandysime dar kartą po {0} pauzės...</value>
+    <value>Dažnio limitas viršytas, bandysime dar kartą po {0} pauzės...</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
@@ -525,7 +519,7 @@
     <value>Botas nerenka kortelių.</value>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>Botas yra ribotas ir negali gauti jokių kortelių iš rinkimo.</value>
+    <value>Botas turi apribojimas ir negali gauti jokių kortelių iš rinkimo.</value>
   </data>
   <data name="BotStatusConnecting" xml:space="preserve">
     <value>Botas jungiasi prie Steam tinklo.</value>
@@ -548,7 +542,7 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="UnusedKeys" xml:space="preserve">
-    <value>Nepanaudoti cd-raktai: {0}</value>
+    <value>Nepanaudoti CD-raktai: {0}</value>
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
@@ -559,10 +553,10 @@
     <value>Ryšys su Steam tinklu prarastas. Bandoma prisijungti iš naujo...</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
-    <value>Paskyra nebėra užimt: kortelių rinkimo procesas tęsiamas!</value>
+    <value>Paskyra nebėra užimta: kortelių rinkimo procesas tęsiamas!</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
-    <value>Paskyra šiuo metu yra naudojama: ASF tęs kortelių rinkimą kai ji atsilaisvins...</value>
+    <value>Paskyra šiuo metu yra naudojama: ASF tęs kortelių rinkimą, kai ji atsilaisvins...</value>
   </data>
   <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
     <value>Pasidalinta biblioteka nebuvo įjungta per duota laiko periodą. Kortelių rinkimo procesas tęstas!</value>
@@ -640,11 +634,11 @@
     <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
   </data>
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
-    <value>Peržiūrima Steam atradimo eilė #{0}...</value>
+    <value>Peržiūrima Steam "Discovery queue" #{0}...</value>
     <comment>{0} will be replaced by queue number</comment>
   </data>
   <data name="DoneClearingDiscoveryQueue" xml:space="preserve">
-    <value>Baigta peržiūrėti Steam atradimo eilė #{0}.</value>
+    <value>Baigta peržiūrėti Steam "Discovery queue" #{0}.</value>
     <comment>{0} will be replaced by queue number</comment>
   </data>
   <data name="BotOwnsOverviewPerGame" xml:space="preserve">
@@ -652,15 +646,18 @@
     <comment>{0} will be replaced by number of bots that already own particular game being checked, {1} will be replaced by total number of bots that were checked during the process, {2} will be replaced by game's ID (number)</comment>
   </data>
   <data name="BotRefreshingPackagesData" xml:space="preserve">
-    <value>Atnaujinimi duomenų paketai...</value>
+    <value>Atnaujinami duomenų paketai...</value>
   </data>
   <data name="WarningDeprecated" xml:space="preserve">
     <value>Naudojimas {0} yra nebeaktualus ir bus pašalintas būsimose programos versijose. Vietoj to naudokite {1}.</value>
     <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
   </data>
   <data name="BotAcceptedDonationTrade" xml:space="preserve">
-    <value>Priimti donorystės mainai: {0}</value>
+    <value>Priimti dovanos mainai: {0}</value>
     <comment>{0} will be replaced by trade's ID (number)</comment>
   </data>
-  
+  <data name="WarningWorkaroundTriggered" xml:space="preserve">
+    <value>Sprendimas klaidai {0} buvo suaktyvintas.</value>
+    <comment>{0} will be replaced by the bug's name provided by ASF</comment>
+  </data>
 </root>

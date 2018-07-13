@@ -280,10 +280,6 @@ StackTrace:
     <value>Valor desconhecido recebido por {0}, por favor reporte isto: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
-  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Não é possível jogar {0} ao mesmo tempo, apenas {0} jogos vão usados com {1}!</value>
-    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
   <data name="IPCReady" xml:space="preserve">
     <value>Servidor IPC pronto!</value>
   </data>
@@ -451,18 +447,12 @@ StackTrace:
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>Não iniciar este bot porque está desligado no ficheiro de configuração!</value>
   </data>
-  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Um código de erro foi recebido {0} vezes seguidas, isso quase sempre indica que os credenciais da autenticação de dois fatores estão
-inválidas, abortando!</value>
-    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
-  </data>
+  
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Desconectado da Steam: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  <data name="BotLoggedOn" xml:space="preserve">
-    <value>Login bem sucedido!</value>
-  </data>
+  
   <data name="BotLoggingIn" xml:space="preserve">
     <value>A iniciar sessão...</value>
   </data>
