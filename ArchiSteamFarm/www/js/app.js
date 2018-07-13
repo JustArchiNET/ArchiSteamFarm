@@ -162,7 +162,7 @@ function logCommand(state, cmd) {
 
 function sendCommand() {
     var command = $cmdInput.val(),
-        requestURL = '/Api/Command/' + command, 
+        requestURL = '/Api/Command/' + encodeURIComponent(command), 
         tmpAutoClear = get('autoClear');
 
     if (command === '') return;
