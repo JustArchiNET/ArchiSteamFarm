@@ -464,7 +464,7 @@
 
                                         TimeRemaining = moment.duration(TimeRemaining).asMilliseconds();
 
-                                        boxBodyHTML = '<div class="box-body" id="' + BotName + '">'
+                                        boxBodyHTML = '<div class="box-body" id="' + BotName + '" style="display: none;">'
                                             + '<div class="row">'
                                             + '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">'
                                             + '<span class="pull-left"><i class="far fa-clock"></i> ' + humanizeDuration(TimeRemaining) + '</span>'
@@ -497,8 +497,8 @@
                                 + deleteBotHTML
                                 + expandBoxHTML
                                 + '</div>'
-                                + boxBodyHTML
                                 + '</div>'
+                                + boxBodyHTML
                                 + '</div>'
                                 + '</div>');
 
