@@ -111,6 +111,7 @@
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
                                     <li><button data-i18n="title-bots-online" title="Toggle online bots" type="button" class="btn btn-box-tool text-grey" id="chkHideOnlineBots"><i id="iconHideOnlineBots" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-hide-online">Online bots</span></li>
+									<li><button data-i18n="title-bots-inactive" title="Toggle inactive bots" type="button" class="btn btn-box-tool text-grey" id="chkHideInactiveBots"><i id="iconHideInactiveBots" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-hide-inactive">Inactive bots</span></li>
                                     <li><button data-i18n="title-bots-offline" title="Toggle offline bots" type="button" class="btn btn-box-tool text-grey" id="chkHideOfflineBots"><i id="iconHideOfflineBots" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-hide-offline">Offline bots</span></li>
                                 </ul>
                             </div>
@@ -176,6 +177,7 @@
             store('CurrentPage', 'pages/bots.html');
 
             var tmpHideOnlineBots = get('hideOnlineBots'),
+				tmpHideInactiveBots = get('hideInactiveBots'),
                 tmpHideOfflineBots = get('hideOfflineBots'),
                 tmpShowDeleteButton = get('showDeleteButton'),
                 tmpShowKeyButton = get('showKeyButton'),
@@ -222,6 +224,12 @@
                     $('#chkHideOnlineBots').addClass('text-olive');
                     $('#iconHideOnlineBots').removeClass('fa-rotate-180');
                 }
+				
+				if (tmpHideInactiveBots === 'true') {
+                    $('#chkHideInactiveBots').removeClass('text-grey');
+                    $('#chkHideInactiveBots').addClass('text-olive');
+                    $('#iconHideInactiveBots').removeClass('fa-rotate-180');
+                }
 
                 if (tmpHideOfflineBots === 'true') {
                     $('#chkHideOfflineBots').removeClass('text-grey');
@@ -229,7 +237,7 @@
                     $('#iconHideOfflineBots').removeClass('fa-rotate-180');
                 }
 
-                if (tmpHideOnlineBots !== 'true' || tmpHideOfflineBots !== 'true') loadPageContent();
+                if (tmpHideOnlineBots !== 'true' || tmpHideInactiveBots !== 'true' || tmpHideOfflineBots !== 'true') loadPageContent();
 
                 if (tmpShowDeleteButton === 'true') {
                     $('#chkShowDeleteButton').removeClass('text-grey');
@@ -282,6 +290,21 @@
                     $('#chkHideOnlineBots').removeClass('text-olive');
                     $('#chkHideOnlineBots').addClass('text-grey');
                     store('hideOnlineBots', false);
+                }
+                loadPageContent();
+            });
+			
+			$('#chkHideInactiveBots').click(function () {
+                if ($('#iconHideInactiveBots').hasClass('fa-rotate-180')) {
+                    $('#iconHideInactiveBots').removeClass('fa-rotate-180');
+                    $('#chkHideInactiveBots').removeClass('text-grey');
+                    $('#chkHideInactiveBots').addClass('text-olive');
+                    store('hideInactiveBots', true);
+                } else {
+                    $('#iconHideInactiveBots').addClass('fa-rotate-180');
+                    $('#chkHideInactiveBots').removeClass('text-olive');
+                    $('#chkHideInactiveBots').addClass('text-grey');
+                    store('hideInactiveBots', false);
                 }
                 loadPageContent();
             });
@@ -338,6 +361,7 @@
 
             function loadPageContent() {
                 var tmpHideOnlineBots = get('hideOnlineBots'),
+					tmpHideInactiveBots = get('hideInactiveBots'),
                     tmpHideOfflineBots = get('hideOfflineBots'),
                     tmpShowDeleteButton = get('showDeleteButton'),
                     tmpDelimiter = get('delimiter'),
@@ -397,7 +421,7 @@
                                 if (tmpHideOfflineBots === 'true') continue;
                                 boxColorHTML = 'box-gray';
                                 startOrStopHTML = '<button title="Start <' + BotName + '>" type="button" class="btn btn-box-tool bot-stopped" data-command="startBot"><i class="fas fa-power-off"></i></button>';
-                            } else { // Bot is idling
+                            } else { // Bot is online
                                 if (tmpHideOnlineBots === 'true') continue;
                                 boxColorHTML = 'box-warning';
                                 startOrStopHTML = '<button title="Stop <' + BotName + '>" type="button" class="btn btn-box-tool bot-started" data-command="stopBot"><i class="fas fa-power-off"></i></button>';
@@ -476,7 +500,9 @@
                                             + '</div>'
                                             + allGamesHTML
                                             + '</div>'
-                                    }
+                                    } else { // Bot is inactive
+										if (tmpHideInactiveBots === 'true') continue;
+									}
                                 }
 
                                 if (Paused) {
