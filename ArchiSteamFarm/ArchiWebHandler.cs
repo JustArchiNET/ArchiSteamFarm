@@ -1507,7 +1507,7 @@ namespace ArchiSteamFarm {
 
 				uint realAppID = appID;
 				Steam.Asset.EType type = Steam.Asset.EType.Unknown;
-                bool Marketable = false;
+                bool Marketable = true;
 
                 if (descriptions.TryGetValue(classID, out (uint AppID, Steam.Asset.EType Type, bool Marketable) description)) {
 					realAppID = description.AppID;
