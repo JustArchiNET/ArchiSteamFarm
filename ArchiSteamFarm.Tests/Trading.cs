@@ -200,7 +200,7 @@ namespace ArchiSteamFarm.Tests {
 				throw new ArgumentNullException(nameof(method));
 			}
 
-			return (bool) method.Invoke(null, new object[] { inventory, itemsToGive, itemsToReceive });
+			return (bool) method.Invoke(null, new object[] { inventory, itemsToGive, itemsToReceive, false });
 		}
 
 		private static Steam.Asset GenerateSteamCommunityItem(ulong classID, uint amount, uint realAppID, Steam.Asset.EType type) => new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, classID, amount, realAppID, type);
