@@ -41,6 +41,9 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool AutoSteamSaleEvent;
 
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly EBotBehaviour BotBehaviour;
+
 		[JsonProperty]
 		internal readonly string CustomGamePlayedWhileFarming;
 
@@ -82,13 +85,13 @@ namespace ArchiSteamFarm {
 		internal readonly EPersonaState OnlineStatus = EPersonaState.Online;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly CryptoHelper.ECryptoMethod PasswordFormat = CryptoHelper.ECryptoMethod.PlainText;
+		internal readonly CryptoHelper.ECryptoMethod PasswordFormat;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool Paused;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ERedeemingPreferences RedeemingPreferences = ERedeemingPreferences.None;
+		internal readonly ERedeemingPreferences RedeemingPreferences;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool SendOnFarmingFinished;
@@ -106,13 +109,10 @@ namespace ArchiSteamFarm {
 		internal readonly Dictionary<ulong, EPermission> SteamUserPermissions = new Dictionary<ulong, EPermission>();
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ETradingPreferences TradingPreferences = ETradingPreferences.None;
+		internal readonly ETradingPreferences TradingPreferences;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool UseLoginKeys = true;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal EBotBehaviour BotBehaviour { get; private set; } = EBotBehaviour.None;
 
 		[JsonProperty]
 		internal string SteamLogin { get; set; }
@@ -127,31 +127,6 @@ namespace ArchiSteamFarm {
 		internal string SteamPassword { get; set; }
 
 		private bool ShouldSerializeSensitiveDetails = true;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		private bool DismissInventoryNotifications {
-			set {
-				ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, nameof(DismissInventoryNotifications), nameof(BotBehaviour)));
-
-				if (value) {
-					BotBehaviour |= EBotBehaviour.DismissInventoryNotifications;
-				}
-			}
-		}
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		private EFarmingOrder FarmingOrder {
-			set {
-				ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, nameof(FarmingOrder), nameof(FarmingOrders)));
-
-				if (!Enum.IsDefined(typeof(EFarmingOrder), value)) {
-					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(FarmingOrder), value));
-					return;
-				}
-
-				FarmingOrders.Add(value);
-			}
-		}
 
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamMasterClanID), Required = Required.DisallowNull)]
 		private string SSteamMasterClanID {
