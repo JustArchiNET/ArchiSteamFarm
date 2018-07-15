@@ -452,7 +452,10 @@
     <value>退出Steam登录︰ {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  
+  <data name="BotLoggedOn" xml:space="preserve">
+    <value>已成功以 {0} 的身份登录。</value>
+    <comment>{0} will be replaced by steam ID (number)</comment>
+  </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>登录中……</value>
   </data>
