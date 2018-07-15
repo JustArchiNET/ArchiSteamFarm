@@ -422,7 +422,9 @@ export default {
                             { value: 10, name: 'BadgeLevelsAscending' },
                             { value: 11, name: 'BadgeLevelsDescending' },
                             { value: 12, name: 'RedeemDateTimesAscending' },
-                            { value: 13, name: 'RedeemDateTimesDescending' }
+                            { value: 13, name: 'RedeemDateTimesDescending' },
+                            { value: 14, name: 'MarketableAscending' },
+                            { value: 15, name: 'MarketableDescending' }
                         ]
                     },
                     {
@@ -944,9 +946,7 @@ export default {
                             { value: 10, name: 'BadgeLevelsAscending' },
                             { value: 11, name: 'BadgeLevelsDescending' },
                             { value: 12, name: 'RedeemDateTimesAscending' },
-                            { value: 13, name: 'RedeemDateTimesDescending' },
-                            { value: 14, name: 'MarketableAscending' },
-                            { value: 15, name: 'MarketableDescending' }
+                            { value: 13, name: 'RedeemDateTimesDescending' }
                         ],
                         defaultValue: 0
                     },
