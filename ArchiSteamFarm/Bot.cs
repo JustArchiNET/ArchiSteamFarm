@@ -323,7 +323,9 @@ namespace ArchiSteamFarm {
 					File.Delete(KeysToRedeemFilePath);
 				}
 
-				DeleteRedeemedKeysFiles();
+				if (!DeleteRedeemedKeysFiles()) {
+					return false;
+				}
 
 				if (File.Exists(MobileAuthenticatorFilePath)) {
 					File.Delete(MobileAuthenticatorFilePath);
