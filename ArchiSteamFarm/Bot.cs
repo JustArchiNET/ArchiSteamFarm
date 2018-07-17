@@ -353,8 +353,7 @@ namespace ArchiSteamFarm {
 				}
 
 				return true;
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 				return false;
 			}
