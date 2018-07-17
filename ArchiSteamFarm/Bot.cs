@@ -699,7 +699,7 @@ namespace ArchiSteamFarm {
 
 					break;
 				default:
-					results = await Task.WhenAll(tasks).ConfigureAwait(false);//results will be the same order as in input per documentation on MSDN
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
 					break;
 			}
 
