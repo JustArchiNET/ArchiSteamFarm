@@ -693,9 +693,7 @@ namespace ArchiSteamFarm {
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					results = new List<Dictionary<string, string>>();
-					results.Append(await task1.ConfigureAwait(false));
-					results.Append(await task2.ConfigureAwait(false));
+					results = new List<Dictionary<string, string>>(await task1, await task2);
 
 					break;
 				default:
