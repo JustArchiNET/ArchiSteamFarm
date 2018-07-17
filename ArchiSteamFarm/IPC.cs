@@ -501,12 +501,57 @@ namespace ArchiSteamFarm {
 			}
 
 			switch (request.HttpMethod) {
+				case HttpMethods.Delete:
+					return await HandleApiGamesToRedeemInBackgroundDelete(request, response, arguments, argumentsIndex).ConfigureAwait(false);
 				case HttpMethods.Post:
 					return await HandleApiGamesToRedeemInBackgroundPost(request, response, arguments, argumentsIndex).ConfigureAwait(false);
 				default:
 					await ResponseStatusCode(request, response, HttpStatusCode.MethodNotAllowed).ConfigureAwait(false);
 					return true;
 			}
+		}
+
+		private static async Task<bool> HandleApiGamesToRedeemInBackgroundDelete(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			if (arguments.Length <= argumentsIndex) {
+				return false;
+			}
+
+			string argument = WebUtility.UrlDecode(string.Join("", arguments.Skip(argumentsIndex)));
+
+			HashSet<Bot> bots = Bot.GetBots(argument);
+			if ((bots == null) || (bots.Count == 0)) {
+				await ResponseJsonObject(request, response, new GenericResponse<object>(false, string.Format(Strings.BotNotFound, argument)), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			IEnumerable<Task<bool>> tasks = bots.Select(bot => Task.Run(() => bot.DeleteRedeemedKeysFiles()));
+			ICollection<bool> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<bool>(bots.Count);
+					foreach (Task<bool> task in tasks) {
+						results.Add(await task.ConfigureAwait(false));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+
+			if (results.Any(result => !result)) {
+				await ResponseJsonObject(request, response, new GenericResponse<object>(false, "Removing one or more files failed, check ASF log for details"), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			await ResponseJsonObject(request, response, new GenericResponse<object>(true, "OK")).ConfigureAwait(false);
+			return true;
 		}
 
 		private static async Task<bool> HandleApiGamesToRedeemInBackgroundPost(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
@@ -1224,6 +1269,16 @@ namespace ArchiSteamFarm {
 
 			// Deserialized from JSON
 			private GamesToRedeemInBackgroundRequest() { }
+		}
+
+		private sealed class GamesToRedeemInBackgroundResponse {
+			[JsonProperty(Required = Required.Always)]
+			internal readonly OrderedDictionary Used;
+
+			[JsonProperty(Required = Required.Always)]
+			internal readonly OrderedDictionary Unused;
+
+			private GamesToRedeemInBackgroundResponse() { }
 		}
 
 		private sealed class GenericResponse<T> where T : class {

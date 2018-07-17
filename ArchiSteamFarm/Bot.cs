@@ -323,13 +323,7 @@ namespace ArchiSteamFarm {
 					File.Delete(KeysToRedeemFilePath);
 				}
 
-				if (File.Exists(KeysToRedeemUnusedFilePath)) {
-					File.Delete(KeysToRedeemUnusedFilePath);
-				}
-
-				if (File.Exists(KeysToRedeemUsedFilePath)) {
-					File.Delete(KeysToRedeemUsedFilePath);
-				}
+				DeleteRedeemedKeysFiles();
 
 				if (File.Exists(MobileAuthenticatorFilePath)) {
 					File.Delete(MobileAuthenticatorFilePath);
@@ -341,6 +335,24 @@ namespace ArchiSteamFarm {
 
 				return true;
 			} catch (Exception e) {
+				ArchiLogger.LogGenericException(e);
+				return false;
+			}
+		}
+
+		internal bool DeleteRedeemedKeysFiles() {
+			try {
+				if (File.Exists(KeysToRedeemUnusedFilePath)) {
+					File.Delete(KeysToRedeemUnusedFilePath);
+				}
+
+				if (File.Exists(KeysToRedeemUsedFilePath)) {
+					File.Delete(KeysToRedeemUsedFilePath);
+				}
+
+				return true;
+			}
+			catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 				return false;
 			}
