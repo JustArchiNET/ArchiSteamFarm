@@ -357,6 +357,7 @@
                     success: function (data) {
                         var json = data['Result'],
                             steamAvatarBaseURL = 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/',
+							steamAvatarDefault = 'fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb.jpg',
                             steamGameBaseURL = 'http://cdn.edgecast.steamstatic.com/steam/apps/',
                             totalGamesRemaining = 0,
                             totalTimeRemaining = '00:00:00',
@@ -387,7 +388,7 @@
                                 var folder = AvatarHash.substring(0, 2);
                                 avatarHTML = steamAvatarBaseURL + folder + '/' + AvatarHash + '.jpg';
                             } else {
-                                avatarHTML = steamAvatarBaseURL + 'fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb.jpg';
+                                avatarHTML = steamAvatarBaseURL + steamAvatarDefault;
                             }
 							
 							profileHTML = '<img src="' + avatarHTML + '">';
