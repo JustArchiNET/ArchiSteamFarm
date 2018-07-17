@@ -712,8 +712,19 @@ namespace ArchiSteamFarm {
 			Type targetType = Type.GetType(argument);
 
 			if (targetType == null) {
-				await ResponseJsonObject(request, response, new GenericResponse<TypeResponse>(false, string.Format(Strings.ErrorIsInvalid, nameof(argument))), HttpStatusCode.BadRequest).ConfigureAwait(false);
-				return true;
+				// We can try one more time by trying to smartly guess the assembly name from the namespace, this will work for custom libraries like SteamKit2
+				int index = argument.IndexOf('.');
+				if ((index <= 0) || (index >= argument.Length - 1)) {
+					await ResponseJsonObject(request, response, new GenericResponse<TypeResponse>(false, string.Format(Strings.ErrorIsInvalid, nameof(argument))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+					return true;
+				}
+
+				targetType = Type.GetType(argument + "," + argument.Substring(0, index));
+
+				if (targetType == null) {
+					await ResponseJsonObject(request, response, new GenericResponse<TypeResponse>(false, string.Format(Strings.ErrorIsInvalid, nameof(argument))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+					return true;
+				}
 			}
 
 			string baseType = targetType.BaseType?.GetUnifiedName();
