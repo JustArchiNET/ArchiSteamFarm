@@ -503,6 +503,8 @@ namespace ArchiSteamFarm {
 			switch (request.HttpMethod) {
 				case HttpMethods.Delete:
 					return await HandleApiGamesToRedeemInBackgroundDelete(request, response, arguments, argumentsIndex).ConfigureAwait(false);
+				case HttpMethods.Get:
+					return await HandleApiGamesToRedeemInBackgroundGet(request, response, arguments, argumentsIndex).ConfigureAwait(false);
 				case HttpMethods.Post:
 					return await HandleApiGamesToRedeemInBackgroundPost(request, response, arguments, argumentsIndex).ConfigureAwait(false);
 				default:
@@ -551,6 +553,56 @@ namespace ArchiSteamFarm {
 			}
 
 			await ResponseJsonObject(request, response, new GenericResponse<object>(true, "OK")).ConfigureAwait(false);
+			return true;
+		}
+
+		private static async Task<bool> HandleApiGamesToRedeemInBackgroundGet(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			if (arguments.Length <= argumentsIndex) {
+				return false;
+			}
+
+			string argument = WebUtility.UrlDecode(string.Join("", arguments.Skip(argumentsIndex)));
+
+			HashSet<Bot> bots = Bot.GetBots(argument);
+			if ((bots == null) || (bots.Count == 0)) {
+				await ResponseJsonObject(request, response, new GenericResponse<object>(false, string.Format(Strings.BotNotFound, argument)), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			IEnumerable<Task<(bool, GamesToRedeemInBackgroundResponse)>> tasks = bots.Select(bot => Task.Run(() => {
+				OrderedDictionary usedKeys = bot.GetUsedKeys().Result;
+				OrderedDictionary unusedKeys = bot.GetUnusedKeys().Result;
+
+				if(usedKeys == null || unusedKeys == null) {
+					return (false, null);
+				}
+
+				return (true, new GamesToRedeemInBackgroundResponse(usedKeys, unusedKeys));
+			}));
+			IEnumerable<GamesToRedeemInBackgroundResponse> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<GamesToRedeemInBackgroundResponse>();
+					foreach (Task<(bool, GamesToRedeemInBackgroundResponse)> task in tasks) {
+						(bool success, GamesToRedeemInBackgroundResponse response) result = await task.ConfigureAwait(false);
+						if (result.success) {
+							results.Append(result.response);
+						}
+					}
+
+					break;
+				default:
+					results = (await Task.WhenAll(tasks).ConfigureAwait(false)).Where(result => result.Item1).Select(result => result.Item2);
+					break;
+			}
+
+			await ResponseJsonObject(request, response, new GenericResponse<object>(true, "OK", results)).ConfigureAwait(false);
 			return true;
 		}
 
@@ -1273,12 +1325,15 @@ namespace ArchiSteamFarm {
 
 		private sealed class GamesToRedeemInBackgroundResponse {
 			[JsonProperty(Required = Required.Always)]
-			internal readonly OrderedDictionary Used;
+			internal readonly OrderedDictionary UsedKeys;
 
 			[JsonProperty(Required = Required.Always)]
-			internal readonly OrderedDictionary Unused;
+			internal readonly OrderedDictionary UnusedKeys;
 
-			private GamesToRedeemInBackgroundResponse() { }
+			internal GamesToRedeemInBackgroundResponse(OrderedDictionary used, OrderedDictionary unused) {
+				UsedKeys = used;
+				UnusedKeys = unused;
+			}
 		}
 
 		private sealed class GenericResponse<T> where T : class {
