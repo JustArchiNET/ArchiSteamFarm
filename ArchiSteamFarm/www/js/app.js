@@ -460,15 +460,6 @@ function prepareConfigForSaving() {
 
                     if ($keyValue !== value) config[key] = $keyValue;
                     break;
-					
-				case 'System.Net.WebProxy':
-                    if ($keyValue === '') {
-                        $keyValue = null;
-                        break;
-                    }
-
-                    if ($keyValue !== value) config[key] = $keyValue;
-                    break;
 
                 case 'System.UInt64':
                     if ($keyValue !== config['s_' + key]) {
@@ -689,11 +680,6 @@ function prepareConfigForDownload(mode) {
                     break;
 
                 case 'System.String':
-                    if ($keyValue === '') $keyValue = null;
-                    if ($keyValue !== value) config[key] = $keyValue;
-                    break;
-					
-				case 'System.Net.WebProxy':
                     if ($keyValue === '') $keyValue = null;
                     if ($keyValue !== value) config[key] = $keyValue;
                     break;
