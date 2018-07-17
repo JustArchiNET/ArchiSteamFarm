@@ -685,7 +685,27 @@ namespace ArchiSteamFarm {
 			return await ArchiWebHandler.GetTradeHoldDurationForTrade(tradeID).ConfigureAwait(false);
 		}
 
-		internal async Task<(Dictionary<string, string> Used, Dictionary<string, string> Unused)> GetUsedAndUnusedKeys() => (await GetKeysFromFile(KeysToRedeemUsedFilePath).ConfigureAwait(false), await GetKeysFromFile(KeysToRedeemUnusedFilePath).ConfigureAwait(false));
+		internal async Task<(Dictionary<string, string> Used, Dictionary<string, string> Unused)> GetUsedAndUnusedKeys() {
+			ICollection<string> fileNames = new List<string>(new string[] { KeysToRedeemUsedFilePath, KeysToRedeemUnusedFilePath });
+
+			IEnumerable<Task<Dictionary<string, string>>> tasks = fileNames.Select(fileName => GetKeysFromFile(fileName));
+			ICollection<Dictionary<string, string>> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<Dictionary<string, string>>();
+					foreach(Task<Dictionary<string, string>> task in tasks) {
+						results.Append(await task.ConfigureAwait(false));
+					}
+
+					break;
+				default:
+					results = (await Task.WhenAll(tasks).ConfigureAwait(false));//results will be the same order as in input per documentation on MSDN
+					break;
+			}
+
+			return (results.ElementAt(0), results.ElementAt(1));
+		}
 
 		internal async Task IdleGame(CardsFarmer.Game game) {
 			if (game == null) {
