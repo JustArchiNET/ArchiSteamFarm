@@ -599,8 +599,7 @@ namespace ArchiSteamFarm {
 				}
 
 				return keys;
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 				return new Dictionary<string, string>();
 			}
