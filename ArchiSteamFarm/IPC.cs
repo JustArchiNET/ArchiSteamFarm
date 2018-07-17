@@ -574,25 +574,27 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			IEnumerable<Task<(Dictionary<string, string> used, Dictionary<string, string> unused)>> tasks = bots.Select(bot => bot.GetUsedAndUnusedKeys());
-			IEnumerable<GamesToRedeemInBackgroundResponse> results;
+			IEnumerable<Task<(Dictionary<string, string> Used, Dictionary<string, string> Unused)>> tasks = bots.Select(bot => bot.GetUsedAndUnusedKeys());
+			ICollection<(Dictionary<string, string> Used, Dictionary<string, string> Unused)> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					results = new List<GamesToRedeemInBackgroundResponse>();
+					results = new List<(Dictionary<string, string> used, Dictionary<string, string> unused)>();
 					foreach (Task<(Dictionary<string, string> used, Dictionary<string, string> unused)> task in tasks) {
-						(Dictionary<string, string> used, Dictionary<string, string> unused) = await task.ConfigureAwait(false);
+						(Dictionary<string, string> Used, Dictionary<string, string> Unused) result = await task.ConfigureAwait(false);
 
-						results.Append(new GamesToRedeemInBackgroundResponse(used, unused));
+						results.Append(result);
 					}
 
 					break;
 				default:
-					results = (await Task.WhenAll(tasks).ConfigureAwait(false)).Select(result => new GamesToRedeemInBackgroundResponse(result.used, result.unused));
+					results = (await Task.WhenAll(tasks).ConfigureAwait(false));
 					break;
 			}
 
-			await ResponseJsonObject(request, response, new GenericResponse<object>(true, "OK", results)).ConfigureAwait(false);
+			IEnumerable<GamesToRedeemInBackgroundResponse> responses = results.Select(result => new GamesToRedeemInBackgroundResponse(result.Used, result.Unused));
+
+			await ResponseJsonObject(request, response, new GenericResponse<object>(true, "OK", responses)).ConfigureAwait(false);
 			return true;
 		}
 
