@@ -226,25 +226,6 @@
                 sendCommand();
                 e.preventDefault();
             });
-			
-			$(window).resize(function() {
-				//resize just happened, check for dropUp or dropDown
-				if (shouldDropUp()) {
-					$cmdsDropDownBox.addClass('dropup');
-					$botsDropDownBox.addClass('dropup');
-					$('#iconCmdsDropDownBox').removeClass('fa-caret-down');
-					$('#iconCmdsDropDownBox').addClass('fa-caret-up');
-					$('#iconBotsDropDownBox').removeClass('fa-caret-down');
-					$('#iconBotsDropDownBox').addClass('fa-caret-up');
-				} else {
-					$cmdsDropDownBox.removeClass('dropup');
-					$botsDropDownBox.removeClass('dropup');
-					$('#iconCmdsDropDownBox').removeClass('fa-caret-up');
-					$('#iconCmdsDropDownBox').addClass('fa-caret-down');
-					$('#iconBotsDropDownBox').removeClass('fa-caret-up');
-					$('#iconBotsDropDownBox').addClass('fa-caret-down');
-				}
-			});
 
             //#region Merge to one function
             $(document).keydown(function (e) {
