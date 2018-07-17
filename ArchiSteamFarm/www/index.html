@@ -20,8 +20,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.parser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.emitter.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.emitter.bidi.min.js"></script>
-    <script src="../js/utils.js"></script>
-    <script src="../js/i18n.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/i18n.js"></script>
+	<link rel="stylesheet" href="css/app.css">
+	<link rel="stylesheet" href="css/_nightmode.min.css">
 </head>
 <body class="hold-transition lockscreen">
     <div class="lockscreen-wrapper">
@@ -57,7 +59,10 @@
 
                 var tmpIsAuthorized = get('IsAuthorized'),
                     tmpLastPage = get('CurrentPage'),
+					tmpNightmodeState = get('nightmodeState'),
                     redirectPage = 'pages/commands.html';
+					
+				if (tmpNightmodeState === 'nightmode') $('html').addClass('nightmode');
 
                 if (tmpLastPage) {
                     redirectPage = tmpLastPage;
