@@ -574,26 +574,21 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			IEnumerable<Task<(bool, GamesToRedeemInBackgroundResponse)>> tasks = bots.Select(bot => Task.Run(async () => {
-				(Dictionary<string, string> used, Dictionary<string, string> unused) = await bot.GetUsedAndUnusedKeys().ConfigureAwait(false);
-
-				return (true, new GamesToRedeemInBackgroundResponse(used, unused));
-			}));
+			IEnumerable<Task<(Dictionary<string, string> used, Dictionary<string, string> unused)>> tasks = bots.Select(bot => bot.GetUsedAndUnusedKeys());
 			IEnumerable<GamesToRedeemInBackgroundResponse> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
 					results = new List<GamesToRedeemInBackgroundResponse>();
-					foreach (Task<(bool, GamesToRedeemInBackgroundResponse)> task in tasks) {
-						(bool success, GamesToRedeemInBackgroundResponse response) result = await task.ConfigureAwait(false);
-						if (result.success) {
-							results.Append(result.response);
-						}
+					foreach (Task<(Dictionary<string, string> used, Dictionary<string, string> unused)> task in tasks) {
+						(Dictionary<string, string> used, Dictionary<string, string> unused) = await task.ConfigureAwait(false);
+
+						results.Append(new GamesToRedeemInBackgroundResponse(used, unused));
 					}
 
 					break;
 				default:
-					results = (await Task.WhenAll(tasks).ConfigureAwait(false)).Where(result => result.Item1).Select(result => result.Item2);
+					results = (await Task.WhenAll(tasks).ConfigureAwait(false)).Select(result => new GamesToRedeemInBackgroundResponse(result.used, result.unused));
 					break;
 			}
 
