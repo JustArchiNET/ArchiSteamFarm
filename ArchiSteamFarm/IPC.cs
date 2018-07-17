@@ -575,14 +575,9 @@ namespace ArchiSteamFarm {
 			}
 
 			IEnumerable<Task<(bool, GamesToRedeemInBackgroundResponse)>> tasks = bots.Select(bot => Task.Run(async () => {
-				Dictionary<string, string> usedKeys = await bot.GetUsedKeys().ConfigureAwait(false);
-				Dictionary<string, string> unusedKeys = await bot.GetUnusedKeys().ConfigureAwait(false);
+				(Dictionary<string, string> used, Dictionary<string, string> unused) = await bot.GetUsedAndUnusedKeys().ConfigureAwait(false);
 
-				if(usedKeys == null || unusedKeys == null) {
-					return (false, null);
-				}
-
-				return (true, new GamesToRedeemInBackgroundResponse(usedKeys, unusedKeys));
+				return (true, new GamesToRedeemInBackgroundResponse(used, unused));
 			}));
 			IEnumerable<GamesToRedeemInBackgroundResponse> results;
 
