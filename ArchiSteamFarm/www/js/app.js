@@ -266,8 +266,8 @@ function generateConfigHTML(mode) {
                 }
 
                 if (mode === 'ASF') {
-                    boxBodyHTML = '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">' + numberBoxes + '</div>'
-                        + '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">' + checkBoxes + textBoxes + defaultBoxes + textAreas + '</div>';
+                    boxBodyHTML = '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">' + checkBoxes + numberBoxes + '</div>'
+                        + '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">' + textBoxes + defaultBoxes + textAreas + '</div>';
                 } else {
                     boxBodyHTML = '<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">' + defaultBoxes + '</div>'
                         + '<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">' + textBoxes + numberBoxes + '</div>'
@@ -453,6 +453,15 @@ function prepareConfigForSaving() {
                     break;
 
                 case 'System.String':
+                    if ($keyValue === '') {
+                        $keyValue = null;
+                        break;
+                    }
+
+                    if ($keyValue !== value) config[key] = $keyValue;
+                    break;
+					
+				case 'System.Net.WebProxy':
                     if ($keyValue === '') {
                         $keyValue = null;
                         break;
@@ -680,6 +689,11 @@ function prepareConfigForDownload(mode) {
                     break;
 
                 case 'System.String':
+                    if ($keyValue === '') $keyValue = null;
+                    if ($keyValue !== value) config[key] = $keyValue;
+                    break;
+					
+				case 'System.Net.WebProxy':
                     if ($keyValue === '') $keyValue = null;
                     if ($keyValue !== value) config[key] = $keyValue;
                     break;
