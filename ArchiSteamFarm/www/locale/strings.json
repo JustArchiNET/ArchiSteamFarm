@@ -39,7 +39,7 @@
   "editor-current": "Currently editing:",
   "editor-current-bot": "Currently editing: <b>$1</b>",
   "editor-save": "Save",
-  "editor-save-confirm": "$1 and its config file got updated.",
+  "editor-save-confirm": "<$1> and its config file got updated.",
   "editor-title": "ASF | Config Editor",
   "editor-update": "The config will be updated and <$1> will be restarted!",
   "editor-update-confirm": "Yes, update config!",
