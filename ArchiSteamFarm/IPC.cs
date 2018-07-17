@@ -579,7 +579,7 @@ namespace ArchiSteamFarm {
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					results = new List<(Dictionary<string, string> used, Dictionary<string, string> unused)>();
+					results = new List<(Dictionary<string, string> used, Dictionary<string, string> unused)>(bots.Count);
 					foreach (Task<(Dictionary<string, string> used, Dictionary<string, string> unused)> task in tasks) {
 						(Dictionary<string, string> Used, Dictionary<string, string> Unused) result = await task.ConfigureAwait(false);
 
@@ -588,7 +588,7 @@ namespace ArchiSteamFarm {
 
 					break;
 				default:
-					results = (await Task.WhenAll(tasks).ConfigureAwait(false));
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
 					break;
 			}
 

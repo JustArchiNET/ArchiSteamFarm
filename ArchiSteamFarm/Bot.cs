@@ -686,21 +686,20 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<(Dictionary<string, string> Used, Dictionary<string, string> Unused)> GetUsedAndUnusedKeys() {
-			ICollection<string> fileNames = new List<string>(new string[] { KeysToRedeemUsedFilePath, KeysToRedeemUnusedFilePath });
+			Task<Dictionary<string, string>> task1 = GetKeysFromFile(KeysToRedeemUsedFilePath);
+			Task<Dictionary<string, string>> task2 = GetKeysFromFile(KeysToRedeemUnusedFilePath);
 
-			IEnumerable<Task<Dictionary<string, string>>> tasks = fileNames.Select(fileName => GetKeysFromFile(fileName));
 			ICollection<Dictionary<string, string>> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
 					results = new List<Dictionary<string, string>>();
-					foreach(Task<Dictionary<string, string>> task in tasks) {
-						results.Append(await task.ConfigureAwait(false));
-					}
+					results.Append(await task1.ConfigureAwait(false));
+					results.Append(await task2.ConfigureAwait(false));
 
 					break;
 				default:
-					results = (await Task.WhenAll(tasks).ConfigureAwait(false));//results will be the same order as in input per documentation on MSDN
+					results = (await Task.WhenAll(task1, task2).ConfigureAwait(false));//results will be the same order as in input per documentation on MSDN
 					break;
 			}
 
