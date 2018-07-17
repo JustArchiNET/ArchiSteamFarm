@@ -574,9 +574,9 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			IEnumerable<Task<(bool, GamesToRedeemInBackgroundResponse)>> tasks = bots.Select(bot => Task.Run(() => {
-				OrderedDictionary usedKeys = bot.GetUsedKeys().Result;
-				OrderedDictionary unusedKeys = bot.GetUnusedKeys().Result;
+			IEnumerable<Task<(bool, GamesToRedeemInBackgroundResponse)>> tasks = bots.Select(bot => Task.Run(async () => {
+				Dictionary<string, string> usedKeys = await bot.GetUsedKeys().ConfigureAwait(false);
+				Dictionary<string, string> unusedKeys = await bot.GetUnusedKeys().ConfigureAwait(false);
 
 				if(usedKeys == null || unusedKeys == null) {
 					return (false, null);
@@ -1325,14 +1325,14 @@ namespace ArchiSteamFarm {
 
 		private sealed class GamesToRedeemInBackgroundResponse {
 			[JsonProperty(Required = Required.Always)]
-			internal readonly OrderedDictionary UsedKeys;
+			internal readonly Dictionary<string, string> UsedKeys;
 
 			[JsonProperty(Required = Required.Always)]
-			internal readonly OrderedDictionary UnusedKeys;
+			internal readonly Dictionary<string, string> UnusedKeys;
 
-			internal GamesToRedeemInBackgroundResponse(OrderedDictionary used, OrderedDictionary unused) {
-				UsedKeys = used;
-				UnusedKeys = unused;
+			internal GamesToRedeemInBackgroundResponse(Dictionary<string, string> usedKeys, Dictionary<string, string> unusedKeys) {
+				UsedKeys = usedKeys;
+				UnusedKeys = unusedKeys;
 			}
 		}
 

@@ -568,6 +568,44 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
+		internal async Task<Dictionary<string, string>> GetKeysFromFile(string filePath) {
+			if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath)) {
+				ArchiLogger.LogNullError(nameof(filePath));
+				return new Dictionary<string, string>();
+			}
+
+			try {
+				Dictionary<string, string> keys = new Dictionary<string, string>();
+
+				using (StreamReader reader = new StreamReader(filePath)) {
+					string line;
+
+					while ((line = await reader.ReadLineAsync().ConfigureAwait(false)) != null) {
+						if (line.Length == 0) {
+							continue;
+						}
+
+						string[] parsedArgs = line.Split(DefaultBackgroundKeysRedeemerSeparator, StringSplitOptions.RemoveEmptyEntries);
+						if (parsedArgs.Length < 4) {
+							ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, line));
+							continue;
+						}
+
+						string name = parsedArgs[0];
+						string key = parsedArgs[3];
+
+						keys[key] = name;
+					}
+				}
+
+				return keys;
+			}
+			catch (Exception e) {
+				ArchiLogger.LogGenericException(e);
+				return new Dictionary<string, string>();
+			}
+		}
+
 		internal async Task<HashSet<uint>> GetMarketableAppIDs() => await ArchiWebHandler.GetAppList().ConfigureAwait(false);
 
 		internal async Task<Dictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)>> GetPackagesData(IReadOnlyCollection<uint> packageIDs) {
@@ -649,79 +687,9 @@ namespace ArchiSteamFarm {
 			return await ArchiWebHandler.GetTradeHoldDurationForTrade(tradeID).ConfigureAwait(false);
 		}
 
-		internal async Task<OrderedDictionary> GetUsedKeys() {
-			if (!File.Exists(KeysToRedeemUsedFilePath)) {
-				return new OrderedDictionary();
-			}
+		internal async Task<Dictionary<string, string>> GetUsedKeys() => await GetKeysFromFile(KeysToRedeemUsedFilePath).ConfigureAwait(false);
 
-			try {
-				OrderedDictionary usedKeys = new OrderedDictionary();
-
-				using (StreamReader reader = new StreamReader(KeysToRedeemUsedFilePath)) {
-					string line;
-
-					while ((line = await reader.ReadLineAsync().ConfigureAwait(false)) != null) {
-						if (line.Length == 0) {
-							continue;
-						}
-
-						string[] parsedArgs = line.Split(DefaultBackgroundKeysRedeemerSeparator, StringSplitOptions.RemoveEmptyEntries);
-						if (parsedArgs.Length < 4) {
-							ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, line));
-							continue;
-						}
-
-						string status = parsedArgs[1].Substring(1, parsedArgs[1].Length - 2);
-						string key = parsedArgs[3];
-
-						usedKeys[key] = status;
-					}
-				}
-
-				return usedKeys;
-			}
-			catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
-				return null;
-			}
-		}
-
-		internal async Task<OrderedDictionary> GetUnusedKeys() {
-			if (!File.Exists(KeysToRedeemUnusedFilePath)) {
-				return new OrderedDictionary();
-			}
-
-			try {
-				OrderedDictionary usedKeys = new OrderedDictionary();
-
-				using (StreamReader reader = new StreamReader(KeysToRedeemUnusedFilePath)) {
-					string line;
-
-					while ((line = await reader.ReadLineAsync().ConfigureAwait(false)) != null) {
-						if (line.Length == 0) {
-							continue;
-						}
-
-						string[] parsedArgs = line.Split(DefaultBackgroundKeysRedeemerSeparator, StringSplitOptions.RemoveEmptyEntries);
-						if (parsedArgs.Length < 4) {
-							ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, line));
-							continue;
-						}
-
-						string status = parsedArgs[1].Substring(1, parsedArgs[1].Length - 2);
-						string key = parsedArgs[3];
-
-						usedKeys[key] = status;
-					}
-				}
-
-				return usedKeys;
-			}
-			catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
-				return null;
-			}
-		}
+		internal async Task<Dictionary<string, string>> GetUnusedKeys() => await GetKeysFromFile(KeysToRedeemUnusedFilePath).ConfigureAwait(false);
 
 		internal async Task IdleGame(CardsFarmer.Game game) {
 			if (game == null) {
