@@ -1324,10 +1324,10 @@ namespace ArchiSteamFarm {
 		}
 
 		private sealed class GamesToRedeemInBackgroundResponse {
-			[JsonProperty(Required = Required.Always)]
+			[JsonProperty]
 			internal readonly Dictionary<string, string> UsedKeys;
 
-			[JsonProperty(Required = Required.Always)]
+			[JsonProperty]
 			internal readonly Dictionary<string, string> UnusedKeys;
 
 			internal GamesToRedeemInBackgroundResponse(Dictionary<string, string> usedKeys, Dictionary<string, string> unusedKeys) {
