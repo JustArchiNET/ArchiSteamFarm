@@ -724,11 +724,19 @@ namespace ArchiSteamFarm {
 
 			if (targetType.IsClass) {
 				foreach (FieldInfo field in targetType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(field => !field.IsPrivate)) {
-					body[field.Name] = field.FieldType.GetUnifiedName();
+					JsonPropertyAttribute jsonProperty = field.GetCustomAttribute<JsonPropertyAttribute>();
+
+					if (jsonProperty != null) {
+						body[jsonProperty.PropertyName ?? field.Name] = field.FieldType.GetUnifiedName();
+					}
 				}
 
 				foreach (PropertyInfo property in targetType.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(property => property.CanRead && !property.GetMethod.IsPrivate)) {
-					body[property.Name] = property.PropertyType.GetUnifiedName();
+					JsonPropertyAttribute jsonProperty = property.GetCustomAttribute<JsonPropertyAttribute>();
+
+					if (jsonProperty != null) {
+						body[jsonProperty.PropertyName ?? property.Name] = property.PropertyType.GetUnifiedName();
+					}
 				}
 			} else if (targetType.IsEnum) {
 				Type enumType = Enum.GetUnderlyingType(targetType);
