@@ -574,13 +574,13 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			IEnumerable<(string BotName, Task<(Dictionary<string, string> Used, Dictionary<string, string> Unused)> Task)> tasks = bots.Select(bot => (bot.BotName, bot.GetUsedAndUnusedKeys()));
-			ICollection<(string BotName, (Dictionary<string, string> Used, Dictionary<string, string> Unused))> results;
+			IEnumerable<(string BotName, Task<(Dictionary<string, string> UnusedKeys, Dictionary<string, string> UsedKeys)> Task)> tasks = bots.Select(bot => (bot.BotName, bot.GetUsedAndUnusedKeys()));
+			ICollection<(string BotName, (Dictionary<string, string> UnusedKeys, Dictionary<string, string> UsedKeys))> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					results = new List<(string BotName, (Dictionary<string, string> Used, Dictionary<string, string> Unused))>(bots.Count);
-					foreach ((string botName, Task<(Dictionary<string, string> Used, Dictionary<string, string> Unused)> task) in tasks) {
+					results = new List<(string BotName, (Dictionary<string, string> UnusedKeys, Dictionary<string, string> UsedKeys))>(bots.Count);
+					foreach ((string botName, Task<(Dictionary<string, string> UnusedKeys, Dictionary<string, string> UsedKeys)> task) in tasks) {
 						results.Add((botName, await task.ConfigureAwait(false)));
 					}
 
@@ -593,8 +593,8 @@ namespace ArchiSteamFarm {
 
 			Dictionary<string, GamesToRedeemInBackgroundResponse> jsonResponse = new Dictionary<string, GamesToRedeemInBackgroundResponse>();
 
-			foreach((string botName, (Dictionary<string, string> Used, Dictionary<string, string> Unused) keys) in results) {
-				jsonResponse[botName] = new GamesToRedeemInBackgroundResponse(keys.Used, keys.Unused);
+			foreach ((string botName, (Dictionary<string, string> UnusedKeys, Dictionary<string, string> UsedKeys) taskResult) in results) {
+				jsonResponse[botName] = new GamesToRedeemInBackgroundResponse(taskResult.UnusedKeys, taskResult.UsedKeys);
 			}
 
 			await ResponseJsonObject(request, response, new GenericResponse<Dictionary<string, GamesToRedeemInBackgroundResponse>>(true, "OK", jsonResponse)).ConfigureAwait(false);
@@ -1352,14 +1352,14 @@ namespace ArchiSteamFarm {
 
 		private sealed class GamesToRedeemInBackgroundResponse {
 			[JsonProperty]
-			internal readonly Dictionary<string, string> UsedKeys;
-
-			[JsonProperty]
 			internal readonly Dictionary<string, string> UnusedKeys;
 
-			internal GamesToRedeemInBackgroundResponse(Dictionary<string, string> usedKeys, Dictionary<string, string> unusedKeys) {
-				UsedKeys = usedKeys;
+			[JsonProperty]
+			internal readonly Dictionary<string, string> UsedKeys;
+
+			internal GamesToRedeemInBackgroundResponse(Dictionary<string, string> unusedKeys = null, Dictionary<string, string> usedKeys = null) {
 				UnusedKeys = unusedKeys;
+				UsedKeys = usedKeys;
 			}
 		}
 
