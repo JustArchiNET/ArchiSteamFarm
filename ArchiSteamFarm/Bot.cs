@@ -692,7 +692,7 @@ namespace ArchiSteamFarm {
 		internal async Task<(Dictionary<string, string> Used, Dictionary<string, string> Unused)> GetUsedAndUnusedKeys() {
 			IEnumerable<Task<Dictionary<string, string>>> tasks = new string[] { KeysToRedeemUsedFilePath, KeysToRedeemUnusedFilePath }.Select(file => GetKeysFromFile(file));
 
-			ICollection<Dictionary<string, string>> results;
+			IList<Dictionary<string, string>> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -707,7 +707,7 @@ namespace ArchiSteamFarm {
 					break;
 			}
 
-			return (results.ElementAt(0), results.ElementAt(1));
+			return (results[0], results[1]);
 		}
 
 		internal async Task IdleGame(CardsFarmer.Game game) {
