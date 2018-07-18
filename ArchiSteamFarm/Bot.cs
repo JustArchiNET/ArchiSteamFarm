@@ -76,7 +76,7 @@ namespace ArchiSteamFarm {
 		private readonly BotDatabase BotDatabase;
 
 		[JsonProperty]
-		private readonly string BotName;
+		internal readonly string BotName;
 
 		private readonly CallbackManager CallbackManager;
 		private readonly SemaphoreSlim CallbackSemaphore = new SemaphoreSlim(1, 1);
@@ -323,12 +323,8 @@ namespace ArchiSteamFarm {
 					File.Delete(KeysToRedeemFilePath);
 				}
 
-				if (File.Exists(KeysToRedeemUnusedFilePath)) {
-					File.Delete(KeysToRedeemUnusedFilePath);
-				}
-
-				if (File.Exists(KeysToRedeemUsedFilePath)) {
-					File.Delete(KeysToRedeemUsedFilePath);
+				if (!DeleteRedeemedKeysFiles()) {
+					return false;
 				}
 
 				if (File.Exists(MobileAuthenticatorFilePath)) {
@@ -337,6 +333,23 @@ namespace ArchiSteamFarm {
 
 				if (File.Exists(SentryFilePath)) {
 					File.Delete(SentryFilePath);
+				}
+
+				return true;
+			} catch (Exception e) {
+				ArchiLogger.LogGenericException(e);
+				return false;
+			}
+		}
+
+		internal bool DeleteRedeemedKeysFiles() {
+			try {
+				if (File.Exists(KeysToRedeemUnusedFilePath)) {
+					File.Delete(KeysToRedeemUnusedFilePath);
+				}
+
+				if (File.Exists(KeysToRedeemUsedFilePath)) {
+					File.Delete(KeysToRedeemUsedFilePath);
 				}
 
 				return true;
@@ -554,6 +567,47 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
+		private async Task<Dictionary<string, string>> GetKeysFromFile(string filePath) {
+			if (string.IsNullOrEmpty(filePath)) {
+				ArchiLogger.LogNullError(nameof(filePath));
+				return null;
+			}
+
+			if (!File.Exists(filePath)) {
+				return new Dictionary<string, string>(0);
+			}
+
+			try {
+				Dictionary<string, string> keys = new Dictionary<string, string>();
+
+				using (StreamReader reader = new StreamReader(filePath)) {
+					string line;
+
+					while ((line = await reader.ReadLineAsync().ConfigureAwait(false)) != null) {
+						if (line.Length == 0) {
+							continue;
+						}
+
+						string[] parsedArgs = line.Split(DefaultBackgroundKeysRedeemerSeparator, StringSplitOptions.RemoveEmptyEntries);
+						if (parsedArgs.Length < 4) {
+							ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, line));
+							continue;
+						}
+
+						string name = parsedArgs[0];
+						string key = parsedArgs[parsedArgs.Length - 1];
+
+						keys[key] = name;
+					}
+				}
+
+				return keys;
+			} catch (Exception e) {
+				ArchiLogger.LogGenericException(e);
+				return null;
+			}
+		}
+
 		internal async Task<HashSet<uint>> GetMarketableAppIDs() => await ArchiWebHandler.GetAppList().ConfigureAwait(false);
 
 		internal async Task<Dictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)>> GetPackagesData(IReadOnlyCollection<uint> packageIDs) {
@@ -633,6 +687,27 @@ namespace ArchiSteamFarm {
 			}
 
 			return await ArchiWebHandler.GetTradeHoldDurationForTrade(tradeID).ConfigureAwait(false);
+		}
+
+		internal async Task<(Dictionary<string, string> Used, Dictionary<string, string> Unused)> GetUsedAndUnusedKeys() {
+			IEnumerable<Task<Dictionary<string, string>>> tasks = new string[] { KeysToRedeemUsedFilePath, KeysToRedeemUnusedFilePath }.Select(file => GetKeysFromFile(file));
+
+			IList<Dictionary<string, string>> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<Dictionary<string, string>>();
+					foreach (Task<Dictionary<string, string>> task in tasks) {
+						results.Add(await task.ConfigureAwait(false));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+
+			return (results[0], results[1]);
 		}
 
 		internal async Task IdleGame(CardsFarmer.Game game) {
