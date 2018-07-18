@@ -567,9 +567,13 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal async Task<Dictionary<string, string>> GetKeysFromFile(string filePath) {
-			if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath)) {
+		private async Task<Dictionary<string, string>> GetKeysFromFile(string filePath) {
+			if (string.IsNullOrEmpty(filePath)) {
 				ArchiLogger.LogNullError(nameof(filePath));
+				return null;
+			}
+
+			if (!File.Exists(filePath)) {
 				return null;
 			}
 
