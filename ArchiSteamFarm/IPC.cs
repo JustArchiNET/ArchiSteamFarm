@@ -591,13 +591,13 @@ namespace ArchiSteamFarm {
 					break;
 			}
 
-			Dictionary<string, GamesToRedeemInBackgroundResponse> responses = new Dictionary<string, GamesToRedeemInBackgroundResponse>();
+			Dictionary<string, GamesToRedeemInBackgroundResponse> jsonResponse = new Dictionary<string, GamesToRedeemInBackgroundResponse>();
 
 			foreach((string botName, (Dictionary<string, string> Used, Dictionary<string, string> Unused) keys) in results) {
-				responses[botName] = new GamesToRedeemInBackgroundResponse(keys.Used, keys.Unused);
+				jsonResponse[botName] = new GamesToRedeemInBackgroundResponse(keys.Used, keys.Unused);
 			}
 
-			await ResponseJsonObject(request, response, new GenericResponse<Dictionary<string, GamesToRedeemInBackgroundResponse>>(true, "OK", responses)).ConfigureAwait(false);
+			await ResponseJsonObject(request, response, new GenericResponse<Dictionary<string, GamesToRedeemInBackgroundResponse>>(true, "OK", jsonResponse)).ConfigureAwait(false);
 			return true;
 		}
 
