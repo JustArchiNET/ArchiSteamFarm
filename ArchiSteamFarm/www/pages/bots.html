@@ -53,6 +53,7 @@
                             <i class="fas fa-users fa-fw"></i> <span data-i18n="global-bots">Bots</span>
                             <span class="pull-right-container bot-status">
                                 <small class="label pull-right bg-gray" id="offlineBots">0</small>
+								<small class="label pull-right bg-red" id="disconnectedBots" style="display:none;">0</small>
                                 <small class="label pull-right bg-yellow" id="onlineBots">0</small>
                                 <small class="label pull-right bg-olive" id="farmingBots">0</small>
                             </span>
@@ -489,7 +490,7 @@
 
                                         TimeRemaining = moment.duration(TimeRemaining).asMilliseconds();
 
-                                        boxBodyHTML = '<div class="box-body" id="' + BotName + '" style="display: none;">'
+                                        boxBodyHTML = '<div class="box-body" id="' + BotName + '" style="display:none;">'
                                             + '<div class="row">'
                                             + '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">'
                                             + '<span class="pull-left"><i class="far fa-clock"></i> ' + humanizeDuration(TimeRemaining) + '</span>'

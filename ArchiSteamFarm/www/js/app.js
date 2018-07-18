@@ -42,6 +42,7 @@ $.ajax({
 //#region Bot Status Buttons
 function displayBotStatus() {
     var offline = 0,
+		disconnected = 0,
         online = 0,
         farming = 0;
 
@@ -54,13 +55,18 @@ function displayBotStatus() {
             for (var i = 0; i < json.length; i++) {
                 var obj = json[i],
                     KeepRunning = obj.KeepRunning,
-                    TimeRemaining = obj.CardsFarmer.TimeRemaining;
+                    TimeRemaining = obj.CardsFarmer.TimeRemaining,
+					SteamID = obj.SteamID;
 
                 if (KeepRunning === false) {
                     offline++;
                 } else {
                     if (TimeRemaining === '00:00:00') {
-                        online++;
+						if (SteamID === 0) {
+							disconnected++;
+						} else {
+							online++;
+						}
                     } else {
                         farming++;
                     }
@@ -68,6 +74,12 @@ function displayBotStatus() {
             }
 
             $('#offlineBots').text(offline);
+			if (disconnected > 0) {
+				$('#disconnectedBots').show();
+				$('#disconnectedBots').text(disconnected);
+			} else {
+				$('#disconnectedBots').hide();
+			}
             $('#onlineBots').text(online);
             $('#farmingBots').text(farming);
         }
