@@ -574,7 +574,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!File.Exists(filePath)) {
-				return null;
+				return new Dictionary<string, string>();
 			}
 
 			try {
