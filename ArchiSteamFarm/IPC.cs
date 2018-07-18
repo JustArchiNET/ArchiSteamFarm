@@ -574,8 +574,8 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			(string BotName, Task<(Dictionary<string, string> Used, Dictionary<string, string> Unused)> Task)[] botTaskTuples = bots.Select(bot => (bot.BotName, bot.GetUsedAndUnusedKeys())).ToArray();
-			IEnumerable<(Dictionary<string, string> Used, Dictionary<string, string> Unused)> taskResults;
+			IEnumerable<(string BotName, Task<(Dictionary<string, string> Used, Dictionary<string, string> Unused)>)> botTaskTuples = bots.Select(bot => (bot.BotName, bot.GetUsedAndUnusedKeys()));
+			ICollection<(Dictionary<string, string> Used, Dictionary<string, string> Unused)> taskResults;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -586,16 +586,16 @@ namespace ArchiSteamFarm {
 
 					break;
 				default:
-					taskResults = await Task.WhenAll(botTaskTuples.Select(tuple => tuple.Task)).ConfigureAwait(false);
+					taskResults = await Task.WhenAll(botTaskTuples.Select(tuple => tuple.Item2)).ConfigureAwait(false);
 
 					break;
 			}
 
 			Dictionary<string, GamesToRedeemInBackgroundResponse> responses = new Dictionary<string, GamesToRedeemInBackgroundResponse>();
 
-			for(int i = 0; i < botTaskTuples.Length; ++i) {
+			for(int i = 0; i < botTaskTuples.Count(); ++i) {
 				(Dictionary<string, string> Used, Dictionary<string, string> Unused) = taskResults.ElementAt(i);
-				responses[botTaskTuples[i].BotName] = new GamesToRedeemInBackgroundResponse(Used, Unused);
+				responses[botTaskTuples.ElementAt(i).BotName] = new GamesToRedeemInBackgroundResponse(Used, Unused);
 			}
 
 			await ResponseJsonObject(request, response, new GenericResponse<Dictionary<string, GamesToRedeemInBackgroundResponse>>(true, "OK", responses)).ConfigureAwait(false);
