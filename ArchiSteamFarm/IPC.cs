@@ -574,28 +574,27 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			IEnumerable<(string BotName, Task<(Dictionary<string, string> Used, Dictionary<string, string> Unused)>)> botTaskTuples = bots.Select(bot => (bot.BotName, bot.GetUsedAndUnusedKeys()));
-			ICollection<(Dictionary<string, string> Used, Dictionary<string, string> Unused)> taskResults;
+			IEnumerable<(string BotName, Task<(Dictionary<string, string> Used, Dictionary<string, string> Unused)>)> tasks = bots.Select(bot => (bot.BotName, bot.GetUsedAndUnusedKeys()));
+			ICollection<(string BotName, (Dictionary<string, string> Used, Dictionary<string, string> Unused))> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					taskResults = new List<(Dictionary<string, string> Used, Dictionary<string, string> Unused)>();
-					foreach((string BotName, Task<(Dictionary<string, string> Used, Dictionary<string, string> Unused)> Task) in botTaskTuples) {
-						taskResults.Append(await Task.ConfigureAwait(false));
+					results = new List<(string BotName, (Dictionary<string, string> Used, Dictionary<string, string> Unused))>(tasks.Count());
+					foreach((string BotName, Task<(Dictionary<string, string> Used, Dictionary<string, string> Unused)> Task) in tasks) {
+						results.Append((BotName, await Task.ConfigureAwait(false)));
 					}
 
 					break;
 				default:
-					taskResults = await Task.WhenAll(botTaskTuples.Select(tuple => tuple.Item2)).ConfigureAwait(false);
+					results = await Task.WhenAll(tasks.Select(async x => (x.BotName, await x.Item2.ConfigureAwait(false)))).ConfigureAwait(false);
 
 					break;
 			}
 
 			Dictionary<string, GamesToRedeemInBackgroundResponse> responses = new Dictionary<string, GamesToRedeemInBackgroundResponse>();
 
-			for(int i = 0; i < botTaskTuples.Count(); ++i) {
-				(Dictionary<string, string> Used, Dictionary<string, string> Unused) = taskResults.ElementAt(i);
-				responses[botTaskTuples.ElementAt(i).BotName] = new GamesToRedeemInBackgroundResponse(Used, Unused);
+			foreach((string BotName, (Dictionary<string, string> Used, Dictionary<string, string> Unused) Keys) kvPair in results) {
+				responses[kvPair.BotName] = new GamesToRedeemInBackgroundResponse(kvPair.Keys.Used, kvPair.Keys.Unused);
 			}
 
 			await ResponseJsonObject(request, response, new GenericResponse<Dictionary<string, GamesToRedeemInBackgroundResponse>>(true, "OK", responses)).ConfigureAwait(false);
