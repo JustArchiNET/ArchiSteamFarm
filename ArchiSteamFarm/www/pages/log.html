@@ -104,7 +104,7 @@
                         <i class="far fa-file-alt"></i>
                         <h3 class="box-title" data-i18n="global-log">Log</h3>
                         <div class="box-tools pull-right">
-                            <button data-i18n="title-log-auto-scroll" title="Toggle auto scroll" type="button" class="btn btn-box-tool text-olive" id="toggleAutoScroll"><i class="fas fa-toggle-on fa-2x"></i></button>
+                            <button data-i18n="title-log-auto-scroll" title="Toggle auto scroll" data-toggle="tooltip" type="button" class="btn btn-box-tool text-olive" id="toggleAutoScroll"><i class="fas fa-toggle-on fa-2x"></i></button>
                         </div>
                     </div>
                     <div class="box-body">
@@ -234,6 +234,8 @@
                 } else {
                     $('.box-content-log').css('height', 400 + 'px');
                 }
+				
+				$('[data-toggle="tooltip"]').tooltip();
             });
 
             interact('.box-content-log')
