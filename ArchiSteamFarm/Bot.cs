@@ -591,7 +591,7 @@ namespace ArchiSteamFarm {
 						}
 
 						string name = parsedArgs[0];
-						string key = parsedArgs[3];
+						string key = parsedArgs[parsedArgs.Length - 1];
 
 						keys[key] = name;
 					}
