@@ -1193,8 +1193,8 @@ namespace ArchiSteamFarm {
 			private readonly Version Version;
 
 			internal ASFResponse(string buildVariant, GlobalConfig globalConfig, uint memoryUsage, DateTime processStartTime, Version version) {
-				if ((string.IsNullOrEmpty(buildVariant) || (globalConfig == null) || (memoryUsage == 0) || (processStartTime == DateTime.MinValue) || (version == null)) {
-					throw new ArgumentNullException(nameof(buildVariant) + " || " + nameof(memoryUsage) + " || " + nameof(processStartTime) + " || " + nameof(version));
+				if ((string.IsNullOrEmpty(buildVariant)) || (globalConfig == null) || (memoryUsage == 0) || (processStartTime == DateTime.MinValue) || (version == null)) {
+					throw new ArgumentNullException(nameof(buildVariant) + " || " + nameof(globalConfig) + " || " + nameof(memoryUsage) + " || " + nameof(processStartTime) + " || " + nameof(version));
 				}
 
 				BuildVariant = buildVariant;
