@@ -230,7 +230,7 @@ namespace ArchiSteamFarm {
 				processStartTime = process.StartTime;
 			}
 
-			ASFResponse asfResponse = new ASFResponse(Program.GlobalConfig, memoryUsage, processStartTime, SharedInfo.Version);
+			ASFResponse asfResponse = new ASFResponse(Program.GlobalConfig, memoryUsage, SharedInfo.BuildInfo.Variant, processStartTime, SharedInfo.Version);
 
 			await ResponseJsonObject(request, response, new GenericResponse<ASFResponse>(true, "OK", asfResponse)).ConfigureAwait(false);
 			return true;
@@ -1184,18 +1184,22 @@ namespace ArchiSteamFarm {
 			private readonly uint MemoryUsage;
 
 			[JsonProperty]
+			private readonly string OSVariant;
+
+			[JsonProperty]
 			private readonly DateTime ProcessStartTime;
 
 			[JsonProperty]
 			private readonly Version Version;
 
-			internal ASFResponse(GlobalConfig globalConfig, uint memoryUsage, DateTime processStartTime, Version version) {
-				if ((globalConfig == null) || (memoryUsage == 0) || (processStartTime == DateTime.MinValue) || (version == null)) {
-					throw new ArgumentNullException(nameof(memoryUsage) + " || " + nameof(processStartTime) + " || " + nameof(version));
+			internal ASFResponse(GlobalConfig globalConfig, uint memoryUsage, string osVariant, DateTime processStartTime, Version version) {
+				if ((globalConfig == null) || (memoryUsage == 0) || (processStartTime == DateTime.MinValue) || (version == null) || (osVariant == null)) {
+					throw new ArgumentNullException(nameof(memoryUsage) + " || " + nameof(processStartTime) + " || " + nameof(version) + " || " + nameof(osVariant));
 				}
 
 				GlobalConfig = globalConfig;
 				MemoryUsage = memoryUsage;
+				OSVariant = osVariant;
 				ProcessStartTime = processStartTime;
 				Version = version;
 			}
