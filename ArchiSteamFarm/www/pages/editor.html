@@ -178,21 +178,6 @@
                     }
                 });
             });
-
-            $('#saveButton').click(function (e) {
-                swal({
-                    title: 'Are you sure?',
-                    text: 'The config will be updated and the bot will be restarted!',
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonClass: 'btn-danger',
-                    confirmButtonText: 'Yes, update config!',
-                    closeOnConfirm: false,
-                    showLoaderOnConfirm: true
-                }, function () { prepareConfigForSaving(); });
-
-                e.preventDefault();
-            });
         })
     </script>
 </body>

@@ -228,7 +228,6 @@
                 e.preventDefault();
             });
 
-            //#region Merge to one function
             $(document).keydown(function (e) {
                 if (e.which == 38 && $commandInput.is(':focus')) {
                     if (prevCommand.length > keyCount) keyCount++;
@@ -249,7 +248,6 @@
                     $('#sendCommand').click();
                 }
             });
-            //#endregion Merge to one function
             
             $('.box-tools').ready(function () {
                 var tmpAutoClear = get('autoClear');
@@ -353,7 +351,7 @@
                     }
                 }
 
-                $botsDropDown.append('<li><a href="javascript:void(0)" onclick="fillBots(\'ASF\')">ASF</a></li>'); // Fill with default value
+                $botsDropDown.append('<li><a href="javascript:void(0)" onclick="fillBots(\'ASF\')">ASF</a></li>');
 
                 $.ajax({ // Fill drop down with all bots + ASF
                     url: '/Api/Bot/ASF',
