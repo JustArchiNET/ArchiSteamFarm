@@ -513,7 +513,7 @@
 
                             $('#botRow').append('<div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">'
                                 + '<div class="box ' + boxColorHTML + ' collapsed-box" id="bot-box-' + BotName + '">'
-                                + '<div class="box-header with-border botHeader ui-widget-content">'
+                                + '<div class="box-header with-border botHeader">'
 								+ profileHTML
                                 + '<h3 class="box-title botTitle">' + BotName + '</h3>'
                                 + '<div class="box-tools pull-right botTools" id="' + BotName + '">'
@@ -523,8 +523,8 @@
                                 + deleteBotHTML
                                 + expandBoxHTML
                                 + '</div>'
-                                + boxBodyHTML
                                 + '</div>'
+                                + boxBodyHTML
                                 + '</div>'
                                 + '</div>');
 
@@ -748,9 +748,10 @@
 										  var target = $(e.target).attr("href")
 										  
 										  if (target === '#viewKeys') {
-											$('.sa-confirm-button-container').hide();
+											//load unused keys here
+											$(".confirm").text('Copy unused keys!');
 										  } else {
-											$('.sa-confirm-button-container').show();
+											$(".confirm").text('Add keys!');
 										  }
 										});
                                         break;
