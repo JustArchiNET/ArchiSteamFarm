@@ -1,5 +1,6 @@
 //#region Setup
-const tmpIPCPassword = get('IPCPassword');
+const tmpIPCPassword = get('IPCPassword'),
+	  vGUI = '0.1';
 
 if (tmpIPCPassword) {
     $.ajaxSetup({
@@ -30,11 +31,12 @@ $.ajax({
     url: '/Api/ASF',
     type: 'GET',
     success: function (data) {
-        var ver = data['Result'].Version,
-            verNr = ver.Major + '.' + ver.Minor + '.' + ver.Build + '.' + ver.Revision;
+        var v = data['Result'].Version,
+			vNr = v.Major + '.' + v.Minor + '.' + v.Build + '.' + v.Revision,
+			build = data['Result'].BuildVariant;
             
-        $('#version').text(verNr);
-        $('#changelog').attr('href', 'https://github.com/JustArchi/ArchiSteamFarm/releases/tag/' + verNr);
+        $('#version').text(vNr + ' - ' + build + ' - ' + vGUI);
+        $('#changelog').attr('href', 'https://github.com/JustArchi/ArchiSteamFarm/releases/tag/' + vNr);
     }
 });
 //#endregion Footer
