@@ -385,7 +385,7 @@
 							steamAvatarDefault = 'fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb.jpg',
                             steamGameBaseURL = 'http://cdn.edgecast.steamstatic.com/steam/apps/',
                             totalGamesRemaining = 0,
-                            totalTimeRemaining = '00:00:00',
+                            totalTimeRemaining = 0,
                             totalCardsRemaining = 0,
                             farmingIsActive = false;
 
@@ -427,7 +427,7 @@
                                 boxColorHTML = 'box-warning';
                                 startOrStopHTML = '<button title="Stop <' + BotName + '>" data-toggle="tooltip" type="button" class="btn btn-box-tool bot-started" data-command="stopBot"><i class="fas fa-power-off"></i></button>';
 
-                                var TimeRemaining = obj.CardsFarmer.TimeRemaining;
+                                var TimeRemaining = moment.duration(obj.CardsFarmer.TimeRemaining).asMilliseconds();
 
                                 if (SteamID === 0) { // Bot is not connected to steam
                                     boxColorHTML = 'box-danger';
@@ -436,7 +436,7 @@
                                         + '<img src="' + avatarHTML + '">'
                                         + '</a>';
 
-                                    if (TimeRemaining !== '00:00:00') { // Bot is farming
+                                    if (TimeRemaining !== 0) { // Bot is farming
                                         var GamesToFarm = obj.CardsFarmer.GamesToFarm,
                                             CurrentGamesFarming = obj.CardsFarmer.CurrentGamesFarming,
                                             allGamesFarmingAppID = [],
@@ -487,8 +487,6 @@
                                         } else {
                                             allGamesHTML = '<p class="text-center no-margin">' + $.i18n('bots-in-use') + '</p>';
                                         }
-
-                                        TimeRemaining = moment.duration(TimeRemaining).asMilliseconds();
 
                                         boxBodyHTML = '<div class="box-body" id="' + BotName + '" style="display:none;">'
                                             + '<div class="row">'
@@ -759,8 +757,6 @@
                                 + '</div>'
                                 + '</div>'
                                 + '</div>');
-
-                            totalTimeRemaining = moment.duration(totalTimeRemaining).asMilliseconds();
 
                             $('#totalGamesRemaining').text(totalGamesRemaining);
                             $('#totalTimeRemaining').text(humanizeDuration(totalTimeRemaining));
