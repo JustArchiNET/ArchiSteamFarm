@@ -230,7 +230,7 @@ namespace ArchiSteamFarm {
 				processStartTime = process.StartTime;
 			}
 
-			ASFResponse asfResponse = new ASFResponse(Program.GlobalConfig, memoryUsage, SharedInfo.BuildInfo.Variant, processStartTime, SharedInfo.Version);
+			ASFResponse asfResponse = new ASFResponse(SharedInfo.BuildInfo.Variant, Program.GlobalConfig, memoryUsage, processStartTime, SharedInfo.Version);
 
 			await ResponseJsonObject(request, response, new GenericResponse<ASFResponse>(true, "OK", asfResponse)).ConfigureAwait(false);
 			return true;
