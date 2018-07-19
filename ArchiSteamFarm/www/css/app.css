@@ -195,4 +195,6 @@ button.bot-resumed:hover {
     text-transform: uppercase;
 }
 
-.lockscreen-image{left:-5px}
+.lockscreen-image{
+	left:-5px
+}
