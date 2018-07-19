@@ -110,7 +110,7 @@
                                     <i class="fas fa-wrench"></i>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><button data-i18n="title-commands-auto-clear" title="Toggle auto clear" data-toggle="tooltip" type="button" class="btn btn-box-tool text-olive" id="chkAutoClear"><i id="iconAutoClear" class="fas fa-toggle-on fa-2x"></i></button><span data-i18n="commands-auto-clear">Auto clear</span></li>
+                                    <li><button type="button" class="btn btn-box-tool text-olive" id="chkAutoClear"><i id="iconAutoClear" class="fas fa-toggle-on fa-2x"></i></button><span data-i18n="commands-auto-clear">Auto clear</span></li>
                                 </ul>
                             </div>
                         </div>
@@ -122,14 +122,14 @@
                     <div class="box-footer">
                         <div class="input-group">
                             <div class="input-group-btn hidden-xs" id="cmdsDropDownBox">
-                                <button data-i18n="title-commands-show-all-commands" title="Show all commands" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                     <span data-i18n="global-commands">Commands</span>
                                     <span class="fas fa-caret-down" id="iconCmdsDropDownBox"></span>
                                 </button>
                                 <ul class="dropdown-menu scrollable-menu" id="commandsDropDown"></ul>
                             </div>
                             <div class="input-group-btn hidden-xs" id="botsDropDownBox">
-                                <button data-i18n="title-commands-show-all-bots" title="Show all bots" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                     <span data-i18n="global-bots">Bots</span>
                                     <span class="fas fa-caret-down" id="iconBotsDropDownBox"></span>
                                 </button>
@@ -137,7 +137,7 @@
                             </div>
                             <input id="commandInput" type="text" class="form-control" data-i18n="placeholder-commands" placeholder="Type command...">
                             <div class="input-group-btn">
-                                <button data-i18n="title-commands-send" title="Send command" data-toggle="tooltip" type="button" class="btn btn-default" id="sendCommand"><i class="far fa-paper-plane"></i></button>
+                                <button type="button" class="btn btn-default" id="sendCommand"><i class="far fa-paper-plane"></i></button>
                             </div>
                         </div>
                     </div>
@@ -371,8 +371,6 @@
                         }
                     }
                 });
-				
-				$('[data-toggle="tooltip"]').tooltip();
             });
 
 			function shouldDropUp() {
