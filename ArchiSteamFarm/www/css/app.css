@@ -102,8 +102,7 @@ button.bot-resumed:hover {
     margin-right: 0px;
 }
 
-.info-overview {
-    pointer-events: none;
+.info-overview  {
     cursor: default;
 }
 
