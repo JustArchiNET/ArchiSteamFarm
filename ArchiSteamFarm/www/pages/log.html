@@ -200,14 +200,12 @@
                     startWebSocket();
                     $('#toggleAutoScroll').removeClass('text-grey');
                     $('#toggleAutoScroll').addClass('text-olive');
-                    $('#toggleAutoScroll').html('<i class="fas fa-toggle-on fa-2x"></i>');
-                    $('#toggleAutoScroll').blur();
+                    //$('#toggleAutoScroll').blur();
                 } else if (ws.readyState === ws.OPEN) {
                     ws.close();
                     $('#toggleAutoScroll').removeClass('text-olive');
                     $('#toggleAutoScroll').addClass('text-grey');
-                    $('#toggleAutoScroll').html('<i class="fas fa-toggle-on fa-2x fa-rotate-180"></i>');
-                    $('#toggleAutoScroll').blur();
+                    //$('#toggleAutoScroll').blur();
                 }
             });
 
@@ -219,8 +217,7 @@
                         ws.close();
                         $('#toggleAutoScroll').removeClass('text-olive');
                         $('#toggleAutoScroll').addClass('text-grey');
-                        $('#toggleAutoScroll').html('<i class="fas fa-toggle-on fa-2x fa-rotate-180"></i>');
-                        $('#toggleAutoScroll').blur();
+                        //$('#toggleAutoScroll').blur();
                     }
                 }
 
