@@ -658,14 +658,33 @@
                                         break;
 
                                     case 'redeemGames':
+										var bgrHTML = '<div class="nav-tabs-custom">'
+														+ '<ul class="nav nav-tabs nav-justified">'
+															+ '<li class="active"><a href="#addKeys" data-toggle="tab" aria-expanded="true">' + $.i18n('bots-redeem-add-title') + '</a></li>'
+															+ '<li class=""><a href="#viewKeys" data-toggle="tab" aria-expanded="false">' + $.i18n('bots-redeem-view-title') + '</a></li>'
+														+ '</ul>'
+														+ '<div class="tab-content">'
+															+ '<div class="tab-pane active" id="addKeys">'
+																+ '<p class="lead text-muted" style="display: block;">' + $.i18n('bots-syntax') + '</p>'
+																+ '<textarea id="gamesToRedeemInBackground"></textarea>'
+																+ '<div class="input-group">'
+																+ '<span class="input-group-addon" id="delimiter-text">' + $.i18n('bots-delimiter') + '</span>'
+																+ '<input type="text" class="form-control" id="delimiter" value="' + tmpDelimiter + '" aria-describedby="delimiter-text">'
+																+ '</div>'
+															+ '</div>'
+															+ '<div class="tab-pane" id="viewKeys">'
+																+ '<div class="alert alert-warning">'
+																	+ '<h4><i class="fas fa-info-circle"></i> Not implemented</h4>'
+																	+ 'This feature is currently being developed.'
+																+ '</div>'
+																+ '<textarea id="gamesToRedeemInBackground"></textarea>' //rename id
+															+ '</div>'
+														+ '</div>'
+													+ '</div>';
+										
                                         swal({
                                             title: $.i18n('bots-redeem-title'),
-                                            text: '<p class="lead text-muted" style="display: block;">' + $.i18n('bots-syntax') + '</p>'
-                                            + '<textarea id="gamesToRedeemInBackground"></textarea>'
-                                            + '<div class="input-group">'
-                                            + '<span class="input-group-addon" id="delimiter-text">' + $.i18n('bots-delimiter') + '</span>'
-                                            + '<input type="text" class="form-control" id="delimiter" value="' + tmpDelimiter + '" aria-describedby="delimiter-text">'
-                                            + '</div>',
+                                            text: bgrHTML,
                                             html: true,
                                             customClass: 'swal-wide',
                                             showCancelButton: true,
@@ -724,6 +743,16 @@
 
                                             $('.overlay').remove();
                                         });
+										
+										$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+										  var target = $(e.target).attr("href")
+										  
+										  if (target === '#viewKeys') {
+											$('.sa-confirm-button-container').hide();
+										  } else {
+											$('.sa-confirm-button-container').show();
+										  }
+										});
                                         break;
                                 }
                             })
