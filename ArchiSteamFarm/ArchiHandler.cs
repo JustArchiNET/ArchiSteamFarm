@@ -147,9 +147,7 @@ namespace ArchiSteamFarm {
 			SteamUnifiedMessages.ServiceMethodResponse response;
 
 			try {
-#pragma warning disable ConfigureAwaitChecker
 				response = await UnifiedPlayerService.SendMessage(x => x.AddFriend(request));
-#pragma warning restore ConfigureAwaitChecker
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
 				return false;
@@ -169,9 +167,7 @@ namespace ArchiSteamFarm {
 			SteamUnifiedMessages.ServiceMethodResponse response;
 
 			try {
-#pragma warning disable ConfigureAwaitChecker
 				response = await UnifiedChatRoomService.SendMessage(x => x.GetMyChatRoomGroups(request));
-#pragma warning restore ConfigureAwaitChecker
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
 				return null;
@@ -201,9 +197,7 @@ namespace ArchiSteamFarm {
 			SteamUnifiedMessages.ServiceMethodResponse response;
 
 			try {
-#pragma warning disable ConfigureAwaitChecker
 				response = await UnifiedChatRoomService.SendMessage(x => x.JoinChatRoomGroup(request));
-#pragma warning restore ConfigureAwaitChecker
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
 				return false;
@@ -323,9 +317,7 @@ namespace ArchiSteamFarm {
 			SteamUnifiedMessages.ServiceMethodResponse response;
 
 			try {
-#pragma warning disable ConfigureAwaitChecker
 				response = await UnifiedPlayerService.SendMessage(x => x.RemoveFriend(request));
-#pragma warning restore ConfigureAwaitChecker
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
 				return false;
@@ -359,9 +351,7 @@ namespace ArchiSteamFarm {
 			SteamUnifiedMessages.ServiceMethodResponse response;
 
 			try {
-#pragma warning disable ConfigureAwaitChecker
 				response = await UnifiedFriendMessagesService.SendMessage(x => x.SendMessage(request));
-#pragma warning restore ConfigureAwaitChecker
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
 				return false;
@@ -390,9 +380,7 @@ namespace ArchiSteamFarm {
 			SteamUnifiedMessages.ServiceMethodResponse response;
 
 			try {
-#pragma warning disable ConfigureAwaitChecker
 				response = await UnifiedChatRoomService.SendMessage(x => x.SendChatMessage(request));
-#pragma warning restore ConfigureAwaitChecker
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
 				return false;
