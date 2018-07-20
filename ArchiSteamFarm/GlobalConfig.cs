@@ -110,86 +110,65 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly ushort WebLimiterDelay = 200;
 
+		[JsonProperty(PropertyName = nameof(WebProxy))]
+		internal readonly string WebProxyText;
+
+		[JsonProperty]
+		internal readonly string WebProxyUsername;
+
+		internal WebProxy WebProxy {
+			get {
+				if (_WebProxy != null) {
+					return _WebProxy;
+				}
+
+				if (string.IsNullOrEmpty(WebProxyText)) {
+					return null;
+				}
+
+				Uri uri;
+
+				try {
+					uri = new Uri(WebProxyText);
+				} catch (UriFormatException e) {
+					ASF.ArchiLogger.LogGenericException(e);
+					return null;
+				}
+
+				_WebProxy = new WebProxy {
+					Address = uri,
+					BypassProxyOnLocal = true
+				};
+
+				if (!string.IsNullOrEmpty(WebProxyUsername) || !string.IsNullOrEmpty(WebProxyPassword)) {
+					NetworkCredential credentials = new NetworkCredential();
+
+					if (!string.IsNullOrEmpty(WebProxyUsername)) {
+						credentials.UserName = WebProxyUsername;
+					}
+
+					if (!string.IsNullOrEmpty(WebProxyPassword)) {
+						credentials.Password = WebProxyPassword;
+					}
+
+					_WebProxy.Credentials = credentials;
+				}
+
+				return _WebProxy;
+			}
+		}
+
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal ulong SteamOwnerID { get; private set; }
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal ProtocolTypes SteamProtocols { get; private set; } = ProtocolTypes.All;
 
-		internal WebProxy WebProxy { get; private set; }
-
 		[JsonProperty]
-		internal string WebProxyPassword {
-			get => WebProxyCredentials?.Password;
-			set {
-				if (string.IsNullOrEmpty(value)) {
-					if (WebProxyCredentials == null) {
-						return;
-					}
+		internal string WebProxyPassword { get; set; }
 
-					WebProxyCredentials.Password = null;
-
-					if (!string.IsNullOrEmpty(WebProxyCredentials.UserName)) {
-						return;
-					}
-
-					WebProxyCredentials = null;
-					if (WebProxy != null) {
-						WebProxy.Credentials = null;
-					}
-
-					return;
-				}
-
-				if (WebProxyCredentials == null) {
-					WebProxyCredentials = new NetworkCredential();
-				}
-
-				WebProxyCredentials.Password = value;
-
-				if ((WebProxy != null) && (WebProxy.Credentials != WebProxyCredentials)) {
-					WebProxy.Credentials = WebProxyCredentials;
-				}
-			}
-		}
-
-		[JsonProperty]
-		internal string WebProxyUsername {
-			get => WebProxyCredentials?.UserName;
-			set {
-				if (string.IsNullOrEmpty(value)) {
-					if (WebProxyCredentials == null) {
-						return;
-					}
-
-					WebProxyCredentials.UserName = null;
-
-					if (!string.IsNullOrEmpty(WebProxyCredentials.Password)) {
-						return;
-					}
-
-					WebProxyCredentials = null;
-					if (WebProxy != null) {
-						WebProxy.Credentials = null;
-					}
-
-					return;
-				}
-
-				if (WebProxyCredentials == null) {
-					WebProxyCredentials = new NetworkCredential();
-				}
-
-				WebProxyCredentials.UserName = value;
-
-				if ((WebProxy != null) && (WebProxy.Credentials != WebProxyCredentials)) {
-					WebProxy.Credentials = WebProxyCredentials;
-				}
-			}
-		}
-
+		private WebProxy _WebProxy;
 		private bool ShouldSerializeSensitiveDetails = true;
-		private NetworkCredential WebProxyCredentials;
 
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamOwnerID), Required = Required.DisallowNull)]
 		private string SSteamOwnerID {
@@ -201,39 +180,6 @@ namespace ArchiSteamFarm {
 				}
 
 				SteamOwnerID = result;
-			}
-		}
-
-		[JsonProperty(PropertyName = nameof(WebProxy))]
-		private string WebProxyText {
-			get => WebProxy?.Address.OriginalString;
-			set {
-				if (string.IsNullOrEmpty(value)) {
-					if (WebProxy != null) {
-						WebProxy = null;
-					}
-
-					return;
-				}
-
-				Uri uri;
-
-				try {
-					uri = new Uri(value);
-				} catch (UriFormatException e) {
-					ASF.ArchiLogger.LogGenericException(e);
-					return;
-				}
-
-				if (WebProxy == null) {
-					WebProxy = new WebProxy { BypassProxyOnLocal = true };
-				}
-
-				WebProxy.Address = uri;
-
-				if ((WebProxyCredentials != null) && (WebProxy.Credentials != WebProxyCredentials)) {
-					WebProxy.Credentials = WebProxyCredentials;
-				}
 			}
 		}
 

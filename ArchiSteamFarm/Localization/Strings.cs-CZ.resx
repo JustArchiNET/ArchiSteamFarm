@@ -447,12 +447,18 @@ StackTrace:
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>Tento bot nebude spuštěn protože je v konfiguračním souboru nastaven jako neaktivní.</value>
   </data>
-  
+  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+    <value>Obdržen chybový kód TwoFactorCodeMismatch {0} krát za sebou. Špatně zadané údaje dvoufázového ověření, nebo vaše hodiny jsou desynchronizované, přerušuji!</value>
+    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+  </data>
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Odhlášeno ze Steamu: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  
+  <data name="BotLoggedOn" xml:space="preserve">
+    <value>Úspěšně přihlášen jako {0}.</value>
+    <comment>{0} will be replaced by steam ID (number)</comment>
+  </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Přihlašování...</value>
   </data>

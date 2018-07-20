@@ -230,7 +230,7 @@ namespace ArchiSteamFarm {
 				processStartTime = process.StartTime;
 			}
 
-			ASFResponse asfResponse = new ASFResponse(Program.GlobalConfig, memoryUsage, processStartTime, SharedInfo.Version);
+			ASFResponse asfResponse = new ASFResponse(SharedInfo.BuildInfo.Variant, Program.GlobalConfig, memoryUsage, processStartTime, SharedInfo.Version);
 
 			await ResponseJsonObject(request, response, new GenericResponse<ASFResponse>(true, "OK", asfResponse)).ConfigureAwait(false);
 			return true;
@@ -501,12 +501,104 @@ namespace ArchiSteamFarm {
 			}
 
 			switch (request.HttpMethod) {
+				case HttpMethods.Delete:
+					return await HandleApiGamesToRedeemInBackgroundDelete(request, response, arguments, argumentsIndex).ConfigureAwait(false);
+				case HttpMethods.Get:
+					return await HandleApiGamesToRedeemInBackgroundGet(request, response, arguments, argumentsIndex).ConfigureAwait(false);
 				case HttpMethods.Post:
 					return await HandleApiGamesToRedeemInBackgroundPost(request, response, arguments, argumentsIndex).ConfigureAwait(false);
 				default:
 					await ResponseStatusCode(request, response, HttpStatusCode.MethodNotAllowed).ConfigureAwait(false);
 					return true;
 			}
+		}
+
+		private static async Task<bool> HandleApiGamesToRedeemInBackgroundDelete(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			if (arguments.Length <= argumentsIndex) {
+				return false;
+			}
+
+			string argument = WebUtility.UrlDecode(string.Join("", arguments.Skip(argumentsIndex)));
+
+			HashSet<Bot> bots = Bot.GetBots(argument);
+			if ((bots == null) || (bots.Count == 0)) {
+				await ResponseJsonObject(request, response, new GenericResponse<object>(false, string.Format(Strings.BotNotFound, argument)), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			IEnumerable<Task<bool>> tasks = bots.Select(bot => Task.Run(() => bot.DeleteRedeemedKeysFiles()));
+			ICollection<bool> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<bool>(bots.Count);
+					foreach (Task<bool> task in tasks) {
+						results.Add(await task.ConfigureAwait(false));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+
+			if (results.Any(result => !result)) {
+				await ResponseJsonObject(request, response, new GenericResponse<object>(false, "Removing one or more files failed, check ASF log for details"), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			await ResponseJsonObject(request, response, new GenericResponse<object>(true, "OK")).ConfigureAwait(false);
+			return true;
+		}
+
+		private static async Task<bool> HandleApiGamesToRedeemInBackgroundGet(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			if (arguments.Length <= argumentsIndex) {
+				return false;
+			}
+
+			string argument = WebUtility.UrlDecode(string.Join("", arguments.Skip(argumentsIndex)));
+
+			HashSet<Bot> bots = Bot.GetBots(argument);
+			if ((bots == null) || (bots.Count == 0)) {
+				await ResponseJsonObject(request, response, new GenericResponse<object>(false, string.Format(Strings.BotNotFound, argument)), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			IEnumerable<(string BotName, Task<(Dictionary<string, string> UnusedKeys, Dictionary<string, string> UsedKeys)> Task)> tasks = bots.Select(bot => (bot.BotName, bot.GetUsedAndUnusedKeys()));
+			ICollection<(string BotName, (Dictionary<string, string> UnusedKeys, Dictionary<string, string> UsedKeys))> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<(string BotName, (Dictionary<string, string> UnusedKeys, Dictionary<string, string> UsedKeys))>(bots.Count);
+					foreach ((string botName, Task<(Dictionary<string, string> UnusedKeys, Dictionary<string, string> UsedKeys)> task) in tasks) {
+						results.Add((botName, await task.ConfigureAwait(false)));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks.Select(async task => (task.BotName, await task.Task.ConfigureAwait(false)))).ConfigureAwait(false);
+
+					break;
+			}
+
+			Dictionary<string, GamesToRedeemInBackgroundResponse> jsonResponse = new Dictionary<string, GamesToRedeemInBackgroundResponse>();
+
+			foreach ((string botName, (Dictionary<string, string> UnusedKeys, Dictionary<string, string> UsedKeys) taskResult) in results) {
+				jsonResponse[botName] = new GamesToRedeemInBackgroundResponse(taskResult.UnusedKeys, taskResult.UsedKeys);
+			}
+
+			await ResponseJsonObject(request, response, new GenericResponse<Dictionary<string, GamesToRedeemInBackgroundResponse>>(true, "OK", jsonResponse)).ConfigureAwait(false);
+			return true;
 		}
 
 		private static async Task<bool> HandleApiGamesToRedeemInBackgroundPost(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
@@ -666,8 +758,20 @@ namespace ArchiSteamFarm {
 			Type targetType = Type.GetType(argument);
 
 			if (targetType == null) {
-				await ResponseJsonObject(request, response, new GenericResponse<object>(false, string.Format(Strings.ErrorIsInvalid, nameof(argument))), HttpStatusCode.BadRequest).ConfigureAwait(false);
-				return true;
+				// We can try one more time by trying to smartly guess the assembly name from the namespace, this will work for custom libraries like SteamKit2
+				int index = argument.IndexOf('.');
+
+				if ((index <= 0) || (index >= argument.Length - 1)) {
+					await ResponseJsonObject(request, response, new GenericResponse<TypeResponse>(false, string.Format(Strings.ErrorIsInvalid, nameof(argument))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+					return true;
+				}
+
+				targetType = Type.GetType(argument + "," + argument.Substring(0, index));
+
+				if (targetType == null) {
+					await ResponseJsonObject(request, response, new GenericResponse<TypeResponse>(false, string.Format(Strings.ErrorIsInvalid, nameof(argument))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+					return true;
+				}
 			}
 
 			object obj;
@@ -712,8 +816,20 @@ namespace ArchiSteamFarm {
 			Type targetType = Type.GetType(argument);
 
 			if (targetType == null) {
-				await ResponseJsonObject(request, response, new GenericResponse<TypeResponse>(false, string.Format(Strings.ErrorIsInvalid, nameof(argument))), HttpStatusCode.BadRequest).ConfigureAwait(false);
-				return true;
+				// We can try one more time by trying to smartly guess the assembly name from the namespace, this will work for custom libraries like SteamKit2
+				int index = argument.IndexOf('.');
+
+				if ((index <= 0) || (index >= argument.Length - 1)) {
+					await ResponseJsonObject(request, response, new GenericResponse<TypeResponse>(false, string.Format(Strings.ErrorIsInvalid, nameof(argument))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+					return true;
+				}
+
+				targetType = Type.GetType(argument + "," + argument.Substring(0, index));
+
+				if (targetType == null) {
+					await ResponseJsonObject(request, response, new GenericResponse<TypeResponse>(false, string.Format(Strings.ErrorIsInvalid, nameof(argument))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+					return true;
+				}
 			}
 
 			string baseType = targetType.BaseType?.GetUnifiedName();
@@ -724,11 +840,19 @@ namespace ArchiSteamFarm {
 
 			if (targetType.IsClass) {
 				foreach (FieldInfo field in targetType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(field => !field.IsPrivate)) {
-					body[field.Name] = field.FieldType.GetUnifiedName();
+					JsonPropertyAttribute jsonProperty = field.GetCustomAttribute<JsonPropertyAttribute>();
+
+					if (jsonProperty != null) {
+						body[jsonProperty.PropertyName ?? field.Name] = field.FieldType.GetUnifiedName();
+					}
 				}
 
 				foreach (PropertyInfo property in targetType.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(property => property.CanRead && !property.GetMethod.IsPrivate)) {
-					body[property.Name] = property.PropertyType.GetUnifiedName();
+					JsonPropertyAttribute jsonProperty = property.GetCustomAttribute<JsonPropertyAttribute>();
+
+					if (jsonProperty != null) {
+						body[jsonProperty.PropertyName ?? property.Name] = property.PropertyType.GetUnifiedName();
+					}
 				}
 			} else if (targetType.IsEnum) {
 				Type enumType = Enum.GetUnderlyingType(targetType);
@@ -1178,6 +1302,9 @@ namespace ArchiSteamFarm {
 
 		private sealed class ASFResponse {
 			[JsonProperty]
+			private readonly string BuildVariant;
+
+			[JsonProperty]
 			private readonly GlobalConfig GlobalConfig;
 
 			[JsonProperty]
@@ -1189,11 +1316,12 @@ namespace ArchiSteamFarm {
 			[JsonProperty]
 			private readonly Version Version;
 
-			internal ASFResponse(GlobalConfig globalConfig, uint memoryUsage, DateTime processStartTime, Version version) {
-				if ((globalConfig == null) || (memoryUsage == 0) || (processStartTime == DateTime.MinValue) || (version == null)) {
-					throw new ArgumentNullException(nameof(memoryUsage) + " || " + nameof(processStartTime) + " || " + nameof(version));
+			internal ASFResponse(string buildVariant, GlobalConfig globalConfig, uint memoryUsage, DateTime processStartTime, Version version) {
+				if (string.IsNullOrEmpty(buildVariant) || (globalConfig == null) || (memoryUsage == 0) || (processStartTime == DateTime.MinValue) || (version == null)) {
+					throw new ArgumentNullException(nameof(buildVariant) + " || " + nameof(globalConfig) + " || " + nameof(memoryUsage) + " || " + nameof(processStartTime) + " || " + nameof(version));
 				}
 
+				BuildVariant = buildVariant;
 				GlobalConfig = globalConfig;
 				MemoryUsage = memoryUsage;
 				ProcessStartTime = processStartTime;
@@ -1224,6 +1352,19 @@ namespace ArchiSteamFarm {
 
 			// Deserialized from JSON
 			private GamesToRedeemInBackgroundRequest() { }
+		}
+
+		private sealed class GamesToRedeemInBackgroundResponse {
+			[JsonProperty]
+			internal readonly Dictionary<string, string> UnusedKeys;
+
+			[JsonProperty]
+			internal readonly Dictionary<string, string> UsedKeys;
+
+			internal GamesToRedeemInBackgroundResponse(Dictionary<string, string> unusedKeys = null, Dictionary<string, string> usedKeys = null) {
+				UnusedKeys = unusedKeys;
+				UsedKeys = usedKeys;
+			}
 		}
 
 		private sealed class GenericResponse<T> where T : class {
