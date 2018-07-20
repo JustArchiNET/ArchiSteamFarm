@@ -99,9 +99,7 @@ namespace ArchiSteamFarm {
 				timestamp = timestamp
 			};
 
-#pragma warning disable CS4014 // This AsyncJob does not return a response
 			UnifiedChatRoomService.SendMessage(x => x.AckChatMessage(request), true);
-#pragma warning restore CS4014 // This AsyncJob does not return a response
 		}
 
 		internal void AckMessage(ulong steamID, uint timestamp) {
@@ -115,9 +113,7 @@ namespace ArchiSteamFarm {
 				timestamp = timestamp
 			};
 
-#pragma warning disable CS4014 // This AsyncJob does not return a response
 			UnifiedFriendMessagesService.SendMessage(x => x.AckMessage(request), true);
-#pragma warning restore CS4014 // This AsyncJob does not return a response
 		}
 
 		internal void AcknowledgeClanInvite(ulong clanID, bool acceptInvite) {
