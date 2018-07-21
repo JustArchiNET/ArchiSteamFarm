@@ -40,9 +40,10 @@
     <PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="2.0.0" />
     <PackageReference Include="HtmlAgilityPack" Version="1.8.5" />
     <PackageReference Include="Humanizer" Version="2.4.2" />
+    <PackageReference Include="Microsoft.Win32.Registry" Version="4.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="NLog" Version="4.5.7" />
-    <PackageReference Include="protobuf-net" Version="2.3.12" />
+    <PackageReference Include="protobuf-net" Version="2.3.14-alpha1" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
