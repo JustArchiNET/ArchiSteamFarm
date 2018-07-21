@@ -6,8 +6,8 @@
     "link.asf": "",
     "link.bot": "",
     "link.home": "",
-    "schema.access": "",
-    "schema.advanced": "",
+    "schema.access": "Acesso",
+    "schema.advanced": "Avançado",
     "schema.basic": "",
     "schema.bot.SteamLogin.description": "",
     "schema.bot.SteamPassword.description": "",
@@ -17,10 +17,10 @@
     "schema.customization": "",
     "schema.farming": "",
     "schema.generic.steamid64": "",
-    "schema.performance": "",
+    "schema.performance": "Desempenho",
     "schema.remote_access": "",
     "schema.security": "",
     "schema.trading": "",
-    "schema.updates": "",
+    "schema.updates": "Atualizações",
     "static.add": ""
 }
