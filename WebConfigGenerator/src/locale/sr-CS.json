@@ -6,8 +6,8 @@
     "link.asf": "",
     "link.bot": "",
     "link.home": "",
-    "schema.access": "",
-    "schema.advanced": "",
+    "schema.access": "Pristup",
+    "schema.advanced": "Napredno",
     "schema.basic": "",
     "schema.bot.SteamLogin.description": "",
     "schema.bot.SteamPassword.description": "",
@@ -17,10 +17,10 @@
     "schema.customization": "",
     "schema.farming": "",
     "schema.generic.steamid64": "",
-    "schema.performance": "",
+    "schema.performance": "Performansa",
     "schema.remote_access": "",
     "schema.security": "",
     "schema.trading": "",
-    "schema.updates": "",
+    "schema.updates": "Ažuriranja",
     "static.add": ""
 }

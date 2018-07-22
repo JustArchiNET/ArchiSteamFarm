@@ -281,7 +281,9 @@ namespace ArchiSteamFarm {
 
 		[Flags]
 		internal enum EBotBehaviour : byte {
+			[SuppressMessage("ReSharper", "UnusedMember.Global")]
 			None = 0,
+
 			RejectInvalidFriendInvites = 1,
 			RejectInvalidTrades = 2,
 			RejectInvalidGroupInvites = 4,
@@ -318,7 +320,9 @@ namespace ArchiSteamFarm {
 
 		[Flags]
 		internal enum ERedeemingPreferences : byte {
+			[SuppressMessage("ReSharper", "UnusedMember.Global")]
 			None = 0,
+
 			Forwarding = 1,
 			Distributing = 2,
 			KeepMissingGames = 4,
@@ -327,7 +331,9 @@ namespace ArchiSteamFarm {
 
 		[Flags]
 		internal enum ETradingPreferences : byte {
+			[SuppressMessage("ReSharper", "UnusedMember.Global")]
 			None = 0,
+
 			AcceptDonations = 1,
 			SteamTradeMatcher = 2,
 			MatchEverything = 4,

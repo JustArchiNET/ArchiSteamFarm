@@ -456,7 +456,7 @@
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
   <data name="BotLoggedOn" xml:space="preserve">
-    <value>Успешный вход как {0}.</value>
+    <value>Успешно выполнен вход как {0}.</value>
     <comment>{0} will be replaced by steam ID (number)</comment>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">

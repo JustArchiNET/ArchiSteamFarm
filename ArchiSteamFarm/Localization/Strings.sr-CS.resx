@@ -121,7 +121,10 @@
     <value>Prihvatanje razmene: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
-  
+  <data name="AutoUpdateCheckInfo" xml:space="preserve">
+    <value>ASF će automatski proveriti da li postoji nova verzija svakih {0} sati.</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
+  </data>
   <data name="Content" xml:space="preserve">
     <value>Sadržaj:
 {0}</value>
@@ -141,12 +144,17 @@ StackTrace:
 {2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
-  
+  <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+    <value>Izlazak sa greškom čiji je kod različit od nule!</value>
+  </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
     <value>Zahtev se ne izvršava: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
-  
+  <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
+    <value>Globalna konfiguracija ne može biti učitana, molimo Vas da proverite da {0} postoji i da je tačan! Pratite "Setting up" uputstva na wiki stranici ako ste nesigurni.</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
     <value>{0} je netačan!</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -154,7 +162,9 @@ StackTrace:
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>Odbijanje izvršavanja ove funkcije zbog netačnog DeviceID u ASF 2FA!</value>
   </data>
-  
+  <data name="ErrorNoBotsDefined" xml:space="preserve">
+    <value>Botovi nisu definisani, da li ste zaboravili da konfigurisete vaš ASF?</value>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} je null!</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -163,7 +173,10 @@ StackTrace:
     <value>Parsiranje {0} nije uspelo!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
+  <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
+    <value>Zahtev nije uspeo nakon {0} pokušaja!</value>
+    <comment>{0} will be replaced by maximum number of tries</comment>
+  </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Neuspešno traženje nove verzije!</value>
   </data>
@@ -230,25 +243,53 @@ StackTrace:
     <value>Lokalna verzija: {0} | Daljinska verzija: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
-  
-  
-  
-  
-  
-  
+  <data name="UserInputDeviceID" xml:space="preserve">
+    <value>Molimo Vas unesite vaš Device ID (uključujući "android:"): </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteam2FA" xml:space="preserve">
+    <value>Molimo Vas unestie vaš 2FA kod iz Vaše Steam authenticator aplikacije: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamGuard" xml:space="preserve">
+    <value>Molimo Vas unesite vaš SteamGuard autentifikacioni kod koji poslat na vaš e-mail: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamLogin" xml:space="preserve">
+    <value>Molimo Vas unestie vašu Steam prijavu: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamParentalPIN" xml:space="preserve">
+    <value>Molimo Vas da unesete Steam roditeljski PIN: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamPassword" xml:space="preserve">
+    <value>Molimo Vas da uneste vašu Steam lozinku: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Dobijena nepoznata vrednost za {0}, molimo prijavite ovo: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
-  
-  
-  
+  <data name="IPCReady" xml:space="preserve">
+    <value>IPC server spreman!</value>
+  </data>
+  <data name="IPCStarting" xml:space="preserve">
+    <value>Pokretanje IPC servera na {0}...</value>
+    <comment>{0} will be replaced by IPC hostname</comment>
+  </data>
+  <data name="BotAlreadyStopped" xml:space="preserve">
+    <value>Ovaj bot je već zaustavnljen!</value>
+  </data>
   <data name="BotNotFound" xml:space="preserve">
     <value>Nije moguće pronaći bilo kakvog bot-a nazvanog {0}!</value>
     <comment>{0} will be replaced by bot's name query (string)</comment>
   </data>
-  
+  <data name="BotStatusOverview" xml:space="preserve">
+    <value>{0}/{1} botova je pokrenuto, sa ukupno {2} igrica ({3} karata) preostalih da se idle-uje.</value>
+    <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
+  </data>
   
   
   <data name="CheckingFirstBadgePage" xml:space="preserve">
@@ -332,8 +373,14 @@ StackTrace:
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   
-  
-  
+  <data name="BotAddLicense" xml:space="preserve">
+    <value>ID: {0} | Status: {1}</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
+  </data>
+  <data name="BotAddLicenseWithItems" xml:space="preserve">
+    <value>ID: {0} | Status: {1} | Stavke: {2}</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string, {2} will be replaced by list of granted IDs (numbers), separated by a comma</comment>
+  </data>
   
   <data name="BotAuthenticatorConverting" xml:space="preserve">
     <value>Konvertovanje .maFile u ASF format...</value>
@@ -348,12 +395,19 @@ StackTrace:
     <value>2FA Token: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
-  
-  
+  <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+    <value>Automatsko idle-ovanje je pauzirano!</value>
+  </data>
+  <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+    <value>Automatsko idle-ovanje je nastavljeno!</value>
+  </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Automatsko idle-ovanje je već pauzirano!</value>
   </data>
-  
+  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
+    <value>Automatsko idle-ovanje je sada pauzirano! Imate {0} minuta da pokrenete igru.</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
+  </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Automatsko idle-ovanje je već pokrenuto!</value>
   </data>
@@ -378,7 +432,10 @@ StackTrace:
     <value>Odjavljen sa Steam-a: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  
+  <data name="BotLoggedOn" xml:space="preserve">
+    <value>Uspešno ulogovani kao {0}.</value>
+    <comment>{0} will be replaced by steam ID (number)</comment>
+  </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Prijavljivanje...</value>
   </data>
@@ -404,8 +461,12 @@ StackTrace:
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Loot-ovanje je privremeno onemogućeno!</value>
   </data>
-  
-  
+  <data name="BotSendingTradeToYourself" xml:space="preserve">
+    <value>Ne možete poslati trade samom sebi!</value>
+  </data>
+  <data name="BotNoASFAuthenticator" xml:space="preserve">
+    <value>Ovaj bot nema ASF 2FA uključen! Da li ste zaboravili da uvedete vaš autentikator kao ASF 2FA?</value>
+  </data>
   <data name="BotNotConnected" xml:space="preserve">
     <value>Ova instanca bot-a nije povezana!</value>
   </data>
@@ -415,17 +476,35 @@ StackTrace:
   <data name="BotReconnecting" xml:space="preserve">
     <value>Ponovo povezivanje...</value>
   </data>
-  
-  
+  <data name="BotRedeem" xml:space="preserve">
+    <value>Ključ: {0} | Status: {1}</value>
+    <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string</comment>
+  </data>
+  <data name="BotRedeemWithItems" xml:space="preserve">
+    <value>Ključ: {0} | Status: {1} | Stavke: {2}</value>
+    <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string, {2} will be replaced by list of key-value pairs, separated by a comma</comment>
+  </data>
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
     <value>Uklonjen stari login ključ!</value>
   </data>
-  
-  
-  
-  
-  
-  
+  <data name="BotStatusNotIdling" xml:space="preserve">
+    <value>Bot trenutno ne idle-uje ništa.</value>
+  </data>
+  <data name="BotStatusLimited" xml:space="preserve">
+    <value>Bot je limitiran i ne može da prikuplja kartice idle-ovanjem.</value>
+  </data>
+  <data name="BotStatusConnecting" xml:space="preserve">
+    <value>Bot se povezuje sa Steam-om.</value>
+  </data>
+  <data name="BotStatusNotRunning" xml:space="preserve">
+    <value>Bot nije pokrenut.</value>
+  </data>
+  <data name="BotStatusPaused" xml:space="preserve">
+    <value>Bot je pauziran ili radi u ručnom režimu.</value>
+  </data>
+  <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
+    <value>Bot je trenutno u upotrebi.</value>
+  </data>
   <data name="BotUnableToLogin" xml:space="preserve">
     <value>Nije moguće prijavljivanje na Steam: {0}{1}</value>
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
@@ -442,9 +521,15 @@ StackTrace:
     <value>Neuspeh zbog greške: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
-  
-  
-  
+  <data name="BotConnectionLost" xml:space="preserve">
+    <value>Izgubljena konekcija sa Steam-om, Povezujemo se ponovo...</value>
+  </data>
+  <data name="BotAccountFree" xml:space="preserve">
+    <value>Nalog više nije zauzet, proces idle-ovanja nastavljen!</value>
+  </data>
+  <data name="BotAccountOccupied" xml:space="preserve">
+    <value>Nalog se trenutno koristi, ASF će nastaviti sa idle-ovanjem čim se oslobodi...</value>
+  </data>
   
   <data name="BotConnecting" xml:space="preserve">
     <value>Povezivanje...</value>
@@ -476,7 +561,10 @@ StackTrace:
   </data>
   
   
-  
+  <data name="BotVersion" xml:space="preserve">
+    <value>{0} V{1}</value>
+    <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
+  </data>
   
   
   
