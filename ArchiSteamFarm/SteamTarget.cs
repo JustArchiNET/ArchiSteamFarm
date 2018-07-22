@@ -40,14 +40,7 @@ namespace ArchiSteamFarm {
 		// This is NLog config property, it must have public get() and set() capabilities
 		[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
-		[RequiredParameter]
 		public ulong ChatGroupID { get; set; }
-
-		// This is NLog config property, it must have public get() and set() capabilities
-		[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
-		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
-		[RequiredParameter]
-		public ulong ChatID { get; set; }
 
 		// This is NLog config property, it must have public get() and set() capabilities
 		[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
@@ -60,7 +53,7 @@ namespace ArchiSteamFarm {
 		// Keeping date in default layout also doesn't make much sense (Steam offers that), so we remove it by default
 		public SteamTarget() => Layout = "${level:uppercase=true}|${logger}|${message}";
 
-		protected override void Write(LogEventInfo logEvent) {
+		protected override async void Write(LogEventInfo logEvent) {
 			if (logEvent == null) {
 				ASF.ArchiLogger.LogNullError(nameof(logEvent));
 				return;
@@ -68,10 +61,7 @@ namespace ArchiSteamFarm {
 
 			base.Write(logEvent);
 
-			bool groupMessage = (ChatGroupID != 0) && (ChatID != 0);
-			bool privateMessage = SteamID != 0;
-
-			if (!groupMessage && !privateMessage) {
+			if (SteamID == 0) {
 				return;
 			}
 
@@ -84,21 +74,15 @@ namespace ArchiSteamFarm {
 			Bot bot = null;
 
 			if (!string.IsNullOrEmpty(BotName)) {
-				if (!Bot.Bots.TryGetValue(BotName, out bot)) {
-					return;
-				}
-
-				if (!bot.IsConnectedAndLoggedOn) {
+				if (!Bot.Bots.TryGetValue(BotName, out bot) || !bot.IsConnectedAndLoggedOn) {
 					return;
 				}
 			}
 
-			if (groupMessage) {
-				Utilities.InBackground(() => SendGroupMessage(message, bot));
-			}
-
-			if (privateMessage && ((bot == null) || (bot.CachedSteamID != SteamID))) {
-				Utilities.InBackground(() => SendPrivateMessage(message, bot));
+			if (ChatGroupID != 0) {
+				await SendGroupMessage(message, bot).ConfigureAwait(false);
+			} else if ((bot == null) || (bot.CachedSteamID != SteamID)) {
+				await SendPrivateMessage(message, bot).ConfigureAwait(false);
 			}
 		}
 
@@ -116,7 +100,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			await bot.SendMessage(ChatGroupID, ChatID, message).ConfigureAwait(false);
+			await bot.SendMessage(ChatGroupID, SteamID, message).ConfigureAwait(false);
 		}
 
 		private async Task SendPrivateMessage(string message, Bot bot = null) {
