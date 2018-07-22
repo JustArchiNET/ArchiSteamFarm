@@ -1404,38 +1404,6 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async Task HandleMessage(ulong chatGroupID, ulong chatID, ulong steamID, string message) {
-			if ((chatGroupID == 0) || (chatID == 0) || (steamID == 0) || string.IsNullOrEmpty(message)) {
-				ArchiLogger.LogNullError(nameof(chatGroupID) + " || " + nameof(chatID) + " || " + nameof(steamID) + " || " + nameof(message));
-				return;
-			}
-
-			string response = await Response(steamID, message).ConfigureAwait(false);
-
-			// We respond with null when user is not authorized (and similar)
-			if (string.IsNullOrEmpty(response)) {
-				return;
-			}
-
-			await SendMessage(chatGroupID, chatID, response).ConfigureAwait(false);
-		}
-
-		private async Task HandleMessage(ulong steamID, string message) {
-			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
-				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(message));
-				return;
-			}
-
-			string response = await Response(steamID, message).ConfigureAwait(false);
-
-			// We respond with null when user is not authorized (and similar)
-			if (string.IsNullOrEmpty(response)) {
-				return;
-			}
-
-			await SendMessage(steamID, response).ConfigureAwait(false);
-		}
-
 		private async Task HeartBeat() {
 			if (!KeepRunning || !IsConnectedAndLoggedOn || (HeartBeatFailures == byte.MaxValue)) {
 				return;
@@ -1948,7 +1916,14 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiLogger.LogChatMessage(false, message, notification.chat_group_id, notification.chat_id, notification.steamid_sender);
-			await HandleMessage(notification.chat_group_id, notification.chat_id, notification.steamid_sender, message).ConfigureAwait(false);
+
+			string response = await Commands.Parse(this, notification.steamid_sender, message).ConfigureAwait(false);
+			if(response == null) {
+				ArchiLogger.LogNullError(nameof(response));
+				return;
+			}
+
+			await SendMessage(notification.chat_group_id, notification.chat_id, response).ConfigureAwait(false);
 		}
 
 		private async Task OnIncomingMessage(CFriendMessages_IncomingMessage_Notification notification) {
@@ -1982,7 +1957,12 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			await HandleMessage(notification.steamid_friend, message).ConfigureAwait(false);
+			string response = await Commands.Parse(this, notification.steamid_friend, message).ConfigureAwait(false);
+			if(response == null) {
+				ArchiLogger.LogNullError(nameof(response));
+			}
+
+			await SendMessage(notification.steamid_friend, response).ConfigureAwait(false);
 		}
 
 		private async void OnLicenseList(SteamApps.LicenseListCallback callback) {
