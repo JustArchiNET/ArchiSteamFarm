@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace ArchiSteamFarm {
 	internal sealed class Commands
     {
-		private static readonly Dictionary<(string Command, byte arguments), Func<Bot, ulong, string[], Task<string>>> CommandDictionary = new Dictionary<(string Command, byte arguments), Func<Bot, ulong, string[], Task<string>>>() {
+		private static readonly Dictionary<(string Command, byte ArgumentCount), Func<Bot, ulong, string[], Task<string>>> CommandDictionary = new Dictionary<(string Command, byte arguments), Func<Bot, ulong, string[], Task<string>>>() {
 			
 		};
 
@@ -23,15 +23,19 @@ namespace ArchiSteamFarm {
 				message = message.Substring(Program.GlobalConfig.CommandPrefix.Length);
 			}
 
-			string[] args = message.Split((char[]) null, StringSplitOptions.RemoveEmptyEntries);
+			string[] messageParts = message.Split((char[]) null, StringSplitOptions.RemoveEmptyEntries);
 
-			if(args.Length == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(args));
+			if(messageParts.Length == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(messageParts));
 				return null;
 			}
 
-			if (CommandDictionary.TryGetValue((args[0].ToUpperInvariant(), (byte) args.Length), out Func<Bot, ulong, string[], Task<string>> func)) {
-				string response = await func(bot, steamID, args).ConfigureAwait(false);
+			string command = messageParts[0];
+			string[] arguments = new string[messageParts.Length - 1];
+			Array.Copy(messageParts, 1, arguments, 0, arguments.Length);
+
+			if (CommandDictionary.TryGetValue((command.ToUpperInvariant(), (byte) arguments.Length), out Func<Bot, ulong, string[], Task<string>> func)) {
+				string response = await func(bot, steamID, arguments).ConfigureAwait(false);
 				if(response == null) {
 					ASF.ArchiLogger.LogNullError(nameof(response));
 					return null;
