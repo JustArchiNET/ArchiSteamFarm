@@ -77,7 +77,7 @@ namespace ArchiSteamFarm {
 		private readonly BotDatabase BotDatabase;
 
 		[JsonProperty]
-		private readonly string BotName;
+		internal readonly string BotName;
 
 		private readonly CallbackManager CallbackManager;
 		private readonly SemaphoreSlim CallbackSemaphore = new SemaphoreSlim(1, 1);
@@ -1587,7 +1587,7 @@ namespace ArchiSteamFarm {
 			return steamID == BotConfig.SteamMasterClanID;
 		}
 
-		private bool IsOperator(ulong steamID) {
+		internal bool IsOperator(ulong steamID) {
 			if (steamID == 0) {
 				ArchiLogger.LogNullError(nameof(steamID));
 				return false;
