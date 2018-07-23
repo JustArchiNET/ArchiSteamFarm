@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 namespace ArchiSteamFarm {
 	internal sealed class Commands {
 		private static readonly Dictionary<string, Func<Bot, ulong, string[], Task<string>>> CommandDictionary = new Dictionary<string, Func<Bot, ulong, string[], Task<string>>>() {
+			{ "2FA", Response2FA },
 			{ "EXIT", ResponseExit },
 			{ "SA", ResponseSA },
 			{ "STATUS", ResponseStatus },
@@ -70,6 +71,64 @@ namespace ArchiSteamFarm {
 			}
 
 			return null;
+		}
+
+		private static async Task<string> Response2FA(Bot bot, ulong steamID, string[] args) {
+			if (bot == null || steamID == 0 || args == null) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID) + " || " + nameof(args));
+				return null;
+			}
+
+			if (args.Length == 0) {
+				return await Response2FA(bot, steamID).ConfigureAwait(false);
+			}
+
+			string botNames = Utilities.GetArgsAsText(args, 0, ",");
+			HashSet<Bot> bots = Bot.GetBots(botNames);
+			if (bots == null || bots.Count == 0) {
+				return Bot.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
+			}
+
+			IEnumerable<Task<string>> tasks = bots.Select(singleBot => Response2FA(singleBot, steamID));
+			ICollection<string> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<string>(bots.Count);
+					foreach(Task<string> currentTask in tasks) {
+						results.Add(await currentTask.ConfigureAwait(false));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+
+			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+			if (responses.Count > 0) {
+				return string.Join(Environment.NewLine, responses);
+			}
+
+			return null;
+		}
+
+		private static async Task<string> Response2FA(Bot bot, ulong steamID) {
+			if (bot == null || steamID == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID));
+				return null;
+			}
+
+			if (!bot.IsMaster(steamID)) {
+				return null;
+			}
+
+			if (!bot.HasMobileAuthenticator) {
+				return FormatBotResponse(bot, Strings.BotNoASFAuthenticator);
+			}
+
+			string token = await bot.BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
+			return FormatBotResponse(bot, !string.IsNullOrEmpty(token) ? string.Format(Strings.BotAuthenticatorToken, token) : Strings.WarningFailed);
 		}
 
 		private static async Task<string> ResponseExit(Bot bot, ulong steamID, string[] args) {

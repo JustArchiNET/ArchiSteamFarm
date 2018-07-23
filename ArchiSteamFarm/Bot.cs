@@ -74,7 +74,7 @@ namespace ArchiSteamFarm {
 		internal bool IsPlayingPossible => !PlayingBlocked && (LibraryLockedBySteamID == 0);
 
 		private readonly ArchiHandler ArchiHandler;
-		private readonly BotDatabase BotDatabase;
+		internal readonly BotDatabase BotDatabase;
 
 		[JsonProperty]
 		internal readonly string BotName;
@@ -930,8 +930,6 @@ namespace ArchiSteamFarm {
 					return null;
 				case 1:
 					switch (args[0].ToUpperInvariant()) {
-						case "2FA":
-							return await Response2FA(steamID).ConfigureAwait(false);
 						case "2FANO":
 							return await Response2FAConfirm(steamID, false).ConfigureAwait(false);
 						case "2FAOK":
@@ -967,8 +965,6 @@ namespace ArchiSteamFarm {
 					}
 				default:
 					switch (args[0].ToUpperInvariant()) {
-						case "2FA":
-							return await Response2FA(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "2FANO":
 							return await Response2FAConfirm(steamID, Utilities.GetArgsAsText(args, 1, ","), false).ConfigureAwait(false);
 						case "2FAOK":
@@ -2493,55 +2489,6 @@ namespace ArchiSteamFarm {
 		private void ResetPlayingWasBlockedWithTimer() {
 			PlayingWasBlocked = false;
 			StopPlayingWasBlockedTimer();
-		}
-
-		private async Task<string> Response2FA(ulong steamID) {
-			if (steamID == 0) {
-				ArchiLogger.LogNullError(nameof(steamID));
-				return null;
-			}
-
-			if (!IsMaster(steamID)) {
-				return null;
-			}
-
-			if (!HasMobileAuthenticator) {
-				return FormatBotResponse(Strings.BotNoASFAuthenticator);
-			}
-
-			string token = await BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
-			return FormatBotResponse(!string.IsNullOrEmpty(token) ? string.Format(Strings.BotAuthenticatorToken, token) : Strings.WarningFailed);
-		}
-
-		private static async Task<string> Response2FA(ulong steamID, string botNames) {
-			if ((steamID == 0) || string.IsNullOrEmpty(botNames)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
-				return null;
-			}
-
-			HashSet<Bot> bots = GetBots(botNames);
-			if ((bots == null) || (bots.Count == 0)) {
-				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
-			}
-
-			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.Response2FA(steamID));
-			ICollection<string> results;
-
-			switch (Program.GlobalConfig.OptimizationMode) {
-				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					results = new List<string>(bots.Count);
-					foreach (Task<string> task in tasks) {
-						results.Add(await task.ConfigureAwait(false));
-					}
-
-					break;
-				default:
-					results = await Task.WhenAll(tasks).ConfigureAwait(false);
-					break;
-			}
-
-			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
-			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 
 		private async Task<string> Response2FAConfirm(ulong steamID, bool confirm) {
