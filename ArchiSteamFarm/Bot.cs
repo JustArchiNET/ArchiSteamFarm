@@ -964,8 +964,6 @@ namespace ArchiSteamFarm {
 							return ResponseStart(steamID);
 						case "STATS":
 							return ResponseStats(steamID);
-						case "UNPACK":
-							return await ResponseUnpackBoosters(steamID).ConfigureAwait(false);
 						default:
 							return ResponseUnknown(steamID);
 					}
@@ -1127,8 +1125,6 @@ namespace ArchiSteamFarm {
 							}
 
 							goto default;
-						case "UNPACK":
-							return await ResponseUnpackBoosters(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						default:
 							return ResponseUnknown(steamID);
 					}
@@ -4837,65 +4833,6 @@ namespace ArchiSteamFarm {
 			}
 
 			return IsOperator(steamID) ? FormatBotResponse(Strings.UnknownCommand) : null;
-		}
-
-		private async Task<string> ResponseUnpackBoosters(ulong steamID) {
-			if (steamID == 0) {
-				ArchiLogger.LogNullError(nameof(steamID));
-				return null;
-			}
-
-			if (!IsMaster(steamID)) {
-				return null;
-			}
-
-			if (!IsConnectedAndLoggedOn) {
-				return FormatBotResponse(Strings.BotNotConnected);
-			}
-
-			HashSet<Steam.Asset> inventory = await ArchiWebHandler.GetInventory(CachedSteamID, wantedTypes: new HashSet<Steam.Asset.EType> { Steam.Asset.EType.BoosterPack }).ConfigureAwait(false);
-			if ((inventory == null) || (inventory.Count == 0)) {
-				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
-			}
-
-			// It'd make sense here to actually check return code of ArchiWebHandler.UnpackBooster(), but it lies most of the time | https://github.com/JustArchi/ArchiSteamFarm/issues/704
-			// It'd also make sense to run all of this in parallel, but it seems that Steam has a lot of problems with inventory-related parallel requests | https://steamcommunity.com/groups/ascfarm/discussions/1/3559414588264550284/
-			foreach (Steam.Asset item in inventory) {
-				await ArchiWebHandler.UnpackBooster(item.RealAppID, item.AssetID).ConfigureAwait(false);
-			}
-
-			return FormatBotResponse(Strings.Done);
-		}
-
-		private static async Task<string> ResponseUnpackBoosters(ulong steamID, string botNames) {
-			if ((steamID == 0) || string.IsNullOrEmpty(botNames)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
-				return null;
-			}
-
-			HashSet<Bot> bots = GetBots(botNames);
-			if ((bots == null) || (bots.Count == 0)) {
-				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
-			}
-
-			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseUnpackBoosters(steamID));
-			ICollection<string> results;
-
-			switch (Program.GlobalConfig.OptimizationMode) {
-				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					results = new List<string>(bots.Count);
-					foreach (Task<string> task in tasks) {
-						results.Add(await task.ConfigureAwait(false));
-					}
-
-					break;
-				default:
-					results = await Task.WhenAll(tasks).ConfigureAwait(false);
-					break;
-			}
-
-			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
-			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 
 		private void SetUserInput(ASF.EUserInputType inputType, string inputValue) {
