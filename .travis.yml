@@ -23,17 +23,17 @@ env:
 
 before_script:
   - |
-    set -e
+    set -eu
 
     if [ "$TRAVIS_OS_NAME" = "osx" ]; then
         ulimit -n 1024
     fi
 
     dotnet --info
-
+    set +u # This is needed to continue Travis build
 script:
   - |
-    set -e
+    set -eu
 
     dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/source' /nologo
     dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/source' /nologo
@@ -60,7 +60,7 @@ script:
     done
 
     wait
-
+    set +u # This is needed to continue Travis build
 matrix:
   # We can use fast finish, as we don't need to wait for allow_failures builds to mark build as success
   fast_finish: true
