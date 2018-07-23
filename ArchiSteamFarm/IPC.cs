@@ -488,7 +488,7 @@ namespace ArchiSteamFarm {
 				argument = Program.GlobalConfig.CommandPrefix + argument;
 			}
 
-			string content = await targetBot.Response(Program.GlobalConfig.SteamOwnerID, argument).ConfigureAwait(false);
+			string content = await Commands.Parse(targetBot, Program.GlobalConfig.SteamOwnerID, argument).ConfigureAwait(false);
 
 			await ResponseJsonObject(request, response, new GenericResponse<string>(true, "OK", content)).ConfigureAwait(false);
 			return true;
