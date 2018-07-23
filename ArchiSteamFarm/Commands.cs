@@ -54,7 +54,6 @@ namespace ArchiSteamFarm {
 				return response;
 			}
 
-			ASF.ArchiLogger.LogNullError(nameof(func));
 			return null;
 		}
 

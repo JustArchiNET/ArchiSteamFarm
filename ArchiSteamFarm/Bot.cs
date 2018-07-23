@@ -976,8 +976,6 @@ namespace ArchiSteamFarm {
 							return await ResponseUnpackBoosters(steamID).ConfigureAwait(false);
 						case "UPDATE":
 							return await ResponseUpdate(steamID).ConfigureAwait(false);
-						case "VERSION":
-							return ResponseVersion(steamID);
 						default:
 							return ResponseUnknown(steamID);
 					}
@@ -5076,15 +5074,6 @@ namespace ArchiSteamFarm {
 
 			Version version = await ASF.CheckAndUpdateProgram(true).ConfigureAwait(false);
 			return FormatStaticResponse(version != null ? (version > SharedInfo.Version ? Strings.Success : Strings.Done) : Strings.WarningFailed);
-		}
-
-		private string ResponseVersion(ulong steamID) {
-			if (steamID == 0) {
-				ArchiLogger.LogNullError(nameof(steamID));
-				return null;
-			}
-
-			return IsOperator(steamID) ? FormatBotResponse(string.Format(Strings.BotVersion, SharedInfo.ASF, SharedInfo.Version)) : null;
 		}
 
 		private void SetUserInput(ASF.EUserInputType inputType, string inputValue) {
