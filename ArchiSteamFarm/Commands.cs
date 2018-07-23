@@ -99,15 +99,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (args.Length == 0) {
-				if (!bot.IsMaster(steamID)) {
-					return null;
-				}
-
-				if (string.IsNullOrEmpty(bot.BotConfig.SteamPassword)) {
-					return FormatBotResponse(bot, string.Format(Strings.ErrorIsEmpty, nameof(BotConfig.SteamPassword)));
-				}
-
-				return FormatBotResponse(bot, string.Format(Strings.BotEncryptedPassword, CryptoHelper.ECryptoMethod.AES, CryptoHelper.Encrypt(CryptoHelper.ECryptoMethod.AES, bot.BotConfig.SteamPassword))) + FormatBotResponse(bot, string.Format(Strings.BotEncryptedPassword, CryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser, CryptoHelper.Encrypt(CryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser, bot.BotConfig.SteamPassword)));
+				return ResponsePassword(bot, steamID);
 			}
 
 			string botNames = Utilities.GetArgsAsText(args, 0, ",");
@@ -116,7 +108,7 @@ namespace ArchiSteamFarm {
 				return Bot.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			IEnumerable<Task<string>> tasks = bots.Select(singleBot => Task.Run(() => ResponsePassword(singleBot, steamID, new string[0])));
+			IEnumerable<Task<string>> tasks = bots.Select(singleBot => Task.Run(() => ResponsePassword(singleBot, steamID)));
 			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
@@ -138,6 +130,23 @@ namespace ArchiSteamFarm {
 			}
 
 			return null;
+		}
+
+		private static string ResponsePassword(Bot bot, ulong steamID) {
+			if (bot == null || steamID == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID));
+				return null;
+			}
+
+			if (!bot.IsMaster(steamID)) {
+				return null;
+			}
+
+			if (string.IsNullOrEmpty(bot.BotConfig.SteamPassword)) {
+				return FormatBotResponse(bot, string.Format(Strings.ErrorIsEmpty, nameof(BotConfig.SteamPassword)));
+			}
+
+			return FormatBotResponse(bot, string.Format(Strings.BotEncryptedPassword, CryptoHelper.ECryptoMethod.AES, CryptoHelper.Encrypt(CryptoHelper.ECryptoMethod.AES, bot.BotConfig.SteamPassword))) + FormatBotResponse(bot, string.Format(Strings.BotEncryptedPassword, CryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser, CryptoHelper.Encrypt(CryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser, bot.BotConfig.SteamPassword)));
 		}
 
 		private static async Task<string> ResponseSA(Bot bot, ulong steamID, string[] args) => await ResponseStatus(bot, steamID, new string[] { SharedInfo.ASF }).ConfigureAwait(false);
@@ -234,16 +243,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (args.Length == 0) {
-				if (!bot.IsMaster(steamID)) {
-					return null;
-				}
-
-				if (!bot.KeepRunning) {
-					return FormatBotResponse(bot, Strings.BotAlreadyStopped);
-				}
-
-				bot.Stop();
-				return FormatBotResponse(bot, Strings.Done);
+				return ResponseStop(bot, steamID);
 			}
 
 			string botNames = Utilities.GetArgsAsText(args, 0, ",");
@@ -252,7 +252,7 @@ namespace ArchiSteamFarm {
 				return Bot.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			IEnumerable<Task<string>> tasks = bots.Select(singleBot => Task.Run(() => ResponseStop(singleBot, steamID, new string[0])));
+			IEnumerable<Task<string>> tasks = bots.Select(singleBot => Task.Run(() => ResponseStop(singleBot, steamID)));
 			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
@@ -276,6 +276,24 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
+		private static string ResponseStop(Bot bot, ulong steamID) {
+			if (bot == null || steamID == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID));
+				return null;
+			}
+
+			if (!bot.IsMaster(steamID)) {
+				return null;
+			}
+
+			if (!bot.KeepRunning) {
+				return FormatBotResponse(bot, Strings.BotAlreadyStopped);
+			}
+
+			bot.Stop();
+			return FormatBotResponse(bot, Strings.Done);
+		}
+
 		private static async Task<string> ResponseUnpack(Bot bot, ulong steamID, string[] args) {
 			if (bot == null || steamID == 0 || args == null) {
 				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID) + " || " + nameof(args));
@@ -283,26 +301,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (args.Length == 0) {
-				if (!bot.IsMaster(steamID)) {
-					return null;
-				}
-
-				if (!bot.IsConnectedAndLoggedOn) {
-					return FormatBotResponse(bot, Strings.BotNotConnected);
-				}
-
-				HashSet<Steam.Asset> inventory = await bot.ArchiWebHandler.GetInventory(bot.CachedSteamID, wantedTypes: new HashSet<Steam.Asset.EType> { Steam.Asset.EType.BoosterPack }).ConfigureAwait(false);
-				if (inventory == null || inventory.Count == 0) {
-					return FormatBotResponse(bot, string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
-				}
-
-				// It'd make sense here to actually check return code of ArchiWebHandler.UnpackBooster(), but it lies most of the time | https://github.com/JustArchi/ArchiSteamFarm/issues/704
-				// It'd also make sense to run all of this in parallel, but it seems that Steam has a lot of problems with inventory-related parallel requests | https://steamcommunity.com/groups/ascfarm/discussions/1/3559414588264550284/
-				foreach (Steam.Asset item in inventory) {
-					await bot.ArchiWebHandler.UnpackBooster(item.RealAppID, item.AssetID).ConfigureAwait(false);
-				}
-
-				return FormatBotResponse(bot, Strings.Done);
+				return await ResponseUnpack(bot, steamID).ConfigureAwait(false);
 			}
 
 			string botNames = Utilities.GetArgsAsText(args, 0, ",");
@@ -311,7 +310,7 @@ namespace ArchiSteamFarm {
 				return Bot.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			IEnumerable<Task<string>> tasks = bots.Select(singleBot => ResponseUnpack(singleBot, steamID, new string[0]));
+			IEnumerable<Task<string>> tasks = bots.Select(singleBot => ResponseUnpack(singleBot, steamID));
 			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
@@ -333,6 +332,34 @@ namespace ArchiSteamFarm {
 			}
 
 			return null;
+		}
+
+		private static async Task<string> ResponseUnpack(Bot bot, ulong steamID) {
+			if (bot == null || steamID == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID));
+				return null;
+			}
+
+			if (!bot.IsMaster(steamID)) {
+				return null;
+			}
+
+			if (!bot.IsConnectedAndLoggedOn) {
+				return FormatBotResponse(bot, Strings.BotNotConnected);
+			}
+
+			HashSet<Steam.Asset> inventory = await bot.ArchiWebHandler.GetInventory(bot.CachedSteamID, wantedTypes: new HashSet<Steam.Asset.EType> { Steam.Asset.EType.BoosterPack }).ConfigureAwait(false);
+			if (inventory == null || inventory.Count == 0) {
+				return FormatBotResponse(bot, string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
+			}
+
+			// It'd make sense here to actually check return code of ArchiWebHandler.UnpackBooster(), but it lies most of the time | https://github.com/JustArchi/ArchiSteamFarm/issues/704
+			// It'd also make sense to run all of this in parallel, but it seems that Steam has a lot of problems with inventory-related parallel requests | https://steamcommunity.com/groups/ascfarm/discussions/1/3559414588264550284/
+			foreach (Steam.Asset item in inventory) {
+				await bot.ArchiWebHandler.UnpackBooster(item.RealAppID, item.AssetID).ConfigureAwait(false);
+			}
+
+			return FormatBotResponse(bot, Strings.Done);
 		}
 
 		private static async Task<string> ResponseUpdate(Bot bot, ulong steamID, string[] args) {
