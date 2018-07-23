@@ -6,24 +6,19 @@ using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal sealed class Commands {
-		//Because this dictionary maps to async functions we have to make sync functions async with lambdas; e.g. VERSION
-		//Because for some commands there exist versions with AND without parameters we have to use lambdas to adapt function-interfaces sometimes; e.g. STOP
-		private static readonly Dictionary<(string Command, byte ArgumentCount), Func<Bot, ulong, string[], Task<string>>> CommandDictionary = new Dictionary<(string Command, byte arguments), Func<Bot, ulong, string[], Task<string>>>() {
-			{ ("EXIT", 0), async (bot, steamID, args) => await Task.Run(() => ResponseExit(steamID)).ConfigureAwait(false) },
-			{ ("SA", 0), async (bot, steamID, args) => await ResponseStatus(steamID, SharedInfo.ASF).ConfigureAwait(false) },
-			{ ("STATUS", 0), async (bot, steamID, args) => await Task.Run(() => ResponseStatus(bot, steamID)).ConfigureAwait(false) },
-			{ ("STOP", 0), async (bot, steamID, args) => await Task.Run(() => ResponseStop(bot, steamID)).ConfigureAwait(false) },
-			{ ("UPDATE", 0), ResponseUpdate },
-			{ ("VERSION", 0), async (bot, steamID, args) => await Task.Run(() => ResponseVersion(bot, steamID)).ConfigureAwait(false) },
-
-			{ ("STATUS", 1), async (bot, steamID, args) => await ResponseStatus(steamID, Utilities.GetArgsAsText(args, 0, ",")).ConfigureAwait(false) },
-			{ ("STOP", 1), async (bot, steamID, args) => await ResponseStop(steamID, Utilities.GetArgsAsText(args, 0, ",")).ConfigureAwait(false) }
+		private static readonly Dictionary<string, Func<Bot, ulong, string[], Task<string>>> CommandDictionary = new Dictionary<string, Func<Bot, ulong, string[], Task<string>>>() {
+			{ "EXIT", ResponseExit },
+			{ "SA", ResponseSA },
+			{ "STATUS", ResponseStatus },
+			{ "STOP", ResponseStop },
+			{ "UPDATE", ResponseUpdate },
+			{ "VERSION", ResponseVersion }
 		};
 
 		private static IEnumerable<string> AllCommands;
 
 		//Because string-operations are quite heavy we don't want to use ToLowerInvariant() each time someone wants a list of all commands
-		internal static IEnumerable<string> GetAllAvailableCommands() => AllCommands ?? (AllCommands = CommandDictionary.Keys.Select(key => key.Command.ToLowerInvariant()).Distinct());
+		internal static IEnumerable<string> GetAllAvailableCommands() => AllCommands ?? (AllCommands = CommandDictionary.Keys.Select(key => key.ToLowerInvariant()));
 
 		private static string FormatBotResponse(Bot bot, string response) {
 			if (bot == null || string.IsNullOrEmpty(response)) {
@@ -68,16 +63,14 @@ namespace ArchiSteamFarm {
 			string[] arguments = new string[messageParts.Length - 1];
 			Array.Copy(messageParts, 1, arguments, 0, arguments.Length);
 
-			if (CommandDictionary.TryGetValue((command.ToUpperInvariant(), (byte)arguments.Length), out Func<Bot, ulong, string[], Task<string>> func)) {
-				string response = await func(bot, steamID, arguments).ConfigureAwait(false);
-
-				return response;
+			if (CommandDictionary.TryGetValue(command.ToUpperInvariant(), out Func<Bot, ulong, string[], Task<string>> func)) {
+				return await func(bot, steamID, arguments).ConfigureAwait(false);
 			}
 
 			return null;
 		}
 
-		private static string ResponseExit(ulong steamID) {
+		private static async Task<string> ResponseExit(Bot bot, ulong steamID, string[] args) {
 			if (steamID == 0) {
 				ASF.ArchiLogger.LogNullError(nameof(steamID));
 				return null;
@@ -97,9 +90,54 @@ namespace ArchiSteamFarm {
 			return FormatStaticResponse(Strings.Done);
 		}
 
-		private static string ResponseStatus(Bot bot, ulong steamID) {
-			if (steamID == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID));
+		private static async Task<string> ResponseSA(Bot bot, ulong steamID, string[] args) => await ResponseStatus(bot, steamID, new string[] { SharedInfo.ASF }).ConfigureAwait(false);
+
+		private static async Task<string> ResponseStatus(Bot bot, ulong steamID, string[] args) {
+			if (bot == null || steamID == 0 || args == null) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID) + " || " + nameof(args));
+				return null;
+			}
+
+			if (args.Length == 0) {
+				return GetSingleBotStatusResponse(bot, steamID);
+			}
+
+			string botNames = Utilities.GetArgsAsText(args, 0, ",");
+			HashSet<Bot> bots = Bot.GetBots(botNames);
+			if (bots == null || bots.Count == 0) {
+				return Bot.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
+			}
+
+			IEnumerable<(Bot Bot, Task<string> Task)> tasks = bots.Select(singleBot => (singleBot, Task.Run(() => GetSingleBotStatusResponse(singleBot, steamID))));
+			ICollection<(Bot Bot, string Response)> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<(Bot Bot, string Response)>(bots.Count);
+					foreach ((Bot currentBot, Task<string> currentTask) in tasks) {
+						results.Add((currentBot, await currentTask.ConfigureAwait(false)));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks.Select(async task => (task.Bot, await task.Task.ConfigureAwait(false)))).ConfigureAwait(false);
+					break;
+			}
+
+			List<(Bot Bot, string Response)> validResults = new List<(Bot Bot, string Response)>(results.Where(result => !string.IsNullOrEmpty(result.Response)));
+			if (validResults.Count == 0) {
+				return null;
+			}
+
+			HashSet<Bot> botsRunning = validResults.Where(result => result.Bot.KeepRunning).Select(result => result.Bot).ToHashSet();
+
+			string extraResponse = string.Format(Strings.BotStatusOverview, botsRunning.Count, validResults.Count, botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarm.Count), botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining)));
+			return string.Join(Environment.NewLine, validResults.Select(result => result.Response).Union(extraResponse.ToEnumerable()));
+		}
+
+		private static string GetSingleBotStatusResponse(Bot bot, ulong steamID) {
+			if (bot == null || steamID == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID));
 				return null;
 			}
 
@@ -139,68 +177,26 @@ namespace ArchiSteamFarm {
 			return FormatBotResponse(bot, string.Format(Strings.BotStatusIdling, soloGame.AppID, soloGame.GameName, soloGame.CardsRemaining, bot.CardsFarmer.GamesToFarm.Count, bot.CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining), bot.CardsFarmer.TimeRemaining.ToHumanReadable()));
 		}
 
-		private static async Task<string> ResponseStatus(ulong steamID, string botNames) {
-			if (steamID == 0 || string.IsNullOrEmpty(botNames)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
+		private static async Task<string> ResponseStop(Bot bot, ulong steamID, string[] args) {
+			if (bot == null || steamID == 0 || args == null) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID) + " || " + nameof(args));
 				return null;
 			}
 
-			HashSet<Bot> bots = Bot.GetBots(botNames);
-			if(bots == null || bots.Count == 0) {
-				return Bot.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
+			if (args.Length == 0) {
+				if (!bot.IsMaster(steamID)) {
+					return null;
+				}
+
+				if (!bot.KeepRunning) {
+					return FormatBotResponse(bot, Strings.BotAlreadyStopped);
+				}
+
+				bot.Stop();
+				return FormatBotResponse(bot, Strings.Done);
 			}
 
-			IEnumerable<(Bot Bot, Task<string> Task)> tasks = bots.Select(bot => (bot, Task.Run(() => ResponseStatus(bot, steamID))));
-			ICollection<(Bot Bot, string Response)> results;
-
-			switch (Program.GlobalConfig.OptimizationMode) {
-				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					results = new List<(Bot Bot, string Response)>(bots.Count);
-					foreach((Bot bot, Task<string> task) in tasks) {
-						results.Add((bot, await task.ConfigureAwait(false)));
-					}
-
-					break;
-				default:
-					results = await Task.WhenAll(tasks.Select(async task => (task.Bot, await task.Task.ConfigureAwait(false)))).ConfigureAwait(false);
-					break;
-			}
-
-			List<(Bot Bot, string Response)> validResults = new List<(Bot Bot, string Response)>(results.Where(result => !string.IsNullOrEmpty(result.Response)));
-			if(validResults.Count == 0) {
-				return null;
-			}
-
-			HashSet<Bot> botsRunning = validResults.Where(result => result.Bot.KeepRunning).Select(result => result.Bot).ToHashSet();
-
-			string extraResponse = string.Format(Strings.BotStatusOverview, botsRunning.Count, validResults.Count, botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarm.Count), botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining)));
-			return string.Join(Environment.NewLine, validResults.Select(result => result.Response).Union(extraResponse.ToEnumerable()));
-		}
-
-		private static string ResponseStop(Bot bot, ulong steamID) {
-			if (bot == null || steamID == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID));
-				return null;
-			}
-
-			if (!bot.IsMaster(steamID)) {
-				return null;
-			}
-
-			if (!bot.KeepRunning) {
-				return FormatBotResponse(bot, Strings.BotAlreadyStopped);
-			}
-
-			bot.Stop();
-			return FormatBotResponse(bot, Strings.Done);
-		}
-
-		private static async Task<string> ResponseStop(ulong steamID, string botNames) {
-			if ((steamID == 0) || string.IsNullOrEmpty(botNames)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
-				return null;
-			}
-
+			string botNames = Utilities.GetArgsAsText(args, 0, ",");
 			HashSet<Bot> bots = Bot.GetBots(botNames);
 			if (bots == null || bots.Count == 0) {
 				return Bot.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
@@ -244,9 +240,9 @@ namespace ArchiSteamFarm {
 			return FormatStaticResponse(version != null ? (version > SharedInfo.Version ? Strings.Success : Strings.Done) : Strings.WarningFailed);
 		}
 
-		private static string ResponseVersion(Bot bot, ulong steamID) {
-			if (steamID == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID));
+		private static async Task<string> ResponseVersion(Bot bot, ulong steamID, string[] args) {
+			if (bot == null || steamID == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID));
 				return null;
 			}
 
