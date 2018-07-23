@@ -83,7 +83,7 @@ namespace ArchiSteamFarm {
 		private readonly SemaphoreSlim CallbackSemaphore = new SemaphoreSlim(1, 1);
 
 		[JsonProperty]
-		private readonly CardsFarmer CardsFarmer;
+		internal readonly CardsFarmer CardsFarmer;
 
 		private readonly SemaphoreSlim GamesRedeemerInBackgroundSemaphore = new SemaphoreSlim(1, 1);
 		private readonly ConcurrentHashSet<ulong> HandledGifts = new ConcurrentHashSet<ulong>();
@@ -102,7 +102,7 @@ namespace ArchiSteamFarm {
 		private string BotPath => Path.Combine(SharedInfo.ConfigDirectory, BotName);
 		private string ConfigFilePath => BotPath + SharedInfo.ConfigExtension;
 		private string DatabaseFilePath => BotPath + SharedInfo.DatabaseExtension;
-		private bool IsAccountLocked => AccountFlags.HasFlag(EAccountFlags.Lockdown);
+		internal bool IsAccountLocked => AccountFlags.HasFlag(EAccountFlags.Lockdown);
 		private string KeysToRedeemFilePath => BotPath + SharedInfo.KeysExtension;
 		private string KeysToRedeemUnusedFilePath => KeysToRedeemFilePath + SharedInfo.KeysUnusedExtension;
 		private string KeysToRedeemUsedFilePath => KeysToRedeemFilePath + SharedInfo.KeysUsedExtension;
@@ -146,7 +146,7 @@ namespace ArchiSteamFarm {
 		private ulong LibraryLockedBySteamID;
 		private bool LootingAllowed = true;
 		private bool LootingScheduled;
-		private bool PlayingBlocked;
+		internal bool PlayingBlocked;
 		private Timer PlayingWasBlockedTimer;
 		private bool ReconnectOnUserInitiated;
 		private Timer SendItemsTimer;
@@ -960,14 +960,10 @@ namespace ArchiSteamFarm {
 							return ResponseResume(steamID);
 						case "RESTART":
 							return ResponseRestart(steamID);
-						case "SA":
-							return await ResponseStatus(steamID, SharedInfo.ASF).ConfigureAwait(false);
 						case "START":
 							return ResponseStart(steamID);
 						case "STATS":
 							return ResponseStats(steamID);
-						case "STATUS":
-							return ResponseStatus(steamID).Response;
 						case "UNPACK":
 							return await ResponseUnpackBoosters(steamID).ConfigureAwait(false);
 						default:
@@ -1121,8 +1117,6 @@ namespace ArchiSteamFarm {
 							return await ResponseResume(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "START":
 							return await ResponseStart(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
-						case "STATUS":
-							return await ResponseStatus(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "TRANSFER":
 							if (args.Length > 3) {
 								return await ResponseTransfer(steamID, args[1], args[2], Utilities.GetArgsAsText(args, 3, ",")).ConfigureAwait(false);
@@ -1559,7 +1553,7 @@ namespace ArchiSteamFarm {
 			Utilities.InBackground(Start);
 		}
 
-		private bool IsFamilySharing(ulong steamID) {
+		internal bool IsFamilySharing(ulong steamID) {
 			if (steamID == 0) {
 				ArchiLogger.LogNullError(nameof(steamID));
 				return false;
@@ -4672,86 +4666,6 @@ namespace ArchiSteamFarm {
 
 			ushort memoryInMegabytes = (ushort) (GC.GetTotalMemory(false) / 1024 / 1024);
 			return FormatBotResponse(string.Format(Strings.BotStats, memoryInMegabytes));
-		}
-
-		private (string Response, Bot Bot) ResponseStatus(ulong steamID) {
-			if (steamID == 0) {
-				ArchiLogger.LogNullError(nameof(steamID));
-				return (null, this);
-			}
-
-			if (!IsFamilySharing(steamID)) {
-				return (null, this);
-			}
-
-			if (!IsConnectedAndLoggedOn) {
-				return (FormatBotResponse(KeepRunning ? Strings.BotStatusConnecting : Strings.BotStatusNotRunning), this);
-			}
-
-			if (PlayingBlocked) {
-				return (FormatBotResponse(Strings.BotStatusPlayingNotAvailable), this);
-			}
-
-			if (CardsFarmer.Paused) {
-				return (FormatBotResponse(Strings.BotStatusPaused), this);
-			}
-
-			if (IsAccountLimited) {
-				return (FormatBotResponse(Strings.BotStatusLimited), this);
-			}
-
-			if (IsAccountLocked) {
-				return (FormatBotResponse(Strings.BotStatusLocked), this);
-			}
-
-			if (!CardsFarmer.NowFarming || (CardsFarmer.CurrentGamesFarming.Count == 0)) {
-				return (FormatBotResponse(Strings.BotStatusNotIdling), this);
-			}
-
-			if (CardsFarmer.CurrentGamesFarming.Count > 1) {
-				return (FormatBotResponse(string.Format(Strings.BotStatusIdlingList, string.Join(", ", CardsFarmer.CurrentGamesFarming.Select(game => game.AppID + " (" + game.GameName + ")")), CardsFarmer.GamesToFarm.Count, CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining), CardsFarmer.TimeRemaining.ToHumanReadable())), this);
-			}
-
-			CardsFarmer.Game soloGame = CardsFarmer.CurrentGamesFarming.First();
-			return (FormatBotResponse(string.Format(Strings.BotStatusIdling, soloGame.AppID, soloGame.GameName, soloGame.CardsRemaining, CardsFarmer.GamesToFarm.Count, CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining), CardsFarmer.TimeRemaining.ToHumanReadable())), this);
-		}
-
-		private static async Task<string> ResponseStatus(ulong steamID, string botNames) {
-			if ((steamID == 0) || string.IsNullOrEmpty(botNames)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
-				return null;
-			}
-
-			HashSet<Bot> bots = GetBots(botNames);
-			if ((bots == null) || (bots.Count == 0)) {
-				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
-			}
-
-			IEnumerable<Task<(string Response, Bot Bot)>> tasks = bots.Select(bot => Task.Run(() => bot.ResponseStatus(steamID)));
-			ICollection<(string Response, Bot Bot)> results;
-
-			switch (Program.GlobalConfig.OptimizationMode) {
-				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					results = new List<(string Response, Bot Bot)>(bots.Count);
-					foreach (Task<(string Response, Bot Bot)> task in tasks) {
-						results.Add(await task.ConfigureAwait(false));
-					}
-
-					break;
-				default:
-					results = await Task.WhenAll(tasks).ConfigureAwait(false);
-					break;
-			}
-
-			List<(string Response, Bot Bot)> validResults = new List<(string Response, Bot Bot)>(results.Where(result => !string.IsNullOrEmpty(result.Response)));
-			if (validResults.Count == 0) {
-				return null;
-			}
-
-			HashSet<Bot> botsRunning = validResults.Where(result => result.Bot.KeepRunning).Select(result => result.Bot).ToHashSet();
-
-			string extraResponse = string.Format(Strings.BotStatusOverview, botsRunning.Count, validResults.Count, botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarm.Count), botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining)));
-			return string.Join(Environment.NewLine, validResults.Select(result => result.Response).Union(extraResponse.ToEnumerable()));
 		}
 
 		private async Task<string> ResponseTransfer(ulong steamID, string mode, string botNameTo) {

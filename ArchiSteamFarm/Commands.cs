@@ -10,10 +10,13 @@ namespace ArchiSteamFarm {
 		//Because for some commands there exist versions with AND without parameters we have to use lambdas to adapt function-interfaces sometimes; e.g. STOP
 		private static readonly Dictionary<(string Command, byte ArgumentCount), Func<Bot, ulong, string[], Task<string>>> CommandDictionary = new Dictionary<(string Command, byte arguments), Func<Bot, ulong, string[], Task<string>>>() {
 			{ ("EXIT", 0), async (bot, steamID, args) => await Task.Run(() => ResponseExit(steamID)).ConfigureAwait(false) },
+			{ ("SA", 0), async (bot, steamID, args) => await ResponseStatus(steamID, SharedInfo.ASF).ConfigureAwait(false) },
+			{ ("STATUS", 0), async (bot, steamID, args) => await Task.Run(() => ResponseStatus(bot, steamID)).ConfigureAwait(false) },
 			{ ("STOP", 0), async (bot, steamID, args) => await Task.Run(() => ResponseStop(bot, steamID)).ConfigureAwait(false) },
 			{ ("UPDATE", 0), ResponseUpdate },
 			{ ("VERSION", 0), async (bot, steamID, args) => await Task.Run(() => ResponseVersion(bot, steamID)).ConfigureAwait(false) },
 
+			{ ("STATUS", 1), async (bot, steamID, args) => await ResponseStatus(steamID, Utilities.GetArgsAsText(args, 0, ",")).ConfigureAwait(false) },
 			{ ("STOP", 1), async (bot, steamID, args) => await ResponseStop(steamID, Utilities.GetArgsAsText(args, 0, ",")).ConfigureAwait(false) }
 		};
 
@@ -87,6 +90,86 @@ namespace ArchiSteamFarm {
 			);
 
 			return FormatStaticResponse(Strings.Done);
+		}
+
+		private static string ResponseStatus(Bot bot, ulong steamID) {
+			if (steamID == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID));
+				return null;
+			}
+
+			if (!bot.IsFamilySharing(steamID)) {
+				return null;
+			}
+
+			if (!bot.IsConnectedAndLoggedOn) {
+				return FormatBotResponse(bot, bot.KeepRunning ? Strings.BotStatusConnecting : Strings.BotStatusNotRunning);
+			}
+
+			if (bot.PlayingBlocked) {
+				return FormatBotResponse(bot, Strings.BotStatusPlayingNotAvailable);
+			}
+
+			if (bot.CardsFarmer.Paused) {
+				return FormatBotResponse(bot, Strings.BotStatusPaused);
+			}
+
+			if (bot.IsAccountLimited) {
+				return FormatBotResponse(bot, Strings.BotStatusLimited);
+			}
+
+			if (bot.IsAccountLocked) {
+				return FormatBotResponse(bot, Strings.BotStatusLocked);
+			}
+
+			if (!bot.CardsFarmer.NowFarming || bot.CardsFarmer.CurrentGamesFarming.Count == 0) {
+				return FormatBotResponse(bot, Strings.BotStatusNotIdling);
+			}
+
+			if (bot.CardsFarmer.CurrentGamesFarming.Count > 1) {
+				return FormatBotResponse(bot, string.Format(Strings.BotStatusIdlingList, string.Join(", ", bot.CardsFarmer.CurrentGamesFarming.Select(game => game.AppID + " (" + game.GameName + ")")), bot.CardsFarmer.GamesToFarm.Count, bot.CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining), bot.CardsFarmer.TimeRemaining.ToHumanReadable()));
+			}
+
+			CardsFarmer.Game soloGame = bot.CardsFarmer.CurrentGamesFarming.First();
+			return FormatBotResponse(bot, string.Format(Strings.BotStatusIdling, soloGame.AppID, soloGame.GameName, soloGame.CardsRemaining, bot.CardsFarmer.GamesToFarm.Count, bot.CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining), bot.CardsFarmer.TimeRemaining.ToHumanReadable()));
+		}
+
+		private static async Task<string> ResponseStatus(ulong steamID, string botNames) {
+			if (steamID == 0 || string.IsNullOrEmpty(botNames)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
+				return null;
+			}
+
+			HashSet<Bot> bots = Bot.GetBots(botNames);
+			if(bots == null || bots.Count == 0) {
+				return Bot.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
+			}
+
+			IEnumerable<(Bot Bot, Task<string> Task)> tasks = bots.Select(bot => (bot, Task.Run(() => ResponseStatus(bot, steamID))));
+			ICollection<(Bot Bot, string Response)> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<(Bot Bot, string Response)>(bots.Count);
+					foreach((Bot bot, Task<string> task) in tasks) {
+						results.Add((bot, await task.ConfigureAwait(false)));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks.Select(async task => (task.Bot, await task.Task.ConfigureAwait(false)))).ConfigureAwait(false);
+					break;
+			}
+
+			List<(Bot Bot, string Response)> validResults = new List<(Bot Bot, string Response)>(results.Where(result => !string.IsNullOrEmpty(result.Response)));
+			if(validResults.Count == 0) {
+				return null;
+			}
+
+			HashSet<Bot> botsRunning = validResults.Where(result => result.Bot.KeepRunning).Select(result => result.Bot).ToHashSet();
+
+			string extraResponse = string.Format(Strings.BotStatusOverview, botsRunning.Count, validResults.Count, botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarm.Count), botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining)));
+			return string.Join(Environment.NewLine, validResults.Select(result => result.Response).Union(extraResponse.ToEnumerable()));
 		}
 
 		private static string ResponseStop(Bot bot, ulong steamID) {
