@@ -938,8 +938,6 @@ namespace ArchiSteamFarm {
 							return await Response2FAConfirm(steamID, true).ConfigureAwait(false);
 						case "BL":
 							return ResponseBlacklist(steamID);
-						case "EXIT":
-							return ResponseExit(steamID);
 						case "FARM":
 							return await ResponseFarm(steamID).ConfigureAwait(false);
 						case "HELP":
@@ -3070,27 +3068,6 @@ namespace ArchiSteamFarm {
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
-		}
-
-		private static string ResponseExit(ulong steamID) {
-			if (steamID == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID));
-				return null;
-			}
-
-			if (!IsOwner(steamID)) {
-				return null;
-			}
-
-			// Schedule the task after some time so user can receive response
-			Utilities.InBackground(
-				async () => {
-					await Task.Delay(1000).ConfigureAwait(false);
-					await Program.Exit().ConfigureAwait(false);
-				}
-			);
-
-			return FormatStaticResponse(Strings.Done);
 		}
 
 		private async Task<string> ResponseFarm(ulong steamID) {
