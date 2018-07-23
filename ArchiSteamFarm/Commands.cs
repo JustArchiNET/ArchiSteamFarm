@@ -7,6 +7,7 @@ namespace ArchiSteamFarm {
 	internal sealed class Commands
     {
 		private static readonly Dictionary<(string Command, byte ArgumentCount), Func<Bot, ulong, string[], Task<string>>> CommandDictionary = new Dictionary<(string Command, byte arguments), Func<Bot, ulong, string[], Task<string>>>() {
+			{ ("UPDATE", 0), ResponseUpdate },
 			{ ("VERSION", 0), async (bot, steamID, args) => await Task.Run(() => ResponseVersion(bot, steamID, args)).ConfigureAwait(false)}//it's a non-async function but we need it to be async to save it into this dictionary
 		};
 
@@ -17,6 +18,15 @@ namespace ArchiSteamFarm {
 			}
 
 			return "<" + bot.BotName + "> " + response;
+		}
+
+		private static string FormatStaticResponse(string response) {
+			if (string.IsNullOrEmpty(response)) {
+				ASF.ArchiLogger.LogNullError(nameof(response));
+				return null;
+			}
+
+			return "<" + SharedInfo.ASF + "> " + response;
 		}
 
 		internal static async Task<string> Parse(Bot bot, ulong steamID, string message) {
@@ -46,15 +56,25 @@ namespace ArchiSteamFarm {
 
 			if (CommandDictionary.TryGetValue((command.ToUpperInvariant(), (byte) arguments.Length), out Func<Bot, ulong, string[], Task<string>> func)) {
 				string response = await func(bot, steamID, arguments).ConfigureAwait(false);
-				if(response == null) {
-					ASF.ArchiLogger.LogNullError(nameof(response));
-					return null;
-				}
 
 				return response;
 			}
 
 			return null;
+		}
+
+		private static async Task<string> ResponseUpdate(Bot bot, ulong steamID, string[] args) {
+			if(steamID == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID));
+				return null;
+			}
+
+			if (!Bot.IsOwner(steamID)) {
+				return null;
+			}
+
+			Version version = await ASF.CheckAndUpdateProgram(true).ConfigureAwait(false);
+			return FormatStaticResponse(version != null ? (version > SharedInfo.Version ? Strings.Success : Strings.Done) : Strings.WarningFailed);
 		}
 
 		private static string ResponseVersion(Bot bot, ulong steamID, string[] args) {

@@ -974,8 +974,6 @@ namespace ArchiSteamFarm {
 							return ResponseStop(steamID);
 						case "UNPACK":
 							return await ResponseUnpackBoosters(steamID).ConfigureAwait(false);
-						case "UPDATE":
-							return await ResponseUpdate(steamID).ConfigureAwait(false);
 						default:
 							return ResponseUnknown(steamID);
 					}
@@ -1594,7 +1592,7 @@ namespace ArchiSteamFarm {
 			return IsOwner(steamID) || (GetSteamUserPermission(steamID) >= BotConfig.EPermission.Operator);
 		}
 
-		private static bool IsOwner(ulong steamID) {
+		internal static bool IsOwner(ulong steamID) {
 			if (steamID == 0) {
 				ASF.ArchiLogger.LogNullError(nameof(steamID));
 				return false;
@@ -5060,20 +5058,6 @@ namespace ArchiSteamFarm {
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
-		}
-
-		private static async Task<string> ResponseUpdate(ulong steamID) {
-			if (steamID == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID));
-				return null;
-			}
-
-			if (!IsOwner(steamID)) {
-				return null;
-			}
-
-			Version version = await ASF.CheckAndUpdateProgram(true).ConfigureAwait(false);
-			return FormatStaticResponse(version != null ? (version > SharedInfo.Version ? Strings.Success : Strings.Done) : Strings.WarningFailed);
 		}
 
 		private void SetUserInput(ASF.EUserInputType inputType, string inputValue) {
