@@ -70,7 +70,7 @@ For more info about the license, please check out **[license](https://github.com
 
 Please stick with ASF code style when submitting PRs. In repo you can find several different files dedicated to making it easier for you:
 
-- **[EditorConfig](https://github.com/JustArchi/ArchiSteamFarm/blob/master/.editorconfig)** file which is supported by all major IDEs and requires no further setup. It's a good starting point, although it doesn't include all the rules thaty we'd like to see.
+- **[EditorConfig](https://github.com/JustArchi/ArchiSteamFarm/blob/master/.editorconfig)** file which is supported by all major IDEs and requires no further setup. It's a good starting point, although it doesn't include all the rules that we'd like to see.
 - **[VS settings](https://github.com/JustArchi/ArchiSteamFarm/blob/master/CodeStyle.vssettings)** file that you can use in Visual Studio for import. This one includes far more options than EditorConfig alone, and it's a very good choice if you're using bare VS.
 - **[DotSettings](https://github.com/JustArchi/ArchiSteamFarm/blob/master/ArchiSteamFarm.sln.DotSettings)** file that is being used by **[ReSharper](https://www.jetbrains.com/resharper)** and **[Rider](https://www.jetbrains.com/rider)**. This one is the most complete config file that is also being loaded automatically when you're using ReSharper/Rider with our code.
 
