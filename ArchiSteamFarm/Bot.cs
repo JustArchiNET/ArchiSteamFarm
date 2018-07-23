@@ -1918,8 +1918,7 @@ namespace ArchiSteamFarm {
 			ArchiLogger.LogChatMessage(false, message, notification.chat_group_id, notification.chat_id, notification.steamid_sender);
 
 			string response = await Commands.Parse(this, notification.steamid_sender, message).ConfigureAwait(false);
-			if(response == null) {
-				ArchiLogger.LogNullError(nameof(response));
+			if (string.IsNullOrEmpty(response)) {
 				return;
 			}
 
@@ -1958,8 +1957,8 @@ namespace ArchiSteamFarm {
 			}
 
 			string response = await Commands.Parse(this, notification.steamid_friend, message).ConfigureAwait(false);
-			if(response == null) {
-				ArchiLogger.LogNullError(nameof(response));
+			if (string.IsNullOrEmpty(response)) {
+				return;
 			}
 
 			await SendMessage(notification.steamid_friend, response).ConfigureAwait(false);
