@@ -6,12 +6,6 @@ solution: ArchiSteamFarm.sln
 git:
   depth: 10
 
-# Don't build other branches than master
-# Sadly Travis doesn't support AppVeyor's "skip_branch_with_pr"
-branches:
-  only:
-    - master
-
 # Use latest images for building
 group: travis_latest
 
