@@ -950,8 +950,6 @@ namespace ArchiSteamFarm {
 							return await ResponseLoot(steamID).ConfigureAwait(false);
 						case "LOOT&":
 							return ResponseLootSwitch(steamID);
-						case "PASSWORD":
-							return ResponsePassword(steamID);
 						case "PAUSE":
 							return await ResponsePause(steamID, true).ConfigureAwait(false);
 						case "PAUSE~":
@@ -1069,8 +1067,6 @@ namespace ArchiSteamFarm {
 							}
 
 							return (await ResponseOwns(steamID, args[1]).ConfigureAwait(false)).Response;
-						case "PASSWORD":
-							return await ResponsePassword(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "PAUSE":
 							return await ResponsePause(steamID, Utilities.GetArgsAsText(args, 1, ","), true).ConfigureAwait(false);
 						case "PAUSE~":
@@ -3920,55 +3916,6 @@ namespace ArchiSteamFarm {
 
 			IEnumerable<string> extraResponses = ownedGameCounts.Select(kv => FormatStaticResponse(string.Format(Strings.BotOwnsOverviewPerGame, kv.Value, validResults.Count, kv.Key)));
 			return string.Join(Environment.NewLine, validResults.Select(result => result.Response).Concat(extraResponses));
-		}
-
-		private string ResponsePassword(ulong steamID) {
-			if (steamID == 0) {
-				ArchiLogger.LogNullError(nameof(steamID));
-				return null;
-			}
-
-			if (!IsMaster(steamID)) {
-				return null;
-			}
-
-			if (string.IsNullOrEmpty(BotConfig.SteamPassword)) {
-				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(BotConfig.SteamPassword)));
-			}
-
-			string response = FormatBotResponse(string.Format(Strings.BotEncryptedPassword, CryptoHelper.ECryptoMethod.AES, CryptoHelper.Encrypt(CryptoHelper.ECryptoMethod.AES, BotConfig.SteamPassword))) + FormatBotResponse(string.Format(Strings.BotEncryptedPassword, CryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser, CryptoHelper.Encrypt(CryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser, BotConfig.SteamPassword)));
-			return response;
-		}
-
-		private static async Task<string> ResponsePassword(ulong steamID, string botNames) {
-			if ((steamID == 0) || string.IsNullOrEmpty(botNames)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
-				return null;
-			}
-
-			HashSet<Bot> bots = GetBots(botNames);
-			if ((bots == null) || (bots.Count == 0)) {
-				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
-			}
-
-			IEnumerable<Task<string>> tasks = bots.Select(bot => Task.Run(() => bot.ResponsePassword(steamID)));
-			ICollection<string> results;
-
-			switch (Program.GlobalConfig.OptimizationMode) {
-				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					results = new List<string>(bots.Count);
-					foreach (Task<string> task in tasks) {
-						results.Add(await task.ConfigureAwait(false));
-					}
-
-					break;
-				default:
-					results = await Task.WhenAll(tasks).ConfigureAwait(false);
-					break;
-			}
-
-			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
-			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 
 		private async Task<string> ResponsePause(ulong steamID, bool sticky, string timeout = null) {

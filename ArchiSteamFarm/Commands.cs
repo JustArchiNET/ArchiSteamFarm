@@ -92,6 +92,54 @@ namespace ArchiSteamFarm {
 			return FormatStaticResponse(Strings.Done);
 		}
 
+		private static async Task<string> ResponsePassword(Bot bot, ulong steamID, string[] args) {
+			if(bot == null || steamID == 0 || args == null) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID) + " || " + nameof(args));
+				return null;
+			}
+
+			if (args.Length == 0) {
+				if (!bot.IsMaster(steamID)) {
+					return null;
+				}
+
+				if (string.IsNullOrEmpty(bot.BotConfig.SteamPassword)) {
+					return FormatBotResponse(bot, string.Format(Strings.ErrorIsEmpty, nameof(BotConfig.SteamPassword)));
+				}
+
+				return FormatBotResponse(bot, string.Format(Strings.BotEncryptedPassword, CryptoHelper.ECryptoMethod.AES, CryptoHelper.Encrypt(CryptoHelper.ECryptoMethod.AES, bot.BotConfig.SteamPassword))) + FormatBotResponse(bot, string.Format(Strings.BotEncryptedPassword, CryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser, CryptoHelper.Encrypt(CryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser, bot.BotConfig.SteamPassword)));
+			}
+
+			string botNames = Utilities.GetArgsAsText(args, 0, ",");
+			HashSet<Bot> bots = Bot.GetBots(botNames);
+			if(bots == null || bots.Count == 0) {
+				return Bot.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
+			}
+
+			IEnumerable<Task<string>> tasks = bots.Select(singleBot => Task.Run(() => ResponsePassword(singleBot, steamID, new string[0])));
+			ICollection<string> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<string>(bots.Count);
+					foreach(Task<string> currentTask in tasks) {
+						results.Add(await currentTask.ConfigureAwait(false));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+
+			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+			if(responses.Count > 0) {
+				return string.Join(Environment.NewLine, responses);
+			}
+
+			return null;
+		}
+
 		private static async Task<string> ResponseSA(Bot bot, ulong steamID, string[] args) => await ResponseStatus(bot, steamID, new string[] { SharedInfo.ASF }).ConfigureAwait(false);
 
 		private static async Task<string> ResponseStatus(Bot bot, ulong steamID, string[] args) {
@@ -280,7 +328,11 @@ namespace ArchiSteamFarm {
 			}
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
-			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+			if(responses.Count > 0) {
+				return string.Join(Environment.NewLine, responses);
+			}
+
+			return null;
 		}
 
 		private static async Task<string> ResponseUpdate(Bot bot, ulong steamID, string[] args) {
