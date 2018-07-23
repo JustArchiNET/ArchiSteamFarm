@@ -454,12 +454,34 @@ namespace ArchiSteamFarm {
 			}
 
 			switch (request.HttpMethod) {
+				case HttpMethods.Get:
+					return await HandleApiCommandGet(request, response, arguments, argumentsIndex).ConfigureAwait(false);
 				case HttpMethods.Post:
 					return await HandleApiCommandPost(request, response, arguments, argumentsIndex).ConfigureAwait(false);
 				default:
 					await ResponseStatusCode(request, response, HttpStatusCode.MethodNotAllowed).ConfigureAwait(false);
 					return true;
 			}
+		}
+
+		private static async Task<bool> HandleApiCommandGet(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			IEnumerable<string> commands = Commands.GetAllAvailableCommands();
+			if(commands == null) {
+				ASF.ArchiLogger.LogNullError(nameof(commands));
+				return false;
+			}
+
+			Dictionary<string, IEnumerable<string>> content = new Dictionary<string, IEnumerable<string>>() {
+				{ "Commands", commands }
+			};
+
+			await ResponseJsonObject(request, response, new GenericResponse<Dictionary<string, IEnumerable<string>>>(true, "OK", content)).ConfigureAwait(false);
+			return true;
 		}
 
 		private static async Task<bool> HandleApiCommandPost(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {

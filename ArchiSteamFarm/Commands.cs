@@ -20,6 +20,11 @@ namespace ArchiSteamFarm {
 			{ ("STOP", 1), async (bot, steamID, args) => await ResponseStop(steamID, Utilities.GetArgsAsText(args, 0, ",")).ConfigureAwait(false) }
 		};
 
+		private static IEnumerable<string> AllCommands;
+
+		//Because string-operations are quite heavy we don't want to use ToLowerInvariant() each time someone wants a list of all commands
+		internal static IEnumerable<string> GetAllAvailableCommands() => AllCommands ?? (AllCommands = CommandDictionary.Keys.Select(key => key.Command.ToLowerInvariant()).Distinct());
+
 		private static string FormatBotResponse(Bot bot, string response) {
 			if (bot == null || string.IsNullOrEmpty(response)) {
 				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(response));
