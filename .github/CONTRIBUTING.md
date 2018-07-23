@@ -50,7 +50,7 @@ Every pull request is carefully examined by our continuous integration system - 
 
 ASF is open-source project, developed mainly by **[JustArchi](https://github.com/JustArchi)**, but also by **[many other contributors](https://github.com/JustArchi/ArchiSteamFarm/graphs/contributors)**. It's not our purpose or objective to make you problems or forbid you from improving our project, especially if you have a decent idea how to do so, therefore don't be afraid of making a suggestion first, then implementing it, after your suggestion is confirmed to make sense. Even if you're not completely sure how you should achieve a particular goal, you can still send a PR with your own solution, and get a feedback in code review regarding it. If you're sending a PR, we expect that you did your best in it code-wise, so make sure that you're proud of your code, same like we are proud of ASF. Also don't be afraid or in a hurry to fix your code based on our review - it's **for you** so you can make your PR better while learning about exact reasons why your previous solution wasn't the best one.
 
-*"Always code as if the guy who ends up maintaining your code will be a violent psychopath who knows where you live"*
+> Always code as if the guy who ends up maintaining your code will be a violent psychopath who knows where you live.
 
 ~John Woods
 
