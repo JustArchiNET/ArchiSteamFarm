@@ -1199,14 +1199,14 @@ namespace ArchiSteamFarm {
 
 			const ushort maxMessageLength = MaxMessageLength - 6; // 4 characters for /me (with space) and 2 for 2x optional …
 
-			// Steam escapes \ and [ characters
-			message = message.Replace("\\", "\\\\").Replace("[", "\\[");
+			// We must escape our message prior to sending it
+			message = Escape(message);
 
 			for (int i = 0; i < message.Length; i += maxMessageLength) {
 				string messagePart = message.Substring(i, Math.Min(maxMessageLength, message.Length - i));
 
-				// If our message ends with \ but second last character isn't \ then we can't split it right there
-				if ((messagePart.Length >= maxMessageLength) && (messagePart[messagePart.Length - 1] == '\\') && (messagePart[messagePart.Length - 2] != '\\')) {
+				// If our message is of max length and ends with '\' then it's very likely that we can't split it here
+				if ((messagePart.Length >= maxMessageLength) && (messagePart[messagePart.Length - 1] == '\\')) {
 					// Instead, we'll cut this message one char short and include the rest in next iteration
 					messagePart = messagePart.Remove(messagePart.Length - 1);
 					i--;
@@ -1236,14 +1236,14 @@ namespace ArchiSteamFarm {
 
 			const ushort maxMessageLength = MaxMessageLength - 6; // 4 characters for /me (with space) and 2 for 2x optional …
 
-			// Steam escapes \ and [ characters
-			message = message.Replace("\\", "\\\\").Replace("[", "\\[");
+			// We must escape our message prior to sending it
+			message = Escape(message);
 
 			for (int i = 0; i < message.Length; i += maxMessageLength) {
 				string messagePart = message.Substring(i, Math.Min(maxMessageLength, message.Length - i));
 
-				// If our message ends with \ but second last character isn't \ then we can't split it right there
-				if ((messagePart.Length >= maxMessageLength) && (messagePart[messagePart.Length - 1] == '\\') && (messagePart[messagePart.Length - 2] != '\\')) {
+				// If our message is of max length and ends with '\' then it's very likely that we can't split it here
+				if ((messagePart.Length >= maxMessageLength) && (messagePart[messagePart.Length - 1] == '\\')) {
 					// Instead, we'll cut this message one char short and include the rest in next iteration
 					messagePart = messagePart.Remove(messagePart.Length - 1);
 					i--;
@@ -1386,6 +1386,15 @@ namespace ArchiSteamFarm {
 		private void Disconnect() {
 			StopConnectionFailureTimer();
 			SteamClient.Disconnect();
+		}
+
+		private static string Escape(string message) {
+			if (string.IsNullOrEmpty(message)) {
+				ASF.ArchiLogger.LogNullError(nameof(message));
+				return null;
+			}
+
+			return message.Replace("\\", "\\\\").Replace("[", "\\[");
 		}
 
 		private string FormatBotResponse(string response) {
@@ -2017,7 +2026,7 @@ namespace ArchiSteamFarm {
 			if (!string.IsNullOrEmpty(notification.message_no_bbcode)) {
 				message = notification.message_no_bbcode;
 			} else if (!string.IsNullOrEmpty(notification.message)) {
-				message = notification.message;
+				message = Unescape(notification.message);
 			} else {
 				return;
 			}
@@ -2046,7 +2055,7 @@ namespace ArchiSteamFarm {
 			if (!string.IsNullOrEmpty(notification.message_no_bbcode)) {
 				message = notification.message_no_bbcode;
 			} else if (!string.IsNullOrEmpty(notification.message)) {
-				message = notification.message;
+				message = Unescape(notification.message);
 			} else {
 				return;
 			}
@@ -5280,6 +5289,15 @@ namespace ArchiSteamFarm {
 
 			PlayingWasBlockedTimer.Dispose();
 			PlayingWasBlockedTimer = null;
+		}
+
+		private static string Unescape(string message) {
+			if (string.IsNullOrEmpty(message)) {
+				ASF.ArchiLogger.LogNullError(nameof(message));
+				return null;
+			}
+
+			return message.Replace("\\[", "[").Replace("\\\\", "\\");
 		}
 
 		[Flags]

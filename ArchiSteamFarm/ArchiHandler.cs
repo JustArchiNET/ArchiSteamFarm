@@ -344,6 +344,7 @@ namespace ArchiSteamFarm {
 
 			CFriendMessages_SendMessage_Request request = new CFriendMessages_SendMessage_Request {
 				chat_entry_type = (int) EChatEntryType.ChatMsg,
+				contains_bbcode = true,
 				message = message,
 				steamid = steamID
 			};
