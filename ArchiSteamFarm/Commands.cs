@@ -9,6 +9,8 @@ namespace ArchiSteamFarm {
 	internal sealed class Commands {
 		private static readonly Dictionary<string, Func<Bot, ulong, string[], Task<string>>> CommandDictionary = new Dictionary<string, Func<Bot, ulong, string[], Task<string>>>() {
 			{ "2FA", Response2FA },
+			{ "2FANO", Response2FANO },
+			{ "2FAOK", Response2FAOK },
 			{ "EXIT", ResponseExit },
 			{ "SA", ResponseSA },
 			{ "STATUS", ResponseStatus },
@@ -129,6 +131,75 @@ namespace ArchiSteamFarm {
 
 			string token = await bot.BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
 			return FormatBotResponse(bot, !string.IsNullOrEmpty(token) ? string.Format(Strings.BotAuthenticatorToken, token) : Strings.WarningFailed);
+		}
+
+		private static async Task<string> Response2FANO(Bot bot, ulong steamID, string[] args) => await Response2FAConfirm(bot, steamID, args, false).ConfigureAwait(false);
+
+		private static async Task<string> Response2FAOK(Bot bot, ulong steamID, string[] args) => await Response2FAConfirm(bot, steamID, args, true).ConfigureAwait(false);
+
+		private static async Task<string> Response2FAConfirm(Bot bot, ulong steamID, string[] args, bool confirm) {
+			if (bot == null || steamID == 0 || args == null) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID) + " || " + nameof(args));
+				return null;
+			}
+
+			if (args.Length == 0) {
+				return await Response2FAConfirm(bot, steamID, confirm).ConfigureAwait(false);
+			}
+
+			string botNames = Utilities.GetArgsAsText(args, 0, ",");
+			HashSet<Bot> bots = Bot.GetBots(botNames);
+			if (bots == null || bots.Count == 0) {
+				return Bot.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
+			}
+
+			IEnumerable<Task<string>> tasks = bots.Select(singleBot => Response2FAConfirm(singleBot, steamID, confirm));
+			ICollection<string> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<string>(bots.Count);
+					foreach (Task<string> currentTask in tasks) {
+						results.Add(await currentTask.ConfigureAwait(false));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+
+			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+			if (responses.Count > 0) {
+				return string.Join(Environment.NewLine, responses);
+			}
+
+			return null;
+		}
+
+		private static async Task<string> Response2FAConfirm(Bot bot, ulong steamID, bool confirm) {
+			if (bot == null || steamID == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID));
+				return null;
+			}
+
+			if (!bot.IsMaster(steamID)) {
+				return null;
+			}
+
+			if (!bot.IsConnectedAndLoggedOn) {
+				return FormatBotResponse(bot, Strings.BotNotConnected);
+			}
+
+			if (!bot.HasMobileAuthenticator) {
+				return FormatBotResponse(bot, Strings.BotNoASFAuthenticator);
+			}
+
+			if (await bot.AcceptConfirmations(confirm).ConfigureAwait(false)) {
+				return FormatBotResponse(bot, Strings.Success);
+			}
+
+			return FormatBotResponse(bot, Strings.WarningFailed);
 		}
 
 		private static async Task<string> ResponseExit(Bot bot, ulong steamID, string[] args) {
