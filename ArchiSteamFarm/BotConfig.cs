@@ -60,9 +60,6 @@ namespace ArchiSteamFarm {
 		internal readonly HashSet<uint> GamesPlayedWhileIdle = new HashSet<uint>();
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool HandleOfflineMessages;
-
-		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte HoursUntilCardDrops = 3;
 
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -118,6 +115,9 @@ namespace ArchiSteamFarm {
 		internal string SteamLogin { get; set; }
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		internal ulong SteamMasterChatGroupID { get; private set; }
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		internal ulong SteamMasterClanID { get; private set; }
 
 		[JsonProperty]
@@ -127,6 +127,19 @@ namespace ArchiSteamFarm {
 		internal string SteamPassword { get; set; }
 
 		private bool ShouldSerializeSensitiveDetails = true;
+
+		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamMasterChatGroupID), Required = Required.DisallowNull)]
+		private string SSteamMasterChatGroupID {
+			get => SteamMasterChatGroupID.ToString();
+			set {
+				if (string.IsNullOrEmpty(value) || !ulong.TryParse(value, out ulong result)) {
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(SSteamMasterChatGroupID)));
+					return;
+				}
+
+				SteamMasterChatGroupID = result;
+			}
+		}
 
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamMasterClanID), Required = Required.DisallowNull)]
 		private string SSteamMasterClanID {
@@ -275,7 +288,8 @@ namespace ArchiSteamFarm {
 			RejectInvalidTrades = 2,
 			RejectInvalidGroupInvites = 4,
 			DismissInventoryNotifications = 8,
-			All = RejectInvalidFriendInvites | RejectInvalidTrades | RejectInvalidGroupInvites | DismissInventoryNotifications
+			MarkReceivedMessagesAsRead = 16,
+			All = RejectInvalidFriendInvites | RejectInvalidTrades | RejectInvalidGroupInvites | DismissInventoryNotifications | MarkReceivedMessagesAsRead
 		}
 
 		internal enum EFarmingOrder : byte {

@@ -21,6 +21,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading.Tasks;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
@@ -35,6 +36,11 @@ namespace ArchiSteamFarm {
 		[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
 		public string BotName { get; set; }
+
+		// This is NLog config property, it must have public get() and set() capabilities
+		[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
+		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
+		public ulong ChatGroupID { get; set; }
 
 		// This is NLog config property, it must have public get() and set() capabilities
 		[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
@@ -59,25 +65,56 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Bot bot;
-			if (string.IsNullOrEmpty(BotName)) {
-				bot = Bot.Bots.Values.FirstOrDefault(targetBot => targetBot.IsConnectedAndLoggedOn && (targetBot.CachedSteamID != SteamID));
-				if (bot == null) {
-					return;
-				}
-			} else {
-				if (!Bot.Bots.TryGetValue(BotName, out bot)) {
-					return;
-				}
+			string message = Layout.Render(logEvent);
 
-				if (!bot.IsConnectedAndLoggedOn || (bot.CachedSteamID == SteamID)) {
+			if (string.IsNullOrEmpty(message)) {
+				return;
+			}
+
+			Bot bot = null;
+
+			if (!string.IsNullOrEmpty(BotName)) {
+				if (!Bot.Bots.TryGetValue(BotName, out bot) || !bot.IsConnectedAndLoggedOn) {
 					return;
 				}
 			}
 
-			string message = Layout.Render(logEvent);
+			if (ChatGroupID != 0) {
+				await SendGroupMessage(message, bot).ConfigureAwait(false);
+			} else if ((bot == null) || (bot.CachedSteamID != SteamID)) {
+				await SendPrivateMessage(message, bot).ConfigureAwait(false);
+			}
+		}
+
+		private async Task SendGroupMessage(string message, Bot bot = null) {
 			if (string.IsNullOrEmpty(message)) {
+				ASF.ArchiLogger.LogNullError(nameof(message));
 				return;
+			}
+
+			if (bot == null) {
+				bot = Bot.Bots.Values.FirstOrDefault(targetBot => targetBot.IsConnectedAndLoggedOn);
+
+				if (bot == null) {
+					return;
+				}
+			}
+
+			await bot.SendMessage(ChatGroupID, SteamID, message).ConfigureAwait(false);
+		}
+
+		private async Task SendPrivateMessage(string message, Bot bot = null) {
+			if (string.IsNullOrEmpty(message)) {
+				ASF.ArchiLogger.LogNullError(nameof(message));
+				return;
+			}
+
+			if (bot == null) {
+				bot = Bot.Bots.Values.FirstOrDefault(targetBot => targetBot.IsConnectedAndLoggedOn && (targetBot.CachedSteamID != SteamID));
+
+				if (bot == null) {
+					return;
+				}
 			}
 
 			await bot.SendMessage(SteamID, message).ConfigureAwait(false);
