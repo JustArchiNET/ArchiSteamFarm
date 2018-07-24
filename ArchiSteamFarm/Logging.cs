@@ -80,20 +80,31 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void InitHistoryLogger() {
-			if (IsUsingCustomConfiguration || (LogManager.Configuration == null)) {
+			if (LogManager.Configuration == null) {
 				return;
 			}
 
-			// TODO: We could use some nice HTML layout for this
-			HistoryTarget historyTarget = new HistoryTarget("History") {
-				Layout = GeneralLayout,
-				MaxCount = 20
-			};
+			HistoryTarget historyTarget;
 
-			LogManager.Configuration.AddTarget(historyTarget);
-			LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, historyTarget));
+			if (IsUsingCustomConfiguration) {
+				historyTarget = LogManager.Configuration.AllTargets.OfType<HistoryTarget>().FirstOrDefault();
 
-			LogManager.ReconfigExistingLoggers();
+				if (historyTarget == null) {
+					return;
+				}
+			} else {
+				// TODO: We could use some nice HTML layout for this
+				historyTarget = new HistoryTarget("History") {
+					Layout = GeneralLayout,
+					MaxCount = 20
+				};
+
+				LogManager.Configuration.AddTarget(historyTarget);
+				LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, historyTarget));
+
+				LogManager.ReconfigExistingLoggers();
+			}
+
 			IPC.OnNewHistoryTarget(historyTarget);
 		}
 
