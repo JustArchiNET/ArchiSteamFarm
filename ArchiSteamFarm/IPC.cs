@@ -84,19 +84,16 @@ namespace ArchiSteamFarm {
 		private static HttpListener HttpListener;
 		private static bool IsHandlingRequests;
 
-		internal static void OnNewHistoryTarget(HistoryTarget historyTarget) {
-			if (historyTarget == null) {
-				ASF.ArchiLogger.LogNullError(nameof(historyTarget));
-				return;
-			}
-
+		internal static void OnNewHistoryTarget(HistoryTarget historyTarget = null) {
 			if (HistoryTarget != null) {
 				HistoryTarget.NewHistoryEntry -= OnNewHistoryEntry;
 				HistoryTarget = null;
 			}
 
-			historyTarget.NewHistoryEntry += OnNewHistoryEntry;
-			HistoryTarget = historyTarget;
+			if (historyTarget != null) {
+				historyTarget.NewHistoryEntry += OnNewHistoryEntry;
+				HistoryTarget = historyTarget;
+			}
 		}
 
 		internal static void Start(HashSet<string> prefixes) {

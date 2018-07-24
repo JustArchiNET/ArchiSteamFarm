@@ -84,15 +84,9 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			HistoryTarget historyTarget;
+			HistoryTarget historyTarget = LogManager.Configuration.AllTargets.OfType<HistoryTarget>().FirstOrDefault();
 
-			if (IsUsingCustomConfiguration) {
-				historyTarget = LogManager.Configuration.AllTargets.OfType<HistoryTarget>().FirstOrDefault();
-
-				if (historyTarget == null) {
-					return;
-				}
-			} else {
+			if ((historyTarget == null) && !IsUsingCustomConfiguration) {
 				// TODO: We could use some nice HTML layout for this
 				historyTarget = new HistoryTarget("History") {
 					Layout = GeneralLayout,
@@ -167,11 +161,8 @@ namespace ArchiSteamFarm {
 				OnUserInputStart();
 			}
 
-			HistoryTarget historyTarget = (HistoryTarget) LogManager.Configuration.AllTargets.FirstOrDefault(target => target is HistoryTarget);
-
-			if (historyTarget != null) {
-				IPC.OnNewHistoryTarget(historyTarget);
-			}
+			HistoryTarget historyTarget = LogManager.Configuration.AllTargets.OfType<HistoryTarget>().FirstOrDefault();
+			IPC.OnNewHistoryTarget(historyTarget);
 		}
 	}
 }
