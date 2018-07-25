@@ -1751,21 +1751,6 @@ namespace ArchiSteamFarm {
 			return Regex.IsMatch(key, @"^[0-9A-Z]{4,7}-[0-9A-Z]{4,7}-[0-9A-Z]{4,7}(?:(?:-[0-9A-Z]{4,7})?(?:-[0-9A-Z]{4,7}))?$", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 		}
 
-		private async Task JoinChatGroupID(ulong chatGroupID) {
-			if (chatGroupID == 0) {
-				ArchiLogger.LogNullError(nameof(chatGroupID));
-				return;
-			}
-
-			HashSet<ulong> chatGroupIDs = await ArchiHandler.GetMyChatGroupIDs().ConfigureAwait(false);
-
-			if (chatGroupIDs?.Contains(chatGroupID) != false) {
-				return;
-			}
-
-			await ArchiHandler.JoinChatRoomGroup(chatGroupID).ConfigureAwait(false);
-		}
-
 		private async Task JoinMasterChatGroupID() {
 			if (BotConfig.SteamMasterClanID == 0) {
 				return;
@@ -1777,7 +1762,13 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			await JoinChatGroupID(chatGroupID).ConfigureAwait(false);
+			HashSet<ulong> chatGroupIDs = await ArchiHandler.GetMyChatGroupIDs().ConfigureAwait(false);
+
+			if (chatGroupIDs?.Contains(chatGroupID) != false) {
+				return;
+			}
+
+			await ArchiHandler.JoinChatRoomGroup(chatGroupID).ConfigureAwait(false);
 		}
 
 		private static async Task LimitGiftsRequestsAsync() {
