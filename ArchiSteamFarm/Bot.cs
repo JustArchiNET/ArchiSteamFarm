@@ -1766,14 +1766,18 @@ namespace ArchiSteamFarm {
 			await ArchiHandler.JoinChatRoomGroup(chatGroupID).ConfigureAwait(false);
 		}
 
-		private async Task JoinMasterClanAndChat() {
-			if (BotConfig.SteamMasterClanID != 0) {
-				await ArchiWebHandler.JoinGroup(BotConfig.SteamMasterClanID).ConfigureAwait(false);
+		private async Task JoinMasterChatGroupID() {
+			if (BotConfig.SteamMasterClanID == 0) {
+				return;
 			}
 
-			if (BotConfig.SteamMasterChatGroupID != 0) {
-				await JoinChatGroupID(BotConfig.SteamMasterChatGroupID).ConfigureAwait(false);
+			ulong chatGroupID = await ArchiHandler.GetClanChatGroupID(BotConfig.SteamMasterClanID).ConfigureAwait(false);
+
+			if (chatGroupID == 0) {
+				return;
 			}
+
+			await JoinChatGroupID(chatGroupID).ConfigureAwait(false);
 		}
 
 		private static async Task LimitGiftsRequestsAsync() {
@@ -1967,11 +1971,7 @@ namespace ArchiSteamFarm {
 				switch (friend.SteamID.AccountType) {
 					case EAccountType.Clan when IsMasterClanID(friend.SteamID):
 						ArchiHandler.AcknowledgeClanInvite(friend.SteamID, true);
-
-						if (BotConfig.SteamMasterChatGroupID != 0) {
-							await JoinChatGroupID(BotConfig.SteamMasterChatGroupID).ConfigureAwait(false);
-						}
-
+						await JoinMasterChatGroupID().ConfigureAwait(false);
 						break;
 					case EAccountType.Clan:
 						if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidGroupInvites)) {
@@ -2286,7 +2286,15 @@ namespace ArchiSteamFarm {
 						SteamFriends.SetPersonaState(BotConfig.OnlineStatus);
 					}
 
-					Utilities.InBackground(JoinMasterClanAndChat);
+					if (BotConfig.SteamMasterClanID != 0) {
+						Utilities.InBackground(
+							async () => {
+								await ArchiWebHandler.JoinGroup(BotConfig.SteamMasterClanID).ConfigureAwait(false);
+								await JoinMasterChatGroupID().ConfigureAwait(false);
+							}
+						);
+					}
+
 					break;
 				case EResult.InvalidPassword:
 				case EResult.NoConnection:

@@ -38,6 +38,7 @@ namespace ArchiSteamFarm {
 
 		private readonly ArchiLogger ArchiLogger;
 		private readonly SteamUnifiedMessages.UnifiedService<IChatRoom> UnifiedChatRoomService;
+		private readonly SteamUnifiedMessages.UnifiedService<IClanChatRooms> UnifiedClanChatRoomsService;
 		private readonly SteamUnifiedMessages.UnifiedService<IFriendMessages> UnifiedFriendMessagesService;
 		private readonly SteamUnifiedMessages.UnifiedService<IPlayer> UnifiedPlayerService;
 
@@ -50,6 +51,7 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger = archiLogger;
 			UnifiedChatRoomService = steamUnifiedMessages.CreateService<IChatRoom>();
+			UnifiedClanChatRoomsService = steamUnifiedMessages.CreateService<IClanChatRooms>();
 			UnifiedFriendMessagesService = steamUnifiedMessages.CreateService<IFriendMessages>();
 			UnifiedPlayerService = steamUnifiedMessages.CreateService<IPlayer>();
 		}
@@ -159,6 +161,39 @@ namespace ArchiSteamFarm {
 			}
 
 			return response.Result == EResult.OK;
+		}
+
+		internal async Task<ulong> GetClanChatGroupID(ulong steamID) {
+			if ((steamID == 0) || !new SteamID(steamID).IsClanAccount) {
+				ArchiLogger.LogNullError(nameof(steamID));
+				return 0;
+			}
+
+			CClanChatRooms_GetClanChatRoomInfo_Request request = new CClanChatRooms_GetClanChatRoomInfo_Request {
+				autocreate = true,
+				steamid = steamID
+			};
+
+			SteamUnifiedMessages.ServiceMethodResponse response;
+
+			try {
+				response = await UnifiedClanChatRoomsService.SendMessage(x => x.GetClanChatRoomInfo(request));
+			} catch (Exception e) {
+				ArchiLogger.LogGenericWarningException(e);
+				return 0;
+			}
+
+			if (response == null) {
+				ArchiLogger.LogNullError(nameof(response));
+				return 0;
+			}
+
+			if (response.Result != EResult.OK) {
+				return 0;
+			}
+
+			CClanChatRooms_GetClanChatRoomInfo_Response body = response.GetDeserializedResponse<CClanChatRooms_GetClanChatRoomInfo_Response>();
+			return body.chat_group_summary.chat_group_id;
 		}
 
 		internal async Task<HashSet<ulong>> GetMyChatGroupIDs() {
