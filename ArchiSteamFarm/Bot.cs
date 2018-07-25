@@ -1766,6 +1766,16 @@ namespace ArchiSteamFarm {
 			await ArchiHandler.JoinChatRoomGroup(chatGroupID).ConfigureAwait(false);
 		}
 
+		private async Task JoinMasterClanAndChat() {
+			if (BotConfig.SteamMasterClanID != 0) {
+				await ArchiWebHandler.JoinGroup(BotConfig.SteamMasterClanID).ConfigureAwait(false);
+			}
+
+			if (BotConfig.SteamMasterChatGroupID != 0) {
+				await JoinChatGroupID(BotConfig.SteamMasterChatGroupID).ConfigureAwait(false);
+			}
+		}
+
 		private static async Task LimitGiftsRequestsAsync() {
 			if (Program.GlobalConfig.GiftsLimiterDelay == 0) {
 				return;
@@ -2276,10 +2286,7 @@ namespace ArchiSteamFarm {
 						SteamFriends.SetPersonaState(BotConfig.OnlineStatus);
 					}
 
-					if (BotConfig.SteamMasterChatGroupID != 0) {
-						Utilities.InBackground(() => JoinChatGroupID(BotConfig.SteamMasterChatGroupID));
-					}
-
+					Utilities.InBackground(JoinMasterClanAndChat);
 					break;
 				case EResult.InvalidPassword:
 				case EResult.NoConnection:
