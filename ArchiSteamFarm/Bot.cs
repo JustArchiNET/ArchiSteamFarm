@@ -147,6 +147,7 @@ namespace ArchiSteamFarm {
 		private ulong LibraryLockedBySteamID;
 		private bool LootingAllowed = true;
 		private bool LootingScheduled;
+		private ulong MasterChatGroupID;
 		private bool PlayingBlocked;
 		private Timer PlayingWasBlockedTimer;
 		private bool ReconnectOnUserInitiated;
@@ -1762,6 +1763,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			MasterChatGroupID = chatGroupID;
+
 			HashSet<ulong> chatGroupIDs = await ArchiHandler.GetMyChatGroupIDs().ConfigureAwait(false);
 
 			if (chatGroupIDs?.Contains(chatGroupID) != false) {
@@ -2033,6 +2036,11 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiLogger.LogChatMessage(false, message, notification.chat_group_id, notification.chat_id, notification.steamid_sender);
+
+			if (notification.chat_group_id != MasterChatGroupID) {
+				return;
+			}
+
 			await HandleMessage(notification.chat_group_id, notification.chat_id, notification.steamid_sender, message).ConfigureAwait(false);
 		}
 
