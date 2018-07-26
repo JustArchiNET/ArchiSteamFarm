@@ -101,6 +101,9 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool Statistics = true;
 
+		[JsonProperty]
+		internal readonly string SteamMessagePrefix = "/me ";
+
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly EUpdateChannel UpdateChannel = EUpdateChannel.Stable;
 
@@ -226,6 +229,11 @@ namespace ArchiSteamFarm {
 
 			if (!Enum.IsDefined(typeof(EOptimizationMode), globalConfig.OptimizationMode)) {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.OptimizationMode), globalConfig.OptimizationMode));
+				return null;
+			}
+
+			if (!string.IsNullOrEmpty(globalConfig.SteamMessagePrefix) && (globalConfig.SteamMessagePrefix.Length > Bot.MaxMessagePrefixLength)) {
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.SteamMessagePrefix), globalConfig.SteamMessagePrefix));
 				return null;
 			}
 

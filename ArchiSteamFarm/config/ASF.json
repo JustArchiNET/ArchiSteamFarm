@@ -21,6 +21,7 @@
 	"MaxTradeHoldDuration": 15,
 	"OptimizationMode": 0,
 	"Statistics": true,
+	"SteamMessagePrefix": "/me ",
 	"SteamOwnerID": 0,
 	"SteamProtocols": 7,
 	"UpdateChannel": 1,

@@ -42,6 +42,7 @@ using SteamKit2.Unified.Internal;
 namespace ArchiSteamFarm {
 	internal sealed class Bot : IDisposable {
 		internal const ushort CallbackSleep = 500; // In miliseconds
+		internal const ushort MaxMessagePrefixLength = MaxMessageLength - 4; // 2 for 2x optional … and extra 2 for a minimum of 2 characters (escape one and real one)
 		internal const byte MinPlayingBlockedTTL = 60; // Delay in seconds added when account was occupied during our disconnect, to not disconnect other Steam client session too soon
 
 		private const char DefaultBackgroundKeysRedeemerSeparator = '\t';
@@ -1198,7 +1199,7 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogChatMessage(true, message, steamID: steamID);
 
-			const ushort maxMessageLength = MaxMessageLength - 6; // 4 characters for /me (with space) and 2 for 2x optional …
+			ushort maxMessageLength = (ushort) (MaxMessageLength - (Program.GlobalConfig.SteamMessagePrefix?.Length ?? 0) - 2); // prefix and 2 for 2x optional …
 
 			// We must escape our message prior to sending it
 			message = Escape(message);
@@ -1206,14 +1207,14 @@ namespace ArchiSteamFarm {
 			for (int i = 0; i < message.Length; i += maxMessageLength) {
 				string messagePart = message.Substring(i, Math.Min(maxMessageLength, message.Length - i));
 
-				// If our message is of max length and ends with '\' then it's very likely that we can't split it here
-				if ((messagePart.Length >= maxMessageLength) && (messagePart[messagePart.Length - 1] == '\\')) {
+				// If our message is of max length and ends with a single '\' then we can't split it here, it escapes the next character
+				if ((messagePart.Length >= maxMessageLength) && (messagePart[messagePart.Length - 1] == '\\') && (messagePart[messagePart.Length - 2] != '\\')) {
 					// Instead, we'll cut this message one char short and include the rest in next iteration
 					messagePart = messagePart.Remove(messagePart.Length - 1);
 					i--;
 				}
 
-				messagePart = "/me " + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
+				messagePart = Program.GlobalConfig.SteamMessagePrefix + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
 
 				if (!await ArchiHandler.SendMessage(steamID, messagePart).ConfigureAwait(false)) {
 					return false;
@@ -1235,7 +1236,7 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogChatMessage(true, message, chatGroupID, chatID);
 
-			const ushort maxMessageLength = MaxMessageLength - 6; // 4 characters for /me (with space) and 2 for 2x optional …
+			ushort maxMessageLength = (ushort) (MaxMessageLength - (Program.GlobalConfig.SteamMessagePrefix?.Length ?? 0) - 2); // prefix and 2 for 2x optional …
 
 			// We must escape our message prior to sending it
 			message = Escape(message);
@@ -1243,14 +1244,14 @@ namespace ArchiSteamFarm {
 			for (int i = 0; i < message.Length; i += maxMessageLength) {
 				string messagePart = message.Substring(i, Math.Min(maxMessageLength, message.Length - i));
 
-				// If our message is of max length and ends with '\' then it's very likely that we can't split it here
-				if ((messagePart.Length >= maxMessageLength) && (messagePart[messagePart.Length - 1] == '\\')) {
+				// If our message is of max length and ends with a single '\' then we can't split it here, it escapes the next character
+				if ((messagePart.Length >= maxMessageLength) && (messagePart[messagePart.Length - 1] == '\\') && (messagePart[messagePart.Length - 2] != '\\')) {
 					// Instead, we'll cut this message one char short and include the rest in next iteration
 					messagePart = messagePart.Remove(messagePart.Length - 1);
 					i--;
 				}
 
-				messagePart = "/me " + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
+				messagePart = Program.GlobalConfig.SteamMessagePrefix + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
 
 				if (!await ArchiHandler.SendMessage(chatGroupID, chatID, messagePart).ConfigureAwait(false)) {
 					return false;
