@@ -42,17 +42,18 @@ using SteamKit2.Unified.Internal;
 namespace ArchiSteamFarm {
 	internal sealed class Bot : IDisposable {
 		internal const ushort CallbackSleep = 500; // In miliseconds
-		internal const ushort MaxMessagePrefixLength = MaxMessageLength - 4; // 2 for 2x optional … and extra 2 for a minimum of 2 characters (escape one and real one)
+		internal const ushort MaxMessagePrefixLength = MaxMessageLength - ReservedMessageLength - 2; // 2 for a minimum of 2 characters (escape one and real one)
 		internal const byte MinPlayingBlockedTTL = 60; // Delay in seconds added when account was occupied during our disconnect, to not disconnect other Steam client session too soon
 
 		private const char DefaultBackgroundKeysRedeemerSeparator = '\t';
 		private const byte FamilySharingInactivityMinutes = 5;
 		private const byte LoginCooldownInMinutes = 25; // Captcha disappears after around 20 minutes, so we make it 25
 		private const uint LoginID = GlobalConfig.DefaultIPCPort; // This must be the same for all ASF bots and all ASF processes
-		private const ushort MaxMessageLength = 5000;
+		private const ushort MaxMessageLength = 5000; // This is a limitation enforced by Steam
 		private const byte MaxTwoFactorCodeFailures = 3;
 		private const byte MinHeartBeatTTL = GlobalConfig.DefaultConnectionTimeout; // Assume client is responsive for at least that amount of seconds
-		private const byte RedeemCooldownInHours = 1; // 1 hour since first redeem attempt
+		private const byte RedeemCooldownInHours = 1; // 1 hour since first redeem attempt, this is a limitation enforced by Steam
+		private const byte ReservedMessageLength = 2; // 2 for 2x optional …
 
 		internal static readonly ConcurrentDictionary<string, Bot> Bots = new ConcurrentDictionary<string, Bot>();
 
@@ -1199,7 +1200,7 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogChatMessage(true, message, steamID: steamID);
 
-			ushort maxMessageLength = (ushort) (MaxMessageLength - (Program.GlobalConfig.SteamMessagePrefix?.Length ?? 0) - 2); // prefix and 2 for 2x optional …
+			ushort maxMessageLength = (ushort) (MaxMessageLength - ReservedMessageLength - (Program.GlobalConfig.SteamMessagePrefix?.Length ?? 0));
 
 			// We must escape our message prior to sending it
 			message = Escape(message);
@@ -1236,7 +1237,7 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogChatMessage(true, message, chatGroupID, chatID);
 
-			ushort maxMessageLength = (ushort) (MaxMessageLength - (Program.GlobalConfig.SteamMessagePrefix?.Length ?? 0) - 2); // prefix and 2 for 2x optional …
+			ushort maxMessageLength = (ushort) (MaxMessageLength - ReservedMessageLength - (Program.GlobalConfig.SteamMessagePrefix?.Length ?? 0));
 
 			// We must escape our message prior to sending it
 			message = Escape(message);
