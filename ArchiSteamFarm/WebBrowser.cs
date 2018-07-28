@@ -63,7 +63,8 @@ namespace ArchiSteamFarm {
 			HttpClient = new HttpClient(httpClientHandler) { Timeout = TimeSpan.FromSeconds(extendedTimeout ? ExtendedTimeoutMultiplier * Program.GlobalConfig.ConnectionTimeout : Program.GlobalConfig.ConnectionTimeout) };
 
 			// Most web services expect that UserAgent is set, so we declare it globally
-			HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(SharedInfo.PublicIdentifier + "/" + SharedInfo.Version);
+			// If you by any chance came here with a very "clever" idea of changing default ASF user-agent then here is a very good advice from me: don't, for your own safety - you've been warned
+			HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(SharedInfo.PublicIdentifier + "/" + SharedInfo.Version + " (+" + SharedInfo.ProjectURL + ")");
 		}
 
 		public void Dispose() => HttpClient.Dispose();
