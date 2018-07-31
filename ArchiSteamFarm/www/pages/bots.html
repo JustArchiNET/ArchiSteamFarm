@@ -182,8 +182,7 @@
                 tmpHideOfflineBots = get('hideOfflineBots'),
                 tmpShowDeleteButton = get('showDeleteButton'),
                 tmpShowKeyButton = get('showKeyButton'),
-                tmpSimpleFarmingInfo = get('simpleFarmingInfo'),
-                currentlySelectedBots = [];
+                tmpSimpleFarmingInfo = get('simpleFarmingInfo');
 
             $(document).delegate('#gamesToRedeemInBackground', 'keydown', function (e) {
                 var keyCode = e.keyCode || e.which;
@@ -473,7 +472,7 @@
 
                                         totalGamesRemaining += GamesToFarm.length;
 
-                                        expandBoxHTML = '<button type="button" class="btn btn-box-tool" data-widget="collapse" id="collapse-trigger"><i class="fas fa-plus"></i></button>'
+                                        expandBoxHTML = '<button type="button" class="btn btn-box-tool" data-widget="collapse" id="collapse-trigger"><i class="fas fa-plus"></i></button>';
 
                                         if (IsPlayingPossible) {
                                             if (Paused) {
@@ -511,7 +510,7 @@
                                             + '</div>'
                                             + '</div>'
                                             + allGamesHTML
-                                            + '</div>'
+                                            + '</div>';
                                     } else { // Bot is inactive
 										if (tmpHideInactiveBots === 'true') continue;
 									}
@@ -758,7 +757,7 @@
                                         });
 										
 										$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-										  var target = $(e.target).attr("href")
+										  var target = $(e.target).attr("href");
 										  
 										  if (target === '#unusedKeys') {
 											$(".confirm").hide();
@@ -822,7 +821,7 @@
 										});
                                         break;
                                 }
-                            })
+                            });
                         }
 
                         if (farmingIsActive) { // Add info boxes if at least one bot is farming
@@ -861,7 +860,7 @@
                     }
                 });
             }
-        })
+        });
     </script>
 </body>
 </html>

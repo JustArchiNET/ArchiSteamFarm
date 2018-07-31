@@ -383,9 +383,6 @@
 							
 							$('.overlay').remove();
 							$commandsDropDown.selectpicker('refresh');
-						},
-						error: function (jqXHR, textStatus, errorThrown) {
-							console.log(jqXHR.status + ' ' + errorThrown + ' - ' + jqXHR.responseJSON.Message)
 						}
 					});
 				}
@@ -422,7 +419,7 @@
 					
 				return dropdown > total;
 			}
-        })
+        });
     </script>
 </body>
 </html>
