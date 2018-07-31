@@ -359,6 +359,19 @@
                 }
                 loadPageContent();
             });
+			
+			function download(filename, text) {
+				var element = document.createElement('a');
+				element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+				element.setAttribute('download', filename);
+
+				element.style.display = 'none';
+				document.body.appendChild(element);
+
+				element.click();
+
+				document.body.removeChild(element);
+			}
 
             function loadPageContent() {
                 var tmpHideOnlineBots = get('hideOnlineBots'),
@@ -390,7 +403,7 @@
                             farmingIsActive = false;
 
                         var deleteBotHTML = tmpShowDeleteButton === 'true' ? '<button type="button" class="btn btn-box-tool" data-command="deleteBot"><i class="far fa-trash-alt"></i></button>' : '';
-                        var redeemGamesHTML = tmpShowKeyButton === 'true' ? '<button type="button" class="btn btn-box-tool" data-command="redeemGames"><i class="fas fa-key"></i></button>' : '';
+                        var bgrHTML = tmpShowKeyButton === 'true' ? '<button type="button" class="btn btn-box-tool" data-command="BGR"><i class="fas fa-key"></i></button>' : '';
 
                         for (var i = 0; i < json.length; i++) {
                             var obj = json[i],
@@ -519,7 +532,7 @@
                                 + '<div class="box-tools pull-right botTools" id="' + BotName + '">'
                                 + startOrStopHTML
                                 + pauseOrResumeHTML
-                                + redeemGamesHTML
+                                + bgrHTML
                                 + deleteBotHTML
                                 + expandBoxHTML
                                 + '</div>'
@@ -657,11 +670,12 @@
                                         });
                                         break;
 
-                                    case 'redeemGames':
+                                    case 'BGR':
 										var bgrHTML = '<div class="nav-tabs-custom">'
 														+ '<ul class="nav nav-tabs nav-justified">'
 															+ '<li class="active"><a href="#addKeys" data-toggle="tab" aria-expanded="true">' + $.i18n('bots-redeem-add-title') + '</a></li>'
-															+ '<li class=""><a href="#viewKeys" data-toggle="tab" aria-expanded="false">' + $.i18n('bots-redeem-view-title') + '</a></li>'
+															+ '<li class=""><a href="#unusedKeys" data-toggle="tab" aria-expanded="false">' + $.i18n('bots-redeem-unused-title') + '</a></li>'
+															+ '<li class=""><a href="#usedKeys" data-toggle="tab" aria-expanded="false">' + $.i18n('bots-redeem-used-title') + '</a></li>'
 														+ '</ul>'
 														+ '<div class="tab-content">'
 															+ '<div class="tab-pane active" id="addKeys">'
@@ -672,12 +686,11 @@
 																+ '<input type="text" class="form-control" id="delimiter" value="' + tmpDelimiter + '" aria-describedby="delimiter-text">'
 																+ '</div>'
 															+ '</div>'
-															+ '<div class="tab-pane" id="viewKeys">'
-																+ '<div class="alert alert-warning">'
-																	+ '<h4><i class="fas fa-info-circle"></i> Not implemented</h4>'
-																	+ 'This feature is currently being developed.'
-																+ '</div>'
-																+ '<textarea id="gamesToRedeemInBackground"></textarea>' //rename id
+															+ '<div class="tab-pane" id="unusedKeys">'
+																+ '<textarea id="unusedKeysText"></textarea>'
+															+ '</div>'
+															+ '<div class="tab-pane" id="usedKeys">'
+																+ '<textarea id="usedKeysText"></textarea>'
 															+ '</div>'
 														+ '</div>'
 													+ '</div>';
@@ -689,7 +702,7 @@
                                             customClass: 'swal-wide',
                                             showCancelButton: true,
                                             confirmButtonClass: 'btn-success',
-                                            confirmButtonText: $.i18n('bots-redeem-button'),
+                                            confirmButtonText: $.i18n('bots-redeem-add-button'),
                                             closeOnConfirm: false,
                                             showLoaderOnConfirm: true
                                         }, function (isConfirm) {
@@ -747,11 +760,64 @@
 										$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 										  var target = $(e.target).attr("href")
 										  
-										  if (target === '#viewKeys') {
-											//load unused keys here
-											$(".confirm").text('Copy unused keys!');
+										  if (target === '#unusedKeys') {
+											$(".confirm").hide();
+											$(".sa-button-container").append('<div class="sa-confirm-button-container">'
+												+ '<button class="confirm btn btn-lg btn-success" id="downloadUnusedKeys" tabindex="1" style="display: inline-block;">'
+												+ $.i18n('bots-redeem-unused-button', BotName) + '</button><div class="la-ball-fall">'
+												+ '<div></div><div></div><div></div></div></div>');
+											$('#downloadUnusedKeys').on('click', function (e) {
+												e.preventDefault();
+												download(BotName + '.keys.unused', $('#unusedKeysText').val());
+											});
+											$.ajax({
+                                                url: '/Api/GamesToRedeemInBackground/' + encodeURIComponent(BotName),
+                                                type: 'GET',
+                                                success: function (data) {
+                                                    var obj = data['Result'],
+														unusedKeys = obj[BotName].UnusedKeys;
+														
+													for (var key in unusedKeys) {
+														if (unusedKeys.hasOwnProperty(key)) {
+															$('#unusedKeysText').append(unusedKeys[key] + tmpDelimiter + key + '\n');
+														}
+													}
+													
+													var allKeys = $('#unusedKeysText').val();
+													$('#unusedKeysText').val(allKeys.substring(0,allKeys.length-1));
+                                                }
+                                            });
+										  } else if (target === '#usedKeys') {
+											$(".confirm").hide();
+											$(".sa-button-container").append('<div class="sa-confirm-button-container">'
+												+ '<button class="confirm btn btn-lg btn-success" id="downloadUsedKeys" tabindex="1" style="display: inline-block;">'
+												+ $.i18n('bots-redeem-used-button', BotName) + '</button><div class="la-ball-fall">'
+												+ '<div></div><div></div><div></div></div></div>');
+											$('#downloadUsedKeys').on('click', function (e) {
+												e.preventDefault();
+												download(BotName + '.keys.used', $('#usedKeysText').val());
+											});
+											$.ajax({
+                                                url: '/Api/GamesToRedeemInBackground/' + encodeURIComponent(BotName),
+                                                type: 'GET',
+                                                success: function (data) {
+                                                    var obj = data['Result'],
+														usedKeys = obj[BotName].UsedKeys;
+														
+													for (var key in usedKeys) {
+														if (usedKeys.hasOwnProperty(key)) {
+															$('#usedKeysText').append(usedKeys[key] + tmpDelimiter + key + '\n');
+														}
+													}
+													
+													var allKeys = $('#usedKeysText').val();
+													$('#usedKeysText').val(allKeys.substring(0,allKeys.length-1));
+                                                }
+                                            });
 										  } else {
-											$(".confirm").text('Add keys!');
+											$("#downloadUnusedKeys").remove();
+											$("#downloadUsedKeys").remove();
+											$(".confirm").show();
 										  }
 										});
                                         break;
