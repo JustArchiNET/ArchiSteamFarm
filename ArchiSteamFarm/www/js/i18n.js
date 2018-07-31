@@ -65,7 +65,7 @@ function loadAllLanguages() {
         type: 'GET',
         async: false,
         success: function (data) {
-            var obj = data['Result'];
+            var obj = data.Result;
             const languageRegex = new RegExp("strings(.[a-z]{2}-[A-Z]{2})?.json");
 
             availableLanguages = [];

@@ -393,7 +393,7 @@
                     url: '/Api/Bot/ASF',
                     type: 'GET',
                     success: function (data) {
-                        var json = data['Result'],
+                        var json = data.Result,
                             steamAvatarBaseURL = 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/',
 							steamAvatarDefault = 'fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb.jpg',
                             steamGameBaseURL = 'https://steamcdn-a.akamaihd.net/steam/apps/',
@@ -736,7 +736,7 @@
                                                 data: JSON.stringify(ajaxData, null, "\t"),
                                                 contentType: 'application/json',
                                                 success: function (data) {
-                                                    var obj = data['Result'],
+                                                    var obj = data.Result,
                                                         gamesAdded = Object.keys(obj).length;
 
                                                     swal({
@@ -748,7 +748,7 @@
                                                 error: function (jqXHR, textStatus, errorThrown) {
                                                     swal({
                                                         title: $.i18n('global-error-title'),
-                                                        text: jqXHR.status + ' ' + errorThrown + ' - ' + jqXHR.responseJSON['Message'],
+                                                        text: jqXHR.status + ' ' + errorThrown + ' - ' + jqXHR.responseJSON.Message,
                                                         type: 'error'
                                                     }, function () { location.reload(); });
                                                 }
@@ -774,7 +774,7 @@
                                                 url: '/Api/GamesToRedeemInBackground/' + encodeURIComponent(BotName),
                                                 type: 'GET',
                                                 success: function (data) {
-                                                    var obj = data['Result'],
+                                                    var obj = data.Result,
 														unusedKeys = obj[BotName].UnusedKeys;
 														
 													for (var key in unusedKeys) {
@@ -801,7 +801,7 @@
                                                 url: '/Api/GamesToRedeemInBackground/' + encodeURIComponent(BotName),
                                                 type: 'GET',
                                                 success: function (data) {
-                                                    var obj = data['Result'],
+                                                    var obj = data.Result,
 														usedKeys = obj[BotName].UsedKeys;
 														
 													for (var key in usedKeys) {

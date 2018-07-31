@@ -358,7 +358,7 @@
 						data: JSON.stringify({ "URL": "https://github.com/JustArchi/ArchiSteamFarm/wiki/Commands" }),
 						contentType: 'application/json',
 						success: function (data) {
-							var htmlString = data['Result'],
+							var htmlString = data.Result,
 								doc = new DOMParser().parseFromString(htmlString,'text/html'),
 								result = doc.evaluate('//table[1]/tbody//td[1]', doc, null, XPathResult.ANY_TYPE, null),
 								myCommands = [],
@@ -385,7 +385,7 @@
 							$commandsDropDown.selectpicker('refresh');
 						},
 						error: function (jqXHR, textStatus, errorThrown) {
-							console.log(jqXHR.status + ' ' + errorThrown + ' - ' + jqXHR.responseJSON['Message'])
+							console.log(jqXHR.status + ' ' + errorThrown + ' - ' + jqXHR.responseJSON.Message)
 						}
 					});
 				}
@@ -396,7 +396,7 @@
                     url: '/Api/Bot/ASF',
                     type: 'GET',
                     success: function (data) {
-                        var json = data['Result'];
+                        var json = data.Result;
 
                         $botsDropDown.append('<option data-divider="true"></option>');
 

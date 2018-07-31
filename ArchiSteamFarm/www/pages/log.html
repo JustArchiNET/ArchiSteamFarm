@@ -177,7 +177,7 @@
                 };
 
                 ws.onmessage = function (event) {
-                    var msg = JSON.parse(event.data)['Result'] + '\n';
+                    var msg = JSON.parse(event.data).Result + '\n';
                     $('.box-content-log').append(msg);
                     $('.box-content-log').stop().animate({ scrollTop: $('.box-content-log')[0].scrollHeight }, 1000);
                 };
