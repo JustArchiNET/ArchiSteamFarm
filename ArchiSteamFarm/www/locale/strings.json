@@ -83,5 +83,7 @@
   "log-title": "ASF | Log",
   "placeholder-auth": "Type your password...",
   "placeholder-commands": "Type command...",
-  "placeholder-generator": "Name"
+  "placeholder-generator": "Name",
+  "title-commands": "Commands",
+  "title-bots": "Bots"
 }

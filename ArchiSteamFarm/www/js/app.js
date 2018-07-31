@@ -143,8 +143,6 @@ window.setInterval(function () { displayUptime(); }, 60000);
 
 //#region Commands Page
 var $cmdInput = $('#commandInput');
-function fillCommand(cmd) { $cmdInput.val(cmd + ' '); }
-function fillBots(bot) { $cmdInput.val($cmdInput.val() + bot); }
 
 function getDateAndTime() {
     var date = new Date();
@@ -878,7 +876,7 @@ $(function () {
                 + '</div>');
         } else {
             $('#languageInfo').text('');
-        }        
+        }
 
         $('#languages').collapse('hide');
     }

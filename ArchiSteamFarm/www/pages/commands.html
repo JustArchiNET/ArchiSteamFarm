@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/AdminLTE.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
     <link rel="stylesheet" href="../css/_all-skins.min.css">
     <link rel="stylesheet" href="../css/app.css">
     <link rel="stylesheet" href="../css/_nightmode.min.css">
@@ -117,26 +118,20 @@
                     </div>
                     <div class="box-body">
                         <div class="box-content-commands"></div>
-                        <input type="text" class="form-control" id="commandSent" disabled>
+                        <input id="commandSent" type="text" class="form-control" disabled>
                     </div>
                     <div class="box-footer">
                         <div class="input-group">
-                            <div class="input-group-btn hidden-xs" id="cmdsDropDownBox">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                    <span data-i18n="global-commands">Commands</span>
-                                    <span class="fas fa-caret-down" id="iconCmdsDropDownBox"></span>
-                                </button>
-                                <ul class="dropdown-menu scrollable-menu" id="commandsDropDown"></ul>
-                            </div>
-                            <div class="input-group-btn hidden-xs" id="botsDropDownBox">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                    <span data-i18n="global-bots">Bots</span>
-                                    <span class="fas fa-caret-down" id="iconBotsDropDownBox"></span>
-                                </button>
-                                <ul class="dropdown-menu scrollable-menu" id="botsDropDown"></ul>
-                            </div>
-                            <input id="commandInput" type="text" class="form-control" data-i18n="placeholder-commands" placeholder="Type command...">
-                            <div class="input-group-btn">
+							<div class="input-group-btn hidden-xs">
+								<select id="commandsDropDown" class="form-control selectpicker" data-dropup-auto="false" data-size="7" data-live-search="true" data-i18n="title-commands" title="Commands"></select>
+							</div>
+							<div class="input-group-btn hidden-xs">
+								<select id="botsDropDown" class="form-control selectpicker" data-dropup-auto="false" data-size="7" data-live-search="true" data-i18n="title-bots" title="Bots"></select>
+							</div>
+							<!-- <div class="autocomplete" style="width:100%;"> -->
+								<input id="commandInput" type="text" class="form-control" data-i18n="placeholder-commands" placeholder="Type command...">
+                            <!-- </div> -->
+							<div class="input-group-btn">
                                 <button type="button" class="btn btn-default" id="sendCommand"><i class="far fa-paper-plane"></i></button>
                             </div>
                         </div>
@@ -176,6 +171,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.parser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.emitter.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.emitter.bidi.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
     <script src="../js/utils.js"></script>
     <script src="../js/i18n.js"></script>
     <script src="../js/app.js"></script>
@@ -187,8 +183,6 @@
 
             var $chkAutoClear = $('#chkAutoClear'),
                 $commandInput = $('#commandInput'),
-                $cmdsDropDownBox = $('#cmdsDropDownBox'),
-                $botsDropDownBox = $('#botsDropDownBox'),
                 $botsDropDown = $("#botsDropDown"),
                 $commandsDropDown = $("#commandsDropDown");
             
@@ -203,7 +197,8 @@
                 'stop': 'Stops given bot instances.',
                 'pause': 'Permanently pauses automatic cards farming module of given bot instances. ASF will not attempt to farm current account in this session, unless you manually !resume it, or restart the process. Also called sticky pause.',
                 'resume': 'Resumes automatic farming of given bot instances. Also see !pause, !play.',
-                'restart': 'Restarts ASF process.'
+                'restart': 'Restarts ASF process.',
+				'status': 'displays status din kælling blabla'
             };
 
             var keyCount = 0,
@@ -221,13 +216,39 @@
                     prevCommand.push(cmd);
                 }
 
-                store('prevCommand', JSON.stringify(prevCommand.slice(-20))); // Only save the last 20 commands
+                store('prevCommand', JSON.stringify(prevCommand.slice(-20)));
                 prevCommand = (JSON.parse(get('prevCommand')) === null) ? [] : JSON.parse(get('prevCommand'));
 
                 sendCommand();
                 e.preventDefault();
             });
+			
+			$commandsDropDown.on('changed.bs.select', function (e) {
+				$cmdInput.val($commandsDropDown.val() + ' ');
+				
+				var elements = document.getElementById("commandsDropDown").options; // dirty... find a better solution
+				for(var i = 0; i < elements.length; i++){
+					elements[i].selected = false;
+				}
+				
+				$commandsDropDown.selectpicker('render');
+			});
+			
+			$botsDropDown.on('changed.bs.select', function (e) {
+				var bot = $botsDropDown.val(),
+					oldText = $cmdInput.val();
+					
+				$cmdInput.val(oldText + bot);
+				
+				var elements = document.getElementById("botsDropDown").options; // dirty... find a better solution
+				for(var i = 0; i < elements.length; i++){
+					elements[i].selected = false;
+				}
+				
+				$botsDropDown.selectpicker('render');
+			});
 
+            //#region Merge to one function
             $(document).keydown(function (e) {
                 if (e.which == 38 && $commandInput.is(':focus')) {
                     if (prevCommand.length > keyCount) keyCount++;
@@ -248,6 +269,7 @@
                     $('#sendCommand').click();
                 }
             });
+            //#endregion Merge to one function
             
             $('.box-tools').ready(function () {
                 var tmpAutoClear = get('autoClear');
@@ -283,19 +305,16 @@
                     $('.box-content-commands').css('height', tmpCommandHeight + 'px');
 					
                     if (shouldDropUp()) {
-                        $cmdsDropDownBox.addClass('dropup');
-                        $botsDropDownBox.addClass('dropup');
-                        $('#iconCmdsDropDownBox').removeClass('fa-caret-down');
-                        $('#iconCmdsDropDownBox').addClass('fa-caret-up');
-                        $('#iconBotsDropDownBox').removeClass('fa-caret-down');
-                        $('#iconBotsDropDownBox').addClass('fa-caret-up');
+						$commandsDropDown.addClass('dropup');
+						$botsDropDown.addClass('dropup');
+						$commandsDropDown.selectpicker('refresh');
+						$botsDropDown.selectpicker('refresh');
                     } else {
-                        $cmdsDropDownBox.removeClass('dropup');
-                        $botsDropDownBox.removeClass('dropup');
-                        $('#iconCmdsDropDownBox').removeClass('fa-caret-up');
-                        $('#iconCmdsDropDownBox').addClass('fa-caret-down');
-                        $('#iconBotsDropDownBox').removeClass('fa-caret-up');
-                        $('#iconBotsDropDownBox').addClass('fa-caret-down');
+						$commandsDropDown.removeClass('dropup');
+						$botsDropDown.removeClass('dropup');
+						$('.bootstrap-select').removeClass('dropup');
+						$commandsDropDown.selectpicker('refresh');
+						$botsDropDown.selectpicker('refresh');
                     }
                 } else {
                     $('.box-content-commands').css('height', 400 + 'px');
@@ -320,38 +339,36 @@
                     store('commandHeight', currentHeight);
 					
                     if (shouldDropUp()) {
-                        $cmdsDropDownBox.addClass('dropup');
-                        $botsDropDownBox.addClass('dropup');
-                        $('#iconCmdsDropDownBox').removeClass('fa-caret-down');
-                        $('#iconCmdsDropDownBox').addClass('fa-caret-up');
-                        $('#iconBotsDropDownBox').removeClass('fa-caret-down');
-                        $('#iconBotsDropDownBox').addClass('fa-caret-up');
+						$commandsDropDown.addClass('dropup');
+						$botsDropDown.addClass('dropup');
+						$commandsDropDown.selectpicker('refresh');
+						$botsDropDown.selectpicker('refresh');
                     } else {
-                        $cmdsDropDownBox.removeClass('dropup');
-                        $botsDropDownBox.removeClass('dropup');
-                        $('#iconCmdsDropDownBox').removeClass('fa-caret-up');
-                        $('#iconCmdsDropDownBox').addClass('fa-caret-down');
-                        $('#iconBotsDropDownBox').removeClass('fa-caret-up');
-                        $('#iconBotsDropDownBox').addClass('fa-caret-down');
+						$commandsDropDown.removeClass('dropup');
+						$botsDropDown.removeClass('dropup');
+						$('.bootstrap-select').removeClass('dropup');
+						$commandsDropDown.selectpicker('refresh');
+						$botsDropDown.selectpicker('refresh');
                     }
                 });
 
             $('.box-footer').ready(function () {
                 for (var cmd in myCommands) { // Fill drop down with all commands
                     if (myCommands.hasOwnProperty(cmd)) {
-                        $commandsDropDown.append('<li><a href="javascript:void(0)" id="' + cmd + '" onclick="fillCommand(\'' + cmd + '\')">' + cmd + '</a></li>');
-
-                        $('#' + cmd)
-                            .mouseenter(function () {
-                                $commandInput.attr('placeholder', myCommands[this.id]); // ToDo: Find a better solution for where to display description
-                            })
-                            .mouseleave(function () {
-                                $commandInput.attr('placeholder', $.i18n('placeholder-commands'));
-                            });
+						$commandsDropDown.append('<option title="Commands">' + cmd + '</option>');
+						
+                        <!-- $('#' + cmd) -->
+                            <!-- .mouseenter(function () { -->
+                                <!-- $commandInput.attr('placeholder', myCommands[this.id]); // ToDo: Find a better solution for where to display description -->
+                            <!-- }) -->
+                            <!-- .mouseleave(function () { -->
+                                <!-- $commandInput.attr('placeholder', $.i18n('placeholder-commands')); -->
+                            <!-- }); -->
                     }
                 }
+				$commandsDropDown.selectpicker('refresh');
 
-                $botsDropDown.append('<li><a href="javascript:void(0)" onclick="fillBots(\'ASF\')">ASF</a></li>');
+				$botsDropDown.append('<option title="Bots">ASF</option>');
 
                 $.ajax({ // Fill drop down with all bots + ASF
                     url: '/Api/Bot/ASF',
@@ -359,20 +376,29 @@
                     success: function (data) {
                         var json = data['Result'];
 
-                        $botsDropDown.append('<li class="divider"></li>');
+                        $botsDropDown.append('<option data-divider="true"></option>');
 
                         for (var i = 0; i < json.length; i++) {
                             var obj = json[i],
                                 botName = obj.BotName;
 
-                            $botsDropDown.append('<li><a href="javascript:void(0)" onclick="fillBots(\'' + botName + '\')">' + botName + '</a></li>');
+							$botsDropDown.append('<option title="Bots">' + botName + '</option>');
                         }
+						
+						$botsDropDown.selectpicker('refresh');
                     }
                 });
             });
 
 			function shouldDropUp() {
-				return 220 > $('.content-wrapper').height() - ( $('.content-header').height() + $('.content').height() );
+				var wrapper = $('.content-wrapper').height(),
+					header = $('.content-header').height(),
+					mainHeader = $('.main-header').height(),
+					box = $('.box').height(),
+					total = wrapper - (header + box + mainHeader),
+					dropdown = 236;
+					
+				return dropdown > total;
 			}
         })
     </script>
