@@ -122,7 +122,7 @@
                     </div>
                     <div class="box-footer">
                         <div class="input-group">
-							<div class="input-group-btn hidden-xs">
+							<div id="commandsDropDownBox" class="input-group-btn hidden-xs">
 								<select id="commandsDropDown" class="form-control selectpicker" data-dropup-auto="false" data-size="7" data-live-search="true" data-i18n="title-commands" title="Commands"></select>
 							</div>
 							<div class="input-group-btn hidden-xs">
@@ -185,21 +185,6 @@
                 $commandInput = $('#commandInput'),
                 $botsDropDown = $("#botsDropDown"),
                 $commandsDropDown = $("#commandsDropDown");
-            
-            var myCommands = { // For the future: Make this dynamic
-                'addlicense': 'Activates given appIDs (Steam Network) or subIDs (Steam Store) on given bot instances (free games only).',
-                'redeem': 'Redeems given cd-keys on given bot instances.',
-                '2faok': 'Accepts all pending 2FA confirmations for given bot instances.',
-                '2fa': 'Generates temporary 2FA token for given bot instances.',
-                'loot': 'Sends all MatchableTypes items of given bot instances to Master user defined in their SteamUserPermissions (with lowest steamID if more than one).',
-                'play': 'Switches to manual farming - launches given AppIDs on given bot instances, optionally also with custom GameName. Use !resume for returning to automatic farming.',
-                'start': 'Starts given bot instances.',
-                'stop': 'Stops given bot instances.',
-                'pause': 'Permanently pauses automatic cards farming module of given bot instances. ASF will not attempt to farm current account in this session, unless you manually !resume it, or restart the process. Also called sticky pause.',
-                'resume': 'Resumes automatic farming of given bot instances. Also see !pause, !play.',
-                'restart': 'Restarts ASF process.',
-				'status': 'displays status din kælling blabla'
-            };
 
             var keyCount = 0,
                 prevCommand = (JSON.parse(get('prevCommand')) === null) ? [] : JSON.parse(get('prevCommand'));
@@ -353,24 +338,63 @@
                 });
 
             $('.box-footer').ready(function () {
-                for (var cmd in myCommands) { // Fill drop down with all commands
-                    if (myCommands.hasOwnProperty(cmd)) {
-						$commandsDropDown.append('<option title="Commands">' + cmd + '</option>');
-						
-                        <!-- $('#' + cmd) -->
-                            <!-- .mouseenter(function () { -->
-                                <!-- $commandInput.attr('placeholder', myCommands[this.id]); // ToDo: Find a better solution for where to display description -->
-                            <!-- }) -->
-                            <!-- .mouseleave(function () { -->
-                                <!-- $commandInput.attr('placeholder', $.i18n('placeholder-commands')); -->
-                            <!-- }); -->
-                    }
-                }
-				$commandsDropDown.selectpicker('refresh');
+				var cachedCommands = get('cachedCommands'),
+					cachedDate = get('cachedCommandsDate'),
+					today = new Date().toLocaleDateString();
+				
+				if (cachedCommands && today == cachedDate) {
+					var myCommands = cachedCommands.split(',');
+				
+					for (var i = 0; i < myCommands.length; i++) {
+						$commandsDropDown.append('<option title="Commands">' + myCommands[i] + '</option>');
+					}
+					
+					$('.overlay').remove();
+					$commandsDropDown.selectpicker('refresh');
+				} else {
+					$('#commandsDropDownBox').append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
+				
+					$.ajax({
+						url: '/Api/WWW/Send',
+						type: 'POST',
+						data: JSON.stringify({ "URL": "https://github.com/JustArchi/ArchiSteamFarm/wiki/Commands" }),
+						contentType: 'application/json',
+						success: function (data) {
+							var htmlString = data['Result'],
+								doc = new DOMParser().parseFromString(htmlString,'text/html'),
+								result = doc.evaluate('//table[1]/tbody//td[1]', doc, null, XPathResult.ANY_TYPE, null),
+								myCommands = [],
+								xres;
+							
+							while (xres = result.iterateNext()) {
+								var str = xres.innerText;
+								
+								if (/\s/.test(str)) {
+									myCommands.push(str.substr(0,str.indexOf(' ')));
+								} else {
+									myCommands.push(str);
+								}
+							}
+							
+							store('cachedCommands', myCommands);
+							store('cachedCommandsDate', new Date().toLocaleDateString());
+							
+							for (var i = 0; i < myCommands.length; i++) {
+								$commandsDropDown.append('<option title="Commands">' + myCommands[i] + '</option>');
+							}
+							
+							$('.overlay').remove();
+							$commandsDropDown.selectpicker('refresh');
+						},
+						error: function (jqXHR, textStatus, errorThrown) {
+							console.log(jqXHR.status + ' ' + errorThrown + ' - ' + jqXHR.responseJSON['Message'])
+						}
+					});
+				}
 
 				$botsDropDown.append('<option title="Bots">ASF</option>');
 
-                $.ajax({ // Fill drop down with all bots + ASF
+                $.ajax({
                     url: '/Api/Bot/ASF',
                     type: 'GET',
                     success: function (data) {
