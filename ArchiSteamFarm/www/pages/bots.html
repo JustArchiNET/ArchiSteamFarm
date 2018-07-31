@@ -53,6 +53,7 @@
                             <i class="fas fa-users fa-fw"></i> <span data-i18n="global-bots">Bots</span>
                             <span class="pull-right-container bot-status">
                                 <small class="label pull-right bg-gray" id="offlineBots">0</small>
+								<small class="label pull-right bg-red" id="disconnectedBots" style="display:none;">0</small>
                                 <small class="label pull-right bg-yellow" id="onlineBots">0</small>
                                 <small class="label pull-right bg-olive" id="farmingBots">0</small>
                             </span>
@@ -65,16 +66,16 @@
                     <li><a href="generator.html"><i class="far fa-copy fa-fw"></i> <span data-i18n="global-generator">Generator</span></a></li>
 
                     <li class="header" data-i18n="global-information">Information</li>
-                    <li class="info-overview">
-                        <a>
+                    <li>
+                        <a class="info-overview" href="javascript:void(0)">
                             <i class="fas fa-tachometer-alt fa-fw"></i> <span data-i18n="global-ram-usage">RAM Usage</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="ramUsage">0.00 MB</small>
                             </span>
                         </a>
                     </li>
-                    <li class="info-overview">
-                        <a>
+                    <li>
+						<a class="info-overview" href="javascript:void(0)">
                             <i class="far fa-clock fa-fw"></i> <span data-i18n="global-uptime">Uptime</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="uptime">0d 0h 0m</small>
@@ -110,20 +111,20 @@
                                     <span data-i18n="bots-hide">Hide bots</span> <span class="fas fa-caret-down"></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><button data-i18n="title-bots-online" title="Toggle online bots" type="button" class="btn btn-box-tool text-grey" id="chkHideOnlineBots"><i id="iconHideOnlineBots" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-hide-online">Online bots</span></li>
-									<li><button data-i18n="title-bots-inactive" title="Toggle inactive bots" type="button" class="btn btn-box-tool text-grey" id="chkHideInactiveBots"><i id="iconHideInactiveBots" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-hide-inactive">Inactive bots</span></li>
-                                    <li><button data-i18n="title-bots-offline" title="Toggle offline bots" type="button" class="btn btn-box-tool text-grey" id="chkHideOfflineBots"><i id="iconHideOfflineBots" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-hide-offline">Offline bots</span></li>
+                                    <li><button type="button" class="btn btn-box-tool text-grey" id="chkHideOnlineBots"><i id="iconHideOnlineBots" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-hide-online">Online bots</span></li>
+									<li><button type="button" class="btn btn-box-tool text-grey" id="chkHideInactiveBots"><i id="iconHideInactiveBots" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-hide-inactive">Inactive bots</span></li>
+                                    <li><button type="button" class="btn btn-box-tool text-grey" id="chkHideOfflineBots"><i id="iconHideOfflineBots" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-hide-offline">Offline bots</span></li>
                                 </ul>
                             </div>
-                            <button data-i18n="title-bots-refresh" title="Refresh content" type="button" class="btn btn-box-tool" id="btnRefreshContent"><i class="fas fa-sync"></i></button>
+                            <button type="button" class="btn btn-box-tool" id="btnRefreshContent"><i class="fas fa-sync"></i></button>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
                                     <i class="fas fa-wrench"></i>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><button data-i18n="title-bots-key" title="Toggle key button" type="button" class="btn btn-box-tool text-grey" id="chkShowKeyButton"><i id="iconShowKeyButton" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-key">Show key button</span></li>
-                                    <li><button data-i18n="title-bots-delete" title="Toggle delete button" type="button" class="btn btn-box-tool text-grey" id="chkShowDeleteButton"><i id="iconShowDeleteButton" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-delete">Show delete button</span></li>
-                                    <li><button data-i18n="title-bots-simple" title="Toggle simple farming info" type="button" class="btn btn-box-tool text-grey" id="chkSimpleFarmingInfo"><i id="iconSimpleFarmingInfo" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-simple">Simple farming info</span></li>
+                                    <li><button type="button" class="btn btn-box-tool text-grey" id="chkShowKeyButton"><i id="iconShowKeyButton" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-key">Show key button</span></li>
+                                    <li><button type="button" class="btn btn-box-tool text-grey" id="chkShowDeleteButton"><i id="iconShowDeleteButton" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-delete">Show delete button</span></li>
+                                    <li><button type="button" class="btn btn-box-tool text-grey" id="chkSimpleFarmingInfo"><i id="iconSimpleFarmingInfo" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-simple">Simple farming info</span></li>
                                 </ul>
                             </div>
                         </div>
@@ -156,7 +157,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/js/adminlte.min.js"></script>
+	<script src="../js/adminlte.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/humanize-duration/3.12.1/humanize-duration.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
@@ -382,14 +383,14 @@
                         var json = data['Result'],
                             steamAvatarBaseURL = 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/',
 							steamAvatarDefault = 'fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb.jpg',
-                            steamGameBaseURL = 'http://cdn.edgecast.steamstatic.com/steam/apps/',
+                            steamGameBaseURL = 'https://steamcdn-a.akamaihd.net/steam/apps/',
                             totalGamesRemaining = 0,
-                            totalTimeRemaining = '00:00:00',
+                            totalTimeRemaining = 0,
                             totalCardsRemaining = 0,
                             farmingIsActive = false;
 
-                        var deleteBotHTML = tmpShowDeleteButton === 'true' ? '<button data-i18n="title-bots-delete-this" title="Delete this bot" type="button" class="btn btn-box-tool" data-command="deleteBot"><i class="far fa-trash-alt"></i></button>' : '';
-                        var redeemGamesHTML = tmpShowKeyButton === 'true' ? '<button data-i18n="title-bots-games" title="Add keys to GamesToRedeemInBackground" type="button" class="btn btn-box-tool" data-command="redeemGames"><i class="fas fa-key"></i></button>' : '';
+                        var deleteBotHTML = tmpShowDeleteButton === 'true' ? '<button type="button" class="btn btn-box-tool" data-command="deleteBot"><i class="far fa-trash-alt"></i></button>' : '';
+                        var redeemGamesHTML = tmpShowKeyButton === 'true' ? '<button type="button" class="btn btn-box-tool" data-command="redeemGames"><i class="fas fa-key"></i></button>' : '';
 
                         for (var i = 0; i < json.length; i++) {
                             var obj = json[i],
@@ -420,13 +421,13 @@
                             if (KeepRunning === false) { // Bot is offline
                                 if (tmpHideOfflineBots === 'true') continue;
                                 boxColorHTML = 'box-gray';
-                                startOrStopHTML = '<button title="Start <' + BotName + '>" type="button" class="btn btn-box-tool bot-stopped" data-command="startBot"><i class="fas fa-power-off"></i></button>';
+                                startOrStopHTML = '<button type="button" class="btn btn-box-tool bot-stopped" data-command="startBot"><i class="fas fa-power-off"></i></button>';
                             } else { // Bot is online
                                 if (tmpHideOnlineBots === 'true') continue;
                                 boxColorHTML = 'box-warning';
-                                startOrStopHTML = '<button title="Stop <' + BotName + '>" type="button" class="btn btn-box-tool bot-started" data-command="stopBot"><i class="fas fa-power-off"></i></button>';
+                                startOrStopHTML = '<button type="button" class="btn btn-box-tool bot-started" data-command="stopBot"><i class="fas fa-power-off"></i></button>';
 
-                                var TimeRemaining = obj.CardsFarmer.TimeRemaining;
+                                var TimeRemaining = moment.duration(obj.CardsFarmer.TimeRemaining).asMilliseconds();
 
                                 if (SteamID === 0) { // Bot is not connected to steam
                                     boxColorHTML = 'box-danger';
@@ -435,7 +436,7 @@
                                         + '<img src="' + avatarHTML + '">'
                                         + '</a>';
 
-                                    if (TimeRemaining !== '00:00:00') { // Bot is farming
+                                    if (TimeRemaining !== 0) { // Bot is farming
                                         var GamesToFarm = obj.CardsFarmer.GamesToFarm,
                                             CurrentGamesFarming = obj.CardsFarmer.CurrentGamesFarming,
                                             allGamesFarmingAppID = [],
@@ -459,7 +460,7 @@
 
                                         totalGamesRemaining += GamesToFarm.length;
 
-                                        expandBoxHTML = '<button data-i18n="title-bots-more" title="Show more infos" type="button" class="btn btn-box-tool" data-widget="collapse" id="collapse-trigger"><i class="fas fa-plus"></i></button>'
+                                        expandBoxHTML = '<button type="button" class="btn btn-box-tool" data-widget="collapse" id="collapse-trigger"><i class="fas fa-plus"></i></button>'
 
                                         if (IsPlayingPossible) {
                                             if (Paused) {
@@ -487,9 +488,7 @@
                                             allGamesHTML = '<p class="text-center no-margin">' + $.i18n('bots-in-use') + '</p>';
                                         }
 
-                                        TimeRemaining = moment.duration(TimeRemaining).asMilliseconds();
-
-                                        boxBodyHTML = '<div class="box-body" id="' + BotName + '" style="display: none;">'
+                                        boxBodyHTML = '<div class="box-body" id="' + BotName + '" style="display:none;">'
                                             + '<div class="row">'
                                             + '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">'
                                             + '<span class="pull-left"><i class="far fa-clock"></i> ' + humanizeDuration(TimeRemaining) + '</span>'
@@ -506,15 +505,15 @@
                                 }
 
                                 if (Paused) {
-                                    pauseOrResumeHTML = '<button title="Resume <' + BotName + '>" type="button" class="btn btn-box-tool bot-paused" data-command="resumeBot"><i class="fas fa-pause"></i></button>';
+                                    pauseOrResumeHTML = '<button type="button" class="btn btn-box-tool bot-paused" data-command="resumeBot"><i class="fas fa-pause"></i></button>';
                                 } else {
-                                    pauseOrResumeHTML = '<button title="Pause <' + BotName + '>" type="button" class="btn btn-box-tool bot-resumed" data-command="pauseBot"><i class="fas fa-pause"></i></button>';
+                                    pauseOrResumeHTML = '<button type="button" class="btn btn-box-tool bot-resumed" data-command="pauseBot"><i class="fas fa-pause"></i></button>';
                                 }
                             }
 
                             $('#botRow').append('<div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">'
                                 + '<div class="box ' + boxColorHTML + ' collapsed-box" id="bot-box-' + BotName + '">'
-                                + '<div class="box-header with-border botHeader ui-widget-content">'
+                                + '<div class="box-header with-border botHeader">'
 								+ profileHTML
                                 + '<h3 class="box-title botTitle">' + BotName + '</h3>'
                                 + '<div class="box-tools pull-right botTools" id="' + BotName + '">'
@@ -524,8 +523,8 @@
                                 + deleteBotHTML
                                 + expandBoxHTML
                                 + '</div>'
-                                + boxBodyHTML
                                 + '</div>'
+                                + boxBodyHTML
                                 + '</div>'
                                 + '</div>');
 
@@ -659,14 +658,33 @@
                                         break;
 
                                     case 'redeemGames':
+										var bgrHTML = '<div class="nav-tabs-custom">'
+														+ '<ul class="nav nav-tabs nav-justified">'
+															+ '<li class="active"><a href="#addKeys" data-toggle="tab" aria-expanded="true">' + $.i18n('bots-redeem-add-title') + '</a></li>'
+															+ '<li class=""><a href="#viewKeys" data-toggle="tab" aria-expanded="false">' + $.i18n('bots-redeem-view-title') + '</a></li>'
+														+ '</ul>'
+														+ '<div class="tab-content">'
+															+ '<div class="tab-pane active" id="addKeys">'
+																+ '<p class="lead text-muted" style="display: block;">' + $.i18n('bots-syntax') + '</p>'
+																+ '<textarea id="gamesToRedeemInBackground"></textarea>'
+																+ '<div class="input-group">'
+																+ '<span class="input-group-addon" id="delimiter-text">' + $.i18n('bots-delimiter') + '</span>'
+																+ '<input type="text" class="form-control" id="delimiter" value="' + tmpDelimiter + '" aria-describedby="delimiter-text">'
+																+ '</div>'
+															+ '</div>'
+															+ '<div class="tab-pane" id="viewKeys">'
+																+ '<div class="alert alert-warning">'
+																	+ '<h4><i class="fas fa-info-circle"></i> Not implemented</h4>'
+																	+ 'This feature is currently being developed.'
+																+ '</div>'
+																+ '<textarea id="gamesToRedeemInBackground"></textarea>' //rename id
+															+ '</div>'
+														+ '</div>'
+													+ '</div>';
+										
                                         swal({
                                             title: $.i18n('bots-redeem-title'),
-                                            text: '<p class="lead text-muted" style="display: block;">' + $.i18n('bots-syntax') + '</p>'
-                                            + '<textarea id="gamesToRedeemInBackground"></textarea>'
-                                            + '<div class="input-group">'
-                                            + '<span class="input-group-addon" id="delimiter-text">' + $.i18n('bots-delimiter') + '</span>'
-                                            + '<input type="text" class="form-control" id="delimiter" value="' + tmpDelimiter + '" aria-describedby="delimiter-text">'
-                                            + '</div>',
+                                            text: bgrHTML,
                                             html: true,
                                             customClass: 'swal-wide',
                                             showCancelButton: true,
@@ -725,6 +743,17 @@
 
                                             $('.overlay').remove();
                                         });
+										
+										$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+										  var target = $(e.target).attr("href")
+										  
+										  if (target === '#viewKeys') {
+											//load unused keys here
+											$(".confirm").text('Copy unused keys!');
+										  } else {
+											$(".confirm").text('Add keys!');
+										  }
+										});
                                         break;
                                 }
                             })
@@ -758,8 +787,6 @@
                                 + '</div>'
                                 + '</div>'
                                 + '</div>');
-
-                            totalTimeRemaining = moment.duration(totalTimeRemaining).asMilliseconds();
 
                             $('#totalGamesRemaining').text(totalGamesRemaining);
                             $('#totalTimeRemaining').text(humanizeDuration(totalTimeRemaining));

@@ -102,8 +102,7 @@ button.bot-resumed:hover {
     margin-right: 0px;
 }
 
-.info-overview {
-    pointer-events: none;
+.info-overview  {
     cursor: default;
 }
 
@@ -191,8 +190,11 @@ button.bot-resumed:hover {
         height: 250px !important;
     }
 }
+
 .sidebar-menu li.header {
     text-transform: uppercase;
 }
 
-.lockscreen-image{left:-5px}
+.lockscreen-image{
+	left:-5px
+}

@@ -1,5 +1,6 @@
 //#region Setup
-const tmpIPCPassword = get('IPCPassword');
+const tmpIPCPassword = get('IPCPassword'),
+	  vGUI = '0.1';
 
 if (tmpIPCPassword) {
     $.ajaxSetup({
@@ -30,11 +31,12 @@ $.ajax({
     url: '/Api/ASF',
     type: 'GET',
     success: function (data) {
-        var ver = data['Result'].Version,
-            verNr = ver.Major + '.' + ver.Minor + '.' + ver.Build + '.' + ver.Revision;
+        var v = data['Result'].Version,
+			vNr = v.Major + '.' + v.Minor + '.' + v.Build + '.' + v.Revision,
+			build = data['Result'].BuildVariant;
             
-        $('#version').text(verNr);
-        $('#changelog').attr('href', 'https://github.com/JustArchi/ArchiSteamFarm/releases/tag/' + verNr);
+        $('#version').text(vNr + ' - ' + build + ' - ' + vGUI);
+        $('#changelog').attr('href', 'https://github.com/JustArchi/ArchiSteamFarm/releases/tag/' + vNr);
     }
 });
 //#endregion Footer
@@ -42,6 +44,7 @@ $.ajax({
 //#region Bot Status Buttons
 function displayBotStatus() {
     var offline = 0,
+		disconnected = 0,
         online = 0,
         farming = 0;
 
@@ -54,13 +57,18 @@ function displayBotStatus() {
             for (var i = 0; i < json.length; i++) {
                 var obj = json[i],
                     KeepRunning = obj.KeepRunning,
-                    TimeRemaining = obj.CardsFarmer.TimeRemaining;
+                    TimeRemaining = obj.CardsFarmer.TimeRemaining,
+					SteamID = obj.SteamID;
 
                 if (KeepRunning === false) {
                     offline++;
                 } else {
                     if (TimeRemaining === '00:00:00') {
-                        online++;
+						if (SteamID === 0) {
+							disconnected++;
+						} else {
+							online++;
+						}
                     } else {
                         farming++;
                     }
@@ -68,6 +76,12 @@ function displayBotStatus() {
             }
 
             $('#offlineBots').text(offline);
+			if (disconnected > 0) {
+				$('#disconnectedBots').show();
+				$('#disconnectedBots').text(disconnected);
+			} else {
+				$('#disconnectedBots').hide();
+			}
             $('#onlineBots').text(online);
             $('#farmingBots').text(farming);
         }
@@ -129,8 +143,6 @@ window.setInterval(function () { displayUptime(); }, 60000);
 
 //#region Commands Page
 var $cmdInput = $('#commandInput');
-function fillCommand(cmd) { $cmdInput.val(cmd + ' '); }
-function fillBots(bot) { $cmdInput.val($cmdInput.val() + bot); }
 
 function getDateAndTime() {
     var date = new Date();
@@ -228,7 +240,7 @@ function generateConfigHTML(mode) {
                     switch (value) {
                         case 'System.Boolean':
                             checkBoxes += '<div class="">'
-                                + '<button title="Toggle ' + key + '" type="button" data-type="' + value + '" class="btn btn-box-tool text-grey" id="' + key + '">'
+                                + '<button type="button" data-type="' + value + '" class="btn btn-box-tool text-grey" id="' + key + '">'
                                 + '<i id="ico' + key + '" class="fas fa-toggle-on fa-2x fa-fw fa-rotate-180" ></i ></button>'
                                 + readableKey
                                 + '</div>';
@@ -852,17 +864,19 @@ $(function () {
             src: '../img/flags/' + tmpLangCode + '.gif'
         });
 
+		//rework this whole part (add saving "never show again")
+		//fix translation not working
         if (tmpLangMissing > 0) {
             var percentage = (tmpLangMissing * 100 / tmpLangTotal).toFixed(0),
                 //infoText = $.i18n('global-language-info', percentage); //Fix this
                 infoText = percentage + "% of this language is not translated!";
             $('#languageInfo').html('<div class="alert alert-warning alert-dismissible">'
-                + '<button data-i18n="title-global-never" title="Never show again" type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>'
+                //+ '<button title="Never show again" type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>'
                 + infoText
                 + '</div>');
         } else {
             $('#languageInfo').text('');
-        }        
+        }
 
         $('#languages').collapse('hide');
     }
@@ -919,7 +933,7 @@ $(function () {
         // Boxed Layout
         + '<div class="form-group hidden-xs hidden-sm">'
         + '<label class="control-sidebar-subheading">'
-        + '<button data-i18n="title-global-boxed" title="Toggle boxed layout" type="button" class="btn btn-box-tool pull-right text-grey" id="toggleBoxed"><i id="iconBoxed" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>'
+        + '<button type="button" class="btn btn-box-tool pull-right text-grey" id="toggleBoxed"><i id="iconBoxed" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>'
         + '<i class="far fa-square fa-fw"></i> <span data-i18n="global-boxed">Boxed Layout</span>'
         + '</label>'
         + '<p data-i18n="global-boxed-description">Toggle the boxed layout</p>'
@@ -927,7 +941,7 @@ $(function () {
         // Nightmode
         + '<div class="form-group">'
         + '<label class="control-sidebar-subheading">'
-        + '<button data-i18n="title-global-nightmode" title="Toggle nightmode" type="button" class="btn btn-box-tool pull-right text-grey" id="toggleNightmode"><i id="iconNightmode" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>'
+        + '<button type="button" class="btn btn-box-tool pull-right text-grey" id="toggleNightmode"><i id="iconNightmode" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>'
         + '<i class="fas fa-moon fa-fw"></i> <span data-i18n="global-nightmode">Nightmode</span>'
         + '</label>'
         + '<p data-i18n="global-nightmode-description">Toggle the nightmode</p>'
@@ -969,14 +983,14 @@ $(function () {
         var language = availableLanguages[i],
             langCode = (language === 'strings') ? 'us' : language.substr(language.length - 2).toLowerCase();
 
-        $languagesList.append('<button data-i18n="title-global-language" title="Change language" type="button" class="btn btn-box-tool language" data-locale="' + language + '"><img src="../img/flags/' + langCode + '.gif" alt="' + langCode + '"></button>');
+        $languagesList.append('<button type="button" class="btn btn-box-tool language" data-locale="' + language + '"><img src="../img/flags/' + langCode + '.gif" alt="' + langCode + '"></button>');
     }
 
     $layoutSettings.append('<h4 class="control-sidebar-heading" data-i18n="global-language">Language</h4>'
         + '<div id="languageInfo"></div>'
         + '<div class="form-group">'
         + '<label class="control-sidebar-subheading">'
-        + '<button data-i18n="title-global-language" title="Change language" type="button" class="btn btn-box-tool pull-right" data-toggle="collapse" data-target="#languages"><span data-i18n="global-change">Change</span> <i class="fas fa-caret-down"></i></button>'
+        + '<button type="button" class="btn btn-box-tool pull-right" data-toggle="collapse" data-target="#languages"><span data-i18n="global-change-language">Change language</span> <i class="fas fa-caret-down"></i></button>'
         + '<img id="currentLanguage" src="../img/flags/us.gif" alt="us">'
         + '</label>'
         + '</div>'

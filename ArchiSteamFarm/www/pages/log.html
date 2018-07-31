@@ -52,6 +52,7 @@
                             <i class="fas fa-users fa-fw"></i> <span data-i18n="global-bots">Bots</span>
                             <span class="pull-right-container bot-status">
                                 <small class="label pull-right bg-gray" id="offlineBots">0</small>
+								<small class="label pull-right bg-red" id="disconnectedBots" style="display:none;">0</small>
                                 <small class="label pull-right bg-yellow" id="onlineBots">0</small>
                                 <small class="label pull-right bg-olive" id="farmingBots">0</small>
                             </span>
@@ -64,16 +65,16 @@
                     <li><a href="generator.html"><i class="far fa-copy fa-fw"></i> <span data-i18n="global-generator">Generator</span></a></li>
 
                     <li class="header" data-i18n="global-information">Information</li>
-                    <li class="info-overview">
-                        <a>
+                    <li>
+                        <a class="info-overview" href="javascript:void(0)">
                             <i class="fas fa-tachometer-alt fa-fw"></i> <span data-i18n="global-ram-usage">RAM Usage</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="ramUsage">0.00 MB</small>
                             </span>
                         </a>
                     </li>
-                    <li class="info-overview">
-                        <a>
+                    <li>
+						<a class="info-overview" href="javascript:void(0)">
                             <i class="far fa-clock fa-fw"></i> <span data-i18n="global-uptime">Uptime</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="uptime">0d 0h 0m</small>
@@ -104,7 +105,7 @@
                         <i class="far fa-file-alt"></i>
                         <h3 class="box-title" data-i18n="global-log">Log</h3>
                         <div class="box-tools pull-right">
-                            <button data-i18n="title-log-auto-scroll" title="Toggle auto scroll" type="button" class="btn btn-box-tool text-olive" id="toggleAutoScroll"><i class="fas fa-toggle-on fa-2x"></i></button>
+                            <button type="button" class="btn btn-box-tool text-olive" id="toggleAutoScroll"><i class="fas fa-sync"></i></button>
                         </div>
                     </div>
                     <div class="box-body">
@@ -139,7 +140,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/interact.js/1.2.9/interact.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/js/adminlte.min.js"></script>
+	<script src="../js/adminlte.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.messagestore.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.fallbacks.min.js"></script>
@@ -172,7 +173,7 @@
 
                 ws.onopen = function (event) {
                     $('.overlay').remove();
-                    $('.box-content-log').text(''); // Clear log
+                    $('.box-content-log').text('');
                 };
 
                 ws.onmessage = function (event) {
@@ -182,7 +183,7 @@
                 };
 
                 ws.onclose = function (event) {
-                    if (event.code !== 1000) { // Code 1000 means that the connection was closed normally
+                    if (event.code !== 1000) { // 1000 = connection was closed normally
                         swal({
                             title: $.i18n('global-error-title'),
                             text: $.i18n('log-event-code', event.code),
@@ -199,14 +200,12 @@
                     startWebSocket();
                     $('#toggleAutoScroll').removeClass('text-grey');
                     $('#toggleAutoScroll').addClass('text-olive');
-                    $('#toggleAutoScroll').html('<i class="fas fa-toggle-on fa-2x"></i>');
-                    $('#toggleAutoScroll').blur();
+					$('#toggleAutoScroll').blur();
                 } else if (ws.readyState === ws.OPEN) {
                     ws.close();
                     $('#toggleAutoScroll').removeClass('text-olive');
                     $('#toggleAutoScroll').addClass('text-grey');
-                    $('#toggleAutoScroll').html('<i class="fas fa-toggle-on fa-2x fa-rotate-180"></i>');
-                    $('#toggleAutoScroll').blur();
+					$('#toggleAutoScroll').blur();
                 }
             });
 
@@ -218,8 +217,7 @@
                         ws.close();
                         $('#toggleAutoScroll').removeClass('text-olive');
                         $('#toggleAutoScroll').addClass('text-grey');
-                        $('#toggleAutoScroll').html('<i class="fas fa-toggle-on fa-2x fa-rotate-180"></i>');
-                        $('#toggleAutoScroll').blur();
+						$('#toggleAutoScroll').blur();
                     }
                 }
 

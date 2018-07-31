@@ -52,6 +52,7 @@
                             <i class="fas fa-users fa-fw"></i> <span data-i18n="global-bots">Bots</span>
                             <span class="pull-right-container bot-status">
                                 <small class="label pull-right bg-gray" id="offlineBots">0</small>
+								<small class="label pull-right bg-red" id="disconnectedBots" style="display:none;">0</small>
                                 <small class="label pull-right bg-yellow" id="onlineBots">0</small>
                                 <small class="label pull-right bg-olive" id="farmingBots">0</small>
                             </span>
@@ -64,16 +65,16 @@
                     <li><a href="generator.html"><i class="far fa-copy fa-fw"></i> <span data-i18n="global-generator">Generator</span></a></li>
 
                     <li class="header" data-i18n="global-information">Information</li>
-                    <li class="info-overview">
-                        <a>
+                    <li>
+                        <a class="info-overview" href="javascript:void(0)">
                             <i class="fas fa-tachometer-alt fa-fw"></i> <span data-i18n="global-ram-usage">RAM Usage</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="ramUsage">0.00 MB</small>
                             </span>
                         </a>
                     </li>
-                    <li class="info-overview">
-                        <a>
+                    <li>
+						<a class="info-overview" href="javascript:void(0)">
                             <i class="far fa-clock fa-fw"></i> <span data-i18n="global-uptime">Uptime</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="uptime">0d 0h 0m</small>
@@ -149,7 +150,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/js/adminlte.min.js"></script>
+	<script src="../js/adminlte.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.messagestore.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.fallbacks.min.js"></script>
@@ -176,21 +177,6 @@
                         loadPageContentEditor(json[0].BotName);
                     }
                 });
-            });
-
-            $('#saveButton').click(function (e) {
-                swal({
-                    title: 'Are you sure?',
-                    text: 'The config will be updated and the bot will be restarted!',
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonClass: 'btn-danger',
-                    confirmButtonText: 'Yes, update config!',
-                    closeOnConfirm: false,
-                    showLoaderOnConfirm: true
-                }, function () { prepareConfigForSaving(); });
-
-                e.preventDefault();
             });
         })
     </script>
