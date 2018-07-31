@@ -200,12 +200,10 @@
                     startWebSocket();
                     $('#toggleAutoScroll').removeClass('text-grey');
                     $('#toggleAutoScroll').addClass('text-olive');
-                    //$('#toggleAutoScroll').blur();
                 } else if (ws.readyState === ws.OPEN) {
                     ws.close();
                     $('#toggleAutoScroll').removeClass('text-olive');
                     $('#toggleAutoScroll').addClass('text-grey');
-                    //$('#toggleAutoScroll').blur();
                 }
             });
 
@@ -217,7 +215,6 @@
                         ws.close();
                         $('#toggleAutoScroll').removeClass('text-olive');
                         $('#toggleAutoScroll').addClass('text-grey');
-                        //$('#toggleAutoScroll').blur();
                     }
                 }
 
