@@ -160,6 +160,7 @@ namespace ArchiSteamFarm {
 				}
 
 				// At this point we're sure that amount of unique items stays the same, so we can evaluate actual sets
+				// We make use of the fact that our amounts are already sorted in descending order, so we can just take the last value instead of calculating ourselves
 				uint beforeSets = beforeAmounts[beforeAmounts.Count - 1];
 				uint afterSets = afterAmounts[afterAmounts.Count - 1];
 
