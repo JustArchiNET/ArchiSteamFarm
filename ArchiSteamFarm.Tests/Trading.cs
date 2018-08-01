@@ -142,6 +142,19 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[TestMethod]
+		public void SingleGameQuantityBadReject2() {
+			Steam.Asset item1 = GenerateSteamCommunityItem(1, 1, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item2X2 = GenerateSteamCommunityItem(2, 2, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item3X3 = GenerateSteamCommunityItem(3, 3, 570, Steam.Asset.EType.TradingCard);
+
+			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> { item1, item2X2 };
+			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { item1, item2X2 };
+			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { item3X3 };
+
+			Assert.IsFalse(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
+		}
+
+		[TestMethod]
 		public void SingleGameQuantityNeutralAccept() {
 			Steam.Asset item1 = GenerateSteamCommunityItem(1, 1, 570, Steam.Asset.EType.TradingCard);
 			Steam.Asset item1X2 = GenerateSteamCommunityItem(1, 2, 570, Steam.Asset.EType.TradingCard);
