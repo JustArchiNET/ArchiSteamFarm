@@ -273,7 +273,7 @@ StackTrace:
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
-    <value>Xin vui lòng nhập các giá trị không có tài liệu của {0}: </value>
+    <value>Xin vui lòng nhập dữ liệu cho {0}: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">

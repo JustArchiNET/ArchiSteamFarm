@@ -447,7 +447,10 @@ StackTrace :
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>Ce bot n'a pas été lancé car l'option de démarrage est désactivée dans son fichier de configuration !</value>
   </data>
-  
+  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+    <value>Le code d'erreur TwoFactorCodeMismatch a été reçu {0} fois d’affilée. Vos informations d’identification 2FA ne sont plus valides, ou votre horloge est désynchronisée, abandon !</value>
+    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+  </data>
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Déconnecté de Steam : {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
