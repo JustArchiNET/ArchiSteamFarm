@@ -68,64 +68,123 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static bool IsTradeNeutralOrBetter(IReadOnlyCollection<Steam.Asset> inventory, IReadOnlyCollection<Steam.Asset> itemsToGive, IReadOnlyCollection<Steam.Asset> itemsToReceive) {
+		private static Dictionary<(uint AppID, Steam.Asset.EType Type), List<uint>> GetInventorySets(IReadOnlyCollection<Steam.Asset> inventory) {
+			if ((inventory == null) || (inventory.Count == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(inventory));
+				return null;
+			}
+
+			Dictionary<(uint AppID, Steam.Asset.EType Type), Dictionary<ulong, uint>> sets = new Dictionary<(uint AppID, Steam.Asset.EType Type), Dictionary<ulong, uint>>();
+
+			foreach (Steam.Asset item in inventory) {
+				if (sets.TryGetValue((item.RealAppID, item.Type), out Dictionary<ulong, uint> set)) {
+					if (set.TryGetValue(item.ClassID, out uint amount)) {
+						set[item.ClassID] = amount + item.Amount;
+					} else {
+						set[item.ClassID] = item.Amount;
+					}
+				} else {
+					sets[(item.RealAppID, item.Type)] = new Dictionary<ulong, uint> { { item.ClassID, item.Amount } };
+				}
+			}
+
+			return sets.ToDictionary(set => set.Key, set => set.Value.Values.OrderByDescending(amount => amount).ToList());
+		}
+
+		private static bool IsTradeNeutralOrBetter(HashSet<Steam.Asset> inventory, IReadOnlyCollection<Steam.Asset> itemsToGive, IReadOnlyCollection<Steam.Asset> itemsToReceive) {
 			if ((inventory == null) || (inventory.Count == 0) || (itemsToGive == null) || (itemsToGive.Count == 0) || (itemsToReceive == null) || (itemsToReceive.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(inventory) + " || " + nameof(itemsToGive) + " || " + nameof(itemsToReceive));
 				return false;
 			}
 
-			// Now let's create a map which maps items to their amount in our EQ
-			// This has to be done as we might have multiple items of given ClassID with multiple amounts
-			Dictionary<ulong, uint> itemAmounts = new Dictionary<ulong, uint>();
-			foreach (Steam.Asset item in inventory) {
-				itemAmounts[item.ClassID] = itemAmounts.TryGetValue(item.ClassID, out uint amount) ? amount + item.Amount : item.Amount;
-			}
+			// Input of this function is items we're expected to give/receive and our inventory (limited to realAppIDs of itemsToGive/itemsToReceive)
+			// The objective is to determine whether the new state is beneficial (or at least neutral) towards us
+			// There are a lot of factors involved here - different realAppIDs, different item types, possibility of user overpaying and more
+			// All of those cases should be verified by our unit tests to ensure that the logic here matches all possible cases, especially those that were incorrectly handled previously
 
-			// Calculate our value of items to give on per-game basis
-			Dictionary<(Steam.Asset.EType Type, uint AppID), List<uint>> itemAmountToGivePerGame = new Dictionary<(Steam.Asset.EType Type, uint AppID), List<uint>>();
-			Dictionary<ulong, uint> itemAmountsToGive = new Dictionary<ulong, uint>(itemAmounts);
-			foreach (Steam.Asset item in itemsToGive) {
-				if (!itemAmountToGivePerGame.TryGetValue((item.Type, item.RealAppID), out List<uint> amountsToGive)) {
-					amountsToGive = new List<uint>();
-					itemAmountToGivePerGame[(item.Type, item.RealAppID)] = amountsToGive;
+			// Firstly we get initial sets state of our inventory
+			Dictionary<(uint AppID, Steam.Asset.EType Type), List<uint>> initialSets = GetInventorySets(inventory);
+
+			// Once we have initial state, we remove items that we're supposed to give from our inventory
+			// This loop is a bit more complex due to the fact that we might have a mix of the same item splitted into different amounts
+			foreach (Steam.Asset itemToGive in itemsToGive) {
+				uint amountToGive = itemToGive.Amount;
+				HashSet<Steam.Asset> itemsToRemove = new HashSet<Steam.Asset>();
+
+				// Keep in mind that ClassID is unique only within appID/contextID scope - we can do it like this because we're not dealing with non-Steam items here (otherwise we'd need to check appID and contextID too)
+				foreach (Steam.Asset item in inventory.Where(item => item.ClassID == itemToGive.ClassID)) {
+					if (amountToGive >= item.Amount) {
+						itemsToRemove.Add(item);
+						amountToGive -= item.Amount;
+					} else {
+						item.Amount -= amountToGive;
+						amountToGive = 0;
+					}
+
+					if (amountToGive == 0) {
+						break;
+					}
 				}
 
-				for (uint i = 0; i < item.Amount; i++) {
-					amountsToGive.Add(itemAmountsToGive.TryGetValue(item.ClassID, out uint amount) ? amount : 0);
-					itemAmountsToGive[item.ClassID] = --amount; // We're giving one, so we have one less
-				}
-			}
-
-			// Sort all the lists of amounts to give on per-game basis ascending
-			foreach (List<uint> amountsToGive in itemAmountToGivePerGame.Values) {
-				amountsToGive.Sort();
-			}
-
-			// Calculate our value of items to receive on per-game basis
-			Dictionary<(Steam.Asset.EType Type, uint AppID), List<uint>> itemAmountToReceivePerGame = new Dictionary<(Steam.Asset.EType Type, uint AppID), List<uint>>();
-			Dictionary<ulong, uint> itemAmountsToReceive = new Dictionary<ulong, uint>(itemAmounts);
-			foreach (Steam.Asset item in itemsToReceive) {
-				if (!itemAmountToReceivePerGame.TryGetValue((item.Type, item.RealAppID), out List<uint> amountsToReceive)) {
-					amountsToReceive = new List<uint>();
-					itemAmountToReceivePerGame[(item.Type, item.RealAppID)] = amountsToReceive;
+				if (amountToGive > 0) {
+					ASF.ArchiLogger.LogNullError(nameof(amountToGive));
+					return false;
 				}
 
-				for (uint i = 0; i < item.Amount; i++) {
-					amountsToReceive.Add(itemAmountsToReceive.TryGetValue(item.ClassID, out uint amount) ? amount : 0);
-					itemAmountsToReceive[item.ClassID] = ++amount; // We're getting one, so we have one more
+				if (itemsToRemove.Count > 0) {
+					inventory.ExceptWith(itemsToRemove);
 				}
 			}
 
-			// Sort all the lists of amounts to receive on per-game basis ascending
-			foreach (List<uint> amountsToReceive in itemAmountToReceivePerGame.Values) {
-				amountsToReceive.Sort();
+			// Now we can add items that we're supposed to receive, this one doesn't require advanced amounts logic since we can just add items regardless
+			foreach (Steam.Asset itemToReceive in itemsToReceive) {
+				inventory.Add(itemToReceive);
 			}
 
-			// Calculate final neutrality result
-			// This is quite complex operation of taking minimum difference from all differences on per-game basis
-			// When calculating per-game difference, we sum only amounts at proper indexes, because user might be overpaying
-			int difference = itemAmountToGivePerGame.Min(kv => kv.Value.Select((t, i) => (int) (t - itemAmountToReceivePerGame[kv.Key][i])).Sum());
-			return difference > 0;
+			// Now we can get final sets state of our inventory after the exchange
+			Dictionary<(uint AppID, Steam.Asset.EType Type), List<uint>> finalSets = GetInventorySets(inventory);
+
+			// Once we have both states, we can check overall fairness
+			foreach (KeyValuePair<(uint AppID, Steam.Asset.EType Type), List<uint>> finalSet in finalSets) {
+				List<uint> beforeAmounts = initialSets[finalSet.Key];
+				List<uint> afterAmounts = finalSet.Value;
+
+				// If amount of unique items in the set decreases, this is always a bad trade (e.g. 1 1 -> 0 2)
+				if (afterAmounts.Count < beforeAmounts.Count) {
+					return false;
+				}
+
+				// If amount of unique items in the set increases, this is always a good trade (e.g. 0 2 -> 1 1)
+				if (afterAmounts.Count > beforeAmounts.Count) {
+					continue;
+				}
+
+				// At this point we're sure that amount of unique items stays the same, so we can evaluate actual sets
+				uint beforeSets = beforeAmounts[beforeAmounts.Count - 1];
+				uint afterSets = afterAmounts[afterAmounts.Count - 1];
+
+				// If amount of our sets for this game decreases, this is always a bad trade (e.g. 2 2 2 -> 3 2 1)
+				if (afterSets < beforeSets) {
+					return false;
+				}
+
+				// If amount of our sets for this game increases, this is always a good trade (e.g. 3 2 1 -> 2 2 2)
+				if (afterSets > beforeSets) {
+					continue;
+				}
+
+				// At this point we're sure that both number of unique items in the set stays the same, as well as number of our actual sets
+				// We need to ensure set progress here, so we'll check if no final amount of a single item is lower than initial one
+				// We also need to remember about overpaying, so we'll compare only appropriate indexes from a list (that is already sorted in descending order)
+				for (byte i = 0; i < afterAmounts.Count; i++) {
+					if (afterAmounts[i] < beforeAmounts[i]) {
+						return false;
+					}
+				}
+			}
+
+			// If we didn't find any reason above to reject this trade, it's at least neutral+ for us - it increases our progress towards badge completion
+			return true;
 		}
 
 		private async Task ParseActiveTrades() {

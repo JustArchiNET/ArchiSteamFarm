@@ -84,8 +84,8 @@ namespace ArchiSteamFarm.Tests {
 			Steam.Asset item1Game1X2 = GenerateSteamCommunityItem(1, 2, 570, Steam.Asset.EType.TradingCard);
 			Steam.Asset item2Game1 = GenerateSteamCommunityItem(2, 1, 570, Steam.Asset.EType.TradingCard);
 
-			Steam.Asset item1Game2 = GenerateSteamCommunityItem(1, 1, 730, Steam.Asset.EType.TradingCard);
-			Steam.Asset item2Game2 = GenerateSteamCommunityItem(2, 1, 730, Steam.Asset.EType.TradingCard);
+			Steam.Asset item1Game2 = GenerateSteamCommunityItem(3, 1, 730, Steam.Asset.EType.TradingCard);
+			Steam.Asset item2Game2 = GenerateSteamCommunityItem(4, 1, 730, Steam.Asset.EType.TradingCard);
 
 			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> { item1Game1X2, item1Game2 };
 			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { item1Game1, item1Game2 };
@@ -181,6 +181,22 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[TestMethod]
+		public void SingleGameSingleTypeBadWithOverpayingReject() {
+			Steam.Asset item1 = GenerateSteamCommunityItem(1, 1, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item1X2 = GenerateSteamCommunityItem(1, 2, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item2 = GenerateSteamCommunityItem(2, 1, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item2X2 = GenerateSteamCommunityItem(2, 2, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item3 = GenerateSteamCommunityItem(3, 1, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item3X2 = GenerateSteamCommunityItem(3, 2, 570, Steam.Asset.EType.TradingCard);
+
+			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> { item1X2, item2X2, item3X2 };
+			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { item2 };
+			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { item1, item3 };
+
+			Assert.IsFalse(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
+		}
+
+		[TestMethod]
 		public void SingleGameSingleTypeGoodAccept() {
 			Steam.Asset item1 = GenerateSteamCommunityItem(1, 1, 570, Steam.Asset.EType.TradingCard);
 			Steam.Asset item1X2 = GenerateSteamCommunityItem(1, 2, 570, Steam.Asset.EType.TradingCard);
@@ -201,6 +217,21 @@ namespace ArchiSteamFarm.Tests {
 			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> { item1 };
 			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { item1 };
 			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { item2 };
+
+			Assert.IsTrue(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
+		}
+
+		[TestMethod]
+		public void SingleGameSingleTypeNeutralWithOverpayingAccept() {
+			Steam.Asset item1 = GenerateSteamCommunityItem(1, 1, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item1X2 = GenerateSteamCommunityItem(1, 2, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item2 = GenerateSteamCommunityItem(2, 1, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item2X2 = GenerateSteamCommunityItem(2, 2, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item3 = GenerateSteamCommunityItem(3, 1, 570, Steam.Asset.EType.TradingCard);
+
+			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> { item1X2, item2X2 };
+			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { item2 };
+			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { item1, item3 };
 
 			Assert.IsTrue(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
 		}

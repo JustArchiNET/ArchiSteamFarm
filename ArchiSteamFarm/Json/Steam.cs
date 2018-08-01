@@ -35,7 +35,7 @@ namespace ArchiSteamFarm.Json {
 			internal const ushort SteamAppID = 753;
 			internal const byte SteamCommunityContextID = 6;
 
-			internal uint Amount { get; private set; }
+			internal uint Amount { get; set; }
 
 			[JsonProperty(PropertyName = "appid", Required = Required.DisallowNull)]
 			internal uint AppID { get; private set; }
