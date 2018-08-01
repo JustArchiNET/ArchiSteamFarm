@@ -163,7 +163,7 @@
             startWebSocket();
 
             function startWebSocket() {
-                if (!'WebSocket' in window) window.alert('Please use a modern browser to properly view ASF GUI!')
+                if (!'WebSocket' in window) window.alert('Please use a modern browser to properly view ASF GUI!');
 
                 var loc = window.location,
                     new_uri = (loc.protocol === 'https:') ? 'wss:' : 'ws:';
@@ -177,7 +177,7 @@
                 };
 
                 ws.onmessage = function (event) {
-                    var msg = JSON.parse(event.data)['Result'] + '\n';
+                    var msg = JSON.parse(event.data).Result + '\n';
                     $('.box-content-log').append(msg);
                     $('.box-content-log').stop().animate({ scrollTop: $('.box-content-log')[0].scrollHeight }, 1000);
                 };
@@ -190,9 +190,9 @@
                             type: 'error'
                         }, function () { swal.close(); });
                     }
-                }
+                };
 
-                window.onbeforeunload = function () { ws.close() };
+                window.onbeforeunload = function () { ws.close(); };
             }
 
             $('#toggleAutoScroll').click(function () {
@@ -251,7 +251,7 @@
                     var currentHeight = parseInt(event.target.style.height, 10);
                     store('logHeight', currentHeight);
                 });
-        })
+        });
     </script>
 </body>
 </html>

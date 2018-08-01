@@ -173,12 +173,12 @@
                     type: 'GET',
                     async: false,
                     success: function (data) {
-                        var json = data['Result'];
+                        var json = data.Result;
                         loadPageContentEditor(json[0].BotName);
                     }
                 });
             });
-        })
+        });
     </script>
 </body>
 </html>

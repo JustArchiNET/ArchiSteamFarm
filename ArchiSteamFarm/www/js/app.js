@@ -1,6 +1,6 @@
 //#region Setup
 const tmpIPCPassword = get('IPCPassword'),
-	  vGUI = '0.1';
+	  vGUI = '0.2';
 
 if (tmpIPCPassword) {
     $.ajaxSetup({
@@ -31,9 +31,9 @@ $.ajax({
     url: '/Api/ASF',
     type: 'GET',
     success: function (data) {
-        var v = data['Result'].Version,
+        var v = data.Result.Version,
 			vNr = v.Major + '.' + v.Minor + '.' + v.Build + '.' + v.Revision,
-			build = data['Result'].BuildVariant;
+			build = data.Result.BuildVariant;
             
         $('#version').text(vNr + ' - ' + build + ' - ' + vGUI);
         $('#changelog').attr('href', 'https://github.com/JustArchi/ArchiSteamFarm/releases/tag/' + vNr);
@@ -52,7 +52,7 @@ function displayBotStatus() {
         url: '/Api/Bot/ASF',
         type: 'GET',
         success: function (data) {
-            var json = data['Result'];
+            var json = data.Result;
 
             for (var i = 0; i < json.length; i++) {
                 var obj = json[i],
@@ -98,7 +98,7 @@ function displayRAMUsage() {
         url: '/Api/ASF',
         type: 'GET',
         success: function (data) {
-            var mem = data['Result'].MemoryUsage,
+            var mem = data.Result.MemoryUsage,
                 memMB = (mem / 1024).toFixed(2);
 
             $('#ramUsage').html(memMB + ' MB');
@@ -114,7 +114,7 @@ function displayUptime() {
         url: '/Api/ASF',
         type: 'GET',
         success: function (data) {
-            var pst = data['Result'].ProcessStartTime,
+            var pst = data.Result.ProcessStartTime,
                 start = new Date(pst),
                 now = new Date(),
                 diff = now.getTime() - start.getTime();
@@ -200,11 +200,11 @@ function sendCommand() {
         type: 'POST',
         success: function (data) {
             $('.overlay').remove();
-            logCommand(false, data['Result']);
+            logCommand(false, data.Result);
         },
         error: function (jqXHR, textStatus, errorThrown) {
             $('.overlay').remove();
-            logCommand(false, jqXHR.status + ' ' + errorThrown + ' - ' + jqXHR.responseJSON['Message']);
+            logCommand(false, jqXHR.status + ' ' + errorThrown + ' - ' + jqXHR.responseJSON.Message);
         }
     });
 
@@ -222,8 +222,8 @@ function generateConfigHTML(mode) {
         type: 'GET',
         async: false,
         success: function (data) {
-            var obj = data['Result'],
-                config = obj['Body'],
+            var obj = data.Result,
+                config = obj.Body,
                 boxBodyHTML = '',
                 textBoxes = '',
                 checkBoxes = '',
@@ -357,7 +357,7 @@ function loadConfigValues(botName) {
         url: requestURL,
         type: 'GET',
         success: function (data) {
-            var objResult = data['Result'],
+            var objResult = data.Result,
                 config = botName === 'ASF' ? objResult.GlobalConfig : objResult[0].BotConfig;
 
             globalConfig = config;
@@ -421,7 +421,7 @@ function loadValuesForBotsDropDown(botName) {
         url: '/Api/Bot/ASF',
         type: 'GET',
         success: function (data) {
-            var obj = data['Result'];
+            var obj = data.Result;
 
             if (botName !== 'ASF') {
                 botsDropDownHTML += '<li><a href="javascript:void(0)" onclick="loadPageContentEditor(\'ASF\')">ASF</a></li>';
@@ -554,7 +554,7 @@ function saveConfig(botName, config) {
         error: function (jqXHR, textStatus, errorThrown) {
             swal({
                 title: $.i18n('global-error-title'),
-                text: jqXHR.status + ' ' + errorThrown + ' - ' + jqXHR.responseJSON['Message'],
+                text: jqXHR.status + ' ' + errorThrown + ' - ' + jqXHR.responseJSON.Message,
                 type: 'error'
             }, function () { location.reload(); });
         }
@@ -592,7 +592,7 @@ function loadDefaultConfigValues(mode) {
         url: '/Api/Structure/' + namespace,
         type: 'GET',
         success: function (data) {
-            var config = data['Result'];
+            var config = data.Result;
 
             globalDefaultConfig = config;
 

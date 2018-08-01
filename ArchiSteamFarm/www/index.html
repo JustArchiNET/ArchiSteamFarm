@@ -54,104 +54,104 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js"></script>
 	<script src="js/adminlte.min.js"></script>
     <script>
-            $(function () {
-                'use strict';
+		$(function () {
+			'use strict';
 
-                var tmpIsAuthorized = get('IsAuthorized'),
-                    tmpLastPage = get('CurrentPage'),
-					tmpNightmodeState = get('nightmodeState'),
-                    redirectPage = 'pages/commands.html';
-					
-				if (tmpNightmodeState === 'nightmode') $('html').addClass('nightmode');
+			var tmpIsAuthorized = get('IsAuthorized'),
+				tmpLastPage = get('CurrentPage'),
+				tmpNightmodeState = get('nightmodeState'),
+				redirectPage = 'pages/commands.html';
+				
+			if (tmpNightmodeState === 'nightmode') $('html').addClass('nightmode');
 
-                if (tmpLastPage) {
-                    redirectPage = tmpLastPage;
-                }
+			if (tmpLastPage) {
+				redirectPage = tmpLastPage;
+			}
 
-                if (tmpIsAuthorized === 'true') {
-                    window.location.replace(redirectPage);
-                } else {
-                    $.ajax({
-                        url: '/Api/ASF',
-                        type: 'GET',
-                        statusCode: {
-                            401: function () {
-                                store('IsAuthorized', false);
-                                store('IPCPassword', '');
-                            },
-                            403: function () {
-                                store('IsAuthorized', false);
-                                store('IPCPassword', '');
-                                $('.lockscreen-name, .lockscreen-item').remove();
-                                var res = $.i18n('auth-ipc-403');
-                                $('.help-block').text(res);
-                            },
-                            200: function () {
-                                store('IsAuthorized', true);
-                                window.location.replace(redirectPage);
-                            }
-                        }
-                    });
-                }
+			if (tmpIsAuthorized === 'true') {
+				window.location.replace(redirectPage);
+			} else {
+				$.ajax({
+					url: '/Api/ASF',
+					type: 'GET',
+					statusCode: {
+						401: function () {
+							store('IsAuthorized', false);
+							store('IPCPassword', '');
+						},
+						403: function () {
+							store('IsAuthorized', false);
+							store('IPCPassword', '');
+							$('.lockscreen-name, .lockscreen-item').remove();
+							var res = $.i18n('auth-ipc-403');
+							$('.help-block').text(res);
+						},
+						200: function () {
+							store('IsAuthorized', true);
+							window.location.replace(redirectPage);
+						}
+					}
+				});
+			}
 
-                $(document).keypress(function (e) {
-                    var keyCode = e.keyCode || e.which;
+			$(document).keypress(function (e) {
+				var keyCode = e.keyCode || e.which;
 
-                    if (keyCode == 13) {
-                        e.preventDefault();
-                        $('#TryToAuth').click();
-                    }
-                });
+				if (keyCode == 13) {
+					e.preventDefault();
+					$('#TryToAuth').click();
+				}
+			});
 
-                $('#TryToAuth').click(function () {
-                    var newPwd = $('#IPCPassword').val();
+			$('#TryToAuth').click(function () {
+				var newPwd = $('#IPCPassword').val();
 
-                    if (newPwd === false) return false;
+				if (newPwd === false) return false;
 
-                    if (newPwd === '') {
-                        swal({
-                            title: $.i18n('global-error-title'),
-                            text: $.i18n('global-error-invalid-pw'),
-                            type: 'error'
-                        }, function () { swal.close(); });
-                        return false;
-                    }
+				if (newPwd === '') {
+					swal({
+						title: $.i18n('global-error-title'),
+						text: $.i18n('global-error-invalid-pw'),
+						type: 'error'
+					}, function () { swal.close(); });
+					return false;
+				}
 
-                    $.ajax({
-                        url: '/Api/ASF',
-                        type: 'GET',
-                        beforeSend: function (jqXHR) {
-                            jqXHR.setRequestHeader('Authentication', newPwd);
-                        },
-                        statusCode: {
-                            401: function () {
-                                store('IsAuthorized', false);
+				$.ajax({
+					url: '/Api/ASF',
+					type: 'GET',
+					beforeSend: function (jqXHR) {
+						jqXHR.setRequestHeader('Authentication', newPwd);
+					},
+					statusCode: {
+						401: function () {
+							store('IsAuthorized', false);
 
-                                swal({
-                                    title: $.i18n('global-error-title'),
-                                    text: $.i18n('auth-ipc-pw-wrong'),
-                                    type: 'error'
-                                }, function () { swal.close(); });
-                            },
-                            403: function () {
-                                store('IsAuthorized', false);
-                                $('.lockscreen-name, .lockscreen-item').remove();
-                                $('.help-block').text($.i18n('auth-ipc-403'));
-                            },
-                            200: function () {
-                                store('IsAuthorized', true);
-                                store('IPCPassword', newPwd);
-                                
-                                swal({
-                                    title: $.i18n('global-success-title'),
-                                    text: $.i18n('auth-ipc-pw-saved'),
-                                    type: 'success'
-                                }, function () { window.location.replace(redirectPage); });
-                            }
-                        }
-                    });
-                });
-            })
+							swal({
+								title: $.i18n('global-error-title'),
+								text: $.i18n('auth-ipc-pw-wrong'),
+								type: 'error'
+							}, function () { swal.close(); });
+						},
+						403: function () {
+							store('IsAuthorized', false);
+							$('.lockscreen-name, .lockscreen-item').remove();
+							$('.help-block').text($.i18n('auth-ipc-403'));
+						},
+						200: function () {
+							store('IsAuthorized', true);
+							store('IPCPassword', newPwd);
+							
+							swal({
+								title: $.i18n('global-success-title'),
+								text: $.i18n('auth-ipc-pw-saved'),
+								type: 'success'
+							}, function () { window.location.replace(redirectPage); });
+						}
+					}
+				});
+			});
+		});
     </script>
 </body>
 </html>
