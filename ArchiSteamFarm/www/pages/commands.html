@@ -384,7 +384,7 @@
 							store('cachedCommandsDate', new Date().toLocaleDateString());
 							
 							for (var i = 0; i < myCommands.length; i++) {
-								$commandsDropDown.append('<option title="Commands">' + myCommands[i] + '</option>');
+								$commandsDropDown.append('<option data-i18n="title-commands" title="Commands">' + myCommands[i] + '</option>');
 							}
 							
 							$('.overlay').remove();
@@ -407,7 +407,7 @@
                             var obj = json[i],
                                 botName = obj.BotName;
 
-							$botsDropDown.append('<option title="Bots">' + botName + '</option>');
+							$botsDropDown.append('<option data-i18n="title-bots" title="Bots">' + botName + '</option>');
                         }
 						
 						$botsDropDown.selectpicker('refresh');
