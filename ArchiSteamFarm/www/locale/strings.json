@@ -68,8 +68,6 @@
   "global-generator": "Generator",
   "global-home": "Home",
   "global-information": "Information",
-  "global-language": "Language",
-  "global-language-info": "$1% of this language is not translated! Help us <a href=\"https://github.com/JustArchi/ArchiSteamFarm/wiki/Localization\">here</a>.",
   "global-layout": "Layout",
   "global-log": "Log",
   "global-navigation": "Toggle navigation",
