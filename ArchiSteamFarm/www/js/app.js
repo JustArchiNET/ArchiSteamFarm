@@ -1,6 +1,6 @@
 //#region Setup
 const tmpIPCPassword = get('IPCPassword'),
-	  vGUI = '0.2';
+	  vGUI = '0.3';
 
 if (tmpIPCPassword) {
     $.ajaxSetup({
