@@ -41,12 +41,6 @@
     cursor: default;
 }
 
-.scrollable-menu {
-    height: auto;
-    max-height: 220px;
-    overflow-x: hidden;
-}
-
 button.bot-stopped {
     color: red;
 }
@@ -166,15 +160,6 @@ button.bot-resumed:hover {
     background: rgb(167, 167, 167);
 }
 
-#botRow .ui-selecting {
-    background: #FECA40;
-}
-
-#botRow .ui-selected {
-    background: #F39814;
-    color: white;
-}
-
 #gamesToRedeemInBackground,
 #unusedKeysText,
 #usedKeysText {
@@ -201,4 +186,13 @@ button.bot-resumed:hover {
 
 .lockscreen-image{
 	left:-5px
+}
+
+.language-item {
+	padding: 0.6rem;
+}
+
+.dropdown-language {
+	background: #222d32 !important;
+	border-color: #222d32 !important;
 }

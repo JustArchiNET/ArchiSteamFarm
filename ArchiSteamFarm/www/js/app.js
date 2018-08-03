@@ -855,30 +855,10 @@ $(function () {
     }
 
     function loadLanguageHTML() {
-        var tmpLangCode = get('langCode'),
-            tmpLangMissing = get('langMissing'),
-            tmpLangTotal = get('langTotal');
+        var tmpLangCode = get('langCode');
 
-        $('#currentLanguage').attr({
-            alt: tmpLangCode,
-            src: '../img/flags/' + tmpLangCode + '.gif'
-        });
-
-		//rework this whole part (add saving "never show again")
-		//fix translation not working
-        if (tmpLangMissing > 0) {
-            var percentage = (tmpLangMissing * 100 / tmpLangTotal).toFixed(0),
-                //infoText = $.i18n('global-language-info', percentage); //Fix this
-                infoText = percentage + "% of this language is not translated!";
-            $('#languageInfo').html('<div class="alert alert-warning alert-dismissible">'
-                //+ '<button title="Never show again" type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>'
-                + infoText
-                + '</div>');
-        } else {
-            $('#languageInfo').text('');
-        }
-
-        $('#languages').collapse('hide');
+		$('#currentLanguage').attr('class', 'flag-icon');
+		$('#currentLanguage').addClass('flag-icon-' + tmpLangCode);
     }
 
     function loadLayout() {
@@ -917,7 +897,7 @@ $(function () {
             store('leftSidebarState', state);
         });
 
-        $('.language').on('click', function (e) {
+        $('.language-item').on('click', function (e) {
             e.preventDefault();
             loadLocales($(this).data('locale'));
             loadLanguageHTML();
@@ -975,28 +955,16 @@ $(function () {
     $layoutSettings.append('<h4 class="control-sidebar-heading" data-i18n="global-skins">Skins</h4>');
     $layoutSettings.append($skinsList);
 
-    var $languagesList = $('<div />', { 'class': 'collapse', 'id': 'languages' });
-
     loadAllLanguages();
 
     for (var i in availableLanguages) {
         var language = availableLanguages[i],
-            langCode = (language === 'strings') ? 'us' : language.substr(language.length - 2).toLowerCase();
-
-        $languagesList.append('<button type="button" class="btn btn-box-tool language" data-locale="' + language + '"><img src="../img/flags/' + langCode + '.gif" alt="' + langCode + '"></button>');
+		langCode = (language === 'strings') ? 'us' : language.substr(language.length - 2).toLowerCase();
+		
+		if (language === 'strings.sr-CS') langCode = 'rs';
+		
+        $('.dropdown-language').append('<a class="language-item" href="javascript:void(0)" data-locale="' + language + '"><i class="flag-icon flag-icon-' + langCode + '"></i></a>');
     }
-
-    $layoutSettings.append('<h4 class="control-sidebar-heading" data-i18n="global-language">Language</h4>'
-        + '<div id="languageInfo"></div>'
-        + '<div class="form-group">'
-        + '<label class="control-sidebar-subheading">'
-        + '<button type="button" class="btn btn-box-tool pull-right" data-toggle="collapse" data-target="#languages"><span data-i18n="global-change-language">Change language</span> <i class="fas fa-caret-down"></i></button>'
-        + '<img id="currentLanguage" src="../img/flags/us.gif" alt="us">'
-        + '</label>'
-        + '</div>'
-    );
-
-    $layoutSettings.append($languagesList);
 
     $('#control-right-sidebar').after($layoutSettings);
 
