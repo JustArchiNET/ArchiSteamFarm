@@ -42,6 +42,10 @@ function loadLocales(language) {
                         }
                     }
                 }
+				
+				// fix for bootstrap-select elements
+				$('[data-id="commandsDropDown"] > .filter-option').text($.i18n('title-commands'));
+				$('[data-id="botsDropDown"] > .filter-option').text($.i18n('title-bots'));
             });
         }
     );
