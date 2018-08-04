@@ -759,11 +759,11 @@ function prepareConfigForDownload(mode) {
     }
 }
 
-function downloadObjectAsJson(exportName, exportObj) {
-    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj, null, "\t"));
+function downloadObjectAsJson(filename, json) {
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(json, null, "\t"));
     var downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", exportName + ".json");
+    downloadAnchorNode.setAttribute("download", filename + ".json");
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
 }
