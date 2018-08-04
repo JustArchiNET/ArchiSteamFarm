@@ -800,57 +800,15 @@ $(function () {
             if ($('body').hasClass('fixed')) {
                 $('body').removeClass('fixed');
                 $('body').addClass('layout-boxed');
-                $('#toggleBoxed').removeClass('text-grey');
-                $('#toggleBoxed').addClass('text-olive');
-                $('#iconBoxed').removeClass('fa-rotate-180');
+				$('#chkBoxed').bootstrapToggle('on');
             }
-        }
-    }
-
-    function toggleBoxed() {
-        if ($('body').hasClass('fixed')) {
-            $('body').removeClass('fixed');
-            $('body').addClass('layout-boxed');
-            $('#toggleBoxed').removeClass('text-grey');
-            $('#toggleBoxed').addClass('text-olive');
-            $('#iconBoxed').removeClass('fa-rotate-180');
-            $('#toggleBoxed').blur();
-            store('layoutState', 'layout-boxed');
-        } else {
-            $('body').removeClass('layout-boxed');
-            $('body').addClass('fixed');
-            $('#toggleBoxed').removeClass('text-olive');
-            $('#toggleBoxed').addClass('text-grey');
-            $('#iconBoxed').addClass('fa-rotate-180');
-            $('#toggleBoxed').blur();
-            store('layoutState', 'fixed');
         }
     }
 
     function changeNightmode(savedNightmodeState) {
         if (savedNightmodeState === 'nightmode') {
             $('body').addClass('nightmode');
-            $('#toggleNightmode').removeClass('text-grey');
-            $('#toggleNightmode').addClass('text-olive');
-            $('#iconNightmode').removeClass('fa-rotate-180');
-        }
-    }
-
-    function toggleNightmode() {
-        if ($('body').hasClass('nightmode')) {
-            $('body').removeClass('nightmode');
-            $('#toggleNightmode').removeClass('text-olive');
-            $('#toggleNightmode').addClass('text-grey');
-            $('#iconNightmode').addClass('fa-rotate-180');
-            $('#toggleNightmode').blur();
-            store('nightmodeState', null);
-        } else {
-            $('body').addClass('nightmode');
-            $('#toggleNightmode').removeClass('text-grey');
-            $('#toggleNightmode').addClass('text-olive');
-            $('#iconNightmode').removeClass('fa-rotate-180');
-            $('#toggleNightmode').blur();
-            store('nightmodeState', 'nightmode');
+			$('#chkNightmode').bootstrapToggle('on');
         }
     }
 
@@ -878,16 +836,28 @@ $(function () {
             e.preventDefault();
             changeSkin($(this).data('skin'));
         });
-
-        $('#toggleBoxed').on('click', function (e) {
-            e.preventDefault();
-            toggleBoxed();
-        });
-
-        $('#toggleNightmode').on('click', function (e) {
-            e.preventDefault();
-            toggleNightmode();
-        });
+		
+		$('#chkBoxed').change(function() {
+			if ($('body').hasClass('fixed')) {
+				$('body').removeClass('fixed');
+				$('body').addClass('layout-boxed');
+				store('layoutState', 'layout-boxed');
+			} else {
+				$('body').removeClass('layout-boxed');
+				$('body').addClass('fixed');
+				store('layoutState', 'fixed');
+			}
+		});
+		
+		$('#chkNightmode').change(function() {
+			if ($('body').hasClass('nightmode')) {
+				$('body').removeClass('nightmode');
+				store('nightmodeState', null);
+			} else {
+				$('body').addClass('nightmode');
+				store('nightmodeState', 'nightmode');
+			}
+		});
 
         $('#leftSidebar').on('click', function (e) {
             e.preventDefault();
@@ -900,6 +870,9 @@ $(function () {
             loadLocales($(this).data('locale'));
             loadLanguageHTML();
         });
+		
+		$('#chkBoxed').bootstrapToggle();
+		$('#chkNightmode').bootstrapToggle();
     }
 
     // Create the menu
@@ -908,18 +881,18 @@ $(function () {
     // Layout options
     $layoutSettings.append(
         '<h4 class="control-sidebar-heading" data-i18n="global-layout">Layout</h4>'
-        // Boxed Layout
-        + '<div class="form-group hidden-xs hidden-sm">'
+		// Boxed Layout
+		+ '<div class="form-group hidden-xs hidden-sm">'
         + '<label class="control-sidebar-subheading">'
-        + '<button type="button" class="btn btn-box-tool pull-right text-grey" id="toggleBoxed"><i id="iconBoxed" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>'
+        + '<input id="chkBoxed" type="checkbox" data-style="ios pull-right" data-onstyle="default" data-toggle="toggle" data-size="mini" data-on="<i class=\'far fa-square fa-fw text-olive\'></i>" data-off="<i class=\'far fa-square fa-fw\'></i>">'
         + '<i class="far fa-square fa-fw"></i> <span data-i18n="global-boxed">Boxed Layout</span>'
         + '</label>'
         + '<p data-i18n="global-boxed-description">Toggle the boxed layout</p>'
         + '</div>'
-        // Nightmode
-        + '<div class="form-group">'
+		// Nightmode
+		+ '<div class="form-group">'
         + '<label class="control-sidebar-subheading">'
-        + '<button type="button" class="btn btn-box-tool pull-right text-grey" id="toggleNightmode"><i id="iconNightmode" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>'
+        + '<input id="chkNightmode" type="checkbox" data-style="ios pull-right" data-onstyle="default" data-toggle="toggle" data-size="mini" data-on="<i class=\'fas fa-moon fa-fw text-olive\'></i>" data-off="<i class=\'fas fa-moon fa-fw\'></i>">'
         + '<i class="fas fa-moon fa-fw"></i> <span data-i18n="global-nightmode">Nightmode</span>'
         + '</label>'
         + '<p data-i18n="global-nightmode-description">Toggle the nightmode</p>'
