@@ -355,6 +355,10 @@
 					
 					$('.overlay').remove();
 					$commandsDropDown.selectpicker('refresh');
+					
+					// fix for bootstrap-select elements
+					$('button > [data-id="commandsDropDown"]').attr("title", $.i18n('title-commands'));
+					$('[data-id="commandsDropDown"] > .filter-option').text($.i18n('title-commands'));
 				} else {
 					$('#commandsDropDownBox').append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
 				
@@ -389,6 +393,10 @@
 							
 							$('.overlay').remove();
 							$commandsDropDown.selectpicker('refresh');
+							
+							// fix for bootstrap-select elements
+							$('button > [data-id="commandsDropDown"]').attr("title", $.i18n('title-commands'));
+							$('[data-id="commandsDropDown"] > .filter-option').text($.i18n('title-commands'));
 						}
 					});
 				}
@@ -411,6 +419,10 @@
                         }
 						
 						$botsDropDown.selectpicker('refresh');
+						
+						// fix for bootstrap-select elements
+						$('button > [data-id="botsDropDown"]').attr("title", $.i18n('title-bots'));
+						$('[data-id="botsDropDown"] > .filter-option').text($.i18n('title-bots'));
                     }
                 });
             });
