@@ -185,7 +185,7 @@
                 tmpShowKeyButton = get('showKeyButton'),
                 tmpSimpleFarmingInfo = get('simpleFarmingInfo');
 
-            $(document).delegate('#gamesToRedeemInBackground', 'keydown', function (e) {
+            $(document).delegate('#addKeysText', 'keydown', function (e) {
                 var keyCode = e.keyCode || e.which;
 
                 if (keyCode == 9) {
@@ -194,9 +194,7 @@
                     var start = this.selectionStart;
                     var end = this.selectionEnd;
                     
-                    $(this).val($(this).val().substring(0, start) // set textarea value to: text before caret + tab + text after caret
-                        + "\t"
-                        + $(this).val().substring(end));
+                    $(this).val($(this).val().substring(0, start) + "\t" + $(this).val().substring(end)); // set textarea value to: text before caret + tab + text after caret
                     
                     this.selectionStart = this.selectionEnd = start + 1; // put caret at right position again
                 }
@@ -211,9 +209,7 @@
                     var start = this.selectionStart;
                     var end = this.selectionEnd;
                     
-                    $(this).val($(this).val().substring(0, start) // set textarea value to: text before caret + tab + text after caret
-                        + "\t"
-                        + $(this).val().substring(end));
+                    $(this).val($(this).val().substring(0, start) + "\t" + $(this).val().substring(end)); // set textarea value to: text before caret + tab + text after caret
                     
                     this.selectionStart = this.selectionEnd = start + 1; // put caret at right position again
                 }
