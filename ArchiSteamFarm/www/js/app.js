@@ -1,4 +1,4 @@
-//#region Setup
+//{#region Setup
 const tmpIPCPassword = get('IPCPassword'),
 	  vGUI = '0.3';
 
@@ -24,9 +24,9 @@ $.ajaxSetup({
         }
     }
 });
-//#endregion Setup
+//}#endregion Setup
 
-//#region Footer
+//{#region Footer
 $.ajax({
     url: '/Api/ASF',
     type: 'GET',
@@ -39,9 +39,9 @@ $.ajax({
         $('#changelog').attr('href', 'https://github.com/JustArchi/ArchiSteamFarm/releases/tag/' + vNr);
     }
 });
-//#endregion Footer
+//}#endregion Footer
 
-//#region Bot Status Buttons
+//{#region Bot Status Buttons
 function displayBotStatus() {
     var offline = 0,
 		disconnected = 0,
@@ -90,9 +90,9 @@ function displayBotStatus() {
 
 displayBotStatus();
 window.setInterval(function () { displayBotStatus(); }, 5000);
-//#endregion Bot Status Buttons
+//}#endregion Bot Status Buttons
 
-//#region ASF Information
+//{#region ASF Information
 function displayRAMUsage() {
     $.ajax({
         url: '/Api/ASF',
@@ -139,9 +139,9 @@ function displayUptime() {
 
 displayUptime();
 window.setInterval(function () { displayUptime(); }, 60000);
-//#endregion ASF Information
+//}#endregion ASF Information
 
-//#region Commands Page
+//{#region Commands Page
 var $cmdInput = $('#commandInput');
 
 function getDateAndTime() {
@@ -210,9 +210,9 @@ function sendCommand() {
 
     if (tmpAutoClear !== 'false') $cmdInput.val('');
 }
-//#endregion Commands Page
+//}#endregion Commands Page
 
-//#region Global Config Utils
+//{#region Global Config Utils
 function generateConfigHTML(mode) {
     var namespace = mode === 'ASF' ? 'ArchiSteamFarm.GlobalConfig' : 'ArchiSteamFarm.BotConfig';
     $('.box-content-config').empty(); // Clear page content first
@@ -317,9 +317,9 @@ function createClickFunction() {
         });
     }
 }
-//#endregion Global Config Utils
+//}#endregion Global Config Utils
 
-//#region Config Editor
+//{#region Config Editor
 var globalConfig = {};
 
 function loadPageContentEditor(botName) {
@@ -560,9 +560,9 @@ function saveConfig(botName, config) {
         }
     });
 }
-//#endregion Config Editor
+//}#endregion Config Editor
 
-//#region Config Generator
+//{#region Config Generator
 var globalDefaultConfig = {};
 
 function loadPageContentGenerator(mode) {
@@ -767,9 +767,9 @@ function downloadObjectAsJson(filename, json) {
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
 }
-//#endregion Config Page
+//}#endregion Config Page
 
-//#region Right Sidebar
+//{#region Right Sidebar
 $(function () {
     'use strict';
 
@@ -970,4 +970,4 @@ $(function () {
 
     loadLayout();
 });
-//#endregion Right Sidebar
+//}#endregion Right Sidebar
