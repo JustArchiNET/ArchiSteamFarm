@@ -9,6 +9,7 @@
   "bots-delete": "Show delete button",
   "bots-delete-success": "<$1> and all related files have been deleted.",
   "bots-delimiter": "Delimiter",
+  "bots-download": "There is nothing to download!",
   "bots-hide": "Hide bots",
   "bots-hide-offline": "Offline bots",
   "bots-hide-inactive": "Inactive bots",

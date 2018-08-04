@@ -772,7 +772,18 @@
 												+ '</div>');
 											$('#downloadUnusedKeys').on('click', function (e) {
 												e.preventDefault();
-												download(BotName + '.keys.unused', $('#unusedKeysText').val());
+												var unusedText = $('#unusedKeysText').val();
+												if (unusedText === '') {
+													$("#downloadUnusedKeysBtn").remove();
+													swal({
+														title: $.i18n('global-error-title'),
+														text: $.i18n('bots-download'),
+														type: 'error'
+													});
+													$('.overlay').remove();
+													return false;
+												}
+												download(BotName + '.keys.unused', unusedText);
 											});
 											$.ajax({
                                                 url: '/Api/GamesToRedeemInBackground/' + encodeURIComponent(BotName),
@@ -801,7 +812,18 @@
 												+ '</div>');
 											$('#downloadUsedKeys').on('click', function (e) {
 												e.preventDefault();
-												download(BotName + '.keys.used', $('#usedKeysText').val());
+												var usedText = $('#usedKeysText').val();
+												if (usedText === '') {
+													$("#downloadUsedKeysBtn").remove();
+													swal({
+														title: $.i18n('global-error-title'),
+														text: $.i18n('bots-download'),
+														type: 'error'
+													});
+													$('.overlay').remove();
+													return false;
+												}
+												download(BotName + '.keys.used', usedText);
 											});
 											$.ajax({
                                                 url: '/Api/GamesToRedeemInBackground/' + encodeURIComponent(BotName),
