@@ -682,7 +682,7 @@
 														+ '<div class="tab-content">'
 															+ '<div class="tab-pane active" id="addKeys">'
 																+ '<p class="lead text-muted" style="display: block;">' + $.i18n('bots-syntax') + '</p>'
-																+ '<textarea id="gamesToRedeemInBackground"></textarea>'
+																+ '<textarea id="addKeysText"></textarea>'
 																+ '<div class="input-group">'
 																+ '<span class="input-group-addon" id="delimiter-text">' + $.i18n('bots-delimiter') + '</span>'
 																+ '<input type="text" class="form-control" id="delimiter" value="' + tmpDelimiter + '" aria-describedby="delimiter-text">'
@@ -712,7 +712,7 @@
                                                 $('.overlay').remove();
                                                 return false;
                                             }
-                                            var val = $('#gamesToRedeemInBackground').val();
+                                            var val = $('#addKeysText').val();
 
                                             var _gamesToRedeemInBackground = {},
                                                 gamesAndKeys = [],

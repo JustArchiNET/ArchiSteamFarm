@@ -160,7 +160,7 @@ button.bot-resumed:hover {
     background: rgb(167, 167, 167);
 }
 
-#gamesToRedeemInBackground,
+#addKeysText,
 #unusedKeysText,
 #usedKeysText {
     width: 100%;
@@ -173,7 +173,7 @@ button.bot-resumed:hover {
     .swal-wide {
         width: 700px !important;
     }
-    #gamesToRedeemInBackground,
+    #addKeysText,
 	#unusedKeysText,
 	#usedKeysText {
         height: 250px !important;
