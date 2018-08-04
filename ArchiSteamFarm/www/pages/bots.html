@@ -117,16 +117,16 @@
                                 <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
                                     <span data-i18n="bots-hide">Hide bots</span> <span class="fas fa-caret-down"></span>
                                 </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><button type="button" class="btn btn-box-tool text-grey" id="chkHideOnlineBots"><i id="iconHideOnlineBots" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-hide-online">Online bots</span></li>
-									<li><button type="button" class="btn btn-box-tool text-grey" id="chkHideInactiveBots"><i id="iconHideInactiveBots" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-hide-inactive">Inactive bots</span></li>
-                                    <li><button type="button" class="btn btn-box-tool text-grey" id="chkHideOfflineBots"><i id="iconHideOfflineBots" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-hide-offline">Offline bots</span></li>
+                                <ul class="dropdown-menu dropdown-menu-toggle" role="menu">
+									<li class="li-toggle"><input id="chkOn" type="checkbox" data-style="ios li-btn" data-onstyle="default" data-toggle="toggle" data-size="small" data-on="<i class='fas fa-users'></i> <span data-i18n='bots-hide-online'>Online bots</span>" data-off="<i class='fas fa-users'></i> <span data-i18n='bots-hide-online'>Online bots</span>"></li>
+									<li class="li-toggle"><input id="chkInactive" type="checkbox" data-style="ios li-btn" data-onstyle="default" data-toggle="toggle" data-size="small" data-on="<i class='fas fa-users'></i> <span data-i18n='bots-hide-inactive'>Inactive bots</span>" data-off="<i class='fas fa-users'></i> <span data-i18n='bots-hide-inactive'>Inactive bots</span>"></li>
+                                    <li class="li-toggle"><input id="chkOff" type="checkbox" data-style="ios li-btn" data-onstyle="default" data-toggle="toggle" data-size="small" data-on="<i class='fas fa-users'></i> <span data-i18n='bots-hide-offline'>Offline bots</span>" data-off="<i class='fas fa-users'></i> <span data-i18n='bots-hide-offline'>Offline bots</span>"></li>
                                 </ul>
-                            </div>
-							<input id="chkShowKeyButton" type="checkbox" data-style="ios" data-onstyle="default" data-toggle="toggle" data-size="mini" data-on="<i class='fas fa-key'></i>" data-off="<i class='fas fa-key'></i>">
-							<input id="chkShowDeleteButton" type="checkbox" data-style="ios" data-onstyle="default" data-toggle="toggle" data-size="mini" data-on="<i class='far fa-trash-alt'></i>" data-off="<i class='far fa-trash-alt'></i>">
-							<input id="chkSimpleFarmingInfo" type="checkbox" data-style="ios" data-onstyle="default" data-toggle="toggle" data-size="mini" data-on="<i class='fas fa-info'></i>" data-off="<i class='fas fa-info'></i>">
-                            <button type="button" class="btn btn-box-tool" id="btnRefreshContent"><i class="fas fa-sync"></i></button>
+                            </div>							
+							<input id="chkKey" type="checkbox" data-style="ios" data-onstyle="default" data-toggle="toggle" data-size="mini" data-on="<i class='fas fa-key'></i>" data-off="<i class='fas fa-key'></i>">
+							<input id="chkDelete" type="checkbox" data-style="ios" data-onstyle="default" data-toggle="toggle" data-size="mini" data-on="<i class='far fa-trash-alt'></i>" data-off="<i class='far fa-trash-alt'></i>">
+							<input id="chkSimple" type="checkbox" data-style="ios" data-onstyle="default" data-toggle="toggle" data-size="mini" data-on="<i class='fas fa-info'></i>" data-off="<i class='fas fa-info'></i>">
+                            <button type="button" class="btn btn-box-tool" id="btnRefresh"><i class="fas fa-sync"></i></button>
                         </div>
                     </div>
                 </div>
@@ -178,29 +178,14 @@
 
             store('CurrentPage', 'pages/bots.html');
 
-            var tmpHideOnlineBots = get('hideOnlineBots'),
-				tmpHideInactiveBots = get('hideInactiveBots'),
-                tmpHideOfflineBots = get('hideOfflineBots'),
-                tmpShowDeleteButton = get('showDeleteButton'),
-                tmpShowKeyButton = get('showKeyButton'),
-                tmpSimpleFarmingInfo = get('simpleFarmingInfo');
+            var tmpHideOnlineBots = get('chkOn'),
+				tmpHideInactiveBots = get('chkInactive'),
+                tmpHideOfflineBots = get('chkOff'),
+                tmpShowKeyButton = get('chkKey'),
+                tmpShowDeleteButton = get('chkDelete'),
+                tmpSimpleFarmingInfo = get('chkSimple');
 
-            $(document).delegate('#addKeysText', 'keydown', function (e) {
-                var keyCode = e.keyCode || e.which;
-
-                if (keyCode == 9) {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    var start = this.selectionStart;
-                    var end = this.selectionEnd;
-                    
-                    $(this).val($(this).val().substring(0, start) + "\t" + $(this).val().substring(end)); // set textarea value to: text before caret + tab + text after caret
-                    
-                    this.selectionStart = this.selectionEnd = start + 1; // put caret at right position again
-                }
-            });
-
-            $(document).delegate('#delimiter', 'keydown', function (e) {
+            $(document).delegate('#txtAddKeys, #delimiter', 'keydown', function (e) {
                 var keyCode = e.keyCode || e.which;
 
                 if (keyCode == 9) {
@@ -216,117 +201,38 @@
             });
             
             $('.box-tools').ready(function () {
-                if (tmpHideOnlineBots === 'true') {
-                    $('#chkHideOnlineBots').removeClass('text-grey');
-                    $('#chkHideOnlineBots').addClass('text-olive');
-                    $('#iconHideOnlineBots').removeClass('fa-rotate-180');
-                }
-				
-				if (tmpHideInactiveBots === 'true') {
-                    $('#chkHideInactiveBots').removeClass('text-grey');
-                    $('#chkHideInactiveBots').addClass('text-olive');
-                    $('#iconHideInactiveBots').removeClass('fa-rotate-180');
-                }
-
-                if (tmpHideOfflineBots === 'true') {
-                    $('#chkHideOfflineBots').removeClass('text-grey');
-                    $('#chkHideOfflineBots').addClass('text-olive');
-                    $('#iconHideOfflineBots').removeClass('fa-rotate-180');
-                }
+                if (tmpHideOnlineBots === 'true') $('#chkOn').bootstrapToggle('on');
+				if (tmpHideInactiveBots === 'true') $('#chkInactive').bootstrapToggle('on');
+                if (tmpHideOfflineBots === 'true') $('#chkOff').bootstrapToggle('on');
 
                 if (tmpHideOnlineBots !== 'true' || tmpHideInactiveBots !== 'true' || tmpHideOfflineBots !== 'true') loadPageContent();
 
-				if (tmpShowKeyButton === 'true') $('#chkShowKeyButton').bootstrapToggle('on');
-                if (tmpShowDeleteButton === 'true') $('#chkShowDeleteButton').bootstrapToggle('on');
-                if (tmpSimpleFarmingInfo === 'true') $('#chkSimpleFarmingInfo').bootstrapToggle('on');
+				if (tmpShowKeyButton === 'true') $('#chkKey').bootstrapToggle('on');
+                if (tmpShowDeleteButton === 'true') $('#chkDelete').bootstrapToggle('on');
+                if (tmpSimpleFarmingInfo === 'true') $('#chkSimple').bootstrapToggle('on');
 				
-				$('#chkShowKeyButton').change(function() {
-				  store('showKeyButton', $(this).prop('checked'));
-				  loadPageContent();
+				$('#chkOn, #chkInactive, #chkOff, #chkKey, #chkDelete, #chkSimple').change(function() {
+					store($(this).attr('id'), $(this).prop('checked'));
+					loadPageContent();
 				});
 				
-				$('#chkShowDeleteButton').change(function() {
-				  store('showDeleteButton', $(this).prop('checked'));
-				  loadPageContent();
-				});
-				
-				$('#chkSimpleFarmingInfo').change(function() {
-				  store('simpleFarmingInfo', $(this).prop('checked'));
-				  loadPageContent();
-				});
-				
-				$('#btnRefreshContent').click(function () {
-					$('#btnRefreshContent').blur();
+				$('#btnRefresh').click(function () {
+					$('#btnRefresh').blur();
 					loadPageContent();
 				});
             });
-			
-			$('#chkHideOnlineBots').click(function () {
-                if ($('#iconHideOnlineBots').hasClass('fa-rotate-180')) {
-                    $('#iconHideOnlineBots').removeClass('fa-rotate-180');
-                    $('#chkHideOnlineBots').removeClass('text-grey');
-                    $('#chkHideOnlineBots').addClass('text-olive');
-                    store('hideOnlineBots', true);
-                } else {
-                    $('#iconHideOnlineBots').addClass('fa-rotate-180');
-                    $('#chkHideOnlineBots').removeClass('text-olive');
-                    $('#chkHideOnlineBots').addClass('text-grey');
-                    store('hideOnlineBots', false);
-                }
-                loadPageContent();
-            });
-			
-			$('#chkHideInactiveBots').click(function () {
-                if ($('#iconHideInactiveBots').hasClass('fa-rotate-180')) {
-                    $('#iconHideInactiveBots').removeClass('fa-rotate-180');
-                    $('#chkHideInactiveBots').removeClass('text-grey');
-                    $('#chkHideInactiveBots').addClass('text-olive');
-                    store('hideInactiveBots', true);
-                } else {
-                    $('#iconHideInactiveBots').addClass('fa-rotate-180');
-                    $('#chkHideInactiveBots').removeClass('text-olive');
-                    $('#chkHideInactiveBots').addClass('text-grey');
-                    store('hideInactiveBots', false);
-                }
-                loadPageContent();
-            });
-
-            $('#chkHideOfflineBots').click(function () {
-                if ($('#iconHideOfflineBots').hasClass('fa-rotate-180')) {
-                    $('#iconHideOfflineBots').removeClass('fa-rotate-180');
-                    $('#chkHideOfflineBots').removeClass('text-grey');
-                    $('#chkHideOfflineBots').addClass('text-olive');
-                    store('hideOfflineBots', true);
-                } else {
-                    $('#iconHideOfflineBots').addClass('fa-rotate-180');
-                    $('#chkHideOfflineBots').removeClass('text-olive');
-                    $('#chkHideOfflineBots').addClass('text-grey');
-                    store('hideOfflineBots', false);
-                }
-                loadPageContent();
-            });
-			
-			function download(filename, text) {
-				var element = document.createElement('a');
-				element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-				element.setAttribute('download', filename);
-				element.style.display = 'none';
-				document.body.appendChild(element);
-				element.click();
-				document.body.removeChild(element);
-			}
 
             function loadPageContent() {
-                var tmpHideOnlineBots = get('hideOnlineBots'),
-					tmpHideInactiveBots = get('hideInactiveBots'),
-                    tmpHideOfflineBots = get('hideOfflineBots'),
-                    tmpShowDeleteButton = get('showDeleteButton'),
-                    tmpDelimiter = get('delimiter'),
-                    tmpShowKeyButton = get('showKeyButton'),
-                    tmpSimpleFarmingInfo = get('simpleFarmingInfo');
+                var tmpHideOnlineBots = get('chkOn'),
+					tmpHideInactiveBots = get('chkInactive'),
+                    tmpHideOfflineBots = get('chkOff'),
+                    tmpShowKeyButton = get('chkKey'),
+                    tmpShowDeleteButton = get('chkDelete'),
+                    tmpSimpleFarmingInfo = get('chkSimple'),
+                    tmpDelimiter = get('delimiter');
                 
-                $('#totalBotOverview').empty(); // Clear page content
-                $('#botRow').empty(); // Clear page content
+                $('#totalBotOverview').empty();
+                $('#botRow').empty();
 
                 if (!tmpDelimiter) {
                     tmpDelimiter = '\t';
@@ -623,17 +529,17 @@
 														+ '<div class="tab-content">'
 															+ '<div class="tab-pane active" id="addKeys">'
 																+ '<p class="lead text-muted" style="display: block;">' + $.i18n('bots-syntax') + '</p>'
-																+ '<textarea id="addKeysText"></textarea>'
+																+ '<textarea id="txtAddKeys"></textarea>'
 																+ '<div class="input-group">'
 																+ '<span class="input-group-addon" id="delimiter-text">' + $.i18n('bots-delimiter') + '</span>'
 																+ '<input type="text" class="form-control" id="delimiter" value="' + tmpDelimiter + '" aria-describedby="delimiter-text">'
 																+ '</div>'
 															+ '</div>'
 															+ '<div class="tab-pane" id="unusedKeys">'
-																+ '<textarea id="unusedKeysText"></textarea>'
+																+ '<textarea id="txtUnusedKeys"></textarea>'
 															+ '</div>'
 															+ '<div class="tab-pane" id="usedKeys">'
-																+ '<textarea id="usedKeysText"></textarea>'
+																+ '<textarea id="txtUsedKeys"></textarea>'
 															+ '</div>'
 														+ '</div>'
 													+ '</div>';
@@ -653,7 +559,7 @@
                                                 $('.overlay').remove();
                                                 return false;
                                             }
-                                            var val = $('#addKeysText').val();
+                                            var val = $('#txtAddKeys').val();
 
                                             var _gamesToRedeemInBackground = {},
                                                 gamesAndKeys = [],
@@ -713,7 +619,7 @@
 												+ '</div>');
 											$('#downloadUnusedKeys').on('click', function (e) {
 												e.preventDefault();
-												var unusedText = $('#unusedKeysText').val();
+												var unusedText = $('#txtUnusedKeys').val();
 												if (unusedText === '') {
 													$("#downloadUnusedKeysBtn").remove();
 													swal({
@@ -735,12 +641,12 @@
 														
 													for (var key in unusedKeys) {
 														if (unusedKeys.hasOwnProperty(key)) {
-															$('#unusedKeysText').append(unusedKeys[key] + tmpDelimiter + key + '\n');
+															$('#txtUnusedKeys').append(unusedKeys[key] + tmpDelimiter + key + '\n');
 														}
 													}
 													
-													var allKeys = $('#unusedKeysText').val();
-													$('#unusedKeysText').val(allKeys.substring(0,allKeys.length-1));
+													var allKeys = $('#txtUnusedKeys').val();
+													$('#txtUnusedKeys').val(allKeys.substring(0,allKeys.length-1));
                                                 }
                                             });
 										  } else if (target === '#usedKeys') {
@@ -753,7 +659,7 @@
 												+ '</div>');
 											$('#downloadUsedKeys').on('click', function (e) {
 												e.preventDefault();
-												var usedText = $('#usedKeysText').val();
+												var usedText = $('#txtUsedKeys').val();
 												if (usedText === '') {
 													$("#downloadUsedKeysBtn").remove();
 													swal({
@@ -775,12 +681,12 @@
 														
 													for (var key in usedKeys) {
 														if (usedKeys.hasOwnProperty(key)) {
-															$('#usedKeysText').append(usedKeys[key] + tmpDelimiter + key + '\n');
+															$('#txtUsedKeys').append(usedKeys[key] + tmpDelimiter + key + '\n');
 														}
 													}
 													
-													var allKeys = $('#usedKeysText').val();
-													$('#usedKeysText').val(allKeys.substring(0,allKeys.length-1));
+													var allKeys = $('#txtUsedKeys').val();
+													$('#txtUsedKeys').val(allKeys.substring(0,allKeys.length-1));
                                                 }
                                             });
 										  } else if (target === '#addKeys') {
@@ -830,6 +736,16 @@
                     }
                 });
             }
+			
+			function download(filename, text) {
+				var element = document.createElement('a');
+				element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+				element.setAttribute('download', filename);
+				element.style.display = 'none';
+				document.body.appendChild(element);
+				element.click();
+				document.body.removeChild(element);
+			}
         });
     </script>
 </body>

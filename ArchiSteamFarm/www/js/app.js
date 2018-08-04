@@ -155,7 +155,7 @@ function getDateAndTime() {
 }
 
 function logCommand(state, cmd) {
-    var tmpAutoClear = get('autoClear');
+    var tmpAutoClear = get('chkClear');
 
     if (state) {
         $('#commandSent').val($.i18n('commands-sent', getDateAndTime(), cmd));
@@ -175,7 +175,7 @@ function logCommand(state, cmd) {
 function sendCommand() {
     var command = $cmdInput.val(),
         requestURL = '/Api/Command/' + encodeURIComponent(command),
-        tmpAutoClear = get('autoClear');
+        tmpAutoClear = get('chkClear');
 
     if (command === '') return;
 

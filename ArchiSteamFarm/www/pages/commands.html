@@ -113,7 +113,7 @@
                         <i class="fas fa-laptop"></i>
                         <h3 class="box-title" data-i18n="global-commands">Commands</h3>
                         <div class="box-tools pull-right">
-							<input id="chkAutoClear" type="checkbox" data-style="ios single-btn" data-onstyle="default" data-toggle="toggle" data-size="mini" data-on="<i class='fas fa-eraser'></i>" data-off="<i class='fas fa-eraser'></i>">
+							<input id="chkClear" type="checkbox" data-style="ios single-btn" data-onstyle="default" data-toggle="toggle" data-size="mini" data-on="<i class='fas fa-eraser'></i>" data-off="<i class='fas fa-eraser'></i>">
                         </div>
                     </div>
                     <div class="box-body">
@@ -257,12 +257,12 @@
             //#endregion Merge to one function
             
             $('.box-tools').ready(function () {
-                var tmpAutoClear = get('autoClear');
-
-                if (tmpAutoClear === 'true') $('#chkAutoClear').bootstrapToggle('on');
+                var tmpAutoClear = get('chkClear');
 				
-				$('#chkAutoClear').change(function() {
-					store('autoClear', $(this).prop('checked'));
+                if (tmpAutoClear == null) $('#chkClear').bootstrapToggle('on');
+				
+				$('#chkClear').change(function() {
+					store($(this).attr('id'), $(this).prop('checked'));
 				});
             });
             
