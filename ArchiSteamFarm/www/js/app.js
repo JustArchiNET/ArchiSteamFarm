@@ -868,9 +868,7 @@ $(function () {
             tmpLeftSidebarState = get('leftSidebarState');
 
         if (tmpSkin && $.inArray(tmpSkin, mySkins)) changeSkin(tmpSkin);            
-        if (tmpLeftSidebarState === 'sidebar-collapse') {
-            $('body').addClass('sidebar-collapse');
-        } 
+        if (tmpLeftSidebarState === 'sidebar-collapse') $('body').addClass('sidebar-collapse');
         if (tmpLayoutState) changeBoxed(tmpLayoutState);
         if (tmpNightmodeState) changeNightmode(tmpNightmodeState);
 
@@ -961,7 +959,7 @@ $(function () {
         var language = availableLanguages[i],
 		langCode = (language === 'strings') ? 'us' : language.substr(language.length - 2).toLowerCase();
 		
-		if (language === 'strings.sr-CS') langCode = 'rs';
+		if (language === 'strings.sr-CS') langCode = 'rs'; // fix for flag-icon-css
 		
         $('.dropdown-language').append('<a class="language-item" href="javascript:void(0)" data-locale="' + language + '"><i class="flag-icon flag-icon-' + langCode + '"></i></a>');
     }
