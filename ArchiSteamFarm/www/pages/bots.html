@@ -224,7 +224,7 @@
                 }
             });
             
-            $('.box-tools').ready(function () { // Load state of checkboxes
+            $('.box-tools').ready(function () {
                 if (tmpHideOnlineBots === 'true') {
                     $('#chkHideOnlineBots').removeClass('text-grey');
                     $('#chkHideOnlineBots').addClass('text-olive');
@@ -369,12 +369,9 @@
 				var element = document.createElement('a');
 				element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
 				element.setAttribute('download', filename);
-
 				element.style.display = 'none';
 				document.body.appendChild(element);
-
 				element.click();
-
 				document.body.removeChild(element);
 			}
 
@@ -769,8 +766,8 @@
 											$(".confirm").hide();
 											$(".sa-button-container").append('<div class="sa-confirm-button-container">'
 												+ '<button class="confirm btn btn-lg btn-success" id="downloadUnusedKeys" tabindex="1" style="display: inline-block;">'
-												+ $.i18n('bots-redeem-unused-button', BotName) + '</button><div class="la-ball-fall">'
-												+ '<div></div><div></div><div></div></div></div>');
+												+ $.i18n('bots-redeem-unused-button', BotName) + '</button>'
+												+ '</div>');
 											$('#downloadUnusedKeys').on('click', function (e) {
 												e.preventDefault();
 												download(BotName + '.keys.unused', $('#unusedKeysText').val());
@@ -796,8 +793,8 @@
 											$(".confirm").hide();
 											$(".sa-button-container").append('<div class="sa-confirm-button-container">'
 												+ '<button class="confirm btn btn-lg btn-success" id="downloadUsedKeys" tabindex="1" style="display: inline-block;">'
-												+ $.i18n('bots-redeem-used-button', BotName) + '</button><div class="la-ball-fall">'
-												+ '<div></div><div></div><div></div></div></div>');
+												+ $.i18n('bots-redeem-used-button', BotName) + '</button>'
+												+ '</div>');
 											$('#downloadUsedKeys').on('click', function (e) {
 												e.preventDefault();
 												download(BotName + '.keys.used', $('#usedKeysText').val());
