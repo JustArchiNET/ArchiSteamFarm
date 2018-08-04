@@ -206,3 +206,7 @@ button.bot-resumed:hover {
 .toggle.ios, .toggle-on.ios, .toggle-off.ios, .toggle-handle { 
 	border-radius: 20px;
 }
+
+.single-btn {
+	vertical-align: -webkit-baseline-middle;
+}

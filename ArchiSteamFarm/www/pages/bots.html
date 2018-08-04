@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.1.0/css/flag-icon.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css">
     <link rel="stylesheet" href="../css/_all-skins.min.css">
     <link rel="stylesheet" href="../css/app.css">
     <link rel="stylesheet" href="../css/_nightmode.min.css">
@@ -122,17 +123,10 @@
                                     <li><button type="button" class="btn btn-box-tool text-grey" id="chkHideOfflineBots"><i id="iconHideOfflineBots" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-hide-offline">Offline bots</span></li>
                                 </ul>
                             </div>
+							<input id="chkShowKeyButton" type="checkbox" data-style="ios" data-onstyle="default" data-toggle="toggle" data-size="mini" data-on="<i class='fas fa-key text-olive'></i>" data-off="<i class='fas fa-key'></i>">
+							<input id="chkShowDeleteButton" type="checkbox" data-style="ios" data-onstyle="default" data-toggle="toggle" data-size="mini" data-on="<i class='far fa-trash-alt text-olive'></i>" data-off="<i class='far fa-trash-alt'></i>">
+							<input id="chkSimpleFarmingInfo" type="checkbox" data-style="ios" data-onstyle="default" data-toggle="toggle" data-size="mini" data-on="<i class='fas fa-info text-olive'></i>" data-off="<i class='fas fa-info'></i>">
                             <button type="button" class="btn btn-box-tool" id="btnRefreshContent"><i class="fas fa-sync"></i></button>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
-                                    <i class="fas fa-wrench"></i>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><button type="button" class="btn btn-box-tool text-grey" id="chkShowKeyButton"><i id="iconShowKeyButton" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-key">Show key button</span></li>
-                                    <li><button type="button" class="btn btn-box-tool text-grey" id="chkShowDeleteButton"><i id="iconShowDeleteButton" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-delete">Show delete button</span></li>
-                                    <li><button type="button" class="btn btn-box-tool text-grey" id="chkSimpleFarmingInfo"><i id="iconSimpleFarmingInfo" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-simple">Simple farming info</span></li>
-                                </ul>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -174,6 +168,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.parser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.emitter.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.emitter.bidi.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <script src="../js/utils.js"></script>
     <script src="../js/i18n.js"></script>
     <script src="../js/app.js"></script>
@@ -245,47 +240,32 @@
 
                 if (tmpHideOnlineBots !== 'true' || tmpHideInactiveBots !== 'true' || tmpHideOfflineBots !== 'true') loadPageContent();
 
-                if (tmpShowDeleteButton === 'true') {
-                    $('#chkShowDeleteButton').removeClass('text-grey');
-                    $('#chkShowDeleteButton').addClass('text-olive');
-                    $('#iconShowDeleteButton').removeClass('fa-rotate-180');
-                }
-
-                if (tmpShowKeyButton === 'true') {
-                    $('#chkShowKeyButton').removeClass('text-grey');
-                    $('#chkShowKeyButton').addClass('text-olive');
-                    $('#iconShowKeyButton').removeClass('fa-rotate-180');
-                }
-
-                if (tmpShowKeyButton === 'true') {
-                    $('#chkShowKeyButton').removeClass('text-grey');
-                    $('#chkShowKeyButton').addClass('text-olive');
-                    $('#iconShowKeyButton').removeClass('fa-rotate-180');
-                }
-
-                if (tmpSimpleFarmingInfo === 'true') {
-                    $('#chkSimpleFarmingInfo').removeClass('text-grey');
-                    $('#chkSimpleFarmingInfo').addClass('text-olive');
-                    $('#iconSimpleFarmingInfo').removeClass('fa-rotate-180');
-                }
+				if (tmpShowKeyButton === 'true') $('#chkShowKeyButton').bootstrapToggle('on');
+                if (tmpShowDeleteButton === 'true') $('#chkShowDeleteButton').bootstrapToggle('on');
+                if (tmpSimpleFarmingInfo === 'true') $('#chkSimpleFarmingInfo').bootstrapToggle('on');
+				
+				$('#chkShowKeyButton').change(function() {
+				  store('showKeyButton', $(this).prop('checked'));
+				  loadPageContent();
+				});
+				
+				$('#chkShowDeleteButton').change(function() {
+				  store('showDeleteButton', $(this).prop('checked'));
+				  loadPageContent();
+				});
+				
+				$('#chkSimpleFarmingInfo').change(function() {
+				  store('simpleFarmingInfo', $(this).prop('checked'));
+				  loadPageContent();
+				});
+				
+				$('#btnRefreshContent').click(function () {
+					$('#btnRefreshContent').blur();
+					loadPageContent();
+				});
             });
-
-            $('#chkSimpleFarmingInfo').click(function () {
-                if ($('#iconSimpleFarmingInfo').hasClass('fa-rotate-180')) {
-                    $('#iconSimpleFarmingInfo').removeClass('fa-rotate-180');
-                    $('#chkSimpleFarmingInfo').removeClass('text-grey');
-                    $('#chkSimpleFarmingInfo').addClass('text-olive');
-                    store('simpleFarmingInfo', true);
-                } else {
-                    $('#iconSimpleFarmingInfo').addClass('fa-rotate-180');
-                    $('#chkSimpleFarmingInfo').removeClass('text-olive');
-                    $('#chkSimpleFarmingInfo').addClass('text-grey');
-                    store('simpleFarmingInfo', false);
-                }
-                loadPageContent();
-            });
-
-            $('#chkHideOnlineBots').click(function () {
+			
+			$('#chkHideOnlineBots').click(function () {
                 if ($('#iconHideOnlineBots').hasClass('fa-rotate-180')) {
                     $('#iconHideOnlineBots').removeClass('fa-rotate-180');
                     $('#chkHideOnlineBots').removeClass('text-grey');
@@ -326,41 +306,6 @@
                     $('#chkHideOfflineBots').removeClass('text-olive');
                     $('#chkHideOfflineBots').addClass('text-grey');
                     store('hideOfflineBots', false);
-                }
-                loadPageContent();
-            });
-
-            $('#btnRefreshContent').click(function () {
-                $('#btnRefreshContent').blur();
-                loadPageContent();
-            });
-
-            $('#chkShowDeleteButton').click(function () {
-                if ($('#iconShowDeleteButton').hasClass('fa-rotate-180')) {
-                    $('#iconShowDeleteButton').removeClass('fa-rotate-180');
-                    $('#chkShowDeleteButton').removeClass('text-grey');
-                    $('#chkShowDeleteButton').addClass('text-olive');
-                    store('showDeleteButton', true);
-                } else {
-                    $('#iconShowDeleteButton').addClass('fa-rotate-180');
-                    $('#chkShowDeleteButton').removeClass('text-olive');
-                    $('#chkShowDeleteButton').addClass('text-grey');
-                    store('showDeleteButton', false);
-                }
-                loadPageContent();
-            });
-
-            $('#chkShowKeyButton').click(function () {
-                if ($('#iconShowKeyButton').hasClass('fa-rotate-180')) {
-                    $('#iconShowKeyButton').removeClass('fa-rotate-180');
-                    $('#chkShowKeyButton').removeClass('text-grey');
-                    $('#chkShowKeyButton').addClass('text-olive');
-                    store('showKeyButton', true);
-                } else {
-                    $('#iconShowKeyButton').addClass('fa-rotate-180');
-                    $('#chkShowKeyButton').removeClass('text-olive');
-                    $('#chkShowKeyButton').addClass('text-grey');
-                    store('showKeyButton', false);
                 }
                 loadPageContent();
             });
