@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/AdminLTE.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.1.0/css/flag-icon.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css">
     <link rel="stylesheet" href="../css/_all-skins.min.css">
     <link rel="stylesheet" href="../css/app.css">
     <link rel="stylesheet" href="../css/_nightmode.min.css">
@@ -111,7 +112,7 @@
                         <i class="far fa-file-alt"></i>
                         <h3 class="box-title" data-i18n="global-log">Log</h3>
                         <div class="box-tools pull-right">
-                            <button type="button" class="btn btn-box-tool text-olive" id="toggleAutoScroll"><i class="fas fa-sync"></i></button>
+							<input id="chkAutoScroll" checked type="checkbox" data-style="ios single-btn" data-onstyle="default" data-toggle="toggle" data-size="mini" data-on="<i class='fas fa-sync text-olive'></i>" data-off="<i class='fas fa-sync'></i>">
                         </div>
                     </div>
                     <div class="box-body">
@@ -154,6 +155,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.parser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.emitter.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.emitter.bidi.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <script src="../js/utils.js"></script>
     <script src="../js/i18n.js"></script>
     <script src="../js/app.js"></script>
@@ -163,8 +165,7 @@
 
             store('CurrentPage', 'pages/log.html');
 
-            var lastScrollPosition = 0,
-                ws;
+            var ws;
 
             startWebSocket();
 
@@ -200,35 +201,14 @@
 
                 window.onbeforeunload = function () { ws.close(); };
             }
-
-            $('#toggleAutoScroll').click(function () {
-                if (ws.readyState === ws.CLOSED) {
-                    startWebSocket();
-                    $('#toggleAutoScroll').removeClass('text-grey');
-                    $('#toggleAutoScroll').addClass('text-olive');
-					$('#toggleAutoScroll').blur();
-                } else if (ws.readyState === ws.OPEN) {
-                    ws.close();
-                    $('#toggleAutoScroll').removeClass('text-olive');
-                    $('#toggleAutoScroll').addClass('text-grey');
-					$('#toggleAutoScroll').blur();
-                }
-            });
-
-            $('.box-content-log').on('scroll', function () {
-                var newScrollPosition = $(this).scrollTop();
-
-                if (newScrollPosition < lastScrollPosition) {
-                    if (ws.readyState === ws.OPEN) {
-                        ws.close();
-                        $('#toggleAutoScroll').removeClass('text-olive');
-                        $('#toggleAutoScroll').addClass('text-grey');
-						$('#toggleAutoScroll').blur();
-                    }
-                }
-
-                lastScrollPosition = newScrollPosition;
-            });
+			
+			$('#chkAutoScroll').change(function() {
+				if ($(this).prop('checked')) {
+					startWebSocket();
+				} else {
+					ws.close();
+				}
+			});
 
             $('.box-content-log').ready(function () {
                 var tmpLogHeight = get('logHeight');
