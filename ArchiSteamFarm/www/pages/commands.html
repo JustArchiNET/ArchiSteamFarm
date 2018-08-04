@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/AdminLTE.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.1.0/css/flag-icon.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css">
     <link rel="stylesheet" href="../css/_all-skins.min.css">
     <link rel="stylesheet" href="../css/app.css">
     <link rel="stylesheet" href="../css/_nightmode.min.css">
@@ -35,6 +37,11 @@
                 </a>
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
+						<!-- Language Button -->
+						<li class="dropdown">
+                            <a class="dropdown-toggle" href="javascript:void(0)" data-toggle="dropdown"><i id="currentLanguage" class="flag-icon flag-icon-us"></i></a>
+                            <div class="dropdown-menu dropdown-language"></div>
+                        </li>
                         <!-- Right Sidebar Toggle Button -->
                         <li><a href="javascript:void(0)" data-toggle="control-sidebar"><i class="fas fa-cogs"></i></a></li>
                     </ul>
@@ -106,14 +113,7 @@
                         <i class="fas fa-laptop"></i>
                         <h3 class="box-title" data-i18n="global-commands">Commands</h3>
                         <div class="box-tools pull-right">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
-                                    <i class="fas fa-wrench"></i>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><button type="button" class="btn btn-box-tool text-olive" id="chkAutoClear"><i id="iconAutoClear" class="fas fa-toggle-on fa-2x"></i></button><span data-i18n="commands-auto-clear">Auto clear</span></li>
-                                </ul>
-                            </div>
+							<input id="chkClear" type="checkbox" data-style="ios single-btn" data-onstyle="default" data-toggle="toggle" data-size="mini" data-on="<i class='fas fa-eraser'></i>" data-off="<i class='fas fa-eraser'></i>">
                         </div>
                     </div>
                     <div class="box-body">
@@ -170,6 +170,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.emitter.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.emitter.bidi.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <script src="../js/utils.js"></script>
     <script src="../js/i18n.js"></script>
     <script src="../js/app.js"></script>
@@ -179,8 +180,7 @@
 
             store('CurrentPage', 'pages/commands.html');
 
-            var $chkAutoClear = $('#chkAutoClear'),
-                $commandInput = $('#commandInput'),
+            var $commandInput = $('#commandInput'),
                 $botsDropDown = $("#botsDropDown"),
                 $commandsDropDown = $("#commandsDropDown");
 
@@ -209,7 +209,8 @@
 			$commandsDropDown.on('changed.bs.select', function (e) {
 				$cmdInput.val($commandsDropDown.val() + ' ');
 				
-				var elements = document.getElementById("commandsDropDown").options; // dirty... find a better solution
+				// dirty... find a better solution
+				var elements = document.getElementById("commandsDropDown").options;
 				for(var i = 0; i < elements.length; i++){
 					elements[i].selected = false;
 				}
@@ -223,7 +224,8 @@
 					
 				$cmdInput.val(oldText + bot);
 				
-				var elements = document.getElementById("botsDropDown").options; // dirty... find a better solution
+				// dirty... find a better solution
+				var elements = document.getElementById("botsDropDown").options;
 				for(var i = 0; i < elements.length; i++){
 					elements[i].selected = false;
 				}
@@ -255,30 +257,13 @@
             //#endregion Merge to one function
             
             $('.box-tools').ready(function () {
-                var tmpAutoClear = get('autoClear');
-
-                if (tmpAutoClear === 'false') {
-                    $chkAutoClear.removeClass('text-olive');
-                    $chkAutoClear.addClass('text-grey');
-                    $('#iconAutoClear').addClass('fa-rotate-180');
-                }
-            });
-
-            $chkAutoClear.click(function () {
-                if ($('#iconAutoClear').hasClass('fa-rotate-180')) {
-                    $('#iconAutoClear').removeClass('fa-rotate-180');
-                    $chkAutoClear.removeClass('text-grey');
-                    $chkAutoClear.addClass('text-olive');
-                    $chkAutoClear.blur();
-                    store('autoClear', true);
-                } else {
-                    $('#iconAutoClear').addClass('fa-rotate-180');
-                    $chkAutoClear.removeClass('text-olive');
-                    $chkAutoClear.addClass('text-grey');
-                    $chkAutoClear.blur();
-                    store('autoClear', false);
-                }
-                return false;
+                var tmpAutoClear = get('chkClear');
+				
+                if (tmpAutoClear == null) $('#chkClear').bootstrapToggle('on');
+				
+				$('#chkClear').change(function() {
+					store($(this).attr('id'), $(this).prop('checked'));
+				});
             });
             
             $('.box-content-commands').ready(function () {
@@ -349,6 +334,10 @@
 					
 					$('.overlay').remove();
 					$commandsDropDown.selectpicker('refresh');
+					
+					// fix for bootstrap-select elements
+					$('button > [data-id="commandsDropDown"]').attr("title", $.i18n('title-commands'));
+					$('[data-id="commandsDropDown"] > .filter-option').text($.i18n('title-commands'));
 				} else {
 					$('#commandsDropDownBox').append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
 				
@@ -378,11 +367,15 @@
 							store('cachedCommandsDate', new Date().toLocaleDateString());
 							
 							for (var i = 0; i < myCommands.length; i++) {
-								$commandsDropDown.append('<option title="Commands">' + myCommands[i] + '</option>');
+								$commandsDropDown.append('<option data-i18n="title-commands" title="Commands">' + myCommands[i] + '</option>');
 							}
 							
 							$('.overlay').remove();
 							$commandsDropDown.selectpicker('refresh');
+							
+							// fix for bootstrap-select elements
+							$('button > [data-id="commandsDropDown"]').attr("title", $.i18n('title-commands'));
+							$('[data-id="commandsDropDown"] > .filter-option').text($.i18n('title-commands'));
 						}
 					});
 				}
@@ -401,10 +394,14 @@
                             var obj = json[i],
                                 botName = obj.BotName;
 
-							$botsDropDown.append('<option title="Bots">' + botName + '</option>');
+							$botsDropDown.append('<option data-i18n="title-bots" title="Bots">' + botName + '</option>');
                         }
 						
 						$botsDropDown.selectpicker('refresh');
+						
+						// fix for bootstrap-select elements
+						$('button > [data-id="botsDropDown"]').attr("title", $.i18n('title-bots'));
+						$('[data-id="botsDropDown"] > .filter-option').text($.i18n('title-bots'));
                     }
                 });
             });

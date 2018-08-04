@@ -41,12 +41,6 @@
     cursor: default;
 }
 
-.scrollable-menu {
-    height: auto;
-    max-height: 220px;
-    overflow-x: hidden;
-}
-
 button.bot-stopped {
     color: red;
 }
@@ -166,18 +160,9 @@ button.bot-resumed:hover {
     background: rgb(167, 167, 167);
 }
 
-#botRow .ui-selecting {
-    background: #FECA40;
-}
-
-#botRow .ui-selected {
-    background: #F39814;
-    color: white;
-}
-
-#gamesToRedeemInBackground,
-#unusedKeysText,
-#usedKeysText {
+#txtAddKeys,
+#txtUnusedKeys,
+#txtUsedKeys {
     width: 100%;
     height: 100px;
     font-size: 18px;
@@ -188,9 +173,10 @@ button.bot-resumed:hover {
     .swal-wide {
         width: 700px !important;
     }
-    #gamesToRedeemInBackground,
-	#unusedKeysText,
-	#usedKeysText {
+	
+    #txtAddKeys,
+	#txtUnusedKeys,
+	#txtUsedKeys {
         height: 250px !important;
     }
 }
@@ -201,4 +187,43 @@ button.bot-resumed:hover {
 
 .lockscreen-image{
 	left:-5px
+}
+
+.language-item {
+	padding: 0.6rem;
+}
+
+.dropdown-language {
+	background: #222d32 !important;
+	border-color: #222d32 !important;
+}
+
+.scrollable-menu {
+    height: auto;
+    max-height: 220px;
+    overflow-x: hidden;
+}
+
+.toggle.ios, .toggle-on.ios, .toggle-off.ios, .toggle-handle { 
+	border-radius: 20px;
+}
+
+.toggle-on {
+	color: #3d9970 !important;
+}
+
+.li-btn {
+	width: 100% !important;
+}
+
+.li-toggle {
+	padding: 5px 10px;
+}
+
+.dropdown-menu-toggle {
+	min-width: 140px !important;
+}
+
+.single-btn {
+	vertical-align: -webkit-baseline-middle;
 }

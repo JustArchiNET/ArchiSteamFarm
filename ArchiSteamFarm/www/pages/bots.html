@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/AdminLTE.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.1.0/css/flag-icon.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css">
     <link rel="stylesheet" href="../css/_all-skins.min.css">
     <link rel="stylesheet" href="../css/app.css">
     <link rel="stylesheet" href="../css/_nightmode.min.css">
@@ -35,6 +37,11 @@
                 </a>
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
+						<!-- Language Button -->
+						<li class="dropdown">
+                            <a class="dropdown-toggle" href="javascript:void(0)" data-toggle="dropdown"><i id="currentLanguage" class="flag-icon flag-icon-us"></i></a>
+                            <div class="dropdown-menu dropdown-language"></div>
+                        </li>
                         <!-- Right Sidebar Toggle Button -->
                         <li><a href="javascript:void(0)" data-toggle="control-sidebar"><i class="fas fa-cogs"></i></a></li>
                     </ul>
@@ -110,23 +117,16 @@
                                 <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
                                     <span data-i18n="bots-hide">Hide bots</span> <span class="fas fa-caret-down"></span>
                                 </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><button type="button" class="btn btn-box-tool text-grey" id="chkHideOnlineBots"><i id="iconHideOnlineBots" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-hide-online">Online bots</span></li>
-									<li><button type="button" class="btn btn-box-tool text-grey" id="chkHideInactiveBots"><i id="iconHideInactiveBots" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-hide-inactive">Inactive bots</span></li>
-                                    <li><button type="button" class="btn btn-box-tool text-grey" id="chkHideOfflineBots"><i id="iconHideOfflineBots" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-hide-offline">Offline bots</span></li>
+                                <ul class="dropdown-menu dropdown-menu-toggle" role="menu">
+									<li class="li-toggle"><input id="chkOn" type="checkbox" data-style="ios li-btn" data-onstyle="default" data-toggle="toggle" data-size="small" data-on="<i class='fas fa-users'></i> <span data-i18n='bots-hide-online'>Online bots</span>" data-off="<i class='fas fa-users'></i> <span data-i18n='bots-hide-online'>Online bots</span>"></li>
+									<li class="li-toggle"><input id="chkInactive" type="checkbox" data-style="ios li-btn" data-onstyle="default" data-toggle="toggle" data-size="small" data-on="<i class='fas fa-users'></i> <span data-i18n='bots-hide-inactive'>Inactive bots</span>" data-off="<i class='fas fa-users'></i> <span data-i18n='bots-hide-inactive'>Inactive bots</span>"></li>
+                                    <li class="li-toggle"><input id="chkOff" type="checkbox" data-style="ios li-btn" data-onstyle="default" data-toggle="toggle" data-size="small" data-on="<i class='fas fa-users'></i> <span data-i18n='bots-hide-offline'>Offline bots</span>" data-off="<i class='fas fa-users'></i> <span data-i18n='bots-hide-offline'>Offline bots</span>"></li>
                                 </ul>
-                            </div>
-                            <button type="button" class="btn btn-box-tool" id="btnRefreshContent"><i class="fas fa-sync"></i></button>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
-                                    <i class="fas fa-wrench"></i>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><button type="button" class="btn btn-box-tool text-grey" id="chkShowKeyButton"><i id="iconShowKeyButton" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-key">Show key button</span></li>
-                                    <li><button type="button" class="btn btn-box-tool text-grey" id="chkShowDeleteButton"><i id="iconShowDeleteButton" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-delete">Show delete button</span></li>
-                                    <li><button type="button" class="btn btn-box-tool text-grey" id="chkSimpleFarmingInfo"><i id="iconSimpleFarmingInfo" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button><span data-i18n="bots-simple">Simple farming info</span></li>
-                                </ul>
-                            </div>
+                            </div>							
+							<input id="chkKey" type="checkbox" data-style="ios" data-onstyle="default" data-toggle="toggle" data-size="mini" data-on="<i class='fas fa-key'></i>" data-off="<i class='fas fa-key'></i>">
+							<input id="chkDelete" type="checkbox" data-style="ios" data-onstyle="default" data-toggle="toggle" data-size="mini" data-on="<i class='far fa-trash-alt'></i>" data-off="<i class='far fa-trash-alt'></i>">
+							<input id="chkSimple" type="checkbox" data-style="ios" data-onstyle="default" data-toggle="toggle" data-size="mini" data-on="<i class='fas fa-info'></i>" data-off="<i class='fas fa-info'></i>">
+                            <button type="button" class="btn btn-box-tool" id="btnRefresh"><i class="fas fa-sync"></i></button>
                         </div>
                     </div>
                 </div>
@@ -168,6 +168,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.parser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.emitter.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.4/jquery.i18n.emitter.bidi.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <script src="../js/utils.js"></script>
     <script src="../js/i18n.js"></script>
     <script src="../js/app.js"></script>
@@ -177,14 +178,14 @@
 
             store('CurrentPage', 'pages/bots.html');
 
-            var tmpHideOnlineBots = get('hideOnlineBots'),
-				tmpHideInactiveBots = get('hideInactiveBots'),
-                tmpHideOfflineBots = get('hideOfflineBots'),
-                tmpShowDeleteButton = get('showDeleteButton'),
-                tmpShowKeyButton = get('showKeyButton'),
-                tmpSimpleFarmingInfo = get('simpleFarmingInfo');
+            var tmpHideOnlineBots = get('chkOn'),
+				tmpHideInactiveBots = get('chkInactive'),
+                tmpHideOfflineBots = get('chkOff'),
+                tmpShowKeyButton = get('chkKey'),
+                tmpShowDeleteButton = get('chkDelete'),
+                tmpSimpleFarmingInfo = get('chkSimple');
 
-            $(document).delegate('#gamesToRedeemInBackground', 'keydown', function (e) {
+            $(document).delegate('#txtAddKeys, #delimiter', 'keydown', function (e) {
                 var keyCode = e.keyCode || e.which;
 
                 if (keyCode == 9) {
@@ -193,196 +194,45 @@
                     var start = this.selectionStart;
                     var end = this.selectionEnd;
                     
-                    $(this).val($(this).val().substring(0, start) // set textarea value to: text before caret + tab + text after caret
-                        + "\t"
-                        + $(this).val().substring(end));
-                    
-                    this.selectionStart = this.selectionEnd = start + 1; // put caret at right position again
-                }
-            });
-
-            $(document).delegate('#delimiter', 'keydown', function (e) {
-                var keyCode = e.keyCode || e.which;
-
-                if (keyCode == 9) {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    var start = this.selectionStart;
-                    var end = this.selectionEnd;
-                    
-                    $(this).val($(this).val().substring(0, start) // set textarea value to: text before caret + tab + text after caret
-                        + "\t"
-                        + $(this).val().substring(end));
+                    $(this).val($(this).val().substring(0, start) + "\t" + $(this).val().substring(end)); // set textarea value to: text before caret + tab + text after caret
                     
                     this.selectionStart = this.selectionEnd = start + 1; // put caret at right position again
                 }
             });
             
-            $('.box-tools').ready(function () { // Load state of checkboxes
-                if (tmpHideOnlineBots === 'true') {
-                    $('#chkHideOnlineBots').removeClass('text-grey');
-                    $('#chkHideOnlineBots').addClass('text-olive');
-                    $('#iconHideOnlineBots').removeClass('fa-rotate-180');
-                }
-				
-				if (tmpHideInactiveBots === 'true') {
-                    $('#chkHideInactiveBots').removeClass('text-grey');
-                    $('#chkHideInactiveBots').addClass('text-olive');
-                    $('#iconHideInactiveBots').removeClass('fa-rotate-180');
-                }
-
-                if (tmpHideOfflineBots === 'true') {
-                    $('#chkHideOfflineBots').removeClass('text-grey');
-                    $('#chkHideOfflineBots').addClass('text-olive');
-                    $('#iconHideOfflineBots').removeClass('fa-rotate-180');
-                }
+            $('.box-tools').ready(function () {
+                if (tmpHideOnlineBots === 'true') $('#chkOn').bootstrapToggle('on');
+				if (tmpHideInactiveBots === 'true') $('#chkInactive').bootstrapToggle('on');
+                if (tmpHideOfflineBots === 'true') $('#chkOff').bootstrapToggle('on');
 
                 if (tmpHideOnlineBots !== 'true' || tmpHideInactiveBots !== 'true' || tmpHideOfflineBots !== 'true') loadPageContent();
 
-                if (tmpShowDeleteButton === 'true') {
-                    $('#chkShowDeleteButton').removeClass('text-grey');
-                    $('#chkShowDeleteButton').addClass('text-olive');
-                    $('#iconShowDeleteButton').removeClass('fa-rotate-180');
-                }
-
-                if (tmpShowKeyButton === 'true') {
-                    $('#chkShowKeyButton').removeClass('text-grey');
-                    $('#chkShowKeyButton').addClass('text-olive');
-                    $('#iconShowKeyButton').removeClass('fa-rotate-180');
-                }
-
-                if (tmpShowKeyButton === 'true') {
-                    $('#chkShowKeyButton').removeClass('text-grey');
-                    $('#chkShowKeyButton').addClass('text-olive');
-                    $('#iconShowKeyButton').removeClass('fa-rotate-180');
-                }
-
-                if (tmpSimpleFarmingInfo === 'true') {
-                    $('#chkSimpleFarmingInfo').removeClass('text-grey');
-                    $('#chkSimpleFarmingInfo').addClass('text-olive');
-                    $('#iconSimpleFarmingInfo').removeClass('fa-rotate-180');
-                }
+				if (tmpShowKeyButton === 'true') $('#chkKey').bootstrapToggle('on');
+                if (tmpShowDeleteButton === 'true') $('#chkDelete').bootstrapToggle('on');
+                if (tmpSimpleFarmingInfo === 'true') $('#chkSimple').bootstrapToggle('on');
+				
+				$('#chkOn, #chkInactive, #chkOff, #chkKey, #chkDelete, #chkSimple').change(function() {
+					store($(this).attr('id'), $(this).prop('checked'));
+					loadPageContent();
+				});
+				
+				$('#btnRefresh').click(function () {
+					$('#btnRefresh').blur();
+					loadPageContent();
+				});
             });
-
-            $('#chkSimpleFarmingInfo').click(function () {
-                if ($('#iconSimpleFarmingInfo').hasClass('fa-rotate-180')) {
-                    $('#iconSimpleFarmingInfo').removeClass('fa-rotate-180');
-                    $('#chkSimpleFarmingInfo').removeClass('text-grey');
-                    $('#chkSimpleFarmingInfo').addClass('text-olive');
-                    store('simpleFarmingInfo', true);
-                } else {
-                    $('#iconSimpleFarmingInfo').addClass('fa-rotate-180');
-                    $('#chkSimpleFarmingInfo').removeClass('text-olive');
-                    $('#chkSimpleFarmingInfo').addClass('text-grey');
-                    store('simpleFarmingInfo', false);
-                }
-                loadPageContent();
-            });
-
-            $('#chkHideOnlineBots').click(function () {
-                if ($('#iconHideOnlineBots').hasClass('fa-rotate-180')) {
-                    $('#iconHideOnlineBots').removeClass('fa-rotate-180');
-                    $('#chkHideOnlineBots').removeClass('text-grey');
-                    $('#chkHideOnlineBots').addClass('text-olive');
-                    store('hideOnlineBots', true);
-                } else {
-                    $('#iconHideOnlineBots').addClass('fa-rotate-180');
-                    $('#chkHideOnlineBots').removeClass('text-olive');
-                    $('#chkHideOnlineBots').addClass('text-grey');
-                    store('hideOnlineBots', false);
-                }
-                loadPageContent();
-            });
-			
-			$('#chkHideInactiveBots').click(function () {
-                if ($('#iconHideInactiveBots').hasClass('fa-rotate-180')) {
-                    $('#iconHideInactiveBots').removeClass('fa-rotate-180');
-                    $('#chkHideInactiveBots').removeClass('text-grey');
-                    $('#chkHideInactiveBots').addClass('text-olive');
-                    store('hideInactiveBots', true);
-                } else {
-                    $('#iconHideInactiveBots').addClass('fa-rotate-180');
-                    $('#chkHideInactiveBots').removeClass('text-olive');
-                    $('#chkHideInactiveBots').addClass('text-grey');
-                    store('hideInactiveBots', false);
-                }
-                loadPageContent();
-            });
-
-            $('#chkHideOfflineBots').click(function () {
-                if ($('#iconHideOfflineBots').hasClass('fa-rotate-180')) {
-                    $('#iconHideOfflineBots').removeClass('fa-rotate-180');
-                    $('#chkHideOfflineBots').removeClass('text-grey');
-                    $('#chkHideOfflineBots').addClass('text-olive');
-                    store('hideOfflineBots', true);
-                } else {
-                    $('#iconHideOfflineBots').addClass('fa-rotate-180');
-                    $('#chkHideOfflineBots').removeClass('text-olive');
-                    $('#chkHideOfflineBots').addClass('text-grey');
-                    store('hideOfflineBots', false);
-                }
-                loadPageContent();
-            });
-
-            $('#btnRefreshContent').click(function () {
-                $('#btnRefreshContent').blur();
-                loadPageContent();
-            });
-
-            $('#chkShowDeleteButton').click(function () {
-                if ($('#iconShowDeleteButton').hasClass('fa-rotate-180')) {
-                    $('#iconShowDeleteButton').removeClass('fa-rotate-180');
-                    $('#chkShowDeleteButton').removeClass('text-grey');
-                    $('#chkShowDeleteButton').addClass('text-olive');
-                    store('showDeleteButton', true);
-                } else {
-                    $('#iconShowDeleteButton').addClass('fa-rotate-180');
-                    $('#chkShowDeleteButton').removeClass('text-olive');
-                    $('#chkShowDeleteButton').addClass('text-grey');
-                    store('showDeleteButton', false);
-                }
-                loadPageContent();
-            });
-
-            $('#chkShowKeyButton').click(function () {
-                if ($('#iconShowKeyButton').hasClass('fa-rotate-180')) {
-                    $('#iconShowKeyButton').removeClass('fa-rotate-180');
-                    $('#chkShowKeyButton').removeClass('text-grey');
-                    $('#chkShowKeyButton').addClass('text-olive');
-                    store('showKeyButton', true);
-                } else {
-                    $('#iconShowKeyButton').addClass('fa-rotate-180');
-                    $('#chkShowKeyButton').removeClass('text-olive');
-                    $('#chkShowKeyButton').addClass('text-grey');
-                    store('showKeyButton', false);
-                }
-                loadPageContent();
-            });
-			
-			function download(filename, text) {
-				var element = document.createElement('a');
-				element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-				element.setAttribute('download', filename);
-
-				element.style.display = 'none';
-				document.body.appendChild(element);
-
-				element.click();
-
-				document.body.removeChild(element);
-			}
 
             function loadPageContent() {
-                var tmpHideOnlineBots = get('hideOnlineBots'),
-					tmpHideInactiveBots = get('hideInactiveBots'),
-                    tmpHideOfflineBots = get('hideOfflineBots'),
-                    tmpShowDeleteButton = get('showDeleteButton'),
-                    tmpDelimiter = get('delimiter'),
-                    tmpShowKeyButton = get('showKeyButton'),
-                    tmpSimpleFarmingInfo = get('simpleFarmingInfo');
+                var tmpHideOnlineBots = get('chkOn'),
+					tmpHideInactiveBots = get('chkInactive'),
+                    tmpHideOfflineBots = get('chkOff'),
+                    tmpShowKeyButton = get('chkKey'),
+                    tmpShowDeleteButton = get('chkDelete'),
+                    tmpSimpleFarmingInfo = get('chkSimple'),
+                    tmpDelimiter = get('delimiter');
                 
-                $('#totalBotOverview').empty(); // Clear page content
-                $('#botRow').empty(); // Clear page content
+                $('#totalBotOverview').empty();
+                $('#botRow').empty();
 
                 if (!tmpDelimiter) {
                     tmpDelimiter = '\t';
@@ -679,17 +529,17 @@
 														+ '<div class="tab-content">'
 															+ '<div class="tab-pane active" id="addKeys">'
 																+ '<p class="lead text-muted" style="display: block;">' + $.i18n('bots-syntax') + '</p>'
-																+ '<textarea id="gamesToRedeemInBackground"></textarea>'
+																+ '<textarea id="txtAddKeys"></textarea>'
 																+ '<div class="input-group">'
 																+ '<span class="input-group-addon" id="delimiter-text">' + $.i18n('bots-delimiter') + '</span>'
 																+ '<input type="text" class="form-control" id="delimiter" value="' + tmpDelimiter + '" aria-describedby="delimiter-text">'
 																+ '</div>'
 															+ '</div>'
 															+ '<div class="tab-pane" id="unusedKeys">'
-																+ '<textarea id="unusedKeysText"></textarea>'
+																+ '<textarea id="txtUnusedKeys"></textarea>'
 															+ '</div>'
 															+ '<div class="tab-pane" id="usedKeys">'
-																+ '<textarea id="usedKeysText"></textarea>'
+																+ '<textarea id="txtUsedKeys"></textarea>'
 															+ '</div>'
 														+ '</div>'
 													+ '</div>';
@@ -709,7 +559,7 @@
                                                 $('.overlay').remove();
                                                 return false;
                                             }
-                                            var val = $('#gamesToRedeemInBackground').val();
+                                            var val = $('#txtAddKeys').val();
 
                                             var _gamesToRedeemInBackground = {},
                                                 gamesAndKeys = [],
@@ -760,14 +610,27 @@
 										  var target = $(e.target).attr("href");
 										  
 										  if (target === '#unusedKeys') {
+											$("#downloadUnusedKeysBtn").remove();
+											$("#downloadUsedKeysBtn").remove();
 											$(".confirm").hide();
-											$(".sa-button-container").append('<div class="sa-confirm-button-container">'
+											$(".sa-button-container").append('<div id="downloadUnusedKeysBtn" class="sa-confirm-button-container">'
 												+ '<button class="confirm btn btn-lg btn-success" id="downloadUnusedKeys" tabindex="1" style="display: inline-block;">'
-												+ $.i18n('bots-redeem-unused-button', BotName) + '</button><div class="la-ball-fall">'
-												+ '<div></div><div></div><div></div></div></div>');
+												+ $.i18n('bots-redeem-unused-button', BotName) + '</button>'
+												+ '</div>');
 											$('#downloadUnusedKeys').on('click', function (e) {
 												e.preventDefault();
-												download(BotName + '.keys.unused', $('#unusedKeysText').val());
+												var unusedText = $('#txtUnusedKeys').val();
+												if (unusedText === '') {
+													$("#downloadUnusedKeysBtn").remove();
+													swal({
+														title: $.i18n('global-error-title'),
+														text: $.i18n('bots-download'),
+														type: 'error'
+													});
+													$('.overlay').remove();
+													return false;
+												}
+												download(BotName + '.keys.unused', unusedText);
 											});
 											$.ajax({
                                                 url: '/Api/GamesToRedeemInBackground/' + encodeURIComponent(BotName),
@@ -778,23 +641,36 @@
 														
 													for (var key in unusedKeys) {
 														if (unusedKeys.hasOwnProperty(key)) {
-															$('#unusedKeysText').append(unusedKeys[key] + tmpDelimiter + key + '\n');
+															$('#txtUnusedKeys').append(unusedKeys[key] + tmpDelimiter + key + '\n');
 														}
 													}
 													
-													var allKeys = $('#unusedKeysText').val();
-													$('#unusedKeysText').val(allKeys.substring(0,allKeys.length-1));
+													var allKeys = $('#txtUnusedKeys').val();
+													$('#txtUnusedKeys').val(allKeys.substring(0,allKeys.length-1));
                                                 }
                                             });
 										  } else if (target === '#usedKeys') {
+											$("#downloadUnusedKeysBtn").remove();
+											$("#downloadUsedKeysBtn").remove();
 											$(".confirm").hide();
-											$(".sa-button-container").append('<div class="sa-confirm-button-container">'
+											$(".sa-button-container").append('<div id="downloadUsedKeysBtn" class="sa-confirm-button-container">'
 												+ '<button class="confirm btn btn-lg btn-success" id="downloadUsedKeys" tabindex="1" style="display: inline-block;">'
-												+ $.i18n('bots-redeem-used-button', BotName) + '</button><div class="la-ball-fall">'
-												+ '<div></div><div></div><div></div></div></div>');
+												+ $.i18n('bots-redeem-used-button', BotName) + '</button>'
+												+ '</div>');
 											$('#downloadUsedKeys').on('click', function (e) {
 												e.preventDefault();
-												download(BotName + '.keys.used', $('#usedKeysText').val());
+												var usedText = $('#txtUsedKeys').val();
+												if (usedText === '') {
+													$("#downloadUsedKeysBtn").remove();
+													swal({
+														title: $.i18n('global-error-title'),
+														text: $.i18n('bots-download'),
+														type: 'error'
+													});
+													$('.overlay').remove();
+													return false;
+												}
+												download(BotName + '.keys.used', usedText);
 											});
 											$.ajax({
                                                 url: '/Api/GamesToRedeemInBackground/' + encodeURIComponent(BotName),
@@ -805,17 +681,17 @@
 														
 													for (var key in usedKeys) {
 														if (usedKeys.hasOwnProperty(key)) {
-															$('#usedKeysText').append(usedKeys[key] + tmpDelimiter + key + '\n');
+															$('#txtUsedKeys').append(usedKeys[key] + tmpDelimiter + key + '\n');
 														}
 													}
 													
-													var allKeys = $('#usedKeysText').val();
-													$('#usedKeysText').val(allKeys.substring(0,allKeys.length-1));
+													var allKeys = $('#txtUsedKeys').val();
+													$('#txtUsedKeys').val(allKeys.substring(0,allKeys.length-1));
                                                 }
                                             });
-										  } else {
-											$("#downloadUnusedKeys").remove();
-											$("#downloadUsedKeys").remove();
+										  } else if (target === '#addKeys') {
+											$("#downloadUnusedKeysBtn").remove();
+											$("#downloadUsedKeysBtn").remove();
 											$(".confirm").show();
 										  }
 										});
@@ -860,6 +736,16 @@
                     }
                 });
             }
+			
+			function download(filename, text) {
+				var element = document.createElement('a');
+				element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+				element.setAttribute('download', filename);
+				element.style.display = 'none';
+				document.body.appendChild(element);
+				element.click();
+				document.body.removeChild(element);
+			}
         });
     </script>
 </body>

@@ -1,5 +1,4 @@
-const defaultLocale = 'strings',
-    nameRegex = /\.\/(\S+)\.json/i;
+const defaultLocale = 'strings';
 var availableLanguages = [],
     tmpLanguage = get('language'),
     myLocal = (tmpLanguage) ? tmpLanguage : getLocale(availableLanguages);
@@ -22,9 +21,7 @@ function getLocale(validLocales) {
 function loadLocales(language) {
     var i18n = $.i18n(),
         langCode = (language === 'strings') ? 'us' : language.substr(language.length - 2).toLowerCase(),
-        translationFile,
-        missing = 0,
-        totalSize = 0;
+        translationFile;
 
     i18n.locale = language;
     translationFile = '../locale/' + i18n.locale + '.json';
@@ -33,7 +30,6 @@ function loadLocales(language) {
             $.getJSON(translationFile, function (obj) {
                 for (var prop in obj) {
                     if (obj.hasOwnProperty(prop)) {
-                        totalSize++;
                         if (obj[prop]) {
                             if (prop.substring(0, 12) === 'placeholder-') {
                                 $('[data-i18n="' + prop + '"]').attr("placeholder", $.i18n(prop));
@@ -43,14 +39,13 @@ function loadLocales(language) {
                                 $('[data-i18n="' + prop + '"]').i18n();
                             }
 
-                        } else {
-                            missing++;
                         }
                     }
                 }
-                
-                store('langMissing', missing);
-                store('langTotal', totalSize);
+				
+				// fix for bootstrap-select elements
+				$('[data-id="commandsDropDown"] > .filter-option').text($.i18n('title-commands'));
+				$('[data-id="botsDropDown"] > .filter-option').text($.i18n('title-bots'));
             });
         }
     );

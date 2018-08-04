@@ -1,6 +1,6 @@
-//#region Setup
+//{#region Setup
 const tmpIPCPassword = get('IPCPassword'),
-	  vGUI = '0.2';
+	  vGUI = '0.3';
 
 if (tmpIPCPassword) {
     $.ajaxSetup({
@@ -24,9 +24,9 @@ $.ajaxSetup({
         }
     }
 });
-//#endregion Setup
+//}#endregion Setup
 
-//#region Footer
+//{#region Footer
 $.ajax({
     url: '/Api/ASF',
     type: 'GET',
@@ -39,9 +39,9 @@ $.ajax({
         $('#changelog').attr('href', 'https://github.com/JustArchi/ArchiSteamFarm/releases/tag/' + vNr);
     }
 });
-//#endregion Footer
+//}#endregion Footer
 
-//#region Bot Status Buttons
+//{#region Bots Status Buttons
 function displayBotStatus() {
     var offline = 0,
 		disconnected = 0,
@@ -90,9 +90,9 @@ function displayBotStatus() {
 
 displayBotStatus();
 window.setInterval(function () { displayBotStatus(); }, 5000);
-//#endregion Bot Status Buttons
+//}#endregion Bots Status Buttons
 
-//#region ASF Information
+//{#region Information
 function displayRAMUsage() {
     $.ajax({
         url: '/Api/ASF',
@@ -139,9 +139,9 @@ function displayUptime() {
 
 displayUptime();
 window.setInterval(function () { displayUptime(); }, 60000);
-//#endregion ASF Information
+//}#endregion Information
 
-//#region Commands Page
+//{#region Commands
 var $cmdInput = $('#commandInput');
 
 function getDateAndTime() {
@@ -155,7 +155,7 @@ function getDateAndTime() {
 }
 
 function logCommand(state, cmd) {
-    var tmpAutoClear = get('autoClear');
+    var tmpAutoClear = get('chkClear');
 
     if (state) {
         $('#commandSent').val($.i18n('commands-sent', getDateAndTime(), cmd));
@@ -175,7 +175,7 @@ function logCommand(state, cmd) {
 function sendCommand() {
     var command = $cmdInput.val(),
         requestURL = '/Api/Command/' + encodeURIComponent(command),
-        tmpAutoClear = get('autoClear');
+        tmpAutoClear = get('chkClear');
 
     if (command === '') return;
 
@@ -210,9 +210,9 @@ function sendCommand() {
 
     if (tmpAutoClear !== 'false') $cmdInput.val('');
 }
-//#endregion Commands Page
+//}#endregion Commands
 
-//#region Global Config Utils
+//{#region Config Utils
 function generateConfigHTML(mode) {
     var namespace = mode === 'ASF' ? 'ArchiSteamFarm.GlobalConfig' : 'ArchiSteamFarm.BotConfig';
     $('.box-content-config').empty(); // Clear page content first
@@ -317,9 +317,9 @@ function createClickFunction() {
         });
     }
 }
-//#endregion Global Config Utils
+//}#endregion Config Utils
 
-//#region Config Editor
+//{#region Editor
 var globalConfig = {};
 
 function loadPageContentEditor(botName) {
@@ -560,9 +560,9 @@ function saveConfig(botName, config) {
         }
     });
 }
-//#endregion Config Editor
+//}#endregion Editor
 
-//#region Config Generator
+//{#region Generator
 var globalDefaultConfig = {};
 
 function loadPageContentGenerator(mode) {
@@ -759,17 +759,17 @@ function prepareConfigForDownload(mode) {
     }
 }
 
-function downloadObjectAsJson(exportName, exportObj) {
-    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj, null, "\t"));
+function downloadObjectAsJson(filename, json) {
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(json, null, "\t"));
     var downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", exportName + ".json");
+    downloadAnchorNode.setAttribute("download", filename + ".json");
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
 }
-//#endregion Config Page
+//}#endregion Generator
 
-//#region Right Sidebar
+//{#region Right Sidebar
 $(function () {
     'use strict';
 
@@ -800,85 +800,23 @@ $(function () {
             if ($('body').hasClass('fixed')) {
                 $('body').removeClass('fixed');
                 $('body').addClass('layout-boxed');
-                $('#toggleBoxed').removeClass('text-grey');
-                $('#toggleBoxed').addClass('text-olive');
-                $('#iconBoxed').removeClass('fa-rotate-180');
+				$('#chkBoxed').bootstrapToggle('on');
             }
-        }
-    }
-
-    function toggleBoxed() {
-        if ($('body').hasClass('fixed')) {
-            $('body').removeClass('fixed');
-            $('body').addClass('layout-boxed');
-            $('#toggleBoxed').removeClass('text-grey');
-            $('#toggleBoxed').addClass('text-olive');
-            $('#iconBoxed').removeClass('fa-rotate-180');
-            $('#toggleBoxed').blur();
-            store('layoutState', 'layout-boxed');
-        } else {
-            $('body').removeClass('layout-boxed');
-            $('body').addClass('fixed');
-            $('#toggleBoxed').removeClass('text-olive');
-            $('#toggleBoxed').addClass('text-grey');
-            $('#iconBoxed').addClass('fa-rotate-180');
-            $('#toggleBoxed').blur();
-            store('layoutState', 'fixed');
         }
     }
 
     function changeNightmode(savedNightmodeState) {
         if (savedNightmodeState === 'nightmode') {
             $('body').addClass('nightmode');
-            $('#toggleNightmode').removeClass('text-grey');
-            $('#toggleNightmode').addClass('text-olive');
-            $('#iconNightmode').removeClass('fa-rotate-180');
-        }
-    }
-
-    function toggleNightmode() {
-        if ($('body').hasClass('nightmode')) {
-            $('body').removeClass('nightmode');
-            $('#toggleNightmode').removeClass('text-olive');
-            $('#toggleNightmode').addClass('text-grey');
-            $('#iconNightmode').addClass('fa-rotate-180');
-            $('#toggleNightmode').blur();
-            store('nightmodeState', null);
-        } else {
-            $('body').addClass('nightmode');
-            $('#toggleNightmode').removeClass('text-grey');
-            $('#toggleNightmode').addClass('text-olive');
-            $('#iconNightmode').removeClass('fa-rotate-180');
-            $('#toggleNightmode').blur();
-            store('nightmodeState', 'nightmode');
+			$('#chkNightmode').bootstrapToggle('on');
         }
     }
 
     function loadLanguageHTML() {
-        var tmpLangCode = get('langCode'),
-            tmpLangMissing = get('langMissing'),
-            tmpLangTotal = get('langTotal');
+        var tmpLangCode = get('langCode');
 
-        $('#currentLanguage').attr({
-            alt: tmpLangCode,
-            src: '../img/flags/' + tmpLangCode + '.gif'
-        });
-
-		//rework this whole part (add saving "never show again")
-		//fix translation not working
-        if (tmpLangMissing > 0) {
-            var percentage = (tmpLangMissing * 100 / tmpLangTotal).toFixed(0),
-                //infoText = $.i18n('global-language-info', percentage); //Fix this
-                infoText = percentage + "% of this language is not translated!";
-            $('#languageInfo').html('<div class="alert alert-warning alert-dismissible">'
-                //+ '<button title="Never show again" type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>'
-                + infoText
-                + '</div>');
-        } else {
-            $('#languageInfo').text('');
-        }
-
-        $('#languages').collapse('hide');
+		$('#currentLanguage').attr('class', 'flag-icon');
+		$('#currentLanguage').addClass('flag-icon-' + tmpLangCode);
     }
 
     function loadLayout() {
@@ -888,9 +826,7 @@ $(function () {
             tmpLeftSidebarState = get('leftSidebarState');
 
         if (tmpSkin && $.inArray(tmpSkin, mySkins)) changeSkin(tmpSkin);            
-        if (tmpLeftSidebarState === 'sidebar-collapse') {
-            $('body').addClass('sidebar-collapse');
-        } 
+        if (tmpLeftSidebarState === 'sidebar-collapse') $('body').addClass('sidebar-collapse');
         if (tmpLayoutState) changeBoxed(tmpLayoutState);
         if (tmpNightmodeState) changeNightmode(tmpNightmodeState);
 
@@ -900,16 +836,28 @@ $(function () {
             e.preventDefault();
             changeSkin($(this).data('skin'));
         });
-
-        $('#toggleBoxed').on('click', function (e) {
-            e.preventDefault();
-            toggleBoxed();
-        });
-
-        $('#toggleNightmode').on('click', function (e) {
-            e.preventDefault();
-            toggleNightmode();
-        });
+		
+		$('#chkBoxed').change(function() {
+			if ($('body').hasClass('fixed')) {
+				$('body').removeClass('fixed');
+				$('body').addClass('layout-boxed');
+				store('layoutState', 'layout-boxed');
+			} else {
+				$('body').removeClass('layout-boxed');
+				$('body').addClass('fixed');
+				store('layoutState', 'fixed');
+			}
+		});
+		
+		$('#chkNightmode').change(function() {
+			if ($('body').hasClass('nightmode')) {
+				$('body').removeClass('nightmode');
+				store('nightmodeState', null);
+			} else {
+				$('body').addClass('nightmode');
+				store('nightmodeState', 'nightmode');
+			}
+		});
 
         $('#leftSidebar').on('click', function (e) {
             e.preventDefault();
@@ -917,11 +865,14 @@ $(function () {
             store('leftSidebarState', state);
         });
 
-        $('.language').on('click', function (e) {
+        $('.language-item').on('click', function (e) {
             e.preventDefault();
             loadLocales($(this).data('locale'));
             loadLanguageHTML();
         });
+		
+		$('#chkBoxed').bootstrapToggle();
+		$('#chkNightmode').bootstrapToggle();
     }
 
     // Create the menu
@@ -930,21 +881,21 @@ $(function () {
     // Layout options
     $layoutSettings.append(
         '<h4 class="control-sidebar-heading" data-i18n="global-layout">Layout</h4>'
-        // Boxed Layout
-        + '<div class="form-group hidden-xs hidden-sm">'
+		// Boxed Layout
+		+ '<div class="form-group hidden-xs hidden-sm">'
         + '<label class="control-sidebar-subheading">'
-        + '<button type="button" class="btn btn-box-tool pull-right text-grey" id="toggleBoxed"><i id="iconBoxed" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>'
+        + '<input id="chkBoxed" type="checkbox" data-style="ios pull-right" data-onstyle="default" data-toggle="toggle" data-size="mini" data-on="<i class=\'far fa-square\'></i>" data-off="<i class=\'far fa-square\'></i>">'
         + '<i class="far fa-square fa-fw"></i> <span data-i18n="global-boxed">Boxed Layout</span>'
         + '</label>'
-        + '<p data-i18n="global-boxed-description">Toggle the boxed layout</p>'
+        + '<p data-i18n="global-boxed-description">Toggle boxed layout</p>'
         + '</div>'
-        // Nightmode
-        + '<div class="form-group">'
+		// Nightmode
+		+ '<div class="form-group">'
         + '<label class="control-sidebar-subheading">'
-        + '<button type="button" class="btn btn-box-tool pull-right text-grey" id="toggleNightmode"><i id="iconNightmode" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>'
+        + '<input id="chkNightmode" type="checkbox" data-style="ios pull-right" data-onstyle="default" data-toggle="toggle" data-size="mini" data-on="<i class=\'fas fa-moon\'></i>" data-off="<i class=\'fas fa-moon\'></i>">'
         + '<i class="fas fa-moon fa-fw"></i> <span data-i18n="global-nightmode">Nightmode</span>'
         + '</label>'
-        + '<p data-i18n="global-nightmode-description">Toggle the nightmode</p>'
+        + '<p data-i18n="global-nightmode-description">Toggle nightmode</p>'
         + '</div>'
     );
     
@@ -975,31 +926,19 @@ $(function () {
     $layoutSettings.append('<h4 class="control-sidebar-heading" data-i18n="global-skins">Skins</h4>');
     $layoutSettings.append($skinsList);
 
-    var $languagesList = $('<div />', { 'class': 'collapse', 'id': 'languages' });
-
     loadAllLanguages();
 
     for (var i in availableLanguages) {
         var language = availableLanguages[i],
-            langCode = (language === 'strings') ? 'us' : language.substr(language.length - 2).toLowerCase();
-
-        $languagesList.append('<button type="button" class="btn btn-box-tool language" data-locale="' + language + '"><img src="../img/flags/' + langCode + '.gif" alt="' + langCode + '"></button>');
+		langCode = (language === 'strings') ? 'us' : language.substr(language.length - 2).toLowerCase();
+		
+		if (language === 'strings.sr-CS') langCode = 'rs'; // fix for flag-icon-css
+		
+        $('.dropdown-language').append('<a class="language-item" href="javascript:void(0)" data-locale="' + language + '"><i class="flag-icon flag-icon-' + langCode + '"></i></a>');
     }
-
-    $layoutSettings.append('<h4 class="control-sidebar-heading" data-i18n="global-language">Language</h4>'
-        + '<div id="languageInfo"></div>'
-        + '<div class="form-group">'
-        + '<label class="control-sidebar-subheading">'
-        + '<button type="button" class="btn btn-box-tool pull-right" data-toggle="collapse" data-target="#languages"><span data-i18n="global-change-language">Change language</span> <i class="fas fa-caret-down"></i></button>'
-        + '<img id="currentLanguage" src="../img/flags/us.gif" alt="us">'
-        + '</label>'
-        + '</div>'
-    );
-
-    $layoutSettings.append($languagesList);
 
     $('#control-right-sidebar').after($layoutSettings);
 
     loadLayout();
 });
-//#endregion Right Sidebar
+//}#endregion Right Sidebar
