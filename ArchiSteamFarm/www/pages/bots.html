@@ -763,8 +763,10 @@
 										  var target = $(e.target).attr("href");
 										  
 										  if (target === '#unusedKeys') {
+											$("#downloadUnusedKeysBtn").remove();
+											$("#downloadUsedKeysBtn").remove();
 											$(".confirm").hide();
-											$(".sa-button-container").append('<div class="sa-confirm-button-container">'
+											$(".sa-button-container").append('<div id="downloadUnusedKeysBtn" class="sa-confirm-button-container">'
 												+ '<button class="confirm btn btn-lg btn-success" id="downloadUnusedKeys" tabindex="1" style="display: inline-block;">'
 												+ $.i18n('bots-redeem-unused-button', BotName) + '</button>'
 												+ '</div>');
@@ -790,8 +792,10 @@
                                                 }
                                             });
 										  } else if (target === '#usedKeys') {
+											$("#downloadUnusedKeysBtn").remove();
+											$("#downloadUsedKeysBtn").remove();
 											$(".confirm").hide();
-											$(".sa-button-container").append('<div class="sa-confirm-button-container">'
+											$(".sa-button-container").append('<div id="downloadUsedKeysBtn" class="sa-confirm-button-container">'
 												+ '<button class="confirm btn btn-lg btn-success" id="downloadUsedKeys" tabindex="1" style="display: inline-block;">'
 												+ $.i18n('bots-redeem-used-button', BotName) + '</button>'
 												+ '</div>');
@@ -816,9 +820,9 @@
 													$('#usedKeysText').val(allKeys.substring(0,allKeys.length-1));
                                                 }
                                             });
-										  } else {
-											$("#downloadUnusedKeys").remove();
-											$("#downloadUsedKeys").remove();
+										  } else if (target === '#addKeys') {
+											$("#downloadUnusedKeysBtn").remove();
+											$("#downloadUsedKeysBtn").remove();
 											$(".confirm").show();
 										  }
 										});
