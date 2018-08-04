@@ -41,7 +41,7 @@ $.ajax({
 });
 //}#endregion Footer
 
-//{#region Bot Status Buttons
+//{#region Bots Status Buttons
 function displayBotStatus() {
     var offline = 0,
 		disconnected = 0,
@@ -90,9 +90,9 @@ function displayBotStatus() {
 
 displayBotStatus();
 window.setInterval(function () { displayBotStatus(); }, 5000);
-//}#endregion Bot Status Buttons
+//}#endregion Bots Status Buttons
 
-//{#region ASF Information
+//{#region Information
 function displayRAMUsage() {
     $.ajax({
         url: '/Api/ASF',
@@ -139,9 +139,9 @@ function displayUptime() {
 
 displayUptime();
 window.setInterval(function () { displayUptime(); }, 60000);
-//}#endregion ASF Information
+//}#endregion Information
 
-//{#region Commands Page
+//{#region Commands
 var $cmdInput = $('#commandInput');
 
 function getDateAndTime() {
@@ -210,9 +210,9 @@ function sendCommand() {
 
     if (tmpAutoClear !== 'false') $cmdInput.val('');
 }
-//}#endregion Commands Page
+//}#endregion Commands
 
-//{#region Global Config Utils
+//{#region Config Utils
 function generateConfigHTML(mode) {
     var namespace = mode === 'ASF' ? 'ArchiSteamFarm.GlobalConfig' : 'ArchiSteamFarm.BotConfig';
     $('.box-content-config').empty(); // Clear page content first
@@ -317,9 +317,9 @@ function createClickFunction() {
         });
     }
 }
-//}#endregion Global Config Utils
+//}#endregion Config Utils
 
-//{#region Config Editor
+//{#region Editor
 var globalConfig = {};
 
 function loadPageContentEditor(botName) {
@@ -560,9 +560,9 @@ function saveConfig(botName, config) {
         }
     });
 }
-//}#endregion Config Editor
+//}#endregion Editor
 
-//{#region Config Generator
+//{#region Generator
 var globalDefaultConfig = {};
 
 function loadPageContentGenerator(mode) {
@@ -767,7 +767,7 @@ function downloadObjectAsJson(filename, json) {
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
 }
-//}#endregion Config Page
+//}#endregion Generator
 
 //{#region Right Sidebar
 $(function () {
