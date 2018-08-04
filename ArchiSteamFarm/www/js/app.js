@@ -884,18 +884,18 @@ $(function () {
 		// Boxed Layout
 		+ '<div class="form-group hidden-xs hidden-sm">'
         + '<label class="control-sidebar-subheading">'
-        + '<input id="chkBoxed" type="checkbox" data-style="ios pull-right" data-onstyle="default" data-toggle="toggle" data-size="mini" data-on="<i class=\'far fa-square fa-fw text-olive\'></i>" data-off="<i class=\'far fa-square fa-fw\'></i>">'
+        + '<input id="chkBoxed" type="checkbox" data-style="ios pull-right" data-onstyle="default" data-toggle="toggle" data-size="mini" data-on="<i class=\'far fa-square\'></i>" data-off="<i class=\'far fa-square\'></i>">'
         + '<i class="far fa-square fa-fw"></i> <span data-i18n="global-boxed">Boxed Layout</span>'
         + '</label>'
-        + '<p data-i18n="global-boxed-description">Toggle the boxed layout</p>'
+        + '<p data-i18n="global-boxed-description">Toggle boxed layout</p>'
         + '</div>'
 		// Nightmode
 		+ '<div class="form-group">'
         + '<label class="control-sidebar-subheading">'
-        + '<input id="chkNightmode" type="checkbox" data-style="ios pull-right" data-onstyle="default" data-toggle="toggle" data-size="mini" data-on="<i class=\'fas fa-moon fa-fw text-olive\'></i>" data-off="<i class=\'fas fa-moon fa-fw\'></i>">'
+        + '<input id="chkNightmode" type="checkbox" data-style="ios pull-right" data-onstyle="default" data-toggle="toggle" data-size="mini" data-on="<i class=\'fas fa-moon\'></i>" data-off="<i class=\'fas fa-moon\'></i>">'
         + '<i class="fas fa-moon fa-fw"></i> <span data-i18n="global-nightmode">Nightmode</span>'
         + '</label>'
-        + '<p data-i18n="global-nightmode-description">Toggle the nightmode</p>'
+        + '<p data-i18n="global-nightmode-description">Toggle nightmode</p>'
         + '</div>'
     );
     

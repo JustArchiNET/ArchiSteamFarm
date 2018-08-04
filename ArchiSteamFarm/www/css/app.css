@@ -207,6 +207,10 @@ button.bot-resumed:hover {
 	border-radius: 20px;
 }
 
+.toggle-on {
+	color: #3d9970 !important;
+}
+
 .single-btn {
 	vertical-align: -webkit-baseline-middle;
 }
