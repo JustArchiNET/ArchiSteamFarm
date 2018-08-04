@@ -202,3 +202,7 @@ button.bot-resumed:hover {
     max-height: 220px;
     overflow-x: hidden;
 }
+
+.toggle.ios, .toggle-on.ios, .toggle-off.ios, .toggle-handle { 
+	border-radius: 20px;
+}
