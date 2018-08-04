@@ -196,3 +196,9 @@ button.bot-resumed:hover {
 	background: #222d32 !important;
 	border-color: #222d32 !important;
 }
+
+.scrollable-menu {
+    height: auto;
+    max-height: 220px;
+    overflow-x: hidden;
+}
