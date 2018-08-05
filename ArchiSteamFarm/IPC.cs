@@ -96,7 +96,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static void Start(HashSet<string> prefixes) {
+		internal static void Start(IReadOnlyCollection<string> prefixes) {
 			if ((prefixes == null) || (prefixes.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(prefixes));
 				return;
@@ -275,6 +275,8 @@ namespace ArchiSteamFarm {
 				}
 			}
 
+			jsonRequest.GlobalConfig.ShouldSerializeEverything = false;
+
 			string filePath = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName);
 
 			if (!await GlobalConfig.Write(filePath, jsonRequest.GlobalConfig).ConfigureAwait(false)) {
@@ -407,6 +409,8 @@ namespace ArchiSteamFarm {
 					jsonRequest.BotConfig.SteamPassword = bot.BotConfig.SteamPassword;
 				}
 			}
+
+			jsonRequest.BotConfig.ShouldSerializeEverything = false;
 
 			string filePath = Path.Combine(SharedInfo.ConfigDirectory, botName + SharedInfo.ConfigExtension);
 

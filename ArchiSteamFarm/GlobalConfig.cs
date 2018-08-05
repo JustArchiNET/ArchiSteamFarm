@@ -20,7 +20,7 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net;
@@ -33,91 +33,118 @@ using SteamKit2;
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	internal sealed class GlobalConfig {
-		internal const byte DefaultConnectionTimeout = 60;
-		internal const ushort DefaultIPCPort = 1242;
-		internal const byte DefaultLoginLimiterDelay = 10;
+		private const bool DefaultAutoRestart = true;
+		private const string DefaultCommandPrefix = "!";
+		private const byte DefaultConfirmationsLimiterDelay = 10;
+		private const byte DefaultConnectionTimeout = 60;
+		private const string DefaultCurrentCulture = null;
+		private const bool DefaultDebug = false;
+		private const byte DefaultFarmingDelay = 15;
+		private const byte DefaultGiftsLimiterDelay = 1;
+		private const bool DefaultHeadless = false;
+		private const byte DefaultIdleFarmingPeriod = 8;
+		private const byte DefaultInventoryLimiterDelay = 3;
+		private const bool DefaultIPC = false;
+		private const string DefaultIPCPassword = null;
+		private const ushort DefaultIPCPort = 1242;
+		private const byte DefaultLoginLimiterDelay = 10;
+		private const byte DefaultMaxFarmingTime = 10;
+		private const byte DefaultMaxTradeHoldDuration = 15;
+		private const EOptimizationMode DefaultOptimizationMode = EOptimizationMode.MaxPerformance;
+		private const bool DefaultStatistics = true;
+		private const string DefaultSteamMessagePrefix = "/me ";
+		private const ulong DefaultSteamOwnerID = 0;
+		private const ProtocolTypes DefaultSteamProtocols = ProtocolTypes.All;
+		private const EUpdateChannel DefaultUpdateChannel = EUpdateChannel.Stable;
+		private const byte DefaultUpdatePeriod = 24;
+		private const ushort DefaultWebLimiterDelay = 200;
+		private const string DefaultWebProxyPassword = null;
+		private const string DefaultWebProxyText = null;
+		private const string DefaultWebProxyUsername = null;
 
-		internal static readonly HashSet<uint> SalesBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900, 762800, 876740 }; // Steam Summer/Winter sales
+		internal static readonly ImmutableHashSet<uint> SalesBlacklist = ImmutableHashSet.Create<uint>(267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900, 762800, 876740);
+		private static readonly ImmutableHashSet<string> DefaultIPCPrefixes = ImmutableHashSet.Create("http://127.0.0.1:" + DefaultIPCPort + "/");
+		private static readonly ImmutableHashSet<uint> DefaultBlacklist = ImmutableHashSet.Create<uint>();
 
 		private static readonly SemaphoreSlim WriteSemaphore = new SemaphoreSlim(1, 1);
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool AutoRestart = true;
+		internal readonly bool AutoRestart = DefaultAutoRestart;
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly HashSet<uint> Blacklist = new HashSet<uint>();
+		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
+		internal readonly ImmutableHashSet<uint> Blacklist = DefaultBlacklist;
 
 		[JsonProperty]
-		internal readonly string CommandPrefix = "!";
+		internal readonly string CommandPrefix = DefaultCommandPrefix;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte ConfirmationsLimiterDelay = 10;
+		internal readonly byte ConfirmationsLimiterDelay = DefaultConfirmationsLimiterDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte ConnectionTimeout = DefaultConnectionTimeout;
 
 		[JsonProperty]
-		internal readonly string CurrentCulture;
+		internal readonly string CurrentCulture = DefaultCurrentCulture;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool Debug;
+		internal readonly bool Debug = DefaultDebug;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte FarmingDelay = 15;
+		internal readonly byte FarmingDelay = DefaultFarmingDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte GiftsLimiterDelay = 1;
+		internal readonly byte GiftsLimiterDelay = DefaultGiftsLimiterDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool Headless;
+		internal readonly bool Headless = DefaultHeadless;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte IdleFarmingPeriod = 8;
+		internal readonly byte IdleFarmingPeriod = DefaultIdleFarmingPeriod;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte InventoryLimiterDelay = 3;
+		internal readonly byte InventoryLimiterDelay = DefaultInventoryLimiterDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool IPC;
+		internal readonly bool IPC = DefaultIPC;
 
 		[JsonProperty]
-		internal readonly string IPCPassword;
+		internal readonly string IPCPassword = DefaultIPCPassword;
 
 		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
-		internal readonly HashSet<string> IPCPrefixes = new HashSet<string> { "http://127.0.0.1:" + DefaultIPCPort + "/" };
+		internal readonly ImmutableHashSet<string> IPCPrefixes = DefaultIPCPrefixes;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte LoginLimiterDelay = DefaultLoginLimiterDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte MaxFarmingTime = 10;
+		internal readonly byte MaxFarmingTime = DefaultMaxFarmingTime;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte MaxTradeHoldDuration = 15;
+		internal readonly byte MaxTradeHoldDuration = DefaultMaxTradeHoldDuration;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly EOptimizationMode OptimizationMode = EOptimizationMode.MaxPerformance;
+		internal readonly EOptimizationMode OptimizationMode = DefaultOptimizationMode;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool Statistics = true;
+		internal readonly bool Statistics = DefaultStatistics;
 
 		[JsonProperty]
-		internal readonly string SteamMessagePrefix = "/me ";
+		internal readonly string SteamMessagePrefix = DefaultSteamMessagePrefix;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly EUpdateChannel UpdateChannel = EUpdateChannel.Stable;
+		internal readonly EUpdateChannel UpdateChannel = DefaultUpdateChannel;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte UpdatePeriod = 24;
+		internal readonly byte UpdatePeriod = DefaultUpdatePeriod;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ushort WebLimiterDelay = 200;
+		internal readonly ushort WebLimiterDelay = DefaultWebLimiterDelay;
 
 		[JsonProperty(PropertyName = nameof(WebProxy))]
-		internal readonly string WebProxyText;
+		internal readonly string WebProxyText = DefaultWebProxyText;
 
 		[JsonProperty]
-		internal readonly string WebProxyUsername;
+		internal readonly string WebProxyUsername = DefaultWebProxyUsername;
 
 		internal WebProxy WebProxy {
 			get {
@@ -161,14 +188,16 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal ulong SteamOwnerID { get; private set; }
+		internal bool ShouldSerializeEverything { private get; set; } = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal ProtocolTypes SteamProtocols { get; private set; } = ProtocolTypes.All;
+		internal ulong SteamOwnerID { get; private set; } = DefaultSteamOwnerID;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal ProtocolTypes SteamProtocols { get; private set; } = DefaultSteamProtocols;
 
 		[JsonProperty]
-		internal string WebProxyPassword { get; set; }
+		internal string WebProxyPassword { get; set; } = DefaultWebProxyPassword;
 
 		private WebProxy _WebProxy;
 		private bool ShouldSerializeSensitiveDetails = true;
@@ -185,8 +214,6 @@ namespace ArchiSteamFarm {
 				SteamOwnerID = result;
 			}
 		}
-
-		public bool ShouldSerializeWebProxyPassword() => ShouldSerializeSensitiveDetails;
 
 		internal static async Task<GlobalConfig> Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
@@ -247,6 +274,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			globalConfig.ShouldSerializeEverything = false;
 			globalConfig.ShouldSerializeSensitiveDetails = false;
 			return globalConfig;
 		}
@@ -292,5 +320,39 @@ namespace ArchiSteamFarm {
 			[SuppressMessage("ReSharper", "UnusedMember.Global")]
 			Experimental
 		}
+
+		// ReSharper disable UnusedMember.Global
+		public bool ShouldSerializeAutoRestart() => ShouldSerializeEverything || (AutoRestart != DefaultAutoRestart);
+		public bool ShouldSerializeBlacklist() => ShouldSerializeEverything || ((Blacklist != DefaultBlacklist) && !Blacklist.SetEquals(DefaultBlacklist));
+		public bool ShouldSerializeCommandPrefix() => ShouldSerializeEverything || (CommandPrefix != DefaultCommandPrefix);
+		public bool ShouldSerializeConfirmationsLimiterDelay() => ShouldSerializeEverything || (ConfirmationsLimiterDelay != DefaultConfirmationsLimiterDelay);
+		public bool ShouldSerializeConnectionTimeout() => ShouldSerializeEverything || (ConnectionTimeout != DefaultConnectionTimeout);
+		public bool ShouldSerializeCurrentCulture() => ShouldSerializeEverything || (CurrentCulture != DefaultCurrentCulture);
+		public bool ShouldSerializeDebug() => ShouldSerializeEverything || (Debug != DefaultDebug);
+		public bool ShouldSerializeFarmingDelay() => ShouldSerializeEverything || (FarmingDelay != DefaultFarmingDelay);
+		public bool ShouldSerializeGiftsLimiterDelay() => ShouldSerializeEverything || (GiftsLimiterDelay != DefaultGiftsLimiterDelay);
+		public bool ShouldSerializeHeadless() => ShouldSerializeEverything || (Headless != DefaultHeadless);
+		public bool ShouldSerializeIdleFarmingPeriod() => ShouldSerializeEverything || (IdleFarmingPeriod != DefaultIdleFarmingPeriod);
+		public bool ShouldSerializeInventoryLimiterDelay() => ShouldSerializeEverything || (InventoryLimiterDelay != DefaultInventoryLimiterDelay);
+		public bool ShouldSerializeIPC() => ShouldSerializeEverything || (IPC != DefaultIPC);
+		public bool ShouldSerializeIPCPassword() => ShouldSerializeEverything || (IPCPassword != DefaultIPCPassword);
+		public bool ShouldSerializeIPCPrefixes() => ShouldSerializeEverything || ((IPCPrefixes != DefaultIPCPrefixes) && !IPCPrefixes.SetEquals(DefaultIPCPrefixes));
+		public bool ShouldSerializeLoginLimiterDelay() => ShouldSerializeEverything || (LoginLimiterDelay != DefaultLoginLimiterDelay);
+		public bool ShouldSerializeMaxFarmingTime() => ShouldSerializeEverything || (MaxFarmingTime != DefaultMaxFarmingTime);
+		public bool ShouldSerializeMaxTradeHoldDuration() => ShouldSerializeEverything || (MaxTradeHoldDuration != DefaultMaxTradeHoldDuration);
+		public bool ShouldSerializeOptimizationMode() => ShouldSerializeEverything || (OptimizationMode != DefaultOptimizationMode);
+		public bool ShouldSerializeSSteamOwnerID() => ShouldSerializeEverything; // We never serialize helper properties
+		public bool ShouldSerializeStatistics() => ShouldSerializeEverything || (Statistics != DefaultStatistics);
+		public bool ShouldSerializeSteamMessagePrefix() => ShouldSerializeEverything || (SteamMessagePrefix != DefaultSteamMessagePrefix);
+		public bool ShouldSerializeSteamOwnerID() => ShouldSerializeEverything || (SteamOwnerID != DefaultSteamOwnerID);
+		public bool ShouldSerializeSteamProtocols() => ShouldSerializeEverything || (SteamProtocols != DefaultSteamProtocols);
+		public bool ShouldSerializeUpdateChannel() => ShouldSerializeEverything || (UpdateChannel != DefaultUpdateChannel);
+		public bool ShouldSerializeUpdatePeriod() => ShouldSerializeEverything || (UpdatePeriod != DefaultUpdatePeriod);
+		public bool ShouldSerializeWebLimiterDelay() => ShouldSerializeEverything || (WebLimiterDelay != DefaultWebLimiterDelay);
+		public bool ShouldSerializeWebProxyPassword() => ShouldSerializeSensitiveDetails && (ShouldSerializeEverything || (WebProxyPassword != DefaultWebProxyPassword));
+		public bool ShouldSerializeWebProxyText() => ShouldSerializeEverything || (WebProxyText != DefaultWebProxyText);
+		public bool ShouldSerializeWebProxyUsername() => ShouldSerializeEverything || (WebProxyUsername != DefaultWebProxyUsername);
+
+		// ReSharper restore UnusedMember.Global
 	}
 }
