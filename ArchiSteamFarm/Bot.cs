@@ -80,7 +80,7 @@ namespace ArchiSteamFarm {
 
 		private readonly ArchiHandler ArchiHandler;
 		private readonly BotDatabase BotDatabase;
-
+		private readonly Dictionary<uint, string> CachedGamesOwned = new Dictionary<uint, string>();
 		private readonly CallbackManager CallbackManager;
 		private readonly SemaphoreSlim CallbackSemaphore = new SemaphoreSlim(1, 1);
 
@@ -2099,6 +2099,11 @@ namespace ArchiSteamFarm {
 				}
 			}
 
+			lock (CachedGamesOwned) {
+				CachedGamesOwned.Clear();
+				CachedGamesOwned.TrimExcess();
+			}
+
 			OwnedPackageIDs.Clear();
 
 			bool refreshData = !BotConfig.IdleRefundableGames || BotConfig.FarmingOrders.Contains(BotConfig.EFarmingOrder.RedeemDateTimesAscending) || BotConfig.FarmingOrders.Contains(BotConfig.EFarmingOrder.RedeemDateTimesDescending);
@@ -3990,11 +3995,31 @@ namespace ArchiSteamFarm {
 				return (FormatBotResponse(Strings.BotNotConnected), null);
 			}
 
-			await LimitGiftsRequestsAsync().ConfigureAwait(false);
+			Dictionary<uint, string> ownedGames = null;
 
-			Dictionary<uint, string> ownedGames = await ArchiWebHandler.HasValidApiKey().ConfigureAwait(false) ? await ArchiWebHandler.GetOwnedGames(CachedSteamID).ConfigureAwait(false) : await ArchiWebHandler.GetMyOwnedGames().ConfigureAwait(false);
-			if ((ownedGames == null) || (ownedGames.Count == 0)) {
-				return (FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(ownedGames))), null);
+			lock (CachedGamesOwned) {
+				if (CachedGamesOwned.Count > 0) {
+					ownedGames = new Dictionary<uint, string>(CachedGamesOwned);
+				}
+			}
+
+			if (ownedGames == null) {
+				await LimitGiftsRequestsAsync().ConfigureAwait(false);
+
+				ownedGames = await ArchiWebHandler.HasValidApiKey().ConfigureAwait(false) ? await ArchiWebHandler.GetOwnedGames(CachedSteamID).ConfigureAwait(false) : await ArchiWebHandler.GetMyOwnedGames().ConfigureAwait(false);
+				if ((ownedGames == null) || (ownedGames.Count == 0)) {
+					return (FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(ownedGames))), null);
+				}
+
+				lock (CachedGamesOwned) {
+					if (CachedGamesOwned.Count == 0) {
+						foreach (KeyValuePair<uint, string> ownedGame in ownedGames) {
+							CachedGamesOwned[ownedGame.Key] = ownedGame.Value;
+						}
+
+						CachedGamesOwned.TrimExcess();
+					}
+				}
 			}
 
 			StringBuilder response = new StringBuilder();
