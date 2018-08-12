@@ -1,16 +1,16 @@
-# ASF is a C# project with solution named ArchiSteamFarm.sln
+# ASF is a C# project with a solution file named ArchiSteamFarm.sln
 language: csharp
 solution: ArchiSteamFarm.sln
 
-# Save bandwidth by limiting git clone to only last 10 commits
+# We can save bandwidth by limiting git clone to only last 10 commits
 git:
   depth: 10
 
-# Use latest images for building
+# Use latest images for building: https://blog.travis-ci.com/2017-12-01-new-update-schedule-for-linux-build-images
 group: travis_latest
 
-# ASF is based on .NET Core platform
-dotnet: 2.1.302
+# ASF is based on .NET Core platform, we're not building with Mono
+dotnet: 2.1
 mono: none
 
 env:
@@ -66,11 +66,12 @@ matrix:
   fast_finish: true
   include:
     # We're building ASF with dotnet on latest versions of Linux and OS X
-    # Sadly, travis is still missing https://github.com/travis-ci/travis-ci/issues/8922
+    # Sadly, travis is still missing support for selecting latest images: https://github.com/travis-ci/travis-ci/issues/8922
     - os: linux
-      # Ref: https://docs.travis-ci.com/user/reference/trusty/
+      # Ref: https://docs.travis-ci.com/user/reference/trusty
       dist: trusty
       sudo: false
     - os: osx
-      # Ref: https://docs.travis-ci.com/user/reference/osx/
+      # Ref: https://docs.travis-ci.com/user/reference/osx
+      dotnet: 2.1.302 # For OSX, we need absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
       osx_image: xcode9.4
