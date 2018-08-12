@@ -439,6 +439,11 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
+			if (Program.GlobalConfig.SteamOwnerID == 0) {
+				await ResponseJsonObject(request, response, new GenericResponse<string>(false, string.Format(Strings.ErrorIsInvalid, nameof(Program.GlobalConfig.SteamOwnerID))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
 			Bot targetBot = Bot.Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value).FirstOrDefault();
 			if (targetBot == null) {
 				await ResponseJsonObject(request, response, new GenericResponse<string>(false, Strings.ErrorNoBotsDefined), HttpStatusCode.BadRequest).ConfigureAwait(false);
