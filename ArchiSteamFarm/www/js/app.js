@@ -385,7 +385,11 @@ function loadConfigValues(botName) {
                             }
                             break;
                         case 'System.UInt64':
-                            $key.val(config['s_' + key]);
+							if(config.includes('s_' + key)){
+								$key.val(config['s_' + key]);
+							} else {
+								$key.val(config[key])
+							}
                             break;
 
                         case 'System.Collections.Generic.HashSet`1[System.String]':
@@ -697,10 +701,10 @@ function prepareConfigForDownload(mode) {
                     break;
 
                 case 'System.UInt64':
-                    if ($keyValue !== config['s_' + key]) {
-                        delete config[key];
-                        config['s_' + key] = $keyValue;
-                    }
+					if ($keyValue !== config['s_' + key]) {
+						delete config[key];
+						config['s_' + key] = $keyValue;
+					}
                     break;
 
                 case 'System.Collections.Generic.HashSet`1[System.UInt32]':
