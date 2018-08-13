@@ -385,11 +385,11 @@ function loadConfigValues(botName) {
                             }
                             break;
                         case 'System.UInt64':
-							if(config.includes('s_' + key)){
-								$key.val(config['s_' + key]);
-							} else {
-								$key.val(config[key])
-							}
+                            if(config.hasOwnProperty('s_' + key)){
+                                $key.val(config['s_' + key]);
+                            } else {
+                                $key.val(config[key])
+                            }
                             break;
 
                         case 'System.Collections.Generic.HashSet`1[System.String]':
