@@ -63,15 +63,16 @@ function displayBotStatus() {
                 if (KeepRunning === false) {
                     offline++;
                 } else {
-                    if (TimeRemaining === '00:00:00') {
-						if (SteamID === 0) {
-							disconnected++;
-						} else {
-							online++;
-						}
-                    } else {
-                        farming++;
-                    }
+			if (SteamID === 0) {
+				disconnected++;
+			} else {
+				if (TimeRemaining === '00:00:00') {
+					online++;
+				}
+				else {
+					farming++;
+				}
+			}
                 }
             }
 
