@@ -49,13 +49,15 @@ Ensure that your log was NOT recorded in Debug mode, as it might contain sensiti
 ```json
 Paste here, in-between triple backtick tags
 
-Ensure that config has hidden/redacted potentially-sensitive properties, such as: 
+Ensure that config has redacted (but NOT removed) potentially-sensitive properties, such as:
 - IPCPassword (recommended)
 - IPCPrefixes (optionally, if exposing public IPs)
 - SteamOwnerID (optionally)
 - WebProxy (optionally, if exposing private details)
 - WebProxyPassword (optionally, if exposing private details)
 - WebProxyUsername (optionally, if exposing private details)
+
+Redacting involves replacing sensitive details (for example with stars ***). You should refrain from removing config lines entirely, as their pure existance might be relevant and should be preserved.
 ```
 
 ### BotName.json config of all affected bot instances (if more than one)
@@ -63,13 +65,15 @@ Ensure that config has hidden/redacted potentially-sensitive properties, such as
 ```json
 Paste here, in-between triple backtick tags
 
-Ensure that config has hidden/redacted potentially-sensitive properties, such as: 
+Ensure that config has redacted (but NOT removed) potentially-sensitive properties, such as:
 - SteamLogin (mandatory)
 - SteamPassword (mandatory)
 - SteamMasterClanID (optionally)
 - SteamParentalPIN (optionally)
 - SteamTradeToken (optionally)
 - SteamUserPermissions (optionally, only SteamIDs)
+
+Redacting involves replacing sensitive details (for example with stars ***). You should refrain from removing config lines entirely, as their pure existance might be relevant and should be preserved.
 ```
 
 ### Additional info
