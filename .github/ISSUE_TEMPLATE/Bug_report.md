@@ -57,7 +57,7 @@ Ensure that config has redacted (but NOT removed) potentially-sensitive properti
 - WebProxyPassword (optionally, if exposing private details)
 - WebProxyUsername (optionally, if exposing private details)
 
-Redacting involves replacing sensitive details (for example with stars ***). You should refrain from removing config lines entirely, as their pure existance might be relevant and should be preserved.
+Redacting involves replacing sensitive details, for example with stars (***). You should refrain from removing config lines entirely, as their pure existance might be relevant and should be preserved.
 ```
 
 ### BotName.json config of all affected bot instances (if more than one)
@@ -73,7 +73,7 @@ Ensure that config has redacted (but NOT removed) potentially-sensitive properti
 - SteamTradeToken (optionally)
 - SteamUserPermissions (optionally, only SteamIDs)
 
-Redacting involves replacing sensitive details (for example with stars ***). You should refrain from removing config lines entirely, as their pure existance might be relevant and should be preserved.
+Redacting involves replacing sensitive details, for example with stars (***). You should refrain from removing config lines entirely, as their pure existance might be relevant and should be preserved.
 ```
 
 ### Additional info
