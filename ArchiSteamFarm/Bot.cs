@@ -1857,15 +1857,14 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			// Steam login, password - ASCII characters only, can contain spaces
+			// Steam login and password fields can contain ASCII characters only, including spaces
+			const string nonAsciiPattern = @"[^\u0000-\u007F]+";
 
-			Regex regex = new Regex(@"[^\u0000-\u007F]+", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
-
-			string username = regex.Replace(BotConfig.SteamLogin, "");
+			string username = Regex.Replace(BotConfig.SteamLogin, nonAsciiPattern, "", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
 			string password = BotConfig.SteamPassword;
 			if (!string.IsNullOrEmpty(password)) {
-				password = regex.Replace(password, "");
+				password = Regex.Replace(password, nonAsciiPattern, "", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.BotLoggingIn);
