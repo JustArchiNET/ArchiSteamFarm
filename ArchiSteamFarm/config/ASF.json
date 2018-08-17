@@ -23,7 +23,7 @@
 	"Statistics": true,
 	"SteamMessagePrefix": "/me ",
 	"SteamOwnerID": 0,
-	"SteamProtocols": 7,
+	"SteamProtocols": 5,
 	"UpdateChannel": 1,
 	"UpdatePeriod": 24,
 	"WebLimiterDelay": 200,

@@ -54,7 +54,7 @@ namespace ArchiSteamFarm {
 		private const bool DefaultStatistics = true;
 		private const string DefaultSteamMessagePrefix = "/me ";
 		private const ulong DefaultSteamOwnerID = 0;
-		private const ProtocolTypes DefaultSteamProtocols = ProtocolTypes.All;
+		private const ProtocolTypes DefaultSteamProtocols = ProtocolTypes.Tcp | ProtocolTypes.WebSocket;
 		private const EUpdateChannel DefaultUpdateChannel = EUpdateChannel.Stable;
 		private const byte DefaultUpdatePeriod = 24;
 		private const ushort DefaultWebLimiterDelay = 200;
