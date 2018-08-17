@@ -22,6 +22,7 @@
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using ArchiSteamFarm.Localization;
 
 namespace ArchiSteamFarm {
@@ -29,13 +30,26 @@ namespace ArchiSteamFarm {
 		internal static bool IsUnix => RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
 		internal static string Variant => RuntimeInformation.OSDescription.Trim();
 
-		internal static void Init(bool systemRequired) {
+		internal static void Init(bool systemRequired, GlobalConfig.EOptimizationMode optimizationMode) {
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
 				DisableQuickEditMode();
 
 				if (systemRequired) {
 					KeepWindowsSystemActive();
 				}
+			}
+
+			switch (optimizationMode) {
+				case GlobalConfig.EOptimizationMode.MaxPerformance:
+					// No specific tuning required for now, ASF is optimized for max performance by default
+					break;
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					// We can disable regex cache which will slightly lower memory usage (for a huge performance hit)
+					Regex.CacheSize = 0;
+					break;
+				default:
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(optimizationMode), optimizationMode));
+					return;
 			}
 		}
 

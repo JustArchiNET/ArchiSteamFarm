@@ -197,7 +197,7 @@ namespace ArchiSteamFarm {
 				ParsePostInitArgs(args);
 			}
 
-			OS.Init(SystemRequired);
+			OS.Init(SystemRequired, GlobalConfig.OptimizationMode);
 
 			await InitGlobalDatabaseAndServices().ConfigureAwait(false);
 
