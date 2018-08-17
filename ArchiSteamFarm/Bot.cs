@@ -555,7 +555,7 @@ namespace ArchiSteamFarm {
 					}
 				} else if (botName.StartsWith("r!", StringComparison.OrdinalIgnoreCase)) {
 					string botPattern = botName.Substring(2);
-					IEnumerable<Bot> regexMatches = Bots.Where(kvp => Regex.Match(kvp.Key, botPattern, RegexOptions.CultureInvariant).Success).Select(kvp => kvp.Value);
+					IEnumerable<Bot> regexMatches = Bots.Where(kvp => Regex.IsMatch(kvp.Key, botPattern, RegexOptions.CultureInvariant)).Select(kvp => kvp.Value);
 					result.UnionWith(regexMatches);
 				}
 
