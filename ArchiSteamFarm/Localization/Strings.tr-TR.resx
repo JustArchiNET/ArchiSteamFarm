@@ -448,7 +448,7 @@ Yığın izleme:
     <value>Bu bot örneğini yapılandırma dosyasında devre dışı bırakıldığından başlatamıyoruz!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Üst üste TwoFactorCodeMismatch hata kodu {0} alındı. 2FA kimlik bilgileriniz artık geçerli değil veya senin saatiniz eşitlenmemiş, iptal ediliyor!</value>
+    <value>Üst üste TwoFactorCodeMismatch hata kodu {0} alındı. 2FA kimlik bilgileriniz artık geçerli değil veya saatiniz eşitlenmemiş, iptal ediliyor!</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">

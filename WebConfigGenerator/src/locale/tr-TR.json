@@ -5,7 +5,7 @@
     "home.topic": "ASF Yapılandırma Oluşturucu, ASF yapılandırma dosyalarınızı oluşturmanıza yardımcı olan, JavaScript ile yazılmış küçük bir yardımcı araçtır. Oluşturulan yapılandırmayı indirdikten sonra, ASF ana dizininin içindeki <var>config</var> klasörüne taşıyın. Tam belgelendirme için <a href=\"https://github.com/JustArchi/ArchiSteamFarm/wiki/Configuration\" target=\"_blank\" rel=\"noopener\">vikimize</a> bakın. Umarız aracımız sizin için kullanışlı olur.",
     "link.asf": "ASF",
     "link.bot": "Bot",
-    "link.home": "Ana sayfa",
+    "link.home": "Ana Sayfa",
     "schema.access": "Erişim",
     "schema.advanced": "Gelişmiş",
     "schema.basic": "Temel",
