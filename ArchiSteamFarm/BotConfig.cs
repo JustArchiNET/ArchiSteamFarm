@@ -149,8 +149,26 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		internal string SteamParentalPIN { get; set; } = DefaultSteamParentalPIN;
 
-		[JsonProperty]
-		internal string SteamPassword { get; set; } = DefaultSteamPassword;
+		internal string SteamPassword {
+			get {
+				if (string.IsNullOrEmpty(_SteamPassword)) {
+					return null;
+				}
+
+				return PasswordFormat == CryptoHelper.ECryptoMethod.PlainText ? _SteamPassword : CryptoHelper.Decrypt(PasswordFormat, _SteamPassword);
+			}
+			set {
+				if (string.IsNullOrEmpty(value)) {
+					ASF.ArchiLogger.LogNullError(nameof(value));
+					return;
+				}
+
+				_SteamPassword = PasswordFormat == CryptoHelper.ECryptoMethod.PlainText ? value : CryptoHelper.Encrypt(PasswordFormat, value);
+			}
+		}
+
+		[JsonProperty(PropertyName = nameof(SteamPassword))]
+		private string _SteamPassword = DefaultSteamPassword;
 
 		private bool ShouldSerializeSensitiveDetails = true;
 
@@ -250,12 +268,6 @@ namespace ArchiSteamFarm {
 			if (botConfig.TradingPreferences > ETradingPreferences.All) {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.TradingPreferences), botConfig.TradingPreferences));
 				return null;
-			}
-
-			// Support encrypted passwords
-			if ((botConfig.PasswordFormat != CryptoHelper.ECryptoMethod.PlainText) && !string.IsNullOrEmpty(botConfig.SteamPassword)) {
-				// In worst case password will result in null, which will have to be corrected by user during runtime
-				botConfig.SteamPassword = CryptoHelper.Decrypt(botConfig.PasswordFormat, botConfig.SteamPassword);
 			}
 
 			botConfig.ShouldSerializeEverything = false;
