@@ -1832,7 +1832,7 @@ namespace ArchiSteamFarm {
 			if (File.Exists(SentryFilePath)) {
 				try {
 					byte[] sentryFileContent = await RuntimeCompatibility.File.ReadAllBytesAsync(SentryFilePath).ConfigureAwait(false);
-					sentryFileHash = SteamKit2.CryptoHelper.SHAHash(sentryFileContent);
+					sentryFileHash = CryptoHelper.SHAHash(sentryFileContent);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericException(e);
 
@@ -1850,8 +1850,8 @@ namespace ArchiSteamFarm {
 				loginKey = BotDatabase.LoginKey;
 
 				// Decrypt login key if needed
-				if (!string.IsNullOrEmpty(loginKey) && (loginKey.Length > 19) && (BotConfig.PasswordFormat != CryptoHelper.ECryptoMethod.PlainText)) {
-					loginKey = CryptoHelper.Decrypt(BotConfig.PasswordFormat, loginKey);
+				if (!string.IsNullOrEmpty(loginKey) && (loginKey.Length > 19) && (BotConfig.PasswordFormat != ArchiCryptoHelper.ECryptoMethod.PlainText)) {
+					loginKey = ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, loginKey);
 				}
 			} else {
 				// If we're not using login keys, ensure we don't have any saved
@@ -2344,8 +2344,8 @@ namespace ArchiSteamFarm {
 			}
 
 			string loginKey = callback.LoginKey;
-			if (BotConfig.PasswordFormat != CryptoHelper.ECryptoMethod.PlainText) {
-				loginKey = CryptoHelper.Encrypt(BotConfig.PasswordFormat, loginKey);
+			if (BotConfig.PasswordFormat != ArchiCryptoHelper.ECryptoMethod.PlainText) {
+				loginKey = ArchiCryptoHelper.Encrypt(BotConfig.PasswordFormat, loginKey);
 			}
 
 			await BotDatabase.SetLoginKey(loginKey).ConfigureAwait(false);
@@ -4127,7 +4127,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(BotConfig.SteamPassword)));
 			}
 
-			string response = FormatBotResponse(string.Format(Strings.BotEncryptedPassword, CryptoHelper.ECryptoMethod.AES, CryptoHelper.Encrypt(CryptoHelper.ECryptoMethod.AES, BotConfig.SteamPassword))) + FormatBotResponse(string.Format(Strings.BotEncryptedPassword, CryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser, CryptoHelper.Encrypt(CryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser, BotConfig.SteamPassword)));
+			string response = FormatBotResponse(string.Format(Strings.BotEncryptedPassword, ArchiCryptoHelper.ECryptoMethod.AES, ArchiCryptoHelper.Encrypt(ArchiCryptoHelper.ECryptoMethod.AES, BotConfig.SteamPassword))) + FormatBotResponse(string.Format(Strings.BotEncryptedPassword, ArchiCryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser, ArchiCryptoHelper.Encrypt(ArchiCryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser, BotConfig.SteamPassword)));
 			return response;
 		}
 

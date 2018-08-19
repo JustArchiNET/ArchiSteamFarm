@@ -45,7 +45,7 @@ namespace ArchiSteamFarm {
 		private const bool DefaultIdlePriorityQueueOnly = false;
 		private const bool DefaultIdleRefundableGames = true;
 		private const EPersonaState DefaultOnlineStatus = EPersonaState.Online;
-		private const CryptoHelper.ECryptoMethod DefaultPasswordFormat = CryptoHelper.ECryptoMethod.PlainText;
+		private const ArchiCryptoHelper.ECryptoMethod DefaultPasswordFormat = ArchiCryptoHelper.ECryptoMethod.PlainText;
 		private const bool DefaultPaused = false;
 		private const ERedeemingPreferences DefaultRedeemingPreferences = ERedeemingPreferences.None;
 		private const bool DefaultSendOnFarmingFinished = false;
@@ -109,7 +109,7 @@ namespace ArchiSteamFarm {
 		internal readonly EPersonaState OnlineStatus = DefaultOnlineStatus;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly CryptoHelper.ECryptoMethod PasswordFormat = DefaultPasswordFormat;
+		internal readonly ArchiCryptoHelper.ECryptoMethod PasswordFormat = DefaultPasswordFormat;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool Paused = DefaultPaused;
@@ -155,7 +155,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				return PasswordFormat == CryptoHelper.ECryptoMethod.PlainText ? EncryptedSteamPassword : CryptoHelper.Decrypt(PasswordFormat, EncryptedSteamPassword);
+				return PasswordFormat == ArchiCryptoHelper.ECryptoMethod.PlainText ? EncryptedSteamPassword : ArchiCryptoHelper.Decrypt(PasswordFormat, EncryptedSteamPassword);
 			}
 			set {
 				if (string.IsNullOrEmpty(value)) {
@@ -163,7 +163,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				EncryptedSteamPassword = PasswordFormat == CryptoHelper.ECryptoMethod.PlainText ? value : CryptoHelper.Encrypt(PasswordFormat, value);
+				EncryptedSteamPassword = PasswordFormat == ArchiCryptoHelper.ECryptoMethod.PlainText ? value : ArchiCryptoHelper.Encrypt(PasswordFormat, value);
 			}
 		}
 
@@ -245,7 +245,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Enum.IsDefined(typeof(CryptoHelper.ECryptoMethod), botConfig.PasswordFormat)) {
+			if (!Enum.IsDefined(typeof(ArchiCryptoHelper.ECryptoMethod), botConfig.PasswordFormat)) {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.PasswordFormat), botConfig.PasswordFormat));
 				return null;
 			}

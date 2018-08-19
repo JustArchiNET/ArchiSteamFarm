@@ -984,7 +984,7 @@ namespace ArchiSteamFarm {
 			string sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(steamID.ToString()));
 
 			// Generate an AES session key
-			byte[] sessionKey = SteamKit2.CryptoHelper.GenerateRandomBlock(32);
+			byte[] sessionKey = CryptoHelper.GenerateRandomBlock(32);
 
 			// RSA encrypt it with the public key for the universe we're on
 			byte[] cryptedSessionKey;
@@ -997,7 +997,7 @@ namespace ArchiSteamFarm {
 			Array.Copy(Encoding.ASCII.GetBytes(webAPIUserNonce), loginKey, webAPIUserNonce.Length);
 
 			// AES encrypt the loginkey with our session key
-			byte[] cryptedLoginKey = SteamKit2.CryptoHelper.SymmetricEncrypt(loginKey, sessionKey);
+			byte[] cryptedLoginKey = CryptoHelper.SymmetricEncrypt(loginKey, sessionKey);
 
 			// Do the magic
 			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.LoggingIn, ISteamUserAuth));

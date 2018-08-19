@@ -28,7 +28,7 @@ namespace ArchiSteamFarm.JSON {
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class ReleaseResponse {
 			[JsonProperty(PropertyName = "assets", Required = Required.Always)]
-			internal readonly List<Asset> Assets;
+			internal readonly HashSet<Asset> Assets;
 
 			[JsonProperty(PropertyName = "tag_name", Required = Required.Always)]
 			internal readonly string Tag;

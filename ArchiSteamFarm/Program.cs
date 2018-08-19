@@ -158,7 +158,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			CryptoHelper.SetEncryptionKey(cryptKey);
+			ArchiCryptoHelper.SetEncryptionKey(cryptKey);
 		}
 
 		private static void HandlePathArgument(string path) {

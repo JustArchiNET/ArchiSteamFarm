@@ -851,7 +851,7 @@ namespace ArchiSteamFarm {
 
 			GamesToFarm.Clear();
 
-			List<Task> tasks = new List<Task>();
+			HashSet<Task> tasks = new HashSet<Task>();
 			Task mainTask = CheckPage(htmlDocument);
 
 			switch (Program.GlobalConfig.OptimizationMode) {

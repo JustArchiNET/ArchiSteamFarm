@@ -23,9 +23,10 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 using ArchiSteamFarm.Localization;
+using SteamKit2;
 
 namespace ArchiSteamFarm {
-	internal static class CryptoHelper {
+	internal static class ArchiCryptoHelper {
 		private static byte[] EncryptionKey = Encoding.UTF8.GetBytes(nameof(ArchiSteamFarm));
 
 		internal static string Decrypt(ECryptoMethod cryptoMethod, string encrypted) {
@@ -88,7 +89,7 @@ namespace ArchiSteamFarm {
 				}
 
 				byte[] decryptedData = Convert.FromBase64String(encrypted);
-				decryptedData = SteamKit2.CryptoHelper.SymmetricDecrypt(decryptedData, key);
+				decryptedData = CryptoHelper.SymmetricDecrypt(decryptedData, key);
 				return Encoding.UTF8.GetString(decryptedData);
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
@@ -132,7 +133,7 @@ namespace ArchiSteamFarm {
 				}
 
 				byte[] encryptedData = Encoding.UTF8.GetBytes(decrypted);
-				encryptedData = SteamKit2.CryptoHelper.SymmetricEncrypt(encryptedData, key);
+				encryptedData = CryptoHelper.SymmetricEncrypt(encryptedData, key);
 				return Convert.ToBase64String(encryptedData);
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
