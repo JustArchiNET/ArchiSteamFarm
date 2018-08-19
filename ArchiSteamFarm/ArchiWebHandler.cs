@@ -462,7 +462,6 @@ namespace ArchiSteamFarm {
 			const string requestGifts = SteamStoreURL + "/gifts";
 			HtmlDocument response = (await WebLimitRequest(SteamStoreURL, async () => await WebBrowser.UrlGetToHtmlDocument(requestGifts).ConfigureAwait(false)).ConfigureAwait(false))?.Content;
 			if (response == null) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return null;
 			}
 
