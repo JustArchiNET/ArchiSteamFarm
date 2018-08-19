@@ -467,7 +467,7 @@ namespace ArchiSteamFarm {
 
 			HtmlNodeCollection nodes = response.DocumentNode.SelectNodes("//div[@class='pending_gift']/div[starts-with(@id,'pending_gift_')]/div[@class='pending_giftcard_leftcol']/../@id");
 			HashSet<ulong> results = new HashSet<ulong>();
-			foreach (string strGID in nodes.Select(node => node.Attributes["id"].Value)) {
+			foreach (string strGID in nodes.Select(node => node.Attributes["id"].Value.Substring(13))) {
 				if (string.IsNullOrEmpty(strGID)) {
 					Bot.ArchiLogger.LogNullError(nameof(strGID));
 					return null;
