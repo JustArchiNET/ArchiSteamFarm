@@ -467,13 +467,18 @@ namespace ArchiSteamFarm {
 
 			HtmlNodeCollection nodes = response.DocumentNode.SelectNodes("//div[@class='pending_gift']/div[starts-with(@id,'pending_gift_')][count(div[@class='pending_giftcard_leftcol'])>0]/@id");
 			HashSet<ulong> results = new HashSet<ulong>();
-			foreach (string gidText in nodes.Select(node => node.GetAttributeValue("id", null)?.Substring(13))) {
+			foreach (string gidText in nodes.Select(node => node.GetAttributeValue("id", null))) {
 				if (string.IsNullOrEmpty(gidText)) {
 					Bot.ArchiLogger.LogNullError(nameof(gidText));
 					return null;
 				}
 
-				if (!ulong.TryParse(gidText, out ulong gid) || (gid == 0)) {
+				if (gidText.Length <= 13) {
+					Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, nameof(gidText)));
+					return null;
+				}
+
+				if (!ulong.TryParse(gidText.Substring(13), out ulong gid) || (gid == 0)) {
 					Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorParsingObject, nameof(gidText)));
 					return null;
 				}
