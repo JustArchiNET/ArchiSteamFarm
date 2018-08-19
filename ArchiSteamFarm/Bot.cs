@@ -555,8 +555,14 @@ namespace ArchiSteamFarm {
 					}
 				} else if (botName.StartsWith("r!", StringComparison.OrdinalIgnoreCase)) {
 					string botPattern = botName.Substring(2);
-					IEnumerable<Bot> regexMatches = Bots.Where(kvp => Regex.IsMatch(kvp.Key, botPattern, RegexOptions.CultureInvariant)).Select(kvp => kvp.Value);
-					result.UnionWith(regexMatches);
+
+					try {
+						IEnumerable<Bot> regexMatches = Bots.Where(kvp => Regex.IsMatch(kvp.Key, botPattern, RegexOptions.CultureInvariant)).Select(kvp => kvp.Value);
+						result.UnionWith(regexMatches);
+					} catch (ArgumentException e) {
+						ASF.ArchiLogger.LogGenericWarningException(e);
+						return null;
+					}
 				}
 
 				if (!Bots.TryGetValue(botName, out Bot targetBot)) {
