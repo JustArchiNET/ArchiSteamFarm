@@ -1002,7 +1002,7 @@ namespace ArchiSteamFarm {
 			// Do the magic
 			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.LoggingIn, ISteamUserAuth));
 
-			KeyValue response = null;
+			KeyValue response;
 			using (dynamic iSteamUserAuth = WebAPI.GetAsyncInterface(ISteamUserAuth)) {
 				iSteamUserAuth.Timeout = WebBrowser.Timeout;
 
@@ -1020,8 +1020,10 @@ namespace ArchiSteamFarm {
 					).ConfigureAwait(false);
 				} catch (TaskCanceledException e) {
 					Bot.ArchiLogger.LogGenericDebuggingException(e);
+					return false;
 				} catch (Exception e) {
 					Bot.ArchiLogger.LogGenericWarningException(e);
+					return false;
 				}
 			}
 
