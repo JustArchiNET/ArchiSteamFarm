@@ -158,7 +158,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			CryptoHelper.SetEncryptionKey(cryptKey);
+			ArchiCryptoHelper.SetEncryptionKey(cryptKey);
 		}
 
 		private static void HandlePathArgument(string path) {
@@ -197,7 +197,7 @@ namespace ArchiSteamFarm {
 				ParsePostInitArgs(args);
 			}
 
-			OS.Init(SystemRequired);
+			OS.Init(SystemRequired, GlobalConfig.OptimizationMode);
 
 			await InitGlobalDatabaseAndServices().ConfigureAwait(false);
 
