@@ -1,4 +1,4 @@
-﻿//     _                _      _  ____   _                           _____
+//     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
@@ -100,6 +100,49 @@ namespace ArchiSteamFarm {
 			};
 
 			return await UrlPostWithSession(SteamCommunityURL, request, data, referer).ConfigureAwait(false);
+		}
+
+		internal async Task AcceptDigitalGiftCards() {
+			const string requestGifts = SteamStoreURL + "/gifts";
+			HtmlDocument response = (await WebLimitRequest(SteamStoreURL, async () => await WebBrowser.UrlGetToHtmlDocument(requestGifts).ConfigureAwait(false)).ConfigureAwait(false))?.Content;
+			if (response == null) {
+				Bot.ArchiLogger.LogNullError(nameof(response));
+				return;
+			}
+
+			const string requestRedeemGift = "/gifts/0/resolvegiftcard";
+			HtmlNodeCollection nodes = response.DocumentNode.SelectNodes("//div[starts-with(@id,'pending_gift_')]");
+			foreach (string strGID in nodes.Where(node => node?.ChildNodes?.Any(giftNode => giftNode?.Attributes["class"]?.Value?.StartsWith("pending_giftcard") == true) == true).Select(node => node.Attributes["id"]?.Value?.Substring(13))) {
+				if (string.IsNullOrEmpty(strGID)) {
+					Bot.ArchiLogger.LogNullError(nameof(strGID));
+					continue;
+				}
+
+				if (!ulong.TryParse(strGID, out ulong gid) || (gid == 0)) {
+					Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorParsingObject, nameof(strGID)));
+					continue;
+				}
+
+				if (Bot.HandledGifts.Contains(gid)) {
+					continue;
+				}
+
+				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.BotAcceptingGift, strGID));
+
+				Bot.HandledGifts.Add(gid);
+				await Bot.LimitGiftsRequestsAsync().ConfigureAwait(false);
+
+				Steam.NumberResponse result = await UrlPostToJsonObjectWithSession<Steam.NumberResponse>(
+					SteamStoreURL, requestRedeemGift, new Dictionary<string, string>(3) {
+						{ "giftcardid", gid.ToString() },
+						{ "accept", "1" }
+					}
+				).ConfigureAwait(false);
+
+				if (!result.Success) {
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				}
+			}
 		}
 
 		internal async Task<bool> AddFreeLicense(uint subID) {

@@ -1,4 +1,4 @@
-﻿//     _                _      _  ____   _                           _____
+//     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
@@ -6,7 +6,7 @@
 // 
 // Copyright 2015-2018 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -68,6 +68,7 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		internal readonly string BotName;
 
+		internal readonly ConcurrentHashSet<ulong> HandledGifts = new ConcurrentHashSet<ulong>();
 		internal readonly ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)> OwnedPackageIDs = new ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>();
 
 		internal bool CanReceiveSteamCards => !IsAccountLimited && !IsAccountLocked;
@@ -88,7 +89,6 @@ namespace ArchiSteamFarm {
 		private readonly CardsFarmer CardsFarmer;
 
 		private readonly SemaphoreSlim GamesRedeemerInBackgroundSemaphore = new SemaphoreSlim(1, 1);
-		private readonly ConcurrentHashSet<ulong> HandledGifts = new ConcurrentHashSet<ulong>();
 		private readonly Timer HeartBeatTimer;
 		private readonly SemaphoreSlim InitializationSemaphore = new SemaphoreSlim(1, 1);
 		private readonly SemaphoreSlim LootingSemaphore = new SemaphoreSlim(1, 1);
@@ -141,6 +141,7 @@ namespace ArchiSteamFarm {
 		private Timer FamilySharingInactivityTimer;
 		private bool FirstTradeSent;
 		private Timer GamesRedeemerInBackgroundTimer;
+		private uint GiftsCount;
 		private byte HeartBeatFailures;
 		private uint ItemsCount;
 		private EResult LastLogOnResult;
@@ -1781,7 +1782,7 @@ namespace ArchiSteamFarm {
 			await ArchiHandler.JoinChatRoomGroup(chatGroupID).ConfigureAwait(false);
 		}
 
-		private static async Task LimitGiftsRequestsAsync() {
+		internal static async Task LimitGiftsRequestsAsync() {
 			if (Program.GlobalConfig.GiftsLimiterDelay == 0) {
 				return;
 			}
@@ -2519,6 +2520,16 @@ namespace ArchiSteamFarm {
 						if (newTrades) {
 							ArchiLogger.LogGenericTrace(nameof(ArchiHandler.UserNotificationsCallback.EUserNotification.Trading));
 							Utilities.InBackground(Trading.OnNewTrade);
+						}
+
+						break;
+					case ArchiHandler.UserNotificationsCallback.EUserNotification.Gifts:
+						bool newGifts = notification.Value > GiftsCount;
+						GiftsCount = notification.Value;
+
+						if (newGifts) {
+							ArchiLogger.LogGenericTrace(nameof(ArchiHandler.UserNotificationsCallback.EUserNotification.Gifts));
+							Utilities.InBackground(ArchiWebHandler.AcceptDigitalGiftCards);
 						}
 
 						break;
