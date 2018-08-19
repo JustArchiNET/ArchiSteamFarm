@@ -1003,6 +1003,10 @@ namespace ArchiSteamFarm {
 			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.LoggingIn, ISteamUserAuth));
 
 			KeyValue response;
+
+			// We do not use usual retry pattern here as webAPIUserNonce is valid only for a single request
+			// Even during timeout, webAPIUserNonce is most likely already invalid
+			// Instead, the caller is supposed to ask for new webAPIUserNonce and call Init() again on failure
 			using (dynamic iSteamUserAuth = WebAPI.GetAsyncInterface(ISteamUserAuth)) {
 				iSteamUserAuth.Timeout = WebBrowser.Timeout;
 
