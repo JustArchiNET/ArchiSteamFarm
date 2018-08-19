@@ -86,12 +86,12 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> AcceptDigitalGiftCard(ulong gid) {
 			const string requestRedeemGift = "/gifts/0/resolvegiftcard";
-			Steam.NumberResponse result = await UrlPostToJsonObjectWithSession<Steam.NumberResponse>(
-				SteamStoreURL, requestRedeemGift, new Dictionary<string, string>(3) {
-					{ "giftcardid", gid.ToString() },
-					{ "accept", "1" }
-				}
-			).ConfigureAwait(false);
+			Dictionary<string, string> data = new Dictionary<string, string>(3) {
+				{ "giftcardid", gid.ToString() },
+				{ "accept", "1" }
+			};
+
+			Steam.NumberResponse result = await UrlPostToJsonObjectWithSession<Steam.NumberResponse>(SteamStoreURL, requestRedeemGift, data).ConfigureAwait(false);
 
 			return result?.Success == true;
 		}
@@ -459,22 +459,22 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<HashSet<ulong>> GetDigitalGiftCards() {
-			const string requestGifts = SteamStoreURL + "/gifts";
-			HtmlDocument response = (await WebLimitRequest(SteamStoreURL, async () => await WebBrowser.UrlGetToHtmlDocument(requestGifts).ConfigureAwait(false)).ConfigureAwait(false))?.Content;
+			const string requestGifts = "/gifts";
+			HtmlDocument response = await UrlGetToHtmlDocumentWithSession(SteamStoreURL, requestGifts).ConfigureAwait(false);
 			if (response == null) {
 				return null;
 			}
 
 			HtmlNodeCollection nodes = response.DocumentNode.SelectNodes("//div[@class='pending_gift']/div[starts-with(@id,'pending_gift_')]/div[@class='pending_giftcard_leftcol']/../@id");
 			HashSet<ulong> results = new HashSet<ulong>();
-			foreach (string strGID in nodes.Select(node => node.Attributes["id"].Value.Substring(13))) {
-				if (string.IsNullOrEmpty(strGID)) {
-					Bot.ArchiLogger.LogNullError(nameof(strGID));
+			foreach (string gidText in nodes.Select(node => node.GetAttributeValue("id", null)?.Substring(13))) {
+				if (string.IsNullOrEmpty(gidText)) {
+					Bot.ArchiLogger.LogNullError(nameof(gidText));
 					return null;
 				}
 
-				if (!ulong.TryParse(strGID, out ulong gid) || (gid == 0)) {
-					Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorParsingObject, nameof(strGID)));
+				if (!ulong.TryParse(gidText, out ulong gid) || (gid == 0)) {
+					Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorParsingObject, nameof(gidText)));
 					return null;
 				}
 
