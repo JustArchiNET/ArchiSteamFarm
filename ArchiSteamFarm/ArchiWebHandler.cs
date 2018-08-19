@@ -1,18 +1,18 @@
-//     _                _      _  ____   _                           _____
+﻿//     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
-// 
+//
 // Copyright 2015-2018 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -84,6 +84,18 @@ namespace ArchiSteamFarm {
 			WebBrowser.Dispose();
 		}
 
+		internal async Task<bool> AcceptDigitalGiftCard(ulong gid) {
+			const string requestRedeemGift = "/gifts/0/resolvegiftcard";
+			Steam.NumberResponse result = await UrlPostToJsonObjectWithSession<Steam.NumberResponse>(
+				SteamStoreURL, requestRedeemGift, new Dictionary<string, string>(3) {
+					{ "giftcardid", gid.ToString() },
+					{ "accept", "1" }
+				}
+			).ConfigureAwait(false);
+
+			return result?.Success == true;
+		}
+
 		internal async Task<bool> AcceptTradeOffer(ulong tradeID) {
 			if (tradeID == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(tradeID));
@@ -100,49 +112,6 @@ namespace ArchiSteamFarm {
 			};
 
 			return await UrlPostWithSession(SteamCommunityURL, request, data, referer).ConfigureAwait(false);
-		}
-
-		internal async Task AcceptDigitalGiftCards() {
-			const string requestGifts = SteamStoreURL + "/gifts";
-			HtmlDocument response = (await WebLimitRequest(SteamStoreURL, async () => await WebBrowser.UrlGetToHtmlDocument(requestGifts).ConfigureAwait(false)).ConfigureAwait(false))?.Content;
-			if (response == null) {
-				Bot.ArchiLogger.LogNullError(nameof(response));
-				return;
-			}
-
-			const string requestRedeemGift = "/gifts/0/resolvegiftcard";
-			HtmlNodeCollection nodes = response.DocumentNode.SelectNodes("//div[starts-with(@id,'pending_gift_')]");
-			foreach (string strGID in nodes.Where(node => node?.ChildNodes?.Any(giftNode => giftNode?.Attributes["class"]?.Value?.StartsWith("pending_giftcard") == true) == true).Select(node => node.Attributes["id"]?.Value?.Substring(13))) {
-				if (string.IsNullOrEmpty(strGID)) {
-					Bot.ArchiLogger.LogNullError(nameof(strGID));
-					continue;
-				}
-
-				if (!ulong.TryParse(strGID, out ulong gid) || (gid == 0)) {
-					Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorParsingObject, nameof(strGID)));
-					continue;
-				}
-
-				if (Bot.HandledGifts.Contains(gid)) {
-					continue;
-				}
-
-				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.BotAcceptingGift, strGID));
-
-				Bot.HandledGifts.Add(gid);
-				await Bot.LimitGiftsRequestsAsync().ConfigureAwait(false);
-
-				Steam.NumberResponse result = await UrlPostToJsonObjectWithSession<Steam.NumberResponse>(
-					SteamStoreURL, requestRedeemGift, new Dictionary<string, string>(3) {
-						{ "giftcardid", gid.ToString() },
-						{ "accept", "1" }
-					}
-				).ConfigureAwait(false);
-
-				if (!result.Success) {
-					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				}
-			}
 		}
 
 		internal async Task<bool> AddFreeLicense(uint subID) {
@@ -487,6 +456,33 @@ namespace ArchiSteamFarm {
 
 			string request = "/mobileconf/conf?a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&l=english&m=android&p=" + WebUtility.UrlEncode(deviceID) + "&t=" + time + "&tag=conf";
 			return await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
+		}
+
+		internal async Task<HashSet<ulong>> GetDigitalGiftCards() {
+			const string requestGifts = SteamStoreURL + "/gifts";
+			HtmlDocument response = (await WebLimitRequest(SteamStoreURL, async () => await WebBrowser.UrlGetToHtmlDocument(requestGifts).ConfigureAwait(false)).ConfigureAwait(false))?.Content;
+			if (response == null) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				return null;
+			}
+
+			HtmlNodeCollection nodes = response.DocumentNode.SelectNodes("//div[@class='pending_gift']/div[starts-with(@id,'pending_gift_')]/div[@class='pending_giftcard_leftcol']/../@id");
+			HashSet<ulong> results = new HashSet<ulong>();
+			foreach (string strGID in nodes.Select(node => node.Attributes["id"].Value)) {
+				if (string.IsNullOrEmpty(strGID)) {
+					Bot.ArchiLogger.LogNullError(nameof(strGID));
+					return null;
+				}
+
+				if (!ulong.TryParse(strGID, out ulong gid) || (gid == 0)) {
+					Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorParsingObject, nameof(strGID)));
+					return null;
+				}
+
+				results.Add(gid);
+			}
+
+			return results;
 		}
 
 		internal async Task<HtmlDocument> GetDiscoveryQueuePage() {

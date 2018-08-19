@@ -1,18 +1,18 @@
-//     _                _      _  ____   _                           _____
+﻿//     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
-// 
+//
 // Copyright 2015-2018 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -68,7 +68,6 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		internal readonly string BotName;
 
-		internal readonly ConcurrentHashSet<ulong> HandledGifts = new ConcurrentHashSet<ulong>();
 		internal readonly ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)> OwnedPackageIDs = new ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>();
 
 		internal bool CanReceiveSteamCards => !IsAccountLimited && !IsAccountLocked;
@@ -89,10 +88,12 @@ namespace ArchiSteamFarm {
 		private readonly CardsFarmer CardsFarmer;
 
 		private readonly SemaphoreSlim GamesRedeemerInBackgroundSemaphore = new SemaphoreSlim(1, 1);
+		private readonly ConcurrentHashSet<ulong> HandledGifts = new ConcurrentHashSet<ulong>();
 		private readonly Timer HeartBeatTimer;
 		private readonly SemaphoreSlim InitializationSemaphore = new SemaphoreSlim(1, 1);
 		private readonly SemaphoreSlim LootingSemaphore = new SemaphoreSlim(1, 1);
 		private readonly SemaphoreSlim PICSSemaphore = new SemaphoreSlim(1, 1);
+
 		private readonly Statistics Statistics;
 		private readonly SteamApps SteamApps;
 		private readonly SteamClient SteamClient;
@@ -308,6 +309,27 @@ namespace ArchiSteamFarm {
 			}
 
 			return await BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false);
+		}
+
+		private async Task AcceptDigitalGiftCards() {
+			HashSet<ulong> gids = await ArchiWebHandler.GetDigitalGiftCards().ConfigureAwait(false);
+			if ((gids == null) || (gids.Count == 0)) {
+				return;
+			}
+
+			foreach (ulong gid in gids) {
+				HandledGifts.Add(gid);
+
+				ArchiLogger.LogGenericInfo(string.Format(Strings.BotAcceptingGift, gid));
+				await LimitGiftsRequestsAsync().ConfigureAwait(false);
+
+				bool result = await ArchiWebHandler.AcceptDigitalGiftCard(gid).ConfigureAwait(false);
+				if (result) {
+					ArchiLogger.LogGenericInfo(Strings.Success);
+				} else {
+					ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				}
+			}
 		}
 
 		internal async Task<bool> DeleteAllRelatedFiles() {
@@ -1782,7 +1804,7 @@ namespace ArchiSteamFarm {
 			await ArchiHandler.JoinChatRoomGroup(chatGroupID).ConfigureAwait(false);
 		}
 
-		internal static async Task LimitGiftsRequestsAsync() {
+		private static async Task LimitGiftsRequestsAsync() {
 			if (Program.GlobalConfig.GiftsLimiterDelay == 0) {
 				return;
 			}
@@ -2529,7 +2551,7 @@ namespace ArchiSteamFarm {
 
 						if (newGifts) {
 							ArchiLogger.LogGenericTrace(nameof(ArchiHandler.UserNotificationsCallback.EUserNotification.Gifts));
-							Utilities.InBackground(ArchiWebHandler.AcceptDigitalGiftCards);
+							Utilities.InBackground(AcceptDigitalGiftCards);
 						}
 
 						break;
