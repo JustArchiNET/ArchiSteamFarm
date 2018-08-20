@@ -57,6 +57,7 @@ namespace ArchiSteamFarm {
 		internal static readonly ConcurrentDictionary<string, Bot> Bots = new ConcurrentDictionary<string, Bot>();
 
 		private static readonly SemaphoreSlim BotsSemaphore = new SemaphoreSlim(1, 1);
+		private static readonly SemaphoreSlim GiftCardsSemaphore = new SemaphoreSlim(1, 1);
 		private static readonly SemaphoreSlim GiftsSemaphore = new SemaphoreSlim(1, 1);
 		private static readonly SemaphoreSlim LoginSemaphore = new SemaphoreSlim(1, 1);
 
@@ -153,6 +154,7 @@ namespace ArchiSteamFarm {
 		private ulong MasterChatGroupID;
 		private bool PlayingBlocked;
 		private Timer PlayingWasBlockedTimer;
+		private bool ProcessingGiftsScheduled;
 		private bool ReconnectOnUserInitiated;
 		private Timer SendItemsTimer;
 		private bool SkipFirstShutdown;
@@ -312,23 +314,41 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task AcceptDigitalGiftCards() {
-			HashSet<ulong> gids = await ArchiWebHandler.GetDigitalGiftCards().ConfigureAwait(false);
-			if ((gids == null) || (gids.Count == 0)) {
-				return;
+			lock (GiftCardsSemaphore) {
+				if (ProcessingGiftsScheduled) {
+					return;
+				}
+
+				ProcessingGiftsScheduled = true;
 			}
 
-			foreach (ulong gid in gids) {
-				HandledGifts.Add(gid);
+			await GiftCardsSemaphore.WaitAsync().ConfigureAwait(false);
 
-				ArchiLogger.LogGenericInfo(string.Format(Strings.BotAcceptingGift, gid));
-				await LimitGiftsRequestsAsync().ConfigureAwait(false);
-
-				bool result = await ArchiWebHandler.AcceptDigitalGiftCard(gid).ConfigureAwait(false);
-				if (result) {
-					ArchiLogger.LogGenericInfo(Strings.Success);
-				} else {
-					ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+			try {
+				lock (GiftCardsSemaphore) {
+					ProcessingGiftsScheduled = false;
 				}
+
+				HashSet<ulong> gids = await ArchiWebHandler.GetDigitalGiftCards().ConfigureAwait(false);
+				if ((gids == null) || (gids.Count == 0)) {
+					return;
+				}
+
+				foreach (ulong gid in gids) {
+					HandledGifts.Add(gid);
+
+					ArchiLogger.LogGenericInfo(string.Format(Strings.BotAcceptingGift, gid));
+					await LimitGiftsRequestsAsync().ConfigureAwait(false);
+
+					bool result = await ArchiWebHandler.AcceptDigitalGiftCard(gid).ConfigureAwait(false);
+					if (result) {
+						ArchiLogger.LogGenericInfo(Strings.Success);
+					} else {
+						ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					}
+				}
+			} finally {
+				GiftCardsSemaphore.Release()
 			}
 		}
 
