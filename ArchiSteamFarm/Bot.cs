@@ -94,7 +94,6 @@ namespace ArchiSteamFarm {
 		private readonly SemaphoreSlim InitializationSemaphore = new SemaphoreSlim(1, 1);
 		private readonly SemaphoreSlim LootingSemaphore = new SemaphoreSlim(1, 1);
 		private readonly SemaphoreSlim PICSSemaphore = new SemaphoreSlim(1, 1);
-
 		private readonly Statistics Statistics;
 		private readonly SteamApps SteamApps;
 		private readonly SteamClient SteamClient;
@@ -335,7 +334,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				foreach (ulong gid in gids) {
+				foreach (ulong gid in gids.Where(gid => !HandledGifts.Contains(gid))) {
 					HandledGifts.Add(gid);
 
 					ArchiLogger.LogGenericInfo(string.Format(Strings.BotAcceptingGift, gid));

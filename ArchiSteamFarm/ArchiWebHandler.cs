@@ -85,7 +85,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> AcceptDigitalGiftCard(ulong gid) {
-			const string requestRedeemGift = "/gifts/0/resolvegiftcard";
+			const string request = "/gifts/0/resolvegiftcard";
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new Dictionary<string, string>(3) {
@@ -93,7 +93,7 @@ namespace ArchiSteamFarm {
 				{ "giftcardid", gid.ToString() }
 			};
 
-			Steam.NumberResponse result = await UrlPostToJsonObjectWithSession<Steam.NumberResponse>(SteamStoreURL, requestRedeemGift, data).ConfigureAwait(false);
+			Steam.NumberResponse result = await UrlPostToJsonObjectWithSession<Steam.NumberResponse>(SteamStoreURL, request, data).ConfigureAwait(false);
 			return result?.Success == true;
 		}
 
@@ -460,15 +460,15 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<HashSet<ulong>> GetDigitalGiftCards() {
-			const string requestGifts = "/gifts";
-			HtmlDocument response = await UrlGetToHtmlDocumentWithSession(SteamStoreURL, requestGifts).ConfigureAwait(false);
+			const string request = "/gifts";
+			HtmlDocument response = await UrlGetToHtmlDocumentWithSession(SteamStoreURL, request).ConfigureAwait(false);
 			if (response == null) {
 				return null;
 			}
 
-			HtmlNodeCollection nodes = response.DocumentNode.SelectNodes("//div[@class='pending_gift']/div[starts-with(@id, 'pending_gift_')][count(div[@class='pending_giftcard_leftcol']) > 0]/@id");
+			HtmlNodeCollection htmlNodes = response.DocumentNode.SelectNodes("//div[@class='pending_gift']/div[starts-with(@id, 'pending_gift_')][count(div[@class='pending_giftcard_leftcol']) > 0]/@id");
 			HashSet<ulong> results = new HashSet<ulong>();
-			foreach (string gidText in nodes.Select(node => node.GetAttributeValue("id", null))) {
+			foreach (string gidText in htmlNodes.Select(node => node.GetAttributeValue("id", null))) {
 				if (string.IsNullOrEmpty(gidText)) {
 					Bot.ArchiLogger.LogNullError(nameof(gidText));
 					return null;
