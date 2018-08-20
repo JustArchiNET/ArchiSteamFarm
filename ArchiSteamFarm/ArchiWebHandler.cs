@@ -85,6 +85,11 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> AcceptDigitalGiftCard(ulong gid) {
+			if (gid == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(gid));
+				return false;
+			}
+
 			const string request = "/gifts/0/resolvegiftcard";
 
 			// Extra entry for sessionID
