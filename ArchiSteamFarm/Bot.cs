@@ -348,7 +348,7 @@ namespace ArchiSteamFarm {
 					}
 				}
 			} finally {
-				GiftCardsSemaphore.Release()
+				GiftCardsSemaphore.Release();
 			}
 		}
 
