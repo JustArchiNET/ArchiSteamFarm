@@ -2569,7 +2569,7 @@ namespace ArchiSteamFarm {
 						bool newGifts = notification.Value > GiftsCount;
 						GiftsCount = notification.Value;
 
-						if (newGifts) {
+						if (newGifts && BotConfig.AcceptGifts) {
 							ArchiLogger.LogGenericTrace(nameof(ArchiHandler.UserNotificationsCallback.EUserNotification.Gifts));
 							Utilities.InBackground(AcceptDigitalGiftCards);
 						}
