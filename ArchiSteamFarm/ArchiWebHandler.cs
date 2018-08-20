@@ -86,9 +86,11 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> AcceptDigitalGiftCard(ulong gid) {
 			const string requestRedeemGift = "/gifts/0/resolvegiftcard";
+
+			// Extra entry for sessionID
 			Dictionary<string, string> data = new Dictionary<string, string>(3) {
-				{ "giftcardid", gid.ToString() },
-				{ "accept", "1" }
+				{ "accept", "1" },
+				{ "giftcardid", gid.ToString() }
 			};
 
 			Steam.NumberResponse result = await UrlPostToJsonObjectWithSession<Steam.NumberResponse>(SteamStoreURL, requestRedeemGift, data).ConfigureAwait(false);
