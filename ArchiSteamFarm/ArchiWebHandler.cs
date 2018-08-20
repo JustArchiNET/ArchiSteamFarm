@@ -476,12 +476,12 @@ namespace ArchiSteamFarm {
 				}
 
 				if (gidText.Length <= 13) {
-					Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, nameof(gidText)));
+					Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(gidText)));
 					return null;
 				}
 
 				if (!ulong.TryParse(gidText.Substring(13), out ulong gid) || (gid == 0)) {
-					Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorParsingObject, nameof(gidText)));
+					Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorParsingObject, nameof(gid)));
 					return null;
 				}
 
