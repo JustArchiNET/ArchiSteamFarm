@@ -253,6 +253,7 @@ namespace ArchiSteamFarm {
 			// Those are objects that are always being created if constructor doesn't throw exception
 			CallbackSemaphore.Dispose();
 			GamesRedeemerInBackgroundSemaphore.Dispose();
+			GiftCardsSemaphore.Dispose();
 			InitializationSemaphore.Dispose();
 			LootingSemaphore.Dispose();
 			PICSSemaphore.Dispose();
