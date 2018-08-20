@@ -3,16 +3,16 @@
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
 // /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
-// 
+//
 // Copyright 2015-2018 Łukasz "JustArchi" Domeradzki
 // Contact: JustArchi@JustArchi.net
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -57,6 +57,7 @@ namespace ArchiSteamFarm {
 		internal static readonly ConcurrentDictionary<string, Bot> Bots = new ConcurrentDictionary<string, Bot>();
 
 		private static readonly SemaphoreSlim BotsSemaphore = new SemaphoreSlim(1, 1);
+		private static readonly SemaphoreSlim GiftCardsSemaphore = new SemaphoreSlim(1, 1);
 		private static readonly SemaphoreSlim GiftsSemaphore = new SemaphoreSlim(1, 1);
 		private static readonly SemaphoreSlim LoginSemaphore = new SemaphoreSlim(1, 1);
 
@@ -141,6 +142,7 @@ namespace ArchiSteamFarm {
 		private Timer FamilySharingInactivityTimer;
 		private bool FirstTradeSent;
 		private Timer GamesRedeemerInBackgroundTimer;
+		private uint GiftsCount;
 		private byte HeartBeatFailures;
 		private uint ItemsCount;
 		private EResult LastLogOnResult;
@@ -151,6 +153,7 @@ namespace ArchiSteamFarm {
 		private ulong MasterChatGroupID;
 		private bool PlayingBlocked;
 		private Timer PlayingWasBlockedTimer;
+		private bool ProcessingGiftsScheduled;
 		private bool ReconnectOnUserInitiated;
 		private Timer SendItemsTimer;
 		private bool SkipFirstShutdown;
@@ -249,6 +252,7 @@ namespace ArchiSteamFarm {
 			// Those are objects that are always being created if constructor doesn't throw exception
 			CallbackSemaphore.Dispose();
 			GamesRedeemerInBackgroundSemaphore.Dispose();
+			GiftCardsSemaphore.Dispose();
 			InitializationSemaphore.Dispose();
 			LootingSemaphore.Dispose();
 			PICSSemaphore.Dispose();
@@ -307,6 +311,45 @@ namespace ArchiSteamFarm {
 			}
 
 			return await BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false);
+		}
+
+		private async Task AcceptDigitalGiftCards() {
+			lock (GiftCardsSemaphore) {
+				if (ProcessingGiftsScheduled) {
+					return;
+				}
+
+				ProcessingGiftsScheduled = true;
+			}
+
+			await GiftCardsSemaphore.WaitAsync().ConfigureAwait(false);
+
+			try {
+				lock (GiftCardsSemaphore) {
+					ProcessingGiftsScheduled = false;
+				}
+
+				HashSet<ulong> gids = await ArchiWebHandler.GetDigitalGiftCards().ConfigureAwait(false);
+				if ((gids == null) || (gids.Count == 0)) {
+					return;
+				}
+
+				foreach (ulong gid in gids.Where(gid => !HandledGifts.Contains(gid))) {
+					HandledGifts.Add(gid);
+
+					ArchiLogger.LogGenericInfo(string.Format(Strings.BotAcceptingGift, gid));
+					await LimitGiftsRequestsAsync().ConfigureAwait(false);
+
+					bool result = await ArchiWebHandler.AcceptDigitalGiftCard(gid).ConfigureAwait(false);
+					if (result) {
+						ArchiLogger.LogGenericInfo(Strings.Success);
+					} else {
+						ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					}
+				}
+			} finally {
+				GiftCardsSemaphore.Release();
+			}
 		}
 
 		internal async Task<bool> DeleteAllRelatedFiles() {
@@ -2519,6 +2562,16 @@ namespace ArchiSteamFarm {
 						if (newTrades) {
 							ArchiLogger.LogGenericTrace(nameof(ArchiHandler.UserNotificationsCallback.EUserNotification.Trading));
 							Utilities.InBackground(Trading.OnNewTrade);
+						}
+
+						break;
+					case ArchiHandler.UserNotificationsCallback.EUserNotification.Gifts:
+						bool newGifts = notification.Value > GiftsCount;
+						GiftsCount = notification.Value;
+
+						if (newGifts && BotConfig.AcceptGifts) {
+							ArchiLogger.LogGenericTrace(nameof(ArchiHandler.UserNotificationsCallback.EUserNotification.Gifts));
+							Utilities.InBackground(AcceptDigitalGiftCards);
 						}
 
 						break;
