@@ -8,7 +8,7 @@
   "bots-confirm-delete": "Oui, supprimer le bot !",
   "bots-delete-success": "<$1> et ses fichiers relatifs ont été supprimés.",
   "bots-delimiter": "",
-  "bots-download": "",
+  "bots-download": "Il n'y a rien à télécharger!",
   "bots-hide": "Masquer les bots",
   "bots-hide-offline": "Bots hors-ligne",
   "bots-hide-inactive": "Bots inactifs",
