@@ -227,3 +227,7 @@ button.bot-resumed:hover {
 .single-btn {
 	vertical-align: -webkit-baseline-middle;
 }
+
+[class^="games-carousel-"] .game-box:not(:first-child):not(.slick-slide){
+    display: none;    
+}
