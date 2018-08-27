@@ -556,6 +556,8 @@
                                             showLoaderOnConfirm: true
                                         }, function (isConfirm) {
                                             if (isConfirm === false) {
+	                                            $("#downloadUnusedKeysBtn").remove();
+												$("#downloadUsedKeysBtn").remove();
                                                 $('.overlay').remove();
                                                 return false;
                                             }
