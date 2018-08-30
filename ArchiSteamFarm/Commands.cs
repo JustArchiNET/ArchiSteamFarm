@@ -24,7 +24,7 @@ namespace ArchiSteamFarm {
 
 			return "<" + SharedInfo.ASF + "> " + response;
 		}
-		
+
 		internal static async Task<string> Parse(Bot bot, ulong steamID, string message) {
 			if (bot == null || steamID == 0 || string.IsNullOrEmpty(message)) {
 				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID) + " || " + nameof(message));
