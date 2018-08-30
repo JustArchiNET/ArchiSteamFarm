@@ -85,8 +85,10 @@ namespace ArchiSteamFarm {
 		private readonly CallbackManager CallbackManager;
 		private readonly SemaphoreSlim CallbackSemaphore = new SemaphoreSlim(1, 1);
 
+		internal MobileAuthenticator MobileAuthenticator => BotDatabase.MobileAuthenticator;
+
 		[JsonProperty]
-		private readonly CardsFarmer CardsFarmer;
+		internal readonly CardsFarmer CardsFarmer;
 
 		private readonly SemaphoreSlim GamesRedeemerInBackgroundSemaphore = new SemaphoreSlim(1, 1);
 		private readonly ConcurrentHashSet<ulong> HandledGifts = new ConcurrentHashSet<ulong>();
@@ -105,7 +107,7 @@ namespace ArchiSteamFarm {
 		private string BotPath => Path.Combine(SharedInfo.ConfigDirectory, BotName);
 		private string ConfigFilePath => BotPath + SharedInfo.ConfigExtension;
 		private string DatabaseFilePath => BotPath + SharedInfo.DatabaseExtension;
-		private bool IsAccountLocked => AccountFlags.HasFlag(EAccountFlags.Lockdown);
+		internal bool IsAccountLocked => AccountFlags.HasFlag(EAccountFlags.Lockdown);
 		private string KeysToRedeemFilePath => BotPath + SharedInfo.KeysExtension;
 		private string KeysToRedeemUnusedFilePath => KeysToRedeemFilePath + SharedInfo.KeysUnusedExtension;
 		private string KeysToRedeemUsedFilePath => KeysToRedeemFilePath + SharedInfo.KeysUsedExtension;
@@ -151,7 +153,7 @@ namespace ArchiSteamFarm {
 		private bool LootingAllowed = true;
 		private bool LootingScheduled;
 		private ulong MasterChatGroupID;
-		private bool PlayingBlocked;
+		internal bool PlayingBlocked { get; private set; }
 		private Timer PlayingWasBlockedTimer;
 		private bool ProcessingGiftsScheduled;
 		private bool ReconnectOnUserInitiated;
@@ -993,6 +995,7 @@ namespace ArchiSteamFarm {
 			SteamFriends.RequestFriendInfo(CachedSteamID, EClientPersonaStateFlag.PlayerName | EClientPersonaStateFlag.Presence);
 		}
 
+		//This is dead code and will be removed in a future commit. It's left here as a reference to not forget any commands
 		internal async Task<string> Response(ulong steamID, string message) {
 			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
 				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(message));
@@ -1015,16 +1018,8 @@ namespace ArchiSteamFarm {
 					return null;
 				case 1:
 					switch (args[0].ToUpperInvariant()) {
-						case "2FA":
-							return await Response2FA(steamID).ConfigureAwait(false);
-						case "2FANO":
-							return await Response2FAConfirm(steamID, false).ConfigureAwait(false);
-						case "2FAOK":
-							return await Response2FAConfirm(steamID, true).ConfigureAwait(false);
 						case "BL":
 							return ResponseBlacklist(steamID);
-						case "EXIT":
-							return ResponseExit(steamID);
 						case "FARM":
 							return await ResponseFarm(steamID).ConfigureAwait(false);
 						case "HELP":
@@ -1047,33 +1042,15 @@ namespace ArchiSteamFarm {
 							return ResponseResume(steamID);
 						case "RESTART":
 							return ResponseRestart(steamID);
-						case "SA":
-							return await ResponseStatus(steamID, SharedInfo.ASF).ConfigureAwait(false);
 						case "START":
 							return ResponseStart(steamID);
 						case "STATS":
 							return ResponseStats(steamID);
-						case "STATUS":
-							return ResponseStatus(steamID).Response;
-						case "STOP":
-							return ResponseStop(steamID);
-						case "UNPACK":
-							return await ResponseUnpackBoosters(steamID).ConfigureAwait(false);
-						case "UPDATE":
-							return await ResponseUpdate(steamID).ConfigureAwait(false);
-						case "VERSION":
-							return ResponseVersion(steamID);
 						default:
 							return ResponseUnknown(steamID);
 					}
 				default:
 					switch (args[0].ToUpperInvariant()) {
-						case "2FA":
-							return await Response2FA(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
-						case "2FANO":
-							return await Response2FAConfirm(steamID, Utilities.GetArgsAsText(args, 1, ","), false).ConfigureAwait(false);
-						case "2FAOK":
-							return await Response2FAConfirm(steamID, Utilities.GetArgsAsText(args, 1, ","), true).ConfigureAwait(false);
 						case "ADDLICENSE":
 							if (args.Length > 2) {
 								return await ResponseAddLicense(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
@@ -1214,10 +1191,6 @@ namespace ArchiSteamFarm {
 							return await ResponseResume(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "START":
 							return await ResponseStart(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
-						case "STATUS":
-							return await ResponseStatus(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
-						case "STOP":
-							return await ResponseStop(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "TRANSFER":
 							if (args.Length > 3) {
 								return await ResponseTransfer(steamID, args[1], args[2], Utilities.GetArgsAsText(args, 3, ",")).ConfigureAwait(false);
@@ -1228,8 +1201,6 @@ namespace ArchiSteamFarm {
 							}
 
 							goto default;
-						case "UNPACK":
-							return await ResponseUnpackBoosters(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						default:
 							return ResponseUnknown(steamID);
 					}
@@ -1545,7 +1516,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			string response = await Response(steamID, message).ConfigureAwait(false);
+			string response = await Commands.Parse(this, steamID, message).ConfigureAwait(false);
 
 			// We respond with null when user is not authorized (and similar)
 			if (string.IsNullOrEmpty(response)) {
@@ -1561,7 +1532,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			string response = await Response(steamID, message).ConfigureAwait(false);
+			string response = await Commands.Parse(this, steamID, message).ConfigureAwait(false);
 
 			// We respond with null when user is not authorized (and similar)
 			if (string.IsNullOrEmpty(response)) {
@@ -1736,7 +1707,7 @@ namespace ArchiSteamFarm {
 			Utilities.InBackground(Start);
 		}
 
-		private bool IsFamilySharing(ulong steamID) {
+		internal bool IsFamilySharing(ulong steamID) {
 			if (steamID == 0) {
 				ArchiLogger.LogNullError(nameof(steamID));
 				return false;
@@ -1754,7 +1725,7 @@ namespace ArchiSteamFarm {
 			return steamID == BotConfig.SteamMasterClanID;
 		}
 
-		private bool IsOperator(ulong steamID) {
+		internal bool IsOperator(ulong steamID) {
 			if (steamID == 0) {
 				ArchiLogger.LogNullError(nameof(steamID));
 				return false;
@@ -1763,7 +1734,7 @@ namespace ArchiSteamFarm {
 			return IsOwner(steamID) || (GetSteamUserPermission(steamID) >= BotConfig.EPermission.Operator);
 		}
 
-		private static bool IsOwner(ulong steamID) {
+		internal static bool IsOwner(ulong steamID) {
 			if (steamID == 0) {
 				ASF.ArchiLogger.LogNullError(nameof(steamID));
 				return false;
