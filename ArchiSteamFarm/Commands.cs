@@ -294,7 +294,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<uint> gamesToRedeem = new HashSet<uint>();
 			foreach(string game in gameIDs) {
-				if(!uint.TryParse(game, out uint gameID)) {
+				if(!uint.TryParse(game, out uint gameID) || gameID == 0) {
 					return FormatBotResponse(bot, string.Format(Strings.ErrorParsingObject, nameof(gameID)));
 				}
 
