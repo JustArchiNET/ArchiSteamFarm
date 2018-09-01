@@ -357,7 +357,7 @@ namespace ArchiSteamFarm {
 		internal async Task<(EResult EResult, string Sub)> AddLicense(uint gameID) {
 			await LimitGiftsRequestsAsync().ConfigureAwait(false);
 
-			if(await ArchiWebHandler.AddFreeLicense(gameID).ConfigureAwait(false)) {
+			if (await ArchiWebHandler.AddFreeLicense(gameID).ConfigureAwait(false)) {
 				return (EResult.OK, "sub/" + gameID);
 			}
 
@@ -370,11 +370,11 @@ namespace ArchiSteamFarm {
 				return (EResult.Timeout, null);
 			}
 
-			if(callback == null) {
+			if (callback == null) {
 				return (EResult.Timeout, null);
 			}
 
-			if(callback.GrantedApps.Count > 0 || callback.GrantedPackages.Count > 0) {
+			if (callback.GrantedApps.Count > 0 || callback.GrantedPackages.Count > 0) {
 				return (callback.Result, string.Join(", ", callback.GrantedApps.Select(appID => "app/" + appID).Union(callback.GrantedPackages.Select(subID => "sub/" + subID))));
 			}
 

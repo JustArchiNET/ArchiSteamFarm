@@ -42,7 +42,7 @@ namespace ArchiSteamFarm {
 			}
 
 			string[] messageParts = message.Split((char[])null, StringSplitOptions.RemoveEmptyEntries);
-			if(messageParts.Length == 0) {
+			if (messageParts.Length == 0) {
 				ASF.ArchiLogger.LogNullError(nameof(messageParts));
 				return null;
 			}
@@ -266,7 +266,7 @@ namespace ArchiSteamFarm {
 			}
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
-			if(responses.Count > 0) {
+			if (responses.Count > 0) {
 				return string.Join(Environment.NewLine, responses);
 			}
 
@@ -288,13 +288,13 @@ namespace ArchiSteamFarm {
 			}
 
 			string[] gameIDs = targetGameIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-			if(gameIDs.Length == 0) {
+			if (gameIDs.Length == 0) {
 				return FormatBotResponse(bot, string.Format(Strings.ErrorIsEmpty, nameof(gameIDs)));
 			}
 
 			HashSet<uint> gamesToRedeem = new HashSet<uint>();
 			foreach(string game in gameIDs) {
-				if(!uint.TryParse(game, out uint gameID) || gameID == 0) {
+				if (!uint.TryParse(game, out uint gameID) || gameID == 0) {
 					return FormatBotResponse(bot, string.Format(Strings.ErrorParsingObject, nameof(gameID)));
 				}
 
@@ -305,7 +305,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task<string> ResponseAddLicense(Bot bot, ulong steamID, IReadOnlyCollection<uint> gameIDs) {
-			if(bot == null || steamID == 0 || gameIDs == null) {
+			if (bot == null || steamID == 0 || gameIDs == null) {
 				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID) + " || " + nameof(gameIDs));
 				return null;
 			}
@@ -331,7 +331,7 @@ namespace ArchiSteamFarm {
 				response.AppendLine(FormatBotResponse(bot, string.Format(Strings.BotAddLicenseWithItems, gameID, Result, Sub)));
 			}
 
-			if(response.Length > 0) {
+			if (response.Length > 0) {
 				return response.ToString();
 			}
 
@@ -344,7 +344,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if(args.Length == 0) {
+			if (args.Length == 0) {
 				return ResponseBlacklist(bot, steamID);
 			}
 
@@ -383,7 +383,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private static string ResponseBlacklist(Bot bot, ulong steamID) {
-			if(bot == null || steamID == 0) {
+			if (bot == null || steamID == 0) {
 				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID));
 				return null;
 			}
@@ -393,7 +393,7 @@ namespace ArchiSteamFarm {
 			}
 
 			IReadOnlyCollection<ulong> blacklist = bot.BotDatabase.GetBlacklistedFromTradesSteamIDs();
-			if(blacklist.Count > 0) {
+			if (blacklist.Count > 0) {
 				return FormatBotResponse(bot, string.Join(", ", blacklist));
 			}
 
@@ -487,7 +487,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private static string ResponseHelp(Bot bot, ulong steamID) {
-			if(bot == null || steamID == 0) {
+			if (bot == null || steamID == 0) {
 				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID));
 				return null;
 			}
@@ -544,7 +544,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private static string ResponseIdleBlacklist(Bot bot, ulong steamID) {
-			if(bot == null || steamID == 0) {
+			if (bot == null || steamID == 0) {
 				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID));
 				return null;
 			}
@@ -554,7 +554,7 @@ namespace ArchiSteamFarm {
 			}
 
 			IReadOnlyCollection<uint> idleBlacklist = bot.BotDatabase.GetIdlingBlacklistedAppIDs();
-			if(idleBlacklist.Count > 0) {
+			if (idleBlacklist.Count > 0) {
 				return FormatBotResponse(bot, string.Join(", ", idleBlacklist));
 			}
 
@@ -562,7 +562,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task<string> ResponsePassword(Bot bot, ulong steamID, string[] args) {
-			if(bot == null || steamID == 0 || args == null) {
+			if (bot == null || steamID == 0 || args == null) {
 				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID) + " || " + nameof(args));
 				return null;
 			}
@@ -573,7 +573,7 @@ namespace ArchiSteamFarm {
 
 			string botNames = Utilities.GetArgsAsText(args, 0, ",");
 			HashSet<Bot> bots = Bot.GetBots(botNames);
-			if(bots == null || bots.Count == 0) {
+			if (bots == null || bots.Count == 0) {
 				if (Bot.IsOwner(steamID)) {
 					return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
 				}
@@ -598,7 +598,7 @@ namespace ArchiSteamFarm {
 			}
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
-			if(responses.Count > 0) {
+			if (responses.Count > 0) {
 				return string.Join(Environment.NewLine, responses);
 			}
 
@@ -825,7 +825,7 @@ namespace ArchiSteamFarm {
 			}
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
-			if(responses.Count > 0) {
+			if (responses.Count > 0) {
 				return string.Join(Environment.NewLine, responses);
 			}
 
