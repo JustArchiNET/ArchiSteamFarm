@@ -240,8 +240,6 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.GamesToIdle, GamesToFarm.Count, GamesToFarm.Sum(game => game.CardsRemaining), TimeRemaining.ToHumanReadable()));
-
 				// This is the last moment for final check if we can farm
 				if (!Bot.IsPlayingPossible) {
 					Bot.ArchiLogger.LogGenericInfo(Strings.PlayingNotAvailable);
@@ -586,6 +584,8 @@ namespace ArchiSteamFarm {
 
 		private async Task Farm() {
 			do {
+				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.GamesToIdle, GamesToFarm.Count, GamesToFarm.Sum(game => game.CardsRemaining), TimeRemaining.ToHumanReadable()));
+
 				// Now the algorithm used for farming depends on whether account is restricted or not
 				if (Bot.BotConfig.HoursUntilCardDrops > 0) {
 					// If we have restricted card drops, we use complex algorithm

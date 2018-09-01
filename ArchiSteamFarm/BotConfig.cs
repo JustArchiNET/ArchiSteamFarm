@@ -138,6 +138,9 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool UseLoginKeys = DefaultUseLoginKeys;
 
+		[JsonProperty(PropertyName = nameof(SteamPassword))]
+		internal string EncryptedSteamPassword { get; private set; } = DefaultEncryptedSteamPassword;
+
 		internal bool ShouldSerializeEverything { private get; set; } = true;
 
 		[JsonProperty]
@@ -166,9 +169,6 @@ namespace ArchiSteamFarm {
 				EncryptedSteamPassword = PasswordFormat == ArchiCryptoHelper.ECryptoMethod.PlainText ? value : ArchiCryptoHelper.Encrypt(PasswordFormat, value);
 			}
 		}
-
-		[JsonProperty(PropertyName = nameof(SteamPassword))]
-		private string EncryptedSteamPassword = DefaultEncryptedSteamPassword;
 
 		private bool ShouldSerializeSensitiveDetails = true;
 

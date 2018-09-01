@@ -1,6 +1,6 @@
 //{#region Setup
 const tmpIPCPassword = get('IPCPassword'),
-	  vGUI = '0.3';
+	  vGUI = '0.4';
 
 if (tmpIPCPassword) {
     $.ajaxSetup({
@@ -259,12 +259,14 @@ function generateConfigHTML(mode) {
                                 + '</div>';
                             break;
                         case 'System.Collections.Generic.HashSet`1[System.String]':
+                        case 'System.Collections.Immutable.ImmutableHashSet`1[System.String]':
                             textAreas += '<div class="form-group-config">'
                                 + '<label for="' + key + '">' + readableKey + '</label>'
                                 + '<textarea id="' + key + '" class="form-control" data-type="' + value + '" rows="4"></textarea>'
                                 + '</div>';
                             break;
                         case 'System.Collections.Generic.Dictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
+                        case 'System.Collections.Immutable.ImmutableDictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
                             textAreas += '<div class="form-group-config">'
                                 + '<label for="' + key + '">' + readableKey + '</label>'
                                 + '<textarea id="' + key + '" class="form-control" data-type="' + value + '" rows="3"></textarea>'
@@ -390,6 +392,7 @@ function loadConfigValues(botName) {
                             break;
 
                         case 'System.Collections.Generic.HashSet`1[System.String]':
+                        case 'System.Collections.Immutable.ImmutableHashSet`1[System.String]':
                             $key.text(''); // Reset textarea before filling
 
                             for (var ipcPrefix in value) {
@@ -398,6 +401,7 @@ function loadConfigValues(botName) {
                             break;
                             
                         case 'System.Collections.Generic.Dictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
+                        case 'System.Collections.Immutable.ImmutableDictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
                             $key.text(''); // Reset textarea before filling
 
                             for (var steamID64 in value) {
@@ -482,6 +486,7 @@ function prepareConfigForSaving() {
                     break;
 
                 case 'System.Collections.Generic.HashSet`1[System.UInt32]':
+                case 'System.Collections.Immutable.ImmutableHashSet`1[System.UInt32]':
                     if ($keyValue === '') {
                         config[key] = [];
                         break;
@@ -491,6 +496,7 @@ function prepareConfigForSaving() {
                     break;
 
                 case 'System.Collections.Generic.HashSet`1[System.String]':
+                case 'System.Collections.Immutable.ImmutableHashSet`1[System.String]':
                     var ipcprefix = [],
                         lines = $key.val().split('\n');
 
@@ -502,6 +508,7 @@ function prepareConfigForSaving() {
                     break;
 
                 case 'System.Collections.Generic.Dictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
+                case 'System.Collections.Immutable.ImmutableDictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
                     var steamUserPermissions = {},
                         permissions = [],
                         lines = $key.val().split('\n');
@@ -623,6 +630,7 @@ function loadDefaultConfigValues(mode) {
                             $key.val(config['s_' + key]);
                             break;
                         case 'System.Collections.Generic.Dictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
+                        case 'System.Collections.Immutable.ImmutableDictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
                             $key.text(''); // Reset textarea before filling
 
                             for (var steamID64 in value) {
@@ -705,12 +713,14 @@ function prepareConfigForDownload(mode) {
                     break;
 
                 case 'System.Collections.Generic.HashSet`1[System.UInt32]':
+                case 'System.Collections.Immutable.ImmutableHashSet`1[System.UInt32]':
                     if ($keyValue === '') continue;
                     var items = $keyValue.split(',');
                     if (items.map(Number) !== value) config[key] = items.map(Number);
                     break;
 
                 case 'System.Collections.Generic.HashSet`1[System.String]':
+                case 'System.Collections.Immutable.ImmutableHashSet`1[System.String]':
                     var ipcprefix = [],
                         lines = $key.val().split('\n');
 
@@ -722,6 +732,7 @@ function prepareConfigForDownload(mode) {
                     break;
 
                 case 'System.Collections.Generic.Dictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
+                case 'System.Collections.Immutable.ImmutableDictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
                     var steamUserPermissions = {},
                         permissions = [],
                         lines = $key.val().split('\n');

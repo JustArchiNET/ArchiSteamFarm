@@ -84,6 +84,24 @@ namespace ArchiSteamFarm {
 			WebBrowser.Dispose();
 		}
 
+		internal async Task<bool> AcceptDigitalGiftCard(ulong gid) {
+			if (gid == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(gid));
+				return false;
+			}
+
+			const string request = "/gifts/0/resolvegiftcard";
+
+			// Extra entry for sessionID
+			Dictionary<string, string> data = new Dictionary<string, string>(3) {
+				{ "accept", "1" },
+				{ "giftcardid", gid.ToString() }
+			};
+
+			Steam.NumberResponse result = await UrlPostToJsonObjectWithSession<Steam.NumberResponse>(SteamStoreURL, request, data).ConfigureAwait(false);
+			return result?.Success == true;
+		}
+
 		internal async Task<bool> AcceptTradeOffer(ulong tradeID) {
 			if (tradeID == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(tradeID));
@@ -444,6 +462,37 @@ namespace ArchiSteamFarm {
 
 			string request = "/mobileconf/conf?a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&l=english&m=android&p=" + WebUtility.UrlEncode(deviceID) + "&t=" + time + "&tag=conf";
 			return await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
+		}
+
+		internal async Task<HashSet<ulong>> GetDigitalGiftCards() {
+			const string request = "/gifts";
+			HtmlDocument response = await UrlGetToHtmlDocumentWithSession(SteamStoreURL, request).ConfigureAwait(false);
+			if (response == null) {
+				return null;
+			}
+
+			HtmlNodeCollection htmlNodes = response.DocumentNode.SelectNodes("//div[@class='pending_gift']/div[starts-with(@id, 'pending_gift_')][count(div[@class='pending_giftcard_leftcol']) > 0]/@id");
+			HashSet<ulong> results = new HashSet<ulong>();
+			foreach (string gidText in htmlNodes.Select(node => node.GetAttributeValue("id", null))) {
+				if (string.IsNullOrEmpty(gidText)) {
+					Bot.ArchiLogger.LogNullError(nameof(gidText));
+					return null;
+				}
+
+				if (gidText.Length <= 13) {
+					Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(gidText)));
+					return null;
+				}
+
+				if (!ulong.TryParse(gidText.Substring(13), out ulong gid) || (gid == 0)) {
+					Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorParsingObject, nameof(gid)));
+					return null;
+				}
+
+				results.Add(gid);
+			}
+
+			return results;
 		}
 
 		internal async Task<HtmlDocument> GetDiscoveryQueuePage() {
