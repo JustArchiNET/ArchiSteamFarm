@@ -354,6 +354,33 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal async Task<(EResult EResult, string Sub)> AddLicense(uint gameID) {
+			await LimitGiftsRequestsAsync().ConfigureAwait(false);
+
+			if(await ArchiWebHandler.AddFreeLicense(gameID).ConfigureAwait(false)) {
+				return (EResult.OK, "sub/" + gameID);
+			}
+
+			SteamApps.FreeLicenseCallback callback;
+
+			try {
+				callback = await SteamApps.RequestFreeLicense(gameID);
+			} catch(Exception e) {
+				ArchiLogger.LogGenericWarningException(e);
+				return (EResult.Timeout, null);
+			}
+
+			if(callback == null) {
+				return (EResult.Timeout, null);
+			}
+
+			if(callback.GrantedApps.Count > 0 || callback.GrantedPackages.Count > 0) {
+				return (callback.Result, string.Join(", ", callback.GrantedApps.Select(appID => "app/" + appID).Union(callback.GrantedPackages.Select(subID => "sub/" + subID))));
+			}
+
+			return (callback.Result, gameID.ToString());
+		}
+
 		internal async Task<bool> DeleteAllRelatedFiles() {
 			await BotDatabase.MakeReadOnly().ConfigureAwait(false);
 
@@ -1041,12 +1068,6 @@ namespace ArchiSteamFarm {
 					}
 				default:
 					switch (args[0].ToUpperInvariant()) {
-						case "ADDLICENSE":
-							if (args.Length > 2) {
-								return await ResponseAddLicense(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
-							}
-
-							return await ResponseAddLicense(steamID, args[1]).ConfigureAwait(false);
 						case "BLADD":
 							if (args.Length > 2) {
 								return await ResponseBlacklistAdd(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);

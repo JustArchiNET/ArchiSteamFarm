@@ -1,8 +1,10 @@
 ﻿using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
+using SteamKit2;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
@@ -55,6 +57,8 @@ namespace ArchiSteamFarm {
 					return await Response2FANO(bot, steamID, args).ConfigureAwait(false);
 				case "2FAOK":
 					return await Response2FAOK(bot, steamID, args).ConfigureAwait(false);
+				case "ADDLICENSE":
+					return await ResponseAddLicense(bot, steamID, args).ConfigureAwait(false);
 				case "BL":
 					return await ResponseBlacklist(bot, steamID, args).ConfigureAwait(false);
 				case "EXIT":
@@ -217,6 +221,121 @@ namespace ArchiSteamFarm {
 			}
 
 			return FormatBotResponse(bot, Strings.WarningFailed);
+		}
+
+		private static async Task<string> ResponseAddLicense(Bot bot, ulong steamID, string[] args) {
+			if (bot == null || steamID == 0 || args == null) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID) + " || " + nameof(args));
+				return null;
+			}
+
+			if (args.Length == 1) {
+				return await ResponseAddLicense(bot, steamID, args[0]).ConfigureAwait(false);
+			}
+
+			string botNames = args[0];
+			HashSet<Bot> bots = Bot.GetBots(botNames);
+			if (bots == null || bots.Count == 0) {
+				if (Bot.IsOwner(steamID)) {
+					return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+				}
+
+				return null;
+			}
+
+			string targetGameIDs = Utilities.GetArgsAsText(args, 1, ",");
+			if (string.IsNullOrEmpty(targetGameIDs)) {
+				ASF.ArchiLogger.LogNullError(nameof(targetGameIDs));
+				return null;
+			}
+
+			IEnumerable<Task<string>> tasks = bots.Select(singleBot => ResponseAddLicense(singleBot, steamID, targetGameIDs));
+			ICollection<string> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<string>(bots.Count);
+					foreach (Task<string> task in tasks) {
+						results.Add(await task.ConfigureAwait(false));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+
+			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+			if(responses.Count > 0) {
+				return string.Join(Environment.NewLine, responses);
+			}
+
+			return null;
+		}
+
+		private static async Task<string> ResponseAddLicense(Bot bot, ulong steamID, string targetGameIDs) {
+			if (bot == null || steamID == 0 || string.IsNullOrEmpty(targetGameIDs)) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID) + " || " + nameof(targetGameIDs));
+				return null;
+			}
+
+			if (!bot.IsOperator(steamID)) {
+				return null;
+			}
+
+			if (!bot.IsConnectedAndLoggedOn) {
+				return FormatBotResponse(bot, Strings.BotNotConnected);
+			}
+
+			string[] gameIDs = targetGameIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			if(gameIDs.Length == 0) {
+				return FormatBotResponse(bot, string.Format(Strings.ErrorIsEmpty, nameof(gameIDs)));
+			}
+
+			HashSet<uint> gamesToRedeem = new HashSet<uint>();
+			foreach(string game in gameIDs) {
+				if(!uint.TryParse(game, out uint gameID)) {
+					return FormatBotResponse(bot, string.Format(Strings.ErrorParsingObject, nameof(gameID)));
+				}
+
+				gamesToRedeem.Add(gameID);
+			}
+
+			return await ResponseAddLicense(bot, steamID, gamesToRedeem).ConfigureAwait(false);
+		}
+
+		private static async Task<string> ResponseAddLicense(Bot bot, ulong steamID, IReadOnlyCollection<uint> gameIDs) {
+			if(bot == null || steamID == 0 || gameIDs == null) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID) + " || " + nameof(gameIDs));
+				return null;
+			}
+
+			if (!bot.IsOperator(steamID)) {
+				return null;
+			}
+
+			if (!bot.IsConnectedAndLoggedOn) {
+				return FormatBotResponse(bot, Strings.BotNotConnected);
+			}
+
+			StringBuilder response = new StringBuilder();
+
+			foreach(uint gameID in gameIDs) {
+				(EResult Result, string Sub) = await bot.AddLicense(gameID).ConfigureAwait(false);
+
+				if (Result != EResult.OK) {
+					response.AppendLine(FormatBotResponse(bot, string.Format(Strings.BotAddLicense, gameID, Result)));
+					break;
+				}
+
+				response.AppendLine(FormatBotResponse(bot, string.Format(Strings.BotAddLicenseWithItems, gameID, Result, Sub)));
+			}
+
+			if(response.Length > 0) {
+				return response.ToString();
+			}
+
+			return null;
 		}
 
 		private static async Task<string> ResponseBlacklist(Bot bot, ulong steamID, string[] args) {
