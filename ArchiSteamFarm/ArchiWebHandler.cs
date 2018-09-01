@@ -472,6 +472,10 @@ namespace ArchiSteamFarm {
 			}
 
 			HtmlNodeCollection htmlNodes = response.DocumentNode.SelectNodes("//div[@class='pending_gift']/div[starts-with(@id, 'pending_gift_')][count(div[@class='pending_giftcard_leftcol']) > 0]/@id");
+			if (htmlNodes == null) {
+				return null;
+			}
+
 			HashSet<ulong> results = new HashSet<ulong>();
 			foreach (string gidText in htmlNodes.Select(node => node.GetAttributeValue("id", null))) {
 				if (string.IsNullOrEmpty(gidText)) {
