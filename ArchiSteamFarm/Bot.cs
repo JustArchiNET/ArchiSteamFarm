@@ -1018,8 +1018,6 @@ namespace ArchiSteamFarm {
 					return null;
 				case 1:
 					switch (args[0].ToUpperInvariant()) {
-						case "HELP":
-							return ResponseHelp(steamID);
 						case "IB":
 							return ResponseIdleBlacklist(steamID);
 						case "IQ":
@@ -3073,15 +3071,6 @@ namespace ArchiSteamFarm {
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
-		}
-
-		private string ResponseHelp(ulong steamID) {
-			if (steamID == 0) {
-				ArchiLogger.LogNullError(nameof(steamID));
-				return null;
-			}
-
-			return IsFamilySharing(steamID) ? FormatBotResponse("https://github.com/" + SharedInfo.GithubRepo + "/wiki/Commands") : null;
 		}
 
 		private string ResponseIdleBlacklist(ulong steamID) {
