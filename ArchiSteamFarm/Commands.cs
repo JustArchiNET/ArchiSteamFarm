@@ -62,7 +62,9 @@ namespace ArchiSteamFarm {
 				case "FARM":
 					return await ResponseFarm(bot, steamID, args).ConfigureAwait(false);
 				case "HELP":
-					return ResponseHelp(steamID);
+					return ResponseHelp(bot, steamID);
+				case "IB":
+					return await ResponseIdleBlacklist(bot, steamID, args).ConfigureAwait(false);
 				case "PASSWORD":
 					return await ResponsePassword(bot, steamID, args).ConfigureAwait(false);
 				case "SA":
@@ -376,6 +378,68 @@ namespace ArchiSteamFarm {
 			}
 
 			return null;
+		}
+
+		private static async Task<string> ResponseIdleBlacklist(Bot bot, ulong steamID, string[] args) {
+			if (bot == null || steamID == 0 || args == null) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID) + " || " + nameof(args));
+				return null;
+			}
+
+			if (args.Length == 0) {
+				return ResponseIdleBlacklist(bot, steamID);
+			}
+
+			string botNames = Utilities.GetArgsAsText(args, 0, ",");
+			HashSet<Bot> bots = Bot.GetBots(botNames);
+			if (bots == null || bots.Count == 0) {
+				if (Bot.IsOwner(steamID)) {
+					return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+				}
+
+				return null;
+			}
+
+			IEnumerable<Task<string>> tasks = bots.Select(singleBot => Task.Run(() => ResponseIdleBlacklist(singleBot, steamID)));
+			ICollection<string> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<string>(bots.Count);
+					foreach (Task<string> currentTask in tasks) {
+						results.Add(await currentTask.ConfigureAwait(false));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+
+			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+			if (responses.Count > 0) {
+				return string.Join(Environment.NewLine, responses);
+			}
+
+			return null;
+		}
+
+		private static string ResponseIdleBlacklist(Bot bot, ulong steamID) {
+			if(bot == null || steamID == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID));
+				return null;
+			}
+
+			if (!bot.IsMaster(steamID)) {
+				return null;
+			}
+
+			IReadOnlyCollection<uint> idleBlacklist = bot.BotDatabase.GetIdlingBlacklistedAppIDs();
+			if(idleBlacklist.Count > 0) {
+				return FormatBotResponse(bot, string.Join(", ", idleBlacklist));
+			}
+
+			return FormatBotResponse(bot, string.Format(Strings.ErrorIsEmpty, nameof(idleBlacklist)));
 		}
 
 		private static async Task<string> ResponsePassword(Bot bot, ulong steamID, string[] args) {
