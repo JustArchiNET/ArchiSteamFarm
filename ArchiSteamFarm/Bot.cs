@@ -80,7 +80,7 @@ namespace ArchiSteamFarm {
 		internal bool IsPlayingPossible => !PlayingBlocked && (LibraryLockedBySteamID == 0);
 
 		private readonly ArchiHandler ArchiHandler;
-		private readonly BotDatabase BotDatabase;
+		internal readonly BotDatabase BotDatabase;
 		private readonly Dictionary<uint, string> CachedGamesOwned = new Dictionary<uint, string>();
 		private readonly CallbackManager CallbackManager;
 		private readonly SemaphoreSlim CallbackSemaphore = new SemaphoreSlim(1, 1);

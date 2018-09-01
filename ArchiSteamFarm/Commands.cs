@@ -39,22 +39,28 @@ namespace ArchiSteamFarm {
 				message = message.Substring(Program.GlobalConfig.CommandPrefix.Length);
 			}
 
-			string[] args = message.Split((char[])null, StringSplitOptions.RemoveEmptyEntries);
-
-			if(args.Length == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(args));
+			string[] messageParts = message.Split((char[])null, StringSplitOptions.RemoveEmptyEntries);
+			if(messageParts.Length == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(messageParts));
 				return null;
 			}
 
-			switch (args[0].ToUpperInvariant()) {
+			string command = messageParts[0].ToUpperInvariant();
+			string[] args = messageParts.Skip(1).ToArray();
+
+			switch (command) {
 				case "2FA":
 					return await Response2FA(bot, steamID, args).ConfigureAwait(false);
 				case "2FANO":
 					return await Response2FANO(bot, steamID, args).ConfigureAwait(false);
 				case "2FAOK":
 					return await Response2FAOK(bot, steamID, args).ConfigureAwait(false);
+				case "BL":
+					return await ResponseBlacklist(bot, steamID, args).ConfigureAwait(false);
 				case "EXIT":
 					return ResponseExit(steamID);
+				case "PASSWORD":
+					return await ResponsePassword(bot, steamID, args).ConfigureAwait(false);
 				case "SA":
 					return await ResponseSA(bot, steamID).ConfigureAwait(false);
 				case "STATUS":
@@ -205,6 +211,68 @@ namespace ArchiSteamFarm {
 			}
 
 			return FormatBotResponse(bot, Strings.WarningFailed);
+		}
+
+		private static async Task<string> ResponseBlacklist(Bot bot, ulong steamID, string[] args) {
+			if (bot == null || steamID == 0 || args == null) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID) + " || " + nameof(args));
+				return null;
+			}
+
+			if(args.Length == 0) {
+				return ResponseBlacklist(bot, steamID);
+			}
+
+			string botNames = Utilities.GetArgsAsText(args, 0, ",");
+			HashSet<Bot> bots = Bot.GetBots(botNames);
+			if (bots == null || bots.Count == 0) {
+				if (Bot.IsOwner(steamID)) {
+					return FormatStaticResponse(string.Format(Strings.BotNotFound, botNames));
+				}
+
+				return null;
+			}
+
+			IEnumerable<Task<string>> tasks = bots.Select(singleBot => Task.Run(() => ResponseBlacklist(singleBot, steamID)));
+			ICollection<string> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<string>(bots.Count);
+					foreach (Task<string> currentTask in tasks) {
+						results.Add(await currentTask.ConfigureAwait(false));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+
+			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+			if (responses.Count > 0) {
+				return string.Join(Environment.NewLine, responses);
+			}
+
+			return null;
+		}
+
+		private static string ResponseBlacklist(Bot bot, ulong steamID) {
+			if(bot == null || steamID == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID));
+				return null;
+			}
+
+			if (!bot.IsMaster(steamID)) {
+				return null;
+			}
+
+			IReadOnlyCollection<ulong> blacklist = bot.BotDatabase.GetBlacklistedFromTradesSteamIDs();
+			if(blacklist.Count > 0) {
+				return FormatBotResponse(bot, string.Join(", ", blacklist));
+			}
+
+			return FormatBotResponse(bot, string.Format(Strings.ErrorIsEmpty, nameof(blacklist)));
 		}
 
 		private static string ResponseExit(ulong steamID) {
