@@ -447,7 +447,10 @@
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>Цей бот не запущений, тому що він відключений у конфігураційному файлі!</value>
   </data>
-  
+  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+    <value>Помилку TwoFactorCodeMismatch отримано {0} разів поспіль. Або ваші дані 2FA більше не є дійсні, або час на вашому пристрої не синхронізований, припиняємо роботу!</value>
+    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+  </data>
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Вийшов зі Steam: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>

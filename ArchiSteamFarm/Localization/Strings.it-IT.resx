@@ -445,12 +445,18 @@
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>Questo bot non verrà avviato poiché è disabilitato nel file di configurazione!</value>
   </data>
-  
+  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+    <value>Ricevuto il codice d'errore TwoFactorCodeMismatch {0} volte consecutive. Le tue credenziali 2FA non sono più valide o il tuo orologio non è sincronizzato. Abbandono!</value>
+    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+  </data>
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Uscito dall'account Steam: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  
+  <data name="BotLoggedOn" xml:space="preserve">
+    <value>Accesso effettuato come {0}.</value>
+    <comment>{0} will be replaced by steam ID (number)</comment>
+  </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Accesso in corso...</value>
   </data>
@@ -517,7 +523,7 @@
     <value>Il Bot non sta trovando niente su cui fare idling.</value>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>Il Bot è un account limitato e non può ottenere carte tramite idling.</value>
+    <value>Il Bot è limitato e non può ottenere carte mentre è inattivo.</value>
   </data>
   <data name="BotStatusConnecting" xml:space="preserve">
     <value>Il bot si stà connettendo alla rete di Steam.</value>
@@ -655,7 +661,7 @@
     <comment>{0} will be replaced by trade's ID (number)</comment>
   </data>
   <data name="WarningWorkaroundTriggered" xml:space="preserve">
-    <value>La soluzione temporanea per il bug {0} è stato utilizzata.</value>
+    <value>La soluzione alternativa per il bug {0} è stata utilizzata.</value>
     <comment>{0} will be replaced by the bug's name provided by ASF</comment>
   </data>
 </root>
