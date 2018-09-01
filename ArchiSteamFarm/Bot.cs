@@ -1018,8 +1018,6 @@ namespace ArchiSteamFarm {
 					return null;
 				case 1:
 					switch (args[0].ToUpperInvariant()) {
-						case "BL":
-							return ResponseBlacklist(steamID);
 						case "FARM":
 							return await ResponseFarm(steamID).ConfigureAwait(false);
 						case "HELP":
@@ -1032,8 +1030,6 @@ namespace ArchiSteamFarm {
 							return await ResponseLoot(steamID).ConfigureAwait(false);
 						case "LOOT&":
 							return ResponseLootSwitch(steamID);
-						case "PASSWORD":
-							return ResponsePassword(steamID);
 						case "PAUSE":
 							return await ResponsePause(steamID, true).ConfigureAwait(false);
 						case "PAUSE~":
@@ -1057,8 +1053,6 @@ namespace ArchiSteamFarm {
 							}
 
 							return await ResponseAddLicense(steamID, args[1]).ConfigureAwait(false);
-						case "BL":
-							return await ResponseBlacklist(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "BLADD":
 							if (args.Length > 2) {
 								return await ResponseBlacklistAdd(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
@@ -1145,8 +1139,6 @@ namespace ArchiSteamFarm {
 							}
 
 							return (await ResponseOwns(steamID, args[1]).ConfigureAwait(false)).Response;
-						case "PASSWORD":
-							return await ResponsePassword(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "PAUSE":
 							return await ResponsePause(steamID, Utilities.GetArgsAsText(args, 1, ","), true).ConfigureAwait(false);
 						case "PAUSE~":
