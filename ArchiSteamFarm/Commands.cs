@@ -61,6 +61,8 @@ namespace ArchiSteamFarm {
 					return ResponseExit(steamID);
 				case "FARM":
 					return await ResponseFarm(bot, steamID, args).ConfigureAwait(false);
+				case "HELP":
+					return ResponseHelp(steamID);
 				case "PASSWORD":
 					return await ResponsePassword(bot, steamID, args).ConfigureAwait(false);
 				case "SA":
@@ -361,6 +363,19 @@ namespace ArchiSteamFarm {
 
 			Utilities.InBackground(bot.CardsFarmer.StartFarming);
 			return FormatBotResponse(bot, Strings.Done);
+		}
+
+		private static string ResponseHelp(Bot bot, ulong steamID) {
+			if(bot == null || steamID == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID));
+				return null;
+			}
+
+			if (bot.IsFamilySharing(steamID)) {
+				FormatBotResponse(bot, "https://github.com/" + SharedInfo.GithubRepo + "/wiki/Commands");
+			}
+
+			return null;
 		}
 
 		private static async Task<string> ResponsePassword(Bot bot, ulong steamID, string[] args) {
