@@ -2086,7 +2086,7 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogChatMessage(false, message, notification.chat_group_id, notification.chat_id, notification.steamid_sender);
 
-			if (notification.chat_group_id != MasterChatGroupID) {
+			if ((notification.chat_group_id != MasterChatGroupID) || (BotConfig.OnlineStatus == EPersonaState.Offline)) {
 				return;
 			}
 
@@ -2120,7 +2120,7 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogChatMessage(notification.local_echo, message, steamID: notification.steamid_friend);
 
-			if (notification.local_echo) {
+			if (notification.local_echo || (BotConfig.OnlineStatus == EPersonaState.Offline)) {
 				return;
 			}
 
