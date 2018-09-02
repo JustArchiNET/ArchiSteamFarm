@@ -2086,6 +2086,10 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogChatMessage(false, message, notification.chat_group_id, notification.chat_id, notification.steamid_sender);
 
+			// Steam network broadcasts chat events also when we don't explicitly sign into Steam community
+			// We'll explicitly ignore those messages when using offline mode, as it was done in the first version of Steam chat when no messages were broadcasted at all before signing in
+			// Handling messages will still work correctly in invisible mode, which is how it should work in the first place
+			// This goes in addition to usual logic that ignores irrelevant messages from being parsed further
 			if ((notification.chat_group_id != MasterChatGroupID) || (BotConfig.OnlineStatus == EPersonaState.Offline)) {
 				return;
 			}
@@ -2120,6 +2124,10 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogChatMessage(notification.local_echo, message, steamID: notification.steamid_friend);
 
+			// Steam network broadcasts chat events also when we don't explicitly sign into Steam community
+			// We'll explicitly ignore those messages when using offline mode, as it was done in the first version of Steam chat when no messages were broadcasted at all before signing in
+			// Handling messages will still work correctly in invisible mode, which is how it should work in the first place
+			// This goes in addition to usual logic that ignores irrelevant messages from being parsed further
 			if (notification.local_echo || (BotConfig.OnlineStatus == EPersonaState.Offline)) {
 				return;
 			}
