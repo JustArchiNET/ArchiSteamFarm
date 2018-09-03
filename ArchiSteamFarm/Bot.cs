@@ -1055,8 +1055,6 @@ namespace ArchiSteamFarm {
 							return await ResponsePause(steamID, false).ConfigureAwait(false);
 						case "RESTART":
 							return ResponseRestart(steamID);
-						case "START":
-							return ResponseStart(steamID);
 						case "STATS":
 							return ResponseStats(steamID);
 						default:
@@ -1184,8 +1182,6 @@ namespace ArchiSteamFarm {
 							}
 
 							goto default;
-						case "START":
-							return await ResponseStart(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "TRANSFER":
 							if (args.Length > 3) {
 								return await ResponseTransfer(steamID, args[1], args[2], Utilities.GetArgsAsText(args, 3, ",")).ConfigureAwait(false);
@@ -4348,56 +4344,6 @@ namespace ArchiSteamFarm {
 			StopFamilySharingInactivityTimer();
 			Utilities.InBackground(() => CardsFarmer.Resume(true));
 			return FormatBotResponse(Strings.BotAutomaticIdlingNowResumed);
-		}
-
-		private string ResponseStart(ulong steamID) {
-			if (steamID == 0) {
-				ArchiLogger.LogNullError(nameof(steamID));
-				return null;
-			}
-
-			if (!IsMaster(steamID)) {
-				return null;
-			}
-
-			if (KeepRunning) {
-				return FormatBotResponse(Strings.BotAlreadyRunning);
-			}
-
-			SkipFirstShutdown = true;
-			Utilities.InBackground(Start);
-			return FormatBotResponse(Strings.Done);
-		}
-
-		private static async Task<string> ResponseStart(ulong steamID, string botNames) {
-			if ((steamID == 0) || string.IsNullOrEmpty(botNames)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
-				return null;
-			}
-
-			HashSet<Bot> bots = GetBots(botNames);
-			if ((bots == null) || (bots.Count == 0)) {
-				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
-			}
-
-			IEnumerable<Task<string>> tasks = bots.Select(bot => Task.Run(() => bot.ResponseStart(steamID)));
-			ICollection<string> results;
-
-			switch (Program.GlobalConfig.OptimizationMode) {
-				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					results = new List<string>(bots.Count);
-					foreach (Task<string> task in tasks) {
-						results.Add(await task.ConfigureAwait(false));
-					}
-
-					break;
-				default:
-					results = await Task.WhenAll(tasks).ConfigureAwait(false);
-					break;
-			}
-
-			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
-			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 
 		private string ResponseStats(ulong steamID) {
