@@ -1055,8 +1055,6 @@ namespace ArchiSteamFarm {
 							return await ResponsePause(steamID, false).ConfigureAwait(false);
 						case "RESTART":
 							return ResponseRestart(steamID);
-						case "STATS":
-							return ResponseStats(steamID);
 						default:
 							return ResponseUnknown(steamID);
 					}
@@ -4344,20 +4342,6 @@ namespace ArchiSteamFarm {
 			StopFamilySharingInactivityTimer();
 			Utilities.InBackground(() => CardsFarmer.Resume(true));
 			return FormatBotResponse(Strings.BotAutomaticIdlingNowResumed);
-		}
-
-		private string ResponseStats(ulong steamID) {
-			if (steamID == 0) {
-				ArchiLogger.LogNullError(nameof(steamID));
-				return null;
-			}
-
-			if (!IsOwner(steamID)) {
-				return null;
-			}
-
-			ushort memoryInMegabytes = (ushort) (GC.GetTotalMemory(false) / 1024 / 1024);
-			return FormatBotResponse(string.Format(Strings.BotStats, memoryInMegabytes));
 		}
 
 		private async Task<string> ResponseTransfer(ulong steamID, string mode, string botNameTo) {
