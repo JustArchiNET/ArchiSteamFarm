@@ -79,6 +79,8 @@ namespace ArchiSteamFarm {
 					return await ResponseSA(bot, steamID).ConfigureAwait(false);
 				case "START":
 					return await ResponseStart(bot, steamID, args).ConfigureAwait(false);
+				case "STATS":
+					return ResponseStats(steamID);
 				case "STATUS":
 					return await ResponseStatus(bot, steamID, args).ConfigureAwait(false);
 				case "STOP":
@@ -537,6 +539,20 @@ namespace ArchiSteamFarm {
 			bot.SkipFirstShutdown = true;
 			Utilities.InBackground(bot.Start);
 			return FormatBotResponse(bot, Strings.Done);
+		}
+
+		private static string ResponseStats(ulong steamID) {
+			if(steamID == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID));
+				return null;
+			}
+
+			if (!Bot.IsOwner(steamID)) {
+				return null;
+			}
+
+			ushort memoryInMegabytes = (ushort)(GC.GetTotalMemory(false) / 1024 / 1024);
+			return FormatStaticResponse(string.Format(Strings.BotStats, memoryInMegabytes));
 		}
 
 		private static async Task<string> ResponseStop(Bot bot, ulong steamID, string[] args) => await ResponseGenericMultiBot(bot, steamID, args, ResponseStop).ConfigureAwait(false);
