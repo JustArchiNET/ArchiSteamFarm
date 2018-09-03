@@ -77,6 +77,8 @@ namespace ArchiSteamFarm {
 					return await ResponseResume(bot, steamID, args).ConfigureAwait(false);
 				case "SA":
 					return await ResponseSA(bot, steamID).ConfigureAwait(false);
+				case "START":
+					return await ResponseStart(bot, steamID, args).ConfigureAwait(false);
 				case "STATUS":
 					return await ResponseStatus(bot, steamID, args).ConfigureAwait(false);
 				case "STOP":
@@ -514,6 +516,27 @@ namespace ArchiSteamFarm {
 
 			CardsFarmer.Game soloGame = bot.CardsFarmer.CurrentGamesFarming.First();
 			return FormatBotResponse(bot, string.Format(Strings.BotStatusIdling, soloGame.AppID, soloGame.GameName, soloGame.CardsRemaining, bot.CardsFarmer.GamesToFarm.Count, bot.CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining), bot.CardsFarmer.TimeRemaining.ToHumanReadable()));
+		}
+
+		private static async Task<string> ResponseStart(Bot bot, ulong steamID, string[] args) => await ResponseGenericMultiBot(bot, steamID, args, ResponseStart).ConfigureAwait(false);
+
+		private static string ResponseStart(Bot bot, ulong steamID) {
+			if (bot == null || steamID == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID));
+				return null;
+			}
+
+			if (!bot.IsMaster(steamID)) {
+				return null;
+			}
+
+			if (bot.KeepRunning) {
+				return FormatBotResponse(bot, Strings.BotAlreadyRunning);
+			}
+
+			bot.SkipFirstShutdown = true;
+			Utilities.InBackground(bot.Start);
+			return FormatBotResponse(bot, Strings.Done);
 		}
 
 		private static async Task<string> ResponseStop(Bot bot, ulong steamID, string[] args) => await ResponseGenericMultiBot(bot, steamID, args, ResponseStop).ConfigureAwait(false);

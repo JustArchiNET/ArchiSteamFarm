@@ -158,7 +158,7 @@ namespace ArchiSteamFarm {
 		private bool ProcessingGiftsScheduled;
 		private bool ReconnectOnUserInitiated;
 		private Timer SendItemsTimer;
-		private bool SkipFirstShutdown;
+		internal bool SkipFirstShutdown;
 		private SteamSaleEvent SteamSaleEvent;
 		private uint TradesCount;
 		private string TwoFactorCode;
@@ -4597,7 +4597,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async Task Start() {
+		internal async Task Start() {
 			if (!KeepRunning) {
 				KeepRunning = true;
 				Utilities.InBackground(HandleCallbacks, true);
