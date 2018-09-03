@@ -469,7 +469,7 @@ namespace ArchiSteamFarm {
 
 			bot.StopFamilySharingInactivityTimer();
 			Utilities.InBackground(() => bot.CardsFarmer.Resume(true));
-			return FormatBotResponse(Strings.BotAutomaticIdlingNowResumed);
+			return FormatBotResponse(bot, Strings.BotAutomaticIdlingNowResumed);
 		}
 
 		private static async Task<string> ResponseSA(Bot bot, ulong steamID) => await ResponseStatus(bot, steamID, new string[] { SharedInfo.ASF }).ConfigureAwait(false);
