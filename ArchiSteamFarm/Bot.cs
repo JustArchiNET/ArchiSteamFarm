@@ -138,7 +138,7 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		private string AvatarHash;
 
-		private Timer CardsFarmerResumeTimer;
+		internal Timer CardsFarmerResumeTimer;
 		private Timer ConnectionFailureTimer;
 		private string DeviceID;
 		private Timer FamilySharingInactivityTimer;
@@ -4701,7 +4701,7 @@ namespace ArchiSteamFarm {
 			ConnectionFailureTimer = null;
 		}
 
-		private void StopFamilySharingInactivityTimer() {
+		internal void StopFamilySharingInactivityTimer() {
 			if (FamilySharingInactivityTimer == null) {
 				return;
 			}

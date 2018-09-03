@@ -73,6 +73,8 @@ namespace ArchiSteamFarm {
 					return await ResponseIdleQueue(bot, steamID, args).ConfigureAwait(false);
 				case "PASSWORD":
 					return await ResponsePassword(bot, steamID, args).ConfigureAwait(false);
+				case "RESUME":
+					return await ResponseResume(bot, steamID, args).ConfigureAwait(false);
 				case "SA":
 					return await ResponseSA(bot, steamID).ConfigureAwait(false);
 				case "STATUS":
@@ -436,6 +438,36 @@ namespace ArchiSteamFarm {
 			}
 
 			return FormatBotResponse(bot, string.Format(Strings.BotEncryptedPassword, ArchiCryptoHelper.ECryptoMethod.AES, ArchiCryptoHelper.Encrypt(ArchiCryptoHelper.ECryptoMethod.AES, bot.BotConfig.SteamPassword))) + FormatBotResponse(bot, string.Format(Strings.BotEncryptedPassword, ArchiCryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser, ArchiCryptoHelper.Encrypt(ArchiCryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser, bot.BotConfig.SteamPassword)));
+		}
+
+		private static async Task<string> ResponseResume(Bot bot, ulong steamID, string[] args) => await ResponseGenericMultiBot(bot, steamID, args, ResponseResume).ConfigureAwait(false);
+
+		private static string ResponseResume(Bot bot, ulong steamID) {
+			if (bot == null || steamID == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID));
+				return null;
+			}
+
+			if (!bot.IsFamilySharing(steamID)) {
+				return null;
+			}
+
+			if (!bot.IsConnectedAndLoggedOn) {
+				return FormatBotResponse(bot, Strings.BotNotConnected);
+			}
+
+			if (!bot.CardsFarmer.Paused) {
+				return FormatBotResponse(bot, Strings.BotAutomaticIdlingResumedAlready);
+			}
+
+			if(bot.CardsFarmerResumeTimer != null) {
+				bot.CardsFarmerResumeTimer.Dispose();
+				bot.CardsFarmerResumeTimer = null;
+			}
+
+			bot.StopFamilySharingInactivityTimer();
+			Utilities.InBackground(() => bot.CardsFarmer.Resume(true));
+			return FormatBotResponse(Strings.BotAutomaticIdlingNowResumed);
 		}
 
 		private static async Task<string> ResponseSA(Bot bot, ulong steamID) => await ResponseStatus(bot, steamID, new string[] { SharedInfo.ASF }).ConfigureAwait(false);
