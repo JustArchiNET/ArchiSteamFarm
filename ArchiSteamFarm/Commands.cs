@@ -71,6 +71,8 @@ namespace ArchiSteamFarm {
 					return await ResponseIdleBlacklist(bot, steamID, args).ConfigureAwait(false);
 				case "IQ":
 					return await ResponseIdleQueue(bot, steamID, args).ConfigureAwait(false);
+				case "LOOT":
+					return await ResponseLoot(bot, steamID, args).ConfigureAwait(false);
 				case "PASSWORD":
 					return await ResponsePassword(bot, steamID, args).ConfigureAwait(false);
 				case "RESUME":
@@ -423,6 +425,51 @@ namespace ArchiSteamFarm {
 			}
 
 			return FormatBotResponse(bot, string.Format(Strings.ErrorIsEmpty, nameof(idleQueue)));
+		}
+
+		private static async Task<string> ResponseLoot(Bot bot, ulong steamID, string[] args) => await ResponseGenericMultiBot(bot, steamID, args, ResponseLoot).ConfigureAwait(false);
+
+		private static async Task<string> ResponseLoot(Bot bot, ulong steamID) {
+			if (bot == null || steamID == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID));
+				return null;
+			}
+
+			if (!bot.IsMaster(steamID)) {
+				return null;
+			}
+
+			if (!bot.IsConnectedAndLoggedOn) {
+				return FormatBotResponse(bot, Strings.BotNotConnected);
+			}
+
+			if (!bot.LootingAllowed) {
+				return FormatBotResponse(bot, Strings.BotLootingTemporarilyDisabled);
+			}
+
+			if(bot.BotConfig.LootableTypes.Count == 0) {
+				return FormatBotResponse(bot, Strings.BotLootingNoLootableTypes);
+			}
+
+			ulong targetSteamMasterID = bot.GetFirstSteamMasterID();
+			if(targetSteamMasterID == 0) {
+				return FormatBotResponse(bot, Strings.BotLootingMasterNotDefined);
+			}
+
+			if(targetSteamMasterID == bot.CachedSteamID) {
+				return FormatBotResponse(bot, Strings.BotSendingTradeToYourself);
+			}
+
+			bool? result = await bot.Loot(targetSteamMasterID).ConfigureAwait(false);
+			if (!result.HasValue) {
+				return FormatBotResponse(bot, string.Format(Strings.ErrorIsEmpty, "inventory"));
+			}
+
+			if (!result.Value) {
+				return FormatBotResponse(bot, Strings.BotLootingFailed);
+			}
+
+			return FormatBotResponse(bot, Strings.BotLootingSuccess);
 		}
 
 		private static async Task<string> ResponsePassword(Bot bot, ulong steamID, string[] args) => await ResponseGenericMultiBot(bot, steamID, args, ResponsePassword).ConfigureAwait(false);

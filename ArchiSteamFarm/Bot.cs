@@ -150,7 +150,7 @@ namespace ArchiSteamFarm {
 		private EResult LastLogOnResult;
 		private DateTime LastLogonSessionReplaced;
 		private ulong LibraryLockedBySteamID;
-		private bool LootingAllowed = true;
+		internal bool LootingAllowed = true;
 		private bool LootingScheduled;
 		private ulong MasterChatGroupID;
 		internal bool PlayingBlocked { get; private set; }
@@ -1426,7 +1426,7 @@ namespace ArchiSteamFarm {
 			return "<" + SharedInfo.ASF + "> " + response;
 		}
 
-		private ulong GetFirstSteamMasterID() => BotConfig.SteamUserPermissions.Where(kv => (kv.Key != 0) && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderByDescending(steamID => steamID != CachedSteamID).ThenBy(steamID => steamID).FirstOrDefault();
+		internal ulong GetFirstSteamMasterID() => BotConfig.SteamUserPermissions.Where(kv => (kv.Key != 0) && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderByDescending(steamID => steamID != CachedSteamID).ThenBy(steamID => steamID).FirstOrDefault();
 
 		private async Task<Dictionary<string, string>> GetKeysFromFile(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
@@ -1810,6 +1810,70 @@ namespace ArchiSteamFarm {
 					LoginSemaphore.Release();
 				}
 			);
+		}
+
+		internal async Task<bool?> Loot(ulong targetSteamMasterID) {
+			if (!IsConnectedAndLoggedOn) {
+				return false;
+			}
+
+			if (!LootingAllowed) {
+				return false;
+			}
+
+			if(BotConfig.LootableTypes.Count == 0) {
+				return false;
+			}
+
+			if(targetSteamMasterID == 0) {
+				ArchiLogger.LogNullError(nameof(targetSteamMasterID));
+				return false;
+			}
+
+			if(targetSteamMasterID == CachedSteamID) {
+				return false;
+			}
+
+			lock (LootingSemaphore) {
+				if (LootingScheduled) {
+					return true;
+				}
+
+				LootingScheduled = true;
+			}
+
+			await LootingSemaphore.WaitAsync().ConfigureAwait(false);
+
+			try {
+				lock (LootingSemaphore) {
+					LootingScheduled = false;
+				}
+
+				HashSet<Steam.Asset> inventory = await ArchiWebHandler.GetInventory(CachedSteamID, tradable: true, wantedTypes: BotConfig.LootableTypes).ConfigureAwait(false);
+				if(inventory == null || inventory.Count == 0) {
+					return null;
+				}
+
+				if(!await ArchiWebHandler.MarkSentTrades().ConfigureAwait(false)) {
+					return false;
+				}
+
+				if(!await ArchiWebHandler.SendTradeOffer(targetSteamMasterID, inventory, BotConfig.SteamTradeToken).ConfigureAwait(false)) {
+					return false;
+				}
+
+				if (HasMobileAuthenticator) {
+					await Task.Delay(3000).ConfigureAwait(false);
+					if(!await AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, targetSteamMasterID).ConfigureAwait(false)) {
+						return false;
+					}
+				}
+			}
+			finally {
+				LootingSemaphore.Release();
+			}
+
+			return true;
 		}
 
 		private async void OnConnected(SteamClient.ConnectedCallback callback) {
