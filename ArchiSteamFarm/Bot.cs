@@ -874,7 +874,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			await ResponseLoot(steamMasterID).ConfigureAwait(false);
+			await Loot(steamMasterID).ConfigureAwait(false);
 		}
 
 		internal async Task OnConfigChanged(bool deleted) {
@@ -1654,7 +1654,7 @@ namespace ArchiSteamFarm {
 				ulong steamMasterID = GetFirstSteamMasterID();
 				if (steamMasterID != 0) {
 					SendItemsTimer = new Timer(
-						async e => await ResponseLoot(steamMasterID).ConfigureAwait(false),
+						async e => await Loot(steamMasterID).ConfigureAwait(false),
 						null,
 						TimeSpan.FromHours(BotConfig.SendTradePeriod) + TimeSpan.FromSeconds(Program.LoadBalancingDelay * Bots.Count), // Delay
 						TimeSpan.FromHours(BotConfig.SendTradePeriod) // Period
@@ -3322,79 +3322,6 @@ namespace ArchiSteamFarm {
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
-		}
-
-		private async Task<string> ResponseLoot(ulong steamID) {
-			if (steamID == 0) {
-				ArchiLogger.LogNullError(nameof(steamID));
-				return null;
-			}
-
-			if (!IsMaster(steamID)) {
-				return null;
-			}
-
-			if (!IsConnectedAndLoggedOn) {
-				return FormatBotResponse(Strings.BotNotConnected);
-			}
-
-			if (!LootingAllowed) {
-				return FormatBotResponse(Strings.BotLootingTemporarilyDisabled);
-			}
-
-			if (BotConfig.LootableTypes.Count == 0) {
-				return FormatBotResponse(Strings.BotLootingNoLootableTypes);
-			}
-
-			ulong targetSteamMasterID = GetFirstSteamMasterID();
-			if (targetSteamMasterID == 0) {
-				return FormatBotResponse(Strings.BotLootingMasterNotDefined);
-			}
-
-			if (targetSteamMasterID == CachedSteamID) {
-				return FormatBotResponse(Strings.BotSendingTradeToYourself);
-			}
-
-			lock (LootingSemaphore) {
-				if (LootingScheduled) {
-					return FormatBotResponse(Strings.Done);
-				}
-
-				LootingScheduled = true;
-			}
-
-			await LootingSemaphore.WaitAsync().ConfigureAwait(false);
-
-			try {
-				lock (LootingSemaphore) {
-					LootingScheduled = false;
-				}
-
-				HashSet<Steam.Asset> inventory = await ArchiWebHandler.GetInventory(CachedSteamID, tradable: true, wantedTypes: BotConfig.LootableTypes).ConfigureAwait(false);
-				if ((inventory == null) || (inventory.Count == 0)) {
-					return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
-				}
-
-				if (!await ArchiWebHandler.MarkSentTrades().ConfigureAwait(false)) {
-					return FormatBotResponse(Strings.BotLootingFailed);
-				}
-
-				if (!await ArchiWebHandler.SendTradeOffer(targetSteamMasterID, inventory, BotConfig.SteamTradeToken).ConfigureAwait(false)) {
-					return FormatBotResponse(Strings.BotLootingFailed);
-				}
-
-				if (HasMobileAuthenticator) {
-					// Give Steam network some time to generate confirmations
-					await Task.Delay(3000).ConfigureAwait(false);
-					if (!await AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, targetSteamMasterID).ConfigureAwait(false)) {
-						return FormatBotResponse(Strings.BotLootingFailed);
-					}
-				}
-			} finally {
-				LootingSemaphore.Release();
-			}
-
-			return FormatBotResponse(Strings.BotLootingSuccess);
 		}
 
 		private async Task<string> ResponseLootByRealAppIDs(ulong steamID, string targetRealAppIDs) {
