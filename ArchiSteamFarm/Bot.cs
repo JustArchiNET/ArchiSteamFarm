@@ -1045,8 +1045,6 @@ namespace ArchiSteamFarm {
 					return null;
 				case 1:
 					switch (args[0].ToUpperInvariant()) {
-						case "LOOT":
-							return await ResponseLoot(steamID).ConfigureAwait(false);
 						case "LOOT&":
 							return ResponseLootSwitch(steamID);
 						case "PAUSE":
@@ -1106,8 +1104,6 @@ namespace ArchiSteamFarm {
 							}
 
 							return await ResponseIdleQueueRemove(steamID, args[1]).ConfigureAwait(false);
-						case "LOOT":
-							return await ResponseLoot(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "LOOT^":
 							if (args.Length > 3) {
 								return await ResponseAdvancedLoot(steamID, args[1], args[2], Utilities.GetArgsAsText(args, 3, ",")).ConfigureAwait(false);
@@ -3399,37 +3395,6 @@ namespace ArchiSteamFarm {
 			}
 
 			return FormatBotResponse(Strings.BotLootingSuccess);
-		}
-
-		private static async Task<string> ResponseLoot(ulong steamID, string botNames) {
-			if ((steamID == 0) || string.IsNullOrEmpty(botNames)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
-				return null;
-			}
-
-			HashSet<Bot> bots = GetBots(botNames);
-			if ((bots == null) || (bots.Count == 0)) {
-				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
-			}
-
-			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseLoot(steamID));
-			ICollection<string> results;
-
-			switch (Program.GlobalConfig.OptimizationMode) {
-				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					results = new List<string>(bots.Count);
-					foreach (Task<string> task in tasks) {
-						results.Add(await task.ConfigureAwait(false));
-					}
-
-					break;
-				default:
-					results = await Task.WhenAll(tasks).ConfigureAwait(false);
-					break;
-			}
-
-			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
-			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 
 		private async Task<string> ResponseLootByRealAppIDs(ulong steamID, string targetRealAppIDs) {
