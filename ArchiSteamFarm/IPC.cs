@@ -130,6 +130,7 @@ namespace ArchiSteamFarm {
 			[SuppressMessage("ReSharper", "ClassNeverInstantiated.Local")]
 			private sealed class ApiAuthenticationMiddleware {
 				private const byte MaxFailedAuthorizationAttempts = 5;
+
 				private static readonly SemaphoreSlim AuthorizationSemaphore = new SemaphoreSlim(1, 1);
 				private static readonly ConcurrentDictionary<IPAddress, byte> FailedAuthorizations = new ConcurrentDictionary<IPAddress, byte>();
 
@@ -154,7 +155,7 @@ namespace ArchiSteamFarm {
 					await Next(context).ConfigureAwait(false);
 				}
 
-				private async Task<HttpStatusCode> GetAuthenticationStatus(HttpContext context) {
+				private static async Task<HttpStatusCode> GetAuthenticationStatus(HttpContext context) {
 					if (context == null) {
 						ASF.ArchiLogger.LogNullError(nameof(context));
 						return HttpStatusCode.InternalServerError;
