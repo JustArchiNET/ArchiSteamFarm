@@ -11,7 +11,7 @@
 	"Headless": false,
 	"IdleFarmingPeriod": 8,
 	"InventoryLimiterDelay": 3,
-	"IPC": false,
+	"IPC": true,
 	"IPCPassword": null,
 	"IPCPrefixes": [
 		"http://127.0.0.1:1242/"

@@ -342,7 +342,7 @@ namespace ArchiSteamFarm {
 			WebBrowser = new WebBrowser(ASF.ArchiLogger, GlobalConfig.WebProxy, true);
 
 			if (GlobalConfig.IPC && (GlobalConfig.IPCPrefixes.Count > 0)) {
-				IPC.Start(GlobalConfig.IPCPrefixes);
+				await IPC.Start(GlobalConfig.IPCPrefixes).ConfigureAwait(false);
 			}
 		}
 
