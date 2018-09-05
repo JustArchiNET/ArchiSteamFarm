@@ -357,7 +357,7 @@ namespace ArchiSteamFarm {
 			// Sockets created by HttpListener might still be running for a short while after complete app shutdown
 			// Ensure that IPC is stopped before we finalize shutdown sequence
 			if (IPC.IsRunning) {
-				IPC.Stop();
+				await IPC.Stop().ConfigureAwait(false);
 
 				for (byte i = 0; (i < WebBrowser.MaxTries) && IPC.IsRunning; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
