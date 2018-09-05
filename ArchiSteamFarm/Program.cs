@@ -201,10 +201,11 @@ namespace ArchiSteamFarm {
 
 			await InitGlobalDatabaseAndServices().ConfigureAwait(false);
 
-			await ASF.CheckAndUpdateProgram().ConfigureAwait(false);
-			await ASF.InitBots().ConfigureAwait(false);
+			// TODO: Uncomment me
+			//await ASF.CheckAndUpdateProgram().ConfigureAwait(false);
+			//await ASF.InitBots().ConfigureAwait(false);
 
-			ASF.InitEvents();
+			//ASF.InitEvents();
 		}
 
 		private static void InitCore(IReadOnlyCollection<string> args) {
@@ -341,8 +342,8 @@ namespace ArchiSteamFarm {
 			WebBrowser.Init();
 			WebBrowser = new WebBrowser(ASF.ArchiLogger, GlobalConfig.WebProxy, true);
 
-			if (GlobalConfig.IPC && (GlobalConfig.IPCPrefixes.Count > 0)) {
-				await IPC.Start(GlobalConfig.IPCPrefixes).ConfigureAwait(false);
+			if (GlobalConfig.IPC) {
+				await IPC.Start().ConfigureAwait(false);
 			}
 		}
 

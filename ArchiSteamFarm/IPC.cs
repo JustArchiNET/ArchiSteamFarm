@@ -19,42 +19,107 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ArchiSteamFarm {
 	internal static class IPC {
-		internal static bool IsRunning => false; // TODO
+		private const string ConfigurationFile = nameof(IPC) + SharedInfo.ConfigExtension;
+
+		internal static bool IsRunning => KestrelWebHost != null;
+
+		private static IWebHost KestrelWebHost;
 
 		internal static void OnNewHistoryTarget(HistoryTarget historyTarget = null) {
 			// TODO
 		}
 
-		internal static async Task Start(IReadOnlyCollection<string> prefixes) {
-			if ((prefixes == null) || (prefixes.Count == 0)) {
-				ASF.ArchiLogger.LogNullError(nameof(prefixes));
+		internal static async Task Start() {
+			if (KestrelWebHost != null) {
 				return;
 			}
 
-			IWebHost test = new WebHostBuilder().UseUrls(string.Join(";", prefixes)).UseStartup<Startup>().UseWebRoot(SharedInfo.WebsiteDirectory).UseKestrel().Build();
+			string absoluteConfigDirectory = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.ConfigDirectory);
 
-			// TODO, this intentionally blocks for now (testing stuff)
-			await test.StartAsync().ConfigureAwait(false);
-		}
+			bool hasCustomConfig = File.Exists(Path.Combine(absoluteConfigDirectory, ConfigurationFile));
+			ASF.ArchiLogger.LogGenericDebug("hasCustomConfig? " + hasCustomConfig);
 
-		internal static void Stop() {
-			// TODO
-		}
+			IWebHostBuilder builder = new WebHostBuilder().UseStartup<Startup>().UseWebRoot(SharedInfo.WebsiteDirectory);
 
-		private sealed class Startup {
-			public void ConfigureServices(IServiceCollection services) {
+			if (hasCustomConfig) {
+				builder = builder.UseConfiguration(new ConfigurationBuilder().SetBasePath(absoluteConfigDirectory).AddJsonFile(ConfigurationFile, false, true).Build());
+				builder = builder.UseKestrel((builderContext, options) => options.Configure(builderContext.Configuration.GetSection("Kestrel")));
+			} else {
+				builder = builder.UseKestrel(options => options.ListenLocalhost(1242));
 			}
 
+			KestrelWebHost = builder.Build();
+			await KestrelWebHost.StartAsync().ConfigureAwait(false);
+		}
+
+		internal static async Task Stop() {
+			if (KestrelWebHost == null) {
+				return;
+			}
+
+			await KestrelWebHost.StopAsync().ConfigureAwait(false);
+			KestrelWebHost.Dispose();
+			KestrelWebHost = null;
+		}
+
+		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Local")]
+		private sealed class Startup {
 			public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
+				if ((app == null) || (env == null)) {
+					ASF.ArchiLogger.LogNullError(nameof(app) + " || " + nameof(env));
+					return;
+				}
+
 				app.UseStaticFiles();
+
+				app.MapWhen(context => context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), appBuilder => appBuilder.UseMiddleware<ApiAuthenticationMiddleware>());
+
+				RouteBuilder routeBuilder = new RouteBuilder(app);
+				routeBuilder.MapGet("Api/Debug", HandleApiDebugGet);
+
+				app.UseRouter(routeBuilder.Build());
+			}
+
+			public void ConfigureServices(IServiceCollection services) {
+				if (services == null) {
+					ASF.ArchiLogger.LogNullError(nameof(services));
+					return;
+				}
+
+				services.AddRouting();
+			}
+
+			private async Task HandleApiDebugGet(HttpContext context) {
+				await context.Response.WriteAsync("works").ConfigureAwait(false);
+			}
+
+			[SuppressMessage("ReSharper", "ClassNeverInstantiated.Local")]
+			private sealed class ApiAuthenticationMiddleware {
+				private readonly RequestDelegate Next;
+
+				public ApiAuthenticationMiddleware(RequestDelegate next) => Next = next ?? throw new ArgumentNullException(nameof(next));
+
+				public async Task InvokeAsync(HttpContext context) {
+					if (context == null) {
+						ASF.ArchiLogger.LogNullError(nameof(context));
+						return;
+					}
+
+					await Next(context).ConfigureAwait(false);
+				}
 			}
 		}
 	}
