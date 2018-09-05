@@ -20,8 +20,12 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
+using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,6 +33,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Primitives;
 
 namespace ArchiSteamFarm {
 	internal static class IPC {
@@ -75,8 +80,21 @@ namespace ArchiSteamFarm {
 			KestrelWebHost = null;
 		}
 
+		private static async Task Generate(this HttpResponse httpResponse, HttpStatusCode statusCode) {
+			if (httpResponse == null) {
+				ASF.ArchiLogger.LogNullError(nameof(httpResponse));
+				return;
+			}
+
+			ushort statusCodeNumber = (ushort) statusCode;
+
+			httpResponse.StatusCode = statusCodeNumber;
+			await httpResponse.WriteAsync(statusCodeNumber + " - " + statusCode).ConfigureAwait(false);
+		}
+
 		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Local")]
 		private sealed class Startup {
+			[SuppressMessage("ReSharper", "UnusedMember.Local")]
 			public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
 				if ((app == null) || (env == null)) {
 					ASF.ArchiLogger.LogNullError(nameof(app) + " || " + nameof(env));
@@ -85,14 +103,17 @@ namespace ArchiSteamFarm {
 
 				app.UseStaticFiles();
 
-				app.MapWhen(context => context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), appBuilder => appBuilder.UseMiddleware<ApiAuthenticationMiddleware>());
+				if (!string.IsNullOrEmpty(Program.GlobalConfig.IPCPassword)) {
+					app.UseWhen(context => context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), appBuilder => appBuilder.UseMiddleware<ApiAuthenticationMiddleware>());
+				}
 
 				RouteBuilder routeBuilder = new RouteBuilder(app);
-				routeBuilder.MapGet("Api/Debug", HandleApiDebugGet);
+				routeBuilder.MapGet("/Api/Debug", HandleApiDebugGet);
 
 				app.UseRouter(routeBuilder.Build());
 			}
 
+			[SuppressMessage("ReSharper", "UnusedMember.Local")]
 			public void ConfigureServices(IServiceCollection services) {
 				if (services == null) {
 					ASF.ArchiLogger.LogNullError(nameof(services));
@@ -108,17 +129,76 @@ namespace ArchiSteamFarm {
 
 			[SuppressMessage("ReSharper", "ClassNeverInstantiated.Local")]
 			private sealed class ApiAuthenticationMiddleware {
+				private const byte MaxFailedAuthorizationAttempts = 5;
+				private static readonly SemaphoreSlim AuthorizationSemaphore = new SemaphoreSlim(1, 1);
+				private static readonly ConcurrentDictionary<IPAddress, byte> FailedAuthorizations = new ConcurrentDictionary<IPAddress, byte>();
+
 				private readonly RequestDelegate Next;
 
 				public ApiAuthenticationMiddleware(RequestDelegate next) => Next = next ?? throw new ArgumentNullException(nameof(next));
 
+				[SuppressMessage("ReSharper", "UnusedMember.Local")]
 				public async Task InvokeAsync(HttpContext context) {
 					if (context == null) {
 						ASF.ArchiLogger.LogNullError(nameof(context));
 						return;
 					}
 
+					HttpStatusCode authenticationStatus = await GetAuthenticationStatus(context).ConfigureAwait(false);
+
+					if (authenticationStatus != HttpStatusCode.OK) {
+						await context.Response.Generate(authenticationStatus).ConfigureAwait(false);
+						return;
+					}
+
 					await Next(context).ConfigureAwait(false);
+				}
+
+				private async Task<HttpStatusCode> GetAuthenticationStatus(HttpContext context) {
+					if (context == null) {
+						ASF.ArchiLogger.LogNullError(nameof(context));
+						return HttpStatusCode.InternalServerError;
+					}
+
+					if (string.IsNullOrEmpty(Program.GlobalConfig.IPCPassword)) {
+						return HttpStatusCode.OK;
+					}
+
+					IPAddress clientIP = context.Connection.RemoteIpAddress;
+
+					if (FailedAuthorizations.TryGetValue(clientIP, out byte attempts)) {
+						if (attempts >= MaxFailedAuthorizationAttempts) {
+							return HttpStatusCode.Forbidden;
+						}
+					}
+
+					bool authorized;
+
+					await AuthorizationSemaphore.WaitAsync().ConfigureAwait(false);
+
+					try {
+						if (FailedAuthorizations.TryGetValue(clientIP, out attempts)) {
+							if (attempts >= MaxFailedAuthorizationAttempts) {
+								return HttpStatusCode.Forbidden;
+							}
+						}
+
+						if (!context.Request.Headers.TryGetValue("Authentication", out StringValues passwords) && !context.Request.Query.TryGetValue("password", out passwords)) {
+							return HttpStatusCode.Unauthorized;
+						}
+
+						authorized = passwords.First() == Program.GlobalConfig.IPCPassword;
+
+						if (authorized) {
+							FailedAuthorizations.TryRemove(clientIP, out _);
+						} else {
+							FailedAuthorizations[clientIP] = FailedAuthorizations.TryGetValue(clientIP, out attempts) ? ++attempts : (byte) 1;
+						}
+					} finally {
+						AuthorizationSemaphore.Release();
+					}
+
+					return authorized ? HttpStatusCode.OK : HttpStatusCode.Unauthorized;
 				}
 			}
 		}
