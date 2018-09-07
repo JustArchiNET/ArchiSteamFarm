@@ -43,6 +43,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			ASFResponse response = new ASFResponse(SharedInfo.BuildInfo.Variant, Program.GlobalConfig, memoryUsage, processStartTime, SharedInfo.Version);
+
 			return Ok(new GenericResponse<ASFResponse>(response));
 		}
 
