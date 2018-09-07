@@ -41,6 +41,7 @@
     <PackageReference Include="HtmlAgilityPack" Version="1.8.7" />
     <PackageReference Include="Humanizer" Version="2.4.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Formatters.Json" Version="2.2.0-preview1-35029" />
+    <PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="2.2.0-preview1-35029" />
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.2.0-preview1-35029" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0-preview1-35029" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0-preview1-35029" />

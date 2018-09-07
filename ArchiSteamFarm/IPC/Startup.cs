@@ -35,12 +35,14 @@ namespace ArchiSteamFarm.IPC {
 				return;
 			}
 
-			app.UseStaticFiles();
-			app.UseMvcWithDefaultRoute();
+			app.UseResponseCompression();
 
 			if (!string.IsNullOrEmpty(Program.GlobalConfig.IPCPassword)) {
 				app.UseWhen(context => context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), appBuilder => appBuilder.UseMiddleware<ApiAuthenticationMiddleware>());
 			}
+
+			app.UseStaticFiles();
+			app.UseMvcWithDefaultRoute();
 		}
 
 		public void ConfigureServices(IServiceCollection services) {
@@ -48,6 +50,8 @@ namespace ArchiSteamFarm.IPC {
 				ASF.ArchiLogger.LogNullError(nameof(services));
 				return;
 			}
+
+			services.AddResponseCompression();
 
 			// We declare only the absolute bare functionality to get our IPC up and running
 			IMvcCoreBuilder mvc = services.AddMvcCore();

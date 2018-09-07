@@ -37,8 +37,6 @@ namespace ArchiSteamFarm.IPC.Middleware {
 
 		private static readonly SemaphoreSlim AuthorizationSemaphore = new SemaphoreSlim(1, 1);
 
-		private static readonly ConcurrentDictionary<IPAddress, byte> FailedAuthorizations = new ConcurrentDictionary<IPAddress, byte>();
-
 		[SuppressMessage("ReSharper", "UnusedMember.Local")]
 		private static readonly Timer ClearFailedAuthorizationsTimer = new Timer(
 			e => FailedAuthorizations.Clear(),
@@ -46,6 +44,8 @@ namespace ArchiSteamFarm.IPC.Middleware {
 			TimeSpan.FromHours(FailedAuthorizationsCooldownInHours), // Delay
 			TimeSpan.FromHours(FailedAuthorizationsCooldownInHours) // Period
 		);
+
+		private static readonly ConcurrentDictionary<IPAddress, byte> FailedAuthorizations = new ConcurrentDictionary<IPAddress, byte>();
 
 		private readonly RequestDelegate Next;
 
@@ -86,7 +86,11 @@ namespace ArchiSteamFarm.IPC.Middleware {
 				}
 			}
 
-			bool authorized;
+			if (!context.Request.Headers.TryGetValue("Authentication", out StringValues passwords) && !context.Request.Query.TryGetValue("password", out passwords)) {
+				return HttpStatusCode.Unauthorized;
+			}
+
+			bool authorized = passwords.First() == Program.GlobalConfig.IPCPassword;
 
 			await AuthorizationSemaphore.WaitAsync().ConfigureAwait(false);
 
@@ -97,15 +101,7 @@ namespace ArchiSteamFarm.IPC.Middleware {
 					}
 				}
 
-				if (!context.Request.Headers.TryGetValue("Authentication", out StringValues passwords) && !context.Request.Query.TryGetValue("password", out passwords)) {
-					return HttpStatusCode.Unauthorized;
-				}
-
-				authorized = passwords.First() == Program.GlobalConfig.IPCPassword;
-
-				if (authorized) {
-					FailedAuthorizations.TryRemove(clientIP, out _);
-				} else {
+				if (!authorized) {
 					FailedAuthorizations[clientIP] = FailedAuthorizations.TryGetValue(clientIP, out attempts) ? ++attempts : (byte) 1;
 				}
 			} finally {

@@ -40,7 +40,7 @@ using SteamKit2.Discovery;
 using SteamKit2.Unified.Internal;
 
 namespace ArchiSteamFarm {
-	internal sealed class Bot : IDisposable {
+	public sealed class Bot : IDisposable {
 		internal const ushort CallbackSleep = 500; // In miliseconds
 		internal const ushort MaxMessagePrefixLength = MaxMessageLength - ReservedMessageLength - 2; // 2 for a minimum of 2 characters (escape one and real one)
 		internal const byte MinPlayingBlockedTTL = 60; // Delay in seconds added when account was occupied during our disconnect, to not disconnect other Steam client session too soon

@@ -19,16 +19,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Requests {
-	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	public sealed class ASFRequest : SensitiveDetailsRequest {
-		[JsonProperty(Required = Required.Always)]
-		internal readonly GlobalConfig GlobalConfig;
-
-		// Deserialized from JSON
-		private ASFRequest() { }
+	public abstract class SensitiveDetailsRequest {
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly bool KeepSensitiveDetails = true;
 	}
 }

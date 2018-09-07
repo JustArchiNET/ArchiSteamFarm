@@ -24,11 +24,11 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Requests {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	public sealed class ASFRequest : SensitiveDetailsRequest {
+	public sealed class BotRequest : SensitiveDetailsRequest {
 		[JsonProperty(Required = Required.Always)]
-		internal readonly GlobalConfig GlobalConfig;
+		internal readonly BotConfig BotConfig;
 
 		// Deserialized from JSON
-		private ASFRequest() { }
+		private BotRequest() { }
 	}
 }
