@@ -40,9 +40,17 @@
     <PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="2.0.0" />
     <PackageReference Include="HtmlAgilityPack" Version="1.8.7" />
     <PackageReference Include="Humanizer" Version="2.4.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Formatters.Json" Version="2.2.0-preview1-35029" />
+    <PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="2.2.0-preview1-35029" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.2.0-preview1-35029" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0-preview1-35029" />
+    <PackageReference Include="Microsoft.AspNetCore.WebSockets" Version="2.2.0-preview1-35029" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0-preview1-35029" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="2.2.0-preview1-35029" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="NLog" Version="4.5.9" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.6.0" />
     <PackageReference Include="protobuf-net" Version="3.0.0-alpha.3" />
   </ItemGroup>
 

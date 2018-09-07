@@ -32,7 +32,7 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	internal sealed class GlobalConfig {
+	public sealed class GlobalConfig {
 		private const bool DefaultAutoRestart = true;
 		private const string DefaultCommandPrefix = "!";
 		private const byte DefaultConfirmationsLimiterDelay = 10;
@@ -46,7 +46,6 @@ namespace ArchiSteamFarm {
 		private const byte DefaultInventoryLimiterDelay = 3;
 		private const bool DefaultIPC = false;
 		private const string DefaultIPCPassword = null;
-		private const ushort DefaultIPCPort = 1242;
 		private const byte DefaultLoginLimiterDelay = 10;
 		private const byte DefaultMaxFarmingTime = 10;
 		private const byte DefaultMaxTradeHoldDuration = 15;
@@ -63,7 +62,6 @@ namespace ArchiSteamFarm {
 		private const string DefaultWebProxyUsername = null;
 
 		internal static readonly ImmutableHashSet<uint> SalesBlacklist = ImmutableHashSet.Create<uint>(267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900, 762800, 876740);
-		private static readonly ImmutableHashSet<string> DefaultIPCPrefixes = ImmutableHashSet.Create("http://127.0.0.1:" + DefaultIPCPort + "/");
 		private static readonly ImmutableHashSet<uint> DefaultBlacklist = ImmutableHashSet.Create<uint>();
 
 		private static readonly SemaphoreSlim WriteSemaphore = new SemaphoreSlim(1, 1);
@@ -109,9 +107,6 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty]
 		internal readonly string IPCPassword = DefaultIPCPassword;
-
-		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
-		internal readonly ImmutableHashSet<string> IPCPrefixes = DefaultIPCPrefixes;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte LoginLimiterDelay = DefaultLoginLimiterDelay;
@@ -336,7 +331,6 @@ namespace ArchiSteamFarm {
 		public bool ShouldSerializeInventoryLimiterDelay() => ShouldSerializeEverything || (InventoryLimiterDelay != DefaultInventoryLimiterDelay);
 		public bool ShouldSerializeIPC() => ShouldSerializeEverything || (IPC != DefaultIPC);
 		public bool ShouldSerializeIPCPassword() => ShouldSerializeEverything || (IPCPassword != DefaultIPCPassword);
-		public bool ShouldSerializeIPCPrefixes() => ShouldSerializeEverything || ((IPCPrefixes != DefaultIPCPrefixes) && !IPCPrefixes.SetEquals(DefaultIPCPrefixes));
 		public bool ShouldSerializeLoginLimiterDelay() => ShouldSerializeEverything || (LoginLimiterDelay != DefaultLoginLimiterDelay);
 		public bool ShouldSerializeMaxFarmingTime() => ShouldSerializeEverything || (MaxFarmingTime != DefaultMaxFarmingTime);
 		public bool ShouldSerializeMaxTradeHoldDuration() => ShouldSerializeEverything || (MaxTradeHoldDuration != DefaultMaxTradeHoldDuration);

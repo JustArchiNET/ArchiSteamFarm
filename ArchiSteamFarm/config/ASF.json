@@ -13,9 +13,6 @@
 	"InventoryLimiterDelay": 3,
 	"IPC": false,
 	"IPCPassword": null,
-	"IPCPrefixes": [
-		"http://127.0.0.1:1242/"
-	],
 	"LoginLimiterDelay": 10,
 	"MaxFarmingTime": 10,
 	"MaxTradeHoldDuration": 15,

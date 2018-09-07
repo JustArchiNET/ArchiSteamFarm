@@ -28,6 +28,7 @@ using System.IO;
 using System.Linq;
 using System.Resources;
 using System.Threading.Tasks;
+using ArchiSteamFarm.IPC;
 using ArchiSteamFarm.Localization;
 using Newtonsoft.Json;
 using NLog;
@@ -341,8 +342,8 @@ namespace ArchiSteamFarm {
 			WebBrowser.Init();
 			WebBrowser = new WebBrowser(ASF.ArchiLogger, GlobalConfig.WebProxy, true);
 
-			if (GlobalConfig.IPC && (GlobalConfig.IPCPrefixes.Count > 0)) {
-				IPC.Start(GlobalConfig.IPCPrefixes);
+			if (GlobalConfig.IPC) {
+				await ArchiKestrel.Start().ConfigureAwait(false);
 			}
 		}
 
@@ -353,15 +354,9 @@ namespace ArchiSteamFarm {
 
 			ShutdownSequenceInitialized = true;
 
-			// Sockets created by HttpListener might still be running for a short while after complete app shutdown
+			// Sockets created by IPC might still be running for a short while after complete app shutdown
 			// Ensure that IPC is stopped before we finalize shutdown sequence
-			if (IPC.IsRunning) {
-				IPC.Stop();
-
-				for (byte i = 0; (i < WebBrowser.MaxTries) && IPC.IsRunning; i++) {
-					await Task.Delay(1000).ConfigureAwait(false);
-				}
-			}
+			await ArchiKestrel.Stop().ConfigureAwait(false);
 
 			if (Bot.Bots.Count > 0) {
 				IEnumerable<Task> tasks = Bot.Bots.Values.Select(bot => Task.Run(() => bot.Stop(true)));
