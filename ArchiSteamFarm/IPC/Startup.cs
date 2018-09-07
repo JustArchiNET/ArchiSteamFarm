@@ -46,7 +46,8 @@ namespace ArchiSteamFarm.IPC {
 			// We need WebSockets support for /Api/Log
 			app.UseWebSockets();
 
-			// We need static files for IPC GUI
+			// We need static files support for IPC GUI
+			app.UseDefaultFiles();
 			app.UseStaticFiles();
 
 			// We need MVC for /Api
