@@ -23,12 +23,18 @@ using System;
 using ArchiSteamFarm.IPC.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
 namespace ArchiSteamFarm.IPC {
 	internal sealed class Startup {
+		private readonly IConfiguration Configuration;
+
+		public Startup(IConfiguration configuration) => Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
 			if ((app == null) || (env == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(app) + " || " + nameof(env));
@@ -36,6 +42,14 @@ namespace ArchiSteamFarm.IPC {
 			}
 
 			// The order of dependency injection matters, pay attention to it
+
+			// Add workaround for missing PathBase feature, https://github.com/aspnet/Hosting/issues/1120
+			PathString pathBase = Configuration.GetSection("Kestrel").GetValue<PathString>("PathBase");
+			if (!string.IsNullOrEmpty(pathBase)) {
+				app.UsePathBase(pathBase);
+			}
+
+			// Add support for response compression
 			app.UseResponseCompression();
 
 			if (!string.IsNullOrEmpty(Program.GlobalConfig.IPCPassword)) {
@@ -61,6 +75,8 @@ namespace ArchiSteamFarm.IPC {
 			}
 
 			// The order of dependency injection matters, pay attention to it
+
+			// Add support for response compression
 			services.AddResponseCompression();
 
 			// We need MVC for /Api, but we're going to use only a small subset of all available features

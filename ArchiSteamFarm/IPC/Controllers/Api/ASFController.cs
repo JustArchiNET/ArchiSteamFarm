@@ -42,7 +42,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				processStartTime = process.StartTime;
 			}
 
-			return Ok(new GenericResponse<ASFResponse>(new ASFResponse(SharedInfo.BuildInfo.Variant, Program.GlobalConfig, memoryUsage, processStartTime, SharedInfo.Version)));
+			ASFResponse response = new ASFResponse(SharedInfo.BuildInfo.Variant, Program.GlobalConfig, memoryUsage, processStartTime, SharedInfo.Version);
+			return Ok(new GenericResponse<ASFResponse>(response));
 		}
 
 		[HttpPost]

@@ -19,6 +19,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using ArchiSteamFarm.IPC.Controllers.Api;
@@ -61,9 +62,8 @@ namespace ArchiSteamFarm.IPC {
 
 			// Check if custom config is available
 			string absoluteConfigDirectory = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.ConfigDirectory);
-			bool hasCustomConfig = File.Exists(Path.Combine(absoluteConfigDirectory, ConfigurationFile));
 
-			if (hasCustomConfig) {
+			if (File.Exists(Path.Combine(absoluteConfigDirectory, ConfigurationFile))) {
 				// Set up custom config to be used
 				builder.UseConfiguration(new ConfigurationBuilder().SetBasePath(absoluteConfigDirectory).AddJsonFile(ConfigurationFile, false, true).Build());
 
@@ -86,8 +86,17 @@ namespace ArchiSteamFarm.IPC {
 			Logging.InitHistoryLogger();
 
 			// Start the server
-			KestrelWebHost = builder.Build();
-			await KestrelWebHost.StartAsync().ConfigureAwait(false);
+			IWebHost kestrelWebHost = builder.Build();
+
+			try {
+				await kestrelWebHost.StartAsync().ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+				kestrelWebHost.Dispose();
+				return;
+			}
+
+			KestrelWebHost = kestrelWebHost;
 		}
 
 		internal static async Task Stop() {
