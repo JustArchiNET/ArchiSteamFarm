@@ -32,7 +32,7 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	internal sealed class GlobalConfig {
+	public sealed class GlobalConfig {
 		private const bool DefaultAutoRestart = true;
 		private const string DefaultCommandPrefix = "!";
 		private const byte DefaultConfirmationsLimiterDelay = 10;

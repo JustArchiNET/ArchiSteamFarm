@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System.Linq;
+using ArchiSteamFarm.IPC;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
@@ -99,7 +100,7 @@ namespace ArchiSteamFarm {
 				LogManager.ReconfigExistingLoggers();
 			}
 
-			IPC.OnNewHistoryTarget(historyTarget);
+			ArchiKestrel.OnNewHistoryTarget(historyTarget);
 		}
 
 		internal static void OnUserInputEnd() {
@@ -109,14 +110,14 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			bool reconfig = false;
+			bool reconfigure = false;
 
 			foreach (LoggingRule consoleLoggingRule in ConsoleLoggingRules.Where(consoleLoggingRule => !LogManager.Configuration.LoggingRules.Contains(consoleLoggingRule))) {
 				LogManager.Configuration.LoggingRules.Add(consoleLoggingRule);
-				reconfig = true;
+				reconfigure = true;
 			}
 
-			if (reconfig) {
+			if (reconfigure) {
 				LogManager.ReconfigExistingLoggers();
 			}
 		}
@@ -128,15 +129,15 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			bool reconfig = false;
+			bool reconfigure = false;
 
 			foreach (LoggingRule consoleLoggingRule in ConsoleLoggingRules) {
 				if (LogManager.Configuration.LoggingRules.Remove(consoleLoggingRule)) {
-					reconfig = true;
+					reconfigure = true;
 				}
 			}
 
-			if (reconfig) {
+			if (reconfigure) {
 				LogManager.ReconfigExistingLoggers();
 			}
 		}
@@ -162,7 +163,7 @@ namespace ArchiSteamFarm {
 			}
 
 			HistoryTarget historyTarget = LogManager.Configuration.AllTargets.OfType<HistoryTarget>().FirstOrDefault();
-			IPC.OnNewHistoryTarget(historyTarget);
+			ArchiKestrel.OnNewHistoryTarget(historyTarget);
 		}
 	}
 }

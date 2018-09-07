@@ -28,6 +28,7 @@ using System.IO;
 using System.Linq;
 using System.Resources;
 using System.Threading.Tasks;
+using ArchiSteamFarm.IPC;
 using ArchiSteamFarm.Localization;
 using Newtonsoft.Json;
 using NLog;
@@ -343,7 +344,7 @@ namespace ArchiSteamFarm {
 			WebBrowser = new WebBrowser(ASF.ArchiLogger, GlobalConfig.WebProxy, true);
 
 			if (GlobalConfig.IPC) {
-				await IPC.Start().ConfigureAwait(false);
+				await ArchiKestrel.Start().ConfigureAwait(false);
 			}
 		}
 
@@ -356,10 +357,10 @@ namespace ArchiSteamFarm {
 
 			// Sockets created by HttpListener might still be running for a short while after complete app shutdown
 			// Ensure that IPC is stopped before we finalize shutdown sequence
-			if (IPC.IsRunning) {
-				await IPC.Stop().ConfigureAwait(false);
+			if (ArchiKestrel.IsRunning) {
+				await ArchiKestrel.Stop().ConfigureAwait(false);
 
-				for (byte i = 0; (i < WebBrowser.MaxTries) && IPC.IsRunning; i++) {
+				for (byte i = 0; (i < WebBrowser.MaxTries) && ArchiKestrel.IsRunning; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 			}

@@ -38,6 +38,7 @@ namespace ArchiSteamFarm {
 		internal const string GithubRepo = "JustArchi/" + AssemblyName;
 		internal const string GlobalConfigFileName = ASF + ConfigExtension;
 		internal const string GlobalDatabaseFileName = ASF + DatabaseExtension;
+		internal const string IPC = nameof(IPC);
 		internal const string KeysExtension = ".keys";
 		internal const string KeysUnusedExtension = ".unused";
 		internal const string KeysUsedExtension = ".used";
