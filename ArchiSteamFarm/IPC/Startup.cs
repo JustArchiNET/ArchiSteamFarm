@@ -24,6 +24,7 @@ using ArchiSteamFarm.IPC.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -81,6 +82,9 @@ namespace ArchiSteamFarm.IPC {
 
 			// We need MVC for /Api, but we're going to use only a small subset of all available features
 			IMvcCoreBuilder mvc = services.AddMvcCore();
+
+			// Use latest compatibility version for MVC
+			mvc.SetCompatibilityVersion(CompatibilityVersion.Latest);
 
 			// Add standard formatters that can be used for serializing/deserializing requests/responses, they're already available in the core
 			mvc.AddFormatterMappings();
