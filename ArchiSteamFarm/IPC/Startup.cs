@@ -49,7 +49,13 @@ namespace ArchiSteamFarm.IPC {
 				return;
 			}
 
-			services.AddMvc().AddJsonOptions(
+			// We declare only the absolute bare functionality to get our IPC up and running
+			IMvcCoreBuilder mvc = services.AddMvcCore();
+
+			mvc.AddFormatterMappings();
+			mvc.AddJsonFormatters();
+
+			mvc.AddJsonOptions(
 				options => {
 					options.SerializerSettings.ContractResolver = new DefaultContractResolver();
 

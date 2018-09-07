@@ -40,10 +40,8 @@
     <PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="2.0.0" />
     <PackageReference Include="HtmlAgilityPack" Version="1.8.7" />
     <PackageReference Include="Humanizer" Version="2.4.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0-preview1-35029" />
-    <PackageReference Include="Microsoft.AspNetCore.Routing" Version="2.2.0-preview1-35029" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Formatters.Json" Version="2.2.0-preview1-35029" />
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.2.0-preview1-35029" />
-    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Https" Version="2.2.0-preview1-35029" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0-preview1-35029" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0-preview1-35029" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.5.0" />
