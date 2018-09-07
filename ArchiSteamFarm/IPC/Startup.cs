@@ -41,6 +41,7 @@ namespace ArchiSteamFarm.IPC {
 				app.UseWhen(context => context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), appBuilder => appBuilder.UseMiddleware<ApiAuthenticationMiddleware>());
 			}
 
+			app.UseWebSockets();
 			app.UseStaticFiles();
 			app.UseMvcWithDefaultRoute();
 		}
