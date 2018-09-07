@@ -19,37 +19,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using ArchiSteamFarm.IPC.Responses;
-using ArchiSteamFarm.Localization;
-using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.CodeAnalysis;
+using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.IPC.Controllers.Api {
-	[ApiController]
-	[Route("Api/Structure")]
-	public sealed class StructureController : ControllerBase {
-		[HttpGet("{structure:required}")]
-		public ActionResult<GenericResponse<object>> Get(string structure) {
-			if (string.IsNullOrEmpty(structure)) {
-				ASF.ArchiLogger.LogNullError(nameof(structure));
-				return BadRequest(new GenericResponse<object>(false, string.Format(Strings.ErrorIsEmpty, nameof(structure))));
-			}
+namespace ArchiSteamFarm.IPC.Requests {
+	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+	public sealed class WWWSendRequest {
+		[JsonProperty(Required = Required.Always)]
+		internal readonly string URL;
 
-			Type targetType = Utilities.ParseType(structure);
-
-			if (targetType == null) {
-				return BadRequest(new GenericResponse<object>(false, string.Format(Strings.ErrorIsInvalid, structure)));
-			}
-
-			object obj;
-
-			try {
-				obj = Activator.CreateInstance(targetType, true);
-			} catch (Exception e) {
-				return BadRequest(new GenericResponse<object>(false, string.Format(Strings.ErrorParsingObject, nameof(targetType)) + Environment.NewLine + e));
-			}
-
-			return Ok(new GenericResponse<object>(obj));
-		}
+		// Deserialized from JSON
+		private WWWSendRequest() { }
 	}
 }
