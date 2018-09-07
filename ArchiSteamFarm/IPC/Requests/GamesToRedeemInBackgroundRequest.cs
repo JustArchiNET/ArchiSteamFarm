@@ -19,42 +19,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+using System.Collections.Specialized;
+using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.IPC.Responses {
-	public sealed class GenericResponse<T> : GenericResponse where T : class {
-		[JsonProperty]
-		private readonly T Result;
+namespace ArchiSteamFarm.IPC.Requests {
+	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+	public sealed class GamesToRedeemInBackgroundRequest {
+		[JsonProperty(Required = Required.Always)]
+		internal readonly OrderedDictionary GamesToRedeemInBackground;
 
-		internal GenericResponse(T result) : base(true, "OK") => Result = result ?? throw new ArgumentNullException(nameof(result));
-		internal GenericResponse(bool success, string message) : base(success, message) { }
-	}
-
-	public class GenericResponse {
-		[JsonProperty]
-		private readonly string Message;
-
-		[JsonProperty]
-		private readonly bool Success;
-
-		internal GenericResponse(bool success) {
-			if (!success) {
-				// Returning failed generic response without a message should never happen
-				throw new ArgumentException(nameof(success));
-			}
-
-			Success = true;
-			Message = "OK";
-		}
-
-		internal GenericResponse(bool success, string message) {
-			if (string.IsNullOrEmpty(message)) {
-				throw new ArgumentNullException(nameof(message));
-			}
-
-			Success = success;
-			Message = message;
-		}
+		// Deserialized from JSON
+		private GamesToRedeemInBackgroundRequest() { }
 	}
 }

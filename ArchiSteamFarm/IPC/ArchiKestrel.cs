@@ -34,18 +34,6 @@ namespace ArchiSteamFarm.IPC {
 
 		private static IWebHost KestrelWebHost;
 
-		internal static async Task Generate(this HttpResponse httpResponse, HttpStatusCode statusCode) {
-			if (httpResponse == null) {
-				ASF.ArchiLogger.LogNullError(nameof(httpResponse));
-				return;
-			}
-
-			ushort statusCodeNumber = (ushort) statusCode;
-
-			httpResponse.StatusCode = statusCodeNumber;
-			await httpResponse.WriteAsync(statusCodeNumber + " - " + statusCode).ConfigureAwait(false);
-		}
-
 		internal static void OnNewHistoryTarget(HistoryTarget historyTarget = null) {
 			// TODO
 		}

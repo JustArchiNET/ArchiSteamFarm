@@ -20,41 +20,36 @@
 // limitations under the License.
 
 using System;
-using Newtonsoft.Json;
+using ArchiSteamFarm.IPC.Responses;
+using ArchiSteamFarm.Localization;
+using Microsoft.AspNetCore.Mvc;
 
-namespace ArchiSteamFarm.IPC.Responses {
-	public sealed class GenericResponse<T> : GenericResponse where T : class {
-		[JsonProperty]
-		private readonly T Result;
-
-		internal GenericResponse(T result) : base(true, "OK") => Result = result ?? throw new ArgumentNullException(nameof(result));
-		internal GenericResponse(bool success, string message) : base(success, message) { }
-	}
-
-	public class GenericResponse {
-		[JsonProperty]
-		private readonly string Message;
-
-		[JsonProperty]
-		private readonly bool Success;
-
-		internal GenericResponse(bool success) {
-			if (!success) {
-				// Returning failed generic response without a message should never happen
-				throw new ArgumentException(nameof(success));
+namespace ArchiSteamFarm.IPC.Controllers.Api {
+	[ApiController]
+	[Route("Api/Structure")]
+	public sealed class StructureController : ControllerBase {
+		[HttpGet("{structure:required}")]
+		public ActionResult<GenericResponse<object>> Get(string structure) {
+			if (string.IsNullOrEmpty(structure)) {
+				ASF.ArchiLogger.LogNullError(nameof(structure));
+				return BadRequest(new GenericResponse<object>(false, string.Format(Strings.ErrorIsEmpty, nameof(structure))));
 			}
 
-			Success = true;
-			Message = "OK";
-		}
+			Type targetType = Utilities.ParseType(structure);
 
-		internal GenericResponse(bool success, string message) {
-			if (string.IsNullOrEmpty(message)) {
-				throw new ArgumentNullException(nameof(message));
+			if (targetType == null) {
+				return BadRequest(new GenericResponse<object>(false, string.Format(Strings.ErrorIsInvalid, structure)));
 			}
 
-			Success = success;
-			Message = message;
+			object obj;
+
+			try {
+				obj = Activator.CreateInstance(targetType, true);
+			} catch (Exception e) {
+				return BadRequest(new GenericResponse<object>(false, string.Format(Strings.ErrorParsingObject, targetType) + Environment.NewLine + e));
+			}
+
+			return Ok(new GenericResponse<object>(obj));
 		}
 	}
 }

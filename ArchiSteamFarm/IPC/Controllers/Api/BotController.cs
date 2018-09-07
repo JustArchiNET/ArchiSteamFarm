@@ -71,12 +71,12 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		public ActionResult<GenericResponse<HashSet<Bot>>> Get(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
-				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
+				return BadRequest(new GenericResponse<HashSet<Bot>>(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
 			}
 
 			HashSet<Bot> bots = Bot.GetBots(botNames);
 			if ((bots == null) || (bots.Count == 0)) {
-				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
+				return BadRequest(new GenericResponse<HashSet<Bot>>(false, string.Format(Strings.BotNotFound, botNames)));
 			}
 
 			return Ok(new GenericResponse<HashSet<Bot>>(bots));
@@ -85,6 +85,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[HttpPost("{botName:required}")]
 		public async Task<ActionResult<GenericResponse>> Post(string botName, [FromBody] BotRequest request) {
 			if (string.IsNullOrEmpty(botName) || (request == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(botName) + " || " + nameof(request));
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botName) + " || " + nameof(request))));
 			}
 

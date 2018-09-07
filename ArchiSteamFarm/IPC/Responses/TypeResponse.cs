@@ -20,41 +20,41 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Responses {
-	public sealed class GenericResponse<T> : GenericResponse where T : class {
+	public sealed class TypeResponse {
 		[JsonProperty]
-		private readonly T Result;
-
-		internal GenericResponse(T result) : base(true, "OK") => Result = result ?? throw new ArgumentNullException(nameof(result));
-		internal GenericResponse(bool success, string message) : base(success, message) { }
-	}
-
-	public class GenericResponse {
-		[JsonProperty]
-		private readonly string Message;
+		private readonly Dictionary<string, string> Body;
 
 		[JsonProperty]
-		private readonly bool Success;
+		private readonly TypeProperties Properties;
 
-		internal GenericResponse(bool success) {
-			if (!success) {
-				// Returning failed generic response without a message should never happen
-				throw new ArgumentException(nameof(success));
+		internal TypeResponse(Dictionary<string, string> body, TypeProperties properties) {
+			if ((body == null) || (properties == null)) {
+				throw new ArgumentNullException(nameof(body) + " || " + nameof(properties));
 			}
 
-			Success = true;
-			Message = "OK";
+			Body = body;
+			Properties = properties;
 		}
 
-		internal GenericResponse(bool success, string message) {
-			if (string.IsNullOrEmpty(message)) {
-				throw new ArgumentNullException(nameof(message));
-			}
+		internal sealed class TypeProperties {
+			[JsonProperty]
+			private readonly string BaseType;
 
-			Success = success;
-			Message = message;
+			[JsonProperty]
+			private readonly HashSet<string> CustomAttributes;
+
+			[JsonProperty]
+			private readonly string UnderlyingType;
+
+			internal TypeProperties(string baseType = null, HashSet<string> customAttributes = null, string underlyingType = null) {
+				BaseType = baseType;
+				CustomAttributes = customAttributes;
+				UnderlyingType = underlyingType;
+			}
 		}
 	}
 }

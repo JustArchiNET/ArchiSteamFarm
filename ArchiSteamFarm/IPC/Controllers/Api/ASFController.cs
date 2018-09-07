@@ -42,13 +42,13 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				processStartTime = process.StartTime;
 			}
 
-			GenericResponse<ASFResponse> response = new GenericResponse<ASFResponse>(new ASFResponse(SharedInfo.BuildInfo.Variant, Program.GlobalConfig, memoryUsage, processStartTime, SharedInfo.Version));
-			return Ok(response);
+			return Ok(new GenericResponse<ASFResponse>(new ASFResponse(SharedInfo.BuildInfo.Variant, Program.GlobalConfig, memoryUsage, processStartTime, SharedInfo.Version)));
 		}
 
 		[HttpPost]
 		public async Task<ActionResult<GenericResponse>> Post([FromBody] ASFRequest request) {
 			if (request == null) {
+				ASF.ArchiLogger.LogNullError(nameof(request));
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(request))));
 			}
 
