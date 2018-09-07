@@ -355,15 +355,9 @@ namespace ArchiSteamFarm {
 
 			ShutdownSequenceInitialized = true;
 
-			// Sockets created by HttpListener might still be running for a short while after complete app shutdown
+			// Sockets created by IPC might still be running for a short while after complete app shutdown
 			// Ensure that IPC is stopped before we finalize shutdown sequence
-			if (ArchiKestrel.IsRunning) {
-				await ArchiKestrel.Stop().ConfigureAwait(false);
-
-				for (byte i = 0; (i < WebBrowser.MaxTries) && ArchiKestrel.IsRunning; i++) {
-					await Task.Delay(1000).ConfigureAwait(false);
-				}
-			}
+			await ArchiKestrel.Stop().ConfigureAwait(false);
 
 			if (Bot.Bots.Count > 0) {
 				IEnumerable<Task> tasks = Bot.Bots.Values.Select(bot => Task.Run(() => bot.Stop(true)));

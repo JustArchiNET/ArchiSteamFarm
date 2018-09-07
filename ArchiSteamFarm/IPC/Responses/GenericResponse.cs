@@ -24,14 +24,18 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Responses {
 	public sealed class GenericResponse<T> where T : class {
+#pragma warning disable 414
 		[JsonProperty]
 		private readonly string Message;
+#pragma warning restore 414
 
 		[JsonProperty]
 		private readonly T Result;
 
+#pragma warning disable 414
 		[JsonProperty]
 		private readonly bool Success;
+#pragma warning restore 414
 
 		internal GenericResponse(T result) {
 			Result = result ?? throw new ArgumentNullException(nameof(result));

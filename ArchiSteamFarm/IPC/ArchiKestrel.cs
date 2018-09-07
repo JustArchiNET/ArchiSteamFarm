@@ -32,8 +32,6 @@ namespace ArchiSteamFarm.IPC {
 	internal static class ArchiKestrel {
 		private const string ConfigurationFile = nameof(ArchiKestrel) + SharedInfo.ConfigExtension;
 
-		internal static bool IsRunning => KestrelWebHost != null;
-
 		private static IWebHost KestrelWebHost;
 
 		internal static async Task Generate(this HttpResponse httpResponse, HttpStatusCode statusCode) {
