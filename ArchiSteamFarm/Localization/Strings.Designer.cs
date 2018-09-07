@@ -1090,7 +1090,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Starting IPC server on {0}....
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Starting IPC server....
         /// </summary>
         internal static string IPCStarting {
             get {

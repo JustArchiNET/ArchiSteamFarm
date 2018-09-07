@@ -284,8 +284,7 @@ StackTrace:
     <value>IPC server ready!</value>
   </data>
   <data name="IPCStarting" xml:space="preserve">
-    <value>Starting IPC server on {0}...</value>
-    <comment>{0} will be replaced by IPC hostname</comment>
+    <value>Starting IPC server...</value>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>This bot has already stopped!</value>

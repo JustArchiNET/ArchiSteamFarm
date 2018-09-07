@@ -23,6 +23,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using ArchiSteamFarm.IPC.Controllers.Api;
+using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -53,6 +54,8 @@ namespace ArchiSteamFarm.IPC {
 			if (KestrelWebHost != null) {
 				return;
 			}
+
+			ASF.ArchiLogger.LogGenericInfo(Strings.IPCStarting);
 
 			// The order of dependency injection matters, pay attention to it
 			IWebHostBuilder builder = new WebHostBuilder();
@@ -98,6 +101,7 @@ namespace ArchiSteamFarm.IPC {
 			}
 
 			KestrelWebHost = kestrelWebHost;
+			ASF.ArchiLogger.LogGenericInfo(Strings.IPCReady);
 		}
 
 		internal static async Task Stop() {
