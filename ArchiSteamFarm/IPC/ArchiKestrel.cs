@@ -20,10 +20,9 @@
 // limitations under the License.
 
 using System.IO;
-using System.Net;
 using System.Threading.Tasks;
+using ArchiSteamFarm.IPC.Controllers.Api;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
@@ -32,10 +31,20 @@ namespace ArchiSteamFarm.IPC {
 	internal static class ArchiKestrel {
 		private const string ConfigurationFile = nameof(ArchiKestrel) + SharedInfo.ConfigExtension;
 
+		internal static HistoryTarget HistoryTarget { get; private set; }
+
 		private static IWebHost KestrelWebHost;
 
 		internal static void OnNewHistoryTarget(HistoryTarget historyTarget = null) {
-			// TODO
+			if (HistoryTarget != null) {
+				HistoryTarget.NewHistoryEntry -= LogController.OnNewHistoryEntry;
+				HistoryTarget = null;
+			}
+
+			if (historyTarget != null) {
+				historyTarget.NewHistoryEntry += LogController.OnNewHistoryEntry;
+				HistoryTarget = historyTarget;
+			}
 		}
 
 		internal static async Task Start() {
