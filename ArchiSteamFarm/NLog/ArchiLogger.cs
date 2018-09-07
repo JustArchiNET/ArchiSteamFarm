@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using NLog;
 
-namespace ArchiSteamFarm {
+namespace ArchiSteamFarm.NLog {
 	internal sealed class ArchiLogger {
 		private readonly Logger Logger;
 

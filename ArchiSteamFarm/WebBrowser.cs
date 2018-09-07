@@ -27,6 +27,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.NLog;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 

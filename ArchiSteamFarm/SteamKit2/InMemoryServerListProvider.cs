@@ -23,10 +23,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Collections;
 using Newtonsoft.Json;
 using SteamKit2.Discovery;
 
-namespace ArchiSteamFarm {
+namespace ArchiSteamFarm.SteamKit2 {
 	internal sealed class InMemoryServerListProvider : IServerListProvider {
 		[JsonProperty(Required = Required.DisallowNull)]
 		private readonly ConcurrentHashSet<ServerRecordEndPoint> ServerRecords = new ConcurrentHashSet<ServerRecordEndPoint>();

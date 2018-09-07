@@ -22,10 +22,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using ArchiSteamFarm.Collections;
 using NLog;
 using NLog.Targets;
 
-namespace ArchiSteamFarm {
+namespace ArchiSteamFarm.NLog {
 	[Target(TargetName)]
 	internal sealed class HistoryTarget : TargetWithLayout {
 		internal const string TargetName = "History";

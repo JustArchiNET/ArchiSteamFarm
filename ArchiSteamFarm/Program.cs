@@ -30,6 +30,7 @@ using System.Resources;
 using System.Threading.Tasks;
 using ArchiSteamFarm.IPC;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.NLog;
 using Newtonsoft.Json;
 using NLog;
 using NLog.Targets;

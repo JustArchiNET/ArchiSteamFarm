@@ -29,6 +29,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.JSON;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.NLog;
 
 namespace ArchiSteamFarm {
 	internal static class ASF {

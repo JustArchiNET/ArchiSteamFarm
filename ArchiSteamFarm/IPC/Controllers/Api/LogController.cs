@@ -27,6 +27,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.NLog;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 

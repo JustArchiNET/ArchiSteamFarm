@@ -26,7 +26,7 @@ using NLog;
 using NLog.Config;
 using NLog.Targets;
 
-namespace ArchiSteamFarm {
+namespace ArchiSteamFarm.NLog {
 	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 	[Target(TargetName)]
 	internal sealed class SteamTarget : TargetWithLayout {

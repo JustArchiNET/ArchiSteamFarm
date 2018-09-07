@@ -20,35 +20,49 @@
 // limitations under the License.
 
 using System;
-using Newtonsoft.Json;
-using SteamKit2;
+using System.Collections;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 
-namespace ArchiSteamFarm {
-	internal sealed class ServerRecordEndPoint {
-		[JsonProperty(Required = Required.Always)]
-		internal readonly string Host;
+namespace ArchiSteamFarm.Collections {
+	internal sealed class FixedSizeConcurrentQueue<T> : IEnumerable<T> {
+		private readonly ConcurrentQueue<T> BackingQueue = new ConcurrentQueue<T>();
 
-		[JsonProperty(Required = Required.Always)]
-		internal readonly ushort Port;
+		internal byte MaxCount {
+			get => _MaxCount;
+			set {
+				if (value == 0) {
+					ASF.ArchiLogger.LogNullError(nameof(value));
+					return;
+				}
 
-		[JsonProperty(Required = Required.Always)]
-		internal readonly ProtocolTypes ProtocolTypes;
+				_MaxCount = value;
 
-		internal ServerRecordEndPoint(string host, ushort port, ProtocolTypes protocolTypes) {
-			if (string.IsNullOrEmpty(host) || (port == 0) || (protocolTypes == 0)) {
-				throw new ArgumentNullException(nameof(host) + " || " + nameof(port) + " || " + nameof(protocolTypes));
+				while ((BackingQueue.Count > MaxCount) && BackingQueue.TryDequeue(out _)) { }
 			}
-
-			Host = host;
-			Port = port;
-			ProtocolTypes = protocolTypes;
 		}
 
-		private ServerRecordEndPoint() { }
+		private byte _MaxCount;
 
-		public override bool Equals(object obj) => (obj != null) && ((obj == this) || (obj is ServerRecordEndPoint serverRecord && Equals(serverRecord)));
-		public override int GetHashCode() => (Host, Port, ProtocolTypes).GetHashCode();
+		internal FixedSizeConcurrentQueue(byte maxCount) {
+			if (maxCount == 0) {
+				throw new ArgumentNullException(nameof(maxCount));
+			}
 
-		private bool Equals(ServerRecordEndPoint other) => string.Equals(Host, other.Host) && (Port == other.Port) && (ProtocolTypes == other.ProtocolTypes);
+			MaxCount = maxCount;
+		}
+
+		public IEnumerator<T> GetEnumerator() => BackingQueue.GetEnumerator();
+		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+		internal void Enqueue(T obj) {
+			BackingQueue.Enqueue(obj);
+
+			if (BackingQueue.Count <= MaxCount) {
+				return;
+			}
+
+			BackingQueue.TryDequeue(out _);
+		}
 	}
 }

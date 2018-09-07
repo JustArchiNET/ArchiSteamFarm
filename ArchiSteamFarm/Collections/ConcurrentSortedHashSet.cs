@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
-namespace ArchiSteamFarm {
+namespace ArchiSteamFarm.Collections {
 	internal sealed class ConcurrentSortedHashSet<T> : IDisposable, IReadOnlyCollection<T>, ISet<T> {
 		public int Count {
 			get {

@@ -20,49 +20,35 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+using Newtonsoft.Json;
+using SteamKit2;
 
-namespace ArchiSteamFarm {
-	internal sealed class FixedSizeConcurrentQueue<T> : IEnumerable<T> {
-		private readonly ConcurrentQueue<T> BackingQueue = new ConcurrentQueue<T>();
+namespace ArchiSteamFarm.SteamKit2 {
+	internal sealed class ServerRecordEndPoint {
+		[JsonProperty(Required = Required.Always)]
+		internal readonly string Host;
 
-		internal byte MaxCount {
-			get => _MaxCount;
-			set {
-				if (value == 0) {
-					ASF.ArchiLogger.LogNullError(nameof(value));
-					return;
-				}
+		[JsonProperty(Required = Required.Always)]
+		internal readonly ushort Port;
 
-				_MaxCount = value;
+		[JsonProperty(Required = Required.Always)]
+		internal readonly ProtocolTypes ProtocolTypes;
 
-				while ((BackingQueue.Count > MaxCount) && BackingQueue.TryDequeue(out _)) { }
-			}
-		}
-
-		private byte _MaxCount;
-
-		internal FixedSizeConcurrentQueue(byte maxCount) {
-			if (maxCount == 0) {
-				throw new ArgumentNullException(nameof(maxCount));
+		internal ServerRecordEndPoint(string host, ushort port, ProtocolTypes protocolTypes) {
+			if (string.IsNullOrEmpty(host) || (port == 0) || (protocolTypes == 0)) {
+				throw new ArgumentNullException(nameof(host) + " || " + nameof(port) + " || " + nameof(protocolTypes));
 			}
 
-			MaxCount = maxCount;
+			Host = host;
+			Port = port;
+			ProtocolTypes = protocolTypes;
 		}
 
-		public IEnumerator<T> GetEnumerator() => BackingQueue.GetEnumerator();
-		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+		private ServerRecordEndPoint() { }
 
-		internal void Enqueue(T obj) {
-			BackingQueue.Enqueue(obj);
+		public override bool Equals(object obj) => (obj != null) && ((obj == this) || (obj is ServerRecordEndPoint serverRecord && Equals(serverRecord)));
+		public override int GetHashCode() => (Host, Port, ProtocolTypes).GetHashCode();
 
-			if (BackingQueue.Count <= MaxCount) {
-				return;
-			}
-
-			BackingQueue.TryDequeue(out _);
-		}
+		private bool Equals(ServerRecordEndPoint other) => string.Equals(Host, other.Host) && (Port == other.Port) && (ProtocolTypes == other.ProtocolTypes);
 	}
 }

@@ -20,12 +20,13 @@
 // limitations under the License.
 
 using System.Linq;
+using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.IPC;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
 
-namespace ArchiSteamFarm {
+namespace ArchiSteamFarm.NLog {
 	internal static class Logging {
 		private const string GeneralLayout = @"${date:format=yyyy-MM-dd HH\:mm\:ss}|${processname}-${processid}|${level:uppercase=true}|" + LayoutMessage;
 		private const string LayoutMessage = @"${logger}|${message}${onexception:inner= ${exception:format=toString,Data}}";

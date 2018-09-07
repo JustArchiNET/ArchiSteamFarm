@@ -28,6 +28,7 @@ using System.Net;
 using System.Threading.Tasks;
 using ArchiSteamFarm.CMsgs;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.NLog;
 using SteamKit2;
 using SteamKit2.Internal;
 using SteamKit2.Unified.Internal;
