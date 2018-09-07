@@ -37,17 +37,19 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		private static readonly ConcurrentDictionary<WebSocket, SemaphoreSlim> ActiveLogWebSockets = new ConcurrentDictionary<WebSocket, SemaphoreSlim>();
 
 		[HttpGet]
-		public async Task<ActionResult<GenericResponse>> Get() {
+		public async Task<ActionResult> Get() {
 			if (!HttpContext.WebSockets.IsWebSocketRequest) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.WarningFailedWithError, nameof(HttpContext.WebSockets.IsWebSocketRequest) + ": " + HttpContext.WebSockets.IsWebSocketRequest)));
 			}
+
+			// From now on we can return only EmptyResult as the response stream is already being used by existing websocket connection
 
 			try {
 				using (WebSocket webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync().ConfigureAwait(false)) {
 					SemaphoreSlim sendSemaphore = new SemaphoreSlim(1, 1);
 					if (!ActiveLogWebSockets.TryAdd(webSocket, sendSemaphore)) {
 						sendSemaphore.Dispose();
-						return BadRequest(new GenericResponse(false, Strings.WarningFailed));
+						return new EmptyResult();
 					}
 
 					try {
@@ -77,10 +79,9 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				}
 			} catch (WebSocketException e) {
 				ASF.ArchiLogger.LogGenericDebuggingException(e);
-				return BadRequest(new GenericResponse(false, string.Format(Strings.WarningFailedWithError, e)));
 			}
 
-			return Ok(new GenericResponse(true));
+			return new EmptyResult();
 		}
 
 		internal static async void OnNewHistoryEntry(object sender, HistoryTarget.NewHistoryEntryArgs newHistoryEntryArgs) {
