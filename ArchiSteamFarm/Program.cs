@@ -202,11 +202,10 @@ namespace ArchiSteamFarm {
 
 			await InitGlobalDatabaseAndServices().ConfigureAwait(false);
 
-			// TODO: Uncomment me
-			//await ASF.CheckAndUpdateProgram().ConfigureAwait(false);
-			//await ASF.InitBots().ConfigureAwait(false);
+			await ASF.CheckAndUpdateProgram().ConfigureAwait(false);
+			await ASF.InitBots().ConfigureAwait(false);
 
-			//ASF.InitEvents();
+			ASF.InitEvents();
 		}
 
 		private static void InitCore(IReadOnlyCollection<string> args) {

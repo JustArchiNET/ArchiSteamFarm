@@ -35,14 +35,21 @@ namespace ArchiSteamFarm.IPC {
 				return;
 			}
 
+			// The order of dependency injection matters, pay attention to it
 			app.UseResponseCompression();
 
 			if (!string.IsNullOrEmpty(Program.GlobalConfig.IPCPassword)) {
+				// We need ApiAuthenticationMiddleware for IPCPassword
 				app.UseWhen(context => context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), appBuilder => appBuilder.UseMiddleware<ApiAuthenticationMiddleware>());
 			}
 
+			// We need WebSockets support for /Api/Log
 			app.UseWebSockets();
+
+			// We need static files for IPC GUI
 			app.UseStaticFiles();
+
+			// We need MVC for /Api
 			app.UseMvcWithDefaultRoute();
 		}
 
@@ -52,14 +59,20 @@ namespace ArchiSteamFarm.IPC {
 				return;
 			}
 
+			// The order of dependency injection matters, pay attention to it
 			services.AddResponseCompression();
 
-			// We declare only the absolute bare functionality to get our IPC up and running
+			// We need MVC for /Api, but we're going to use only a small subset of all available features
 			IMvcCoreBuilder mvc = services.AddMvcCore();
 
+			// Add standard formatters that can be used for serializing/deserializing requests/responses, they're already available in the core
 			mvc.AddFormatterMappings();
+
+			// Add JSON formatters that will be used as default ones if no specific formatters are asked for
 			mvc.AddJsonFormatters();
 
+			// Fix default contract resolver to use original names and not a camel case
+			// Also add debugging aid while we're at it
 			mvc.AddJsonOptions(
 				options => {
 					options.SerializerSettings.ContractResolver = new DefaultContractResolver();

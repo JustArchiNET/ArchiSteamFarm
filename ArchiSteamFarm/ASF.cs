@@ -238,7 +238,6 @@ namespace ArchiSteamFarm {
 
 			switch (botName) {
 				case SharedInfo.ASF:
-				case SharedInfo.IPC:
 				case "example":
 				case "minimal":
 					return false;

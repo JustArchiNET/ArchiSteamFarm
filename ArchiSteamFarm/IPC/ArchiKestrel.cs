@@ -29,7 +29,7 @@ using NLog.Web;
 
 namespace ArchiSteamFarm.IPC {
 	internal static class ArchiKestrel {
-		private const string ConfigurationFile = nameof(ArchiKestrel) + SharedInfo.ConfigExtension;
+		private const string ConfigurationFile = nameof(IPC) + ".config";
 
 		internal static HistoryTarget HistoryTarget { get; private set; }
 
@@ -52,30 +52,41 @@ namespace ArchiSteamFarm.IPC {
 				return;
 			}
 
+			// The order of dependency injection matters, pay attention to it
+			IWebHostBuilder builder = new WebHostBuilder();
+
+			// Set default directories
+			builder.UseContentRoot(SharedInfo.HomeDirectory);
+			builder.UseWebRoot(SharedInfo.WebsiteDirectory);
+
+			// Check if custom config is available
 			string absoluteConfigDirectory = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.ConfigDirectory);
-
 			bool hasCustomConfig = File.Exists(Path.Combine(absoluteConfigDirectory, ConfigurationFile));
-			ASF.ArchiLogger.LogGenericDebug("hasCustomConfig? " + hasCustomConfig);
-
-			IWebHostBuilder builder = new WebHostBuilder().UseStartup<Startup>().UseWebRoot(SharedInfo.WebsiteDirectory);
 
 			if (hasCustomConfig) {
-				builder = builder.UseConfiguration(new ConfigurationBuilder().SetBasePath(absoluteConfigDirectory).AddJsonFile(ConfigurationFile, false, true).Build());
-				builder = builder.UseKestrel((builderContext, options) => options.Configure(builderContext.Configuration.GetSection("Kestrel")));
+				// Set up custom config to be used
+				builder.UseConfiguration(new ConfigurationBuilder().SetBasePath(absoluteConfigDirectory).AddJsonFile(ConfigurationFile, false, true).Build());
+
+				// Use custom config for Kestrel and Logging configuration
+				builder.UseKestrel((builderContext, options) => options.Configure(builderContext.Configuration.GetSection("Kestrel")));
+				builder.ConfigureLogging((hostingContext, logging) => logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging")));
 			} else {
-				builder = builder.UseKestrel(options => options.ListenLocalhost(1242));
+				// Use ASF defaults for Kestrel and Logging
+				builder.UseKestrel(options => options.ListenLocalhost(1242));
+				builder.ConfigureLogging(logging => logging.SetMinimumLevel(Debugging.IsUserDebugging ? LogLevel.Trace : LogLevel.Warning));
 			}
 
-			builder = builder.ConfigureLogging(
-				logging => {
-					logging.ClearProviders();
-					logging.SetMinimumLevel(Debugging.IsUserDebugging ? LogLevel.Trace : LogLevel.Warning);
-				}
-			).UseNLog();
+			// Enable NLog integration for logging
+			builder.UseNLog();
 
-			KestrelWebHost = builder.Build();
+			// Specify Startup class for IPC
+			builder.UseStartup<Startup>();
+
+			// Init history logger for /Api/Log usage
 			Logging.InitHistoryLogger();
 
+			// Start the server
+			KestrelWebHost = builder.Build();
 			await KestrelWebHost.StartAsync().ConfigureAwait(false);
 		}
 
