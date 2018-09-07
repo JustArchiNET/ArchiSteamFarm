@@ -49,7 +49,7 @@ namespace ArchiSteamFarm {
 			ArchiLogger = archiLogger ?? throw new ArgumentNullException(nameof(archiLogger));
 
 			HttpClientHandler httpClientHandler = new HttpClientHandler {
-				AllowAutoRedirect = false, // This must be false if we want to handle custom redirection schemes such as "steammobile"
+				AllowAutoRedirect = false, // This must be false if we want to handle custom redirection schemes such as "steammobile://"
 				AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
 				CookieContainer = CookieContainer,
 				Proxy = webProxy,
@@ -388,7 +388,7 @@ namespace ArchiSteamFarm {
 				return response;
 			}
 
-			// WARNING: We still have undisposed response by now, make sure to dispose it ASAP if we're not returning it!
+			// WARNING: We still have not disposed response by now, make sure to dispose it ASAP if we're not returning it!
 			if ((response.StatusCode >= HttpStatusCode.Ambiguous) && (response.StatusCode < HttpStatusCode.BadRequest) && (maxRedirections > 0)) {
 				Uri redirectUri = response.Headers.Location;
 

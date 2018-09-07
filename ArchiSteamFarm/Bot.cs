@@ -41,7 +41,7 @@ using SteamKit2.Unified.Internal;
 
 namespace ArchiSteamFarm {
 	public sealed class Bot : IDisposable {
-		internal const ushort CallbackSleep = 500; // In miliseconds
+		internal const ushort CallbackSleep = 500; // In milliseconds
 		internal const ushort MaxMessagePrefixLength = MaxMessageLength - ReservedMessageLength - 2; // 2 for a minimum of 2 characters (escape one and real one)
 		internal const byte MinPlayingBlockedTTL = 60; // Delay in seconds added when account was occupied during our disconnect, to not disconnect other Steam client session too soon
 
@@ -329,18 +329,18 @@ namespace ArchiSteamFarm {
 					ProcessingGiftsScheduled = false;
 				}
 
-				HashSet<ulong> gids = await ArchiWebHandler.GetDigitalGiftCards().ConfigureAwait(false);
-				if ((gids == null) || (gids.Count == 0)) {
+				HashSet<ulong> giftCardIDs = await ArchiWebHandler.GetDigitalGiftCards().ConfigureAwait(false);
+				if ((giftCardIDs == null) || (giftCardIDs.Count == 0)) {
 					return;
 				}
 
-				foreach (ulong gid in gids.Where(gid => !HandledGifts.Contains(gid))) {
-					HandledGifts.Add(gid);
+				foreach (ulong giftCardID in giftCardIDs.Where(gid => !HandledGifts.Contains(gid))) {
+					HandledGifts.Add(giftCardID);
 
-					ArchiLogger.LogGenericInfo(string.Format(Strings.BotAcceptingGift, gid));
+					ArchiLogger.LogGenericInfo(string.Format(Strings.BotAcceptingGift, giftCardID));
 					await LimitGiftsRequestsAsync().ConfigureAwait(false);
 
-					bool result = await ArchiWebHandler.AcceptDigitalGiftCard(gid).ConfigureAwait(false);
+					bool result = await ArchiWebHandler.AcceptDigitalGiftCard(giftCardID).ConfigureAwait(false);
 					if (result) {
 						ArchiLogger.LogGenericInfo(Strings.Success);
 					} else {
@@ -1427,7 +1427,7 @@ namespace ArchiSteamFarm {
 			if (!force) {
 				Stop();
 			} else {
-				// Stop() will most likely block due to fuckup, don't wait for it
+				// Stop() will most likely block due to connection freeze, don't wait for it
 				Utilities.InBackground(() => Stop());
 			}
 
@@ -2079,7 +2079,7 @@ namespace ArchiSteamFarm {
 			if (!string.IsNullOrEmpty(notification.message_no_bbcode)) {
 				message = notification.message_no_bbcode;
 			} else if (!string.IsNullOrEmpty(notification.message)) {
-				message = Unescape(notification.message);
+				message = UnEscape(notification.message);
 			} else {
 				return;
 			}
@@ -2117,7 +2117,7 @@ namespace ArchiSteamFarm {
 			if (!string.IsNullOrEmpty(notification.message_no_bbcode)) {
 				message = notification.message_no_bbcode;
 			} else if (!string.IsNullOrEmpty(notification.message)) {
-				message = Unescape(notification.message);
+				message = UnEscape(notification.message);
 			} else {
 				return;
 			}
@@ -5397,7 +5397,7 @@ namespace ArchiSteamFarm {
 			PlayingWasBlockedTimer = null;
 		}
 
-		private static string Unescape(string message) {
+		private static string UnEscape(string message) {
 			if (string.IsNullOrEmpty(message)) {
 				ASF.ArchiLogger.LogNullError(nameof(message));
 				return null;

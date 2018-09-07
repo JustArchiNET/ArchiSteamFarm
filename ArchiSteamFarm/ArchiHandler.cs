@@ -261,7 +261,7 @@ namespace ArchiSteamFarm {
 			byte maxGamesCount = MaxGamesPlayedConcurrently;
 
 			if (!string.IsNullOrEmpty(gameName)) {
-				// If we have custom name to display, we must workaround the Steam network fuckup and send request on clean non-playing session
+				// If we have custom name to display, we must workaround the Steam network broken behaviour and send request on clean non-playing session
 				// This ensures that custom name will in fact display properly
 				Client.Send(request);
 				await Task.Delay(Bot.CallbackSleep).ConfigureAwait(false);

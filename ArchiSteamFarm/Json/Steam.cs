@@ -245,7 +245,7 @@ namespace ArchiSteamFarm.Json {
 						return _Type;
 					}
 
-					// Normally this should be reported, but under some specific fuckups we might actually receive this one
+					// Normally this should be reported, but under some specific circumstances we might actually receive this one
 					_Type = EType.Generic;
 					return _Type;
 				}

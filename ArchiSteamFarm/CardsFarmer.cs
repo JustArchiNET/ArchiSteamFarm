@@ -43,7 +43,13 @@ namespace ArchiSteamFarm {
 		private const byte HoursToIgnore = 24; // How many hours we ignore unreleased appIDs and don't bother checking them again
 
 		private static readonly ConcurrentDictionary<uint, DateTime> IgnoredAppIDs = new ConcurrentDictionary<uint, DateTime>(); // Reserved for unreleased games
-		private static readonly HashSet<uint> UntrustedAppIDs = new HashSet<uint> { 440, 570, 730 }; // Games that were confirmed to show false status on general badges page
+
+		// Games that were confirmed to show false status on general badges page
+		private static readonly HashSet<uint> UntrustedAppIDs = new HashSet<uint> {
+			440, // Team Fortress 2
+			570, // Dota 2
+			730 // Counter-Strike: Global Offensive
+		};
 
 		[JsonProperty]
 		internal readonly ConcurrentHashSet<Game> CurrentGamesFarming = new ConcurrentHashSet<Game>();
@@ -449,9 +455,8 @@ namespace ArchiSteamFarm {
 					// If we have no cardsRemaining and no cardsEarned, it's either:
 					// - A game we don't own physically, but we have cards from it in inventory
 					// - F2P game that we didn't spend any money in, but we have cards from it in inventory
-					// - Steam fuckup
-					// As you can guess, we must follow the rest of the logic in case of Steam fuckup
-					// Please kill me ;_;
+					// - Steam issue
+					// As you can guess, we must follow the rest of the logic in case of Steam issue
 				}
 
 				// Hours
@@ -546,7 +551,7 @@ namespace ArchiSteamFarm {
 
 				// Done with parsing, we have two possible cases here
 				// Either we have decent info about appID, name, hours, cardsRemaining (cardsRemaining > 0) and level
-				// OR we strongly believe that Steam lied to us, in this case we will need to check game invidually (cardsRemaining == 0)
+				// OR we strongly believe that Steam lied to us, in this case we will need to check game individually (cardsRemaining == 0)
 				if (cardsRemaining > 0) {
 					GamesToFarm.Add(new Game(appID, name, hours, cardsRemaining, badgeLevel));
 				} else {

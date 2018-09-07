@@ -84,9 +84,9 @@ namespace ArchiSteamFarm {
 			WebBrowser.Dispose();
 		}
 
-		internal async Task<bool> AcceptDigitalGiftCard(ulong gid) {
-			if (gid == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(gid));
+		internal async Task<bool> AcceptDigitalGiftCard(ulong giftCardID) {
+			if (giftCardID == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(giftCardID));
 				return false;
 			}
 
@@ -95,7 +95,7 @@ namespace ArchiSteamFarm {
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new Dictionary<string, string>(3) {
 				{ "accept", "1" },
-				{ "giftcardid", gid.ToString() }
+				{ "giftcardid", giftCardID.ToString() }
 			};
 
 			Steam.NumberResponse result = await UrlPostToJsonObjectWithSession<Steam.NumberResponse>(SteamStoreURL, request, data).ConfigureAwait(false);
@@ -474,23 +474,23 @@ namespace ArchiSteamFarm {
 			}
 
 			HashSet<ulong> results = new HashSet<ulong>();
-			foreach (string gidText in htmlNodes.Select(node => node.GetAttributeValue("id", null))) {
-				if (string.IsNullOrEmpty(gidText)) {
-					Bot.ArchiLogger.LogNullError(nameof(gidText));
+			foreach (string giftCardIDText in htmlNodes.Select(node => node.GetAttributeValue("id", null))) {
+				if (string.IsNullOrEmpty(giftCardIDText)) {
+					Bot.ArchiLogger.LogNullError(nameof(giftCardIDText));
 					return null;
 				}
 
-				if (gidText.Length <= 13) {
-					Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(gidText)));
+				if (giftCardIDText.Length <= 13) {
+					Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(giftCardIDText)));
 					return null;
 				}
 
-				if (!ulong.TryParse(gidText.Substring(13), out ulong gid) || (gid == 0)) {
-					Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorParsingObject, nameof(gid)));
+				if (!ulong.TryParse(giftCardIDText.Substring(13), out ulong giftCardID) || (giftCardID == 0)) {
+					Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorParsingObject, nameof(giftCardID)));
 					return null;
 				}
 
-				results.Add(gid);
+				results.Add(giftCardID);
 			}
 
 			return results;
@@ -1037,17 +1037,17 @@ namespace ArchiSteamFarm {
 			byte[] sessionKey = CryptoHelper.GenerateRandomBlock(32);
 
 			// RSA encrypt it with the public key for the universe we're on
-			byte[] cryptedSessionKey;
+			byte[] encryptedSessionKey;
 			using (RSACrypto rsa = new RSACrypto(KeyDictionary.GetPublicKey(universe))) {
-				cryptedSessionKey = rsa.Encrypt(sessionKey);
+				encryptedSessionKey = rsa.Encrypt(sessionKey);
 			}
 
 			// Copy our login key
 			byte[] loginKey = new byte[webAPIUserNonce.Length];
 			Array.Copy(Encoding.ASCII.GetBytes(webAPIUserNonce), loginKey, webAPIUserNonce.Length);
 
-			// AES encrypt the loginkey with our session key
-			byte[] cryptedLoginKey = CryptoHelper.SymmetricEncrypt(loginKey, sessionKey);
+			// AES encrypt the login key with our session key
+			byte[] encryptedLoginKey = CryptoHelper.SymmetricEncrypt(loginKey, sessionKey);
 
 			// Do the magic
 			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.LoggingIn, ISteamUserAuth));
@@ -1065,10 +1065,10 @@ namespace ArchiSteamFarm {
 						WebAPI.DefaultBaseAddress.Host,
 						// ReSharper disable once AccessToDisposedClosure
 						async () => await iSteamUserAuth.AuthenticateUser(
-							encrypted_loginkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedLoginKey, 0, cryptedLoginKey.Length)),
+							encrypted_loginkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(encryptedLoginKey, 0, encryptedLoginKey.Length)),
 							method: WebRequestMethods.Http.Post,
 							secure: true,
-							sessionkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedSessionKey, 0, cryptedSessionKey.Length)),
+							sessionkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(encryptedSessionKey, 0, encryptedSessionKey.Length)),
 							steamid: steamID
 						)
 					).ConfigureAwait(false);

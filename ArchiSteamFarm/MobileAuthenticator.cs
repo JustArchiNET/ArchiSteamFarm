@@ -228,7 +228,7 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			// Our multi request failed, this is almost always Steam fuckup that happens randomly
+			// Our multi request failed, this is almost always Steam issue that happens randomly
 			// In this case, we'll accept all pending confirmations one-by-one, synchronously (as Steam can't handle them in parallel)
 			// We totally ignore actual result returned by those calls, abort only if request timed out
 			foreach (Confirmation confirmation in confirmations) {

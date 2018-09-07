@@ -299,7 +299,7 @@ namespace ArchiSteamFarm {
 			// Check if it's donation trade
 			switch (tradeOffer.ItemsToGive.Count) {
 				case 0 when tradeOffer.ItemsToReceive.Count == 0:
-					// If it's steam fuckup, temporarily ignore it
+					// If it's steam issue, temporarily ignore it
 					return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedTemporarily);
 				case 0:
 					// Otherwise react accordingly, depending on our preference
