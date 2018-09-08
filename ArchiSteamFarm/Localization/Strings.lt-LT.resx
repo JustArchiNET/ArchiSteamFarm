@@ -280,10 +280,7 @@
   <data name="IPCReady" xml:space="preserve">
     <value>IPC serveris paruoštas!</value>
   </data>
-  <data name="IPCStarting" xml:space="preserve">
-    <value>Paleidžiamas IPC serveris ant {0}...</value>
-    <comment>{0} will be replaced by IPC hostname</comment>
-  </data>
+  
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Šis botas jau sustabdytas!</value>
   </data>

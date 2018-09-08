@@ -280,10 +280,7 @@
   <data name="IPCReady" xml:space="preserve">
     <value>IPC 服务已就绪 ！</value>
   </data>
-  <data name="IPCStarting" xml:space="preserve">
-    <value>在 {0} 上的启动 IPC 服务...</value>
-    <comment>{0} will be replaced by IPC hostname</comment>
-  </data>
+  
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>这个帐号已停止运行！</value>
   </data>

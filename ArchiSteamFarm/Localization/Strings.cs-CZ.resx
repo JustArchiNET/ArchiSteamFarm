@@ -283,10 +283,7 @@ StackTrace:
   <data name="IPCReady" xml:space="preserve">
     <value>IPC server je připravený.</value>
   </data>
-  <data name="IPCStarting" xml:space="preserve">
-    <value>Spouštění serveru IPC na adrese {0}...</value>
-    <comment>{0} will be replaced by IPC hostname</comment>
-  </data>
+  
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Tento bot byl již zastaven.</value>
   </data>

@@ -283,10 +283,7 @@
   <data name="IPCReady" xml:space="preserve">
     <value>Сервер IPC готовий!</value>
   </data>
-  <data name="IPCStarting" xml:space="preserve">
-    <value>Запуск серверу IPC на {0}...</value>
-    <comment>{0} will be replaced by IPC hostname</comment>
-  </data>
+  
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Цей бот вже зупинений!</value>
   </data>

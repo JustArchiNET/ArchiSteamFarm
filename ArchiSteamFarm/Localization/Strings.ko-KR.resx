@@ -283,10 +283,7 @@ StackTrace:
   <data name="IPCReady" xml:space="preserve">
     <value>IPC 서버 준비 완료!</value>
   </data>
-  <data name="IPCStarting" xml:space="preserve">
-    <value>{0} 에서 IPC 서버 시작...</value>
-    <comment>{0} will be replaced by IPC hostname</comment>
-  </data>
+  
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>이 봇은 이미 중지되어 있습니다!</value>
   </data>

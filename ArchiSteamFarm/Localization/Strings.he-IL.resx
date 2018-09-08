@@ -283,10 +283,7 @@ StackTrace:
   <data name="IPCReady" xml:space="preserve">
     <value>שרת IPC מוכן!</value>
   </data>
-  <data name="IPCStarting" xml:space="preserve">
-    <value>מחל שרת IPC בעוד {0}...</value>
-    <comment>{0} will be replaced by IPC hostname</comment>
-  </data>
+  
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>בוט זה כבר הפסיק!</value>
   </data>

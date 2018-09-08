@@ -283,10 +283,7 @@ StackTrace:
   <data name="IPCReady" xml:space="preserve">
     <value>IPC server pripravený!</value>
   </data>
-  <data name="IPCStarting" xml:space="preserve">
-    <value>Spúšťanie IPC servera na {0}...</value>
-    <comment>{0} will be replaced by IPC hostname</comment>
-  </data>
+  
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Tento bot už bol zastavený!</value>
   </data>

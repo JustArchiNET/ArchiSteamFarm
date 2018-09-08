@@ -283,10 +283,7 @@ StackTrace:
   <data name="IPCReady" xml:space="preserve">
     <value>Ο διακομιστής IPC είναι έτοιμος!</value>
   </data>
-  <data name="IPCStarting" xml:space="preserve">
-    <value>Έναρξη διακομιστή IPC στο {0}...</value>
-    <comment>{0} will be replaced by IPC hostname</comment>
-  </data>
+  
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Το bot έχει ήδη σταματήσει!</value>
   </data>
