@@ -67,6 +67,10 @@ namespace ArchiSteamFarm.IPC {
 			// Check if custom config is available
 			string absoluteConfigDirectory = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.ConfigDirectory);
 
+			// Firstly initialize settings that user is free to override
+			builder.ConfigureLogging(logging => logging.SetMinimumLevel(Debugging.IsUserDebugging ? LogLevel.Trace : LogLevel.Warning));
+
+			// Now conditionally initialize settings that are not possible to override
 			if (File.Exists(Path.Combine(absoluteConfigDirectory, ConfigurationFile))) {
 				// Set up custom config to be used
 				builder.UseConfiguration(new ConfigurationBuilder().SetBasePath(absoluteConfigDirectory).AddJsonFile(ConfigurationFile, false, true).Build());
@@ -75,9 +79,8 @@ namespace ArchiSteamFarm.IPC {
 				builder.UseKestrel((builderContext, options) => options.Configure(builderContext.Configuration.GetSection("Kestrel")));
 				builder.ConfigureLogging((hostingContext, logging) => logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging")));
 			} else {
-				// Use ASF defaults for Kestrel and Logging
+				// Use ASF defaults for Kestrel
 				builder.UseKestrel(options => options.ListenLocalhost(1242));
-				builder.ConfigureLogging(logging => logging.SetMinimumLevel(Debugging.IsUserDebugging ? LogLevel.Trace : LogLevel.Warning));
 			}
 
 			// Enable NLog integration for logging
