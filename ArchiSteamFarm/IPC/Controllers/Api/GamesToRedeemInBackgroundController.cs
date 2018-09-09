@@ -30,7 +30,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[ApiController]
-	[Route("Api/GamesToRedeemInBackgroundController")]
+	[Route("Api/GamesToRedeemInBackground")]
 	public sealed class GamesToRedeemInBackgroundController : ControllerBase {
 		[HttpDelete("{botNames:required}")]
 		public async Task<ActionResult<GenericResponse>> Delete(string botNames) {
