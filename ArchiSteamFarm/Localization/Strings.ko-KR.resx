@@ -283,7 +283,9 @@ StackTrace:
   <data name="IPCReady" xml:space="preserve">
     <value>IPC 서버 준비 완료!</value>
   </data>
-  
+  <data name="IPCStarting" xml:space="preserve">
+    <value>IPC 서버 시작...</value>
+  </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>이 봇은 이미 중지되어 있습니다!</value>
   </data>
@@ -444,12 +446,18 @@ StackTrace:
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>이 봇 인스턴스는 설정 파일에서 비활성화되어 있기에 시작하지 않습니다!</value>
   </data>
-  
+  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+    <value>한 줄에 TwoFactorCodeMismatch 오류 코드가 {0}번 발생했습니다. 2FA 자격 증명이 더 이상 유효하지 않거나 시계가 동기화되지 않았습니다. 작업을 중단합니다.</value>
+    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+  </data>
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Steam에서 로그아웃: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  
+  <data name="BotLoggedOn" xml:space="preserve">
+    <value>{0}으로 로그인 성공</value>
+    <comment>{0} will be replaced by steam ID (number)</comment>
+  </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>로그인 중...</value>
   </data>

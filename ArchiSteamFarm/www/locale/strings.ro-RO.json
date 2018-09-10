@@ -39,7 +39,7 @@
   "commands-waiting": "$1 Așteaptă un răspuns...",
   "editor-change": "Schimbă botul",
   "editor-current": "Se editează în prezent:",
-  "editor-current-bot": "Momentan editează: <b>$1</b>",
+  "editor-current-bot": "Momentan editând: <b>$1</b>",
   "editor-save": "Salvează",
   "editor-save-confirm": "<$1> și fișierele sale de configure au fost actualizate.",
   "editor-title": "ASF | Editor de configurații",

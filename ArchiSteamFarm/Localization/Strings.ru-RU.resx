@@ -283,7 +283,9 @@
   <data name="IPCReady" xml:space="preserve">
     <value>IPC сервер готов!</value>
   </data>
-  
+  <data name="IPCStarting" xml:space="preserve">
+    <value>Запуск IPC сервера...</value>
+  </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Этот бот уже остановлен!</value>
   </data>
