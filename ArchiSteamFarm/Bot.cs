@@ -2671,7 +2671,7 @@ namespace ArchiSteamFarm {
 
 					await BotDatabase.RemoveGameToRedeemInBackground(key).ConfigureAwait(false);
 
-					string logEntry = name + DefaultBackgroundKeysRedeemerSeparator + "[" + result.PurchaseResultDetail + "]" + ((result.Items != null) && (result.Items.Count > 0) ? DefaultBackgroundKeysRedeemerSeparator + string.Join("", result.Items) : "") + DefaultBackgroundKeysRedeemerSeparator + key;
+					string logEntry = name + DefaultBackgroundKeysRedeemerSeparator + "[" + result.PurchaseResultDetail + "]" + ((result.Items != null) && (result.Items.Count > 0) ? DefaultBackgroundKeysRedeemerSeparator + string.Join(", ", result.Items) : "") + DefaultBackgroundKeysRedeemerSeparator + key;
 
 					try {
 						await RuntimeCompatibility.File.AppendAllTextAsync(redeemed ? KeysToRedeemUsedFilePath : KeysToRedeemUnusedFilePath, logEntry + Environment.NewLine).ConfigureAwait(false);
@@ -3847,9 +3847,9 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 
-		private async Task<string> ResponseLootByRealAppIDs(ulong steamID, string targetRealAppIDs) {
-			if ((steamID == 0) || string.IsNullOrEmpty(targetRealAppIDs)) {
-				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(targetRealAppIDs));
+		private async Task<string> ResponseLootByRealAppIDs(ulong steamID, string realAppIDsText) {
+			if ((steamID == 0) || string.IsNullOrEmpty(realAppIDsText)) {
+				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(realAppIDsText));
 				return null;
 			}
 
@@ -3861,7 +3861,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
-			string[] appIDTexts = targetRealAppIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			string[] appIDTexts = realAppIDsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
 			if (appIDTexts.Length == 0) {
 				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(appIDTexts)));
@@ -3924,9 +3924,9 @@ namespace ArchiSteamFarm {
 			return FormatBotResponse(Strings.BotLootingSuccess);
 		}
 
-		private static async Task<string> ResponseLootByRealAppIDs(ulong steamID, string botNames, string realappID) {
-			if ((steamID == 0) || string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(realappID)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames) + " || " + nameof(realappID));
+		private static async Task<string> ResponseLootByRealAppIDs(ulong steamID, string botNames, string realAppIDsText) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(realAppIDsText)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames) + " || " + nameof(realAppIDsText));
 				return null;
 			}
 
@@ -3935,7 +3935,7 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseLootByRealAppIDs(steamID, realappID));
+			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseLootByRealAppIDs(steamID, realAppIDsText));
 			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
@@ -4620,7 +4620,7 @@ namespace ArchiSteamFarm {
 										case EPurchaseResultDetail.NoDetail: // OK
 										case EPurchaseResultDetail.Timeout:
 											if ((result.Items != null) && (result.Items.Count > 0)) {
-												response.AppendLine(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, result.Result + "/" + result.PurchaseResultDetail, string.Join("", result.Items)), currentBot.BotName));
+												response.AppendLine(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, result.Result + "/" + result.PurchaseResultDetail, string.Join(", ", result.Items)), currentBot.BotName));
 											} else {
 												response.AppendLine(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail), currentBot.BotName));
 											}
@@ -4641,7 +4641,7 @@ namespace ArchiSteamFarm {
 										case EPurchaseResultDetail.DoesNotOwnRequiredApp:
 										case EPurchaseResultDetail.RestrictedCountry:
 											if ((result.Items != null) && (result.Items.Count > 0)) {
-												response.AppendLine(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, result.Result + "/" + result.PurchaseResultDetail, string.Join("", result.Items)), currentBot.BotName));
+												response.AppendLine(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, result.Result + "/" + result.PurchaseResultDetail, string.Join(", ", result.Items)), currentBot.BotName));
 											} else {
 												response.AppendLine(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail), currentBot.BotName));
 											}
@@ -4680,7 +4680,7 @@ namespace ArchiSteamFarm {
 												}
 
 												if ((otherResult.Items != null) && (otherResult.Items.Count > 0)) {
-													response.AppendLine(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, otherResult.Result + "/" + otherResult.PurchaseResultDetail, string.Join("", otherResult.Items)), innerBot.BotName));
+													response.AppendLine(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, otherResult.Result + "/" + otherResult.PurchaseResultDetail, string.Join(", ", otherResult.Items)), innerBot.BotName));
 												} else {
 													response.AppendLine(FormatBotResponse(string.Format(Strings.BotRedeem, key, otherResult.Result + "/" + otherResult.PurchaseResultDetail), innerBot.BotName));
 												}
@@ -4707,7 +4707,7 @@ namespace ArchiSteamFarm {
 											ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.PurchaseResultDetail), result.PurchaseResultDetail));
 
 											if ((result.Items != null) && (result.Items.Count > 0)) {
-												response.AppendLine(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, result.Result + "/" + result.PurchaseResultDetail, string.Join("", result.Items)), currentBot.BotName));
+												response.AppendLine(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, result.Result + "/" + result.PurchaseResultDetail, string.Join(", ", result.Items)), currentBot.BotName));
 											} else {
 												response.AppendLine(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail), currentBot.BotName));
 											}
