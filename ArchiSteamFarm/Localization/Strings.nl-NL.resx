@@ -283,7 +283,9 @@ StackTrace:
   <data name="IPCReady" xml:space="preserve">
     <value>IPC server gereed!</value>
   </data>
-  
+  <data name="IPCStarting" xml:space="preserve">
+    <value>IPC server starten...</value>
+  </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Deze bot is al gestopt!</value>
   </data>
