@@ -282,7 +282,9 @@ StackTrace:
   <data name="IPCReady" xml:space="preserve">
     <value>IPC serveren er klar!</value>
   </data>
-  
+  <data name="IPCStarting" xml:space="preserve">
+    <value>Starter IPC server...</value>
+  </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Denne bot er allerede stoppet!</value>
   </data>
@@ -443,7 +445,10 @@ StackTrace:
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>Starter ikke denne bot instans fordi den er slået fra i konfigurationsfilen!</value>
   </data>
-  
+  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+    <value>Modtaget TwoFactorCodeMismatch fejlkode {0} gange i træk. Din 2FA legitimationsoplysninger er ikke længere gyldige, eller dit ur er ikke synkroniseret, afbryder!</value>
+    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+  </data>
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Loggede af fra Steam: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>

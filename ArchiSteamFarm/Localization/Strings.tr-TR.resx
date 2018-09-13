@@ -283,7 +283,9 @@ Yığın izleme:
   <data name="IPCReady" xml:space="preserve">
     <value>IPC sunucusu hazır!</value>
   </data>
-  
+  <data name="IPCStarting" xml:space="preserve">
+    <value>IPC sunucusu başlatılıyor...</value>
+  </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Bu bot zaten durdurulmuş!</value>
   </data>
