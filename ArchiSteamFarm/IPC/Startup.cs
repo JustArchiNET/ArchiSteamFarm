@@ -61,12 +61,16 @@ namespace ArchiSteamFarm.IPC {
 			// We need WebSockets support for /Api/Log
 			app.UseWebSockets();
 
+			// We need MVC for /Api
+			app.UseMvcWithDefaultRoute();
+
+			// This will re-execute all definitions specified below to WWW root, we need this for 404 URLs such as /login -> /index.html
+			// It's nice to note that entries above (such as our /Api provided by MVC) is not affected by this, only static files
+			app.UseStatusCodePagesWithReExecute("/");
+
 			// We need static files support for IPC GUI
 			app.UseDefaultFiles();
 			app.UseStaticFiles();
-
-			// We need MVC for /Api
-			app.UseMvcWithDefaultRoute();
 		}
 
 		public void ConfigureServices(IServiceCollection services) {
