@@ -88,7 +88,7 @@ after_test:
             $compressionMethod = 'Deflate' # This depends on what ZipArchive supports on given platform
             $targetFramework = $env:NET_FRAMEWORK_VERSION
         } elseif ($variant -eq 'linux-arm') {
-            # TODO: Workaround https://github.com/dotnet/coreclr/issues/18486 (don't forget to remove it from docker files too)
+            # TODO: Workaround https://github.com/dotnet/coreclr/issues/18486
             Write-Warning -Message "$variant is still targetting $env:NET_CORE_FALLBACK_VERSION, ensure to correct this once https://github.com/dotnet/coreclr/issues/18486 is resolved" -WarningAction Continue
             $compressionMethod = 'Deflate64' # This depends on what ZipArchive supports on given platform
             $targetFramework = $env:NET_CORE_FALLBACK_VERSION

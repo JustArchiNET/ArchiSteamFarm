@@ -1,5 +1,5 @@
 FROM microsoft/dotnet:2.1-sdk AS build
-ENV NET_CORE_VERSION netcoreapp2.0
+ENV NET_CORE_VERSION netcoreapp2.1
 WORKDIR /app
 COPY ArchiSteamFarm ArchiSteamFarm
 RUN dotnet --info && \
