@@ -119,7 +119,7 @@ after_test:
         }
 
         # Until https://github.com/dotnet/cli/issues/3267 happens, we'll hack dotnet binary icon on Windows and include .ico file on other platforms
-        if ($targetFramework -eq "$env:NET_CORE_VERSION") {
+        if ($targetFramework -ne "$env:NET_FRAMEWORK_VERSION") {
             if (Test-Path -Path "ArchiSteamFarm\out\$variant\ArchiSteamFarm.exe" -PathType Leaf) {
                 tools\rcedit\rcedit-x64.exe "ArchiSteamFarm\out\$variant\ArchiSteamFarm.exe" --set-icon 'resources\ASF.ico'
 
