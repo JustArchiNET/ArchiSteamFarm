@@ -40,12 +40,12 @@ namespace ArchiSteamFarm.IPC {
 
 		internal static void OnNewHistoryTarget(HistoryTarget historyTarget = null) {
 			if (HistoryTarget != null) {
-				HistoryTarget.NewHistoryEntry -= LogController.OnNewHistoryEntry;
+				HistoryTarget.NewHistoryEntry -= NLogController.OnNewHistoryEntry;
 				HistoryTarget = null;
 			}
 
 			if (historyTarget != null) {
-				historyTarget.NewHistoryEntry += LogController.OnNewHistoryEntry;
+				historyTarget.NewHistoryEntry += NLogController.OnNewHistoryEntry;
 				HistoryTarget = historyTarget;
 			}
 		}

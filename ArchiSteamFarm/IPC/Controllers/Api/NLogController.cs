@@ -33,8 +33,9 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[ApiController]
+	[Route("Api/NLog")]
 	[Route("Api/Log")]
-	public sealed class LogController : ControllerBase {
+	public sealed class NLogController : ControllerBase {
 		private static readonly ConcurrentDictionary<WebSocket, SemaphoreSlim> ActiveLogWebSockets = new ConcurrentDictionary<WebSocket, SemaphoreSlim>();
 
 		[HttpGet]
