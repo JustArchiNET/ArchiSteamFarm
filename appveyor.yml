@@ -82,11 +82,13 @@ after_test:
 
         Set-Location -Path "$env:APPVEYOR_BUILD_FOLDER"
 
+        $linkDuringPublish = 'true'
+
         if ($variant -like '*-netf') {
             $compressionMethod = 'Deflate' # This depends on what ZipArchive supports on given platform
             $targetFramework = $env:NET_FRAMEWORK_VERSION
         } elseif ($variant -eq 'linux-arm') {
-            # TODO: Temporary workaround for https://github.com/dotnet/coreclr/issues/18486
+            # TODO: Workaround https://github.com/dotnet/coreclr/issues/18486 (don't forget to remove it from docker files too)
             Write-Warning -Message "$variant is still targetting $env:NET_CORE_FALLBACK_VERSION, ensure to correct this once https://github.com/dotnet/coreclr/issues/18486 is resolved" -WarningAction Continue
             $compressionMethod = 'Deflate64' # This depends on what ZipArchive supports on given platform
             $targetFramework = $env:NET_CORE_FALLBACK_VERSION
@@ -95,12 +97,16 @@ after_test:
             $targetFramework = $env:NET_CORE_VERSION
         }
 
+        # TODO: Workaround https://github.com/mono/linker/issues/286 (don't forget to remove it from docker files too)
+        # TODO: Workaround https://github.com/dotnet/coreclr/issues/19896 (don't forget to remove it from docker files too)
+        if ($variant -like 'generic*' -or $targetFramework -eq $env:NET_CORE_FALLBACK_VERSION) {
+            $linkDuringPublish = false;
+        }
+
         if ($variant -like 'generic*') {
-            # TODO: Workaround https://github.com/mono/linker/issues/286 until it's resolved
-            # Don't forget to remove it from docker files too
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" --no-restore /nologo "/p:ASFVariant=$variant" "/p:LinkDuringPublish=false"
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" --no-restore /nologo "/p:ASFVariant=$variant" "/p:LinkDuringPublish=$linkDuringPublish" "/p:CrossGenDuringPublish=false"
         } else {
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" -r "$variant" --no-restore /nologo "/p:ASFVariant=$variant" "/p:CrossGenDuringPublish=false"
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" -r "$variant" --no-restore /nologo "/p:ASFVariant=$variant" "/p:LinkDuringPublish=$linkDuringPublish" "/p:CrossGenDuringPublish=false"
         }
 
         if ($LastExitCode -ne 0) {
