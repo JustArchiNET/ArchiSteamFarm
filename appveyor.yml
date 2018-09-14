@@ -100,7 +100,7 @@ after_test:
         # TODO: Workaround https://github.com/mono/linker/issues/286 (don't forget to remove it from docker files too)
         # TODO: Workaround https://github.com/dotnet/coreclr/issues/19896 (don't forget to remove it from docker files too)
         if ($variant -like 'generic*' -or $targetFramework -eq $env:NET_CORE_FALLBACK_VERSION) {
-            $linkDuringPublish = false;
+            $linkDuringPublish = 'false'
         }
 
         if ($variant -like 'generic*') {
