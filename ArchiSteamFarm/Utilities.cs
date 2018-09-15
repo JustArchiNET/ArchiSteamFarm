@@ -25,6 +25,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Humanizer;
@@ -103,6 +104,15 @@ namespace ArchiSteamFarm {
 			}
 
 			Task.Factory.StartNew(function, CancellationToken.None, options, TaskScheduler.Default);
+		}
+
+		internal static bool IsValidCdKey(string key) {
+			if (string.IsNullOrEmpty(key)) {
+				ASF.ArchiLogger.LogNullError(nameof(key));
+				return false;
+			}
+
+			return Regex.IsMatch(key, @"^[0-9A-Z]{4,7}-[0-9A-Z]{4,7}-[0-9A-Z]{4,7}(?:(?:-[0-9A-Z]{4,7})?(?:-[0-9A-Z]{4,7}))?$", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 		}
 
 		internal static bool IsValidHexadecimalString(string text) {

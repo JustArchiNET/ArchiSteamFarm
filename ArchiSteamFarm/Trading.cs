@@ -216,13 +216,13 @@ namespace ArchiSteamFarm {
 				if (acceptedWithItemLoseTradeIDs.Count > 0) {
 					// Give Steam network some time to generate confirmations
 					await Task.Delay(3000).ConfigureAwait(false);
-					await Bot.AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, 0, acceptedWithItemLoseTradeIDs).ConfigureAwait(false);
+					await Bot.Actions.AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, 0, acceptedWithItemLoseTradeIDs).ConfigureAwait(false);
 				}
 			}
 
-			if (results.Any(result => (result != null) && ((result.Result == ParseTradeResult.EResult.AcceptedWithItemLose) || (result.Result == ParseTradeResult.EResult.AcceptedWithoutItemLose)))) {
+			if (results.Any(result => (result != null) && ((result.Result == ParseTradeResult.EResult.AcceptedWithItemLose) || (result.Result == ParseTradeResult.EResult.AcceptedWithoutItemLose))) && Bot.BotConfig.SendOnFarmingFinished) {
 				// If we finished a trade, perform a loot if user wants to do so
-				await Bot.LootIfNeeded().ConfigureAwait(false);
+				await Bot.Actions.Loot().ConfigureAwait(false);
 			}
 		}
 

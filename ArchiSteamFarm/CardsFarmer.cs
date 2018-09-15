@@ -168,7 +168,9 @@ namespace ArchiSteamFarm {
 
 			// If we're not farming, and we got new items, it's likely to be a booster pack or likewise
 			// In this case, perform a loot if user wants to do so
-			await Bot.LootIfNeeded().ConfigureAwait(false);
+			if (Bot.BotConfig.SendOnFarmingFinished) {
+				await Bot.Actions.Loot().ConfigureAwait(false);
+			}
 		}
 
 		internal async Task Pause(bool sticky) {

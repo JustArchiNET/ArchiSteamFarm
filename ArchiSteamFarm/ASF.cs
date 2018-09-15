@@ -227,6 +227,15 @@ namespace ArchiSteamFarm {
 			FileSystemWatcher.EnableRaisingEvents = true;
 		}
 
+		internal static bool IsOwner(ulong steamID) {
+			if (steamID == 0) {
+				ArchiLogger.LogNullError(nameof(steamID));
+				return false;
+			}
+
+			return (steamID == Program.GlobalConfig.SteamOwnerID) || (Debugging.IsDebugBuild && (steamID == SharedInfo.ArchiSteamID));
+		}
+
 		private static bool IsValidBotName(string botName) {
 			if (string.IsNullOrEmpty(botName)) {
 				ArchiLogger.LogNullError(nameof(botName));
