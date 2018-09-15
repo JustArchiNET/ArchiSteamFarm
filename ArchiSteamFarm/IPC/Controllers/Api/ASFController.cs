@@ -70,5 +70,11 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 
 			return Ok(new GenericResponse(true));
 		}
+
+		[HttpPost("Exit")]
+		public ActionResult<GenericResponse> PostExit() {
+			(bool success, string output) = Actions.Exit();
+			return Ok(new GenericResponse(success, output));
+		}
 	}
 }

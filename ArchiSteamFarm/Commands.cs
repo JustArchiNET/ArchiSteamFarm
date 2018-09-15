@@ -853,15 +853,8 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			// Schedule the task after some time so user can receive response
-			Utilities.InBackground(
-				async () => {
-					await Task.Delay(1000).ConfigureAwait(false);
-					await Program.Exit().ConfigureAwait(false);
-				}
-			);
-
-			return FormatStaticResponse(Strings.Done);
+			(bool success, string output) = Actions.Exit();
+			return FormatStaticResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
 		}
 
 		private async Task<string> ResponseFarm(ulong steamID) {

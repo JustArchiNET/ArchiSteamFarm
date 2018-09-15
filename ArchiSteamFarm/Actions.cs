@@ -150,6 +150,18 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal static (bool Success, string Output) Exit() {
+			// Schedule the task after some time so user can receive response
+			Utilities.InBackground(
+				async () => {
+					await Task.Delay(1000).ConfigureAwait(false);
+					await Program.Exit().ConfigureAwait(false);
+				}
+			);
+
+			return (true, Strings.Done);
+		}
+
 		internal async Task<(bool Success, string Output)> Loot(uint appID = Steam.Asset.SteamAppID, byte contextID = Steam.Asset.SteamCommunityContextID, ulong targetSteamID = 0, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<uint> wantedRealAppIDs = null) {
 			if ((appID == 0) || (contextID == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
