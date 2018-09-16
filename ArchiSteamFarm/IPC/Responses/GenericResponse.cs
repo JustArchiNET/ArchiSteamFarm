@@ -19,7 +19,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Responses {
@@ -27,8 +26,9 @@ namespace ArchiSteamFarm.IPC.Responses {
 		[JsonProperty]
 		private readonly T Result;
 
-		internal GenericResponse(T result) : base(true, "OK") => Result = result ?? throw new ArgumentNullException(nameof(result));
+		internal GenericResponse(T result) : base(result != null) => Result = result;
 		internal GenericResponse(bool success, string message) : base(success, message) { }
+		internal GenericResponse(bool success, T result) : base(success) => Result = result;
 	}
 
 	public class GenericResponse {
@@ -39,20 +39,14 @@ namespace ArchiSteamFarm.IPC.Responses {
 		private readonly bool Success;
 
 		internal GenericResponse(bool success) {
-			if (!success) {
-				// Returning failed generic response without a message should never happen
-				throw new ArgumentException(nameof(success));
-			}
+			Success = success;
 
-			Success = true;
-			Message = "OK";
+			if (success) {
+				Message = "OK";
+			}
 		}
 
 		internal GenericResponse(bool success, string message) {
-			if (string.IsNullOrEmpty(message)) {
-				throw new ArgumentNullException(nameof(message));
-			}
-
 			Success = success;
 			Message = message;
 		}

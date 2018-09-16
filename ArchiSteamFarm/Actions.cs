@@ -238,7 +238,29 @@ namespace ArchiSteamFarm {
 			return await Bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
 		}
 
+		internal static (bool Success, string Output) Restart() {
+			// Schedule the task after some time so user can receive response
+			Utilities.InBackground(
+				async () => {
+					await Task.Delay(1000).ConfigureAwait(false);
+					await Program.Restart().ConfigureAwait(false);
+				}
+			);
+
+			return (true, Strings.Done);
+		}
+
 		internal bool SwitchLootingAllowed() => LootingAllowed = !LootingAllowed;
+
+		internal static async Task<(bool Success, Version Version)> Update() {
+			Version version = await ASF.Update(true).ConfigureAwait(false);
+			if ((version == null) || (version <= SharedInfo.Version)) {
+				return (false, version);
+			}
+
+			Utilities.InBackground(ASF.RestartOrExit);
+			return (true, version);
+		}
 
 		private ulong GetFirstSteamMasterID() => Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key != 0) && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderByDescending(steamID => steamID != Bot.CachedSteamID).ThenBy(steamID => steamID).FirstOrDefault();
 

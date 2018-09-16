@@ -2243,15 +2243,8 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			// Schedule the task after some time so user can receive response
-			Utilities.InBackground(
-				async () => {
-					await Task.Delay(1000).ConfigureAwait(false);
-					await Program.Restart().ConfigureAwait(false);
-				}
-			);
-
-			return FormatStaticResponse(Strings.Done);
+			(bool success, string output) = Actions.Exit();
+			return FormatStaticResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
 		}
 
 		private string ResponseResume(ulong steamID) {
@@ -2695,8 +2688,8 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			Version version = await ASF.CheckAndUpdateProgram(true).ConfigureAwait(false);
-			return FormatStaticResponse(version != null ? (version > SharedInfo.Version ? Strings.Success : Strings.Done) : Strings.WarningFailed);
+			(bool success, Version version) = await Actions.Update().ConfigureAwait(false);
+			return FormatStaticResponse((success ? Strings.Success : Strings.WarningFailed) + (version != null ? " V" + version : ""));
 		}
 
 		private string ResponseVersion(ulong steamID) {

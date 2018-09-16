@@ -76,5 +76,17 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			(bool success, string output) = Actions.Exit();
 			return Ok(new GenericResponse(success, output));
 		}
+
+		[HttpPost("Restart")]
+		public ActionResult<GenericResponse> PostRestart() {
+			(bool success, string output) = Actions.Restart();
+			return Ok(new GenericResponse(success, output));
+		}
+
+		[HttpPost("Update")]
+		public async Task<ActionResult<GenericResponse<Version>>> PostUpdate() {
+			(bool success, Version version) = await Actions.Update().ConfigureAwait(false);
+			return Ok(new GenericResponse<Version>(success, version));
+		}
 	}
 }
