@@ -40,8 +40,7 @@ script:
 
     publish() {
         if [ "$1" = 'generic' ]; then
-            # TODO: Workaround https://github.com/mono/linker/issues/286 until it's resolved
-            # Don't forget to remove it from docker files too
+            # TODO: Workaround https://github.com/mono/linker/issues/286 (don't forget to remove it from docker files too)
             dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" --no-restore /nologo "/p:ASFVariant=$1" "/p:LinkDuringPublish=false"
         else
             dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" -r "$1" --no-restore /nologo "/p:ASFVariant=$1" "/p:CrossGenDuringPublish=false"
