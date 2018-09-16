@@ -203,6 +203,30 @@ namespace ArchiSteamFarm {
 			return new ObjectResponse<T>(response, obj);
 		}
 
+		internal async Task<StringResponse> UrlGetToString(string request, string referer = null, byte maxTries = MaxTries) {
+			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
+				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
+				return null;
+			}
+
+			for (byte i = 0; i < maxTries; i++) {
+				using (HttpResponseMessage response = await InternalGet(request, referer).ConfigureAwait(false)) {
+					if (response == null) {
+						continue;
+					}
+
+					return new StringResponse(response, await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+				}
+			}
+
+			if (maxTries > 1) {
+				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+			}
+
+			return null;
+		}
+
 		internal async Task<XmlDocumentResponse> UrlGetToXmlDocument(string request, string referer = null, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
@@ -421,30 +445,6 @@ namespace ArchiSteamFarm {
 
 				return null;
 			}
-		}
-
-		private async Task<StringResponse> UrlGetToString(string request, string referer = null, byte maxTries = MaxTries) {
-			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
-				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
-				return null;
-			}
-
-			for (byte i = 0; i < maxTries; i++) {
-				using (HttpResponseMessage response = await InternalGet(request, referer).ConfigureAwait(false)) {
-					if (response == null) {
-						continue;
-					}
-
-					return new StringResponse(response, await response.Content.ReadAsStringAsync().ConfigureAwait(false));
-				}
-			}
-
-			if (maxTries > 1) {
-				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
-				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
-			}
-
-			return null;
 		}
 
 		private async Task<StringResponse> UrlPostToString(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, byte maxTries = MaxTries) {

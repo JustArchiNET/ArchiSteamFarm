@@ -68,12 +68,12 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse<string>(false, string.Format(Strings.ErrorIsInvalid, nameof(request.URL))));
 			}
 
-			WebBrowser.HtmlDocumentResponse urlResponse = await Program.WebBrowser.UrlGetToHtmlDocument(request.URL).ConfigureAwait(false);
+			WebBrowser.StringResponse urlResponse = await Program.WebBrowser.UrlGetToString(request.URL).ConfigureAwait(false);
 			if (urlResponse?.Content == null) {
 				return BadRequest(new GenericResponse<string>(false, string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
 			}
 
-			return Ok(new GenericResponse<string>(urlResponse.Content.DocumentNode.InnerHtml));
+			return Ok(new GenericResponse<string>(urlResponse.Content));
 		}
 	}
 }
