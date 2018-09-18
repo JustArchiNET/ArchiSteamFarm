@@ -75,8 +75,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			HashSet<Bot> bots = Bot.GetBots(botNames);
-			if ((bots == null) || (bots.Count == 0)) {
-				return BadRequest(new GenericResponse<HashSet<Bot>>(false, string.Format(Strings.BotNotFound, botNames)));
+			if (bots == null) {
+				return BadRequest(new GenericResponse<HashSet<Bot>>(false, string.Format(Strings.ErrorIsInvalid, nameof(bots))));
 			}
 
 			return Ok(new GenericResponse<HashSet<Bot>>(bots));
@@ -87,6 +87,11 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			if (string.IsNullOrEmpty(botName) || (request == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(botName) + " || " + nameof(request));
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botName) + " || " + nameof(request))));
+			}
+
+			(bool valid, string errorMessage) = request.BotConfig.CheckValidation();
+			if (!valid) {
+				return BadRequest(new GenericResponse(false, errorMessage));
 			}
 
 			if (request.KeepSensitiveDetails && Bot.Bots.TryGetValue(botName, out Bot bot)) {

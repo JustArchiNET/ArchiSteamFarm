@@ -54,6 +54,11 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(request))));
 			}
 
+			(bool valid, string errorMessage) = request.GlobalConfig.CheckValidation();
+			if (!valid) {
+				return BadRequest(new GenericResponse(false, errorMessage));
+			}
+
 			if (request.KeepSensitiveDetails) {
 				if (string.IsNullOrEmpty(request.GlobalConfig.WebProxyPassword) && !string.IsNullOrEmpty(Program.GlobalConfig.WebProxyPassword)) {
 					request.GlobalConfig.WebProxyPassword = Program.GlobalConfig.WebProxyPassword;

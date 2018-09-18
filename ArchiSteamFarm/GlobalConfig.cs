@@ -210,6 +210,34 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal (bool Valid, string ErrorMessage) CheckValidation() {
+			if (ConnectionTimeout == 0) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(ConnectionTimeout), ConnectionTimeout));
+			}
+
+			if (FarmingDelay == 0) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(FarmingDelay), FarmingDelay));
+			}
+
+			if (MaxFarmingTime == 0) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(MaxFarmingTime), MaxFarmingTime));
+			}
+
+			if (!Enum.IsDefined(typeof(EOptimizationMode), OptimizationMode)) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(OptimizationMode), OptimizationMode));
+			}
+
+			if (!string.IsNullOrEmpty(SteamMessagePrefix) && (SteamMessagePrefix.Length > Bot.MaxMessagePrefixLength)) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(SteamMessagePrefix), SteamMessagePrefix));
+			}
+
+			if ((SteamProtocols <= 0) || (SteamProtocols > ProtocolTypes.All)) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(SteamProtocols), SteamProtocols));
+			}
+
+			return Enum.IsDefined(typeof(EUpdateChannel), UpdateChannel) ? (true, null) : (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(UpdateChannel), UpdateChannel));
+		}
+
 		internal static async Task<GlobalConfig> Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(filePath));
@@ -234,38 +262,9 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (globalConfig.ConnectionTimeout == 0) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.ConnectionTimeout), globalConfig.ConnectionTimeout));
-				return null;
-			}
-
-			if (globalConfig.FarmingDelay == 0) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.FarmingDelay), globalConfig.FarmingDelay));
-				return null;
-			}
-
-			if (globalConfig.MaxFarmingTime == 0) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.MaxFarmingTime), globalConfig.MaxFarmingTime));
-				return null;
-			}
-
-			if (!Enum.IsDefined(typeof(EOptimizationMode), globalConfig.OptimizationMode)) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.OptimizationMode), globalConfig.OptimizationMode));
-				return null;
-			}
-
-			if (!string.IsNullOrEmpty(globalConfig.SteamMessagePrefix) && (globalConfig.SteamMessagePrefix.Length > Bot.MaxMessagePrefixLength)) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.SteamMessagePrefix), globalConfig.SteamMessagePrefix));
-				return null;
-			}
-
-			if ((globalConfig.SteamProtocols <= 0) || (globalConfig.SteamProtocols > ProtocolTypes.All)) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.SteamProtocols), globalConfig.SteamProtocols));
-				return null;
-			}
-
-			if (!Enum.IsDefined(typeof(EUpdateChannel), globalConfig.UpdateChannel)) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.UpdateChannel), globalConfig.UpdateChannel));
+			(bool valid, string errorMessage) = globalConfig.CheckValidation();
+			if (!valid) {
+				ASF.ArchiLogger.LogGenericError(errorMessage);
 				return null;
 			}
 
