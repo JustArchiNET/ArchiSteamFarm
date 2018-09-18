@@ -40,7 +40,6 @@ namespace ArchiSteamFarm {
 		private const string DefaultCustomGamePlayedWhileFarming = null;
 		private const string DefaultCustomGamePlayedWhileIdle = null;
 		private const bool DefaultEnabled = false;
-		private const string DefaultEncryptedSteamPassword = null;
 		private const byte DefaultHoursUntilCardDrops = 3;
 		private const bool DefaultIdlePriorityQueueOnly = false;
 		private const bool DefaultIdleRefundableGames = true;
@@ -54,6 +53,7 @@ namespace ArchiSteamFarm {
 		private const string DefaultSteamLogin = null;
 		private const ulong DefaultSteamMasterClanID = 0;
 		private const string DefaultSteamParentalPIN = "0";
+		private const string DefaultSteamPassword = null;
 		private const string DefaultSteamTradeToken = null;
 		private const ETradingPreferences DefaultTradingPreferences = ETradingPreferences.None;
 		private const bool DefaultUseLoginKeys = true;
@@ -138,8 +138,33 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool UseLoginKeys = DefaultUseLoginKeys;
 
-		[JsonProperty(PropertyName = nameof(SteamPassword))]
-		internal string EncryptedSteamPassword { get; private set; } = DefaultEncryptedSteamPassword;
+		internal string OriginalSteamPassword {
+			get {
+				if (string.IsNullOrEmpty(SteamPassword)) {
+					return null;
+				}
+
+				if (PasswordFormat == ArchiCryptoHelper.ECryptoMethod.PlainText) {
+					return SteamPassword;
+				}
+
+				string decryptedPassword = ArchiCryptoHelper.Decrypt(PasswordFormat, SteamPassword);
+				if (string.IsNullOrEmpty(decryptedPassword)) {
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(SteamPassword)));
+					return null;
+				}
+
+				return decryptedPassword;
+			}
+			set {
+				if (string.IsNullOrEmpty(value)) {
+					ASF.ArchiLogger.LogNullError(nameof(value));
+					return;
+				}
+
+				SteamPassword = PasswordFormat == ArchiCryptoHelper.ECryptoMethod.PlainText ? value : ArchiCryptoHelper.Encrypt(PasswordFormat, value);
+			}
+		}
 
 		internal bool ShouldSerializeEverything { private get; set; } = true;
 
@@ -152,25 +177,10 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		internal string SteamParentalPIN { get; set; } = DefaultSteamParentalPIN;
 
-		internal string SteamPassword {
-			get {
-				if (string.IsNullOrEmpty(EncryptedSteamPassword)) {
-					return null;
-				}
-
-				return PasswordFormat == ArchiCryptoHelper.ECryptoMethod.PlainText ? EncryptedSteamPassword : ArchiCryptoHelper.Decrypt(PasswordFormat, EncryptedSteamPassword);
-			}
-			set {
-				if (string.IsNullOrEmpty(value)) {
-					ASF.ArchiLogger.LogNullError(nameof(value));
-					return;
-				}
-
-				EncryptedSteamPassword = PasswordFormat == ArchiCryptoHelper.ECryptoMethod.PlainText ? value : ArchiCryptoHelper.Encrypt(PasswordFormat, value);
-			}
-		}
-
 		private bool ShouldSerializeSensitiveDetails = true;
+
+		[JsonProperty]
+		private string SteamPassword = DefaultSteamPassword;
 
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamMasterClanID), Required = Required.DisallowNull)]
 		private string SSteamMasterClanID {
@@ -373,7 +383,6 @@ namespace ArchiSteamFarm {
 		public bool ShouldSerializeCustomGamePlayedWhileFarming() => ShouldSerializeEverything || (CustomGamePlayedWhileFarming != DefaultCustomGamePlayedWhileFarming);
 		public bool ShouldSerializeCustomGamePlayedWhileIdle() => ShouldSerializeEverything || (CustomGamePlayedWhileIdle != DefaultCustomGamePlayedWhileIdle);
 		public bool ShouldSerializeEnabled() => ShouldSerializeEverything || (Enabled != DefaultEnabled);
-		public bool ShouldSerializeEncryptedSteamPassword() => ShouldSerializeSensitiveDetails && (ShouldSerializeEverything || (EncryptedSteamPassword != DefaultEncryptedSteamPassword));
 		public bool ShouldSerializeFarmingOrders() => ShouldSerializeEverything || ((FarmingOrders != DefaultFarmingOrders) && !FarmingOrders.SetEquals(DefaultFarmingOrders));
 		public bool ShouldSerializeGamesPlayedWhileIdle() => ShouldSerializeEverything || ((GamesPlayedWhileIdle != DefaultGamesPlayedWhileIdle) && !GamesPlayedWhileIdle.SetEquals(DefaultGamesPlayedWhileIdle));
 		public bool ShouldSerializeHoursUntilCardDrops() => ShouldSerializeEverything || (HoursUntilCardDrops != DefaultHoursUntilCardDrops);
@@ -392,6 +401,7 @@ namespace ArchiSteamFarm {
 		public bool ShouldSerializeSteamLogin() => ShouldSerializeSensitiveDetails && (ShouldSerializeEverything || (SteamLogin != DefaultSteamLogin));
 		public bool ShouldSerializeSteamMasterClanID() => ShouldSerializeEverything || (SteamMasterClanID != DefaultSteamMasterClanID);
 		public bool ShouldSerializeSteamParentalPIN() => ShouldSerializeSensitiveDetails && (ShouldSerializeEverything || (SteamParentalPIN != DefaultSteamParentalPIN));
+		public bool ShouldSerializeSteamPassword() => ShouldSerializeSensitiveDetails && (ShouldSerializeEverything || (SteamPassword != DefaultSteamPassword));
 		public bool ShouldSerializeSteamTradeToken() => ShouldSerializeEverything || (SteamTradeToken != DefaultSteamTradeToken);
 		public bool ShouldSerializeSteamUserPermissions() => ShouldSerializeEverything || ((SteamUserPermissions != DefaultSteamUserPermissions) && ((SteamUserPermissions.Count != DefaultSteamUserPermissions.Count) || SteamUserPermissions.Except(DefaultSteamUserPermissions).Any()));
 		public bool ShouldSerializeTradingPreferences() => ShouldSerializeEverything || (TradingPreferences != DefaultTradingPreferences);

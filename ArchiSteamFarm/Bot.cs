@@ -1007,7 +1007,7 @@ namespace ArchiSteamFarm {
 					break;
 				case ASF.EUserInputType.Password:
 					if (BotConfig != null) {
-						BotConfig.SteamPassword = inputValue;
+						BotConfig.OriginalSteamPassword = inputValue;
 					}
 
 					break;
@@ -1407,7 +1407,7 @@ namespace ArchiSteamFarm {
 				SetUserInput(ASF.EUserInputType.Login, steamLogin);
 			}
 
-			if (requiresPassword && string.IsNullOrEmpty(BotConfig.SteamPassword)) {
+			if (requiresPassword && string.IsNullOrEmpty(BotConfig.OriginalSteamPassword)) {
 				string steamPassword = Program.GetUserInput(ASF.EUserInputType.Password, BotName);
 				if (string.IsNullOrEmpty(steamPassword)) {
 					return false;
@@ -1591,7 +1591,7 @@ namespace ArchiSteamFarm {
 
 			string username = Regex.Replace(BotConfig.SteamLogin, nonAsciiPattern, "", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
-			string password = BotConfig.SteamPassword;
+			string password = BotConfig.OriginalSteamPassword;
 			if (!string.IsNullOrEmpty(password)) {
 				password = Regex.Replace(password, nonAsciiPattern, "", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 			}

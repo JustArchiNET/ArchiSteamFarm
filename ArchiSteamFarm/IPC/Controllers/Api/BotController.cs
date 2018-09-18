@@ -98,8 +98,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 					request.BotConfig.SteamParentalPIN = bot.BotConfig.SteamParentalPIN;
 				}
 
-				if (string.IsNullOrEmpty(request.BotConfig.SteamPassword) && !string.IsNullOrEmpty(bot.BotConfig.SteamPassword)) {
-					request.BotConfig.SteamPassword = bot.BotConfig.SteamPassword;
+				if (string.IsNullOrEmpty(request.BotConfig.OriginalSteamPassword) && !string.IsNullOrEmpty(bot.BotConfig.OriginalSteamPassword)) {
+					request.BotConfig.OriginalSteamPassword = bot.BotConfig.OriginalSteamPassword;
 				}
 			}
 
