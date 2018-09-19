@@ -360,19 +360,8 @@ namespace ArchiSteamFarm {
 			await ArchiKestrel.Stop().ConfigureAwait(false);
 
 			if (Bot.Bots.Count > 0) {
-				IEnumerable<Task> tasks = Bot.Bots.Values.Select(bot => Task.Run(() => bot.Stop(true)));
-
-				switch (GlobalConfig.OptimizationMode) {
-					case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-						foreach (Task task in tasks) {
-							await Task.WhenAny(task, Task.Delay(WebBrowser.MaxTries * 1000)).ConfigureAwait(false);
-						}
-
-						break;
-					default:
-						await Task.WhenAny(Task.WhenAll(tasks), Task.Delay(Bot.Bots.Count * WebBrowser.MaxTries * 1000)).ConfigureAwait(false);
-						break;
-				}
+				// Stop() function can block due to SK2 sockets, don't forget a maximum delay
+				await Task.WhenAny(Utilities.InParallel(Bot.Bots.Values.Select(bot => Task.Run(() => bot.Stop(true)))), Task.Delay(Bot.Bots.Count * WebBrowser.MaxTries * 1000)).ConfigureAwait(false);
 
 				// Extra second for Steam requests to go through
 				await Task.Delay(1000).ConfigureAwait(false);

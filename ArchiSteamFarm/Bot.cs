@@ -124,7 +124,6 @@ namespace ArchiSteamFarm {
 
 		internal bool PlayingBlocked { get; private set; }
 		internal bool PlayingWasBlocked { get; private set; }
-		internal bool SkipFirstShutdown { private get; set; }
 
 		[JsonProperty]
 		private EAccountFlags AccountFlags;
@@ -623,22 +622,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<(Dictionary<string, string> UnusedKeys, Dictionary<string, string> UsedKeys)> GetUsedAndUnusedKeys() {
-			IEnumerable<Task<Dictionary<string, string>>> tasks = new[] { KeysToRedeemUnusedFilePath, KeysToRedeemUsedFilePath }.Select(GetKeysFromFile);
-			IList<Dictionary<string, string>> results;
-
-			switch (Program.GlobalConfig.OptimizationMode) {
-				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					results = new List<Dictionary<string, string>>(2);
-					foreach (Task<Dictionary<string, string>> task in tasks) {
-						results.Add(await task.ConfigureAwait(false));
-					}
-
-					break;
-				default:
-					results = await Task.WhenAll(tasks).ConfigureAwait(false);
-					break;
-			}
-
+			IList<Dictionary<string, string>> results = await Utilities.InParallel(new[] { KeysToRedeemUnusedFilePath, KeysToRedeemUsedFilePath }.Select(GetKeysFromFile)).ConfigureAwait(false);
 			return (results[0], results[1]);
 		}
 
@@ -818,8 +802,8 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				if (SkipFirstShutdown) {
-					SkipFirstShutdown = false;
+				if (Actions.SkipFirstShutdown) {
+					Actions.SkipFirstShutdown = false;
 				} else {
 					Stop();
 				}
@@ -1089,10 +1073,10 @@ namespace ArchiSteamFarm {
 			FamilySharingInactivityTimer = null;
 		}
 
-		internal async Task ValidateAndAddGamesToRedeemInBackground(OrderedDictionary gamesToRedeemInBackground) {
+		internal async Task<bool> ValidateAndAddGamesToRedeemInBackground(OrderedDictionary gamesToRedeemInBackground) {
 			if ((gamesToRedeemInBackground == null) || (gamesToRedeemInBackground.Count == 0)) {
 				ArchiLogger.LogNullError(nameof(gamesToRedeemInBackground));
-				return;
+				return false;
 			}
 
 			HashSet<object> invalidKeys = new HashSet<object>();
@@ -1126,7 +1110,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if (gamesToRedeemInBackground.Count == 0) {
-					return;
+					return false;
 				}
 			}
 
@@ -1135,6 +1119,8 @@ namespace ArchiSteamFarm {
 			if ((GamesRedeemerInBackgroundTimer == null) && BotDatabase.HasGamesToRedeemInBackground && IsConnectedAndLoggedOn) {
 				Utilities.InBackground(RedeemGamesInBackground);
 			}
+
+			return true;
 		}
 
 		private async Task CheckFamilySharingInactivity() {

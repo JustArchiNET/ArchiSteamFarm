@@ -44,27 +44,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
 			}
 
-			IEnumerable<Task<bool>> tasks = bots.Select(bot => Task.Run(bot.DeleteRedeemedKeysFiles));
-			ICollection<bool> results;
-
-			switch (Program.GlobalConfig.OptimizationMode) {
-				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					results = new List<bool>(bots.Count);
-					foreach (Task<bool> task in tasks) {
-						results.Add(await task.ConfigureAwait(false));
-					}
-
-					break;
-				default:
-					results = await Task.WhenAll(tasks).ConfigureAwait(false);
-					break;
-			}
-
-			if (results.Any(result => !result)) {
-				return BadRequest(new GenericResponse(false, Strings.WarningFailed));
-			}
-
-			return Ok(new GenericResponse(true));
+			IList<bool> results = await Utilities.InParallel(bots.Select(bot => Task.Run(bot.DeleteRedeemedKeysFiles))).ConfigureAwait(false);
+			return Ok(results.All(result => result) ? new GenericResponse(true) : new GenericResponse(false, Strings.WarningFailed));
 		}
 
 		[HttpGet("{botNames:required}")]
@@ -79,26 +60,13 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse<Dictionary<string, GamesToRedeemInBackgroundResponse>>(false, string.Format(Strings.BotNotFound, botNames)));
 			}
 
-			IEnumerable<(string BotName, Task<(Dictionary<string, string> UnusedKeys, Dictionary<string, string> UsedKeys)> Task)> tasks = bots.Select(bot => (bot.BotName, bot.GetUsedAndUnusedKeys()));
-			ICollection<(string BotName, (Dictionary<string, string> UnusedKeys, Dictionary<string, string> UsedKeys))> results;
-
-			switch (Program.GlobalConfig.OptimizationMode) {
-				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					results = new List<(string BotName, (Dictionary<string, string> UnusedKeys, Dictionary<string, string> UsedKeys))>(bots.Count);
-					foreach ((string botName, Task<(Dictionary<string, string> UnusedKeys, Dictionary<string, string> UsedKeys)> task) in tasks) {
-						results.Add((botName, await task.ConfigureAwait(false)));
-					}
-
-					break;
-				default:
-					results = await Task.WhenAll(tasks.Select(async task => (task.BotName, await task.Task.ConfigureAwait(false)))).ConfigureAwait(false);
-					break;
-			}
+			IList<(Dictionary<string, string> UnusedKeys, Dictionary<string, string> UsedKeys)> results = await Utilities.InParallel(bots.Select(bot => bot.GetUsedAndUnusedKeys())).ConfigureAwait(false);
 
 			Dictionary<string, GamesToRedeemInBackgroundResponse> result = new Dictionary<string, GamesToRedeemInBackgroundResponse>();
 
-			foreach ((string botName, (Dictionary<string, string> UnusedKeys, Dictionary<string, string> UsedKeys) taskResult) in results) {
-				result[botName] = new GamesToRedeemInBackgroundResponse(taskResult.UnusedKeys, taskResult.UsedKeys);
+			foreach (Bot bot in bots) {
+				(Dictionary<string, string> unusedKeys, Dictionary<string, string> usedKeys) = results[result.Count];
+				result[bot.BotName] = new GamesToRedeemInBackgroundResponse(unusedKeys, usedKeys);
 			}
 
 			return Ok(new GenericResponse<Dictionary<string, GamesToRedeemInBackgroundResponse>>(result));
@@ -119,8 +87,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse<OrderedDictionary>(false, string.Format(Strings.BotNotFound, botName)));
 			}
 
-			await bot.ValidateAndAddGamesToRedeemInBackground(request.GamesToRedeemInBackground).ConfigureAwait(false);
-			return Ok(new GenericResponse<OrderedDictionary>(request.GamesToRedeemInBackground));
+			bool result = await bot.ValidateAndAddGamesToRedeemInBackground(request.GamesToRedeemInBackground).ConfigureAwait(false);
+			return Ok(new GenericResponse<OrderedDictionary>(result, request.GamesToRedeemInBackground));
 		}
 	}
 }

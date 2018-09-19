@@ -19,6 +19,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using ArchiSteamFarm.Localization;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Responses {
@@ -38,17 +39,15 @@ namespace ArchiSteamFarm.IPC.Responses {
 		[JsonProperty]
 		private readonly bool Success;
 
-		internal GenericResponse(bool success) {
+		internal GenericResponse(bool success, string message = null) {
 			Success = success;
 
-			if (success) {
-				Message = "OK";
+			if (!string.IsNullOrEmpty(message)) {
+				Message = message;
+				return;
 			}
-		}
 
-		internal GenericResponse(bool success, string message) {
-			Success = success;
-			Message = message;
+			Message = success ? "OK" : Strings.WarningFailed;
 		}
 	}
 }

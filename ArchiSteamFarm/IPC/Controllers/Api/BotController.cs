@@ -19,6 +19,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -44,27 +45,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
 			}
 
-			IEnumerable<Task<bool>> tasks = bots.Select(bot => bot.DeleteAllRelatedFiles());
-			ICollection<bool> results;
-
-			switch (Program.GlobalConfig.OptimizationMode) {
-				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					results = new List<bool>(bots.Count);
-					foreach (Task<bool> task in tasks) {
-						results.Add(await task.ConfigureAwait(false));
-					}
-
-					break;
-				default:
-					results = await Task.WhenAll(tasks).ConfigureAwait(false);
-					break;
-			}
-
-			if (results.Any(result => !result)) {
-				return BadRequest(new GenericResponse(false, Strings.WarningFailed));
-			}
-
-			return Ok(new GenericResponse(true));
+			IList<bool> results = await Utilities.InParallel(bots.Select(bot => bot.DeleteAllRelatedFiles())).ConfigureAwait(false);
+			return Ok(new GenericResponse(results.All(result => result)));
 		}
 
 		[HttpGet("{botNames:required}")]
@@ -112,11 +94,40 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 
 			string filePath = Path.Combine(SharedInfo.ConfigDirectory, botName + SharedInfo.ConfigExtension);
 
-			if (!await BotConfig.Write(filePath, request.BotConfig).ConfigureAwait(false)) {
-				return BadRequest(new GenericResponse(false, Strings.WarningFailed));
+			bool result = await BotConfig.Write(filePath, request.BotConfig).ConfigureAwait(false);
+			return Ok(new GenericResponse(result));
+		}
+
+		[HttpPost("{botNames:required}/Stop")]
+		public async Task<ActionResult<GenericResponse>> PostStop(string botNames) {
+			if (string.IsNullOrEmpty(botNames)) {
+				ASF.ArchiLogger.LogNullError(nameof(botNames));
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
 			}
 
-			return Ok(new GenericResponse(true));
+			HashSet<Bot> bots = Bot.GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
+			}
+
+			IList<(bool Success, string Output)> results = await Utilities.InParallel(bots.Select(bot => Task.Run(bot.Actions.Stop))).ConfigureAwait(false);
+			return Ok(new GenericResponse(results.All(result => result.Success), string.Join(Environment.NewLine, results.Select(result => result.Output))));
+		}
+
+		[HttpPost("{botNames:required}/Start")]
+		public async Task<ActionResult<GenericResponse>> PostStart(string botNames) {
+			if (string.IsNullOrEmpty(botNames)) {
+				ASF.ArchiLogger.LogNullError(nameof(botNames));
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
+			}
+
+			HashSet<Bot> bots = Bot.GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
+			}
+
+			IList<(bool Success, string Output)> results = await Utilities.InParallel(bots.Select(bot => Task.Run(bot.Actions.Start))).ConfigureAwait(false);
+			return Ok(new GenericResponse(results.All(result => result.Success), string.Join(Environment.NewLine, results.Select(result => result.Output))));
 		}
 	}
 }

@@ -50,19 +50,7 @@ namespace ArchiSteamFarm {
 			await Bot.InitializeSteamConfiguration(Program.GlobalConfig.SteamProtocols, Program.GlobalDatabase.CellID, Program.GlobalDatabase.ServerListProvider).ConfigureAwait(false);
 
 			try {
-				IEnumerable<Task> tasks = Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*" + SharedInfo.ConfigExtension).Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).OrderBy(botName => botName).Select(Bot.RegisterBot);
-
-				switch (Program.GlobalConfig.OptimizationMode) {
-					case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-						foreach (Task task in tasks) {
-							await task.ConfigureAwait(false);
-						}
-
-						break;
-					default:
-						await Task.WhenAll(tasks).ConfigureAwait(false);
-						break;
-				}
+				await Utilities.InParallel(Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*" + SharedInfo.ConfigExtension).Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).OrderBy(botName => botName).Select(Bot.RegisterBot)).ConfigureAwait(false);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 				return;

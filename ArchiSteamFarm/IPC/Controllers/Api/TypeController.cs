@@ -39,7 +39,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse<TypeResponse>(false, string.Format(Strings.ErrorIsEmpty, nameof(type))));
 			}
 
-			Type targetType = Utilities.ParseType(type);
+			Type targetType = WebUtilities.ParseType(type);
 
 			if (targetType == null) {
 				return BadRequest(new GenericResponse<object>(false, string.Format(Strings.ErrorIsInvalid, type)));
@@ -77,8 +77,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			TypeResponse.TypeProperties properties = new TypeResponse.TypeProperties(baseType, customAttributes.Count > 0 ? customAttributes : null, underlyingType);
-			TypeResponse response = new TypeResponse(body, properties);
 
+			TypeResponse response = new TypeResponse(body, properties);
 			return Ok(new GenericResponse<TypeResponse>(response));
 		}
 	}

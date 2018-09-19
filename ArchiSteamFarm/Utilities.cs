@@ -106,6 +106,50 @@ namespace ArchiSteamFarm {
 			Task.Factory.StartNew(function, CancellationToken.None, options, TaskScheduler.Default);
 		}
 
+		internal static async Task<IList<T>> InParallel<T>(IEnumerable<Task<T>> tasks) {
+			if (tasks == null) {
+				ASF.ArchiLogger.LogNullError(nameof(tasks));
+				return null;
+			}
+
+			IList<T> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<T>();
+
+					foreach (Task<T> task in tasks) {
+						results.Add(await task.ConfigureAwait(false));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+
+			return results;
+		}
+
+		internal static async Task InParallel(IEnumerable<Task> tasks) {
+			if (tasks == null) {
+				ASF.ArchiLogger.LogNullError(nameof(tasks));
+				return;
+			}
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					foreach (Task task in tasks) {
+						await task.ConfigureAwait(false);
+					}
+
+					break;
+				default:
+					await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+		}
+
 		internal static bool IsValidCdKey(string key) {
 			if (string.IsNullOrEmpty(key)) {
 				ASF.ArchiLogger.LogNullError(nameof(key));

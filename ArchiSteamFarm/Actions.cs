@@ -38,6 +38,8 @@ namespace ArchiSteamFarm {
 		private readonly ConcurrentHashSet<ulong> HandledGifts = new ConcurrentHashSet<ulong>();
 		private readonly SemaphoreSlim LootingSemaphore = new SemaphoreSlim(1, 1);
 
+		internal bool SkipFirstShutdown { get; set; }
+
 		private bool LootingAllowed = true;
 		private bool LootingScheduled;
 		private bool ProcessingGiftsScheduled;
@@ -60,21 +62,7 @@ namespace ArchiSteamFarm {
 				return await Bot.BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false);
 			}
 
-			IEnumerable<Task<Steam.ConfirmationDetails>> tasks = confirmations.Select(Bot.BotDatabase.MobileAuthenticator.GetConfirmationDetails);
-			ICollection<Steam.ConfirmationDetails> results;
-
-			switch (Program.GlobalConfig.OptimizationMode) {
-				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					results = new List<Steam.ConfirmationDetails>(confirmations.Count);
-					foreach (Task<Steam.ConfirmationDetails> task in tasks) {
-						results.Add(await task.ConfigureAwait(false));
-					}
-
-					break;
-				default:
-					results = await Task.WhenAll(tasks).ConfigureAwait(false);
-					break;
-			}
+			IList<Steam.ConfirmationDetails> results = await Utilities.InParallel(confirmations.Select(Bot.BotDatabase.MobileAuthenticator.GetConfirmationDetails)).ConfigureAwait(false);
 
 			foreach (MobileAuthenticator.Confirmation confirmation in results.Where(details => (details != null) && ((acceptedType != details.Type) || ((acceptedSteamID != 0) && (details.OtherSteamID64 != 0) && (acceptedSteamID != details.OtherSteamID64)) || ((acceptedTradeIDs != null) && (details.TradeOfferID != 0) && !acceptedTradeIDs.Contains(details.TradeOfferID)))).Select(details => details.Confirmation)) {
 				confirmations.Remove(confirmation);
@@ -247,6 +235,25 @@ namespace ArchiSteamFarm {
 				}
 			);
 
+			return (true, Strings.Done);
+		}
+
+		internal (bool Success, string Output) Start() {
+			if (Bot.KeepRunning) {
+				return (false, Strings.BotAlreadyRunning);
+			}
+
+			SkipFirstShutdown = true;
+			Utilities.InBackground(Bot.Start);
+			return (true, Strings.Done);
+		}
+
+		internal (bool Success, string Output) Stop() {
+			if (!Bot.KeepRunning) {
+				return (false, Strings.BotAlreadyStopped);
+			}
+
+			Bot.Stop();
 			return (true, Strings.Done);
 		}
 

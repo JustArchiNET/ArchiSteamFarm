@@ -42,9 +42,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				processStartTime = process.StartTime;
 			}
 
-			ASFResponse response = new ASFResponse(SharedInfo.BuildInfo.Variant, Program.GlobalConfig, memoryUsage, processStartTime, SharedInfo.Version);
-
-			return Ok(new GenericResponse<ASFResponse>(response));
+			ASFResponse result = new ASFResponse(SharedInfo.BuildInfo.Variant, Program.GlobalConfig, memoryUsage, processStartTime, SharedInfo.Version);
+			return Ok(new GenericResponse<ASFResponse>(result));
 		}
 
 		[HttpPost]
@@ -69,11 +68,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 
 			string filePath = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName);
 
-			if (!await GlobalConfig.Write(filePath, request.GlobalConfig).ConfigureAwait(false)) {
-				return BadRequest(new GenericResponse(false, Strings.WarningFailed));
-			}
-
-			return Ok(new GenericResponse(true));
+			bool result = await GlobalConfig.Write(filePath, request.GlobalConfig).ConfigureAwait(false);
+			return Ok(new GenericResponse(result));
 		}
 
 		[HttpPost("Exit")]

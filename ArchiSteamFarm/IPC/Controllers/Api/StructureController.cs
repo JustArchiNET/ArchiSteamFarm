@@ -35,7 +35,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse<object>(false, string.Format(Strings.ErrorIsEmpty, nameof(structure))));
 			}
 
-			Type targetType = Utilities.ParseType(structure);
+			Type targetType = WebUtilities.ParseType(structure);
 
 			if (targetType == null) {
 				return BadRequest(new GenericResponse<object>(false, string.Format(Strings.ErrorIsInvalid, structure)));

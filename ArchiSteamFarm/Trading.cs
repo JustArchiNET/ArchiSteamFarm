@@ -195,21 +195,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			IEnumerable<Task<ParseTradeResult>> tasks = tradeOffers.Select(ParseTrade);
-			ICollection<ParseTradeResult> results;
-
-			switch (Program.GlobalConfig.OptimizationMode) {
-				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					results = new List<ParseTradeResult>(tradeOffers.Count);
-					foreach (Task<ParseTradeResult> task in tasks) {
-						results.Add(await task.ConfigureAwait(false));
-					}
-
-					break;
-				default:
-					results = await Task.WhenAll(tasks).ConfigureAwait(false);
-					break;
-			}
+			IList<ParseTradeResult> results = await Utilities.InParallel(tradeOffers.Select(ParseTrade)).ConfigureAwait(false);
 
 			if (Bot.HasMobileAuthenticator) {
 				HashSet<ulong> acceptedWithItemLoseTradeIDs = results.Where(result => (result != null) && (result.Result == ParseTradeResult.EResult.AcceptedWithItemLose)).Select(result => result.TradeID).ToHashSet();

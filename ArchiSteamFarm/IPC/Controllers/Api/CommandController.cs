@@ -50,8 +50,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				command = Program.GlobalConfig.CommandPrefix + command;
 			}
 
-			string content = await targetBot.Commands.Response(Program.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
-			return Ok(new GenericResponse<string>(content));
+			string response = await targetBot.Commands.Response(Program.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
+			return Ok(new GenericResponse<string>(response));
 		}
 	}
 }

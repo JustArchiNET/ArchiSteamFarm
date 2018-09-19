@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
 namespace ArchiSteamFarm.IPC {
-	internal static class Utilities {
+	internal static class WebUtilities {
 		internal static async Task Generate(this HttpResponse httpResponse, HttpStatusCode statusCode) {
 			if (httpResponse == null) {
 				ASF.ArchiLogger.LogNullError(nameof(httpResponse));
