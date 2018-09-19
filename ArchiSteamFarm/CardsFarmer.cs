@@ -76,8 +76,8 @@ namespace ArchiSteamFarm {
 
 		private bool KeepFarming;
 		private bool ParsingScheduled;
+		private bool PermanentlyPaused;
 		private bool ShouldResumeFarming = true;
-		private bool StickyPause;
 
 		internal CardsFarmer(Bot bot) {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
@@ -173,9 +173,9 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task Pause(bool sticky) {
-			if (sticky) {
-				StickyPause = true;
+		internal async Task Pause(bool permanent) {
+			if (permanent) {
+				PermanentlyPaused = true;
 			}
 
 			Paused = true;
@@ -188,13 +188,13 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> Resume(bool userAction) {
-			if (StickyPause) {
+			if (PermanentlyPaused) {
 				if (!userAction) {
-					Bot.ArchiLogger.LogGenericInfo(Strings.IgnoredStickyPauseEnabled);
+					Bot.ArchiLogger.LogGenericInfo(Strings.IgnoredPermanentPauseEnabled);
 					return false;
 				}
 
-				StickyPause = false;
+				PermanentlyPaused = false;
 			}
 
 			Paused = false;
@@ -211,7 +211,7 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		internal void SetInitialState(bool paused) => StickyPause = Paused = paused;
+		internal void SetInitialState(bool paused) => PermanentlyPaused = Paused = paused;
 
 		internal async Task StartFarming() {
 			if (NowFarming || Paused || !Bot.IsPlayingPossible) {

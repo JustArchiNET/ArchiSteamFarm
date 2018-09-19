@@ -40,13 +40,20 @@ namespace ArchiSteamFarm {
 
 		internal bool SkipFirstShutdown { get; set; }
 
+		private Timer CardsFarmerResumeTimer;
 		private bool LootingAllowed = true;
 		private bool LootingScheduled;
 		private bool ProcessingGiftsScheduled;
 
 		internal Actions(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
-		public void Dispose() => LootingSemaphore.Dispose();
+		public void Dispose() {
+			// Those are objects that are always being created if constructor doesn't throw exception
+			LootingSemaphore.Dispose();
+
+			// Those are objects that might be null and the check should be in-place
+			CardsFarmerResumeTimer?.Dispose();
+		}
 
 		internal async Task<bool> AcceptConfirmations(bool accept, Steam.ConfirmationDetails.EType acceptedType = Steam.ConfirmationDetails.EType.Unknown, ulong acceptedSteamID = 0, IReadOnlyCollection<ulong> acceptedTradeIDs = null) {
 			if (!Bot.HasMobileAuthenticator) {
@@ -220,6 +227,42 @@ namespace ArchiSteamFarm {
 
 		internal void OnDisconnected() => HandledGifts.Clear();
 
+		internal async Task<(bool Success, string Output)> Pause(bool permanent, ushort resumeInSeconds = 0) {
+			if (!Bot.IsConnectedAndLoggedOn) {
+				return (false, Strings.BotNotConnected);
+			}
+
+			if (Bot.CardsFarmer.Paused) {
+				return (false, Strings.BotAutomaticIdlingPausedAlready);
+			}
+
+			await Bot.CardsFarmer.Pause(permanent).ConfigureAwait(false);
+
+			if (!permanent && (Bot.BotConfig.GamesPlayedWhileIdle.Count > 0)) {
+				// We want to let family sharing users access our library, and in this case we must also stop GamesPlayedWhileIdle
+				// We add extra delay because OnFarmingStopped() also executes PlayGames()
+				// Despite of proper order on our end, Steam network might not respect it
+				await Task.Delay(Bot.CallbackSleep).ConfigureAwait(false);
+				await Bot.ArchiHandler.PlayGames(Enumerable.Empty<uint>(), Bot.BotConfig.CustomGamePlayedWhileIdle).ConfigureAwait(false);
+			}
+
+			if (resumeInSeconds > 0) {
+				if (CardsFarmerResumeTimer != null) {
+					CardsFarmerResumeTimer.Dispose();
+					CardsFarmerResumeTimer = null;
+				}
+
+				CardsFarmerResumeTimer = new Timer(
+					e => Resume(),
+					null,
+					TimeSpan.FromSeconds(resumeInSeconds), // Delay
+					Timeout.InfiniteTimeSpan // Period
+				);
+			}
+
+			return (true, Strings.BotAutomaticIdlingNowPaused);
+		}
+
 		internal async Task<ArchiHandler.PurchaseResponseCallback> RedeemKey(string key) {
 			await LimitGiftsRequestsAsync().ConfigureAwait(false);
 
@@ -236,6 +279,19 @@ namespace ArchiSteamFarm {
 			);
 
 			return (true, Strings.Done);
+		}
+
+		internal (bool Success, string Output) Resume() {
+			if (!Bot.IsConnectedAndLoggedOn) {
+				return (false, Strings.BotNotConnected);
+			}
+
+			if (!Bot.CardsFarmer.Paused) {
+				return (false, Strings.BotAutomaticIdlingResumedAlready);
+			}
+
+			Utilities.InBackground(() => Bot.CardsFarmer.Resume(true));
+			return (true, Strings.BotAutomaticIdlingNowResumed);
 		}
 
 		internal (bool Success, string Output) Start() {

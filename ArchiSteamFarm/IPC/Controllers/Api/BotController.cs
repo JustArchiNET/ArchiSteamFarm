@@ -98,8 +98,24 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			return Ok(new GenericResponse(result));
 		}
 
-		[HttpPost("{botNames:required}/Stop")]
-		public async Task<ActionResult<GenericResponse>> PostStop(string botNames) {
+		[HttpPost("{botNames:required}/Pause")]
+		public async Task<ActionResult<GenericResponse>> PostPause(string botNames, [FromBody] BotPauseRequest request) {
+			if (string.IsNullOrEmpty(botNames) || (request == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(botNames) + " || " + nameof(request));
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames) + " || " + nameof(request))));
+			}
+
+			HashSet<Bot> bots = Bot.GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
+			}
+
+			IList<(bool Success, string Output)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.Pause(request.Permanent, request.ResumeInSeconds))).ConfigureAwait(false);
+			return Ok(new GenericResponse(results.All(result => result.Success), string.Join(Environment.NewLine, results.Select(result => result.Output))));
+		}
+
+		[HttpPost("{botNames:required}/Resume")]
+		public async Task<ActionResult<GenericResponse>> PostResume(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
@@ -110,7 +126,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
 			}
 
-			IList<(bool Success, string Output)> results = await Utilities.InParallel(bots.Select(bot => Task.Run(bot.Actions.Stop))).ConfigureAwait(false);
+			IList<(bool Success, string Output)> results = await Utilities.InParallel(bots.Select(bot => Task.Run(bot.Actions.Resume))).ConfigureAwait(false);
 			return Ok(new GenericResponse(results.All(result => result.Success), string.Join(Environment.NewLine, results.Select(result => result.Output))));
 		}
 
@@ -127,6 +143,22 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			IList<(bool Success, string Output)> results = await Utilities.InParallel(bots.Select(bot => Task.Run(bot.Actions.Start))).ConfigureAwait(false);
+			return Ok(new GenericResponse(results.All(result => result.Success), string.Join(Environment.NewLine, results.Select(result => result.Output))));
+		}
+
+		[HttpPost("{botNames:required}/Stop")]
+		public async Task<ActionResult<GenericResponse>> PostStop(string botNames) {
+			if (string.IsNullOrEmpty(botNames)) {
+				ASF.ArchiLogger.LogNullError(nameof(botNames));
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
+			}
+
+			HashSet<Bot> bots = Bot.GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
+			}
+
+			IList<(bool Success, string Output)> results = await Utilities.InParallel(bots.Select(bot => Task.Run(bot.Actions.Stop))).ConfigureAwait(false);
 			return Ok(new GenericResponse(results.All(result => result.Success), string.Join(Environment.NewLine, results.Select(result => result.Output))));
 		}
 	}

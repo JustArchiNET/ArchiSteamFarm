@@ -340,8 +340,8 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Idling stopped!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Ignoring this request, as sticky pause is enabled!</value>
+  <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
+    <value>Ignoring this request, as permanent pause is enabled!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>We don't have anything to idle on this account!</value>
@@ -422,10 +422,6 @@ StackTrace:
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Automatic idling is paused already!</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Automatic idling is now paused! You have {0} to start a game.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Automatic idling is resumed already!</value>
@@ -562,9 +558,6 @@ StackTrace:
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Account is currently being used: ASF will resume idling when it's free...</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Shared library has not been launched in given time period. Idling process resumed!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Connecting...</value>

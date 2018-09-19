@@ -42,7 +42,6 @@ using SteamKit2.Unified.Internal;
 namespace ArchiSteamFarm {
 	public sealed class Bot : IDisposable {
 		internal const ushort CallbackSleep = 500; // In milliseconds
-		internal const byte FamilySharingInactivityMinutes = 5;
 		internal const ushort MaxMessagePrefixLength = MaxMessageLength - ReservedMessageLength - 2; // 2 for a minimum of 2 characters (escape one and real one)
 		internal const byte MinPlayingBlockedTTL = 60; // Delay in seconds added when account was occupied during our disconnect, to not disconnect other Steam client session too soon
 
@@ -135,7 +134,6 @@ namespace ArchiSteamFarm {
 
 		private Timer ConnectionFailureTimer;
 		private string DeviceID;
-		private Timer FamilySharingInactivityTimer;
 		private bool FirstTradeSent;
 		private Timer GamesRedeemerInBackgroundTimer;
 		private uint GiftsCount;
@@ -245,7 +243,6 @@ namespace ArchiSteamFarm {
 			// Those are objects that are always being created if constructor doesn't throw exception
 			Actions.Dispose();
 			CallbackSemaphore.Dispose();
-			Commands.Dispose();
 			GamesRedeemerInBackgroundSemaphore.Dispose();
 			InitializationSemaphore.Dispose();
 			PICSSemaphore.Dispose();
@@ -255,7 +252,6 @@ namespace ArchiSteamFarm {
 			BotDatabase?.Dispose();
 			CardsFarmer?.Dispose();
 			ConnectionFailureTimer?.Dispose();
-			FamilySharingInactivityTimer?.Dispose();
 			GamesRedeemerInBackgroundTimer?.Dispose();
 			HeartBeatTimer?.Dispose();
 			PlayingWasBlockedTimer?.Dispose();
@@ -1034,19 +1030,6 @@ namespace ArchiSteamFarm {
 			await Connect().ConfigureAwait(false);
 		}
 
-		internal void StartFamilySharingInactivityTimer() {
-			if (FamilySharingInactivityTimer != null) {
-				return;
-			}
-
-			FamilySharingInactivityTimer = new Timer(
-				async e => await CheckFamilySharingInactivity().ConfigureAwait(false),
-				null,
-				TimeSpan.FromMinutes(FamilySharingInactivityMinutes), // Delay
-				Timeout.InfiniteTimeSpan // Period
-			);
-		}
-
 		internal void Stop(bool skipShutdownEvent = false) {
 			if (!KeepRunning) {
 				return;
@@ -1062,15 +1045,6 @@ namespace ArchiSteamFarm {
 			if (!skipShutdownEvent) {
 				Utilities.InBackground(Events.OnBotShutdown);
 			}
-		}
-
-		internal void StopFamilySharingInactivityTimer() {
-			if (FamilySharingInactivityTimer == null) {
-				return;
-			}
-
-			FamilySharingInactivityTimer.Dispose();
-			FamilySharingInactivityTimer = null;
 		}
 
 		internal async Task<bool> ValidateAndAddGamesToRedeemInBackground(OrderedDictionary gamesToRedeemInBackground) {
@@ -1123,27 +1097,12 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		private async Task CheckFamilySharingInactivity() {
-			StopFamilySharingInactivityTimer();
-
-			if (!IsPlayingPossible) {
-				return;
-			}
-
-			ArchiLogger.LogGenericInfo(Strings.BotAutomaticIdlingPauseTimeout);
-
-			if (!await CardsFarmer.Resume(false).ConfigureAwait(false)) {
-				await ResetGamesPlayed().ConfigureAwait(false);
-			}
-		}
-
 		private async Task CheckOccupationStatus() {
 			StopPlayingWasBlockedTimer();
 
 			if (!IsPlayingPossible) {
 				ArchiLogger.LogGenericInfo(Strings.BotAccountOccupied);
 				PlayingWasBlocked = true;
-				StopFamilySharingInactivityTimer();
 				return;
 			}
 
@@ -2347,7 +2306,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task ResetGamesPlayed() {
-			if (!IsPlayingPossible || (FamilySharingInactivityTimer != null) || CardsFarmer.NowFarming) {
+			if (!IsPlayingPossible || CardsFarmer.NowFarming) {
 				return;
 			}
 

@@ -24,22 +24,17 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
-	internal sealed class Commands : IDisposable {
+	internal sealed class Commands {
 		private readonly Bot Bot;
 		private readonly Dictionary<uint, string> CachedGamesOwned = new Dictionary<uint, string>();
 
-		private Timer CardsFarmerResumeTimer;
-
 		internal Commands(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
-
-		public void Dispose() => CardsFarmerResumeTimer?.Dispose();
 
 		internal void OnNewLicenseList() {
 			lock (CachedGamesOwned) {
@@ -1380,7 +1375,7 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 
-		private async Task<string> ResponsePause(ulong steamID, bool sticky, string timeout = null) {
+		private async Task<string> ResponsePause(ulong steamID, bool permanent, string resumeInSecondsText = null) {
 			if (steamID == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID));
 				return null;
@@ -1390,59 +1385,21 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (sticky && !IsOperator(steamID)) {
+			if (permanent && !IsOperator(steamID)) {
 				return FormatBotResponse(Strings.ErrorAccessDenied);
-			}
-
-			if (!Bot.IsConnectedAndLoggedOn) {
-				return FormatBotResponse(Strings.BotNotConnected);
-			}
-
-			if (Bot.CardsFarmer.Paused) {
-				return FormatBotResponse(Strings.BotAutomaticIdlingPausedAlready);
 			}
 
 			ushort resumeInSeconds = 0;
 
-			if (sticky && !string.IsNullOrEmpty(timeout)) {
-				if (!ushort.TryParse(timeout, out resumeInSeconds) || (resumeInSeconds == 0)) {
-					return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(timeout)));
-				}
+			if (!string.IsNullOrEmpty(resumeInSecondsText) && (!ushort.TryParse(resumeInSecondsText, out resumeInSeconds) || (resumeInSeconds == 0))) {
+				return string.Format(Strings.ErrorIsInvalid, nameof(resumeInSecondsText));
 			}
 
-			await Bot.CardsFarmer.Pause(sticky).ConfigureAwait(false);
-
-			if (!sticky && (Bot.BotConfig.GamesPlayedWhileIdle.Count > 0)) {
-				// We want to let family sharing users access our library, and in this case we must also stop GamesPlayedWhileIdle
-				// We add extra delay because OnFarmingStopped() also executes PlayGames()
-				// Despite of proper order on our end, Steam network might not respect it
-				await Task.Delay(Bot.CallbackSleep).ConfigureAwait(false);
-				await Bot.ArchiHandler.PlayGames(Enumerable.Empty<uint>(), Bot.BotConfig.CustomGamePlayedWhileIdle).ConfigureAwait(false);
-			}
-
-			if (resumeInSeconds > 0) {
-				if (CardsFarmerResumeTimer != null) {
-					CardsFarmerResumeTimer.Dispose();
-					CardsFarmerResumeTimer = null;
-				}
-
-				CardsFarmerResumeTimer = new Timer(
-					e => ResponseResume(steamID),
-					null,
-					TimeSpan.FromSeconds(resumeInSeconds), // Delay
-					Timeout.InfiniteTimeSpan // Period
-				);
-			}
-
-			if (IsOperator(steamID)) {
-				return FormatBotResponse(Strings.BotAutomaticIdlingNowPaused);
-			}
-
-			Bot.StartFamilySharingInactivityTimer();
-			return FormatBotResponse(string.Format(Strings.BotAutomaticIdlingPausedWithCountdown, TimeSpan.FromMinutes(Bot.FamilySharingInactivityMinutes).ToHumanReadable()));
+			(bool success, string output) = await Bot.Actions.Pause(permanent, resumeInSeconds).ConfigureAwait(false);
+			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
 		}
 
-		private static async Task<string> ResponsePause(ulong steamID, string botNames, bool sticky, string timeout = null) {
+		private static async Task<string> ResponsePause(ulong steamID, string botNames, bool permanent, string resumeInSecondsText = null) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
 				return null;
@@ -1453,7 +1410,7 @@ namespace ArchiSteamFarm {
 				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			IList<string> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePause(steamID, sticky, timeout))).ConfigureAwait(false);
+			IList<string> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePause(steamID, permanent, resumeInSecondsText))).ConfigureAwait(false);
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
@@ -1640,7 +1597,7 @@ namespace ArchiSteamFarm {
 			return FormatBotResponse(await Bot.ArchiWebHandler.ChangePrivacySettings(userPrivacy).ConfigureAwait(false) ? Strings.Success : Strings.WarningFailed);
 		}
 
-		private async Task<string> ResponsePrivacy(ulong steamID, string botNames, string privacySettingsText) {
+		private static async Task<string> ResponsePrivacy(ulong steamID, string botNames, string privacySettingsText) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(privacySettingsText)) {
 				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames) + " || " + nameof(privacySettingsText));
 				return null;
@@ -1893,22 +1850,8 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.IsConnectedAndLoggedOn) {
-				return FormatBotResponse(Strings.BotNotConnected);
-			}
-
-			if (!Bot.CardsFarmer.Paused) {
-				return FormatBotResponse(Strings.BotAutomaticIdlingResumedAlready);
-			}
-
-			if (CardsFarmerResumeTimer != null) {
-				CardsFarmerResumeTimer.Dispose();
-				CardsFarmerResumeTimer = null;
-			}
-
-			Bot.StopFamilySharingInactivityTimer();
-			Utilities.InBackground(() => Bot.CardsFarmer.Resume(true));
-			return FormatBotResponse(Strings.BotAutomaticIdlingNowResumed);
+			(bool success, string output) = Bot.Actions.Resume();
+			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
 		}
 
 		private static async Task<string> ResponseResume(ulong steamID, string botNames) {
@@ -1939,7 +1882,7 @@ namespace ArchiSteamFarm {
 			}
 
 			(bool success, string output) = Bot.Actions.Start();
-			return FormatStaticResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
+			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
 		}
 
 		private static async Task<string> ResponseStart(ulong steamID, string botNames) {
@@ -2050,7 +1993,7 @@ namespace ArchiSteamFarm {
 			}
 
 			(bool success, string output) = Bot.Actions.Stop();
-			return FormatStaticResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
+			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
 		}
 
 		private static async Task<string> ResponseStop(ulong steamID, string botNames) {
