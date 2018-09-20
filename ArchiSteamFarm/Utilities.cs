@@ -177,6 +177,21 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
+		internal static string MarkdownToText(string markdownText) {
+			if (string.IsNullOrEmpty(markdownText)) {
+				ASF.ArchiLogger.LogNullError(nameof(markdownText));
+				return null;
+			}
+
+			string plainText = Markdig.Markdown.ToPlainText(markdownText);
+			if (plainText == null) {
+				ASF.ArchiLogger.LogNullError(nameof(plainText));
+				return null;
+			}
+
+			return plainText;
+		}
+
 		internal static int RandomNext() {
 			lock (Random) {
 				return Random.Next();
