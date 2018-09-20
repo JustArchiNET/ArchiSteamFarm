@@ -18,6 +18,21 @@ matrix:
   allow_failures:
     - image: Visual Studio 2017 Preview
   fast_finish: true
+install:
+- pwsh: >-
+    Set-StrictMode -Version Latest
+
+    $ErrorActionPreference = 'Stop'
+
+    $ProgressPreference = 'SilentlyContinue'
+
+
+    git submodule update --init --recursive
+
+
+    if ($LastExitCode -ne 0) {
+        throw "Last command failed."
+    }
 before_build:
 - pwsh: >-
     Set-StrictMode -Version Latest
@@ -40,6 +55,28 @@ build_script:
     $ErrorActionPreference = 'Stop'
 
     $ProgressPreference = 'SilentlyContinue'
+
+
+    Push-Location -Path asf-ui
+
+
+    npm install --no-progress
+
+
+    if ($LastExitCode -ne 0) {
+        throw "Last command failed."
+    }
+
+
+    npm run-script build
+
+
+    if ($LastExitCode -ne 0) {
+        throw "Last command failed."
+    }
+
+
+    Pop-Location
 
 
     dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -o 'out\source' /nologo
@@ -149,15 +186,6 @@ after_test:
         # TODO: Change me to Push-AppveyorArtifact once https://github.com/appveyor/ci/issues/2183 is fixed
         appveyor PushArtifact "ArchiSteamFarm\out\ASF-$variant.zip" -FileName "ASF-$variant.zip" -DeploymentName "ASF-$variant.zip"
     }
-
-
-    Push-Location -Path asf-ui
-
-    npm install --no-progress
-
-    npm run-script build --no-progress
-
-    Pop-Location
 
 
     dotnet restore ArchiSteamFarm
