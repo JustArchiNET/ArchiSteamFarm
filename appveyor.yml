@@ -68,7 +68,7 @@ build_script:
     }
 
 
-    npm run-script build --no-progress
+    npm run-script deploy --no-progress
 
 
     if ($LastExitCode -ne 0) {

@@ -40,7 +40,7 @@ script:
 
     cd asf-ui
     npm i --no-progress
-    npm run-script build --no-progress
+    npm run-script deploy --no-progress
     cd ..
 
     if [ "$TRAVIS_OS_NAME" = "osx" ]; then
