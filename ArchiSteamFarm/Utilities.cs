@@ -139,13 +139,13 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string text = Markdig.Markdown.ToPlainText(markdownText);
-			if (string.IsNullOrEmpty(text)) {
-				ASF.ArchiLogger.LogNullError(nameof(text));
+			string plainText = Markdig.Markdown.ToPlainText(markdownText);
+			if (plainText == null) {
+				ASF.ArchiLogger.LogNullError(nameof(plainText));
 				return null;
 			}
 
-			return text;
+			return plainText;
 		}
 
 		internal static int RandomNext() {
