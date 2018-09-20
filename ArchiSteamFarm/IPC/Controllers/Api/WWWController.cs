@@ -19,15 +19,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using ArchiSteamFarm.IPC.Requests;
+using ArchiSteamFarm.IPC.Responses;
+using ArchiSteamFarm.Localization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using ArchiSteamFarm.IPC.Requests;
-using ArchiSteamFarm.IPC.Responses;
-using ArchiSteamFarm.Localization;
-using Microsoft.AspNetCore.Mvc;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[ApiController]
@@ -74,6 +74,16 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			return Ok(new GenericResponse<string>(urlResponse.Content));
+		}
+
+		[HttpGet("MarkdownToText")]
+		public ActionResult<GenericResponse<string>> MarkdownToTextGet([FromQuery] string text) {
+			if (string.IsNullOrEmpty(text)) {
+				ASF.ArchiLogger.LogNullError(nameof(text));
+				return BadRequest(new GenericResponse<string>(false, string.Format(Strings.ErrorIsEmpty, nameof(text))));
+			}
+
+			return Ok(new GenericResponse<string>(ArchiSteamFarm.Utilities.MarkdownToText(text)));
 		}
 	}
 }
