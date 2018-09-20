@@ -60,7 +60,7 @@ build_script:
     Push-Location -Path asf-ui
 
 
-    npm install --no-progress
+    npm ci --no-progress
 
 
     if ($LastExitCode -ne 0) {
@@ -68,7 +68,7 @@ build_script:
     }
 
 
-    npm run-script build
+    npm run-script build --no-progress
 
 
     if ($LastExitCode -ne 0) {

@@ -20,7 +20,8 @@ env:
     - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
     - NET_CORE_VERSION: netcoreapp2.1
     - VARIANTS="generic linux-arm linux-x64 osx-x64 win-x64" # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
-
+install:
+  - npm ci
 before_script:
   - |
     set -eu
@@ -35,12 +36,10 @@ script:
   - |
     set -eu
 
-    if [ "$TRAVIS_OS_NAME" != "osx" ]; then
-        cd asf-ui
-        npm install --no-progress
-        npm run-script build
-        cd ..
-    fi
+    cd asf-ui
+    npm ci --no-progress
+    npm run-script build --no-progress
+    cd ..
 
     dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/source' /nologo
     dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/source' /nologo
