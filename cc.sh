@@ -61,7 +61,7 @@ if hash npm 2>/dev/null; then
 	npm run-script build
 	cd ..
 else
-	echo "WARNING: npm not installed, skipping building IPC GUI..."
+	echo "WARNING: npm not installed, skipping build of ASF UI..."
 fi
 
 DOTNET_FLAGS=(-c "$CONFIGURATION" -f "$TARGET_FRAMEWORK" -o "$OUT" '/nologo')

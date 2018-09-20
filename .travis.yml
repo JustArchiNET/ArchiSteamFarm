@@ -35,10 +35,14 @@ script:
   - |
     set -eu
 
-    cd asf-ui
-    npm install --no-progress
-    npm run-script build
-    cd ..
+    if hash npm 2>/dev/null; then
+        cd asf-ui
+        npm install --no-progress
+        npm run-script build
+        cd ..
+    else
+        echo "WARNING: npm not installed, skipping build of ASF UI..."
+    fi
 
     dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/source' /nologo
     dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/source' /nologo
