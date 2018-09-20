@@ -19,15 +19,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using ArchiSteamFarm.IPC.Requests;
-using ArchiSteamFarm.IPC.Responses;
-using ArchiSteamFarm.Localization;
-using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ArchiSteamFarm.IPC.Requests;
+using ArchiSteamFarm.IPC.Responses;
+using ArchiSteamFarm.Localization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[ApiController]
