@@ -13,6 +13,10 @@ group: travis_latest
 dotnet: 2.1
 mono: none
 
+addons:
+  homebrew:
+    packages: node
+
 env:
   global:
     - CONFIGURATION: Release
@@ -35,7 +39,7 @@ script:
     set -eu
 
     cd asf-ui
-    npm ci --no-progress
+    npm i --no-progress
     npm run-script build --no-progress
     cd ..
 
