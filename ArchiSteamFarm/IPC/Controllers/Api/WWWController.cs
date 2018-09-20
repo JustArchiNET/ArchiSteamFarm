@@ -57,6 +57,16 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			return Ok(new GenericResponse<HashSet<string>>(result));
 		}
 
+		[HttpGet("MarkdownToText")]
+		public ActionResult<GenericResponse<string>> MarkdownToTextGet([FromQuery] string text) {
+			if (string.IsNullOrEmpty(text)) {
+				ASF.ArchiLogger.LogNullError(nameof(text));
+				return BadRequest(new GenericResponse<string>(false, string.Format(Strings.ErrorIsEmpty, nameof(text))));
+			}
+
+			return Ok(new GenericResponse<string>(ArchiSteamFarm.Utilities.MarkdownToText(text)));
+		}
+
 		[HttpPost("Send")]
 		public async Task<ActionResult<GenericResponse<string>>> SendPost([FromBody] WWWSendRequest request) {
 			if (request == null) {
@@ -74,16 +84,6 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			return Ok(new GenericResponse<string>(urlResponse.Content));
-		}
-
-		[HttpGet("MarkdownToText")]
-		public ActionResult<GenericResponse<string>> MarkdownToTextGet([FromQuery] string text) {
-			if (string.IsNullOrEmpty(text)) {
-				ASF.ArchiLogger.LogNullError(nameof(text));
-				return BadRequest(new GenericResponse<string>(false, string.Format(Strings.ErrorIsEmpty, nameof(text))));
-			}
-
-			return Ok(new GenericResponse<string>(ArchiSteamFarm.Utilities.MarkdownToText(text)));
 		}
 	}
 }
