@@ -52,6 +52,11 @@ script:
         fi
     }
 
+    cd asf-ui
+    npm install --no-progress
+    npm run-script build --no-progress
+    cd ..
+
     dotnet restore ArchiSteamFarm
 
     for variant in $VARIANTS; do

@@ -151,6 +151,15 @@ after_test:
     }
 
 
+    Push-Location -Path asf-ui
+
+    npm install --no-progress
+
+    npm run-script build --no-progress
+
+    Pop-Location
+
+
     dotnet restore ArchiSteamFarm
 
 

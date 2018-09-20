@@ -1,3 +1,6 @@
+[submodule "asf-ui"]
+	path = asf-ui
+	url = https://github.com/Aareksio/asf-ui
 [submodule "wiki"]
 	path = wiki
 	url = https://github.com/JustArchi/ArchiSteamFarm.wiki.git

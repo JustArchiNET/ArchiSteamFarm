@@ -110,7 +110,8 @@
     <None Update="config\minimal.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Content Include="www\**" Exclude="**\README.md">
+    <Content Include="..\asf-ui\dist\**\*.*" Exclude="**\README.md">
+      <Link>www\%(RecursiveDir)%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

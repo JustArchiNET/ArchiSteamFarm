@@ -53,6 +53,17 @@ if [[ ! -f "$SOLUTION" ]]; then
 	exit 1
 fi
 
+if hash npm 2>/dev/null; then
+	echo "Building IPC GUI..."
+
+	cd asf-ui
+	npm install --no-progress
+	npm run-script build --no-progress
+	cd ..
+else
+	echo "WARNING: npm not installed, skipping building IPC GUI..."
+fi
+
 DOTNET_FLAGS=(-c "$CONFIGURATION" -f "$TARGET_FRAMEWORK" -o "$OUT" '/nologo')
 
 if [[ "$LINK_DURING_PUBLISH" -eq 0 ]]; then
