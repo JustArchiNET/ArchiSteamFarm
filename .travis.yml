@@ -35,7 +35,7 @@ script:
   - |
     set -eu
 
-    if hash npm 2>/dev/null; then
+    if npm --version 1>/dev/null 2>&1; then
         cd asf-ui
         npm install --no-progress
         npm run-script build
