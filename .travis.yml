@@ -32,17 +32,22 @@ before_script:
     set +u # This is needed to continue Travis build
 script:
   - |
-    set +eu
+    set -eu
 
-    echo "DEBUG1 $?"
     cd asf-ui
-    echo "DEBUG2 $?"
+    
+    if [ "$TRAVIS_OS_NAME" = "osx" ]; then
+        set +u # This is needed to run npm on OSX
+    fi
+
     npm i --no-progress
-    echo "DEBUG3 $?"
     npm run-script build --no-progress
-    echo "DEBUG4 $?"
+
+    if [ "$TRAVIS_OS_NAME" = "osx" ]; then
+        set -u # Continue without +u afterwards
+    fi
+
     cd ..
-    echo "DEBUG5 $?"
 
     dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/source' /nologo
     dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/source' /nologo
