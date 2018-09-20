@@ -58,7 +58,7 @@ if hash npm 2>/dev/null; then
 
 	cd asf-ui
 	npm install --no-progress
-	npm run-script build --no-progress
+	npm run-script build
 	cd ..
 else
 	echo "WARNING: npm not installed, skipping building IPC GUI..."
