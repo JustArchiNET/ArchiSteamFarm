@@ -54,14 +54,14 @@ if [[ ! -f "$SOLUTION" ]]; then
 fi
 
 if [[ -f "asf-ui/package.json" ]] && hash npm 2>/dev/null; then
-	echo "Building IPC GUI..."
+	echo "Building ASF UI..."
 
 	cd asf-ui
 	npm i --no-progress
 	npm run-script deploy --no-progress
 	cd ..
 else
-	echo "WARNING: ASF UI dependencies missing, skipping build of ASF UI..."
+	echo "WARNING: ASF UI dependencies are missing, skipping build of ASF UI..."
 fi
 
 DOTNET_FLAGS=(-c "$CONFIGURATION" -f "$TARGET_FRAMEWORK" -o "$OUT" '/nologo')
