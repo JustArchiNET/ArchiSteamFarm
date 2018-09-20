@@ -60,7 +60,6 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[HttpGet("MarkdownToText")]
 		public ActionResult<GenericResponse<string>> MarkdownToTextGet([FromQuery] string text) {
 			if (string.IsNullOrEmpty(text)) {
-				ASF.ArchiLogger.LogNullError(nameof(text));
 				return BadRequest(new GenericResponse<string>(false, string.Format(Strings.ErrorIsEmpty, nameof(text))));
 			}
 
