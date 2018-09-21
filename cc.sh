@@ -53,10 +53,10 @@ if [[ ! -f "$SOLUTION" ]]; then
 	exit 1
 fi
 
-if [[ -f "asf-ui/package.json" ]] && hash npm 2>/dev/null; then
+if [[ -f "ASF-ui/package.json" ]] && hash npm 2>/dev/null; then
 	echo "Building ASF UI..."
 
-	cd asf-ui
+	cd ASF-ui
 	npm i --no-progress
 	npm run-script deploy --no-progress
 	cd ..

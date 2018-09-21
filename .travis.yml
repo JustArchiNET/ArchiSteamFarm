@@ -38,7 +38,7 @@ script:
         set +eu # This is needed to run below npm block on OSX
     fi
 
-    cd asf-ui
+    cd ASF-ui
     npm i --no-progress
     npm run-script deploy --no-progress
     cd ..

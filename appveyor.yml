@@ -57,7 +57,7 @@ build_script:
     $ProgressPreference = 'SilentlyContinue'
 
 
-    Push-Location -Path asf-ui
+    Push-Location -Path ASF-ui
 
 
     npm ci --no-progress
