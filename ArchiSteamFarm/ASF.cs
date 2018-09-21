@@ -21,13 +21,11 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ArchiSteamFarm.JSON;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 
@@ -131,26 +129,10 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				string releaseURL = SharedInfo.GithubReleaseURL + (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable ? "/latest" : "?per_page=1");
-
-				GitHub.ReleaseResponse releaseResponse;
-
-				if (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable) {
-					WebBrowser.ObjectResponse<GitHub.ReleaseResponse> objectResponse = await Program.WebBrowser.UrlGetToJsonObject<GitHub.ReleaseResponse>(releaseURL).ConfigureAwait(false);
-					if (objectResponse?.Content == null) {
-						ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
-						return null;
-					}
-
-					releaseResponse = objectResponse.Content;
-				} else {
-					WebBrowser.ObjectResponse<List<GitHub.ReleaseResponse>> objectResponse = await Program.WebBrowser.UrlGetToJsonObject<List<GitHub.ReleaseResponse>>(releaseURL).ConfigureAwait(false);
-					if ((objectResponse?.Content == null) || (objectResponse.Content.Count == 0)) {
-						ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
-						return null;
-					}
-
-					releaseResponse = objectResponse.Content[0];
+				GitHub.ReleaseResponse releaseResponse = await GitHub.GetLatestRelease(Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable).ConfigureAwait(false);
+				if (releaseResponse == null) {
+					ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
+					return null;
 				}
 
 				if (string.IsNullOrEmpty(releaseResponse.Tag)) {
@@ -197,12 +179,8 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				if (!string.IsNullOrEmpty(releaseResponse.ReleaseNotesInMarkdown)) {
-					string plainText = Utilities.MarkdownToText(releaseResponse.ReleaseNotesInMarkdown);
-
-					if (!string.IsNullOrEmpty(plainText)) {
-						ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateChangelog, plainText));
-					}
+				if (!string.IsNullOrEmpty(releaseResponse.ChangelogPlainText)) {
+					ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateChangelog, releaseResponse.ChangelogPlainText));
 				}
 
 				ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateDownloadingNewVersion, newVersion, binaryAsset.Size / 1024 / 1024));
