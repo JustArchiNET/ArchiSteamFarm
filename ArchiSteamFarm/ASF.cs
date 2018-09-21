@@ -27,7 +27,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ArchiSteamFarm.JSON;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 
@@ -131,27 +130,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				string releaseURL = SharedInfo.GithubReleaseURL + (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable ? "/latest" : "?per_page=1");
-
-				GitHub.ReleaseResponse releaseResponse;
-
-				if (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable) {
-					WebBrowser.ObjectResponse<GitHub.ReleaseResponse> objectResponse = await Program.WebBrowser.UrlGetToJsonObject<GitHub.ReleaseResponse>(releaseURL).ConfigureAwait(false);
-					if (objectResponse?.Content == null) {
-						ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
-						return null;
-					}
-
-					releaseResponse = objectResponse.Content;
-				} else {
-					WebBrowser.ObjectResponse<List<GitHub.ReleaseResponse>> objectResponse = await Program.WebBrowser.UrlGetToJsonObject<List<GitHub.ReleaseResponse>>(releaseURL).ConfigureAwait(false);
-					if ((objectResponse?.Content == null) || (objectResponse.Content.Count == 0)) {
-						ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
-						return null;
-					}
-
-					releaseResponse = objectResponse.Content[0];
-				}
+				GitHub.ReleaseResponse releaseResponse = await GitHub.GetLatestRelease(Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable).ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(releaseResponse.Tag)) {
 					ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
