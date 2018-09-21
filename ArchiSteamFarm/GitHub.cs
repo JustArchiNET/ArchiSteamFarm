@@ -129,7 +129,7 @@ namespace ArchiSteamFarm {
 			internal readonly string Tag;
 
 			[JsonProperty(PropertyName = "body", Required = Required.Always)]
-			internal readonly string MarkdownBody;
+			private readonly string MarkdownBody;
 
 			[JsonProperty(PropertyName = "published_at", Required = Required.Always)]
 			internal readonly DateTime PublishedAt;
@@ -137,25 +137,64 @@ namespace ArchiSteamFarm {
 			[JsonProperty(PropertyName = "prerelease", Required = Required.Always)]
 			internal readonly bool IsPreRelease;
 
+			private MarkdownDocument _Changelog;
+
+			private MarkdownDocument Changelog {
+				get {
+					if (_Changelog != null) {
+						return _Changelog;
+					}
+
+					return _Changelog = ExtractChangelogFromBody(MarkdownBody);
+				}
+			}
+
 			private string _ChangelogHTML;
 
 			internal string ChangelogHTML {
 				get {
-					if(_ChangelogHTML != null) {
+					if (_ChangelogHTML != null) {
 						return _ChangelogHTML;
 					}
 
-					MarkdownDocument markdownDocument = ExtractChangelogFromBody(MarkdownBody);
-					if (markdownDocument == null) {
-						ASF.ArchiLogger.LogNullError(nameof(markdownDocument));
+					if (Changelog == null) {
+						ASF.ArchiLogger.LogNullError(nameof(Changelog));
 						return null;
 					}
 
-					StringWriter writer = new StringWriter();
-					HtmlRenderer renderer = new HtmlRenderer(writer);
-					renderer.Render(markdownDocument);
+					using (StringWriter writer = new StringWriter()) {
+						HtmlRenderer renderer = new HtmlRenderer(writer);
+						renderer.Render(Changelog);
+						writer.Flush();
 
-					return _ChangelogHTML = writer.ToString();
+						return _ChangelogHTML = writer.ToString();
+					}
+				}
+			}
+
+			internal string _ChangelogPlainText;
+
+			internal string ChangelogPlainText {
+				get {
+					if (_ChangelogPlainText != null) {
+						return _ChangelogPlainText;
+					}
+
+					if (Changelog == null) {
+						ASF.ArchiLogger.LogNullError(nameof(Changelog));
+						return null;
+					}
+
+					using (StringWriter writer = new StringWriter()) {
+						HtmlRenderer renderer = new HtmlRenderer(writer) {
+							EnableHtmlForBlock = false,
+							EnableHtmlForInline = false
+						};
+						renderer.Render(Changelog);
+						writer.Flush();
+
+						return _ChangelogPlainText = writer.ToString();
+					}
 				}
 			}
 

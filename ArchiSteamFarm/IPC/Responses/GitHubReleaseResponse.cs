@@ -1,9 +1,5 @@
-﻿using Markdig;
-using Markdig.Syntax;
-using Markdig.Syntax.Inlines;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
-using System.Linq;
 
 namespace ArchiSteamFarm.IPC.Responses {
 	public sealed class GitHubReleaseResponse {
@@ -21,9 +17,10 @@ namespace ArchiSteamFarm.IPC.Responses {
 
 
 		internal GitHubReleaseResponse(GitHub.ReleaseResponse releaseResponse) {
-			if(releaseResponse == null) {
+			if (releaseResponse == null) {
 				throw new ArgumentNullException(nameof(releaseResponse));
 			}
+
 			Changes = releaseResponse.ChangelogHTML;
 			ReleasedAt = releaseResponse.PublishedAt;
 			Stable = !releaseResponse.IsPreRelease;

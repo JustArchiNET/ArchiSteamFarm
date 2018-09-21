@@ -24,12 +24,12 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		[HttpGet("Releases")]
-		public async Task<ActionResult<IEnumerable<GitHubReleaseResponse>>> GetReleases([FromQuery] byte? count) {
-			if (count == null) {
-				count = 10;
+		public async Task<ActionResult<GenericResponse<IEnumerable<GitHubReleaseResponse>>>> GetReleases([FromQuery] byte count = 10) {
+			if (count == 0) {
+				return BadRequest(new GenericResponse<IEnumerable<GitHubReleaseResponse>>(false, string.Format(Strings.ErrorIsEmpty, nameof(count))));
 			}
 
-			List<GitHub.ReleaseResponse> response = await GitHub.GetReleases(count.Value).ConfigureAwait(false);
+			List<GitHub.ReleaseResponse> response = await GitHub.GetReleases(count).ConfigureAwait(false);
 			if (response == null || response.Count == 0) {
 				return BadRequest(new GenericResponse<IEnumerable<GitHub.ReleaseResponse>>(false, string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
 			}

@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -180,12 +179,8 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				if (!string.IsNullOrEmpty(releaseResponse.MarkdownBody)) {
-					string plainText = Utilities.MarkdownToText(releaseResponse.MarkdownBody);
-
-					if (!string.IsNullOrEmpty(plainText)) {
-						ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateChangelog, plainText));
-					}
+				if (!string.IsNullOrEmpty(releaseResponse.ChangelogPlainText)) {
+					ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateChangelog, releaseResponse.ChangelogPlainText));
 				}
 
 				ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateDownloadingNewVersion, newVersion, binaryAsset.Size / 1024 / 1024));
