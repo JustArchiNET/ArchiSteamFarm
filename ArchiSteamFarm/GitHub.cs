@@ -60,7 +60,6 @@ namespace ArchiSteamFarm {
 			}
 
 			string releaseURL = SharedInfo.GithubReleaseURL + "?per_page=" + count;
-
 			return await GetReleasesFromURL(releaseURL).ConfigureAwait(false);
 		}
 
