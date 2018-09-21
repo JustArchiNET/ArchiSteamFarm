@@ -131,6 +131,10 @@ namespace ArchiSteamFarm {
 				}
 
 				GitHub.ReleaseResponse releaseResponse = await GitHub.GetLatestRelease(Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable).ConfigureAwait(false);
+				if (releaseResponse == null) {
+					ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
+					return null;
+				}
 
 				if (string.IsNullOrEmpty(releaseResponse.Tag)) {
 					ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
@@ -176,8 +180,8 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				if (!string.IsNullOrEmpty(releaseResponse.ReleaseNotesInMarkdown)) {
-					string plainText = Utilities.MarkdownToText(releaseResponse.ReleaseNotesInMarkdown);
+				if (!string.IsNullOrEmpty(releaseResponse.MarkdownBody)) {
+					string plainText = Utilities.MarkdownToText(releaseResponse.MarkdownBody);
 
 					if (!string.IsNullOrEmpty(plainText)) {
 						ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateChangelog, plainText));

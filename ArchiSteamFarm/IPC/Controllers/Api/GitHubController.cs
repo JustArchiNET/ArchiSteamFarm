@@ -16,7 +16,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			GitHub.ReleaseResponse releaseResponse = await GitHub.GetRelease(version).ConfigureAwait(false);
-			if(releaseResponse == null) {
+			if (releaseResponse == null) {
 				return BadRequest(new GenericResponse<GitHubReleaseResponse>(false, string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
 			}
 
@@ -24,13 +24,13 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		[HttpGet("Releases")]
-		public async Task<ActionResult<IEnumerable<GitHubReleaseResponse>>> GetReleases([FromQuery] uint? count) {
-			if(count == null) {
+		public async Task<ActionResult<IEnumerable<GitHubReleaseResponse>>> GetReleases([FromQuery] byte? count) {
+			if (count == null) {
 				count = 10;
 			}
 
-			List<GitHub.ReleaseResponse> response = await GitHub.GetNLatestReleases(count.Value).ConfigureAwait(false);
-			if(response == null || response.Count == 0) {
+			List<GitHub.ReleaseResponse> response = await GitHub.GetReleases(count.Value).ConfigureAwait(false);
+			if (response == null || response.Count == 0) {
 				return BadRequest(new GenericResponse<IEnumerable<GitHub.ReleaseResponse>>(false, string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
 			}
 

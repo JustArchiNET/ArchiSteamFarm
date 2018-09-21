@@ -5,21 +5,27 @@ using System.Linq;
 
 namespace ArchiSteamFarm.IPC.Responses {
 	public sealed class GitHubReleaseResponse {
-		private GitHub.ReleaseResponse ReleaseResponse;
+		[JsonProperty]
+		private readonly IEnumerable<string> Changes;
 
 		[JsonProperty]
-		private IEnumerable<string> Changes => ReleaseResponse.MarkdownBody.Split('\n').Where(line => line.StartsWith("- ")).Select(change => ArchiSteamFarm.Utilities.MarkdownToText(change)).Where(change => !string.IsNullOrEmpty(change));
+		private readonly DateTime ReleasedAt;
 
 		[JsonProperty]
-		private string ReleasedAt => ReleaseResponse.PublishDate;
+		private readonly bool Stable;
 
 		[JsonProperty]
-		private bool Stable => !ReleaseResponse.IsPreRelease;
-
-		[JsonProperty]
-		private string Version => ReleaseResponse.Tag;
+		private readonly string Version;
 
 
-		internal GitHubReleaseResponse(GitHub.ReleaseResponse releaseResponse) => ReleaseResponse = releaseResponse ?? throw new ArgumentNullException(nameof(releaseResponse));
+		internal GitHubReleaseResponse(GitHub.ReleaseResponse releaseResponse) {
+			if(releaseResponse == null) {
+				throw new ArgumentNullException(nameof(releaseResponse));
+			}
+			Changes = releaseResponse.MarkdownBody.Split('\n').Where(line => line.StartsWith("- ")).Select(change => ArchiSteamFarm.Utilities.MarkdownToText(change)).Where(change => !string.IsNullOrEmpty(change));
+			ReleasedAt = releaseResponse.PublishedAt;
+			Stable = !releaseResponse.IsPreRelease;
+			Version = releaseResponse.Tag;
+		}
 	}
 }

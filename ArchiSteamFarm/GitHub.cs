@@ -19,23 +19,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
-using ArchiSteamFarm.Localization;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	internal static class GitHub {
-		internal static async Task<List<ReleaseResponse>> GetNLatestReleases(uint n) {
-			if(n == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(n));
+		internal static async Task<List<ReleaseResponse>> GetReleases(byte count) {
+			if (count == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(count));
 				return null;
 			}
 
-			string releaseURL = SharedInfo.GithubReleaseURL + "?per_page=" + n;
+			string releaseURL = SharedInfo.GithubReleaseURL + "?per_page=" + count;
 
 			return await GetReleasesFromURL(releaseURL).ConfigureAwait(false);
 		}
@@ -45,14 +44,13 @@ namespace ArchiSteamFarm {
 
 			if (stable) {
 				return await GetReleaseFromURL(releaseURL).ConfigureAwait(false);
-			}
-			else {
+			} else {
 				return (await GetReleasesFromURL(releaseURL).ConfigureAwait(false))?.ElementAt(0);
 			}
 		}
 
 		internal static async Task<ReleaseResponse> GetRelease(string version) {
-			if(string.IsNullOrEmpty(version)) {
+			if (string.IsNullOrEmpty(version)) {
 				ASF.ArchiLogger.LogNullError(nameof(version));
 				return null;
 			}
@@ -68,7 +66,6 @@ namespace ArchiSteamFarm {
 
 			WebBrowser.ObjectResponse<ReleaseResponse> objectResponse = await Program.WebBrowser.UrlGetToJsonObject<ReleaseResponse>(releaseURL).ConfigureAwait(false);
 			if (objectResponse?.Content == null) {
-				ASF.ArchiLogger.LogNullError(nameof(objectResponse) + " || " + nameof(objectResponse.Content));
 				return null;
 			}
 
@@ -83,7 +80,6 @@ namespace ArchiSteamFarm {
 
 			WebBrowser.ObjectResponse<List<ReleaseResponse>> objectResponse = await Program.WebBrowser.UrlGetToJsonObject<List<ReleaseResponse>>(releaseURL).ConfigureAwait(false);
 			if ((objectResponse?.Content == null) || (objectResponse.Content.Count == 0)) {
-				ASF.ArchiLogger.LogNullError(nameof(objectResponse) + " || " + nameof(objectResponse.Content));
 				return null;
 			}
 
@@ -95,9 +91,6 @@ namespace ArchiSteamFarm {
 			[JsonProperty(PropertyName = "assets", Required = Required.Always)]
 			internal readonly HashSet<Asset> Assets;
 
-			[JsonProperty(PropertyName = "body", Required = Required.Always)]
-			internal readonly string ReleaseNotesInMarkdown;
-
 			[JsonProperty(PropertyName = "tag_name", Required = Required.Always)]
 			internal readonly string Tag;
 
@@ -105,7 +98,7 @@ namespace ArchiSteamFarm {
 			internal readonly string MarkdownBody;
 
 			[JsonProperty(PropertyName = "published_at", Required = Required.Always)]
-			internal readonly string PublishDate;
+			internal readonly DateTime PublishedAt;
 
 			[JsonProperty(PropertyName = "prerelease", Required = Required.Always)]
 			internal readonly bool IsPreRelease;
