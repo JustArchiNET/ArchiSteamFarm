@@ -137,8 +137,14 @@ namespace ArchiSteamFarm {
 			[JsonProperty(PropertyName = "prerelease", Required = Required.Always)]
 			internal readonly bool IsPreRelease;
 
+			private string _ChangelogHTML;
+
 			internal string ChangelogHTML {
 				get {
+					if(_ChangelogHTML != null) {
+						return _ChangelogHTML;
+					}
+
 					MarkdownDocument markdownDocument = ExtractChangelogFromBody(MarkdownBody);
 					if (markdownDocument == null) {
 						ASF.ArchiLogger.LogNullError(nameof(markdownDocument));
@@ -149,7 +155,7 @@ namespace ArchiSteamFarm {
 					HtmlRenderer renderer = new HtmlRenderer(writer);
 					renderer.Render(markdownDocument);
 
-					return writer.ToString();
+					return _ChangelogHTML = writer.ToString();
 				}
 			}
 
