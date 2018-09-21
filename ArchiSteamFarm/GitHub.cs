@@ -19,20 +19,51 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Markdig;
-using Markdig.Renderers;
-using Markdig.Syntax;
-using Markdig.Syntax.Inlines;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Markdig;
+using Markdig.Renderers;
+using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
+using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	internal static class GitHub {
+		internal static async Task<ReleaseResponse> GetLatestRelease(bool stable = true) {
+			string releaseURL = SharedInfo.GithubReleaseURL + (stable ? "/latest" : "?per_page=1");
+
+			if (stable) {
+				return await GetReleaseFromURL(releaseURL).ConfigureAwait(false);
+			}
+
+			List<ReleaseResponse> response = await GetReleasesFromURL(releaseURL).ConfigureAwait(false);
+			return response?.FirstOrDefault();
+		}
+
+		internal static async Task<ReleaseResponse> GetRelease(string version) {
+			if (string.IsNullOrEmpty(version)) {
+				ASF.ArchiLogger.LogNullError(nameof(version));
+				return null;
+			}
+
+			return await GetReleaseFromURL(SharedInfo.GithubReleaseURL + "/tags/" + version).ConfigureAwait(false);
+		}
+
+		internal static async Task<List<ReleaseResponse>> GetReleases(byte count) {
+			if (count == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(count));
+				return null;
+			}
+
+			string releaseURL = SharedInfo.GithubReleaseURL + "?per_page=" + count;
+
+			return await GetReleasesFromURL(releaseURL).ConfigureAwait(false);
+		}
+
 		private static MarkdownDocument ExtractChangelogFromBody(string markdownText) {
 			if (string.IsNullOrEmpty(markdownText)) {
 				ASF.ArchiLogger.LogNullError(nameof(markdownText));
@@ -61,42 +92,6 @@ namespace ArchiSteamFarm {
 			return markdownDocument;
 		}
 
-		internal static async Task<List<ReleaseResponse>> GetReleases(byte count) {
-			if (count == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(count));
-				return null;
-			}
-
-			string releaseURL = SharedInfo.GithubReleaseURL + "?per_page=" + count;
-
-			return await GetReleasesFromURL(releaseURL).ConfigureAwait(false);
-		}
-
-		internal static async Task<ReleaseResponse> GetLatestRelease(bool stable = true) {
-			string releaseURL = SharedInfo.GithubReleaseURL + (stable ? "/latest" : "?per_page=1");
-
-			if (stable) {
-				return await GetReleaseFromURL(releaseURL).ConfigureAwait(false);
-			}
-
-			List<ReleaseResponse> response = await GetReleasesFromURL(releaseURL).ConfigureAwait(false);
-			if (response == null || response.Count == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(response));
-				return null;
-			}
-
-			return response.FirstOrDefault();
-		}
-
-		internal static async Task<ReleaseResponse> GetRelease(string version) {
-			if (string.IsNullOrEmpty(version)) {
-				ASF.ArchiLogger.LogNullError(nameof(version));
-				return null;
-			}
-
-			return await GetReleaseFromURL(SharedInfo.GithubReleaseURL + "/tags/" + version).ConfigureAwait(false);
-		}
-
 		private static async Task<ReleaseResponse> GetReleaseFromURL(string releaseURL) {
 			if (string.IsNullOrEmpty(nameof(releaseURL))) {
 				ASF.ArchiLogger.LogNullError(nameof(releaseURL));
@@ -104,12 +99,7 @@ namespace ArchiSteamFarm {
 			}
 
 			WebBrowser.ObjectResponse<ReleaseResponse> objectResponse = await Program.WebBrowser.UrlGetToJsonObject<ReleaseResponse>(releaseURL).ConfigureAwait(false);
-			if (objectResponse == null) {
-				ASF.ArchiLogger.LogNullError(nameof(objectResponse));
-				return null;
-			}
-
-			return objectResponse.Content;
+			return objectResponse?.Content;
 		}
 
 		private static async Task<List<ReleaseResponse>> GetReleasesFromURL(string releaseURL) {
@@ -119,46 +109,22 @@ namespace ArchiSteamFarm {
 			}
 
 			WebBrowser.ObjectResponse<List<ReleaseResponse>> objectResponse = await Program.WebBrowser.UrlGetToJsonObject<List<ReleaseResponse>>(releaseURL).ConfigureAwait(false);
-			if ((objectResponse?.Content == null) || (objectResponse.Content.Count == 0)) {
-				return null;
-			}
-
-			return objectResponse.Content;
+			return objectResponse?.Content;
 		}
-
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class ReleaseResponse {
 			[JsonProperty(PropertyName = "assets", Required = Required.Always)]
 			internal readonly HashSet<Asset> Assets;
 
-			[JsonProperty(PropertyName = "tag_name", Required = Required.Always)]
-			internal readonly string Tag;
-
-#pragma warning disable 649
-			[JsonProperty(PropertyName = "body", Required = Required.Always)]
-			private readonly string MarkdownBody;
-#pragma warning restore 649
+			[JsonProperty(PropertyName = "prerelease", Required = Required.Always)]
+			internal readonly bool IsPreRelease;
 
 			[JsonProperty(PropertyName = "published_at", Required = Required.Always)]
 			internal readonly DateTime PublishedAt;
 
-			[JsonProperty(PropertyName = "prerelease", Required = Required.Always)]
-			internal readonly bool IsPreRelease;
-
-			private MarkdownDocument _Changelog;
-
-			private MarkdownDocument Changelog {
-				get {
-					if (_Changelog != null) {
-						return _Changelog;
-					}
-
-					return _Changelog = ExtractChangelogFromBody(MarkdownBody);
-				}
-			}
-
-			private string _ChangelogHTML;
+			[JsonProperty(PropertyName = "tag_name", Required = Required.Always)]
+			internal readonly string Tag;
 
 			internal string ChangelogHTML {
 				get {
@@ -180,8 +146,6 @@ namespace ArchiSteamFarm {
 					}
 				}
 			}
-
-			internal string _ChangelogPlainText;
 
 			internal string ChangelogPlainText {
 				get {
@@ -208,6 +172,24 @@ namespace ArchiSteamFarm {
 				}
 			}
 
+#pragma warning disable 649
+			[JsonProperty(PropertyName = "body", Required = Required.Always)]
+			private readonly string MarkdownBody;
+#pragma warning restore 649
+
+			private MarkdownDocument Changelog {
+				get {
+					if (_Changelog != null) {
+						return _Changelog;
+					}
+
+					return _Changelog = ExtractChangelogFromBody(MarkdownBody);
+				}
+			}
+
+			private MarkdownDocument _Changelog;
+			private string _ChangelogHTML;
+			private string _ChangelogPlainText;
 
 			// Deserialized from JSON
 			private ReleaseResponse() { }
