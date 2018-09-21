@@ -77,9 +77,15 @@ namespace ArchiSteamFarm {
 
 			if (stable) {
 				return await GetReleaseFromURL(releaseURL).ConfigureAwait(false);
-			} else {
-				return (await GetReleasesFromURL(releaseURL).ConfigureAwait(false))?.FirstOrDefault();
 			}
+
+			List<ReleaseResponse> response = await GetReleasesFromURL(releaseURL).ConfigureAwait(false);
+			if(response == null || response.Count == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(response));
+				return null;
+			}
+
+			return response.FirstOrDefault();
 		}
 
 		internal static async Task<ReleaseResponse> GetRelease(string version) {
@@ -98,6 +104,11 @@ namespace ArchiSteamFarm {
 			}
 
 			WebBrowser.ObjectResponse<ReleaseResponse> objectResponse = await Program.WebBrowser.UrlGetToJsonObject<ReleaseResponse>(releaseURL).ConfigureAwait(false);
+			if(objectResponse == null) {
+				ASF.ArchiLogger.LogNullError(nameof(objectResponse));
+				return null;
+			}
+
 			return objectResponse.Content;
 		}
 
