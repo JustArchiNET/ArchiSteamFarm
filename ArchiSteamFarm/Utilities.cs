@@ -30,7 +30,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Humanizer;
 using Humanizer.Localisation;
-using Markdig;
 
 namespace ArchiSteamFarm {
 	internal static class Utilities {
@@ -176,21 +175,6 @@ namespace ArchiSteamFarm {
 			}
 
 			return true;
-		}
-
-		internal static string MarkdownToText(string markdownText) {
-			if (string.IsNullOrEmpty(markdownText)) {
-				ASF.ArchiLogger.LogNullError(nameof(markdownText));
-				return null;
-			}
-
-			string plainText = Markdown.ToPlainText(markdownText);
-			if (plainText == null) {
-				ASF.ArchiLogger.LogNullError(nameof(plainText));
-				return null;
-			}
-
-			return plainText;
 		}
 
 		internal static int RandomNext() {
