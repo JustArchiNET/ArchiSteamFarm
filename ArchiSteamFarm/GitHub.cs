@@ -78,7 +78,7 @@ namespace ArchiSteamFarm {
 			if (stable) {
 				return await GetReleaseFromURL(releaseURL).ConfigureAwait(false);
 			} else {
-				return (await GetReleasesFromURL(releaseURL).ConfigureAwait(false))?.ElementAt(0);
+				return (await GetReleasesFromURL(releaseURL).ConfigureAwait(false))?.FirstOrDefault();
 			}
 		}
 
@@ -98,10 +98,6 @@ namespace ArchiSteamFarm {
 			}
 
 			WebBrowser.ObjectResponse<ReleaseResponse> objectResponse = await Program.WebBrowser.UrlGetToJsonObject<ReleaseResponse>(releaseURL).ConfigureAwait(false);
-			if (objectResponse?.Content == null) {
-				return null;
-			}
-
 			return objectResponse.Content;
 		}
 
@@ -190,6 +186,7 @@ namespace ArchiSteamFarm {
 							EnableHtmlForBlock = false,
 							EnableHtmlForInline = false
 						};
+
 						renderer.Render(Changelog);
 						writer.Flush();
 

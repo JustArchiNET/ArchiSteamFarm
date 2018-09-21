@@ -4,7 +4,7 @@ using System;
 namespace ArchiSteamFarm.IPC.Responses {
 	public sealed class GitHubReleaseResponse {
 		[JsonProperty]
-		private readonly string Changes;
+		private readonly string ChangelogHTML;
 
 		[JsonProperty]
 		private readonly DateTime ReleasedAt;
@@ -21,7 +21,7 @@ namespace ArchiSteamFarm.IPC.Responses {
 				throw new ArgumentNullException(nameof(releaseResponse));
 			}
 
-			Changes = releaseResponse.ChangelogHTML;
+			ChangelogHTML = releaseResponse.ChangelogHTML;
 			ReleasedAt = releaseResponse.PublishedAt;
 			Stable = !releaseResponse.IsPreRelease;
 			Version = releaseResponse.Tag;
