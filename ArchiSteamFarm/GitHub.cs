@@ -19,15 +19,48 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Markdig;
+using Markdig.Renderers;
+using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal static class GitHub {
+		private static MarkdownDocument ExtractChangelogFromBody(string markdownText) {
+			if (string.IsNullOrEmpty(markdownText)) {
+				ASF.ArchiLogger.LogNullError(nameof(markdownText));
+				return null;
+			}
+
+			MarkdownDocument markdownDocument = Markdown.Parse(markdownText);
+			bool insideChangelog = false;
+
+			foreach (Block block in markdownDocument.ToList()) {
+				if (!insideChangelog) {
+					if (block is HeadingBlock headingBlock && (headingBlock.Inline.FirstChild != null) && headingBlock.Inline.FirstChild is LiteralInline literalInline && (literalInline.Content.ToString() == "Changelog")) {
+						insideChangelog = true;
+					}
+
+					markdownDocument.Remove(block);
+					continue;
+				}
+
+				if (block is ThematicBreakBlock) {
+					insideChangelog = false;
+					markdownDocument.Remove(block);
+				}
+			}
+
+			return markdownDocument;
+		}
+
 		internal static async Task<List<ReleaseResponse>> GetReleases(byte count) {
 			if (count == 0) {
 				ASF.ArchiLogger.LogNullError(nameof(count));
@@ -86,6 +119,7 @@ namespace ArchiSteamFarm {
 			return objectResponse.Content;
 		}
 
+
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class ReleaseResponse {
 			[JsonProperty(PropertyName = "assets", Required = Required.Always)]
@@ -102,6 +136,22 @@ namespace ArchiSteamFarm {
 
 			[JsonProperty(PropertyName = "prerelease", Required = Required.Always)]
 			internal readonly bool IsPreRelease;
+
+			internal string ChangelogHTML {
+				get {
+					MarkdownDocument markdownDocument = ExtractChangelogFromBody(MarkdownBody);
+					if (markdownDocument == null) {
+						ASF.ArchiLogger.LogNullError(nameof(markdownDocument));
+						return null;
+					}
+
+					StringWriter writer = new StringWriter();
+					HtmlRenderer renderer = new HtmlRenderer(writer);
+					renderer.Render(markdownDocument);
+
+					return writer.ToString();
+				}
+			}
 
 
 			// Deserialized from JSON
