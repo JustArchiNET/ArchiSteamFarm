@@ -135,8 +135,10 @@ namespace ArchiSteamFarm {
 			[JsonProperty(PropertyName = "tag_name", Required = Required.Always)]
 			internal readonly string Tag;
 
+#pragma warning disable 649
 			[JsonProperty(PropertyName = "body", Required = Required.Always)]
 			private readonly string MarkdownBody;
+#pragma warning restore 649
 
 			[JsonProperty(PropertyName = "published_at", Required = Required.Always)]
 			internal readonly DateTime PublishedAt;
