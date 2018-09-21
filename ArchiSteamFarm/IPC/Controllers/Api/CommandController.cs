@@ -31,7 +31,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[Route("Api/Command")]
 	public sealed class CommandController : ControllerBase {
 		[HttpPost("{command:required}")]
-		public async Task<ActionResult<GenericResponse<string>>> Post(string command) {
+		public async Task<ActionResult<GenericResponse<string>>> CommandPost(string command) {
 			if (string.IsNullOrEmpty(command)) {
 				ASF.ArchiLogger.LogNullError(nameof(command));
 				return BadRequest(new GenericResponse<string>(false, string.Format(Strings.ErrorIsEmpty, nameof(command))));

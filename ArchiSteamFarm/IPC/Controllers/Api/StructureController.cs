@@ -29,7 +29,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[Route("Api/Structure")]
 	public sealed class StructureController : ControllerBase {
 		[HttpGet("{structure:required}")]
-		public ActionResult<GenericResponse<object>> Get(string structure) {
+		public ActionResult<GenericResponse<object>> StructureGet(string structure) {
 			if (string.IsNullOrEmpty(structure)) {
 				ASF.ArchiLogger.LogNullError(nameof(structure));
 				return BadRequest(new GenericResponse<object>(false, string.Format(Strings.ErrorIsEmpty, nameof(structure))));

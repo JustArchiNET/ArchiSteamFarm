@@ -1252,6 +1252,16 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Changelog:
+        ///{0}.
+        /// </summary>
+        internal static string UpdateChangelog {
+            get {
+                return ResourceManager.GetString("UpdateChangelog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Checking for new version....
         /// </summary>
         internal static string UpdateCheckingNewVersion {

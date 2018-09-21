@@ -19,36 +19,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+using System;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.JSON {
-	internal static class GitHub {
-		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		internal sealed class ReleaseResponse {
-			[JsonProperty(PropertyName = "assets", Required = Required.Always)]
-			internal readonly HashSet<Asset> Assets;
+namespace ArchiSteamFarm.IPC.Responses {
+	public sealed class GitHubReleaseResponse {
+		[JsonProperty]
+		private readonly string ChangelogHTML;
 
-			[JsonProperty(PropertyName = "tag_name", Required = Required.Always)]
-			internal readonly string Tag;
+		[JsonProperty]
+		private readonly DateTime ReleasedAt;
 
-			// Deserialized from JSON
-			private ReleaseResponse() { }
+		[JsonProperty]
+		private readonly bool Stable;
 
-			internal sealed class Asset {
-				[JsonProperty(PropertyName = "browser_download_url", Required = Required.Always)]
-				internal readonly string DownloadURL;
+		[JsonProperty]
+		private readonly string Version;
 
-				[JsonProperty(PropertyName = "name", Required = Required.Always)]
-				internal readonly string Name;
-
-				[JsonProperty(PropertyName = "size", Required = Required.Always)]
-				internal readonly uint Size;
-
-				// Deserialized from JSON
-				private Asset() { }
+		internal GitHubReleaseResponse(GitHub.ReleaseResponse releaseResponse) {
+			if (releaseResponse == null) {
+				throw new ArgumentNullException(nameof(releaseResponse));
 			}
+
+			ChangelogHTML = releaseResponse.ChangelogHTML;
+			ReleasedAt = releaseResponse.PublishedAt;
+			Stable = !releaseResponse.IsPreRelease;
+			Version = releaseResponse.Tag;
 		}
 	}
 }
