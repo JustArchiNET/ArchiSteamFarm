@@ -39,7 +39,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		private static readonly ConcurrentDictionary<WebSocket, SemaphoreSlim> ActiveLogWebSockets = new ConcurrentDictionary<WebSocket, SemaphoreSlim>();
 
 		[HttpGet]
-		public async Task<ActionResult> Get() {
+		public async Task<ActionResult> NLogGet() {
 			if (!HttpContext.WebSockets.IsWebSocketRequest) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.WarningFailedWithError, nameof(HttpContext.WebSockets.IsWebSocketRequest) + ": " + HttpContext.WebSockets.IsWebSocketRequest)));
 			}

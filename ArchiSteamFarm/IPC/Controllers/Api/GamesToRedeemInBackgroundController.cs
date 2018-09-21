@@ -33,7 +33,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[Route("Api/GamesToRedeemInBackground")]
 	public sealed class GamesToRedeemInBackgroundController : ControllerBase {
 		[HttpDelete("{botNames:required}")]
-		public async Task<ActionResult<GenericResponse>> Delete(string botNames) {
+		public async Task<ActionResult<GenericResponse>> GamesToRedeemInBackgroundDelete(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
@@ -49,7 +49,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		[HttpGet("{botNames:required}")]
-		public async Task<ActionResult<GenericResponse<Dictionary<string, GamesToRedeemInBackgroundResponse>>>> Get(string botNames) {
+		public async Task<ActionResult<GenericResponse<Dictionary<string, GamesToRedeemInBackgroundResponse>>>> GamesToRedeemInBackgroundGet(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
 				return BadRequest(new GenericResponse<Dictionary<string, GamesToRedeemInBackgroundResponse>>(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
@@ -73,7 +73,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		[HttpPost("{botName:required}")]
-		public async Task<ActionResult<GenericResponse<OrderedDictionary>>> Post(string botName, [FromBody] GamesToRedeemInBackgroundRequest request) {
+		public async Task<ActionResult<GenericResponse<OrderedDictionary>>> GamesToRedeemInBackgroundPost(string botName, [FromBody] GamesToRedeemInBackgroundRequest request) {
 			if (string.IsNullOrEmpty(botName) || (request == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(botName) + " || " + nameof(request));
 				return BadRequest(new GenericResponse<OrderedDictionary>(false, string.Format(Strings.ErrorIsEmpty, nameof(botName) + " || " + nameof(request))));

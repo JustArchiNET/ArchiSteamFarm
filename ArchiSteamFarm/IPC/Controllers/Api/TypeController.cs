@@ -33,7 +33,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[Route("Api/Type")]
 	public sealed class TypeController : ControllerBase {
 		[HttpGet("{type:required}")]
-		public ActionResult<GenericResponse<TypeResponse>> Get(string type) {
+		public ActionResult<GenericResponse<TypeResponse>> TypeGet(string type) {
 			if (string.IsNullOrEmpty(type)) {
 				ASF.ArchiLogger.LogNullError(nameof(type));
 				return BadRequest(new GenericResponse<TypeResponse>(false, string.Format(Strings.ErrorIsEmpty, nameof(type))));

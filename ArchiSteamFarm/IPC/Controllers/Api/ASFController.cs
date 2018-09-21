@@ -33,7 +33,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[Route("Api/ASF")]
 	public sealed class ASFController : ControllerBase {
 		[HttpGet]
-		public ActionResult<GenericResponse<ASFResponse>> Get() {
+		public ActionResult<GenericResponse<ASFResponse>> ASFGet() {
 			uint memoryUsage = (uint) GC.GetTotalMemory(false) / 1024;
 
 			DateTime processStartTime;
@@ -47,7 +47,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		[HttpPost]
-		public async Task<ActionResult<GenericResponse>> Post([FromBody] ASFRequest request) {
+		public async Task<ActionResult<GenericResponse>> ASFPost([FromBody] ASFRequest request) {
 			if (request == null) {
 				ASF.ArchiLogger.LogNullError(nameof(request));
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(request))));
@@ -73,19 +73,19 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		[HttpPost("Exit")]
-		public ActionResult<GenericResponse> PostExit() {
+		public ActionResult<GenericResponse> ExitPost() {
 			(bool success, string output) = Actions.Exit();
 			return Ok(new GenericResponse(success, output));
 		}
 
 		[HttpPost("Restart")]
-		public ActionResult<GenericResponse> PostRestart() {
+		public ActionResult<GenericResponse> RestartPost() {
 			(bool success, string output) = Actions.Restart();
 			return Ok(new GenericResponse(success, output));
 		}
 
 		[HttpPost("Update")]
-		public async Task<ActionResult<GenericResponse<Version>>> PostUpdate() {
+		public async Task<ActionResult<GenericResponse<Version>>> UpdatePost() {
 			(bool success, Version version) = await Actions.Update().ConfigureAwait(false);
 			return Ok(new GenericResponse<Version>(success, version));
 		}
