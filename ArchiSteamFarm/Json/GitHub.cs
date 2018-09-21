@@ -30,6 +30,9 @@ namespace ArchiSteamFarm.JSON {
 			[JsonProperty(PropertyName = "assets", Required = Required.Always)]
 			internal readonly HashSet<Asset> Assets;
 
+			[JsonProperty(PropertyName = "body", Required = Required.Always)]
+			internal readonly string ReleaseNotesInMarkdown;
+
 			[JsonProperty(PropertyName = "tag_name", Required = Required.Always)]
 			internal readonly string Tag;
 

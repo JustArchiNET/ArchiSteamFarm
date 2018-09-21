@@ -197,6 +197,14 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
+				if (!string.IsNullOrEmpty(releaseResponse.ReleaseNotesInMarkdown)) {
+					string plainText = Utilities.MarkdownToText(releaseResponse.ReleaseNotesInMarkdown);
+
+					if (!string.IsNullOrEmpty(plainText)) {
+						ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateChangelog, plainText));
+					}
+				}
+
 				ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateDownloadingNewVersion, newVersion, binaryAsset.Size / 1024 / 1024));
 
 				WebBrowser.BinaryResponse response = await Program.WebBrowser.UrlGetToBinaryWithProgress(binaryAsset.DownloadURL).ConfigureAwait(false);

@@ -63,7 +63,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse<string>(false, string.Format(Strings.ErrorIsEmpty, nameof(text))));
 			}
 
-			return Ok(new GenericResponse<string>(ArchiSteamFarm.Utilities.MarkdownToText(text)));
+			return Ok(new GenericResponse<string>(Utilities.MarkdownToText(text)));
 		}
 
 		[HttpPost("Send")]
