@@ -102,6 +102,9 @@
     <None Update="ConfigGenerator.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="UI.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="config\ASF.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
