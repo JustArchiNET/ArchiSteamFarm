@@ -18,6 +18,21 @@ matrix:
   allow_failures:
     - image: Visual Studio 2017 Preview
   fast_finish: true
+install:
+- pwsh: >-
+    Set-StrictMode -Version Latest
+
+    $ErrorActionPreference = 'Stop'
+
+    $ProgressPreference = 'SilentlyContinue'
+
+
+    git submodule update --init --recursive
+
+
+    if ($LastExitCode -ne 0) {
+        throw "Last command failed."
+    }
 before_build:
 - pwsh: >-
     Set-StrictMode -Version Latest
@@ -40,6 +55,28 @@ build_script:
     $ErrorActionPreference = 'Stop'
 
     $ProgressPreference = 'SilentlyContinue'
+
+
+    Push-Location -Path ASF-ui
+
+
+    npm ci --no-progress
+
+
+    if ($LastExitCode -ne 0) {
+        throw "Last command failed."
+    }
+
+
+    npm run-script deploy --no-progress
+
+
+    if ($LastExitCode -ne 0) {
+        throw "Last command failed."
+    }
+
+
+    Pop-Location
 
 
     dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -o 'out\source' /nologo

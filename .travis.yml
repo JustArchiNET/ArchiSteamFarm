@@ -20,7 +20,6 @@ env:
     - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
     - NET_CORE_VERSION: netcoreapp2.1
     - VARIANTS="generic linux-arm linux-x64 osx-x64 win-x64" # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
-
 before_script:
   - |
     set -eu
@@ -34,6 +33,19 @@ before_script:
 script:
   - |
     set -eu
+
+    if [ "$TRAVIS_OS_NAME" = "osx" ]; then
+        set +eu # This is needed to run below npm block on OSX
+    fi
+
+    cd ASF-ui
+    npm i --no-progress
+    npm run-script deploy --no-progress
+    cd ..
+
+    if [ "$TRAVIS_OS_NAME" = "osx" ]; then
+        set -eu # We no longer need +eu on OSX
+    fi
 
     dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/source' /nologo
     dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/source' /nologo

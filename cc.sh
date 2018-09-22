@@ -53,6 +53,17 @@ if [[ ! -f "$SOLUTION" ]]; then
 	exit 1
 fi
 
+if [[ -f "ASF-ui/package.json" ]] && hash npm 2>/dev/null; then
+	echo "Building ASF UI..."
+
+	cd ASF-ui
+	npm i --no-progress
+	npm run-script deploy --no-progress
+	cd ..
+else
+	echo "WARNING: ASF UI dependencies are missing, skipping build of ASF UI..."
+fi
+
 DOTNET_FLAGS=(-c "$CONFIGURATION" -f "$TARGET_FRAMEWORK" -o "$OUT" '/nologo')
 
 if [[ "$LINK_DURING_PUBLISH" -eq 0 ]]; then
