@@ -24,7 +24,7 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Requests {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	public sealed class BotRequest : SensitiveDetailsRequest {
+	public sealed class BotRequest {
 		[JsonProperty(Required = Required.Always)]
 		internal readonly BotConfig BotConfig;
 

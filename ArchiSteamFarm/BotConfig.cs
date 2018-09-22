@@ -52,7 +52,7 @@ namespace ArchiSteamFarm {
 		private const bool DefaultShutdownOnFarmingFinished = false;
 		private const string DefaultSteamLogin = null;
 		private const ulong DefaultSteamMasterClanID = 0;
-		private const string DefaultSteamParentalPIN = "0";
+		private const string DefaultSteamParentalCode = null;
 		private const string DefaultSteamPassword = null;
 		private const string DefaultSteamTradeToken = null;
 		private const ETradingPreferences DefaultTradingPreferences = ETradingPreferences.None;
@@ -138,6 +138,97 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool UseLoginKeys = DefaultUseLoginKeys;
 
+		internal string DecryptedSteamPassword {
+			get {
+				if (string.IsNullOrEmpty(SteamPassword)) {
+					return null;
+				}
+
+				if (PasswordFormat == ArchiCryptoHelper.ECryptoMethod.PlainText) {
+					return SteamPassword;
+				}
+
+				string decryptedPassword = ArchiCryptoHelper.Decrypt(PasswordFormat, SteamPassword);
+				if (string.IsNullOrEmpty(decryptedPassword)) {
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(SteamPassword)));
+					return null;
+				}
+
+				return decryptedPassword;
+			}
+			set {
+				if (string.IsNullOrEmpty(value)) {
+					ASF.ArchiLogger.LogNullError(nameof(value));
+					return;
+				}
+
+				SteamPassword = PasswordFormat == ArchiCryptoHelper.ECryptoMethod.PlainText ? value : ArchiCryptoHelper.Encrypt(PasswordFormat, value);
+			}
+		}
+
+		internal bool IsSteamLoginSet { get; private set; }
+		internal bool IsSteamParentalCodeSet { get; private set; }
+		internal bool IsSteamPasswordSet { get; private set; }
+		internal bool ShouldSerializeEverything { private get; set; } = true;
+
+		[JsonProperty]
+		internal string SteamLogin {
+			get => _SteamLogin;
+			set {
+				IsSteamLoginSet = true;
+				_SteamLogin = value;
+			}
+		}
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal ulong SteamMasterClanID { get; private set; } = DefaultSteamMasterClanID;
+
+		[JsonProperty]
+		internal string SteamParentalCode {
+			get => _SteamParentalCode;
+			set {
+				IsSteamParentalCodeSet = true;
+				_SteamParentalCode = value;
+			}
+		}
+
+		[JsonProperty]
+		internal string SteamPassword {
+			get => _SteamPassword;
+			set {
+				IsSteamPasswordSet = true;
+				_SteamPassword = value;
+			}
+		}
+
+		private string _SteamLogin = DefaultSteamLogin;
+		private string _SteamParentalCode = DefaultSteamParentalCode;
+		private string _SteamPassword = DefaultSteamPassword;
+		private bool ShouldSerializeSensitiveDetails = true;
+
+		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamMasterClanID), Required = Required.DisallowNull)]
+		private string SSteamMasterClanID {
+			get => SteamMasterClanID.ToString();
+			set {
+				if (string.IsNullOrEmpty(value) || !ulong.TryParse(value, out ulong result)) {
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(SSteamMasterClanID)));
+					return;
+				}
+
+				SteamMasterClanID = result;
+			}
+		}
+
+		[JsonProperty]
+		private string SteamParentalPIN {
+			set {
+				if (string.IsNullOrEmpty(value) || (value != "0")) {
+					ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, nameof(SteamParentalPIN), nameof(SteamParentalCode)));
+					SteamParentalCode = string.IsNullOrEmpty(value) ? "0" : value;
+				}
+			}
+		}
+
 		internal (bool Valid, string ErrorMessage) CheckValidation() {
 			if (BotBehaviour > EBotBehaviour.All) {
 				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(BotBehaviour), BotBehaviour));
@@ -181,68 +272,15 @@ namespace ArchiSteamFarm {
 				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(SteamMasterClanID), SteamMasterClanID));
 			}
 
+			if (!string.IsNullOrEmpty(SteamParentalCode) && (SteamParentalCode != "0") && (SteamParentalCode.Length != 4)) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(SteamParentalCode), SteamParentalCode));
+			}
+
 			foreach (EPermission permission in SteamUserPermissions.Values.Where(permission => !Enum.IsDefined(typeof(EPermission), permission))) {
 				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(SteamUserPermissions), permission));
 			}
 
 			return TradingPreferences <= ETradingPreferences.All ? (true, null) : (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(TradingPreferences), TradingPreferences));
-		}
-
-		internal string OriginalSteamPassword {
-			get {
-				if (string.IsNullOrEmpty(SteamPassword)) {
-					return null;
-				}
-
-				if (PasswordFormat == ArchiCryptoHelper.ECryptoMethod.PlainText) {
-					return SteamPassword;
-				}
-
-				string decryptedPassword = ArchiCryptoHelper.Decrypt(PasswordFormat, SteamPassword);
-				if (string.IsNullOrEmpty(decryptedPassword)) {
-					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(SteamPassword)));
-					return null;
-				}
-
-				return decryptedPassword;
-			}
-			set {
-				if (string.IsNullOrEmpty(value)) {
-					ASF.ArchiLogger.LogNullError(nameof(value));
-					return;
-				}
-
-				SteamPassword = PasswordFormat == ArchiCryptoHelper.ECryptoMethod.PlainText ? value : ArchiCryptoHelper.Encrypt(PasswordFormat, value);
-			}
-		}
-
-		internal bool ShouldSerializeEverything { private get; set; } = true;
-
-		[JsonProperty]
-		internal string SteamLogin { get; set; } = DefaultSteamLogin;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal ulong SteamMasterClanID { get; private set; } = DefaultSteamMasterClanID;
-
-		[JsonProperty]
-		internal string SteamParentalPIN { get; set; } = DefaultSteamParentalPIN;
-
-		private bool ShouldSerializeSensitiveDetails = true;
-
-		[JsonProperty]
-		private string SteamPassword = DefaultSteamPassword;
-
-		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamMasterClanID), Required = Required.DisallowNull)]
-		private string SSteamMasterClanID {
-			get => SteamMasterClanID.ToString();
-			set {
-				if (string.IsNullOrEmpty(value) || !ulong.TryParse(value, out ulong result)) {
-					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(SSteamMasterClanID)));
-					return;
-				}
-
-				SteamMasterClanID = result;
-			}
 		}
 
 		internal static async Task<BotConfig> Load(string filePath) {
@@ -395,7 +433,7 @@ namespace ArchiSteamFarm {
 		public bool ShouldSerializeSSteamMasterClanID() => ShouldSerializeEverything; // We never serialize helper properties
 		public bool ShouldSerializeSteamLogin() => ShouldSerializeSensitiveDetails && (ShouldSerializeEverything || (SteamLogin != DefaultSteamLogin));
 		public bool ShouldSerializeSteamMasterClanID() => ShouldSerializeEverything || (SteamMasterClanID != DefaultSteamMasterClanID);
-		public bool ShouldSerializeSteamParentalPIN() => ShouldSerializeSensitiveDetails && (ShouldSerializeEverything || (SteamParentalPIN != DefaultSteamParentalPIN));
+		public bool ShouldSerializeSteamParentalCode() => ShouldSerializeSensitiveDetails && (ShouldSerializeEverything || (SteamParentalCode != DefaultSteamParentalCode));
 		public bool ShouldSerializeSteamPassword() => ShouldSerializeSensitiveDetails && (ShouldSerializeEverything || (SteamPassword != DefaultSteamPassword));
 		public bool ShouldSerializeSteamTradeToken() => ShouldSerializeEverything || (SteamTradeToken != DefaultSteamTradeToken);
 		public bool ShouldSerializeSteamUserPermissions() => ShouldSerializeEverything || ((SteamUserPermissions != DefaultSteamUserPermissions) && ((SteamUserPermissions.Count != DefaultSteamUserPermissions.Count) || SteamUserPermissions.Except(DefaultSteamUserPermissions).Any()));

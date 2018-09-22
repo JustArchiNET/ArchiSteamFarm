@@ -1025,9 +1025,9 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> HasValidApiKey() => !string.IsNullOrEmpty(await GetApiKey().ConfigureAwait(false));
 
-		internal async Task<bool> Init(ulong steamID, EUniverse universe, string webAPIUserNonce, string parentalPin) {
-			if ((steamID == 0) || (universe == EUniverse.Invalid) || string.IsNullOrEmpty(webAPIUserNonce) || string.IsNullOrEmpty(parentalPin)) {
-				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(universe) + " || " + nameof(webAPIUserNonce) + " || " + nameof(parentalPin));
+		internal async Task<bool> Init(ulong steamID, EUniverse universe, string webAPIUserNonce, string parentalCode = null) {
+			if ((steamID == 0) || (universe == EUniverse.Invalid) || string.IsNullOrEmpty(webAPIUserNonce)) {
+				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(universe) + " || " + nameof(webAPIUserNonce));
 				return false;
 			}
 
@@ -1109,8 +1109,8 @@ namespace ArchiSteamFarm {
 			Bot.ArchiLogger.LogGenericInfo(Strings.Success);
 
 			// Unlock Steam Parental if needed
-			if (!parentalPin.Equals("0")) {
-				if (!await UnlockParentalAccount(parentalPin).ConfigureAwait(false)) {
+			if (!string.IsNullOrEmpty(parentalCode) && (parentalCode.Length == 4)) {
+				if (!await UnlockParentalAccount(parentalCode).ConfigureAwait(false)) {
 					return false;
 				}
 			}
@@ -1622,20 +1622,20 @@ namespace ArchiSteamFarm {
 			return await UrlPostWithSession(SteamCommunityURL, request, data).ConfigureAwait(false);
 		}
 
-		private async Task<bool> UnlockParentalAccount(string parentalPin) {
-			if (string.IsNullOrEmpty(parentalPin)) {
-				Bot.ArchiLogger.LogNullError(nameof(parentalPin));
+		private async Task<bool> UnlockParentalAccount(string parentalCode) {
+			if (string.IsNullOrEmpty(parentalCode)) {
+				Bot.ArchiLogger.LogNullError(nameof(parentalCode));
 				return false;
 			}
 
 			Bot.ArchiLogger.LogGenericInfo(Strings.UnlockingParentalAccount);
 
-			if (!await UnlockParentalAccountForService(SteamCommunityURL, parentalPin).ConfigureAwait(false)) {
+			if (!await UnlockParentalAccountForService(SteamCommunityURL, parentalCode).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return false;
 			}
 
-			if (!await UnlockParentalAccountForService(SteamStoreURL, parentalPin).ConfigureAwait(false)) {
+			if (!await UnlockParentalAccountForService(SteamStoreURL, parentalCode).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return false;
 			}
@@ -1644,9 +1644,9 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		private async Task<bool> UnlockParentalAccountForService(string serviceURL, string parentalPin, byte maxTries = WebBrowser.MaxTries) {
-			if (string.IsNullOrEmpty(serviceURL) || string.IsNullOrEmpty(parentalPin)) {
-				Bot.ArchiLogger.LogNullError(nameof(serviceURL) + " || " + nameof(parentalPin));
+		private async Task<bool> UnlockParentalAccountForService(string serviceURL, string parentalCode, byte maxTries = WebBrowser.MaxTries) {
+			if (string.IsNullOrEmpty(serviceURL) || string.IsNullOrEmpty(parentalCode)) {
+				Bot.ArchiLogger.LogNullError(nameof(serviceURL) + " || " + nameof(parentalCode));
 				return false;
 			}
 
@@ -1658,7 +1658,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			Dictionary<string, string> data = new Dictionary<string, string>(1) { { "pin", parentalPin } };
+			Dictionary<string, string> data = new Dictionary<string, string>(1) { { "pin", parentalCode } };
 
 			// This request doesn't go through UrlPostRetryWithSession as we have no access to session refresh capability (this is in fact session initialization)
 			WebBrowser.BasicResponse response = await WebLimitRequest(serviceURL, async () => await WebBrowser.UrlPost(serviceURL + request, data, serviceURL).ConfigureAwait(false)).ConfigureAwait(false);
@@ -1670,7 +1670,7 @@ namespace ArchiSteamFarm {
 			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
 			if (await IsProfileUri(response.FinalUri, false).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
-				return await UnlockParentalAccountForService(serviceURL, parentalPin, --maxTries).ConfigureAwait(false);
+				return await UnlockParentalAccountForService(serviceURL, parentalCode, --maxTries).ConfigureAwait(false);
 			}
 
 			return true;

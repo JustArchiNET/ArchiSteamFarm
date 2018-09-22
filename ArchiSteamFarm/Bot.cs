@@ -828,7 +828,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (await ArchiWebHandler.Init(CachedSteamID, SteamClient.Universe, callback.Nonce, BotConfig.SteamParentalPIN).ConfigureAwait(false)) {
+			if (await ArchiWebHandler.Init(CachedSteamID, SteamClient.Universe, callback.Nonce, BotConfig.SteamParentalCode).ConfigureAwait(false)) {
 				return true;
 			}
 
@@ -987,16 +987,16 @@ namespace ArchiSteamFarm {
 					break;
 				case ASF.EUserInputType.Password:
 					if (BotConfig != null) {
-						BotConfig.OriginalSteamPassword = inputValue;
+						BotConfig.DecryptedSteamPassword = inputValue;
 					}
 
 					break;
 				case ASF.EUserInputType.SteamGuard:
 					AuthCode = inputValue;
 					break;
-				case ASF.EUserInputType.SteamParentalPIN:
+				case ASF.EUserInputType.SteamParentalCode:
 					if (BotConfig != null) {
-						BotConfig.SteamParentalPIN = inputValue;
+						BotConfig.SteamParentalCode = inputValue;
 					}
 
 					break;
@@ -1352,7 +1352,7 @@ namespace ArchiSteamFarm {
 				SetUserInput(ASF.EUserInputType.Login, steamLogin);
 			}
 
-			if (requiresPassword && string.IsNullOrEmpty(BotConfig.OriginalSteamPassword)) {
+			if (requiresPassword && string.IsNullOrEmpty(BotConfig.DecryptedSteamPassword)) {
 				string steamPassword = Program.GetUserInput(ASF.EUserInputType.Password, BotName);
 				if (string.IsNullOrEmpty(steamPassword)) {
 					return false;
@@ -1536,7 +1536,7 @@ namespace ArchiSteamFarm {
 
 			string username = Regex.Replace(BotConfig.SteamLogin, nonAsciiPattern, "", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
-			string password = BotConfig.OriginalSteamPassword;
+			string password = BotConfig.DecryptedSteamPassword;
 			if (!string.IsNullOrEmpty(password)) {
 				password = Regex.Replace(password, nonAsciiPattern, "", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 			}
@@ -1916,19 +1916,19 @@ namespace ArchiSteamFarm {
 						}
 					}
 
-					if (string.IsNullOrEmpty(BotConfig.SteamParentalPIN)) {
-						string steamParentalPIN = Program.GetUserInput(ASF.EUserInputType.SteamParentalPIN, BotName);
-						if (string.IsNullOrEmpty(steamParentalPIN)) {
+					if (!string.IsNullOrEmpty(BotConfig.SteamParentalCode) && (BotConfig.SteamParentalCode.Length != 4)) {
+						string steamParentalCode = Program.GetUserInput(ASF.EUserInputType.SteamParentalCode, BotName);
+						if (string.IsNullOrEmpty(steamParentalCode) || (steamParentalCode.Length != 4)) {
 							Stop();
 							break;
 						}
 
-						SetUserInput(ASF.EUserInputType.SteamParentalPIN, steamParentalPIN);
+						SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode);
 					}
 
 					ArchiWebHandler.OnVanityURLChanged(callback.VanityURL);
 
-					if (!await ArchiWebHandler.Init(callback.ClientSteamID, SteamClient.Universe, callback.WebAPIUserNonce, BotConfig.SteamParentalPIN).ConfigureAwait(false)) {
+					if (!await ArchiWebHandler.Init(callback.ClientSteamID, SteamClient.Universe, callback.WebAPIUserNonce, BotConfig.SteamParentalCode).ConfigureAwait(false)) {
 						if (!await RefreshSession().ConfigureAwait(false)) {
 							break;
 						}

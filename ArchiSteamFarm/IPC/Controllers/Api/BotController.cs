@@ -77,17 +77,17 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, errorMessage));
 			}
 
-			if (request.KeepSensitiveDetails && Bot.Bots.TryGetValue(botName, out Bot bot)) {
-				if (string.IsNullOrEmpty(request.BotConfig.SteamLogin) && !string.IsNullOrEmpty(bot.BotConfig.SteamLogin)) {
+			if (Bot.Bots.TryGetValue(botName, out Bot bot)) {
+				if (!request.BotConfig.IsSteamLoginSet && bot.BotConfig.IsSteamLoginSet) {
 					request.BotConfig.SteamLogin = bot.BotConfig.SteamLogin;
 				}
 
-				if (string.IsNullOrEmpty(request.BotConfig.SteamParentalPIN) && !string.IsNullOrEmpty(bot.BotConfig.SteamParentalPIN)) {
-					request.BotConfig.SteamParentalPIN = bot.BotConfig.SteamParentalPIN;
+				if (!request.BotConfig.IsSteamPasswordSet && bot.BotConfig.IsSteamPasswordSet) {
+					request.BotConfig.DecryptedSteamPassword = bot.BotConfig.DecryptedSteamPassword;
 				}
 
-				if (string.IsNullOrEmpty(request.BotConfig.OriginalSteamPassword) && !string.IsNullOrEmpty(bot.BotConfig.OriginalSteamPassword)) {
-					request.BotConfig.OriginalSteamPassword = bot.BotConfig.OriginalSteamPassword;
+				if (!request.BotConfig.IsSteamParentalCodeSet && bot.BotConfig.IsSteamParentalCodeSet) {
+					request.BotConfig.SteamParentalCode = bot.BotConfig.SteamParentalCode;
 				}
 			}
 

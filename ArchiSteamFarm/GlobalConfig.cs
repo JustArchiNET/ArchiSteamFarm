@@ -183,6 +183,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal bool IsWebProxyPasswordSet { get; private set; }
 		internal bool ShouldSerializeEverything { private get; set; } = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -192,9 +193,16 @@ namespace ArchiSteamFarm {
 		internal ProtocolTypes SteamProtocols { get; private set; } = DefaultSteamProtocols;
 
 		[JsonProperty]
-		internal string WebProxyPassword { get; set; } = DefaultWebProxyPassword;
+		internal string WebProxyPassword {
+			get => _WebProxyPassword;
+			set {
+				IsWebProxyPasswordSet = true;
+				_WebProxyPassword = value;
+			}
+		}
 
 		private WebProxy _WebProxy;
+		private string _WebProxyPassword = DefaultWebProxyPassword;
 		private bool ShouldSerializeSensitiveDetails = true;
 
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamOwnerID), Required = Required.DisallowNull)]

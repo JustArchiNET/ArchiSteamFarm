@@ -264,8 +264,8 @@ StackTrace:
     <value>Please enter your Steam login: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>Please enter Steam parental PIN: </value>
+  <data name="UserInputSteamParentalCode" xml:space="preserve">
+    <value>Please enter Steam parental code: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">

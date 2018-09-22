@@ -24,7 +24,7 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Requests {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	public sealed class ASFRequest : SensitiveDetailsRequest {
+	public sealed class ASFRequest {
 		[JsonProperty(Required = Required.Always)]
 		internal readonly GlobalConfig GlobalConfig;
 
