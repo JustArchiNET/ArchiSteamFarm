@@ -3,4 +3,4 @@
 	url = https://github.com/JustArchiNET/ASF-WebConfigGenerator
 [submodule "wiki"]
 	path = wiki
-	url = https://github.com/JustArchi/ArchiSteamFarm.wiki.git
+	url = https://github.com/JustArchiNET/ArchiSteamFarm.wiki.git
