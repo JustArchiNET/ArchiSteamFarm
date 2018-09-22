@@ -9,8 +9,8 @@
     "translation": "/ArchiSteamFarm/www/locale/strings.%locale%.json"
   },
   {
-    "source": "/WebConfigGenerator/src/locale/strings.json",
-    "translation": "/WebConfigGenerator/src/locale/%locale%.json"
+    "source": "/ASF-WebConfigGenerator/src/locale/strings.json",
+    "translation": "/ASF-WebConfigGenerator/src/locale/%locale%.json"
   },
   {
     "source": "/wiki/*.md",

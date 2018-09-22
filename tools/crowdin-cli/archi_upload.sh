@@ -4,6 +4,12 @@ set -eu
 cd "$(dirname "$(readlink -f "$0")")"
 cd ../..
 
+cd ASF-WebConfigGenerator
+git reset --hard
+git clean -fd
+git pull
+cd ..
+
 cd wiki
 git reset --hard
 git clean -fd
