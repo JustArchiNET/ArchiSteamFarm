@@ -58,10 +58,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, errorMessage));
 			}
 
-			if (request.KeepSensitiveDetails) {
-				if (string.IsNullOrEmpty(request.GlobalConfig.WebProxyPassword) && !string.IsNullOrEmpty(Program.GlobalConfig.WebProxyPassword)) {
-					request.GlobalConfig.WebProxyPassword = Program.GlobalConfig.WebProxyPassword;
-				}
+			if (!request.GlobalConfig.IsWebProxyPasswordSet && Program.GlobalConfig.IsWebProxyPasswordSet) {
+				request.GlobalConfig.WebProxyPassword = Program.GlobalConfig.WebProxyPassword;
 			}
 
 			request.GlobalConfig.ShouldSerializeEverything = false;

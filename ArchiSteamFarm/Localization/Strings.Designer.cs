@@ -1343,11 +1343,11 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Please enter Steam parental PIN: .
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Please enter Steam parental code: .
         /// </summary>
-        internal static string UserInputSteamParentalPIN {
+        internal static string UserInputSteamParentalCode {
             get {
-                return ResourceManager.GetString("UserInputSteamParentalPIN", resourceCulture);
+                return ResourceManager.GetString("UserInputSteamParentalCode", resourceCulture);
             }
         }
         

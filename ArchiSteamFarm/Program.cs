@@ -98,8 +98,8 @@ namespace ArchiSteamFarm {
 							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamGuard, botName));
 							result = Console.ReadLine();
 							break;
-						case ASF.EUserInputType.SteamParentalPIN:
-							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamParentalPIN, botName));
+						case ASF.EUserInputType.SteamParentalCode:
+							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamParentalCode, botName));
 							result = Utilities.ReadLineMasked();
 							break;
 						case ASF.EUserInputType.TwoFactorAuthentication:

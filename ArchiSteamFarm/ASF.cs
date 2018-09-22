@@ -615,7 +615,7 @@ namespace ArchiSteamFarm {
 			Login,
 			Password,
 			SteamGuard,
-			SteamParentalPIN,
+			SteamParentalCode,
 			TwoFactorAuthentication
 		}
 	}

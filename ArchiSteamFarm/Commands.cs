@@ -1350,11 +1350,11 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (string.IsNullOrEmpty(Bot.BotConfig.OriginalSteamPassword)) {
-				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(BotConfig.OriginalSteamPassword)));
+			if (string.IsNullOrEmpty(Bot.BotConfig.DecryptedSteamPassword)) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(BotConfig.DecryptedSteamPassword)));
 			}
 
-			string response = FormatBotResponse(string.Format(Strings.BotEncryptedPassword, ArchiCryptoHelper.ECryptoMethod.AES, ArchiCryptoHelper.Encrypt(ArchiCryptoHelper.ECryptoMethod.AES, Bot.BotConfig.OriginalSteamPassword))) + FormatBotResponse(string.Format(Strings.BotEncryptedPassword, ArchiCryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser, ArchiCryptoHelper.Encrypt(ArchiCryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser, Bot.BotConfig.OriginalSteamPassword)));
+			string response = FormatBotResponse(string.Format(Strings.BotEncryptedPassword, ArchiCryptoHelper.ECryptoMethod.AES, ArchiCryptoHelper.Encrypt(ArchiCryptoHelper.ECryptoMethod.AES, Bot.BotConfig.DecryptedSteamPassword))) + FormatBotResponse(string.Format(Strings.BotEncryptedPassword, ArchiCryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser, ArchiCryptoHelper.Encrypt(ArchiCryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser, Bot.BotConfig.DecryptedSteamPassword)));
 			return response;
 		}
 
