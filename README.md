@@ -7,7 +7,7 @@
 [![License](https://img.shields.io/github/license/JustArchiNET/ArchiSteamFarm.svg?label=License&maxAge=2592000)](https://github.com/JustArchiNET/ArchiSteamFarm/blob/master/LICENSE-2.0.txt)
 [![Localization](https://d322cqt584bo4o.cloudfront.net/archisteamfarm/localized.svg)](https://crowdin.com/project/archisteamfarm)
 
-[![ConfigGenerator status](https://img.shields.io/website-up-down-green-red/https/justarchi.github.io/ArchiSteamFarm.svg?label=ConfigGenerator&maxAge=3600)](https://justarchi.github.io/ArchiSteamFarm)
+[![ConfigGenerator status](https://img.shields.io/website-up-down-green-red/https/justarchinet.github.io/ASF-WebConfigGenerator.svg?label=ConfigGenerator&maxAge=3600)](https://justarchinet.github.io/ASF-WebConfigGenerator)
 [![Statistics status](https://img.shields.io/website-up-down-green-red/https/asf.justarchi.net.svg?label=Statistics&maxAge=3600)](https://asf.justarchi.net)
 [![Steam group](https://img.shields.io/badge/Steam-group-yellowgreen.svg)](https://steamcommunity.com/groups/ascfarm)
 [![Discord](https://img.shields.io/discord/267292556709068800.svg?label=Discord&maxAge=3600)](https://discord.gg/hSQgt8j)
