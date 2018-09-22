@@ -9,7 +9,7 @@
 
 [![ConfigGenerator status](https://img.shields.io/website-up-down-green-red/https/justarchinet.github.io/ASF-WebConfigGenerator.svg?label=ConfigGenerator&maxAge=3600)](https://justarchinet.github.io/ASF-WebConfigGenerator)
 [![Statistics status](https://img.shields.io/website-up-down-green-red/https/asf.justarchi.net.svg?label=Statistics&maxAge=3600)](https://asf.justarchi.net)
-[![Steam group](https://img.shields.io/badge/Steam-group-yellowgreen.svg)](https://steamcommunity.com/groups/ascfarm)
+[![Steam group](https://img.shields.io/badge/Steam-group-yellowgreen.svg)](https://steamcommunity.com/groups/archiasf)
 [![Discord](https://img.shields.io/discord/267292556709068800.svg?label=Discord&maxAge=3600)](https://discord.gg/hSQgt8j)
 [![Wiki](https://img.shields.io/badge/Read-wiki-cc5490.svg)](https://github.com/JustArchiNET/ArchiSteamFarm/wiki)
 
