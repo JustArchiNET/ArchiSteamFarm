@@ -3,8 +3,8 @@
 [![Build status (Windows)](https://img.shields.io/appveyor/ci/JustArchi/ArchiSteamFarm/master.svg?label=Windows&maxAge=600)](https://ci.appveyor.com/project/JustArchi/ArchiSteamFarm)
 [![Build status (Unix)](https://img.shields.io/travis/com/JustArchiNET/ArchiSteamFarm/master.svg?label=Unix&maxAge=600)](https://travis-ci.com/JustArchiNET/ArchiSteamFarm)
 [![Build status (Docker)](https://img.shields.io/docker/build/justarchi/archisteamfarm.svg?label=Docker&maxAge=600)](https://hub.docker.com/r/justarchi/archisteamfarm)
-[![Github last commit date](https://img.shields.io/github/last-commit/JustArchiNET/ArchiSteamFarm.svg?label=Updated&maxAge=600)](https://github.com/JustArchi/ArchiSteamFarm/commits)
-[![License](https://img.shields.io/github/license/JustArchiNET/ArchiSteamFarm.svg?label=License&maxAge=2592000)](https://github.com/JustArchi/ArchiSteamFarm/blob/master/LICENSE-2.0.txt)
+[![Github last commit date](https://img.shields.io/github/last-commit/JustArchiNET/ArchiSteamFarm.svg?label=Updated&maxAge=600)](https://github.com/JustArchiNET/ArchiSteamFarm/commits)
+[![License](https://img.shields.io/github/license/JustArchiNET/ArchiSteamFarm.svg?label=License&maxAge=2592000)](https://github.com/JustArchiNET/ArchiSteamFarm/blob/master/LICENSE-2.0.txt)
 [![Localization](https://d322cqt584bo4o.cloudfront.net/archisteamfarm/localized.svg)](https://crowdin.com/project/archisteamfarm)
 
 [![ConfigGenerator status](https://img.shields.io/website-up-down-green-red/https/justarchi.github.io/ArchiSteamFarm.svg?label=ConfigGenerator&maxAge=3600)](https://justarchi.github.io/ArchiSteamFarm)
@@ -13,12 +13,12 @@
 [![Discord](https://img.shields.io/discord/267292556709068800.svg?label=Discord&maxAge=3600)](https://discord.gg/hSQgt8j)
 [![Wiki](https://img.shields.io/badge/Read-wiki-cc5490.svg)](https://github.com/JustArchiNET/ArchiSteamFarm/wiki)
 
-[![GitHub stable release version](https://img.shields.io/github/release/JustArchiNET/ArchiSteamFarm.svg?label=Stable&maxAge=600)](https://github.com/JustArchi/ArchiSteamFarm/releases/latest)
-[![GitHub stable release date](https://img.shields.io/github/release-date/JustArchiNET/ArchiSteamFarm.svg?label=Released&maxAge=600)](https://github.com/JustArchi/ArchiSteamFarm/releases/latest)
-[![Github stable release downloads](https://img.shields.io/github/downloads/JustArchiNET/ArchiSteamFarm/latest/total.svg?label=Downloads&maxAge=600)](https://github.com/JustArchi/ArchiSteamFarm/releases/latest)
+[![GitHub stable release version](https://img.shields.io/github/release/JustArchiNET/ArchiSteamFarm.svg?label=Stable&maxAge=600)](https://github.com/JustArchiNET/ArchiSteamFarm/releases/latest)
+[![GitHub stable release date](https://img.shields.io/github/release-date/JustArchiNET/ArchiSteamFarm.svg?label=Released&maxAge=600)](https://github.com/JustArchiNET/ArchiSteamFarm/releases/latest)
+[![Github stable release downloads](https://img.shields.io/github/downloads/JustArchiNET/ArchiSteamFarm/latest/total.svg?label=Downloads&maxAge=600)](https://github.com/JustArchiNET/ArchiSteamFarm/releases/latest)
 
-[![GitHub experimental release version](https://img.shields.io/github/release/JustArchiNET/ArchiSteamFarm/all.svg?label=Experimental&maxAge=600)](https://github.com/JustArchi/ArchiSteamFarm/releases)
-[![GitHub experimental release date](https://img.shields.io/github/release-date-pre/JustArchiNET/ArchiSteamFarm.svg?label=Released&maxAge=600)](https://github.com/JustArchi/ArchiSteamFarm/releases)
+[![GitHub experimental release version](https://img.shields.io/github/release/JustArchiNET/ArchiSteamFarm/all.svg?label=Experimental&maxAge=600)](https://github.com/JustArchiNET/ArchiSteamFarm/releases)
+[![GitHub experimental release date](https://img.shields.io/github/release-date-pre/JustArchiNET/ArchiSteamFarm.svg?label=Released&maxAge=600)](https://github.com/JustArchiNET/ArchiSteamFarm/releases)
 [![Github experimental release downloads](https://img.shields.io/github/downloads-pre/JustArchiNET/ArchiSteamFarm/latest/total.svg?label=Downloads&maxAge=600)](https://github.com/JustArchiNET/ArchiSteamFarm/releases)
 
 [![Patreon support](https://img.shields.io/badge/Patreon-support-yellow.svg)](https://www.patreon.com/JustArchi)
