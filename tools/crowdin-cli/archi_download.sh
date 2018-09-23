@@ -19,7 +19,7 @@ git add -A "locale/*.md"
 git commit -m "Translations update"
 cd ..
 
-git add -A "ArchiSteamFarm/Localization/*.resx" "ArchiSteamFarm/www/locale/*.json" "ASF-WebConfigGenerator" "wiki"
+git add -A "ArchiSteamFarm/Localization/*.resx" "ASF-WebConfigGenerator" "wiki"
 git commit -m "Translations update"
 
 git push --recurse-submodules=on-demand
