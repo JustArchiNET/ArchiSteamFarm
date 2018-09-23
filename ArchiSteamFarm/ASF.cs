@@ -180,7 +180,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if (!string.IsNullOrEmpty(releaseResponse.ChangelogPlainText)) {
-					ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateChangelog, releaseResponse.ChangelogPlainText));
+					ArchiLogger.LogGenericInfo(releaseResponse.ChangelogPlainText);
 				}
 
 				ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateDownloadingNewVersion, newVersion, binaryAsset.Size / 1024 / 1024));

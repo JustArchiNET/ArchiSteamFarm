@@ -658,9 +658,4 @@ StackTrace:
     <value>Workaround for {0} bug has been triggered.</value>
     <comment>{0} will be replaced by the bug's name provided by ASF</comment>
   </data>
-  <data name="UpdateChangelog" xml:space="preserve">
-    <value>Changelog:
-{0}</value>
-    <comment>{0} will be replaced by complete changelog text from GitHub (in english). Please note that this string should include newlines for formatting.</comment>
-  </data>
 </root>
