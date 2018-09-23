@@ -1,12 +1,12 @@
 [submodule "ASF-WebConfigGenerator"]
 	path = ASF-WebConfigGenerator
 	url = https://github.com/JustArchiNET/ASF-WebConfigGenerator
-	branch = master
+	shallow = true
 [submodule "ASF-ui"]
 	path = ASF-ui
 	url = https://github.com/JustArchiNET/ASF-ui
-	branch = master
+	shallow = true
 [submodule "wiki"]
 	path = wiki
 	url = https://github.com/JustArchiNET/ArchiSteamFarm.wiki.git
-	branch = master
+	shallow = true
