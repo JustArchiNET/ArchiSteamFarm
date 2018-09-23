@@ -263,10 +263,7 @@ StackTrace:
     <value>Syötä Steam-tilisi käyttäjätunnus: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>Syötä Steam-tilisi lapsilukon PIN-koodi: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Syötä Steam-tilisi salasana: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -337,9 +334,7 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Idlaaminen pysäytetty!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Ohitetaan tämä pyyntö, pysyvä tauko on päällä!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>Tällä tilillä ei ole mitään idlattavaa!</value>
   </data>
@@ -419,10 +414,6 @@ StackTrace:
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Automattinen idlaus on jo pysäytetty!</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Automaattinen idlaus on nyt pysäytetty! Sinulla on {0} aikaa käynnistää peli.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Automattista idlausta on jo jatkettu!</value>
@@ -553,9 +544,6 @@ StackTrace:
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Tiliä kautetään tällä hetkellä muualla: ASF jatkaa idlaamista kun tili vapautuu...</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Jaettua kirjastoa ei ole käynnistetty annettuna aikana. Idlaaminen jatkukoon!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Yhdistetään...</value>

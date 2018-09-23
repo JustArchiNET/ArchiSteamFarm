@@ -261,10 +261,7 @@
     <value>請輸入您的 Steam 帳號： </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>請輸入 Steam 家庭監護 PIN 碼： </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>請輸入您的 Steam 密碼： </value>
     <comment>Please note that this translation should end with space</comment>
@@ -335,9 +332,7 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>已停止掛卡！</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>因啟用了強制暫停，忽略此請求！</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>這個帳戶已經沒有任何卡片可以掉落！</value>
   </data>
@@ -417,10 +412,6 @@
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>已經暫停自動掛卡！</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>現已暫停自動掛卡！您有 {0} 的時間開啟遊戲。</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>已經恢復自動掛卡！</value>
@@ -551,9 +542,6 @@
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>帳號目前正被使用，ASF 會在該帳號空閒時繼續掛卡...</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>在設定時間內未啟動親友收藏庫同享服務，恢復掛卡程序！</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>正在連線...</value>

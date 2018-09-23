@@ -265,10 +265,7 @@ StackTrace:
     <value>Vänligen ange din Steam-inloggning: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>Vänligen ange Steam Familjevy-PIN: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Vänligen ange ditt Steam lösenord: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -339,9 +336,7 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Farmandet stoppad!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Ignorerar denna begäran då "sticky pause" är aktiverat!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>Vi har inte något att farma på detta konto!</value>
   </data>
@@ -421,10 +416,6 @@ StackTrace:
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Automatisk farmning är redan pausad!</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Automatisk farmning är nu pausad! Du har {0} på dig att starta ett spel.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Automatisk farmning är redan återupptagen!</value>
@@ -550,9 +541,6 @@ StackTrace:
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Kontot används för närvarande: ASF återupptar farmandet när det är ledigt...</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>"Shared library" har inte startats inom en given tidsram. Farmnings-process återupptagen!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Ansluter...</value>

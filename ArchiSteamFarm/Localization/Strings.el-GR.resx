@@ -264,10 +264,7 @@ StackTrace:
     <value>Εισάγετε το όνομα χρήστη Steam σας: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>Εισάγετε το PIN γονικού ελέγχου Steam σας: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Εισάγετε τον κωδικό πρόσβασής σας στο Steam: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -338,9 +335,7 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Η συλλογή καρτών σταμάτησε!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Αγνοήθηκε το αίτημα, γιατί η «επίμονη παύση» είναι ενεργοποιημένη!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>Δεν έχουμε τίποτα να συλλέξουμε σε αυτόν τον λογαριασμό!</value>
   </data>
@@ -420,10 +415,6 @@ StackTrace:
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Η αυτόματη συλλογή καρτών είναι ήδη σε παύση!</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Η αυτόματη συλλογή καρτών είναι τώρα σε παύση! Έχετε {0} για να ξεκινήσετε ένα παιχνίδι.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Η αυτόματη συλλογή καρτών συνεχίζεται ήδη!</value>
@@ -551,9 +542,6 @@ StackTrace:
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Ο λογαριασμός χρησιμοποιείται αυτή τη στιγμή: το ASF θα συνεχίσει όταν αυτός αποδεσμευθεί...</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Η κοινόχρηστη συλλογή δεν ξεκίνησε στο χρόνο που δόθηκε. Η συλλογή καρτών ξεκινά πάλι!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Σύνδεση...</value>

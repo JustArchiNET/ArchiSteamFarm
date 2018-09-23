@@ -264,10 +264,7 @@ StackTrace:
     <value>Por favor, insira o seu nome de usuário Steam: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>Por favor, insira o código do modo família: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Por favor, insira a sua senha do Steam: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -340,9 +337,7 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Coleta de cartas interrompida!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Ignorando esse pedido, já que a pausa forçada está habilitada!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>Não temos cartas disponíveis nesta conta!</value>
   </data>
@@ -422,10 +417,6 @@ StackTrace:
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>A coleta automática de cartas já está pausada!</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Coleta automática pausada! Você tem {0} para iniciar um jogo.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>A coleta automática de cartas já foi retomada!</value>
@@ -562,9 +553,6 @@ StackTrace:
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Conta em uso, o ASF retomará a coleta quando ela estiver disponível...</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>A biblioteca compartilhada não foi iniciada no período de tempo especificado. O processo de coleta foi retomado!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Conectando...</value>

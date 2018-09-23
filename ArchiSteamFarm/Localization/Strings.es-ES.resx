@@ -263,10 +263,7 @@ Trazo de pila:
     <value>Introduzca su usuario de Steam: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>Por favor ingresa el PIN del Modo Familiar de Steam: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Por favor, introduce tu contraseña de Steam: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -337,9 +334,7 @@ Trazo de pila:
   <data name="IdlingStopped" xml:space="preserve">
     <value>¡Recolección detenida!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>¡Ignorando esta petición mientras la pausa permantente esté activa!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>¡No tenemos nada para recolectar en esta cuenta!</value>
   </data>
@@ -419,10 +414,6 @@ Trazo de pila:
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>¡La recolección automática ya esta pausada!</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>La recolección automática está pausada! Tienes {0} para iniciar un juego.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>¡La recolección automática ya está reanudada!</value>
@@ -559,9 +550,6 @@ Trazo de pila:
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>La cuenta se está utilizando: ASF reanudará la recolección cuando esté disponible...</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>La biblioteca compartida no ha sido iniciada en el tiempo especificado. ¡Proceso de recolección reanudado!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Conectando...</value>

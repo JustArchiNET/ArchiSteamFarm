@@ -264,10 +264,7 @@ StackTrace:
     <value>Te rugăm să introduci datele de autentificare Steam: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>Te rog să introduci PIN-ul parental Steam: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Te rog să introduci parola contului tău de Steam: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -338,9 +335,7 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Farmare oprită!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Cerere ignorată, deoarece pauza permanentă este activată!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>Nu avem nimic de farmat pe acest cont!</value>
   </data>
@@ -420,10 +415,6 @@ StackTrace:
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Farmarea automată este pusă pe pauză deja!</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Farmarea automată este acum pusă pe pauză! Ai {0} pentru a porni un joc.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Farmarea automată este reluată deja!</value>
@@ -554,9 +545,6 @@ StackTrace:
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Contul este în prezent folosit: ASF va relua farmatul atunci când este liber...</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Biblioteca partajată nu a fost lansată în perioada de timp alocată. Procesul de farmat a fost reluat!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Se conectează...</value>

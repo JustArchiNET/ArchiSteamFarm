@@ -264,10 +264,7 @@ StackTrace:
     <value>Steam 로그인 아이디를 입력하세요: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>Steam 부모 계정의 PIN을 입력하세요: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Steam 비밀 번호를 입력하세요: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -340,9 +337,7 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>농사 멈춤!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>이 요청을 무시하고, 일시 정지되었습니다!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>이 계정에는 농사지을 것이 없습니다!</value>
   </data>
@@ -422,10 +417,6 @@ StackTrace:
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>자동 농사가 이미 일시 정지되어 있습니다!</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>자동 농사가 일시 정지되었습니다! 게임을 시작하기까지 {0} 남았습니다.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>자동 농사가 이미 재개되어 있습니다!</value>
@@ -562,9 +553,6 @@ StackTrace:
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>계정이 현재 사용 중입니다. ASF는 계정이 아무 것도 하지 않고 있을 경우 농사를 재개할 것입니다...</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>공유 라이브러리가 일정 기간 동안 실행되지 않았습니다. 농사가 재개되었습니다!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>연결 중...</value>

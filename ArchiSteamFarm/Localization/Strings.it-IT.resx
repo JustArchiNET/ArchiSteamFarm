@@ -262,10 +262,7 @@
     <value>Per favore inserisci il tuo login di Steam: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>Si prega di inserire il PIN famigliare di Steam: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Inserisci la tua password di Steam: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -336,9 +333,7 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>Idling arrestato!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Questa richiesta verrà ignorata, in quanto è abilitata la pausa permanente!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>Non c'è niente da farmare su questo account!</value>
   </data>
@@ -418,10 +413,6 @@
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>L'idling automatico è già in pausa!</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Il processo di farming automatico è ora in pausa! Hai {0} per avviare un gioco.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>L'idling automatico è già stato ripreso!</value>
@@ -558,9 +549,6 @@
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>L'account è attualmente in uso: ASF riprenderà l'idling quando sarà nuovamente libero...</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>La libreria condivisa non è stata avviata nel limite di tempo predeterminato. Il processo di idling è ripreso!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Connessione in corso...</value>

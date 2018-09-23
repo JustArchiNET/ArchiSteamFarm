@@ -261,10 +261,7 @@
     <value>Prašome įvesti savo Steam prisijungimo vardą: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>Prašome įvesti Steam tėvų kontrolės PIN kodą: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Prašome įvesti savo Steam slaptažodį: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -335,9 +332,7 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>Kortelių rinkimas sustabdytas!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Šis prašymas ignoruojamas, nes lipni pauzė yra įjungta!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>Mes neturime nieko, ką galima surinkti šioje paskyroje!</value>
   </data>
@@ -417,10 +412,6 @@
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Automatinis kortelių rinkimas jau sustabdytas!</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Automatinis kortelių rinkimas sustabdytas! Jūs turite {0} pradėti žaidimą.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Automatinis kortelių rinkimas jau tęstas!</value>
@@ -554,9 +545,6 @@
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Paskyra šiuo metu yra naudojama: ASF tęs kortelių rinkimą, kai ji atsilaisvins...</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Pasidalinta biblioteka nebuvo įjungta per duota laiko periodą. Kortelių rinkimo procesas tęstas!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Jungiamasi...</value>

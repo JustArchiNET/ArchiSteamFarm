@@ -259,10 +259,7 @@ StackTrace:
     <value>Molimo Vas unestie vašu Steam prijavu: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>Molimo Vas da unesete Steam roditeljski PIN: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Molimo Vas da uneste vašu Steam lozinku: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -324,9 +321,7 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Idle-ovanje zaustavljeno!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Ignorisanje ovog zahteva, zato što je sticky pause uključen!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>Ništa nije preostalo da se idle-uje na ovom nalogu!</value>
   </data>
@@ -400,10 +395,6 @@ StackTrace:
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Automatsko idle-ovanje je već pauzirano!</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Automatsko idle-ovanje je sada pauzirano! Imate {0} minuta da pokrenete igru.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Automatsko idle-ovanje je već pokrenuto!</value>
@@ -527,7 +518,6 @@ StackTrace:
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Nalog se trenutno koristi, ASF će nastaviti sa idle-ovanjem čim se oslobodi...</value>
   </data>
-  
   <data name="BotConnecting" xml:space="preserve">
     <value>Povezivanje...</value>
   </data>

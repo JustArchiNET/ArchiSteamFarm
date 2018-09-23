@@ -261,10 +261,7 @@
     <value>あなたのSteamアカウント名を入力してください: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>あなたのSteamペアレンタルPINを入力してください: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>あなたのSteamパスワードを入力してください: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -335,9 +332,7 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>アイドリング停止！</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Sticky pauseが有効なため、このリクエストは無視されました！</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>このアカウントにはアイドリングするものがありません！</value>
   </data>
@@ -417,10 +412,6 @@
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>自動アイドリングは既に一時停止されています！</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>自動アイドリングを一時停止しました！{0} 以内にゲームを起動してください。</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>自動アイドリングはすでに再開されています！</value>
@@ -548,9 +539,6 @@
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>現在アカウントが使用中です。アカウントが開放された時、ASFはアイドリングを再開します...</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>共有ライブラリが一定の時間使用されませんでした。アイドリング処理を再開します！</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>接続中...</value>

@@ -264,10 +264,7 @@ StackTrace:
     <value>Bitte gib deinen Steam Anmeldenamen ein: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>Bitte gib deinen Steam-Familienansicht-PIN ein: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Bitte Steam Passwort eingeben: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -340,9 +337,7 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Idlen gestoppt!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Ignoriere diese Anfrage, da die Anhaltende Pause aktiviert ist!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>Wir haben auf diesem Benutzerkonto nichts zum Sammeln!</value>
   </data>
@@ -422,10 +417,6 @@ StackTrace:
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Automatisches Sammeln ist bereits pausiert!</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Automatisches Sammeln ist nun pausiert! Du hast {0}, um ein Spiel zu starten.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Automatisches Idlen wird bereits fortgesetzt!</value>
@@ -562,9 +553,6 @@ StackTrace:
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Benutzerkonto wird derzeit verwendet: ASF wird das Sammeln fortsetzen, sobald dieser nicht mehr verwendet wird...</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Geteilte Bibliothek wurde nicht in der gegebenen Zeitperiode gestartet. Sammelprozess wird fortgesetzt!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Verbindung wird hergestellt...</value>

@@ -264,10 +264,7 @@ Yığın izleme:
     <value>Lütfen Steam kullanıcı adınızı girin: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>Lütfen Steam ebeveyn PIN'inizi giriniz: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Lütfen Steam parolanızı girin: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -340,9 +337,7 @@ Yığın izleme:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Çalıştırma durdu!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Sticky pause etkin olduğundan bu talep göz ardı edildi!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>Bu hesapta çalıştırılacak hiçbir şey bulamadık!</value>
   </data>
@@ -422,10 +417,6 @@ Yığın izleme:
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Otomatik çalıştırma zaten duraklatılmış!</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Otomatik çalıştırma şimdi duraklatıldı! Oyuna başlamak için {0} dakikanız kaldı.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Otomatik çalıştırma zaten sürdürülüyor!</value>
@@ -562,9 +553,6 @@ Yığın izleme:
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Hesap şu anda kullanılıyor, ASF, hesap kullanılmadığında çalışmaya devam edecektir...</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Paylaşılan kütüphane belirli bir süre içinde başlatılmadı, çalıştırma süreci devam devam ediyor!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Bağlanılıyor...</value>

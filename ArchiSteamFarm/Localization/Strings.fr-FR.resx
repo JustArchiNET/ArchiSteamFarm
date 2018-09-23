@@ -264,10 +264,7 @@ StackTrace :
     <value>Veuillez entrer votre nom d’utilisateur Steam : </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>Veuillez entrer le code du mode famille : </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Veuillez entrer votre mot de passe Steam : </value>
     <comment>Please note that this translation should end with space</comment>
@@ -338,9 +335,7 @@ StackTrace :
   <data name="IdlingStopped" xml:space="preserve">
     <value>Collecte interrompue !</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Requête ignorée car la pause permanente est active !</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>Nous n’avons rien à collecter sur ce compte !</value>
   </data>
@@ -420,10 +415,6 @@ StackTrace :
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>La collecte automatique est déjà en pause !</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>La collecte automatique est maintenant en pause ! Vous avez {0} minutes pour démarrer un jeu.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>La collecte automatique a déjà repris !</value>
@@ -560,9 +551,6 @@ StackTrace :
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Ce compte est actuellement utilisé : ASF reprendra la collecte quand celui-ci sera libre...</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>La bibliothèque partagée n'a pas été lancée dans le temps imparti, reprise du processus de collecte !</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Connexion...</value>
