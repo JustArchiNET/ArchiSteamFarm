@@ -81,7 +81,9 @@ namespace ArchiSteamFarm {
 		internal bool HasMobileAuthenticator => BotDatabase?.MobileAuthenticator != null;
 		internal bool IsAccountLimited => AccountFlags.HasFlag(EAccountFlags.LimitedUser) || AccountFlags.HasFlag(EAccountFlags.LimitedUserForce);
 		internal bool IsAccountLocked => AccountFlags.HasFlag(EAccountFlags.Lockdown);
-		internal bool IsConnectedAndLoggedOn => SteamID != 0;
+
+		[JsonProperty]
+		internal bool IsConnectedAndLoggedOn => SteamClient?.SteamID != null;
 
 		[JsonProperty]
 		internal bool IsPlayingPossible => !PlayingBlocked && (LibraryLockedBySteamID == 0);
@@ -111,18 +113,14 @@ namespace ArchiSteamFarm {
 		private string SSteamID => SteamID.ToString();
 
 		[JsonProperty]
-		private ulong SteamID => SteamClient?.SteamID ?? 0;
-
-		[JsonProperty]
 		internal BotConfig BotConfig { get; private set; }
-
-		internal ulong CachedSteamID { get; private set; }
 
 		[JsonProperty]
 		internal bool KeepRunning { get; private set; }
 
 		internal bool PlayingBlocked { get; private set; }
 		internal bool PlayingWasBlocked { get; private set; }
+		internal ulong SteamID { get; private set; }
 
 		[JsonProperty]
 		private EAccountFlags AccountFlags;
@@ -606,7 +604,7 @@ namespace ArchiSteamFarm {
 				return await ArchiWebHandler.GetTradeHoldDurationForUser(steamID).ConfigureAwait(false);
 			}
 
-			Bot targetBot = Bots.Values.FirstOrDefault(bot => bot.CachedSteamID == steamID);
+			Bot targetBot = Bots.Values.FirstOrDefault(bot => bot.SteamID == steamID);
 			if (targetBot != null) {
 				string targetTradeToken = await targetBot.ArchiWebHandler.GetTradeToken().ConfigureAwait(false);
 				if (!string.IsNullOrEmpty(targetTradeToken)) {
@@ -828,7 +826,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (await ArchiWebHandler.Init(CachedSteamID, SteamClient.Universe, callback.Nonce, BotConfig.SteamParentalCode).ConfigureAwait(false)) {
+			if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, callback.Nonce, BotConfig.SteamParentalCode).ConfigureAwait(false)) {
 				return true;
 			}
 
@@ -892,7 +890,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			SteamFriends.RequestFriendInfo(CachedSteamID, EClientPersonaStateFlag.PlayerName | EClientPersonaStateFlag.Presence);
+			SteamFriends.RequestFriendInfo(SteamID, EClientPersonaStateFlag.PlayerName | EClientPersonaStateFlag.Presence);
 		}
 
 		internal async Task<bool> SendMessage(ulong steamID, string message) {
@@ -1683,7 +1681,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if ((notification.steamid_sender != CachedSteamID) && BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkReceivedMessagesAsRead)) {
+			if ((notification.steamid_sender != SteamID) && BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkReceivedMessagesAsRead)) {
 				Utilities.InBackground(() => ArchiHandler.AckChatMessage(notification.chat_group_id, notification.chat_id, notification.timestamp));
 			}
 
@@ -1879,9 +1877,9 @@ namespace ArchiSteamFarm {
 					break;
 				case EResult.OK:
 					AccountFlags = callback.AccountFlags;
-					CachedSteamID = callback.ClientSteamID;
+					SteamID = callback.ClientSteamID;
 
-					ArchiLogger.LogGenericInfo(string.Format(Strings.BotLoggedOn, CachedSteamID + (!string.IsNullOrEmpty(callback.VanityURL) ? "/" + callback.VanityURL : "")));
+					ArchiLogger.LogGenericInfo(string.Format(Strings.BotLoggedOn, SteamID + (!string.IsNullOrEmpty(callback.VanityURL) ? "/" + callback.VanityURL : "")));
 
 					// Old status for these doesn't matter, we'll update them if needed
 					LibraryLockedBySteamID = TwoFactorCodeFailures = 0;
@@ -2067,7 +2065,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (callback.FriendID == CachedSteamID) {
+			if (callback.FriendID == SteamID) {
 				string avatarHash = null;
 
 				if ((callback.AvatarHash != null) && (callback.AvatarHash.Length > 0) && callback.AvatarHash.Any(singleByte => singleByte != 0)) {
@@ -2127,13 +2125,13 @@ namespace ArchiSteamFarm {
 
 			// Ignore no status updates
 			if (LibraryLockedBySteamID == 0) {
-				if ((callback.LibraryLockedBySteamID == 0) || (callback.LibraryLockedBySteamID == CachedSteamID)) {
+				if ((callback.LibraryLockedBySteamID == 0) || (callback.LibraryLockedBySteamID == SteamID)) {
 					return;
 				}
 
 				LibraryLockedBySteamID = callback.LibraryLockedBySteamID;
 			} else {
-				if ((callback.LibraryLockedBySteamID != 0) && (callback.LibraryLockedBySteamID != CachedSteamID)) {
+				if ((callback.LibraryLockedBySteamID != 0) && (callback.LibraryLockedBySteamID != SteamID)) {
 					return;
 				}
 

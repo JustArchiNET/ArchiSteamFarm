@@ -81,7 +81,7 @@ namespace ArchiSteamFarm.NLog {
 
 			if (ChatGroupID != 0) {
 				await SendGroupMessage(message, bot).ConfigureAwait(false);
-			} else if ((bot == null) || (bot.CachedSteamID != SteamID)) {
+			} else if ((bot == null) || (bot.SteamID != SteamID)) {
 				await SendPrivateMessage(message, bot).ConfigureAwait(false);
 			}
 		}
@@ -110,7 +110,7 @@ namespace ArchiSteamFarm.NLog {
 			}
 
 			if (bot == null) {
-				bot = Bot.Bots.Values.FirstOrDefault(targetBot => targetBot.IsConnectedAndLoggedOn && (targetBot.CachedSteamID != SteamID));
+				bot = Bot.Bots.Values.FirstOrDefault(targetBot => targetBot.IsConnectedAndLoggedOn && (targetBot.SteamID != SteamID));
 
 				if (bot == null) {
 					return;

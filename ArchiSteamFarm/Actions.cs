@@ -183,7 +183,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			if (targetSteamID == Bot.CachedSteamID) {
+			if (targetSteamID == Bot.SteamID) {
 				return (false, Strings.BotSendingTradeToYourself);
 			}
 
@@ -202,7 +202,7 @@ namespace ArchiSteamFarm {
 					LootingScheduled = false;
 				}
 
-				HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetInventory(Bot.CachedSteamID, appID, contextID, true, wantedTypes, wantedRealAppIDs).ConfigureAwait(false);
+				HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetInventory(Bot.SteamID, appID, contextID, true, wantedTypes, wantedRealAppIDs).ConfigureAwait(false);
 				if ((inventory == null) || (inventory.Count == 0)) {
 					return (false, string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
 				}
@@ -325,7 +325,7 @@ namespace ArchiSteamFarm {
 			return (true, version);
 		}
 
-		private ulong GetFirstSteamMasterID() => Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key != 0) && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderByDescending(steamID => steamID != Bot.CachedSteamID).ThenBy(steamID => steamID).FirstOrDefault();
+		private ulong GetFirstSteamMasterID() => Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key != 0) && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderByDescending(steamID => steamID != Bot.SteamID).ThenBy(steamID => steamID).FirstOrDefault();
 
 		private static async Task LimitGiftsRequestsAsync() {
 			if (Program.GlobalConfig.GiftsLimiterDelay == 0) {

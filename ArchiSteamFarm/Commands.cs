@@ -1252,7 +1252,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (ownedGames == null) {
-				ownedGames = await Bot.ArchiWebHandler.HasValidApiKey().ConfigureAwait(false) ? await Bot.ArchiWebHandler.GetOwnedGames(Bot.CachedSteamID).ConfigureAwait(false) : await Bot.ArchiWebHandler.GetMyOwnedGames().ConfigureAwait(false);
+				ownedGames = await Bot.ArchiWebHandler.HasValidApiKey().ConfigureAwait(false) ? await Bot.ArchiWebHandler.GetOwnedGames(Bot.SteamID).ConfigureAwait(false) : await Bot.ArchiWebHandler.GetMyOwnedGames().ConfigureAwait(false);
 				if ((ownedGames == null) || (ownedGames.Count == 0)) {
 					return (FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(ownedGames))), null);
 				}
@@ -2035,7 +2035,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
-			if (targetBot.CachedSteamID == Bot.CachedSteamID) {
+			if (targetBot.SteamID == Bot.SteamID) {
 				return FormatBotResponse(Strings.BotSendingTradeToYourself);
 			}
 
@@ -2089,7 +2089,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			(bool success, string output) = await Bot.Actions.Loot(targetSteamID: targetBot.CachedSteamID, wantedTypes: transferTypes).ConfigureAwait(false);
+			(bool success, string output) = await Bot.Actions.Loot(targetSteamID: targetBot.SteamID, wantedTypes: transferTypes).ConfigureAwait(false);
 			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
 		}
 
@@ -2133,7 +2133,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
-			HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetInventory(Bot.CachedSteamID, wantedTypes: new HashSet<Steam.Asset.EType> { Steam.Asset.EType.BoosterPack }).ConfigureAwait(false);
+			HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetInventory(Bot.SteamID, wantedTypes: new HashSet<Steam.Asset.EType> { Steam.Asset.EType.BoosterPack }).ConfigureAwait(false);
 			if ((inventory == null) || (inventory.Count == 0)) {
 				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
 			}
