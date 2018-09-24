@@ -46,7 +46,7 @@ namespace ArchiSteamFarm.IPC {
 
 			// Add workaround for missing PathBase feature, https://github.com/aspnet/Hosting/issues/1120
 			PathString pathBase = Configuration.GetSection("Kestrel").GetValue<PathString>("PathBase");
-			if (!string.IsNullOrEmpty(pathBase)) {
+			if (!string.IsNullOrEmpty(pathBase) && (pathBase != "/")) {
 				app.UsePathBase(pathBase);
 			}
 
