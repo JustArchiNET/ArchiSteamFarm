@@ -278,6 +278,16 @@ namespace ArchiSteamFarm {
 							}
 
 							goto default;
+						case "TRANSFER^":
+							if (args.Length > 4) {
+								return await ResponseAdvancedTransfer(steamID, args[1], args[2], args[3], Utilities.GetArgsAsText(args, 4, ",")).ConfigureAwait(false);
+							}
+
+							if (args.Length > 3) {
+								return await ResponseAdvancedTransfer(steamID, args[1], args[2], Utilities.GetArgsAsText(args, 3, ",")).ConfigureAwait(false);
+							}
+
+							goto default;
 						case "UNPACK":
 							return await ResponseUnpackBoosters(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						default:
@@ -596,6 +606,61 @@ namespace ArchiSteamFarm {
 			}
 
 			IList<string> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAdvancedRedeem(steamID, options, keys))).ConfigureAwait(false);
+
+			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+		}
+
+		private async Task<string> ResponseAdvancedTransfer(ulong steamID, string targetAppID, string targetContextID, string botNameTo) {
+			if (steamID == 0 || string.IsNullOrEmpty(targetAppID) || string.IsNullOrEmpty(targetContextID) || string.IsNullOrEmpty(botNameTo)) {
+				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(targetAppID) + " || " + nameof(targetContextID) + " || " + nameof(botNameTo));
+				return null;
+			}
+
+			if (!Bot.IsMaster(steamID)) {
+				return null;
+			}
+
+			if (!Bot.IsConnectedAndLoggedOn) {
+				return FormatBotResponse(Strings.BotNotConnected);
+			}
+
+			if (!Bot.Bots.TryGetValue(botNameTo, out Bot targetBot)) {
+				return ASF.IsOwner(steamID) ? FormatBotResponse(string.Format(Strings.BotNotFound, botNameTo)) : null;
+			}
+
+			if (!targetBot.IsConnectedAndLoggedOn) {
+				return FormatBotResponse(Strings.BotNotConnected);
+			}
+
+			if (targetBot.SteamID == Bot.SteamID) {
+				return FormatBotResponse(Strings.BotSendingTradeToYourself);
+			}
+
+			if (!uint.TryParse(targetAppID, out uint appID) || appID == 0) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(appID)));
+			}
+
+			if (!byte.TryParse(targetContextID, out byte contextID) || contextID == 0) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(contextID)));
+			}
+
+			(bool success, string output) = await Bot.Actions.Loot(appID, contextID, targetBot.SteamID).ConfigureAwait(false);
+			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
+		}
+
+		private static async Task<string> ResponseAdvancedTransfer(ulong steamID, string botNames, string targetAppID, string targetContextID, string botNameTo) {
+			if (steamID == 0 || string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(targetAppID) || string.IsNullOrEmpty(targetContextID) || string.IsNullOrEmpty(botNameTo)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames) + " || " + nameof(targetAppID) + " || " + nameof(targetContextID) + " || " + nameof(botNameTo));
+				return null;
+			}
+
+			HashSet<Bot> bots = Bot.GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
+			}
+
+			IList<string> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAdvancedTransfer(steamID, targetAppID, targetContextID, botNameTo))).ConfigureAwait(false);
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
