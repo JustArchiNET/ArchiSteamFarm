@@ -64,9 +64,8 @@ namespace ArchiSteamFarm.IPC {
 			// We need MVC for /Api
 			app.UseMvcWithDefaultRoute();
 
-			// This will re-execute all definitions specified below to WWW root, we need this for 404 URLs such as /login -> /index.html
-			// It's nice to note that entries above (such as our /Api provided by MVC) is not affected by this, only static files
-			app.UseStatusCodePagesWithReExecute("/");
+			// We're using index for URL routing in our static files so re-execute all non-API calls on /
+			app.UseWhen(context => !context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), appBuilder => appBuilder.UseStatusCodePagesWithReExecute("/"));
 
 			// We need static files support for IPC GUI
 			app.UseDefaultFiles();
