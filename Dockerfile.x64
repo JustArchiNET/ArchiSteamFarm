@@ -7,7 +7,7 @@ RUN dotnet --info && \
     cp "ArchiSteamFarm/scripts/generic/ArchiSteamFarm.sh" "ArchiSteamFarm/out/ArchiSteamFarm.sh"
 
 FROM microsoft/dotnet:2.1-runtime-stretch-slim AS runtime
-ENV ASPNETCORE_URLS
+ENV ASPNETCORE_URLS=
 LABEL maintainer="JustArchi <JustArchi@JustArchi.net>"
 EXPOSE 1242
 WORKDIR /app
