@@ -93,6 +93,7 @@ namespace ArchiSteamFarm {
 		private readonly SemaphoreSlim GamesRedeemerInBackgroundSemaphore = new SemaphoreSlim(1, 1);
 		private readonly Timer HeartBeatTimer;
 		private readonly SemaphoreSlim InitializationSemaphore = new SemaphoreSlim(1, 1);
+		private readonly SemaphoreSlim MessagingSemaphore = new SemaphoreSlim(1, 1);
 		private readonly SemaphoreSlim PICSSemaphore = new SemaphoreSlim(1, 1);
 		private readonly Statistics Statistics;
 		private readonly SteamClient SteamClient;
@@ -243,6 +244,7 @@ namespace ArchiSteamFarm {
 			CallbackSemaphore.Dispose();
 			GamesRedeemerInBackgroundSemaphore.Dispose();
 			InitializationSemaphore.Dispose();
+			MessagingSemaphore.Dispose();
 			PICSSemaphore.Dispose();
 
 			// Those are objects that might be null and the check should be in-place
@@ -922,6 +924,8 @@ namespace ArchiSteamFarm {
 
 				messagePart = Program.GlobalConfig.SteamMessagePrefix + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
 
+				await LimitMessagingRequestsAsync().ConfigureAwait(false);
+
 				if (!await ArchiHandler.SendMessage(steamID, messagePart).ConfigureAwait(false)) {
 					return false;
 				}
@@ -958,6 +962,8 @@ namespace ArchiSteamFarm {
 				}
 
 				messagePart = Program.GlobalConfig.SteamMessagePrefix + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
+
+				await LimitMessagingRequestsAsync().ConfigureAwait(false);
 
 				if (!await ArchiHandler.SendMessage(chatGroupID, chatID, messagePart).ConfigureAwait(false)) {
 					return false;
@@ -1471,6 +1477,20 @@ namespace ArchiSteamFarm {
 				async () => {
 					await Task.Delay(Program.GlobalConfig.LoginLimiterDelay * 1000).ConfigureAwait(false);
 					LoginSemaphore.Release();
+				}
+			);
+		}
+
+		private async Task LimitMessagingRequestsAsync() {
+			if (Program.GlobalConfig.MessagingLimiterDelay == 0) {
+				return;
+			}
+
+			await MessagingSemaphore.WaitAsync().ConfigureAwait(false);
+			Utilities.InBackground(
+				async () => {
+					await Task.Delay(Program.GlobalConfig.MessagingLimiterDelay).ConfigureAwait(false);
+					MessagingSemaphore.Release();
 				}
 			);
 		}
