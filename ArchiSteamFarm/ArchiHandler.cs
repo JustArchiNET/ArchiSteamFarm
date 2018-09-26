@@ -96,6 +96,10 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			if (!Client.IsConnected) {
+				return;
+			}
+
 			CChatRoom_AckChatMessage_Notification request = new CChatRoom_AckChatMessage_Notification {
 				chat_group_id = chatGroupID,
 				chat_id = chatID,
@@ -108,6 +112,10 @@ namespace ArchiSteamFarm {
 		internal void AckMessage(ulong steamID, uint timestamp) {
 			if ((steamID == 0) || (timestamp == 0)) {
 				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(timestamp));
+				return;
+			}
+
+			if (!Client.IsConnected) {
 				return;
 			}
 
@@ -145,6 +153,10 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
+			if (!Client.IsConnected) {
+				return false;
+			}
+
 			CPlayer_AddFriend_Request request = new CPlayer_AddFriend_Request { steamid = steamID };
 
 			SteamUnifiedMessages.ServiceMethodResponse response;
@@ -167,6 +179,10 @@ namespace ArchiSteamFarm {
 		internal async Task<ulong> GetClanChatGroupID(ulong steamID) {
 			if ((steamID == 0) || !new SteamID(steamID).IsClanAccount) {
 				ArchiLogger.LogNullError(nameof(steamID));
+				return 0;
+			}
+
+			if (!Client.IsConnected) {
 				return 0;
 			}
 
@@ -198,6 +214,10 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<HashSet<ulong>> GetMyChatGroupIDs() {
+			if (!Client.IsConnected) {
+				return null;
+			}
+
 			CChatRoom_GetMyChatRoomGroups_Request request = new CChatRoom_GetMyChatRoomGroups_Request();
 
 			SteamUnifiedMessages.ServiceMethodResponse response;
@@ -225,6 +245,10 @@ namespace ArchiSteamFarm {
 		internal async Task<bool> JoinChatRoomGroup(ulong chatGroupID) {
 			if (chatGroupID == 0) {
 				ArchiLogger.LogNullError(nameof(chatGroupID));
+				return false;
+			}
+
+			if (!Client.IsConnected) {
 				return false;
 			}
 
@@ -348,6 +372,10 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
+			if (!Client.IsConnected) {
+				return false;
+			}
+
 			CPlayer_RemoveFriend_Request request = new CPlayer_RemoveFriend_Request { steamid = steamID };
 
 			SteamUnifiedMessages.ServiceMethodResponse response;
@@ -368,6 +396,10 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void RequestItemAnnouncements() {
+			if (!Client.IsConnected) {
+				return;
+			}
+
 			ClientMsgProtobuf<CMsgClientRequestItemAnnouncements> request = new ClientMsgProtobuf<CMsgClientRequestItemAnnouncements>(EMsg.ClientRequestItemAnnouncements);
 			Client.Send(request);
 		}
@@ -376,6 +408,10 @@ namespace ArchiSteamFarm {
 			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
 				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(message));
 				return EResult.Fail;
+			}
+
+			if (!Client.IsConnected) {
+				return EResult.NoConnection;
 			}
 
 			CFriendMessages_SendMessage_Request request = new CFriendMessages_SendMessage_Request {
@@ -408,6 +444,10 @@ namespace ArchiSteamFarm {
 				return EResult.Fail;
 			}
 
+			if (!Client.IsConnected) {
+				return EResult.NoConnection;
+			}
+
 			CChatRoom_SendChatMessage_Request request = new CChatRoom_SendChatMessage_Request {
 				chat_group_id = chatGroupID,
 				chat_id = chatID,
@@ -434,6 +474,10 @@ namespace ArchiSteamFarm {
 		internal void SetCurrentMode(uint chatMode) {
 			if (chatMode == 0) {
 				ArchiLogger.LogNullError(nameof(chatMode));
+				return;
+			}
+
+			if (!Client.IsConnected) {
 				return;
 			}
 

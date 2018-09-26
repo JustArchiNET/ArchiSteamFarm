@@ -929,7 +929,7 @@ namespace ArchiSteamFarm {
 				try {
 					bool sent = false;
 
-					for (byte j = 0; (j < WebBrowser.MaxTries) && !sent; j++) {
+					for (byte j = 0; (j < WebBrowser.MaxTries) && !sent && IsConnectedAndLoggedOn; j++) {
 						EResult result = await ArchiHandler.SendMessage(steamID, messagePart).ConfigureAwait(false);
 
 						switch (result) {
@@ -937,6 +937,7 @@ namespace ArchiSteamFarm {
 								sent = true;
 								break;
 							case EResult.RateLimitExceeded:
+							case EResult.Timeout:
 								await Task.Delay(1000).ConfigureAwait(false);
 								continue;
 							default:
@@ -946,7 +947,7 @@ namespace ArchiSteamFarm {
 					}
 
 					if (!sent) {
-						ArchiLogger.LogGenericError(Strings.WarningFailed);
+						ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 						return false;
 					}
 				} finally {
@@ -991,7 +992,7 @@ namespace ArchiSteamFarm {
 				try {
 					bool sent = false;
 
-					for (byte j = 0; (j < WebBrowser.MaxTries) && !sent; j++) {
+					for (byte j = 0; (j < WebBrowser.MaxTries) && !sent && IsConnectedAndLoggedOn; j++) {
 						EResult result = await ArchiHandler.SendMessage(chatGroupID, chatID, messagePart).ConfigureAwait(false);
 
 						switch (result) {
@@ -999,6 +1000,7 @@ namespace ArchiSteamFarm {
 								sent = true;
 								break;
 							case EResult.RateLimitExceeded:
+							case EResult.Timeout:
 								await Task.Delay(1000).ConfigureAwait(false);
 								continue;
 							default:
@@ -1008,7 +1010,7 @@ namespace ArchiSteamFarm {
 					}
 
 					if (!sent) {
-						ArchiLogger.LogGenericError(Strings.WarningFailed);
+						ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 						return false;
 					}
 				} finally {
