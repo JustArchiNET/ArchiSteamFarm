@@ -938,7 +938,7 @@ namespace ArchiSteamFarm {
 								break;
 							case EResult.RateLimitExceeded:
 							case EResult.Timeout:
-								await Task.Delay(1000).ConfigureAwait(false);
+								await Task.Delay(5000).ConfigureAwait(false);
 								continue;
 							default:
 								ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result), result));
@@ -1001,7 +1001,7 @@ namespace ArchiSteamFarm {
 								break;
 							case EResult.RateLimitExceeded:
 							case EResult.Timeout:
-								await Task.Delay(1000).ConfigureAwait(false);
+								await Task.Delay(5000).ConfigureAwait(false);
 								continue;
 							default:
 								ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result), result));
