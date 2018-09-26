@@ -383,14 +383,10 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			List<KeyValue> apps = response["applist"]["apps"].Children;
+			List<KeyValue> apps = response["apps"].Children;
 			if ((apps == null) || (apps.Count == 0)) {
-				// TODO: Temporary workaround for https://github.com/SteamRE/SteamKit/issues/594
-				apps = response["apps"].Children;
-				if ((apps == null) || (apps.Count == 0)) {
-					Bot.ArchiLogger.LogNullError(nameof(apps));
-					return null;
-				}
+				Bot.ArchiLogger.LogNullError(nameof(apps));
+				return null;
 			}
 
 			HashSet<uint> result = new HashSet<uint>(apps.Count);
