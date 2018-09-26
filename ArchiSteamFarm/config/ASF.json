@@ -16,7 +16,6 @@
 	"LoginLimiterDelay": 10,
 	"MaxFarmingTime": 10,
 	"MaxTradeHoldDuration": 15,
-	"MessagingLimiterDelay": 1000,
 	"OptimizationMode": 0,
 	"Statistics": true,
 	"SteamMessagePrefix": "/me ",

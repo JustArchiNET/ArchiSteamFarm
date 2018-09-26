@@ -49,7 +49,6 @@ namespace ArchiSteamFarm {
 		private const byte DefaultLoginLimiterDelay = 10;
 		private const byte DefaultMaxFarmingTime = 10;
 		private const byte DefaultMaxTradeHoldDuration = 15;
-		private const ushort DefaultMessagingLimiterDelay = 1000;
 		private const EOptimizationMode DefaultOptimizationMode = EOptimizationMode.MaxPerformance;
 		private const bool DefaultStatistics = true;
 		private const string DefaultSteamMessagePrefix = "/me ";
@@ -117,9 +116,6 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte MaxTradeHoldDuration = DefaultMaxTradeHoldDuration;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ushort MessagingLimiterDelay = DefaultMessagingLimiterDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly EOptimizationMode OptimizationMode = DefaultOptimizationMode;
@@ -345,7 +341,6 @@ namespace ArchiSteamFarm {
 		public bool ShouldSerializeLoginLimiterDelay() => ShouldSerializeEverything || (LoginLimiterDelay != DefaultLoginLimiterDelay);
 		public bool ShouldSerializeMaxFarmingTime() => ShouldSerializeEverything || (MaxFarmingTime != DefaultMaxFarmingTime);
 		public bool ShouldSerializeMaxTradeHoldDuration() => ShouldSerializeEverything || (MaxTradeHoldDuration != DefaultMaxTradeHoldDuration);
-		public bool ShouldSerializeMessagingLimiterDelay() => ShouldSerializeEverything || (MessagingLimiterDelay != DefaultMessagingLimiterDelay);
 		public bool ShouldSerializeOptimizationMode() => ShouldSerializeEverything || (OptimizationMode != DefaultOptimizationMode);
 		public bool ShouldSerializeSSteamOwnerID() => ShouldSerializeEverything; // We never serialize helper properties
 		public bool ShouldSerializeStatistics() => ShouldSerializeEverything || (Statistics != DefaultStatistics);

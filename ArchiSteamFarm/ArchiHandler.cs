@@ -372,10 +372,10 @@ namespace ArchiSteamFarm {
 			Client.Send(request);
 		}
 
-		internal async Task<bool> SendMessage(ulong steamID, string message) {
+		internal async Task<EResult> SendMessage(ulong steamID, string message) {
 			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
 				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(message));
-				return false;
+				return EResult.Fail;
 			}
 
 			CFriendMessages_SendMessage_Request request = new CFriendMessages_SendMessage_Request {
@@ -391,21 +391,21 @@ namespace ArchiSteamFarm {
 				response = await UnifiedFriendMessagesService.SendMessage(x => x.SendMessage(request));
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
-				return false;
+				return EResult.Timeout;
 			}
 
 			if (response == null) {
 				ArchiLogger.LogNullError(nameof(response));
-				return false;
+				return EResult.Fail;
 			}
 
-			return response.Result == EResult.OK;
+			return response.Result;
 		}
 
-		internal async Task<bool> SendMessage(ulong chatGroupID, ulong chatID, string message) {
+		internal async Task<EResult> SendMessage(ulong chatGroupID, ulong chatID, string message) {
 			if ((chatGroupID == 0) || (chatID == 0) || string.IsNullOrEmpty(message)) {
 				ArchiLogger.LogNullError(nameof(chatGroupID) + " || " + nameof(chatID) + " || " + nameof(message));
-				return false;
+				return EResult.Fail;
 			}
 
 			CChatRoom_SendChatMessage_Request request = new CChatRoom_SendChatMessage_Request {
@@ -420,15 +420,15 @@ namespace ArchiSteamFarm {
 				response = await UnifiedChatRoomService.SendMessage(x => x.SendChatMessage(request));
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
-				return false;
+				return EResult.Timeout;
 			}
 
 			if (response == null) {
 				ArchiLogger.LogNullError(nameof(response));
-				return false;
+				return EResult.Fail;
 			}
 
-			return response.Result == EResult.OK;
+			return response.Result;
 		}
 
 		internal void SetCurrentMode(uint chatMode) {

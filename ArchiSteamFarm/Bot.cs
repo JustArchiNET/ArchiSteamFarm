@@ -924,10 +924,33 @@ namespace ArchiSteamFarm {
 
 				messagePart = Program.GlobalConfig.SteamMessagePrefix + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
 
-				await LimitMessagingRequestsAsync().ConfigureAwait(false);
+				await MessagingSemaphore.WaitAsync().ConfigureAwait(false);
 
-				if (!await ArchiHandler.SendMessage(steamID, messagePart).ConfigureAwait(false)) {
-					return false;
+				try {
+					bool sent = false;
+
+					for (byte j = 0; (j < WebBrowser.MaxTries) && !sent; j++) {
+						EResult result = await ArchiHandler.SendMessage(steamID, messagePart).ConfigureAwait(false);
+
+						switch (result) {
+							case EResult.OK:
+								sent = true;
+								break;
+							case EResult.RateLimitExceeded:
+								await Task.Delay(1000).ConfigureAwait(false);
+								continue;
+							default:
+								ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result), result));
+								return false;
+						}
+					}
+
+					if (!sent) {
+						ArchiLogger.LogGenericError(Strings.WarningFailed);
+						return false;
+					}
+				} finally {
+					MessagingSemaphore.Release();
 				}
 			}
 
@@ -963,10 +986,33 @@ namespace ArchiSteamFarm {
 
 				messagePart = Program.GlobalConfig.SteamMessagePrefix + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
 
-				await LimitMessagingRequestsAsync().ConfigureAwait(false);
+				await MessagingSemaphore.WaitAsync().ConfigureAwait(false);
 
-				if (!await ArchiHandler.SendMessage(chatGroupID, chatID, messagePart).ConfigureAwait(false)) {
-					return false;
+				try {
+					bool sent = false;
+
+					for (byte j = 0; (j < WebBrowser.MaxTries) && !sent; j++) {
+						EResult result = await ArchiHandler.SendMessage(chatGroupID, chatID, messagePart).ConfigureAwait(false);
+
+						switch (result) {
+							case EResult.OK:
+								sent = true;
+								break;
+							case EResult.RateLimitExceeded:
+								await Task.Delay(1000).ConfigureAwait(false);
+								continue;
+							default:
+								ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result), result));
+								return false;
+						}
+					}
+
+					if (!sent) {
+						ArchiLogger.LogGenericError(Strings.WarningFailed);
+						return false;
+					}
+				} finally {
+					MessagingSemaphore.Release();
 				}
 			}
 
@@ -1477,20 +1523,6 @@ namespace ArchiSteamFarm {
 				async () => {
 					await Task.Delay(Program.GlobalConfig.LoginLimiterDelay * 1000).ConfigureAwait(false);
 					LoginSemaphore.Release();
-				}
-			);
-		}
-
-		private async Task LimitMessagingRequestsAsync() {
-			if (Program.GlobalConfig.MessagingLimiterDelay == 0) {
-				return;
-			}
-
-			await MessagingSemaphore.WaitAsync().ConfigureAwait(false);
-			Utilities.InBackground(
-				async () => {
-					await Task.Delay(Program.GlobalConfig.MessagingLimiterDelay).ConfigureAwait(false);
-					MessagingSemaphore.Release();
 				}
 			);
 		}
