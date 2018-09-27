@@ -70,25 +70,15 @@ namespace ArchiSteamFarm {
 			}
 
 			MarkdownDocument markdownDocument = Markdown.Parse(markdownText);
-			bool insideChangelog = false;
+			MarkdownDocument result = new MarkdownDocument();
 
-			foreach (Block block in markdownDocument.ToList()) {
-				if (!insideChangelog) {
-					if (block is HeadingBlock headingBlock && (headingBlock.Inline.FirstChild != null) && headingBlock.Inline.FirstChild is LiteralInline literalInline && (literalInline.Content.ToString() == "Changelog")) {
-						insideChangelog = true;
-					}
-
-					markdownDocument.Remove(block);
-					continue;
-				}
-
-				if (block is ThematicBreakBlock) {
-					insideChangelog = false;
-					markdownDocument.Remove(block);
-				}
+			foreach (Block block in markdownDocument.SkipWhile(block => !(block is HeadingBlock headingBlock) || (headingBlock.Inline.FirstChild == null) || !(headingBlock.Inline.FirstChild is LiteralInline literalInline) || (literalInline.Content.ToString() != "Changelog")).Skip(1).TakeWhile(block => !(block is ThematicBreakBlock)).ToList()) {
+				// All blocks that we're interested in must be removed from original markdownDocument firstly
+				markdownDocument.Remove(block);
+				result.Add(block);
 			}
 
-			return markdownDocument;
+			return result;
 		}
 
 		private static async Task<ReleaseResponse> GetReleaseFromURL(string releaseURL) {
