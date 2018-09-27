@@ -1579,13 +1579,14 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(privacySettingsArgs)));
 			}
 
-			// There are only 6 privacy settings
-			if (privacySettingsArgs.Length > 6) {
+			// There are only 7 privacy settings
+			if (privacySettingsArgs.Length > 7) {
 				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(privacySettingsArgs)));
 			}
 
 			Steam.UserPrivacy.PrivacySettings.EPrivacySetting profile = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
 			Steam.UserPrivacy.PrivacySettings.EPrivacySetting ownedGames = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
+			Steam.UserPrivacy.PrivacySettings.EPrivacySetting friendsList = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
 			Steam.UserPrivacy.PrivacySettings.EPrivacySetting playtime = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
 			Steam.UserPrivacy.PrivacySettings.EPrivacySetting inventory = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
 			Steam.UserPrivacy.PrivacySettings.EPrivacySetting inventoryGifts = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
@@ -1609,28 +1610,35 @@ namespace ArchiSteamFarm {
 
 						ownedGames = privacySetting;
 						break;
-					case 2: // Playtime, child of OwnedGames
+					case 2: // FriendsList, child of Profile
+						if (profile < privacySetting) {
+							return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(ownedGames)));
+						}
+
+						friendsList = privacySetting;
+						break;
+					case 3: // Playtime, child of OwnedGames
 						if (ownedGames < privacySetting) {
 							return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(playtime)));
 						}
 
 						playtime = privacySetting;
 						break;
-					case 3: // Inventory, child of Profile
+					case 4: // Inventory, child of Profile
 						if (profile < privacySetting) {
 							return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(inventory)));
 						}
 
 						inventory = privacySetting;
 						break;
-					case 4: // InventoryGifts, child of Inventory
+					case 5: // InventoryGifts, child of Inventory
 						if (inventory < privacySetting) {
 							return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(inventoryGifts)));
 						}
 
 						inventoryGifts = privacySetting;
 						break;
-					case 5: // Comments, child of Profile
+					case 6: // Comments, child of Profile
 						if (profile < privacySetting) {
 							return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(comments)));
 						}
@@ -1658,7 +1666,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			Steam.UserPrivacy userPrivacy = new Steam.UserPrivacy(new Steam.UserPrivacy.PrivacySettings(profile, ownedGames, playtime, inventory, inventoryGifts), comments);
+			Steam.UserPrivacy userPrivacy = new Steam.UserPrivacy(new Steam.UserPrivacy.PrivacySettings(profile, ownedGames, friendsList, playtime, inventory, inventoryGifts), comments);
 			return FormatBotResponse(await Bot.ArchiWebHandler.ChangePrivacySettings(userPrivacy).ConfigureAwait(false) ? Strings.Success : Strings.WarningFailed);
 		}
 
