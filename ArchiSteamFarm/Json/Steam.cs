@@ -634,15 +634,15 @@ namespace ArchiSteamFarm.Json {
 				internal readonly EPrivacySetting Profile;
 
 				// Constructed from privacy change request
-				internal PrivacySettings(EPrivacySetting profile, EPrivacySetting ownedGames, EPrivacySetting friendsList, EPrivacySetting playtime, EPrivacySetting inventory, EPrivacySetting inventoryGifts) {
-					if ((profile == EPrivacySetting.Unknown) || (ownedGames == EPrivacySetting.Unknown) || (friendsList == EPrivacySetting.Unknown) || (playtime == EPrivacySetting.Unknown) || (inventory == EPrivacySetting.Unknown) || (inventoryGifts == EPrivacySetting.Unknown)) {
-						throw new ArgumentNullException(nameof(profile) + " || " + nameof(ownedGames) + " || " + nameof(friendsList) + " || " + nameof(playtime) + " || " + nameof(inventory) + " || " + nameof(inventoryGifts));
+				internal PrivacySettings(EPrivacySetting profile, EPrivacySetting ownedGames, EPrivacySetting playtime, EPrivacySetting friendsList, EPrivacySetting inventory, EPrivacySetting inventoryGifts) {
+					if ((profile == EPrivacySetting.Unknown) || (ownedGames == EPrivacySetting.Unknown) || (playtime == EPrivacySetting.Unknown) || (friendsList == EPrivacySetting.Unknown) || (inventory == EPrivacySetting.Unknown) || (inventoryGifts == EPrivacySetting.Unknown)) {
+						throw new ArgumentNullException(nameof(profile) + " || " + nameof(ownedGames) + " || " + nameof(playtime) + " || " + nameof(friendsList) + " || " + nameof(inventory) + " || " + nameof(inventoryGifts));
 					}
 
 					Profile = profile;
 					OwnedGames = ownedGames;
-					FriendsList = friendsList;
 					Playtime = playtime;
+					FriendsList = friendsList;
 					Inventory = inventory;
 					InventoryGifts = inventoryGifts;
 				}

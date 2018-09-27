@@ -1586,8 +1586,8 @@ namespace ArchiSteamFarm {
 
 			Steam.UserPrivacy.PrivacySettings.EPrivacySetting profile = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
 			Steam.UserPrivacy.PrivacySettings.EPrivacySetting ownedGames = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
-			Steam.UserPrivacy.PrivacySettings.EPrivacySetting friendsList = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
 			Steam.UserPrivacy.PrivacySettings.EPrivacySetting playtime = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
+			Steam.UserPrivacy.PrivacySettings.EPrivacySetting friendsList = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
 			Steam.UserPrivacy.PrivacySettings.EPrivacySetting inventory = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
 			Steam.UserPrivacy.PrivacySettings.EPrivacySetting inventoryGifts = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
 			Steam.UserPrivacy.ECommentPermission comments = Steam.UserPrivacy.ECommentPermission.Private;
@@ -1610,19 +1610,19 @@ namespace ArchiSteamFarm {
 
 						ownedGames = privacySetting;
 						break;
-					case 2: // FriendsList, child of Profile
-						if (profile < privacySetting) {
-							return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(ownedGames)));
-						}
-
-						friendsList = privacySetting;
-						break;
-					case 3: // Playtime, child of OwnedGames
+					case 2: // Playtime, child of OwnedGames
 						if (ownedGames < privacySetting) {
 							return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(playtime)));
 						}
 
 						playtime = privacySetting;
+						break;
+					case 3: // FriendsList, child of Profile
+						if (profile < privacySetting) {
+							return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(ownedGames)));
+						}
+
+						friendsList = privacySetting;
 						break;
 					case 4: // Inventory, child of Profile
 						if (profile < privacySetting) {
@@ -1666,7 +1666,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			Steam.UserPrivacy userPrivacy = new Steam.UserPrivacy(new Steam.UserPrivacy.PrivacySettings(profile, ownedGames, friendsList, playtime, inventory, inventoryGifts), comments);
+			Steam.UserPrivacy userPrivacy = new Steam.UserPrivacy(new Steam.UserPrivacy.PrivacySettings(profile, ownedGames, playtime, friendsList, inventory, inventoryGifts), comments);
 			return FormatBotResponse(await Bot.ArchiWebHandler.ChangePrivacySettings(userPrivacy).ConfigureAwait(false) ? Strings.Success : Strings.WarningFailed);
 		}
 
