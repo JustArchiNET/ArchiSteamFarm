@@ -264,7 +264,10 @@
     <value>Пожалуйста, введите ваш логин Steam: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputSteamParentalCode" xml:space="preserve">
+    <value>Пожалуйста, введите PIN-код родительского контроля Steam: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Пожалуйста, введите ваш пароль Steam: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -337,7 +340,9 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>Фарм остановлен!</value>
   </data>
-  
+  <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
+    <value>Игнорирование запроса, так как включена постоянная пауза!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>На этом аккаунте нечего фармить!</value>
   </data>
