@@ -157,7 +157,14 @@ namespace ArchiSteamFarm {
 			return (true, Strings.Done);
 		}
 
-		internal async Task<(bool Success, string Output)> Loot() => await SendTradeOffer().ConfigureAwait(false);
+		internal async Task<(bool Success, string Output)> Loot() {
+			ulong targetSteamID = GetFirstSteamMasterID();
+			if (targetSteamID == 0) {
+				return (false, Strings.BotLootingMasterNotDefined);
+			}
+
+			return await SendTradeOffer(targetSteamID, Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID).ConfigureAwait(false);
+		}
 
 		internal void OnDisconnected() => HandledGifts.Clear();
 
@@ -228,10 +235,10 @@ namespace ArchiSteamFarm {
 			return (true, Strings.BotAutomaticIdlingNowResumed);
 		}
 
-		internal async Task<(bool Success, string Output)> SendTradeOffer(uint appID = Steam.Asset.SteamAppID, byte contextID = Steam.Asset.SteamCommunityContextID, ulong targetSteamID = 0, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<uint> wantedRealAppIDs = null) {
-			if ((appID == 0) || (contextID == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
-				return (false, null);
+		internal async Task<(bool Success, string Output)> SendTradeOffer(ulong targetSteamID, uint appID = Steam.Asset.SteamAppID, byte contextID = Steam.Asset.SteamCommunityContextID, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<uint> wantedRealAppIDs = null) {
+			if (targetSteamID == 0 || appID == 0 || contextID == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(targetSteamID) + " || " + nameof(appID) + " || " + nameof(contextID));
+				return (false, string.Format(Strings.ErrorObjectIsNull, nameof(targetSteamID) + " || " + nameof(appID) + " || " + nameof(contextID)));
 			}
 
 			if (!Bot.IsConnectedAndLoggedOn) {
@@ -244,14 +251,6 @@ namespace ArchiSteamFarm {
 
 			if (Bot.BotConfig.LootableTypes.Count == 0) {
 				return (false, Strings.BotLootingNoLootableTypes);
-			}
-
-			if (targetSteamID == 0) {
-				targetSteamID = GetFirstSteamMasterID();
-
-				if (targetSteamID == 0) {
-					return (false, Strings.BotLootingMasterNotDefined);
-				}
 			}
 
 			if (targetSteamID == Bot.SteamID) {
@@ -327,7 +326,7 @@ namespace ArchiSteamFarm {
 			return (true, version);
 		}
 
-		private ulong GetFirstSteamMasterID() => Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key != 0) && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderByDescending(steamID => steamID != Bot.SteamID).ThenBy(steamID => steamID).FirstOrDefault();
+		internal ulong GetFirstSteamMasterID() => Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key != 0) && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderByDescending(steamID => steamID != Bot.SteamID).ThenBy(steamID => steamID).FirstOrDefault();
 
 		private static async Task LimitGiftsRequestsAsync() {
 			if (Program.GlobalConfig.GiftsLimiterDelay == 0) {

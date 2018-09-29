@@ -531,7 +531,12 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(contextID)));
 			}
 
-			(bool success, string output) = await Bot.Actions.SendTradeOffer(appID, contextID).ConfigureAwait(false);
+			ulong targetSteamID = Bot.Actions.GetFirstSteamMasterID();
+			if (targetSteamID == 0) {
+				return Strings.BotLootingMasterNotDefined;
+			}
+
+			(bool success, string output) = await Bot.Actions.SendTradeOffer(targetSteamID, appID, contextID).ConfigureAwait(false);
 			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
 		}
 
@@ -655,7 +660,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(contextID)));
 			}
 
-			(bool success, string output) = await Bot.Actions.SendTradeOffer(appID, contextID, targetBot.SteamID).ConfigureAwait(false);
+			(bool success, string output) = await Bot.Actions.SendTradeOffer(targetBot.SteamID, appID, contextID).ConfigureAwait(false);
 			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
 		}
 
@@ -1166,7 +1171,12 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
-			(bool success, string output) = await Bot.Actions.SendTradeOffer(wantedTypes: Bot.BotConfig.LootableTypes).ConfigureAwait(false);
+			ulong targetSteamID = Bot.Actions.GetFirstSteamMasterID();
+			if (targetSteamID == 0) {
+				return Strings.BotLootingMasterNotDefined;
+			}
+
+			(bool success, string output) = await Bot.Actions.SendTradeOffer(targetSteamID, wantedTypes: Bot.BotConfig.LootableTypes).ConfigureAwait(false);
 			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
 		}
 
@@ -1217,7 +1227,12 @@ namespace ArchiSteamFarm {
 				realAppIDs.Add(appID);
 			}
 
-			(bool success, string output) = await Bot.Actions.SendTradeOffer(wantedRealAppIDs: realAppIDs).ConfigureAwait(false);
+			ulong targetSteamID = Bot.Actions.GetFirstSteamMasterID();
+			if (targetSteamID == 0) {
+				return Strings.BotLootingMasterNotDefined;
+			}
+
+			(bool success, string output) = await Bot.Actions.SendTradeOffer(targetSteamID, wantedRealAppIDs: realAppIDs).ConfigureAwait(false);
 			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
 		}
 
@@ -2207,6 +2222,18 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
+			if (!Bot.Bots.TryGetValue(botNameTo, out Bot targetBot)) {
+				return ASF.IsOwner(steamID) ? FormatBotResponse(string.Format(Strings.BotNotFound, botNameTo)) : null;
+			}
+
+			if (!targetBot.IsConnectedAndLoggedOn) {
+				return FormatBotResponse(Strings.BotNotConnected);
+			}
+
+			if (targetBot.SteamID == Bot.SteamID) {
+				return FormatBotResponse(Strings.BotSendingTradeToYourself);
+			}
+
 			string[] appIDTexts = realAppIDsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 			if (appIDTexts.Length == 0) {
 				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(appIDTexts)));
@@ -2221,7 +2248,7 @@ namespace ArchiSteamFarm {
 				realAppIDs.Add(appID);
 			}
 
-			(bool success, string output) = await Bot.Actions.SendTradeOffer(wantedRealAppIDs: realAppIDs).ConfigureAwait(false);
+			(bool success, string output) = await Bot.Actions.SendTradeOffer(targetBot.SteamID, wantedRealAppIDs: realAppIDs).ConfigureAwait(false);
 			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
 		}
 
