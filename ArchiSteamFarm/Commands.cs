@@ -626,9 +626,9 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 
-		private async Task<string> ResponseAdvancedTransfer(ulong steamID, string targetAppID, string targetContextID, string botNameTo) {
-			if (steamID == 0 || string.IsNullOrEmpty(targetAppID) || string.IsNullOrEmpty(targetContextID) || string.IsNullOrEmpty(botNameTo)) {
-				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(targetAppID) + " || " + nameof(targetContextID) + " || " + nameof(botNameTo));
+		private async Task<string> ResponseAdvancedTransfer(ulong steamID, uint appID, byte contextID, Bot targetBot) {
+			if (steamID == 0 || appID == 0 || contextID == 0 || targetBot == null) {
+				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(appID) + " || " + nameof(contextID) + " || " + nameof(targetBot));
 				return null;
 			}
 
@@ -640,16 +640,26 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
-			if (!Bot.Bots.TryGetValue(botNameTo, out Bot targetBot)) {
-				return ASF.IsOwner(steamID) ? FormatBotResponse(string.Format(Strings.BotNotFound, botNameTo)) : null;
-			}
-
 			if (!targetBot.IsConnectedAndLoggedOn) {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
 			if (targetBot.SteamID == Bot.SteamID) {
 				return FormatBotResponse(Strings.BotSendingTradeToYourself);
+			}
+
+			(bool success, string output) = await Bot.Actions.SendTradeOffer(targetBot.SteamID, appID, contextID).ConfigureAwait(false);
+			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
+		}
+
+		private async Task<string> ResponseAdvancedTransfer(ulong steamID, string targetAppID, string targetContextID, string botNameTo) {
+			if (steamID == 0 || string.IsNullOrEmpty(targetAppID) || string.IsNullOrEmpty(targetContextID) || string.IsNullOrEmpty(botNameTo)) {
+				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(targetAppID) + " || " + nameof(targetContextID) + " || " + nameof(botNameTo));
+				return null;
+			}
+
+			if (!Bot.Bots.TryGetValue(botNameTo, out Bot targetBot)) {
+				return ASF.IsOwner(steamID) ? FormatBotResponse(string.Format(Strings.BotNotFound, botNameTo)) : null;
 			}
 
 			if (!uint.TryParse(targetAppID, out uint appID) || appID == 0) {
@@ -660,8 +670,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(contextID)));
 			}
 
-			(bool success, string output) = await Bot.Actions.SendTradeOffer(targetBot.SteamID, appID, contextID).ConfigureAwait(false);
-			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
+			return await ResponseAdvancedTransfer(steamID, appID, contextID, targetBot).ConfigureAwait(false);
 		}
 
 		private static async Task<string> ResponseAdvancedTransfer(ulong steamID, string botNames, string targetAppID, string targetContextID, string botNameTo) {
@@ -675,7 +684,19 @@ namespace ArchiSteamFarm {
 				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			IList<string> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAdvancedTransfer(steamID, targetAppID, targetContextID, botNameTo))).ConfigureAwait(false);
+			if (!uint.TryParse(targetAppID, out uint appID) || appID == 0) {
+				return FormatStaticResponse(string.Format(Strings.ErrorIsInvalid, nameof(appID)));
+			}
+
+			if (!byte.TryParse(targetContextID, out byte contextID) || contextID == 0) {
+				return FormatStaticResponse(string.Format(Strings.ErrorIsInvalid, nameof(contextID)));
+			}
+
+			if (!Bot.Bots.TryGetValue(botNameTo, out Bot targetBot)) {
+				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNameTo)) : null;
+			}
+
+			IList<string> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAdvancedTransfer(steamID, appID, contextID, targetBot))).ConfigureAwait(false);
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
