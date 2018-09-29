@@ -639,7 +639,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
-			(bool success, string output) = await Bot.Actions.SendTradeOffer(targetBot.SteamID, appID, contextID).ConfigureAwait(false);
+			(bool success, string output) = await Bot.Actions.SendTradeOffer(appID, contextID, targetBot.SteamID).ConfigureAwait(false);
 			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
 		}
 
@@ -2232,7 +2232,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotSendingTradeToYourself);
 			}
 
-			(bool success, string output) = await Bot.Actions.SendTradeOffer(targetBot.SteamID, wantedRealAppIDs: realAppIDs).ConfigureAwait(false);
+			(bool success, string output) = await Bot.Actions.SendTradeOffer(targetSteamID: targetBot.SteamID, wantedRealAppIDs: realAppIDs).ConfigureAwait(false);
 			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
 		}
 
