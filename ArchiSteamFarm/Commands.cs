@@ -2194,7 +2194,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<string> ResponseTransferByRealAppIDs(ulong steamID, string realAppIDsText, string botNameTo) {
-			if(steamID == 0 || string.IsNullOrEmpty(realAppIDsText) || string.IsNullOrEmpty(botNameTo)) {
+			if (steamID == 0 || string.IsNullOrEmpty(realAppIDsText) || string.IsNullOrEmpty(botNameTo)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(realAppIDsText) + " || " + nameof(botNameTo));
 				return null;
 			}
@@ -2208,13 +2208,13 @@ namespace ArchiSteamFarm {
 			}
 
 			string[] appIDTexts = realAppIDsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-			if(appIDTexts.Length == 0) {
+			if (appIDTexts.Length == 0) {
 				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(appIDTexts)));
 			}
 
 			HashSet<uint> realAppIDs = new HashSet<uint>();
-			foreach(string appIDText in appIDTexts) {
-				if(!uint.TryParse(appIDText, out uint appID) || appID == 0) {
+			foreach (string appIDText in appIDTexts) {
+				if (!uint.TryParse(appIDText, out uint appID) || appID == 0) {
 					return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(appID)));
 				}
 
