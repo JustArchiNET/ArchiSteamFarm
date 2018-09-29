@@ -2276,7 +2276,7 @@ namespace ArchiSteamFarm {
 				realAppIDs.Add(appID);
 			}
 
-			(bool success, string output) = await Bot.Actions.SendTradeOffer(targetBot.SteamID, wantedRealAppIDs: realAppIDs).ConfigureAwait(false);
+			(bool success, string output) = await Bot.Actions.SendTradeOffer(targetSteamID: targetBot.SteamID, wantedRealAppIDs: realAppIDs).ConfigureAwait(false);
 			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
 		}
 
