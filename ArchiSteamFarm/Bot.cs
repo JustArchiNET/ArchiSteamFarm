@@ -1989,6 +1989,7 @@ namespace ArchiSteamFarm {
 					// TODO: Until https://github.com/dotnet/corefx/issues/27232 is dealt with, use this fallback as an alternative for keys import
 					if (OS.IsUnix && File.Exists(KeysToRedeemFilePath)) {
 						await ImportKeysToRedeem(KeysToRedeemFilePath).ConfigureAwait(false);
+						await Task.Delay(1000).ConfigureAwait(false);
 					}
 
 					if ((GamesRedeemerInBackgroundTimer == null) && BotDatabase.HasGamesToRedeemInBackground) {
