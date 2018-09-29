@@ -227,13 +227,6 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<(bool Success, string Output)> SendTradeOffer(ulong targetSteamID = 0, uint appID = Steam.Asset.SteamAppID, byte contextID = Steam.Asset.SteamCommunityContextID, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<uint> wantedRealAppIDs = null) {
-			if (targetSteamID == 0) {
-				targetSteamID = GetFirstSteamMasterID();
-				if (targetSteamID == 0) {
-					return (false, Strings.BotLootingMasterNotDefined);
-				}
-			}
-
 			if (appID == 0 || contextID == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
 				return (false, string.Format(Strings.ErrorObjectIsNull, nameof(targetSteamID) + " || " + nameof(appID) + " || " + nameof(contextID)));
@@ -249,6 +242,13 @@ namespace ArchiSteamFarm {
 
 			if (Bot.BotConfig.LootableTypes.Count == 0) {
 				return (false, Strings.BotLootingNoLootableTypes);
+			}
+
+			if (targetSteamID == 0) {
+				targetSteamID = GetFirstSteamMasterID();
+				if (targetSteamID == 0) {
+					return (false, Strings.BotLootingMasterNotDefined);
+				}
 			}
 
 			if (targetSteamID == Bot.SteamID) {
