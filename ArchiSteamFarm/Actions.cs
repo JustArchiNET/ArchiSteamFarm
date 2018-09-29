@@ -157,15 +157,6 @@ namespace ArchiSteamFarm {
 			return (true, Strings.Done);
 		}
 
-		internal async Task<(bool Success, string Output)> Loot() {
-			ulong targetSteamID = GetFirstSteamMasterID();
-			if (targetSteamID == 0) {
-				return (false, Strings.BotLootingMasterNotDefined);
-			}
-
-			return await SendTradeOffer(targetSteamID, Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID).ConfigureAwait(false);
-		}
-
 		internal void OnDisconnected() => HandledGifts.Clear();
 
 		internal async Task<(bool Success, string Output)> Pause(bool permanent, ushort resumeInSeconds = 0) {
@@ -235,9 +226,16 @@ namespace ArchiSteamFarm {
 			return (true, Strings.BotAutomaticIdlingNowResumed);
 		}
 
-		internal async Task<(bool Success, string Output)> SendTradeOffer(ulong targetSteamID, uint appID = Steam.Asset.SteamAppID, byte contextID = Steam.Asset.SteamCommunityContextID, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<uint> wantedRealAppIDs = null) {
-			if (targetSteamID == 0 || appID == 0 || contextID == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(targetSteamID) + " || " + nameof(appID) + " || " + nameof(contextID));
+		internal async Task<(bool Success, string Output)> SendTradeOffer(ulong targetSteamID = 0, uint appID = Steam.Asset.SteamAppID, byte contextID = Steam.Asset.SteamCommunityContextID, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<uint> wantedRealAppIDs = null) {
+			if (targetSteamID == 0) {
+				targetSteamID = GetFirstSteamMasterID();
+				if (targetSteamID == 0) {
+					return (false, Strings.BotLootingMasterNotDefined);
+				}
+			}
+
+			if (appID == 0 || contextID == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
 				return (false, string.Format(Strings.ErrorObjectIsNull, nameof(targetSteamID) + " || " + nameof(appID) + " || " + nameof(contextID)));
 			}
 
@@ -326,7 +324,7 @@ namespace ArchiSteamFarm {
 			return (true, version);
 		}
 
-		internal ulong GetFirstSteamMasterID() => Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key != 0) && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderByDescending(steamID => steamID != Bot.SteamID).ThenBy(steamID => steamID).FirstOrDefault();
+		private ulong GetFirstSteamMasterID() => Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key != 0) && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderByDescending(steamID => steamID != Bot.SteamID).ThenBy(steamID => steamID).FirstOrDefault();
 
 		private static async Task LimitGiftsRequestsAsync() {
 			if (Program.GlobalConfig.GiftsLimiterDelay == 0) {

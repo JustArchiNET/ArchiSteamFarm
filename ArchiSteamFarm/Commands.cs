@@ -531,12 +531,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(contextID)));
 			}
 
-			ulong targetSteamID = Bot.Actions.GetFirstSteamMasterID();
-			if (targetSteamID == 0) {
-				return Strings.BotLootingMasterNotDefined;
-			}
-
-			(bool success, string output) = await Bot.Actions.SendTradeOffer(targetSteamID, appID, contextID).ConfigureAwait(false);
+			(bool success, string output) = await Bot.Actions.SendTradeOffer(appID, contextID).ConfigureAwait(false);
 			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
 		}
 
@@ -642,10 +637,6 @@ namespace ArchiSteamFarm {
 
 			if (!targetBot.IsConnectedAndLoggedOn) {
 				return FormatBotResponse(Strings.BotNotConnected);
-			}
-
-			if (targetBot.SteamID == Bot.SteamID) {
-				return FormatBotResponse(Strings.BotSendingTradeToYourself);
 			}
 
 			(bool success, string output) = await Bot.Actions.SendTradeOffer(targetBot.SteamID, appID, contextID).ConfigureAwait(false);
@@ -1192,12 +1183,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
-			ulong targetSteamID = Bot.Actions.GetFirstSteamMasterID();
-			if (targetSteamID == 0) {
-				return Strings.BotLootingMasterNotDefined;
-			}
-
-			(bool success, string output) = await Bot.Actions.SendTradeOffer(targetSteamID, wantedTypes: Bot.BotConfig.LootableTypes).ConfigureAwait(false);
+			(bool success, string output) = await Bot.Actions.SendTradeOffer(wantedTypes: Bot.BotConfig.LootableTypes).ConfigureAwait(false);
 			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
 		}
 
@@ -1248,12 +1234,7 @@ namespace ArchiSteamFarm {
 				realAppIDs.Add(appID);
 			}
 
-			ulong targetSteamID = Bot.Actions.GetFirstSteamMasterID();
-			if (targetSteamID == 0) {
-				return Strings.BotLootingMasterNotDefined;
-			}
-
-			(bool success, string output) = await Bot.Actions.SendTradeOffer(targetSteamID, wantedRealAppIDs: realAppIDs).ConfigureAwait(false);
+			(bool success, string output) = await Bot.Actions.SendTradeOffer(wantedRealAppIDs: realAppIDs).ConfigureAwait(false);
 			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
 		}
 
