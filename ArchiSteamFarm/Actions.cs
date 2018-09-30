@@ -227,7 +227,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<(bool Success, string Output)> SendTradeOffer(uint appID = Steam.Asset.SteamAppID, byte contextID = Steam.Asset.SteamCommunityContextID, ulong targetSteamID = 0, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<uint> wantedRealAppIDs = null) {
-			if (appID == 0 || contextID == 0) {
+			if ((appID == 0) || (contextID == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
 				return (false, string.Format(Strings.ErrorObjectIsNull, nameof(targetSteamID) + " || " + nameof(appID) + " || " + nameof(contextID)));
 			}

@@ -622,7 +622,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<string> ResponseAdvancedTransfer(ulong steamID, uint appID, byte contextID, Bot targetBot) {
-			if (steamID == 0 || appID == 0 || contextID == 0 || targetBot == null) {
+			if ((steamID == 0) || (appID == 0) || (contextID == 0) || (targetBot == null)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(appID) + " || " + nameof(contextID) + " || " + nameof(targetBot));
 				return null;
 			}
@@ -644,7 +644,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<string> ResponseAdvancedTransfer(ulong steamID, string targetAppID, string targetContextID, string botNameTo) {
-			if (steamID == 0 || string.IsNullOrEmpty(targetAppID) || string.IsNullOrEmpty(targetContextID) || string.IsNullOrEmpty(botNameTo)) {
+			if ((steamID == 0) || string.IsNullOrEmpty(targetAppID) || string.IsNullOrEmpty(targetContextID) || string.IsNullOrEmpty(botNameTo)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(targetAppID) + " || " + nameof(targetContextID) + " || " + nameof(botNameTo));
 				return null;
 			}
@@ -653,11 +653,11 @@ namespace ArchiSteamFarm {
 				return ASF.IsOwner(steamID) ? FormatBotResponse(string.Format(Strings.BotNotFound, botNameTo)) : null;
 			}
 
-			if (!uint.TryParse(targetAppID, out uint appID) || appID == 0) {
+			if (!uint.TryParse(targetAppID, out uint appID) || (appID == 0)) {
 				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(appID)));
 			}
 
-			if (!byte.TryParse(targetContextID, out byte contextID) || contextID == 0) {
+			if (!byte.TryParse(targetContextID, out byte contextID) || (contextID == 0)) {
 				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(contextID)));
 			}
 
@@ -665,7 +665,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task<string> ResponseAdvancedTransfer(ulong steamID, string botNames, string targetAppID, string targetContextID, string botNameTo) {
-			if (steamID == 0 || string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(targetAppID) || string.IsNullOrEmpty(targetContextID) || string.IsNullOrEmpty(botNameTo)) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(targetAppID) || string.IsNullOrEmpty(targetContextID) || string.IsNullOrEmpty(botNameTo)) {
 				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames) + " || " + nameof(targetAppID) + " || " + nameof(targetContextID) + " || " + nameof(botNameTo));
 				return null;
 			}
@@ -675,11 +675,11 @@ namespace ArchiSteamFarm {
 				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			if (!uint.TryParse(targetAppID, out uint appID) || appID == 0) {
+			if (!uint.TryParse(targetAppID, out uint appID) || (appID == 0)) {
 				return FormatStaticResponse(string.Format(Strings.ErrorIsInvalid, nameof(appID)));
 			}
 
-			if (!byte.TryParse(targetContextID, out byte contextID) || contextID == 0) {
+			if (!byte.TryParse(targetContextID, out byte contextID) || (contextID == 0)) {
 				return FormatStaticResponse(string.Format(Strings.ErrorIsInvalid, nameof(contextID)));
 			}
 
@@ -2211,7 +2211,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<string> ResponseTransferByRealAppIDs(ulong steamID, HashSet<uint> realAppIDs, Bot targetBot) {
-			if (steamID == 0 || realAppIDs == null || realAppIDs.Count == 0 || targetBot == null) {
+			if ((steamID == 0) || (realAppIDs == null) || (realAppIDs.Count == 0) || (targetBot == null)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(realAppIDs) + " || " + nameof(targetBot));
 				return null;
 			}
@@ -2237,7 +2237,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<string> ResponseTransferByRealAppIDs(ulong steamID, string realAppIDsText, string botNameTo) {
-			if (steamID == 0 || string.IsNullOrEmpty(realAppIDsText) || string.IsNullOrEmpty(botNameTo)) {
+			if ((steamID == 0) || string.IsNullOrEmpty(realAppIDsText) || string.IsNullOrEmpty(botNameTo)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(realAppIDsText) + " || " + nameof(botNameTo));
 				return null;
 			}
@@ -2269,7 +2269,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<uint> realAppIDs = new HashSet<uint>();
 			foreach (string appIDText in appIDTexts) {
-				if (!uint.TryParse(appIDText, out uint appID) || appID == 0) {
+				if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
 					return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(appID)));
 				}
 
@@ -2298,7 +2298,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<uint> realAppIDs = new HashSet<uint>();
 			foreach (string appIDText in appIDTexts) {
-				if (!uint.TryParse(appIDText, out uint appID) || appID == 0) {
+				if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
 					return FormatStaticResponse(string.Format(Strings.ErrorIsInvalid, nameof(appID)));
 				}
 
