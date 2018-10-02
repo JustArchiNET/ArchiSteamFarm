@@ -2362,6 +2362,15 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			if (BotConfig.GamesPlayedWhileIdle.Count > 0) {
+				// This function might be executed before PlayingSessionStateCallback/SharedLibraryLockStatusCallback, ensure proper delay in this case
+				await Task.Delay(2000).ConfigureAwait(false);
+
+				if (!IsPlayingPossible || CardsFarmer.NowFarming) {
+					return;
+				}
+			}
+
 			await ArchiHandler.PlayGames(BotConfig.GamesPlayedWhileIdle, BotConfig.CustomGamePlayedWhileIdle).ConfigureAwait(false);
 		}
 
