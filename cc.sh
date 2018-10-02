@@ -58,6 +58,7 @@ if [[ -f "ASF-ui/package.json" ]] && hash npm 2>/dev/null; then
 
 	cd ASF-ui
 	npm i --no-progress
+	git checkout -- package.json package-lock.json # Until we can switch to npm ci, avoid any changes to source files done by npm i
 	npm run-script deploy --no-progress
 	cd ..
 else
