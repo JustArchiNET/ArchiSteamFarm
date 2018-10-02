@@ -1810,9 +1810,6 @@ namespace ArchiSteamFarm {
 			// Return early if this update doesn't bring anything new
 			if (callback.LicenseList.Count == OwnedPackageIDs.Count) {
 				if (callback.LicenseList.All(license => OwnedPackageIDs.ContainsKey(license.PackageID))) {
-					// Wait 2 seconds for eventual PlayingSessionStateCallback or SharedLibraryLockStatusCallback
-					await Task.Delay(2000).ConfigureAwait(false);
-
 					if (!await CardsFarmer.Resume(false).ConfigureAwait(false)) {
 						await ResetGamesPlayed().ConfigureAwait(false);
 					}
@@ -1844,9 +1841,6 @@ namespace ArchiSteamFarm {
 				await Program.GlobalDatabase.RefreshPackages(this, packagesToRefresh).ConfigureAwait(false);
 				ArchiLogger.LogGenericInfo(Strings.Done);
 			}
-
-			// Wait a second for eventual PlayingSessionStateCallback or SharedLibraryLockStatusCallback
-			await Task.Delay(1000).ConfigureAwait(false);
 
 			if (CardsFarmer.Paused) {
 				await ResetGamesPlayed().ConfigureAwait(false);

@@ -211,7 +211,10 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		internal void SetInitialState(bool paused) => PermanentlyPaused = Paused = paused;
+		internal void SetInitialState(bool paused) {
+			PermanentlyPaused = Paused = paused;
+			ShouldResumeFarming = true;
+		}
 
 		internal async Task StartFarming() {
 			if (NowFarming || Paused || !Bot.IsPlayingPossible) {
