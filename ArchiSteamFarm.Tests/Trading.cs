@@ -304,6 +304,23 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[TestMethod]
+		public void SingleGameSingleTypeBigDifferenceAccept() {
+			Steam.Asset item2X1 = GenerateSteamCommunityItem(2, 1, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item2X5 = GenerateSteamCommunityItem(2, 5, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item3X1 = GenerateSteamCommunityItem(3, 1, 570, Steam.Asset.EType.TradingCard);
+
+			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> {
+				item2X5,
+				item3X1
+			};
+
+			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { item2X1 };
+			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { item3X1 };
+
+			Assert.IsTrue(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
+		}
+
+		[TestMethod]
 		public void SingleGameSingleTypeGoodAccept() {
 			Steam.Asset item1 = GenerateSteamCommunityItem(1, 1, 570, Steam.Asset.EType.TradingCard);
 			Steam.Asset item1X2 = GenerateSteamCommunityItem(1, 2, 570, Steam.Asset.EType.TradingCard);

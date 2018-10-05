@@ -89,7 +89,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			return sets.ToDictionary(set => set.Key, set => set.Value.Values.OrderByDescending(amount => amount).ToList());
+			return sets.ToDictionary(set => set.Key, set => set.Value.Values.OrderBy(amount => amount).ToList());
 		}
 
 		private static bool IsTradeNeutralOrBetter(HashSet<Steam.Asset> inventory, IReadOnlyCollection<Steam.Asset> itemsToGive, IReadOnlyCollection<Steam.Asset> itemsToReceive) {
@@ -161,9 +161,9 @@ namespace ArchiSteamFarm {
 				}
 
 				// At this point we're sure that amount of unique items stays the same, so we can evaluate actual sets
-				// We make use of the fact that our amounts are already sorted in descending order, so we can just take the last value instead of calculating ourselves
-				uint beforeSets = beforeAmounts[beforeAmounts.Count - 1];
-				uint afterSets = afterAmounts[afterAmounts.Count - 1];
+				// We make use of the fact that our amounts are already sorted in ascending order, so we can just take the first value instead of calculating ourselves
+				uint beforeSets = beforeAmounts[0];
+				uint afterSets = afterAmounts[0];
 
 				// If amount of our sets for this game decreases, this is always a bad trade (e.g. 2 2 2 -> 3 2 1)
 				if (afterSets < beforeSets) {
@@ -176,12 +176,10 @@ namespace ArchiSteamFarm {
 				}
 
 				// At this point we're sure that both number of unique items in the set stays the same, as well as number of our actual sets
-				// We need to ensure set progress here, so we'll check if no final amount of a single item is lower than initial one
-				// We also need to remember about overpaying, so we'll compare only appropriate indexes from a list (that is already sorted in descending order)
-				for (byte i = 0; i < afterAmounts.Count; i++) {
-					if (afterAmounts[i] < beforeAmounts[i]) {
-						return false;
-					}
+				// We need to ensure set progress here and keep in mind overpaying, so we'll calculate neutrality as a difference in amounts on appropriate indexes
+				// The higher the neutrality the better the trade, with 0 being the absolute minimum we're willing to accept
+				if (afterAmounts.Select((t, i) => (int) (t - beforeAmounts[i])).Sum() < 0) {
+					return false;
 				}
 			}
 
