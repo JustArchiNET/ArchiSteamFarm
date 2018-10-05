@@ -264,7 +264,10 @@ Yığın izleme:
     <value>Lütfen Steam kullanıcı adınızı girin: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputSteamParentalCode" xml:space="preserve">
+    <value>Lütfen Steam aile PIN'inizi girin: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Lütfen Steam parolanızı girin: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -337,7 +340,9 @@ Yığın izleme:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Çalıştırma durdu!</value>
   </data>
-  
+  <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
+    <value>Kalıcı duraklatma etkin olduğundan bu talep göz ardı edildi!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Bu hesapta çalıştırılacak hiçbir şey bulamadık!</value>
   </data>

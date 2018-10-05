@@ -264,7 +264,10 @@ StackTrace:
     <value>Bitte gib deinen Steam Anmeldenamen ein: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputSteamParentalCode" xml:space="preserve">
+    <value>Bitte gib deinen Steam-Familienansicht-PIN ein: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Bitte Steam Passwort eingeben: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -337,7 +340,9 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Idlen gestoppt!</value>
   </data>
-  
+  <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
+    <value>Ignoriere Anfrage - permanente Pause aktiviert!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Wir haben auf diesem Benutzerkonto nichts zum Sammeln!</value>
   </data>

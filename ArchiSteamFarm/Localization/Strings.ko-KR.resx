@@ -337,7 +337,9 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>농사 멈춤!</value>
   </data>
-  
+  <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
+    <value>일시정지가 켜져 있으므로 이 요청을 무시합니다.</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>이 계정에는 농사지을 것이 없습니다!</value>
   </data>
