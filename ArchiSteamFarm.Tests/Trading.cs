@@ -33,17 +33,17 @@ namespace ArchiSteamFarm.Tests {
 			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> {
 				CreateItem(1, 9),
 				CreateItem(3, 9, 730, Steam.Asset.EType.Emoticon),
-				CreateItem(4, 1, 730, Steam.Asset.EType.Emoticon)
+				CreateItem(4, realAppID: 730, type: Steam.Asset.EType.Emoticon)
 			};
 
 			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> {
-				CreateItem(1, 1),
-				CreateItem(4, 1, 730, Steam.Asset.EType.Emoticon)
+				CreateItem(1),
+				CreateItem(4, realAppID: 730, type: Steam.Asset.EType.Emoticon)
 			};
 
 			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> {
-				CreateItem(2, 1),
-				CreateItem(3, 1, 730, Steam.Asset.EType.Emoticon)
+				CreateItem(2),
+				CreateItem(3, realAppID: 730, type: Steam.Asset.EType.Emoticon)
 			};
 
 			Assert.IsFalse(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
@@ -53,17 +53,17 @@ namespace ArchiSteamFarm.Tests {
 		public void MultiGameMultiTypeNeutralAccept() {
 			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> {
 				CreateItem(1, 9),
-				CreateItem(3, 1, 730, Steam.Asset.EType.Emoticon)
+				CreateItem(3, realAppID: 730, type: Steam.Asset.EType.Emoticon)
 			};
 
 			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> {
-				CreateItem(1, 1),
-				CreateItem(3, 1, 730, Steam.Asset.EType.Emoticon)
+				CreateItem(1),
+				CreateItem(3, realAppID: 730, type: Steam.Asset.EType.Emoticon)
 			};
 
 			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> {
-				CreateItem(2, 1),
-				CreateItem(4, 1, 730, Steam.Asset.EType.Emoticon)
+				CreateItem(2),
+				CreateItem(4, realAppID: 730, type: Steam.Asset.EType.Emoticon)
 			};
 
 			Assert.IsTrue(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
@@ -73,18 +73,18 @@ namespace ArchiSteamFarm.Tests {
 		public void MultiGameSingleTypeBadReject() {
 			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> {
 				CreateItem(1, 9),
-				CreateItem(3, 1, 730),
-				CreateItem(4, 1, 730)
+				CreateItem(3, realAppID: 730),
+				CreateItem(4, realAppID: 730)
 			};
 
 			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> {
-				CreateItem(1, 1),
-				CreateItem(3, 1, 730)
+				CreateItem(1),
+				CreateItem(3, realAppID: 730)
 			};
 
 			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> {
-				CreateItem(2, 1),
-				CreateItem(4, 1, 730)
+				CreateItem(2),
+				CreateItem(4, realAppID: 730)
 			};
 
 			Assert.IsFalse(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
@@ -94,17 +94,17 @@ namespace ArchiSteamFarm.Tests {
 		public void MultiGameSingleTypeNeutralAccept() {
 			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> {
 				CreateItem(1, 2),
-				CreateItem(3, 1, 730)
+				CreateItem(3, realAppID: 730)
 			};
 
 			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> {
-				CreateItem(1, 1),
-				CreateItem(3, 1, 730)
+				CreateItem(1),
+				CreateItem(3, realAppID: 730)
 			};
 
 			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> {
-				CreateItem(2, 1),
-				CreateItem(4, 1, 730)
+				CreateItem(2),
+				CreateItem(4, realAppID: 730)
 			};
 
 			Assert.IsTrue(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
@@ -115,17 +115,17 @@ namespace ArchiSteamFarm.Tests {
 			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> {
 				CreateItem(1, 9),
 				CreateItem(3, 9, type: Steam.Asset.EType.Emoticon),
-				CreateItem(4, 1, type: Steam.Asset.EType.Emoticon)
+				CreateItem(4, type: Steam.Asset.EType.Emoticon)
 			};
 
 			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> {
-				CreateItem(1, 1),
-				CreateItem(4, 1, type: Steam.Asset.EType.Emoticon)
+				CreateItem(1),
+				CreateItem(4, type: Steam.Asset.EType.Emoticon)
 			};
 
 			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> {
-				CreateItem(2, 1),
-				CreateItem(3, 1, type: Steam.Asset.EType.Emoticon)
+				CreateItem(2),
+				CreateItem(3, type: Steam.Asset.EType.Emoticon)
 			};
 
 			Assert.IsFalse(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
@@ -135,17 +135,17 @@ namespace ArchiSteamFarm.Tests {
 		public void SingleGameMultiTypeNeutralAccept() {
 			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> {
 				CreateItem(1, 9),
-				CreateItem(3, 1, type: Steam.Asset.EType.Emoticon)
+				CreateItem(3, type: Steam.Asset.EType.Emoticon)
 			};
 
 			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> {
-				CreateItem(1, 1),
-				CreateItem(3, 1, type: Steam.Asset.EType.Emoticon)
+				CreateItem(1),
+				CreateItem(3, type: Steam.Asset.EType.Emoticon)
 			};
 
 			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> {
-				CreateItem(2, 1),
-				CreateItem(4, 1, type: Steam.Asset.EType.Emoticon)
+				CreateItem(2),
+				CreateItem(4, type: Steam.Asset.EType.Emoticon)
 			};
 
 			Assert.IsTrue(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
@@ -154,15 +154,15 @@ namespace ArchiSteamFarm.Tests {
 		[TestMethod]
 		public void SingleGameQuantityBadReject() {
 			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> {
-				CreateItem(1, 1),
-				CreateItem(2, 1),
-				CreateItem(3, 1)
+				CreateItem(1),
+				CreateItem(2),
+				CreateItem(3)
 			};
 
 			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> {
-				CreateItem(1, 1),
-				CreateItem(2, 1),
-				CreateItem(3, 1)
+				CreateItem(1),
+				CreateItem(2),
+				CreateItem(3)
 			};
 
 			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { CreateItem(4, 3) };
@@ -173,12 +173,12 @@ namespace ArchiSteamFarm.Tests {
 		[TestMethod]
 		public void SingleGameQuantityBadReject2() {
 			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> {
-				CreateItem(1, 1),
+				CreateItem(1),
 				CreateItem(2, 2)
 			};
 
 			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> {
-				CreateItem(1, 1),
+				CreateItem(1),
 				CreateItem(2, 2)
 			};
 
@@ -191,12 +191,12 @@ namespace ArchiSteamFarm.Tests {
 		public void SingleGameQuantityNeutralAccept() {
 			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> {
 				CreateItem(1, 2),
-				CreateItem(2, 1)
+				CreateItem(2)
 			};
 
 			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> {
-				CreateItem(1, 1),
-				CreateItem(2, 1)
+				CreateItem(1),
+				CreateItem(2)
 			};
 
 			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { CreateItem(3, 2) };
@@ -207,12 +207,12 @@ namespace ArchiSteamFarm.Tests {
 		[TestMethod]
 		public void SingleGameSingleTypeBadReject() {
 			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> {
-				CreateItem(1, 1),
-				CreateItem(2, 1)
+				CreateItem(1),
+				CreateItem(2)
 			};
 
-			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { CreateItem(1, 1) };
-			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { CreateItem(2, 1) };
+			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { CreateItem(1) };
+			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { CreateItem(2) };
 
 			Assert.IsFalse(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
 		}
@@ -225,11 +225,11 @@ namespace ArchiSteamFarm.Tests {
 				CreateItem(3, 2)
 			};
 
-			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { CreateItem(2, 1) };
+			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { CreateItem(2) };
 
 			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> {
-				CreateItem(1, 1),
-				CreateItem(3, 1)
+				CreateItem(1),
+				CreateItem(3)
 			};
 
 			Assert.IsFalse(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
@@ -238,13 +238,13 @@ namespace ArchiSteamFarm.Tests {
 		[TestMethod]
 		public void SingleGameSingleTypeBigDifferenceAccept() {
 			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> {
-				CreateItem(1, 1),
+				CreateItem(1),
 				CreateItem(2, 5),
-				CreateItem(3, 1)
+				CreateItem(3)
 			};
 
-			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { CreateItem(2, 1) };
-			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { CreateItem(3, 1) };
+			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { CreateItem(2) };
+			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { CreateItem(3) };
 
 			Assert.IsTrue(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
 		}
@@ -252,17 +252,17 @@ namespace ArchiSteamFarm.Tests {
 		[TestMethod]
 		public void SingleGameSingleTypeGoodAccept() {
 			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> { CreateItem(1, 2) };
-			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { CreateItem(1, 1) };
-			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { CreateItem(2, 1) };
+			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { CreateItem(1) };
+			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { CreateItem(2) };
 
 			Assert.IsTrue(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
 		}
 
 		[TestMethod]
 		public void SingleGameSingleTypeNeutralAccept() {
-			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> { CreateItem(1, 1) };
-			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { CreateItem(1, 1) };
-			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { CreateItem(2, 1) };
+			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> { CreateItem(1) };
+			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { CreateItem(1) };
+			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { CreateItem(2) };
 
 			Assert.IsTrue(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
 		}
@@ -274,11 +274,11 @@ namespace ArchiSteamFarm.Tests {
 				CreateItem(2, 2)
 			};
 
-			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { CreateItem(2, 1) };
+			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { CreateItem(2) };
 
 			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> {
-				CreateItem(1, 1),
-				CreateItem(3, 1)
+				CreateItem(1),
+				CreateItem(3)
 			};
 
 			Assert.IsTrue(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
@@ -295,6 +295,6 @@ namespace ArchiSteamFarm.Tests {
 			return (bool) method.Invoke(null, new object[] { inventory, itemsToGive, itemsToReceive });
 		}
 
-		private static Steam.Asset CreateItem(ulong classID, uint amount, uint realAppID = Steam.Asset.SteamAppID, Steam.Asset.EType type = Steam.Asset.EType.TradingCard) => new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, classID, amount, realAppID, type);
+		private static Steam.Asset CreateItem(ulong classID, uint amount = 1, uint realAppID = Steam.Asset.SteamAppID, Steam.Asset.EType type = Steam.Asset.EType.TradingCard) => new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, classID, amount, realAppID, type);
 	}
 }
