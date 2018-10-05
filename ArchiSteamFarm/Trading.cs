@@ -177,9 +177,15 @@ namespace ArchiSteamFarm {
 
 				// At this point we're sure that both number of unique items in the set stays the same, as well as number of our actual sets
 				// We need to ensure set progress here and keep in mind overpaying, so we'll calculate neutrality as a difference in amounts at appropriate indexes
-				// The higher the neutrality the better the trade, with 0 being the absolute minimum we're willing to accept
-				if (afterAmounts.Select((t, i) => (int) (t - beforeAmounts[i])).Sum() < 0) {
-					return false;
+				// Neutrality can't reach value below 0 at any single point of calculation, as that would imply a loss of progress even if we'd end up with a positive value by the end
+				int neutrality = 0;
+
+				for (byte i = 0; i < afterAmounts.Count; i++) {
+					neutrality += (int) (afterAmounts[i] - beforeAmounts[i]);
+
+					if (neutrality < 0) {
+						return false;
+					}
 				}
 			}
 

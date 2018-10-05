@@ -250,6 +250,28 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[TestMethod]
+		public void SingleGameSingleTypeBigDifferenceReject() {
+			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> {
+				CreateItem(1),
+				CreateItem(2, 2),
+				CreateItem(3, 2),
+				CreateItem(4, 3),
+				CreateItem(5, 10)
+			};
+
+			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> {
+				CreateItem(2),
+				CreateItem(5)
+			};
+			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> {
+				CreateItem(3),
+				CreateItem(4)
+			};
+
+			Assert.IsFalse(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
+		}
+
+		[TestMethod]
 		public void SingleGameSingleTypeGoodAccept() {
 			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> { CreateItem(1, 2) };
 			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { CreateItem(1) };
