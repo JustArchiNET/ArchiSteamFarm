@@ -11,6 +11,7 @@ ENV NET_CORE_VERSION netcoreapp2.1
 WORKDIR /app
 COPY --from=build-node /app/dist ASF-ui/dist
 COPY ArchiSteamFarm ArchiSteamFarm
+COPY ArchiSteamFarm.Tests ArchiSteamFarm.Tests
 RUN dotnet --info && \
     dotnet test ArchiSteamFarm.Tests -c Release -f "$NET_CORE_VERSION" -o out/test /nologo && \
     dotnet publish ArchiSteamFarm -c Release -f "$NET_CORE_VERSION" -o out/publish /nologo /p:ASFVariant=docker /p:LinkDuringPublish=false && \
