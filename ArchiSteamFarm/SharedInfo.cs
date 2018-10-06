@@ -49,12 +49,25 @@ namespace ArchiSteamFarm {
 		internal const string StatisticsServer = "asf.justarchi.net";
 		internal const string UlongCompatibilityStringPrefix = "s_";
 		internal const string UpdateDirectory = "_old";
-		internal const string WebsiteDirectory = "www";
 
 		internal static string HomeDirectory => Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 		internal static Guid ModuleVersion => Assembly.GetEntryAssembly().ManifestModule.ModuleVersionId;
 		internal static string PublicIdentifier => AssemblyName + (BuildInfo.IsCustomBuild ? "-custom" : "");
 		internal static Version Version => Assembly.GetEntryAssembly().GetName().Version;
+		internal static string WebsiteDirectory {
+			get {
+				if (_WebsiteDirectory != null) {
+					return _WebsiteDirectory;
+				}
+
+				string customDirectory = CustomWebsiteDirectory;
+				return _WebsiteDirectory = Directory.Exists(customDirectory) ? customDirectory : DefaultWebsiteDirectory;
+			}
+		}
+
+		private static string _WebsiteDirectory;
+		private static string CustomWebsiteDirectory => Path.Combine(Directory.GetCurrentDirectory(), "www");
+		private static string DefaultWebsiteDirectory => Path.Combine(HomeDirectory, "www");
 
 		[SuppressMessage("ReSharper", "ConvertToConstant.Global")]
 		internal static class BuildInfo {
