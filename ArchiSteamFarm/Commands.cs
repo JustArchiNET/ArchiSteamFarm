@@ -188,7 +188,7 @@ namespace ArchiSteamFarm {
 							return await ResponseLoot(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "LOOT^":
 							if (args.Length > 3) {
-								return await ResponseAdvancedLoot(steamID, args[1], args[2], Utilities.GetArgsAsText(args, 3, ",")).ConfigureAwait(false);
+								return await ResponseAdvancedLoot(steamID, args[1], args[2], Utilities.GetArgsAsText(message, 3)).ConfigureAwait(false);
 							}
 
 							if (args.Length > 2) {
@@ -226,7 +226,7 @@ namespace ArchiSteamFarm {
 							return await ResponsePause(steamID, Utilities.GetArgsAsText(args, 1, ","), false).ConfigureAwait(false);
 						case "PAUSE&":
 							if (args.Length > 2) {
-								return await ResponsePause(steamID, args[1], true, Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
+								return await ResponsePause(steamID, args[1], true, Utilities.GetArgsAsText(message, 2)).ConfigureAwait(false);
 							}
 
 							return await ResponsePause(steamID, true, args[1]).ConfigureAwait(false);
@@ -270,27 +270,27 @@ namespace ArchiSteamFarm {
 							return await ResponseStop(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "TRANSFER":
 							if (args.Length > 2) {
-								return await ResponseTransfer(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
+								return await ResponseTransfer(steamID, args[1], Utilities.GetArgsAsText(message, 2)).ConfigureAwait(false);
 							}
 
 							return await ResponseTransfer(steamID, args[1]).ConfigureAwait(false);
 						case "TRANSFER^":
 							if (args.Length > 4) {
-								return await ResponseAdvancedTransfer(steamID, args[1], args[2], args[3], Utilities.GetArgsAsText(args, 4, ",")).ConfigureAwait(false);
+								return await ResponseAdvancedTransfer(steamID, args[1], args[2], args[3], Utilities.GetArgsAsText(message, 4)).ConfigureAwait(false);
 							}
 
 							if (args.Length > 3) {
-								return await ResponseAdvancedTransfer(steamID, args[1], args[2], Utilities.GetArgsAsText(args, 3, ",")).ConfigureAwait(false);
+								return await ResponseAdvancedTransfer(steamID, args[1], args[2], args[3]).ConfigureAwait(false);
 							}
 
 							goto default;
 						case "TRANSFER@":
 							if (args.Length > 3) {
-								return await ResponseTransferByRealAppIDs(steamID, args[1], args[2], Utilities.GetArgsAsText(args, 3, ",")).ConfigureAwait(false);
+								return await ResponseTransferByRealAppIDs(steamID, args[1], args[2], Utilities.GetArgsAsText(message, 3)).ConfigureAwait(false);
 							}
 
 							if (args.Length > 2) {
-								return await ResponseTransferByRealAppIDs(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
+								return await ResponseTransferByRealAppIDs(steamID, args[1], args[2]).ConfigureAwait(false);
 							}
 
 							goto default;
