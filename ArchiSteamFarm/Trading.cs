@@ -212,7 +212,7 @@ namespace ArchiSteamFarm {
 
 			if (results.Any(result => (result != null) && ((result.Result == ParseTradeResult.EResult.AcceptedWithItemLose) || (result.Result == ParseTradeResult.EResult.AcceptedWithoutItemLose))) && Bot.BotConfig.SendOnFarmingFinished) {
 				// If we finished a trade, perform a loot if user wants to do so
-				await Bot.Actions.SendTradeOffer().ConfigureAwait(false);
+				await Bot.Actions.SendTradeOffer(wantedTypes: Bot.BotConfig.LootableTypes).ConfigureAwait(false);
 			}
 		}
 

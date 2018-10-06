@@ -32,5 +32,10 @@
 	"SteamTradeToken": null,
 	"SteamUserPermissions": {},
 	"TradingPreferences": 0,
+	"TransferableTypes": [
+		1,
+		3,
+		5
+	],
 	"UseLoginKeys": true
 }

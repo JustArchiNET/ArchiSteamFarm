@@ -788,7 +788,7 @@ namespace ArchiSteamFarm {
 				FirstTradeSent = true;
 
 				if (BotConfig.SendOnFarmingFinished) {
-					await Actions.SendTradeOffer().ConfigureAwait(false);
+					await Actions.SendTradeOffer(wantedTypes: BotConfig.LootableTypes).ConfigureAwait(false);
 				}
 			}
 
@@ -1426,7 +1426,7 @@ namespace ArchiSteamFarm {
 
 			if ((BotConfig.SendTradePeriod > 0) && BotConfig.SteamUserPermissions.Values.Any(permission => permission >= BotConfig.EPermission.Master)) {
 				SendItemsTimer = new Timer(
-					async e => await Actions.SendTradeOffer().ConfigureAwait(false),
+					async e => await Actions.SendTradeOffer(wantedTypes: BotConfig.LootableTypes).ConfigureAwait(false),
 					null,
 					TimeSpan.FromHours(BotConfig.SendTradePeriod) + TimeSpan.FromSeconds(Program.LoadBalancingDelay * Bots.Count), // Delay
 					TimeSpan.FromHours(BotConfig.SendTradePeriod) // Period

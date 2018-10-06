@@ -269,15 +269,11 @@ namespace ArchiSteamFarm {
 						case "STOP":
 							return await ResponseStop(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "TRANSFER":
-							if (args.Length > 3) {
-								return await ResponseTransfer(steamID, args[1], args[2], Utilities.GetArgsAsText(args, 3, ",")).ConfigureAwait(false);
-							}
-
 							if (args.Length > 2) {
-								return await ResponseTransfer(steamID, args[1], args[2]).ConfigureAwait(false);
+								return await ResponseTransfer(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
 							}
 
-							goto default;
+							return await ResponseTransfer(steamID, args[1]).ConfigureAwait(false);
 						case "TRANSFER^":
 							if (args.Length > 4) {
 								return await ResponseAdvancedTransfer(steamID, args[1], args[2], args[3], Utilities.GetArgsAsText(args, 4, ",")).ConfigureAwait(false);
@@ -1234,7 +1230,7 @@ namespace ArchiSteamFarm {
 				realAppIDs.Add(appID);
 			}
 
-			(bool success, string output) = await Bot.Actions.SendTradeOffer(wantedRealAppIDs: realAppIDs).ConfigureAwait(false);
+			(bool success, string output) = await Bot.Actions.SendTradeOffer(wantedTypes: Bot.BotConfig.LootableTypes, wantedRealAppIDs: realAppIDs).ConfigureAwait(false);
 			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
 		}
 
@@ -2113,9 +2109,9 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 
-		private async Task<string> ResponseTransfer(ulong steamID, string mode, string botNameTo) {
-			if ((steamID == 0) || string.IsNullOrEmpty(botNameTo) || string.IsNullOrEmpty(mode)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(mode) + " || " + nameof(botNameTo));
+		private async Task<string> ResponseTransfer(ulong steamID, string botNameTo) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botNameTo)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNameTo));
 				return null;
 			}
 
@@ -2139,63 +2135,13 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotSendingTradeToYourself);
 			}
 
-			string[] modes = mode.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-			if (modes.Length == 0) {
-				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(modes)));
-			}
-
-			HashSet<Steam.Asset.EType> transferTypes = new HashSet<Steam.Asset.EType>();
-
-			foreach (string singleMode in modes) {
-				switch (singleMode.ToUpper()) {
-					case "A":
-					case "ALL":
-						foreach (Steam.Asset.EType type in Enum.GetValues(typeof(Steam.Asset.EType))) {
-							transferTypes.Add(type);
-						}
-
-						break;
-					case "BG":
-					case "BACKGROUND":
-						transferTypes.Add(Steam.Asset.EType.ProfileBackground);
-						break;
-					case "BO":
-					case "BOOSTER":
-						transferTypes.Add(Steam.Asset.EType.BoosterPack);
-						break;
-					case "C":
-					case "CARD":
-						transferTypes.Add(Steam.Asset.EType.TradingCard);
-						break;
-					case "E":
-					case "EMOTICON":
-						transferTypes.Add(Steam.Asset.EType.Emoticon);
-						break;
-					case "F":
-					case "FOIL":
-						transferTypes.Add(Steam.Asset.EType.FoilTradingCard);
-						break;
-					case "G":
-					case "GEMS":
-						transferTypes.Add(Steam.Asset.EType.SteamGems);
-						break;
-					case "U":
-					case "UNKNOWN":
-						transferTypes.Add(Steam.Asset.EType.Unknown);
-						break;
-					default:
-						return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, mode));
-				}
-			}
-
-			(bool success, string output) = await Bot.Actions.SendTradeOffer(targetSteamID: targetBot.SteamID, wantedTypes: transferTypes).ConfigureAwait(false);
+			(bool success, string output) = await Bot.Actions.SendTradeOffer(targetSteamID: targetBot.SteamID, wantedTypes: Bot.BotConfig.TransferableTypes).ConfigureAwait(false);
 			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
 		}
 
-		private static async Task<string> ResponseTransfer(ulong steamID, string botNames, string mode, string botNameTo) {
-			if ((steamID == 0) || string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(mode) || string.IsNullOrEmpty(botNameTo)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames) + " || " + nameof(mode) + " || " + nameof(botNameTo));
+		private static async Task<string> ResponseTransfer(ulong steamID, string botNames, string botNameTo) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(botNameTo)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames) + " || " + nameof(botNameTo));
 				return null;
 			}
 
@@ -2204,7 +2150,7 @@ namespace ArchiSteamFarm {
 				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			IList<string> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseTransfer(steamID, mode, botNameTo))).ConfigureAwait(false);
+			IList<string> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseTransfer(steamID, botNameTo))).ConfigureAwait(false);
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
@@ -2232,7 +2178,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotSendingTradeToYourself);
 			}
 
-			(bool success, string output) = await Bot.Actions.SendTradeOffer(targetSteamID: targetBot.SteamID, wantedRealAppIDs: realAppIDs).ConfigureAwait(false);
+			(bool success, string output) = await Bot.Actions.SendTradeOffer(targetSteamID: targetBot.SteamID, wantedTypes: Bot.BotConfig.TransferableTypes, wantedRealAppIDs: realAppIDs).ConfigureAwait(false);
 			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
 		}
 
@@ -2246,20 +2192,8 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.IsConnectedAndLoggedOn) {
-				return FormatBotResponse(Strings.BotNotConnected);
-			}
-
 			if (!Bot.Bots.TryGetValue(botNameTo, out Bot targetBot)) {
 				return ASF.IsOwner(steamID) ? FormatBotResponse(string.Format(Strings.BotNotFound, botNameTo)) : null;
-			}
-
-			if (!targetBot.IsConnectedAndLoggedOn) {
-				return FormatBotResponse(Strings.BotNotConnected);
-			}
-
-			if (targetBot.SteamID == Bot.SteamID) {
-				return FormatBotResponse(Strings.BotSendingTradeToYourself);
 			}
 
 			string[] appIDTexts = realAppIDsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
@@ -2276,8 +2210,7 @@ namespace ArchiSteamFarm {
 				realAppIDs.Add(appID);
 			}
 
-			(bool success, string output) = await Bot.Actions.SendTradeOffer(targetSteamID: targetBot.SteamID, wantedRealAppIDs: realAppIDs).ConfigureAwait(false);
-			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
+			return await ResponseTransferByRealAppIDs(steamID, realAppIDs, targetBot).ConfigureAwait(false);
 		}
 
 		private static async Task<string> ResponseTransferByRealAppIDs(ulong steamID, string botNames, string realAppIDsText, string botNameTo) {

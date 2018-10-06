@@ -63,6 +63,7 @@ namespace ArchiSteamFarm {
 		private static readonly ImmutableHashSet<Steam.Asset.EType> DefaultLootableTypes = ImmutableHashSet.Create(Steam.Asset.EType.BoosterPack, Steam.Asset.EType.FoilTradingCard, Steam.Asset.EType.TradingCard);
 		private static readonly ImmutableHashSet<Steam.Asset.EType> DefaultMatchableTypes = ImmutableHashSet.Create(Steam.Asset.EType.TradingCard);
 		private static readonly ImmutableDictionary<ulong, EPermission> DefaultSteamUserPermissions = ImmutableDictionary<ulong, EPermission>.Empty;
+		private static readonly ImmutableHashSet<Steam.Asset.EType> DefaultTransferableTypes = ImmutableHashSet.Create(Steam.Asset.EType.BoosterPack, Steam.Asset.EType.FoilTradingCard, Steam.Asset.EType.TradingCard);
 
 		private static readonly SemaphoreSlim WriteSemaphore = new SemaphoreSlim(1, 1);
 
@@ -134,6 +135,9 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly ETradingPreferences TradingPreferences = DefaultTradingPreferences;
+
+		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
+		internal readonly ImmutableHashSet<Steam.Asset.EType> TransferableTypes = DefaultTransferableTypes;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool UseLoginKeys = DefaultUseLoginKeys;
@@ -438,6 +442,7 @@ namespace ArchiSteamFarm {
 		public bool ShouldSerializeSteamTradeToken() => ShouldSerializeEverything || (SteamTradeToken != DefaultSteamTradeToken);
 		public bool ShouldSerializeSteamUserPermissions() => ShouldSerializeEverything || ((SteamUserPermissions != DefaultSteamUserPermissions) && ((SteamUserPermissions.Count != DefaultSteamUserPermissions.Count) || SteamUserPermissions.Except(DefaultSteamUserPermissions).Any()));
 		public bool ShouldSerializeTradingPreferences() => ShouldSerializeEverything || (TradingPreferences != DefaultTradingPreferences);
+		public bool ShouldSerializeTransferableTypes() => ShouldSerializeEverything || ((TransferableTypes != DefaultTransferableTypes) && !TransferableTypes.SetEquals(DefaultTransferableTypes));
 		public bool ShouldSerializeUseLoginKeys() => ShouldSerializeEverything || (UseLoginKeys != DefaultUseLoginKeys);
 
 		// ReSharper restore UnusedMember.Global
