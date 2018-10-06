@@ -63,7 +63,7 @@ namespace ArchiSteamFarm.IPC {
 			IWebHostBuilder builder = new WebHostBuilder();
 
 			string customDirectory = SharedInfo.CustomWebsiteDirectory;
-			if (!Directory.Exists(customDirectory)) {
+			if (Directory.Exists(customDirectory)) {
 				WebsiteDirectory = customDirectory;
 			}
 
