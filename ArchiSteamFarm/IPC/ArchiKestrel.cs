@@ -34,21 +34,7 @@ namespace ArchiSteamFarm.IPC {
 	internal static class ArchiKestrel {
 		private const string ConfigurationFile = nameof(IPC) + ".config";
 
-		private static string _WebsiteDirectory;
-		internal static string WebsiteDirectory {
-			get {
-				if (_WebsiteDirectory != null) {
-					return _WebsiteDirectory;
-				}
-
-				_WebsiteDirectory = SharedInfo.CustomWebsiteDirectory;
-				if (!Directory.Exists(_WebsiteDirectory)) {
-					_WebsiteDirectory = SharedInfo.DefaultWebsiteDirectory;
-				}
-
-				return _WebsiteDirectory;
-			}
-		}
+		internal static string WebsiteDirectory;
 
 		internal static HistoryTarget HistoryTarget { get; private set; }
 
@@ -75,6 +61,11 @@ namespace ArchiSteamFarm.IPC {
 
 			// The order of dependency injection matters, pay attention to it
 			IWebHostBuilder builder = new WebHostBuilder();
+
+			WebsiteDirectory = SharedInfo.CustomWebsiteDirectory;
+			if (!Directory.Exists(WebsiteDirectory)) {
+				WebsiteDirectory = SharedInfo.DefaultWebsiteDirectory;
+			}
 
 			// Set default directories
 			builder.UseContentRoot(SharedInfo.HomeDirectory);
