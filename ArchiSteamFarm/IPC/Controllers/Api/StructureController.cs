@@ -26,8 +26,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[ApiController]
+	[Produces("application/json")]
 	[Route("Api/Structure")]
 	public sealed class StructureController : ControllerBase {
+		/// <summary>
+		/// Fetches structure of given type.
+		/// </summary>
+		/// <remarks>
+		/// Structure is defined as a representation of given object in its default state.
+		/// </remarks>
 		[HttpGet("{structure:required}")]
 		public ActionResult<GenericResponse<object>> StructureGet(string structure) {
 			if (string.IsNullOrEmpty(structure)) {

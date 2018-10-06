@@ -33,10 +33,17 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[ApiController]
+	[Produces("application/json")]
 	[Route("Api/NLog")]
 	public sealed class NLogController : ControllerBase {
 		private static readonly ConcurrentDictionary<WebSocket, SemaphoreSlim> ActiveLogWebSockets = new ConcurrentDictionary<WebSocket, SemaphoreSlim>();
 
+		/// <summary>
+		/// Fetches ASF log in realtime.
+		/// </summary>
+		/// <remarks>
+		/// This API endpoint requires a websocket connection.
+		/// </remarks>
 		[HttpGet]
 		public async Task<ActionResult> NLogGet() {
 			if (!HttpContext.WebSockets.IsWebSocketRequest) {

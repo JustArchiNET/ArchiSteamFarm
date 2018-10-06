@@ -25,11 +25,17 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm.IPC.Requests {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	public sealed class BotPauseRequest {
+		/// <summary>
+		/// Specifies if pause is permanent or temporary (default).
+		/// </summary>
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool Permanent;
+		public readonly bool Permanent;
 
+		/// <summary>
+		/// Specifies automatic resume action in given seconds. Default value of 0 disables automatic resume.
+		/// </summary>
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ushort ResumeInSeconds;
+		public readonly ushort ResumeInSeconds;
 
 		// Deserialized from JSON
 		private BotPauseRequest() { }

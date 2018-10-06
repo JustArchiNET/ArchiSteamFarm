@@ -20,21 +20,38 @@
 // limitations under the License.
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Responses {
 	public sealed class GitHubReleaseResponse {
-		[JsonProperty]
-		private readonly string ChangelogHTML;
+		/// <summary>
+		/// Changelog of the release rendered in HTML.
+		/// </summary>
+		[JsonProperty(Required = Required.Always)]
+		[Required]
+		public readonly string ChangelogHTML;
 
-		[JsonProperty]
-		private readonly DateTime ReleasedAt;
+		/// <summary>
+		/// Date of the release.
+		/// </summary>
+		[JsonProperty(Required = Required.Always)]
+		[Required]
+		public readonly DateTime ReleasedAt;
 
-		[JsonProperty]
-		private readonly bool Stable;
+		/// <summary>
+		/// Boolean value that specifies whether the build is stable or not (pre-release).
+		/// </summary>
+		[JsonProperty(Required = Required.Always)]
+		[Required]
+		public readonly bool Stable;
 
-		[JsonProperty]
-		private readonly string Version;
+		/// <summary>
+		/// Version of the release.
+		/// </summary>
+		[JsonProperty(Required = Required.Always)]
+		[Required]
+		public readonly string Version;
 
 		internal GitHubReleaseResponse(GitHub.ReleaseResponse releaseResponse) {
 			if (releaseResponse == null) {

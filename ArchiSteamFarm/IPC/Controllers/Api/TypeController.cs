@@ -30,8 +30,15 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[ApiController]
+	[Produces("application/json")]
 	[Route("Api/Type")]
 	public sealed class TypeController : ControllerBase {
+		/// <summary>
+		/// Fetches type info of given type.
+		/// </summary>
+		/// <remarks>
+		/// Type info is defined as a representation of given object with its fields and properties being assigned to a string value that defines their type.
+		/// </remarks>
 		[HttpGet("{type:required}")]
 		public ActionResult<GenericResponse<TypeResponse>> TypeGet(string type) {
 			if (string.IsNullOrEmpty(type)) {

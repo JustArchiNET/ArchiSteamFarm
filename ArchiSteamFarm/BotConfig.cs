@@ -33,7 +33,7 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	internal sealed class BotConfig {
+	public sealed class BotConfig {
 		private const bool DefaultAcceptGifts = false;
 		private const bool DefaultAutoSteamSaleEvent = false;
 		private const EBotBehaviour DefaultBotBehaviour = EBotBehaviour.None;

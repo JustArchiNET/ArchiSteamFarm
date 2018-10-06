@@ -30,8 +30,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[ApiController]
+	[Produces("application/json")]
 	[Route("Api/ASF")]
 	public sealed class ASFController : ControllerBase {
+		/// <summary>
+		/// Fetches common info related to ASF as a whole.
+		/// </summary>
 		[HttpGet]
 		public ActionResult<GenericResponse<ASFResponse>> ASFGet() {
 			uint memoryUsage = (uint) GC.GetTotalMemory(false) / 1024;
@@ -46,6 +50,9 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			return Ok(new GenericResponse<ASFResponse>(result));
 		}
 
+		/// <summary>
+		/// Updates ASF's global config.
+		/// </summary>
 		[HttpPost]
 		public async Task<ActionResult<GenericResponse>> ASFPost([FromBody] ASFRequest request) {
 			if (request == null) {
@@ -70,18 +77,27 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			return Ok(new GenericResponse(result));
 		}
 
+		/// <summary>
+		/// Makes ASF shutdown itself.
+		/// </summary>
 		[HttpPost("Exit")]
 		public ActionResult<GenericResponse> ExitPost() {
 			(bool success, string output) = Actions.Exit();
 			return Ok(new GenericResponse(success, output));
 		}
 
+		/// <summary>
+		/// Makes ASF restart itself.
+		/// </summary>
 		[HttpPost("Restart")]
 		public ActionResult<GenericResponse> RestartPost() {
 			(bool success, string output) = Actions.Restart();
 			return Ok(new GenericResponse(success, output));
 		}
 
+		/// <summary>
+		/// Makes ASF update itself.
+		/// </summary>
 		[HttpPost("Update")]
 		public async Task<ActionResult<GenericResponse<Version>>> UpdatePost() {
 			(bool success, Version version) = await Actions.Update().ConfigureAwait(false);

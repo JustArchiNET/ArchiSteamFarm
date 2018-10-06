@@ -28,8 +28,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[ApiController]
+	[Produces("application/json")]
 	[Route("Api/Command")]
 	public sealed class CommandController : ControllerBase {
+		/// <summary>
+		/// Executes a command.
+		/// </summary>
+		/// <remarks>
+		/// This API endpoint is supposed to be entirely replaced by ASF actions available under /Api/ASF/{action} and /Api/Bot/{bot}/{action}.
+		/// You should use "given bot" commands when executing this endpoint, omitting targets of the command will cause the command to be executed on first defined bot
+		/// </remarks>
 		[HttpPost("{command:required}")]
 		public async Task<ActionResult<GenericResponse<string>>> CommandPost(string command) {
 			if (string.IsNullOrEmpty(command)) {

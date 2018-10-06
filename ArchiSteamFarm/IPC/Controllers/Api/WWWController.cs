@@ -31,8 +31,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[ApiController]
+	[Produces("application/json")]
 	[Route("Api/WWW")]
 	public sealed class WWWController : ControllerBase {
+		/// <summary>
+		/// Fetches files in given directory relative to WWW root.
+		/// </summary>
+		/// <remarks>
+		/// This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW as they can disappear and change anytime.
+		/// </remarks>
 		[HttpGet("Directory/{directory:required}")]
 		public ActionResult<GenericResponse<HashSet<string>>> DirectoryGet(string directory) {
 			if (string.IsNullOrEmpty(directory)) {
@@ -57,6 +64,12 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			return Ok(new GenericResponse<HashSet<string>>(result));
 		}
 
+		/// <summary>
+		/// Fetches newest GitHub releases of ASF project.
+		/// </summary>
+		/// <remarks>
+		/// This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW as they can disappear and change anytime.
+		/// </remarks>
 		[HttpGet("GitHub/Releases")]
 		public async Task<ActionResult<GenericResponse<IEnumerable<GitHubReleaseResponse>>>> GitHubReleasesGet([FromQuery] byte count = 10) {
 			if (count == 0) {
@@ -72,6 +85,12 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			return Ok(new GenericResponse<IEnumerable<GitHubReleaseResponse>>(result));
 		}
 
+		/// <summary>
+		/// Fetches specific GitHub release of ASF project.
+		/// </summary>
+		/// <remarks>
+		/// This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW as they can disappear and change anytime.
+		/// </remarks>
 		[HttpGet("GitHub/Releases/{version:required}")]
 		public async Task<ActionResult<GenericResponse<GitHubReleaseResponse>>> GitHubReleasesGet(string version) {
 			if (string.IsNullOrEmpty(version)) {
@@ -86,6 +105,12 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			return Ok(new GenericResponse<GitHubReleaseResponse>(new GitHubReleaseResponse(releaseResponse)));
 		}
 
+		/// <summary>
+		/// Sends a HTTPS request through ASF's built-in HttpClient.
+		/// </summary>
+		/// <remarks>
+		/// This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW as they can disappear and change anytime.
+		/// </remarks>
 		[HttpPost("Send")]
 		public async Task<ActionResult<GenericResponse<string>>> SendPost([FromBody] WWWSendRequest request) {
 			if (request == null) {

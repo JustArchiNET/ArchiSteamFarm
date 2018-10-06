@@ -32,8 +32,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[ApiController]
+	[Produces("application/json")]
 	[Route("Api/Bot")]
 	public sealed class BotController : ControllerBase {
+		/// <summary>
+		/// Deletes all files related to given bots.
+		/// </summary>
 		[HttpDelete("{botNames:required}")]
 		public async Task<ActionResult<GenericResponse>> BotDelete(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
@@ -50,6 +54,9 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			return Ok(new GenericResponse(results.All(result => result)));
 		}
 
+		/// <summary>
+		/// Fetches common info related to given bots.
+		/// </summary>
 		[HttpGet("{botNames:required}")]
 		public ActionResult<GenericResponse<HashSet<Bot>>> BotGet(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
@@ -65,6 +72,9 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			return Ok(new GenericResponse<HashSet<Bot>>(bots));
 		}
 
+		/// <summary>
+		/// Updates bot config of given bot.
+		/// </summary>
 		[HttpPost("{botName:required}")]
 		public async Task<ActionResult<GenericResponse>> BotPost(string botName, [FromBody] BotRequest request) {
 			if (string.IsNullOrEmpty(botName) || (request == null)) {
@@ -99,6 +109,9 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			return Ok(new GenericResponse(result));
 		}
 
+		/// <summary>
+		/// Removes BGR output files of given bots.
+		/// </summary>
 		[HttpDelete("{botNames:required}/GamesToRedeemInBackground")]
 		public async Task<ActionResult<GenericResponse>> GamesToRedeemInBackgroundDelete(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
@@ -115,6 +128,9 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			return Ok(results.All(result => result) ? new GenericResponse(true) : new GenericResponse(false, Strings.WarningFailed));
 		}
 
+		/// <summary>
+		/// Fetches BGR output files of given bots.
+		/// </summary>
 		[HttpGet("{botNames:required}/GamesToRedeemInBackground")]
 		public async Task<ActionResult<GenericResponse<Dictionary<string, GamesToRedeemInBackgroundResponse>>>> GamesToRedeemInBackgroundGet(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
@@ -139,6 +155,9 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			return Ok(new GenericResponse<Dictionary<string, GamesToRedeemInBackgroundResponse>>(result));
 		}
 
+		/// <summary>
+		/// Adds keys to redeem using BGR to given bot.
+		/// </summary>
 		[HttpPost("{botName:required}/GamesToRedeemInBackground")]
 		public async Task<ActionResult<GenericResponse<OrderedDictionary>>> GamesToRedeemInBackgroundPost(string botName, [FromBody] GamesToRedeemInBackgroundRequest request) {
 			if (string.IsNullOrEmpty(botName) || (request == null)) {
@@ -158,6 +177,9 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			return Ok(new GenericResponse<OrderedDictionary>(result, request.GamesToRedeemInBackground));
 		}
 
+		/// <summary>
+		/// Pauses given bots.
+		/// </summary>
 		[HttpPost("{botNames:required}/Pause")]
 		public async Task<ActionResult<GenericResponse>> PausePost(string botNames, [FromBody] BotPauseRequest request) {
 			if (string.IsNullOrEmpty(botNames) || (request == null)) {
@@ -174,6 +196,9 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			return Ok(new GenericResponse(results.All(result => result.Success), string.Join(Environment.NewLine, results.Select(result => result.Output))));
 		}
 
+		/// <summary>
+		/// Resumes given bots.
+		/// </summary>
 		[HttpPost("{botNames:required}/Resume")]
 		public async Task<ActionResult<GenericResponse>> ResumePost(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
@@ -190,6 +215,9 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			return Ok(new GenericResponse(results.All(result => result.Success), string.Join(Environment.NewLine, results.Select(result => result.Output))));
 		}
 
+		/// <summary>
+		/// Starts given bots.
+		/// </summary>
 		[HttpPost("{botNames:required}/Start")]
 		public async Task<ActionResult<GenericResponse>> StartPost(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
@@ -206,6 +234,9 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			return Ok(new GenericResponse(results.All(result => result.Success), string.Join(Environment.NewLine, results.Select(result => result.Output))));
 		}
 
+		/// <summary>
+		/// Stops given bots.
+		/// </summary>
 		[HttpPost("{botNames:required}/Stop")]
 		public async Task<ActionResult<GenericResponse>> StopPost(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {

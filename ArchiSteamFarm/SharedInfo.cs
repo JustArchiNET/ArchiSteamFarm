@@ -29,6 +29,7 @@ namespace ArchiSteamFarm {
 		internal const ulong ArchiSteamID = 76561198006963719;
 		internal const string ASF = nameof(ASF);
 		internal const ulong ASFGroupSteamID = 103582791440160998;
+		internal const string AssemblyDocumentation = AssemblyName + ".xml";
 		internal const string AssemblyName = nameof(ArchiSteamFarm);
 		internal const string ConfigDirectory = "config";
 		internal const string ConfigExtension = ".json";

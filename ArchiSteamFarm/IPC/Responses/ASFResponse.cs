@@ -20,24 +20,45 @@
 // limitations under the License.
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Responses {
 	public sealed class ASFResponse {
-		[JsonProperty]
-		private readonly string BuildVariant;
+		/// <summary>
+		/// ASF's build variant.
+		/// </summary>
+		[JsonProperty(Required = Required.Always)]
+		[Required]
+		public readonly string BuildVariant;
 
-		[JsonProperty]
-		private readonly GlobalConfig GlobalConfig;
+		/// <summary>
+		/// Currently loaded ASF's global config.
+		/// </summary>
+		[JsonProperty(Required = Required.Always)]
+		[Required]
+		public readonly GlobalConfig GlobalConfig;
 
-		[JsonProperty]
-		private readonly uint MemoryUsage;
+		/// <summary>
+		/// Current amount of managed memory being used by the process, in kilobytes.
+		/// </summary>
+		[JsonProperty(Required = Required.Always)]
+		[Required]
+		public readonly uint MemoryUsage;
 
-		[JsonProperty]
-		private readonly DateTime ProcessStartTime;
+		/// <summary>
+		/// Start date of the process.
+		/// </summary>
+		[JsonProperty(Required = Required.Always)]
+		[Required]
+		public readonly DateTime ProcessStartTime;
 
-		[JsonProperty]
-		private readonly Version Version;
+		/// <summary>
+		/// ASF version of currently running binary.
+		/// </summary>
+		[JsonProperty(Required = Required.Always)]
+		[Required]
+		public readonly Version Version;
 
 		internal ASFResponse(string buildVariant, GlobalConfig globalConfig, uint memoryUsage, DateTime processStartTime, Version version) {
 			if (string.IsNullOrEmpty(buildVariant) || (globalConfig == null) || (memoryUsage == 0) || (processStartTime == DateTime.MinValue) || (version == null)) {

@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.IO;
 using ArchiSteamFarm.IPC.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,6 +30,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace ArchiSteamFarm.IPC {
 	internal sealed class Startup {
@@ -64,6 +66,12 @@ namespace ArchiSteamFarm.IPC {
 			// We need MVC for /Api
 			app.UseMvcWithDefaultRoute();
 
+			// Use swagger for automatic API documentation generation
+			app.UseSwagger();
+
+			// Use friendly swagger UI
+			app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/ASF/swagger.json", "ASF API"));
+
 			// We're using index for URL routing in our static files so re-execute all non-API calls on /
 			app.UseWhen(context => !context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), appBuilder => appBuilder.UseStatusCodePagesWithReExecute("/"));
 
@@ -83,8 +91,25 @@ namespace ArchiSteamFarm.IPC {
 			// Add support for response compression
 			services.AddResponseCompression();
 
+			// Add swagger documentation generation
+			services.AddSwaggerGen(
+				c => {
+					c.DescribeAllEnumsAsStrings();
+					c.SwaggerDoc("ASF", new Info { Title = "ASF API" });
+
+					string xmlDocumentationFile = Path.Combine(AppContext.BaseDirectory, SharedInfo.AssemblyDocumentation);
+
+					if (File.Exists(xmlDocumentationFile)) {
+						c.IncludeXmlComments(xmlDocumentationFile);
+					}
+				}
+			);
+
 			// We need MVC for /Api, but we're going to use only a small subset of all available features
 			IMvcCoreBuilder mvc = services.AddMvcCore();
+
+			// Add API explorer for swagger
+			mvc.AddApiExplorer();
 
 			// Use latest compatibility version for MVC
 			mvc.SetCompatibilityVersion(CompatibilityVersion.Latest);

@@ -19,13 +19,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.ComponentModel.DataAnnotations;
 using ArchiSteamFarm.Localization;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Responses {
 	public sealed class GenericResponse<T> : GenericResponse where T : class {
+		/// <summary>
+		/// The actual result of the request, if available.
+		/// </summary>
+		/// <remarks>
+		/// The type of the result depends on the API endpoint that you've called.
+		/// </remarks>
 		[JsonProperty]
-		private readonly T Result;
+		public readonly T Result;
 
 		internal GenericResponse(T result) : base(result != null) => Result = result;
 		internal GenericResponse(bool success, string message) : base(success, message) { }
@@ -33,11 +40,21 @@ namespace ArchiSteamFarm.IPC.Responses {
 	}
 
 	public class GenericResponse {
+		/// <summary>
+		/// A message that describes what happened with the request, if available.
+		/// </summary>
+		/// <remarks>
+		/// This property will provide exact reason for majority of expected failures.
+		/// </remarks>
 		[JsonProperty]
-		private readonly string Message;
+		public readonly string Message;
 
-		[JsonProperty]
-		private readonly bool Success;
+		/// <summary>
+		/// Boolean type that specifies if the request has succeeded.
+		/// </summary>
+		[JsonProperty(Required = Required.Always)]
+		[Required]
+		public readonly bool Success;
 
 		internal GenericResponse(bool success, string message = null) {
 			Success = success;

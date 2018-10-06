@@ -21,15 +21,29 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Responses {
 	public sealed class TypeResponse {
-		[JsonProperty]
-		private readonly Dictionary<string, string> Body;
+		/// <summary>
+		/// A string-string map representing a decomposition of given type.
+		/// </summary>
+		/// <remarks>
+		/// The actual structure of this field depends on the type that was requested. You can determine that type based on <see cref="Properties"/> metadata.
+		/// For enums, keys are friendly names while values are underlying values of those names.
+		/// For objects, keys are non-private fields and properties, while values are underlying types of those.
+		/// </remarks>
+		[JsonProperty(Required = Required.Always)]
+		[Required]
+		public readonly Dictionary<string, string> Body;
 
-		[JsonProperty]
-		private readonly TypeProperties Properties;
+		/// <summary>
+		/// Metadata of given type.
+		/// </summary>
+		[JsonProperty(Required = Required.Always)]
+		[Required]
+		public readonly TypeProperties Properties;
 
 		internal TypeResponse(Dictionary<string, string> body, TypeProperties properties) {
 			if ((body == null) || (properties == null)) {
@@ -40,15 +54,33 @@ namespace ArchiSteamFarm.IPC.Responses {
 			Properties = properties;
 		}
 
-		internal sealed class TypeProperties {
+		public sealed class TypeProperties {
+			/// <summary>
+			/// Base type of given type, if available.
+			/// </summary>
+			/// <remarks>
+			/// This can be used for determining how <see cref="Body"/> should be interpreted.
+			/// </remarks>
 			[JsonProperty]
-			private readonly string BaseType;
+			public readonly string BaseType;
 
+			/// <summary>
+			/// Custom attributes of given type, if available.
+			/// </summary>
+			/// <remarks>
+			/// This can be used for determining main enum type if <see cref="BaseType"/> is <see cref="Enum"/>.
+			/// </remarks>
 			[JsonProperty]
-			private readonly HashSet<string> CustomAttributes;
+			public readonly HashSet<string> CustomAttributes;
 
+			/// <summary>
+			/// Underlying type of given type, if available.
+			/// </summary>
+			/// <remarks>
+			/// This can be used for determining underlying enum type if <see cref="BaseType"/> is <see cref="Enum"/>.
+			/// </remarks>
 			[JsonProperty]
-			private readonly string UnderlyingType;
+			public readonly string UnderlyingType;
 
 			internal TypeProperties(string baseType = null, HashSet<string> customAttributes = null, string underlyingType = null) {
 				BaseType = baseType;

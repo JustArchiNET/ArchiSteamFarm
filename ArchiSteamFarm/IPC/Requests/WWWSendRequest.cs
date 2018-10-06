@@ -19,14 +19,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Requests {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	public sealed class WWWSendRequest {
+		/// <summary>
+		/// Full URL of the request to be made.
+		/// </summary>
+		/// <remarks>
+		/// URL must start from https:// scheme.
+		/// </remarks>
+		[Required]
 		[JsonProperty(Required = Required.Always)]
-		internal readonly string URL;
+		public readonly string URL;
 
 		// Deserialized from JSON
 		private WWWSendRequest() { }
