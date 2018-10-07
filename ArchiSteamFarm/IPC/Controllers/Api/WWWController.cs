@@ -48,9 +48,6 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			string directoryPath = Path.Combine(ArchiKestrel.WebsiteDirectory, directory);
-			if (ArchiKestrel.WebsiteDirectory == SharedInfo.WebsiteDirectory) {
-				directoryPath = Path.Combine(SharedInfo.HomeDirectory, directoryPath);
-			}
 			if (!Directory.Exists(directoryPath)) {
 				return BadRequest(new GenericResponse<HashSet<string>>(false, string.Format(Strings.ErrorIsInvalid, directory)));
 			}

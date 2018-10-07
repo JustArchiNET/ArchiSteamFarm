@@ -34,8 +34,7 @@ namespace ArchiSteamFarm.IPC {
 	internal static class ArchiKestrel {
 		private const string ConfigurationFile = nameof(IPC) + ".config";
 
-		// We can use a relative path to the location of ASFs executable as WebRoot to serve default ASF-ui because Kestrel uses it relative to the path given as ContentRoot and not relative to Directory.GetCurrentDirectory()
-		internal static string WebsiteDirectory { get; private set; } = SharedInfo.WebsiteDirectory;
+		internal static string WebsiteDirectory { get; private set; } = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.WebsiteDirectory);
 
 		internal static HistoryTarget HistoryTarget { get; private set; }
 
