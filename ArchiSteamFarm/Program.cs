@@ -239,12 +239,16 @@ namespace ArchiSteamFarm {
 		private static async Task InitGlobalConfigAndLanguage() {
 			string globalConfigFile = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName);
 
-			GlobalConfig = await GlobalConfig.Load(globalConfigFile).ConfigureAwait(false);
-			if (GlobalConfig == null) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorGlobalConfigNotLoaded, globalConfigFile));
-				await Task.Delay(5 * 1000).ConfigureAwait(false);
-				await Exit(1).ConfigureAwait(false);
-				return;
+			if (File.Exists(globalConfigFile)) {
+				GlobalConfig = await GlobalConfig.Load(globalConfigFile).ConfigureAwait(false);
+				if (GlobalConfig == null) {
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorGlobalConfigNotLoaded, globalConfigFile));
+					await Task.Delay(5 * 1000).ConfigureAwait(false);
+					await Exit(1).ConfigureAwait(false);
+					return;
+				}
+			} else {
+				GlobalConfig = GlobalConfig.Create();
 			}
 
 			if (Debugging.IsUserDebugging) {
@@ -312,7 +316,7 @@ namespace ArchiSteamFarm {
 				await Task.Delay(5 * 1000).ConfigureAwait(false);
 			}
 
-			GlobalDatabase = await GlobalDatabase.Load(globalDatabaseFile).ConfigureAwait(false);
+			GlobalDatabase = await GlobalDatabase.CreateOrLoad(globalDatabaseFile).ConfigureAwait(false);
 			if (GlobalDatabase == null) {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorDatabaseInvalid, globalDatabaseFile));
 				await Task.Delay(5 * 1000).ConfigureAwait(false);

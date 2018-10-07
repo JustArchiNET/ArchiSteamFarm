@@ -246,6 +246,12 @@ namespace ArchiSteamFarm {
 			return Enum.IsDefined(typeof(EUpdateChannel), UpdateChannel) ? (true, null) : (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(UpdateChannel), UpdateChannel));
 		}
 
+		internal static GlobalConfig Create() =>
+			new GlobalConfig {
+				ShouldSerializeEverything = false,
+				ShouldSerializeSensitiveDetails = false
+			};
+
 		internal static async Task<GlobalConfig> Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(filePath));

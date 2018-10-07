@@ -861,7 +861,7 @@ namespace ArchiSteamFarm {
 
 			string databaseFilePath = botPath + SharedInfo.DatabaseExtension;
 
-			BotDatabase botDatabase = await BotDatabase.Load(databaseFilePath).ConfigureAwait(false);
+			BotDatabase botDatabase = await BotDatabase.CreateOrLoad(databaseFilePath).ConfigureAwait(false);
 			if (botDatabase == null) {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorDatabaseInvalid, databaseFilePath));
 				return;

@@ -69,16 +69,7 @@ namespace ArchiSteamFarm {
 			PackagesRefreshSemaphore.Dispose();
 		}
 
-		internal HashSet<uint> GetPackageIDs(uint appID) {
-			if (appID == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(appID));
-				return null;
-			}
-
-			return PackagesData.Where(package => package.Value.AppIDs?.Contains(appID) == true).Select(package => package.Key).ToHashSet();
-		}
-
-		internal static async Task<GlobalDatabase> Load(string filePath) {
+		internal static async Task<GlobalDatabase> CreateOrLoad(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(filePath));
 				return null;
@@ -104,6 +95,15 @@ namespace ArchiSteamFarm {
 
 			globalDatabase.FilePath = filePath;
 			return globalDatabase;
+		}
+
+		internal HashSet<uint> GetPackageIDs(uint appID) {
+			if (appID == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(appID));
+				return null;
+			}
+
+			return PackagesData.Where(package => package.Value.AppIDs?.Contains(appID) == true).Select(package => package.Key).ToHashSet();
 		}
 
 		internal async Task RefreshPackages(Bot bot, IReadOnlyDictionary<uint, uint> packages) {

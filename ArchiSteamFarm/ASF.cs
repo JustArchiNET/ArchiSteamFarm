@@ -253,8 +253,6 @@ namespace ArchiSteamFarm {
 
 			switch (botName) {
 				case SharedInfo.ASF:
-				case "example":
-				case "minimal":
 					return false;
 				default:
 					return true;
@@ -586,7 +584,7 @@ namespace ArchiSteamFarm {
 					Directory.CreateDirectory(directory);
 				}
 
-				if (string.IsNullOrEmpty(zipFile.Name) || zipFile.Name.Equals(SharedInfo.GlobalConfigFileName)) {
+				if (string.IsNullOrEmpty(zipFile.Name)) {
 					continue;
 				}
 
