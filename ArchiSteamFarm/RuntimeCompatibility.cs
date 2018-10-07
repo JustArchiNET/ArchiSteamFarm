@@ -22,7 +22,7 @@
 using System;
 using System.Threading.Tasks;
 
-#if NETFRAMEWORK || NETCOREAPP2_0
+#if NETFRAMEWORK
 using System.Collections.Generic;
 #endif
 
@@ -84,7 +84,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-#if NETFRAMEWORK || NETCOREAPP2_0
+#if NETFRAMEWORK
 		internal static void TrimExcess<T1, T2>(this Dictionary<T1, T2> _) { } // no-op
 #endif
 
