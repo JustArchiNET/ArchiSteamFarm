@@ -28,11 +28,15 @@ using ArchiSteamFarm.IPC.Requests;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[ApiController]
 	[Produces("application/json")]
 	[Route("Api/WWW")]
+	[SwaggerResponse(400, "The request has failed, check " + nameof(GenericResponse.Message) + " from response body for actual reason. Most of the time this is ASF, understanding the request, but refusing to execute it due to provided reason.", typeof(GenericResponse))]
+	[SwaggerResponse(401, "ASF has " + nameof(GlobalConfig.IPCPassword) + " set, but you've failed to authenticate. See " + "https://github.com/" + SharedInfo.GithubRepo + "/wiki/IPC#authentication.")]
+	[SwaggerResponse(403, "ASF has " + nameof(GlobalConfig.IPCPassword) + " set and you've failed to authenticate too many times, try again in an hour. See " + "https://github.com/" + SharedInfo.GithubRepo + "/wiki/IPC#authentication.")]
 	public sealed class WWWController : ControllerBase {
 		/// <summary>
 		/// Fetches files in given directory relative to WWW root.
@@ -41,15 +45,16 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW as they can disappear and change anytime.
 		/// </remarks>
 		[HttpGet("Directory/{directory:required}")]
-		public ActionResult<GenericResponse<HashSet<string>>> DirectoryGet(string directory) {
+		[SwaggerResponse(200, type: typeof(GenericResponse<IReadOnlyCollection<string>>))]
+		public ActionResult<GenericResponse<IReadOnlyCollection<string>>> DirectoryGet(string directory) {
 			if (string.IsNullOrEmpty(directory)) {
 				ASF.ArchiLogger.LogNullError(nameof(directory));
-				return BadRequest(new GenericResponse<HashSet<string>>(false, string.Format(Strings.ErrorIsEmpty, nameof(directory))));
+				return BadRequest(new GenericResponse<IReadOnlyCollection<string>>(false, string.Format(Strings.ErrorIsEmpty, nameof(directory))));
 			}
 
 			string directoryPath = Path.Combine(ArchiKestrel.WebsiteDirectory, directory);
 			if (!Directory.Exists(directoryPath)) {
-				return BadRequest(new GenericResponse<HashSet<string>>(false, string.Format(Strings.ErrorIsInvalid, directory)));
+				return BadRequest(new GenericResponse<IReadOnlyCollection<string>>(false, string.Format(Strings.ErrorIsInvalid, directory)));
 			}
 
 			string[] files;
@@ -57,11 +62,11 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			try {
 				files = Directory.GetFiles(directoryPath);
 			} catch (Exception e) {
-				return BadRequest(new GenericResponse<HashSet<string>>(false, string.Format(Strings.ErrorParsingObject, nameof(files)) + Environment.NewLine + e));
+				return BadRequest(new GenericResponse<IReadOnlyCollection<string>>(false, string.Format(Strings.ErrorParsingObject, nameof(files)) + Environment.NewLine + e));
 			}
 
 			HashSet<string> result = files.Select(Path.GetFileName).ToHashSet();
-			return Ok(new GenericResponse<HashSet<string>>(result));
+			return Ok(new GenericResponse<IReadOnlyCollection<string>>(result));
 		}
 
 		/// <summary>
@@ -71,18 +76,19 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW as they can disappear and change anytime.
 		/// </remarks>
 		[HttpGet("GitHub/Releases")]
-		public async Task<ActionResult<GenericResponse<IEnumerable<GitHubReleaseResponse>>>> GitHubReleasesGet([FromQuery] byte count = 10) {
+		[SwaggerResponse(200, type: typeof(GenericResponse<IReadOnlyCollection<GitHubReleaseResponse>>))]
+		public async Task<ActionResult<GenericResponse<IReadOnlyCollection<GitHubReleaseResponse>>>> GitHubReleasesGet([FromQuery] byte count = 10) {
 			if (count == 0) {
-				return BadRequest(new GenericResponse<IEnumerable<GitHubReleaseResponse>>(false, string.Format(Strings.ErrorIsEmpty, nameof(count))));
+				return BadRequest(new GenericResponse<IReadOnlyCollection<GitHubReleaseResponse>>(false, string.Format(Strings.ErrorIsEmpty, nameof(count))));
 			}
 
 			List<GitHub.ReleaseResponse> response = await GitHub.GetReleases(count).ConfigureAwait(false);
 			if ((response == null) || (response.Count == 0)) {
-				return BadRequest(new GenericResponse<IEnumerable<GitHub.ReleaseResponse>>(false, string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
+				return BadRequest(new GenericResponse<IReadOnlyCollection<GitHub.ReleaseResponse>>(false, string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
 			}
 
-			IEnumerable<GitHubReleaseResponse> result = response.Select(singleResponse => new GitHubReleaseResponse(singleResponse));
-			return Ok(new GenericResponse<IEnumerable<GitHubReleaseResponse>>(result));
+			List<GitHubReleaseResponse> result = response.Select(singleResponse => new GitHubReleaseResponse(singleResponse)).ToList();
+			return Ok(new GenericResponse<IReadOnlyCollection<GitHubReleaseResponse>>(result));
 		}
 
 		/// <summary>
@@ -92,6 +98,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW as they can disappear and change anytime.
 		/// </remarks>
 		[HttpGet("GitHub/Releases/{version:required}")]
+		[SwaggerResponse(200, type: typeof(GenericResponse<GitHubReleaseResponse>))]
 		public async Task<ActionResult<GenericResponse<GitHubReleaseResponse>>> GitHubReleasesGet(string version) {
 			if (string.IsNullOrEmpty(version)) {
 				return BadRequest(new GenericResponse<GitHubReleaseResponse>(false, string.Format(Strings.ErrorIsEmpty, nameof(version))));
@@ -111,7 +118,9 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// <remarks>
 		/// This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW as they can disappear and change anytime.
 		/// </remarks>
+		[Consumes("application/json")]
 		[HttpPost("Send")]
+		[SwaggerResponse(200, type: typeof(GenericResponse<string>))]
 		public async Task<ActionResult<GenericResponse<string>>> SendPost([FromBody] WWWSendRequest request) {
 			if (request == null) {
 				ASF.ArchiLogger.LogNullError(nameof(request));

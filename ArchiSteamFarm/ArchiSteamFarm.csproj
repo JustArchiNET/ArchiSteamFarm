@@ -56,6 +56,7 @@
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.7.0" />
     <PackageReference Include="protobuf-net" Version="3.0.0-alpha.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="3.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">

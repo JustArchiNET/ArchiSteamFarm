@@ -27,16 +27,21 @@ using ArchiSteamFarm.IPC.Requests;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[ApiController]
 	[Produces("application/json")]
 	[Route("Api/ASF")]
+	[SwaggerResponse(400, "The request has failed, check " + nameof(GenericResponse.Message) + " from response body for actual reason. Most of the time this is ASF, understanding the request, but refusing to execute it due to provided reason.", typeof(GenericResponse))]
+	[SwaggerResponse(401, "ASF has " + nameof(GlobalConfig.IPCPassword) + " set, but you've failed to authenticate. See " + "https://github.com/" + SharedInfo.GithubRepo + "/wiki/IPC#authentication.")]
+	[SwaggerResponse(403, "ASF has " + nameof(GlobalConfig.IPCPassword) + " set and you've failed to authenticate too many times, try again in an hour. See " + "https://github.com/" + SharedInfo.GithubRepo + "/wiki/IPC#authentication.")]
 	public sealed class ASFController : ControllerBase {
 		/// <summary>
 		/// Fetches common info related to ASF as a whole.
 		/// </summary>
 		[HttpGet]
+		[SwaggerResponse(200, type: typeof(GenericResponse<ASFResponse>))]
 		public ActionResult<GenericResponse<ASFResponse>> ASFGet() {
 			uint memoryUsage = (uint) GC.GetTotalMemory(false) / 1024;
 
@@ -53,7 +58,9 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// <summary>
 		/// Updates ASF's global config.
 		/// </summary>
+		[Consumes("application/json")]
 		[HttpPost]
+		[SwaggerResponse(200, type: typeof(GenericResponse))]
 		public async Task<ActionResult<GenericResponse>> ASFPost([FromBody] ASFRequest request) {
 			if (request == null) {
 				ASF.ArchiLogger.LogNullError(nameof(request));
@@ -81,6 +88,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// Makes ASF shutdown itself.
 		/// </summary>
 		[HttpPost("Exit")]
+		[SwaggerResponse(200, type: typeof(GenericResponse))]
 		public ActionResult<GenericResponse> ExitPost() {
 			(bool success, string output) = Actions.Exit();
 			return Ok(new GenericResponse(success, output));
@@ -90,6 +98,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// Makes ASF restart itself.
 		/// </summary>
 		[HttpPost("Restart")]
+		[SwaggerResponse(200, type: typeof(GenericResponse))]
 		public ActionResult<GenericResponse> RestartPost() {
 			(bool success, string output) = Actions.Restart();
 			return Ok(new GenericResponse(success, output));
@@ -99,6 +108,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// Makes ASF update itself.
 		/// </summary>
 		[HttpPost("Update")]
+		[SwaggerResponse(200, type: typeof(GenericResponse<Version>))]
 		public async Task<ActionResult<GenericResponse<Version>>> UpdatePost() {
 			(bool success, Version version) = await Actions.Update().ConfigureAwait(false);
 			return Ok(new GenericResponse<Version>(success, version));

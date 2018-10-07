@@ -95,6 +95,7 @@ namespace ArchiSteamFarm.IPC {
 			services.AddSwaggerGen(
 				c => {
 					c.DescribeAllEnumsAsStrings();
+					c.EnableAnnotations();
 					c.SwaggerDoc("ASF", new Info { Title = "ASF API" });
 
 					string xmlDocumentationFile = Path.Combine(AppContext.BaseDirectory, SharedInfo.AssemblyDocumentation);

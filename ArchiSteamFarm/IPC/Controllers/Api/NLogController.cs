@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
@@ -30,11 +31,15 @@ using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[ApiController]
 	[Produces("application/json")]
 	[Route("Api/NLog")]
+	[SwaggerResponse(400, "The request has failed, check " + nameof(GenericResponse.Message) + " from response body for actual reason. Most of the time this is ASF, understanding the request, but refusing to execute it due to provided reason.", typeof(GenericResponse))]
+	[SwaggerResponse(401, "ASF has " + nameof(GlobalConfig.IPCPassword) + " set, but you've failed to authenticate. See " + "https://github.com/" + SharedInfo.GithubRepo + "/wiki/IPC#authentication.")]
+	[SwaggerResponse(403, "ASF has " + nameof(GlobalConfig.IPCPassword) + " set and you've failed to authenticate too many times, try again in an hour. See " + "https://github.com/" + SharedInfo.GithubRepo + "/wiki/IPC#authentication.")]
 	public sealed class NLogController : ControllerBase {
 		private static readonly ConcurrentDictionary<WebSocket, SemaphoreSlim> ActiveLogWebSockets = new ConcurrentDictionary<WebSocket, SemaphoreSlim>();
 
@@ -45,6 +50,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// This API endpoint requires a websocket connection.
 		/// </remarks>
 		[HttpGet]
+		[SwaggerResponse(200, type: typeof(IEnumerable<GenericResponse<string>>))]
 		public async Task<ActionResult> NLogGet() {
 			if (!HttpContext.WebSockets.IsWebSocketRequest) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.WarningFailedWithError, nameof(HttpContext.WebSockets.IsWebSocketRequest) + ": " + HttpContext.WebSockets.IsWebSocketRequest)));
