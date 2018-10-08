@@ -41,7 +41,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// Fetches common info related to ASF as a whole.
 		/// </summary>
 		[HttpGet]
-		[SwaggerResponse(200, type: typeof(GenericResponse<ASFResponse>))]
+		[ProducesResponseType(typeof(GenericResponse<ASFResponse>), 200)]
 		public ActionResult<GenericResponse<ASFResponse>> ASFGet() {
 			uint memoryUsage = (uint) GC.GetTotalMemory(false) / 1024;
 
@@ -60,7 +60,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// </summary>
 		[Consumes("application/json")]
 		[HttpPost]
-		[SwaggerResponse(200, type: typeof(GenericResponse))]
+		[ProducesResponseType(typeof(GenericResponse), 200)]
 		public async Task<ActionResult<GenericResponse>> ASFPost([FromBody] ASFRequest request) {
 			if (request == null) {
 				ASF.ArchiLogger.LogNullError(nameof(request));
@@ -88,7 +88,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// Makes ASF shutdown itself.
 		/// </summary>
 		[HttpPost("Exit")]
-		[SwaggerResponse(200, type: typeof(GenericResponse))]
+		[ProducesResponseType(typeof(GenericResponse), 200)]
 		public ActionResult<GenericResponse> ExitPost() {
 			(bool success, string output) = Actions.Exit();
 			return Ok(new GenericResponse(success, output));
@@ -98,7 +98,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// Makes ASF restart itself.
 		/// </summary>
 		[HttpPost("Restart")]
-		[SwaggerResponse(200, type: typeof(GenericResponse))]
+		[ProducesResponseType(typeof(GenericResponse), 200)]
 		public ActionResult<GenericResponse> RestartPost() {
 			(bool success, string output) = Actions.Restart();
 			return Ok(new GenericResponse(success, output));
@@ -108,7 +108,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// Makes ASF update itself.
 		/// </summary>
 		[HttpPost("Update")]
-		[SwaggerResponse(200, type: typeof(GenericResponse<Version>))]
+		[ProducesResponseType(typeof(GenericResponse<Version>), 200)]
 		public async Task<ActionResult<GenericResponse<Version>>> UpdatePost() {
 			(bool success, Version version) = await Actions.Update().ConfigureAwait(false);
 			return Ok(new GenericResponse<Version>(success, version));

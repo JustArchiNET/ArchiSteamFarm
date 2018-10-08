@@ -45,7 +45,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW as they can disappear and change anytime.
 		/// </remarks>
 		[HttpGet("Directory/{directory:required}")]
-		[SwaggerResponse(200, type: typeof(GenericResponse<IReadOnlyCollection<string>>))]
+		[ProducesResponseType(typeof(GenericResponse<IReadOnlyCollection<string>>), 200)]
 		public ActionResult<GenericResponse<IReadOnlyCollection<string>>> DirectoryGet(string directory) {
 			if (string.IsNullOrEmpty(directory)) {
 				ASF.ArchiLogger.LogNullError(nameof(directory));
@@ -76,7 +76,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW as they can disappear and change anytime.
 		/// </remarks>
 		[HttpGet("GitHub/Releases")]
-		[SwaggerResponse(200, type: typeof(GenericResponse<IReadOnlyCollection<GitHubReleaseResponse>>))]
+		[ProducesResponseType(typeof(GenericResponse<IReadOnlyCollection<GitHubReleaseResponse>>), 200)]
 		public async Task<ActionResult<GenericResponse<IReadOnlyCollection<GitHubReleaseResponse>>>> GitHubReleasesGet([FromQuery] byte count = 10) {
 			if (count == 0) {
 				return BadRequest(new GenericResponse<IReadOnlyCollection<GitHubReleaseResponse>>(false, string.Format(Strings.ErrorIsEmpty, nameof(count))));
@@ -98,7 +98,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW as they can disappear and change anytime.
 		/// </remarks>
 		[HttpGet("GitHub/Releases/{version:required}")]
-		[SwaggerResponse(200, type: typeof(GenericResponse<GitHubReleaseResponse>))]
+		[ProducesResponseType(typeof(GenericResponse<GitHubReleaseResponse>), 200)]
 		public async Task<ActionResult<GenericResponse<GitHubReleaseResponse>>> GitHubReleasesGet(string version) {
 			if (string.IsNullOrEmpty(version)) {
 				return BadRequest(new GenericResponse<GitHubReleaseResponse>(false, string.Format(Strings.ErrorIsEmpty, nameof(version))));
@@ -120,7 +120,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// </remarks>
 		[Consumes("application/json")]
 		[HttpPost("Send")]
-		[SwaggerResponse(200, type: typeof(GenericResponse<string>))]
+		[ProducesResponseType(typeof(GenericResponse<string>), 200)]
 		public async Task<ActionResult<GenericResponse<string>>> SendPost([FromBody] WWWSendRequest request) {
 			if (request == null) {
 				ASF.ArchiLogger.LogNullError(nameof(request));

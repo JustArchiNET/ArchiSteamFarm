@@ -44,7 +44,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// Type info is defined as a representation of given object with its fields and properties being assigned to a string value that defines their type.
 		/// </remarks>
 		[HttpGet("{type:required}")]
-		[SwaggerResponse(200, type: typeof(GenericResponse<TypeResponse>))]
+		[ProducesResponseType(typeof(GenericResponse<TypeResponse>), 200)]
 		public ActionResult<GenericResponse<TypeResponse>> TypeGet(string type) {
 			if (string.IsNullOrEmpty(type)) {
 				ASF.ArchiLogger.LogNullError(nameof(type));

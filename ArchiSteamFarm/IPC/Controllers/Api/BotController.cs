@@ -43,7 +43,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// Deletes all files related to given bots.
 		/// </summary>
 		[HttpDelete("{botNames:required}")]
-		[SwaggerResponse(200, type: typeof(GenericResponse))]
+		[ProducesResponseType(typeof(GenericResponse), 200)]
 		public async Task<ActionResult<GenericResponse>> BotDelete(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
@@ -63,7 +63,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// Fetches common info related to given bots.
 		/// </summary>
 		[HttpGet("{botNames:required}")]
-		[SwaggerResponse(200, type: typeof(GenericResponse<IDictionary<string, Bot>>))]
+		[ProducesResponseType(typeof(GenericResponse<IDictionary<string, Bot>>), 200)]
 		public ActionResult<GenericResponse<IDictionary<string, Bot>>> BotGet(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
@@ -83,7 +83,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// </summary>
 		[Consumes("application/json")]
 		[HttpPost("{botName:required}")]
-		[SwaggerResponse(200, type: typeof(GenericResponse))]
+		[ProducesResponseType(typeof(GenericResponse), 200)]
 		public async Task<ActionResult<GenericResponse>> BotPost(string botName, [FromBody] BotRequest request) {
 			if (string.IsNullOrEmpty(botName) || (request == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(botName) + " || " + nameof(request));
@@ -121,7 +121,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// Removes BGR output files of given bots.
 		/// </summary>
 		[HttpDelete("{botNames:required}/GamesToRedeemInBackground")]
-		[SwaggerResponse(200, type: typeof(GenericResponse))]
+		[ProducesResponseType(typeof(GenericResponse), 200)]
 		public async Task<ActionResult<GenericResponse>> GamesToRedeemInBackgroundDelete(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
@@ -141,7 +141,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// Fetches BGR output files of given bots.
 		/// </summary>
 		[HttpGet("{botNames:required}/GamesToRedeemInBackground")]
-		[SwaggerResponse(200, type: typeof(GenericResponse<IReadOnlyDictionary<string, GamesToRedeemInBackgroundResponse>>))]
+		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GamesToRedeemInBackgroundResponse>>), 200)]
 		public async Task<ActionResult<GenericResponse<IReadOnlyDictionary<string, GamesToRedeemInBackgroundResponse>>>> GamesToRedeemInBackgroundGet(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
@@ -170,7 +170,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// </summary>
 		[Consumes("application/json")]
 		[HttpPost("{botName:required}/GamesToRedeemInBackground")]
-		[SwaggerResponse(200, type: typeof(GenericResponse<OrderedDictionary>))]
+		[ProducesResponseType(typeof(GenericResponse<OrderedDictionary>), 200)]
 		public async Task<ActionResult<GenericResponse<OrderedDictionary>>> GamesToRedeemInBackgroundPost(string botName, [FromBody] GamesToRedeemInBackgroundRequest request) {
 			if (string.IsNullOrEmpty(botName) || (request == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(botName) + " || " + nameof(request));
@@ -194,7 +194,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// </summary>
 		[Consumes("application/json")]
 		[HttpPost("{botNames:required}/Pause")]
-		[SwaggerResponse(200, type: typeof(GenericResponse))]
+		[ProducesResponseType(typeof(GenericResponse), 200)]
 		public async Task<ActionResult<GenericResponse>> PausePost(string botNames, [FromBody] BotPauseRequest request) {
 			if (string.IsNullOrEmpty(botNames) || (request == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames) + " || " + nameof(request));
@@ -214,7 +214,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// Resumes given bots.
 		/// </summary>
 		[HttpPost("{botNames:required}/Resume")]
-		[SwaggerResponse(200, type: typeof(GenericResponse))]
+		[ProducesResponseType(typeof(GenericResponse), 200)]
 		public async Task<ActionResult<GenericResponse>> ResumePost(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
@@ -234,7 +234,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// Starts given bots.
 		/// </summary>
 		[HttpPost("{botNames:required}/Start")]
-		[SwaggerResponse(200, type: typeof(GenericResponse))]
+		[ProducesResponseType(typeof(GenericResponse), 200)]
 		public async Task<ActionResult<GenericResponse>> StartPost(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
@@ -254,7 +254,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// Stops given bots.
 		/// </summary>
 		[HttpPost("{botNames:required}/Stop")]
-		[SwaggerResponse(200, type: typeof(GenericResponse))]
+		[ProducesResponseType(typeof(GenericResponse), 200)]
 		public async Task<ActionResult<GenericResponse>> StopPost(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));

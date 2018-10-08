@@ -40,7 +40,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// Structure is defined as a representation of given object in its default state.
 		/// </remarks>
 		[HttpGet("{structure:required}")]
-		[SwaggerResponse(200, type: typeof(GenericResponse<object>))]
+		[ProducesResponseType(typeof(GenericResponse<object>), 200)]
 		public ActionResult<GenericResponse<object>> StructureGet(string structure) {
 			if (string.IsNullOrEmpty(structure)) {
 				ASF.ArchiLogger.LogNullError(nameof(structure));

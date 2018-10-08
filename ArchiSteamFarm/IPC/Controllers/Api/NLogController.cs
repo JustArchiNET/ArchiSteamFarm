@@ -50,7 +50,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// This API endpoint requires a websocket connection.
 		/// </remarks>
 		[HttpGet]
-		[SwaggerResponse(200, type: typeof(IEnumerable<GenericResponse<string>>))]
+		[ProducesResponseType(typeof(IEnumerable<GenericResponse<string>>), 200)]
 		public async Task<ActionResult> NLogGet() {
 			if (!HttpContext.WebSockets.IsWebSocketRequest) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.WarningFailedWithError, nameof(HttpContext.WebSockets.IsWebSocketRequest) + ": " + HttpContext.WebSockets.IsWebSocketRequest)));

@@ -43,7 +43,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// You should use "given bot" commands when executing this endpoint, omitting targets of the command will cause the command to be executed on first defined bot
 		/// </remarks>
 		[HttpPost("{command:required}")]
-		[SwaggerResponse(200, type: typeof(GenericResponse<string>))]
+		[ProducesResponseType(typeof(GenericResponse<string>), 200)]
 		public async Task<ActionResult<GenericResponse<string>>> CommandPost(string command) {
 			if (string.IsNullOrEmpty(command)) {
 				ASF.ArchiLogger.LogNullError(nameof(command));
