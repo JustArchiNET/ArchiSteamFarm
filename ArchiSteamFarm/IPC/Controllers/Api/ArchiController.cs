@@ -19,43 +19,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using ArchiSteamFarm.IPC.Responses;
-using ArchiSteamFarm.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api {
-	[Route("Api/Structure")]
-	public sealed class StructureController : ArchiController {
-		/// <summary>
-		/// Fetches structure of given type.
-		/// </summary>
-		/// <remarks>
-		/// Structure is defined as a representation of given object in its default state.
-		/// </remarks>
-		[HttpGet("{structure:required}")]
-		[ProducesResponseType(typeof(GenericResponse<object>), 200)]
-		public ActionResult<GenericResponse<object>> StructureGet(string structure) {
-			if (string.IsNullOrEmpty(structure)) {
-				ASF.ArchiLogger.LogNullError(nameof(structure));
-				return BadRequest(new GenericResponse<object>(false, string.Format(Strings.ErrorIsEmpty, nameof(structure))));
-			}
-
-			Type targetType = WebUtilities.ParseType(structure);
-
-			if (targetType == null) {
-				return BadRequest(new GenericResponse<object>(false, string.Format(Strings.ErrorIsInvalid, structure)));
-			}
-
-			object obj;
-
-			try {
-				obj = Activator.CreateInstance(targetType, true);
-			} catch (Exception e) {
-				return BadRequest(new GenericResponse<object>(false, string.Format(Strings.ErrorParsingObject, nameof(targetType)) + Environment.NewLine + e));
-			}
-
-			return Ok(new GenericResponse<object>(obj));
-		}
-	}
+	[ApiController]
+	[Produces("application/json")]
+	[SwaggerResponse(400, "The request has failed, check " + nameof(GenericResponse.Message) + " from response body for actual reason. Most of the time this is ASF, understanding the request, but refusing to execute it due to provided reason.", typeof(GenericResponse))]
+	[SwaggerResponse(401, "ASF has " + nameof(GlobalConfig.IPCPassword) + " set, but you've failed to authenticate. See " + "https://github.com/" + SharedInfo.GithubRepo + "/wiki/IPC#authentication.")]
+	[SwaggerResponse(403, "ASF has " + nameof(GlobalConfig.IPCPassword) + " set and you've failed to authenticate too many times, try again in an hour. See " + "https://github.com/" + SharedInfo.GithubRepo + "/wiki/IPC#authentication.")]
+	public abstract class ArchiController : ControllerBase { }
 }
