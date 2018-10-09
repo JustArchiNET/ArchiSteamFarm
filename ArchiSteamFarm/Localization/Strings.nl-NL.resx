@@ -264,7 +264,10 @@ StackTrace:
     <value>Voer je Steam gebruikersnaam in: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputSteamParentalCode" xml:space="preserve">
+    <value>Voer je Steam ouderlijktoezichtscode in: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Voer je Steam wachtwoord in: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -337,7 +340,9 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Het farmen is gestopt!</value>
   </data>
-  
+  <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
+    <value>Dit verzoek wordt genegeerd aangezien permanente pauze is ingeschakeld!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Er is niets om te farmen op dit account!</value>
   </data>
