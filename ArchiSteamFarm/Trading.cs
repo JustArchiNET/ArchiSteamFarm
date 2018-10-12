@@ -208,7 +208,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			if (results.Any(result => (result.TradeResult != null) && (result.TradeResult.Result == ParseTradeResult.EResult.Accepted) && (result.TradeResult.ReceivedItemTypes?.Any(receivedItemType => Bot.BotConfig.LootableTypes.Contains(receivedItemType)) == true)) && Bot.BotConfig.SendOnFarmingFinished) {
+			if (results.Any(result => (result.TradeResult != null) && (result.TradeResult.Result == ParseTradeResult.EResult.Accepted) && (result.TradeResult.ReceivingItemTypes?.Any(receivedItemType => Bot.BotConfig.LootableTypes.Contains(receivedItemType)) == true)) && Bot.BotConfig.SendOnFarmingFinished) {
 				// If we finished a trade, perform a loot if user wants to do so
 				await Bot.Actions.SendTradeOffer(wantedTypes: Bot.BotConfig.LootableTypes).ConfigureAwait(false);
 			}
@@ -370,7 +370,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private sealed class ParseTradeResult {
-			internal readonly HashSet<Steam.Asset.EType> ReceivedItemTypes;
+			internal readonly HashSet<Steam.Asset.EType> ReceivingItemTypes;
 			internal readonly EResult Result;
 			internal readonly ulong TradeOfferID;
 
@@ -383,7 +383,7 @@ namespace ArchiSteamFarm {
 				Result = result;
 
 				if ((itemsToReceive != null) && (itemsToReceive.Count > 0)) {
-					ReceivedItemTypes = itemsToReceive.Select(item => item.Type).ToHashSet();
+					ReceivingItemTypes = itemsToReceive.Select(item => item.Type).ToHashSet();
 				}
 			}
 
