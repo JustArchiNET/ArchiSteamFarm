@@ -55,30 +55,39 @@ namespace ArchiSteamFarm {
 			CardsFarmerResumeTimer?.Dispose();
 		}
 
-		internal async Task<bool> AcceptConfirmations(bool accept, Steam.ConfirmationDetails.EType acceptedType = Steam.ConfirmationDetails.EType.Unknown, ulong acceptedSteamID = 0, IReadOnlyCollection<ulong> acceptedTradeIDs = null) {
+		internal async Task<bool> AcceptConfirmations(bool accept, Steam.ConfirmationDetails.EType acceptedType = Steam.ConfirmationDetails.EType.Unknown, ulong acceptedSteamID = 0, IReadOnlyCollection<ulong> acceptedTradeIDs = null, bool waitIfNeeded = false) {
 			if (!Bot.HasMobileAuthenticator) {
 				return false;
 			}
 
-			HashSet<MobileAuthenticator.Confirmation> confirmations = await Bot.BotDatabase.MobileAuthenticator.GetConfirmations(acceptedType).ConfigureAwait(false);
-			if ((confirmations == null) || (confirmations.Count == 0)) {
-				return true;
-			}
+			for (byte i = 0; (i == 0) || ((i < WebBrowser.MaxTries) && waitIfNeeded); i++) {
+				if (i > 0) {
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
 
-			if ((acceptedSteamID == 0) && ((acceptedTradeIDs == null) || (acceptedTradeIDs.Count == 0))) {
+				HashSet<MobileAuthenticator.Confirmation> confirmations = await Bot.BotDatabase.MobileAuthenticator.GetConfirmations(acceptedType).ConfigureAwait(false);
+				if ((confirmations == null) || (confirmations.Count == 0)) {
+					continue;
+				}
+
+				if ((acceptedSteamID == 0) && ((acceptedTradeIDs == null) || (acceptedTradeIDs.Count == 0))) {
+					return await Bot.BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false);
+				}
+
+				IList<Steam.ConfirmationDetails> results = await Utilities.InParallel(confirmations.Select(Bot.BotDatabase.MobileAuthenticator.GetConfirmationDetails)).ConfigureAwait(false);
+
+				foreach (MobileAuthenticator.Confirmation confirmation in results.Where(details => (details != null) && ((acceptedType != details.Type) || ((acceptedSteamID != 0) && (details.OtherSteamID64 != 0) && (acceptedSteamID != details.OtherSteamID64)) || ((acceptedTradeIDs != null) && (details.TradeOfferID != 0) && !acceptedTradeIDs.Contains(details.TradeOfferID)))).Select(details => details.Confirmation)) {
+					confirmations.Remove(confirmation);
+				}
+
+				if (confirmations.Count == 0) {
+					continue;
+				}
+
 				return await Bot.BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false);
 			}
 
-			IList<Steam.ConfirmationDetails> results = await Utilities.InParallel(confirmations.Select(Bot.BotDatabase.MobileAuthenticator.GetConfirmationDetails)).ConfigureAwait(false);
-
-			foreach (MobileAuthenticator.Confirmation confirmation in results.Where(details => (details != null) && ((acceptedType != details.Type) || ((acceptedSteamID != 0) && (details.OtherSteamID64 != 0) && (acceptedSteamID != details.OtherSteamID64)) || ((acceptedTradeIDs != null) && (details.TradeOfferID != 0) && !acceptedTradeIDs.Contains(details.TradeOfferID)))).Select(details => details.Confirmation)) {
-				confirmations.Remove(confirmation);
-				if (confirmations.Count == 0) {
-					return true;
-				}
-			}
-
-			return await Bot.BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false);
+			return true;
 		}
 
 		internal async Task AcceptDigitalGiftCards() {
@@ -280,9 +289,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if (Bot.HasMobileAuthenticator) {
-					// Give Steam network some time to generate confirmations
-					await Task.Delay(3000).ConfigureAwait(false);
-					if (!await AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, targetSteamID).ConfigureAwait(false)) {
+					if (!await AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, targetSteamID, waitIfNeeded: true).ConfigureAwait(false)) {
 						return (false, Strings.BotLootingFailed);
 					}
 				}
