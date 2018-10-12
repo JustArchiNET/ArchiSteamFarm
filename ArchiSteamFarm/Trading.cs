@@ -204,7 +204,9 @@ namespace ArchiSteamFarm {
 			if (Bot.HasMobileAuthenticator) {
 				HashSet<ulong> mobileTradeOfferIDs = results.Where(result => (result.TradeResult != null) && result.RequiresMobileConfirmation).Select(result => result.TradeResult.TradeOfferID).ToHashSet();
 				if (mobileTradeOfferIDs.Count > 0) {
-					await Bot.Actions.AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, 0, mobileTradeOfferIDs, true).ConfigureAwait(false);
+					if (!await Bot.Actions.AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, 0, mobileTradeOfferIDs, true).ConfigureAwait(false)) {
+						return;
+					}
 				}
 			}
 
