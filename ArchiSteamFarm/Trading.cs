@@ -199,50 +199,51 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			IList<ParseTradeResult> results = await Utilities.InParallel(tradeOffers.Select(ParseTrade)).ConfigureAwait(false);
+			IList<(ParseTradeResult TradeResult, bool RequiresMobileConfirmation)> results = await Utilities.InParallel(tradeOffers.Select(ParseTrade)).ConfigureAwait(false);
 
 			if (Bot.HasMobileAuthenticator) {
-				HashSet<ulong> acceptedWithItemLoseTradeIDs = results.Where(result => (result != null) && (result.Result == ParseTradeResult.EResult.AcceptedWithItemLose)).Select(result => result.TradeID).ToHashSet();
-				if (acceptedWithItemLoseTradeIDs.Count > 0) {
-					await Bot.Actions.AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, 0, acceptedWithItemLoseTradeIDs, true).ConfigureAwait(false);
+				HashSet<ulong> mobileTradeOfferIDs = results.Where(result => (result.TradeResult != null) && result.RequiresMobileConfirmation).Select(result => result.TradeResult.TradeOfferID).ToHashSet();
+				if (mobileTradeOfferIDs.Count > 0) {
+					await Bot.Actions.AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, 0, mobileTradeOfferIDs, true).ConfigureAwait(false);
 				}
 			}
 
-			if (results.Any(result => (result != null) && ((result.Result == ParseTradeResult.EResult.AcceptedWithItemLose) || (result.Result == ParseTradeResult.EResult.AcceptedWithoutItemLose))) && Bot.BotConfig.SendOnFarmingFinished) {
+			if (results.Any(result => (result.TradeResult != null) && (result.TradeResult.Result == ParseTradeResult.EResult.Accepted)) && Bot.BotConfig.SendOnFarmingFinished) {
 				// If we finished a trade, perform a loot if user wants to do so
 				await Bot.Actions.SendTradeOffer(wantedTypes: Bot.BotConfig.LootableTypes).ConfigureAwait(false);
 			}
 		}
 
-		private async Task<ParseTradeResult> ParseTrade(Steam.TradeOffer tradeOffer) {
+		private async Task<(ParseTradeResult TradeResult, bool RequiresMobileConfirmation)> ParseTrade(Steam.TradeOffer tradeOffer) {
 			if (tradeOffer == null) {
 				Bot.ArchiLogger.LogNullError(nameof(tradeOffer));
-				return null;
+				return (null, false);
 			}
 
 			if (tradeOffer.State != Steam.TradeOffer.ETradeOfferState.Active) {
 				Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, tradeOffer.State));
-				return null;
+				return (null, false);
 			}
 
 			ParseTradeResult result = await ShouldAcceptTrade(tradeOffer).ConfigureAwait(false);
 			if (result == null) {
 				Bot.ArchiLogger.LogNullError(nameof(result));
-				return null;
+				return (null, false);
 			}
 
 			switch (result.Result) {
-				case ParseTradeResult.EResult.AcceptedWithItemLose:
-				case ParseTradeResult.EResult.AcceptedWithoutItemLose:
+				case ParseTradeResult.EResult.Accepted:
 					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.AcceptingTrade, tradeOffer.TradeOfferID));
 
-					if (await Bot.ArchiWebHandler.AcceptTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false)) {
+					(bool success, bool requiresMobileConfirmation) = await Bot.ArchiWebHandler.AcceptTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false);
+
+					if (success) {
 						if (tradeOffer.ItemsToReceive.Sum(item => item.Amount) > tradeOffer.ItemsToGive.Sum(item => item.Amount)) {
 							Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.BotAcceptedDonationTrade, tradeOffer.TradeOfferID));
 						}
 					}
 
-					break;
+					return (result, requiresMobileConfirmation);
 				case ParseTradeResult.EResult.RejectedPermanently:
 				case ParseTradeResult.EResult.RejectedTemporarily:
 					if (result.Result == ParseTradeResult.EResult.RejectedPermanently) {
@@ -254,17 +255,15 @@ namespace ArchiSteamFarm {
 					}
 
 					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.IgnoringTrade, tradeOffer.TradeOfferID));
-					break;
+					return (result, false);
 				case ParseTradeResult.EResult.RejectedAndBlacklisted:
 					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.RejectingTrade, tradeOffer.TradeOfferID));
 					await Bot.ArchiWebHandler.DeclineTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false);
-					break;
+					return (result, false);
 				default:
 					Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.Result), result.Result));
-					return null;
+					return (null, false);
 			}
-
-			return result;
 		}
 
 		private async Task<ParseTradeResult> ShouldAcceptTrade(Steam.TradeOffer tradeOffer) {
@@ -276,7 +275,7 @@ namespace ArchiSteamFarm {
 			if (tradeOffer.OtherSteamID64 != 0) {
 				// Always accept trades from SteamMasterID
 				if (Bot.IsMaster(tradeOffer.OtherSteamID64)) {
-					return new ParseTradeResult(tradeOffer.TradeOfferID, tradeOffer.ItemsToGive.Count > 0 ? ParseTradeResult.EResult.AcceptedWithItemLose : ParseTradeResult.EResult.AcceptedWithoutItemLose);
+					return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Accepted);
 				}
 
 				// Always deny trades from blacklisted steamIDs
@@ -297,7 +296,7 @@ namespace ArchiSteamFarm {
 
 					// If we accept donations and bot trades, accept it right away
 					if (acceptDonations && acceptBotTrades) {
-						return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.AcceptedWithoutItemLose);
+						return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Accepted);
 					}
 
 					// If we don't accept donations, neither bot trades, deny it right away
@@ -307,7 +306,7 @@ namespace ArchiSteamFarm {
 
 					// Otherwise we either accept donations but not bot trades, or we accept bot trades but not donations
 					bool isBotTrade = (tradeOffer.OtherSteamID64 != 0) && Bot.Bots.Values.Any(bot => bot.SteamID == tradeOffer.OtherSteamID64);
-					return new ParseTradeResult(tradeOffer.TradeOfferID, (acceptDonations && !isBotTrade) || (acceptBotTrades && isBotTrade) ? ParseTradeResult.EResult.AcceptedWithoutItemLose : ParseTradeResult.EResult.RejectedPermanently);
+					return new ParseTradeResult(tradeOffer.TradeOfferID, (acceptDonations && !isBotTrade) || (acceptBotTrades && isBotTrade) ? ParseTradeResult.EResult.Accepted : ParseTradeResult.EResult.RejectedPermanently);
 			}
 
 			// If we don't have SteamTradeMatcher enabled, this is the end for us
@@ -344,7 +343,7 @@ namespace ArchiSteamFarm {
 
 			// If we're matching everything, this is enough for us
 			if (Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything)) {
-				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.AcceptedWithItemLose);
+				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Accepted);
 			}
 
 			// Get appIDs/types we're interested in
@@ -367,27 +366,25 @@ namespace ArchiSteamFarm {
 			bool accept = IsTradeNeutralOrBetter(inventory, tradeOffer.ItemsToGive, tradeOffer.ItemsToReceive);
 
 			// Even if trade is not neutral+ for us right now, it might be in the future, unless we're bot account where we assume that inventory doesn't change
-			return new ParseTradeResult(tradeOffer.TradeOfferID, accept ? ParseTradeResult.EResult.AcceptedWithItemLose : (Bot.BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidTrades) ? ParseTradeResult.EResult.RejectedPermanently : ParseTradeResult.EResult.RejectedTemporarily));
+			return new ParseTradeResult(tradeOffer.TradeOfferID, accept ? ParseTradeResult.EResult.Accepted : (Bot.BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidTrades) ? ParseTradeResult.EResult.RejectedPermanently : ParseTradeResult.EResult.RejectedTemporarily));
 		}
 
 		private sealed class ParseTradeResult {
 			internal readonly EResult Result;
+			internal readonly ulong TradeOfferID;
 
-			internal readonly ulong TradeID;
-
-			internal ParseTradeResult(ulong tradeID, EResult result) {
-				if ((tradeID == 0) || (result == EResult.Unknown)) {
-					throw new ArgumentNullException(nameof(tradeID) + " || " + nameof(result));
+			internal ParseTradeResult(ulong tradeOfferID, EResult result) {
+				if ((tradeOfferID == 0) || (result == EResult.Unknown)) {
+					throw new ArgumentNullException(nameof(tradeOfferID) + " || " + nameof(result));
 				}
 
-				TradeID = tradeID;
+				TradeOfferID = tradeOfferID;
 				Result = result;
 			}
 
 			internal enum EResult : byte {
 				Unknown,
-				AcceptedWithItemLose,
-				AcceptedWithoutItemLose,
+				Accepted,
 				RejectedTemporarily,
 				RejectedPermanently,
 				RejectedAndBlacklisted

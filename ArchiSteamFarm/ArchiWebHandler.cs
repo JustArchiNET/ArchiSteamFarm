@@ -102,10 +102,10 @@ namespace ArchiSteamFarm {
 			return result?.Success == true;
 		}
 
-		internal async Task<bool> AcceptTradeOffer(ulong tradeID) {
+		internal async Task<(bool Success, bool RequiresMobileConfirmation)> AcceptTradeOffer(ulong tradeID) {
 			if (tradeID == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(tradeID));
-				return false;
+				return (false, false);
 			}
 
 			string request = "/tradeoffer/" + tradeID + "/accept";
@@ -117,7 +117,8 @@ namespace ArchiSteamFarm {
 				{ "tradeofferid", tradeID.ToString() }
 			};
 
-			return await UrlPostWithSession(SteamCommunityURL, request, data, referer).ConfigureAwait(false);
+			Steam.TradeOfferAcceptResponse response = await UrlPostToJsonObjectWithSession<Steam.TradeOfferAcceptResponse>(SteamCommunityURL, request, data, referer).ConfigureAwait(false);
+			return response != null ? (true, response.RequiresMobileConfirmation) : (false, false);
 		}
 
 		internal async Task<bool> AddFreeLicense(uint subID) {
@@ -1196,14 +1197,14 @@ namespace ArchiSteamFarm {
 			return response == null ? ((EResult Result, EPurchaseResultDetail? PurchaseResult)?) null : (response.Result, response.PurchaseResultDetail);
 		}
 
-		internal async Task<bool> SendTradeOffer(ulong partnerID, IReadOnlyCollection<Steam.Asset> itemsToGive, string token = null) {
+		internal async Task<(bool Success, HashSet<ulong> MobileTradeOfferIDs)> SendTradeOffer(ulong partnerID, IReadOnlyCollection<Steam.Asset> itemsToGive, string token = null) {
 			if ((partnerID == 0) || (itemsToGive == null) || (itemsToGive.Count == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(partnerID) + " || " + nameof(itemsToGive));
-				return false;
+				return (false, null);
 			}
 
-			Steam.TradeOfferRequest singleTrade = new Steam.TradeOfferRequest();
-			HashSet<Steam.TradeOfferRequest> trades = new HashSet<Steam.TradeOfferRequest> { singleTrade };
+			Steam.TradeOfferSendRequest singleTrade = new Steam.TradeOfferSendRequest();
+			HashSet<Steam.TradeOfferSendRequest> trades = new HashSet<Steam.TradeOfferSendRequest> { singleTrade };
 
 			foreach (Steam.Asset itemToGive in itemsToGive) {
 				if (singleTrade.ItemsToGive.Assets.Count >= Trading.MaxItemsPerTrade) {
@@ -1211,7 +1212,7 @@ namespace ArchiSteamFarm {
 						break;
 					}
 
-					singleTrade = new Steam.TradeOfferRequest();
+					singleTrade = new Steam.TradeOfferSendRequest();
 					trades.Add(singleTrade);
 				}
 
@@ -1222,21 +1223,30 @@ namespace ArchiSteamFarm {
 			const string referer = SteamCommunityURL + "/tradeoffer/new";
 
 			// Extra entry for sessionID
-			foreach (Dictionary<string, string> data in trades.Select(
-				trade => new Dictionary<string, string>(6) {
-					{ "json_tradeoffer", JsonConvert.SerializeObject(trade) },
-					{ "partner", partnerID.ToString() },
-					{ "serverid", "1" },
-					{ "trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : new JObject { { "trade_offer_access_token", token } }.ToString(Formatting.None) },
-					{ "tradeoffermessage", "Sent by " + SharedInfo.PublicIdentifier + "/" + SharedInfo.Version }
+			Dictionary<string, string> data = new Dictionary<string, string>(6) {
+				{ "partner", partnerID.ToString() },
+				{ "serverid", "1" },
+				{ "trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : new JObject { { "trade_offer_access_token", token } }.ToString(Formatting.None) },
+				{ "tradeoffermessage", "Sent by " + SharedInfo.PublicIdentifier + "/" + SharedInfo.Version }
+			};
+
+			HashSet<ulong> mobileTradeOfferIDs = new HashSet<ulong>();
+
+			foreach (Steam.TradeOfferSendRequest trade in trades) {
+				data["json_tradeoffer"] = JsonConvert.SerializeObject(trade);
+
+				Steam.TradeOfferSendResponse response = await UrlPostToJsonObjectWithSession<Steam.TradeOfferSendResponse>(SteamCommunityURL, request, data, referer).ConfigureAwait(false);
+
+				if (response == null) {
+					return (false, mobileTradeOfferIDs);
 				}
-			)) {
-				if (!await UrlPostWithSession(SteamCommunityURL, request, data, referer).ConfigureAwait(false)) {
-					return false;
+
+				if (response.RequiresMobileConfirmation) {
+					mobileTradeOfferIDs.Add(response.TradeOfferID);
 				}
 			}
 
-			return true;
+			return (true, mobileTradeOfferIDs);
 		}
 
 		internal async Task<bool> SteamAwardsVote(byte voteID, uint appID) {

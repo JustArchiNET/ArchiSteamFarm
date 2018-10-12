@@ -483,7 +483,16 @@ namespace ArchiSteamFarm.Json {
 			}
 		}
 
-		internal sealed class TradeOfferRequest {
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		internal sealed class TradeOfferAcceptResponse {
+			[JsonProperty(PropertyName = "needs_mobile_confirmation", Required = Required.Always)]
+			internal readonly bool RequiresMobileConfirmation;
+
+			// Deserialized from JSON
+			private TradeOfferAcceptResponse() { }
+		}
+
+		internal sealed class TradeOfferSendRequest {
 			[JsonProperty(PropertyName = "me", Required = Required.Always)]
 			internal readonly ItemList ItemsToGive = new ItemList();
 
@@ -494,6 +503,34 @@ namespace ArchiSteamFarm.Json {
 				[JsonProperty(PropertyName = "assets", Required = Required.Always)]
 				internal readonly HashSet<Asset> Assets = new HashSet<Asset>();
 			}
+		}
+
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		internal sealed class TradeOfferSendResponse {
+			[JsonProperty(PropertyName = "needs_mobile_confirmation", Required = Required.Always)]
+			internal readonly bool RequiresMobileConfirmation;
+
+			internal ulong TradeOfferID { get; private set; }
+
+			[JsonProperty(PropertyName = "tradeofferid", Required = Required.Always)]
+			private string TradeOfferIDText {
+				set {
+					if (string.IsNullOrEmpty(value)) {
+						ASF.ArchiLogger.LogNullError(nameof(value));
+						return;
+					}
+
+					if (!ulong.TryParse(value, out ulong tradeOfferID) || (tradeOfferID == 0)) {
+						ASF.ArchiLogger.LogNullError(nameof(tradeOfferID));
+						return;
+					}
+
+					TradeOfferID = tradeOfferID;
+				}
+			}
+
+			// Deserialized from JSON
+			private TradeOfferSendResponse() { }
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]

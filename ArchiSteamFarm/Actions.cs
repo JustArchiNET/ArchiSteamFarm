@@ -284,14 +284,20 @@ namespace ArchiSteamFarm {
 					return (false, string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
 				}
 
-				if (!await Bot.ArchiWebHandler.MarkSentTrades().ConfigureAwait(false) || !await Bot.ArchiWebHandler.SendTradeOffer(targetSteamID, inventory, Bot.BotConfig.SteamTradeToken).ConfigureAwait(false)) {
+				if (!await Bot.ArchiWebHandler.MarkSentTrades().ConfigureAwait(false)) {
 					return (false, Strings.BotLootingFailed);
 				}
 
-				if (Bot.HasMobileAuthenticator) {
-					if (!await AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, targetSteamID, waitIfNeeded: true).ConfigureAwait(false)) {
+				(bool success, HashSet<ulong> mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(targetSteamID, inventory, Bot.BotConfig.SteamTradeToken).ConfigureAwait(false);
+
+				if ((mobileTradeOfferIDs != null) && (mobileTradeOfferIDs.Count > 0) && Bot.HasMobileAuthenticator) {
+					if (!await AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, targetSteamID, mobileTradeOfferIDs, true).ConfigureAwait(false)) {
 						return (false, Strings.BotLootingFailed);
 					}
+				}
+
+				if (!success) {
+					return (false, Strings.BotLootingFailed);
 				}
 			} finally {
 				LootingSemaphore.Release();
