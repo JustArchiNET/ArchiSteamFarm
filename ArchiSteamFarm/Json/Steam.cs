@@ -485,7 +485,7 @@ namespace ArchiSteamFarm.Json {
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class TradeOfferAcceptResponse {
-			[JsonProperty(PropertyName = "needs_mobile_confirmation", Required = Required.Always)]
+			[JsonProperty(PropertyName = "needs_mobile_confirmation", Required = Required.DisallowNull)]
 			internal readonly bool RequiresMobileConfirmation;
 
 			// Deserialized from JSON
@@ -507,7 +507,7 @@ namespace ArchiSteamFarm.Json {
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class TradeOfferSendResponse {
-			[JsonProperty(PropertyName = "needs_mobile_confirmation", Required = Required.Always)]
+			[JsonProperty(PropertyName = "needs_mobile_confirmation", Required = Required.DisallowNull)]
 			internal readonly bool RequiresMobileConfirmation;
 
 			internal ulong TradeOfferID { get; private set; }
