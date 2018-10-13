@@ -55,7 +55,7 @@ namespace ArchiSteamFarm {
 			CardsFarmerResumeTimer?.Dispose();
 		}
 
-		internal async Task<bool> AcceptConfirmations(bool accept, Steam.ConfirmationDetails.EType acceptedType = Steam.ConfirmationDetails.EType.Unknown, ulong acceptedSteamID = 0, IReadOnlyCollection<ulong> acceptedTradeIDs = null, bool waitIfNeeded = false) {
+		internal async Task<bool> AcceptConfirmations(bool accept, Steam.ConfirmationDetails.EType acceptedType = Steam.ConfirmationDetails.EType.Unknown, ulong acceptedSteamID = 0, ISet<ulong> acceptedTradeOfferIDs = null, bool waitIfNeeded = false) {
 			if (!Bot.HasMobileAuthenticator) {
 				return false;
 			}
@@ -70,13 +70,13 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				if ((acceptedSteamID == 0) && ((acceptedTradeIDs == null) || (acceptedTradeIDs.Count == 0))) {
+				if ((acceptedSteamID == 0) && ((acceptedTradeOfferIDs == null) || (acceptedTradeOfferIDs.Count == 0))) {
 					return await Bot.BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false);
 				}
 
 				IList<Steam.ConfirmationDetails> results = await Utilities.InParallel(confirmations.Select(Bot.BotDatabase.MobileAuthenticator.GetConfirmationDetails)).ConfigureAwait(false);
 
-				foreach (MobileAuthenticator.Confirmation confirmation in results.Where(details => (details != null) && ((acceptedType != details.Type) || ((acceptedSteamID != 0) && (details.OtherSteamID64 != 0) && (acceptedSteamID != details.OtherSteamID64)) || ((acceptedTradeIDs != null) && (details.TradeOfferID != 0) && !acceptedTradeIDs.Contains(details.TradeOfferID)))).Select(details => details.Confirmation)) {
+				foreach (MobileAuthenticator.Confirmation confirmation in results.Where(details => (details != null) && ((acceptedType != details.Type) || ((acceptedSteamID != 0) && (details.OtherSteamID64 != 0) && (acceptedSteamID != details.OtherSteamID64)) || ((acceptedTradeOfferIDs != null) && (details.TradeOfferID != 0) && !acceptedTradeOfferIDs.Contains(details.TradeOfferID)))).Select(details => details.Confirmation)) {
 					confirmations.Remove(confirmation);
 				}
 
@@ -84,7 +84,13 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				return await Bot.BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false);
+				if (!await Bot.BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false)) {
+					return false;
+				}
+
+				if ((acceptedTradeOfferIDs == null) || (acceptedTradeOfferIDs.Count == 0) || results.Where(result => (result.TradeOfferID != 0) && confirmations.Contains(result.Confirmation)).Select(result => result.TradeOfferID).Where(acceptedTradeOfferIDs.Remove).Any(tradeOfferID => acceptedTradeOfferIDs.Count == 0)) {
+					return true;
+				}
 			}
 
 			return true;
