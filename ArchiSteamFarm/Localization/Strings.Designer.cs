@@ -232,24 +232,6 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Automatic idling is now paused! You have {0} to start a game..
-        /// </summary>
-        internal static string BotAutomaticIdlingPausedWithCountdown {
-            get {
-                return ResourceManager.GetString("BotAutomaticIdlingPausedWithCountdown", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Shared library has not been launched in given time period. Idling process resumed!.
-        /// </summary>
-        internal static string BotAutomaticIdlingPauseTimeout {
-            get {
-                return ResourceManager.GetString("BotAutomaticIdlingPauseTimeout", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Automatic idling is resumed already!.
         /// </summary>
         internal static string BotAutomaticIdlingResumedAlready {
@@ -1054,11 +1036,11 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Ignoring this request, as sticky pause is enabled!.
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Ignoring this request, as permanent pause is enabled!.
         /// </summary>
-        internal static string IgnoredStickyPauseEnabled {
+        internal static string IgnoredPermanentPauseEnabled {
             get {
-                return ResourceManager.GetString("IgnoredStickyPauseEnabled", resourceCulture);
+                return ResourceManager.GetString("IgnoredPermanentPauseEnabled", resourceCulture);
             }
         }
         
@@ -1090,7 +1072,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Starting IPC server on {0}....
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Starting IPC server....
         /// </summary>
         internal static string IPCStarting {
             get {
@@ -1351,11 +1333,11 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Please enter Steam parental PIN: .
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Please enter Steam parental code: .
         /// </summary>
-        internal static string UserInputSteamParentalPIN {
+        internal static string UserInputSteamParentalCode {
             get {
-                return ResourceManager.GetString("UserInputSteamParentalPIN", resourceCulture);
+                return ResourceManager.GetString("UserInputSteamParentalCode", resourceCulture);
             }
         }
         

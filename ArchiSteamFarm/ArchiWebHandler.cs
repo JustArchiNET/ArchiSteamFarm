@@ -84,9 +84,9 @@ namespace ArchiSteamFarm {
 			WebBrowser.Dispose();
 		}
 
-		internal async Task<bool> AcceptDigitalGiftCard(ulong gid) {
-			if (gid == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(gid));
+		internal async Task<bool> AcceptDigitalGiftCard(ulong giftCardID) {
+			if (giftCardID == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(giftCardID));
 				return false;
 			}
 
@@ -95,17 +95,17 @@ namespace ArchiSteamFarm {
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new Dictionary<string, string>(3) {
 				{ "accept", "1" },
-				{ "giftcardid", gid.ToString() }
+				{ "giftcardid", giftCardID.ToString() }
 			};
 
 			Steam.NumberResponse result = await UrlPostToJsonObjectWithSession<Steam.NumberResponse>(SteamStoreURL, request, data).ConfigureAwait(false);
 			return result?.Success == true;
 		}
 
-		internal async Task<bool> AcceptTradeOffer(ulong tradeID) {
+		internal async Task<(bool Success, bool RequiresMobileConfirmation)> AcceptTradeOffer(ulong tradeID) {
 			if (tradeID == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(tradeID));
-				return false;
+				return (false, false);
 			}
 
 			string request = "/tradeoffer/" + tradeID + "/accept";
@@ -117,7 +117,8 @@ namespace ArchiSteamFarm {
 				{ "tradeofferid", tradeID.ToString() }
 			};
 
-			return await UrlPostWithSession(SteamCommunityURL, request, data, referer).ConfigureAwait(false);
+			Steam.TradeOfferAcceptResponse response = await UrlPostToJsonObjectWithSession<Steam.TradeOfferAcceptResponse>(SteamCommunityURL, request, data, referer).ConfigureAwait(false);
+			return response != null ? (true, response.RequiresMobileConfirmation) : (false, false);
 		}
 
 		internal async Task<bool> AddFreeLicense(uint subID) {
@@ -383,7 +384,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			List<KeyValue> apps = response["applist"]["apps"].Children;
+			List<KeyValue> apps = response["apps"].Children;
 			if ((apps == null) || (apps.Count == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(apps));
 				return null;
@@ -467,29 +468,30 @@ namespace ArchiSteamFarm {
 		internal async Task<HashSet<ulong>> GetDigitalGiftCards() {
 			const string request = "/gifts";
 			HtmlDocument response = await UrlGetToHtmlDocumentWithSession(SteamStoreURL, request).ConfigureAwait(false);
-			if (response == null) {
+
+			HtmlNodeCollection htmlNodes = response?.DocumentNode.SelectNodes("//div[@class='pending_gift']/div[starts-with(@id, 'pending_gift_')][count(div[@class='pending_giftcard_leftcol']) > 0]/@id");
+			if (htmlNodes == null) {
 				return null;
 			}
 
-			HtmlNodeCollection htmlNodes = response.DocumentNode.SelectNodes("//div[@class='pending_gift']/div[starts-with(@id, 'pending_gift_')][count(div[@class='pending_giftcard_leftcol']) > 0]/@id");
 			HashSet<ulong> results = new HashSet<ulong>();
-			foreach (string gidText in htmlNodes.Select(node => node.GetAttributeValue("id", null))) {
-				if (string.IsNullOrEmpty(gidText)) {
-					Bot.ArchiLogger.LogNullError(nameof(gidText));
+			foreach (string giftCardIDText in htmlNodes.Select(node => node.GetAttributeValue("id", null))) {
+				if (string.IsNullOrEmpty(giftCardIDText)) {
+					Bot.ArchiLogger.LogNullError(nameof(giftCardIDText));
 					return null;
 				}
 
-				if (gidText.Length <= 13) {
-					Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(gidText)));
+				if (giftCardIDText.Length <= 13) {
+					Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(giftCardIDText)));
 					return null;
 				}
 
-				if (!ulong.TryParse(gidText.Substring(13), out ulong gid) || (gid == 0)) {
-					Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorParsingObject, nameof(gid)));
+				if (!ulong.TryParse(giftCardIDText.Substring(13), out ulong giftCardID) || (giftCardID == 0)) {
+					Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorParsingObject, nameof(giftCardID)));
 					return null;
 				}
 
-				results.Add(gid);
+				results.Add(giftCardID);
 			}
 
 			return results;
@@ -1024,9 +1026,9 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> HasValidApiKey() => !string.IsNullOrEmpty(await GetApiKey().ConfigureAwait(false));
 
-		internal async Task<bool> Init(ulong steamID, EUniverse universe, string webAPIUserNonce, string parentalPin) {
-			if ((steamID == 0) || (universe == EUniverse.Invalid) || string.IsNullOrEmpty(webAPIUserNonce) || string.IsNullOrEmpty(parentalPin)) {
-				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(universe) + " || " + nameof(webAPIUserNonce) + " || " + nameof(parentalPin));
+		internal async Task<bool> Init(ulong steamID, EUniverse universe, string webAPIUserNonce, string parentalCode = null) {
+			if ((steamID == 0) || (universe == EUniverse.Invalid) || string.IsNullOrEmpty(webAPIUserNonce)) {
+				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(universe) + " || " + nameof(webAPIUserNonce));
 				return false;
 			}
 
@@ -1036,17 +1038,17 @@ namespace ArchiSteamFarm {
 			byte[] sessionKey = CryptoHelper.GenerateRandomBlock(32);
 
 			// RSA encrypt it with the public key for the universe we're on
-			byte[] cryptedSessionKey;
+			byte[] encryptedSessionKey;
 			using (RSACrypto rsa = new RSACrypto(KeyDictionary.GetPublicKey(universe))) {
-				cryptedSessionKey = rsa.Encrypt(sessionKey);
+				encryptedSessionKey = rsa.Encrypt(sessionKey);
 			}
 
 			// Copy our login key
 			byte[] loginKey = new byte[webAPIUserNonce.Length];
 			Array.Copy(Encoding.ASCII.GetBytes(webAPIUserNonce), loginKey, webAPIUserNonce.Length);
 
-			// AES encrypt the loginkey with our session key
-			byte[] cryptedLoginKey = CryptoHelper.SymmetricEncrypt(loginKey, sessionKey);
+			// AES encrypt the login key with our session key
+			byte[] encryptedLoginKey = CryptoHelper.SymmetricEncrypt(loginKey, sessionKey);
 
 			// Do the magic
 			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.LoggingIn, ISteamUserAuth));
@@ -1064,10 +1066,10 @@ namespace ArchiSteamFarm {
 						WebAPI.DefaultBaseAddress.Host,
 						// ReSharper disable once AccessToDisposedClosure
 						async () => await iSteamUserAuth.AuthenticateUser(
-							encrypted_loginkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedLoginKey, 0, cryptedLoginKey.Length)),
+							encrypted_loginkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(encryptedLoginKey, 0, encryptedLoginKey.Length)),
 							method: WebRequestMethods.Http.Post,
 							secure: true,
-							sessionkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedSessionKey, 0, cryptedSessionKey.Length)),
+							sessionkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(encryptedSessionKey, 0, encryptedSessionKey.Length)),
 							steamid: steamID
 						)
 					).ConfigureAwait(false);
@@ -1108,8 +1110,8 @@ namespace ArchiSteamFarm {
 			Bot.ArchiLogger.LogGenericInfo(Strings.Success);
 
 			// Unlock Steam Parental if needed
-			if (!parentalPin.Equals("0")) {
-				if (!await UnlockParentalAccount(parentalPin).ConfigureAwait(false)) {
+			if (!string.IsNullOrEmpty(parentalCode) && (parentalCode.Length == 4)) {
+				if (!await UnlockParentalAccount(parentalCode).ConfigureAwait(false)) {
 					return false;
 				}
 			}
@@ -1195,14 +1197,14 @@ namespace ArchiSteamFarm {
 			return response == null ? ((EResult Result, EPurchaseResultDetail? PurchaseResult)?) null : (response.Result, response.PurchaseResultDetail);
 		}
 
-		internal async Task<bool> SendTradeOffer(ulong partnerID, IReadOnlyCollection<Steam.Asset> itemsToGive, string token = null) {
+		internal async Task<(bool Success, HashSet<ulong> MobileTradeOfferIDs)> SendTradeOffer(ulong partnerID, IReadOnlyCollection<Steam.Asset> itemsToGive, string token = null) {
 			if ((partnerID == 0) || (itemsToGive == null) || (itemsToGive.Count == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(partnerID) + " || " + nameof(itemsToGive));
-				return false;
+				return (false, null);
 			}
 
-			Steam.TradeOfferRequest singleTrade = new Steam.TradeOfferRequest();
-			HashSet<Steam.TradeOfferRequest> trades = new HashSet<Steam.TradeOfferRequest> { singleTrade };
+			Steam.TradeOfferSendRequest singleTrade = new Steam.TradeOfferSendRequest();
+			HashSet<Steam.TradeOfferSendRequest> trades = new HashSet<Steam.TradeOfferSendRequest> { singleTrade };
 
 			foreach (Steam.Asset itemToGive in itemsToGive) {
 				if (singleTrade.ItemsToGive.Assets.Count >= Trading.MaxItemsPerTrade) {
@@ -1210,7 +1212,7 @@ namespace ArchiSteamFarm {
 						break;
 					}
 
-					singleTrade = new Steam.TradeOfferRequest();
+					singleTrade = new Steam.TradeOfferSendRequest();
 					trades.Add(singleTrade);
 				}
 
@@ -1221,21 +1223,30 @@ namespace ArchiSteamFarm {
 			const string referer = SteamCommunityURL + "/tradeoffer/new";
 
 			// Extra entry for sessionID
-			foreach (Dictionary<string, string> data in trades.Select(
-				trade => new Dictionary<string, string>(6) {
-					{ "json_tradeoffer", JsonConvert.SerializeObject(trade) },
-					{ "partner", partnerID.ToString() },
-					{ "serverid", "1" },
-					{ "trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : new JObject { { "trade_offer_access_token", token } }.ToString(Formatting.None) },
-					{ "tradeoffermessage", "Sent by " + SharedInfo.PublicIdentifier + "/" + SharedInfo.Version }
+			Dictionary<string, string> data = new Dictionary<string, string>(6) {
+				{ "partner", partnerID.ToString() },
+				{ "serverid", "1" },
+				{ "trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : new JObject { { "trade_offer_access_token", token } }.ToString(Formatting.None) },
+				{ "tradeoffermessage", "Sent by " + SharedInfo.PublicIdentifier + "/" + SharedInfo.Version }
+			};
+
+			HashSet<ulong> mobileTradeOfferIDs = new HashSet<ulong>();
+
+			foreach (Steam.TradeOfferSendRequest trade in trades) {
+				data["json_tradeoffer"] = JsonConvert.SerializeObject(trade);
+
+				Steam.TradeOfferSendResponse response = await UrlPostToJsonObjectWithSession<Steam.TradeOfferSendResponse>(SteamCommunityURL, request, data, referer).ConfigureAwait(false);
+
+				if (response == null) {
+					return (false, mobileTradeOfferIDs);
 				}
-			)) {
-				if (!await UrlPostWithSession(SteamCommunityURL, request, data, referer).ConfigureAwait(false)) {
-					return false;
+
+				if (response.RequiresMobileConfirmation) {
+					mobileTradeOfferIDs.Add(response.TradeOfferID);
 				}
 			}
 
-			return true;
+			return (true, mobileTradeOfferIDs);
 		}
 
 		internal async Task<bool> SteamAwardsVote(byte voteID, uint appID) {
@@ -1621,20 +1632,20 @@ namespace ArchiSteamFarm {
 			return await UrlPostWithSession(SteamCommunityURL, request, data).ConfigureAwait(false);
 		}
 
-		private async Task<bool> UnlockParentalAccount(string parentalPin) {
-			if (string.IsNullOrEmpty(parentalPin)) {
-				Bot.ArchiLogger.LogNullError(nameof(parentalPin));
+		private async Task<bool> UnlockParentalAccount(string parentalCode) {
+			if (string.IsNullOrEmpty(parentalCode)) {
+				Bot.ArchiLogger.LogNullError(nameof(parentalCode));
 				return false;
 			}
 
 			Bot.ArchiLogger.LogGenericInfo(Strings.UnlockingParentalAccount);
 
-			if (!await UnlockParentalAccountForService(SteamCommunityURL, parentalPin).ConfigureAwait(false)) {
+			if (!await UnlockParentalAccountForService(SteamCommunityURL, parentalCode).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return false;
 			}
 
-			if (!await UnlockParentalAccountForService(SteamStoreURL, parentalPin).ConfigureAwait(false)) {
+			if (!await UnlockParentalAccountForService(SteamStoreURL, parentalCode).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return false;
 			}
@@ -1643,9 +1654,9 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		private async Task<bool> UnlockParentalAccountForService(string serviceURL, string parentalPin, byte maxTries = WebBrowser.MaxTries) {
-			if (string.IsNullOrEmpty(serviceURL) || string.IsNullOrEmpty(parentalPin)) {
-				Bot.ArchiLogger.LogNullError(nameof(serviceURL) + " || " + nameof(parentalPin));
+		private async Task<bool> UnlockParentalAccountForService(string serviceURL, string parentalCode, byte maxTries = WebBrowser.MaxTries) {
+			if (string.IsNullOrEmpty(serviceURL) || string.IsNullOrEmpty(parentalCode)) {
+				Bot.ArchiLogger.LogNullError(nameof(serviceURL) + " || " + nameof(parentalCode));
 				return false;
 			}
 
@@ -1657,7 +1668,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			Dictionary<string, string> data = new Dictionary<string, string>(1) { { "pin", parentalPin } };
+			Dictionary<string, string> data = new Dictionary<string, string>(1) { { "pin", parentalCode } };
 
 			// This request doesn't go through UrlPostRetryWithSession as we have no access to session refresh capability (this is in fact session initialization)
 			WebBrowser.BasicResponse response = await WebLimitRequest(serviceURL, async () => await WebBrowser.UrlPost(serviceURL + request, data, serviceURL).ConfigureAwait(false)).ConfigureAwait(false);
@@ -1669,7 +1680,7 @@ namespace ArchiSteamFarm {
 			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
 			if (await IsProfileUri(response.FinalUri, false).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
-				return await UnlockParentalAccountForService(serviceURL, parentalPin, --maxTries).ConfigureAwait(false);
+				return await UnlockParentalAccountForService(serviceURL, parentalCode, --maxTries).ConfigureAwait(false);
 			}
 
 			return true;

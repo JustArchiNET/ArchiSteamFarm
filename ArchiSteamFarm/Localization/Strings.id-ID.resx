@@ -261,10 +261,7 @@
     <value>Masukkan login Steam Anda: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>Masukkan PIN Parental Steam: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Silakan masukkan sandi Steam anda: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -280,10 +277,7 @@
   <data name="IPCReady" xml:space="preserve">
     <value>Server IPC siap!</value>
   </data>
-  <data name="IPCStarting" xml:space="preserve">
-    <value>Memulai server IPC di {0}...</value>
-    <comment>{0} will be replaced by IPC hostname</comment>
-  </data>
+  
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Bot ini sudah berhenti!</value>
   </data>
@@ -338,9 +332,7 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>Idling berhenti!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Mengabaikan permintaan ini, karena sticky pause aktif!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>Kami tidak memiliki apa-apa untuk dimainkan di akun ini!</value>
   </data>
@@ -420,10 +412,6 @@
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Idling otomatis sudah ditunda sebelumnya!</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Idling otomatis sekarang dihentikan! Anda memiliki {0} untuk memulai permainan.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Idling otomatis sudah dilanjuntkan sebelumnya!</value>
@@ -551,9 +539,6 @@
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Akun ini sedang digunakan, ASF akan melanjutkan idling jika akun tidak sedang digunakan...</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Shared library belum diluncurkan dalam periode waktu yang diberikan, proses idling dilanjutkan!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Menghubungkan...</value>

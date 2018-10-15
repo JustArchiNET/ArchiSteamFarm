@@ -27,6 +27,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.NLog;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 
@@ -49,7 +50,7 @@ namespace ArchiSteamFarm {
 			ArchiLogger = archiLogger ?? throw new ArgumentNullException(nameof(archiLogger));
 
 			HttpClientHandler httpClientHandler = new HttpClientHandler {
-				AllowAutoRedirect = false, // This must be false if we want to handle custom redirection schemes such as "steammobile"
+				AllowAutoRedirect = false, // This must be false if we want to handle custom redirection schemes such as "steammobile://"
 				AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
 				CookieContainer = CookieContainer,
 				Proxy = webProxy,
@@ -200,6 +201,30 @@ namespace ArchiSteamFarm {
 			}
 
 			return new ObjectResponse<T>(response, obj);
+		}
+
+		internal async Task<StringResponse> UrlGetToString(string request, string referer = null, byte maxTries = MaxTries) {
+			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
+				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
+				return null;
+			}
+
+			for (byte i = 0; i < maxTries; i++) {
+				using (HttpResponseMessage response = await InternalGet(request, referer).ConfigureAwait(false)) {
+					if (response == null) {
+						continue;
+					}
+
+					return new StringResponse(response, await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+				}
+			}
+
+			if (maxTries > 1) {
+				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+			}
+
+			return null;
 		}
 
 		internal async Task<XmlDocumentResponse> UrlGetToXmlDocument(string request, string referer = null, byte maxTries = MaxTries) {
@@ -388,7 +413,7 @@ namespace ArchiSteamFarm {
 				return response;
 			}
 
-			// WARNING: We still have undisposed response by now, make sure to dispose it ASAP if we're not returning it!
+			// WARNING: We still have not disposed response by now, make sure to dispose it ASAP if we're not returning it!
 			if ((response.StatusCode >= HttpStatusCode.Ambiguous) && (response.StatusCode < HttpStatusCode.BadRequest) && (maxRedirections > 0)) {
 				Uri redirectUri = response.Headers.Location;
 
@@ -420,30 +445,6 @@ namespace ArchiSteamFarm {
 
 				return null;
 			}
-		}
-
-		private async Task<StringResponse> UrlGetToString(string request, string referer = null, byte maxTries = MaxTries) {
-			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
-				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
-				return null;
-			}
-
-			for (byte i = 0; i < maxTries; i++) {
-				using (HttpResponseMessage response = await InternalGet(request, referer).ConfigureAwait(false)) {
-					if (response == null) {
-						continue;
-					}
-
-					return new StringResponse(response, await response.Content.ReadAsStringAsync().ConfigureAwait(false));
-				}
-			}
-
-			if (maxTries > 1) {
-				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
-				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
-			}
-
-			return null;
 		}
 
 		private async Task<StringResponse> UrlPostToString(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, byte maxTries = MaxTries) {

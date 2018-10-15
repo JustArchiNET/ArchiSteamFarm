@@ -25,6 +25,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Humanizer;
@@ -73,15 +74,6 @@ namespace ArchiSteamFarm {
 			return cookies.Count > 0 ? (from Cookie cookie in cookies where cookie.Name.Equals(name) select cookie.Value).FirstOrDefault() : null;
 		}
 
-		internal static string GetUnifiedName(this Type type) {
-			if (type == null) {
-				ASF.ArchiLogger.LogNullError(nameof(type));
-				return null;
-			}
-
-			return type.GenericTypeArguments.Length == 0 ? type.FullName : type.Namespace + "." + type.Name + string.Join("", type.GenericTypeArguments.Select(innerType => '[' + innerType.GetUnifiedName() + ']'));
-		}
-
 		internal static uint GetUnixTime() => (uint) DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
 		internal static void InBackground(Action action, bool longRunning = false) {
@@ -112,6 +104,59 @@ namespace ArchiSteamFarm {
 			}
 
 			Task.Factory.StartNew(function, CancellationToken.None, options, TaskScheduler.Default);
+		}
+
+		internal static async Task<IList<T>> InParallel<T>(IEnumerable<Task<T>> tasks) {
+			if (tasks == null) {
+				ASF.ArchiLogger.LogNullError(nameof(tasks));
+				return null;
+			}
+
+			IList<T> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<T>();
+
+					foreach (Task<T> task in tasks) {
+						results.Add(await task.ConfigureAwait(false));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+
+			return results;
+		}
+
+		internal static async Task InParallel(IEnumerable<Task> tasks) {
+			if (tasks == null) {
+				ASF.ArchiLogger.LogNullError(nameof(tasks));
+				return;
+			}
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					foreach (Task task in tasks) {
+						await task.ConfigureAwait(false);
+					}
+
+					break;
+				default:
+					await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+		}
+
+		internal static bool IsValidCdKey(string key) {
+			if (string.IsNullOrEmpty(key)) {
+				ASF.ArchiLogger.LogNullError(nameof(key));
+				return false;
+			}
+
+			return Regex.IsMatch(key, @"^[0-9A-Z]{4,7}-[0-9A-Z]{4,7}-[0-9A-Z]{4,7}(?:(?:-[0-9A-Z]{4,7})?(?:-[0-9A-Z]{4,7}))?$", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 		}
 
 		internal static bool IsValidHexadecimalString(string text) {

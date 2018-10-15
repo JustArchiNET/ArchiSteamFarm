@@ -33,14 +33,13 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	internal sealed class BotConfig {
+	public sealed class BotConfig {
 		private const bool DefaultAcceptGifts = false;
 		private const bool DefaultAutoSteamSaleEvent = false;
 		private const EBotBehaviour DefaultBotBehaviour = EBotBehaviour.None;
 		private const string DefaultCustomGamePlayedWhileFarming = null;
 		private const string DefaultCustomGamePlayedWhileIdle = null;
 		private const bool DefaultEnabled = false;
-		private const string DefaultEncryptedSteamPassword = null;
 		private const byte DefaultHoursUntilCardDrops = 3;
 		private const bool DefaultIdlePriorityQueueOnly = false;
 		private const bool DefaultIdleRefundableGames = true;
@@ -53,16 +52,18 @@ namespace ArchiSteamFarm {
 		private const bool DefaultShutdownOnFarmingFinished = false;
 		private const string DefaultSteamLogin = null;
 		private const ulong DefaultSteamMasterClanID = 0;
-		private const string DefaultSteamParentalPIN = "0";
+		private const string DefaultSteamParentalCode = null;
+		private const string DefaultSteamPassword = null;
 		private const string DefaultSteamTradeToken = null;
 		private const ETradingPreferences DefaultTradingPreferences = ETradingPreferences.None;
 		private const bool DefaultUseLoginKeys = true;
 
-		private static readonly ImmutableHashSet<EFarmingOrder> DefaultFarmingOrders = ImmutableHashSet<EFarmingOrder>.Empty;
+		private static readonly ImmutableList<EFarmingOrder> DefaultFarmingOrders = ImmutableList<EFarmingOrder>.Empty;
 		private static readonly ImmutableHashSet<uint> DefaultGamesPlayedWhileIdle = ImmutableHashSet<uint>.Empty;
 		private static readonly ImmutableHashSet<Steam.Asset.EType> DefaultLootableTypes = ImmutableHashSet.Create(Steam.Asset.EType.BoosterPack, Steam.Asset.EType.FoilTradingCard, Steam.Asset.EType.TradingCard);
 		private static readonly ImmutableHashSet<Steam.Asset.EType> DefaultMatchableTypes = ImmutableHashSet.Create(Steam.Asset.EType.TradingCard);
 		private static readonly ImmutableDictionary<ulong, EPermission> DefaultSteamUserPermissions = ImmutableDictionary<ulong, EPermission>.Empty;
+		private static readonly ImmutableHashSet<Steam.Asset.EType> DefaultTransferableTypes = ImmutableHashSet.Create(Steam.Asset.EType.BoosterPack, Steam.Asset.EType.FoilTradingCard, Steam.Asset.EType.TradingCard);
 
 		private static readonly SemaphoreSlim WriteSemaphore = new SemaphoreSlim(1, 1);
 
@@ -85,7 +86,7 @@ namespace ArchiSteamFarm {
 		internal readonly bool Enabled = DefaultEnabled;
 
 		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
-		internal readonly ImmutableHashSet<EFarmingOrder> FarmingOrders = DefaultFarmingOrders;
+		internal readonly ImmutableList<EFarmingOrder> FarmingOrders = DefaultFarmingOrders;
 
 		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
 		internal readonly ImmutableHashSet<uint> GamesPlayedWhileIdle = DefaultGamesPlayedWhileIdle;
@@ -135,30 +136,29 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly ETradingPreferences TradingPreferences = DefaultTradingPreferences;
 
+		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
+		internal readonly ImmutableHashSet<Steam.Asset.EType> TransferableTypes = DefaultTransferableTypes;
+
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool UseLoginKeys = DefaultUseLoginKeys;
 
-		[JsonProperty(PropertyName = nameof(SteamPassword))]
-		internal string EncryptedSteamPassword { get; private set; } = DefaultEncryptedSteamPassword;
-
-		internal bool ShouldSerializeEverything { private get; set; } = true;
-
-		[JsonProperty]
-		internal string SteamLogin { get; set; } = DefaultSteamLogin;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal ulong SteamMasterClanID { get; private set; } = DefaultSteamMasterClanID;
-
-		[JsonProperty]
-		internal string SteamParentalPIN { get; set; } = DefaultSteamParentalPIN;
-
-		internal string SteamPassword {
+		internal string DecryptedSteamPassword {
 			get {
-				if (string.IsNullOrEmpty(EncryptedSteamPassword)) {
+				if (string.IsNullOrEmpty(SteamPassword)) {
 					return null;
 				}
 
-				return PasswordFormat == ArchiCryptoHelper.ECryptoMethod.PlainText ? EncryptedSteamPassword : ArchiCryptoHelper.Decrypt(PasswordFormat, EncryptedSteamPassword);
+				if (PasswordFormat == ArchiCryptoHelper.ECryptoMethod.PlainText) {
+					return SteamPassword;
+				}
+
+				string decryptedPassword = ArchiCryptoHelper.Decrypt(PasswordFormat, SteamPassword);
+				if (string.IsNullOrEmpty(decryptedPassword)) {
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(SteamPassword)));
+					return null;
+				}
+
+				return decryptedPassword;
 			}
 			set {
 				if (string.IsNullOrEmpty(value)) {
@@ -166,10 +166,48 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				EncryptedSteamPassword = PasswordFormat == ArchiCryptoHelper.ECryptoMethod.PlainText ? value : ArchiCryptoHelper.Encrypt(PasswordFormat, value);
+				SteamPassword = PasswordFormat == ArchiCryptoHelper.ECryptoMethod.PlainText ? value : ArchiCryptoHelper.Encrypt(PasswordFormat, value);
 			}
 		}
 
+		internal bool IsSteamLoginSet { get; private set; }
+		internal bool IsSteamParentalCodeSet { get; private set; }
+		internal bool IsSteamPasswordSet { get; private set; }
+		internal bool ShouldSerializeEverything { private get; set; } = true;
+
+		[JsonProperty]
+		internal string SteamLogin {
+			get => _SteamLogin;
+			set {
+				IsSteamLoginSet = true;
+				_SteamLogin = value;
+			}
+		}
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal ulong SteamMasterClanID { get; private set; } = DefaultSteamMasterClanID;
+
+		[JsonProperty]
+		internal string SteamParentalCode {
+			get => _SteamParentalCode;
+			set {
+				IsSteamParentalCodeSet = true;
+				_SteamParentalCode = value;
+			}
+		}
+
+		[JsonProperty]
+		internal string SteamPassword {
+			get => _SteamPassword;
+			set {
+				IsSteamPasswordSet = true;
+				_SteamPassword = value;
+			}
+		}
+
+		private string _SteamLogin = DefaultSteamLogin;
+		private string _SteamParentalCode = DefaultSteamParentalCode;
+		private string _SteamPassword = DefaultSteamPassword;
 		private bool ShouldSerializeSensitiveDetails = true;
 
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamMasterClanID), Required = Required.DisallowNull)]
@@ -183,6 +221,70 @@ namespace ArchiSteamFarm {
 
 				SteamMasterClanID = result;
 			}
+		}
+
+		[JsonProperty]
+		private string SteamParentalPIN {
+			set {
+				if (string.IsNullOrEmpty(value) || (value != "0")) {
+					ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, nameof(SteamParentalPIN), nameof(SteamParentalCode)));
+					SteamParentalCode = string.IsNullOrEmpty(value) ? "0" : value;
+				}
+			}
+		}
+
+		internal (bool Valid, string ErrorMessage) CheckValidation() {
+			if (BotBehaviour > EBotBehaviour.All) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(BotBehaviour), BotBehaviour));
+			}
+
+			foreach (EFarmingOrder farmingOrder in FarmingOrders) {
+				if (!Enum.IsDefined(typeof(EFarmingOrder), farmingOrder)) {
+					return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(FarmingOrders), farmingOrder));
+				}
+			}
+
+			if (GamesPlayedWhileIdle.Count > ArchiHandler.MaxGamesPlayedConcurrently) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(GamesPlayedWhileIdle), GamesPlayedWhileIdle.Count + " > " + ArchiHandler.MaxGamesPlayedConcurrently));
+			}
+
+			foreach (Steam.Asset.EType lootableType in LootableTypes) {
+				if (!Enum.IsDefined(typeof(Steam.Asset.EType), lootableType)) {
+					return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(LootableTypes), lootableType));
+				}
+			}
+
+			foreach (Steam.Asset.EType matchableType in MatchableTypes) {
+				if (!Enum.IsDefined(typeof(Steam.Asset.EType), matchableType)) {
+					return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(MatchableTypes), matchableType));
+				}
+			}
+
+			if ((OnlineStatus < EPersonaState.Offline) || (OnlineStatus >= EPersonaState.Max)) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(OnlineStatus), OnlineStatus));
+			}
+
+			if (!Enum.IsDefined(typeof(ArchiCryptoHelper.ECryptoMethod), PasswordFormat)) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(PasswordFormat), PasswordFormat));
+			}
+
+			if (RedeemingPreferences > ERedeemingPreferences.All) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(RedeemingPreferences), RedeemingPreferences));
+			}
+
+			if ((SteamMasterClanID != 0) && !new SteamID(SteamMasterClanID).IsClanAccount) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(SteamMasterClanID), SteamMasterClanID));
+			}
+
+			if (!string.IsNullOrEmpty(SteamParentalCode) && (SteamParentalCode != "0") && (SteamParentalCode.Length != 4)) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(SteamParentalCode), SteamParentalCode));
+			}
+
+			foreach (EPermission permission in SteamUserPermissions.Values.Where(permission => !Enum.IsDefined(typeof(EPermission), permission))) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(SteamUserPermissions), permission));
+			}
+
+			return TradingPreferences <= ETradingPreferences.All ? (true, null) : (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(TradingPreferences), TradingPreferences));
 		}
 
 		internal static async Task<BotConfig> Load(string filePath) {
@@ -209,64 +311,9 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (botConfig.BotBehaviour > EBotBehaviour.All) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.BotBehaviour), botConfig.BotBehaviour));
-				return null;
-			}
-
-			foreach (EFarmingOrder farmingOrder in botConfig.FarmingOrders) {
-				if (!Enum.IsDefined(typeof(EFarmingOrder), farmingOrder)) {
-					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.FarmingOrders), farmingOrder));
-					return null;
-				}
-			}
-
-			if (botConfig.GamesPlayedWhileIdle.Count > ArchiHandler.MaxGamesPlayedConcurrently) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.GamesPlayedWhileIdle), botConfig.GamesPlayedWhileIdle.Count + " > " + ArchiHandler.MaxGamesPlayedConcurrently));
-				return null;
-			}
-
-			foreach (Steam.Asset.EType lootableType in botConfig.LootableTypes) {
-				if (!Enum.IsDefined(typeof(Steam.Asset.EType), lootableType)) {
-					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.LootableTypes), lootableType));
-					return null;
-				}
-			}
-
-			foreach (Steam.Asset.EType matchableType in botConfig.MatchableTypes) {
-				if (!Enum.IsDefined(typeof(Steam.Asset.EType), matchableType)) {
-					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.MatchableTypes), matchableType));
-					return null;
-				}
-			}
-
-			if ((botConfig.OnlineStatus < EPersonaState.Offline) || (botConfig.OnlineStatus >= EPersonaState.Max)) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.OnlineStatus), botConfig.OnlineStatus));
-				return null;
-			}
-
-			if (!Enum.IsDefined(typeof(ArchiCryptoHelper.ECryptoMethod), botConfig.PasswordFormat)) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.PasswordFormat), botConfig.PasswordFormat));
-				return null;
-			}
-
-			if (botConfig.RedeemingPreferences > ERedeemingPreferences.All) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.RedeemingPreferences), botConfig.RedeemingPreferences));
-				return null;
-			}
-
-			if ((botConfig.SteamMasterClanID != 0) && !new SteamID(botConfig.SteamMasterClanID).IsClanAccount) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.SteamMasterClanID), botConfig.SteamMasterClanID));
-				return null;
-			}
-
-			foreach (EPermission permission in botConfig.SteamUserPermissions.Values.Where(permission => !Enum.IsDefined(typeof(EPermission), permission))) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.SteamUserPermissions), permission));
-				return null;
-			}
-
-			if (botConfig.TradingPreferences > ETradingPreferences.All) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(botConfig.TradingPreferences), botConfig.TradingPreferences));
+			(bool valid, string errorMessage) = botConfig.CheckValidation();
+			if (!valid) {
+				ASF.ArchiLogger.LogGenericError(errorMessage);
 				return null;
 			}
 
@@ -373,8 +420,7 @@ namespace ArchiSteamFarm {
 		public bool ShouldSerializeCustomGamePlayedWhileFarming() => ShouldSerializeEverything || (CustomGamePlayedWhileFarming != DefaultCustomGamePlayedWhileFarming);
 		public bool ShouldSerializeCustomGamePlayedWhileIdle() => ShouldSerializeEverything || (CustomGamePlayedWhileIdle != DefaultCustomGamePlayedWhileIdle);
 		public bool ShouldSerializeEnabled() => ShouldSerializeEverything || (Enabled != DefaultEnabled);
-		public bool ShouldSerializeEncryptedSteamPassword() => ShouldSerializeSensitiveDetails && (ShouldSerializeEverything || (EncryptedSteamPassword != DefaultEncryptedSteamPassword));
-		public bool ShouldSerializeFarmingOrders() => ShouldSerializeEverything || ((FarmingOrders != DefaultFarmingOrders) && !FarmingOrders.SetEquals(DefaultFarmingOrders));
+		public bool ShouldSerializeFarmingOrders() => ShouldSerializeEverything || ((FarmingOrders != DefaultFarmingOrders) && !FarmingOrders.SequenceEqual(DefaultFarmingOrders));
 		public bool ShouldSerializeGamesPlayedWhileIdle() => ShouldSerializeEverything || ((GamesPlayedWhileIdle != DefaultGamesPlayedWhileIdle) && !GamesPlayedWhileIdle.SetEquals(DefaultGamesPlayedWhileIdle));
 		public bool ShouldSerializeHoursUntilCardDrops() => ShouldSerializeEverything || (HoursUntilCardDrops != DefaultHoursUntilCardDrops);
 		public bool ShouldSerializeIdlePriorityQueueOnly() => ShouldSerializeEverything || (IdlePriorityQueueOnly != DefaultIdlePriorityQueueOnly);
@@ -391,10 +437,12 @@ namespace ArchiSteamFarm {
 		public bool ShouldSerializeSSteamMasterClanID() => ShouldSerializeEverything; // We never serialize helper properties
 		public bool ShouldSerializeSteamLogin() => ShouldSerializeSensitiveDetails && (ShouldSerializeEverything || (SteamLogin != DefaultSteamLogin));
 		public bool ShouldSerializeSteamMasterClanID() => ShouldSerializeEverything || (SteamMasterClanID != DefaultSteamMasterClanID);
-		public bool ShouldSerializeSteamParentalPIN() => ShouldSerializeSensitiveDetails && (ShouldSerializeEverything || (SteamParentalPIN != DefaultSteamParentalPIN));
+		public bool ShouldSerializeSteamParentalCode() => ShouldSerializeSensitiveDetails && (ShouldSerializeEverything || (SteamParentalCode != DefaultSteamParentalCode));
+		public bool ShouldSerializeSteamPassword() => ShouldSerializeSensitiveDetails && (ShouldSerializeEverything || (SteamPassword != DefaultSteamPassword));
 		public bool ShouldSerializeSteamTradeToken() => ShouldSerializeEverything || (SteamTradeToken != DefaultSteamTradeToken);
 		public bool ShouldSerializeSteamUserPermissions() => ShouldSerializeEverything || ((SteamUserPermissions != DefaultSteamUserPermissions) && ((SteamUserPermissions.Count != DefaultSteamUserPermissions.Count) || SteamUserPermissions.Except(DefaultSteamUserPermissions).Any()));
 		public bool ShouldSerializeTradingPreferences() => ShouldSerializeEverything || (TradingPreferences != DefaultTradingPreferences);
+		public bool ShouldSerializeTransferableTypes() => ShouldSerializeEverything || ((TransferableTypes != DefaultTransferableTypes) && !TransferableTypes.SetEquals(DefaultTransferableTypes));
 		public bool ShouldSerializeUseLoginKeys() => ShouldSerializeEverything || (UseLoginKeys != DefaultUseLoginKeys);
 
 		// ReSharper restore UnusedMember.Global

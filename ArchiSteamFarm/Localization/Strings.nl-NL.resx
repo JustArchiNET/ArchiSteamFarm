@@ -264,8 +264,8 @@ StackTrace:
     <value>Voer je Steam gebruikersnaam in: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>Voer je Steam ouderlijk toezicht pincode in: </value>
+  <data name="UserInputSteamParentalCode" xml:space="preserve">
+    <value>Voer je Steam ouderlijktoezichtscode in: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
@@ -284,8 +284,7 @@ StackTrace:
     <value>IPC server gereed!</value>
   </data>
   <data name="IPCStarting" xml:space="preserve">
-    <value>IPC server starten op {0}...</value>
-    <comment>{0} will be replaced by IPC hostname</comment>
+    <value>IPC server starten...</value>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Deze bot is al gestopt!</value>
@@ -341,8 +340,8 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Het farmen is gestopt!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Dit verzoek wordt genegeerd. Permanente pauze staat aan!</value>
+  <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
+    <value>Dit verzoek wordt genegeerd aangezien permanente pauze is ingeschakeld!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Er is niets om te farmen op dit account!</value>
@@ -423,10 +422,6 @@ StackTrace:
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Automatisch farmen is al gepauzeerd!</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Automatisch farmen is nu gepauzeerd! Je hebt {0} om een spel te starten.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Automatisch farmen is al hervat!</value>
@@ -563,9 +558,6 @@ StackTrace:
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Account is momenteel in gebruik: ASF zal het farmen hervatten wanneer het account weer beschikbaar is...</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Gedeelde bibliotheek is niet opgestart in de gegeven tijdsperiode. Farming proces wordt hervat!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Verbinden...</value>

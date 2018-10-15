@@ -28,7 +28,9 @@ using System.IO;
 using System.Linq;
 using System.Resources;
 using System.Threading.Tasks;
+using ArchiSteamFarm.IPC;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.NLog;
 using Newtonsoft.Json;
 using NLog;
 using NLog.Targets;
@@ -96,8 +98,8 @@ namespace ArchiSteamFarm {
 							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamGuard, botName));
 							result = Console.ReadLine();
 							break;
-						case ASF.EUserInputType.SteamParentalPIN:
-							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamParentalPIN, botName));
+						case ASF.EUserInputType.SteamParentalCode:
+							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamParentalCode, botName));
 							result = Utilities.ReadLineMasked();
 							break;
 						case ASF.EUserInputType.TwoFactorAuthentication:
@@ -201,7 +203,7 @@ namespace ArchiSteamFarm {
 
 			await InitGlobalDatabaseAndServices().ConfigureAwait(false);
 
-			await ASF.CheckAndUpdateProgram().ConfigureAwait(false);
+			await ASF.UpdateAndRestart().ConfigureAwait(false);
 			await ASF.InitBots().ConfigureAwait(false);
 
 			ASF.InitEvents();
@@ -237,12 +239,16 @@ namespace ArchiSteamFarm {
 		private static async Task InitGlobalConfigAndLanguage() {
 			string globalConfigFile = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName);
 
-			GlobalConfig = await GlobalConfig.Load(globalConfigFile).ConfigureAwait(false);
-			if (GlobalConfig == null) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorGlobalConfigNotLoaded, globalConfigFile));
-				await Task.Delay(5 * 1000).ConfigureAwait(false);
-				await Exit(1).ConfigureAwait(false);
-				return;
+			if (File.Exists(globalConfigFile)) {
+				GlobalConfig = await GlobalConfig.Load(globalConfigFile).ConfigureAwait(false);
+				if (GlobalConfig == null) {
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorGlobalConfigNotLoaded, globalConfigFile));
+					await Task.Delay(5 * 1000).ConfigureAwait(false);
+					await Exit(1).ConfigureAwait(false);
+					return;
+				}
+			} else {
+				GlobalConfig = GlobalConfig.Create();
 			}
 
 			if (Debugging.IsUserDebugging) {
@@ -310,7 +316,7 @@ namespace ArchiSteamFarm {
 				await Task.Delay(5 * 1000).ConfigureAwait(false);
 			}
 
-			GlobalDatabase = await GlobalDatabase.Load(globalDatabaseFile).ConfigureAwait(false);
+			GlobalDatabase = await GlobalDatabase.CreateOrLoad(globalDatabaseFile).ConfigureAwait(false);
 			if (GlobalDatabase == null) {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorDatabaseInvalid, globalDatabaseFile));
 				await Task.Delay(5 * 1000).ConfigureAwait(false);
@@ -341,8 +347,8 @@ namespace ArchiSteamFarm {
 			WebBrowser.Init();
 			WebBrowser = new WebBrowser(ASF.ArchiLogger, GlobalConfig.WebProxy, true);
 
-			if (GlobalConfig.IPC && (GlobalConfig.IPCPrefixes.Count > 0)) {
-				IPC.Start(GlobalConfig.IPCPrefixes);
+			if (GlobalConfig.IPC) {
+				await ArchiKestrel.Start().ConfigureAwait(false);
 			}
 		}
 
@@ -353,30 +359,13 @@ namespace ArchiSteamFarm {
 
 			ShutdownSequenceInitialized = true;
 
-			// Sockets created by HttpListener might still be running for a short while after complete app shutdown
+			// Sockets created by IPC might still be running for a short while after complete app shutdown
 			// Ensure that IPC is stopped before we finalize shutdown sequence
-			if (IPC.IsRunning) {
-				IPC.Stop();
-
-				for (byte i = 0; (i < WebBrowser.MaxTries) && IPC.IsRunning; i++) {
-					await Task.Delay(1000).ConfigureAwait(false);
-				}
-			}
+			await ArchiKestrel.Stop().ConfigureAwait(false);
 
 			if (Bot.Bots.Count > 0) {
-				IEnumerable<Task> tasks = Bot.Bots.Values.Select(bot => Task.Run(() => bot.Stop(true)));
-
-				switch (GlobalConfig.OptimizationMode) {
-					case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-						foreach (Task task in tasks) {
-							await Task.WhenAny(task, Task.Delay(WebBrowser.MaxTries * 1000)).ConfigureAwait(false);
-						}
-
-						break;
-					default:
-						await Task.WhenAny(Task.WhenAll(tasks), Task.Delay(Bot.Bots.Count * WebBrowser.MaxTries * 1000)).ConfigureAwait(false);
-						break;
-				}
+				// Stop() function can block due to SK2 sockets, don't forget a maximum delay
+				await Task.WhenAny(Utilities.InParallel(Bot.Bots.Values.Select(bot => Task.Run(() => bot.Stop(true)))), Task.Delay(Bot.Bots.Count * WebBrowser.MaxTries * 1000)).ConfigureAwait(false);
 
 				// Extra second for Steam requests to go through
 				await Task.Delay(1000).ConfigureAwait(false);

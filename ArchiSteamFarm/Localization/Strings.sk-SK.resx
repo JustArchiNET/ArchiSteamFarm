@@ -264,10 +264,7 @@ StackTrace:
     <value>Zadaj Steam login: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>Zadaj rodičovský PIN Steam kód: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Zadaj Steam heslo: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -283,10 +280,7 @@ StackTrace:
   <data name="IPCReady" xml:space="preserve">
     <value>IPC server pripravený!</value>
   </data>
-  <data name="IPCStarting" xml:space="preserve">
-    <value>Spúšťanie IPC servera na {0}...</value>
-    <comment>{0} will be replaced by IPC hostname</comment>
-  </data>
+  
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Tento bot už bol zastavený!</value>
   </data>
@@ -341,9 +335,7 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Farmenie zastavené!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Táto požiadavka bola ignorovaná, pretože permanentné pozastavenie je aktívne!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>Na tomto účte nie je nič na farmenie!</value>
   </data>
@@ -423,10 +415,6 @@ StackTrace:
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Automatické farmenie už bolo pozastavené!</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Automatické farmenie je pozastavené! Máš {0} na spustenie hry.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Automatické farmenie už bolo obnovené!</value>
@@ -557,9 +545,6 @@ StackTrace:
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Účet je momentálne využívaný: ASF bude pokračovať vo farmení až po uvoľnení...</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Zdieľaná knižnica nebola spustená v danom časovom úseku. Proces farmenia znova spustený!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Pripájanie...</value>

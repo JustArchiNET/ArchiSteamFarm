@@ -26,6 +26,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Collections;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
@@ -143,6 +144,34 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal static async Task<BotDatabase> CreateOrLoad(string filePath) {
+			if (string.IsNullOrEmpty(filePath)) {
+				ASF.ArchiLogger.LogNullError(nameof(filePath));
+				return null;
+			}
+
+			if (!File.Exists(filePath)) {
+				return new BotDatabase(filePath);
+			}
+
+			BotDatabase botDatabase;
+
+			try {
+				botDatabase = JsonConvert.DeserializeObject<BotDatabase>(await RuntimeCompatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false));
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+				return null;
+			}
+
+			if (botDatabase == null) {
+				ASF.ArchiLogger.LogNullError(nameof(botDatabase));
+				return null;
+			}
+
+			botDatabase.FilePath = filePath;
+			return botDatabase;
+		}
+
 		internal IReadOnlyCollection<ulong> GetBlacklistedFromTradesSteamIDs() => BlacklistedFromTradesSteamIDs;
 
 		internal (string Key, string Name) GetGameToRedeemInBackground() {
@@ -183,34 +212,6 @@ namespace ArchiSteamFarm {
 			}
 
 			return IdlingPriorityAppIDs.Contains(appID);
-		}
-
-		internal static async Task<BotDatabase> Load(string filePath) {
-			if (string.IsNullOrEmpty(filePath)) {
-				ASF.ArchiLogger.LogNullError(nameof(filePath));
-				return null;
-			}
-
-			if (!File.Exists(filePath)) {
-				return new BotDatabase(filePath);
-			}
-
-			BotDatabase botDatabase;
-
-			try {
-				botDatabase = JsonConvert.DeserializeObject<BotDatabase>(await RuntimeCompatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false));
-			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericException(e);
-				return null;
-			}
-
-			if (botDatabase == null) {
-				ASF.ArchiLogger.LogNullError(nameof(botDatabase));
-				return null;
-			}
-
-			botDatabase.FilePath = filePath;
-			return botDatabase;
 		}
 
 		internal async Task MakeReadOnly() {

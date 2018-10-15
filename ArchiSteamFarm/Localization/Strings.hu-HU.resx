@@ -262,10 +262,7 @@ StackTrace: {2}</value>
     <value>Add meg a Steames felhasználó neved: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>Add meg a Szülői felügyelet PIN kódját: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Add meg a Steames felhasználód jelszavát: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -282,8 +279,7 @@ StackTrace: {2}</value>
     <value>IPC szerver készen áll!</value>
   </data>
   <data name="IPCStarting" xml:space="preserve">
-    <value>IPC szerver indítása a {0} címen...</value>
-    <comment>{0} will be replaced by IPC hostname</comment>
+    <value>Az IPC-szerver indítása...</value>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Ez a bor már leállt!</value>
@@ -339,9 +335,7 @@ StackTrace: {2}</value>
   <data name="IdlingStopped" xml:space="preserve">
     <value>Farmolás leállítva!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>A kérelem figyelmen kívül marad, mert a sticky pause mód engedélyezve van!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>Ezen az accounton nincs mit farmolni!</value>
   </data>
@@ -421,10 +415,6 @@ StackTrace: {2}</value>
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Az automatikus farmolás már szüneteltetve van!</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Az automatikus farmolás most szüneteltetve van! Enny időd van elindítani egy játékot: {0}.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Az automatikus farmolás már folytatva van!</value>
@@ -561,9 +551,6 @@ StackTrace: {2}</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>A felhasználó jelenleg használatban van. Amint szabaddá válik, az ASF folytatja a farmolást...</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>A megosztott könyvtár nem indult el a megadott időszakon belül. A kártyafarmolási folyamat folytatódik!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Kapcsolódás...</value>

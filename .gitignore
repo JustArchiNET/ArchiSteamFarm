@@ -2,13 +2,11 @@
 ## ArchiSteamFarm
 #################
 
-# Ignore all config files
+# Ignore all files in config directory
 ArchiSteamFarm/config
 
-# Include default pre-defined config files
-!ArchiSteamFarm/config/ASF.json
-!ArchiSteamFarm/config/example.json
-!ArchiSteamFarm/config/minimal.json
+# Except placeholder to include the folder itself
+!ArchiSteamFarm/config/.gitkeep
 
 # Ignore local log + debugging
 ArchiSteamFarm/log.txt

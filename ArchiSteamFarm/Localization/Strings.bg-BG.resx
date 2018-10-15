@@ -261,10 +261,7 @@
     <value>Моля, въведете Вашият Steam login: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>Моля, въведете Steam родителски PIN: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Моля, въведете Вашата Steam парола: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -280,10 +277,7 @@
   <data name="IPCReady" xml:space="preserve">
     <value>IPC сървърът е готов!</value>
   </data>
-  <data name="IPCStarting" xml:space="preserve">
-    <value>Стартиране IPC сървър на {0}...</value>
-    <comment>{0} will be replaced by IPC hostname</comment>
-  </data>
+  
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Този бот вече е спрян!</value>
   </data>
@@ -338,9 +332,7 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>Изкарването на карти е спряно!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Отказване на това желание, тъй като е активирана постоянна пауза!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>Няма на какво да вадим карти на този акаунт!</value>
   </data>
@@ -420,10 +412,6 @@
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Автоматичното вадене на карти е вече временно прекратено!</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Автоматичното вадене на карти е вече прекратено! Имате {0} за да стартирате игра.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Автоматичното вадене на карти е вече възобновено!</value>
@@ -554,9 +542,6 @@
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Акаунтът в момента се ползва: ASF ще възобнови ваденето на карти, когато е свободен...</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Споделената библиотека не е стартирана през даденият период на време. Ваденето на карти е продължено!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Свързване…</value>

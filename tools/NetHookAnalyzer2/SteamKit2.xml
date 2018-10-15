@@ -2165,6 +2165,14 @@
             <param name="endPoint">The IP address and port of the server.</param>
             <returns>A new <see cref="T:SteamKit2.Discovery.ServerRecord"/> instance</returns>
         </member>
+        <member name="M:SteamKit2.Discovery.ServerRecord.TryCreateSocketServer(System.String,SteamKit2.Discovery.ServerRecord@)">
+            <summary>
+            Creates a Socket server given an IP endpoint.
+            </summary>
+            <param name="address">The IP address and port of the server, as a string.</param>
+            <param name="serverRecord">A new <see cref="T:SteamKit2.Discovery.ServerRecord"/>, if the address was able to be parsed. <c>null</c> otherwise.</param>
+            <returns><c>true</c> if the address was able to be parsed, <c>false</c> otherwise.</returns>
+        </member>
         <member name="M:SteamKit2.Discovery.ServerRecord.CreateWebSocketServer(System.String)">
             <summary>
             Creates a WebSocket server given an address in the form of "hostname:port".
@@ -6282,6 +6290,15 @@
             Load a list of servers from the Steam Directory.
             </summary>
             <param name="configuration">Configuration Object</param>
+            <param name="cancellationToken">Cancellation Token</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> with the Result set to an enumerable list of <see cref="T:SteamKit2.Discovery.ServerRecord"/>s.</returns>
+        </member>
+        <member name="M:SteamKit2.SteamDirectory.LoadAsync(SteamKit2.SteamConfiguration,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Load a list of servers from the Steam Directory.
+            </summary>
+            <param name="configuration">Configuration Object</param>
+            <param name="maxNumServers">Max number of servers to return. The API will typically return this number per server type (socket and websocket).</param>
             <param name="cancellationToken">Cancellation Token</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> with the Result set to an enumerable list of <see cref="T:SteamKit2.Discovery.ServerRecord"/>s.</returns>
         </member>

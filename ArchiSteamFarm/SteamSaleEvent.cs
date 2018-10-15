@@ -139,7 +139,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				// Random a game we'll actually vote for, we don't want to make GabeN angry by rigging votes...
+				// Random a game we'll actually vote for, we don't want to make anybody angry by rigging votes...
 				HtmlNode voteNode = voteNodes[Utilities.RandomNext(voteNodes.Count)];
 
 				string appIDText = voteNode.GetAttributeValue("data-vote-appid", null);

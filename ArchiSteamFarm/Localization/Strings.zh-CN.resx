@@ -261,10 +261,7 @@
     <value>请输入你的Steam登录名: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>请输入Steam父账号 PIN: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>请输入你的Steam密码: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -281,8 +278,7 @@
     <value>IPC 服务已就绪 ！</value>
   </data>
   <data name="IPCStarting" xml:space="preserve">
-    <value>在 {0} 上的启动 IPC 服务...</value>
-    <comment>{0} will be replaced by IPC hostname</comment>
+    <value>正在启动IPC服务...</value>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>这个帐号已停止运行！</value>
@@ -338,9 +334,7 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>已停止挂卡！</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>请求已忽略，因为强制暂停已开启</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>该账户已经无卡可挂！</value>
   </data>
@@ -420,10 +414,6 @@
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>自动挂卡已经暂停 ！</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>自动挂卡已经暂停，请在{0} 分钟内运行游戏。</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>自动挂卡已经恢复 ！</value>
@@ -560,9 +550,6 @@
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>账户正在被占用，ASF会在它空闲时继续挂卡……</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>共享库没有在规定时间开启，挂卡进程恢复！</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>正在连接...</value>

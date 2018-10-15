@@ -1,14 +1,26 @@
-FROM microsoft/dotnet:2.1-sdk AS build
+FROM node:slim AS build-node
+WORKDIR /app
+COPY ASF-ui .
+RUN echo "Node.js: $(node --version)" && \
+    echo "npm: $(npm --version)" && \
+    npm ci --no-progress && \
+    npm run-script deploy --no-progress
+
+FROM microsoft/dotnet:2.1-sdk AS build-dotnet
 ENV NET_CORE_VERSION netcoreapp2.1
 WORKDIR /app
+COPY --from=build-node /app/dist ASF-ui/dist
 COPY ArchiSteamFarm ArchiSteamFarm
+COPY ArchiSteamFarm.Tests ArchiSteamFarm.Tests
 RUN dotnet --info && \
-    dotnet publish ArchiSteamFarm -c Release -f "$NET_CORE_VERSION" -o out /nologo /p:ASFVariant=generic /p:LinkDuringPublish=false && \
-    cp "ArchiSteamFarm/scripts/generic/ArchiSteamFarm-Service.sh" "ArchiSteamFarm/out/ArchiSteamFarm-Service.sh"
+    dotnet test ArchiSteamFarm.Tests -c Release -f "$NET_CORE_VERSION" -o out/test /nologo && \
+    dotnet publish ArchiSteamFarm -c Release -f "$NET_CORE_VERSION" -o out/publish /nologo /p:ASFVariant=generic /p:LinkDuringPublish=false && \
+    cp "ArchiSteamFarm/scripts/generic/ArchiSteamFarm-Service.sh" "ArchiSteamFarm/out/publish/ArchiSteamFarm-Service.sh"
 
 FROM microsoft/dotnet:2.1-runtime-stretch-slim-arm32v7 AS runtime
+ENV ASPNETCORE_URLS=
 LABEL maintainer="JustArchi <JustArchi@JustArchi.net>"
 EXPOSE 1242
 WORKDIR /app
-COPY --from=build /app/ArchiSteamFarm/out .
+COPY --from=build-dotnet /app/ArchiSteamFarm/out/publish .
 ENTRYPOINT ["./ArchiSteamFarm-Service.sh", "--no-restart", "--process-required", "--system-required"]

@@ -264,8 +264,8 @@ StackTrace:
     <value>Xin vui lòng nhập tài khoản Steam của bạn: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>Xin vui lòng nhập mã PIN của Steam Parental: </value>
+  <data name="UserInputSteamParentalCode" xml:space="preserve">
+    <value>Xin vui lòng nhập mã Steam Parental: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
@@ -284,8 +284,7 @@ StackTrace:
     <value>Máy chủ IPC đã sẵn sàng!</value>
   </data>
   <data name="IPCStarting" xml:space="preserve">
-    <value>Đang khởi động IPC server trên {0}...</value>
-    <comment>{0} will be replaced by IPC hostname</comment>
+    <value>Đang khởi động máy chủ IPC...</value>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Bot này đã được dừng lại từ trước rồi!</value>
@@ -341,8 +340,8 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Dừng thu hoạch!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Bỏ qua yêu cầu này, tạm dừng mãi được kích hoạt!</value>
+  <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
+    <value>Bỏ qua yêu cầu này, vì tạm dừng vĩnh viễn được kích hoạt!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Chúng tôi không có gì để thu hoạch trên tài khoản này!</value>
@@ -424,10 +423,6 @@ StackTrace:
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Tự động thu hoạch đã tạm dừng!</value>
   </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Tự động thu hoạch đã tạm dừng! Bạn có {0} để bắt đầu 1 trò chơi.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
-  </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Tự động thu hoạch đã tiếp tục từ trước!</value>
   </data>
@@ -447,12 +442,18 @@ StackTrace:
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>Không chạy bot này bởi vì nó đã bị vô hiệu hóa trong tập tin cấu hình!</value>
   </data>
-  
+  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+    <value>Nhận được lỗi mã TwoFactorCodeMismatch {0} lần liên tiếp. Thông tin đăng nhập 2FA của bạn không còn hợp lệ hoặc đồng hồ của bạn không đồng bộ, tiến hành hủy!</value>
+    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+  </data>
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Đã đăng xuất khỏi Steam: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  
+  <data name="BotLoggedOn" xml:space="preserve">
+    <value>Đăng nhập thành công vào {0}.</value>
+    <comment>{0} will be replaced by steam ID (number)</comment>
+  </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Đang đăng nhập...</value>
   </data>
@@ -557,9 +558,6 @@ StackTrace:
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Tài khoản hiện tại đang được sử dụng: ASF sẽ tiếp tục việc thu hoạch khi nó tự do...</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Thư viện chia sẻ không được chạy trong khoảng thời gian đưa ra. Quá trình thu hoạch tiếp tục!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Đang kết nối...</value>

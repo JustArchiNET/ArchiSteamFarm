@@ -21,163 +21,23 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ArchiSteamFarm.JSON;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.NLog;
 
 namespace ArchiSteamFarm {
 	internal static class ASF {
 		internal static readonly ArchiLogger ArchiLogger = new ArchiLogger(SharedInfo.ASF);
 
 		private static readonly ConcurrentDictionary<string, DateTime> LastWriteTimes = new ConcurrentDictionary<string, DateTime>();
+		private static readonly SemaphoreSlim UpdateSemaphore = new SemaphoreSlim(1, 1);
 
 		private static Timer AutoUpdatesTimer;
 		private static FileSystemWatcher FileSystemWatcher;
-
-		internal static async Task<Version> CheckAndUpdateProgram(bool updateOverride = false) {
-			if (!SharedInfo.BuildInfo.CanUpdate || (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None)) {
-				return null;
-			}
-
-			if ((AutoUpdatesTimer == null) && (Program.GlobalConfig.UpdatePeriod > 0)) {
-				TimeSpan autoUpdatePeriod = TimeSpan.FromHours(Program.GlobalConfig.UpdatePeriod);
-
-				AutoUpdatesTimer = new Timer(
-					async e => await CheckAndUpdateProgram().ConfigureAwait(false),
-					null,
-					autoUpdatePeriod, // Delay
-					autoUpdatePeriod // Period
-				);
-
-				ArchiLogger.LogGenericInfo(string.Format(Strings.AutoUpdateCheckInfo, autoUpdatePeriod.ToHumanReadable()));
-			}
-
-			ArchiLogger.LogGenericInfo(Strings.UpdateCheckingNewVersion);
-
-			// Cleanup from previous update - update directory for old in-use runtime files
-			string backupDirectory = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.UpdateDirectory);
-			if (Directory.Exists(backupDirectory)) {
-				// It's entirely possible that old process is still running, wait a short moment for eventual cleanup
-				await Task.Delay(5000).ConfigureAwait(false);
-
-				try {
-					Directory.Delete(backupDirectory, true);
-				} catch (Exception e) {
-					ArchiLogger.LogGenericException(e);
-					return null;
-				}
-			}
-
-			// Cleanup from previous update - old non-runtime in-use files
-			try {
-				foreach (string file in Directory.EnumerateFiles(SharedInfo.HomeDirectory, "*.old", SearchOption.AllDirectories)) {
-					File.Delete(file);
-				}
-			} catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
-				return null;
-			}
-
-			string releaseURL = SharedInfo.GithubReleaseURL + (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable ? "/latest" : "?per_page=1");
-
-			GitHub.ReleaseResponse releaseResponse;
-
-			if (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable) {
-				WebBrowser.ObjectResponse<GitHub.ReleaseResponse> objectResponse = await Program.WebBrowser.UrlGetToJsonObject<GitHub.ReleaseResponse>(releaseURL).ConfigureAwait(false);
-				if (objectResponse?.Content == null) {
-					ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
-					return null;
-				}
-
-				releaseResponse = objectResponse.Content;
-			} else {
-				WebBrowser.ObjectResponse<List<GitHub.ReleaseResponse>> objectResponse = await Program.WebBrowser.UrlGetToJsonObject<List<GitHub.ReleaseResponse>>(releaseURL).ConfigureAwait(false);
-				if ((objectResponse?.Content == null) || (objectResponse.Content.Count == 0)) {
-					ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
-					return null;
-				}
-
-				releaseResponse = objectResponse.Content[0];
-			}
-
-			if (string.IsNullOrEmpty(releaseResponse.Tag)) {
-				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
-				return null;
-			}
-
-			Version newVersion = new Version(releaseResponse.Tag);
-
-			ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateVersionInfo, SharedInfo.Version, newVersion));
-
-			if (SharedInfo.Version == newVersion) {
-				return SharedInfo.Version;
-			}
-
-			if (SharedInfo.Version > newVersion) {
-				ArchiLogger.LogGenericWarning(Strings.WarningPreReleaseVersion);
-				await Task.Delay(15 * 1000).ConfigureAwait(false);
-				return SharedInfo.Version;
-			}
-
-			if (!updateOverride && (Program.GlobalConfig.UpdatePeriod == 0)) {
-				ArchiLogger.LogGenericInfo(Strings.UpdateNewVersionAvailable);
-				await Task.Delay(5000).ConfigureAwait(false);
-				return null;
-			}
-
-			// Auto update logic starts here
-			if (releaseResponse.Assets == null) {
-				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateNoAssets);
-				return null;
-			}
-
-			string targetFile = SharedInfo.ASF + "-" + SharedInfo.BuildInfo.Variant + ".zip";
-			GitHub.ReleaseResponse.Asset binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => asset.Name.Equals(targetFile, StringComparison.OrdinalIgnoreCase));
-
-			if (binaryAsset == null) {
-				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateNoAssetForThisVersion);
-				return null;
-			}
-
-			if (string.IsNullOrEmpty(binaryAsset.DownloadURL)) {
-				ArchiLogger.LogNullError(nameof(binaryAsset.DownloadURL));
-				return null;
-			}
-
-			ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateDownloadingNewVersion, newVersion, binaryAsset.Size / 1024 / 1024));
-
-			WebBrowser.BinaryResponse response = await Program.WebBrowser.UrlGetToBinaryWithProgress(binaryAsset.DownloadURL).ConfigureAwait(false);
-			if (response?.Content == null) {
-				return null;
-			}
-
-			try {
-				using (ZipArchive zipArchive = new ZipArchive(new MemoryStream(response.Content))) {
-					if (!UpdateFromArchive(zipArchive, SharedInfo.HomeDirectory)) {
-						ArchiLogger.LogGenericError(Strings.WarningFailed);
-					}
-				}
-			} catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
-				return null;
-			}
-
-			if (OS.IsUnix) {
-				string executable = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.AssemblyName);
-				if (File.Exists(executable)) {
-					OS.UnixSetFileAccessExecutable(executable);
-				}
-			}
-
-			ArchiLogger.LogGenericInfo(Strings.UpdateFinished);
-			await RestartOrExit().ConfigureAwait(false);
-			return newVersion;
-		}
 
 		internal static async Task InitBots() {
 			if (Bot.Bots.Count != 0) {
@@ -188,19 +48,7 @@ namespace ArchiSteamFarm {
 			await Bot.InitializeSteamConfiguration(Program.GlobalConfig.SteamProtocols, Program.GlobalDatabase.CellID, Program.GlobalDatabase.ServerListProvider).ConfigureAwait(false);
 
 			try {
-				IEnumerable<Task> tasks = Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*" + SharedInfo.ConfigExtension).Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).OrderBy(botName => botName).Select(Bot.RegisterBot);
-
-				switch (Program.GlobalConfig.OptimizationMode) {
-					case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-						foreach (Task task in tasks) {
-							await task.ConfigureAwait(false);
-						}
-
-						break;
-					default:
-						await Task.WhenAll(tasks).ConfigureAwait(false);
-						break;
-				}
+				await Utilities.InParallel(Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*" + SharedInfo.ConfigExtension).Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).OrderBy(botName => botName).Select(Bot.RegisterBot)).ConfigureAwait(false);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 				return;
@@ -226,6 +74,173 @@ namespace ArchiSteamFarm {
 			FileSystemWatcher.EnableRaisingEvents = true;
 		}
 
+		internal static bool IsOwner(ulong steamID) {
+			if (steamID == 0) {
+				ArchiLogger.LogNullError(nameof(steamID));
+				return false;
+			}
+
+			return (steamID == Program.GlobalConfig.SteamOwnerID) || (Debugging.IsDebugBuild && (steamID == SharedInfo.ArchiSteamID));
+		}
+
+		internal static async Task RestartOrExit() {
+			if (Program.RestartAllowed && Program.GlobalConfig.AutoRestart) {
+				ArchiLogger.LogGenericInfo(Strings.Restarting);
+				await Task.Delay(5000).ConfigureAwait(false);
+				await Program.Restart().ConfigureAwait(false);
+			} else {
+				ArchiLogger.LogGenericInfo(Strings.Exiting);
+				await Task.Delay(5000).ConfigureAwait(false);
+				await Program.Exit().ConfigureAwait(false);
+			}
+		}
+
+		internal static async Task<Version> Update(bool updateOverride = false) {
+			if (!SharedInfo.BuildInfo.CanUpdate || (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None)) {
+				return null;
+			}
+
+			await UpdateSemaphore.WaitAsync().ConfigureAwait(false);
+
+			try {
+				ArchiLogger.LogGenericInfo(Strings.UpdateCheckingNewVersion);
+
+				// Cleanup from previous update - update directory for old in-use runtime files
+				string backupDirectory = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.UpdateDirectory);
+				if (Directory.Exists(backupDirectory)) {
+					// It's entirely possible that old process is still running, wait a short moment for eventual cleanup
+					await Task.Delay(5000).ConfigureAwait(false);
+
+					try {
+						Directory.Delete(backupDirectory, true);
+					} catch (Exception e) {
+						ArchiLogger.LogGenericException(e);
+						return null;
+					}
+				}
+
+				// Cleanup from previous update - old non-runtime in-use files
+				try {
+					foreach (string file in Directory.EnumerateFiles(SharedInfo.HomeDirectory, "*.old", SearchOption.AllDirectories)) {
+						File.Delete(file);
+					}
+				} catch (Exception e) {
+					ArchiLogger.LogGenericException(e);
+					return null;
+				}
+
+				GitHub.ReleaseResponse releaseResponse = await GitHub.GetLatestRelease(Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable).ConfigureAwait(false);
+				if (releaseResponse == null) {
+					ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
+					return null;
+				}
+
+				if (string.IsNullOrEmpty(releaseResponse.Tag)) {
+					ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
+					return null;
+				}
+
+				Version newVersion = new Version(releaseResponse.Tag);
+
+				ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateVersionInfo, SharedInfo.Version, newVersion));
+
+				if (SharedInfo.Version == newVersion) {
+					return SharedInfo.Version;
+				}
+
+				if (SharedInfo.Version > newVersion) {
+					ArchiLogger.LogGenericWarning(Strings.WarningPreReleaseVersion);
+					await Task.Delay(15 * 1000).ConfigureAwait(false);
+					return SharedInfo.Version;
+				}
+
+				if (!updateOverride && (Program.GlobalConfig.UpdatePeriod == 0)) {
+					ArchiLogger.LogGenericInfo(Strings.UpdateNewVersionAvailable);
+					await Task.Delay(5000).ConfigureAwait(false);
+					return null;
+				}
+
+				// Auto update logic starts here
+				if (releaseResponse.Assets == null) {
+					ArchiLogger.LogGenericWarning(Strings.ErrorUpdateNoAssets);
+					return null;
+				}
+
+				string targetFile = SharedInfo.ASF + "-" + SharedInfo.BuildInfo.Variant + ".zip";
+				GitHub.ReleaseResponse.Asset binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => asset.Name.Equals(targetFile, StringComparison.OrdinalIgnoreCase));
+
+				if (binaryAsset == null) {
+					ArchiLogger.LogGenericWarning(Strings.ErrorUpdateNoAssetForThisVersion);
+					return null;
+				}
+
+				if (string.IsNullOrEmpty(binaryAsset.DownloadURL)) {
+					ArchiLogger.LogNullError(nameof(binaryAsset.DownloadURL));
+					return null;
+				}
+
+				if (!string.IsNullOrEmpty(releaseResponse.ChangelogPlainText)) {
+					ArchiLogger.LogGenericInfo(releaseResponse.ChangelogPlainText);
+				}
+
+				ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateDownloadingNewVersion, newVersion, binaryAsset.Size / 1024 / 1024));
+
+				WebBrowser.BinaryResponse response = await Program.WebBrowser.UrlGetToBinaryWithProgress(binaryAsset.DownloadURL).ConfigureAwait(false);
+				if (response?.Content == null) {
+					return null;
+				}
+
+				try {
+					using (ZipArchive zipArchive = new ZipArchive(new MemoryStream(response.Content))) {
+						if (!UpdateFromArchive(zipArchive, SharedInfo.HomeDirectory)) {
+							ArchiLogger.LogGenericError(Strings.WarningFailed);
+						}
+					}
+				} catch (Exception e) {
+					ArchiLogger.LogGenericException(e);
+					return null;
+				}
+
+				if (OS.IsUnix) {
+					string executable = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.AssemblyName);
+					if (File.Exists(executable)) {
+						OS.UnixSetFileAccessExecutable(executable);
+					}
+				}
+
+				ArchiLogger.LogGenericInfo(Strings.UpdateFinished);
+				return newVersion;
+			} finally {
+				UpdateSemaphore.Release();
+			}
+		}
+
+		internal static async Task UpdateAndRestart() {
+			if (!SharedInfo.BuildInfo.CanUpdate || (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None)) {
+				return;
+			}
+
+			if ((AutoUpdatesTimer == null) && (Program.GlobalConfig.UpdatePeriod > 0)) {
+				TimeSpan autoUpdatePeriod = TimeSpan.FromHours(Program.GlobalConfig.UpdatePeriod);
+
+				AutoUpdatesTimer = new Timer(
+					async e => await UpdateAndRestart().ConfigureAwait(false),
+					null,
+					autoUpdatePeriod, // Delay
+					autoUpdatePeriod // Period
+				);
+
+				ArchiLogger.LogGenericInfo(string.Format(Strings.AutoUpdateCheckInfo, autoUpdatePeriod.ToHumanReadable()));
+			}
+
+			Version newVersion = await Update().ConfigureAwait(false);
+			if ((newVersion == null) || (newVersion <= SharedInfo.Version)) {
+				return;
+			}
+
+			await RestartOrExit().ConfigureAwait(false);
+		}
+
 		private static bool IsValidBotName(string botName) {
 			if (string.IsNullOrEmpty(botName)) {
 				ArchiLogger.LogNullError(nameof(botName));
@@ -238,8 +253,6 @@ namespace ArchiSteamFarm {
 
 			switch (botName) {
 				case SharedInfo.ASF:
-				case "example":
-				case "minimal":
 					return false;
 				default:
 					return true;
@@ -508,18 +521,6 @@ namespace ArchiSteamFarm {
 			await OnCreatedFile(e.Name, e.FullPath).ConfigureAwait(false);
 		}
 
-		private static async Task RestartOrExit() {
-			if (Program.RestartAllowed && Program.GlobalConfig.AutoRestart) {
-				ArchiLogger.LogGenericInfo(Strings.Restarting);
-				await Task.Delay(5000).ConfigureAwait(false);
-				await Program.Restart().ConfigureAwait(false);
-			} else {
-				ArchiLogger.LogGenericInfo(Strings.Exiting);
-				await Task.Delay(5000).ConfigureAwait(false);
-				await Program.Exit().ConfigureAwait(false);
-			}
-		}
-
 		private static bool UpdateFromArchive(ZipArchive archive, string targetDirectory) {
 			if ((archive == null) || string.IsNullOrEmpty(targetDirectory)) {
 				ArchiLogger.LogNullError(nameof(archive) + " || " + nameof(targetDirectory));
@@ -583,7 +584,7 @@ namespace ArchiSteamFarm {
 					Directory.CreateDirectory(directory);
 				}
 
-				if (string.IsNullOrEmpty(zipFile.Name) || zipFile.Name.Equals(SharedInfo.GlobalConfigFileName)) {
+				if (string.IsNullOrEmpty(zipFile.Name)) {
 					continue;
 				}
 
@@ -612,7 +613,7 @@ namespace ArchiSteamFarm {
 			Login,
 			Password,
 			SteamGuard,
-			SteamParentalPIN,
+			SteamParentalCode,
 			TwoFactorAuthentication
 		}
 	}

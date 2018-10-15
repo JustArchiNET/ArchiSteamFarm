@@ -1,3 +1,9 @@
+[submodule "ASF-WebConfigGenerator"]
+	path = ASF-WebConfigGenerator
+	url = https://github.com/JustArchiNET/ASF-WebConfigGenerator
+[submodule "ASF-ui"]
+	path = ASF-ui
+	url = https://github.com/JustArchiNET/ASF-ui
 [submodule "wiki"]
 	path = wiki
-	url = https://github.com/JustArchi/ArchiSteamFarm.wiki.git
+	url = https://github.com/JustArchiNET/ArchiSteamFarm.wiki.git

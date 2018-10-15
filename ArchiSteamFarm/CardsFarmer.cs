@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
@@ -29,6 +30,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Localization;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
@@ -43,7 +45,9 @@ namespace ArchiSteamFarm {
 		private const byte HoursToIgnore = 24; // How many hours we ignore unreleased appIDs and don't bother checking them again
 
 		private static readonly ConcurrentDictionary<uint, DateTime> IgnoredAppIDs = new ConcurrentDictionary<uint, DateTime>(); // Reserved for unreleased games
-		private static readonly HashSet<uint> UntrustedAppIDs = new HashSet<uint> { 440, 570, 730 }; // Games that were confirmed to show false status on general badges page
+
+		// Games that were confirmed to show false status on general badges page
+		private static readonly ImmutableHashSet<uint> UntrustedAppIDs = ImmutableHashSet.Create<uint>(440, 570, 730);
 
 		[JsonProperty]
 		internal readonly ConcurrentHashSet<Game> CurrentGamesFarming = new ConcurrentHashSet<Game>();
@@ -72,8 +76,8 @@ namespace ArchiSteamFarm {
 
 		private bool KeepFarming;
 		private bool ParsingScheduled;
+		private bool PermanentlyPaused;
 		private bool ShouldResumeFarming = true;
-		private bool StickyPause;
 
 		internal CardsFarmer(Bot bot) {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
@@ -164,12 +168,14 @@ namespace ArchiSteamFarm {
 
 			// If we're not farming, and we got new items, it's likely to be a booster pack or likewise
 			// In this case, perform a loot if user wants to do so
-			await Bot.LootIfNeeded().ConfigureAwait(false);
+			if (Bot.BotConfig.SendOnFarmingFinished) {
+				await Bot.Actions.SendTradeOffer(wantedTypes: Bot.BotConfig.LootableTypes).ConfigureAwait(false);
+			}
 		}
 
-		internal async Task Pause(bool sticky) {
-			if (sticky) {
-				StickyPause = true;
+		internal async Task Pause(bool permanent) {
+			if (permanent) {
+				PermanentlyPaused = true;
 			}
 
 			Paused = true;
@@ -182,13 +188,13 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> Resume(bool userAction) {
-			if (StickyPause) {
+			if (PermanentlyPaused) {
 				if (!userAction) {
-					Bot.ArchiLogger.LogGenericInfo(Strings.IgnoredStickyPauseEnabled);
+					Bot.ArchiLogger.LogGenericInfo(Strings.IgnoredPermanentPauseEnabled);
 					return false;
 				}
 
-				StickyPause = false;
+				PermanentlyPaused = false;
 			}
 
 			Paused = false;
@@ -205,7 +211,10 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		internal void SetInitialState(bool paused) => StickyPause = Paused = paused;
+		internal void SetInitialState(bool paused) {
+			PermanentlyPaused = Paused = paused;
+			ShouldResumeFarming = true;
+		}
 
 		internal async Task StartFarming() {
 			if (NowFarming || Paused || !Bot.IsPlayingPossible) {
@@ -336,7 +345,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			HashSet<Task> backgroundTasks = new HashSet<Task>();
+			List<Task> backgroundTasks = null;
 
 			foreach (HtmlNode htmlNode in htmlNodes) {
 				HtmlNode statsNode = htmlNode.SelectSingleNode(".//div[@class='badge_title_stats_content']");
@@ -449,9 +458,8 @@ namespace ArchiSteamFarm {
 					// If we have no cardsRemaining and no cardsEarned, it's either:
 					// - A game we don't own physically, but we have cards from it in inventory
 					// - F2P game that we didn't spend any money in, but we have cards from it in inventory
-					// - Steam fuckup
-					// As you can guess, we must follow the rest of the logic in case of Steam fuckup
-					// Please kill me ;_;
+					// - Steam issue
+					// As you can guess, we must follow the rest of the logic in case of Steam issue
 				}
 
 				// Hours
@@ -546,16 +554,21 @@ namespace ArchiSteamFarm {
 
 				// Done with parsing, we have two possible cases here
 				// Either we have decent info about appID, name, hours, cardsRemaining (cardsRemaining > 0) and level
-				// OR we strongly believe that Steam lied to us, in this case we will need to check game invidually (cardsRemaining == 0)
+				// OR we strongly believe that Steam lied to us, in this case we will need to check game individually (cardsRemaining == 0)
 				if (cardsRemaining > 0) {
 					GamesToFarm.Add(new Game(appID, name, hours, cardsRemaining, badgeLevel));
 				} else {
 					Task task = CheckGame(appID, name, hours, badgeLevel);
+
 					switch (Program.GlobalConfig.OptimizationMode) {
 						case GlobalConfig.EOptimizationMode.MinMemoryUsage:
 							await task.ConfigureAwait(false);
 							break;
 						default:
+							if (backgroundTasks == null) {
+								backgroundTasks = new List<Task>();
+							}
+
 							backgroundTasks.Add(task);
 							break;
 					}
@@ -563,7 +576,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// If we have any background tasks, wait for them
-			if (backgroundTasks.Count > 0) {
+			if ((backgroundTasks != null) && (backgroundTasks.Count > 0)) {
 				await Task.WhenAll(backgroundTasks).ConfigureAwait(false);
 			}
 		}
@@ -851,41 +864,36 @@ namespace ArchiSteamFarm {
 
 			GamesToFarm.Clear();
 
-			HashSet<Task> tasks = new HashSet<Task>();
 			Task mainTask = CheckPage(htmlDocument);
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
 					await mainTask.ConfigureAwait(false);
-					break;
-				default:
-					tasks.Add(mainTask);
-					break;
-			}
 
-			if (maxPages > 1) {
-				Bot.ArchiLogger.LogGenericInfo(Strings.CheckingOtherBadgePages);
+					if (maxPages > 1) {
+						Bot.ArchiLogger.LogGenericInfo(Strings.CheckingOtherBadgePages);
 
-				switch (Program.GlobalConfig.OptimizationMode) {
-					case GlobalConfig.EOptimizationMode.MinMemoryUsage:
 						for (byte page = 2; page <= maxPages; page++) {
 							await CheckPage(page).ConfigureAwait(false);
 						}
+					}
 
-						break;
-					default:
+					break;
+				default:
+					List<Task> tasks = new List<Task>(maxPages) { mainTask };
+
+					if (maxPages > 1) {
+						Bot.ArchiLogger.LogGenericInfo(Strings.CheckingOtherBadgePages);
+
 						for (byte page = 2; page <= maxPages; page++) {
 							// We need a copy of variable being passed when in for loops, as loop will proceed before our task is launched
 							byte currentPage = page;
 							tasks.Add(CheckPage(currentPage));
 						}
+					}
 
-						break;
-				}
-			}
-
-			if (tasks.Count > 0) {
-				await Task.WhenAll(tasks).ConfigureAwait(false);
+					await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
 			}
 
 			if (GamesToFarm.Count == 0) {

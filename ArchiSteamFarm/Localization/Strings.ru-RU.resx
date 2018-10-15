@@ -264,7 +264,7 @@
     <value>Пожалуйста, введите ваш логин Steam: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
+  <data name="UserInputSteamParentalCode" xml:space="preserve">
     <value>Пожалуйста, введите PIN-код родительского контроля Steam: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
@@ -284,8 +284,7 @@
     <value>IPC сервер готов!</value>
   </data>
   <data name="IPCStarting" xml:space="preserve">
-    <value>Запуск IPC сервера на {0}...</value>
-    <comment>{0} will be replaced by IPC hostname</comment>
+    <value>Запуск IPC сервера...</value>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Этот бот уже остановлен!</value>
@@ -341,7 +340,7 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>Фарм остановлен!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+  <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
     <value>Игнорирование запроса, так как включена постоянная пауза!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
@@ -423,10 +422,6 @@
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Автоматический фарм уже на паузе!</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Автоматический фарм на паузе! У вас есть {0}, чтобы запустить игру.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Автоматический фарм уже возобновлён!</value>
@@ -563,9 +558,6 @@
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Аккаунт сейчас используется: ASF продолжит фарм, когда он освободится...</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Семейная библиотека не была запущена в отведённый период времени. Фарм возобновлён!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Подключение...</value>

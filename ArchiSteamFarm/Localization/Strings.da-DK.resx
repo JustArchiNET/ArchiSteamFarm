@@ -263,10 +263,7 @@ StackTrace:
     <value>Venligst indtast dit Steam login: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>Venligst indtast Steam forældre PIN: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Venligst indtast dit Steam kodeord: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -283,8 +280,7 @@ StackTrace:
     <value>IPC serveren er klar!</value>
   </data>
   <data name="IPCStarting" xml:space="preserve">
-    <value>Starter IPC server på {0}...</value>
-    <comment>{0} will be replaced by IPC hostname</comment>
+    <value>Starter IPC server...</value>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Denne bot er allerede stoppet!</value>
@@ -340,9 +336,7 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Idling stoppede!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Ignorere denne anmodning da sticky pause er aktiveret!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>Vi har ikke noget at idle på denne konto!</value>
   </data>
@@ -423,10 +417,6 @@ StackTrace:
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Automatisk idling er allerede på pause!</value>
   </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Automatisk Idling er på pause! Du har {0} til at starte et spil.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
-  </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Automatisk idling er genoptaget allerede!</value>
   </data>
@@ -446,7 +436,10 @@ StackTrace:
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>Starter ikke denne bot instans fordi den er slået fra i konfigurationsfilen!</value>
   </data>
-  
+  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+    <value>Modtaget TwoFactorCodeMismatch fejlkode {0} gange i træk. Din 2FA legitimationsoplysninger er ikke længere gyldige, eller dit ur er ikke synkroniseret, afbryder!</value>
+    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+  </data>
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Loggede af fra Steam: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
@@ -559,9 +552,6 @@ StackTrace:
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Kontoen bruges i øjeblikket: ASF vil genoptage idling når det er fri...</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Delt bibliotek er ikke blevet lanceret i given tidsperiode. Idling processen genoptages!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Forbinder...</value>

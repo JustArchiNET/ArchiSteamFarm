@@ -32,7 +32,7 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	internal sealed class GlobalConfig {
+	public sealed class GlobalConfig {
 		private const bool DefaultAutoRestart = true;
 		private const string DefaultCommandPrefix = "!";
 		private const byte DefaultConfirmationsLimiterDelay = 10;
@@ -46,7 +46,6 @@ namespace ArchiSteamFarm {
 		private const byte DefaultInventoryLimiterDelay = 3;
 		private const bool DefaultIPC = false;
 		private const string DefaultIPCPassword = null;
-		private const ushort DefaultIPCPort = 1242;
 		private const byte DefaultLoginLimiterDelay = 10;
 		private const byte DefaultMaxFarmingTime = 10;
 		private const byte DefaultMaxTradeHoldDuration = 15;
@@ -54,7 +53,7 @@ namespace ArchiSteamFarm {
 		private const bool DefaultStatistics = true;
 		private const string DefaultSteamMessagePrefix = "/me ";
 		private const ulong DefaultSteamOwnerID = 0;
-		private const ProtocolTypes DefaultSteamProtocols = ProtocolTypes.Tcp | ProtocolTypes.WebSocket;
+		private const ProtocolTypes DefaultSteamProtocols = ProtocolTypes.All;
 		private const EUpdateChannel DefaultUpdateChannel = EUpdateChannel.Stable;
 		private const byte DefaultUpdatePeriod = 24;
 		private const ushort DefaultWebLimiterDelay = 200;
@@ -63,9 +62,8 @@ namespace ArchiSteamFarm {
 		private const string DefaultWebProxyUsername = null;
 
 		internal static readonly ImmutableHashSet<uint> SalesBlacklist = ImmutableHashSet.Create<uint>(267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900, 762800, 876740);
-		private static readonly ImmutableHashSet<string> DefaultIPCPrefixes = ImmutableHashSet.Create("http://127.0.0.1:" + DefaultIPCPort + "/");
-		private static readonly ImmutableHashSet<uint> DefaultBlacklist = ImmutableHashSet.Create<uint>();
 
+		private static readonly ImmutableHashSet<uint> DefaultBlacklist = ImmutableHashSet.Create<uint>();
 		private static readonly SemaphoreSlim WriteSemaphore = new SemaphoreSlim(1, 1);
 
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -109,9 +107,6 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty]
 		internal readonly string IPCPassword = DefaultIPCPassword;
-
-		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
-		internal readonly ImmutableHashSet<string> IPCPrefixes = DefaultIPCPrefixes;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte LoginLimiterDelay = DefaultLoginLimiterDelay;
@@ -188,6 +183,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal bool IsWebProxyPasswordSet { get; private set; }
 		internal bool ShouldSerializeEverything { private get; set; } = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -197,9 +193,16 @@ namespace ArchiSteamFarm {
 		internal ProtocolTypes SteamProtocols { get; private set; } = DefaultSteamProtocols;
 
 		[JsonProperty]
-		internal string WebProxyPassword { get; set; } = DefaultWebProxyPassword;
+		internal string WebProxyPassword {
+			get => _WebProxyPassword;
+			set {
+				IsWebProxyPasswordSet = true;
+				_WebProxyPassword = value;
+			}
+		}
 
 		private WebProxy _WebProxy;
+		private string _WebProxyPassword = DefaultWebProxyPassword;
 		private bool ShouldSerializeSensitiveDetails = true;
 
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamOwnerID), Required = Required.DisallowNull)]
@@ -214,6 +217,40 @@ namespace ArchiSteamFarm {
 				SteamOwnerID = result;
 			}
 		}
+
+		internal (bool Valid, string ErrorMessage) CheckValidation() {
+			if (ConnectionTimeout == 0) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(ConnectionTimeout), ConnectionTimeout));
+			}
+
+			if (FarmingDelay == 0) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(FarmingDelay), FarmingDelay));
+			}
+
+			if (MaxFarmingTime == 0) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(MaxFarmingTime), MaxFarmingTime));
+			}
+
+			if (!Enum.IsDefined(typeof(EOptimizationMode), OptimizationMode)) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(OptimizationMode), OptimizationMode));
+			}
+
+			if (!string.IsNullOrEmpty(SteamMessagePrefix) && (SteamMessagePrefix.Length > Bot.MaxMessagePrefixLength)) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(SteamMessagePrefix), SteamMessagePrefix));
+			}
+
+			if ((SteamProtocols <= 0) || (SteamProtocols > ProtocolTypes.All)) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(SteamProtocols), SteamProtocols));
+			}
+
+			return Enum.IsDefined(typeof(EUpdateChannel), UpdateChannel) ? (true, null) : (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(UpdateChannel), UpdateChannel));
+		}
+
+		internal static GlobalConfig Create() =>
+			new GlobalConfig {
+				ShouldSerializeEverything = false,
+				ShouldSerializeSensitiveDetails = false
+			};
 
 		internal static async Task<GlobalConfig> Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
@@ -239,38 +276,9 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (globalConfig.ConnectionTimeout == 0) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.ConnectionTimeout), globalConfig.ConnectionTimeout));
-				return null;
-			}
-
-			if (globalConfig.FarmingDelay == 0) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.FarmingDelay), globalConfig.FarmingDelay));
-				return null;
-			}
-
-			if (globalConfig.MaxFarmingTime == 0) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.MaxFarmingTime), globalConfig.MaxFarmingTime));
-				return null;
-			}
-
-			if (!Enum.IsDefined(typeof(EOptimizationMode), globalConfig.OptimizationMode)) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.OptimizationMode), globalConfig.OptimizationMode));
-				return null;
-			}
-
-			if (!string.IsNullOrEmpty(globalConfig.SteamMessagePrefix) && (globalConfig.SteamMessagePrefix.Length > Bot.MaxMessagePrefixLength)) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.SteamMessagePrefix), globalConfig.SteamMessagePrefix));
-				return null;
-			}
-
-			if ((globalConfig.SteamProtocols <= 0) || (globalConfig.SteamProtocols > ProtocolTypes.All)) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.SteamProtocols), globalConfig.SteamProtocols));
-				return null;
-			}
-
-			if (!Enum.IsDefined(typeof(EUpdateChannel), globalConfig.UpdateChannel)) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.UpdateChannel), globalConfig.UpdateChannel));
+			(bool valid, string errorMessage) = globalConfig.CheckValidation();
+			if (!valid) {
+				ASF.ArchiLogger.LogGenericError(errorMessage);
 				return null;
 			}
 
@@ -336,7 +344,6 @@ namespace ArchiSteamFarm {
 		public bool ShouldSerializeInventoryLimiterDelay() => ShouldSerializeEverything || (InventoryLimiterDelay != DefaultInventoryLimiterDelay);
 		public bool ShouldSerializeIPC() => ShouldSerializeEverything || (IPC != DefaultIPC);
 		public bool ShouldSerializeIPCPassword() => ShouldSerializeEverything || (IPCPassword != DefaultIPCPassword);
-		public bool ShouldSerializeIPCPrefixes() => ShouldSerializeEverything || ((IPCPrefixes != DefaultIPCPrefixes) && !IPCPrefixes.SetEquals(DefaultIPCPrefixes));
 		public bool ShouldSerializeLoginLimiterDelay() => ShouldSerializeEverything || (LoginLimiterDelay != DefaultLoginLimiterDelay);
 		public bool ShouldSerializeMaxFarmingTime() => ShouldSerializeEverything || (MaxFarmingTime != DefaultMaxFarmingTime);
 		public bool ShouldSerializeMaxTradeHoldDuration() => ShouldSerializeEverything || (MaxTradeHoldDuration != DefaultMaxTradeHoldDuration);

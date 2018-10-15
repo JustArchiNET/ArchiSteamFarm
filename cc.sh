@@ -45,12 +45,24 @@ fi
 dotnet --info
 
 if [[ "$PULL" -eq 1 && -d ".git" ]] && hash git 2>/dev/null; then
-	git pull || true
+	git pull --recurse-submodules || true
 fi
 
 if [[ ! -f "$SOLUTION" ]]; then
 	echo "ERROR: $SOLUTION could not be found!"
 	exit 1
+fi
+
+if [[ -f "ASF-ui/package.json" ]] && hash npm 2>/dev/null; then
+	echo "Building ASF UI..."
+
+	cd ASF-ui
+	npm i --no-progress
+	git checkout -- package.json package-lock.json # Until we can switch to npm ci, avoid any changes to source files done by npm i
+	npm run-script deploy --no-progress
+	cd ..
+else
+	echo "WARNING: ASF UI dependencies are missing, skipping build of ASF UI..."
 fi
 
 DOTNET_FLAGS=(-c "$CONFIGURATION" -f "$TARGET_FRAMEWORK" -o "$OUT" '/nologo')

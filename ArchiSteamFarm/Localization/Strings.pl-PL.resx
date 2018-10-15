@@ -264,7 +264,7 @@ StackTrace:
     <value>Wprowadź swój login Steam: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
+  <data name="UserInputSteamParentalCode" xml:space="preserve">
     <value>Wprowadź swój kod konta rodzicielskiego Steam: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
@@ -284,8 +284,7 @@ StackTrace:
     <value>Serwer IPC jest gotowy!</value>
   </data>
   <data name="IPCStarting" xml:space="preserve">
-    <value>Uruchamianie serwera IPC na {0}...</value>
-    <comment>{0} will be replaced by IPC hostname</comment>
+    <value>Uruchamianie serwera IPC...</value>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Ten bot został już zatrzymany!</value>
@@ -341,7 +340,7 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Farmienie zatrzymane!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+  <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
     <value>Ignorowanie tego żądania, ponieważ trwała pauza jest włączona!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
@@ -423,10 +422,6 @@ StackTrace:
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Automatyczne farmienie jest już zatrzymane!</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Automatyczne farmienie zostało zatrzymane! Masz teraz {0} aby uruchomić grę.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Automatyczne farmienie jest już wznowione!</value>
@@ -563,9 +558,6 @@ StackTrace:
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Konto jest aktualnie używane: ASF wznowi proces farmienia gdy będzie wolne...</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Współdzielona biblioteka nie została uruchomiona w danym przedziale czasu. Proces farmienia został wznowiony!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Łączenie...</value>

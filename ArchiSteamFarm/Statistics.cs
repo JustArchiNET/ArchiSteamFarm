@@ -35,7 +35,12 @@ namespace ArchiSteamFarm {
 		private const byte MinPersonaStateTTL = 8; // Minimum amount of hours we must wait before requesting persona state update
 		private const string URL = "https://" + SharedInfo.StatisticsServer;
 
-		private static readonly HashSet<Steam.Asset.EType> AcceptedMatchableTypes = new HashSet<Steam.Asset.EType> { Steam.Asset.EType.Emoticon, Steam.Asset.EType.FoilTradingCard, Steam.Asset.EType.ProfileBackground, Steam.Asset.EType.TradingCard };
+		private static readonly HashSet<Steam.Asset.EType> AcceptedMatchableTypes = new HashSet<Steam.Asset.EType> {
+			Steam.Asset.EType.Emoticon,
+			Steam.Asset.EType.FoilTradingCard,
+			Steam.Asset.EType.ProfileBackground,
+			Steam.Asset.EType.TradingCard
+		};
 
 		private readonly Bot Bot;
 		private readonly SemaphoreSlim RequestsSemaphore = new SemaphoreSlim(1, 1);
@@ -69,7 +74,7 @@ namespace ArchiSteamFarm {
 
 				const string request = URL + "/Api/HeartBeat";
 				Dictionary<string, string> data = new Dictionary<string, string>(2) {
-					{ "SteamID", Bot.CachedSteamID.ToString() },
+					{ "SteamID", Bot.SteamID.ToString() },
 					{ "Guid", Program.GlobalDatabase.Guid.ToString("N") }
 				};
 
@@ -111,7 +116,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetInventory(Bot.CachedSteamID, tradable: true, wantedTypes: acceptedMatchableTypes).ConfigureAwait(false);
+				HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetInventory(Bot.SteamID, tradable: true, wantedTypes: acceptedMatchableTypes).ConfigureAwait(false);
 
 				// This is actually inventory failure, so we'll stop sending heartbeats but not record it as valid check
 				if (inventory == null) {
@@ -128,7 +133,7 @@ namespace ArchiSteamFarm {
 
 				const string request = URL + "/Api/Announce";
 				Dictionary<string, string> data = new Dictionary<string, string>(9) {
-					{ "SteamID", Bot.CachedSteamID.ToString() },
+					{ "SteamID", Bot.SteamID.ToString() },
 					{ "Guid", Program.GlobalDatabase.Guid.ToString("N") },
 					{ "Nickname", nickname ?? "" },
 					{ "AvatarHash", avatarHash ?? "" },

@@ -264,10 +264,7 @@ StackTrace:
     <value>נא הזינו את משתמש ה- Steam שלכם: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>בבקשה הזן את את סיסמת הPIN של הגדרות ההורים של Steam: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>אנא הקישו את הסיסמה הנוכחית שלכם: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -283,10 +280,7 @@ StackTrace:
   <data name="IPCReady" xml:space="preserve">
     <value>שרת IPC מוכן!</value>
   </data>
-  <data name="IPCStarting" xml:space="preserve">
-    <value>מחל שרת IPC בעוד {0}...</value>
-    <comment>{0} will be replaced by IPC hostname</comment>
-  </data>
+  
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>בוט זה כבר הפסיק!</value>
   </data>
@@ -341,9 +335,7 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>הרצה נעצרה!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>מתעלם מבקשה זו כיוון שהשהיה דביקה פועלת!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>אין שום דבר להריץ בחשבון זה!</value>
   </data>
@@ -423,10 +415,6 @@ StackTrace:
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>הרצה אוטומטית כבר בהשהיה!</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>הרצה אוטומטית בהשהיה כעת! יש לך {0} דקות להפעיל משחק.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>הרצה אוטומטית כבר שבה לפעול!</value>
@@ -557,9 +545,6 @@ StackTrace:
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>החשבון נמצא בשימוש כעת: ASF ימשיך לרוץ כשהוא יתפנה...</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>הספרייה המשותפת לא הורצה בתקופת הזמן הנתונה. תהליך ההרצה חודש!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>מתחבר...</value>

@@ -20,7 +20,6 @@ env:
     - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
     - NET_CORE_VERSION: netcoreapp2.1
     - VARIANTS="generic linux-arm linux-x64 osx-x64 win-x64" # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
-
 before_script:
   - |
     set -eu
@@ -35,13 +34,25 @@ script:
   - |
     set -eu
 
+    if [ "$TRAVIS_OS_NAME" = "osx" ]; then
+        set +eu # This is needed to run below npm block on OSX
+    fi
+
+    cd ASF-ui
+    npm i --no-progress
+    npm run-script deploy --no-progress
+    cd ..
+
+    if [ "$TRAVIS_OS_NAME" = "osx" ]; then
+        set -eu # We no longer need +eu on OSX
+    fi
+
     dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/source' /nologo
     dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/source' /nologo
 
     publish() {
         if [ "$1" = 'generic' ]; then
-            # TODO: Workaround https://github.com/mono/linker/issues/286 until it's resolved
-            # Don't forget to remove it from docker files too
+            # TODO: Workaround https://github.com/mono/linker/issues/286 (don't forget to remove it from docker files too)
             dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" --no-restore /nologo "/p:ASFVariant=$1" "/p:LinkDuringPublish=false"
         else
             dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" -r "$1" --no-restore /nologo "/p:ASFVariant=$1" "/p:CrossGenDuringPublish=false"
@@ -73,5 +84,5 @@ matrix:
       sudo: false
     - os: osx
       # Ref: https://docs.travis-ci.com/user/reference/osx
-      dotnet: 2.1.401 # For OSX, we need absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
+      dotnet: 2.1.403 # For OSX, we need absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
       osx_image: xcode10
