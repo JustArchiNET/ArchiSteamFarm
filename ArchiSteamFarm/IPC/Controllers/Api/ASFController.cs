@@ -71,6 +71,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			request.GlobalConfig.ShouldSerializeEverything = false;
+			request.GlobalConfig.ShouldSerializeHelperProperties = false;
 
 			string filePath = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName);
 

@@ -174,6 +174,7 @@ namespace ArchiSteamFarm {
 		internal bool IsSteamParentalCodeSet { get; private set; }
 		internal bool IsSteamPasswordSet { get; private set; }
 		internal bool ShouldSerializeEverything { private get; set; } = true;
+		internal bool ShouldSerializeHelperProperties { private get; set; } = true;
 
 		[JsonProperty]
 		internal string SteamLogin {
@@ -434,7 +435,7 @@ namespace ArchiSteamFarm {
 		public bool ShouldSerializeSendOnFarmingFinished() => ShouldSerializeEverything || (SendOnFarmingFinished != DefaultSendOnFarmingFinished);
 		public bool ShouldSerializeSendTradePeriod() => ShouldSerializeEverything || (SendTradePeriod != DefaultSendTradePeriod);
 		public bool ShouldSerializeShutdownOnFarmingFinished() => ShouldSerializeEverything || (ShutdownOnFarmingFinished != DefaultShutdownOnFarmingFinished);
-		public bool ShouldSerializeSSteamMasterClanID() => ShouldSerializeEverything; // We never serialize helper properties
+		public bool ShouldSerializeSSteamMasterClanID() => ShouldSerializeEverything || (ShouldSerializeHelperProperties && (SteamMasterClanID != DefaultSteamMasterClanID));
 		public bool ShouldSerializeSteamLogin() => ShouldSerializeSensitiveDetails && (ShouldSerializeEverything || (SteamLogin != DefaultSteamLogin));
 		public bool ShouldSerializeSteamMasterClanID() => ShouldSerializeEverything || (SteamMasterClanID != DefaultSteamMasterClanID);
 		public bool ShouldSerializeSteamParentalCode() => ShouldSerializeSensitiveDetails && (ShouldSerializeEverything || (SteamParentalCode != DefaultSteamParentalCode));

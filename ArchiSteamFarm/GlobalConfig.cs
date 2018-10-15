@@ -185,6 +185,7 @@ namespace ArchiSteamFarm {
 
 		internal bool IsWebProxyPasswordSet { get; private set; }
 		internal bool ShouldSerializeEverything { private get; set; } = true;
+		internal bool ShouldSerializeHelperProperties { private get; set; } = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal ulong SteamOwnerID { get; private set; } = DefaultSteamOwnerID;
@@ -348,7 +349,7 @@ namespace ArchiSteamFarm {
 		public bool ShouldSerializeMaxFarmingTime() => ShouldSerializeEverything || (MaxFarmingTime != DefaultMaxFarmingTime);
 		public bool ShouldSerializeMaxTradeHoldDuration() => ShouldSerializeEverything || (MaxTradeHoldDuration != DefaultMaxTradeHoldDuration);
 		public bool ShouldSerializeOptimizationMode() => ShouldSerializeEverything || (OptimizationMode != DefaultOptimizationMode);
-		public bool ShouldSerializeSSteamOwnerID() => ShouldSerializeEverything; // We never serialize helper properties
+		public bool ShouldSerializeSSteamOwnerID() => ShouldSerializeEverything || (ShouldSerializeHelperProperties && (SteamOwnerID != DefaultSteamOwnerID));
 		public bool ShouldSerializeStatistics() => ShouldSerializeEverything || (Statistics != DefaultStatistics);
 		public bool ShouldSerializeSteamMessagePrefix() => ShouldSerializeEverything || (SteamMessagePrefix != DefaultSteamMessagePrefix);
 		public bool ShouldSerializeSteamOwnerID() => ShouldSerializeEverything || (SteamOwnerID != DefaultSteamOwnerID);

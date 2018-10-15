@@ -104,6 +104,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			request.BotConfig.ShouldSerializeEverything = false;
+			request.BotConfig.ShouldSerializeHelperProperties = false;
 
 			string filePath = Path.Combine(SharedInfo.ConfigDirectory, botName + SharedInfo.ConfigExtension);
 
