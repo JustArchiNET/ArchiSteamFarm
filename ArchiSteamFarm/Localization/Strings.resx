@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -657,5 +657,8 @@ StackTrace:
   <data name="WarningWorkaroundTriggered" xml:space="preserve">
     <value>Workaround for {0} bug has been triggered.</value>
     <comment>{0} will be replaced by the bug's name provided by ASF</comment>
+  </data>
+  <data name="TargetBotNotConnected" xml:space="preserve">
+    <value>Target bot instance is not connected!</value>
   </data>
 </root>
