@@ -57,19 +57,19 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// Fetches common info related to given bots.
 		/// </summary>
 		[HttpGet("{botNames:required}")]
-		[ProducesResponseType(typeof(GenericResponse<IDictionary<string, Bot>>), 200)]
-		public ActionResult<GenericResponse<IDictionary<string, Bot>>> BotGet(string botNames) {
+		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, Bot>>), 200)]
+		public ActionResult<GenericResponse<IReadOnlyDictionary<string, Bot>>> BotGet(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
-				return BadRequest(new GenericResponse<IDictionary<string, Bot>>(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
+				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, Bot>>(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
 			}
 
 			HashSet<Bot> bots = Bot.GetBots(botNames);
 			if (bots == null) {
-				return BadRequest(new GenericResponse<IDictionary<string, Bot>>(false, string.Format(Strings.ErrorIsInvalid, nameof(bots))));
+				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, Bot>>(false, string.Format(Strings.ErrorIsInvalid, nameof(bots))));
 			}
 
-			return Ok(new GenericResponse<IDictionary<string, Bot>>(bots.ToDictionary(bot => bot.BotName, bot => bot)));
+			return Ok(new GenericResponse<IReadOnlyDictionary<string, Bot>>(bots.ToDictionary(bot => bot.BotName, bot => bot)));
 		}
 
 		/// <summary>
@@ -164,23 +164,23 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// </summary>
 		[Consumes("application/json")]
 		[HttpPost("{botName:required}/GamesToRedeemInBackground")]
-		[ProducesResponseType(typeof(GenericResponse<OrderedDictionary>), 200)]
-		public async Task<ActionResult<GenericResponse<OrderedDictionary>>> GamesToRedeemInBackgroundPost(string botName, [FromBody] GamesToRedeemInBackgroundRequest request) {
+		[ProducesResponseType(typeof(GenericResponse<IOrderedDictionary>), 200)]
+		public async Task<ActionResult<GenericResponse<IOrderedDictionary>>> GamesToRedeemInBackgroundPost(string botName, [FromBody] GamesToRedeemInBackgroundRequest request) {
 			if (string.IsNullOrEmpty(botName) || (request == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(botName) + " || " + nameof(request));
-				return BadRequest(new GenericResponse<OrderedDictionary>(false, string.Format(Strings.ErrorIsEmpty, nameof(botName) + " || " + nameof(request))));
+				return BadRequest(new GenericResponse<IOrderedDictionary>(false, string.Format(Strings.ErrorIsEmpty, nameof(botName) + " || " + nameof(request))));
 			}
 
 			if (request.GamesToRedeemInBackground.Count == 0) {
-				return BadRequest(new GenericResponse<OrderedDictionary>(false, string.Format(Strings.ErrorIsEmpty, nameof(request.GamesToRedeemInBackground))));
+				return BadRequest(new GenericResponse<IOrderedDictionary>(false, string.Format(Strings.ErrorIsEmpty, nameof(request.GamesToRedeemInBackground))));
 			}
 
 			if (!Bot.Bots.TryGetValue(botName, out Bot bot)) {
-				return BadRequest(new GenericResponse<OrderedDictionary>(false, string.Format(Strings.BotNotFound, botName)));
+				return BadRequest(new GenericResponse<IOrderedDictionary>(false, string.Format(Strings.BotNotFound, botName)));
 			}
 
 			bool result = await bot.ValidateAndAddGamesToRedeemInBackground(request.GamesToRedeemInBackground).ConfigureAwait(false);
-			return Ok(new GenericResponse<OrderedDictionary>(result, request.GamesToRedeemInBackground));
+			return Ok(new GenericResponse<IOrderedDictionary>(result, request.GamesToRedeemInBackground));
 		}
 
 		/// <summary>
