@@ -242,6 +242,11 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task<bool> CanHandleWriteEvent(string name) {
+			if (string.IsNullOrEmpty(name)) {
+				ArchiLogger.LogNullError(nameof(name));
+				return false;
+			}
+
 			// Save our event in dictionary
 			object currentWriteEvent = new object();
 			LastWriteEvents[name] = currentWriteEvent;
