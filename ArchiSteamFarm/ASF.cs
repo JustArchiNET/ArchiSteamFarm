@@ -33,7 +33,7 @@ namespace ArchiSteamFarm {
 	internal static class ASF {
 		internal static readonly ArchiLogger ArchiLogger = new ArchiLogger(SharedInfo.ASF);
 
-		private static readonly ConcurrentDictionary<string, DateTime> LastWriteTimes = new ConcurrentDictionary<string, DateTime>();
+		private static readonly ConcurrentDictionary<string, object> LastWriteEvents = new ConcurrentDictionary<string, object>();
 		private static readonly SemaphoreSlim UpdateSemaphore = new SemaphoreSlim(1, 1);
 
 		private static Timer AutoUpdatesTimer;
@@ -241,6 +241,18 @@ namespace ArchiSteamFarm {
 			await RestartOrExit().ConfigureAwait(false);
 		}
 
+		private static async Task<bool> CanHandleWriteEvent(string name) {
+			// Save our event in dictionary
+			object currentWriteEvent = new object();
+			LastWriteEvents[name] = currentWriteEvent;
+
+			// Wait a second for eventual other events to arrive
+			await Task.Delay(1000).ConfigureAwait(false);
+
+			// We're allowed to handle this event if the one that is saved after full second is our event and we succeed in clearing it (we don't care what we're clearing anymore, it doesn't have to be atomic operation)
+			return LastWriteEvents.TryGetValue(name, out object savedWriteEvent) && (currentWriteEvent == savedWriteEvent) && LastWriteEvents.TryRemove(name, out _);
+		}
+
 		private static bool IsValidBotName(string botName) {
 			if (string.IsNullOrEmpty(botName)) {
 				ArchiLogger.LogNullError(nameof(botName));
@@ -319,30 +331,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			DateTime lastWriteTime = DateTime.UtcNow;
-
-			if (LastWriteTimes.TryGetValue(name, out DateTime savedLastWriteTime)) {
-				if (savedLastWriteTime >= lastWriteTime) {
-					return;
-				}
-			}
-
-			LastWriteTimes[name] = lastWriteTime;
-
-			// It's entirely possible that some process is still accessing our file, allow at least a second before trying to read it
-			await Task.Delay(1000).ConfigureAwait(false);
-
-			// It's also possible that we got some other event in the meantime
-			if (LastWriteTimes.TryGetValue(name, out savedLastWriteTime)) {
-				if (lastWriteTime != savedLastWriteTime) {
-					return;
-				}
-
-				if (LastWriteTimes.TryRemove(name, out savedLastWriteTime)) {
-					if (lastWriteTime != savedLastWriteTime) {
-						return;
-					}
-				}
+			if (!await CanHandleWriteEvent(name).ConfigureAwait(false)) {
+				return;
 			}
 
 			if (botName.Equals(SharedInfo.ASF)) {
@@ -391,30 +381,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			DateTime lastWriteTime = DateTime.UtcNow;
-
-			if (LastWriteTimes.TryGetValue(name, out DateTime savedLastWriteTime)) {
-				if (savedLastWriteTime >= lastWriteTime) {
-					return;
-				}
-			}
-
-			LastWriteTimes[name] = lastWriteTime;
-
-			// It's entirely possible that some process is still accessing our file, allow at least a second before trying to read it
-			await Task.Delay(1000).ConfigureAwait(false);
-
-			// It's also possible that we got some other event in the meantime
-			if (LastWriteTimes.TryGetValue(name, out savedLastWriteTime)) {
-				if (lastWriteTime != savedLastWriteTime) {
-					return;
-				}
-
-				if (LastWriteTimes.TryRemove(name, out savedLastWriteTime)) {
-					if (lastWriteTime != savedLastWriteTime) {
-						return;
-					}
-				}
+			if (!await CanHandleWriteEvent(name).ConfigureAwait(false)) {
+				return;
 			}
 
 			if (!Bot.Bots.TryGetValue(botName, out Bot bot)) {
@@ -444,30 +412,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			DateTime lastWriteTime = DateTime.UtcNow;
-
-			if (LastWriteTimes.TryGetValue(name, out DateTime savedLastWriteTime)) {
-				if (savedLastWriteTime >= lastWriteTime) {
-					return;
-				}
-			}
-
-			LastWriteTimes[name] = lastWriteTime;
-
-			// It's entirely possible that some process is still accessing our file, allow at least a second before trying to read it
-			await Task.Delay(1000).ConfigureAwait(false);
-
-			// It's also possible that we got some other event in the meantime
-			if (LastWriteTimes.TryGetValue(name, out savedLastWriteTime)) {
-				if (lastWriteTime != savedLastWriteTime) {
-					return;
-				}
-
-				if (LastWriteTimes.TryRemove(name, out savedLastWriteTime)) {
-					if (lastWriteTime != savedLastWriteTime) {
-						return;
-					}
-				}
+			if (!await CanHandleWriteEvent(name).ConfigureAwait(false)) {
+				return;
 			}
 
 			if (botName.Equals(SharedInfo.ASF)) {
