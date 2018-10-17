@@ -32,7 +32,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[Route("Api/ASF")]
 	public sealed class ASFController : ArchiController {
 		/// <summary>
-		/// Fetches common info related to ASF as a whole.
+		///     Fetches common info related to ASF as a whole.
 		/// </summary>
 		[HttpGet]
 		[ProducesResponseType(typeof(GenericResponse<ASFResponse>), 200)]
@@ -50,7 +50,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		/// <summary>
-		/// Updates ASF's global config.
+		///     Updates ASF's global config.
 		/// </summary>
 		[Consumes("application/json")]
 		[HttpPost]
@@ -80,7 +80,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		/// <summary>
-		/// Makes ASF shutdown itself.
+		///     Makes ASF shutdown itself.
 		/// </summary>
 		[HttpPost("Exit")]
 		[ProducesResponseType(typeof(GenericResponse), 200)]
@@ -90,7 +90,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		/// <summary>
-		/// Makes ASF restart itself.
+		///     Makes ASF restart itself.
 		/// </summary>
 		[HttpPost("Restart")]
 		[ProducesResponseType(typeof(GenericResponse), 200)]
@@ -100,7 +100,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		/// <summary>
-		/// Makes ASF update itself.
+		///     Makes ASF update itself.
 		/// </summary>
 		[HttpPost("Update")]
 		[ProducesResponseType(typeof(GenericResponse<Version>), 200)]

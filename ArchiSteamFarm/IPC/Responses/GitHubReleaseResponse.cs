@@ -26,28 +26,28 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm.IPC.Responses {
 	public sealed class GitHubReleaseResponse {
 		/// <summary>
-		/// Changelog of the release rendered in HTML.
+		///     Changelog of the release rendered in HTML.
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
 		public readonly string ChangelogHTML;
 
 		/// <summary>
-		/// Date of the release.
+		///     Date of the release.
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
 		public readonly DateTime ReleasedAt;
 
 		/// <summary>
-		/// Boolean value that specifies whether the build is stable or not (pre-release).
+		///     Boolean value that specifies whether the build is stable or not (pre-release).
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
 		public readonly bool Stable;
 
 		/// <summary>
-		/// Version of the release.
+		///     Version of the release.
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]

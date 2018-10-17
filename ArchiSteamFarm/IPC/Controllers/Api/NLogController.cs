@@ -38,10 +38,10 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		private static readonly ConcurrentDictionary<WebSocket, SemaphoreSlim> ActiveLogWebSockets = new ConcurrentDictionary<WebSocket, SemaphoreSlim>();
 
 		/// <summary>
-		/// Fetches ASF log in realtime.
+		///     Fetches ASF log in realtime.
 		/// </summary>
 		/// <remarks>
-		/// This API endpoint requires a websocket connection.
+		///     This API endpoint requires a websocket connection.
 		/// </remarks>
 		[HttpGet]
 		[ProducesResponseType(typeof(IEnumerable<GenericResponse<string>>), 200)]

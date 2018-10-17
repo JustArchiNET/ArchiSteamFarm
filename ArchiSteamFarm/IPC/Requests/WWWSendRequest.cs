@@ -27,10 +27,10 @@ namespace ArchiSteamFarm.IPC.Requests {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	public sealed class WWWSendRequest {
 		/// <summary>
-		/// Full URL of the request to be made.
+		///     Full URL of the request to be made.
 		/// </summary>
 		/// <remarks>
-		/// URL must start from https:// scheme.
+		///     URL must start from https:// scheme.
 		/// </remarks>
 		[Required]
 		[JsonProperty(Required = Required.Always)]

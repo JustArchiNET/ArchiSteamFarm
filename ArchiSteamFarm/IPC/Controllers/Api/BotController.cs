@@ -34,7 +34,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[Route("Api/Bot")]
 	public sealed class BotController : ArchiController {
 		/// <summary>
-		/// Deletes all files related to given bots.
+		///     Deletes all files related to given bots.
 		/// </summary>
 		[HttpDelete("{botNames:required}")]
 		[ProducesResponseType(typeof(GenericResponse), 200)]
@@ -54,7 +54,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		/// <summary>
-		/// Fetches common info related to given bots.
+		///     Fetches common info related to given bots.
 		/// </summary>
 		[HttpGet("{botNames:required}")]
 		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, Bot>>), 200)]
@@ -73,7 +73,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		/// <summary>
-		/// Updates bot config of given bot.
+		///     Updates bot config of given bot.
 		/// </summary>
 		[Consumes("application/json")]
 		[HttpPost("{botName:required}")]
@@ -113,7 +113,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		/// <summary>
-		/// Removes BGR output files of given bots.
+		///     Removes BGR output files of given bots.
 		/// </summary>
 		[HttpDelete("{botNames:required}/GamesToRedeemInBackground")]
 		[ProducesResponseType(typeof(GenericResponse), 200)]
@@ -133,7 +133,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		/// <summary>
-		/// Fetches BGR output files of given bots.
+		///     Fetches BGR output files of given bots.
 		/// </summary>
 		[HttpGet("{botNames:required}/GamesToRedeemInBackground")]
 		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GamesToRedeemInBackgroundResponse>>), 200)]
@@ -161,7 +161,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		/// <summary>
-		/// Adds keys to redeem using BGR to given bot.
+		///     Adds keys to redeem using BGR to given bot.
 		/// </summary>
 		[Consumes("application/json")]
 		[HttpPost("{botName:required}/GamesToRedeemInBackground")]
@@ -185,7 +185,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		/// <summary>
-		/// Pauses given bots.
+		///     Pauses given bots.
 		/// </summary>
 		[Consumes("application/json")]
 		[HttpPost("{botNames:required}/Pause")]
@@ -206,7 +206,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		/// <summary>
-		/// Resumes given bots.
+		///     Resumes given bots.
 		/// </summary>
 		[HttpPost("{botNames:required}/Resume")]
 		[ProducesResponseType(typeof(GenericResponse), 200)]
@@ -226,7 +226,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		/// <summary>
-		/// Starts given bots.
+		///     Starts given bots.
 		/// </summary>
 		[HttpPost("{botNames:required}/Start")]
 		[ProducesResponseType(typeof(GenericResponse), 200)]
@@ -246,7 +246,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		/// <summary>
-		/// Stops given bots.
+		///     Stops given bots.
 		/// </summary>
 		[HttpPost("{botNames:required}/Stop")]
 		[ProducesResponseType(typeof(GenericResponse), 200)]

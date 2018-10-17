@@ -28,11 +28,11 @@ namespace ArchiSteamFarm.IPC.Requests {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	public sealed class GamesToRedeemInBackgroundRequest {
 		/// <summary>
-		/// A string-string map that maps cd-key to redeem (key) to its name (value).
+		///     A string-string map that maps cd-key to redeem (key) to its name (value).
 		/// </summary>
 		/// <remarks>
-		/// Key in the map must be a valid and unique Steam cd-key.
-		/// Value in the map must be a non-null and non-empty name of the key (e.g. game's name, but can be anything).
+		///     Key in the map must be a valid and unique Steam cd-key.
+		///     Value in the map must be a non-null and non-empty name of the key (e.g. game's name, but can be anything).
 		/// </remarks>
 		[JsonProperty(Required = Required.Always)]
 		[Required]

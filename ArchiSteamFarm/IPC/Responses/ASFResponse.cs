@@ -26,35 +26,35 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm.IPC.Responses {
 	public sealed class ASFResponse {
 		/// <summary>
-		/// ASF's build variant.
+		///     ASF's build variant.
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
 		public readonly string BuildVariant;
 
 		/// <summary>
-		/// Currently loaded ASF's global config.
+		///     Currently loaded ASF's global config.
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
 		public readonly GlobalConfig GlobalConfig;
 
 		/// <summary>
-		/// Current amount of managed memory being used by the process, in kilobytes.
+		///     Current amount of managed memory being used by the process, in kilobytes.
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
 		public readonly uint MemoryUsage;
 
 		/// <summary>
-		/// Start date of the process.
+		///     Start date of the process.
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
 		public readonly DateTime ProcessStartTime;
 
 		/// <summary>
-		/// ASF version of currently running binary.
+		///     ASF version of currently running binary.
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]

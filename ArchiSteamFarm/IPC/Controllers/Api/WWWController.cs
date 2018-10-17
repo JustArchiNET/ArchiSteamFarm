@@ -33,10 +33,10 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[Route("Api/WWW")]
 	public sealed class WWWController : ArchiController {
 		/// <summary>
-		/// Fetches files in given directory relative to WWW root.
+		///     Fetches files in given directory relative to WWW root.
 		/// </summary>
 		/// <remarks>
-		/// This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW as they can disappear and change anytime.
+		///     This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW endpoints as they can disappear and change anytime.
 		/// </remarks>
 		[HttpGet("Directory/{directory:required}")]
 		[ProducesResponseType(typeof(GenericResponse<IReadOnlyCollection<string>>), 200)]
@@ -64,10 +64,10 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		/// <summary>
-		/// Fetches newest GitHub releases of ASF project.
+		///     Fetches newest GitHub releases of ASF project.
 		/// </summary>
 		/// <remarks>
-		/// This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW as they can disappear and change anytime.
+		///     This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW endpoints as they can disappear and change anytime.
 		/// </remarks>
 		[HttpGet("GitHub/Releases")]
 		[ProducesResponseType(typeof(GenericResponse<IReadOnlyCollection<GitHubReleaseResponse>>), 200)]
@@ -86,10 +86,10 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		/// <summary>
-		/// Fetches specific GitHub release of ASF project.
+		///     Fetches specific GitHub release of ASF project.
 		/// </summary>
 		/// <remarks>
-		/// This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW as they can disappear and change anytime.
+		///     This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW endpoints as they can disappear and change anytime.
 		/// </remarks>
 		[HttpGet("GitHub/Releases/{version:required}")]
 		[ProducesResponseType(typeof(GenericResponse<GitHubReleaseResponse>), 200)]
@@ -107,10 +107,10 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		/// <summary>
-		/// Sends a HTTPS request through ASF's built-in HttpClient.
+		///     Sends a HTTPS request through ASF's built-in HttpClient.
 		/// </summary>
 		/// <remarks>
-		/// This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW as they can disappear and change anytime.
+		///     This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW endpoints as they can disappear and change anytime.
 		/// </remarks>
 		[Consumes("application/json")]
 		[HttpPost("Send")]

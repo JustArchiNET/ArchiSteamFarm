@@ -27,19 +27,19 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm.IPC.Responses {
 	public sealed class TypeResponse {
 		/// <summary>
-		/// A string-string map representing a decomposition of given type.
+		///     A string-string map representing a decomposition of given type.
 		/// </summary>
 		/// <remarks>
-		/// The actual structure of this field depends on the type that was requested. You can determine that type based on <see cref="Properties"/> metadata.
-		/// For enums, keys are friendly names while values are underlying values of those names.
-		/// For objects, keys are non-private fields and properties, while values are underlying types of those.
+		///     The actual structure of this field depends on the type that was requested. You can determine that type based on <see cref="Properties" /> metadata.
+		///     For enums, keys are friendly names while values are underlying values of those names.
+		///     For objects, keys are non-private fields and properties, while values are underlying types of those.
 		/// </remarks>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
 		public readonly Dictionary<string, string> Body;
 
 		/// <summary>
-		/// Metadata of given type.
+		///     Metadata of given type.
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
@@ -56,28 +56,28 @@ namespace ArchiSteamFarm.IPC.Responses {
 
 		public sealed class TypeProperties {
 			/// <summary>
-			/// Base type of given type, if available.
+			///     Base type of given type, if available.
 			/// </summary>
 			/// <remarks>
-			/// This can be used for determining how <see cref="Body"/> should be interpreted.
+			///     This can be used for determining how <see cref="Body" /> should be interpreted.
 			/// </remarks>
 			[JsonProperty]
 			public readonly string BaseType;
 
 			/// <summary>
-			/// Custom attributes of given type, if available.
+			///     Custom attributes of given type, if available.
 			/// </summary>
 			/// <remarks>
-			/// This can be used for determining main enum type if <see cref="BaseType"/> is <see cref="Enum"/>.
+			///     This can be used for determining main enum type if <see cref="BaseType" /> is <see cref="Enum" />.
 			/// </remarks>
 			[JsonProperty]
 			public readonly HashSet<string> CustomAttributes;
 
 			/// <summary>
-			/// Underlying type of given type, if available.
+			///     Underlying type of given type, if available.
 			/// </summary>
 			/// <remarks>
-			/// This can be used for determining underlying enum type if <see cref="BaseType"/> is <see cref="Enum"/>.
+			///     This can be used for determining underlying enum type if <see cref="BaseType" /> is <see cref="Enum" />.
 			/// </remarks>
 			[JsonProperty]
 			public readonly string UnderlyingType;

@@ -27,7 +27,7 @@ namespace ArchiSteamFarm.IPC.Requests {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	public sealed class BotRequest {
 		/// <summary>
-		/// ASF's bot config structure.
+		///     ASF's bot config structure.
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]

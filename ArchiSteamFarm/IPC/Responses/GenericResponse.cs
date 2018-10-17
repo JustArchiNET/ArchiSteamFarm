@@ -26,10 +26,10 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm.IPC.Responses {
 	public sealed class GenericResponse<T> : GenericResponse where T : class {
 		/// <summary>
-		/// The actual result of the request, if available.
+		///     The actual result of the request, if available.
 		/// </summary>
 		/// <remarks>
-		/// The type of the result depends on the API endpoint that you've called.
+		///     The type of the result depends on the API endpoint that you've called.
 		/// </remarks>
 		[JsonProperty]
 		public readonly T Result;
@@ -41,16 +41,16 @@ namespace ArchiSteamFarm.IPC.Responses {
 
 	public class GenericResponse {
 		/// <summary>
-		/// A message that describes what happened with the request, if available.
+		///     A message that describes what happened with the request, if available.
 		/// </summary>
 		/// <remarks>
-		/// This property will provide exact reason for majority of expected failures.
+		///     This property will provide exact reason for majority of expected failures.
 		/// </remarks>
 		[JsonProperty]
 		public readonly string Message;
 
 		/// <summary>
-		/// Boolean type that specifies if the request has succeeded.
+		///     Boolean type that specifies if the request has succeeded.
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]

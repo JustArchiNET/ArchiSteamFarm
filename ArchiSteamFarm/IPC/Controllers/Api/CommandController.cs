@@ -30,11 +30,11 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[Route("Api/Command")]
 	public sealed class CommandController : ArchiController {
 		/// <summary>
-		/// Executes a command.
+		///     Executes a command.
 		/// </summary>
 		/// <remarks>
-		/// This API endpoint is supposed to be entirely replaced by ASF actions available under /Api/ASF/{action} and /Api/Bot/{bot}/{action}.
-		/// You should use "given bot" commands when executing this endpoint, omitting targets of the command will cause the command to be executed on first defined bot
+		///     This API endpoint is supposed to be entirely replaced by ASF actions available under /Api/ASF/{action} and /Api/Bot/{bot}/{action}.
+		///     You should use "given bot" commands when executing this endpoint, omitting targets of the command will cause the command to be executed on first defined bot
 		/// </remarks>
 		[HttpPost("{command:required}")]
 		[ProducesResponseType(typeof(GenericResponse<string>), 200)]

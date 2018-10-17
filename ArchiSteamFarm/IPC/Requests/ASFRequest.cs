@@ -27,7 +27,7 @@ namespace ArchiSteamFarm.IPC.Requests {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	public sealed class ASFRequest {
 		/// <summary>
-		/// ASF's global config structure.
+		///     ASF's global config structure.
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]

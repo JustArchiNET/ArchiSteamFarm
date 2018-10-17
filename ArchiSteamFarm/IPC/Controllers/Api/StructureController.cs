@@ -28,10 +28,10 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[Route("Api/Structure")]
 	public sealed class StructureController : ArchiController {
 		/// <summary>
-		/// Fetches structure of given type.
+		///     Fetches structure of given type.
 		/// </summary>
 		/// <remarks>
-		/// Structure is defined as a representation of given object in its default state.
+		///     Structure is defined as a representation of given object in its default state.
 		/// </remarks>
 		[HttpGet("{structure:required}")]
 		[ProducesResponseType(typeof(GenericResponse<object>), 200)]

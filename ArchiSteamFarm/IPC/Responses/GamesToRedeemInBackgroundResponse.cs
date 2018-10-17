@@ -25,13 +25,13 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm.IPC.Responses {
 	public sealed class GamesToRedeemInBackgroundResponse {
 		/// <summary>
-		/// Keys that were redeemed and not used during the process, if available.
+		///     Keys that were redeemed and not used during the process, if available.
 		/// </summary>
 		[JsonProperty]
 		public readonly Dictionary<string, string> UnusedKeys;
 
 		/// <summary>
-		/// Keys that were redeemed and used during the process, if available.
+		///     Keys that were redeemed and used during the process, if available.
 		/// </summary>
 		[JsonProperty]
 		public readonly Dictionary<string, string> UsedKeys;

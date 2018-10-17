@@ -26,13 +26,13 @@ namespace ArchiSteamFarm.IPC.Requests {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	public sealed class BotPauseRequest {
 		/// <summary>
-		/// Specifies if pause is permanent or temporary (default).
+		///     Specifies if pause is permanent or temporary (default).
 		/// </summary>
 		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly bool Permanent;
 
 		/// <summary>
-		/// Specifies automatic resume action in given seconds. Default value of 0 disables automatic resume.
+		///     Specifies automatic resume action in given seconds. Default value of 0 disables automatic resume.
 		/// </summary>
 		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly ushort ResumeInSeconds;
