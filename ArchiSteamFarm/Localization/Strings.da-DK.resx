@@ -652,4 +652,5 @@ StackTrace:
     <value>Workaround for fejlen {0} er blevet aktiveret.</value>
     <comment>{0} will be replaced by the bug's name provided by ASF</comment>
   </data>
+  
 </root>

@@ -126,7 +126,8 @@
     <comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
   </data>
   <data name="Content" xml:space="preserve">
-    <value>Sisältö: {0}</value>
+    <value>Sisältö:
+{0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
@@ -263,7 +264,10 @@ StackTrace:
     <value>Syötä Steam-tilisi käyttäjätunnus: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputSteamParentalCode" xml:space="preserve">
+    <value>Syötä Steam-tilisi lapsilukon Pin-koodi: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Syötä Steam-tilisi salasana: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -279,7 +283,9 @@ StackTrace:
   <data name="IPCReady" xml:space="preserve">
     <value>IPC-palvelin on valmiina!</value>
   </data>
-  
+  <data name="IPCStarting" xml:space="preserve">
+    <value>Käynnistetään IPC serveriä...</value>
+  </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Tämä botti on jo pysäytetty!</value>
   </data>
@@ -334,7 +340,9 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Idlaaminen pysäytetty!</value>
   </data>
-  
+  <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
+    <value>Tämä pyyntö jätetään huomioimatta, kun pysyvä tauko on päällä!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Tällä tilillä ei ole mitään idlattavaa!</value>
   </data>
@@ -434,12 +442,18 @@ StackTrace:
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>Ei käynnistetä tätä bottia koska se on poistettu käytöstä configuraatiossa!</value>
   </data>
-  
+  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+    <value>Saimme TwoFactorCodeMismatch virhekoodin {0} kertaa putkeen. Joko 2FA tilitiedot eivät ole enää voimassa, tai kellosi ei ole synkronoitu, keskeytetään!</value>
+    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+  </data>
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Kirjauduttu ulos Steamista: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  
+  <data name="BotLoggedOn" xml:space="preserve">
+    <value>Kirjauduttu onnistuneesti käyttäjänä {0}.</value>
+    <comment>{0} will be replaced by steam ID (number)</comment>
+  </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Kirjaudutaan sisään...</value>
   </data>
@@ -644,4 +658,5 @@ StackTrace:
     <value>Kierto ongelmalle {0} on aloitettu.</value>
     <comment>{0} will be replaced by the bug's name provided by ASF</comment>
   </data>
+  
 </root>

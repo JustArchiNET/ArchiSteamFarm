@@ -451,7 +451,7 @@
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
   <data name="BotLoggedOn" xml:space="preserve">
-    <value>Успешно выполнен вход как {0}.</value>
+    <value>Успешный вход как {0}.</value>
     <comment>{0} will be replaced by steam ID (number)</comment>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
@@ -658,4 +658,5 @@
     <value>Сработал обход ошибки {0}.</value>
     <comment>{0} will be replaced by the bug's name provided by ASF</comment>
   </data>
+  
 </root>

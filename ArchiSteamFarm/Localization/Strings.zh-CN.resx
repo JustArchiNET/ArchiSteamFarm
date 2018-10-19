@@ -650,4 +650,5 @@
     <value>{0} 漏洞的解决措施已触发</value>
     <comment>{0} will be replaced by the bug's name provided by ASF</comment>
   </data>
+  
 </root>
