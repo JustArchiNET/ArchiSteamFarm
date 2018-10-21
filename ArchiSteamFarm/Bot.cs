@@ -1229,7 +1229,7 @@ namespace ArchiSteamFarm {
 						}
 
 						string[] parsedArgs = line.Split(DefaultBackgroundKeysRedeemerSeparator, StringSplitOptions.RemoveEmptyEntries);
-						if (parsedArgs.Length < 4) {
+						if (parsedArgs.Length < 3) {
 							ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, line));
 							continue;
 						}
