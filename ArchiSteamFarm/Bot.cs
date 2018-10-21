@@ -1234,9 +1234,13 @@ namespace ArchiSteamFarm {
 							continue;
 						}
 
-						string name = parsedArgs[0];
 						string key = parsedArgs[parsedArgs.Length - 1];
+						if (!Utilities.IsValidCdKey(key)) {
+							ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, key));
+							continue;
+						}
 
+						string name = parsedArgs[0];
 						keys[key] = name;
 					}
 				}
