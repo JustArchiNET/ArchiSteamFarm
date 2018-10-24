@@ -5,6 +5,12 @@ $ProgressPreference = 'SilentlyContinue'
 Set-Location $PSScriptRoot
 Set-Location ..\\..
 
+Push-Location -Path ASF-ui
+git reset --hard
+git clean -fd
+git pull
+Pop-Location
+
 Push-Location -Path ASF-WebConfigGenerator
 git reset --hard
 git clean -fd
@@ -22,6 +28,12 @@ crowdin -b master --identity tools\\crowdin-cli\\crowdin_identity.yml upload sou
 crowdin -b master --identity tools\\crowdin-cli\\crowdin_identity.yml download
 git reset
 
+Push-Location -Path ASF-ui
+git pull
+git add -A "src\i18n\locale\*.json"
+git commit -m "Translations update"
+Pop-Location
+
 Push-Location -Path ASF-WebConfigGenerator
 git pull
 git add -A "src\locale\*.json"
@@ -34,7 +46,7 @@ git add -A "locale\*.md"
 git commit -m "Translations update"
 Pop-Location
 
-git add -A "ArchiSteamFarm\Localization\*.resx" "ASF-WebConfigGenerator" "wiki"
+git add -A "ArchiSteamFarm\Localization\*.resx" "ASF-ui" "ASF-WebConfigGenerator" "wiki"
 git commit -m "Translations update"
 
 git push --recurse-submodules=on-demand

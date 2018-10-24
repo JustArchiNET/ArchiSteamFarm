@@ -5,6 +5,10 @@
     "translation": "/ArchiSteamFarm/Localization/Strings.%locale%.resx"
   },
   {
+    "source": "/ASF-ui/src/i18n/locale/default.json",
+    "translation": "/ASF-ui/src/i18n/locale/%locale%.json"
+  },
+  {
     "source": "/ASF-WebConfigGenerator/src/locale/strings.json",
     "translation": "/ASF-WebConfigGenerator/src/locale/%locale%.json"
   },
