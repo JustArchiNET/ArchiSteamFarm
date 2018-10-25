@@ -263,7 +263,10 @@ StackTrace:
     <value>Venligst indtast dit Steam login: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputSteamParentalCode" xml:space="preserve">
+    <value>Venligst indtast Steam forældre kode: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Venligst indtast dit Steam kodeord: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -336,7 +339,9 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Idling stoppede!</value>
   </data>
-  
+  <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
+    <value>Ignorere denne anmodning da permanent pause er aktiveret!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Vi har ikke noget at idle på denne konto!</value>
   </data>
@@ -652,5 +657,7 @@ StackTrace:
     <value>Workaround for fejlen {0} er blevet aktiveret.</value>
     <comment>{0} will be replaced by the bug's name provided by ASF</comment>
   </data>
-  
+  <data name="TargetBotNotConnected" xml:space="preserve">
+    <value>Mål bot instans er ikke forbundet!</value>
+  </data>
 </root>
