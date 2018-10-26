@@ -170,7 +170,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
-    <value>Fehler beim Parsen von {0}!</value>
+    <value>Parsen von {0} fehlgeschlagen!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
@@ -560,7 +560,7 @@ StackTrace:
     <value>Benutzerkonto wird derzeit verwendet: ASF wird das Sammeln fortsetzen, sobald dieser nicht mehr verwendet wird...</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
-    <value>Verbindung wird hergestellt...</value>
+    <value>Verbinde...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
     <value>Trennen des Klienten fehlgeschlagen. Verzichte auf diese Botinstanz!</value>
