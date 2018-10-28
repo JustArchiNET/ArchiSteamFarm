@@ -58,6 +58,10 @@ namespace ArchiSteamFarm.IPC {
 			if (!string.IsNullOrEmpty(Program.GlobalConfig.IPCPassword)) {
 				// We need ApiAuthenticationMiddleware for IPCPassword
 				app.UseWhen(context => context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), appBuilder => appBuilder.UseMiddleware<ApiAuthenticationMiddleware>());
+
+				// We want to apply CORS policy in order to allow userscripts and other third-party integrations to communicate with ASF API
+				// We apply CORS policy only with IPCPassword set as extra authentication measure
+				app.UseCors();
 			}
 
 			// We need WebSockets support for /Api/Log
@@ -90,6 +94,17 @@ namespace ArchiSteamFarm.IPC {
 
 			// Add support for response compression
 			services.AddResponseCompression();
+
+			// Add CORS to allow userscripts and third-party apps
+			services.AddCors(
+				builder => {
+					builder.AddDefaultPolicy(
+						policyBuilder => {
+							policyBuilder.AllowAnyOrigin();
+						}
+					);
+				}
+			);
 
 			// Add swagger documentation generation
 			services.AddSwaggerGen(
