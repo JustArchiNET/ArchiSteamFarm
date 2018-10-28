@@ -58,6 +58,10 @@ namespace ArchiSteamFarm.IPC {
 			if (!string.IsNullOrEmpty(Program.GlobalConfig.IPCPassword)) {
 				// We need ApiAuthenticationMiddleware for IPCPassword
 				app.UseWhen(context => context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), appBuilder => appBuilder.UseMiddleware<ApiAuthenticationMiddleware>());
+
+				// We need CORS to allow for Userscripts and other integrations outside of Kestrel and it's respectable folders (ArchiKestre.WebsiteDirectory)
+				// We add it here so that users need to confirm their password in their third party app
+				app.UseCors();
 			}
 
 			// We need WebSockets support for /Api/Log
@@ -90,6 +94,17 @@ namespace ArchiSteamFarm.IPC {
 
 			// Add support for response compression
 			services.AddResponseCompression();
+
+			// Add CORS to allow Userscripts and third party apps
+			services.AddCors(
+				builder => {
+					builder.AddDefaultPolicy(
+						policyBuilder => {
+							policyBuilder.AllowAnyOrigin();
+						}
+					);
+				}
+			);
 
 			// Add swagger documentation generation
 			services.AddSwaggerGen(
