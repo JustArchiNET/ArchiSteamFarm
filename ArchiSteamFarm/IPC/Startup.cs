@@ -59,7 +59,7 @@ namespace ArchiSteamFarm.IPC {
 				// We need ApiAuthenticationMiddleware for IPCPassword
 				app.UseWhen(context => context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), appBuilder => appBuilder.UseMiddleware<ApiAuthenticationMiddleware>());
 
-				// We want to apply CORS policy in order to allow userscripts and other third-party integrations to co9mmunicate with ASF API
+				// We want to apply CORS policy in order to allow userscripts and other third-party integrations to communicate with ASF API
 				// We apply CORS policy only with IPCPassword set as extra authentication measure
 				app.UseCors();
 			}
