@@ -35,7 +35,10 @@ install:
     }
 
     if ("$env:DOTNET_CHANNEL") {
-        &([scriptblock]::Create((Invoke-WebRequest -Uri 'https://dot.net/v1/dotnet-install.ps1'))) -Channel "$env:DOTNET_CHANNEL"
+        $installDir = "$pwd\tools\dotnet"
+
+        &([scriptblock]::Create((Invoke-WebRequest -Uri 'https://dot.net/v1/dotnet-install.ps1'))) -Channel "$env:DOTNET_CHANNEL" -InstallDir "$installDir" -NoPath
+        $env:Path = "$installDir;$env:Path"
     }
 before_build:
 - pwsh: >-
