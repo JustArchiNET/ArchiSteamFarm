@@ -261,7 +261,10 @@
     <value>请输入你的Steam登录名: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputSteamParentalCode" xml:space="preserve">
+    <value>请输入Steam父账号 Pin: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>请输入你的Steam密码: </value>
     <comment>Please note that this translation should end with space</comment>
