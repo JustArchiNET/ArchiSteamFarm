@@ -8,6 +8,7 @@ image:
 configuration: Release
 clone_depth: 10
 environment:
+  DOTNET_CHANNEL: 2.1
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   NET_CORE_VERSION: netcoreapp2.1
@@ -31,6 +32,10 @@ install:
 
     if ($LastExitCode -ne 0) {
         throw "Last command failed."
+    }
+
+    if ("$env:DOTNET_CHANNEL") {
+        &([scriptblock]::Create((Invoke-WebRequest -Uri 'https://dot.net/v1/dotnet-install.ps1'))) -Channel "$env:DOTNET_CHANNEL"
     }
 before_build:
 - pwsh: >-
