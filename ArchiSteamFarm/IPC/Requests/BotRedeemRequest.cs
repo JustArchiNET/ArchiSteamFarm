@@ -19,26 +19,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Specialized;
+using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Requests {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	public sealed class GamesToRedeemInBackgroundRequest {
+	public sealed class BotRedeemRequest {
 		/// <summary>
-		///     A string-string map that maps cd-key to redeem (key) to its name (value).
+		///     A collection (set) of keys to redeem.
 		/// </summary>
-		/// <remarks>
-		///     Key in the map must be a valid and unique Steam cd-key.
-		///     Value in the map must be a non-null and non-empty name of the key (e.g. game's name, but can be anything).
-		/// </remarks>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public readonly OrderedDictionary GamesToRedeemInBackground;
+		public readonly ImmutableHashSet<string> KeysToRedeem;
 
 		// Deserialized from JSON
-		private GamesToRedeemInBackgroundRequest() { }
+		private BotRedeemRequest() { }
 	}
 }

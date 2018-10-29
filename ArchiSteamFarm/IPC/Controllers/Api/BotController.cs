@@ -150,7 +150,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 
 			IList<(Dictionary<string, string> UnusedKeys, Dictionary<string, string> UsedKeys)> results = await Utilities.InParallel(bots.Select(bot => bot.GetUsedAndUnusedKeys())).ConfigureAwait(false);
 
-			Dictionary<string, GamesToRedeemInBackgroundResponse> result = new Dictionary<string, GamesToRedeemInBackgroundResponse>();
+			Dictionary<string, GamesToRedeemInBackgroundResponse> result = new Dictionary<string, GamesToRedeemInBackgroundResponse>(bots.Count);
 
 			foreach (Bot bot in bots) {
 				(Dictionary<string, string> unusedKeys, Dictionary<string, string> usedKeys) = results[result.Count];
@@ -166,7 +166,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[Consumes("application/json")]
 		[HttpPost("{botName:required}/GamesToRedeemInBackground")]
 		[ProducesResponseType(typeof(GenericResponse<IOrderedDictionary>), 200)]
-		public async Task<ActionResult<GenericResponse<IOrderedDictionary>>> GamesToRedeemInBackgroundPost(string botName, [FromBody] GamesToRedeemInBackgroundRequest request) {
+		public async Task<ActionResult<GenericResponse<IOrderedDictionary>>> GamesToRedeemInBackgroundPost(string botName, [FromBody] BotGamesToRedeemInBackgroundRequest request) {
 			if (string.IsNullOrEmpty(botName) || (request == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(botName) + " || " + nameof(request));
 				return BadRequest(new GenericResponse<IOrderedDictionary>(false, string.Format(Strings.ErrorIsEmpty, nameof(botName) + " || " + nameof(request))));
@@ -203,6 +203,41 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 
 			IList<(bool Success, string Output)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.Pause(request.Permanent, request.ResumeInSeconds))).ConfigureAwait(false);
 			return Ok(new GenericResponse(results.All(result => result.Success), string.Join(Environment.NewLine, results.Select(result => result.Output))));
+		}
+
+		/// <summary>
+		///     Redeems cd-keys on given bot.
+		/// </summary>
+		/// <remarks>
+		///     Response contains a map that maps each provided cd-key to its redeem result.
+		///     Redeem result can be a null value, this means that ASF didn't even attempt to send a request (e.g. because of bot not being connected to Steam network).
+		/// </remarks>
+		[Consumes("application/json")]
+		[HttpPost("{botName:required}/Redeem")]
+		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>), 200)]
+		public async Task<ActionResult<GenericResponse<IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>>> RedeemPost(string botName, [FromBody] BotRedeemRequest request) {
+			if (string.IsNullOrEmpty(botName) || (request == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(botName) + " || " + nameof(request));
+				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>(false, string.Format(Strings.ErrorIsEmpty, nameof(botName) + " || " + nameof(request))));
+			}
+
+			if (request.KeysToRedeem.Count == 0) {
+				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>(false, string.Format(Strings.ErrorIsEmpty, nameof(request.KeysToRedeem))));
+			}
+
+			if (!Bot.Bots.TryGetValue(botName, out Bot bot)) {
+				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>(false, string.Format(Strings.BotNotFound, botName)));
+			}
+
+			IList<ArchiHandler.PurchaseResponseCallback> results = await Utilities.InParallel(request.KeysToRedeem.Select(key => bot.Actions.RedeemKey(key))).ConfigureAwait(false);
+
+			Dictionary<string, ArchiHandler.PurchaseResponseCallback> result = new Dictionary<string, ArchiHandler.PurchaseResponseCallback>(request.KeysToRedeem.Count);
+
+			foreach (string key in request.KeysToRedeem) {
+				result[key] = results[result.Count];
+			}
+
+			return Ok(new GenericResponse<IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>(result.Values.All(value => value != null), result));
 		}
 
 		/// <summary>

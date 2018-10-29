@@ -34,7 +34,7 @@ using SteamKit2.Internal;
 using SteamKit2.Unified.Internal;
 
 namespace ArchiSteamFarm {
-	internal sealed class ArchiHandler : ClientMsgHandler {
+	public sealed class ArchiHandler : ClientMsgHandler {
 		internal const byte MaxGamesPlayedConcurrently = 32; // This is limit introduced by Steam Network
 
 		private readonly ArchiLogger ArchiLogger;
@@ -555,24 +555,12 @@ namespace ArchiSteamFarm {
 			Client.PostCallback(new VanityURLChangedCallback(packetMsg.TargetJobID, response.Body));
 		}
 
-		internal sealed class PlayingSessionStateCallback : CallbackMsg {
-			internal readonly bool PlayingBlocked;
+		[SuppressMessage("ReSharper", "MemberCanBeInternal")]
+		public sealed class PurchaseResponseCallback : CallbackMsg {
+			public readonly Dictionary<uint, string> Items;
 
-			internal PlayingSessionStateCallback(JobID jobID, CMsgClientPlayingSessionState msg) {
-				if ((jobID == null) || (msg == null)) {
-					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
-				}
-
-				JobID = jobID;
-				PlayingBlocked = msg.playing_blocked;
-			}
-		}
-
-		internal sealed class PurchaseResponseCallback : CallbackMsg {
-			internal readonly Dictionary<uint, string> Items;
-
-			internal EPurchaseResultDetail PurchaseResultDetail { get; set; }
-			internal EResult Result { get; set; }
+			public EPurchaseResultDetail PurchaseResultDetail { get; internal set; }
+			public EResult Result { get; internal set; }
 
 			internal PurchaseResponseCallback(JobID jobID, CMsgClientPurchaseResponse msg) {
 				if ((jobID == null) || (msg == null)) {
@@ -624,6 +612,19 @@ namespace ArchiSteamFarm {
 					gameName = WebUtility.HtmlDecode(gameName);
 					Items[packageID] = gameName;
 				}
+			}
+		}
+
+		internal sealed class PlayingSessionStateCallback : CallbackMsg {
+			internal readonly bool PlayingBlocked;
+
+			internal PlayingSessionStateCallback(JobID jobID, CMsgClientPlayingSessionState msg) {
+				if ((jobID == null) || (msg == null)) {
+					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
+				}
+
+				JobID = jobID;
+				PlayingBlocked = msg.playing_blocked;
 			}
 		}
 

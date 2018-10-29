@@ -96,15 +96,7 @@ namespace ArchiSteamFarm.IPC {
 			services.AddResponseCompression();
 
 			// Add CORS to allow userscripts and third-party apps
-			services.AddCors(
-				builder => {
-					builder.AddDefaultPolicy(
-						policyBuilder => {
-							policyBuilder.AllowAnyOrigin();
-						}
-					);
-				}
-			);
+			services.AddCors(builder => builder.AddDefaultPolicy(policyBuilder => policyBuilder.AllowAnyOrigin()));
 
 			// Add swagger documentation generation
 			services.AddSwaggerGen(
