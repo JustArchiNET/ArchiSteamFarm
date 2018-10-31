@@ -1932,8 +1932,8 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			(bool success, string output) = Actions.Exit();
-			return FormatStaticResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
+			Utilities.InBackground(ASF.RestartOrExit);
+			return FormatStaticResponse(Strings.Done);
 		}
 
 		private string ResponseResume(ulong steamID) {
