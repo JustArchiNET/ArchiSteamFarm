@@ -1932,7 +1932,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			(bool success, string output) = Actions.Exit();
+			(bool success, string output) = Actions.Restart();
 			return FormatStaticResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
 		}
 
