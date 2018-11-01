@@ -119,6 +119,16 @@ namespace ArchiSteamFarm {
 					}
 				}
 
+				// TODO: cleanup from previous update, remove this after next stable
+				try {
+					foreach (string file in Directory.EnumerateFiles(SharedInfo.HomeDirectory, "*.old", SearchOption.AllDirectories)) {
+						File.Delete(file);
+					}
+				} catch (Exception e) {
+					ArchiLogger.LogGenericException(e);
+					return null;
+				}
+
 				GitHub.ReleaseResponse releaseResponse = await GitHub.GetLatestRelease(Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable).ConfigureAwait(false);
 				if (releaseResponse == null) {
 					ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
