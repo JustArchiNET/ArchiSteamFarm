@@ -705,8 +705,8 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
-			if (Bot.HasWallet) { 
-				return FormatBotResponse(string.Format(Strings.BotBalance, Bot.Balance / 100, Bot.Currency));
+			if (Bot.WalletCurrency != 0) { 
+				return FormatBotResponse(string.Format(Strings.BotBalance, Bot.Balance / 100.0, Bot.WalletCurrency.ToString()));
 			}
 
 			return FormatBotResponse(string.Format(Strings.BotHasNoWallet));

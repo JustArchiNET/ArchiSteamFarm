@@ -150,9 +150,8 @@ namespace ArchiSteamFarm {
 		private string TwoFactorCode;
 		private byte TwoFactorCodeFailures;
 
-		internal bool HasWallet { get; private set; }
 		internal int Balance { get; private set; }
-		internal string Currency { get; private set; }
+		internal ECurrencyCode WalletCurrency { get; private set; }
 
 		private Bot(string botName, BotConfig botConfig, BotDatabase botDatabase) {
 			if (string.IsNullOrEmpty(botName) || (botConfig == null) || (botDatabase == null)) {
@@ -2272,9 +2271,9 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogNullError(nameof(callback));
 				return;
 			}
-			HasWallet = callback.HasWallet;
+
 			Balance = callback.Balance;
-			Currency = callback.Currency.ToString();
+			WalletCurrency = callback.Currency;
 		}
 
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
