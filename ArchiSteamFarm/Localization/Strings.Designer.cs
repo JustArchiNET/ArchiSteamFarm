@@ -241,15 +241,6 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на Balance: {0} {1}.
-        /// </summary>
-        internal static string BotBalance {
-            get {
-                return ResourceManager.GetString("BotBalance", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Ищет локализованную строку, похожую на Connected to Steam!.
         /// </summary>
         internal static string BotConnected {
@@ -696,6 +687,15 @@ namespace ArchiSteamFarm.Localization {
         internal static string BotVersion {
             get {
                 return ResourceManager.GetString("BotVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Wallet balance: {0} {1}.
+        /// </summary>
+        internal static string BotWalletBalance {
+            get {
+                return ResourceManager.GetString("BotWalletBalance", resourceCulture);
             }
         }
         

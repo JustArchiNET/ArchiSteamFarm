@@ -150,7 +150,7 @@ namespace ArchiSteamFarm {
 		private string TwoFactorCode;
 		private byte TwoFactorCodeFailures;
 
-		internal int Balance { get; private set; }
+		internal int WalletBalance { get; private set; }
 		internal ECurrencyCode WalletCurrency { get; private set; }
 
 		private Bot(string botName, BotConfig botConfig, BotDatabase botDatabase) {
@@ -2272,7 +2272,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Balance = callback.Balance;
+			WalletBalance = callback.Balance;
 			WalletCurrency = callback.Currency;
 		}
 

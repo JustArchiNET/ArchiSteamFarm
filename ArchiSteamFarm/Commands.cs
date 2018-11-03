@@ -71,6 +71,8 @@ namespace ArchiSteamFarm {
 							return await Response2FAConfirm(steamID, false).ConfigureAwait(false);
 						case "2FAOK":
 							return await Response2FAConfirm(steamID, true).ConfigureAwait(false);
+						case "BALANCE":
+							return ResponseWalletBalance(steamID);
 						case "BL":
 							return ResponseBlacklist(steamID);
 						case "EXIT":
@@ -131,7 +133,7 @@ namespace ArchiSteamFarm {
 
 							return await ResponseAddLicense(steamID, args[1]).ConfigureAwait(false);
 						case "BALANCE":
-							return await ResponseBalance(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
+							return await ResponseWalletBalance(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "BL":
 							return await ResponseBlacklist(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "BLADD":
@@ -686,44 +688,6 @@ namespace ArchiSteamFarm {
 			}
 
 			IList<string> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAdvancedTransfer(steamID, appID, contextID, targetBot))).ConfigureAwait(false);
-
-			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
-			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
-		}
-
-		private string ResponseBalance(ulong steamID) {
-			if (steamID == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(steamID));
-				return null;
-			}
-
-			if (!Bot.IsMaster(steamID)) {
-				return null;
-			}
-
-			if (!Bot.IsConnectedAndLoggedOn) {
-				return FormatBotResponse(Strings.BotNotConnected);
-			}
-
-			if (Bot.WalletCurrency != 0) { 
-				return FormatBotResponse(string.Format(Strings.BotBalance, Bot.Balance / 100.0, Bot.WalletCurrency.ToString()));
-			}
-
-			return FormatBotResponse(string.Format(Strings.BotHasNoWallet));
-		}
-
-		private static async Task<string> ResponseBalance(ulong steamID, string botNames) {
-			if ((steamID == 0) || string.IsNullOrEmpty(botNames)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
-				return null;
-			}
-
-			HashSet<Bot> bots = Bot.GetBots(botNames);
-			if ((bots == null) || (bots.Count == 0)) {
-				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
-			}
-
-			IList<string> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseBalance(steamID)))).ConfigureAwait(false);
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
@@ -2363,6 +2327,44 @@ namespace ArchiSteamFarm {
 			}
 
 			return IsOperator(steamID) ? FormatBotResponse(string.Format(Strings.BotVersion, SharedInfo.ASF, SharedInfo.Version)) : null;
+		}
+
+		private string ResponseWalletBalance(ulong steamID) {
+			if (steamID == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(steamID));
+				return null;
+			}
+
+			if (!Bot.IsMaster(steamID)) {
+				return null;
+			}
+
+			if (!Bot.IsConnectedAndLoggedOn) {
+				return FormatBotResponse(Strings.BotNotConnected);
+			}
+
+			if (Bot.WalletCurrency != ECurrencyCode.Invalid) {
+				return FormatBotResponse(string.Format(Strings.BotWalletBalance, Bot.WalletBalance / 100.0, Bot.WalletCurrency.ToString()));
+			}
+
+			return FormatBotResponse(string.Format(Strings.BotHasNoWallet));
+		}
+
+		private static async Task<string> ResponseWalletBalance(ulong steamID, string botNames) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botNames)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
+				return null;
+			}
+
+			HashSet<Bot> bots = Bot.GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
+			}
+
+			IList<string> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseWalletBalance(steamID)))).ConfigureAwait(false);
+
+			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 
 		[Flags]
