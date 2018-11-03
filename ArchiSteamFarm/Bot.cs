@@ -150,6 +150,9 @@ namespace ArchiSteamFarm {
 		private string TwoFactorCode;
 		private byte TwoFactorCodeFailures;
 
+		internal int WalletBalance { get; private set; }
+		internal ECurrencyCode WalletCurrency { get; private set; }
+
 		private Bot(string botName, BotConfig botConfig, BotDatabase botDatabase) {
 			if (string.IsNullOrEmpty(botName) || (botConfig == null) || (botDatabase == null)) {
 				throw new ArgumentNullException(nameof(botName) + " || " + nameof(botConfig) + " || " + nameof(botDatabase));
@@ -212,6 +215,7 @@ namespace ArchiSteamFarm {
 			CallbackManager.Subscribe<SteamUser.LoggedOnCallback>(OnLoggedOn);
 			CallbackManager.Subscribe<SteamUser.LoginKeyCallback>(OnLoginKey);
 			CallbackManager.Subscribe<SteamUser.UpdateMachineAuthCallback>(OnMachineAuth);
+			CallbackManager.Subscribe<SteamUser.WalletInfoCallback>(OnWalletUpdate);
 
 			CallbackManager.Subscribe<ArchiHandler.PlayingSessionStateCallback>(OnPlayingSessionState);
 			CallbackManager.Subscribe<ArchiHandler.SharedLibraryLockStatusCallback>(OnSharedLibraryLockStatus);
@@ -2260,6 +2264,16 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiWebHandler.OnVanityURLChanged(callback.VanityURL);
+		}
+
+		private void OnWalletUpdate(SteamUser.WalletInfoCallback callback) {
+			if (callback == null) {
+				ArchiLogger.LogNullError(nameof(callback));
+				return;
+			}
+
+			WalletBalance = callback.Balance;
+			WalletCurrency = callback.Currency;
 		}
 
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
