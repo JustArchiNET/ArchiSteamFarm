@@ -2339,15 +2339,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.IsConnectedAndLoggedOn) {
-				return FormatBotResponse(Strings.BotNotConnected);
-			}
-
-			if (Bot.WalletCurrency != ECurrencyCode.Invalid) {
-				return FormatBotResponse(string.Format(Strings.BotWalletBalance, Bot.WalletBalance / 100.0, Bot.WalletCurrency.ToString()));
-			}
-
-			return FormatBotResponse(string.Format(Strings.BotHasNoWallet));
+			return !Bot.IsConnectedAndLoggedOn ? FormatBotResponse(Strings.BotNotConnected) : FormatBotResponse(Bot.WalletCurrency != ECurrencyCode.Invalid ? string.Format(Strings.BotWalletBalance, Bot.WalletBalance / 100.0, Bot.WalletCurrency.ToString()) : Strings.BotHasNoWallet);
 		}
 
 		private static async Task<string> ResponseWalletBalance(ulong steamID, string botNames) {

@@ -123,6 +123,9 @@ namespace ArchiSteamFarm {
 		internal bool PlayingWasBlocked { get; private set; }
 		internal ulong SteamID { get; private set; }
 
+		internal int WalletBalance { get; private set; }
+		internal ECurrencyCode WalletCurrency { get; private set; }
+
 		[JsonProperty]
 		private EAccountFlags AccountFlags;
 
@@ -149,9 +152,6 @@ namespace ArchiSteamFarm {
 		private uint TradesCount;
 		private string TwoFactorCode;
 		private byte TwoFactorCodeFailures;
-
-		internal int WalletBalance { get; private set; }
-		internal ECurrencyCode WalletCurrency { get; private set; }
 
 		private Bot(string botName, BotConfig botConfig, BotDatabase botDatabase) {
 			if (string.IsNullOrEmpty(botName) || (botConfig == null) || (botDatabase == null)) {
