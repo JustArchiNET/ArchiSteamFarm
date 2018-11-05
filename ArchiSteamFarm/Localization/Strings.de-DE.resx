@@ -122,7 +122,7 @@
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF sucht automatisch alle {0} nach einer aktuelleren Version.</value>
+    <value>ASF sucht automatisch nach einer aktuelleren Version. Konfiguriertes Intervall: {0}.</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
   </data>
   <data name="Content" xml:space="preserve">
@@ -152,7 +152,7 @@ StackTrace:
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Globale Konfiguration konnte nicht geladen werden. Stelle sicher, dass {0} existiert und gültig ist! Folge der 'Installation' Anleitung im Wiki, falls du verwirrt sein solltest.</value>
+    <value>Globale Konfiguration konnte nicht geladen werden. Stelle sicher, dass {0} existiert und gültig ist! Folge der Installationsanleitung im Wiki, falls etwas unklar sein sollte.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
@@ -178,7 +178,7 @@ StackTrace:
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>Die neueste Version konnte nicht überprüft werden!</value>
+    <value>Konnte aktuellste Version nicht überprüfen!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
     <value>Die Aktualisierung konnte nicht fortgesetzt werden, da es keine Datei gibt, die sich auf die aktuell laufende Version bezieht! Eine automatische Aktualisierung auf diese Version ist nicht möglich.</value>
@@ -514,7 +514,7 @@ StackTrace:
     <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string, {2} will be replaced by list of key-value pairs, separated by a comma</comment>
   </data>
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
-    <value>Abgelaufenen Anmelde-Schlüssel entfernt!</value>
+    <value>Abgelaufener Anmelde-Schlüssel entfernt!</value>
   </data>
   <data name="BotStatusNotIdling" xml:space="preserve">
     <value>Bot sammelt nichts.</value>
@@ -547,7 +547,7 @@ StackTrace:
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
-    <value>Gescheitert aufgrund eines Fehlers: {0}</value>
+    <value>Gescheitert aufgrund des Fehlers: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotConnectionLost" xml:space="preserve">
@@ -593,7 +593,7 @@ StackTrace:
     <value>Deine angegebene CurrentCulture ist ungültig, ASF wird weiterhin mit dem Standard laufen!</value>
   </data>
   <data name="TranslationIncomplete" xml:space="preserve">
-    <value>ASF wird versuchen deine bevorzugte {0} Sprache zu verwenden, jedoch wurde die Übersetzung in dieser Sprache nur zu {1} abgeschlossen. Kannst du uns vielleicht helfen die ASF-Übersetzung in deiner Sprache zu verbessern?</value>
+    <value>ASF wird versuchen deine bevorzugte Sprache {0} zu verwenden, jedoch wurde die Übersetzung in dieser Sprache nur zu {1} abgeschlossen. Kannst du uns vielleicht helfen die ASF-Übersetzung in deiner Sprache zu verbessern?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
   <data name="IdlingGameNotPossible" xml:space="preserve">
@@ -625,7 +625,7 @@ StackTrace:
     <value>Zugriff verweigert!</value>
   </data>
   <data name="WarningPreReleaseVersion" xml:space="preserve">
-    <value>Du verwendest eine Version, die neuer ist als die zuletzt veröffentlichte Version deines Aktualisierungskanal. Bitte bedenke, dass Vorabversionen für Benutzer bestimmt sind, die wissen, wie man Fehler meldet, mit Problemen umgeht und Rückmeldung gibt - es wird kein technische Unterstützung zur Verfügung gestellt.</value>
+    <value>Du verwendest eine Version, die neuer ist als die zuletzt veröffentlichte Version deines Aktualisierungskanals. Bitte bedenke, dass Vorabversionen für Benutzer bestimmt sind, die wissen, wie man Fehler meldet, mit Problemen umgeht und Rückmeldung gibt - es wird keine technische Unterstützung zur Verfügung gestellt.</value>
   </data>
   <data name="BotStats" xml:space="preserve">
     <value>Momentaner Arbeitsspeicherverbrauch: {0} MB.</value>
@@ -660,5 +660,12 @@ StackTrace:
   </data>
   <data name="TargetBotNotConnected" xml:space="preserve">
     <value>Ziel Bot-Instanz ist nicht verbunden!</value>
+  </data>
+  <data name="BotWalletBalance" xml:space="preserve">
+    <value>Guthaben: {0} {1}</value>
+    <comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
+  </data>
+  <data name="BotHasNoWallet" xml:space="preserve">
+    <value>Der Bot hat kein Guthaben.</value>
   </data>
 </root>

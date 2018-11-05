@@ -658,4 +658,6 @@
   <data name="TargetBotNotConnected" xml:space="preserve">
     <value>目標 BOT 實例未連接！</value>
   </data>
+  
+  
 </root>

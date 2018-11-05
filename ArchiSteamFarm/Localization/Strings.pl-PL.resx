@@ -661,4 +661,11 @@ StackTrace:
   <data name="TargetBotNotConnected" xml:space="preserve">
     <value>Docelowa instancja bota nie jest połączona!</value>
   </data>
+  <data name="BotWalletBalance" xml:space="preserve">
+    <value>Saldo w portfelu: {0} {1}</value>
+    <comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
+  </data>
+  <data name="BotHasNoWallet" xml:space="preserve">
+    <value>Bot nie posiada portfela.</value>
+  </data>
 </root>

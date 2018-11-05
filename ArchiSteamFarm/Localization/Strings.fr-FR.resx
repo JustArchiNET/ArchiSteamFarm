@@ -661,4 +661,6 @@ StackTrace :
   <data name="TargetBotNotConnected" xml:space="preserve">
     <value>L'instance cible du bot n'est pas connecté!</value>
   </data>
+  
+  
 </root>

@@ -264,7 +264,10 @@ StackTrace:
     <value>Steam 로그인 아이디를 입력하세요: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputSteamParentalCode" xml:space="preserve">
+    <value>Steam 자녀보호 코드를 입력하세요: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Steam 비밀 번호를 입력하세요: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -655,5 +658,9 @@ StackTrace:
     <value>{0} 버그의 우회법이 발동했습니다.</value>
     <comment>{0} will be replaced by the bug's name provided by ASF</comment>
   </data>
+  <data name="TargetBotNotConnected" xml:space="preserve">
+    <value>대상 봇 인스턴스는 연결되어 있지 않습니다!</value>
+  </data>
+  
   
 </root>
