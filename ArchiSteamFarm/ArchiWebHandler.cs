@@ -1583,12 +1583,7 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		private async Task<bool> RefreshSession(string host) {
-			if (string.IsNullOrEmpty(host)) {
-				Bot.ArchiLogger.LogNullError(nameof(host));
-				return false;
-			}
-
+		private async Task<bool> RefreshSession() {
 			if (!Bot.IsConnectedAndLoggedOn) {
 				return false;
 			}
@@ -1720,7 +1715,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (IsSessionExpiredUri(response.FinalUri)) {
-				if (await RefreshSession(host).ConfigureAwait(false)) {
+				if (await RefreshSession().ConfigureAwait(false)) {
 					return await UrlGetToHtmlDocumentWithSession(host, request, --maxTries).ConfigureAwait(false);
 				}
 
@@ -1772,7 +1767,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (IsSessionExpiredUri(response.FinalUri)) {
-				if (await RefreshSession(host).ConfigureAwait(false)) {
+				if (await RefreshSession().ConfigureAwait(false)) {
 					return await UrlGetToJsonObjectWithSession<T>(host, request, --maxTries).ConfigureAwait(false);
 				}
 
@@ -1824,7 +1819,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (IsSessionExpiredUri(response.FinalUri)) {
-				if (await RefreshSession(host).ConfigureAwait(false)) {
+				if (await RefreshSession().ConfigureAwait(false)) {
 					return await UrlGetToXmlDocumentWithSession(host, request, --maxTries).ConfigureAwait(false);
 				}
 
@@ -1876,7 +1871,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (IsSessionExpiredUri(response.FinalUri)) {
-				if (await RefreshSession(host).ConfigureAwait(false)) {
+				if (await RefreshSession().ConfigureAwait(false)) {
 					return await UrlHeadWithSession(host, request, --maxTries).ConfigureAwait(false);
 				}
 
@@ -1957,7 +1952,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (IsSessionExpiredUri(response.FinalUri)) {
-				if (await RefreshSession(host).ConfigureAwait(false)) {
+				if (await RefreshSession().ConfigureAwait(false)) {
 					return await UrlPostToHtmlDocumentWithSession(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
 				}
 
@@ -2038,7 +2033,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (IsSessionExpiredUri(response.FinalUri)) {
-				if (await RefreshSession(host).ConfigureAwait(false)) {
+				if (await RefreshSession().ConfigureAwait(false)) {
 					return await UrlPostToJsonObjectWithSession<T>(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
 				}
 
@@ -2122,7 +2117,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (IsSessionExpiredUri(response.FinalUri)) {
-				if (await RefreshSession(host).ConfigureAwait(false)) {
+				if (await RefreshSession().ConfigureAwait(false)) {
 					return await UrlPostToJsonObjectWithSession<T>(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
 				}
 
@@ -2203,7 +2198,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (IsSessionExpiredUri(response.FinalUri)) {
-				if (await RefreshSession(host).ConfigureAwait(false)) {
+				if (await RefreshSession().ConfigureAwait(false)) {
 					return await UrlPostWithSession(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
 				}
 
