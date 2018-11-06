@@ -1531,14 +1531,14 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool?> IsSessionExpired() {
-			if (LastSessionCheck.AddSeconds(MinSessionValidityInSeconds) < DateTime.UtcNow) {
+			if (DateTime.UtcNow < LastSessionCheck.AddSeconds(MinSessionValidityInSeconds)) {
 				return LastSessionCheck != LastSessionRefresh;
 			}
 
 			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				if (LastSessionCheck.AddSeconds(MinSessionValidityInSeconds) < DateTime.UtcNow) {
+				if (DateTime.UtcNow < LastSessionCheck.AddSeconds(MinSessionValidityInSeconds)) {
 					return LastSessionCheck != LastSessionRefresh;
 				}
 
