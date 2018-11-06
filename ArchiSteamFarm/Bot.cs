@@ -265,6 +265,19 @@ namespace ArchiSteamFarm {
 			Trading?.Dispose();
 		}
 
+		internal async Task AddGamesToRedeemInBackground(IOrderedDictionary gamesToRedeemInBackground) {
+			if ((gamesToRedeemInBackground == null) || (gamesToRedeemInBackground.Count == 0)) {
+				ArchiLogger.LogNullError(nameof(gamesToRedeemInBackground));
+				return;
+			}
+
+			await BotDatabase.AddGamesToRedeemInBackground(gamesToRedeemInBackground).ConfigureAwait(false);
+
+			if ((GamesRedeemerInBackgroundTimer == null) && BotDatabase.HasGamesToRedeemInBackground && IsConnectedAndLoggedOn) {
+				Utilities.InBackground(RedeemGamesInBackground);
+			}
+		}
+
 		internal async Task<bool> DeleteAllRelatedFiles() {
 			await BotDatabase.MakeReadOnly().ConfigureAwait(false);
 
@@ -675,7 +688,11 @@ namespace ArchiSteamFarm {
 				}
 
 				if (gamesToRedeemInBackground.Count > 0) {
-					await ValidateAndAddGamesToRedeemInBackground(gamesToRedeemInBackground).ConfigureAwait(false);
+					IOrderedDictionary validGamesToRedeemInBackground = ValidateGamesToRedeemInBackground(gamesToRedeemInBackground);
+
+					if ((validGamesToRedeemInBackground != null) && (validGamesToRedeemInBackground.Count > 0)) {
+						await AddGamesToRedeemInBackground(validGamesToRedeemInBackground).ConfigureAwait(false);
+					}
 				}
 
 				File.Delete(filePath);
@@ -1103,10 +1120,10 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task<bool> ValidateAndAddGamesToRedeemInBackground(OrderedDictionary gamesToRedeemInBackground) {
+		internal static IOrderedDictionary ValidateGamesToRedeemInBackground(IOrderedDictionary gamesToRedeemInBackground) {
 			if ((gamesToRedeemInBackground == null) || (gamesToRedeemInBackground.Count == 0)) {
-				ArchiLogger.LogNullError(nameof(gamesToRedeemInBackground));
-				return false;
+				ASF.ArchiLogger.LogNullError(nameof(gamesToRedeemInBackground));
+				return gamesToRedeemInBackground;
 			}
 
 			HashSet<object> invalidKeys = new HashSet<object>();
@@ -1117,16 +1134,16 @@ namespace ArchiSteamFarm {
 				string key = game.Key as string;
 				if (string.IsNullOrEmpty(key)) {
 					invalid = true;
-					ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, nameof(key)));
+					ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, nameof(key)));
 				} else if (!Utilities.IsValidCdKey(key)) {
 					invalid = true;
-					ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, key));
+					ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, key));
 				}
 
 				string name = game.Value as string;
 				if (string.IsNullOrEmpty(name)) {
 					invalid = true;
-					ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, nameof(name)));
+					ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, nameof(name)));
 				}
 
 				if (invalid) {
@@ -1138,19 +1155,9 @@ namespace ArchiSteamFarm {
 				foreach (string invalidKey in invalidKeys) {
 					gamesToRedeemInBackground.Remove(invalidKey);
 				}
-
-				if (gamesToRedeemInBackground.Count == 0) {
-					return false;
-				}
 			}
 
-			await BotDatabase.AddGamesToRedeemInBackground(gamesToRedeemInBackground).ConfigureAwait(false);
-
-			if ((GamesRedeemerInBackgroundTimer == null) && BotDatabase.HasGamesToRedeemInBackground && IsConnectedAndLoggedOn) {
-				Utilities.InBackground(RedeemGamesInBackground);
-			}
-
-			return true;
+			return gamesToRedeemInBackground;
 		}
 
 		private async Task CheckOccupationStatus() {
