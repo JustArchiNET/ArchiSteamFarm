@@ -1,0 +1,146 @@
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
+$ProgressPreference = 'SilentlyContinue'
+
+$crowdinConfigPath = 'crowdin.yml'
+$crowdinHomePath = 'tools\crowdin-cli'
+$crowdinIdentityPath = "$crowdinHomePath\crowdin_identity.yml"
+$crowdinJarPath = "$crowdinHomePath\crowdin-cli.jar"
+$projectHomePath = '..\..'
+
+function Commit-Module($project, $path) {
+	Push-Location "$project"
+
+	try {
+		git pull
+
+		if ($LastExitCode -ne 0) {
+			throw "Last command failed."
+		}
+
+		git add -A "$path"
+
+		if ($LastExitCode -ne 0) {
+			throw "Last command failed."
+		}
+
+		git commit -m "Translations update"
+
+		if ($LastExitCode -ne 0) {
+			throw "Last command failed."
+		}
+	} finally {
+		Pop-Location
+	}
+}
+
+function Crowdin-Download {
+	Crowdin-Execute 'download'
+	git reset
+
+	if ($LastExitCode -ne 0) {
+		throw "Last command failed."
+	}
+
+	Commit-Module 'ASF-ui' 'src\i18n\locale\*.json'
+	Commit-Module 'ASF-WebConfigGenerator' 'src\locale\*.json'
+	Commit-Module 'wiki' 'locale\*.md'
+
+	git add -A "ArchiSteamFarm\Localization\*.resx" "ASF-ui" "ASF-WebConfigGenerator" "wiki"
+
+	if ($LastExitCode -ne 0) {
+		throw "Last command failed."
+	}
+
+	git commit -m "Translations update"
+
+	if ($LastExitCode -ne 0) {
+		throw "Last command failed."
+	}
+
+	git push --recurse-submodules=on-demand
+
+	if ($LastExitCode -ne 0) {
+		throw "Last command failed."
+	}
+}
+
+function Crowdin-Execute($command) {
+	if (Get-Command 'crowdin' -ErrorAction SilentlyContinue) {
+		& crowdin -b master --identity "$crowdinIdentityPath" $command
+
+		if ($LastExitCode -ne 0) {
+			throw "Last command failed."
+		}
+	} elseif (Get-Command 'java' -ErrorAction SilentlyContinue -and Test-Path "$crowdinJarPath" -PathType Leaf) {
+		& java -jar "$crowdinJarPath" -b master --identity "$crowdinIdentityPath" $command
+
+		if ($LastExitCode -ne 0) {
+			throw "Last command failed."
+		}
+	} else {
+		throw "Could not find crowdin executable!"
+	}
+}
+
+function Crowdin-Upload {
+	Pull-Module 'ASF-ui'
+	Pull-Module 'ASF-WebConfigGenerator'
+	Pull-Module 'wiki'
+
+	Crowdin-Execute 'upload sources'
+}
+
+function Pull-Module($project) {
+	Push-Location "$project"
+
+	try {
+		git reset --hard
+
+		if ($LastExitCode -ne 0) {
+			throw "Last command failed."
+		}
+
+		git clean -fd
+
+		if ($LastExitCode -ne 0) {
+			throw "Last command failed."
+		}
+
+		git pull
+
+		if ($LastExitCode -ne 0) {
+			throw "Last command failed."
+		}
+	} finally {
+		Pop-Location
+	}
+}
+
+Push-Location "$PSScriptRoot\$projectHomePath"
+
+try {
+	if (!(Test-Path "$crowdinConfigPath" -PathType Leaf)) {
+		throw "$crowdinConfigPath could not be found, aborting."
+	}
+
+	if (!(Test-Path "$crowdinIdentityPath" -PathType Leaf)) {
+		throw "$crowdinIdentityPath could not be found, aborting."
+	}
+
+	foreach ($arg in $args) {
+		switch -Wildcard ($arg) {
+			'*download' {
+				Crowdin-Download
+			}
+			'*upload' {
+				Crowdin-Upload
+			}
+			default {
+				throw "$arg action is unknown, aborting."
+			}
+		}
+	}
+} finally {
+	Pop-Location
+}
