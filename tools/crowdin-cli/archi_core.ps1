@@ -25,10 +25,14 @@ function Commit-Module($project, $path) {
 			throw "Last command failed."
 		}
 
-		git commit -m "Translations update"
+		git diff-index --quiet HEAD
 
 		if ($LastExitCode -ne 0) {
-			throw "Last command failed."
+			git commit -m "Translations update"
+
+			if ($LastExitCode -ne 0) {
+				throw "Last command failed."
+			}
 		}
 	} finally {
 		Pop-Location
@@ -58,10 +62,14 @@ function Crowdin-Download {
 		throw "Last command failed."
 	}
 
-	git commit -m "Translations update"
+	git diff-index --quiet HEAD
 
 	if ($LastExitCode -ne 0) {
-		throw "Last command failed."
+		git commit -m "Translations update"
+
+		if ($LastExitCode -ne 0) {
+			throw "Last command failed."
+		}
 	}
 
 	git push origin "$branch" --recurse-submodules=on-demand
