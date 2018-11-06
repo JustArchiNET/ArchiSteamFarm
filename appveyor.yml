@@ -144,7 +144,7 @@ after_test:
         $ErrorActionPreference = 'Stop'
         $ProgressPreference = 'SilentlyContinue'
 
-        Push-Location "$env:APPVEYOR_BUILD_FOLDER"
+        Set-Location "$env:APPVEYOR_BUILD_FOLDER"
 
         if ($variant -like '*-netf') {
             $compressionMethod = 'Deflate' # This depends on what ZipArchive supports on given platform
@@ -227,13 +227,15 @@ after_test:
     Get-Job | Receive-Job -Wait -AutoRemoveJob
 
 
-    # TODO: Enhance if below to skip PRs and branches different than master once logic is finished
-
-    if ((Test-Path 'crowdin.yml' -PathType Leaf) -and (Test-Path 'tools\crowdin-cli\crowdin_identity_example.yml' -PathType Leaf) -and (Test-Path 'tools\crowdin-cli\archi_core.ps1' -PathType Leaf)) {
+    if (!($env:APPVEYOR_PULL_REQUEST_NUMBER) -and ($env:APPVEYOR_REPO_BRANCH -eq 'master') -and ($env:APPVEYOR_REPO_TAG -eq 'false') -and (Test-Path 'crowdin.yml' -PathType Leaf) -and (Test-Path 'tools\crowdin-cli\crowdin_identity_example.yml' -PathType Leaf) -and (Test-Path 'tools\crowdin-cli\archi_core.ps1' -PathType Leaf)) {
         (Get-Content 'tools\crowdin-cli\crowdin_identity_example.yml').Replace('CROWDIN_API_KEY', "$env:CROWDIN_API_KEY") | Set-Content 'tools\crowdin-cli\crowdin_identity.yml'
-        & tools\crowdin-cli\archi_core.ps1 --upload
-    }
 
+        try {
+            & tools\crowdin-cli\archi_core.ps1 --upload
+        } finally {
+            Remove-Item 'tools\crowdin-cli\crowdin_identity.yml'
+        }
+    }
 deploy:
 - provider: GitHub
   tag: $(appveyor_repo_tag_name)
