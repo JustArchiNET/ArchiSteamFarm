@@ -73,7 +73,7 @@ function Crowdin-Execute($command) {
 		if ($LastExitCode -ne 0) {
 			throw "Last command failed."
 		}
-	} elseif (Get-Command 'java' -ErrorAction SilentlyContinue -and Test-Path "$crowdinJarPath" -PathType Leaf) {
+	} elseif ((Test-Path "$crowdinJarPath" -PathType Leaf) -and (Get-Command 'java' -ErrorAction SilentlyContinue)) {
 		& java -jar "$crowdinJarPath" -b "$branch" --identity "$crowdinIdentityPath" $command
 
 		if ($LastExitCode -ne 0) {
