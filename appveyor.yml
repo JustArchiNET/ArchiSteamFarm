@@ -227,7 +227,7 @@ after_test:
 
     # TODO: Enhance if below to skip PRs and branches different than master once logic is finished
 
-    if (Test-Path 'crowdin.yml' -PathType Leaf -and Test-Path 'tools\crowdin-cli\crowdin_identity_example.yml' -PathType Leaf -and Test-Path 'tools\crowdin-cli\archi_core.ps1' -PathType Leaf) {
+    if ((Test-Path 'crowdin.yml' -PathType Leaf) -and (Test-Path 'tools\crowdin-cli\crowdin_identity_example.yml' -PathType Leaf) -and (Test-Path 'tools\crowdin-cli\archi_core.ps1' -PathType Leaf)) {
         (Get-Content 'tools\crowdin-cli\crowdin_identity_example.yml').Replace('CROWDIN_API_KEY', "$env:CROWDIN_API_KEY") | Set-Content 'tools\crowdin-cli\crowdin_identity.yml'
         & tools\crowdin-cli\archi_core.ps1 --upload
     }
