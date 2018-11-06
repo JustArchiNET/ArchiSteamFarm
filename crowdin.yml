@@ -1,5 +1,6 @@
 "preserve_hierarchy": true
 "files": [
+  # Note: any modifications to this file should carry appropriate modifications to tools/crowdin-cli scripts as well (CI integration)
   {
     "source": "/ArchiSteamFarm/Localization/Strings.resx",
     "translation": "/ArchiSteamFarm/Localization/Strings.%locale%.resx"

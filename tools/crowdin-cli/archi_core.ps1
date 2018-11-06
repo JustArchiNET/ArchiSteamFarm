@@ -36,16 +36,21 @@ function Commit-Module($project, $path) {
 }
 
 function Crowdin-Download {
+	Pull-Module 'ASF-ui'
+	Pull-Module 'ASF-WebConfigGenerator'
+	Pull-Module 'wiki'
+
 	Crowdin-Execute 'download'
+
+	Commit-Module 'ASF-ui' 'src\i18n\locale\*.json'
+	Commit-Module 'ASF-WebConfigGenerator' 'src\locale\*.json'
+	Commit-Module 'wiki' 'locale\*.md'
+
 	git reset
 
 	if ($LastExitCode -ne 0) {
 		throw "Last command failed."
 	}
-
-	Commit-Module 'ASF-ui' 'src\i18n\locale\*.json'
-	Commit-Module 'ASF-WebConfigGenerator' 'src\locale\*.json'
-	Commit-Module 'wiki' 'locale\*.md'
 
 	git add -A "ArchiSteamFarm\Localization\*.resx" "ASF-ui" "ASF-WebConfigGenerator" "wiki"
 
@@ -96,6 +101,12 @@ function Pull-Module($project) {
 	Push-Location "$project"
 
 	try {
+		git checkout -f "$branch"
+
+		if ($LastExitCode -ne 0) {
+			throw "Last command failed."
+		}
+
 		git reset --hard
 
 		if ($LastExitCode -ne 0) {
