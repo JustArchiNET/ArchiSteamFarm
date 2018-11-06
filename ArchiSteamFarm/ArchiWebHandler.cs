@@ -1544,7 +1544,7 @@ namespace ArchiSteamFarm {
 
 				// It would make sense to use /my/profile here, but it dismisses notifications related to profile comments
 				// So instead, we'll use some less invasive /my link that ensures the session validation, doesn't cause issues and is fast enough
-				const string request = SteamCommunityURL + "/my/badges/2";
+				const string request = SteamCommunityURL + "/my/edit/settings";
 
 				WebBrowser.BasicResponse response = await WebBrowser.UrlHead(request).ConfigureAwait(false);
 				if (response?.FinalUri == null) {
