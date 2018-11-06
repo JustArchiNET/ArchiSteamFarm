@@ -2,6 +2,7 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 
+$branch = 'master'
 $crowdinConfigPath = 'crowdin.yml'
 $crowdinHomePath = 'tools\crowdin-cli'
 $crowdinIdentityPath = "$crowdinHomePath\crowdin_identity.yml"
@@ -12,7 +13,7 @@ function Commit-Module($project, $path) {
 	Push-Location "$project"
 
 	try {
-		git pull
+		git pull origin "$branch"
 
 		if ($LastExitCode -ne 0) {
 			throw "Last command failed."
@@ -58,7 +59,7 @@ function Crowdin-Download {
 		throw "Last command failed."
 	}
 
-	git push --recurse-submodules=on-demand
+	git push origin "$branch" --recurse-submodules=on-demand
 
 	if ($LastExitCode -ne 0) {
 		throw "Last command failed."
@@ -67,13 +68,13 @@ function Crowdin-Download {
 
 function Crowdin-Execute($command) {
 	if (Get-Command 'crowdin' -ErrorAction SilentlyContinue) {
-		& crowdin -b master --identity "$crowdinIdentityPath" $command
+		& crowdin -b "$branch" --identity "$crowdinIdentityPath" $command
 
 		if ($LastExitCode -ne 0) {
 			throw "Last command failed."
 		}
 	} elseif (Get-Command 'java' -ErrorAction SilentlyContinue -and Test-Path "$crowdinJarPath" -PathType Leaf) {
-		& java -jar "$crowdinJarPath" -b master --identity "$crowdinIdentityPath" $command
+		& java -jar "$crowdinJarPath" -b "$branch" --identity "$crowdinIdentityPath" $command
 
 		if ($LastExitCode -ne 0) {
 			throw "Last command failed."
@@ -107,7 +108,7 @@ function Pull-Module($project) {
 			throw "Last command failed."
 		}
 
-		git pull
+		git pull origin "$branch"
 
 		if ($LastExitCode -ne 0) {
 			throw "Last command failed."
