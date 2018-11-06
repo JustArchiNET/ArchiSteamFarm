@@ -1123,7 +1123,7 @@ namespace ArchiSteamFarm {
 		internal static IOrderedDictionary ValidateGamesToRedeemInBackground(IOrderedDictionary gamesToRedeemInBackground) {
 			if ((gamesToRedeemInBackground == null) || (gamesToRedeemInBackground.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(gamesToRedeemInBackground));
-				return gamesToRedeemInBackground;
+				return null;
 			}
 
 			HashSet<object> invalidKeys = new HashSet<object>();
