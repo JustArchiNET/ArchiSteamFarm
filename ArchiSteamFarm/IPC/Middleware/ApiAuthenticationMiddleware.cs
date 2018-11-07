@@ -32,6 +32,8 @@ using Microsoft.Extensions.Primitives;
 namespace ArchiSteamFarm.IPC.Middleware {
 	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 	internal sealed class ApiAuthenticationMiddleware {
+		internal const string HeadersField = "Authentication";
+
 		private const byte FailedAuthorizationsCooldownInHours = 1;
 		private const byte MaxFailedAuthorizationAttempts = 5;
 
@@ -86,7 +88,7 @@ namespace ArchiSteamFarm.IPC.Middleware {
 				}
 			}
 
-			if (!context.Request.Headers.TryGetValue("Authentication", out StringValues passwords) && !context.Request.Query.TryGetValue("password", out passwords)) {
+			if (!context.Request.Headers.TryGetValue(HeadersField, out StringValues passwords) && !context.Request.Query.TryGetValue("password", out passwords)) {
 				return HttpStatusCode.Unauthorized;
 			}
 
