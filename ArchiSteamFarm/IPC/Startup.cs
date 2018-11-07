@@ -104,7 +104,7 @@ namespace ArchiSteamFarm.IPC {
 				c => {
 					c.AddSecurityDefinition(
 						nameof(GlobalConfig.IPCPassword), new ApiKeyScheme {
-							Description = "IPCPassword authentication using request headers. Check https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC#authentication for more info.",
+							Description = nameof(GlobalConfig.IPCPassword) + " authentication using request headers. Check https://github.com/JustArchiNET/ArchiSteamFarm/wiki/IPC#authentication for more info.",
 							In = "header",
 							Name = ApiAuthenticationMiddleware.HeadersField,
 							Type = "apiKey"
