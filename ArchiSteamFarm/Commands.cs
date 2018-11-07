@@ -2317,7 +2317,7 @@ namespace ArchiSteamFarm {
 			}
 
 			(bool success, Version version) = await Actions.Update().ConfigureAwait(false);
-			return FormatStaticResponse((success ? Strings.Success : Strings.WarningFailed) + (version != null ? " V" + version : ""));
+			return FormatStaticResponse((success ? Strings.Success : Strings.WarningFailed) + " " + (version != null ? SharedInfo.Version >= version ? "V" + SharedInfo.Version + " ≥ V" + version : "V" + version : ""));
 		}
 
 		private string ResponseVersion(ulong steamID) {

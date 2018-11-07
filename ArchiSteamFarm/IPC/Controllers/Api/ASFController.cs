@@ -110,7 +110,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			GenericResponse<Version> response;
 
 			if (!success && (version != null) && (SharedInfo.Version >= version)) {
-				response = new GenericResponse<Version>(false, SharedInfo.Version + " ≥ " + version, version);
+				response = new GenericResponse<Version>(false, "V" + SharedInfo.Version + " ≥ V" + version, version);
 			} else {
 				response = new GenericResponse<Version>(success, version);
 			}
