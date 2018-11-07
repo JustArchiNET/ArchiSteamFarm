@@ -106,7 +106,16 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[ProducesResponseType(typeof(GenericResponse<Version>), 200)]
 		public async Task<ActionResult<GenericResponse<Version>>> UpdatePost() {
 			(bool success, Version version) = await Actions.Update().ConfigureAwait(false);
-			return Ok(new GenericResponse<Version>(success, version));
+
+			GenericResponse<Version> response;
+
+			if (!success && (version != null) && (SharedInfo.Version >= version)) {
+				response = new GenericResponse<Version>(false, SharedInfo.Version + " ≥ " + version, version);
+			} else {
+				response = new GenericResponse<Version>(success, version);
+			}
+
+			return Ok(response);
 		}
 	}
 }
