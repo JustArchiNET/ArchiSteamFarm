@@ -88,7 +88,7 @@ namespace ArchiSteamFarm {
 					return false;
 				}
 
-				if ((acceptedTradeOfferIDs == null) || (acceptedTradeOfferIDs.Count == 0) || results.Where(result => (result.TradeOfferID != 0) && confirmations.Contains(result.Confirmation)).Select(result => result.TradeOfferID).Where(acceptedTradeOfferIDs.Remove).Any(tradeOfferID => acceptedTradeOfferIDs.Count == 0)) {
+				if ((acceptedTradeOfferIDs == null) || (acceptedTradeOfferIDs.Count == 0) || results.Where(result => (result != null) && (result.TradeOfferID != 0) && confirmations.Contains(result.Confirmation)).Select(result => result.TradeOfferID).Where(acceptedTradeOfferIDs.Remove).Any(tradeOfferID => acceptedTradeOfferIDs.Count == 0)) {
 					return true;
 				}
 			}
