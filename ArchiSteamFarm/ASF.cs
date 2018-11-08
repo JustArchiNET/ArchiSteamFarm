@@ -105,7 +105,7 @@ namespace ArchiSteamFarm {
 			try {
 				ArchiLogger.LogGenericInfo(Strings.UpdateCheckingNewVersion);
 
-				// Cleanup from previous update - update directory for old in-use runtime files
+				// If backup directory from previous update exists, it's a good idea to purge it now
 				string backupDirectory = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.UpdateDirectory);
 				if (Directory.Exists(backupDirectory)) {
 					// It's entirely possible that old process is still running, wait a short moment for eventual cleanup
@@ -119,7 +119,7 @@ namespace ArchiSteamFarm {
 					}
 				}
 
-				// Cleanup from previous update - old non-runtime in-use files
+				// TODO: cleanup from previous update, remove this after next stable
 				try {
 					foreach (string file in Directory.EnumerateFiles(SharedInfo.HomeDirectory, "*.old", SearchOption.AllDirectories)) {
 						File.Delete(file);
@@ -478,52 +478,67 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
+			// Firstly we'll move all our existing files to a backup directory
 			string backupDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectory);
-			Directory.CreateDirectory(backupDirectory);
 
-			// Move top-level runtime in-use files to other directory
-			// We must do it in order to not crash at later stage - all libraries/executables must keep original names
-			foreach (string file in Directory.EnumerateFiles(targetDirectory)) {
+			// We can't use EnumerateFiles here as we're going to actively move them
+			foreach (string file in Directory.GetFiles(targetDirectory, "*", SearchOption.AllDirectories)) {
 				string fileName = Path.GetFileName(file);
-				switch (fileName) {
-					// Files that we want to keep in original directory
-					case "NLog.config":
+
+				if (string.IsNullOrEmpty(fileName)) {
+					ArchiLogger.LogNullError(nameof(fileName));
+					return false;
+				}
+
+				string relativeFilePath = RuntimeCompatibility.Path.GetRelativePath(targetDirectory, file);
+
+				if (string.IsNullOrEmpty(relativeFilePath)) {
+					ArchiLogger.LogNullError(nameof(relativeFilePath));
+					return false;
+				}
+
+				string relativeDirectoryName = Path.GetDirectoryName(relativeFilePath);
+
+				switch (relativeDirectoryName) {
+					// Files in those directories we want to keep in their current place
+					case SharedInfo.ConfigDirectory:
 						continue;
+					case "":
+						switch (fileName) {
+							// Files with those names in root directory we want to keep
+							case SharedInfo.LogFile:
+							case "NLog.config":
+								continue;
+						}
+
+						break;
 					case null:
-						ArchiLogger.LogNullError(nameof(fileName));
+						ArchiLogger.LogNullError(nameof(relativeDirectoryName));
 						return false;
 				}
 
-				string target = Path.Combine(backupDirectory, fileName);
-				File.Move(file, target);
+				string targetBackupDirectory = relativeDirectoryName.Length > 0 ? Path.Combine(backupDirectory, relativeDirectoryName) : backupDirectory;
+				Directory.CreateDirectory(targetBackupDirectory);
+
+				string targetBackupFile = Path.Combine(targetBackupDirectory, fileName);
+				File.Move(file, targetBackupFile);
 			}
 
-			// In generic ASF variant there can also be "runtimes" directory in need of same approach
-			string runtimesDirectory = Path.Combine(targetDirectory, "runtimes");
-			if (Directory.Exists(runtimesDirectory)) {
-				foreach (string file in Directory.EnumerateFiles(runtimesDirectory, "*", SearchOption.AllDirectories)) {
-					string directoryName = Path.GetDirectoryName(RuntimeCompatibility.Path.GetRelativePath(targetDirectory, file));
-					if (string.IsNullOrEmpty(directoryName)) {
-						ArchiLogger.LogNullError(nameof(directoryName));
-						return false;
-					}
-
-					string directory = Path.Combine(backupDirectory, directoryName);
-					Directory.CreateDirectory(directory);
-
-					string fileName = Path.GetFileName(file);
-					if (string.IsNullOrEmpty(fileName)) {
-						ArchiLogger.LogNullError(nameof(fileName));
-						return false;
-					}
-
-					string target = Path.Combine(directory, fileName);
-					File.Move(file, target);
-				}
+			// We can now get rid of directories that are empty
+			foreach (string directory in Directory.EnumerateDirectories(targetDirectory).Where(directory => !Directory.EnumerateFiles(directory).Any())) {
+				Directory.Delete(directory, true);
 			}
 
-			foreach (ZipArchiveEntry zipFile in archive.Entries) {
+			// Now enumerate over files in the zip archive, skip directory entries that we're not interested in (we can create them ourselves if needed)
+			foreach (ZipArchiveEntry zipFile in archive.Entries.Where(zipFile => !string.IsNullOrEmpty(zipFile.Name))) {
 				string file = Path.Combine(targetDirectory, zipFile.FullName);
+
+				if (File.Exists(file)) {
+					// This is possible only with files that we decided to leave in place during our backup function
+					// Those files should never be overwritten with anything, ignore
+					continue;
+				}
+
 				string directory = Path.GetDirectoryName(file);
 
 				if (string.IsNullOrEmpty(directory)) {
@@ -535,24 +550,7 @@ namespace ArchiSteamFarm {
 					Directory.CreateDirectory(directory);
 				}
 
-				if (string.IsNullOrEmpty(zipFile.Name)) {
-					continue;
-				}
-
-				string backupFile = file + ".old";
-
-				if (File.Exists(file)) {
-					// This is non-runtime file to be replaced, probably in use, move it away
-					File.Move(file, backupFile);
-				}
-
 				zipFile.ExtractToFile(file);
-
-				try {
-					File.Delete(backupFile);
-				} catch {
-					// Ignored - that file is indeed in use, it will be deleted after restart
-				}
 			}
 
 			return true;

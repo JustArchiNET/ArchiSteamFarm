@@ -264,7 +264,10 @@
     <value>Будь ласка, введіть свій Steam логін: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputSteamParentalCode" xml:space="preserve">
+    <value>Будь ласка, введіть PIN-код батьківського контролю Steam: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Будь ласка, введіть ваш Steam пароль: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -337,7 +340,9 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>Роботу зупинено!</value>
   </data>
-  
+  <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
+    <value>Ігнорування запиту, тому що ввімкнена постійна пауза!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>На акаунті немає ігор, з яких можуть випасти картки!</value>
   </data>
@@ -653,5 +658,14 @@
     <value>Використано тимчасове рішення для помилки {0}.</value>
     <comment>{0} will be replaced by the bug's name provided by ASF</comment>
   </data>
-  
+  <data name="TargetBotNotConnected" xml:space="preserve">
+    <value>Бот-одержувач не підключений!</value>
+  </data>
+  <data name="BotWalletBalance" xml:space="preserve">
+    <value>Кошти в гаманці: {0} {1}</value>
+    <comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
+  </data>
+  <data name="BotHasNoWallet" xml:space="preserve">
+    <value>Бот не має гаманця.</value>
+  </data>
 </root>

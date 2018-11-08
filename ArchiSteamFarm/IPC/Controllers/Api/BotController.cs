@@ -76,40 +76,58 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		///     Updates bot config of given bot.
 		/// </summary>
 		[Consumes("application/json")]
-		[HttpPost("{botName:required}")]
-		[ProducesResponseType(typeof(GenericResponse), 200)]
-		public async Task<ActionResult<GenericResponse>> BotPost(string botName, [FromBody] BotRequest request) {
-			if (string.IsNullOrEmpty(botName) || (request == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(botName) + " || " + nameof(request));
-				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botName) + " || " + nameof(request))));
+		[HttpPost("{botNames:required}")]
+		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, bool>>), 200)]
+		public async Task<ActionResult<GenericResponse<IReadOnlyDictionary<string, bool>>>> BotPost(string botNames, [FromBody] BotRequest request) {
+			if (string.IsNullOrEmpty(botNames) || (request == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(botNames) + " || " + nameof(request));
+				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, bool>>(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames) + " || " + nameof(request))));
 			}
 
 			(bool valid, string errorMessage) = request.BotConfig.CheckValidation();
 			if (!valid) {
-				return BadRequest(new GenericResponse(false, errorMessage));
-			}
-
-			if (Bot.Bots.TryGetValue(botName, out Bot bot)) {
-				if (!request.BotConfig.IsSteamLoginSet && bot.BotConfig.IsSteamLoginSet) {
-					request.BotConfig.SteamLogin = bot.BotConfig.SteamLogin;
-				}
-
-				if (!request.BotConfig.IsSteamPasswordSet && bot.BotConfig.IsSteamPasswordSet) {
-					request.BotConfig.DecryptedSteamPassword = bot.BotConfig.DecryptedSteamPassword;
-				}
-
-				if (!request.BotConfig.IsSteamParentalCodeSet && bot.BotConfig.IsSteamParentalCodeSet) {
-					request.BotConfig.SteamParentalCode = bot.BotConfig.SteamParentalCode;
-				}
+				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, bool>>(false, errorMessage));
 			}
 
 			request.BotConfig.ShouldSerializeEverything = false;
 			request.BotConfig.ShouldSerializeHelperProperties = false;
 
-			string filePath = Path.Combine(SharedInfo.ConfigDirectory, botName + SharedInfo.ConfigExtension);
+			string originalSteamLogin = request.BotConfig.SteamLogin;
+			string originalDecryptedSteamPassword = request.BotConfig.DecryptedSteamPassword;
+			string originalSteamParentalCode = request.BotConfig.SteamParentalCode;
 
-			bool result = await BotConfig.Write(filePath, request.BotConfig).ConfigureAwait(false);
-			return Ok(new GenericResponse(result));
+			HashSet<string> bots = botNames.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Where(botName => botName != SharedInfo.ASF).ToHashSet();
+
+			Dictionary<string, bool> result = new Dictionary<string, bool>(bots.Count);
+
+			foreach (string botName in bots) {
+				bool botExists = Bot.Bots.TryGetValue(botName, out Bot bot);
+
+				if (botExists) {
+					if (!request.BotConfig.IsSteamLoginSet && bot.BotConfig.IsSteamLoginSet) {
+						request.BotConfig.SteamLogin = bot.BotConfig.SteamLogin;
+					}
+
+					if (!request.BotConfig.IsSteamPasswordSet && bot.BotConfig.IsSteamPasswordSet) {
+						request.BotConfig.DecryptedSteamPassword = bot.BotConfig.DecryptedSteamPassword;
+					}
+
+					if (!request.BotConfig.IsSteamParentalCodeSet && bot.BotConfig.IsSteamParentalCodeSet) {
+						request.BotConfig.SteamParentalCode = bot.BotConfig.SteamParentalCode;
+					}
+				}
+
+				string filePath = Path.Combine(SharedInfo.ConfigDirectory, botName + SharedInfo.ConfigExtension);
+				result[botName] = await BotConfig.Write(filePath, request.BotConfig).ConfigureAwait(false);
+
+				if (botExists) {
+					request.BotConfig.SteamLogin = originalSteamLogin;
+					request.BotConfig.DecryptedSteamPassword = originalDecryptedSteamPassword;
+					request.BotConfig.SteamParentalCode = originalSteamParentalCode;
+				}
+			}
+
+			return Ok(new GenericResponse<IReadOnlyDictionary<string, bool>>(result.Values.All(value => value), result));
 		}
 
 		/// <summary>
@@ -164,24 +182,37 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		///     Adds keys to redeem using BGR to given bot.
 		/// </summary>
 		[Consumes("application/json")]
-		[HttpPost("{botName:required}/GamesToRedeemInBackground")]
-		[ProducesResponseType(typeof(GenericResponse<IOrderedDictionary>), 200)]
-		public async Task<ActionResult<GenericResponse<IOrderedDictionary>>> GamesToRedeemInBackgroundPost(string botName, [FromBody] BotGamesToRedeemInBackgroundRequest request) {
-			if (string.IsNullOrEmpty(botName) || (request == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(botName) + " || " + nameof(request));
-				return BadRequest(new GenericResponse<IOrderedDictionary>(false, string.Format(Strings.ErrorIsEmpty, nameof(botName) + " || " + nameof(request))));
+		[HttpPost("{botNames:required}/GamesToRedeemInBackground")]
+		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, IOrderedDictionary>>), 200)]
+		public async Task<ActionResult<GenericResponse<IReadOnlyDictionary<string, IOrderedDictionary>>>> GamesToRedeemInBackgroundPost(string botNames, [FromBody] BotGamesToRedeemInBackgroundRequest request) {
+			if (string.IsNullOrEmpty(botNames) || (request == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(botNames) + " || " + nameof(request));
+				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, IOrderedDictionary>>(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames) + " || " + nameof(request))));
 			}
 
 			if (request.GamesToRedeemInBackground.Count == 0) {
-				return BadRequest(new GenericResponse<IOrderedDictionary>(false, string.Format(Strings.ErrorIsEmpty, nameof(request.GamesToRedeemInBackground))));
+				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, IOrderedDictionary>>(false, string.Format(Strings.ErrorIsEmpty, nameof(request.GamesToRedeemInBackground))));
 			}
 
-			if (!Bot.Bots.TryGetValue(botName, out Bot bot)) {
-				return BadRequest(new GenericResponse<IOrderedDictionary>(false, string.Format(Strings.BotNotFound, botName)));
+			HashSet<Bot> bots = Bot.GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, IOrderedDictionary>>(false, string.Format(Strings.BotNotFound, botNames)));
 			}
 
-			bool result = await bot.ValidateAndAddGamesToRedeemInBackground(request.GamesToRedeemInBackground).ConfigureAwait(false);
-			return Ok(new GenericResponse<IOrderedDictionary>(result, request.GamesToRedeemInBackground));
+			IOrderedDictionary validGamesToRedeemInBackground = Bot.ValidateGamesToRedeemInBackground(request.GamesToRedeemInBackground);
+			if ((validGamesToRedeemInBackground == null) || (validGamesToRedeemInBackground.Count == 0)) {
+				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, IOrderedDictionary>>(false, string.Format(Strings.ErrorIsEmpty, nameof(validGamesToRedeemInBackground))));
+			}
+
+			await Utilities.InParallel(bots.Select(bot => bot.AddGamesToRedeemInBackground(validGamesToRedeemInBackground))).ConfigureAwait(false);
+
+			Dictionary<string, IOrderedDictionary> result = new Dictionary<string, IOrderedDictionary>(bots.Count);
+
+			foreach (Bot bot in bots) {
+				result[bot.BotName] = validGamesToRedeemInBackground;
+			}
+
+			return Ok(new GenericResponse<IReadOnlyDictionary<string, IOrderedDictionary>>(result));
 		}
 
 		/// <summary>
@@ -213,31 +244,39 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		///     Redeem result can be a null value, this means that ASF didn't even attempt to send a request (e.g. because of bot not being connected to Steam network).
 		/// </remarks>
 		[Consumes("application/json")]
-		[HttpPost("{botName:required}/Redeem")]
-		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>), 200)]
-		public async Task<ActionResult<GenericResponse<IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>>> RedeemPost(string botName, [FromBody] BotRedeemRequest request) {
-			if (string.IsNullOrEmpty(botName) || (request == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(botName) + " || " + nameof(request));
-				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>(false, string.Format(Strings.ErrorIsEmpty, nameof(botName) + " || " + nameof(request))));
+		[HttpPost("{botNames:required}/Redeem")]
+		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>>), 200)]
+		public async Task<ActionResult<GenericResponse<IReadOnlyDictionary<string, IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>>>> RedeemPost(string botNames, [FromBody] BotRedeemRequest request) {
+			if (string.IsNullOrEmpty(botNames) || (request == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(botNames) + " || " + nameof(request));
+				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>>(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames) + " || " + nameof(request))));
 			}
 
 			if (request.KeysToRedeem.Count == 0) {
-				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>(false, string.Format(Strings.ErrorIsEmpty, nameof(request.KeysToRedeem))));
+				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>>(false, string.Format(Strings.ErrorIsEmpty, nameof(request.KeysToRedeem))));
 			}
 
-			if (!Bot.Bots.TryGetValue(botName, out Bot bot)) {
-				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>(false, string.Format(Strings.BotNotFound, botName)));
+			HashSet<Bot> bots = Bot.GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>>(false, string.Format(Strings.BotNotFound, botNames)));
 			}
 
-			IList<ArchiHandler.PurchaseResponseCallback> results = await Utilities.InParallel(request.KeysToRedeem.Select(key => bot.Actions.RedeemKey(key))).ConfigureAwait(false);
+			IList<ArchiHandler.PurchaseResponseCallback> results = await Utilities.InParallel(bots.Select(bot => request.KeysToRedeem.Select(key => bot.Actions.RedeemKey(key))).SelectMany(task => task)).ConfigureAwait(false);
 
-			Dictionary<string, ArchiHandler.PurchaseResponseCallback> result = new Dictionary<string, ArchiHandler.PurchaseResponseCallback>(request.KeysToRedeem.Count);
+			Dictionary<string, IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>> result = new Dictionary<string, IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>(bots.Count);
 
-			foreach (string key in request.KeysToRedeem) {
-				result[key] = results[result.Count];
+			int count = 0;
+
+			foreach (Bot bot in bots) {
+				Dictionary<string, ArchiHandler.PurchaseResponseCallback> responses = new Dictionary<string, ArchiHandler.PurchaseResponseCallback>(request.KeysToRedeem.Count);
+				result[bot.BotName] = responses;
+
+				foreach (string key in request.KeysToRedeem) {
+					responses[key] = results[count++];
+				}
 			}
 
-			return Ok(new GenericResponse<IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>(result.Values.All(value => value != null), result));
+			return Ok(new GenericResponse<IReadOnlyDictionary<string, IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>>(result.Values.SelectMany(responses => responses.Values).All(value => value != null), result));
 		}
 
 		/// <summary>

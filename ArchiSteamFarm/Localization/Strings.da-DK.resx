@@ -660,4 +660,6 @@ StackTrace:
   <data name="TargetBotNotConnected" xml:space="preserve">
     <value>Mål bot instans er ikke forbundet!</value>
   </data>
+  
+  
 </root>

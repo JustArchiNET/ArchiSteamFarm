@@ -262,7 +262,10 @@
     <value>Per favore inserisci il tuo login di Steam: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputSteamParentalCode" xml:space="preserve">
+    <value>Si prega di inserire il PIN familiare di Steam: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Inserisci la tua password di Steam: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -278,7 +281,9 @@
   <data name="IPCReady" xml:space="preserve">
     <value>Il server IPC è pronto!</value>
   </data>
-  
+  <data name="IPCStarting" xml:space="preserve">
+    <value>Avvio del server IPC in...</value>
+  </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Questo bot è già stato arrestato!</value>
   </data>
@@ -333,7 +338,9 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>Idling arrestato!</value>
   </data>
-  
+  <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
+    <value>Questa richiesta verrà ignorata, in quanto è abilitata la pausa permanente!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Non c'è niente da farmare su questo account!</value>
   </data>
@@ -649,5 +656,9 @@
     <value>La soluzione alternativa per il bug {0} è stata utilizzata.</value>
     <comment>{0} will be replaced by the bug's name provided by ASF</comment>
   </data>
+  <data name="TargetBotNotConnected" xml:space="preserve">
+    <value>Questa istanza del bot non è connessa!</value>
+  </data>
+  
   
 </root>

@@ -71,6 +71,8 @@ namespace ArchiSteamFarm {
 							return await Response2FAConfirm(steamID, false).ConfigureAwait(false);
 						case "2FAOK":
 							return await Response2FAConfirm(steamID, true).ConfigureAwait(false);
+						case "BALANCE":
+							return ResponseWalletBalance(steamID);
 						case "BL":
 							return ResponseBlacklist(steamID);
 						case "EXIT":
@@ -130,6 +132,8 @@ namespace ArchiSteamFarm {
 							}
 
 							return await ResponseAddLicense(steamID, args[1]).ConfigureAwait(false);
+						case "BALANCE":
+							return await ResponseWalletBalance(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "BL":
 							return await ResponseBlacklist(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "BLADD":
@@ -1932,7 +1936,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			(bool success, string output) = Actions.Exit();
+			(bool success, string output) = Actions.Restart();
 			return FormatStaticResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
 		}
 
@@ -2313,7 +2317,7 @@ namespace ArchiSteamFarm {
 			}
 
 			(bool success, Version version) = await Actions.Update().ConfigureAwait(false);
-			return FormatStaticResponse((success ? Strings.Success : Strings.WarningFailed) + (version != null ? " V" + version : ""));
+			return FormatStaticResponse((success ? Strings.Success : Strings.WarningFailed) + " " + (version != null ? SharedInfo.Version >= version ? "V" + SharedInfo.Version + " ≥ V" + version : "V" + version : ""));
 		}
 
 		private string ResponseVersion(ulong steamID) {
@@ -2323,6 +2327,36 @@ namespace ArchiSteamFarm {
 			}
 
 			return IsOperator(steamID) ? FormatBotResponse(string.Format(Strings.BotVersion, SharedInfo.ASF, SharedInfo.Version)) : null;
+		}
+
+		private string ResponseWalletBalance(ulong steamID) {
+			if (steamID == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(steamID));
+				return null;
+			}
+
+			if (!Bot.IsMaster(steamID)) {
+				return null;
+			}
+
+			return !Bot.IsConnectedAndLoggedOn ? FormatBotResponse(Strings.BotNotConnected) : FormatBotResponse(Bot.WalletCurrency != ECurrencyCode.Invalid ? string.Format(Strings.BotWalletBalance, Bot.WalletBalance / 100.0, Bot.WalletCurrency.ToString()) : Strings.BotHasNoWallet);
+		}
+
+		private static async Task<string> ResponseWalletBalance(ulong steamID, string botNames) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botNames)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
+				return null;
+			}
+
+			HashSet<Bot> bots = Bot.GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
+			}
+
+			IList<string> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseWalletBalance(steamID)))).ConfigureAwait(false);
+
+			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 
 		[Flags]

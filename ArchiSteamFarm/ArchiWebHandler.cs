@@ -43,6 +43,7 @@ namespace ArchiSteamFarm {
 		private const string ISteamApps = "ISteamApps";
 		private const string ISteamUserAuth = "ISteamUserAuth";
 		private const string ITwoFactorService = "ITwoFactorService";
+		private const byte MinSessionValidityInSeconds = GlobalConfig.DefaultConnectionTimeout / 6;
 		private const string SteamCommunityHost = "steamcommunity.com";
 		private const string SteamCommunityURL = "https://" + SteamCommunityHost;
 		private const string SteamStoreHost = "store.steampowered.com";
@@ -66,6 +67,7 @@ namespace ArchiSteamFarm {
 		private string CachedApiKey;
 		private bool? CachedPublicInventory;
 		private string CachedTradeToken;
+		private DateTime LastSessionCheck;
 		private DateTime LastSessionRefresh;
 		private bool MarkingInventoryScheduled;
 		private ulong SteamID;
@@ -413,7 +415,7 @@ namespace ArchiSteamFarm {
 			}
 
 			string request = "/my/badges?l=english&p=" + page;
-			return await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
+			return await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
 		}
 
 		internal async Task<Steam.ConfirmationDetails> GetConfirmationDetails(string deviceID, string confirmationHash, uint time, MobileAuthenticator.Confirmation confirmation) {
@@ -538,7 +540,7 @@ namespace ArchiSteamFarm {
 			}
 
 			string request = "/my/gamecards/" + appID + "?l=english";
-			return await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
+			return await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
 		}
 
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
@@ -665,7 +667,7 @@ namespace ArchiSteamFarm {
 		internal async Task<Dictionary<uint, string>> GetMyOwnedGames() {
 			const string request = "/my/games?l=english&xml=1";
 
-			XmlDocument response = await UrlGetToXmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
+			XmlDocument response = await UrlGetToXmlDocumentWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
 
 			XmlNodeList xmlNodeList = response?.SelectNodes("gamesList/games/game");
 			if ((xmlNodeList == null) || (xmlNodeList.Count == 0)) {
@@ -900,7 +902,7 @@ namespace ArchiSteamFarm {
 				}
 
 				const string request = "/my/tradeoffers/privacy?l=english";
-				HtmlDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
+				HtmlDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
 
 				if (htmlDocument == null) {
 					return null;
@@ -1117,7 +1119,7 @@ namespace ArchiSteamFarm {
 			}
 
 			SteamID = steamID;
-			LastSessionRefresh = DateTime.UtcNow;
+			LastSessionCheck = LastSessionRefresh = DateTime.UtcNow;
 			return true;
 		}
 
@@ -1154,7 +1156,7 @@ namespace ArchiSteamFarm {
 				}
 
 				const string request = "/my/inventory";
-				await UrlHeadWithSession(SteamCommunityURL, request).ConfigureAwait(false);
+				await UrlHeadWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
 			} finally {
 				if (Program.GlobalConfig.InventoryLimiterDelay == 0) {
 					InventorySemaphore.Release();
@@ -1171,7 +1173,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> MarkSentTrades() {
 			const string request = "/my/tradeoffers/sent";
-			return await UrlHeadWithSession(SteamCommunityURL, request).ConfigureAwait(false);
+			return await UrlHeadWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
 		}
 
 		internal void OnDisconnected() {
@@ -1466,7 +1468,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<bool?> IsInventoryPublic() {
 			const string request = "/my/edit/settings?l=english";
-			HtmlDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
+			HtmlDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
 
 			if (htmlDocument == null) {
 				return null;
@@ -1528,6 +1530,42 @@ namespace ArchiSteamFarm {
 			return uri.AbsolutePath.Equals(profileURL);
 		}
 
+		private async Task<bool?> IsSessionExpired() {
+			if (DateTime.UtcNow < LastSessionCheck.AddSeconds(MinSessionValidityInSeconds)) {
+				return LastSessionCheck != LastSessionRefresh;
+			}
+
+			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+
+			try {
+				if (DateTime.UtcNow < LastSessionCheck.AddSeconds(MinSessionValidityInSeconds)) {
+					return LastSessionCheck != LastSessionRefresh;
+				}
+
+				// It would make sense to use /my/profile here, but it dismisses notifications related to profile comments
+				// So instead, we'll use some less invasive /my link that ensures the session validation, doesn't cause issues and is fast enough
+				const string request = SteamCommunityURL + "/my/edit/settings";
+
+				WebBrowser.BasicResponse response = await WebBrowser.UrlHead(request).ConfigureAwait(false);
+				if (response?.FinalUri == null) {
+					return null;
+				}
+
+				bool result = IsSessionExpiredUri(response.FinalUri);
+
+				DateTime now = DateTime.UtcNow;
+
+				if (!result) {
+					LastSessionRefresh = now;
+				}
+
+				LastSessionCheck = now;
+				return result;
+			} finally {
+				SessionSemaphore.Release();
+			}
+		}
+
 		private static bool IsSessionExpiredUri(Uri uri) {
 			if (uri == null) {
 				ASF.ArchiLogger.LogNullError(nameof(uri));
@@ -1583,12 +1621,7 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		private async Task<bool> RefreshSession(string host) {
-			if (string.IsNullOrEmpty(host)) {
-				Bot.ArchiLogger.LogNullError(nameof(host));
-				return false;
-			}
-
+		private async Task<bool> RefreshSession() {
 			if (!Bot.IsConnectedAndLoggedOn) {
 				return false;
 			}
@@ -1610,7 +1643,7 @@ namespace ArchiSteamFarm {
 				bool result = await Bot.RefreshSession().ConfigureAwait(false);
 
 				if (result) {
-					LastSessionRefresh = DateTime.UtcNow;
+					LastSessionCheck = LastSessionRefresh = DateTime.UtcNow;
 				}
 
 				return result;
@@ -1686,7 +1719,7 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		private async Task<HtmlDocument> UrlGetToHtmlDocumentWithSession(string host, string request, byte maxTries = WebBrowser.MaxTries) {
+		private async Task<HtmlDocument> UrlGetToHtmlDocumentWithSession(string host, string request, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
 				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
 				return null;
@@ -1698,9 +1731,20 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			// If session refresh is already in progress, wait for it
-			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
-			SessionSemaphore.Release();
+			if (checkSessionPreemptively) {
+				// Check session preemptively as this request might not get redirected to expiration
+				bool? sessionExpired = await IsSessionExpired().ConfigureAwait(false);
+
+				if (sessionExpired.GetValueOrDefault(true)) {
+					if (await RefreshSession().ConfigureAwait(false)) {
+						return await UrlGetToHtmlDocumentWithSession(host, request, true, --maxTries).ConfigureAwait(false);
+					}
+				}
+			} else {
+				// If session refresh is already in progress, just wait for it
+				await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+				SessionSemaphore.Release();
+			}
 
 			if (SteamID == 0) {
 				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
@@ -1720,8 +1764,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (IsSessionExpiredUri(response.FinalUri)) {
-				if (await RefreshSession(host).ConfigureAwait(false)) {
-					return await UrlGetToHtmlDocumentWithSession(host, request, --maxTries).ConfigureAwait(false);
+				if (await RefreshSession().ConfigureAwait(false)) {
+					return await UrlGetToHtmlDocumentWithSession(host, request, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1732,13 +1776,13 @@ namespace ArchiSteamFarm {
 			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
 			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
-				return await UrlGetToHtmlDocumentWithSession(host, request, --maxTries).ConfigureAwait(false);
+				return await UrlGetToHtmlDocumentWithSession(host, request, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 			}
 
 			return response.Content;
 		}
 
-		private async Task<T> UrlGetToJsonObjectWithSession<T>(string host, string request, byte maxTries = WebBrowser.MaxTries) where T : class {
+		private async Task<T> UrlGetToJsonObjectWithSession<T>(string host, string request, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) where T : class {
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
 				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
 				return default;
@@ -1750,9 +1794,20 @@ namespace ArchiSteamFarm {
 				return default;
 			}
 
-			// If session refresh is already in progress, wait for it
-			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
-			SessionSemaphore.Release();
+			if (checkSessionPreemptively) {
+				// Check session preemptively as this request might not get redirected to expiration
+				bool? sessionExpired = await IsSessionExpired().ConfigureAwait(false);
+
+				if (sessionExpired.GetValueOrDefault(true)) {
+					if (await RefreshSession().ConfigureAwait(false)) {
+						return await UrlGetToJsonObjectWithSession<T>(host, request, true, --maxTries).ConfigureAwait(false);
+					}
+				}
+			} else {
+				// If session refresh is already in progress, just wait for it
+				await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+				SessionSemaphore.Release();
+			}
 
 			if (SteamID == 0) {
 				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
@@ -1772,8 +1827,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (IsSessionExpiredUri(response.FinalUri)) {
-				if (await RefreshSession(host).ConfigureAwait(false)) {
-					return await UrlGetToJsonObjectWithSession<T>(host, request, --maxTries).ConfigureAwait(false);
+				if (await RefreshSession().ConfigureAwait(false)) {
+					return await UrlGetToJsonObjectWithSession<T>(host, request, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1784,13 +1839,13 @@ namespace ArchiSteamFarm {
 			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
 			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
-				return await UrlGetToJsonObjectWithSession<T>(host, request, --maxTries).ConfigureAwait(false);
+				return await UrlGetToJsonObjectWithSession<T>(host, request, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 			}
 
 			return response.Content;
 		}
 
-		private async Task<XmlDocument> UrlGetToXmlDocumentWithSession(string host, string request, byte maxTries = WebBrowser.MaxTries) {
+		private async Task<XmlDocument> UrlGetToXmlDocumentWithSession(string host, string request, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
 				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
 				return null;
@@ -1802,9 +1857,20 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			// If session refresh is already in progress, wait for it
-			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
-			SessionSemaphore.Release();
+			if (checkSessionPreemptively) {
+				// Check session preemptively as this request might not get redirected to expiration
+				bool? sessionExpired = await IsSessionExpired().ConfigureAwait(false);
+
+				if (sessionExpired.GetValueOrDefault(true)) {
+					if (await RefreshSession().ConfigureAwait(false)) {
+						return await UrlGetToXmlDocumentWithSession(host, request, true, --maxTries).ConfigureAwait(false);
+					}
+				}
+			} else {
+				// If session refresh is already in progress, just wait for it
+				await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+				SessionSemaphore.Release();
+			}
 
 			if (SteamID == 0) {
 				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
@@ -1824,8 +1890,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (IsSessionExpiredUri(response.FinalUri)) {
-				if (await RefreshSession(host).ConfigureAwait(false)) {
-					return await UrlGetToXmlDocumentWithSession(host, request, --maxTries).ConfigureAwait(false);
+				if (await RefreshSession().ConfigureAwait(false)) {
+					return await UrlGetToXmlDocumentWithSession(host, request, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1836,13 +1902,13 @@ namespace ArchiSteamFarm {
 			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
 			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
-				return await UrlGetToXmlDocumentWithSession(host, request, --maxTries).ConfigureAwait(false);
+				return await UrlGetToXmlDocumentWithSession(host, request, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 			}
 
 			return response.Content;
 		}
 
-		private async Task<bool> UrlHeadWithSession(string host, string request, byte maxTries = WebBrowser.MaxTries) {
+		private async Task<bool> UrlHeadWithSession(string host, string request, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
 				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
 				return false;
@@ -1854,9 +1920,20 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			// If session refresh is already in progress, wait for it
-			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
-			SessionSemaphore.Release();
+			if (checkSessionPreemptively) {
+				// Check session preemptively as this request might not get redirected to expiration
+				bool? sessionExpired = await IsSessionExpired().ConfigureAwait(false);
+
+				if (sessionExpired.GetValueOrDefault(true)) {
+					if (await RefreshSession().ConfigureAwait(false)) {
+						return await UrlHeadWithSession(host, request, true, --maxTries).ConfigureAwait(false);
+					}
+				}
+			} else {
+				// If session refresh is already in progress, just wait for it
+				await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+				SessionSemaphore.Release();
+			}
 
 			if (SteamID == 0) {
 				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
@@ -1876,8 +1953,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (IsSessionExpiredUri(response.FinalUri)) {
-				if (await RefreshSession(host).ConfigureAwait(false)) {
-					return await UrlHeadWithSession(host, request, --maxTries).ConfigureAwait(false);
+				if (await RefreshSession().ConfigureAwait(false)) {
+					return await UrlHeadWithSession(host, request, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1888,13 +1965,13 @@ namespace ArchiSteamFarm {
 			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
 			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
-				return await UrlHeadWithSession(host, request, --maxTries).ConfigureAwait(false);
+				return await UrlHeadWithSession(host, request, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 			}
 
 			return true;
 		}
 
-		private async Task<HtmlDocument> UrlPostToHtmlDocumentWithSession(string host, string request, Dictionary<string, string> data = null, string referer = null, ESession session = ESession.Lowercase, byte maxTries = WebBrowser.MaxTries) {
+		private async Task<HtmlDocument> UrlPostToHtmlDocumentWithSession(string host, string request, Dictionary<string, string> data = null, string referer = null, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
 				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
 				return null;
@@ -1906,9 +1983,20 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			// If session refresh is already in progress, wait for it
-			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
-			SessionSemaphore.Release();
+			if (checkSessionPreemptively) {
+				// Check session preemptively as this request might not get redirected to expiration
+				bool? sessionExpired = await IsSessionExpired().ConfigureAwait(false);
+
+				if (sessionExpired.GetValueOrDefault(true)) {
+					if (await RefreshSession().ConfigureAwait(false)) {
+						return await UrlPostToHtmlDocumentWithSession(host, request, data, referer, session, true, --maxTries).ConfigureAwait(false);
+					}
+				}
+			} else {
+				// If session refresh is already in progress, just wait for it
+				await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+				SessionSemaphore.Release();
+			}
 
 			if (SteamID == 0) {
 				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
@@ -1957,8 +2045,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (IsSessionExpiredUri(response.FinalUri)) {
-				if (await RefreshSession(host).ConfigureAwait(false)) {
-					return await UrlPostToHtmlDocumentWithSession(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
+				if (await RefreshSession().ConfigureAwait(false)) {
+					return await UrlPostToHtmlDocumentWithSession(host, request, data, referer, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -1969,13 +2057,13 @@ namespace ArchiSteamFarm {
 			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
 			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
-				return await UrlPostToHtmlDocumentWithSession(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
+				return await UrlPostToHtmlDocumentWithSession(host, request, data, referer, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 			}
 
 			return response.Content;
 		}
 
-		private async Task<T> UrlPostToJsonObjectWithSession<T>(string host, string request, Dictionary<string, string> data = null, string referer = null, ESession session = ESession.Lowercase, byte maxTries = WebBrowser.MaxTries) where T : class {
+		private async Task<T> UrlPostToJsonObjectWithSession<T>(string host, string request, Dictionary<string, string> data = null, string referer = null, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) where T : class {
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
 				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
 				return null;
@@ -1987,9 +2075,20 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			// If session refresh is already in progress, wait for it
-			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
-			SessionSemaphore.Release();
+			if (checkSessionPreemptively) {
+				// Check session preemptively as this request might not get redirected to expiration
+				bool? sessionExpired = await IsSessionExpired().ConfigureAwait(false);
+
+				if (sessionExpired.GetValueOrDefault(true)) {
+					if (await RefreshSession().ConfigureAwait(false)) {
+						return await UrlPostToJsonObjectWithSession<T>(host, request, data, referer, session, true, --maxTries).ConfigureAwait(false);
+					}
+				}
+			} else {
+				// If session refresh is already in progress, just wait for it
+				await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+				SessionSemaphore.Release();
+			}
 
 			if (SteamID == 0) {
 				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
@@ -2038,8 +2137,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (IsSessionExpiredUri(response.FinalUri)) {
-				if (await RefreshSession(host).ConfigureAwait(false)) {
-					return await UrlPostToJsonObjectWithSession<T>(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
+				if (await RefreshSession().ConfigureAwait(false)) {
+					return await UrlPostToJsonObjectWithSession<T>(host, request, data, referer, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -2050,13 +2149,13 @@ namespace ArchiSteamFarm {
 			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
 			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
-				return await UrlPostToJsonObjectWithSession<T>(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
+				return await UrlPostToJsonObjectWithSession<T>(host, request, data, referer, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 			}
 
 			return response.Content;
 		}
 
-		private async Task<T> UrlPostToJsonObjectWithSession<T>(string host, string request, List<KeyValuePair<string, string>> data = null, string referer = null, ESession session = ESession.Lowercase, byte maxTries = WebBrowser.MaxTries) where T : class {
+		private async Task<T> UrlPostToJsonObjectWithSession<T>(string host, string request, List<KeyValuePair<string, string>> data = null, string referer = null, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) where T : class {
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
 				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
 				return null;
@@ -2068,9 +2167,20 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			// If session refresh is already in progress, wait for it
-			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
-			SessionSemaphore.Release();
+			if (checkSessionPreemptively) {
+				// Check session preemptively as this request might not get redirected to expiration
+				bool? sessionExpired = await IsSessionExpired().ConfigureAwait(false);
+
+				if (sessionExpired.GetValueOrDefault(true)) {
+					if (await RefreshSession().ConfigureAwait(false)) {
+						return await UrlPostToJsonObjectWithSession<T>(host, request, data, referer, session, true, --maxTries).ConfigureAwait(false);
+					}
+				}
+			} else {
+				// If session refresh is already in progress, just wait for it
+				await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+				SessionSemaphore.Release();
+			}
 
 			if (SteamID == 0) {
 				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
@@ -2122,8 +2232,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (IsSessionExpiredUri(response.FinalUri)) {
-				if (await RefreshSession(host).ConfigureAwait(false)) {
-					return await UrlPostToJsonObjectWithSession<T>(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
+				if (await RefreshSession().ConfigureAwait(false)) {
+					return await UrlPostToJsonObjectWithSession<T>(host, request, data, referer, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -2134,13 +2244,13 @@ namespace ArchiSteamFarm {
 			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
 			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
-				return await UrlPostToJsonObjectWithSession<T>(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
+				return await UrlPostToJsonObjectWithSession<T>(host, request, data, referer, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 			}
 
 			return response.Content;
 		}
 
-		private async Task<bool> UrlPostWithSession(string host, string request, Dictionary<string, string> data = null, string referer = null, ESession session = ESession.Lowercase, byte maxTries = WebBrowser.MaxTries) {
+		private async Task<bool> UrlPostWithSession(string host, string request, Dictionary<string, string> data = null, string referer = null, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
 				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
 				return false;
@@ -2152,9 +2262,20 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			// If session refresh is already in progress, wait for it
-			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
-			SessionSemaphore.Release();
+			if (checkSessionPreemptively) {
+				// Check session preemptively as this request might not get redirected to expiration
+				bool? sessionExpired = await IsSessionExpired().ConfigureAwait(false);
+
+				if (sessionExpired.GetValueOrDefault(true)) {
+					if (await RefreshSession().ConfigureAwait(false)) {
+						return await UrlPostWithSession(host, request, data, referer, session, true, --maxTries).ConfigureAwait(false);
+					}
+				}
+			} else {
+				// If session refresh is already in progress, just wait for it
+				await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+				SessionSemaphore.Release();
+			}
 
 			if (SteamID == 0) {
 				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
@@ -2203,8 +2324,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (IsSessionExpiredUri(response.FinalUri)) {
-				if (await RefreshSession(host).ConfigureAwait(false)) {
-					return await UrlPostWithSession(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
+				if (await RefreshSession().ConfigureAwait(false)) {
+					return await UrlPostWithSession(host, request, data, referer, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -2215,7 +2336,7 @@ namespace ArchiSteamFarm {
 			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
 			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
-				return await UrlPostWithSession(host, request, data, referer, session, --maxTries).ConfigureAwait(false);
+				return await UrlPostWithSession(host, request, data, referer, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 			}
 
 			return true;

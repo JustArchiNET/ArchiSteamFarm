@@ -1,4 +1,4 @@
-FROM node:slim AS build-node
+FROM node AS build-node
 WORKDIR /app
 COPY ASF-ui .
 RUN echo "Node.js: $(node --version)" && \

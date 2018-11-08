@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using ArchiSteamFarm.IPC.Middleware;
 using Microsoft.AspNetCore.Builder;
@@ -101,6 +102,20 @@ namespace ArchiSteamFarm.IPC {
 			// Add swagger documentation generation
 			services.AddSwaggerGen(
 				c => {
+					c.AddSecurityDefinition(
+						nameof(GlobalConfig.IPCPassword), new ApiKeyScheme {
+							Description = nameof(GlobalConfig.IPCPassword) + " authentication using request headers. Check https://github.com/" + SharedInfo.GithubRepo + "/wiki/IPC#authentication for more info.",
+							In = "header",
+							Name = ApiAuthenticationMiddleware.HeadersField
+						}
+					);
+
+					c.AddSecurityRequirement(
+						new Dictionary<string, IEnumerable<string>> {
+							{ nameof(GlobalConfig.IPCPassword), new string[0] }
+						}
+					);
+
 					c.DescribeAllEnumsAsStrings();
 					c.EnableAnnotations();
 					c.SwaggerDoc("ASF", new Info { Title = "ASF API" });

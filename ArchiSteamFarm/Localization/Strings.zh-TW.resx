@@ -658,4 +658,11 @@
   <data name="TargetBotNotConnected" xml:space="preserve">
     <value>目標 BOT 實例未連接！</value>
   </data>
+  <data name="BotWalletBalance" xml:space="preserve">
+    <value>錢包平衡：{0} {1}</value>
+    <comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
+  </data>
+  <data name="BotHasNoWallet" xml:space="preserve">
+    <value>Bot 沒有錢包餘額。</value>
+  </data>
 </root>

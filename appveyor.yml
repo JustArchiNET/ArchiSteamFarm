@@ -6,6 +6,8 @@ image: Visual Studio 2017
 configuration: Release
 clone_depth: 10
 environment:
+  CROWDIN_API_KEY:
+    secure: oGuZaQo2z5/JkEYaKrD9Ing+TgwZ3qQVf+9Jdz73Fephy04z5rWPGCCtkjaMLTcY
   DOTNET_CHANNEL: 2.1
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_INSTALL_DIR: tools\dotnet
@@ -34,7 +36,9 @@ install:
     }
 
     if ($env:DOTNET_CHANNEL) {
-        &([scriptblock]::Create((Invoke-WebRequest -Uri 'https://dot.net/v1/dotnet-install.ps1'))) -Channel "$env:DOTNET_CHANNEL" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
+        dotnet --info
+
+        &([scriptblock]::Create((Invoke-WebRequest 'https://dot.net/v1/dotnet-install.ps1'))) -Channel "$env:DOTNET_CHANNEL" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
         $env:Path = "$pwd\$env:DOTNET_INSTALL_DIR;$env:Path"
     }
 before_build:
@@ -46,7 +50,7 @@ before_build:
     $ProgressPreference = 'SilentlyContinue'
 
 
-    if (Test-Path -Path "$env:DOTNET_INSTALL_DIR" -PathType Container) {
+    if (Test-Path "$env:DOTNET_INSTALL_DIR" -PathType Container) {
         $env:Path = "$pwd\$env:DOTNET_INSTALL_DIR;$env:Path"
     }
 
@@ -66,12 +70,12 @@ build_script:
     $ProgressPreference = 'SilentlyContinue'
 
 
-    if (Test-Path -Path "$env:DOTNET_INSTALL_DIR" -PathType Container) {
+    if (Test-Path "$env:DOTNET_INSTALL_DIR" -PathType Container) {
         $env:Path = "$pwd\$env:DOTNET_INSTALL_DIR;$env:Path"
     }
 
 
-    Push-Location -Path ASF-ui
+    Push-Location ASF-ui
 
 
     npm ci --no-progress
@@ -108,7 +112,7 @@ test_script:
     $ProgressPreference = 'SilentlyContinue'
 
 
-    if (Test-Path -Path "$env:DOTNET_INSTALL_DIR" -PathType Container) {
+    if (Test-Path "$env:DOTNET_INSTALL_DIR" -PathType Container) {
         $env:Path = "$pwd\$env:DOTNET_INSTALL_DIR;$env:Path"
     }
 
@@ -128,7 +132,7 @@ after_test:
     $ProgressPreference = 'SilentlyContinue'
 
 
-    if (Test-Path -Path "$env:DOTNET_INSTALL_DIR" -PathType Container) {
+    if (Test-Path "$env:DOTNET_INSTALL_DIR" -PathType Container) {
         $env:Path = "$pwd\$env:DOTNET_INSTALL_DIR;$env:Path"
     }
 
@@ -140,7 +144,7 @@ after_test:
         $ErrorActionPreference = 'Stop'
         $ProgressPreference = 'SilentlyContinue'
 
-        Set-Location -Path "$env:APPVEYOR_BUILD_FOLDER"
+        Set-Location "$env:APPVEYOR_BUILD_FOLDER"
 
         if ($variant -like '*-netf') {
             $compressionMethod = 'Deflate' # This depends on what ZipArchive supports on given platform
@@ -162,20 +166,20 @@ after_test:
         }
 
         # If we include any helper scripts for this variant, copy them to output directory
-        if (Test-Path -Path "ArchiSteamFarm\scripts\$variant" -PathType Container) {
-            Copy-Item "ArchiSteamFarm\scripts\$variant\*" -Destination "ArchiSteamFarm\out\$variant"
+        if (Test-Path "ArchiSteamFarm\scripts\$variant" -PathType Container) {
+            Copy-Item "ArchiSteamFarm\scripts\$variant\*" "ArchiSteamFarm\out\$variant"
         }
 
         # Until https://github.com/dotnet/cli/issues/3267 happens, we'll hack dotnet binary icon on Windows and include .ico file on other platforms
         if ($targetFramework -ne "$env:NET_FRAMEWORK_VERSION") {
-            if (Test-Path -Path "ArchiSteamFarm\out\$variant\ArchiSteamFarm.exe" -PathType Leaf) {
+            if (Test-Path "ArchiSteamFarm\out\$variant\ArchiSteamFarm.exe" -PathType Leaf) {
                 tools\rcedit\rcedit-x64.exe "ArchiSteamFarm\out\$variant\ArchiSteamFarm.exe" --set-icon 'resources\ASF.ico'
 
                 if ($LastExitCode -ne 0) {
                     throw "Last command failed."
                 }
             } else {
-                Copy-Item 'resources\ASF.ico' -Destination "ArchiSteamFarm\out\$variant\ArchiSteamFarm.ico"
+                Copy-Item 'resources\ASF.ico' "ArchiSteamFarm\out\$variant\ArchiSteamFarm.ico"
             }
         }
 
@@ -185,8 +189,8 @@ after_test:
         # Include extra logic for builds marked for release
         if ($env:APPVEYOR_REPO_TAG -eq 'true') {
             # Update link in Changelog.html accordingly
-            if (Test-Path -Path "ArchiSteamFarm\out\$variant\Changelog.html" -PathType Leaf) {
-                (Get-Content -Path "ArchiSteamFarm\out\$variant\Changelog.html").Replace('ArchiSteamFarm/commits/master', "ArchiSteamFarm/releases/tag/$env:APPVEYOR_REPO_TAG_NAME") | Set-Content -Path "ArchiSteamFarm\out\$variant\Changelog.html"
+            if (Test-Path "ArchiSteamFarm\out\$variant\Changelog.html" -PathType Leaf) {
+                (Get-Content "ArchiSteamFarm\out\$variant\Changelog.html").Replace('ArchiSteamFarm/commits/master', "ArchiSteamFarm/releases/tag/$env:APPVEYOR_REPO_TAG_NAME") | Set-Content "ArchiSteamFarm\out\$variant\Changelog.html"
             }
 
             # If this build is going to be deployed further, prefer maximum compression
@@ -216,11 +220,22 @@ after_test:
 
 
     foreach ($variant in $env:VARIANTS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
-        Start-Job -Name "$variant" -ScriptBlock $PublishBlock -ArgumentList "$variant"
+        Start-Job -Name "$variant" $PublishBlock -ArgumentList "$variant"
     }
 
 
-    Get-Job | Receive-Job -AutoRemoveJob -Wait
+    Get-Job | Receive-Job -Wait -AutoRemoveJob
+
+
+    if (!($env:APPVEYOR_PULL_REQUEST_NUMBER) -and ($env:APPVEYOR_REPO_BRANCH -eq 'master') -and ($env:APPVEYOR_REPO_TAG -eq 'false') -and (Test-Path 'crowdin.yml' -PathType Leaf) -and (Test-Path 'tools\crowdin-cli\crowdin_identity_example.yml' -PathType Leaf) -and (Test-Path 'tools\crowdin-cli\archi_core.ps1' -PathType Leaf)) {
+        (Get-Content 'tools\crowdin-cli\crowdin_identity_example.yml').Replace('CROWDIN_API_KEY', "$env:CROWDIN_API_KEY") | Set-Content 'tools\crowdin-cli\crowdin_identity.yml'
+
+        try {
+            & tools\crowdin-cli\archi_core.ps1 --upload
+        } finally {
+            Remove-Item 'tools\crowdin-cli\crowdin_identity.yml'
+        }
+    }
 deploy:
 - provider: GitHub
   tag: $(appveyor_repo_tag_name)

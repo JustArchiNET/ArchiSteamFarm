@@ -87,7 +87,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task AddGamesToRedeemInBackground(OrderedDictionary games) {
+		internal async Task AddGamesToRedeemInBackground(IOrderedDictionary games) {
 			if ((games == null) || (games.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(games));
 				return;

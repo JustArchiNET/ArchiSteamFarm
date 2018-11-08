@@ -295,6 +295,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Bot has no wallet..
+        /// </summary>
+        internal static string BotHasNoWallet {
+            get {
+                return ResourceManager.GetString("BotHasNoWallet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Failed to disconnect the client. Abandoning this bot instance!.
         /// </summary>
         internal static string BotHeartBeatFailed {
@@ -678,6 +687,15 @@ namespace ArchiSteamFarm.Localization {
         internal static string BotVersion {
             get {
                 return ResourceManager.GetString("BotVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Wallet balance: {0} {1}.
+        /// </summary>
+        internal static string BotWalletBalance {
+            get {
+                return ResourceManager.GetString("BotWalletBalance", resourceCulture);
             }
         }
         
