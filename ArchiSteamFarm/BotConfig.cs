@@ -224,6 +224,16 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		[JsonProperty]
+		private string SteamParentalPIN {
+			set {
+				if (string.IsNullOrEmpty(value) || (value != "0")) {
+					ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, nameof(SteamParentalPIN), nameof(SteamParentalCode)));
+					SteamParentalCode = string.IsNullOrEmpty(value) ? "0" : value;
+				}
+			}
+		}
+
 		internal (bool Valid, string ErrorMessage) CheckValidation() {
 			if (BotBehaviour > EBotBehaviour.All) {
 				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(BotBehaviour), BotBehaviour));
