@@ -131,7 +131,7 @@
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Die konfigurierte {0}-Eigenschaft ist ungültig: {1}</value>
+    <value>Der konfigurierte Wert für {0} ist ungültig: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
@@ -160,7 +160,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Verweigere die Ausführung dieser Funktion wegen ungültiger DeviceID in ASF 2FA!</value>
+    <value>Verweigere die Ausführung dieser Funktion aufgrund einer ungültigen DeviceID in ASF 2FA!</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>Es sind keine Bots definiert. Hast du vergessen ASF zu konfigurieren?</value>
@@ -178,7 +178,7 @@ StackTrace:
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>Konnte aktuellste Version nicht überprüfen!</value>
+    <value>Konnte aktuellste Version nicht abfragen!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
     <value>Die Aktualisierung konnte nicht fortgesetzt werden, da es keine Datei gibt, die sich auf die aktuell laufende Version bezieht! Eine automatische Aktualisierung auf diese Version ist nicht möglich.</value>
@@ -242,7 +242,7 @@ StackTrace:
     <value>Aktualisierung abgeschlossen!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>Es ist eine neue ASF Version verfügbar! Erwäge selbst zu aktualisieren!</value>
+    <value>Es ist eine neue ASF Version verfügbar! Überlege dir selbst zu aktualisieren!</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>Lokale Version: {0} | Verfügbare Version: {1}</value>
@@ -584,7 +584,7 @@ StackTrace:
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>Bitte lies den Abschnitt zur Datenschutzerklärung im Wiki, solltest du über das Verhalten von ASF beunruhigt sein!</value>
+    <value>Bitte lies den Abschnitt zu unseren Datenschutzrichtlinien im Wiki, wenn du wissen möchtest was ASF im Detail alles macht!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
     <value>Es sieht so aus, als ob du das Programm zum ersten Mal gestartet hast, willkommen!</value>
@@ -625,7 +625,7 @@ StackTrace:
     <value>Zugriff verweigert!</value>
   </data>
   <data name="WarningPreReleaseVersion" xml:space="preserve">
-    <value>Du verwendest eine Version, die neuer ist als die zuletzt veröffentlichte Version deines Aktualisierungskanals. Bitte bedenke, dass Vorabversionen für Benutzer bestimmt sind, die wissen, wie man Fehler meldet, mit Problemen umgeht und Rückmeldung gibt - es wird keine technische Unterstützung zur Verfügung gestellt.</value>
+    <value>Du verwendest eine Version, die neuer ist als die zuletzt veröffentlichte Version deines Aktualisierungskanals. Bitte bedenke, dass Vorabversionen nur für Benutzer gedacht sind, die wissen wie man Fehler meldet, mit Problemen umgeht und Rückmeldung gibt - es wird keine technische Unterstützung geben.</value>
   </data>
   <data name="BotStats" xml:space="preserve">
     <value>Momentaner Arbeitsspeicherverbrauch: {0} MB.</value>
