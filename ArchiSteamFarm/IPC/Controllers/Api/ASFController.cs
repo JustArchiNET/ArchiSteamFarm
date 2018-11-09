@@ -20,7 +20,6 @@
 // limitations under the License.
 
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using ArchiSteamFarm.IPC.Requests;
@@ -39,13 +38,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		public ActionResult<GenericResponse<ASFResponse>> ASFGet() {
 			uint memoryUsage = (uint) GC.GetTotalMemory(false) / 1024;
 
-			DateTime processStartTime;
-
-			using (Process process = Process.GetCurrentProcess()) {
-				processStartTime = process.StartTime;
-			}
-
-			ASFResponse result = new ASFResponse(SharedInfo.BuildInfo.Variant, Program.GlobalConfig, memoryUsage, processStartTime, SharedInfo.Version);
+			ASFResponse result = new ASFResponse(SharedInfo.BuildInfo.Variant, Program.GlobalConfig, memoryUsage, RuntimeCompatibility.ProcessStartTime, SharedInfo.Version);
 			return Ok(new GenericResponse<ASFResponse>(result));
 		}
 
