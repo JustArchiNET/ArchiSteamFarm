@@ -1542,11 +1542,13 @@ namespace ArchiSteamFarm {
 					return LastSessionCheck != LastSessionRefresh;
 				}
 
+				const string host = SteamCommunityURL;
+
 				// It would make sense to use /my/profile here, but it dismisses notifications related to profile comments
 				// So instead, we'll use some less invasive /my link that ensures the session validation, doesn't cause issues and is fast enough
-				const string request = SteamCommunityURL + "/my/edit/settings";
+				const string request = "/my/edit/settings";
 
-				WebBrowser.BasicResponse response = await WebBrowser.UrlHead(request).ConfigureAwait(false);
+				WebBrowser.BasicResponse response = await WebLimitRequest(host, async () => await WebBrowser.UrlHead(host + request).ConfigureAwait(false)).ConfigureAwait(false);
 				if (response?.FinalUri == null) {
 					return null;
 				}
@@ -1739,6 +1741,10 @@ namespace ArchiSteamFarm {
 					if (await RefreshSession().ConfigureAwait(false)) {
 						return await UrlGetToHtmlDocumentWithSession(host, request, true, --maxTries).ConfigureAwait(false);
 					}
+
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					return null;
 				}
 			} else {
 				// If session refresh is already in progress, just wait for it
@@ -1802,6 +1808,10 @@ namespace ArchiSteamFarm {
 					if (await RefreshSession().ConfigureAwait(false)) {
 						return await UrlGetToJsonObjectWithSession<T>(host, request, true, --maxTries).ConfigureAwait(false);
 					}
+
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					return null;
 				}
 			} else {
 				// If session refresh is already in progress, just wait for it
@@ -1865,6 +1875,10 @@ namespace ArchiSteamFarm {
 					if (await RefreshSession().ConfigureAwait(false)) {
 						return await UrlGetToXmlDocumentWithSession(host, request, true, --maxTries).ConfigureAwait(false);
 					}
+
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					return null;
 				}
 			} else {
 				// If session refresh is already in progress, just wait for it
@@ -1928,6 +1942,10 @@ namespace ArchiSteamFarm {
 					if (await RefreshSession().ConfigureAwait(false)) {
 						return await UrlHeadWithSession(host, request, true, --maxTries).ConfigureAwait(false);
 					}
+
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					return false;
 				}
 			} else {
 				// If session refresh is already in progress, just wait for it
@@ -1991,6 +2009,10 @@ namespace ArchiSteamFarm {
 					if (await RefreshSession().ConfigureAwait(false)) {
 						return await UrlPostToHtmlDocumentWithSession(host, request, data, referer, session, true, --maxTries).ConfigureAwait(false);
 					}
+
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					return null;
 				}
 			} else {
 				// If session refresh is already in progress, just wait for it
@@ -2083,6 +2105,10 @@ namespace ArchiSteamFarm {
 					if (await RefreshSession().ConfigureAwait(false)) {
 						return await UrlPostToJsonObjectWithSession<T>(host, request, data, referer, session, true, --maxTries).ConfigureAwait(false);
 					}
+
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					return null;
 				}
 			} else {
 				// If session refresh is already in progress, just wait for it
@@ -2175,6 +2201,10 @@ namespace ArchiSteamFarm {
 					if (await RefreshSession().ConfigureAwait(false)) {
 						return await UrlPostToJsonObjectWithSession<T>(host, request, data, referer, session, true, --maxTries).ConfigureAwait(false);
 					}
+
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					return null;
 				}
 			} else {
 				// If session refresh is already in progress, just wait for it
@@ -2270,6 +2300,10 @@ namespace ArchiSteamFarm {
 					if (await RefreshSession().ConfigureAwait(false)) {
 						return await UrlPostWithSession(host, request, data, referer, session, true, --maxTries).ConfigureAwait(false);
 					}
+
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					return false;
 				}
 			} else {
 				// If session refresh is already in progress, just wait for it
