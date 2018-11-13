@@ -2,10 +2,6 @@
 language: csharp
 solution: ArchiSteamFarm.sln
 
-# Travis lacks universal way of specifying dotnet channel, we need to use absolute one until https://github.com/travis-ci/travis-ci/issues/10059 gets implemented
-# This should be equal to the latest SDK version returned by https://dotnetcli.azureedge.net/dotnet/Sdk/Current/latest.version
-dotnet: 2.1.403
-
 # We can save bandwidth by limiting git clone to only last 10 commits
 git:
   depth: 10
@@ -88,4 +84,5 @@ matrix:
       sudo: false
     - os: osx
       # Ref: https://docs.travis-ci.com/user/reference/osx
+      dotnet: 2.1.403 # For OSX, we need absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
       osx_image: xcode10.1
