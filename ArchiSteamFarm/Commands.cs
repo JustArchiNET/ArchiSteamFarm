@@ -1178,16 +1178,21 @@ namespace ArchiSteamFarm {
 				Bot.ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
+
 			if (!Bot.IsConnectedAndLoggedOn) {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
+
 			if (!Bot.IsMaster(steamID)) {
 				return null;
 			}
+
 			uint? level = await Bot.ArchiHandler.GetLevel().ConfigureAwait(false);
+
 			if (level == null) {
 				return FormatBotResponse(Strings.WarningFailed);
 			}
+
 			return FormatBotResponse(string.Format(Strings.BotLevel, level));
 		}
 
@@ -1196,12 +1201,16 @@ namespace ArchiSteamFarm {
 				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
 				return null;
 			}
+
 			HashSet<Bot> bots = Bot.GetBots(botNames);
 			if ((bots == null) || (bots.Count == 0)) {
 				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
+
 			IList<string> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseLevel(steamID)))).ConfigureAwait(false);
+
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 

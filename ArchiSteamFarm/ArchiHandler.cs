@@ -217,22 +217,28 @@ namespace ArchiSteamFarm {
 			if (!Client.IsConnected) {
 				return null;
 			}
+
 			CPlayer_GetGameBadgeLevels_Request request = new CPlayer_GetGameBadgeLevels_Request { };
 			SteamUnifiedMessages.ServiceMethodResponse response;
+
 			try {
 				response = await UnifiedPlayerService.SendMessage(x => x.GetGameBadgeLevels(request));
 			}
+
 			catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
 				return null;
 			}
+
 			if (response == null) {
 				ArchiLogger.LogNullError(nameof(response));
 				return null;
 			}
+
 			if (response.Result != EResult.OK) {
 				return null;
 			}
+
 			CPlayer_GetGameBadgeLevels_Response resp = response.GetDeserializedResponse<CPlayer_GetGameBadgeLevels_Response>();
 			return resp.player_level;
 		}
