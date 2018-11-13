@@ -145,6 +145,10 @@ namespace ArchiSteamFarm {
 		private DateTime LastLogonSessionReplaced;
 		private ulong LibraryLockedBySteamID;
 		private ulong MasterChatGroupID;
+
+		[JsonProperty]
+		private string Nickname;
+
 		private Timer PlayingWasBlockedTimer;
 		private bool ReconnectOnUserInitiated;
 		private Timer SendItemsTimer;
@@ -2146,6 +2150,7 @@ namespace ArchiSteamFarm {
 				}
 
 				AvatarHash = avatarHash;
+				Nickname = callback.Name;
 
 				if (Statistics != null) {
 					Utilities.InBackground(() => Statistics.OnPersonaState(callback.Name, avatarHash));
