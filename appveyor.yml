@@ -8,7 +8,7 @@ clone_depth: 10
 environment:
   CROWDIN_API_KEY:
     secure: oGuZaQo2z5/JkEYaKrD9Ing+TgwZ3qQVf+9Jdz73Fephy04z5rWPGCCtkjaMLTcY
-  DOTNET_CHANNEL: 2.1
+#  DOTNET_CHANNEL: 2.1
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_INSTALL_DIR: tools\dotnet
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
