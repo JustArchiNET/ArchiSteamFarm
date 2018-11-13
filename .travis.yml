@@ -39,8 +39,8 @@ script:
     fi
 
     cd ASF-ui
-    npm i --no-progress
-    npm run-script deploy --no-progress
+    npm ci
+    npm run-script deploy
     cd ..
 
     if [ "$TRAVIS_OS_NAME" = "osx" ]; then
