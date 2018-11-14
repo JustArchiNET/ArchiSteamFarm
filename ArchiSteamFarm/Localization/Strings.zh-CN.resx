@@ -337,7 +337,9 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>已停止挂卡！</value>
   </data>
-  
+  <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
+    <value>忽略此请求，因为已启用长期暂停！</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>该账户已经无卡可挂！</value>
   </data>
@@ -653,7 +655,15 @@
     <value>{0} 漏洞的解决措施已触发</value>
     <comment>{0} will be replaced by the bug's name provided by ASF</comment>
   </data>
-  
-  
+  <data name="TargetBotNotConnected" xml:space="preserve">
+    <value>目标机器人实例未连接！</value>
+  </data>
+  <data name="BotWalletBalance" xml:space="preserve">
+    <value>钱包余额: {0} {1}</value>
+    <comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
+  </data>
+  <data name="BotHasNoWallet" xml:space="preserve">
+    <value>机器人没有 Steam 钱包</value>
+  </data>
   
 </root>
