@@ -213,6 +213,34 @@ namespace ArchiSteamFarm {
 			return body.chat_group_summary.chat_group_id;
 		}
 
+		internal async Task<uint?> GetLevel() {
+			if (!Client.IsConnected) {
+				return null;
+			}
+
+			CPlayer_GetGameBadgeLevels_Request request = new CPlayer_GetGameBadgeLevels_Request { };
+			SteamUnifiedMessages.ServiceMethodResponse response;
+
+			try {
+				response = await UnifiedPlayerService.SendMessage(x => x.GetGameBadgeLevels(request));
+			} catch (Exception e) {
+				ArchiLogger.LogGenericWarningException(e);
+				return null;
+			}
+
+			if (response == null) {
+				ArchiLogger.LogNullError(nameof(response));
+				return null;
+			}
+
+			if (response.Result != EResult.OK) {
+				return null;
+			}
+
+			CPlayer_GetGameBadgeLevels_Response body = response.GetDeserializedResponse<CPlayer_GetGameBadgeLevels_Response>();
+			return body.player_level;
+		}
+
 		internal async Task<HashSet<ulong>> GetMyChatGroupIDs() {
 			if (!Client.IsConnected) {
 				return null;

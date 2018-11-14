@@ -85,6 +85,8 @@ namespace ArchiSteamFarm {
 							return ResponseIdleBlacklist(steamID);
 						case "IQ":
 							return ResponseIdleQueue(steamID);
+						case "LEVEL":
+							return await ResponseLevel(steamID).ConfigureAwait(false);
 						case "LOOT":
 							return await ResponseLoot(steamID).ConfigureAwait(false);
 						case "LOOT&":
@@ -188,6 +190,8 @@ namespace ArchiSteamFarm {
 							}
 
 							return await ResponseIdleQueueRemove(steamID, args[1]).ConfigureAwait(false);
+						case "LEVEL":
+							return await ResponseLevel(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "LOOT":
 							return await ResponseLoot(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "LOOT^":
@@ -1164,6 +1168,46 @@ namespace ArchiSteamFarm {
 			}
 
 			IList<string> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseInput(steamID, propertyName, inputValue)))).ConfigureAwait(false);
+
+			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+		}
+
+		private async Task<string> ResponseLevel(ulong steamID) {
+			if (steamID == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(steamID));
+				return null;
+			}
+
+			if (!Bot.IsConnectedAndLoggedOn) {
+				return FormatBotResponse(Strings.BotNotConnected);
+			}
+
+			if (!Bot.IsMaster(steamID)) {
+				return null;
+			}
+
+			uint? level = await Bot.ArchiHandler.GetLevel().ConfigureAwait(false);
+
+			if (!level.HasValue) {
+				return FormatBotResponse(Strings.WarningFailed);
+			}
+
+			return FormatBotResponse(string.Format(Strings.BotLevel, level.Value));
+		}
+
+		private static async Task<string> ResponseLevel(ulong steamID, string botNames) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botNames)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
+				return null;
+			}
+
+			HashSet<Bot> bots = Bot.GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
+			}
+
+			IList<string> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseLevel(steamID))).ConfigureAwait(false);
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
