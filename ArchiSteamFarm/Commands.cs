@@ -236,7 +236,7 @@ namespace ArchiSteamFarm {
 							return await ResponsePause(steamID, true, args[1]).ConfigureAwait(false);
 						case "PLAY":
 							if (args.Length > 2) {
-								return await ResponsePlay(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
+								return await ResponsePlay(steamID, args[1], Utilities.GetArgsAsText(message, 2)).ConfigureAwait(false);
 							}
 
 							return await ResponsePlay(steamID, args[1]).ConfigureAwait(false);
@@ -1555,7 +1555,7 @@ namespace ArchiSteamFarm {
 
 			foreach (string game in games) {
 				if (!uint.TryParse(game, out uint gameID) || (gameID == 0)) {
-					gameName.AppendLine((gameName.Length > 0 ? " " : "") + game);
+					gameName.Append((gameName.Length > 0 ? " " : "") + game);
 					continue;
 				}
 
