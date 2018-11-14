@@ -331,7 +331,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на has {0} level..
+        ///   Ищет локализованную строку, похожую на Bot has level {0}..
         /// </summary>
         internal static string BotLevel {
             get {
