@@ -1189,11 +1189,11 @@ namespace ArchiSteamFarm {
 
 			uint? level = await Bot.ArchiHandler.GetLevel().ConfigureAwait(false);
 
-			if (level == null) {
+			if (!level.HasValue) {
 				return FormatBotResponse(Strings.WarningFailed);
 			}
 
-			return FormatBotResponse(string.Format(Strings.BotLevel, level));
+			return FormatBotResponse(string.Format(Strings.BotLevel, level.Value));
 		}
 
 		private static async Task<string> ResponseLevel(ulong steamID, string botNames) {
@@ -1207,10 +1207,9 @@ namespace ArchiSteamFarm {
 				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			IList<string> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseLevel(steamID)))).ConfigureAwait(false);
+			IList<string> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseLevel(steamID))).ConfigureAwait(false);
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
-
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 

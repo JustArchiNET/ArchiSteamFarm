@@ -669,7 +669,7 @@ StackTrace:
     <value>Bot has no wallet.</value>
   </data>
   <data name="BotLevel" xml:space="preserve">
-    <value>{0} level.</value>
-    <comment>{0} will be replaced by account level</comment>
+    <value>has {0} level.</value>
+    <comment>{0} will be replaced by account's level</comment>
   </data>
 </root>

@@ -223,9 +223,7 @@ namespace ArchiSteamFarm {
 
 			try {
 				response = await UnifiedPlayerService.SendMessage(x => x.GetGameBadgeLevels(request));
-			}
-
-			catch (Exception e) {
+			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
 				return null;
 			}
@@ -239,8 +237,8 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			CPlayer_GetGameBadgeLevels_Response resp = response.GetDeserializedResponse<CPlayer_GetGameBadgeLevels_Response>();
-			return resp.player_level;
+			CPlayer_GetGameBadgeLevels_Response body = response.GetDeserializedResponse<CPlayer_GetGameBadgeLevels_Response>();
+			return body.player_level;
 		}
 
 		internal async Task<HashSet<ulong>> GetMyChatGroupIDs() {
