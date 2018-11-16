@@ -118,195 +118,197 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptingTrade" xml:space="preserve">
-    <value>接受交易︰{0}</value>
+    <value>接受交易：{0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF 将会在每 {0} 个小时后自动检查新版本。</value>
+    <value>ASF 每隔 {0} 个小时自动检查新版本。</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
   </data>
   <data name="Content" xml:space="preserve">
-    <value>内容︰{0}</value>
+    <value>内容：{0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>配置 {0} 属性无效︰ {1}</value>
+    <value>配置 {0} 属性无效：{1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} 在核心日志记录模块加载前遇到异常！</value>
+    <value>ASF V{0} 在核心日志模块初始化前遇到严重异常！</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
-    <value>异常︰ {0}() {1} 堆栈跟踪:{2}</value>
+    <value>异常：{0}() {1}
+堆栈跟踪：
+{2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>正在以非零的错误代码退出 ！</value>
+    <value>正在以非 0 错误代码退出！</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
-    <value>请求失败︰ {0}</value>
+    <value>请求失败：{0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>不能加载全局配置，请确保 {0} 存在并且是有效的 ！如果您仍然有疑问请遵循wiki的设置指南。</value>
+    <value>全局配置无法加载，请确定 {0} 存在并且有效！如果您仍然有疑问请遵循 Wiki 的“初始设置”指南。</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
-    <value>'{0}' 无效。</value>
+    <value>{0} 无效！</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>拒绝执行此功能，因为ASF 二次认证的设备ID无效</value>
+    <value>ASF 两步验证中的 DeviceID 无效，拒绝执行此功能！</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>没有配置任何账号，是否忘记配置你的ASF了？</value>
+    <value>没有配置任何机器人，您是否忘记配置 ASF 了？</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} 为空</value>
+    <value>{0} 为空！</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
-    <value>解析 {0} 失败 ！</value>
+    <value>解析 {0} 失败！</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>在 {0} 次尝试后请求失败！</value>
+    <value>该请求在 {0} 次尝试后失败！</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>无法检查最新版本 ！</value>
+    <value>无法检查最新版本！</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
-    <value>无法继续更新，因为没有与当前正在运行的版本相关的版本！ 无法自动更新到该版本。</value>
+    <value>无法进行更新，因为没有与当前正在运行的版本相关的资源文件！无法自动更新到该版本。</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>不能进行更新，因为此版本没有任何资源！</value>
+    <value>无法进行更新，因为此版本没有提供任何资源文件！</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>收到一个用户输入请求，但进程目前正在以无显示模式运行 ！</value>
+    <value>收到一个用户输入请求，但进程目前正在以 Headless 模式运行！</value>
   </data>
   <data name="Exiting" xml:space="preserve">
-    <value>正在退出...</value>
+    <value>正在退出……</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
-    <value>失败 ！</value>
+    <value>失败！</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>已更改全局配置文件 ！</value>
+    <value>全局配置文件已被更改！</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>全局配置文件已被删除 ！</value>
+    <value>全局配置文件已被删除！</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
-    <value>忽略交易︰ {0}</value>
+    <value>忽略交易：{0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
-    <value>登录到 {0}...</value>
+    <value>正在登录到 {0}……</value>
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>无账号正在运行，即将退出...</value>
+    <value>没有正在运行的机器人，即将退出……</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
     <value>正在刷新会话！</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
-    <value>拒绝交易︰ {0}</value>
+    <value>拒绝交易：{0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
-    <value>正在重新启动...</value>
+    <value>正在重新启动……</value>
   </data>
   <data name="Starting" xml:space="preserve">
-    <value>正在启动...</value>
+    <value>正在启动……</value>
   </data>
   <data name="Success" xml:space="preserve">
     <value>成功！</value>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>正在解锁主帐户...</value>
+    <value>正在解锁家庭监护……</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
-    <value>正在检查新版本...</value>
+    <value>正在检查新版本……</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>更新中： {0} ({1} MB)...... 在你等待的时候，可以考虑趁现在进行捐赠！:)</value>
+    <value>正在下载新版本：{0} ({1} MB)……在等待的时候，如果您赞赏作者的工作请考虑捐助！:)</value>
     <comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
-    <value>更新完毕</value>
+    <value>更新完成！</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>ASF有新版本！请手动更新！</value>
+    <value>ASF 有新版本！请手动更新！</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
-    <value>当前版本︰ {0} |最新版本︰ {1}</value>
+    <value>当前版本：{0} | 最新版本：{1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
-    <value>请输入您移动身份验证器设备 ID (包括"android:"): </value>
+    <value>请输入您的手机验证器 DeviceID (包括 "android:" 前缀): </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>输入显示在 Steam 移动应用上的验证码 </value>
+    <value>请输入 Steam 手机验证器上的两步验证代码: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>请输入发送到你的邮箱里的Steam令牌验证码 </value>
+    <value>请输入发送到您的邮箱里的 Steam 令牌验证代码: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>请输入你的Steam登录名: </value>
+    <value>请输入您的 Steam 用户名: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalCode" xml:space="preserve">
-    <value>请输入Steam父账号 Pin: </value>
+    <value>请输入 Steam 家庭监护代码: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>请输入你的Steam密码: </value>
+    <value>请输入您的 Steam 密码: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
-    <value>请输入非正式的值 {0}: </value>
+    <value>请输入未说明的值 {0}: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
-    <value>收到的{0} 为未知值，请报告此值：{1}</value>
+    <value>收到 {0} 的未知值，请报告：{1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
   <data name="IPCReady" xml:space="preserve">
-    <value>IPC 服务已就绪 ！</value>
+    <value>IPC 服务已就绪！</value>
   </data>
   <data name="IPCStarting" xml:space="preserve">
-    <value>正在启动IPC服务...</value>
+    <value>正在启动 IPC 服务……</value>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
-    <value>这个帐号已停止运行！</value>
+    <value>这个机器人已停止运行！</value>
   </data>
   <data name="BotNotFound" xml:space="preserve">
-    <value>找不到任何名为 {0} 的bot ！</value>
+    <value>找不到任何名为 {0} 的机器人！</value>
     <comment>{0} will be replaced by bot's name query (string)</comment>
   </data>
   <data name="BotStatusOverview" xml:space="preserve">
-    <value>有 {0}/{1} 账号运行，一共 {2} 个游戏 ({3} 张卡) 等待挂卡。</value>
+    <value>有 {0}/{1} 个机器人正在运行，共 {2} 个游戏 ({3} 张卡牌) 等待挂卡。</value>
     <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
   </data>
   <data name="BotStatusIdling" xml:space="preserve">
-    <value>账号 {0} 正在挂游戏︰ {1} (剩余掉卡 {2}) 一共还有{3} 个游戏({4} 张卡) 等待挂卡 (还剩 {5})。</value>
+    <value>机器人正在挂游戏：{0} ({1}，剩余 {2} 张卡牌)，共 {3} 个游戏 ({4} 张卡牌) 等待挂卡 (剩余时间约为 {5})。</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle, {3} will be replaced by total number of games to idle, {4} will be replaced by total number of cards to idle, {5} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
   </data>
   <data name="BotStatusIdlingList" xml:space="preserve">
-    <value>帐号正在挂游戏︰ {0} 一共有 {1} 个游戏 ({2} 张卡) 等待挂卡 (还剩 {3}) 。</value>
+    <value>机器人正在挂游戏：{0}，共 {1} 个游戏 ({2} 张卡牌) 等待挂卡 (剩余时间约为 {3})。</value>
     <comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to idle, {2} will be replaced by total number of cards to idle, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
   </data>
   <data name="CheckingFirstBadgePage" xml:space="preserve">
-    <value>正在检查Steam徽章页面第一页……</value>
+    <value>正在检查 Steam 徽章页面的第一页……</value>
   </data>
   <data name="CheckingOtherBadgePages" xml:space="preserve">
-    <value>正在读取徽章其他页……</value>
+    <value>正在检查其他徽章页面……</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
     <value>已选的挂卡算法：{0}</value>
@@ -316,14 +318,14 @@
     <value>完成！</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
-    <value>共有 {0} 个游戏(共计 {1} 张卡) 等待挂卡(~还剩{2})...</value>
+    <value>共 {0} 个游戏 ({1} 张卡牌) 等待挂卡 (剩余时间约为 {2})……</value>
     <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
   </data>
   <data name="IdlingFinished" xml:space="preserve">
-    <value>挂卡完毕 ！</value>
+    <value>挂卡完成！</value>
   </data>
   <data name="IdlingFinishedForGame" xml:space="preserve">
-    <value>完成挂卡︰ {0} ({1}) 花了 {2} 的时间！</value>
+    <value>挂卡完成：{0} ({1})，游戏时间 {2}！</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
   </data>
   <data name="IdlingFinishedForGames" xml:space="preserve">
@@ -331,11 +333,11 @@
     <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="IdlingStatusForGame" xml:space="preserve">
-    <value>挂卡状态{0} ({1}) ︰ 剩余 {2} 张卡</value>
+    <value>挂卡状态 {0} ({1})：剩余 {2} 张卡牌</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle</comment>
   </data>
   <data name="IdlingStopped" xml:space="preserve">
-    <value>已停止挂卡！</value>
+    <value>挂卡已停止！</value>
   </data>
   <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
     <value>忽略此请求，因为已启用长期暂停！</value>
@@ -344,7 +346,7 @@
     <value>该账户已经无卡可挂！</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
-    <value>正在挂卡︰{0} ({1})</value>
+    <value>正在挂卡：{0} ({1})</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="NowIdlingList" xml:space="preserve">
@@ -352,119 +354,119 @@
     <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
-    <value>目前不能挂卡，我们将稍后重试！</value>
+    <value>目前无法挂卡，将稍后重试！</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
-    <value>挂卡中︰ {0} ({1})</value>
+    <value>仍在挂卡：{0} ({1})</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StillIdlingList" xml:space="preserve">
-    <value>挂卡中︰ {0}</value>
+    <value>仍在挂卡：{0}</value>
     <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="StoppedIdling" xml:space="preserve">
-    <value>停止挂卡︰ {0} ({1})</value>
+    <value>已停止挂卡：{0} ({1})</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StoppedIdlingList" xml:space="preserve">
-    <value>停止挂卡︰ {0}</value>
+    <value>已停止挂卡：{0}</value>
     <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
-    <value>未知命令!</value>
+    <value>未知命令！</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
-    <value>无法获取徽章信息，将稍后再试 ！</value>
+    <value>无法获取徽章信息，将稍后重试！</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
-    <value>无法检测卡牌状态︰ {0} ({1})，将稍后再试 ！</value>
+    <value>无法检测卡牌状态：{0} ({1})，将稍后重试 ！</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotAcceptingGift" xml:space="preserve">
-    <value>接受礼物︰ {0}...</value>
+    <value>接受礼物：{0}……</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>该账户当前受限，在限制解除前将无法挂卡！</value>
+    <value>该账户目前受限，在限制解除前将无法挂卡！</value>
   </data>
   <data name="BotAddLicense" xml:space="preserve">
-    <value>ID: {0} |状态︰ {1}</value>
+    <value>ID：{0} | 状态：{1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
   </data>
   <data name="BotAddLicenseWithItems" xml:space="preserve">
-    <value>Key︰ {0} |状态︰ {1} |物品︰ {2}</value>
+    <value>ID：{0} | 状态：{1} | 物品：{2}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string, {2} will be replaced by list of granted IDs (numbers), separated by a comma</comment>
   </data>
   <data name="BotAlreadyRunning" xml:space="preserve">
-    <value>这个帐号已经在运行中！</value>
+    <value>这个机器人已经在运行！</value>
   </data>
   <data name="BotAuthenticatorConverting" xml:space="preserve">
-    <value>正在将.MaFile 转换为 ASF 格式...</value>
+    <value>正在将 .maFile 转换为 ASF 格式……</value>
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>导入手机身份验证成功 ！</value>
+    <value>成功导入手机验证器！</value>
   </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>您的设备 ID 不正确或者不存在！</value>
+    <value>您的 DeviceID 不正确或者不存在！</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
-    <value>二次验证令牌︰ {0}</value>
+    <value>两步验证令牌：{0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
   <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
-    <value>自动挂卡已停止！</value>
+    <value>自动挂卡已暂停！</value>
   </data>
   <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
     <value>自动挂卡已恢复！</value>
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
-    <value>自动挂卡已经暂停 ！</value>
+    <value>自动挂卡已经暂停！</value>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
-    <value>自动挂卡已经恢复 ！</value>
+    <value>自动挂卡已经恢复！</value>
   </data>
   <data name="BotConnected" xml:space="preserve">
-    <value>已连接到Steam！</value>
+    <value>已连接到 Steam！</value>
   </data>
   <data name="BotDisconnected" xml:space="preserve">
-    <value>从Steam断开连接！</value>
+    <value>已从 Steam 断开连接！</value>
   </data>
   <data name="BotDisconnecting" xml:space="preserve">
-    <value>正在断开连接...</value>
+    <value>正在断开连接……</value>
   </data>
   <data name="BotEncryptedPassword" xml:space="preserve">
-    <value>[{0}] 密码︰ {1}</value>
+    <value>[{0}] 密码：{1}</value>
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
-    <value>不会启动该帐号，因为配置文件中禁用了它！</value>
+    <value>因为已在配置文件中禁用，所以该机器人实例将不会启动！</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>连续收到 TwoFactorCodeMismatch 错误码 {0} 次。要么是你的两步验证凭据不再有效，要么是你的时钟失去同步，正在中止！</value>
+    <value>连续收到 TwoFactorCodeMismatch 错误码 {0} 次。可能您的两步验证凭据已失效，或者您的设备时钟未及时同步。正在中止操作！</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
-    <value>退出Steam登录︰ {0}</value>
+    <value>从 Steam 退出登录：{0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
   <data name="BotLoggedOn" xml:space="preserve">
-    <value>已成功以 {0} 的身份登录。</value>
+    <value>成功以 {0} 的身份登录。</value>
     <comment>{0} will be replaced by steam ID (number)</comment>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>登录中……</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>这个帐号似乎正被另一个 ASF 实例使用中，这是未定义的行为，拒绝继续运行！</value>
+    <value>这个帐号似乎正被另一个 ASF 实例使用，这是未定义的行为，拒绝继续运行！</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>交易报价失败！</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>不能发送报价，因为没有定义主权限的用户！</value>
+    <value>无法发送交易报价，因为没有为机器人设置 Master （机器人所有者）用户！</value>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>你没有设置任何拾取类型！</value>
+    <value>您尚未设置任何可拾取类型！</value>
   </data>
   <data name="BotLootingNowDisabled" xml:space="preserve">
     <value>拾取现在已禁用！</value>
@@ -473,78 +475,78 @@
     <value>拾取现在已启用！</value>
   </data>
   <data name="BotLootingSuccess" xml:space="preserve">
-    <value>发送交易报价成功！</value>
+    <value>交易报价发送成功！</value>
   </data>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>拾取暂时关闭！</value>
+    <value>拾取暂时被禁用！</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
-    <value>您不能给自己发送贸易 ！</value>
+    <value>无法给自己发送交易报价！</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>该帐号没有启用 ASF 二次验证！你忘记将您的身份验证信息导入为 ASF 二次验证了吗？</value>
+    <value>该机器人没有启用 ASF 两步验证！您是否忘记将身份验证器导入为 ASF 两步验证？</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
-    <value>这个帐号实例没有连接！</value>
+    <value>这个机器人实例未连接！</value>
   </data>
   <data name="BotNotOwnedYet" xml:space="preserve">
     <value>尚未拥有：{0}</value>
     <comment>{0} will be replaced by query (string)</comment>
   </data>
   <data name="BotOwnedAlreadyWithName" xml:space="preserve">
-    <value>已经获得：{0} | {1}</value>
+    <value>已拥有：{0} | {1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>超过频率限制，我们将在 {0} 分钟后重试……</value>
+    <value>达到频率限制，将在 {0} 后重试……</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
-    <value>重新连接中…</value>
+    <value>重新连接中……</value>
   </data>
   <data name="BotRedeem" xml:space="preserve">
-    <value>Key︰ {0} |状态︰ {1}</value>
+    <value>序列号：{0} | 状态：{1}</value>
     <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string</comment>
   </data>
   <data name="BotRedeemWithItems" xml:space="preserve">
-    <value>Key︰ {0} |状态︰ {1} |物品︰ {2}</value>
+    <value>序列号：{0} | 状态：{1} | 物品：{2}</value>
     <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string, {2} will be replaced by list of key-value pairs, separated by a comma</comment>
   </data>
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
-    <value>已删除过期的登录密钥 ！</value>
+    <value>已删除过期的登录密钥！</value>
   </data>
   <data name="BotStatusNotIdling" xml:space="preserve">
-    <value>帐号没有在挂卡。</value>
+    <value>机器人没有在挂卡。</value>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>帐号是受限制的，不会掉落任何卡牌。</value>
+    <value>机器人为受限账户，无法通过挂卡掉落任何卡牌。</value>
   </data>
   <data name="BotStatusConnecting" xml:space="preserve">
-    <value>账号正在连接到Steam网络。</value>
+    <value>机器人正在连接到 Steam 网络。</value>
   </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
-    <value>帐号没有在运行。</value>
+    <value>机器人没有在运行。</value>
   </data>
   <data name="BotStatusPaused" xml:space="preserve">
-    <value>帐号已暂停或正在手动模式下运行。</value>
+    <value>机器人已暂停或正在手动模式下运行。</value>
   </data>
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
-    <value>当前帐号正在使用。</value>
+    <value>当前机器人正在被占用。</value>
   </data>
   <data name="BotUnableToLogin" xml:space="preserve">
     <value>无法登录到 Steam：{0}/{1}</value>
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
   </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
-    <value>{0} 是空的 ！</value>
+    <value>{0} 是空的！</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="UnusedKeys" xml:space="preserve">
-    <value>未使用的产品代码︰{0}</value>
+    <value>未使用的序列号：{0}</value>
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
-    <value>失败！错误原因：{0}</value>
+    <value>因发生此错误而失败：{0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotConnectionLost" xml:space="preserve">
@@ -554,51 +556,51 @@
     <value>账户不再被占用，恢复挂卡！</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
-    <value>账户正在被占用，ASF会在它空闲时继续挂卡……</value>
+    <value>账户正在被占用：ASF 将会在账户空闲时恢复挂卡……</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
-    <value>正在连接...</value>
+    <value>正在连接……</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>断开客户端失败，正在放弃这个帐号实例！</value>
+    <value>断开客户端连接失败，将跳过此机器人实例！</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>无法初始化 Steam 目录，与 Steam 网络连接可能需要比平常更长的时间！</value>
+    <value>无法初始化 SteamDirectory：可能需要比平时更长的时间连接 Steam 网络！</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
-    <value>正在停止...</value>
+    <value>正在停止……</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>您的帐号配置无效，请检查 {0} 的内容，然后重试！</value>
+    <value>您的机器人配置无效，请检查 {0} 的内容，然后重试！</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>无法加载数据库，如果问题仍然存在，请删除 {0} 以重新创建数据库 ！</value>
+    <value>无法加载数据库，如果问题仍然存在，请删除 {0} 以重建数据库！</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
-    <value>正在初始化 {0}...</value>
+    <value>正在初始化 {0}……</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>如果您想知道ASF干了些什么，请移步wiki中privacy policy 一节</value>
+    <value>如果您需要检查 ASF 究竟做了什么，请查看 Wiki 中的“隐私政策”一节。</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>初次使用ASF？欢迎！</value>
+    <value>看起来您是第一次使用 ASF？欢迎！</value>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-    <value>您输入的 CurrentCulture 属性无效，ASF 将继续使用默认值运行 ！</value>
+    <value>您输入的 CurrentCulture 无效，ASF 将继续使用默认值运行！</value>
   </data>
   <data name="TranslationIncomplete" xml:space="preserve">
-    <value>ASF将尝试使用您偏好的语言{0}，但该语言当前的翻译完成度为{1}。或许你可以帮助我们改进ASF的翻译？</value>
+    <value>ASF 将尝试使用您偏好的语言 {0}，但该语言当前的翻译进度只有 {1}。或许您可以帮助我们改进 ASF 的翻译？</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
   <data name="IdlingGameNotPossible" xml:space="preserve">
-    <value>{0} ({1}) 的挂卡暂时不可用，ASF 暂时不能玩这个游戏。</value>
+    <value>{0} ({1}) 的挂卡暂时不可用，因为 ASF 目前无法运行这个游戏。</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="WarningIdlingGameMismatch" xml:space="preserve">
-    <value>ASF 检测到 {0} ({1}) 的 appID 不匹配，而会改用{2} 的 appID 。</value>
+    <value>ASF 检测到 {0} ({1}) 的 ID 不匹配，将会以 {2} 的 ID 代替。</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
   </data>
   <data name="BotVersion" xml:space="preserve">
@@ -606,53 +608,53 @@
     <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
   </data>
   <data name="BotAccountLocked" xml:space="preserve">
-    <value>此帐户被锁定，将永久无法挂卡 ！</value>
+    <value>此帐户已被锁定，将永久无法挂卡！</value>
   </data>
   <data name="BotStatusLocked" xml:space="preserve">
-    <value>帐号被锁定，不会掉落任何卡牌。</value>
+    <value>机器人已被锁定，无法通过挂卡掉落任何卡牌。</value>
   </data>
   <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
-    <value>此功能仅在无头模式中可用！</value>
+    <value>此功能仅在 Headless 模式中可用！</value>
   </data>
   <data name="BotOwnedAlready" xml:space="preserve">
-    <value>已经拥有︰ {0}</value>
+    <value>已拥有：{0}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
-    <value>拒绝访问!</value>
+    <value>拒绝访问！</value>
   </data>
   <data name="WarningPreReleaseVersion" xml:space="preserve">
-    <value>您正使用最新的测试版本，此版本是用于汇报bug使用的，所以此版本将不会提供技术支持。</value>
+    <value>您选择的更新通道中的版本比稳定版更新，预览版仅供了解如何汇报漏洞、处理问题、提交反馈的用户使用——不会提供技术支持。</value>
   </data>
   <data name="BotStats" xml:space="preserve">
-    <value>当前内存用量： {0} MB。</value>
+    <value>当前内存用量：{0} MB。</value>
     <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
   </data>
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
-    <value>正在浏览Steam探索队列 #{0}...</value>
+    <value>正在浏览 Steam 探索队列 #{0}……</value>
     <comment>{0} will be replaced by queue number</comment>
   </data>
   <data name="DoneClearingDiscoveryQueue" xml:space="preserve">
-    <value>已完成Steam探索队列 #{0}。</value>
+    <value>已完成 Steam 探索队列 #{0}。</value>
     <comment>{0} will be replaced by queue number</comment>
   </data>
   <data name="BotOwnsOverviewPerGame" xml:space="preserve">
-    <value>{0}/{1} bots 已经拥有{2} 游戏了。</value>
+    <value>{0}/{1} 个机器人已拥有游戏 {2}。</value>
     <comment>{0} will be replaced by number of bots that already own particular game being checked, {1} will be replaced by total number of bots that were checked during the process, {2} will be replaced by game's ID (number)</comment>
   </data>
   <data name="BotRefreshingPackagesData" xml:space="preserve">
-    <value>正在刷新游戏包数据...</value>
+    <value>正在刷新游戏包数据……</value>
   </data>
   <data name="WarningDeprecated" xml:space="preserve">
-    <value>{0} 用法已弃用，并将在程序的未来版本中被移除。请改用 {1}。</value>
+    <value>{0} 用法已被废弃，并将在程序的未来版本中被移除。请改用 {1}。</value>
     <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
   </data>
   <data name="BotAcceptedDonationTrade" xml:space="preserve">
-    <value>已接受捐赠交易︰{0}</value>
+    <value>接受捐赠交易报价：{0}</value>
     <comment>{0} will be replaced by trade's ID (number)</comment>
   </data>
   <data name="WarningWorkaroundTriggered" xml:space="preserve">
-    <value>{0} 漏洞的解决措施已触发</value>
+    <value>已触发 {0} 漏洞的解决方案。</value>
     <comment>{0} will be replaced by the bug's name provided by ASF</comment>
   </data>
   <data name="TargetBotNotConnected" xml:space="preserve">
@@ -663,7 +665,10 @@
     <comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
   </data>
   <data name="BotHasNoWallet" xml:space="preserve">
-    <value>机器人没有 Steam 钱包</value>
+    <value>机器人没有 Steam 钱包。</value>
   </data>
-  
+  <data name="BotLevel" xml:space="preserve">
+    <value>机器人的等级为 {0}。</value>
+    <comment>{0} will be replaced by bot's level</comment>
+  </data>
 </root>

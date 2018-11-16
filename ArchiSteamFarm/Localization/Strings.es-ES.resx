@@ -667,4 +667,5 @@ Trazo de pila:
   <data name="BotHasNoWallet" xml:space="preserve">
     <value>El bot no tiene cartera.</value>
   </data>
+  
 </root>
