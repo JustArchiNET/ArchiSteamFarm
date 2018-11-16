@@ -8,6 +8,7 @@ clone_depth: 10
 environment:
   CROWDIN_API_KEY:
     secure: oGuZaQo2z5/JkEYaKrD9Ing+TgwZ3qQVf+9Jdz73Fephy04z5rWPGCCtkjaMLTcY
+  CROWDIN_PROJECT_IDENTIFIER: archisteamfarm
 #  DOTNET_CHANNEL: 2.1
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_INSTALL_DIR: tools\dotnet
@@ -227,13 +228,13 @@ after_test:
     Get-Job | Receive-Job -Wait -AutoRemoveJob
 
 
-    if (!($env:APPVEYOR_PULL_REQUEST_NUMBER) -and ($env:APPVEYOR_REPO_BRANCH -eq 'master') -and ($env:APPVEYOR_REPO_TAG -eq 'false') -and (Test-Path 'crowdin.yml' -PathType Leaf) -and (Test-Path 'tools\crowdin-cli\crowdin_identity_example.yml' -PathType Leaf) -and (Test-Path 'tools\crowdin-cli\archi_core.ps1' -PathType Leaf)) {
-        (Get-Content 'tools\crowdin-cli\crowdin_identity_example.yml').Replace('CROWDIN_API_KEY', "$env:CROWDIN_API_KEY") | Set-Content 'tools\crowdin-cli\crowdin_identity.yml'
+    if (!($env:APPVEYOR_PULL_REQUEST_NUMBER) -and ($env:APPVEYOR_REPO_BRANCH -eq 'master') -and ($env:APPVEYOR_REPO_TAG -eq 'false') -and (Test-Path 'crowdin.yml' -PathType Leaf) -and (Test-Path 'tools\ArchiCrowdin\crowdin_identity_example.yml' -PathType Leaf) -and (Test-Path 'tools\ArchiCrowdin\archi.ps1' -PathType Leaf)) {
+        (Get-Content 'tools\ArchiCrowdin\crowdin_identity_example.yml').Replace('CROWDIN_API_KEY', "$env:CROWDIN_API_KEY").Replace('CROWDIN_PROJECT_IDENTIFIER', "$env:CROWDIN_PROJECT_IDENTIFIER") | Set-Content 'tools\ArchiCrowdin\crowdin_identity.yml'
 
         try {
-            & tools\crowdin-cli\archi_core.ps1 --upload
+            & tools\ArchiCrowdin\archi.ps1 -u
         } finally {
-            Remove-Item 'tools\crowdin-cli\crowdin_identity.yml'
+            Remove-Item 'tools\ArchiCrowdin\crowdin_identity.yml'
         }
     }
 deploy:

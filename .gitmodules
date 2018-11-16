@@ -4,6 +4,9 @@
 [submodule "ASF-ui"]
 	path = ASF-ui
 	url = https://github.com/JustArchiNET/ASF-ui
+[submodule "tools/ArchiCrowdin"]
+	path = tools/ArchiCrowdin
+	url = https://github.com/JustArchiNET/ArchiCrowdin.git
 [submodule "wiki"]
 	path = wiki
 	url = https://github.com/JustArchiNET/ArchiSteamFarm.wiki.git
