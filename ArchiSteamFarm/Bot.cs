@@ -134,7 +134,6 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		private string AvatarHash;
 
-		private string CachedTradeToken;
 		private Timer ConnectionFailureTimer;
 		private string DeviceID;
 		private bool FirstTradeSent;
@@ -630,27 +629,13 @@ namespace ArchiSteamFarm {
 
 			Bot targetBot = Bots.Values.FirstOrDefault(bot => bot.SteamID == steamID);
 			if (targetBot != null) {
-				string targetTradeToken = await targetBot.GetTradeToken().ConfigureAwait(false);
+				string targetTradeToken = await targetBot.ArchiHandler.GetTradeToken().ConfigureAwait(false);
 				if (!string.IsNullOrEmpty(targetTradeToken)) {
 					return await ArchiWebHandler.GetTradeHoldDurationForUser(steamID, targetTradeToken).ConfigureAwait(false);
 				}
 			}
 
 			return await ArchiWebHandler.GetTradeHoldDurationForTrade(tradeID).ConfigureAwait(false);
-		}
-
-		internal async Task<string> GetTradeToken() {
-			if (!string.IsNullOrEmpty(CachedTradeToken)) {
-				return CachedTradeToken;
-			}
-
-			string tradeToken = await ArchiHandler.GetTradeToken().ConfigureAwait(false);
-			if (string.IsNullOrEmpty(tradeToken)) {
-				tradeToken = await ArchiWebHandler.GetTradeToken().ConfigureAwait(false);
-			}
-
-			CachedTradeToken = tradeToken;
-			return CachedTradeToken;
 		}
 
 		internal async Task<(Dictionary<string, string> UnusedKeys, Dictionary<string, string> UsedKeys)> GetUsedAndUnusedKeys() {
@@ -1659,7 +1644,6 @@ namespace ArchiSteamFarm {
 
 			EResult lastLogOnResult = LastLogOnResult;
 			LastLogOnResult = EResult.Invalid;
-			CachedTradeToken = null;
 			ItemsCount = TradesCount = HeartBeatFailures = 0;
 			StopConnectionFailureTimer();
 			StopPlayingWasBlockedTimer();

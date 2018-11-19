@@ -102,8 +102,8 @@ namespace ArchiSteamFarm {
 				}
 
 				// Don't announce if we don't meet conditions
-				string tradeToken;
-				if (!await ShouldAnnounce().ConfigureAwait(false) || string.IsNullOrEmpty(tradeToken = await Bot.GetTradeToken().ConfigureAwait(false))) {
+				string tradeToken = await Bot.ArchiHandler.GetTradeToken().ConfigureAwait(false);
+				if (!await ShouldAnnounce().ConfigureAwait(false) || string.IsNullOrEmpty(tradeToken)) {
 					LastAnnouncementCheck = DateTime.UtcNow;
 					ShouldSendHeartBeats = false;
 					return;

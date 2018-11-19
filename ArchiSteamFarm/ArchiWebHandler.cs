@@ -61,7 +61,6 @@ namespace ArchiSteamFarm {
 		private readonly Bot Bot;
 		private readonly SemaphoreSlim PublicInventorySemaphore = new SemaphoreSlim(1, 1);
 		private readonly SemaphoreSlim SessionSemaphore = new SemaphoreSlim(1, 1);
-		private readonly SemaphoreSlim TradeTokenSemaphore = new SemaphoreSlim(1, 1);
 		private readonly WebBrowser WebBrowser;
 
 		private string CachedApiKey;
@@ -81,7 +80,6 @@ namespace ArchiSteamFarm {
 			ApiKeySemaphore.Dispose();
 			PublicInventorySemaphore.Dispose();
 			SessionSemaphore.Dispose();
-			TradeTokenSemaphore.Dispose();
 			WebBrowser.Dispose();
 		}
 
@@ -886,47 +884,6 @@ namespace ArchiSteamFarm {
 			}
 
 			return resultInSeconds == 0 ? (byte) 0 : (byte) (resultInSeconds / 86400);
-		}
-
-		internal async Task<string> GetTradeToken() {
-			await TradeTokenSemaphore.WaitAsync().ConfigureAwait(false);
-
-			try {
-				const string request = "/my/tradeoffers/privacy?l=english";
-				HtmlDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
-
-				if (htmlDocument == null) {
-					return null;
-				}
-
-				HtmlNode tokenNode = htmlDocument.DocumentNode.SelectSingleNode("//input[@class='trade_offer_access_url']");
-				if (tokenNode == null) {
-					Bot.ArchiLogger.LogNullError(nameof(tokenNode));
-					return null;
-				}
-
-				string value = tokenNode.GetAttributeValue("value", null);
-				if (string.IsNullOrEmpty(value)) {
-					Bot.ArchiLogger.LogNullError(nameof(value));
-					return null;
-				}
-
-				int index = value.IndexOf("token=", StringComparison.Ordinal);
-				if (index < 0) {
-					Bot.ArchiLogger.LogNullError(nameof(index));
-					return null;
-				}
-
-				index += 6;
-				if (index + 8 < value.Length) {
-					Bot.ArchiLogger.LogNullError(nameof(index));
-					return null;
-				}
-
-				return value.Substring(index, 8);
-			} finally {
-				TradeTokenSemaphore.Release();
-			}
 		}
 
 		internal async Task<bool?> HandleConfirmation(string deviceID, string confirmationHash, uint time, ulong confirmationID, ulong confirmationKey, bool accept) {
