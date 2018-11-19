@@ -1,4 +1,4 @@
-﻿//     _                _      _  ____   _                           _____
+//     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
@@ -66,7 +66,6 @@ namespace ArchiSteamFarm {
 
 		private string CachedApiKey;
 		private bool? CachedPublicInventory;
-		private string CachedTradeToken;
 		private DateTime LastSessionCheck;
 		private DateTime LastSessionRefresh;
 		private bool MarkingInventoryScheduled;
@@ -890,17 +889,9 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<string> GetTradeToken() {
-			if (CachedTradeToken != null) {
-				return CachedTradeToken;
-			}
-
 			await TradeTokenSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				if (CachedTradeToken != null) {
-					return CachedTradeToken;
-				}
-
 				const string request = "/my/tradeoffers/privacy?l=english";
 				HtmlDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
 
@@ -932,8 +923,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				CachedTradeToken = value.Substring(index, 8);
-				return CachedTradeToken;
+				return value.Substring(index, 8);
 			} finally {
 				TradeTokenSemaphore.Release();
 			}
@@ -1177,7 +1167,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void OnDisconnected() {
-			CachedApiKey = CachedTradeToken = null;
+			CachedApiKey = null;
 			CachedPublicInventory = null;
 			SteamID = 0;
 		}
