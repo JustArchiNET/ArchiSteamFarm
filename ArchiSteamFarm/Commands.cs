@@ -85,6 +85,8 @@ namespace ArchiSteamFarm {
 							return ResponseIdleBlacklist(steamID);
 						case "IQ":
 							return ResponseIdleQueue(steamID);
+						case "LEVEL":
+							return await ResponseLevel(steamID).ConfigureAwait(false);
 						case "LOOT":
 							return await ResponseLoot(steamID).ConfigureAwait(false);
 						case "LOOT&":
@@ -188,6 +190,8 @@ namespace ArchiSteamFarm {
 							}
 
 							return await ResponseIdleQueueRemove(steamID, args[1]).ConfigureAwait(false);
+						case "LEVEL":
+							return await ResponseLevel(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "LOOT":
 							return await ResponseLoot(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "LOOT^":
@@ -236,7 +240,7 @@ namespace ArchiSteamFarm {
 							return await ResponsePause(steamID, true, args[1]).ConfigureAwait(false);
 						case "PLAY":
 							if (args.Length > 2) {
-								return await ResponsePlay(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
+								return await ResponsePlay(steamID, args[1], Utilities.GetArgsAsText(message, 2)).ConfigureAwait(false);
 							}
 
 							return await ResponsePlay(steamID, args[1]).ConfigureAwait(false);
@@ -1169,6 +1173,46 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 
+		private async Task<string> ResponseLevel(ulong steamID) {
+			if (steamID == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(steamID));
+				return null;
+			}
+
+			if (!Bot.IsConnectedAndLoggedOn) {
+				return FormatBotResponse(Strings.BotNotConnected);
+			}
+
+			if (!Bot.IsMaster(steamID)) {
+				return null;
+			}
+
+			uint? level = await Bot.ArchiHandler.GetLevel().ConfigureAwait(false);
+
+			if (!level.HasValue) {
+				return FormatBotResponse(Strings.WarningFailed);
+			}
+
+			return FormatBotResponse(string.Format(Strings.BotLevel, level.Value));
+		}
+
+		private static async Task<string> ResponseLevel(ulong steamID, string botNames) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botNames)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
+				return null;
+			}
+
+			HashSet<Bot> bots = Bot.GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
+			}
+
+			IList<string> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseLevel(steamID))).ConfigureAwait(false);
+
+			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+		}
+
 		private async Task<string> ResponseLoot(ulong steamID) {
 			if (steamID == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID));
@@ -1555,7 +1599,7 @@ namespace ArchiSteamFarm {
 
 			foreach (string game in games) {
 				if (!uint.TryParse(game, out uint gameID) || (gameID == 0)) {
-					gameName.AppendLine((gameName.Length > 0 ? " " : "") + game);
+					gameName.Append((gameName.Length > 0 ? " " : "") + game);
 					continue;
 				}
 
@@ -2316,8 +2360,8 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			(bool success, Version version) = await Actions.Update().ConfigureAwait(false);
-			return FormatStaticResponse((success ? Strings.Success : Strings.WarningFailed) + " " + (version != null ? SharedInfo.Version >= version ? "V" + SharedInfo.Version + " ≥ V" + version : "V" + version : ""));
+			(bool success, string message) = await Actions.Update().ConfigureAwait(false);
+			return FormatStaticResponse((success ? Strings.Success : Strings.WarningFailed) + (!string.IsNullOrEmpty(message) ? " " + message : ""));
 		}
 
 		private string ResponseVersion(ulong steamID) {

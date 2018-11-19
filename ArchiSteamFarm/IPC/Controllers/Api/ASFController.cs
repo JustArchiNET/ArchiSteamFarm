@@ -20,7 +20,6 @@
 // limitations under the License.
 
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using ArchiSteamFarm.IPC.Requests;
@@ -39,13 +38,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		public ActionResult<GenericResponse<ASFResponse>> ASFGet() {
 			uint memoryUsage = (uint) GC.GetTotalMemory(false) / 1024;
 
-			DateTime processStartTime;
-
-			using (Process process = Process.GetCurrentProcess()) {
-				processStartTime = process.StartTime;
-			}
-
-			ASFResponse result = new ASFResponse(SharedInfo.BuildInfo.Variant, Program.GlobalConfig, memoryUsage, processStartTime, SharedInfo.Version);
+			ASFResponse result = new ASFResponse(SharedInfo.BuildInfo.Variant, Program.GlobalConfig, memoryUsage, RuntimeCompatibility.ProcessStartTime, SharedInfo.Version);
 			return Ok(new GenericResponse<ASFResponse>(result));
 		}
 
@@ -103,19 +96,15 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		///     Makes ASF update itself.
 		/// </summary>
 		[HttpPost("Update")]
-		[ProducesResponseType(typeof(GenericResponse<Version>), 200)]
-		public async Task<ActionResult<GenericResponse<Version>>> UpdatePost() {
-			(bool success, Version version) = await Actions.Update().ConfigureAwait(false);
+		[ProducesResponseType(typeof(GenericResponse), 200)]
+		public async Task<ActionResult<GenericResponse>> UpdatePost() {
+			(bool success, string message) = await Actions.Update().ConfigureAwait(false);
 
-			GenericResponse<Version> response;
-
-			if (!success && (version != null) && (SharedInfo.Version >= version)) {
-				response = new GenericResponse<Version>(false, "V" + SharedInfo.Version + " ≥ V" + version, version);
-			} else {
-				response = new GenericResponse<Version>(success, version);
+			if (string.IsNullOrEmpty(message)) {
+				message = success ? Strings.Success : Strings.WarningFailed;
 			}
 
-			return Ok(response);
+			return Ok(new GenericResponse(success, message));
 		}
 	}
 }

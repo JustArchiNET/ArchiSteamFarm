@@ -661,6 +661,15 @@ Yığın izleme:
   <data name="TargetBotNotConnected" xml:space="preserve">
     <value>Hedef bot örneği bağlı değil!</value>
   </data>
-  
-  
+  <data name="BotWalletBalance" xml:space="preserve">
+    <value>Cüzdan bakiyesi: {0} {1}</value>
+    <comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
+  </data>
+  <data name="BotHasNoWallet" xml:space="preserve">
+    <value>Botun cüzdanı yok.</value>
+  </data>
+  <data name="BotLevel" xml:space="preserve">
+    <value>Bot seviyesi {0}.</value>
+    <comment>{0} will be replaced by bot's level</comment>
+  </data>
 </root>

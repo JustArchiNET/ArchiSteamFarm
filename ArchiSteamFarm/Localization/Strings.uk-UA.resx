@@ -668,4 +668,8 @@
   <data name="BotHasNoWallet" xml:space="preserve">
     <value>Бот не має гаманця.</value>
   </data>
+  <data name="BotLevel" xml:space="preserve">
+    <value>Рівень бота {0}.</value>
+    <comment>{0} will be replaced by bot's level</comment>
+  </data>
 </root>

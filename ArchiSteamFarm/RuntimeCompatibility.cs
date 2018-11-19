@@ -20,20 +20,36 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 #if NETFRAMEWORK
 using System.Collections.Generic;
-#endif
-
-#if NETFRAMEWORK
 using System.Net.WebSockets;
 using System.Threading;
 #endif
 
 namespace ArchiSteamFarm {
 	internal static class RuntimeCompatibility {
+#if NETFRAMEWORK
+		private static readonly DateTime SavedProcessStartTime = DateTime.UtcNow;
+#endif
+
 		internal static bool IsRunningOnMono => Type.GetType("Mono.Runtime") != null;
+
+		internal static DateTime ProcessStartTime {
+			get {
+#if NETFRAMEWORK
+				if (IsRunningOnMono) {
+					return SavedProcessStartTime;
+				}
+#endif
+
+				using (Process process = Process.GetCurrentProcess()) {
+					return process.StartTime;
+				}
+			}
+		}
 
 #pragma warning disable 1998
 		internal static class File {
