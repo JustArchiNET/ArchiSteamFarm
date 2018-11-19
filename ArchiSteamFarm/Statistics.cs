@@ -1,4 +1,4 @@
-﻿//     _                _      _  ____   _                           _____
+//     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
@@ -103,7 +103,7 @@ namespace ArchiSteamFarm {
 
 				// Don't announce if we don't meet conditions
 				string tradeToken;
-				if (!await ShouldAnnounce().ConfigureAwait(false) || string.IsNullOrEmpty(tradeToken = await Bot.ArchiWebHandler.GetTradeToken().ConfigureAwait(false))) {
+				if (!await ShouldAnnounce().ConfigureAwait(false) || string.IsNullOrEmpty(tradeToken = await Bot.ArchiHandler.GetTradeToken().ConfigureAwait(false))) {
 					LastAnnouncementCheck = DateTime.UtcNow;
 					ShouldSendHeartBeats = false;
 					return;

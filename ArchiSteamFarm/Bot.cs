@@ -1,4 +1,4 @@
-﻿//     _                _      _  ____   _                           _____
+//     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
@@ -629,7 +629,7 @@ namespace ArchiSteamFarm {
 
 			Bot targetBot = Bots.Values.FirstOrDefault(bot => bot.SteamID == steamID);
 			if (targetBot != null) {
-				string targetTradeToken = await targetBot.ArchiWebHandler.GetTradeToken().ConfigureAwait(false);
+				string targetTradeToken = await targetBot.ArchiHandler.GetTradeToken().ConfigureAwait(false);
 				if (!string.IsNullOrEmpty(targetTradeToken)) {
 					return await ArchiWebHandler.GetTradeHoldDurationForUser(steamID, targetTradeToken).ConfigureAwait(false);
 				}

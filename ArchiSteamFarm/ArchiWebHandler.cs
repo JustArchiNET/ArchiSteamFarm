@@ -1,4 +1,4 @@
-﻿//     _                _      _  ____   _                           _____
+//     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
@@ -61,12 +61,10 @@ namespace ArchiSteamFarm {
 		private readonly Bot Bot;
 		private readonly SemaphoreSlim PublicInventorySemaphore = new SemaphoreSlim(1, 1);
 		private readonly SemaphoreSlim SessionSemaphore = new SemaphoreSlim(1, 1);
-		private readonly SemaphoreSlim TradeTokenSemaphore = new SemaphoreSlim(1, 1);
 		private readonly WebBrowser WebBrowser;
 
 		private string CachedApiKey;
 		private bool? CachedPublicInventory;
-		private string CachedTradeToken;
 		private DateTime LastSessionCheck;
 		private DateTime LastSessionRefresh;
 		private bool MarkingInventoryScheduled;
@@ -82,7 +80,6 @@ namespace ArchiSteamFarm {
 			ApiKeySemaphore.Dispose();
 			PublicInventorySemaphore.Dispose();
 			SessionSemaphore.Dispose();
-			TradeTokenSemaphore.Dispose();
 			WebBrowser.Dispose();
 		}
 
@@ -889,56 +886,6 @@ namespace ArchiSteamFarm {
 			return resultInSeconds == 0 ? (byte) 0 : (byte) (resultInSeconds / 86400);
 		}
 
-		internal async Task<string> GetTradeToken() {
-			if (CachedTradeToken != null) {
-				return CachedTradeToken;
-			}
-
-			await TradeTokenSemaphore.WaitAsync().ConfigureAwait(false);
-
-			try {
-				if (CachedTradeToken != null) {
-					return CachedTradeToken;
-				}
-
-				const string request = "/my/tradeoffers/privacy?l=english";
-				HtmlDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
-
-				if (htmlDocument == null) {
-					return null;
-				}
-
-				HtmlNode tokenNode = htmlDocument.DocumentNode.SelectSingleNode("//input[@class='trade_offer_access_url']");
-				if (tokenNode == null) {
-					Bot.ArchiLogger.LogNullError(nameof(tokenNode));
-					return null;
-				}
-
-				string value = tokenNode.GetAttributeValue("value", null);
-				if (string.IsNullOrEmpty(value)) {
-					Bot.ArchiLogger.LogNullError(nameof(value));
-					return null;
-				}
-
-				int index = value.IndexOf("token=", StringComparison.Ordinal);
-				if (index < 0) {
-					Bot.ArchiLogger.LogNullError(nameof(index));
-					return null;
-				}
-
-				index += 6;
-				if (index + 8 < value.Length) {
-					Bot.ArchiLogger.LogNullError(nameof(index));
-					return null;
-				}
-
-				CachedTradeToken = value.Substring(index, 8);
-				return CachedTradeToken;
-			} finally {
-				TradeTokenSemaphore.Release();
-			}
-		}
-
 		internal async Task<bool?> HandleConfirmation(string deviceID, string confirmationHash, uint time, ulong confirmationID, ulong confirmationKey, bool accept) {
 			if (string.IsNullOrEmpty(deviceID) || string.IsNullOrEmpty(confirmationHash) || (time == 0) || (confirmationID == 0) || (confirmationKey == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time) + " || " + nameof(confirmationID) + " || " + nameof(confirmationKey));
@@ -1177,7 +1124,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void OnDisconnected() {
-			CachedApiKey = CachedTradeToken = null;
+			CachedApiKey = null;
 			CachedPublicInventory = null;
 			SteamID = 0;
 		}
