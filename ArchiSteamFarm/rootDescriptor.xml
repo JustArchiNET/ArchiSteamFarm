@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 
 <linker>
-  <assembly fullname="System.ComponentModel.TypeConverter">
-    <type fullname="System.ComponentModel.*" required="true" />
-  </assembly>
+	<assembly fullname="System.ComponentModel.TypeConverter">
+		<type fullname="System.ComponentModel.*" required="true" />
+	</assembly>
 </linker>
