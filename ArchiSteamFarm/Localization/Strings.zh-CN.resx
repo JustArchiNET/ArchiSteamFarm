@@ -215,7 +215,7 @@
     <value>正在刷新会话！</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
-    <value>拒绝交易：{0}</value>
+    <value>驳回交易：{0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
@@ -646,7 +646,7 @@
     <value>正在刷新游戏包数据……</value>
   </data>
   <data name="WarningDeprecated" xml:space="preserve">
-    <value>{0} 用法已被废弃，并将在程序的未来版本中被移除。请改用 {1}。</value>
+    <value>{0} 用法已被弃用，并将在程序的未来版本中被移除。请改用 {1}。</value>
     <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
   </data>
   <data name="BotAcceptedDonationTrade" xml:space="preserve">

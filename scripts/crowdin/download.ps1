@@ -9,7 +9,7 @@ $crowdinConfigFileName = 'crowdin.yml'
 $crowdinIdentityFileName = 'crowdin_identity.yml'
 $crowdinIdentityPath = "$archiCrowdinPath\$crowdinIdentityFileName"
 
-$archiTargets = @('ASF-ui', 'ASF-WebConfigGenerator', 'this')
+$archiTargets = @('ASF-ui', 'ASF-WebConfigGenerator')
 
 Push-Location "$PSScriptRoot"
 
@@ -30,8 +30,10 @@ try {
 		throw "$crowdinIdentityPath could not be found, aborting."
 	}
 
-	$ErrorActionPreference = 'Continue'
 	& "$archiCrowdinScriptPath" -t:$archiTargets -d -c -p
+	& "$archiCrowdinScriptPath" -d -p
+	& "$archiCrowdinScriptPath" -t:wiki -c -p
+	& "$archiCrowdinScriptPath" -c -p
 } finally {
 	Pop-Location
 }

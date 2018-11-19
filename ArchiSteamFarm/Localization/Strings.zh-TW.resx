@@ -584,7 +584,7 @@
     <value>如果您對 ASF 的實際運作方式有疑慮，請至我們 wiki 上的隱私政策章節中查看！</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>看來這是你首次使用ASF，歡迎！</value>
+    <value>看來這是你首次使用 ASF，歡迎！</value>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>您提供的 CurrentCulture 無效，ASF 將以預設值繼續運行！</value>
