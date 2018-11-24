@@ -1,10 +1,10 @@
 FROM node AS build-node
 WORKDIR /app
 COPY ASF-ui .
-RUN echo "Node.js: $(node --version)" && \
+RUN echo "node: $(node --version)" && \
     echo "npm: $(npm --version)" && \
-    npm ci --no-progress && \
-    npm run-script deploy --no-progress
+    npm ci && \
+    npm run-script deploy
 
 FROM microsoft/dotnet:2.1-sdk AS build-dotnet
 ENV NET_CORE_VERSION netcoreapp2.1
