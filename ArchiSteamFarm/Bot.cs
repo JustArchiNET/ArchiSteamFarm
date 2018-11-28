@@ -678,8 +678,13 @@ namespace ArchiSteamFarm {
 							continue;
 						}
 
+						// Valid formats:
+						// Key (name will be the same as key and replaced from redemption result, if possible)
+						// Name + Key (user provides both, if name is equal to key, above logic is used, otherwise name is kept)
+						// Name + <Ignored> + Key (BGR output format, we include extra properties in the middle, those are ignored during import)
 						string[] parsedArgs = line.Split(DefaultBackgroundKeysRedeemerSeparator, StringSplitOptions.RemoveEmptyEntries);
-						if (parsedArgs.Length < 2) {
+
+						if (parsedArgs.Length < 1) {
 							ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, line));
 							continue;
 						}
@@ -2355,6 +2360,11 @@ namespace ArchiSteamFarm {
 
 					if (rateLimited) {
 						break;
+					}
+
+					// If user omitted the name or intentionally provided the same name as key, replace it with the Steam result
+					if (name.Equals(key) && (result.Items != null) && (result.Items.Count > 0)) {
+						name = string.Join(", ", result.Items.Values);
 					}
 
 					await BotDatabase.RemoveGameToRedeemInBackground(key).ConfigureAwait(false);
