@@ -823,7 +823,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			return Bot.IsFamilySharing(steamID) ? FormatBotResponse("https://github.com/" + SharedInfo.GithubRepo + "/wiki/Commands") : null;
+			return Bot.IsFamilySharing(steamID) ? FormatBotResponse(SharedInfo.ProjectURL + "/wiki/Commands") : null;
 		}
 
 		private string ResponseIdleBlacklist(ulong steamID) {
