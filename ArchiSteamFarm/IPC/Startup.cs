@@ -74,7 +74,7 @@ namespace ArchiSteamFarm.IPC {
 			app.UseSwagger();
 
 			// Use friendly swagger UI
-			app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/ASF/swagger.json", "ASF API"));
+			app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/" + SharedInfo.ASF + "/swagger.json", SharedInfo.ASF + " API"));
 
 			// We're using index for URL routing in our static files so re-execute all non-API calls on /
 			app.UseWhen(context => !context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), appBuilder => appBuilder.UseStatusCodePagesWithReExecute("/"));
@@ -114,7 +114,10 @@ namespace ArchiSteamFarm.IPC {
 						new OpenApiSecurityRequirement {
 							{
 								new OpenApiSecurityScheme {
-									Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = nameof(GlobalConfig.IPCPassword) }
+									Reference = new OpenApiReference {
+										Id = nameof(GlobalConfig.IPCPassword),
+										Type = ReferenceType.SecurityScheme
+									}
 								},
 
 								new string[0]
@@ -125,7 +128,7 @@ namespace ArchiSteamFarm.IPC {
 					c.DescribeAllEnumsAsStrings();
 					c.EnableAnnotations();
 					c.SwaggerDoc(
-						"ASF", new OpenApiInfo {
+						SharedInfo.ASF, new OpenApiInfo {
 							Contact = new OpenApiContact {
 								Name = SharedInfo.GithubRepo,
 								Url = new Uri(SharedInfo.ProjectURL)
@@ -136,7 +139,7 @@ namespace ArchiSteamFarm.IPC {
 								Url = new Uri(SharedInfo.LicenseURL)
 							},
 
-							Title = "ASF API"
+							Title = SharedInfo.ASF + " API"
 						}
 					);
 
