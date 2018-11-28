@@ -122,15 +122,16 @@
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF vill automatisk undersøge for nye versioner hver {0}.</value>
+    <value>ASF vil automatisk undersøge for nye versioner hver {0}.</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
   </data>
   <data name="Content" xml:space="preserve">
-    <value>Indhold: {0}</value>
+    <value>Indhold:
+{0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Konfigureret {0} egenskab er forkert: {1}</value>
+    <value>Konfigurerede {0} egenskab er ugyldig: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
@@ -138,7 +139,7 @@
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
-    <value>Undtagelse: {0}(){1}
+    <value>Undtagelse: {0}() {1}
 StackTrace:
 {2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
@@ -660,7 +661,15 @@ StackTrace:
   <data name="TargetBotNotConnected" xml:space="preserve">
     <value>Mål bot instans er ikke forbundet!</value>
   </data>
-  
-  
-  
+  <data name="BotWalletBalance" xml:space="preserve">
+    <value>Tegnebogssaldo: {0} {1}</value>
+    <comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
+  </data>
+  <data name="BotHasNoWallet" xml:space="preserve">
+    <value>Bot har ingen tegnebog.</value>
+  </data>
+  <data name="BotLevel" xml:space="preserve">
+    <value>Bot har niveau {0}.</value>
+    <comment>{0} will be replaced by bot's level</comment>
+  </data>
 </root>
