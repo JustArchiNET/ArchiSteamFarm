@@ -2362,12 +2362,12 @@ namespace ArchiSteamFarm {
 						break;
 					}
 
+					await BotDatabase.RemoveGameToRedeemInBackground(key).ConfigureAwait(false);
+
 					// If user omitted the name or intentionally provided the same name as key, replace it with the Steam result
 					if (name.Equals(key) && (result.Items != null) && (result.Items.Count > 0)) {
 						name = string.Join(", ", result.Items.Values);
 					}
-
-					await BotDatabase.RemoveGameToRedeemInBackground(key).ConfigureAwait(false);
 
 					string logEntry = name + DefaultBackgroundKeysRedeemerSeparator + "[" + result.PurchaseResultDetail + "]" + ((result.Items != null) && (result.Items.Count > 0) ? DefaultBackgroundKeysRedeemerSeparator + string.Join(", ", result.Items) : "") + DefaultBackgroundKeysRedeemerSeparator + key;
 
