@@ -181,26 +181,36 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			StringResponse response = await UrlGetToString(request, referer, maxTries).ConfigureAwait(false);
-			if (string.IsNullOrEmpty(response?.Content)) {
-				return null;
-			}
+			for (byte i = 0; i < maxTries; i++) {
+				StringResponse response = await UrlGetToString(request, referer, 1).ConfigureAwait(false);
 
-			T obj;
-
-			try {
-				obj = JsonConvert.DeserializeObject<T>(response.Content);
-			} catch (JsonException e) {
-				ArchiLogger.LogGenericException(e);
-
-				if (Debugging.IsUserDebugging) {
-					ArchiLogger.LogGenericDebug(string.Format(Strings.Content, response.Content));
+				if (string.IsNullOrEmpty(response?.Content)) {
+					continue;
 				}
 
-				return null;
+				T obj;
+
+				try {
+					obj = JsonConvert.DeserializeObject<T>(response.Content);
+				} catch (JsonException e) {
+					ArchiLogger.LogGenericWarningException(e);
+
+					if (Debugging.IsUserDebugging) {
+						ArchiLogger.LogGenericDebug(string.Format(Strings.Content, response.Content));
+					}
+
+					continue;
+				}
+
+				return new ObjectResponse<T>(response, obj);
 			}
 
-			return new ObjectResponse<T>(response, obj);
+			if (maxTries > 1) {
+				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+			}
+
+			return null;
 		}
 
 		internal async Task<StringResponse> UrlGetToString(string request, string referer = null, byte maxTries = MaxTries) {
@@ -233,21 +243,31 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			StringResponse response = await UrlGetToString(request, referer, maxTries).ConfigureAwait(false);
-			if (string.IsNullOrEmpty(response?.Content)) {
-				return null;
+			for (byte i = 0; i < maxTries; i++) {
+				StringResponse response = await UrlGetToString(request, referer, 1).ConfigureAwait(false);
+
+				if (string.IsNullOrEmpty(response?.Content)) {
+					continue;
+				}
+
+				XmlDocument xmlDocument = new XmlDocument();
+
+				try {
+					xmlDocument.LoadXml(response.Content);
+				} catch (XmlException e) {
+					ArchiLogger.LogGenericWarningException(e);
+					continue;
+				}
+
+				return new XmlDocumentResponse(response, xmlDocument);
 			}
 
-			XmlDocument xmlDocument = new XmlDocument();
-
-			try {
-				xmlDocument.LoadXml(response.Content);
-			} catch (XmlException e) {
-				ArchiLogger.LogGenericException(e);
-				return null;
+			if (maxTries > 1) {
+				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 			}
 
-			return new XmlDocumentResponse(response, xmlDocument);
+			return null;
 		}
 
 		internal async Task<BasicResponse> UrlHead(string request, string referer = null, byte maxTries = MaxTries) {
@@ -314,26 +334,36 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			StringResponse response = await UrlPostToString(request, data, referer, maxTries).ConfigureAwait(false);
-			if (string.IsNullOrEmpty(response?.Content)) {
-				return null;
-			}
+			for (byte i = 0; i < maxTries; i++) {
+				StringResponse response = await UrlPostToString(request, data, referer, maxTries).ConfigureAwait(false);
 
-			T obj;
-
-			try {
-				obj = JsonConvert.DeserializeObject<T>(response.Content);
-			} catch (JsonException e) {
-				ArchiLogger.LogGenericException(e);
-
-				if (Debugging.IsUserDebugging) {
-					ArchiLogger.LogGenericDebug(string.Format(Strings.Content, response.Content));
+				if (string.IsNullOrEmpty(response?.Content)) {
+					continue;
 				}
 
-				return null;
+				T obj;
+
+				try {
+					obj = JsonConvert.DeserializeObject<T>(response.Content);
+				} catch (JsonException e) {
+					ArchiLogger.LogGenericWarningException(e);
+
+					if (Debugging.IsUserDebugging) {
+						ArchiLogger.LogGenericDebug(string.Format(Strings.Content, response.Content));
+					}
+
+					continue;
+				}
+
+				return new ObjectResponse<T>(response, obj);
 			}
 
-			return new ObjectResponse<T>(response, obj);
+			if (maxTries > 1) {
+				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+			}
+
+			return null;
 		}
 
 		private async Task<HttpResponseMessage> InternalGet(string request, string referer = null, HttpCompletionOption httpCompletionOptions = HttpCompletionOption.ResponseContentRead) {
