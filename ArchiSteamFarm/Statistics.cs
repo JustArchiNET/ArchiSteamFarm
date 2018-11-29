@@ -244,18 +244,10 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			Dictionary<ulong, uint> classIDs = new Dictionary<ulong, uint>();
+			Dictionary<(uint AppID, Steam.Asset.EType Type), Dictionary<ulong, uint>> ourInventoryState = Trading.GetInventoryState(ourInventory);
 
-			foreach (Steam.Asset item in ourInventory) {
-				if (classIDs.TryGetValue(item.ClassID, out uint amount)) {
-					classIDs[item.ClassID] = amount + item.Amount;
-				} else {
-					classIDs.Add(item.ClassID, item.Amount);
-				}
-			}
-
-			if (classIDs.Values.All(amount => amount <= 1)) {
-				// User doesn't have any dupes in the inventory
+			if (ourInventoryState.Values.All(set => set.Values.All(amount => amount <= 1))) {
+				// User doesn't have any more dupes in the inventory
 				Bot.ArchiLogger.LogGenericDebug("No dupes in inventory, returning");
 				return false;
 			}
@@ -265,8 +257,6 @@ namespace ArchiSteamFarm {
 				Bot.ArchiLogger.LogGenericDebug("No listed users, returning");
 				return false;
 			}
-
-			Dictionary<(uint AppID, Steam.Asset.EType Type), Dictionary<ulong, uint>> ourInventoryState = Trading.GetInventoryState(ourInventory);
 
 			byte emptyMatches = 0;
 			HashSet<(uint AppID, Steam.Asset.EType Type)> skippedSets = new HashSet<(uint AppID, Steam.Asset.EType Type)>();
@@ -381,22 +371,14 @@ namespace ArchiSteamFarm {
 
 				Bot.ArchiLogger.LogGenericDebug("Trade succeeded!");
 
-				foreach (KeyValuePair<ulong, uint> classIDToGive in classIDsToGive) {
-					if (!classIDs.TryGetValue(classIDToGive.Key, out uint amount)) {
-						continue;
-					}
-
-					if (amount <= classIDToGive.Value) {
-						classIDs.Remove(classIDToGive.Key);
-					} else {
-						classIDs[classIDToGive.Key] = amount - classIDToGive.Value;
-					}
+				foreach ((uint AppID, Steam.Asset.EType Type) skippedSetThisTrade in skippedSetsThisTrade) {
+					ourInventoryState.Remove(skippedSetThisTrade);
 				}
 
-				if (classIDs.Values.All(amount => amount <= 1)) {
+				if (ourInventoryState.Values.All(set => set.Values.All(amount => amount <= 1))) {
 					// User doesn't have any more dupes in the inventory
 					Bot.ArchiLogger.LogGenericDebug("No dupes in inventory, returning");
-					return false;
+					break;
 				}
 
 				skippedSets.UnionWith(skippedSetsThisTrade);
