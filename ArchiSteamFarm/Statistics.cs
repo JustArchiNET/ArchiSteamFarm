@@ -30,8 +30,8 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	internal sealed class Statistics : IDisposable {
-		private const byte MaxMatchedBotsHard = 20;
-		private const byte MaxMatchesBotsSoft = 10;
+		private const byte MaxMatchedBotsHard = 40;
+		private const byte MaxMatchesBotsSoft = 20;
 		private const byte MaxMatchingRounds = 10;
 		private const byte MinAnnouncementCheckTTL = 6; // Minimum amount of hours we must wait before checking eligibility for Announcement, should be lower than MinPersonaStateTTL
 		private const byte MinHeartBeatTTL = 10; // Minimum amount of minutes we must wait before sending next HeartBeat
