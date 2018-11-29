@@ -294,7 +294,7 @@ namespace ArchiSteamFarm {
 					return (false, Strings.BotLootingFailed);
 				}
 
-				(bool success, HashSet<ulong> mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(targetSteamID, inventory, Bot.BotConfig.SteamTradeToken).ConfigureAwait(false);
+				(bool success, HashSet<ulong> mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(targetSteamID, inventory, token: Bot.BotConfig.SteamTradeToken).ConfigureAwait(false);
 
 				if ((mobileTradeOfferIDs != null) && (mobileTradeOfferIDs.Count > 0) && Bot.HasMobileAuthenticator) {
 					if (!await AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, targetSteamID, mobileTradeOfferIDs, true).ConfigureAwait(false)) {

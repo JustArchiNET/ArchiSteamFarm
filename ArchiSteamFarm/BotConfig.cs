@@ -401,7 +401,8 @@ namespace ArchiSteamFarm {
 			SteamTradeMatcher = 2,
 			MatchEverything = 4,
 			DontAcceptBotTrades = 8,
-			All = AcceptDonations | SteamTradeMatcher | MatchEverything | DontAcceptBotTrades
+			MatchActively = 16,
+			All = AcceptDonations | SteamTradeMatcher | MatchEverything | DontAcceptBotTrades | MatchActively
 		}
 
 		// ReSharper disable UnusedMember.Global
