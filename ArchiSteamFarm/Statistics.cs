@@ -409,11 +409,15 @@ namespace ArchiSteamFarm {
 		private sealed class ListedUser {
 			internal readonly HashSet<Steam.Asset.EType> MatchableTypes = new HashSet<Steam.Asset.EType>();
 
+#pragma warning disable 649
 			[JsonProperty(PropertyName = "steam_id", Required = Required.Always)]
 			internal readonly ulong SteamID;
+#pragma warning restore 649
 
+#pragma warning disable 649
 			[JsonProperty(PropertyName = "trade_token", Required = Required.Always)]
 			internal readonly string TradeToken;
+#pragma warning restore 649
 
 			internal float Score => GamesCount / (float) ItemsCount;
 
