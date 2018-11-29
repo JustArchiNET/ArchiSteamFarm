@@ -47,6 +47,7 @@ namespace ArchiSteamFarm {
 		};
 
 		private readonly Bot Bot;
+		private readonly SemaphoreSlim MatchActivelySemaphore = new SemaphoreSlim(1, 1);
 		private readonly Timer MatchActivelyTimer;
 		private readonly SemaphoreSlim RequestsSemaphore = new SemaphoreSlim(1, 1);
 
@@ -68,6 +69,7 @@ namespace ArchiSteamFarm {
 		}
 
 		public void Dispose() {
+			MatchActivelySemaphore.Dispose();
 			MatchActivelyTimer.Dispose();
 			RequestsSemaphore.Dispose();
 		}
@@ -206,23 +208,32 @@ namespace ArchiSteamFarm {
 
 		private async Task MatchActively() {
 			// TODO: This function has a lot of debug leftovers for logic testing, once that period is over, get rid of them
-			bool match = true;
 
-			Bot.ArchiLogger.LogGenericDebug("Matching started!");
-
-			for (byte i = 0; (i < MaxMatchingRounds) && match; i++) {
-				if (i > 0) {
-					// After each round we wait at least 5 minutes for all bots to react
-					Bot.ArchiLogger.LogGenericDebug("Cooldown...");
-					await Task.Delay(5 * 60 * 1000).ConfigureAwait(false);
-				}
-
-				Bot.ArchiLogger.LogGenericDebug("Now matching, round #" + i);
-				match = await MatchActivelyRound().ConfigureAwait(false);
-				Bot.ArchiLogger.LogGenericDebug("Matching ended, round #" + i);
+			if (!await MatchActivelySemaphore.WaitAsync(0).ConfigureAwait(false)) {
+				return;
 			}
 
-			Bot.ArchiLogger.LogGenericDebug("Matching finished!");
+			try {
+				bool match = true;
+
+				Bot.ArchiLogger.LogGenericDebug("Matching started!");
+
+				for (byte i = 0; (i < MaxMatchingRounds) && match; i++) {
+					if (i > 0) {
+						// After each round we wait at least 5 minutes for all bots to react
+						Bot.ArchiLogger.LogGenericDebug("Cooldown...");
+						await Task.Delay(5 * 60 * 1000).ConfigureAwait(false);
+					}
+
+					Bot.ArchiLogger.LogGenericDebug("Now matching, round #" + i);
+					match = await MatchActivelyRound().ConfigureAwait(false);
+					Bot.ArchiLogger.LogGenericDebug("Matching ended, round #" + i);
+				}
+
+				Bot.ArchiLogger.LogGenericDebug("Matching finished!");
+			} finally {
+				MatchActivelySemaphore.Release();
+			}
 		}
 
 		private async Task<bool> MatchActivelyRound() {
