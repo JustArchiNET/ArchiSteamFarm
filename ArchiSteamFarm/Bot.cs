@@ -1592,7 +1592,7 @@ namespace ArchiSteamFarm {
 
 			if (BotConfig.UseLoginKeys) {
 				// Login keys are not guaranteed to be valid, we should use them only if we don't have full details available from the user
-				if (string.IsNullOrEmpty(BotConfig.DecryptedSteamPassword) || !HasMobileAuthenticator) {
+				if (string.IsNullOrEmpty(BotConfig.DecryptedSteamPassword) || (string.IsNullOrEmpty(AuthCode) && string.IsNullOrEmpty(TwoFactorCode) && !HasMobileAuthenticator)) {
 					loginKey = BotDatabase.LoginKey;
 
 					// Decrypt login key if needed
