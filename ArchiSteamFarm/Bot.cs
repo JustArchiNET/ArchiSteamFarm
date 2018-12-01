@@ -1591,11 +1591,14 @@ namespace ArchiSteamFarm {
 			string loginKey = null;
 
 			if (BotConfig.UseLoginKeys) {
-				loginKey = BotDatabase.LoginKey;
+				// Login keys are not guaranteed to be valid, we should use them only if we don't have full details available from the user
+				if (string.IsNullOrEmpty(BotConfig.DecryptedSteamPassword) || !HasMobileAuthenticator) {
+					loginKey = BotDatabase.LoginKey;
 
-				// Decrypt login key if needed
-				if (!string.IsNullOrEmpty(loginKey) && (loginKey.Length > 19) && (BotConfig.PasswordFormat != ArchiCryptoHelper.ECryptoMethod.PlainText)) {
-					loginKey = ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, loginKey);
+					// Decrypt login key if needed
+					if (!string.IsNullOrEmpty(loginKey) && (loginKey.Length > 19) && (BotConfig.PasswordFormat != ArchiCryptoHelper.ECryptoMethod.PlainText)) {
+						loginKey = ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, loginKey);
+					}
 				}
 			} else {
 				// If we're not using login keys, ensure we don't have any saved
@@ -1620,7 +1623,7 @@ namespace ArchiSteamFarm {
 			ArchiLogger.LogGenericInfo(Strings.BotLoggingIn);
 
 			if (string.IsNullOrEmpty(TwoFactorCode) && HasMobileAuthenticator) {
-				// In this case, we can also use ASF 2FA for providing 2FA token, even if it's not required
+				// We should always include 2FA token, even if it's not required
 				TwoFactorCode = await BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
 			}
 
