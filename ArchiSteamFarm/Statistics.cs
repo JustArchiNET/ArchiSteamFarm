@@ -386,13 +386,13 @@ namespace ArchiSteamFarm {
 					ourInventoryState.Remove(skippedSetThisTrade);
 				}
 
+				skippedSets.UnionWith(skippedSetsThisTrade);
+
 				if (ourInventoryState.Values.All(set => set.Values.All(amount => amount <= 1))) {
 					// User doesn't have any more dupes in the inventory
-					Bot.ArchiLogger.LogGenericDebug("No dupes in inventory, returning");
+					Bot.ArchiLogger.LogGenericDebug("No dupes in inventory, breaking");
 					break;
 				}
-
-				skippedSets.UnionWith(skippedSetsThisTrade);
 			}
 
 			Bot.ArchiLogger.LogGenericDebug("This round is over, we traded " + skippedSets.Count + " sets!");
