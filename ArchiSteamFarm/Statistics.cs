@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -244,6 +245,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
 		private async Task<bool> MatchActivelyRound(IReadOnlyCollection<Steam.Asset.EType> acceptedMatchableTypes) {
 			if ((acceptedMatchableTypes == null) || (acceptedMatchableTypes.Count == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(acceptedMatchableTypes));
@@ -273,7 +275,7 @@ namespace ArchiSteamFarm {
 			byte emptyMatches = 0;
 			HashSet<(uint AppID, Steam.Asset.EType Type)> skippedSetsThisRound = new HashSet<(uint AppID, Steam.Asset.EType Type)>();
 
-			foreach (ListedUser listedUser in listedUsers.Where(listedUser => listedUser.MatchEverything && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderByDescending(listedUser => listedUser.Score).Take(MaxMatchedBotsHard)) {
+			foreach (ListedUser listedUser in listedUsers.Where(listedUser => listedUser.MatchEverything && listedUser.MatchableTypes.Any(acceptedMatchableTypes.Contains) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderByDescending(listedUser => listedUser.Score).Take(MaxMatchedBotsHard)) {
 				Bot.ArchiLogger.LogGenericTrace(listedUser.SteamID + "...");
 
 				HashSet<Steam.Asset> theirInventory = await Bot.ArchiWebHandler.GetInventory(listedUser.SteamID, tradable: true, wantedTypes: acceptedMatchableTypes, skippedSets: skippedSetsThisRound).ConfigureAwait(false);
