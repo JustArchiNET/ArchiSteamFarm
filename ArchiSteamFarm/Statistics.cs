@@ -252,7 +252,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<Steam.Asset> ourInventory = await Bot.ArchiWebHandler.GetInventory(Bot.SteamID, tradable: true, wantedTypes: acceptedMatchableTypes).ConfigureAwait(false);
 			if ((ourInventory == null) || (ourInventory.Count == 0)) {
-				Bot.ArchiLogger.LogGenericTrace(Strings.ErrorIsEmpty, nameof(ourInventory));
+				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(ourInventory)));
 				return false;
 			}
 
@@ -260,13 +260,13 @@ namespace ArchiSteamFarm {
 
 			if (ourInventoryState.Values.All(set => set.Values.All(amount => amount <= 1))) {
 				// User doesn't have any more dupes in the inventory
-				Bot.ArchiLogger.LogGenericTrace(Strings.ErrorIsEmpty, nameof(ourInventoryState));
+				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(ourInventoryState)));
 				return false;
 			}
 
 			HashSet<ListedUser> listedUsers = await GetListedUsers().ConfigureAwait(false);
 			if ((listedUsers == null) || (listedUsers.Count == 0)) {
-				Bot.ArchiLogger.LogGenericTrace(Strings.ErrorIsEmpty, nameof(listedUsers));
+				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(listedUsers)));
 				return false;
 			}
 
@@ -278,7 +278,7 @@ namespace ArchiSteamFarm {
 
 				HashSet<Steam.Asset> theirInventory = await Bot.ArchiWebHandler.GetInventory(listedUser.SteamID, tradable: true, wantedTypes: acceptedMatchableTypes, skippedSets: skippedSets).ConfigureAwait(false);
 				if ((theirInventory == null) || (theirInventory.Count == 0)) {
-					Bot.ArchiLogger.LogGenericTrace(Strings.ErrorIsEmpty, nameof(theirInventory));
+					Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(theirInventory)));
 					continue;
 				}
 
@@ -373,7 +373,7 @@ namespace ArchiSteamFarm {
 
 				if (ourInventoryState.Values.All(set => set.Values.All(amount => amount <= 1))) {
 					// User doesn't have any more dupes in the inventory
-					Bot.ArchiLogger.LogGenericTrace(Strings.ErrorIsEmpty, nameof(ourInventoryState));
+					Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(ourInventoryState)));
 					break;
 				}
 			}
