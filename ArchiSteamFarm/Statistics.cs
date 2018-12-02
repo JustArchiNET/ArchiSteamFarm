@@ -271,105 +271,121 @@ namespace ArchiSteamFarm {
 			}
 
 			byte emptyMatches = 0;
-			HashSet<(uint AppID, Steam.Asset.EType Type)> skippedSets = new HashSet<(uint AppID, Steam.Asset.EType Type)>();
+			HashSet<(uint AppID, Steam.Asset.EType Type)> skippedSetsThisRound = new HashSet<(uint AppID, Steam.Asset.EType Type)>();
 
 			foreach (ListedUser listedUser in listedUsers.Where(listedUser => listedUser.MatchEverything && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderByDescending(listedUser => listedUser.Score).Take(MaxMatchedBotsHard)) {
 				Bot.ArchiLogger.LogGenericTrace(listedUser.SteamID + "...");
 
-				HashSet<Steam.Asset> theirInventory = await Bot.ArchiWebHandler.GetInventory(listedUser.SteamID, tradable: true, wantedTypes: acceptedMatchableTypes, skippedSets: skippedSets).ConfigureAwait(false);
+				HashSet<Steam.Asset> theirInventory = await Bot.ArchiWebHandler.GetInventory(listedUser.SteamID, tradable: true, wantedTypes: acceptedMatchableTypes, skippedSets: skippedSetsThisRound).ConfigureAwait(false);
 				if ((theirInventory == null) || (theirInventory.Count == 0)) {
 					Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(theirInventory)));
 					continue;
 				}
 
+				HashSet<(uint AppID, Steam.Asset.EType Type)> skippedSetsThisUser = new HashSet<(uint AppID, Steam.Asset.EType Type)>();
 				Dictionary<(uint AppID, Steam.Asset.EType Type), Dictionary<ulong, uint>> theirInventoryState = Trading.GetInventoryState(theirInventory);
 
-				Dictionary<ulong, uint> classIDsToGive = new Dictionary<ulong, uint>();
-				Dictionary<ulong, uint> classIDsToReceive = new Dictionary<ulong, uint>();
-				HashSet<(uint AppID, Steam.Asset.EType Type)> skippedSetsThisTrade = new HashSet<(uint AppID, Steam.Asset.EType Type)>();
+				for (byte i = 0; i < Trading.MaxTradesPerAccount; i++) {
+					byte itemsInTrade = 0;
 
-				foreach (KeyValuePair<(uint AppID, Steam.Asset.EType Type), Dictionary<ulong, uint>> ourInventoryStateSet in ourInventoryState.Where(set => listedUser.MatchableTypes.Contains(set.Key.Type) && set.Value.Values.Any(count => count > 1))) {
-					if (!theirInventoryState.TryGetValue(ourInventoryStateSet.Key, out Dictionary<ulong, uint> theirItems)) {
-						continue;
+					Dictionary<ulong, uint> classIDsToGive = new Dictionary<ulong, uint>();
+					Dictionary<ulong, uint> classIDsToReceive = new Dictionary<ulong, uint>();
+
+					foreach (KeyValuePair<(uint AppID, Steam.Asset.EType Type), Dictionary<ulong, uint>> ourInventoryStateSet in ourInventoryState.Where(set => listedUser.MatchableTypes.Contains(set.Key.Type) && set.Value.Values.Any(count => count > 1))) {
+						if (!theirInventoryState.TryGetValue(ourInventoryStateSet.Key, out Dictionary<ulong, uint> theirItems)) {
+							continue;
+						}
+
+						bool match;
+
+						do {
+							match = false;
+
+							foreach (KeyValuePair<ulong, uint> ourItem in ourInventoryStateSet.Value.Where(item => item.Value > 1).OrderByDescending(item => item.Value)) {
+								foreach (KeyValuePair<ulong, uint> theirItem in theirItems.OrderBy(item => ourInventoryStateSet.Value.TryGetValue(item.Key, out uint ourAmount) ? ourAmount : 0)) {
+									if (ourInventoryStateSet.Value.TryGetValue(theirItem.Key, out uint ourAmountOfTheirItem) && (ourItem.Value <= ourAmountOfTheirItem + 1)) {
+										continue;
+									}
+
+									// Skip this set from the remaining of this round
+									skippedSetsThisUser.Add(ourInventoryStateSet.Key);
+
+									// Update our state based on given items
+									classIDsToGive[ourItem.Key] = classIDsToGive.TryGetValue(ourItem.Key, out uint givenAmount) ? givenAmount + 1 : 1;
+									ourInventoryStateSet.Value[ourItem.Key] = ourItem.Value - 1;
+
+									// Update our state based on received items
+									classIDsToReceive[theirItem.Key] = classIDsToReceive.TryGetValue(theirItem.Key, out uint receivedAmount) ? receivedAmount + 1 : 1;
+									ourInventoryStateSet.Value[theirItem.Key] = ourAmountOfTheirItem + 1;
+
+									// Update their state based on taken items
+									if (theirItems.TryGetValue(theirItem.Key, out uint theirAmount) && (theirAmount > 1)) {
+										theirItems[theirItem.Key] = theirAmount - 1;
+									} else {
+										theirItems.Remove(theirItem.Key);
+									}
+
+									itemsInTrade += 2;
+
+									match = true;
+									break;
+								}
+
+								if (match) {
+									break;
+								}
+							}
+						} while (match && (itemsInTrade < Trading.MaxItemsPerTrade - 1));
+
+						if (itemsInTrade >= Trading.MaxItemsPerTrade - 1) {
+							break;
+						}
 					}
 
-					bool match;
+					if ((classIDsToGive.Count == 0) && (classIDsToReceive.Count == 0)) {
+						Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(classIDsToGive)));
 
-					do {
-						match = false;
-
-						foreach (KeyValuePair<ulong, uint> ourItem in ourInventoryStateSet.Value.Where(item => item.Value > 1).OrderByDescending(item => item.Value)) {
-							foreach (KeyValuePair<ulong, uint> theirItem in theirItems.OrderBy(item => ourInventoryStateSet.Value.TryGetValue(item.Key, out uint ourAmount) ? ourAmount : 0)) {
-								if (ourInventoryStateSet.Value.TryGetValue(theirItem.Key, out uint ourAmountOfTheirItem) && (ourItem.Value <= ourAmountOfTheirItem + 1)) {
-									continue;
-								}
-
-								// Skip this set from the remaining of this round
-								skippedSetsThisTrade.Add(ourInventoryStateSet.Key);
-
-								// Update our state based on given items
-								classIDsToGive[ourItem.Key] = classIDsToGive.TryGetValue(ourItem.Key, out uint givenAmount) ? givenAmount + 1 : 1;
-								ourInventoryStateSet.Value[ourItem.Key] = ourItem.Value - 1;
-
-								// Update our state based on received items
-								classIDsToReceive[theirItem.Key] = classIDsToReceive.TryGetValue(theirItem.Key, out uint receivedAmount) ? receivedAmount + 1 : 1;
-								ourInventoryStateSet.Value[theirItem.Key] = ourAmountOfTheirItem + 1;
-
-								// Update their state based on taken items
-								if (theirItems.TryGetValue(theirItem.Key, out uint theirAmount) && (theirAmount > 1)) {
-									theirItems[theirItem.Key] = theirAmount - 1;
-								} else {
-									theirItems.Remove(theirItem.Key);
-								}
-
-								match = true;
-								break;
-							}
-
-							if (match) {
-								break;
-							}
+						if (++emptyMatches >= MaxMatchesBotsSoft) {
+							Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ActivelyMatchingItemsRound, skippedSetsThisRound.Count));
+							return skippedSetsThisRound.Count > 0;
 						}
-					} while (match);
-				}
 
-				if ((classIDsToGive.Count == 0) && (classIDsToReceive.Count == 0)) {
-					Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(classIDsToGive)));
-
-					if (++emptyMatches >= MaxMatchesBotsSoft) {
 						break;
 					}
 
-					continue;
-				}
+					emptyMatches = 0;
 
-				emptyMatches = 0;
+					HashSet<Steam.Asset> itemsToGive = Trading.GetItemsFromInventory(ourInventory, classIDsToGive);
+					HashSet<Steam.Asset> itemsToReceive = Trading.GetItemsFromInventory(theirInventory, classIDsToReceive);
 
-				HashSet<Steam.Asset> itemsToGive = Trading.GetItemsFromInventory(ourInventory, classIDsToGive);
-				HashSet<Steam.Asset> itemsToReceive = Trading.GetItemsFromInventory(theirInventory, classIDsToReceive);
+					Bot.ArchiLogger.LogGenericTrace(Bot.SteamID + " <- " + string.Join(", ", itemsToReceive.Select(item => item.RealAppID + "/" + item.Type + "-" + item.ClassID + " #" + item.Amount)) + " | " + string.Join(", ", itemsToGive.Select(item => item.RealAppID + "/" + item.Type + "-" + item.ClassID + " #" + item.Amount)) + " -> " + listedUser.SteamID);
 
-				Bot.ArchiLogger.LogGenericTrace(Bot.SteamID + " <- " + string.Join(", ", itemsToReceive.Select(item => item.RealAppID + "/" + item.Type + "-" + item.ClassID + " #" + item.Amount)) + " | " + string.Join(", ", itemsToGive.Select(item => item.RealAppID + "/" + item.Type + "-" + item.ClassID + " #" + item.Amount)) + " -> " + listedUser.SteamID);
+					(bool success, HashSet<ulong> mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(listedUser.SteamID, itemsToGive, itemsToReceive, listedUser.TradeToken, true).ConfigureAwait(false);
 
-				(bool success, HashSet<ulong> mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(listedUser.SteamID, itemsToGive, itemsToReceive, listedUser.TradeToken, true).ConfigureAwait(false);
-
-				if ((mobileTradeOfferIDs != null) && (mobileTradeOfferIDs.Count > 0) && Bot.HasMobileAuthenticator) {
-					if (!await Bot.Actions.AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, listedUser.SteamID, mobileTradeOfferIDs, true).ConfigureAwait(false)) {
-						return false;
+					if ((mobileTradeOfferIDs != null) && (mobileTradeOfferIDs.Count > 0) && Bot.HasMobileAuthenticator) {
+						if (!await Bot.Actions.AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, listedUser.SteamID, mobileTradeOfferIDs, true).ConfigureAwait(false)) {
+							Bot.ArchiLogger.LogGenericTrace(Strings.WarningFailed);
+							return false;
+						}
 					}
+
+					if (!success) {
+						Bot.ArchiLogger.LogGenericTrace(Strings.WarningFailed);
+						continue;
+					}
+
+					Bot.ArchiLogger.LogGenericTrace(Strings.Success);
 				}
 
-				if (!success) {
-					Bot.ArchiLogger.LogGenericTrace(Strings.WarningFailed);
+				if (skippedSetsThisUser.Count == 0) {
 					continue;
 				}
 
-				Bot.ArchiLogger.LogGenericTrace(Strings.Success);
+				skippedSetsThisRound.UnionWith(skippedSetsThisUser);
 
-				foreach ((uint AppID, Steam.Asset.EType Type) skippedSetThisTrade in skippedSetsThisTrade) {
-					ourInventoryState.Remove(skippedSetThisTrade);
+				foreach ((uint AppID, Steam.Asset.EType Type) skippedSet in skippedSetsThisUser) {
+					ourInventoryState.Remove(skippedSet);
 				}
-
-				skippedSets.UnionWith(skippedSetsThisTrade);
 
 				if (ourInventoryState.Values.All(set => set.Values.All(amount => amount <= 1))) {
 					// User doesn't have any more dupes in the inventory
@@ -378,8 +394,8 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ActivelyMatchingItemsRound, skippedSets.Count));
-			return skippedSets.Count > 0;
+			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ActivelyMatchingItemsRound, skippedSetsThisRound.Count));
+			return skippedSetsThisRound.Count > 0;
 		}
 
 		private sealed class ListedUser {
