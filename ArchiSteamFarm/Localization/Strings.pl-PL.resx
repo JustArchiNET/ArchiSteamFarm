@@ -672,4 +672,19 @@ StackTrace:
     <value>Bot posiada poziom {0}.</value>
     <comment>{0} will be replaced by bot's level</comment>
   </data>
+  <data name="ActivelyMatchingItems" xml:space="preserve">
+    <value>Dopasowywanie przedmiotów Steam, runda #{0}...</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="DoneActivelyMatchingItems" xml:space="preserve">
+    <value>Ukończono dopasowywanie przedmiotów Steam, runda #{0}.</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="ErrorAborted" xml:space="preserve">
+    <value>Anulowano!</value>
+  </data>
+  <data name="ActivelyMatchingItemsRound" xml:space="preserve">
+    <value>Dopasowano w sumie {0} setów w tej rundzie.</value>
+    <comment>{0} will be replaced by number of sets traded</comment>
+  </data>
 </root>

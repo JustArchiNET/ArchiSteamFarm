@@ -672,4 +672,10 @@ StackTrace:
     <value>Der Bot hat das Level {0}.</value>
     <comment>{0} will be replaced by bot's level</comment>
   </data>
+  
+  
+  <data name="ErrorAborted" xml:space="preserve">
+    <value>Abgebrochen!</value>
+  </data>
+  
 </root>

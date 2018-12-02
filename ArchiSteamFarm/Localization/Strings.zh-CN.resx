@@ -671,4 +671,19 @@
     <value>机器人的等级为 {0}。</value>
     <comment>{0} will be replaced by bot's level</comment>
   </data>
+  <data name="ActivelyMatchingItems" xml:space="preserve">
+    <value>正在匹配 Steam 物品，第 #{0} 轮……</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="DoneActivelyMatchingItems" xml:space="preserve">
+    <value>完成匹配 Steam 物品，第 #{0} 轮。</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="ErrorAborted" xml:space="preserve">
+    <value>已中止！</value>
+  </data>
+  <data name="ActivelyMatchingItemsRound" xml:space="preserve">
+    <value>本轮共匹配 {0} 组。</value>
+    <comment>{0} will be replaced by number of sets traded</comment>
+  </data>
 </root>
