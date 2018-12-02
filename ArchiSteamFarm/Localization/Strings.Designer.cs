@@ -70,6 +70,24 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Matching Steam items, round #{0}....
+        /// </summary>
+        internal static string ActivelyMatchingItems {
+            get {
+                return ResourceManager.GetString("ActivelyMatchingItems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Matched a total of {0} sets this round..
+        /// </summary>
+        internal static string ActivelyMatchingItemsRound {
+            get {
+                return ResourceManager.GetString("ActivelyMatchingItemsRound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu ASF will automatically check for new versions every {0}..
         /// </summary>
         internal static string AutoUpdateCheckInfo {
@@ -764,11 +782,29 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Done matching Steam items, round #{0}..
+        /// </summary>
+        internal static string DoneActivelyMatchingItems {
+            get {
+                return ResourceManager.GetString("DoneActivelyMatchingItems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Done clearing Steam discovery queue #{0}..
         /// </summary>
         internal static string DoneClearingDiscoveryQueue {
             get {
                 return ResourceManager.GetString("DoneClearingDiscoveryQueue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Aborted!.
+        /// </summary>
+        internal static string ErrorAborted {
+            get {
+                return ResourceManager.GetString("ErrorAborted", resourceCulture);
             }
         }
         

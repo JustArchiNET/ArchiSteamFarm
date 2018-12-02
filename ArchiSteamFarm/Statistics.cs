@@ -59,11 +59,10 @@ namespace ArchiSteamFarm {
 		internal Statistics(Bot bot) {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
-			// TODO: This should start from 1 hour, not 1 minute
 			MatchActivelyTimer = new Timer(
 				async e => await MatchActively().ConfigureAwait(false),
 				null,
-				TimeSpan.FromMinutes(1) + TimeSpan.FromSeconds(Program.GlobalConfig.LoginLimiterDelay + Program.LoadBalancingDelay * Bot.Bots.Count), // Delay
+				TimeSpan.FromHours(1) + TimeSpan.FromSeconds(Program.LoadBalancingDelay * Bot.Bots.Count), // Delay
 				TimeSpan.FromDays(1) // Period
 			);
 		}
@@ -207,51 +206,53 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task MatchActively() {
-			// TODO: This function has a lot of debug leftovers for logic testing, once that period is over, get rid of them
+			if (!Bot.IsConnectedAndLoggedOn || Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchActively) || !await IsEligibleForMatching().ConfigureAwait(false)) {
+				Bot.ArchiLogger.LogGenericTrace(Strings.ErrorAborted);
+				return;
+			}
+
+			HashSet<Steam.Asset.EType> acceptedMatchableTypes = Bot.BotConfig.MatchableTypes.Where(type => AcceptedMatchableTypes.Contains(type)).ToHashSet();
+			if (acceptedMatchableTypes.Count == 0) {
+				Bot.ArchiLogger.LogGenericTrace(Strings.ErrorAborted);
+				return;
+			}
 
 			if (!await MatchActivelySemaphore.WaitAsync(0).ConfigureAwait(false)) {
+				Bot.ArchiLogger.LogGenericTrace(Strings.ErrorAborted);
 				return;
 			}
 
 			try {
-				bool match = true;
+				Bot.ArchiLogger.LogGenericTrace(Strings.Starting);
 
-				Bot.ArchiLogger.LogGenericDebug("Matching started!");
+				bool match = true;
 
 				for (byte i = 0; (i < MaxMatchingRounds) && match; i++) {
 					if (i > 0) {
 						// After each round we wait at least 5 minutes for all bots to react
-						Bot.ArchiLogger.LogGenericDebug("Cooldown...");
 						await Task.Delay(5 * 60 * 1000).ConfigureAwait(false);
 					}
 
-					Bot.ArchiLogger.LogGenericDebug("Now matching, round #" + i);
-					match = await MatchActivelyRound().ConfigureAwait(false);
-					Bot.ArchiLogger.LogGenericDebug("Matching ended, round #" + i);
+					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ActivelyMatchingItems, i));
+					match = await MatchActivelyRound(acceptedMatchableTypes).ConfigureAwait(false);
+					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.DoneActivelyMatchingItems, i));
 				}
 
-				Bot.ArchiLogger.LogGenericDebug("Matching finished!");
+				Bot.ArchiLogger.LogGenericTrace(Strings.Done);
 			} finally {
 				MatchActivelySemaphore.Release();
 			}
 		}
 
-		private async Task<bool> MatchActivelyRound() {
-			// TODO: This function has a lot of debug leftovers for logic testing, once that period is over, get rid of them
-			if (!Bot.IsConnectedAndLoggedOn || Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchActively) || !await IsEligibleForMatching().ConfigureAwait(false)) {
-				Bot.ArchiLogger.LogGenericDebug("User not eligible for this function, returning");
-				return false;
-			}
-
-			HashSet<Steam.Asset.EType> acceptedMatchableTypes = Bot.BotConfig.MatchableTypes.Where(type => AcceptedMatchableTypes.Contains(type)).ToHashSet();
-			if (acceptedMatchableTypes.Count == 0) {
-				Bot.ArchiLogger.LogGenericDebug("No acceptable matchable types, returning");
+		private async Task<bool> MatchActivelyRound(IReadOnlyCollection<Steam.Asset.EType> acceptedMatchableTypes) {
+			if ((acceptedMatchableTypes == null) || (acceptedMatchableTypes.Count == 0)) {
+				Bot.ArchiLogger.LogNullError(nameof(acceptedMatchableTypes));
 				return false;
 			}
 
 			HashSet<Steam.Asset> ourInventory = await Bot.ArchiWebHandler.GetInventory(Bot.SteamID, tradable: true, wantedTypes: acceptedMatchableTypes).ConfigureAwait(false);
 			if ((ourInventory == null) || (ourInventory.Count == 0)) {
-				Bot.ArchiLogger.LogGenericDebug("Empty inventory, returning");
+				Bot.ArchiLogger.LogGenericTrace(Strings.ErrorIsEmpty, nameof(ourInventory));
 				return false;
 			}
 
@@ -259,13 +260,13 @@ namespace ArchiSteamFarm {
 
 			if (ourInventoryState.Values.All(set => set.Values.All(amount => amount <= 1))) {
 				// User doesn't have any more dupes in the inventory
-				Bot.ArchiLogger.LogGenericDebug("No dupes in inventory, returning");
+				Bot.ArchiLogger.LogGenericTrace(Strings.ErrorIsEmpty, nameof(ourInventoryState));
 				return false;
 			}
 
 			HashSet<ListedUser> listedUsers = await GetListedUsers().ConfigureAwait(false);
 			if ((listedUsers == null) || (listedUsers.Count == 0)) {
-				Bot.ArchiLogger.LogGenericDebug("No listed users, returning");
+				Bot.ArchiLogger.LogGenericTrace(Strings.ErrorIsEmpty, nameof(listedUsers));
 				return false;
 			}
 
@@ -273,11 +274,11 @@ namespace ArchiSteamFarm {
 			HashSet<(uint AppID, Steam.Asset.EType Type)> skippedSets = new HashSet<(uint AppID, Steam.Asset.EType Type)>();
 
 			foreach (ListedUser listedUser in listedUsers.Where(listedUser => listedUser.MatchEverything && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderByDescending(listedUser => listedUser.Score).Take(MaxMatchedBotsHard)) {
-				Bot.ArchiLogger.LogGenericDebug("Now matching " + listedUser.SteamID + "...");
+				Bot.ArchiLogger.LogGenericTrace(listedUser.SteamID + "...");
 
 				HashSet<Steam.Asset> theirInventory = await Bot.ArchiWebHandler.GetInventory(listedUser.SteamID, tradable: true, wantedTypes: acceptedMatchableTypes, skippedSets: skippedSets).ConfigureAwait(false);
 				if ((theirInventory == null) || (theirInventory.Count == 0)) {
-					Bot.ArchiLogger.LogGenericDebug("Inventory of " + listedUser.SteamID + " is empty, continuing...");
+					Bot.ArchiLogger.LogGenericTrace(Strings.ErrorIsEmpty, nameof(theirInventory));
 					continue;
 				}
 
@@ -302,8 +303,6 @@ namespace ArchiSteamFarm {
 								if (ourInventoryStateSet.Value.TryGetValue(theirItem.Key, out uint ourAmountOfTheirItem) && (ourItem.Value <= ourAmountOfTheirItem + 1)) {
 									continue;
 								}
-
-								Bot.ArchiLogger.LogGenericDebug("Found a match: our " + ourItem.Key + " for theirs " + theirItem.Key);
 
 								// Skip this set from the remaining of this round
 								skippedSetsThisTrade.Add(ourInventoryStateSet.Key);
@@ -335,7 +334,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if ((classIDsToGive.Count == 0) && (classIDsToReceive.Count == 0)) {
-					Bot.ArchiLogger.LogGenericDebug("No matches found, continuing...");
+					Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(classIDsToGive)));
 
 					if (++emptyMatches >= MaxMatchesBotsSoft) {
 						break;
@@ -349,23 +348,7 @@ namespace ArchiSteamFarm {
 				HashSet<Steam.Asset> itemsToGive = Trading.GetItemsFromInventory(ourInventory, classIDsToGive);
 				HashSet<Steam.Asset> itemsToReceive = Trading.GetItemsFromInventory(theirInventory, classIDsToReceive);
 
-				// TODO: Debug only offer, should be removed after tests
-				Steam.TradeOffer debugOffer = new Steam.TradeOffer(1, 46697991, Steam.TradeOffer.ETradeOfferState.Active);
-
-				foreach (Steam.Asset itemToGive in itemsToGive) {
-					debugOffer.ItemsToGive.Add(itemToGive);
-				}
-
-				foreach (Steam.Asset itemToReceive in itemsToReceive) {
-					debugOffer.ItemsToReceive.Add(itemToReceive);
-				}
-
-				if (!debugOffer.IsFairTypesExchange()) {
-					Bot.ArchiLogger.LogGenericDebug("CRITICAL: This offer is NOT fair!!!");
-					return false;
-				}
-
-				Bot.ArchiLogger.LogGenericDebug("Sending trade: our " + string.Join(", ", itemsToGive.Select(item => item.RealAppID + "/" + item.Type + " " + item.ClassID + " of " + item.Amount)));
+				Bot.ArchiLogger.LogGenericTrace(Bot.SteamID + " <- " + string.Join(", ", itemsToReceive.Select(item => item.RealAppID + "/" + item.Type + "-" + item.ClassID + " #" + item.Amount)) + " | " + string.Join(", ", itemsToGive.Select(item => item.RealAppID + "/" + item.Type + "-" + item.ClassID + " #" + item.Amount)) + " -> " + listedUser.SteamID);
 
 				(bool success, HashSet<ulong> mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(listedUser.SteamID, itemsToGive, itemsToReceive, listedUser.TradeToken, true).ConfigureAwait(false);
 
@@ -376,11 +359,11 @@ namespace ArchiSteamFarm {
 				}
 
 				if (!success) {
-					Bot.ArchiLogger.LogGenericDebug("Trade failed (?), continuing...");
+					Bot.ArchiLogger.LogGenericTrace(Strings.WarningFailed);
 					continue;
 				}
 
-				Bot.ArchiLogger.LogGenericDebug("Trade succeeded!");
+				Bot.ArchiLogger.LogGenericTrace(Strings.Success);
 
 				foreach ((uint AppID, Steam.Asset.EType Type) skippedSetThisTrade in skippedSetsThisTrade) {
 					ourInventoryState.Remove(skippedSetThisTrade);
@@ -390,12 +373,12 @@ namespace ArchiSteamFarm {
 
 				if (ourInventoryState.Values.All(set => set.Values.All(amount => amount <= 1))) {
 					// User doesn't have any more dupes in the inventory
-					Bot.ArchiLogger.LogGenericDebug("No dupes in inventory, breaking");
+					Bot.ArchiLogger.LogGenericTrace(Strings.ErrorIsEmpty, nameof(ourInventoryState));
 					break;
 				}
 			}
 
-			Bot.ArchiLogger.LogGenericDebug("This round is over, we traded " + skippedSets.Count + " sets!");
+			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ActivelyMatchingItemsRound, skippedSets.Count));
 			return skippedSets.Count > 0;
 		}
 

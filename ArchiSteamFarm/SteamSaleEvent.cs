@@ -28,7 +28,7 @@ using HtmlAgilityPack;
 
 namespace ArchiSteamFarm {
 	internal sealed class SteamSaleEvent : IDisposable {
-		private const byte MaxSingleQueuesDaily = 3; // This is mainly a pre-caution for infinite queue clearing
+		private const byte MaxSingleQueuesDaily = 3; // This is only a failsafe for infinite queue clearing
 
 		private readonly Bot Bot;
 		private readonly Timer SaleEventTimer;
@@ -39,7 +39,7 @@ namespace ArchiSteamFarm {
 			SaleEventTimer = new Timer(
 				async e => await Task.WhenAll(ExploreDiscoveryQueue(), VoteForSteamAwards()).ConfigureAwait(false),
 				null,
-				TimeSpan.FromMinutes(1) + TimeSpan.FromSeconds(Program.LoadBalancingDelay * Bot.Bots.Count), // Delay
+				TimeSpan.FromHours(1) + TimeSpan.FromSeconds(Program.LoadBalancingDelay * Bot.Bots.Count), // Delay
 				TimeSpan.FromHours(6.1) // Period
 			);
 		}
