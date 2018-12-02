@@ -64,7 +64,7 @@ namespace ArchiSteamFarm {
 				async e => await MatchActively().ConfigureAwait(false),
 				null,
 				TimeSpan.FromHours(1) + TimeSpan.FromSeconds(Program.LoadBalancingDelay * Bot.Bots.Count), // Delay
-				TimeSpan.FromDays(1) // Period
+				TimeSpan.FromHours(8) // Period
 			);
 		}
 
