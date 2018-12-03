@@ -278,9 +278,7 @@ namespace ArchiSteamFarm {
 			foreach (ListedUser listedUser in listedUsers.Where(listedUser => listedUser.MatchEverything && acceptedMatchableTypes.Any(listedUser.MatchableTypes.Contains) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderByDescending(listedUser => listedUser.Score).Take(MaxMatchedBotsHard)) {
 				Bot.ArchiLogger.LogGenericTrace(listedUser.SteamID + "...");
 
-				HashSet<Steam.Asset.EType> sharedTypes = acceptedMatchableTypes.Where(listedUser.MatchableTypes.Contains).ToHashSet();
-
-				HashSet<Steam.Asset> theirInventory = await Bot.ArchiWebHandler.GetInventory(listedUser.SteamID, tradable: true, wantedTypes: sharedTypes, skippedSets: skippedSetsThisRound).ConfigureAwait(false);
+				HashSet<Steam.Asset> theirInventory = await Bot.ArchiWebHandler.GetInventory(listedUser.SteamID, tradable: true, wantedSets: ourInventoryState.Keys, skippedSets: skippedSetsThisRound).ConfigureAwait(false);
 				if ((theirInventory == null) || (theirInventory.Count == 0)) {
 					Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(theirInventory)));
 					continue;

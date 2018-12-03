@@ -542,7 +542,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
-		internal async Task<HashSet<Steam.Asset>> GetInventory(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, byte contextID = Steam.Asset.SteamCommunityContextID, bool? tradable = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<uint> wantedRealAppIDs = null, IReadOnlyCollection<(uint AppID, Steam.Asset.EType Type)> skippedSets = null) {
+		internal async Task<HashSet<Steam.Asset>> GetInventory(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, byte contextID = Steam.Asset.SteamCommunityContextID, bool? tradable = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<uint> wantedRealAppIDs = null, IReadOnlyCollection<(uint AppID, Steam.Asset.EType Type)> wantedSets = null, IReadOnlyCollection<(uint AppID, Steam.Asset.EType Type)> skippedSets = null) {
 			if ((appID == 0) || (contextID == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
 				return null;
@@ -625,7 +625,7 @@ namespace ArchiSteamFarm {
 
 					foreach (Steam.Asset asset in response.Assets.Where(asset => asset != null)) {
 						if (descriptionMap.TryGetValue(asset.ClassID, out (bool Tradable, Steam.Asset.EType Type, uint RealAppID) description)) {
-							if ((tradable.HasValue && (description.Tradable != tradable.Value)) || (wantedTypes?.Contains(description.Type) == false) || (wantedRealAppIDs?.Contains(description.RealAppID) == false) || (skippedSets?.Contains((description.RealAppID, description.Type)) == true)) {
+							if ((tradable.HasValue && (description.Tradable != tradable.Value)) || (wantedTypes?.Contains(description.Type) == false) || (wantedRealAppIDs?.Contains(description.RealAppID) == false) || (wantedSets?.Contains((description.RealAppID, description.Type)) == false) || (skippedSets?.Contains((description.RealAppID, description.Type)) == true)) {
 								continue;
 							}
 

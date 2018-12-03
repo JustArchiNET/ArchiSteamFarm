@@ -389,17 +389,15 @@ namespace ArchiSteamFarm {
 				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Accepted, tradeOffer.ItemsToReceive);
 			}
 
-			// Get appIDs/types we're interested in
-			HashSet<uint> appIDs = new HashSet<uint>();
-			HashSet<Steam.Asset.EType> types = new HashSet<Steam.Asset.EType>();
+			// Get sets we're interested in
+			HashSet<(uint AppID, Steam.Asset.EType Type)> wantedSets = new HashSet<(uint AppID, Steam.Asset.EType Type)>();
 
 			foreach (Steam.Asset item in tradeOffer.ItemsToGive) {
-				appIDs.Add(item.RealAppID);
-				types.Add(item.Type);
+				wantedSets.Add((item.RealAppID, item.Type));
 			}
 
 			// Now check if it's worth for us to do the trade
-			HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetInventory(Bot.SteamID, wantedTypes: types, wantedRealAppIDs: appIDs).ConfigureAwait(false);
+			HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetInventory(Bot.SteamID, wantedSets: wantedSets).ConfigureAwait(false);
 			if ((inventory == null) || (inventory.Count == 0)) {
 				// If we can't check our inventory when not using MatchEverything, this is a temporary failure
 				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
