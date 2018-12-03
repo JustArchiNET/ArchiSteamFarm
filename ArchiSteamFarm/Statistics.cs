@@ -234,6 +234,11 @@ namespace ArchiSteamFarm {
 						await Task.Delay(5 * 60 * 1000).ConfigureAwait(false);
 					}
 
+					if (!Bot.IsConnectedAndLoggedOn || Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchActively) || !await IsEligibleForMatching().ConfigureAwait(false)) {
+						Bot.ArchiLogger.LogGenericTrace(Strings.ErrorAborted);
+						break;
+					}
+
 					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ActivelyMatchingItems, i));
 					match = await MatchActivelyRound(acceptedMatchableTypes).ConfigureAwait(false);
 					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.DoneActivelyMatchingItems, i));
