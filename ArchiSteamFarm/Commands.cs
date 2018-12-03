@@ -1130,12 +1130,7 @@ namespace ArchiSteamFarm {
 			}
 
 			uint? level = await Bot.ArchiHandler.GetLevel().ConfigureAwait(false);
-
-			if (!level.HasValue) {
-				return FormatBotResponse(Strings.WarningFailed);
-			}
-
-			return FormatBotResponse(string.Format(Strings.BotLevel, level.Value));
+			return FormatBotResponse(level.HasValue ? string.Format(Strings.BotLevel, level.Value) : Strings.WarningFailed);
 		}
 
 		private static async Task<string> ResponseLevel(ulong steamID, string botNames) {

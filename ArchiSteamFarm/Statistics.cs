@@ -275,10 +275,12 @@ namespace ArchiSteamFarm {
 			byte emptyMatches = 0;
 			HashSet<(uint AppID, Steam.Asset.EType Type)> skippedSetsThisRound = new HashSet<(uint AppID, Steam.Asset.EType Type)>();
 
-			foreach (ListedUser listedUser in listedUsers.Where(listedUser => listedUser.MatchEverything && listedUser.MatchableTypes.Any(acceptedMatchableTypes.Contains) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderByDescending(listedUser => listedUser.Score).Take(MaxMatchedBotsHard)) {
+			foreach (ListedUser listedUser in listedUsers.Where(listedUser => listedUser.MatchEverything && acceptedMatchableTypes.Any(listedUser.MatchableTypes.Contains) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderByDescending(listedUser => listedUser.Score).Take(MaxMatchedBotsHard)) {
 				Bot.ArchiLogger.LogGenericTrace(listedUser.SteamID + "...");
 
-				HashSet<Steam.Asset> theirInventory = await Bot.ArchiWebHandler.GetInventory(listedUser.SteamID, tradable: true, wantedTypes: acceptedMatchableTypes, skippedSets: skippedSetsThisRound).ConfigureAwait(false);
+				HashSet<Steam.Asset.EType> sharedTypes = acceptedMatchableTypes.Where(listedUser.MatchableTypes.Contains).ToHashSet();
+
+				HashSet<Steam.Asset> theirInventory = await Bot.ArchiWebHandler.GetInventory(listedUser.SteamID, tradable: true, wantedTypes: sharedTypes, skippedSets: skippedSetsThisRound).ConfigureAwait(false);
 				if ((theirInventory == null) || (theirInventory.Count == 0)) {
 					Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(theirInventory)));
 					continue;

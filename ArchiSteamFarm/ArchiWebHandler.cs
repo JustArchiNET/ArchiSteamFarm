@@ -1059,7 +1059,7 @@ namespace ArchiSteamFarm {
 			Bot.ArchiLogger.LogGenericInfo(Strings.Success);
 
 			// Unlock Steam Parental if needed
-			if (!string.IsNullOrEmpty(parentalCode) && (parentalCode.Length == 4)) {
+			if ((parentalCode != null) && (parentalCode.Length == 4)) {
 				if (!await UnlockParentalAccount(parentalCode).ConfigureAwait(false)) {
 					return false;
 				}
