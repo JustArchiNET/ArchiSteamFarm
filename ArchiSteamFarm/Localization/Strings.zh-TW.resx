@@ -463,20 +463,8 @@
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>無法發送交易提案，因為沒有帳戶設有 master 權限！</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>並未設定任何可獲取的物品類型！</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>搜刮功能現已停用！</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>搜刮功能現已啟用！</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>交易提案發送成功！</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>搜刮功能暫時停用！</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>您無法發送交易給自己！</value>

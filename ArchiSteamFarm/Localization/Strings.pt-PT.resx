@@ -453,20 +453,8 @@ StackTrace:
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Troca não pôde ser enviada porque não há nenhum usuário com a permissão mestre definida!</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>Não tens tipos de loot defenidos!</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Looting está agora desligado!</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Looting está agora ligado!</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>O pedido de troca foi enviado com sucesso!</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Looting está temporariamente desligado!</value>
   </data>
   
   <data name="BotNoASFAuthenticator" xml:space="preserve">

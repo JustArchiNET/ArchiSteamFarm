@@ -453,20 +453,8 @@ StackTrace:
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Obchod nemohol byť odoslaný, pretože nie je definovaný žiadny účet s master povoleniami!</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>Nemáš nastavené žiadne typy na zasielanie!</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Zasielanie je momentálne zakázané!</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Zasielanie je momentálne povolené!</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Obchodná ponuka úspešne odoslaná!</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Zasielanie je dočasne zakázané!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>Nemôžeš poslať obchodnú ponuku sám sebe!</value>

@@ -453,20 +453,8 @@ StackTrace:
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>לא ניתן לשלוח את הצעת המסחר כיוון שאין משתמש עם הרשאת מאסטר מוגדרת!</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>לא הגדרת אף סוג לביזה!</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>ביזה אינה פעילה כעת!</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>ביזה מופעלת כעת!</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>הצעת סחר חליפין נשלחה בהצלחה!</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>ביזה אינה פעילה באופן זמני!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>את לא יכול לשלוח בקשות החלפה לעצמך!</value>

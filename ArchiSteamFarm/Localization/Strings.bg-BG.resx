@@ -450,20 +450,8 @@
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Предложението за размяна не може да бъде избратено, защото няма потребител с master разрешително!</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>Нямата никакви видове грабене зададени!</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Грабенето сега е изключено!</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Грабенето сега е включено!</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Предложението за замяна е изпратено успешно!</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Грабенето е временно изключено!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>Не можете да предложите размяна на себе си!</value>

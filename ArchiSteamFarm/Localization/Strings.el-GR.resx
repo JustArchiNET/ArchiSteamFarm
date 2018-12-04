@@ -453,20 +453,8 @@ StackTrace:
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Η ανταλλαγή δεν μπορεί να αποσταλεί καθώς δεν υπάρχει κανένας χρήστης με ορισμένο το δικαίωμα «master»!</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>Δεν έχετε ορίσει τύπους αντικειμένων για μαζική συλλογή!</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Η μαζική συλλογή απενεργοποιήθηκε!</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Η μαζική συλλογή ενεργοποιήθηκε!</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Η πρόταση ανταλλαγής στάλθηκε επιτυχώς!</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Η μαζική συλλογή είναι προσωρινά απενεργοποιημένη!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>Δεν μπορείτε να ανταλλάξετε με τον εαυτό σας!</value>

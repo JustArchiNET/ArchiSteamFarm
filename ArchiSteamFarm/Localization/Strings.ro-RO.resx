@@ -453,20 +453,8 @@ StackTrace:
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Schimbul nu a putut fi trimis deoarece nu există utilizator cu permisiunea master definită!</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>Nu aveți niciun tip colectabil!</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Colectarea este dezactivată acum!</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Colectarea este activată acum!</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Oferta de schimb a fost trimisă cu succes!</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Colectarea este dezactivată temporar!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>Nu poți să îți trimiți ție un schimb!</value>

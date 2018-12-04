@@ -450,20 +450,8 @@
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Perdagangan tidak dapat dikirim karena ada tidak ada pengguna dengan izin master yang didefinisikan!</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>Anda belum mengatur jenis lootable!</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Looting dinonaktifkan!</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Looting diaktifkan!</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Trade Offer berhasil dikirim!</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Looting dinonaktifkan sementara!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>Anda tidak dapat mengirimkan pesan kepada dirisendiri!</value>

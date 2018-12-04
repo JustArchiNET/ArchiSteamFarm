@@ -434,20 +434,8 @@ StackTrace:
     <value>Ponuda za ramenu nije uspela!</value>
   </data>
   
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>Nemate bilo kakve lootable tipove podešene!</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Loot-ovanje je sada onemogućeno!</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Loot-ovanje je sada omogućeno!</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Ponuda za razmenu je uspešno poslata!</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Loot-ovanje je privremeno onemogućeno!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>Ne možete poslati trade samom sebi!</value>

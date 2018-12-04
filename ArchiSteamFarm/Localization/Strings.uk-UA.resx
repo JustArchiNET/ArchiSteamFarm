@@ -466,20 +466,8 @@
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Неможливо надіслати обмін, бо нe задано користувача з правами "master"!</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>У вас не виставлені будь-які типи предметів для збору!</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Збір предметів зараз відключений!</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Збір предметів зараз включений!</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Обмін успішно надіслано!</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Збір предметів тимчасово відключений!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>Неможливо відправити обмін самому собі!</value>

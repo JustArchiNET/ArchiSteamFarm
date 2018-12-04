@@ -466,20 +466,8 @@ StackTrace:
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Oferta wymiany nie mogła zostać wysłana, ponieważ żaden użytkownik z dostępem "master" nie został zdefiniowany!</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>Nie skonfigurowałeś żadnych typów do wysłania!</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Wysyłanie ofert jest teraz wyłączone!</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Wysyłanie ofert jest teraz włączone!</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Oferta wymiany została wysłana pomyślnie!</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Wysyłanie ofert jest teraz tymczasowo wyłączone!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>Nie możesz wysłać oferty do samego siebie!</value>

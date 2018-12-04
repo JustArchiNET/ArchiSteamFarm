@@ -464,20 +464,8 @@ StackTrace: {2}</value>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>A cserét nem sikerült elküldeni, mert nincs definiált felhasználó a mester engedélyével!</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>Nincsenek meghatározott begyűjtési típusaid!</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>A begyűjtés le lett tiltva!</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>A begyűjtés engedélyezve van!</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Csereajánlat sikeresen elküldve!</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>A begyűjtés átmenetileg le van tiltva!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>Nem tudsz cserét küldeni magadnak!</value>

@@ -466,20 +466,8 @@ StackTrace:
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Vaihtoa ei voitu lähettää koska yhtään käyttäjää master-oikeuksilla ei ole määritelty!</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>Sinulla ei ole yhtään tavaraa lähetettäväksi!</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Tavaran lähettäminen on nyt poistettu käytöstä!</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Tavaran lähetttäminen on nyt otettu käyttöön!</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Vaihtopyyntö lähetetty onnistuneesti!</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Tuotteiden lähettäminen on poistettu väliaikaisesti käytöstä!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>Et voi vaihtaa itsesi kanssa!</value>

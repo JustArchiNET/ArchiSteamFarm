@@ -466,20 +466,8 @@ StackTrace :
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>L'offre d'échange n'a pas pu être envoyée car il n'y a pas d'utilisateur avec une autorisation Master définie !</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>Vous n'avez aucun type d'objets à récupérer de configuré !</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>La récupération des cartes est maintenant désactivée !</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>La récupération des cartes est maintenant activée !</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Offre d'échange envoyée avec succès !</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>La récupération des cartes est temporairement désactivée !</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>Vous ne pouvez échanger avec vous-même !</value>

@@ -466,20 +466,8 @@ StackTrace:
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Das Handelsangebot konnte nicht gesendet werden, da kein Benutzer mit Master-Berechtigung definiert ist!</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>Du hast keine Gegenstandstypen zum Versenden festgelegt!</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Plündern ist nun deaktiviert!</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Plündern ist nun aktiviert!</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Handelsangebot erfolgreich gesendet!</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Plündern ist vorübergehend deaktiviert!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>Du kannst nicht mit dir selbst handeln!</value>

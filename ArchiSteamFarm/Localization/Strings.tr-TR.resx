@@ -466,20 +466,8 @@ Yığın izleme:
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Takas gönderilemedi çünkü master izniyle tanımlanmış hiçbir kullanıcı yok!</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>Ayarlanan hiç düşürme türünüz yok!</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Düşürme şu anda devre dışı!</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Düşürme artık etkin!</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Takas teklifi başarıyla gönderildi!</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Düşürme geçici olarak devre dışı!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>Kendinize takas teklifi gönderemezsiniz!</value>

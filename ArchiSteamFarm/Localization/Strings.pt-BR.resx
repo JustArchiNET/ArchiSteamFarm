@@ -466,20 +466,8 @@ StackTrace:
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>A troca não pode ser enviada porque não há nenhum usuário com permissão "master" definida!</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>Você não configurou nenhum tipo de item para coletar!</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>A coleta está desabilitada!</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>A coleta agora está ativada!</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Proposta de troca enviada com sucesso!</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Coleta temporariamente desabilitada!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>Você não pode enviar uma proposta de troca a si mesmo!</value>

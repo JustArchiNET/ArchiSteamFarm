@@ -466,20 +466,8 @@
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Невозможно отправить обмен, потому что не задано пользователя с правами "master"!</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>У вас не указаны типы лута для сбора!</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Лут отключен!</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Лутинг включен!</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Предложение обмена отправлено!</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Лутинг временно отключен!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>Невозможно отправить обмен самому себе!</value>

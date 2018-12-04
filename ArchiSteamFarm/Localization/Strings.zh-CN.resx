@@ -465,20 +465,8 @@
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>无法发送交易报价，因为没有为机器人设置 Master （机器人所有者）用户！</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>您尚未设置任何可拾取类型！</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>拾取现在已禁用！</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>拾取现在已启用！</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>交易报价发送成功！</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>拾取暂时被禁用！</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>无法给自己发送交易报价！</value>
