@@ -466,20 +466,8 @@ StackTrace:
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Trade couldn't be sent because there is no user with master permission defined!</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>You don't have any lootable types set!</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Looting is now disabled!</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Looting is now enabled!</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Trade offer sent successfully!</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Looting is temporarily disabled!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>You can't send trade to yourself!</value>

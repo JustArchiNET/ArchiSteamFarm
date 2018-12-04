@@ -412,47 +412,11 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu You don&apos;t have any lootable types set!.
-        /// </summary>
-        internal static string BotLootingNoLootableTypes {
-            get {
-                return ResourceManager.GetString("BotLootingNoLootableTypes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Looting is now disabled!.
-        /// </summary>
-        internal static string BotLootingNowDisabled {
-            get {
-                return ResourceManager.GetString("BotLootingNowDisabled", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Looting is now enabled!.
-        /// </summary>
-        internal static string BotLootingNowEnabled {
-            get {
-                return ResourceManager.GetString("BotLootingNowEnabled", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Trade offer sent successfully!.
         /// </summary>
         internal static string BotLootingSuccess {
             get {
                 return ResourceManager.GetString("BotLootingSuccess", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Looting is temporarily disabled!.
-        /// </summary>
-        internal static string BotLootingTemporarilyDisabled {
-            get {
-                return ResourceManager.GetString("BotLootingTemporarilyDisabled", resourceCulture);
             }
         }
         

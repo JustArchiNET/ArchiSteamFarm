@@ -89,8 +89,6 @@ namespace ArchiSteamFarm {
 							return await ResponseLevel(steamID).ConfigureAwait(false);
 						case "LOOT":
 							return await ResponseLoot(steamID).ConfigureAwait(false);
-						case "LOOT&":
-							return ResponseLootSwitch(steamID);
 						case "PASSWORD":
 							return ResponsePassword(steamID);
 						case "PAUSE":
@@ -182,8 +180,6 @@ namespace ArchiSteamFarm {
 							return await ResponseLootByRealAppIDs(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
 						case "LOOT@":
 							return await ResponseLootByRealAppIDs(steamID, args[1]).ConfigureAwait(false);
-						case "LOOT&":
-							return await ResponseLootSwitch(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "NICKNAME" when args.Length > 2:
 							return await ResponseNickname(steamID, args[1], Utilities.GetArgsAsText(message, 2)).ConfigureAwait(false);
 						case "NICKNAME":
@@ -1164,6 +1160,10 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
+			if (Bot.BotConfig.LootableTypes.Count == 0) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(Bot.BotConfig.LootableTypes)));
+			}
+
 			(bool success, string output) = await Bot.Actions.SendTradeOffer(wantedTypes: Bot.BotConfig.LootableTypes).ConfigureAwait(false);
 			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
 		}
@@ -1199,6 +1199,10 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
+			if (Bot.BotConfig.LootableTypes.Count == 0) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(Bot.BotConfig.LootableTypes)));
+			}
+
 			string[] appIDTexts = realAppIDsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
 			if (appIDTexts.Length == 0) {
@@ -1231,37 +1235,6 @@ namespace ArchiSteamFarm {
 			}
 
 			IList<string> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseLootByRealAppIDs(steamID, realAppIDsText))).ConfigureAwait(false);
-
-			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
-			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
-		}
-
-		private string ResponseLootSwitch(ulong steamID) {
-			if (steamID == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(steamID));
-				return null;
-			}
-
-			if (!Bot.IsMaster(steamID)) {
-				return null;
-			}
-
-			bool newValue = Bot.Actions.SwitchLootingAllowed();
-			return FormatBotResponse(newValue ? Strings.BotLootingNowEnabled : Strings.BotLootingNowDisabled);
-		}
-
-		private static async Task<string> ResponseLootSwitch(ulong steamID, string botNames) {
-			if ((steamID == 0) || string.IsNullOrEmpty(botNames)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
-				return null;
-			}
-
-			HashSet<Bot> bots = Bot.GetBots(botNames);
-			if ((bots == null) || (bots.Count == 0)) {
-				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
-			}
-
-			IList<string> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseLootSwitch(steamID)))).ConfigureAwait(false);
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
@@ -2108,6 +2081,10 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
+			if (Bot.BotConfig.TransferableTypes.Count == 0) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(Bot.BotConfig.TransferableTypes)));
+			}
+
 			if (!Bot.Bots.TryGetValue(botNameTo, out Bot targetBot)) {
 				return ASF.IsOwner(steamID) ? FormatBotResponse(string.Format(Strings.BotNotFound, botNameTo)) : null;
 			}
@@ -2141,7 +2118,7 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 
-		private async Task<string> ResponseTransferByRealAppIDs(ulong steamID, HashSet<uint> realAppIDs, Bot targetBot) {
+		private async Task<string> ResponseTransferByRealAppIDs(ulong steamID, IReadOnlyCollection<uint> realAppIDs, Bot targetBot) {
 			if ((steamID == 0) || (realAppIDs == null) || (realAppIDs.Count == 0) || (targetBot == null)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(realAppIDs) + " || " + nameof(targetBot));
 				return null;
@@ -2153,6 +2130,10 @@ namespace ArchiSteamFarm {
 
 			if (!Bot.IsConnectedAndLoggedOn) {
 				return FormatBotResponse(Strings.BotNotConnected);
+			}
+
+			if (Bot.BotConfig.TransferableTypes.Count == 0) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(Bot.BotConfig.TransferableTypes)));
 			}
 
 			if (!targetBot.IsConnectedAndLoggedOn) {

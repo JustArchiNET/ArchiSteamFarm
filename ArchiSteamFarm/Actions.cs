@@ -25,6 +25,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
+using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
 using SteamKit2;
@@ -36,20 +37,19 @@ namespace ArchiSteamFarm {
 
 		private readonly Bot Bot;
 		private readonly ConcurrentHashSet<ulong> HandledGifts = new ConcurrentHashSet<ulong>();
-		private readonly SemaphoreSlim LootingSemaphore = new SemaphoreSlim(1, 1);
+		private readonly SemaphoreSlim TradingSemaphore = new SemaphoreSlim(1, 1);
 
 		internal bool SkipFirstShutdown { get; set; }
 
 		private Timer CardsFarmerResumeTimer;
-		private bool LootingAllowed = true;
-		private bool LootingScheduled;
 		private bool ProcessingGiftsScheduled;
+		private bool TradingScheduled;
 
 		internal Actions(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 		public void Dispose() {
 			// Those are objects that are always being created if constructor doesn't throw exception
-			LootingSemaphore.Dispose();
+			TradingSemaphore.Dispose();
 
 			// Those are objects that might be null and the check should be in-place
 			CardsFarmerResumeTimer?.Dispose();
@@ -172,6 +172,11 @@ namespace ArchiSteamFarm {
 			return (true, Strings.Done);
 		}
 
+		internal async Task<SemaphoreLock> GetTradingLock() {
+			await TradingSemaphore.WaitAsync().ConfigureAwait(false);
+			return new SemaphoreLock(TradingSemaphore);
+		}
+
 		internal void OnDisconnected() => HandledGifts.Clear();
 
 		internal async Task<(bool Success, string Output)> Pause(bool permanent, ushort resumeInSeconds = 0) {
@@ -251,14 +256,6 @@ namespace ArchiSteamFarm {
 				return (false, Strings.BotNotConnected);
 			}
 
-			if (!LootingAllowed) {
-				return (false, Strings.BotLootingTemporarilyDisabled);
-			}
-
-			if (Bot.BotConfig.LootableTypes.Count == 0) {
-				return (false, Strings.BotLootingNoLootableTypes);
-			}
-
 			if (targetSteamID == 0) {
 				targetSteamID = GetFirstSteamMasterID();
 				if (targetSteamID == 0) {
@@ -270,19 +267,19 @@ namespace ArchiSteamFarm {
 				return (false, Strings.BotSendingTradeToYourself);
 			}
 
-			lock (LootingSemaphore) {
-				if (LootingScheduled) {
-					return (false, Strings.BotLootingTemporarilyDisabled);
+			lock (TradingSemaphore) {
+				if (TradingScheduled) {
+					return (false, Strings.ErrorAborted);
 				}
 
-				LootingScheduled = true;
+				TradingScheduled = true;
 			}
 
-			await LootingSemaphore.WaitAsync().ConfigureAwait(false);
+			await TradingSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				lock (LootingSemaphore) {
-					LootingScheduled = false;
+				lock (TradingSemaphore) {
+					TradingScheduled = false;
 				}
 
 				HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetInventory(Bot.SteamID, appID, contextID, true, wantedTypes, wantedRealAppIDs).ConfigureAwait(false);
@@ -306,7 +303,7 @@ namespace ArchiSteamFarm {
 					return (false, Strings.BotLootingFailed);
 				}
 			} finally {
-				LootingSemaphore.Release();
+				TradingSemaphore.Release();
 			}
 
 			return (true, Strings.BotLootingSuccess);
@@ -330,8 +327,6 @@ namespace ArchiSteamFarm {
 			Bot.Stop();
 			return (true, Strings.Done);
 		}
-
-		internal bool SwitchLootingAllowed() => LootingAllowed = !LootingAllowed;
 
 		internal static async Task<(bool Success, string Message)> Update() {
 			Version version = await ASF.Update(true).ConfigureAwait(false);

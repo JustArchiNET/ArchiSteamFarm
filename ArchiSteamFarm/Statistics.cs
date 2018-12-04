@@ -239,9 +239,11 @@ namespace ArchiSteamFarm {
 						break;
 					}
 
-					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ActivelyMatchingItems, i));
-					match = await MatchActivelyRound(acceptedMatchableTypes).ConfigureAwait(false);
-					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.DoneActivelyMatchingItems, i));
+					using (await Bot.Actions.GetTradingLock().ConfigureAwait(false)) {
+						Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ActivelyMatchingItems, i));
+						match = await MatchActivelyRound(acceptedMatchableTypes).ConfigureAwait(false);
+						Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.DoneActivelyMatchingItems, i));
+					}
 				}
 
 				Bot.ArchiLogger.LogGenericTrace(Strings.Done);
