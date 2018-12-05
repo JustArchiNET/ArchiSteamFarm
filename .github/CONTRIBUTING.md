@@ -6,17 +6,17 @@ Before making an issue or pull request, you should carefully read **[ASF wiki](h
 
 GitHub **[issues](https://github.com/JustArchiNET/ArchiSteamFarm/issues)** page is being used for ASF "todo" list, regarding both features and bugs. It has **strict policy** that applies to everybody - GitHub is **NOT** technical support, it's a place dedicated **only** to ASF bugs and suggestions. It's **not** proper place for technical issues, general discussion or questions that are unrelated to development. In short, GitHub is for the **development** part of the ASF, and all issues should be **development-oriented**. You have **[ASF chat](https://discord.gg/hSQgt8j)** and **[Steam group](https://steamcommunity.com/groups/archiasf/discussions/1)** for general discussion, questions, technical issues and everything else that is not related to ASF development. If you decide to use GitHub issues, please make sure that you're in fact dealing with a bug, or your suggestion makes sense, preferably by asking on chat/steam group first. Invalid issues will be closed immediately and won't be answered - if you're not sure if your issue is valid, then most likely it's not, and you shouldn't post it here. Valid bugs/suggestions will be forwarded and added as GitHub issues by us, if needed.
 
-Examples of **valid** issues:
-- Reporting incorrect program behaviour that **requires a development action from us**
-- Posting valid enhancement suggestions
-- Correcting mistakes on our wiki
-- Other activities that directly benefit ASF development
-
 Examples of **invalid** issues:
 - Asking how to install the program or use one of its functions
-- Having technical difficulties running the program in some environment
-- Reporting problems that are not caused by ASF, such as Steam not letting you to log in
-- Other activities that are not related to ASF development in any way and do not require any code correction
+- Having technical difficulties running the program in some environment, encountering expected issues caused by the user's neglect
+- Reporting problems that are not caused by ASF, such as ASF-ui issues or Steam not allowing you to log in
+- Other activities that are not related to ASF development in any way and do not require any development action from us
+
+Examples of **valid** issues:
+- Reporting incorrect program behaviour that requires a code correction from us
+- Posting a valid development suggestion on improving the project
+- Correcting mistakes on our wiki, in the documentation or in likewise places that we're in charge of
+- Other activities that directly benefit ASF development and require a development action
 
 ---
 
