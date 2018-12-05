@@ -226,6 +226,8 @@ namespace ArchiSteamFarm {
 			try {
 				Bot.ArchiLogger.LogGenericTrace(Strings.Starting);
 
+				Dictionary<ulong, byte> triedSteamIDs = new Dictionary<ulong, byte>();
+
 				bool match = true;
 
 				for (byte i = 0; (i < MaxMatchingRounds) && match; i++) {
@@ -241,7 +243,7 @@ namespace ArchiSteamFarm {
 
 					using (await Bot.Actions.GetTradingLock().ConfigureAwait(false)) {
 						Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ActivelyMatchingItems, i));
-						match = await MatchActivelyRound(acceptedMatchableTypes).ConfigureAwait(false);
+						match = await MatchActivelyRound(acceptedMatchableTypes, triedSteamIDs).ConfigureAwait(false);
 						Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.DoneActivelyMatchingItems, i));
 					}
 				}
@@ -253,9 +255,9 @@ namespace ArchiSteamFarm {
 		}
 
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
-		private async Task<bool> MatchActivelyRound(IReadOnlyCollection<Steam.Asset.EType> acceptedMatchableTypes) {
-			if ((acceptedMatchableTypes == null) || (acceptedMatchableTypes.Count == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(acceptedMatchableTypes));
+		private async Task<bool> MatchActivelyRound(IReadOnlyCollection<Steam.Asset.EType> acceptedMatchableTypes, IDictionary<ulong, byte> triedSteamIDs) {
+			if ((acceptedMatchableTypes == null) || (acceptedMatchableTypes.Count == 0) || (triedSteamIDs == null)) {
+				Bot.ArchiLogger.LogNullError(nameof(acceptedMatchableTypes) + " || " + nameof(triedSteamIDs));
 				return false;
 			}
 
@@ -282,7 +284,7 @@ namespace ArchiSteamFarm {
 			byte emptyMatches = 0;
 			HashSet<(uint AppID, Steam.Asset.EType Type)> skippedSetsThisRound = new HashSet<(uint AppID, Steam.Asset.EType Type)>();
 
-			foreach (ListedUser listedUser in listedUsers.Where(listedUser => listedUser.MatchEverything && acceptedMatchableTypes.Any(listedUser.MatchableTypes.Contains) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderByDescending(listedUser => listedUser.Score).Take(MaxMatchedBotsHard)) {
+			foreach (ListedUser listedUser in listedUsers.Where(listedUser => listedUser.MatchEverything && acceptedMatchableTypes.Any(listedUser.MatchableTypes.Contains) && (!triedSteamIDs.TryGetValue(listedUser.SteamID, out byte tries) || (tries < byte.MaxValue)) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderBy(listedUser => triedSteamIDs.TryGetValue(listedUser.SteamID, out byte tries) ? tries : 0).ThenByDescending(listedUser => listedUser.Score).Take(MaxMatchedBotsHard)) {
 				Bot.ArchiLogger.LogGenericTrace(listedUser.SteamID + "...");
 
 				HashSet<Steam.Asset> theirInventory = await Bot.ArchiWebHandler.GetInventory(listedUser.SteamID, tradable: true, wantedSets: ourInventoryState.Keys, skippedSets: skippedSetsThisRound).ConfigureAwait(false);
@@ -380,13 +382,20 @@ namespace ArchiSteamFarm {
 
 					if (!success) {
 						Bot.ArchiLogger.LogGenericTrace(Strings.WarningFailed);
-						continue;
+						break;
 					}
 
 					Bot.ArchiLogger.LogGenericTrace(Strings.Success);
 				}
 
+				triedSteamIDs[listedUser.SteamID] = triedSteamIDs.TryGetValue(listedUser.SteamID, out byte tries) ? ++tries : (byte) 1;
+
 				if (skippedSetsThisUser.Count == 0) {
+					if (skippedSetsThisRound.Count == 0) {
+						// If we didn't find any match on clean round, this user isn't going to have anything interesting for us anytime soon
+						triedSteamIDs[listedUser.SteamID] = byte.MaxValue;
+					}
+
 					continue;
 				}
 
