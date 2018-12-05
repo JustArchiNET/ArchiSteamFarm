@@ -56,10 +56,15 @@ fi
 if [[ -f "ASF-ui/package.json" ]] && hash npm 2>/dev/null; then
 	echo "Building ASF UI..."
 
+	if [[ -d "ASF-ui/dist" ]]; then
+		# ASF-ui doesn't clean itself after old build
+		rm -rf "ASF-ui/dist"
+	fi
+
 	cd ASF-ui
-	npm i --no-progress
+	npm i
 	git checkout -- package.json package-lock.json # Until we can switch to npm ci, avoid any changes to source files done by npm i
-	npm run-script deploy --no-progress
+	npm run-script deploy
 	cd ..
 else
 	echo "WARNING: ASF UI dependencies are missing, skipping build of ASF UI..."
