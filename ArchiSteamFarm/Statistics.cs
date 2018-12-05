@@ -353,14 +353,8 @@ namespace ArchiSteamFarm {
 						}
 					}
 
-					if ((classIDsToGive.Count == 0) && (classIDsToReceive.Count == 0)) {
-						Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(classIDsToGive)));
-
-						if (++emptyMatches >= MaxMatchesBotsSoft) {
-							Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ActivelyMatchingItemsRound, skippedSetsThisRound.Count));
-							return skippedSetsThisRound.Count > 0;
-						}
-
+					if (skippedSetsThisUser.Count == 0) {
+						Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(skippedSetsThisUser)));
 						break;
 					}
 
@@ -394,6 +388,10 @@ namespace ArchiSteamFarm {
 					if (skippedSetsThisRound.Count == 0) {
 						// If we didn't find any match on clean round, this user isn't going to have anything interesting for us anytime soon
 						triedSteamIDs[listedUser.SteamID] = byte.MaxValue;
+					}
+
+					if (++emptyMatches >= MaxMatchesBotsSoft) {
+						break;
 					}
 
 					continue;
