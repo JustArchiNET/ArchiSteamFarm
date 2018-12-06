@@ -1137,6 +1137,12 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			// ASF should redeem wallet key only in case of existing wallet
+			if (Bot.WalletCurrency == ECurrencyCode.Invalid) {
+				Bot.ArchiLogger.LogNullError(nameof(Bot.WalletCurrency));
+				return null;
+			}
+
 			const string requestValidateCode = "/account/validatewalletcode";
 
 			// Extra entry for sessionID
