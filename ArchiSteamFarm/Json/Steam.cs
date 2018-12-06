@@ -395,7 +395,7 @@ namespace ArchiSteamFarm.Json {
 				internal readonly ulong Amount;
 
 				[JsonProperty(PropertyName = "currencycode", Required = Required.Always)]
-				internal readonly ECurrencyCode CurrencyCode;
+				internal readonly ECurrencyCode KeyCurrencyCode;
 
 				// Deserialized from JSON
 				private InternalWallet() { }
@@ -408,7 +408,7 @@ namespace ArchiSteamFarm.Json {
 			internal readonly InternalWallet KeyRedeemingWallet;
 
 			[JsonProperty(PropertyName = "currency", Required = Required.DisallowNull)]
-			internal readonly ECurrencyCode? WalletCurrencyCode;
+			internal readonly ECurrencyCode? AccountWalletCurrencyCode;
 
 			// Deserialized from JSON
 			private RedeemWalletResponse() { }
