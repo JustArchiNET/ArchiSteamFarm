@@ -390,8 +390,25 @@ namespace ArchiSteamFarm.Json {
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class RedeemWalletResponse : EResultResponse {
+			internal sealed class Wallet {
+				[JsonProperty(PropertyName = "currency", Required = Required.Always)]
+				internal readonly ulong Amount;
+
+				[JsonProperty(PropertyName = "currencycode", Required = Required.Always)]
+				internal readonly ECurrencyCode CurrencyCode;
+
+				// Deserialized from JSON
+				private Wallet() { }
+			}
+
 			[JsonProperty(PropertyName = "detail", Required = Required.DisallowNull)]
-			internal readonly EPurchaseResultDetail PurchaseResultDetail;
+			internal readonly EPurchaseResultDetail? PurchaseResultDetail;
+
+			[JsonProperty(PropertyName = "currencycode", Required = Required.DisallowNull)]
+			internal readonly Wallet RedeemingCodeWallet;
+
+			[JsonProperty(PropertyName = "currency", Required = Required.DisallowNull)]
+			internal readonly ECurrencyCode? WalletCurrencyCode;
 
 			// Deserialized from JSON
 			private RedeemWalletResponse() { }

@@ -1722,12 +1722,17 @@ namespace ArchiSteamFarm {
 									response.AppendLine(FormatBotResponse(string.Format(Strings.BotRedeem, key, EPurchaseResultDetail.Timeout), currentBot.BotName));
 									currentBot = null; // Either bot will be changed, or loop aborted
 								} else {
-									if (result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) {
+									if ((result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) && (Bot.WalletCurrency != ECurrencyCode.Invalid)) {
 										// If it's a wallet code, we try to redeem it first, then handle the inner result as our primary one
-										(EResult Result, EPurchaseResultDetail PurchaseResult) walletResult = await currentBot.ArchiWebHandler.RedeemWalletKey(key).ConfigureAwait(false);
+										(EResult Result, EPurchaseResultDetail? PurchaseResult)? walletResult = await currentBot.ArchiWebHandler.RedeemWalletKey(key).ConfigureAwait(false);
 
-										result.Result = walletResult.Result;
-										result.PurchaseResultDetail = walletResult.PurchaseResult;
+										if (walletResult != null) {
+											result.Result = walletResult.Value.Result;
+											result.PurchaseResultDetail = walletResult.Value.PurchaseResult.GetValueOrDefault(walletResult.Value.Result == EResult.OK ? EPurchaseResultDetail.NoDetail : EPurchaseResultDetail.BadActivationCode); // BadActivationCode is our smart guess in this case
+										} else {
+											result.Result = EResult.Timeout;
+											result.PurchaseResultDetail = EPurchaseResultDetail.Timeout;
+										}
 									}
 
 									switch (result.PurchaseResultDetail) {

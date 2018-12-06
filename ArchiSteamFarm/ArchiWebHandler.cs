@@ -1131,10 +1131,10 @@ namespace ArchiSteamFarm {
 
 		internal void OnVanityURLChanged(string vanityURL = null) => VanityURL = string.IsNullOrEmpty(vanityURL) ? null : vanityURL;
 
-		internal async Task<(EResult Result, EPurchaseResultDetail PurchaseResult)> RedeemWalletKey(string key) {
+		internal async Task<(EResult Result, EPurchaseResultDetail? PurchaseResult)?> RedeemWalletKey(string key) {
 			if (string.IsNullOrEmpty(key)) {
 				Bot.ArchiLogger.LogNullError(nameof(key));
-				return (EResult.Timeout, EPurchaseResultDetail.Timeout);
+				return null;
 			}
 
 			const string requestValidateCode = "/account/validatewalletcode";
@@ -1144,26 +1144,28 @@ namespace ArchiSteamFarm {
 
 			Steam.RedeemWalletResponse responseValidateCode = await UrlPostToJsonObjectWithSession<Steam.RedeemWalletResponse>(SteamStoreURL, requestValidateCode, data).ConfigureAwait(false);
 			if (responseValidateCode == null) {
-				return (EResult.Timeout, EPurchaseResultDetail.Timeout);
+				return null;
 			}
 
 			if (responseValidateCode.Result != EResult.OK) {
 				return (responseValidateCode.Result, responseValidateCode.PurchaseResultDetail);
 			}
 
-			const string requestCheckFunds = "/account/createwalletandcheckfunds";
-			Steam.EResultResponse responseCheckFunds = await UrlPostToJsonObjectWithSession<Steam.EResultResponse>(SteamStoreURL, requestCheckFunds, data).ConfigureAwait(false);
-			if (responseCheckFunds == null) {
-				return (EResult.Timeout, EPurchaseResultDetail.Timeout);
-			}
+			if (responseValidateCode.WalletCurrencyCode != responseValidateCode.RedeemingCodeWallet?.CurrencyCode) {
+				const string requestCheckFunds = "/account/createwalletandcheckfunds";
+				Steam.EResultResponse responseCheckFunds = await UrlPostToJsonObjectWithSession<Steam.EResultResponse>(SteamStoreURL, requestCheckFunds, data).ConfigureAwait(false);
+				if (responseCheckFunds == null) {
+					return null;
+				}
 
-			if (responseCheckFunds.Result != EResult.OK) {
-				return (responseCheckFunds.Result, EPurchaseResultDetail.NoDetail);
+				if (responseCheckFunds.Result != EResult.OK) {
+					return (responseCheckFunds.Result, EPurchaseResultDetail.NoDetail);
+				}
 			}
 
 			const string requestConfirmRedeem = "/account/confirmredeemwalletcode";
 			Steam.RedeemWalletResponse responseConfirmRedeem = await UrlPostToJsonObjectWithSession<Steam.RedeemWalletResponse>(SteamStoreURL, requestConfirmRedeem, data).ConfigureAwait(false);
-			return responseConfirmRedeem == null ? (EResult.Timeout, EPurchaseResultDetail.Timeout) : (responseCheckFunds.Result, EPurchaseResultDetail.NoDetail);
+			return responseConfirmRedeem == null ? ((EResult Result, EPurchaseResultDetail? PurchaseResult)?) null : (responseConfirmRedeem.Result, EPurchaseResultDetail.NoDetail);
 		}
 
 		internal async Task<(bool Success, HashSet<ulong> MobileTradeOfferIDs)> SendTradeOffer(ulong partnerID, IReadOnlyCollection<Steam.Asset> itemsToGive = null, IReadOnlyCollection<Steam.Asset> itemsToReceive = null, string token = null, bool forcedSingleOffer = false) {
