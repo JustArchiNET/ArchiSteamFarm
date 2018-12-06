@@ -1162,7 +1162,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (responseValidateCode.WalletCurrencyCode != responseValidateCode.KeyDetails.CurrencyCode) {
+			if ((responseValidateCode.Result != EResult.OK) || (responseValidateCode.PurchaseResultDetail != EPurchaseResultDetail.NoDetail)) {
 				const string requestCheckFunds = "/account/createwalletandcheckfunds";
 				Steam.EResultResponse responseCheckFunds = await UrlPostToJsonObjectWithSession<Steam.EResultResponse>(SteamStoreURL, requestCheckFunds, data).ConfigureAwait(false);
 				if (responseCheckFunds == null) {
