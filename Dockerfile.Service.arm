@@ -1,20 +1,22 @@
 FROM node AS build-node
 WORKDIR /app
 COPY ASF-ui .
-RUN echo "Node.js: $(node --version)" && \
+RUN echo "node: $(node --version)" && \
     echo "npm: $(npm --version)" && \
-    npm ci --no-progress && \
-    npm run-script deploy --no-progress
+    npm ci && \
+    npm run-script deploy
 
 FROM microsoft/dotnet:2.1-sdk AS build-dotnet
+ENV CONFIGURATION Release
 ENV NET_CORE_VERSION netcoreapp2.1
 WORKDIR /app
 COPY --from=build-node /app/dist ASF-ui/dist
 COPY ArchiSteamFarm ArchiSteamFarm
 COPY ArchiSteamFarm.Tests ArchiSteamFarm.Tests
 RUN dotnet --info && \
-    dotnet test ArchiSteamFarm.Tests -c Release -f "$NET_CORE_VERSION" -o out/test /nologo && \
-    dotnet publish ArchiSteamFarm -c Release -f "$NET_CORE_VERSION" -o out/publish /nologo /p:ASFVariant=generic /p:LinkDuringPublish=false && \
+    dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/source' /nologo && \
+    dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/source' /nologo && \
+    dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/publish' /nologo /p:ASFVariant=generic /p:LinkDuringPublish=false && \
     cp "ArchiSteamFarm/scripts/generic/ArchiSteamFarm-Service.sh" "ArchiSteamFarm/out/publish/ArchiSteamFarm-Service.sh"
 
 FROM microsoft/dotnet:2.1-runtime-stretch-slim-arm32v7 AS runtime

@@ -79,7 +79,7 @@ build_script:
     Push-Location ASF-ui
 
 
-    npm ci --no-progress
+    npm ci
 
 
     if ($LastExitCode -ne 0) {
@@ -87,7 +87,7 @@ build_script:
     }
 
 
-    npm run-script deploy --no-progress
+    npm run-script deploy
 
 
     if ($LastExitCode -ne 0) {

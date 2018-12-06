@@ -629,7 +629,7 @@ namespace ArchiSteamFarm {
 
 			Bot targetBot = Bots.Values.FirstOrDefault(bot => bot.SteamID == steamID);
 			if (targetBot != null) {
-				string targetTradeToken = await targetBot.ArchiWebHandler.GetTradeToken().ConfigureAwait(false);
+				string targetTradeToken = await targetBot.ArchiHandler.GetTradeToken().ConfigureAwait(false);
 				if (!string.IsNullOrEmpty(targetTradeToken)) {
 					return await ArchiWebHandler.GetTradeHoldDurationForUser(steamID, targetTradeToken).ConfigureAwait(false);
 				}
@@ -678,8 +678,13 @@ namespace ArchiSteamFarm {
 							continue;
 						}
 
+						// Valid formats:
+						// Key (name will be the same as key and replaced from redemption result, if possible)
+						// Name + Key (user provides both, if name is equal to key, above logic is used, otherwise name is kept)
+						// Name + <Ignored> + Key (BGR output format, we include extra properties in the middle, those are ignored during import)
 						string[] parsedArgs = line.Split(DefaultBackgroundKeysRedeemerSeparator, StringSplitOptions.RemoveEmptyEntries);
-						if (parsedArgs.Length < 2) {
+
+						if (parsedArgs.Length < 1) {
 							ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, line));
 							continue;
 						}
@@ -1586,11 +1591,14 @@ namespace ArchiSteamFarm {
 			string loginKey = null;
 
 			if (BotConfig.UseLoginKeys) {
-				loginKey = BotDatabase.LoginKey;
+				// Login keys are not guaranteed to be valid, we should use them only if we don't have full details available from the user
+				if (string.IsNullOrEmpty(BotConfig.DecryptedSteamPassword) || (string.IsNullOrEmpty(AuthCode) && string.IsNullOrEmpty(TwoFactorCode) && !HasMobileAuthenticator)) {
+					loginKey = BotDatabase.LoginKey;
 
-				// Decrypt login key if needed
-				if (!string.IsNullOrEmpty(loginKey) && (loginKey.Length > 19) && (BotConfig.PasswordFormat != ArchiCryptoHelper.ECryptoMethod.PlainText)) {
-					loginKey = ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, loginKey);
+					// Decrypt login key if needed
+					if (!string.IsNullOrEmpty(loginKey) && (loginKey.Length > 19) && (BotConfig.PasswordFormat != ArchiCryptoHelper.ECryptoMethod.PlainText)) {
+						loginKey = ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, loginKey);
+					}
 				}
 			} else {
 				// If we're not using login keys, ensure we don't have any saved
@@ -1615,7 +1623,7 @@ namespace ArchiSteamFarm {
 			ArchiLogger.LogGenericInfo(Strings.BotLoggingIn);
 
 			if (string.IsNullOrEmpty(TwoFactorCode) && HasMobileAuthenticator) {
-				// In this case, we can also use ASF 2FA for providing 2FA token, even if it's not required
+				// We should always include 2FA token, even if it's not required
 				TwoFactorCode = await BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
 			}
 
@@ -2358,6 +2366,11 @@ namespace ArchiSteamFarm {
 					}
 
 					await BotDatabase.RemoveGameToRedeemInBackground(key).ConfigureAwait(false);
+
+					// If user omitted the name or intentionally provided the same name as key, replace it with the Steam result
+					if (name.Equals(key) && (result.Items != null) && (result.Items.Count > 0)) {
+						name = string.Join(", ", result.Items.Values);
+					}
 
 					string logEntry = name + DefaultBackgroundKeysRedeemerSeparator + "[" + result.PurchaseResultDetail + "]" + ((result.Items != null) && (result.Items.Count > 0) ? DefaultBackgroundKeysRedeemerSeparator + string.Join(", ", result.Items) : "") + DefaultBackgroundKeysRedeemerSeparator + key;
 

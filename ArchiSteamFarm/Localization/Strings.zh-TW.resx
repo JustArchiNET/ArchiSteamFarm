@@ -463,20 +463,8 @@
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>無法發送交易提案，因為沒有帳戶設有 master 權限！</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>並未設定任何可獲取的物品類型！</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>搜刮功能現已停用！</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>搜刮功能現已啟用！</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>交易提案發送成功！</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>搜刮功能暫時停用！</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>您無法發送交易給自己！</value>
@@ -584,7 +572,7 @@
     <value>如果您對 ASF 的實際運作方式有疑慮，請至我們 wiki 上的隱私政策章節中查看！</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>看來這是你首次使用ASF，歡迎！</value>
+    <value>看來這是你首次使用 ASF，歡迎！</value>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>您提供的 CurrentCulture 無效，ASF 將以預設值繼續運行！</value>
@@ -665,5 +653,9 @@
   <data name="BotHasNoWallet" xml:space="preserve">
     <value>Bot 沒有錢包餘額。</value>
   </data>
+  
+  
+  
+  
   
 </root>

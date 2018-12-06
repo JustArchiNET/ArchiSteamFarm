@@ -466,20 +466,8 @@ StackTrace:
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Trade couldn't be sent because there is no user with master permission defined!</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>You don't have any lootable types set!</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Looting is now disabled!</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Looting is now enabled!</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Trade offer sent successfully!</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Looting is temporarily disabled!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>You can't send trade to yourself!</value>
@@ -671,5 +659,20 @@ StackTrace:
   <data name="BotLevel" xml:space="preserve">
     <value>Bot has level {0}.</value>
     <comment>{0} will be replaced by bot's level</comment>
+  </data>
+  <data name="ActivelyMatchingItems" xml:space="preserve">
+    <value>Matching Steam items, round #{0}...</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="DoneActivelyMatchingItems" xml:space="preserve">
+    <value>Done matching Steam items, round #{0}.</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="ErrorAborted" xml:space="preserve">
+    <value>Aborted!</value>
+  </data>
+  <data name="ActivelyMatchingItemsRound" xml:space="preserve">
+    <value>Matched a total of {0} sets this round.</value>
+    <comment>{0} will be replaced by number of sets traded</comment>
   </data>
 </root>

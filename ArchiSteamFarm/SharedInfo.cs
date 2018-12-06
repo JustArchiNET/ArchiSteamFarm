@@ -42,6 +42,8 @@ namespace ArchiSteamFarm {
 		internal const string KeysExtension = ".keys";
 		internal const string KeysUnusedExtension = ".unused";
 		internal const string KeysUsedExtension = ".used";
+		internal const string LicenseName = "Apache 2.0";
+		internal const string LicenseURL = "http://www.apache.org/licenses/LICENSE-2.0";
 		internal const string LogFile = "log.txt";
 		internal const string MobileAuthenticatorExtension = ".maFile";
 		internal const string ProjectURL = "https://github.com/" + GithubRepo;

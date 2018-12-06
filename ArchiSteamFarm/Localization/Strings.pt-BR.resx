@@ -235,11 +235,11 @@ StackTrace:
     <value>Verificando se há atualizações...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Baixando uma nova versão: {0} ({1} MB)... Enquanto aguarda, considere doar se você aprecia o nosso trabalho! :)</value>
+    <value>Baixando a versão mais recente: {0} ({1} MB)... Enquanto aguarda, considere fazer uma doação caso aprecie nosso trabalho! :)</value>
     <comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
-    <value>Processo de atualização finalizado!</value>
+    <value>Programa atualizado!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
     <value>Uma nova versão do ASF está disponível! Considere atualizá-lo!</value>
@@ -344,7 +344,7 @@ StackTrace:
     <value>Ignorando esse pedido pois a pausa permanente está habilitada!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
-    <value>Não temos cartas disponíveis nesta conta!</value>
+    <value>Não há cartas disponíveis para coleta nesta conta!</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
     <value>Coletando de: {0} ({1})</value>
@@ -466,20 +466,8 @@ StackTrace:
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>A troca não pode ser enviada porque não há nenhum usuário com permissão "master" definida!</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>Você não configurou nenhum tipo de item para coletar!</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>A coleta está desabilitada!</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>A coleta agora está ativada!</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Proposta de troca enviada com sucesso!</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Coleta temporariamente desabilitada!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>Você não pode enviar uma proposta de troca a si mesmo!</value>
@@ -662,7 +650,7 @@ StackTrace:
     <value>O bot de destino não está conectado!</value>
   </data>
   <data name="BotWalletBalance" xml:space="preserve">
-    <value>Valor na carteira: {0} {1}</value>
+    <value>Saldo de carteira: {0} {1}</value>
     <comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
   </data>
   <data name="BotHasNoWallet" xml:space="preserve">
@@ -671,5 +659,20 @@ StackTrace:
   <data name="BotLevel" xml:space="preserve">
     <value>O nível do bot é {0}.</value>
     <comment>{0} will be replaced by bot's level</comment>
+  </data>
+  <data name="ActivelyMatchingItems" xml:space="preserve">
+    <value>Correspondendo itens Steam, rodada #{0}...</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="DoneActivelyMatchingItems" xml:space="preserve">
+    <value>Itens Steam correspondidos, rodada #{0}.</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="ErrorAborted" xml:space="preserve">
+    <value>Cancelado!</value>
+  </data>
+  <data name="ActivelyMatchingItemsRound" xml:space="preserve">
+    <value>Correspondido um total de {0} conjuntos nessa rodada.</value>
+    <comment>{0} will be replaced by number of sets traded</comment>
   </data>
 </root>

@@ -43,6 +43,7 @@ namespace ArchiSteamFarm {
 		private const string ISteamApps = "ISteamApps";
 		private const string ISteamUserAuth = "ISteamUserAuth";
 		private const string ITwoFactorService = "ITwoFactorService";
+		private const ushort MaxItemsInSingleInventoryRequest = 5000;
 		private const byte MinSessionValidityInSeconds = GlobalConfig.DefaultConnectionTimeout / 6;
 		private const string SteamCommunityHost = "steamcommunity.com";
 		private const string SteamCommunityURL = "https://" + SteamCommunityHost;
@@ -61,12 +62,10 @@ namespace ArchiSteamFarm {
 		private readonly Bot Bot;
 		private readonly SemaphoreSlim PublicInventorySemaphore = new SemaphoreSlim(1, 1);
 		private readonly SemaphoreSlim SessionSemaphore = new SemaphoreSlim(1, 1);
-		private readonly SemaphoreSlim TradeTokenSemaphore = new SemaphoreSlim(1, 1);
 		private readonly WebBrowser WebBrowser;
 
 		private string CachedApiKey;
 		private bool? CachedPublicInventory;
-		private string CachedTradeToken;
 		private DateTime LastSessionCheck;
 		private DateTime LastSessionRefresh;
 		private bool MarkingInventoryScheduled;
@@ -82,7 +81,6 @@ namespace ArchiSteamFarm {
 			ApiKeySemaphore.Dispose();
 			PublicInventorySemaphore.Dispose();
 			SessionSemaphore.Dispose();
-			TradeTokenSemaphore.Dispose();
 			WebBrowser.Dispose();
 		}
 
@@ -544,7 +542,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
-		internal async Task<HashSet<Steam.Asset>> GetInventory(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, byte contextID = Steam.Asset.SteamCommunityContextID, bool? tradable = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<uint> wantedRealAppIDs = null) {
+		internal async Task<HashSet<Steam.Asset>> GetInventory(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, byte contextID = Steam.Asset.SteamCommunityContextID, bool? tradable = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<uint> wantedRealAppIDs = null, IReadOnlyCollection<(uint AppID, Steam.Asset.EType Type)> wantedSets = null, IReadOnlyCollection<(uint AppID, Steam.Asset.EType Type)> skippedSets = null) {
 			if ((appID == 0) || (contextID == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
 				return null;
@@ -567,8 +565,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<Steam.Asset> result = new HashSet<Steam.Asset>();
 
-			// 5000 is maximum allowed count per single request
-			string request = "/inventory/" + steamID + "/" + appID + "/" + contextID + "?count=5000&l=english";
+			string request = "/inventory/" + steamID + "/" + appID + "/" + contextID + "?count=" + MaxItemsInSingleInventoryRequest + "&l=english";
 			ulong startAssetID = 0;
 
 			await InventorySemaphore.WaitAsync().ConfigureAwait(false);
@@ -628,7 +625,7 @@ namespace ArchiSteamFarm {
 
 					foreach (Steam.Asset asset in response.Assets.Where(asset => asset != null)) {
 						if (descriptionMap.TryGetValue(asset.ClassID, out (bool Tradable, Steam.Asset.EType Type, uint RealAppID) description)) {
-							if ((tradable.HasValue && (description.Tradable != tradable.Value)) || (wantedTypes?.Contains(description.Type) == false) || (wantedRealAppIDs?.Contains(description.RealAppID) == false)) {
+							if ((tradable.HasValue && (description.Tradable != tradable.Value)) || (wantedTypes?.Contains(description.Type) == false) || (wantedRealAppIDs?.Contains(description.RealAppID) == false) || (wantedSets?.Contains((description.RealAppID, description.Type)) == false) || (skippedSets?.Contains((description.RealAppID, description.Type)) == true)) {
 								continue;
 							}
 
@@ -889,56 +886,6 @@ namespace ArchiSteamFarm {
 			return resultInSeconds == 0 ? (byte) 0 : (byte) (resultInSeconds / 86400);
 		}
 
-		internal async Task<string> GetTradeToken() {
-			if (CachedTradeToken != null) {
-				return CachedTradeToken;
-			}
-
-			await TradeTokenSemaphore.WaitAsync().ConfigureAwait(false);
-
-			try {
-				if (CachedTradeToken != null) {
-					return CachedTradeToken;
-				}
-
-				const string request = "/my/tradeoffers/privacy?l=english";
-				HtmlDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
-
-				if (htmlDocument == null) {
-					return null;
-				}
-
-				HtmlNode tokenNode = htmlDocument.DocumentNode.SelectSingleNode("//input[@class='trade_offer_access_url']");
-				if (tokenNode == null) {
-					Bot.ArchiLogger.LogNullError(nameof(tokenNode));
-					return null;
-				}
-
-				string value = tokenNode.GetAttributeValue("value", null);
-				if (string.IsNullOrEmpty(value)) {
-					Bot.ArchiLogger.LogNullError(nameof(value));
-					return null;
-				}
-
-				int index = value.IndexOf("token=", StringComparison.Ordinal);
-				if (index < 0) {
-					Bot.ArchiLogger.LogNullError(nameof(index));
-					return null;
-				}
-
-				index += 6;
-				if (index + 8 < value.Length) {
-					Bot.ArchiLogger.LogNullError(nameof(index));
-					return null;
-				}
-
-				CachedTradeToken = value.Substring(index, 8);
-				return CachedTradeToken;
-			} finally {
-				TradeTokenSemaphore.Release();
-			}
-		}
-
 		internal async Task<bool?> HandleConfirmation(string deviceID, string confirmationHash, uint time, ulong confirmationID, ulong confirmationKey, bool accept) {
 			if (string.IsNullOrEmpty(deviceID) || string.IsNullOrEmpty(confirmationHash) || (time == 0) || (confirmationID == 0) || (confirmationKey == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time) + " || " + nameof(confirmationID) + " || " + nameof(confirmationKey));
@@ -1112,7 +1059,7 @@ namespace ArchiSteamFarm {
 			Bot.ArchiLogger.LogGenericInfo(Strings.Success);
 
 			// Unlock Steam Parental if needed
-			if (!string.IsNullOrEmpty(parentalCode) && (parentalCode.Length == 4)) {
+			if ((parentalCode != null) && (parentalCode.Length == 4)) {
 				if (!await UnlockParentalAccount(parentalCode).ConfigureAwait(false)) {
 					return false;
 				}
@@ -1177,7 +1124,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void OnDisconnected() {
-			CachedApiKey = CachedTradeToken = null;
+			CachedApiKey = null;
 			CachedPublicInventory = null;
 			SteamID = 0;
 		}
@@ -1199,26 +1146,43 @@ namespace ArchiSteamFarm {
 			return response == null ? ((EResult Result, EPurchaseResultDetail? PurchaseResult)?) null : (response.Result, response.PurchaseResultDetail);
 		}
 
-		internal async Task<(bool Success, HashSet<ulong> MobileTradeOfferIDs)> SendTradeOffer(ulong partnerID, IReadOnlyCollection<Steam.Asset> itemsToGive, string token = null) {
-			if ((partnerID == 0) || (itemsToGive == null) || (itemsToGive.Count == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(partnerID) + " || " + nameof(itemsToGive));
+		internal async Task<(bool Success, HashSet<ulong> MobileTradeOfferIDs)> SendTradeOffer(ulong partnerID, IReadOnlyCollection<Steam.Asset> itemsToGive = null, IReadOnlyCollection<Steam.Asset> itemsToReceive = null, string token = null, bool forcedSingleOffer = false) {
+			if ((partnerID == 0) || (((itemsToGive == null) || (itemsToGive.Count == 0)) && ((itemsToReceive == null) || (itemsToReceive.Count == 0)))) {
+				Bot.ArchiLogger.LogNullError(nameof(partnerID) + " || (" + nameof(itemsToGive) + " && " + nameof(itemsToReceive) + ")");
 				return (false, null);
 			}
 
 			Steam.TradeOfferSendRequest singleTrade = new Steam.TradeOfferSendRequest();
 			HashSet<Steam.TradeOfferSendRequest> trades = new HashSet<Steam.TradeOfferSendRequest> { singleTrade };
 
-			foreach (Steam.Asset itemToGive in itemsToGive) {
-				if (singleTrade.ItemsToGive.Assets.Count >= Trading.MaxItemsPerTrade) {
-					if (trades.Count >= Trading.MaxTradesPerAccount) {
-						break;
+			if (itemsToGive != null) {
+				foreach (Steam.Asset itemToGive in itemsToGive) {
+					if (!forcedSingleOffer && (singleTrade.ItemsToGive.Assets.Count + singleTrade.ItemsToReceive.Assets.Count >= Trading.MaxItemsPerTrade)) {
+						if (trades.Count >= Trading.MaxTradesPerAccount) {
+							break;
+						}
+
+						singleTrade = new Steam.TradeOfferSendRequest();
+						trades.Add(singleTrade);
 					}
 
-					singleTrade = new Steam.TradeOfferSendRequest();
-					trades.Add(singleTrade);
+					singleTrade.ItemsToGive.Assets.Add(itemToGive);
 				}
+			}
 
-				singleTrade.ItemsToGive.Assets.Add(itemToGive);
+			if (itemsToReceive != null) {
+				foreach (Steam.Asset itemToReceive in itemsToReceive) {
+					if (!forcedSingleOffer && (singleTrade.ItemsToGive.Assets.Count + singleTrade.ItemsToReceive.Assets.Count >= Trading.MaxItemsPerTrade)) {
+						if (trades.Count >= Trading.MaxTradesPerAccount) {
+							break;
+						}
+
+						singleTrade = new Steam.TradeOfferSendRequest();
+						trades.Add(singleTrade);
+					}
+
+					singleTrade.ItemsToReceive.Assets.Add(itemToReceive);
+				}
 			}
 
 			const string request = "/tradeoffer/new/send";

@@ -215,7 +215,7 @@
     <value>正在刷新会话！</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
-    <value>拒绝交易：{0}</value>
+    <value>驳回交易：{0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
@@ -343,7 +343,7 @@
     <value>忽略此请求，因为已启用长期暂停！</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
-    <value>该账户已经无卡可挂！</value>
+    <value>该帐户已经无卡可挂！</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
     <value>正在挂卡：{0} ({1})</value>
@@ -387,7 +387,7 @@
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>该账户目前受限，在限制解除前将无法挂卡！</value>
+    <value>该帐户目前受限，在限制解除前将无法挂卡！</value>
   </data>
   <data name="BotAddLicense" xml:space="preserve">
     <value>ID：{0} | 状态：{1}</value>
@@ -457,7 +457,7 @@
     <value>登录中……</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>这个帐号似乎正被另一个 ASF 实例使用，这是未定义的行为，拒绝继续运行！</value>
+    <value>这个帐户似乎正被另一个 ASF 实例使用，这是未定义的行为，程序拒绝继续运行！</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>交易报价失败！</value>
@@ -465,20 +465,8 @@
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>无法发送交易报价，因为没有为机器人设置 Master （机器人所有者）用户！</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>您尚未设置任何可拾取类型！</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>拾取现在已禁用！</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>拾取现在已启用！</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>交易报价发送成功！</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>拾取暂时被禁用！</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>无法给自己发送交易报价！</value>
@@ -519,7 +507,7 @@
     <value>机器人没有在挂卡。</value>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>机器人为受限账户，无法通过挂卡掉落任何卡牌。</value>
+    <value>机器人为受限帐户，无法通过挂卡掉落任何卡牌。</value>
   </data>
   <data name="BotStatusConnecting" xml:space="preserve">
     <value>机器人正在连接到 Steam 网络。</value>
@@ -553,10 +541,10 @@
     <value>与 Steam 网络的连接丢失，正在重新连接……</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
-    <value>账户不再被占用，恢复挂卡！</value>
+    <value>帐户不再被占用，恢复挂卡！</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
-    <value>账户正在被占用：ASF 将会在账户空闲时恢复挂卡……</value>
+    <value>帐户正在被占用：ASF 将会在账户空闲时恢复挂卡……</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>正在连接……</value>
@@ -646,7 +634,7 @@
     <value>正在刷新游戏包数据……</value>
   </data>
   <data name="WarningDeprecated" xml:space="preserve">
-    <value>{0} 用法已被废弃，并将在程序的未来版本中被移除。请改用 {1}。</value>
+    <value>{0} 用法已被弃用，并将在程序的未来版本中被移除。请改用 {1}。</value>
     <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
   </data>
   <data name="BotAcceptedDonationTrade" xml:space="preserve">
@@ -670,5 +658,20 @@
   <data name="BotLevel" xml:space="preserve">
     <value>机器人的等级为 {0}。</value>
     <comment>{0} will be replaced by bot's level</comment>
+  </data>
+  <data name="ActivelyMatchingItems" xml:space="preserve">
+    <value>正在匹配 Steam 物品，第 #{0} 轮……</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="DoneActivelyMatchingItems" xml:space="preserve">
+    <value>完成匹配 Steam 物品，第 #{0} 轮。</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="ErrorAborted" xml:space="preserve">
+    <value>已中止！</value>
+  </data>
+  <data name="ActivelyMatchingItemsRound" xml:space="preserve">
+    <value>本轮共匹配 {0} 组。</value>
+    <comment>{0} will be replaced by number of sets traded</comment>
   </data>
 </root>

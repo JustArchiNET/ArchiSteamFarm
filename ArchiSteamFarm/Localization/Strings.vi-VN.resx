@@ -466,20 +466,8 @@ StackTrace:
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Giao dịch không thể gửi do không có ai có quyền chủ được thiết lập!</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>Bạn không có bất kỳ cái gì có thể lấy được!</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Lấy đồ đã được vô hiệu hóa!</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Lấy đồ đã được được kích hoạt!</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Lời mời giao dịch đã gửi thành công!</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Lấy đồ tạm thời bị vô hiệu hóa!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>Bạn không thể gửi lời mời giao dịch cho chính mình!</value>
@@ -658,6 +646,10 @@ StackTrace:
     <value>Giải pháp cho lỗi {0} đã được kích hoạt.</value>
     <comment>{0} will be replaced by the bug's name provided by ASF</comment>
   </data>
+  
+  
+  
+  
   
   
   

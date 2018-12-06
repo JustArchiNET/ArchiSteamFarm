@@ -461,20 +461,8 @@ StackTrace:
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Obchod nemohl být odeslán protože není nastaven žádný účet s master permission.</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>Zatím nemáte nastavené žádné typy pro zasílání.</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Zasílání je nyní zakázáno.</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Zasílání je nyní povoleno.</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Nabídka k obchodování byla úspěšně odeslána!</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Zasílání je dočasně zakázáno.</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>Nemůžeš obchodovat sám se sebou!</value>
@@ -653,6 +641,10 @@ StackTrace:
     <value>Řešení pro chybu {0} bylo spuštěno.</value>
     <comment>{0} will be replaced by the bug's name provided by ASF</comment>
   </data>
+  
+  
+  
+  
   
   
   

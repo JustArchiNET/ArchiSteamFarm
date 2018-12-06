@@ -40,6 +40,7 @@ namespace ArchiSteamFarm {
 		private readonly ArchiLogger ArchiLogger;
 		private readonly SteamUnifiedMessages.UnifiedService<IChatRoom> UnifiedChatRoomService;
 		private readonly SteamUnifiedMessages.UnifiedService<IClanChatRooms> UnifiedClanChatRoomsService;
+		private readonly SteamUnifiedMessages.UnifiedService<IEcon> UnifiedEconService;
 		private readonly SteamUnifiedMessages.UnifiedService<IFriendMessages> UnifiedFriendMessagesService;
 		private readonly SteamUnifiedMessages.UnifiedService<IPlayer> UnifiedPlayerService;
 
@@ -53,6 +54,7 @@ namespace ArchiSteamFarm {
 			ArchiLogger = archiLogger;
 			UnifiedChatRoomService = steamUnifiedMessages.CreateService<IChatRoom>();
 			UnifiedClanChatRoomsService = steamUnifiedMessages.CreateService<IClanChatRooms>();
+			UnifiedEconService = steamUnifiedMessages.CreateService<IEcon>();
 			UnifiedFriendMessagesService = steamUnifiedMessages.CreateService<IFriendMessages>();
 			UnifiedPlayerService = steamUnifiedMessages.CreateService<IPlayer>();
 		}
@@ -218,7 +220,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			CPlayer_GetGameBadgeLevels_Request request = new CPlayer_GetGameBadgeLevels_Request { };
+			CPlayer_GetGameBadgeLevels_Request request = new CPlayer_GetGameBadgeLevels_Request();
 			SteamUnifiedMessages.ServiceMethodResponse response;
 
 			try {
@@ -268,6 +270,35 @@ namespace ArchiSteamFarm {
 
 			CChatRoom_GetMyChatRoomGroups_Response body = response.GetDeserializedResponse<CChatRoom_GetMyChatRoomGroups_Response>();
 			return body.chat_room_groups.Select(chatRoom => chatRoom.group_summary.chat_group_id).ToHashSet();
+		}
+
+		internal async Task<string> GetTradeToken() {
+			if (!Client.IsConnected) {
+				return null;
+			}
+
+			CEcon_GetTradeOfferAccessToken_Request request = new CEcon_GetTradeOfferAccessToken_Request();
+
+			SteamUnifiedMessages.ServiceMethodResponse response;
+
+			try {
+				response = await UnifiedEconService.SendMessage(x => x.GetTradeOfferAccessToken(request));
+			} catch (Exception e) {
+				ArchiLogger.LogGenericWarningException(e);
+				return null;
+			}
+
+			if (response == null) {
+				ArchiLogger.LogNullError(nameof(response));
+				return null;
+			}
+
+			if (response.Result != EResult.OK) {
+				return null;
+			}
+
+			CEcon_GetTradeOfferAccessToken_Response body = response.GetDeserializedResponse<CEcon_GetTradeOfferAccessToken_Response>();
+			return body.trade_offer_access_token;
 		}
 
 		internal async Task<bool> JoinChatRoomGroup(ulong chatGroupID) {

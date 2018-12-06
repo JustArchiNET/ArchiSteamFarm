@@ -466,20 +466,8 @@ StackTrace:
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Ruilaanbod kon niet verzonden worden omdat er geen gebruiker is toegewezen met master permissies!</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>Je hebt geen lootable types ingesteld!</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Looting is nu uitgeschakeld!</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Looting is nu ingeschakeld!</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Ruilaanbod succesvol verzonden!</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Looting is tijdelijk uitgeschakeld!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>Je kan jezelf geen ruil aanbieden!</value>
@@ -672,4 +660,8 @@ StackTrace:
     <value>Bot is level {0}.</value>
     <comment>{0} will be replaced by bot's level</comment>
   </data>
+  
+  
+  
+  
 </root>

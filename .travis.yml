@@ -81,8 +81,7 @@ matrix:
     - os: linux
       # Ref: https://docs.travis-ci.com/user/reference/xenial
       dist: xenial
-      sudo: false
     - os: osx
       # Ref: https://docs.travis-ci.com/user/reference/osx
-      dotnet: 2.1.403 # For OSX, we need absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
+      dotnet: 2.1.500 # For OSX, we need absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
       osx_image: xcode10.1

@@ -450,20 +450,8 @@
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Master権限に定義されているbotがないため、トレードは送信できません！</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>Lootable typesが設定されていません！</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Lootingを無効にしました！</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Lootingを有効にしました！</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>トレードオファーを正常に送信しました！</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Lootingは一時的に無効化されています！</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>自分自身にトレードを送信することはできません！</value>
@@ -627,6 +615,10 @@
   <data name="BotRefreshingPackagesData" xml:space="preserve">
     <value>パッケージデータを更新しています...</value>
   </data>
+  
+  
+  
+  
   
   
   

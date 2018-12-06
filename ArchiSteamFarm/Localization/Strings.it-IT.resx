@@ -464,20 +464,8 @@
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>L'offerta di scambio non può essere inviata perchè non c'è nessun botmaster definito!</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>Non hai configurato il tipo di oggetti per il loot!</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Looting è ora disabilitato!</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Looting è ora abilitato!</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Offerta di scambio inviata con successo!</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Looting temporaneamente disabilitato!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>Non puoi inviare una richiesta di scambio a te stesso!</value>
@@ -670,4 +658,8 @@
     <value>Il Bot ha il livello {0}.</value>
     <comment>{0} will be replaced by bot's level</comment>
   </data>
+  
+  
+  
+  
 </root>

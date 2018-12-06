@@ -19,15 +19,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using ArchiSteamFarm.IPC.Responses;
-using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
+using System;
+using System.Threading;
 
-namespace ArchiSteamFarm.IPC.Controllers.Api {
-	[ApiController]
-	[Produces("application/json")]
-	[SwaggerResponse(400, "The request has failed, check " + nameof(GenericResponse.Message) + " from response body for actual reason. Most of the time this is ASF, understanding the request, but refusing to execute it due to provided reason.", typeof(GenericResponse))]
-	[SwaggerResponse(401, "ASF has " + nameof(GlobalConfig.IPCPassword) + " set, but you've failed to authenticate. See " + SharedInfo.ProjectURL + "/wiki/IPC#authentication.")]
-	[SwaggerResponse(403, "ASF has " + nameof(GlobalConfig.IPCPassword) + " set and you've failed to authenticate too many times, try again in an hour. See " + SharedInfo.ProjectURL + "/wiki/IPC#authentication.")]
-	public abstract class ArchiController : ControllerBase { }
+namespace ArchiSteamFarm.Helpers {
+	internal sealed class SemaphoreLock : IDisposable {
+		private readonly SemaphoreSlim Semaphore;
+
+		internal SemaphoreLock(SemaphoreSlim semaphore) => Semaphore = semaphore ?? throw new ArgumentNullException(nameof(semaphore));
+
+		public void Dispose() => Semaphore.Release();
+	}
 }

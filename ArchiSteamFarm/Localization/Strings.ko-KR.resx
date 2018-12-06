@@ -466,20 +466,8 @@ StackTrace:
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Master 권한이 설정된 유저가 없어서, 거래를 전송할 수 없었습니다.</value>
   </data>
-  <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>루팅 타입 설정이 없습니다!</value>
-  </data>
-  <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>루팅이 이제 비활성화 되었습니다!</value>
-  </data>
-  <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>루팅이 이제 활성화되었습니다!</value>
-  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>거래 제안이 성공적으로 보내졌습니다!</value>
-  </data>
-  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>루팅이 일시적으로 비활성화 되었습니다!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>자신에게 거래 요청을 보낼 수 없습니다!</value>
@@ -668,5 +656,23 @@ StackTrace:
   <data name="BotHasNoWallet" xml:space="preserve">
     <value>봇에 지갑이 없습니다.</value>
   </data>
-  
+  <data name="BotLevel" xml:space="preserve">
+    <value>봇은 레벨 {0} 입니다.</value>
+    <comment>{0} will be replaced by bot's level</comment>
+  </data>
+  <data name="ActivelyMatchingItems" xml:space="preserve">
+    <value>#{0} 번째 Steam 아이템 매칭 중입니다.</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="DoneActivelyMatchingItems" xml:space="preserve">
+    <value>Steam 아이템 매칭 #{0} 번째를 완료했습니다.</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="ErrorAborted" xml:space="preserve">
+    <value>중단됨</value>
+  </data>
+  <data name="ActivelyMatchingItemsRound" xml:space="preserve">
+    <value>이번에 {0} 세트를 매치하였습니다.</value>
+    <comment>{0} will be replaced by number of sets traded</comment>
+  </data>
 </root>

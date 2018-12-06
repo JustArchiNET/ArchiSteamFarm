@@ -20,7 +20,6 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using ArchiSteamFarm.IPC.Middleware;
 using Microsoft.AspNetCore.Builder;
@@ -29,9 +28,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Swashbuckle.AspNetCore.Swagger;
 
 namespace ArchiSteamFarm.IPC {
 	internal sealed class Startup {
@@ -75,7 +74,7 @@ namespace ArchiSteamFarm.IPC {
 			app.UseSwagger();
 
 			// Use friendly swagger UI
-			app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/ASF/swagger.json", "ASF API"));
+			app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/" + SharedInfo.ASF + "/swagger.json", SharedInfo.ASF + " API"));
 
 			// We're using index for URL routing in our static files so re-execute all non-API calls on /
 			app.UseWhen(context => !context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), appBuilder => appBuilder.UseStatusCodePagesWithReExecute("/"));
@@ -103,22 +102,46 @@ namespace ArchiSteamFarm.IPC {
 			services.AddSwaggerGen(
 				c => {
 					c.AddSecurityDefinition(
-						nameof(GlobalConfig.IPCPassword), new ApiKeyScheme {
-							Description = nameof(GlobalConfig.IPCPassword) + " authentication using request headers. Check https://github.com/" + SharedInfo.GithubRepo + "/wiki/IPC#authentication for more info.",
-							In = "header",
-							Name = ApiAuthenticationMiddleware.HeadersField
+						nameof(GlobalConfig.IPCPassword), new OpenApiSecurityScheme {
+							Description = nameof(GlobalConfig.IPCPassword) + " authentication using request headers. Check " + SharedInfo.ProjectURL + "/wiki/IPC#authentication for more info.",
+							In = ParameterLocation.Header,
+							Name = ApiAuthenticationMiddleware.HeadersField,
+							Type = SecuritySchemeType.ApiKey
 						}
 					);
 
 					c.AddSecurityRequirement(
-						new Dictionary<string, IEnumerable<string>> {
-							{ nameof(GlobalConfig.IPCPassword), new string[0] }
+						new OpenApiSecurityRequirement {
+							{
+								new OpenApiSecurityScheme {
+									Reference = new OpenApiReference {
+										Id = nameof(GlobalConfig.IPCPassword),
+										Type = ReferenceType.SecurityScheme
+									}
+								},
+
+								new string[0]
+							}
 						}
 					);
 
 					c.DescribeAllEnumsAsStrings();
 					c.EnableAnnotations();
-					c.SwaggerDoc("ASF", new Info { Title = "ASF API" });
+					c.SwaggerDoc(
+						SharedInfo.ASF, new OpenApiInfo {
+							Contact = new OpenApiContact {
+								Name = SharedInfo.GithubRepo,
+								Url = new Uri(SharedInfo.ProjectURL)
+							},
+
+							License = new OpenApiLicense {
+								Name = SharedInfo.LicenseName,
+								Url = new Uri(SharedInfo.LicenseURL)
+							},
+
+							Title = SharedInfo.ASF + " API"
+						}
+					);
 
 					string xmlDocumentationFile = Path.Combine(AppContext.BaseDirectory, SharedInfo.AssemblyDocumentation);
 
