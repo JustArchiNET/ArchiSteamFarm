@@ -1154,7 +1154,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if ((responseValidateCode.Result != EResult.OK) || (responseValidateCode.PurchaseResultDetail != EPurchaseResultDetail.NoDetail)) {
-				return (responseValidateCode.Result, responseValidateCode.PurchaseResultDetail);
+				return (responseValidateCode.Result != EResult.OK ? responseValidateCode.Result : EResult.Fail, responseValidateCode.PurchaseResultDetail);
 			}
 
 			if (responseValidateCode.KeyDetails == null) {
@@ -1176,7 +1176,11 @@ namespace ArchiSteamFarm {
 
 			const string requestConfirmRedeem = "/account/confirmredeemwalletcode";
 			Steam.RedeemWalletResponse responseConfirmRedeem = await UrlPostToJsonObjectWithSession<Steam.RedeemWalletResponse>(SteamStoreURL, requestConfirmRedeem, data).ConfigureAwait(false);
-			return responseConfirmRedeem != null ? (responseConfirmRedeem.Result, responseConfirmRedeem.PurchaseResultDetail) : ((EResult Result, EPurchaseResultDetail? PurchaseResult)?) null;
+			if (responseConfirmRedeem == null) {
+				return null;
+			}
+
+			return ((responseConfirmRedeem.PurchaseResultDetail != EPurchaseResultDetail.NoDetail) && (responseConfirmRedeem.Result == EResult.OK) ? responseConfirmRedeem.Result : EResult.Fail, responseConfirmRedeem.PurchaseResultDetail);
 		}
 
 		internal async Task<(bool Success, HashSet<ulong> MobileTradeOfferIDs)> SendTradeOffer(ulong partnerID, IReadOnlyCollection<Steam.Asset> itemsToGive = null, IReadOnlyCollection<Steam.Asset> itemsToReceive = null, string token = null, bool forcedSingleOffer = false) {
