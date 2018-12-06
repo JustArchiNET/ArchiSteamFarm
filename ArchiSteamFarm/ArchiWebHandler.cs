@@ -1,4 +1,4 @@
-﻿//     _                _      _  ____   _                           _____
+//     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
@@ -1137,13 +1137,52 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			const string request = "/account/validatewalletcode";
+			// ASF should redeem wallet key only in case of existing wallet
+			if (Bot.WalletCurrency == ECurrencyCode.Invalid) {
+				Bot.ArchiLogger.LogNullError(nameof(Bot.WalletCurrency));
+				return null;
+			}
+
+			const string requestValidateCode = "/account/validatewalletcode";
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new Dictionary<string, string>(2) { { "wallet_code", key } };
 
-			Steam.RedeemWalletResponse response = await UrlPostToJsonObjectWithSession<Steam.RedeemWalletResponse>(SteamStoreURL, request, data).ConfigureAwait(false);
-			return response == null ? ((EResult Result, EPurchaseResultDetail? PurchaseResult)?) null : (response.Result, response.PurchaseResultDetail);
+			Steam.RedeemWalletResponse responseValidateCode = await UrlPostToJsonObjectWithSession<Steam.RedeemWalletResponse>(SteamStoreURL, requestValidateCode, data).ConfigureAwait(false);
+			if (responseValidateCode == null) {
+				return null;
+			}
+
+			// We can not trust EResult response, because it is OK even in the case of error, so changing it to Fail in this case
+			if ((responseValidateCode.Result != EResult.OK) || (responseValidateCode.PurchaseResultDetail != EPurchaseResultDetail.NoDetail)) {
+				return (responseValidateCode.Result == EResult.OK ? EResult.Fail : responseValidateCode.Result, responseValidateCode.PurchaseResultDetail);
+			}
+
+			if (responseValidateCode.KeyDetails == null) {
+				Bot.ArchiLogger.LogNullError(nameof(responseValidateCode.KeyDetails));
+				return null;
+			}
+
+			if (responseValidateCode.WalletCurrencyCode != responseValidateCode.KeyDetails.CurrencyCode) {
+				const string requestCheckFunds = "/account/createwalletandcheckfunds";
+				Steam.EResultResponse responseCheckFunds = await UrlPostToJsonObjectWithSession<Steam.EResultResponse>(SteamStoreURL, requestCheckFunds, data).ConfigureAwait(false);
+				if (responseCheckFunds == null) {
+					return null;
+				}
+
+				if (responseCheckFunds.Result != EResult.OK) {
+					return (responseCheckFunds.Result, null);
+				}
+			}
+
+			const string requestConfirmRedeem = "/account/confirmredeemwalletcode";
+			Steam.RedeemWalletResponse responseConfirmRedeem = await UrlPostToJsonObjectWithSession<Steam.RedeemWalletResponse>(SteamStoreURL, requestConfirmRedeem, data).ConfigureAwait(false);
+			if (responseConfirmRedeem == null) {
+				return null;
+			}
+
+			// Same, returning OK EResult only if PurchaseResultDetail is NoDetail (no error occured) 
+			return ((responseConfirmRedeem.PurchaseResultDetail == EPurchaseResultDetail.NoDetail) && (responseConfirmRedeem.Result == EResult.OK) ? responseConfirmRedeem.Result : EResult.Fail, responseConfirmRedeem.PurchaseResultDetail);
 		}
 
 		internal async Task<(bool Success, HashSet<ulong> MobileTradeOfferIDs)> SendTradeOffer(ulong partnerID, IReadOnlyCollection<Steam.Asset> itemsToGive = null, IReadOnlyCollection<Steam.Asset> itemsToReceive = null, string token = null, bool forcedSingleOffer = false) {

@@ -1,4 +1,4 @@
-﻿//     _                _      _  ____   _                           _____
+//     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
@@ -390,8 +390,22 @@ namespace ArchiSteamFarm.Json {
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class RedeemWalletResponse : EResultResponse {
+			internal sealed class InternalKeyDetails {
+				[JsonProperty(PropertyName = "currencycode", Required = Required.Always)]
+				internal readonly ECurrencyCode CurrencyCode;
+
+				// Deserialized from JSON
+				private InternalKeyDetails() { }
+			}
+
 			[JsonProperty(PropertyName = "detail", Required = Required.DisallowNull)]
 			internal readonly EPurchaseResultDetail? PurchaseResultDetail;
+
+			[JsonProperty(PropertyName = "wallet", Required = Required.DisallowNull)]
+			internal readonly InternalKeyDetails KeyDetails;
+
+			[JsonProperty(PropertyName = "currency", Required = Required.DisallowNull)]
+			internal readonly ECurrencyCode? WalletCurrencyCode;
 
 			// Deserialized from JSON
 			private RedeemWalletResponse() { }

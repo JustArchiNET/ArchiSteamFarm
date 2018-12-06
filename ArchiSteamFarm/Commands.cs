@@ -1,4 +1,4 @@
-﻿//     _                _      _  ____   _                           _____
+//     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
@@ -1722,7 +1722,7 @@ namespace ArchiSteamFarm {
 									response.AppendLine(FormatBotResponse(string.Format(Strings.BotRedeem, key, EPurchaseResultDetail.Timeout), currentBot.BotName));
 									currentBot = null; // Either bot will be changed, or loop aborted
 								} else {
-									if (result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) {
+									if ((result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) && (Bot.WalletCurrency != ECurrencyCode.Invalid)) {
 										// If it's a wallet code, we try to redeem it first, then handle the inner result as our primary one
 										(EResult Result, EPurchaseResultDetail? PurchaseResult)? walletResult = await currentBot.ArchiWebHandler.RedeemWalletKey(key).ConfigureAwait(false);
 
