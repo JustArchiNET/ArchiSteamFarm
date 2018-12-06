@@ -1153,8 +1153,9 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			// We can not trust EResult response, because it is OK even in the case of error, so changing it to Fail in this case
 			if ((responseValidateCode.Result != EResult.OK) || (responseValidateCode.PurchaseResultDetail != EPurchaseResultDetail.NoDetail)) {
-				return (responseValidateCode.Result != EResult.OK ? responseValidateCode.Result : EResult.Fail, responseValidateCode.PurchaseResultDetail);
+				return (responseValidateCode.Result == EResult.OK ? EResult.Fail : responseValidateCode.Result, responseValidateCode.PurchaseResultDetail);
 			}
 
 			if (responseValidateCode.KeyDetails == null) {
@@ -1180,7 +1181,8 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			return ((responseConfirmRedeem.PurchaseResultDetail != EPurchaseResultDetail.NoDetail) && (responseConfirmRedeem.Result == EResult.OK) ? responseConfirmRedeem.Result : EResult.Fail, responseConfirmRedeem.PurchaseResultDetail);
+			// Same, returning OK EResult only if PurchaseResultDetail is NoDetail (no error occured) 
+			return ((responseConfirmRedeem.PurchaseResultDetail == EPurchaseResultDetail.NoDetail) && (responseConfirmRedeem.Result == EResult.OK) ? responseConfirmRedeem.Result : EResult.Fail, responseConfirmRedeem.PurchaseResultDetail);
 		}
 
 		internal async Task<(bool Success, HashSet<ulong> MobileTradeOfferIDs)> SendTradeOffer(ulong partnerID, IReadOnlyCollection<Steam.Asset> itemsToGive = null, IReadOnlyCollection<Steam.Asset> itemsToReceive = null, string token = null, bool forcedSingleOffer = false) {
