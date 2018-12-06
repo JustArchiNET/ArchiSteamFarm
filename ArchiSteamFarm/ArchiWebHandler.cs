@@ -1170,7 +1170,7 @@ namespace ArchiSteamFarm {
 
 			const string requestConfirmRedeem = "/account/confirmredeemwalletcode";
 			Steam.RedeemWalletResponse responseConfirmRedeem = await UrlPostToJsonObjectWithSession<Steam.RedeemWalletResponse>(SteamStoreURL, requestConfirmRedeem, data).ConfigureAwait(false);
-			return responseConfirmRedeem == null ? ((EResult Result, EPurchaseResultDetail? PurchaseResult)?) null : (responseConfirmRedeem.Result, EPurchaseResultDetail.NoDetail);
+			return responseConfirmRedeem != null ? (responseConfirmRedeem.Result, responseConfirmRedeem.PurchaseResultDetail) : ((EResult Result, EPurchaseResultDetail? PurchaseResult)?) null;
 		}
 
 		internal async Task<(bool Success, HashSet<ulong> MobileTradeOfferIDs)> SendTradeOffer(ulong partnerID, IReadOnlyCollection<Steam.Asset> itemsToGive = null, IReadOnlyCollection<Steam.Asset> itemsToReceive = null, string token = null, bool forcedSingleOffer = false) {
