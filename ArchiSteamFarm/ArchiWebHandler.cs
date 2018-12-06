@@ -1151,12 +1151,12 @@ namespace ArchiSteamFarm {
 				return (responseValidateCode.Result, responseValidateCode.PurchaseResultDetail);
 			}
 
-			if (responseValidateCode.KeyRedeemingWallet == null) {
-				Bot.ArchiLogger.LogNullError(nameof(responseValidateCode.KeyRedeemingWallet));
+			if (responseValidateCode.KeyDetails == null) {
+				Bot.ArchiLogger.LogNullError(nameof(responseValidateCode.KeyDetails));
 				return null;
 			}
 
-			if (responseValidateCode.AccountWalletCurrencyCode != responseValidateCode.KeyRedeemingWallet.KeyCurrencyCode) {
+			if (responseValidateCode.WalletCurrencyCode != responseValidateCode.KeyDetails.CurrencyCode) {
 				const string requestCheckFunds = "/account/createwalletandcheckfunds";
 				Steam.EResultResponse responseCheckFunds = await UrlPostToJsonObjectWithSession<Steam.EResultResponse>(SteamStoreURL, requestCheckFunds, data).ConfigureAwait(false);
 				if (responseCheckFunds == null) {
