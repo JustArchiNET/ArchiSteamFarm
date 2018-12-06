@@ -1153,7 +1153,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (responseValidateCode.Result != EResult.OK) {
+			if ((responseValidateCode.Result != EResult.OK) || (responseValidateCode.PurchaseResultDetail != EPurchaseResultDetail.NoDetail)) {
 				return (responseValidateCode.Result, responseValidateCode.PurchaseResultDetail);
 			}
 
@@ -1162,7 +1162,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if ((responseValidateCode.Result != EResult.OK) || (responseValidateCode.PurchaseResultDetail != EPurchaseResultDetail.NoDetail)) {
+			if (responseValidateCode.WalletCurrencyCode != responseValidateCode.KeyDetails.CurrencyCode) {
 				const string requestCheckFunds = "/account/createwalletandcheckfunds";
 				Steam.EResultResponse responseCheckFunds = await UrlPostToJsonObjectWithSession<Steam.EResultResponse>(SteamStoreURL, requestCheckFunds, data).ConfigureAwait(false);
 				if (responseCheckFunds == null) {
