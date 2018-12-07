@@ -22,7 +22,7 @@
     <RepositoryUrl>https://github.com/JustArchi/ArchiSteamFarm.git</RepositoryUrl>
     <RuntimeIdentifiers>linux-arm;linux-x64;osx-x64;win-x64</RuntimeIdentifiers>
     <ServerGarbageCollection>false</ServerGarbageCollection>
-    <TargetFrameworks>netcoreapp2.1;net472</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.2;net472</TargetFrameworks>
     <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
   </PropertyGroup>
 
@@ -60,7 +60,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="5.0.0-beta" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2'">
     <PackageReference Include="ILLink.Tasks" Version="0.1.5-preview-1841731" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.6.0-preview.18571.3" />
   </ItemGroup>

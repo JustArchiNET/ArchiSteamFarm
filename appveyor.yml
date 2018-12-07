@@ -9,11 +9,11 @@ environment:
   CROWDIN_API_KEY:
     secure: oGuZaQo2z5/JkEYaKrD9Ing+TgwZ3qQVf+9Jdz73Fephy04z5rWPGCCtkjaMLTcY
   CROWDIN_PROJECT_IDENTIFIER: archisteamfarm
-#  DOTNET_CHANNEL: 2.1
+  DOTNET_CHANNEL: 2.2
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_INSTALL_DIR: tools\dotnet
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-  NET_CORE_VERSION: netcoreapp2.1
+  NET_CORE_VERSION: netcoreapp2.2
   NET_FRAMEWORK_VERSION: net472
   VARIANTS: generic generic-netf linux-arm linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
 matrix:
