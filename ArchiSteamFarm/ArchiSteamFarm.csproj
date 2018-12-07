@@ -39,7 +39,7 @@
 
   <ItemGroup>
     <PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="2.0.0" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.8.10" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.8.11" />
     <PackageReference Include="Humanizer" Version="2.5.16" />
     <PackageReference Include="Markdig.Signed" Version="0.15.4" />
     <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
