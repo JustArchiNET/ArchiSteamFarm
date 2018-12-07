@@ -57,7 +57,7 @@ namespace ArchiSteamFarm {
 		private const ProtocolTypes DefaultSteamProtocols = ProtocolTypes.All;
 		private const EUpdateChannel DefaultUpdateChannel = EUpdateChannel.Stable;
 		private const byte DefaultUpdatePeriod = 24;
-		private const ushort DefaultWebLimiterDelay = 200;
+		private const ushort DefaultWebLimiterDelay = 300;
 		private const string DefaultWebProxyPassword = null;
 		private const string DefaultWebProxyText = null;
 		private const string DefaultWebProxyUsername = null;
