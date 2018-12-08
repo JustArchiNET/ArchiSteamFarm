@@ -563,15 +563,15 @@ namespace ArchiSteamFarm {
 				steamID = SteamID;
 			}
 
-			HashSet<Steam.Asset> result = new HashSet<Steam.Asset>();
-
 			string request = "/inventory/" + steamID + "/" + appID + "/" + contextID + "?count=" + MaxItemsInSingleInventoryRequest + "&l=english";
 			ulong startAssetID = 0;
 
-			await InventorySemaphore.WaitAsync().ConfigureAwait(false);
+			HashSet<Steam.Asset> result = new HashSet<Steam.Asset>();
 
-			try {
-				while (true) {
+			while (true) {
+				await InventorySemaphore.WaitAsync().ConfigureAwait(false);
+
+				try {
 					Steam.InventoryResponse response = await UrlGetToJsonObjectWithSession<Steam.InventoryResponse>(SteamCommunityURL, request + (startAssetID > 0 ? "&start_assetid=" + startAssetID : "")).ConfigureAwait(false);
 
 					if (response == null) {
@@ -646,17 +646,17 @@ namespace ArchiSteamFarm {
 					}
 
 					startAssetID = response.LastAssetID;
-				}
-			} finally {
-				if (Program.GlobalConfig.InventoryLimiterDelay == 0) {
-					InventorySemaphore.Release();
-				} else {
-					Utilities.InBackground(
-						async () => {
-							await Task.Delay(Program.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
-							InventorySemaphore.Release();
-						}
-					);
+				} finally {
+					if (Program.GlobalConfig.InventoryLimiterDelay == 0) {
+						InventorySemaphore.Release();
+					} else {
+						Utilities.InBackground(
+							async () => {
+								await Task.Delay(Program.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
+								InventorySemaphore.Release();
+							}
+						);
+					}
 				}
 			}
 		}
@@ -1181,7 +1181,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			// Same, returning OK EResult only if PurchaseResultDetail is NoDetail (no error occured) 
+			// Same, returning OK EResult only if PurchaseResultDetail is NoDetail (no error occured)
 			return ((responseConfirmRedeem.PurchaseResultDetail == EPurchaseResultDetail.NoDetail) && (responseConfirmRedeem.Result == EResult.OK) ? responseConfirmRedeem.Result : EResult.Fail, responseConfirmRedeem.PurchaseResultDetail);
 		}
 
