@@ -184,26 +184,35 @@ namespace ArchiSteamFarm {
 		private async Task<bool> IsEligibleForMatching() {
 			// Bot must have ASF 2FA
 			if (!Bot.HasMobileAuthenticator) {
+				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.HasMobileAuthenticator) + ": " + Bot.HasMobileAuthenticator));
 				return false;
 			}
 
 			// Bot must have STM enable in TradingPreferences
 			if (!Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher)) {
+				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.BotConfig.TradingPreferences) + ": " + Bot.BotConfig.TradingPreferences));
 				return false;
 			}
 
 			// Bot must have at least one accepted matchable type set
 			if ((Bot.BotConfig.MatchableTypes.Count == 0) || Bot.BotConfig.MatchableTypes.All(type => !AcceptedMatchableTypes.Contains(type))) {
+				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.BotConfig.MatchableTypes) + ": " + Bot.BotConfig.MatchableTypes));
 				return false;
 			}
 
 			// Bot must have public inventory
 			if (!await Bot.ArchiWebHandler.HasPublicInventory().ConfigureAwait(false)) {
+				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.ArchiWebHandler.HasPublicInventory) + ": " + false));
 				return false;
 			}
 
 			// Bot must have valid API key (e.g. not being restricted account)
-			return await Bot.ArchiWebHandler.HasValidApiKey().ConfigureAwait(false);
+			if (!await Bot.ArchiWebHandler.HasValidApiKey().ConfigureAwait(false)) {
+				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.ArchiWebHandler.HasValidApiKey) + ": " + false));
+				return false;
+			}
+
+			return true;
 		}
 
 		private async Task MatchActively() {
@@ -363,11 +372,9 @@ namespace ArchiSteamFarm {
 					HashSet<Steam.Asset> itemsToReceive = Trading.GetItemsFromInventory(theirInventory, classIDsToReceive);
 
 					if (triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs) previousAttempt)) {
-						Bot.ArchiLogger.LogGenericDebug("Previous: " + listedUser.SteamID + ": " + previousAttempt.Tries + " | " + string.Join(", ", previousAttempt.GivenAssetIDs) + " | " + string.Join(", ", previousAttempt.ReceivedAssetIDs)); // TODO: remove debug
 						if (itemsToGive.Select(item => item.AssetID).All(previousAttempt.GivenAssetIDs.Contains) && itemsToReceive.Select(item => item.AssetID).All(previousAttempt.ReceivedAssetIDs.Contains)) {
 							// This user didn't respond in our previous round, avoid him for remaining ones
 							triedSteamIDs[listedUser.SteamID] = (byte.MaxValue, previousAttempt.GivenAssetIDs, previousAttempt.ReceivedAssetIDs);
-							Bot.ArchiLogger.LogGenericDebug("Banned: " + listedUser.SteamID); // TODO: remove debug
 							break;
 						}
 
@@ -376,7 +383,6 @@ namespace ArchiSteamFarm {
 					} else {
 						previousAttempt.GivenAssetIDs = new HashSet<ulong>(itemsToGive.Select(item => item.AssetID));
 						previousAttempt.ReceivedAssetIDs = new HashSet<ulong>(itemsToReceive.Select(item => item.AssetID));
-						Bot.ArchiLogger.LogGenericDebug("New: " + listedUser.SteamID + ": " + string.Join(", ", previousAttempt.GivenAssetIDs) + " | " + string.Join(", ", previousAttempt.ReceivedAssetIDs)); // TODO: remove debug
 					}
 
 					triedSteamIDs[listedUser.SteamID] = (++previousAttempt.Tries, previousAttempt.GivenAssetIDs, previousAttempt.ReceivedAssetIDs);

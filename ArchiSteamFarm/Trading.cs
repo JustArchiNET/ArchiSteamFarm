@@ -117,7 +117,9 @@ namespace ArchiSteamFarm {
 					ParsingScheduled = false;
 				}
 
-				await ParseActiveTrades().ConfigureAwait(false);
+				using (await Bot.Actions.GetTradingLock().ConfigureAwait(false)) {
+					await ParseActiveTrades().ConfigureAwait(false);
+				}
 			} finally {
 				TradesSemaphore.Release();
 			}
