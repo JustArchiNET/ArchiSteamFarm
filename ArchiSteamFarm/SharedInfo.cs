@@ -55,7 +55,6 @@ namespace ArchiSteamFarm {
 
 		internal static string HomeDirectory => Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 		internal static Guid ModuleVersion => Assembly.GetEntryAssembly().ManifestModule.ModuleVersionId;
-		internal static string PrivateIdentifier => PublicIdentifier + "-" + (Program.GlobalDatabase?.Guid.ToString("N") ?? Guid.NewGuid().ToString("N"));
 		internal static string PublicIdentifier => AssemblyName + (BuildInfo.IsCustomBuild ? "-custom" : "");
 		internal static Version Version => Assembly.GetEntryAssembly().GetName().Version;
 
