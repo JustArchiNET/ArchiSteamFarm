@@ -44,6 +44,7 @@ namespace ArchiSteamFarm.Json {
 			internal ulong ClassID { get; private set; }
 			internal ulong ContextID { get; private set; }
 			internal uint RealAppID { get; set; }
+			internal bool Tradable { get; set; }
 			internal EType Type { get; set; }
 
 			[JsonProperty(PropertyName = "amount", Required = Required.Always)]
@@ -428,47 +429,6 @@ namespace ArchiSteamFarm.Json {
 				TradeOfferID = tradeOfferID;
 				OtherSteamID64 = new SteamID(otherSteamID3, EUniverse.Public, EAccountType.Individual);
 				State = state;
-			}
-
-			internal bool IsFairTypesExchange() {
-				Dictionary<uint, Dictionary<Asset.EType, uint>> itemsToGivePerGame = new Dictionary<uint, Dictionary<Asset.EType, uint>>();
-				foreach (Asset item in ItemsToGive) {
-					if (itemsToGivePerGame.TryGetValue(item.RealAppID, out Dictionary<Asset.EType, uint> itemsPerType)) {
-						itemsPerType[item.Type] = itemsPerType.TryGetValue(item.Type, out uint amount) ? amount + item.Amount : item.Amount;
-					} else {
-						itemsPerType = new Dictionary<Asset.EType, uint> { [item.Type] = item.Amount };
-						itemsToGivePerGame[item.RealAppID] = itemsPerType;
-					}
-				}
-
-				Dictionary<uint, Dictionary<Asset.EType, uint>> itemsToReceivePerGame = new Dictionary<uint, Dictionary<Asset.EType, uint>>();
-				foreach (Asset item in ItemsToReceive) {
-					if (itemsToReceivePerGame.TryGetValue(item.RealAppID, out Dictionary<Asset.EType, uint> itemsPerType)) {
-						itemsPerType[item.Type] = itemsPerType.TryGetValue(item.Type, out uint amount) ? amount + item.Amount : item.Amount;
-					} else {
-						itemsPerType = new Dictionary<Asset.EType, uint> { [item.Type] = item.Amount };
-						itemsToReceivePerGame[item.RealAppID] = itemsPerType;
-					}
-				}
-
-				// Ensure that amount of items to give is at least amount of items to receive (per game and per type)
-				foreach (KeyValuePair<uint, Dictionary<Asset.EType, uint>> itemsPerGame in itemsToGivePerGame) {
-					if (!itemsToReceivePerGame.TryGetValue(itemsPerGame.Key, out Dictionary<Asset.EType, uint> otherItemsPerType)) {
-						return false;
-					}
-
-					foreach (KeyValuePair<Asset.EType, uint> itemsPerType in itemsPerGame.Value) {
-						if (!otherItemsPerType.TryGetValue(itemsPerType.Key, out uint otherAmount)) {
-							return false;
-						}
-
-						if (itemsPerType.Value > otherAmount) {
-							return false;
-						}
-					}
-				}
-
-				return true;
 			}
 
 			internal bool IsValidSteamItemsRequest(IReadOnlyCollection<Asset.EType> acceptedTypes) {

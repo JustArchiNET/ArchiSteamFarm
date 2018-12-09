@@ -630,6 +630,7 @@ namespace ArchiSteamFarm {
 							}
 
 							asset.RealAppID = description.RealAppID;
+							asset.Tradable = description.Tradable;
 							asset.Type = description.Type;
 						}
 

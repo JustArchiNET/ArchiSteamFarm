@@ -36,6 +36,17 @@ namespace ArchiSteamFarm {
 		// Normally we wouldn't need to use this singleton, but we want to ensure decent randomness across entire program's lifetime
 		private static readonly Random Random = new Random();
 
+		internal static void AddRange<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, IEnumerable<KeyValuePair<TKey, TValue>> other) {
+			if ((dictionary == null) || (other == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(dictionary) + " || " + nameof(other));
+				return;
+			}
+
+			foreach (KeyValuePair<TKey, TValue> item in other) {
+				dictionary.TryAdd(item.Key, item.Value);
+			}
+		}
+
 		internal static string GetArgsAsText(string[] args, byte argsToSkip, string delimiter) {
 			if ((args == null) || (args.Length <= argsToSkip) || string.IsNullOrEmpty(delimiter)) {
 				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(argsToSkip) + " || " + nameof(delimiter));
