@@ -660,8 +660,19 @@ StackTrace :
     <value>Le bot a le niveau {0}.</value>
     <comment>{0} will be replaced by bot's level</comment>
   </data>
-  
-  
-  
-  
+  <data name="ActivelyMatchingItems" xml:space="preserve">
+    <value>En train de match des Items, round #{0}...</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="DoneActivelyMatchingItems" xml:space="preserve">
+    <value>Fini de match des Items, round #{0}.</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="ErrorAborted" xml:space="preserve">
+    <value>Annulé !</value>
+  </data>
+  <data name="ActivelyMatchingItemsRound" xml:space="preserve">
+    <value>{0} sets ont été matché pendant ce round.</value>
+    <comment>{0} will be replaced by number of sets traded</comment>
+  </data>
 </root>
