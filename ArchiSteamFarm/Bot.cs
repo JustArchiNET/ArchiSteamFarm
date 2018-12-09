@@ -1448,7 +1448,7 @@ namespace ArchiSteamFarm {
 				SendItemsTimer = null;
 			}
 
-			if ((BotConfig.SendTradePeriod > 0) && BotConfig.SteamUserPermissions.Values.Any(permission => permission >= BotConfig.EPermission.Master)) {
+			if ((BotConfig.SendTradePeriod > 0) && BotConfig.SteamUserPermissions.Values.Any(permission => permission >= BotConfig.EPermission.Master) && HasMobileAuthenticator) {
 				SendItemsTimer = new Timer(
 					async e => await Actions.SendTradeOffer(wantedTypes: BotConfig.LootableTypes).ConfigureAwait(false),
 					null,
