@@ -302,12 +302,10 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				// Those 3 collections are on user-basis since we can't be sure that the trade passes through (and therefore we need to keep original state in case of failure)
 				HashSet<(uint AppID, Steam.Asset.EType Type)> skippedSetsThisUser = new HashSet<(uint AppID, Steam.Asset.EType Type)>();
-				Dictionary<ulong, uint> ourFullSet = new Dictionary<ulong, uint>();
-				Dictionary<ulong, uint> ourTradableSet = new Dictionary<ulong, uint>();
 
 				Dictionary<(uint AppID, Steam.Asset.EType Type), Dictionary<ulong, uint>> theirTradableState = Trading.GetInventoryState(theirInventory);
+				Dictionary<(uint AppID, Steam.Asset.EType Type), Dictionary<ulong, uint>> inventoryStateChanges = new Dictionary<(uint AppID, Steam.Asset.EType Type), Dictionary<ulong, uint>>();
 
 				for (byte i = 0; i < Trading.MaxTradesPerAccount; i++) {
 					byte itemsInTrade = 0;
@@ -317,16 +315,48 @@ namespace ArchiSteamFarm {
 					Dictionary<ulong, uint> classIDsToReceive = new Dictionary<ulong, uint>();
 
 					foreach (KeyValuePair<(uint AppID, Steam.Asset.EType Type), Dictionary<ulong, uint>> ourInventoryStateSet in fullState.Where(set => listedUser.MatchableTypes.Contains(set.Key.Type) && set.Value.Values.Any(count => count > 1))) {
-						if (!tradableState.TryGetValue(ourInventoryStateSet.Key, out Dictionary<ulong, uint> ourTradableItems)) {
+						if (!tradableState.TryGetValue(ourInventoryStateSet.Key, out Dictionary<ulong, uint> ourTradableItems) || (ourTradableItems.Count == 0)) {
 							continue;
 						}
 
-						if (!theirTradableState.TryGetValue(ourInventoryStateSet.Key, out Dictionary<ulong, uint> theirItems)) {
+						if (!theirTradableState.TryGetValue(ourInventoryStateSet.Key, out Dictionary<ulong, uint> theirItems) || (theirItems.Count == 0)) {
 							continue;
 						}
 
-						ourFullSet.AddRange(ourInventoryStateSet.Value);
-						ourTradableSet.AddRange(ourTradableItems);
+						// Those 2 collections are on user-basis since we can't be sure that the trade passes through (and therefore we need to keep original state in case of failure)
+						Dictionary<ulong, uint> ourFullSet = new Dictionary<ulong, uint>(ourInventoryStateSet.Value);
+						Dictionary<ulong, uint> ourTradableSet = new Dictionary<ulong, uint>(ourTradableItems);
+
+						// We also have to take into account changes that happened in previoius trades with this user, so this block will adapt to that
+						if (inventoryStateChanges.TryGetValue(ourInventoryStateSet.Key, out Dictionary<ulong, uint> pastChanges) && (pastChanges.Count > 0)) {
+							foreach (KeyValuePair<ulong, uint> pastChange in pastChanges) {
+								if (!ourFullSet.TryGetValue(pastChange.Key, out uint fullAmount) || (fullAmount == 0) || (fullAmount < pastChange.Value)) {
+									Bot.ArchiLogger.LogNullError(nameof(fullAmount));
+									return false;
+								}
+
+								if (fullAmount > pastChange.Value) {
+									ourFullSet[pastChange.Key] = fullAmount - pastChange.Value;
+								} else {
+									ourFullSet.Remove(pastChange.Key);
+								}
+
+								if (!ourTradableSet.TryGetValue(pastChange.Key, out uint tradableAmount) || (tradableAmount == 0) || (tradableAmount < pastChange.Value)) {
+									Bot.ArchiLogger.LogNullError(nameof(tradableAmount));
+									return false;
+								}
+
+								if (fullAmount > pastChange.Value) {
+									ourTradableSet[pastChange.Key] = fullAmount - pastChange.Value;
+								} else {
+									ourTradableSet.Remove(pastChange.Key);
+								}
+							}
+
+							if (Trading.IsEmptyForMatching(ourFullSet, ourTradableSet)) {
+								continue;
+							}
+						}
 
 						bool match;
 
@@ -334,7 +364,7 @@ namespace ArchiSteamFarm {
 							match = false;
 
 							foreach (KeyValuePair<ulong, uint> ourItem in ourFullSet.Where(item => item.Value > 1).OrderByDescending(item => item.Value)) {
-								if (!ourTradableSet.TryGetValue(ourItem.Key, out uint tradableAmount)) {
+								if (!ourTradableSet.TryGetValue(ourItem.Key, out uint tradableAmount) || (tradableAmount == 0)) {
 									continue;
 								}
 
@@ -348,23 +378,40 @@ namespace ArchiSteamFarm {
 
 									// Update our state based on given items
 									classIDsToGive[ourItem.Key] = classIDsToGive.TryGetValue(ourItem.Key, out uint givenAmount) ? givenAmount + 1 : 1;
-									ourFullSet[ourItem.Key] = ourItem.Value - 1;
+									ourFullSet[ourItem.Key] = ourItem.Value - 1; // We don't need to remove anything here because we can guarantee that ourItem.Value is at least 2
+
+									if (inventoryStateChanges.TryGetValue(ourInventoryStateSet.Key, out Dictionary<ulong, uint> currentChanges)) {
+										if (currentChanges.TryGetValue(ourItem.Key, out uint amount)) {
+											currentChanges[ourItem.Key] = amount + 1;
+										} else {
+											currentChanges[ourItem.Key] = 1;
+										}
+									} else {
+										inventoryStateChanges[ourInventoryStateSet.Key] = new Dictionary<ulong, uint> {
+											{ ourItem.Key, 1 }
+										};
+									}
 
 									// Update our state based on received items
 									classIDsToReceive[theirItem.Key] = classIDsToReceive.TryGetValue(theirItem.Key, out uint receivedAmount) ? receivedAmount + 1 : 1;
 									ourFullSet[theirItem.Key] = ourAmountOfTheirItem + 1;
 
-									// Update their state based on taken items
-									if (theirItems.TryGetValue(theirItem.Key, out uint theirAmount) && (theirAmount > 1)) {
-										theirItems[theirItem.Key] = theirAmount - 1;
-									} else {
-										theirItems.Remove(theirItem.Key);
-									}
-
 									if (tradableAmount > 1) {
 										ourTradableSet[ourItem.Key] = tradableAmount - 1;
 									} else {
 										ourTradableSet.Remove(ourItem.Key);
+									}
+
+									// Update their state based on taken items
+									if (!theirItems.TryGetValue(theirItem.Key, out uint theirAmount) || (theirAmount == 0)) {
+										Bot.ArchiLogger.LogNullError(nameof(theirAmount));
+										return false;
+									}
+
+									if (theirAmount > 1) {
+										theirItems[theirItem.Key] = theirAmount - 1;
+									} else {
+										theirItems.Remove(theirItem.Key);
 									}
 
 									itemsInTrade += 2;

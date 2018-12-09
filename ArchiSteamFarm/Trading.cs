@@ -144,35 +144,49 @@ namespace ArchiSteamFarm {
 			}
 
 			foreach (KeyValuePair<(uint AppID, Steam.Asset.EType Type), Dictionary<ulong, uint>> tradableSet in tradableState) {
-				foreach (KeyValuePair<ulong, uint> tradableItem in tradableSet.Value) {
-					switch (tradableItem.Value) {
-						case 0:
-							// No tradable items, this should never happen, dictionary should not have this key to begin with
-							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(tradableItem.Value), tradableItem.Value));
+				if (!fullState.TryGetValue(tradableSet.Key, out Dictionary<ulong, uint> fullSet) || (fullSet == null) || (fullSet.Count == 0)) {
+					ASF.ArchiLogger.LogNullError(nameof(fullSet));
+					return false;
+				}
+
+				if (!IsEmptyForMatching(fullSet, tradableSet.Value)) {
+					return false;
+				}
+			}
+
+			// We didn't find any matchable combinations, so this inventory is empty
+			return true;
+		}
+
+		internal static bool IsEmptyForMatching(IReadOnlyDictionary<ulong, uint> fullSet, IReadOnlyDictionary<ulong, uint> tradableSet) {
+			if ((fullSet == null) || (tradableSet == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(fullSet) + " || " + nameof(tradableSet));
+				return false;
+			}
+
+			foreach (KeyValuePair<ulong, uint> tradableItem in tradableSet) {
+				switch (tradableItem.Value) {
+					case 0:
+						// No tradable items, this should never happen, dictionary should not have this key to begin with
+						ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(tradableItem.Value), tradableItem.Value));
+						return false;
+					case 1:
+						// Single tradable item, can be matchable or not depending on the rest of the inventory
+						if (!fullSet.TryGetValue(tradableItem.Key, out uint fullAmount) || (fullAmount == 0) || (fullAmount < tradableItem.Value)) {
+							ASF.ArchiLogger.LogNullError(nameof(fullAmount));
 							return false;
-						case 1:
-							// Single tradable item, can be matchable or not depending on the rest of the inventory
-							if (!fullState.TryGetValue(tradableSet.Key, out Dictionary<ulong, uint> fullItem) || (fullItem == null) || (fullItem.Count == 0)) {
-								ASF.ArchiLogger.LogNullError(nameof(fullItem));
-								return false;
-							}
+						}
 
-							if (!fullItem.TryGetValue(tradableItem.Key, out uint fullAmount) || (fullAmount == 0)) {
-								ASF.ArchiLogger.LogNullError(nameof(fullAmount));
-								return false;
-							}
-
-							if (fullAmount > 1) {
-								// If we have a single tradable item but more than 1 in total, this is matchable
-								return false;
-							}
-
-							// A single exclusive tradable item is not matchable, continue
-							continue;
-						default:
-							// Any other combination of tradable items is always matchable
+						if (fullAmount > 1) {
+							// If we have a single tradable item but more than 1 in total, this is matchable
 							return false;
-					}
+						}
+
+						// A single exclusive tradable item is not matchable, continue
+						continue;
+					default:
+						// Any other combination of tradable items is always matchable
+						return false;
 				}
 			}
 
