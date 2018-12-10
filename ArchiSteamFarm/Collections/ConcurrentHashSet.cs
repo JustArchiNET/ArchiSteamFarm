@@ -22,7 +22,6 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace ArchiSteamFarm.Collections {
@@ -34,10 +33,7 @@ namespace ArchiSteamFarm.Collections {
 
 		public bool Add(T item) => BackingCollection.TryAdd(item, true);
 		public void Clear() => BackingCollection.Clear();
-
-		[SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
 		public bool Contains(T item) => BackingCollection.ContainsKey(item);
-
 		public void CopyTo(T[] array, int arrayIndex) => BackingCollection.Keys.CopyTo(array, arrayIndex);
 
 		public void ExceptWith(IEnumerable<T> other) {
@@ -49,48 +45,55 @@ namespace ArchiSteamFarm.Collections {
 		public IEnumerator<T> GetEnumerator() => BackingCollection.Keys.GetEnumerator();
 
 		public void IntersectWith(IEnumerable<T> other) {
-			ICollection<T> collection = other as ICollection<T> ?? other.ToList();
-			foreach (T item in this.Where(item => !collection.Contains(item))) {
+			ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
+
+			foreach (T item in this.Where(item => !otherSet.Contains(item))) {
 				Remove(item);
 			}
 		}
 
 		public bool IsProperSubsetOf(IEnumerable<T> other) {
-			ICollection<T> collection = other as ICollection<T> ?? other.ToList();
-			return (collection.Count != Count) && IsSubsetOf(collection);
+			ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
+			return (otherSet.Count > Count) && IsSubsetOf(otherSet);
 		}
 
 		public bool IsProperSupersetOf(IEnumerable<T> other) {
-			ICollection<T> collection = other as ICollection<T> ?? other.ToList();
-			return (collection.Count != Count) && IsSupersetOf(collection);
+			ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
+			return (otherSet.Count < Count) && IsSupersetOf(otherSet);
 		}
 
 		public bool IsSubsetOf(IEnumerable<T> other) {
-			ICollection<T> collection = other as ICollection<T> ?? other.ToList();
-			return this.AsParallel().All(collection.Contains);
+			ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
+			return this.All(otherSet.Contains);
 		}
 
-		public bool IsSupersetOf(IEnumerable<T> other) => other.AsParallel().All(Contains);
-		public bool Overlaps(IEnumerable<T> other) => other.AsParallel().Any(Contains);
+		public bool IsSupersetOf(IEnumerable<T> other) {
+			ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
+			return otherSet.All(Contains);
+		}
 
-		[SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
+		public bool Overlaps(IEnumerable<T> other) {
+			ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
+			return otherSet.Any(Contains);
+		}
+
 		public bool Remove(T item) => BackingCollection.TryRemove(item, out _);
 
 		public bool SetEquals(IEnumerable<T> other) {
-			ICollection<T> collection = other as ICollection<T> ?? other.ToList();
-			return (collection.Count == Count) && collection.AsParallel().All(Contains);
+			ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
+			return (otherSet.Count == Count) && otherSet.All(Contains);
 		}
 
 		public void SymmetricExceptWith(IEnumerable<T> other) {
-			ICollection<T> collection = other as ICollection<T> ?? other.ToList();
+			ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
 
 			HashSet<T> removed = new HashSet<T>();
-			foreach (T item in collection.Where(Contains)) {
+			foreach (T item in otherSet.Where(Contains)) {
 				removed.Add(item);
 				Remove(item);
 			}
 
-			foreach (T item in collection.Where(item => !removed.Contains(item))) {
+			foreach (T item in otherSet.Where(item => !removed.Contains(item))) {
 				Add(item);
 			}
 		}
@@ -101,9 +104,7 @@ namespace ArchiSteamFarm.Collections {
 			}
 		}
 
-		[SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
 		void ICollection<T>.Add(T item) => Add(item);
-
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 		// We use Count() and not Any() because we must ensure full loop pass
@@ -123,6 +124,7 @@ namespace ArchiSteamFarm.Collections {
 
 		internal void ReplaceWith(IEnumerable<T> other) {
 			BackingCollection.Clear();
+
 			foreach (T item in other) {
 				BackingCollection[item] = true;
 			}
