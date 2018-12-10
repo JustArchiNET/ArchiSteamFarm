@@ -817,7 +817,7 @@ namespace ArchiSteamFarm {
 			if (farmedSomething || !FirstTradeSent) {
 				FirstTradeSent = true;
 
-				if (BotConfig.SendOnFarmingFinished && HasMobileAuthenticator) {
+				if (BotConfig.SendOnFarmingFinished) {
 					await Actions.SendTradeOffer(wantedTypes: BotConfig.LootableTypes).ConfigureAwait(false);
 				}
 			}
