@@ -238,7 +238,7 @@ namespace ArchiSteamFarm {
 			return output?.Queue;
 		}
 
-		internal async Task<HashSet<Steam.TradeOffer>> GetActiveTradeOffers(IReadOnlyCollection<ulong> ignoredTradeOfferIDs = null) {
+		internal async Task<HashSet<Steam.TradeOffer>> GetActiveTradeOffers() {
 			string steamApiKey = await GetApiKey().ConfigureAwait(false);
 			if (string.IsNullOrEmpty(steamApiKey)) {
 				return null;
@@ -323,10 +323,6 @@ namespace ArchiSteamFarm {
 				if (tradeOfferID == 0) {
 					Bot.ArchiLogger.LogNullError(nameof(tradeOfferID));
 					return null;
-				}
-
-				if (ignoredTradeOfferIDs?.Contains(tradeOfferID) == true) {
-					continue;
 				}
 
 				uint otherSteamID3 = trade["accountid_other"].AsUnsignedInteger();

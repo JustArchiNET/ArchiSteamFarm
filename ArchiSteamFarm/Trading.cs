@@ -35,6 +35,7 @@ namespace ArchiSteamFarm {
 
 		private readonly Bot Bot;
 		private readonly ConcurrentHashSet<ulong> IgnoredTrades = new ConcurrentHashSet<ulong>();
+		private readonly ConcurrentHashSet<ulong> RecentlyFailedTrades = new ConcurrentHashSet<ulong>();
 		private readonly SemaphoreSlim TradesSemaphore = new SemaphoreSlim(1, 1);
 
 		private bool ParsingScheduled;
@@ -240,7 +241,10 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		internal void OnDisconnected() => IgnoredTrades.Clear();
+		internal void OnDisconnected() {
+			IgnoredTrades.Clear();
+			RecentlyFailedTrades.Clear();
+		}
 
 		internal async Task OnNewTrade() {
 			// We aim to have a maximum of 2 tasks, one already working, and one waiting in the queue
@@ -380,17 +384,26 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task ParseActiveTrades() {
-			HashSet<Steam.TradeOffer> tradeOffers = await Bot.ArchiWebHandler.GetActiveTradeOffers(IgnoredTrades).ConfigureAwait(false);
+			HashSet<Steam.TradeOffer> tradeOffers = await Bot.ArchiWebHandler.GetActiveTradeOffers().ConfigureAwait(false);
 			if ((tradeOffers == null) || (tradeOffers.Count == 0)) {
 				return;
 			}
 
-			IList<(ParseTradeResult TradeResult, bool RequiresMobileConfirmation)> results = await Utilities.InParallel(tradeOffers.Select(ParseTrade)).ConfigureAwait(false);
+			if (IgnoredTrades.Count > 0) {
+				IgnoredTrades.IntersectWith(tradeOffers.Select(tradeOffer => tradeOffer.TradeOfferID));
+			}
+
+			if (RecentlyFailedTrades.Count > 0) {
+				RecentlyFailedTrades.IntersectWith(tradeOffers.Select(tradeOffer => tradeOffer.TradeOfferID));
+			}
+
+			IEnumerable<Task<(ParseTradeResult TradeResult, bool RequiresMobileConfirmation)>> tasks = tradeOffers.Where(tradeOffer => !IgnoredTrades.Contains(tradeOffer.TradeOfferID)).Select(ParseTrade);
+			IList<(ParseTradeResult TradeResult, bool RequiresMobileConfirmation)> results = await Utilities.InParallel(tasks).ConfigureAwait(false);
 
 			if (Bot.HasMobileAuthenticator) {
-				HashSet<ulong> mobileTradeOfferIDs = results.Where(result => (result.TradeResult != null) && result.RequiresMobileConfirmation).Select(result => result.TradeResult.TradeOfferID).ToHashSet();
+				HashSet<ulong> mobileTradeOfferIDs = results.Where(result => (result.TradeResult != null) && (result.TradeResult.Result == ParseTradeResult.EResult.Accepted) && result.RequiresMobileConfirmation).Select(result => result.TradeResult.TradeOfferID).ToHashSet();
 				if (mobileTradeOfferIDs.Count > 0) {
-					if (!await Bot.Actions.AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, 0, mobileTradeOfferIDs, true).ConfigureAwait(false)) {
+					if (!await Bot.Actions.AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, acceptedTradeOfferIDs: mobileTradeOfferIDs, waitIfNeeded: true).ConfigureAwait(false)) {
 						return;
 					}
 				}
@@ -426,27 +439,33 @@ namespace ArchiSteamFarm {
 					(bool success, bool requiresMobileConfirmation) = await Bot.ArchiWebHandler.AcceptTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false);
 
 					if (success) {
+						RecentlyFailedTrades.Remove(tradeOffer.TradeOfferID);
+
 						if (tradeOffer.ItemsToReceive.Sum(item => item.Amount) > tradeOffer.ItemsToGive.Sum(item => item.Amount)) {
 							Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.BotAcceptedDonationTrade, tradeOffer.TradeOfferID));
+						}
+					} else if (Bot.BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidTrades)) {
+						if (!RecentlyFailedTrades.Add(tradeOffer.TradeOfferID)) {
+							RecentlyFailedTrades.Remove(tradeOffer.TradeOfferID);
+							IgnoredTrades.Add(tradeOffer.TradeOfferID);
+
+							Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.RejectingTrade, tradeOffer.TradeOfferID));
+							await Bot.ArchiWebHandler.DeclineTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false);
+							return (new ParseTradeResult(result.TradeOfferID, ParseTradeResult.EResult.RejectedPermanently), false);
 						}
 					}
 
 					return (result, requiresMobileConfirmation);
-				case ParseTradeResult.EResult.RejectedPermanently:
-				case ParseTradeResult.EResult.RejectedTemporarily:
-					if (result.Result == ParseTradeResult.EResult.RejectedPermanently) {
-						if (Bot.BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidTrades)) {
-							goto case ParseTradeResult.EResult.RejectedAndBlacklisted;
-						}
-
-						IgnoredTrades.Add(tradeOffer.TradeOfferID);
-					}
-
-					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.IgnoringTrade, tradeOffer.TradeOfferID));
-					return (result, false);
 				case ParseTradeResult.EResult.RejectedAndBlacklisted:
+				case ParseTradeResult.EResult.RejectedPermanently when Bot.BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidTrades):
 					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.RejectingTrade, tradeOffer.TradeOfferID));
 					await Bot.ArchiWebHandler.DeclineTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false);
+					return (result, false);
+				case ParseTradeResult.EResult.RejectedPermanently:
+					IgnoredTrades.Add(tradeOffer.TradeOfferID);
+					goto case ParseTradeResult.EResult.RejectedTemporarily;
+				case ParseTradeResult.EResult.RejectedTemporarily:
+					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.IgnoringTrade, tradeOffer.TradeOfferID));
 					return (result, false);
 				default:
 					Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.Result), result.Result));
