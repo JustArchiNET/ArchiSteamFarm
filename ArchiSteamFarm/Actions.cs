@@ -100,7 +100,7 @@ namespace ArchiSteamFarm {
 				}
 
 				// Check if those are all that we were expected to confirm
-				if (handledTradeOfferIDs.SetEquals(acceptedTradeOfferIDs)) {
+				if (acceptedTradeOfferIDs.All(handledTradeOfferIDs.Contains)) {
 					return true;
 				}
 			}
