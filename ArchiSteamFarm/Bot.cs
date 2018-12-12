@@ -2023,9 +2023,6 @@ namespace ArchiSteamFarm {
 					// Sometimes Steam won't send us our own PersonaStateCallback, so request it explicitly
 					RequestPersonaStateUpdate();
 
-					// This will pre-cache API key for eventual further usage
-					Utilities.InBackground(ArchiWebHandler.HasValidApiKey);
-
 					Utilities.InBackground(InitializeFamilySharing);
 
 					if (Statistics != null) {

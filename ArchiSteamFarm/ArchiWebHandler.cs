@@ -28,6 +28,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
 using HtmlAgilityPack;
@@ -58,14 +59,12 @@ namespace ArchiSteamFarm {
 			{ WebAPI.DefaultBaseAddress.Host, (new SemaphoreSlim(1, 1), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) }
 		};
 
-		private readonly SemaphoreSlim ApiKeySemaphore = new SemaphoreSlim(1, 1);
 		private readonly Bot Bot;
-		private readonly SemaphoreSlim PublicInventorySemaphore = new SemaphoreSlim(1, 1);
+		private readonly ArchiCachable<string> CachedApiKey;
+		private readonly ArchiCachable<bool> CachedPublicInventory;
 		private readonly SemaphoreSlim SessionSemaphore = new SemaphoreSlim(1, 1);
 		private readonly WebBrowser WebBrowser;
 
-		private string CachedApiKey;
-		private bool? CachedPublicInventory;
 		private DateTime LastSessionCheck;
 		private DateTime LastSessionRefresh;
 		private bool MarkingInventoryScheduled;
@@ -74,12 +73,15 @@ namespace ArchiSteamFarm {
 
 		internal ArchiWebHandler(Bot bot) {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+
+			CachedApiKey = new ArchiCachable<string>(ResolveApiKey, TimeSpan.FromHours(1));
+			CachedPublicInventory = new ArchiCachable<bool>(ResolvePublicInventory, TimeSpan.FromHours(1));
 			WebBrowser = new WebBrowser(bot.ArchiLogger, Program.GlobalConfig.WebProxy);
 		}
 
 		public void Dispose() {
-			ApiKeySemaphore.Dispose();
-			PublicInventorySemaphore.Dispose();
+			CachedApiKey.Dispose();
+			CachedPublicInventory.Dispose();
 			SessionSemaphore.Dispose();
 			WebBrowser.Dispose();
 		}
@@ -192,8 +194,8 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string steamApiKey = await GetApiKey().ConfigureAwait(false);
-			if (string.IsNullOrEmpty(steamApiKey)) {
+			(bool success, string steamApiKey) = await CachedApiKey.GetValue().ConfigureAwait(false);
+			if (!success || string.IsNullOrEmpty(steamApiKey)) {
 				return false;
 			}
 
@@ -239,8 +241,8 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<HashSet<Steam.TradeOffer>> GetActiveTradeOffers() {
-			string steamApiKey = await GetApiKey().ConfigureAwait(false);
-			if (string.IsNullOrEmpty(steamApiKey)) {
+			(bool success, string steamApiKey) = await CachedApiKey.GetValue().ConfigureAwait(false);
+			if (!success || string.IsNullOrEmpty(steamApiKey)) {
 				return null;
 			}
 
@@ -699,8 +701,8 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string steamApiKey = await GetApiKey().ConfigureAwait(false);
-			if (string.IsNullOrEmpty(steamApiKey)) {
+			(bool success, string steamApiKey) = await CachedApiKey.GetValue().ConfigureAwait(false);
+			if (!success || string.IsNullOrEmpty(steamApiKey)) {
 				return null;
 			}
 
@@ -841,8 +843,8 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string steamApiKey = await GetApiKey().ConfigureAwait(false);
-			if (string.IsNullOrEmpty(steamApiKey)) {
+			(bool success, string steamApiKey) = await CachedApiKey.GetValue().ConfigureAwait(false);
+			if (!success || string.IsNullOrEmpty(steamApiKey)) {
 				return null;
 			}
 
@@ -946,31 +948,14 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> HasPublicInventory() {
-			if (CachedPublicInventory.HasValue) {
-				return CachedPublicInventory.Value;
-			}
-
-			// We didn't fetch state yet
-			await PublicInventorySemaphore.WaitAsync().ConfigureAwait(false);
-
-			try {
-				if (CachedPublicInventory.HasValue) {
-					return CachedPublicInventory.Value;
-				}
-
-				bool? isInventoryPublic = await IsInventoryPublic().ConfigureAwait(false);
-				if (!isInventoryPublic.HasValue) {
-					return false;
-				}
-
-				CachedPublicInventory = isInventoryPublic.Value;
-				return isInventoryPublic.Value;
-			} finally {
-				PublicInventorySemaphore.Release();
-			}
+			(bool success, bool hasPublicInventory) = await CachedPublicInventory.GetValue().ConfigureAwait(false);
+			return success && hasPublicInventory;
 		}
 
-		internal async Task<bool> HasValidApiKey() => !string.IsNullOrEmpty(await GetApiKey().ConfigureAwait(false));
+		internal async Task<bool> HasValidApiKey() {
+			(bool success, string steamApiKey) = await CachedApiKey.GetValue().ConfigureAwait(false);
+			return success && !string.IsNullOrEmpty(steamApiKey);
+		}
 
 		internal async Task<bool> Init(ulong steamID, EUniverse universe, string webAPIUserNonce, string parentalCode = null) {
 			if ((steamID == 0) || (universe == EUniverse.Invalid) || string.IsNullOrEmpty(webAPIUserNonce)) {
@@ -1121,9 +1106,9 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void OnDisconnected() {
-			CachedApiKey = null;
-			CachedPublicInventory = null;
 			SteamID = 0;
+			Utilities.InBackground(CachedApiKey.Reset);
+			Utilities.InBackground(CachedPublicInventory.Reset);
 		}
 
 		internal void OnVanityURLChanged(string vanityURL = null) => VanityURL = string.IsNullOrEmpty(vanityURL) ? null : vanityURL;
@@ -1307,70 +1292,6 @@ namespace ArchiSteamFarm {
 			return string.IsNullOrEmpty(VanityURL) ? "/profiles/" + SteamID : "/id/" + VanityURL;
 		}
 
-		private async Task<string> GetApiKey() {
-			if (CachedApiKey != null) {
-				// We fetched API key already, and either got valid one, or permanent AccessDenied
-				// In any case, this is our final result
-				return CachedApiKey;
-			}
-
-			if (Bot.IsAccountLimited) {
-				// API key is permanently unavailable for limited accounts
-				return null;
-			}
-
-			// We didn't fetch API key yet
-			await ApiKeySemaphore.WaitAsync().ConfigureAwait(false);
-
-			try {
-				if (CachedApiKey != null) {
-					return CachedApiKey;
-				}
-
-				(ESteamApiKeyState State, string Key) result = await GetApiKeyState().ConfigureAwait(false);
-
-				switch (result.State) {
-					case ESteamApiKeyState.AccessDenied:
-						// We succeeded in fetching API key, but it resulted in access denied
-						// Cache the result as empty, API key is unavailable permanently
-						CachedApiKey = string.Empty;
-						break;
-					case ESteamApiKeyState.NotRegisteredYet:
-						// We succeeded in fetching API key, and it resulted in no key registered yet
-						// Let's try to register a new key
-						if (!await RegisterApiKey().ConfigureAwait(false)) {
-							// Request timed out, bad luck, we'll try again later
-							return null;
-						}
-
-						// We should have the key ready, so let's fetch it again
-						result = await GetApiKeyState().ConfigureAwait(false);
-						if (result.State != ESteamApiKeyState.Registered) {
-							// Something went wrong, bad luck, we'll try again later
-							return null;
-						}
-
-						goto case ESteamApiKeyState.Registered;
-					case ESteamApiKeyState.Registered:
-						// We succeeded in fetching API key, and it resulted in registered key
-						// Cache the result, this is the API key we want
-						CachedApiKey = result.Key;
-						break;
-					case ESteamApiKeyState.Timeout:
-						// Request timed out, bad luck, we'll try again later
-						return null;
-					default:
-						// We got an unhandled error, this should never happen
-						Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.State), result.State));
-						return null;
-				}
-
-				return CachedApiKey;
-			} finally {
-				ApiKeySemaphore.Release();
-			}
-		}
-
 		private async Task<(ESteamApiKeyState State, string Key)> GetApiKeyState() {
 			const string request = "/dev/apikey?l=english";
 			HtmlDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
@@ -1463,55 +1384,6 @@ namespace ArchiSteamFarm {
 					}
 
 					return name.EndsWith("Trading Card", StringComparison.Ordinal) ? Steam.Asset.EType.TradingCard : Steam.Asset.EType.Unknown;
-			}
-		}
-
-		private async Task<bool?> IsInventoryPublic() {
-			const string request = "/my/edit/settings?l=english";
-			HtmlDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
-
-			if (htmlDocument == null) {
-				return null;
-			}
-
-			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@data-component='ProfilePrivacySettings']/@data-privacysettings");
-			if (htmlNode == null) {
-				Bot.ArchiLogger.LogNullError(nameof(htmlNode));
-				return null;
-			}
-
-			string json = htmlNode.GetAttributeValue("data-privacysettings", null);
-			if (string.IsNullOrEmpty(json)) {
-				Bot.ArchiLogger.LogNullError(nameof(json));
-				return null;
-			}
-
-			// This json is encoded as html attribute, don't forget to decode it
-			json = WebUtility.HtmlDecode(json);
-
-			Steam.UserPrivacy userPrivacy;
-
-			try {
-				userPrivacy = JsonConvert.DeserializeObject<Steam.UserPrivacy>(json);
-			} catch (JsonException e) {
-				Bot.ArchiLogger.LogGenericException(e);
-				return null;
-			}
-
-			if (userPrivacy == null) {
-				Bot.ArchiLogger.LogNullError(nameof(userPrivacy));
-				return null;
-			}
-
-			switch (userPrivacy.Settings.Inventory) {
-				case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.FriendsOnly:
-				case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private:
-					return false;
-				case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Public:
-					return true;
-				default:
-					Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(userPrivacy.Settings.Inventory), userPrivacy.Settings.Inventory));
-					return null;
 			}
 		}
 
@@ -1665,6 +1537,98 @@ namespace ArchiSteamFarm {
 			};
 
 			return await UrlPostWithSession(SteamCommunityURL, request, data).ConfigureAwait(false);
+		}
+
+		private async Task<(bool Success, string Result)> ResolveApiKey() {
+			if (Bot.IsAccountLimited) {
+				// API key is permanently unavailable for limited accounts
+				return (true, null);
+			}
+
+			(ESteamApiKeyState State, string Key) result = await GetApiKeyState().ConfigureAwait(false);
+
+			switch (result.State) {
+				case ESteamApiKeyState.AccessDenied:
+					// We succeeded in fetching API key, but it resulted in access denied
+					// Return empty result, API key is unavailable permanently
+					return (true, "");
+				case ESteamApiKeyState.NotRegisteredYet:
+					// We succeeded in fetching API key, and it resulted in no key registered yet
+					// Let's try to register a new key
+					if (!await RegisterApiKey().ConfigureAwait(false)) {
+						// Request timed out, bad luck, we'll try again later
+						return (false, null);
+					}
+
+					// We should have the key ready, so let's fetch it again
+					result = await GetApiKeyState().ConfigureAwait(false);
+					if (result.State != ESteamApiKeyState.Registered) {
+						// Something went wrong, bad luck, we'll try again later
+						goto case ESteamApiKeyState.Timeout;
+					}
+
+					goto case ESteamApiKeyState.Registered;
+				case ESteamApiKeyState.Registered:
+					// We succeeded in fetching API key, and it resulted in registered key
+					// Cache the result, this is the API key we want
+					return (true, result.Key);
+				case ESteamApiKeyState.Timeout:
+					// Request timed out, bad luck, we'll try again later
+					return (false, null);
+				default:
+					// We got an unhandled error, this should never happen
+					Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.State), result.State));
+					return (false, null);
+			}
+		}
+
+		private async Task<(bool Success, bool Result)> ResolvePublicInventory() {
+			const string request = "/my/edit/settings?l=english";
+			HtmlDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
+
+			if (htmlDocument == null) {
+				return (false, false);
+			}
+
+			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@data-component='ProfilePrivacySettings']/@data-privacysettings");
+			if (htmlNode == null) {
+				Bot.ArchiLogger.LogNullError(nameof(htmlNode));
+				return (false, false);
+			}
+
+			string json = htmlNode.GetAttributeValue("data-privacysettings", null);
+			if (string.IsNullOrEmpty(json)) {
+				Bot.ArchiLogger.LogNullError(nameof(json));
+				return (false, false);
+			}
+
+			// This json is encoded as html attribute, don't forget to decode it
+			json = WebUtility.HtmlDecode(json);
+
+			Steam.UserPrivacy userPrivacy;
+
+			try {
+				userPrivacy = JsonConvert.DeserializeObject<Steam.UserPrivacy>(json);
+			} catch (JsonException e) {
+				Bot.ArchiLogger.LogGenericException(e);
+				return (false, false);
+			}
+
+			if (userPrivacy == null) {
+				Bot.ArchiLogger.LogNullError(nameof(userPrivacy));
+				return (false, false);
+			}
+
+			switch (userPrivacy.Settings.Inventory) {
+				case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.FriendsOnly:
+				case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private:
+					return (true, false);
+				case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Public:
+					return (true, true);
+				default:
+					Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(userPrivacy.Settings.Inventory), userPrivacy.Settings.Inventory));
+					return (false, false);
+			}
 		}
 
 		private async Task<bool> UnlockParentalAccount(string parentalCode) {
