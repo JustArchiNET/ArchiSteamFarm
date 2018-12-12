@@ -60,6 +60,8 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
+			HashSet<ulong> handledTradeOfferIDs = null;
+
 			for (byte i = 0; (i == 0) || ((i < WebBrowser.MaxTries) && waitIfNeeded); i++) {
 				if (i > 0) {
 					await Task.Delay(1000).ConfigureAwait(false);
@@ -89,9 +91,15 @@ namespace ArchiSteamFarm {
 					return false;
 				}
 
-				// Check if those are all that we were expected to confirm
-				HashSet<ulong> handledTradeOfferIDs = results.Where(details => (details != null) && (details.TradeOfferID != 0)).Select(result => result.TradeOfferID).ToHashSet();
+				IEnumerable<ulong> handledTradeOfferIDsThisRound = results.Where(details => (details != null) && (details.TradeOfferID != 0)).Select(result => result.TradeOfferID);
 
+				if (handledTradeOfferIDs != null) {
+					handledTradeOfferIDs.UnionWith(handledTradeOfferIDsThisRound);
+				} else {
+					handledTradeOfferIDs = handledTradeOfferIDsThisRound.ToHashSet();
+				}
+
+				// Check if those are all that we were expected to confirm
 				if (handledTradeOfferIDs.SetEquals(acceptedTradeOfferIDs)) {
 					return true;
 				}
