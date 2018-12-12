@@ -1557,14 +1557,20 @@ namespace ArchiSteamFarm {
 					// Let's try to register a new key
 					if (!await RegisterApiKey().ConfigureAwait(false)) {
 						// Request timed out, bad luck, we'll try again later
-						return (false, null);
+						goto case ESteamApiKeyState.Timeout;
 					}
 
 					// We should have the key ready, so let's fetch it again
 					result = await GetApiKeyState().ConfigureAwait(false);
-					if (result.State != ESteamApiKeyState.Registered) {
-						// Something went wrong, bad luck, we'll try again later
+
+					if (result.State == ESteamApiKeyState.Timeout) {
+						// Request timed out, bad luck, we'll try again later
 						goto case ESteamApiKeyState.Timeout;
+					}
+
+					if (result.State != ESteamApiKeyState.Registered) {
+						// Something went wrong, report error
+						goto default;
 					}
 
 					goto case ESteamApiKeyState.Registered;
