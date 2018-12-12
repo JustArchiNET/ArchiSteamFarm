@@ -34,7 +34,7 @@ namespace ArchiSteamFarm.Helpers {
 		private bool IsRecent => IsPermanentCache || (DateTime.UtcNow.Subtract(InitializedAt) < CacheLifetime);
 
 		// Purge should happen slightly after lifetime, to allow eventual refresh if the property is still used
-		private TimeSpan PurgeLifetime => CacheLifetime + TimeSpan.FromMinutes(1);
+		private TimeSpan PurgeLifetime => CacheLifetime + TimeSpan.FromMinutes(5);
 
 		private DateTime InitializedAt;
 		private T InitializedValue;
