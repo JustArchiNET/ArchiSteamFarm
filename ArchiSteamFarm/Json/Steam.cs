@@ -168,7 +168,6 @@ namespace ArchiSteamFarm.Json {
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class ConfirmationDetails : BooleanResponse {
 			internal MobileAuthenticator.Confirmation Confirmation { get; set; }
-			internal ulong OtherSteamID64 { get; private set; }
 			internal ulong TradeOfferID { get; private set; }
 			internal EType Type { get; private set; }
 
@@ -220,25 +219,6 @@ namespace ArchiSteamFarm.Json {
 						}
 
 						TradeOfferID = tradeOfferID;
-
-						HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//a/@data-miniprofile");
-						if (htmlNode == null) {
-							ASF.ArchiLogger.LogNullError(nameof(htmlNode));
-							return;
-						}
-
-						string miniProfile = htmlNode.GetAttributeValue("data-miniprofile", null);
-						if (string.IsNullOrEmpty(miniProfile)) {
-							ASF.ArchiLogger.LogNullError(nameof(miniProfile));
-							return;
-						}
-
-						if (!uint.TryParse(miniProfile, out uint steamID3) || (steamID3 == 0)) {
-							ASF.ArchiLogger.LogNullError(nameof(steamID3));
-							return;
-						}
-
-						OtherSteamID64 = new SteamID(steamID3, EUniverse.Public, EAccountType.Individual);
 					} else if (htmlDocument.DocumentNode.SelectSingleNode("//div[@class='mobileconf_listing_prices']") != null) {
 						Type = EType.Market;
 					} else {

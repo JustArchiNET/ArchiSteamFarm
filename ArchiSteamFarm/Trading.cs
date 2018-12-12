@@ -403,7 +403,7 @@ namespace ArchiSteamFarm {
 			if (Bot.HasMobileAuthenticator) {
 				HashSet<ulong> mobileTradeOfferIDs = results.Where(result => (result.TradeResult != null) && (result.TradeResult.Result == ParseTradeResult.EResult.Accepted) && result.RequiresMobileConfirmation).Select(result => result.TradeResult.TradeOfferID).ToHashSet();
 				if (mobileTradeOfferIDs.Count > 0) {
-					if (!await Bot.Actions.AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, acceptedTradeOfferIDs: mobileTradeOfferIDs, waitIfNeeded: true).ConfigureAwait(false)) {
+					if (!await Bot.Actions.AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false)) {
 						return;
 					}
 				}
