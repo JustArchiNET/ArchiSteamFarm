@@ -44,6 +44,8 @@ namespace ArchiSteamFarm {
 		private const byte ExtraFarmingDelaySeconds = 10; // In seconds, how much time to add on top of FarmingDelay (helps fighting misc time differences of Steam network)
 		private const byte HoursToIgnore = 24; // How many hours we ignore unreleased appIDs and don't bother checking them again
 
+		internal static readonly ImmutableHashSet<uint> SalesBlacklist = ImmutableHashSet.Create<uint>(267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900, 762800, 876740, 991980);
+
 		private static readonly ConcurrentDictionary<uint, DateTime> IgnoredAppIDs = new ConcurrentDictionary<uint, DateTime>(); // Reserved for unreleased games
 
 		// Games that were confirmed to show false status on general badges page
@@ -375,7 +377,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				if (GlobalConfig.SalesBlacklist.Contains(appID) || Program.GlobalConfig.Blacklist.Contains(appID) || Bot.IsBlacklistedFromIdling(appID) || (Bot.BotConfig.IdlePriorityQueueOnly && !Bot.IsPriorityIdling(appID))) {
+				if (SalesBlacklist.Contains(appID) || Program.GlobalConfig.Blacklist.Contains(appID) || Bot.IsBlacklistedFromIdling(appID) || (Bot.BotConfig.IdlePriorityQueueOnly && !Bot.IsPriorityIdling(appID))) {
 					// We're configured to ignore this appID, so skip it
 					continue;
 				}
