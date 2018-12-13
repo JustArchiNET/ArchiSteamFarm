@@ -1762,7 +1762,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if ((notification.steamid_sender != SteamID) && BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkReceivedMessagesAsRead)) {
+			// Under normal circumstances, timestamp must always be greater than 0, but Steam already proved that it's capable of going against the logic
+			if ((notification.steamid_sender != SteamID) && (notification.timestamp > 0) && BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkReceivedMessagesAsRead)) {
 				Utilities.InBackground(() => ArchiHandler.AckChatMessage(notification.chat_group_id, notification.chat_id, notification.timestamp));
 			}
 
@@ -1800,7 +1801,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (!notification.local_echo && BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkReceivedMessagesAsRead)) {
+			// Under normal circumstances, timestamp must always be greater than 0, but Steam already proved that it's capable of going against the logic
+			if (!notification.local_echo && (notification.rtime32_server_timestamp > 0) && BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkReceivedMessagesAsRead)) {
 				Utilities.InBackground(() => ArchiHandler.AckMessage(notification.steamid_friend, notification.rtime32_server_timestamp));
 			}
 
