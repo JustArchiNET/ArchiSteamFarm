@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
@@ -40,12 +41,12 @@ namespace ArchiSteamFarm {
 		private const byte MinPersonaStateTTL = 8; // Minimum amount of hours we must wait before requesting persona state update
 		private const string URL = "https://" + SharedInfo.StatisticsServer;
 
-		private static readonly HashSet<Steam.Asset.EType> AcceptedMatchableTypes = new HashSet<Steam.Asset.EType> {
+		private static readonly ImmutableHashSet<Steam.Asset.EType> AcceptedMatchableTypes = ImmutableHashSet.Create(
 			Steam.Asset.EType.Emoticon,
 			Steam.Asset.EType.FoilTradingCard,
 			Steam.Asset.EType.ProfileBackground,
 			Steam.Asset.EType.TradingCard
-		};
+		);
 
 		private readonly Bot Bot;
 		private readonly SemaphoreSlim MatchActivelySemaphore = new SemaphoreSlim(1, 1);

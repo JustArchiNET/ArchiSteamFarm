@@ -75,7 +75,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 								break;
 							}
 
-							await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None).ConfigureAwait(false);
+							await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None).ConfigureAwait(false);
 							break;
 						}
 					} finally {
