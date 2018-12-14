@@ -46,7 +46,7 @@ namespace ArchiSteamFarm.SteamKit2 {
 
 		private ServerRecordEndPoint() { }
 
-		public bool Equals(ServerRecordEndPoint other) => (Host == other.Host) && (Port == other.Port) && (ProtocolTypes == other.ProtocolTypes);
+		public bool Equals(ServerRecordEndPoint other) => (other != null) && (ReferenceEquals(other, this) || ((Host == other.Host) && (Port == other.Port) && (ProtocolTypes == other.ProtocolTypes)));
 		public override bool Equals(object obj) => (obj != null) && ((obj == this) || (obj is ServerRecordEndPoint serverRecord && Equals(serverRecord)));
 		public override int GetHashCode() => RuntimeCompatibility.HashCode.Combine(Host, Port, ProtocolTypes);
 	}
