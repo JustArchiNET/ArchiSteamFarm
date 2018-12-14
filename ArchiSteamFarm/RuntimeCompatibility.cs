@@ -83,6 +83,15 @@ namespace ArchiSteamFarm {
 		}
 #pragma warning restore 1998
 
+		internal static class HashCode {
+			internal static int Combine<T1, T2, T3>(T1 value1, T2 value2, T3 value3) =>
+#if NETFRAMEWORK
+				(value1, value2, value3).GetHashCode();
+#else
+				System.HashCode.Combine(value1, value2, value3);
+#endif
+		}
+
 		internal static class Path {
 			internal static string GetRelativePath(string relativeTo, string path) {
 #if NETFRAMEWORK

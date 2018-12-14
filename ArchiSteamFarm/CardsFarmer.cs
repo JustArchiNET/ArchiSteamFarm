@@ -23,7 +23,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -1075,11 +1074,9 @@ namespace ArchiSteamFarm {
 				PlayableAppID = appID;
 			}
 
-			[SuppressMessage("ReSharper", "PossibleUnintendedReferenceComparison")]
-			public bool Equals(Game other) => (other != null) && ((other == this) || (AppID == other.AppID));
-
+			public bool Equals(Game other) => (other != null) && (ReferenceEquals(other, this) || ((AppID == other.AppID) && (BadgeLevel == other.BadgeLevel) && (GameName == other.GameName)));
 			public override bool Equals(object obj) => (obj != null) && ((obj == this) || (obj is Game game && Equals(game)));
-			public override int GetHashCode() => (int) (AppID - 1 - int.MaxValue);
+			public override int GetHashCode() => RuntimeCompatibility.HashCode.Combine(AppID, BadgeLevel, GameName);
 		}
 	}
 }
