@@ -218,22 +218,22 @@ namespace ArchiSteamFarm.Collections {
 			public T Current => Enumerator.Current;
 
 			private readonly IEnumerator<T> Enumerator;
-			private readonly SemaphoreSlim SemaphoreSlim;
+			private readonly SemaphoreSlim Semaphore;
 
 			object IEnumerator.Current => Current;
 
-			internal ConcurrentEnumerator(IReadOnlyCollection<T> collection, SemaphoreSlim semaphoreSlim) {
-				if ((collection == null) || (semaphoreSlim == null)) {
-					throw new ArgumentNullException(nameof(collection) + " || " + nameof(semaphoreSlim));
+			internal ConcurrentEnumerator(IReadOnlyCollection<T> collection, SemaphoreSlim semaphore) {
+				if ((collection == null) || (semaphore == null)) {
+					throw new ArgumentNullException(nameof(collection) + " || " + nameof(semaphore));
 				}
 
-				SemaphoreSlim = semaphoreSlim;
-				semaphoreSlim.Wait();
+				Semaphore = semaphore;
+				semaphore.Wait();
 
 				Enumerator = collection.GetEnumerator();
 			}
 
-			public void Dispose() => SemaphoreSlim.Release();
+			public void Dispose() => Semaphore.Release();
 			public bool MoveNext() => Enumerator.MoveNext();
 			public void Reset() => Enumerator.Reset();
 		}

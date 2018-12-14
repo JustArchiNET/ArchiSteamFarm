@@ -89,6 +89,7 @@ namespace ArchiSteamFarm {
 		internal static HtmlDocument StringToHtmlDocument(string html) {
 			if (html == null) {
 				ASF.ArchiLogger.LogNullError(nameof(html));
+
 				return null;
 			}
 
@@ -101,6 +102,7 @@ namespace ArchiSteamFarm {
 		internal async Task<BinaryResponse> UrlGetToBinaryWithProgress(string request, string referer = null, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
+
 				return null;
 			}
 
@@ -126,6 +128,7 @@ namespace ArchiSteamFarm {
 
 								while (contentStream.CanRead) {
 									int read = await contentStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+
 									if (read == 0) {
 										break;
 									}
@@ -148,10 +151,12 @@ namespace ArchiSteamFarm {
 							}
 						} catch (Exception e) {
 							ArchiLogger.LogGenericDebuggingException(e);
+
 							return null;
 						}
 
 						ArchiLogger.LogGenericDebug("100%");
+
 						return new BinaryResponse(response, ms.ToArray());
 					}
 				}
@@ -168,16 +173,19 @@ namespace ArchiSteamFarm {
 		internal async Task<HtmlDocumentResponse> UrlGetToHtmlDocument(string request, string referer = null, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
+
 				return null;
 			}
 
 			StringResponse response = await UrlGetToString(request, referer, maxTries).ConfigureAwait(false);
+
 			return response != null ? new HtmlDocumentResponse(response) : null;
 		}
 
 		internal async Task<ObjectResponse<T>> UrlGetToJsonObject<T>(string request, string referer = null, byte maxTries = MaxTries) where T : class {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
+
 				return null;
 			}
 
@@ -216,6 +224,7 @@ namespace ArchiSteamFarm {
 		internal async Task<StringResponse> UrlGetToString(string request, string referer = null, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
+
 				return null;
 			}
 
@@ -240,6 +249,7 @@ namespace ArchiSteamFarm {
 		internal async Task<XmlDocumentResponse> UrlGetToXmlDocument(string request, string referer = null, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
+
 				return null;
 			}
 
@@ -256,6 +266,7 @@ namespace ArchiSteamFarm {
 					xmlDocument.LoadXml(response.Content);
 				} catch (XmlException e) {
 					ArchiLogger.LogGenericWarningException(e);
+
 					continue;
 				}
 
@@ -273,6 +284,7 @@ namespace ArchiSteamFarm {
 		internal async Task<BasicResponse> UrlHead(string request, string referer = null, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
+
 				return null;
 			}
 
@@ -297,6 +309,7 @@ namespace ArchiSteamFarm {
 		internal async Task<BasicResponse> UrlPost(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
+
 				return null;
 			}
 
@@ -321,16 +334,19 @@ namespace ArchiSteamFarm {
 		internal async Task<HtmlDocumentResponse> UrlPostToHtmlDocument(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
+
 				return null;
 			}
 
 			StringResponse response = await UrlPostToString(request, data, referer, maxTries).ConfigureAwait(false);
+
 			return response != null ? new HtmlDocumentResponse(response) : null;
 		}
 
 		internal async Task<ObjectResponse<T>> UrlPostToJsonObject<T>(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, byte maxTries = MaxTries) where T : class {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
+
 				return null;
 			}
 
@@ -369,6 +385,7 @@ namespace ArchiSteamFarm {
 		private async Task<HttpResponseMessage> InternalGet(string request, string referer = null, HttpCompletionOption httpCompletionOptions = HttpCompletionOption.ResponseContentRead) {
 			if (string.IsNullOrEmpty(request)) {
 				ArchiLogger.LogNullError(nameof(request));
+
 				return null;
 			}
 
@@ -378,6 +395,7 @@ namespace ArchiSteamFarm {
 		private async Task<HttpResponseMessage> InternalHead(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				ArchiLogger.LogNullError(nameof(request));
+
 				return null;
 			}
 
@@ -387,6 +405,7 @@ namespace ArchiSteamFarm {
 		private async Task<HttpResponseMessage> InternalPost(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				ArchiLogger.LogNullError(nameof(request));
+
 				return null;
 			}
 
@@ -396,6 +415,7 @@ namespace ArchiSteamFarm {
 		private async Task<HttpResponseMessage> InternalRequest(Uri requestUri, HttpMethod httpMethod, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, byte maxRedirections = MaxTries) {
 			if ((requestUri == null) || (httpMethod == null)) {
 				ArchiLogger.LogNullError(nameof(requestUri) + " || " + nameof(httpMethod));
+
 				return null;
 			}
 
@@ -407,6 +427,7 @@ namespace ArchiSteamFarm {
 						request.Content = new FormUrlEncodedContent(data);
 					} catch (UriFormatException e) {
 						ArchiLogger.LogGenericException(e);
+
 						return null;
 					}
 				}
@@ -423,6 +444,7 @@ namespace ArchiSteamFarm {
 					response = await HttpClient.SendAsync(request, httpCompletionOption).ConfigureAwait(false);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericDebuggingException(e);
+
 					return null;
 				}
 			}
@@ -451,13 +473,17 @@ namespace ArchiSteamFarm {
 					switch (redirectUri.Scheme) {
 						case "http":
 						case "https":
+
 							break;
 						case "steammobile":
+
 							// Those redirections are invalid, but we're aware of that and we have extra logic for them
 							return response;
 						default:
+
 							// We have no clue about those, but maybe HttpClient can handle them for us
 							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(redirectUri.Scheme), redirectUri.Scheme));
+
 							break;
 					}
 				} else {
@@ -465,6 +491,7 @@ namespace ArchiSteamFarm {
 				}
 
 				response.Dispose();
+
 				return await InternalRequest(redirectUri, httpMethod, data, referer, httpCompletionOption, --maxRedirections).ConfigureAwait(false);
 			}
 
@@ -480,6 +507,7 @@ namespace ArchiSteamFarm {
 		private async Task<StringResponse> UrlPostToString(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
+
 				return null;
 			}
 

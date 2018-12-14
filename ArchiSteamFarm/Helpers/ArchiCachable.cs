@@ -66,6 +66,7 @@ namespace ArchiSteamFarm.Helpers {
 				}
 
 				(bool success, T result) = await ResolveFunction().ConfigureAwait(false);
+
 				if (!success) {
 					return (false, InitializedValue);
 				}

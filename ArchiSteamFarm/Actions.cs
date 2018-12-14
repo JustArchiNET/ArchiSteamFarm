@@ -68,6 +68,7 @@ namespace ArchiSteamFarm {
 				}
 
 				HashSet<MobileAuthenticator.Confirmation> confirmations = await Bot.BotDatabase.MobileAuthenticator.GetConfirmations(acceptedType).ConfigureAwait(false);
+
 				if ((confirmations == null) || (confirmations.Count == 0)) {
 					continue;
 				}
@@ -125,6 +126,7 @@ namespace ArchiSteamFarm {
 				}
 
 				HashSet<ulong> giftCardIDs = await Bot.ArchiWebHandler.GetDigitalGiftCards().ConfigureAwait(false);
+
 				if ((giftCardIDs == null) || (giftCardIDs.Count == 0)) {
 					return;
 				}
@@ -136,6 +138,7 @@ namespace ArchiSteamFarm {
 					await LimitGiftsRequestsAsync().ConfigureAwait(false);
 
 					bool result = await Bot.ArchiWebHandler.AcceptDigitalGiftCard(giftCardID).ConfigureAwait(false);
+
 					if (result) {
 						Bot.ArchiLogger.LogGenericInfo(Strings.Success);
 					} else {
@@ -150,6 +153,7 @@ namespace ArchiSteamFarm {
 		internal async Task AcceptGuestPasses(IReadOnlyCollection<ulong> guestPassIDs) {
 			if ((guestPassIDs == null) || (guestPassIDs.Count == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(guestPassIDs));
+
 				return;
 			}
 
@@ -160,6 +164,7 @@ namespace ArchiSteamFarm {
 				await LimitGiftsRequestsAsync().ConfigureAwait(false);
 
 				ArchiHandler.RedeemGuestPassResponseCallback response = await Bot.ArchiHandler.RedeemGuestPass(guestPassID).ConfigureAwait(false);
+
 				if (response != null) {
 					if (response.Result == EResult.OK) {
 						Bot.ArchiLogger.LogGenericInfo(Strings.Success);
@@ -186,6 +191,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<SemaphoreLock> GetTradingLock() {
 			await TradingSemaphore.WaitAsync().ConfigureAwait(false);
+
 			return new SemaphoreLock(TradingSemaphore);
 		}
 
@@ -255,12 +261,14 @@ namespace ArchiSteamFarm {
 			}
 
 			Utilities.InBackground(() => Bot.CardsFarmer.Resume(true));
+
 			return (true, Strings.BotAutomaticIdlingNowResumed);
 		}
 
 		internal async Task<(bool Success, string Output)> SendTradeOffer(uint appID = Steam.Asset.SteamAppID, byte contextID = Steam.Asset.SteamCommunityContextID, ulong targetSteamID = 0, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<uint> wantedRealAppIDs = null) {
 			if ((appID == 0) || (contextID == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
+
 				return (false, string.Format(Strings.ErrorObjectIsNull, nameof(targetSteamID) + " || " + nameof(appID) + " || " + nameof(contextID)));
 			}
 
@@ -270,6 +278,7 @@ namespace ArchiSteamFarm {
 
 			if (targetSteamID == 0) {
 				targetSteamID = GetFirstSteamMasterID();
+
 				if (targetSteamID == 0) {
 					return (false, Strings.BotLootingMasterNotDefined);
 				}
@@ -295,6 +304,7 @@ namespace ArchiSteamFarm {
 				}
 
 				HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetInventory(Bot.SteamID, appID, contextID, true, wantedTypes, wantedRealAppIDs).ConfigureAwait(false);
+
 				if ((inventory == null) || (inventory.Count == 0)) {
 					return (false, string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
 				}
@@ -328,6 +338,7 @@ namespace ArchiSteamFarm {
 
 			SkipFirstShutdown = true;
 			Utilities.InBackground(Bot.Start);
+
 			return (true, Strings.Done);
 		}
 
@@ -337,11 +348,13 @@ namespace ArchiSteamFarm {
 			}
 
 			Bot.Stop();
+
 			return (true, Strings.Done);
 		}
 
 		internal static async Task<(bool Success, string Message)> Update() {
 			Version version = await ASF.Update(true).ConfigureAwait(false);
+
 			if (version == null) {
 				return (false, null);
 			}
@@ -351,6 +364,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Utilities.InBackground(ASF.RestartOrExit);
+
 			return (true, version.ToString());
 		}
 
@@ -362,6 +376,7 @@ namespace ArchiSteamFarm {
 			}
 
 			await GiftsSemaphore.WaitAsync().ConfigureAwait(false);
+
 			Utilities.InBackground(
 				async () => {
 					await Task.Delay(Program.GlobalConfig.GiftsLimiterDelay * 1000).ConfigureAwait(false);

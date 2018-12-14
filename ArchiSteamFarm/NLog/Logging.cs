@@ -42,6 +42,7 @@ namespace ArchiSteamFarm.NLog {
 			}
 
 			bool reload = false;
+
 			foreach (LoggingRule rule in LogManager.Configuration.LoggingRules.Where(rule => rule.IsLoggingEnabledForLevel(LogLevel.Debug) && !rule.IsLoggingEnabledForLevel(LogLevel.Trace))) {
 				rule.EnableLoggingForLevel(LogLevel.Trace);
 				reload = true;
@@ -57,6 +58,7 @@ namespace ArchiSteamFarm.NLog {
 				IsUsingCustomConfiguration = true;
 				InitConsoleLoggers();
 				LogManager.ConfigurationChanged += OnConfigurationChanged;
+
 				return;
 			}
 
@@ -89,7 +91,6 @@ namespace ArchiSteamFarm.NLog {
 			HistoryTarget historyTarget = LogManager.Configuration.AllTargets.OfType<HistoryTarget>().FirstOrDefault();
 
 			if ((historyTarget == null) && !IsUsingCustomConfiguration) {
-				// TODO: We could use some nice HTML layout for this
 				historyTarget = new HistoryTarget("History") {
 					Layout = GeneralLayout,
 					MaxCount = 20
@@ -154,6 +155,7 @@ namespace ArchiSteamFarm.NLog {
 		private static void OnConfigurationChanged(object sender, LoggingConfigurationChangedEventArgs e) {
 			if ((sender == null) || (e == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
+
 				return;
 			}
 

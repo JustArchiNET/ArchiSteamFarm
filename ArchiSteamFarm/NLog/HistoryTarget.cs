@@ -41,9 +41,11 @@ namespace ArchiSteamFarm.NLog {
 		[SuppressMessage("ReSharper", "UnusedMember.Global")]
 		public byte MaxCount {
 			get => HistoryQueue.MaxCount;
+
 			set {
 				if (value == 0) {
 					ASF.ArchiLogger.LogNullError(nameof(value));
+
 					return;
 				}
 
@@ -61,6 +63,7 @@ namespace ArchiSteamFarm.NLog {
 		protected override void Write(LogEventInfo logEvent) {
 			if (logEvent == null) {
 				ASF.ArchiLogger.LogNullError(nameof(logEvent));
+
 				return;
 			}
 

@@ -24,7 +24,7 @@ using Newtonsoft.Json;
 using SteamKit2;
 
 namespace ArchiSteamFarm.SteamKit2 {
-	internal sealed class ServerRecordEndPoint {
+	internal sealed class ServerRecordEndPoint : IEquatable<ServerRecordEndPoint> {
 		[JsonProperty(Required = Required.Always)]
 		internal readonly string Host;
 
@@ -46,9 +46,8 @@ namespace ArchiSteamFarm.SteamKit2 {
 
 		private ServerRecordEndPoint() { }
 
+		public bool Equals(ServerRecordEndPoint other) => (Host == other.Host) && (Port == other.Port) && (ProtocolTypes == other.ProtocolTypes);
 		public override bool Equals(object obj) => (obj != null) && ((obj == this) || (obj is ServerRecordEndPoint serverRecord && Equals(serverRecord)));
-		public override int GetHashCode() => (Host, Port, ProtocolTypes).GetHashCode();
-
-		private bool Equals(ServerRecordEndPoint other) => string.Equals(Host, other.Host) && (Port == other.Port) && (ProtocolTypes == other.ProtocolTypes);
+		public override int GetHashCode() => RuntimeCompatibility.HashCode.Combine(Host, Port, ProtocolTypes);
 	}
 }

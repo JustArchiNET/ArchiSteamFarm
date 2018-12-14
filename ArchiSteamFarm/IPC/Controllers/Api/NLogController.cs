@@ -55,8 +55,10 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			try {
 				using (WebSocket webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync().ConfigureAwait(false)) {
 					SemaphoreSlim sendSemaphore = new SemaphoreSlim(1, 1);
+
 					if (!ActiveLogWebSockets.TryAdd(webSocket, sendSemaphore)) {
 						sendSemaphore.Dispose();
+
 						return new EmptyResult();
 					}
 
@@ -72,10 +74,12 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 
 							if (result.MessageType != WebSocketMessageType.Close) {
 								await webSocket.CloseAsync(WebSocketCloseStatus.InvalidMessageType, "You're not supposed to be sending any message but Close!", CancellationToken.None).ConfigureAwait(false);
+
 								break;
 							}
 
 							await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None).ConfigureAwait(false);
+
 							break;
 						}
 					} finally {
@@ -95,6 +99,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		internal static async void OnNewHistoryEntry(object sender, HistoryTarget.NewHistoryEntryArgs newHistoryEntryArgs) {
 			if ((sender == null) || (newHistoryEntryArgs == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(newHistoryEntryArgs));
+
 				return;
 			}
 
@@ -109,6 +114,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		private static async Task PostLoggedJsonUpdate(WebSocket webSocket, SemaphoreSlim sendSemaphore, string json) {
 			if ((webSocket == null) || (sendSemaphore == null) || string.IsNullOrEmpty(json)) {
 				ASF.ArchiLogger.LogNullError(nameof(webSocket) + " || " + nameof(sendSemaphore) + " || " + nameof(json));
+
 				return;
 			}
 
@@ -134,6 +140,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		private static async Task PostLoggedMessageUpdate(WebSocket webSocket, SemaphoreSlim sendSemaphore, string loggedMessage) {
 			if ((webSocket == null) || (sendSemaphore == null) || string.IsNullOrEmpty(loggedMessage)) {
 				ASF.ArchiLogger.LogNullError(nameof(webSocket) + " || " + nameof(sendSemaphore) + " || " + nameof(loggedMessage));
+
 				return;
 			}
 

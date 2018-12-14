@@ -30,6 +30,7 @@ namespace ArchiSteamFarm.IPC {
 		internal static async Task Generate(this HttpResponse httpResponse, HttpStatusCode statusCode) {
 			if (httpResponse == null) {
 				ASF.ArchiLogger.LogNullError(nameof(httpResponse));
+
 				return;
 			}
 
@@ -42,6 +43,7 @@ namespace ArchiSteamFarm.IPC {
 		internal static string GetUnifiedName(this Type type) {
 			if (type == null) {
 				ASF.ArchiLogger.LogNullError(nameof(type));
+
 				return null;
 			}
 
@@ -51,10 +53,12 @@ namespace ArchiSteamFarm.IPC {
 		internal static Type ParseType(string typeText) {
 			if (string.IsNullOrEmpty(typeText)) {
 				ASF.ArchiLogger.LogNullError(nameof(typeText));
+
 				return null;
 			}
 
 			Type targetType = Type.GetType(typeText);
+
 			if (targetType != null) {
 				return targetType;
 			}

@@ -56,6 +56,7 @@ namespace ArchiSteamFarm.NLog {
 		protected override async void Write(LogEventInfo logEvent) {
 			if (logEvent == null) {
 				ASF.ArchiLogger.LogNullError(nameof(logEvent));
+
 				return;
 			}
 
@@ -89,6 +90,7 @@ namespace ArchiSteamFarm.NLog {
 		private async Task SendGroupMessage(string message, Bot bot = null) {
 			if (string.IsNullOrEmpty(message)) {
 				ASF.ArchiLogger.LogNullError(nameof(message));
+
 				return;
 			}
 
@@ -106,6 +108,7 @@ namespace ArchiSteamFarm.NLog {
 		private async Task SendPrivateMessage(string message, Bot bot = null) {
 			if (string.IsNullOrEmpty(message)) {
 				ASF.ArchiLogger.LogNullError(nameof(message));
+
 				return;
 			}
 

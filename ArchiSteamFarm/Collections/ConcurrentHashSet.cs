@@ -54,26 +54,31 @@ namespace ArchiSteamFarm.Collections {
 
 		public bool IsProperSubsetOf(IEnumerable<T> other) {
 			ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
+
 			return (otherSet.Count > Count) && IsSubsetOf(otherSet);
 		}
 
 		public bool IsProperSupersetOf(IEnumerable<T> other) {
 			ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
+
 			return (otherSet.Count < Count) && IsSupersetOf(otherSet);
 		}
 
 		public bool IsSubsetOf(IEnumerable<T> other) {
 			ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
+
 			return this.All(otherSet.Contains);
 		}
 
 		public bool IsSupersetOf(IEnumerable<T> other) {
 			ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
+
 			return otherSet.All(Contains);
 		}
 
 		public bool Overlaps(IEnumerable<T> other) {
 			ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
+
 			return otherSet.Any(Contains);
 		}
 
@@ -81,13 +86,14 @@ namespace ArchiSteamFarm.Collections {
 
 		public bool SetEquals(IEnumerable<T> other) {
 			ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
+
 			return (otherSet.Count == Count) && otherSet.All(Contains);
 		}
 
 		public void SymmetricExceptWith(IEnumerable<T> other) {
 			ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
-
 			HashSet<T> removed = new HashSet<T>();
+
 			foreach (T item in otherSet.Where(Contains)) {
 				removed.Add(item);
 				Remove(item);
@@ -119,6 +125,7 @@ namespace ArchiSteamFarm.Collections {
 			}
 
 			ReplaceWith(other);
+
 			return true;
 		}
 

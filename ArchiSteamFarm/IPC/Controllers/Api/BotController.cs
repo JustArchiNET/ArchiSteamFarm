@@ -41,15 +41,18 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		public async Task<ActionResult<GenericResponse>> BotDelete(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
+
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
 			}
 
 			HashSet<Bot> bots = Bot.GetBots(botNames);
+
 			if ((bots == null) || (bots.Count == 0)) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
 			}
 
 			IList<bool> results = await Utilities.InParallel(bots.Select(bot => bot.DeleteAllRelatedFiles())).ConfigureAwait(false);
+
 			return Ok(new GenericResponse(results.All(result => result)));
 		}
 
@@ -61,10 +64,12 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		public ActionResult<GenericResponse<IReadOnlyDictionary<string, Bot>>> BotGet(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
+
 				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, Bot>>(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
 			}
 
 			HashSet<Bot> bots = Bot.GetBots(botNames);
+
 			if (bots == null) {
 				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, Bot>>(false, string.Format(Strings.ErrorIsInvalid, nameof(bots))));
 			}
@@ -81,10 +86,12 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		public async Task<ActionResult<GenericResponse<IReadOnlyDictionary<string, bool>>>> BotPost(string botNames, [FromBody] BotRequest request) {
 			if (string.IsNullOrEmpty(botNames) || (request == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames) + " || " + nameof(request));
+
 				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, bool>>(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames) + " || " + nameof(request))));
 			}
 
 			(bool valid, string errorMessage) = request.BotConfig.CheckValidation();
+
 			if (!valid) {
 				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, bool>>(false, errorMessage));
 			}
@@ -138,15 +145,18 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		public async Task<ActionResult<GenericResponse>> GamesToRedeemInBackgroundDelete(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
+
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
 			}
 
 			HashSet<Bot> bots = Bot.GetBots(botNames);
+
 			if ((bots == null) || (bots.Count == 0)) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
 			}
 
 			IList<bool> results = await Utilities.InParallel(bots.Select(bot => Task.Run(bot.DeleteRedeemedKeysFiles))).ConfigureAwait(false);
+
 			return Ok(results.All(result => result) ? new GenericResponse(true) : new GenericResponse(false, Strings.WarningFailed));
 		}
 
@@ -158,10 +168,12 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		public async Task<ActionResult<GenericResponse<IReadOnlyDictionary<string, GamesToRedeemInBackgroundResponse>>>> GamesToRedeemInBackgroundGet(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
+
 				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GamesToRedeemInBackgroundResponse>>(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
 			}
 
 			HashSet<Bot> bots = Bot.GetBots(botNames);
+
 			if ((bots == null) || (bots.Count == 0)) {
 				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GamesToRedeemInBackgroundResponse>>(false, string.Format(Strings.BotNotFound, botNames)));
 			}
@@ -187,6 +199,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		public async Task<ActionResult<GenericResponse<IReadOnlyDictionary<string, IOrderedDictionary>>>> GamesToRedeemInBackgroundPost(string botNames, [FromBody] BotGamesToRedeemInBackgroundRequest request) {
 			if (string.IsNullOrEmpty(botNames) || (request == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames) + " || " + nameof(request));
+
 				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, IOrderedDictionary>>(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames) + " || " + nameof(request))));
 			}
 
@@ -195,11 +208,13 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			HashSet<Bot> bots = Bot.GetBots(botNames);
+
 			if ((bots == null) || (bots.Count == 0)) {
 				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, IOrderedDictionary>>(false, string.Format(Strings.BotNotFound, botNames)));
 			}
 
 			IOrderedDictionary validGamesToRedeemInBackground = Bot.ValidateGamesToRedeemInBackground(request.GamesToRedeemInBackground);
+
 			if ((validGamesToRedeemInBackground == null) || (validGamesToRedeemInBackground.Count == 0)) {
 				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, IOrderedDictionary>>(false, string.Format(Strings.ErrorIsEmpty, nameof(validGamesToRedeemInBackground))));
 			}
@@ -224,15 +239,18 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		public async Task<ActionResult<GenericResponse>> PausePost(string botNames, [FromBody] BotPauseRequest request) {
 			if (string.IsNullOrEmpty(botNames) || (request == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames) + " || " + nameof(request));
+
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames) + " || " + nameof(request))));
 			}
 
 			HashSet<Bot> bots = Bot.GetBots(botNames);
+
 			if ((bots == null) || (bots.Count == 0)) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
 			}
 
 			IList<(bool Success, string Output)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.Pause(request.Permanent, request.ResumeInSeconds))).ConfigureAwait(false);
+
 			return Ok(new GenericResponse(results.All(result => result.Success), string.Join(Environment.NewLine, results.Select(result => result.Output))));
 		}
 
@@ -249,6 +267,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		public async Task<ActionResult<GenericResponse<IReadOnlyDictionary<string, IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>>>> RedeemPost(string botNames, [FromBody] BotRedeemRequest request) {
 			if (string.IsNullOrEmpty(botNames) || (request == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames) + " || " + nameof(request));
+
 				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>>(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames) + " || " + nameof(request))));
 			}
 
@@ -257,6 +276,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			HashSet<Bot> bots = Bot.GetBots(botNames);
+
 			if ((bots == null) || (bots.Count == 0)) {
 				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>>(false, string.Format(Strings.BotNotFound, botNames)));
 			}
@@ -287,15 +307,18 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		public async Task<ActionResult<GenericResponse>> ResumePost(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
+
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
 			}
 
 			HashSet<Bot> bots = Bot.GetBots(botNames);
+
 			if ((bots == null) || (bots.Count == 0)) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
 			}
 
 			IList<(bool Success, string Output)> results = await Utilities.InParallel(bots.Select(bot => Task.Run(bot.Actions.Resume))).ConfigureAwait(false);
+
 			return Ok(new GenericResponse(results.All(result => result.Success), string.Join(Environment.NewLine, results.Select(result => result.Output))));
 		}
 
@@ -307,15 +330,18 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		public async Task<ActionResult<GenericResponse>> StartPost(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
+
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
 			}
 
 			HashSet<Bot> bots = Bot.GetBots(botNames);
+
 			if ((bots == null) || (bots.Count == 0)) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
 			}
 
 			IList<(bool Success, string Output)> results = await Utilities.InParallel(bots.Select(bot => Task.Run(bot.Actions.Start))).ConfigureAwait(false);
+
 			return Ok(new GenericResponse(results.All(result => result.Success), string.Join(Environment.NewLine, results.Select(result => result.Output))));
 		}
 
@@ -327,15 +353,18 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		public async Task<ActionResult<GenericResponse>> StopPost(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
+
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
 			}
 
 			HashSet<Bot> bots = Bot.GetBots(botNames);
+
 			if ((bots == null) || (bots.Count == 0)) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
 			}
 
 			IList<(bool Success, string Output)> results = await Utilities.InParallel(bots.Select(bot => Task.Run(bot.Actions.Stop))).ConfigureAwait(false);
+
 			return Ok(new GenericResponse(results.All(result => result.Success), string.Join(Environment.NewLine, results.Select(result => result.Output))));
 		}
 	}

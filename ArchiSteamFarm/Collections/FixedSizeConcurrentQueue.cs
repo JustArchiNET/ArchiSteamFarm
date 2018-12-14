@@ -30,9 +30,11 @@ namespace ArchiSteamFarm.Collections {
 
 		internal byte MaxCount {
 			get => _MaxCount;
+
 			set {
 				if (value == 0) {
 					ASF.ArchiLogger.LogNullError(nameof(value));
+
 					return;
 				}
 

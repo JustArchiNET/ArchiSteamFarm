@@ -55,8 +55,10 @@ namespace ArchiSteamFarm {
 
 			for (byte i = 0; (i < MaxSingleQueuesDaily) && (await IsDiscoveryQueueAvailable().ConfigureAwait(false)).GetValueOrDefault(); i++) {
 				HashSet<uint> queue = await Bot.ArchiWebHandler.GenerateNewDiscoveryQueue().ConfigureAwait(false);
+
 				if ((queue == null) || (queue.Count == 0)) {
 					Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(queue)));
+
 					break;
 				}
 
@@ -69,6 +71,7 @@ namespace ArchiSteamFarm {
 					}
 
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+
 					return;
 				}
 
@@ -80,19 +83,23 @@ namespace ArchiSteamFarm {
 
 		private async Task<bool?> IsDiscoveryQueueAvailable() {
 			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetDiscoveryQueuePage().ConfigureAwait(false);
+
 			if (htmlDocument == null) {
 				return null;
 			}
 
 			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@class='subtext']");
+
 			if (htmlNode == null) {
 				// Valid, no cards for exploring the queue available
 				return false;
 			}
 
 			string text = htmlNode.InnerText;
+
 			if (string.IsNullOrEmpty(text)) {
 				Bot.ArchiLogger.LogNullError(nameof(text));
+
 				return null;
 			}
 
@@ -110,6 +117,7 @@ namespace ArchiSteamFarm {
 			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetSteamAwardsPage().ConfigureAwait(false);
 
 			HtmlNodeCollection nominationNodes = htmlDocument?.DocumentNode.SelectNodes("//div[@class='vote_nominations store_horizontal_autoslider']");
+
 			if (nominationNodes == null) {
 				// Event ended, error or likewise
 				return;
@@ -117,25 +125,31 @@ namespace ArchiSteamFarm {
 
 			foreach (HtmlNode nominationNode in nominationNodes) {
 				HtmlNode myVoteNode = nominationNode.SelectSingleNode("./div[@class='vote_nomination your_vote']");
+
 				if (myVoteNode != null) {
 					// Already voted
 					continue;
 				}
 
 				string voteIDText = nominationNode.GetAttributeValue("data-voteid", null);
+
 				if (string.IsNullOrEmpty(voteIDText)) {
 					Bot.ArchiLogger.LogNullError(nameof(voteIDText));
+
 					return;
 				}
 
 				if (!byte.TryParse(voteIDText, out byte voteID) || (voteID == 0)) {
 					Bot.ArchiLogger.LogNullError(nameof(voteID));
+
 					return;
 				}
 
 				HtmlNodeCollection voteNodes = nominationNode.SelectNodes("./div[starts-with(@class, 'vote_nomination')]");
+
 				if (voteNodes == null) {
 					Bot.ArchiLogger.LogNullError(nameof(voteNodes));
+
 					return;
 				}
 
@@ -143,13 +157,16 @@ namespace ArchiSteamFarm {
 				HtmlNode voteNode = voteNodes[Utilities.RandomNext(voteNodes.Count)];
 
 				string appIDText = voteNode.GetAttributeValue("data-vote-appid", null);
+
 				if (string.IsNullOrEmpty(appIDText)) {
 					Bot.ArchiLogger.LogNullError(nameof(appIDText));
+
 					return;
 				}
 
 				if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
 					Bot.ArchiLogger.LogNullError(nameof(appID));
+
 					return;
 				}
 

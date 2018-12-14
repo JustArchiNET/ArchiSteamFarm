@@ -263,6 +263,7 @@ namespace ArchiSteamFarm.Tests {
 				CreateItem(2),
 				CreateItem(5)
 			};
+
 			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> {
 				CreateItem(3),
 				CreateItem(4)

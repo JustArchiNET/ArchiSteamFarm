@@ -54,11 +54,13 @@ namespace ArchiSteamFarm.Json {
 				set {
 					if (string.IsNullOrEmpty(value)) {
 						ASF.ArchiLogger.LogNullError(nameof(value));
+
 						return;
 					}
 
 					if (!uint.TryParse(value, out uint amount) || (amount == 0)) {
 						ASF.ArchiLogger.LogNullError(nameof(amount));
+
 						return;
 					}
 
@@ -73,11 +75,13 @@ namespace ArchiSteamFarm.Json {
 				set {
 					if (string.IsNullOrEmpty(value)) {
 						ASF.ArchiLogger.LogNullError(nameof(value));
+
 						return;
 					}
 
 					if (!ulong.TryParse(value, out ulong assetID) || (assetID == 0)) {
 						ASF.ArchiLogger.LogNullError(nameof(assetID));
+
 						return;
 					}
 
@@ -92,6 +96,7 @@ namespace ArchiSteamFarm.Json {
 				set {
 					if (string.IsNullOrEmpty(value)) {
 						ASF.ArchiLogger.LogNullError(nameof(value));
+
 						return;
 					}
 
@@ -110,11 +115,13 @@ namespace ArchiSteamFarm.Json {
 				set {
 					if (string.IsNullOrEmpty(value)) {
 						ASF.ArchiLogger.LogNullError(nameof(value));
+
 						return;
 					}
 
 					if (!ulong.TryParse(value, out ulong contextID) || (contextID == 0)) {
 						ASF.ArchiLogger.LogNullError(nameof(contextID));
+
 						return;
 					}
 
@@ -176,12 +183,15 @@ namespace ArchiSteamFarm.Json {
 				set {
 					if (string.IsNullOrEmpty(value)) {
 						ASF.ArchiLogger.LogNullError(nameof(value));
+
 						return;
 					}
 
 					HtmlDocument htmlDocument = WebBrowser.StringToHtmlDocument(value);
+
 					if (htmlDocument == null) {
 						ASF.ArchiLogger.LogNullError(nameof(htmlDocument));
+
 						return;
 					}
 
@@ -189,32 +199,42 @@ namespace ArchiSteamFarm.Json {
 						Type = EType.Trade;
 
 						HtmlNode tradeOfferNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@class='tradeoffer']");
+
 						if (tradeOfferNode == null) {
 							ASF.ArchiLogger.LogNullError(nameof(tradeOfferNode));
+
 							return;
 						}
 
 						string idText = tradeOfferNode.GetAttributeValue("id", null);
+
 						if (string.IsNullOrEmpty(idText)) {
 							ASF.ArchiLogger.LogNullError(nameof(idText));
+
 							return;
 						}
 
 						int index = idText.IndexOf('_');
+
 						if (index < 0) {
 							ASF.ArchiLogger.LogNullError(nameof(index));
+
 							return;
 						}
 
 						index++;
+
 						if (idText.Length <= index) {
 							ASF.ArchiLogger.LogNullError(nameof(idText.Length));
+
 							return;
 						}
 
 						idText = idText.Substring(index);
+
 						if (!ulong.TryParse(idText, out ulong tradeOfferID) || (tradeOfferID == 0)) {
 							ASF.ArchiLogger.LogNullError(nameof(tradeOfferID));
+
 							return;
 						}
 
@@ -275,11 +295,13 @@ namespace ArchiSteamFarm.Json {
 				set {
 					if (string.IsNullOrEmpty(value)) {
 						ASF.ArchiLogger.LogNullError(nameof(value));
+
 						return;
 					}
 
 					if (!ulong.TryParse(value, out ulong lastAssetID) || (lastAssetID == 0)) {
 						ASF.ArchiLogger.LogNullError(nameof(lastAssetID));
+
 						return;
 					}
 
@@ -313,11 +335,13 @@ namespace ArchiSteamFarm.Json {
 					set {
 						if (string.IsNullOrEmpty(value)) {
 							ASF.ArchiLogger.LogNullError(nameof(value));
+
 							return;
 						}
 
 						if (!ulong.TryParse(value, out ulong classID) || (classID == 0)) {
 							ASF.ArchiLogger.LogNullError(nameof(classID));
+
 							return;
 						}
 
@@ -354,12 +378,15 @@ namespace ArchiSteamFarm.Json {
 					switch (value) {
 						case 0:
 							Success = false;
+
 							break;
 						case 1:
 							Success = true;
+
 							break;
 						default:
 							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(value), value));
+
 							return;
 					}
 				}
@@ -414,6 +441,7 @@ namespace ArchiSteamFarm.Json {
 			internal bool IsValidSteamItemsRequest(IReadOnlyCollection<Asset.EType> acceptedTypes) {
 				if ((acceptedTypes == null) || (acceptedTypes.Count == 0)) {
 					ASF.ArchiLogger.LogNullError(nameof(acceptedTypes));
+
 					return false;
 				}
 
@@ -471,11 +499,13 @@ namespace ArchiSteamFarm.Json {
 				set {
 					if (string.IsNullOrEmpty(value)) {
 						ASF.ArchiLogger.LogNullError(nameof(value));
+
 						return;
 					}
 
 					if (!ulong.TryParse(value, out ulong tradeOfferID) || (tradeOfferID == 0)) {
 						ASF.ArchiLogger.LogNullError(nameof(tradeOfferID));
+
 						return;
 					}
 

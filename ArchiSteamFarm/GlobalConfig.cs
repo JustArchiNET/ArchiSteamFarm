@@ -156,6 +156,7 @@ namespace ArchiSteamFarm {
 					uri = new Uri(WebProxyText);
 				} catch (UriFormatException e) {
 					ASF.ArchiLogger.LogGenericException(e);
+
 					return null;
 				}
 
@@ -195,6 +196,7 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		internal string WebProxyPassword {
 			get => _WebProxyPassword;
+
 			set {
 				IsWebProxyPasswordSet = true;
 				_WebProxyPassword = value;
@@ -208,9 +210,11 @@ namespace ArchiSteamFarm {
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamOwnerID), Required = Required.DisallowNull)]
 		private string SSteamOwnerID {
 			get => SteamOwnerID.ToString();
+
 			set {
 				if (string.IsNullOrEmpty(value) || !ulong.TryParse(value, out ulong result)) {
 					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(SSteamOwnerID)));
+
 					return;
 				}
 
@@ -255,6 +259,7 @@ namespace ArchiSteamFarm {
 		internal static async Task<GlobalConfig> Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(filePath));
+
 				return null;
 			}
 
@@ -268,28 +273,34 @@ namespace ArchiSteamFarm {
 				globalConfig = JsonConvert.DeserializeObject<GlobalConfig>(await RuntimeCompatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false));
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
+
 				return null;
 			}
 
 			if (globalConfig == null) {
 				ASF.ArchiLogger.LogNullError(nameof(globalConfig));
+
 				return null;
 			}
 
 			(bool valid, string errorMessage) = globalConfig.CheckValidation();
+
 			if (!valid) {
 				ASF.ArchiLogger.LogGenericError(errorMessage);
+
 				return null;
 			}
 
 			globalConfig.ShouldSerializeEverything = false;
 			globalConfig.ShouldSerializeSensitiveDetails = false;
+
 			return globalConfig;
 		}
 
 		internal static async Task<bool> Write(string filePath, GlobalConfig globalConfig) {
 			if (string.IsNullOrEmpty(filePath) || (globalConfig == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(filePath) + " || " + nameof(globalConfig));
+
 				return false;
 			}
 
@@ -308,6 +319,7 @@ namespace ArchiSteamFarm {
 				}
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
+
 				return false;
 			} finally {
 				WriteSemaphore.Release();

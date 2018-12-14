@@ -37,6 +37,7 @@ namespace ArchiSteamFarm.SteamKit2 {
 		public Task UpdateServerListAsync(IEnumerable<ServerRecord> endpoints) {
 			if (endpoints == null) {
 				ASF.ArchiLogger.LogNullError(nameof(endpoints));
+
 				return Task.CompletedTask;
 			}
 
@@ -47,6 +48,7 @@ namespace ArchiSteamFarm.SteamKit2 {
 			}
 
 			ServerListUpdated?.Invoke(this, EventArgs.Empty);
+
 			return Task.CompletedTask;
 		}
 

@@ -42,6 +42,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		public ActionResult<GenericResponse<TypeResponse>> TypeGet(string type) {
 			if (string.IsNullOrEmpty(type)) {
 				ASF.ArchiLogger.LogNullError(nameof(type));
+
 				return BadRequest(new GenericResponse<TypeResponse>(false, string.Format(Strings.ErrorIsEmpty, nameof(type))));
 			}
 
@@ -85,6 +86,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			TypeResponse.TypeProperties properties = new TypeResponse.TypeProperties(baseType, customAttributes.Count > 0 ? customAttributes : null, underlyingType);
 
 			TypeResponse response = new TypeResponse(body, properties);
+
 			return Ok(new GenericResponse<TypeResponse>(response));
 		}
 	}

@@ -41,6 +41,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		public async Task<ActionResult<GenericResponse<string>>> CommandPost(string command) {
 			if (string.IsNullOrEmpty(command)) {
 				ASF.ArchiLogger.LogNullError(nameof(command));
+
 				return BadRequest(new GenericResponse<string>(false, string.Format(Strings.ErrorIsEmpty, nameof(command))));
 			}
 
@@ -49,6 +50,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			Bot targetBot = Bot.Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value).FirstOrDefault();
+
 			if (targetBot == null) {
 				return BadRequest(new GenericResponse<string>(false, Strings.ErrorNoBotsDefined));
 			}
@@ -58,6 +60,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			string response = await targetBot.Commands.Response(Program.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
+
 			return Ok(new GenericResponse<string>(response));
 		}
 	}
