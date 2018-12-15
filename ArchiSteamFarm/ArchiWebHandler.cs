@@ -1,4 +1,4 @@
-﻿//     _                _      _  ____   _                           _____
+//     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
@@ -61,8 +61,8 @@ namespace ArchiSteamFarm {
 		}.ToImmutableDictionary();
 
 		private readonly Bot Bot;
-		private readonly ArchiCachable<string> CachedApiKey;
-		private readonly ArchiCachable<bool> CachedPublicInventory;
+		private readonly ArchiCacheable<string> CachedApiKey;
+		private readonly ArchiCacheable<bool> CachedPublicInventory;
 		private readonly SemaphoreSlim SessionSemaphore = new SemaphoreSlim(1, 1);
 		private readonly WebBrowser WebBrowser;
 
@@ -75,8 +75,8 @@ namespace ArchiSteamFarm {
 		internal ArchiWebHandler(Bot bot) {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
-			CachedApiKey = new ArchiCachable<string>(ResolveApiKey, TimeSpan.FromHours(1));
-			CachedPublicInventory = new ArchiCachable<bool>(ResolvePublicInventory, TimeSpan.FromHours(1));
+			CachedApiKey = new ArchiCacheable<string>(ResolveApiKey, TimeSpan.FromHours(1));
+			CachedPublicInventory = new ArchiCacheable<bool>(ResolvePublicInventory, TimeSpan.FromHours(1));
 			WebBrowser = new WebBrowser(bot.ArchiLogger, Program.GlobalConfig.WebProxy);
 		}
 
