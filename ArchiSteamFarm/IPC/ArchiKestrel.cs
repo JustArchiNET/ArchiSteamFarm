@@ -62,6 +62,7 @@ namespace ArchiSteamFarm.IPC {
 			IWebHostBuilder builder = new WebHostBuilder();
 
 			string customDirectory = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.WebsiteDirectory);
+
 			if (Directory.Exists(customDirectory)) {
 				WebsiteDirectory = customDirectory;
 			}
@@ -106,6 +107,7 @@ namespace ArchiSteamFarm.IPC {
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 				kestrelWebHost.Dispose();
+
 				return;
 			}
 

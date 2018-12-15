@@ -44,6 +44,7 @@ namespace ArchiSteamFarm.Json {
 			internal ulong ClassID { get; private set; }
 			internal ulong ContextID { get; private set; }
 			internal uint RealAppID { get; set; }
+			internal bool Tradable { get; set; }
 			internal EType Type { get; set; }
 
 			[JsonProperty(PropertyName = "amount", Required = Required.Always)]
@@ -53,11 +54,13 @@ namespace ArchiSteamFarm.Json {
 				set {
 					if (string.IsNullOrEmpty(value)) {
 						ASF.ArchiLogger.LogNullError(nameof(value));
+
 						return;
 					}
 
 					if (!uint.TryParse(value, out uint amount) || (amount == 0)) {
 						ASF.ArchiLogger.LogNullError(nameof(amount));
+
 						return;
 					}
 
@@ -72,11 +75,13 @@ namespace ArchiSteamFarm.Json {
 				set {
 					if (string.IsNullOrEmpty(value)) {
 						ASF.ArchiLogger.LogNullError(nameof(value));
+
 						return;
 					}
 
 					if (!ulong.TryParse(value, out ulong assetID) || (assetID == 0)) {
 						ASF.ArchiLogger.LogNullError(nameof(assetID));
+
 						return;
 					}
 
@@ -91,6 +96,7 @@ namespace ArchiSteamFarm.Json {
 				set {
 					if (string.IsNullOrEmpty(value)) {
 						ASF.ArchiLogger.LogNullError(nameof(value));
+
 						return;
 					}
 
@@ -109,11 +115,13 @@ namespace ArchiSteamFarm.Json {
 				set {
 					if (string.IsNullOrEmpty(value)) {
 						ASF.ArchiLogger.LogNullError(nameof(value));
+
 						return;
 					}
 
 					if (!ulong.TryParse(value, out ulong contextID) || (contextID == 0)) {
 						ASF.ArchiLogger.LogNullError(nameof(contextID));
+
 						return;
 					}
 
@@ -130,7 +138,7 @@ namespace ArchiSteamFarm.Json {
 			// Constructed from trades being received
 			internal Asset(uint appID, ulong contextID, ulong classID, uint amount, uint realAppID, EType type = EType.Unknown) {
 				if ((appID == 0) || (contextID == 0) || (classID == 0) || (amount == 0) || (realAppID == 0)) {
-					throw new ArgumentNullException(nameof(classID) + " || " + nameof(contextID) + " || " + nameof(classID) + " || " + nameof(amount) + " || " + nameof(realAppID));
+					throw new ArgumentNullException(nameof(appID) + " || " + nameof(contextID) + " || " + nameof(classID) + " || " + nameof(amount) + " || " + nameof(realAppID));
 				}
 
 				AppID = appID;
@@ -167,7 +175,6 @@ namespace ArchiSteamFarm.Json {
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class ConfirmationDetails : BooleanResponse {
 			internal MobileAuthenticator.Confirmation Confirmation { get; set; }
-			internal ulong OtherSteamID64 { get; private set; }
 			internal ulong TradeOfferID { get; private set; }
 			internal EType Type { get; private set; }
 
@@ -176,12 +183,15 @@ namespace ArchiSteamFarm.Json {
 				set {
 					if (string.IsNullOrEmpty(value)) {
 						ASF.ArchiLogger.LogNullError(nameof(value));
+
 						return;
 					}
 
 					HtmlDocument htmlDocument = WebBrowser.StringToHtmlDocument(value);
+
 					if (htmlDocument == null) {
 						ASF.ArchiLogger.LogNullError(nameof(htmlDocument));
+
 						return;
 					}
 
@@ -189,55 +199,46 @@ namespace ArchiSteamFarm.Json {
 						Type = EType.Trade;
 
 						HtmlNode tradeOfferNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@class='tradeoffer']");
+
 						if (tradeOfferNode == null) {
 							ASF.ArchiLogger.LogNullError(nameof(tradeOfferNode));
+
 							return;
 						}
 
 						string idText = tradeOfferNode.GetAttributeValue("id", null);
+
 						if (string.IsNullOrEmpty(idText)) {
 							ASF.ArchiLogger.LogNullError(nameof(idText));
+
 							return;
 						}
 
 						int index = idText.IndexOf('_');
+
 						if (index < 0) {
 							ASF.ArchiLogger.LogNullError(nameof(index));
+
 							return;
 						}
 
 						index++;
+
 						if (idText.Length <= index) {
 							ASF.ArchiLogger.LogNullError(nameof(idText.Length));
+
 							return;
 						}
 
 						idText = idText.Substring(index);
+
 						if (!ulong.TryParse(idText, out ulong tradeOfferID) || (tradeOfferID == 0)) {
 							ASF.ArchiLogger.LogNullError(nameof(tradeOfferID));
+
 							return;
 						}
 
 						TradeOfferID = tradeOfferID;
-
-						HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//a/@data-miniprofile");
-						if (htmlNode == null) {
-							ASF.ArchiLogger.LogNullError(nameof(htmlNode));
-							return;
-						}
-
-						string miniProfile = htmlNode.GetAttributeValue("data-miniprofile", null);
-						if (string.IsNullOrEmpty(miniProfile)) {
-							ASF.ArchiLogger.LogNullError(nameof(miniProfile));
-							return;
-						}
-
-						if (!uint.TryParse(miniProfile, out uint steamID3) || (steamID3 == 0)) {
-							ASF.ArchiLogger.LogNullError(nameof(steamID3));
-							return;
-						}
-
-						OtherSteamID64 = new SteamID(steamID3, EUniverse.Public, EAccountType.Individual);
 					} else if (htmlDocument.DocumentNode.SelectSingleNode("//div[@class='mobileconf_listing_prices']") != null) {
 						Type = EType.Market;
 					} else {
@@ -294,11 +295,13 @@ namespace ArchiSteamFarm.Json {
 				set {
 					if (string.IsNullOrEmpty(value)) {
 						ASF.ArchiLogger.LogNullError(nameof(value));
+
 						return;
 					}
 
 					if (!ulong.TryParse(value, out ulong lastAssetID) || (lastAssetID == 0)) {
 						ASF.ArchiLogger.LogNullError(nameof(lastAssetID));
+
 						return;
 					}
 
@@ -332,11 +335,13 @@ namespace ArchiSteamFarm.Json {
 					set {
 						if (string.IsNullOrEmpty(value)) {
 							ASF.ArchiLogger.LogNullError(nameof(value));
+
 							return;
 						}
 
 						if (!ulong.TryParse(value, out ulong classID) || (classID == 0)) {
 							ASF.ArchiLogger.LogNullError(nameof(classID));
+
 							return;
 						}
 
@@ -373,12 +378,15 @@ namespace ArchiSteamFarm.Json {
 					switch (value) {
 						case 0:
 							Success = false;
+
 							break;
 						case 1:
 							Success = true;
+
 							break;
 						default:
 							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(value), value));
+
 							return;
 					}
 				}
@@ -390,11 +398,25 @@ namespace ArchiSteamFarm.Json {
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class RedeemWalletResponse : EResultResponse {
+			[JsonProperty(PropertyName = "wallet", Required = Required.DisallowNull)]
+			internal readonly InternalKeyDetails KeyDetails;
+
 			[JsonProperty(PropertyName = "detail", Required = Required.DisallowNull)]
 			internal readonly EPurchaseResultDetail? PurchaseResultDetail;
 
+			[JsonProperty(PropertyName = "currency", Required = Required.DisallowNull)]
+			internal readonly ECurrencyCode? WalletCurrencyCode;
+
 			// Deserialized from JSON
 			private RedeemWalletResponse() { }
+
+			internal sealed class InternalKeyDetails {
+				[JsonProperty(PropertyName = "currencycode", Required = Required.Always)]
+				internal readonly ECurrencyCode CurrencyCode;
+
+				// Deserialized from JSON
+				private InternalKeyDetails() { }
+			}
 		}
 
 		// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer
@@ -416,50 +438,10 @@ namespace ArchiSteamFarm.Json {
 				State = state;
 			}
 
-			internal bool IsFairTypesExchange() {
-				Dictionary<uint, Dictionary<Asset.EType, uint>> itemsToGivePerGame = new Dictionary<uint, Dictionary<Asset.EType, uint>>();
-				foreach (Asset item in ItemsToGive) {
-					if (itemsToGivePerGame.TryGetValue(item.RealAppID, out Dictionary<Asset.EType, uint> itemsPerType)) {
-						itemsPerType[item.Type] = itemsPerType.TryGetValue(item.Type, out uint amount) ? amount + item.Amount : item.Amount;
-					} else {
-						itemsPerType = new Dictionary<Asset.EType, uint> { [item.Type] = item.Amount };
-						itemsToGivePerGame[item.RealAppID] = itemsPerType;
-					}
-				}
-
-				Dictionary<uint, Dictionary<Asset.EType, uint>> itemsToReceivePerGame = new Dictionary<uint, Dictionary<Asset.EType, uint>>();
-				foreach (Asset item in ItemsToReceive) {
-					if (itemsToReceivePerGame.TryGetValue(item.RealAppID, out Dictionary<Asset.EType, uint> itemsPerType)) {
-						itemsPerType[item.Type] = itemsPerType.TryGetValue(item.Type, out uint amount) ? amount + item.Amount : item.Amount;
-					} else {
-						itemsPerType = new Dictionary<Asset.EType, uint> { [item.Type] = item.Amount };
-						itemsToReceivePerGame[item.RealAppID] = itemsPerType;
-					}
-				}
-
-				// Ensure that amount of items to give is at least amount of items to receive (per game and per type)
-				foreach (KeyValuePair<uint, Dictionary<Asset.EType, uint>> itemsPerGame in itemsToGivePerGame) {
-					if (!itemsToReceivePerGame.TryGetValue(itemsPerGame.Key, out Dictionary<Asset.EType, uint> otherItemsPerType)) {
-						return false;
-					}
-
-					foreach (KeyValuePair<Asset.EType, uint> itemsPerType in itemsPerGame.Value) {
-						if (!otherItemsPerType.TryGetValue(itemsPerType.Key, out uint otherAmount)) {
-							return false;
-						}
-
-						if (itemsPerType.Value > otherAmount) {
-							return false;
-						}
-					}
-				}
-
-				return true;
-			}
-
 			internal bool IsValidSteamItemsRequest(IReadOnlyCollection<Asset.EType> acceptedTypes) {
 				if ((acceptedTypes == null) || (acceptedTypes.Count == 0)) {
 					ASF.ArchiLogger.LogNullError(nameof(acceptedTypes));
+
 					return false;
 				}
 
@@ -517,11 +499,13 @@ namespace ArchiSteamFarm.Json {
 				set {
 					if (string.IsNullOrEmpty(value)) {
 						ASF.ArchiLogger.LogNullError(nameof(value));
+
 						return;
 					}
 
 					if (!ulong.TryParse(value, out ulong tradeOfferID) || (tradeOfferID == 0)) {
 						ASF.ArchiLogger.LogNullError(nameof(tradeOfferID));
+
 						return;
 					}
 

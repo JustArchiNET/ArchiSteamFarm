@@ -62,6 +62,7 @@ namespace ArchiSteamFarm.IPC.Responses {
 
 			if (!string.IsNullOrEmpty(message)) {
 				Message = message;
+
 				return;
 			}
 

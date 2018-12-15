@@ -57,6 +57,7 @@ namespace ArchiSteamFarm.IPC.Middleware {
 		public async Task InvokeAsync(HttpContext context) {
 			if (context == null) {
 				ASF.ArchiLogger.LogNullError(nameof(context));
+
 				return;
 			}
 
@@ -64,6 +65,7 @@ namespace ArchiSteamFarm.IPC.Middleware {
 
 			if (authenticationStatus != HttpStatusCode.OK) {
 				await context.Response.Generate(authenticationStatus).ConfigureAwait(false);
+
 				return;
 			}
 
@@ -73,6 +75,7 @@ namespace ArchiSteamFarm.IPC.Middleware {
 		private static async Task<HttpStatusCode> GetAuthenticationStatus(HttpContext context) {
 			if (context == null) {
 				ASF.ArchiLogger.LogNullError(nameof(context));
+
 				return HttpStatusCode.InternalServerError;
 			}
 

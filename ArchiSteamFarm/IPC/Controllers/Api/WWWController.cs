@@ -43,10 +43,12 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		public ActionResult<GenericResponse<IReadOnlyCollection<string>>> DirectoryGet(string directory) {
 			if (string.IsNullOrEmpty(directory)) {
 				ASF.ArchiLogger.LogNullError(nameof(directory));
+
 				return BadRequest(new GenericResponse<IReadOnlyCollection<string>>(false, string.Format(Strings.ErrorIsEmpty, nameof(directory))));
 			}
 
 			string directoryPath = Path.Combine(ArchiKestrel.WebsiteDirectory, directory);
+
 			if (!Directory.Exists(directoryPath)) {
 				return BadRequest(new GenericResponse<IReadOnlyCollection<string>>(false, string.Format(Strings.ErrorIsInvalid, directory)));
 			}
@@ -60,6 +62,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			HashSet<string> result = files.Select(Path.GetFileName).ToHashSet();
+
 			return Ok(new GenericResponse<IReadOnlyCollection<string>>(result));
 		}
 
@@ -77,11 +80,13 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			List<GitHub.ReleaseResponse> response = await GitHub.GetReleases(count).ConfigureAwait(false);
+
 			if ((response == null) || (response.Count == 0)) {
 				return BadRequest(new GenericResponse<IReadOnlyCollection<GitHub.ReleaseResponse>>(false, string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
 			}
 
 			List<GitHubReleaseResponse> result = response.Select(singleResponse => new GitHubReleaseResponse(singleResponse)).ToList();
+
 			return Ok(new GenericResponse<IReadOnlyCollection<GitHubReleaseResponse>>(result));
 		}
 
@@ -99,6 +104,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			GitHub.ReleaseResponse releaseResponse = await GitHub.GetRelease(version).ConfigureAwait(false);
+
 			if (releaseResponse == null) {
 				return BadRequest(new GenericResponse<GitHubReleaseResponse>(false, string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
 			}
@@ -118,6 +124,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		public async Task<ActionResult<GenericResponse<string>>> SendPost([FromBody] WWWSendRequest request) {
 			if (request == null) {
 				ASF.ArchiLogger.LogNullError(nameof(request));
+
 				return BadRequest(new GenericResponse<string>(false, string.Format(Strings.ErrorIsEmpty, nameof(request))));
 			}
 
@@ -126,6 +133,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			WebBrowser.StringResponse urlResponse = await Program.WebBrowser.UrlGetToString(request.URL).ConfigureAwait(false);
+
 			if (urlResponse?.Content == null) {
 				return BadRequest(new GenericResponse<string>(false, string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
 			}

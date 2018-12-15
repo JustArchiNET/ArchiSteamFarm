@@ -57,12 +57,10 @@ namespace ArchiSteamFarm {
 		private const ProtocolTypes DefaultSteamProtocols = ProtocolTypes.All;
 		private const EUpdateChannel DefaultUpdateChannel = EUpdateChannel.Stable;
 		private const byte DefaultUpdatePeriod = 24;
-		private const ushort DefaultWebLimiterDelay = 200;
+		private const ushort DefaultWebLimiterDelay = 300;
 		private const string DefaultWebProxyPassword = null;
 		private const string DefaultWebProxyText = null;
 		private const string DefaultWebProxyUsername = null;
-
-		internal static readonly ImmutableHashSet<uint> SalesBlacklist = ImmutableHashSet.Create<uint>(267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900, 762800, 876740);
 
 		private static readonly ImmutableHashSet<uint> DefaultBlacklist = ImmutableHashSet.Create<uint>();
 		private static readonly SemaphoreSlim WriteSemaphore = new SemaphoreSlim(1, 1);
@@ -158,6 +156,7 @@ namespace ArchiSteamFarm {
 					uri = new Uri(WebProxyText);
 				} catch (UriFormatException e) {
 					ASF.ArchiLogger.LogGenericException(e);
+
 					return null;
 				}
 
@@ -197,6 +196,7 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		internal string WebProxyPassword {
 			get => _WebProxyPassword;
+
 			set {
 				IsWebProxyPasswordSet = true;
 				_WebProxyPassword = value;
@@ -210,9 +210,11 @@ namespace ArchiSteamFarm {
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamOwnerID), Required = Required.DisallowNull)]
 		private string SSteamOwnerID {
 			get => SteamOwnerID.ToString();
+
 			set {
 				if (string.IsNullOrEmpty(value) || !ulong.TryParse(value, out ulong result)) {
 					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(SSteamOwnerID)));
+
 					return;
 				}
 
@@ -257,6 +259,7 @@ namespace ArchiSteamFarm {
 		internal static async Task<GlobalConfig> Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(filePath));
+
 				return null;
 			}
 
@@ -270,28 +273,34 @@ namespace ArchiSteamFarm {
 				globalConfig = JsonConvert.DeserializeObject<GlobalConfig>(await RuntimeCompatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false));
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
+
 				return null;
 			}
 
 			if (globalConfig == null) {
 				ASF.ArchiLogger.LogNullError(nameof(globalConfig));
+
 				return null;
 			}
 
 			(bool valid, string errorMessage) = globalConfig.CheckValidation();
+
 			if (!valid) {
 				ASF.ArchiLogger.LogGenericError(errorMessage);
+
 				return null;
 			}
 
 			globalConfig.ShouldSerializeEverything = false;
 			globalConfig.ShouldSerializeSensitiveDetails = false;
+
 			return globalConfig;
 		}
 
 		internal static async Task<bool> Write(string filePath, GlobalConfig globalConfig) {
 			if (string.IsNullOrEmpty(filePath) || (globalConfig == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(filePath) + " || " + nameof(globalConfig));
+
 				return false;
 			}
 
@@ -310,6 +319,7 @@ namespace ArchiSteamFarm {
 				}
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
+
 				return false;
 			} finally {
 				WriteSemaphore.Release();

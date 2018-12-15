@@ -72,6 +72,7 @@ namespace ArchiSteamFarm {
 
 			if (GlobalConfig.Headless) {
 				ASF.ArchiLogger.LogGenericWarning(Strings.ErrorUserInputRunningInHeadlessMode);
+
 				return null;
 			}
 
@@ -85,31 +86,38 @@ namespace ArchiSteamFarm {
 						case ASF.EUserInputType.DeviceID:
 							Console.Write(Bot.FormatBotResponse(Strings.UserInputDeviceID, botName));
 							result = Console.ReadLine();
+
 							break;
 						case ASF.EUserInputType.Login:
 							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamLogin, botName));
 							result = Console.ReadLine();
+
 							break;
 						case ASF.EUserInputType.Password:
 							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamPassword, botName));
 							result = Utilities.ReadLineMasked();
+
 							break;
 						case ASF.EUserInputType.SteamGuard:
 							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamGuard, botName));
 							result = Console.ReadLine();
+
 							break;
 						case ASF.EUserInputType.SteamParentalCode:
 							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamParentalCode, botName));
 							result = Utilities.ReadLineMasked();
+
 							break;
 						case ASF.EUserInputType.TwoFactorAuthentication:
 							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteam2FA, botName));
 							result = Console.ReadLine();
+
 							break;
 						default:
 							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(userInputType), userInputType));
 							Console.Write(Bot.FormatBotResponse(string.Format(Strings.UserInputUnknown, userInputType), botName));
 							result = Console.ReadLine();
+
 							break;
 					}
 
@@ -119,6 +127,7 @@ namespace ArchiSteamFarm {
 				} catch (Exception e) {
 					Logging.OnUserInputEnd();
 					ASF.ArchiLogger.LogGenericException(e);
+
 					return null;
 				}
 
@@ -134,8 +143,10 @@ namespace ArchiSteamFarm {
 			}
 
 			string executableName = Path.GetFileNameWithoutExtension(ProcessFileName);
+
 			if (string.IsNullOrEmpty(executableName)) {
 				ASF.ArchiLogger.LogNullError(nameof(executableName));
+
 				return;
 			}
 
@@ -157,6 +168,7 @@ namespace ArchiSteamFarm {
 		private static void HandleCryptKeyArgument(string cryptKey) {
 			if (string.IsNullOrEmpty(cryptKey)) {
 				ASF.ArchiLogger.LogNullError(nameof(cryptKey));
+
 				return;
 			}
 
@@ -166,6 +178,7 @@ namespace ArchiSteamFarm {
 		private static void HandlePathArgument(string path) {
 			if (string.IsNullOrEmpty(path)) {
 				ASF.ArchiLogger.LogNullError(nameof(path));
+
 				return;
 			}
 
@@ -217,6 +230,7 @@ namespace ArchiSteamFarm {
 				// Common structure is bin/(x64/)Debug/ArchiSteamFarm.exe, so we allow up to 4 directories up
 				for (byte i = 0; i < 4; i++) {
 					Directory.SetCurrentDirectory("..");
+
 					if (Directory.Exists(SharedInfo.ConfigDirectory)) {
 						break;
 					}
@@ -241,10 +255,12 @@ namespace ArchiSteamFarm {
 
 			if (File.Exists(globalConfigFile)) {
 				GlobalConfig = await GlobalConfig.Load(globalConfigFile).ConfigureAwait(false);
+
 				if (GlobalConfig == null) {
 					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorGlobalConfigNotLoaded, globalConfigFile));
 					await Task.Delay(5 * 1000).ConfigureAwait(false);
 					await Exit(1).ConfigureAwait(false);
+
 					return;
 				}
 			} else {
@@ -270,24 +286,31 @@ namespace ArchiSteamFarm {
 			}
 
 			ResourceSet defaultResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.GetCultureInfo("en-US"), true, true);
+
 			if (defaultResourceSet == null) {
 				ASF.ArchiLogger.LogNullError(nameof(defaultResourceSet));
+
 				return;
 			}
 
 			HashSet<DictionaryEntry> defaultStringObjects = defaultResourceSet.Cast<DictionaryEntry>().ToHashSet();
+
 			if (defaultStringObjects.Count == 0) {
 				ASF.ArchiLogger.LogNullError(nameof(defaultStringObjects));
+
 				return;
 			}
 
 			ResourceSet currentResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+
 			if (currentResourceSet == null) {
 				ASF.ArchiLogger.LogNullError(nameof(currentResourceSet));
+
 				return;
 			}
 
 			HashSet<DictionaryEntry> currentStringObjects = currentResourceSet.Cast<DictionaryEntry>().ToHashSet();
+
 			if (currentStringObjects.Count >= defaultStringObjects.Count) {
 				// Either we have 100% finished translation, or we're missing it entirely and using en-US
 				HashSet<DictionaryEntry> testStringObjects = currentStringObjects.ToHashSet();
@@ -317,10 +340,12 @@ namespace ArchiSteamFarm {
 			}
 
 			GlobalDatabase = await GlobalDatabase.CreateOrLoad(globalDatabaseFile).ConfigureAwait(false);
+
 			if (GlobalDatabase == null) {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorDatabaseInvalid, globalDatabaseFile));
 				await Task.Delay(5 * 1000).ConfigureAwait(false);
 				await Exit(1).ConfigureAwait(false);
+
 				return;
 			}
 
@@ -372,6 +397,7 @@ namespace ArchiSteamFarm {
 			}
 
 			LogManager.Flush();
+
 			return true;
 		}
 
@@ -388,6 +414,7 @@ namespace ArchiSteamFarm {
 		private static async void OnUnhandledException(object sender, UnhandledExceptionEventArgs e) {
 			if (e?.ExceptionObject == null) {
 				ASF.ArchiLogger.LogNullError(nameof(e) + " || " + nameof(e.ExceptionObject));
+
 				return;
 			}
 
@@ -398,6 +425,7 @@ namespace ArchiSteamFarm {
 		private static async void OnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e) {
 			if (e?.Exception == null) {
 				ASF.ArchiLogger.LogNullError(nameof(e) + " || " + nameof(e.Exception));
+
 				return;
 			}
 
@@ -411,6 +439,7 @@ namespace ArchiSteamFarm {
 		private static void ParsePostInitArgs(IReadOnlyCollection<string> args) {
 			if (args == null) {
 				ASF.ArchiLogger.LogNullError(nameof(args));
+
 				return;
 			}
 
@@ -420,17 +449,22 @@ namespace ArchiSteamFarm {
 				switch (arg) {
 					case "--cryptkey" when !cryptKeyNext:
 						cryptKeyNext = true;
+
 						break;
 					case "--no-restart" when !cryptKeyNext:
 						RestartAllowed = false;
+
 						break;
 					case "--process-required" when !cryptKeyNext:
 						ProcessRequired = true;
+
 						break;
 					case "--system-required" when !cryptKeyNext:
 						SystemRequired = true;
+
 						break;
 					default:
+
 						if (cryptKeyNext) {
 							cryptKeyNext = false;
 							HandleCryptKeyArgument(arg);
@@ -446,6 +480,7 @@ namespace ArchiSteamFarm {
 		private static void ParsePreInitArgs(IReadOnlyCollection<string> args) {
 			if (args == null) {
 				ASF.ArchiLogger.LogNullError(nameof(args));
+
 				return;
 			}
 
@@ -455,8 +490,10 @@ namespace ArchiSteamFarm {
 				switch (arg) {
 					case "--path" when !pathNext:
 						pathNext = true;
+
 						break;
 					default:
+
 						if (pathNext) {
 							pathNext = false;
 							HandlePathArgument(arg);

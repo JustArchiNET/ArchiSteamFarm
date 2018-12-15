@@ -35,6 +35,7 @@ namespace ArchiSteamFarm {
 			public void WriteLine(string category, string msg) {
 				if (string.IsNullOrEmpty(category) && string.IsNullOrEmpty(msg)) {
 					ASF.ArchiLogger.LogNullError(nameof(category) + " && " + nameof(msg));
+
 					return;
 				}
 

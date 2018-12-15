@@ -39,6 +39,7 @@ namespace ArchiSteamFarm {
 		internal static string GetArgsAsText(string[] args, byte argsToSkip, string delimiter) {
 			if ((args == null) || (args.Length <= argsToSkip) || string.IsNullOrEmpty(delimiter)) {
 				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(argsToSkip) + " || " + nameof(delimiter));
+
 				return null;
 			}
 
@@ -48,16 +49,19 @@ namespace ArchiSteamFarm {
 		internal static string GetArgsAsText(string text, byte argsToSkip) {
 			if (string.IsNullOrEmpty(text)) {
 				ASF.ArchiLogger.LogNullError(nameof(text));
+
 				return null;
 			}
 
 			string[] args = text.Split((char[]) null, argsToSkip + 1, StringSplitOptions.RemoveEmptyEntries);
+
 			return args[args.Length - 1];
 		}
 
 		internal static string GetCookieValue(this CookieContainer cookieContainer, string url, string name) {
 			if ((cookieContainer == null) || string.IsNullOrEmpty(url) || string.IsNullOrEmpty(name)) {
 				ASF.ArchiLogger.LogNullError(nameof(cookieContainer) + " || " + nameof(url) + " || " + nameof(name));
+
 				return null;
 			}
 
@@ -67,10 +71,12 @@ namespace ArchiSteamFarm {
 				uri = new Uri(url);
 			} catch (UriFormatException e) {
 				ASF.ArchiLogger.LogGenericException(e);
+
 				return null;
 			}
 
 			CookieCollection cookies = cookieContainer.GetCookies(uri);
+
 			return cookies.Count > 0 ? (from Cookie cookie in cookies where cookie.Name.Equals(name) select cookie.Value).FirstOrDefault() : null;
 		}
 
@@ -79,6 +85,7 @@ namespace ArchiSteamFarm {
 		internal static void InBackground(Action action, bool longRunning = false) {
 			if (action == null) {
 				ASF.ArchiLogger.LogNullError(nameof(action));
+
 				return;
 			}
 
@@ -94,6 +101,7 @@ namespace ArchiSteamFarm {
 		internal static void InBackground<T>(Func<T> function, bool longRunning = false) {
 			if (function == null) {
 				ASF.ArchiLogger.LogNullError(nameof(function));
+
 				return;
 			}
 
@@ -109,6 +117,7 @@ namespace ArchiSteamFarm {
 		internal static async Task<IList<T>> InParallel<T>(IEnumerable<Task<T>> tasks) {
 			if (tasks == null) {
 				ASF.ArchiLogger.LogNullError(nameof(tasks));
+
 				return null;
 			}
 
@@ -125,6 +134,7 @@ namespace ArchiSteamFarm {
 					break;
 				default:
 					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+
 					break;
 			}
 
@@ -134,11 +144,13 @@ namespace ArchiSteamFarm {
 		internal static async Task InParallel(IEnumerable<Task> tasks) {
 			if (tasks == null) {
 				ASF.ArchiLogger.LogNullError(nameof(tasks));
+
 				return;
 			}
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+
 					foreach (Task task in tasks) {
 						await task.ConfigureAwait(false);
 					}
@@ -146,6 +158,7 @@ namespace ArchiSteamFarm {
 					break;
 				default:
 					await Task.WhenAll(tasks).ConfigureAwait(false);
+
 					break;
 			}
 		}
@@ -153,6 +166,7 @@ namespace ArchiSteamFarm {
 		internal static bool IsValidCdKey(string key) {
 			if (string.IsNullOrEmpty(key)) {
 				ASF.ArchiLogger.LogNullError(nameof(key));
+
 				return false;
 			}
 
@@ -162,10 +176,12 @@ namespace ArchiSteamFarm {
 		internal static bool IsValidHexadecimalString(string text) {
 			if (string.IsNullOrEmpty(text)) {
 				ASF.ArchiLogger.LogNullError(nameof(text));
+
 				return false;
 			}
 
 			const byte split = 16;
+
 			for (byte i = 0; i < text.Length; i += split) {
 				string textPart = string.Join("", text.Skip(i).Take(split));
 
@@ -186,6 +202,7 @@ namespace ArchiSteamFarm {
 		internal static int RandomNext(int maxWithout) {
 			if (maxWithout <= 0) {
 				ASF.ArchiLogger.LogNullError(nameof(maxWithout));
+
 				return -1;
 			}
 
@@ -202,6 +219,7 @@ namespace ArchiSteamFarm {
 			StringBuilder result = new StringBuilder();
 
 			ConsoleKeyInfo keyInfo;
+
 			while ((keyInfo = Console.ReadKey(true)).Key != ConsoleKey.Enter) {
 				if (!char.IsControl(keyInfo.KeyChar)) {
 					result.Append(keyInfo.KeyChar);
@@ -221,6 +239,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Console.WriteLine();
+
 			return result.ToString();
 		}
 

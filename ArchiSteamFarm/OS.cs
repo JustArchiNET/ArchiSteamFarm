@@ -41,14 +41,18 @@ namespace ArchiSteamFarm {
 
 			switch (optimizationMode) {
 				case GlobalConfig.EOptimizationMode.MaxPerformance:
+
 					// No specific tuning required for now, ASF is optimized for max performance by default
 					break;
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+
 					// We can disable regex cache which will slightly lower memory usage (for a huge performance hit)
 					Regex.CacheSize = 0;
+
 					break;
 				default:
 					ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(optimizationMode), optimizationMode));
+
 					return;
 			}
 		}
@@ -56,6 +60,7 @@ namespace ArchiSteamFarm {
 		internal static void UnixSetFileAccessExecutable(string path) {
 			if (string.IsNullOrEmpty(path) || !File.Exists(path)) {
 				ASF.ArchiLogger.LogNullError(nameof(path));
+
 				return;
 			}
 
@@ -75,6 +80,7 @@ namespace ArchiSteamFarm {
 
 			if (!NativeMethods.GetConsoleMode(consoleHandle, out uint consoleMode)) {
 				ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);
+
 				return;
 			}
 

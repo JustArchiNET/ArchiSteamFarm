@@ -41,6 +41,7 @@ namespace ArchiSteamFarm.IPC {
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
 			if ((app == null) || (env == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(app) + " || " + nameof(env));
+
 				return;
 			}
 
@@ -48,6 +49,7 @@ namespace ArchiSteamFarm.IPC {
 
 			// Add workaround for missing PathBase feature, https://github.com/aspnet/Hosting/issues/1120
 			PathString pathBase = Configuration.GetSection("Kestrel").GetValue<PathString>("PathBase");
+
 			if (!string.IsNullOrEmpty(pathBase) && (pathBase != "/")) {
 				app.UsePathBase(pathBase);
 			}
@@ -87,6 +89,7 @@ namespace ArchiSteamFarm.IPC {
 		public void ConfigureServices(IServiceCollection services) {
 			if (services == null) {
 				ASF.ArchiLogger.LogNullError(nameof(services));
+
 				return;
 			}
 
@@ -127,6 +130,7 @@ namespace ArchiSteamFarm.IPC {
 
 					c.DescribeAllEnumsAsStrings();
 					c.EnableAnnotations();
+
 					c.SwaggerDoc(
 						SharedInfo.ASF, new OpenApiInfo {
 							Contact = new OpenApiContact {

@@ -41,6 +41,7 @@ namespace ArchiSteamFarm.NLog {
 		internal void LogChatMessage(bool echo, string message, ulong chatGroupID = 0, ulong chatID = 0, ulong steamID = 0, [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message) || (((chatGroupID == 0) || (chatID == 0)) && (steamID == 0))) {
 				LogNullError(nameof(message) + " || " + "((" + nameof(chatGroupID) + " || " + nameof(chatID) + ") && " + nameof(steamID) + ")");
+
 				return;
 			}
 
@@ -69,6 +70,7 @@ namespace ArchiSteamFarm.NLog {
 		internal async Task LogFatalException(Exception exception, [CallerMemberName] string previousMethodName = null) {
 			if (exception == null) {
 				LogNullError(nameof(exception));
+
 				return;
 			}
 
@@ -85,13 +87,13 @@ namespace ArchiSteamFarm.NLog {
 			try {
 				await RuntimeCompatibility.File.WriteAllTextAsync(SharedInfo.LogFile, message).ConfigureAwait(false);
 			} catch {
-				// Ignored, we can't do anything with this
+				// Ignored, we can't do anything about this
 			}
 
 			try {
 				Console.Write(message);
 			} catch {
-				// Ignored, we can't do anything with this
+				// Ignored, we can't do anything about this
 			}
 
 			while (true) {
@@ -100,17 +102,18 @@ namespace ArchiSteamFarm.NLog {
 				try {
 					await RuntimeCompatibility.File.AppendAllTextAsync(SharedInfo.LogFile, message).ConfigureAwait(false);
 				} catch {
-					// Ignored, we can't do anything with this
+					// Ignored, we can't do anything about this
 				}
 
 				try {
 					Console.Write(message);
 				} catch {
-					// Ignored, we can't do anything with this
+					// Ignored, we can't do anything about this
 				}
 
 				if (exception.InnerException != null) {
 					exception = exception.InnerException;
+
 					continue;
 				}
 
@@ -121,6 +124,7 @@ namespace ArchiSteamFarm.NLog {
 		internal void LogGenericDebug(string message, [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
 				LogNullError(nameof(message));
+
 				return;
 			}
 
@@ -130,6 +134,7 @@ namespace ArchiSteamFarm.NLog {
 		internal void LogGenericDebuggingException(Exception exception, [CallerMemberName] string previousMethodName = null) {
 			if (exception == null) {
 				LogNullError(nameof(exception));
+
 				return;
 			}
 
@@ -143,6 +148,7 @@ namespace ArchiSteamFarm.NLog {
 		internal void LogGenericError(string message, [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
 				LogNullError(nameof(message));
+
 				return;
 			}
 
@@ -152,6 +158,7 @@ namespace ArchiSteamFarm.NLog {
 		internal void LogGenericException(Exception exception, [CallerMemberName] string previousMethodName = null) {
 			if (exception == null) {
 				LogNullError(nameof(exception));
+
 				return;
 			}
 
@@ -161,6 +168,7 @@ namespace ArchiSteamFarm.NLog {
 		internal void LogGenericInfo(string message, [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
 				LogNullError(nameof(message));
+
 				return;
 			}
 
@@ -170,6 +178,7 @@ namespace ArchiSteamFarm.NLog {
 		internal void LogGenericTrace(string message, [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
 				LogNullError(nameof(message));
+
 				return;
 			}
 
@@ -179,6 +188,7 @@ namespace ArchiSteamFarm.NLog {
 		internal void LogGenericWarning(string message, [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
 				LogNullError(nameof(message));
+
 				return;
 			}
 
@@ -188,6 +198,7 @@ namespace ArchiSteamFarm.NLog {
 		internal void LogGenericWarningException(Exception exception, [CallerMemberName] string previousMethodName = null) {
 			if (exception == null) {
 				LogNullError(nameof(exception));
+
 				return;
 			}
 

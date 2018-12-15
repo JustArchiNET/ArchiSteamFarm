@@ -38,6 +38,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		public ActionResult<GenericResponse<object>> StructureGet(string structure) {
 			if (string.IsNullOrEmpty(structure)) {
 				ASF.ArchiLogger.LogNullError(nameof(structure));
+
 				return BadRequest(new GenericResponse<object>(false, string.Format(Strings.ErrorIsEmpty, nameof(structure))));
 			}
 

@@ -41,12 +41,14 @@ namespace ArchiSteamFarm {
 			}
 
 			List<ReleaseResponse> response = await GetReleasesFromURL(releaseURL).ConfigureAwait(false);
+
 			return response?.FirstOrDefault();
 		}
 
 		internal static async Task<ReleaseResponse> GetRelease(string version) {
 			if (string.IsNullOrEmpty(version)) {
 				ASF.ArchiLogger.LogNullError(nameof(version));
+
 				return null;
 			}
 
@@ -56,16 +58,19 @@ namespace ArchiSteamFarm {
 		internal static async Task<List<ReleaseResponse>> GetReleases(byte count) {
 			if (count == 0) {
 				ASF.ArchiLogger.LogNullError(nameof(count));
+
 				return null;
 			}
 
 			string releaseURL = SharedInfo.GithubReleaseURL + "?per_page=" + count;
+
 			return await GetReleasesFromURL(releaseURL).ConfigureAwait(false);
 		}
 
 		private static MarkdownDocument ExtractChangelogFromBody(string markdownText) {
 			if (string.IsNullOrEmpty(markdownText)) {
 				ASF.ArchiLogger.LogNullError(nameof(markdownText));
+
 				return null;
 			}
 
@@ -84,20 +89,24 @@ namespace ArchiSteamFarm {
 		private static async Task<ReleaseResponse> GetReleaseFromURL(string releaseURL) {
 			if (string.IsNullOrEmpty(nameof(releaseURL))) {
 				ASF.ArchiLogger.LogNullError(nameof(releaseURL));
+
 				return null;
 			}
 
 			WebBrowser.ObjectResponse<ReleaseResponse> objectResponse = await Program.WebBrowser.UrlGetToJsonObject<ReleaseResponse>(releaseURL).ConfigureAwait(false);
+
 			return objectResponse?.Content;
 		}
 
 		private static async Task<List<ReleaseResponse>> GetReleasesFromURL(string releaseURL) {
 			if (string.IsNullOrEmpty(nameof(releaseURL))) {
 				ASF.ArchiLogger.LogNullError(nameof(releaseURL));
+
 				return null;
 			}
 
 			WebBrowser.ObjectResponse<List<ReleaseResponse>> objectResponse = await Program.WebBrowser.UrlGetToJsonObject<List<ReleaseResponse>>(releaseURL).ConfigureAwait(false);
+
 			return objectResponse?.Content;
 		}
 
@@ -123,6 +132,7 @@ namespace ArchiSteamFarm {
 
 					if (Changelog == null) {
 						ASF.ArchiLogger.LogNullError(nameof(Changelog));
+
 						return null;
 					}
 
@@ -144,6 +154,7 @@ namespace ArchiSteamFarm {
 
 					if (Changelog == null) {
 						ASF.ArchiLogger.LogNullError(nameof(Changelog));
+
 						return null;
 					}
 
