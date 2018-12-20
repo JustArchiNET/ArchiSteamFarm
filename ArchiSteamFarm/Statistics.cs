@@ -100,7 +100,7 @@ namespace ArchiSteamFarm {
 					{ "Guid", Program.GlobalDatabase.Guid.ToString("N") }
 				};
 
-				if (await Program.WebBrowser.UrlPost(request, data).ConfigureAwait(false) != null) {
+				if (await Program.WebBrowser.UrlPost(request, data, maxTries: 1).ConfigureAwait(false) != null) {
 					LastHeartBeat = DateTime.UtcNow;
 				}
 			} finally {
