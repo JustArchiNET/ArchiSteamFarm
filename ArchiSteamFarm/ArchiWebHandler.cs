@@ -1814,16 +1814,28 @@ namespace ArchiSteamFarm {
 				return (false, false);
 			}
 
-			switch (userPrivacy.Settings.Inventory) {
+			switch (userPrivacy.Settings.Profile) {
 				case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.FriendsOnly:
 				case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private:
 
 					return (true, false);
 				case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Public:
 
-					return (true, true);
+					switch (userPrivacy.Settings.Inventory) {
+						case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.FriendsOnly:
+						case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private:
+
+							return (true, false);
+						case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Public:
+
+							return (true, true);
+						default:
+							Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(userPrivacy.Settings.Inventory), userPrivacy.Settings.Inventory));
+
+							return (false, false);
+					}
 				default:
-					Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(userPrivacy.Settings.Inventory), userPrivacy.Settings.Inventory));
+					Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(userPrivacy.Settings.Profile), userPrivacy.Settings.Profile));
 
 					return (false, false);
 			}
