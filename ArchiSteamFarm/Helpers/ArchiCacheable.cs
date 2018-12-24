@@ -1,4 +1,4 @@
-﻿//     _                _      _  ____   _                           _____
+//     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
@@ -24,7 +24,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace ArchiSteamFarm.Helpers {
-	internal sealed class ArchiCachable<T> : IDisposable {
+	internal sealed class ArchiCacheable<T> : IDisposable {
 		private readonly TimeSpan CacheLifetime;
 		private readonly SemaphoreSlim InitSemaphore = new SemaphoreSlim(1, 1);
 		private readonly Func<Task<(bool Success, T Result)>> ResolveFunction;
@@ -40,7 +40,7 @@ namespace ArchiSteamFarm.Helpers {
 		private T InitializedValue;
 		private Timer MaintenanceTimer;
 
-		internal ArchiCachable(Func<Task<(bool Success, T Result)>> resolveFunction, TimeSpan? cacheLifetime = null) {
+		internal ArchiCacheable(Func<Task<(bool Success, T Result)>> resolveFunction, TimeSpan? cacheLifetime = null) {
 			ResolveFunction = resolveFunction ?? throw new ArgumentNullException(nameof(resolveFunction));
 			CacheLifetime = cacheLifetime ?? Timeout.InfiniteTimeSpan;
 		}

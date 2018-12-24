@@ -100,7 +100,8 @@ namespace ArchiSteamFarm {
 					{ "Guid", Program.GlobalDatabase.Guid.ToString("N") }
 				};
 
-				if (await Program.WebBrowser.UrlPost(request, data).ConfigureAwait(false) != null) {
+				// Listing is free to deny our announce request, hence we don't retry
+				if (await Program.WebBrowser.UrlPost(request, data, maxTries: 1).ConfigureAwait(false) != null) {
 					LastHeartBeat = DateTime.UtcNow;
 				}
 			} finally {
@@ -151,9 +152,10 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
+				LastAnnouncementCheck = DateTime.UtcNow;
+
 				// This is actual inventory
 				if (inventory.Count < MinItemsCount) {
-					LastAnnouncementCheck = DateTime.UtcNow;
 					ShouldSendHeartBeats = false;
 
 					return;
@@ -174,10 +176,7 @@ namespace ArchiSteamFarm {
 				};
 
 				// Listing is free to deny our announce request, hence we don't retry
-				if (await Program.WebBrowser.UrlPost(request, data, maxTries: 1).ConfigureAwait(false) != null) {
-					LastAnnouncementCheck = DateTime.UtcNow;
-					ShouldSendHeartBeats = true;
-				}
+				ShouldSendHeartBeats = await Program.WebBrowser.UrlPost(request, data, maxTries: 1).ConfigureAwait(false) != null;
 			} finally {
 				RequestsSemaphore.Release();
 			}
