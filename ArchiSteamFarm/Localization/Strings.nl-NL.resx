@@ -660,8 +660,19 @@ StackTrace:
     <value>Bot is level {0}.</value>
     <comment>{0} will be replaced by bot's level</comment>
   </data>
-  
-  
-  
-  
+  <data name="ActivelyMatchingItems" xml:space="preserve">
+    <value>Steam-items matchen, ronde #{0}...</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="DoneActivelyMatchingItems" xml:space="preserve">
+    <value>Steam-items matchen gereed, ronde #{0}.</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="ErrorAborted" xml:space="preserve">
+    <value>Afgebroken!</value>
+  </data>
+  <data name="ActivelyMatchingItemsRound" xml:space="preserve">
+    <value>Deze ronde zijn in totaal {0} sets gematcht.</value>
+    <comment>{0} will be replaced by number of sets traded</comment>
+  </data>
 </root>

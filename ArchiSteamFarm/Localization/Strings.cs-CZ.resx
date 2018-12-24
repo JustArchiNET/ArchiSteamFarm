@@ -644,7 +644,10 @@ StackTrace:
   
   
   
-  
+  <data name="BotLevel" xml:space="preserve">
+    <value>Bot má level {0}.</value>
+    <comment>{0} will be replaced by bot's level</comment>
+  </data>
   
   
   

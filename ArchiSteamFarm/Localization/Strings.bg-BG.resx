@@ -261,7 +261,10 @@
     <value>Моля, въведете Вашият Steam login: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputSteamParentalCode" xml:space="preserve">
+    <value>Моля, въведете Steam родителски PIN: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Моля, въведете Вашата Steam парола: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -277,7 +280,9 @@
   <data name="IPCReady" xml:space="preserve">
     <value>IPC сървърът е готов!</value>
   </data>
-  
+  <data name="IPCStarting" xml:space="preserve">
+    <value>Стартиране IPC сървър на...</value>
+  </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Този бот вече е спрян!</value>
   </data>
@@ -332,7 +337,9 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>Изкарването на карти е спряно!</value>
   </data>
-  
+  <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
+    <value>Отказване на това желание, тъй като е активирана постоянна пауза!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Няма на какво да вадим карти на този акаунт!</value>
   </data>
@@ -437,7 +444,10 @@
     <value>Излязъл от Steam: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  
+  <data name="BotLoggedOn" xml:space="preserve">
+    <value>Влезли сте успешно.</value>
+    <comment>{0} will be replaced by steam ID (number)</comment>
+  </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Влизане…</value>
   </data>
@@ -630,12 +640,16 @@
     <value>Заобикалянето на {0} бъг е задействано.</value>
     <comment>{0} will be replaced by the bug's name provided by ASF</comment>
   </data>
+  <data name="TargetBotNotConnected" xml:space="preserve">
+    <value>Този бот не е свързан!</value>
+  </data>
   
   
   
   
   
-  
-  
+  <data name="ErrorAborted" xml:space="preserve">
+    <value>Прекратен</value>
+  </data>
   
 </root>
