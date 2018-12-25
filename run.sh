@@ -1,13 +1,24 @@
 #!/bin/bash
 set -eu
 
+ASF_PATH="$(dirname "$(readlink -f "$0")")/ArchiSteamFarm/out/source"
 CONFIG_PATH="config/ASF.json"
 
-cd "$(dirname "$(readlink -f "$0")")/ArchiSteamFarm/out/source"
+if [[ ! -d "$ASF_PATH" ]]; then
+	echo "ERROR: $ASF_PATH could not be found!"
+	exit 1
+fi
+
+cd "$ASF_PATH"
 
 BINARY="$(pwd)/ArchiSteamFarm.dll"
-BINARY_ARGS=()
 
+if [[ ! -f "$BINARY" ]]; then
+	echo "ERROR: $BINARY could not be found!"
+	exit 1
+fi
+
+BINARY_ARGS=()
 PATH_NEXT=0
 
 PARSE_ARG() {
