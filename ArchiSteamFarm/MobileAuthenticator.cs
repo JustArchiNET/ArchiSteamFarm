@@ -45,8 +45,7 @@ namespace ArchiSteamFarm {
 		private static DateTime LastSteamTimeCheck;
 		private static int? SteamTimeDifference;
 
-		// "ERROR" is being used by SteamDesktopAuthenticator
-		internal bool HasCorrectDeviceID => !string.IsNullOrEmpty(DeviceID) && !DeviceID.Equals("ERROR");
+		internal bool HasValidDeviceID => !string.IsNullOrEmpty(DeviceID) && IsValidDeviceID(DeviceID);
 
 #pragma warning disable 649
 		[JsonProperty(PropertyName = "identity_secret", Required = Required.Always)]
@@ -65,20 +64,20 @@ namespace ArchiSteamFarm {
 
 		private MobileAuthenticator() { }
 
-		internal bool CorrectDeviceID(string deviceID) {
+		internal void CorrectDeviceID(string deviceID) {
 			if (string.IsNullOrEmpty(deviceID)) {
 				Bot.ArchiLogger.LogNullError(nameof(deviceID));
 
-				return false;
+				return;
 			}
 
-			if (!string.IsNullOrEmpty(DeviceID) && DeviceID.Equals(deviceID)) {
-				return false;
+			if (!IsValidDeviceID(deviceID)) {
+				Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(deviceID)));
+
+				return;
 			}
 
 			DeviceID = deviceID;
-
-			return true;
 		}
 
 		internal async Task<string> GenerateToken() {
@@ -100,7 +99,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!HasCorrectDeviceID) {
+			if (!HasValidDeviceID) {
 				Bot.ArchiLogger.LogGenericError(Strings.ErrorMobileAuthenticatorInvalidDeviceID);
 
 				return null;
@@ -128,7 +127,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<HashSet<Confirmation>> GetConfirmations(Steam.ConfirmationDetails.EType acceptedType = Steam.ConfirmationDetails.EType.Unknown) {
-			if (!HasCorrectDeviceID) {
+			if (!HasValidDeviceID) {
 				Bot.ArchiLogger.LogGenericError(Strings.ErrorMobileAuthenticatorInvalidDeviceID);
 
 				return null;
@@ -228,7 +227,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (!HasCorrectDeviceID) {
+			if (!HasValidDeviceID) {
 				Bot.ArchiLogger.LogGenericError(Strings.ErrorMobileAuthenticatorInvalidDeviceID);
 
 				return false;
@@ -277,6 +276,26 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void Init(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+
+		internal static bool IsValidDeviceID(string deviceID) {
+			if (string.IsNullOrEmpty(deviceID)) {
+				ASF.ArchiLogger.LogNullError(nameof(deviceID));
+
+				return false;
+			}
+
+			// To the best of my knowledge, Steam uses android identifier even on iOS and other devices right now
+			// If we ever need to correct this, we also need to clean up other places
+			const string deviceIdentifier = "android:";
+
+			if (!deviceID.StartsWith(deviceIdentifier, StringComparison.Ordinal) || (deviceID.Length != deviceIdentifier.Length + 36)) {
+				return false;
+			}
+
+			string hash = deviceID.Substring(deviceIdentifier.Length).Replace("-", "");
+
+			return (hash.Length == 32) && Utilities.IsValidHexadecimalString(hash);
+		}
 
 		private string GenerateConfirmationHash(uint time, string tag = null) {
 			if (time == 0) {

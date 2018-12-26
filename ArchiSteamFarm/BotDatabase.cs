@@ -137,18 +137,6 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task CorrectMobileAuthenticatorDeviceID(string deviceID) {
-			if (string.IsNullOrEmpty(deviceID) || (MobileAuthenticator == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(deviceID) + " || " + nameof(MobileAuthenticator));
-
-				return;
-			}
-
-			if (MobileAuthenticator.CorrectDeviceID(deviceID)) {
-				await Save().ConfigureAwait(false);
-			}
-		}
-
 		internal static async Task<BotDatabase> CreateOrLoad(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(filePath));
