@@ -37,7 +37,7 @@ namespace ArchiSteamFarm {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 			SaleEventTimer = new Timer(
-				async e => await Task.WhenAll(ExploreDiscoveryQueue(), VoteForSteamAwards()).ConfigureAwait(false),
+				async e => await ExploreDiscoveryQueue().ConfigureAwait(false),
 				null,
 				TimeSpan.FromHours(1.1) + TimeSpan.FromSeconds(Program.LoadBalancingDelay * Bot.Bots.Count), // Delay
 				TimeSpan.FromHours(8.1) // Period
@@ -107,71 +107,6 @@ namespace ArchiSteamFarm {
 
 			// It'd make more sense to check against "Come back tomorrow", but it might not cover out-of-the-event queue
 			return text.StartsWith("You can get ", StringComparison.Ordinal);
-		}
-
-		private async Task VoteForSteamAwards() {
-			if (!Bot.IsConnectedAndLoggedOn) {
-				return;
-			}
-
-			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetSteamAwardsPage().ConfigureAwait(false);
-
-			HtmlNodeCollection nominationNodes = htmlDocument?.DocumentNode.SelectNodes("//div[@class='vote_nominations store_horizontal_autoslider']");
-
-			if (nominationNodes == null) {
-				// Event ended, error or likewise
-				return;
-			}
-
-			foreach (HtmlNode nominationNode in nominationNodes) {
-				HtmlNode myVoteNode = nominationNode.SelectSingleNode("./div[@class='vote_nomination your_vote']");
-
-				if (myVoteNode != null) {
-					// Already voted
-					continue;
-				}
-
-				string voteIDText = nominationNode.GetAttributeValue("data-voteid", null);
-
-				if (string.IsNullOrEmpty(voteIDText)) {
-					Bot.ArchiLogger.LogNullError(nameof(voteIDText));
-
-					return;
-				}
-
-				if (!byte.TryParse(voteIDText, out byte voteID) || (voteID == 0)) {
-					Bot.ArchiLogger.LogNullError(nameof(voteID));
-
-					return;
-				}
-
-				HtmlNodeCollection voteNodes = nominationNode.SelectNodes("./div[starts-with(@class, 'vote_nomination')]");
-
-				if (voteNodes == null) {
-					Bot.ArchiLogger.LogNullError(nameof(voteNodes));
-
-					return;
-				}
-
-				// Random a game we'll actually vote for, we don't want to make anybody angry by rigging votes...
-				HtmlNode voteNode = voteNodes[Utilities.RandomNext(voteNodes.Count)];
-
-				string appIDText = voteNode.GetAttributeValue("data-vote-appid", null);
-
-				if (string.IsNullOrEmpty(appIDText)) {
-					Bot.ArchiLogger.LogNullError(nameof(appIDText));
-
-					return;
-				}
-
-				if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
-					Bot.ArchiLogger.LogNullError(nameof(appID));
-
-					return;
-				}
-
-				await Bot.ArchiWebHandler.SteamAwardsVote(voteID, appID).ConfigureAwait(false);
-			}
 		}
 	}
 }

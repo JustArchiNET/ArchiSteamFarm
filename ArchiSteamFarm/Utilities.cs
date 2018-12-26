@@ -199,22 +199,6 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static int RandomNext(int maxWithout) {
-			if (maxWithout <= 0) {
-				ASF.ArchiLogger.LogNullError(nameof(maxWithout));
-
-				return -1;
-			}
-
-			if (maxWithout == 1) {
-				return 0;
-			}
-
-			lock (Random) {
-				return Random.Next(maxWithout);
-			}
-		}
-
 		internal static string ReadLineMasked(char mask = '*') {
 			StringBuilder result = new StringBuilder();
 
