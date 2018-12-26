@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -31,6 +32,9 @@ using ArchiSteamFarm.NLog;
 
 namespace ArchiSteamFarm {
 	internal static class ASF {
+		// This is based on internal Valve guidelines, we're not using it as a hard limit
+		private const byte MaximumRecommendedBotsCount = 10;
+
 		internal static readonly ArchiLogger ArchiLogger = new ArchiLogger(SharedInfo.ASF);
 
 		private static readonly ConcurrentDictionary<string, object> LastWriteEvents = new ConcurrentDictionary<string, object>();
@@ -47,17 +51,28 @@ namespace ArchiSteamFarm {
 			// Before attempting to connect, initialize our configuration
 			await Bot.InitializeSteamConfiguration(Program.GlobalConfig.SteamProtocols, Program.GlobalDatabase.CellID, Program.GlobalDatabase.ServerListProvider).ConfigureAwait(false);
 
+			HashSet<string> botNames;
+
 			try {
-				await Utilities.InParallel(Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*" + SharedInfo.ConfigExtension).Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).OrderBy(botName => botName).Select(Bot.RegisterBot)).ConfigureAwait(false);
+				botNames = Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*" + SharedInfo.ConfigExtension).Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).ToHashSet();
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 
 				return;
 			}
 
-			if (Bot.Bots.Count == 0) {
+			if (botNames.Count == 0) {
 				ArchiLogger.LogGenericWarning(Strings.ErrorNoBotsDefined);
+
+				return;
 			}
+
+			if (botNames.Count > MaximumRecommendedBotsCount) {
+				ArchiLogger.LogGenericWarning(string.Format(Strings.WarningExcessiveBotsCount, MaximumRecommendedBotsCount));
+				await Task.Delay(10000).ConfigureAwait(false);
+			}
+
+			await Utilities.InParallel(botNames.OrderBy(botName => botName).Select(Bot.RegisterBot)).ConfigureAwait(false);
 		}
 
 		internal static void InitEvents() {
