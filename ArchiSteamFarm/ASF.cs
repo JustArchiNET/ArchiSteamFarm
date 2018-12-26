@@ -389,6 +389,10 @@ namespace ArchiSteamFarm {
 				await bot.OnConfigChanged(false).ConfigureAwait(false);
 			} else {
 				await Bot.RegisterBot(botName).ConfigureAwait(false);
+
+				if (Bot.Bots.Count > MaximumRecommendedBotsCount) {
+					ArchiLogger.LogGenericWarning(string.Format(Strings.WarningExcessiveBotsCount, MaximumRecommendedBotsCount));
+				}
 			}
 		}
 
