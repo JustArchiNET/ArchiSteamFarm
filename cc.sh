@@ -45,7 +45,7 @@ fi
 dotnet --info
 
 if [[ "$PULL" -eq 1 && -d ".git" ]] && hash git 2>/dev/null; then
-	git pull --recurse-submodules || true
+	git pull --recurse-submodules=on-demand || true
 fi
 
 if [[ ! -f "$SOLUTION" ]]; then
