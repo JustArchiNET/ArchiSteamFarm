@@ -122,7 +122,7 @@
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF 每隔 {0} 个小时自动检查新版本。</value>
+    <value>ASF 将每隔 {0}自动检查新版本。</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
   </data>
   <data name="Content" xml:space="preserve">
@@ -165,7 +165,7 @@
     <value>没有配置任何机器人，您是否忘记配置 ASF 了？</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} 为空！</value>
+    <value>{0} 为 null！</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
@@ -442,7 +442,7 @@
     <value>因为已在配置文件中禁用，所以该机器人实例将不会启动！</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>连续收到 TwoFactorCodeMismatch 错误码 {0} 次。可能您的两步验证凭据已失效，或者您的设备时钟未及时同步。正在中止操作！</value>
+    <value>连续收到 {0} 次 TwoFactorCodeMismatch 错误码。可能您的两步验证凭据已失效，或者您的设备时钟未及时同步。正在中止操作！</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
@@ -544,7 +544,7 @@
     <value>帐户不再被占用，恢复挂卡！</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
-    <value>帐户正在被占用：ASF 将会在账户空闲时恢复挂卡……</value>
+    <value>帐户正在被占用：ASF 将会在帐户空闲时恢复挂卡……</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>正在连接……</value>
@@ -671,7 +671,7 @@
     <value>已中止！</value>
   </data>
   <data name="ActivelyMatchingItemsRound" xml:space="preserve">
-    <value>本轮共匹配 {0} 组。</value>
+    <value>本轮共匹配 {0} 套物品。</value>
     <comment>{0} will be replaced by number of sets traded</comment>
   </data>
 </root>

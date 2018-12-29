@@ -879,12 +879,6 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal async Task<HtmlDocument> GetSteamAwardsPage() {
-			const string request = "/SteamAwards?l=english";
-
-			return await UrlGetToHtmlDocumentWithSession(SteamStoreURL, request).ConfigureAwait(false);
-		}
-
 		internal async Task<byte?> GetTradeHoldDurationForTrade(ulong tradeID) {
 			if (tradeID == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(tradeID));
@@ -1372,24 +1366,6 @@ namespace ArchiSteamFarm {
 			}
 
 			return (true, mobileTradeOfferIDs);
-		}
-
-		internal async Task<bool> SteamAwardsVote(byte voteID, uint appID) {
-			if ((voteID == 0) || (appID == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(voteID) + " || " + nameof(appID));
-
-				return false;
-			}
-
-			const string request = "/salevote";
-
-			// Extra entry for sessionID
-			Dictionary<string, string> data = new Dictionary<string, string>(3) {
-				{ "appid", appID.ToString() },
-				{ "voteid", voteID.ToString() }
-			};
-
-			return await UrlPostWithSession(SteamStoreURL, request, data).ConfigureAwait(false);
 		}
 
 		internal async Task<bool> UnpackBooster(uint appID, ulong itemID) {

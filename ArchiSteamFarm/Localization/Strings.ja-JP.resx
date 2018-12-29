@@ -261,7 +261,10 @@
     <value>あなたのSteamアカウント名を入力してください: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputSteamParentalCode" xml:space="preserve">
+    <value>Steam parental code を入力してください: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>あなたのSteamパスワードを入力してください: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -277,7 +280,9 @@
   <data name="IPCReady" xml:space="preserve">
     <value>IPC サーバーの準備ができました！</value>
   </data>
-  
+  <data name="IPCStarting" xml:space="preserve">
+    <value>IPC サーバーを起動しています...</value>
+  </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>このBotは既に停止しています！</value>
   </data>
@@ -332,7 +337,9 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>アイドリング停止！</value>
   </data>
-  
+  <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
+    <value>永続的一時停止が有効なため、このリクエストを無視します！</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>このアカウントにはアイドリングするものがありません！</value>
   </data>
@@ -432,12 +439,18 @@
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>設定ファイル内で無効化されているため、このbotのインスタンスを起動しません！</value>
   </data>
-  
+  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+    <value>TwoFactorCodeMismatch エラーを {0} 回受信しました。二次認証資格が有効でないか、時刻が同期されていません。中断します！</value>
+    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+  </data>
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Steamからログオフ: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  
+  <data name="BotLoggedOn" xml:space="preserve">
+    <value>{0} へのログインに成功しました。</value>
+    <comment>{0} will be replaced by steam ID (number)</comment>
+  </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>ログイン中...</value>
   </data>
@@ -470,7 +483,10 @@
     <value>所有している: {0} | {1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
-  
+  <data name="BotRateLimitExceeded" xml:space="preserve">
+    <value>回数制限を超過しました。{0} のクールダウン後に再試行します。</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
+  </data>
   <data name="BotReconnecting" xml:space="preserve">
     <value>再接続中...</value>
   </data>
@@ -615,15 +631,36 @@
   <data name="BotRefreshingPackagesData" xml:space="preserve">
     <value>パッケージデータを更新しています...</value>
   </data>
+  <data name="WarningDeprecated" xml:space="preserve">
+    <value>{0} は廃止予定であり、将来のバージョンのプログラムで削除されます。代わりに {1} を使用してください。</value>
+    <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
+  </data>
+  <data name="BotAcceptedDonationTrade" xml:space="preserve">
+    <value>承認された寄付トレード: {0}</value>
+    <comment>{0} will be replaced by trade's ID (number)</comment>
+  </data>
+  <data name="WarningWorkaroundTriggered" xml:space="preserve">
+    <value>{0} バグへの解決策が適用されました。</value>
+    <comment>{0} will be replaced by the bug's name provided by ASF</comment>
+  </data>
+  <data name="TargetBotNotConnected" xml:space="preserve">
+    <value>対象Botのインスタンスは接続されていません！</value>
+  </data>
+  <data name="BotWalletBalance" xml:space="preserve">
+    <value>ウォレット残高: {0} {1}</value>
+    <comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
+  </data>
+  <data name="BotHasNoWallet" xml:space="preserve">
+    <value>Botにウォレット残高がありません。</value>
+  </data>
+  <data name="BotLevel" xml:space="preserve">
+    <value>Botのレベルは {0} です。</value>
+    <comment>{0} will be replaced by bot's level</comment>
+  </data>
   
   
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="ErrorAborted" xml:space="preserve">
+    <value>中断しました！</value>
+  </data>
   
 </root>

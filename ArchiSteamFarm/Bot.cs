@@ -1450,39 +1450,51 @@ namespace ArchiSteamFarm {
 			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorConverting);
 
 			try {
-				MobileAuthenticator authenticator = JsonConvert.DeserializeObject<MobileAuthenticator>(await RuntimeCompatibility.File.ReadAllTextAsync(maFilePath).ConfigureAwait(false));
+				string json = await RuntimeCompatibility.File.ReadAllTextAsync(maFilePath).ConfigureAwait(false);
+
+				if (string.IsNullOrEmpty(json)) {
+					ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsEmpty, nameof(json)));
+
+					return;
+				}
+
+				MobileAuthenticator authenticator = JsonConvert.DeserializeObject<MobileAuthenticator>(json);
+
+				if (authenticator == null) {
+					ArchiLogger.LogNullError(nameof(authenticator));
+
+					return;
+				}
+
+				if (!authenticator.HasValidDeviceID) {
+					ArchiLogger.LogGenericWarning(Strings.BotAuthenticatorInvalidDeviceID);
+
+					if (string.IsNullOrEmpty(DeviceID)) {
+						string deviceID = Program.GetUserInput(ASF.EUserInputType.DeviceID, BotName);
+
+						if (string.IsNullOrEmpty(deviceID)) {
+							return;
+						}
+
+						SetUserInput(ASF.EUserInputType.DeviceID, deviceID);
+					}
+
+					if (!MobileAuthenticator.IsValidDeviceID(DeviceID)) {
+						ArchiLogger.LogGenericWarning(Strings.BotAuthenticatorInvalidDeviceID);
+
+						return;
+					}
+
+					authenticator.CorrectDeviceID(DeviceID);
+				}
+
+				authenticator.Init(this);
 				await BotDatabase.SetMobileAuthenticator(authenticator).ConfigureAwait(false);
 				File.Delete(maFilePath);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 
 				return;
-			}
-
-			if (BotDatabase.MobileAuthenticator == null) {
-				ArchiLogger.LogNullError(nameof(BotDatabase.MobileAuthenticator));
-
-				return;
-			}
-
-			BotDatabase.MobileAuthenticator.Init(this);
-
-			if (!BotDatabase.MobileAuthenticator.HasCorrectDeviceID) {
-				ArchiLogger.LogGenericWarning(Strings.BotAuthenticatorInvalidDeviceID);
-
-				if (string.IsNullOrEmpty(DeviceID)) {
-					string deviceID = Program.GetUserInput(ASF.EUserInputType.DeviceID, BotName);
-
-					if (string.IsNullOrEmpty(deviceID)) {
-						await BotDatabase.SetMobileAuthenticator().ConfigureAwait(false);
-
-						return;
-					}
-
-					SetUserInput(ASF.EUserInputType.DeviceID, deviceID);
-				}
-
-				await BotDatabase.CorrectMobileAuthenticatorDeviceID(DeviceID).ConfigureAwait(false);
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorImportFinished);

@@ -660,8 +660,19 @@
     <value>Рівень бота {0}.</value>
     <comment>{0} will be replaced by bot's level</comment>
   </data>
-  
-  
-  
-  
+  <data name="ActivelyMatchingItems" xml:space="preserve">
+    <value>Підбір предметів Steam, раунд #{0}...</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="DoneActivelyMatchingItems" xml:space="preserve">
+    <value>Завершено підбір предметів Steam, раунд #{0}.</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="ErrorAborted" xml:space="preserve">
+    <value>Перервано!</value>
+  </data>
+  <data name="ActivelyMatchingItemsRound" xml:space="preserve">
+    <value>За цей раунд зібрано {0} наборів карток.</value>
+    <comment>{0} will be replaced by number of sets traded</comment>
+  </data>
 </root>

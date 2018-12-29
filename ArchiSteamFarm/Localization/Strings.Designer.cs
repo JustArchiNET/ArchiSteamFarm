@@ -1423,6 +1423,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu You&apos;re running more personal bot accounts than our upper recommended limit ({0}). Be advised that this setup is not supported and might cause various Steam-related issues, including account suspensions. Check out the FAQ for more details..
+        /// </summary>
+        internal static string WarningExcessiveBotsCount {
+            get {
+                return ResourceManager.GetString("WarningExcessiveBotsCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Failed!.
         /// </summary>
         internal static string WarningFailed {

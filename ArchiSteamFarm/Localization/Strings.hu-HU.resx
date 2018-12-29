@@ -658,8 +658,19 @@ StackTrace: {2}</value>
     <value>A bot szintje: {0}.</value>
     <comment>{0} will be replaced by bot's level</comment>
   </data>
-  
-  
-  
-  
+  <data name="ActivelyMatchingItems" xml:space="preserve">
+    <value>Steam tárgyak egyeztetése #{0}...</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="DoneActivelyMatchingItems" xml:space="preserve">
+    <value>Sikeres Steam tárgy egyeztetés. #{0}.</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="ErrorAborted" xml:space="preserve">
+    <value>Megszakítva!</value>
+  </data>
+  <data name="ActivelyMatchingItemsRound" xml:space="preserve">
+    <value>Összesen {0} szett cserélve.</value>
+    <comment>{0} will be replaced by number of sets traded</comment>
+  </data>
 </root>

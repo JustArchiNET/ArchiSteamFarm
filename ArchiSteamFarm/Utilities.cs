@@ -180,38 +180,60 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			const byte split = 16;
-
-			for (byte i = 0; i < text.Length; i += split) {
-				string textPart = string.Join("", text.Skip(i).Take(split));
-
-				if (!ulong.TryParse(textPart, NumberStyles.HexNumber, null, out _)) {
-					return false;
-				}
+			if (text.Length % 2 != 0) {
+				return false;
 			}
 
-			return true;
+			// ulong is 64-bits wide, each hexadecimal character is 4-bits wide, so we split each 16
+			const byte split = 16;
+
+			string lastHex;
+
+			if (text.Length >= split) {
+				StringBuilder hex = new StringBuilder(split);
+
+				foreach (char character in text) {
+					hex.Append(character);
+
+					if (hex.Length < split) {
+						continue;
+					}
+
+					if (!ulong.TryParse(hex.ToString(), NumberStyles.HexNumber, null, out _)) {
+						return false;
+					}
+
+					hex.Clear();
+				}
+
+				if (hex.Length == 0) {
+					return true;
+				}
+
+				lastHex = hex.ToString();
+			} else {
+				lastHex = text;
+			}
+
+			switch (lastHex.Length) {
+				case 2:
+
+					return byte.TryParse(lastHex, NumberStyles.HexNumber, null, out _);
+				case 4:
+
+					return ushort.TryParse(lastHex, NumberStyles.HexNumber, null, out _);
+				case 8:
+
+					return uint.TryParse(lastHex, NumberStyles.HexNumber, null, out _);
+				default:
+
+					return false;
+			}
 		}
 
 		internal static int RandomNext() {
 			lock (Random) {
 				return Random.Next();
-			}
-		}
-
-		internal static int RandomNext(int maxWithout) {
-			if (maxWithout <= 0) {
-				ASF.ArchiLogger.LogNullError(nameof(maxWithout));
-
-				return -1;
-			}
-
-			if (maxWithout == 1) {
-				return 0;
-			}
-
-			lock (Random) {
-				return Random.Next(maxWithout);
 			}
 		}
 
