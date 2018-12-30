@@ -33,7 +33,7 @@ using SteamKit2;
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	public sealed class GlobalConfig {
-		internal const byte DefaultConnectionTimeout = 60;
+		internal const byte DefaultConnectionTimeout = 90;
 
 		private const bool DefaultAutoRestart = true;
 		private const string DefaultCommandPrefix = "!";
