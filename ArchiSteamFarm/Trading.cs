@@ -446,7 +446,7 @@ namespace ArchiSteamFarm {
 				// We've already seen this trade, this should not happen
 				Bot.ArchiLogger.LogGenericError(string.Format(Strings.IgnoringTrade, tradeOffer.TradeOfferID));
 
-				return (new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedTemporarily), false);
+				return (new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Ignored), false);
 			}
 
 			ParseTradeResult result = await ShouldAcceptTrade(tradeOffer).ConfigureAwait(false);
@@ -475,8 +475,7 @@ namespace ArchiSteamFarm {
 
 					return (result, requiresMobileConfirmation);
 				case ParseTradeResult.EResult.Blacklisted:
-				case ParseTradeResult.EResult.RejectedPermanently when Bot.BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidTrades):
-				case ParseTradeResult.EResult.RejectedTemporarily when Bot.BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidTrades):
+				case ParseTradeResult.EResult.Rejected when Bot.BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidTrades):
 					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.RejectingTrade, tradeOffer.TradeOfferID));
 
 					if (!await Bot.ArchiWebHandler.DeclineTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false)) {
@@ -487,8 +486,7 @@ namespace ArchiSteamFarm {
 
 					return (result, false);
 				case ParseTradeResult.EResult.Ignored:
-				case ParseTradeResult.EResult.RejectedPermanently:
-				case ParseTradeResult.EResult.RejectedTemporarily:
+				case ParseTradeResult.EResult.Rejected:
 					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.IgnoringTrade, tradeOffer.TradeOfferID));
 
 					return (result, false);
@@ -541,28 +539,28 @@ namespace ArchiSteamFarm {
 
 					// If we don't accept donations, neither bot trades, deny it right away
 					if (!acceptDonations && !acceptBotTrades) {
-						return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedPermanently, tradeOffer.ItemsToReceive);
+						return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, tradeOffer.ItemsToReceive);
 					}
 
 					// Otherwise we either accept donations but not bot trades, or we accept bot trades but not donations
 					bool isBotTrade = (tradeOffer.OtherSteamID64 != 0) && Bot.Bots.Values.Any(bot => bot.SteamID == tradeOffer.OtherSteamID64);
 
-					return new ParseTradeResult(tradeOffer.TradeOfferID, (acceptDonations && !isBotTrade) || (acceptBotTrades && isBotTrade) ? ParseTradeResult.EResult.Accepted : ParseTradeResult.EResult.RejectedPermanently, tradeOffer.ItemsToReceive);
+					return new ParseTradeResult(tradeOffer.TradeOfferID, (acceptDonations && !isBotTrade) || (acceptBotTrades && isBotTrade) ? ParseTradeResult.EResult.Accepted : ParseTradeResult.EResult.Rejected, tradeOffer.ItemsToReceive);
 			}
 
 			// If we don't have SteamTradeMatcher enabled, this is the end for us
 			if (!Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher)) {
-				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedPermanently, tradeOffer.ItemsToReceive);
+				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, tradeOffer.ItemsToReceive);
 			}
 
-			// Decline trade if we're giving more count-wise
+			// Decline trade if we're giving more count-wise, this is a very naive pre-check, it'll be strengthened in more detailed fair types exchange next
 			if (tradeOffer.ItemsToGive.Count > tradeOffer.ItemsToReceive.Count) {
-				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedPermanently, tradeOffer.ItemsToReceive);
+				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, tradeOffer.ItemsToReceive);
 			}
 
 			// Decline trade if we're requested to handle any not-accepted item type or if it's not fair games/types exchange
 			if (!tradeOffer.IsValidSteamItemsRequest(Bot.BotConfig.MatchableTypes) || !IsFairTypesExchange(tradeOffer.ItemsToGive, tradeOffer.ItemsToReceive)) {
-				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedPermanently, tradeOffer.ItemsToReceive);
+				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, tradeOffer.ItemsToReceive);
 			}
 
 			// At this point we're sure that STM trade is valid
@@ -579,7 +577,7 @@ namespace ArchiSteamFarm {
 			if (holdDuration.Value > 0) {
 				// If trade hold duration exceeds our max, or user asks for cards with short lifespan, reject the trade
 				if ((holdDuration.Value > Program.GlobalConfig.MaxTradeHoldDuration) || tradeOffer.ItemsToGive.Any(item => ((item.Type == Steam.Asset.EType.FoilTradingCard) || (item.Type == Steam.Asset.EType.TradingCard)) && CardsFarmer.SalesBlacklist.Contains(item.RealAppID))) {
-					return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedPermanently, tradeOffer.ItemsToReceive);
+					return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, tradeOffer.ItemsToReceive);
 				}
 			}
 
@@ -607,8 +605,8 @@ namespace ArchiSteamFarm {
 
 			bool accept = IsTradeNeutralOrBetter(inventory, tradeOffer.ItemsToGive, tradeOffer.ItemsToReceive);
 
-			// Even if trade is not neutral+ for us right now, it might be in the future, so we're rejecting it temporarily and letting bot logic decide what to do with it
-			return new ParseTradeResult(tradeOffer.TradeOfferID, accept ? ParseTradeResult.EResult.Accepted : ParseTradeResult.EResult.RejectedTemporarily, tradeOffer.ItemsToReceive);
+			// We're now sure whether the trade is neutral+ for us or not
+			return new ParseTradeResult(tradeOffer.TradeOfferID, accept ? ParseTradeResult.EResult.Accepted : ParseTradeResult.EResult.Rejected, tradeOffer.ItemsToReceive);
 		}
 
 		private sealed class ParseTradeResult {
@@ -635,8 +633,7 @@ namespace ArchiSteamFarm {
 				Accepted,
 				Blacklisted,
 				Ignored,
-				RejectedPermanently,
-				RejectedTemporarily,
+				Rejected,
 				TryAgain
 			}
 		}
