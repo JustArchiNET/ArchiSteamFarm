@@ -446,7 +446,7 @@ namespace ArchiSteamFarm {
 				// We've already seen this trade, this should not happen
 				Bot.ArchiLogger.LogGenericError(string.Format(Strings.IgnoringTrade, tradeOffer.TradeOfferID));
 
-				return (new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Ignored), false);
+				return (new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Ignored, tradeOffer.ItemsToReceive), false);
 			}
 
 			ParseTradeResult result = await ShouldAcceptTrade(tradeOffer).ConfigureAwait(false);
