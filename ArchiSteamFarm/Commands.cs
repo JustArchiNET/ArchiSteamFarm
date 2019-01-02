@@ -756,7 +756,7 @@ namespace ArchiSteamFarm {
 				return FormatStaticResponse(string.Format(Strings.ErrorIsInvalid, nameof(appID)));
 			}
 
-			if (!byte.TryParse(targetContextID, out byte contextID) || (contextID == 0)) {
+			if (!uint.TryParse(targetContextID, out uint contextID) || (contextID == 0)) {
 				return FormatStaticResponse(string.Format(Strings.ErrorIsInvalid, nameof(contextID)));
 			}
 
