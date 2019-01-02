@@ -52,6 +52,8 @@ namespace ArchiSteamFarm.SteamKit2 {
 			return Task.CompletedTask;
 		}
 
+		public bool ShouldSerializeServerRecords() => ServerRecords.Count > 0;
+
 		internal event EventHandler ServerListUpdated;
 	}
 }

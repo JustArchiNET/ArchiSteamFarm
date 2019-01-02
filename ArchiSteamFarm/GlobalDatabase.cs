@@ -182,5 +182,12 @@ namespace ArchiSteamFarm {
 				FileSemaphore.Release();
 			}
 		}
+
+		// ReSharper disable UnusedMember.Global
+		public bool ShouldSerializeCellID() => CellID != 0;
+		public bool ShouldSerializePackagesData() => PackagesData.Count > 0;
+		public bool ShouldSerializeServerListProvider() => ServerListProvider.ShouldSerializeServerRecords();
+
+		// ReSharper restore UnusedMember.Global
 	}
 }

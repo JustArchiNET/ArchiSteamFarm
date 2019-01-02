@@ -340,5 +340,15 @@ namespace ArchiSteamFarm {
 				FileSemaphore.Release();
 			}
 		}
+
+		// ReSharper disable UnusedMember.Global
+		public bool ShouldSerializeBlacklistedFromTradesSteamIDs() => BlacklistedFromTradesSteamIDs.Count > 0;
+		public bool ShouldSerializeGamesToRedeemInBackground() => HasGamesToRedeemInBackground;
+		public bool ShouldSerializeIdlingBlacklistedAppIDs() => IdlingBlacklistedAppIDs.Count > 0;
+		public bool ShouldSerializeIdlingPriorityAppIDs() => IdlingPriorityAppIDs.Count > 0;
+		public bool ShouldSerializeLoginKey() => !string.IsNullOrEmpty(LoginKey);
+		public bool ShouldSerializeMobileAuthenticator() => MobileAuthenticator != null;
+
+		// ReSharper restore UnusedMember.Global
 	}
 }
