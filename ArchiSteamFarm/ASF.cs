@@ -29,6 +29,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
+using SteamKit2;
+using SteamKit2.Discovery;
 
 namespace ArchiSteamFarm {
 	internal static class ASF {
@@ -48,8 +50,22 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			// Before attempting to connect, initialize our configuration
-			await Bot.InitializeSteamConfiguration(Program.GlobalConfig.SteamProtocols, Program.GlobalDatabase.CellID, Program.GlobalDatabase.ServerListProvider).ConfigureAwait(false);
+			// Ensure that we ask for a list of servers if we don't have any saved servers available
+			IEnumerable<ServerRecord> servers = await Program.GlobalDatabase.ServerListProvider.FetchServerListAsync().ConfigureAwait(false);
+
+			if (servers?.Any() != true) {
+				ArchiLogger.LogGenericInfo(string.Format(Strings.Initializing, nameof(SteamDirectory)));
+
+				SteamConfiguration steamConfiguration = SteamConfiguration.Create(builder => builder.WithProtocolTypes(Program.GlobalConfig.SteamProtocols).WithCellID(Program.GlobalDatabase.CellID).WithServerListProvider(Program.GlobalDatabase.ServerListProvider).WithHttpClientFactory(() => Program.WebBrowser.GenerateDisposableHttpClient()));
+
+				try {
+					await SteamDirectory.LoadAsync(steamConfiguration).ConfigureAwait(false);
+					ArchiLogger.LogGenericInfo(Strings.Success);
+				} catch {
+					ArchiLogger.LogGenericWarning(Strings.BotSteamDirectoryInitializationFailed);
+					await Task.Delay(5000).ConfigureAwait(false);
+				}
+			}
 
 			HashSet<string> botNames;
 

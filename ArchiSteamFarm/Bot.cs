@@ -36,7 +36,6 @@ using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using Newtonsoft.Json;
 using SteamKit2;
-using SteamKit2.Discovery;
 using SteamKit2.Unified.Internal;
 
 namespace ArchiSteamFarm {
@@ -57,8 +56,6 @@ namespace ArchiSteamFarm {
 
 		private static readonly SemaphoreSlim BotsSemaphore = new SemaphoreSlim(1, 1);
 		private static readonly SemaphoreSlim LoginSemaphore = new SemaphoreSlim(1, 1);
-
-		private static SteamConfiguration SteamConfiguration;
 
 		internal readonly Actions Actions;
 		internal readonly ArchiHandler ArchiHandler;
@@ -123,7 +120,7 @@ namespace ArchiSteamFarm {
 		internal bool PlayingWasBlocked { get; private set; }
 		internal ulong SteamID { get; private set; }
 
-		internal int WalletBalance { get; private set; }
+		internal uint WalletBalance { get; private set; }
 		internal ECurrencyCode WalletCurrency { get; private set; }
 
 		[JsonProperty]
@@ -181,8 +178,12 @@ namespace ArchiSteamFarm {
 				BotDatabase.MobileAuthenticator.Init(this);
 			}
 
+			ArchiWebHandler = new ArchiWebHandler(this);
+
+			SteamConfiguration steamConfiguration = SteamConfiguration.Create(builder => builder.WithProtocolTypes(Program.GlobalConfig.SteamProtocols).WithCellID(Program.GlobalDatabase.CellID).WithServerListProvider(Program.GlobalDatabase.ServerListProvider).WithHttpClientFactory(() => ArchiWebHandler.GenerateDisposableHttpClient()));
+
 			// Initialize
-			SteamClient = new SteamClient(SteamConfiguration);
+			SteamClient = new SteamClient(steamConfiguration);
 
 			if (Debugging.IsUserDebugging && Directory.Exists(SharedInfo.DebugDirectory)) {
 				string debugListenerPath = Path.Combine(SharedInfo.DebugDirectory, botName);
@@ -227,7 +228,6 @@ namespace ArchiSteamFarm {
 			CallbackManager.Subscribe<ArchiHandler.VanityURLChangedCallback>(OnVanityURLChangedCallback);
 
 			Actions = new Actions(this);
-			ArchiWebHandler = new ArchiWebHandler(this);
 			CardsFarmer = new CardsFarmer(this);
 			Commands = new Commands(this);
 			Trading = new Trading(this);
@@ -745,30 +745,6 @@ namespace ArchiSteamFarm {
 				File.Delete(filePath);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
-			}
-		}
-
-		internal static async Task InitializeSteamConfiguration(ProtocolTypes protocolTypes, uint cellID, IServerListProvider serverListProvider) {
-			if (serverListProvider == null) {
-				ASF.ArchiLogger.LogNullError(nameof(serverListProvider));
-
-				return;
-			}
-
-			SteamConfiguration = SteamConfiguration.Create(builder => builder.WithProtocolTypes(protocolTypes).WithCellID(cellID).WithServerListProvider(serverListProvider));
-
-			// Ensure that we ask for a list of servers if we don't have any saved servers available
-			IEnumerable<ServerRecord> servers = await SteamConfiguration.ServerListProvider.FetchServerListAsync().ConfigureAwait(false);
-
-			if (servers?.Any() != true) {
-				ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.Initializing, nameof(SteamDirectory)));
-
-				try {
-					await SteamDirectory.LoadAsync(SteamConfiguration).ConfigureAwait(false);
-					ASF.ArchiLogger.LogGenericInfo(Strings.Success);
-				} catch {
-					ASF.ArchiLogger.LogGenericWarning(Strings.BotSteamDirectoryInitializationFailed);
-				}
 			}
 		}
 
@@ -2456,7 +2432,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			WalletBalance = callback.Balance;
+			WalletBalance = (uint) callback.LongBalance;
 			WalletCurrency = callback.Currency;
 		}
 

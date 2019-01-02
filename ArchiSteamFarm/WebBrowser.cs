@@ -45,30 +45,45 @@ namespace ArchiSteamFarm {
 
 		private readonly ArchiLogger ArchiLogger;
 		private readonly HttpClient HttpClient;
+		private readonly HttpClientHandler HttpClientHandler;
 
 		internal WebBrowser(ArchiLogger archiLogger, IWebProxy webProxy = null, bool extendedTimeout = false) {
 			ArchiLogger = archiLogger ?? throw new ArgumentNullException(nameof(archiLogger));
 
-			HttpClientHandler httpClientHandler = new HttpClientHandler {
+			HttpClientHandler = new HttpClientHandler {
 				AllowAutoRedirect = false, // This must be false if we want to handle custom redirection schemes such as "steammobile://"
 				AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
-				CookieContainer = CookieContainer,
-				Proxy = webProxy,
-				UseProxy = webProxy != null
+				CookieContainer = CookieContainer
 			};
 
-			if (!RuntimeCompatibility.IsRunningOnMono) {
-				httpClientHandler.MaxConnectionsPerServer = MaxConnections;
+			if (webProxy != null) {
+				HttpClientHandler.Proxy = webProxy;
+				HttpClientHandler.UseProxy = true;
 			}
 
-			HttpClient = new HttpClient(httpClientHandler) { Timeout = TimeSpan.FromSeconds(extendedTimeout ? ExtendedTimeoutMultiplier * Program.GlobalConfig.ConnectionTimeout : Program.GlobalConfig.ConnectionTimeout) };
+			if (!RuntimeCompatibility.IsRunningOnMono) {
+				HttpClientHandler.MaxConnectionsPerServer = MaxConnections;
+			}
 
-			// Most web services expect that UserAgent is set, so we declare it globally
-			// If you by any chance came here with a very "clever" idea of changing default ASF user-agent then here is a very good advice from me: don't, for your own safety - you've been warned
-			HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(SharedInfo.PublicIdentifier + "/" + SharedInfo.Version + " (+" + SharedInfo.ProjectURL + ")");
+			HttpClient = GenerateDisposableHttpClient(extendedTimeout);
 		}
 
-		public void Dispose() => HttpClient.Dispose();
+		public void Dispose() {
+			HttpClient.Dispose();
+			HttpClientHandler.Dispose();
+		}
+
+		internal HttpClient GenerateDisposableHttpClient(bool extendedTimeout = false) {
+			HttpClient result = new HttpClient(HttpClientHandler) {
+				Timeout = TimeSpan.FromSeconds(extendedTimeout ? ExtendedTimeoutMultiplier * Program.GlobalConfig.ConnectionTimeout : Program.GlobalConfig.ConnectionTimeout)
+			};
+
+			// Most web services expect that UserAgent is set, so we declare it globally
+			// If you by any chance came here with a very "clever" idea of hiding your ass by changing default ASF user-agent then here is a very good advice from me: don't, for your own safety - you've been warned
+			result.DefaultRequestHeaders.UserAgent.ParseAdd(SharedInfo.PublicIdentifier + "/" + SharedInfo.Version + " (+" + SharedInfo.ProjectURL + ")");
+
+			return result;
+		}
 
 		internal static void Init() {
 			// Set max connection limit from default of 2 to desired value

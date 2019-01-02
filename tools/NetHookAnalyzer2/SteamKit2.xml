@@ -4879,7 +4879,12 @@
         </member>
         <member name="P:SteamKit2.SteamUser.WalletInfoCallback.Balance">
             <summary>
-            Gets the balance of the wallet, in cents.
+            Gets the balance of the wallet as a 32-bit integer, in cents.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamUser.WalletInfoCallback.LongBalance">
+            <summary>
+            Gets the balance of the wallet as a 64-bit integer, in cents.
             </summary>
         </member>
         <member name="T:SteamKit2.SteamUser.UpdateMachineAuthCallback">
@@ -5935,6 +5940,13 @@
             <param name="allowDirectoryFetch">Whether or not to use the Steam Directory to discover available servers.</param>
             <returns>A builder with modified configuration.</returns>
         </member>
+        <member name="M:SteamKit2.ISteamConfigurationBuilder.WithHttpClientFactory(SteamKit2.HttpClientFactory)">
+            <summary>
+            Configures this <see cref="T:SteamKit2.SteamConfiguration" /> with custom HTTP behaviour.
+            </summary>
+            <param name="factoryFunction">A function to create and configure a new HttpClient.</param>
+            <returns>A builder with modified configuration.</returns>
+        </member>
         <member name="M:SteamKit2.ISteamConfigurationBuilder.WithProtocolTypes(SteamKit2.ProtocolTypes)">
             <summary>
             Configures how this <see cref="T:SteamKit2.SteamConfiguration" /> will be used to connect to Steam.
@@ -5973,6 +5985,13 @@
             Keys can be obtained from https://steamcommunity.com/dev or the Steamworks Partner site.</param>
             <returns>A builder with modified configuration.</returns>
         </member>
+        <member name="T:SteamKit2.HttpClientFactory">
+            <summary>
+            Factory function to create a user-configured HttpClient.
+            The HttpClient will be disposed of after use.
+            </summary>
+            <returns>A new <see cref="T:System.Net.Http.HttpClient"/> to be used to send HTTP requests.</returns>
+        </member>
         <member name="T:SteamKit2.SteamConfiguration">
             <summary>
             Configuration object to use.
@@ -6010,6 +6029,11 @@
             <summary>
             The default persona state flags used when requesting information for a new friend, or
             when calling <c>SteamFriends.RequestFriendInfo</c> without specifying flags.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamConfiguration.HttpClientFactory">
+            <summary>
+            Factory function to create a user-configured HttpClient.
             </summary>
         </member>
         <member name="P:SteamKit2.SteamConfiguration.ProtocolTypes">
@@ -6338,6 +6362,7 @@
             <returns>A <see cref="T:SteamKit2.KeyValue"/> object representing the results of the Web API call.</returns>
             <exception cref="T:System.ArgumentNullException">The function name or request method provided were <c>null</c>.</exception>
             <exception cref="T:System.Net.Http.HttpRequestException">An network error occurred when performing the request.</exception>
+            <exception cref="T:SteamKit2.WebAPIRequestException">A network error occurred when performing the request.</exception>
             <exception cref="T:System.IO.InvalidDataException">An error occured when parsing the response from the WebAPI.</exception>
         </member>
         <member name="M:SteamKit2.WebAPI.Interface.Call(System.Net.Http.HttpMethod,System.String,System.Int32,System.Collections.Generic.Dictionary{System.String,System.String})">
@@ -6351,6 +6376,7 @@
             <returns>A <see cref="T:SteamKit2.KeyValue"/> object representing the results of the Web API call.</returns>
             <exception cref="T:System.ArgumentNullException">The function name or request method provided were <c>null</c>.</exception>
             <exception cref="T:System.Net.Http.HttpRequestException">An network error occurred when performing the request.</exception>
+            <exception cref="T:SteamKit2.WebAPIRequestException">A network error occurred when performing the request.</exception>
             <exception cref="T:System.IO.InvalidDataException">An error occured when parsing the response from the WebAPI.</exception>
         </member>
         <member name="M:SteamKit2.WebAPI.Interface.Dispose">
@@ -6389,10 +6415,6 @@
             The dynamic method name was not in the correct format.
             All API function calls must be in the format 'FunctionName###' where the optional ###'s represent a version number.
             </exception>
-            <exception cref="T:System.ArgumentException">
-            The reserved named parameter 'secure' was not a boolean value.
-            This parameter is used when requests must go through the secure API.
-            </exception>
             <exception cref="T:System.ArgumentOutOfRangeException">
             The function version number specified was out of range.
             </exception>
@@ -6423,6 +6445,7 @@
             <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> that contains a <see cref="T:SteamKit2.KeyValue"/> object representing the results of the Web API call.</returns>
             <exception cref="T:System.ArgumentNullException">The function name or request method provided were <c>null</c>.</exception>
             <exception cref="T:System.Net.Http.HttpRequestException">An network error occurred when performing the request.</exception>
+            <exception cref="T:SteamKit2.WebAPIRequestException">A network error occurred when performing the request.</exception>
             <exception cref="T:System.IO.InvalidDataException">An error occured when parsing the response from the WebAPI.</exception>
         </member>
         <member name="M:SteamKit2.WebAPI.AsyncInterface.Dispose">
@@ -6461,10 +6484,6 @@
             The dynamic method name was not in the correct format.
             All API function calls must be in the format 'FunctionName###' where the optional ###'s represent a version number.
             </exception>
-            <exception cref="T:System.ArgumentException">
-            The reserved named parameter 'secure' was not a boolean value.
-            This parameter is used when requests must go through the secure API.
-            </exception>
             <exception cref="T:System.ArgumentOutOfRangeException">
             The function version number specified was out of range.
             </exception>
@@ -6502,6 +6521,28 @@
             <param name="iface">The interface to retrieve a handler for.</param>
             <param name="apiKey">An optional API key to be used for authorized requests.</param>
             <returns>A dynamic <see cref="T:SteamKit2.WebAPI.AsyncInterface"/> object to interact with the Web API.</returns>
+        </member>
+        <member name="T:SteamKit2.WebAPIRequestException">
+            <summary>
+            Thrown when WebAPI request fails.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.WebAPIRequestException.StatusCode">
+            <summary>
+            Represents the status code of the HTTP response.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.WebAPIRequestException.Headers">
+            <summary>
+            Represents the collection of HTTP response headers.
+            </summary>
+        </member>
+        <member name="M:SteamKit2.WebAPIRequestException.#ctor(System.String,System.Net.Http.HttpResponseMessage)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SteamKit2.WebAPIRequestException"/> class.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+            <param name="response">HTTP response message including the status code and data.</param>
         </member>
         <member name="T:SteamKit2.DepotManifest">
             <summary>
@@ -6586,6 +6627,31 @@
               <c>true</c> if the filenames are encrypted; otherwise, <c>false</c>.
             </value>
         </member>
+        <member name="P:SteamKit2.DepotManifest.DepotID">
+            <summary>
+            Gets the depot id.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.DepotManifest.ManifestGID">
+            <summary>
+            Gets the manifest id.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.DepotManifest.CreationTime">
+            <summary>
+            Gets the depot creation time.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.DepotManifest.TotalUncompressedSize">
+            <summary>
+            Gets the total uncompressed size of all files in this depot.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.DepotManifest.TotalCompressedSize">
+            <summary>
+            Gets the total compressed size of all files in this depot.
+            </summary>
+        </member>
         <member name="M:SteamKit2.DepotManifest.DecryptFilenames(System.Byte[])">
             <summary>
             Attempts to decrypts file names with the given encryption key.
@@ -6639,6 +6705,20 @@
             Initializes a new instance of the <see cref="T:SteamKit2.GameID"/> class.
             </summary>
             <param name="nAppID">The 32bit app id to assign this GameID from.</param>
+        </member>
+        <member name="M:SteamKit2.GameID.#ctor(System.UInt32,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SteamKit2.GameID"/> class.
+            </summary>
+            <param name="nAppID">The base app id of the mod.</param>
+            <param name="modPath">The game folder name of the mod.</param>
+        </member>
+        <member name="M:SteamKit2.GameID.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SteamKit2.GameID"/> class.
+            </summary>
+            <param name="exePath">The path to the executable, usually quoted.</param>
+            <param name="appName">The name of the application shortcut.</param>
         </member>
         <member name="M:SteamKit2.GameID.Set(System.UInt64)">
             <summary>

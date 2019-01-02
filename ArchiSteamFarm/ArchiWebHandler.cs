@@ -25,6 +25,7 @@ using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -227,7 +228,6 @@ namespace ArchiSteamFarm {
 							// ReSharper disable once AccessToDisposedClosure
 							async () => await iEconService.DeclineTradeOffer(
 								method: WebRequestMethods.Http.Post,
-								secure: true,
 								tradeofferid: tradeID
 							)
 						).ConfigureAwait(false);
@@ -247,6 +247,8 @@ namespace ArchiSteamFarm {
 
 			return true;
 		}
+
+		internal HttpClient GenerateDisposableHttpClient() => WebBrowser.GenerateDisposableHttpClient();
 
 		internal async Task<HashSet<uint>> GenerateNewDiscoveryQueue() {
 			const string request = "/explore/generatenewdiscoveryqueue";
@@ -281,7 +283,6 @@ namespace ArchiSteamFarm {
 								active_only: 1,
 								get_descriptions: 1,
 								get_received_offers: 1,
-								secure: true,
 								time_historical_cutoff: uint.MaxValue
 							)
 						).ConfigureAwait(false);
@@ -408,7 +409,7 @@ namespace ArchiSteamFarm {
 							WebAPI.DefaultBaseAddress.Host,
 
 							// ReSharper disable once AccessToDisposedClosure
-							async () => await iSteamApps.GetAppList2(secure: true)
+							async () => await iSteamApps.GetAppList2()
 						).ConfigureAwait(false);
 					} catch (TaskCanceledException e) {
 						Bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -800,7 +801,6 @@ namespace ArchiSteamFarm {
 							// ReSharper disable once AccessToDisposedClosure
 							async () => await iPlayerService.GetOwnedGames(
 								include_appinfo: 1,
-								secure: true,
 								steamid: steamID
 							)
 						).ConfigureAwait(false);
@@ -849,10 +849,7 @@ namespace ArchiSteamFarm {
 							WebAPI.DefaultBaseAddress.Host,
 
 							// ReSharper disable once AccessToDisposedClosure
-							async () => await iTwoFactorService.QueryTime(
-								method: WebRequestMethods.Http.Post,
-								secure: true
-							)
+							async () => await iTwoFactorService.QueryTime(method: WebRequestMethods.Http.Post)
 						).ConfigureAwait(false);
 					} catch (TaskCanceledException e) {
 						Bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -960,7 +957,6 @@ namespace ArchiSteamFarm {
 
 							// ReSharper disable once AccessToDisposedClosure
 							async () => await iEconService.GetTradeHoldDurations(
-								secure: true,
 								steamid_target: steamID,
 								trade_offer_access_token: tradeToken ?? "" // TODO: Change me once https://github.com/SteamRE/SteamKit/pull/522 is merged
 							)
@@ -1115,7 +1111,6 @@ namespace ArchiSteamFarm {
 						async () => await iSteamUserAuth.AuthenticateUser(
 							encrypted_loginkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(encryptedLoginKey, 0, encryptedLoginKey.Length)),
 							method: WebRequestMethods.Http.Post,
-							secure: true,
 							sessionkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(encryptedSessionKey, 0, encryptedSessionKey.Length)),
 							steamid: steamID
 						)
