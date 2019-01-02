@@ -675,4 +675,8 @@ Yığın izleme:
     <value>Bu turda {0} eşleşme oldu.</value>
     <comment>{0} will be replaced by number of sets traded</comment>
   </data>
+  <data name="WarningExcessiveBotsCount" xml:space="preserve">
+    <value>Önerdiğimiz sınırdan ({0}) daha fazla kişisel bot hesabı kullanıyorsun. Bu yapılandırma desteklenmemektedir ve hesabın kapatılması da dahil Steam ile alakalı sorunlara sebep olabilir. Daha fazla bilgi için SSS'ye bakın.</value>
+    <comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
+  </data>
 </root>

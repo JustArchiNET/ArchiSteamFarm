@@ -674,4 +674,8 @@
     <value>本轮共匹配 {0} 套物品。</value>
     <comment>{0} will be replaced by number of sets traded</comment>
   </data>
+  <data name="WarningExcessiveBotsCount" xml:space="preserve">
+    <value>您运行的个人机器人帐户数量超过了我们建议的上限（{0}）。请注意，此设置不受支持，可能会导致各种与 Steam 相关的问题，包括帐户停用。请阅读我们的常见问题了解详情。</value>
+    <comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
+  </data>
 </root>

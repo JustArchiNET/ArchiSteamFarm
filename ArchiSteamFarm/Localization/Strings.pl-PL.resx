@@ -675,4 +675,8 @@ StackTrace:
     <value>Dopasowano w sumie {0} setów w tej rundzie.</value>
     <comment>{0} will be replaced by number of sets traded</comment>
   </data>
+  <data name="WarningExcessiveBotsCount" xml:space="preserve">
+    <value>Używasz większej ilość botów niż nasz górny rekomendowany limit ({0}). Miej na uwadze, że ta konfiguracja nie jest wspierana i może być przyczyną różnych problemów związanych z platformą Steam, z blokadą kont włącznie. Odwiedź nasze FAQ po więcej informacji.</value>
+    <comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
+  </data>
 </root>

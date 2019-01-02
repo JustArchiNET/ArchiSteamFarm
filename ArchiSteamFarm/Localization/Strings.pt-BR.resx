@@ -675,4 +675,8 @@ StackTrace:
     <value>Correspondido um total de {0} conjuntos nessa rodada.</value>
     <comment>{0} will be replaced by number of sets traded</comment>
   </data>
+  <data name="WarningExcessiveBotsCount" xml:space="preserve">
+    <value>Se você estiver rodando mais contas bot que nosso limite máximo recomendado ({0}). Fique ciente de que não há suporte para isso e isso poderá causar vários problemas com o Steam, incluindo suspensões de contas. Veja as Perguntas Frequentes para mais detalhes.</value>
+    <comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
+  </data>
 </root>

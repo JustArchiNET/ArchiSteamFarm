@@ -673,4 +673,5 @@ StackTrace: {2}</value>
     <value>Összesen {0} szett cserélve.</value>
     <comment>{0} will be replaced by number of sets traded</comment>
   </data>
+  
 </root>
