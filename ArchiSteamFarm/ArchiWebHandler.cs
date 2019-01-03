@@ -1550,11 +1550,15 @@ namespace ArchiSteamFarm {
 					return LastSessionCheck != LastSessionRefresh;
 				}
 
-				const string host = SteamCommunityURL;
+				// Choosing proper URL to check against is actually much harder than it initially looks like, we must abide by several rules to make this function as lightweight and reliable as possible
+				// We should prefer to use Steam store, as the community is much more unstable and broken, plus majority of our requests get there anyway, so load-balancing with store makes much more sense. It also has a higher priority than the community, so all eventual issues should be fixed there first
+				// The URL must be fast enough to render, as this function will be called reasonably often, and every extra delay adds up. We're already making our best effort by using HEAD request, but the URL itself plays a very important role as well
+				// The page should have as little internal dependencies as possible, since every extra chunk increases likelihood of broken functionality. We can only make a guess here based on the amount of content that the page returns to us
+				// It should also be URL with fairly fixed address that isn't going to disappear anytime soon, preferably something staple that is a dependency of other requests, so it's very unlikely to change in a way that would add overhead in the future
+				// Lastly, it should be a request that is preferably generic enough as a routine check, not something specialized and targetted, to make it very clear that we're just checking if session is up, and to further aid internal dependencies specified above by rendering as general Steam info as possible
 
-				// It would make sense to use /my/profile here, but it dismisses notifications related to profile comments
-				// So instead, we'll use some less invasive /my link that ensures the session validation, doesn't cause issues and is fast enough
-				const string request = "/my/edit/settings";
+				const string host = SteamStoreURL;
+				const string request = "/account";
 
 				WebBrowser.BasicResponse response = await WebLimitRequest(host, async () => await WebBrowser.UrlHead(host + request).ConfigureAwait(false)).ConfigureAwait(false);
 
