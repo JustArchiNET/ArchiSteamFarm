@@ -295,7 +295,7 @@ namespace ArchiSteamFarm {
 			// Dashes are optional in the ID, strip them off for comparison
 			string hash = deviceID.Substring(deviceIdentifier.Length).Replace("-", "");
 
-			return Utilities.IsValidHexadecimalString(hash);
+			return (hash.Length > 0) && Utilities.IsValidHexadecimalString(hash);
 		}
 
 		private string GenerateConfirmationHash(uint time, string tag = null) {
