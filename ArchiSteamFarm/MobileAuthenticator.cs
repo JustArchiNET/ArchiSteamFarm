@@ -288,13 +288,14 @@ namespace ArchiSteamFarm {
 			// If we ever need to correct this, we also need to clean up other places
 			const string deviceIdentifier = "android:";
 
-			if (!deviceID.StartsWith(deviceIdentifier, StringComparison.Ordinal) || (deviceID.Length != deviceIdentifier.Length + 36)) {
+			if (!deviceID.StartsWith(deviceIdentifier, StringComparison.Ordinal) || (deviceID.Length <= deviceIdentifier.Length)) {
 				return false;
 			}
 
+			// Dashes are optional in the ID, strip them off for comparison
 			string hash = deviceID.Substring(deviceIdentifier.Length).Replace("-", "");
 
-			return (hash.Length == 32) && Utilities.IsValidHexadecimalString(hash);
+			return Utilities.IsValidHexadecimalString(hash);
 		}
 
 		private string GenerateConfirmationHash(uint time, string tag = null) {
