@@ -505,6 +505,20 @@ namespace ArchiSteamFarm {
 					redirectUri = new Uri(requestUri.GetLeftPart(UriPartial.Authority) + redirectUri);
 				}
 
+				// According to the RFC, POST requests in certain types of redirection must be converted into GET
+				if (httpMethod == HttpMethod.Post) {
+					switch (response.StatusCode) {
+						case HttpStatusCode.Found:
+						case HttpStatusCode.Moved:
+						case HttpStatusCode.MultipleChoices:
+						case HttpStatusCode.SeeOther:
+							httpMethod = HttpMethod.Get;
+							data = null;
+
+							break;
+					}
+				}
+
 				response.Dispose();
 
 				return await InternalRequest(redirectUri, httpMethod, data, referer, httpCompletionOption, --maxRedirections).ConfigureAwait(false);
