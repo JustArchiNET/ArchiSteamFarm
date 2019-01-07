@@ -661,7 +661,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's level</comment>
   </data>
   <data name="ActivelyMatchingItems" xml:space="preserve">
-    <value>Vergleich der Steam-Gegenstände, Durchgang #{0}...</value>
+    <value>Vergleiche Steam-Gegenstände, Durchgang #{0}...</value>
     <comment>{0} will be replaced by round number</comment>
   </data>
   <data name="DoneActivelyMatchingItems" xml:space="preserve">
@@ -672,11 +672,11 @@ StackTrace:
     <value>Abgebrochen!</value>
   </data>
   <data name="ActivelyMatchingItemsRound" xml:space="preserve">
-    <value>Übereinstimmende Anzahl von {0} Set(s) in diesem Durchgang.</value>
+    <value>Insgesamt wurden in diesem Durchgang {0} Set(s) abgeglichen.</value>
     <comment>{0} will be replaced by number of sets traded</comment>
   </data>
   <data name="WarningExcessiveBotsCount" xml:space="preserve">
-    <value>Bei dir laufen mehr private Bot-Konten als unser höchster, empfohlender Grenzwert von ({0}). Beachte, dass diese Konfiguration nicht unterstützt wird und verschiedene Steam bezogene Probleme verursachen kann, einschließlich Kontosperrungen. Für weitere Details schaue dir das FAQ an.</value>
+    <value>Du verwendest mehr persönliche Bot-Konten als unsere empfohlene Obergrenze ({0}). Bitte bedenke, dass dieses Setup nicht unterstützt wird und verschiedene Steam-bezogene Probleme verursachen kann, einschließlich Kontosperrungen. Weitere Informationen findest du in den FAQs.</value>
     <comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
   </data>
 </root>
