@@ -30,10 +30,11 @@ try {
 		throw "$crowdinIdentityPath could not be found, aborting."
 	}
 
-	& "$archiCrowdinScriptPath" -t:$archiTargets -d -c -p
-	& "$archiCrowdinScriptPath" -d -p
-	& "$archiCrowdinScriptPath" -t:wiki -c -p
-	& "$archiCrowdinScriptPath" -c -p
+	& "$archiCrowdinScriptPath" -t:$archiTargets -d -c -p # Download and commit all independent submodules that are part of ASF project
+	& "$archiCrowdinScriptPath" -t:wiki -c -p # Wiki submodule depends on us, we do this one more time before in order to ensure that tree is up-to-date (e.g. branch is master before we start modifying files in the next step)
+	& "$archiCrowdinScriptPath" -d -p -rs:no # Download translations for the main project, which also includes wiki submodule as of now
+	& "$archiCrowdinScriptPath" -t:wiki -c -p # Commit the wiki submodule that we updated in the previous step
+	& "$archiCrowdinScriptPath" -c # Commit the main project and references of all submodules
 } finally {
 	Pop-Location
 }
