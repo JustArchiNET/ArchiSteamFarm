@@ -584,5 +584,52 @@ namespace ArchiSteamFarm.Json {
 				Private
 			}
 		}
+
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		internal sealed class BoosterPack {
+			[JsonProperty(PropertyName = "appid", Required = Required.Always)]
+			internal readonly uint AppID;
+
+			[JsonProperty(PropertyName = "name", Required = Required.Always)]
+			internal readonly string Name;
+
+			[JsonProperty(PropertyName = "series", Required = Required.Always)]
+			internal readonly uint Series;
+
+			[JsonProperty(PropertyName = "price", Required = Required.Always)]
+			internal readonly uint Price;
+
+			[JsonProperty(PropertyName = "unavailable", Required = Required.DisallowNull)]
+			internal readonly bool Unavailable;
+
+			[JsonProperty(PropertyName = "available_at_time", Required = Required.DisallowNull)]
+			internal readonly string AvailableAtTime;
+
+			// Deserialized from JSON
+			private BoosterPack() { }
+		}
+
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		internal sealed class BoosterResponse {
+			[JsonProperty(PropertyName = "goo_amount", Required = Required.Always)]
+			internal readonly uint GooAmount;
+
+			[JsonProperty(PropertyName = "tradable_goo_amount", Required = Required.Always)]
+			internal readonly uint TradableGooAmount;
+
+			[JsonProperty(PropertyName = "untradable_goo_amount", Required = Required.Always)]
+			internal readonly uint UntradableGooAmount;
+
+			[JsonProperty(PropertyName = "purchase_result", Required = Required.DisallowNull)]
+			internal readonly PurchaseResult PurchaseResultDetail;
+
+			internal sealed class PurchaseResult : EResultResponse {
+				// Deserialized from JSON
+				private PurchaseResult() { }
+			}
+
+			// Deserialized from JSON
+			private BoosterResponse() { }
+		}
 	}
 }

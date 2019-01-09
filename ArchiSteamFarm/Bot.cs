@@ -150,6 +150,7 @@ namespace ArchiSteamFarm {
 		private bool ReconnectOnUserInitiated;
 		private Timer SendItemsTimer;
 		private SteamSaleEvent SteamSaleEvent;
+		private BoosterCreator BoosterCreator;
 		private uint TradesCount;
 		private string TwoFactorCode;
 		private byte TwoFactorCodeFailures;
@@ -1547,6 +1548,15 @@ namespace ArchiSteamFarm {
 
 			if (BotConfig.AutoSteamSaleEvent) {
 				SteamSaleEvent = new SteamSaleEvent(this);
+			}
+
+			if (BoosterCreator != null) {
+				BoosterCreator.Dispose();
+				BoosterCreator = null;
+			}
+
+			if (!BotConfig.GamesToBooster.IsEmpty) {
+				BoosterCreator = new BoosterCreator(this);
 			}
 		}
 

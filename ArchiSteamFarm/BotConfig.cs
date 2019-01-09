@@ -59,6 +59,7 @@ namespace ArchiSteamFarm {
 		private const bool DefaultUseLoginKeys = true;
 
 		private static readonly ImmutableList<EFarmingOrder> DefaultFarmingOrders = ImmutableList<EFarmingOrder>.Empty;
+		private static readonly ImmutableHashSet<uint> DefaultGamesToBooster = ImmutableHashSet<uint>.Empty;
 		private static readonly ImmutableHashSet<uint> DefaultGamesPlayedWhileIdle = ImmutableHashSet<uint>.Empty;
 		private static readonly ImmutableHashSet<Steam.Asset.EType> DefaultLootableTypes = ImmutableHashSet.Create(Steam.Asset.EType.BoosterPack, Steam.Asset.EType.FoilTradingCard, Steam.Asset.EType.TradingCard);
 		private static readonly ImmutableHashSet<Steam.Asset.EType> DefaultMatchableTypes = ImmutableHashSet.Create(Steam.Asset.EType.TradingCard);
@@ -75,6 +76,9 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly EBotBehaviour BotBehaviour = DefaultBotBehaviour;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly ImmutableHashSet<uint> GamesToBooster = DefaultGamesToBooster;
 
 		[JsonProperty]
 		internal readonly string CustomGamePlayedWhileFarming = DefaultCustomGamePlayedWhileFarming;

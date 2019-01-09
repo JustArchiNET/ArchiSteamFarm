@@ -605,6 +605,31 @@ namespace ArchiSteamFarm {
 			return await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
 		}
 
+		internal async Task<HtmlDocument> GetBoosterCreatorPage() {
+			const string request = "/tradingcards/boostercreator";
+
+			return await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
+		}
+
+		internal async Task<Steam.BoosterResponse> CreateBooster(uint appID, uint series, uint nTradabilityPreference) {
+			if (appID == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(appID));
+
+				return null;
+			}
+
+			const string request = "/tradingcards/ajaxcreatebooster";
+
+			// Extra entry for sessionID
+			Dictionary<string, string> data = new Dictionary<string, string>(4) {
+				{ "appid", appID.ToString() },
+				{ "series", series.ToString() },
+				{ "tradability_preference", nTradabilityPreference.ToString() }
+			};
+
+			return await UrlPostToJsonObjectWithSession<Steam.BoosterResponse>(SteamCommunityURL, request, data).ConfigureAwait(false);
+		}
+
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
 		internal async Task<HashSet<Steam.Asset>> GetInventory(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, uint contextID = Steam.Asset.SteamCommunityContextID, bool? tradable = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<uint> wantedRealAppIDs = null, IReadOnlyCollection<(uint AppID, Steam.Asset.EType Type)> wantedSets = null, IReadOnlyCollection<(uint AppID, Steam.Asset.EType Type)> skippedSets = null) {
 			if ((appID == 0) || (contextID == 0)) {
