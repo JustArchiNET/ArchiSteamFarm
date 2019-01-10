@@ -98,7 +98,15 @@ build_script:
     Pop-Location
 
 
-    dotnet build ArchiSteamFarm ArchiSteamFarm.CustomPlugins.Example -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -o 'out\source' /nologo
+    dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -o 'out\source' /nologo
+
+
+    if ($LastExitCode -ne 0) {
+        throw "Last command failed."
+    }
+
+
+    dotnet build ArchiSteamFarm.CustomPlugins.Example -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -o 'out\source' /nologo
 
 
     if ($LastExitCode -ne 0) {
