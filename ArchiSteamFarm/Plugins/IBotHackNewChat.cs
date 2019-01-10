@@ -24,6 +24,12 @@ using JetBrains.Annotations;
 namespace ArchiSteamFarm.Plugins {
 	[PublicAPI]
 	public interface IBotHackNewChat : IPlugin {
-		bool BotUsesNewChat(Bot bot);
+		/// <summary>
+		///     ASF will use this property for determining whether the bot should use new chat system.
+		///     Unless you know what you're doing, you should not implement this property yourself and let ASF decide.
+		/// </summary>
+		/// <param name="bot">Bot object related to this callback.</param>
+		/// <returns>Boolean indicating whether the bot should use new chat system.</returns>
+		bool BotUsesNewChat([NotNull] Bot bot);
 	}
 }

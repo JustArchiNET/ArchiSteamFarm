@@ -25,6 +25,15 @@ using JetBrains.Annotations;
 namespace ArchiSteamFarm.Plugins {
 	[PublicAPI]
 	public interface IBotCommand : IPlugin {
-		Task<string> OnBotCommand(Bot bot, ulong steamID, string message, string[] args);
+		/// <summary>
+		///     ASF will call this method for unrecognized commands.
+		/// </summary>
+		/// <param name="bot">Bot object related to this callback.</param>
+		/// <param name="steamID">64-bit long unsigned integer of steamID executing the command.</param>
+		/// <param name="message">Command message in its raw format, stripped of <see cref="GlobalConfig.CommandPrefix" />.</param>
+		/// <param name="args">Pre-parsed message using standard ASF delimiters.</param>
+		/// <returns>Response to the command, or null/empty (as the task value) if the command isn't handled by this plugin.</returns>
+		[NotNull]
+		Task<string> OnBotCommand([NotNull] Bot bot, ulong steamID, [NotNull] string message, [NotNull] string[] args);
 	}
 }

@@ -21,11 +21,16 @@
 
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace ArchiSteamFarm.Plugins {
 	[PublicAPI]
 	public interface IASF : IPlugin {
-		void OnASFInit(IReadOnlyDictionary<string, JToken> additionalConfigProperties = null);
+		/// <summary>
+		///     ASF will call this method right after global config initialization.
+		/// </summary>
+		/// <param name="additionalConfigProperties">Extra config properties made out of <see cref="JsonExtensionDataAttribute" />. Can be null if no extra properties are found.</param>
+		void OnASFInit([CanBeNull] IReadOnlyDictionary<string, JToken> additionalConfigProperties = null);
 	}
 }

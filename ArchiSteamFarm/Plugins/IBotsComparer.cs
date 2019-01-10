@@ -25,6 +25,12 @@ using JetBrains.Annotations;
 namespace ArchiSteamFarm.Plugins {
 	[PublicAPI]
 	public interface IBotsComparer : IPlugin {
+		/// <summary>
+		/// ASF will use this property for determining the comparer for the bots.
+		/// Unless you know what you're doing, you should not implement this property yourself and let ASF decide.
+		/// </summary>
+		/// <returns>Comparer that will be used for the bots, as well as bot regexes.</returns>
+		[NotNull]
 		StringComparer BotsComparer { get; }
 	}
 }

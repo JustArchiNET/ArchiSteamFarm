@@ -25,8 +25,24 @@ using JetBrains.Annotations;
 namespace ArchiSteamFarm.Plugins {
 	[PublicAPI]
 	public interface IPlugin {
+		/// <summary>
+		///     ASF will use this property as general plugin identifier for the user.
+		/// </summary>
+		/// <returns>String that will be used as the name of this plugin.</returns>
+		[NotNull]
 		string Name { get; }
+
+		/// <summary>
+		///     ASF will use this property as version indicator of your plugin to the user.
+		///     You have a freedom in deciding what versionining you want to use, this is for identification purposes only.
+		/// </summary>
+		/// <returns>Version that will be shown to the user when plugin is loaded.</returns>
+		[NotNull]
 		Version Version { get; }
+
+		/// <summary>
+		///     ASF will call this method right after plugin initialization.
+		/// </summary>
 		void OnLoaded();
 	}
 }

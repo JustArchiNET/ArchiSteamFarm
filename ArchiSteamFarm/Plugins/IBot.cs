@@ -24,7 +24,19 @@ using JetBrains.Annotations;
 namespace ArchiSteamFarm.Plugins {
 	[PublicAPI]
 	public interface IBot : IPlugin {
-		void OnBotDestroy(Bot bot);
-		void OnBotInit(Bot bot);
+		/// <summary>
+		///     ASF will call this method after removing its own references from it, e.g. after config removal.
+		///     You should ensure that you'll remove any of your own references to this bot instance in timely manner.
+		///     Doing so will allow the garbage collector to dispose the bot afterwards, refraining from doing so will create a "memory leak" by keeping the reference alive
+		/// </summary>
+		/// <param name="bot">Bot object related to this callback.</param>
+		void OnBotDestroy([NotNull] Bot bot);
+
+		/// <summary>
+		///     ASF will call this method after creating the bot object, e.g. after config creation.
+		///     Bot config is not yet available at this stage. This function will execute only once for every bot object.
+		/// </summary>
+		/// <param name="bot">Bot object related to this callback.</param>
+		void OnBotInit([NotNull] Bot bot);
 	}
 }
