@@ -76,7 +76,7 @@ namespace ArchiSteamFarm {
 				await Task.Delay(10000).ConfigureAwait(false);
 			}
 
-			Core.OnASFInitModules(Program.GlobalConfig.AdditionalProperties);
+			await Core.OnASFInitModules(Program.GlobalConfig.AdditionalProperties).ConfigureAwait(false);
 
 			await InitBots().ConfigureAwait(false);
 

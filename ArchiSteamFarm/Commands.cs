@@ -28,6 +28,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Plugins;
+using JetBrains.Annotations;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
@@ -37,6 +38,40 @@ namespace ArchiSteamFarm {
 
 		internal Commands(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
+		[PublicAPI]
+		public static string FormatBotResponse(string response, string botName) {
+			if (string.IsNullOrEmpty(response) || string.IsNullOrEmpty(botName)) {
+				ASF.ArchiLogger.LogNullError(nameof(response) + " || " + nameof(botName));
+
+				return null;
+			}
+
+			return Environment.NewLine + "<" + botName + "> " + response;
+		}
+
+		[PublicAPI]
+		public string FormatBotResponse(string response) {
+			if (string.IsNullOrEmpty(response)) {
+				ASF.ArchiLogger.LogNullError(nameof(response));
+
+				return null;
+			}
+
+			return "<" + Bot.BotName + "> " + response;
+		}
+
+		[PublicAPI]
+		public static string FormatStaticResponse(string response) {
+			if (string.IsNullOrEmpty(response)) {
+				ASF.ArchiLogger.LogNullError(nameof(response));
+
+				return null;
+			}
+
+			return "<" + SharedInfo.ASF + "> " + response;
+		}
+
+		[PublicAPI]
 		public async Task<string> Response(ulong steamID, string message) {
 			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(message));
@@ -341,36 +376,6 @@ namespace ArchiSteamFarm {
 				CachedGamesOwned.Clear();
 				CachedGamesOwned.TrimExcess();
 			}
-		}
-
-		private static string FormatBotResponse(string response, string botName) {
-			if (string.IsNullOrEmpty(response) || string.IsNullOrEmpty(botName)) {
-				ASF.ArchiLogger.LogNullError(nameof(response) + " || " + nameof(botName));
-
-				return null;
-			}
-
-			return Environment.NewLine + "<" + botName + "> " + response;
-		}
-
-		private string FormatBotResponse(string response) {
-			if (string.IsNullOrEmpty(response)) {
-				ASF.ArchiLogger.LogNullError(nameof(response));
-
-				return null;
-			}
-
-			return "<" + Bot.BotName + "> " + response;
-		}
-
-		private static string FormatStaticResponse(string response) {
-			if (string.IsNullOrEmpty(response)) {
-				ASF.ArchiLogger.LogNullError(nameof(response));
-
-				return null;
-			}
-
-			return "<" + SharedInfo.ASF + "> " + response;
 		}
 
 		private async Task<string> Response2FA(ulong steamID) {

@@ -145,17 +145,15 @@ namespace ArchiSteamFarm.Plugins {
 			return invalidPlugins.Count == 0;
 		}
 
-		internal static void OnASFInitModules(IReadOnlyDictionary<string, JToken> additionalConfigProperties = null) {
+		internal static async Task OnASFInitModules(IReadOnlyDictionary<string, JToken> additionalConfigProperties = null) {
 			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 				return;
 			}
 
-			foreach (IASF plugin in ActivePlugins.OfType<IASF>()) {
-				try {
-					plugin.OnASFInit(additionalConfigProperties);
-				} catch (Exception e) {
-					ASF.ArchiLogger.LogGenericException(e);
-				}
+			try {
+				await Utilities.InParallel(ActivePlugins.OfType<IASF>().Select(plugin => Task.Run(() => plugin.OnASFInit(additionalConfigProperties)))).ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
 			}
 		}
 
@@ -170,26 +168,12 @@ namespace ArchiSteamFarm.Plugins {
 				return null;
 			}
 
-			foreach (IBotCommand plugin in ActivePlugins.OfType<IBotCommand>()) {
-				string response;
+			IList<string> responses = await Utilities.InParallel(ActivePlugins.OfType<IBotCommand>().Select(plugin => plugin.OnBotCommand(bot, steamID, message, args))).ConfigureAwait(false);
 
-				try {
-					response = await plugin.OnBotCommand(bot, steamID, message, args).ConfigureAwait(false);
-				} catch (Exception e) {
-					ASF.ArchiLogger.LogGenericException(e);
-
-					continue;
-				}
-
-				if (!string.IsNullOrEmpty(response)) {
-					return response;
-				}
-			}
-
-			return null;
+			return string.Join(Environment.NewLine, responses.Where(response => !string.IsNullOrEmpty(response)));
 		}
 
-		internal static void OnBotDestroy(Bot bot) {
+		internal static async Task OnBotDestroy(Bot bot) {
 			if (bot == null) {
 				ASF.ArchiLogger.LogNullError(nameof(bot));
 
@@ -200,32 +184,14 @@ namespace ArchiSteamFarm.Plugins {
 				return;
 			}
 
-			foreach (IBot plugin in ActivePlugins.OfType<IBot>()) {
-				try {
-					plugin.OnBotDestroy(bot);
-				} catch (Exception e) {
-					ASF.ArchiLogger.LogGenericException(e);
-				}
+			try {
+				await Utilities.InParallel(ActivePlugins.OfType<IBot>().Select(plugin => Task.Run(() => plugin.OnBotDestroy(bot)))).ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
 			}
 		}
 
-		internal static void OnBotDisconnected(Bot bot, EResult reason) {
-			if (bot == null) {
-				ASF.ArchiLogger.LogNullError(nameof(bot));
-
-				return;
-			}
-
-			foreach (IBotConnection plugin in ActivePlugins.OfType<IBotConnection>()) {
-				try {
-					plugin.OnBotDisconnected(bot, reason);
-				} catch (Exception e) {
-					ASF.ArchiLogger.LogGenericException(e);
-				}
-			}
-		}
-
-		internal static void OnBotInit(Bot bot) {
+		internal static async Task OnBotDisconnected(Bot bot, EResult reason) {
 			if (bot == null) {
 				ASF.ArchiLogger.LogNullError(nameof(bot));
 
@@ -236,16 +202,14 @@ namespace ArchiSteamFarm.Plugins {
 				return;
 			}
 
-			foreach (IBot plugin in ActivePlugins.OfType<IBot>()) {
-				try {
-					plugin.OnBotInit(bot);
-				} catch (Exception e) {
-					ASF.ArchiLogger.LogGenericException(e);
-				}
+			try {
+				await Utilities.InParallel(ActivePlugins.OfType<IBotConnection>().Select(plugin => Task.Run(() => plugin.OnBotDisconnected(bot, reason)))).ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
 			}
 		}
 
-		internal static void OnBotInitModules(Bot bot, IReadOnlyDictionary<string, JToken> additionalConfigProperties = null) {
+		internal static async Task OnBotInit(Bot bot) {
 			if (bot == null) {
 				ASF.ArchiLogger.LogNullError(nameof(bot));
 
@@ -256,28 +220,46 @@ namespace ArchiSteamFarm.Plugins {
 				return;
 			}
 
-			foreach (IBotModules plugin in ActivePlugins.OfType<IBotModules>()) {
-				try {
-					plugin.OnBotInitModules(bot, additionalConfigProperties);
-				} catch (Exception e) {
-					ASF.ArchiLogger.LogGenericException(e);
-				}
+			try {
+				await Utilities.InParallel(ActivePlugins.OfType<IBot>().Select(plugin => Task.Run(() => plugin.OnBotInit(bot)))).ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
 			}
 		}
 
-		internal static void OnBotLoggedOn(Bot bot) {
+		internal static async Task OnBotInitModules(Bot bot, IReadOnlyDictionary<string, JToken> additionalConfigProperties = null) {
 			if (bot == null) {
 				ASF.ArchiLogger.LogNullError(nameof(bot));
 
 				return;
 			}
 
-			foreach (IBotConnection plugin in ActivePlugins.OfType<IBotConnection>()) {
-				try {
-					plugin.OnBotLoggedOn(bot);
-				} catch (Exception e) {
-					ASF.ArchiLogger.LogGenericException(e);
-				}
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+				return;
+			}
+
+			try {
+				await Utilities.InParallel(ActivePlugins.OfType<IBotModules>().Select(plugin => Task.Run(() => plugin.OnBotInitModules(bot, additionalConfigProperties)))).ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+			}
+		}
+
+		internal static async Task OnBotLoggedOn(Bot bot) {
+			if (bot == null) {
+				ASF.ArchiLogger.LogNullError(nameof(bot));
+
+				return;
+			}
+
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+				return;
+			}
+
+			try {
+				await Utilities.InParallel(ActivePlugins.OfType<IBotConnection>().Select(plugin => Task.Run(() => plugin.OnBotLoggedOn(bot)))).ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
 			}
 		}
 
@@ -292,23 +274,9 @@ namespace ArchiSteamFarm.Plugins {
 				return null;
 			}
 
-			foreach (IBotMessage plugin in ActivePlugins.OfType<IBotMessage>()) {
-				string response;
+			IList<string> responses = await Utilities.InParallel(ActivePlugins.OfType<IBotMessage>().Select(plugin => plugin.OnBotMessage(bot, steamID, message))).ConfigureAwait(false);
 
-				try {
-					response = await plugin.OnBotMessage(bot, steamID, message).ConfigureAwait(false);
-				} catch (Exception e) {
-					ASF.ArchiLogger.LogGenericException(e);
-
-					continue;
-				}
-
-				if (!string.IsNullOrEmpty(response)) {
-					return response;
-				}
-			}
-
-			return null;
+			return string.Join(Environment.NewLine, responses.Where(response => !string.IsNullOrEmpty(response)));
 		}
 	}
 }

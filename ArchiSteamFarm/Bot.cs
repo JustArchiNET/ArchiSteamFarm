@@ -251,10 +251,6 @@ namespace ArchiSteamFarm {
 				Statistics = new Statistics(this);
 			}
 
-			Core.OnBotInit(this);
-
-			InitModules();
-
 			HeartBeatTimer = new Timer(
 				async e => await HeartBeat().ConfigureAwait(false),
 				null,
@@ -787,7 +783,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task OnConfigChanged(bool deleted) {
 			if (deleted) {
-				Destroy();
+				await Destroy().ConfigureAwait(false);
 
 				return;
 			}
@@ -795,7 +791,7 @@ namespace ArchiSteamFarm {
 			BotConfig botConfig = await BotConfig.Load(ConfigFilePath).ConfigureAwait(false);
 
 			if (botConfig == null) {
-				Destroy();
+				await Destroy().ConfigureAwait(false);
 
 				return;
 			}
@@ -814,7 +810,7 @@ namespace ArchiSteamFarm {
 				Stop(botConfig.Enabled);
 				BotConfig = botConfig;
 
-				InitModules();
+				await InitModules().ConfigureAwait(false);
 				InitStart();
 			} finally {
 				InitializationSemaphore.Release();
@@ -932,6 +928,10 @@ namespace ArchiSteamFarm {
 			} finally {
 				BotsSemaphore.Release();
 			}
+
+			await Core.OnBotInit(bot).ConfigureAwait(false);
+
+			await bot.InitModules().ConfigureAwait(false);
 
 			bot.InitStart();
 		}
@@ -1242,7 +1242,7 @@ namespace ArchiSteamFarm {
 			SteamClient.Connect();
 		}
 
-		private void Destroy(bool force = false) {
+		private async Task Destroy(bool force = false) {
 			if (!force) {
 				Stop();
 			} else {
@@ -1251,7 +1251,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Bots.TryRemove(BotName, out _);
-			Core.OnBotDestroy(this);
+			await Core.OnBotDestroy(this).ConfigureAwait(false);
 		}
 
 		private void Disconnect() {
@@ -1511,7 +1511,7 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		private void InitModules() {
+		private async Task InitModules() {
 			CardsFarmer.SetInitialState(BotConfig.Paused);
 
 			if (SendItemsTimer != null) {
@@ -1537,7 +1537,7 @@ namespace ArchiSteamFarm {
 				SteamSaleEvent = new SteamSaleEvent(this);
 			}
 
-			Core.OnBotInitModules(this, BotConfig.AdditionalProperties);
+			await Core.OnBotInitModules(this, BotConfig.AdditionalProperties).ConfigureAwait(false);
 		}
 
 		private async Task InitPermanentConnectionFailure() {
@@ -1546,7 +1546,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiLogger.LogGenericWarning(Strings.BotHeartBeatFailed);
-			Destroy(true);
+			await Destroy(true).ConfigureAwait(false);
 			await RegisterBot(BotName).ConfigureAwait(false);
 		}
 
@@ -1748,7 +1748,7 @@ namespace ArchiSteamFarm {
 
 			FirstTradeSent = false;
 
-			Core.OnBotDisconnected(this, callback.UserInitiated ? EResult.OK : lastLogOnResult);
+			await Core.OnBotDisconnected(this, callback.UserInitiated ? EResult.OK : lastLogOnResult).ConfigureAwait(false);
 
 			// If we initiated disconnect, do not attempt to reconnect
 			if (callback.UserInitiated && !ReconnectOnUserInitiated) {
@@ -2165,7 +2165,7 @@ namespace ArchiSteamFarm {
 						);
 					}
 
-					Core.OnBotLoggedOn(this);
+					await Core.OnBotLoggedOn(this).ConfigureAwait(false);
 
 					break;
 				case EResult.InvalidPassword:
