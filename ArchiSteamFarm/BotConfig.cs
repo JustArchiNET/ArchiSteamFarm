@@ -229,6 +229,7 @@ namespace ArchiSteamFarm {
 		private bool ShouldSerializeSensitiveDetails = true;
 
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamMasterClanID), Required = Required.DisallowNull)]
+		[NotNull]
 		private string SSteamMasterClanID {
 			get => SteamMasterClanID.ToString();
 
@@ -297,6 +298,7 @@ namespace ArchiSteamFarm {
 			return TradingPreferences <= ETradingPreferences.All ? (true, null) : (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(TradingPreferences), TradingPreferences));
 		}
 
+		[ItemCanBeNull]
 		internal static async Task<BotConfig> Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(filePath));

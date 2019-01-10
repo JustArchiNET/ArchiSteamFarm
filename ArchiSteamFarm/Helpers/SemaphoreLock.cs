@@ -21,12 +21,13 @@
 
 using System;
 using System.Threading;
+using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Helpers {
 	internal sealed class SemaphoreLock : IDisposable {
 		private readonly SemaphoreSlim Semaphore;
 
-		internal SemaphoreLock(SemaphoreSlim semaphore) => Semaphore = semaphore ?? throw new ArgumentNullException(nameof(semaphore));
+		internal SemaphoreLock([NotNull] SemaphoreSlim semaphore) => Semaphore = semaphore ?? throw new ArgumentNullException(nameof(semaphore));
 
 		public void Dispose() => Semaphore.Release();
 	}

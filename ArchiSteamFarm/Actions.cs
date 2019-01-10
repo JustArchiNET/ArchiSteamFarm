@@ -46,7 +46,7 @@ namespace ArchiSteamFarm {
 		private bool ProcessingGiftsScheduled;
 		private bool TradingScheduled;
 
-		internal Actions(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+		internal Actions([NotNull] Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 		public void Dispose() {
 			// Those are objects that are always being created if constructor doesn't throw exception
@@ -363,6 +363,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		[ItemNotNull]
 		internal async Task<SemaphoreLock> GetTradingLock() {
 			await TradingSemaphore.WaitAsync().ConfigureAwait(false);
 

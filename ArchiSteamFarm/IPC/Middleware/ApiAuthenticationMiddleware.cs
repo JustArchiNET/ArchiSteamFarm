@@ -52,7 +52,7 @@ namespace ArchiSteamFarm.IPC.Middleware {
 
 		private readonly RequestDelegate Next;
 
-		public ApiAuthenticationMiddleware(RequestDelegate next) => Next = next ?? throw new ArgumentNullException(nameof(next));
+		public ApiAuthenticationMiddleware([NotNull] RequestDelegate next) => Next = next ?? throw new ArgumentNullException(nameof(next));
 
 		[PublicAPI]
 		public async Task InvokeAsync(HttpContext context) {

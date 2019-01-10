@@ -64,6 +64,7 @@ namespace ArchiSteamFarm.Json {
 			public EType Type { get; internal set; }
 
 			[JsonProperty(PropertyName = "amount", Required = Required.Always)]
+			[NotNull]
 			private string AmountText {
 				get => Amount.ToString();
 
@@ -85,6 +86,7 @@ namespace ArchiSteamFarm.Json {
 			}
 
 			[JsonProperty(PropertyName = "assetid", Required = Required.DisallowNull)]
+			[NotNull]
 			private string AssetIDText {
 				get => AssetID.ToString();
 
@@ -106,6 +108,7 @@ namespace ArchiSteamFarm.Json {
 			}
 
 			[JsonProperty(PropertyName = "classid", Required = Required.DisallowNull)]
+			[NotNull]
 			private string ClassIDText {
 				get => ClassID.ToString();
 
@@ -125,6 +128,7 @@ namespace ArchiSteamFarm.Json {
 			}
 
 			[JsonProperty(PropertyName = "contextid", Required = Required.DisallowNull)]
+			[NotNull]
 			private string ContextIDText {
 				get => ContextID.ToString();
 
@@ -146,6 +150,7 @@ namespace ArchiSteamFarm.Json {
 			}
 
 			[JsonProperty(PropertyName = "id", Required = Required.DisallowNull)]
+			[NotNull]
 			private string IDText {
 				get => AssetIDText;
 				set => AssetIDText = value;
@@ -555,7 +560,7 @@ namespace ArchiSteamFarm.Json {
 			internal readonly PrivacySettings Settings;
 
 			// Constructed from privacy change request
-			internal UserPrivacy(PrivacySettings settings, ECommentPermission commentPermission) {
+			internal UserPrivacy([NotNull] PrivacySettings settings, ECommentPermission commentPermission) {
 				Settings = settings ?? throw new ArgumentNullException(nameof(settings));
 				CommentPermission = commentPermission;
 			}

@@ -27,6 +27,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.SteamKit2;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
@@ -49,7 +50,7 @@ namespace ArchiSteamFarm {
 		private string FilePath;
 
 		// This constructor is used when creating new database
-		private GlobalDatabase(string filePath) : this() {
+		private GlobalDatabase([NotNull] string filePath) : this() {
 			if (string.IsNullOrEmpty(filePath)) {
 				throw new ArgumentNullException(nameof(filePath));
 			}
@@ -69,6 +70,7 @@ namespace ArchiSteamFarm {
 			PackagesRefreshSemaphore.Dispose();
 		}
 
+		[ItemCanBeNull]
 		internal static async Task<GlobalDatabase> CreateOrLoad(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(filePath));

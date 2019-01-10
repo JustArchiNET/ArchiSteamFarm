@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SteamKit2;
 
@@ -34,7 +35,7 @@ namespace ArchiSteamFarm.SteamKit2 {
 		[JsonProperty(Required = Required.Always)]
 		internal readonly ProtocolTypes ProtocolTypes;
 
-		internal ServerRecordEndPoint(string host, ushort port, ProtocolTypes protocolTypes) {
+		internal ServerRecordEndPoint([NotNull] string host, ushort port, ProtocolTypes protocolTypes) {
 			if (string.IsNullOrEmpty(host) || (port == 0) || (protocolTypes == 0)) {
 				throw new ArgumentNullException(nameof(host) + " || " + nameof(port) + " || " + nameof(protocolTypes));
 			}

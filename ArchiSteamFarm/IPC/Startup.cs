@@ -22,6 +22,7 @@
 using System;
 using System.IO;
 using ArchiSteamFarm.IPC.Middleware;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -36,7 +37,7 @@ namespace ArchiSteamFarm.IPC {
 	internal sealed class Startup {
 		private readonly IConfiguration Configuration;
 
-		public Startup(IConfiguration configuration) => Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+		public Startup([NotNull] IConfiguration configuration) => Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
 			if ((app == null) || (env == null)) {

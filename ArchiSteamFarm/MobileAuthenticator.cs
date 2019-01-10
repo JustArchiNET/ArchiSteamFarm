@@ -29,6 +29,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
 using HtmlAgilityPack;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
@@ -92,6 +93,7 @@ namespace ArchiSteamFarm {
 			return GenerateTokenForTime(time);
 		}
 
+		[ItemCanBeNull]
 		internal async Task<Steam.ConfirmationDetails> GetConfirmationDetails(Confirmation confirmation) {
 			if (confirmation == null) {
 				Bot.ArchiLogger.LogNullError(nameof(confirmation));
@@ -126,6 +128,7 @@ namespace ArchiSteamFarm {
 			return response?.Success == true ? response : null;
 		}
 
+		[ItemCanBeNull]
 		internal async Task<HashSet<Confirmation>> GetConfirmations(Steam.ConfirmationDetails.EType acceptedType = Steam.ConfirmationDetails.EType.Unknown) {
 			if (!HasValidDeviceID) {
 				Bot.ArchiLogger.LogGenericError(Strings.ErrorMobileAuthenticatorInvalidDeviceID);
@@ -275,7 +278,7 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		internal void Init(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+		internal void Init([NotNull] Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 		internal static bool IsValidDeviceID(string deviceID) {
 			if (string.IsNullOrEmpty(deviceID)) {

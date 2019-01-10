@@ -32,6 +32,7 @@ namespace ArchiSteamFarm.Plugins {
 		/// <param name="steamID">64-bit long unsigned integer of steamID executing the command.</param>
 		/// <param name="message">Message in its raw format.</param>
 		/// <returns>Response to the message, or null/empty (as the task value) for silence.</returns>
+		[ItemCanBeNull]
 		[NotNull]
 		Task<string> OnBotMessage([NotNull] Bot bot, ulong steamID, [NotNull] string message);
 	}

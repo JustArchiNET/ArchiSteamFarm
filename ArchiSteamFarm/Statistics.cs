@@ -28,6 +28,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
@@ -58,7 +59,7 @@ namespace ArchiSteamFarm {
 		private DateTime LastPersonaStateRequest;
 		private bool ShouldSendHeartBeats;
 
-		internal Statistics(Bot bot) {
+		internal Statistics([NotNull] Bot bot) {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 			MatchActivelyTimer = new Timer(
@@ -182,6 +183,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		[ItemCanBeNull]
 		private async Task<HashSet<ListedUser>> GetListedUsers() {
 			const string request = URL + "/Api/Bots";
 

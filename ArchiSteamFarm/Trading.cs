@@ -41,7 +41,7 @@ namespace ArchiSteamFarm {
 
 		private bool ParsingScheduled;
 
-		internal Trading(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+		internal Trading([NotNull] Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 		public void Dispose() => TradesSemaphore.Dispose();
 
@@ -517,6 +517,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		[ItemCanBeNull]
 		private async Task<ParseTradeResult> ShouldAcceptTrade(Steam.TradeOffer tradeOffer) {
 			if (tradeOffer == null) {
 				Bot.ArchiLogger.LogNullError(nameof(tradeOffer));

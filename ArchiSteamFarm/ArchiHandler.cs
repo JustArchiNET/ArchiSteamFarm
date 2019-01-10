@@ -47,7 +47,7 @@ namespace ArchiSteamFarm {
 
 		internal DateTime LastPacketReceived { get; private set; }
 
-		internal ArchiHandler(ArchiLogger archiLogger, SteamUnifiedMessages steamUnifiedMessages) {
+		internal ArchiHandler([NotNull] ArchiLogger archiLogger, [NotNull] SteamUnifiedMessages steamUnifiedMessages) {
 			if ((archiLogger == null) || (steamUnifiedMessages == null)) {
 				throw new ArgumentNullException(nameof(archiLogger) + " || " + nameof(steamUnifiedMessages));
 			}
@@ -674,7 +674,7 @@ namespace ArchiSteamFarm {
 			public EPurchaseResultDetail PurchaseResultDetail { get; internal set; }
 			public EResult Result { get; internal set; }
 
-			internal PurchaseResponseCallback(JobID jobID, CMsgClientPurchaseResponse msg) {
+			internal PurchaseResponseCallback([NotNull] JobID jobID, [NotNull] CMsgClientPurchaseResponse msg) {
 				if ((jobID == null) || (msg == null)) {
 					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
 				}
@@ -740,7 +740,7 @@ namespace ArchiSteamFarm {
 		internal sealed class PlayingSessionStateCallback : CallbackMsg {
 			internal readonly bool PlayingBlocked;
 
-			internal PlayingSessionStateCallback(JobID jobID, CMsgClientPlayingSessionState msg) {
+			internal PlayingSessionStateCallback([NotNull] JobID jobID, [NotNull] CMsgClientPlayingSessionState msg) {
 				if ((jobID == null) || (msg == null)) {
 					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
 				}
@@ -753,7 +753,7 @@ namespace ArchiSteamFarm {
 		internal sealed class RedeemGuestPassResponseCallback : CallbackMsg {
 			internal readonly EResult Result;
 
-			internal RedeemGuestPassResponseCallback(JobID jobID, CMsgClientRedeemGuestPassResponse msg) {
+			internal RedeemGuestPassResponseCallback([NotNull] JobID jobID, [NotNull] CMsgClientRedeemGuestPassResponse msg) {
 				if ((jobID == null) || (msg == null)) {
 					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
 				}
@@ -766,7 +766,7 @@ namespace ArchiSteamFarm {
 		internal sealed class SharedLibraryLockStatusCallback : CallbackMsg {
 			internal readonly ulong LibraryLockedBySteamID;
 
-			internal SharedLibraryLockStatusCallback(JobID jobID, CMsgClientSharedLibraryLockStatus msg) {
+			internal SharedLibraryLockStatusCallback([NotNull] JobID jobID, [NotNull] CMsgClientSharedLibraryLockStatus msg) {
 				if ((jobID == null) || (msg == null)) {
 					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
 				}
@@ -784,7 +784,7 @@ namespace ArchiSteamFarm {
 		internal sealed class UserNotificationsCallback : CallbackMsg {
 			internal readonly Dictionary<EUserNotification, uint> Notifications;
 
-			internal UserNotificationsCallback(JobID jobID, CMsgClientUserNotifications msg) {
+			internal UserNotificationsCallback([NotNull] JobID jobID, [NotNull] CMsgClientUserNotifications msg) {
 				if ((jobID == null) || (msg == null)) {
 					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
 				}
@@ -824,7 +824,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			internal UserNotificationsCallback(JobID jobID, CMsgClientItemAnnouncements msg) {
+			internal UserNotificationsCallback([NotNull] JobID jobID, [NotNull] CMsgClientItemAnnouncements msg) {
 				if ((jobID == null) || (msg == null)) {
 					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
 				}
@@ -853,7 +853,7 @@ namespace ArchiSteamFarm {
 		internal sealed class VanityURLChangedCallback : CallbackMsg {
 			internal readonly string VanityURL;
 
-			internal VanityURLChangedCallback(JobID jobID, CMsgClientVanityURLChangedNotification msg) {
+			internal VanityURLChangedCallback([NotNull] JobID jobID, [NotNull] CMsgClientVanityURLChangedNotification msg) {
 				if ((jobID == null) || (msg == null)) {
 					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
 				}

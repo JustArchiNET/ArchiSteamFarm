@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using ArchiSteamFarm.Json;
+using JetBrains.Annotations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ArchiSteamFarm.Tests {
@@ -318,6 +319,7 @@ namespace ArchiSteamFarm.Tests {
 			return (bool) method.Invoke(null, new object[] { inventory, itemsToGive, itemsToReceive });
 		}
 
+		[NotNull]
 		private static Steam.Asset CreateItem(ulong classID, uint amount = 1, uint realAppID = Steam.Asset.SteamAppID, Steam.Asset.EType type = Steam.Asset.EType.TradingCard) => new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, classID, amount, realAppID, type);
 	}
 }

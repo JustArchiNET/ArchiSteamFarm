@@ -24,10 +24,13 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using ArchiSteamFarm.Localization;
+using JetBrains.Annotations;
 
 namespace ArchiSteamFarm {
 	internal static class OS {
 		internal static bool IsUnix => RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+
+		[NotNull]
 		internal static string Variant => RuntimeInformation.OSDescription.Trim();
 
 		internal static void Init(bool systemRequired, GlobalConfig.EOptimizationMode optimizationMode) {

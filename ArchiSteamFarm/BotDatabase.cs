@@ -27,6 +27,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
@@ -63,7 +64,7 @@ namespace ArchiSteamFarm {
 		private bool ReadOnly;
 
 		// This constructor is used when creating new database
-		private BotDatabase(string filePath) {
+		private BotDatabase([NotNull] string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				throw new ArgumentNullException(nameof(filePath));
 			}
@@ -137,6 +138,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		[ItemCanBeNull]
 		internal static async Task<BotDatabase> CreateOrLoad(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(filePath));

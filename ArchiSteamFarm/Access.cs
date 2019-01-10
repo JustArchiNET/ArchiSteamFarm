@@ -29,7 +29,7 @@ namespace ArchiSteamFarm {
 
 		private readonly Bot Bot;
 
-		internal Access(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+		internal Access([NotNull] Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 		[PublicAPI]
 		public bool IsFamilySharing(ulong steamID) {

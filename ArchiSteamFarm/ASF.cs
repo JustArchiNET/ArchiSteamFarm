@@ -95,6 +95,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		[ItemCanBeNull]
 		internal static async Task<Version> Update(bool updateOverride = false) {
 			if (!SharedInfo.BuildInfo.CanUpdate || (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None)) {
 				return null;
@@ -243,13 +244,6 @@ namespace ArchiSteamFarm {
 			}
 
 			StringComparer botsComparer = await Core.GetBotsComparer().ConfigureAwait(false);
-
-			if (botsComparer == null) {
-				ArchiLogger.LogNullError(nameof(botsComparer));
-
-				return;
-			}
-
 			Bot.Init(botsComparer);
 
 			// Ensure that we ask for a list of servers if we don't have any saved servers available

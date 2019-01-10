@@ -22,7 +22,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
+using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Collections {
 	internal sealed class ConcurrentSortedHashSet<T> : IDisposable, IReadOnlyCollection<T>, ISet<T> {
@@ -197,10 +199,12 @@ namespace ArchiSteamFarm.Collections {
 			}
 		}
 
+		[SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
 		void ICollection<T>.Add(T item) => Add(item);
+
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		internal void ReplaceWith(IEnumerable<T> other) {
+		internal void ReplaceWith([NotNull] IEnumerable<T> other) {
 			CollectionSemaphore.Wait();
 
 			try {
@@ -222,7 +226,7 @@ namespace ArchiSteamFarm.Collections {
 
 			object IEnumerator.Current => Current;
 
-			internal ConcurrentEnumerator(IReadOnlyCollection<T> collection, SemaphoreSlim semaphore) {
+			internal ConcurrentEnumerator([NotNull] IReadOnlyCollection<T> collection, [NotNull] SemaphoreSlim semaphore) {
 				if ((collection == null) || (semaphore == null)) {
 					throw new ArgumentNullException(nameof(collection) + " || " + nameof(semaphore));
 				}

@@ -83,7 +83,7 @@ namespace ArchiSteamFarm {
 		private ulong SteamID;
 		private string VanityURL;
 
-		internal ArchiWebHandler(Bot bot) {
+		internal ArchiWebHandler([NotNull] Bot bot) {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 			CachedApiKey = new ArchiCacheable<string>(ResolveApiKey, TimeSpan.FromHours(1));
@@ -98,6 +98,7 @@ namespace ArchiSteamFarm {
 			WebBrowser.Dispose();
 		}
 
+		[ItemCanBeNull]
 		[PublicAPI]
 		public async Task<string> GetAbsoluteProfileURL(bool waitForInitialization = true) {
 			if (waitForInitialization && (SteamID == 0)) {
@@ -1010,8 +1011,10 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
+		[NotNull]
 		internal HttpClient GenerateDisposableHttpClient() => WebBrowser.GenerateDisposableHttpClient();
 
+		[ItemCanBeNull]
 		internal async Task<HashSet<uint>> GenerateNewDiscoveryQueue() {
 			const string request = "/explore/generatenewdiscoveryqueue";
 
@@ -1023,6 +1026,7 @@ namespace ArchiSteamFarm {
 			return output?.Queue;
 		}
 
+		[ItemCanBeNull]
 		internal async Task<HashSet<Steam.TradeOffer>> GetActiveTradeOffers() {
 			(bool success, string steamApiKey) = await CachedApiKey.GetValue().ConfigureAwait(false);
 
@@ -1159,6 +1163,7 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
+		[ItemCanBeNull]
 		internal async Task<HashSet<uint>> GetAppList() {
 			KeyValue response = null;
 
@@ -1224,6 +1229,7 @@ namespace ArchiSteamFarm {
 			return await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
 		}
 
+		[ItemCanBeNull]
 		internal async Task<Steam.ConfirmationDetails> GetConfirmationDetails(string deviceID, string confirmationHash, uint time, MobileAuthenticator.Confirmation confirmation) {
 			if (string.IsNullOrEmpty(deviceID) || string.IsNullOrEmpty(confirmationHash) || (time == 0) || (confirmation == null)) {
 				Bot.ArchiLogger.LogNullError(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time) + " || " + nameof(confirmation));
@@ -1280,6 +1286,7 @@ namespace ArchiSteamFarm {
 			return await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
 		}
 
+		[ItemCanBeNull]
 		internal async Task<HashSet<ulong>> GetDigitalGiftCards() {
 			const string request = "/gifts";
 			HtmlDocument response = await UrlGetToHtmlDocumentWithSession(SteamStoreURL, request).ConfigureAwait(false);
@@ -1323,6 +1330,7 @@ namespace ArchiSteamFarm {
 			return await UrlGetToHtmlDocumentWithSession(SteamStoreURL, request).ConfigureAwait(false);
 		}
 
+		[ItemCanBeNull]
 		internal async Task<HashSet<ulong>> GetFamilySharingSteamIDs() {
 			const string request = "/account/managedevices?l=english";
 			HtmlDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamStoreURL, request).ConfigureAwait(false);
@@ -1367,6 +1375,7 @@ namespace ArchiSteamFarm {
 			return await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
 		}
 
+		[ItemCanBeNull]
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
 		internal async Task<HashSet<Steam.Asset>> GetInventory(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, uint contextID = Steam.Asset.SteamCommunityContextID, bool? tradable = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<uint> wantedRealAppIDs = null, IReadOnlyCollection<(uint AppID, Steam.Asset.EType Type)> wantedSets = null, IReadOnlyCollection<(uint AppID, Steam.Asset.EType Type)> skippedSets = null) {
 			if ((appID == 0) || (contextID == 0)) {
@@ -1495,6 +1504,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		[ItemCanBeNull]
 		internal async Task<Dictionary<uint, string>> GetMyOwnedGames() {
 			const string request = "/my/games?l=english&xml=1";
 
@@ -1537,6 +1547,7 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
+		[ItemCanBeNull]
 		internal async Task<Dictionary<uint, string>> GetOwnedGames(ulong steamID) {
 			if (steamID == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID));

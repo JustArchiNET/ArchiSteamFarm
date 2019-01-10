@@ -22,9 +22,9 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 #if NETFRAMEWORK
-using JetBrains.Annotations;
 using System.Collections.Generic;
 using System.Net.WebSockets;
 using System.Threading;
@@ -54,28 +54,30 @@ namespace ArchiSteamFarm {
 
 #pragma warning disable 1998
 		internal static class File {
-			internal static async Task AppendAllTextAsync(string path, string contents) =>
+			internal static async Task AppendAllTextAsync([NotNull] string path, string contents) =>
 #if NETFRAMEWORK
 				System.IO.File.AppendAllText(path, contents);
 #else
 				await System.IO.File.AppendAllTextAsync(path, contents).ConfigureAwait(false);
 #endif
 
-			internal static async Task<byte[]> ReadAllBytesAsync(string path) =>
+			[ItemNotNull]
+			internal static async Task<byte[]> ReadAllBytesAsync([NotNull] string path) =>
 #if NETFRAMEWORK
 				System.IO.File.ReadAllBytes(path);
 #else
 				await System.IO.File.ReadAllBytesAsync(path).ConfigureAwait(false);
 #endif
 
-			internal static async Task<string> ReadAllTextAsync(string path) =>
+			[ItemNotNull]
+			internal static async Task<string> ReadAllTextAsync([NotNull] string path) =>
 #if NETFRAMEWORK
 				System.IO.File.ReadAllText(path);
 #else
 				await System.IO.File.ReadAllTextAsync(path).ConfigureAwait(false);
 #endif
 
-			internal static async Task WriteAllTextAsync(string path, string contents) =>
+			internal static async Task WriteAllTextAsync([NotNull] string path, string contents) =>
 #if NETFRAMEWORK
 				System.IO.File.WriteAllText(path, contents);
 #else
@@ -94,7 +96,8 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static class Path {
-			internal static string GetRelativePath(string relativeTo, string path) {
+			[NotNull]
+			internal static string GetRelativePath([NotNull] string relativeTo, [NotNull] string path) {
 #if NETFRAMEWORK
 				if (!path.StartsWith(relativeTo, StringComparison.Ordinal)) {
 					throw new NotImplementedException();
@@ -112,9 +115,11 @@ namespace ArchiSteamFarm {
 		}
 
 #if NETFRAMEWORK
-		internal static async Task<WebSocketReceiveResult> ReceiveAsync(this WebSocket webSocket, byte[] buffer, CancellationToken cancellationToken) => await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken).ConfigureAwait(false);
-		internal static async Task SendAsync(this WebSocket webSocket, byte[] buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) => await webSocket.SendAsync(new ArraySegment<byte>(buffer), messageType, endOfMessage, cancellationToken).ConfigureAwait(false);
-		internal static string[] Split(this string text, char separator, StringSplitOptions options = StringSplitOptions.None) => text.Split(new[] { separator }, options);
+		internal static async Task<WebSocketReceiveResult> ReceiveAsync([NotNull] this WebSocket webSocket, [NotNull] byte[] buffer, CancellationToken cancellationToken) => await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken).ConfigureAwait(false);
+		internal static async Task SendAsync([NotNull] this WebSocket webSocket, [NotNull] byte[] buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) => await webSocket.SendAsync(new ArraySegment<byte>(buffer), messageType, endOfMessage, cancellationToken).ConfigureAwait(false);
+
+		[NotNull]
+		internal static string[] Split([NotNull] this string text, char separator, StringSplitOptions options = StringSplitOptions.None) => text.Split(new[] { separator }, options);
 
 		[PublicAPI]
 		internal static void TrimExcess<T1, T2>(this Dictionary<T1, T2> _) { } // no-op

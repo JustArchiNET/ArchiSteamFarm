@@ -32,6 +32,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Localization;
 using HtmlAgilityPack;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SteamKit2;
 
@@ -80,7 +81,7 @@ namespace ArchiSteamFarm {
 		private bool PermanentlyPaused;
 		private bool ShouldResumeFarming = true;
 
-		internal CardsFarmer(Bot bot) {
+		internal CardsFarmer([NotNull] Bot bot) {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 			if (Program.GlobalConfig.IdleFarmingPeriod > 0) {
@@ -1004,6 +1005,12 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool> IsPlayableGame(Game game) {
+			if (game == null) {
+				Bot.ArchiLogger.LogNullError(nameof(game));
+
+				return false;
+			}
+
 			(uint playableAppID, DateTime ignoredUntil) = await Bot.GetAppDataForIdling(game.AppID, game.HoursPlayed).ConfigureAwait(false);
 
 			if (playableAppID == 0) {
@@ -1182,7 +1189,7 @@ namespace ArchiSteamFarm {
 
 			internal uint PlayableAppID { get; set; }
 
-			internal Game(uint appID, string gameName, float hoursPlayed, ushort cardsRemaining, byte badgeLevel) {
+			internal Game(uint appID, [NotNull] string gameName, float hoursPlayed, ushort cardsRemaining, byte badgeLevel) {
 				if ((appID == 0) || string.IsNullOrEmpty(gameName) || (hoursPlayed < 0) || (cardsRemaining == 0)) {
 					throw new ArgumentOutOfRangeException(nameof(appID) + " || " + nameof(gameName) + " || " + nameof(hoursPlayed) + " || " + nameof(cardsRemaining));
 				}

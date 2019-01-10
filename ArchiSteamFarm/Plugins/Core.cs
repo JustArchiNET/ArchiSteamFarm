@@ -31,6 +31,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
+using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
 
@@ -63,6 +64,7 @@ namespace ArchiSteamFarm.Plugins {
 			return true;
 		}
 
+		[ItemNotNull]
 		internal static async Task<StringComparer> GetBotsComparer() {
 			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 				return StringComparer.Ordinal;
@@ -178,6 +180,7 @@ namespace ArchiSteamFarm.Plugins {
 			}
 		}
 
+		[ItemCanBeNull]
 		internal static async Task<string> OnBotCommand(Bot bot, ulong steamID, string message, string[] args) {
 			if ((bot == null) || (steamID == 0) || string.IsNullOrEmpty(message) || (args == null) || (args.Length == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(args));
@@ -292,6 +295,7 @@ namespace ArchiSteamFarm.Plugins {
 			}
 		}
 
+		[ItemCanBeNull]
 		internal static async Task<string> OnBotMessage(Bot bot, ulong steamID, string message) {
 			if ((bot == null) || (steamID == 0) || string.IsNullOrEmpty(message)) {
 				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(message));

@@ -219,6 +219,7 @@ namespace ArchiSteamFarm {
 		private bool ShouldSerializeSensitiveDetails = true;
 
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamOwnerID), Required = Required.DisallowNull)]
+		[NotNull]
 		private string SSteamOwnerID {
 			get => SteamOwnerID.ToString();
 
@@ -261,12 +262,14 @@ namespace ArchiSteamFarm {
 			return Enum.IsDefined(typeof(EUpdateChannel), UpdateChannel) ? (true, null) : (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(UpdateChannel), UpdateChannel));
 		}
 
+		[NotNull]
 		internal static GlobalConfig Create() =>
 			new GlobalConfig {
 				ShouldSerializeEverything = false,
 				ShouldSerializeSensitiveDetails = false
 			};
 
+		[ItemCanBeNull]
 		internal static async Task<GlobalConfig> Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(filePath));

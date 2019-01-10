@@ -21,6 +21,7 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Responses {
@@ -53,7 +54,7 @@ namespace ArchiSteamFarm.IPC.Responses {
 		[Required]
 		public readonly string Version;
 
-		internal GitHubReleaseResponse(GitHub.ReleaseResponse releaseResponse) {
+		internal GitHubReleaseResponse([NotNull] GitHub.ReleaseResponse releaseResponse) {
 			if (releaseResponse == null) {
 				throw new ArgumentNullException(nameof(releaseResponse));
 			}

@@ -30,6 +30,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Humanizer;
 using Humanizer.Localisation;
+using JetBrains.Annotations;
 
 namespace ArchiSteamFarm {
 	internal static class Utilities {
@@ -237,6 +238,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		[NotNull]
 		internal static string ReadLineMasked(char mask = '*') {
 			StringBuilder result = new StringBuilder();
 

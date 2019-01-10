@@ -25,6 +25,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using HtmlAgilityPack;
+using JetBrains.Annotations;
 
 namespace ArchiSteamFarm {
 	internal sealed class SteamSaleEvent : IDisposable {
@@ -33,7 +34,7 @@ namespace ArchiSteamFarm {
 		private readonly Bot Bot;
 		private readonly Timer SaleEventTimer;
 
-		internal SteamSaleEvent(Bot bot) {
+		internal SteamSaleEvent([NotNull] Bot bot) {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 			SaleEventTimer = new Timer(

@@ -48,7 +48,7 @@ namespace ArchiSteamFarm {
 		private readonly HttpClient HttpClient;
 		private readonly HttpClientHandler HttpClientHandler;
 
-		internal WebBrowser(ArchiLogger archiLogger, IWebProxy webProxy = null, bool extendedTimeout = false) {
+		internal WebBrowser([NotNull] ArchiLogger archiLogger, IWebProxy webProxy = null, bool extendedTimeout = false) {
 			ArchiLogger = archiLogger ?? throw new ArgumentNullException(nameof(archiLogger));
 
 			HttpClientHandler = new HttpClientHandler {
@@ -74,6 +74,7 @@ namespace ArchiSteamFarm {
 			HttpClientHandler.Dispose();
 		}
 
+		[ItemCanBeNull]
 		[PublicAPI]
 		public async Task<HtmlDocumentResponse> UrlGetToHtmlDocument(string request, string referer = null, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
@@ -87,6 +88,7 @@ namespace ArchiSteamFarm {
 			return response != null ? new HtmlDocumentResponse(response) : null;
 		}
 
+		[ItemCanBeNull]
 		[PublicAPI]
 		public async Task<ObjectResponse<T>> UrlGetToJsonObject<T>(string request, string referer = null, byte maxTries = MaxTries) where T : class {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
@@ -127,6 +129,7 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
+		[ItemCanBeNull]
 		[PublicAPI]
 		public async Task<XmlDocumentResponse> UrlGetToXmlDocument(string request, string referer = null, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
@@ -163,6 +166,7 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
+		[ItemCanBeNull]
 		[PublicAPI]
 		public async Task<BasicResponse> UrlHead(string request, string referer = null, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
@@ -189,6 +193,7 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
+		[ItemCanBeNull]
 		[PublicAPI]
 		public async Task<BasicResponse> UrlPost(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
@@ -215,6 +220,7 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
+		[ItemCanBeNull]
 		[PublicAPI]
 		public async Task<HtmlDocumentResponse> UrlPostToHtmlDocument(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
@@ -228,6 +234,7 @@ namespace ArchiSteamFarm {
 			return response != null ? new HtmlDocumentResponse(response) : null;
 		}
 
+		[ItemCanBeNull]
 		[PublicAPI]
 		public async Task<ObjectResponse<T>> UrlPostToJsonObject<T>(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, byte maxTries = MaxTries) where T : class {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
@@ -268,6 +275,7 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
+		[NotNull]
 		internal HttpClient GenerateDisposableHttpClient(bool extendedTimeout = false) {
 			HttpClient result = new HttpClient(HttpClientHandler) {
 				Timeout = TimeSpan.FromSeconds(extendedTimeout ? ExtendedTimeoutMultiplier * Program.GlobalConfig.ConnectionTimeout : Program.GlobalConfig.ConnectionTimeout)
@@ -309,6 +317,7 @@ namespace ArchiSteamFarm {
 			return htmlDocument;
 		}
 
+		[ItemCanBeNull]
 		internal async Task<BinaryResponse> UrlGetToBinaryWithProgress(string request, string referer = null, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
@@ -380,6 +389,7 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
+		[ItemCanBeNull]
 		internal async Task<StringResponse> UrlGetToString(string request, string referer = null, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
@@ -546,6 +556,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		[ItemCanBeNull]
 		private async Task<StringResponse> UrlPostToString(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
@@ -574,7 +585,7 @@ namespace ArchiSteamFarm {
 		public class BasicResponse {
 			internal readonly Uri FinalUri;
 
-			internal BasicResponse(HttpResponseMessage httpResponseMessage) {
+			internal BasicResponse([NotNull] HttpResponseMessage httpResponseMessage) {
 				if (httpResponseMessage == null) {
 					throw new ArgumentNullException(nameof(httpResponseMessage));
 				}
@@ -582,7 +593,7 @@ namespace ArchiSteamFarm {
 				FinalUri = httpResponseMessage.Headers.Location ?? httpResponseMessage.RequestMessage.RequestUri;
 			}
 
-			internal BasicResponse(BasicResponse basicResponse) {
+			internal BasicResponse([NotNull] BasicResponse basicResponse) {
 				if (basicResponse == null) {
 					throw new ArgumentNullException(nameof(basicResponse));
 				}
@@ -595,7 +606,7 @@ namespace ArchiSteamFarm {
 			[PublicAPI]
 			public readonly HtmlDocument Content;
 
-			internal HtmlDocumentResponse(StringResponse stringResponse) : base(stringResponse) {
+			internal HtmlDocumentResponse([NotNull] StringResponse stringResponse) : base(stringResponse) {
 				if (stringResponse == null) {
 					throw new ArgumentNullException(nameof(stringResponse));
 				}
@@ -608,7 +619,7 @@ namespace ArchiSteamFarm {
 			[PublicAPI]
 			public readonly T Content;
 
-			internal ObjectResponse(StringResponse stringResponse, T content) : base(stringResponse) {
+			internal ObjectResponse([NotNull] StringResponse stringResponse, T content) : base(stringResponse) {
 				if (stringResponse == null) {
 					throw new ArgumentNullException(nameof(stringResponse));
 				}
@@ -621,7 +632,7 @@ namespace ArchiSteamFarm {
 			[PublicAPI]
 			public readonly XmlDocument Content;
 
-			internal XmlDocumentResponse(StringResponse stringResponse, XmlDocument content) : base(stringResponse) {
+			internal XmlDocumentResponse([NotNull] StringResponse stringResponse, XmlDocument content) : base(stringResponse) {
 				if (stringResponse == null) {
 					throw new ArgumentNullException(nameof(stringResponse));
 				}
@@ -633,7 +644,7 @@ namespace ArchiSteamFarm {
 		internal sealed class BinaryResponse : BasicResponse {
 			internal readonly byte[] Content;
 
-			internal BinaryResponse(HttpResponseMessage httpResponseMessage, byte[] content) : base(httpResponseMessage) {
+			internal BinaryResponse([NotNull] HttpResponseMessage httpResponseMessage, [NotNull] byte[] content) : base(httpResponseMessage) {
 				if ((httpResponseMessage == null) || (content == null)) {
 					throw new ArgumentNullException(nameof(httpResponseMessage) + " || " + nameof(content));
 				}
@@ -645,7 +656,7 @@ namespace ArchiSteamFarm {
 		internal sealed class StringResponse : BasicResponse {
 			internal readonly string Content;
 
-			internal StringResponse(HttpResponseMessage httpResponseMessage, string content) : base(httpResponseMessage) {
+			internal StringResponse([NotNull] HttpResponseMessage httpResponseMessage, [NotNull] string content) : base(httpResponseMessage) {
 				if ((httpResponseMessage == null) || (content == null)) {
 					throw new ArgumentNullException(nameof(httpResponseMessage) + " || " + nameof(content));
 				}

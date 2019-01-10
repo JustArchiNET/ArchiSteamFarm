@@ -25,6 +25,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Markdig;
 using Markdig.Renderers;
 using Markdig.Syntax;
@@ -33,6 +34,7 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	internal static class GitHub {
+		[ItemCanBeNull]
 		internal static async Task<ReleaseResponse> GetLatestRelease(bool stable = true) {
 			string releaseURL = SharedInfo.GithubReleaseURL + (stable ? "/latest" : "?per_page=1");
 
@@ -45,6 +47,7 @@ namespace ArchiSteamFarm {
 			return response?.FirstOrDefault();
 		}
 
+		[ItemCanBeNull]
 		internal static async Task<ReleaseResponse> GetRelease(string version) {
 			if (string.IsNullOrEmpty(version)) {
 				ASF.ArchiLogger.LogNullError(nameof(version));
@@ -55,6 +58,7 @@ namespace ArchiSteamFarm {
 			return await GetReleaseFromURL(SharedInfo.GithubReleaseURL + "/tags/" + version).ConfigureAwait(false);
 		}
 
+		[ItemCanBeNull]
 		internal static async Task<List<ReleaseResponse>> GetReleases(byte count) {
 			if (count == 0) {
 				ASF.ArchiLogger.LogNullError(nameof(count));
@@ -86,6 +90,7 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
+		[ItemCanBeNull]
 		private static async Task<ReleaseResponse> GetReleaseFromURL(string releaseURL) {
 			if (string.IsNullOrEmpty(nameof(releaseURL))) {
 				ASF.ArchiLogger.LogNullError(nameof(releaseURL));
@@ -98,6 +103,7 @@ namespace ArchiSteamFarm {
 			return objectResponse?.Content;
 		}
 
+		[ItemCanBeNull]
 		private static async Task<List<ReleaseResponse>> GetReleasesFromURL(string releaseURL) {
 			if (string.IsNullOrEmpty(nameof(releaseURL))) {
 				ASF.ArchiLogger.LogNullError(nameof(releaseURL));

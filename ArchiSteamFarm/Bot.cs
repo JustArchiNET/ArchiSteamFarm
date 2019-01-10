@@ -114,16 +114,32 @@ namespace ArchiSteamFarm {
 		private readonly SteamUser SteamUser;
 		private readonly Trading Trading;
 
+		[NotNull]
 		private string BotPath => Path.Combine(SharedInfo.ConfigDirectory, BotName);
+
+		[NotNull]
 		private string ConfigFilePath => BotPath + SharedInfo.ConfigExtension;
+
+		[NotNull]
 		private string DatabaseFilePath => BotPath + SharedInfo.DatabaseExtension;
+
+		[NotNull]
 		private string KeysToRedeemFilePath => BotPath + SharedInfo.KeysExtension;
+
+		[NotNull]
 		private string KeysToRedeemUnusedFilePath => KeysToRedeemFilePath + SharedInfo.KeysUnusedExtension;
+
+		[NotNull]
 		private string KeysToRedeemUsedFilePath => KeysToRedeemFilePath + SharedInfo.KeysUsedExtension;
+
+		[NotNull]
 		private string MobileAuthenticatorFilePath => BotPath + SharedInfo.MobileAuthenticatorExtension;
+
+		[NotNull]
 		private string SentryFilePath => BotPath + SharedInfo.SentryHashExtension;
 
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamID))]
+		[NotNull]
 		private string SSteamID => SteamID.ToString();
 
 		[JsonProperty]
@@ -170,7 +186,7 @@ namespace ArchiSteamFarm {
 		private string TwoFactorCode;
 		private byte TwoFactorCodeFailures;
 
-		private Bot(string botName, BotConfig botConfig, BotDatabase botDatabase) {
+		private Bot([NotNull] string botName, [NotNull] BotConfig botConfig, [NotNull] BotDatabase botDatabase) {
 			if (string.IsNullOrEmpty(botName) || (botConfig == null) || (botDatabase == null)) {
 				throw new ArgumentNullException(nameof(botName) + " || " + nameof(botConfig) + " || " + nameof(botDatabase));
 			}
@@ -588,8 +604,10 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
+		[ItemCanBeNull]
 		internal async Task<HashSet<uint>> GetMarketableAppIDs() => await ArchiWebHandler.GetAppList().ConfigureAwait(false);
 
+		[ItemCanBeNull]
 		internal async Task<Dictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)>> GetPackagesData(IReadOnlyCollection<uint> packageIDs) {
 			if ((packageIDs == null) || (packageIDs.Count == 0)) {
 				ArchiLogger.LogNullError(nameof(packageIDs));
@@ -1293,6 +1311,7 @@ namespace ArchiSteamFarm {
 			return message.Replace("\\", "\\\\").Replace("[", "\\[");
 		}
 
+		[ItemCanBeNull]
 		private async Task<Dictionary<string, string>> GetKeysFromFile(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				ArchiLogger.LogNullError(nameof(filePath));

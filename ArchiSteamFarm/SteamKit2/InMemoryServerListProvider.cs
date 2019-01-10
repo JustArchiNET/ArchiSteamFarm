@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SteamKit2.Discovery;
 
@@ -32,8 +33,10 @@ namespace ArchiSteamFarm.SteamKit2 {
 		[JsonProperty(Required = Required.DisallowNull)]
 		private readonly ConcurrentHashSet<ServerRecordEndPoint> ServerRecords = new ConcurrentHashSet<ServerRecordEndPoint>();
 
+		[NotNull]
 		public Task<IEnumerable<ServerRecord>> FetchServerListAsync() => Task.FromResult(ServerRecords.Select(server => ServerRecord.CreateServer(server.Host, server.Port, server.ProtocolTypes)));
 
+		[NotNull]
 		public Task UpdateServerListAsync(IEnumerable<ServerRecord> endpoints) {
 			if (endpoints == null) {
 				ASF.ArchiLogger.LogNullError(nameof(endpoints));

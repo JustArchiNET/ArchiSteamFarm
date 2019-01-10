@@ -22,6 +22,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
@@ -31,7 +32,8 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 	internal static class CatAPI {
 		private const string URL = "https://aws.random.cat";
 
-		internal static async Task<string> GetRandomCatURL(WebBrowser webBrowser) {
+		[ItemCanBeNull]
+		internal static async Task<string> GetRandomCatURL([NotNull] WebBrowser webBrowser) {
 			const string request = URL + "/meow";
 
 			WebBrowser.ObjectResponse<MeowResponse> response = await webBrowser.UrlGetToJsonObject<MeowResponse>(request).ConfigureAwait(false);

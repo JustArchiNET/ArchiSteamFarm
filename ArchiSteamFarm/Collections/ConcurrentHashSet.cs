@@ -22,6 +22,7 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using JetBrains.Annotations;
 
@@ -34,7 +35,10 @@ namespace ArchiSteamFarm.Collections {
 
 		public bool Add(T item) => BackingCollection.TryAdd(item, true);
 		public void Clear() => BackingCollection.Clear();
+
+		[SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
 		public bool Contains(T item) => BackingCollection.ContainsKey(item);
+
 		public void CopyTo(T[] array, int arrayIndex) => BackingCollection.Keys.CopyTo(array, arrayIndex);
 
 		public void ExceptWith(IEnumerable<T> other) {
@@ -83,6 +87,7 @@ namespace ArchiSteamFarm.Collections {
 			return otherSet.Any(Contains);
 		}
 
+		[SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
 		public bool Remove(T item) => BackingCollection.TryRemove(item, out _);
 
 		public bool SetEquals(IEnumerable<T> other) {
@@ -111,19 +116,21 @@ namespace ArchiSteamFarm.Collections {
 			}
 		}
 
+		[SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
 		void ICollection<T>.Add(T item) => Add(item);
+
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 		// We use Count() and not Any() because we must ensure full loop pass
 		[PublicAPI]
-		public bool AddRange(IEnumerable<T> items) => items.Count(Add) > 0;
+		public bool AddRange([NotNull] IEnumerable<T> items) => items.Count(Add) > 0;
 
 		// We use Count() and not Any() because we must ensure full loop pass
 		[PublicAPI]
-		public bool RemoveRange(IEnumerable<T> items) => items.Count(Remove) > 0;
+		public bool RemoveRange([NotNull] IEnumerable<T> items) => items.Count(Remove) > 0;
 
 		[PublicAPI]
-		public bool ReplaceIfNeededWith(IReadOnlyCollection<T> other) {
+		public bool ReplaceIfNeededWith([NotNull] IReadOnlyCollection<T> other) {
 			if (SetEquals(other)) {
 				return false;
 			}
@@ -134,7 +141,7 @@ namespace ArchiSteamFarm.Collections {
 		}
 
 		[PublicAPI]
-		public void ReplaceWith(IEnumerable<T> other) {
+		public void ReplaceWith([NotNull] IEnumerable<T> other) {
 			BackingCollection.Clear();
 
 			foreach (T item in other) {

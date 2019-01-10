@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Responses {
@@ -45,7 +46,7 @@ namespace ArchiSteamFarm.IPC.Responses {
 		[Required]
 		public readonly TypeProperties Properties;
 
-		internal TypeResponse(Dictionary<string, string> body, TypeProperties properties) {
+		internal TypeResponse([NotNull] Dictionary<string, string> body, [NotNull] TypeProperties properties) {
 			if ((body == null) || (properties == null)) {
 				throw new ArgumentNullException(nameof(body) + " || " + nameof(properties));
 			}

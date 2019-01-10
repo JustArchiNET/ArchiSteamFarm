@@ -31,7 +31,7 @@ namespace ArchiSteamFarm.NLog {
 	public sealed class ArchiLogger {
 		private readonly Logger Logger;
 
-		public ArchiLogger(string name) {
+		public ArchiLogger([NotNull] string name) {
 			if (string.IsNullOrEmpty(name)) {
 				throw new ArgumentNullException(nameof(name));
 			}
