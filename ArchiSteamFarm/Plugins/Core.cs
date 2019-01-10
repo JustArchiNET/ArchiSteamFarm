@@ -120,9 +120,9 @@ namespace ArchiSteamFarm.Plugins {
 
 			foreach (IPlugin plugin in ActivePlugins) {
 				try {
-					string pluginName = plugin.GetName();
+					string pluginName = plugin.Name;
 
-					ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.PluginLoading, pluginName, plugin.GetVersion()));
+					ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.PluginLoading, pluginName, plugin.Version));
 					plugin.OnLoaded();
 					ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.PluginLoaded, pluginName));
 				} catch (Exception e) {

@@ -25,8 +25,8 @@ using JetBrains.Annotations;
 namespace ArchiSteamFarm.Plugins {
 	[PublicAPI]
 	public interface IPlugin {
-		string GetName();
-		Version GetVersion();
+		string Name { get; }
+		Version Version { get; }
 		void OnLoaded();
 	}
 }
