@@ -135,8 +135,8 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				foreach (KeyValuePair<uint, (uint ChangeNumber, HashSet<uint> AppIDs)> packageData in packagesData) {
-					PackagesData[packageData.Key] = packageData.Value;
+				foreach ((uint packageID, (uint ChangeNumber, HashSet<uint> AppIDs) package) in packagesData) {
+					PackagesData[packageID] = package;
 				}
 
 				await Save().ConfigureAwait(false);

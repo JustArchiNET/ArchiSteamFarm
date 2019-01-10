@@ -115,6 +115,11 @@ namespace ArchiSteamFarm {
 		}
 
 #if NETFRAMEWORK
+		internal static void Deconstruct<T1, T2>(this KeyValuePair<T1, T2> kv, out T1 key, out T2 value) {
+			key = kv.Key;
+			value = kv.Value;
+		}
+
 		internal static async Task<WebSocketReceiveResult> ReceiveAsync([NotNull] this WebSocket webSocket, [NotNull] byte[] buffer, CancellationToken cancellationToken) => await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken).ConfigureAwait(false);
 		internal static async Task SendAsync([NotNull] this WebSocket webSocket, [NotNull] byte[] buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) => await webSocket.SendAsync(new ArraySegment<byte>(buffer), messageType, endOfMessage, cancellationToken).ConfigureAwait(false);
 

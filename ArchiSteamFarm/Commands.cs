@@ -1541,8 +1541,8 @@ namespace ArchiSteamFarm {
 
 				lock (CachedGamesOwned) {
 					if (CachedGamesOwned.Count == 0) {
-						foreach (KeyValuePair<uint, string> ownedGame in ownedGames) {
-							CachedGamesOwned[ownedGame.Key] = ownedGame.Value;
+						foreach ((uint appID, string gameName) in ownedGames) {
+							CachedGamesOwned[appID] = gameName;
 						}
 
 						CachedGamesOwned.TrimExcess();
@@ -1554,9 +1554,9 @@ namespace ArchiSteamFarm {
 			HashSet<uint> ownedGameIDs = new HashSet<uint>();
 
 			if (query.Equals("*")) {
-				foreach (KeyValuePair<uint, string> ownedGame in ownedGames) {
-					ownedGameIDs.Add(ownedGame.Key);
-					response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, ownedGame.Key, ownedGame.Value)));
+				foreach ((uint appID, string gameName) in ownedGames) {
+					ownedGameIDs.Add(appID);
+					response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, appID, gameName)));
 				}
 			} else {
 				string[] games = query.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
@@ -1586,9 +1586,9 @@ namespace ArchiSteamFarm {
 					}
 
 					// This is a string, so check our entire library
-					foreach (KeyValuePair<uint, string> ownedGame in ownedGames.Where(ownedGame => ownedGame.Value.IndexOf(game, StringComparison.OrdinalIgnoreCase) >= 0)) {
-						ownedGameIDs.Add(ownedGame.Key);
-						response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, ownedGame.Key, ownedGame.Value)));
+					foreach ((uint appID, string gameName) in ownedGames.Where(ownedGame => ownedGame.Value.IndexOf(game, StringComparison.OrdinalIgnoreCase) >= 0)) {
+						ownedGameIDs.Add(appID);
+						response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, appID, gameName)));
 					}
 				}
 			}
@@ -2113,8 +2113,8 @@ namespace ArchiSteamFarm {
 													continue;
 												}
 
-												foreach (KeyValuePair<uint, string> item in otherResult.Items.Where(item => !items.ContainsKey(item.Key))) {
-													items[item.Key] = item.Value;
+												foreach ((uint packageID, string packageName) in otherResult.Items.Where(item => !items.ContainsKey(item.Key))) {
+													items[packageID] = packageName;
 												}
 											}
 

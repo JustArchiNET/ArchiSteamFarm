@@ -149,14 +149,14 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			foreach (KeyValuePair<(uint AppID, Steam.Asset.EType Type), Dictionary<ulong, uint>> tradableSet in tradableState) {
-				if (!fullState.TryGetValue(tradableSet.Key, out Dictionary<ulong, uint> fullSet) || (fullSet == null) || (fullSet.Count == 0)) {
+			foreach (((uint AppID, Steam.Asset.EType Type) set, Dictionary<ulong, uint> state) in tradableState) {
+				if (!fullState.TryGetValue(set, out Dictionary<ulong, uint> fullSet) || (fullSet == null) || (fullSet.Count == 0)) {
 					ASF.ArchiLogger.LogNullError(nameof(fullSet));
 
 					return false;
 				}
 
-				if (!IsEmptyForMatching(fullSet, tradableSet.Value)) {
+				if (!IsEmptyForMatching(fullSet, state)) {
 					return false;
 				}
 			}
@@ -172,18 +172,18 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			foreach (KeyValuePair<ulong, uint> tradableItem in tradableSet) {
-				switch (tradableItem.Value) {
+			foreach ((ulong classID, uint amount) in tradableSet) {
+				switch (amount) {
 					case 0:
 
 						// No tradable items, this should never happen, dictionary should not have this key to begin with
-						ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(tradableItem.Value), tradableItem.Value));
+						ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(amount), amount));
 
 						return false;
 					case 1:
 
 						// Single tradable item, can be matchable or not depending on the rest of the inventory
-						if (!fullSet.TryGetValue(tradableItem.Key, out uint fullAmount) || (fullAmount == 0) || (fullAmount < tradableItem.Value)) {
+						if (!fullSet.TryGetValue(classID, out uint fullAmount) || (fullAmount == 0) || (fullAmount < amount)) {
 							ASF.ArchiLogger.LogNullError(nameof(fullAmount));
 
 							return false;
@@ -237,17 +237,17 @@ namespace ArchiSteamFarm {
 			}
 
 			// Ensure that amount of items to give is at least amount of items to receive (per game and per type)
-			foreach (KeyValuePair<uint, Dictionary<Steam.Asset.EType, uint>> itemsPerGame in itemsToGivePerGame) {
-				if (!itemsToReceivePerGame.TryGetValue(itemsPerGame.Key, out Dictionary<Steam.Asset.EType, uint> otherItemsPerType)) {
+			foreach ((uint appID, Dictionary<Steam.Asset.EType, uint> itemsPerGame) in itemsToGivePerGame) {
+				if (!itemsToReceivePerGame.TryGetValue(appID, out Dictionary<Steam.Asset.EType, uint> otherItemsPerType)) {
 					return false;
 				}
 
-				foreach (KeyValuePair<Steam.Asset.EType, uint> itemsPerType in itemsPerGame.Value) {
-					if (!otherItemsPerType.TryGetValue(itemsPerType.Key, out uint otherAmount)) {
+				foreach ((Steam.Asset.EType type, uint amount) in itemsPerGame) {
+					if (!otherItemsPerType.TryGetValue(type, out uint otherAmount)) {
 						return false;
 					}
 
-					if (itemsPerType.Value > otherAmount) {
+					if (amount > otherAmount) {
 						return false;
 					}
 				}
@@ -352,9 +352,8 @@ namespace ArchiSteamFarm {
 			Dictionary<(uint AppID, Steam.Asset.EType Type), List<uint>> finalSets = GetInventorySets(inventory);
 
 			// Once we have both states, we can check overall fairness
-			foreach (KeyValuePair<(uint AppID, Steam.Asset.EType Type), List<uint>> finalSet in finalSets) {
-				List<uint> beforeAmounts = initialSets[finalSet.Key];
-				List<uint> afterAmounts = finalSet.Value;
+			foreach (((uint AppID, Steam.Asset.EType Type) set, List<uint> afterAmounts) in finalSets) {
+				List<uint> beforeAmounts = initialSets[set];
 
 				// If amount of unique items in the set decreases, this is always a bad trade (e.g. 1 1 -> 0 2)
 				if (afterAmounts.Count < beforeAmounts.Count) {

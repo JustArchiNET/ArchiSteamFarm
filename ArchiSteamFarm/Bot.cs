@@ -2415,11 +2415,11 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			foreach (KeyValuePair<ArchiHandler.UserNotificationsCallback.EUserNotification, uint> notification in callback.Notifications) {
-				switch (notification.Key) {
+			foreach ((ArchiHandler.UserNotificationsCallback.EUserNotification notification, uint count) in callback.Notifications) {
+				switch (notification) {
 					case ArchiHandler.UserNotificationsCallback.EUserNotification.Items:
-						bool newItems = notification.Value > ItemsCount;
-						ItemsCount = notification.Value;
+						bool newItems = count > ItemsCount;
+						ItemsCount = count;
 
 						if (newItems) {
 							ArchiLogger.LogGenericTrace(nameof(ArchiHandler.UserNotificationsCallback.EUserNotification.Items));
@@ -2432,8 +2432,8 @@ namespace ArchiSteamFarm {
 
 						break;
 					case ArchiHandler.UserNotificationsCallback.EUserNotification.Trading:
-						bool newTrades = notification.Value > TradesCount;
-						TradesCount = notification.Value;
+						bool newTrades = count > TradesCount;
+						TradesCount = count;
 
 						if (newTrades) {
 							ArchiLogger.LogGenericTrace(nameof(ArchiHandler.UserNotificationsCallback.EUserNotification.Trading));
@@ -2442,8 +2442,8 @@ namespace ArchiSteamFarm {
 
 						break;
 					case ArchiHandler.UserNotificationsCallback.EUserNotification.Gifts:
-						bool newGifts = notification.Value > GiftsCount;
-						GiftsCount = notification.Value;
+						bool newGifts = count > GiftsCount;
+						GiftsCount = count;
 
 						if (newGifts && BotConfig.AcceptGifts) {
 							ArchiLogger.LogGenericTrace(nameof(ArchiHandler.UserNotificationsCallback.EUserNotification.Gifts));
