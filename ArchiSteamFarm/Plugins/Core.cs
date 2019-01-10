@@ -62,6 +62,26 @@ namespace ArchiSteamFarm.Plugins {
 			return true;
 		}
 
+		internal static async Task<StringComparer> GetBotsComparer() {
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+				return StringComparer.Ordinal;
+			}
+
+			IList<StringComparer> results;
+
+			try {
+				results = await Utilities.InParallel(ActivePlugins.OfType<IBotsComparer>().Select(plugin => Task.Run(() => plugin.BotsComparer))).ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+
+				return StringComparer.Ordinal;
+			}
+
+			StringComparer result = results.FirstOrDefault(comparer => comparer != null);
+
+			return result ?? StringComparer.Ordinal;
+		}
+
 		internal static bool InitPlugins() {
 			string pluginsPath = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.PluginsDirectory);
 

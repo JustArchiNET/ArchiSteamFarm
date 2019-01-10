@@ -56,10 +56,12 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public static IReadOnlyDictionary<string, Bot> BotsReadOnly => Bots;
 
-		internal static readonly ConcurrentDictionary<string, Bot> Bots = new ConcurrentDictionary<string, Bot>();
+		internal static ConcurrentDictionary<string, Bot> Bots { get; private set; }
 
 		private static readonly SemaphoreSlim BotsSemaphore = new SemaphoreSlim(1, 1);
 		private static readonly SemaphoreSlim LoginSemaphore = new SemaphoreSlim(1, 1);
+
+		private static RegexOptions BotsRegex;
 
 		[PublicAPI]
 		public readonly Access Access;
@@ -567,7 +569,7 @@ namespace ArchiSteamFarm {
 					string botPattern = botName.Substring(2);
 
 					try {
-						IEnumerable<Bot> regexMatches = Bots.Where(kvp => Regex.IsMatch(kvp.Key, botPattern, RegexOptions.CultureInvariant)).Select(kvp => kvp.Value);
+						IEnumerable<Bot> regexMatches = Bots.Where(kvp => Regex.IsMatch(kvp.Key, botPattern, BotsRegex)).Select(kvp => kvp.Value);
 						result.UnionWith(regexMatches);
 					} catch (ArgumentException e) {
 						ASF.ArchiLogger.LogGenericWarningException(e);
@@ -748,6 +750,28 @@ namespace ArchiSteamFarm {
 				File.Delete(filePath);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
+			}
+		}
+
+		internal static void Init(StringComparer botsComparer) {
+			if (botsComparer == null) {
+				ASF.ArchiLogger.LogNullError(nameof(botsComparer));
+
+				return;
+			}
+
+			if (Bots != null) {
+				ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);
+
+				return;
+			}
+
+			Bots = new ConcurrentDictionary<string, Bot>(botsComparer);
+
+			if ((botsComparer == StringComparer.InvariantCulture) || (botsComparer == StringComparer.Ordinal)) {
+				BotsRegex |= RegexOptions.CultureInvariant;
+			} else if ((botsComparer == StringComparer.InvariantCultureIgnoreCase) || (botsComparer == StringComparer.OrdinalIgnoreCase)) {
+				BotsRegex |= RegexOptions.CultureInvariant | RegexOptions.IgnoreCase;
 			}
 		}
 

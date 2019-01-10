@@ -238,9 +238,19 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task InitBots() {
-			if (Bot.Bots.Count != 0) {
+			if (Bot.Bots != null) {
 				return;
 			}
+
+			StringComparer botsComparer = await Core.GetBotsComparer().ConfigureAwait(false);
+
+			if (botsComparer == null) {
+				ArchiLogger.LogNullError(nameof(botsComparer));
+
+				return;
+			}
+
+			Bot.Init(botsComparer);
 
 			// Ensure that we ask for a list of servers if we don't have any saved servers available
 			IEnumerable<ServerRecord> servers = await Program.GlobalDatabase.ServerListProvider.FetchServerListAsync().ConfigureAwait(false);
@@ -262,7 +272,7 @@ namespace ArchiSteamFarm {
 			HashSet<string> botNames;
 
 			try {
-				botNames = Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*" + SharedInfo.ConfigExtension).Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).ToHashSet();
+				botNames = Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*" + SharedInfo.ConfigExtension).Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).ToHashSet(botsComparer);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 
