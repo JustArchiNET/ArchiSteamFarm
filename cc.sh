@@ -8,6 +8,7 @@ CONFIGURATION="Release"
 OUT="out/source"
 TARGET_FRAMEWORK="netcoreapp2.2"
 
+ASF_UI=1
 CLEAN=0
 LINK_DURING_PUBLISH=1
 PULL=1
@@ -20,6 +21,8 @@ for ARG in "$@"; do
 	case "$ARG" in
 		debug|Debug) CONFIGURATION="Debug" ;;
 		release|Release) CONFIGURATION="Release" ;;
+		--asf-ui) ASF_UI=1 ;;
+		--no-asf-ui) ASF_UI=0 ;;
 		--clean) CLEAN=1 ;;
 		--no-clean) CLEAN=0 ;;
 		--link-during-publish) LINK_DURING_PUBLISH=1 ;;
@@ -30,8 +33,8 @@ for ARG in "$@"; do
 		--no-shared-compilation) SHARED_COMPILATION=0 ;;
 		--test) TEST=1 ;;
 		--no-test) TEST=0 ;;
-		--help) echo "Usage: $0 [--clean] [--no-link-during-publish] [--no-pull] [--no-shared-compilation] [--no-test] [debug/release]"; exit 0 ;;
-		*) echo "Usage: $0 [--clean] [--no-link-during-publish] [--no-pull] [--no-shared-compilation] [--no-test] [debug/release]"; exit 1
+		--help) echo "Usage: $0 [--clean] [--no-asf-ui] [--no-link-during-publish] [--no-pull] [--no-shared-compilation] [--no-test] [debug/release]"; exit 0 ;;
+		*) echo "Usage: $0 [--clean] [--no-asf-ui] [--no-link-during-publish] [--no-pull] [--no-shared-compilation] [--no-test] [debug/release]"; exit 1
 	esac
 done
 
@@ -53,22 +56,24 @@ if [[ ! -f "$SOLUTION" ]]; then
 	exit 1
 fi
 
-if [[ -f "ASF-ui/package.json" ]] && hash npm 2>/dev/null; then
-	echo "Building ASF UI..."
+if [[ "$ASF_UI" -eq 1 ]]; then
+	if [[ -f "ASF-ui/package.json" ]] && hash npm 2>/dev/null; then
+		echo "Building ASF UI..."
 
-	# ASF-ui doesn't clean itself after old build
-	rm -rf "ASF-ui/dist"
+		# ASF-ui doesn't clean itself after old build
+		rm -rf "ASF-ui/dist"
 
-	cd ASF-ui
-	npm i
-	git checkout -- package.json package-lock.json # Until we can switch to npm ci, avoid any changes to source files done by npm i
-	npm run-script deploy
-	cd ..
+		cd ASF-ui
+		npm i
+		git checkout -- package.json package-lock.json # Until we can switch to npm ci, avoid any changes to source files done by npm i
+		npm run-script deploy
+		cd ..
 
-	# ASF's output www folder needs cleaning as well
-	rm -rf "${MAIN_PROJECT}/${OUT}/www"
-else
-	echo "WARNING: ASF UI dependencies are missing, skipping build of ASF UI..."
+		# ASF's output www folder needs cleaning as well
+		rm -rf "${MAIN_PROJECT}/${OUT}/www"
+	else
+		echo "WARNING: ASF UI dependencies are missing, skipping build of ASF UI..."
+	fi
 fi
 
 DOTNET_FLAGS=(-c "$CONFIGURATION" -f "$TARGET_FRAMEWORK" -o "$OUT" '/nologo')
