@@ -73,7 +73,7 @@ namespace ArchiSteamFarm {
 			await UpdateAndRestart().ConfigureAwait(false);
 
 			if (!Core.InitPlugins()) {
-				await Task.Delay(15000).ConfigureAwait(false);
+				await Task.Delay(10000).ConfigureAwait(false);
 			}
 
 			Core.OnASFInitModules(Program.GlobalConfig.AdditionalProperties);

@@ -42,6 +42,8 @@ namespace ArchiSteamFarm.Plugins {
 			string pluginsPath = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.PluginsDirectory);
 
 			if (!Directory.Exists(pluginsPath)) {
+				ASF.ArchiLogger.LogGenericTrace(Strings.NothingFound);
+
 				return true;
 			}
 
@@ -70,7 +72,7 @@ namespace ArchiSteamFarm.Plugins {
 			}
 
 			if (assemblies.Count == 0) {
-				ASF.ArchiLogger.LogGenericInfo(Strings.Done);
+				ASF.ArchiLogger.LogGenericInfo(Strings.NothingFound);
 
 				return true;
 			}
@@ -105,10 +107,18 @@ namespace ArchiSteamFarm.Plugins {
 				}
 			}
 
-			ActivePlugins = ActivePlugins.Except(invalidPlugins);
-			ASF.ArchiLogger.LogGenericInfo(Strings.Done);
+			ImmutableHashSet<IPlugin> activePlugins = ActivePlugins.Except(invalidPlugins);
 
-			return true;
+			if (activePlugins.Count == 0) {
+				ActivePlugins = null;
+
+				return false;
+			}
+
+			ActivePlugins = activePlugins;
+			ASF.ArchiLogger.LogGenericInfo(Strings.PluginsWarning);
+
+			return invalidPlugins.Count == 0;
 		}
 
 		internal static void OnASFInitModules(IReadOnlyDictionary<string, JToken> additionalConfigProperties = null) {

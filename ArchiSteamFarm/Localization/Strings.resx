@@ -687,4 +687,10 @@ StackTrace:
     <value>Loading {0} V{1}...</value>
     <comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
   </data>
+  <data name="NothingFound" xml:space="preserve">
+    <value>Nothing found!</value>
+  </data>
+  <data name="PluginsWarning" xml:space="preserve">
+    <value>You've loaded one or more of custom plugins into the ASF. Since we're unable to offer a support for modded setups, please reach the appropriate developers of the plugins that you decided to use in case of any issues.</value>
+  </data>
 </root>
