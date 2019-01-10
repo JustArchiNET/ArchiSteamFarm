@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Composition;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Plugins;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
@@ -34,7 +35,7 @@ namespace ArchiSteamFarm.CustomPlugins.Example {
 	// Your plugin class should inherit the plugin interfaces it wants to handle
 	// If you do not want to handle a particular action (e.g. OnBotMessage that is offered in IBotMessage), it's the best idea to not inherit it at all
 	// This will keep your code compact, efficient and less dependent. You can always add additional interfaces when you'll need them, this example project will inherit quite a bit of them to show you potential usage
-	internal sealed class ExamplePlugin : IASF, IBot, IBotCommand, IBotConnection, IBotMessage, IBotModules {
+	internal sealed class ExamplePlugin : IASF, IBot, IBotCommand, IBotConnection, IBotMessage, IBotModules, IBotTradeOffer {
 		// This is used for identification purposes, typically you want to use a friendly name of your plugin here, such as the name of your main class
 		// Please note that this property can have direct dependencies only on structures that were initialized by the constructor, as it's possible to be called before OnLoaded() takes place
 		public string Name => nameof(ExamplePlugin);
@@ -140,6 +141,12 @@ namespace ArchiSteamFarm.CustomPlugins.Example {
 
 			return Task.FromResult("I didn't get that, did you mean to use a command?");
 		}
+
+		// This method is called when bot receives a trade offer that ASF isn't willing to accept (ignored and rejected trades)
+		// It allows you not only to analyze such trades, but generate a response whether ASF should accept it (true), or proceed like usual (false)
+		// Thanks to that, you can implement custom rules for all trades that aren't handled by ASF, for example cross-set trading on your own custom rules
+		// You'd implement your own logic here, as an example we'll allow all trades to be accepted if the bot's name starts from "TrashBot"
+		public Task<bool> OnBotTradeOffer(Bot bot, Steam.TradeOffer tradeOffer) => Task.FromResult(bot.BotName.StartsWith("TrashBot", StringComparison.OrdinalIgnoreCase));
 
 		// This is the earliest method that will be called, right after loading the plugin, long before any bot initialization takes place
 		// It's a good place to initialize all potential (non-bot-specific) structures that you will need across lifetime of your plugin, such as global timers, concurrent dictionaries and alike
