@@ -101,7 +101,7 @@ namespace ArchiSteamFarm {
 				};
 
 				// Listing is free to deny our announce request, hence we don't retry
-				if (await Program.WebBrowser.UrlPost(request, data, maxTries: 1).ConfigureAwait(false) != null) {
+				if (await Bot.ArchiWebHandler.WebBrowser.UrlPost(request, data, maxTries: 1).ConfigureAwait(false) != null) {
 					LastHeartBeat = DateTime.UtcNow;
 				}
 			} finally {
@@ -176,16 +176,16 @@ namespace ArchiSteamFarm {
 				};
 
 				// Listing is free to deny our announce request, hence we don't retry
-				ShouldSendHeartBeats = await Program.WebBrowser.UrlPost(request, data, maxTries: 1).ConfigureAwait(false) != null;
+				ShouldSendHeartBeats = await Bot.ArchiWebHandler.WebBrowser.UrlPost(request, data, maxTries: 1).ConfigureAwait(false) != null;
 			} finally {
 				RequestsSemaphore.Release();
 			}
 		}
 
-		private static async Task<HashSet<ListedUser>> GetListedUsers() {
+		private async Task<HashSet<ListedUser>> GetListedUsers() {
 			const string request = URL + "/Api/Bots";
 
-			WebBrowser.ObjectResponse<HashSet<ListedUser>> objectResponse = await Program.WebBrowser.UrlGetToJsonObject<HashSet<ListedUser>>(request).ConfigureAwait(false);
+			WebBrowser.ObjectResponse<HashSet<ListedUser>> objectResponse = await Bot.ArchiWebHandler.WebBrowser.UrlGetToJsonObject<HashSet<ListedUser>>(request).ConfigureAwait(false);
 
 			return objectResponse?.Content;
 		}

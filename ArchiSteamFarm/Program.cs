@@ -44,7 +44,6 @@ namespace ArchiSteamFarm {
 		internal static GlobalDatabase GlobalDatabase { get; private set; }
 		internal static bool ProcessRequired { get; private set; }
 		internal static bool RestartAllowed { get; private set; } = true;
-		internal static WebBrowser WebBrowser { get; private set; }
 
 		private static readonly object ConsoleLock = new object();
 
@@ -215,11 +214,7 @@ namespace ArchiSteamFarm {
 			OS.Init(SystemRequired, GlobalConfig.OptimizationMode);
 
 			await InitGlobalDatabaseAndServices().ConfigureAwait(false);
-
-			await ASF.UpdateAndRestart().ConfigureAwait(false);
-			await ASF.InitBots().ConfigureAwait(false);
-
-			ASF.InitEvents();
+			await ASF.Init().ConfigureAwait(false);
 		}
 
 		private static void InitCore(IReadOnlyCollection<string> args) {
@@ -370,11 +365,6 @@ namespace ArchiSteamFarm {
 			}
 
 			WebBrowser.Init();
-			WebBrowser = new WebBrowser(ASF.ArchiLogger, GlobalConfig.WebProxy, true);
-
-			if (GlobalConfig.IPC) {
-				await ArchiKestrel.Start().ConfigureAwait(false);
-			}
 		}
 
 		private static async Task<bool> InitShutdownSequence() {

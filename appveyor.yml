@@ -104,6 +104,14 @@ build_script:
     if ($LastExitCode -ne 0) {
         throw "Last command failed."
     }
+
+
+    dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -o 'out\source' /nologo
+
+
+    if ($LastExitCode -ne 0) {
+        throw "Last command failed."
+    }
 test_script:
 - pwsh: >-
     Set-StrictMode -Version Latest

@@ -46,6 +46,7 @@ namespace ArchiSteamFarm {
 		internal const string LicenseURL = "http://www.apache.org/licenses/LICENSE-2.0";
 		internal const string LogFile = "log.txt";
 		internal const string MobileAuthenticatorExtension = ".maFile";
+		internal const string PluginsDirectory = "plugins";
 		internal const string ProjectURL = "https://github.com/" + GithubRepo;
 		internal const string SentryHashExtension = ".bin";
 		internal const string StatisticsServer = "asf.justarchi.net";

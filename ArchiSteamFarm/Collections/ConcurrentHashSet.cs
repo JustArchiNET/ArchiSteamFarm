@@ -23,9 +23,10 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Collections {
-	internal sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ISet<T> {
+	public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ISet<T> {
 		public int Count => BackingCollection.Count;
 		public bool IsReadOnly => false;
 
@@ -114,12 +115,15 @@ namespace ArchiSteamFarm.Collections {
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 		// We use Count() and not Any() because we must ensure full loop pass
-		internal bool AddRange(IEnumerable<T> items) => items.Count(Add) > 0;
+		[PublicAPI]
+		public bool AddRange(IEnumerable<T> items) => items.Count(Add) > 0;
 
 		// We use Count() and not Any() because we must ensure full loop pass
-		internal bool RemoveRange(IEnumerable<T> items) => items.Count(Remove) > 0;
+		[PublicAPI]
+		public bool RemoveRange(IEnumerable<T> items) => items.Count(Remove) > 0;
 
-		internal bool ReplaceIfNeededWith(IReadOnlyCollection<T> other) {
+		[PublicAPI]
+		public bool ReplaceIfNeededWith(IReadOnlyCollection<T> other) {
 			if (SetEquals(other)) {
 				return false;
 			}
@@ -129,7 +133,8 @@ namespace ArchiSteamFarm.Collections {
 			return true;
 		}
 
-		internal void ReplaceWith(IEnumerable<T> other) {
+		[PublicAPI]
+		public void ReplaceWith(IEnumerable<T> other) {
 			BackingCollection.Clear();
 
 			foreach (T item in other) {

@@ -25,27 +25,43 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using ArchiSteamFarm.Localization;
 using HtmlAgilityPack;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SteamKit2;
 
 namespace ArchiSteamFarm.Json {
-	internal static class Steam {
+	public static class Steam {
 		// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_Asset
-		internal sealed class Asset {
-			internal const uint SteamAppID = 753;
-			internal const uint SteamCommunityContextID = 6;
+		public sealed class Asset {
+			[PublicAPI]
+			public const uint SteamAppID = 753;
 
-			internal uint Amount { get; set; }
+			[PublicAPI]
+			public const uint SteamCommunityContextID = 6;
+
+			[PublicAPI]
+			public uint Amount { get; internal set; }
 
 			[JsonProperty(PropertyName = "appid", Required = Required.DisallowNull)]
-			internal uint AppID { get; private set; }
+			public uint AppID { get; private set; }
 
-			internal ulong AssetID { get; private set; }
-			internal ulong ClassID { get; private set; }
-			internal ulong ContextID { get; private set; }
-			internal uint RealAppID { get; set; }
-			internal bool Tradable { get; set; }
-			internal EType Type { get; set; }
+			[PublicAPI]
+			public ulong AssetID { get; private set; }
+
+			[PublicAPI]
+			public ulong ClassID { get; private set; }
+
+			[PublicAPI]
+			public ulong ContextID { get; private set; }
+
+			[PublicAPI]
+			public uint RealAppID { get; internal set; }
+
+			[PublicAPI]
+			public bool Tradable { get; internal set; }
+
+			[PublicAPI]
+			public EType Type { get; internal set; }
 
 			[JsonProperty(PropertyName = "amount", Required = Required.Always)]
 			private string AmountText {
@@ -135,8 +151,8 @@ namespace ArchiSteamFarm.Json {
 				set => AssetIDText = value;
 			}
 
-			// Constructed from trades being received
-			internal Asset(uint appID, ulong contextID, ulong classID, uint amount, uint realAppID, EType type = EType.Unknown) {
+			// Constructed from trades being received or plugins
+			public Asset(uint appID, ulong contextID, ulong classID, uint amount, uint realAppID, EType type = EType.Unknown) {
 				if ((appID == 0) || (contextID == 0) || (classID == 0) || (amount == 0) || (realAppID == 0)) {
 					throw new ArgumentNullException(nameof(appID) + " || " + nameof(contextID) + " || " + nameof(classID) + " || " + nameof(amount) + " || " + nameof(realAppID));
 				}
@@ -152,7 +168,7 @@ namespace ArchiSteamFarm.Json {
 			// Deserialized from JSON
 			private Asset() { }
 
-			internal enum EType : byte {
+			public enum EType : byte {
 				Unknown,
 				BoosterPack,
 				Emoticon,
@@ -164,16 +180,16 @@ namespace ArchiSteamFarm.Json {
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		internal class BooleanResponse {
+		public class BooleanResponse {
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
-			internal readonly bool Success;
+			public readonly bool Success;
 
 			// Deserialized from JSON
 			protected BooleanResponse() { }
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		internal sealed class ConfirmationDetails : BooleanResponse {
+		public sealed class ConfirmationDetails : BooleanResponse {
 			internal MobileAuthenticator.Confirmation Confirmation { get; set; }
 			internal ulong TradeOfferID { get; private set; }
 			internal EType Type { get; private set; }
@@ -252,8 +268,8 @@ namespace ArchiSteamFarm.Json {
 			private ConfirmationDetails() { }
 
 			// REF: Internal documentation
-			[SuppressMessage("ReSharper", "UnusedMember.Global")]
-			internal enum EType : byte {
+			[PublicAPI]
+			public enum EType : byte {
 				Unknown,
 				Generic,
 				Trade,
@@ -265,12 +281,99 @@ namespace ArchiSteamFarm.Json {
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		internal class EResultResponse {
+		public class EResultResponse {
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
-			internal readonly EResult Result;
+			public readonly EResult Result;
 
 			// Deserialized from JSON
 			protected EResultResponse() { }
+		}
+
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		public class NumberResponse {
+			[PublicAPI]
+			public bool Success { get; private set; }
+
+			[JsonProperty(PropertyName = "success", Required = Required.Always)]
+			private byte SuccessNumber {
+				set {
+					switch (value) {
+						case 0:
+							Success = false;
+
+							break;
+						case 1:
+							Success = true;
+
+							break;
+						default:
+							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(value), value));
+
+							return;
+					}
+				}
+			}
+
+			// Deserialized from JSON
+			protected NumberResponse() { }
+		}
+
+		// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer
+		public sealed class TradeOffer {
+			[PublicAPI]
+			public readonly ulong OtherSteamID64;
+
+			[PublicAPI]
+			public readonly ETradeOfferState State;
+
+			[PublicAPI]
+			public readonly ulong TradeOfferID;
+
+			[PublicAPI]
+			public IReadOnlyCollection<Asset> ItemsToGiveReadOnly => ItemsToGive;
+
+			[PublicAPI]
+			public IReadOnlyCollection<Asset> ItemsToReceiveReadOnly => ItemsToReceive;
+
+			internal readonly HashSet<Asset> ItemsToGive = new HashSet<Asset>();
+			internal readonly HashSet<Asset> ItemsToReceive = new HashSet<Asset>();
+
+			// Constructed from trades being received
+			internal TradeOffer(ulong tradeOfferID, uint otherSteamID3, ETradeOfferState state) {
+				if ((tradeOfferID == 0) || (otherSteamID3 == 0) || (state == ETradeOfferState.Unknown)) {
+					throw new ArgumentNullException(nameof(tradeOfferID) + " || " + nameof(otherSteamID3) + " || " + nameof(state));
+				}
+
+				TradeOfferID = tradeOfferID;
+				OtherSteamID64 = new SteamID(otherSteamID3, EUniverse.Public, EAccountType.Individual);
+				State = state;
+			}
+
+			internal bool IsValidSteamItemsRequest(IReadOnlyCollection<Asset.EType> acceptedTypes) {
+				if ((acceptedTypes == null) || (acceptedTypes.Count == 0)) {
+					ASF.ArchiLogger.LogNullError(nameof(acceptedTypes));
+
+					return false;
+				}
+
+				return ItemsToGive.All(item => (item.AppID == Asset.SteamAppID) && (item.ContextID == Asset.SteamCommunityContextID) && acceptedTypes.Contains(item.Type));
+			}
+
+			[PublicAPI]
+			public enum ETradeOfferState : byte {
+				Unknown,
+				Invalid,
+				Active,
+				Accepted,
+				Countered,
+				Expired,
+				Canceled,
+				Declined,
+				InvalidItems,
+				EmailPending,
+				EmailCanceled,
+				OnHold
+			}
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
@@ -369,34 +472,6 @@ namespace ArchiSteamFarm.Json {
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		internal class NumberResponse {
-			internal bool Success { get; private set; }
-
-			[JsonProperty(PropertyName = "success", Required = Required.Always)]
-			private byte SuccessNumber {
-				set {
-					switch (value) {
-						case 0:
-							Success = false;
-
-							break;
-						case 1:
-							Success = true;
-
-							break;
-						default:
-							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(value), value));
-
-							return;
-					}
-				}
-			}
-
-			// Deserialized from JSON
-			protected NumberResponse() { }
-		}
-
-		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class RedeemWalletResponse : EResultResponse {
 			[JsonProperty(PropertyName = "wallet", Required = Required.DisallowNull)]
 			internal readonly InternalKeyDetails KeyDetails;
@@ -416,52 +491,6 @@ namespace ArchiSteamFarm.Json {
 
 				// Deserialized from JSON
 				private InternalKeyDetails() { }
-			}
-		}
-
-		// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer
-		internal sealed class TradeOffer {
-			internal readonly HashSet<Asset> ItemsToGive = new HashSet<Asset>();
-			internal readonly HashSet<Asset> ItemsToReceive = new HashSet<Asset>();
-			internal readonly ulong OtherSteamID64;
-			internal readonly ETradeOfferState State;
-			internal readonly ulong TradeOfferID;
-
-			// Constructed from trades being received
-			internal TradeOffer(ulong tradeOfferID, uint otherSteamID3, ETradeOfferState state) {
-				if ((tradeOfferID == 0) || (otherSteamID3 == 0) || (state == ETradeOfferState.Unknown)) {
-					throw new ArgumentNullException(nameof(tradeOfferID) + " || " + nameof(otherSteamID3) + " || " + nameof(state));
-				}
-
-				TradeOfferID = tradeOfferID;
-				OtherSteamID64 = new SteamID(otherSteamID3, EUniverse.Public, EAccountType.Individual);
-				State = state;
-			}
-
-			internal bool IsValidSteamItemsRequest(IReadOnlyCollection<Asset.EType> acceptedTypes) {
-				if ((acceptedTypes == null) || (acceptedTypes.Count == 0)) {
-					ASF.ArchiLogger.LogNullError(nameof(acceptedTypes));
-
-					return false;
-				}
-
-				return ItemsToGive.All(item => (item.AppID == Asset.SteamAppID) && (item.ContextID == Asset.SteamCommunityContextID) && acceptedTypes.Contains(item.Type));
-			}
-
-			[SuppressMessage("ReSharper", "UnusedMember.Global")]
-			internal enum ETradeOfferState : byte {
-				Unknown,
-				Invalid,
-				Active,
-				Accepted,
-				Countered,
-				Expired,
-				Canceled,
-				Declined,
-				InvalidItems,
-				EmailPending,
-				EmailCanceled,
-				OnHold
 			}
 		}
 

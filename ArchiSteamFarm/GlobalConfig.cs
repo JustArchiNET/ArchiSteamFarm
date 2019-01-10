@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -27,7 +28,9 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
@@ -183,6 +186,14 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		[JsonExtensionData]
+		[PublicAPI]
+		internal Dictionary<string, JToken> AdditionalProperties {
+			get;
+			[UsedImplicitly]
+			private set;
+		}
+
 		internal bool IsWebProxyPasswordSet { get; private set; }
 		internal bool ShouldSerializeEverything { private get; set; } = true;
 		internal bool ShouldSerializeHelperProperties { private get; set; } = true;
@@ -333,11 +344,10 @@ namespace ArchiSteamFarm {
 			MinMemoryUsage
 		}
 
+		[PublicAPI]
 		internal enum EUpdateChannel : byte {
 			None,
 			Stable,
-
-			[SuppressMessage("ReSharper", "UnusedMember.Global")]
 			Experimental
 		}
 

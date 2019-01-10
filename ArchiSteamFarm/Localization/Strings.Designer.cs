@@ -1126,6 +1126,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Nothing found!.
+        /// </summary>
+        internal static string NothingFound {
+            get {
+                return ResourceManager.GetString("NothingFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu We don&apos;t have anything to idle on this account!.
         /// </summary>
         internal static string NothingToIdle {
@@ -1158,6 +1167,33 @@ namespace ArchiSteamFarm.Localization {
         internal static string PlayingNotAvailable {
             get {
                 return ResourceManager.GetString("PlayingNotAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu {0} has been loaded successfully!.
+        /// </summary>
+        internal static string PluginLoaded {
+            get {
+                return ResourceManager.GetString("PluginLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Loading {0} V{1}....
+        /// </summary>
+        internal static string PluginLoading {
+            get {
+                return ResourceManager.GetString("PluginLoading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu You&apos;ve loaded one or more of custom plugins into the ASF. Since we&apos;re unable to offer a support for modded setups, please reach the appropriate developers of the plugins that you decided to use in case of any issues..
+        /// </summary>
+        internal static string PluginsWarning {
+            get {
+                return ResourceManager.GetString("PluginsWarning", resourceCulture);
             }
         }
         

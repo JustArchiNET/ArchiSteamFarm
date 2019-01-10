@@ -26,6 +26,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 
@@ -53,7 +54,7 @@ namespace ArchiSteamFarm.IPC.Middleware {
 
 		public ApiAuthenticationMiddleware(RequestDelegate next) => Next = next ?? throw new ArgumentNullException(nameof(next));
 
-		[SuppressMessage("ReSharper", "UnusedMember.Global")]
+		[PublicAPI]
 		public async Task InvokeAsync(HttpContext context) {
 			if (context == null) {
 				ASF.ArchiLogger.LogNullError(nameof(context));

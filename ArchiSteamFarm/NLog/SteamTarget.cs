@@ -22,6 +22,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
@@ -33,18 +34,15 @@ namespace ArchiSteamFarm.NLog {
 		internal const string TargetName = "Steam";
 
 		// This is NLog config property, it must have public get() and set() capabilities
-		[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
-		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
+		[PublicAPI]
 		public string BotName { get; set; }
 
 		// This is NLog config property, it must have public get() and set() capabilities
-		[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
-		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
+		[PublicAPI]
 		public ulong ChatGroupID { get; set; }
 
 		// This is NLog config property, it must have public get() and set() capabilities
-		[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
-		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
+		[PublicAPI]
 		[RequiredParameter]
 		public ulong SteamID { get; set; }
 
