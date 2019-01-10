@@ -76,6 +76,9 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		public readonly string BotName;
 
+		[PublicAPI]
+		public readonly Commands Commands;
+
 		[JsonProperty]
 		public bool IsConnectedAndLoggedOn => SteamClient?.SteamID != null;
 
@@ -88,7 +91,6 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		internal readonly CardsFarmer CardsFarmer;
 
-		internal readonly Commands Commands;
 		internal readonly ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)> OwnedPackageIDs = new ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>();
 		internal readonly SteamApps SteamApps;
 		internal readonly SteamFriends SteamFriends;

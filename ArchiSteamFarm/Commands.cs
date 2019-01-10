@@ -31,20 +31,13 @@ using ArchiSteamFarm.Plugins;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
-	internal sealed class Commands {
+	public sealed class Commands {
 		private readonly Bot Bot;
 		private readonly Dictionary<uint, string> CachedGamesOwned = new Dictionary<uint, string>();
 
 		internal Commands(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
-		internal void OnNewLicenseList() {
-			lock (CachedGamesOwned) {
-				CachedGamesOwned.Clear();
-				CachedGamesOwned.TrimExcess();
-			}
-		}
-
-		internal async Task<string> Response(ulong steamID, string message) {
+		public async Task<string> Response(ulong steamID, string message) {
 			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(message));
 
@@ -340,6 +333,13 @@ namespace ArchiSteamFarm {
 
 							return !string.IsNullOrEmpty(pluginsResponse) ? pluginsResponse : ResponseUnknown(steamID);
 					}
+			}
+		}
+
+		internal void OnNewLicenseList() {
+			lock (CachedGamesOwned) {
+				CachedGamesOwned.Clear();
+				CachedGamesOwned.TrimExcess();
 			}
 		}
 
