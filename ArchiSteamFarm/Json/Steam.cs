@@ -25,13 +25,14 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using ArchiSteamFarm.Localization;
 using HtmlAgilityPack;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SteamKit2;
 
 namespace ArchiSteamFarm.Json {
-	internal static class Steam {
+	public static class Steam {
 		// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_Asset
-		internal sealed class Asset {
+		public sealed class Asset {
 			internal const uint SteamAppID = 753;
 			internal const uint SteamCommunityContextID = 6;
 
@@ -135,8 +136,8 @@ namespace ArchiSteamFarm.Json {
 				set => AssetIDText = value;
 			}
 
-			// Constructed from trades being received
-			internal Asset(uint appID, ulong contextID, ulong classID, uint amount, uint realAppID, EType type = EType.Unknown) {
+			// Constructed from trades being received or plugins
+			public Asset(uint appID, ulong contextID, ulong classID, uint amount, uint realAppID, EType type = EType.Unknown) {
 				if ((appID == 0) || (contextID == 0) || (classID == 0) || (amount == 0) || (realAppID == 0)) {
 					throw new ArgumentNullException(nameof(appID) + " || " + nameof(contextID) + " || " + nameof(classID) + " || " + nameof(amount) + " || " + nameof(realAppID));
 				}
@@ -152,7 +153,7 @@ namespace ArchiSteamFarm.Json {
 			// Deserialized from JSON
 			private Asset() { }
 
-			internal enum EType : byte {
+			public enum EType : byte {
 				Unknown,
 				BoosterPack,
 				Emoticon,
@@ -164,16 +165,16 @@ namespace ArchiSteamFarm.Json {
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		internal class BooleanResponse {
+		public class BooleanResponse {
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
-			internal readonly bool Success;
+			public readonly bool Success;
 
 			// Deserialized from JSON
 			protected BooleanResponse() { }
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		internal sealed class ConfirmationDetails : BooleanResponse {
+		public sealed class ConfirmationDetails : BooleanResponse {
 			internal MobileAuthenticator.Confirmation Confirmation { get; set; }
 			internal ulong TradeOfferID { get; private set; }
 			internal EType Type { get; private set; }
@@ -253,7 +254,7 @@ namespace ArchiSteamFarm.Json {
 
 			// REF: Internal documentation
 			[SuppressMessage("ReSharper", "UnusedMember.Global")]
-			internal enum EType : byte {
+			public enum EType : byte {
 				Unknown,
 				Generic,
 				Trade,
@@ -265,12 +266,41 @@ namespace ArchiSteamFarm.Json {
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		internal class EResultResponse {
+		public class EResultResponse {
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
-			internal readonly EResult Result;
+			public readonly EResult Result;
 
 			// Deserialized from JSON
 			protected EResultResponse() { }
+		}
+
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		public class NumberResponse {
+			[PublicAPI]
+			public bool Success { get; private set; }
+
+			[JsonProperty(PropertyName = "success", Required = Required.Always)]
+			private byte SuccessNumber {
+				set {
+					switch (value) {
+						case 0:
+							Success = false;
+
+							break;
+						case 1:
+							Success = true;
+
+							break;
+						default:
+							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(value), value));
+
+							return;
+					}
+				}
+			}
+
+			// Deserialized from JSON
+			protected NumberResponse() { }
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
@@ -366,34 +396,6 @@ namespace ArchiSteamFarm.Json {
 
 			// Deserialized from JSON
 			private NewDiscoveryQueueResponse() { }
-		}
-
-		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		internal class NumberResponse {
-			internal bool Success { get; private set; }
-
-			[JsonProperty(PropertyName = "success", Required = Required.Always)]
-			private byte SuccessNumber {
-				set {
-					switch (value) {
-						case 0:
-							Success = false;
-
-							break;
-						case 1:
-							Success = true;
-
-							break;
-						default:
-							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(value), value));
-
-							return;
-					}
-				}
-			}
-
-			// Deserialized from JSON
-			protected NumberResponse() { }
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]

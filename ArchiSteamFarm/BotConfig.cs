@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -28,7 +29,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
@@ -141,6 +144,14 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool UseLoginKeys = DefaultUseLoginKeys;
+
+		[JsonExtensionData]
+		internal Dictionary<string, JToken> AdditionalProperties {
+			get;
+
+			[UsedImplicitly]
+			private set;
+		}
 
 		internal string DecryptedSteamPassword {
 			get {

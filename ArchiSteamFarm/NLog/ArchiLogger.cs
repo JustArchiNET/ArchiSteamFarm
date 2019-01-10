@@ -24,18 +24,120 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
+using JetBrains.Annotations;
 using NLog;
 
 namespace ArchiSteamFarm.NLog {
-	internal sealed class ArchiLogger {
+	public sealed class ArchiLogger {
 		private readonly Logger Logger;
 
-		internal ArchiLogger(string name) {
+		public ArchiLogger(string name) {
 			if (string.IsNullOrEmpty(name)) {
 				throw new ArgumentNullException(nameof(name));
 			}
 
 			Logger = LogManager.GetLogger(name);
+		}
+
+		[PublicAPI]
+		public void LogGenericDebug(string message, [CallerMemberName] string previousMethodName = null) {
+			if (string.IsNullOrEmpty(message)) {
+				LogNullError(nameof(message));
+
+				return;
+			}
+
+			Logger.Debug($"{previousMethodName}() {message}");
+		}
+
+		[PublicAPI]
+		public void LogGenericDebuggingException(Exception exception, [CallerMemberName] string previousMethodName = null) {
+			if (exception == null) {
+				LogNullError(nameof(exception));
+
+				return;
+			}
+
+			if (!Debugging.IsUserDebugging) {
+				return;
+			}
+
+			Logger.Debug(exception, $"{previousMethodName}()");
+		}
+
+		[PublicAPI]
+		public void LogGenericError(string message, [CallerMemberName] string previousMethodName = null) {
+			if (string.IsNullOrEmpty(message)) {
+				LogNullError(nameof(message));
+
+				return;
+			}
+
+			Logger.Error($"{previousMethodName}() {message}");
+		}
+
+		[PublicAPI]
+		public void LogGenericException(Exception exception, [CallerMemberName] string previousMethodName = null) {
+			if (exception == null) {
+				LogNullError(nameof(exception));
+
+				return;
+			}
+
+			Logger.Error(exception, $"{previousMethodName}()");
+		}
+
+		[PublicAPI]
+		public void LogGenericInfo(string message, [CallerMemberName] string previousMethodName = null) {
+			if (string.IsNullOrEmpty(message)) {
+				LogNullError(nameof(message));
+
+				return;
+			}
+
+			Logger.Info($"{previousMethodName}() {message}");
+		}
+
+		[PublicAPI]
+		public void LogGenericTrace(string message, [CallerMemberName] string previousMethodName = null) {
+			if (string.IsNullOrEmpty(message)) {
+				LogNullError(nameof(message));
+
+				return;
+			}
+
+			Logger.Trace($"{previousMethodName}() {message}");
+		}
+
+		[PublicAPI]
+		public void LogGenericWarning(string message, [CallerMemberName] string previousMethodName = null) {
+			if (string.IsNullOrEmpty(message)) {
+				LogNullError(nameof(message));
+
+				return;
+			}
+
+			Logger.Warn($"{previousMethodName}() {message}");
+		}
+
+		[PublicAPI]
+		public void LogGenericWarningException(Exception exception, [CallerMemberName] string previousMethodName = null) {
+			if (exception == null) {
+				LogNullError(nameof(exception));
+
+				return;
+			}
+
+			Logger.Warn(exception, $"{previousMethodName}()");
+		}
+
+		[PublicAPI]
+		public void LogNullError(string nullObjectName, [CallerMemberName] string previousMethodName = null) {
+			if (string.IsNullOrEmpty(nullObjectName)) {
+				return;
+			}
+
+			LogGenericError(string.Format(Strings.ErrorObjectIsNull, nullObjectName), previousMethodName);
 		}
 
 		internal void LogChatMessage(bool echo, string message, ulong chatGroupID = 0, ulong chatID = 0, ulong steamID = 0, [CallerMemberName] string previousMethodName = null) {
@@ -119,98 +221,6 @@ namespace ArchiSteamFarm.NLog {
 
 				break;
 			}
-		}
-
-		internal void LogGenericDebug(string message, [CallerMemberName] string previousMethodName = null) {
-			if (string.IsNullOrEmpty(message)) {
-				LogNullError(nameof(message));
-
-				return;
-			}
-
-			Logger.Debug($"{previousMethodName}() {message}");
-		}
-
-		internal void LogGenericDebuggingException(Exception exception, [CallerMemberName] string previousMethodName = null) {
-			if (exception == null) {
-				LogNullError(nameof(exception));
-
-				return;
-			}
-
-			if (!Debugging.IsUserDebugging) {
-				return;
-			}
-
-			Logger.Debug(exception, $"{previousMethodName}()");
-		}
-
-		internal void LogGenericError(string message, [CallerMemberName] string previousMethodName = null) {
-			if (string.IsNullOrEmpty(message)) {
-				LogNullError(nameof(message));
-
-				return;
-			}
-
-			Logger.Error($"{previousMethodName}() {message}");
-		}
-
-		internal void LogGenericException(Exception exception, [CallerMemberName] string previousMethodName = null) {
-			if (exception == null) {
-				LogNullError(nameof(exception));
-
-				return;
-			}
-
-			Logger.Error(exception, $"{previousMethodName}()");
-		}
-
-		internal void LogGenericInfo(string message, [CallerMemberName] string previousMethodName = null) {
-			if (string.IsNullOrEmpty(message)) {
-				LogNullError(nameof(message));
-
-				return;
-			}
-
-			Logger.Info($"{previousMethodName}() {message}");
-		}
-
-		internal void LogGenericTrace(string message, [CallerMemberName] string previousMethodName = null) {
-			if (string.IsNullOrEmpty(message)) {
-				LogNullError(nameof(message));
-
-				return;
-			}
-
-			Logger.Trace($"{previousMethodName}() {message}");
-		}
-
-		internal void LogGenericWarning(string message, [CallerMemberName] string previousMethodName = null) {
-			if (string.IsNullOrEmpty(message)) {
-				LogNullError(nameof(message));
-
-				return;
-			}
-
-			Logger.Warn($"{previousMethodName}() {message}");
-		}
-
-		internal void LogGenericWarningException(Exception exception, [CallerMemberName] string previousMethodName = null) {
-			if (exception == null) {
-				LogNullError(nameof(exception));
-
-				return;
-			}
-
-			Logger.Warn(exception, $"{previousMethodName}()");
-		}
-
-		internal void LogNullError(string nullObjectName, [CallerMemberName] string previousMethodName = null) {
-			if (string.IsNullOrEmpty(nullObjectName)) {
-				return;
-			}
-
-			LogGenericError(string.Format(Strings.ErrorObjectIsNull, nullObjectName), previousMethodName);
 		}
 	}
 }

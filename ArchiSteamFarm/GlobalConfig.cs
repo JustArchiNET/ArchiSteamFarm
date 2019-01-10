@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -27,7 +28,9 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
@@ -181,6 +184,14 @@ namespace ArchiSteamFarm {
 
 				return _WebProxy;
 			}
+		}
+
+		[JsonExtensionData]
+		[PublicAPI]
+		internal Dictionary<string, JToken> AdditionalProperties {
+			get;
+			[UsedImplicitly]
+			private set;
 		}
 
 		internal bool IsWebProxyPasswordSet { get; private set; }

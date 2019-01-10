@@ -31,9 +31,10 @@ using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
+using ArchiSteamFarm.Plugins;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SteamKit2;
 using SteamKit2.Unified.Internal;
@@ -52,19 +53,37 @@ namespace ArchiSteamFarm {
 		private const byte RedeemCooldownInHours = 1; // 1 hour since first redeem attempt, this is a limitation enforced by Steam
 		private const byte ReservedMessageLength = 2; // 2 for 2x optional …
 
+		[PublicAPI]
+		public static IReadOnlyDictionary<string, Bot> BotsReadOnly => Bots;
+
 		internal static readonly ConcurrentDictionary<string, Bot> Bots = new ConcurrentDictionary<string, Bot>();
 
 		private static readonly SemaphoreSlim BotsSemaphore = new SemaphoreSlim(1, 1);
 		private static readonly SemaphoreSlim LoginSemaphore = new SemaphoreSlim(1, 1);
 
-		internal readonly Actions Actions;
-		internal readonly ArchiHandler ArchiHandler;
-		internal readonly ArchiLogger ArchiLogger;
-		internal readonly ArchiWebHandler ArchiWebHandler;
-		internal readonly BotDatabase BotDatabase;
+		[PublicAPI]
+		public readonly Access Access;
+
+		[PublicAPI]
+		public readonly Actions Actions;
+
+		[PublicAPI]
+		public readonly ArchiLogger ArchiLogger;
+
+		[PublicAPI]
+		public readonly ArchiWebHandler ArchiWebHandler;
 
 		[JsonProperty]
-		internal readonly string BotName;
+		public readonly string BotName;
+
+		[JsonProperty]
+		public bool IsConnectedAndLoggedOn => SteamClient?.SteamID != null;
+
+		[JsonProperty]
+		public bool IsPlayingPossible => !PlayingBlocked && (LibraryLockedBySteamID == 0);
+
+		internal readonly ArchiHandler ArchiHandler;
+		internal readonly BotDatabase BotDatabase;
 
 		[JsonProperty]
 		internal readonly CardsFarmer CardsFarmer;
@@ -79,12 +98,6 @@ namespace ArchiSteamFarm {
 		internal bool IsAccountLimited => AccountFlags.HasFlag(EAccountFlags.LimitedUser) || AccountFlags.HasFlag(EAccountFlags.LimitedUserForce);
 		internal bool IsAccountLocked => AccountFlags.HasFlag(EAccountFlags.Lockdown);
 
-		[JsonProperty]
-		internal bool IsConnectedAndLoggedOn => SteamClient?.SteamID != null;
-
-		[JsonProperty]
-		internal bool IsPlayingPossible => !PlayingBlocked && (LibraryLockedBySteamID == 0);
-
 		private readonly CallbackManager CallbackManager;
 		private readonly SemaphoreSlim CallbackSemaphore = new SemaphoreSlim(1, 1);
 		private readonly SemaphoreSlim GamesRedeemerInBackgroundSemaphore = new SemaphoreSlim(1, 1);
@@ -94,7 +107,6 @@ namespace ArchiSteamFarm {
 		private readonly SemaphoreSlim PICSSemaphore = new SemaphoreSlim(1, 1);
 		private readonly Statistics Statistics;
 		private readonly SteamClient SteamClient;
-		private readonly ConcurrentHashSet<ulong> SteamFamilySharingIDs = new ConcurrentHashSet<ulong>();
 		private readonly SteamUser SteamUser;
 		private readonly Trading Trading;
 
@@ -111,10 +123,16 @@ namespace ArchiSteamFarm {
 		private string SSteamID => SteamID.ToString();
 
 		[JsonProperty]
-		internal BotConfig BotConfig { get; private set; }
+		public EAccountFlags AccountFlags { get; private set; }
 
 		[JsonProperty]
-		internal bool KeepRunning { get; private set; }
+		public bool KeepRunning { get; private set; }
+
+		[JsonProperty]
+		public string Nickname { get; private set; }
+
+		[JsonProperty]
+		internal BotConfig BotConfig { get; private set; }
 
 		internal bool PlayingBlocked { get; private set; }
 		internal bool PlayingWasBlocked { get; private set; }
@@ -122,9 +140,6 @@ namespace ArchiSteamFarm {
 
 		internal uint WalletBalance { get; private set; }
 		internal ECurrencyCode WalletCurrency { get; private set; }
-
-		[JsonProperty]
-		private EAccountFlags AccountFlags;
 
 		private string AuthCode;
 
@@ -142,9 +157,6 @@ namespace ArchiSteamFarm {
 		private DateTime LastLogonSessionReplaced;
 		private ulong LibraryLockedBySteamID;
 		private ulong MasterChatGroupID;
-
-		[JsonProperty]
-		private string Nickname;
 
 		private Timer PlayingWasBlockedTimer;
 		private bool ReconnectOnUserInitiated;
@@ -227,6 +239,7 @@ namespace ArchiSteamFarm {
 			CallbackManager.Subscribe<ArchiHandler.UserNotificationsCallback>(OnUserNotifications);
 			CallbackManager.Subscribe<ArchiHandler.VanityURLChangedCallback>(OnVanityURLChangedCallback);
 
+			Access = new Access(this);
 			Actions = new Actions(this);
 			CardsFarmer = new CardsFarmer(this);
 			Commands = new Commands(this);
@@ -235,6 +248,8 @@ namespace ArchiSteamFarm {
 			if (!Debugging.IsDebugBuild && Program.GlobalConfig.Statistics) {
 				Statistics = new Statistics(this);
 			}
+
+			Core.OnBotInit(this);
 
 			InitModules();
 
@@ -637,16 +652,6 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal BotConfig.EPermission GetSteamUserPermission(ulong steamID) {
-			if (steamID == 0) {
-				ArchiLogger.LogNullError(nameof(steamID));
-
-				return BotConfig.EPermission.None;
-			}
-
-			return BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EPermission permission) ? permission : BotConfig.EPermission.None;
-		}
-
 		internal async Task<byte?> GetTradeHoldDuration(ulong steamID, ulong tradeID) {
 			if ((steamID == 0) || (tradeID == 0)) {
 				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(tradeID));
@@ -766,26 +771,6 @@ namespace ArchiSteamFarm {
 			}
 
 			return BotDatabase.IsBlacklistedFromTrades(steamID);
-		}
-
-		internal bool IsFamilySharing(ulong steamID) {
-			if (steamID == 0) {
-				ArchiLogger.LogNullError(nameof(steamID));
-
-				return false;
-			}
-
-			return ASF.IsOwner(steamID) || SteamFamilySharingIDs.Contains(steamID) || (GetSteamUserPermission(steamID) >= BotConfig.EPermission.FamilySharing);
-		}
-
-		internal bool IsMaster(ulong steamID) {
-			if (steamID == 0) {
-				ArchiLogger.LogNullError(nameof(steamID));
-
-				return false;
-			}
-
-			return ASF.IsOwner(steamID) || (GetSteamUserPermission(steamID) >= BotConfig.EPermission.Master);
 		}
 
 		internal bool IsPriorityIdling(uint appID) {
@@ -1264,6 +1249,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Bots.TryRemove(BotName, out _);
+			Core.OnBotDestroy(this);
 		}
 
 		private void Disconnect() {
@@ -1496,7 +1482,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			SteamFamilySharingIDs.ReplaceIfNeededWith(steamIDs);
+			Access.SteamFamilySharingIDs.ReplaceIfNeededWith(steamIDs);
 		}
 
 		private bool InitLoginAndPassword(bool requiresPassword) {
@@ -1548,6 +1534,8 @@ namespace ArchiSteamFarm {
 			if (BotConfig.AutoSteamSaleEvent) {
 				SteamSaleEvent = new SteamSaleEvent(this);
 			}
+
+			Core.OnBotInitModules(this, BotConfig.AdditionalProperties);
 		}
 
 		private async Task InitPermanentConnectionFailure() {
@@ -1758,6 +1746,8 @@ namespace ArchiSteamFarm {
 
 			FirstTradeSent = false;
 
+			Core.OnBotDisconnected(this, callback.UserInitiated ? EResult.OK : lastLogOnResult);
+
 			// If we initiated disconnect, do not attempt to reconnect
 			if (callback.UserInitiated && !ReconnectOnUserInitiated) {
 				return;
@@ -1831,7 +1821,7 @@ namespace ArchiSteamFarm {
 						break;
 					default:
 
-						if (IsFamilySharing(friend.SteamID)) {
+						if (Access.IsFamilySharing(friend.SteamID)) {
 							await ArchiHandler.AddFriend(friend.SteamID).ConfigureAwait(false);
 						} else if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidFriendInvites)) {
 							await ArchiHandler.RemoveFriend(friend.SteamID).ConfigureAwait(false);
@@ -2169,6 +2159,8 @@ namespace ArchiSteamFarm {
 							}
 						);
 					}
+
+					Core.OnBotLoggedOn(this);
 
 					break;
 				case EResult.InvalidPassword:

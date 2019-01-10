@@ -5,7 +5,9 @@ VisualStudioVersion = 15.0.26621.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchiSteamFarm", "ArchiSteamFarm\ArchiSteamFarm.csproj", "{CF84911C-2C4C-4195-8AF3-ABBB6D3DE9AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiSteamFarm.Tests", "ArchiSteamFarm.Tests\ArchiSteamFarm.Tests.csproj", "{91DC4C4F-3C23-4716-8CB2-BC7EAB65D759}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchiSteamFarm.Tests", "ArchiSteamFarm.Tests\ArchiSteamFarm.Tests.csproj", "{91DC4C4F-3C23-4716-8CB2-BC7EAB65D759}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchiSteamFarm.CustomPlugins.Example", "ArchiSteamFarm.CustomPlugins.Example\ArchiSteamFarm.CustomPlugins.Example.csproj", "{2E2C26B6-7C1D-4BAF-BCF9-79286DA08F82}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{91DC4C4F-3C23-4716-8CB2-BC7EAB65D759}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91DC4C4F-3C23-4716-8CB2-BC7EAB65D759}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91DC4C4F-3C23-4716-8CB2-BC7EAB65D759}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E2C26B6-7C1D-4BAF-BCF9-79286DA08F82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E2C26B6-7C1D-4BAF-BCF9-79286DA08F82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E2C26B6-7C1D-4BAF-BCF9-79286DA08F82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E2C26B6-7C1D-4BAF-BCF9-79286DA08F82}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

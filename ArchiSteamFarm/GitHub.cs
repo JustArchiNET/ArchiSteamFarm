@@ -93,7 +93,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			WebBrowser.ObjectResponse<ReleaseResponse> objectResponse = await Program.WebBrowser.UrlGetToJsonObject<ReleaseResponse>(releaseURL).ConfigureAwait(false);
+			WebBrowser.ObjectResponse<ReleaseResponse> objectResponse = await ASF.WebBrowser.UrlGetToJsonObject<ReleaseResponse>(releaseURL).ConfigureAwait(false);
 
 			return objectResponse?.Content;
 		}
@@ -105,7 +105,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			WebBrowser.ObjectResponse<List<ReleaseResponse>> objectResponse = await Program.WebBrowser.UrlGetToJsonObject<List<ReleaseResponse>>(releaseURL).ConfigureAwait(false);
+			WebBrowser.ObjectResponse<List<ReleaseResponse>> objectResponse = await ASF.WebBrowser.UrlGetToJsonObject<List<ReleaseResponse>>(releaseURL).ConfigureAwait(false);
 
 			return objectResponse?.Content;
 		}

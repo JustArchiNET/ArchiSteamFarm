@@ -132,7 +132,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse<string>(false, string.Format(Strings.ErrorIsInvalid, nameof(request.URL))));
 			}
 
-			WebBrowser.StringResponse urlResponse = await Program.WebBrowser.UrlGetToString(request.URL).ConfigureAwait(false);
+			WebBrowser.StringResponse urlResponse = await ASF.WebBrowser.UrlGetToString(request.URL).ConfigureAwait(false);
 
 			if (urlResponse?.Content == null) {
 				return BadRequest(new GenericResponse<string>(false, string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));

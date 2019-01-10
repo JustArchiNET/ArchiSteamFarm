@@ -21,6 +21,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 #if NETFRAMEWORK
@@ -100,6 +101,7 @@ namespace ArchiSteamFarm {
 				}
 
 				string result = path.Substring(relativeTo.Length);
+
 				return (result[0] == System.IO.Path.DirectorySeparatorChar) || (result[0] == System.IO.Path.AltDirectorySeparatorChar) ? result.Substring(1) : result;
 #else
 #pragma warning disable IDE0022
@@ -113,6 +115,8 @@ namespace ArchiSteamFarm {
 		internal static async Task<WebSocketReceiveResult> ReceiveAsync(this WebSocket webSocket, byte[] buffer, CancellationToken cancellationToken) => await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken).ConfigureAwait(false);
 		internal static async Task SendAsync(this WebSocket webSocket, byte[] buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) => await webSocket.SendAsync(new ArraySegment<byte>(buffer), messageType, endOfMessage, cancellationToken).ConfigureAwait(false);
 		internal static string[] Split(this string text, char separator, StringSplitOptions options = StringSplitOptions.None) => text.Split(new[] { separator }, options);
+
+		[SuppressMessage("ReSharper", "UnusedParameter.Global")]
 		internal static void TrimExcess<T1, T2>(this Dictionary<T1, T2> _) { } // no-op
 #endif
 	}

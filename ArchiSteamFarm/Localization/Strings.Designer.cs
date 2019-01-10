@@ -1162,6 +1162,24 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu {0} has been loaded successfully!.
+        /// </summary>
+        internal static string PluginLoaded {
+            get {
+                return ResourceManager.GetString("PluginLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Loading {0} V{1}....
+        /// </summary>
+        internal static string PluginLoading {
+            get {
+                return ResourceManager.GetString("PluginLoading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Refreshing our session!.
         /// </summary>
         internal static string RefreshingOurSession {

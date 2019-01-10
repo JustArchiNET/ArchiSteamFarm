@@ -28,10 +28,11 @@ using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
+using JetBrains.Annotations;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
-	internal sealed class Actions : IDisposable {
+	public sealed class Actions : IDisposable {
 		private static readonly SemaphoreSlim GiftCardsSemaphore = new SemaphoreSlim(1, 1);
 		private static readonly SemaphoreSlim GiftsSemaphore = new SemaphoreSlim(1, 1);
 
@@ -55,7 +56,8 @@ namespace ArchiSteamFarm {
 			CardsFarmerResumeTimer?.Dispose();
 		}
 
-		internal async Task<bool> AcceptConfirmations(bool accept, Steam.ConfirmationDetails.EType acceptedType = Steam.ConfirmationDetails.EType.Unknown, IReadOnlyCollection<ulong> acceptedTradeOfferIDs = null, bool waitIfNeeded = false) {
+		[PublicAPI]
+		public async Task<bool> AcceptConfirmations(bool accept, Steam.ConfirmationDetails.EType acceptedType = Steam.ConfirmationDetails.EType.Unknown, IReadOnlyCollection<ulong> acceptedTradeOfferIDs = null, bool waitIfNeeded = false) {
 			if (!Bot.HasMobileAuthenticator) {
 				return false;
 			}
@@ -107,6 +109,190 @@ namespace ArchiSteamFarm {
 			}
 
 			return !waitIfNeeded;
+		}
+
+		[PublicAPI]
+		public static (bool Success, string Output) Exit() {
+			// Schedule the task after some time so user can receive response
+			Utilities.InBackground(
+				async () => {
+					await Task.Delay(1000).ConfigureAwait(false);
+					await Program.Exit().ConfigureAwait(false);
+				}
+			);
+
+			return (true, Strings.Done);
+		}
+
+		[PublicAPI]
+		public async Task<(bool Success, string Output)> Pause(bool permanent, ushort resumeInSeconds = 0) {
+			if (Bot.CardsFarmer.Paused) {
+				return (false, Strings.BotAutomaticIdlingPausedAlready);
+			}
+
+			await Bot.CardsFarmer.Pause(permanent).ConfigureAwait(false);
+
+			if (!permanent && (Bot.BotConfig.GamesPlayedWhileIdle.Count > 0)) {
+				// We want to let family sharing users access our library, and in this case we must also stop GamesPlayedWhileIdle
+				// We add extra delay because OnFarmingStopped() also executes PlayGames()
+				// Despite of proper order on our end, Steam network might not respect it
+				await Task.Delay(Bot.CallbackSleep).ConfigureAwait(false);
+				await Bot.ArchiHandler.PlayGames(Enumerable.Empty<uint>(), Bot.BotConfig.CustomGamePlayedWhileIdle).ConfigureAwait(false);
+			}
+
+			if (resumeInSeconds > 0) {
+				if (CardsFarmerResumeTimer != null) {
+					CardsFarmerResumeTimer.Dispose();
+					CardsFarmerResumeTimer = null;
+				}
+
+				CardsFarmerResumeTimer = new Timer(
+					e => Resume(),
+					null,
+					TimeSpan.FromSeconds(resumeInSeconds), // Delay
+					Timeout.InfiniteTimeSpan // Period
+				);
+			}
+
+			return (true, Strings.BotAutomaticIdlingNowPaused);
+		}
+
+		[PublicAPI]
+		public async Task<ArchiHandler.PurchaseResponseCallback> RedeemKey(string key) {
+			await LimitGiftsRequestsAsync().ConfigureAwait(false);
+
+			return await Bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
+		}
+
+		[PublicAPI]
+		public static (bool Success, string Output) Restart() {
+			// Schedule the task after some time so user can receive response
+			Utilities.InBackground(
+				async () => {
+					await Task.Delay(1000).ConfigureAwait(false);
+					await Program.Restart().ConfigureAwait(false);
+				}
+			);
+
+			return (true, Strings.Done);
+		}
+
+		[PublicAPI]
+		public (bool Success, string Output) Resume() {
+			if (!Bot.CardsFarmer.Paused) {
+				return (false, Strings.BotAutomaticIdlingResumedAlready);
+			}
+
+			Utilities.InBackground(() => Bot.CardsFarmer.Resume(true));
+
+			return (true, Strings.BotAutomaticIdlingNowResumed);
+		}
+
+		[PublicAPI]
+		public async Task<(bool Success, string Output)> SendTradeOffer(uint appID = Steam.Asset.SteamAppID, uint contextID = Steam.Asset.SteamCommunityContextID, ulong targetSteamID = 0, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<uint> wantedRealAppIDs = null) {
+			if ((appID == 0) || (contextID == 0)) {
+				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
+
+				return (false, string.Format(Strings.ErrorObjectIsNull, nameof(targetSteamID) + " || " + nameof(appID) + " || " + nameof(contextID)));
+			}
+
+			if (!Bot.IsConnectedAndLoggedOn) {
+				return (false, Strings.BotNotConnected);
+			}
+
+			if (targetSteamID == 0) {
+				targetSteamID = GetFirstSteamMasterID();
+
+				if (targetSteamID == 0) {
+					return (false, Strings.BotLootingMasterNotDefined);
+				}
+			}
+
+			if (targetSteamID == Bot.SteamID) {
+				return (false, Strings.BotSendingTradeToYourself);
+			}
+
+			lock (TradingSemaphore) {
+				if (TradingScheduled) {
+					return (false, Strings.ErrorAborted);
+				}
+
+				TradingScheduled = true;
+			}
+
+			await TradingSemaphore.WaitAsync().ConfigureAwait(false);
+
+			try {
+				lock (TradingSemaphore) {
+					TradingScheduled = false;
+				}
+
+				HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetInventory(Bot.SteamID, appID, contextID, true, wantedTypes, wantedRealAppIDs).ConfigureAwait(false);
+
+				if ((inventory == null) || (inventory.Count == 0)) {
+					return (false, string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
+				}
+
+				if (!await Bot.ArchiWebHandler.MarkSentTrades().ConfigureAwait(false)) {
+					return (false, Strings.BotLootingFailed);
+				}
+
+				(bool success, HashSet<ulong> mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(targetSteamID, inventory, token: Bot.BotConfig.SteamTradeToken).ConfigureAwait(false);
+
+				if ((mobileTradeOfferIDs != null) && (mobileTradeOfferIDs.Count > 0) && Bot.HasMobileAuthenticator) {
+					if (!await AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false)) {
+						return (false, Strings.BotLootingFailed);
+					}
+				}
+
+				if (!success) {
+					return (false, Strings.BotLootingFailed);
+				}
+			} finally {
+				TradingSemaphore.Release();
+			}
+
+			return (true, Strings.BotLootingSuccess);
+		}
+
+		[PublicAPI]
+		public (bool Success, string Output) Start() {
+			if (Bot.KeepRunning) {
+				return (false, Strings.BotAlreadyRunning);
+			}
+
+			SkipFirstShutdown = true;
+			Utilities.InBackground(Bot.Start);
+
+			return (true, Strings.Done);
+		}
+
+		[PublicAPI]
+		public (bool Success, string Output) Stop() {
+			if (!Bot.KeepRunning) {
+				return (false, Strings.BotAlreadyStopped);
+			}
+
+			Bot.Stop();
+
+			return (true, Strings.Done);
+		}
+
+		[PublicAPI]
+		public static async Task<(bool Success, string Message)> Update() {
+			Version version = await ASF.Update(true).ConfigureAwait(false);
+
+			if (version == null) {
+				return (false, null);
+			}
+
+			if (SharedInfo.Version >= version) {
+				return (false, "V" + SharedInfo.Version + " ≥ V" + version);
+			}
+
+			Utilities.InBackground(ASF.RestartOrExit);
+
+			return (true, version.ToString());
 		}
 
 		internal async Task AcceptDigitalGiftCards() {
@@ -177,18 +363,6 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static (bool Success, string Output) Exit() {
-			// Schedule the task after some time so user can receive response
-			Utilities.InBackground(
-				async () => {
-					await Task.Delay(1000).ConfigureAwait(false);
-					await Program.Exit().ConfigureAwait(false);
-				}
-			);
-
-			return (true, Strings.Done);
-		}
-
 		internal async Task<SemaphoreLock> GetTradingLock() {
 			await TradingSemaphore.WaitAsync().ConfigureAwait(false);
 
@@ -196,177 +370,6 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void OnDisconnected() => HandledGifts.Clear();
-
-		internal async Task<(bool Success, string Output)> Pause(bool permanent, ushort resumeInSeconds = 0) {
-			if (!Bot.IsConnectedAndLoggedOn) {
-				return (false, Strings.BotNotConnected);
-			}
-
-			if (Bot.CardsFarmer.Paused) {
-				return (false, Strings.BotAutomaticIdlingPausedAlready);
-			}
-
-			await Bot.CardsFarmer.Pause(permanent).ConfigureAwait(false);
-
-			if (!permanent && (Bot.BotConfig.GamesPlayedWhileIdle.Count > 0)) {
-				// We want to let family sharing users access our library, and in this case we must also stop GamesPlayedWhileIdle
-				// We add extra delay because OnFarmingStopped() also executes PlayGames()
-				// Despite of proper order on our end, Steam network might not respect it
-				await Task.Delay(Bot.CallbackSleep).ConfigureAwait(false);
-				await Bot.ArchiHandler.PlayGames(Enumerable.Empty<uint>(), Bot.BotConfig.CustomGamePlayedWhileIdle).ConfigureAwait(false);
-			}
-
-			if (resumeInSeconds > 0) {
-				if (CardsFarmerResumeTimer != null) {
-					CardsFarmerResumeTimer.Dispose();
-					CardsFarmerResumeTimer = null;
-				}
-
-				CardsFarmerResumeTimer = new Timer(
-					e => Resume(),
-					null,
-					TimeSpan.FromSeconds(resumeInSeconds), // Delay
-					Timeout.InfiniteTimeSpan // Period
-				);
-			}
-
-			return (true, Strings.BotAutomaticIdlingNowPaused);
-		}
-
-		internal async Task<ArchiHandler.PurchaseResponseCallback> RedeemKey(string key) {
-			await LimitGiftsRequestsAsync().ConfigureAwait(false);
-
-			return await Bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
-		}
-
-		internal static (bool Success, string Output) Restart() {
-			// Schedule the task after some time so user can receive response
-			Utilities.InBackground(
-				async () => {
-					await Task.Delay(1000).ConfigureAwait(false);
-					await Program.Restart().ConfigureAwait(false);
-				}
-			);
-
-			return (true, Strings.Done);
-		}
-
-		internal (bool Success, string Output) Resume() {
-			if (!Bot.IsConnectedAndLoggedOn) {
-				return (false, Strings.BotNotConnected);
-			}
-
-			if (!Bot.CardsFarmer.Paused) {
-				return (false, Strings.BotAutomaticIdlingResumedAlready);
-			}
-
-			Utilities.InBackground(() => Bot.CardsFarmer.Resume(true));
-
-			return (true, Strings.BotAutomaticIdlingNowResumed);
-		}
-
-		internal async Task<(bool Success, string Output)> SendTradeOffer(uint appID = Steam.Asset.SteamAppID, uint contextID = Steam.Asset.SteamCommunityContextID, ulong targetSteamID = 0, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<uint> wantedRealAppIDs = null) {
-			if ((appID == 0) || (contextID == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
-
-				return (false, string.Format(Strings.ErrorObjectIsNull, nameof(targetSteamID) + " || " + nameof(appID) + " || " + nameof(contextID)));
-			}
-
-			if (!Bot.IsConnectedAndLoggedOn) {
-				return (false, Strings.BotNotConnected);
-			}
-
-			if (targetSteamID == 0) {
-				targetSteamID = GetFirstSteamMasterID();
-
-				if (targetSteamID == 0) {
-					return (false, Strings.BotLootingMasterNotDefined);
-				}
-			}
-
-			if (targetSteamID == Bot.SteamID) {
-				return (false, Strings.BotSendingTradeToYourself);
-			}
-
-			lock (TradingSemaphore) {
-				if (TradingScheduled) {
-					return (false, Strings.ErrorAborted);
-				}
-
-				TradingScheduled = true;
-			}
-
-			await TradingSemaphore.WaitAsync().ConfigureAwait(false);
-
-			try {
-				lock (TradingSemaphore) {
-					TradingScheduled = false;
-				}
-
-				HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetInventory(Bot.SteamID, appID, contextID, true, wantedTypes, wantedRealAppIDs).ConfigureAwait(false);
-
-				if ((inventory == null) || (inventory.Count == 0)) {
-					return (false, string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
-				}
-
-				if (!await Bot.ArchiWebHandler.MarkSentTrades().ConfigureAwait(false)) {
-					return (false, Strings.BotLootingFailed);
-				}
-
-				(bool success, HashSet<ulong> mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(targetSteamID, inventory, token: Bot.BotConfig.SteamTradeToken).ConfigureAwait(false);
-
-				if ((mobileTradeOfferIDs != null) && (mobileTradeOfferIDs.Count > 0) && Bot.HasMobileAuthenticator) {
-					if (!await AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false)) {
-						return (false, Strings.BotLootingFailed);
-					}
-				}
-
-				if (!success) {
-					return (false, Strings.BotLootingFailed);
-				}
-			} finally {
-				TradingSemaphore.Release();
-			}
-
-			return (true, Strings.BotLootingSuccess);
-		}
-
-		internal (bool Success, string Output) Start() {
-			if (Bot.KeepRunning) {
-				return (false, Strings.BotAlreadyRunning);
-			}
-
-			SkipFirstShutdown = true;
-			Utilities.InBackground(Bot.Start);
-
-			return (true, Strings.Done);
-		}
-
-		internal (bool Success, string Output) Stop() {
-			if (!Bot.KeepRunning) {
-				return (false, Strings.BotAlreadyStopped);
-			}
-
-			Bot.Stop();
-
-			return (true, Strings.Done);
-		}
-
-		internal static async Task<(bool Success, string Message)> Update() {
-			Version version = await ASF.Update(true).ConfigureAwait(false);
-
-			if (version == null) {
-				return (false, null);
-			}
-
-			if (SharedInfo.Version >= version) {
-				return (false, "V" + SharedInfo.Version + " ≥ V" + version);
-			}
-
-			Utilities.InBackground(ASF.RestartOrExit);
-
-			return (true, version.ToString());
-		}
 
 		private ulong GetFirstSteamMasterID() => Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key != 0) && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderByDescending(steamID => steamID != Bot.SteamID).ThenBy(steamID => steamID).FirstOrDefault();
 

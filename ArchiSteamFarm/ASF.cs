@@ -27,17 +27,24 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ArchiSteamFarm.IPC;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
+using ArchiSteamFarm.Plugins;
+using JetBrains.Annotations;
 using SteamKit2;
 using SteamKit2.Discovery;
 
 namespace ArchiSteamFarm {
-	internal static class ASF {
+	public static class ASF {
 		// This is based on internal Valve guidelines, we're not using it as a hard limit
 		private const byte MaximumRecommendedBotsCount = 10;
 
-		internal static readonly ArchiLogger ArchiLogger = new ArchiLogger(SharedInfo.ASF);
+		[PublicAPI]
+		public static readonly ArchiLogger ArchiLogger = new ArchiLogger(SharedInfo.ASF);
+
+		[PublicAPI]
+		public static WebBrowser WebBrowser { get; internal set; }
 
 		private static readonly ConcurrentDictionary<string, object> LastWriteEvents = new ConcurrentDictionary<string, object>();
 		private static readonly SemaphoreSlim UpdateSemaphore = new SemaphoreSlim(1, 1);
@@ -45,68 +52,8 @@ namespace ArchiSteamFarm {
 		private static Timer AutoUpdatesTimer;
 		private static FileSystemWatcher FileSystemWatcher;
 
-		internal static async Task InitBots() {
-			if (Bot.Bots.Count != 0) {
-				return;
-			}
-
-			// Ensure that we ask for a list of servers if we don't have any saved servers available
-			IEnumerable<ServerRecord> servers = await Program.GlobalDatabase.ServerListProvider.FetchServerListAsync().ConfigureAwait(false);
-
-			if (servers?.Any() != true) {
-				ArchiLogger.LogGenericInfo(string.Format(Strings.Initializing, nameof(SteamDirectory)));
-
-				SteamConfiguration steamConfiguration = SteamConfiguration.Create(builder => builder.WithProtocolTypes(Program.GlobalConfig.SteamProtocols).WithCellID(Program.GlobalDatabase.CellID).WithServerListProvider(Program.GlobalDatabase.ServerListProvider).WithHttpClientFactory(() => Program.WebBrowser.GenerateDisposableHttpClient()));
-
-				try {
-					await SteamDirectory.LoadAsync(steamConfiguration).ConfigureAwait(false);
-					ArchiLogger.LogGenericInfo(Strings.Success);
-				} catch {
-					ArchiLogger.LogGenericWarning(Strings.BotSteamDirectoryInitializationFailed);
-					await Task.Delay(5000).ConfigureAwait(false);
-				}
-			}
-
-			HashSet<string> botNames;
-
-			try {
-				botNames = Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*" + SharedInfo.ConfigExtension).Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).ToHashSet();
-			} catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
-
-				return;
-			}
-
-			if (botNames.Count == 0) {
-				ArchiLogger.LogGenericWarning(Strings.ErrorNoBotsDefined);
-
-				return;
-			}
-
-			if (botNames.Count > MaximumRecommendedBotsCount) {
-				ArchiLogger.LogGenericWarning(string.Format(Strings.WarningExcessiveBotsCount, MaximumRecommendedBotsCount));
-				await Task.Delay(10000).ConfigureAwait(false);
-			}
-
-			await Utilities.InParallel(botNames.OrderBy(botName => botName).Select(Bot.RegisterBot)).ConfigureAwait(false);
-		}
-
-		internal static void InitEvents() {
-			if (FileSystemWatcher != null) {
-				return;
-			}
-
-			FileSystemWatcher = new FileSystemWatcher(SharedInfo.ConfigDirectory) { NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite };
-
-			FileSystemWatcher.Changed += OnChanged;
-			FileSystemWatcher.Created += OnCreated;
-			FileSystemWatcher.Deleted += OnDeleted;
-			FileSystemWatcher.Renamed += OnRenamed;
-
-			FileSystemWatcher.EnableRaisingEvents = true;
-		}
-
-		internal static bool IsOwner(ulong steamID) {
+		[PublicAPI]
+		public static bool IsOwner(ulong steamID) {
 			if (steamID == 0) {
 				ArchiLogger.LogNullError(nameof(steamID));
 
@@ -114,6 +61,26 @@ namespace ArchiSteamFarm {
 			}
 
 			return (steamID == Program.GlobalConfig.SteamOwnerID) || (Debugging.IsDebugBuild && (steamID == SharedInfo.ArchiSteamID));
+		}
+
+		internal static async Task Init() {
+			WebBrowser = new WebBrowser(ArchiLogger, Program.GlobalConfig.WebProxy, true);
+
+			if (Program.GlobalConfig.IPC) {
+				await ArchiKestrel.Start().ConfigureAwait(false);
+			}
+
+			await UpdateAndRestart().ConfigureAwait(false);
+
+			if (!Core.InitPlugins()) {
+				await Task.Delay(15000).ConfigureAwait(false);
+			}
+
+			Core.OnASFInitModules(Program.GlobalConfig.AdditionalProperties);
+
+			await InitBots().ConfigureAwait(false);
+
+			InitEvents();
 		}
 
 		internal static async Task RestartOrExit() {
@@ -218,7 +185,7 @@ namespace ArchiSteamFarm {
 
 				ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateDownloadingNewVersion, newVersion, binaryAsset.Size / 1024 / 1024));
 
-				WebBrowser.BinaryResponse response = await Program.WebBrowser.UrlGetToBinaryWithProgress(binaryAsset.DownloadURL).ConfigureAwait(false);
+				WebBrowser.BinaryResponse response = await WebBrowser.UrlGetToBinaryWithProgress(binaryAsset.DownloadURL).ConfigureAwait(false);
 
 				if (response?.Content == null) {
 					return null;
@@ -252,33 +219,6 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static async Task UpdateAndRestart() {
-			if (!SharedInfo.BuildInfo.CanUpdate || (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None)) {
-				return;
-			}
-
-			if ((AutoUpdatesTimer == null) && (Program.GlobalConfig.UpdatePeriod > 0)) {
-				TimeSpan autoUpdatePeriod = TimeSpan.FromHours(Program.GlobalConfig.UpdatePeriod);
-
-				AutoUpdatesTimer = new Timer(
-					async e => await UpdateAndRestart().ConfigureAwait(false),
-					null,
-					autoUpdatePeriod, // Delay
-					autoUpdatePeriod // Period
-				);
-
-				ArchiLogger.LogGenericInfo(string.Format(Strings.AutoUpdateCheckInfo, autoUpdatePeriod.ToHumanReadable()));
-			}
-
-			Version newVersion = await Update().ConfigureAwait(false);
-
-			if ((newVersion == null) || (newVersion <= SharedInfo.Version)) {
-				return;
-			}
-
-			await RestartOrExit().ConfigureAwait(false);
-		}
-
 		private static async Task<bool> CanHandleWriteEvent(string name) {
 			if (string.IsNullOrEmpty(name)) {
 				ArchiLogger.LogNullError(nameof(name));
@@ -295,6 +235,67 @@ namespace ArchiSteamFarm {
 
 			// We're allowed to handle this event if the one that is saved after full second is our event and we succeed in clearing it (we don't care what we're clearing anymore, it doesn't have to be atomic operation)
 			return LastWriteEvents.TryGetValue(name, out object savedWriteEvent) && (currentWriteEvent == savedWriteEvent) && LastWriteEvents.TryRemove(name, out _);
+		}
+
+		private static async Task InitBots() {
+			if (Bot.Bots.Count != 0) {
+				return;
+			}
+
+			// Ensure that we ask for a list of servers if we don't have any saved servers available
+			IEnumerable<ServerRecord> servers = await Program.GlobalDatabase.ServerListProvider.FetchServerListAsync().ConfigureAwait(false);
+
+			if (servers?.Any() != true) {
+				ArchiLogger.LogGenericInfo(string.Format(Strings.Initializing, nameof(SteamDirectory)));
+
+				SteamConfiguration steamConfiguration = SteamConfiguration.Create(builder => builder.WithProtocolTypes(Program.GlobalConfig.SteamProtocols).WithCellID(Program.GlobalDatabase.CellID).WithServerListProvider(Program.GlobalDatabase.ServerListProvider).WithHttpClientFactory(() => WebBrowser.GenerateDisposableHttpClient()));
+
+				try {
+					await SteamDirectory.LoadAsync(steamConfiguration).ConfigureAwait(false);
+					ArchiLogger.LogGenericInfo(Strings.Success);
+				} catch {
+					ArchiLogger.LogGenericWarning(Strings.BotSteamDirectoryInitializationFailed);
+					await Task.Delay(5000).ConfigureAwait(false);
+				}
+			}
+
+			HashSet<string> botNames;
+
+			try {
+				botNames = Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*" + SharedInfo.ConfigExtension).Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).ToHashSet();
+			} catch (Exception e) {
+				ArchiLogger.LogGenericException(e);
+
+				return;
+			}
+
+			if (botNames.Count == 0) {
+				ArchiLogger.LogGenericWarning(Strings.ErrorNoBotsDefined);
+
+				return;
+			}
+
+			if (botNames.Count > MaximumRecommendedBotsCount) {
+				ArchiLogger.LogGenericWarning(string.Format(Strings.WarningExcessiveBotsCount, MaximumRecommendedBotsCount));
+				await Task.Delay(10000).ConfigureAwait(false);
+			}
+
+			await Utilities.InParallel(botNames.OrderBy(botName => botName).Select(Bot.RegisterBot)).ConfigureAwait(false);
+		}
+
+		private static void InitEvents() {
+			if (FileSystemWatcher != null) {
+				return;
+			}
+
+			FileSystemWatcher = new FileSystemWatcher(SharedInfo.ConfigDirectory) { NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite };
+
+			FileSystemWatcher.Changed += OnChanged;
+			FileSystemWatcher.Created += OnCreated;
+			FileSystemWatcher.Deleted += OnDeleted;
+			FileSystemWatcher.Renamed += OnRenamed;
+
+			FileSystemWatcher.EnableRaisingEvents = true;
 		}
 
 		private static bool IsValidBotName(string botName) {
@@ -540,6 +541,33 @@ namespace ArchiSteamFarm {
 			await OnCreatedFile(e.Name, e.FullPath).ConfigureAwait(false);
 		}
 
+		private static async Task UpdateAndRestart() {
+			if (!SharedInfo.BuildInfo.CanUpdate || (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None)) {
+				return;
+			}
+
+			if ((AutoUpdatesTimer == null) && (Program.GlobalConfig.UpdatePeriod > 0)) {
+				TimeSpan autoUpdatePeriod = TimeSpan.FromHours(Program.GlobalConfig.UpdatePeriod);
+
+				AutoUpdatesTimer = new Timer(
+					async e => await UpdateAndRestart().ConfigureAwait(false),
+					null,
+					autoUpdatePeriod, // Delay
+					autoUpdatePeriod // Period
+				);
+
+				ArchiLogger.LogGenericInfo(string.Format(Strings.AutoUpdateCheckInfo, autoUpdatePeriod.ToHumanReadable()));
+			}
+
+			Version newVersion = await Update().ConfigureAwait(false);
+
+			if ((newVersion == null) || (newVersion <= SharedInfo.Version)) {
+				return;
+			}
+
+			await RestartOrExit().ConfigureAwait(false);
+		}
+
 		private static bool UpdateFromArchive(ZipArchive archive, string targetDirectory) {
 			if ((archive == null) || string.IsNullOrEmpty(targetDirectory)) {
 				ArchiLogger.LogNullError(nameof(archive) + " || " + nameof(targetDirectory));
@@ -573,6 +601,7 @@ namespace ArchiSteamFarm {
 				switch (relativeDirectoryName) {
 					// Files in those directories we want to keep in their current place
 					case SharedInfo.ConfigDirectory:
+					case SharedInfo.PluginsDirectory:
 
 						continue;
 					case "":
