@@ -315,5 +315,23 @@ namespace ArchiSteamFarm.Plugins {
 
 			return responses.Any(response => response);
 		}
+
+		internal static async Task OnBotTradeOfferResults(Bot bot, IReadOnlyCollection<Trading.ParseTradeResult> tradeResults) {
+			if ((bot == null) || (tradeResults == null) || (tradeResults.Count == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(tradeResults));
+
+				return;
+			}
+
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+				return;
+			}
+
+			try {
+				await Utilities.InParallel(ActivePlugins.OfType<IBotTradeOfferResults>().Select(plugin => Task.Run(() => plugin.OnBotTradeOfferResults(bot, tradeResults)))).ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+			}
+		}
 	}
 }

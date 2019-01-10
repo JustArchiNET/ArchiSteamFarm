@@ -22,9 +22,10 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Helpers {
-	internal sealed class ArchiCacheable<T> : IDisposable {
+	public sealed class ArchiCacheable<T> : IDisposable {
 		private readonly TimeSpan CacheLifetime;
 		private readonly SemaphoreSlim InitSemaphore = new SemaphoreSlim(1, 1);
 		private readonly Func<Task<(bool Success, T Result)>> ResolveFunction;
@@ -53,7 +54,8 @@ namespace ArchiSteamFarm.Helpers {
 			MaintenanceTimer?.Dispose();
 		}
 
-		internal async Task<(bool Success, T Result)> GetValue() {
+		[PublicAPI]
+		public async Task<(bool Success, T Result)> GetValue() {
 			if (IsInitialized && IsRecent) {
 				return (true, InitializedValue);
 			}

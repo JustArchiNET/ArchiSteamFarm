@@ -28,9 +28,10 @@ using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Plugins;
+using JetBrains.Annotations;
 
 namespace ArchiSteamFarm {
-	internal sealed class Trading : IDisposable {
+	public sealed class Trading : IDisposable {
 		internal const byte MaxItemsPerTrade = byte.MaxValue; // This is due to limit on POST size in WebBrowser
 		internal const byte MaxTradesPerAccount = 5; // This is limit introduced by Valve
 
@@ -428,6 +429,8 @@ namespace ArchiSteamFarm {
 				// If we finished a trade, perform a loot if user wants to do so
 				await Bot.Actions.SendTradeOffer(wantedTypes: Bot.BotConfig.LootableTypes).ConfigureAwait(false);
 			}
+
+			await Core.OnBotTradeOfferResults(Bot, results.Select(result => result.TradeResult).ToHashSet()).ConfigureAwait(false);
 		}
 
 		private async Task<(ParseTradeResult TradeResult, bool RequiresMobileConfirmation)> ParseTrade(Steam.TradeOffer tradeOffer) {
@@ -622,11 +625,14 @@ namespace ArchiSteamFarm {
 			return new ParseTradeResult(tradeOffer.TradeOfferID, accept ? ParseTradeResult.EResult.Accepted : ParseTradeResult.EResult.Rejected, tradeOffer.ItemsToReceive);
 		}
 
-		private sealed class ParseTradeResult {
-			internal readonly HashSet<Steam.Asset.EType> ReceivingItemTypes;
-			internal readonly ulong TradeOfferID;
+		public sealed class ParseTradeResult {
+			[PublicAPI]
+			public readonly ulong TradeOfferID;
 
-			internal EResult Result { get; set; }
+			internal readonly HashSet<Steam.Asset.EType> ReceivingItemTypes;
+
+			[PublicAPI]
+			public EResult Result { get; internal set; }
 
 			internal ParseTradeResult(ulong tradeOfferID, EResult result, IReadOnlyCollection<Steam.Asset> itemsToReceive = null) {
 				if ((tradeOfferID == 0) || (result == EResult.Unknown)) {
@@ -641,7 +647,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			internal enum EResult : byte {
+			public enum EResult : byte {
 				Unknown,
 				Accepted,
 				Blacklisted,

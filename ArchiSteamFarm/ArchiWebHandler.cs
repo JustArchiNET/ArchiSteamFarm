@@ -42,6 +42,12 @@ using Formatting = Newtonsoft.Json.Formatting;
 
 namespace ArchiSteamFarm {
 	public sealed class ArchiWebHandler : IDisposable {
+		[PublicAPI]
+		public const string SteamCommunityURL = "https://" + SteamCommunityHost;
+
+		[PublicAPI]
+		public const string SteamStoreURL = "https://" + SteamStoreHost;
+
 		private const string IEconService = "IEconService";
 		private const string IPlayerService = "IPlayerService";
 		private const string ISteamApps = "ISteamApps";
@@ -50,23 +56,24 @@ namespace ArchiSteamFarm {
 		private const ushort MaxItemsInSingleInventoryRequest = 5000;
 		private const byte MinSessionValidityInSeconds = GlobalConfig.DefaultConnectionTimeout / 6;
 		private const string SteamCommunityHost = "steamcommunity.com";
-		private const string SteamCommunityURL = "https://" + SteamCommunityHost;
 		private const string SteamStoreHost = "store.steampowered.com";
-		private const string SteamStoreURL = "https://" + SteamStoreHost;
 
 		private static readonly SemaphoreSlim InventorySemaphore = new SemaphoreSlim(1, 1);
 
-		private static readonly ImmutableDictionary<string, (SemaphoreSlim RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)> WebLimitingSemaphores = new Dictionary<string, (SemaphoreSlim RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)>(3) {
+		private static readonly ImmutableDictionary<string, (SemaphoreSlim RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)> WebLimitingSemaphores = new Dictionary<string, (SemaphoreSlim RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)>(4) {
+			{ nameof(ArchiWebHandler), (new SemaphoreSlim(1, 1), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
 			{ SteamCommunityURL, (new SemaphoreSlim(1, 1), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
 			{ SteamStoreURL, (new SemaphoreSlim(1, 1), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
 			{ WebAPI.DefaultBaseAddress.Host, (new SemaphoreSlim(1, 1), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) }
 		}.ToImmutableDictionary();
 
 		[PublicAPI]
+		public readonly ArchiCacheable<string> CachedApiKey;
+
+		[PublicAPI]
 		public readonly WebBrowser WebBrowser;
 
 		private readonly Bot Bot;
-		private readonly ArchiCacheable<string> CachedApiKey;
 		private readonly ArchiCacheable<bool> CachedPublicInventory;
 		private readonly SemaphoreSlim SessionSemaphore = new SemaphoreSlim(1, 1);
 
@@ -89,6 +96,23 @@ namespace ArchiSteamFarm {
 			CachedPublicInventory.Dispose();
 			SessionSemaphore.Dispose();
 			WebBrowser.Dispose();
+		}
+
+		[PublicAPI]
+		public async Task<string> GetAbsoluteProfileURL(bool waitForInitialization = true) {
+			if (waitForInitialization && (SteamID == 0)) {
+				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+
+				if (SteamID == 0) {
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+
+					return null;
+				}
+			}
+
+			return string.IsNullOrEmpty(VanityURL) ? "/profiles/" + SteamID : "/id/" + VanityURL;
 		}
 
 		[PublicAPI]
@@ -2129,22 +2153,6 @@ namespace ArchiSteamFarm {
 			return response?.Result == EResult.OK;
 		}
 
-		private async Task<string> GetAbsoluteProfileURL(bool waitForInitialization = true) {
-			if (waitForInitialization && (SteamID == 0)) {
-				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
-					await Task.Delay(1000).ConfigureAwait(false);
-				}
-
-				if (SteamID == 0) {
-					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-
-					return null;
-				}
-			}
-
-			return string.IsNullOrEmpty(VanityURL) ? "/profiles/" + SteamID : "/id/" + VanityURL;
-		}
-
 		private async Task<(ESteamApiKeyState State, string Key)> GetApiKeyState() {
 			const string request = "/dev/apikey?l=english";
 			HtmlDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
@@ -2628,9 +2636,13 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!WebLimitingSemaphores.TryGetValue(service, out (SemaphoreSlim RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore) limiters)) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(service), service));
+				ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(service), service));
 
-				return await function().ConfigureAwait(false);
+				if (!WebLimitingSemaphores.TryGetValue(nameof(ArchiWebHandler), out limiters)) {
+					ASF.ArchiLogger.LogNullError(nameof(limiters));
+
+					return await function().ConfigureAwait(false);
+				}
 			}
 
 			// Sending a request opens a new connection
