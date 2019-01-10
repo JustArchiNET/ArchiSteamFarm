@@ -344,11 +344,10 @@ namespace ArchiSteamFarm {
 			MinMemoryUsage
 		}
 
+		[PublicAPI]
 		internal enum EUpdateChannel : byte {
 			None,
 			Stable,
-
-			[SuppressMessage("ReSharper", "UnusedMember.Global")]
 			Experimental
 		}
 

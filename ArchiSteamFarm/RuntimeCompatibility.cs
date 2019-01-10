@@ -21,10 +21,10 @@
 
 using System;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 #if NETFRAMEWORK
+using JetBrains.Annotations;
 using System.Collections.Generic;
 using System.Net.WebSockets;
 using System.Threading;
@@ -116,7 +116,7 @@ namespace ArchiSteamFarm {
 		internal static async Task SendAsync(this WebSocket webSocket, byte[] buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) => await webSocket.SendAsync(new ArraySegment<byte>(buffer), messageType, endOfMessage, cancellationToken).ConfigureAwait(false);
 		internal static string[] Split(this string text, char separator, StringSplitOptions options = StringSplitOptions.None) => text.Split(new[] { separator }, options);
 
-		[SuppressMessage("ReSharper", "UnusedParameter.Global")]
+		[PublicAPI]
 		internal static void TrimExcess<T1, T2>(this Dictionary<T1, T2> _) { } // no-op
 #endif
 	}

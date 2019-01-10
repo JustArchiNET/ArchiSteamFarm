@@ -29,6 +29,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.CMsgs;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
+using JetBrains.Annotations;
 using SteamKit2;
 using SteamKit2.Internal;
 using SteamKit2.Unified.Internal;
@@ -832,7 +833,7 @@ namespace ArchiSteamFarm {
 				Notifications = new Dictionary<EUserNotification, uint>(1) { { EUserNotification.Items, msg.count_new_items } };
 			}
 
-			[SuppressMessage("ReSharper", "UnusedMember.Global")]
+			[PublicAPI]
 			internal enum EUserNotification : byte {
 				Unknown,
 				Trading,

@@ -253,7 +253,7 @@ namespace ArchiSteamFarm.Json {
 			private ConfirmationDetails() { }
 
 			// REF: Internal documentation
-			[SuppressMessage("ReSharper", "UnusedMember.Global")]
+			[PublicAPI]
 			public enum EType : byte {
 				Unknown,
 				Generic,
@@ -450,7 +450,7 @@ namespace ArchiSteamFarm.Json {
 				return ItemsToGive.All(item => (item.AppID == Asset.SteamAppID) && (item.ContextID == Asset.SteamCommunityContextID) && acceptedTypes.Contains(item.Type));
 			}
 
-			[SuppressMessage("ReSharper", "UnusedMember.Global")]
+			[PublicAPI]
 			internal enum ETradeOfferState : byte {
 				Unknown,
 				Invalid,

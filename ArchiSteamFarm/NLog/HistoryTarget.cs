@@ -21,8 +21,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using ArchiSteamFarm.Collections;
+using JetBrains.Annotations;
 using NLog;
 using NLog.Targets;
 
@@ -38,7 +38,7 @@ namespace ArchiSteamFarm.NLog {
 		private readonly FixedSizeConcurrentQueue<string> HistoryQueue = new FixedSizeConcurrentQueue<string>(DefaultMaxCount);
 
 		// This is NLog config property, it must have public get() and set() capabilities
-		[SuppressMessage("ReSharper", "UnusedMember.Global")]
+		[PublicAPI]
 		public byte MaxCount {
 			get => HistoryQueue.MaxCount;
 
@@ -55,7 +55,7 @@ namespace ArchiSteamFarm.NLog {
 
 		// This parameter-less constructor is intentionally public, as NLog uses it for creating targets
 		// It must stay like this as we want to have our targets defined in our NLog.config
-		[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
+		[PublicAPI]
 		public HistoryTarget() { }
 
 		internal HistoryTarget(string name) : this() => Name = name;
