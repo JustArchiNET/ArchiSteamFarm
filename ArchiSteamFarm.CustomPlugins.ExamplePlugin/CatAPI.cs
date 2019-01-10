@@ -24,7 +24,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.CustomPlugins.Example {
+namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 	// This is example class that shows how you can call third-party services within your plugin
 	// You always wanted from your ASF to post cats, right? Now is your chance!
 	// P.S. The code is almost 1:1 copy from the one I use in ArchiBoT, you can thank me later

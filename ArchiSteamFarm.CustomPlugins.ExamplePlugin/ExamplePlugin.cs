@@ -28,7 +28,7 @@ using ArchiSteamFarm.Plugins;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
 
-namespace ArchiSteamFarm.CustomPlugins.Example {
+namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 	// In order for your plugin to work, it must export generic ASF's IPlugin interface
 	[Export(typeof(IPlugin))]
 

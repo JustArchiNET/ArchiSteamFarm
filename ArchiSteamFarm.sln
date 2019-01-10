@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchiSteamFarm", "ArchiStea
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchiSteamFarm.Tests", "ArchiSteamFarm.Tests\ArchiSteamFarm.Tests.csproj", "{91DC4C4F-3C23-4716-8CB2-BC7EAB65D759}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchiSteamFarm.CustomPlugins.Example", "ArchiSteamFarm.CustomPlugins.Example\ArchiSteamFarm.CustomPlugins.Example.csproj", "{2E2C26B6-7C1D-4BAF-BCF9-79286DA08F82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchiSteamFarm.CustomPlugins.ExamplePlugin", "ArchiSteamFarm.CustomPlugins.ExamplePlugin\ArchiSteamFarm.CustomPlugins.ExamplePlugin.csproj", "{2E2C26B6-7C1D-4BAF-BCF9-79286DA08F82}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
