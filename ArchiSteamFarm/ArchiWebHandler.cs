@@ -2242,7 +2242,19 @@ namespace ArchiSteamFarm {
 
 			int index = hashName.IndexOf('-');
 
-			return (index > 0) && uint.TryParse(hashName.Substring(0, index), out uint appID) && (appID != 0) ? appID : 0;
+			if (index <= 0) {
+				ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(hashName), hashName));
+
+				return 0;
+			}
+
+			if (!uint.TryParse(hashName.Substring(0, index), out uint appID) || (appID == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(appID));
+
+				return 0;
+			}
+
+			return appID;
 		}
 
 		private static Steam.Asset.EType GetItemType(string name) {
@@ -2273,7 +2285,13 @@ namespace ArchiSteamFarm {
 						return Steam.Asset.EType.ProfileBackground;
 					}
 
-					return name.EndsWith("Trading Card", StringComparison.Ordinal) ? Steam.Asset.EType.TradingCard : Steam.Asset.EType.Unknown;
+					if (name.EndsWith("Trading Card", StringComparison.Ordinal)) {
+						return Steam.Asset.EType.TradingCard;
+					}
+
+					ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(name), name));
+
+					return Steam.Asset.EType.Unknown;
 			}
 		}
 
