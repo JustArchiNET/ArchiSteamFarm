@@ -189,7 +189,15 @@ namespace ArchiSteamFarm.Plugins {
 				return null;
 			}
 
-			IList<string> responses = await Utilities.InParallel(ActivePlugins.OfType<IBotCommand>().Select(plugin => plugin.OnBotCommand(bot, steamID, message, args))).ConfigureAwait(false);
+			IList<string> responses;
+
+			try {
+				responses = await Utilities.InParallel(ActivePlugins.OfType<IBotCommand>().Select(plugin => plugin.OnBotCommand(bot, steamID, message, args))).ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+
+				return null;
+			}
 
 			return string.Join(Environment.NewLine, responses.Where(response => !string.IsNullOrEmpty(response)));
 		}
@@ -295,7 +303,15 @@ namespace ArchiSteamFarm.Plugins {
 				return null;
 			}
 
-			IList<string> responses = await Utilities.InParallel(ActivePlugins.OfType<IBotMessage>().Select(plugin => plugin.OnBotMessage(bot, steamID, message))).ConfigureAwait(false);
+			IList<string> responses;
+
+			try {
+				responses = await Utilities.InParallel(ActivePlugins.OfType<IBotMessage>().Select(plugin => plugin.OnBotMessage(bot, steamID, message))).ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+
+				return null;
+			}
 
 			return string.Join(Environment.NewLine, responses.Where(response => !string.IsNullOrEmpty(response)));
 		}
@@ -311,7 +327,15 @@ namespace ArchiSteamFarm.Plugins {
 				return false;
 			}
 
-			IList<bool> responses = await Utilities.InParallel(ActivePlugins.OfType<IBotTradeOffer>().Select(plugin => plugin.OnBotTradeOffer(bot, tradeOffer))).ConfigureAwait(false);
+			IList<bool> responses;
+
+			try {
+				responses = await Utilities.InParallel(ActivePlugins.OfType<IBotTradeOffer>().Select(plugin => plugin.OnBotTradeOffer(bot, tradeOffer))).ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+
+				return false;
+			}
 
 			return responses.Any(response => response);
 		}
