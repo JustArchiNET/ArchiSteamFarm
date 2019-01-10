@@ -29,6 +29,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
@@ -297,6 +298,22 @@ namespace ArchiSteamFarm.Plugins {
 			IList<string> responses = await Utilities.InParallel(ActivePlugins.OfType<IBotMessage>().Select(plugin => plugin.OnBotMessage(bot, steamID, message))).ConfigureAwait(false);
 
 			return string.Join(Environment.NewLine, responses.Where(response => !string.IsNullOrEmpty(response)));
+		}
+
+		internal static async Task<bool> OnBotTradeOffer(Bot bot, Steam.TradeOffer tradeOffer) {
+			if ((bot == null) || (tradeOffer == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(tradeOffer));
+
+				return false;
+			}
+
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+				return false;
+			}
+
+			IList<bool> responses = await Utilities.InParallel(ActivePlugins.OfType<IBotTradeOffer>().Select(plugin => plugin.OnBotTradeOffer(bot, tradeOffer))).ConfigureAwait(false);
+
+			return responses.Any(response => response);
 		}
 	}
 }

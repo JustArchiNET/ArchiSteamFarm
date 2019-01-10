@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.Plugins;
 
 namespace ArchiSteamFarm {
 	internal sealed class Trading : IDisposable {
@@ -455,6 +456,18 @@ namespace ArchiSteamFarm {
 				Bot.ArchiLogger.LogNullError(nameof(result));
 
 				return (null, false);
+			}
+
+			switch (result.Result) {
+				case ParseTradeResult.EResult.Ignored:
+				case ParseTradeResult.EResult.Rejected:
+					bool accept = await Core.OnBotTradeOffer(Bot, tradeOffer).ConfigureAwait(false);
+
+					if (accept) {
+						result.Result = ParseTradeResult.EResult.Accepted;
+					}
+
+					break;
 			}
 
 			switch (result.Result) {

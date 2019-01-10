@@ -33,20 +33,35 @@ namespace ArchiSteamFarm.Json {
 	public static class Steam {
 		// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_Asset
 		public sealed class Asset {
-			internal const uint SteamAppID = 753;
-			internal const uint SteamCommunityContextID = 6;
+			[PublicAPI]
+			public const uint SteamAppID = 753;
 
-			internal uint Amount { get; set; }
+			[PublicAPI]
+			public const uint SteamCommunityContextID = 6;
+
+			[PublicAPI]
+			public uint Amount { get; internal set; }
 
 			[JsonProperty(PropertyName = "appid", Required = Required.DisallowNull)]
-			internal uint AppID { get; private set; }
+			public uint AppID { get; private set; }
 
-			internal ulong AssetID { get; private set; }
-			internal ulong ClassID { get; private set; }
-			internal ulong ContextID { get; private set; }
-			internal uint RealAppID { get; set; }
-			internal bool Tradable { get; set; }
-			internal EType Type { get; set; }
+			[PublicAPI]
+			public ulong AssetID { get; private set; }
+
+			[PublicAPI]
+			public ulong ClassID { get; private set; }
+
+			[PublicAPI]
+			public ulong ContextID { get; private set; }
+
+			[PublicAPI]
+			public uint RealAppID { get; internal set; }
+
+			[PublicAPI]
+			public bool Tradable { get; internal set; }
+
+			[PublicAPI]
+			public EType Type { get; internal set; }
 
 			[JsonProperty(PropertyName = "amount", Required = Required.Always)]
 			private string AmountText {
@@ -303,6 +318,64 @@ namespace ArchiSteamFarm.Json {
 			protected NumberResponse() { }
 		}
 
+		// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer
+		public sealed class TradeOffer {
+			[PublicAPI]
+			public readonly ulong OtherSteamID64;
+
+			[PublicAPI]
+			public readonly ETradeOfferState State;
+
+			[PublicAPI]
+			public readonly ulong TradeOfferID;
+
+			[PublicAPI]
+			public IReadOnlyCollection<Asset> ItemsToGiveReadOnly => ItemsToGive;
+
+			[PublicAPI]
+			public IReadOnlyCollection<Asset> ItemsToReceiveReadOnly => ItemsToReceive;
+
+			internal readonly HashSet<Asset> ItemsToGive = new HashSet<Asset>();
+			internal readonly HashSet<Asset> ItemsToReceive = new HashSet<Asset>();
+
+			// Constructed from trades being received
+			internal TradeOffer(ulong tradeOfferID, uint otherSteamID3, ETradeOfferState state) {
+				if ((tradeOfferID == 0) || (otherSteamID3 == 0) || (state == ETradeOfferState.Unknown)) {
+					throw new ArgumentNullException(nameof(tradeOfferID) + " || " + nameof(otherSteamID3) + " || " + nameof(state));
+				}
+
+				TradeOfferID = tradeOfferID;
+				OtherSteamID64 = new SteamID(otherSteamID3, EUniverse.Public, EAccountType.Individual);
+				State = state;
+			}
+
+			internal bool IsValidSteamItemsRequest(IReadOnlyCollection<Asset.EType> acceptedTypes) {
+				if ((acceptedTypes == null) || (acceptedTypes.Count == 0)) {
+					ASF.ArchiLogger.LogNullError(nameof(acceptedTypes));
+
+					return false;
+				}
+
+				return ItemsToGive.All(item => (item.AppID == Asset.SteamAppID) && (item.ContextID == Asset.SteamCommunityContextID) && acceptedTypes.Contains(item.Type));
+			}
+
+			[PublicAPI]
+			public enum ETradeOfferState : byte {
+				Unknown,
+				Invalid,
+				Active,
+				Accepted,
+				Countered,
+				Expired,
+				Canceled,
+				Declined,
+				InvalidItems,
+				EmailPending,
+				EmailCanceled,
+				OnHold
+			}
+		}
+
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class InventoryResponse : NumberResponse {
 			[JsonProperty(PropertyName = "assets", Required = Required.DisallowNull)]
@@ -418,52 +491,6 @@ namespace ArchiSteamFarm.Json {
 
 				// Deserialized from JSON
 				private InternalKeyDetails() { }
-			}
-		}
-
-		// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer
-		internal sealed class TradeOffer {
-			internal readonly HashSet<Asset> ItemsToGive = new HashSet<Asset>();
-			internal readonly HashSet<Asset> ItemsToReceive = new HashSet<Asset>();
-			internal readonly ulong OtherSteamID64;
-			internal readonly ETradeOfferState State;
-			internal readonly ulong TradeOfferID;
-
-			// Constructed from trades being received
-			internal TradeOffer(ulong tradeOfferID, uint otherSteamID3, ETradeOfferState state) {
-				if ((tradeOfferID == 0) || (otherSteamID3 == 0) || (state == ETradeOfferState.Unknown)) {
-					throw new ArgumentNullException(nameof(tradeOfferID) + " || " + nameof(otherSteamID3) + " || " + nameof(state));
-				}
-
-				TradeOfferID = tradeOfferID;
-				OtherSteamID64 = new SteamID(otherSteamID3, EUniverse.Public, EAccountType.Individual);
-				State = state;
-			}
-
-			internal bool IsValidSteamItemsRequest(IReadOnlyCollection<Asset.EType> acceptedTypes) {
-				if ((acceptedTypes == null) || (acceptedTypes.Count == 0)) {
-					ASF.ArchiLogger.LogNullError(nameof(acceptedTypes));
-
-					return false;
-				}
-
-				return ItemsToGive.All(item => (item.AppID == Asset.SteamAppID) && (item.ContextID == Asset.SteamCommunityContextID) && acceptedTypes.Contains(item.Type));
-			}
-
-			[PublicAPI]
-			internal enum ETradeOfferState : byte {
-				Unknown,
-				Invalid,
-				Active,
-				Accepted,
-				Countered,
-				Expired,
-				Canceled,
-				Declined,
-				InvalidItems,
-				EmailPending,
-				EmailCanceled,
-				OnHold
 			}
 		}
 
