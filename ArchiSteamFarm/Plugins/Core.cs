@@ -38,6 +38,30 @@ namespace ArchiSteamFarm.Plugins {
 		[ImportMany]
 		private static ImmutableHashSet<IPlugin> ActivePlugins { get; set; }
 
+		internal static bool BotUsesNewChat(Bot bot) {
+			if (bot == null) {
+				ASF.ArchiLogger.LogNullError(nameof(bot));
+
+				return false;
+			}
+
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+				return true;
+			}
+
+			foreach (IBotHackNewChat plugin in ActivePlugins.OfType<IBotHackNewChat>()) {
+				try {
+					if (!plugin.BotUsesNewChat(bot)) {
+						return false;
+					}
+				} catch (Exception e) {
+					ASF.ArchiLogger.LogGenericException(e);
+				}
+			}
+
+			return true;
+		}
+
 		internal static bool InitPlugins() {
 			string pluginsPath = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.PluginsDirectory);
 
