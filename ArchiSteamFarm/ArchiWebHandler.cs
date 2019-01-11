@@ -2255,7 +2255,7 @@ namespace ArchiSteamFarm {
 			int index = hashName.IndexOf('-');
 
 			if (index <= 0) {
-				ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(hashName), hashName));
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(hashName), hashName));
 
 				return 0;
 			}
@@ -2305,7 +2305,7 @@ namespace ArchiSteamFarm {
 						return Steam.Asset.EType.TradingCard;
 					}
 
-					ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(name), name));
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(name), name));
 
 					return Steam.Asset.EType.Unknown;
 			}
