@@ -99,7 +99,7 @@ namespace ArchiSteamFarm.Plugins {
 			HashSet<Assembly> assemblies = new HashSet<Assembly>();
 
 			try {
-				foreach (string assemblyPath in Directory.EnumerateFiles(pluginsPath, "*.dll")) {
+				foreach (string assemblyPath in Directory.EnumerateFiles(pluginsPath, "*.dll", SearchOption.AllDirectories)) {
 					Assembly assembly;
 
 					try {
