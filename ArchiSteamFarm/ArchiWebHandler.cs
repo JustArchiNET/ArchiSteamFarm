@@ -2383,7 +2383,7 @@ namespace ArchiSteamFarm {
 					return false;
 				}
 
-				ulong contextID = item["contextid"].AsUnsignedLong();
+				uint contextID = item["contextid"].AsUnsignedInteger();
 
 				if (contextID == 0) {
 					ASF.ArchiLogger.LogNullError(nameof(contextID));
