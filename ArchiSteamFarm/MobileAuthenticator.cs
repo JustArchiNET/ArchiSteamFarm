@@ -287,16 +287,21 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			// To the best of my knowledge, Steam uses android identifier even on iOS and other devices right now
-			// If we ever need to correct this, we also need to clean up other places
-			const string deviceIdentifier = "android:";
+			// This one is optional
+			int deviceIdentifierIndex = deviceID.IndexOf(':');
 
-			if (!deviceID.StartsWith(deviceIdentifier, StringComparison.Ordinal) || (deviceID.Length <= deviceIdentifier.Length)) {
-				return false;
+			if (deviceIdentifierIndex >= 0) {
+				deviceIdentifierIndex++;
+
+				if (deviceID.Length <= deviceIdentifierIndex) {
+					return false;
+				}
+
+				deviceID = deviceID.Substring(deviceIdentifierIndex);
 			}
 
 			// Dashes are optional in the ID, strip them off for comparison
-			string hash = deviceID.Substring(deviceIdentifier.Length).Replace("-", "");
+			string hash = deviceID.Replace("-", "");
 
 			return (hash.Length > 0) && Utilities.IsValidHexadecimalString(hash);
 		}
