@@ -2277,6 +2277,10 @@ namespace ArchiSteamFarm {
 					return Steam.Asset.EType.SteamGems;
 				default:
 
+					if (name.EndsWith("Consumable", StringComparison.Ordinal)) {
+						return Steam.Asset.EType.Consumable;
+					}
+
 					if (name.EndsWith("Emoticon", StringComparison.Ordinal)) {
 						return Steam.Asset.EType.Emoticon;
 					}

@@ -181,7 +181,8 @@ namespace ArchiSteamFarm.Json {
 				ProfileBackground,
 				TradingCard,
 				SteamGems,
-				SaleItem
+				SaleItem,
+				Consumable
 			}
 		}
 
