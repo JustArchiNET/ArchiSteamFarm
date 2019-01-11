@@ -1,19 +1,26 @@
 #!/bin/bash
 set -eu
 
+NET_CORE_VERSION="netcoreapp2.2"
+NET_FRAMEWORK_VERSION="net472"
+
 MAIN_PROJECT="ArchiSteamFarm"
 TESTS_PROJECT="${MAIN_PROJECT}.Tests"
 SOLUTION="${MAIN_PROJECT}.sln"
 CONFIGURATION="Release"
 OUT="out/source"
-TARGET_FRAMEWORK="netcoreapp2.2"
+TARGET_FRAMEWORK="$NET_CORE_VERSION"
 
 ASF_UI=1
 CLEAN=0
-LINK_DURING_PUBLISH=1
+LINK_DURING_PUBLISH=0
 PULL=1
 SHARED_COMPILATION=1
 TEST=1
+
+PRINT_USAGE() {
+	echo "Usage: $0 [--clean] [--link-during-publish] [--netf] [--no-asf-ui] [--no-pull] [--no-shared-compilation] [--no-test] [debug/release]"
+}
 
 cd "$(dirname "$(readlink -f "$0")")"
 
@@ -27,14 +34,16 @@ for ARG in "$@"; do
 		--no-clean) CLEAN=0 ;;
 		--link-during-publish) LINK_DURING_PUBLISH=1 ;;
 		--no-link-during-publish) LINK_DURING_PUBLISH=0 ;;
+		--netf) TARGET_FRAMEWORK="$NET_FRAMEWORK_VERSION" ;;
+		--no-netf) TARGET_FRAMEWORK="$NET_CORE_VERSION" ;;
 		--pull) PULL=1 ;;
 		--no-pull) PULL=0 ;;
 		--shared-compilation) SHARED_COMPILATION=1 ;;
 		--no-shared-compilation) SHARED_COMPILATION=0 ;;
 		--test) TEST=1 ;;
 		--no-test) TEST=0 ;;
-		--help) echo "Usage: $0 [--clean] [--no-asf-ui] [--no-link-during-publish] [--no-pull] [--no-shared-compilation] [--no-test] [debug/release]"; exit 0 ;;
-		*) echo "Usage: $0 [--clean] [--no-asf-ui] [--no-link-during-publish] [--no-pull] [--no-shared-compilation] [--no-test] [debug/release]"; exit 1
+		--help) PRINT_USAGE; exit 0 ;;
+		*) PRINT_USAGE; exit 1
 	esac
 done
 

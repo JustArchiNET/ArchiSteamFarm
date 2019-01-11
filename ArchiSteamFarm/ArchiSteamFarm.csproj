@@ -6,6 +6,7 @@
     <Authors>JustArchi</Authors>
     <Company>JustArchi</Company>
     <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
+    <CrossGenDuringPublish>false</CrossGenDuringPublish>
     <Copyright>Copyright © ArchiSteamFarm 2015-2019</Copyright>
     <DefaultItemExcludes>$(DefaultItemExcludes);debug/**;out/**</DefaultItemExcludes>
     <Description>ASF is an application that allows you to farm steam cards using multiple steam accounts simultaneously.</Description>
@@ -36,6 +37,16 @@
   <PropertyGroup Condition="'$(ASFVariant)' != ''">
     <DefineConstants>$(DefineConstants);ASF_VARIANT_$(ASFVariant.Replace('-', '_').ToUpperInvariant())</DefineConstants>
   </PropertyGroup>
+
+  <ItemGroup>
+    <LinkerRootDescriptors Include="rootDescriptor.xml" />
+  </ItemGroup>
+
+  <!-- Workaround for https://github.com/Microsoft/msbuild/issues/3350 -->
+  <!-- TODO: Revisit this with msbuild 16.0+ (probably .NET Core 3.0) -->
+  <ItemGroup>
+    <CoreCompileCache Include="$(DefineConstants)" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="2.0.0" />
@@ -78,15 +89,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <LinkerRootDescriptors Include="rootDescriptor.xml" />
-  </ItemGroup>
-
-  <!-- Workaround for https://github.com/Microsoft/msbuild/issues/3350 -->
-  <ItemGroup>
-    <CoreCompileCache Include="$(DefineConstants)" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="Localization\Strings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Strings.resx</DependentUpon>
@@ -106,6 +108,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="ConfigGenerator.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Manual.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="UI.html">
