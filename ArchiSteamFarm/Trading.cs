@@ -317,7 +317,7 @@ namespace ArchiSteamFarm {
 				uint amountToGive = itemToGive.Amount;
 				HashSet<Steam.Asset> itemsToRemove = new HashSet<Steam.Asset>();
 
-				// Keep in mind that ClassID is unique only within appID/contextID scope - we can do it like this because we're not dealing with non-Steam items here (otherwise we'd need to check appID and contextID too)
+				// Keep in mind that ClassID is unique only within appID scope - we can do it like this because we're not dealing with non-Steam items here (otherwise we'd need to check appID too)
 				foreach (Steam.Asset item in inventory.Where(item => item.ClassID == itemToGive.ClassID)) {
 					if (amountToGive >= item.Amount) {
 						itemsToRemove.Add(item);

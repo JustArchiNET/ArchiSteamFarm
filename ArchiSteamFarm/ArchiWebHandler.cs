@@ -1066,21 +1066,13 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			Dictionary<(uint AppID, uint ContextID, ulong ClassID), (uint RealAppID, Steam.Asset.EType Type)> descriptions = new Dictionary<(uint AppID, uint ContextID, ulong ClassID), (uint RealAppID, Steam.Asset.EType Type)>();
+			Dictionary<(uint AppID, ulong ClassID), (uint RealAppID, Steam.Asset.EType Type)> descriptions = new Dictionary<(uint AppID, ulong ClassID), (uint RealAppID, Steam.Asset.EType Type)>();
 
 			foreach (KeyValue description in response["descriptions"].Children) {
 				uint appID = description["appid"].AsUnsignedInteger();
 
 				if (appID == 0) {
 					Bot.ArchiLogger.LogNullError(nameof(appID));
-
-					return null;
-				}
-
-				uint contextID = description["contextid"].AsUnsignedInteger();
-
-				if (contextID == 0) {
-					Bot.ArchiLogger.LogNullError(nameof(contextID));
 
 					return null;
 				}
@@ -1093,7 +1085,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				if (descriptions.ContainsKey((appID, contextID, classID))) {
+				if (descriptions.ContainsKey((appID, classID))) {
 					continue;
 				}
 
@@ -1114,7 +1106,7 @@ namespace ArchiSteamFarm {
 					}
 				}
 
-				descriptions[(appID, contextID, classID)] = (realAppID, type);
+				descriptions[(appID, classID)] = (realAppID, type);
 			}
 
 			HashSet<Steam.TradeOffer> result = new HashSet<Steam.TradeOffer>();
@@ -2383,7 +2375,7 @@ namespace ArchiSteamFarm {
 			return uri.AbsolutePath.StartsWith("/login", StringComparison.Ordinal) || uri.Host.Equals("lostauth");
 		}
 
-		private static bool ParseItems(IReadOnlyDictionary<(uint AppID, uint ContextID, ulong ClassID), (uint RealAppID, Steam.Asset.EType Type)> descriptions, IReadOnlyCollection<KeyValue> input, ICollection<Steam.Asset> output) {
+		private static bool ParseItems(IReadOnlyDictionary<(uint AppID, ulong ClassID), (uint RealAppID, Steam.Asset.EType Type)> descriptions, IReadOnlyCollection<KeyValue> input, ICollection<Steam.Asset> output) {
 			if ((descriptions == null) || (input == null) || (input.Count == 0) || (output == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(descriptions) + " || " + nameof(input) + " || " + nameof(output));
 
@@ -2426,7 +2418,7 @@ namespace ArchiSteamFarm {
 				uint realAppID = 0;
 				Steam.Asset.EType type = Steam.Asset.EType.Unknown;
 
-				if (descriptions.TryGetValue((appID, contextID, classID), out (uint RealAppID, Steam.Asset.EType Type) description)) {
+				if (descriptions.TryGetValue((appID, classID), out (uint RealAppID, Steam.Asset.EType Type) description)) {
 					realAppID = description.RealAppID;
 					type = description.Type;
 				}
