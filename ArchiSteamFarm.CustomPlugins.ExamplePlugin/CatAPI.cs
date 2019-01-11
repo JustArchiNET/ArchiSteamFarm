@@ -58,6 +58,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 			internal readonly string Link;
 #pragma warning restore 649
 
+			[JsonConstructor]
 			private MeowResponse() { }
 		}
 	}

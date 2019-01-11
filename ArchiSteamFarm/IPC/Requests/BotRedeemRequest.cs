@@ -34,7 +34,7 @@ namespace ArchiSteamFarm.IPC.Requests {
 		[Required]
 		public readonly ImmutableHashSet<string> KeysToRedeem;
 
-		// Deserialized from JSON
+		[JsonConstructor]
 		private BotRedeemRequest() { }
 	}
 }

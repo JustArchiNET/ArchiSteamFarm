@@ -170,7 +170,7 @@ namespace ArchiSteamFarm.Json {
 				Type = type;
 			}
 
-			// Deserialized from JSON
+			[JsonConstructor]
 			private Asset() { }
 
 			public enum EType : byte {
@@ -189,7 +189,7 @@ namespace ArchiSteamFarm.Json {
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
 			public readonly bool Success;
 
-			// Deserialized from JSON
+			[JsonConstructor]
 			protected BooleanResponse() { }
 		}
 
@@ -269,7 +269,7 @@ namespace ArchiSteamFarm.Json {
 				}
 			}
 
-			// Deserialized from JSON
+			[JsonConstructor]
 			private ConfirmationDetails() { }
 
 			// REF: Internal documentation
@@ -290,7 +290,7 @@ namespace ArchiSteamFarm.Json {
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
 			public readonly EResult Result;
 
-			// Deserialized from JSON
+			[JsonConstructor]
 			protected EResultResponse() { }
 		}
 
@@ -319,7 +319,7 @@ namespace ArchiSteamFarm.Json {
 				}
 			}
 
-			// Deserialized from JSON
+			[JsonConstructor]
 			protected NumberResponse() { }
 		}
 
@@ -422,7 +422,7 @@ namespace ArchiSteamFarm.Json {
 				set => MoreItems = value > 0;
 			}
 
-			// Deserialized from JSON
+			[JsonConstructor]
 			private InventoryResponse() { }
 
 			internal sealed class Description {
@@ -462,7 +462,7 @@ namespace ArchiSteamFarm.Json {
 					set => Tradable = value > 0;
 				}
 
-				// Deserialized from JSON
+				[JsonConstructor]
 				private Description() { }
 			}
 		}
@@ -472,7 +472,7 @@ namespace ArchiSteamFarm.Json {
 			[JsonProperty(PropertyName = "queue", Required = Required.Always)]
 			internal readonly HashSet<uint> Queue;
 
-			// Deserialized from JSON
+			[JsonConstructor]
 			private NewDiscoveryQueueResponse() { }
 		}
 
@@ -487,14 +487,14 @@ namespace ArchiSteamFarm.Json {
 			[JsonProperty(PropertyName = "currency", Required = Required.DisallowNull)]
 			internal readonly ECurrencyCode? WalletCurrencyCode;
 
-			// Deserialized from JSON
+			[JsonConstructor]
 			private RedeemWalletResponse() { }
 
 			internal sealed class InternalKeyDetails {
 				[JsonProperty(PropertyName = "currencycode", Required = Required.Always)]
 				internal readonly ECurrencyCode CurrencyCode;
 
-				// Deserialized from JSON
+				[JsonConstructor]
 				private InternalKeyDetails() { }
 			}
 		}
@@ -504,7 +504,7 @@ namespace ArchiSteamFarm.Json {
 			[JsonProperty(PropertyName = "needs_mobile_confirmation", Required = Required.DisallowNull)]
 			internal readonly bool RequiresMobileConfirmation;
 
-			// Deserialized from JSON
+			[JsonConstructor]
 			private TradeOfferAcceptResponse() { }
 		}
 
@@ -547,7 +547,7 @@ namespace ArchiSteamFarm.Json {
 				}
 			}
 
-			// Deserialized from JSON
+			[JsonConstructor]
 			private TradeOfferSendResponse() { }
 		}
 
@@ -565,7 +565,7 @@ namespace ArchiSteamFarm.Json {
 				CommentPermission = commentPermission;
 			}
 
-			// Deserialized from JSON
+			[JsonConstructor]
 			private UserPrivacy() { }
 
 			internal sealed class PrivacySettings {
@@ -601,7 +601,7 @@ namespace ArchiSteamFarm.Json {
 					InventoryGifts = inventoryGifts;
 				}
 
-				// Deserialized from JSON
+				[JsonConstructor]
 				private PrivacySettings() { }
 
 				internal enum EPrivacySetting : byte {

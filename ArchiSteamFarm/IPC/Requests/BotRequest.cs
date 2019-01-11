@@ -33,7 +33,7 @@ namespace ArchiSteamFarm.IPC.Requests {
 		[Required]
 		public readonly BotConfig BotConfig;
 
-		// Deserialized from JSON
+		[JsonConstructor]
 		private BotRequest() { }
 	}
 }

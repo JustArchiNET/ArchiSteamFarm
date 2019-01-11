@@ -33,7 +33,7 @@ namespace ArchiSteamFarm.IPC.Requests {
 		[Required]
 		public readonly GlobalConfig GlobalConfig;
 
-		// Deserialized from JSON
+		[JsonConstructor]
 		private ASFRequest() { }
 	}
 }

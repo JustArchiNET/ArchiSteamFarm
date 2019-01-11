@@ -37,7 +37,7 @@ namespace ArchiSteamFarm.IPC.Requests {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly ushort ResumeInSeconds;
 
-		// Deserialized from JSON
+		[JsonConstructor]
 		private BotPauseRequest() { }
 	}
 }

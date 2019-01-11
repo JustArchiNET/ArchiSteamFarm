@@ -197,7 +197,7 @@ namespace ArchiSteamFarm {
 			private string _ChangelogHTML;
 			private string _ChangelogPlainText;
 
-			// Deserialized from JSON
+			[JsonConstructor]
 			private ReleaseResponse() { }
 
 			internal sealed class Asset {
@@ -210,7 +210,7 @@ namespace ArchiSteamFarm {
 				[JsonProperty(PropertyName = "size", Required = Required.Always)]
 				internal readonly uint Size;
 
-				// Deserialized from JSON
+				[JsonConstructor]
 				private Asset() { }
 			}
 		}

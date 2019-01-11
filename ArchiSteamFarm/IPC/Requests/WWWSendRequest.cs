@@ -36,7 +36,7 @@ namespace ArchiSteamFarm.IPC.Requests {
 		[JsonProperty(Required = Required.Always)]
 		public readonly string URL;
 
-		// Deserialized from JSON
+		[JsonConstructor]
 		private WWWSendRequest() { }
 	}
 }
