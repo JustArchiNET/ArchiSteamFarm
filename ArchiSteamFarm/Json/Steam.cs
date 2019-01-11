@@ -180,7 +180,8 @@ namespace ArchiSteamFarm.Json {
 				FoilTradingCard,
 				ProfileBackground,
 				TradingCard,
-				SteamGems
+				SteamGems,
+				SaleItem
 			}
 		}
 

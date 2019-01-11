@@ -2285,6 +2285,10 @@ namespace ArchiSteamFarm {
 						return Steam.Asset.EType.ProfileBackground;
 					}
 
+					if (name.EndsWith("Sale Item", StringComparison.Ordinal)) {
+						return Steam.Asset.EType.SaleItem;
+					}
+
 					if (name.EndsWith("Trading Card", StringComparison.Ordinal)) {
 						return Steam.Asset.EType.TradingCard;
 					}
