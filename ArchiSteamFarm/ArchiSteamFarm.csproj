@@ -8,7 +8,7 @@
     <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
     <CrossGenDuringPublish>false</CrossGenDuringPublish>
     <Copyright>Copyright © ArchiSteamFarm 2015-2019</Copyright>
-    <DefaultItemExcludes>$(DefaultItemExcludes);debug/**;out/**</DefaultItemExcludes>
+    <DefaultItemExcludes>$(DefaultItemExcludes);config/**;debug/**;out/**;overlay/**</DefaultItemExcludes>
     <Description>ASF is an application that allows you to farm steam cards using multiple steam accounts simultaneously.</Description>
     <ErrorReport>none</ErrorReport>
     <FileVersion>4.0.0.0</FileVersion>
@@ -116,7 +116,7 @@
     <None Update="UI.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Content Include="overlay\**\*.*">
+    <Content Include="overlay\all\**\*.*">
       <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -59,9 +59,9 @@ script:
             dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" -r "$1" --no-restore /nologo "/p:ASFVariant=$1"
         fi
 
-        # If we include any helper scripts for this variant, copy them to output directory
-        if [ -d "ArchiSteamFarm/scripts/${1}" ]; then
-            cp "ArchiSteamFarm/scripts/${1}/"* "ArchiSteamFarm/out/${1}"
+        # If we include any overlay for this variant, copy it to output directory
+        if [ -d "ArchiSteamFarm/overlay/${1}" ]; then
+            cp "ArchiSteamFarm/overlay/${1}/"* "ArchiSteamFarm/out/${1}"
         fi
     }
 

@@ -174,9 +174,9 @@ after_test:
             throw "Last command failed."
         }
 
-        # If we include any helper scripts for this variant, copy them to output directory
-        if (Test-Path "ArchiSteamFarm\scripts\$variant" -PathType Container) {
-            Copy-Item "ArchiSteamFarm\scripts\$variant\*" "ArchiSteamFarm\out\$variant"
+        # If we include any overlay for this variant, copy it output directory
+        if (Test-Path "ArchiSteamFarm\overlay\$variant" -PathType Container) {
+            Copy-Item "ArchiSteamFarm\overlay\$variant\*" "ArchiSteamFarm\out\$variant"
         }
 
         # Until https://github.com/dotnet/cli/issues/3267 happens, we'll hack dotnet binary icon on Windows and include .ico file on other platforms
