@@ -659,6 +659,13 @@ namespace ArchiSteamFarm {
 					Directory.CreateDirectory(directory);
 				}
 
+				// We're not interested in extracting placeholder files (but we still want directories created for them, done above)
+				switch (zipFile.Name) {
+					case ".gitkeep":
+
+						continue;
+				}
+
 				zipFile.ExtractToFile(file);
 			}
 

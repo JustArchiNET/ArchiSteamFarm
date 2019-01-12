@@ -105,7 +105,8 @@ namespace ArchiSteamFarm.Plugins {
 					try {
 						assembly = Assembly.LoadFrom(assemblyPath);
 					} catch (Exception e) {
-						ASF.ArchiLogger.LogGenericException(e);
+						ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, assemblyPath));
+						ASF.ArchiLogger.LogGenericWarningException(e);
 
 						continue;
 					}
