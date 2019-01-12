@@ -148,7 +148,6 @@ namespace ArchiSteamFarm {
 		[JsonExtensionData]
 		internal Dictionary<string, JToken> AdditionalProperties {
 			get;
-
 			[UsedImplicitly]
 			private set;
 		}
@@ -371,6 +370,14 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
+		[PublicAPI]
+		public enum EPermission : byte {
+			None,
+			FamilySharing,
+			Operator,
+			Master
+		}
+
 		[Flags]
 		internal enum EBotBehaviour : byte {
 			None = 0,
@@ -399,13 +406,6 @@ namespace ArchiSteamFarm {
 			RedeemDateTimesDescending,
 			MarketableAscending,
 			MarketableDescending
-		}
-
-		internal enum EPermission : byte {
-			None,
-			FamilySharing,
-			Operator,
-			Master
 		}
 
 		[Flags]

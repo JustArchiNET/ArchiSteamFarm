@@ -31,6 +31,7 @@ using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Plugins;
@@ -62,9 +63,6 @@ namespace ArchiSteamFarm {
 		private static readonly SemaphoreSlim LoginSemaphore = new SemaphoreSlim(1, 1);
 
 		private static RegexOptions BotsRegex;
-
-		[PublicAPI]
-		public readonly Access Access;
 
 		[PublicAPI]
 		public readonly Actions Actions;
@@ -111,6 +109,7 @@ namespace ArchiSteamFarm {
 		private readonly SemaphoreSlim PICSSemaphore = new SemaphoreSlim(1, 1);
 		private readonly Statistics Statistics;
 		private readonly SteamClient SteamClient;
+		private readonly ConcurrentHashSet<ulong> SteamFamilySharingIDs = new ConcurrentHashSet<ulong>();
 		private readonly SteamUser SteamUser;
 		private readonly Trading Trading;
 
@@ -259,7 +258,6 @@ namespace ArchiSteamFarm {
 			CallbackManager.Subscribe<ArchiHandler.UserNotificationsCallback>(OnUserNotifications);
 			CallbackManager.Subscribe<ArchiHandler.VanityURLChangedCallback>(OnVanityURLChangedCallback);
 
-			Access = new Access(this);
 			Actions = new Actions(this);
 			CardsFarmer = new CardsFarmer(this);
 			Commands = new Commands(this);
@@ -298,6 +296,28 @@ namespace ArchiSteamFarm {
 			Statistics?.Dispose();
 			SteamSaleEvent?.Dispose();
 			Trading?.Dispose();
+		}
+
+		[PublicAPI]
+		public bool HasPermission(ulong steamID, BotConfig.EPermission permission) {
+			if ((steamID == 0) || (permission == BotConfig.EPermission.None)) {
+				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(permission));
+
+				return false;
+			}
+
+			if (ASF.IsOwner(steamID)) {
+				return true;
+			}
+
+			switch (permission) {
+				case BotConfig.EPermission.FamilySharing when SteamFamilySharingIDs.Contains(steamID):
+
+					return true;
+				default:
+
+					return BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EPermission realPermission) && (realPermission >= permission);
+			}
 		}
 
 		internal async Task AddGamesToRedeemInBackground(IOrderedDictionary gamesToRedeemInBackground) {
@@ -1527,7 +1547,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Access.SteamFamilySharingIDs.ReplaceIfNeededWith(steamIDs);
+			SteamFamilySharingIDs.ReplaceIfNeededWith(steamIDs);
 		}
 
 		private bool InitLoginAndPassword(bool requiresPassword) {
@@ -1866,7 +1886,7 @@ namespace ArchiSteamFarm {
 						break;
 					default:
 
-						if (Access.IsFamilySharing(friend.SteamID)) {
+						if (HasPermission(friend.SteamID, BotConfig.EPermission.FamilySharing)) {
 							await ArchiHandler.AddFriend(friend.SteamID).ConfigureAwait(false);
 						} else if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidFriendInvites)) {
 							await ArchiHandler.RemoveFriend(friend.SteamID).ConfigureAwait(false);

@@ -385,7 +385,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -426,7 +426,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -471,7 +471,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsOperator(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Operator)) {
 				return null;
 			}
 
@@ -518,7 +518,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsOperator(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Operator)) {
 				return null;
 			}
 
@@ -573,7 +573,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -622,7 +622,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsOperator(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Operator)) {
 				return null;
 			}
 
@@ -705,7 +705,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -783,7 +783,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -820,7 +820,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -873,7 +873,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -942,7 +942,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -987,7 +987,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			return Bot.Access.IsFamilySharing(steamID) ? FormatBotResponse(SharedInfo.ProjectURL + "/wiki/Commands") : null;
+			return Bot.HasPermission(steamID, BotConfig.EPermission.FamilySharing) ? FormatBotResponse(SharedInfo.ProjectURL + "/wiki/Commands") : null;
 		}
 
 		private string ResponseIdleBlacklist(ulong steamID) {
@@ -997,7 +997,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -1034,7 +1034,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -1087,7 +1087,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -1140,7 +1140,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -1177,7 +1177,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -1230,7 +1230,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -1283,7 +1283,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -1332,7 +1332,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -1369,7 +1369,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -1414,7 +1414,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -1475,7 +1475,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -1516,7 +1516,7 @@ namespace ArchiSteamFarm {
 				return (null, null);
 			}
 
-			if (!Bot.Access.IsOperator(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Operator)) {
 				return (null, null);
 			}
 
@@ -1636,7 +1636,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -1680,11 +1680,11 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsFamilySharing(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.FamilySharing)) {
 				return null;
 			}
 
-			if (permanent && !Bot.Access.IsOperator(steamID)) {
+			if (permanent && !Bot.HasPermission(steamID, BotConfig.EPermission.Operator)) {
 				return FormatBotResponse(Strings.ErrorAccessDenied);
 			}
 
@@ -1727,7 +1727,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -1751,7 +1751,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -1813,7 +1813,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -1965,7 +1965,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsOperator(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Operator)) {
 				return null;
 			}
 
@@ -1995,7 +1995,7 @@ namespace ArchiSteamFarm {
 				while (!string.IsNullOrEmpty(key)) {
 					string startingKey = key;
 
-					using (IEnumerator<Bot> botsEnumerator = Bot.Bots.Where(bot => (bot.Value != Bot) && !rateLimitedBots.Contains(bot.Value) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.Access.IsOperator(steamID)).OrderBy(bot => bot.Key).Select(bot => bot.Value).GetEnumerator()) {
+					using (IEnumerator<Bot> botsEnumerator = Bot.Bots.Where(bot => (bot.Value != Bot) && !rateLimitedBots.Contains(bot.Value) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.HasPermission(steamID, BotConfig.EPermission.Operator)).OrderBy(bot => bot.Key).Select(bot => bot.Value).GetEnumerator()) {
 						Bot currentBot = Bot;
 
 						while (!string.IsNullOrEmpty(key) && (currentBot != null)) {
@@ -2076,7 +2076,7 @@ namespace ArchiSteamFarm {
 
 											bool alreadyHandled = false;
 
-											foreach (Bot innerBot in Bot.Bots.Where(bot => (bot.Value != currentBot) && (!redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || (bot.Value != Bot)) && !rateLimitedBots.Contains(bot.Value) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.Access.IsOperator(steamID) && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.ContainsKey(packageID)))).OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
+											foreach (Bot innerBot in Bot.Bots.Where(bot => (bot.Value != currentBot) && (!redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || (bot.Value != Bot)) && !rateLimitedBots.Contains(bot.Value) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.HasPermission(steamID, BotConfig.EPermission.Operator) && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.ContainsKey(packageID)))).OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
 												ArchiHandler.PurchaseResponseCallback otherResult = await innerBot.Actions.RedeemKey(key).ConfigureAwait(false);
 
 												if (otherResult == null) {
@@ -2209,7 +2209,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsFamilySharing(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.FamilySharing)) {
 				return null;
 			}
 
@@ -2246,7 +2246,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -2299,7 +2299,7 @@ namespace ArchiSteamFarm {
 				return (null, Bot);
 			}
 
-			if (!Bot.Access.IsFamilySharing(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.FamilySharing)) {
 				return (null, Bot);
 			}
 
@@ -2372,7 +2372,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -2409,7 +2409,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -2466,7 +2466,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -2498,7 +2498,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -2572,7 +2572,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			return Bot.Access.IsOperator(steamID) ? FormatBotResponse(Strings.UnknownCommand) : null;
+			return Bot.HasPermission(steamID, BotConfig.EPermission.Operator) ? FormatBotResponse(Strings.UnknownCommand) : null;
 		}
 
 		private async Task<string> ResponseUnpackBoosters(ulong steamID) {
@@ -2582,7 +2582,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 
@@ -2649,7 +2649,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			return Bot.Access.IsOperator(steamID) ? FormatBotResponse(string.Format(Strings.BotVersion, SharedInfo.ASF, SharedInfo.Version)) : null;
+			return Bot.HasPermission(steamID, BotConfig.EPermission.Operator) ? FormatBotResponse(string.Format(Strings.BotVersion, SharedInfo.ASF, SharedInfo.Version)) : null;
 		}
 
 		private string ResponseWalletBalance(ulong steamID) {
@@ -2659,7 +2659,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Access.IsMaster(steamID)) {
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
 			}
 

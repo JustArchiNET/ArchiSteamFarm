@@ -68,7 +68,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 		// This method is called when unknown command is received (starting with CommandPrefix)
 		// This allows you to recognize the command yourself and implement custom commands
 		// Keep in mind that there is no guarantee what is the actual access of steamID, so you should do the appropriate access checking yourself
-		// You can use either ASF's default functions for that (using the Bot.Access), or implement your own logic as you please
+		// You can use either ASF's default functions for that, or implement your own logic as you please
 		// Since ASF already had to do initial parsing in order to determine that the command is unknown, args[] are splitted using standard ASF delimiters
 		// If by any chance you want to handle message in its raw format, you also have it available, although for usual ASF pattern you can most likely stick with args[] exclusively. The message has CommandPrefix already stripped for your convenience
 		// If you do not recognize the command, just return null/empty and allow ASF to gracefully return "unknown command" to user on usual basis
@@ -76,7 +76,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 			// In comparison with OnBotMessage(), we're using asynchronous CatAPI call here, so we declare our method as async and return the message as usual
 			switch (args[0].ToUpperInvariant()) {
 				// Notice how we handle access here as well, it'll work only for FamilySharing+
-				case "CAT" when bot.Access.IsFamilySharing(steamID):
+				case "CAT" when bot.HasPermission(steamID, BotConfig.EPermission.FamilySharing):
 
 					// Notice how we can decide whether to use bot's AWH WebBrowser or ASF's one. For Steam-related requests, AWH's one should always be used, for third-party requests like those it doesn't really matter
 					// Still, it makes sense to pass AWH's one, so in case you get some errors or alike, you know from which bot instance they come from. It's similar to using Bot's ArchiLogger compared to ASF's one
@@ -132,7 +132,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 		// Normally ASF entirely ignores such messages as the program should not respond to something that isn't recognized
 		// Therefore this function allows you to catch all such messages and handle them yourself
 		// Keep in mind that there is no guarantee what is the actual access of steamID, so you should do the appropriate access checking yourself
-		// You can use either ASF's default functions for that (using the Bot.Access), or implement your own logic as you please
+		// You can use either ASF's default functions for that, or implement your own logic as you please
 		// If you do not intend to return any response to user, just return null/empty and ASF will proceed with the silence as usual
 		public Task<string> OnBotMessage(Bot bot, ulong steamID, string message) {
 			// Normally ASF will expect from you async-capable responses, such as Task<string>. This allows you to make your code fully asynchronous which is a core fundament on which ASF is built upon

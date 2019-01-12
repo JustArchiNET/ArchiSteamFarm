@@ -526,7 +526,7 @@ namespace ArchiSteamFarm {
 
 			if (tradeOffer.OtherSteamID64 != 0) {
 				// Always accept trades from SteamMasterID
-				if (Bot.Access.IsMaster(tradeOffer.OtherSteamID64)) {
+				if (Bot.HasPermission(tradeOffer.OtherSteamID64, BotConfig.EPermission.Master)) {
 					return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Accepted, tradeOffer.ItemsToReceive);
 				}
 
