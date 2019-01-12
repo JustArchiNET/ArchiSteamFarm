@@ -116,9 +116,10 @@
     <None Update="UI.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="config\.gitkeep">
+    <Content Include="overlay\**\*.*">
+      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
     <Content Include="..\ASF-ui\dist\**\*.*" Exclude="**\README.md">
       <Link>www\%(RecursiveDir)%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
