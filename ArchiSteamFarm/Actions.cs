@@ -57,7 +57,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<bool> AcceptConfirmations(bool accept, Steam.ConfirmationDetails.EType acceptedType = Steam.ConfirmationDetails.EType.Unknown, IReadOnlyCollection<ulong> acceptedTradeOfferIDs = null, bool waitIfNeeded = false) {
+		public async Task<bool> AcceptConfirmations(bool accept, Steam.ConfirmationDetails.EType? acceptedType = null, IReadOnlyCollection<ulong> acceptedTradeOfferIDs = null, bool waitIfNeeded = false) {
 			if (!Bot.HasMobileAuthenticator) {
 				return false;
 			}
@@ -82,7 +82,7 @@ namespace ArchiSteamFarm {
 
 				IList<Steam.ConfirmationDetails> results = await Utilities.InParallel(confirmations.Select(Bot.BotDatabase.MobileAuthenticator.GetConfirmationDetails)).ConfigureAwait(false);
 
-				foreach (MobileAuthenticator.Confirmation confirmation in results.Where(details => (details != null) && ((acceptedType != details.Type) || ((details.TradeOfferID != 0) && !acceptedTradeOfferIDs.Contains(details.TradeOfferID)))).Select(details => details.Confirmation)) {
+				foreach (MobileAuthenticator.Confirmation confirmation in results.Where(details => (details != null) && ((acceptedType.HasValue && (acceptedType.Value != details.Type)) || ((details.TradeOfferID != 0) && !acceptedTradeOfferIDs.Contains(details.TradeOfferID)))).Select(details => details.Confirmation)) {
 					confirmations.Remove(confirmation);
 				}
 

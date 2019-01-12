@@ -129,7 +129,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[ItemCanBeNull]
-		internal async Task<HashSet<Confirmation>> GetConfirmations(Steam.ConfirmationDetails.EType acceptedType = Steam.ConfirmationDetails.EType.Unknown) {
+		internal async Task<HashSet<Confirmation>> GetConfirmations(Steam.ConfirmationDetails.EType? acceptedType = null) {
 			if (!HasValidDeviceID) {
 				Bot.ArchiLogger.LogGenericError(Strings.ErrorMobileAuthenticatorInvalidDeviceID);
 
@@ -213,7 +213,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				if ((acceptedType != Steam.ConfirmationDetails.EType.Unknown) && (acceptedType != type)) {
+				if (acceptedType.HasValue && (acceptedType.Value != type)) {
 					continue;
 				}
 
