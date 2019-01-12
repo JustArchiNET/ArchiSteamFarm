@@ -33,57 +33,15 @@ using Humanizer.Localisation;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm {
-	internal static class Utilities {
+	public static class Utilities {
 		// Normally we wouldn't need to use this singleton, but we want to ensure decent randomness across entire program's lifetime
 		private static readonly Random Random = new Random();
 
-		internal static string GetArgsAsText(string[] args, byte argsToSkip, string delimiter) {
-			if ((args == null) || (args.Length <= argsToSkip) || string.IsNullOrEmpty(delimiter)) {
-				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(argsToSkip) + " || " + nameof(delimiter));
+		[PublicAPI]
+		public static uint GetUnixTime() => (uint) DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
-				return null;
-			}
-
-			return string.Join(delimiter, args.Skip(argsToSkip));
-		}
-
-		internal static string GetArgsAsText(string text, byte argsToSkip) {
-			if (string.IsNullOrEmpty(text)) {
-				ASF.ArchiLogger.LogNullError(nameof(text));
-
-				return null;
-			}
-
-			string[] args = text.Split((char[]) null, argsToSkip + 1, StringSplitOptions.RemoveEmptyEntries);
-
-			return args[args.Length - 1];
-		}
-
-		internal static string GetCookieValue(this CookieContainer cookieContainer, string url, string name) {
-			if ((cookieContainer == null) || string.IsNullOrEmpty(url) || string.IsNullOrEmpty(name)) {
-				ASF.ArchiLogger.LogNullError(nameof(cookieContainer) + " || " + nameof(url) + " || " + nameof(name));
-
-				return null;
-			}
-
-			Uri uri;
-
-			try {
-				uri = new Uri(url);
-			} catch (UriFormatException e) {
-				ASF.ArchiLogger.LogGenericException(e);
-
-				return null;
-			}
-
-			CookieCollection cookies = cookieContainer.GetCookies(uri);
-
-			return cookies.Count > 0 ? (from Cookie cookie in cookies where cookie.Name.Equals(name) select cookie.Value).FirstOrDefault() : null;
-		}
-
-		internal static uint GetUnixTime() => (uint) DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-
-		internal static void InBackground(Action action, bool longRunning = false) {
+		[PublicAPI]
+		public static void InBackground(Action action, bool longRunning = false) {
 			if (action == null) {
 				ASF.ArchiLogger.LogNullError(nameof(action));
 
@@ -99,7 +57,8 @@ namespace ArchiSteamFarm {
 			Task.Factory.StartNew(action, CancellationToken.None, options, TaskScheduler.Default);
 		}
 
-		internal static void InBackground<T>(Func<T> function, bool longRunning = false) {
+		[PublicAPI]
+		public static void InBackground<T>(Func<T> function, bool longRunning = false) {
 			if (function == null) {
 				ASF.ArchiLogger.LogNullError(nameof(function));
 
@@ -115,7 +74,8 @@ namespace ArchiSteamFarm {
 			Task.Factory.StartNew(function, CancellationToken.None, options, TaskScheduler.Default);
 		}
 
-		internal static async Task<IList<T>> InParallel<T>(IEnumerable<Task<T>> tasks) {
+		[PublicAPI]
+		public static async Task<IList<T>> InParallel<T>(IEnumerable<Task<T>> tasks) {
 			if (tasks == null) {
 				ASF.ArchiLogger.LogNullError(nameof(tasks));
 
@@ -142,7 +102,8 @@ namespace ArchiSteamFarm {
 			return results;
 		}
 
-		internal static async Task InParallel(IEnumerable<Task> tasks) {
+		[PublicAPI]
+		public static async Task InParallel(IEnumerable<Task> tasks) {
 			if (tasks == null) {
 				ASF.ArchiLogger.LogNullError(nameof(tasks));
 
@@ -164,7 +125,8 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static bool IsValidCdKey(string key) {
+		[PublicAPI]
+		public static bool IsValidCdKey(string key) {
 			if (string.IsNullOrEmpty(key)) {
 				ASF.ArchiLogger.LogNullError(nameof(key));
 
@@ -174,7 +136,8 @@ namespace ArchiSteamFarm {
 			return Regex.IsMatch(key, @"^[0-9A-Z]{4,7}-[0-9A-Z]{4,7}-[0-9A-Z]{4,7}(?:(?:-[0-9A-Z]{4,7})?(?:-[0-9A-Z]{4,7}))?$", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 		}
 
-		internal static bool IsValidHexadecimalString(string text) {
+		[PublicAPI]
+		public static bool IsValidHexadecimalString(string text) {
 			if (string.IsNullOrEmpty(text)) {
 				ASF.ArchiLogger.LogNullError(nameof(text));
 
@@ -232,6 +195,58 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		[PublicAPI]
+		public static IEnumerable<T> ToEnumerable<T>(this T item) {
+			yield return item;
+		}
+
+		[PublicAPI]
+		public static string ToHumanReadable(this TimeSpan timeSpan) => timeSpan.Humanize(3, maxUnit: TimeUnit.Year, minUnit: TimeUnit.Second);
+
+		internal static string GetArgsAsText(string[] args, byte argsToSkip, string delimiter) {
+			if ((args == null) || (args.Length <= argsToSkip) || string.IsNullOrEmpty(delimiter)) {
+				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(argsToSkip) + " || " + nameof(delimiter));
+
+				return null;
+			}
+
+			return string.Join(delimiter, args.Skip(argsToSkip));
+		}
+
+		internal static string GetArgsAsText(string text, byte argsToSkip) {
+			if (string.IsNullOrEmpty(text)) {
+				ASF.ArchiLogger.LogNullError(nameof(text));
+
+				return null;
+			}
+
+			string[] args = text.Split((char[]) null, argsToSkip + 1, StringSplitOptions.RemoveEmptyEntries);
+
+			return args[args.Length - 1];
+		}
+
+		internal static string GetCookieValue(this CookieContainer cookieContainer, string url, string name) {
+			if ((cookieContainer == null) || string.IsNullOrEmpty(url) || string.IsNullOrEmpty(name)) {
+				ASF.ArchiLogger.LogNullError(nameof(cookieContainer) + " || " + nameof(url) + " || " + nameof(name));
+
+				return null;
+			}
+
+			Uri uri;
+
+			try {
+				uri = new Uri(url);
+			} catch (UriFormatException e) {
+				ASF.ArchiLogger.LogGenericException(e);
+
+				return null;
+			}
+
+			CookieCollection cookies = cookieContainer.GetCookies(uri);
+
+			return cookies.Count > 0 ? (from Cookie cookie in cookies where cookie.Name.Equals(name) select cookie.Value).FirstOrDefault() : null;
+		}
+
 		internal static int RandomNext() {
 			lock (Random) {
 				return Random.Next();
@@ -266,11 +281,5 @@ namespace ArchiSteamFarm {
 
 			return result.ToString();
 		}
-
-		internal static IEnumerable<T> ToEnumerable<T>(this T item) {
-			yield return item;
-		}
-
-		internal static string ToHumanReadable(this TimeSpan timeSpan) => timeSpan.Humanize(3, maxUnit: TimeUnit.Year, minUnit: TimeUnit.Second);
 	}
 }
