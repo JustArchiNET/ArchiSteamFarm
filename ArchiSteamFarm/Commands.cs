@@ -72,14 +72,14 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<string> Response(ulong steamID, string message) {
+		public async Task<string> Response(ulong steamID, string message, bool useCommandPrefix = true) {
 			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(message));
 
 				return null;
 			}
 
-			if (!string.IsNullOrEmpty(Program.GlobalConfig.CommandPrefix)) {
+			if (useCommandPrefix && !string.IsNullOrEmpty(Program.GlobalConfig.CommandPrefix)) {
 				if (!message.StartsWith(Program.GlobalConfig.CommandPrefix, StringComparison.Ordinal)) {
 					string pluginsResponse = await Core.OnBotMessage(Bot, steamID, message).ConfigureAwait(false);
 

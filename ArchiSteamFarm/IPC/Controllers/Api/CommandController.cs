@@ -55,11 +55,11 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse<string>(false, Strings.ErrorNoBotsDefined));
 			}
 
-			if (!string.IsNullOrEmpty(Program.GlobalConfig.CommandPrefix) && !command.StartsWith(Program.GlobalConfig.CommandPrefix, StringComparison.Ordinal)) {
-				command = Program.GlobalConfig.CommandPrefix + command;
+			if (!string.IsNullOrEmpty(Program.GlobalConfig.CommandPrefix) && command.StartsWith(Program.GlobalConfig.CommandPrefix, StringComparison.Ordinal)) {
+				command = command.Substring(Program.GlobalConfig.CommandPrefix.Length);
 			}
 
-			string response = await targetBot.Commands.Response(Program.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
+			string response = await targetBot.Commands.Response(Program.GlobalConfig.SteamOwnerID, command, false).ConfigureAwait(false);
 
 			return Ok(new GenericResponse<string>(response));
 		}
