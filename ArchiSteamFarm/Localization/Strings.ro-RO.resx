@@ -264,7 +264,10 @@ StackTrace:
     <value>Te rugăm să introduci datele de autentificare Steam: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputSteamParentalCode" xml:space="preserve">
+    <value>Te rugăm să introduci codul parental Steam: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Te rog să introduci parola contului tău de Steam: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -280,7 +283,9 @@ StackTrace:
   <data name="IPCReady" xml:space="preserve">
     <value>Serverul IPC este pregătit!</value>
   </data>
-  
+  <data name="IPCStarting" xml:space="preserve">
+    <value>Serverul IPC pornește...</value>
+  </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Acest bot s-a oprit deja!</value>
   </data>
@@ -335,7 +340,9 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Farmare oprită!</value>
   </data>
-  
+  <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
+    <value>Se ignoră această cerere, deoarece pauza permanentă este activată!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Nu avem nimic de farmat pe acest cont!</value>
   </data>
@@ -630,13 +637,34 @@ StackTrace:
     <comment>{0} will be replaced by trade's ID (number)</comment>
   </data>
   
+  <data name="TargetBotNotConnected" xml:space="preserve">
+    <value>Instanța botului țintă nu este conectată!</value>
+  </data>
+  <data name="BotWalletBalance" xml:space="preserve">
+    <value>Soldul portofelului: {0} {1}</value>
+    <comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
+  </data>
+  <data name="BotHasNoWallet" xml:space="preserve">
+    <value>Botul nu are portofel.</value>
+  </data>
+  <data name="BotLevel" xml:space="preserve">
+    <value>Botul are nivelul {0}.</value>
+    <comment>{0} will be replaced by bot's level</comment>
+  </data>
+  
+  
+  <data name="ErrorAborted" xml:space="preserve">
+    <value>Abandonat!</value>
+  </data>
   
   
   
-  
-  
-  
-  
-  
+  <data name="PluginLoading" xml:space="preserve">
+    <value>Se încarcă {0} V{1}...</value>
+    <comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
+  </data>
+  <data name="NothingFound" xml:space="preserve">
+    <value>Nimic găsit!</value>
+  </data>
   
 </root>

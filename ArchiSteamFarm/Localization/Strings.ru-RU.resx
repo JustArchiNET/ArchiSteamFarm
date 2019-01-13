@@ -679,4 +679,18 @@
     <value>Вы используете в качестве ботов больше личных аккаунтов чем рекомендуемый нами предел ({0}). Помните, что такая конфигурация не поддерживается и может привести к различным проблемам связанным со Steam, включая блокировку аккаунта. Более подробно - читайте в наших ЧАВО.</value>
     <comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
   </data>
+  <data name="PluginLoaded" xml:space="preserve">
+    <value>{0} был успешно загружен!</value>
+    <comment>{0} will be replaced by the name of the custom ASF plugin</comment>
+  </data>
+  <data name="PluginLoading" xml:space="preserve">
+    <value>Загрузка {0} V{1}...</value>
+    <comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
+  </data>
+  <data name="NothingFound" xml:space="preserve">
+    <value>Ничего не найдено!</value>
+  </data>
+  <data name="PluginsWarning" xml:space="preserve">
+    <value>Вы загрузили в ASF один или более пользовательских плагинов. Поскольку мы не можем оказывать поддержку для модифицированных конфигураций, в случае каких-либо ошибок пожалуйста свяжитесь с разработчиком соответствующих плагинов.</value>
+  </data>
 </root>

@@ -679,4 +679,18 @@ StackTrace:
     <value>Je gebruikt meer botaccounts dan de door ons aanbevolen limiet ({0}). Hou er rekening mee dat deze configuratie niet wordt ondersteund en kan leiden tot verschillende Steam-gerelateerde problemen, waaronder het opschorten van accounts. Bekijk de FAQ voor meer details.</value>
     <comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
   </data>
+  <data name="PluginLoaded" xml:space="preserve">
+    <value>{0} is succesvol geladen!</value>
+    <comment>{0} will be replaced by the name of the custom ASF plugin</comment>
+  </data>
+  <data name="PluginLoading" xml:space="preserve">
+    <value>{0} V{1} wordt geladen...</value>
+    <comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
+  </data>
+  <data name="NothingFound" xml:space="preserve">
+    <value>Niets gevonden!</value>
+  </data>
+  <data name="PluginsWarning" xml:space="preserve">
+    <value>Je hebt een of meer aangepaste plugins geladen in ASF. Neem in geval van problemen contact op met de ontwikkelaars van de plugins die je gebruikt, aangezien we geen ondersteuning voor aangepaste instellingen kunnen bieden.</value>
+  </data>
 </root>

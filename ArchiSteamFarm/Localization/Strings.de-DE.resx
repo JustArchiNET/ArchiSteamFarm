@@ -679,4 +679,18 @@ StackTrace:
     <value>Du verwendest mehr persönliche Bot-Konten als unsere empfohlene Obergrenze ({0}). Bitte bedenke, dass dieses Setup nicht unterstützt wird und verschiedene Steam-bezogene Probleme verursachen kann, einschließlich Kontosperrungen. Weitere Informationen findest du in den FAQs.</value>
     <comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
   </data>
+  <data name="PluginLoaded" xml:space="preserve">
+    <value>{0} wurde erfolgreich geladen!</value>
+    <comment>{0} will be replaced by the name of the custom ASF plugin</comment>
+  </data>
+  <data name="PluginLoading" xml:space="preserve">
+    <value>Lade {0} V{1}...</value>
+    <comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
+  </data>
+  <data name="NothingFound" xml:space="preserve">
+    <value>Nichts gefunden!</value>
+  </data>
+  <data name="PluginsWarning" xml:space="preserve">
+    <value>Du hast ein oder mehrere benutzerdefinierte Plugins in ASF geladen. Da wir keine Unterstützung für modifizierte Setups anbieten können, wende dich bitte im Falle von Problemen an die entsprechenden Entwickler der Plugins die du verwendet hast.</value>
+  </data>
 </root>

@@ -678,4 +678,8 @@
     <value>你執行的個人 BOT 帳戶數量超過我們的建議上限 ({0})。請留意，此配置不受支援，且可能會導致各種 Steam 相關問題，包括帳戶停權。請參閱常見問答了解詳情。</value>
     <comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
   </data>
+  
+  
+  
+  
 </root>

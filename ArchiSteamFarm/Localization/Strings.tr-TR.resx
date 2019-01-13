@@ -679,4 +679,8 @@ Yığın izleme:
     <value>Önerdiğimiz sınırdan ({0}) daha fazla kişisel bot hesabı kullanıyorsun. Bu yapılandırma desteklenmemektedir ve hesabın kapatılması da dahil Steam ile alakalı sorunlara sebep olabilir. Daha fazla bilgi için SSS'ye bakın.</value>
     <comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
   </data>
+  
+  
+  
+  
 </root>
