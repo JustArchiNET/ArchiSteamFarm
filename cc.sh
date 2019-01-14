@@ -1,15 +1,13 @@
 #!/bin/bash
 set -eu
 
-NET_CORE_VERSION="netcoreapp2.2"
-NET_FRAMEWORK_VERSION="net472"
+TARGET_FRAMEWORK="netcoreapp2.2"
 
 MAIN_PROJECT="ArchiSteamFarm"
 TESTS_PROJECT="${MAIN_PROJECT}.Tests"
 SOLUTION="${MAIN_PROJECT}.sln"
 CONFIGURATION="Release"
 OUT="out/source"
-TARGET_FRAMEWORK="$NET_CORE_VERSION"
 
 ASF_UI=1
 CLEAN=0
@@ -19,7 +17,7 @@ SHARED_COMPILATION=1
 TEST=1
 
 PRINT_USAGE() {
-	echo "Usage: $0 [--clean] [--link-during-publish] [--netf] [--no-asf-ui] [--no-pull] [--no-shared-compilation] [--no-test] [debug/release]"
+	echo "Usage: $0 [--clean] [--link-during-publish] [--no-asf-ui] [--no-pull] [--no-shared-compilation] [--no-test] [debug/release]"
 }
 
 cd "$(dirname "$(readlink -f "$0")")"
@@ -34,8 +32,6 @@ for ARG in "$@"; do
 		--no-clean) CLEAN=0 ;;
 		--link-during-publish) LINK_DURING_PUBLISH=1 ;;
 		--no-link-during-publish) LINK_DURING_PUBLISH=0 ;;
-		--netf) TARGET_FRAMEWORK="$NET_FRAMEWORK_VERSION" ;;
-		--no-netf) TARGET_FRAMEWORK="$NET_CORE_VERSION" ;;
 		--pull) PULL=1 ;;
 		--no-pull) PULL=0 ;;
 		--shared-compilation) SHARED_COMPILATION=1 ;;
