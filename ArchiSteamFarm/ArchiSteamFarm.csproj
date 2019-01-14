@@ -49,7 +49,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="2.0.0" />
+    <PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="2.0.1" />
     <PackageReference Include="HtmlAgilityPack" Version="1.8.11" />
     <PackageReference Include="Humanizer" Version="2.5.16" />
     <PackageReference Include="JetBrains.Annotations" Version="2018.2.1" />
