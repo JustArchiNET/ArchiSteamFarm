@@ -61,6 +61,9 @@ namespace ArchiSteamFarm.Json {
 			public bool Tradable { get; internal set; }
 
 			[PublicAPI]
+			public bool Marketable { get; internal set; }
+
+			[PublicAPI]
 			public EType Type { get; internal set; }
 
 			[JsonProperty(PropertyName = "amount", Required = Required.Always)]
@@ -157,7 +160,7 @@ namespace ArchiSteamFarm.Json {
 			}
 
 			// Constructed from trades being received or plugins
-			public Asset(uint appID, uint contextID, ulong classID, uint amount, uint realAppID = 0, EType type = EType.Unknown) {
+			public Asset(uint appID, uint contextID, ulong classID, uint amount, uint realAppID = 0, EType type = EType.Unknown, bool marketable = true) {
 				if ((appID == 0) || (contextID == 0) || (classID == 0) || (amount == 0)) {
 					throw new ArgumentNullException(nameof(appID) + " || " + nameof(contextID) + " || " + nameof(classID) + " || " + nameof(amount));
 				}
@@ -168,6 +171,7 @@ namespace ArchiSteamFarm.Json {
 				Amount = amount;
 				RealAppID = realAppID;
 				Type = type;
+				Marketable = marketable;
 			}
 
 			[JsonConstructor]
@@ -439,6 +443,7 @@ namespace ArchiSteamFarm.Json {
 
 				internal ulong ClassID { get; private set; }
 				internal bool Tradable { get; private set; }
+				internal bool Marketable { get; private set; }
 
 				[JsonProperty(PropertyName = "classid", Required = Required.Always)]
 				private string ClassIDText {
