@@ -469,6 +469,11 @@ namespace ArchiSteamFarm.Json {
 					set => Tradable = value > 0;
 				}
 
+				[JsonProperty(PropertyName = "marketable", Required = Required.Always)]
+				private byte MarketableNumber {
+					set => Marketable = value > 0;
+				}
+
 				[JsonConstructor]
 				private Description() { }
 			}
