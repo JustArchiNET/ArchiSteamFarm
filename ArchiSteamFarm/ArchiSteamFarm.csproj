@@ -23,8 +23,15 @@
     <RepositoryUrl>https://github.com/JustArchiNET/ArchiSteamFarm.git</RepositoryUrl>
     <RuntimeIdentifiers>linux-arm;linux-x64;osx-x64;win-x64</RuntimeIdentifiers>
     <ServerGarbageCollection>false</ServerGarbageCollection>
-    <TargetFrameworks>netcoreapp2.2;net472</TargetFrameworks>
     <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(OS)' == 'Windows_NT' OR '$(ASFNetFramework)' != ''">
+    <TargetFrameworks>netcoreapp2.2;net472</TargetFrameworks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(OS)' != 'Windows_NT' AND '$(ASFNetFramework)' == ''">
+    <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
