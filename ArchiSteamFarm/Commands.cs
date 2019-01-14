@@ -79,14 +79,14 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (useCommandPrefix && !string.IsNullOrEmpty(Program.GlobalConfig.CommandPrefix)) {
-				if (!message.StartsWith(Program.GlobalConfig.CommandPrefix, StringComparison.Ordinal)) {
+			if (useCommandPrefix && !string.IsNullOrEmpty(ASF.GlobalConfig.CommandPrefix)) {
+				if (!message.StartsWith(ASF.GlobalConfig.CommandPrefix, StringComparison.Ordinal)) {
 					string pluginsResponse = await Core.OnBotMessage(Bot, steamID, message).ConfigureAwait(false);
 
 					return !string.IsNullOrEmpty(pluginsResponse) ? pluginsResponse : null;
 				}
 
-				message = message.Substring(Program.GlobalConfig.CommandPrefix.Length);
+				message = message.Substring(ASF.GlobalConfig.CommandPrefix.Length);
 			}
 
 			string[] args = message.Split((char[]) null, StringSplitOptions.RemoveEmptyEntries);
@@ -1287,7 +1287,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Program.GlobalConfig.Headless) {
+			if (!ASF.GlobalConfig.Headless) {
 				return FormatBotResponse(Strings.ErrorFunctionOnlyInHeadlessMode);
 			}
 

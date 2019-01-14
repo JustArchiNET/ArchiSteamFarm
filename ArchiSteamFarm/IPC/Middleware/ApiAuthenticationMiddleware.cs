@@ -80,7 +80,7 @@ namespace ArchiSteamFarm.IPC.Middleware {
 				return HttpStatusCode.InternalServerError;
 			}
 
-			if (string.IsNullOrEmpty(Program.GlobalConfig.IPCPassword)) {
+			if (string.IsNullOrEmpty(ASF.GlobalConfig.IPCPassword)) {
 				return HttpStatusCode.OK;
 			}
 
@@ -96,7 +96,7 @@ namespace ArchiSteamFarm.IPC.Middleware {
 				return HttpStatusCode.Unauthorized;
 			}
 
-			bool authorized = passwords.First() == Program.GlobalConfig.IPCPassword;
+			bool authorized = passwords.First() == ASF.GlobalConfig.IPCPassword;
 
 			await AuthorizationSemaphore.WaitAsync().ConfigureAwait(false);
 

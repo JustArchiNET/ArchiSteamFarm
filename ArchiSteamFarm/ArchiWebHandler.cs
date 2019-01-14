@@ -88,7 +88,7 @@ namespace ArchiSteamFarm {
 
 			CachedApiKey = new ArchiCacheable<string>(ResolveApiKey, TimeSpan.FromHours(1));
 			CachedPublicInventory = new ArchiCacheable<bool>(ResolvePublicInventory, TimeSpan.FromHours(1));
-			WebBrowser = new WebBrowser(bot.ArchiLogger, Program.GlobalConfig.WebProxy);
+			WebBrowser = new WebBrowser(bot.ArchiLogger, ASF.GlobalConfig.WebProxy);
 		}
 
 		public void Dispose() {
@@ -102,7 +102,7 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public async Task<string> GetAbsoluteProfileURL(bool waitForInitialization = true) {
 			if (waitForInitialization && (SteamID == 0)) {
-				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
@@ -152,7 +152,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (SteamID == 0) {
-				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
@@ -227,7 +227,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (SteamID == 0) {
-				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
@@ -302,7 +302,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (SteamID == 0) {
-				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
@@ -377,7 +377,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (SteamID == 0) {
-				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
@@ -452,7 +452,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (SteamID == 0) {
-				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
@@ -560,7 +560,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (SteamID == 0) {
-				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
@@ -668,7 +668,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (SteamID == 0) {
-				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
@@ -779,7 +779,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (SteamID == 0) {
-				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
@@ -1245,7 +1245,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (SteamID == 0) {
-				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
@@ -1277,7 +1277,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (SteamID == 0) {
-				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
@@ -1393,7 +1393,7 @@ namespace ArchiSteamFarm {
 
 			if (steamID == 0) {
 				if (SteamID == 0) {
-					for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+					for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
 						await Task.Delay(1000).ConfigureAwait(false);
 					}
 
@@ -1497,12 +1497,12 @@ namespace ArchiSteamFarm {
 
 					startAssetID = response.LastAssetID;
 				} finally {
-					if (Program.GlobalConfig.InventoryLimiterDelay == 0) {
+					if (ASF.GlobalConfig.InventoryLimiterDelay == 0) {
 						InventorySemaphore.Release();
 					} else {
 						Utilities.InBackground(
 							async () => {
-								await Task.Delay(Program.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
+								await Task.Delay(ASF.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
 								InventorySemaphore.Release();
 							}
 						);
@@ -1774,7 +1774,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (SteamID == 0) {
-				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
@@ -1800,7 +1800,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (SteamID == 0) {
-				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
@@ -1986,12 +1986,12 @@ namespace ArchiSteamFarm {
 				const string request = "/my/inventory";
 				await UrlHeadWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
 			} finally {
-				if (Program.GlobalConfig.InventoryLimiterDelay == 0) {
+				if (ASF.GlobalConfig.InventoryLimiterDelay == 0) {
 					InventorySemaphore.Release();
 				} else {
 					Utilities.InBackground(
 						async () => {
-							await Task.Delay(Program.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
+							await Task.Delay(ASF.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
 							InventorySemaphore.Release();
 						}
 					);
@@ -2677,7 +2677,7 @@ namespace ArchiSteamFarm {
 				return default;
 			}
 
-			if (Program.GlobalConfig.WebLimiterDelay == 0) {
+			if (ASF.GlobalConfig.WebLimiterDelay == 0) {
 				return await function().ConfigureAwait(false);
 			}
 
@@ -2701,7 +2701,7 @@ namespace ArchiSteamFarm {
 				// We release rate-limiter semaphore regardless of our task completion, since we use that one only to guarantee rate-limiting of their creation
 				Utilities.InBackground(
 					async () => {
-						await Task.Delay(Program.GlobalConfig.WebLimiterDelay).ConfigureAwait(false);
+						await Task.Delay(ASF.GlobalConfig.WebLimiterDelay).ConfigureAwait(false);
 						limiters.RateLimitingSemaphore.Release();
 					}
 				);

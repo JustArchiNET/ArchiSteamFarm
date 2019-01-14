@@ -145,13 +145,13 @@ namespace ArchiSteamFarm {
 		public EAccountFlags AccountFlags { get; private set; }
 
 		[JsonProperty]
+		public BotConfig BotConfig { get; private set; }
+
+		[JsonProperty]
 		public bool KeepRunning { get; private set; }
 
 		[JsonProperty]
 		public string Nickname { get; private set; }
-
-		[JsonProperty]
-		internal BotConfig BotConfig { get; private set; }
 
 		internal bool PlayingBlocked { get; private set; }
 		internal bool PlayingWasBlocked { get; private set; }
@@ -211,7 +211,7 @@ namespace ArchiSteamFarm {
 
 			ArchiWebHandler = new ArchiWebHandler(this);
 
-			SteamConfiguration steamConfiguration = SteamConfiguration.Create(builder => builder.WithProtocolTypes(Program.GlobalConfig.SteamProtocols).WithCellID(Program.GlobalDatabase.CellID).WithServerListProvider(Program.GlobalDatabase.ServerListProvider).WithHttpClientFactory(() => ArchiWebHandler.GenerateDisposableHttpClient()));
+			SteamConfiguration steamConfiguration = SteamConfiguration.Create(builder => builder.WithProtocolTypes(ASF.GlobalConfig.SteamProtocols).WithCellID(Program.GlobalDatabase.CellID).WithServerListProvider(Program.GlobalDatabase.ServerListProvider).WithHttpClientFactory(() => ArchiWebHandler.GenerateDisposableHttpClient()));
 
 			// Initialize
 			SteamClient = new SteamClient(steamConfiguration);
@@ -263,7 +263,7 @@ namespace ArchiSteamFarm {
 			Commands = new Commands(this);
 			Trading = new Trading(this);
 
-			if (!Debugging.IsDebugBuild && Program.GlobalConfig.Statistics) {
+			if (!Debugging.IsDebugBuild && ASF.GlobalConfig.Statistics) {
 				Statistics = new Statistics(this);
 			}
 
@@ -891,7 +891,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (BotConfig.ShutdownOnFarmingFinished) {
-				if (farmedSomething || (Program.GlobalConfig.IdleFarmingPeriod == 0)) {
+				if (farmedSomething || (ASF.GlobalConfig.IdleFarmingPeriod == 0)) {
 					Stop();
 
 					return;
@@ -1019,7 +1019,7 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogChatMessage(true, message, steamID: steamID);
 
-			ushort maxMessageLength = (ushort) (MaxMessageLength - ReservedMessageLength - (Program.GlobalConfig.SteamMessagePrefix?.Length ?? 0));
+			ushort maxMessageLength = (ushort) (MaxMessageLength - ReservedMessageLength - (ASF.GlobalConfig.SteamMessagePrefix?.Length ?? 0));
 
 			// We must escape our message prior to sending it
 			message = Escape(message);
@@ -1034,7 +1034,7 @@ namespace ArchiSteamFarm {
 					i--;
 				}
 
-				messagePart = Program.GlobalConfig.SteamMessagePrefix + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
+				messagePart = ASF.GlobalConfig.SteamMessagePrefix + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
 
 				await MessagingSemaphore.WaitAsync().ConfigureAwait(false);
 
@@ -1087,7 +1087,7 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogChatMessage(true, message, chatGroupID, chatID);
 
-			ushort maxMessageLength = (ushort) (MaxMessageLength - ReservedMessageLength - (Program.GlobalConfig.SteamMessagePrefix?.Length ?? 0));
+			ushort maxMessageLength = (ushort) (MaxMessageLength - ReservedMessageLength - (ASF.GlobalConfig.SteamMessagePrefix?.Length ?? 0));
 
 			// We must escape our message prior to sending it
 			message = Escape(message);
@@ -1102,7 +1102,7 @@ namespace ArchiSteamFarm {
 					i--;
 				}
 
-				messagePart = Program.GlobalConfig.SteamMessagePrefix + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
+				messagePart = ASF.GlobalConfig.SteamMessagePrefix + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
 
 				await MessagingSemaphore.WaitAsync().ConfigureAwait(false);
 
@@ -1445,7 +1445,7 @@ namespace ArchiSteamFarm {
 			}
 
 			try {
-				if (DateTime.UtcNow.Subtract(ArchiHandler.LastPacketReceived).TotalSeconds > Program.GlobalConfig.ConnectionTimeout) {
+				if (DateTime.UtcNow.Subtract(ArchiHandler.LastPacketReceived).TotalSeconds > ASF.GlobalConfig.ConnectionTimeout) {
 					await SteamFriends.RequestProfileInfo(SteamClient.SteamID);
 				}
 
@@ -1461,7 +1461,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				if (++HeartBeatFailures >= (byte) Math.Ceiling(Program.GlobalConfig.ConnectionTimeout / 10.0)) {
+				if (++HeartBeatFailures >= (byte) Math.Ceiling(ASF.GlobalConfig.ConnectionTimeout / 10.0)) {
 					HeartBeatFailures = byte.MaxValue;
 					ArchiLogger.LogGenericWarning(Strings.BotConnectionLost);
 					Utilities.InBackground(() => Connect(true));
@@ -1535,7 +1535,7 @@ namespace ArchiSteamFarm {
 			ConnectionFailureTimer = new Timer(
 				async e => await InitPermanentConnectionFailure().ConfigureAwait(false),
 				null,
-				TimeSpan.FromMinutes(Math.Ceiling(Program.GlobalConfig.ConnectionTimeout / 30.0)), // Delay
+				TimeSpan.FromMinutes(Math.Ceiling(ASF.GlobalConfig.ConnectionTimeout / 30.0)), // Delay
 				Timeout.InfiniteTimeSpan // Period
 			);
 		}
@@ -1681,7 +1681,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task LimitLoginRequestsAsync() {
-			if (Program.GlobalConfig.LoginLimiterDelay == 0) {
+			if (ASF.GlobalConfig.LoginLimiterDelay == 0) {
 				return;
 			}
 
@@ -1689,7 +1689,7 @@ namespace ArchiSteamFarm {
 
 			Utilities.InBackground(
 				async () => {
-					await Task.Delay(Program.GlobalConfig.LoginLimiterDelay * 1000).ConfigureAwait(false);
+					await Task.Delay(ASF.GlobalConfig.LoginLimiterDelay * 1000).ConfigureAwait(false);
 					LoginSemaphore.Release();
 				}
 			);

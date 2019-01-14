@@ -58,7 +58,7 @@ namespace ArchiSteamFarm.IPC {
 			// Add support for response compression
 			app.UseResponseCompression();
 
-			if (!string.IsNullOrEmpty(Program.GlobalConfig.IPCPassword)) {
+			if (!string.IsNullOrEmpty(ASF.GlobalConfig.IPCPassword)) {
 				// We need ApiAuthenticationMiddleware for IPCPassword
 				app.UseWhen(context => context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), appBuilder => appBuilder.UseMiddleware<ApiAuthenticationMiddleware>());
 

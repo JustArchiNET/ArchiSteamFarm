@@ -38,7 +38,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		public ActionResult<GenericResponse<ASFResponse>> ASFGet() {
 			uint memoryUsage = (uint) GC.GetTotalMemory(false) / 1024;
 
-			ASFResponse result = new ASFResponse(SharedInfo.BuildInfo.Variant, Program.GlobalConfig, memoryUsage, RuntimeCompatibility.ProcessStartTime, SharedInfo.Version);
+			ASFResponse result = new ASFResponse(SharedInfo.BuildInfo.Variant, ASF.GlobalConfig, memoryUsage, RuntimeCompatibility.ProcessStartTime, SharedInfo.Version);
 
 			return Ok(new GenericResponse<ASFResponse>(result));
 		}
@@ -62,8 +62,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, errorMessage));
 			}
 
-			if (!request.GlobalConfig.IsWebProxyPasswordSet && Program.GlobalConfig.IsWebProxyPasswordSet) {
-				request.GlobalConfig.WebProxyPassword = Program.GlobalConfig.WebProxyPassword;
+			if (!request.GlobalConfig.IsWebProxyPasswordSet && ASF.GlobalConfig.IsWebProxyPasswordSet) {
+				request.GlobalConfig.WebProxyPassword = ASF.GlobalConfig.WebProxyPassword;
 			}
 
 			request.GlobalConfig.ShouldSerializeEverything = false;

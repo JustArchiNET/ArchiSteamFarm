@@ -45,8 +45,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse<string>(false, string.Format(Strings.ErrorIsEmpty, nameof(command))));
 			}
 
-			if (Program.GlobalConfig.SteamOwnerID == 0) {
-				return BadRequest(new GenericResponse<string>(false, string.Format(Strings.ErrorIsInvalid, nameof(Program.GlobalConfig.SteamOwnerID))));
+			if (ASF.GlobalConfig.SteamOwnerID == 0) {
+				return BadRequest(new GenericResponse<string>(false, string.Format(Strings.ErrorIsInvalid, nameof(ASF.GlobalConfig.SteamOwnerID))));
 			}
 
 			Bot targetBot = Bot.Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value).FirstOrDefault();
@@ -55,11 +55,11 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse<string>(false, Strings.ErrorNoBotsDefined));
 			}
 
-			if (!string.IsNullOrEmpty(Program.GlobalConfig.CommandPrefix) && command.StartsWith(Program.GlobalConfig.CommandPrefix, StringComparison.Ordinal)) {
-				command = command.Substring(Program.GlobalConfig.CommandPrefix.Length);
+			if (!string.IsNullOrEmpty(ASF.GlobalConfig.CommandPrefix) && command.StartsWith(ASF.GlobalConfig.CommandPrefix, StringComparison.Ordinal)) {
+				command = command.Substring(ASF.GlobalConfig.CommandPrefix.Length);
 			}
 
-			string response = await targetBot.Commands.Response(Program.GlobalConfig.SteamOwnerID, command, false).ConfigureAwait(false);
+			string response = await targetBot.Commands.Response(ASF.GlobalConfig.SteamOwnerID, command, false).ConfigureAwait(false);
 
 			return Ok(new GenericResponse<string>(response));
 		}

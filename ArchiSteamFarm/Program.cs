@@ -38,9 +38,8 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	internal static class Program {
-		internal static byte LoadBalancingDelay => Math.Max(GlobalConfig?.LoginLimiterDelay ?? 0, (byte) 10);
+		internal static byte LoadBalancingDelay => Math.Max(ASF.GlobalConfig?.LoginLimiterDelay ?? 0, (byte) 10);
 
-		internal static GlobalConfig GlobalConfig { get; private set; }
 		internal static GlobalDatabase GlobalDatabase { get; private set; }
 		internal static bool ProcessRequired { get; private set; }
 		internal static bool RestartAllowed { get; private set; } = true;
@@ -69,7 +68,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (GlobalConfig.Headless) {
+			if (ASF.GlobalConfig.Headless) {
 				ASF.ArchiLogger.LogGenericWarning(Strings.ErrorUserInputRunningInHeadlessMode);
 
 				return null;
@@ -211,7 +210,7 @@ namespace ArchiSteamFarm {
 				ParsePostInitArgs(args);
 			}
 
-			OS.Init(SystemRequired, GlobalConfig.OptimizationMode);
+			OS.Init(SystemRequired, ASF.GlobalConfig.OptimizationMode);
 
 			await InitGlobalDatabaseAndServices().ConfigureAwait(false);
 			await ASF.Init().ConfigureAwait(false);
@@ -248,10 +247,12 @@ namespace ArchiSteamFarm {
 		private static async Task InitGlobalConfigAndLanguage() {
 			string globalConfigFile = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName);
 
-			if (File.Exists(globalConfigFile)) {
-				GlobalConfig = await GlobalConfig.Load(globalConfigFile).ConfigureAwait(false);
+			GlobalConfig globalConfig;
 
-				if (GlobalConfig == null) {
+			if (File.Exists(globalConfigFile)) {
+				globalConfig = await GlobalConfig.Load(globalConfigFile).ConfigureAwait(false);
+
+				if (globalConfig == null) {
 					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorGlobalConfigNotLoaded, globalConfigFile));
 					await Task.Delay(5 * 1000).ConfigureAwait(false);
 					await Exit(1).ConfigureAwait(false);
@@ -259,17 +260,19 @@ namespace ArchiSteamFarm {
 					return;
 				}
 			} else {
-				GlobalConfig = GlobalConfig.Create();
+				globalConfig = GlobalConfig.Create();
 			}
+
+			ASF.InitGlobalConfig(globalConfig);
 
 			if (Debugging.IsUserDebugging) {
-				ASF.ArchiLogger.LogGenericDebug(SharedInfo.GlobalConfigFileName + ": " + JsonConvert.SerializeObject(GlobalConfig, Formatting.Indented));
+				ASF.ArchiLogger.LogGenericDebug(SharedInfo.GlobalConfigFileName + ": " + JsonConvert.SerializeObject(ASF.GlobalConfig, Formatting.Indented));
 			}
 
-			if (!string.IsNullOrEmpty(GlobalConfig.CurrentCulture)) {
+			if (!string.IsNullOrEmpty(ASF.GlobalConfig.CurrentCulture)) {
 				try {
 					// GetCultureInfo() would be better but we can't use it for specifying neutral cultures such as "en"
-					CultureInfo culture = CultureInfo.CreateSpecificCulture(GlobalConfig.CurrentCulture);
+					CultureInfo culture = CultureInfo.CreateSpecificCulture(ASF.GlobalConfig.CurrentCulture);
 					CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = culture;
 				} catch (Exception) {
 					ASF.ArchiLogger.LogGenericError(Strings.ErrorInvalidCurrentCulture);

@@ -278,7 +278,7 @@ namespace ArchiSteamFarm {
 		[NotNull]
 		internal HttpClient GenerateDisposableHttpClient(bool extendedTimeout = false) {
 			HttpClient result = new HttpClient(HttpClientHandler) {
-				Timeout = TimeSpan.FromSeconds(extendedTimeout ? ExtendedTimeoutMultiplier * Program.GlobalConfig.ConnectionTimeout : Program.GlobalConfig.ConnectionTimeout)
+				Timeout = TimeSpan.FromSeconds(extendedTimeout ? ExtendedTimeoutMultiplier * ASF.GlobalConfig.ConnectionTimeout : ASF.GlobalConfig.ConnectionTimeout)
 			};
 
 			// Most web services expect that UserAgent is set, so we declare it globally

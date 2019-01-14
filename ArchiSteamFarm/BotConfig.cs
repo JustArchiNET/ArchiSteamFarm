@@ -71,79 +71,79 @@ namespace ArchiSteamFarm {
 		private static readonly SemaphoreSlim WriteSemaphore = new SemaphoreSlim(1, 1);
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool AcceptGifts = DefaultAcceptGifts;
+		public readonly bool AcceptGifts = DefaultAcceptGifts;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool AutoSteamSaleEvent = DefaultAutoSteamSaleEvent;
+		public readonly bool AutoSteamSaleEvent = DefaultAutoSteamSaleEvent;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly EBotBehaviour BotBehaviour = DefaultBotBehaviour;
+		public readonly EBotBehaviour BotBehaviour = DefaultBotBehaviour;
 
 		[JsonProperty]
-		internal readonly string CustomGamePlayedWhileFarming = DefaultCustomGamePlayedWhileFarming;
+		public readonly string CustomGamePlayedWhileFarming = DefaultCustomGamePlayedWhileFarming;
 
 		[JsonProperty]
-		internal readonly string CustomGamePlayedWhileIdle = DefaultCustomGamePlayedWhileIdle;
+		public readonly string CustomGamePlayedWhileIdle = DefaultCustomGamePlayedWhileIdle;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool Enabled = DefaultEnabled;
+		public readonly bool Enabled = DefaultEnabled;
 
 		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
-		internal readonly ImmutableList<EFarmingOrder> FarmingOrders = DefaultFarmingOrders;
+		public readonly ImmutableList<EFarmingOrder> FarmingOrders = DefaultFarmingOrders;
 
 		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
-		internal readonly ImmutableHashSet<uint> GamesPlayedWhileIdle = DefaultGamesPlayedWhileIdle;
+		public readonly ImmutableHashSet<uint> GamesPlayedWhileIdle = DefaultGamesPlayedWhileIdle;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte HoursUntilCardDrops = DefaultHoursUntilCardDrops;
+		public readonly byte HoursUntilCardDrops = DefaultHoursUntilCardDrops;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool IdlePriorityQueueOnly = DefaultIdlePriorityQueueOnly;
+		public readonly bool IdlePriorityQueueOnly = DefaultIdlePriorityQueueOnly;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool IdleRefundableGames = DefaultIdleRefundableGames;
+		public readonly bool IdleRefundableGames = DefaultIdleRefundableGames;
 
 		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
-		internal readonly ImmutableHashSet<Steam.Asset.EType> LootableTypes = DefaultLootableTypes;
+		public readonly ImmutableHashSet<Steam.Asset.EType> LootableTypes = DefaultLootableTypes;
 
 		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
-		internal readonly ImmutableHashSet<Steam.Asset.EType> MatchableTypes = DefaultMatchableTypes;
+		public readonly ImmutableHashSet<Steam.Asset.EType> MatchableTypes = DefaultMatchableTypes;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly EPersonaState OnlineStatus = DefaultOnlineStatus;
+		public readonly EPersonaState OnlineStatus = DefaultOnlineStatus;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ArchiCryptoHelper.ECryptoMethod PasswordFormat = DefaultPasswordFormat;
+		public readonly ArchiCryptoHelper.ECryptoMethod PasswordFormat = DefaultPasswordFormat;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool Paused = DefaultPaused;
+		public readonly bool Paused = DefaultPaused;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ERedeemingPreferences RedeemingPreferences = DefaultRedeemingPreferences;
+		public readonly ERedeemingPreferences RedeemingPreferences = DefaultRedeemingPreferences;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool SendOnFarmingFinished = DefaultSendOnFarmingFinished;
+		public readonly bool SendOnFarmingFinished = DefaultSendOnFarmingFinished;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte SendTradePeriod = DefaultSendTradePeriod;
+		public readonly byte SendTradePeriod = DefaultSendTradePeriod;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool ShutdownOnFarmingFinished = DefaultShutdownOnFarmingFinished;
+		public readonly bool ShutdownOnFarmingFinished = DefaultShutdownOnFarmingFinished;
 
 		[JsonProperty]
-		internal readonly string SteamTradeToken = DefaultSteamTradeToken;
+		public readonly string SteamTradeToken = DefaultSteamTradeToken;
 
 		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
-		internal readonly ImmutableDictionary<ulong, EPermission> SteamUserPermissions = DefaultSteamUserPermissions;
+		public readonly ImmutableDictionary<ulong, EPermission> SteamUserPermissions = DefaultSteamUserPermissions;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ETradingPreferences TradingPreferences = DefaultTradingPreferences;
+		public readonly ETradingPreferences TradingPreferences = DefaultTradingPreferences;
 
 		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
-		internal readonly ImmutableHashSet<Steam.Asset.EType> TransferableTypes = DefaultTransferableTypes;
+		public readonly ImmutableHashSet<Steam.Asset.EType> TransferableTypes = DefaultTransferableTypes;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool UseLoginKeys = DefaultUseLoginKeys;
+		public readonly bool UseLoginKeys = DefaultUseLoginKeys;
 
 		[JsonExtensionData]
 		internal Dictionary<string, JToken> AdditionalProperties {
@@ -242,6 +242,9 @@ namespace ArchiSteamFarm {
 				SteamMasterClanID = result;
 			}
 		}
+
+		[JsonConstructor]
+		private BotConfig() { }
 
 		internal (bool Valid, string ErrorMessage) CheckValidation() {
 			if (BotBehaviour > EBotBehaviour.All) {
@@ -370,16 +373,8 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		[PublicAPI]
-		public enum EPermission : byte {
-			None,
-			FamilySharing,
-			Operator,
-			Master
-		}
-
 		[Flags]
-		internal enum EBotBehaviour : byte {
+		public enum EBotBehaviour : byte {
 			None = 0,
 			RejectInvalidFriendInvites = 1,
 			RejectInvalidTrades = 2,
@@ -389,7 +384,7 @@ namespace ArchiSteamFarm {
 			All = RejectInvalidFriendInvites | RejectInvalidTrades | RejectInvalidGroupInvites | DismissInventoryNotifications | MarkReceivedMessagesAsRead
 		}
 
-		internal enum EFarmingOrder : byte {
+		public enum EFarmingOrder : byte {
 			Unordered,
 			AppIDsAscending,
 			AppIDsDescending,
@@ -408,8 +403,15 @@ namespace ArchiSteamFarm {
 			MarketableDescending
 		}
 
+		public enum EPermission : byte {
+			None,
+			FamilySharing,
+			Operator,
+			Master
+		}
+
 		[Flags]
-		internal enum ERedeemingPreferences : byte {
+		public enum ERedeemingPreferences : byte {
 			None = 0,
 			Forwarding = 1,
 			Distributing = 2,
@@ -418,7 +420,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[Flags]
-		internal enum ETradingPreferences : byte {
+		public enum ETradingPreferences : byte {
 			None = 0,
 			AcceptDonations = 1,
 			SteamTradeMatcher = 2,

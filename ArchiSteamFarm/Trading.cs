@@ -45,6 +45,109 @@ namespace ArchiSteamFarm {
 
 		public void Dispose() => TradesSemaphore.Dispose();
 
+		[PublicAPI]
+		public static bool IsTradeNeutralOrBetter(HashSet<Steam.Asset> inventory, IReadOnlyCollection<Steam.Asset> itemsToGive, IReadOnlyCollection<Steam.Asset> itemsToReceive) {
+			if ((inventory == null) || (inventory.Count == 0) || (itemsToGive == null) || (itemsToGive.Count == 0) || (itemsToReceive == null) || (itemsToReceive.Count == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(inventory) + " || " + nameof(itemsToGive) + " || " + nameof(itemsToReceive));
+
+				return false;
+			}
+
+			// Input of this function is items we're expected to give/receive and our inventory (limited to realAppIDs of itemsToGive/itemsToReceive)
+			// The objective is to determine whether the new state is beneficial (or at least neutral) towards us
+			// There are a lot of factors involved here - different realAppIDs, different item types, possibility of user overpaying and more
+			// All of those cases should be verified by our unit tests to ensure that the logic here matches all possible cases, especially those that were incorrectly handled previously
+
+			// Firstly we get initial sets state of our inventory
+			Dictionary<(uint AppID, Steam.Asset.EType Type), List<uint>> initialSets = GetInventorySets(inventory);
+
+			// Once we have initial state, we remove items that we're supposed to give from our inventory
+			// This loop is a bit more complex due to the fact that we might have a mix of the same item splitted into different amounts
+			foreach (Steam.Asset itemToGive in itemsToGive) {
+				uint amountToGive = itemToGive.Amount;
+				HashSet<Steam.Asset> itemsToRemove = new HashSet<Steam.Asset>();
+
+				// Keep in mind that ClassID is unique only within appID scope - we can do it like this because we're not dealing with non-Steam items here (otherwise we'd need to check appID too)
+				foreach (Steam.Asset item in inventory.Where(item => item.ClassID == itemToGive.ClassID)) {
+					if (amountToGive >= item.Amount) {
+						itemsToRemove.Add(item);
+						amountToGive -= item.Amount;
+					} else {
+						item.Amount -= amountToGive;
+						amountToGive = 0;
+					}
+
+					if (amountToGive == 0) {
+						break;
+					}
+				}
+
+				if (amountToGive > 0) {
+					ASF.ArchiLogger.LogNullError(nameof(amountToGive));
+
+					return false;
+				}
+
+				if (itemsToRemove.Count > 0) {
+					inventory.ExceptWith(itemsToRemove);
+				}
+			}
+
+			// Now we can add items that we're supposed to receive, this one doesn't require advanced amounts logic since we can just add items regardless
+			foreach (Steam.Asset itemToReceive in itemsToReceive) {
+				inventory.Add(itemToReceive);
+			}
+
+			// Now we can get final sets state of our inventory after the exchange
+			Dictionary<(uint AppID, Steam.Asset.EType Type), List<uint>> finalSets = GetInventorySets(inventory);
+
+			// Once we have both states, we can check overall fairness
+			foreach (((uint AppID, Steam.Asset.EType Type) set, List<uint> afterAmounts) in finalSets) {
+				List<uint> beforeAmounts = initialSets[set];
+
+				// If amount of unique items in the set decreases, this is always a bad trade (e.g. 1 1 -> 0 2)
+				if (afterAmounts.Count < beforeAmounts.Count) {
+					return false;
+				}
+
+				// If amount of unique items in the set increases, this is always a good trade (e.g. 0 2 -> 1 1)
+				if (afterAmounts.Count > beforeAmounts.Count) {
+					continue;
+				}
+
+				// At this point we're sure that amount of unique items stays the same, so we can evaluate actual sets
+				// We make use of the fact that our amounts are already sorted in ascending order, so we can just take the first value instead of calculating ourselves
+				uint beforeSets = beforeAmounts[0];
+				uint afterSets = afterAmounts[0];
+
+				// If amount of our sets for this game decreases, this is always a bad trade (e.g. 2 2 2 -> 3 2 1)
+				if (afterSets < beforeSets) {
+					return false;
+				}
+
+				// If amount of our sets for this game increases, this is always a good trade (e.g. 3 2 1 -> 2 2 2)
+				if (afterSets > beforeSets) {
+					continue;
+				}
+
+				// At this point we're sure that both number of unique items in the set stays the same, as well as number of our actual sets
+				// We need to ensure set progress here and keep in mind overpaying, so we'll calculate neutrality as a difference in amounts at appropriate indexes
+				// Neutrality can't reach value below 0 at any single point of calculation, as that would imply a loss of progress even if we'd end up with a positive value by the end
+				int neutrality = 0;
+
+				for (byte i = 0; i < afterAmounts.Count; i++) {
+					neutrality += (int) (afterAmounts[i] - beforeAmounts[i]);
+
+					if (neutrality < 0) {
+						return false;
+					}
+				}
+			}
+
+			// If we didn't find any reason above to reject this trade, it's at least neutral+ for us - it increases our progress towards badge completion
+			return true;
+		}
+
 		internal static (Dictionary<(uint AppID, Steam.Asset.EType Type), Dictionary<ulong, uint>> FullState, Dictionary<(uint AppID, Steam.Asset.EType Type), Dictionary<ulong, uint>> TradableState) GetDividedInventoryState(IReadOnlyCollection<Steam.Asset> inventory) {
 			if ((inventory == null) || (inventory.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(inventory));
@@ -296,108 +399,6 @@ namespace ArchiSteamFarm {
 			return sets.ToDictionary(set => set.Key, set => set.Value.Values.OrderBy(amount => amount).ToList());
 		}
 
-		private static bool IsTradeNeutralOrBetter(HashSet<Steam.Asset> inventory, IReadOnlyCollection<Steam.Asset> itemsToGive, IReadOnlyCollection<Steam.Asset> itemsToReceive) {
-			if ((inventory == null) || (inventory.Count == 0) || (itemsToGive == null) || (itemsToGive.Count == 0) || (itemsToReceive == null) || (itemsToReceive.Count == 0)) {
-				ASF.ArchiLogger.LogNullError(nameof(inventory) + " || " + nameof(itemsToGive) + " || " + nameof(itemsToReceive));
-
-				return false;
-			}
-
-			// Input of this function is items we're expected to give/receive and our inventory (limited to realAppIDs of itemsToGive/itemsToReceive)
-			// The objective is to determine whether the new state is beneficial (or at least neutral) towards us
-			// There are a lot of factors involved here - different realAppIDs, different item types, possibility of user overpaying and more
-			// All of those cases should be verified by our unit tests to ensure that the logic here matches all possible cases, especially those that were incorrectly handled previously
-
-			// Firstly we get initial sets state of our inventory
-			Dictionary<(uint AppID, Steam.Asset.EType Type), List<uint>> initialSets = GetInventorySets(inventory);
-
-			// Once we have initial state, we remove items that we're supposed to give from our inventory
-			// This loop is a bit more complex due to the fact that we might have a mix of the same item splitted into different amounts
-			foreach (Steam.Asset itemToGive in itemsToGive) {
-				uint amountToGive = itemToGive.Amount;
-				HashSet<Steam.Asset> itemsToRemove = new HashSet<Steam.Asset>();
-
-				// Keep in mind that ClassID is unique only within appID scope - we can do it like this because we're not dealing with non-Steam items here (otherwise we'd need to check appID too)
-				foreach (Steam.Asset item in inventory.Where(item => item.ClassID == itemToGive.ClassID)) {
-					if (amountToGive >= item.Amount) {
-						itemsToRemove.Add(item);
-						amountToGive -= item.Amount;
-					} else {
-						item.Amount -= amountToGive;
-						amountToGive = 0;
-					}
-
-					if (amountToGive == 0) {
-						break;
-					}
-				}
-
-				if (amountToGive > 0) {
-					ASF.ArchiLogger.LogNullError(nameof(amountToGive));
-
-					return false;
-				}
-
-				if (itemsToRemove.Count > 0) {
-					inventory.ExceptWith(itemsToRemove);
-				}
-			}
-
-			// Now we can add items that we're supposed to receive, this one doesn't require advanced amounts logic since we can just add items regardless
-			foreach (Steam.Asset itemToReceive in itemsToReceive) {
-				inventory.Add(itemToReceive);
-			}
-
-			// Now we can get final sets state of our inventory after the exchange
-			Dictionary<(uint AppID, Steam.Asset.EType Type), List<uint>> finalSets = GetInventorySets(inventory);
-
-			// Once we have both states, we can check overall fairness
-			foreach (((uint AppID, Steam.Asset.EType Type) set, List<uint> afterAmounts) in finalSets) {
-				List<uint> beforeAmounts = initialSets[set];
-
-				// If amount of unique items in the set decreases, this is always a bad trade (e.g. 1 1 -> 0 2)
-				if (afterAmounts.Count < beforeAmounts.Count) {
-					return false;
-				}
-
-				// If amount of unique items in the set increases, this is always a good trade (e.g. 0 2 -> 1 1)
-				if (afterAmounts.Count > beforeAmounts.Count) {
-					continue;
-				}
-
-				// At this point we're sure that amount of unique items stays the same, so we can evaluate actual sets
-				// We make use of the fact that our amounts are already sorted in ascending order, so we can just take the first value instead of calculating ourselves
-				uint beforeSets = beforeAmounts[0];
-				uint afterSets = afterAmounts[0];
-
-				// If amount of our sets for this game decreases, this is always a bad trade (e.g. 2 2 2 -> 3 2 1)
-				if (afterSets < beforeSets) {
-					return false;
-				}
-
-				// If amount of our sets for this game increases, this is always a good trade (e.g. 3 2 1 -> 2 2 2)
-				if (afterSets > beforeSets) {
-					continue;
-				}
-
-				// At this point we're sure that both number of unique items in the set stays the same, as well as number of our actual sets
-				// We need to ensure set progress here and keep in mind overpaying, so we'll calculate neutrality as a difference in amounts at appropriate indexes
-				// Neutrality can't reach value below 0 at any single point of calculation, as that would imply a loss of progress even if we'd end up with a positive value by the end
-				int neutrality = 0;
-
-				for (byte i = 0; i < afterAmounts.Count; i++) {
-					neutrality += (int) (afterAmounts[i] - beforeAmounts[i]);
-
-					if (neutrality < 0) {
-						return false;
-					}
-				}
-			}
-
-			// If we didn't find any reason above to reject this trade, it's at least neutral+ for us - it increases our progress towards badge completion
-			return true;
-		}
-
 		private async Task ParseActiveTrades() {
 			HashSet<Steam.TradeOffer> tradeOffers = await Bot.ArchiWebHandler.GetActiveTradeOffers().ConfigureAwait(false);
 
@@ -592,7 +593,7 @@ namespace ArchiSteamFarm {
 			// If user has a trade hold, we add extra logic
 			if (holdDuration.Value > 0) {
 				// If trade hold duration exceeds our max, or user asks for cards with short lifespan, reject the trade
-				if ((holdDuration.Value > Program.GlobalConfig.MaxTradeHoldDuration) || tradeOffer.ItemsToGive.Any(item => ((item.Type == Steam.Asset.EType.FoilTradingCard) || (item.Type == Steam.Asset.EType.TradingCard)) && CardsFarmer.SalesBlacklist.Contains(item.RealAppID))) {
+				if ((holdDuration.Value > ASF.GlobalConfig.MaxTradeHoldDuration) || tradeOffer.ItemsToGive.Any(item => ((item.Type == Steam.Asset.EType.FoilTradingCard) || (item.Type == Steam.Asset.EType.TradingCard)) && CardsFarmer.SalesBlacklist.Contains(item.RealAppID))) {
 					return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, tradeOffer.ItemsToReceive);
 				}
 			}

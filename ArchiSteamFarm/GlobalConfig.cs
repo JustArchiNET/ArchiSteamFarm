@@ -69,79 +69,79 @@ namespace ArchiSteamFarm {
 		private static readonly SemaphoreSlim WriteSemaphore = new SemaphoreSlim(1, 1);
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool AutoRestart = DefaultAutoRestart;
+		public readonly bool AutoRestart = DefaultAutoRestart;
 
 		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
-		internal readonly ImmutableHashSet<uint> Blacklist = DefaultBlacklist;
+		public readonly ImmutableHashSet<uint> Blacklist = DefaultBlacklist;
 
 		[JsonProperty]
-		internal readonly string CommandPrefix = DefaultCommandPrefix;
+		public readonly string CommandPrefix = DefaultCommandPrefix;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte ConfirmationsLimiterDelay = DefaultConfirmationsLimiterDelay;
+		public readonly byte ConfirmationsLimiterDelay = DefaultConfirmationsLimiterDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte ConnectionTimeout = DefaultConnectionTimeout;
+		public readonly byte ConnectionTimeout = DefaultConnectionTimeout;
 
 		[JsonProperty]
-		internal readonly string CurrentCulture = DefaultCurrentCulture;
+		public readonly string CurrentCulture = DefaultCurrentCulture;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool Debug = DefaultDebug;
+		public readonly bool Debug = DefaultDebug;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte FarmingDelay = DefaultFarmingDelay;
+		public readonly byte FarmingDelay = DefaultFarmingDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte GiftsLimiterDelay = DefaultGiftsLimiterDelay;
+		public readonly byte GiftsLimiterDelay = DefaultGiftsLimiterDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool Headless = DefaultHeadless;
+		public readonly bool Headless = DefaultHeadless;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte IdleFarmingPeriod = DefaultIdleFarmingPeriod;
+		public readonly byte IdleFarmingPeriod = DefaultIdleFarmingPeriod;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte InventoryLimiterDelay = DefaultInventoryLimiterDelay;
+		public readonly byte InventoryLimiterDelay = DefaultInventoryLimiterDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool IPC = DefaultIPC;
+		public readonly bool IPC = DefaultIPC;
 
 		[JsonProperty]
-		internal readonly string IPCPassword = DefaultIPCPassword;
+		public readonly string IPCPassword = DefaultIPCPassword;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte LoginLimiterDelay = DefaultLoginLimiterDelay;
+		public readonly byte LoginLimiterDelay = DefaultLoginLimiterDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte MaxFarmingTime = DefaultMaxFarmingTime;
+		public readonly byte MaxFarmingTime = DefaultMaxFarmingTime;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte MaxTradeHoldDuration = DefaultMaxTradeHoldDuration;
+		public readonly byte MaxTradeHoldDuration = DefaultMaxTradeHoldDuration;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly EOptimizationMode OptimizationMode = DefaultOptimizationMode;
+		public readonly EOptimizationMode OptimizationMode = DefaultOptimizationMode;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool Statistics = DefaultStatistics;
+		public readonly bool Statistics = DefaultStatistics;
 
 		[JsonProperty]
-		internal readonly string SteamMessagePrefix = DefaultSteamMessagePrefix;
+		public readonly string SteamMessagePrefix = DefaultSteamMessagePrefix;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly EUpdateChannel UpdateChannel = DefaultUpdateChannel;
+		public readonly EUpdateChannel UpdateChannel = DefaultUpdateChannel;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte UpdatePeriod = DefaultUpdatePeriod;
+		public readonly byte UpdatePeriod = DefaultUpdatePeriod;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ushort WebLimiterDelay = DefaultWebLimiterDelay;
+		public readonly ushort WebLimiterDelay = DefaultWebLimiterDelay;
 
 		[JsonProperty(PropertyName = nameof(WebProxy))]
-		internal readonly string WebProxyText = DefaultWebProxyText;
+		public readonly string WebProxyText = DefaultWebProxyText;
 
 		[JsonProperty]
-		internal readonly string WebProxyUsername = DefaultWebProxyUsername;
+		public readonly string WebProxyUsername = DefaultWebProxyUsername;
 
 		internal WebProxy WebProxy {
 			get {
@@ -187,7 +187,6 @@ namespace ArchiSteamFarm {
 		}
 
 		[JsonExtensionData]
-		[PublicAPI]
 		internal Dictionary<string, JToken> AdditionalProperties {
 			get;
 			[UsedImplicitly]
@@ -233,6 +232,9 @@ namespace ArchiSteamFarm {
 				SteamOwnerID = result;
 			}
 		}
+
+		[JsonConstructor]
+		private GlobalConfig() { }
 
 		internal (bool Valid, string ErrorMessage) CheckValidation() {
 			if (ConnectionTimeout == 0) {
@@ -342,15 +344,16 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		internal enum EOptimizationMode : byte {
+		public enum EOptimizationMode : byte {
 			MaxPerformance,
 			MinMemoryUsage
 		}
 
-		[PublicAPI]
-		internal enum EUpdateChannel : byte {
+		public enum EUpdateChannel : byte {
 			None,
 			Stable,
+
+			[PublicAPI]
 			Experimental
 		}
 

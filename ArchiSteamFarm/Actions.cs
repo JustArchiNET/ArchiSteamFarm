@@ -375,7 +375,7 @@ namespace ArchiSteamFarm {
 		private ulong GetFirstSteamMasterID() => Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key != 0) && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderByDescending(steamID => steamID != Bot.SteamID).ThenBy(steamID => steamID).FirstOrDefault();
 
 		private static async Task LimitGiftsRequestsAsync() {
-			if (Program.GlobalConfig.GiftsLimiterDelay == 0) {
+			if (ASF.GlobalConfig.GiftsLimiterDelay == 0) {
 				return;
 			}
 
@@ -383,7 +383,7 @@ namespace ArchiSteamFarm {
 
 			Utilities.InBackground(
 				async () => {
-					await Task.Delay(Program.GlobalConfig.GiftsLimiterDelay * 1000).ConfigureAwait(false);
+					await Task.Delay(ASF.GlobalConfig.GiftsLimiterDelay * 1000).ConfigureAwait(false);
 					GiftsSemaphore.Release();
 				}
 			);

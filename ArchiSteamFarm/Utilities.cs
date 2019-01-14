@@ -84,7 +84,7 @@ namespace ArchiSteamFarm {
 
 			IList<T> results;
 
-			switch (Program.GlobalConfig.OptimizationMode) {
+			switch (ASF.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
 					results = new List<T>();
 
@@ -110,7 +110,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			switch (Program.GlobalConfig.OptimizationMode) {
+			switch (ASF.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
 
 					foreach (Task task in tasks) {

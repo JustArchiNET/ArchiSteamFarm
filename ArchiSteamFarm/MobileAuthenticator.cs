@@ -436,7 +436,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task LimitConfirmationsRequestsAsync() {
-			if (Program.GlobalConfig.ConfirmationsLimiterDelay == 0) {
+			if (ASF.GlobalConfig.ConfirmationsLimiterDelay == 0) {
 				return;
 			}
 
@@ -444,7 +444,7 @@ namespace ArchiSteamFarm {
 
 			Utilities.InBackground(
 				async () => {
-					await Task.Delay(Program.GlobalConfig.ConfirmationsLimiterDelay * 1000).ConfigureAwait(false);
+					await Task.Delay(ASF.GlobalConfig.ConfirmationsLimiterDelay * 1000).ConfigureAwait(false);
 					ConfirmationsSemaphore.Release();
 				}
 			);

@@ -84,12 +84,12 @@ namespace ArchiSteamFarm {
 		internal CardsFarmer([NotNull] Bot bot) {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
-			if (Program.GlobalConfig.IdleFarmingPeriod > 0) {
+			if (ASF.GlobalConfig.IdleFarmingPeriod > 0) {
 				IdleFarmingTimer = new Timer(
 					async e => await CheckGamesForFarming().ConfigureAwait(false),
 					null,
-					TimeSpan.FromHours(Program.GlobalConfig.IdleFarmingPeriod) + TimeSpan.FromSeconds(Program.LoadBalancingDelay * Bot.Bots.Count), // Delay
-					TimeSpan.FromHours(Program.GlobalConfig.IdleFarmingPeriod) // Period
+					TimeSpan.FromHours(ASF.GlobalConfig.IdleFarmingPeriod) + TimeSpan.FromSeconds(Program.LoadBalancingDelay * Bot.Bots.Count), // Delay
+					TimeSpan.FromHours(ASF.GlobalConfig.IdleFarmingPeriod) // Period
 				);
 			}
 		}
@@ -396,7 +396,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				if (SalesBlacklist.Contains(appID) || Program.GlobalConfig.Blacklist.Contains(appID) || Bot.IsBlacklistedFromIdling(appID) || (Bot.BotConfig.IdlePriorityQueueOnly && !Bot.IsPriorityIdling(appID))) {
+				if (SalesBlacklist.Contains(appID) || ASF.GlobalConfig.Blacklist.Contains(appID) || Bot.IsBlacklistedFromIdling(appID) || (Bot.BotConfig.IdlePriorityQueueOnly && !Bot.IsPriorityIdling(appID))) {
 					// We're configured to ignore this appID, so skip it
 					continue;
 				}
@@ -616,7 +616,7 @@ namespace ArchiSteamFarm {
 				} else {
 					Task task = CheckGame(appID, name, hours, badgeLevel);
 
-					switch (Program.GlobalConfig.OptimizationMode) {
+					switch (ASF.GlobalConfig.OptimizationMode) {
 						case GlobalConfig.EOptimizationMode.MinMemoryUsage:
 							await task.ConfigureAwait(false);
 
@@ -769,14 +769,14 @@ namespace ArchiSteamFarm {
 			await Bot.IdleGame(game).ConfigureAwait(false);
 
 			bool success = true;
-			DateTime endFarmingDate = DateTime.UtcNow.AddHours(Program.GlobalConfig.MaxFarmingTime);
+			DateTime endFarmingDate = DateTime.UtcNow.AddHours(ASF.GlobalConfig.MaxFarmingTime);
 
 			while ((DateTime.UtcNow < endFarmingDate) && (await ShouldFarm(game).ConfigureAwait(false)).GetValueOrDefault(true)) {
 				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.StillIdling, game.AppID, game.GameName));
 
 				DateTime startFarmingPeriod = DateTime.UtcNow;
 
-				if (await FarmingResetSemaphore.WaitAsync(Program.GlobalConfig.FarmingDelay * 60 * 1000 + ExtraFarmingDelaySeconds * 1000).ConfigureAwait(false)) {
+				if (await FarmingResetSemaphore.WaitAsync(ASF.GlobalConfig.FarmingDelay * 60 * 1000 + ExtraFarmingDelaySeconds * 1000).ConfigureAwait(false)) {
 					success = KeepFarming;
 				}
 
@@ -823,7 +823,7 @@ namespace ArchiSteamFarm {
 
 				DateTime startFarmingPeriod = DateTime.UtcNow;
 
-				if (await FarmingResetSemaphore.WaitAsync(Program.GlobalConfig.FarmingDelay * 60 * 1000 + ExtraFarmingDelaySeconds * 1000).ConfigureAwait(false)) {
+				if (await FarmingResetSemaphore.WaitAsync(ASF.GlobalConfig.FarmingDelay * 60 * 1000 + ExtraFarmingDelaySeconds * 1000).ConfigureAwait(false)) {
 					success = KeepFarming;
 				}
 
@@ -961,7 +961,7 @@ namespace ArchiSteamFarm {
 
 			Task mainTask = CheckPage(htmlDocument);
 
-			switch (Program.GlobalConfig.OptimizationMode) {
+			switch (ASF.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
 					await mainTask.ConfigureAwait(false);
 

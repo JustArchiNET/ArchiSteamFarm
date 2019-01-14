@@ -26,7 +26,7 @@ using ArchiSteamFarm.Localization;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
-	internal static class ArchiCryptoHelper {
+	public static class ArchiCryptoHelper {
 		private static byte[] EncryptionKey = Encoding.UTF8.GetBytes(nameof(ArchiSteamFarm));
 
 		internal static string Decrypt(ECryptoMethod cryptoMethod, string encrypted) {
@@ -189,7 +189,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal enum ECryptoMethod : byte {
+		public enum ECryptoMethod : byte {
 			PlainText,
 			AES,
 			ProtectedDataForCurrentUser

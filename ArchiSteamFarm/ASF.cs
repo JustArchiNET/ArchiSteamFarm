@@ -37,6 +37,9 @@ using SteamKit2.Discovery;
 
 namespace ArchiSteamFarm {
 	public static class ASF {
+		[PublicAPI]
+		public static GlobalConfig GlobalConfig { get; private set; }
+
 		// This is based on internal Valve guidelines, we're not using it as a hard limit
 		private const byte MaximumRecommendedBotsCount = 10;
 
@@ -60,13 +63,13 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			return (steamID == Program.GlobalConfig.SteamOwnerID) || (Debugging.IsDebugBuild && (steamID == SharedInfo.ArchiSteamID));
+			return (steamID == GlobalConfig.SteamOwnerID) || (Debugging.IsDebugBuild && (steamID == SharedInfo.ArchiSteamID));
 		}
 
 		internal static async Task Init() {
-			WebBrowser = new WebBrowser(ArchiLogger, Program.GlobalConfig.WebProxy, true);
+			WebBrowser = new WebBrowser(ArchiLogger, GlobalConfig.WebProxy, true);
 
-			if (Program.GlobalConfig.IPC) {
+			if (GlobalConfig.IPC) {
 				await ArchiKestrel.Start().ConfigureAwait(false);
 			}
 
@@ -76,15 +79,29 @@ namespace ArchiSteamFarm {
 				await Task.Delay(10000).ConfigureAwait(false);
 			}
 
-			await Core.OnASFInitModules(Program.GlobalConfig.AdditionalProperties).ConfigureAwait(false);
+			await Core.OnASFInitModules(GlobalConfig.AdditionalProperties).ConfigureAwait(false);
 
 			await InitBots().ConfigureAwait(false);
 
 			InitEvents();
 		}
 
+		internal static void InitGlobalConfig(GlobalConfig globalConfig) {
+			if (globalConfig == null) {
+				ArchiLogger.LogNullError(nameof(globalConfig));
+
+				return;
+			}
+
+			if (GlobalConfig != null) {
+				return;
+			}
+
+			GlobalConfig = globalConfig;
+		}
+
 		internal static async Task RestartOrExit() {
-			if (Program.RestartAllowed && Program.GlobalConfig.AutoRestart) {
+			if (Program.RestartAllowed && GlobalConfig.AutoRestart) {
 				ArchiLogger.LogGenericInfo(Strings.Restarting);
 				await Task.Delay(5000).ConfigureAwait(false);
 				await Program.Restart().ConfigureAwait(false);
@@ -97,7 +114,7 @@ namespace ArchiSteamFarm {
 
 		[ItemCanBeNull]
 		internal static async Task<Version> Update(bool updateOverride = false) {
-			if (!SharedInfo.BuildInfo.CanUpdate || (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None)) {
+			if (!SharedInfo.BuildInfo.CanUpdate || (GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None)) {
 				return null;
 			}
 
@@ -122,7 +139,7 @@ namespace ArchiSteamFarm {
 					}
 				}
 
-				GitHub.ReleaseResponse releaseResponse = await GitHub.GetLatestRelease(Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable).ConfigureAwait(false);
+				GitHub.ReleaseResponse releaseResponse = await GitHub.GetLatestRelease(GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable).ConfigureAwait(false);
 
 				if (releaseResponse == null) {
 					ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
@@ -151,7 +168,7 @@ namespace ArchiSteamFarm {
 					return SharedInfo.Version;
 				}
 
-				if (!updateOverride && (Program.GlobalConfig.UpdatePeriod == 0)) {
+				if (!updateOverride && (GlobalConfig.UpdatePeriod == 0)) {
 					ArchiLogger.LogGenericInfo(Strings.UpdateNewVersionAvailable);
 					await Task.Delay(5000).ConfigureAwait(false);
 
@@ -252,7 +269,7 @@ namespace ArchiSteamFarm {
 			if (servers?.Any() != true) {
 				ArchiLogger.LogGenericInfo(string.Format(Strings.Initializing, nameof(SteamDirectory)));
 
-				SteamConfiguration steamConfiguration = SteamConfiguration.Create(builder => builder.WithProtocolTypes(Program.GlobalConfig.SteamProtocols).WithCellID(Program.GlobalDatabase.CellID).WithServerListProvider(Program.GlobalDatabase.ServerListProvider).WithHttpClientFactory(() => WebBrowser.GenerateDisposableHttpClient()));
+				SteamConfiguration steamConfiguration = SteamConfiguration.Create(builder => builder.WithProtocolTypes(GlobalConfig.SteamProtocols).WithCellID(Program.GlobalDatabase.CellID).WithServerListProvider(Program.GlobalDatabase.ServerListProvider).WithHttpClientFactory(() => WebBrowser.GenerateDisposableHttpClient()));
 
 				try {
 					await SteamDirectory.LoadAsync(steamConfiguration).ConfigureAwait(false);
@@ -546,12 +563,12 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task UpdateAndRestart() {
-			if (!SharedInfo.BuildInfo.CanUpdate || (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None)) {
+			if (!SharedInfo.BuildInfo.CanUpdate || (GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None)) {
 				return;
 			}
 
-			if ((AutoUpdatesTimer == null) && (Program.GlobalConfig.UpdatePeriod > 0)) {
-				TimeSpan autoUpdatePeriod = TimeSpan.FromHours(Program.GlobalConfig.UpdatePeriod);
+			if ((AutoUpdatesTimer == null) && (GlobalConfig.UpdatePeriod > 0)) {
+				TimeSpan autoUpdatePeriod = TimeSpan.FromHours(GlobalConfig.UpdatePeriod);
 
 				AutoUpdatesTimer = new Timer(
 					async e => await UpdateAndRestart().ConfigureAwait(false),
