@@ -33,7 +33,7 @@ namespace ArchiSteamFarm.Tests {
 		public void MultiGameMultiTypeBadReject() {
 			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> {
 				CreateItem(1, 9),
-				CreateItem(3, 9, 730, Steam.Asset.EType.Emoticon),
+				CreateItem(3, 9, realAppID: 730, type: Steam.Asset.EType.Emoticon),
 				CreateItem(4, realAppID: 730, type: Steam.Asset.EType.Emoticon)
 			};
 
@@ -320,6 +320,6 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[NotNull]
-		private static Steam.Asset CreateItem(ulong classID, uint amount = 1, uint realAppID = Steam.Asset.SteamAppID, Steam.Asset.EType type = Steam.Asset.EType.TradingCard) => new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, classID, amount, realAppID, type);
+		private static Steam.Asset CreateItem(ulong classID, uint amount = 1, bool marketable = true, uint realAppID = Steam.Asset.SteamAppID, Steam.Asset.EType type = Steam.Asset.EType.TradingCard) => new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, classID, amount, marketable, realAppID, type);
 	}
 }
