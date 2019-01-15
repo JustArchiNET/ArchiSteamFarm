@@ -37,14 +37,14 @@ using SteamKit2.Discovery;
 
 namespace ArchiSteamFarm {
 	public static class ASF {
-		[PublicAPI]
-		public static GlobalConfig GlobalConfig { get; private set; }
-
 		// This is based on internal Valve guidelines, we're not using it as a hard limit
 		private const byte MaximumRecommendedBotsCount = 10;
 
 		[PublicAPI]
 		public static readonly ArchiLogger ArchiLogger = new ArchiLogger(SharedInfo.ASF);
+
+		[PublicAPI]
+		public static GlobalConfig GlobalConfig { get; private set; }
 
 		[PublicAPI]
 		public static WebBrowser WebBrowser { get; internal set; }
@@ -69,10 +69,6 @@ namespace ArchiSteamFarm {
 		internal static async Task Init() {
 			WebBrowser = new WebBrowser(ArchiLogger, GlobalConfig.WebProxy, true);
 
-			if (GlobalConfig.IPC) {
-				await ArchiKestrel.Start().ConfigureAwait(false);
-			}
-
 			await UpdateAndRestart().ConfigureAwait(false);
 
 			if (!Core.InitPlugins()) {
@@ -81,7 +77,15 @@ namespace ArchiSteamFarm {
 
 			await Core.OnASFInitModules(GlobalConfig.AdditionalProperties).ConfigureAwait(false);
 
-			await InitBots().ConfigureAwait(false);
+			StringComparer botsComparer = await Core.GetBotsComparer().ConfigureAwait(false);
+
+			InitBotsComparer(botsComparer);
+
+			if (GlobalConfig.IPC) {
+				await ArchiKestrel.Start().ConfigureAwait(false);
+			}
+
+			await RegisterBots(botsComparer).ConfigureAwait(false);
 
 			InitEvents();
 		}
@@ -255,53 +259,18 @@ namespace ArchiSteamFarm {
 			return LastWriteEvents.TryGetValue(name, out object savedWriteEvent) && (currentWriteEvent == savedWriteEvent) && LastWriteEvents.TryRemove(name, out _);
 		}
 
-		private static async Task InitBots() {
+		private static void InitBotsComparer(StringComparer botsComparer) {
+			if (botsComparer == null) {
+				ArchiLogger.LogNullError(nameof(botsComparer));
+
+				return;
+			}
+
 			if (Bot.Bots != null) {
 				return;
 			}
 
-			StringComparer botsComparer = await Core.GetBotsComparer().ConfigureAwait(false);
 			Bot.Init(botsComparer);
-
-			// Ensure that we ask for a list of servers if we don't have any saved servers available
-			IEnumerable<ServerRecord> servers = await Program.GlobalDatabase.ServerListProvider.FetchServerListAsync().ConfigureAwait(false);
-
-			if (servers?.Any() != true) {
-				ArchiLogger.LogGenericInfo(string.Format(Strings.Initializing, nameof(SteamDirectory)));
-
-				SteamConfiguration steamConfiguration = SteamConfiguration.Create(builder => builder.WithProtocolTypes(GlobalConfig.SteamProtocols).WithCellID(Program.GlobalDatabase.CellID).WithServerListProvider(Program.GlobalDatabase.ServerListProvider).WithHttpClientFactory(() => WebBrowser.GenerateDisposableHttpClient()));
-
-				try {
-					await SteamDirectory.LoadAsync(steamConfiguration).ConfigureAwait(false);
-					ArchiLogger.LogGenericInfo(Strings.Success);
-				} catch {
-					ArchiLogger.LogGenericWarning(Strings.BotSteamDirectoryInitializationFailed);
-					await Task.Delay(5000).ConfigureAwait(false);
-				}
-			}
-
-			HashSet<string> botNames;
-
-			try {
-				botNames = Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*" + SharedInfo.ConfigExtension).Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).ToHashSet(botsComparer);
-			} catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
-
-				return;
-			}
-
-			if (botNames.Count == 0) {
-				ArchiLogger.LogGenericWarning(Strings.ErrorNoBotsDefined);
-
-				return;
-			}
-
-			if (botNames.Count > MaximumRecommendedBotsCount) {
-				ArchiLogger.LogGenericWarning(string.Format(Strings.WarningExcessiveBotsCount, MaximumRecommendedBotsCount));
-				await Task.Delay(10000).ConfigureAwait(false);
-			}
-
-			await Utilities.InParallel(botNames.OrderBy(botName => botName).Select(Bot.RegisterBot)).ConfigureAwait(false);
 		}
 
 		private static void InitEvents() {
@@ -560,6 +529,58 @@ namespace ArchiSteamFarm {
 
 			await OnDeletedFile(e.OldName, e.OldFullPath).ConfigureAwait(false);
 			await OnCreatedFile(e.Name, e.FullPath).ConfigureAwait(false);
+		}
+
+		private static async Task RegisterBots(StringComparer botsComparer) {
+			if (botsComparer == null) {
+				ArchiLogger.LogNullError(nameof(botsComparer));
+
+				return;
+			}
+
+			if (Bot.Bots.Count > 0) {
+				return;
+			}
+
+			// Ensure that we ask for a list of servers if we don't have any saved servers available
+			IEnumerable<ServerRecord> servers = await Program.GlobalDatabase.ServerListProvider.FetchServerListAsync().ConfigureAwait(false);
+
+			if (servers?.Any() != true) {
+				ArchiLogger.LogGenericInfo(string.Format(Strings.Initializing, nameof(SteamDirectory)));
+
+				SteamConfiguration steamConfiguration = SteamConfiguration.Create(builder => builder.WithProtocolTypes(GlobalConfig.SteamProtocols).WithCellID(Program.GlobalDatabase.CellID).WithServerListProvider(Program.GlobalDatabase.ServerListProvider).WithHttpClientFactory(() => WebBrowser.GenerateDisposableHttpClient()));
+
+				try {
+					await SteamDirectory.LoadAsync(steamConfiguration).ConfigureAwait(false);
+					ArchiLogger.LogGenericInfo(Strings.Success);
+				} catch {
+					ArchiLogger.LogGenericWarning(Strings.BotSteamDirectoryInitializationFailed);
+					await Task.Delay(5000).ConfigureAwait(false);
+				}
+			}
+
+			HashSet<string> botNames;
+
+			try {
+				botNames = Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*" + SharedInfo.ConfigExtension).Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).ToHashSet(botsComparer);
+			} catch (Exception e) {
+				ArchiLogger.LogGenericException(e);
+
+				return;
+			}
+
+			if (botNames.Count == 0) {
+				ArchiLogger.LogGenericWarning(Strings.ErrorNoBotsDefined);
+
+				return;
+			}
+
+			if (botNames.Count > MaximumRecommendedBotsCount) {
+				ArchiLogger.LogGenericWarning(string.Format(Strings.WarningExcessiveBotsCount, MaximumRecommendedBotsCount));
+				await Task.Delay(10000).ConfigureAwait(false);
+			}
+
+			await Utilities.InParallel(botNames.OrderBy(botName => botName).Select(Bot.RegisterBot)).ConfigureAwait(false);
 		}
 
 		private static async Task UpdateAndRestart() {
