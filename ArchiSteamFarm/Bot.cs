@@ -299,6 +299,74 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
+		public static HashSet<Bot> GetBots(string args) {
+			if (string.IsNullOrEmpty(args)) {
+				ASF.ArchiLogger.LogNullError(nameof(args));
+
+				return null;
+			}
+
+			string[] botNames = args.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+			HashSet<Bot> result = new HashSet<Bot>();
+
+			foreach (string botName in botNames) {
+				if (botName.Equals(SharedInfo.ASF, StringComparison.OrdinalIgnoreCase)) {
+					foreach (Bot bot in Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
+						result.Add(bot);
+					}
+
+					return result;
+				}
+
+				if (botName.Contains("..")) {
+					string[] botRange = botName.Split(new[] { ".." }, StringSplitOptions.RemoveEmptyEntries);
+
+					if (botRange.Length == 2) {
+						if (Bots.TryGetValue(botRange[0], out Bot firstBot) && Bots.TryGetValue(botRange[1], out Bot lastBot)) {
+							bool inRange = false;
+
+							foreach (Bot bot in Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
+								if (bot == firstBot) {
+									inRange = true;
+								} else if (!inRange) {
+									continue;
+								}
+
+								result.Add(bot);
+
+								if (bot == lastBot) {
+									break;
+								}
+							}
+
+							continue;
+						}
+					}
+				} else if (botName.StartsWith("r!", StringComparison.OrdinalIgnoreCase)) {
+					string botPattern = botName.Substring(2);
+
+					try {
+						IEnumerable<Bot> regexMatches = Bots.Where(kvp => Regex.IsMatch(kvp.Key, botPattern, BotsRegex)).Select(kvp => kvp.Value);
+						result.UnionWith(regexMatches);
+					} catch (ArgumentException e) {
+						ASF.ArchiLogger.LogGenericWarningException(e);
+
+						return null;
+					}
+				}
+
+				if (!Bots.TryGetValue(botName, out Bot targetBot)) {
+					continue;
+				}
+
+				result.Add(targetBot);
+			}
+
+			return result;
+		}
+
+		[PublicAPI]
 		public bool HasPermission(ulong steamID, BotConfig.EPermission permission) {
 			if ((steamID == 0) || (permission == BotConfig.EPermission.None)) {
 				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(permission));
@@ -555,73 +623,6 @@ namespace ArchiSteamFarm {
 			}
 
 			return ((productInfoResultSet.Complete && !productInfoResultSet.Failed) || optimisticDiscovery ? appID : 0, DateTime.MinValue);
-		}
-
-		internal static HashSet<Bot> GetBots(string args) {
-			if (string.IsNullOrEmpty(args)) {
-				ASF.ArchiLogger.LogNullError(nameof(args));
-
-				return null;
-			}
-
-			string[] botNames = args.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-			HashSet<Bot> result = new HashSet<Bot>();
-
-			foreach (string botName in botNames) {
-				if (botName.Equals(SharedInfo.ASF, StringComparison.OrdinalIgnoreCase)) {
-					foreach (Bot bot in Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
-						result.Add(bot);
-					}
-
-					return result;
-				}
-
-				if (botName.Contains("..")) {
-					string[] botRange = botName.Split(new[] { ".." }, StringSplitOptions.RemoveEmptyEntries);
-
-					if (botRange.Length == 2) {
-						if (Bots.TryGetValue(botRange[0], out Bot firstBot) && Bots.TryGetValue(botRange[1], out Bot lastBot)) {
-							bool inRange = false;
-
-							foreach (Bot bot in Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
-								if (bot == firstBot) {
-									inRange = true;
-								} else if (!inRange) {
-									continue;
-								}
-
-								result.Add(bot);
-
-								if (bot == lastBot) {
-									break;
-								}
-							}
-
-							continue;
-						}
-					}
-				} else if (botName.StartsWith("r!", StringComparison.OrdinalIgnoreCase)) {
-					string botPattern = botName.Substring(2);
-
-					try {
-						IEnumerable<Bot> regexMatches = Bots.Where(kvp => Regex.IsMatch(kvp.Key, botPattern, BotsRegex)).Select(kvp => kvp.Value);
-						result.UnionWith(regexMatches);
-					} catch (ArgumentException e) {
-						ASF.ArchiLogger.LogGenericWarningException(e);
-
-						return null;
-					}
-				}
-
-				if (!Bots.TryGetValue(botName, out Bot targetBot)) {
-					continue;
-				}
-
-				result.Add(targetBot);
-			}
-
-			return result;
 		}
 
 		[ItemCanBeNull]

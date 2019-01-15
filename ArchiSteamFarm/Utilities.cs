@@ -38,6 +38,30 @@ namespace ArchiSteamFarm {
 		private static readonly Random Random = new Random();
 
 		[PublicAPI]
+		public static string GetArgsAsText(string[] args, byte argsToSkip, string delimiter) {
+			if ((args == null) || (args.Length <= argsToSkip) || string.IsNullOrEmpty(delimiter)) {
+				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(argsToSkip) + " || " + nameof(delimiter));
+
+				return null;
+			}
+
+			return string.Join(delimiter, args.Skip(argsToSkip));
+		}
+
+		[PublicAPI]
+		public static string GetArgsAsText(string text, byte argsToSkip) {
+			if (string.IsNullOrEmpty(text)) {
+				ASF.ArchiLogger.LogNullError(nameof(text));
+
+				return null;
+			}
+
+			string[] args = text.Split((char[]) null, argsToSkip + 1, StringSplitOptions.RemoveEmptyEntries);
+
+			return args[args.Length - 1];
+		}
+
+		[PublicAPI]
 		public static uint GetUnixTime() => (uint) DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
 		[PublicAPI]
@@ -202,28 +226,6 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public static string ToHumanReadable(this TimeSpan timeSpan) => timeSpan.Humanize(3, maxUnit: TimeUnit.Year, minUnit: TimeUnit.Second);
-
-		internal static string GetArgsAsText(string[] args, byte argsToSkip, string delimiter) {
-			if ((args == null) || (args.Length <= argsToSkip) || string.IsNullOrEmpty(delimiter)) {
-				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(argsToSkip) + " || " + nameof(delimiter));
-
-				return null;
-			}
-
-			return string.Join(delimiter, args.Skip(argsToSkip));
-		}
-
-		internal static string GetArgsAsText(string text, byte argsToSkip) {
-			if (string.IsNullOrEmpty(text)) {
-				ASF.ArchiLogger.LogNullError(nameof(text));
-
-				return null;
-			}
-
-			string[] args = text.Split((char[]) null, argsToSkip + 1, StringSplitOptions.RemoveEmptyEntries);
-
-			return args[args.Length - 1];
-		}
 
 		internal static string GetCookieValue(this CookieContainer cookieContainer, string url, string name) {
 			if ((cookieContainer == null) || string.IsNullOrEmpty(url) || string.IsNullOrEmpty(name)) {
