@@ -145,6 +145,9 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly bool UseLoginKeys = DefaultUseLoginKeys;
 
+		[JsonProperty(Required = Required.DisallowNull)]
+		public ulong SteamMasterClanID { get; private set; } = DefaultSteamMasterClanID;
+
 		[JsonExtensionData]
 		internal Dictionary<string, JToken> AdditionalProperties {
 			get;
@@ -198,9 +201,6 @@ namespace ArchiSteamFarm {
 				_SteamLogin = value;
 			}
 		}
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal ulong SteamMasterClanID { get; private set; } = DefaultSteamMasterClanID;
 
 		[JsonProperty]
 		internal string SteamParentalCode {

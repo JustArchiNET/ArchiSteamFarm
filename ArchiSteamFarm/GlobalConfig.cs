@@ -186,6 +186,12 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		[JsonProperty(Required = Required.DisallowNull)]
+		public ulong SteamOwnerID { get; private set; } = DefaultSteamOwnerID;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		public ProtocolTypes SteamProtocols { get; private set; } = DefaultSteamProtocols;
+
 		[JsonExtensionData]
 		internal Dictionary<string, JToken> AdditionalProperties {
 			get;
@@ -196,12 +202,6 @@ namespace ArchiSteamFarm {
 		internal bool IsWebProxyPasswordSet { get; private set; }
 		internal bool ShouldSerializeEverything { private get; set; } = true;
 		internal bool ShouldSerializeHelperProperties { private get; set; } = true;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal ulong SteamOwnerID { get; private set; } = DefaultSteamOwnerID;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal ProtocolTypes SteamProtocols { get; private set; } = DefaultSteamProtocols;
 
 		[JsonProperty]
 		internal string WebProxyPassword {

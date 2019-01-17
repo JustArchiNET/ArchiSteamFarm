@@ -74,6 +74,20 @@ namespace ArchiSteamFarm {
 			HttpClientHandler.Dispose();
 		}
 
+		[NotNull]
+		[PublicAPI]
+		public HttpClient GenerateDisposableHttpClient(bool extendedTimeout = false) {
+			HttpClient result = new HttpClient(HttpClientHandler) {
+				Timeout = TimeSpan.FromSeconds(extendedTimeout ? ExtendedTimeoutMultiplier * ASF.GlobalConfig.ConnectionTimeout : ASF.GlobalConfig.ConnectionTimeout)
+			};
+
+			// Most web services expect that UserAgent is set, so we declare it globally
+			// If you by any chance came here with a very "clever" idea of hiding your ass by changing default ASF user-agent then here is a very good advice from me: don't, for your own safety - you've been warned
+			result.DefaultRequestHeaders.UserAgent.ParseAdd(SharedInfo.PublicIdentifier + "/" + SharedInfo.Version + " (+" + SharedInfo.ProjectURL + ")");
+
+			return result;
+		}
+
 		[ItemCanBeNull]
 		[PublicAPI]
 		public async Task<HtmlDocumentResponse> UrlGetToHtmlDocument(string request, string referer = null, byte maxTries = MaxTries) {
@@ -273,19 +287,6 @@ namespace ArchiSteamFarm {
 			}
 
 			return null;
-		}
-
-		[NotNull]
-		internal HttpClient GenerateDisposableHttpClient(bool extendedTimeout = false) {
-			HttpClient result = new HttpClient(HttpClientHandler) {
-				Timeout = TimeSpan.FromSeconds(extendedTimeout ? ExtendedTimeoutMultiplier * ASF.GlobalConfig.ConnectionTimeout : ASF.GlobalConfig.ConnectionTimeout)
-			};
-
-			// Most web services expect that UserAgent is set, so we declare it globally
-			// If you by any chance came here with a very "clever" idea of hiding your ass by changing default ASF user-agent then here is a very good advice from me: don't, for your own safety - you've been warned
-			result.DefaultRequestHeaders.UserAgent.ParseAdd(SharedInfo.PublicIdentifier + "/" + SharedInfo.Version + " (+" + SharedInfo.ProjectURL + ")");
-
-			return result;
 		}
 
 		internal static void Init() {
