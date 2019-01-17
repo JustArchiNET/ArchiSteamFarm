@@ -31,9 +31,9 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
-	internal sealed class GlobalDatabase : IDisposable {
+	public sealed class GlobalDatabase : IDisposable {
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly Guid Guid = Guid.NewGuid();
+		public readonly Guid Guid = Guid.NewGuid();
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly ConcurrentDictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)> PackagesData = new ConcurrentDictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)>();

@@ -47,6 +47,9 @@ namespace ArchiSteamFarm {
 		public static GlobalConfig GlobalConfig { get; private set; }
 
 		[PublicAPI]
+		public static GlobalDatabase GlobalDatabase { get; private set; }
+
+		[PublicAPI]
 		public static WebBrowser WebBrowser { get; internal set; }
 
 		private static readonly ConcurrentDictionary<string, object> LastWriteEvents = new ConcurrentDictionary<string, object>();
@@ -102,6 +105,20 @@ namespace ArchiSteamFarm {
 			}
 
 			GlobalConfig = globalConfig;
+		}
+
+		internal static void InitGlobalDatabase(GlobalDatabase globalDatabase) {
+			if (globalDatabase == null) {
+				ArchiLogger.LogNullError(nameof(globalDatabase));
+
+				return;
+			}
+
+			if (GlobalDatabase != null) {
+				return;
+			}
+
+			GlobalDatabase = globalDatabase;
 		}
 
 		internal static async Task RestartOrExit() {
@@ -543,12 +560,12 @@ namespace ArchiSteamFarm {
 			}
 
 			// Ensure that we ask for a list of servers if we don't have any saved servers available
-			IEnumerable<ServerRecord> servers = await Program.GlobalDatabase.ServerListProvider.FetchServerListAsync().ConfigureAwait(false);
+			IEnumerable<ServerRecord> servers = await GlobalDatabase.ServerListProvider.FetchServerListAsync().ConfigureAwait(false);
 
 			if (servers?.Any() != true) {
 				ArchiLogger.LogGenericInfo(string.Format(Strings.Initializing, nameof(SteamDirectory)));
 
-				SteamConfiguration steamConfiguration = SteamConfiguration.Create(builder => builder.WithProtocolTypes(GlobalConfig.SteamProtocols).WithCellID(Program.GlobalDatabase.CellID).WithServerListProvider(Program.GlobalDatabase.ServerListProvider).WithHttpClientFactory(() => WebBrowser.GenerateDisposableHttpClient()));
+				SteamConfiguration steamConfiguration = SteamConfiguration.Create(builder => builder.WithProtocolTypes(GlobalConfig.SteamProtocols).WithCellID(GlobalDatabase.CellID).WithServerListProvider(GlobalDatabase.ServerListProvider).WithHttpClientFactory(() => WebBrowser.GenerateDisposableHttpClient()));
 
 				try {
 					await SteamDirectory.LoadAsync(steamConfiguration).ConfigureAwait(false);

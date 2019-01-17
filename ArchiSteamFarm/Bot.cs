@@ -213,7 +213,7 @@ namespace ArchiSteamFarm {
 
 			ArchiWebHandler = new ArchiWebHandler(this);
 
-			SteamConfiguration steamConfiguration = SteamConfiguration.Create(builder => builder.WithProtocolTypes(ASF.GlobalConfig.SteamProtocols).WithCellID(Program.GlobalDatabase.CellID).WithServerListProvider(Program.GlobalDatabase.ServerListProvider).WithHttpClientFactory(() => ArchiWebHandler.GenerateDisposableHttpClient()));
+			SteamConfiguration steamConfiguration = SteamConfiguration.Create(builder => builder.WithProtocolTypes(ASF.GlobalConfig.SteamProtocols).WithCellID(ASF.GlobalDatabase.CellID).WithServerListProvider(ASF.GlobalDatabase.ServerListProvider).WithHttpClientFactory(() => ArchiWebHandler.GenerateDisposableHttpClient()));
 
 			// Initialize
 			SteamClient = new SteamClient(steamConfiguration);
@@ -501,7 +501,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if ((hoursPlayed < CardsFarmer.HoursForRefund) && !BotConfig.IdleRefundableGames) {
-				HashSet<uint> packageIDs = Program.GlobalDatabase.GetPackageIDs(appID);
+				HashSet<uint> packageIDs = ASF.GlobalDatabase.GetPackageIDs(appID);
 
 				if (packageIDs == null) {
 					return (0, DateTime.MaxValue);
@@ -1781,7 +1781,7 @@ namespace ArchiSteamFarm {
 			SteamUser.LogOn(
 				new SteamUser.LogOnDetails {
 					AuthCode = AuthCode,
-					CellID = Program.GlobalDatabase.CellID,
+					CellID = ASF.GlobalDatabase.CellID,
 					LoginID = LoginID,
 					LoginKey = loginKey,
 					Password = password,
@@ -2028,14 +2028,14 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				if (!Program.GlobalDatabase.PackagesData.TryGetValue(license.PackageID, out (uint ChangeNumber, HashSet<uint> _) packageData) || (packageData.ChangeNumber < license.LastChangeNumber)) {
+				if (!ASF.GlobalDatabase.PackagesData.TryGetValue(license.PackageID, out (uint ChangeNumber, HashSet<uint> _) packageData) || (packageData.ChangeNumber < license.LastChangeNumber)) {
 					packagesToRefresh[license.PackageID] = (uint) license.LastChangeNumber;
 				}
 			}
 
 			if (packagesToRefresh.Count > 0) {
 				ArchiLogger.LogGenericInfo(Strings.BotRefreshingPackagesData);
-				await Program.GlobalDatabase.RefreshPackages(this, packagesToRefresh).ConfigureAwait(false);
+				await ASF.GlobalDatabase.RefreshPackages(this, packagesToRefresh).ConfigureAwait(false);
 				ArchiLogger.LogGenericInfo(Strings.Done);
 			}
 
@@ -2161,8 +2161,8 @@ namespace ArchiSteamFarm {
 						ArchiLogger.LogGenericWarning(Strings.BotAccountLocked);
 					}
 
-					if ((callback.CellID != 0) && (callback.CellID != Program.GlobalDatabase.CellID)) {
-						await Program.GlobalDatabase.SetCellID(callback.CellID).ConfigureAwait(false);
+					if ((callback.CellID != 0) && (callback.CellID != ASF.GlobalDatabase.CellID)) {
+						await ASF.GlobalDatabase.SetCellID(callback.CellID).ConfigureAwait(false);
 					}
 
 					if (!HasMobileAuthenticator) {

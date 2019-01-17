@@ -98,7 +98,7 @@ namespace ArchiSteamFarm {
 
 				Dictionary<string, string> data = new Dictionary<string, string>(2) {
 					{ "SteamID", Bot.SteamID.ToString() },
-					{ "Guid", Program.GlobalDatabase.Guid.ToString("N") }
+					{ "Guid", ASF.GlobalDatabase.Guid.ToString("N") }
 				};
 
 				// Listing is free to deny our announce request, hence we don't retry
@@ -166,7 +166,7 @@ namespace ArchiSteamFarm {
 
 				Dictionary<string, string> data = new Dictionary<string, string>(9) {
 					{ "SteamID", Bot.SteamID.ToString() },
-					{ "Guid", Program.GlobalDatabase.Guid.ToString("N") },
+					{ "Guid", ASF.GlobalDatabase.Guid.ToString("N") },
 					{ "Nickname", nickname ?? "" },
 					{ "AvatarHash", avatarHash ?? "" },
 					{ "GamesCount", inventory.Select(item => item.RealAppID).Distinct().Count().ToString() },
