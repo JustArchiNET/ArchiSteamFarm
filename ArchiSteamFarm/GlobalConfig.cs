@@ -37,6 +37,7 @@ namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	public sealed class GlobalConfig {
 		internal const byte DefaultConnectionTimeout = 90;
+		internal const byte DefaultLoginLimiterDelay = 10;
 
 		private const bool DefaultAutoRestart = true;
 		private const string DefaultCommandPrefix = "!";
@@ -50,7 +51,6 @@ namespace ArchiSteamFarm {
 		private const byte DefaultInventoryLimiterDelay = 3;
 		private const bool DefaultIPC = false;
 		private const string DefaultIPCPassword = null;
-		private const byte DefaultLoginLimiterDelay = 10;
 		private const byte DefaultMaxFarmingTime = 10;
 		private const byte DefaultMaxTradeHoldDuration = 15;
 		private const EOptimizationMode DefaultOptimizationMode = EOptimizationMode.MaxPerformance;

@@ -38,7 +38,7 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	internal static class Program {
-		internal static byte LoadBalancingDelay => Math.Max(ASF.GlobalConfig?.LoginLimiterDelay ?? 0, (byte) 10);
+		internal static byte LoadBalancingDelay => Math.Max(ASF.GlobalConfig?.LoginLimiterDelay ?? 0, GlobalConfig.DefaultLoginLimiterDelay);
 
 		internal static GlobalDatabase GlobalDatabase { get; private set; }
 		internal static bool ProcessRequired { get; private set; }
