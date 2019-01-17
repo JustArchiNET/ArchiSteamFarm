@@ -130,9 +130,11 @@ namespace ArchiSteamFarm.Plugins {
 
 			ContainerConfiguration configuration = new ContainerConfiguration().WithAssemblies(assemblies, conventions);
 
+			HashSet<IPlugin> activePlugins;
+
 			try {
 				using (CompositionHost container = configuration.CreateContainer()) {
-					ActivePlugins = container.GetExports<IPlugin>().ToImmutableHashSet();
+					activePlugins = container.GetExports<IPlugin>().ToHashSet();
 				}
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
@@ -140,9 +142,13 @@ namespace ArchiSteamFarm.Plugins {
 				return false;
 			}
 
+			if (activePlugins.Count == 0) {
+				return true;
+			}
+
 			HashSet<IPlugin> invalidPlugins = new HashSet<IPlugin>();
 
-			foreach (IPlugin plugin in ActivePlugins) {
+			foreach (IPlugin plugin in activePlugins) {
 				try {
 					string pluginName = plugin.Name;
 
@@ -155,15 +161,15 @@ namespace ArchiSteamFarm.Plugins {
 				}
 			}
 
-			ImmutableHashSet<IPlugin> activePlugins = ActivePlugins.Except(invalidPlugins);
+			if (invalidPlugins.Count > 0) {
+				activePlugins.ExceptWith(invalidPlugins);
 
-			if (activePlugins.Count == 0) {
-				ActivePlugins = null;
-
-				return false;
+				if (activePlugins.Count == 0) {
+					return false;
+				}
 			}
 
-			ActivePlugins = activePlugins;
+			ActivePlugins = activePlugins.ToImmutableHashSet();
 			ASF.ArchiLogger.LogGenericInfo(Strings.PluginsWarning);
 
 			return invalidPlugins.Count == 0;
