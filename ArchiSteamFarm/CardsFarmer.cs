@@ -37,14 +37,15 @@ using Newtonsoft.Json;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
-	internal sealed class CardsFarmer : IDisposable {
+	public sealed class CardsFarmer : IDisposable {
 		internal const byte DaysForRefund = 14; // In how many days since payment we're allowed to refund
 		internal const byte HoursForRefund = 2; // Up to how many hours we're allowed to play for refund
 
 		private const byte ExtraFarmingDelaySeconds = 10; // In seconds, how much time to add on top of FarmingDelay (helps fighting misc time differences of Steam network)
 		private const byte HoursToIgnore = 24; // How many hours we ignore unreleased appIDs and don't bother checking them again
 
-		internal static readonly ImmutableHashSet<uint> SalesBlacklist = ImmutableHashSet.Create<uint>(267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900, 762800, 876740, 991980);
+		[PublicAPI]
+		public static readonly ImmutableHashSet<uint> SalesBlacklist = ImmutableHashSet.Create<uint>(267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900, 762800, 876740, 991980);
 
 		private static readonly ConcurrentDictionary<uint, DateTime> IgnoredAppIDs = new ConcurrentDictionary<uint, DateTime>(); // Reserved for unreleased games
 

@@ -46,6 +46,56 @@ namespace ArchiSteamFarm {
 		public void Dispose() => TradesSemaphore.Dispose();
 
 		[PublicAPI]
+		public static bool IsFairTypesExchange(IReadOnlyCollection<Steam.Asset> itemsToGive, IReadOnlyCollection<Steam.Asset> itemsToReceive) {
+			if ((itemsToGive == null) || (itemsToGive.Count == 0) || (itemsToReceive == null) || (itemsToReceive.Count == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(itemsToGive) + " || " + nameof(itemsToReceive));
+
+				return false;
+			}
+
+			Dictionary<uint, Dictionary<Steam.Asset.EType, uint>> itemsToGivePerGame = new Dictionary<uint, Dictionary<Steam.Asset.EType, uint>>();
+
+			foreach (Steam.Asset item in itemsToGive) {
+				if (itemsToGivePerGame.TryGetValue(item.RealAppID, out Dictionary<Steam.Asset.EType, uint> itemsPerType)) {
+					itemsPerType[item.Type] = itemsPerType.TryGetValue(item.Type, out uint amount) ? amount + item.Amount : item.Amount;
+				} else {
+					itemsPerType = new Dictionary<Steam.Asset.EType, uint> { [item.Type] = item.Amount };
+					itemsToGivePerGame[item.RealAppID] = itemsPerType;
+				}
+			}
+
+			Dictionary<uint, Dictionary<Steam.Asset.EType, uint>> itemsToReceivePerGame = new Dictionary<uint, Dictionary<Steam.Asset.EType, uint>>();
+
+			foreach (Steam.Asset item in itemsToReceive) {
+				if (itemsToReceivePerGame.TryGetValue(item.RealAppID, out Dictionary<Steam.Asset.EType, uint> itemsPerType)) {
+					itemsPerType[item.Type] = itemsPerType.TryGetValue(item.Type, out uint amount) ? amount + item.Amount : item.Amount;
+				} else {
+					itemsPerType = new Dictionary<Steam.Asset.EType, uint> { [item.Type] = item.Amount };
+					itemsToReceivePerGame[item.RealAppID] = itemsPerType;
+				}
+			}
+
+			// Ensure that amount of items to give is at least amount of items to receive (per game and per type)
+			foreach ((uint appID, Dictionary<Steam.Asset.EType, uint> itemsPerGame) in itemsToGivePerGame) {
+				if (!itemsToReceivePerGame.TryGetValue(appID, out Dictionary<Steam.Asset.EType, uint> otherItemsPerType)) {
+					return false;
+				}
+
+				foreach ((Steam.Asset.EType type, uint amount) in itemsPerGame) {
+					if (!otherItemsPerType.TryGetValue(type, out uint otherAmount)) {
+						return false;
+					}
+
+					if (amount > otherAmount) {
+						return false;
+					}
+				}
+			}
+
+			return true;
+		}
+
+		[PublicAPI]
 		public static bool IsTradeNeutralOrBetter(HashSet<Steam.Asset> inventory, IReadOnlyCollection<Steam.Asset> itemsToGive, IReadOnlyCollection<Steam.Asset> itemsToReceive) {
 			if ((inventory == null) || (inventory.Count == 0) || (itemsToGive == null) || (itemsToGive.Count == 0) || (itemsToReceive == null) || (itemsToReceive.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(inventory) + " || " + nameof(itemsToGive) + " || " + nameof(itemsToReceive));
@@ -307,55 +357,6 @@ namespace ArchiSteamFarm {
 			}
 
 			// We didn't find any matchable combinations, so this inventory is empty
-			return true;
-		}
-
-		internal static bool IsFairTypesExchange(IReadOnlyCollection<Steam.Asset> itemsToGive, IReadOnlyCollection<Steam.Asset> itemsToReceive) {
-			if ((itemsToGive == null) || (itemsToGive.Count == 0) || (itemsToReceive == null) || (itemsToReceive.Count == 0)) {
-				ASF.ArchiLogger.LogNullError(nameof(itemsToGive) + " || " + nameof(itemsToReceive));
-
-				return false;
-			}
-
-			Dictionary<uint, Dictionary<Steam.Asset.EType, uint>> itemsToGivePerGame = new Dictionary<uint, Dictionary<Steam.Asset.EType, uint>>();
-
-			foreach (Steam.Asset item in itemsToGive) {
-				if (itemsToGivePerGame.TryGetValue(item.RealAppID, out Dictionary<Steam.Asset.EType, uint> itemsPerType)) {
-					itemsPerType[item.Type] = itemsPerType.TryGetValue(item.Type, out uint amount) ? amount + item.Amount : item.Amount;
-				} else {
-					itemsPerType = new Dictionary<Steam.Asset.EType, uint> { [item.Type] = item.Amount };
-					itemsToGivePerGame[item.RealAppID] = itemsPerType;
-				}
-			}
-
-			Dictionary<uint, Dictionary<Steam.Asset.EType, uint>> itemsToReceivePerGame = new Dictionary<uint, Dictionary<Steam.Asset.EType, uint>>();
-
-			foreach (Steam.Asset item in itemsToReceive) {
-				if (itemsToReceivePerGame.TryGetValue(item.RealAppID, out Dictionary<Steam.Asset.EType, uint> itemsPerType)) {
-					itemsPerType[item.Type] = itemsPerType.TryGetValue(item.Type, out uint amount) ? amount + item.Amount : item.Amount;
-				} else {
-					itemsPerType = new Dictionary<Steam.Asset.EType, uint> { [item.Type] = item.Amount };
-					itemsToReceivePerGame[item.RealAppID] = itemsPerType;
-				}
-			}
-
-			// Ensure that amount of items to give is at least amount of items to receive (per game and per type)
-			foreach ((uint appID, Dictionary<Steam.Asset.EType, uint> itemsPerGame) in itemsToGivePerGame) {
-				if (!itemsToReceivePerGame.TryGetValue(appID, out Dictionary<Steam.Asset.EType, uint> otherItemsPerType)) {
-					return false;
-				}
-
-				foreach ((Steam.Asset.EType type, uint amount) in itemsPerGame) {
-					if (!otherItemsPerType.TryGetValue(type, out uint otherAmount)) {
-						return false;
-					}
-
-					if (amount > otherAmount) {
-						return false;
-					}
-				}
-			}
-
 			return true;
 		}
 

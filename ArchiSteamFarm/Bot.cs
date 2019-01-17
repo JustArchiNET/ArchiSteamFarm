@@ -153,9 +153,11 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		public string Nickname { get; private set; }
 
+		[PublicAPI]
+		public ulong SteamID { get; private set; }
+
 		internal bool PlayingBlocked { get; private set; }
 		internal bool PlayingWasBlocked { get; private set; }
-		internal ulong SteamID { get; private set; }
 
 		internal uint WalletBalance { get; private set; }
 		internal ECurrencyCode WalletCurrency { get; private set; }
@@ -364,6 +366,31 @@ namespace ArchiSteamFarm {
 			}
 
 			return result;
+		}
+
+		[PublicAPI]
+		public async Task<byte?> GetTradeHoldDuration(ulong steamID, ulong tradeID) {
+			if ((steamID == 0) || (tradeID == 0)) {
+				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(tradeID));
+
+				return null;
+			}
+
+			if (SteamFriends.GetFriendRelationship(steamID) == EFriendRelationship.Friend) {
+				return await ArchiWebHandler.GetTradeHoldDurationForUser(steamID).ConfigureAwait(false);
+			}
+
+			Bot targetBot = Bots.Values.FirstOrDefault(bot => bot.SteamID == steamID);
+
+			if (targetBot != null) {
+				string targetTradeToken = await targetBot.ArchiHandler.GetTradeToken().ConfigureAwait(false);
+
+				if (!string.IsNullOrEmpty(targetTradeToken)) {
+					return await ArchiWebHandler.GetTradeHoldDurationForUser(steamID, targetTradeToken).ConfigureAwait(false);
+				}
+			}
+
+			return await ArchiWebHandler.GetTradeHoldDurationForTrade(tradeID).ConfigureAwait(false);
 		}
 
 		[PublicAPI]
@@ -689,30 +716,6 @@ namespace ArchiSteamFarm {
 			}
 
 			return result;
-		}
-
-		internal async Task<byte?> GetTradeHoldDuration(ulong steamID, ulong tradeID) {
-			if ((steamID == 0) || (tradeID == 0)) {
-				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(tradeID));
-
-				return null;
-			}
-
-			if (SteamFriends.GetFriendRelationship(steamID) == EFriendRelationship.Friend) {
-				return await ArchiWebHandler.GetTradeHoldDurationForUser(steamID).ConfigureAwait(false);
-			}
-
-			Bot targetBot = Bots.Values.FirstOrDefault(bot => bot.SteamID == steamID);
-
-			if (targetBot != null) {
-				string targetTradeToken = await targetBot.ArchiHandler.GetTradeToken().ConfigureAwait(false);
-
-				if (!string.IsNullOrEmpty(targetTradeToken)) {
-					return await ArchiWebHandler.GetTradeHoldDurationForUser(steamID, targetTradeToken).ConfigureAwait(false);
-				}
-			}
-
-			return await ArchiWebHandler.GetTradeHoldDurationForTrade(tradeID).ConfigureAwait(false);
 		}
 
 		internal async Task<(Dictionary<string, string> UnusedKeys, Dictionary<string, string> UsedKeys)> GetUsedAndUnusedKeys() {

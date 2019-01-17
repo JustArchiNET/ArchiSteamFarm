@@ -360,7 +360,8 @@ namespace ArchiSteamFarm.Json {
 				State = state;
 			}
 
-			internal bool IsValidSteamItemsRequest(IReadOnlyCollection<Asset.EType> acceptedTypes) {
+			[PublicAPI]
+			public bool IsValidSteamItemsRequest(IReadOnlyCollection<Asset.EType> acceptedTypes) {
 				if ((acceptedTypes == null) || (acceptedTypes.Count == 0)) {
 					ASF.ArchiLogger.LogNullError(nameof(acceptedTypes));
 
