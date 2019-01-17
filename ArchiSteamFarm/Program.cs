@@ -381,7 +381,7 @@ namespace ArchiSteamFarm {
 			// Ensure that IPC is stopped before we finalize shutdown sequence
 			await ArchiKestrel.Stop().ConfigureAwait(false);
 
-			if (Bot.Bots.Count > 0) {
+			if (Bot.Bots?.Count > 0) {
 				// Stop() function can block due to SK2 sockets, don't forget a maximum delay
 				await Task.WhenAny(Utilities.InParallel(Bot.Bots.Values.Select(bot => Task.Run(() => bot.Stop(true)))), Task.Delay(Bot.Bots.Count * WebBrowser.MaxTries * 1000)).ConfigureAwait(false);
 
