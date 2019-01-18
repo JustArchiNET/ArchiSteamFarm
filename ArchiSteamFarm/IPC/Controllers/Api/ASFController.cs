@@ -102,15 +102,15 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		///     Makes ASF update itself.
 		/// </summary>
 		[HttpPost("Update")]
-		[ProducesResponseType(typeof(GenericResponse), 200)]
-		public async Task<ActionResult<GenericResponse>> UpdatePost() {
-			(bool success, string message) = await Actions.Update().ConfigureAwait(false);
+		[ProducesResponseType(typeof(GenericResponse<Version>), 200)]
+		public async Task<ActionResult<GenericResponse<Version>>> UpdatePost() {
+			(bool success, string message, Version version) = await Actions.Update().ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(message)) {
 				message = success ? Strings.Success : Strings.WarningFailed;
 			}
 
-			return Ok(new GenericResponse(success, message));
+			return Ok(new GenericResponse<Version>(success, message, version));
 		}
 	}
 }

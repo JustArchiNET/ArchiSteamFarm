@@ -279,20 +279,20 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public static async Task<(bool Success, string Message)> Update() {
+		public static async Task<(bool Success, string Message, Version Version)> Update() {
 			Version version = await ASF.Update(true).ConfigureAwait(false);
 
 			if (version == null) {
-				return (false, null);
+				return (false, null, null);
 			}
 
 			if (SharedInfo.Version >= version) {
-				return (false, "V" + SharedInfo.Version + " ≥ V" + version);
+				return (false, "V" + SharedInfo.Version + " ≥ V" + version, version);
 			}
 
 			Utilities.InBackground(ASF.RestartOrExit);
 
-			return (true, version.ToString());
+			return (true, null, version);
 		}
 
 		internal async Task AcceptDigitalGiftCards() {

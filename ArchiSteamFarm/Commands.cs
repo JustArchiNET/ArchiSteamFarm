@@ -2637,9 +2637,9 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			(bool success, string message) = await Actions.Update().ConfigureAwait(false);
+			(bool success, string message, Version version) = await Actions.Update().ConfigureAwait(false);
 
-			return FormatStaticResponse((success ? Strings.Success : Strings.WarningFailed) + (!string.IsNullOrEmpty(message) ? " " + message : ""));
+			return FormatStaticResponse((success ? Strings.Success : Strings.WarningFailed) + (!string.IsNullOrEmpty(message) ? " " + message : version != null ? " " + version : ""));
 		}
 
 		private string ResponseVersion(ulong steamID) {
