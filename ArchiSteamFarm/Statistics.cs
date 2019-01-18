@@ -343,7 +343,7 @@ namespace ArchiSteamFarm {
 					Dictionary<ulong, uint> classIDsToGive = new Dictionary<ulong, uint>();
 					Dictionary<ulong, uint> classIDsToReceive = new Dictionary<ulong, uint>();
 
-					foreach (((uint AppID, Steam.Asset.EType Type) set, Dictionary<ulong, uint> ourFullItems) in fullState.Where(set => listedUser.MatchableTypes.Contains(set.Key.Type) && set.Value.Values.Any(count => count > 1))) {
+					foreach (((uint AppID, Steam.Asset.EType Type) set, Dictionary<ulong, uint> ourFullItems) in fullState.Where(set => !skippedSetsThisUser.Contains(set.Key) && listedUser.MatchableTypes.Contains(set.Key.Type) && set.Value.Values.Any(count => count > 1))) {
 						if (!tradableState.TryGetValue(set, out Dictionary<ulong, uint> ourTradableItems) || (ourTradableItems.Count == 0)) {
 							continue;
 						}
