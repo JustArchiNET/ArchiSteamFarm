@@ -174,7 +174,7 @@ namespace ArchiSteamFarm {
 						return null;
 					}
 
-					Dictionary<ulong, (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type)> descriptions = new Dictionary<ulong, (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type)>();
+					Dictionary<ulong, (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type, int Droprate)> descriptions = new Dictionary<ulong, (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type, int Droprate)>();
 
 					foreach (Steam.InventoryResponse.Description description in response.Descriptions.Where(description => description != null)) {
 						if (description.ClassID == 0) {
@@ -200,11 +200,11 @@ namespace ArchiSteamFarm {
 							}
 						}
 
-						descriptions[description.ClassID] = (description.Marketable, description.Tradable, realAppID, type);
+						descriptions[description.ClassID] = (description.Marketable, description.Tradable, realAppID, type, description.Droprate);
 					}
 
 					foreach (Steam.Asset asset in response.Assets.Where(asset => asset != null)) {
-						if (descriptions.TryGetValue(asset.ClassID, out (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type) description)) {
+						if (descriptions.TryGetValue(asset.ClassID, out (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type, int Droprate) description)) {
 							if ((tradable.HasValue && (description.Tradable != tradable.Value)) || (wantedRealAppIDs?.Contains(description.RealAppID) == false) || (wantedSets?.Contains((description.RealAppID, description.Type)) == false) || (wantedTypes?.Contains(description.Type) == false) || (skippedSets?.Contains((description.RealAppID, description.Type)) == true)) {
 								continue;
 							}
@@ -213,6 +213,8 @@ namespace ArchiSteamFarm {
 							asset.Tradable = description.Tradable;
 							asset.RealAppID = description.RealAppID;
 							asset.Type = description.Type;
+							asset.Droprate = description.Droprate;
+
 						} else if (tradable.HasValue || (wantedRealAppIDs != null) || (wantedSets != null) || (wantedTypes != null) || (skippedSets != null)) {
 							continue;
 						}
@@ -1196,7 +1198,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			Dictionary<(uint AppID, ulong ClassID), (bool Marketable, uint RealAppID, Steam.Asset.EType Type)> descriptions = new Dictionary<(uint AppID, ulong ClassID), (bool Marketable, uint RealAppID, Steam.Asset.EType Type)>();
+			Dictionary<(uint AppID, ulong ClassID), (bool Marketable, uint RealAppID, Steam.Asset.EType Type,int Droprage)> descriptions = new Dictionary<(uint AppID, ulong ClassID), (bool Marketable, uint RealAppID, Steam.Asset.EType Type, int Droprate)>();
 
 			foreach (KeyValue description in response["descriptions"].Children) {
 				uint appID = description["appid"].AsUnsignedInteger();
@@ -1237,8 +1239,14 @@ namespace ArchiSteamFarm {
 						type = GetItemType(descriptionType);
 					}
 				}
+				int droprate = 0;
+				foreach (KeyValue tag in description["tags"].Children) {
+					if (tag["category"].AsString().Equals("droprate")) {
+						int.TryParse(tag["internal_name"].AsString().Substring(9), out droprate);
+					}
+				}
 
-				descriptions[(appID, classID)] = (marketable, realAppID, type);
+				descriptions[(appID, classID)] = (marketable, realAppID, type, droprate);
 			}
 
 			HashSet<Steam.TradeOffer> result = new HashSet<Steam.TradeOffer>();
@@ -2383,7 +2391,7 @@ namespace ArchiSteamFarm {
 			return uri.AbsolutePath.StartsWith("/login", StringComparison.Ordinal) || uri.Host.Equals("lostauth");
 		}
 
-		private static bool ParseItems(IReadOnlyDictionary<(uint AppID, ulong ClassID), (bool Marketable, uint RealAppID, Steam.Asset.EType Type)> descriptions, IReadOnlyCollection<KeyValue> input, ICollection<Steam.Asset> output) {
+		private static bool ParseItems(IReadOnlyDictionary<(uint AppID, ulong ClassID), (bool Marketable, uint RealAppID, Steam.Asset.EType Type, int Droprate)> descriptions, IReadOnlyCollection<KeyValue> input, ICollection<Steam.Asset> output) {
 			if ((descriptions == null) || (input == null) || (input.Count == 0) || (output == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(descriptions) + " || " + nameof(input) + " || " + nameof(output));
 
@@ -2425,15 +2433,17 @@ namespace ArchiSteamFarm {
 
 				bool marketable = true;
 				uint realAppID = 0;
+				int droprate = 0;
 				Steam.Asset.EType type = Steam.Asset.EType.Unknown;
 
-				if (descriptions.TryGetValue((appID, classID), out (bool Marketable, uint RealAppID, Steam.Asset.EType Type) description)) {
+				if (descriptions.TryGetValue((appID, classID), out (bool Marketable, uint RealAppID, Steam.Asset.EType Type, int Droprate) description)) {
 					marketable = description.Marketable;
 					realAppID = description.RealAppID;
 					type = description.Type;
+					droprate = description.Droprate;
 				}
 
-				Steam.Asset steamAsset = new Steam.Asset(appID, contextID, classID, amount, marketable, realAppID, type);
+				Steam.Asset steamAsset = new Steam.Asset(appID, contextID, classID, amount, marketable, realAppID, type,droprate);
 				output.Add(steamAsset);
 			}
 

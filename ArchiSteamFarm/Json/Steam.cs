@@ -27,6 +27,7 @@ using ArchiSteamFarm.Localization;
 using HtmlAgilityPack;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SteamKit2;
 
 namespace ArchiSteamFarm.Json {
@@ -62,6 +63,9 @@ namespace ArchiSteamFarm.Json {
 
 			[PublicAPI]
 			public bool Tradable { get; internal set; }
+
+			[PublicAPI]
+			public int Droprate { get; internal set; }
 
 			[PublicAPI]
 			public EType Type { get; internal set; }
@@ -160,7 +164,7 @@ namespace ArchiSteamFarm.Json {
 			}
 
 			// Constructed from trades being received or plugins
-			public Asset(uint appID, uint contextID, ulong classID, uint amount, bool marketable = true, uint realAppID = 0, EType type = EType.Unknown) {
+			public Asset(uint appID, uint contextID, ulong classID, uint amount, bool marketable = true, uint realAppID = 0, EType type = EType.Unknown, int droprate = 0) {
 				if ((appID == 0) || (contextID == 0) || (classID == 0) || (amount == 0)) {
 					throw new ArgumentNullException(nameof(appID) + " || " + nameof(contextID) + " || " + nameof(classID) + " || " + nameof(amount));
 				}
@@ -172,6 +176,7 @@ namespace ArchiSteamFarm.Json {
 				Marketable = marketable;
 				RealAppID = realAppID;
 				Type = type;
+				Droprate = droprate;
 			}
 
 			[JsonConstructor]
@@ -445,6 +450,7 @@ namespace ArchiSteamFarm.Json {
 				internal ulong ClassID { get; private set; }
 				internal bool Marketable { get; private set; }
 				internal bool Tradable { get; private set; }
+				internal int Droprate { get; private set; }
 
 				[JsonProperty(PropertyName = "classid", Required = Required.Always)]
 				private string ClassIDText {
@@ -477,6 +483,19 @@ namespace ArchiSteamFarm.Json {
 
 				[JsonConstructor]
 				private Description() { }
+
+				[JsonProperty(PropertyName = "tags", Required = Required.Always)]
+				private JArray Tags {
+					set {
+						foreach (JObject tag in value) {
+							if (tag["category"].ToString().Equals("droprate")) { 
+								if (int.TryParse(tag["internal_name"].ToString().Substring(9), out int droprate)) {
+									Droprate = droprate;
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 
