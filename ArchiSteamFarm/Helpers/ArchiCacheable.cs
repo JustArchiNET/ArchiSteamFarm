@@ -22,6 +22,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Localization;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Helpers {
@@ -55,7 +56,13 @@ namespace ArchiSteamFarm.Helpers {
 		}
 
 		[PublicAPI]
-		public async Task<(bool Success, T Result)> GetValue() {
+		public async Task<(bool Success, T Result)> GetValue(EFallback fallback = EFallback.DefaultForType) {
+			if (!Enum.IsDefined(typeof(EFallback), fallback)) {
+				ASF.ArchiLogger.LogNullError(nameof(fallback));
+
+				return (false, default);
+			}
+
 			if (IsInitialized && IsRecent) {
 				return (true, InitializedValue);
 			}
@@ -70,7 +77,20 @@ namespace ArchiSteamFarm.Helpers {
 				(bool success, T result) = await ResolveFunction().ConfigureAwait(false);
 
 				if (!success) {
-					return (false, InitializedValue);
+					switch (fallback) {
+						case EFallback.DefaultForType:
+
+							return (false, default);
+						case EFallback.FailedNow:
+
+							return (false, result);
+						case EFallback.SuccessPreviously:
+
+							return (false, InitializedValue);
+						default:
+							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(fallback), fallback));
+							goto case EFallback.DefaultForType;
+					}
 				}
 
 				InitializedValue = result;
@@ -95,7 +115,8 @@ namespace ArchiSteamFarm.Helpers {
 			}
 		}
 
-		internal async Task Reset() {
+		[PublicAPI]
+		public async Task Reset() {
 			if (!IsInitialized) {
 				return;
 			}
@@ -113,9 +134,12 @@ namespace ArchiSteamFarm.Helpers {
 			}
 		}
 
-		private void HardReset() {
+		private void HardReset(bool withValue = true) {
 			InitializedAt = DateTime.MinValue;
-			InitializedValue = default;
+
+			if (withValue) {
+				InitializedValue = default;
+			}
 
 			if (MaintenanceTimer != null) {
 				MaintenanceTimer.Dispose();
@@ -135,10 +159,16 @@ namespace ArchiSteamFarm.Helpers {
 					return;
 				}
 
-				HardReset();
+				HardReset(false);
 			} finally {
 				InitSemaphore.Release();
 			}
+		}
+
+		public enum EFallback : byte {
+			DefaultForType,
+			FailedNow,
+			SuccessPreviously
 		}
 	}
 }
