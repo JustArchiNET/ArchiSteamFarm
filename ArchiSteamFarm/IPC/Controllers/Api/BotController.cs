@@ -416,7 +416,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GenericResponse>>(false, string.Format(Strings.BotNotFound, botNames)));
 			}
 
-			IList<(bool Success, string Message)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.HandleTwoFactorAuthenticationConfirmations(true))).ConfigureAwait(false);
+			IList<(bool Success, string Message)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.HandleTwoFactorAuthenticationConfirmations(false))).ConfigureAwait(false);
 
 			Dictionary<string, GenericResponse> result = new Dictionary<string, GenericResponse>(bots.Count);
 
