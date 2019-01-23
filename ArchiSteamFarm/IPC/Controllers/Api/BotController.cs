@@ -373,60 +373,14 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// </summary>
 		[HttpPost("{botNames:required}/TwoFactorAuthentication/Confirmations/Accept")]
 		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse>>), 200)]
-		public async Task<ActionResult<GenericResponse<IReadOnlyDictionary<string, GenericResponse>>>> TwoFactorAuthenticationConfirmationsAcceptPost(string botNames) {
-			if (string.IsNullOrEmpty(botNames)) {
-				ASF.ArchiLogger.LogNullError(nameof(botNames));
-
-				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GenericResponse>>(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
-			}
-
-			HashSet<Bot> bots = Bot.GetBots(botNames);
-
-			if ((bots == null) || (bots.Count == 0)) {
-				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GenericResponse>>(false, string.Format(Strings.BotNotFound, botNames)));
-			}
-
-			IList<(bool Success, string Message)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.HandleTwoFactorAuthenticationConfirmations(true))).ConfigureAwait(false);
-
-			Dictionary<string, GenericResponse> result = new Dictionary<string, GenericResponse>(bots.Count);
-
-			foreach (Bot bot in bots) {
-				(bool success, string message) = results[result.Count];
-				result[bot.BotName] = new GenericResponse(success, message);
-			}
-
-			return Ok(new GenericResponse<IReadOnlyDictionary<string, GenericResponse>>(result));
-		}
+		public async Task<ActionResult<GenericResponse<IReadOnlyDictionary<string, GenericResponse>>>> TwoFactorAuthenticationConfirmationsAcceptPost(string botNames) => await TwoFactorAuthenticationConfirmationsPost(botNames, true).ConfigureAwait(false);
 
 		/// <summary>
 		///     Denies 2FA confirmations of given bots, requires ASF 2FA module to be active on them.
 		/// </summary>
 		[HttpPost("{botNames:required}/TwoFactorAuthentication/Confirmations/Deny")]
 		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse>>), 200)]
-		public async Task<ActionResult<GenericResponse<IReadOnlyDictionary<string, GenericResponse>>>> TwoFactorAuthenticationConfirmationsDenyPost(string botNames) {
-			if (string.IsNullOrEmpty(botNames)) {
-				ASF.ArchiLogger.LogNullError(nameof(botNames));
-
-				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GenericResponse>>(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
-			}
-
-			HashSet<Bot> bots = Bot.GetBots(botNames);
-
-			if ((bots == null) || (bots.Count == 0)) {
-				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GenericResponse>>(false, string.Format(Strings.BotNotFound, botNames)));
-			}
-
-			IList<(bool Success, string Message)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.HandleTwoFactorAuthenticationConfirmations(false))).ConfigureAwait(false);
-
-			Dictionary<string, GenericResponse> result = new Dictionary<string, GenericResponse>(bots.Count);
-
-			foreach (Bot bot in bots) {
-				(bool success, string message) = results[result.Count];
-				result[bot.BotName] = new GenericResponse(success, message);
-			}
-
-			return Ok(new GenericResponse<IReadOnlyDictionary<string, GenericResponse>>(result));
-		}
+		public async Task<ActionResult<GenericResponse<IReadOnlyDictionary<string, GenericResponse>>>> TwoFactorAuthenticationConfirmationsDenyPost(string botNames) => await TwoFactorAuthenticationConfirmationsPost(botNames, false).ConfigureAwait(false);
 
 		/// <summary>
 		///     Fetches 2FA tokens of given bots, requires ASF 2FA module to be active on them.
@@ -456,6 +410,31 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			return Ok(new GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>(result));
+		}
+
+		private async Task<ActionResult<GenericResponse<IReadOnlyDictionary<string, GenericResponse>>>> TwoFactorAuthenticationConfirmationsPost(string botNames, bool accept) {
+			if (string.IsNullOrEmpty(botNames)) {
+				ASF.ArchiLogger.LogNullError(nameof(botNames));
+
+				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GenericResponse>>(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
+			}
+
+			HashSet<Bot> bots = Bot.GetBots(botNames);
+
+			if ((bots == null) || (bots.Count == 0)) {
+				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GenericResponse>>(false, string.Format(Strings.BotNotFound, botNames)));
+			}
+
+			IList<(bool Success, string Message)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.HandleTwoFactorAuthenticationConfirmations(accept))).ConfigureAwait(false);
+
+			Dictionary<string, GenericResponse> result = new Dictionary<string, GenericResponse>(bots.Count);
+
+			foreach (Bot bot in bots) {
+				(bool success, string message) = results[result.Count];
+				result[bot.BotName] = new GenericResponse(success, message);
+			}
+
+			return Ok(new GenericResponse<IReadOnlyDictionary<string, GenericResponse>>(result));
 		}
 	}
 }
