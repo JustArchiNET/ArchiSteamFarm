@@ -21,7 +21,7 @@
 
 using System;
 using System.IO;
-using ArchiSteamFarm.IPC.Middleware;
+using ArchiSteamFarm.IPC.Integration;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

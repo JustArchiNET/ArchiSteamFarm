@@ -389,13 +389,9 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.HasMobileAuthenticator) {
-				return FormatBotResponse(Strings.BotNoASFAuthenticator);
-			}
+			(bool success, string token, string message) = await Bot.Actions.GenerateTwoFactorAuthenticationToken().ConfigureAwait(false);
 
-			string token = await Bot.BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
-
-			return FormatBotResponse(!string.IsNullOrEmpty(token) ? string.Format(Strings.BotAuthenticatorToken, token) : Strings.WarningFailed);
+			return FormatBotResponse(success ? string.Format(Strings.BotAuthenticatorToken, token) : string.Format(Strings.WarningFailedWithError, message));
 		}
 
 		[ItemCanBeNull]
@@ -438,9 +434,9 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNoASFAuthenticator);
 			}
 
-			bool result = await Bot.Actions.AcceptConfirmations(confirm).ConfigureAwait(false);
+			(bool success, string message) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(confirm).ConfigureAwait(false);
 
-			return FormatBotResponse(result ? Strings.Success : Strings.WarningFailed);
+			return FormatBotResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
 
 		[ItemCanBeNull]
@@ -589,9 +585,9 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(contextID)));
 			}
 
-			(bool success, string output) = await Bot.Actions.SendTradeOffer(appID, contextID).ConfigureAwait(false);
+			(bool success, string message) = await Bot.Actions.SendTradeOffer(appID, contextID).ConfigureAwait(false);
 
-			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
+			return FormatBotResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
 
 		[ItemCanBeNull]
@@ -717,9 +713,9 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.TargetBotNotConnected);
 			}
 
-			(bool success, string output) = await Bot.Actions.SendTradeOffer(appID, contextID, targetBot.SteamID).ConfigureAwait(false);
+			(bool success, string message) = await Bot.Actions.SendTradeOffer(appID, contextID, targetBot.SteamID).ConfigureAwait(false);
 
-			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
+			return FormatBotResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
 
 		private async Task<string> ResponseAdvancedTransfer(ulong steamID, string targetAppID, string targetContextID, string botNameTo) {
@@ -930,9 +926,9 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			(bool success, string output) = Actions.Exit();
+			(bool success, string message) = Actions.Exit();
 
-			return FormatStaticResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
+			return FormatStaticResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
 
 		private async Task<string> ResponseFarm(ulong steamID) {
@@ -1381,9 +1377,9 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(Bot.BotConfig.LootableTypes)));
 			}
 
-			(bool success, string output) = await Bot.Actions.SendTradeOffer(wantedTypes: Bot.BotConfig.LootableTypes).ConfigureAwait(false);
+			(bool success, string message) = await Bot.Actions.SendTradeOffer(wantedTypes: Bot.BotConfig.LootableTypes).ConfigureAwait(false);
 
-			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
+			return FormatBotResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
 
 		[ItemCanBeNull]
@@ -1442,9 +1438,9 @@ namespace ArchiSteamFarm {
 				realAppIDs.Add(appID);
 			}
 
-			(bool success, string output) = await Bot.Actions.SendTradeOffer(wantedTypes: Bot.BotConfig.LootableTypes, wantedRealAppIDs: realAppIDs).ConfigureAwait(false);
+			(bool success, string message) = await Bot.Actions.SendTradeOffer(wantedTypes: Bot.BotConfig.LootableTypes, wantedRealAppIDs: realAppIDs).ConfigureAwait(false);
 
-			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
+			return FormatBotResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
 
 		[ItemCanBeNull]
@@ -1694,9 +1690,9 @@ namespace ArchiSteamFarm {
 				return string.Format(Strings.ErrorIsInvalid, nameof(resumeInSecondsText));
 			}
 
-			(bool success, string output) = await Bot.Actions.Pause(permanent, resumeInSeconds).ConfigureAwait(false);
+			(bool success, string message) = await Bot.Actions.Pause(permanent, resumeInSeconds).ConfigureAwait(false);
 
-			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
+			return FormatBotResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
 
 		[ItemCanBeNull]
@@ -2197,9 +2193,9 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			(bool success, string output) = Actions.Restart();
+			(bool success, string message) = Actions.Restart();
 
-			return FormatStaticResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
+			return FormatStaticResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
 
 		private string ResponseResume(ulong steamID) {
@@ -2213,9 +2209,9 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			(bool success, string output) = Bot.Actions.Resume();
+			(bool success, string message) = Bot.Actions.Resume();
 
-			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
+			return FormatBotResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
 
 		[ItemCanBeNull]
@@ -2250,9 +2246,9 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			(bool success, string output) = Bot.Actions.Start();
+			(bool success, string message) = Bot.Actions.Start();
 
-			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
+			return FormatBotResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
 
 		[ItemCanBeNull]
@@ -2376,9 +2372,9 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			(bool success, string output) = Bot.Actions.Stop();
+			(bool success, string message) = Bot.Actions.Stop();
 
-			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
+			return FormatBotResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
 
 		[ItemCanBeNull]
@@ -2433,9 +2429,9 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotSendingTradeToYourself);
 			}
 
-			(bool success, string output) = await Bot.Actions.SendTradeOffer(targetSteamID: targetBot.SteamID, wantedTypes: Bot.BotConfig.TransferableTypes).ConfigureAwait(false);
+			(bool success, string message) = await Bot.Actions.SendTradeOffer(targetSteamID: targetBot.SteamID, wantedTypes: Bot.BotConfig.TransferableTypes).ConfigureAwait(false);
 
-			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
+			return FormatBotResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
 
 		[ItemCanBeNull]
@@ -2486,9 +2482,9 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotSendingTradeToYourself);
 			}
 
-			(bool success, string output) = await Bot.Actions.SendTradeOffer(targetSteamID: targetBot.SteamID, wantedTypes: Bot.BotConfig.TransferableTypes, wantedRealAppIDs: realAppIDs).ConfigureAwait(false);
+			(bool success, string message) = await Bot.Actions.SendTradeOffer(targetSteamID: targetBot.SteamID, wantedTypes: Bot.BotConfig.TransferableTypes, wantedRealAppIDs: realAppIDs).ConfigureAwait(false);
 
-			return FormatBotResponse(success ? output : string.Format(Strings.WarningFailedWithError, output));
+			return FormatBotResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
 
 		private async Task<string> ResponseTransferByRealAppIDs(ulong steamID, string realAppIDsText, string botNameTo) {

@@ -57,9 +57,33 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<bool> AcceptConfirmations(bool accept, Steam.ConfirmationDetails.EType? acceptedType = null, IReadOnlyCollection<ulong> acceptedTradeOfferIDs = null, bool waitIfNeeded = false) {
+		public static (bool Success, string Message) Exit() {
+			// Schedule the task after some time so user can receive response
+			Utilities.InBackground(
+				async () => {
+					await Task.Delay(1000).ConfigureAwait(false);
+					await Program.Exit().ConfigureAwait(false);
+				}
+			);
+
+			return (true, Strings.Done);
+		}
+
+		[PublicAPI]
+		public async Task<(bool Success, string Token, string Message)> GenerateTwoFactorAuthenticationToken() {
 			if (!Bot.HasMobileAuthenticator) {
-				return false;
+				return (false, null, Strings.BotNoASFAuthenticator);
+			}
+
+			string token = await Bot.BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
+
+			return (true, token, Strings.Success);
+		}
+
+		[PublicAPI]
+		public async Task<(bool Success, string Message)> HandleTwoFactorAuthenticationConfirmations(bool accept, Steam.ConfirmationDetails.EType? acceptedType = null, IReadOnlyCollection<ulong> acceptedTradeOfferIDs = null, bool waitIfNeeded = false) {
+			if (!Bot.HasMobileAuthenticator) {
+				return (false, Strings.BotNoASFAuthenticator);
 			}
 
 			HashSet<ulong> handledTradeOfferIDs = null;
@@ -77,7 +101,9 @@ namespace ArchiSteamFarm {
 
 				// If we can skip asking for details, we can handle confirmations right away
 				if ((acceptedTradeOfferIDs == null) || (acceptedTradeOfferIDs.Count == 0)) {
-					return await Bot.BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false);
+					bool result = await Bot.BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false);
+
+					return (result, result ? Strings.Success : Strings.WarningFailed);
 				}
 
 				IList<Steam.ConfirmationDetails> results = await Utilities.InParallel(confirmations.Select(Bot.BotDatabase.MobileAuthenticator.GetConfirmationDetails)).ConfigureAwait(false);
@@ -91,7 +117,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if (!await Bot.BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false)) {
-					return false;
+					return (false, Strings.WarningFailed);
 				}
 
 				IEnumerable<ulong> handledTradeOfferIDsThisRound = results.Where(details => (details != null) && (details.TradeOfferID != 0)).Select(result => result.TradeOfferID);
@@ -104,28 +130,15 @@ namespace ArchiSteamFarm {
 
 				// Check if those are all that we were expected to confirm
 				if (acceptedTradeOfferIDs.All(handledTradeOfferIDs.Contains)) {
-					return true;
+					return (true, Strings.Success);
 				}
 			}
 
-			return !waitIfNeeded;
+			return (!waitIfNeeded, waitIfNeeded ? Strings.Success : string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
 		}
 
 		[PublicAPI]
-		public static (bool Success, string Output) Exit() {
-			// Schedule the task after some time so user can receive response
-			Utilities.InBackground(
-				async () => {
-					await Task.Delay(1000).ConfigureAwait(false);
-					await Program.Exit().ConfigureAwait(false);
-				}
-			);
-
-			return (true, Strings.Done);
-		}
-
-		[PublicAPI]
-		public async Task<(bool Success, string Output)> Pause(bool permanent, ushort resumeInSeconds = 0) {
+		public async Task<(bool Success, string Message)> Pause(bool permanent, ushort resumeInSeconds = 0) {
 			if (Bot.CardsFarmer.Paused) {
 				return (false, Strings.BotAutomaticIdlingPausedAlready);
 			}
@@ -165,7 +178,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public static (bool Success, string Output) Restart() {
+		public static (bool Success, string Message) Restart() {
 			// Schedule the task after some time so user can receive response
 			Utilities.InBackground(
 				async () => {
@@ -178,7 +191,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public (bool Success, string Output) Resume() {
+		public (bool Success, string Message) Resume() {
 			if (!Bot.CardsFarmer.Paused) {
 				return (false, Strings.BotAutomaticIdlingResumedAlready);
 			}
@@ -189,7 +202,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<(bool Success, string Output)> SendTradeOffer(uint appID = Steam.Asset.SteamAppID, uint contextID = Steam.Asset.SteamCommunityContextID, ulong targetSteamID = 0, IReadOnlyCollection<uint> wantedRealAppIDs = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null) {
+		public async Task<(bool Success, string Message)> SendTradeOffer(uint appID = Steam.Asset.SteamAppID, uint contextID = Steam.Asset.SteamCommunityContextID, ulong targetSteamID = 0, IReadOnlyCollection<uint> wantedRealAppIDs = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null) {
 			if ((appID == 0) || (contextID == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
 
@@ -240,7 +253,9 @@ namespace ArchiSteamFarm {
 				(bool success, HashSet<ulong> mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(targetSteamID, inventory, token: Bot.BotConfig.SteamTradeToken).ConfigureAwait(false);
 
 				if ((mobileTradeOfferIDs != null) && (mobileTradeOfferIDs.Count > 0) && Bot.HasMobileAuthenticator) {
-					if (!await AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false)) {
+					(bool twoFactorSuccess, _) = await HandleTwoFactorAuthenticationConfirmations(true, Steam.ConfirmationDetails.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
+
+					if (!twoFactorSuccess) {
 						return (false, Strings.BotLootingFailed);
 					}
 				}
@@ -256,7 +271,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public (bool Success, string Output) Start() {
+		public (bool Success, string Message) Start() {
 			if (Bot.KeepRunning) {
 				return (false, Strings.BotAlreadyRunning);
 			}
@@ -268,7 +283,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public (bool Success, string Output) Stop() {
+		public (bool Success, string Message) Stop() {
 			if (!Bot.KeepRunning) {
 				return (false, Strings.BotAlreadyStopped);
 			}

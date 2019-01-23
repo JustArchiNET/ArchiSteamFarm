@@ -30,7 +30,7 @@ using JetBrains.Annotations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 
-namespace ArchiSteamFarm.IPC.Middleware {
+namespace ArchiSteamFarm.IPC.Integration {
 	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 	internal sealed class ApiAuthenticationMiddleware {
 		internal const string HeadersField = "Authentication";

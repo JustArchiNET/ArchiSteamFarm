@@ -82,9 +82,9 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[HttpPost("Exit")]
 		[ProducesResponseType(typeof(GenericResponse), 200)]
 		public ActionResult<GenericResponse> ExitPost() {
-			(bool success, string output) = Actions.Exit();
+			(bool success, string message) = Actions.Exit();
 
-			return Ok(new GenericResponse(success, output));
+			return Ok(new GenericResponse(success, message));
 		}
 
 		/// <summary>
@@ -93,9 +93,9 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[HttpPost("Restart")]
 		[ProducesResponseType(typeof(GenericResponse), 200)]
 		public ActionResult<GenericResponse> RestartPost() {
-			(bool success, string output) = Actions.Restart();
+			(bool success, string message) = Actions.Restart();
 
-			return Ok(new GenericResponse(success, output));
+			return Ok(new GenericResponse(success, message));
 		}
 
 		/// <summary>
