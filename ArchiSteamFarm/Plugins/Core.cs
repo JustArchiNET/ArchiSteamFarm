@@ -94,8 +94,6 @@ namespace ArchiSteamFarm.Plugins {
 				return true;
 			}
 
-			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.Initializing, nameof(Plugins)));
-
 			HashSet<Assembly> assemblies = new HashSet<Assembly>();
 
 			try {
@@ -120,10 +118,12 @@ namespace ArchiSteamFarm.Plugins {
 			}
 
 			if (assemblies.Count == 0) {
-				ASF.ArchiLogger.LogGenericInfo(Strings.NothingFound);
+				ASF.ArchiLogger.LogGenericTrace(Strings.NothingFound);
 
 				return true;
 			}
+
+			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.Initializing, nameof(Plugins)));
 
 			ConventionBuilder conventions = new ConventionBuilder();
 			conventions.ForTypesDerivedFrom<IPlugin>().Export<IPlugin>();
