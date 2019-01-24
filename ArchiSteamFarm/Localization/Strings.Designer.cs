@@ -22,7 +22,7 @@ namespace ArchiSteamFarm.Localization {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Strings {
+    public class Strings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace ArchiSteamFarm.Localization {
         /// Zwraca buforowane wystąpienie ResourceManager używane przez tę klasę.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ArchiSteamFarm.Localization.Strings", typeof(Strings).Assembly);
@@ -51,7 +51,7 @@ namespace ArchiSteamFarm.Localization {
         ///   przypadków przeszukiwania zasobów za pomocą tej klasy zasobów wymagającej zdefiniowania typu.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Accepting trade: {0}.
         /// </summary>
-        internal static string AcceptingTrade {
+        public static string AcceptingTrade {
             get {
                 return ResourceManager.GetString("AcceptingTrade", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Matching Steam items, round #{0}....
         /// </summary>
-        internal static string ActivelyMatchingItems {
+        public static string ActivelyMatchingItems {
             get {
                 return ResourceManager.GetString("ActivelyMatchingItems", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Matched a total of {0} sets this round..
         /// </summary>
-        internal static string ActivelyMatchingItemsRound {
+        public static string ActivelyMatchingItemsRound {
             get {
                 return ResourceManager.GetString("ActivelyMatchingItemsRound", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu ASF will automatically check for new versions every {0}..
         /// </summary>
-        internal static string AutoUpdateCheckInfo {
+        public static string AutoUpdateCheckInfo {
             get {
                 return ResourceManager.GetString("AutoUpdateCheckInfo", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Accepted donation trade: {0}.
         /// </summary>
-        internal static string BotAcceptedDonationTrade {
+        public static string BotAcceptedDonationTrade {
             get {
                 return ResourceManager.GetString("BotAcceptedDonationTrade", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Accepting gift: {0}....
         /// </summary>
-        internal static string BotAcceptingGift {
+        public static string BotAcceptingGift {
             get {
                 return ResourceManager.GetString("BotAcceptingGift", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Account is no longer occupied: idling process resumed!.
         /// </summary>
-        internal static string BotAccountFree {
+        public static string BotAccountFree {
             get {
                 return ResourceManager.GetString("BotAccountFree", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu This account is limited, idling process is unavailable until the restriction is removed!.
         /// </summary>
-        internal static string BotAccountLimited {
+        public static string BotAccountLimited {
             get {
                 return ResourceManager.GetString("BotAccountLimited", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu This account is locked, idling process is permanently unavailable!.
         /// </summary>
-        internal static string BotAccountLocked {
+        public static string BotAccountLocked {
             get {
                 return ResourceManager.GetString("BotAccountLocked", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Account is currently being used: ASF will resume idling when it&apos;s free....
         /// </summary>
-        internal static string BotAccountOccupied {
+        public static string BotAccountOccupied {
             get {
                 return ResourceManager.GetString("BotAccountOccupied", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu ID: {0} | Status: {1}.
         /// </summary>
-        internal static string BotAddLicense {
+        public static string BotAddLicense {
             get {
                 return ResourceManager.GetString("BotAddLicense", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu ID: {0} | Status: {1} | Items: {2}.
         /// </summary>
-        internal static string BotAddLicenseWithItems {
+        public static string BotAddLicenseWithItems {
             get {
                 return ResourceManager.GetString("BotAddLicenseWithItems", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu This bot is already running!.
         /// </summary>
-        internal static string BotAlreadyRunning {
+        public static string BotAlreadyRunning {
             get {
                 return ResourceManager.GetString("BotAlreadyRunning", resourceCulture);
             }
@@ -180,7 +180,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu This bot has already stopped!.
         /// </summary>
-        internal static string BotAlreadyStopped {
+        public static string BotAlreadyStopped {
             get {
                 return ResourceManager.GetString("BotAlreadyStopped", resourceCulture);
             }
@@ -189,7 +189,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Converting .maFile into ASF format....
         /// </summary>
-        internal static string BotAuthenticatorConverting {
+        public static string BotAuthenticatorConverting {
             get {
                 return ResourceManager.GetString("BotAuthenticatorConverting", resourceCulture);
             }
@@ -198,7 +198,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Successfully finished importing mobile authenticator!.
         /// </summary>
-        internal static string BotAuthenticatorImportFinished {
+        public static string BotAuthenticatorImportFinished {
             get {
                 return ResourceManager.GetString("BotAuthenticatorImportFinished", resourceCulture);
             }
@@ -207,7 +207,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Your DeviceID is incorrect or doesn&apos;t exist!.
         /// </summary>
-        internal static string BotAuthenticatorInvalidDeviceID {
+        public static string BotAuthenticatorInvalidDeviceID {
             get {
                 return ResourceManager.GetString("BotAuthenticatorInvalidDeviceID", resourceCulture);
             }
@@ -216,7 +216,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu 2FA Token: {0}.
         /// </summary>
-        internal static string BotAuthenticatorToken {
+        public static string BotAuthenticatorToken {
             get {
                 return ResourceManager.GetString("BotAuthenticatorToken", resourceCulture);
             }
@@ -225,7 +225,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Automatic idling has paused!.
         /// </summary>
-        internal static string BotAutomaticIdlingNowPaused {
+        public static string BotAutomaticIdlingNowPaused {
             get {
                 return ResourceManager.GetString("BotAutomaticIdlingNowPaused", resourceCulture);
             }
@@ -234,7 +234,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Automatic idling has resumed!.
         /// </summary>
-        internal static string BotAutomaticIdlingNowResumed {
+        public static string BotAutomaticIdlingNowResumed {
             get {
                 return ResourceManager.GetString("BotAutomaticIdlingNowResumed", resourceCulture);
             }
@@ -243,7 +243,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Automatic idling is paused already!.
         /// </summary>
-        internal static string BotAutomaticIdlingPausedAlready {
+        public static string BotAutomaticIdlingPausedAlready {
             get {
                 return ResourceManager.GetString("BotAutomaticIdlingPausedAlready", resourceCulture);
             }
@@ -252,7 +252,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Automatic idling is resumed already!.
         /// </summary>
-        internal static string BotAutomaticIdlingResumedAlready {
+        public static string BotAutomaticIdlingResumedAlready {
             get {
                 return ResourceManager.GetString("BotAutomaticIdlingResumedAlready", resourceCulture);
             }
@@ -261,7 +261,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Connected to Steam!.
         /// </summary>
-        internal static string BotConnected {
+        public static string BotConnected {
             get {
                 return ResourceManager.GetString("BotConnected", resourceCulture);
             }
@@ -270,7 +270,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Connecting....
         /// </summary>
-        internal static string BotConnecting {
+        public static string BotConnecting {
             get {
                 return ResourceManager.GetString("BotConnecting", resourceCulture);
             }
@@ -279,7 +279,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Connection to Steam Network lost. Reconnecting....
         /// </summary>
-        internal static string BotConnectionLost {
+        public static string BotConnectionLost {
             get {
                 return ResourceManager.GetString("BotConnectionLost", resourceCulture);
             }
@@ -288,7 +288,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Disconnected from Steam!.
         /// </summary>
-        internal static string BotDisconnected {
+        public static string BotDisconnected {
             get {
                 return ResourceManager.GetString("BotDisconnected", resourceCulture);
             }
@@ -297,7 +297,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Disconnecting....
         /// </summary>
-        internal static string BotDisconnecting {
+        public static string BotDisconnecting {
             get {
                 return ResourceManager.GetString("BotDisconnecting", resourceCulture);
             }
@@ -306,7 +306,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu [{0}] password: {1}.
         /// </summary>
-        internal static string BotEncryptedPassword {
+        public static string BotEncryptedPassword {
             get {
                 return ResourceManager.GetString("BotEncryptedPassword", resourceCulture);
             }
@@ -315,7 +315,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Bot has no wallet..
         /// </summary>
-        internal static string BotHasNoWallet {
+        public static string BotHasNoWallet {
             get {
                 return ResourceManager.GetString("BotHasNoWallet", resourceCulture);
             }
@@ -324,7 +324,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Failed to disconnect the client. Abandoning this bot instance!.
         /// </summary>
-        internal static string BotHeartBeatFailed {
+        public static string BotHeartBeatFailed {
             get {
                 return ResourceManager.GetString("BotHeartBeatFailed", resourceCulture);
             }
@@ -333,7 +333,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Not starting this bot instance because it&apos;s disabled in config file!.
         /// </summary>
-        internal static string BotInstanceNotStartingBecauseDisabled {
+        public static string BotInstanceNotStartingBecauseDisabled {
             get {
                 return ResourceManager.GetString("BotInstanceNotStartingBecauseDisabled", resourceCulture);
             }
@@ -342,7 +342,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Received TwoFactorCodeMismatch error code {0} times in a row. Either your 2FA credentials are no longer valid, or your clock is out of sync, aborting!.
         /// </summary>
-        internal static string BotInvalidAuthenticatorDuringLogin {
+        public static string BotInvalidAuthenticatorDuringLogin {
             get {
                 return ResourceManager.GetString("BotInvalidAuthenticatorDuringLogin", resourceCulture);
             }
@@ -351,7 +351,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Bot has level {0}..
         /// </summary>
-        internal static string BotLevel {
+        public static string BotLevel {
             get {
                 return ResourceManager.GetString("BotLevel", resourceCulture);
             }
@@ -360,7 +360,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Logged off of Steam: {0}.
         /// </summary>
-        internal static string BotLoggedOff {
+        public static string BotLoggedOff {
             get {
                 return ResourceManager.GetString("BotLoggedOff", resourceCulture);
             }
@@ -369,7 +369,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Successfully logged on as {0}..
         /// </summary>
-        internal static string BotLoggedOn {
+        public static string BotLoggedOn {
             get {
                 return ResourceManager.GetString("BotLoggedOn", resourceCulture);
             }
@@ -378,7 +378,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Logging in....
         /// </summary>
-        internal static string BotLoggingIn {
+        public static string BotLoggingIn {
             get {
                 return ResourceManager.GetString("BotLoggingIn", resourceCulture);
             }
@@ -387,7 +387,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu This account seems to be used in another ASF instance, which is undefined behaviour, refusing to keep it running!.
         /// </summary>
-        internal static string BotLogonSessionReplaced {
+        public static string BotLogonSessionReplaced {
             get {
                 return ResourceManager.GetString("BotLogonSessionReplaced", resourceCulture);
             }
@@ -396,7 +396,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Trade offer failed!.
         /// </summary>
-        internal static string BotLootingFailed {
+        public static string BotLootingFailed {
             get {
                 return ResourceManager.GetString("BotLootingFailed", resourceCulture);
             }
@@ -405,7 +405,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Trade couldn&apos;t be sent because there is no user with master permission defined!.
         /// </summary>
-        internal static string BotLootingMasterNotDefined {
+        public static string BotLootingMasterNotDefined {
             get {
                 return ResourceManager.GetString("BotLootingMasterNotDefined", resourceCulture);
             }
@@ -414,7 +414,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Trade offer sent successfully!.
         /// </summary>
-        internal static string BotLootingSuccess {
+        public static string BotLootingSuccess {
             get {
                 return ResourceManager.GetString("BotLootingSuccess", resourceCulture);
             }
@@ -423,7 +423,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu This bot doesn&apos;t have ASF 2FA enabled! Did you forget to import your authenticator as ASF 2FA?.
         /// </summary>
-        internal static string BotNoASFAuthenticator {
+        public static string BotNoASFAuthenticator {
             get {
                 return ResourceManager.GetString("BotNoASFAuthenticator", resourceCulture);
             }
@@ -432,7 +432,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu This bot instance is not connected!.
         /// </summary>
-        internal static string BotNotConnected {
+        public static string BotNotConnected {
             get {
                 return ResourceManager.GetString("BotNotConnected", resourceCulture);
             }
@@ -441,7 +441,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Couldn&apos;t find any bot named {0}!.
         /// </summary>
-        internal static string BotNotFound {
+        public static string BotNotFound {
             get {
                 return ResourceManager.GetString("BotNotFound", resourceCulture);
             }
@@ -450,7 +450,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Not owned yet: {0}.
         /// </summary>
-        internal static string BotNotOwnedYet {
+        public static string BotNotOwnedYet {
             get {
                 return ResourceManager.GetString("BotNotOwnedYet", resourceCulture);
             }
@@ -459,7 +459,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Owned already: {0}.
         /// </summary>
-        internal static string BotOwnedAlready {
+        public static string BotOwnedAlready {
             get {
                 return ResourceManager.GetString("BotOwnedAlready", resourceCulture);
             }
@@ -468,7 +468,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Owned already: {0} | {1}.
         /// </summary>
-        internal static string BotOwnedAlreadyWithName {
+        public static string BotOwnedAlreadyWithName {
             get {
                 return ResourceManager.GetString("BotOwnedAlreadyWithName", resourceCulture);
             }
@@ -477,7 +477,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu {0}/{1} bots already own game {2}..
         /// </summary>
-        internal static string BotOwnsOverviewPerGame {
+        public static string BotOwnsOverviewPerGame {
             get {
                 return ResourceManager.GetString("BotOwnsOverviewPerGame", resourceCulture);
             }
@@ -486,7 +486,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Rate limit exceeded, we will retry after {0} of cooldown....
         /// </summary>
-        internal static string BotRateLimitExceeded {
+        public static string BotRateLimitExceeded {
             get {
                 return ResourceManager.GetString("BotRateLimitExceeded", resourceCulture);
             }
@@ -495,7 +495,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Reconnecting....
         /// </summary>
-        internal static string BotReconnecting {
+        public static string BotReconnecting {
             get {
                 return ResourceManager.GetString("BotReconnecting", resourceCulture);
             }
@@ -504,7 +504,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Key: {0} | Status: {1}.
         /// </summary>
-        internal static string BotRedeem {
+        public static string BotRedeem {
             get {
                 return ResourceManager.GetString("BotRedeem", resourceCulture);
             }
@@ -513,7 +513,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Key: {0} | Status: {1} | Items: {2}.
         /// </summary>
-        internal static string BotRedeemWithItems {
+        public static string BotRedeemWithItems {
             get {
                 return ResourceManager.GetString("BotRedeemWithItems", resourceCulture);
             }
@@ -522,7 +522,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Refreshing packages data....
         /// </summary>
-        internal static string BotRefreshingPackagesData {
+        public static string BotRefreshingPackagesData {
             get {
                 return ResourceManager.GetString("BotRefreshingPackagesData", resourceCulture);
             }
@@ -531,7 +531,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Removed expired login key!.
         /// </summary>
-        internal static string BotRemovedExpiredLoginKey {
+        public static string BotRemovedExpiredLoginKey {
             get {
                 return ResourceManager.GetString("BotRemovedExpiredLoginKey", resourceCulture);
             }
@@ -540,7 +540,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu You can&apos;t send trade to yourself!.
         /// </summary>
-        internal static string BotSendingTradeToYourself {
+        public static string BotSendingTradeToYourself {
             get {
                 return ResourceManager.GetString("BotSendingTradeToYourself", resourceCulture);
             }
@@ -549,7 +549,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Current memory usage: {0} MB..
         /// </summary>
-        internal static string BotStats {
+        public static string BotStats {
             get {
                 return ResourceManager.GetString("BotStats", resourceCulture);
             }
@@ -558,7 +558,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Bot is connecting to Steam network..
         /// </summary>
-        internal static string BotStatusConnecting {
+        public static string BotStatusConnecting {
             get {
                 return ResourceManager.GetString("BotStatusConnecting", resourceCulture);
             }
@@ -567,7 +567,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Bot is idling game: {0} ({1}, {2} card drops remaining) from a total of {3} games ({4} cards) left to idle (~{5} remaining)..
         /// </summary>
-        internal static string BotStatusIdling {
+        public static string BotStatusIdling {
             get {
                 return ResourceManager.GetString("BotStatusIdling", resourceCulture);
             }
@@ -576,7 +576,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Bot is idling games: {0} from a total of {1} games ({2} cards) left to idle (~{3} remaining)..
         /// </summary>
-        internal static string BotStatusIdlingList {
+        public static string BotStatusIdlingList {
             get {
                 return ResourceManager.GetString("BotStatusIdlingList", resourceCulture);
             }
@@ -585,7 +585,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Bot is limited and can&apos;t drop any cards through idling..
         /// </summary>
-        internal static string BotStatusLimited {
+        public static string BotStatusLimited {
             get {
                 return ResourceManager.GetString("BotStatusLimited", resourceCulture);
             }
@@ -594,7 +594,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Bot is locked and can&apos;t drop any cards through idling..
         /// </summary>
-        internal static string BotStatusLocked {
+        public static string BotStatusLocked {
             get {
                 return ResourceManager.GetString("BotStatusLocked", resourceCulture);
             }
@@ -603,7 +603,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Bot is not idling anything..
         /// </summary>
-        internal static string BotStatusNotIdling {
+        public static string BotStatusNotIdling {
             get {
                 return ResourceManager.GetString("BotStatusNotIdling", resourceCulture);
             }
@@ -612,7 +612,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Bot is not running..
         /// </summary>
-        internal static string BotStatusNotRunning {
+        public static string BotStatusNotRunning {
             get {
                 return ResourceManager.GetString("BotStatusNotRunning", resourceCulture);
             }
@@ -621,7 +621,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu There are {0}/{1} bots running, with total of {2} games ({3} cards) left to idle..
         /// </summary>
-        internal static string BotStatusOverview {
+        public static string BotStatusOverview {
             get {
                 return ResourceManager.GetString("BotStatusOverview", resourceCulture);
             }
@@ -630,7 +630,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Bot is paused or running in manual mode..
         /// </summary>
-        internal static string BotStatusPaused {
+        public static string BotStatusPaused {
             get {
                 return ResourceManager.GetString("BotStatusPaused", resourceCulture);
             }
@@ -639,7 +639,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Bot is currently being used..
         /// </summary>
-        internal static string BotStatusPlayingNotAvailable {
+        public static string BotStatusPlayingNotAvailable {
             get {
                 return ResourceManager.GetString("BotStatusPlayingNotAvailable", resourceCulture);
             }
@@ -648,7 +648,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Could not initialize SteamDirectory: connecting with Steam Network might take much longer than usual!.
         /// </summary>
-        internal static string BotSteamDirectoryInitializationFailed {
+        public static string BotSteamDirectoryInitializationFailed {
             get {
                 return ResourceManager.GetString("BotSteamDirectoryInitializationFailed", resourceCulture);
             }
@@ -657,7 +657,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Stopping....
         /// </summary>
-        internal static string BotStopping {
+        public static string BotStopping {
             get {
                 return ResourceManager.GetString("BotStopping", resourceCulture);
             }
@@ -666,7 +666,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Unable to login to Steam: {0}/{1}.
         /// </summary>
-        internal static string BotUnableToLogin {
+        public static string BotUnableToLogin {
             get {
                 return ResourceManager.GetString("BotUnableToLogin", resourceCulture);
             }
@@ -675,7 +675,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu {0} V{1}.
         /// </summary>
-        internal static string BotVersion {
+        public static string BotVersion {
             get {
                 return ResourceManager.GetString("BotVersion", resourceCulture);
             }
@@ -684,7 +684,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Wallet balance: {0} {1}.
         /// </summary>
-        internal static string BotWalletBalance {
+        public static string BotWalletBalance {
             get {
                 return ResourceManager.GetString("BotWalletBalance", resourceCulture);
             }
@@ -693,7 +693,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Checking first badge page....
         /// </summary>
-        internal static string CheckingFirstBadgePage {
+        public static string CheckingFirstBadgePage {
             get {
                 return ResourceManager.GetString("CheckingFirstBadgePage", resourceCulture);
             }
@@ -702,7 +702,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Checking other badge pages....
         /// </summary>
-        internal static string CheckingOtherBadgePages {
+        public static string CheckingOtherBadgePages {
             get {
                 return ResourceManager.GetString("CheckingOtherBadgePages", resourceCulture);
             }
@@ -711,7 +711,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Chosen idling algorithm: {0}.
         /// </summary>
-        internal static string ChosenFarmingAlgorithm {
+        public static string ChosenFarmingAlgorithm {
             get {
                 return ResourceManager.GetString("ChosenFarmingAlgorithm", resourceCulture);
             }
@@ -720,7 +720,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Clearing Steam discovery queue #{0}....
         /// </summary>
-        internal static string ClearingDiscoveryQueue {
+        public static string ClearingDiscoveryQueue {
             get {
                 return ResourceManager.GetString("ClearingDiscoveryQueue", resourceCulture);
             }
@@ -730,7 +730,7 @@ namespace ArchiSteamFarm.Localization {
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Content:
         ///{0}.
         /// </summary>
-        internal static string Content {
+        public static string Content {
             get {
                 return ResourceManager.GetString("Content", resourceCulture);
             }
@@ -739,7 +739,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Done!.
         /// </summary>
-        internal static string Done {
+        public static string Done {
             get {
                 return ResourceManager.GetString("Done", resourceCulture);
             }
@@ -748,7 +748,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Done matching Steam items, round #{0}..
         /// </summary>
-        internal static string DoneActivelyMatchingItems {
+        public static string DoneActivelyMatchingItems {
             get {
                 return ResourceManager.GetString("DoneActivelyMatchingItems", resourceCulture);
             }
@@ -757,7 +757,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Done clearing Steam discovery queue #{0}..
         /// </summary>
-        internal static string DoneClearingDiscoveryQueue {
+        public static string DoneClearingDiscoveryQueue {
             get {
                 return ResourceManager.GetString("DoneClearingDiscoveryQueue", resourceCulture);
             }
@@ -766,7 +766,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Aborted!.
         /// </summary>
-        internal static string ErrorAborted {
+        public static string ErrorAborted {
             get {
                 return ResourceManager.GetString("ErrorAborted", resourceCulture);
             }
@@ -775,7 +775,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Access denied!.
         /// </summary>
-        internal static string ErrorAccessDenied {
+        public static string ErrorAccessDenied {
             get {
                 return ResourceManager.GetString("ErrorAccessDenied", resourceCulture);
             }
@@ -784,7 +784,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Your bot config is invalid. Please verify content of {0} and try again!.
         /// </summary>
-        internal static string ErrorBotConfigInvalid {
+        public static string ErrorBotConfigInvalid {
             get {
                 return ResourceManager.GetString("ErrorBotConfigInvalid", resourceCulture);
             }
@@ -793,7 +793,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Configured {0} property is invalid: {1}.
         /// </summary>
-        internal static string ErrorConfigPropertyInvalid {
+        public static string ErrorConfigPropertyInvalid {
             get {
                 return ResourceManager.GetString("ErrorConfigPropertyInvalid", resourceCulture);
             }
@@ -802,7 +802,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Persistent database could not be loaded, if issue persists, please remove {0} in order to recreate the database!.
         /// </summary>
-        internal static string ErrorDatabaseInvalid {
+        public static string ErrorDatabaseInvalid {
             get {
                 return ResourceManager.GetString("ErrorDatabaseInvalid", resourceCulture);
             }
@@ -811,7 +811,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu ASF V{0} has run into fatal exception before core logging module was even able to initialize!.
         /// </summary>
-        internal static string ErrorEarlyFatalExceptionInfo {
+        public static string ErrorEarlyFatalExceptionInfo {
             get {
                 return ResourceManager.GetString("ErrorEarlyFatalExceptionInfo", resourceCulture);
             }
@@ -822,7 +822,7 @@ namespace ArchiSteamFarm.Localization {
         ///StackTrace:
         ///{2}.
         /// </summary>
-        internal static string ErrorEarlyFatalExceptionPrint {
+        public static string ErrorEarlyFatalExceptionPrint {
             get {
                 return ResourceManager.GetString("ErrorEarlyFatalExceptionPrint", resourceCulture);
             }
@@ -831,7 +831,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Exiting with nonzero error code!.
         /// </summary>
-        internal static string ErrorExitingWithNonZeroErrorCode {
+        public static string ErrorExitingWithNonZeroErrorCode {
             get {
                 return ResourceManager.GetString("ErrorExitingWithNonZeroErrorCode", resourceCulture);
             }
@@ -840,7 +840,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Request failing: {0}.
         /// </summary>
-        internal static string ErrorFailingRequest {
+        public static string ErrorFailingRequest {
             get {
                 return ResourceManager.GetString("ErrorFailingRequest", resourceCulture);
             }
@@ -849,7 +849,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu This function is available only in headless mode!.
         /// </summary>
-        internal static string ErrorFunctionOnlyInHeadlessMode {
+        public static string ErrorFunctionOnlyInHeadlessMode {
             get {
                 return ResourceManager.GetString("ErrorFunctionOnlyInHeadlessMode", resourceCulture);
             }
@@ -858,7 +858,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Global config could not be loaded. Make sure that {0} exists and is valid! Follow &apos;setting up&apos; guide on the wiki if you&apos;re confused..
         /// </summary>
-        internal static string ErrorGlobalConfigNotLoaded {
+        public static string ErrorGlobalConfigNotLoaded {
             get {
                 return ResourceManager.GetString("ErrorGlobalConfigNotLoaded", resourceCulture);
             }
@@ -867,7 +867,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Global config file has been removed!.
         /// </summary>
-        internal static string ErrorGlobalConfigRemoved {
+        public static string ErrorGlobalConfigRemoved {
             get {
                 return ResourceManager.GetString("ErrorGlobalConfigRemoved", resourceCulture);
             }
@@ -876,7 +876,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Your provided CurrentCulture is invalid, ASF will keep running with the default one!.
         /// </summary>
-        internal static string ErrorInvalidCurrentCulture {
+        public static string ErrorInvalidCurrentCulture {
             get {
                 return ResourceManager.GetString("ErrorInvalidCurrentCulture", resourceCulture);
             }
@@ -885,7 +885,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu {0} is empty!.
         /// </summary>
-        internal static string ErrorIsEmpty {
+        public static string ErrorIsEmpty {
             get {
                 return ResourceManager.GetString("ErrorIsEmpty", resourceCulture);
             }
@@ -894,7 +894,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu {0} is invalid!.
         /// </summary>
-        internal static string ErrorIsInvalid {
+        public static string ErrorIsInvalid {
             get {
                 return ResourceManager.GetString("ErrorIsInvalid", resourceCulture);
             }
@@ -903,7 +903,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Refusing to execute this function due to invalid DeviceID in ASF 2FA!.
         /// </summary>
-        internal static string ErrorMobileAuthenticatorInvalidDeviceID {
+        public static string ErrorMobileAuthenticatorInvalidDeviceID {
             get {
                 return ResourceManager.GetString("ErrorMobileAuthenticatorInvalidDeviceID", resourceCulture);
             }
@@ -912,7 +912,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu No bots are defined. Did you forget to configure your ASF?.
         /// </summary>
-        internal static string ErrorNoBotsDefined {
+        public static string ErrorNoBotsDefined {
             get {
                 return ResourceManager.GetString("ErrorNoBotsDefined", resourceCulture);
             }
@@ -921,7 +921,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu {0} is null!.
         /// </summary>
-        internal static string ErrorObjectIsNull {
+        public static string ErrorObjectIsNull {
             get {
                 return ResourceManager.GetString("ErrorObjectIsNull", resourceCulture);
             }
@@ -930,7 +930,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Parsing {0} failed!.
         /// </summary>
-        internal static string ErrorParsingObject {
+        public static string ErrorParsingObject {
             get {
                 return ResourceManager.GetString("ErrorParsingObject", resourceCulture);
             }
@@ -939,7 +939,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Request failed after {0} attempts!.
         /// </summary>
-        internal static string ErrorRequestFailedTooManyTimes {
+        public static string ErrorRequestFailedTooManyTimes {
             get {
                 return ResourceManager.GetString("ErrorRequestFailedTooManyTimes", resourceCulture);
             }
@@ -948,7 +948,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Could not check latest version!.
         /// </summary>
-        internal static string ErrorUpdateCheckFailed {
+        public static string ErrorUpdateCheckFailed {
             get {
                 return ResourceManager.GetString("ErrorUpdateCheckFailed", resourceCulture);
             }
@@ -957,7 +957,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Could not proceed with update because there is no asset that relates to currently running version! Automatic update to that version is not possible..
         /// </summary>
-        internal static string ErrorUpdateNoAssetForThisVersion {
+        public static string ErrorUpdateNoAssetForThisVersion {
             get {
                 return ResourceManager.GetString("ErrorUpdateNoAssetForThisVersion", resourceCulture);
             }
@@ -966,7 +966,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Could not proceed with an update because that version doesn&apos;t include any assets!.
         /// </summary>
-        internal static string ErrorUpdateNoAssets {
+        public static string ErrorUpdateNoAssets {
             get {
                 return ResourceManager.GetString("ErrorUpdateNoAssets", resourceCulture);
             }
@@ -975,7 +975,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Received a request for user input, but process is running in headless mode!.
         /// </summary>
-        internal static string ErrorUserInputRunningInHeadlessMode {
+        public static string ErrorUserInputRunningInHeadlessMode {
             get {
                 return ResourceManager.GetString("ErrorUserInputRunningInHeadlessMode", resourceCulture);
             }
@@ -984,7 +984,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Exiting....
         /// </summary>
-        internal static string Exiting {
+        public static string Exiting {
             get {
                 return ResourceManager.GetString("Exiting", resourceCulture);
             }
@@ -993,7 +993,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu We have a total of {0} games ({1} cards) left to idle (~{2} remaining)....
         /// </summary>
-        internal static string GamesToIdle {
+        public static string GamesToIdle {
             get {
                 return ResourceManager.GetString("GamesToIdle", resourceCulture);
             }
@@ -1002,7 +1002,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Global config file has been changed!.
         /// </summary>
-        internal static string GlobalConfigChanged {
+        public static string GlobalConfigChanged {
             get {
                 return ResourceManager.GetString("GlobalConfigChanged", resourceCulture);
             }
@@ -1011,7 +1011,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Idling finished!.
         /// </summary>
-        internal static string IdlingFinished {
+        public static string IdlingFinished {
             get {
                 return ResourceManager.GetString("IdlingFinished", resourceCulture);
             }
@@ -1020,7 +1020,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Finished idling: {0} ({1}) after {2} of playtime!.
         /// </summary>
-        internal static string IdlingFinishedForGame {
+        public static string IdlingFinishedForGame {
             get {
                 return ResourceManager.GetString("IdlingFinishedForGame", resourceCulture);
             }
@@ -1029,7 +1029,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Finished idling games: {0}.
         /// </summary>
-        internal static string IdlingFinishedForGames {
+        public static string IdlingFinishedForGames {
             get {
                 return ResourceManager.GetString("IdlingFinishedForGames", resourceCulture);
             }
@@ -1038,7 +1038,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Idling {0} ({1}) is temporarily disabled, as ASF is not able to play that game at the moment..
         /// </summary>
-        internal static string IdlingGameNotPossible {
+        public static string IdlingGameNotPossible {
             get {
                 return ResourceManager.GetString("IdlingGameNotPossible", resourceCulture);
             }
@@ -1047,7 +1047,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Idling status for {0} ({1}): {2} cards remaining.
         /// </summary>
-        internal static string IdlingStatusForGame {
+        public static string IdlingStatusForGame {
             get {
                 return ResourceManager.GetString("IdlingStatusForGame", resourceCulture);
             }
@@ -1056,7 +1056,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Idling stopped!.
         /// </summary>
-        internal static string IdlingStopped {
+        public static string IdlingStopped {
             get {
                 return ResourceManager.GetString("IdlingStopped", resourceCulture);
             }
@@ -1065,7 +1065,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Ignoring this request, as permanent pause is enabled!.
         /// </summary>
-        internal static string IgnoredPermanentPauseEnabled {
+        public static string IgnoredPermanentPauseEnabled {
             get {
                 return ResourceManager.GetString("IgnoredPermanentPauseEnabled", resourceCulture);
             }
@@ -1074,7 +1074,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Ignoring trade: {0}.
         /// </summary>
-        internal static string IgnoringTrade {
+        public static string IgnoringTrade {
             get {
                 return ResourceManager.GetString("IgnoringTrade", resourceCulture);
             }
@@ -1083,7 +1083,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Initializing {0}....
         /// </summary>
-        internal static string Initializing {
+        public static string Initializing {
             get {
                 return ResourceManager.GetString("Initializing", resourceCulture);
             }
@@ -1092,7 +1092,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu IPC server ready!.
         /// </summary>
-        internal static string IPCReady {
+        public static string IPCReady {
             get {
                 return ResourceManager.GetString("IPCReady", resourceCulture);
             }
@@ -1101,7 +1101,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Starting IPC server....
         /// </summary>
-        internal static string IPCStarting {
+        public static string IPCStarting {
             get {
                 return ResourceManager.GetString("IPCStarting", resourceCulture);
             }
@@ -1110,7 +1110,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Logging in to {0}....
         /// </summary>
-        internal static string LoggingIn {
+        public static string LoggingIn {
             get {
                 return ResourceManager.GetString("LoggingIn", resourceCulture);
             }
@@ -1119,7 +1119,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu No bots are running, exiting....
         /// </summary>
-        internal static string NoBotsAreRunning {
+        public static string NoBotsAreRunning {
             get {
                 return ResourceManager.GetString("NoBotsAreRunning", resourceCulture);
             }
@@ -1128,7 +1128,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Nothing found!.
         /// </summary>
-        internal static string NothingFound {
+        public static string NothingFound {
             get {
                 return ResourceManager.GetString("NothingFound", resourceCulture);
             }
@@ -1137,7 +1137,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu We don&apos;t have anything to idle on this account!.
         /// </summary>
-        internal static string NothingToIdle {
+        public static string NothingToIdle {
             get {
                 return ResourceManager.GetString("NothingToIdle", resourceCulture);
             }
@@ -1146,7 +1146,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Now idling: {0} ({1}).
         /// </summary>
-        internal static string NowIdling {
+        public static string NowIdling {
             get {
                 return ResourceManager.GetString("NowIdling", resourceCulture);
             }
@@ -1155,7 +1155,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Now idling: {0}.
         /// </summary>
-        internal static string NowIdlingList {
+        public static string NowIdlingList {
             get {
                 return ResourceManager.GetString("NowIdlingList", resourceCulture);
             }
@@ -1164,7 +1164,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Playing is currently unavailable, we&apos;ll try again later!.
         /// </summary>
-        internal static string PlayingNotAvailable {
+        public static string PlayingNotAvailable {
             get {
                 return ResourceManager.GetString("PlayingNotAvailable", resourceCulture);
             }
@@ -1173,7 +1173,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu {0} has been loaded successfully!.
         /// </summary>
-        internal static string PluginLoaded {
+        public static string PluginLoaded {
             get {
                 return ResourceManager.GetString("PluginLoaded", resourceCulture);
             }
@@ -1182,7 +1182,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Loading {0} V{1}....
         /// </summary>
-        internal static string PluginLoading {
+        public static string PluginLoading {
             get {
                 return ResourceManager.GetString("PluginLoading", resourceCulture);
             }
@@ -1191,7 +1191,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu You&apos;ve loaded one or more of custom plugins into the ASF. Since we&apos;re unable to offer a support for modded setups, please reach the appropriate developers of the plugins that you decided to use in case of any issues..
         /// </summary>
-        internal static string PluginsWarning {
+        public static string PluginsWarning {
             get {
                 return ResourceManager.GetString("PluginsWarning", resourceCulture);
             }
@@ -1200,7 +1200,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Refreshing our session!.
         /// </summary>
-        internal static string RefreshingOurSession {
+        public static string RefreshingOurSession {
             get {
                 return ResourceManager.GetString("RefreshingOurSession", resourceCulture);
             }
@@ -1209,7 +1209,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Rejecting trade: {0}.
         /// </summary>
-        internal static string RejectingTrade {
+        public static string RejectingTrade {
             get {
                 return ResourceManager.GetString("RejectingTrade", resourceCulture);
             }
@@ -1218,7 +1218,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Restarting....
         /// </summary>
-        internal static string Restarting {
+        public static string Restarting {
             get {
                 return ResourceManager.GetString("Restarting", resourceCulture);
             }
@@ -1227,7 +1227,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Starting....
         /// </summary>
-        internal static string Starting {
+        public static string Starting {
             get {
                 return ResourceManager.GetString("Starting", resourceCulture);
             }
@@ -1236,7 +1236,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Still idling: {0} ({1}).
         /// </summary>
-        internal static string StillIdling {
+        public static string StillIdling {
             get {
                 return ResourceManager.GetString("StillIdling", resourceCulture);
             }
@@ -1245,7 +1245,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Still idling: {0}.
         /// </summary>
-        internal static string StillIdlingList {
+        public static string StillIdlingList {
             get {
                 return ResourceManager.GetString("StillIdlingList", resourceCulture);
             }
@@ -1254,7 +1254,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Stopped idling: {0} ({1}).
         /// </summary>
-        internal static string StoppedIdling {
+        public static string StoppedIdling {
             get {
                 return ResourceManager.GetString("StoppedIdling", resourceCulture);
             }
@@ -1263,7 +1263,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Stopped idling: {0}.
         /// </summary>
-        internal static string StoppedIdlingList {
+        public static string StoppedIdlingList {
             get {
                 return ResourceManager.GetString("StoppedIdlingList", resourceCulture);
             }
@@ -1272,7 +1272,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Success!.
         /// </summary>
-        internal static string Success {
+        public static string Success {
             get {
                 return ResourceManager.GetString("Success", resourceCulture);
             }
@@ -1281,7 +1281,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Target bot instance is not connected!.
         /// </summary>
-        internal static string TargetBotNotConnected {
+        public static string TargetBotNotConnected {
             get {
                 return ResourceManager.GetString("TargetBotNotConnected", resourceCulture);
             }
@@ -1290,7 +1290,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu ASF will attempt to use your preferred {0} culture, but translation in that language was completed only in {1}. Perhaps you could help us improve ASF translation for your language?.
         /// </summary>
-        internal static string TranslationIncomplete {
+        public static string TranslationIncomplete {
             get {
                 return ResourceManager.GetString("TranslationIncomplete", resourceCulture);
             }
@@ -1299,7 +1299,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Unknown command!.
         /// </summary>
-        internal static string UnknownCommand {
+        public static string UnknownCommand {
             get {
                 return ResourceManager.GetString("UnknownCommand", resourceCulture);
             }
@@ -1308,7 +1308,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Unlocking parental account....
         /// </summary>
-        internal static string UnlockingParentalAccount {
+        public static string UnlockingParentalAccount {
             get {
                 return ResourceManager.GetString("UnlockingParentalAccount", resourceCulture);
             }
@@ -1317,7 +1317,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Unused keys: {0}.
         /// </summary>
-        internal static string UnusedKeys {
+        public static string UnusedKeys {
             get {
                 return ResourceManager.GetString("UnusedKeys", resourceCulture);
             }
@@ -1326,7 +1326,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Checking for new version....
         /// </summary>
-        internal static string UpdateCheckingNewVersion {
+        public static string UpdateCheckingNewVersion {
             get {
                 return ResourceManager.GetString("UpdateCheckingNewVersion", resourceCulture);
             }
@@ -1335,7 +1335,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Downloading new version: {0} ({1} MB)... While waiting, consider donating if you appreciate the work being done! :).
         /// </summary>
-        internal static string UpdateDownloadingNewVersion {
+        public static string UpdateDownloadingNewVersion {
             get {
                 return ResourceManager.GetString("UpdateDownloadingNewVersion", resourceCulture);
             }
@@ -1344,7 +1344,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Update process finished!.
         /// </summary>
-        internal static string UpdateFinished {
+        public static string UpdateFinished {
             get {
                 return ResourceManager.GetString("UpdateFinished", resourceCulture);
             }
@@ -1353,7 +1353,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu New ASF version is available! Consider updating yourself!.
         /// </summary>
-        internal static string UpdateNewVersionAvailable {
+        public static string UpdateNewVersionAvailable {
             get {
                 return ResourceManager.GetString("UpdateNewVersionAvailable", resourceCulture);
             }
@@ -1362,7 +1362,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Local version: {0} | Remote version: {1}.
         /// </summary>
-        internal static string UpdateVersionInfo {
+        public static string UpdateVersionInfo {
             get {
                 return ResourceManager.GetString("UpdateVersionInfo", resourceCulture);
             }
@@ -1371,7 +1371,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Please enter your mobile authenticator device ID (including &quot;android:&quot;): .
         /// </summary>
-        internal static string UserInputDeviceID {
+        public static string UserInputDeviceID {
             get {
                 return ResourceManager.GetString("UserInputDeviceID", resourceCulture);
             }
@@ -1380,7 +1380,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Please enter your 2FA code from your Steam authenticator app: .
         /// </summary>
-        internal static string UserInputSteam2FA {
+        public static string UserInputSteam2FA {
             get {
                 return ResourceManager.GetString("UserInputSteam2FA", resourceCulture);
             }
@@ -1389,7 +1389,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Please enter SteamGuard auth code that was sent on your e-mail: .
         /// </summary>
-        internal static string UserInputSteamGuard {
+        public static string UserInputSteamGuard {
             get {
                 return ResourceManager.GetString("UserInputSteamGuard", resourceCulture);
             }
@@ -1398,7 +1398,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Please enter your Steam login: .
         /// </summary>
-        internal static string UserInputSteamLogin {
+        public static string UserInputSteamLogin {
             get {
                 return ResourceManager.GetString("UserInputSteamLogin", resourceCulture);
             }
@@ -1407,7 +1407,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Please enter Steam parental code: .
         /// </summary>
-        internal static string UserInputSteamParentalCode {
+        public static string UserInputSteamParentalCode {
             get {
                 return ResourceManager.GetString("UserInputSteamParentalCode", resourceCulture);
             }
@@ -1416,7 +1416,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Please enter your Steam password: .
         /// </summary>
-        internal static string UserInputSteamPassword {
+        public static string UserInputSteamPassword {
             get {
                 return ResourceManager.GetString("UserInputSteamPassword", resourceCulture);
             }
@@ -1425,7 +1425,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Please enter undocumented value of {0}: .
         /// </summary>
-        internal static string UserInputUnknown {
+        public static string UserInputUnknown {
             get {
                 return ResourceManager.GetString("UserInputUnknown", resourceCulture);
             }
@@ -1434,7 +1434,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Could not get badges&apos; information, we will try again later!.
         /// </summary>
-        internal static string WarningCouldNotCheckBadges {
+        public static string WarningCouldNotCheckBadges {
             get {
                 return ResourceManager.GetString("WarningCouldNotCheckBadges", resourceCulture);
             }
@@ -1443,7 +1443,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Could not check cards status for: {0} ({1}), we will try again later!.
         /// </summary>
-        internal static string WarningCouldNotCheckCardsStatus {
+        public static string WarningCouldNotCheckCardsStatus {
             get {
                 return ResourceManager.GetString("WarningCouldNotCheckCardsStatus", resourceCulture);
             }
@@ -1452,7 +1452,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Usage of {0} is deprecated and will be removed in future versions of the program. Please use {1} instead..
         /// </summary>
-        internal static string WarningDeprecated {
+        public static string WarningDeprecated {
             get {
                 return ResourceManager.GetString("WarningDeprecated", resourceCulture);
             }
@@ -1461,7 +1461,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu You&apos;re running more personal bot accounts than our upper recommended limit ({0}). Be advised that this setup is not supported and might cause various Steam-related issues, including account suspensions. Check out the FAQ for more details..
         /// </summary>
-        internal static string WarningExcessiveBotsCount {
+        public static string WarningExcessiveBotsCount {
             get {
                 return ResourceManager.GetString("WarningExcessiveBotsCount", resourceCulture);
             }
@@ -1470,7 +1470,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Failed!.
         /// </summary>
-        internal static string WarningFailed {
+        public static string WarningFailed {
             get {
                 return ResourceManager.GetString("WarningFailed", resourceCulture);
             }
@@ -1479,7 +1479,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Failed due to error: {0}.
         /// </summary>
-        internal static string WarningFailedWithError {
+        public static string WarningFailedWithError {
             get {
                 return ResourceManager.GetString("WarningFailedWithError", resourceCulture);
             }
@@ -1488,7 +1488,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu ASF detected ID mismatch for {0} ({1}) and will use ID of {2} instead..
         /// </summary>
-        internal static string WarningIdlingGameMismatch {
+        public static string WarningIdlingGameMismatch {
             get {
                 return ResourceManager.GetString("WarningIdlingGameMismatch", resourceCulture);
             }
@@ -1497,7 +1497,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu You&apos;re using a version that is newer than latest released version for your update channel. Please note that pre-release versions are dedicated to users who know how to report bugs, deal with issues and give feedback - no technical support will be given..
         /// </summary>
-        internal static string WarningPreReleaseVersion {
+        public static string WarningPreReleaseVersion {
             get {
                 return ResourceManager.GetString("WarningPreReleaseVersion", resourceCulture);
             }
@@ -1506,7 +1506,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Please review our privacy policy section on the wiki if you&apos;re concerned about what ASF is in fact doing!.
         /// </summary>
-        internal static string WarningPrivacyPolicy {
+        public static string WarningPrivacyPolicy {
             get {
                 return ResourceManager.GetString("WarningPrivacyPolicy", resourceCulture);
             }
@@ -1515,7 +1515,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Received unknown value for {0}, please report this: {1}.
         /// </summary>
-        internal static string WarningUnknownValuePleaseReport {
+        public static string WarningUnknownValuePleaseReport {
             get {
                 return ResourceManager.GetString("WarningUnknownValuePleaseReport", resourceCulture);
             }
@@ -1524,7 +1524,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Workaround for {0} bug has been triggered..
         /// </summary>
-        internal static string WarningWorkaroundTriggered {
+        public static string WarningWorkaroundTriggered {
             get {
                 return ResourceManager.GetString("WarningWorkaroundTriggered", resourceCulture);
             }
@@ -1533,7 +1533,7 @@ namespace ArchiSteamFarm.Localization {
         /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu It looks like it&apos;s your first launch of the program, welcome!.
         /// </summary>
-        internal static string Welcome {
+        public static string Welcome {
             get {
                 return ResourceManager.GetString("Welcome", resourceCulture);
             }
