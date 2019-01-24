@@ -159,7 +159,7 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>ASF 雙重驗證中設定的 DeviceID 無效，該功能無法執行！</value>
+    <value>ASF 兩步驟驗證中設定的 DeviceID 無效，該功能無法執行！</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>沒有設定任何 BOT。你忘記設定 ASF 了嗎？</value>
@@ -186,7 +186,7 @@
     <value>無法進行更新，因為此版本沒有提供任何資源文件！</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>收到一個使用者輸入請求，但程序目前正以無標頭模式執行！</value>
+    <value>收到一個使用者輸入請求，但程序目前正以無介面模式執行！</value>
   </data>
   <data name="Exiting" xml:space="preserve">
     <value>正在退出...</value>
@@ -252,11 +252,11 @@
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>請輸入您的 Steam Guard 行動驗證器上的雙重驗證代碼： </value>
+    <value>請輸入你的 Steam Guard 行動驗證器上的兩步驟驗證代碼： </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>請輸入寄送至您電子信箱的 Steam Guard 驗證代碼： </value>
+    <value>請輸入寄送至你的電子信箱的 Steam Guard 驗證代碼： </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
@@ -268,7 +268,7 @@
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>請輸入您的 Steam 密碼： </value>
+    <value>請輸入你的 Steam 密碼： </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
@@ -410,7 +410,7 @@
     <value>你的 DeviceID 不正確或不存在！</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
-    <value>雙重驗證代碼：{0}</value>
+    <value>兩步驟驗證代碼：{0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
   <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
@@ -442,7 +442,7 @@
     <value>這個 BOT 將不會啟動，因為它在設定檔中被禁用！</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>已連續收到 {0} 次 TwoFactorCodeMismatch 錯誤訊息。你的雙重驗證憑證可能已失效，或時鐘不同步，正在中止！</value>
+    <value>已連續收到 {0} 次 TwoFactorCodeMismatch 錯誤訊息。你的兩步驟驗證憑證可能已失效，或時鐘不同步，正在中止！</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
@@ -472,7 +472,7 @@
     <value>你無法發送交易給自己！</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>BOT 並未啟用 ASF 雙重驗證！您是否忘記將驗證器匯入成 ASF 雙重驗證？</value>
+    <value>BOT 並未啟用 ASF 兩步驟驗證！你是否忘記將驗證器匯入成 ASF 兩步驟驗證？</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
     <value>此 BOT 實例尚未連線！</value>
@@ -571,13 +571,13 @@
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>如果您對 ASF 的實際運作方式有疑慮，請查看我們的 wiki 上的隱私政策章節！</value>
+    <value>如果你對 ASF 的實際運作方式有疑慮，請查看 wiki 中的隱私政策章節！</value>
   </data>
   <data name="Welcome" xml:space="preserve">
     <value>看來這是你首次使用 ASF，歡迎！</value>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-    <value>您提供的 CurrentCulture 無效，ASF 將以預設值繼續執行！</value>
+    <value>你提供的 CurrentCulture 無效，ASF 將以預設值繼續執行！</value>
   </data>
   <data name="TranslationIncomplete" xml:space="preserve">
     <value>ASF 將使用你的偏好語系 {0}，但該語言的翻譯只完成了 {1}。請協助我們改善 ASF 的翻譯品質。</value>
@@ -602,7 +602,7 @@
     <value>BOT 已被鎖定，無法透過掛卡得到卡片。</value>
   </data>
   <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
-    <value>此功能僅能在無標頭模式下使用！</value>
+    <value>此功能僅能在無介面模式下使用！</value>
   </data>
   <data name="BotOwnedAlready" xml:space="preserve">
     <value>已擁有：{0}</value>
@@ -612,7 +612,7 @@
     <value>存取被拒！</value>
   </data>
   <data name="WarningPreReleaseVersion" xml:space="preserve">
-    <value>您目前使用的版本高於最新的穩定版本。請注意：預覽版本是專門給了解如何回報錯誤、處理問題並提供回饋的使用者，並不提供任何技術支援。</value>
+    <value>你目前使用的版本高於最新的穩定版本。請注意：預覽版本是專門給了解如何回報錯誤、處理問題並提供回饋的使用者使用，並不提供任何技術支援。</value>
   </data>
   <data name="BotStats" xml:space="preserve">
     <value>當前記憶體使用量：{0} MB。</value>
@@ -678,8 +678,18 @@
     <value>你執行的個人 BOT 帳戶數量超過我們的建議上限 ({0})。請留意，此配置不受支援，且可能會導致各種 Steam 相關問題，包括帳戶停權。請參閱常見問答了解詳情。</value>
     <comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
   </data>
-  
-  
-  
-  
+  <data name="PluginLoaded" xml:space="preserve">
+    <value>{0} 載入成功！</value>
+    <comment>{0} will be replaced by the name of the custom ASF plugin</comment>
+  </data>
+  <data name="PluginLoading" xml:space="preserve">
+    <value>正在載入 {0} V{1}...</value>
+    <comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
+  </data>
+  <data name="NothingFound" xml:space="preserve">
+    <value>未找到任何內容！</value>
+  </data>
+  <data name="PluginsWarning" xml:space="preserve">
+    <value>你已載入一個以上的自訂插件。由於我們無法支援修改過的程序，如遭遇任何問題，請向相關插件的開發者尋求協助。</value>
+  </data>
 </root>

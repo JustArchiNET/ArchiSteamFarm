@@ -657,6 +657,8 @@ StackTrace:
   
   
   
-  
+  <data name="NothingFound" xml:space="preserve">
+    <value>Mitään ei löytynyt!</value>
+  </data>
   
 </root>

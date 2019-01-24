@@ -691,6 +691,6 @@ StackTrace:
     <value>Niets gevonden!</value>
   </data>
   <data name="PluginsWarning" xml:space="preserve">
-    <value>Je hebt een of meer aangepaste plugins geladen in ASF. Neem in geval van problemen contact op met de ontwikkelaars van de plugins die je gebruikt, aangezien we geen ondersteuning voor aangepaste instellingen kunnen bieden.</value>
+    <value>Je hebt een of meer aangepaste plugins geladen in ASF. Neem in geval van problemen contact op met de ontwikkelaars van deze plugins, aangezien we geen ondersteuning voor aangepaste instellingen kunnen bieden.</value>
   </data>
 </root>

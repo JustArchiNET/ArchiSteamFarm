@@ -264,7 +264,10 @@ StackTrace:
     <value>Prosím zadejte své přihlašovací jméno služby Steam: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputSteamParentalCode" xml:space="preserve">
+    <value>Prosím zadejte svůj PIN rodičovské kontroly: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Prosím, zadejte své heslo: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -337,7 +340,9 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Farmení zastaveno.</value>
   </data>
-  
+  <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
+    <value>Tento požadavek je ignorován, protože je aktivní pozastavení.</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Na tomto účtu není co farmit.</value>
   </data>
@@ -642,19 +647,31 @@ StackTrace:
     <comment>{0} will be replaced by the bug's name provided by ASF</comment>
   </data>
   
-  
-  
+  <data name="BotWalletBalance" xml:space="preserve">
+    <value>Zůstatek v peněžence: {0} {1}</value>
+    <comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
+  </data>
+  <data name="BotHasNoWallet" xml:space="preserve">
+    <value>Bot nemá peněženku.</value>
+  </data>
   <data name="BotLevel" xml:space="preserve">
     <value>Bot má level {0}.</value>
     <comment>{0} will be replaced by bot's level</comment>
   </data>
   
   
+  <data name="ErrorAborted" xml:space="preserve">
+    <value>Přerušeno!</value>
+  </data>
   
   
   
-  
-  
-  
+  <data name="PluginLoading" xml:space="preserve">
+    <value>Načítám {0} V{1}...</value>
+    <comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
+  </data>
+  <data name="NothingFound" xml:space="preserve">
+    <value>Nic nenalezeno!</value>
+  </data>
   
 </root>
