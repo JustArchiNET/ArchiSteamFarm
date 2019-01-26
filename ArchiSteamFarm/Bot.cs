@@ -377,7 +377,7 @@ namespace ArchiSteamFarm {
 
 			Bot targetBot = Bots.Values.FirstOrDefault(bot => bot.SteamID == steamID);
 
-			if (targetBot != null) {
+			if (targetBot?.IsConnectedAndLoggedOn == true) {
 				string targetTradeToken = await targetBot.ArchiHandler.GetTradeToken().ConfigureAwait(false);
 
 				if (!string.IsNullOrEmpty(targetTradeToken)) {
