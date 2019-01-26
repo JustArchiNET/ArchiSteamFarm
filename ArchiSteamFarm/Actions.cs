@@ -231,14 +231,6 @@ namespace ArchiSteamFarm {
 				return (false, Strings.BotSendingTradeToYourself);
 			}
 
-			if (string.IsNullOrEmpty(tradeToken) && (Bot.SteamFriends.GetFriendRelationship(targetSteamID) != EFriendRelationship.Friend)) {
-				Bot targetBot = Bot.Bots.Values.FirstOrDefault(bot => bot.SteamID == targetSteamID);
-
-				if (targetBot?.IsConnectedAndLoggedOn == true) {
-					tradeToken = await targetBot.ArchiHandler.GetTradeToken().ConfigureAwait(false);
-				}
-			}
-
 			lock (TradingSemaphore) {
 				if (TradingScheduled) {
 					return (false, Strings.ErrorAborted);
@@ -262,6 +254,14 @@ namespace ArchiSteamFarm {
 
 				if (!await Bot.ArchiWebHandler.MarkSentTrades().ConfigureAwait(false)) {
 					return (false, Strings.BotLootingFailed);
+				}
+
+				if (string.IsNullOrEmpty(tradeToken) && (Bot.SteamFriends.GetFriendRelationship(targetSteamID) != EFriendRelationship.Friend)) {
+					Bot targetBot = Bot.Bots.Values.FirstOrDefault(bot => bot.SteamID == targetSteamID);
+
+					if (targetBot?.IsConnectedAndLoggedOn == true) {
+						tradeToken = await targetBot.ArchiHandler.GetTradeToken().ConfigureAwait(false);
+					}
 				}
 
 				(bool success, HashSet<ulong> mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(targetSteamID, inventory, token: tradeToken).ConfigureAwait(false);
