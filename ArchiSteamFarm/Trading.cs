@@ -152,10 +152,10 @@ namespace ArchiSteamFarm {
 			Dictionary<(uint AppID, Steam.Asset.EType Type), List<uint>> finalSets = GetInventorySets(inventory);
 
 			// Once we have both states, we can check overall fairness
-			foreach (((uint AppID, Steam.Asset.EType Type) set, List<uint> afterAmounts) in finalSets) {
-				if (!initialSets.TryGetValue(set, out List<uint> beforeAmounts)) {
-					// If we have no info about this set, then it has to be a donation
-					continue;
+			foreach (((uint AppID, Steam.Asset.EType Type) set, List<uint> beforeAmounts) in initialSets) {
+				if (!finalSets.TryGetValue(set, out List<uint> afterAmounts)) {
+					// If we have no info about this set, then it has to be a bad one
+					return false;
 				}
 
 				// If amount of unique items in the set decreases, this is always a bad trade (e.g. 1 1 -> 0 2)
