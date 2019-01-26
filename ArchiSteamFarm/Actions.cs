@@ -222,7 +222,7 @@ namespace ArchiSteamFarm {
 					return (false, Strings.BotLootingMasterNotDefined);
 				}
 
-				if (!string.IsNullOrEmpty(Bot.BotConfig.SteamTradeToken)) {
+				if (string.IsNullOrEmpty(tradeToken) && !string.IsNullOrEmpty(Bot.BotConfig.SteamTradeToken)) {
 					tradeToken = Bot.BotConfig.SteamTradeToken;
 				}
 			}
