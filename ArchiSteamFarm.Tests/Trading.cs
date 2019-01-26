@@ -19,12 +19,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
-using System.Reflection;
 using ArchiSteamFarm.Json;
 using JetBrains.Annotations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static ArchiSteamFarm.Trading;
 
 namespace ArchiSteamFarm.Tests {
 	[TestClass]
@@ -47,7 +46,7 @@ namespace ArchiSteamFarm.Tests {
 				CreateItem(3, realAppID: 730, type: Steam.Asset.EType.Emoticon)
 			};
 
-			Assert.IsFalse(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
+			Assert.IsFalse(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
 		[TestMethod]
@@ -67,7 +66,7 @@ namespace ArchiSteamFarm.Tests {
 				CreateItem(4, realAppID: 730, type: Steam.Asset.EType.Emoticon)
 			};
 
-			Assert.IsTrue(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
+			Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
 		[TestMethod]
@@ -88,7 +87,7 @@ namespace ArchiSteamFarm.Tests {
 				CreateItem(4, realAppID: 730)
 			};
 
-			Assert.IsFalse(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
+			Assert.IsFalse(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
 		[TestMethod]
@@ -108,7 +107,25 @@ namespace ArchiSteamFarm.Tests {
 				CreateItem(4, realAppID: 730)
 			};
 
-			Assert.IsTrue(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
+			Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
+		}
+
+		[TestMethod]
+		public void SingleGameDonationAccept() {
+			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> {
+				CreateItem(1)
+			};
+
+			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> {
+				CreateItem(1)
+			};
+
+			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> {
+				CreateItem(2),
+				CreateItem(3, type: Steam.Asset.EType.SteamGems)
+			};
+
+			Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
 		[TestMethod]
@@ -129,7 +146,7 @@ namespace ArchiSteamFarm.Tests {
 				CreateItem(3, type: Steam.Asset.EType.Emoticon)
 			};
 
-			Assert.IsFalse(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
+			Assert.IsFalse(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
 		[TestMethod]
@@ -149,7 +166,7 @@ namespace ArchiSteamFarm.Tests {
 				CreateItem(4, type: Steam.Asset.EType.Emoticon)
 			};
 
-			Assert.IsTrue(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
+			Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
 		[TestMethod]
@@ -168,7 +185,7 @@ namespace ArchiSteamFarm.Tests {
 
 			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { CreateItem(4, 3) };
 
-			Assert.IsFalse(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
+			Assert.IsFalse(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
 		[TestMethod]
@@ -185,7 +202,7 @@ namespace ArchiSteamFarm.Tests {
 
 			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { CreateItem(3, 3) };
 
-			Assert.IsFalse(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
+			Assert.IsFalse(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
 		[TestMethod]
@@ -202,7 +219,7 @@ namespace ArchiSteamFarm.Tests {
 
 			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { CreateItem(3, 2) };
 
-			Assert.IsTrue(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
+			Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
 		[TestMethod]
@@ -215,7 +232,7 @@ namespace ArchiSteamFarm.Tests {
 			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { CreateItem(1) };
 			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { CreateItem(2) };
 
-			Assert.IsFalse(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
+			Assert.IsFalse(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
 		[TestMethod]
@@ -233,7 +250,7 @@ namespace ArchiSteamFarm.Tests {
 				CreateItem(3)
 			};
 
-			Assert.IsFalse(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
+			Assert.IsFalse(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
 		[TestMethod]
@@ -247,7 +264,7 @@ namespace ArchiSteamFarm.Tests {
 			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { CreateItem(2) };
 			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { CreateItem(3) };
 
-			Assert.IsTrue(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
+			Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
 		[TestMethod]
@@ -270,7 +287,7 @@ namespace ArchiSteamFarm.Tests {
 				CreateItem(4)
 			};
 
-			Assert.IsFalse(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
+			Assert.IsFalse(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
 		[TestMethod]
@@ -279,7 +296,7 @@ namespace ArchiSteamFarm.Tests {
 			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { CreateItem(1) };
 			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { CreateItem(2) };
 
-			Assert.IsTrue(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
+			Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
 		[TestMethod]
@@ -288,7 +305,7 @@ namespace ArchiSteamFarm.Tests {
 			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { CreateItem(1) };
 			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { CreateItem(2) };
 
-			Assert.IsTrue(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
+			Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
 		[TestMethod]
@@ -305,18 +322,7 @@ namespace ArchiSteamFarm.Tests {
 				CreateItem(3)
 			};
 
-			Assert.IsTrue(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
-		}
-
-		private static bool AcceptsTrade(IReadOnlyCollection<Steam.Asset> inventory, IReadOnlyCollection<Steam.Asset> itemsToGive, IReadOnlyCollection<Steam.Asset> itemsToReceive) {
-			Type trading = typeof(ArchiSteamFarm.Trading);
-			MethodInfo method = trading.GetMethod("IsTradeNeutralOrBetter", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
-
-			if (method == null) {
-				throw new ArgumentNullException(nameof(method));
-			}
-
-			return (bool) method.Invoke(null, new object[] { inventory, itemsToGive, itemsToReceive });
+			Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
 		[NotNull]

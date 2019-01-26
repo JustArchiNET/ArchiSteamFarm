@@ -153,7 +153,10 @@ namespace ArchiSteamFarm {
 
 			// Once we have both states, we can check overall fairness
 			foreach (((uint AppID, Steam.Asset.EType Type) set, List<uint> afterAmounts) in finalSets) {
-				List<uint> beforeAmounts = initialSets[set];
+				if (!initialSets.TryGetValue(set, out List<uint> beforeAmounts)) {
+					// If we have no info about this set, then it has to be a donation
+					continue;
+				}
 
 				// If amount of unique items in the set decreases, this is always a bad trade (e.g. 1 1 -> 0 2)
 				if (afterAmounts.Count < beforeAmounts.Count) {
