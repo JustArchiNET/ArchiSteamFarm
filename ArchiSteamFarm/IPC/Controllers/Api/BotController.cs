@@ -378,9 +378,9 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// <summary>
 		///     Denies 2FA confirmations of given bots, requires ASF 2FA module to be active on them.
 		/// </summary>
-		[HttpPost("{botNames:required}/TwoFactorAuthentication/Confirmations/Deny")]
+		[HttpPost("{botNames:required}/TwoFactorAuthentication/Confirmations/Cancel")]
 		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse>>), 200)]
-		public async Task<ActionResult<GenericResponse<IReadOnlyDictionary<string, GenericResponse>>>> TwoFactorAuthenticationConfirmationsDenyPost(string botNames) => await TwoFactorAuthenticationConfirmationsPost(botNames, false).ConfigureAwait(false);
+		public async Task<ActionResult<GenericResponse<IReadOnlyDictionary<string, GenericResponse>>>> TwoFactorAuthenticationConfirmationsCancelPost(string botNames) => await TwoFactorAuthenticationConfirmationsPost(botNames, false).ConfigureAwait(false);
 
 		/// <summary>
 		///     Fetches 2FA tokens of given bots, requires ASF 2FA module to be active on them.
