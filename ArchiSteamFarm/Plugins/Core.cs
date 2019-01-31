@@ -248,6 +248,30 @@ namespace ArchiSteamFarm.Plugins {
 			}
 		}
 
+		internal static async Task<bool> OnBotFriendRequest(Bot bot, ulong steamID) {
+			if ((bot == null) || (steamID == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID));
+
+				return false;
+			}
+
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+				return false;
+			}
+
+			IList<bool> responses;
+
+			try {
+				responses = await Utilities.InParallel(ActivePlugins.OfType<IBotFriendRequest>().Select(plugin => plugin.OnBotFriendRequest(bot, steamID))).ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+
+				return false;
+			}
+
+			return responses.Any(response => response);
+		}
+
 		internal static async Task OnBotInit(Bot bot) {
 			if (bot == null) {
 				ASF.ArchiLogger.LogNullError(nameof(bot));

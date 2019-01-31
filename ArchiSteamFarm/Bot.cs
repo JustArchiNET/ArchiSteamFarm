@@ -1877,6 +1877,14 @@ namespace ArchiSteamFarm {
 
 						break;
 					case EAccountType.Clan:
+						bool acceptGroupRequest = await Core.OnBotFriendRequest(this, friend.SteamID).ConfigureAwait(false);
+
+						if (acceptGroupRequest) {
+							ArchiHandler.AcknowledgeClanInvite(friend.SteamID, true);
+							await JoinMasterChatGroupID().ConfigureAwait(false);
+
+							break;
+						}
 
 						if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidGroupInvites)) {
 							ArchiHandler.AcknowledgeClanInvite(friend.SteamID, false);
@@ -1887,7 +1895,19 @@ namespace ArchiSteamFarm {
 
 						if (HasPermission(friend.SteamID, BotConfig.EPermission.FamilySharing)) {
 							await ArchiHandler.AddFriend(friend.SteamID).ConfigureAwait(false);
-						} else if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidFriendInvites)) {
+
+							break;
+						}
+
+						bool acceptFriendRequest = await Core.OnBotFriendRequest(this, friend.SteamID).ConfigureAwait(false);
+
+						if (acceptFriendRequest) {
+							await ArchiHandler.AddFriend(friend.SteamID).ConfigureAwait(false);
+
+							break;
+						}
+
+						if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidFriendInvites)) {
 							await ArchiHandler.RemoveFriend(friend.SteamID).ConfigureAwait(false);
 						}
 

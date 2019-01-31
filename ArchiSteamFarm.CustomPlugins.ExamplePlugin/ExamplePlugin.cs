@@ -35,7 +35,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 	// Your plugin class should inherit the plugin interfaces it wants to handle
 	// If you do not want to handle a particular action (e.g. OnBotMessage that is offered in IBotMessage), it's the best idea to not inherit it at all
 	// This will keep your code compact, efficient and less dependent. You can always add additional interfaces when you'll need them, this example project will inherit quite a bit of them to show you potential usage
-	internal sealed class ExamplePlugin : IASF, IBot, IBotCommand, IBotConnection, IBotMessage, IBotModules, IBotTradeOffer {
+	internal sealed class ExamplePlugin : IASF, IBot, IBotCommand, IBotConnection, IBotFriendRequest, IBotMessage, IBotModules, IBotTradeOffer {
 		// This is used for identification purposes, typically you want to use a friendly name of your plugin here, such as the name of your main class
 		// Please note that this property can have direct dependencies only on structures that were initialized by the constructor, as it's possible to be called before OnLoaded() takes place
 		public string Name => nameof(ExamplePlugin);
@@ -104,6 +104,12 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 		// ASF tries its best to provide logical reason why the disconnection has happened, and will use EResult.OK if the disconnection was initiated by us (e.g. as part of a command)
 		// Still, you should take anything other than EResult.OK with a grain of salt, unless you want to assume that Steam knows why it disconnected us (hehe, you bet)
 		public void OnBotDisconnected(Bot bot, EResult reason) { }
+
+		// This method is called when bot receives a friend request or group invite that ASF isn't willing to accept
+		// It allows you to generate a response whether ASF should accept it (true) or proceed like usual (false)
+		// If you wanted to do extra filtering (e.g. friend requests only), you can interpret the steamID as SteamID (SteamKit2 type) and then operate on AccountType
+		// As an example, we'll run a trade bot that is open to all friend/group invites, therefore we'll accept all of them here
+		public Task<bool> OnBotFriendRequest(Bot bot, ulong steamID) => Task.FromResult(true);
 
 		// This method is called at the end of Bot's constructor
 		// You can initialize all your per-bot structures here
