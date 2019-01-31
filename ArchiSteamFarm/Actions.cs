@@ -87,6 +87,10 @@ namespace ArchiSteamFarm {
 				return (false, Strings.BotNoASFAuthenticator);
 			}
 
+			if (!Bot.IsConnectedAndLoggedOn) {
+				return (false, Strings.BotNotConnected);
+			}
+
 			HashSet<ulong> handledTradeOfferIDs = null;
 
 			for (byte i = 0; (i == 0) || ((i < WebBrowser.MaxTries) && waitIfNeeded); i++) {
