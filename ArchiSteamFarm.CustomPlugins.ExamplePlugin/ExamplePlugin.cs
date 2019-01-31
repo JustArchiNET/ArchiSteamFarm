@@ -162,7 +162,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 		// At this point you can access core ASF's functionality, such as logging or a web browser
 		// Once all plugins execute their OnLoaded() methods, OnASFInit() will be called next
 		public void OnLoaded() {
-			ASF.ArchiLogger.LogGenericInfo("Hey! Thanks for checking if our example plugin works fine, this is a confirmation that indeed OnLoaded() method was called!");
+			ASF.ArchiLogger.LogGenericInfo("Hey! Thanks for checking if our example plugin works fine, this is a confirmation that indeed " + nameof(OnLoaded) + "() method was called!");
 			ASF.ArchiLogger.LogGenericInfo("Good luck in whatever you're doing!");
 		}
 	}
