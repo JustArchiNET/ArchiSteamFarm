@@ -293,8 +293,14 @@ namespace ArchiSteamFarm {
 				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(SteamParentalCode), SteamParentalCode));
 			}
 
-			foreach (EPermission permission in SteamUserPermissions.Values.Where(permission => !Enum.IsDefined(typeof(EPermission), permission))) {
-				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(SteamUserPermissions), permission));
+			foreach ((ulong steamID, EPermission permission) in SteamUserPermissions) {
+				if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+					return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(SteamUserPermissions), steamID));
+				}
+
+				if (!Enum.IsDefined(typeof(EPermission), permission)) {
+					return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(SteamUserPermissions), permission));
+				}
 			}
 
 			return TradingPreferences <= ETradingPreferences.All ? (true, null) : (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(TradingPreferences), TradingPreferences));
