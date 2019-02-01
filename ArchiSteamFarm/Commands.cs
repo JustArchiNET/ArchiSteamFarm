@@ -462,7 +462,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<string> ResponseAddLicense(ulong steamID, IReadOnlyCollection<uint> gameIDs) {
 			if ((steamID == 0) || (gameIDs == null) || (gameIDs.Count == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(gameIDs) + " || " + nameof(gameIDs.Count));
+				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(gameIDs));
 
 				return null;
 			}
