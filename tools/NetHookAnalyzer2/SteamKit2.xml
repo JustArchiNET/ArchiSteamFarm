@@ -2013,6 +2013,7 @@
             </param>
             <returns>A <see cref="T:SteamKit2.CDNClient.DepotChunk"/> instance that contains the data for the given chunk.</returns>
             <exception cref="T:System.ArgumentNullException">chunk's <see cref="P:SteamKit2.DepotManifest.ChunkData.ChunkID"/> was null.</exception>
+            <exception cref="T:System.IO.InvalidDataException">Thrown if the downloaded data does not match the expected length.</exception>
         </member>
         <member name="M:SteamKit2.CDNClient.DownloadDepotChunkAsync(System.UInt32,SteamKit2.DepotManifest.ChunkData,System.String,System.String,System.Byte[])">
             <summary>
@@ -2035,6 +2036,7 @@
             This is used for decrypting filenames (if needed) in depot manifests, and processing depot chunks.
             </param>
             <exception cref="T:System.ArgumentNullException">chunk's <see cref="P:SteamKit2.DepotManifest.ChunkData.ChunkID"/> was null.</exception>
+            <exception cref="T:System.IO.InvalidDataException">Thrown if the downloaded data does not match the expected length.</exception>
         </member>
         <member name="M:SteamKit2.CDNClient.Dispose">
             <summary>
