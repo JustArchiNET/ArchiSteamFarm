@@ -581,7 +581,7 @@ StackTrace:
     <value>De door jou ingevoerde CurrentCulture is ongeldig. ASF zal de standaardtaal blijven gebruiken!</value>
   </data>
   <data name="TranslationIncomplete" xml:space="preserve">
-    <value>ASF probeert de {0} taalmodule te gebruiken, maar het vertalen in deze taal is slechts {1} compleet. Misschien kan je ons helpen om ASF te vertalen in jouw taal?</value>
+    <value>ASF zal de {0} taalmodule gebruiken. De vertaling, inclusief de Wiki, is {1} compleet. Misschien kun je ons helpen om ASF te vertalen in jouw taal?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
   <data name="IdlingGameNotPossible" xml:space="preserve">
