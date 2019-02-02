@@ -197,7 +197,10 @@ namespace ArchiSteamFarm.Json {
 				ProfileBackground,
 				TradingCard,
 				SteamGems,
-				SaleItem
+				SaleItem,
+
+				// ReSharper disable once UnusedMember.Global - TODO: This type exists, but we don't know what item class it has, maybe we can fill it when consumables return in one of the future sales
+				Consumable
 			}
 		}
 
