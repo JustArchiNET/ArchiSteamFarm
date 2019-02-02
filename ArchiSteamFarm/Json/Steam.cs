@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using ArchiSteamFarm.Localization;
@@ -56,6 +57,9 @@ namespace ArchiSteamFarm.Json {
 
 			[PublicAPI]
 			public bool Marketable { get; internal set; }
+
+			[PublicAPI]
+			public ERarity Rarity { get; internal set; }
 
 			[PublicAPI]
 			public uint RealAppID { get; internal set; }
@@ -160,7 +164,7 @@ namespace ArchiSteamFarm.Json {
 			}
 
 			// Constructed from trades being received or plugins
-			public Asset(uint appID, uint contextID, ulong classID, uint amount, bool marketable = true, uint realAppID = 0, EType type = EType.Unknown) {
+			public Asset(uint appID, uint contextID, ulong classID, uint amount, bool marketable = true, uint realAppID = 0, EType type = EType.Unknown, ERarity rarity = ERarity.Unknown) {
 				if ((appID == 0) || (contextID == 0) || (classID == 0) || (amount == 0)) {
 					throw new ArgumentNullException(nameof(appID) + " || " + nameof(contextID) + " || " + nameof(classID) + " || " + nameof(amount));
 				}
@@ -172,10 +176,18 @@ namespace ArchiSteamFarm.Json {
 				Marketable = marketable;
 				RealAppID = realAppID;
 				Type = type;
+				Rarity = rarity;
 			}
 
 			[JsonConstructor]
 			private Asset() { }
+
+			public enum ERarity : byte {
+				Unknown,
+				Common,
+				Uncommon,
+				Rare
+			}
 
 			public enum EType : byte {
 				Unknown,
@@ -185,8 +197,7 @@ namespace ArchiSteamFarm.Json {
 				ProfileBackground,
 				TradingCard,
 				SteamGems,
-				SaleItem,
-				Consumable
+				SaleItem
 			}
 		}
 
@@ -391,10 +402,10 @@ namespace ArchiSteamFarm.Json {
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class InventoryResponse : NumberResponse {
 			[JsonProperty(PropertyName = "assets", Required = Required.DisallowNull)]
-			internal readonly HashSet<Asset> Assets;
+			internal readonly ImmutableHashSet<Asset> Assets;
 
 			[JsonProperty(PropertyName = "descriptions", Required = Required.DisallowNull)]
-			internal readonly HashSet<Description> Descriptions;
+			internal readonly ImmutableHashSet<Description> Descriptions;
 
 			[JsonProperty(PropertyName = "error", Required = Required.DisallowNull)]
 			internal readonly string Error;
@@ -436,15 +447,14 @@ namespace ArchiSteamFarm.Json {
 				[JsonProperty(PropertyName = "appid", Required = Required.Always)]
 				internal readonly uint AppID;
 
-				[JsonProperty(PropertyName = "market_hash_name", Required = Required.Always)]
-				internal readonly string MarketHashName;
-
-				[JsonProperty(PropertyName = "type", Required = Required.Always)]
-				internal readonly string Type;
+				[JsonProperty(PropertyName = "market_fee_app", Required = Required.DisallowNull)]
+				internal readonly uint RealAppID;
 
 				internal ulong ClassID { get; private set; }
 				internal bool Marketable { get; private set; }
+				internal Asset.ERarity Rarity { get; private set; }
 				internal bool Tradable { get; private set; }
+				internal Asset.EType Type { get; private set; }
 
 				[JsonProperty(PropertyName = "classid", Required = Required.Always)]
 				private string ClassIDText {
@@ -470,6 +480,19 @@ namespace ArchiSteamFarm.Json {
 					set => Marketable = value > 0;
 				}
 
+				[JsonProperty(PropertyName = "tags", Required = Required.DisallowNull)]
+				private ImmutableHashSet<Tag> Tags {
+					set {
+						if ((value == null) || (value.Count == 0)) {
+							ASF.ArchiLogger.LogNullError(nameof(value));
+
+							return;
+						}
+
+						(Type, Rarity) = InterpretTags(value);
+					}
+				}
+
 				[JsonProperty(PropertyName = "tradable", Required = Required.Always)]
 				private byte TradableNumber {
 					set => Tradable = value > 0;
@@ -477,13 +500,129 @@ namespace ArchiSteamFarm.Json {
 
 				[JsonConstructor]
 				private Description() { }
+
+				internal static (Asset.EType Type, Asset.ERarity Rarity) InterpretTags(IReadOnlyCollection<Tag> tags) {
+					if ((tags == null) || (tags.Count == 0)) {
+						ASF.ArchiLogger.LogNullError(nameof(tags));
+
+						return (Asset.EType.Unknown, Asset.ERarity.Unknown);
+					}
+
+					Asset.EType type = Asset.EType.Unknown;
+					Asset.ERarity rarity = Asset.ERarity.Unknown;
+
+					foreach (Tag tag in tags) {
+						switch (tag.Identifier) {
+							case "cardborder":
+
+								switch (tag.Value) {
+									case "cardborder_0":
+										type = Asset.EType.TradingCard;
+
+										break;
+									case "cardborder_1":
+										type = Asset.EType.FoilTradingCard;
+
+										break;
+									default:
+										ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
+
+										break;
+								}
+
+								break;
+							case "droprate":
+
+								switch (tag.Value) {
+									case "droprate_0":
+										rarity = Asset.ERarity.Common;
+
+										break;
+									case "droprate_1":
+										rarity = Asset.ERarity.Uncommon;
+
+										break;
+									case "droprate_2":
+										rarity = Asset.ERarity.Rare;
+
+										break;
+									default:
+										ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
+
+										break;
+								}
+
+								break;
+							case "item_class":
+
+								switch (tag.Value) {
+									case "item_class_2":
+
+										// This is a fallback in case we'd have no cardborder available to interpret
+										if (type == Asset.EType.Unknown) {
+											type = Asset.EType.TradingCard;
+										}
+
+										break;
+									case "item_class_3":
+										type = Asset.EType.ProfileBackground;
+
+										break;
+									case "item_class_4":
+										type = Asset.EType.Emoticon;
+
+										break;
+									case "item_class_5":
+										type = Asset.EType.BoosterPack;
+
+										break;
+									case "item_class_7":
+										type = Asset.EType.SteamGems;
+
+										break;
+									case "item_class_10":
+										type = Asset.EType.SaleItem;
+
+										break;
+									default:
+										ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
+
+										break;
+								}
+
+								break;
+						}
+					}
+
+					return (type, rarity);
+				}
+
+				internal sealed class Tag {
+					[JsonProperty(PropertyName = "category", Required = Required.Always)]
+					internal readonly string Identifier;
+
+					[JsonProperty(PropertyName = "internal_name", Required = Required.Always)]
+					internal readonly string Value;
+
+					internal Tag([NotNull] string identifier, [NotNull] string value) {
+						if (string.IsNullOrEmpty(identifier) || string.IsNullOrEmpty(value)) {
+							throw new ArgumentNullException(nameof(identifier) + " || " + nameof(value));
+						}
+
+						Identifier = identifier;
+						Value = value;
+					}
+
+					[JsonConstructor]
+					private Tag() { }
+				}
 			}
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class NewDiscoveryQueueResponse {
 			[JsonProperty(PropertyName = "queue", Required = Required.Always)]
-			internal readonly HashSet<uint> Queue;
+			internal readonly ImmutableHashSet<uint> Queue;
 
 			[JsonConstructor]
 			private NewDiscoveryQueueResponse() { }

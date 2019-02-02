@@ -20,7 +20,7 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -42,7 +42,7 @@ namespace ArchiSteamFarm {
 				return await GetReleaseFromURL(releaseURL).ConfigureAwait(false);
 			}
 
-			List<ReleaseResponse> response = await GetReleasesFromURL(releaseURL).ConfigureAwait(false);
+			ImmutableList<ReleaseResponse> response = await GetReleasesFromURL(releaseURL).ConfigureAwait(false);
 
 			return response?.FirstOrDefault();
 		}
@@ -59,7 +59,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[ItemCanBeNull]
-		internal static async Task<List<ReleaseResponse>> GetReleases(byte count) {
+		internal static async Task<ImmutableList<ReleaseResponse>> GetReleases(byte count) {
 			if (count == 0) {
 				ASF.ArchiLogger.LogNullError(nameof(count));
 
@@ -104,14 +104,14 @@ namespace ArchiSteamFarm {
 		}
 
 		[ItemCanBeNull]
-		private static async Task<List<ReleaseResponse>> GetReleasesFromURL(string releaseURL) {
+		private static async Task<ImmutableList<ReleaseResponse>> GetReleasesFromURL(string releaseURL) {
 			if (string.IsNullOrEmpty(nameof(releaseURL))) {
 				ASF.ArchiLogger.LogNullError(nameof(releaseURL));
 
 				return null;
 			}
 
-			WebBrowser.ObjectResponse<List<ReleaseResponse>> objectResponse = await ASF.WebBrowser.UrlGetToJsonObject<List<ReleaseResponse>>(releaseURL).ConfigureAwait(false);
+			WebBrowser.ObjectResponse<ImmutableList<ReleaseResponse>> objectResponse = await ASF.WebBrowser.UrlGetToJsonObject<ImmutableList<ReleaseResponse>>(releaseURL).ConfigureAwait(false);
 
 			return objectResponse?.Content;
 		}
@@ -119,7 +119,7 @@ namespace ArchiSteamFarm {
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class ReleaseResponse {
 			[JsonProperty(PropertyName = "assets", Required = Required.Always)]
-			internal readonly HashSet<Asset> Assets;
+			internal readonly ImmutableHashSet<Asset> Assets;
 
 			[JsonProperty(PropertyName = "prerelease", Required = Required.Always)]
 			internal readonly bool IsPreRelease;

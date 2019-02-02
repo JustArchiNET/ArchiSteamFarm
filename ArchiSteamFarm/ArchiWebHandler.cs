@@ -119,7 +119,7 @@ namespace ArchiSteamFarm {
 		[ItemCanBeNull]
 		[PublicAPI]
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
-		public async Task<HashSet<Steam.Asset>> GetInventory(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, uint contextID = Steam.Asset.SteamCommunityContextID, bool? tradable = null, IReadOnlyCollection<uint> wantedRealAppIDs = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<(uint AppID, Steam.Asset.EType Type)> wantedSets = null, IReadOnlyCollection<(uint AppID, Steam.Asset.EType Type)> skippedSets = null) {
+		public async Task<HashSet<Steam.Asset>> GetInventory(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, uint contextID = Steam.Asset.SteamCommunityContextID, bool? tradable = null, IReadOnlyCollection<uint> wantedRealAppIDs = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<(uint AppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> wantedSets = null, IReadOnlyCollection<(uint AppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> skippedSets = null) {
 			if ((appID == 0) || (contextID == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
 
@@ -174,7 +174,7 @@ namespace ArchiSteamFarm {
 						return null;
 					}
 
-					Dictionary<ulong, (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type)> descriptions = new Dictionary<ulong, (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type)>();
+					Dictionary<ulong, (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> descriptions = new Dictionary<ulong, (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)>();
 
 					foreach (Steam.InventoryResponse.Description description in response.Descriptions.Where(description => description != null)) {
 						if (description.ClassID == 0) {
@@ -187,25 +187,14 @@ namespace ArchiSteamFarm {
 							continue;
 						}
 
-						uint realAppID = 0;
-						Steam.Asset.EType type = Steam.Asset.EType.Unknown;
+						uint realAppID = description.RealAppID > 0 ? description.RealAppID : description.AppID;
 
-						if (appID == Steam.Asset.SteamAppID) {
-							if (!string.IsNullOrEmpty(description.MarketHashName)) {
-								realAppID = GetAppIDFromMarketHashName(description.MarketHashName);
-							}
-
-							if (!string.IsNullOrEmpty(description.Type)) {
-								type = GetItemType(description.Type);
-							}
-						}
-
-						descriptions[description.ClassID] = (description.Marketable, description.Tradable, realAppID, type);
+						descriptions[description.ClassID] = (description.Marketable, description.Tradable, realAppID, description.Type, description.Rarity);
 					}
 
 					foreach (Steam.Asset asset in response.Assets.Where(asset => asset != null)) {
-						if (descriptions.TryGetValue(asset.ClassID, out (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type) description)) {
-							if ((tradable.HasValue && (description.Tradable != tradable.Value)) || (wantedRealAppIDs?.Contains(description.RealAppID) == false) || (wantedSets?.Contains((description.RealAppID, description.Type)) == false) || (wantedTypes?.Contains(description.Type) == false) || (skippedSets?.Contains((description.RealAppID, description.Type)) == true)) {
+						if (descriptions.TryGetValue(asset.ClassID, out (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) description)) {
+							if ((tradable.HasValue && (description.Tradable != tradable.Value)) || (wantedRealAppIDs?.Contains(description.RealAppID) == false) || (wantedSets?.Contains((description.RealAppID, description.Type, description.Rarity)) == false) || (wantedTypes?.Contains(description.Type) == false) || (skippedSets?.Contains((description.RealAppID, description.Type, description.Rarity)) == true)) {
 								continue;
 							}
 
@@ -213,6 +202,7 @@ namespace ArchiSteamFarm {
 							asset.Tradable = description.Tradable;
 							asset.RealAppID = description.RealAppID;
 							asset.Type = description.Type;
+							asset.Rarity = description.Rarity;
 						} else if (tradable.HasValue || (wantedRealAppIDs != null) || (wantedSets != null) || (wantedTypes != null) || (skippedSets != null)) {
 							continue;
 						}
@@ -1145,7 +1135,7 @@ namespace ArchiSteamFarm {
 		internal HttpClient GenerateDisposableHttpClient() => WebBrowser.GenerateDisposableHttpClient();
 
 		[ItemCanBeNull]
-		internal async Task<HashSet<uint>> GenerateNewDiscoveryQueue() {
+		internal async Task<ImmutableHashSet<uint>> GenerateNewDiscoveryQueue() {
 			const string request = "/explore/generatenewdiscoveryqueue";
 
 			// Extra entry for sessionID
@@ -1196,7 +1186,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			Dictionary<(uint AppID, ulong ClassID), (bool Marketable, uint RealAppID, Steam.Asset.EType Type)> descriptions = new Dictionary<(uint AppID, ulong ClassID), (bool Marketable, uint RealAppID, Steam.Asset.EType Type)>();
+			Dictionary<(uint AppID, ulong ClassID), (bool Marketable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> descriptions = new Dictionary<(uint AppID, ulong ClassID), (bool Marketable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)>();
 
 			foreach (KeyValue description in response["descriptions"].Children) {
 				uint appID = description["appid"].AsUnsignedInteger();
@@ -1221,24 +1211,51 @@ namespace ArchiSteamFarm {
 
 				bool marketable = description["marketable"].AsBoolean();
 
-				uint realAppID = 0;
-				Steam.Asset.EType type = Steam.Asset.EType.Unknown;
+				uint realAppID = appID;
+				KeyValue marketFeeApp = description["market_fee_app"];
 
-				if (appID == Steam.Asset.SteamAppID) {
-					string hashName = description["market_hash_name"].Value;
+				if (marketFeeApp != KeyValue.Invalid) {
+					realAppID = description["market_fee_app"].AsUnsignedInteger();
 
-					if (!string.IsNullOrEmpty(hashName)) {
-						realAppID = GetAppIDFromMarketHashName(hashName);
-					}
+					if (realAppID == 0) {
+						Bot.ArchiLogger.LogNullError(nameof(realAppID));
 
-					string descriptionType = description["type"].Value;
-
-					if (!string.IsNullOrEmpty(descriptionType)) {
-						type = GetItemType(descriptionType);
+						return null;
 					}
 				}
 
-				descriptions[(appID, classID)] = (marketable, realAppID, type);
+				Steam.Asset.EType type = Steam.Asset.EType.Unknown;
+				Steam.Asset.ERarity rarity = Steam.Asset.ERarity.Unknown;
+
+				List<KeyValue> tags = description["tags"].Children;
+
+				if (tags.Count > 0) {
+					HashSet<Steam.InventoryResponse.Description.Tag> parsedTags = new HashSet<Steam.InventoryResponse.Description.Tag>();
+
+					foreach (KeyValue tag in tags) {
+						string identifier = tag["category"].AsString();
+
+						if (string.IsNullOrEmpty(identifier)) {
+							Bot.ArchiLogger.LogNullError(nameof(identifier));
+
+							return null;
+						}
+
+						string value = tag["internal_name"].AsString();
+
+						if (string.IsNullOrEmpty(value)) {
+							Bot.ArchiLogger.LogNullError(nameof(value));
+
+							return null;
+						}
+
+						parsedTags.Add(new Steam.InventoryResponse.Description.Tag(identifier, value));
+					}
+
+					(type, rarity) = Steam.InventoryResponse.Description.InterpretTags(parsedTags);
+				}
+
+				descriptions[(appID, classID)] = (marketable, realAppID, type, rarity);
 			}
 
 			HashSet<Steam.TradeOffer> result = new HashSet<Steam.TradeOffer>();
@@ -1612,7 +1629,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				result[appID] = game["name"].Value;
+				result[appID] = game["name"].AsString();
 			}
 
 			return result;
@@ -1911,7 +1928,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string steamLogin = response["token"].Value;
+			string steamLogin = response["token"].AsString();
 
 			if (string.IsNullOrEmpty(steamLogin)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamLogin));
@@ -1919,7 +1936,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string steamLoginSecure = response["tokensecure"].Value;
+			string steamLoginSecure = response["tokensecure"].AsString();
 
 			if (string.IsNullOrEmpty(steamLoginSecure)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamLoginSecure));
@@ -2241,76 +2258,6 @@ namespace ArchiSteamFarm {
 			return (ESteamApiKeyState.Registered, text);
 		}
 
-		private static uint GetAppIDFromMarketHashName(string hashName) {
-			if (string.IsNullOrEmpty(hashName)) {
-				ASF.ArchiLogger.LogNullError(nameof(hashName));
-
-				return 0;
-			}
-
-			int index = hashName.IndexOf('-');
-
-			if (index <= 0) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(hashName), hashName));
-
-				return 0;
-			}
-
-			if (!uint.TryParse(hashName.Substring(0, index), out uint appID) || (appID == 0)) {
-				ASF.ArchiLogger.LogNullError(nameof(appID));
-
-				return 0;
-			}
-
-			return appID;
-		}
-
-		private static Steam.Asset.EType GetItemType(string name) {
-			if (string.IsNullOrEmpty(name)) {
-				ASF.ArchiLogger.LogNullError(nameof(name));
-
-				return Steam.Asset.EType.Unknown;
-			}
-
-			switch (name) {
-				case "Booster Pack":
-
-					return Steam.Asset.EType.BoosterPack;
-				case "Steam Gems":
-
-					return Steam.Asset.EType.SteamGems;
-				default:
-
-					if (name.EndsWith("Consumable", StringComparison.Ordinal)) {
-						return Steam.Asset.EType.Consumable;
-					}
-
-					if (name.EndsWith("Emoticon", StringComparison.Ordinal)) {
-						return Steam.Asset.EType.Emoticon;
-					}
-
-					if (name.EndsWith("Foil Trading Card", StringComparison.Ordinal)) {
-						return Steam.Asset.EType.FoilTradingCard;
-					}
-
-					if (name.EndsWith("Profile Background", StringComparison.Ordinal)) {
-						return Steam.Asset.EType.ProfileBackground;
-					}
-
-					if (name.EndsWith("Sale Item", StringComparison.Ordinal)) {
-						return Steam.Asset.EType.SaleItem;
-					}
-
-					if (name.EndsWith("Trading Card", StringComparison.Ordinal)) {
-						return Steam.Asset.EType.TradingCard;
-					}
-
-					ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(name), name));
-
-					return Steam.Asset.EType.Unknown;
-			}
-		}
-
 		private async Task<bool> IsProfileUri(Uri uri, bool waitForInitialization = true) {
 			if (uri == null) {
 				ASF.ArchiLogger.LogNullError(nameof(uri));
@@ -2383,7 +2330,7 @@ namespace ArchiSteamFarm {
 			return uri.AbsolutePath.StartsWith("/login", StringComparison.Ordinal) || uri.Host.Equals("lostauth");
 		}
 
-		private static bool ParseItems(IReadOnlyDictionary<(uint AppID, ulong ClassID), (bool Marketable, uint RealAppID, Steam.Asset.EType Type)> descriptions, IReadOnlyCollection<KeyValue> input, ICollection<Steam.Asset> output) {
+		private static bool ParseItems(IReadOnlyDictionary<(uint AppID, ulong ClassID), (bool Marketable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> descriptions, IReadOnlyCollection<KeyValue> input, ICollection<Steam.Asset> output) {
 			if ((descriptions == null) || (input == null) || (input.Count == 0) || (output == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(descriptions) + " || " + nameof(input) + " || " + nameof(output));
 
@@ -2426,14 +2373,16 @@ namespace ArchiSteamFarm {
 				bool marketable = true;
 				uint realAppID = 0;
 				Steam.Asset.EType type = Steam.Asset.EType.Unknown;
+				Steam.Asset.ERarity rarity = Steam.Asset.ERarity.Unknown;
 
-				if (descriptions.TryGetValue((appID, classID), out (bool Marketable, uint RealAppID, Steam.Asset.EType Type) description)) {
+				if (descriptions.TryGetValue((appID, classID), out (bool Marketable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) description)) {
 					marketable = description.Marketable;
 					realAppID = description.RealAppID;
 					type = description.Type;
+					rarity = description.Rarity;
 				}
 
-				Steam.Asset steamAsset = new Steam.Asset(appID, contextID, classID, amount, marketable, realAppID, type);
+				Steam.Asset steamAsset = new Steam.Asset(appID, contextID, classID, amount, marketable, realAppID, type, rarity);
 				output.Add(steamAsset);
 			}
 

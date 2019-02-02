@@ -29,6 +29,30 @@ namespace ArchiSteamFarm.Tests {
 	[TestClass]
 	public sealed class Trading {
 		[TestMethod]
+		public void MismatchRarityIsNotFair() {
+			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { CreateItem(1, rarity: Steam.Asset.ERarity.Rare) };
+			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { CreateItem(2) };
+
+			Assert.IsFalse(IsFairExchange(itemsToGive, itemsToReceive));
+		}
+
+		[TestMethod]
+		public void MismatchRealAppIDsIsNotFair() {
+			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { CreateItem(1, realAppID: 570) };
+			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { CreateItem(2) };
+
+			Assert.IsFalse(IsFairExchange(itemsToGive, itemsToReceive));
+		}
+
+		[TestMethod]
+		public void MismatchTypesIsNotFair() {
+			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { CreateItem(1, type: Steam.Asset.EType.Emoticon) };
+			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { CreateItem(2) };
+
+			Assert.IsFalse(IsFairExchange(itemsToGive, itemsToReceive));
+		}
+
+		[TestMethod]
 		public void MultiGameMultiTypeBadReject() {
 			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> {
 				CreateItem(1, 9),
@@ -46,6 +70,7 @@ namespace ArchiSteamFarm.Tests {
 				CreateItem(3, realAppID: 730, type: Steam.Asset.EType.Emoticon)
 			};
 
+			Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
 			Assert.IsFalse(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
@@ -66,6 +91,7 @@ namespace ArchiSteamFarm.Tests {
 				CreateItem(4, realAppID: 730, type: Steam.Asset.EType.Emoticon)
 			};
 
+			Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
 			Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
@@ -87,6 +113,7 @@ namespace ArchiSteamFarm.Tests {
 				CreateItem(4, realAppID: 730)
 			};
 
+			Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
 			Assert.IsFalse(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
@@ -107,6 +134,7 @@ namespace ArchiSteamFarm.Tests {
 				CreateItem(4, realAppID: 730)
 			};
 
+			Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
 			Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
@@ -125,6 +153,7 @@ namespace ArchiSteamFarm.Tests {
 				CreateItem(3, type: Steam.Asset.EType.SteamGems)
 			};
 
+			Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
 			Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
@@ -146,6 +175,7 @@ namespace ArchiSteamFarm.Tests {
 				CreateItem(3, type: Steam.Asset.EType.Emoticon)
 			};
 
+			Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
 			Assert.IsFalse(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
@@ -166,6 +196,7 @@ namespace ArchiSteamFarm.Tests {
 				CreateItem(4, type: Steam.Asset.EType.Emoticon)
 			};
 
+			Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
 			Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
@@ -185,6 +216,7 @@ namespace ArchiSteamFarm.Tests {
 
 			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { CreateItem(4, 3) };
 
+			Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
 			Assert.IsFalse(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
@@ -202,6 +234,7 @@ namespace ArchiSteamFarm.Tests {
 
 			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { CreateItem(3, 3) };
 
+			Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
 			Assert.IsFalse(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
@@ -219,6 +252,7 @@ namespace ArchiSteamFarm.Tests {
 
 			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { CreateItem(3, 2) };
 
+			Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
 			Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
@@ -232,6 +266,7 @@ namespace ArchiSteamFarm.Tests {
 			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { CreateItem(1) };
 			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { CreateItem(2) };
 
+			Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
 			Assert.IsFalse(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
@@ -250,6 +285,7 @@ namespace ArchiSteamFarm.Tests {
 				CreateItem(3)
 			};
 
+			Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
 			Assert.IsFalse(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
@@ -264,6 +300,7 @@ namespace ArchiSteamFarm.Tests {
 			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { CreateItem(2) };
 			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { CreateItem(3) };
 
+			Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
 			Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
@@ -287,6 +324,7 @@ namespace ArchiSteamFarm.Tests {
 				CreateItem(4)
 			};
 
+			Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
 			Assert.IsFalse(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
@@ -296,6 +334,7 @@ namespace ArchiSteamFarm.Tests {
 			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { CreateItem(1) };
 			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { CreateItem(2) };
 
+			Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
 			Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
@@ -305,6 +344,7 @@ namespace ArchiSteamFarm.Tests {
 			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { CreateItem(1) };
 			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { CreateItem(2) };
 
+			Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
 			Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
@@ -322,10 +362,11 @@ namespace ArchiSteamFarm.Tests {
 				CreateItem(3)
 			};
 
+			Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
 			Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
 		}
 
 		[NotNull]
-		private static Steam.Asset CreateItem(ulong classID, uint amount = 1, bool marketable = true, uint realAppID = Steam.Asset.SteamAppID, Steam.Asset.EType type = Steam.Asset.EType.TradingCard) => new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, classID, amount, marketable, realAppID, type);
+		private static Steam.Asset CreateItem(ulong classID, uint amount = 1, bool marketable = true, uint realAppID = Steam.Asset.SteamAppID, Steam.Asset.EType type = Steam.Asset.EType.TradingCard, Steam.Asset.ERarity rarity = Steam.Asset.ERarity.Common) => new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, classID, amount, marketable, realAppID, type, rarity);
 	}
 }
