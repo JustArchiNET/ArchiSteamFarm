@@ -200,7 +200,9 @@ namespace ArchiSteamFarm.Json {
 				SaleItem,
 
 				// ReSharper disable once UnusedMember.Global - TODO: This type exists, but we don't know what item class it has, maybe we can fill it when consumables return in one of the future sales
-				Consumable
+				Consumable,
+
+				ProfileModifier
 			}
 		}
 
@@ -581,6 +583,10 @@ namespace ArchiSteamFarm.Json {
 										break;
 									case "item_class_7":
 										type = Asset.EType.SteamGems;
+
+										break;
+									case "item_class_8":
+										type = Asset.EType.ProfileModifier;
 
 										break;
 									case "item_class_10":
