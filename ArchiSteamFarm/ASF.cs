@@ -178,15 +178,13 @@ namespace ArchiSteamFarm {
 
 				ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateVersionInfo, SharedInfo.Version, newVersion));
 
-				if (SharedInfo.Version == newVersion) {
-					return SharedInfo.Version;
-				}
+				if (SharedInfo.Version >= newVersion) {
+					if (SharedInfo.Version > newVersion) {
+						ArchiLogger.LogGenericWarning(Strings.WarningPreReleaseVersion);
+						await Task.Delay(15 * 1000).ConfigureAwait(false);
+					}
 
-				if (SharedInfo.Version > newVersion) {
-					ArchiLogger.LogGenericWarning(Strings.WarningPreReleaseVersion);
-					await Task.Delay(15 * 1000).ConfigureAwait(false);
-
-					return SharedInfo.Version;
+					return newVersion;
 				}
 
 				if (!updateOverride && (GlobalConfig.UpdatePeriod == 0)) {
