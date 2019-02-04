@@ -119,7 +119,7 @@ namespace ArchiSteamFarm {
 		[ItemCanBeNull]
 		[PublicAPI]
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
-		public async Task<HashSet<Steam.Asset>> GetInventory(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, uint contextID = Steam.Asset.SteamCommunityContextID, bool? tradable = null, IReadOnlyCollection<uint> wantedRealAppIDs = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<(uint AppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> wantedSets = null, IReadOnlyCollection<(uint AppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> skippedSets = null) {
+		public async Task<HashSet<Steam.Asset>> GetInventory(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, uint contextID = Steam.Asset.SteamCommunityContextID, bool? tradable = null, IReadOnlyCollection<uint> wantedRealAppIDs = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> wantedSets = null) {
 			if ((appID == 0) || (contextID == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
 
@@ -194,7 +194,7 @@ namespace ArchiSteamFarm {
 
 					foreach (Steam.Asset asset in response.Assets.Where(asset => asset != null)) {
 						if (descriptions.TryGetValue(asset.ClassID, out (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) description)) {
-							if ((tradable.HasValue && (description.Tradable != tradable.Value)) || (wantedRealAppIDs?.Contains(description.RealAppID) == false) || (wantedSets?.Contains((description.RealAppID, description.Type, description.Rarity)) == false) || (wantedTypes?.Contains(description.Type) == false) || (skippedSets?.Contains((description.RealAppID, description.Type, description.Rarity)) == true)) {
+							if ((tradable.HasValue && (description.Tradable != tradable.Value)) || (wantedRealAppIDs?.Contains(description.RealAppID) == false) || (wantedSets?.Contains((description.RealAppID, description.Type, description.Rarity)) == false) || (wantedTypes?.Contains(description.Type) == false)) {
 								continue;
 							}
 
@@ -203,7 +203,7 @@ namespace ArchiSteamFarm {
 							asset.RealAppID = description.RealAppID;
 							asset.Type = description.Type;
 							asset.Rarity = description.Rarity;
-						} else if (tradable.HasValue || (wantedRealAppIDs != null) || (wantedSets != null) || (wantedTypes != null) || (skippedSets != null)) {
+						} else if (tradable.HasValue || (wantedRealAppIDs != null) || (wantedSets != null) || (wantedTypes != null)) {
 							continue;
 						}
 
