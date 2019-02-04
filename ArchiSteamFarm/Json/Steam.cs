@@ -198,10 +198,7 @@ namespace ArchiSteamFarm.Json {
 				TradingCard,
 				SteamGems,
 				SaleItem,
-
-				// ReSharper disable once UnusedMember.Global - TODO: This type exists, but we don't know what item class it has, maybe we can fill it when consumables return in one of the future sales
 				Consumable,
-
 				ProfileModifier
 			}
 		}
@@ -579,6 +576,10 @@ namespace ArchiSteamFarm.Json {
 										break;
 									case "item_class_5":
 										type = Asset.EType.BoosterPack;
+
+										break;
+									case "item_class_6":
+										type = Asset.EType.Consumable;
 
 										break;
 									case "item_class_7":
