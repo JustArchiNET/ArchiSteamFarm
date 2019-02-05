@@ -449,12 +449,10 @@ namespace ArchiSteamFarm.Json {
 				[JsonProperty(PropertyName = "appid", Required = Required.Always)]
 				internal readonly uint AppID;
 
-				[JsonProperty(PropertyName = "market_fee_app", Required = Required.DisallowNull)]
-				internal readonly uint RealAppID;
-
 				internal ulong ClassID { get; private set; }
 				internal bool Marketable { get; private set; }
 				internal Asset.ERarity Rarity { get; private set; }
+				internal uint RealAppID { get; private set; }
 				internal bool Tradable { get; private set; }
 				internal Asset.EType Type { get; private set; }
 
@@ -491,7 +489,7 @@ namespace ArchiSteamFarm.Json {
 							return;
 						}
 
-						(Type, Rarity) = InterpretTags(value);
+						(Type, Rarity, RealAppID) = InterpretTags(value);
 					}
 				}
 
@@ -503,15 +501,16 @@ namespace ArchiSteamFarm.Json {
 				[JsonConstructor]
 				private Description() { }
 
-				internal static (Asset.EType Type, Asset.ERarity Rarity) InterpretTags(IReadOnlyCollection<Tag> tags) {
+				internal static (Asset.EType Type, Asset.ERarity Rarity, uint RealAppID) InterpretTags(IReadOnlyCollection<Tag> tags) {
 					if ((tags == null) || (tags.Count == 0)) {
 						ASF.ArchiLogger.LogNullError(nameof(tags));
 
-						return (Asset.EType.Unknown, Asset.ERarity.Unknown);
+						return (Asset.EType.Unknown, Asset.ERarity.Unknown, 0);
 					}
 
 					Asset.EType type = Asset.EType.Unknown;
 					Asset.ERarity rarity = Asset.ERarity.Unknown;
+					uint realAppID = 0;
 
 					foreach (Tag tag in tags) {
 						switch (tag.Identifier) {
@@ -553,6 +552,25 @@ namespace ArchiSteamFarm.Json {
 
 										break;
 								}
+
+								break;
+							case "Game":
+
+								if ((tag.Value.Length <= 4) || !tag.Value.StartsWith("app_", StringComparison.Ordinal)) {
+									ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
+
+									break;
+								}
+
+								string appIDText = tag.Value.Substring(4);
+
+								if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
+									ASF.ArchiLogger.LogNullError(nameof(appID));
+
+									break;
+								}
+
+								realAppID = appID;
 
 								break;
 							case "item_class":
@@ -604,7 +622,7 @@ namespace ArchiSteamFarm.Json {
 						}
 					}
 
-					return (type, rarity);
+					return (type, rarity, realAppID);
 				}
 
 				internal sealed class Tag {

@@ -187,9 +187,7 @@ namespace ArchiSteamFarm {
 							continue;
 						}
 
-						uint realAppID = description.RealAppID > 0 ? description.RealAppID : description.AppID;
-
-						descriptions[description.ClassID] = (description.Marketable, description.Tradable, realAppID, description.Type, description.Rarity);
+						descriptions[description.ClassID] = (description.Marketable, description.Tradable, description.RealAppID, description.Type, description.Rarity);
 					}
 
 					foreach (Steam.Asset asset in response.Assets.Where(asset => asset != null)) {
@@ -1211,21 +1209,9 @@ namespace ArchiSteamFarm {
 
 				bool marketable = description["marketable"].AsBoolean();
 
-				uint realAppID = appID;
-				KeyValue marketFeeApp = description["market_fee_app"];
-
-				if (marketFeeApp != KeyValue.Invalid) {
-					realAppID = description["market_fee_app"].AsUnsignedInteger();
-
-					if (realAppID == 0) {
-						Bot.ArchiLogger.LogNullError(nameof(realAppID));
-
-						return null;
-					}
-				}
-
 				Steam.Asset.EType type = Steam.Asset.EType.Unknown;
 				Steam.Asset.ERarity rarity = Steam.Asset.ERarity.Unknown;
+				uint realAppID = 0;
 
 				List<KeyValue> tags = description["tags"].Children;
 
@@ -1252,7 +1238,7 @@ namespace ArchiSteamFarm {
 						parsedTags.Add(new Steam.InventoryResponse.Description.Tag(identifier, value));
 					}
 
-					(type, rarity) = Steam.InventoryResponse.Description.InterpretTags(parsedTags);
+					(type, rarity, realAppID) = Steam.InventoryResponse.Description.InterpretTags(parsedTags);
 				}
 
 				descriptions[(appID, classID)] = (marketable, realAppID, type, rarity);
