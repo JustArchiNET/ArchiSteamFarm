@@ -646,7 +646,9 @@ StackTrace:
     <value>Řešení pro chybu {0} bylo spuštěno.</value>
     <comment>{0} will be replaced by the bug's name provided by ASF</comment>
   </data>
-  
+  <data name="TargetBotNotConnected" xml:space="preserve">
+    <value>Tato instance bota není připojena!</value>
+  </data>
   <data name="BotWalletBalance" xml:space="preserve">
     <value>Zůstatek v peněžence: {0} {1}</value>
     <comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
@@ -658,14 +660,29 @@ StackTrace:
     <value>Bot má level {0}.</value>
     <comment>{0} will be replaced by bot's level</comment>
   </data>
-  
-  
+  <data name="ActivelyMatchingItems" xml:space="preserve">
+    <value>Srovnávám položky ze Steamu, kolo #{0}...</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="DoneActivelyMatchingItems" xml:space="preserve">
+    <value>Položky ze Steamu porovnány, kolo #{0}.</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
   <data name="ErrorAborted" xml:space="preserve">
     <value>Přerušeno!</value>
   </data>
-  
-  
-  
+  <data name="ActivelyMatchingItemsRound" xml:space="preserve">
+    <value>Celkem porovnáno {0} sad karet.</value>
+    <comment>{0} will be replaced by number of sets traded</comment>
+  </data>
+  <data name="WarningExcessiveBotsCount" xml:space="preserve">
+    <value>Používáte více osobních účtů pro boty, než je náš doporučený limit ({0}). Upozorňujeme, že takové nastavení není podporováno a může způsobovat různé problémy se službou Steam, včetně pozastavení nebo blokací účtů. Pro další informace se podívejte na FAQ.</value>
+    <comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
+  </data>
+  <data name="PluginLoaded" xml:space="preserve">
+    <value>Plugin {0} byl úspěšně načten!</value>
+    <comment>{0} will be replaced by the name of the custom ASF plugin</comment>
+  </data>
   <data name="PluginLoading" xml:space="preserve">
     <value>Načítám {0} V{1}...</value>
     <comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
@@ -673,5 +690,7 @@ StackTrace:
   <data name="NothingFound" xml:space="preserve">
     <value>Nic nenalezeno!</value>
   </data>
-  
+  <data name="PluginsWarning" xml:space="preserve">
+    <value>Jeden nebo více vlastních pluginů bylo načteno do ASF. Jelikož nejsme schopni poskytnout podporu pro modifikované nastavení, prosím, v případě problémů kontaktujte příslušné vývojáře daných pluginů.</value>
+  </data>
 </root>
