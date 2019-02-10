@@ -1411,14 +1411,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			string response = await Commands.Response(steamID, message).ConfigureAwait(false);
-
-			// We respond with null when user is not authorized (and similar)
-			if (string.IsNullOrEmpty(response)) {
-				return;
-			}
-
-			await SendMessage(chatGroupID, chatID, response).ConfigureAwait(false);
+			await Commands.HandleMessage(chatGroupID, chatID, steamID, message).ConfigureAwait(false);
 		}
 
 		private async Task HandleMessage(ulong steamID, string message) {
@@ -1428,14 +1421,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			string response = await Commands.Response(steamID, message).ConfigureAwait(false);
-
-			// We respond with null when user is not authorized (and similar)
-			if (string.IsNullOrEmpty(response)) {
-				return;
-			}
-
-			await SendMessage(steamID, response).ConfigureAwait(false);
+			await Commands.HandleMessage(steamID, message).ConfigureAwait(false);
 		}
 
 		private async Task HeartBeat() {

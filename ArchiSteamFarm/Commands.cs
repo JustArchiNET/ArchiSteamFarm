@@ -71,8 +71,13 @@ namespace ArchiSteamFarm {
 			return "<" + SharedInfo.ASF + "> " + response;
 		}
 
+		[Obsolete("Use Response(steamID, message) instead, useCommandPrefix is obsolete and no longer used (same as false), this method will be removed in the next ASF version.", true)]
 		[PublicAPI]
+		[SuppressMessage("ReSharper", "MethodOverloadWithOptionalParameter")]
 		public async Task<string> Response(ulong steamID, string message, bool useCommandPrefix = true) {
+			// TODO: Delete the method entirely in the next ASF version
+			ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningDeprecated, "[API] Response(steamID, message, useCommandPrefix)", "[API] Response(steamID, message)"));
+
 			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(message));
 
@@ -87,6 +92,17 @@ namespace ArchiSteamFarm {
 				}
 
 				message = message.Substring(ASF.GlobalConfig.CommandPrefix.Length);
+			}
+
+			return await Response(steamID, message).ConfigureAwait(false);
+		}
+
+		[PublicAPI]
+		public async Task<string> Response(ulong steamID, string message) {
+			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
+				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(message));
+
+				return null;
 			}
 
 			string[] args = message.Split((char[]) null, StringSplitOptions.RemoveEmptyEntries);
@@ -369,6 +385,88 @@ namespace ArchiSteamFarm {
 							return !string.IsNullOrEmpty(pluginsResponse) ? pluginsResponse : ResponseUnknown(steamID);
 					}
 			}
+		}
+
+		internal async Task HandleMessage(ulong steamID, string message) {
+			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
+				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(message));
+
+				return;
+			}
+
+			if (!string.IsNullOrEmpty(ASF.GlobalConfig.CommandPrefix)) {
+				if (!message.StartsWith(ASF.GlobalConfig.CommandPrefix, StringComparison.OrdinalIgnoreCase)) {
+					string pluginsResponse = await Core.OnBotMessage(Bot, steamID, message).ConfigureAwait(false);
+
+					if (!string.IsNullOrEmpty(pluginsResponse)) {
+						await Bot.SendMessage(steamID, pluginsResponse).ConfigureAwait(false);
+					}
+
+					return;
+				}
+
+				message = message.Substring(ASF.GlobalConfig.CommandPrefix.Length);
+			}
+
+			bool feedback = Bot.HasPermission(steamID, BotConfig.EPermission.FamilySharing);
+
+			if (feedback) {
+				await Bot.SendMessage(steamID, FormatBotResponse(Strings.PleaseWait)).ConfigureAwait(false);
+			}
+
+			string response = await Response(steamID, message).ConfigureAwait(false);
+
+			if (string.IsNullOrEmpty(response)) {
+				if (!feedback) {
+					return;
+				}
+
+				Bot.ArchiLogger.LogNullError(nameof(response));
+				response = FormatBotResponse(Strings.UnknownCommand);
+			}
+
+			await Bot.SendMessage(steamID, response).ConfigureAwait(false);
+		}
+
+		internal async Task HandleMessage(ulong chatGroupID, ulong chatID, ulong steamID, string message) {
+			if ((chatGroupID == 0) || (chatID == 0) || (steamID == 0) || string.IsNullOrEmpty(message)) {
+				Bot.ArchiLogger.LogNullError(nameof(chatGroupID) + " || " + nameof(chatID) + " || " + nameof(steamID) + " || " + nameof(message));
+
+				return;
+			}
+
+			if (!string.IsNullOrEmpty(ASF.GlobalConfig.CommandPrefix)) {
+				if (!message.StartsWith(ASF.GlobalConfig.CommandPrefix, StringComparison.OrdinalIgnoreCase)) {
+					string pluginsResponse = await Core.OnBotMessage(Bot, steamID, message).ConfigureAwait(false);
+
+					if (!string.IsNullOrEmpty(pluginsResponse)) {
+						await Bot.SendMessage(chatGroupID, chatID, pluginsResponse).ConfigureAwait(false);
+					}
+
+					return;
+				}
+
+				message = message.Substring(ASF.GlobalConfig.CommandPrefix.Length);
+			}
+
+			bool feedback = Bot.HasPermission(steamID, BotConfig.EPermission.FamilySharing);
+
+			if (feedback) {
+				await Bot.SendMessage(chatGroupID, chatID, FormatBotResponse(Strings.PleaseWait)).ConfigureAwait(false);
+			}
+
+			string response = await Response(steamID, message).ConfigureAwait(false);
+
+			if (string.IsNullOrEmpty(response)) {
+				if (!feedback) {
+					return;
+				}
+
+				Bot.ArchiLogger.LogNullError(nameof(response));
+				response = FormatBotResponse(Strings.UnknownCommand);
+			}
+
+			await Bot.SendMessage(chatGroupID, chatID, response).ConfigureAwait(false);
 		}
 
 		internal void OnNewLicenseList() {
