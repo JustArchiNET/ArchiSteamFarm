@@ -1863,24 +1863,23 @@ namespace ArchiSteamFarm {
 
 			string sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(steamID.ToString()));
 
-			// Generate an AES session key
+			// Generate a random 32-byte session key
 			byte[] sessionKey = CryptoHelper.GenerateRandomBlock(32);
 
-			// RSA encrypt it with the public key for the universe we're on
+			// RSA encrypt our session key with the public key for the universe we're on
 			byte[] encryptedSessionKey;
 
 			using (RSACrypto rsa = new RSACrypto(KeyDictionary.GetPublicKey(universe))) {
 				encryptedSessionKey = rsa.Encrypt(sessionKey);
 			}
 
-			// Copy our login key
-			byte[] loginKey = new byte[webAPIUserNonce.Length];
-			Array.Copy(Encoding.ASCII.GetBytes(webAPIUserNonce), loginKey, webAPIUserNonce.Length);
+			// Generate login key from the user nonce that we've received from Steam network
+			byte[] loginKey = Encoding.ASCII.GetBytes(webAPIUserNonce);
 
-			// AES encrypt the login key with our session key
+			// AES encrypt our login key with our session key
 			byte[] encryptedLoginKey = CryptoHelper.SymmetricEncrypt(loginKey, sessionKey);
 
-			// Do the magic
+			// We're now ready to send the data to Steam API
 			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.LoggingIn, ISteamUserAuth));
 
 			KeyValue response;
