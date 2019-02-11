@@ -1099,7 +1099,7 @@ namespace ArchiSteamFarm {
 			KeyValue response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-				using (dynamic iEconService = WebAPI.GetAsyncInterface(IEconService, steamApiKey)) {
+				using (dynamic iEconService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(IEconService)) {
 					iEconService.Timeout = WebBrowser.Timeout;
 
 					try {
@@ -1108,6 +1108,7 @@ namespace ArchiSteamFarm {
 
 							// ReSharper disable once AccessToDisposedClosure
 							async () => await iEconService.DeclineTradeOffer(
+								key: steamApiKey,
 								method: WebRequestMethods.Http.Post,
 								tradeofferid: tradeID
 							)
@@ -1155,7 +1156,7 @@ namespace ArchiSteamFarm {
 			KeyValue response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-				using (dynamic iEconService = WebAPI.GetAsyncInterface(IEconService, steamApiKey)) {
+				using (dynamic iEconService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(IEconService)) {
 					iEconService.Timeout = WebBrowser.Timeout;
 
 					try {
@@ -1167,6 +1168,7 @@ namespace ArchiSteamFarm {
 								active_only: 1,
 								get_descriptions: 1,
 								get_received_offers: 1,
+								key: steamApiKey,
 								time_historical_cutoff: uint.MaxValue
 							)
 						).ConfigureAwait(false);
@@ -1308,7 +1310,7 @@ namespace ArchiSteamFarm {
 			KeyValue response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-				using (dynamic iSteamApps = WebAPI.GetAsyncInterface(ISteamApps)) {
+				using (dynamic iSteamApps = Bot.SteamConfiguration.GetAsyncWebAPIInterface(ISteamApps)) {
 					iSteamApps.Timeout = WebBrowser.Timeout;
 
 					try {
@@ -1575,7 +1577,7 @@ namespace ArchiSteamFarm {
 			KeyValue response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-				using (dynamic iPlayerService = WebAPI.GetAsyncInterface(IPlayerService, steamApiKey)) {
+				using (dynamic iPlayerService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(IPlayerService)) {
 					iPlayerService.Timeout = WebBrowser.Timeout;
 
 					try {
@@ -1585,6 +1587,7 @@ namespace ArchiSteamFarm {
 							// ReSharper disable once AccessToDisposedClosure
 							async () => await iPlayerService.GetOwnedGames(
 								include_appinfo: 1,
+								key: steamApiKey,
 								steamid: steamID
 							)
 						).ConfigureAwait(false);
@@ -1625,7 +1628,7 @@ namespace ArchiSteamFarm {
 			KeyValue response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-				using (dynamic iTwoFactorService = WebAPI.GetAsyncInterface(ITwoFactorService)) {
+				using (dynamic iTwoFactorService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(ITwoFactorService)) {
 					iTwoFactorService.Timeout = WebBrowser.Timeout;
 
 					try {
@@ -1732,7 +1735,7 @@ namespace ArchiSteamFarm {
 			KeyValue response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-				using (dynamic iEconService = WebAPI.GetAsyncInterface(IEconService, steamApiKey)) {
+				using (dynamic iEconService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(IEconService)) {
 					iEconService.Timeout = WebBrowser.Timeout;
 
 					try {
@@ -1741,6 +1744,7 @@ namespace ArchiSteamFarm {
 
 							// ReSharper disable once AccessToDisposedClosure
 							async () => await iEconService.GetTradeHoldDurations(
+								key: steamApiKey,
 								steamid_target: steamID,
 								trade_offer_access_token: tradeToken ?? "" // TODO: Change me once https://github.com/SteamRE/SteamKit/pull/522 is merged
 							)
@@ -1884,7 +1888,7 @@ namespace ArchiSteamFarm {
 			// We do not use usual retry pattern here as webAPIUserNonce is valid only for a single request
 			// Even during timeout, webAPIUserNonce is most likely already invalid
 			// Instead, the caller is supposed to ask for new webAPIUserNonce and call Init() again on failure
-			using (dynamic iSteamUserAuth = WebAPI.GetAsyncInterface(ISteamUserAuth)) {
+			using (dynamic iSteamUserAuth = Bot.SteamConfiguration.GetAsyncWebAPIInterface(ISteamUserAuth)) {
 				iSteamUserAuth.Timeout = WebBrowser.Timeout;
 
 				try {

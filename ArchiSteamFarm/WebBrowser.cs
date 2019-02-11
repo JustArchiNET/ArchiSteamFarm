@@ -77,7 +77,7 @@ namespace ArchiSteamFarm {
 		[NotNull]
 		[PublicAPI]
 		public HttpClient GenerateDisposableHttpClient(bool extendedTimeout = false) {
-			HttpClient result = new HttpClient(HttpClientHandler) {
+			HttpClient result = new HttpClient(HttpClientHandler, false) {
 				Timeout = TimeSpan.FromSeconds(extendedTimeout ? ExtendedTimeoutMultiplier * ASF.GlobalConfig.ConnectionTimeout : ASF.GlobalConfig.ConnectionTimeout)
 			};
 
