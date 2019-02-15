@@ -2238,7 +2238,7 @@ namespace ArchiSteamFarm {
 
 			text = text.Substring(keyIndex);
 
-			if ((text.Length != 32) || !Utilities.IsValidHexadecimalString(text)) {
+			if ((text.Length != 32) || !Utilities.IsValidHexadecimalText(text)) {
 				Bot.ArchiLogger.LogNullError(nameof(text));
 
 				return (ESteamApiKeyState.Error, null);

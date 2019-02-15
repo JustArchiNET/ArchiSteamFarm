@@ -161,7 +161,18 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public static bool IsValidHexadecimalString(string text) {
+		public static bool IsValidDigitsText(string text) {
+			if (string.IsNullOrEmpty(text)) {
+				ASF.ArchiLogger.LogNullError(nameof(text));
+
+				return false;
+			}
+
+			return text.All(char.IsDigit);
+		}
+
+		[PublicAPI]
+		public static bool IsValidHexadecimalText(string text) {
 			if (string.IsNullOrEmpty(text)) {
 				ASF.ArchiLogger.LogNullError(nameof(text));
 
@@ -178,7 +189,7 @@ namespace ArchiSteamFarm {
 			string lastHex;
 
 			if (text.Length >= split) {
-				StringBuilder hex = new StringBuilder(split);
+				StringBuilder hex = new StringBuilder(split, 16);
 
 				foreach (char character in text) {
 					hex.Append(character);
