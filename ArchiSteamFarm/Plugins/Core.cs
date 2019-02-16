@@ -86,35 +86,26 @@ namespace ArchiSteamFarm.Plugins {
 		}
 
 		internal static bool InitPlugins() {
-			string pluginsPath = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.PluginsDirectory);
-
-			if (!Directory.Exists(pluginsPath)) {
-				ASF.ArchiLogger.LogGenericTrace(Strings.NothingFound);
-
-				return true;
-			}
-
 			HashSet<Assembly> assemblies = new HashSet<Assembly>();
 
-			try {
-				foreach (string assemblyPath in Directory.EnumerateFiles(pluginsPath, "*.dll", SearchOption.AllDirectories)) {
-					Assembly assembly;
+			string pluginsPath = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.PluginsDirectory);
 
-					try {
-						assembly = Assembly.LoadFrom(assemblyPath);
-					} catch (Exception e) {
-						ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, assemblyPath));
-						ASF.ArchiLogger.LogGenericWarningException(e);
+			if (Directory.Exists(pluginsPath)) {
+				HashSet<Assembly> loadedAssemblies = LoadAssembliesFrom(pluginsPath);
 
-						continue;
-					}
-
-					assemblies.Add(assembly);
+				if ((loadedAssemblies != null) && (loadedAssemblies.Count > 0)) {
+					assemblies.UnionWith(loadedAssemblies);
 				}
-			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericException(e);
+			}
 
-				return false;
+			string customPluginsPath = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.PluginsDirectory);
+
+			if (Directory.Exists(customPluginsPath)) {
+				HashSet<Assembly> loadedAssemblies = LoadAssembliesFrom(customPluginsPath);
+
+				if ((loadedAssemblies != null) && (loadedAssemblies.Count > 0)) {
+					assemblies.UnionWith(loadedAssemblies);
+				}
 			}
 
 			if (assemblies.Count == 0) {
@@ -391,6 +382,43 @@ namespace ArchiSteamFarm.Plugins {
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 			}
+		}
+
+		private static HashSet<Assembly> LoadAssembliesFrom(string path) {
+			if (string.IsNullOrEmpty(path)) {
+				ASF.ArchiLogger.LogNullError(nameof(path));
+
+				return null;
+			}
+
+			if (!Directory.Exists(path)) {
+				return null;
+			}
+
+			HashSet<Assembly> assemblies = new HashSet<Assembly>();
+
+			try {
+				foreach (string assemblyPath in Directory.EnumerateFiles(path, "*.dll", SearchOption.AllDirectories)) {
+					Assembly assembly;
+
+					try {
+						assembly = Assembly.LoadFrom(assemblyPath);
+					} catch (Exception e) {
+						ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, assemblyPath));
+						ASF.ArchiLogger.LogGenericWarningException(e);
+
+						continue;
+					}
+
+					assemblies.Add(assembly);
+				}
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+
+				return null;
+			}
+
+			return assemblies;
 		}
 	}
 }
