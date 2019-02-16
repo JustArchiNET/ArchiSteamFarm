@@ -1,4 +1,4 @@
-﻿//     _                _      _  ____   _                           _____
+//     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
@@ -197,11 +197,7 @@ namespace ArchiSteamFarm {
 				(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
 
 				if (fullState.TryGetValue(key, out Dictionary<ulong, uint> fullSet)) {
-					if (fullSet.TryGetValue(item.ClassID, out uint amount)) {
-						fullSet[item.ClassID] = amount + item.Amount;
-					} else {
-						fullSet[item.ClassID] = item.Amount;
-					}
+					fullSet[item.ClassID] = fullSet.TryGetValue(item.ClassID, out uint amount) ? amount + item.Amount : item.Amount;
 				} else {
 					fullState[key] = new Dictionary<ulong, uint> { { item.ClassID, item.Amount } };
 				}
@@ -211,11 +207,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if (tradableState.TryGetValue(key, out Dictionary<ulong, uint> tradableSet)) {
-					if (tradableSet.TryGetValue(item.ClassID, out uint amount)) {
-						tradableSet[item.ClassID] = amount + item.Amount;
-					} else {
-						tradableSet[item.ClassID] = item.Amount;
-					}
+					tradableSet[item.ClassID] = tradableSet.TryGetValue(item.ClassID, out uint amount) ? amount + item.Amount : item.Amount;
 				} else {
 					tradableState[key] = new Dictionary<ulong, uint> { { item.ClassID, item.Amount } };
 				}
@@ -237,11 +229,7 @@ namespace ArchiSteamFarm {
 				(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
 
 				if (state.TryGetValue(key, out Dictionary<ulong, uint> set)) {
-					if (set.TryGetValue(item.ClassID, out uint amount)) {
-						set[item.ClassID] = amount + item.Amount;
-					} else {
-						set[item.ClassID] = item.Amount;
-					}
+					set[item.ClassID] = set.TryGetValue(item.ClassID, out uint amount) ? amount + item.Amount : item.Amount;
 				} else {
 					state[key] = new Dictionary<ulong, uint> { { item.ClassID, item.Amount } };
 				}

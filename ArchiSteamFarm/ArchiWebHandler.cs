@@ -1822,7 +1822,7 @@ namespace ArchiSteamFarm {
 			const string request = "/mobileconf/multiajaxop";
 
 			// Extra entry for sessionID
-			List<KeyValuePair<string, string>> data = new List<KeyValuePair<string, string>>(8 + confirmations.Count * 2) {
+			List<KeyValuePair<string, string>> data = new List<KeyValuePair<string, string>>(8 + (confirmations.Count * 2)) {
 				new KeyValuePair<string, string>("a", SteamID.ToString()),
 				new KeyValuePair<string, string>("k", confirmationHash),
 				new KeyValuePair<string, string>("m", "android"),

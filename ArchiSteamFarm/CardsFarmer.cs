@@ -1,4 +1,4 @@
-﻿//     _                _      _  ____   _                           _____
+//     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
@@ -777,7 +777,7 @@ namespace ArchiSteamFarm {
 
 				DateTime startFarmingPeriod = DateTime.UtcNow;
 
-				if (await FarmingResetSemaphore.WaitAsync(ASF.GlobalConfig.FarmingDelay * 60 * 1000 + ExtraFarmingDelaySeconds * 1000).ConfigureAwait(false)) {
+				if (await FarmingResetSemaphore.WaitAsync((ASF.GlobalConfig.FarmingDelay * 60 * 1000) + (ExtraFarmingDelaySeconds * 1000)).ConfigureAwait(false)) {
 					success = KeepFarming;
 				}
 
@@ -824,7 +824,7 @@ namespace ArchiSteamFarm {
 
 				DateTime startFarmingPeriod = DateTime.UtcNow;
 
-				if (await FarmingResetSemaphore.WaitAsync(ASF.GlobalConfig.FarmingDelay * 60 * 1000 + ExtraFarmingDelaySeconds * 1000).ConfigureAwait(false)) {
+				if (await FarmingResetSemaphore.WaitAsync((ASF.GlobalConfig.FarmingDelay * 60 * 1000) + (ExtraFarmingDelaySeconds * 1000)).ConfigureAwait(false)) {
 					success = KeepFarming;
 				}
 
