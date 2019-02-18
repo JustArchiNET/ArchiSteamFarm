@@ -60,7 +60,7 @@ namespace ArchiSteamFarm.NLog {
 
 			base.Write(logEvent);
 
-			if (SteamID == 0) {
+			if ((SteamID == 0) || (Bot.Bots == null) || (Bot.Bots.Count == 0)) {
 				return;
 			}
 
