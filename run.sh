@@ -1,5 +1,5 @@
-#!/bin/bash
-set -eu
+#!/usr/bin/env bash
+set -euo pipefail
 
 ASF_PATH="$(dirname "$(readlink -f "$0")")/ArchiSteamFarm/out/source"
 CONFIG_PATH="config/ASF.json"
