@@ -30,7 +30,7 @@ namespace ArchiSteamFarm {
 		private static byte[] EncryptionKey = Encoding.UTF8.GetBytes(nameof(ArchiSteamFarm));
 
 		internal static string Decrypt(ECryptoMethod cryptoMethod, string encrypted) {
-			if (string.IsNullOrEmpty(encrypted)) {
+			if (!Enum.IsDefined(typeof(ECryptoMethod), cryptoMethod) || string.IsNullOrEmpty(encrypted)) {
 				ASF.ArchiLogger.LogNullError(nameof(encrypted));
 
 				return null;
@@ -54,7 +54,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static string Encrypt(ECryptoMethod cryptoMethod, string decrypted) {
-			if (string.IsNullOrEmpty(decrypted)) {
+			if (!Enum.IsDefined(typeof(ECryptoMethod), cryptoMethod) || string.IsNullOrEmpty(decrypted)) {
 				ASF.ArchiLogger.LogNullError(nameof(decrypted));
 
 				return null;

@@ -300,6 +300,32 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		/// <summary>
+		///     Renames given bot along with all its related files.
+		/// </summary>
+		[Consumes("application/json")]
+		[HttpPost("{botName:required}/Rename")]
+		[ProducesResponseType(typeof(GenericResponse), 200)]
+		public async Task<ActionResult<GenericResponse>> RenamePost(string botName, [FromBody] BotRenameRequest request) {
+			if (string.IsNullOrEmpty(botName) || (request == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(botName) + " || " + nameof(request));
+
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botName) + " || " + nameof(request))));
+			}
+
+			if (request.NewName.Equals(SharedInfo.ASF) || Bot.Bots.ContainsKey(request.NewName)) {
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(request.NewName))));
+			}
+
+			if (!Bot.Bots.TryGetValue(botName, out Bot bot)) {
+				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botName)));
+			}
+
+			bool result = await bot.Rename(request.NewName).ConfigureAwait(false);
+
+			return Ok(new GenericResponse(result));
+		}
+
+		/// <summary>
 		///     Resumes given bots.
 		/// </summary>
 		[HttpPost("{botNames:required}/Resume")]
