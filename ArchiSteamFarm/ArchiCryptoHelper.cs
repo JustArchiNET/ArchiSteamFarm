@@ -31,7 +31,7 @@ namespace ArchiSteamFarm {
 
 		internal static string Decrypt(ECryptoMethod cryptoMethod, string encrypted) {
 			if (!Enum.IsDefined(typeof(ECryptoMethod), cryptoMethod) || string.IsNullOrEmpty(encrypted)) {
-				ASF.ArchiLogger.LogNullError(nameof(encrypted));
+				ASF.ArchiLogger.LogNullError(nameof(cryptoMethod) + " || " + nameof(encrypted));
 
 				return null;
 			}
@@ -55,7 +55,7 @@ namespace ArchiSteamFarm {
 
 		internal static string Encrypt(ECryptoMethod cryptoMethod, string decrypted) {
 			if (!Enum.IsDefined(typeof(ECryptoMethod), cryptoMethod) || string.IsNullOrEmpty(decrypted)) {
-				ASF.ArchiLogger.LogNullError(nameof(decrypted));
+				ASF.ArchiLogger.LogNullError(nameof(cryptoMethod) + " || " + nameof(decrypted));
 
 				return null;
 			}
