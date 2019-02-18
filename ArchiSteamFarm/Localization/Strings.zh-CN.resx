@@ -131,7 +131,7 @@
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>配置 {0} 属性无效：{1}</value>
+    <value>配置的 {0} 属性无效：{1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
@@ -692,5 +692,8 @@
   </data>
   <data name="PluginsWarning" xml:space="preserve">
     <value>您已将一个或多个自定义插件加载到 ASF 中。由于我们无法为修改过的程序提供支持，所以如果您遇到任何问题，请咨询相应插件的开发者。</value>
+  </data>
+  <data name="PleaseWait" xml:space="preserve">
+    <value>请稍等……</value>
   </data>
 </root>

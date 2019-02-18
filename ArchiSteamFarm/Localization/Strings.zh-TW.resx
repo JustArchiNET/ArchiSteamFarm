@@ -186,7 +186,7 @@
     <value>無法進行更新，因為此版本沒有提供任何資源文件！</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>收到一個使用者輸入請求，但程序目前正以無頭模式執行！</value>
+    <value>收到一個使用者輸入請求，但程序目前正以無介面模式執行！</value>
   </data>
   <data name="Exiting" xml:space="preserve">
     <value>正在退出...</value>
@@ -534,7 +534,7 @@
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
-    <value>因發生錯誤{0} 而失敗</value>
+    <value>因發生錯誤而失敗：{0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotConnectionLost" xml:space="preserve">
@@ -602,7 +602,7 @@
     <value>BOT 已被鎖定，無法透過掛卡得到卡片。</value>
   </data>
   <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
-    <value>此功能僅能在無頭模式下使用！</value>
+    <value>此功能僅能在無介面模式下使用！</value>
   </data>
   <data name="BotOwnedAlready" xml:space="preserve">
     <value>已擁有：{0}</value>
@@ -691,5 +691,8 @@
   </data>
   <data name="PluginsWarning" xml:space="preserve">
     <value>你已載入一個以上的自訂插件。由於我們無法支援修改過的程序，如遭遇任何問題，請向相關插件的開發者尋求協助。</value>
+  </data>
+  <data name="PleaseWait" xml:space="preserve">
+    <value>請稍候⋯⋯</value>
   </data>
 </root>

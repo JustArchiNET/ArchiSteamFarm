@@ -693,4 +693,7 @@ StackTrace:
   <data name="PluginsWarning" xml:space="preserve">
     <value>Você carregou 1 ou mais plugins no ASF. Como não temos como oferecer suporte para configurações modificadas, contate os desenvolvedores do(s) plugin(s) que você decidiu usar em caso de problemas.</value>
   </data>
+  <data name="PleaseWait" xml:space="preserve">
+    <value>Por favor, aguarde...</value>
+  </data>
 </root>

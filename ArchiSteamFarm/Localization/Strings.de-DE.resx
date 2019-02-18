@@ -693,4 +693,7 @@ StackTrace:
   <data name="PluginsWarning" xml:space="preserve">
     <value>Du hast ein oder mehrere benutzerdefinierte Plugins in ASF geladen. Da wir keine Unterstützung für modifizierte Setups anbieten können, wende dich bitte im Falle von Problemen an die entsprechenden Entwickler der Plugins die du verwendet hast.</value>
   </data>
+  <data name="PleaseWait" xml:space="preserve">
+    <value>Bitte warte...</value>
+  </data>
 </root>

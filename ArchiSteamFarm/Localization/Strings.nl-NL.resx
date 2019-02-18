@@ -290,7 +290,7 @@ StackTrace:
     <value>Deze bot is al gestopt!</value>
   </data>
   <data name="BotNotFound" xml:space="preserve">
-    <value>Kon geen bot vinden met de naam {0}!</value>
+    <value>Geen bot gevonden met de naam {0}!</value>
     <comment>{0} will be replaced by bot's name query (string)</comment>
   </data>
   <data name="BotStatusOverview" xml:space="preserve">
@@ -692,5 +692,8 @@ StackTrace:
   </data>
   <data name="PluginsWarning" xml:space="preserve">
     <value>Je hebt een of meer aangepaste plugins geladen in ASF. Neem in geval van problemen contact op met de ontwikkelaars van deze plugins, aangezien we geen ondersteuning voor aangepaste instellingen kunnen bieden.</value>
+  </data>
+  <data name="PleaseWait" xml:space="preserve">
+    <value>Een ogenblik geduld...</value>
   </data>
 </root>

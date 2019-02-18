@@ -693,4 +693,5 @@ StackTrace:
   <data name="PluginsWarning" xml:space="preserve">
     <value>Jeden nebo více vlastních pluginů bylo načteno do ASF. Jelikož nejsme schopni poskytnout podporu pro modifikované nastavení, prosím, v případě problémů kontaktujte příslušné vývojáře daných pluginů.</value>
   </data>
+  
 </root>

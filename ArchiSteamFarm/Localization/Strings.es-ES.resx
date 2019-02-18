@@ -692,4 +692,5 @@ Trazo de pila:
   <data name="PluginsWarning" xml:space="preserve">
     <value>Has cargado uno o más plugins personalizados en el ASF. Ya que no podemos ofrecer soporte a configuraciones alteradas, por favor, consulte a los desarrolladores apropiados de los plugins que has decidido usar en caso de que tengas problemas.</value>
   </data>
+  
 </root>

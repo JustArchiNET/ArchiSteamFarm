@@ -693,4 +693,5 @@ StackTrace:
   <data name="PluginsWarning" xml:space="preserve">
     <value>Uaktywniono jedną lub więcej niestandardowych wtyczek do ASF. Ponieważ nie jesteśmy w stanie zaoferować wsparcia dla zmodyfikowanych konfiguracji, skontaktuj się z odpowiednimi programistami wtyczek, z których zdecydowałeś się korzystać w przypadku jakichkolwiek problemów.</value>
   </data>
+  
 </root>
