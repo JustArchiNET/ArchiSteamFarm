@@ -10,7 +10,7 @@ Examples of **invalid** issues:
 - Asking how to install the program or use one of its functions
 - Having technical difficulties running the program in some environment, encountering expected issues caused by the user's neglect
 - Reporting problems that are not caused by ASF, such as ASF-ui issues or Steam not allowing you to log in
-- Running in unsupported environment/setup, such as with modified ASF source, more bots than our maximum recommended limit or custom plugins
+- All issues encountered while running ASF in unsupported environment/setup, such as those with modified ASF source, having more bots than our maximum recommended limit or using custom plugins
 - Other activities that are not related to ASF development in any way and do not require any development action from us
 
 Examples of **valid** issues:
