@@ -312,7 +312,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botName) + " || " + nameof(request))));
 			}
 
-			if (request.NewName.Equals(SharedInfo.ASF) || Bot.Bots.ContainsKey(request.NewName)) {
+			if (string.IsNullOrEmpty(request.NewName) || request.NewName.Equals(SharedInfo.ASF) || Bot.Bots.ContainsKey(request.NewName)) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(request.NewName))));
 			}
 
