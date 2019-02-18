@@ -1421,16 +1421,16 @@ namespace ArchiSteamFarm {
 			return message.Replace("\\", "\\\\").Replace("[", "\\[");
 		}
 
-		private static string GetBotFilePath(string botName, EBotFileType filePath) {
-			if (string.IsNullOrEmpty(botName) || !Enum.IsDefined(typeof(EBotFileType), filePath)) {
-				ASF.ArchiLogger.LogNullError(nameof(botName) + " || " + nameof(filePath));
+		private static string GetBotFilePath(string botName, EBotFileType fileType) {
+			if (string.IsNullOrEmpty(botName) || !Enum.IsDefined(typeof(EBotFileType), fileType)) {
+				ASF.ArchiLogger.LogNullError(nameof(botName) + " || " + nameof(fileType));
 
 				return null;
 			}
 
 			string botPath = Path.Combine(SharedInfo.ConfigDirectory, botName);
 
-			switch (filePath) {
+			switch (fileType) {
 				case EBotFileType.Config:
 
 					return botPath + SharedInfo.ConfigExtension;
@@ -1453,7 +1453,7 @@ namespace ArchiSteamFarm {
 
 					return botPath + SharedInfo.SentryHashExtension;
 				default:
-					ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(filePath), filePath));
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(fileType), fileType));
 
 					return null;
 			}
