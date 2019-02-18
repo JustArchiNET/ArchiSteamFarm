@@ -2753,7 +2753,7 @@ namespace ArchiSteamFarm {
 					}
 				}
 
-				if (BotDatabase.HasGamesToRedeemInBackground) {
+				if (IsConnectedAndLoggedOn && BotDatabase.HasGamesToRedeemInBackground) {
 					ArchiLogger.LogGenericInfo(string.Format(Strings.BotRateLimitExceeded, TimeSpan.FromHours(RedeemCooldownInHours).ToHumanReadable()));
 
 					GamesRedeemerInBackgroundTimer = new Timer(
