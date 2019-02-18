@@ -1459,14 +1459,14 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private string GetBotFilePath(EBotFileType filePath) {
-			if (!Enum.IsDefined(typeof(EBotFileType), filePath)) {
-				ASF.ArchiLogger.LogNullError(nameof(filePath));
+		private string GetBotFilePath(EBotFileType fileType) {
+			if (!Enum.IsDefined(typeof(EBotFileType), fileType)) {
+				ASF.ArchiLogger.LogNullError(nameof(fileType));
 
 				return null;
 			}
 
-			return GetBotFilePath(BotName, filePath);
+			return GetBotFilePath(BotName, fileType);
 		}
 
 		[ItemCanBeNull]
