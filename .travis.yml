@@ -22,7 +22,7 @@ env:
     - VARIANTS="generic linux-arm linux-x64 osx-x64 win-x64" # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
 before_script:
   - |
-    set -eu
+    set -euo pipefail
 
     if [ "$TRAVIS_OS_NAME" = "osx" ]; then
         ulimit -n 1024
@@ -32,7 +32,7 @@ before_script:
     set +u # This is needed to continue Travis build
 script:
   - |
-    set -eu
+    set -euo pipefail
 
     if [ "$TRAVIS_OS_NAME" = "osx" ]; then
         set +eu # This is needed to run below npm block on OSX
