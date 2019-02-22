@@ -119,7 +119,7 @@ namespace ArchiSteamFarm {
 		[ItemCanBeNull]
 		[PublicAPI]
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
-		public async Task<HashSet<Steam.Asset>> GetInventory(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, uint contextID = Steam.Asset.SteamCommunityContextID, bool? marketable = null, bool? tradable = null, IReadOnlyCollection<uint> wantedRealAppIDs = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> wantedSets = null) {
+		public async Task<HashSet<Steam.Asset>> GetInventory(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, bool? marketable = null, bool? tradable = null, IReadOnlyCollection<uint> wantedRealAppIDs = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> wantedSets = null) {
 			if ((appID == 0) || (contextID == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
 
@@ -2335,7 +2335,7 @@ namespace ArchiSteamFarm {
 					return false;
 				}
 
-				uint contextID = item["contextid"].AsUnsignedInteger();
+				ulong contextID = item["contextid"].AsUnsignedLong();
 
 				if (contextID == 0) {
 					ASF.ArchiLogger.LogNullError(nameof(contextID));

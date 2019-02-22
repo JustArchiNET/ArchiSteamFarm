@@ -679,7 +679,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(appID)));
 			}
 
-			if (!uint.TryParse(targetContextID, out uint contextID) || (contextID == 0)) {
+			if (!ulong.TryParse(targetContextID, out ulong contextID) || (contextID == 0)) {
 				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(contextID)));
 			}
 
@@ -792,7 +792,7 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 
-		private async Task<string> ResponseAdvancedTransfer(ulong steamID, uint appID, uint contextID, Bot targetBot) {
+		private async Task<string> ResponseAdvancedTransfer(ulong steamID, uint appID, ulong contextID, Bot targetBot) {
 			if ((steamID == 0) || (appID == 0) || (contextID == 0) || (targetBot == null)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(appID) + " || " + nameof(contextID) + " || " + nameof(targetBot));
 
@@ -831,7 +831,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(appID)));
 			}
 
-			if (!uint.TryParse(targetContextID, out uint contextID) || (contextID == 0)) {
+			if (!ulong.TryParse(targetContextID, out ulong contextID) || (contextID == 0)) {
 				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(contextID)));
 			}
 
@@ -855,7 +855,7 @@ namespace ArchiSteamFarm {
 				return FormatStaticResponse(string.Format(Strings.ErrorIsInvalid, nameof(appID)));
 			}
 
-			if (!uint.TryParse(targetContextID, out uint contextID) || (contextID == 0)) {
+			if (!ulong.TryParse(targetContextID, out ulong contextID) || (contextID == 0)) {
 				return FormatStaticResponse(string.Format(Strings.ErrorIsInvalid, nameof(contextID)));
 			}
 
