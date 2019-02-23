@@ -92,7 +92,7 @@ namespace ArchiSteamFarm {
 				await ArchiKestrel.Start().ConfigureAwait(false);
 			}
 
-			await RegisterBots(botsComparer).ConfigureAwait(false);
+			await RegisterBots().ConfigureAwait(false);
 
 			InitEvents();
 		}
@@ -550,13 +550,7 @@ namespace ArchiSteamFarm {
 			await OnCreatedFile(e.Name, e.FullPath).ConfigureAwait(false);
 		}
 
-		private static async Task RegisterBots(StringComparer botsComparer) {
-			if (botsComparer == null) {
-				ArchiLogger.LogNullError(nameof(botsComparer));
-
-				return;
-			}
-
+		private static async Task RegisterBots() {
 			if (Bot.Bots.Count > 0) {
 				return;
 			}
@@ -581,7 +575,7 @@ namespace ArchiSteamFarm {
 			HashSet<string> botNames;
 
 			try {
-				botNames = Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*" + SharedInfo.ConfigExtension).Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).ToHashSet(botsComparer);
+				botNames = Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*" + SharedInfo.ConfigExtension).Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).ToHashSet(Bot.BotsComparer);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 
