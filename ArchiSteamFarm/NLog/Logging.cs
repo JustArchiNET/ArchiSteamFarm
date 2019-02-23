@@ -265,6 +265,14 @@ namespace ArchiSteamFarm.NLog {
 								continue;
 							}
 
+							if (!string.IsNullOrEmpty(ASF.GlobalConfig.CommandPrefix) && command.StartsWith(ASF.GlobalConfig.CommandPrefix, StringComparison.Ordinal)) {
+								command = command.Substring(ASF.GlobalConfig.CommandPrefix.Length);
+
+								if (string.IsNullOrEmpty(command)) {
+									continue;
+								}
+							}
+
 							Bot targetBot = Bot.Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value).FirstOrDefault();
 
 							if (targetBot == null) {

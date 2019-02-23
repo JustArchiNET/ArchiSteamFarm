@@ -57,6 +57,10 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 
 			if (!string.IsNullOrEmpty(ASF.GlobalConfig.CommandPrefix) && command.StartsWith(ASF.GlobalConfig.CommandPrefix, StringComparison.Ordinal)) {
 				command = command.Substring(ASF.GlobalConfig.CommandPrefix.Length);
+
+				if (string.IsNullOrEmpty(command)) {
+					return BadRequest(new GenericResponse<string>(false, string.Format(Strings.ErrorIsEmpty, nameof(command))));
+				}
 			}
 
 			string response = await targetBot.Commands.Response(ASF.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
