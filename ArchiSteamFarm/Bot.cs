@@ -306,7 +306,7 @@ namespace ArchiSteamFarm {
 
 			foreach (string botName in botNames) {
 				if (botName.Equals(SharedInfo.ASF, StringComparison.OrdinalIgnoreCase)) {
-					IEnumerable<Bot> allBots = Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value);
+					IEnumerable<Bot> allBots = Bots.OrderBy(bot => bot.Key, BotsComparer).Select(bot => bot.Value);
 					result.UnionWith(allBots);
 
 					return result;
@@ -316,7 +316,7 @@ namespace ArchiSteamFarm {
 					string[] botRange = botName.Split(new[] { ".." }, StringSplitOptions.RemoveEmptyEntries);
 
 					if ((botRange.Length == 2) && Bots.TryGetValue(botRange[0], out Bot firstBot) && Bots.TryGetValue(botRange[1], out Bot lastBot)) {
-						foreach (Bot bot in Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value).SkipWhile(bot => bot != firstBot)) {
+						foreach (Bot bot in Bots.OrderBy(bot => bot.Key, BotsComparer).Select(bot => bot.Value).SkipWhile(bot => bot != firstBot)) {
 							result.Add(bot);
 
 							if (bot == lastBot) {

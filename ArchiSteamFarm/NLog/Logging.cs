@@ -273,7 +273,7 @@ namespace ArchiSteamFarm.NLog {
 								}
 							}
 
-							Bot targetBot = Bot.Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value).FirstOrDefault();
+							Bot targetBot = Bot.Bots.OrderBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value).FirstOrDefault();
 
 							if (targetBot == null) {
 								Console.WriteLine(@"<< " + Strings.ErrorNoBotsDefined);

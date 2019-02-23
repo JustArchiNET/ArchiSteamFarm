@@ -599,7 +599,7 @@ namespace ArchiSteamFarm {
 				await Task.Delay(10000).ConfigureAwait(false);
 			}
 
-			await Utilities.InParallel(botNames.OrderBy(botName => botName).Select(Bot.RegisterBot)).ConfigureAwait(false);
+			await Utilities.InParallel(botNames.OrderBy(botName => botName, Bot.BotsComparer).Select(Bot.RegisterBot)).ConfigureAwait(false);
 		}
 
 		private static async Task UpdateAndRestart() {

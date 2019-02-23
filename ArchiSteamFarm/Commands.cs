@@ -2091,7 +2091,7 @@ namespace ArchiSteamFarm {
 				while (!string.IsNullOrEmpty(key)) {
 					string startingKey = key;
 
-					using (IEnumerator<Bot> botsEnumerator = Bot.Bots.Where(bot => (bot.Value != Bot) && !rateLimitedBots.Contains(bot.Value) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.HasPermission(steamID, BotConfig.EPermission.Operator)).OrderBy(bot => bot.Key).Select(bot => bot.Value).GetEnumerator()) {
+					using (IEnumerator<Bot> botsEnumerator = Bot.Bots.Where(bot => (bot.Value != Bot) && !rateLimitedBots.Contains(bot.Value) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.HasPermission(steamID, BotConfig.EPermission.Operator)).OrderBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value).GetEnumerator()) {
 						Bot currentBot = Bot;
 
 						while (!string.IsNullOrEmpty(key) && (currentBot != null)) {
@@ -2172,7 +2172,7 @@ namespace ArchiSteamFarm {
 
 											bool alreadyHandled = false;
 
-											foreach (Bot innerBot in Bot.Bots.Where(bot => (bot.Value != currentBot) && (!redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || (bot.Value != Bot)) && !rateLimitedBots.Contains(bot.Value) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.HasPermission(steamID, BotConfig.EPermission.Operator) && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.ContainsKey(packageID)))).OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
+											foreach (Bot innerBot in Bot.Bots.Where(bot => (bot.Value != currentBot) && (!redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || (bot.Value != Bot)) && !rateLimitedBots.Contains(bot.Value) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.HasPermission(steamID, BotConfig.EPermission.Operator) && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.ContainsKey(packageID)))).OrderBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value)) {
 												ArchiHandler.PurchaseResponseCallback otherResult = await innerBot.Actions.RedeemKey(key).ConfigureAwait(false);
 
 												if (otherResult == null) {
