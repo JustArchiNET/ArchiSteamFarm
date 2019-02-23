@@ -2080,10 +2080,12 @@ namespace ArchiSteamFarm {
 			HashSet<string> pendingKeys = keys.ToHashSet();
 			HashSet<string> unusedKeys = pendingKeys.ToHashSet();
 
+			bool firstRound = true;
+			HashSet<Bot> rateLimitedBots = new HashSet<Bot>();
+
 			StringBuilder response = new StringBuilder();
 
 			using (HashSet<string>.Enumerator keysEnumerator = pendingKeys.GetEnumerator()) {
-				HashSet<Bot> rateLimitedBots = new HashSet<Bot>();
 				string key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null; // Initial key
 
 				while (!string.IsNullOrEmpty(key)) {
@@ -2241,6 +2243,26 @@ namespace ArchiSteamFarm {
 							// b) When we're skipping initial bot AND we have forwarding enabled, otherwise we won't get down to other accounts
 							if (distribute || (forward && redeemFlags.HasFlag(ERedeemFlags.SkipInitial))) {
 								currentBot = botsEnumerator.MoveNext() ? botsEnumerator.Current : null;
+
+								if (!firstRound) {
+									continue;
+								}
+
+								firstRound = false;
+
+								if (currentBot == null) {
+									continue;
+								}
+
+								while (Bot.BotsComparer.Compare(currentBot.BotName, Bot.BotName) <= 0) {
+									if (!botsEnumerator.MoveNext()) {
+										currentBot = null;
+
+										break;
+									}
+
+									currentBot = botsEnumerator.Current;
+								}
 							}
 						}
 					}

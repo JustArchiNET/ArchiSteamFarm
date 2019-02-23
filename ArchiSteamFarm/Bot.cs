@@ -58,11 +58,10 @@ namespace ArchiSteamFarm {
 		public static IReadOnlyDictionary<string, Bot> BotsReadOnly => Bots;
 
 		internal static ConcurrentDictionary<string, Bot> Bots { get; private set; }
+		internal static StringComparer BotsComparer { get; private set; }
 
 		private static readonly SemaphoreSlim BotsSemaphore = new SemaphoreSlim(1, 1);
 		private static readonly SemaphoreSlim LoginSemaphore = new SemaphoreSlim(1, 1);
-
-		private static RegexOptions BotsRegex;
 
 		[PublicAPI]
 		public readonly Actions Actions;
@@ -330,10 +329,18 @@ namespace ArchiSteamFarm {
 				}
 
 				if (botName.StartsWith("r!", StringComparison.OrdinalIgnoreCase)) {
-					string botPattern = botName.Substring(2);
+					string botsPattern = botName.Substring(2);
 
 					try {
-						Regex regex = new Regex(botPattern, BotsRegex);
+						RegexOptions botsRegex = RegexOptions.None;
+
+						if ((BotsComparer == StringComparer.InvariantCulture) || (BotsComparer == StringComparer.Ordinal)) {
+							botsRegex |= RegexOptions.CultureInvariant;
+						} else if ((BotsComparer == StringComparer.InvariantCultureIgnoreCase) || (BotsComparer == StringComparer.OrdinalIgnoreCase)) {
+							botsRegex |= RegexOptions.CultureInvariant | RegexOptions.IgnoreCase;
+						}
+
+						Regex regex = new Regex(botsPattern, botsRegex);
 
 						IEnumerable<Bot> regexMatches = Bots.Where(kvp => regex.IsMatch(kvp.Key)).Select(kvp => kvp.Value);
 						result.UnionWith(regexMatches);
@@ -816,13 +823,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			BotsComparer = botsComparer;
 			Bots = new ConcurrentDictionary<string, Bot>(botsComparer);
-
-			if ((botsComparer == StringComparer.InvariantCulture) || (botsComparer == StringComparer.Ordinal)) {
-				BotsRegex |= RegexOptions.CultureInvariant;
-			} else if ((botsComparer == StringComparer.InvariantCultureIgnoreCase) || (botsComparer == StringComparer.OrdinalIgnoreCase)) {
-				BotsRegex |= RegexOptions.CultureInvariant | RegexOptions.IgnoreCase;
-			}
 		}
 
 		internal bool IsBlacklistedFromIdling(uint appID) {
