@@ -198,7 +198,7 @@ namespace ArchiSteamFarm.NLog {
 				return;
 			}
 
-			Utilities.InBackground(HandleConsoleInteractively);
+			Utilities.InBackground(HandleConsoleInteractively, true);
 			ASF.ArchiLogger.LogGenericInfo(Strings.InteractiveConsoleEnabled);
 		}
 
