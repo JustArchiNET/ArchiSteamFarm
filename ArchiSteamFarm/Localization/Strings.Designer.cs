@@ -764,6 +764,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Enter command: .
+        /// </summary>
+        public static string EnterCommand {
+            get {
+                return ResourceManager.GetString("EnterCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Aborted!.
         /// </summary>
         public static string ErrorAborted {
@@ -982,6 +991,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Executing....
+        /// </summary>
+        public static string Executing {
+            get {
+                return ResourceManager.GetString("Executing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Exiting....
         /// </summary>
         public static string Exiting {
@@ -1086,6 +1104,24 @@ namespace ArchiSteamFarm.Localization {
         public static string Initializing {
             get {
                 return ResourceManager.GetString("Initializing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Interactive console is now active, type &apos;c&apos; in order to enter command mode..
+        /// </summary>
+        public static string InteractiveConsoleEnabled {
+            get {
+                return ResourceManager.GetString("InteractiveConsoleEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Interactive console is not available due to missing {0} config property..
+        /// </summary>
+        public static string InteractiveConsoleNotAvailable {
+            get {
+                return ResourceManager.GetString("InteractiveConsoleNotAvailable", resourceCulture);
             }
         }
         
@@ -1221,6 +1257,15 @@ namespace ArchiSteamFarm.Localization {
         public static string RejectingTrade {
             get {
                 return ResourceManager.GetString("RejectingTrade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Response: {0}.
+        /// </summary>
+        public static string Response {
+            get {
+                return ResourceManager.GetString("Response", resourceCulture);
             }
         }
         

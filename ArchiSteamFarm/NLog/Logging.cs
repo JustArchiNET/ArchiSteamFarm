@@ -19,19 +19,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.IPC;
+using ArchiSteamFarm.Localization;
+using JetBrains.Annotations;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
 
 namespace ArchiSteamFarm.NLog {
 	internal static class Logging {
+		private const byte ConsoleResponsivenessDelay = 250; // In miliseconds
 		private const string GeneralLayout = @"${date:format=yyyy-MM-dd HH\:mm\:ss}|${processname}-${processid}|${level:uppercase=true}|" + LayoutMessage;
 		private const string LayoutMessage = @"${logger}|${message}${onexception:inner= ${exception:format=toString,Data}}";
 
 		private static readonly ConcurrentHashSet<LoggingRule> ConsoleLoggingRules = new ConcurrentHashSet<LoggingRule>();
+		private static readonly SemaphoreSlim ConsoleSemaphore = new SemaphoreSlim(1, 1);
 
 		private static bool IsUsingCustomConfiguration;
 		private static bool IsWaitingForUserInput;
@@ -51,6 +59,84 @@ namespace ArchiSteamFarm.NLog {
 			if (reload) {
 				LogManager.ReconfigExistingLoggers();
 			}
+		}
+
+		internal static async Task<string> GetUserInput(ASF.EUserInputType userInputType, string botName = SharedInfo.ASF) {
+			if (userInputType == ASF.EUserInputType.Unknown) {
+				return null;
+			}
+
+			if (ASF.GlobalConfig.Headless) {
+				ASF.ArchiLogger.LogGenericWarning(Strings.ErrorUserInputRunningInHeadlessMode);
+
+				return null;
+			}
+
+			await ConsoleSemaphore.WaitAsync().ConfigureAwait(false);
+
+			string result;
+
+			try {
+				OnUserInputStart();
+
+				try {
+					Console.Beep();
+
+					switch (userInputType) {
+						case ASF.EUserInputType.DeviceID:
+							Console.Write(Bot.FormatBotResponse(Strings.UserInputDeviceID, botName));
+							result = ConsoleReadLine();
+
+							break;
+						case ASF.EUserInputType.Login:
+							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamLogin, botName));
+							result = ConsoleReadLine();
+
+							break;
+						case ASF.EUserInputType.Password:
+							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamPassword, botName));
+							result = ConsoleReadLineMasked();
+
+							break;
+						case ASF.EUserInputType.SteamGuard:
+							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamGuard, botName));
+							result = ConsoleReadLine();
+
+							break;
+						case ASF.EUserInputType.SteamParentalCode:
+							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamParentalCode, botName));
+							result = ConsoleReadLineMasked();
+
+							break;
+						case ASF.EUserInputType.TwoFactorAuthentication:
+							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteam2FA, botName));
+							result = ConsoleReadLine();
+
+							break;
+						default:
+							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(userInputType), userInputType));
+							Console.Write(Bot.FormatBotResponse(string.Format(Strings.UserInputUnknown, userInputType), botName));
+							result = ConsoleReadLine();
+
+							break;
+					}
+
+					if (!Console.IsOutputRedirected) {
+						Console.Clear(); // For security purposes
+					}
+				} catch (Exception e) {
+					OnUserInputEnd();
+					ASF.ArchiLogger.LogGenericException(e);
+
+					return null;
+				}
+
+				OnUserInputEnd();
+			} finally {
+				ConsoleSemaphore.Release();
+			}
+
+			return !string.IsNullOrEmpty(result) ? result.Trim() : null;
 		}
 
 		internal static void InitCoreLoggers() {
@@ -105,42 +191,109 @@ namespace ArchiSteamFarm.NLog {
 			ArchiKestrel.OnNewHistoryTarget(historyTarget);
 		}
 
-		internal static void OnUserInputEnd() {
-			IsWaitingForUserInput = false;
+		internal static void StartInteractiveConsole() {
+			if (ASF.GlobalConfig.SteamOwnerID == 0) {
+				ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.InteractiveConsoleNotAvailable, nameof(ASF.GlobalConfig.SteamOwnerID)));
 
-			if (ConsoleLoggingRules.Count == 0) {
 				return;
 			}
 
-			bool reconfigure = false;
-
-			foreach (LoggingRule consoleLoggingRule in ConsoleLoggingRules.Where(consoleLoggingRule => !LogManager.Configuration.LoggingRules.Contains(consoleLoggingRule))) {
-				LogManager.Configuration.LoggingRules.Add(consoleLoggingRule);
-				reconfigure = true;
-			}
-
-			if (reconfigure) {
-				LogManager.ReconfigExistingLoggers();
-			}
+			Utilities.InBackground(HandleConsoleInteractively);
+			ASF.ArchiLogger.LogGenericInfo(Strings.InteractiveConsoleEnabled);
 		}
 
-		internal static void OnUserInputStart() {
-			IsWaitingForUserInput = true;
+		private static string ConsoleReadLine() {
+			Console.Beep();
 
-			if (ConsoleLoggingRules.Count == 0) {
-				return;
-			}
+			return Console.ReadLine();
+		}
 
-			bool reconfigure = false;
+		[NotNull]
+		private static string ConsoleReadLineMasked(char mask = '*') {
+			StringBuilder result = new StringBuilder();
 
-			foreach (LoggingRule consoleLoggingRule in ConsoleLoggingRules) {
-				if (LogManager.Configuration.LoggingRules.Remove(consoleLoggingRule)) {
-					reconfigure = true;
+			Console.Beep();
+
+			ConsoleKeyInfo keyInfo;
+
+			while ((keyInfo = Console.ReadKey(true)).Key != ConsoleKey.Enter) {
+				if (!char.IsControl(keyInfo.KeyChar)) {
+					result.Append(keyInfo.KeyChar);
+					Console.Write(mask);
+				} else if ((keyInfo.Key == ConsoleKey.Backspace) && (result.Length > 0)) {
+					result.Length--;
+
+					if (Console.CursorLeft == 0) {
+						Console.SetCursorPosition(Console.BufferWidth - 1, Console.CursorTop - 1);
+						Console.Write(' ');
+						Console.SetCursorPosition(Console.BufferWidth - 1, Console.CursorTop - 1);
+					} else {
+						// There are two \b characters here
+						Console.Write(@" ");
+					}
 				}
 			}
 
-			if (reconfigure) {
-				LogManager.ReconfigExistingLoggers();
+			Console.WriteLine();
+
+			return result.ToString();
+		}
+
+		private static async Task HandleConsoleInteractively() {
+			while (!Program.ShutdownSequenceInitialized) {
+				try {
+					if (IsWaitingForUserInput || !Console.KeyAvailable) {
+						continue;
+					}
+
+					await ConsoleSemaphore.WaitAsync().ConfigureAwait(false);
+
+					try {
+						ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+
+						if (keyInfo.Key != ConsoleKey.C) {
+							continue;
+						}
+
+						OnUserInputStart();
+
+						try {
+							Console.Write(@">> " + Strings.EnterCommand);
+							string command = ConsoleReadLine();
+
+							if (string.IsNullOrEmpty(command)) {
+								continue;
+							}
+
+							Bot targetBot = Bot.Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value).FirstOrDefault();
+
+							if (targetBot == null) {
+								Console.WriteLine(@"<< " + Strings.ErrorNoBotsDefined);
+
+								continue;
+							}
+
+							Console.WriteLine(@"<> " + Strings.Executing);
+
+							string response = await targetBot.Commands.Response(ASF.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
+
+							if (string.IsNullOrEmpty(response)) {
+								ASF.ArchiLogger.LogNullError(nameof(response));
+								Console.WriteLine(Strings.ErrorIsEmpty, nameof(response));
+
+								continue;
+							}
+
+							Console.WriteLine(@"<< " + response);
+						} finally {
+							OnUserInputEnd();
+						}
+					} finally {
+						ConsoleSemaphore.Release();
+					}
+				} finally {
+					await Task.Delay(ConsoleResponsivenessDelay).ConfigureAwait(false);
+				}
 			}
 		}
 
@@ -167,6 +320,45 @@ namespace ArchiSteamFarm.NLog {
 
 			HistoryTarget historyTarget = LogManager.Configuration.AllTargets.OfType<HistoryTarget>().FirstOrDefault();
 			ArchiKestrel.OnNewHistoryTarget(historyTarget);
+		}
+
+		private static void OnUserInputEnd() {
+			IsWaitingForUserInput = false;
+
+			if (ConsoleLoggingRules.Count == 0) {
+				return;
+			}
+
+			bool reconfigure = false;
+
+			foreach (LoggingRule consoleLoggingRule in ConsoleLoggingRules.Where(consoleLoggingRule => !LogManager.Configuration.LoggingRules.Contains(consoleLoggingRule))) {
+				LogManager.Configuration.LoggingRules.Add(consoleLoggingRule);
+				reconfigure = true;
+			}
+
+			if (reconfigure) {
+				LogManager.ReconfigExistingLoggers();
+			}
+		}
+
+		private static void OnUserInputStart() {
+			IsWaitingForUserInput = true;
+
+			if (ConsoleLoggingRules.Count == 0) {
+				return;
+			}
+
+			bool reconfigure = false;
+
+			foreach (LoggingRule consoleLoggingRule in ConsoleLoggingRules) {
+				if (LogManager.Configuration.LoggingRules.Remove(consoleLoggingRule)) {
+					reconfigure = true;
+				}
+			}
+
+			if (reconfigure) {
+				LogManager.ReconfigExistingLoggers();
+			}
 		}
 	}
 }

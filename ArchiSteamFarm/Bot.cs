@@ -1621,7 +1621,7 @@ namespace ArchiSteamFarm {
 					ArchiLogger.LogGenericWarning(Strings.BotAuthenticatorInvalidDeviceID);
 
 					if (string.IsNullOrEmpty(DeviceID)) {
-						string deviceID = Program.GetUserInput(ASF.EUserInputType.DeviceID, BotName);
+						string deviceID = await Logging.GetUserInput(ASF.EUserInputType.DeviceID, BotName).ConfigureAwait(false);
 
 						if (string.IsNullOrEmpty(deviceID)) {
 							return;
@@ -1674,9 +1674,9 @@ namespace ArchiSteamFarm {
 			SteamFamilySharingIDs.ReplaceIfNeededWith(steamIDs);
 		}
 
-		private bool InitLoginAndPassword(bool requiresPassword) {
+		private async Task<bool> InitLoginAndPassword(bool requiresPassword) {
 			if (string.IsNullOrEmpty(BotConfig.SteamLogin)) {
-				string steamLogin = Program.GetUserInput(ASF.EUserInputType.Login, BotName);
+				string steamLogin = await Logging.GetUserInput(ASF.EUserInputType.Login, BotName).ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(steamLogin)) {
 					return false;
@@ -1686,7 +1686,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (requiresPassword && string.IsNullOrEmpty(BotConfig.DecryptedSteamPassword)) {
-				string steamPassword = Program.GetUserInput(ASF.EUserInputType.Password, BotName);
+				string steamPassword = await Logging.GetUserInput(ASF.EUserInputType.Password, BotName).ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(steamPassword)) {
 					return false;
@@ -1881,7 +1881,7 @@ namespace ArchiSteamFarm {
 				await BotDatabase.SetLoginKey().ConfigureAwait(false);
 			}
 
-			if (!InitLoginAndPassword(string.IsNullOrEmpty(loginKey))) {
+			if (!await InitLoginAndPassword(string.IsNullOrEmpty(loginKey)).ConfigureAwait(false)) {
 				Stop();
 
 				return;
@@ -2256,7 +2256,7 @@ namespace ArchiSteamFarm {
 
 					break;
 				case EResult.AccountLogonDenied:
-					string authCode = Program.GetUserInput(ASF.EUserInputType.SteamGuard, BotName);
+					string authCode = await Logging.GetUserInput(ASF.EUserInputType.SteamGuard, BotName).ConfigureAwait(false);
 
 					if (string.IsNullOrEmpty(authCode)) {
 						Stop();
@@ -2270,7 +2270,7 @@ namespace ArchiSteamFarm {
 				case EResult.AccountLoginDeniedNeedTwoFactor:
 
 					if (!HasMobileAuthenticator) {
-						string twoFactorCode = Program.GetUserInput(ASF.EUserInputType.TwoFactorAuthentication, BotName);
+						string twoFactorCode = await Logging.GetUserInput(ASF.EUserInputType.TwoFactorAuthentication, BotName).ConfigureAwait(false);
 
 						if (string.IsNullOrEmpty(twoFactorCode)) {
 							Stop();
@@ -2323,7 +2323,7 @@ namespace ArchiSteamFarm {
 					}
 
 					if (!string.IsNullOrEmpty(BotConfig.SteamParentalCode) && (BotConfig.SteamParentalCode.Length != 4)) {
-						string steamParentalCode = Program.GetUserInput(ASF.EUserInputType.SteamParentalCode, BotName);
+						string steamParentalCode = await Logging.GetUserInput(ASF.EUserInputType.SteamParentalCode, BotName).ConfigureAwait(false);
 
 						if (string.IsNullOrEmpty(steamParentalCode) || (steamParentalCode.Length != 4)) {
 							Stop();

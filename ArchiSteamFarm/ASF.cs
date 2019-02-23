@@ -84,6 +84,10 @@ namespace ArchiSteamFarm {
 
 			InitBotsComparer(botsComparer);
 
+			if (!GlobalConfig.Headless) {
+				Logging.StartInteractiveConsole();
+			}
+
 			if (GlobalConfig.IPC) {
 				await ArchiKestrel.Start().ConfigureAwait(false);
 			}

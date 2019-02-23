@@ -42,15 +42,12 @@ namespace ArchiSteamFarm {
 
 		internal static bool ProcessRequired { get; private set; }
 		internal static bool RestartAllowed { get; private set; } = true;
-
-		private static readonly object ConsoleLock = new object();
+		internal static bool ShutdownSequenceInitialized { get; private set; }
 
 		// We need to keep this one assigned and not calculated on-demand
 		private static readonly string ProcessFileName = Process.GetCurrentProcess().MainModule.FileName;
 
 		private static readonly TaskCompletionSource<byte> ShutdownResetEvent = new TaskCompletionSource<byte>();
-
-		private static bool ShutdownSequenceInitialized;
 		private static bool SystemRequired;
 
 		internal static async Task Exit(byte exitCode = 0) {
@@ -60,78 +57,6 @@ namespace ArchiSteamFarm {
 
 			await Shutdown(exitCode).ConfigureAwait(false);
 			Environment.Exit(exitCode);
-		}
-
-		internal static string GetUserInput(ASF.EUserInputType userInputType, string botName = SharedInfo.ASF) {
-			if (userInputType == ASF.EUserInputType.Unknown) {
-				return null;
-			}
-
-			if (ASF.GlobalConfig.Headless) {
-				ASF.ArchiLogger.LogGenericWarning(Strings.ErrorUserInputRunningInHeadlessMode);
-
-				return null;
-			}
-
-			string result;
-
-			lock (ConsoleLock) {
-				Logging.OnUserInputStart();
-
-				try {
-					switch (userInputType) {
-						case ASF.EUserInputType.DeviceID:
-							Console.Write(Bot.FormatBotResponse(Strings.UserInputDeviceID, botName));
-							result = Console.ReadLine();
-
-							break;
-						case ASF.EUserInputType.Login:
-							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamLogin, botName));
-							result = Console.ReadLine();
-
-							break;
-						case ASF.EUserInputType.Password:
-							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamPassword, botName));
-							result = Utilities.ReadLineMasked();
-
-							break;
-						case ASF.EUserInputType.SteamGuard:
-							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamGuard, botName));
-							result = Console.ReadLine();
-
-							break;
-						case ASF.EUserInputType.SteamParentalCode:
-							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamParentalCode, botName));
-							result = Utilities.ReadLineMasked();
-
-							break;
-						case ASF.EUserInputType.TwoFactorAuthentication:
-							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteam2FA, botName));
-							result = Console.ReadLine();
-
-							break;
-						default:
-							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(userInputType), userInputType));
-							Console.Write(Bot.FormatBotResponse(string.Format(Strings.UserInputUnknown, userInputType), botName));
-							result = Console.ReadLine();
-
-							break;
-					}
-
-					if (!Console.IsOutputRedirected) {
-						Console.Clear(); // For security purposes
-					}
-				} catch (Exception e) {
-					Logging.OnUserInputEnd();
-					ASF.ArchiLogger.LogGenericException(e);
-
-					return null;
-				}
-
-				Logging.OnUserInputEnd();
-			}
-
-			return !string.IsNullOrEmpty(result) ? result.Trim() : null;
 		}
 
 		internal static async Task Restart() {
@@ -200,7 +125,10 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task InitASF(IReadOnlyCollection<string> args) {
-			ASF.ArchiLogger.LogGenericInfo(SharedInfo.PublicIdentifier + " V" + SharedInfo.Version + " (" + SharedInfo.BuildInfo.Variant + "/" + SharedInfo.ModuleVersion + " | " + OS.Variant + ")");
+			string programIdentifier = SharedInfo.PublicIdentifier + " V" + SharedInfo.Version + " (" + SharedInfo.BuildInfo.Variant + "/" + SharedInfo.ModuleVersion + " | " + OS.Variant + ")";
+
+			Console.Title = programIdentifier;
+			ASF.ArchiLogger.LogGenericInfo(programIdentifier);
 
 			await InitGlobalConfigAndLanguage().ConfigureAwait(false);
 
