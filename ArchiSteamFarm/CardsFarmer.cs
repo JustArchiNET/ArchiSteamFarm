@@ -141,10 +141,10 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				// If we have Complex algorithm and any game to boost, it's also worth to make a re-check, but only in this case
-				// That's because we would check for new games after our current round anyway, and having extra games to boost in the queue right away doesn't change anything in terms of performance
-				// Therefore, make extra restart of CardsFarmer only if we have at least one game under HoursUntilCardDrops in current round
-				if ((Bot.BotConfig.HoursUntilCardDrops > 0) && (GamesToFarm.Count > 0) && GamesToFarm.Any(game => game.HoursPlayed < Bot.BotConfig.HoursUntilCardDrops)) {
+				// We should restart the farming if the order or efficiency of the farming could be affected by the newly-activated product
+				// The order is affected when user uses farming order that isn't independent of the game data (it could alter the order in deterministic way if the game was considered in current queue)
+				// The efficiency is affected only in complex algorithm (entirely), as it depends on hours order that is not independent (as specified above)
+				if ((Bot.BotConfig.HoursUntilCardDrops > 0) || ((Bot.BotConfig.FarmingOrders.Count > 0) && Bot.BotConfig.FarmingOrders.Any(farmingOrder => (farmingOrder != BotConfig.EFarmingOrder.Unordered) && (farmingOrder != BotConfig.EFarmingOrder.Random)))) {
 					await StopFarming().ConfigureAwait(false);
 					await StartFarming().ConfigureAwait(false);
 				}
