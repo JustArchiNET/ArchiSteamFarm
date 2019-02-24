@@ -414,7 +414,7 @@ namespace ArchiSteamFarm {
 
 			bool feedback = Bot.HasPermission(steamID, BotConfig.EPermission.FamilySharing);
 
-			if (feedback) {
+			if (feedback && !responseTask.IsCompleted) {
 				await Bot.SendTypingMessage(steamID).ConfigureAwait(false);
 
 				while (!responseTask.IsCompleted && (await Task.WhenAny(responseTask, Task.Delay(SteamTypingStatusDelay)).ConfigureAwait(false) != responseTask)) {
@@ -461,7 +461,7 @@ namespace ArchiSteamFarm {
 
 			bool feedback = Bot.HasPermission(steamID, BotConfig.EPermission.FamilySharing);
 
-			if (feedback) {
+			if (feedback && !responseTask.IsCompleted) {
 				string pleaseWaitMessage = FormatBotResponse(Strings.PleaseWait);
 
 				await Bot.SendMessage(chatGroupID, chatID, pleaseWaitMessage).ConfigureAwait(false);
