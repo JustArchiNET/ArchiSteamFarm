@@ -33,6 +33,8 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	public sealed class Commands {
+		private const ushort SteamTypingStatusDelay = 10000; // Steam client broadcasts typing status each 10 seconds
+
 		private readonly Bot Bot;
 		private readonly Dictionary<uint, string> CachedGamesOwned = new Dictionary<uint, string>();
 
@@ -408,13 +410,19 @@ namespace ArchiSteamFarm {
 				message = message.Substring(ASF.GlobalConfig.CommandPrefix.Length);
 			}
 
+			Task<string> responseTask = Response(steamID, message);
+
 			bool feedback = Bot.HasPermission(steamID, BotConfig.EPermission.FamilySharing);
 
 			if (feedback) {
-				await Bot.SendMessage(steamID, FormatBotResponse(Strings.PleaseWait)).ConfigureAwait(false);
+				await Bot.SendTypingMessage(steamID).ConfigureAwait(false);
+
+				while (!responseTask.IsCompleted && (await Task.WhenAny(responseTask, Task.Delay(SteamTypingStatusDelay)).ConfigureAwait(false) != responseTask)) {
+					await Bot.SendTypingMessage(steamID).ConfigureAwait(false);
+				}
 			}
 
-			string response = await Response(steamID, message).ConfigureAwait(false);
+			string response = await responseTask.ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(response)) {
 				if (!feedback) {
@@ -449,13 +457,19 @@ namespace ArchiSteamFarm {
 				message = message.Substring(ASF.GlobalConfig.CommandPrefix.Length);
 			}
 
+			Task<string> responseTask = Response(steamID, message);
+
 			bool feedback = Bot.HasPermission(steamID, BotConfig.EPermission.FamilySharing);
 
 			if (feedback) {
 				await Bot.SendMessage(chatGroupID, chatID, FormatBotResponse(Strings.PleaseWait)).ConfigureAwait(false);
+
+				while (!responseTask.IsCompleted && (await Task.WhenAny(responseTask, Task.Delay(SteamTypingStatusDelay)).ConfigureAwait(false) != responseTask)) {
+					await Bot.SendMessage(chatGroupID, chatID, FormatBotResponse(Strings.PleaseWait)).ConfigureAwait(false);
+				}
 			}
 
-			string response = await Response(steamID, message).ConfigureAwait(false);
+			string response = await responseTask.ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(response)) {
 				if (!feedback) {

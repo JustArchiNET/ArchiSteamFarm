@@ -1079,13 +1079,13 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> SendMessage(ulong steamID, string message) {
-			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || string.IsNullOrEmpty(message)) {
 				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(message));
 
 				return false;
 			}
 
-			if (!IsConnectedAndLoggedOn || !new SteamID(steamID).IsIndividualAccount) {
+			if (!IsConnectedAndLoggedOn) {
 				return false;
 			}
 
@@ -1212,6 +1212,20 @@ namespace ArchiSteamFarm {
 			}
 
 			return true;
+		}
+
+		internal async Task<bool> SendTypingMessage(ulong steamID) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+				ArchiLogger.LogNullError(nameof(steamID));
+
+				return false;
+			}
+
+			if (!IsConnectedAndLoggedOn) {
+				return false;
+			}
+
+			return await ArchiHandler.SendTypingStatus(steamID).ConfigureAwait(false) == EResult.OK;
 		}
 
 		internal void SetUserInput(ASF.EUserInputType inputType, string inputValue) {

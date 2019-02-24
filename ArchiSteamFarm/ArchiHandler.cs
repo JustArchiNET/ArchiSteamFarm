@@ -122,7 +122,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void AckMessage(ulong steamID, uint timestamp) {
-			if ((steamID == 0) || (timestamp == 0)) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || (timestamp == 0)) {
 				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(timestamp));
 
 				return;
@@ -140,9 +140,9 @@ namespace ArchiSteamFarm {
 			UnifiedFriendMessagesService.SendMessage(x => x.AckMessage(request), true);
 		}
 
-		internal void AcknowledgeClanInvite(ulong clanID, bool acceptInvite) {
-			if (clanID == 0) {
-				ArchiLogger.LogNullError(nameof(clanID));
+		internal void AcknowledgeClanInvite(ulong steamID, bool acceptInvite) {
+			if ((steamID == 0) || !new SteamID(steamID).IsClanAccount) {
+				ArchiLogger.LogNullError(nameof(steamID));
 
 				return;
 			}
@@ -153,7 +153,7 @@ namespace ArchiSteamFarm {
 
 			ClientMsg<CMsgClientAcknowledgeClanInvite> request = new ClientMsg<CMsgClientAcknowledgeClanInvite> {
 				Body = {
-					ClanID = clanID,
+					ClanID = steamID,
 					AcceptInvite = acceptInvite
 				}
 			};
@@ -162,7 +162,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> AddFriend(ulong steamID) {
-			if (steamID == 0) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 				ArchiLogger.LogNullError(nameof(steamID));
 
 				return false;
@@ -462,7 +462,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> RemoveFriend(ulong steamID) {
-			if (steamID == 0) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 				ArchiLogger.LogNullError(nameof(steamID));
 
 				return false;
@@ -503,7 +503,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<EResult> SendMessage(ulong steamID, string message) {
-			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || string.IsNullOrEmpty(message)) {
 				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(message));
 
 				return EResult.Fail;
@@ -560,6 +560,41 @@ namespace ArchiSteamFarm {
 
 			try {
 				response = await UnifiedChatRoomService.SendMessage(x => x.SendChatMessage(request));
+			} catch (Exception e) {
+				ArchiLogger.LogGenericWarningException(e);
+
+				return EResult.Timeout;
+			}
+
+			if (response == null) {
+				ArchiLogger.LogNullError(nameof(response));
+
+				return EResult.Fail;
+			}
+
+			return response.Result;
+		}
+
+		internal async Task<EResult> SendTypingStatus(ulong steamID) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+				ArchiLogger.LogNullError(nameof(steamID));
+
+				return EResult.Fail;
+			}
+
+			if (!Client.IsConnected) {
+				return EResult.NoConnection;
+			}
+
+			CFriendMessages_SendMessage_Request request = new CFriendMessages_SendMessage_Request {
+				chat_entry_type = (int) EChatEntryType.Typing,
+				steamid = steamID
+			};
+
+			SteamUnifiedMessages.ServiceMethodResponse response;
+
+			try {
+				response = await UnifiedFriendMessagesService.SendMessage(x => x.SendMessage(request));
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
 
