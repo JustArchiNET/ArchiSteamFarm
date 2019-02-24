@@ -462,10 +462,12 @@ namespace ArchiSteamFarm {
 			bool feedback = Bot.HasPermission(steamID, BotConfig.EPermission.FamilySharing);
 
 			if (feedback) {
-				await Bot.SendMessage(chatGroupID, chatID, FormatBotResponse(Strings.PleaseWait)).ConfigureAwait(false);
+				string pleaseWaitMessage = FormatBotResponse(Strings.PleaseWait);
+
+				await Bot.SendMessage(chatGroupID, chatID, pleaseWaitMessage).ConfigureAwait(false);
 
 				while (!responseTask.IsCompleted && (await Task.WhenAny(responseTask, Task.Delay(SteamTypingStatusDelay)).ConfigureAwait(false) != responseTask)) {
-					await Bot.SendMessage(chatGroupID, chatID, FormatBotResponse(Strings.PleaseWait)).ConfigureAwait(false);
+					await Bot.SendMessage(chatGroupID, chatID, pleaseWaitMessage).ConfigureAwait(false);
 				}
 			}
 
