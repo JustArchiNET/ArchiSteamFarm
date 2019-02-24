@@ -693,5 +693,24 @@ StackTrace:
   <data name="PluginsWarning" xml:space="preserve">
     <value>Uaktywniono jedną lub więcej niestandardowych wtyczek do ASF. Ponieważ nie jesteśmy w stanie zaoferować wsparcia dla zmodyfikowanych konfiguracji, skontaktuj się z odpowiednimi programistami wtyczek, z których zdecydowałeś się korzystać w przypadku jakichkolwiek problemów.</value>
   </data>
-  
+  <data name="PleaseWait" xml:space="preserve">
+    <value>Proszę czekać...</value>
+  </data>
+  <data name="EnterCommand" xml:space="preserve">
+    <value>Wprowadź polecenie: </value>
+  </data>
+  <data name="Executing" xml:space="preserve">
+    <value>Wykonywanie...</value>
+  </data>
+  <data name="InteractiveConsoleEnabled" xml:space="preserve">
+    <value>Interaktywna konsola jest teraz aktywna, wciśnij 'c', aby przejść do trybu poleceń.</value>
+  </data>
+  <data name="InteractiveConsoleNotAvailable" xml:space="preserve">
+    <value>Interaktywna konsola nie jest dostępna ze względu na brakującą konfigurację {0}.</value>
+    <comment>{0} will be replaced by the name of the missing config property (string)</comment>
+  </data>
+  <data name="Response" xml:space="preserve">
+    <value>Odpowiedź: {0}</value>
+    <comment>{0} will be replaced by the generated response (string)</comment>
+  </data>
 </root>

@@ -696,4 +696,21 @@
   <data name="PleaseWait" xml:space="preserve">
     <value>Подождите пожалуйста...</value>
   </data>
+  <data name="EnterCommand" xml:space="preserve">
+    <value>Введите команду: </value>
+  </data>
+  <data name="Executing" xml:space="preserve">
+    <value>Выполнение...</value>
+  </data>
+  <data name="InteractiveConsoleEnabled" xml:space="preserve">
+    <value>Включена интерактивная консоль, нажмите 'c' чтобы перейти в режим команд.</value>
+  </data>
+  <data name="InteractiveConsoleNotAvailable" xml:space="preserve">
+    <value>Интерактивная консоль недоступна из-за отсутствия параметра конфигурации {0}.</value>
+    <comment>{0} will be replaced by the name of the missing config property (string)</comment>
+  </data>
+  <data name="Response" xml:space="preserve">
+    <value>Ответ: {0}</value>
+    <comment>{0} will be replaced by the generated response (string)</comment>
+  </data>
 </root>

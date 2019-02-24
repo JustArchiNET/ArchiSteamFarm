@@ -696,4 +696,21 @@
   <data name="PleaseWait" xml:space="preserve">
     <value>请稍等……</value>
   </data>
+  <data name="EnterCommand" xml:space="preserve">
+    <value>请输入命令: </value>
+  </data>
+  <data name="Executing" xml:space="preserve">
+    <value>正在执行……</value>
+  </data>
+  <data name="InteractiveConsoleEnabled" xml:space="preserve">
+    <value>交互式控制台已启用，输入 c 以进入命令模式。</value>
+  </data>
+  <data name="InteractiveConsoleNotAvailable" xml:space="preserve">
+    <value>由于缺少 {0} 配置属性，交互式控制台目前不可用。</value>
+    <comment>{0} will be replaced by the name of the missing config property (string)</comment>
+  </data>
+  <data name="Response" xml:space="preserve">
+    <value>响应：{0}</value>
+    <comment>{0} will be replaced by the generated response (string)</comment>
+  </data>
 </root>
