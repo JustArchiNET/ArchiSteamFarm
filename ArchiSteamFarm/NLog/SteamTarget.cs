@@ -73,7 +73,9 @@ namespace ArchiSteamFarm.NLog {
 			Bot bot = null;
 
 			if (!string.IsNullOrEmpty(BotName)) {
-				if (!Bot.Bots.TryGetValue(BotName, out bot) || !bot.IsConnectedAndLoggedOn) {
+				bot = Bot.GetBot(BotName);
+
+				if (bot?.IsConnectedAndLoggedOn != true) {
 					return;
 				}
 			}

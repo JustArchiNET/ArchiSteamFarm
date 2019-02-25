@@ -839,7 +839,9 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Bots.TryGetValue(botNameTo, out Bot targetBot)) {
+			Bot targetBot = Bot.GetBot(botNameTo);
+
+			if (targetBot == null) {
 				return ASF.IsOwner(steamID) ? FormatBotResponse(string.Format(Strings.BotNotFound, botNameTo)) : null;
 			}
 
@@ -875,7 +877,9 @@ namespace ArchiSteamFarm {
 				return FormatStaticResponse(string.Format(Strings.ErrorIsInvalid, nameof(contextID)));
 			}
 
-			if (!Bot.Bots.TryGetValue(botNameTo, out Bot targetBot)) {
+			Bot targetBot = Bot.GetBot(botNameTo);
+
+			if (targetBot == null) {
 				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNameTo)) : null;
 			}
 
@@ -2553,7 +2557,9 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(Bot.BotConfig.TransferableTypes)));
 			}
 
-			if (!Bot.Bots.TryGetValue(botNameTo, out Bot targetBot)) {
+			Bot targetBot = Bot.GetBot(botNameTo);
+
+			if (targetBot == null) {
 				return ASF.IsOwner(steamID) ? FormatBotResponse(string.Format(Strings.BotNotFound, botNameTo)) : null;
 			}
 
@@ -2634,7 +2640,9 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Bot.Bots.TryGetValue(botNameTo, out Bot targetBot)) {
+			Bot targetBot = Bot.GetBot(botNameTo);
+
+			if (targetBot == null) {
 				return ASF.IsOwner(steamID) ? FormatBotResponse(string.Format(Strings.BotNotFound, botNameTo)) : null;
 			}
 
@@ -2686,7 +2694,9 @@ namespace ArchiSteamFarm {
 				realAppIDs.Add(appID);
 			}
 
-			if (!Bot.Bots.TryGetValue(botNameTo, out Bot targetBot)) {
+			Bot targetBot = Bot.GetBot(botNameTo);
+
+			if (targetBot == null) {
 				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNameTo)) : null;
 			}
 

@@ -293,6 +293,25 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
+		public static Bot GetBot(string botName) {
+			if (string.IsNullOrEmpty(botName)) {
+				ASF.ArchiLogger.LogNullError(nameof(botName));
+
+				return null;
+			}
+
+			if (Bots.TryGetValue(botName, out Bot targetBot)) {
+				return targetBot;
+			}
+
+			if (!ulong.TryParse(botName, out ulong steamID) || (steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+				return null;
+			}
+
+			return Bots.Values.FirstOrDefault(bot => bot.SteamID == steamID);
+		}
+
+		[PublicAPI]
 		public static HashSet<Bot> GetBots(string args) {
 			if (string.IsNullOrEmpty(args)) {
 				ASF.ArchiLogger.LogNullError(nameof(args));
@@ -315,16 +334,24 @@ namespace ArchiSteamFarm {
 				if (botName.Contains("..")) {
 					string[] botRange = botName.Split(new[] { ".." }, StringSplitOptions.RemoveEmptyEntries);
 
-					if ((botRange.Length == 2) && Bots.TryGetValue(botRange[0], out Bot firstBot) && Bots.TryGetValue(botRange[1], out Bot lastBot)) {
-						foreach (Bot bot in Bots.OrderBy(bot => bot.Key, BotsComparer).Select(bot => bot.Value).SkipWhile(bot => bot != firstBot)) {
-							result.Add(bot);
+					if (botRange.Length == 2) {
+						Bot firstBot = GetBot(botRange[0]);
 
-							if (bot == lastBot) {
-								break;
+						if (firstBot != null) {
+							Bot lastBot = GetBot(botRange[1]);
+
+							if (lastBot != null) {
+								foreach (Bot bot in Bots.OrderBy(bot => bot.Key, BotsComparer).Select(bot => bot.Value).SkipWhile(bot => bot != firstBot)) {
+									result.Add(bot);
+
+									if (bot == lastBot) {
+										break;
+									}
+								}
+
+								continue;
 							}
 						}
-
-						continue;
 					}
 				}
 
@@ -353,11 +380,13 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				if (!Bots.TryGetValue(botName, out Bot targetBot)) {
+				Bot singleBot = GetBot(botName);
+
+				if (singleBot == null) {
 					continue;
 				}
 
-				result.Add(targetBot);
+				result.Add(singleBot);
 			}
 
 			return result;
