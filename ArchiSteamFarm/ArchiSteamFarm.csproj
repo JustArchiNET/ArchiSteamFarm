@@ -60,7 +60,7 @@
     <PackageReference Include="HtmlAgilityPack" Version="1.9.0" />
     <PackageReference Include="Humanizer" Version="2.5.16" />
     <PackageReference Include="JetBrains.Annotations" Version="2018.3.0" />
-    <PackageReference Include="Markdig.Signed" Version="0.15.7" />
+    <PackageReference Include="Markdig.Signed" Version="0.16.0" />
     <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Formatters.Json" Version="2.2.0" />
