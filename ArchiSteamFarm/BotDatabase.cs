@@ -32,13 +32,15 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	internal sealed class BotDatabase : IDisposable {
-		internal bool HasGamesToRedeemInBackground {
+		internal uint GamesToRedeemInBackgroundCount {
 			get {
 				lock (GamesToRedeemInBackground) {
-					return GamesToRedeemInBackground.Count > 0;
+					return (uint) GamesToRedeemInBackground.Count;
 				}
 			}
 		}
+
+		internal bool HasGamesToRedeemInBackground => GamesToRedeemInBackgroundCount > 0;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		private readonly ConcurrentHashSet<ulong> BlacklistedFromTradesSteamIDs = new ConcurrentHashSet<ulong>();

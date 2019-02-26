@@ -79,6 +79,9 @@ namespace ArchiSteamFarm {
 		public readonly Commands Commands;
 
 		[JsonProperty]
+		public uint GamesToRedeemInBackgroundCount => BotDatabase?.GamesToRedeemInBackgroundCount ?? 0;
+
+		[JsonProperty]
 		public bool IsConnectedAndLoggedOn => SteamClient?.SteamID != null;
 
 		[JsonProperty]

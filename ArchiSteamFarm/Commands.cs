@@ -129,6 +129,9 @@ namespace ArchiSteamFarm {
 						case "BALANCE":
 
 							return ResponseWalletBalance(steamID);
+						case "BGR":
+
+							return ResponseBackgroundGamesRedeemer(steamID);
 						case "BL":
 
 							return ResponseBlacklist(steamID);
@@ -218,6 +221,9 @@ namespace ArchiSteamFarm {
 						case "BALANCE":
 
 							return await ResponseWalletBalance(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
+						case "BGR":
+
+							return await ResponseBackgroundGamesRedeemer(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "BL":
 
 							return await ResponseBlacklist(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
@@ -884,6 +890,43 @@ namespace ArchiSteamFarm {
 			}
 
 			IList<string> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAdvancedTransfer(steamID, appID, contextID, targetBot))).ConfigureAwait(false);
+
+			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+
+			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+		}
+
+		private string ResponseBackgroundGamesRedeemer(ulong steamID) {
+			if (steamID == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(steamID));
+
+				return null;
+			}
+
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
+				return null;
+			}
+
+			uint count = Bot.GamesToRedeemInBackgroundCount;
+
+			return FormatBotResponse(string.Format(Strings.BotGamesToRedeemInBackgroundCount, count));
+		}
+
+		[ItemCanBeNull]
+		private static async Task<string> ResponseBackgroundGamesRedeemer(ulong steamID, string botNames) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botNames)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
+
+				return null;
+			}
+
+			HashSet<Bot> bots = Bot.GetBots(botNames);
+
+			if ((bots == null) || (bots.Count == 0)) {
+				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
+			}
+
+			IList<string> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseBackgroundGamesRedeemer(steamID)))).ConfigureAwait(false);
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 

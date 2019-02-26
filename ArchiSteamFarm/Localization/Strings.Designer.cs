@@ -313,6 +313,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Bot has {0} games remaining in its background queue..
+        /// </summary>
+        public static string BotGamesToRedeemInBackgroundCount {
+            get {
+                return ResourceManager.GetString("BotGamesToRedeemInBackgroundCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Bot has no wallet..
         /// </summary>
         public static string BotHasNoWallet {
