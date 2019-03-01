@@ -2143,7 +2143,6 @@ namespace ArchiSteamFarm {
 			HashSet<string> pendingKeys = keys.ToHashSet();
 			HashSet<string> unusedKeys = pendingKeys.ToHashSet();
 
-			bool firstRound = true;
 			HashSet<Bot> rateLimitedBots = new HashSet<Bot>();
 
 			StringBuilder response = new StringBuilder();
@@ -2154,7 +2153,7 @@ namespace ArchiSteamFarm {
 				while (!string.IsNullOrEmpty(key)) {
 					string startingKey = key;
 
-					using (IEnumerator<Bot> botsEnumerator = Bot.Bots.Where(bot => (bot.Value != Bot) && !rateLimitedBots.Contains(bot.Value) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.HasPermission(steamID, BotConfig.EPermission.Operator)).OrderBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value).GetEnumerator()) {
+					using (IEnumerator<Bot> botsEnumerator = Bot.Bots.Where(bot => (bot.Value != Bot) && !rateLimitedBots.Contains(bot.Value) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.HasPermission(steamID, BotConfig.EPermission.Operator)).OrderByDescending(bot => Bot.BotsComparer.Compare(bot.Key, Bot.BotName)).ThenBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value).GetEnumerator()) {
 						Bot currentBot = Bot;
 
 						while (!string.IsNullOrEmpty(key) && (currentBot != null)) {
@@ -2306,26 +2305,6 @@ namespace ArchiSteamFarm {
 							// b) When we're skipping initial bot AND we have forwarding enabled, otherwise we won't get down to other accounts
 							if (distribute || (forward && redeemFlags.HasFlag(ERedeemFlags.SkipInitial))) {
 								currentBot = botsEnumerator.MoveNext() ? botsEnumerator.Current : null;
-
-								if (!firstRound) {
-									continue;
-								}
-
-								firstRound = false;
-
-								if (currentBot == null) {
-									continue;
-								}
-
-								while (Bot.BotsComparer.Compare(currentBot.BotName, Bot.BotName) <= 0) {
-									if (!botsEnumerator.MoveNext()) {
-										currentBot = null;
-
-										break;
-									}
-
-									currentBot = botsEnumerator.Current;
-								}
 							}
 						}
 					}
