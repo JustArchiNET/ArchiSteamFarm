@@ -44,6 +44,9 @@ namespace ArchiSteamFarm {
 		public static readonly ArchiLogger ArchiLogger = new ArchiLogger(SharedInfo.ASF);
 
 		[PublicAPI]
+		public static byte LoadBalancingDelay => Math.Max(GlobalConfig?.LoginLimiterDelay ?? 0, GlobalConfig.DefaultLoginLimiterDelay);
+
+		[PublicAPI]
 		public static GlobalConfig GlobalConfig { get; private set; }
 
 		[PublicAPI]
