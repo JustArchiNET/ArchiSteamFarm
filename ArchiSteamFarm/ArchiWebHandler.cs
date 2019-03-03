@@ -536,8 +536,8 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<HtmlDocument> UrlPostToHtmlDocumentWithSession(string host, string request, Dictionary<string, string> data = null, string referer = null, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
-			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
-				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
+			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request) || !Enum.IsDefined(typeof(ESession), session)) {
+				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request) + " || " + nameof(session));
 
 				return null;
 			}
@@ -602,6 +602,10 @@ namespace ArchiSteamFarm {
 						sessionName = "sessionid";
 
 						break;
+					case ESession.PascalCase:
+						sessionName = "SessionID";
+
+						break;
 					default:
 						Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(session), session));
 
@@ -644,8 +648,8 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<T> UrlPostToJsonObjectWithSession<T>(string host, string request, Dictionary<string, string> data = null, string referer = null, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) where T : class {
-			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
-				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
+			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request) || !Enum.IsDefined(typeof(ESession), session)) {
+				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request) + " || " + nameof(session));
 
 				return null;
 			}
@@ -708,6 +712,10 @@ namespace ArchiSteamFarm {
 						break;
 					case ESession.Lowercase:
 						sessionName = "sessionid";
+
+						break;
+					case ESession.PascalCase:
+						sessionName = "SessionID";
 
 						break;
 					default:
@@ -752,8 +760,8 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<T> UrlPostToJsonObjectWithSession<T>(string host, string request, List<KeyValuePair<string, string>> data = null, string referer = null, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) where T : class {
-			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
-				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
+			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request) || !Enum.IsDefined(typeof(ESession), session)) {
+				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request) + " || " + nameof(session));
 
 				return null;
 			}
@@ -816,6 +824,10 @@ namespace ArchiSteamFarm {
 						break;
 					case ESession.Lowercase:
 						sessionName = "sessionid";
+
+						break;
+					case ESession.PascalCase:
+						sessionName = "SessionID";
 
 						break;
 					default:
@@ -863,8 +875,8 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<bool> UrlPostWithSession(string host, string request, Dictionary<string, string> data = null, string referer = null, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
-			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
-				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
+			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request) || !Enum.IsDefined(typeof(ESession), session)) {
+				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request) + " || " + nameof(session));
 
 				return false;
 			}
@@ -927,6 +939,10 @@ namespace ArchiSteamFarm {
 						break;
 					case ESession.Lowercase:
 						sessionName = "sessionid";
+
+						break;
+					case ESession.PascalCase:
+						sessionName = "SessionID";
 
 						break;
 					default:
@@ -2655,7 +2671,8 @@ namespace ArchiSteamFarm {
 		public enum ESession : byte {
 			None,
 			Lowercase,
-			CamelCase
+			CamelCase,
+			PascalCase
 		}
 
 		private enum ESteamApiKeyState : byte {
