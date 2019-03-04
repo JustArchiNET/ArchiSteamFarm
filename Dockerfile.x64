@@ -6,7 +6,7 @@ RUN echo "node: $(node --version)" && \
     npm ci && \
     npm run-script deploy
 
-FROM microsoft/dotnet:2.2-sdk AS build-dotnet
+FROM mcr.microsoft.com/dotnet/core/sdk:2.2 AS build-dotnet
 ENV CONFIGURATION Release
 ENV NET_CORE_VERSION netcoreapp2.2
 WORKDIR /app
@@ -19,7 +19,7 @@ RUN dotnet --info && \
     dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/publish' /nologo /p:ASFVariant=docker /p:LinkDuringPublish=false && \
     cp "ArchiSteamFarm/overlay/generic/ArchiSteamFarm.sh" "ArchiSteamFarm/out/publish/ArchiSteamFarm.sh"
 
-FROM microsoft/dotnet:2.2-runtime-stretch-slim AS runtime
+FROM mcr.microsoft.com/dotnet/core/runtime:2.2-stretch-slim AS runtime
 ENV ASPNETCORE_URLS=
 LABEL maintainer="JustArchi <JustArchi@JustArchi.net>"
 EXPOSE 1242
