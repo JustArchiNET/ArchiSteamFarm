@@ -1058,6 +1058,16 @@ namespace ArchiSteamFarm {
 
 			await Core.OnBotInit(bot).ConfigureAwait(false);
 
+			HashSet<ClientMsgHandler> customHandlers = await Core.OnBotSteamHandlersInit(bot).ConfigureAwait(false);
+
+			if ((customHandlers != null) && (customHandlers.Count > 0)) {
+				foreach (ClientMsgHandler customHandler in customHandlers) {
+					bot.SteamClient.AddHandler(customHandler);
+				}
+			}
+
+			await Core.OnBotSteamCallbacksInit(bot, bot.CallbackManager).ConfigureAwait(false);
+
 			await bot.InitModules().ConfigureAwait(false);
 
 			bot.InitStart();

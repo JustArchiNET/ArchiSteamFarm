@@ -342,6 +342,48 @@ namespace ArchiSteamFarm.Plugins {
 			return string.Join(Environment.NewLine, responses.Where(response => !string.IsNullOrEmpty(response)));
 		}
 
+		internal static async Task OnBotSteamCallbacksInit(Bot bot, CallbackManager callbackManager) {
+			if ((bot == null) || (callbackManager == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(callbackManager));
+
+				return;
+			}
+
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+				return;
+			}
+
+			try {
+				await Utilities.InParallel(ActivePlugins.OfType<IBotSteamClient>().Select(plugin => Task.Run(() => plugin.OnBotSteamCallbacksInit(bot, callbackManager)))).ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+			}
+		}
+
+		internal static async Task<HashSet<ClientMsgHandler>> OnBotSteamHandlersInit(Bot bot) {
+			if (bot == null) {
+				ASF.ArchiLogger.LogNullError(nameof(bot));
+
+				return null;
+			}
+
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+				return null;
+			}
+
+			IList<IReadOnlyCollection<ClientMsgHandler>> responses;
+
+			try {
+				responses = await Utilities.InParallel(ActivePlugins.OfType<IBotSteamClient>().Select(plugin => Task.Run(() => plugin.OnBotSteamHandlersInit(bot)))).ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+
+				return null;
+			}
+
+			return responses.Where(response => response != null).SelectMany(handler => handler).Where(handler => handler != null).ToHashSet();
+		}
+
 		internal static async Task<bool> OnBotTradeOffer(Bot bot, Steam.TradeOffer tradeOffer) {
 			if ((bot == null) || (tradeOffer == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(tradeOffer));
