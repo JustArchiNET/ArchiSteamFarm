@@ -34,7 +34,7 @@ namespace ArchiSteamFarm.Plugins {
 
 		/// <summary>
 		///     ASF will use this property as version indicator of your plugin to the user.
-		///     You have a freedom in deciding what versionining you want to use, this is for identification purposes only.
+		///     You have a freedom in deciding what versioning you want to use, this is for identification purposes only.
 		/// </summary>
 		/// <returns>Version that will be shown to the user when plugin is loaded.</returns>
 		[NotNull]
