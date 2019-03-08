@@ -41,6 +41,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal bool HasGamesToRedeemInBackground => GamesToRedeemInBackgroundCount > 0;
+		internal bool HasIdlingPriorityAppIDs => IdlingPriorityAppIDs.Count > 0;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		private readonly ConcurrentHashSet<ulong> BlacklistedFromTradesSteamIDs = new ConcurrentHashSet<ulong>();
