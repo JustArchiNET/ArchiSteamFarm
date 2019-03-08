@@ -22,13 +22,13 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.IPC.Requests;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[Route("Api/Bot")]
@@ -99,18 +99,12 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			request.BotConfig.ShouldSerializeEverything = false;
 			request.BotConfig.ShouldSerializeHelperProperties = false;
 
-			string originalSteamLogin = request.BotConfig.SteamLogin;
-			string originalDecryptedSteamPassword = request.BotConfig.DecryptedSteamPassword;
-			string originalSteamParentalCode = request.BotConfig.SteamParentalCode;
-
 			HashSet<string> bots = botNames.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Where(botName => botName != SharedInfo.ASF).ToHashSet();
 
 			Dictionary<string, bool> result = new Dictionary<string, bool>(bots.Count);
 
 			foreach (string botName in bots) {
-				bool botExists = Bot.Bots.TryGetValue(botName, out Bot bot);
-
-				if (botExists) {
+				if (Bot.Bots.TryGetValue(botName, out Bot bot)) {
 					if (!request.BotConfig.IsSteamLoginSet && bot.BotConfig.IsSteamLoginSet) {
 						request.BotConfig.SteamLogin = bot.BotConfig.SteamLogin;
 					}
@@ -122,16 +116,29 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 					if (!request.BotConfig.IsSteamParentalCodeSet && bot.BotConfig.IsSteamParentalCodeSet) {
 						request.BotConfig.SteamParentalCode = bot.BotConfig.SteamParentalCode;
 					}
+
+					if ((bot.BotConfig.AdditionalProperties != null) && (bot.BotConfig.AdditionalProperties.Count > 0)) {
+						if (request.BotConfig.AdditionalProperties == null) {
+							request.BotConfig.AdditionalProperties = new Dictionary<string, JToken>(bot.BotConfig.AdditionalProperties.Count);
+						}
+
+						foreach ((string key, JToken value) in bot.BotConfig.AdditionalProperties.Where(property => !request.BotConfig.AdditionalProperties.ContainsKey(property.Key))) {
+							request.BotConfig.AdditionalProperties.Add(key, value);
+						}
+
+						request.BotConfig.AdditionalProperties.TrimExcess();
+					}
 				}
 
-				string filePath = Path.Combine(SharedInfo.ConfigDirectory, botName + SharedInfo.ConfigExtension);
+				string filePath = Bot.GetFilePath(botName, Bot.EFileType.Config);
+
+				if (string.IsNullOrEmpty(filePath)) {
+					ASF.ArchiLogger.LogNullError(filePath);
+
+					return BadRequest(new GenericResponse<IReadOnlyDictionary<string, bool>>(false, string.Format(Strings.ErrorIsInvalid, nameof(filePath))));
+				}
+
 				result[botName] = await BotConfig.Write(filePath, request.BotConfig).ConfigureAwait(false);
-
-				if (botExists) {
-					request.BotConfig.SteamLogin = originalSteamLogin;
-					request.BotConfig.DecryptedSteamPassword = originalDecryptedSteamPassword;
-					request.BotConfig.SteamParentalCode = originalSteamParentalCode;
-				}
 			}
 
 			return Ok(new GenericResponse<IReadOnlyDictionary<string, bool>>(result.Values.All(value => value), result));

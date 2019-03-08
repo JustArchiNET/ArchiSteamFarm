@@ -116,10 +116,10 @@ namespace ArchiSteamFarm {
 		private readonly SteamUser SteamUser;
 		private readonly Trading Trading;
 
-		private IEnumerable<(string FilePath, EBotFileType FileType)> RelatedFiles {
+		private IEnumerable<(string FilePath, EFileType FileType)> RelatedFiles {
 			get {
-				foreach (EBotFileType fileType in Enum.GetValues(typeof(EBotFileType))) {
-					string filePath = GetBotFilePath(fileType);
+				foreach (EFileType fileType in Enum.GetValues(typeof(EFileType))) {
+					string filePath = GetFilePath(fileType);
 
 					if (string.IsNullOrEmpty(filePath)) {
 						ArchiLogger.LogNullError(nameof(filePath));
@@ -473,7 +473,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal bool DeleteRedeemedKeysFiles() {
-			string unusedKeysFilePath = GetBotFilePath(EBotFileType.KeysToRedeemUnused);
+			string unusedKeysFilePath = GetFilePath(EFileType.KeysToRedeemUnused);
 
 			if (string.IsNullOrEmpty(unusedKeysFilePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(unusedKeysFilePath));
@@ -491,7 +491,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			string usedKeysFilePath = GetBotFilePath(EBotFileType.KeysToRedeemUsed);
+			string usedKeysFilePath = GetFilePath(EFileType.KeysToRedeemUsed);
 
 			if (string.IsNullOrEmpty(usedKeysFilePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(usedKeysFilePath));
@@ -681,6 +681,44 @@ namespace ArchiSteamFarm {
 			return ((productInfoResultSet.Complete && !productInfoResultSet.Failed) || optimisticDiscovery ? appID : 0, DateTime.MinValue);
 		}
 
+		internal static string GetFilePath(string botName, EFileType fileType) {
+			if (string.IsNullOrEmpty(botName) || !Enum.IsDefined(typeof(EFileType), fileType)) {
+				ASF.ArchiLogger.LogNullError(nameof(botName) + " || " + nameof(fileType));
+
+				return null;
+			}
+
+			string botPath = Path.Combine(SharedInfo.ConfigDirectory, botName);
+
+			switch (fileType) {
+				case EFileType.Config:
+
+					return botPath + SharedInfo.ConfigExtension;
+				case EFileType.Database:
+
+					return botPath + SharedInfo.DatabaseExtension;
+				case EFileType.KeysToRedeem:
+
+					return botPath + SharedInfo.KeysExtension;
+				case EFileType.KeysToRedeemUnused:
+
+					return botPath + SharedInfo.KeysExtension + SharedInfo.KeysUnusedExtension;
+				case EFileType.KeysToRedeemUsed:
+
+					return botPath + SharedInfo.KeysExtension + SharedInfo.KeysUsedExtension;
+				case EFileType.MobileAuthenticator:
+
+					return botPath + SharedInfo.MobileAuthenticatorExtension;
+				case EFileType.SentryFile:
+
+					return botPath + SharedInfo.SentryHashExtension;
+				default:
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(fileType), fileType));
+
+					return null;
+			}
+		}
+
 		[ItemCanBeNull]
 		internal async Task<HashSet<uint>> GetMarketableAppIDs() => await ArchiWebHandler.GetAppList().ConfigureAwait(false);
 
@@ -748,7 +786,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<(Dictionary<string, string> UnusedKeys, Dictionary<string, string> UsedKeys)> GetUsedAndUnusedKeys() {
-			string unusedKeysFilePath = GetBotFilePath(EBotFileType.KeysToRedeemUnused);
+			string unusedKeysFilePath = GetFilePath(EFileType.KeysToRedeemUnused);
 
 			if (string.IsNullOrEmpty(unusedKeysFilePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(unusedKeysFilePath));
@@ -756,7 +794,7 @@ namespace ArchiSteamFarm {
 				return (null, null);
 			}
 
-			string usedKeysFilePath = GetBotFilePath(EBotFileType.KeysToRedeemUsed);
+			string usedKeysFilePath = GetFilePath(EFileType.KeysToRedeemUsed);
 
 			if (string.IsNullOrEmpty(usedKeysFilePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(usedKeysFilePath));
@@ -896,7 +934,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			string configFile = GetBotFilePath(EBotFileType.Config);
+			string configFile = GetFilePath(EFileType.Config);
 
 			if (string.IsNullOrEmpty(configFile)) {
 				ArchiLogger.LogNullError(nameof(configFile));
@@ -1003,7 +1041,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			string configFilePath = GetBotFilePath(botName, EBotFileType.Config);
+			string configFilePath = GetFilePath(botName, EFileType.Config);
 
 			if (string.IsNullOrEmpty(configFilePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(configFilePath));
@@ -1023,7 +1061,7 @@ namespace ArchiSteamFarm {
 				ASF.ArchiLogger.LogGenericDebug(configFilePath + ": " + JsonConvert.SerializeObject(botConfig, Formatting.Indented));
 			}
 
-			string databaseFilePath = GetBotFilePath(botName, EBotFileType.Database);
+			string databaseFilePath = GetFilePath(botName, EFileType.Database);
 
 			if (string.IsNullOrEmpty(databaseFilePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(databaseFilePath));
@@ -1091,8 +1129,8 @@ namespace ArchiSteamFarm {
 			await BotDatabase.MakeReadOnly().ConfigureAwait(false);
 
 			// We handle the config file last as it'll trigger new bot creation
-			foreach ((string filePath, EBotFileType fileType) in RelatedFiles.Where(file => File.Exists(file.FilePath)).OrderByDescending(file => file.FileType != EBotFileType.Config)) {
-				string newFilePath = GetBotFilePath(newBotName, fileType);
+			foreach ((string filePath, EFileType fileType) in RelatedFiles.Where(file => File.Exists(file.FilePath)).OrderByDescending(file => file.FileType != EFileType.Config)) {
+				string newFilePath = GetFilePath(newBotName, fileType);
 
 				if (string.IsNullOrEmpty(newFilePath)) {
 					ArchiLogger.LogNullError(nameof(newFilePath));
@@ -1328,7 +1366,7 @@ namespace ArchiSteamFarm {
 
 			// Support and convert 2FA files
 			if (!HasMobileAuthenticator) {
-				string mobileAuthenticatorFilePath = GetBotFilePath(EBotFileType.MobileAuthenticator);
+				string mobileAuthenticatorFilePath = GetFilePath(EFileType.MobileAuthenticator);
 
 				if (string.IsNullOrEmpty(mobileAuthenticatorFilePath)) {
 					ArchiLogger.LogNullError(nameof(mobileAuthenticatorFilePath));
@@ -1341,7 +1379,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			string keysToRedeemFilePath = GetBotFilePath(EBotFileType.KeysToRedeem);
+			string keysToRedeemFilePath = GetFilePath(EFileType.KeysToRedeem);
 
 			if (string.IsNullOrEmpty(keysToRedeemFilePath)) {
 				ArchiLogger.LogNullError(nameof(keysToRedeemFilePath));
@@ -1479,52 +1517,14 @@ namespace ArchiSteamFarm {
 			return message.Replace("\\", "\\\\").Replace("[", "\\[");
 		}
 
-		private static string GetBotFilePath(string botName, EBotFileType fileType) {
-			if (string.IsNullOrEmpty(botName) || !Enum.IsDefined(typeof(EBotFileType), fileType)) {
-				ASF.ArchiLogger.LogNullError(nameof(botName) + " || " + nameof(fileType));
-
-				return null;
-			}
-
-			string botPath = Path.Combine(SharedInfo.ConfigDirectory, botName);
-
-			switch (fileType) {
-				case EBotFileType.Config:
-
-					return botPath + SharedInfo.ConfigExtension;
-				case EBotFileType.Database:
-
-					return botPath + SharedInfo.DatabaseExtension;
-				case EBotFileType.KeysToRedeem:
-
-					return botPath + SharedInfo.KeysExtension;
-				case EBotFileType.KeysToRedeemUnused:
-
-					return botPath + SharedInfo.KeysExtension + SharedInfo.KeysUnusedExtension;
-				case EBotFileType.KeysToRedeemUsed:
-
-					return botPath + SharedInfo.KeysExtension + SharedInfo.KeysUsedExtension;
-				case EBotFileType.MobileAuthenticator:
-
-					return botPath + SharedInfo.MobileAuthenticatorExtension;
-				case EBotFileType.SentryFile:
-
-					return botPath + SharedInfo.SentryHashExtension;
-				default:
-					ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(fileType), fileType));
-
-					return null;
-			}
-		}
-
-		private string GetBotFilePath(EBotFileType fileType) {
-			if (!Enum.IsDefined(typeof(EBotFileType), fileType)) {
+		private string GetFilePath(EFileType fileType) {
+			if (!Enum.IsDefined(typeof(EFileType), fileType)) {
 				ASF.ArchiLogger.LogNullError(nameof(fileType));
 
 				return null;
 			}
 
-			return GetBotFilePath(BotName, fileType);
+			return GetFilePath(BotName, fileType);
 		}
 
 		[ItemCanBeNull]
@@ -1897,7 +1897,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			string sentryFilePath = GetBotFilePath(EBotFileType.SentryFile);
+			string sentryFilePath = GetFilePath(EFileType.SentryFile);
 
 			if (string.IsNullOrEmpty(sentryFilePath)) {
 				ArchiLogger.LogNullError(nameof(sentryFilePath));
@@ -2492,7 +2492,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			string sentryFilePath = GetBotFilePath(EBotFileType.SentryFile);
+			string sentryFilePath = GetFilePath(EFileType.SentryFile);
 
 			if (string.IsNullOrEmpty(sentryFilePath)) {
 				ArchiLogger.LogNullError(nameof(sentryFilePath));
@@ -2793,7 +2793,7 @@ namespace ArchiSteamFarm {
 
 					string logEntry = name + DefaultBackgroundKeysRedeemerSeparator + "[" + result.PurchaseResultDetail + "]" + ((result.Items != null) && (result.Items.Count > 0) ? DefaultBackgroundKeysRedeemerSeparator + string.Join(", ", result.Items) : "") + DefaultBackgroundKeysRedeemerSeparator + key;
 
-					string filePath = GetBotFilePath(redeemed ? EBotFileType.KeysToRedeemUsed : EBotFileType.KeysToRedeemUnused);
+					string filePath = GetFilePath(redeemed ? EFileType.KeysToRedeemUsed : EFileType.KeysToRedeemUnused);
 
 					if (string.IsNullOrEmpty(filePath)) {
 						ArchiLogger.LogNullError(nameof(filePath));
@@ -2878,7 +2878,7 @@ namespace ArchiSteamFarm {
 			return message.Replace("\\[", "[").Replace("\\\\", "\\");
 		}
 
-		private enum EBotFileType : byte {
+		internal enum EFileType : byte {
 			Config,
 			Database,
 			KeysToRedeem,

@@ -20,12 +20,14 @@
 // limitations under the License.
 
 using System;
-using System.IO;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.IPC.Requests;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[Route("Api/ASF")]
@@ -62,14 +64,32 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, errorMessage));
 			}
 
+			request.GlobalConfig.ShouldSerializeEverything = false;
+			request.GlobalConfig.ShouldSerializeHelperProperties = false;
+
 			if (!request.GlobalConfig.IsWebProxyPasswordSet && ASF.GlobalConfig.IsWebProxyPasswordSet) {
 				request.GlobalConfig.WebProxyPassword = ASF.GlobalConfig.WebProxyPassword;
 			}
 
-			request.GlobalConfig.ShouldSerializeEverything = false;
-			request.GlobalConfig.ShouldSerializeHelperProperties = false;
+			if ((ASF.GlobalConfig.AdditionalProperties != null) && (ASF.GlobalConfig.AdditionalProperties.Count > 0)) {
+				if (request.GlobalConfig.AdditionalProperties == null) {
+					request.GlobalConfig.AdditionalProperties = new Dictionary<string, JToken>(ASF.GlobalConfig.AdditionalProperties.Count);
+				}
 
-			string filePath = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName);
+				foreach ((string key, JToken value) in ASF.GlobalConfig.AdditionalProperties.Where(property => !request.GlobalConfig.AdditionalProperties.ContainsKey(property.Key))) {
+					request.GlobalConfig.AdditionalProperties.Add(key, value);
+				}
+
+				request.GlobalConfig.AdditionalProperties.TrimExcess();
+			}
+
+			string filePath = ASF.GetFilePath(ASF.EFileType.Config);
+
+			if (string.IsNullOrEmpty(filePath)) {
+				ASF.ArchiLogger.LogNullError(filePath);
+
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(filePath))));
+			}
 
 			bool result = await GlobalConfig.Write(filePath, request.GlobalConfig).ConfigureAwait(false);
 

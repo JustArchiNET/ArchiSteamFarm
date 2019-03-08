@@ -149,11 +149,7 @@ namespace ArchiSteamFarm {
 		public ulong SteamMasterClanID { get; private set; } = DefaultSteamMasterClanID;
 
 		[JsonExtensionData]
-		internal Dictionary<string, JToken> AdditionalProperties {
-			get;
-			[UsedImplicitly]
-			private set;
-		}
+		internal Dictionary<string, JToken> AdditionalProperties { get; set; }
 
 		internal string DecryptedSteamPassword {
 			get {

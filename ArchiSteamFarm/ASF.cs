@@ -72,6 +72,27 @@ namespace ArchiSteamFarm {
 			return (steamID == GlobalConfig.SteamOwnerID) || (Debugging.IsDebugBuild && (steamID == SharedInfo.ArchiSteamID));
 		}
 
+		internal static string GetFilePath(EFileType fileType) {
+			if (!Enum.IsDefined(typeof(EFileType), fileType)) {
+				ArchiLogger.LogNullError(nameof(fileType));
+
+				return null;
+			}
+
+			switch (fileType) {
+				case EFileType.Config:
+
+					return Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName);
+				case EFileType.Database:
+
+					return Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalDatabaseFileName);
+				default:
+					ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(fileType), fileType));
+
+					return null;
+			}
+		}
+
 		internal static async Task Init() {
 			WebBrowser = new WebBrowser(ArchiLogger, GlobalConfig.WebProxy, true);
 
@@ -724,6 +745,11 @@ namespace ArchiSteamFarm {
 			}
 
 			return true;
+		}
+
+		internal enum EFileType : byte {
+			Config,
+			Database
 		}
 
 		internal enum EUserInputType : byte {

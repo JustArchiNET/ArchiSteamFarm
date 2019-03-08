@@ -170,7 +170,13 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task InitGlobalConfigAndLanguage() {
-			string globalConfigFile = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName);
+			string globalConfigFile = ASF.GetFilePath(ASF.EFileType.Config);
+
+			if (string.IsNullOrEmpty(globalConfigFile)) {
+				ASF.ArchiLogger.LogNullError(nameof(globalConfigFile));
+
+				return;
+			}
 
 			GlobalConfig globalConfig;
 
@@ -191,7 +197,7 @@ namespace ArchiSteamFarm {
 			ASF.InitGlobalConfig(globalConfig);
 
 			if (Debugging.IsUserDebugging) {
-				ASF.ArchiLogger.LogGenericDebug(SharedInfo.GlobalConfigFileName + ": " + JsonConvert.SerializeObject(ASF.GlobalConfig, Formatting.Indented));
+				ASF.ArchiLogger.LogGenericDebug(globalConfigFile + ": " + JsonConvert.SerializeObject(ASF.GlobalConfig, Formatting.Indented));
 			}
 
 			if (!string.IsNullOrEmpty(ASF.GlobalConfig.CurrentCulture)) {
@@ -253,7 +259,13 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task InitGlobalDatabaseAndServices() {
-			string globalDatabaseFile = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalDatabaseFileName);
+			string globalDatabaseFile = ASF.GetFilePath(ASF.EFileType.Database);
+
+			if (string.IsNullOrEmpty(globalDatabaseFile)) {
+				ASF.ArchiLogger.LogNullError(nameof(globalDatabaseFile));
+
+				return;
+			}
 
 			if (!File.Exists(globalDatabaseFile)) {
 				ASF.ArchiLogger.LogGenericInfo(Strings.Welcome);
@@ -276,7 +288,7 @@ namespace ArchiSteamFarm {
 
 			// If debugging is on, we prepare debug directory prior to running
 			if (Debugging.IsUserDebugging) {
-				ASF.ArchiLogger.LogGenericDebug(SharedInfo.GlobalDatabaseFileName + ": " + JsonConvert.SerializeObject(ASF.GlobalDatabase, Formatting.Indented));
+				ASF.ArchiLogger.LogGenericDebug(globalDatabaseFile + ": " + JsonConvert.SerializeObject(ASF.GlobalDatabase, Formatting.Indented));
 				Logging.EnableTraceLogging();
 
 				if (Directory.Exists(SharedInfo.DebugDirectory)) {
