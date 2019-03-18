@@ -713,5 +713,8 @@ StackTrace:
     <value>Odpowiedź: {0}</value>
     <comment>{0} will be replaced by the generated response (string)</comment>
   </data>
-  
+  <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
+    <value>Bot ma {0} gier oczekujących w tle.</value>
+    <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
+  </data>
 </root>

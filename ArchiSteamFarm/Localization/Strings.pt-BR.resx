@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptingTrade" xml:space="preserve">
-    <value>Aceitando a troca: {0}</value>
+    <value>Aceitando troca: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
@@ -148,7 +148,7 @@ StackTrace:
     <value>Saindo com um código de erro diferente de zero!</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
-    <value>Pedido falhou em: {0}</value>
+    <value>Falha na solicitação: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
@@ -650,14 +650,14 @@ StackTrace:
     <value>O bot de destino não está conectado!</value>
   </data>
   <data name="BotWalletBalance" xml:space="preserve">
-    <value>Saldo na carteira: {0} {1}</value>
+    <value>Saldo da Carteira: {0} {1}</value>
     <comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
   </data>
   <data name="BotHasNoWallet" xml:space="preserve">
-    <value>O bot está com a carteira vazia.</value>
+    <value>O bot não tem saldo na Carteira.</value>
   </data>
   <data name="BotLevel" xml:space="preserve">
-    <value>O nível do bot é {0}.</value>
+    <value>Nível Steam do bot: {0}.</value>
     <comment>{0} will be replaced by bot's level</comment>
   </data>
   <data name="ActivelyMatchingItems" xml:space="preserve">
@@ -703,10 +703,10 @@ StackTrace:
     <value>Executando...</value>
   </data>
   <data name="InteractiveConsoleEnabled" xml:space="preserve">
-    <value>O console interativo está ativo, digite 'c' para entrar no modo de comando.</value>
+    <value>O console interativo agora está ativo. Digite "c" para entrar no modo de comando.</value>
   </data>
   <data name="InteractiveConsoleNotAvailable" xml:space="preserve">
-    <value>O console interativo não está disponível devido à falta da propriedade de configuração {0}.</value>
+    <value>O console interativo está indisponível porque a propriedade de configuração "{0}" está ausente.</value>
     <comment>{0} will be replaced by the name of the missing config property (string)</comment>
   </data>
   <data name="Response" xml:space="preserve">
@@ -714,7 +714,7 @@ StackTrace:
     <comment>{0} will be replaced by the generated response (string)</comment>
   </data>
   <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
-    <value>Há {0} jogos restantes na lista de ativação em segundo plano desse bot.</value>
+    <value>Há {0} jogo(s) restante(s) na fila de ativação em segundo plano do bot.</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
   </data>
 </root>
