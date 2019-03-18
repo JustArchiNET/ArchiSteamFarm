@@ -2127,7 +2127,7 @@ namespace ArchiSteamFarm {
 				while (!string.IsNullOrEmpty(key)) {
 					string startingKey = key;
 
-					using (IEnumerator<Bot> botsEnumerator = Bot.Bots.Where(bot => (bot.Value != Bot) && !rateLimitedBots.Contains(bot.Value) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.HasPermission(steamID, BotConfig.EPermission.Operator)).OrderByDescending(bot => Bot.BotsComparer.Compare(bot.Key, Bot.BotName)).ThenBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value).GetEnumerator()) {
+					using (IEnumerator<Bot> botsEnumerator = Bot.Bots.Where(bot => (bot.Value != Bot) && !rateLimitedBots.Contains(bot.Value) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.HasPermission(steamID, BotConfig.EPermission.Operator)).OrderByDescending(bot => Bot.BotsComparer.Compare(bot.Key, Bot.BotName) > 0).ThenBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value).GetEnumerator()) {
 						Bot currentBot = Bot;
 
 						while (!string.IsNullOrEmpty(key) && (currentBot != null)) {
