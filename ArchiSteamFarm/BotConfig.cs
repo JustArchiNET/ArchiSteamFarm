@@ -161,24 +161,22 @@ namespace ArchiSteamFarm {
 					return SteamPassword;
 				}
 
-				string decryptedPassword = ArchiCryptoHelper.Decrypt(PasswordFormat, SteamPassword);
+				string result = ArchiCryptoHelper.Decrypt(PasswordFormat, SteamPassword);
 
-				if (string.IsNullOrEmpty(decryptedPassword)) {
+				if (string.IsNullOrEmpty(result)) {
 					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(SteamPassword)));
 
 					return null;
 				}
 
-				return decryptedPassword;
+				return result;
 			}
 			set {
-				if (string.IsNullOrEmpty(value)) {
-					ASF.ArchiLogger.LogNullError(nameof(value));
-
-					return;
+				if (!string.IsNullOrEmpty(value) && (PasswordFormat != ArchiCryptoHelper.ECryptoMethod.PlainText)) {
+					value = ArchiCryptoHelper.Encrypt(PasswordFormat, value);
 				}
 
-				SteamPassword = PasswordFormat == ArchiCryptoHelper.ECryptoMethod.PlainText ? value : ArchiCryptoHelper.Encrypt(PasswordFormat, value);
+				SteamPassword = value;
 			}
 		}
 
