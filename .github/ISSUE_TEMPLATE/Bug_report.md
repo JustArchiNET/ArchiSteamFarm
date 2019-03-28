@@ -41,7 +41,7 @@ Feel free to remove our notice and fill the template below with your details.
 ```
 Paste here, in-between triple backtick tags
 
-Ensure that your log is complete and was NOT recorded in Debug mode, as it might contain sensitive information that should not be shared publicly, as stated on the wiki.
+Ensure that your log is complete and was NOT recorded in Debug mode, as debug log may contain sensitive information that should not be shared publicly, as per our the wiki. Standard ASF log does not include sensitive information.
 ```
 
 ### Global ASF.json config (if using one)
@@ -56,7 +56,7 @@ Ensure that your config has redacted (but NOT removed) potentially-sensitive pro
 - WebProxyPassword (optionally, if exposing private details)
 - WebProxyUsername (optionally, if exposing private details)
 
-Redacting involves replacing sensitive details, for example with stars (***). You should refrain from removing config lines entirely, as their pure existence might be relevant and should be preserved.
+Redacting involves replacing sensitive details, for example with stars (***). You should refrain from removing config lines entirely, as their pure existence may be relevant and should be preserved.
 ```
 
 ### BotName.json config of all affected bot instances (if more than one)
@@ -72,7 +72,7 @@ Ensure that your config has redacted (but NOT removed) potentially-sensitive pro
 - SteamTradeToken (optionally)
 - SteamUserPermissions (optionally, only SteamIDs)
 
-Redacting involves replacing sensitive details, for example with stars (***). You should refrain from removing config lines entirely, as their pure existence might be relevant and should be preserved.
+Redacting involves replacing sensitive details, for example with stars (***). You should refrain from removing config lines entirely, as their pure existence may be relevant and should be preserved.
 ```
 
 ### Additional info
