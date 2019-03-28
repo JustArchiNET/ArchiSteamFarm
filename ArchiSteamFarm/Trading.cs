@@ -353,8 +353,14 @@ namespace ArchiSteamFarm {
 					ParsingScheduled = false;
 				}
 
+				bool lootableTypesReceived;
+
 				using (await Bot.Actions.GetTradingLock().ConfigureAwait(false)) {
-					await ParseActiveTrades().ConfigureAwait(false);
+					lootableTypesReceived = await ParseActiveTrades().ConfigureAwait(false);
+				}
+
+				if (lootableTypesReceived && Bot.BotConfig.SendOnFarmingFinished) {
+					await Bot.Actions.SendTradeOffer(wantedTypes: Bot.BotConfig.LootableTypes).ConfigureAwait(false);
 				}
 			} finally {
 				TradesSemaphore.Release();
@@ -373,11 +379,11 @@ namespace ArchiSteamFarm {
 			return sets.ToDictionary(set => set.Key, set => set.Value.Values.OrderBy(amount => amount).ToList());
 		}
 
-		private async Task ParseActiveTrades() {
+		private async Task<bool> ParseActiveTrades() {
 			HashSet<Steam.TradeOffer> tradeOffers = await Bot.ArchiWebHandler.GetActiveTradeOffers().ConfigureAwait(false);
 
 			if ((tradeOffers == null) || (tradeOffers.Count == 0)) {
-				return;
+				return false;
 			}
 
 			if (HandledTradeOfferIDs.Count > 0) {
@@ -396,17 +402,14 @@ namespace ArchiSteamFarm {
 					if (!twoFactorSuccess) {
 						HandledTradeOfferIDs.ExceptWith(mobileTradeOfferIDs);
 
-						return;
+						return false;
 					}
 				}
 			}
 
-			if (results.Any(result => (result.TradeResult != null) && (result.TradeResult.Result == ParseTradeResult.EResult.Accepted) && (!result.RequiresMobileConfirmation || Bot.HasMobileAuthenticator) && (result.TradeResult.ReceivingItemTypes?.Any(receivedItemType => Bot.BotConfig.LootableTypes.Contains(receivedItemType)) == true)) && Bot.BotConfig.SendOnFarmingFinished) {
-				// If we finished a trade, perform a loot if user wants to do so
-				await Bot.Actions.SendTradeOffer(wantedTypes: Bot.BotConfig.LootableTypes).ConfigureAwait(false);
-			}
-
 			await Core.OnBotTradeOfferResults(Bot, results.Select(result => result.TradeResult).ToHashSet()).ConfigureAwait(false);
+
+			return results.Any(result => (result.TradeResult != null) && (result.TradeResult.Result == ParseTradeResult.EResult.Accepted) && (!result.RequiresMobileConfirmation || Bot.HasMobileAuthenticator) && (result.TradeResult.ReceivingItemTypes?.Any(receivedItemType => Bot.BotConfig.LootableTypes.Contains(receivedItemType)) == true));
 		}
 
 		private async Task<(ParseTradeResult TradeResult, bool RequiresMobileConfirmation)> ParseTrade(Steam.TradeOffer tradeOffer) {
