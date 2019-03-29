@@ -717,4 +717,7 @@ StackTrace:
     <value>Bot ma {0} gier oczekujących w tle.</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
   </data>
+  <data name="ErrorSingleInstanceRequired" xml:space="preserve">
+    <value>Proces ASF jest już uruchomiony dla tego katalogu roboczego, anulowanie!</value>
+  </data>
 </root>

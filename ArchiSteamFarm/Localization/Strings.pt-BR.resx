@@ -717,4 +717,5 @@ StackTrace:
     <value>Há {0} jogo(s) restante(s) na fila de ativação em segundo plano do bot.</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
   </data>
+  
 </root>

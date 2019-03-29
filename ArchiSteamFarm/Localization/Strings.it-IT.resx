@@ -715,4 +715,5 @@
     <value>Il bot ha {0} giochi rimanenti nella coda di background.</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
   </data>
+  
 </root>

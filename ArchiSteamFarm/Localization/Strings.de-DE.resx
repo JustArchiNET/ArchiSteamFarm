@@ -717,4 +717,7 @@ StackTrace:
     <value>Bot hat {0} Spiele, die in seiner Hintergrundwarteschlange verbleiben.</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
   </data>
+  <data name="ErrorSingleInstanceRequired" xml:space="preserve">
+    <value>Der ASF-Prozess läuft bereits für dieses Arbeitsverzeichnis. Abbruch!</value>
+  </data>
 </root>

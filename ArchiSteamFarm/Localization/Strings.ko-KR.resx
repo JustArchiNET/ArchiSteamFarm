@@ -717,4 +717,5 @@ StackTrace:
     <value>{0} 개의 게임이 이 봇의 배경 큐에 남아있습니다.</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
   </data>
+  
 </root>

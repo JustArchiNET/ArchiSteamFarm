@@ -717,4 +717,5 @@ Yığın izleme:
     <value>Bot kuyruğunda {0} oyun kaldı.</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
   </data>
+  
 </root>

@@ -717,4 +717,5 @@ StackTrace:
     <value>Bot heeft {0} spellen resterend in de achtergrondwachtrij.</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
   </data>
+  
 </root>
