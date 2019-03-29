@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System.IO;
+using System.Text;
 using SteamKit2;
 using SteamKit2.Internal;
 
@@ -35,9 +36,10 @@ namespace ArchiSteamFarm.CMsgs {
 				return;
 			}
 
-			BinaryReader binaryReader = new BinaryReader(stream);
-			ClanID = binaryReader.ReadUInt64();
-			AcceptInvite = binaryReader.ReadBoolean();
+			using (BinaryReader binaryReader = new BinaryReader(stream, Encoding.UTF8, true)) {
+				ClanID = binaryReader.ReadUInt64();
+				AcceptInvite = binaryReader.ReadBoolean();
+			}
 		}
 
 		EMsg ISteamSerializableMessage.GetEMsg() => EMsg.ClientAcknowledgeClanInvite;
@@ -49,9 +51,10 @@ namespace ArchiSteamFarm.CMsgs {
 				return;
 			}
 
-			BinaryWriter binaryWriter = new BinaryWriter(stream);
-			binaryWriter.Write(ClanID);
-			binaryWriter.Write(AcceptInvite);
+			using (BinaryWriter binaryWriter = new BinaryWriter(stream, Encoding.UTF8, true)) {
+				binaryWriter.Write(ClanID);
+				binaryWriter.Write(AcceptInvite);
+			}
 		}
 	}
 }
