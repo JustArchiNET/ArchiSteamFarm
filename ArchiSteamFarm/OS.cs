@@ -22,7 +22,9 @@
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using ArchiSteamFarm.Localization;
 using JetBrains.Annotations;
 
@@ -32,6 +34,8 @@ namespace ArchiSteamFarm {
 
 		[NotNull]
 		internal static string Variant => RuntimeInformation.OSDescription.Trim();
+
+		private static Mutex SingleInstance;
 
 		internal static void Init(bool systemRequired, GlobalConfig.EOptimizationMode optimizationMode) {
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
@@ -60,6 +64,24 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal static bool RegisterProcess() {
+			if (SingleInstance != null) {
+				return false;
+			}
+
+			string uniqueName = "Global\\" + SharedInfo.AssemblyName + "-" + Convert.ToBase64String(Encoding.UTF8.GetBytes(Directory.GetCurrentDirectory()));
+
+			Mutex singleInstance = new Mutex(true, uniqueName, out bool result);
+
+			if (!result) {
+				return false;
+			}
+
+			SingleInstance = singleInstance;
+
+			return true;
+		}
+
 		internal static void UnixSetFileAccessExecutable(string path) {
 			if (string.IsNullOrEmpty(path) || !File.Exists(path)) {
 				ASF.ArchiLogger.LogNullError(nameof(path));
@@ -71,6 +93,16 @@ namespace ArchiSteamFarm {
 			if (NativeMethods.Chmod(path, (int) NativeMethods.UnixExecutePermission) != 0) {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningFailedWithError, Marshal.GetLastWin32Error()));
 			}
+		}
+
+		internal static void UnregisterProcess() {
+			if (SingleInstance == null) {
+				return;
+			}
+
+			SingleInstance.ReleaseMutex();
+			SingleInstance.Dispose();
+			SingleInstance = null;
 		}
 
 		private static void DisableQuickEditMode() {

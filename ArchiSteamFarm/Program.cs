@@ -118,7 +118,12 @@ namespace ArchiSteamFarm {
 			Target.Register<HistoryTarget>(HistoryTarget.TargetName);
 			Target.Register<SteamTarget>(SteamTarget.TargetName);
 
-			InitCore(args);
+			if (!await InitCore(args).ConfigureAwait(false)) {
+				await Exit(1).ConfigureAwait(false);
+
+				return;
+			}
+
 			await InitASF(args).ConfigureAwait(false);
 		}
 
@@ -141,7 +146,7 @@ namespace ArchiSteamFarm {
 			await ASF.Init().ConfigureAwait(false);
 		}
 
-		private static void InitCore(IReadOnlyCollection<string> args) {
+		private static async Task<bool> InitCore(IReadOnlyCollection<string> args) {
 			Directory.SetCurrentDirectory(SharedInfo.HomeDirectory);
 
 			// Allow loading configs from source tree if it's a debug build
@@ -166,7 +171,17 @@ namespace ArchiSteamFarm {
 				ParsePreInitArgs(args);
 			}
 
-			Logging.InitCoreLoggers();
+			bool uniqueInstance = OS.RegisterProcess();
+			Logging.InitCoreLoggers(uniqueInstance);
+
+			if (!uniqueInstance) {
+				ASF.ArchiLogger.LogGenericError(Strings.ErrorSingleInstanceRequired);
+				await Task.Delay(5000).ConfigureAwait(false);
+
+				return false;
+			}
+
+			return true;
 		}
 
 		private static async Task InitGlobalConfigAndLanguage() {
@@ -320,6 +335,7 @@ namespace ArchiSteamFarm {
 			// Ensure that IPC is stopped before we finalize shutdown sequence
 			await ArchiKestrel.Stop().ConfigureAwait(false);
 
+			// Stop all the active bots so they can disconnect cleanly
 			if (Bot.Bots?.Count > 0) {
 				// Stop() function can block due to SK2 sockets, don't forget a maximum delay
 				await Task.WhenAny(Utilities.InParallel(Bot.Bots.Values.Select(bot => Task.Run(() => bot.Stop(true)))), Task.Delay(Bot.Bots.Count * WebBrowser.MaxTries * 1000)).ConfigureAwait(false);
@@ -328,7 +344,11 @@ namespace ArchiSteamFarm {
 				await Task.Delay(1000).ConfigureAwait(false);
 			}
 
+			// Flush all the pending writes to log files
 			LogManager.Flush();
+
+			// Unregister the process from single instancing
+			OS.UnregisterProcess();
 
 			return true;
 		}

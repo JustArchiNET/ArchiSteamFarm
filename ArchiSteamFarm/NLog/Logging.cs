@@ -139,7 +139,7 @@ namespace ArchiSteamFarm.NLog {
 			return !string.IsNullOrEmpty(result) ? result.Trim() : null;
 		}
 
-		internal static void InitCoreLoggers() {
+		internal static void InitCoreLoggers(bool uniqueInstance) {
 			if (LogManager.Configuration != null) {
 				IsUsingCustomConfiguration = true;
 				InitConsoleLoggers();
@@ -156,14 +156,18 @@ namespace ArchiSteamFarm.NLog {
 			config.AddTarget(coloredConsoleTarget);
 			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, coloredConsoleTarget));
 
-			FileTarget fileTarget = new FileTarget("File") {
-				DeleteOldFileOnStartup = true,
-				FileName = SharedInfo.LogFile,
-				Layout = GeneralLayout
-			};
+			if (uniqueInstance) {
+				FileTarget fileTarget = new FileTarget("File") {
+					CleanupFileName = false,
+					ConcurrentWrites = false,
+					DeleteOldFileOnStartup = true,
+					FileName = SharedInfo.LogFile,
+					Layout = GeneralLayout
+				};
 
-			config.AddTarget(fileTarget);
-			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, fileTarget));
+				config.AddTarget(fileTarget);
+				config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, fileTarget));
+			}
 
 			LogManager.Configuration = config;
 			InitConsoleLoggers();

@@ -964,6 +964,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu ASF process is already running for this working directory, aborting!.
+        /// </summary>
+        public static string ErrorSingleInstanceRequired {
+            get {
+                return ResourceManager.GetString("ErrorSingleInstanceRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Could not check latest version!.
         /// </summary>
         public static string ErrorUpdateCheckFailed {

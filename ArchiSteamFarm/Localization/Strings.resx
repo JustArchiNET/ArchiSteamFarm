@@ -717,4 +717,7 @@ StackTrace:
     <value>Bot has {0} games remaining in its background queue.</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
   </data>
+  <data name="ErrorSingleInstanceRequired" xml:space="preserve">
+    <value>ASF process is already running for this working directory, aborting!</value>
+  </data>
 </root>
