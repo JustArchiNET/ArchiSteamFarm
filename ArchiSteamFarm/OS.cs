@@ -100,7 +100,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			SingleInstance.ReleaseMutex();
+			// We should release the mutex here, but that can be done only from the same thread due to thread affinity
+			// Instead, we'll dispose the mutex which should automatically release it by the CLR
 			SingleInstance.Dispose();
 			SingleInstance = null;
 		}
