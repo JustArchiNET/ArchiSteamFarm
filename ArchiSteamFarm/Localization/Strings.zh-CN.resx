@@ -717,5 +717,7 @@
     <value>机器人的后台队列中剩余 {0} 个游戏。</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
   </data>
-  
+  <data name="ErrorSingleInstanceRequired" xml:space="preserve">
+    <value>ASF 进程已经在此工作目录中运行，即将中止！</value>
+  </data>
 </root>
