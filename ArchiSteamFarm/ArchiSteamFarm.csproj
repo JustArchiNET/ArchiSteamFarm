@@ -71,7 +71,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0-preview.19074.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="3.0.0-preview.19074.2" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
-    <PackageReference Include="NLog" Version="4.6.0" />
+    <PackageReference Include="NLog" Version="4.6.1" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.8.1" />
     <PackageReference Include="SteamKit2" Version="2.2.0-Beta.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc2" />
