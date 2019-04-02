@@ -1536,12 +1536,12 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!File.Exists(filePath)) {
-				return new Dictionary<string, string>(0);
+				return new Dictionary<string, string>(0, StringComparer.Ordinal);
 			}
 
-			try {
-				Dictionary<string, string> keys = new Dictionary<string, string>();
+			Dictionary<string, string> keys = new Dictionary<string, string>(StringComparer.Ordinal);
 
+			try {
 				using (StreamReader reader = new StreamReader(filePath)) {
 					string line;
 
@@ -1570,13 +1570,13 @@ namespace ArchiSteamFarm {
 						keys[key] = name;
 					}
 				}
-
-				return keys;
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 
 				return null;
 			}
+
+			return keys;
 		}
 
 		private void HandleCallbacks() {

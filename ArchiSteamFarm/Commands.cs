@@ -2114,8 +2114,8 @@ namespace ArchiSteamFarm {
 			bool distribute = !redeemFlags.HasFlag(ERedeemFlags.SkipDistributing) && (redeemFlags.HasFlag(ERedeemFlags.ForceDistributing) || Bot.BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.Distributing));
 			bool keepMissingGames = !redeemFlags.HasFlag(ERedeemFlags.SkipKeepMissingGames) && (redeemFlags.HasFlag(ERedeemFlags.ForceKeepMissingGames) || Bot.BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.KeepMissingGames));
 
-			HashSet<string> pendingKeys = keys.ToHashSet();
-			HashSet<string> unusedKeys = pendingKeys.ToHashSet();
+			HashSet<string> pendingKeys = keys.ToHashSet(StringComparer.Ordinal);
+			HashSet<string> unusedKeys = pendingKeys.ToHashSet(StringComparer.Ordinal);
 
 			HashSet<Bot> rateLimitedBots = new HashSet<Bot>();
 

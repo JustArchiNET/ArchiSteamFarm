@@ -96,9 +96,9 @@ namespace ArchiSteamFarm {
 
 				const string request = URL + "/Api/HeartBeat";
 
-				Dictionary<string, string> data = new Dictionary<string, string>(2) {
-					{ "SteamID", Bot.SteamID.ToString() },
-					{ "Guid", ASF.GlobalDatabase.Guid.ToString("N") }
+				Dictionary<string, string> data = new Dictionary<string, string>(2, StringComparer.Ordinal) {
+					{ "Guid", ASF.GlobalDatabase.Guid.ToString("N") },
+					{ "SteamID", Bot.SteamID.ToString() }
 				};
 
 				// Listing is free to deny our announce request, hence we don't retry
@@ -164,15 +164,15 @@ namespace ArchiSteamFarm {
 
 				const string request = URL + "/Api/Announce";
 
-				Dictionary<string, string> data = new Dictionary<string, string>(9) {
-					{ "SteamID", Bot.SteamID.ToString() },
-					{ "Guid", ASF.GlobalDatabase.Guid.ToString("N") },
-					{ "Nickname", nickname ?? "" },
+				Dictionary<string, string> data = new Dictionary<string, string>(9, StringComparer.Ordinal) {
 					{ "AvatarHash", avatarHash ?? "" },
 					{ "GamesCount", inventory.Select(item => item.RealAppID).Distinct().Count().ToString() },
+					{ "Guid", ASF.GlobalDatabase.Guid.ToString("N") },
 					{ "ItemsCount", inventory.Count.ToString() },
 					{ "MatchableTypes", JsonConvert.SerializeObject(acceptedMatchableTypes) },
 					{ "MatchEverything", Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) ? "1" : "0" },
+					{ "Nickname", nickname ?? "" },
+					{ "SteamID", Bot.SteamID.ToString() },
 					{ "TradeToken", tradeToken }
 				};
 

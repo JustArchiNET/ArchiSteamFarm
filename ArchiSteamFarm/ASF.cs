@@ -55,11 +55,11 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public static WebBrowser WebBrowser { get; internal set; }
 
-		private static readonly ConcurrentDictionary<string, object> LastWriteEvents = new ConcurrentDictionary<string, object>();
 		private static readonly SemaphoreSlim UpdateSemaphore = new SemaphoreSlim(1, 1);
 
 		private static Timer AutoUpdatesTimer;
 		private static FileSystemWatcher FileSystemWatcher;
+		private static ConcurrentDictionary<string, object> LastWriteEvents;
 
 		[PublicAPI]
 		public static bool IsOwner(ulong steamID) {
@@ -317,7 +317,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void InitEvents() {
-			if (FileSystemWatcher != null) {
+			if ((FileSystemWatcher != null) || (LastWriteEvents != null)) {
 				return;
 			}
 
@@ -327,6 +327,8 @@ namespace ArchiSteamFarm {
 			FileSystemWatcher.Created += OnCreated;
 			FileSystemWatcher.Deleted += OnDeleted;
 			FileSystemWatcher.Renamed += OnRenamed;
+
+			LastWriteEvents = new ConcurrentDictionary<string, object>(Bot.BotsComparer);
 
 			FileSystemWatcher.EnableRaisingEvents = true;
 		}

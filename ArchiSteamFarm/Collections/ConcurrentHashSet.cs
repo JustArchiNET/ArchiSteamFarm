@@ -19,6 +19,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -31,7 +32,17 @@ namespace ArchiSteamFarm.Collections {
 		public int Count => BackingCollection.Count;
 		public bool IsReadOnly => false;
 
-		private readonly ConcurrentDictionary<T, bool> BackingCollection = new ConcurrentDictionary<T, bool>();
+		private readonly ConcurrentDictionary<T, bool> BackingCollection;
+
+		public ConcurrentHashSet() => BackingCollection = new ConcurrentDictionary<T, bool>();
+
+		public ConcurrentHashSet([NotNull] IEqualityComparer<T> comparer) {
+			if (comparer == null) {
+				throw new ArgumentNullException(nameof(comparer));
+			}
+
+			BackingCollection = new ConcurrentDictionary<T, bool>(comparer);
+		}
 
 		public bool Add(T item) => BackingCollection.TryAdd(item, true);
 		public void Clear() => BackingCollection.Clear();

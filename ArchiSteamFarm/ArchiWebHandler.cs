@@ -60,12 +60,12 @@ namespace ArchiSteamFarm {
 
 		private static readonly SemaphoreSlim InventorySemaphore = new SemaphoreSlim(1, 1);
 
-		private static readonly ImmutableDictionary<string, (SemaphoreSlim RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)> WebLimitingSemaphores = new Dictionary<string, (SemaphoreSlim RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)>(4) {
+		private static readonly ImmutableDictionary<string, (SemaphoreSlim RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)> WebLimitingSemaphores = new Dictionary<string, (SemaphoreSlim RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)>(4, StringComparer.Ordinal) {
 			{ nameof(ArchiWebHandler), (new SemaphoreSlim(1, 1), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
 			{ SteamCommunityURL, (new SemaphoreSlim(1, 1), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
 			{ SteamStoreURL, (new SemaphoreSlim(1, 1), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
 			{ WebAPI.DefaultBaseAddress.Host, (new SemaphoreSlim(1, 1), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) }
-		}.ToImmutableDictionary();
+		}.ToImmutableDictionary(StringComparer.Ordinal);
 
 		[PublicAPI]
 		public readonly ArchiCacheable<string> CachedApiKey;
@@ -615,7 +615,7 @@ namespace ArchiSteamFarm {
 				if (data != null) {
 					data[sessionName] = sessionID;
 				} else {
-					data = new Dictionary<string, string>(1) { { sessionName, sessionID } };
+					data = new Dictionary<string, string>(1, StringComparer.Ordinal) { { sessionName, sessionID } };
 				}
 			}
 
@@ -727,7 +727,7 @@ namespace ArchiSteamFarm {
 				if (data != null) {
 					data[sessionName] = sessionID;
 				} else {
-					data = new Dictionary<string, string>(1) { { sessionName, sessionID } };
+					data = new Dictionary<string, string>(1, StringComparer.Ordinal) { { sessionName, sessionID } };
 				}
 			}
 
@@ -954,7 +954,7 @@ namespace ArchiSteamFarm {
 				if (data != null) {
 					data[sessionName] = sessionID;
 				} else {
-					data = new Dictionary<string, string>(1) { { sessionName, sessionID } };
+					data = new Dictionary<string, string>(1, StringComparer.Ordinal) { { sessionName, sessionID } };
 				}
 			}
 
@@ -995,7 +995,7 @@ namespace ArchiSteamFarm {
 			const string request = "/gifts/0/resolvegiftcard";
 
 			// Extra entry for sessionID
-			Dictionary<string, string> data = new Dictionary<string, string>(3) {
+			Dictionary<string, string> data = new Dictionary<string, string>(3, StringComparer.Ordinal) {
 				{ "accept", "1" },
 				{ "giftcardid", giftCardID.ToString() }
 			};
@@ -1016,7 +1016,7 @@ namespace ArchiSteamFarm {
 			string referer = SteamCommunityURL + "/tradeoffer/" + tradeID;
 
 			// Extra entry for sessionID
-			Dictionary<string, string> data = new Dictionary<string, string>(3) {
+			Dictionary<string, string> data = new Dictionary<string, string>(3, StringComparer.Ordinal) {
 				{ "serverid", "1" },
 				{ "tradeofferid", tradeID.ToString() }
 			};
@@ -1036,7 +1036,7 @@ namespace ArchiSteamFarm {
 			const string request = "/checkout/addfreelicense";
 
 			// Extra entry for sessionID
-			Dictionary<string, string> data = new Dictionary<string, string>(3) {
+			Dictionary<string, string> data = new Dictionary<string, string>(3, StringComparer.Ordinal) {
 				{ "action", "add_to_cart" },
 				{ "subid", subID.ToString() }
 			};
@@ -1064,7 +1064,7 @@ namespace ArchiSteamFarm {
 			string request = profileURL + "/ajaxsetprivacy";
 
 			// Extra entry for sessionID
-			Dictionary<string, string> data = new Dictionary<string, string>(3) {
+			Dictionary<string, string> data = new Dictionary<string, string>(3, StringComparer.Ordinal) {
 				{ "eCommentPermission", ((byte) userPrivacy.CommentPermission).ToString() },
 				{ "Privacy", JsonConvert.SerializeObject(userPrivacy.Settings) }
 			};
@@ -1094,7 +1094,7 @@ namespace ArchiSteamFarm {
 			string request = "/app/" + appID;
 
 			// Extra entry for sessionID
-			Dictionary<string, string> data = new Dictionary<string, string>(2) { { "appid_to_clear_from_queue", appID.ToString() } };
+			Dictionary<string, string> data = new Dictionary<string, string>(2, StringComparer.Ordinal) { { "appid_to_clear_from_queue", appID.ToString() } };
 
 			return await UrlPostWithSession(SteamStoreURL, request, data).ConfigureAwait(false);
 		}
@@ -1154,7 +1154,7 @@ namespace ArchiSteamFarm {
 			const string request = "/explore/generatenewdiscoveryqueue";
 
 			// Extra entry for sessionID
-			Dictionary<string, string> data = new Dictionary<string, string>(2) { { "queuetype", "0" } };
+			Dictionary<string, string> data = new Dictionary<string, string>(2, StringComparer.Ordinal) { { "queuetype", "0" } };
 
 			Steam.NewDiscoveryQueueResponse output = await UrlPostToJsonObjectWithSession<Steam.NewDiscoveryQueueResponse>(SteamStoreURL, request, data).ConfigureAwait(false);
 
@@ -1983,7 +1983,7 @@ namespace ArchiSteamFarm {
 			string request = "/gid/" + groupID;
 
 			// Extra entry for sessionID
-			Dictionary<string, string> data = new Dictionary<string, string>(2) { { "action", "join" } };
+			Dictionary<string, string> data = new Dictionary<string, string>(2, StringComparer.Ordinal) { { "action", "join" } };
 
 			return await UrlPostWithSession(SteamCommunityURL, request, data, session: ESession.CamelCase).ConfigureAwait(false);
 		}
@@ -2053,7 +2053,7 @@ namespace ArchiSteamFarm {
 			const string requestValidateCode = "/account/validatewalletcode";
 
 			// Extra entry for sessionID
-			Dictionary<string, string> data = new Dictionary<string, string>(2) { { "wallet_code", key } };
+			Dictionary<string, string> data = new Dictionary<string, string>(2, StringComparer.Ordinal) { { "wallet_code", key } };
 
 			Steam.RedeemWalletResponse responseValidateCode = await UrlPostToJsonObjectWithSession<Steam.RedeemWalletResponse>(SteamStoreURL, requestValidateCode, data).ConfigureAwait(false);
 
@@ -2140,7 +2140,7 @@ namespace ArchiSteamFarm {
 			const string referer = SteamCommunityURL + "/tradeoffer/new";
 
 			// Extra entry for sessionID
-			Dictionary<string, string> data = new Dictionary<string, string>(6) {
+			Dictionary<string, string> data = new Dictionary<string, string>(6, StringComparer.Ordinal) {
 				{ "partner", partnerID.ToString() },
 				{ "serverid", "1" },
 				{ "trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : new JObject { { "trade_offer_access_token", token } }.ToString(Formatting.None) },
@@ -2184,7 +2184,7 @@ namespace ArchiSteamFarm {
 			string request = profileURL + "/ajaxunpackbooster";
 
 			// Extra entry for sessionID
-			Dictionary<string, string> data = new Dictionary<string, string>(3) {
+			Dictionary<string, string> data = new Dictionary<string, string>(3, StringComparer.Ordinal) {
 				{ "appid", appID.ToString() },
 				{ "communityitemid", itemID.ToString() }
 			};
@@ -2429,7 +2429,7 @@ namespace ArchiSteamFarm {
 			const string request = "/dev/registerkey";
 
 			// Extra entry for sessionID
-			Dictionary<string, string> data = new Dictionary<string, string>(4) {
+			Dictionary<string, string> data = new Dictionary<string, string>(4, StringComparer.Ordinal) {
 				{ "agreeToTerms", "agreed" },
 				{ "domain", "localhost" },
 				{ "Submit", "Register" }
@@ -2605,7 +2605,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			Dictionary<string, string> data = new Dictionary<string, string>(1) { { "pin", parentalCode } };
+			Dictionary<string, string> data = new Dictionary<string, string>(1, StringComparer.Ordinal) { { "pin", parentalCode } };
 
 			// This request doesn't go through UrlPostRetryWithSession as we have no access to session refresh capability (this is in fact session initialization)
 			WebBrowser.BasicResponse response = await WebLimitRequest(serviceURL, async () => await WebBrowser.UrlPost(serviceURL + request, data, serviceURL).ConfigureAwait(false)).ConfigureAwait(false);

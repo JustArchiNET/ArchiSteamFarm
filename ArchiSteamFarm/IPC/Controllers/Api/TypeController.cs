@@ -53,10 +53,10 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			string baseType = targetType.BaseType?.GetUnifiedName();
-			HashSet<string> customAttributes = targetType.CustomAttributes.Select(attribute => attribute.AttributeType.GetUnifiedName()).ToHashSet();
+			HashSet<string> customAttributes = targetType.CustomAttributes.Select(attribute => attribute.AttributeType.GetUnifiedName()).ToHashSet(StringComparer.Ordinal);
 			string underlyingType = null;
 
-			Dictionary<string, string> body = new Dictionary<string, string>();
+			Dictionary<string, string> body = new Dictionary<string, string>(StringComparer.Ordinal);
 
 			if (targetType.IsClass) {
 				foreach (FieldInfo field in targetType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(field => !field.IsPrivate)) {

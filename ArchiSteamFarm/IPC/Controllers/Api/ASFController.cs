@@ -73,7 +73,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 
 			if ((ASF.GlobalConfig.AdditionalProperties != null) && (ASF.GlobalConfig.AdditionalProperties.Count > 0)) {
 				if (request.GlobalConfig.AdditionalProperties == null) {
-					request.GlobalConfig.AdditionalProperties = new Dictionary<string, JToken>(ASF.GlobalConfig.AdditionalProperties.Count);
+					request.GlobalConfig.AdditionalProperties = new Dictionary<string, JToken>(ASF.GlobalConfig.AdditionalProperties.Count, StringComparer.Ordinal);
 				}
 
 				foreach ((string key, JToken value) in ASF.GlobalConfig.AdditionalProperties.Where(property => !request.GlobalConfig.AdditionalProperties.ContainsKey(property.Key))) {
