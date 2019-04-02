@@ -1578,7 +1578,7 @@ namespace ArchiSteamFarm {
 
 		[ItemCanBeNull]
 		internal async Task<Dictionary<uint, string>> GetOwnedGames(ulong steamID) {
-			if (steamID == 0) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID));
 
 				return null;
@@ -1736,7 +1736,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<byte?> GetTradeHoldDurationForUser(ulong steamID, string tradeToken = null) {
-			if (steamID == 0) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID));
 
 				return null;
@@ -1871,7 +1871,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> Init(ulong steamID, EUniverse universe, string webAPIUserNonce, string parentalCode = null) {
-			if ((steamID == 0) || (universe == EUniverse.Invalid) || string.IsNullOrEmpty(webAPIUserNonce)) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || (universe == EUniverse.Invalid) || string.IsNullOrEmpty(webAPIUserNonce)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(universe) + " || " + nameof(webAPIUserNonce));
 
 				return false;
