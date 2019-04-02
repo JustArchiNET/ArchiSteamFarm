@@ -119,7 +119,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 
 					if ((bot.BotConfig.AdditionalProperties != null) && (bot.BotConfig.AdditionalProperties.Count > 0)) {
 						if (request.BotConfig.AdditionalProperties == null) {
-							request.BotConfig.AdditionalProperties = new Dictionary<string, JToken>(bot.BotConfig.AdditionalProperties.Count, StringComparer.Ordinal);
+							request.BotConfig.AdditionalProperties = new Dictionary<string, JToken>(bot.BotConfig.AdditionalProperties.Count, bot.BotConfig.AdditionalProperties.Comparer);
 						}
 
 						foreach ((string key, JToken value) in bot.BotConfig.AdditionalProperties.Where(property => !request.BotConfig.AdditionalProperties.ContainsKey(property.Key))) {
