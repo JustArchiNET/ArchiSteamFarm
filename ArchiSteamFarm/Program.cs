@@ -306,19 +306,23 @@ namespace ArchiSteamFarm {
 				ASF.ArchiLogger.LogGenericDebug(globalDatabaseFile + ": " + JsonConvert.SerializeObject(ASF.GlobalDatabase, Formatting.Indented));
 				Logging.EnableTraceLogging();
 
+				DebugLog.AddListener(new Debugging.DebugListener());
+				DebugLog.Enabled = true;
+
 				if (Directory.Exists(SharedInfo.DebugDirectory)) {
 					try {
 						Directory.Delete(SharedInfo.DebugDirectory, true);
 						await Task.Delay(1000).ConfigureAwait(false); // Dirty workaround giving Windows some time to sync
-					} catch (IOException e) {
+					} catch (Exception e) {
 						ASF.ArchiLogger.LogGenericException(e);
 					}
 				}
 
-				Directory.CreateDirectory(SharedInfo.DebugDirectory);
-
-				DebugLog.AddListener(new Debugging.DebugListener());
-				DebugLog.Enabled = true;
+				try {
+					Directory.CreateDirectory(SharedInfo.DebugDirectory);
+				} catch (Exception e) {
+					ASF.ArchiLogger.LogGenericException(e);
+				}
 			}
 
 			WebBrowser.Init();
