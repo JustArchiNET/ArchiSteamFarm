@@ -29,6 +29,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using SteamKit2;
 
 namespace ArchiSteamFarm {
 	internal sealed class BotDatabase : IDisposable {
@@ -200,7 +201,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal bool IsBlacklistedFromTrades(ulong steamID) {
-			if (steamID == 0) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 				ASF.ArchiLogger.LogNullError(nameof(steamID));
 
 				return false;

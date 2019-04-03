@@ -397,7 +397,7 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<byte?> GetTradeHoldDuration(ulong steamID, ulong tradeID) {
-			if ((steamID == 0) || (tradeID == 0)) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || (tradeID == 0)) {
 				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(tradeID));
 
 				return null;
@@ -422,7 +422,7 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public bool HasPermission(ulong steamID, BotConfig.EPermission permission) {
-			if ((steamID == 0) || (permission == BotConfig.EPermission.None)) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || (permission == BotConfig.EPermission.None)) {
 				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(permission));
 
 				return false;
@@ -908,7 +908,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal bool IsBlacklistedFromTrades(ulong steamID) {
-			if (steamID == 0) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 				ArchiLogger.LogNullError(nameof(steamID));
 
 				return false;
@@ -1612,7 +1612,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task HandleMessage(ulong steamID, string message) {
-			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || string.IsNullOrEmpty(message)) {
 				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(message));
 
 				return;
@@ -1807,7 +1807,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private bool IsMasterClanID(ulong steamID) {
-			if (steamID == 0) {
+			if ((steamID == 0) || !new SteamID(steamID).IsClanAccount) {
 				ArchiLogger.LogNullError(nameof(steamID));
 
 				return false;

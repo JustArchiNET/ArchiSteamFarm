@@ -964,7 +964,7 @@ namespace ArchiSteamFarm {
 			HashSet<ulong> targetIDs = new HashSet<ulong>();
 
 			foreach (string target in targets) {
-				if (!ulong.TryParse(target, out ulong targetID) || (targetID == 0)) {
+				if (!ulong.TryParse(target, out ulong targetID) || (targetID == 0) || !new SteamID(targetID).IsIndividualAccount) {
 					return FormatBotResponse(string.Format(Strings.ErrorParsingObject, nameof(targetID)));
 				}
 
@@ -1017,7 +1017,7 @@ namespace ArchiSteamFarm {
 			HashSet<ulong> targetIDs = new HashSet<ulong>();
 
 			foreach (string target in targets) {
-				if (!ulong.TryParse(target, out ulong targetID) || (targetID == 0)) {
+				if (!ulong.TryParse(target, out ulong targetID) || (targetID == 0) || !new SteamID(targetID).IsIndividualAccount) {
 					return FormatBotResponse(string.Format(Strings.ErrorParsingObject, nameof(targetID)));
 				}
 
