@@ -2481,7 +2481,7 @@ namespace ArchiSteamFarm {
 			SteamUser.AcceptNewLoginKey(callback);
 		}
 
-		private void OnMachineAuth(SteamUser.UpdateMachineAuthCallback callback) {
+		private async void OnMachineAuth(SteamUser.UpdateMachineAuthCallback callback) {
 			if (callback == null) {
 				ArchiLogger.LogNullError(nameof(callback));
 
@@ -2502,9 +2502,10 @@ namespace ArchiSteamFarm {
 			try {
 				using (FileStream fileStream = File.Open(sentryFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite)) {
 					fileStream.Seek(callback.Offset, SeekOrigin.Begin);
-					fileStream.Write(callback.Data, 0, callback.BytesToWrite);
-					fileSize = fileStream.Length;
 
+					await fileStream.WriteAsync(callback.Data, 0, callback.BytesToWrite).ConfigureAwait(false);
+
+					fileSize = fileStream.Length;
 					fileStream.Seek(0, SeekOrigin.Begin);
 
 					using (SHA1CryptoServiceProvider sha = new SHA1CryptoServiceProvider()) {
