@@ -2038,7 +2038,7 @@ namespace ArchiSteamFarm {
 			Utilities.InBackground(CachedPublicInventory.Reset);
 		}
 
-		internal void OnVanityURLChanged(string vanityURL = null) => VanityURL = string.IsNullOrEmpty(vanityURL) ? null : vanityURL;
+		internal void OnVanityURLChanged(string vanityURL = null) => VanityURL = !string.IsNullOrEmpty(vanityURL) ? vanityURL : null;
 
 		internal async Task<(EResult Result, EPurchaseResultDetail? PurchaseResult)?> RedeemWalletKey(string key) {
 			if (string.IsNullOrEmpty(key)) {
