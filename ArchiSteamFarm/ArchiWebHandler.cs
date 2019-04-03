@@ -140,6 +140,10 @@ namespace ArchiSteamFarm {
 				}
 
 				steamID = SteamID;
+			} else if (!new SteamID(steamID).IsIndividualAccount) {
+				Bot.ArchiLogger.LogNullError(nameof(steamID));
+
+				return null;
 			}
 
 			string request = "/inventory/" + steamID + "/" + appID + "/" + contextID + "?count=" + MaxItemsInSingleInventoryRequest + "&l=english";
@@ -1871,7 +1875,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> Init(ulong steamID, EUniverse universe, string webAPIUserNonce, string parentalCode = null) {
-			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || (universe == EUniverse.Invalid) || string.IsNullOrEmpty(webAPIUserNonce)) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || (universe == EUniverse.Invalid) || !Enum.IsDefined(typeof(EUniverse), universe) || string.IsNullOrEmpty(webAPIUserNonce)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(universe) + " || " + nameof(webAPIUserNonce));
 
 				return false;
@@ -1974,7 +1978,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> JoinGroup(ulong groupID) {
-			if (groupID == 0) {
+			if ((groupID == 0) || !new SteamID(groupID).IsClanAccount) {
 				Bot.ArchiLogger.LogNullError(nameof(groupID));
 
 				return false;
@@ -2096,9 +2100,9 @@ namespace ArchiSteamFarm {
 			return ((responseConfirmRedeem.PurchaseResultDetail == EPurchaseResultDetail.NoDetail) && (responseConfirmRedeem.Result == EResult.OK) ? responseConfirmRedeem.Result : EResult.Fail, responseConfirmRedeem.PurchaseResultDetail);
 		}
 
-		internal async Task<(bool Success, HashSet<ulong> MobileTradeOfferIDs)> SendTradeOffer(ulong partnerID, IReadOnlyCollection<Steam.Asset> itemsToGive = null, IReadOnlyCollection<Steam.Asset> itemsToReceive = null, string token = null, bool forcedSingleOffer = false) {
-			if ((partnerID == 0) || (((itemsToGive == null) || (itemsToGive.Count == 0)) && ((itemsToReceive == null) || (itemsToReceive.Count == 0)))) {
-				Bot.ArchiLogger.LogNullError(nameof(partnerID) + " || (" + nameof(itemsToGive) + " && " + nameof(itemsToReceive) + ")");
+		internal async Task<(bool Success, HashSet<ulong> MobileTradeOfferIDs)> SendTradeOffer(ulong steamID, IReadOnlyCollection<Steam.Asset> itemsToGive = null, IReadOnlyCollection<Steam.Asset> itemsToReceive = null, string token = null, bool forcedSingleOffer = false) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || (((itemsToGive == null) || (itemsToGive.Count == 0)) && ((itemsToReceive == null) || (itemsToReceive.Count == 0)))) {
+				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || (" + nameof(itemsToGive) + " && " + nameof(itemsToReceive) + ")");
 
 				return (false, null);
 			}
@@ -2141,7 +2145,7 @@ namespace ArchiSteamFarm {
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new Dictionary<string, string>(6, StringComparer.Ordinal) {
-				{ "partner", partnerID.ToString() },
+				{ "partner", steamID.ToString() },
 				{ "serverid", "1" },
 				{ "trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : new JObject { { "trade_offer_access_token", token } }.ToString(Formatting.None) },
 				{ "tradeoffermessage", "Sent by " + SharedInfo.PublicIdentifier + "/" + SharedInfo.Version }
