@@ -41,8 +41,6 @@ namespace ArchiSteamFarm {
 		private readonly ConcurrentHashSet<ulong> HandledGifts = new ConcurrentHashSet<ulong>();
 		private readonly SemaphoreSlim TradingSemaphore = new SemaphoreSlim(1, 1);
 
-		internal bool SkipFirstShutdown { get; set; }
-
 		private Timer CardsFarmerResumeTimer;
 		private bool ProcessingGiftsScheduled;
 		private bool TradingScheduled;
@@ -294,7 +292,6 @@ namespace ArchiSteamFarm {
 				return (false, Strings.BotAlreadyRunning);
 			}
 
-			SkipFirstShutdown = true;
 			Utilities.InBackground(Bot.Start);
 
 			return (true, Strings.Done);

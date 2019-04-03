@@ -982,26 +982,14 @@ namespace ArchiSteamFarm {
 		internal async Task OnFarmingFinished(bool farmedSomething) {
 			await OnFarmingStopped().ConfigureAwait(false);
 
-			if (farmedSomething || !FirstTradeSent) {
+			if (BotConfig.SendOnFarmingFinished && (farmedSomething || !FirstTradeSent)) {
 				FirstTradeSent = true;
 
-				if (BotConfig.SendOnFarmingFinished) {
-					await Actions.SendTradeOffer(wantedTypes: BotConfig.LootableTypes).ConfigureAwait(false);
-				}
+				await Actions.SendTradeOffer(wantedTypes: BotConfig.LootableTypes).ConfigureAwait(false);
 			}
 
 			if (BotConfig.ShutdownOnFarmingFinished) {
-				if (farmedSomething || (ASF.GlobalConfig.IdleFarmingPeriod == 0)) {
-					Stop();
-
-					return;
-				}
-
-				if (Actions.SkipFirstShutdown) {
-					Actions.SkipFirstShutdown = false;
-				} else {
-					Stop();
-				}
+				Stop();
 			}
 		}
 
