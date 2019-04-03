@@ -2527,14 +2527,14 @@ namespace ArchiSteamFarm {
 			// Inform the steam servers that we're accepting this sentry file
 			SteamUser.SendMachineAuthResponse(
 				new SteamUser.MachineAuthDetails {
-					JobID = callback.JobID,
-					FileName = callback.FileName,
 					BytesWritten = callback.BytesToWrite,
+					FileName = callback.FileName,
 					FileSize = (int) fileSize,
-					Offset = callback.Offset,
-					Result = EResult.OK,
+					JobID = callback.JobID,
 					LastError = 0,
+					Offset = callback.Offset,
 					OneTimePassword = callback.OneTimePassword,
+					Result = EResult.OK,
 					SentryFileHash = sentryHash
 				}
 			);
