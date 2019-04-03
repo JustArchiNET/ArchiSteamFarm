@@ -404,7 +404,11 @@ namespace ArchiSteamFarm {
 			}
 
 			if (SteamFriends.GetFriendRelationship(steamID) == EFriendRelationship.Friend) {
-				return await ArchiWebHandler.GetTradeHoldDurationForUser(steamID).ConfigureAwait(false);
+				byte? tradeHoldDurationForUser = await ArchiWebHandler.GetTradeHoldDurationForUser(steamID).ConfigureAwait(false);
+
+				if (tradeHoldDurationForUser.HasValue) {
+					return tradeHoldDurationForUser;
+				}
 			}
 
 			Bot targetBot = Bots.Values.FirstOrDefault(bot => bot.SteamID == steamID);
@@ -413,7 +417,11 @@ namespace ArchiSteamFarm {
 				string targetTradeToken = await targetBot.ArchiHandler.GetTradeToken().ConfigureAwait(false);
 
 				if (!string.IsNullOrEmpty(targetTradeToken)) {
-					return await ArchiWebHandler.GetTradeHoldDurationForUser(steamID, targetTradeToken).ConfigureAwait(false);
+					byte? tradeHoldDurationForUser = await ArchiWebHandler.GetTradeHoldDurationForUser(steamID, targetTradeToken).ConfigureAwait(false);
+
+					if (tradeHoldDurationForUser.HasValue) {
+						return tradeHoldDurationForUser;
+					}
 				}
 			}
 
