@@ -1626,7 +1626,7 @@ namespace ArchiSteamFarm {
 
 			try {
 				if (DateTime.UtcNow.Subtract(ArchiHandler.LastPacketReceived).TotalSeconds > ASF.GlobalConfig.ConnectionTimeout) {
-					await SteamFriends.RequestProfileInfo(SteamClient.SteamID);
+					await SteamFriends.RequestProfileInfo(SteamID);
 				}
 
 				HeartBeatFailures = 0;
