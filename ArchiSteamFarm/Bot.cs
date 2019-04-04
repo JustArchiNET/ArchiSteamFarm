@@ -152,7 +152,7 @@ namespace ArchiSteamFarm {
 		public ulong SteamID { get; private set; }
 
 		[PublicAPI]
-		public uint WalletBalance { get; private set; }
+		public long WalletBalance { get; private set; }
 
 		[PublicAPI]
 		public ECurrencyCode WalletCurrency { get; private set; }
@@ -2703,7 +2703,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			WalletBalance = (uint) callback.LongBalance;
+			WalletBalance = callback.LongBalance;
 			WalletCurrency = callback.Currency;
 		}
 
