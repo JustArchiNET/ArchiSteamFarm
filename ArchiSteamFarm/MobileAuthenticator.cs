@@ -63,6 +63,7 @@ namespace ArchiSteamFarm {
 		[JsonProperty(PropertyName = "device_id")]
 		private string DeviceID;
 
+		[JsonConstructor]
 		private MobileAuthenticator() { }
 
 		internal void CorrectDeviceID(string deviceID) {

@@ -559,6 +559,7 @@ namespace ArchiSteamFarm {
 			return skippedSetsThisRound.Count > 0;
 		}
 
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		private sealed class ListedUser {
 			internal readonly HashSet<Steam.Asset.EType> MatchableTypes = new HashSet<Steam.Asset.EType>();
 
@@ -685,6 +686,9 @@ namespace ArchiSteamFarm {
 					}
 				}
 			}
+
+			[JsonConstructor]
+			private ListedUser() { }
 		}
 	}
 }

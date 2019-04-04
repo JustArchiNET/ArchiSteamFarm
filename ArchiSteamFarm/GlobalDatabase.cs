@@ -49,7 +49,6 @@ namespace ArchiSteamFarm {
 
 		private string FilePath;
 
-		// This constructor is used when creating new database
 		private GlobalDatabase([NotNull] string filePath) : this() {
 			if (string.IsNullOrEmpty(filePath)) {
 				throw new ArgumentNullException(nameof(filePath));
@@ -58,7 +57,7 @@ namespace ArchiSteamFarm {
 			FilePath = filePath;
 		}
 
-		// This constructor is used only by deserializer
+		[JsonConstructor]
 		private GlobalDatabase() => ServerListProvider.ServerListUpdated += OnServerListUpdated;
 
 		public void Dispose() {

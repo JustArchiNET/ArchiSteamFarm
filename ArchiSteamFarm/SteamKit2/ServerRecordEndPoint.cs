@@ -45,6 +45,7 @@ namespace ArchiSteamFarm.SteamKit2 {
 			ProtocolTypes = protocolTypes;
 		}
 
+		[JsonConstructor]
 		private ServerRecordEndPoint() { }
 
 		public bool Equals(ServerRecordEndPoint other) => (other != null) && (ReferenceEquals(other, this) || ((Host == other.Host) && (Port == other.Port) && (ProtocolTypes == other.ProtocolTypes)));

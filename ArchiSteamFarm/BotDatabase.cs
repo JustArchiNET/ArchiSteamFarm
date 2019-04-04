@@ -67,7 +67,6 @@ namespace ArchiSteamFarm {
 		private string FilePath;
 		private bool ReadOnly;
 
-		// This constructor is used when creating new database
 		private BotDatabase([NotNull] string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				throw new ArgumentNullException(nameof(filePath));
@@ -76,7 +75,7 @@ namespace ArchiSteamFarm {
 			FilePath = filePath;
 		}
 
-		// This constructor is used only by deserializer
+		[JsonConstructor]
 		private BotDatabase() { }
 
 		public void Dispose() => FileSemaphore.Dispose();
