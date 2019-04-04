@@ -315,7 +315,15 @@ namespace ArchiSteamFarm {
 			BotConfig botConfig;
 
 			try {
-				botConfig = JsonConvert.DeserializeObject<BotConfig>(await RuntimeCompatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false));
+				string json = await RuntimeCompatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+
+				if (string.IsNullOrEmpty(json)) {
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsEmpty, nameof(json)));
+
+					return null;
+				}
+
+				botConfig = JsonConvert.DeserializeObject<BotConfig>(json);
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 

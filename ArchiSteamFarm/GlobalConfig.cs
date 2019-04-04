@@ -286,7 +286,15 @@ namespace ArchiSteamFarm {
 			GlobalConfig globalConfig;
 
 			try {
-				globalConfig = JsonConvert.DeserializeObject<GlobalConfig>(await RuntimeCompatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false));
+				string json = await RuntimeCompatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+
+				if (string.IsNullOrEmpty(json)) {
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsEmpty, nameof(json)));
+
+					return null;
+				}
+
+				globalConfig = JsonConvert.DeserializeObject<GlobalConfig>(json);
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 

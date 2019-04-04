@@ -26,6 +26,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.SteamKit2;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -84,7 +85,15 @@ namespace ArchiSteamFarm {
 			GlobalDatabase globalDatabase;
 
 			try {
-				globalDatabase = JsonConvert.DeserializeObject<GlobalDatabase>(await RuntimeCompatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false));
+				string json = await RuntimeCompatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+
+				if (string.IsNullOrEmpty(json)) {
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsEmpty, nameof(json)));
+
+					return null;
+				}
+
+				globalDatabase = JsonConvert.DeserializeObject<GlobalDatabase>(json);
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 
