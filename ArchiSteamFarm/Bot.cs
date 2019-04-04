@@ -151,11 +151,14 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public ulong SteamID { get; private set; }
 
+		[PublicAPI]
+		public uint WalletBalance { get; private set; }
+
+		[PublicAPI]
+		public ECurrencyCode WalletCurrency { get; private set; }
+
 		internal bool PlayingBlocked { get; private set; }
 		internal bool PlayingWasBlocked { get; private set; }
-
-		internal uint WalletBalance { get; private set; }
-		internal ECurrencyCode WalletCurrency { get; private set; }
 
 		private string AuthCode;
 
@@ -173,7 +176,6 @@ namespace ArchiSteamFarm {
 		private DateTime LastLogonSessionReplaced;
 		private ulong LibraryLockedBySteamID;
 		private ulong MasterChatGroupID;
-
 		private Timer PlayingWasBlockedTimer;
 		private bool ReconnectOnUserInitiated;
 		private Timer SendItemsTimer;
