@@ -211,6 +211,8 @@ namespace ArchiSteamFarm {
 				if (response.StatusCode.IsClientErrorCode()) {
 					LastHeartBeat = DateTime.MinValue;
 					ShouldSendHeartBeats = false;
+
+					return;
 				}
 
 				LastHeartBeat = DateTime.UtcNow;
