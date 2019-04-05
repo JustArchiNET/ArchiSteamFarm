@@ -1862,16 +1862,16 @@ namespace ArchiSteamFarm {
 			return response?.Success;
 		}
 
-		internal async Task<bool> HasPublicInventory() {
+		internal async Task<bool?> HasPublicInventory() {
 			(bool success, bool hasPublicInventory) = await CachedPublicInventory.GetValue().ConfigureAwait(false);
 
-			return success && hasPublicInventory;
+			return success ? hasPublicInventory : (bool?) null;
 		}
 
-		internal async Task<bool> HasValidApiKey() {
+		internal async Task<bool?> HasValidApiKey() {
 			(bool success, string steamApiKey) = await CachedApiKey.GetValue().ConfigureAwait(false);
 
-			return success && !string.IsNullOrEmpty(steamApiKey);
+			return success ? !string.IsNullOrEmpty(steamApiKey) : (bool?) null;
 		}
 
 		internal async Task<bool> Init(ulong steamID, EUniverse universe, string webAPIUserNonce, string parentalCode = null) {

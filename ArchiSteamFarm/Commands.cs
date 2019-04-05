@@ -1664,7 +1664,9 @@ namespace ArchiSteamFarm {
 			}
 
 			if (ownedGames == null) {
-				ownedGames = await Bot.ArchiWebHandler.HasValidApiKey().ConfigureAwait(false) ? await Bot.ArchiWebHandler.GetOwnedGames(Bot.SteamID).ConfigureAwait(false) : await Bot.ArchiWebHandler.GetMyOwnedGames().ConfigureAwait(false);
+				bool? hasValidApiKey = await Bot.ArchiWebHandler.HasValidApiKey().ConfigureAwait(false);
+
+				ownedGames = hasValidApiKey.GetValueOrDefault() ? await Bot.ArchiWebHandler.GetOwnedGames(Bot.SteamID).ConfigureAwait(false) : await Bot.ArchiWebHandler.GetMyOwnedGames().ConfigureAwait(false);
 
 				if ((ownedGames == null) || (ownedGames.Count == 0)) {
 					return (FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(ownedGames))), null);

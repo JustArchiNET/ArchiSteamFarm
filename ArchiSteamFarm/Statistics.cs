@@ -106,6 +106,7 @@ namespace ArchiSteamFarm {
 				if (await Bot.ArchiWebHandler.WebBrowser.UrlPost(request, data, maxTries: 1).ConfigureAwait(false) == null) {
 					if (DateTime.UtcNow > LastHeartBeat.AddMinutes(MaxHeartBeatTTL)) {
 						ShouldSendHeartBeats = false;
+						Bot.RequestPersonaStateUpdate();
 					}
 
 					return;
@@ -120,22 +121,38 @@ namespace ArchiSteamFarm {
 		internal async Task OnLoggedOn() => await Bot.ArchiWebHandler.JoinGroup(SharedInfo.ASFGroupSteamID).ConfigureAwait(false);
 
 		internal async Task OnPersonaState(string nickname = null, string avatarHash = null) {
-			if (DateTime.UtcNow < LastAnnouncementCheck.AddHours(MinAnnouncementCheckTTL)) {
+			if ((DateTime.UtcNow < LastAnnouncementCheck.AddHours(MinAnnouncementCheckTTL)) && (ShouldSendHeartBeats || (LastHeartBeat == DateTime.MinValue))) {
 				return;
 			}
 
 			await RequestsSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				if (DateTime.UtcNow < LastAnnouncementCheck.AddHours(MinAnnouncementCheckTTL)) {
+				if ((DateTime.UtcNow < LastAnnouncementCheck.AddHours(MinAnnouncementCheckTTL)) && (ShouldSendHeartBeats || (LastHeartBeat == DateTime.MinValue))) {
 					return;
 				}
 
 				// Don't announce if we don't meet conditions
-				string tradeToken;
+				bool? eligible = await IsEligibleForMatching().ConfigureAwait(false);
 
-				if (!await IsEligibleForMatching().ConfigureAwait(false) || string.IsNullOrEmpty(tradeToken = await Bot.ArchiHandler.GetTradeToken().ConfigureAwait(false))) {
+				if (!eligible.HasValue) {
+					// This is actually network failure, so we'll stop sending heartbeats but not record it as valid check
+					ShouldSendHeartBeats = false;
+
+					return;
+				}
+
+				if (!eligible.Value) {
 					LastAnnouncementCheck = DateTime.UtcNow;
+					ShouldSendHeartBeats = false;
+
+					return;
+				}
+
+				string tradeToken = await Bot.ArchiHandler.GetTradeToken().ConfigureAwait(false);
+
+				if (string.IsNullOrEmpty(tradeToken)) {
+					// This is actually network failure, so we'll stop sending heartbeats but not record it as valid check
 					ShouldSendHeartBeats = false;
 
 					return;
@@ -153,8 +170,8 @@ namespace ArchiSteamFarm {
 
 				HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetInventory(Bot.SteamID, tradable: true, wantedTypes: acceptedMatchableTypes).ConfigureAwait(false);
 
-				// This is actually inventory failure, so we'll stop sending heartbeats but not record it as valid check
 				if (inventory == null) {
+					// This is actually inventory failure, so we'll stop sending heartbeats but not record it as valid check
 					ShouldSendHeartBeats = false;
 
 					return;
@@ -186,10 +203,7 @@ namespace ArchiSteamFarm {
 				// Listing is free to deny our announce request, hence we don't retry
 				bool announced = await Bot.ArchiWebHandler.WebBrowser.UrlPost(request, data, maxTries: 1).ConfigureAwait(false) != null;
 
-				if (announced) {
-					LastHeartBeat = DateTime.UtcNow;
-				}
-
+				LastHeartBeat = announced ? DateTime.UtcNow : DateTime.MinValue;
 				ShouldSendHeartBeats = announced;
 			} finally {
 				RequestsSemaphore.Release();
@@ -205,7 +219,7 @@ namespace ArchiSteamFarm {
 			return objectResponse?.Content;
 		}
 
-		private async Task<bool> IsEligibleForMatching() {
+		private async Task<bool?> IsEligibleForMatching() {
 			// Bot must have ASF 2FA
 			if (!Bot.HasMobileAuthenticator) {
 				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.HasMobileAuthenticator) + ": " + Bot.HasMobileAuthenticator));
@@ -228,24 +242,28 @@ namespace ArchiSteamFarm {
 			}
 
 			// Bot must have public inventory
-			if (!await Bot.ArchiWebHandler.HasPublicInventory().ConfigureAwait(false)) {
-				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.ArchiWebHandler.HasPublicInventory) + ": " + false));
+			bool? hasPublicInventory = await Bot.ArchiWebHandler.HasPublicInventory().ConfigureAwait(false);
 
-				return false;
+			if (!hasPublicInventory.GetValueOrDefault()) {
+				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.ArchiWebHandler.HasPublicInventory) + ": " + (hasPublicInventory.HasValue ? hasPublicInventory.Value.ToString() : "null")));
+
+				return hasPublicInventory;
 			}
 
 			// Bot must have valid API key (e.g. not being restricted account)
-			if (!await Bot.ArchiWebHandler.HasValidApiKey().ConfigureAwait(false)) {
-				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.ArchiWebHandler.HasValidApiKey) + ": " + false));
+			bool? hasValidApiKey = await Bot.ArchiWebHandler.HasValidApiKey().ConfigureAwait(false);
 
-				return false;
+			if (!hasValidApiKey.GetValueOrDefault()) {
+				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.ArchiWebHandler.HasValidApiKey) + ": " + (hasValidApiKey.HasValue ? hasValidApiKey.Value.ToString() : "null")));
+
+				return hasValidApiKey;
 			}
 
 			return true;
 		}
 
 		private async Task MatchActively() {
-			if (!Bot.IsConnectedAndLoggedOn || Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchActively) || !await IsEligibleForMatching().ConfigureAwait(false)) {
+			if (!Bot.IsConnectedAndLoggedOn || Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchActively) || (await IsEligibleForMatching().ConfigureAwait(false) != true)) {
 				Bot.ArchiLogger.LogGenericTrace(Strings.ErrorAborted);
 
 				return;
@@ -278,7 +296,7 @@ namespace ArchiSteamFarm {
 						await Task.Delay(5 * 60 * 1000).ConfigureAwait(false);
 					}
 
-					if (!Bot.IsConnectedAndLoggedOn || Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchActively) || !await IsEligibleForMatching().ConfigureAwait(false)) {
+					if (!Bot.IsConnectedAndLoggedOn || Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchActively) || (await IsEligibleForMatching().ConfigureAwait(false) != true)) {
 						Bot.ArchiLogger.LogGenericTrace(Strings.ErrorAborted);
 
 						break;
