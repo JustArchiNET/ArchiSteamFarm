@@ -33,8 +33,9 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	internal sealed class Statistics : IDisposable {
+		private const byte MaxHeartBeatTTL = MinHeartBeatTTL + WebBrowser.MaxTries; // Maximum amount of minutes until we give up on sending further HeartBeats
 		private const byte MaxMatchedBotsHard = 40;
-		private const byte MaxMatchesBotsSoft = 20;
+		private const byte MaxMatchedBotsSoft = 20;
 		private const byte MaxMatchingRounds = 10;
 		private const byte MinAnnouncementCheckTTL = 6; // Minimum amount of hours we must wait before checking eligibility for Announcement, should be lower than MinPersonaStateTTL
 		private const byte MinHeartBeatTTL = 10; // Minimum amount of minutes we must wait before sending next HeartBeat
@@ -102,9 +103,15 @@ namespace ArchiSteamFarm {
 				};
 
 				// Listing is free to deny our announce request, hence we don't retry
-				if (await Bot.ArchiWebHandler.WebBrowser.UrlPost(request, data, maxTries: 1).ConfigureAwait(false) != null) {
-					LastHeartBeat = DateTime.UtcNow;
+				if (await Bot.ArchiWebHandler.WebBrowser.UrlPost(request, data, maxTries: 1).ConfigureAwait(false) == null) {
+					if (DateTime.UtcNow > LastHeartBeat.AddMinutes(MaxHeartBeatTTL)) {
+						ShouldSendHeartBeats = false;
+					}
+
+					return;
 				}
+
+				LastHeartBeat = DateTime.UtcNow;
 			} finally {
 				RequestsSemaphore.Release();
 			}
@@ -177,7 +184,13 @@ namespace ArchiSteamFarm {
 				};
 
 				// Listing is free to deny our announce request, hence we don't retry
-				ShouldSendHeartBeats = await Bot.ArchiWebHandler.WebBrowser.UrlPost(request, data, maxTries: 1).ConfigureAwait(false) != null;
+				bool announced = await Bot.ArchiWebHandler.WebBrowser.UrlPost(request, data, maxTries: 1).ConfigureAwait(false) != null;
+
+				if (announced) {
+					LastHeartBeat = DateTime.UtcNow;
+				}
+
+				ShouldSendHeartBeats = announced;
 			} finally {
 				RequestsSemaphore.Release();
 			}
@@ -531,7 +544,7 @@ namespace ArchiSteamFarm {
 						triedSteamIDs[listedUser.SteamID] = (byte.MaxValue, null, null);
 					}
 
-					if (++emptyMatches >= MaxMatchesBotsSoft) {
+					if (++emptyMatches >= MaxMatchedBotsSoft) {
 						break;
 					}
 
