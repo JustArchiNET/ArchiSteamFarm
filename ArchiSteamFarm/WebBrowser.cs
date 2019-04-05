@@ -632,7 +632,7 @@ namespace ArchiSteamFarm {
 				return await InternalRequest(redirectUri, httpMethod, data, referer, httpCompletionOption, --maxRedirections).ConfigureAwait(false);
 			}
 
-			if ((response.StatusCode >= HttpStatusCode.BadRequest) && (response.StatusCode < HttpStatusCode.InternalServerError)) {
+			if (response.StatusCode.IsClientErrorCode()) {
 				// Do not retry on client errors
 				return response;
 			}
