@@ -33,7 +33,6 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	internal sealed class Statistics : IDisposable {
-		private const byte MaxHeartBeatTTL = MinHeartBeatTTL + WebBrowser.MaxTries; // Maximum amount of minutes until we give up on sending further HeartBeats
 		private const byte MaxMatchedBotsHard = 40;
 		private const byte MaxMatchedBotsSoft = 20;
 		private const byte MaxMatchingRounds = 10;
@@ -102,12 +101,15 @@ namespace ArchiSteamFarm {
 					{ "SteamID", Bot.SteamID.ToString() }
 				};
 
-				// Listing is free to deny our announce request, hence we don't retry
-				if (await Bot.ArchiWebHandler.WebBrowser.UrlPost(request, data, maxTries: 1).ConfigureAwait(false) == null) {
-					if (DateTime.UtcNow > LastHeartBeat.AddMinutes(MaxHeartBeatTTL)) {
-						ShouldSendHeartBeats = false;
-						Bot.RequestPersonaStateUpdate();
-					}
+				WebBrowser.BasicResponse response = await Bot.ArchiWebHandler.WebBrowser.UrlPost(request, data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
+
+				if (response == null) {
+					return;
+				}
+
+				if (response.StatusCode.IsClientErrorCode()) {
+					LastHeartBeat = DateTime.MinValue;
+					ShouldSendHeartBeats = false;
 
 					return;
 				}
@@ -200,11 +202,19 @@ namespace ArchiSteamFarm {
 					{ "TradeToken", tradeToken }
 				};
 
-				// Listing is free to deny our announce request, hence we don't retry
-				bool announced = await Bot.ArchiWebHandler.WebBrowser.UrlPost(request, data, maxTries: 1).ConfigureAwait(false) != null;
+				WebBrowser.BasicResponse response = await Bot.ArchiWebHandler.WebBrowser.UrlPost(request, data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
 
-				LastHeartBeat = announced ? DateTime.UtcNow : DateTime.MinValue;
-				ShouldSendHeartBeats = announced;
+				if (response == null) {
+					return;
+				}
+
+				if (response.StatusCode.IsClientErrorCode()) {
+					LastHeartBeat = DateTime.MinValue;
+					ShouldSendHeartBeats = false;
+				}
+
+				LastHeartBeat = DateTime.UtcNow;
+				ShouldSendHeartBeats = true;
 			} finally {
 				RequestsSemaphore.Release();
 			}

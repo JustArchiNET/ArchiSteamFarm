@@ -90,31 +90,46 @@ namespace ArchiSteamFarm {
 
 		[ItemCanBeNull]
 		[PublicAPI]
-		public async Task<HtmlDocumentResponse> UrlGetToHtmlDocument(string request, string referer = null, byte maxTries = MaxTries) {
+		public async Task<HtmlDocumentResponse> UrlGetToHtmlDocument(string request, string referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
 
 				return null;
 			}
 
-			StringResponse response = await UrlGetToString(request, referer, maxTries).ConfigureAwait(false);
+			StringResponse response = await UrlGetToString(request, referer, requestOptions, maxTries).ConfigureAwait(false);
 
 			return response != null ? new HtmlDocumentResponse(response) : null;
 		}
 
 		[ItemCanBeNull]
 		[PublicAPI]
-		public async Task<ObjectResponse<T>> UrlGetToJsonObject<T>(string request, string referer = null, byte maxTries = MaxTries) where T : class {
+		public async Task<ObjectResponse<T>> UrlGetToJsonObject<T>(string request, string referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) where T : class {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
 
 				return null;
 			}
 
-			for (byte i = 0; i < maxTries; i++) {
-				StringResponse response = await UrlGetToString(request, referer, 1).ConfigureAwait(false);
+			ObjectResponse<T> result = null;
 
-				if (string.IsNullOrEmpty(response?.Content)) {
+			for (byte i = 0; i < maxTries; i++) {
+				StringResponse response = await UrlGetToString(request, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
+
+				// ReSharper disable once UseNullPropagationWhenPossible - false check
+				if (response == null) {
+					continue;
+				}
+
+				if (response.StatusCode.IsClientErrorCode()) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						result = new ObjectResponse<T>(response);
+					}
+
+					break;
+				}
+
+				if (string.IsNullOrEmpty(response.Content)) {
 					continue;
 				}
 
@@ -140,22 +155,37 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 			}
 
-			return null;
+			return result;
 		}
 
 		[ItemCanBeNull]
 		[PublicAPI]
-		public async Task<XmlDocumentResponse> UrlGetToXmlDocument(string request, string referer = null, byte maxTries = MaxTries) {
+		public async Task<XmlDocumentResponse> UrlGetToXmlDocument(string request, string referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
 
 				return null;
 			}
 
-			for (byte i = 0; i < maxTries; i++) {
-				StringResponse response = await UrlGetToString(request, referer, 1).ConfigureAwait(false);
+			XmlDocumentResponse result = null;
 
-				if (string.IsNullOrEmpty(response?.Content)) {
+			for (byte i = 0; i < maxTries; i++) {
+				StringResponse response = await UrlGetToString(request, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
+
+				// ReSharper disable once UseNullPropagationWhenPossible - false check
+				if (response == null) {
+					continue;
+				}
+
+				if (response.StatusCode.IsClientErrorCode()) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						result = new XmlDocumentResponse(response);
+					}
+
+					break;
+				}
+
+				if (string.IsNullOrEmpty(response.Content)) {
 					continue;
 				}
 
@@ -177,17 +207,19 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 			}
 
-			return null;
+			return result;
 		}
 
 		[ItemCanBeNull]
 		[PublicAPI]
-		public async Task<BasicResponse> UrlHead(string request, string referer = null, byte maxTries = MaxTries) {
+		public async Task<BasicResponse> UrlHead(string request, string referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
 
 				return null;
 			}
+
+			BasicResponse result = null;
 
 			for (byte i = 0; i < maxTries; i++) {
 				using (HttpResponseMessage response = await InternalHead(request, referer).ConfigureAwait(false)) {
@@ -195,31 +227,12 @@ namespace ArchiSteamFarm {
 						continue;
 					}
 
-					return new BasicResponse(response);
-				}
-			}
+					if (response.StatusCode.IsClientErrorCode()) {
+						if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+							result = new BasicResponse(response);
+						}
 
-			if (maxTries > 1) {
-				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
-				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
-			}
-
-			return null;
-		}
-
-		[ItemCanBeNull]
-		[PublicAPI]
-		public async Task<BasicResponse> UrlPost(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, byte maxTries = MaxTries) {
-			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
-				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
-
-				return null;
-			}
-
-			for (byte i = 0; i < maxTries; i++) {
-				using (HttpResponseMessage response = await InternalPost(request, data, referer).ConfigureAwait(false)) {
-					if (response == null) {
-						continue;
+						break;
 					}
 
 					return new BasicResponse(response);
@@ -231,36 +244,87 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 			}
 
-			return null;
+			return result;
 		}
 
 		[ItemCanBeNull]
 		[PublicAPI]
-		public async Task<HtmlDocumentResponse> UrlPostToHtmlDocument(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, byte maxTries = MaxTries) {
+		public async Task<BasicResponse> UrlPost(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
 
 				return null;
 			}
 
-			StringResponse response = await UrlPostToString(request, data, referer, maxTries).ConfigureAwait(false);
+			BasicResponse result = null;
+
+			for (byte i = 0; i < maxTries; i++) {
+				using (HttpResponseMessage response = await InternalPost(request, data, referer).ConfigureAwait(false)) {
+					if (response == null) {
+						continue;
+					}
+
+					if (response.StatusCode.IsClientErrorCode()) {
+						if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+							result = new BasicResponse(response);
+						}
+
+						break;
+					}
+
+					return new BasicResponse(response);
+				}
+			}
+
+			if (maxTries > 1) {
+				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+			}
+
+			return result;
+		}
+
+		[ItemCanBeNull]
+		[PublicAPI]
+		public async Task<HtmlDocumentResponse> UrlPostToHtmlDocument(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
+			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
+				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
+
+				return null;
+			}
+
+			StringResponse response = await UrlPostToString(request, data, referer, requestOptions, maxTries).ConfigureAwait(false);
 
 			return response != null ? new HtmlDocumentResponse(response) : null;
 		}
 
 		[ItemCanBeNull]
 		[PublicAPI]
-		public async Task<ObjectResponse<T>> UrlPostToJsonObject<T>(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, byte maxTries = MaxTries) where T : class {
+		public async Task<ObjectResponse<T>> UrlPostToJsonObject<T>(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) where T : class {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
 
 				return null;
 			}
 
-			for (byte i = 0; i < maxTries; i++) {
-				StringResponse response = await UrlPostToString(request, data, referer, maxTries).ConfigureAwait(false);
+			ObjectResponse<T> result = null;
 
-				if (string.IsNullOrEmpty(response?.Content)) {
+			for (byte i = 0; i < maxTries; i++) {
+				StringResponse response = await UrlPostToString(request, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, maxTries).ConfigureAwait(false);
+
+				if (response == null) {
+					return null;
+				}
+
+				if (response.StatusCode.IsClientErrorCode()) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						result = new ObjectResponse<T>(response);
+					}
+
+					break;
+				}
+
+				if (string.IsNullOrEmpty(response.Content)) {
 					continue;
 				}
 
@@ -286,7 +350,7 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 			}
 
-			return null;
+			return result;
 		}
 
 		internal static void Init() {
@@ -319,12 +383,14 @@ namespace ArchiSteamFarm {
 		}
 
 		[ItemCanBeNull]
-		internal async Task<BinaryResponse> UrlGetToBinaryWithProgress(string request, string referer = null, byte maxTries = MaxTries) {
+		internal async Task<BinaryResponse> UrlGetToBinaryWithProgress(string request, string referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
 
 				return null;
 			}
+
+			BinaryResponse result = null;
 
 			for (byte i = 0; i < maxTries; i++) {
 				const byte printPercentage = 10;
@@ -333,6 +399,14 @@ namespace ArchiSteamFarm {
 				using (HttpResponseMessage response = await InternalGet(request, referer, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false)) {
 					if (response == null) {
 						continue;
+					}
+
+					if (response.StatusCode.IsClientErrorCode()) {
+						if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+							result = new BinaryResponse(response);
+						}
+
+						break;
 					}
 
 					ArchiLogger.LogGenericDebug("0%...");
@@ -387,21 +461,31 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 			}
 
-			return null;
+			return result;
 		}
 
 		[ItemCanBeNull]
-		internal async Task<StringResponse> UrlGetToString(string request, string referer = null, byte maxTries = MaxTries) {
+		internal async Task<StringResponse> UrlGetToString(string request, string referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
 
 				return null;
 			}
 
+			StringResponse result = null;
+
 			for (byte i = 0; i < maxTries; i++) {
 				using (HttpResponseMessage response = await InternalGet(request, referer).ConfigureAwait(false)) {
 					if (response == null) {
 						continue;
+					}
+
+					if (response.StatusCode.IsClientErrorCode()) {
+						if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+							result = new StringResponse(response);
+						}
+
+						break;
 					}
 
 					return new StringResponse(response, await response.Content.ReadAsStringAsync().ConfigureAwait(false));
@@ -413,7 +497,7 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 			}
 
-			return null;
+			return result;
 		}
 
 		private async Task<HttpResponseMessage> InternalGet(string request, string referer = null, HttpCompletionOption httpCompletionOptions = HttpCompletionOption.ResponseContentRead) {
@@ -548,6 +632,11 @@ namespace ArchiSteamFarm {
 				return await InternalRequest(redirectUri, httpMethod, data, referer, httpCompletionOption, --maxRedirections).ConfigureAwait(false);
 			}
 
+			if ((response.StatusCode >= HttpStatusCode.BadRequest) && (response.StatusCode < HttpStatusCode.InternalServerError)) {
+				// Do not retry on client errors
+				return response;
+			}
+
 			using (response) {
 				if (Debugging.IsUserDebugging) {
 					ArchiLogger.LogGenericDebug(string.Format(Strings.Content, await response.Content.ReadAsStringAsync().ConfigureAwait(false)));
@@ -558,17 +647,27 @@ namespace ArchiSteamFarm {
 		}
 
 		[ItemCanBeNull]
-		private async Task<StringResponse> UrlPostToString(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, byte maxTries = MaxTries) {
+		private async Task<StringResponse> UrlPostToString(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
 
 				return null;
 			}
 
+			StringResponse result = null;
+
 			for (byte i = 0; i < maxTries; i++) {
 				using (HttpResponseMessage response = await InternalPost(request, data, referer).ConfigureAwait(false)) {
 					if (response == null) {
 						continue;
+					}
+
+					if (response.StatusCode.IsClientErrorCode()) {
+						if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+							result = new StringResponse(response);
+						}
+
+						break;
 					}
 
 					return new StringResponse(response, await response.Content.ReadAsStringAsync().ConfigureAwait(false));
@@ -580,10 +679,13 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 			}
 
-			return null;
+			return result;
 		}
 
 		public class BasicResponse {
+			[PublicAPI]
+			public readonly HttpStatusCode StatusCode;
+
 			internal readonly Uri FinalUri;
 
 			internal BasicResponse([NotNull] HttpResponseMessage httpResponseMessage) {
@@ -592,6 +694,7 @@ namespace ArchiSteamFarm {
 				}
 
 				FinalUri = httpResponseMessage.Headers.Location ?? httpResponseMessage.RequestMessage.RequestUri;
+				StatusCode = httpResponseMessage.StatusCode;
 			}
 
 			internal BasicResponse([NotNull] BasicResponse basicResponse) {
@@ -600,6 +703,7 @@ namespace ArchiSteamFarm {
 				}
 
 				FinalUri = basicResponse.FinalUri;
+				StatusCode = basicResponse.StatusCode;
 			}
 		}
 
@@ -627,6 +731,8 @@ namespace ArchiSteamFarm {
 
 				Content = content;
 			}
+
+			internal ObjectResponse([NotNull] BasicResponse basicResponse) : base(basicResponse) { }
 		}
 
 		public sealed class XmlDocumentResponse : BasicResponse {
@@ -640,6 +746,14 @@ namespace ArchiSteamFarm {
 
 				Content = content;
 			}
+
+			internal XmlDocumentResponse([NotNull] BasicResponse basicResponse) : base(basicResponse) { }
+		}
+
+		[Flags]
+		public enum ERequestOptions : byte {
+			None = 0,
+			ReturnClientErrors = 1
 		}
 
 		internal sealed class BinaryResponse : BasicResponse {
@@ -652,6 +766,8 @@ namespace ArchiSteamFarm {
 
 				Content = content;
 			}
+
+			internal BinaryResponse([NotNull] HttpResponseMessage httpResponseMessage) : base(httpResponseMessage) { }
 		}
 
 		internal sealed class StringResponse : BasicResponse {
@@ -664,6 +780,8 @@ namespace ArchiSteamFarm {
 
 				Content = content;
 			}
+
+			internal StringResponse([NotNull] HttpResponseMessage httpResponseMessage) : base(httpResponseMessage) { }
 		}
 	}
 }
