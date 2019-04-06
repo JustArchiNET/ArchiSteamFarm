@@ -257,7 +257,7 @@ namespace ArchiSteamFarm {
 			bool? hasPublicInventory = await Bot.ArchiWebHandler.HasPublicInventory().ConfigureAwait(false);
 
 			if (!hasPublicInventory.GetValueOrDefault()) {
-				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.ArchiWebHandler.HasPublicInventory) + ": " + (hasPublicInventory.HasValue ? hasPublicInventory.Value.ToString() : "null")));
+				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.ArchiWebHandler.HasPublicInventory) + ": " + (hasPublicInventory?.ToString() ?? "null")));
 
 				return hasPublicInventory;
 			}
@@ -266,7 +266,7 @@ namespace ArchiSteamFarm {
 			bool? hasValidApiKey = await Bot.ArchiWebHandler.HasValidApiKey().ConfigureAwait(false);
 
 			if (!hasValidApiKey.GetValueOrDefault()) {
-				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.ArchiWebHandler.HasValidApiKey) + ": " + (hasValidApiKey.HasValue ? hasValidApiKey.Value.ToString() : "null")));
+				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.ArchiWebHandler.HasValidApiKey) + ": " + (hasValidApiKey?.ToString() ?? "null")));
 
 				return hasValidApiKey;
 			}
