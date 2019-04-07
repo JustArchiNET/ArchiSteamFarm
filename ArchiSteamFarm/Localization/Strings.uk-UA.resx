@@ -717,5 +717,7 @@
     <value>Бот має {0} ігор у фоновій черзі.</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
   </data>
-  
+  <data name="ErrorSingleInstanceRequired" xml:space="preserve">
+    <value>Процес ASF вже працює для цього робочого каталогу, завершуємо роботу!</value>
+  </data>
 </root>

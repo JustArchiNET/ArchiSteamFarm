@@ -717,5 +717,7 @@
     <value>機械人的後台佇列中還有 {0} 個遊戲。</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
   </data>
-  
+  <data name="ErrorSingleInstanceRequired" xml:space="preserve">
+    <value>ASF 進程已在此工作目錄中運行，正在中止!</value>
+  </data>
 </root>

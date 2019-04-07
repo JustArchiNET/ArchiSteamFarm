@@ -676,7 +676,7 @@ StackTrace:
     <comment>{0} will be replaced by number of sets traded</comment>
   </data>
   <data name="WarningExcessiveBotsCount" xml:space="preserve">
-    <value>Se você estiver rodando mais contas bot que nosso limite máximo recomendado ({0}). Fique ciente de que não há suporte para isso e isso poderá causar vários problemas com o Steam, incluindo suspensões de contas. Veja as Perguntas Frequentes para mais detalhes.</value>
+    <value>Você está rodando mais contas de bots pessoais do que nosso limite máximo recomendado ({0}). Esteja ciente de que essa configuração não é suportada e pode causar vários problemas relacionados ao Steam, incluindo suspensões de contas. Confira o FAQ para mais detalhes.</value>
     <comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
   </data>
   <data name="PluginLoaded" xml:space="preserve">
@@ -691,7 +691,7 @@ StackTrace:
     <value>Nada encontrado!</value>
   </data>
   <data name="PluginsWarning" xml:space="preserve">
-    <value>Você carregou 1 ou mais plugins no ASF. Como não temos como oferecer suporte para configurações modificadas, contate os desenvolvedores do(s) plugin(s) que você decidiu usar em caso de problemas.</value>
+    <value>Você carregou um ou mais plugins personalizados no ASF. Como não podemos oferecer suporte para configurações modificadas, por favor contate os desenvolvedores do plugin que você decidiu usar em caso de problemas.</value>
   </data>
   <data name="PleaseWait" xml:space="preserve">
     <value>Por favor, aguarde...</value>
@@ -717,5 +717,7 @@ StackTrace:
     <value>Há {0} jogo(s) restante(s) na fila de ativação em segundo plano do bot.</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
   </data>
-  
+  <data name="ErrorSingleInstanceRequired" xml:space="preserve">
+    <value>O processo ASF já está sendo executado para este diretório, abortando!</value>
+  </data>
 </root>
