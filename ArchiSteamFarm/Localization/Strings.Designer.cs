@@ -322,6 +322,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Successfully handled {0} confirmations..
+        /// </summary>
+        public static string BotHandledConfirmations {
+            get {
+                return ResourceManager.GetString("BotHandledConfirmations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Bot has no wallet..
         /// </summary>
         public static string BotHasNoWallet {

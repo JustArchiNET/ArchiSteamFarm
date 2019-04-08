@@ -106,7 +106,7 @@ namespace ArchiSteamFarm {
 				if ((acceptedTradeOfferIDs == null) || (acceptedTradeOfferIDs.Count == 0)) {
 					bool result = await Bot.BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false);
 
-					return (result, result ? Strings.Success : Strings.WarningFailed);
+					return (result, result ? string.Format(Strings.BotHandledConfirmations, confirmations.Count) : Strings.WarningFailed);
 				}
 
 				IList<Steam.ConfirmationDetails> results = await Utilities.InParallel(confirmations.Select(Bot.BotDatabase.MobileAuthenticator.GetConfirmationDetails)).ConfigureAwait(false);
@@ -133,11 +133,11 @@ namespace ArchiSteamFarm {
 
 				// Check if those are all that we were expected to confirm
 				if (acceptedTradeOfferIDs.All(handledTradeOfferIDs.Contains)) {
-					return (true, Strings.Success);
+					return (true, string.Format(Strings.BotHandledConfirmations, acceptedTradeOfferIDs.Count));
 				}
 			}
 
-			return (!waitIfNeeded, waitIfNeeded ? Strings.Success : string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+			return (!waitIfNeeded, !waitIfNeeded ? Strings.Success : string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
 		}
 
 		[PublicAPI]
