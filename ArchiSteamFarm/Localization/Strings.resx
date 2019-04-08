@@ -721,7 +721,7 @@ StackTrace:
     <value>ASF process is already running for this working directory, aborting!</value>
   </data>
   <data name="BotHandledConfirmations" xml:space="preserve">
-    <value>Successfully handled {0} confirmations.</value>
+    <value>Successfully handled {0} confirmations!</value>
     <comment>{0} will be replaced by number of confirmations</comment>
   </data>
 </root>

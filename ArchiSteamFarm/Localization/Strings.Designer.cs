@@ -322,7 +322,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Successfully handled {0} confirmations..
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Successfully handled {0} confirmations!.
         /// </summary>
         public static string BotHandledConfirmations {
             get {
