@@ -86,8 +86,8 @@ namespace ArchiSteamFarm {
 		internal ArchiWebHandler([NotNull] Bot bot) {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
-			CachedApiKey = new ArchiCacheable<string>(ResolveApiKey, TimeSpan.FromHours(1));
-			CachedPublicInventory = new ArchiCacheable<bool>(ResolvePublicInventory, TimeSpan.FromHours(1));
+			CachedApiKey = new ArchiCacheable<string>(ResolveApiKey);
+			CachedPublicInventory = new ArchiCacheable<bool>(ResolvePublicInventory);
 			WebBrowser = new WebBrowser(bot.ArchiLogger, ASF.GlobalConfig.WebProxy);
 		}
 
