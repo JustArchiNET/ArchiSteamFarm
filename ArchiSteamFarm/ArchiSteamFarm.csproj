@@ -57,7 +57,7 @@
 
   <ItemGroup>
     <PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="3.0.0" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.1" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.2" />
     <PackageReference Include="Humanizer" Version="2.6.2" />
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
     <PackageReference Include="Markdig.Signed" Version="0.16.0" />
