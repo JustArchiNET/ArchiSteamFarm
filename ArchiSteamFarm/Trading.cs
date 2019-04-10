@@ -349,13 +349,13 @@ namespace ArchiSteamFarm {
 			await TradesSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				lock (TradesSemaphore) {
-					ParsingScheduled = false;
-				}
-
 				bool lootableTypesReceived;
 
 				using (await Bot.Actions.GetTradingLock().ConfigureAwait(false)) {
+					lock (TradesSemaphore) {
+						ParsingScheduled = false;
+					}
+
 					lootableTypesReceived = await ParseActiveTrades().ConfigureAwait(false);
 				}
 
