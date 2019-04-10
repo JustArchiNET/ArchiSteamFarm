@@ -77,10 +77,10 @@ namespace ArchiSteamFarm {
 		private readonly ArchiCacheable<bool> CachedPublicInventory;
 		private readonly SemaphoreSlim SessionSemaphore = new SemaphoreSlim(1, 1);
 
+		private bool Initialized;
 		private DateTime LastSessionCheck;
 		private DateTime LastSessionRefresh;
 		private bool MarkingInventoryScheduled;
-		private ulong SteamID;
 		private string VanityURL;
 
 		internal ArchiWebHandler([NotNull] Bot bot) {
@@ -101,19 +101,19 @@ namespace ArchiSteamFarm {
 		[ItemCanBeNull]
 		[PublicAPI]
 		public async Task<string> GetAbsoluteProfileURL(bool waitForInitialization = true) {
-			if (waitForInitialization && (SteamID == 0)) {
-				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+			if (waitForInitialization && !Initialized) {
+				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
-				if (SteamID == 0) {
+				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
 					return null;
 				}
 			}
 
-			return string.IsNullOrEmpty(VanityURL) ? "/profiles/" + SteamID : "/id/" + VanityURL;
+			return string.IsNullOrEmpty(VanityURL) ? "/profiles/" + Bot.SteamID : "/id/" + VanityURL;
 		}
 
 		[ItemCanBeNull]
@@ -127,19 +127,19 @@ namespace ArchiSteamFarm {
 			}
 
 			if (steamID == 0) {
-				if (SteamID == 0) {
-					for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+				if (!Initialized) {
+					for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
 						await Task.Delay(1000).ConfigureAwait(false);
 					}
 
-					if (SteamID == 0) {
+					if (!Initialized) {
 						Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
 						return null;
 					}
 				}
 
-				steamID = SteamID;
+				steamID = Bot.SteamID;
 			} else if (!new SteamID(steamID).IsIndividualAccount) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID));
 
@@ -273,12 +273,12 @@ namespace ArchiSteamFarm {
 				SessionSemaphore.Release();
 			}
 
-			if (SteamID == 0) {
-				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+			if (!Initialized) {
+				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
-				if (SteamID == 0) {
+				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 
@@ -348,12 +348,12 @@ namespace ArchiSteamFarm {
 				SessionSemaphore.Release();
 			}
 
-			if (SteamID == 0) {
-				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+			if (!Initialized) {
+				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
-				if (SteamID == 0) {
+				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 
@@ -423,12 +423,12 @@ namespace ArchiSteamFarm {
 				SessionSemaphore.Release();
 			}
 
-			if (SteamID == 0) {
-				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+			if (!Initialized) {
+				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
-				if (SteamID == 0) {
+				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 
@@ -498,12 +498,12 @@ namespace ArchiSteamFarm {
 				SessionSemaphore.Release();
 			}
 
-			if (SteamID == 0) {
-				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+			if (!Initialized) {
+				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
-				if (SteamID == 0) {
+				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 
@@ -573,12 +573,12 @@ namespace ArchiSteamFarm {
 				SessionSemaphore.Release();
 			}
 
-			if (SteamID == 0) {
-				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+			if (!Initialized) {
+				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
-				if (SteamID == 0) {
+				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 
@@ -685,12 +685,12 @@ namespace ArchiSteamFarm {
 				SessionSemaphore.Release();
 			}
 
-			if (SteamID == 0) {
-				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+			if (!Initialized) {
+				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
-				if (SteamID == 0) {
+				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 
@@ -797,12 +797,12 @@ namespace ArchiSteamFarm {
 				SessionSemaphore.Release();
 			}
 
-			if (SteamID == 0) {
-				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+			if (!Initialized) {
+				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
-				if (SteamID == 0) {
+				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 
@@ -912,12 +912,12 @@ namespace ArchiSteamFarm {
 				SessionSemaphore.Release();
 			}
 
-			if (SteamID == 0) {
-				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+			if (!Initialized) {
+				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
-				if (SteamID == 0) {
+				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 
@@ -1399,19 +1399,19 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (SteamID == 0) {
-				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+			if (!Initialized) {
+				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
-				if (SteamID == 0) {
+				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
 					return null;
 				}
 			}
 
-			string request = "/mobileconf/details/" + confirmation.ID + "?a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&l=english&m=android&p=" + WebUtility.UrlEncode(deviceID) + "&t=" + time + "&tag=conf";
+			string request = "/mobileconf/details/" + confirmation.ID + "?a=" + Bot.SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&l=english&m=android&p=" + WebUtility.UrlEncode(deviceID) + "&t=" + time + "&tag=conf";
 
 			Steam.ConfirmationDetails response = await UrlGetToJsonObjectWithSession<Steam.ConfirmationDetails>(SteamCommunityURL, request).ConfigureAwait(false);
 
@@ -1431,19 +1431,19 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (SteamID == 0) {
-				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+			if (!Initialized) {
+				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
-				if (SteamID == 0) {
+				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
 					return null;
 				}
 			}
 
-			string request = "/mobileconf/conf?a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&l=english&m=android&p=" + WebUtility.UrlEncode(deviceID) + "&t=" + time + "&tag=conf";
+			string request = "/mobileconf/conf?a=" + Bot.SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&l=english&m=android&p=" + WebUtility.UrlEncode(deviceID) + "&t=" + time + "&tag=conf";
 
 			return await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
 		}
@@ -1801,19 +1801,19 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (SteamID == 0) {
-				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+			if (!Initialized) {
+				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
-				if (SteamID == 0) {
+				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
 					return null;
 				}
 			}
 
-			string request = "/mobileconf/ajaxop?a=" + SteamID + "&cid=" + confirmationID + "&ck=" + confirmationKey + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&l=english&m=android&op=" + (accept ? "allow" : "cancel") + "&p=" + WebUtility.UrlEncode(deviceID) + "&t=" + time + "&tag=conf";
+			string request = "/mobileconf/ajaxop?a=" + Bot.SteamID + "&cid=" + confirmationID + "&ck=" + confirmationKey + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&l=english&m=android&op=" + (accept ? "allow" : "cancel") + "&p=" + WebUtility.UrlEncode(deviceID) + "&t=" + time + "&tag=conf";
 
 			Steam.BooleanResponse response = await UrlGetToJsonObjectWithSession<Steam.BooleanResponse>(SteamCommunityURL, request).ConfigureAwait(false);
 
@@ -1827,12 +1827,12 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (SteamID == 0) {
-				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && (SteamID == 0) && Bot.IsConnectedAndLoggedOn; i++) {
+			if (!Initialized) {
+				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
-				if (SteamID == 0) {
+				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
 					return null;
@@ -1843,7 +1843,7 @@ namespace ArchiSteamFarm {
 
 			// Extra entry for sessionID
 			List<KeyValuePair<string, string>> data = new List<KeyValuePair<string, string>>(8 + (confirmations.Count * 2)) {
-				new KeyValuePair<string, string>("a", SteamID.ToString()),
+				new KeyValuePair<string, string>("a", Bot.SteamID.ToString()),
 				new KeyValuePair<string, string>("k", confirmationHash),
 				new KeyValuePair<string, string>("m", "android"),
 				new KeyValuePair<string, string>("op", accept ? "allow" : "cancel"),
@@ -1971,8 +1971,8 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			SteamID = steamID;
 			LastSessionCheck = LastSessionRefresh = DateTime.UtcNow;
+			Initialized = true;
 
 			return true;
 		}
@@ -2033,7 +2033,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void OnDisconnected() {
-			SteamID = 0;
+			Initialized = false;
 			Utilities.InBackground(CachedApiKey.Reset);
 			Utilities.InBackground(CachedPublicInventory.Reset);
 		}
