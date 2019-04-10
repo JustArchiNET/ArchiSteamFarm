@@ -410,7 +410,7 @@ namespace ArchiSteamFarm {
 
 			await Core.OnBotTradeOfferResults(Bot, results.Select(result => result.TradeResult).ToHashSet()).ConfigureAwait(false);
 
-			return results.Any(result => (result.TradeResult != null) && (result.TradeResult.Result == ParseTradeResult.EResult.Accepted) && (!result.RequiresMobileConfirmation || Bot.HasMobileAuthenticator) && (result.TradeResult.ReceivingItemTypes?.Any(receivedItemType => Bot.BotConfig.LootableTypes.Contains(receivedItemType)) == true));
+			return results.Any(result => (result.TradeResult != null) && (result.TradeResult.Result == ParseTradeResult.EResult.Accepted) && (!result.RequiresMobileConfirmation || Bot.HasMobileAuthenticator) && (result.TradeResult.ReceivedItemTypes?.Any(receivedItemType => Bot.BotConfig.LootableTypes.Contains(receivedItemType)) == true));
 		}
 
 		private async Task<(ParseTradeResult TradeResult, bool RequiresMobileConfirmation)> ParseTrade(Steam.TradeOffer tradeOffer) {
@@ -611,7 +611,7 @@ namespace ArchiSteamFarm {
 			[PublicAPI]
 			public readonly ulong TradeOfferID;
 
-			internal readonly ImmutableHashSet<Steam.Asset.EType> ReceivingItemTypes;
+			internal readonly ImmutableHashSet<Steam.Asset.EType> ReceivedItemTypes;
 
 			internal ParseTradeResult(ulong tradeOfferID, EResult result, IReadOnlyCollection<Steam.Asset> itemsToReceive = null) {
 				if ((tradeOfferID == 0) || (result == EResult.Unknown)) {
@@ -622,7 +622,7 @@ namespace ArchiSteamFarm {
 				Result = result;
 
 				if ((itemsToReceive != null) && (itemsToReceive.Count > 0)) {
-					ReceivingItemTypes = itemsToReceive.Select(item => item.Type).ToImmutableHashSet();
+					ReceivedItemTypes = itemsToReceive.Select(item => item.Type).ToImmutableHashSet();
 				}
 			}
 
