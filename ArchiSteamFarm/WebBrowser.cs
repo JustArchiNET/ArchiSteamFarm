@@ -716,7 +716,9 @@ namespace ArchiSteamFarm {
 					throw new ArgumentNullException(nameof(stringResponse));
 				}
 
-				Content = StringToHtmlDocument(stringResponse.Content);
+				if (!string.IsNullOrEmpty(stringResponse.Content)) {
+					Content = StringToHtmlDocument(stringResponse.Content);
+				}
 			}
 		}
 
