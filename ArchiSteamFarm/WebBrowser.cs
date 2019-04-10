@@ -310,7 +310,7 @@ namespace ArchiSteamFarm {
 			ObjectResponse<T> result = null;
 
 			for (byte i = 0; i < maxTries; i++) {
-				StringResponse response = await UrlPostToString(request, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, maxTries).ConfigureAwait(false);
+				StringResponse response = await UrlPostToString(request, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
 				if (response == null) {
 					return null;
