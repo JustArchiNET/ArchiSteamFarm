@@ -192,7 +192,7 @@ namespace ArchiSteamFarm {
 			string lastHex;
 
 			if (text.Length >= split) {
-				StringBuilder hex = new StringBuilder(split, 16);
+				StringBuilder hex = new StringBuilder(split, split);
 
 				foreach (char character in text) {
 					hex.Append(character);
