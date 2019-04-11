@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
@@ -38,18 +39,19 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		///     Type info is defined as a representation of given object with its fields and properties being assigned to a string value that defines their type.
 		/// </remarks>
 		[HttpGet("{type:required}")]
-		[ProducesResponseType(typeof(GenericResponse<TypeResponse>), 200)]
-		public ActionResult<GenericResponse<TypeResponse>> TypeGet(string type) {
+		[ProducesResponseType(typeof(GenericResponse<TypeResponse>), (int) HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+		public ActionResult<GenericResponse> TypeGet(string type) {
 			if (string.IsNullOrEmpty(type)) {
 				ASF.ArchiLogger.LogNullError(nameof(type));
 
-				return BadRequest(new GenericResponse<TypeResponse>(false, string.Format(Strings.ErrorIsEmpty, nameof(type))));
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(type))));
 			}
 
 			Type targetType = WebUtilities.ParseType(type);
 
 			if (targetType == null) {
-				return BadRequest(new GenericResponse<object>(false, string.Format(Strings.ErrorIsInvalid, type)));
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, type)));
 			}
 
 			string baseType = targetType.BaseType?.GetUnifiedName();

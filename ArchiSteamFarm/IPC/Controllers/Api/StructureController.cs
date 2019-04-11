@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.Net;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
 using Microsoft.AspNetCore.Mvc;
@@ -34,18 +35,19 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		///     Structure is defined as a representation of given object in its default state.
 		/// </remarks>
 		[HttpGet("{structure:required}")]
-		[ProducesResponseType(typeof(GenericResponse<object>), 200)]
-		public ActionResult<GenericResponse<object>> StructureGet(string structure) {
+		[ProducesResponseType(typeof(GenericResponse<object>), (int) HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+		public ActionResult<GenericResponse> StructureGet(string structure) {
 			if (string.IsNullOrEmpty(structure)) {
 				ASF.ArchiLogger.LogNullError(nameof(structure));
 
-				return BadRequest(new GenericResponse<object>(false, string.Format(Strings.ErrorIsEmpty, nameof(structure))));
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(structure))));
 			}
 
 			Type targetType = WebUtilities.ParseType(structure);
 
 			if (targetType == null) {
-				return BadRequest(new GenericResponse<object>(false, string.Format(Strings.ErrorIsInvalid, structure)));
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, structure)));
 			}
 
 			object obj;
@@ -53,7 +55,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			try {
 				obj = Activator.CreateInstance(targetType, true);
 			} catch (Exception e) {
-				return BadRequest(new GenericResponse<object>(false, string.Format(Strings.ErrorParsingObject, nameof(targetType)) + Environment.NewLine + e));
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorParsingObject, nameof(targetType)) + Environment.NewLine + e));
 			}
 
 			return Ok(new GenericResponse<object>(obj));

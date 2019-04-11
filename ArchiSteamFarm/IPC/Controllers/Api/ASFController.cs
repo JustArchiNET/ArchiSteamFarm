@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using ArchiSteamFarm.IPC.Requests;
 using ArchiSteamFarm.IPC.Responses;
@@ -36,7 +37,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		///     Fetches common info related to ASF as a whole.
 		/// </summary>
 		[HttpGet]
-		[ProducesResponseType(typeof(GenericResponse<ASFResponse>), 200)]
+		[ProducesResponseType(typeof(GenericResponse<ASFResponse>), (int) HttpStatusCode.OK)]
 		public ActionResult<GenericResponse<ASFResponse>> ASFGet() {
 			uint memoryUsage = (uint) GC.GetTotalMemory(false) / 1024;
 
@@ -50,7 +51,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// </summary>
 		[Consumes("application/json")]
 		[HttpPost]
-		[ProducesResponseType(typeof(GenericResponse), 200)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		public async Task<ActionResult<GenericResponse>> ASFPost([FromBody] ASFRequest request) {
 			if (request == null) {
 				ASF.ArchiLogger.LogNullError(nameof(request));
@@ -100,7 +102,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		///     Makes ASF shutdown itself.
 		/// </summary>
 		[HttpPost("Exit")]
-		[ProducesResponseType(typeof(GenericResponse), 200)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
 		public ActionResult<GenericResponse> ExitPost() {
 			(bool success, string message) = Actions.Exit();
 
@@ -111,7 +113,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		///     Makes ASF restart itself.
 		/// </summary>
 		[HttpPost("Restart")]
-		[ProducesResponseType(typeof(GenericResponse), 200)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
 		public ActionResult<GenericResponse> RestartPost() {
 			(bool success, string message) = Actions.Restart();
 
@@ -122,7 +124,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		///     Makes ASF update itself.
 		/// </summary>
 		[HttpPost("Update")]
-		[ProducesResponseType(typeof(GenericResponse<Version>), 200)]
+		[ProducesResponseType(typeof(GenericResponse<Version>), (int) HttpStatusCode.OK)]
 		public async Task<ActionResult<GenericResponse<Version>>> UpdatePost() {
 			(bool success, string message, Version version) = await Actions.Update().ConfigureAwait(false);
 

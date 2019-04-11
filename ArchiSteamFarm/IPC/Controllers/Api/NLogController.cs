@@ -22,6 +22,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -44,7 +45,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		///     This API endpoint requires a websocket connection.
 		/// </remarks>
 		[HttpGet]
-		[ProducesResponseType(typeof(IEnumerable<GenericResponse<string>>), 200)]
+		[ProducesResponseType(typeof(IEnumerable<GenericResponse<string>>), (int) HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		public async Task<ActionResult> NLogGet() {
 			if (!HttpContext.WebSockets.IsWebSocketRequest) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.WarningFailedWithError, nameof(HttpContext.WebSockets.IsWebSocketRequest) + ": " + HttpContext.WebSockets.IsWebSocketRequest)));

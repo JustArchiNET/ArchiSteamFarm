@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
@@ -37,29 +38,30 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		///     You should use "given bot" commands when executing this endpoint, omitting targets of the command will cause the command to be executed on first defined bot
 		/// </remarks>
 		[HttpPost("{command:required}")]
-		[ProducesResponseType(typeof(GenericResponse<string>), 200)]
-		public async Task<ActionResult<GenericResponse<string>>> CommandPost(string command) {
+		[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+		public async Task<ActionResult<GenericResponse>> CommandPost(string command) {
 			if (string.IsNullOrEmpty(command)) {
 				ASF.ArchiLogger.LogNullError(nameof(command));
 
-				return BadRequest(new GenericResponse<string>(false, string.Format(Strings.ErrorIsEmpty, nameof(command))));
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(command))));
 			}
 
 			if (ASF.GlobalConfig.SteamOwnerID == 0) {
-				return BadRequest(new GenericResponse<string>(false, string.Format(Strings.ErrorIsInvalid, nameof(ASF.GlobalConfig.SteamOwnerID))));
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(ASF.GlobalConfig.SteamOwnerID))));
 			}
 
 			Bot targetBot = Bot.Bots.OrderBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value).FirstOrDefault();
 
 			if (targetBot == null) {
-				return BadRequest(new GenericResponse<string>(false, Strings.ErrorNoBotsDefined));
+				return BadRequest(new GenericResponse(false, Strings.ErrorNoBotsDefined));
 			}
 
 			if (!string.IsNullOrEmpty(ASF.GlobalConfig.CommandPrefix) && command.StartsWith(ASF.GlobalConfig.CommandPrefix, StringComparison.Ordinal)) {
 				command = command.Substring(ASF.GlobalConfig.CommandPrefix.Length);
 
 				if (string.IsNullOrEmpty(command)) {
-					return BadRequest(new GenericResponse<string>(false, string.Format(Strings.ErrorIsEmpty, nameof(command))));
+					return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(command))));
 				}
 			}
 

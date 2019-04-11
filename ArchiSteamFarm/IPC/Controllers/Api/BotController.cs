@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using ArchiSteamFarm.IPC.Requests;
 using ArchiSteamFarm.IPC.Responses;
@@ -37,7 +38,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		///     Deletes all files related to given bots.
 		/// </summary>
 		[HttpDelete("{botNames:required}")]
-		[ProducesResponseType(typeof(GenericResponse), 200)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		public async Task<ActionResult<GenericResponse>> BotDelete(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
@@ -60,18 +62,19 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		///     Fetches common info related to given bots.
 		/// </summary>
 		[HttpGet("{botNames:required}")]
-		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, Bot>>), 200)]
-		public ActionResult<GenericResponse<IReadOnlyDictionary<string, Bot>>> BotGet(string botNames) {
+		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, Bot>>), (int) HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+		public ActionResult<GenericResponse> BotGet(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
 
-				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, Bot>>(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
 			}
 
 			HashSet<Bot> bots = Bot.GetBots(botNames);
 
 			if (bots == null) {
-				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, Bot>>(false, string.Format(Strings.ErrorIsInvalid, nameof(bots))));
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(bots))));
 			}
 
 			return Ok(new GenericResponse<IReadOnlyDictionary<string, Bot>>(bots.ToDictionary(bot => bot.BotName, bot => bot, Bot.BotsComparer)));
@@ -82,18 +85,19 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// </summary>
 		[Consumes("application/json")]
 		[HttpPost("{botNames:required}")]
-		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, bool>>), 200)]
-		public async Task<ActionResult<GenericResponse<IReadOnlyDictionary<string, bool>>>> BotPost(string botNames, [FromBody] BotRequest request) {
+		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, bool>>), (int) HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+		public async Task<ActionResult<GenericResponse>> BotPost(string botNames, [FromBody] BotRequest request) {
 			if (string.IsNullOrEmpty(botNames) || (request == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames) + " || " + nameof(request));
 
-				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, bool>>(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames) + " || " + nameof(request))));
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames) + " || " + nameof(request))));
 			}
 
 			(bool valid, string errorMessage) = request.BotConfig.CheckValidation();
 
 			if (!valid) {
-				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, bool>>(false, errorMessage));
+				return BadRequest(new GenericResponse(false, errorMessage));
 			}
 
 			request.BotConfig.ShouldSerializeEverything = false;
@@ -135,7 +139,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				if (string.IsNullOrEmpty(filePath)) {
 					ASF.ArchiLogger.LogNullError(filePath);
 
-					return BadRequest(new GenericResponse<IReadOnlyDictionary<string, bool>>(false, string.Format(Strings.ErrorIsInvalid, nameof(filePath))));
+					return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(filePath))));
 				}
 
 				result[botName] = await BotConfig.Write(filePath, request.BotConfig).ConfigureAwait(false);
@@ -148,7 +152,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		///     Removes BGR output files of given bots.
 		/// </summary>
 		[HttpDelete("{botNames:required}/GamesToRedeemInBackground")]
-		[ProducesResponseType(typeof(GenericResponse), 200)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		public async Task<ActionResult<GenericResponse>> GamesToRedeemInBackgroundDelete(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
@@ -171,18 +176,19 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		///     Fetches BGR output files of given bots.
 		/// </summary>
 		[HttpGet("{botNames:required}/GamesToRedeemInBackground")]
-		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GamesToRedeemInBackgroundResponse>>), 200)]
-		public async Task<ActionResult<GenericResponse<IReadOnlyDictionary<string, GamesToRedeemInBackgroundResponse>>>> GamesToRedeemInBackgroundGet(string botNames) {
+		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GamesToRedeemInBackgroundResponse>>), (int) HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+		public async Task<ActionResult<GenericResponse>> GamesToRedeemInBackgroundGet(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
 
-				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GamesToRedeemInBackgroundResponse>>(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
 			}
 
 			HashSet<Bot> bots = Bot.GetBots(botNames);
 
 			if ((bots == null) || (bots.Count == 0)) {
-				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GamesToRedeemInBackgroundResponse>>(false, string.Format(Strings.BotNotFound, botNames)));
+				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
 			}
 
 			IList<(Dictionary<string, string> UnusedKeys, Dictionary<string, string> UsedKeys)> results = await Utilities.InParallel(bots.Select(bot => bot.GetUsedAndUnusedKeys())).ConfigureAwait(false);
@@ -202,28 +208,29 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// </summary>
 		[Consumes("application/json")]
 		[HttpPost("{botNames:required}/GamesToRedeemInBackground")]
-		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, IOrderedDictionary>>), 200)]
-		public async Task<ActionResult<GenericResponse<IReadOnlyDictionary<string, IOrderedDictionary>>>> GamesToRedeemInBackgroundPost(string botNames, [FromBody] BotGamesToRedeemInBackgroundRequest request) {
+		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, IOrderedDictionary>>), (int) HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+		public async Task<ActionResult<GenericResponse>> GamesToRedeemInBackgroundPost(string botNames, [FromBody] BotGamesToRedeemInBackgroundRequest request) {
 			if (string.IsNullOrEmpty(botNames) || (request == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames) + " || " + nameof(request));
 
-				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, IOrderedDictionary>>(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames) + " || " + nameof(request))));
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames) + " || " + nameof(request))));
 			}
 
 			if (request.GamesToRedeemInBackground.Count == 0) {
-				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, IOrderedDictionary>>(false, string.Format(Strings.ErrorIsEmpty, nameof(request.GamesToRedeemInBackground))));
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(request.GamesToRedeemInBackground))));
 			}
 
 			HashSet<Bot> bots = Bot.GetBots(botNames);
 
 			if ((bots == null) || (bots.Count == 0)) {
-				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, IOrderedDictionary>>(false, string.Format(Strings.BotNotFound, botNames)));
+				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
 			}
 
 			IOrderedDictionary validGamesToRedeemInBackground = Bot.ValidateGamesToRedeemInBackground(request.GamesToRedeemInBackground);
 
 			if ((validGamesToRedeemInBackground == null) || (validGamesToRedeemInBackground.Count == 0)) {
-				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, IOrderedDictionary>>(false, string.Format(Strings.ErrorIsEmpty, nameof(validGamesToRedeemInBackground))));
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(validGamesToRedeemInBackground))));
 			}
 
 			await Utilities.InParallel(bots.Select(bot => bot.AddGamesToRedeemInBackground(validGamesToRedeemInBackground))).ConfigureAwait(false);
@@ -242,7 +249,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// </summary>
 		[Consumes("application/json")]
 		[HttpPost("{botNames:required}/Pause")]
-		[ProducesResponseType(typeof(GenericResponse), 200)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		public async Task<ActionResult<GenericResponse>> PausePost(string botNames, [FromBody] BotPauseRequest request) {
 			if (string.IsNullOrEmpty(botNames) || (request == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames) + " || " + nameof(request));
@@ -270,22 +278,23 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// </remarks>
 		[Consumes("application/json")]
 		[HttpPost("{botNames:required}/Redeem")]
-		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>>), 200)]
-		public async Task<ActionResult<GenericResponse<IReadOnlyDictionary<string, IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>>>> RedeemPost(string botNames, [FromBody] BotRedeemRequest request) {
+		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>>), (int) HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+		public async Task<ActionResult<GenericResponse>> RedeemPost(string botNames, [FromBody] BotRedeemRequest request) {
 			if (string.IsNullOrEmpty(botNames) || (request == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames) + " || " + nameof(request));
 
-				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>>(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames) + " || " + nameof(request))));
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames) + " || " + nameof(request))));
 			}
 
 			if (request.KeysToRedeem.Count == 0) {
-				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>>(false, string.Format(Strings.ErrorIsEmpty, nameof(request.KeysToRedeem))));
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(request.KeysToRedeem))));
 			}
 
 			HashSet<Bot> bots = Bot.GetBots(botNames);
 
 			if ((bots == null) || (bots.Count == 0)) {
-				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>>(false, string.Format(Strings.BotNotFound, botNames)));
+				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
 			}
 
 			IList<ArchiHandler.PurchaseResponseCallback> results = await Utilities.InParallel(bots.Select(bot => request.KeysToRedeem.Select(key => bot.Actions.RedeemKey(key))).SelectMany(task => task)).ConfigureAwait(false);
@@ -311,7 +320,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// </summary>
 		[Consumes("application/json")]
 		[HttpPost("{botName:required}/Rename")]
-		[ProducesResponseType(typeof(GenericResponse), 200)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		public async Task<ActionResult<GenericResponse>> RenamePost(string botName, [FromBody] BotRenameRequest request) {
 			if (string.IsNullOrEmpty(botName) || (request == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(botName) + " || " + nameof(request));
@@ -336,7 +346,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		///     Resumes given bots.
 		/// </summary>
 		[HttpPost("{botNames:required}/Resume")]
-		[ProducesResponseType(typeof(GenericResponse), 200)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		public async Task<ActionResult<GenericResponse>> ResumePost(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
@@ -359,7 +370,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		///     Starts given bots.
 		/// </summary>
 		[HttpPost("{botNames:required}/Start")]
-		[ProducesResponseType(typeof(GenericResponse), 200)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		public async Task<ActionResult<GenericResponse>> StartPost(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
@@ -382,7 +394,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		///     Stops given bots.
 		/// </summary>
 		[HttpPost("{botNames:required}/Stop")]
-		[ProducesResponseType(typeof(GenericResponse), 200)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		public async Task<ActionResult<GenericResponse>> StopPost(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
@@ -405,22 +418,25 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		///     Accepts 2FA confirmations of given bots, requires ASF 2FA module to be active on them.
 		/// </summary>
 		[HttpPost("{botNames:required}/TwoFactorAuthentication/Confirmations/Accept")]
-		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse>>), 200)]
-		public async Task<ActionResult<GenericResponse<IReadOnlyDictionary<string, GenericResponse>>>> TwoFactorAuthenticationConfirmationsAcceptPost(string botNames) => await TwoFactorAuthenticationConfirmationsPost(botNames, true).ConfigureAwait(false);
+		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse>>), (int) HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+		public async Task<ActionResult<GenericResponse>> TwoFactorAuthenticationConfirmationsAcceptPost(string botNames) => await TwoFactorAuthenticationConfirmationsPost(botNames, true).ConfigureAwait(false);
 
 		/// <summary>
 		///     Denies 2FA confirmations of given bots, requires ASF 2FA module to be active on them.
 		/// </summary>
 		[HttpPost("{botNames:required}/TwoFactorAuthentication/Confirmations/Cancel")]
-		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse>>), 200)]
-		public async Task<ActionResult<GenericResponse<IReadOnlyDictionary<string, GenericResponse>>>> TwoFactorAuthenticationConfirmationsCancelPost(string botNames) => await TwoFactorAuthenticationConfirmationsPost(botNames, false).ConfigureAwait(false);
+		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse>>), (int) HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+		public async Task<ActionResult<GenericResponse>> TwoFactorAuthenticationConfirmationsCancelPost(string botNames) => await TwoFactorAuthenticationConfirmationsPost(botNames, false).ConfigureAwait(false);
 
 		/// <summary>
 		///     Fetches 2FA tokens of given bots, requires ASF 2FA module to be active on them.
 		/// </summary>
 		[HttpGet("{botNames:required}/TwoFactorAuthentication/Token")]
-		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>), 200)]
-		public async Task<ActionResult<GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>>> TwoFactorAuthenticationTokenGet(string botNames) {
+		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>), (int) HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+		public async Task<ActionResult<GenericResponse>> TwoFactorAuthenticationTokenGet(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
 
@@ -445,7 +461,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			return Ok(new GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>(result));
 		}
 
-		private async Task<ActionResult<GenericResponse<IReadOnlyDictionary<string, GenericResponse>>>> TwoFactorAuthenticationConfirmationsPost(string botNames, bool accept) {
+		private async Task<ActionResult<GenericResponse>> TwoFactorAuthenticationConfirmationsPost(string botNames, bool accept) {
 			if (string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
 
