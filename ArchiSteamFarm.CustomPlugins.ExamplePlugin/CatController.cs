@@ -31,6 +31,9 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 	// All API controllers will be discovered during our Kestrel initialization using attributes mapping, you're also getting usual ASF goodies such as swagger documentation out of the box
 	[Route("/Api/Cat")]
 	public sealed class CatController : ArchiController {
+		/// <summary>
+		///     Fetches URL of a random cat picture.
+		/// </summary>
 		[HttpGet]
 		[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
