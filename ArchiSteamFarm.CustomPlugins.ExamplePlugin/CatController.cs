@@ -34,7 +34,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 		[HttpGet]
 		[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
-		public async Task<ActionResult<GenericResponse<string>>> ASFGet() {
+		public async Task<ActionResult<GenericResponse<string>>> CatGet() {
 			string link = await CatAPI.GetRandomCatURL(ASF.WebBrowser).ConfigureAwait(false);
 
 			return !string.IsNullOrEmpty(link) ? Ok(new GenericResponse<string>(link)) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false));
