@@ -20,8 +20,11 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using ArchiSteamFarm.IPC.Integration;
+using ArchiSteamFarm.Plugins;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -158,6 +161,15 @@ namespace ArchiSteamFarm.IPC {
 
 			// We need MVC for /Api, but we're going to use only a small subset of all available features
 			IMvcCoreBuilder mvc = services.AddMvcCore();
+
+			// Add support for controllers declared in custom plugins
+			HashSet<Assembly> assemblies = Core.LoadAssemblies();
+
+			if (assemblies != null) {
+				foreach (Assembly assembly in assemblies) {
+					mvc.AddApplicationPart(assembly);
+				}
+			}
 
 			// Add API explorer for swagger
 			mvc.AddApiExplorer();

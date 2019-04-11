@@ -86,29 +86,9 @@ namespace ArchiSteamFarm.Plugins {
 		}
 
 		internal static bool InitPlugins() {
-			HashSet<Assembly> assemblies = new HashSet<Assembly>();
+			HashSet<Assembly> assemblies = LoadAssemblies();
 
-			string pluginsPath = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.PluginsDirectory);
-
-			if (Directory.Exists(pluginsPath)) {
-				HashSet<Assembly> loadedAssemblies = LoadAssembliesFrom(pluginsPath);
-
-				if ((loadedAssemblies != null) && (loadedAssemblies.Count > 0)) {
-					assemblies.UnionWith(loadedAssemblies);
-				}
-			}
-
-			string customPluginsPath = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.PluginsDirectory);
-
-			if (Directory.Exists(customPluginsPath)) {
-				HashSet<Assembly> loadedAssemblies = LoadAssembliesFrom(customPluginsPath);
-
-				if ((loadedAssemblies != null) && (loadedAssemblies.Count > 0)) {
-					assemblies.UnionWith(loadedAssemblies);
-				}
-			}
-
-			if (assemblies.Count == 0) {
+			if ((assemblies == null) || (assemblies.Count == 0)) {
 				ASF.ArchiLogger.LogGenericTrace(Strings.NothingFound);
 
 				return true;
@@ -164,6 +144,36 @@ namespace ArchiSteamFarm.Plugins {
 			ASF.ArchiLogger.LogGenericInfo(Strings.PluginsWarning);
 
 			return invalidPlugins.Count == 0;
+		}
+
+		internal static HashSet<Assembly> LoadAssemblies() {
+			HashSet<Assembly> assemblies = null;
+
+			string pluginsPath = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.PluginsDirectory);
+
+			if (Directory.Exists(pluginsPath)) {
+				HashSet<Assembly> loadedAssemblies = LoadAssembliesFrom(pluginsPath);
+
+				if ((loadedAssemblies != null) && (loadedAssemblies.Count > 0)) {
+					assemblies = loadedAssemblies;
+				}
+			}
+
+			string customPluginsPath = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.PluginsDirectory);
+
+			if (Directory.Exists(customPluginsPath)) {
+				HashSet<Assembly> loadedAssemblies = LoadAssembliesFrom(customPluginsPath);
+
+				if ((loadedAssemblies != null) && (loadedAssemblies.Count > 0)) {
+					if ((assemblies != null) && (assemblies.Count > 0)) {
+						assemblies.UnionWith(loadedAssemblies);
+					} else {
+						assemblies = loadedAssemblies;
+					}
+				}
+			}
+
+			return assemblies;
 		}
 
 		internal static async Task OnASFInitModules(IReadOnlyDictionary<string, JToken> additionalConfigProperties = null) {

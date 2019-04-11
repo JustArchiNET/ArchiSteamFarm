@@ -34,10 +34,10 @@ namespace ArchiSteamFarm.IPC.Responses {
 		[JsonProperty]
 		public readonly T Result;
 
-		internal GenericResponse(T result) : base(result != null) => Result = result;
-		internal GenericResponse(bool success, string message) : base(success, message) { }
-		internal GenericResponse(bool success, T result) : base(success) => Result = result;
-		internal GenericResponse(bool success, string message, T result) : base(success, message) => Result = result;
+		public GenericResponse(T result) : base(result != null) => Result = result;
+		public GenericResponse(bool success, string message) : base(success, message) { }
+		public GenericResponse(bool success, T result) : base(success) => Result = result;
+		public GenericResponse(bool success, string message, T result) : base(success, message) => Result = result;
 	}
 
 	public class GenericResponse {
@@ -57,7 +57,7 @@ namespace ArchiSteamFarm.IPC.Responses {
 		[Required]
 		public readonly bool Success;
 
-		internal GenericResponse(bool success, string message = null) {
+		public GenericResponse(bool success, string message = null) {
 			Success = success;
 
 			if (!string.IsNullOrEmpty(message)) {
