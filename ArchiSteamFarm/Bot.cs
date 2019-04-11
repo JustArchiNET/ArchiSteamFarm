@@ -63,18 +63,22 @@ namespace ArchiSteamFarm {
 		private static readonly SemaphoreSlim BotsSemaphore = new SemaphoreSlim(1, 1);
 		private static readonly SemaphoreSlim LoginSemaphore = new SemaphoreSlim(1, 1);
 
+		[JsonIgnore]
 		[PublicAPI]
 		public readonly Actions Actions;
 
+		[JsonIgnore]
 		[PublicAPI]
 		public readonly ArchiLogger ArchiLogger;
 
+		[JsonIgnore]
 		[PublicAPI]
 		public readonly ArchiWebHandler ArchiWebHandler;
 
 		[JsonProperty]
 		public readonly string BotName;
 
+		[JsonIgnore]
 		[PublicAPI]
 		public readonly Commands Commands;
 
