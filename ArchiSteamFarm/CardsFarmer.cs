@@ -270,7 +270,7 @@ namespace ArchiSteamFarm {
 				if (Bot.PlayingWasBlocked) {
 					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.BotExtraIdlingCooldown, TimeSpan.FromSeconds(Bot.MinPlayingBlockedTTL).ToHumanReadable()));
 
-					for (byte i = 0; (i < Bot.MinPlayingBlockedTTL) && Bot.IsPlayingPossible; i++) {
+					for (byte i = 0; (i < Bot.MinPlayingBlockedTTL) && Bot.IsPlayingPossible && Bot.PlayingWasBlocked; i++) {
 						await Task.Delay(1000).ConfigureAwait(false);
 					}
 

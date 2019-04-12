@@ -313,7 +313,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Waiting additional {0} to ensure that we&apos;re free to start idling....
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Waiting up to {0} to ensure that we&apos;re free to start idling....
         /// </summary>
         public static string BotExtraIdlingCooldown {
             get {
