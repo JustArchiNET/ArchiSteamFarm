@@ -724,4 +724,8 @@ StackTrace:
     <value>Successfully handled {0} confirmations!</value>
     <comment>{0} will be replaced by number of confirmations</comment>
   </data>
+  <data name="BotExtraIdlingCooldown" xml:space="preserve">
+    <value>Waiting additional {0} to ensure that we're free to start idling...</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+  </data>
 </root>

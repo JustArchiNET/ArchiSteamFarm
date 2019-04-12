@@ -1460,14 +1460,17 @@ namespace ArchiSteamFarm {
 			StopPlayingWasBlockedTimer();
 
 			if (!IsPlayingPossible) {
-				ArchiLogger.LogGenericInfo(Strings.BotAccountOccupied);
 				PlayingWasBlocked = true;
+				ArchiLogger.LogGenericInfo(Strings.BotAccountOccupied);
 
 				return;
 			}
 
+			if (PlayingWasBlocked && (PlayingWasBlockedTimer == null)) {
+				InitPlayingWasBlockedTimer();
+			}
+
 			ArchiLogger.LogGenericInfo(Strings.BotAccountFree);
-			PlayingWasBlocked = false;
 
 			if (!await CardsFarmer.Resume(false).ConfigureAwait(false)) {
 				await ResetGamesPlayed().ConfigureAwait(false);
@@ -1795,6 +1798,19 @@ namespace ArchiSteamFarm {
 			ArchiLogger.LogGenericWarning(Strings.BotHeartBeatFailed);
 			await Destroy(true).ConfigureAwait(false);
 			await RegisterBot(BotName).ConfigureAwait(false);
+		}
+
+		private void InitPlayingWasBlockedTimer() {
+			if (PlayingWasBlockedTimer != null) {
+				return;
+			}
+
+			PlayingWasBlockedTimer = new Timer(
+				e => ResetPlayingWasBlockedWithTimer(),
+				null,
+				TimeSpan.FromSeconds(MinPlayingBlockedTTL), // Delay
+				Timeout.InfiniteTimeSpan // Period
+			);
 		}
 
 		private void InitStart() {
@@ -2353,12 +2369,7 @@ namespace ArchiSteamFarm {
 					PlayingBlocked = false;
 
 					if (PlayingWasBlocked && (PlayingWasBlockedTimer == null)) {
-						PlayingWasBlockedTimer = new Timer(
-							e => ResetPlayingWasBlockedWithTimer(),
-							null,
-							TimeSpan.FromSeconds(MinPlayingBlockedTTL), // Delay
-							Timeout.InfiniteTimeSpan // Period
-						);
+						InitPlayingWasBlockedTimer();
 					}
 
 					if (IsAccountLimited) {
