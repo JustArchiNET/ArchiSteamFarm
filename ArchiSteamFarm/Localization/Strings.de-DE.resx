@@ -720,4 +720,9 @@ StackTrace:
   <data name="ErrorSingleInstanceRequired" xml:space="preserve">
     <value>Der ASF-Prozess läuft bereits für dieses Arbeitsverzeichnis. Abbruch!</value>
   </data>
+  <data name="BotHandledConfirmations" xml:space="preserve">
+    <value>Erfolgreiche Bearbeitung von {0} Bestätigungen!</value>
+    <comment>{0} will be replaced by number of confirmations</comment>
+  </data>
+  
 </root>

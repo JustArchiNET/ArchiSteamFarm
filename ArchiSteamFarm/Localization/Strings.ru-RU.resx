@@ -720,4 +720,9 @@
   <data name="ErrorSingleInstanceRequired" xml:space="preserve">
     <value>Процесс ASF уже запущен для этой рабочей директории, прекращаем работу!</value>
   </data>
+  <data name="BotHandledConfirmations" xml:space="preserve">
+    <value>Успешно обработано {0} подтверждений!</value>
+    <comment>{0} will be replaced by number of confirmations</comment>
+  </data>
+  
 </root>

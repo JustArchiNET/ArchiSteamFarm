@@ -720,4 +720,12 @@ StackTrace:
   <data name="ErrorSingleInstanceRequired" xml:space="preserve">
     <value>Proces ASF jest już uruchomiony dla tego katalogu roboczego, anulowanie!</value>
   </data>
+  <data name="BotHandledConfirmations" xml:space="preserve">
+    <value>Pomyślnie obsłużono {0} potwierdzeń!</value>
+    <comment>{0} will be replaced by number of confirmations</comment>
+  </data>
+  <data name="BotExtraIdlingCooldown" xml:space="preserve">
+    <value>{0} oczekiwania, aby upewnić się że jesteśmy w stanie rozpocząć farmienie...</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+  </data>
 </root>

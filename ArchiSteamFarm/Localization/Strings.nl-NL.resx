@@ -720,4 +720,9 @@ StackTrace:
   <data name="ErrorSingleInstanceRequired" xml:space="preserve">
     <value>Het ASF-proces is al actief voor deze werkdirectory. Beëindigen!</value>
   </data>
+  <data name="BotHandledConfirmations" xml:space="preserve">
+    <value>{0} bevestiging(en) succesvol uitgevoerd!</value>
+    <comment>{0} will be replaced by number of confirmations</comment>
+  </data>
+  
 </root>

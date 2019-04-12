@@ -720,4 +720,9 @@ StackTrace:
   <data name="ErrorSingleInstanceRequired" xml:space="preserve">
     <value>O processo ASF já está sendo executado para este diretório, abortando!</value>
   </data>
+  <data name="BotHandledConfirmations" xml:space="preserve">
+    <value>{0} confirmações tratadas com sucesso!</value>
+    <comment>{0} will be replaced by number of confirmations</comment>
+  </data>
+  
 </root>

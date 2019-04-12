@@ -720,4 +720,9 @@ StackTrace:
   <data name="ErrorSingleInstanceRequired" xml:space="preserve">
     <value>ASF 프로세스가 이 작업디렉토리에서 실행중입니다. 중단합니다.</value>
   </data>
+  <data name="BotHandledConfirmations" xml:space="preserve">
+    <value>{0} 개의 확인이 성공적으로 처리되었습니다!</value>
+    <comment>{0} will be replaced by number of confirmations</comment>
+  </data>
+  
 </root>
