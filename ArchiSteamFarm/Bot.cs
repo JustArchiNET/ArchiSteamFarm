@@ -59,6 +59,7 @@ namespace ArchiSteamFarm {
 
 		internal static ConcurrentDictionary<string, Bot> Bots { get; private set; }
 		internal static StringComparer BotsComparer { get; private set; }
+		internal static EOSType OSType { get; private set; } = EOSType.Unknown;
 
 		private static readonly SemaphoreSlim BotsSemaphore = new SemaphoreSlim(1, 1);
 		private static readonly SemaphoreSlim LoginSemaphore = new SemaphoreSlim(1, 1);
@@ -1982,19 +1983,23 @@ namespace ArchiSteamFarm {
 
 			InitConnectionFailureTimer();
 
-			SteamUser.LogOn(
-				new SteamUser.LogOnDetails {
-					AuthCode = AuthCode,
-					CellID = ASF.GlobalDatabase.CellID,
-					LoginID = LoginID,
-					LoginKey = loginKey,
-					Password = password,
-					SentryFileHash = sentryFileHash,
-					ShouldRememberPassword = BotConfig.UseLoginKeys,
-					TwoFactorCode = TwoFactorCode,
-					Username = username
-				}
-			);
+			SteamUser.LogOnDetails logOnDetails = new SteamUser.LogOnDetails {
+				AuthCode = AuthCode,
+				CellID = ASF.GlobalDatabase.CellID,
+				LoginID = LoginID,
+				LoginKey = loginKey,
+				Password = password,
+				SentryFileHash = sentryFileHash,
+				ShouldRememberPassword = BotConfig.UseLoginKeys,
+				TwoFactorCode = TwoFactorCode,
+				Username = username
+			};
+
+			if (OSType == EOSType.Unknown) {
+				OSType = logOnDetails.ClientOSType;
+			}
+
+			SteamUser.LogOn(logOnDetails);
 		}
 
 		private async void OnDisconnected(SteamClient.DisconnectedCallback callback) {

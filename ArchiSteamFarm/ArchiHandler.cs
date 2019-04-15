@@ -372,7 +372,11 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ClientMsgProtobuf<CMsgClientGamesPlayed> request = new ClientMsgProtobuf<CMsgClientGamesPlayed>(EMsg.ClientGamesPlayed);
+			ClientMsgProtobuf<CMsgClientGamesPlayed> request = new ClientMsgProtobuf<CMsgClientGamesPlayed>(EMsg.ClientGamesPlayedWithDataBlob) {
+				Body = {
+					client_os_type = (uint) Bot.OSType
+				}
+			};
 
 			byte maxGamesCount = MaxGamesPlayedConcurrently;
 
