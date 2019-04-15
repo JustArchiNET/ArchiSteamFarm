@@ -2565,33 +2565,32 @@ namespace ArchiSteamFarm {
 			);
 		}
 
-		private async void OnPersonaState(SteamFriends.PersonaStateCallback callback) {
+		private void OnPersonaState(SteamFriends.PersonaStateCallback callback) {
 			if (callback == null) {
 				ArchiLogger.LogNullError(nameof(callback));
 
 				return;
 			}
 
-			if (callback.FriendID == SteamID) {
-				string avatarHash = null;
+			if (callback.FriendID != SteamID) {
+				return;
+			}
 
-				if ((callback.AvatarHash != null) && (callback.AvatarHash.Length > 0) && callback.AvatarHash.Any(singleByte => singleByte != 0)) {
-					avatarHash = BitConverter.ToString(callback.AvatarHash).Replace("-", "").ToLowerInvariant();
+			string avatarHash = null;
 
-					if (string.IsNullOrEmpty(avatarHash) || avatarHash.All(singleChar => singleChar == '0')) {
-						avatarHash = null;
-					}
+			if ((callback.AvatarHash != null) && (callback.AvatarHash.Length > 0) && callback.AvatarHash.Any(singleByte => singleByte != 0)) {
+				avatarHash = BitConverter.ToString(callback.AvatarHash).Replace("-", "").ToLowerInvariant();
+
+				if (string.IsNullOrEmpty(avatarHash) || avatarHash.All(singleChar => singleChar == '0')) {
+					avatarHash = null;
 				}
+			}
 
-				AvatarHash = avatarHash;
-				Nickname = callback.Name;
+			AvatarHash = avatarHash;
+			Nickname = callback.Name;
 
-				if (Statistics != null) {
-					Utilities.InBackground(() => Statistics.OnPersonaState(callback.Name, avatarHash));
-				}
-			} else if ((callback.FriendID == LibraryLockedBySteamID) && (callback.GameID == 0)) {
-				LibraryLockedBySteamID = 0;
-				await CheckOccupationStatus().ConfigureAwait(false);
+			if (Statistics != null) {
+				Utilities.InBackground(() => Statistics.OnPersonaState(callback.Name, avatarHash));
 			}
 		}
 
@@ -2645,10 +2644,6 @@ namespace ArchiSteamFarm {
 				LibraryLockedBySteamID = callback.LibraryLockedBySteamID;
 			} else {
 				if ((callback.LibraryLockedBySteamID != 0) && (callback.LibraryLockedBySteamID != SteamID)) {
-					return;
-				}
-
-				if (SteamFriends.GetFriendGamePlayed(LibraryLockedBySteamID) != 0) {
 					return;
 				}
 
