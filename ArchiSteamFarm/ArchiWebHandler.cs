@@ -2403,12 +2403,12 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			DateTime now = DateTime.UtcNow;
+			DateTime triggeredAt = DateTime.UtcNow;
 
 			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				if (now < LastSessionRefresh) {
+				if (triggeredAt < LastSessionRefresh) {
 					return true;
 				}
 
