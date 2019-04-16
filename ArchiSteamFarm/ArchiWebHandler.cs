@@ -2405,10 +2405,14 @@ namespace ArchiSteamFarm {
 
 			DateTime triggeredAt = DateTime.UtcNow;
 
+			if (triggeredAt < LastSessionRefresh.AddSeconds(MinSessionValidityInSeconds)) {
+				return true;
+			}
+
 			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				if (triggeredAt < LastSessionRefresh) {
+				if (triggeredAt < LastSessionRefresh.AddSeconds(MinSessionValidityInSeconds)) {
 					return true;
 				}
 
