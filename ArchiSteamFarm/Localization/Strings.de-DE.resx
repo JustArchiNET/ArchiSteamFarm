@@ -724,5 +724,8 @@ StackTrace:
     <value>Erfolgreiche Bearbeitung von {0} Bestätigungen!</value>
     <comment>{0} will be replaced by number of confirmations</comment>
   </data>
-  
+  <data name="BotExtraIdlingCooldown" xml:space="preserve">
+    <value>Wir warten noch {0}, um sicherzustellen, dass alles OK ist um mit dem Farmen zu beginnen...</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+  </data>
 </root>

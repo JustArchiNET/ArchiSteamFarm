@@ -135,7 +135,7 @@
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} har ramt en fatal undtagelse før kernelogging modulet selv kunne initialisere!</value>
+    <value>ASF V{0} er løbet ind i en fatal fejl før kerneloggningsmodulet kunne indlæses!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
@@ -660,23 +660,72 @@ StackTrace:
     <value>Bot har niveau {0}.</value>
     <comment>{0} will be replaced by bot's level</comment>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="ActivelyMatchingItems" xml:space="preserve">
+    <value>Matcher Steam inventar, runde #{0}...</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="DoneActivelyMatchingItems" xml:space="preserve">
+    <value>Færdig med at matche Steam inventar, runde #{0}.</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="ErrorAborted" xml:space="preserve">
+    <value>Annulleret!</value>
+  </data>
+  <data name="ActivelyMatchingItemsRound" xml:space="preserve">
+    <value>Matched totalt {0} sæt denne runde.</value>
+    <comment>{0} will be replaced by number of sets traded</comment>
+  </data>
+  <data name="WarningExcessiveBotsCount" xml:space="preserve">
+    <value>Du kører flere personlige bots end vores øverst anbefalede grænse ({0}). Vær opmærksom på at denne opsætning ikke er understøttet og kan medføre Steam-relaterede problemer, herunder eventuelt suspendering af konti. Tjek vores FAQ for flere detaljer.</value>
+    <comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
+  </data>
+  <data name="PluginLoaded" xml:space="preserve">
+    <value>{0} er blevet indlæst succesfuldt!</value>
+    <comment>{0} will be replaced by the name of the custom ASF plugin</comment>
+  </data>
+  <data name="PluginLoading" xml:space="preserve">
+    <value>Indlæser {0} V{1}...</value>
+    <comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
+  </data>
+  <data name="NothingFound" xml:space="preserve">
+    <value>Intet fundet!</value>
+  </data>
+  <data name="PluginsWarning" xml:space="preserve">
+    <value>Du har indlæst en eller flere brugerdefinerede plug-ins i ASF. Da vi ikke kan tilbyde support til modificerede opsætninger, bedes du kontakte udvikleren af de plug-ins du bruger i tilfælde af eventuelle problemer.</value>
+  </data>
+  <data name="PleaseWait" xml:space="preserve">
+    <value>Vent venligst...</value>
+  </data>
+  <data name="EnterCommand" xml:space="preserve">
+    <value>Indtast kommando: </value>
+  </data>
+  <data name="Executing" xml:space="preserve">
+    <value>Udfører...</value>
+  </data>
+  <data name="InteractiveConsoleEnabled" xml:space="preserve">
+    <value>Den interaktive konsol er nu aktiv, tast "c" for at skifte til kommando-mode.</value>
+  </data>
+  <data name="InteractiveConsoleNotAvailable" xml:space="preserve">
+    <value>Den interaktive konsol den ikke tilgængelig på grund af at {0} mangler en eller flere konfigurationsindstillinger.</value>
+    <comment>{0} will be replaced by the name of the missing config property (string)</comment>
+  </data>
+  <data name="Response" xml:space="preserve">
+    <value>Svar: {0}</value>
+    <comment>{0} will be replaced by the generated response (string)</comment>
+  </data>
+  <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
+    <value>Bot har {0} spil tilbage i sin baggrundskø.</value>
+    <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
+  </data>
+  <data name="ErrorSingleInstanceRequired" xml:space="preserve">
+    <value>ASF processen kører allerede i denne mappe, afbryder!</value>
+  </data>
+  <data name="BotHandledConfirmations" xml:space="preserve">
+    <value>Behandlede {0} bekræftelser succesfuldt!</value>
+    <comment>{0} will be replaced by number of confirmations</comment>
+  </data>
+  <data name="BotExtraIdlingCooldown" xml:space="preserve">
+    <value>Venter op til {0} for at sikre at vi er klar til at begynde at idle...</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+  </data>
 </root>

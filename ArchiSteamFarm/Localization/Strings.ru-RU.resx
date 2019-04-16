@@ -724,5 +724,8 @@
     <value>Успешно обработано {0} подтверждений!</value>
     <comment>{0} will be replaced by number of confirmations</comment>
   </data>
-  
+  <data name="BotExtraIdlingCooldown" xml:space="preserve">
+    <value>Задержка {0}, чтобы убедится, что аккаунт свободен для фарма...</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+  </data>
 </root>

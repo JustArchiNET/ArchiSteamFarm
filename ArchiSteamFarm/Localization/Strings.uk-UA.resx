@@ -341,7 +341,7 @@
     <value>Роботу зупинено!</value>
   </data>
   <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
-    <value>Ігнорування запиту, тому що ввімкнена постійна пауза!</value>
+    <value>Ігнорувати цей запит, тому що параметр паузи увімкнено!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>На акаунті немає ігор, з яких можуть випасти картки!</value>
@@ -724,5 +724,8 @@
     <value>Успішно оброблено {0} підтверджень!</value>
     <comment>{0} will be replaced by number of confirmations</comment>
   </data>
-  
+  <data name="BotExtraIdlingCooldown" xml:space="preserve">
+    <value>Затримка {0}, щоб гарантувати, що акаунт вільний для фарму...</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+  </data>
 </root>
