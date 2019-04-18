@@ -90,7 +90,7 @@ namespace ArchiSteamFarm {
 		public bool IsConnectedAndLoggedOn => SteamClient?.SteamID != null;
 
 		[JsonProperty]
-		public bool IsPlayingPossible => !PlayingBlocked && (LibraryLockedBySteamID == 0);
+		public bool IsPlayingPossible => !PlayingBlocked && !LibraryLocked;
 
 		internal readonly ArchiHandler ArchiHandler;
 		internal readonly BotDatabase BotDatabase;
@@ -179,7 +179,7 @@ namespace ArchiSteamFarm {
 		private uint ItemsCount;
 		private EResult LastLogOnResult;
 		private DateTime LastLogonSessionReplaced;
-		private ulong LibraryLockedBySteamID;
+		private bool LibraryLocked;
 		private ulong MasterChatGroupID;
 		private Timer PlayingWasBlockedTimer;
 		private bool ReconnectOnUserInitiated;
@@ -1763,6 +1763,12 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task InitModules() {
+			AccountFlags = EAccountFlags.NormalUser;
+			AvatarHash = Nickname = null;
+			MasterChatGroupID = 0;
+			WalletBalance = 0;
+			WalletCurrency = ECurrencyCode.Invalid;
+
 			CardsFarmer.SetInitialState(BotConfig.Paused);
 
 			if (SendItemsTimer != null) {
@@ -1864,21 +1870,23 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ulong chatGroupID = await ArchiHandler.GetClanChatGroupID(BotConfig.SteamMasterClanID).ConfigureAwait(false);
+			if (MasterChatGroupID == 0) {
+				ulong chatGroupID = await ArchiHandler.GetClanChatGroupID(BotConfig.SteamMasterClanID).ConfigureAwait(false);
 
-			if (chatGroupID == 0) {
-				return;
+				if (chatGroupID == 0) {
+					return;
+				}
+
+				MasterChatGroupID = chatGroupID;
 			}
-
-			MasterChatGroupID = chatGroupID;
 
 			HashSet<ulong> chatGroupIDs = await ArchiHandler.GetMyChatGroupIDs().ConfigureAwait(false);
 
-			if (chatGroupIDs?.Contains(chatGroupID) != false) {
+			if (chatGroupIDs?.Contains(MasterChatGroupID) != false) {
 				return;
 			}
 
-			await ArchiHandler.JoinChatRoomGroup(chatGroupID).ConfigureAwait(false);
+			await ArchiHandler.JoinChatRoomGroup(MasterChatGroupID).ConfigureAwait(false);
 		}
 
 		private static async Task LimitLoginRequestsAsync() {
@@ -2370,8 +2378,8 @@ namespace ArchiSteamFarm {
 					ArchiLogger.LogGenericInfo(string.Format(Strings.BotLoggedOn, SteamID + (!string.IsNullOrEmpty(callback.VanityURL) ? "/" + callback.VanityURL : "")));
 
 					// Old status for these doesn't matter, we'll update them if needed
-					LibraryLockedBySteamID = TwoFactorCodeFailures = 0;
-					PlayingBlocked = false;
+					TwoFactorCodeFailures = 0;
+					LibraryLocked = PlayingBlocked = false;
 
 					if (PlayingWasBlocked && (PlayingWasBlockedTimer == null)) {
 						InitPlayingWasBlockedTimer();
@@ -2636,18 +2644,18 @@ namespace ArchiSteamFarm {
 			}
 
 			// Ignore no status updates
-			if (LibraryLockedBySteamID == 0) {
-				if ((callback.LibraryLockedBySteamID == 0) || (callback.LibraryLockedBySteamID == SteamID)) {
-					return;
-				}
-
-				LibraryLockedBySteamID = callback.LibraryLockedBySteamID;
-			} else {
+			if (LibraryLocked) {
 				if ((callback.LibraryLockedBySteamID != 0) && (callback.LibraryLockedBySteamID != SteamID)) {
 					return;
 				}
 
-				LibraryLockedBySteamID = 0;
+				LibraryLocked = false;
+			} else {
+				if ((callback.LibraryLockedBySteamID == 0) || (callback.LibraryLockedBySteamID == SteamID)) {
+					return;
+				}
+
+				LibraryLocked = true;
 			}
 
 			await CheckOccupationStatus().ConfigureAwait(false);
