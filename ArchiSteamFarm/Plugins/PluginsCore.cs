@@ -86,6 +86,10 @@ namespace ArchiSteamFarm.Plugins {
 		}
 
 		internal static bool InitPlugins() {
+			if ((ActivePlugins != null) && (ActivePlugins.Count > 0)) {
+				return false;
+			}
+
 			HashSet<Assembly> assemblies = LoadAssemblies();
 
 			if ((assemblies == null) || (assemblies.Count == 0)) {
