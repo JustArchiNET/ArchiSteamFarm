@@ -98,13 +98,13 @@ namespace ArchiSteamFarm {
 
 			await UpdateAndRestart().ConfigureAwait(false);
 
-			if (!Core.InitPlugins()) {
+			if (!PluginsCore.InitPlugins()) {
 				await Task.Delay(10000).ConfigureAwait(false);
 			}
 
-			await Core.OnASFInitModules(GlobalConfig.AdditionalProperties).ConfigureAwait(false);
+			await PluginsCore.OnASFInitModules(GlobalConfig.AdditionalProperties).ConfigureAwait(false);
 
-			StringComparer botsComparer = await Core.GetBotsComparer().ConfigureAwait(false);
+			StringComparer botsComparer = await PluginsCore.GetBotsComparer().ConfigureAwait(false);
 
 			InitBotsComparer(botsComparer);
 

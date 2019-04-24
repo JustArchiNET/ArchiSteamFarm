@@ -408,7 +408,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			await Core.OnBotTradeOfferResults(Bot, results.Select(result => result.TradeResult).ToHashSet()).ConfigureAwait(false);
+			await PluginsCore.OnBotTradeOfferResults(Bot, results.Select(result => result.TradeResult).ToHashSet()).ConfigureAwait(false);
 
 			return results.Any(result => (result.TradeResult != null) && (result.TradeResult.Result == ParseTradeResult.EResult.Accepted) && (!result.RequiresMobileConfirmation || Bot.HasMobileAuthenticator) && (result.TradeResult.ReceivedItemTypes?.Any(receivedItemType => Bot.BotConfig.LootableTypes.Contains(receivedItemType)) == true));
 		}
@@ -439,7 +439,7 @@ namespace ArchiSteamFarm {
 			switch (result) {
 				case ParseTradeResult.EResult.Ignored:
 				case ParseTradeResult.EResult.Rejected:
-					bool accept = await Core.OnBotTradeOffer(Bot, tradeOffer).ConfigureAwait(false);
+					bool accept = await PluginsCore.OnBotTradeOffer(Bot, tradeOffer).ConfigureAwait(false);
 
 					if (accept) {
 						result = ParseTradeResult.EResult.Accepted;

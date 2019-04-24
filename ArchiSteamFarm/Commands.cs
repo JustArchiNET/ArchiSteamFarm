@@ -170,7 +170,7 @@ namespace ArchiSteamFarm {
 
 							return ResponseVersion(steamID);
 						default:
-							string pluginsResponse = await Core.OnBotCommand(Bot, steamID, message, args).ConfigureAwait(false);
+							string pluginsResponse = await PluginsCore.OnBotCommand(Bot, steamID, message, args).ConfigureAwait(false);
 
 							return !string.IsNullOrEmpty(pluginsResponse) ? pluginsResponse : ResponseUnknown(steamID);
 					}
@@ -362,7 +362,7 @@ namespace ArchiSteamFarm {
 
 							return await ResponseUnpackBoosters(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						default:
-							string pluginsResponse = await Core.OnBotCommand(Bot, steamID, message, args).ConfigureAwait(false);
+							string pluginsResponse = await PluginsCore.OnBotCommand(Bot, steamID, message, args).ConfigureAwait(false);
 
 							return !string.IsNullOrEmpty(pluginsResponse) ? pluginsResponse : ResponseUnknown(steamID);
 					}
@@ -378,7 +378,7 @@ namespace ArchiSteamFarm {
 
 			if (!string.IsNullOrEmpty(ASF.GlobalConfig.CommandPrefix)) {
 				if (!message.StartsWith(ASF.GlobalConfig.CommandPrefix, StringComparison.OrdinalIgnoreCase)) {
-					string pluginsResponse = await Core.OnBotMessage(Bot, steamID, message).ConfigureAwait(false);
+					string pluginsResponse = await PluginsCore.OnBotMessage(Bot, steamID, message).ConfigureAwait(false);
 
 					if (!string.IsNullOrEmpty(pluginsResponse)) {
 						await Bot.SendMessage(steamID, pluginsResponse).ConfigureAwait(false);
@@ -425,7 +425,7 @@ namespace ArchiSteamFarm {
 
 			if (!string.IsNullOrEmpty(ASF.GlobalConfig.CommandPrefix)) {
 				if (!message.StartsWith(ASF.GlobalConfig.CommandPrefix, StringComparison.OrdinalIgnoreCase)) {
-					string pluginsResponse = await Core.OnBotMessage(Bot, steamID, message).ConfigureAwait(false);
+					string pluginsResponse = await PluginsCore.OnBotMessage(Bot, steamID, message).ConfigureAwait(false);
 
 					if (!string.IsNullOrEmpty(pluginsResponse)) {
 						await Bot.SendMessage(chatGroupID, chatID, pluginsResponse).ConfigureAwait(false);

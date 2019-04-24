@@ -36,7 +36,7 @@ using Newtonsoft.Json.Linq;
 using SteamKit2;
 
 namespace ArchiSteamFarm.Plugins {
-	internal static class Core {
+	internal static class PluginsCore {
 		[ImportMany]
 		private static ImmutableHashSet<IPlugin> ActivePlugins { get; set; }
 

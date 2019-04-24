@@ -1097,9 +1097,9 @@ namespace ArchiSteamFarm {
 				BotsSemaphore.Release();
 			}
 
-			await Core.OnBotInit(bot).ConfigureAwait(false);
+			await PluginsCore.OnBotInit(bot).ConfigureAwait(false);
 
-			HashSet<ClientMsgHandler> customHandlers = await Core.OnBotSteamHandlersInit(bot).ConfigureAwait(false);
+			HashSet<ClientMsgHandler> customHandlers = await PluginsCore.OnBotSteamHandlersInit(bot).ConfigureAwait(false);
 
 			if ((customHandlers != null) && (customHandlers.Count > 0)) {
 				foreach (ClientMsgHandler customHandler in customHandlers) {
@@ -1107,7 +1107,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			await Core.OnBotSteamCallbacksInit(bot, bot.CallbackManager).ConfigureAwait(false);
+			await PluginsCore.OnBotSteamCallbacksInit(bot, bot.CallbackManager).ConfigureAwait(false);
 
 			await bot.InitModules().ConfigureAwait(false);
 
@@ -1505,7 +1505,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Bots.TryRemove(BotName, out _);
-			await Core.OnBotDestroy(this).ConfigureAwait(false);
+			await PluginsCore.OnBotDestroy(this).ConfigureAwait(false);
 		}
 
 		private void Disconnect() {
@@ -1794,7 +1794,7 @@ namespace ArchiSteamFarm {
 				SteamSaleEvent = new SteamSaleEvent(this);
 			}
 
-			await Core.OnBotInitModules(this, BotConfig.AdditionalProperties).ConfigureAwait(false);
+			await PluginsCore.OnBotInitModules(this, BotConfig.AdditionalProperties).ConfigureAwait(false);
 		}
 
 		private async Task InitPermanentConnectionFailure() {
@@ -2032,7 +2032,7 @@ namespace ArchiSteamFarm {
 
 			FirstTradeSent = false;
 
-			await Core.OnBotDisconnected(this, callback.UserInitiated ? EResult.OK : lastLogOnResult).ConfigureAwait(false);
+			await PluginsCore.OnBotDisconnected(this, callback.UserInitiated ? EResult.OK : lastLogOnResult).ConfigureAwait(false);
 
 			// If we initiated disconnect, do not attempt to reconnect
 			if (callback.UserInitiated && !ReconnectOnUserInitiated) {
@@ -2099,7 +2099,7 @@ namespace ArchiSteamFarm {
 
 						break;
 					case EAccountType.Clan:
-						bool acceptGroupRequest = await Core.OnBotFriendRequest(this, friend.SteamID).ConfigureAwait(false);
+						bool acceptGroupRequest = await PluginsCore.OnBotFriendRequest(this, friend.SteamID).ConfigureAwait(false);
 
 						if (acceptGroupRequest) {
 							ArchiHandler.AcknowledgeClanInvite(friend.SteamID, true);
@@ -2121,7 +2121,7 @@ namespace ArchiSteamFarm {
 							break;
 						}
 
-						bool acceptFriendRequest = await Core.OnBotFriendRequest(this, friend.SteamID).ConfigureAwait(false);
+						bool acceptFriendRequest = await PluginsCore.OnBotFriendRequest(this, friend.SteamID).ConfigureAwait(false);
 
 						if (acceptFriendRequest) {
 							await ArchiHandler.AddFriend(friend.SteamID).ConfigureAwait(false);
@@ -2433,7 +2433,7 @@ namespace ArchiSteamFarm {
 						Utilities.InBackground(RedeemGamesInBackground);
 					}
 
-					if (Core.BotUsesNewChat(this)) {
+					if (PluginsCore.BotUsesNewChat(this)) {
 						ArchiHandler.SetCurrentMode(2);
 					}
 
@@ -2461,7 +2461,7 @@ namespace ArchiSteamFarm {
 						);
 					}
 
-					await Core.OnBotLoggedOn(this).ConfigureAwait(false);
+					await PluginsCore.OnBotLoggedOn(this).ConfigureAwait(false);
 
 					break;
 				case EResult.InvalidPassword:

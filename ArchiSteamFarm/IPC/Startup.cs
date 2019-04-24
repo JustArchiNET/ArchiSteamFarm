@@ -163,7 +163,7 @@ namespace ArchiSteamFarm.IPC {
 			IMvcCoreBuilder mvc = services.AddMvcCore();
 
 			// Add support for controllers declared in custom plugins
-			HashSet<Assembly> assemblies = Core.LoadAssemblies();
+			HashSet<Assembly> assemblies = PluginsCore.LoadAssemblies();
 
 			if (assemblies != null) {
 				foreach (Assembly assembly in assemblies) {
