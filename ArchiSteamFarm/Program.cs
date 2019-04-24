@@ -399,6 +399,16 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			try {
+				string envCryptKey = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableCryptKey);
+
+				if (!string.IsNullOrEmpty(envCryptKey)) {
+					HandleCryptKeyArgument(envCryptKey);
+				}
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+			}
+
 			bool cryptKeyNext = false;
 
 			foreach (string arg in args) {
