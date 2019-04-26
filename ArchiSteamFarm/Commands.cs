@@ -33,7 +33,7 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	public sealed class Commands {
-		private const ushort SteamTypingStatusDelay = 10000; // Steam client broadcasts typing status each 10 seconds
+		private const ushort SteamTypingStatusDelay = 10 * 1000; // Steam client broadcasts typing status each 10 seconds
 
 		private readonly Bot Bot;
 		private readonly Dictionary<uint, string> CachedGamesOwned = new Dictionary<uint, string>();
