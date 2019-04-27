@@ -683,7 +683,10 @@ StackTrace :
     <value>"{0}" a été chargée avec succès!</value>
     <comment>{0} will be replaced by the name of the custom ASF plugin</comment>
   </data>
-  
+  <data name="PluginLoading" xml:space="preserve">
+    <value>Chargement {0} V{1}...</value>
+    <comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
+  </data>
   <data name="NothingFound" xml:space="preserve">
     <value>Rien n'a été trouvé!</value>
   </data>
@@ -693,12 +696,24 @@ StackTrace :
   <data name="PleaseWait" xml:space="preserve">
     <value>Veuillez patienter...</value>
   </data>
+  <data name="EnterCommand" xml:space="preserve">
+    <value>Entrer la commande : </value>
+  </data>
+  <data name="Executing" xml:space="preserve">
+    <value>Exécution en cours...</value>
+  </data>
+  <data name="InteractiveConsoleEnabled" xml:space="preserve">
+    <value>La console interactive est maintenant active, tapez 'c' pour entrer en mode commande.</value>
+  </data>
   
-  
-  
-  
-  
-  
+  <data name="Response" xml:space="preserve">
+    <value>Réponse : {0}</value>
+    <comment>{0} will be replaced by the generated response (string)</comment>
+  </data>
+  <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
+    <value>Le bot a {0} jeux restants dans sa file d'attente.</value>
+    <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
+  </data>
   
   
   

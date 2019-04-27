@@ -724,5 +724,8 @@ StackTrace:
     <value>{0} bevestiging(en) succesvol uitgevoerd!</value>
     <comment>{0} will be replaced by number of confirmations</comment>
   </data>
-  
+  <data name="BotExtraIdlingCooldown" xml:space="preserve">
+    <value>{0} wachten ter controle of alles in orde is om het farmen te starten...</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+  </data>
 </root>
