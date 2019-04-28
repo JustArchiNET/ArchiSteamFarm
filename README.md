@@ -31,9 +31,9 @@
 
 ## Description
 
-ASF is a C# application that allows you to farm steam cards using multiple steam accounts simultaneously. Unlike Idle Master which works only for one account at given time, requires steam client running in background, and launches additional processes imitating "game playing" status, ASF doesn't require any steam client running in the background, doesn't launch any additional processes and is made to handle unlimited steam accounts at once. In addition to that, it's meant to be run on servers or other desktop-less machines, and features full cross-OS support, which makes it possible to launch on any .NET Core-supported operating system, such as Windows, Linux or OS X. ASF is possible thanks to gigantic amount of work done in marvelous **[SteamKit2](https://github.com/SteamRE/SteamKit)** library.
+ASF is a C# application with primary purpose of idling Steam cards from multiple accounts simultaneously. Unlike Idle Master which works only for one account at given time, requires Steam client running in the background, while launching additional processes imitating "game playing" status, ASF doesn't require any Steam client running in the background, doesn't launch any additional processes and is made to handle unlimited Steam accounts at once. In addition to that, it's meant to be run on servers or other desktop-less machines, and features full cross-OS support, which makes it possible to launch on any operating system with .NET Core runtime, such as Windows, Linux and OS X. ASF is possible thanks to gigantic amount of work done in marvelous **[SteamKit2](https://github.com/SteamRE/SteamKit)** library.
 
-ASF doesn't require and doesn't interfere in any way with Steam client. In addition to that, it doesn't require exclusive access to given account, which means that you can use your main account in Steam client, and use ASF for idling the same account at the same time. If you decide to launch a game, ASF will get disconnected, and resume idling once you finish playing your game, being as transparent as possible during entire process.
+Today, ASF is one of the most versatile Steam power tools, allowing you to make use of many features that were implemented over time. Apart from idling Steam cards, which remains the primary focus, ASF includes bunch of features on its own, such as a possibility to use it as Steam authenticator or chat logger. In addition to that, ASF includes plugin system, thanks to which anybody can further extend it to his/her needs.
 
 ---
 
@@ -41,31 +41,34 @@ ASF doesn't require and doesn't interfere in any way with Steam client. In addit
 
 - Automatic idling of available games with card drops using any number of active accounts
 - No requirement of running or even having official Steam client installed
-- Guarantee of being VAC-free
-- Complex error-reporting mechanism, allowing ASF to be smart and resume idling even in case of Steam or networking problems
-- Customizable cards idling algorithm which will push performance of card drops to the maximum
-- Offline idling, allowing you to skip in-game status and stop confusing your friends
-- Advanced support for alt accounts, including ability to redeem keys, redeem gifts, accept trades and more through a simple Steam chat
-- Support for latest Steam security features, including SteamGuard, SteamParental and two-factor authentication
-- Unique ASF 2FA mechanism allowing ASF to act as a mobile authenticator (if needed)
-- StreamTradeMatcher integration allowing ASF to help you in completing your steam badges by accepting dupe trades
-- Rebased on .NET Core 2.0, cross-OS compatibility, official support for Windows, Linux and OS X
+- Guarantee of being VAC-free, focus on security and privacy
+- Complex error-reporting mechanism, reliability even during Steam issues and other networking quirks
+- Flexible cards idling algorithm, pushing the performance to the maximum while still allowing a lot of customization
+- Offline idling, enabling you to skip in-game status and stop confusing your friends with fake playing status
+- Advanced support for Steam accounts, including ability to redeem keys, redeem gifts, accept trades, send messages and more
+- Support for latest Steam security features, including SteamGuard, SteamParental and 2-factor authentication
+- Unique ASF 2FA mechanism allowing ASF to act as a mobile authenticator, if needed
+- STM-like integration for trades, both passive (accepting) and active (sending), ASF can help you complete your sets
+- Special plugin system, which allows you to extend ASF in any way you wish through your own code
+- Powered by .NET Core, cross-OS compatibility, official support for Windows, Linux and OS X
 - ...and many more!
+
+For learning about even more ASF features, we recommend starting with our **[FAQ entry](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/FAQ#what-interesting-features-asf-offers-that-idle-master-does-not)**.
 
 ---
 
 ### Setting up / Help
 
-Detailed guide regarding setting up and using ASF is available on our wiki in **[setting up](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Setting-up)** section.
+Detailed guide regarding setting up and using ASF is available on our wiki in **[setting up](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Setting-up)** section. It's user-friendly guide that shows basic, as well as a bit more complex ASF setup, covering all the required dependencies and other steps that are required in order to start using ASF software.
 
 ---
 
 ### Compatibility / Supported operating systems
 
-ASF officially supports Windows, Linux and OS X operating systems. Please visit **[compatibility](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compatibility)** section on the wiki for more info.
+ASF officially supports Windows, Linux and OS X operating systems, but it can work anywhere where you can obtain working .NET Core runtime. Please visit **[compatibility](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Compatibility)** section on the wiki for more information regarding environments that ASF can work in.
 
 ---
 
 ### Want to know more?
 
-Our **[wiki](https://github.com/JustArchiNET/ArchiSteamFarm/wiki)** includes a lot of other articles that might help you further with using ASF, as well as show you everything that you can make use of.
+Our **[wiki](https://github.com/JustArchiNET/ArchiSteamFarm/wiki)** includes a lot of other articles that will tell you about everything in regards to ASF, as well as show you other features that you can make use of. If you have some time to spare and you'd like to find out what else ASF can do for you, we heavily encourage you to take a look!
