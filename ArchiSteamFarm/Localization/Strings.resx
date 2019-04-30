@@ -728,4 +728,7 @@ StackTrace:
     <value>Waiting up to {0} to ensure that we're free to start idling...</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
   </data>
+  <data name="UpdateCleanup" xml:space="preserve">
+    <value>Cleaning up old files after update...</value>
+  </data>
 </root>

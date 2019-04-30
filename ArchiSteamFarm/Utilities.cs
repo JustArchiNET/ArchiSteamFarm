@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -241,6 +242,30 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public static string ToHumanReadable(this TimeSpan timeSpan) => timeSpan.Humanize(3, maxUnit: TimeUnit.Year, minUnit: TimeUnit.Second);
 
+		internal static void DeleteEmptyDirectoriesRecursively(string directory) {
+			if (string.IsNullOrEmpty(directory)) {
+				ASF.ArchiLogger.LogNullError(nameof(directory));
+
+				return;
+			}
+
+			if (!Directory.Exists(directory)) {
+				return;
+			}
+
+			try {
+				foreach (string subDirectory in Directory.EnumerateDirectories(directory)) {
+					DeleteEmptyDirectoriesRecursively(subDirectory);
+				}
+
+				if (!Directory.EnumerateFileSystemEntries(directory).Any()) {
+					Directory.Delete(directory);
+				}
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+			}
+		}
+
 		internal static string GetCookieValue(this CookieContainer cookieContainer, string url, string name) {
 			if ((cookieContainer == null) || string.IsNullOrEmpty(url) || string.IsNullOrEmpty(name)) {
 				ASF.ArchiLogger.LogNullError(nameof(cookieContainer) + " || " + nameof(url) + " || " + nameof(name));
@@ -267,6 +292,16 @@ namespace ArchiSteamFarm {
 			lock (Random) {
 				return Random.Next();
 			}
+		}
+
+		internal static bool RelativeDirectoryStartsWith(string directory, params string[] prefixes) {
+			if (string.IsNullOrEmpty(directory) || (prefixes == null) || (prefixes.Length == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(directory) + " || " + nameof(prefixes));
+
+				return false;
+			}
+
+			return (from prefix in prefixes where directory.Length > prefix.Length let pathSeparator = directory[prefix.Length] where (pathSeparator == Path.DirectorySeparatorChar) || (pathSeparator == Path.AltDirectorySeparatorChar) select prefix).Any(prefix => directory.StartsWith(prefix, StringComparison.Ordinal));
 		}
 	}
 }

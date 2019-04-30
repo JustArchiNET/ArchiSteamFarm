@@ -1,4 +1,4 @@
-FROM node AS build-node
+FROM node:lts AS build-node
 WORKDIR /app
 COPY ASF-ui .
 RUN echo "node: $(node --version)" && \

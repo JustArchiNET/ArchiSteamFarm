@@ -1423,6 +1423,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Cleaning up old files after update....
+        /// </summary>
+        public static string UpdateCleanup {
+            get {
+                return ResourceManager.GetString("UpdateCleanup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Downloading new version: {0} ({1} MB)... While waiting, consider donating if you appreciate the work being done! :).
         /// </summary>
         public static string UpdateDownloadingNewVersion {
