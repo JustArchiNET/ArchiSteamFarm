@@ -170,12 +170,12 @@ namespace ArchiSteamFarm {
 			await UpdateSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				ArchiLogger.LogGenericInfo(Strings.UpdateCheckingNewVersion);
-
 				// If backup directory from previous update exists, it's a good idea to purge it now
 				string backupDirectory = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.UpdateDirectory);
 
 				if (Directory.Exists(backupDirectory)) {
+					ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
+
 					// It's entirely possible that old process is still running, wait a short moment for eventual cleanup
 					await Task.Delay(5000).ConfigureAwait(false);
 
@@ -186,7 +186,11 @@ namespace ArchiSteamFarm {
 
 						return null;
 					}
+
+					ArchiLogger.LogGenericInfo(Strings.Done);
 				}
+
+				ArchiLogger.LogGenericInfo(Strings.UpdateCheckingNewVersion);
 
 				GitHub.ReleaseResponse releaseResponse = await GitHub.GetLatestRelease(GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable).ConfigureAwait(false);
 
@@ -659,8 +663,7 @@ namespace ArchiSteamFarm {
 			// Firstly we'll move all our existing files to a backup directory
 			string backupDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectory);
 
-			// We can't use EnumerateFiles here as we're going to actively move them
-			foreach (string file in Directory.GetFiles(targetDirectory, "*", SearchOption.AllDirectories)) {
+			foreach (string file in Directory.EnumerateFiles(targetDirectory, "*", SearchOption.AllDirectories)) {
 				string fileName = Path.GetFileName(file);
 
 				if (string.IsNullOrEmpty(fileName)) {
@@ -680,11 +683,12 @@ namespace ArchiSteamFarm {
 				string relativeDirectoryName = Path.GetDirectoryName(relativeFilePath);
 
 				switch (relativeDirectoryName) {
-					// Files in those directories we want to keep in their current place
-					case SharedInfo.ConfigDirectory:
-					case SharedInfo.PluginsDirectory:
+					case null:
+						ArchiLogger.LogNullError(nameof(relativeDirectoryName));
 
-						continue;
+						return false;
+
+					// No directory, root folder
 					case "":
 
 						switch (fileName) {
@@ -696,10 +700,21 @@ namespace ArchiSteamFarm {
 						}
 
 						break;
-					case null:
-						ArchiLogger.LogNullError(nameof(relativeDirectoryName));
 
-						return false;
+					// Files in those directories we want to keep in their current place
+					case SharedInfo.ConfigDirectory:
+					case SharedInfo.PluginsDirectory:
+					case SharedInfo.UpdateDirectory:
+
+						continue;
+					default:
+
+						// Files in subdirectories of those directories we want to keep as well
+						if (Utilities.RelativeDirectoryStartsWith(relativeDirectoryName, SharedInfo.ConfigDirectory, SharedInfo.PluginsDirectory, SharedInfo.UpdateDirectory)) {
+							continue;
+						}
+
+						break;
 				}
 
 				string targetBackupDirectory = relativeDirectoryName.Length > 0 ? Path.Combine(backupDirectory, relativeDirectoryName) : backupDirectory;
@@ -710,8 +725,10 @@ namespace ArchiSteamFarm {
 			}
 
 			// We can now get rid of directories that are empty
-			foreach (string directory in Directory.EnumerateDirectories(targetDirectory).Where(directory => !Directory.EnumerateFiles(directory).Any())) {
-				Directory.Delete(directory, true);
+			Utilities.DeleteEmptyDirectoriesRecursively(targetDirectory);
+
+			if (!Directory.Exists(targetDirectory)) {
+				Directory.CreateDirectory(targetDirectory);
 			}
 
 			// Now enumerate over files in the zip archive, skip directory entries that we're not interested in (we can create them ourselves if needed)
@@ -724,23 +741,26 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				string directory = Path.GetDirectoryName(file);
+				// Check if this file requires its own folder
+				if (zipFile.Name != zipFile.FullName) {
+					string directory = Path.GetDirectoryName(file);
 
-				if (string.IsNullOrEmpty(directory)) {
-					ArchiLogger.LogNullError(nameof(directory));
+					if (string.IsNullOrEmpty(directory)) {
+						ArchiLogger.LogNullError(nameof(directory));
 
-					return false;
-				}
+						return false;
+					}
 
-				if (!Directory.Exists(directory)) {
-					Directory.CreateDirectory(directory);
-				}
+					if (!Directory.Exists(directory)) {
+						Directory.CreateDirectory(directory);
+					}
 
-				// We're not interested in extracting placeholder files (but we still want directories created for them, done above)
-				switch (zipFile.Name) {
-					case ".gitkeep":
+					// We're not interested in extracting placeholder files (but we still want directories created for them, done above)
+					switch (zipFile.Name) {
+						case ".gitkeep":
 
-						continue;
+							continue;
+					}
 				}
 
 				zipFile.ExtractToFile(file);
