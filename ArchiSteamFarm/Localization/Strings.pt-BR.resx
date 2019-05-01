@@ -728,4 +728,7 @@ StackTrace:
     <value>Esperando até {0} para garantir que estamos livres para começar a coletar...</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
   </data>
+  <data name="UpdateCleanup" xml:space="preserve">
+    <value>Apagando arquivos antigos após a atualização...</value>
+  </data>
 </root>

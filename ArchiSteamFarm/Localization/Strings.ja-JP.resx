@@ -657,25 +657,75 @@
     <value>Botのレベルは {0} です。</value>
     <comment>{0} will be replaced by bot's level</comment>
   </data>
-  
-  
+  <data name="ActivelyMatchingItems" xml:space="preserve">
+    <value>Steamアイテムをマッチさせています: #{0}</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="DoneActivelyMatchingItems" xml:space="preserve">
+    <value>Steamアイテムのマッチが完了しました: #{0}</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
   <data name="ErrorAborted" xml:space="preserve">
     <value>中断しました！</value>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="ActivelyMatchingItemsRound" xml:space="preserve">
+    <value>すべてのうち、{0} セットにマッチしたためこのラウンドを終了します。</value>
+    <comment>{0} will be replaced by number of sets traded</comment>
+  </data>
+  <data name="WarningExcessiveBotsCount" xml:space="preserve">
+    <value>推奨の上限値よりも多くの個人Botを実行しているようです({0})。この設定はサポートされておらず、アカウントの凍結を含むさまざまな問題を引き起こす可能性があります。詳しくは FAQ をチェックしてください。</value>
+    <comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
+  </data>
+  <data name="PluginLoaded" xml:space="preserve">
+    <value>{0} が正常にロードされました！</value>
+    <comment>{0} will be replaced by the name of the custom ASF plugin</comment>
+  </data>
+  <data name="PluginLoading" xml:space="preserve">
+    <value>{0} V{1} をロード中…</value>
+    <comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
+  </data>
+  <data name="NothingFound" xml:space="preserve">
+    <value>何も見つかりません！</value>
+  </data>
+  <data name="PluginsWarning" xml:space="preserve">
+    <value>ASFに1つ以上のカスタムプラグインをロードしました。私たちはModのセットアップのためにサポートを提供することはできません。何か問題が発生した場合はModの開発者に問い合わせてください。</value>
+  </data>
+  <data name="PleaseWait" xml:space="preserve">
+    <value>しばらくお待ちください…</value>
+  </data>
+  <data name="EnterCommand" xml:space="preserve">
+    <value>コマンドを入力: </value>
+  </data>
+  <data name="Executing" xml:space="preserve">
+    <value>実行中…</value>
+  </data>
+  <data name="InteractiveConsoleEnabled" xml:space="preserve">
+    <value>対話型コンソールがアクティブになりました。コマンドモードに入るには「c」と入力します。</value>
+  </data>
+  <data name="InteractiveConsoleNotAvailable" xml:space="preserve">
+    <value>{0} の設定が見つからないため、対話型コンソールが無効にしました。</value>
+    <comment>{0} will be replaced by the name of the missing config property (string)</comment>
+  </data>
+  <data name="Response" xml:space="preserve">
+    <value>応答: {0}</value>
+    <comment>{0} will be replaced by the generated response (string)</comment>
+  </data>
+  <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
+    <value>Botのバックグラウンドキューに {0} 個のゲームが残っています。</value>
+    <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
+  </data>
+  <data name="ErrorSingleInstanceRequired" xml:space="preserve">
+    <value>ASFプロセスはすでにこの作業ディレクトリに対して実行中です。中止します！</value>
+  </data>
+  <data name="BotHandledConfirmations" xml:space="preserve">
+    <value>{0} 件の確認を正常に処理しました。</value>
+    <comment>{0} will be replaced by number of confirmations</comment>
+  </data>
+  <data name="BotExtraIdlingCooldown" xml:space="preserve">
+    <value>アイドル状態になったことを確認するために {0} まで待機しています…</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+  </data>
+  <data name="UpdateCleanup" xml:space="preserve">
+    <value>更新後に古いファイルをクリーンアップしています…</value>
+  </data>
 </root>

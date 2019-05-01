@@ -728,4 +728,7 @@
     <value>正在等待至多 {0}以确保可以开始挂卡……</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
   </data>
+  <data name="UpdateCleanup" xml:space="preserve">
+    <value>正在清理更新后过时的文件……</value>
+  </data>
 </root>
