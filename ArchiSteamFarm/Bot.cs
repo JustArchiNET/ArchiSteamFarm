@@ -1892,6 +1892,9 @@ namespace ArchiSteamFarm {
 
 		private static async Task LimitLoginRequestsAsync() {
 			if (ASF.GlobalConfig.LoginLimiterDelay == 0) {
+				await LoginRateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
+				LoginRateLimitingSemaphore.Release();
+
 				return;
 			}
 
