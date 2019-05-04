@@ -62,6 +62,7 @@ namespace ArchiSteamFarm {
 		internal static EOSType OSType { get; private set; } = EOSType.Unknown;
 
 		private static readonly SemaphoreSlim BotsSemaphore = new SemaphoreSlim(1, 1);
+		private static readonly SemaphoreSlim LoginRateLimitingSemaphore = new SemaphoreSlim(1, 1);
 		private static readonly SemaphoreSlim LoginSemaphore = new SemaphoreSlim(1, 1);
 
 		[JsonIgnore]
@@ -1896,12 +1897,17 @@ namespace ArchiSteamFarm {
 
 			await LoginSemaphore.WaitAsync().ConfigureAwait(false);
 
-			Utilities.InBackground(
-				async () => {
-					await Task.Delay(ASF.GlobalConfig.LoginLimiterDelay * 1000).ConfigureAwait(false);
-					LoginSemaphore.Release();
-				}
-			);
+			try {
+				await LoginRateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
+				LoginRateLimitingSemaphore.Release();
+			} finally {
+				Utilities.InBackground(
+					async () => {
+						await Task.Delay(ASF.GlobalConfig.LoginLimiterDelay * 1000).ConfigureAwait(false);
+						LoginSemaphore.Release();
+					}
+				);
+			}
 		}
 
 		private async void OnConnected(SteamClient.ConnectedCallback callback) {
@@ -2071,7 +2077,15 @@ namespace ArchiSteamFarm {
 					break;
 				case EResult.RateLimitExceeded:
 					ArchiLogger.LogGenericInfo(string.Format(Strings.BotRateLimitExceeded, TimeSpan.FromMinutes(LoginCooldownInMinutes).ToHumanReadable()));
-					await Task.Delay(LoginCooldownInMinutes * 60 * 1000).ConfigureAwait(false);
+
+					await LoginRateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
+
+					Utilities.InBackground(
+						async () => {
+							await Task.Delay(LoginCooldownInMinutes * 60 * 1000).ConfigureAwait(false);
+							LoginRateLimitingSemaphore.Release();
+						}
+					);
 
 					break;
 			}
