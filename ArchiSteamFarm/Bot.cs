@@ -2081,14 +2081,14 @@ namespace ArchiSteamFarm {
 				case EResult.RateLimitExceeded:
 					ArchiLogger.LogGenericInfo(string.Format(Strings.BotRateLimitExceeded, TimeSpan.FromMinutes(LoginCooldownInMinutes).ToHumanReadable()));
 
-					await LoginRateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
-
-					Utilities.InBackground(
-						async () => {
-							await Task.Delay(LoginCooldownInMinutes * 60 * 1000).ConfigureAwait(false);
-							LoginRateLimitingSemaphore.Release();
-						}
-					);
+					if (await LoginRateLimitingSemaphore.WaitAsync(WebBrowser.MaxTries * 1000).ConfigureAwait(false)) {
+						Utilities.InBackground(
+							async () => {
+								await Task.Delay(LoginCooldownInMinutes * 60 * 1000).ConfigureAwait(false);
+								LoginRateLimitingSemaphore.Release();
+							}
+						);
+					}
 
 					break;
 			}
