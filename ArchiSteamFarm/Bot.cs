@@ -65,6 +65,8 @@ namespace ArchiSteamFarm {
 		private static readonly SemaphoreSlim LoginRateLimitingSemaphore = new SemaphoreSlim(1, 1);
 		private static readonly SemaphoreSlim LoginSemaphore = new SemaphoreSlim(1, 1);
 
+		private static bool LoginRateLimited;
+
 		[JsonIgnore]
 		[PublicAPI]
 		public readonly Actions Actions;
@@ -2081,13 +2083,24 @@ namespace ArchiSteamFarm {
 				case EResult.RateLimitExceeded:
 					ArchiLogger.LogGenericInfo(string.Format(Strings.BotRateLimitExceeded, TimeSpan.FromMinutes(LoginCooldownInMinutes).ToHumanReadable()));
 
-					if (await LoginRateLimitingSemaphore.WaitAsync(WebBrowser.MaxTries * 1000).ConfigureAwait(false)) {
-						Utilities.InBackground(
-							async () => {
-								await Task.Delay(LoginCooldownInMinutes * 60 * 1000).ConfigureAwait(false);
-								LoginRateLimitingSemaphore.Release();
-							}
-						);
+					if (LoginRateLimited) {
+						break;
+					}
+
+					await LoginRateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
+
+					try {
+						if (LoginRateLimited) {
+							break;
+						}
+
+						LoginRateLimited = true;
+
+						await Task.Delay(LoginCooldownInMinutes * 60 * 1000).ConfigureAwait(false);
+
+						LoginRateLimited = false;
+					} finally {
+						LoginRateLimitingSemaphore.Release();
 					}
 
 					break;
