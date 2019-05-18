@@ -70,24 +70,24 @@
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.WebSockets" Version="2.2.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0-preview4.19216.2" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="3.0.0-preview4.19216.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0-preview5.19227.9" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="3.0.0-preview5.19227.9" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="NLog" Version="4.6.3" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.8.2" />
-    <PackageReference Include="SteamKit2" Version="2.2.0-Beta.1" />
+    <PackageReference Include="SteamKit2" Version="2.2.0-Beta.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc2" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="5.0.0-rc2" />
-    <PackageReference Include="System.Composition" Version="1.3.0-preview4.19212.13" />
+    <PackageReference Include="System.Composition" Version="1.3.0-preview5.19224.8" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2'">
     <PackageReference Include="ILLink.Tasks" Version="0.1.5-preview-1841731" />
-    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.6.0-preview4.19212.13" />
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.6.0-preview5.19224.8" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
-    <PackageReference Include="System.Collections.Immutable" Version="1.6.0-preview4.19212.13" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.6.0-preview5.19224.8" />
     <Reference Include="System.Net.Http">
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Net.Http.dll</HintPath>
     </Reference>
