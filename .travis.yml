@@ -38,10 +38,11 @@ script:
         set +eu # This is needed to run below npm block on OSX
     fi
 
-    cd ASF-ui
-    npm ci
-    npm run-script deploy
-    cd ..
+    (
+        cd ASF-ui
+        npm ci
+        npm run-script deploy
+    )
 
     if [ "$TRAVIS_OS_NAME" = "osx" ]; then
         set -eu # We no longer need +eu on OSX
