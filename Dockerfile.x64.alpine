@@ -1,0 +1,29 @@
+FROM node:lts-alpine AS build-node
+WORKDIR /app
+COPY ASF-ui .
+RUN echo "node: $(node --version)" && \
+  echo "npm: $(npm --version)" && \
+  npm ci -s && \
+  npm run-script deploy -s
+
+FROM mcr.microsoft.com/dotnet/core/sdk:2.2-alpine AS build-dotnet
+ENV CONFIGURATION Release
+ENV NET_CORE_VERSION netcoreapp2.2
+WORKDIR /app
+COPY --from=build-node /app/dist ASF-ui/dist
+COPY ArchiSteamFarm ArchiSteamFarm
+COPY ArchiSteamFarm.Tests ArchiSteamFarm.Tests
+RUN dotnet --info && \
+  dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/source' /nologo && \
+  dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/source' /nologo && \
+  dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/publish' /nologo /p:ASFVariant=docker /p:LinkDuringPublish=false && \
+  cp "ArchiSteamFarm/overlay/generic/ArchiSteamFarm.sh" "ArchiSteamFarm/out/publish/ArchiSteamFarm.sh"
+
+FROM mcr.microsoft.com/dotnet/core/runtime:2.2-alpine AS runtime
+ENV ASPNETCORE_URLS=
+LABEL maintainer="JustArchi <JustArchi@JustArchi.net>"
+EXPOSE 1242
+WORKDIR /app
+RUN apk add --no-cache --no-progress bash
+COPY --from=build-dotnet /app/ArchiSteamFarm/out/publish .
+ENTRYPOINT ["./ArchiSteamFarm.sh", "--no-restart", "--process-required", "--system-required"]
