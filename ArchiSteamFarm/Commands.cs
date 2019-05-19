@@ -2204,6 +2204,7 @@ namespace ArchiSteamFarm {
 											break;
 										case EPurchaseResultDetail.RateLimited:
 											rateLimitedBots.Add(currentBot);
+
 											goto case EPurchaseResultDetail.AccountLocked;
 										default:
 											ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.PurchaseResultDetail), result.PurchaseResultDetail));
