@@ -728,5 +728,7 @@
     <value>Задержка {0}, чтобы убедится, что аккаунт свободен для фарма...</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
   </data>
-  
+  <data name="UpdateCleanup" xml:space="preserve">
+    <value>Удаление старых файлов после обновления...</value>
+  </data>
 </root>
