@@ -1752,17 +1752,6 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			bool hasTradeToken = !string.IsNullOrEmpty(tradeToken);
-
-			Dictionary<string, object> arguments = new Dictionary<string, object>(hasTradeToken ? 3 : 2) {
-				{ "key", steamApiKey },
-				{ "steamid_target", steamID }
-			};
-
-			if (hasTradeToken) {
-				arguments["trade_offer_access_token"] = tradeToken;
-			}
-
 			KeyValue response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
@@ -1774,7 +1763,11 @@ namespace ArchiSteamFarm {
 							WebAPI.DefaultBaseAddress.Host,
 
 							// ReSharper disable once AccessToDisposedClosure
-							async () => await iEconService.GetTradeHoldDurations(arguments)
+							async () => await iEconService.GetTradeHoldDurations(
+								key: steamApiKey,
+								steamid_target: steamID,
+								trade_offer_access_token: tradeToken ?? "" // TODO: Change me once https://github.com/SteamRE/SteamKit/pull/522 is merged
+							)
 						).ConfigureAwait(false);
 					} catch (TaskCanceledException e) {
 						Bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -1923,9 +1916,9 @@ namespace ArchiSteamFarm {
 
 						// ReSharper disable once AccessToDisposedClosure
 						async () => await iSteamUserAuth.AuthenticateUser(
-							encrypted_loginkey: encryptedLoginKey,
+							encrypted_loginkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(encryptedLoginKey, 0, encryptedLoginKey.Length)),
 							method: WebRequestMethods.Http.Post,
-							sessionkey: encryptedSessionKey,
+							sessionkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(encryptedSessionKey, 0, encryptedSessionKey.Length)),
 							steamid: steamID
 						)
 					).ConfigureAwait(false);
