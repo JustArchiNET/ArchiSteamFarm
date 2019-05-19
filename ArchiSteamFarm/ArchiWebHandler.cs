@@ -2463,12 +2463,10 @@ namespace ArchiSteamFarm {
 
 			switch (result.State) {
 				case ESteamApiKeyState.AccessDenied:
-
 					// We succeeded in fetching API key, but it resulted in access denied
 					// Return empty result, API key is unavailable permanently
 					return (true, "");
 				case ESteamApiKeyState.NotRegisteredYet:
-
 					// We succeeded in fetching API key, and it resulted in no key registered yet
 					// Let's try to register a new key
 					if (!await RegisterApiKey().ConfigureAwait(false)) {
@@ -2491,16 +2489,13 @@ namespace ArchiSteamFarm {
 
 					goto case ESteamApiKeyState.Registered;
 				case ESteamApiKeyState.Registered:
-
 					// We succeeded in fetching API key, and it resulted in registered key
 					// Cache the result, this is the API key we want
 					return (true, result.Key);
 				case ESteamApiKeyState.Timeout:
-
 					// Request timed out, bad luck, we'll try again later
 					return (false, null);
 				default:
-
 					// We got an unhandled error, this should never happen
 					Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.State), result.State));
 
@@ -2554,17 +2549,13 @@ namespace ArchiSteamFarm {
 			switch (userPrivacy.Settings.Profile) {
 				case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.FriendsOnly:
 				case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private:
-
 					return (true, false);
 				case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Public:
-
 					switch (userPrivacy.Settings.Inventory) {
 						case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.FriendsOnly:
 						case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private:
-
 							return (true, false);
 						case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Public:
-
 							return (true, true);
 						default:
 							Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(userPrivacy.Settings.Inventory), userPrivacy.Settings.Inventory));

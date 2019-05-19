@@ -452,10 +452,8 @@ namespace ArchiSteamFarm {
 
 			switch (permission) {
 				case BotConfig.EPermission.FamilySharing when SteamFamilySharingIDs.Contains(steamID):
-
 					return true;
 				default:
-
 					return BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EPermission realPermission) && (realPermission >= permission);
 			}
 		}
@@ -620,11 +618,9 @@ namespace ArchiSteamFarm {
 					// We must convert this to uppercase, since Valve doesn't stick to any convention and we can have a case mismatch
 					switch (releaseState.ToUpperInvariant()) {
 						case "RELEASED":
-
 							break;
 						case "PRELOADONLY":
 						case "PRERELEASE":
-
 							return (0, DateTime.MaxValue);
 						default:
 							ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(releaseState), releaseState));
@@ -641,7 +637,6 @@ namespace ArchiSteamFarm {
 
 				// We must convert this to uppercase, since Valve doesn't stick to any convention and we can have a case mismatch
 				switch (type.ToUpperInvariant()) {
-					// Types that can be idled
 					case "APPLICATION":
 					case "EPISODE":
 					case "GAME":
@@ -650,16 +645,14 @@ namespace ArchiSteamFarm {
 					case "SERIES":
 					case "TOOL":
 					case "VIDEO":
-
+						// Types that can be idled
 						return (appID, DateTime.MinValue);
-
-					// Types that can't be idled
 					case "ADVERTISING":
 					case "DEMO":
 					case "DLC":
 					case "GUIDE":
 					case "HARDWARE":
-
+						// Types that can't be idled
 						break;
 					default:
 						ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(type), type));
@@ -710,25 +703,18 @@ namespace ArchiSteamFarm {
 
 			switch (fileType) {
 				case EFileType.Config:
-
 					return botPath + SharedInfo.ConfigExtension;
 				case EFileType.Database:
-
 					return botPath + SharedInfo.DatabaseExtension;
 				case EFileType.KeysToRedeem:
-
 					return botPath + SharedInfo.KeysExtension;
 				case EFileType.KeysToRedeemUnused:
-
 					return botPath + SharedInfo.KeysExtension + SharedInfo.KeysUnusedExtension;
 				case EFileType.KeysToRedeemUsed:
-
 					return botPath + SharedInfo.KeysExtension + SharedInfo.KeysUsedExtension;
 				case EFileType.MobileAuthenticator:
-
 					return botPath + SharedInfo.MobileAuthenticatorExtension;
 				case EFileType.SentryFile:
-
 					return botPath + SharedInfo.SentryHashExtension;
 				default:
 					ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(fileType), fileType));
@@ -1326,14 +1312,12 @@ namespace ArchiSteamFarm {
 
 					break;
 				case ASF.EUserInputType.Login:
-
 					if (BotConfig != null) {
 						BotConfig.SteamLogin = inputValue;
 					}
 
 					break;
 				case ASF.EUserInputType.Password:
-
 					if (BotConfig != null) {
 						BotConfig.DecryptedSteamPassword = inputValue;
 					}
@@ -1344,7 +1328,6 @@ namespace ArchiSteamFarm {
 
 					break;
 				case ASF.EUserInputType.SteamParentalCode:
-
 					if (BotConfig != null) {
 						BotConfig.SteamParentalCode = inputValue;
 					}
@@ -1844,27 +1827,21 @@ namespace ArchiSteamFarm {
 			return steamID == BotConfig.SteamMasterClanID;
 		}
 
-		private static bool IsRefundable(EPaymentMethod method) {
-			if (method == EPaymentMethod.None) {
-				ASF.ArchiLogger.LogNullError(nameof(method));
+		private static bool IsRefundable(EPaymentMethod paymentMethod) {
+			if (paymentMethod == EPaymentMethod.None) {
+				ASF.ArchiLogger.LogNullError(nameof(paymentMethod));
 
 				return false;
 			}
 
-			switch (method) {
+			switch (paymentMethod) {
 				case EPaymentMethod.ActivationCode:
 				case EPaymentMethod.Complimentary: // This is also a flag
 				case EPaymentMethod.GuestPass:
 				case EPaymentMethod.HardwarePromo:
-
 					return false;
 				default:
-
-					if (method.HasFlag(EPaymentMethod.Complimentary)) {
-						return false;
-					}
-
-					return true;
+					return !paymentMethod.HasFlag(EPaymentMethod.Complimentary);
 			}
 		}
 
@@ -1889,7 +1866,9 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			await ArchiHandler.JoinChatRoomGroup(MasterChatGroupID).ConfigureAwait(false);
+			if (!await ArchiHandler.JoinChatRoomGroup(MasterChatGroupID).ConfigureAwait(false)) {
+				ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, nameof(ArchiHandler.JoinChatRoomGroup)));
+			}
 		}
 
 		private static async Task LimitLoginRequestsAsync() {
@@ -2052,18 +2031,15 @@ namespace ArchiSteamFarm {
 
 			switch (lastLogOnResult) {
 				case EResult.AccountDisabled:
-
 					// Do not attempt to reconnect, those failures are permanent
 					return;
 				case EResult.Invalid:
-
 					// Invalid means that we didn't get OnLoggedOn() in the first place, so Steam is down
 					// Always reset one-time-only access tokens in this case, as OnLoggedOn() didn't do that for us
 					AuthCode = TwoFactorCode = null;
 
 					break;
 				case EResult.InvalidPassword:
-
 					// If we didn't use login key, it's nearly always rate limiting
 					if (string.IsNullOrEmpty(BotDatabase.LoginKey)) {
 						goto case EResult.RateLimitExceeded;
@@ -2144,9 +2120,10 @@ namespace ArchiSteamFarm {
 
 						break;
 					default:
-
 						if (HasPermission(friend.SteamID, BotConfig.EPermission.FamilySharing)) {
-							await ArchiHandler.AddFriend(friend.SteamID).ConfigureAwait(false);
+							if (!await ArchiHandler.AddFriend(friend.SteamID).ConfigureAwait(false)) {
+								ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, nameof(ArchiHandler.AddFriend)));
+							}
 
 							break;
 						}
@@ -2154,13 +2131,17 @@ namespace ArchiSteamFarm {
 						bool acceptFriendRequest = await PluginsCore.OnBotFriendRequest(this, friend.SteamID).ConfigureAwait(false);
 
 						if (acceptFriendRequest) {
-							await ArchiHandler.AddFriend(friend.SteamID).ConfigureAwait(false);
+							if (!await ArchiHandler.AddFriend(friend.SteamID).ConfigureAwait(false)) {
+								ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, nameof(ArchiHandler.AddFriend)));
+							}
 
 							break;
 						}
 
 						if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidFriendInvites)) {
-							await ArchiHandler.RemoveFriend(friend.SteamID).ConfigureAwait(false);
+							if (!await ArchiHandler.RemoveFriend(friend.SteamID).ConfigureAwait(false)) {
+								ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, nameof(ArchiHandler.RemoveFriend)));
+							}
 						}
 
 						break;
@@ -2326,7 +2307,6 @@ namespace ArchiSteamFarm {
 
 			switch (callback.Result) {
 				case EResult.LoggedInElsewhere:
-
 					// This result directly indicates that playing was blocked when we got (forcefully) disconnected
 					PlayingWasBlocked = true;
 
@@ -2368,7 +2348,6 @@ namespace ArchiSteamFarm {
 
 			switch (callback.Result) {
 				case EResult.AccountDisabled:
-
 					// Those failures are permanent, we should Stop() the bot if any of those happen
 					ArchiLogger.LogGenericWarning(string.Format(Strings.BotUnableToLogin, callback.Result, callback.ExtendedResult));
 					Stop();
@@ -2387,7 +2366,6 @@ namespace ArchiSteamFarm {
 
 					break;
 				case EResult.AccountLoginDeniedNeedTwoFactor:
-
 					if (!HasMobileAuthenticator) {
 						string twoFactorCode = await Logging.GetUserInput(ASF.EUserInputType.TwoFactorAuthentication, BotName).ConfigureAwait(false);
 
@@ -2485,7 +2463,10 @@ namespace ArchiSteamFarm {
 					if (BotConfig.SteamMasterClanID != 0) {
 						Utilities.InBackground(
 							async () => {
-								await ArchiWebHandler.JoinGroup(BotConfig.SteamMasterClanID).ConfigureAwait(false);
+								if (!await ArchiWebHandler.JoinGroup(BotConfig.SteamMasterClanID).ConfigureAwait(false)) {
+									ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, nameof(ArchiWebHandler.JoinGroup)));
+								}
+
 								await JoinMasterChatGroupID().ConfigureAwait(false);
 							}
 						);
@@ -2514,7 +2495,6 @@ namespace ArchiSteamFarm {
 
 					break;
 				default:
-
 					// Unexpected result, shutdown immediately
 					ArchiLogger.LogGenericError(string.Format(Strings.BotUnableToLogin, callback.Result, callback.ExtendedResult));
 					Stop();
@@ -2817,7 +2797,6 @@ namespace ArchiSteamFarm {
 						case EPurchaseResultDetail.DoesNotOwnRequiredApp:
 						case EPurchaseResultDetail.RestrictedCountry:
 						case EPurchaseResultDetail.Timeout:
-
 							break;
 						case EPurchaseResultDetail.BadActivationCode:
 						case EPurchaseResultDetail.DuplicateActivationCode:

@@ -591,14 +591,11 @@ namespace ArchiSteamFarm {
 					switch (redirectUri.Scheme) {
 						case "http":
 						case "https":
-
 							break;
 						case "steammobile":
-
 							// Those redirections are invalid, but we're aware of that and we have extra logic for them
 							return response;
 						default:
-
 							// We have no clue about those, but maybe HttpClient can handle them for us
 							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(redirectUri.Scheme), redirectUri.Scheme));
 

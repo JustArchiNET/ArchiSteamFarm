@@ -81,10 +81,8 @@ namespace ArchiSteamFarm {
 
 			switch (fileType) {
 				case EFileType.Config:
-
 					return Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName);
 				case EFileType.Database:
-
 					return Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalDatabaseFileName);
 				default:
 					ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(fileType), fileType));
@@ -350,10 +348,8 @@ namespace ArchiSteamFarm {
 
 			switch (botName) {
 				case SharedInfo.ASF:
-
 					return false;
 				default:
-
 					return true;
 			}
 		}
@@ -687,28 +683,22 @@ namespace ArchiSteamFarm {
 						ArchiLogger.LogNullError(nameof(relativeDirectoryName));
 
 						return false;
-
-					// No directory, root folder
 					case "":
-
+						// No directory, root folder
 						switch (fileName) {
-							// Files with those names in root directory we want to keep
 							case SharedInfo.LogFile:
 							case "NLog.config":
-
+								// Files with those names in root directory we want to keep
 								continue;
 						}
 
 						break;
-
-					// Files in those directories we want to keep in their current place
 					case SharedInfo.ConfigDirectory:
 					case SharedInfo.PluginsDirectory:
 					case SharedInfo.UpdateDirectory:
-
+						// Files in those directories we want to keep in their current place
 						continue;
 					default:
-
 						// Files in subdirectories of those directories we want to keep as well
 						if (Utilities.RelativeDirectoryStartsWith(relativeDirectoryName, SharedInfo.ConfigDirectory, SharedInfo.PluginsDirectory, SharedInfo.UpdateDirectory)) {
 							continue;
@@ -758,7 +748,6 @@ namespace ArchiSteamFarm {
 					// We're not interested in extracting placeholder files (but we still want directories created for them, done above)
 					switch (zipFile.Name) {
 						case ".gitkeep":
-
 							continue;
 					}
 				}

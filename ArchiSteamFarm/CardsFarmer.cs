@@ -572,6 +572,12 @@ namespace ArchiSteamFarm {
 
 				name = WebUtility.HtmlDecode(name.Substring(nameStartIndex, nameEndIndex - nameStartIndex));
 
+				if (string.IsNullOrEmpty(name)) {
+					Bot.ArchiLogger.LogNullError(nameof(name));
+
+					continue;
+				}
+
 				// Levels
 				byte badgeLevel = 0;
 
@@ -626,7 +632,6 @@ namespace ArchiSteamFarm {
 
 							break;
 						default:
-
 							if (backgroundTasks == null) {
 								backgroundTasks = new List<Task>();
 							}
@@ -1058,7 +1063,6 @@ namespace ArchiSteamFarm {
 			foreach (BotConfig.EFarmingOrder farmingOrder in Bot.BotConfig.FarmingOrders) {
 				switch (farmingOrder) {
 					case BotConfig.EFarmingOrder.Unordered:
-
 						break;
 					case BotConfig.EFarmingOrder.AppIDsAscending:
 						gamesToFarm = gamesToFarm.ThenBy(game => game.AppID);

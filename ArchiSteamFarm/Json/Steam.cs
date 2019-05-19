@@ -515,7 +515,6 @@ namespace ArchiSteamFarm.Json {
 					foreach (Tag tag in tags) {
 						switch (tag.Identifier) {
 							case "cardborder":
-
 								switch (tag.Value) {
 									case "cardborder_0":
 										type = Asset.EType.TradingCard;
@@ -533,7 +532,6 @@ namespace ArchiSteamFarm.Json {
 
 								break;
 							case "droprate":
-
 								switch (tag.Value) {
 									case "droprate_0":
 										rarity = Asset.ERarity.Common;
@@ -555,7 +553,6 @@ namespace ArchiSteamFarm.Json {
 
 								break;
 							case "Game":
-
 								if ((tag.Value.Length <= 4) || !tag.Value.StartsWith("app_", StringComparison.Ordinal)) {
 									ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
 
@@ -574,12 +571,10 @@ namespace ArchiSteamFarm.Json {
 
 								break;
 							case "item_class":
-
 								switch (tag.Value) {
 									case "item_class_2":
-
-										// This is a fallback in case we'd have no cardborder available to interpret
 										if (type == Asset.EType.Unknown) {
+											// This is a fallback in case we'd have no cardborder available to interpret
 											type = Asset.EType.TradingCard;
 										}
 

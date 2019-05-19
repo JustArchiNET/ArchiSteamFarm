@@ -120,7 +120,11 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task OnLoggedOn() => await Bot.ArchiWebHandler.JoinGroup(SharedInfo.ASFGroupSteamID).ConfigureAwait(false);
+		internal async Task OnLoggedOn() {
+			if (!await Bot.ArchiWebHandler.JoinGroup(SharedInfo.ASFGroupSteamID).ConfigureAwait(false)) {
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, nameof(ArchiWebHandler.JoinGroup)));
+			}
+		}
 
 		internal async Task OnPersonaState(string nickname = null, string avatarHash = null) {
 			if ((DateTime.UtcNow < LastAnnouncementCheck.AddHours(MinAnnouncementCheckTTL)) && (ShouldSendHeartBeats || (LastHeartBeat == DateTime.MinValue))) {

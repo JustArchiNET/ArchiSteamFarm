@@ -38,13 +38,10 @@ namespace ArchiSteamFarm {
 
 			switch (cryptoMethod) {
 				case ECryptoMethod.PlainText:
-
 					return encrypted;
 				case ECryptoMethod.AES:
-
 					return DecryptAES(encrypted);
 				case ECryptoMethod.ProtectedDataForCurrentUser:
-
 					return DecryptProtectedDataForCurrentUser(encrypted);
 				default:
 					ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(cryptoMethod), cryptoMethod));
@@ -62,13 +59,10 @@ namespace ArchiSteamFarm {
 
 			switch (cryptoMethod) {
 				case ECryptoMethod.PlainText:
-
 					return decrypted;
 				case ECryptoMethod.AES:
-
 					return EncryptAES(decrypted);
 				case ECryptoMethod.ProtectedDataForCurrentUser:
-
 					return EncryptProtectedDataForCurrentUser(decrypted);
 				default:
 					ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(cryptoMethod), cryptoMethod));

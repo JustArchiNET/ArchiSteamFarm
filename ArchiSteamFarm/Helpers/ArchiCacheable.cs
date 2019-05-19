@@ -79,16 +79,14 @@ namespace ArchiSteamFarm.Helpers {
 				if (!success) {
 					switch (fallback) {
 						case EFallback.DefaultForType:
-
 							return (false, default);
 						case EFallback.FailedNow:
-
 							return (false, result);
 						case EFallback.SuccessPreviously:
-
 							return (false, InitializedValue);
 						default:
 							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(fallback), fallback));
+
 							goto case EFallback.DefaultForType;
 					}
 				}

@@ -851,7 +851,6 @@ namespace ArchiSteamFarm {
 						case EUserNotification.Items:
 						case EUserNotification.ModeratorMessages:
 						case EUserNotification.Trading:
-
 							break;
 						default:
 							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(type), type));

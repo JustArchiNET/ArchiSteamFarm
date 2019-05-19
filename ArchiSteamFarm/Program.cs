@@ -43,7 +43,7 @@ namespace ArchiSteamFarm {
 		internal static bool ShutdownSequenceInitialized { get; private set; }
 
 		// We need to keep this one assigned and not calculated on-demand
-		private static readonly string ProcessFileName = Process.GetCurrentProcess().MainModule.FileName;
+		private static readonly string ProcessFileName = Process.GetCurrentProcess().MainModule?.FileName ?? throw new ArgumentNullException(nameof(ProcessFileName));
 
 		private static readonly TaskCompletionSource<byte> ShutdownResetEvent = new TaskCompletionSource<byte>();
 		private static bool SystemRequired;
@@ -430,7 +430,6 @@ namespace ArchiSteamFarm {
 
 						break;
 					default:
-
 						if (cryptKeyNext) {
 							cryptKeyNext = false;
 							HandleCryptKeyArgument(arg);
@@ -459,7 +458,6 @@ namespace ArchiSteamFarm {
 
 						break;
 					default:
-
 						if (pathNext) {
 							pathNext = false;
 							HandlePathArgument(arg);

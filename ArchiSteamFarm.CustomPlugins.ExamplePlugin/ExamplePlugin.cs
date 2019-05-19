@@ -55,8 +55,8 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 
 			// ReSharper disable once UseDeconstruction - deconstruction is not available in .NET Framework
 			foreach (KeyValuePair<string, JToken> configProperty in additionalConfigProperties) {
+				// It's a good idea to prefix your custom properties with the name of your plugin, so there will be no possible conflict of ASF or other plugins using the same name, neither now or in the future
 				switch (configProperty.Key) {
-					// It's a good idea to prefix your custom properties with the name of your plugin, so there will be no possible conflict of ASF or other plugins using the same name, neither now or in the future
 					case nameof(ExamplePlugin) + "TestProperty" when configProperty.Value.Type == JTokenType.Boolean:
 						bool exampleBooleanValue = configProperty.Value.Value<bool>();
 						ASF.ArchiLogger.LogGenericInfo(nameof(ExamplePlugin) + "TestProperty boolean property has been found with a value of: " + exampleBooleanValue);
@@ -75,21 +75,15 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 		// If you do not recognize the command, just return null/empty and allow ASF to gracefully return "unknown command" to user on usual basis
 		public async Task<string> OnBotCommand(Bot bot, ulong steamID, string message, string[] args) {
 			// In comparison with OnBotMessage(), we're using asynchronous CatAPI call here, so we declare our method as async and return the message as usual
+			// Notice how we handle access here as well, it'll work only for FamilySharing+
 			switch (args[0].ToUpperInvariant()) {
-				// Notice how we handle access here as well, it'll work only for FamilySharing+
 				case "CAT" when bot.HasPermission(steamID, BotConfig.EPermission.FamilySharing):
-
 					// Notice how we can decide whether to use bot's AWH WebBrowser or ASF's one. For Steam-related requests, AWH's one should always be used, for third-party requests like those it doesn't really matter
 					// Still, it makes sense to pass AWH's one, so in case you get some errors or alike, you know from which bot instance they come from. It's similar to using Bot's ArchiLogger compared to ASF's one
 					string randomCatURL = await CatAPI.GetRandomCatURL(bot.ArchiWebHandler.WebBrowser).ConfigureAwait(false);
 
-					if (string.IsNullOrEmpty(randomCatURL)) {
-						return "God damn it, we're out of cats, care to notify my master? Thanks!";
-					}
-
-					return randomCatURL;
+					return !string.IsNullOrEmpty(randomCatURL) ? randomCatURL : "God damn it, we're out of cats, care to notify my master? Thanks!";
 				default:
-
 					return null;
 			}
 		}

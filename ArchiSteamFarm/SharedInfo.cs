@@ -56,13 +56,14 @@ namespace ArchiSteamFarm {
 		internal const string UpdateDirectory = "_old";
 		internal const string WebsiteDirectory = "www";
 
-		internal static string HomeDirectory => Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-		internal static Guid ModuleVersion => Assembly.GetEntryAssembly().ManifestModule.ModuleVersionId;
+		internal static string HomeDirectory => Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location ?? throw new ArgumentNullException(nameof(HomeDirectory)));
+		internal static Guid ModuleVersion => Assembly.GetEntryAssembly()?.ManifestModule.ModuleVersionId ?? throw new ArgumentNullException(nameof(ModuleVersion));
 
 		[NotNull]
 		internal static string PublicIdentifier => AssemblyName + (BuildInfo.IsCustomBuild ? "-custom" : "");
 
-		internal static Version Version => Assembly.GetEntryAssembly().GetName().Version;
+		[NotNull]
+		internal static Version Version => Assembly.GetEntryAssembly()?.GetName().Version ?? throw new ArgumentNullException(nameof(Version));
 
 		[SuppressMessage("ReSharper", "ConvertToConstant.Global")]
 		internal static class BuildInfo {
