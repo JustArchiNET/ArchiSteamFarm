@@ -303,6 +303,10 @@ namespace ArchiSteamFarm.NLog {
 					} finally {
 						ConsoleSemaphore.Release();
 					}
+				} catch (Exception e) {
+					ASF.ArchiLogger.LogGenericException(e);
+
+					return;
 				} finally {
 					await Task.Delay(ConsoleResponsivenessDelay).ConfigureAwait(false);
 				}
