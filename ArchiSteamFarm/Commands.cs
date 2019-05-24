@@ -1784,8 +1784,8 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 
-		private async Task<string> ResponsePlay(ulong steamID, IEnumerable<uint> gameIDs, string gameName = null) {
-			if ((steamID == 0) || (gameIDs == null)) {
+		private async Task<string> ResponsePlay(ulong steamID, IReadOnlyCollection<uint> gameIDs, string gameName = null) {
+			if ((steamID == 0) || (gameIDs == null) || (gameIDs.Count > ArchiHandler.MaxGamesPlayedConcurrently)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(gameIDs));
 
 				return null;
@@ -1840,7 +1840,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if (gamesToPlay.Count >= ArchiHandler.MaxGamesPlayedConcurrently) {
-					continue;
+					return FormatBotResponse(string.Format(Strings.WarningFailedWithError, nameof(gamesToPlay) + " > " + ArchiHandler.MaxGamesPlayedConcurrently));
 				}
 
 				gamesToPlay.Add(gameID);
