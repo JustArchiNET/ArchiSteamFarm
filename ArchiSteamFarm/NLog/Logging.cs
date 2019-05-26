@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -140,6 +141,14 @@ namespace ArchiSteamFarm.NLog {
 		}
 
 		internal static void InitCoreLoggers(bool uniqueInstance) {
+			try {
+				if ((Directory.GetCurrentDirectory() != SharedInfo.HomeDirectory) && File.Exists("NLog.config")) {
+					LogManager.Configuration = new XmlLoggingConfiguration("NLog.config");
+				}
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+			}
+
 			if (LogManager.Configuration != null) {
 				IsUsingCustomConfiguration = true;
 				InitConsoleLoggers();
