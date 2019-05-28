@@ -1128,7 +1128,7 @@ namespace ArchiSteamFarm {
 
 							// ReSharper disable once AccessToDisposedClosure
 							async () => await iEconService.CallAsync(
-								HttpMethod.Post, "DeclineTradeOffer", args: new Dictionary<string, object>(2) {
+								HttpMethod.Post, "DeclineTradeOffer", args: new Dictionary<string, object>(2, StringComparer.Ordinal) {
 									{ "key", steamApiKey },
 									{ "tradeofferid", tradeID }
 								}
@@ -1186,7 +1186,7 @@ namespace ArchiSteamFarm {
 
 							// ReSharper disable once AccessToDisposedClosure
 							async () => await iEconService.CallAsync(
-								HttpMethod.Get, "GetTradeOffers", args: new Dictionary<string, object>(5) {
+								HttpMethod.Get, "GetTradeOffers", args: new Dictionary<string, object>(5, StringComparer.Ordinal) {
 									{ "active_only", 1 },
 									{ "get_descriptions", 1 },
 									{ "get_received_offers", 1 },
@@ -1609,7 +1609,7 @@ namespace ArchiSteamFarm {
 
 							// ReSharper disable once AccessToDisposedClosure
 							async () => await iPlayerService.CallAsync(
-								HttpMethod.Get, "GetOwnedGames", args: new Dictionary<string, object>(3) {
+								HttpMethod.Get, "GetOwnedGames", args: new Dictionary<string, object>(3, StringComparer.Ordinal) {
 									{ "include_appinfo", 1 },
 									{ "key", steamApiKey },
 									{ "steamid", steamID }
@@ -1759,7 +1759,7 @@ namespace ArchiSteamFarm {
 
 			bool hasTradeToken = !string.IsNullOrEmpty(tradeToken);
 
-			Dictionary<string, object> arguments = new Dictionary<string, object>(hasTradeToken ? 3 : 2) {
+			Dictionary<string, object> arguments = new Dictionary<string, object>(hasTradeToken ? 3 : 2, StringComparer.Ordinal) {
 				{ "key", steamApiKey },
 				{ "steamid_target", steamID }
 			};
@@ -1928,7 +1928,7 @@ namespace ArchiSteamFarm {
 
 						// ReSharper disable once AccessToDisposedClosure
 						async () => await iSteamUserAuth.CallAsync(
-							HttpMethod.Post, "AuthenticateUser", args: new Dictionary<string, object>(3) {
+							HttpMethod.Post, "AuthenticateUser", args: new Dictionary<string, object>(3, StringComparer.Ordinal) {
 								{ "encrypted_loginkey", encryptedLoginKey },
 								{ "sessionkey", encryptedSessionKey },
 								{ "steamid", steamID }
