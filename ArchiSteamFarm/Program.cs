@@ -27,6 +27,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Resources;
+using System.Text;
 using System.Threading.Tasks;
 using ArchiSteamFarm.IPC;
 using ArchiSteamFarm.Localization;
@@ -128,6 +129,8 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task InitASF(IReadOnlyCollection<string> args) {
+			Console.OutputEncoding = Encoding.Unicode;
+
 			string programIdentifier = SharedInfo.PublicIdentifier + " V" + SharedInfo.Version + " (" + SharedInfo.BuildInfo.Variant + "/" + SharedInfo.ModuleVersion + " | " + OS.Variant + ")";
 
 			Console.Title = programIdentifier;
