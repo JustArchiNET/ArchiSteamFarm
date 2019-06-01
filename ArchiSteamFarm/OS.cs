@@ -37,10 +37,16 @@ namespace ArchiSteamFarm {
 
 		private static Mutex SingleInstance;
 
+		internal static void CoreInit() {
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+				Console.OutputEncoding = Encoding.Unicode;
+
+				DisableQuickEditMode();
+			}
+		}
+
 		internal static void Init(bool systemRequired, GlobalConfig.EOptimizationMode optimizationMode) {
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-				DisableQuickEditMode();
-
 				if (systemRequired) {
 					KeepWindowsSystemActive();
 				}
