@@ -62,6 +62,14 @@ before_build:
     if ($LastExitCode -ne 0) {
         throw "Last command failed."
     }
+
+
+    java -version
+
+
+    if ($LastExitCode -ne 0) {
+        throw "Last command failed."
+    }
 build_script:
 - pwsh: >-
     Set-StrictMode -Version Latest
