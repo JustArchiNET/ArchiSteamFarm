@@ -2,7 +2,7 @@ version: '{build}-{branch}'
 pull_requests:
   do_not_increment_build_number: true
 skip_branch_with_pr: true
-image: Visual Studio 2017
+image: Visual Studio 2019
 configuration: Release
 clone_depth: 10
 environment:
@@ -18,7 +18,7 @@ environment:
   VARIANTS: generic generic-netf linux-arm linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
 matrix:
   allow_failures:
-    - image: Visual Studio 2017 Preview
+    - image: Visual Studio 2019 Preview
   fast_finish: true
 install:
 - pwsh: >-
@@ -203,7 +203,7 @@ after_test:
             }
 
             # If this build is going to be deployed further, prefer maximum compression
-            if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq 'Visual Studio 2017') {
+            if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq 'Visual Studio 2019') {
                 $compressionArgs = '-mx=9', '-mpass=15'
 
                 if ($compressionMethod -eq 'Deflate64') {
@@ -259,7 +259,7 @@ deploy:
   on:
     branch: master
     configuration: Release
-    appveyor_build_worker_image: Visual Studio 2017
+    appveyor_build_worker_image: Visual Studio 2019
     appveyor_repo_tag: true
 notifications:
 - provider: Webhook
