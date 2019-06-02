@@ -38,9 +38,9 @@ namespace ArchiSteamFarm {
 		private static Mutex SingleInstance;
 
 		internal static void CoreInit() {
-			Console.OutputEncoding = Encoding.UTF8;
-
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+				Console.OutputEncoding = Encoding.UTF8;
+
 				DisableQuickEditMode();
 			}
 		}
