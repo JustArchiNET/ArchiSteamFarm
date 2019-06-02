@@ -1906,7 +1906,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Generate login key from the user nonce that we've received from Steam network
-			byte[] loginKey = Encoding.ASCII.GetBytes(webAPIUserNonce);
+			byte[] loginKey = Encoding.UTF8.GetBytes(webAPIUserNonce);
 
 			// AES encrypt our login key with our session key
 			byte[] encryptedLoginKey = CryptoHelper.SymmetricEncrypt(loginKey, sessionKey);
