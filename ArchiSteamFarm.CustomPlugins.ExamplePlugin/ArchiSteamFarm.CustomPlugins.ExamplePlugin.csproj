@@ -33,7 +33,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="3.0.0">
+    <PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="4.0.0">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="System.Composition.AttributedModel" Version="*" />
