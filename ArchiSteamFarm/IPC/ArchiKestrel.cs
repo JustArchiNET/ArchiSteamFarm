@@ -100,13 +100,14 @@ namespace ArchiSteamFarm.IPC {
 			Logging.InitHistoryLogger();
 
 			// Start the server
-			IWebHost kestrelWebHost = builder.Build();
+			IWebHost kestrelWebHost = null;
 
 			try {
+				kestrelWebHost = builder.Build();
 				await kestrelWebHost.StartAsync().ConfigureAwait(false);
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
-				kestrelWebHost.Dispose();
+				kestrelWebHost?.Dispose();
 
 				return;
 			}
