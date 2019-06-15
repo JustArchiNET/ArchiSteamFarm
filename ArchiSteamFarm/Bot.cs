@@ -1189,15 +1189,16 @@ namespace ArchiSteamFarm {
 						EResult result = await ArchiHandler.SendMessage(steamID, messagePart).ConfigureAwait(false);
 
 						switch (result) {
-							case EResult.OK:
-								sent = true;
-
-								break;
+							case EResult.Fail:
 							case EResult.RateLimitExceeded:
 							case EResult.Timeout:
 								await Task.Delay(5000).ConfigureAwait(false);
 
 								continue;
+							case EResult.OK:
+								sent = true;
+
+								break;
 							default:
 								ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result), result));
 
@@ -1257,15 +1258,16 @@ namespace ArchiSteamFarm {
 						EResult result = await ArchiHandler.SendMessage(chatGroupID, chatID, messagePart).ConfigureAwait(false);
 
 						switch (result) {
-							case EResult.OK:
-								sent = true;
-
-								break;
+							case EResult.Fail:
 							case EResult.RateLimitExceeded:
 							case EResult.Timeout:
 								await Task.Delay(5000).ConfigureAwait(false);
 
 								continue;
+							case EResult.OK:
+								sent = true;
+
+								break;
 							default:
 								ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result), result));
 
