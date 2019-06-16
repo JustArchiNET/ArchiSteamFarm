@@ -624,7 +624,7 @@ StackTrace :
     <comment>{0} will be replaced by queue number</comment>
   </data>
   <data name="DoneClearingDiscoveryQueue" xml:space="preserve">
-    <value>Fini de consulter la liste de découvertes #{0}.</value>
+    <value>Fin de l’exploration de la liste de découvertes #{0}.</value>
     <comment>{0} will be replaced by queue number</comment>
   </data>
   <data name="BotOwnsOverviewPerGame" xml:space="preserve">
@@ -665,7 +665,7 @@ StackTrace :
     <comment>{0} will be replaced by round number</comment>
   </data>
   <data name="DoneActivelyMatchingItems" xml:space="preserve">
-    <value>Fini de match des Items, round #{0}.</value>
+    <value>Fin de l'appariement des Items Steam, round #{0}.</value>
     <comment>{0} will be replaced by round number</comment>
   </data>
   <data name="ErrorAborted" xml:space="preserve">
@@ -705,7 +705,10 @@ StackTrace :
   <data name="InteractiveConsoleEnabled" xml:space="preserve">
     <value>La console interactive est maintenant active, tapez 'c' pour entrer en mode commande.</value>
   </data>
-  
+  <data name="InteractiveConsoleNotAvailable" xml:space="preserve">
+    <value>La console interactive n'est pas disponible en raison de la propriété de configuration {0} manquante.</value>
+    <comment>{0} will be replaced by the name of the missing config property (string)</comment>
+  </data>
   <data name="Response" xml:space="preserve">
     <value>Réponse : {0}</value>
     <comment>{0} will be replaced by the generated response (string)</comment>
@@ -714,8 +717,18 @@ StackTrace :
     <value>Le bot a {0} jeux restants dans sa file d'attente.</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
   </data>
-  
-  
-  
-  
+  <data name="ErrorSingleInstanceRequired" xml:space="preserve">
+    <value>Le processus ASF est déjà en cours d'exécution pour ce répertoire de travail, interruption !</value>
+  </data>
+  <data name="BotHandledConfirmations" xml:space="preserve">
+    <value>{0} confirmations gérées avec succès !</value>
+    <comment>{0} will be replaced by number of confirmations</comment>
+  </data>
+  <data name="BotExtraIdlingCooldown" xml:space="preserve">
+    <value>En attente de {0} pour s'assurer que nous pouvons commencer à récolter les cartes...</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+  </data>
+  <data name="UpdateCleanup" xml:space="preserve">
+    <value>Nettoyage des anciens fichiers après mise à jour...</value>
+  </data>
 </root>

@@ -692,15 +692,42 @@ Trazo de pila:
   <data name="PluginsWarning" xml:space="preserve">
     <value>Has cargado uno o más plugins personalizados en el ASF. Ya que no podemos ofrecer soporte a configuraciones alteradas, por favor, consulte a los desarrolladores apropiados de los plugins que has decidido usar en caso de que tengas problemas.</value>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="PleaseWait" xml:space="preserve">
+    <value>Por favor espera...</value>
+  </data>
+  <data name="EnterCommand" xml:space="preserve">
+    <value>Ingrese el comando: </value>
+  </data>
+  <data name="Executing" xml:space="preserve">
+    <value>Ejecutando...</value>
+  </data>
+  <data name="InteractiveConsoleEnabled" xml:space="preserve">
+    <value>La consola interactiva está activa, escriba 'c' para ingresar al modo de comando.</value>
+  </data>
+  <data name="InteractiveConsoleNotAvailable" xml:space="preserve">
+    <value>La consola interactiva no está disponible debido a que faltan {0} propiedades de configuración.</value>
+    <comment>{0} will be replaced by the name of the missing config property (string)</comment>
+  </data>
+  <data name="Response" xml:space="preserve">
+    <value>Respuesta: {0}</value>
+    <comment>{0} will be replaced by the generated response (string)</comment>
+  </data>
+  <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
+    <value>El bot tiene {0} juegos restantes en su cola de fondo.</value>
+    <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
+  </data>
+  <data name="ErrorSingleInstanceRequired" xml:space="preserve">
+    <value>El proceso ASF ya está ejecutándose para este directorio de trabajo, ¡abortando!</value>
+  </data>
+  <data name="BotHandledConfirmations" xml:space="preserve">
+    <value>¡Se han manejado correctamente {0} confirmaciones!</value>
+    <comment>{0} will be replaced by number of confirmations</comment>
+  </data>
+  <data name="BotExtraIdlingCooldown" xml:space="preserve">
+    <value>Esperando hasta {0} para asegurar que estamos libres para empezar a recolectar...</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+  </data>
+  <data name="UpdateCleanup" xml:space="preserve">
+    <value>Limpiando archivos antiguos después de actualizar...</value>
+  </data>
 </root>
