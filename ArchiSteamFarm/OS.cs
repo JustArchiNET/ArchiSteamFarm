@@ -46,6 +46,12 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void Init(bool systemRequired, GlobalConfig.EOptimizationMode optimizationMode) {
+			if (!Enum.IsDefined(typeof(GlobalConfig.EOptimizationMode), optimizationMode)) {
+				ASF.ArchiLogger.LogNullError(nameof(optimizationMode));
+
+				return;
+			}
+
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
 				if (systemRequired) {
 					KeepWindowsSystemActive();
@@ -78,6 +84,8 @@ namespace ArchiSteamFarm {
 			Mutex singleInstance = new Mutex(true, uniqueName, out bool result);
 
 			if (!result) {
+				singleInstance.Dispose();
+
 				return false;
 			}
 
@@ -137,8 +145,8 @@ namespace ArchiSteamFarm {
 			// More info: https://msdn.microsoft.com/library/windows/desktop/aa373208(v=vs.85).aspx
 			NativeMethods.EExecutionState result = NativeMethods.SetThreadExecutionState(NativeMethods.AwakeExecutionState);
 
-			// SetThreadExecutionState() returns NULL on failure, which is mapped to 0 (EExecutionState.Error) in our case
-			if (result == NativeMethods.EExecutionState.Error) {
+			// SetThreadExecutionState() returns NULL on failure, which is mapped to 0 (EExecutionState.None) in our case
+			if (result == NativeMethods.EExecutionState.None) {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningFailedWithError, result));
 			}
 		}
@@ -166,7 +174,7 @@ namespace ArchiSteamFarm {
 
 			[Flags]
 			internal enum EExecutionState : uint {
-				Error = 0,
+				None = 0,
 				SystemRequired = 0x00000001,
 				AwayModeRequired = 0x00000040,
 				Continuous = 0x80000000
