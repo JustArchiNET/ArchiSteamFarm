@@ -605,26 +605,12 @@ namespace ArchiSteamFarm {
 					redirectUri = new Uri(requestUri, redirectUri);
 				}
 
+				response.Dispose();
+
 				// Per https://tools.ietf.org/html/rfc7231#section-7.1.2, a redirect location without a fragment should inherit the fragment from the original URI
 				if (!string.IsNullOrEmpty(requestUri.Fragment) && string.IsNullOrEmpty(redirectUri.Fragment)) {
 					redirectUri = new UriBuilder(redirectUri) { Fragment = requestUri.Fragment }.Uri;
 				}
-
-				// According to the RFC, POST requests in certain types of redirection must be converted into GET
-				if (httpMethod == HttpMethod.Post) {
-					switch (response.StatusCode) {
-						case HttpStatusCode.Found:
-						case HttpStatusCode.Moved:
-						case HttpStatusCode.MultipleChoices:
-						case HttpStatusCode.SeeOther:
-							httpMethod = HttpMethod.Get;
-							data = null;
-
-							break;
-					}
-				}
-
-				response.Dispose();
 
 				return await InternalRequest(redirectUri, httpMethod, data, referer, httpCompletionOption, --maxRedirections).ConfigureAwait(false);
 			}
