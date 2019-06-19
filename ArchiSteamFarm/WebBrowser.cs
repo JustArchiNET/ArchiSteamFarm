@@ -630,6 +630,10 @@ namespace ArchiSteamFarm {
 			}
 
 			if (response.StatusCode.IsClientErrorCode()) {
+				if (Debugging.IsUserDebugging) {
+					ArchiLogger.LogGenericDebug(string.Format(Strings.Content, await response.Content.ReadAsStringAsync().ConfigureAwait(false)));
+				}
+
 				// Do not retry on client errors
 				return response;
 			}
