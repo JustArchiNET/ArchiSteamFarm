@@ -139,7 +139,7 @@ namespace ArchiSteamFarm {
 				}
 
 				// Don't announce if we don't meet conditions
-				bool? eligible = await IsEligibleForMatching().ConfigureAwait(false);
+				bool? eligible = await IsEligibleForListing().ConfigureAwait(false);
 
 				if (!eligible.HasValue) {
 					// This is actually network failure, so we'll stop sending heartbeats but not record it as valid check
@@ -235,6 +235,25 @@ namespace ArchiSteamFarm {
 			return objectResponse?.Content;
 		}
 
+		private async Task<bool?> IsEligibleForListing() {
+			bool? isEligibleForMatching = await IsEligibleForMatching().ConfigureAwait(false);
+
+			if (isEligibleForMatching != true) {
+				return isEligibleForMatching;
+			}
+
+			// Bot must have public inventory
+			bool? hasPublicInventory = await Bot.ArchiWebHandler.HasPublicInventory().ConfigureAwait(false);
+
+			if (hasPublicInventory != true) {
+				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.ArchiWebHandler.HasPublicInventory) + ": " + (hasPublicInventory?.ToString() ?? "null")));
+
+				return hasPublicInventory;
+			}
+
+			return true;
+		}
+
 		private async Task<bool?> IsEligibleForMatching() {
 			// Bot must have ASF 2FA
 			if (!Bot.HasMobileAuthenticator) {
@@ -257,19 +276,10 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			// Bot must have public inventory
-			bool? hasPublicInventory = await Bot.ArchiWebHandler.HasPublicInventory().ConfigureAwait(false);
-
-			if (!hasPublicInventory.GetValueOrDefault()) {
-				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.ArchiWebHandler.HasPublicInventory) + ": " + (hasPublicInventory?.ToString() ?? "null")));
-
-				return hasPublicInventory;
-			}
-
 			// Bot must have valid API key (e.g. not being restricted account)
 			bool? hasValidApiKey = await Bot.ArchiWebHandler.HasValidApiKey().ConfigureAwait(false);
 
-			if (!hasValidApiKey.GetValueOrDefault()) {
+			if (hasValidApiKey != true) {
 				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.ArchiWebHandler.HasValidApiKey) + ": " + (hasValidApiKey?.ToString() ?? "null")));
 
 				return hasValidApiKey;
