@@ -295,7 +295,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			HashSet<Steam.Asset.EType> acceptedMatchableTypes = Bot.BotConfig.MatchableTypes.Where(type => AcceptedMatchableTypes.Contains(type)).ToHashSet();
+			HashSet<Steam.Asset.EType> acceptedMatchableTypes = Bot.BotConfig.MatchableTypes.Where(AcceptedMatchableTypes.Contains).ToHashSet();
 
 			if (acceptedMatchableTypes.Count == 0) {
 				Bot.ArchiLogger.LogGenericTrace(Strings.ErrorAborted);
