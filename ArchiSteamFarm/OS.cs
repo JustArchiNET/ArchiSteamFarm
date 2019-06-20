@@ -38,7 +38,7 @@ namespace ArchiSteamFarm {
 		private static Mutex SingleInstance;
 
 		internal static void CoreInit() {
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && !Console.IsOutputRedirected) {
 				Console.OutputEncoding = Encoding.UTF8;
 
 				DisableQuickEditMode();
@@ -119,10 +119,6 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void DisableQuickEditMode() {
-			if (Console.IsOutputRedirected) {
-				return;
-			}
-
 			// http://stackoverflow.com/questions/30418886/how-and-why-does-quickedit-mode-in-command-prompt-freeze-applications
 			IntPtr consoleHandle = NativeMethods.GetStdHandle(NativeMethods.StandardInputHandle);
 
