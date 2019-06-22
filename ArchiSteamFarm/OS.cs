@@ -39,7 +39,13 @@ namespace ArchiSteamFarm {
 
 		internal static void CoreInit() {
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && !Console.IsOutputRedirected) {
-				Console.OutputEncoding = Encoding.UTF8;
+				// Normally we should use UTF-8 encoding as it's the most correct one for our case, and we already use it on other OSes such as Linux
+				// However, older Windows versions, mainly 7/8.1 can't into UTF-8 without appropriate console font, and expecting from users to change it manually is unwanted
+				// As irrational as it can sound, those versions actually can work with unicode encoding instead, as they magically map it into proper chars despite of incorrect font
+				// We could in theory conditionally use UTF-8 for Windows 10+ and unicode otherwise, but Windows version detection is simply not worth the hassle in this case
+				// Therefore, until we can drop support for Windows < 10, we'll stick with Unicode for all Windows boxes, unless there will be valid reasoning for conditional switch
+				// See https://github.com/JustArchiNET/ArchiSteamFarm/issues/1289 for more details
+				Console.OutputEncoding = Encoding.Unicode;
 
 				DisableQuickEditMode();
 			}
