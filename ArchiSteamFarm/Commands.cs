@@ -122,6 +122,8 @@ namespace ArchiSteamFarm {
 							return await ResponsePause(steamID, true).ConfigureAwait(false);
 						case "PAUSE~":
 							return await ResponsePause(steamID, false).ConfigureAwait(false);
+						case "RESET":
+							return await ResponseReset(steamID).ConfigureAwait(false);
 						case "RESUME":
 							return ResponseResume(steamID);
 						case "RESTART":
@@ -251,6 +253,8 @@ namespace ArchiSteamFarm {
 						case "R^" when args.Length > 2:
 						case "REDEEM^" when args.Length > 2:
 							return await ResponseAdvancedRedeem(steamID, args[1], args[2]).ConfigureAwait(false);
+						case "RESET":
+							return await ResponseReset(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "RESUME":
 							return await ResponseResume(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "START":
@@ -1799,13 +1803,9 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
-			if (!Bot.CardsFarmer.Paused) {
-				await Bot.CardsFarmer.Pause(false).ConfigureAwait(false);
-			}
+			(bool success, string message) = await Bot.Actions.Play(gameIDs, gameName).ConfigureAwait(false);
 
-			await Bot.ArchiHandler.PlayGames(gameIDs, gameName).ConfigureAwait(false);
-
-			return FormatBotResponse(Strings.Done);
+			return FormatBotResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
 
 		private async Task<string> ResponsePlay(ulong steamID, string targetGameIDs) {
@@ -1846,7 +1846,7 @@ namespace ArchiSteamFarm {
 				gamesToPlay.Add(gameID);
 			}
 
-			return await ResponsePlay(steamID, gamesToPlay, gameName.ToString()).ConfigureAwait(false);
+			return await ResponsePlay(steamID, gamesToPlay, gameName.Length > 0 ? gameName.ToString() : null).ConfigureAwait(false);
 		}
 
 		[ItemCanBeNull]
@@ -2268,6 +2268,47 @@ namespace ArchiSteamFarm {
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+		}
+
+		[ItemCanBeNull]
+		private static async Task<string> ResponseReset(ulong steamID, string botNames) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botNames)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
+
+				return null;
+			}
+
+			HashSet<Bot> bots = Bot.GetBots(botNames);
+
+			if ((bots == null) || (bots.Count == 0)) {
+				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
+			}
+
+			IList<string> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseReset(steamID))).ConfigureAwait(false);
+
+			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+
+			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+		}
+
+		private async Task<string> ResponseReset(ulong steamID) {
+			if (steamID == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(steamID));
+
+				return null;
+			}
+
+			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
+				return null;
+			}
+
+			if (!Bot.IsConnectedAndLoggedOn) {
+				return FormatBotResponse(Strings.BotNotConnected);
+			}
+
+			(bool success, string message) = await Bot.Actions.Play(Enumerable.Empty<uint>(), Bot.BotConfig.CustomGamePlayedWhileIdle).ConfigureAwait(false);
+
+			return FormatBotResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
 
 		private static string ResponseRestart(ulong steamID) {
