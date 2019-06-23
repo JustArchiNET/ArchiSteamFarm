@@ -65,8 +65,6 @@ namespace ArchiSteamFarm {
 		private static readonly SemaphoreSlim LoginRateLimitingSemaphore = new SemaphoreSlim(1, 1);
 		private static readonly SemaphoreSlim LoginSemaphore = new SemaphoreSlim(1, 1);
 
-		private static bool LoginRateLimited;
-
 		[JsonIgnore]
 		[PublicAPI]
 		public readonly Actions Actions;
@@ -2033,6 +2031,7 @@ namespace ArchiSteamFarm {
 
 			switch (lastLogOnResult) {
 				case EResult.AccountDisabled:
+				case EResult.InvalidPassword when string.IsNullOrEmpty(BotDatabase.LoginKey):
 					// Do not attempt to reconnect, those failures are permanent
 					return;
 				case EResult.Invalid:
@@ -2042,11 +2041,6 @@ namespace ArchiSteamFarm {
 
 					break;
 				case EResult.InvalidPassword:
-					// If we didn't use login key, it's nearly always rate limiting
-					if (string.IsNullOrEmpty(BotDatabase.LoginKey)) {
-						goto case EResult.RateLimitExceeded;
-					}
-
 					await BotDatabase.SetLoginKey().ConfigureAwait(false);
 					ArchiLogger.LogGenericInfo(Strings.BotRemovedExpiredLoginKey);
 
@@ -2061,22 +2055,12 @@ namespace ArchiSteamFarm {
 				case EResult.RateLimitExceeded:
 					ArchiLogger.LogGenericInfo(string.Format(Strings.BotRateLimitExceeded, TimeSpan.FromMinutes(LoginCooldownInMinutes).ToHumanReadable()));
 
-					if (LoginRateLimited) {
+					if (!await LoginRateLimitingSemaphore.WaitAsync(1000 * WebBrowser.MaxTries).ConfigureAwait(false)) {
 						break;
 					}
 
-					await LoginRateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
-
 					try {
-						if (LoginRateLimited) {
-							break;
-						}
-
-						LoginRateLimited = true;
-
 						await Task.Delay(LoginCooldownInMinutes * 60 * 1000).ConfigureAwait(false);
-
-						LoginRateLimited = false;
 					} finally {
 						LoginRateLimitingSemaphore.Release();
 					}
@@ -2350,6 +2334,7 @@ namespace ArchiSteamFarm {
 
 			switch (callback.Result) {
 				case EResult.AccountDisabled:
+				case EResult.InvalidPassword when string.IsNullOrEmpty(BotDatabase.LoginKey):
 					// Those failures are permanent, we should Stop() the bot if any of those happen
 					ArchiLogger.LogGenericWarning(string.Format(Strings.BotUnableToLogin, callback.Result, callback.ExtendedResult));
 					Stop();
