@@ -153,8 +153,8 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 		// This is the earliest method that will be called, right after loading the plugin, long before any bot initialization takes place
 		// It's a good place to initialize all potential (non-bot-specific) structures that you will need across lifetime of your plugin, such as global timers, concurrent dictionaries and alike
 		// If you do not have any global structures to initialize, you can leave this function empty
-		// At this point you can access core ASF's functionality, such as logging or a web browser
-		// Once all plugins execute their OnLoaded() methods, OnASFInit() will be called next
+		// At this point you can access core ASF's functionality, such as logging, but more advanced structures (like ASF's WebBrowser) will be available in OnASFInit(), which itself takes place after every plugin gets OnLoaded()
+		// Typically you should use this function only for preparing core structures of your plugin, and optionally also sending a message to the user (e.g. support link, welcome message or similar), ASF-specific things should usually happen in OnASFInit()
 		public void OnLoaded() {
 			ASF.ArchiLogger.LogGenericInfo("Hey! Thanks for checking if our example plugin works fine, this is a confirmation that indeed " + nameof(OnLoaded) + "() method was called!");
 			ASF.ArchiLogger.LogGenericInfo("Good luck in whatever you're doing!");
