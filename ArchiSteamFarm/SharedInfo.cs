@@ -23,6 +23,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
+using ArchiSteamFarm.Plugins;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm {
@@ -57,13 +58,17 @@ namespace ArchiSteamFarm {
 		internal const string WebsiteDirectory = "www";
 
 		internal static string HomeDirectory => Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location ?? throw new ArgumentNullException(nameof(HomeDirectory)));
-		internal static Guid ModuleVersion => Assembly.GetEntryAssembly()?.ManifestModule.ModuleVersionId ?? throw new ArgumentNullException(nameof(ModuleVersion));
 
 		[NotNull]
-		internal static string PublicIdentifier => AssemblyName + (BuildInfo.IsCustomBuild ? "-custom" : "");
+		internal static string ProgramIdentifier => PublicIdentifier + " V" + Version + " (" + BuildInfo.Variant + "/" + ModuleVersion + " | " + OS.Variant + ")";
+
+		[NotNull]
+		internal static string PublicIdentifier => AssemblyName + (BuildInfo.IsCustomBuild ? "-custom" : PluginsCore.HasActivePluginsLoaded ? "-modded" : "");
 
 		[NotNull]
 		internal static Version Version => Assembly.GetEntryAssembly()?.GetName().Version ?? throw new ArgumentNullException(nameof(Version));
+
+		private static Guid ModuleVersion => Assembly.GetEntryAssembly()?.ManifestModule.ModuleVersionId ?? throw new ArgumentNullException(nameof(ModuleVersion));
 
 		[SuppressMessage("ReSharper", "ConvertToConstant.Global")]
 		internal static class BuildInfo {

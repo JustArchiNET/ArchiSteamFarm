@@ -92,13 +92,13 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static async Task Init() {
-			WebBrowser = new WebBrowser(ArchiLogger, GlobalConfig.WebProxy, true);
-
-			await UpdateAndRestart().ConfigureAwait(false);
-
 			if (!PluginsCore.InitPlugins()) {
 				await Task.Delay(10000).ConfigureAwait(false);
 			}
+
+			WebBrowser = new WebBrowser(ArchiLogger, GlobalConfig.WebProxy, true);
+
+			await UpdateAndRestart().ConfigureAwait(false);
 
 			await PluginsCore.OnASFInitModules(GlobalConfig.AdditionalProperties).ConfigureAwait(false);
 
