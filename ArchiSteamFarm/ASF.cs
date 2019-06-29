@@ -346,12 +346,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			switch (botName) {
-				case SharedInfo.ASF:
-					return false;
-				default:
-					return true;
-			}
+			return !botName.Equals(SharedInfo.ASF, StringComparison.OrdinalIgnoreCase);
 		}
 
 		private static async void OnChanged(object sender, FileSystemEventArgs e) {
@@ -426,7 +421,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (botName.Equals(SharedInfo.ASF)) {
+			if (botName.Equals(SharedInfo.ASF, StringComparison.OrdinalIgnoreCase)) {
 				ArchiLogger.LogGenericInfo(Strings.GlobalConfigChanged);
 				await RestartOrExit().ConfigureAwait(false);
 
@@ -520,7 +515,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (botName.Equals(SharedInfo.ASF)) {
+			if (botName.Equals(SharedInfo.ASF, StringComparison.OrdinalIgnoreCase)) {
 				if (File.Exists(fullPath)) {
 					return;
 				}

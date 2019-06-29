@@ -39,20 +39,26 @@ namespace ArchiSteamFarm.IPC.Integration {
 		private const byte MaxFailedAuthorizationAttempts = 5;
 
 		private static readonly SemaphoreSlim AuthorizationSemaphore = new SemaphoreSlim(1, 1);
-
-		[SuppressMessage("ReSharper", "UnusedMember.Local")]
-		private static readonly Timer ClearFailedAuthorizationsTimer = new Timer(
-			e => FailedAuthorizations.Clear(),
-			null,
-			TimeSpan.FromHours(FailedAuthorizationsCooldownInHours), // Delay
-			TimeSpan.FromHours(FailedAuthorizationsCooldownInHours) // Period
-		);
-
 		private static readonly ConcurrentDictionary<IPAddress, byte> FailedAuthorizations = new ConcurrentDictionary<IPAddress, byte>();
+
+		private static Timer ClearFailedAuthorizationsTimer;
 
 		private readonly RequestDelegate Next;
 
-		public ApiAuthenticationMiddleware([NotNull] RequestDelegate next) => Next = next ?? throw new ArgumentNullException(nameof(next));
+		public ApiAuthenticationMiddleware([NotNull] RequestDelegate next) {
+			Next = next ?? throw new ArgumentNullException(nameof(next));
+
+			lock (FailedAuthorizations) {
+				if (ClearFailedAuthorizationsTimer == null) {
+					ClearFailedAuthorizationsTimer = new Timer(
+						e => FailedAuthorizations.Clear(),
+						null,
+						TimeSpan.FromHours(FailedAuthorizationsCooldownInHours), // Delay
+						TimeSpan.FromHours(FailedAuthorizationsCooldownInHours) // Period
+					);
+				}
+			}
+		}
 
 		[PublicAPI]
 		public async Task InvokeAsync(HttpContext context) {

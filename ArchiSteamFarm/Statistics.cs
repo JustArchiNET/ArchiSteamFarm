@@ -644,6 +644,7 @@ namespace ArchiSteamFarm {
 
 			internal bool MatchEverything { get; private set; }
 
+#pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "matchable_backgrounds", Required = Required.Always)]
 			private byte MatchableBackgroundsNumber {
 				set {
@@ -663,7 +664,9 @@ namespace ArchiSteamFarm {
 					}
 				}
 			}
+#pragma warning restore IDE0051
 
+#pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "matchable_cards", Required = Required.Always)]
 			private byte MatchableCardsNumber {
 				set {
@@ -683,7 +686,9 @@ namespace ArchiSteamFarm {
 					}
 				}
 			}
+#pragma warning restore IDE0051
 
+#pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "matchable_emoticons", Required = Required.Always)]
 			private byte MatchableEmoticonsNumber {
 				set {
@@ -703,7 +708,9 @@ namespace ArchiSteamFarm {
 					}
 				}
 			}
+#pragma warning restore IDE0051
 
+#pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "matchable_foil_cards", Required = Required.Always)]
 			private byte MatchableFoilCardsNumber {
 				set {
@@ -723,7 +730,9 @@ namespace ArchiSteamFarm {
 					}
 				}
 			}
+#pragma warning restore IDE0051
 
+#pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "match_everything", Required = Required.Always)]
 			private byte MatchEverythingNumber {
 				set {
@@ -743,6 +752,7 @@ namespace ArchiSteamFarm {
 					}
 				}
 			}
+#pragma warning restore IDE0051
 
 			[JsonConstructor]
 			private ListedUser() { }

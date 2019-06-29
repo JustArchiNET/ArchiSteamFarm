@@ -138,9 +138,11 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+#pragma warning disable IDE0051
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamID))]
 		[NotNull]
 		private string SSteamID => SteamID.ToString();
+#pragma warning restore IDE0051
 
 		[JsonProperty]
 		public EAccountFlags AccountFlags { get; private set; }
@@ -168,8 +170,10 @@ namespace ArchiSteamFarm {
 
 		private string AuthCode;
 
+#pragma warning disable IDE0052
 		[JsonProperty]
 		private string AvatarHash;
+#pragma warning restore IDE0052
 
 		private Timer ConnectionFailureTimer;
 		private string DeviceID;
