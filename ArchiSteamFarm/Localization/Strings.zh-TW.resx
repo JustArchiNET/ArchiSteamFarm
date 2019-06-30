@@ -697,7 +697,9 @@
   </data>
   
   
-  
+  <data name="InteractiveConsoleEnabled" xml:space="preserve">
+    <value>已開啟互動式主控台，按'C'回到指令模式</value>
+  </data>
   
   
   
