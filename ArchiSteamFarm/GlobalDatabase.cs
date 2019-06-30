@@ -111,14 +111,24 @@ namespace ArchiSteamFarm {
 			return globalDatabase;
 		}
 
-		internal HashSet<uint> GetPackageIDs(uint appID) {
-			if (appID == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(appID));
+		internal HashSet<uint> GetPackageIDs(uint appID, ICollection<uint> packageIDs) {
+			if ((appID == 0) || (packageIDs == null) || (packageIDs.Count == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(packageIDs));
 
 				return null;
 			}
 
-			return PackagesData.Where(package => package.Value.AppIDs?.Contains(appID) == true).Select(package => package.Key).ToHashSet();
+			HashSet<uint> result = new HashSet<uint>();
+
+			foreach (uint packageID in packageIDs.Where(packageID => packageID != 0)) {
+				if (!PackagesData.TryGetValue(packageID, out (uint _, HashSet<uint> AppIDs) packagesData) || (packagesData.AppIDs?.Contains(appID) != true)) {
+					continue;
+				}
+
+				result.Add(packageID);
+			}
+
+			return result;
 		}
 
 		internal async Task RefreshPackages(Bot bot, IReadOnlyDictionary<uint, uint> packages) {
@@ -140,6 +150,8 @@ namespace ArchiSteamFarm {
 				Dictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)> packagesData = await bot.GetPackagesData(packageIDs).ConfigureAwait(false);
 
 				if ((packagesData == null) || (packagesData.Count == 0)) {
+					bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+
 					return;
 				}
 

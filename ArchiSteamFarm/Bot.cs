@@ -547,32 +547,30 @@ namespace ArchiSteamFarm {
 				return (0, DateTime.MaxValue);
 			}
 
+			HashSet<uint> packageIDs = ASF.GlobalDatabase.GetPackageIDs(appID, OwnedPackageIDs.Keys);
+
+			if ((packageIDs == null) || (packageIDs.Count == 0)) {
+				return (0, DateTime.MaxValue);
+			}
+
 			if ((hoursPlayed < CardsFarmer.HoursForRefund) && !BotConfig.IdleRefundableGames) {
-				HashSet<uint> packageIDs = ASF.GlobalDatabase.GetPackageIDs(appID);
+				DateTime mostRecent = DateTime.MinValue;
 
-				if (packageIDs == null) {
-					return (0, DateTime.MaxValue);
-				}
-
-				if (packageIDs.Count > 0) {
-					DateTime mostRecent = DateTime.MinValue;
-
-					foreach (uint packageID in packageIDs) {
-						if (!OwnedPackageIDs.TryGetValue(packageID, out (EPaymentMethod PaymentMethod, DateTime TimeCreated) packageData)) {
-							continue;
-						}
-
-						if (IsRefundable(packageData.PaymentMethod) && (packageData.TimeCreated > mostRecent)) {
-							mostRecent = packageData.TimeCreated;
-						}
+				foreach (uint packageID in packageIDs) {
+					if (!OwnedPackageIDs.TryGetValue(packageID, out (EPaymentMethod PaymentMethod, DateTime TimeCreated) packageData)) {
+						continue;
 					}
 
-					if (mostRecent > DateTime.MinValue) {
-						DateTime playableIn = mostRecent.AddDays(CardsFarmer.DaysForRefund);
+					if (IsRefundable(packageData.PaymentMethod) && (packageData.TimeCreated > mostRecent)) {
+						mostRecent = packageData.TimeCreated;
+					}
+				}
 
-						if (playableIn > DateTime.UtcNow) {
-							return (0, playableIn);
-						}
+				if (mostRecent > DateTime.MinValue) {
+					DateTime playableIn = mostRecent.AddDays(CardsFarmer.DaysForRefund);
+
+					if (playableIn > DateTime.UtcNow) {
+						return (0, playableIn);
 					}
 				}
 			}
@@ -2242,29 +2240,13 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			// Return early if this update doesn't bring anything new
-			if (callback.LicenseList.Count == OwnedPackageIDs.Count) {
-				if (callback.LicenseList.All(license => OwnedPackageIDs.ContainsKey(license.PackageID))) {
-					if (!await CardsFarmer.Resume(false).ConfigureAwait(false)) {
-						await ResetGamesPlayed().ConfigureAwait(false);
-					}
-
-					return;
-				}
-			}
-
 			Commands.OnNewLicenseList();
 			OwnedPackageIDs.Clear();
 
-			bool refreshData = !BotConfig.IdleRefundableGames || BotConfig.FarmingOrders.Contains(BotConfig.EFarmingOrder.RedeemDateTimesAscending) || BotConfig.FarmingOrders.Contains(BotConfig.EFarmingOrder.RedeemDateTimesDescending);
 			Dictionary<uint, uint> packagesToRefresh = new Dictionary<uint, uint>();
 
 			foreach (SteamApps.LicenseListCallback.License license in callback.LicenseList.Where(license => license.PackageID != 0)) {
 				OwnedPackageIDs[license.PackageID] = (license.PaymentMethod, license.TimeCreated);
-
-				if (!refreshData) {
-					continue;
-				}
 
 				if (!ASF.GlobalDatabase.PackagesData.TryGetValue(license.PackageID, out (uint ChangeNumber, HashSet<uint> _) packageData) || (packageData.ChangeNumber < license.LastChangeNumber)) {
 					packagesToRefresh[license.PackageID] = (uint) license.LastChangeNumber;
@@ -2275,10 +2257,6 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericInfo(Strings.BotRefreshingPackagesData);
 				await ASF.GlobalDatabase.RefreshPackages(this, packagesToRefresh).ConfigureAwait(false);
 				ArchiLogger.LogGenericInfo(Strings.Done);
-			}
-
-			if (CardsFarmer.Paused) {
-				await ResetGamesPlayed().ConfigureAwait(false);
 			}
 
 			await CardsFarmer.OnNewGameAdded().ConfigureAwait(false);
