@@ -29,6 +29,7 @@ using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -57,6 +58,9 @@ namespace ArchiSteamFarm.IPC {
 			if (!string.IsNullOrEmpty(pathBase) && (pathBase != "/")) {
 				app.UsePathBase(pathBase);
 			}
+
+			// Add support for proxies
+			app.UseForwardedHeaders();
 
 			// Add support for response compression
 			app.UseResponseCompression();
@@ -98,6 +102,9 @@ namespace ArchiSteamFarm.IPC {
 			}
 
 			// The order of dependency injection matters, pay attention to it
+
+			// Add support for proxies
+			services.Configure<ForwardedHeadersOptions>(options => options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto);
 
 			// Add support for response compression
 			services.AddResponseCompression();
