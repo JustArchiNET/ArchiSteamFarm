@@ -1775,6 +1775,8 @@ namespace ArchiSteamFarm {
 			foreach ((string gameID, string gameName) in validResults.Where(validResult => (validResult.OwnedGames != null) && (validResult.OwnedGames.Count > 0)).SelectMany(validResult => validResult.OwnedGames)) {
 				if (ownedGamesStats.TryGetValue(gameID, out (ushort Count, string GameName) ownedGameStats)) {
 					ownedGameStats.Count++;
+				} else {
+					ownedGameStats.Count = 1;
 				}
 
 				if (!string.IsNullOrEmpty(gameName)) {
