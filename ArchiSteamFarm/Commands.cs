@@ -1603,7 +1603,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
-		private async Task<(string Response, HashSet<string> OwnedGames)> ResponseOwns(ulong steamID, string query) {
+		private async Task<(string Response, Dictionary<string, string> OwnedGames)> ResponseOwns(ulong steamID, string query) {
 			if ((steamID == 0) || string.IsNullOrEmpty(query)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(query));
 
@@ -1621,7 +1621,7 @@ namespace ArchiSteamFarm {
 			Dictionary<uint, string> gamesOwned = null;
 
 			StringBuilder response = new StringBuilder();
-			HashSet<string> result = new HashSet<string>();
+			Dictionary<string, string> result = new Dictionary<string, string>();
 
 			string[] entries = query.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -1648,7 +1648,7 @@ namespace ArchiSteamFarm {
 						HashSet<uint> packageIDs = ASF.GlobalDatabase.GetPackageIDs(appID, Bot.OwnedPackageIDs.Keys);
 
 						if ((packageIDs != null) && (packageIDs.Count > 0)) {
-							result.Add("app/" + appID);
+							result["app/" + appID] = null;
 							response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlready, appID)));
 						} else {
 							if (gamesOwned == null) {
@@ -1662,7 +1662,7 @@ namespace ArchiSteamFarm {
 							}
 
 							if (gamesOwned.TryGetValue(appID, out string gameName)) {
-								result.Add("app/" + appID);
+								result["app/" + appID] = gameName;
 								response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, appID, gameName)));
 							} else {
 								response.AppendLine(FormatBotResponse(string.Format(Strings.BotNotOwnedYet, appID)));
@@ -1698,7 +1698,7 @@ namespace ArchiSteamFarm {
 						foreach ((uint appID, string gameName) in gamesOwned.Where(gameOwned => regex.IsMatch(gameOwned.Value))) {
 							foundWithRegex = true;
 
-							result.Add("app/" + appID);
+							result["app/" + appID] = gameName;
 							response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, appID, gameName)));
 						}
 
@@ -1710,7 +1710,7 @@ namespace ArchiSteamFarm {
 					case "s" when uint.TryParse(game, out uint packageID) && (packageID > 0):
 					case "sub" when uint.TryParse(game, out packageID) && (packageID > 0):
 						if (Bot.OwnedPackageIDs.ContainsKey(packageID)) {
-							result.Add("sub/" + packageID);
+							result["sub/" + packageID] = null;
 							response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlready, packageID)));
 						} else {
 							response.AppendLine(FormatBotResponse(string.Format(Strings.BotNotOwnedYet, packageID)));
@@ -1733,7 +1733,7 @@ namespace ArchiSteamFarm {
 						foreach ((uint appID, string gameName) in gamesOwned.Where(gameOwned => gameOwned.Value.IndexOf(game, StringComparison.OrdinalIgnoreCase) >= 0)) {
 							foundWithName = true;
 
-							result.Add("app/" + appID);
+							result["app/" + appID] = gameName;
 							response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, appID, gameName)));
 						}
 
@@ -1762,21 +1762,29 @@ namespace ArchiSteamFarm {
 				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			IList<(string Response, HashSet<string> OwnedGames)> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseOwns(steamID, query))).ConfigureAwait(false);
+			IList<(string Response, Dictionary<string, string> OwnedGames)> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseOwns(steamID, query))).ConfigureAwait(false);
 
-			List<(string Response, HashSet<string> OwnedGames)> validResults = new List<(string Response, HashSet<string> OwnedGames)>(results.Where(result => !string.IsNullOrEmpty(result.Response)));
+			List<(string Response, Dictionary<string, string> OwnedGames)> validResults = new List<(string Response, Dictionary<string, string> OwnedGames)>(results.Where(result => !string.IsNullOrEmpty(result.Response)));
 
 			if (validResults.Count == 0) {
 				return null;
 			}
 
-			Dictionary<string, ushort> ownedGameCounts = new Dictionary<string, ushort>();
+			Dictionary<string, (ushort Count, string GameName)> ownedGamesStats = new Dictionary<string, (ushort Count, string GameName)>();
 
-			foreach (string ownedGame in validResults.Where(validResult => (validResult.OwnedGames != null) && (validResult.OwnedGames.Count > 0)).SelectMany(validResult => validResult.OwnedGames)) {
-				ownedGameCounts[ownedGame] = ownedGameCounts.TryGetValue(ownedGame, out ushort count) ? ++count : (ushort) 1;
+			foreach ((string gameID, string gameName) in validResults.Where(validResult => (validResult.OwnedGames != null) && (validResult.OwnedGames.Count > 0)).SelectMany(validResult => validResult.OwnedGames)) {
+				if (ownedGamesStats.TryGetValue(gameID, out (ushort Count, string GameName) ownedGameStats)) {
+					ownedGameStats.Count++;
+				}
+
+				if (!string.IsNullOrEmpty(gameName)) {
+					ownedGameStats.GameName = gameName;
+				}
+
+				ownedGamesStats[gameID] = ownedGameStats;
 			}
 
-			IEnumerable<string> extraResponses = ownedGameCounts.Select(kv => FormatStaticResponse(string.Format(Strings.BotOwnsOverviewPerGame, kv.Value, validResults.Count, kv.Key)));
+			IEnumerable<string> extraResponses = ownedGamesStats.Select(kv => FormatStaticResponse(string.Format(Strings.BotOwnsOverviewPerGame, kv.Value, validResults.Count, kv.Key)));
 
 			return string.Join(Environment.NewLine, validResults.Select(result => result.Response).Concat(extraResponses));
 		}
