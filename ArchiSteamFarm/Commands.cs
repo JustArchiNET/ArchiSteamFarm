@@ -694,34 +694,42 @@ namespace ArchiSteamFarm {
 			foreach (string flag in flags) {
 				switch (flag.ToUpperInvariant()) {
 					case "FD":
+					case "FORCEDISTRIBUTING":
 						redeemFlags |= ERedeemFlags.ForceDistributing;
 
 						break;
 					case "FF":
+					case "FORCEFORWARDING":
 						redeemFlags |= ERedeemFlags.ForceForwarding;
 
 						break;
 					case "FKMG":
+					case "FORCEKEEPMISSINGGAMES":
 						redeemFlags |= ERedeemFlags.ForceKeepMissingGames;
 
 						break;
 					case "SD":
+					case "SKIPDISTRIBUTING":
 						redeemFlags |= ERedeemFlags.SkipDistributing;
 
 						break;
 					case "SF":
+					case "SKIPFORWARDING":
 						redeemFlags |= ERedeemFlags.SkipForwarding;
 
 						break;
 					case "SI":
+					case "SKIPINITIAL":
 						redeemFlags |= ERedeemFlags.SkipInitial;
 
 						break;
 					case "SKMG":
+					case "SKIPKEEPMISSINGGAMES":
 						redeemFlags |= ERedeemFlags.SkipKeepMissingGames;
 
 						break;
 					case "V":
+					case "VALIDATE":
 						redeemFlags |= ERedeemFlags.Validate;
 
 						break;
