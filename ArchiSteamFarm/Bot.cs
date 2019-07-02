@@ -373,24 +373,26 @@ namespace ArchiSteamFarm {
 				if (botName.StartsWith("r!", StringComparison.OrdinalIgnoreCase)) {
 					string botsPattern = botName.Substring(2);
 
+					RegexOptions botsRegex = RegexOptions.None;
+
+					if ((BotsComparer == StringComparer.InvariantCulture) || (BotsComparer == StringComparer.Ordinal)) {
+						botsRegex |= RegexOptions.CultureInvariant;
+					} else if ((BotsComparer == StringComparer.InvariantCultureIgnoreCase) || (BotsComparer == StringComparer.OrdinalIgnoreCase)) {
+						botsRegex |= RegexOptions.CultureInvariant | RegexOptions.IgnoreCase;
+					}
+
+					Regex regex;
+
 					try {
-						RegexOptions botsRegex = RegexOptions.None;
-
-						if ((BotsComparer == StringComparer.InvariantCulture) || (BotsComparer == StringComparer.Ordinal)) {
-							botsRegex |= RegexOptions.CultureInvariant;
-						} else if ((BotsComparer == StringComparer.InvariantCultureIgnoreCase) || (BotsComparer == StringComparer.OrdinalIgnoreCase)) {
-							botsRegex |= RegexOptions.CultureInvariant | RegexOptions.IgnoreCase;
-						}
-
-						Regex regex = new Regex(botsPattern, botsRegex);
-
-						IEnumerable<Bot> regexMatches = Bots.Where(kvp => regex.IsMatch(kvp.Key)).Select(kvp => kvp.Value);
-						result.UnionWith(regexMatches);
+						regex = new Regex(botsPattern, botsRegex);
 					} catch (ArgumentException e) {
 						ASF.ArchiLogger.LogGenericWarningException(e);
 
 						return null;
 					}
+
+					IEnumerable<Bot> regexMatches = Bots.Where(kvp => regex.IsMatch(kvp.Key)).Select(kvp => kvp.Value);
+					result.UnionWith(regexMatches);
 
 					continue;
 				}
