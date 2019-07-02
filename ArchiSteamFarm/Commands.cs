@@ -1649,7 +1649,7 @@ namespace ArchiSteamFarm {
 
 						if ((packageIDs != null) && (packageIDs.Count > 0)) {
 							result["app/" + appID] = null;
-							response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlready, appID)));
+							response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlready, "app/" + appID)));
 						} else {
 							if (gamesOwned == null) {
 								gamesOwned = await FetchGamesOwned().ConfigureAwait(false);
@@ -1663,9 +1663,9 @@ namespace ArchiSteamFarm {
 
 							if (gamesOwned.TryGetValue(appID, out string gameName)) {
 								result["app/" + appID] = gameName;
-								response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, appID, gameName)));
+								response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, "app/" + appID, gameName)));
 							} else {
-								response.AppendLine(FormatBotResponse(string.Format(Strings.BotNotOwnedYet, appID)));
+								response.AppendLine(FormatBotResponse(string.Format(Strings.BotNotOwnedYet, "app/" + appID)));
 							}
 						}
 
@@ -1699,7 +1699,7 @@ namespace ArchiSteamFarm {
 							foundWithRegex = true;
 
 							result["app/" + appID] = gameName;
-							response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, appID, gameName)));
+							response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, "app/" + appID, gameName)));
 						}
 
 						if (!foundWithRegex) {
@@ -1711,9 +1711,9 @@ namespace ArchiSteamFarm {
 					case "sub" when uint.TryParse(game, out packageID) && (packageID > 0):
 						if (Bot.OwnedPackageIDs.ContainsKey(packageID)) {
 							result["sub/" + packageID] = null;
-							response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlready, packageID)));
+							response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlready, "sub/" + packageID)));
 						} else {
-							response.AppendLine(FormatBotResponse(string.Format(Strings.BotNotOwnedYet, packageID)));
+							response.AppendLine(FormatBotResponse(string.Format(Strings.BotNotOwnedYet, "sub/" + packageID)));
 						}
 
 						break;
@@ -1734,7 +1734,7 @@ namespace ArchiSteamFarm {
 							foundWithName = true;
 
 							result["app/" + appID] = gameName;
-							response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, appID, gameName)));
+							response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, "app/" + appID, gameName)));
 						}
 
 						if (!foundWithName) {
