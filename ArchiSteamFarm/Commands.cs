@@ -1640,15 +1640,15 @@ namespace ArchiSteamFarm {
 					type = entry.Substring(0, index);
 				} else if (uint.TryParse(entry, out uint appID) && (appID > 0)) {
 					game = entry;
-					type = "app";
+					type = "APP";
 				} else {
 					game = entry;
-					type = "name";
+					type = "NAME";
 				}
 
-				switch (type) {
-					case "a" when uint.TryParse(game, out uint appID) && (appID > 0):
-					case "app" when uint.TryParse(game, out appID) && (appID > 0):
+				switch (type.ToUpperInvariant()) {
+					case "A" when uint.TryParse(game, out uint appID) && (appID > 0):
+					case "APP" when uint.TryParse(game, out appID) && (appID > 0):
 						HashSet<uint> packageIDs = ASF.GlobalDatabase.GetPackageIDs(appID, Bot.OwnedPackageIDs.Keys);
 
 						if ((packageIDs != null) && (packageIDs.Count > 0)) {
@@ -1679,8 +1679,8 @@ namespace ArchiSteamFarm {
 						}
 
 						break;
-					case "r":
-					case "regex":
+					case "R":
+					case "REGEX":
 						Regex regex;
 
 						try {
@@ -1716,8 +1716,8 @@ namespace ArchiSteamFarm {
 						}
 
 						continue;
-					case "s" when uint.TryParse(game, out uint packageID) && (packageID > 0):
-					case "sub" when uint.TryParse(game, out packageID) && (packageID > 0):
+					case "S" when uint.TryParse(game, out uint packageID) && (packageID > 0):
+					case "SUB" when uint.TryParse(game, out packageID) && (packageID > 0):
 						if (Bot.OwnedPackageIDs.ContainsKey(packageID)) {
 							result["sub/" + packageID] = null;
 							response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlready, "sub/" + packageID)));
