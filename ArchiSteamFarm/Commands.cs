@@ -409,11 +409,15 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async Task<Dictionary<uint, string>> FetchGamesOwned() {
+		private async Task<Dictionary<uint, string>> FetchGamesOwned(bool cachedOnly = false) {
 			lock (CachedGamesOwned) {
 				if (CachedGamesOwned.Count > 0) {
 					return new Dictionary<uint, string>(CachedGamesOwned);
 				}
+			}
+
+			if (cachedOnly) {
+				return null;
 			}
 
 			bool? hasValidApiKey = await Bot.ArchiWebHandler.HasValidApiKey().ConfigureAwait(false);
@@ -1618,7 +1622,7 @@ namespace ArchiSteamFarm {
 				return (FormatBotResponse(Strings.BotNotConnected), null);
 			}
 
-			Dictionary<uint, string> gamesOwned = null;
+			Dictionary<uint, string> gamesOwned = await FetchGamesOwned(true).ConfigureAwait(false);
 
 			StringBuilder response = new StringBuilder();
 			Dictionary<string, string> result = new Dictionary<string, string>();
@@ -1648,8 +1652,13 @@ namespace ArchiSteamFarm {
 						HashSet<uint> packageIDs = ASF.GlobalDatabase.GetPackageIDs(appID, Bot.OwnedPackageIDs.Keys);
 
 						if ((packageIDs != null) && (packageIDs.Count > 0)) {
-							result["app/" + appID] = null;
-							response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlready, "app/" + appID)));
+							if ((gamesOwned != null) && gamesOwned.TryGetValue(appID, out string cachedGameName)) {
+								result["app/" + appID] = cachedGameName;
+								response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, "app/" + appID, cachedGameName)));
+							} else {
+								result["app/" + appID] = null;
+								response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlready, "app/" + appID)));
+							}
 						} else {
 							if (gamesOwned == null) {
 								gamesOwned = await FetchGamesOwned().ConfigureAwait(false);
