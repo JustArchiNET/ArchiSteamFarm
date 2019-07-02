@@ -1648,7 +1648,7 @@ namespace ArchiSteamFarm {
 						HashSet<uint> packageIDs = ASF.GlobalDatabase.GetPackageIDs(appID, Bot.OwnedPackageIDs.Keys);
 
 						if ((packageIDs != null) && (packageIDs.Count > 0)) {
-							result.Add(entry);
+							result.Add("app/" + appID);
 							response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlready, appID)));
 						} else {
 							if (gamesOwned == null) {
@@ -1662,7 +1662,7 @@ namespace ArchiSteamFarm {
 							}
 
 							if (gamesOwned.TryGetValue(appID, out string gameName)) {
-								result.Add(entry);
+								result.Add("app/" + appID);
 								response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, appID, gameName)));
 							} else {
 								response.AppendLine(FormatBotResponse(string.Format(Strings.BotNotOwnedYet, appID)));
@@ -1698,7 +1698,7 @@ namespace ArchiSteamFarm {
 						foreach ((uint appID, string gameName) in gamesOwned.Where(gameOwned => regex.IsMatch(gameOwned.Value))) {
 							foundWithRegex = true;
 
-							result.Add(entry);
+							result.Add("app/" + appID);
 							response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, appID, gameName)));
 						}
 
@@ -1710,7 +1710,7 @@ namespace ArchiSteamFarm {
 					case "s" when uint.TryParse(game, out uint packageID) && (packageID > 0):
 					case "sub" when uint.TryParse(game, out packageID) && (packageID > 0):
 						if (Bot.OwnedPackageIDs.ContainsKey(packageID)) {
-							result.Add(entry);
+							result.Add("sub/" + packageID);
 							response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlready, packageID)));
 						} else {
 							response.AppendLine(FormatBotResponse(string.Format(Strings.BotNotOwnedYet, packageID)));
@@ -1733,7 +1733,7 @@ namespace ArchiSteamFarm {
 						foreach ((uint appID, string gameName) in gamesOwned.Where(gameOwned => gameOwned.Value.IndexOf(game, StringComparison.OrdinalIgnoreCase) >= 0)) {
 							foundWithName = true;
 
-							result.Add(entry);
+							result.Add("app/" + appID);
 							response.AppendLine(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, appID, gameName)));
 						}
 
