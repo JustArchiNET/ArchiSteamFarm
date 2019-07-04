@@ -521,9 +521,9 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 
-		private async Task<string> ResponseAddLicense(ulong steamID, IReadOnlyCollection<uint> gameIDs) {
-			if ((steamID == 0) || (gameIDs == null) || (gameIDs.Count == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(gameIDs));
+		private async Task<string> ResponseAddLicense(ulong steamID, string query) {
+			if ((steamID == 0) || string.IsNullOrEmpty(query)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(query));
 
 				return null;
 			}
@@ -538,74 +538,73 @@ namespace ArchiSteamFarm {
 
 			StringBuilder response = new StringBuilder();
 
-			foreach (uint gameID in gameIDs) {
-				if (await Bot.ArchiWebHandler.AddFreeLicense(gameID).ConfigureAwait(false)) {
-					response.AppendLine(FormatBotResponse(string.Format(Strings.BotAddLicenseWithItems, gameID, EResult.OK, "sub/" + gameID)));
+			string[] entries = query.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+			foreach (string entry in entries) {
+				uint gameID;
+				string type;
+
+				int index = entry.IndexOf('/');
+
+				if ((index > 0) && (entry.Length > index + 1)) {
+					if (!uint.TryParse(entry.Substring(index + 1), out gameID) || (gameID == 0)) {
+						response.AppendLine(FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(gameID))));
+
+						continue;
+					}
+
+					type = entry.Substring(0, index);
+				} else if (uint.TryParse(entry, out gameID) && (gameID > 0)) {
+					type = "SUB";
+				} else {
+					response.AppendLine(FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(gameID))));
 
 					continue;
 				}
 
-				SteamApps.FreeLicenseCallback callback;
+				switch (type.ToUpperInvariant()) {
+					case "A":
+					case "APP":
+						SteamApps.FreeLicenseCallback callback;
 
-				try {
-					callback = await Bot.SteamApps.RequestFreeLicense(gameID);
-				} catch (Exception e) {
-					Bot.ArchiLogger.LogGenericWarningException(e);
-					response.AppendLine(FormatBotResponse(string.Format(Strings.BotAddLicense, gameID, EResult.Timeout)));
+						try {
+							callback = await Bot.SteamApps.RequestFreeLicense(gameID);
+						} catch (Exception e) {
+							Bot.ArchiLogger.LogGenericWarningException(e);
+							response.AppendLine(FormatBotResponse(string.Format(Strings.BotAddLicense, "app/" + gameID, EResult.Timeout)));
 
-					break;
+							break;
+						}
+
+						if (callback == null) {
+							response.AppendLine(FormatBotResponse(string.Format(Strings.BotAddLicense, "app/" + gameID, EResult.Timeout)));
+
+							break;
+						}
+
+						response.AppendLine(FormatBotResponse((callback.GrantedApps.Count > 0) || (callback.GrantedPackages.Count > 0) ? string.Format(Strings.BotAddLicenseWithItems, "app/" + gameID, callback.Result, string.Join(", ", callback.GrantedApps.Select(appID => "app/" + appID).Union(callback.GrantedPackages.Select(subID => "sub/" + subID)))) : string.Format(Strings.BotAddLicense, "app/" + gameID, callback.Result)));
+
+						break;
+					default:
+						if (!await Bot.ArchiWebHandler.AddFreeLicense(gameID).ConfigureAwait(false)) {
+							response.AppendLine(FormatBotResponse(string.Format(Strings.BotAddLicense, "sub/" + gameID, EResult.Fail)));
+
+							continue;
+						}
+
+						response.AppendLine(FormatBotResponse(string.Format(Strings.BotAddLicenseWithItems, gameID, EResult.OK, "sub/" + gameID)));
+
+						break;
 				}
-
-				if (callback == null) {
-					response.AppendLine(FormatBotResponse(string.Format(Strings.BotAddLicense, gameID, EResult.Timeout)));
-
-					break;
-				}
-
-				response.AppendLine(FormatBotResponse((callback.GrantedApps.Count > 0) || (callback.GrantedPackages.Count > 0) ? string.Format(Strings.BotAddLicenseWithItems, gameID, callback.Result, string.Join(", ", callback.GrantedApps.Select(appID => "app/" + appID).Union(callback.GrantedPackages.Select(subID => "sub/" + subID)))) : string.Format(Strings.BotAddLicense, gameID, callback.Result)));
 			}
 
 			return response.Length > 0 ? response.ToString() : null;
 		}
 
-		private async Task<string> ResponseAddLicense(ulong steamID, string targetGameIDs) {
-			if ((steamID == 0) || string.IsNullOrEmpty(targetGameIDs)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(targetGameIDs));
-
-				return null;
-			}
-
-			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Operator)) {
-				return null;
-			}
-
-			if (!Bot.IsConnectedAndLoggedOn) {
-				return FormatBotResponse(Strings.BotNotConnected);
-			}
-
-			string[] gameIDs = targetGameIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-			if (gameIDs.Length == 0) {
-				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(gameIDs)));
-			}
-
-			HashSet<uint> gamesToRedeem = new HashSet<uint>();
-
-			foreach (string game in gameIDs) {
-				if (!uint.TryParse(game, out uint gameID) || (gameID == 0)) {
-					return FormatBotResponse(string.Format(Strings.ErrorParsingObject, nameof(gameID)));
-				}
-
-				gamesToRedeem.Add(gameID);
-			}
-
-			return await ResponseAddLicense(steamID, gamesToRedeem).ConfigureAwait(false);
-		}
-
 		[ItemCanBeNull]
-		private static async Task<string> ResponseAddLicense(ulong steamID, string botNames, string targetGameIDs) {
-			if ((steamID == 0) || string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(targetGameIDs)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames) + " || " + nameof(targetGameIDs));
+		private static async Task<string> ResponseAddLicense(ulong steamID, string botNames, string query) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(query)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames) + " || " + nameof(query));
 
 				return null;
 			}
@@ -616,7 +615,7 @@ namespace ArchiSteamFarm {
 				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			IList<string> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAddLicense(steamID, targetGameIDs))).ConfigureAwait(false);
+			IList<string> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAddLicense(steamID, query))).ConfigureAwait(false);
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 
