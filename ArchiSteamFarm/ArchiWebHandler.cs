@@ -989,6 +989,50 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
+		[PublicAPI]
+		public static async Task<T> WebLimitRequest<T>(string service, Func<Task<T>> function) {
+			if (string.IsNullOrEmpty(service) || (function == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(service) + " || " + nameof(function));
+
+				return default;
+			}
+
+			if (ASF.GlobalConfig.WebLimiterDelay == 0) {
+				return await function().ConfigureAwait(false);
+			}
+
+			if (!WebLimitingSemaphores.TryGetValue(service, out (SemaphoreSlim RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore) limiters)) {
+				ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(service), service));
+
+				if (!WebLimitingSemaphores.TryGetValue(nameof(ArchiWebHandler), out limiters)) {
+					ASF.ArchiLogger.LogNullError(nameof(limiters));
+
+					return await function().ConfigureAwait(false);
+				}
+			}
+
+			// Sending a request opens a new connection
+			await limiters.OpenConnectionsSemaphore.WaitAsync().ConfigureAwait(false);
+
+			try {
+				// It also increases number of requests
+				await limiters.RateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
+
+				// We release rate-limiter semaphore regardless of our task completion, since we use that one only to guarantee rate-limiting of their creation
+				Utilities.InBackground(
+					async () => {
+						await Task.Delay(ASF.GlobalConfig.WebLimiterDelay).ConfigureAwait(false);
+						limiters.RateLimitingSemaphore.Release();
+					}
+				);
+
+				return await function().ConfigureAwait(false);
+			} finally {
+				// We release open connections semaphore only once we're indeed done sending a particular request
+				limiters.OpenConnectionsSemaphore.Release();
+			}
+		}
+
 		internal async Task<bool> AcceptDigitalGiftCard(ulong giftCardID) {
 			if (giftCardID == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(giftCardID));
@@ -2641,49 +2685,6 @@ namespace ArchiSteamFarm {
 			}
 
 			return true;
-		}
-
-		private static async Task<T> WebLimitRequest<T>(string service, Func<Task<T>> function) {
-			if (string.IsNullOrEmpty(service) || (function == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(service) + " || " + nameof(function));
-
-				return default;
-			}
-
-			if (ASF.GlobalConfig.WebLimiterDelay == 0) {
-				return await function().ConfigureAwait(false);
-			}
-
-			if (!WebLimitingSemaphores.TryGetValue(service, out (SemaphoreSlim RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore) limiters)) {
-				ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(service), service));
-
-				if (!WebLimitingSemaphores.TryGetValue(nameof(ArchiWebHandler), out limiters)) {
-					ASF.ArchiLogger.LogNullError(nameof(limiters));
-
-					return await function().ConfigureAwait(false);
-				}
-			}
-
-			// Sending a request opens a new connection
-			await limiters.OpenConnectionsSemaphore.WaitAsync().ConfigureAwait(false);
-
-			try {
-				// It also increases number of requests
-				await limiters.RateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
-
-				// We release rate-limiter semaphore regardless of our task completion, since we use that one only to guarantee rate-limiting of their creation
-				Utilities.InBackground(
-					async () => {
-						await Task.Delay(ASF.GlobalConfig.WebLimiterDelay).ConfigureAwait(false);
-						limiters.RateLimitingSemaphore.Release();
-					}
-				);
-
-				return await function().ConfigureAwait(false);
-			} finally {
-				// We release open connections semaphore only once we're indeed done sending a particular request
-				limiters.OpenConnectionsSemaphore.Release();
-			}
 		}
 
 		public enum ESession : byte {

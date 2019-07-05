@@ -84,6 +84,9 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public readonly Commands Commands;
 
+		[PublicAPI]
+		public readonly SteamConfiguration SteamConfiguration;
+
 		[JsonProperty]
 		public uint GamesToRedeemInBackgroundCount => BotDatabase?.GamesToRedeemInBackgroundCount ?? 0;
 
@@ -101,7 +104,6 @@ namespace ArchiSteamFarm {
 
 		internal readonly ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)> OwnedPackageIDs = new ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>();
 		internal readonly SteamApps SteamApps;
-		internal readonly SteamConfiguration SteamConfiguration;
 		internal readonly SteamFriends SteamFriends;
 
 		internal bool CanReceiveSteamCards => !IsAccountLimited && !IsAccountLocked;
