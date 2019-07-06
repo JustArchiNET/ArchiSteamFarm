@@ -84,6 +84,7 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public readonly Commands Commands;
 
+		[JsonIgnore]
 		[PublicAPI]
 		public readonly SteamConfiguration SteamConfiguration;
 
