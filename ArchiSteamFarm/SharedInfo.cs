@@ -38,6 +38,7 @@ namespace ArchiSteamFarm {
 		internal const string DatabaseExtension = ".db";
 		internal const string DebugDirectory = "debug";
 		internal const string EnvironmentVariableCryptKey = ASF + "_CRYPTKEY";
+		internal const string EnvironmentVariablePath = ASF + "_PATH";
 		internal const string GithubReleaseURL = "https://api.github.com/repos/" + GithubRepo + "/releases"; // GitHub API is HTTPS only
 		internal const string GithubRepo = "JustArchiNET/" + AssemblyName;
 		internal const string GlobalConfigFileName = ASF + ConfigExtension;

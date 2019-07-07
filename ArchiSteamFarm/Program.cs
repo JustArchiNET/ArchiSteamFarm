@@ -449,6 +449,16 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			try {
+				string envPath = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariablePath);
+
+				if (!string.IsNullOrEmpty(envPath)) {
+					HandlePathArgument(envPath);
+				}
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+			}
+
 			bool pathNext = false;
 
 			foreach (string arg in args) {
