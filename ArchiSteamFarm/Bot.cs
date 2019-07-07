@@ -2022,6 +2022,8 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogGenericInfo(Strings.BotDisconnected);
 
+			OwnedPackageIDs.Clear();
+
 			Actions.OnDisconnected();
 			ArchiWebHandler.OnDisconnected();
 			CardsFarmer.OnDisconnected();
@@ -2245,6 +2247,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			bool initialLogin = OwnedPackageIDs.Count == 0;
+
 			Commands.OnNewLicenseList();
 			OwnedPackageIDs.Clear();
 
@@ -2262,6 +2266,11 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericInfo(Strings.BotRefreshingPackagesData);
 				await ASF.GlobalDatabase.RefreshPackages(this, packagesToRefresh).ConfigureAwait(false);
 				ArchiLogger.LogGenericInfo(Strings.Done);
+			}
+
+			if (initialLogin && CardsFarmer.Paused) {
+				// Emit initial game playing status in this case
+				await ResetGamesPlayed().ConfigureAwait(false);
 			}
 
 			await CardsFarmer.OnNewGameAdded().ConfigureAwait(false);
@@ -2837,15 +2846,19 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task ResetGamesPlayed() {
-			if (!IsPlayingPossible || CardsFarmer.NowFarming) {
+			if (CardsFarmer.NowFarming) {
 				return;
 			}
 
 			if (BotConfig.GamesPlayedWhileIdle.Count > 0) {
+				if (!IsPlayingPossible) {
+					return;
+				}
+
 				// This function might be executed before PlayingSessionStateCallback/SharedLibraryLockStatusCallback, ensure proper delay in this case
 				await Task.Delay(2000).ConfigureAwait(false);
 
-				if (!IsPlayingPossible || CardsFarmer.NowFarming) {
+				if (CardsFarmer.NowFarming || !IsPlayingPossible) {
 					return;
 				}
 			}
