@@ -238,6 +238,188 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		[ItemCanBeNull]
+		[PublicAPI]
+		public async Task<Dictionary<uint, string>> GetMyOwnedGames() {
+			const string request = "/my/games?l=english&xml=1";
+
+			XmlDocument response = await UrlGetToXmlDocumentWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
+
+			XmlNodeList xmlNodeList = response?.SelectNodes("gamesList/games/game");
+
+			if ((xmlNodeList == null) || (xmlNodeList.Count == 0)) {
+				return null;
+			}
+
+			Dictionary<uint, string> result = new Dictionary<uint, string>(xmlNodeList.Count);
+
+			foreach (XmlNode xmlNode in xmlNodeList) {
+				XmlNode appNode = xmlNode.SelectSingleNode("appID");
+
+				if (appNode == null) {
+					Bot.ArchiLogger.LogNullError(nameof(appNode));
+
+					return null;
+				}
+
+				if (!uint.TryParse(appNode.InnerText, out uint appID) || (appID == 0)) {
+					Bot.ArchiLogger.LogNullError(nameof(appID));
+
+					return null;
+				}
+
+				XmlNode nameNode = xmlNode.SelectSingleNode("name");
+
+				if (nameNode == null) {
+					Bot.ArchiLogger.LogNullError(nameof(nameNode));
+
+					return null;
+				}
+
+				result[appID] = nameNode.InnerText;
+			}
+
+			return result;
+		}
+
+		[ItemCanBeNull]
+		[PublicAPI]
+		public async Task<Dictionary<uint, string>> GetOwnedGames(ulong steamID) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+				Bot.ArchiLogger.LogNullError(nameof(steamID));
+
+				return null;
+			}
+
+			(bool success, string steamApiKey) = await CachedApiKey.GetValue().ConfigureAwait(false);
+
+			if (!success || string.IsNullOrEmpty(steamApiKey)) {
+				return null;
+			}
+
+			KeyValue response = null;
+
+			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
+				using (WebAPI.AsyncInterface iPlayerService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(IPlayerService)) {
+					iPlayerService.Timeout = WebBrowser.Timeout;
+
+					try {
+						response = await WebLimitRequest(
+							WebAPI.DefaultBaseAddress.Host,
+
+							// ReSharper disable once AccessToDisposedClosure
+							async () => await iPlayerService.CallAsync(
+								HttpMethod.Get, "GetOwnedGames", args: new Dictionary<string, object>(3, StringComparer.Ordinal) {
+									{ "include_appinfo", 1 },
+									{ "key", steamApiKey },
+									{ "steamid", steamID }
+								}
+							).ConfigureAwait(false)
+						).ConfigureAwait(false);
+					} catch (TaskCanceledException e) {
+						Bot.ArchiLogger.LogGenericDebuggingException(e);
+					} catch (Exception e) {
+						Bot.ArchiLogger.LogGenericWarningException(e);
+					}
+				}
+			}
+
+			if (response == null) {
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+
+				return null;
+			}
+
+			List<KeyValue> games = response["games"].Children;
+
+			Dictionary<uint, string> result = new Dictionary<uint, string>(games.Count);
+
+			foreach (KeyValue game in games) {
+				uint appID = game["appid"].AsUnsignedInteger();
+
+				if (appID == 0) {
+					Bot.ArchiLogger.LogNullError(nameof(appID));
+
+					return null;
+				}
+
+				result[appID] = game["name"].AsString();
+			}
+
+			return result;
+		}
+
+		[PublicAPI]
+		public async Task<(bool Success, HashSet<ulong> MobileTradeOfferIDs)> SendTradeOffer(ulong steamID, IReadOnlyCollection<Steam.Asset> itemsToGive = null, IReadOnlyCollection<Steam.Asset> itemsToReceive = null, string token = null, bool forcedSingleOffer = false) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || (((itemsToGive == null) || (itemsToGive.Count == 0)) && ((itemsToReceive == null) || (itemsToReceive.Count == 0)))) {
+				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || (" + nameof(itemsToGive) + " && " + nameof(itemsToReceive) + ")");
+
+				return (false, null);
+			}
+
+			Steam.TradeOfferSendRequest singleTrade = new Steam.TradeOfferSendRequest();
+			HashSet<Steam.TradeOfferSendRequest> trades = new HashSet<Steam.TradeOfferSendRequest> { singleTrade };
+
+			if (itemsToGive != null) {
+				foreach (Steam.Asset itemToGive in itemsToGive) {
+					if (!forcedSingleOffer && (singleTrade.ItemsToGive.Assets.Count + singleTrade.ItemsToReceive.Assets.Count >= Trading.MaxItemsPerTrade)) {
+						if (trades.Count >= Trading.MaxTradesPerAccount) {
+							break;
+						}
+
+						singleTrade = new Steam.TradeOfferSendRequest();
+						trades.Add(singleTrade);
+					}
+
+					singleTrade.ItemsToGive.Assets.Add(itemToGive);
+				}
+			}
+
+			if (itemsToReceive != null) {
+				foreach (Steam.Asset itemToReceive in itemsToReceive) {
+					if (!forcedSingleOffer && (singleTrade.ItemsToGive.Assets.Count + singleTrade.ItemsToReceive.Assets.Count >= Trading.MaxItemsPerTrade)) {
+						if (trades.Count >= Trading.MaxTradesPerAccount) {
+							break;
+						}
+
+						singleTrade = new Steam.TradeOfferSendRequest();
+						trades.Add(singleTrade);
+					}
+
+					singleTrade.ItemsToReceive.Assets.Add(itemToReceive);
+				}
+			}
+
+			const string request = "/tradeoffer/new/send";
+			const string referer = SteamCommunityURL + "/tradeoffer/new";
+
+			// Extra entry for sessionID
+			Dictionary<string, string> data = new Dictionary<string, string>(6, StringComparer.Ordinal) {
+				{ "partner", steamID.ToString() },
+				{ "serverid", "1" },
+				{ "trade_offer_create_params", !string.IsNullOrEmpty(token) ? new JObject { { "trade_offer_access_token", token } }.ToString(Formatting.None) : "" },
+				{ "tradeoffermessage", "Sent by " + SharedInfo.PublicIdentifier + "/" + SharedInfo.Version }
+			};
+
+			HashSet<ulong> mobileTradeOfferIDs = new HashSet<ulong>();
+
+			foreach (Steam.TradeOfferSendRequest trade in trades) {
+				data["json_tradeoffer"] = JsonConvert.SerializeObject(trade);
+
+				Steam.TradeOfferSendResponse response = await UrlPostToJsonObjectWithSession<Steam.TradeOfferSendResponse>(SteamCommunityURL, request, data, referer).ConfigureAwait(false);
+
+				if (response == null) {
+					return (false, mobileTradeOfferIDs);
+				}
+
+				if (response.RequiresMobileConfirmation) {
+					mobileTradeOfferIDs.Add(response.TradeOfferID);
+				}
+			}
+
+			return (true, mobileTradeOfferIDs);
+		}
+
 		[PublicAPI]
 		public async Task<HtmlDocument> UrlGetToHtmlDocumentWithSession(string host, string request, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
@@ -1584,115 +1766,6 @@ namespace ArchiSteamFarm {
 			return await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
 		}
 
-		[ItemCanBeNull]
-		internal async Task<Dictionary<uint, string>> GetMyOwnedGames() {
-			const string request = "/my/games?l=english&xml=1";
-
-			XmlDocument response = await UrlGetToXmlDocumentWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
-
-			XmlNodeList xmlNodeList = response?.SelectNodes("gamesList/games/game");
-
-			if ((xmlNodeList == null) || (xmlNodeList.Count == 0)) {
-				return null;
-			}
-
-			Dictionary<uint, string> result = new Dictionary<uint, string>(xmlNodeList.Count);
-
-			foreach (XmlNode xmlNode in xmlNodeList) {
-				XmlNode appNode = xmlNode.SelectSingleNode("appID");
-
-				if (appNode == null) {
-					Bot.ArchiLogger.LogNullError(nameof(appNode));
-
-					return null;
-				}
-
-				if (!uint.TryParse(appNode.InnerText, out uint appID) || (appID == 0)) {
-					Bot.ArchiLogger.LogNullError(nameof(appID));
-
-					return null;
-				}
-
-				XmlNode nameNode = xmlNode.SelectSingleNode("name");
-
-				if (nameNode == null) {
-					Bot.ArchiLogger.LogNullError(nameof(nameNode));
-
-					return null;
-				}
-
-				result[appID] = nameNode.InnerText;
-			}
-
-			return result;
-		}
-
-		[ItemCanBeNull]
-		internal async Task<Dictionary<uint, string>> GetOwnedGames(ulong steamID) {
-			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-				Bot.ArchiLogger.LogNullError(nameof(steamID));
-
-				return null;
-			}
-
-			(bool success, string steamApiKey) = await CachedApiKey.GetValue().ConfigureAwait(false);
-
-			if (!success || string.IsNullOrEmpty(steamApiKey)) {
-				return null;
-			}
-
-			KeyValue response = null;
-
-			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-				using (WebAPI.AsyncInterface iPlayerService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(IPlayerService)) {
-					iPlayerService.Timeout = WebBrowser.Timeout;
-
-					try {
-						response = await WebLimitRequest(
-							WebAPI.DefaultBaseAddress.Host,
-
-							// ReSharper disable once AccessToDisposedClosure
-							async () => await iPlayerService.CallAsync(
-								HttpMethod.Get, "GetOwnedGames", args: new Dictionary<string, object>(3, StringComparer.Ordinal) {
-									{ "include_appinfo", 1 },
-									{ "key", steamApiKey },
-									{ "steamid", steamID }
-								}
-							).ConfigureAwait(false)
-						).ConfigureAwait(false);
-					} catch (TaskCanceledException e) {
-						Bot.ArchiLogger.LogGenericDebuggingException(e);
-					} catch (Exception e) {
-						Bot.ArchiLogger.LogGenericWarningException(e);
-					}
-				}
-			}
-
-			if (response == null) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-
-				return null;
-			}
-
-			List<KeyValue> games = response["games"].Children;
-
-			Dictionary<uint, string> result = new Dictionary<uint, string>(games.Count);
-
-			foreach (KeyValue game in games) {
-				uint appID = game["appid"].AsUnsignedInteger();
-
-				if (appID == 0) {
-					Bot.ArchiLogger.LogNullError(nameof(appID));
-
-					return null;
-				}
-
-				result[appID] = game["name"].AsString();
-			}
-
-			return result;
-		}
-
 		internal async Task<uint> GetServerTime() {
 			KeyValue response = null;
 
@@ -2161,76 +2234,6 @@ namespace ArchiSteamFarm {
 
 			// Same, returning OK EResult only if PurchaseResultDetail is NoDetail (no error occured)
 			return ((responseConfirmRedeem.PurchaseResultDetail == EPurchaseResultDetail.NoDetail) && (responseConfirmRedeem.Result == EResult.OK) ? responseConfirmRedeem.Result : EResult.Fail, responseConfirmRedeem.PurchaseResultDetail);
-		}
-
-		internal async Task<(bool Success, HashSet<ulong> MobileTradeOfferIDs)> SendTradeOffer(ulong steamID, IReadOnlyCollection<Steam.Asset> itemsToGive = null, IReadOnlyCollection<Steam.Asset> itemsToReceive = null, string token = null, bool forcedSingleOffer = false) {
-			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || (((itemsToGive == null) || (itemsToGive.Count == 0)) && ((itemsToReceive == null) || (itemsToReceive.Count == 0)))) {
-				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || (" + nameof(itemsToGive) + " && " + nameof(itemsToReceive) + ")");
-
-				return (false, null);
-			}
-
-			Steam.TradeOfferSendRequest singleTrade = new Steam.TradeOfferSendRequest();
-			HashSet<Steam.TradeOfferSendRequest> trades = new HashSet<Steam.TradeOfferSendRequest> { singleTrade };
-
-			if (itemsToGive != null) {
-				foreach (Steam.Asset itemToGive in itemsToGive) {
-					if (!forcedSingleOffer && (singleTrade.ItemsToGive.Assets.Count + singleTrade.ItemsToReceive.Assets.Count >= Trading.MaxItemsPerTrade)) {
-						if (trades.Count >= Trading.MaxTradesPerAccount) {
-							break;
-						}
-
-						singleTrade = new Steam.TradeOfferSendRequest();
-						trades.Add(singleTrade);
-					}
-
-					singleTrade.ItemsToGive.Assets.Add(itemToGive);
-				}
-			}
-
-			if (itemsToReceive != null) {
-				foreach (Steam.Asset itemToReceive in itemsToReceive) {
-					if (!forcedSingleOffer && (singleTrade.ItemsToGive.Assets.Count + singleTrade.ItemsToReceive.Assets.Count >= Trading.MaxItemsPerTrade)) {
-						if (trades.Count >= Trading.MaxTradesPerAccount) {
-							break;
-						}
-
-						singleTrade = new Steam.TradeOfferSendRequest();
-						trades.Add(singleTrade);
-					}
-
-					singleTrade.ItemsToReceive.Assets.Add(itemToReceive);
-				}
-			}
-
-			const string request = "/tradeoffer/new/send";
-			const string referer = SteamCommunityURL + "/tradeoffer/new";
-
-			// Extra entry for sessionID
-			Dictionary<string, string> data = new Dictionary<string, string>(6, StringComparer.Ordinal) {
-				{ "partner", steamID.ToString() },
-				{ "serverid", "1" },
-				{ "trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : new JObject { { "trade_offer_access_token", token } }.ToString(Formatting.None) },
-				{ "tradeoffermessage", "Sent by " + SharedInfo.PublicIdentifier + "/" + SharedInfo.Version }
-			};
-
-			HashSet<ulong> mobileTradeOfferIDs = new HashSet<ulong>();
-
-			foreach (Steam.TradeOfferSendRequest trade in trades) {
-				data["json_tradeoffer"] = JsonConvert.SerializeObject(trade);
-
-				Steam.TradeOfferSendResponse response = await UrlPostToJsonObjectWithSession<Steam.TradeOfferSendResponse>(SteamCommunityURL, request, data, referer).ConfigureAwait(false);
-
-				if (response == null) {
-					return (false, mobileTradeOfferIDs);
-				}
-
-				if (response.RequiresMobileConfirmation) {
-					mobileTradeOfferIDs.Add(response.TradeOfferID);
-				}
-			}
-
-			return (true, mobileTradeOfferIDs);
 		}
 
 		internal async Task<bool> UnpackBooster(uint appID, ulong itemID) {
