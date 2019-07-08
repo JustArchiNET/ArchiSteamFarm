@@ -46,6 +46,9 @@ namespace ArchiSteamFarm {
 		public const string SteamCommunityURL = "https://" + SteamCommunityHost;
 
 		[PublicAPI]
+		public const string SteamHelpURL = "https://" + SteamHelpHost;
+
+		[PublicAPI]
 		public const string SteamStoreURL = "https://" + SteamStoreHost;
 
 		private const string IEconService = "IEconService";
@@ -56,6 +59,7 @@ namespace ArchiSteamFarm {
 		private const ushort MaxItemsInSingleInventoryRequest = 5000;
 		private const byte MinSessionValidityInSeconds = GlobalConfig.DefaultConnectionTimeout / 6;
 		private const string SteamCommunityHost = "steamcommunity.com";
+		private const string SteamHelpHost = "help.steampowered.com";
 		private const string SteamStoreHost = "store.steampowered.com";
 
 		private static readonly SemaphoreSlim InventorySemaphore = new SemaphoreSlim(1, 1);
@@ -63,6 +67,7 @@ namespace ArchiSteamFarm {
 		private static readonly ImmutableDictionary<string, (SemaphoreSlim RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)> WebLimitingSemaphores = new Dictionary<string, (SemaphoreSlim RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)>(4, StringComparer.Ordinal) {
 			{ nameof(ArchiWebHandler), (new SemaphoreSlim(1, 1), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
 			{ SteamCommunityURL, (new SemaphoreSlim(1, 1), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+			{ SteamHelpURL, (new SemaphoreSlim(1, 1), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
 			{ SteamStoreURL, (new SemaphoreSlim(1, 1), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
 			{ WebAPI.DefaultBaseAddress.Host, (new SemaphoreSlim(1, 1), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) }
 		}.ToImmutableDictionary(StringComparer.Ordinal);
@@ -2084,18 +2089,22 @@ namespace ArchiSteamFarm {
 			}
 
 			WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", "." + SteamCommunityHost));
+			WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", "." + SteamHelpHost));
 			WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", "." + SteamStoreHost));
 
 			WebBrowser.CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", "." + SteamCommunityHost));
+			WebBrowser.CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", "." + SteamHelpHost));
 			WebBrowser.CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", "." + SteamStoreHost));
 
 			WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", "." + SteamCommunityHost));
+			WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", "." + SteamHelpHost));
 			WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", "." + SteamStoreHost));
 
 			// Report proper time when doing timezone-based calculations, see setTimezoneCookies() from https://steamcommunity-a.akamaihd.net/public/shared/javascript/shared_global.js
 			string timeZoneOffset = DateTimeOffset.Now.Offset.TotalSeconds + WebUtility.UrlEncode(",") + "0";
 
 			WebBrowser.CookieContainer.Add(new Cookie("timezoneOffset", timeZoneOffset, "/", "." + SteamCommunityHost));
+			WebBrowser.CookieContainer.Add(new Cookie("timezoneOffset", timeZoneOffset, "/", "." + SteamHelpHost));
 			WebBrowser.CookieContainer.Add(new Cookie("timezoneOffset", timeZoneOffset, "/", "." + SteamStoreHost));
 
 			Bot.ArchiLogger.LogGenericInfo(Strings.Success);
