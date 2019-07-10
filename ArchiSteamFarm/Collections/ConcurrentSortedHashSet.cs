@@ -22,6 +22,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using JetBrains.Annotations;
 
@@ -74,6 +75,7 @@ namespace ArchiSteamFarm.Collections {
 			}
 		}
 
+		[SuppressMessage("ReSharper", "AnnotationRedundancyInHierarchy")]
 		public void CopyTo([NotNull] T[] array, int arrayIndex) {
 			CollectionSemaphore.Wait();
 
@@ -97,6 +99,7 @@ namespace ArchiSteamFarm.Collections {
 		}
 
 		[NotNull]
+		[SuppressMessage("ReSharper", "AnnotationRedundancyInHierarchy")]
 		public IEnumerator<T> GetEnumerator() => new ConcurrentEnumerator<T>(BackingCollection, CollectionSemaphore);
 
 		public void IntersectWith(IEnumerable<T> other) {
@@ -199,9 +202,11 @@ namespace ArchiSteamFarm.Collections {
 			}
 		}
 
+		[SuppressMessage("ReSharper", "AnnotationConflictInHierarchy")]
 		void ICollection<T>.Add([NotNull] T item) => Add(item);
 
 		[NotNull]
+		[SuppressMessage("ReSharper", "AnnotationRedundancyInHierarchy")]
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 		internal void ReplaceWith([NotNull] IEnumerable<T> other) {
