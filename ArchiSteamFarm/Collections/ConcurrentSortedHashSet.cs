@@ -203,6 +203,7 @@ namespace ArchiSteamFarm.Collections {
 		}
 
 		[SuppressMessage("ReSharper", "AnnotationConflictInHierarchy")]
+		[SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
 		void ICollection<T>.Add([NotNull] T item) => Add(item);
 
 		[NotNull]
