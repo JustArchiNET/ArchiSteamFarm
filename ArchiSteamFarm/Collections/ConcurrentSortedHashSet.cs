@@ -22,7 +22,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using JetBrains.Annotations;
 
@@ -75,7 +74,7 @@ namespace ArchiSteamFarm.Collections {
 			}
 		}
 
-		public void CopyTo(T[] array, int arrayIndex) {
+		public void CopyTo([NotNull] T[] array, int arrayIndex) {
 			CollectionSemaphore.Wait();
 
 			try {
@@ -97,6 +96,7 @@ namespace ArchiSteamFarm.Collections {
 			}
 		}
 
+		[NotNull]
 		public IEnumerator<T> GetEnumerator() => new ConcurrentEnumerator<T>(BackingCollection, CollectionSemaphore);
 
 		public void IntersectWith(IEnumerable<T> other) {
@@ -199,9 +199,9 @@ namespace ArchiSteamFarm.Collections {
 			}
 		}
 
-		[SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
-		void ICollection<T>.Add(T item) => Add(item);
+		void ICollection<T>.Add([NotNull] T item) => Add(item);
 
+		[NotNull]
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 		internal void ReplaceWith([NotNull] IEnumerable<T> other) {

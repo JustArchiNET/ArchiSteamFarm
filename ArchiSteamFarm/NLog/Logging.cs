@@ -375,10 +375,8 @@ namespace ArchiSteamFarm.NLog {
 
 			bool reconfigure = false;
 
-			foreach (LoggingRule consoleLoggingRule in ConsoleLoggingRules) {
-				if (LogManager.Configuration.LoggingRules.Remove(consoleLoggingRule)) {
-					reconfigure = true;
-				}
+			foreach (LoggingRule _ in ConsoleLoggingRules.Where(consoleLoggingRule => LogManager.Configuration.LoggingRules.Remove(consoleLoggingRule))) {
+				reconfigure = true;
 			}
 
 			if (reconfigure) {
