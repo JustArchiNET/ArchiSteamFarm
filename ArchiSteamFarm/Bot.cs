@@ -1174,15 +1174,11 @@ namespace ArchiSteamFarm {
 			message = Escape(message);
 
 			int i = 0;
-			int partLength;
 			while (i < message.Length) {
+				int partLength;
 				if (message.Length - i > maxMessageLength) {
-					int lastNewLine = message.LastIndexOf('\n', i+maxMessageLength, maxMessageLength);
-					if (lastNewLine > 0 && lastNewLine > i) {
-						partLength = lastNewLine-i; //split at last newline
-					} else {
-						partLength = maxMessageLength; //if there is no new lines - fallback to default
-					}
+					int lastNewLine = message.LastIndexOf(Environment.NewLine, i + maxMessageLength, maxMessageLength);
+					partLength = lastNewLine > i ? lastNewLine - i : maxMessageLength;
 				} else {
 					partLength = message.Length - i; //less than maxMessageLength left
 				}
@@ -1232,6 +1228,7 @@ namespace ArchiSteamFarm {
 				} finally {
 					MessagingSemaphore.Release();
 				}
+
 				i += partLength;
 			}
 
