@@ -1173,8 +1173,21 @@ namespace ArchiSteamFarm {
 			// We must escape our message prior to sending it
 			message = Escape(message);
 
-			for (int i = 0; i < message.Length; i += maxMessageLength) {
-				string messagePart = message.Substring(i, Math.Min(maxMessageLength, message.Length - i));
+			int i = 0;
+			int partLength;
+			while (i < message.Length) {
+				if (message.Length - i > maxMessageLength) {
+					int lastNewLine = message.LastIndexOf('\n', i+maxMessageLength, maxMessageLength);
+					if (lastNewLine > 0 && lastNewLine > i) {
+						partLength = lastNewLine-i; //split at last newline
+					} else {
+						partLength = maxMessageLength; //if there is no new lines - fallback to default
+					}
+				} else {
+					partLength = message.Length - i; //less than maxMessageLength left
+				}
+
+				string messagePart = message.Substring(i, partLength);
 
 				// If our message is of max length and ends with a single '\' then we can't split it here, it escapes the next character
 				if ((messagePart.Length >= maxMessageLength) && (messagePart[messagePart.Length - 1] == '\\') && (messagePart[messagePart.Length - 2] != '\\')) {
@@ -1219,6 +1232,7 @@ namespace ArchiSteamFarm {
 				} finally {
 					MessagingSemaphore.Release();
 				}
+				i += partLength;
 			}
 
 			return true;
