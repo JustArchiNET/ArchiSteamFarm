@@ -1185,14 +1185,13 @@ namespace ArchiSteamFarm {
 					partLength = message.Length - i;
 				}
 
-				string messagePart = message.Substring(i, partLength);
-
 				// If our message is of max length and ends with a single '\' then we can't split it here, it escapes the next character
-				if ((messagePart.Length >= maxMessageLength) && (messagePart[messagePart.Length - 1] == '\\') && (messagePart[messagePart.Length - 2] != '\\')) {
+				if ((partLength == maxMessageLength) && (message[i + partLength - 1] == '\\') && (message[i + partLength - 2] != '\\')) {
 					// Instead, we'll cut this message one char short and include the rest in next iteration
-					messagePart = messagePart.Remove(messagePart.Length - 1);
-					i--;
+					partLength--;
 				}
+
+				string messagePart = message.Substring(i, partLength);
 
 				messagePart = ASF.GlobalConfig.SteamMessagePrefix + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
 
@@ -1267,14 +1266,13 @@ namespace ArchiSteamFarm {
 					partLength = message.Length - i;
 				}
 
-				string messagePart = message.Substring(i, partLength);
-
 				// If our message is of max length and ends with a single '\' then we can't split it here, it escapes the next character
-				if ((messagePart.Length >= maxMessageLength) && (messagePart[messagePart.Length - 1] == '\\') && (messagePart[messagePart.Length - 2] != '\\')) {
+				if ((partLength == maxMessageLength) && (message[i + partLength - 1] == '\\') && (message[i + partLength - 2] != '\\')) {
 					// Instead, we'll cut this message one char short and include the rest in next iteration
-					messagePart = messagePart.Remove(messagePart.Length - 1);
-					i--;
+					partLength--;
 				}
+
+				string messagePart = message.Substring(i, partLength);
 
 				messagePart = ASF.GlobalConfig.SteamMessagePrefix + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
 
