@@ -1177,10 +1177,18 @@ namespace ArchiSteamFarm {
 
 			while (i < message.Length) {
 				int partLength;
+				bool copyNewline = false;
 
 				if (message.Length - i > maxMessageLength) {
 					int lastNewLine = message.LastIndexOf(Environment.NewLine, i + maxMessageLength, maxMessageLength, StringComparison.Ordinal);
-					partLength = lastNewLine > i ? lastNewLine - i : maxMessageLength;
+
+					if (lastNewLine > i) {
+						partLength = lastNewLine - i + Environment.NewLine.Length;
+						copyNewline = true;
+					} else {
+						partLength = maxMessageLength;
+					}
+
 				} else {
 					partLength = message.Length - i;
 				}
@@ -1230,7 +1238,7 @@ namespace ArchiSteamFarm {
 					MessagingSemaphore.Release();
 				}
 
-				i += partLength;
+				i += partLength - (copyNewline ? Environment.NewLine.Length : 0);
 			}
 
 			return true;
@@ -1258,10 +1266,18 @@ namespace ArchiSteamFarm {
 
 			while (i < message.Length) {
 				int partLength;
+				bool copyNewline = false;
 
 				if (message.Length - i > maxMessageLength) {
 					int lastNewLine = message.LastIndexOf(Environment.NewLine, i + maxMessageLength, maxMessageLength, StringComparison.Ordinal);
-					partLength = lastNewLine > i ? lastNewLine - i : maxMessageLength;
+
+					if (lastNewLine > i) {
+						partLength = lastNewLine - i + Environment.NewLine.Length;
+						copyNewline = true;
+					} else {
+						partLength = maxMessageLength;
+					}
+
 				} else {
 					partLength = message.Length - i;
 				}
@@ -1311,7 +1327,7 @@ namespace ArchiSteamFarm {
 					MessagingSemaphore.Release();
 				}
 
-				i += partLength;
+				i += partLength - (copyNewline ? Environment.NewLine.Length : 0);
 			}
 
 			return true;
