@@ -1186,7 +1186,7 @@ namespace ArchiSteamFarm {
 				}
 
 				// If our message is of max length and ends with a single '\' then we can't split it here, it escapes the next character
-				if ((partLength == maxMessageLength) && (message[i + partLength - 1] == '\\') && (message[i + partLength - 2] != '\\')) {
+				if ((partLength >= maxMessageLength) && (message[i + partLength - 1] == '\\') && (message[i + partLength - 2] != '\\')) {
 					// Instead, we'll cut this message one char short and include the rest in next iteration
 					partLength--;
 				}
@@ -1267,7 +1267,7 @@ namespace ArchiSteamFarm {
 				}
 
 				// If our message is of max length and ends with a single '\' then we can't split it here, it escapes the next character
-				if ((partLength == maxMessageLength) && (message[i + partLength - 1] == '\\') && (message[i + partLength - 2] != '\\')) {
+				if ((partLength >= maxMessageLength) && (message[i + partLength - 1] == '\\') && (message[i + partLength - 2] != '\\')) {
 					// Instead, we'll cut this message one char short and include the rest in next iteration
 					partLength--;
 				}
