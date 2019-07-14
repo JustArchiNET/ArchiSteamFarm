@@ -1173,15 +1173,33 @@ namespace ArchiSteamFarm {
 			// We must escape our message prior to sending it
 			message = Escape(message);
 
-			for (int i = 0; i < message.Length; i += maxMessageLength) {
-				string messagePart = message.Substring(i, Math.Min(maxMessageLength, message.Length - i));
+			int i = 0;
+
+			while (i < message.Length) {
+				int partLength;
+				bool copyNewline = false;
+
+				if (message.Length - i > maxMessageLength) {
+					int lastNewLine = message.LastIndexOf(Environment.NewLine, i + maxMessageLength - Environment.NewLine.Length, maxMessageLength - Environment.NewLine.Length, StringComparison.Ordinal);
+
+					if (lastNewLine > i) {
+						partLength = lastNewLine - i + Environment.NewLine.Length;
+						copyNewline = true;
+					} else {
+						partLength = maxMessageLength;
+					}
+
+				} else {
+					partLength = message.Length - i;
+				}
 
 				// If our message is of max length and ends with a single '\' then we can't split it here, it escapes the next character
-				if ((messagePart.Length >= maxMessageLength) && (messagePart[messagePart.Length - 1] == '\\') && (messagePart[messagePart.Length - 2] != '\\')) {
+				if ((partLength >= maxMessageLength) && (message[i + partLength - 1] == '\\') && (message[i + partLength - 2] != '\\')) {
 					// Instead, we'll cut this message one char short and include the rest in next iteration
-					messagePart = messagePart.Remove(messagePart.Length - 1);
-					i--;
+					partLength--;
 				}
+
+				string messagePart = message.Substring(i, partLength);
 
 				messagePart = ASF.GlobalConfig.SteamMessagePrefix + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
 
@@ -1219,6 +1237,8 @@ namespace ArchiSteamFarm {
 				} finally {
 					MessagingSemaphore.Release();
 				}
+
+				i += partLength - (copyNewline ? Environment.NewLine.Length : 0);
 			}
 
 			return true;
@@ -1242,15 +1262,33 @@ namespace ArchiSteamFarm {
 			// We must escape our message prior to sending it
 			message = Escape(message);
 
-			for (int i = 0; i < message.Length; i += maxMessageLength) {
-				string messagePart = message.Substring(i, Math.Min(maxMessageLength, message.Length - i));
+			int i = 0;
+
+			while (i < message.Length) {
+				int partLength;
+				bool copyNewline = false;
+
+				if (message.Length - i > maxMessageLength) {
+					int lastNewLine = message.LastIndexOf(Environment.NewLine, i + maxMessageLength - Environment.NewLine.Length, maxMessageLength - Environment.NewLine.Length, StringComparison.Ordinal);
+
+					if (lastNewLine > i) {
+						partLength = lastNewLine - i + Environment.NewLine.Length;
+						copyNewline = true;
+					} else {
+						partLength = maxMessageLength;
+					}
+
+				} else {
+					partLength = message.Length - i;
+				}
 
 				// If our message is of max length and ends with a single '\' then we can't split it here, it escapes the next character
-				if ((messagePart.Length >= maxMessageLength) && (messagePart[messagePart.Length - 1] == '\\') && (messagePart[messagePart.Length - 2] != '\\')) {
+				if ((partLength >= maxMessageLength) && (message[i + partLength - 1] == '\\') && (message[i + partLength - 2] != '\\')) {
 					// Instead, we'll cut this message one char short and include the rest in next iteration
-					messagePart = messagePart.Remove(messagePart.Length - 1);
-					i--;
+					partLength--;
 				}
+
+				string messagePart = message.Substring(i, partLength);
 
 				messagePart = ASF.GlobalConfig.SteamMessagePrefix + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
 
@@ -1288,6 +1326,8 @@ namespace ArchiSteamFarm {
 				} finally {
 					MessagingSemaphore.Release();
 				}
+
+				i += partLength - (copyNewline ? Environment.NewLine.Length : 0);
 			}
 
 			return true;
