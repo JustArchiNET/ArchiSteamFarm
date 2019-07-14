@@ -1180,7 +1180,7 @@ namespace ArchiSteamFarm {
 				bool copyNewline = false;
 
 				if (message.Length - i > maxMessageLength) {
-					int lastNewLine = message.LastIndexOf(Environment.NewLine, i + maxMessageLength, maxMessageLength, StringComparison.Ordinal);
+					int lastNewLine = message.LastIndexOf(Environment.NewLine, i + maxMessageLength - Environment.NewLine.Length, maxMessageLength - Environment.NewLine.Length, StringComparison.Ordinal);
 
 					if (lastNewLine > i) {
 						partLength = lastNewLine - i + Environment.NewLine.Length;
@@ -1269,7 +1269,7 @@ namespace ArchiSteamFarm {
 				bool copyNewline = false;
 
 				if (message.Length - i > maxMessageLength) {
-					int lastNewLine = message.LastIndexOf(Environment.NewLine, i + maxMessageLength, maxMessageLength, StringComparison.Ordinal);
+					int lastNewLine = message.LastIndexOf(Environment.NewLine, i + maxMessageLength - Environment.NewLine.Length, maxMessageLength - Environment.NewLine.Length, StringComparison.Ordinal);
 
 					if (lastNewLine > i) {
 						partLength = lastNewLine - i + Environment.NewLine.Length;
