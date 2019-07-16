@@ -92,7 +92,7 @@ namespace ArchiSteamFarm {
 
 		[ItemCanBeNull]
 		private static async Task<ReleaseResponse> GetReleaseFromURL(string releaseURL) {
-			if (string.IsNullOrEmpty(nameof(releaseURL))) {
+			if (string.IsNullOrEmpty(releaseURL)) {
 				ASF.ArchiLogger.LogNullError(nameof(releaseURL));
 
 				return null;
@@ -105,7 +105,7 @@ namespace ArchiSteamFarm {
 
 		[ItemCanBeNull]
 		private static async Task<ImmutableList<ReleaseResponse>> GetReleasesFromURL(string releaseURL) {
-			if (string.IsNullOrEmpty(nameof(releaseURL))) {
+			if (string.IsNullOrEmpty(releaseURL)) {
 				ASF.ArchiLogger.LogNullError(nameof(releaseURL));
 
 				return null;
