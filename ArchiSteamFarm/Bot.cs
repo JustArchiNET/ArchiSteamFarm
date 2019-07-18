@@ -1640,26 +1640,6 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async Task HandleMessage(ulong chatGroupID, ulong chatID, ulong steamID, string message) {
-			if ((chatGroupID == 0) || (chatID == 0) || (steamID == 0) || string.IsNullOrEmpty(message)) {
-				ArchiLogger.LogNullError(nameof(chatGroupID) + " || " + nameof(chatID) + " || " + nameof(steamID) + " || " + nameof(message));
-
-				return;
-			}
-
-			await Commands.HandleMessage(chatGroupID, chatID, steamID, message).ConfigureAwait(false);
-		}
-
-		private async Task HandleMessage(ulong steamID, string message) {
-			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || string.IsNullOrEmpty(message)) {
-				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(message));
-
-				return;
-			}
-
-			await Commands.HandleMessage(steamID, message).ConfigureAwait(false);
-		}
-
 		private async Task HeartBeat() {
 			if (!KeepRunning || !IsConnectedAndLoggedOn || (HeartBeatFailures == byte.MaxValue)) {
 				return;
@@ -2237,7 +2217,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			await HandleMessage(notification.chat_group_id, notification.chat_id, notification.steamid_sender, message).ConfigureAwait(false);
+			await Commands.HandleMessage(notification.chat_group_id, notification.chat_id, notification.steamid_sender, message).ConfigureAwait(false);
 		}
 
 		private async Task OnIncomingMessage(CFriendMessages_IncomingMessage_Notification notification) {
@@ -2277,7 +2257,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			await HandleMessage(notification.steamid_friend, message).ConfigureAwait(false);
+			await Commands.HandleMessage(notification.steamid_friend, message).ConfigureAwait(false);
 		}
 
 		private async void OnLicenseList(SteamApps.LicenseListCallback callback) {
