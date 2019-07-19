@@ -2679,7 +2679,18 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			Dictionary<string, string> data = new Dictionary<string, string>(1, StringComparer.Ordinal) { { "pin", parentalCode } };
+			string sessionID = WebBrowser.CookieContainer.GetCookieValue(serviceURL, "sessionid");
+
+			if (string.IsNullOrEmpty(sessionID)) {
+				Bot.ArchiLogger.LogNullError(nameof(sessionID));
+
+				return false;
+			}
+
+			Dictionary<string, string> data = new Dictionary<string, string>(2, StringComparer.Ordinal) {
+				{ "pin", parentalCode },
+				{ "sessionid", sessionID }
+			};
 
 			// This request doesn't go through UrlPostRetryWithSession as we have no access to session refresh capability (this is in fact session initialization)
 			WebBrowser.BasicResponse response = await WebLimitRequest(serviceURL, async () => await WebBrowser.UrlPost(serviceURL + request, data, serviceURL).ConfigureAwait(false)).ConfigureAwait(false);
