@@ -20,15 +20,32 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using ArchiSteamFarm.Localization;
 using CryptSharp.Utility;
+using JetBrains.Annotations;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
 	public static class ArchiCryptoHelper {
+		[ItemNotNull]
+		private static IEnumerable<byte[]> SteamParentalCodes {
+			get {
+				for (char a = '0'; a <= '9'; a++) {
+					for (char b = '0'; b <= '9'; b++) {
+						for (char c = '0'; c <= '9'; c++) {
+							for (char d = '0'; d <= '9'; d++) {
+								yield return new[] { (byte) a, (byte) b, (byte) c, (byte) d };
+							}
+						}
+					}
+				}
+			}
+		}
+
 		private static byte[] EncryptionKey = Encoding.UTF8.GetBytes(nameof(ArchiSteamFarm));
 
 		internal static string BruteforceSteamParentalCode(byte[] passwordHash, byte[] salt, bool scrypt = true) {
@@ -38,7 +55,17 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			return scrypt ? BruteforceSteamParentalCodeScrypt(passwordHash, salt) : BruteforceSteamParentalCodePbkdf2(passwordHash, salt);
+			byte[] password = scrypt
+				? SteamParentalCodes.AsParallel().FirstOrDefault(passwordToTry => passwordHash.SequenceEqual(SCrypt.ComputeDerivedKey(passwordToTry, salt, 8192, 8, 1, null, passwordHash.Length)))
+				: SteamParentalCodes.AsParallel().FirstOrDefault(
+					passwordToTry => {
+						using (HMACSHA1 hmacAlgorithm = new HMACSHA1(passwordToTry)) {
+							return passwordHash.SequenceEqual(Pbkdf2.ComputeDerivedKey(hmacAlgorithm, salt, 10000, passwordHash.Length));
+						}
+					}
+				);
+
+			return password != null ? Encoding.UTF8.GetString(password) : null;
 		}
 
 		internal static string Decrypt(ECryptoMethod cryptoMethod, string encrypted) {
@@ -91,76 +118,6 @@ namespace ArchiSteamFarm {
 			}
 
 			EncryptionKey = Encoding.UTF8.GetBytes(key);
-		}
-
-		private static string BruteforceSteamParentalCodePbkdf2(byte[] passwordHash, byte[] salt) {
-			if ((passwordHash == null) || (salt == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(passwordHash) + " || " + nameof(salt));
-
-				return null;
-			}
-
-			byte[] password = new byte[4];
-
-			using (KeyedHashAlgorithm hmacAlgorithm = KeyedHashAlgorithm.Create()) {
-				for (char a = '0'; a <= '9'; a++) {
-					password[0] = (byte) a;
-
-					for (char b = '0'; b <= '9'; b++) {
-						password[1] = (byte) b;
-
-						for (char c = '0'; c <= '9'; c++) {
-							password[2] = (byte) c;
-
-							for (char d = '0'; d <= '9'; d++) {
-								password[3] = (byte) d;
-
-								byte[] passwordHashTry = Pbkdf2.ComputeDerivedKey(hmacAlgorithm, salt, 10000, passwordHash.Length);
-
-								if (passwordHashTry.SequenceEqual(passwordHash)) {
-									return Encoding.UTF8.GetString(password);
-								}
-							}
-						}
-					}
-				}
-			}
-
-			return null;
-		}
-
-		private static string BruteforceSteamParentalCodeScrypt(byte[] passwordHash, byte[] salt) {
-			if ((passwordHash == null) || (salt == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(passwordHash) + " || " + nameof(salt));
-
-				return null;
-			}
-
-			byte[] password = new byte[4];
-
-			for (char a = '0'; a <= '9'; a++) {
-				password[0] = (byte) a;
-
-				for (char b = '0'; b <= '9'; b++) {
-					password[1] = (byte) b;
-
-					for (char c = '0'; c <= '9'; c++) {
-						password[2] = (byte) c;
-
-						for (char d = '0'; d <= '9'; d++) {
-							password[3] = (byte) d;
-
-							byte[] passwordHashTry = SCrypt.ComputeDerivedKey(password, salt, 8192, 8, 1, null, passwordHash.Length);
-
-							if (passwordHashTry.SequenceEqual(passwordHash)) {
-								return Encoding.UTF8.GetString(password);
-							}
-						}
-					}
-				}
-			}
-
-			return null;
 		}
 
 		private static string DecryptAES(string encrypted) {

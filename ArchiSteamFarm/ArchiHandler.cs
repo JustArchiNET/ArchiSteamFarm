@@ -701,7 +701,7 @@ namespace ArchiSteamFarm {
 					if (scrypt) {
 						passwordHash = SCrypt.ComputeDerivedKey(password, body.settings.salt, 8192, 8, 1, null, body.settings.passwordhash.Length);
 					} else {
-						using (KeyedHashAlgorithm hmacAlgorithm = KeyedHashAlgorithm.Create()) {
+						using (HMACSHA1 hmacAlgorithm = new HMACSHA1(password)) {
 							passwordHash = Pbkdf2.ComputeDerivedKey(hmacAlgorithm, body.settings.salt, 10000, body.settings.passwordhash.Length);
 						}
 					}
