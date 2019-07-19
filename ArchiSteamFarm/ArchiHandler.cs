@@ -25,6 +25,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using ArchiSteamFarm.CMsgs;
 using ArchiSteamFarm.Localization;
@@ -665,15 +666,15 @@ namespace ArchiSteamFarm {
 				return (false, null);
 			}
 
-			bool derivedKey;
+			bool scrypt;
 
 			switch (body.settings.passwordhashtype) {
 				case 4:
-					derivedKey = false;
+					scrypt = false;
 
 					break;
 				case 6:
-					derivedKey = true;
+					scrypt = true;
 
 					break;
 				default:
@@ -695,7 +696,15 @@ namespace ArchiSteamFarm {
 				}
 
 				if (i >= steamParentalCode.Length) {
-					byte[] passwordHash = derivedKey ? SCrypt.ComputeDerivedKey(password, body.settings.salt, 8192, 8, 1, null, body.settings.passwordhash.Length) : SCrypt.GetEffectivePbkdf2Salt(password, body.settings.salt, 8192, 8, 1, null);
+					byte[] passwordHash;
+
+					if (scrypt) {
+						passwordHash = SCrypt.ComputeDerivedKey(password, body.settings.salt, 8192, 8, 1, null, body.settings.passwordhash.Length);
+					} else {
+						using (KeyedHashAlgorithm hmacAlgorithm = KeyedHashAlgorithm.Create()) {
+							passwordHash = Pbkdf2.ComputeDerivedKey(hmacAlgorithm, body.settings.salt, 10000, body.settings.passwordhash.Length);
+						}
+					}
 
 					if (passwordHash.SequenceEqual(body.settings.passwordhash)) {
 						return (true, steamParentalCode);
@@ -705,7 +714,7 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogGenericInfo(Strings.PleaseWait);
 
-			steamParentalCode = ArchiCryptoHelper.BruteforceSteamParentalCode(body.settings.passwordhash, body.settings.salt, derivedKey);
+			steamParentalCode = ArchiCryptoHelper.BruteforceSteamParentalCode(body.settings.passwordhash, body.settings.salt, scrypt);
 
 			ArchiLogger.LogGenericInfo(Strings.Done);
 

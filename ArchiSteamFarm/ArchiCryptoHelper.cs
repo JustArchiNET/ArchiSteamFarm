@@ -31,14 +31,14 @@ namespace ArchiSteamFarm {
 	public static class ArchiCryptoHelper {
 		private static byte[] EncryptionKey = Encoding.UTF8.GetBytes(nameof(ArchiSteamFarm));
 
-		internal static string BruteforceSteamParentalCode(byte[] passwordHash, byte[] salt, bool derivedKey = true) {
+		internal static string BruteforceSteamParentalCode(byte[] passwordHash, byte[] salt, bool scrypt = true) {
 			if ((passwordHash == null) || (salt == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(passwordHash) + " || " + nameof(salt));
 
 				return null;
 			}
 
-			return derivedKey ? BruteforceSteamParentalCodeDerived(passwordHash, salt) : BruteforceSteamParentalCodePbkdf2(passwordHash, salt);
+			return scrypt ? BruteforceSteamParentalCodeScrypt(passwordHash, salt) : BruteforceSteamParentalCodePbkdf2(passwordHash, salt);
 		}
 
 		internal static string Decrypt(ECryptoMethod cryptoMethod, string encrypted) {
@@ -93,40 +93,6 @@ namespace ArchiSteamFarm {
 			EncryptionKey = Encoding.UTF8.GetBytes(key);
 		}
 
-		private static string BruteforceSteamParentalCodeDerived(byte[] passwordHash, byte[] salt) {
-			if ((passwordHash == null) || (salt == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(passwordHash) + " || " + nameof(salt));
-
-				return null;
-			}
-
-			byte[] password = new byte[4];
-
-			for (char a = '0'; a <= '9'; a++) {
-				password[0] = (byte) a;
-
-				for (char b = '0'; b <= '9'; b++) {
-					password[1] = (byte) b;
-
-					for (char c = '0'; c <= '9'; c++) {
-						password[2] = (byte) c;
-
-						for (char d = '0'; d <= '9'; d++) {
-							password[3] = (byte) d;
-
-							byte[] passwordHashTry = SCrypt.ComputeDerivedKey(password, salt, 8192, 8, 1, null, passwordHash.Length);
-
-							if (passwordHashTry.SequenceEqual(passwordHash)) {
-								return Encoding.UTF8.GetString(password);
-							}
-						}
-					}
-				}
-			}
-
-			return null;
-		}
-
 		private static string BruteforceSteamParentalCodePbkdf2(byte[] passwordHash, byte[] salt) {
 			if ((passwordHash == null) || (salt == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(passwordHash) + " || " + nameof(salt));
@@ -154,6 +120,40 @@ namespace ArchiSteamFarm {
 								if (passwordHashTry.SequenceEqual(passwordHash)) {
 									return Encoding.UTF8.GetString(password);
 								}
+							}
+						}
+					}
+				}
+			}
+
+			return null;
+		}
+
+		private static string BruteforceSteamParentalCodeScrypt(byte[] passwordHash, byte[] salt) {
+			if ((passwordHash == null) || (salt == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(passwordHash) + " || " + nameof(salt));
+
+				return null;
+			}
+
+			byte[] password = new byte[4];
+
+			for (char a = '0'; a <= '9'; a++) {
+				password[0] = (byte) a;
+
+				for (char b = '0'; b <= '9'; b++) {
+					password[1] = (byte) b;
+
+					for (char c = '0'; c <= '9'; c++) {
+						password[2] = (byte) c;
+
+						for (char d = '0'; d <= '9'; d++) {
+							password[3] = (byte) d;
+
+							byte[] passwordHashTry = SCrypt.ComputeDerivedKey(password, salt, 8192, 8, 1, null, passwordHash.Length);
+
+							if (passwordHashTry.SequenceEqual(passwordHash)) {
+								return Encoding.UTF8.GetString(password);
 							}
 						}
 					}
