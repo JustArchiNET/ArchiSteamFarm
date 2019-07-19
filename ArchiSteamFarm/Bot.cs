@@ -2417,16 +2417,24 @@ namespace ArchiSteamFarm {
 						}
 					}
 
-					if (!string.IsNullOrEmpty(BotConfig.SteamParentalCode) && (BotConfig.SteamParentalCode.Length != 4)) {
-						string steamParentalCode = await Logging.GetUserInput(ASF.EUserInputType.SteamParentalCode, BotName).ConfigureAwait(false);
+					(bool isSteamParentalEnabled, string steamParentalCode)? steamParental = await ArchiHandler.ValidateSteamParental(BotConfig.SteamParentalCode).ConfigureAwait(false);
 
-						if (string.IsNullOrEmpty(steamParentalCode) || (steamParentalCode.Length != 4)) {
-							Stop();
+					if (steamParental?.isSteamParentalEnabled == true) {
+						if (!string.IsNullOrEmpty(steamParental.Value.steamParentalCode)) {
+							if (BotConfig.SteamParentalCode != steamParental.Value.steamParentalCode) {
+								SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParental.Value.steamParentalCode);
+							}
+						} else {
+							string steamParentalCode = await Logging.GetUserInput(ASF.EUserInputType.SteamParentalCode, BotName).ConfigureAwait(false);
 
-							break;
+							if (string.IsNullOrEmpty(steamParentalCode) || (steamParentalCode.Length != 4)) {
+								Stop();
+
+								break;
+							}
+
+							SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode);
 						}
-
-						SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode);
 					}
 
 					ArchiWebHandler.OnVanityURLChanged(callback.VanityURL);

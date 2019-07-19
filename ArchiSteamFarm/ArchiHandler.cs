@@ -29,6 +29,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.CMsgs;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
+using CryptSharp.Utility;
 using JetBrains.Annotations;
 using SteamKit2;
 using SteamKit2.Internal;
@@ -43,6 +44,7 @@ namespace ArchiSteamFarm {
 		private readonly SteamUnifiedMessages.UnifiedService<IClanChatRooms> UnifiedClanChatRoomsService;
 		private readonly SteamUnifiedMessages.UnifiedService<IEcon> UnifiedEconService;
 		private readonly SteamUnifiedMessages.UnifiedService<IFriendMessages> UnifiedFriendMessagesService;
+		private readonly SteamUnifiedMessages.UnifiedService<IParental> UnifiedParentalService;
 		private readonly SteamUnifiedMessages.UnifiedService<IPlayer> UnifiedPlayerService;
 
 		internal DateTime LastPacketReceived { get; private set; }
@@ -57,6 +59,7 @@ namespace ArchiSteamFarm {
 			UnifiedClanChatRoomsService = steamUnifiedMessages.CreateService<IClanChatRooms>();
 			UnifiedEconService = steamUnifiedMessages.CreateService<IEcon>();
 			UnifiedFriendMessagesService = steamUnifiedMessages.CreateService<IFriendMessages>();
+			UnifiedParentalService = steamUnifiedMessages.CreateService<IParental>();
 			UnifiedPlayerService = steamUnifiedMessages.CreateService<IPlayer>();
 		}
 
@@ -627,6 +630,86 @@ namespace ArchiSteamFarm {
 
 			ClientMsgProtobuf<CMsgClientUIMode> request = new ClientMsgProtobuf<CMsgClientUIMode>(EMsg.ClientCurrentUIMode) { Body = { chat_mode = chatMode } };
 			Client.Send(request);
+		}
+
+		internal async Task<(bool IsSteamParentalEnabled, string SteamParentalCode)?> ValidateSteamParental(string steamParentalCode = null) {
+			if (!Client.IsConnected) {
+				return null;
+			}
+
+			CParental_GetParentalSettings_Request request = new CParental_GetParentalSettings_Request { steamid = Client.SteamID };
+
+			SteamUnifiedMessages.ServiceMethodResponse response;
+
+			try {
+				response = await UnifiedParentalService.SendMessage(x => x.GetParentalSettings(request));
+			} catch (Exception e) {
+				ArchiLogger.LogGenericWarningException(e);
+
+				return null;
+			}
+
+			if (response == null) {
+				ArchiLogger.LogNullError(nameof(response));
+
+				return null;
+			}
+
+			if (response.Result != EResult.OK) {
+				return null;
+			}
+
+			CParental_GetParentalSettings_Response body = response.GetDeserializedResponse<CParental_GetParentalSettings_Response>();
+
+			if (!body.settings.is_enabled) {
+				return (false, null);
+			}
+
+			bool derivedKey;
+
+			switch (body.settings.passwordhashtype) {
+				case 4:
+					derivedKey = false;
+
+					break;
+				case 6:
+					derivedKey = true;
+
+					break;
+				default:
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(body.settings.passwordhashtype), body.settings.passwordhashtype));
+
+					return (false, null);
+			}
+
+			if ((steamParentalCode != null) && (steamParentalCode.Length > 4)) {
+				byte i = 0;
+				byte[] password = new byte[steamParentalCode.Length];
+
+				foreach (char character in steamParentalCode) {
+					if ((character < '0') || (character > '9')) {
+						break;
+					}
+
+					password[i++] = (byte) character;
+				}
+
+				if (i >= steamParentalCode.Length) {
+					byte[] passwordHash = derivedKey ? SCrypt.ComputeDerivedKey(password, body.settings.salt, 8192, 8, 1, null, body.settings.passwordhash.Length) : SCrypt.GetEffectivePbkdf2Salt(password, body.settings.salt, 8192, 8, 1, null);
+
+					if (passwordHash.SequenceEqual(body.settings.passwordhash)) {
+						return (true, steamParentalCode);
+					}
+				}
+			}
+
+			ArchiLogger.LogGenericInfo(Strings.PleaseWait);
+
+			steamParentalCode = ArchiCryptoHelper.BruteforceSteamParentalCode(body.settings.passwordhash, body.settings.salt, derivedKey);
+
+			ArchiLogger.LogGenericInfo(Strings.Done);
+
+			return (true, steamParentalCode);
 		}
 
 		private void HandleItemAnnouncements(IPacketMsg packetMsg) {
