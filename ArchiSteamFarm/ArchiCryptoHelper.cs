@@ -31,42 +31,23 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	public static class ArchiCryptoHelper {
-		[ItemNotNull]
+		private const ushort SteamParentalPbkdf2Iterations = 10000;
+		private const byte SteamParentalSCryptBlocksCount = 8;
+		private const ushort SteamParentalSCryptIterations = 8192;
+
+		[NotNull]
+		private static IEnumerable<byte> SteamParentalCharacters => Enumerable.Range('0', 10).Select(character => (byte) character);
+
+		[NotNull]
 		private static IEnumerable<byte[]> SteamParentalCodes {
 			get {
-				for (char a = '0'; a <= '9'; a++) {
-					for (char b = '0'; b <= '9'; b++) {
-						for (char c = '0'; c <= '9'; c++) {
-							for (char d = '0'; d <= '9'; d++) {
-								yield return new[] { (byte) a, (byte) b, (byte) c, (byte) d };
-							}
-						}
-					}
-				}
+				HashSet<byte> steamParentalCharacters = SteamParentalCharacters.ToHashSet();
+
+				return from a in steamParentalCharacters from b in steamParentalCharacters from c in steamParentalCharacters from d in steamParentalCharacters select new[] { a, b, c, d };
 			}
 		}
 
 		private static byte[] EncryptionKey = Encoding.UTF8.GetBytes(nameof(ArchiSteamFarm));
-
-		internal static string BruteforceSteamParentalCode(byte[] passwordHash, byte[] salt, bool scrypt = true) {
-			if ((passwordHash == null) || (salt == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(passwordHash) + " || " + nameof(salt));
-
-				return null;
-			}
-
-			byte[] password = scrypt
-				? SteamParentalCodes.AsParallel().FirstOrDefault(passwordToTry => passwordHash.SequenceEqual(SCrypt.ComputeDerivedKey(passwordToTry, salt, 8192, 8, 1, null, passwordHash.Length)))
-				: SteamParentalCodes.AsParallel().FirstOrDefault(
-					passwordToTry => {
-						using (HMACSHA1 hmacAlgorithm = new HMACSHA1(passwordToTry)) {
-							return passwordHash.SequenceEqual(Pbkdf2.ComputeDerivedKey(hmacAlgorithm, salt, 10000, passwordHash.Length));
-						}
-					}
-				);
-
-			return password != null ? Encoding.UTF8.GetString(password) : null;
-		}
 
 		internal static string Decrypt(ECryptoMethod cryptoMethod, string encrypted) {
 			if (!Enum.IsDefined(typeof(ECryptoMethod), cryptoMethod) || string.IsNullOrEmpty(encrypted)) {
@@ -108,6 +89,39 @@ namespace ArchiSteamFarm {
 
 					return null;
 			}
+		}
+
+		internal static byte[] GenerateSteamParentalHash(byte[] password, byte[] salt, byte hashLength, ESteamParentalAlgorithm steamParentalAlgorithm) {
+			if ((password == null) || (salt == null) || (hashLength == 0) || !Enum.IsDefined(typeof(ESteamParentalAlgorithm), steamParentalAlgorithm)) {
+				ASF.ArchiLogger.LogNullError(nameof(password) + " || " + nameof(salt) + " || " + nameof(hashLength) + " || " + nameof(steamParentalAlgorithm));
+
+				return null;
+			}
+
+			switch (steamParentalAlgorithm) {
+				case ESteamParentalAlgorithm.Pbkdf2:
+					using (HMACSHA1 hmacAlgorithm = new HMACSHA1(password)) {
+						return Pbkdf2.ComputeDerivedKey(hmacAlgorithm, salt, SteamParentalPbkdf2Iterations, hashLength);
+					}
+				case ESteamParentalAlgorithm.SCrypt:
+					return SCrypt.ComputeDerivedKey(password, salt, SteamParentalSCryptIterations, SteamParentalSCryptBlocksCount, 1, null, hashLength);
+				default:
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(steamParentalAlgorithm), steamParentalAlgorithm));
+
+					return null;
+			}
+		}
+
+		internal static string RecoverSteamParentalCode(byte[] passwordHash, byte[] salt, ESteamParentalAlgorithm steamParentalAlgorithm) {
+			if ((passwordHash == null) || (salt == null) || !Enum.IsDefined(typeof(ESteamParentalAlgorithm), steamParentalAlgorithm)) {
+				ASF.ArchiLogger.LogNullError(nameof(passwordHash) + " || " + nameof(salt) + " || " + nameof(steamParentalAlgorithm));
+
+				return null;
+			}
+
+			byte[] password = SteamParentalCodes.AsParallel().FirstOrDefault(passwordToTry => GenerateSteamParentalHash(passwordToTry, salt, (byte) passwordHash.Length, steamParentalAlgorithm)?.SequenceEqual(passwordHash) == true);
+
+			return password != null ? Encoding.UTF8.GetString(password) : null;
 		}
 
 		internal static void SetEncryptionKey(string key) {
@@ -226,6 +240,11 @@ namespace ArchiSteamFarm {
 			PlainText,
 			AES,
 			ProtectedDataForCurrentUser
+		}
+
+		internal enum ESteamParentalAlgorithm : byte {
+			SCrypt,
+			Pbkdf2
 		}
 	}
 }

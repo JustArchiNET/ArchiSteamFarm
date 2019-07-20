@@ -19,7 +19,7 @@ namespace ArchiSteamFarm.Localization {
     // przez narzędzie, takie jak ResGen lub Visual Studio.
     // Aby dodać lub usunąć składową, edytuj plik ResX, a następnie ponownie uruchom narzędzie ResGen
     // z opcją /str lub ponownie utwórz projekt VS.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Strings {
@@ -327,6 +327,15 @@ namespace ArchiSteamFarm.Localization {
         public static string BotGamesToRedeemInBackgroundCount {
             get {
                 return ResourceManager.GetString("BotGamesToRedeemInBackgroundCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Generating Steam parental code, this can take a while, consider putting it in the config instead....
+        /// </summary>
+        public static string BotGeneratingSteamParentalCode {
+            get {
+                return ResourceManager.GetString("BotGeneratingSteamParentalCode", resourceCulture);
             }
         }
         

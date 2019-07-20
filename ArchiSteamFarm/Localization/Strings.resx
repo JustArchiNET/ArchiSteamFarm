@@ -731,4 +731,7 @@ StackTrace:
   <data name="UpdateCleanup" xml:space="preserve">
     <value>Cleaning up old files after update...</value>
   </data>
+  <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
+    <value>Generating Steam parental code, this can take a while, consider putting it in the config instead...</value>
+  </data>
 </root>

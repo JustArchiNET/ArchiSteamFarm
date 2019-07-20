@@ -25,12 +25,10 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 using ArchiSteamFarm.CMsgs;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
-using CryptSharp.Utility;
 using JetBrains.Annotations;
 using SteamKit2;
 using SteamKit2.Internal;
@@ -666,15 +664,15 @@ namespace ArchiSteamFarm {
 				return (false, null);
 			}
 
-			bool scrypt;
+			ArchiCryptoHelper.ESteamParentalAlgorithm steamParentalAlgorithm;
 
 			switch (body.settings.passwordhashtype) {
 				case 4:
-					scrypt = false;
+					steamParentalAlgorithm = ArchiCryptoHelper.ESteamParentalAlgorithm.Pbkdf2;
 
 					break;
 				case 6:
-					scrypt = true;
+					steamParentalAlgorithm = ArchiCryptoHelper.ESteamParentalAlgorithm.SCrypt;
 
 					break;
 				default:
@@ -696,15 +694,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if (i >= steamParentalCode.Length) {
-					byte[] passwordHash;
-
-					if (scrypt) {
-						passwordHash = SCrypt.ComputeDerivedKey(password, body.settings.salt, 8192, 8, 1, null, body.settings.passwordhash.Length);
-					} else {
-						using (HMACSHA1 hmacAlgorithm = new HMACSHA1(password)) {
-							passwordHash = Pbkdf2.ComputeDerivedKey(hmacAlgorithm, body.settings.salt, 10000, body.settings.passwordhash.Length);
-						}
-					}
+					byte[] passwordHash = ArchiCryptoHelper.GenerateSteamParentalHash(password, body.settings.salt, (byte) body.settings.passwordhash.Length, steamParentalAlgorithm);
 
 					if (passwordHash.SequenceEqual(body.settings.passwordhash)) {
 						return (true, steamParentalCode);
@@ -712,9 +702,9 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			ArchiLogger.LogGenericInfo(Strings.PleaseWait);
+			ArchiLogger.LogGenericInfo(Strings.BotGeneratingSteamParentalCode);
 
-			steamParentalCode = ArchiCryptoHelper.BruteforceSteamParentalCode(body.settings.passwordhash, body.settings.salt, scrypt);
+			steamParentalCode = ArchiCryptoHelper.RecoverSteamParentalCode(body.settings.passwordhash, body.settings.salt, steamParentalAlgorithm);
 
 			ArchiLogger.LogGenericInfo(Strings.Done);
 
