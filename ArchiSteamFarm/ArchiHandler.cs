@@ -683,7 +683,7 @@ namespace ArchiSteamFarm {
 					return (false, null);
 			}
 
-			if ((steamParentalCode != null) && (steamParentalCode.Length > 4)) {
+			if ((steamParentalCode != null) && (steamParentalCode.Length == BotConfig.SteamParentalCodeLength)) {
 				byte i = 0;
 				byte[] password = new byte[steamParentalCode.Length];
 

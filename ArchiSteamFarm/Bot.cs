@@ -2429,7 +2429,7 @@ namespace ArchiSteamFarm {
 							} else {
 								string steamParentalCode = await Logging.GetUserInput(ASF.EUserInputType.SteamParentalCode, BotName).ConfigureAwait(false);
 
-								if (string.IsNullOrEmpty(steamParentalCode) || (steamParentalCode.Length != 4)) {
+								if (string.IsNullOrEmpty(steamParentalCode) || (steamParentalCode.Length != BotConfig.SteamParentalCodeLength)) {
 									Stop();
 
 									break;
