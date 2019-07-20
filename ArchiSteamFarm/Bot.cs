@@ -1188,7 +1188,6 @@ namespace ArchiSteamFarm {
 					} else {
 						partLength = maxMessageLength;
 					}
-
 				} else {
 					partLength = message.Length - i;
 				}
@@ -1277,7 +1276,6 @@ namespace ArchiSteamFarm {
 					} else {
 						partLength = maxMessageLength;
 					}
-
 				} else {
 					partLength = message.Length - i;
 				}
