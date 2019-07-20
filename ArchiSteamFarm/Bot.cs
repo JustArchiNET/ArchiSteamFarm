@@ -192,6 +192,7 @@ namespace ArchiSteamFarm {
 		private Timer PlayingWasBlockedTimer;
 		private bool ReconnectOnUserInitiated;
 		private Timer SendItemsTimer;
+		private bool SteamParentalActive = true;
 		private SteamSaleEvent SteamSaleEvent;
 		private uint TradesCount;
 		private string TwoFactorCode;
@@ -1018,7 +1019,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, callback.Nonce, BotConfig.SteamParentalCode).ConfigureAwait(false)) {
+			if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, callback.Nonce, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
 				return true;
 			}
 
@@ -2415,29 +2416,35 @@ namespace ArchiSteamFarm {
 						}
 					}
 
-					(bool isSteamParentalEnabled, string steamParentalCode)? steamParental = await ArchiHandler.ValidateSteamParental(BotConfig.SteamParentalCode).ConfigureAwait(false);
+					(bool IsSteamParentalEnabled, string SteamParentalCode)? steamParental = await ArchiHandler.ValidateSteamParental(BotConfig.SteamParentalCode).ConfigureAwait(false);
 
-					if (steamParental?.isSteamParentalEnabled == true) {
-						if (!string.IsNullOrEmpty(steamParental.Value.steamParentalCode)) {
-							if (BotConfig.SteamParentalCode != steamParental.Value.steamParentalCode) {
-								SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParental.Value.steamParentalCode);
+					if (steamParental.HasValue) {
+						if (steamParental.Value.IsSteamParentalEnabled) {
+							SteamParentalActive = true;
+
+							if (!string.IsNullOrEmpty(steamParental.Value.SteamParentalCode)) {
+								if (BotConfig.SteamParentalCode != steamParental.Value.SteamParentalCode) {
+									SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParental.Value.SteamParentalCode);
+								}
+							} else {
+								string steamParentalCode = await Logging.GetUserInput(ASF.EUserInputType.SteamParentalCode, BotName).ConfigureAwait(false);
+
+								if (string.IsNullOrEmpty(steamParentalCode) || (steamParentalCode.Length != 4)) {
+									Stop();
+
+									break;
+								}
+
+								SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode);
 							}
 						} else {
-							string steamParentalCode = await Logging.GetUserInput(ASF.EUserInputType.SteamParentalCode, BotName).ConfigureAwait(false);
-
-							if (string.IsNullOrEmpty(steamParentalCode) || (steamParentalCode.Length != 4)) {
-								Stop();
-
-								break;
-							}
-
-							SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode);
+							SteamParentalActive = false;
 						}
 					}
 
 					ArchiWebHandler.OnVanityURLChanged(callback.VanityURL);
 
-					if (!await ArchiWebHandler.Init(callback.ClientSteamID, SteamClient.Universe, callback.WebAPIUserNonce, BotConfig.SteamParentalCode).ConfigureAwait(false)) {
+					if (!await ArchiWebHandler.Init(callback.ClientSteamID, SteamClient.Universe, callback.WebAPIUserNonce, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
 						if (!await RefreshSession().ConfigureAwait(false)) {
 							break;
 						}
