@@ -100,7 +100,7 @@ namespace ArchiSteamFarm {
 
 			switch (steamParentalAlgorithm) {
 				case ESteamParentalAlgorithm.Pbkdf2:
-					using (HMACSHA1 hmacAlgorithm = new HMACSHA1(password)) {
+					using (HMACSHA256 hmacAlgorithm = new HMACSHA256(password)) {
 						return Pbkdf2.ComputeDerivedKey(hmacAlgorithm, salt, SteamParentalPbkdf2Iterations, hashLength);
 					}
 				case ESteamParentalAlgorithm.SCrypt:
