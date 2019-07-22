@@ -660,6 +660,10 @@ namespace ArchiSteamFarm {
 
 			CParental_GetParentalSettings_Response body = response.GetDeserializedResponse<CParental_GetParentalSettings_Response>();
 
+			if (body.settings == null) {
+				return null;
+			}
+
 			if (!body.settings.is_enabled) {
 				return (false, null);
 			}

@@ -2036,6 +2036,7 @@ namespace ArchiSteamFarm {
 			EResult lastLogOnResult = LastLogOnResult;
 			LastLogOnResult = EResult.Invalid;
 			ItemsCount = TradesCount = HeartBeatFailures = 0;
+			SteamParentalActive = true;
 			StopConnectionFailureTimer();
 			StopPlayingWasBlockedTimer();
 
@@ -2440,6 +2441,16 @@ namespace ArchiSteamFarm {
 						} else {
 							SteamParentalActive = false;
 						}
+					} else if (SteamParentalActive && !string.IsNullOrEmpty(BotConfig.SteamParentalCode) && (BotConfig.SteamParentalCode.Length != BotConfig.SteamParentalCodeLength)) {
+						string steamParentalCode = await Logging.GetUserInput(ASF.EUserInputType.SteamParentalCode, BotName).ConfigureAwait(false);
+
+						if (string.IsNullOrEmpty(steamParentalCode) || (steamParentalCode.Length != BotConfig.SteamParentalCodeLength)) {
+							Stop();
+
+							break;
+						}
+
+						SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode);
 					}
 
 					ArchiWebHandler.OnVanityURLChanged(callback.VanityURL);
