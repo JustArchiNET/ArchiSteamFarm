@@ -731,4 +731,5 @@ StackTrace:
   <data name="UpdateCleanup" xml:space="preserve">
     <value>Alte Dateien nach dem Update bereinigen...</value>
   </data>
+  
 </root>

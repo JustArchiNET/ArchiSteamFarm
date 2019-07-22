@@ -731,4 +731,7 @@
   <data name="UpdateCleanup" xml:space="preserve">
     <value>Удаление старых файлов после обновления...</value>
   </data>
+  <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
+    <value>Генерация кода родительского контроля Steam, это может занять некоторое время, оцените возможность вместо этого указать его в конфигурационном файле...</value>
+  </data>
 </root>

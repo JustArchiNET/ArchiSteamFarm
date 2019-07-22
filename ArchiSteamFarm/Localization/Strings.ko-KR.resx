@@ -731,4 +731,5 @@ StackTrace:
   <data name="UpdateCleanup" xml:space="preserve">
     <value>업데이트 후 예전 파일을 삭제합니다...</value>
   </data>
+  
 </root>

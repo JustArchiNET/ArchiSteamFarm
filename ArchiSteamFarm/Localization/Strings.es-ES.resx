@@ -730,4 +730,7 @@ Trazo de pila:
   <data name="UpdateCleanup" xml:space="preserve">
     <value>Limpiando archivos antiguos después de actualizar...</value>
   </data>
+  <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
+    <value>Generando código parental de Steam, esto puede tomar un tiempo, considere ponerlo en la configuración...</value>
+  </data>
 </root>

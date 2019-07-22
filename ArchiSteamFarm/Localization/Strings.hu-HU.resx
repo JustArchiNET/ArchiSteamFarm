@@ -729,4 +729,5 @@ StackTrace: {2}</value>
   <data name="UpdateCleanup" xml:space="preserve">
     <value>Régi fájlok törlése a frissítés után...</value>
   </data>
+  
 </root>
