@@ -2417,18 +2417,18 @@ namespace ArchiSteamFarm {
 						}
 					}
 
-					(bool IsSteamParentalEnabled, string SteamParentalCode)? steamParental = await ArchiHandler.ValidateSteamParental(BotConfig.SteamParentalCode).ConfigureAwait(false);
+					if (callback.ParentalSettings != null) {
+						(bool isSteamParentalEnabled, string steamParentalCode) = ValidateSteamParental(callback.ParentalSettings, BotConfig.SteamParentalCode);
 
-					if (steamParental.HasValue) {
-						if (steamParental.Value.IsSteamParentalEnabled) {
+						if (isSteamParentalEnabled) {
 							SteamParentalActive = true;
 
-							if (!string.IsNullOrEmpty(steamParental.Value.SteamParentalCode)) {
-								if (BotConfig.SteamParentalCode != steamParental.Value.SteamParentalCode) {
-									SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParental.Value.SteamParentalCode);
+							if (!string.IsNullOrEmpty(steamParentalCode)) {
+								if (BotConfig.SteamParentalCode != steamParentalCode) {
+									SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode);
 								}
 							} else {
-								string steamParentalCode = await Logging.GetUserInput(ASF.EUserInputType.SteamParentalCode, BotName).ConfigureAwait(false);
+								steamParentalCode = await Logging.GetUserInput(ASF.EUserInputType.SteamParentalCode, BotName).ConfigureAwait(false);
 
 								if (string.IsNullOrEmpty(steamParentalCode) || (steamParentalCode.Length != BotConfig.SteamParentalCodeLength)) {
 									Stop();
@@ -2941,6 +2941,64 @@ namespace ArchiSteamFarm {
 			}
 
 			return message.Replace("\\[", "[").Replace("\\\\", "\\");
+		}
+
+		private (bool IsSteamParentalEnabled, string SteamParentalCode) ValidateSteamParental(ParentalSettings settings, string steamParentalCode = null) {
+			if (settings == null) {
+				ArchiLogger.LogNullError(nameof(settings));
+
+				return (false, null);
+			}
+
+			if (!settings.is_enabled) {
+				return (false, null);
+			}
+
+			ArchiCryptoHelper.ESteamParentalAlgorithm steamParentalAlgorithm;
+
+			switch (settings.passwordhashtype) {
+				case 4:
+					steamParentalAlgorithm = ArchiCryptoHelper.ESteamParentalAlgorithm.Pbkdf2;
+
+					break;
+				case 6:
+					steamParentalAlgorithm = ArchiCryptoHelper.ESteamParentalAlgorithm.SCrypt;
+
+					break;
+				default:
+					ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(settings.passwordhashtype), settings.passwordhashtype));
+
+					return (true, null);
+			}
+
+			if ((steamParentalCode != null) && (steamParentalCode.Length == BotConfig.SteamParentalCodeLength)) {
+				byte i = 0;
+				byte[] password = new byte[steamParentalCode.Length];
+
+				foreach (char character in steamParentalCode) {
+					if ((character < '0') || (character > '9')) {
+						break;
+					}
+
+					password[i++] = (byte) character;
+				}
+
+				if (i >= steamParentalCode.Length) {
+					byte[] passwordHash = ArchiCryptoHelper.GenerateSteamParentalHash(password, settings.salt, (byte) settings.passwordhash.Length, steamParentalAlgorithm);
+
+					if (passwordHash.SequenceEqual(settings.passwordhash)) {
+						return (true, steamParentalCode);
+					}
+				}
+			}
+
+			ArchiLogger.LogGenericInfo(Strings.BotGeneratingSteamParentalCode);
+
+			steamParentalCode = ArchiCryptoHelper.RecoverSteamParentalCode(settings.passwordhash, settings.salt, steamParentalAlgorithm);
+
+			ArchiLogger.LogGenericInfo(Strings.Done);
+
+			return (true, steamParentalCode);
 		}
 
 		internal enum EFileType : byte {
