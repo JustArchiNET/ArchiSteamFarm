@@ -2427,7 +2427,7 @@ namespace ArchiSteamFarm {
 								if (BotConfig.SteamParentalCode != steamParentalCode) {
 									SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode);
 								}
-							} else {
+							} else if (string.IsNullOrEmpty(BotConfig.SteamParentalCode) || (BotConfig.SteamParentalCode.Length != BotConfig.SteamParentalCodeLength)) {
 								steamParentalCode = await Logging.GetUserInput(ASF.EUserInputType.SteamParentalCode, BotName).ConfigureAwait(false);
 
 								if (string.IsNullOrEmpty(steamParentalCode) || (steamParentalCode.Length != BotConfig.SteamParentalCodeLength)) {
