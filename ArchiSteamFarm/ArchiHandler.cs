@@ -831,7 +831,7 @@ namespace ArchiSteamFarm {
 				JobID = jobID;
 
 				// We might get null body here, and that means there are no notifications related to trading
-				Notifications = new Dictionary<EUserNotification, uint>(1) { { EUserNotification.Trading, 0 } };
+				Notifications = new Dictionary<EUserNotification, uint> { { EUserNotification.Trading, 0 } };
 
 				if (msg.notifications == null) {
 					return;
