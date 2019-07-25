@@ -731,5 +731,7 @@ StackTrace:
   <data name="UpdateCleanup" xml:space="preserve">
     <value>Limpando arquivos antigos após a atualização...</value>
   </data>
-  
+  <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
+    <value>Gerando o código do Modo Família, isso pode levar um tempo. Considere colocá-lo no arquivo de configuração...</value>
+  </data>
 </root>
