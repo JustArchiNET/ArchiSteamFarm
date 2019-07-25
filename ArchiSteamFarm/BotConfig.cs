@@ -173,6 +173,7 @@ namespace ArchiSteamFarm {
 
 				return result;
 			}
+
 			set {
 				if (!string.IsNullOrEmpty(value) && (PasswordFormat != ArchiCryptoHelper.ECryptoMethod.PlainText)) {
 					value = ArchiCryptoHelper.Encrypt(PasswordFormat, value);
@@ -190,37 +191,37 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty]
 		internal string SteamLogin {
-			get => _SteamLogin;
+			get => BackingSteamLogin;
 
 			set {
 				IsSteamLoginSet = true;
-				_SteamLogin = value;
+				BackingSteamLogin = value;
 			}
 		}
 
 		[JsonProperty]
 		internal string SteamParentalCode {
-			get => _SteamParentalCode;
+			get => BackingSteamParentalCode;
 
 			set {
 				IsSteamParentalCodeSet = true;
-				_SteamParentalCode = value;
+				BackingSteamParentalCode = value;
 			}
 		}
 
 		[JsonProperty]
 		internal string SteamPassword {
-			get => _SteamPassword;
+			get => BackingSteamPassword;
 
 			set {
 				IsSteamPasswordSet = true;
-				_SteamPassword = value;
+				BackingSteamPassword = value;
 			}
 		}
 
-		private string _SteamLogin = DefaultSteamLogin;
-		private string _SteamParentalCode = DefaultSteamParentalCode;
-		private string _SteamPassword = DefaultSteamPassword;
+		private string BackingSteamLogin = DefaultSteamLogin;
+		private string BackingSteamParentalCode = DefaultSteamParentalCode;
+		private string BackingSteamPassword = DefaultSteamPassword;
 		private bool ShouldSerializeSensitiveDetails = true;
 
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamMasterClanID), Required = Required.DisallowNull)]

@@ -171,11 +171,11 @@ namespace ArchiSteamFarm {
 						case "BLADD" when args.Length > 2:
 							return await ResponseBlacklistAdd(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
 						case "BLADD":
-							return await ResponseBlacklistAdd(steamID, args[1]).ConfigureAwait(false);
+							return ResponseBlacklistAdd(steamID, args[1]);
 						case "BLRM" when args.Length > 2:
 							return await ResponseBlacklistRemove(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
 						case "BLRM":
-							return await ResponseBlacklistRemove(steamID, args[1]).ConfigureAwait(false);
+							return ResponseBlacklistRemove(steamID, args[1]);
 						case "FARM":
 							return await ResponseFarm(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "INPUT" when args.Length > 3:
@@ -187,21 +187,21 @@ namespace ArchiSteamFarm {
 						case "IBADD" when args.Length > 2:
 							return await ResponseIdleBlacklistAdd(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
 						case "IBADD":
-							return await ResponseIdleBlacklistAdd(steamID, args[1]).ConfigureAwait(false);
+							return ResponseIdleBlacklistAdd(steamID, args[1]);
 						case "IBRM" when args.Length > 2:
 							return await ResponseIdleBlacklistRemove(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
 						case "IBRM":
-							return await ResponseIdleBlacklistRemove(steamID, args[1]).ConfigureAwait(false);
+							return ResponseIdleBlacklistRemove(steamID, args[1]);
 						case "IQ":
 							return await ResponseIdleQueue(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "IQADD" when args.Length > 2:
 							return await ResponseIdleQueueAdd(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
 						case "IQADD":
-							return await ResponseIdleQueueAdd(steamID, args[1]).ConfigureAwait(false);
+							return ResponseIdleQueueAdd(steamID, args[1]);
 						case "IQRM" when args.Length > 2:
 							return await ResponseIdleQueueRemove(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
 						case "IQRM":
-							return await ResponseIdleQueueRemove(steamID, args[1]).ConfigureAwait(false);
+							return ResponseIdleQueueRemove(steamID, args[1]);
 						case "LEVEL":
 							return await ResponseLevel(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "LOOT":
@@ -917,7 +917,7 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 
-		private async Task<string> ResponseBlacklistAdd(ulong steamID, string targetSteamIDs) {
+		private string ResponseBlacklistAdd(ulong steamID, string targetSteamIDs) {
 			if ((steamID == 0) || string.IsNullOrEmpty(targetSteamIDs)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(targetSteamIDs));
 
@@ -944,7 +944,7 @@ namespace ArchiSteamFarm {
 				targetIDs.Add(targetID);
 			}
 
-			await Bot.BotDatabase.AddBlacklistedFromTradesSteamIDs(targetIDs).ConfigureAwait(false);
+			Bot.BotDatabase.AddBlacklistedFromTradesSteamIDs(targetIDs);
 
 			return FormatBotResponse(Strings.Done);
 		}
@@ -963,14 +963,14 @@ namespace ArchiSteamFarm {
 				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			IList<string> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseBlacklistAdd(steamID, targetSteamIDs))).ConfigureAwait(false);
+			IList<string> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseBlacklistAdd(steamID, targetSteamIDs)))).ConfigureAwait(false);
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 
-		private async Task<string> ResponseBlacklistRemove(ulong steamID, string targetSteamIDs) {
+		private string ResponseBlacklistRemove(ulong steamID, string targetSteamIDs) {
 			if ((steamID == 0) || string.IsNullOrEmpty(targetSteamIDs)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(targetSteamIDs));
 
@@ -997,7 +997,7 @@ namespace ArchiSteamFarm {
 				targetIDs.Add(targetID);
 			}
 
-			await Bot.BotDatabase.RemoveBlacklistedFromTradesSteamIDs(targetIDs).ConfigureAwait(false);
+			Bot.BotDatabase.RemoveBlacklistedFromTradesSteamIDs(targetIDs);
 
 			return FormatBotResponse(Strings.Done);
 		}
@@ -1016,7 +1016,7 @@ namespace ArchiSteamFarm {
 				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			IList<string> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseBlacklistRemove(steamID, targetSteamIDs))).ConfigureAwait(false);
+			IList<string> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseBlacklistRemove(steamID, targetSteamIDs)))).ConfigureAwait(false);
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 
@@ -1131,7 +1131,7 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 
-		private async Task<string> ResponseIdleBlacklistAdd(ulong steamID, string targetAppIDs) {
+		private string ResponseIdleBlacklistAdd(ulong steamID, string targetAppIDs) {
 			if ((steamID == 0) || string.IsNullOrEmpty(targetAppIDs)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(targetAppIDs));
 
@@ -1158,7 +1158,7 @@ namespace ArchiSteamFarm {
 				appIDs.Add(appID);
 			}
 
-			await Bot.BotDatabase.AddIdlingBlacklistedAppIDs(appIDs).ConfigureAwait(false);
+			Bot.BotDatabase.AddIdlingBlacklistedAppIDs(appIDs);
 
 			return FormatBotResponse(Strings.Done);
 		}
@@ -1177,14 +1177,14 @@ namespace ArchiSteamFarm {
 				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			IList<string> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseIdleBlacklistAdd(steamID, targetAppIDs))).ConfigureAwait(false);
+			IList<string> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseIdleBlacklistAdd(steamID, targetAppIDs)))).ConfigureAwait(false);
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 
-		private async Task<string> ResponseIdleBlacklistRemove(ulong steamID, string targetAppIDs) {
+		private string ResponseIdleBlacklistRemove(ulong steamID, string targetAppIDs) {
 			if ((steamID == 0) || string.IsNullOrEmpty(targetAppIDs)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(targetAppIDs));
 
@@ -1211,7 +1211,7 @@ namespace ArchiSteamFarm {
 				appIDs.Add(appID);
 			}
 
-			await Bot.BotDatabase.RemoveIdlingBlacklistedAppIDs(appIDs).ConfigureAwait(false);
+			Bot.BotDatabase.RemoveIdlingBlacklistedAppIDs(appIDs);
 
 			return FormatBotResponse(Strings.Done);
 		}
@@ -1230,7 +1230,7 @@ namespace ArchiSteamFarm {
 				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			IList<string> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseIdleBlacklistRemove(steamID, targetAppIDs))).ConfigureAwait(false);
+			IList<string> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseIdleBlacklistRemove(steamID, targetAppIDs)))).ConfigureAwait(false);
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 
@@ -1274,7 +1274,7 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 
-		private async Task<string> ResponseIdleQueueAdd(ulong steamID, string targetAppIDs) {
+		private string ResponseIdleQueueAdd(ulong steamID, string targetAppIDs) {
 			if ((steamID == 0) || string.IsNullOrEmpty(targetAppIDs)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(targetAppIDs));
 
@@ -1301,7 +1301,7 @@ namespace ArchiSteamFarm {
 				appIDs.Add(appID);
 			}
 
-			await Bot.BotDatabase.AddIdlingPriorityAppIDs(appIDs).ConfigureAwait(false);
+			Bot.BotDatabase.AddIdlingPriorityAppIDs(appIDs);
 
 			return FormatBotResponse(Strings.Done);
 		}
@@ -1320,14 +1320,14 @@ namespace ArchiSteamFarm {
 				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			IList<string> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseIdleQueueAdd(steamID, targetAppIDs))).ConfigureAwait(false);
+			IList<string> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseIdleQueueAdd(steamID, targetAppIDs)))).ConfigureAwait(false);
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 
-		private async Task<string> ResponseIdleQueueRemove(ulong steamID, string targetAppIDs) {
+		private string ResponseIdleQueueRemove(ulong steamID, string targetAppIDs) {
 			if ((steamID == 0) || string.IsNullOrEmpty(targetAppIDs)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(targetAppIDs));
 
@@ -1354,7 +1354,7 @@ namespace ArchiSteamFarm {
 				appIDs.Add(appID);
 			}
 
-			await Bot.BotDatabase.RemoveIdlingPriorityAppIDs(appIDs).ConfigureAwait(false);
+			Bot.BotDatabase.RemoveIdlingPriorityAppIDs(appIDs);
 
 			return FormatBotResponse(Strings.Done);
 		}
@@ -1373,7 +1373,7 @@ namespace ArchiSteamFarm {
 				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			IList<string> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseIdleQueueRemove(steamID, targetAppIDs))).ConfigureAwait(false);
+			IList<string> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseIdleQueueRemove(steamID, targetAppIDs)))).ConfigureAwait(false);
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 

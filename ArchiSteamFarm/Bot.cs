@@ -466,14 +466,14 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task AddGamesToRedeemInBackground(IOrderedDictionary gamesToRedeemInBackground) {
+		internal void AddGamesToRedeemInBackground(IOrderedDictionary gamesToRedeemInBackground) {
 			if ((gamesToRedeemInBackground == null) || (gamesToRedeemInBackground.Count == 0)) {
 				ArchiLogger.LogNullError(nameof(gamesToRedeemInBackground));
 
 				return;
 			}
 
-			await BotDatabase.AddGamesToRedeemInBackground(gamesToRedeemInBackground).ConfigureAwait(false);
+			BotDatabase.AddGamesToRedeemInBackground(gamesToRedeemInBackground);
 
 			if ((GamesRedeemerInBackgroundTimer == null) && BotDatabase.HasGamesToRedeemInBackground && IsConnectedAndLoggedOn) {
 				Utilities.InBackground(RedeemGamesInBackground);
@@ -880,7 +880,7 @@ namespace ArchiSteamFarm {
 					IOrderedDictionary validGamesToRedeemInBackground = ValidateGamesToRedeemInBackground(gamesToRedeemInBackground);
 
 					if ((validGamesToRedeemInBackground != null) && (validGamesToRedeemInBackground.Count > 0)) {
-						await AddGamesToRedeemInBackground(validGamesToRedeemInBackground).ConfigureAwait(false);
+						AddGamesToRedeemInBackground(validGamesToRedeemInBackground);
 					}
 				}
 
@@ -1180,6 +1180,7 @@ namespace ArchiSteamFarm {
 				int partLength;
 				bool copyNewline = false;
 
+				// ReSharper disable ArrangeMissingParentheses - conflict with Roslyn
 				if (message.Length - i > maxMessageLength) {
 					int lastNewLine = message.LastIndexOf(Environment.NewLine, i + maxMessageLength - Environment.NewLine.Length, maxMessageLength - Environment.NewLine.Length, StringComparison.Ordinal);
 
@@ -1199,6 +1200,7 @@ namespace ArchiSteamFarm {
 					partLength--;
 				}
 
+				// ReSharper restore ArrangeMissingParentheses
 				string messagePart = message.Substring(i, partLength);
 
 				messagePart = ASF.GlobalConfig.SteamMessagePrefix + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
@@ -1264,6 +1266,7 @@ namespace ArchiSteamFarm {
 
 			int i = 0;
 
+			// ReSharper disable ArrangeMissingParentheses - conflict with Roslyn
 			while (i < message.Length) {
 				int partLength;
 				bool copyNewline = false;
@@ -1287,6 +1290,7 @@ namespace ArchiSteamFarm {
 					partLength--;
 				}
 
+				// ReSharper restore ArrangeMissingParentheses
 				string messagePart = message.Substring(i, partLength);
 
 				messagePart = ASF.GlobalConfig.SteamMessagePrefix + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
@@ -1716,7 +1720,8 @@ namespace ArchiSteamFarm {
 				}
 
 				authenticator.Init(this);
-				await BotDatabase.SetMobileAuthenticator(authenticator).ConfigureAwait(false);
+				BotDatabase.MobileAuthenticator = authenticator;
+
 				File.Delete(maFilePath);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
@@ -1979,7 +1984,7 @@ namespace ArchiSteamFarm {
 				}
 			} else {
 				// If we're not using login keys, ensure we don't have any saved
-				await BotDatabase.SetLoginKey().ConfigureAwait(false);
+				BotDatabase.LoginKey = null;
 			}
 
 			if (!await InitLoginAndPassword(string.IsNullOrEmpty(loginKey)).ConfigureAwait(false)) {
@@ -2070,7 +2075,7 @@ namespace ArchiSteamFarm {
 
 					break;
 				case EResult.InvalidPassword:
-					await BotDatabase.SetLoginKey().ConfigureAwait(false);
+					BotDatabase.LoginKey = null;
 					ArchiLogger.LogGenericInfo(Strings.BotRemovedExpiredLoginKey);
 
 					break;
@@ -2405,7 +2410,7 @@ namespace ArchiSteamFarm {
 					}
 
 					if ((callback.CellID != 0) && (callback.CellID != ASF.GlobalDatabase.CellID)) {
-						await ASF.GlobalDatabase.SetCellID(callback.CellID).ConfigureAwait(false);
+						ASF.GlobalDatabase.CellID = callback.CellID;
 					}
 
 					// Handle steamID-based maFile
@@ -2530,7 +2535,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async void OnLoginKey(SteamUser.LoginKeyCallback callback) {
+		private void OnLoginKey(SteamUser.LoginKeyCallback callback) {
 			if (string.IsNullOrEmpty(callback?.LoginKey)) {
 				ArchiLogger.LogNullError(nameof(callback) + " || " + nameof(callback.LoginKey));
 
@@ -2547,7 +2552,7 @@ namespace ArchiSteamFarm {
 				loginKey = ArchiCryptoHelper.Encrypt(BotConfig.PasswordFormat, loginKey);
 			}
 
-			await BotDatabase.SetLoginKey(loginKey).ConfigureAwait(false);
+			BotDatabase.LoginKey = loginKey;
 			SteamUser.AcceptNewLoginKey(callback);
 		}
 
@@ -2845,7 +2850,7 @@ namespace ArchiSteamFarm {
 						break;
 					}
 
-					await BotDatabase.RemoveGameToRedeemInBackground(key).ConfigureAwait(false);
+					BotDatabase.RemoveGameToRedeemInBackground(key);
 
 					// If user omitted the name or intentionally provided the same name as key, replace it with the Steam result
 					if (name.Equals(key) && (result.Items != null) && (result.Items.Count > 0)) {
@@ -2984,7 +2989,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if (i >= steamParentalCode.Length) {
-					byte[] passwordHash = ArchiCryptoHelper.GenerateSteamParentalHash(password, settings.salt, (byte) settings.passwordhash.Length, steamParentalAlgorithm);
+					IEnumerable<byte> passwordHash = ArchiCryptoHelper.GenerateSteamParentalHash(password, settings.salt, (byte) settings.passwordhash.Length, steamParentalAlgorithm);
 
 					if (passwordHash.SequenceEqual(settings.passwordhash)) {
 						return (true, steamParentalCode);

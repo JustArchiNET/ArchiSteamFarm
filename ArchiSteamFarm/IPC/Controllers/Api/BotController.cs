@@ -233,7 +233,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(validGamesToRedeemInBackground))));
 			}
 
-			await Utilities.InParallel(bots.Select(bot => bot.AddGamesToRedeemInBackground(validGamesToRedeemInBackground))).ConfigureAwait(false);
+			await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.AddGamesToRedeemInBackground(validGamesToRedeemInBackground)))).ConfigureAwait(false);
 
 			Dictionary<string, IOrderedDictionary> result = new Dictionary<string, IOrderedDictionary>(bots.Count, Bot.BotsComparer);
 

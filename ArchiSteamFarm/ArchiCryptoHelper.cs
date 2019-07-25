@@ -91,7 +91,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static byte[] GenerateSteamParentalHash(byte[] password, byte[] salt, byte hashLength, ESteamParentalAlgorithm steamParentalAlgorithm) {
+		internal static IEnumerable<byte> GenerateSteamParentalHash(byte[] password, byte[] salt, byte hashLength, ESteamParentalAlgorithm steamParentalAlgorithm) {
 			if ((password == null) || (salt == null) || (hashLength == 0) || !Enum.IsDefined(typeof(ESteamParentalAlgorithm), steamParentalAlgorithm)) {
 				ASF.ArchiLogger.LogNullError(nameof(password) + " || " + nameof(salt) + " || " + nameof(hashLength) + " || " + nameof(steamParentalAlgorithm));
 
