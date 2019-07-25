@@ -2991,7 +2991,7 @@ namespace ArchiSteamFarm {
 				if (i >= steamParentalCode.Length) {
 					IEnumerable<byte> passwordHash = ArchiCryptoHelper.GenerateSteamParentalHash(password, settings.salt, (byte) settings.passwordhash.Length, steamParentalAlgorithm);
 
-					if (passwordHash.SequenceEqual(settings.passwordhash)) {
+					if (passwordHash?.SequenceEqual(settings.passwordhash) == true) {
 						return (true, steamParentalCode);
 					}
 				}
