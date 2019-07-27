@@ -29,6 +29,8 @@ using JetBrains.Annotations;
 namespace ArchiSteamFarm {
 	internal static class SharedInfo {
 		internal const ulong ArchiSteamID = 76561198006963719;
+		internal const string ArchivalLogFile = "log.{#}.txt";
+		internal const string ArchivalLogsDirectory = "logs";
 		internal const string ASF = nameof(ASF);
 		internal const ulong ASFGroupSteamID = 103582791440160998;
 		internal const string AssemblyDocumentation = AssemblyName + ".xml";

@@ -166,12 +166,24 @@ namespace ArchiSteamFarm.NLog {
 			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, coloredConsoleTarget));
 
 			if (uniqueInstance) {
+				try {
+					if (!Directory.Exists(SharedInfo.ArchivalLogsDirectory)) {
+						Directory.CreateDirectory(SharedInfo.ArchivalLogsDirectory);
+					}
+				} catch (Exception e) {
+					ASF.ArchiLogger.LogGenericException(e);
+				}
+
 				FileTarget fileTarget = new FileTarget("File") {
+					ArchiveFileName = Path.Combine(SharedInfo.ArchivalLogsDirectory, SharedInfo.ArchivalLogFile),
+					ArchiveNumbering = ArchiveNumberingMode.Rolling,
+					ArchiveOldFileOnStartup = true,
 					CleanupFileName = false,
 					ConcurrentWrites = false,
 					DeleteOldFileOnStartup = true,
 					FileName = SharedInfo.LogFile,
-					Layout = GeneralLayout
+					Layout = GeneralLayout,
+					MaxArchiveFiles = 10
 				};
 
 				config.AddTarget(fileTarget);
