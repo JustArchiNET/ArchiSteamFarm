@@ -2415,7 +2415,7 @@ namespace ArchiSteamFarm {
 
 					// Handle steamID-based maFile
 					if (!HasMobileAuthenticator) {
-						string maFilePath = Path.Combine(SharedInfo.ConfigDirectory, callback.ClientSteamID.ConvertToUInt64() + SharedInfo.MobileAuthenticatorExtension);
+						string maFilePath = Path.Combine(SharedInfo.ConfigDirectory, SteamID + SharedInfo.MobileAuthenticatorExtension);
 
 						if (File.Exists(maFilePath)) {
 							await ImportAuthenticator(maFilePath).ConfigureAwait(false);
@@ -2460,7 +2460,7 @@ namespace ArchiSteamFarm {
 
 					ArchiWebHandler.OnVanityURLChanged(callback.VanityURL);
 
-					if (!await ArchiWebHandler.Init(callback.ClientSteamID, SteamClient.Universe, callback.WebAPIUserNonce, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
+					if (!await ArchiWebHandler.Init(SteamID, SteamClient.Universe, callback.WebAPIUserNonce, SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
 						if (!await RefreshSession().ConfigureAwait(false)) {
 							break;
 						}
