@@ -26,7 +26,7 @@ using System.Collections.Generic;
 
 namespace ArchiSteamFarm.Collections {
 	internal sealed class FixedSizeConcurrentQueue<T> : IEnumerable<T> {
-		private readonly ConcurrentQueue<T> Queue = new ConcurrentQueue<T>();
+		private readonly ConcurrentQueue<T> BackingQueue = new ConcurrentQueue<T>();
 
 		internal byte MaxCount {
 			get => BackingMaxCount;
@@ -40,7 +40,7 @@ namespace ArchiSteamFarm.Collections {
 
 				BackingMaxCount = value;
 
-				while ((Queue.Count > MaxCount) && Queue.TryDequeue(out _)) { }
+				while ((BackingQueue.Count > MaxCount) && BackingQueue.TryDequeue(out _)) { }
 			}
 		}
 
@@ -54,17 +54,17 @@ namespace ArchiSteamFarm.Collections {
 			MaxCount = maxCount;
 		}
 
-		public IEnumerator<T> GetEnumerator() => Queue.GetEnumerator();
+		public IEnumerator<T> GetEnumerator() => BackingQueue.GetEnumerator();
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 		internal void Enqueue(T obj) {
-			Queue.Enqueue(obj);
+			BackingQueue.Enqueue(obj);
 
-			if (Queue.Count <= MaxCount) {
+			if (BackingQueue.Count <= MaxCount) {
 				return;
 			}
 
-			Queue.TryDequeue(out _);
+			BackingQueue.TryDequeue(out _);
 		}
 	}
 }
