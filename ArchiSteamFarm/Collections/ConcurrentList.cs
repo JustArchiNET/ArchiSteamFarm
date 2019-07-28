@@ -113,8 +113,9 @@ namespace ArchiSteamFarm.Collections {
 		[SuppressMessage("ReSharper", "AnnotationRedundancyInHierarchy")]
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		internal void AddRange([NotNull] IEnumerable<T> collection) {
+		internal void ReplaceWith([NotNull] IEnumerable<T> collection) {
 			using (Lock.WriterLock()) {
+				BackingCollection.Clear();
 				BackingCollection.AddRange(collection);
 			}
 		}

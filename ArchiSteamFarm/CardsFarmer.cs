@@ -1179,9 +1179,7 @@ namespace ArchiSteamFarm {
 
 			// We must call ToList() here as we can't do in-place replace
 			List<Game> gamesToFarm = orderedGamesToFarm.ToList();
-
-			GamesToFarm.Clear();
-			GamesToFarm.AddRange(gamesToFarm);
+			GamesToFarm.ReplaceWith(gamesToFarm);
 		}
 
 		internal sealed class Game : IEquatable<Game> {
