@@ -132,8 +132,8 @@ namespace ArchiSteamFarm {
 
 			internal string ChangelogHTML {
 				get {
-					if (_ChangelogHTML != null) {
-						return _ChangelogHTML;
+					if (BackingChangelogHTML != null) {
+						return BackingChangelogHTML;
 					}
 
 					if (Changelog == null) {
@@ -147,15 +147,15 @@ namespace ArchiSteamFarm {
 						renderer.Render(Changelog);
 						writer.Flush();
 
-						return _ChangelogHTML = writer.ToString();
+						return BackingChangelogHTML = writer.ToString();
 					}
 				}
 			}
 
 			internal string ChangelogPlainText {
 				get {
-					if (_ChangelogPlainText != null) {
-						return _ChangelogPlainText;
+					if (BackingChangelogPlainText != null) {
+						return BackingChangelogPlainText;
 					}
 
 					if (Changelog == null) {
@@ -173,7 +173,7 @@ namespace ArchiSteamFarm {
 						renderer.Render(Changelog);
 						writer.Flush();
 
-						return _ChangelogPlainText = writer.ToString();
+						return BackingChangelogPlainText = writer.ToString();
 					}
 				}
 			}
@@ -185,17 +185,17 @@ namespace ArchiSteamFarm {
 
 			private MarkdownDocument Changelog {
 				get {
-					if (_Changelog != null) {
-						return _Changelog;
+					if (BackingChangelog != null) {
+						return BackingChangelog;
 					}
 
-					return _Changelog = ExtractChangelogFromBody(MarkdownBody);
+					return BackingChangelog = ExtractChangelogFromBody(MarkdownBody);
 				}
 			}
 
-			private MarkdownDocument _Changelog;
-			private string _ChangelogHTML;
-			private string _ChangelogPlainText;
+			private MarkdownDocument BackingChangelog;
+			private string BackingChangelogHTML;
+			private string BackingChangelogPlainText;
 
 			[JsonConstructor]
 			private ReleaseResponse() { }
