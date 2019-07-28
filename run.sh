@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ASF_PATH="$(dirname "$(readlink -f "$0")")/ArchiSteamFarm/out/source"
+BINARY_PATH="$(dirname "$(readlink -f "$0")")/ArchiSteamFarm/out/source"
 CONFIG_PATH="config/ASF.json"
 
-if [[ ! -d "$ASF_PATH" ]]; then
-	echo "ERROR: $ASF_PATH could not be found!"
+if [[ ! -d "$BINARY_PATH" ]]; then
+	echo "ERROR: $BINARY_PATH could not be found!"
 	exit 1
 fi
 
-cd "$ASF_PATH"
+cd "$BINARY_PATH"
 
 BINARY="$(pwd)/ArchiSteamFarm.dll"
 
