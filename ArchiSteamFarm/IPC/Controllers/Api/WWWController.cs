@@ -77,7 +77,6 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// </remarks>
 		[HttpGet("GitHub/Release")]
 		[ProducesResponseType(typeof(GenericResponse<GitHubReleaseResponse>), (int) HttpStatusCode.OK)]
-		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
 		public async Task<ActionResult<GenericResponse>> GitHubReleaseGet() {
 			GitHub.ReleaseResponse releaseResponse = await GitHub.GetLatestRelease(false).ConfigureAwait(false);
