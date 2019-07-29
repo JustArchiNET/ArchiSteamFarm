@@ -58,19 +58,6 @@ namespace ArchiSteamFarm {
 			return await GetReleaseFromURL(SharedInfo.GithubReleaseURL + "/tags/" + version).ConfigureAwait(false);
 		}
 
-		[ItemCanBeNull]
-		internal static async Task<ImmutableList<ReleaseResponse>> GetReleases(byte count) {
-			if (count == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(count));
-
-				return null;
-			}
-
-			string releaseURL = SharedInfo.GithubReleaseURL + "?per_page=" + count;
-
-			return await GetReleasesFromURL(releaseURL).ConfigureAwait(false);
-		}
-
 		private static MarkdownDocument ExtractChangelogFromBody(string markdownText) {
 			if (string.IsNullOrEmpty(markdownText)) {
 				ASF.ArchiLogger.LogNullError(nameof(markdownText));
