@@ -460,7 +460,8 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.IPCConfigChanged);
-			await RestartOrExit().ConfigureAwait(false);
+			await ArchiKestrel.Stop().ConfigureAwait(true);
+			await ArchiKestrel.Start().ConfigureAwait(false);
 		}
 
 		private static async Task OnCreatedJsonConfigFile(string name, string fullPath) {
