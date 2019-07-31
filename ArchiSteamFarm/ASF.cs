@@ -374,6 +374,7 @@ namespace ArchiSteamFarm {
 
 			switch (extension) {
 				case SharedInfo.ConfigExtension:
+				case SharedInfo.IPCConfigExtension:
 					await OnChangedConfigFile(name, fullPath).ConfigureAwait(false);
 
 					break;
@@ -411,6 +412,64 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			string extension = Path.GetExtension(name);
+
+			switch (extension) {
+				case SharedInfo.IPCConfigExtension:
+					await OnCreatedIPCConfigFile(name).ConfigureAwait(false);
+
+					break;
+				case SharedInfo.ConfigExtension:
+					await OnCreatedJsonConfigFile(name, fullPath).ConfigureAwait(false);
+
+					break;
+			}
+		}
+
+		private static async Task OnCreatedFile(string name, string fullPath) {
+			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
+				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
+
+				return;
+			}
+
+			string extension = Path.GetExtension(name);
+
+			switch (extension) {
+				case SharedInfo.ConfigExtension:
+					await OnCreatedConfigFile(name, fullPath).ConfigureAwait(false);
+
+					break;
+
+				case SharedInfo.KeysExtension:
+					await OnCreatedKeysFile(name, fullPath).ConfigureAwait(false);
+
+					break;
+			}
+		}
+
+		private static async Task OnCreatedIPCConfigFile(string name) {
+			if (string.IsNullOrEmpty(name)) {
+				ArchiLogger.LogNullError(nameof(name));
+
+				return;
+			}
+
+			if (!name.Equals(SharedInfo.IPCConfigFile) || (GlobalConfig?.IPC != true)) {
+				return;
+			}
+
+			ArchiLogger.LogGenericInfo(Strings.IPCConfigChanged);
+			await RestartOrExit().ConfigureAwait(false);
+		}
+
+		private static async Task OnCreatedJsonConfigFile(string name, string fullPath) {
+			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
+				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
+
+				return;
+			}
+
 			string botName = Path.GetFileNameWithoutExtension(name);
 
 			if (string.IsNullOrEmpty(botName) || (botName[0] == '.')) {
@@ -440,27 +499,6 @@ namespace ArchiSteamFarm {
 				if (Bot.Bots.Count > MaximumRecommendedBotsCount) {
 					ArchiLogger.LogGenericWarning(string.Format(Strings.WarningExcessiveBotsCount, MaximumRecommendedBotsCount));
 				}
-			}
-		}
-
-		private static async Task OnCreatedFile(string name, string fullPath) {
-			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
-				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
-
-				return;
-			}
-
-			string extension = Path.GetExtension(name);
-
-			switch (extension) {
-				case SharedInfo.ConfigExtension:
-					await OnCreatedConfigFile(name, fullPath).ConfigureAwait(false);
-
-					break;
-				case SharedInfo.KeysExtension:
-					await OnCreatedKeysFile(name, fullPath).ConfigureAwait(false);
-
-					break;
 			}
 		}
 
