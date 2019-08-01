@@ -460,7 +460,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.IPCConfigChanged);
-			await ArchiKestrel.Stop().ConfigureAwait(true);
+			await ArchiKestrel.Stop().ConfigureAwait(false);
 			await ArchiKestrel.Start().ConfigureAwait(false);
 		}
 
