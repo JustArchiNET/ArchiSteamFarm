@@ -369,23 +369,7 @@ namespace ArchiSteamFarm {
 			await OnCreatedConfigFile(name, fullPath).ConfigureAwait(false);
 		}
 
-		private static async Task OnChangedFile(string name, string fullPath) {
-			string extension = Path.GetExtension(name);
-
-			switch (extension) {
-				case SharedInfo.JsonConfigExtension:
-				case SharedInfo.IPCConfigExtension:
-					await OnChangedConfigFile(name, fullPath).ConfigureAwait(false);
-
-					break;
-				case SharedInfo.KeysExtension:
-					await OnChangedKeysFile(name, fullPath).ConfigureAwait(false);
-
-					break;
-			}
-		}
-
-		private static async Task OnChangedIPCFile(string name) {
+		private static async Task OnChangedConfigFile(string name) {
 			if (string.IsNullOrEmpty(name)) {
 				ArchiLogger.LogNullError(nameof(name));
 
@@ -403,6 +387,22 @@ namespace ArchiSteamFarm {
 			ArchiLogger.LogGenericInfo(Strings.IPCConfigChanged);
 			await ArchiKestrel.Stop().ConfigureAwait(false);
 			await ArchiKestrel.Start().ConfigureAwait(false);
+		}
+
+		private static async Task OnChangedFile(string name, string fullPath) {
+			string extension = Path.GetExtension(name);
+
+			switch (extension) {
+				case SharedInfo.JsonConfigExtension:
+				case SharedInfo.IPCConfigExtension:
+					await OnChangedConfigFile(name, fullPath).ConfigureAwait(false);
+
+					break;
+				case SharedInfo.KeysExtension:
+					await OnChangedKeysFile(name, fullPath).ConfigureAwait(false);
+
+					break;
+			}
 		}
 
 		private static async Task OnChangedKeysFile(string name, string fullPath) {
@@ -436,7 +436,7 @@ namespace ArchiSteamFarm {
 
 			switch (extension) {
 				case SharedInfo.IPCConfigExtension:
-					await OnChangedIPCFile(name).ConfigureAwait(false);
+					await OnChangedConfigFile(name).ConfigureAwait(false);
 
 					break;
 				case SharedInfo.JsonConfigExtension:
@@ -552,7 +552,7 @@ namespace ArchiSteamFarm {
 
 			switch (extension) {
 				case SharedInfo.IPCConfigExtension:
-					await OnChangedIPCFile(name).ConfigureAwait(false);
+					await OnChangedConfigFile(name).ConfigureAwait(false);
 
 					break;
 				case SharedInfo.JsonConfigExtension:
