@@ -77,26 +77,5 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 
 			return Ok(new GenericResponse<string>(response));
 		}
-
-		/// <summary>
-		///     Executes a command.
-		/// </summary>
-		/// <remarks>
-		///     This API endpoint is supposed to be entirely replaced by ASF actions available under /Api/ASF/{action} and /Api/Bot/{bot}/{action}.
-		///     You should use "given bot" commands when executing this endpoint, omitting targets of the command will cause the command to be executed on first defined bot
-		/// </remarks>
-		[HttpPost("{command:required}")]
-		[Obsolete]
-		[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
-		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-		public async Task<ActionResult<GenericResponse>> ObsoleteCommandPost(string command) {
-			if (string.IsNullOrEmpty(command)) {
-				ASF.ArchiLogger.LogNullError(nameof(command));
-
-				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(command))));
-			}
-
-			return await CommandPost(new CommandRequest(command)).ConfigureAwait(false);
-		}
 	}
 }
