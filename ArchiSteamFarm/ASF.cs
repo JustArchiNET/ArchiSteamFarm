@@ -416,11 +416,11 @@ namespace ArchiSteamFarm {
 
 			switch (extension) {
 				case SharedInfo.IPCConfigExtension:
-					await OnCreatedIPCConfigFile(name).ConfigureAwait(false);
+					await OnCreatedConfigFile(fullPath).ConfigureAwait(false);
 
 					break;
 				case SharedInfo.ConfigExtension:
-					await OnCreatedJsonConfigFile(name, fullPath).ConfigureAwait(false);
+					await OnCreatedJsonFile(name, fullPath).ConfigureAwait(false);
 
 					break;
 			}
@@ -448,14 +448,18 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static async Task OnCreatedIPCConfigFile(string name) {
-			if (string.IsNullOrEmpty(name)) {
-				ArchiLogger.LogNullError(nameof(name));
+		private static async Task OnCreatedConfigFile(string fullPath) {
+			if (string.IsNullOrEmpty(fullPath)) {
+				ArchiLogger.LogNullError(nameof(fullPath));
 
 				return;
 			}
 
-			if (!name.Equals(SharedInfo.IPCConfigFile) || (GlobalConfig?.IPC != true)) {
+			if (!fullPath.Equals(Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.IPCConfigFile)) || (GlobalConfig?.IPC != true)) {
+				return;
+			}
+
+			if (!await CanHandleWriteEvent(fullPath).ConfigureAwait(false)) {
 				return;
 			}
 
@@ -464,7 +468,7 @@ namespace ArchiSteamFarm {
 			await ArchiKestrel.Start().ConfigureAwait(false);
 		}
 
-		private static async Task OnCreatedJsonConfigFile(string name, string fullPath) {
+		private static async Task OnCreatedJsonFile(string name, string fullPath) {
 			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
 				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
 
