@@ -34,15 +34,18 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	public sealed class WebBrowser : IDisposable {
-		internal const byte MaxConnections = 10; // Defines maximum number of connections per ServicePoint. Be careful, as it also defines maximum number of sockets in CLOSE_WAIT state
-		internal const byte MaxTries = 5; // Defines maximum number of recommended tries for a single request
+		[PublicAPI]
+		public const byte MaxTries = 5; // Defines maximum number of recommended tries for a single request
+
+		internal const byte MaxConnections = 5; // Defines maximum number of connections per ServicePoint. Be careful, as it also defines maximum number of sockets in CLOSE_WAIT state
 
 		private const byte ExtendedTimeoutMultiplier = 10; // Defines multiplier of timeout for WebBrowsers dealing with huge data (ASF update)
 		private const byte MaxIdleTime = 15; // Defines in seconds, how long socket is allowed to stay in CLOSE_WAIT state after there are no connections to it
 
-		internal readonly CookieContainer CookieContainer = new CookieContainer();
+		[PublicAPI]
+		public TimeSpan Timeout => HttpClient.Timeout;
 
-		internal TimeSpan Timeout => HttpClient.Timeout;
+		internal readonly CookieContainer CookieContainer = new CookieContainer();
 
 		private readonly ArchiLogger ArchiLogger;
 		private readonly HttpClient HttpClient;
@@ -591,14 +594,11 @@ namespace ArchiSteamFarm {
 					switch (redirectUri.Scheme) {
 						case "http":
 						case "https":
-
 							break;
 						case "steammobile":
-
 							// Those redirections are invalid, but we're aware of that and we have extra logic for them
 							return response;
 						default:
-
 							// We have no clue about those, but maybe HttpClient can handle them for us
 							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(redirectUri.Scheme), redirectUri.Scheme));
 
@@ -608,31 +608,21 @@ namespace ArchiSteamFarm {
 					redirectUri = new Uri(requestUri, redirectUri);
 				}
 
+				response.Dispose();
+
 				// Per https://tools.ietf.org/html/rfc7231#section-7.1.2, a redirect location without a fragment should inherit the fragment from the original URI
 				if (!string.IsNullOrEmpty(requestUri.Fragment) && string.IsNullOrEmpty(redirectUri.Fragment)) {
 					redirectUri = new UriBuilder(redirectUri) { Fragment = requestUri.Fragment }.Uri;
 				}
 
-				// According to the RFC, POST requests in certain types of redirection must be converted into GET
-				if (httpMethod == HttpMethod.Post) {
-					switch (response.StatusCode) {
-						case HttpStatusCode.Found:
-						case HttpStatusCode.Moved:
-						case HttpStatusCode.MultipleChoices:
-						case HttpStatusCode.SeeOther:
-							httpMethod = HttpMethod.Get;
-							data = null;
-
-							break;
-					}
-				}
-
-				response.Dispose();
-
 				return await InternalRequest(redirectUri, httpMethod, data, referer, httpCompletionOption, --maxRedirections).ConfigureAwait(false);
 			}
 
 			if (response.StatusCode.IsClientErrorCode()) {
+				if (Debugging.IsUserDebugging) {
+					ArchiLogger.LogGenericDebug(string.Format(Strings.Content, await response.Content.ReadAsStringAsync().ConfigureAwait(false)));
+				}
+
 				// Do not retry on client errors
 				return response;
 			}

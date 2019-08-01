@@ -724,5 +724,12 @@
     <value>成功處理 {0} 個確認!</value>
     <comment>{0} will be replaced by number of confirmations</comment>
   </data>
+  <data name="BotExtraIdlingCooldown" xml:space="preserve">
+    <value>等待 {0} 以確保我們可以開始掛卡......</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+  </data>
+  <data name="UpdateCleanup" xml:space="preserve">
+    <value>清理升級後的舊檔案……</value>
+  </data>
   
 </root>

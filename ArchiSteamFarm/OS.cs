@@ -37,10 +37,28 @@ namespace ArchiSteamFarm {
 
 		private static Mutex SingleInstance;
 
-		internal static void Init(bool systemRequired, GlobalConfig.EOptimizationMode optimizationMode) {
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-				DisableQuickEditMode();
+		internal static void CoreInit() {
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && !Console.IsOutputRedirected) {
+				// Normally we should use UTF-8 encoding as it's the most correct one for our case, and we already use it on other OSes such as Linux
+				// However, older Windows versions, mainly 7/8.1 can't into UTF-8 without appropriate console font, and expecting from users to change it manually is unwanted
+				// As irrational as it can sound, those versions actually can work with unicode encoding instead, as they magically map it into proper chars despite of incorrect font
+				// We could in theory conditionally use UTF-8 for Windows 10+ and unicode otherwise, but Windows version detection is simply not worth the hassle in this case
+				// Therefore, until we can drop support for Windows < 10, we'll stick with Unicode for all Windows boxes, unless there will be valid reasoning for conditional switch
+				// See https://github.com/JustArchiNET/ArchiSteamFarm/issues/1289 for more details
+				Console.OutputEncoding = Encoding.Unicode;
 
+				DisableQuickEditMode();
+			}
+		}
+
+		internal static void Init(bool systemRequired, GlobalConfig.EOptimizationMode optimizationMode) {
+			if (!Enum.IsDefined(typeof(GlobalConfig.EOptimizationMode), optimizationMode)) {
+				ASF.ArchiLogger.LogNullError(nameof(optimizationMode));
+
+				return;
+			}
+
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
 				if (systemRequired) {
 					KeepWindowsSystemActive();
 				}
@@ -48,11 +66,9 @@ namespace ArchiSteamFarm {
 
 			switch (optimizationMode) {
 				case GlobalConfig.EOptimizationMode.MaxPerformance:
-
 					// No specific tuning required for now, ASF is optimized for max performance by default
 					break;
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-
 					// We can disable regex cache which will slightly lower memory usage (for a huge performance hit)
 					Regex.CacheSize = 0;
 
@@ -74,6 +90,8 @@ namespace ArchiSteamFarm {
 			Mutex singleInstance = new Mutex(true, uniqueName, out bool result);
 
 			if (!result) {
+				singleInstance.Dispose();
+
 				return false;
 			}
 
@@ -107,10 +125,6 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void DisableQuickEditMode() {
-			if (Console.IsOutputRedirected) {
-				return;
-			}
-
 			// http://stackoverflow.com/questions/30418886/how-and-why-does-quickedit-mode-in-command-prompt-freeze-applications
 			IntPtr consoleHandle = NativeMethods.GetStdHandle(NativeMethods.StandardInputHandle);
 
@@ -133,8 +147,8 @@ namespace ArchiSteamFarm {
 			// More info: https://msdn.microsoft.com/library/windows/desktop/aa373208(v=vs.85).aspx
 			NativeMethods.EExecutionState result = NativeMethods.SetThreadExecutionState(NativeMethods.AwakeExecutionState);
 
-			// SetThreadExecutionState() returns NULL on failure, which is mapped to 0 (EExecutionState.Error) in our case
-			if (result == NativeMethods.EExecutionState.Error) {
+			// SetThreadExecutionState() returns NULL on failure, which is mapped to 0 (EExecutionState.None) in our case
+			if (result == NativeMethods.EExecutionState.None) {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningFailedWithError, result));
 			}
 		}
@@ -162,7 +176,7 @@ namespace ArchiSteamFarm {
 
 			[Flags]
 			internal enum EExecutionState : uint {
-				Error = 0,
+				None = 0,
 				SystemRequired = 0x00000001,
 				AwayModeRequired = 0x00000040,
 				Continuous = 0x80000000

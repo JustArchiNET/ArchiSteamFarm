@@ -21,11 +21,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -137,7 +135,6 @@ namespace ArchiSteamFarm {
 
 			switch (ASF.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-
 					foreach (Task task in tasks) {
 						await task.ConfigureAwait(false);
 					}
@@ -183,55 +180,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (text.Length % 2 != 0) {
-				return false;
-			}
-
-			// ulong is 64-bits wide, each hexadecimal character is 4-bits wide, so we split each 16
-			const byte split = 16;
-
-			string lastHex;
-
-			if (text.Length >= split) {
-				StringBuilder hex = new StringBuilder(split, split);
-
-				foreach (char character in text) {
-					hex.Append(character);
-
-					if (hex.Length < split) {
-						continue;
-					}
-
-					if (!ulong.TryParse(hex.ToString(), NumberStyles.HexNumber, null, out _)) {
-						return false;
-					}
-
-					hex.Clear();
-				}
-
-				if (hex.Length == 0) {
-					return true;
-				}
-
-				lastHex = hex.ToString();
-			} else {
-				lastHex = text;
-			}
-
-			switch (lastHex.Length) {
-				case 2:
-
-					return byte.TryParse(lastHex, NumberStyles.HexNumber, null, out _);
-				case 4:
-
-					return ushort.TryParse(lastHex, NumberStyles.HexNumber, null, out _);
-				case 8:
-
-					return uint.TryParse(lastHex, NumberStyles.HexNumber, null, out _);
-				default:
-
-					return false;
-			}
+			return (text.Length % 2 == 0) && text.All(Uri.IsHexDigit);
 		}
 
 		[PublicAPI]

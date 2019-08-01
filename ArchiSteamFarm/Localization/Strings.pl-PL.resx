@@ -728,4 +728,8 @@ StackTrace:
     <value>{0} oczekiwania, aby upewnić się że jesteśmy w stanie rozpocząć farmienie...</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
   </data>
+  <data name="UpdateCleanup" xml:space="preserve">
+    <value>Czyszczenie starych plików po aktualizacji...</value>
+  </data>
+  
 </root>

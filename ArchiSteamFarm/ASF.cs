@@ -81,10 +81,8 @@ namespace ArchiSteamFarm {
 
 			switch (fileType) {
 				case EFileType.Config:
-
 					return Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName);
 				case EFileType.Database:
-
 					return Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalDatabaseFileName);
 				default:
 					ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(fileType), fileType));
@@ -94,13 +92,13 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static async Task Init() {
-			WebBrowser = new WebBrowser(ArchiLogger, GlobalConfig.WebProxy, true);
-
-			await UpdateAndRestart().ConfigureAwait(false);
-
 			if (!PluginsCore.InitPlugins()) {
 				await Task.Delay(10000).ConfigureAwait(false);
 			}
+
+			WebBrowser = new WebBrowser(ArchiLogger, GlobalConfig.WebProxy, true);
+
+			await UpdateAndRestart().ConfigureAwait(false);
 
 			await PluginsCore.OnASFInitModules(GlobalConfig.AdditionalProperties).ConfigureAwait(false);
 
@@ -288,22 +286,22 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static async Task<bool> CanHandleWriteEvent(string name) {
-			if (string.IsNullOrEmpty(name)) {
-				ArchiLogger.LogNullError(nameof(name));
+		private static async Task<bool> CanHandleWriteEvent(string filePath) {
+			if (string.IsNullOrEmpty(filePath)) {
+				ArchiLogger.LogNullError(nameof(filePath));
 
 				return false;
 			}
 
 			// Save our event in dictionary
 			object currentWriteEvent = new object();
-			LastWriteEvents[name] = currentWriteEvent;
+			LastWriteEvents[filePath] = currentWriteEvent;
 
 			// Wait a second for eventual other events to arrive
 			await Task.Delay(1000).ConfigureAwait(false);
 
 			// We're allowed to handle this event if the one that is saved after full second is our event and we succeed in clearing it (we don't care what we're clearing anymore, it doesn't have to be atomic operation)
-			return LastWriteEvents.TryGetValue(name, out object savedWriteEvent) && (currentWriteEvent == savedWriteEvent) && LastWriteEvents.TryRemove(name, out _);
+			return LastWriteEvents.TryGetValue(filePath, out object savedWriteEvent) && (currentWriteEvent == savedWriteEvent) && LastWriteEvents.TryRemove(filePath, out _);
 		}
 
 		private static void InitBotsComparer(StringComparer botsComparer) {
@@ -348,14 +346,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			switch (botName) {
-				case SharedInfo.ASF:
-
-					return false;
-				default:
-
-					return true;
-			}
+			return !botName.Equals(SharedInfo.ASF, StringComparison.OrdinalIgnoreCase);
 		}
 
 		private static async void OnChanged(object sender, FileSystemEventArgs e) {
@@ -378,11 +369,32 @@ namespace ArchiSteamFarm {
 			await OnCreatedConfigFile(name, fullPath).ConfigureAwait(false);
 		}
 
+		private static async Task OnChangedConfigFile(string name) {
+			if (string.IsNullOrEmpty(name)) {
+				ArchiLogger.LogNullError(nameof(name));
+
+				return;
+			}
+
+			if (!name.Equals(SharedInfo.IPCConfigFile) || (GlobalConfig?.IPC != true)) {
+				return;
+			}
+
+			if (!await CanHandleWriteEvent(name).ConfigureAwait(false)) {
+				return;
+			}
+
+			ArchiLogger.LogGenericInfo(Strings.IPCConfigChanged);
+			await ArchiKestrel.Stop().ConfigureAwait(false);
+			await ArchiKestrel.Start().ConfigureAwait(false);
+		}
+
 		private static async Task OnChangedFile(string name, string fullPath) {
 			string extension = Path.GetExtension(name);
 
 			switch (extension) {
-				case SharedInfo.ConfigExtension:
+				case SharedInfo.JsonConfigExtension:
+				case SharedInfo.IPCConfigExtension:
 					await OnChangedConfigFile(name, fullPath).ConfigureAwait(false);
 
 					break;
@@ -420,17 +432,60 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			string extension = Path.GetExtension(name);
+
+			switch (extension) {
+				case SharedInfo.IPCConfigExtension:
+					await OnChangedConfigFile(name).ConfigureAwait(false);
+
+					break;
+				case SharedInfo.JsonConfigExtension:
+					await OnCreatedJsonFile(name, fullPath).ConfigureAwait(false);
+
+					break;
+			}
+		}
+
+		private static async Task OnCreatedFile(string name, string fullPath) {
+			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
+				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
+
+				return;
+			}
+
+			string extension = Path.GetExtension(name);
+
+			switch (extension) {
+				case SharedInfo.JsonConfigExtension:
+					await OnCreatedConfigFile(name, fullPath).ConfigureAwait(false);
+
+					break;
+
+				case SharedInfo.KeysExtension:
+					await OnCreatedKeysFile(name, fullPath).ConfigureAwait(false);
+
+					break;
+			}
+		}
+
+		private static async Task OnCreatedJsonFile(string name, string fullPath) {
+			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
+				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
+
+				return;
+			}
+
 			string botName = Path.GetFileNameWithoutExtension(name);
 
 			if (string.IsNullOrEmpty(botName) || (botName[0] == '.')) {
 				return;
 			}
 
-			if (!await CanHandleWriteEvent(name).ConfigureAwait(false)) {
+			if (!await CanHandleWriteEvent(fullPath).ConfigureAwait(false)) {
 				return;
 			}
 
-			if (botName.Equals(SharedInfo.ASF)) {
+			if (botName.Equals(SharedInfo.ASF, StringComparison.OrdinalIgnoreCase)) {
 				ArchiLogger.LogGenericInfo(Strings.GlobalConfigChanged);
 				await RestartOrExit().ConfigureAwait(false);
 
@@ -452,27 +507,6 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static async Task OnCreatedFile(string name, string fullPath) {
-			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
-				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
-
-				return;
-			}
-
-			string extension = Path.GetExtension(name);
-
-			switch (extension) {
-				case SharedInfo.ConfigExtension:
-					await OnCreatedConfigFile(name, fullPath).ConfigureAwait(false);
-
-					break;
-				case SharedInfo.KeysExtension:
-					await OnCreatedKeysFile(name, fullPath).ConfigureAwait(false);
-
-					break;
-			}
-		}
-
 		private static async Task OnCreatedKeysFile(string name, string fullPath) {
 			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
 				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
@@ -486,7 +520,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (!await CanHandleWriteEvent(name).ConfigureAwait(false)) {
+			if (!await CanHandleWriteEvent(fullPath).ConfigureAwait(false)) {
 				return;
 			}
 
@@ -514,17 +548,56 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			string extension = Path.GetExtension(name);
+
+			switch (extension) {
+				case SharedInfo.IPCConfigExtension:
+					await OnChangedConfigFile(name).ConfigureAwait(false);
+
+					break;
+				case SharedInfo.JsonConfigExtension:
+					await OnDeletedJsonConfigFile(name, fullPath).ConfigureAwait(false);
+
+					break;
+			}
+		}
+
+		private static async Task OnDeletedFile(string name, string fullPath) {
+			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
+				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
+
+				return;
+			}
+
+			string extension = Path.GetExtension(name);
+
+			switch (extension) {
+				case SharedInfo.JsonConfigExtension:
+				case SharedInfo.IPCConfigExtension:
+					await OnDeletedConfigFile(name, fullPath).ConfigureAwait(false);
+
+					break;
+			}
+		}
+
+		private static async Task OnDeletedJsonConfigFile(string name, string fullPath) {
+			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
+				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
+
+				return;
+			}
+
 			string botName = Path.GetFileNameWithoutExtension(name);
 
 			if (string.IsNullOrEmpty(botName)) {
 				return;
 			}
 
-			if (!await CanHandleWriteEvent(name).ConfigureAwait(false)) {
+			if (!await CanHandleWriteEvent(fullPath).ConfigureAwait(false)) {
 				return;
 			}
 
-			if (botName.Equals(SharedInfo.ASF)) {
+			if (botName.Equals(SharedInfo.ASF, StringComparison.OrdinalIgnoreCase)) {
 				if (File.Exists(fullPath)) {
 					return;
 				}
@@ -549,23 +622,6 @@ namespace ArchiSteamFarm {
 
 			if (Bot.Bots.TryGetValue(botName, out Bot bot)) {
 				await bot.OnConfigChanged(true).ConfigureAwait(false);
-			}
-		}
-
-		private static async Task OnDeletedFile(string name, string fullPath) {
-			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
-				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
-
-				return;
-			}
-
-			string extension = Path.GetExtension(name);
-
-			switch (extension) {
-				case SharedInfo.ConfigExtension:
-					await OnDeletedConfigFile(name, fullPath).ConfigureAwait(false);
-
-					break;
 			}
 		}
 
@@ -605,7 +661,7 @@ namespace ArchiSteamFarm {
 			HashSet<string> botNames;
 
 			try {
-				botNames = Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*" + SharedInfo.ConfigExtension).Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).ToHashSet(Bot.BotsComparer);
+				botNames = Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*" + SharedInfo.JsonConfigExtension).Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).ToHashSet(Bot.BotsComparer);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 
@@ -687,30 +743,26 @@ namespace ArchiSteamFarm {
 						ArchiLogger.LogNullError(nameof(relativeDirectoryName));
 
 						return false;
-
-					// No directory, root folder
 					case "":
-
+						// No directory, root folder
 						switch (fileName) {
-							// Files with those names in root directory we want to keep
 							case SharedInfo.LogFile:
 							case "NLog.config":
-
+								// Files with those names in root directory we want to keep
 								continue;
 						}
 
 						break;
-
-					// Files in those directories we want to keep in their current place
+					case SharedInfo.ArchivalLogsDirectory:
 					case SharedInfo.ConfigDirectory:
+					case SharedInfo.DebugDirectory:
 					case SharedInfo.PluginsDirectory:
 					case SharedInfo.UpdateDirectory:
-
+						// Files in those directories we want to keep in their current place
 						continue;
 					default:
-
 						// Files in subdirectories of those directories we want to keep as well
-						if (Utilities.RelativeDirectoryStartsWith(relativeDirectoryName, SharedInfo.ConfigDirectory, SharedInfo.PluginsDirectory, SharedInfo.UpdateDirectory)) {
+						if (Utilities.RelativeDirectoryStartsWith(relativeDirectoryName, SharedInfo.ArchivalLogsDirectory, SharedInfo.ConfigDirectory, SharedInfo.DebugDirectory, SharedInfo.PluginsDirectory, SharedInfo.UpdateDirectory)) {
 							continue;
 						}
 
@@ -758,7 +810,6 @@ namespace ArchiSteamFarm {
 					// We're not interested in extracting placeholder files (but we still want directories created for them, done above)
 					switch (zipFile.Name) {
 						case ".gitkeep":
-
 							continue;
 					}
 				}

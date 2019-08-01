@@ -37,6 +37,8 @@ using SteamKit2;
 
 namespace ArchiSteamFarm.Plugins {
 	internal static class PluginsCore {
+		internal static bool HasActivePluginsLoaded => ActivePlugins?.Count > 0;
+
 		[ImportMany]
 		private static ImmutableHashSet<IPlugin> ActivePlugins { get; set; }
 
@@ -47,7 +49,7 @@ namespace ArchiSteamFarm.Plugins {
 				return false;
 			}
 
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return true;
 			}
 
@@ -66,7 +68,7 @@ namespace ArchiSteamFarm.Plugins {
 
 		[ItemNotNull]
 		internal static async Task<StringComparer> GetBotsComparer() {
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return StringComparer.Ordinal;
 			}
 
@@ -86,7 +88,7 @@ namespace ArchiSteamFarm.Plugins {
 		}
 
 		internal static bool InitPlugins() {
-			if ((ActivePlugins != null) && (ActivePlugins.Count > 0)) {
+			if (HasActivePluginsLoaded) {
 				return false;
 			}
 
@@ -147,6 +149,8 @@ namespace ArchiSteamFarm.Plugins {
 			ActivePlugins = activePlugins.ToImmutableHashSet();
 			ASF.ArchiLogger.LogGenericInfo(Strings.PluginsWarning);
 
+			Console.Title = SharedInfo.ProgramIdentifier;
+
 			return invalidPlugins.Count == 0;
 		}
 
@@ -181,7 +185,7 @@ namespace ArchiSteamFarm.Plugins {
 		}
 
 		internal static async Task OnASFInitModules(IReadOnlyDictionary<string, JToken> additionalConfigProperties = null) {
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return;
 			}
 
@@ -200,7 +204,7 @@ namespace ArchiSteamFarm.Plugins {
 				return null;
 			}
 
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return null;
 			}
 
@@ -224,7 +228,7 @@ namespace ArchiSteamFarm.Plugins {
 				return;
 			}
 
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return;
 			}
 
@@ -242,7 +246,7 @@ namespace ArchiSteamFarm.Plugins {
 				return;
 			}
 
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return;
 			}
 
@@ -260,7 +264,7 @@ namespace ArchiSteamFarm.Plugins {
 				return false;
 			}
 
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return false;
 			}
 
@@ -284,7 +288,7 @@ namespace ArchiSteamFarm.Plugins {
 				return;
 			}
 
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return;
 			}
 
@@ -302,7 +306,7 @@ namespace ArchiSteamFarm.Plugins {
 				return;
 			}
 
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return;
 			}
 
@@ -320,7 +324,7 @@ namespace ArchiSteamFarm.Plugins {
 				return;
 			}
 
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return;
 			}
 
@@ -339,7 +343,7 @@ namespace ArchiSteamFarm.Plugins {
 				return null;
 			}
 
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return null;
 			}
 
@@ -363,7 +367,7 @@ namespace ArchiSteamFarm.Plugins {
 				return;
 			}
 
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return;
 			}
 
@@ -381,7 +385,7 @@ namespace ArchiSteamFarm.Plugins {
 				return null;
 			}
 
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return null;
 			}
 
@@ -405,7 +409,7 @@ namespace ArchiSteamFarm.Plugins {
 				return false;
 			}
 
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return false;
 			}
 
@@ -429,7 +433,7 @@ namespace ArchiSteamFarm.Plugins {
 				return;
 			}
 
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return;
 			}
 

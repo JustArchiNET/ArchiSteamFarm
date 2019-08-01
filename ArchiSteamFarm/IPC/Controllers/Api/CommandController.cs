@@ -23,6 +23,7 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using ArchiSteamFarm.IPC.Requests;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
 using Microsoft.AspNetCore.Mvc;
@@ -37,14 +38,19 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		///     This API endpoint is supposed to be entirely replaced by ASF actions available under /Api/ASF/{action} and /Api/Bot/{bot}/{action}.
 		///     You should use "given bot" commands when executing this endpoint, omitting targets of the command will cause the command to be executed on first defined bot
 		/// </remarks>
-		[HttpPost("{command:required}")]
+		[Consumes("application/json")]
+		[HttpPost]
 		[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-		public async Task<ActionResult<GenericResponse>> CommandPost(string command) {
-			if (string.IsNullOrEmpty(command)) {
-				ASF.ArchiLogger.LogNullError(nameof(command));
+		public async Task<ActionResult<GenericResponse>> CommandPost([FromBody] CommandRequest request) {
+			if (request == null) {
+				ASF.ArchiLogger.LogNullError(nameof(request));
 
-				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(command))));
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(request))));
+			}
+
+			if (string.IsNullOrEmpty(request.Command)) {
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(request.Command))));
 			}
 
 			if (ASF.GlobalConfig.SteamOwnerID == 0) {
@@ -56,6 +62,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			if (targetBot == null) {
 				return BadRequest(new GenericResponse(false, Strings.ErrorNoBotsDefined));
 			}
+
+			string command = request.Command;
 
 			if (!string.IsNullOrEmpty(ASF.GlobalConfig.CommandPrefix) && command.StartsWith(ASF.GlobalConfig.CommandPrefix, StringComparison.Ordinal)) {
 				command = command.Substring(ASF.GlobalConfig.CommandPrefix.Length);

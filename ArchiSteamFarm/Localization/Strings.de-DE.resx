@@ -718,14 +718,18 @@ StackTrace:
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
   </data>
   <data name="ErrorSingleInstanceRequired" xml:space="preserve">
-    <value>Der ASF-Prozess läuft bereits für dieses Arbeitsverzeichnis. Abbruch!</value>
+    <value>Der ASF-Prozess läuft bereits für dieses Arbeitsverzeichnis. Der Vorgang wird abgebrochen!</value>
   </data>
   <data name="BotHandledConfirmations" xml:space="preserve">
-    <value>Erfolgreiche Bearbeitung von {0} Bestätigungen!</value>
+    <value>Es wurde(n) {0} Bestätigung(en) erfolgreich durchgeführt!</value>
     <comment>{0} will be replaced by number of confirmations</comment>
   </data>
   <data name="BotExtraIdlingCooldown" xml:space="preserve">
-    <value>Wir warten noch {0}, um sicherzustellen, dass alles OK ist um mit dem Farmen zu beginnen...</value>
+    <value>Wir warten bis zu {0}, um sicherzustellen, dass wir in der Lage sind mit dem Sammeln zu beginnen...</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
   </data>
+  <data name="UpdateCleanup" xml:space="preserve">
+    <value>Alte Dateien nach dem Update bereinigen...</value>
+  </data>
+  
 </root>

@@ -38,10 +38,11 @@ script:
         set +eu # This is needed to run below npm block on OSX
     fi
 
-    cd ASF-ui
-    npm ci
-    npm run-script deploy
-    cd ..
+    (
+        cd ASF-ui
+        npm ci
+        npm run-script deploy
+    )
 
     if [ "$TRAVIS_OS_NAME" = "osx" ]; then
         set -eu # We no longer need +eu on OSX
@@ -84,5 +85,5 @@ matrix:
       dist: xenial
     - os: osx
       # Ref: https://docs.travis-ci.com/user/reference/osx
-      dotnet: 2.2.203 # For OSX, we need absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
+      dotnet: 2.2.300 # For OSX, we need absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
       osx_image: xcode10.2

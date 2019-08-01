@@ -120,7 +120,11 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task OnLoggedOn() => await Bot.ArchiWebHandler.JoinGroup(SharedInfo.ASFGroupSteamID).ConfigureAwait(false);
+		internal async Task OnLoggedOn() {
+			if (!await Bot.ArchiWebHandler.JoinGroup(SharedInfo.ASFGroupSteamID).ConfigureAwait(false)) {
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, nameof(ArchiWebHandler.JoinGroup)));
+			}
+		}
 
 		internal async Task OnPersonaState(string nickname = null, string avatarHash = null) {
 			if ((DateTime.UtcNow < LastAnnouncementCheck.AddHours(MinAnnouncementCheckTTL)) && (ShouldSendHeartBeats || (LastHeartBeat == DateTime.MinValue))) {
@@ -135,7 +139,7 @@ namespace ArchiSteamFarm {
 				}
 
 				// Don't announce if we don't meet conditions
-				bool? eligible = await IsEligibleForMatching().ConfigureAwait(false);
+				bool? eligible = await IsEligibleForListing().ConfigureAwait(false);
 
 				if (!eligible.HasValue) {
 					// This is actually network failure, so we'll stop sending heartbeats but not record it as valid check
@@ -224,11 +228,30 @@ namespace ArchiSteamFarm {
 
 		[ItemCanBeNull]
 		private async Task<ImmutableHashSet<ListedUser>> GetListedUsers() {
-			const string request = URL + "/Api/Bots";
+			const string request = URL + "/Api/Bots?matchEverything=1";
 
 			WebBrowser.ObjectResponse<ImmutableHashSet<ListedUser>> objectResponse = await Bot.ArchiWebHandler.WebBrowser.UrlGetToJsonObject<ImmutableHashSet<ListedUser>>(request).ConfigureAwait(false);
 
 			return objectResponse?.Content;
+		}
+
+		private async Task<bool?> IsEligibleForListing() {
+			bool? isEligibleForMatching = await IsEligibleForMatching().ConfigureAwait(false);
+
+			if (isEligibleForMatching != true) {
+				return isEligibleForMatching;
+			}
+
+			// Bot must have public inventory
+			bool? hasPublicInventory = await Bot.ArchiWebHandler.HasPublicInventory().ConfigureAwait(false);
+
+			if (hasPublicInventory != true) {
+				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.ArchiWebHandler.HasPublicInventory) + ": " + (hasPublicInventory?.ToString() ?? "null")));
+
+				return hasPublicInventory;
+			}
+
+			return true;
 		}
 
 		private async Task<bool?> IsEligibleForMatching() {
@@ -253,19 +276,10 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			// Bot must have public inventory
-			bool? hasPublicInventory = await Bot.ArchiWebHandler.HasPublicInventory().ConfigureAwait(false);
-
-			if (!hasPublicInventory.GetValueOrDefault()) {
-				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.ArchiWebHandler.HasPublicInventory) + ": " + (hasPublicInventory?.ToString() ?? "null")));
-
-				return hasPublicInventory;
-			}
-
 			// Bot must have valid API key (e.g. not being restricted account)
 			bool? hasValidApiKey = await Bot.ArchiWebHandler.HasValidApiKey().ConfigureAwait(false);
 
-			if (!hasValidApiKey.GetValueOrDefault()) {
+			if (hasValidApiKey != true) {
 				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.ArchiWebHandler.HasValidApiKey) + ": " + (hasValidApiKey?.ToString() ?? "null")));
 
 				return hasValidApiKey;
@@ -281,7 +295,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			HashSet<Steam.Asset.EType> acceptedMatchableTypes = Bot.BotConfig.MatchableTypes.Where(type => AcceptedMatchableTypes.Contains(type)).ToHashSet();
+			HashSet<Steam.Asset.EType> acceptedMatchableTypes = Bot.BotConfig.MatchableTypes.Where(AcceptedMatchableTypes.Contains).ToHashSet();
 
 			if (acceptedMatchableTypes.Count == 0) {
 				Bot.ArchiLogger.LogGenericTrace(Strings.ErrorAborted);
@@ -630,6 +644,7 @@ namespace ArchiSteamFarm {
 
 			internal bool MatchEverything { get; private set; }
 
+#pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "matchable_backgrounds", Required = Required.Always)]
 			private byte MatchableBackgroundsNumber {
 				set {
@@ -649,7 +664,9 @@ namespace ArchiSteamFarm {
 					}
 				}
 			}
+#pragma warning restore IDE0051
 
+#pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "matchable_cards", Required = Required.Always)]
 			private byte MatchableCardsNumber {
 				set {
@@ -669,7 +686,9 @@ namespace ArchiSteamFarm {
 					}
 				}
 			}
+#pragma warning restore IDE0051
 
+#pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "matchable_emoticons", Required = Required.Always)]
 			private byte MatchableEmoticonsNumber {
 				set {
@@ -689,7 +708,9 @@ namespace ArchiSteamFarm {
 					}
 				}
 			}
+#pragma warning restore IDE0051
 
+#pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "matchable_foil_cards", Required = Required.Always)]
 			private byte MatchableFoilCardsNumber {
 				set {
@@ -709,7 +730,9 @@ namespace ArchiSteamFarm {
 					}
 				}
 			}
+#pragma warning restore IDE0051
 
+#pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "match_everything", Required = Required.Always)]
 			private byte MatchEverythingNumber {
 				set {
@@ -729,6 +752,7 @@ namespace ArchiSteamFarm {
 					}
 				}
 			}
+#pragma warning restore IDE0051
 
 			[JsonConstructor]
 			private ListedUser() { }

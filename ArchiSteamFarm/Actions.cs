@@ -157,20 +157,40 @@ namespace ArchiSteamFarm {
 			}
 
 			if (resumeInSeconds > 0) {
-				if (CardsFarmerResumeTimer != null) {
-					CardsFarmerResumeTimer.Dispose();
-					CardsFarmerResumeTimer = null;
+				if (CardsFarmerResumeTimer == null) {
+					CardsFarmerResumeTimer = new Timer(
+						e => Resume(),
+						null,
+						TimeSpan.FromSeconds(resumeInSeconds), // Delay
+						Timeout.InfiniteTimeSpan // Period
+					);
+				} else {
+					CardsFarmerResumeTimer.Change(TimeSpan.FromSeconds(resumeInSeconds), Timeout.InfiniteTimeSpan);
 				}
-
-				CardsFarmerResumeTimer = new Timer(
-					e => Resume(),
-					null,
-					TimeSpan.FromSeconds(resumeInSeconds), // Delay
-					Timeout.InfiniteTimeSpan // Period
-				);
 			}
 
 			return (true, Strings.BotAutomaticIdlingNowPaused);
+		}
+
+		[PublicAPI]
+		public async Task<(bool Success, string Message)> Play(IEnumerable<uint> gameIDs, string gameName = null) {
+			if (gameIDs == null) {
+				Bot.ArchiLogger.LogNullError(nameof(gameIDs));
+
+				return (false, string.Format(Strings.ErrorObjectIsNull, nameof(gameIDs)));
+			}
+
+			if (!Bot.IsConnectedAndLoggedOn) {
+				return (false, Strings.BotNotConnected);
+			}
+
+			if (!Bot.CardsFarmer.Paused) {
+				await Bot.CardsFarmer.Pause(true).ConfigureAwait(false);
+			}
+
+			await Bot.ArchiHandler.PlayGames(gameIDs, gameName).ConfigureAwait(false);
+
+			return (true, Strings.Done);
 		}
 
 		[PublicAPI]

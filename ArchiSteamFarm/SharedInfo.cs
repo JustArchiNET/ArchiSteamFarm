@@ -23,24 +23,30 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
+using ArchiSteamFarm.Plugins;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm {
 	internal static class SharedInfo {
 		internal const ulong ArchiSteamID = 76561198006963719;
+		internal const string ArchivalLogFile = "log.{#}.txt";
+		internal const string ArchivalLogsDirectory = "logs";
 		internal const string ASF = nameof(ASF);
 		internal const ulong ASFGroupSteamID = 103582791440160998;
 		internal const string AssemblyDocumentation = AssemblyName + ".xml";
 		internal const string AssemblyName = nameof(ArchiSteamFarm);
 		internal const string ConfigDirectory = "config";
-		internal const string ConfigExtension = ".json";
 		internal const string DatabaseExtension = ".db";
 		internal const string DebugDirectory = "debug";
 		internal const string EnvironmentVariableCryptKey = ASF + "_CRYPTKEY";
+		internal const string EnvironmentVariablePath = ASF + "_PATH";
 		internal const string GithubReleaseURL = "https://api.github.com/repos/" + GithubRepo + "/releases"; // GitHub API is HTTPS only
 		internal const string GithubRepo = "JustArchiNET/" + AssemblyName;
-		internal const string GlobalConfigFileName = ASF + ConfigExtension;
+		internal const string GlobalConfigFileName = ASF + JsonConfigExtension;
 		internal const string GlobalDatabaseFileName = ASF + DatabaseExtension;
+		internal const string IPCConfigExtension = ".config";
+		internal const string IPCConfigFile = nameof(IPC) + IPCConfigExtension;
+		internal const string JsonConfigExtension = ".json";
 		internal const string KeysExtension = ".keys";
 		internal const string KeysUnusedExtension = ".unused";
 		internal const string KeysUsedExtension = ".used";
@@ -56,13 +62,18 @@ namespace ArchiSteamFarm {
 		internal const string UpdateDirectory = "_old";
 		internal const string WebsiteDirectory = "www";
 
-		internal static string HomeDirectory => Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-		internal static Guid ModuleVersion => Assembly.GetEntryAssembly().ManifestModule.ModuleVersionId;
+		internal static string HomeDirectory => Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location ?? throw new ArgumentNullException(nameof(HomeDirectory)));
 
 		[NotNull]
-		internal static string PublicIdentifier => AssemblyName + (BuildInfo.IsCustomBuild ? "-custom" : "");
+		internal static string ProgramIdentifier => PublicIdentifier + " V" + Version + " (" + BuildInfo.Variant + "/" + ModuleVersion + " | " + OS.Variant + ")";
 
-		internal static Version Version => Assembly.GetEntryAssembly().GetName().Version;
+		[NotNull]
+		internal static string PublicIdentifier => AssemblyName + (BuildInfo.IsCustomBuild ? "-custom" : PluginsCore.HasActivePluginsLoaded ? "-modded" : "");
+
+		[NotNull]
+		internal static Version Version => Assembly.GetEntryAssembly()?.GetName().Version ?? throw new ArgumentNullException(nameof(Version));
+
+		private static Guid ModuleVersion => Assembly.GetEntryAssembly()?.ManifestModule.ModuleVersionId ?? throw new ArgumentNullException(nameof(ModuleVersion));
 
 		[SuppressMessage("ReSharper", "ConvertToConstant.Global")]
 		internal static class BuildInfo {

@@ -22,6 +22,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Localization;
 using JetBrains.Annotations;
 using NLog;
 using NLog.Config;
@@ -102,7 +103,9 @@ namespace ArchiSteamFarm.NLog {
 				}
 			}
 
-			await bot.SendMessage(ChatGroupID, SteamID, message).ConfigureAwait(false);
+			if (!await bot.SendMessage(ChatGroupID, SteamID, message).ConfigureAwait(false)) {
+				bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
+			}
 		}
 
 		private async Task SendPrivateMessage(string message, Bot bot = null) {
@@ -120,7 +123,9 @@ namespace ArchiSteamFarm.NLog {
 				}
 			}
 
-			await bot.SendMessage(SteamID, message).ConfigureAwait(false);
+			if (!await bot.SendMessage(SteamID, message).ConfigureAwait(false)) {
+				bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
+			}
 		}
 	}
 }

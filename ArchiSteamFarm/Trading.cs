@@ -302,13 +302,11 @@ namespace ArchiSteamFarm {
 			foreach ((ulong classID, uint amount) in tradableSet) {
 				switch (amount) {
 					case 0:
-
 						// No tradable items, this should never happen, dictionary should not have this key to begin with
 						ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(amount), amount));
 
 						return false;
 					case 1:
-
 						// Single tradable item, can be matchable or not depending on the rest of the inventory
 						if (!fullSet.TryGetValue(classID, out uint fullAmount) || (fullAmount == 0) || (fullAmount < amount)) {
 							ASF.ArchiLogger.LogNullError(nameof(fullAmount));
@@ -324,7 +322,6 @@ namespace ArchiSteamFarm {
 						// A single exclusive tradable item is not matchable, continue
 						continue;
 					default:
-
 						// Any other combination of tradable items is always matchable
 						return false;
 				}
@@ -518,11 +515,9 @@ namespace ArchiSteamFarm {
 			// Check if it's donation trade
 			switch (tradeOffer.ItemsToGive.Count) {
 				case 0 when tradeOffer.ItemsToReceive.Count == 0:
-
 					// If it's steam issue, try again later
 					return ParseTradeResult.EResult.TryAgain;
 				case 0:
-
 					// Otherwise react accordingly, depending on our preference
 					bool acceptDonations = Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.AcceptDonations);
 					bool acceptBotTrades = !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.DontAcceptBotTrades);

@@ -24,16 +24,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
+using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
-	internal sealed class BotDatabase : IDisposable {
+	internal sealed class BotDatabase : SerializableFile {
 		internal uint GamesToRedeemInBackgroundCount {
 			get {
 				lock (GamesToRedeemInBackground) {
@@ -48,8 +48,6 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		private readonly ConcurrentHashSet<ulong> BlacklistedFromTradesSteamIDs = new ConcurrentHashSet<ulong>();
 
-		private readonly SemaphoreSlim FileSemaphore = new SemaphoreSlim(1, 1);
-
 		[JsonProperty(Required = Required.DisallowNull)]
 		private readonly OrderedDictionary GamesToRedeemInBackground = new OrderedDictionary();
 
@@ -59,14 +57,37 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		private readonly ConcurrentHashSet<uint> IdlingPriorityAppIDs = new ConcurrentHashSet<uint>();
 
+		internal string LoginKey {
+			get => BackingLoginKey;
+
+			set {
+				if (BackingLoginKey == value) {
+					return;
+				}
+
+				BackingLoginKey = value;
+				Utilities.InBackground(Save);
+			}
+		}
+
+		internal MobileAuthenticator MobileAuthenticator {
+			get => BackingMobileAuthenticator;
+
+			set {
+				if (BackingMobileAuthenticator == value) {
+					return;
+				}
+
+				BackingMobileAuthenticator = value;
+				Utilities.InBackground(Save);
+			}
+		}
+
 		[JsonProperty(PropertyName = "_LoginKey")]
-		internal string LoginKey { get; private set; }
+		private string BackingLoginKey;
 
 		[JsonProperty(PropertyName = "_MobileAuthenticator")]
-		internal MobileAuthenticator MobileAuthenticator { get; private set; }
-
-		private string FilePath;
-		private bool ReadOnly;
+		private MobileAuthenticator BackingMobileAuthenticator;
 
 		private BotDatabase([NotNull] string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
@@ -79,9 +100,7 @@ namespace ArchiSteamFarm {
 		[JsonConstructor]
 		private BotDatabase() { }
 
-		public void Dispose() => FileSemaphore.Dispose();
-
-		internal async Task AddBlacklistedFromTradesSteamIDs(IReadOnlyCollection<ulong> steamIDs) {
+		internal void AddBlacklistedFromTradesSteamIDs(IReadOnlyCollection<ulong> steamIDs) {
 			if ((steamIDs == null) || (steamIDs.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(steamIDs));
 
@@ -89,11 +108,11 @@ namespace ArchiSteamFarm {
 			}
 
 			if (BlacklistedFromTradesSteamIDs.AddRange(steamIDs)) {
-				await Save().ConfigureAwait(false);
+				Utilities.InBackground(Save);
 			}
 		}
 
-		internal async Task AddGamesToRedeemInBackground(IOrderedDictionary games) {
+		internal void AddGamesToRedeemInBackground(IOrderedDictionary games) {
 			if ((games == null) || (games.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(games));
 
@@ -114,11 +133,11 @@ namespace ArchiSteamFarm {
 			}
 
 			if (save) {
-				await Save().ConfigureAwait(false);
+				Utilities.InBackground(Save);
 			}
 		}
 
-		internal async Task AddIdlingBlacklistedAppIDs(IReadOnlyCollection<uint> appIDs) {
+		internal void AddIdlingBlacklistedAppIDs(IReadOnlyCollection<uint> appIDs) {
 			if ((appIDs == null) || (appIDs.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(appIDs));
 
@@ -126,11 +145,11 @@ namespace ArchiSteamFarm {
 			}
 
 			if (IdlingBlacklistedAppIDs.AddRange(appIDs)) {
-				await Save().ConfigureAwait(false);
+				Utilities.InBackground(Save);
 			}
 		}
 
-		internal async Task AddIdlingPriorityAppIDs(IReadOnlyCollection<uint> appIDs) {
+		internal void AddIdlingPriorityAppIDs(IReadOnlyCollection<uint> appIDs) {
 			if ((appIDs == null) || (appIDs.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(appIDs));
 
@@ -138,7 +157,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (IdlingPriorityAppIDs.AddRange(appIDs)) {
-				await Save().ConfigureAwait(false);
+				Utilities.InBackground(Save);
 			}
 		}
 
@@ -228,25 +247,7 @@ namespace ArchiSteamFarm {
 			return IdlingPriorityAppIDs.Contains(appID);
 		}
 
-		internal async Task MakeReadOnly() {
-			if (ReadOnly) {
-				return;
-			}
-
-			await FileSemaphore.WaitAsync().ConfigureAwait(false);
-
-			try {
-				if (ReadOnly) {
-					return;
-				}
-
-				ReadOnly = true;
-			} finally {
-				FileSemaphore.Release();
-			}
-		}
-
-		internal async Task RemoveBlacklistedFromTradesSteamIDs(IReadOnlyCollection<ulong> steamIDs) {
+		internal void RemoveBlacklistedFromTradesSteamIDs(IReadOnlyCollection<ulong> steamIDs) {
 			if ((steamIDs == null) || (steamIDs.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(steamIDs));
 
@@ -254,11 +255,11 @@ namespace ArchiSteamFarm {
 			}
 
 			if (BlacklistedFromTradesSteamIDs.RemoveRange(steamIDs)) {
-				await Save().ConfigureAwait(false);
+				Utilities.InBackground(Save);
 			}
 		}
 
-		internal async Task RemoveGameToRedeemInBackground(string key) {
+		internal void RemoveGameToRedeemInBackground(string key) {
 			if (string.IsNullOrEmpty(key)) {
 				ASF.ArchiLogger.LogNullError(nameof(key));
 
@@ -273,10 +274,10 @@ namespace ArchiSteamFarm {
 				GamesToRedeemInBackground.Remove(key);
 			}
 
-			await Save().ConfigureAwait(false);
+			Utilities.InBackground(Save);
 		}
 
-		internal async Task RemoveIdlingBlacklistedAppIDs(IReadOnlyCollection<uint> appIDs) {
+		internal void RemoveIdlingBlacklistedAppIDs(IReadOnlyCollection<uint> appIDs) {
 			if ((appIDs == null) || (appIDs.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(appIDs));
 
@@ -284,11 +285,11 @@ namespace ArchiSteamFarm {
 			}
 
 			if (IdlingBlacklistedAppIDs.RemoveRange(appIDs)) {
-				await Save().ConfigureAwait(false);
+				Utilities.InBackground(Save);
 			}
 		}
 
-		internal async Task RemoveIdlingPriorityAppIDs(IReadOnlyCollection<uint> appIDs) {
+		internal void RemoveIdlingPriorityAppIDs(IReadOnlyCollection<uint> appIDs) {
 			if ((appIDs == null) || (appIDs.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(appIDs));
 
@@ -296,62 +297,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (IdlingPriorityAppIDs.RemoveRange(appIDs)) {
-				await Save().ConfigureAwait(false);
-			}
-		}
-
-		internal async Task SetLoginKey(string value = null) {
-			if (value == LoginKey) {
-				return;
-			}
-
-			LoginKey = value;
-			await Save().ConfigureAwait(false);
-		}
-
-		internal async Task SetMobileAuthenticator(MobileAuthenticator value = null) {
-			if (value == MobileAuthenticator) {
-				return;
-			}
-
-			MobileAuthenticator = value;
-			await Save().ConfigureAwait(false);
-		}
-
-		private async Task Save() {
-			if (ReadOnly) {
-				return;
-			}
-
-			string json = JsonConvert.SerializeObject(this);
-
-			if (string.IsNullOrEmpty(json)) {
-				ASF.ArchiLogger.LogNullError(nameof(json));
-
-				return;
-			}
-
-			string newFilePath = FilePath + ".new";
-
-			await FileSemaphore.WaitAsync().ConfigureAwait(false);
-
-			try {
-				if (ReadOnly) {
-					return;
-				}
-
-				// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
-				await RuntimeCompatibility.File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
-
-				if (File.Exists(FilePath)) {
-					File.Replace(newFilePath, FilePath, null);
-				} else {
-					File.Move(newFilePath, FilePath);
-				}
-			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericException(e);
-			} finally {
-				FileSemaphore.Release();
+				Utilities.InBackground(Save);
 			}
 		}
 

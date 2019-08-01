@@ -341,7 +341,7 @@
     <value>Роботу зупинено!</value>
   </data>
   <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
-    <value>Ігнорувати цей запит, тому що параметр паузи увімкнено!</value>
+    <value>Ігнорування запиту, тому що ввімкнена постійна пауза!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>На акаунті немає ігор, з яких можуть випасти картки!</value>
@@ -443,7 +443,7 @@
     <value>Цей бот не запущений, тому що він відключений у конфігураційному файлі!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Помилку TwoFactorCodeMismatch отримано {0} разів поспіль. Або ваші дані 2FA більше не є дійсні, або час на вашому пристрої не синхронізований, припиняємо роботу!</value>
+    <value>Помилка TwoFactorCodeMismatch виникла {0} разів поспіль. Дані 2FA більше не дійсні, або час на вашому пристрої не синхронізований, припиняю роботу!</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
@@ -727,5 +727,11 @@
   <data name="BotExtraIdlingCooldown" xml:space="preserve">
     <value>Затримка {0}, щоб гарантувати, що акаунт вільний для фарму...</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+  </data>
+  <data name="UpdateCleanup" xml:space="preserve">
+    <value>Видалення старих файлів після оновлення...</value>
+  </data>
+  <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
+    <value>Генерація коду батьківського контролю Steam, зважте можливість вказати його у конфігураційному файлі замість цього...</value>
   </data>
 </root>

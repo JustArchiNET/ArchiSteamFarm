@@ -673,21 +673,61 @@ StackTrace: {2}</value>
     <value>Összesen {0} szett cserélve.</value>
     <comment>{0} will be replaced by number of sets traded</comment>
   </data>
-  
-  
-  
-  
-  
+  <data name="WarningExcessiveBotsCount" xml:space="preserve">
+    <value>Több bot accountot használsz, mint a mi ajánlott felső limitünk ({0}). Tudatnunk kell veled, hogy ez nem támogatott és sokféle Steammel kapcsolatos hibát okozhat, vagy akár az accountjaidat is letilthatják. Nézd meg a gyakori kérdéseket, ha több információt szeretnél erről.</value>
+    <comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
+  </data>
+  <data name="PluginLoaded" xml:space="preserve">
+    <value>{0} sikeresen betöltött!</value>
+    <comment>{0} will be replaced by the name of the custom ASF plugin</comment>
+  </data>
+  <data name="PluginLoading" xml:space="preserve">
+    <value>{0} V{1} betöltése...</value>
+    <comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
+  </data>
+  <data name="NothingFound" xml:space="preserve">
+    <value>Nincs találat!</value>
+  </data>
+  <data name="PluginsWarning" xml:space="preserve">
+    <value>Egy, vagy több egyedi plugint töltöttél be az ASF-be. Mivel mi nem tudunk támogatást nyújtani a módosított konfigurációkhoz, ezért kérünk, hogy a pluginek fejlesztőit keresd fel, ha bármi gondod adódna.</value>
+  </data>
   <data name="PleaseWait" xml:space="preserve">
     <value>Kérjük, várjon...</value>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="EnterCommand" xml:space="preserve">
+    <value>Írd be a parancsot: </value>
+  </data>
+  <data name="Executing" xml:space="preserve">
+    <value>Végrehajtás...</value>
+  </data>
+  <data name="InteractiveConsoleEnabled" xml:space="preserve">
+    <value>Az interaktív konzol aktív, nyomd meg a 'c' billentyűt, hogy a parancs módba lépj.</value>
+  </data>
+  <data name="InteractiveConsoleNotAvailable" xml:space="preserve">
+    <value>Az interaktív konzol nem elérhető mivel a(z) {0} tulajdonság hiányzik a konfigurációból.</value>
+    <comment>{0} will be replaced by the name of the missing config property (string)</comment>
+  </data>
+  <data name="Response" xml:space="preserve">
+    <value>Válasz: {0}</value>
+    <comment>{0} will be replaced by the generated response (string)</comment>
+  </data>
+  <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
+    <value>A botnak {0} játéka maradt a várólistán.</value>
+    <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
+  </data>
+  <data name="ErrorSingleInstanceRequired" xml:space="preserve">
+    <value>Egy ASF processz már fut ebben a munka könyvtárban, leállítás!</value>
+  </data>
+  <data name="BotHandledConfirmations" xml:space="preserve">
+    <value>{0} megerősítés sikeresen lekezelve!</value>
+    <comment>{0} will be replaced by number of confirmations</comment>
+  </data>
+  <data name="BotExtraIdlingCooldown" xml:space="preserve">
+    <value>{0} várakozás, hogy biztosak legyünk benne, hogy elindíthatjuk a farmolást...</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+  </data>
+  <data name="UpdateCleanup" xml:space="preserve">
+    <value>Régi fájlok törlése a frissítés után...</value>
+  </data>
   
 </root>

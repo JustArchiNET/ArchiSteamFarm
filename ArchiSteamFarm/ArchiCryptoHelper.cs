@@ -20,13 +20,33 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using ArchiSteamFarm.Localization;
+using CryptSharp.Utility;
+using JetBrains.Annotations;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
 	public static class ArchiCryptoHelper {
+		private const ushort SteamParentalPbkdf2Iterations = 10000;
+		private const byte SteamParentalSCryptBlocksCount = 8;
+		private const ushort SteamParentalSCryptIterations = 8192;
+
+		[NotNull]
+		private static IEnumerable<byte> SteamParentalCharacters => Enumerable.Range('0', 10).Select(character => (byte) character);
+
+		[NotNull]
+		private static IEnumerable<byte[]> SteamParentalCodes {
+			get {
+				HashSet<byte> steamParentalCharacters = SteamParentalCharacters.ToHashSet();
+
+				return from a in steamParentalCharacters from b in steamParentalCharacters from c in steamParentalCharacters from d in steamParentalCharacters select new[] { a, b, c, d };
+			}
+		}
+
 		private static byte[] EncryptionKey = Encoding.UTF8.GetBytes(nameof(ArchiSteamFarm));
 
 		internal static string Decrypt(ECryptoMethod cryptoMethod, string encrypted) {
@@ -38,13 +58,10 @@ namespace ArchiSteamFarm {
 
 			switch (cryptoMethod) {
 				case ECryptoMethod.PlainText:
-
 					return encrypted;
 				case ECryptoMethod.AES:
-
 					return DecryptAES(encrypted);
 				case ECryptoMethod.ProtectedDataForCurrentUser:
-
 					return DecryptProtectedDataForCurrentUser(encrypted);
 				default:
 					ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(cryptoMethod), cryptoMethod));
@@ -62,19 +79,49 @@ namespace ArchiSteamFarm {
 
 			switch (cryptoMethod) {
 				case ECryptoMethod.PlainText:
-
 					return decrypted;
 				case ECryptoMethod.AES:
-
 					return EncryptAES(decrypted);
 				case ECryptoMethod.ProtectedDataForCurrentUser:
-
 					return EncryptProtectedDataForCurrentUser(decrypted);
 				default:
 					ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(cryptoMethod), cryptoMethod));
 
 					return null;
 			}
+		}
+
+		internal static IEnumerable<byte> GenerateSteamParentalHash(byte[] password, byte[] salt, byte hashLength, ESteamParentalAlgorithm steamParentalAlgorithm) {
+			if ((password == null) || (salt == null) || (hashLength == 0) || !Enum.IsDefined(typeof(ESteamParentalAlgorithm), steamParentalAlgorithm)) {
+				ASF.ArchiLogger.LogNullError(nameof(password) + " || " + nameof(salt) + " || " + nameof(hashLength) + " || " + nameof(steamParentalAlgorithm));
+
+				return null;
+			}
+
+			switch (steamParentalAlgorithm) {
+				case ESteamParentalAlgorithm.Pbkdf2:
+					using (HMACSHA256 hmacAlgorithm = new HMACSHA256(password)) {
+						return Pbkdf2.ComputeDerivedKey(hmacAlgorithm, salt, SteamParentalPbkdf2Iterations, hashLength);
+					}
+				case ESteamParentalAlgorithm.SCrypt:
+					return SCrypt.ComputeDerivedKey(password, salt, SteamParentalSCryptIterations, SteamParentalSCryptBlocksCount, 1, null, hashLength);
+				default:
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(steamParentalAlgorithm), steamParentalAlgorithm));
+
+					return null;
+			}
+		}
+
+		internal static string RecoverSteamParentalCode(byte[] passwordHash, byte[] salt, ESteamParentalAlgorithm steamParentalAlgorithm) {
+			if ((passwordHash == null) || (salt == null) || !Enum.IsDefined(typeof(ESteamParentalAlgorithm), steamParentalAlgorithm)) {
+				ASF.ArchiLogger.LogNullError(nameof(passwordHash) + " || " + nameof(salt) + " || " + nameof(steamParentalAlgorithm));
+
+				return null;
+			}
+
+			byte[] password = SteamParentalCodes.AsParallel().FirstOrDefault(passwordToTry => GenerateSteamParentalHash(passwordToTry, salt, (byte) passwordHash.Length, steamParentalAlgorithm)?.SequenceEqual(passwordHash) == true);
+
+			return password != null ? Encoding.UTF8.GetString(password) : null;
 		}
 
 		internal static void SetEncryptionKey(string key) {
@@ -193,6 +240,11 @@ namespace ArchiSteamFarm {
 			PlainText,
 			AES,
 			ProtectedDataForCurrentUser
+		}
+
+		internal enum ESteamParentalAlgorithm : byte {
+			SCrypt,
+			Pbkdf2
 		}
 	}
 }

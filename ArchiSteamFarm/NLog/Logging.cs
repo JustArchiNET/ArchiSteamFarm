@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -140,6 +141,14 @@ namespace ArchiSteamFarm.NLog {
 		}
 
 		internal static void InitCoreLoggers(bool uniqueInstance) {
+			try {
+				if ((Directory.GetCurrentDirectory() != SharedInfo.HomeDirectory) && File.Exists("NLog.config")) {
+					LogManager.Configuration = new XmlLoggingConfiguration("NLog.config");
+				}
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+			}
+
 			if (LogManager.Configuration != null) {
 				IsUsingCustomConfiguration = true;
 				InitConsoleLoggers();
@@ -157,12 +166,24 @@ namespace ArchiSteamFarm.NLog {
 			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, coloredConsoleTarget));
 
 			if (uniqueInstance) {
+				try {
+					if (!Directory.Exists(SharedInfo.ArchivalLogsDirectory)) {
+						Directory.CreateDirectory(SharedInfo.ArchivalLogsDirectory);
+					}
+				} catch (Exception e) {
+					ASF.ArchiLogger.LogGenericException(e);
+				}
+
 				FileTarget fileTarget = new FileTarget("File") {
+					ArchiveFileName = Path.Combine(SharedInfo.ArchivalLogsDirectory, SharedInfo.ArchivalLogFile),
+					ArchiveNumbering = ArchiveNumberingMode.Rolling,
+					ArchiveOldFileOnStartup = true,
 					CleanupFileName = false,
 					ConcurrentWrites = false,
 					DeleteOldFileOnStartup = true,
 					FileName = SharedInfo.LogFile,
-					Layout = GeneralLayout
+					Layout = GeneralLayout,
+					MaxArchiveFiles = 10
 				};
 
 				config.AddTarget(fileTarget);
@@ -303,6 +324,10 @@ namespace ArchiSteamFarm.NLog {
 					} finally {
 						ConsoleSemaphore.Release();
 					}
+				} catch (Exception e) {
+					ASF.ArchiLogger.LogGenericException(e);
+
+					return;
 				} finally {
 					await Task.Delay(ConsoleResponsivenessDelay).ConfigureAwait(false);
 				}
@@ -362,10 +387,8 @@ namespace ArchiSteamFarm.NLog {
 
 			bool reconfigure = false;
 
-			foreach (LoggingRule consoleLoggingRule in ConsoleLoggingRules) {
-				if (LogManager.Configuration.LoggingRules.Remove(consoleLoggingRule)) {
-					reconfigure = true;
-				}
+			foreach (LoggingRule _ in ConsoleLoggingRules.Where(consoleLoggingRule => LogManager.Configuration.LoggingRules.Remove(consoleLoggingRule))) {
+				reconfigure = true;
 			}
 
 			if (reconfigure) {

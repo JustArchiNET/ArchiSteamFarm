@@ -56,7 +56,7 @@ namespace ArchiSteamFarm {
 		internal readonly ConcurrentHashSet<Game> CurrentGamesFarming = new ConcurrentHashSet<Game>();
 
 		[JsonProperty]
-		internal readonly ConcurrentSortedHashSet<Game> GamesToFarm = new ConcurrentSortedHashSet<Game>();
+		internal readonly ConcurrentList<Game> GamesToFarm = new ConcurrentList<Game>();
 
 		[JsonProperty]
 		internal TimeSpan TimeRemaining =>
@@ -100,7 +100,6 @@ namespace ArchiSteamFarm {
 			EventSemaphore.Dispose();
 			FarmingInitializationSemaphore.Dispose();
 			FarmingResetSemaphore.Dispose();
-			GamesToFarm.Dispose();
 
 			// Those are objects that might be null and the check should be in-place
 			IdleFarmingTimer?.Dispose();
@@ -572,6 +571,12 @@ namespace ArchiSteamFarm {
 
 				name = WebUtility.HtmlDecode(name.Substring(nameStartIndex, nameEndIndex - nameStartIndex));
 
+				if (string.IsNullOrEmpty(name)) {
+					Bot.ArchiLogger.LogNullError(nameof(name));
+
+					continue;
+				}
+
 				// Levels
 				byte badgeLevel = 0;
 
@@ -626,7 +631,6 @@ namespace ArchiSteamFarm {
 
 							break;
 						default:
-
 							if (backgroundTasks == null) {
 								backgroundTasks = new List<Task>();
 							}
@@ -1053,35 +1057,34 @@ namespace ArchiSteamFarm {
 
 		private async Task SortGamesToFarm() {
 			// Put priority idling appIDs on top
-			IOrderedEnumerable<Game> gamesToFarm = GamesToFarm.OrderByDescending(game => Bot.IsPriorityIdling(game.AppID));
+			IOrderedEnumerable<Game> orderedGamesToFarm = GamesToFarm.OrderByDescending(game => Bot.IsPriorityIdling(game.AppID));
 
 			foreach (BotConfig.EFarmingOrder farmingOrder in Bot.BotConfig.FarmingOrders) {
 				switch (farmingOrder) {
 					case BotConfig.EFarmingOrder.Unordered:
-
 						break;
 					case BotConfig.EFarmingOrder.AppIDsAscending:
-						gamesToFarm = gamesToFarm.ThenBy(game => game.AppID);
+						orderedGamesToFarm = orderedGamesToFarm.ThenBy(game => game.AppID);
 
 						break;
 					case BotConfig.EFarmingOrder.AppIDsDescending:
-						gamesToFarm = gamesToFarm.ThenByDescending(game => game.AppID);
+						orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(game => game.AppID);
 
 						break;
 					case BotConfig.EFarmingOrder.BadgeLevelsAscending:
-						gamesToFarm = gamesToFarm.ThenBy(game => game.BadgeLevel);
+						orderedGamesToFarm = orderedGamesToFarm.ThenBy(game => game.BadgeLevel);
 
 						break;
 					case BotConfig.EFarmingOrder.BadgeLevelsDescending:
-						gamesToFarm = gamesToFarm.ThenByDescending(game => game.BadgeLevel);
+						orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(game => game.BadgeLevel);
 
 						break;
 					case BotConfig.EFarmingOrder.CardDropsAscending:
-						gamesToFarm = gamesToFarm.ThenBy(game => game.CardsRemaining);
+						orderedGamesToFarm = orderedGamesToFarm.ThenBy(game => game.CardsRemaining);
 
 						break;
 					case BotConfig.EFarmingOrder.CardDropsDescending:
-						gamesToFarm = gamesToFarm.ThenByDescending(game => game.CardsRemaining);
+						orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(game => game.CardsRemaining);
 
 						break;
 					case BotConfig.EFarmingOrder.MarketableAscending:
@@ -1091,11 +1094,11 @@ namespace ArchiSteamFarm {
 						if ((marketableAppIDs != null) && (marketableAppIDs.Count > 0)) {
 							switch (farmingOrder) {
 								case BotConfig.EFarmingOrder.MarketableAscending:
-									gamesToFarm = gamesToFarm.ThenBy(game => marketableAppIDs.Contains(game.AppID));
+									orderedGamesToFarm = orderedGamesToFarm.ThenBy(game => marketableAppIDs.Contains(game.AppID));
 
 									break;
 								case BotConfig.EFarmingOrder.MarketableDescending:
-									gamesToFarm = gamesToFarm.ThenByDescending(game => marketableAppIDs.Contains(game.AppID));
+									orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(game => marketableAppIDs.Contains(game.AppID));
 
 									break;
 								default:
@@ -1107,23 +1110,23 @@ namespace ArchiSteamFarm {
 
 						break;
 					case BotConfig.EFarmingOrder.HoursAscending:
-						gamesToFarm = gamesToFarm.ThenBy(game => game.HoursPlayed);
+						orderedGamesToFarm = orderedGamesToFarm.ThenBy(game => game.HoursPlayed);
 
 						break;
 					case BotConfig.EFarmingOrder.HoursDescending:
-						gamesToFarm = gamesToFarm.ThenByDescending(game => game.HoursPlayed);
+						orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(game => game.HoursPlayed);
 
 						break;
 					case BotConfig.EFarmingOrder.NamesAscending:
-						gamesToFarm = gamesToFarm.ThenBy(game => game.GameName);
+						orderedGamesToFarm = orderedGamesToFarm.ThenBy(game => game.GameName);
 
 						break;
 					case BotConfig.EFarmingOrder.NamesDescending:
-						gamesToFarm = gamesToFarm.ThenByDescending(game => game.GameName);
+						orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(game => game.GameName);
 
 						break;
 					case BotConfig.EFarmingOrder.Random:
-						gamesToFarm = gamesToFarm.ThenBy(game => Utilities.RandomNext());
+						orderedGamesToFarm = orderedGamesToFarm.ThenBy(game => Utilities.RandomNext());
 
 						break;
 					case BotConfig.EFarmingOrder.RedeemDateTimesAscending:
@@ -1132,12 +1135,14 @@ namespace ArchiSteamFarm {
 
 						foreach (Game game in GamesToFarm) {
 							DateTime redeemDate = DateTime.MinValue;
-							HashSet<uint> packageIDs = ASF.GlobalDatabase.GetPackageIDs(game.AppID);
+							HashSet<uint> packageIDs = ASF.GlobalDatabase.GetPackageIDs(game.AppID, Bot.OwnedPackageIDs.Keys);
 
 							if (packageIDs != null) {
 								foreach (uint packageID in packageIDs) {
 									if (!Bot.OwnedPackageIDs.TryGetValue(packageID, out (EPaymentMethod PaymentMethod, DateTime TimeCreated) packageData)) {
-										continue;
+										Bot.ArchiLogger.LogNullError(nameof(packageData));
+
+										return;
 									}
 
 									if (packageData.TimeCreated > redeemDate) {
@@ -1151,11 +1156,11 @@ namespace ArchiSteamFarm {
 
 						switch (farmingOrder) {
 							case BotConfig.EFarmingOrder.RedeemDateTimesAscending:
-								gamesToFarm = gamesToFarm.ThenBy(game => redeemDates[game.AppID]);
+								orderedGamesToFarm = orderedGamesToFarm.ThenBy(game => redeemDates[game.AppID]);
 
 								break;
 							case BotConfig.EFarmingOrder.RedeemDateTimesDescending:
-								gamesToFarm = gamesToFarm.ThenByDescending(game => redeemDates[game.AppID]);
+								orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(game => redeemDates[game.AppID]);
 
 								break;
 							default:
@@ -1172,8 +1177,9 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			// We must call ToList() here as we can't replace items while enumerating
-			GamesToFarm.ReplaceWith(gamesToFarm.ToList());
+			// We must call ToList() here as we can't do in-place replace
+			List<Game> gamesToFarm = orderedGamesToFarm.ToList();
+			GamesToFarm.ReplaceWith(gamesToFarm);
 		}
 
 		internal sealed class Game : IEquatable<Game> {

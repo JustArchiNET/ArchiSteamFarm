@@ -43,7 +43,7 @@ Feel free to remove our notice and fill the template below with your details.
 ```
 Paste here, in-between triple backtick tags
 
-Ensure that your log is complete and was NOT recorded in Debug mode, as debug log may contain sensitive information that should not be shared publicly, as per our the wiki. Standard ASF log does not include sensitive information.
+Ensure that your log is complete and was NOT recorded in Debug mode, as debug log may contain sensitive information that should not be shared publicly, as per our wiki statement. Standard ASF log does not include sensitive information.
 ```
 
 ### Global ASF.json config (if using one)

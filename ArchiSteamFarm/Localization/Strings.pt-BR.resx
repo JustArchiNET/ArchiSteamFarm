@@ -160,7 +160,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Recusando executar esta função devido ao DeviceID inválido no ASF 2FA!</value>
+    <value>Recusando a execução desta função devido a um DeviceID inválido no ASF 2FA!</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>Nenhum bot definido. Você se esqueceu de configurar seu ASF?</value>
@@ -187,7 +187,7 @@ StackTrace:
     <value>Não foi possível prosseguir com a atualização pois esta versão não inclui nenhum arquivo!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>O pedido de entrada do usuário foi recebido, mas o processo está sendo executado no modo não-interativo!</value>
+    <value>Recebemos um pedido de entrada do usuário, mas o processo está sendo executado no modo não-interativo!</value>
   </data>
   <data name="Exiting" xml:space="preserve">
     <value>Saindo...</value>
@@ -443,7 +443,7 @@ StackTrace:
     <value>Este bot não será iniciado pois está desativado no arquivo de configurações!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Erro TwoFactorCodeMismatch recebido {0} vezes seguidas. Suas credencias 2FA não são válidas ou seu relógio está fora de sincronia. Abortando!</value>
+    <value>Recebemos o código de erro TwoFactorCodeMismatch {0} vezes seguidas. As suas credencias da autenticação em duas etapas são inválidas ou o relógio do sistema não está sincronizado. Abortando!</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
@@ -473,7 +473,7 @@ StackTrace:
     <value>Você não pode enviar uma proposta de troca a si mesmo!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>Este bot não possui o ASF 2FA habilitado! Você esqueceu de importar seu autenticador para o 2FA ASF?</value>
+    <value>Este bot não possui o ASF 2FA habilitado! Você se esqueceu de importar o autenticador como ASF 2FA?</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
     <value>Esse bot não está conectado!</value>
@@ -661,22 +661,22 @@ StackTrace:
     <comment>{0} will be replaced by bot's level</comment>
   </data>
   <data name="ActivelyMatchingItems" xml:space="preserve">
-    <value>Correspondendo itens Steam, rodada #{0}...</value>
+    <value>Associando itens do Steam, {0}ª rodada...</value>
     <comment>{0} will be replaced by round number</comment>
   </data>
   <data name="DoneActivelyMatchingItems" xml:space="preserve">
-    <value>Itens Steam correspondidos, rodada #{0}.</value>
+    <value>Associação de itens do Steam concluída, {0}ª rodada.</value>
     <comment>{0} will be replaced by round number</comment>
   </data>
   <data name="ErrorAborted" xml:space="preserve">
     <value>Cancelado!</value>
   </data>
   <data name="ActivelyMatchingItemsRound" xml:space="preserve">
-    <value>Correspondido um total de {0} conjuntos nessa rodada.</value>
+    <value>{0} conjuntos foram associados no total nessa rodada.</value>
     <comment>{0} will be replaced by number of sets traded</comment>
   </data>
   <data name="WarningExcessiveBotsCount" xml:space="preserve">
-    <value>Você está rodando mais contas de bots pessoais do que nosso limite máximo recomendado ({0}). Esteja ciente de que essa configuração não é suportada e pode causar vários problemas relacionados ao Steam, incluindo suspensões de contas. Confira o FAQ para mais detalhes.</value>
+    <value>Você está rodando mais contas pessoais de bots do que nosso limite máximo recomendado ({0}). Esteja ciente de que essa configuração não é suportada e pode causar vários problemas relacionados ao Steam, incluindo suspensões de contas. Acesse as perguntas frequentes para mais detalhes.</value>
     <comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
   </data>
   <data name="PluginLoaded" xml:space="preserve">
@@ -727,5 +727,11 @@ StackTrace:
   <data name="BotExtraIdlingCooldown" xml:space="preserve">
     <value>Esperando até {0} para garantir que estamos livres para começar a coletar...</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+  </data>
+  <data name="UpdateCleanup" xml:space="preserve">
+    <value>Limpando arquivos antigos após a atualização...</value>
+  </data>
+  <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
+    <value>Gerando o código do Modo Família, isso pode levar um tempo. Considere colocá-lo no arquivo de configuração...</value>
   </data>
 </root>

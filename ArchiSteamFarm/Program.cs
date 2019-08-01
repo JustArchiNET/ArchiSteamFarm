@@ -43,7 +43,7 @@ namespace ArchiSteamFarm {
 		internal static bool ShutdownSequenceInitialized { get; private set; }
 
 		// We need to keep this one assigned and not calculated on-demand
-		private static readonly string ProcessFileName = Process.GetCurrentProcess().MainModule.FileName;
+		private static readonly string ProcessFileName = Process.GetCurrentProcess().MainModule?.FileName ?? throw new ArgumentNullException(nameof(ProcessFileName));
 
 		private static readonly TaskCompletionSource<byte> ShutdownResetEvent = new TaskCompletionSource<byte>();
 		private static bool SystemRequired;
@@ -128,10 +128,10 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task InitASF(IReadOnlyCollection<string> args) {
-			string programIdentifier = SharedInfo.PublicIdentifier + " V" + SharedInfo.Version + " (" + SharedInfo.BuildInfo.Variant + "/" + SharedInfo.ModuleVersion + " | " + OS.Variant + ")";
+			OS.CoreInit();
 
-			Console.Title = programIdentifier;
-			ASF.ArchiLogger.LogGenericInfo(programIdentifier);
+			Console.Title = SharedInfo.ProgramIdentifier;
+			ASF.ArchiLogger.LogGenericInfo(SharedInfo.ProgramIdentifier);
 
 			await InitGlobalConfigAndLanguage().ConfigureAwait(false);
 
@@ -430,7 +430,6 @@ namespace ArchiSteamFarm {
 
 						break;
 					default:
-
 						if (cryptKeyNext) {
 							cryptKeyNext = false;
 							HandleCryptKeyArgument(arg);
@@ -450,6 +449,16 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			try {
+				string envPath = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariablePath);
+
+				if (!string.IsNullOrEmpty(envPath)) {
+					HandlePathArgument(envPath);
+				}
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+			}
+
 			bool pathNext = false;
 
 			foreach (string arg in args) {
@@ -459,7 +468,6 @@ namespace ArchiSteamFarm {
 
 						break;
 					default:
-
 						if (pathNext) {
 							pathNext = false;
 							HandlePathArgument(arg);

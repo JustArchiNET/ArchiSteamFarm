@@ -145,8 +145,8 @@ namespace ArchiSteamFarm {
 
 		internal WebProxy WebProxy {
 			get {
-				if (_WebProxy != null) {
-					return _WebProxy;
+				if (BackingWebProxy != null) {
+					return BackingWebProxy;
 				}
 
 				if (string.IsNullOrEmpty(WebProxyText)) {
@@ -163,7 +163,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				_WebProxy = new WebProxy {
+				BackingWebProxy = new WebProxy {
 					Address = uri,
 					BypassProxyOnLocal = true
 				};
@@ -179,10 +179,10 @@ namespace ArchiSteamFarm {
 						credentials.Password = WebProxyPassword;
 					}
 
-					_WebProxy.Credentials = credentials;
+					BackingWebProxy.Credentials = credentials;
 				}
 
-				return _WebProxy;
+				return BackingWebProxy;
 			}
 		}
 
@@ -201,16 +201,16 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty]
 		internal string WebProxyPassword {
-			get => _WebProxyPassword;
+			get => BackingWebProxyPassword;
 
 			set {
 				IsWebProxyPasswordSet = true;
-				_WebProxyPassword = value;
+				BackingWebProxyPassword = value;
 			}
 		}
 
-		private WebProxy _WebProxy;
-		private string _WebProxyPassword = DefaultWebProxyPassword;
+		private WebProxy BackingWebProxy;
+		private string BackingWebProxyPassword = DefaultWebProxyPassword;
 		private bool ShouldSerializeSensitiveDetails = true;
 
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamOwnerID), Required = Required.DisallowNull)]

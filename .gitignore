@@ -10,6 +10,7 @@ ArchiSteamFarm/config
 # Ignore local log + debug of development builds
 ArchiSteamFarm/log.txt
 ArchiSteamFarm/debug
+ArchiSteamFarm/logs
 
 # Ignore standard out folders for publishing
 **/out

@@ -29,7 +29,7 @@ namespace ArchiSteamFarm.Collections {
 		private readonly ConcurrentQueue<T> BackingQueue = new ConcurrentQueue<T>();
 
 		internal byte MaxCount {
-			get => _MaxCount;
+			get => BackingMaxCount;
 
 			set {
 				if (value == 0) {
@@ -38,13 +38,13 @@ namespace ArchiSteamFarm.Collections {
 					return;
 				}
 
-				_MaxCount = value;
+				BackingMaxCount = value;
 
 				while ((BackingQueue.Count > MaxCount) && BackingQueue.TryDequeue(out _)) { }
 			}
 		}
 
-		private byte _MaxCount;
+		private byte BackingMaxCount;
 
 		internal FixedSizeConcurrentQueue(byte maxCount) {
 			if (maxCount == 0) {

@@ -42,7 +42,7 @@ namespace ArchiSteamFarm.Helpers {
 		private T InitializedValue;
 		private Timer MaintenanceTimer;
 
-		internal ArchiCacheable([NotNull] Func<Task<(bool Success, T Result)>> resolveFunction, TimeSpan? cacheLifetime = null) {
+		public ArchiCacheable([NotNull] Func<Task<(bool Success, T Result)>> resolveFunction, TimeSpan? cacheLifetime = null) {
 			ResolveFunction = resolveFunction ?? throw new ArgumentNullException(nameof(resolveFunction));
 			CacheLifetime = cacheLifetime ?? Timeout.InfiniteTimeSpan;
 		}
@@ -79,16 +79,14 @@ namespace ArchiSteamFarm.Helpers {
 				if (!success) {
 					switch (fallback) {
 						case EFallback.DefaultForType:
-
 							return (false, default);
 						case EFallback.FailedNow:
-
 							return (false, result);
 						case EFallback.SuccessPreviously:
-
 							return (false, InitializedValue);
 						default:
 							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(fallback), fallback));
+
 							goto case EFallback.DefaultForType;
 					}
 				}

@@ -35,6 +35,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 	// Your plugin class should inherit the plugin interfaces it wants to handle
 	// If you do not want to handle a particular action (e.g. OnBotMessage that is offered in IBotMessage), it's the best idea to not inherit it at all
 	// This will keep your code compact, efficient and less dependent. You can always add additional interfaces when you'll need them, this example project will inherit quite a bit of them to show you potential usage
+	// ReSharper disable once UnusedMember.Global - this is example plugin class that isn't used in our main code
 	internal sealed class ExamplePlugin : IASF, IBot, IBotCommand, IBotConnection, IBotFriendRequest, IBotMessage, IBotModules, IBotTradeOffer {
 		// This is used for identification purposes, typically you want to use a friendly name of your plugin here, such as the name of your main class
 		// Please note that this property can have direct dependencies only on structures that were initialized by the constructor, as it's possible to be called before OnLoaded() takes place
@@ -55,8 +56,8 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 
 			// ReSharper disable once UseDeconstruction - deconstruction is not available in .NET Framework
 			foreach (KeyValuePair<string, JToken> configProperty in additionalConfigProperties) {
+				// It's a good idea to prefix your custom properties with the name of your plugin, so there will be no possible conflict of ASF or other plugins using the same name, neither now or in the future
 				switch (configProperty.Key) {
-					// It's a good idea to prefix your custom properties with the name of your plugin, so there will be no possible conflict of ASF or other plugins using the same name, neither now or in the future
 					case nameof(ExamplePlugin) + "TestProperty" when configProperty.Value.Type == JTokenType.Boolean:
 						bool exampleBooleanValue = configProperty.Value.Value<bool>();
 						ASF.ArchiLogger.LogGenericInfo(nameof(ExamplePlugin) + "TestProperty boolean property has been found with a value of: " + exampleBooleanValue);
@@ -75,21 +76,15 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 		// If you do not recognize the command, just return null/empty and allow ASF to gracefully return "unknown command" to user on usual basis
 		public async Task<string> OnBotCommand(Bot bot, ulong steamID, string message, string[] args) {
 			// In comparison with OnBotMessage(), we're using asynchronous CatAPI call here, so we declare our method as async and return the message as usual
+			// Notice how we handle access here as well, it'll work only for FamilySharing+
 			switch (args[0].ToUpperInvariant()) {
-				// Notice how we handle access here as well, it'll work only for FamilySharing+
 				case "CAT" when bot.HasPermission(steamID, BotConfig.EPermission.FamilySharing):
-
 					// Notice how we can decide whether to use bot's AWH WebBrowser or ASF's one. For Steam-related requests, AWH's one should always be used, for third-party requests like those it doesn't really matter
 					// Still, it makes sense to pass AWH's one, so in case you get some errors or alike, you know from which bot instance they come from. It's similar to using Bot's ArchiLogger compared to ASF's one
 					string randomCatURL = await CatAPI.GetRandomCatURL(bot.ArchiWebHandler.WebBrowser).ConfigureAwait(false);
 
-					if (string.IsNullOrEmpty(randomCatURL)) {
-						return "God damn it, we're out of cats, care to notify my master? Thanks!";
-					}
-
-					return randomCatURL;
+					return !string.IsNullOrEmpty(randomCatURL) ? randomCatURL : "God damn it, we're out of cats, care to notify my master? Thanks!";
 				default:
-
 					return null;
 			}
 		}
@@ -159,8 +154,8 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 		// This is the earliest method that will be called, right after loading the plugin, long before any bot initialization takes place
 		// It's a good place to initialize all potential (non-bot-specific) structures that you will need across lifetime of your plugin, such as global timers, concurrent dictionaries and alike
 		// If you do not have any global structures to initialize, you can leave this function empty
-		// At this point you can access core ASF's functionality, such as logging or a web browser
-		// Once all plugins execute their OnLoaded() methods, OnASFInit() will be called next
+		// At this point you can access core ASF's functionality, such as logging, but more advanced structures (like ASF's WebBrowser) will be available in OnASFInit(), which itself takes place after every plugin gets OnLoaded()
+		// Typically you should use this function only for preparing core structures of your plugin, and optionally also sending a message to the user (e.g. support link, welcome message or similar), ASF-specific things should usually happen in OnASFInit()
 		public void OnLoaded() {
 			ASF.ArchiLogger.LogGenericInfo("Hey! Thanks for checking if our example plugin works fine, this is a confirmation that indeed " + nameof(OnLoaded) + "() method was called!");
 			ASF.ArchiLogger.LogGenericInfo("Good luck in whatever you're doing!");

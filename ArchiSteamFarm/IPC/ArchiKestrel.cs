@@ -32,8 +32,6 @@ using NLog.Web;
 
 namespace ArchiSteamFarm.IPC {
 	internal static class ArchiKestrel {
-		private const string ConfigurationFile = nameof(IPC) + ".config";
-
 		internal static HistoryTarget HistoryTarget { get; private set; }
 		internal static string WebsiteDirectory { get; private set; } = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.WebsiteDirectory);
 
@@ -78,9 +76,9 @@ namespace ArchiSteamFarm.IPC {
 			builder.ConfigureLogging(logging => logging.SetMinimumLevel(Debugging.IsUserDebugging ? LogLevel.Trace : LogLevel.Warning));
 
 			// Now conditionally initialize settings that are not possible to override
-			if (File.Exists(Path.Combine(absoluteConfigDirectory, ConfigurationFile))) {
+			if (File.Exists(Path.Combine(absoluteConfigDirectory, SharedInfo.IPCConfigFile))) {
 				// Set up custom config to be used
-				builder.UseConfiguration(new ConfigurationBuilder().SetBasePath(absoluteConfigDirectory).AddJsonFile(ConfigurationFile, false, true).Build());
+				builder.UseConfiguration(new ConfigurationBuilder().SetBasePath(absoluteConfigDirectory).AddJsonFile(SharedInfo.IPCConfigFile, false, true).Build());
 
 				// Use custom config for Kestrel and Logging configuration
 				builder.UseKestrel((builderContext, options) => options.Configure(builderContext.Configuration.GetSection("Kestrel")));
@@ -100,13 +98,14 @@ namespace ArchiSteamFarm.IPC {
 			Logging.InitHistoryLogger();
 
 			// Start the server
-			IWebHost kestrelWebHost = builder.Build();
+			IWebHost kestrelWebHost = null;
 
 			try {
+				kestrelWebHost = builder.Build();
 				await kestrelWebHost.StartAsync().ConfigureAwait(false);
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
-				kestrelWebHost.Dispose();
+				kestrelWebHost?.Dispose();
 
 				return;
 			}

@@ -728,4 +728,10 @@
     <value>正在等待至多 {0}以确保可以开始挂卡……</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
   </data>
+  <data name="UpdateCleanup" xml:space="preserve">
+    <value>正在清理更新后过时的文件……</value>
+  </data>
+  <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
+    <value>正在生成 Steam 家庭监护代码，这可能需要一段时间，建议您将此代码写到配置文件中……</value>
+  </data>
 </root>
