@@ -416,7 +416,7 @@ namespace ArchiSteamFarm {
 
 			switch (extension) {
 				case SharedInfo.IPCConfigExtension:
-					await OnCreatedConfigFile(fullPath).ConfigureAwait(false);
+					await OnCreatedConfigFile(name).ConfigureAwait(false);
 
 					break;
 				case SharedInfo.ConfigExtension:
@@ -448,18 +448,18 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static async Task OnCreatedConfigFile(string fullPath) {
-			if (string.IsNullOrEmpty(fullPath)) {
-				ArchiLogger.LogNullError(nameof(fullPath));
+		private static async Task OnCreatedConfigFile(string name) {
+			if (string.IsNullOrEmpty(name)) {
+				ArchiLogger.LogNullError(nameof(name));
 
 				return;
 			}
 
-			if (!fullPath.Equals(Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.IPCConfigFile)) || (GlobalConfig?.IPC != true)) {
+			if (!name.Equals(SharedInfo.IPCConfigFile) || (GlobalConfig?.IPC != true)) {
 				return;
 			}
 
-			if (!await CanHandleWriteEvent(fullPath).ConfigureAwait(false)) {
+			if (!await CanHandleWriteEvent(name).ConfigureAwait(false)) {
 				return;
 			}
 
