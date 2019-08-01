@@ -709,7 +709,7 @@ namespace ArchiSteamFarm {
 
 			switch (fileType) {
 				case EFileType.Config:
-					return botPath + SharedInfo.ConfigExtension;
+					return botPath + SharedInfo.JsonConfigExtension;
 				case EFileType.Database:
 					return botPath + SharedInfo.DatabaseExtension;
 				case EFileType.KeysToRedeem:
