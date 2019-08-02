@@ -5,7 +5,7 @@
 [![Build status (Docker)](https://img.shields.io/docker/cloud/build/justarchi/archisteamfarm.svg?label=Docker&maxAge=600)](https://hub.docker.com/r/justarchi/archisteamfarm)
 [![Github last commit date](https://img.shields.io/github/last-commit/JustArchiNET/ArchiSteamFarm.svg?label=Updated&maxAge=600)](https://github.com/JustArchiNET/ArchiSteamFarm/commits)
 [![License](https://img.shields.io/github/license/JustArchiNET/ArchiSteamFarm.svg?label=License&maxAge=2592000)](https://github.com/JustArchiNET/ArchiSteamFarm/blob/master/LICENSE-2.0.txt)
-[![Localization](https://d322cqt584bo4o.cloudfront.net/archisteamfarm/localized.svg)](https://crowdin.com/project/archisteamfarm)
+[![Localization](https://badges.crowdin.net/archisteamfarm/localized.svg](https://crowdin.com/project/archisteamfarm)
 
 [![ConfigGenerator status](https://img.shields.io/website-up-down-green-red/https/justarchinet.github.io/ASF-WebConfigGenerator.svg?label=ConfigGenerator&maxAge=3600)](https://justarchinet.github.io/ASF-WebConfigGenerator)
 [![Statistics status](https://img.shields.io/website-up-down-green-red/https/asf.justarchi.net.svg?label=Statistics&maxAge=3600)](https://asf.justarchi.net)
