@@ -42,6 +42,10 @@ PARSE_ARG() {
 	esac
 }
 
+if [[ -n "${ASF_PATH-}" ]]; then
+	cd "$ASF_PATH"
+fi
+
 if [[ -n "${ASF_ARGS-}" ]]; then
 	for ARG in $ASF_ARGS; do
 		if [[ -n "$ARG" ]]; then

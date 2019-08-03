@@ -9,8 +9,13 @@ SCRIPT_DIR="$(pwd)"
 SCRIPT_PATH="${SCRIPT_DIR}/${0}"
 
 BINARY="${SCRIPT_DIR}/ArchiSteamFarm.exe"
-BINARY_ARGS=()
 
+if [[ ! -f "$BINARY" ]]; then
+	echo "ERROR: $BINARY could not be found!"
+	exit 1
+fi
+
+BINARY_ARGS=()
 PATH_NEXT=0
 
 PARSE_ARG() {
@@ -18,7 +23,14 @@ PARSE_ARG() {
 
 	case "$1" in
 		--path) PATH_NEXT=1 ;;
-		--path=*) cd "$(echo "$1" | cut -d '=' -f 2-)" ;;
+		--path=*)
+			if [[ "$PATH_NEXT" -eq 1 ]]; then
+				PATH_NEXT=0
+				cd "$1"
+			else
+				cd "$(echo "$1" | cut -d '=' -f 2-)"
+			fi
+			;;
 		*)
 			if [[ "$PATH_NEXT" -eq 1 ]]; then
 				PATH_NEXT=0
@@ -26,6 +38,10 @@ PARSE_ARG() {
 			fi
 	esac
 }
+
+if [[ -n "${ASF_PATH-}" ]]; then
+	cd "$ASF_PATH"
+fi
 
 if [[ -n "${ASF_ARGS-}" ]]; then
 	for ARG in $ASF_ARGS; do
