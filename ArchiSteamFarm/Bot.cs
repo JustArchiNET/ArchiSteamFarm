@@ -1211,6 +1211,10 @@ namespace ArchiSteamFarm {
 					bool sent = false;
 
 					for (byte j = 0; (j < WebBrowser.MaxTries) && !sent && IsConnectedAndLoggedOn; j++) {
+						// TODO: Determine if this dirty workaround fixes "ghost notification" bug
+						// Theory: Perhaps Steam is confused when dealing with more than 1 message per second from the same user, check if this helps
+						await Task.Delay(1000).ConfigureAwait(false);
+
 						EResult result = await ArchiHandler.SendMessage(steamID, messagePart).ConfigureAwait(false);
 
 						switch (result) {
