@@ -427,7 +427,8 @@ namespace ArchiSteamFarm {
 			Forwarding = 1,
 			Distributing = 2,
 			KeepMissingGames = 4,
-			All = Forwarding | Distributing | KeepMissingGames
+			AssumeWalletKeyOnBadActivationCode = 8,
+			All = Forwarding | Distributing | KeepMissingGames | AssumeWalletKeyOnBadActivationCode
 		}
 
 		[Flags]

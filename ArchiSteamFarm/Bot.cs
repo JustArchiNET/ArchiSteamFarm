@@ -2793,6 +2793,8 @@ namespace ArchiSteamFarm {
 
 				ArchiLogger.LogGenericInfo(Strings.Starting);
 
+				bool assumeWalletKeyOnBadActivationCode = BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.AssumeWalletKeyOnBadActivationCode);
+
 				while (IsConnectedAndLoggedOn && BotDatabase.HasGamesToRedeemInBackground) {
 					(string key, string name) = BotDatabase.GetGameToRedeemInBackground();
 
@@ -2808,7 +2810,7 @@ namespace ArchiSteamFarm {
 						continue;
 					}
 
-					if ((result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) && (WalletCurrency != ECurrencyCode.Invalid)) {
+					if (((result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) || ((result.PurchaseResultDetail == EPurchaseResultDetail.BadActivationCode) && assumeWalletKeyOnBadActivationCode)) && (WalletCurrency != ECurrencyCode.Invalid)) {
 						// If it's a wallet code, we try to redeem it first, then handle the inner result as our primary one
 						(EResult Result, EPurchaseResultDetail? PurchaseResult)? walletResult = await ArchiWebHandler.RedeemWalletKey(key).ConfigureAwait(false);
 

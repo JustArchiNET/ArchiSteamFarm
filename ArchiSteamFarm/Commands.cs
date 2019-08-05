@@ -692,6 +692,11 @@ namespace ArchiSteamFarm {
 
 			foreach (string flag in flags) {
 				switch (flag.ToUpperInvariant()) {
+					case "FAWK":
+					case "FORCEASSUMEWALLETKEY":
+						redeemFlags |= ERedeemFlags.ForceAssumeWalletKeyOnBadActivationCode;
+
+						break;
 					case "FD":
 					case "FORCEDISTRIBUTING":
 						redeemFlags |= ERedeemFlags.ForceDistributing;
@@ -705,6 +710,11 @@ namespace ArchiSteamFarm {
 					case "FKMG":
 					case "FORCEKEEPMISSINGGAMES":
 						redeemFlags |= ERedeemFlags.ForceKeepMissingGames;
+
+						break;
+					case "SAWK":
+					case "SKIPASSUMEWALLETKEY":
+						redeemFlags |= ERedeemFlags.SkipAssumeWalletKeyOnBadActivationCode;
 
 						break;
 					case "SD":
@@ -2157,6 +2167,7 @@ namespace ArchiSteamFarm {
 			bool forward = !redeemFlags.HasFlag(ERedeemFlags.SkipForwarding) && (redeemFlags.HasFlag(ERedeemFlags.ForceForwarding) || Bot.BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.Forwarding));
 			bool distribute = !redeemFlags.HasFlag(ERedeemFlags.SkipDistributing) && (redeemFlags.HasFlag(ERedeemFlags.ForceDistributing) || Bot.BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.Distributing));
 			bool keepMissingGames = !redeemFlags.HasFlag(ERedeemFlags.SkipKeepMissingGames) && (redeemFlags.HasFlag(ERedeemFlags.ForceKeepMissingGames) || Bot.BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.KeepMissingGames));
+			bool assumeWalletKeyOnBadActivationCode = !redeemFlags.HasFlag(ERedeemFlags.SkipAssumeWalletKeyOnBadActivationCode) && (redeemFlags.HasFlag(ERedeemFlags.ForceAssumeWalletKeyOnBadActivationCode) || Bot.BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.AssumeWalletKeyOnBadActivationCode));
 
 			HashSet<string> pendingKeys = keys.ToHashSet(StringComparer.Ordinal);
 			HashSet<string> unusedKeys = pendingKeys.ToHashSet(StringComparer.Ordinal);
@@ -2196,7 +2207,7 @@ namespace ArchiSteamFarm {
 									// Either bot will be changed, or loop aborted
 									currentBot = null;
 								} else {
-									if ((result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) && (Bot.WalletCurrency != ECurrencyCode.Invalid)) {
+									if (((result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) || ((result.PurchaseResultDetail == EPurchaseResultDetail.BadActivationCode) && assumeWalletKeyOnBadActivationCode)) && (Bot.WalletCurrency != ECurrencyCode.Invalid)) {
 										// If it's a wallet code, we try to redeem it first, then handle the inner result as our primary one
 										(EResult Result, EPurchaseResultDetail? PurchaseResult)? walletResult = await currentBot.ArchiWebHandler.RedeemWalletKey(key).ConfigureAwait(false);
 
@@ -2933,7 +2944,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[Flags]
-		private enum ERedeemFlags : byte {
+		private enum ERedeemFlags : ushort {
 			None = 0,
 			Validate = 1,
 			ForceForwarding = 2,
@@ -2942,7 +2953,9 @@ namespace ArchiSteamFarm {
 			SkipDistributing = 16,
 			SkipInitial = 32,
 			ForceKeepMissingGames = 64,
-			SkipKeepMissingGames = 128
+			SkipKeepMissingGames = 128,
+			ForceAssumeWalletKeyOnBadActivationCode = 256,
+			SkipAssumeWalletKeyOnBadActivationCode = 512
 		}
 	}
 }
