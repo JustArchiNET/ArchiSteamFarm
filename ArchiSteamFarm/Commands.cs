@@ -2196,8 +2196,7 @@ namespace ArchiSteamFarm {
 									// Either bot will be changed, or loop aborted
 									currentBot = null;
 								} else {
-									if ((result.PurchaseResultDetail == EPurchaseResultDetail.BadActivationCode) && (Bot.WalletCurrency != ECurrencyCode.Invalid)) {
-										// We may try to assume that key is a wallet code, because Steam gives BadActivationCode in this case
+									if ((result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) && (Bot.WalletCurrency != ECurrencyCode.Invalid)) {
 										// If it's a wallet code, we try to redeem it first, then handle the inner result as our primary one
 										(EResult Result, EPurchaseResultDetail? PurchaseResult)? walletResult = await currentBot.ArchiWebHandler.RedeemWalletKey(key).ConfigureAwait(false);
 
