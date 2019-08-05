@@ -20,7 +20,6 @@
 // limitations under the License.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
 using ArchiSteamFarm.Plugins;
@@ -75,32 +74,47 @@ namespace ArchiSteamFarm {
 
 		private static Guid ModuleVersion => Assembly.GetEntryAssembly()?.ManifestModule.ModuleVersionId ?? throw new ArgumentNullException(nameof(ModuleVersion));
 
-		[SuppressMessage("ReSharper", "ConvertToConstant.Global")]
 		internal static class BuildInfo {
 #if ASF_VARIANT_DOCKER
-			internal static readonly bool CanUpdate = false;
-			internal static readonly string Variant = "docker";
+			internal static bool CanUpdate => false;
+
+			[NotNull]
+			internal static string Variant => "docker";
 #elif ASF_VARIANT_GENERIC
-			internal static readonly bool CanUpdate = true;
-			internal static readonly string Variant = "generic";
+			internal static bool CanUpdate => true;
+
+			[NotNull]
+			internal static string Variant => "generic";
 #elif ASF_VARIANT_GENERIC_NETF
-			internal static readonly bool CanUpdate = true;
-			internal static readonly string Variant = "generic-netf";
+			internal static bool CanUpdate => true;
+
+			[NotNull]
+			internal static string Variant => "generic-netf";
 #elif ASF_VARIANT_LINUX_ARM
-			internal static readonly bool CanUpdate = true;
-			internal static readonly string Variant = "linux-arm";
+			internal static bool CanUpdate => true;
+
+			[NotNull]
+			internal static string Variant => "linux-arm";
 #elif ASF_VARIANT_LINUX_X64
-			internal static readonly bool CanUpdate = true;
-			internal static readonly string Variant = "linux-x64";
+			internal static bool CanUpdate => true;
+
+			[NotNull]
+			internal static string Variant => "linux-x64";
 #elif ASF_VARIANT_OSX_X64
-			internal static readonly bool CanUpdate = true;
-			internal static readonly string Variant = "osx-x64";
+			internal static bool CanUpdate => true;
+
+			[NotNull]
+			internal static string Variant => "osx-x64";
 #elif ASF_VARIANT_WIN_X64
-			internal static readonly bool CanUpdate = true;
-			internal static readonly string Variant = "win-x64";
+			internal static bool CanUpdate => true;
+
+			[NotNull]
+			internal static string Variant => "win-x64";
 #else
-			internal static readonly bool CanUpdate = false;
-			internal static readonly string Variant = SourceVariant;
+			internal static bool CanUpdate => false;
+
+			[NotNull]
+			internal static string Variant => SourceVariant;
 #endif
 
 			private const string SourceVariant = "source";
