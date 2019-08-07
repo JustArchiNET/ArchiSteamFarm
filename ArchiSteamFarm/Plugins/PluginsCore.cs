@@ -42,30 +42,6 @@ namespace ArchiSteamFarm.Plugins {
 		[ImportMany]
 		private static ImmutableHashSet<IPlugin> ActivePlugins { get; set; }
 
-		internal static bool BotUsesNewChat(Bot bot) {
-			if (bot == null) {
-				ASF.ArchiLogger.LogNullError(nameof(bot));
-
-				return false;
-			}
-
-			if (!HasActivePluginsLoaded) {
-				return true;
-			}
-
-			foreach (IBotHackNewChat plugin in ActivePlugins.OfType<IBotHackNewChat>()) {
-				try {
-					if (!plugin.BotUsesNewChat(bot)) {
-						return false;
-					}
-				} catch (Exception e) {
-					ASF.ArchiLogger.LogGenericException(e);
-				}
-			}
-
-			return true;
-		}
-
 		[ItemNotNull]
 		internal static async Task<StringComparer> GetBotsComparer() {
 			if (!HasActivePluginsLoaded) {
