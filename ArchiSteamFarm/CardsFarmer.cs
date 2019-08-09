@@ -47,7 +47,7 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public static readonly ImmutableHashSet<uint> SalesBlacklist = ImmutableHashSet.Create<uint>(267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900, 762800, 876740, 991980);
 
-		private static readonly ConcurrentDictionary<uint, DateTime> IgnoredAppIDs = new ConcurrentDictionary<uint, DateTime>(); // Reserved for unreleased games
+		private static readonly ConcurrentDictionary<uint, DateTime> GloballyIgnoredAppIDs = new ConcurrentDictionary<uint, DateTime>(); // Reserved for unreleased games
 
 		// Games that were confirmed to show false status on general badges page
 		private static readonly ImmutableHashSet<uint> UntrustedAppIDs = ImmutableHashSet.Create<uint>(440, 570, 730);
@@ -71,6 +71,14 @@ namespace ArchiSteamFarm {
 		private readonly SemaphoreSlim FarmingInitializationSemaphore = new SemaphoreSlim(1, 1);
 		private readonly SemaphoreSlim FarmingResetSemaphore = new SemaphoreSlim(0, 1);
 		private readonly Timer IdleFarmingTimer;
+		private readonly ConcurrentDictionary<uint, DateTime> LocallyIgnoredAppIDs = new ConcurrentDictionary<uint, DateTime>();
+
+		private IEnumerable<ConcurrentDictionary<uint, DateTime>> SourcesOfIgnoredAppIDs {
+			get {
+				yield return GloballyIgnoredAppIDs;
+				yield return LocallyIgnoredAppIDs;
+			}
+		}
 
 		internal bool NowFarming { get; private set; }
 
@@ -114,6 +122,9 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task OnNewGameAdded() {
+			// This update has a potential to modify local ignores, therefore we need to purge our cache
+			LocallyIgnoredAppIDs.Clear();
+
 			ShouldResumeFarming = true;
 
 			// We aim to have a maximum of 2 tasks, one already parsing, and one waiting in the queue
@@ -404,14 +415,26 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				if (IgnoredAppIDs.TryGetValue(appID, out DateTime ignoredUntil)) {
-					if (ignoredUntil < DateTime.UtcNow) {
-						// This game served its time as being ignored
-						IgnoredAppIDs.TryRemove(appID, out _);
-					} else {
-						// This game is still ignored
+				bool ignored = false;
+
+				foreach (ConcurrentDictionary<uint, DateTime> sourceOfIgnoredAppIDs in SourcesOfIgnoredAppIDs) {
+					if (!sourceOfIgnoredAppIDs.TryGetValue(appID, out DateTime ignoredUntil)) {
 						continue;
 					}
+
+					if (ignoredUntil > DateTime.UtcNow) {
+						// This game is still ignored
+						ignored = true;
+
+						break;
+					}
+
+					// This game served its time as being ignored
+					sourceOfIgnoredAppIDs.TryRemove(appID, out _);
+				}
+
+				if (ignored) {
+					continue;
 				}
 
 				// Cards
@@ -1019,10 +1042,12 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			(uint playableAppID, DateTime ignoredUntil) = await Bot.GetAppDataForIdling(game.AppID, game.HoursPlayed).ConfigureAwait(false);
+			(uint playableAppID, DateTime ignoredUntil, bool ignoredGlobally) = await Bot.GetAppDataForIdling(game.AppID, game.HoursPlayed).ConfigureAwait(false);
 
 			if (playableAppID == 0) {
-				IgnoredAppIDs[game.AppID] = ignoredUntil < DateTime.MaxValue ? ignoredUntil : DateTime.UtcNow.AddHours(HoursToIgnore);
+				ConcurrentDictionary<uint, DateTime> ignoredAppIDs = ignoredGlobally ? GloballyIgnoredAppIDs : LocallyIgnoredAppIDs;
+
+				ignoredAppIDs[game.AppID] = (ignoredUntil > DateTime.MinValue) && (ignoredUntil < DateTime.MaxValue) ? ignoredUntil : DateTime.UtcNow.AddHours(HoursToIgnore);
 				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.IdlingGameNotPossible, game.AppID, game.GameName));
 
 				return false;

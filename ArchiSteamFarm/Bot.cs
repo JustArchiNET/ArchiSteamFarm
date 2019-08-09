@@ -546,17 +546,17 @@ namespace ArchiSteamFarm {
 			return Environment.NewLine + "<" + botName + "> " + response;
 		}
 
-		internal async Task<(uint PlayableAppID, DateTime IgnoredUntil)> GetAppDataForIdling(uint appID, float hoursPlayed, bool allowRecursiveDiscovery = true, bool optimisticDiscovery = true) {
+		internal async Task<(uint PlayableAppID, DateTime IgnoredUntil, bool IgnoredGlobally)> GetAppDataForIdling(uint appID, float hoursPlayed, bool allowRecursiveDiscovery = true, bool optimisticDiscovery = true) {
 			if ((appID == 0) || (hoursPlayed < 0)) {
 				ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(hoursPlayed));
 
-				return (0, DateTime.MaxValue);
+				return (0, DateTime.MaxValue, true);
 			}
 
 			HashSet<uint> packageIDs = ASF.GlobalDatabase.GetPackageIDs(appID, OwnedPackageIDs.Keys);
 
 			if ((packageIDs == null) || (packageIDs.Count == 0)) {
-				return (0, DateTime.MaxValue);
+				return (0, DateTime.MaxValue, true);
 			}
 
 			if ((hoursPlayed < CardsFarmer.HoursForRefund) && !BotConfig.IdleRefundableGames) {
@@ -576,7 +576,7 @@ namespace ArchiSteamFarm {
 					DateTime playableIn = mostRecent.AddDays(CardsFarmer.DaysForRefund);
 
 					if (playableIn > DateTime.UtcNow) {
-						return (0, playableIn);
+						return (0, playableIn, false);
 					}
 				}
 			}
@@ -596,7 +596,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (productInfoResultSet == null) {
-				return (optimisticDiscovery ? appID : 0, DateTime.MinValue);
+				return (optimisticDiscovery ? appID : 0, DateTime.MinValue, true);
 			}
 
 			foreach (Dictionary<uint, SteamApps.PICSProductInfoCallback.PICSProductInfo> productInfoApps in productInfoResultSet.Results.Select(result => result.Apps)) {
@@ -627,7 +627,7 @@ namespace ArchiSteamFarm {
 							break;
 						case "PRELOADONLY":
 						case "PRERELEASE":
-							return (0, DateTime.MaxValue);
+							return (0, DateTime.MaxValue, true);
 						default:
 							ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(releaseState), releaseState));
 
@@ -638,7 +638,7 @@ namespace ArchiSteamFarm {
 				string type = commonProductInfo["type"].Value;
 
 				if (string.IsNullOrEmpty(type)) {
-					return (appID, DateTime.MinValue);
+					return (appID, DateTime.MinValue, true);
 				}
 
 				// We must convert this to uppercase, since Valve doesn't stick to any convention and we can have a case mismatch
@@ -652,7 +652,7 @@ namespace ArchiSteamFarm {
 					case "TOOL":
 					case "VIDEO":
 						// Types that can be idled
-						return (appID, DateTime.MinValue);
+						return (appID, DateTime.MinValue, true);
 					case "ADVERTISING":
 					case "DEMO":
 					case "DLC":
@@ -667,13 +667,13 @@ namespace ArchiSteamFarm {
 				}
 
 				if (!allowRecursiveDiscovery) {
-					return (0, DateTime.MinValue);
+					return (0, DateTime.MinValue, true);
 				}
 
 				string listOfDlc = productInfo["extended"]["listofdlc"].Value;
 
 				if (string.IsNullOrEmpty(listOfDlc)) {
-					return (appID, DateTime.MinValue);
+					return (appID, DateTime.MinValue, true);
 				}
 
 				string[] dlcAppIDsTexts = listOfDlc.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
@@ -685,17 +685,17 @@ namespace ArchiSteamFarm {
 						break;
 					}
 
-					(uint playableAppID, _) = await GetAppDataForIdling(dlcAppID, hoursPlayed, false, false).ConfigureAwait(false);
+					(uint playableAppID, _, _) = await GetAppDataForIdling(dlcAppID, hoursPlayed, false, false).ConfigureAwait(false);
 
 					if (playableAppID != 0) {
-						return (playableAppID, DateTime.MinValue);
+						return (playableAppID, DateTime.MinValue, true);
 					}
 				}
 
-				return (appID, DateTime.MinValue);
+				return (appID, DateTime.MinValue, true);
 			}
 
-			return ((productInfoResultSet.Complete && !productInfoResultSet.Failed) || optimisticDiscovery ? appID : 0, DateTime.MinValue);
+			return ((productInfoResultSet.Complete && !productInfoResultSet.Failed) || optimisticDiscovery ? appID : 0, DateTime.MinValue, true);
 		}
 
 		internal static string GetFilePath(string botName, EFileType fileType) {
