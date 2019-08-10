@@ -734,4 +734,7 @@ StackTrace:
   <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
     <value>Steam-ouderlijktoezichtcode genereren, dit kan even duren. Als je wilt kun je de code in je configuratie plaatsen...</value>
   </data>
+  <data name="IPCConfigChanged" xml:space="preserve">
+    <value>IPC-configuratie is gewijzigd!</value>
+  </data>
 </root>

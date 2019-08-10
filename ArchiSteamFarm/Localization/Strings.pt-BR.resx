@@ -734,4 +734,7 @@ StackTrace:
   <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
     <value>Gerando o código do Modo Família, isso pode levar um tempo. Considere colocá-lo no arquivo de configuração...</value>
   </data>
+  <data name="IPCConfigChanged" xml:space="preserve">
+    <value>A configuração IPC foi alterada!</value>
+  </data>
 </root>

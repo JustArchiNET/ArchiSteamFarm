@@ -733,4 +733,7 @@ Trazo de pila:
   <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
     <value>Generando código parental de Steam, esto puede tomar un tiempo, considere ponerlo en la configuración...</value>
   </data>
+  <data name="IPCConfigChanged" xml:space="preserve">
+    <value>¡La configuración IPC ha sido cambiada!</value>
+  </data>
 </root>

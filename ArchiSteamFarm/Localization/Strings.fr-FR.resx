@@ -731,5 +731,10 @@ StackTrace :
   <data name="UpdateCleanup" xml:space="preserve">
     <value>Nettoyage des anciens fichiers après mise à jour...</value>
   </data>
-  
+  <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
+    <value>Génération du code parental Steam, cela peut prendre un certain temps, envisagez plutôt de mettre le code dans le fichier de configuration...</value>
+  </data>
+  <data name="IPCConfigChanged" xml:space="preserve">
+    <value>La configuration IPC a été modifiée !</value>
+  </data>
 </root>

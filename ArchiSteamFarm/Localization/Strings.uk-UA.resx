@@ -734,4 +734,7 @@
   <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
     <value>Генерація коду батьківського контролю Steam, зважте можливість вказати його у конфігураційному файлі замість цього...</value>
   </data>
+  <data name="IPCConfigChanged" xml:space="preserve">
+    <value>Конфігурацію IPC було змінено!</value>
+  </data>
 </root>

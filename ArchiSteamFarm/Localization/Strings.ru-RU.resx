@@ -725,7 +725,7 @@
     <comment>{0} will be replaced by number of confirmations</comment>
   </data>
   <data name="BotExtraIdlingCooldown" xml:space="preserve">
-    <value>Задержка {0}, чтобы убедится, что аккаунт свободен для фарма...</value>
+    <value>Задержка {0}, чтобы убедиться, что аккаунт свободен для фарма...</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
   </data>
   <data name="UpdateCleanup" xml:space="preserve">
@@ -733,5 +733,8 @@
   </data>
   <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
     <value>Генерация кода родительского контроля Steam, это может занять некоторое время, оцените возможность вместо этого указать его в конфигурационном файле...</value>
+  </data>
+  <data name="IPCConfigChanged" xml:space="preserve">
+    <value>Конфигурация IPC была изменена!</value>
   </data>
 </root>
