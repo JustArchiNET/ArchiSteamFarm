@@ -1598,9 +1598,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<uint> result = new HashSet<uint>(apps.Count);
 
-			foreach (KeyValue app in apps) {
-				uint appID = app["appid"].AsUnsignedInteger();
-
+			foreach (uint appID in apps.Select(app => app["appid"].AsUnsignedInteger())) {
 				if (appID == 0) {
 					Bot.ArchiLogger.LogNullError(nameof(appID));
 

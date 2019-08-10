@@ -24,6 +24,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Helpers;
@@ -122,11 +123,7 @@ namespace ArchiSteamFarm {
 			bool save = false;
 
 			lock (GamesToRedeemInBackground) {
-				foreach (DictionaryEntry game in games) {
-					if (GamesToRedeemInBackground.Contains(game.Key)) {
-						continue;
-					}
-
+				foreach (DictionaryEntry game in games.Cast<DictionaryEntry>().Where(game => !GamesToRedeemInBackground.Contains(game.Key))) {
 					GamesToRedeemInBackground.Add(game.Key, game.Value);
 					save = true;
 				}

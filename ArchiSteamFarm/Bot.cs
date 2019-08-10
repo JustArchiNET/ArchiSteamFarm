@@ -2983,11 +2983,7 @@ namespace ArchiSteamFarm {
 				byte i = 0;
 				byte[] password = new byte[steamParentalCode.Length];
 
-				foreach (char character in steamParentalCode) {
-					if ((character < '0') || (character > '9')) {
-						break;
-					}
-
+				foreach (char character in steamParentalCode.TakeWhile(character => (character >= '0') && (character <= '9'))) {
 					password[i++] = (byte) character;
 				}
 

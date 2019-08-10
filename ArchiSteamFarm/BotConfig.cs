@@ -248,26 +248,20 @@ namespace ArchiSteamFarm {
 				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(BotBehaviour), BotBehaviour));
 			}
 
-			foreach (EFarmingOrder farmingOrder in FarmingOrders) {
-				if (!Enum.IsDefined(typeof(EFarmingOrder), farmingOrder)) {
-					return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(FarmingOrders), farmingOrder));
-				}
+			foreach (EFarmingOrder farmingOrder in FarmingOrders.Where(farmingOrder => !Enum.IsDefined(typeof(EFarmingOrder), farmingOrder))) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(FarmingOrders), farmingOrder));
 			}
 
 			if (GamesPlayedWhileIdle.Count > ArchiHandler.MaxGamesPlayedConcurrently) {
 				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(GamesPlayedWhileIdle), GamesPlayedWhileIdle.Count + " > " + ArchiHandler.MaxGamesPlayedConcurrently));
 			}
 
-			foreach (Steam.Asset.EType lootableType in LootableTypes) {
-				if (!Enum.IsDefined(typeof(Steam.Asset.EType), lootableType)) {
-					return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(LootableTypes), lootableType));
-				}
+			foreach (Steam.Asset.EType lootableType in LootableTypes.Where(lootableType => !Enum.IsDefined(typeof(Steam.Asset.EType), lootableType))) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(LootableTypes), lootableType));
 			}
 
-			foreach (Steam.Asset.EType matchableType in MatchableTypes) {
-				if (!Enum.IsDefined(typeof(Steam.Asset.EType), matchableType)) {
-					return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(MatchableTypes), matchableType));
-				}
+			foreach (Steam.Asset.EType matchableType in MatchableTypes.Where(matchableType => !Enum.IsDefined(typeof(Steam.Asset.EType), matchableType))) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(MatchableTypes), matchableType));
 			}
 
 			if ((OnlineStatus < EPersonaState.Offline) || (OnlineStatus >= EPersonaState.Max)) {
