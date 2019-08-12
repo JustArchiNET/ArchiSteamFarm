@@ -2292,9 +2292,9 @@ namespace ArchiSteamFarm {
 			}
 
 			if (packagesToRefresh.Count > 0) {
-				ArchiLogger.LogGenericInfo(Strings.BotRefreshingPackagesData);
+				ArchiLogger.LogGenericTrace(Strings.BotRefreshingPackagesData);
 				await ASF.GlobalDatabase.RefreshPackages(this, packagesToRefresh).ConfigureAwait(false);
-				ArchiLogger.LogGenericInfo(Strings.Done);
+				ArchiLogger.LogGenericTrace(Strings.Done);
 			}
 
 			if (initialLogin && CardsFarmer.Paused) {
