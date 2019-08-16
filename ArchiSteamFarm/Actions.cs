@@ -79,6 +79,14 @@ namespace ArchiSteamFarm {
 			return (true, token, Strings.Success);
 		}
 
+		[ItemNotNull]
+		[PublicAPI]
+		public async Task<IDisposable> GetTradingLock() {
+			await TradingSemaphore.WaitAsync().ConfigureAwait(false);
+
+			return new SemaphoreLock(TradingSemaphore);
+		}
+
 		[PublicAPI]
 		public async Task<(bool Success, string Message)> HandleTwoFactorAuthenticationConfirmations(bool accept, Steam.ConfirmationDetails.EType? acceptedType = null, IReadOnlyCollection<ulong> acceptedTradeOfferIDs = null, bool waitIfNeeded = false) {
 			if (!Bot.HasMobileAuthenticator) {
@@ -411,13 +419,6 @@ namespace ArchiSteamFarm {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				}
 			}
-		}
-
-		[ItemNotNull]
-		internal async Task<SemaphoreLock> GetTradingLock() {
-			await TradingSemaphore.WaitAsync().ConfigureAwait(false);
-
-			return new SemaphoreLock(TradingSemaphore);
 		}
 
 		internal void OnDisconnected() => HandledGifts.Clear();

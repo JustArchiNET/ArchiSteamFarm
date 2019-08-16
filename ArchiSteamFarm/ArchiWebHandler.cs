@@ -355,6 +355,13 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
+		public async Task<bool?> HasValidApiKey() {
+			(bool success, string steamApiKey) = await CachedApiKey.GetValue().ConfigureAwait(false);
+
+			return success ? !string.IsNullOrEmpty(steamApiKey) : (bool?) null;
+		}
+
+		[PublicAPI]
 		public async Task<(bool Success, HashSet<ulong> MobileTradeOfferIDs)> SendTradeOffer(ulong steamID, IReadOnlyCollection<Steam.Asset> itemsToGive = null, IReadOnlyCollection<Steam.Asset> itemsToReceive = null, string token = null, bool forcedSingleOffer = false) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || (((itemsToGive == null) || (itemsToGive.Count == 0)) && ((itemsToReceive == null) || (itemsToReceive.Count == 0)))) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || (" + nameof(itemsToGive) + " && " + nameof(itemsToReceive) + ")");
@@ -1998,12 +2005,6 @@ namespace ArchiSteamFarm {
 			(bool success, bool hasPublicInventory) = await CachedPublicInventory.GetValue().ConfigureAwait(false);
 
 			return success ? hasPublicInventory : (bool?) null;
-		}
-
-		internal async Task<bool?> HasValidApiKey() {
-			(bool success, string steamApiKey) = await CachedApiKey.GetValue().ConfigureAwait(false);
-
-			return success ? !string.IsNullOrEmpty(steamApiKey) : (bool?) null;
 		}
 
 		internal async Task<bool> Init(ulong steamID, EUniverse universe, string webAPIUserNonce, string parentalCode = null) {
