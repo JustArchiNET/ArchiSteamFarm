@@ -227,8 +227,8 @@ namespace ArchiSteamFarm {
 		}
 
 		[ItemCanBeNull]
-		private async Task<ImmutableHashSet<ListedUser>> GetListedUsers(bool MatchEverything) {
-			string request = URL + "/Api/Bots?matchEverything=" + (MatchEverything ? 1 : 0);
+		private async Task<ImmutableHashSet<ListedUser>> GetListedUsers() {
+			const string request = URL + "/Api/Bots";
 
 			WebBrowser.ObjectResponse<ImmutableHashSet<ListedUser>> objectResponse = await Bot.ArchiWebHandler.WebBrowser.UrlGetToJsonObject<ImmutableHashSet<ListedUser>>(request).ConfigureAwait(false);
 
@@ -315,37 +315,25 @@ namespace ArchiSteamFarm {
 				Dictionary<ulong, (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs)> triedSteamIDs = new Dictionary<ulong, (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs)>();
 
 				bool match = true;
-				bool matchEverything = true;
-				int tries = 0;
 
-				do {
-					match = true;
-					for (byte i = 0; (i < MaxMatchingRounds) && match; i++) {
-						if (i > 0) {
-							// After each round we wait at least 5 minutes for all bots to react
-							await Task.Delay(5 * 60 * 1000).ConfigureAwait(false);
-						}
-
-						if (!Bot.IsConnectedAndLoggedOn || Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchActively) || (await IsEligibleForMatching().ConfigureAwait(false) != true)) {
-							Bot.ArchiLogger.LogGenericTrace(Strings.ErrorAborted);
-
-							break;
-						}
-
-						using (await Bot.Actions.GetTradingLock().ConfigureAwait(false)) {
-							Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ActivelyMatchingItems, i));
-							match = await MatchActivelyRound(acceptedMatchableTypes, triedSteamIDs, matchEverything).ConfigureAwait(false);
-							Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.DoneActivelyMatchingItems, i));
-						}
+				for (byte i = 0; (i < MaxMatchingRounds) && match; i++) {
+					if (i > 0) {
+						// After each round we wait at least 5 minutes for all bots to react
+						await Task.Delay(5 * 60 * 1000).ConfigureAwait(false);
 					}
 
-					// repeat for Fair bots if no matches found
-					if (!match) {
-						matchEverything = false;
+					if (!Bot.IsConnectedAndLoggedOn || Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchActively) || (await IsEligibleForMatching().ConfigureAwait(false) != true)) {
+						Bot.ArchiLogger.LogGenericTrace(Strings.ErrorAborted);
+
+						break;
 					}
 
-					tries++;
-				} while (!match && tries <= 1);
+					using (await Bot.Actions.GetTradingLock().ConfigureAwait(false)) {
+						Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ActivelyMatchingItems, i));
+						match = await MatchActivelyRound(acceptedMatchableTypes, triedSteamIDs).ConfigureAwait(false);
+						Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.DoneActivelyMatchingItems, i));
+					}
+				}
 
 				Bot.ArchiLogger.LogGenericTrace(Strings.Done);
 			} finally {
@@ -354,7 +342,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
-		private async Task<bool> MatchActivelyRound(IReadOnlyCollection<Steam.Asset.EType> acceptedMatchableTypes, IDictionary<ulong, (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs)> triedSteamIDs, bool MatchEverything) {
+		private async Task<bool> MatchActivelyRound(IReadOnlyCollection<Steam.Asset.EType> acceptedMatchableTypes, IDictionary<ulong, (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs)> triedSteamIDs) {
 			if ((acceptedMatchableTypes == null) || (acceptedMatchableTypes.Count == 0) || (triedSteamIDs == null)) {
 				Bot.ArchiLogger.LogNullError(nameof(acceptedMatchableTypes) + " || " + nameof(triedSteamIDs));
 
@@ -378,7 +366,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			ImmutableHashSet<ListedUser> listedUsers = await GetListedUsers(MatchEverything).ConfigureAwait(false);
+			ImmutableHashSet<ListedUser> listedUsers = await GetListedUsers().ConfigureAwait(false);
 
 			if ((listedUsers == null) || (listedUsers.Count == 0)) {
 				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(listedUsers)));
@@ -389,7 +377,7 @@ namespace ArchiSteamFarm {
 			byte emptyMatches = 0;
 			HashSet<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> skippedSetsThisRound = new HashSet<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)>();
 
-			foreach (ListedUser listedUser in listedUsers.Where(listedUser => acceptedMatchableTypes.Any(listedUser.MatchableTypes.Contains) && (!triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs) attempt) || (attempt.Tries < byte.MaxValue)) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderBy(listedUser => triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs) attempt) ? attempt.Tries : 0).ThenByDescending(listedUser => listedUser.Score).Take(MaxMatchedBotsHard)) {
+			foreach (ListedUser listedUser in listedUsers.Where(listedUser => acceptedMatchableTypes.Any(listedUser.MatchableTypes.Contains) && (!triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs) attempt) || (attempt.Tries < byte.MaxValue)) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderByDescending(listedUser => listedUser.MatchEverything).ThenBy(listedUser => triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs) attempt) ? attempt.Tries : 0).ThenByDescending(listedUser => listedUser.Score).Take(MaxMatchedBotsHard)) {
 				HashSet<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> wantedSets = ourTradableState.Keys.Where(set => !skippedSetsThisRound.Contains(set) && listedUser.MatchableTypes.Contains(set.Type)).ToHashSet();
 
 				if (wantedSets.Count == 0) {
