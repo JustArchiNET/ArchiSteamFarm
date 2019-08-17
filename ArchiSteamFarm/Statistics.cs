@@ -377,7 +377,7 @@ namespace ArchiSteamFarm {
 			byte emptyMatches = 0;
 			HashSet<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> skippedSetsThisRound = new HashSet<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)>();
 
-			foreach (ListedUser listedUser in listedUsers.Where(listedUser => acceptedMatchableTypes.Any(listedUser.MatchableTypes.Contains) && (!triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs) attempt) || (attempt.Tries < byte.MaxValue)) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderByDescending(listedUser => listedUser.MatchEverything).ThenBy(listedUser => triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs) attempt) ? attempt.Tries : 0).ThenByDescending(listedUser => listedUser.Score).Take(MaxMatchedBotsHard)) {
+			foreach (ListedUser listedUser in listedUsers.Where(listedUser => acceptedMatchableTypes.Any(listedUser.MatchableTypes.Contains) && (!triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs) attempt) || (attempt.Tries < byte.MaxValue)) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderBy(listedUser => triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs) attempt) ? attempt.Tries : 0).ThenByDescending(listedUser => listedUser.MatchEverything).ThenByDescending(listedUser => listedUser.Score).Take(MaxMatchedBotsHard)) {
 				HashSet<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> wantedSets = ourTradableState.Keys.Where(set => !skippedSetsThisRound.Contains(set) && listedUser.MatchableTypes.Contains(set.Type)).ToHashSet();
 
 				if (wantedSets.Count == 0) {
@@ -491,10 +491,10 @@ namespace ArchiSteamFarm {
 										HashSet<Steam.Asset> fairItemsToReceive = Trading.GetTradableItemsFromInventory(theirInventory, fairClassIDsToReceive);
 
 										// Filter inventory for the sets we're looking for for IsTradeNeutralOrBetter
-										HashSet<Steam.Asset> fairFiltered = new HashSet<Steam.Asset>();
+										HashSet<Steam.Asset> fairFiltered = new HashSet<Steam.Asset>(theirInventory);
 
-										foreach (Steam.Asset item in theirInventory.Where(item => item.RealAppID == set.RealAppID)) {
-											fairFiltered.Add(item);
+										foreach (Steam.Asset item in fairFiltered.Where(item => item.RealAppID != set.RealAppID)) {
+											fairFiltered.Remove(item);
 										}
 
 										// Actual check:
