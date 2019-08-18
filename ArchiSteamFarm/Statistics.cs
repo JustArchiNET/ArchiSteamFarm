@@ -386,7 +386,7 @@ namespace ArchiSteamFarm {
 
 				Bot.ArchiLogger.LogGenericTrace(listedUser.SteamID + "...");
 
-				HashSet<Steam.Asset> theirInventory = await Bot.ArchiWebHandler.GetInventory(listedUser.SteamID, wantedSets: wantedSets).ConfigureAwait(false);
+				HashSet<Steam.Asset> theirInventory = await Bot.ArchiWebHandler.GetInventory(listedUser.SteamID, tradable: listedUser.MatchEverything ? true : (bool?) null, wantedSets: wantedSets).ConfigureAwait(false);
 
 				if ((theirInventory == null) || (theirInventory.Count == 0)) {
 					Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(theirInventory)));
@@ -396,7 +396,7 @@ namespace ArchiSteamFarm {
 
 				HashSet<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> skippedSetsThisUser = new HashSet<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)>();
 
-				(Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> theirFullState, Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> theirTradableState) = Trading.GetDividedInventoryState(theirInventory);
+				Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> theirTradableState = Trading.GetTradableInventoryState(theirInventory);
 				Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> inventoryStateChanges = new Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>>();
 
 				for (byte i = 0; i < Trading.MaxTradesPerAccount; i++) {
@@ -414,10 +414,6 @@ namespace ArchiSteamFarm {
 						}
 
 						if (!theirTradableState.TryGetValue(set, out Dictionary<ulong, uint> theirTradableItems) || (theirTradableItems.Count == 0)) {
-							continue;
-						}
-
-						if (!theirFullState.TryGetValue(set, out Dictionary<ulong, uint> theirFullItems) || (theirFullItems.Count == 0)) {
 							continue;
 						}
 
@@ -468,16 +464,8 @@ namespace ArchiSteamFarm {
 									continue;
 								}
 
-								foreach ((ulong theirItem, uint theirFullAmount) in theirFullItems.OrderBy(item => ourFullSet.TryGetValue(item.Key, out uint ourAmountOfTheirItem) ? ourAmountOfTheirItem : 0)) {
-									if (!theirTradableItems.TryGetValue(theirItem, out uint theirTradableAmount) || (theirTradableAmount == 0)) {
-										continue;
-									}
-
+								foreach ((ulong theirItem, uint theirTradableAmount) in theirTradableItems.OrderBy(item => ourFullSet.TryGetValue(item.Key, out uint ourAmountOfTheirItem) ? ourAmountOfTheirItem : 0)) {
 									if (ourFullSet.TryGetValue(theirItem, out uint ourAmountOfTheirItem) && (ourFullAmount <= ourAmountOfTheirItem + 1)) {
-										continue;
-									}
-
-									if (theirFullItems.TryGetValue(ourItem, out uint theirAmountOfOurItem) && (theirFullAmount <= theirAmountOfOurItem + 1)) {
 										continue;
 									}
 
@@ -543,12 +531,6 @@ namespace ArchiSteamFarm {
 									}
 
 									// Update their state based on taken items
-									if (theirFullAmount > 1) {
-										theirFullItems[theirItem] = theirFullAmount - 1;
-									} else {
-										theirFullItems.Remove(theirItem);
-									}
-
 									if (theirTradableAmount > 1) {
 										theirTradableItems[theirItem] = theirTradableAmount - 1;
 									} else {
@@ -557,7 +539,6 @@ namespace ArchiSteamFarm {
 
 									// Update their state based on given items
 									theirTradableItems[ourItem] = theirTradableItems.TryGetValue(ourItem, out uint theirReceivedAmount) ? theirReceivedAmount + 1 : 1;
-									theirFullItems[ourItem] = theirAmountOfOurItem + 1;
 
 									itemsInTrade += 2;
 
