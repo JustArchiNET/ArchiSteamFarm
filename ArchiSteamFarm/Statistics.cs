@@ -483,8 +483,10 @@ namespace ArchiSteamFarm {
 
 									if (!listedUser.MatchEverything) {
 										// We have a potential match, let's check fairness for them
-										fairClassIDsToGive[ourItem] = fairClassIDsToGive.TryGetValue(ourItem, out uint fairGivenAmount) ? fairGivenAmount + 1 : 1;
-										fairClassIDsToReceive[theirItem] = fairClassIDsToReceive.TryGetValue(theirItem, out uint fairReceivedAmount) ? fairReceivedAmount + 1 : 1;
+										fairClassIDsToGive.TryGetValue(ourItem, out uint fairGivenAmount);
+										fairClassIDsToReceive.TryGetValue(theirItem, out uint fairReceivedAmount);
+										fairClassIDsToGive[ourItem] = ++fairGivenAmount;
+										fairClassIDsToReceive[theirItem] = ++fairReceivedAmount;
 
 										// Convert list to HashSet<Steam.Asset>
 										HashSet<Steam.Asset> fairItemsToGive = Trading.GetTradableItemsFromInventory(ourInventory, fairClassIDsToGive);
