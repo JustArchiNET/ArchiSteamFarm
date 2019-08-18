@@ -491,10 +491,10 @@ namespace ArchiSteamFarm {
 										HashSet<Steam.Asset> fairItemsToReceive = Trading.GetTradableItemsFromInventory(theirInventory, fairClassIDsToReceive);
 
 										// Filter inventory for the sets we're looking for for IsTradeNeutralOrBetter
-										HashSet<Steam.Asset> fairFiltered = new HashSet<Steam.Asset>(theirInventory);
+										HashSet<Steam.Asset> fairFiltered = new HashSet<Steam.Asset>();
 
-										foreach (Steam.Asset item in fairFiltered.Where(item => item.RealAppID != set.RealAppID)) {
-											fairFiltered.Remove(item);
+										foreach (Steam.Asset item in theirInventory.Where(item => item.RealAppID == set.RealAppID)) {
+											fairFiltered.Add(item.CreateShallowCopy());
 										}
 
 										// Actual check:
@@ -585,15 +585,6 @@ namespace ArchiSteamFarm {
 					HashSet<Steam.Asset> itemsToReceive = Trading.GetTradableItemsFromInventory(theirInventory, classIDsToReceive);
 
 					if ((itemsToGive.Count != itemsToReceive.Count) || !Trading.IsFairExchange(itemsToGive, itemsToReceive)) {
-						// Failsafe
-						Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningFailedWithError, Strings.ErrorAborted));
-
-						return false;
-					}
-
-					HashSet<Steam.Asset> fairTheirInventory = new HashSet<Steam.Asset>(theirInventory);
-
-					if (!listedUser.MatchEverything && !Trading.IsTradeNeutralOrBetter(fairTheirInventory, itemsToReceive, itemsToGive)) {
 						// Failsafe
 						Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningFailedWithError, Strings.ErrorAborted));
 
