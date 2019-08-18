@@ -493,7 +493,7 @@ namespace ArchiSteamFarm {
 										// Filter inventory for the sets we're looking for for IsTradeNeutralOrBetter
 										HashSet<Steam.Asset> fairFiltered = new HashSet<Steam.Asset>();
 
-										foreach (Steam.Asset item in theirInventory.Where(item => item.RealAppID == set.RealAppID)) {
+										foreach (Steam.Asset item in theirInventory.Where(item => (item.RealAppID == set.RealAppID) && (item.Type == set.Type) && (item.Rarity == set.Rarity))) {
 											fairFiltered.Add(item.CreateShallowCopy());
 										}
 
