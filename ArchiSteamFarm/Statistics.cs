@@ -477,7 +477,7 @@ namespace ArchiSteamFarm {
 										fairClassIDsToReceive[theirItem] = ++fairReceivedAmount;
 										
 										// Filter their inventory for the sets we're trading or have traded with this user
-										HashSet<Steam.Asset> fairFiltered = new HashSet<Steam.Asset>(theirInventory.Where(item => (item.RealAppID == set.RealAppID) && (item.Type == set.Type) && (item.Rarity == set.Rarity) || skippedSetsThisTrade.Any(skippedSets => skippedSets.RealAppID == item.RealAppID && skippedSets.Type == item.Type && skippedSets.Rarity == item.Rarity)).Select(item => item.CreateShallowCopy()).ToHashSet());
+										HashSet<Steam.Asset> fairFiltered = theirInventory.Where(item => (item.RealAppID == set.RealAppID) && (item.Type == set.Type) && (item.Rarity == set.Rarity) || skippedSetsThisTrade.Any(skippedSets => skippedSets.RealAppID == item.RealAppID && skippedSets.Type == item.Type && skippedSets.Rarity == item.Rarity)).Select(item => item.CreateShallowCopy()).ToHashSet();
 
 										// Copy list to HashSet<Steam.Asset>
 										HashSet<Steam.Asset> fairItemsToGive = Trading.GetTradableItemsFromInventory(ourInventory.Where(item => (item.RealAppID == set.RealAppID && item.Type == set.Type && item.Rarity == set.Rarity) || skippedSetsThisTrade.Any(skippedSets => skippedSets.RealAppID == item.RealAppID && skippedSets.Type == item.Type && skippedSets.Rarity == item.Rarity)).Select(item => item.CreateShallowCopy()).ToHashSet(), fairClassIDsToGive.ToDictionary(classID => classID.Key, classID => classID.Value));
