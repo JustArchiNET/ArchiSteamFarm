@@ -398,6 +398,9 @@ namespace ArchiSteamFarm {
 
 				Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> theirTradableState = Trading.GetTradableInventoryState(theirInventory);
 				Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> inventoryStateChanges = new Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>>();
+				
+				Dictionary<ulong, uint> fairClassIDsToGive = new Dictionary<ulong, uint>();
+				Dictionary<ulong, uint> fairClassIDsToReceive = new Dictionary<ulong, uint>();
 
 				for (byte i = 0; i < Trading.MaxTradesPerAccount; i++) {
 					byte itemsInTrade = 0;
@@ -405,8 +408,6 @@ namespace ArchiSteamFarm {
 
 					Dictionary<ulong, uint> classIDsToGive = new Dictionary<ulong, uint>();
 					Dictionary<ulong, uint> classIDsToReceive = new Dictionary<ulong, uint>();
-					Dictionary<ulong, uint> fairClassIDsToGive = new Dictionary<ulong, uint>();
-					Dictionary<ulong, uint> fairClassIDsToReceive = new Dictionary<ulong, uint>();
 
 					foreach (((uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) set, Dictionary<ulong, uint> ourFullItems) in ourFullState.Where(set => !skippedSetsThisUser.Contains(set.Key) && listedUser.MatchableTypes.Contains(set.Key.Type) && set.Value.Values.Any(count => count > 1))) {
 						if (!ourTradableState.TryGetValue(set, out Dictionary<ulong, uint> ourTradableItems) || (ourTradableItems.Count == 0)) {
@@ -475,17 +476,13 @@ namespace ArchiSteamFarm {
 										fairClassIDsToReceive.TryGetValue(theirItem, out uint fairReceivedAmount);
 										fairClassIDsToGive[ourItem] = ++fairGivenAmount;
 										fairClassIDsToReceive[theirItem] = ++fairReceivedAmount;
+										
+										// Filter their inventory for the sets we're trading or have traded with this user
+										HashSet<Steam.Asset> fairFiltered = new HashSet<Steam.Asset>(theirInventory.Where(item => (item.RealAppID == set.RealAppID) && (item.Type == set.Type) && (item.Rarity == set.Rarity) || skippedSetsThisTrade.Any(skippedSets => skippedSets.RealAppID == item.RealAppID && skippedSets.Type == item.Type && skippedSets.Rarity == item.Rarity) || skippedSetsThisUser.Any(skippedSets => skippedSets.RealAppID == item.RealAppID && skippedSets.Type == item.Type && skippedSets.Rarity == item.Rarity)).Select(item => item.CreateShallowCopy()).ToHashSet());
 
-										// Convert list to HashSet<Steam.Asset>
-										HashSet<Steam.Asset> fairItemsToGive = Trading.GetTradableItemsFromInventory(ourInventory, fairClassIDsToGive);
-										HashSet<Steam.Asset> fairItemsToReceive = Trading.GetTradableItemsFromInventory(theirInventory, fairClassIDsToReceive);
-
-										// Filter inventory for the sets we're looking for for IsTradeNeutralOrBetter
-										HashSet<Steam.Asset> fairFiltered = new HashSet<Steam.Asset>();
-
-										foreach (Steam.Asset item in theirInventory.Where(item => (item.RealAppID == set.RealAppID) && (item.Type == set.Type) && (item.Rarity == set.Rarity))) {
-											fairFiltered.Add(item.CreateShallowCopy());
-										}
+										// Copy list to HashSet<Steam.Asset>
+										HashSet<Steam.Asset> fairItemsToGive = Trading.GetTradableItemsFromInventory(ourInventory.Where(item => (item.RealAppID == set.RealAppID && item.Type == set.Type && item.Rarity == set.Rarity) || skippedSetsThisTrade.Any(skippedSets => skippedSets.RealAppID == item.RealAppID && skippedSets.Type == item.Type && skippedSets.Rarity == item.Rarity) || skippedSetsThisUser.Any(skippedSets => skippedSets.RealAppID == item.RealAppID && skippedSets.Type == item.Type && skippedSets.Rarity == item.Rarity)).Select(item => item.CreateShallowCopy()).ToHashSet(), fairClassIDsToGive.ToDictionary(classID => classID.Key, classID => classID.Value));
+										HashSet<Steam.Asset> fairItemsToReceive = Trading.GetTradableItemsFromInventory(fairFiltered.Select(item => item.CreateShallowCopy()).ToHashSet(), fairClassIDsToReceive.ToDictionary(classID => classID.Key, classID => classID.Value));
 
 										// Actual check:
 										if (!Trading.IsTradeNeutralOrBetter(fairFiltered, fairItemsToReceive, fairItemsToGive)) {
@@ -536,9 +533,6 @@ namespace ArchiSteamFarm {
 									} else {
 										theirTradableItems.Remove(theirItem);
 									}
-
-									// Update their state based on given items
-									theirTradableItems[ourItem] = theirTradableItems.TryGetValue(ourItem, out uint theirReceivedAmount) ? theirReceivedAmount + 1 : 1;
 
 									itemsInTrade += 2;
 
