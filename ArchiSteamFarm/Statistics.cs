@@ -558,8 +558,8 @@ namespace ArchiSteamFarm {
 						break;
 					}
 
-					HashSet<Steam.Asset> itemsToGive = Trading.GetTradableItemsFromInventory(ourInventory, classIDsToGive);
-					HashSet<Steam.Asset> itemsToReceive = Trading.GetTradableItemsFromInventory(theirInventory, classIDsToReceive);
+					HashSet<Steam.Asset> itemsToGive = Trading.GetTradableItemsFromInventory(ourInventory.Select(item => item.CreateShallowCopy()).ToHashSet(), classIDsToGive);
+					HashSet<Steam.Asset> itemsToReceive = Trading.GetTradableItemsFromInventory(theirInventory.Select(item => item.CreateShallowCopy()).ToHashSet(), classIDsToReceive);
 
 					if ((itemsToGive.Count != itemsToReceive.Count) || !Trading.IsFairExchange(itemsToGive, itemsToReceive)) {
 						// Failsafe
