@@ -228,7 +228,7 @@ namespace ArchiSteamFarm {
 
 		[ItemCanBeNull]
 		private async Task<ImmutableHashSet<ListedUser>> GetListedUsers() {
-			const string request = URL + "/Api/Bots?matchEverything=1";
+			const string request = URL + "/Api/Bots";
 
 			WebBrowser.ObjectResponse<ImmutableHashSet<ListedUser>> objectResponse = await Bot.ArchiWebHandler.WebBrowser.UrlGetToJsonObject<ImmutableHashSet<ListedUser>>(request).ConfigureAwait(false);
 
@@ -357,11 +357,11 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			(Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> fullState, Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> tradableState) = Trading.GetDividedInventoryState(ourInventory);
+			(Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> ourFullState, Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> ourTradableState) = Trading.GetDividedInventoryState(ourInventory);
 
-			if (Trading.IsEmptyForMatching(fullState, tradableState)) {
+			if (Trading.IsEmptyForMatching(ourFullState, ourTradableState)) {
 				// User doesn't have any more dupes in the inventory
-				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(fullState) + " || " + nameof(tradableState)));
+				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(ourFullState) + " || " + nameof(ourTradableState)));
 
 				return false;
 			}
@@ -377,8 +377,8 @@ namespace ArchiSteamFarm {
 			byte emptyMatches = 0;
 			HashSet<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> skippedSetsThisRound = new HashSet<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)>();
 
-			foreach (ListedUser listedUser in listedUsers.Where(listedUser => listedUser.MatchEverything && acceptedMatchableTypes.Any(listedUser.MatchableTypes.Contains) && (!triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs) attempt) || (attempt.Tries < byte.MaxValue)) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderBy(listedUser => triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs) attempt) ? attempt.Tries : 0).ThenByDescending(listedUser => listedUser.Score).Take(MaxMatchedBotsHard)) {
-				HashSet<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> wantedSets = tradableState.Keys.Where(set => !skippedSetsThisRound.Contains(set) && listedUser.MatchableTypes.Contains(set.Type)).ToHashSet();
+			foreach (ListedUser listedUser in listedUsers.Where(listedUser => acceptedMatchableTypes.Any(listedUser.MatchableTypes.Contains) && (!triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs) attempt) || (attempt.Tries < byte.MaxValue)) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderBy(listedUser => triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs) attempt) ? attempt.Tries : 0).ThenByDescending(listedUser => listedUser.MatchEverything).ThenByDescending(listedUser => listedUser.Score).Take(MaxMatchedBotsHard)) {
+				HashSet<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> wantedSets = ourTradableState.Keys.Where(set => !skippedSetsThisRound.Contains(set) && listedUser.MatchableTypes.Contains(set.Type)).ToHashSet();
 
 				if (wantedSets.Count == 0) {
 					continue;
@@ -386,7 +386,7 @@ namespace ArchiSteamFarm {
 
 				Bot.ArchiLogger.LogGenericTrace(listedUser.SteamID + "...");
 
-				HashSet<Steam.Asset> theirInventory = await Bot.ArchiWebHandler.GetInventory(listedUser.SteamID, tradable: true, wantedSets: wantedSets).ConfigureAwait(false);
+				HashSet<Steam.Asset> theirInventory = await Bot.ArchiWebHandler.GetInventory(listedUser.SteamID, tradable: listedUser.MatchEverything ? true : (bool?) null, wantedSets: wantedSets).ConfigureAwait(false);
 
 				if ((theirInventory == null) || (theirInventory.Count == 0)) {
 					Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(theirInventory)));
@@ -396,7 +396,7 @@ namespace ArchiSteamFarm {
 
 				HashSet<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> skippedSetsThisUser = new HashSet<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)>();
 
-				Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> theirTradableState = Trading.GetInventoryState(theirInventory);
+				Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> theirTradableState = Trading.GetTradableInventoryState(theirInventory);
 				Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> inventoryStateChanges = new Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>>();
 
 				for (byte i = 0; i < Trading.MaxTradesPerAccount; i++) {
@@ -405,13 +405,15 @@ namespace ArchiSteamFarm {
 
 					Dictionary<ulong, uint> classIDsToGive = new Dictionary<ulong, uint>();
 					Dictionary<ulong, uint> classIDsToReceive = new Dictionary<ulong, uint>();
+					Dictionary<ulong, uint> fairClassIDsToGive = new Dictionary<ulong, uint>();
+					Dictionary<ulong, uint> fairClassIDsToReceive = new Dictionary<ulong, uint>();
 
-					foreach (((uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) set, Dictionary<ulong, uint> ourFullItems) in fullState.Where(set => !skippedSetsThisUser.Contains(set.Key) && listedUser.MatchableTypes.Contains(set.Key.Type) && set.Value.Values.Any(count => count > 1))) {
-						if (!tradableState.TryGetValue(set, out Dictionary<ulong, uint> ourTradableItems) || (ourTradableItems.Count == 0)) {
+					foreach (((uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) set, Dictionary<ulong, uint> ourFullItems) in ourFullState.Where(set => !skippedSetsThisUser.Contains(set.Key) && listedUser.MatchableTypes.Contains(set.Key.Type) && set.Value.Values.Any(count => count > 1))) {
+						if (!ourTradableState.TryGetValue(set, out Dictionary<ulong, uint> ourTradableItems) || (ourTradableItems.Count == 0)) {
 							continue;
 						}
 
-						if (!theirTradableState.TryGetValue(set, out Dictionary<ulong, uint> theirItems) || (theirItems.Count == 0)) {
+						if (!theirTradableState.TryGetValue(set, out Dictionary<ulong, uint> theirTradableItems) || (theirTradableItems.Count == 0)) {
 							continue;
 						}
 
@@ -419,7 +421,7 @@ namespace ArchiSteamFarm {
 						Dictionary<ulong, uint> ourFullSet = new Dictionary<ulong, uint>(ourFullItems);
 						Dictionary<ulong, uint> ourTradableSet = new Dictionary<ulong, uint>(ourTradableItems);
 
-						// We also have to take into account changes that happened in previoius trades with this user, so this block will adapt to that
+						// We also have to take into account changes that happened in previous trades with this user, so this block will adapt to that
 						if (inventoryStateChanges.TryGetValue(set, out Dictionary<ulong, uint> pastChanges) && (pastChanges.Count > 0)) {
 							foreach ((ulong classID, uint amount) in pastChanges) {
 								if (!ourFullSet.TryGetValue(classID, out uint fullAmount) || (fullAmount == 0) || (fullAmount < amount)) {
@@ -457,22 +459,54 @@ namespace ArchiSteamFarm {
 						do {
 							match = false;
 
-							foreach ((ulong ourItem, uint ourAmount) in ourFullSet.Where(item => item.Value > 1).OrderByDescending(item => item.Value)) {
-								if (!ourTradableSet.TryGetValue(ourItem, out uint tradableAmount) || (tradableAmount == 0)) {
+							foreach ((ulong ourItem, uint ourFullAmount) in ourFullSet.Where(item => item.Value > 1).OrderByDescending(item => item.Value)) {
+								if (!ourTradableSet.TryGetValue(ourItem, out uint ourTradableAmount) || (ourTradableAmount == 0)) {
 									continue;
 								}
 
-								foreach ((ulong theirItem, _) in theirItems.OrderBy(item => ourFullSet.TryGetValue(item.Key, out uint ourAmountOfTheirItem) ? ourAmountOfTheirItem : 0)) {
-									if (ourFullSet.TryGetValue(theirItem, out uint ourAmountOfTheirItem) && (ourAmount <= ourAmountOfTheirItem + 1)) {
+								foreach ((ulong theirItem, uint theirTradableAmount) in theirTradableItems.OrderBy(item => ourFullSet.TryGetValue(item.Key, out uint ourAmountOfTheirItem) ? ourAmountOfTheirItem : 0)) {
+									if (ourFullSet.TryGetValue(theirItem, out uint ourAmountOfTheirItem) && (ourFullAmount <= ourAmountOfTheirItem + 1)) {
 										continue;
+									}
+
+									if (!listedUser.MatchEverything) {
+										// We have a potential match, let's check fairness for them
+										fairClassIDsToGive.TryGetValue(ourItem, out uint fairGivenAmount);
+										fairClassIDsToReceive.TryGetValue(theirItem, out uint fairReceivedAmount);
+										fairClassIDsToGive[ourItem] = ++fairGivenAmount;
+										fairClassIDsToReceive[theirItem] = ++fairReceivedAmount;
+										
+										// Filter their inventory for the sets we're trading or have traded with this user
+										HashSet<Steam.Asset> fairFiltered = theirInventory.Where(item => (item.RealAppID == set.RealAppID) && (item.Type == set.Type) && (item.Rarity == set.Rarity) || skippedSetsThisTrade.Any(skippedSets => skippedSets.RealAppID == item.RealAppID && skippedSets.Type == item.Type && skippedSets.Rarity == item.Rarity)).Select(item => item.CreateShallowCopy()).ToHashSet();
+
+										// Copy list to HashSet<Steam.Asset>
+										HashSet<Steam.Asset> fairItemsToGive = Trading.GetTradableItemsFromInventory(ourInventory.Where(item => (item.RealAppID == set.RealAppID && item.Type == set.Type && item.Rarity == set.Rarity) || skippedSetsThisTrade.Any(skippedSets => skippedSets.RealAppID == item.RealAppID && skippedSets.Type == item.Type && skippedSets.Rarity == item.Rarity)).Select(item => item.CreateShallowCopy()).ToHashSet(), fairClassIDsToGive.ToDictionary(classID => classID.Key, classID => classID.Value));
+										HashSet<Steam.Asset> fairItemsToReceive = Trading.GetTradableItemsFromInventory(fairFiltered.Select(item => item.CreateShallowCopy()).ToHashSet(), fairClassIDsToReceive.ToDictionary(classID => classID.Key, classID => classID.Value));
+
+										// Actual check:
+										if (!Trading.IsTradeNeutralOrBetter(fairFiltered, fairItemsToReceive, fairItemsToGive)) {
+											if (fairGivenAmount > 1) {
+												fairClassIDsToGive[ourItem] = fairGivenAmount - 1;
+											} else {
+												fairClassIDsToGive.Remove(ourItem);
+											}
+
+											if (fairReceivedAmount > 1) {
+												fairClassIDsToReceive[theirItem] = fairReceivedAmount - 1;
+											} else {
+												fairClassIDsToReceive.Remove(theirItem);
+											}
+
+											continue;
+										}
 									}
 
 									// Skip this set from the remaining of this round
 									skippedSetsThisTrade.Add(set);
 
 									// Update our state based on given items
-									classIDsToGive[ourItem] = classIDsToGive.TryGetValue(ourItem, out uint givenAmount) ? givenAmount + 1 : 1;
-									ourFullSet[ourItem] = ourAmount - 1; // We don't need to remove anything here because we can guarantee that ourItem.Value is at least 2
+									classIDsToGive[ourItem] = classIDsToGive.TryGetValue(ourItem, out uint ourGivenAmount) ? ourGivenAmount + 1 : 1;
+									ourFullSet[ourItem] = ourFullAmount - 1; // We don't need to remove anything here because we can guarantee that ourItem.Value is at least 2
 
 									if (inventoryStateChanges.TryGetValue(set, out Dictionary<ulong, uint> currentChanges)) {
 										currentChanges[ourItem] = currentChanges.TryGetValue(ourItem, out uint amount) ? amount + 1 : 1;
@@ -483,26 +517,20 @@ namespace ArchiSteamFarm {
 									}
 
 									// Update our state based on received items
-									classIDsToReceive[theirItem] = classIDsToReceive.TryGetValue(theirItem, out uint receivedAmount) ? receivedAmount + 1 : 1;
+									classIDsToReceive[theirItem] = classIDsToReceive.TryGetValue(theirItem, out uint ourReceivedAmount) ? ourReceivedAmount + 1 : 1;
 									ourFullSet[theirItem] = ourAmountOfTheirItem + 1;
 
-									if (tradableAmount > 1) {
-										ourTradableSet[ourItem] = tradableAmount - 1;
+									if (ourTradableAmount > 1) {
+										ourTradableSet[ourItem] = ourTradableAmount - 1;
 									} else {
 										ourTradableSet.Remove(ourItem);
 									}
 
 									// Update their state based on taken items
-									if (!theirItems.TryGetValue(theirItem, out uint theirAmount) || (theirAmount == 0)) {
-										Bot.ArchiLogger.LogNullError(nameof(theirAmount));
-
-										return false;
-									}
-
-									if (theirAmount > 1) {
-										theirItems[theirItem] = theirAmount - 1;
+									if (theirTradableAmount > 1) {
+										theirTradableItems[theirItem] = theirTradableAmount - 1;
 									} else {
-										theirItems.Remove(theirItem);
+										theirTradableItems.Remove(theirItem);
 									}
 
 									itemsInTrade += 2;
@@ -529,6 +557,7 @@ namespace ArchiSteamFarm {
 						break;
 					}
 
+					// Remove the items from inventories
 					HashSet<Steam.Asset> itemsToGive = Trading.GetTradableItemsFromInventory(ourInventory, classIDsToGive);
 					HashSet<Steam.Asset> itemsToReceive = Trading.GetTradableItemsFromInventory(theirInventory, classIDsToReceive);
 
@@ -578,6 +607,9 @@ namespace ArchiSteamFarm {
 						break;
 					}
 
+					// Add itemsToGive to theirInventory to reflect their current state if we're over MaxItemsPerTrade
+					theirInventory.UnionWith(itemsToGive);
+
 					skippedSetsThisUser.UnionWith(skippedSetsThisTrade);
 					Bot.ArchiLogger.LogGenericTrace(Strings.Success);
 				}
@@ -598,17 +630,17 @@ namespace ArchiSteamFarm {
 				skippedSetsThisRound.UnionWith(skippedSetsThisUser);
 
 				foreach ((uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) skippedSet in skippedSetsThisUser) {
-					fullState.Remove(skippedSet);
-					tradableState.Remove(skippedSet);
+					ourFullState.Remove(skippedSet);
+					ourTradableState.Remove(skippedSet);
 				}
 
-				if (Trading.IsEmptyForMatching(fullState, tradableState)) {
+				if (Trading.IsEmptyForMatching(ourFullState, ourTradableState)) {
 					// User doesn't have any more dupes in the inventory
 					break;
 				}
 
-				fullState.TrimExcess();
-				tradableState.TrimExcess();
+				ourFullState.TrimExcess();
+				ourTradableState.TrimExcess();
 			}
 
 			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ActivelyMatchingItemsRound, skippedSetsThisRound.Count));

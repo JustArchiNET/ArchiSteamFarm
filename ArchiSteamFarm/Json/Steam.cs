@@ -70,6 +70,8 @@ namespace ArchiSteamFarm.Json {
 			[PublicAPI]
 			public EType Type { get; internal set; }
 
+			internal Asset CreateShallowCopy() => (Asset) MemberwiseClone();
+
 #pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "amount", Required = Required.Always)]
 			[NotNull]
