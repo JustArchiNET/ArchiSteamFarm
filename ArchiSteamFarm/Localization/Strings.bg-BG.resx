@@ -693,16 +693,25 @@
   <data name="PleaseWait" xml:space="preserve">
     <value>Моля изчакайте...</value>
   </data>
+  <data name="EnterCommand" xml:space="preserve">
+    <value>Въведи команда: </value>
+  </data>
+  <data name="Executing" xml:space="preserve">
+    <value>Изпълнение...</value>
+  </data>
+  
+  
+  <data name="Response" xml:space="preserve">
+    <value>Отговор: {0}</value>
+    <comment>{0} will be replaced by the generated response (string)</comment>
+  </data>
   
   
   
   
   
   
-  
-  
-  
-  
-  
-  
+  <data name="IPCConfigChanged" xml:space="preserve">
+    <value>IPC настройките са били променени!</value>
+  </data>
 </root>

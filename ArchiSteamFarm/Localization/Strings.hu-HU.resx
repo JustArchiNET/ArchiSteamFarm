@@ -729,6 +729,10 @@ StackTrace: {2}</value>
   <data name="UpdateCleanup" xml:space="preserve">
     <value>Régi fájlok törlése a frissítés után...</value>
   </data>
-  
-  
+  <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
+    <value>Steam szülői felügyelet kód generálása folyamatban, ez eltarthat egy darabig, fontold meg, hogy inkább a konfigurációs fájlba rakod...</value>
+  </data>
+  <data name="IPCConfigChanged" xml:space="preserve">
+    <value>Az IPC konfig megváltozott!</value>
+  </data>
 </root>

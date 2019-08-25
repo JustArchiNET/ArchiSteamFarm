@@ -661,11 +661,11 @@ StackTrace:
     <comment>{0} will be replaced by bot's level</comment>
   </data>
   <data name="ActivelyMatchingItems" xml:space="preserve">
-    <value>Associando itens do Steam, {0}ª rodada...</value>
+    <value>Correspondendo itens Steam, rodada #{0}...</value>
     <comment>{0} will be replaced by round number</comment>
   </data>
   <data name="DoneActivelyMatchingItems" xml:space="preserve">
-    <value>Associação de itens do Steam concluída, {0}ª rodada.</value>
+    <value>Itens Steam correspondidos, rodada #{0}.</value>
     <comment>{0} will be replaced by round number</comment>
   </data>
   <data name="ErrorAborted" xml:space="preserve">
