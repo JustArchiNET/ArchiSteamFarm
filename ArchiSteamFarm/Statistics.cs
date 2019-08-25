@@ -33,9 +33,9 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	internal sealed class Statistics : IDisposable {
-		private const byte MaxMatchedBotsHard = 40;
-		private const byte MaxMatchedBotsSoft = 20;
-		private const byte MaxMatchingRounds = 10;
+		private const byte MaxMatchedBotsHard = 40; // Determines how many bots we can attempt to match in total, where match attempt is equal to analyzing bot's inventory
+		private const byte MaxMatchedBotsSoft = MaxMatchedBotsHard / 2; // Determines how many consecutive empty matches we need to get before we decide to skip bots from the same category
+		private const byte MaxMatchingRounds = 10; // Determines maximum amount of matching rounds we're going to consider before leaving the rest of work for the next batch
 		private const byte MinAnnouncementCheckTTL = 6; // Minimum amount of hours we must wait before checking eligibility for Announcement, should be lower than MinPersonaStateTTL
 		private const byte MinHeartBeatTTL = 10; // Minimum amount of minutes we must wait before sending next HeartBeat
 		private const byte MinItemsCount = 100; // Minimum amount of items to be eligible for public listing
@@ -374,14 +374,25 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
+			bool skipAnyBots = false;
 			byte emptyMatches = 0;
+			byte totalMatches = 0;
+
 			HashSet<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> skippedSetsThisRound = new HashSet<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)>();
 
-			foreach (ListedUser listedUser in listedUsers.Where(listedUser => acceptedMatchableTypes.Any(listedUser.MatchableTypes.Contains) && (!triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs) attempt) || (attempt.Tries < byte.MaxValue)) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderBy(listedUser => triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs) attempt) ? attempt.Tries : 0).ThenByDescending(listedUser => listedUser.MatchEverything).ThenByDescending(listedUser => listedUser.Score).Take(MaxMatchedBotsHard)) {
+			foreach (ListedUser listedUser in listedUsers.Where(listedUser => acceptedMatchableTypes.Any(listedUser.MatchableTypes.Contains) && (!triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs) attempt) || (attempt.Tries < byte.MaxValue)) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderBy(listedUser => triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs) attempt) ? attempt.Tries : 0).ThenByDescending(listedUser => listedUser.MatchEverything).ThenByDescending(listedUser => listedUser.Score)) {
+				if (listedUser.MatchEverything && skipAnyBots) {
+					continue;
+				}
+
 				HashSet<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> wantedSets = ourTradableState.Keys.Where(set => !skippedSetsThisRound.Contains(set) && listedUser.MatchableTypes.Contains(set.Type)).ToHashSet();
 
 				if (wantedSets.Count == 0) {
 					continue;
+				}
+
+				if (++totalMatches > MaxMatchedBotsHard) {
+					break;
 				}
 
 				Bot.ArchiLogger.LogGenericTrace(listedUser.SteamID + "...");
@@ -621,7 +632,12 @@ namespace ArchiSteamFarm {
 					}
 
 					if (++emptyMatches >= MaxMatchedBotsSoft) {
-						break;
+						if (skipAnyBots) {
+							break;
+						}
+
+						skipAnyBots = true;
+						emptyMatches = 0;
 					}
 
 					continue;
