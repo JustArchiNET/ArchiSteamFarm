@@ -239,28 +239,6 @@ namespace ArchiSteamFarm {
 			return tradableState;
 		}
 
-		internal static Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> GetInventoryState(IReadOnlyCollection<Steam.Asset> inventory) {
-			if ((inventory == null) || (inventory.Count == 0)) {
-				ASF.ArchiLogger.LogNullError(nameof(inventory));
-
-				return null;
-			}
-
-			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> state = new Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>>();
-
-			foreach (Steam.Asset item in inventory) {
-				(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
-
-				if (state.TryGetValue(key, out Dictionary<ulong, uint> set)) {
-					set[item.ClassID] = set.TryGetValue(item.ClassID, out uint amount) ? amount + item.Amount : item.Amount;
-				} else {
-					state[key] = new Dictionary<ulong, uint> { { item.ClassID, item.Amount } };
-				}
-			}
-
-			return state;
-		}
-
 		internal static HashSet<Steam.Asset> GetTradableItemsFromInventory(IReadOnlyCollection<Steam.Asset> inventory, IDictionary<ulong, uint> classIDs) {
 			if ((inventory == null) || (inventory.Count == 0) || (classIDs == null) || (classIDs.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(inventory) + " || " + nameof(classIDs));
@@ -397,6 +375,28 @@ namespace ArchiSteamFarm {
 			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> sets = GetInventoryState(inventory);
 
 			return sets.ToDictionary(set => set.Key, set => set.Value.Values.OrderBy(amount => amount).ToList());
+		}
+
+		private static Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> GetInventoryState(IReadOnlyCollection<Steam.Asset> inventory) {
+			if ((inventory == null) || (inventory.Count == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(inventory));
+
+				return null;
+			}
+
+			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> state = new Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>>();
+
+			foreach (Steam.Asset item in inventory) {
+				(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
+
+				if (state.TryGetValue(key, out Dictionary<ulong, uint> set)) {
+					set[item.ClassID] = set.TryGetValue(item.ClassID, out uint amount) ? amount + item.Amount : item.Amount;
+				} else {
+					state[key] = new Dictionary<ulong, uint> { { item.ClassID, item.Amount } };
+				}
+			}
+
+			return state;
 		}
 
 		private async Task<bool> ParseActiveTrades() {
