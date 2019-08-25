@@ -42,7 +42,11 @@ namespace ArchiSteamFarm.Collections {
 			Enumerator = collection.GetEnumerator();
 		}
 
-		public void Dispose() => Lock.Dispose();
+		public void Dispose() {
+			Enumerator.Dispose();
+			Lock.Dispose();
+		}
+
 		public bool MoveNext() => Enumerator.MoveNext();
 		public void Reset() => Enumerator.Reset();
 	}

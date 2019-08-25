@@ -203,20 +203,11 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(botName) + " || " + nameof(botConfig) + " || " + nameof(botDatabase));
 			}
 
-			if (Bots.ContainsKey(botName)) {
-				throw new ArgumentException(string.Format(Strings.ErrorIsInvalid, nameof(botName)));
-			}
-
 			BotName = botName;
 			BotConfig = botConfig;
 			BotDatabase = botDatabase;
 
 			ArchiLogger = new ArchiLogger(botName);
-
-			// Register bot as available for ASF
-			if (!Bots.TryAdd(botName, this)) {
-				throw new ArgumentException(string.Format(Strings.ErrorIsInvalid, nameof(botName)));
-			}
 
 			if (HasMobileAuthenticator) {
 				BotDatabase.MobileAuthenticator.Init(this);
@@ -1080,6 +1071,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Bot bot;
+
 			await BotsSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
@@ -1088,6 +1080,13 @@ namespace ArchiSteamFarm {
 				}
 
 				bot = new Bot(botName, botConfig, botDatabase);
+
+				if (!Bots.TryAdd(botName, bot)) {
+					ASF.ArchiLogger.LogNullError(nameof(bot));
+					bot.Dispose();
+
+					return;
+				}
 			} finally {
 				BotsSemaphore.Release();
 			}
