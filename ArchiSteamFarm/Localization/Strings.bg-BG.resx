@@ -699,18 +699,38 @@
   <data name="Executing" xml:space="preserve">
     <value>Изпълнение...</value>
   </data>
-  
-  
+  <data name="InteractiveConsoleEnabled" xml:space="preserve">
+    <value>Интерактивната конзола е вече активна, натиснете 'c' за да влезето в команден режим.</value>
+  </data>
+  <data name="InteractiveConsoleNotAvailable" xml:space="preserve">
+    <value>Интерактивната конзола не е налична, защото липсва {0} конфигурирана стойност.</value>
+    <comment>{0} will be replaced by the name of the missing config property (string)</comment>
+  </data>
   <data name="Response" xml:space="preserve">
     <value>Отговор: {0}</value>
     <comment>{0} will be replaced by the generated response (string)</comment>
   </data>
-  
-  
-  
-  
-  
-  
+  <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
+    <value>Ботът има {0} игри оставащи в опашката на заден фон.</value>
+    <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
+  </data>
+  <data name="ErrorSingleInstanceRequired" xml:space="preserve">
+    <value>ASF процесът е вече работещ за тази директория, прекратяване!</value>
+  </data>
+  <data name="BotHandledConfirmations" xml:space="preserve">
+    <value>Успешно извършени {0} потвърждения!</value>
+    <comment>{0} will be replaced by number of confirmations</comment>
+  </data>
+  <data name="BotExtraIdlingCooldown" xml:space="preserve">
+    <value>Изчакване до {0}, за да се гарантира, че е може да започне ваденето на карти...</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+  </data>
+  <data name="UpdateCleanup" xml:space="preserve">
+    <value>Изтриване на старите файлове след обновление...</value>
+  </data>
+  <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
+    <value>Генериране на Steam основен код, това може да отнеме доста време, вместо това, помислете да го сложите в конфигурацията...</value>
+  </data>
   <data name="IPCConfigChanged" xml:space="preserve">
     <value>IPC настройките са били променени!</value>
   </data>
