@@ -771,6 +771,20 @@
             </summary>
             <returns>The local IP.</returns>
         </member>
+        <member name="P:SteamKit2.Internal.CMClient.PublicIP">
+            <summary>
+            Gets the public IP address of this client. This value is assigned after a logon attempt has succeeded.
+            This value will be <c>null</c> if the client is logged off of Steam.
+            </summary>
+            <value>The SteamID.</value>
+        </member>
+        <member name="P:SteamKit2.Internal.CMClient.IPCountryCode">
+            <summary>
+            Gets the country code of our public IP address according to Steam. This value is assigned after a logon attempt has succeeded.
+            This value will be <c>null</c> if the client is logged off of Steam.
+            </summary>
+            <value>The SteamID.</value>
+        </member>
         <member name="P:SteamKit2.Internal.CMClient.Universe">
             <summary>
             Gets the universe of this client.
@@ -1845,6 +1859,11 @@
             Gets the type of the server.
             </summary>
         </member>
+        <member name="P:SteamKit2.CDNClient.Server.SourceID">
+            <summary>
+            Gets the SourceID this server belongs to.
+            </summary>
+        </member>
         <member name="P:SteamKit2.CDNClient.Server.CellID">
             <summary>
             Gets the CellID this server belongs to.
@@ -1957,6 +1976,8 @@
             No Steam CS servers available, or the suggested CellID is unavailable.
             Check that the <see cref="T:SteamKit2.SteamClient"/> associated with this <see cref="T:SteamKit2.CDNClient"/> instance is logged onto Steam.
             </exception>
+            <exception cref="T:System.Net.Http.HttpRequestException">An network error occurred when performing the request.</exception>
+            <exception cref="T:SteamKit2.SteamKitWebRequestException">A network error occurred when performing the request.</exception>
         </member>
         <member name="M:SteamKit2.CDNClient.ConnectAsync(SteamKit2.CDNClient.Server)">
             <summary>
@@ -1964,6 +1985,8 @@
             </summary>
             <param name="csServer">The content server to connect to.</param>
             <exception cref="T:System.ArgumentNullException">csServer was null.</exception>
+            <exception cref="T:System.Net.Http.HttpRequestException">An network error occurred when performing the request.</exception>
+            <exception cref="T:SteamKit2.SteamKitWebRequestException">A network error occurred when performing the request.</exception>
         </member>
         <member name="M:SteamKit2.CDNClient.AuthenticateDepotAsync(System.UInt32,System.Byte[],System.String)">
             <summary>
@@ -1975,6 +1998,8 @@
             This is used for decrypting filenames (if needed) in depot manifests, and processing depot chunks.
             </param>
             <param name="cdnAuthToken">CDN auth token for CDN content server endpoints.</param>
+            <exception cref="T:System.Net.Http.HttpRequestException">An network error occurred when performing the request.</exception>
+            <exception cref="T:SteamKit2.SteamKitWebRequestException">A network error occurred when performing the request.</exception>
         </member>
         <member name="M:SteamKit2.CDNClient.DownloadManifestAsync(System.UInt32,System.UInt64)">
             <summary>
@@ -1983,6 +2008,8 @@
             <param name="depotId">The id of the depot being accessed.</param>
             <param name="manifestId">The unique identifier of the manifest to be downloaded.</param>
             <returns>A <see cref="T:SteamKit2.DepotManifest"/> instance that contains information about the files present within a depot.</returns>
+            <exception cref="T:System.Net.Http.HttpRequestException">An network error occurred when performing the request.</exception>
+            <exception cref="T:SteamKit2.SteamKitWebRequestException">A network error occurred when performing the request.</exception>
         </member>
         <member name="M:SteamKit2.CDNClient.DownloadManifestAsync(System.UInt32,System.UInt64,System.String,System.String,System.Byte[])">
             <summary>
@@ -1997,6 +2024,24 @@
             This is used for decrypting filenames (if needed) in depot manifests, and processing depot chunks.
             </param>
             <returns>A <see cref="T:SteamKit2.DepotManifest"/> instance that contains information about the files present within a depot.</returns>
+            <exception cref="T:System.Net.Http.HttpRequestException">An network error occurred when performing the request.</exception>
+            <exception cref="T:SteamKit2.SteamKitWebRequestException">A network error occurred when performing the request.</exception>
+        </member>
+        <member name="M:SteamKit2.CDNClient.DownloadManifestAsync(System.UInt32,System.UInt64,SteamKit2.CDNClient.Server,System.String,System.Byte[])">
+            <summary>
+            Downloads the depot manifest specified by the given manifest ID, and optionally decrypts the manifest's filenames if the depot decryption key has been provided.
+            </summary>
+            <param name="depotId">The id of the depot being accessed.</param>
+            <param name="manifestId">The unique identifier of the manifest to be downloaded.</param>
+            <param name="server">The content server to connect to.</param>
+            <param name="cdnAuthToken">CDN auth token for CDN content server endpoints.</param>
+            <param name="depotKey">
+            The depot decryption key for the depot that will be downloaded.
+            This is used for decrypting filenames (if needed) in depot manifests, and processing depot chunks.
+            </param>
+            <returns>A <see cref="T:SteamKit2.DepotManifest"/> instance that contains information about the files present within a depot.</returns>
+            <exception cref="T:System.Net.Http.HttpRequestException">An network error occurred when performing the request.</exception>
+            <exception cref="T:SteamKit2.SteamKitWebRequestException">A network error occurred when performing the request.</exception>
         </member>
         <member name="M:SteamKit2.CDNClient.DownloadDepotChunkAsync(System.UInt32,SteamKit2.DepotManifest.ChunkData)">
             <summary>
@@ -2009,11 +2054,13 @@
             <param name="depotId">The id of the depot being accessed.</param>
             <param name="chunk">
             A <see cref="T:SteamKit2.DepotManifest.ChunkData"/> instance that represents the chunk to download.
-            This value should come from a manifest downloaded with <see cref="!:CDNClient.DownloadManifest"/>.
+            This value should come from a manifest downloaded with <see cref="o:DownloadManifestAsync"/>.
             </param>
             <returns>A <see cref="T:SteamKit2.CDNClient.DepotChunk"/> instance that contains the data for the given chunk.</returns>
             <exception cref="T:System.ArgumentNullException">chunk's <see cref="P:SteamKit2.DepotManifest.ChunkData.ChunkID"/> was null.</exception>
             <exception cref="T:System.IO.InvalidDataException">Thrown if the downloaded data does not match the expected length.</exception>
+            <exception cref="T:System.Net.Http.HttpRequestException">An network error occurred when performing the request.</exception>
+            <exception cref="T:SteamKit2.SteamKitWebRequestException">A network error occurred when performing the request.</exception>
         </member>
         <member name="M:SteamKit2.CDNClient.DownloadDepotChunkAsync(System.UInt32,SteamKit2.DepotManifest.ChunkData,System.String,System.String,System.Byte[])">
             <summary>
@@ -2026,7 +2073,7 @@
             <param name="depotId">The id of the depot being accessed.</param>
             <param name="chunk">
             A <see cref="T:SteamKit2.DepotManifest.ChunkData"/> instance that represents the chunk to download.
-            This value should come from a manifest downloaded with <see cref="!:CDNClient.DownloadManifest"/>.
+            This value should come from a manifest downloaded with <see cref="o:DownloadManifestAsync"/>.
             </param>
             <returns>A <see cref="T:SteamKit2.CDNClient.DepotChunk"/> instance that contains the data for the given chunk.</returns>
             <param name="host">CDN hostname.</param>
@@ -2037,6 +2084,33 @@
             </param>
             <exception cref="T:System.ArgumentNullException">chunk's <see cref="P:SteamKit2.DepotManifest.ChunkData.ChunkID"/> was null.</exception>
             <exception cref="T:System.IO.InvalidDataException">Thrown if the downloaded data does not match the expected length.</exception>
+            <exception cref="T:System.Net.Http.HttpRequestException">An network error occurred when performing the request.</exception>
+            <exception cref="T:SteamKit2.SteamKitWebRequestException">A network error occurred when performing the request.</exception>
+        </member>
+        <member name="M:SteamKit2.CDNClient.DownloadDepotChunkAsync(System.UInt32,SteamKit2.DepotManifest.ChunkData,SteamKit2.CDNClient.Server,System.String,System.Byte[])">
+            <summary>
+            Downloads the specified depot chunk, and optionally processes the chunk and verifies the checksum if the depot decryption key has been provided.
+            </summary>
+            <remarks>
+            This function will also validate the length of the downloaded chunk with the value of <see cref="P:SteamKit2.DepotManifest.ChunkData.CompressedLength"/>,
+            if it has been assigned a value.
+            </remarks>
+            <param name="depotId">The id of the depot being accessed.</param>
+            <param name="chunk">
+            A <see cref="T:SteamKit2.DepotManifest.ChunkData"/> instance that represents the chunk to download.
+            This value should come from a manifest downloaded with <see cref="o:DownloadManifestAsync"/>.
+            </param>
+            <returns>A <see cref="T:SteamKit2.CDNClient.DepotChunk"/> instance that contains the data for the given chunk.</returns>
+            <param name="server">The content server to connect to.</param>
+            <param name="cdnAuthToken">CDN auth token for CDN content server endpoints.</param>
+            <param name="depotKey">
+            The depot decryption key for the depot that will be downloaded.
+            This is used for decrypting filenames (if needed) in depot manifests, and processing depot chunks.
+            </param>
+            <exception cref="T:System.ArgumentNullException">chunk's <see cref="P:SteamKit2.DepotManifest.ChunkData.ChunkID"/> was null.</exception>
+            <exception cref="T:System.IO.InvalidDataException">Thrown if the downloaded data does not match the expected length.</exception>
+            <exception cref="T:System.Net.Http.HttpRequestException">An network error occurred when performing the request.</exception>
+            <exception cref="T:SteamKit2.SteamKitWebRequestException">A network error occurred when performing the request.</exception>
         </member>
         <member name="M:SteamKit2.CDNClient.Dispose">
             <summary>
@@ -4227,6 +4301,535 @@
             </summary>
             <param name="packetMsg">The packet message that contains the data.</param>
         </member>
+        <member name="T:SteamKit2.SteamMatchmaking">
+            <summary>
+            This handler is used for creating, joining and obtaining lobby information.
+            </summary>
+        </member>
+        <member name="T:SteamKit2.SteamMatchmaking.GetLobbyListCallback">
+            <summary>
+            This callback is fired in response to <see cref="M:SteamKit2.SteamMatchmaking.GetLobbyList(System.UInt32,System.Collections.Generic.List{SteamKit2.SteamMatchmaking.Lobby.Filter},System.Int32)"/>.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.GetLobbyListCallback.AppID">
+            <summary>
+            ID of the app the lobbies belongs to.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.GetLobbyListCallback.Result">
+            <summary>
+            The result of the request.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.GetLobbyListCallback.Lobbies">
+            <summary>
+            The list of lobbies matching the criteria specified with <see cref="M:SteamKit2.SteamMatchmaking.GetLobbyList(System.UInt32,System.Collections.Generic.List{SteamKit2.SteamMatchmaking.Lobby.Filter},System.Int32)"/>.
+            </summary>
+        </member>
+        <member name="T:SteamKit2.SteamMatchmaking.CreateLobbyCallback">
+            <summary>
+            This callback is fired in response to <see cref="M:SteamKit2.SteamMatchmaking.CreateLobby(System.UInt32,SteamKit2.ELobbyType,System.Int32,System.Int32,System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})"/>.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.CreateLobbyCallback.AppID">
+            <summary>
+            ID of the app the created lobby belongs to.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.CreateLobbyCallback.Result">
+            <summary>
+            The result of the request.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.CreateLobbyCallback.LobbySteamID">
+            <summary>
+            The SteamID of the created lobby.
+            </summary>
+        </member>
+        <member name="T:SteamKit2.SteamMatchmaking.SetLobbyDataCallback">
+            <summary>
+            This callback is fired in response to <see cref="M:SteamKit2.SteamMatchmaking.SetLobbyData(System.UInt32,SteamKit2.SteamID,SteamKit2.ELobbyType,System.Int32,System.Int32,System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})"/>.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.SetLobbyDataCallback.AppID">
+            <summary>
+            ID of the app the targeted lobby belongs to.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.SetLobbyDataCallback.Result">
+            <summary>
+            The result of the request.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.SetLobbyDataCallback.LobbySteamID">
+            <summary>
+            The SteamID of the targeted Lobby.
+            </summary>
+        </member>
+        <member name="T:SteamKit2.SteamMatchmaking.SetLobbyOwnerCallback">
+            <summary>
+            This callback is fired in response to <see cref="M:SteamKit2.SteamMatchmaking.SetLobbyOwner(System.UInt32,SteamKit2.SteamID,SteamKit2.SteamID)"/>.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.SetLobbyOwnerCallback.AppID">
+            <summary>
+            ID of the app the targeted lobby belongs to.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.SetLobbyOwnerCallback.Result">
+            <summary>
+            The result of the request.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.SetLobbyOwnerCallback.LobbySteamID">
+            <summary>
+            The SteamID of the targeted Lobby.
+            </summary>
+        </member>
+        <member name="T:SteamKit2.SteamMatchmaking.JoinLobbyCallback">
+            <summary>
+            This callback is fired in response to <see cref="M:SteamKit2.SteamMatchmaking.JoinLobby(System.UInt32,SteamKit2.SteamID)"/>.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.JoinLobbyCallback.AppID">
+            <summary>
+            ID of the app the targeted lobby belongs to.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.JoinLobbyCallback.ChatRoomEnterResponse">
+            <summary>
+            The result of the request.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.JoinLobbyCallback.Lobby">
+            <summary>
+            The joined <see cref="P:SteamKit2.SteamMatchmaking.JoinLobbyCallback.Lobby"/>, when <see cref="P:SteamKit2.SteamMatchmaking.JoinLobbyCallback.ChatRoomEnterResponse"/> equals
+            <see cref="F:SteamKit2.EChatRoomEnterResponse.Success"/>, otherwise <c>null</c>
+            </summary>
+        </member>
+        <member name="T:SteamKit2.SteamMatchmaking.LeaveLobbyCallback">
+            <summary>
+            This callback is fired in response to <see cref="M:SteamKit2.SteamMatchmaking.LeaveLobby(System.UInt32,SteamKit2.SteamID)"/>.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.LeaveLobbyCallback.AppID">
+            <summary>
+            ID of the app the targeted lobby belongs to.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.LeaveLobbyCallback.Result">
+            <summary>
+            The result of the request.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.LeaveLobbyCallback.LobbySteamID">
+            <summary>
+            The SteamID of the targeted Lobby.
+            </summary>
+        </member>
+        <member name="T:SteamKit2.SteamMatchmaking.LobbyDataCallback">
+            <summary>
+            This callback is fired in response to <see cref="M:SteamKit2.SteamMatchmaking.GetLobbyData(System.UInt32,SteamKit2.SteamID)"/>, as well as whenever Steam sends us updated lobby data.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.LobbyDataCallback.AppID">
+            <summary>
+            ID of the app the updated lobby belongs to.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.LobbyDataCallback.Lobby">
+            <summary>
+            The lobby that was updated.
+            </summary>
+        </member>
+        <member name="T:SteamKit2.SteamMatchmaking.UserJoinedLobbyCallback">
+            <summary>
+            This callback is fired whenever Steam informs us a user has joined a lobby.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.UserJoinedLobbyCallback.AppID">
+            <summary>
+            ID of the app the lobby belongs to.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.UserJoinedLobbyCallback.LobbySteamID">
+            <summary>
+            The SteamID of the lobby that a member joined.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.UserJoinedLobbyCallback.User">
+            <summary>
+            The lobby member that joined.
+            </summary>
+        </member>
+        <member name="T:SteamKit2.SteamMatchmaking.UserLeftLobbyCallback">
+            <summary>
+            This callback is fired whenever Steam informs us a user has left a lobby.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.UserLeftLobbyCallback.AppID">
+            <summary>
+            ID of the app the lobby belongs to.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.UserLeftLobbyCallback.LobbySteamID">
+            <summary>
+            The SteamID of the lobby that a member left.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.UserLeftLobbyCallback.User">
+            <summary>
+            The lobby member that left.
+            </summary>
+        </member>
+        <member name="T:SteamKit2.SteamMatchmaking.Lobby">
+            <summary>
+            Represents a Steam lobby.
+            </summary>
+        </member>
+        <member name="T:SteamKit2.SteamMatchmaking.Lobby.Filter">
+            <summary>
+            The lobby filter base class.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.Lobby.Filter.FilterType">
+            <summary>
+            The type of filter.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.Lobby.Filter.Key">
+            <summary>
+            The metadata key this filter pertains to. Under certain circumstances e.g. a distance
+            filter, this will be an empty string.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.Lobby.Filter.Comparison">
+            <summary>
+            The comparison method used by this filter.
+            </summary>
+        </member>
+        <member name="M:SteamKit2.SteamMatchmaking.Lobby.Filter.#ctor(SteamKit2.ELobbyFilterType,System.String,SteamKit2.ELobbyComparison)">
+            <summary>
+            Base constructor for all filter sub-classes.
+            </summary>
+            <param name="filterType">The type of filter.</param>
+            <param name="key">The metadata key this filter pertains to.</param>
+            <param name="comparison">The comparison method used by this filter.</param>
+        </member>
+        <member name="M:SteamKit2.SteamMatchmaking.Lobby.Filter.Serialize">
+            <summary>
+            Serializes the filter into a representation used internally by SteamMatchmaking.
+            </summary>
+            <returns>A protobuf serializable representation of this filter.</returns>
+        </member>
+        <member name="T:SteamKit2.SteamMatchmaking.Lobby.DistanceFilter">
+            <summary>
+            Can be used to filter lobbies geographically (based on IP according to Steam's IP database).
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.Lobby.DistanceFilter.Value">
+            <summary>
+            Steam distance filter value.
+            </summary>
+        </member>
+        <member name="M:SteamKit2.SteamMatchmaking.Lobby.DistanceFilter.#ctor(SteamKit2.ELobbyDistanceFilter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SteamKit2.SteamMatchmaking.Lobby.DistanceFilter"/> class.
+            </summary>
+            <param name="value">Steam distance filter value.</param>
+        </member>
+        <member name="M:SteamKit2.SteamMatchmaking.Lobby.DistanceFilter.Serialize">
+            <summary>
+            Serializes the distance filter into a representation used internally by SteamMatchmaking.
+            </summary>
+            <returns>A protobuf serializable representation of this filter.</returns>
+        </member>
+        <member name="T:SteamKit2.SteamMatchmaking.Lobby.NearValueFilter">
+            <summary>
+            Can be used to filter lobbies with a metadata value closest to the specified value. Multiple
+            near filters can be specified, with former filters taking precedence over latter filters.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.Lobby.NearValueFilter.Value">
+            <summary>
+            Integer value that lobbies' metadata value should be close to.
+            </summary>
+        </member>
+        <member name="M:SteamKit2.SteamMatchmaking.Lobby.NearValueFilter.#ctor(System.String,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SteamKit2.SteamMatchmaking.Lobby.NearValueFilter"/> class.
+            </summary>
+            <param name="key">The metadata key this filter pertains to.</param>
+            <param name="value">Integer value to compare against.</param>
+        </member>
+        <member name="M:SteamKit2.SteamMatchmaking.Lobby.NearValueFilter.Serialize">
+            <summary>
+            Serializes the slots available filter into a representation used internally by SteamMatchmaking.
+            </summary>
+            <returns>A protobuf serializable representation of this filter.</returns>
+        </member>
+        <member name="T:SteamKit2.SteamMatchmaking.Lobby.NumericalFilter">
+            <summary>
+            Can be used to filter lobbies by comparing an integer against a value in each lobby's metadata.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.Lobby.NumericalFilter.Value">
+            <summary>
+            Integer value to compare against.
+            </summary>
+        </member>
+        <member name="M:SteamKit2.SteamMatchmaking.Lobby.NumericalFilter.#ctor(System.String,SteamKit2.ELobbyComparison,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SteamKit2.SteamMatchmaking.Lobby.NumericalFilter"/> class.
+            </summary>
+            <param name="key">The metadata key this filter pertains to.</param>
+            <param name="comparison">The comparison method used by this filter.</param>
+            <param name="value">Integer value to compare against.</param>
+        </member>
+        <member name="M:SteamKit2.SteamMatchmaking.Lobby.NumericalFilter.Serialize">
+            <summary>
+            Serializes the numerical filter into a representation used internally by SteamMatchmaking.
+            </summary>
+            <returns>A protobuf serializable representation of this filter.</returns>
+        </member>
+        <member name="T:SteamKit2.SteamMatchmaking.Lobby.SlotsAvailableFilter">
+            <summary>
+            Can be used to filter lobbies by minimum number of slots available.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.Lobby.SlotsAvailableFilter.SlotsAvailable">
+            <summary>
+            Minumum number of slots available in the lobby.
+            </summary>
+        </member>
+        <member name="M:SteamKit2.SteamMatchmaking.Lobby.SlotsAvailableFilter.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SteamKit2.SteamMatchmaking.Lobby.SlotsAvailableFilter"/> class.
+            </summary>
+            <param name="key">The metadata key this filter pertains to.</param>
+            <param name="slotsAvailable">Integer value to compare against.</param>
+        </member>
+        <member name="M:SteamKit2.SteamMatchmaking.Lobby.SlotsAvailableFilter.Serialize">
+            <summary>
+            Serializes the slots available filter into a representation used internally by SteamMatchmaking.
+            </summary>
+            <returns>A protobuf serializable representation of this filter.</returns>
+        </member>
+        <member name="T:SteamKit2.SteamMatchmaking.Lobby.StringFilter">
+            <summary>
+            Can be used to filter lobbies by comparing a string against a value in each lobby's metadata.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.Lobby.StringFilter.Value">
+            <summary>
+            String value to compare against.
+            </summary>
+        </member>
+        <member name="M:SteamKit2.SteamMatchmaking.Lobby.StringFilter.#ctor(System.String,SteamKit2.ELobbyComparison,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SteamKit2.SteamMatchmaking.Lobby.StringFilter"/> class.
+            </summary>
+            <param name="key">The metadata key this filter pertains to.</param>
+            <param name="comparison">The comparison method used by this filter.</param>
+            <param name="value">String value to compare against.</param>
+        </member>
+        <member name="M:SteamKit2.SteamMatchmaking.Lobby.StringFilter.Serialize">
+            <summary>
+            Serializes the string filter into a representation used internally by SteamMatchmaking.
+            </summary>
+            <returns>A protobuf serializable representation of this filter.</returns>
+        </member>
+        <member name="T:SteamKit2.SteamMatchmaking.Lobby.Member">
+            <summary>
+            Represents a Steam user within a lobby.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.Lobby.Member.SteamID">
+            <summary>
+            SteamID of the lobby member.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.Lobby.Member.PersonaName">
+            <summary>
+            Steam persona of the lobby member.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.Lobby.Member.Metadata">
+            <summary>
+            Metadata attached to the lobby member.
+            </summary>
+        </member>
+        <member name="M:SteamKit2.SteamMatchmaking.Lobby.Member.Equals(System.Object)">
+            <summary>
+            Checks to see if this lobby member is equal to another. Only the SteamID of the lobby member is taken into account.
+            </summary>
+            <param name="obj"></param>
+            <returns>true, if obj is <see cref="T:SteamKit2.SteamMatchmaking.Lobby.Member"/> with a matching SteamID. Otherwise, false.</returns>
+        </member>
+        <member name="M:SteamKit2.SteamMatchmaking.Lobby.Member.GetHashCode">
+            <summary>
+            Hash code of the lobby member. Only the SteamID of the lobby member is taken into account.
+            </summary>
+            <returns>The hash code of this lobby member.</returns>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.Lobby.SteamID">
+            <summary>
+            SteamID of the lobby.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.Lobby.LobbyType">
+            <summary>
+            The type of the lobby.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.Lobby.LobbyFlags">
+            <summary>
+            The lobby's flags.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.Lobby.OwnerSteamID">
+            <summary>
+            The SteamID of the lobby's owner. Please keep in mind that Steam does not provide lobby
+            owner details for lobbies returned in a lobby list. As such, lobbies that have been
+            obtained/updated as a result of calling <see cref="M:SteamKit2.SteamMatchmaking.GetLobbyList(System.UInt32,System.Collections.Generic.List{SteamKit2.SteamMatchmaking.Lobby.Filter},System.Int32)"/>
+            may have a null (or non-null but state) owner.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.Lobby.Metadata">
+            <summary>
+            The metadata of the lobby; string key-value pairs.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.Lobby.MaxMembers">
+            <summary>
+            The maximum number of members that can occupy the lobby.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.Lobby.NumMembers">
+            <summary>
+            The number of members that are currently occupying the lobby.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.Lobby.Members">
+            <summary>
+            A list of lobby members. This will only be populated for the user's current lobby.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.Lobby.Distance">
+            <summary>
+            The distance of the lobby.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamMatchmaking.Lobby.Weight">
+            <summary>
+            The weight of the lobby.
+            </summary>
+        </member>
+        <member name="M:SteamKit2.SteamMatchmaking.CreateLobby(System.UInt32,SteamKit2.ELobbyType,System.Int32,System.Int32,System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})">
+            <summary>
+            Sends a request to create a new lobby.
+            </summary>
+            <param name="appId">ID of the app the lobby will belong to.</param>
+            <param name="lobbyType">The new lobby type.</param>
+            <param name="maxMembers">The new maximum number of members that may occupy the lobby.</param>
+            <param name="lobbyFlags">The new lobby flags. Defaults to 0.</param>
+            <param name="metadata">The new metadata for the lobby. Defaults to <c>null</c> (treated as an empty dictionary).</param>
+            <returns><c>null</c>, if the request could not be submitted i.e. not yet logged in. Otherwise, an <see cref="T:SteamKit2.AsyncJob`1"/>.</returns>
+        </member>
+        <member name="M:SteamKit2.SteamMatchmaking.SetLobbyData(System.UInt32,SteamKit2.SteamID,SteamKit2.ELobbyType,System.Int32,System.Int32,System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})">
+            <summary>
+            Sends a request to update a lobby.
+            </summary>
+            <param name="appId">ID of app the lobby belongs to.</param>
+            <param name="lobbySteamId">The SteamID of the lobby that should be updated.</param>
+            <param name="lobbyType">The new lobby type.</param>
+            <param name="maxMembers">The new maximum number of members that may occupy the lobby.</param>
+            <param name="lobbyFlags">The new lobby flags. Defaults to 0.</param>
+            <param name="metadata">The new metadata for the lobby. Defaults to <c>null</c> (treated as an empty dictionary).</param>
+            <returns>An <see cref="T:SteamKit2.AsyncJob`1"/>.</returns>
+        </member>
+        <member name="M:SteamKit2.SteamMatchmaking.SetLobbyMemberData(System.UInt32,SteamKit2.SteamID,System.Collections.Generic.IReadOnlyDictionary{System.String,System.String})">
+            <summary>
+            Sends a request to update the current user's lobby metadata.
+            </summary>
+            <param name="appId">ID of app the lobby belongs to.</param>
+            <param name="lobbySteamId">The SteamID of the lobby that should be updated.</param>
+            <param name="metadata">The new metadata for the lobby.</param>
+            <returns><c>null</c>, if the request could not be submitted i.e. not yet logged in. Otherwise, an <see cref="T:SteamKit2.AsyncJob`1"/>.</returns>
+        </member>
+        <member name="M:SteamKit2.SteamMatchmaking.SetLobbyOwner(System.UInt32,SteamKit2.SteamID,SteamKit2.SteamID)">
+            <summary>
+            Sends a request to update the owner of a lobby.
+            </summary>
+            <param name="appId">ID of app the lobby belongs to.</param>
+            <param name="lobbySteamId">The SteamID of the lobby that should have its owner updated.</param>
+            <param name="newOwner">The SteamID of the new owner.</param>
+            <returns>An <see cref="T:SteamKit2.AsyncJob`1"/>.</returns>
+        </member>
+        <member name="M:SteamKit2.SteamMatchmaking.GetLobbyList(System.UInt32,System.Collections.Generic.List{SteamKit2.SteamMatchmaking.Lobby.Filter},System.Int32)">
+            <summary>
+            Sends a request to obtains a list of lobbies matching the specified criteria.
+            </summary>
+            <param name="appId">The ID of app for which we're requesting a list of lobbies.</param>
+            <param name="filters">An optional list of filters.</param>
+            <param name="maxLobbies">An optional maximum number of lobbies that will be returned.</param>
+            <returns><c>null</c>, if the request could not be submitted i.e. not yet logged in. Otherwise, an <see cref="T:SteamKit2.AsyncJob`1"/>.</returns>
+        </member>
+        <member name="M:SteamKit2.SteamMatchmaking.JoinLobby(System.UInt32,SteamKit2.SteamID)">
+            <summary>
+            Sends a request to join a lobby.
+            </summary>
+            <param name="appId">ID of app the lobby belongs to.</param>
+            <param name="lobbySteamId">The SteamID of the lobby that should be joined.</param>
+            <returns><c>null</c>, if the request could not be submitted i.e. not yet logged in. Otherwise, an <see cref="T:SteamKit2.AsyncJob`1"/>.</returns>
+        </member>
+        <member name="M:SteamKit2.SteamMatchmaking.LeaveLobby(System.UInt32,SteamKit2.SteamID)">
+            <summary>
+            Sends a request to leave a lobby.
+            </summary>
+            <param name="appId">ID of app the lobby belongs to.</param>
+            <param name="lobbySteamId">The SteamID of the lobby that should be left.</param>
+            <returns>An <see cref="T:SteamKit2.AsyncJob`1"/>.</returns>
+        </member>
+        <member name="M:SteamKit2.SteamMatchmaking.GetLobbyData(System.UInt32,SteamKit2.SteamID)">
+            <summary>
+            Sends a request to obtain a lobby's data.
+            </summary>
+            <param name="appId">The ID of app which we're attempting to obtain lobby data for.</param>
+            <param name="lobbySteamId">The SteamID of the lobby whose data is being requested.</param>
+            <returns>An <see cref="T:SteamKit2.AsyncJob`1"/>.</returns>
+        </member>
+        <member name="M:SteamKit2.SteamMatchmaking.InviteToLobby(System.UInt32,SteamKit2.SteamID,SteamKit2.SteamID)">
+            <summary>
+            Sends a lobby invite request.
+            NOTE: Steam provides no functionality to determine if the user was successfully invited.
+            </summary>
+            <param name="appId">The ID of app which owns the lobby we're inviting a user to.</param>
+            <param name="lobbySteamId">The SteamID of the lobby we're inviting a user to.</param>
+            <param name="userSteamId">The SteamID of the user we're inviting.</param>
+        </member>
+        <member name="M:SteamKit2.SteamMatchmaking.GetLobby(System.UInt32,SteamKit2.SteamID)">
+            <summary>
+            Obtains a <see cref="T:SteamKit2.SteamMatchmaking.Lobby"/>, by its SteamID, if the data is cached locally.
+            This method does not send a network request.
+            </summary>
+            <param name="appId">The ID of app which we're attempting to obtain a lobby for.</param>
+            <param name="lobbySteamId">The SteamID of the lobby that should be returned.</param>
+            <returns>The <see cref="T:SteamKit2.SteamMatchmaking.Lobby"/> corresponding with the specified app and lobby ID, if cached. Otherwise, <c>null</c>.</returns>
+        </member>
+        <member name="M:SteamKit2.SteamMatchmaking.Send(SteamKit2.ClientMsgProtobuf,System.UInt32)">
+            <summary>
+            Sends a matchmaking message for a specific app.
+            </summary>
+            <param name="msg">The matchmaking message to send.</param>
+            <param name="appId">The ID of the app this message pertains to.</param>
+        </member>
+        <member name="M:SteamKit2.SteamMatchmaking.HandleMsg(SteamKit2.IPacketMsg)">
+            <summary>
+            Handles a client message. This should not be called directly.
+            </summary>
+            <param name="packetMsg">The packet message that contains the data.</param>
+        </member>
         <member name="T:SteamKit2.SteamScreenshots">
             <summary>
             This handler is used for initializing Steam trades with other clients.
@@ -4785,6 +5388,11 @@
         <member name="P:SteamKit2.SteamUser.LoggedOnCallback.NumDisconnectsToMigrate">
             <summary>
             Gets the threshold for disconnects before Steam wants the client to migrate to a new CM.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamUser.LoggedOnCallback.ParentalSettings">
+            <summary>
+            Gets the Steam parental settings.
             </summary>
         </member>
         <member name="T:SteamKit2.SteamUser.LoggedOffCallback">
@@ -6278,6 +6886,45 @@
             </summary>
             <param name="msg">The client message to send.</param>
         </member>
+        <member name="T:SteamKit2.ContentServerDirectoryService">
+            <summary>
+            Helper class to load servers from the Content Server Directory Service Web API.
+            </summary>
+        </member>
+        <member name="M:SteamKit2.ContentServerDirectoryService.LoadAsync(SteamKit2.SteamConfiguration)">
+            <summary>
+            Load a list of servers from the Content Server Directory Service.
+            </summary>
+            <param name="configuration">Configuration Object</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> with the Result set to an enumerable list of <see cref="T:SteamKit2.CDNClient.Server"/>s.</returns>
+        </member>
+        <member name="M:SteamKit2.ContentServerDirectoryService.LoadAsync(SteamKit2.SteamConfiguration,System.Threading.CancellationToken)">
+            <summary>
+            Load a list of servers from the Content Server Directory Service.
+            </summary>
+            <param name="configuration">Configuration Object</param>
+            <param name="cancellationToken">Cancellation Token</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> with the Result set to an enumerable list of <see cref="T:SteamKit2.CDNClient.Server"/>s.</returns>
+        </member>
+        <member name="M:SteamKit2.ContentServerDirectoryService.LoadAsync(SteamKit2.SteamConfiguration,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Load a list of servers from the Content Server Directory Service.
+            </summary>
+            <param name="configuration">Configuration Object</param>
+            <param name="cellId">Preferred steam cell id</param>
+            <param name="cancellationToken">Cancellation Token</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> with the Result set to an enumerable list of <see cref="T:SteamKit2.CDNClient.Server"/>s.</returns>
+        </member>
+        <member name="M:SteamKit2.ContentServerDirectoryService.LoadAsync(SteamKit2.SteamConfiguration,System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Load a list of servers from the Content Server Directory Service.
+            </summary>
+            <param name="configuration">Configuration Object</param>
+            <param name="cellId">Preferred steam cell id</param>
+            <param name="maxNumServers">Max number of servers to return.</param>
+            <param name="cancellationToken">Cancellation Token</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> with the Result set to an enumerable list of <see cref="T:SteamKit2.CDNClient.Server"/>s.</returns>
+        </member>
         <member name="T:SteamKit2.SteamConfigurationWebAPIExtensions">
             <summary>
             Provides helper extensions to make WebAPI interfaces from existing SteamConfiguration.
@@ -6354,7 +7001,7 @@
             The timeout value in milliseconds. The default value is 100 seconds.
             </value>
         </member>
-        <member name="M:SteamKit2.WebAPI.Interface.Call(System.String,System.Int32,System.Collections.Generic.Dictionary{System.String,System.String})">
+        <member name="M:SteamKit2.WebAPI.Interface.Call(System.String,System.Int32,System.Collections.Generic.Dictionary{System.String,System.Object})">
             <summary>
             Manually calls the specified Web API function with the provided details.
             </summary>
@@ -6367,7 +7014,7 @@
             <exception cref="T:SteamKit2.WebAPIRequestException">A network error occurred when performing the request.</exception>
             <exception cref="T:System.IO.InvalidDataException">An error occured when parsing the response from the WebAPI.</exception>
         </member>
-        <member name="M:SteamKit2.WebAPI.Interface.Call(System.Net.Http.HttpMethod,System.String,System.Int32,System.Collections.Generic.Dictionary{System.String,System.String})">
+        <member name="M:SteamKit2.WebAPI.Interface.Call(System.Net.Http.HttpMethod,System.String,System.Int32,System.Collections.Generic.Dictionary{System.String,System.Object})">
             <summary>
             Manually calls the specified Web API function with the provided details.
             </summary>
@@ -6436,7 +7083,7 @@
             The timeout value in milliseconds. The default value is 100 seconds.
             </value>
         </member>
-        <member name="M:SteamKit2.WebAPI.AsyncInterface.CallAsync(System.Net.Http.HttpMethod,System.String,System.Int32,System.Collections.Generic.Dictionary{System.String,System.String})">
+        <member name="M:SteamKit2.WebAPI.AsyncInterface.CallAsync(System.Net.Http.HttpMethod,System.String,System.Int32,System.Collections.Generic.Dictionary{System.String,System.Object})">
             <summary>
             Manually calls the specified Web API function with the provided details.
             </summary>
@@ -6527,16 +7174,6 @@
         <member name="T:SteamKit2.WebAPIRequestException">
             <summary>
             Thrown when WebAPI request fails.
-            </summary>
-        </member>
-        <member name="P:SteamKit2.WebAPIRequestException.StatusCode">
-            <summary>
-            Represents the status code of the HTTP response.
-            </summary>
-        </member>
-        <member name="P:SteamKit2.WebAPIRequestException.Headers">
-            <summary>
-            Represents the collection of HTTP response headers.
             </summary>
         </member>
         <member name="M:SteamKit2.WebAPIRequestException.#ctor(System.String,System.Net.Http.HttpResponseMessage)">
@@ -8192,6 +8829,28 @@
             </summary>
             <param name="category">The category of the message.</param>
             <param name="msg">The message to log.</param>
+        </member>
+        <member name="T:SteamKit2.SteamKitWebRequestException">
+            <summary>
+            Thrown when a HTTP request fails.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamKitWebRequestException.StatusCode">
+            <summary>
+            Represents the status code of the HTTP response.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamKitWebRequestException.Headers">
+            <summary>
+            Represents the collection of HTTP response headers.
+            </summary>
+        </member>
+        <member name="M:SteamKit2.SteamKitWebRequestException.#ctor(System.String,System.Net.Http.HttpResponseMessage)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SteamKit2.SteamKitWebRequestException"/> class.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+            <param name="response">HTTP response message including the status code and data.</param>
         </member>
         <member name="T:SteamKit2.DateUtils">
             <summary>
