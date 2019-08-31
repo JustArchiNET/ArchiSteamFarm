@@ -37,6 +37,8 @@ using SteamKit2;
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	public sealed class BotConfig {
+		internal const byte SteamParentalCodeLength = 4;
+
 		private const bool DefaultAcceptGifts = false;
 		private const bool DefaultAutoSteamSaleEvent = false;
 		private const EBotBehaviour DefaultBotBehaviour = EBotBehaviour.None;
@@ -171,6 +173,7 @@ namespace ArchiSteamFarm {
 
 				return result;
 			}
+
 			set {
 				if (!string.IsNullOrEmpty(value) && (PasswordFormat != ArchiCryptoHelper.ECryptoMethod.PlainText)) {
 					value = ArchiCryptoHelper.Encrypt(PasswordFormat, value);
@@ -188,37 +191,37 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty]
 		internal string SteamLogin {
-			get => _SteamLogin;
+			get => BackingSteamLogin;
 
 			set {
 				IsSteamLoginSet = true;
-				_SteamLogin = value;
+				BackingSteamLogin = value;
 			}
 		}
 
 		[JsonProperty]
 		internal string SteamParentalCode {
-			get => _SteamParentalCode;
+			get => BackingSteamParentalCode;
 
 			set {
 				IsSteamParentalCodeSet = true;
-				_SteamParentalCode = value;
+				BackingSteamParentalCode = value;
 			}
 		}
 
 		[JsonProperty]
 		internal string SteamPassword {
-			get => _SteamPassword;
+			get => BackingSteamPassword;
 
 			set {
 				IsSteamPasswordSet = true;
-				_SteamPassword = value;
+				BackingSteamPassword = value;
 			}
 		}
 
-		private string _SteamLogin = DefaultSteamLogin;
-		private string _SteamParentalCode = DefaultSteamParentalCode;
-		private string _SteamPassword = DefaultSteamPassword;
+		private string BackingSteamLogin = DefaultSteamLogin;
+		private string BackingSteamParentalCode = DefaultSteamParentalCode;
+		private string BackingSteamPassword = DefaultSteamPassword;
 		private bool ShouldSerializeSensitiveDetails = true;
 
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamMasterClanID), Required = Required.DisallowNull)]
@@ -245,26 +248,20 @@ namespace ArchiSteamFarm {
 				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(BotBehaviour), BotBehaviour));
 			}
 
-			foreach (EFarmingOrder farmingOrder in FarmingOrders) {
-				if (!Enum.IsDefined(typeof(EFarmingOrder), farmingOrder)) {
-					return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(FarmingOrders), farmingOrder));
-				}
+			foreach (EFarmingOrder farmingOrder in FarmingOrders.Where(farmingOrder => !Enum.IsDefined(typeof(EFarmingOrder), farmingOrder))) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(FarmingOrders), farmingOrder));
 			}
 
 			if (GamesPlayedWhileIdle.Count > ArchiHandler.MaxGamesPlayedConcurrently) {
 				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(GamesPlayedWhileIdle), GamesPlayedWhileIdle.Count + " > " + ArchiHandler.MaxGamesPlayedConcurrently));
 			}
 
-			foreach (Steam.Asset.EType lootableType in LootableTypes) {
-				if (!Enum.IsDefined(typeof(Steam.Asset.EType), lootableType)) {
-					return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(LootableTypes), lootableType));
-				}
+			foreach (Steam.Asset.EType lootableType in LootableTypes.Where(lootableType => !Enum.IsDefined(typeof(Steam.Asset.EType), lootableType))) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(LootableTypes), lootableType));
 			}
 
-			foreach (Steam.Asset.EType matchableType in MatchableTypes) {
-				if (!Enum.IsDefined(typeof(Steam.Asset.EType), matchableType)) {
-					return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(MatchableTypes), matchableType));
-				}
+			foreach (Steam.Asset.EType matchableType in MatchableTypes.Where(matchableType => !Enum.IsDefined(typeof(Steam.Asset.EType), matchableType))) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(MatchableTypes), matchableType));
 			}
 
 			if ((OnlineStatus < EPersonaState.Offline) || (OnlineStatus >= EPersonaState.Max)) {
@@ -283,7 +280,7 @@ namespace ArchiSteamFarm {
 				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(SteamMasterClanID), SteamMasterClanID));
 			}
 
-			if (!string.IsNullOrEmpty(SteamParentalCode) && (SteamParentalCode != "0") && (SteamParentalCode.Length != 4)) {
+			if (!string.IsNullOrEmpty(SteamParentalCode) && (SteamParentalCode != "0") && (SteamParentalCode.Length != SteamParentalCodeLength)) {
 				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(SteamParentalCode), SteamParentalCode));
 			}
 
@@ -424,7 +421,8 @@ namespace ArchiSteamFarm {
 			Forwarding = 1,
 			Distributing = 2,
 			KeepMissingGames = 4,
-			All = Forwarding | Distributing | KeepMissingGames
+			AssumeWalletKeyOnBadActivationCode = 8,
+			All = Forwarding | Distributing | KeepMissingGames | AssumeWalletKeyOnBadActivationCode
 		}
 
 		[Flags]

@@ -264,13 +264,16 @@ StackTrace:
     <value>Εισάγετε το όνομα χρήστη Steam σας: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputSteamParentalCode" xml:space="preserve">
+    <value>Εισάγετε το κωδικό γονικού ελέγχου του Steam σας: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>Εισάγετε τον κωδικό πρόσβασής σας στο Steam: </value>
+    <value>Εισάγετε τον κωδικό πρόσβαση του Steam: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
-    <value>Εισάγετε τη μη τεκμηριωμένη τιμή {0}: </value>
+    <value>Εισάγετε τη μη τεκμηριωμένη τιμή του {0}: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
@@ -280,7 +283,9 @@ StackTrace:
   <data name="IPCReady" xml:space="preserve">
     <value>Ο διακομιστής IPC είναι έτοιμος!</value>
   </data>
-  
+  <data name="IPCStarting" xml:space="preserve">
+    <value>Έναρξη διακομιστή IPC...</value>
+  </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Το bot έχει ήδη σταματήσει!</value>
   </data>
@@ -297,7 +302,7 @@ StackTrace:
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle, {3} will be replaced by total number of games to idle, {4} will be replaced by total number of cards to idle, {5} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
   </data>
   <data name="BotStatusIdlingList" xml:space="preserve">
-    <value>Το bot συλλέγει κάρτες των παιχνιδιών: {0} από ένα σύνολο {1} παιχνιδιών ({2} κάρτες) που απομένουν (υπόλοιπο χρόνου ~{3}).</value>
+    <value>Το bot συλλέγει κάρτες των παιχνιδιών: {0} από ένα σύνολο {1} παιχνιδιών ({2} κάρτες) που απομένουν (υπόλοιπο χρόνου: ~{3}).</value>
     <comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to idle, {2} will be replaced by total number of cards to idle, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
   </data>
   <data name="CheckingFirstBadgePage" xml:space="preserve">
@@ -314,7 +319,7 @@ StackTrace:
     <value>Ολοκληρώθηκε!</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
-    <value>Έχουμε συνολικά {0} παιχνίδια ({1} κάρτες) ακόμα για συλλογή καρτών (απομένουν ~{2})...</value>
+    <value>Έχουμε συνολικά {0} παιχνίδια ({1} κάρτες) ακόμα για συλλογή καρτών (υπόλοιπο χρόνου: ~{2})...</value>
     <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
   </data>
   <data name="IdlingFinished" xml:space="preserve">
@@ -335,7 +340,9 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Η συλλογή καρτών σταμάτησε!</value>
   </data>
-  
+  <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
+    <value>Αγνοήθηκε το αίτημα, γιατί η μόνιμη παύση είναι ενεργοποιημένη!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Δεν έχουμε τίποτα να συλλέξουμε σε αυτόν τον λογαριασμό!</value>
   </data>
@@ -440,7 +447,10 @@ StackTrace:
     <value>Έγινε αποσύνδεση από το Steam: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  
+  <data name="BotLoggedOn" xml:space="preserve">
+    <value>Επιτυχής σύνδεση ως {0}.</value>
+    <comment>{0} will be replaced by steam ID (number)</comment>
+  </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Σύνδεση...</value>
   </data>
@@ -473,7 +483,10 @@ StackTrace:
     <value>Κατέχετε ήδη: {0} | {1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
-  
+  <data name="BotRateLimitExceeded" xml:space="preserve">
+    <value>Ξεπεράστηκε το όριο προσπαθειών, θα ξαναγίνει προσπάθεια μετά από {0}...</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
+  </data>
   <data name="BotReconnecting" xml:space="preserve">
     <value>Επανασύνδεση...</value>
   </data>
@@ -577,7 +590,7 @@ StackTrace:
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
   </data>
   <data name="BotVersion" xml:space="preserve">
-    <value>{0} V{1}</value>
+    <value>{0} Εκδ.{1}</value>
     <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
   </data>
   <data name="BotAccountLocked" xml:space="preserve">
@@ -618,6 +631,10 @@ StackTrace:
   <data name="BotRefreshingPackagesData" xml:space="preserve">
     <value>Ανανέωση δεδομένων πακέτων...</value>
   </data>
+  <data name="WarningDeprecated" xml:space="preserve">
+    <value>Η χρήση του {0} είναι υπό απόσυρση και θα αφαιρεθεί σε μελλοντικές εκδόσεις του προγράμματος. Παρακαλώ χρησιμοποιήστε το {1}.</value>
+    <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
+  </data>
   
   
   
@@ -626,23 +643,47 @@ StackTrace:
   
   
   
+  <data name="ErrorAborted" xml:space="preserve">
+    <value>Ακυρώθηκε!</value>
+  </data>
   
   
   
+  <data name="PluginLoading" xml:space="preserve">
+    <value>Φόρτωση του {0} Εκδ.{1}...</value>
+    <comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
+  </data>
+  <data name="NothingFound" xml:space="preserve">
+    <value>Δεν βρέθηκε τίποτα!</value>
+  </data>
+  
+  <data name="PleaseWait" xml:space="preserve">
+    <value>Παρακαλώ περιμένετε...</value>
+  </data>
+  <data name="EnterCommand" xml:space="preserve">
+    <value>Εισαγωγή εντολής: </value>
+  </data>
+  <data name="Executing" xml:space="preserve">
+    <value>Εκτέλεση...</value>
+  </data>
+  <data name="InteractiveConsoleEnabled" xml:space="preserve">
+    <value>Η διαδραστική κονσόλα είναι ενεργή, πατήστε 'c' για να εισάγετε εντολή.</value>
+  </data>
+  <data name="InteractiveConsoleNotAvailable" xml:space="preserve">
+    <value>Η διαδραστική κονσόλα δεν είναι διαθέσιμη διότι λείπει η ιδιότητα {0} από το αρχείο διαμόρφωσης.</value>
+    <comment>{0} will be replaced by the name of the missing config property (string)</comment>
+  </data>
+  
+  <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
+    <value>Το bot έχει {0} παιχνίδια που απομένουν στην ουρά.</value>
+    <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
+  </data>
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="UpdateCleanup" xml:space="preserve">
+    <value>Εκκαθάριση παλιών αρχείων μετά την ενημέρωση...</value>
+  </data>
   
   
 </root>

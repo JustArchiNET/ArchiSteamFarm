@@ -217,26 +217,26 @@ namespace ArchiSteamFarm {
 			return (fullState, tradableState);
 		}
 
-		internal static Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> GetInventoryState(IReadOnlyCollection<Steam.Asset> inventory) {
+		internal static Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> GetTradableInventoryState(IReadOnlyCollection<Steam.Asset> inventory) {
 			if ((inventory == null) || (inventory.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(inventory));
 
 				return null;
 			}
 
-			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> state = new Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>>();
+			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> tradableState = new Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>>();
 
-			foreach (Steam.Asset item in inventory) {
+			foreach (Steam.Asset item in inventory.Where(item => item.Tradable)) {
 				(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
 
-				if (state.TryGetValue(key, out Dictionary<ulong, uint> set)) {
-					set[item.ClassID] = set.TryGetValue(item.ClassID, out uint amount) ? amount + item.Amount : item.Amount;
+				if (tradableState.TryGetValue(key, out Dictionary<ulong, uint> tradableSet)) {
+					tradableSet[item.ClassID] = tradableSet.TryGetValue(item.ClassID, out uint amount) ? amount + item.Amount : item.Amount;
 				} else {
-					state[key] = new Dictionary<ulong, uint> { { item.ClassID, item.Amount } };
+					tradableState[key] = new Dictionary<ulong, uint> { { item.ClassID, item.Amount } };
 				}
 			}
 
-			return state;
+			return tradableState;
 		}
 
 		internal static HashSet<Steam.Asset> GetTradableItemsFromInventory(IReadOnlyCollection<Steam.Asset> inventory, IDictionary<ulong, uint> classIDs) {
@@ -375,6 +375,28 @@ namespace ArchiSteamFarm {
 			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> sets = GetInventoryState(inventory);
 
 			return sets.ToDictionary(set => set.Key, set => set.Value.Values.OrderBy(amount => amount).ToList());
+		}
+
+		private static Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> GetInventoryState(IReadOnlyCollection<Steam.Asset> inventory) {
+			if ((inventory == null) || (inventory.Count == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(inventory));
+
+				return null;
+			}
+
+			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> state = new Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>>();
+
+			foreach (Steam.Asset item in inventory) {
+				(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
+
+				if (state.TryGetValue(key, out Dictionary<ulong, uint> set)) {
+					set[item.ClassID] = set.TryGetValue(item.ClassID, out uint amount) ? amount + item.Amount : item.Amount;
+				} else {
+					state[key] = new Dictionary<ulong, uint> { { item.ClassID, item.Amount } };
+				}
+			}
+
+			return state;
 		}
 
 		private async Task<bool> ParseActiveTrades() {

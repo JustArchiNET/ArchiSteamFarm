@@ -127,8 +127,9 @@ namespace ArchiSteamFarm.Collections {
 			}
 		}
 
+		[SuppressMessage("ReSharper", "AnnotationConflictInHierarchy")]
 		[SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
-		void ICollection<T>.Add(T item) => Add(item);
+		void ICollection<T>.Add([NotNull] T item) => Add(item);
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 

@@ -27,7 +27,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Resources;
-using System.Text;
 using System.Threading.Tasks;
 using ArchiSteamFarm.IPC;
 using ArchiSteamFarm.Localization;
@@ -129,12 +128,10 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task InitASF(IReadOnlyCollection<string> args) {
-			Console.OutputEncoding = Encoding.Unicode;
+			OS.CoreInit();
 
-			string programIdentifier = SharedInfo.PublicIdentifier + " V" + SharedInfo.Version + " (" + SharedInfo.BuildInfo.Variant + "/" + SharedInfo.ModuleVersion + " | " + OS.Variant + ")";
-
-			Console.Title = programIdentifier;
-			ASF.ArchiLogger.LogGenericInfo(programIdentifier);
+			Console.Title = SharedInfo.ProgramIdentifier;
+			ASF.ArchiLogger.LogGenericInfo(SharedInfo.ProgramIdentifier);
 
 			await InitGlobalConfigAndLanguage().ConfigureAwait(false);
 
@@ -450,6 +447,16 @@ namespace ArchiSteamFarm {
 				ASF.ArchiLogger.LogNullError(nameof(args));
 
 				return;
+			}
+
+			try {
+				string envPath = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariablePath);
+
+				if (!string.IsNullOrEmpty(envPath)) {
+					HandlePathArgument(envPath);
+				}
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
 			}
 
 			bool pathNext = false;

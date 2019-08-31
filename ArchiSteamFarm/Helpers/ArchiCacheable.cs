@@ -42,7 +42,7 @@ namespace ArchiSteamFarm.Helpers {
 		private T InitializedValue;
 		private Timer MaintenanceTimer;
 
-		internal ArchiCacheable([NotNull] Func<Task<(bool Success, T Result)>> resolveFunction, TimeSpan? cacheLifetime = null) {
+		public ArchiCacheable([NotNull] Func<Task<(bool Success, T Result)>> resolveFunction, TimeSpan? cacheLifetime = null) {
 			ResolveFunction = resolveFunction ?? throw new ArgumentNullException(nameof(resolveFunction));
 			CacheLifetime = cacheLifetime ?? Timeout.InfiniteTimeSpan;
 		}

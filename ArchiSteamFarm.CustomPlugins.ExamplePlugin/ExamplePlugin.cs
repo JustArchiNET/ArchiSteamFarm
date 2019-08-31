@@ -35,6 +35,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 	// Your plugin class should inherit the plugin interfaces it wants to handle
 	// If you do not want to handle a particular action (e.g. OnBotMessage that is offered in IBotMessage), it's the best idea to not inherit it at all
 	// This will keep your code compact, efficient and less dependent. You can always add additional interfaces when you'll need them, this example project will inherit quite a bit of them to show you potential usage
+	// ReSharper disable once UnusedMember.Global - this is example plugin class that isn't used in our main code
 	internal sealed class ExamplePlugin : IASF, IBot, IBotCommand, IBotConnection, IBotFriendRequest, IBotMessage, IBotModules, IBotTradeOffer {
 		// This is used for identification purposes, typically you want to use a friendly name of your plugin here, such as the name of your main class
 		// Please note that this property can have direct dependencies only on structures that were initialized by the constructor, as it's possible to be called before OnLoaded() takes place
@@ -153,8 +154,8 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 		// This is the earliest method that will be called, right after loading the plugin, long before any bot initialization takes place
 		// It's a good place to initialize all potential (non-bot-specific) structures that you will need across lifetime of your plugin, such as global timers, concurrent dictionaries and alike
 		// If you do not have any global structures to initialize, you can leave this function empty
-		// At this point you can access core ASF's functionality, such as logging or a web browser
-		// Once all plugins execute their OnLoaded() methods, OnASFInit() will be called next
+		// At this point you can access core ASF's functionality, such as logging, but more advanced structures (like ASF's WebBrowser) will be available in OnASFInit(), which itself takes place after every plugin gets OnLoaded()
+		// Typically you should use this function only for preparing core structures of your plugin, and optionally also sending a message to the user (e.g. support link, welcome message or similar), ASF-specific things should usually happen in OnASFInit()
 		public void OnLoaded() {
 			ASF.ArchiLogger.LogGenericInfo("Hey! Thanks for checking if our example plugin works fine, this is a confirmation that indeed " + nameof(OnLoaded) + "() method was called!");
 			ASF.ArchiLogger.LogGenericInfo("Good luck in whatever you're doing!");

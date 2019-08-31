@@ -18,7 +18,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(OS)' == 'Windows_NT' OR '$(ASFNetFramework)' != ''">
-    <TargetFrameworks>netcoreapp2.2;net472</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.2;net48</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(OS)' != 'Windows_NT' AND '$(ASFNetFramework)' == ''">
@@ -33,9 +33,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="3.0.0">
+    <PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="4.0.0">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="SteamKit2" Version="*" />
     <PackageReference Include="System.Composition.AttributedModel" Version="*" />
   </ItemGroup>
 

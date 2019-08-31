@@ -37,36 +37,14 @@ using SteamKit2;
 
 namespace ArchiSteamFarm.Plugins {
 	internal static class PluginsCore {
+		internal static bool HasActivePluginsLoaded => ActivePlugins?.Count > 0;
+
 		[ImportMany]
 		private static ImmutableHashSet<IPlugin> ActivePlugins { get; set; }
 
-		internal static bool BotUsesNewChat(Bot bot) {
-			if (bot == null) {
-				ASF.ArchiLogger.LogNullError(nameof(bot));
-
-				return false;
-			}
-
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
-				return true;
-			}
-
-			foreach (IBotHackNewChat plugin in ActivePlugins.OfType<IBotHackNewChat>()) {
-				try {
-					if (!plugin.BotUsesNewChat(bot)) {
-						return false;
-					}
-				} catch (Exception e) {
-					ASF.ArchiLogger.LogGenericException(e);
-				}
-			}
-
-			return true;
-		}
-
 		[ItemNotNull]
 		internal static async Task<StringComparer> GetBotsComparer() {
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return StringComparer.Ordinal;
 			}
 
@@ -86,7 +64,7 @@ namespace ArchiSteamFarm.Plugins {
 		}
 
 		internal static bool InitPlugins() {
-			if ((ActivePlugins != null) && (ActivePlugins.Count > 0)) {
+			if (HasActivePluginsLoaded) {
 				return false;
 			}
 
@@ -147,6 +125,8 @@ namespace ArchiSteamFarm.Plugins {
 			ActivePlugins = activePlugins.ToImmutableHashSet();
 			ASF.ArchiLogger.LogGenericInfo(Strings.PluginsWarning);
 
+			Console.Title = SharedInfo.ProgramIdentifier;
+
 			return invalidPlugins.Count == 0;
 		}
 
@@ -181,7 +161,7 @@ namespace ArchiSteamFarm.Plugins {
 		}
 
 		internal static async Task OnASFInitModules(IReadOnlyDictionary<string, JToken> additionalConfigProperties = null) {
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return;
 			}
 
@@ -200,7 +180,7 @@ namespace ArchiSteamFarm.Plugins {
 				return null;
 			}
 
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return null;
 			}
 
@@ -224,7 +204,7 @@ namespace ArchiSteamFarm.Plugins {
 				return;
 			}
 
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return;
 			}
 
@@ -242,7 +222,7 @@ namespace ArchiSteamFarm.Plugins {
 				return;
 			}
 
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return;
 			}
 
@@ -260,7 +240,7 @@ namespace ArchiSteamFarm.Plugins {
 				return false;
 			}
 
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return false;
 			}
 
@@ -284,7 +264,7 @@ namespace ArchiSteamFarm.Plugins {
 				return;
 			}
 
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return;
 			}
 
@@ -302,7 +282,7 @@ namespace ArchiSteamFarm.Plugins {
 				return;
 			}
 
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return;
 			}
 
@@ -320,7 +300,7 @@ namespace ArchiSteamFarm.Plugins {
 				return;
 			}
 
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return;
 			}
 
@@ -339,7 +319,7 @@ namespace ArchiSteamFarm.Plugins {
 				return null;
 			}
 
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return null;
 			}
 
@@ -363,7 +343,7 @@ namespace ArchiSteamFarm.Plugins {
 				return;
 			}
 
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return;
 			}
 
@@ -381,7 +361,7 @@ namespace ArchiSteamFarm.Plugins {
 				return null;
 			}
 
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return null;
 			}
 
@@ -405,7 +385,7 @@ namespace ArchiSteamFarm.Plugins {
 				return false;
 			}
 
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return false;
 			}
 
@@ -429,7 +409,7 @@ namespace ArchiSteamFarm.Plugins {
 				return;
 			}
 
-			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+			if (!HasActivePluginsLoaded) {
 				return;
 			}
 

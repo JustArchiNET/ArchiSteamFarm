@@ -728,5 +728,9 @@ StackTrace:
     <value>Venter op til {0} for at sikre at vi er klar til at begynde at idle...</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
   </data>
+  <data name="UpdateCleanup" xml:space="preserve">
+    <value>Rydder op i de gamle filer efter opdateringen...</value>
+  </data>
+  
   
 </root>

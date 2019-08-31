@@ -731,4 +731,10 @@ Yığın izleme:
   <data name="UpdateCleanup" xml:space="preserve">
     <value>Güncellemeden sonra eski dosyalar temizleniyor...</value>
   </data>
+  <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
+    <value>Steam aile kodu oluşturuluyor. Bu işlem uzun süreceğinden, config dosyasına eklemeniz daha iyi olabilir...</value>
+  </data>
+  <data name="IPCConfigChanged" xml:space="preserve">
+    <value>IPC yapılandırması değiştirildi!</value>
+  </data>
 </root>

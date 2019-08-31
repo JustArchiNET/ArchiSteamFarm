@@ -63,20 +63,21 @@ fi
 
 if [[ "$ASF_UI" -eq 1 ]]; then
 	if [[ -f "ASF-ui/package.json" ]] && hash npm 2>/dev/null; then
-		echo "Building ASF UI..."
+		echo "Building ASF-ui..."
 
 		# ASF-ui doesn't clean itself after old build
 		rm -rf "ASF-ui/dist"
 
-		cd ASF-ui
-		npm ci
-		npm run-script deploy
-		cd ..
+		(
+			cd ASF-ui
+			npm ci
+			npm run-script deploy
+		)
 
 		# ASF's output www folder needs cleaning as well
 		rm -rf "${MAIN_PROJECT}/${OUT}/www"
 	else
-		echo "WARNING: ASF UI dependencies are missing, skipping build of ASF UI..."
+		echo "WARNING: ASF-ui dependencies are missing, skipping build of ASF-ui..."
 	fi
 fi
 
@@ -102,4 +103,4 @@ fi
 dotnet publish "$MAIN_PROJECT" "${DOTNET_FLAGS[@]}"
 
 echo
-echo "Compilation finished successfully! :)"
+echo "SUCCESS: Compilation finished successfully! :)"

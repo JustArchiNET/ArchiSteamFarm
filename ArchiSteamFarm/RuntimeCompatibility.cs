@@ -119,7 +119,7 @@ namespace ArchiSteamFarm {
 		}
 
 #if NETFRAMEWORK
-		public static void Deconstruct<T1, T2>(this KeyValuePair<T1, T2> kv, out T1 key, out T2 value) {
+		public static void Deconstruct<TKey, TValue>(this KeyValuePair<TKey, TValue> kv, out TKey key, out TValue value) {
 			key = kv.Key;
 			value = kv.Value;
 		}
@@ -130,7 +130,7 @@ namespace ArchiSteamFarm {
 		[NotNull]
 		public static string[] Split([NotNull] this string text, char separator, StringSplitOptions options = StringSplitOptions.None) => text.Split(new[] { separator }, options);
 
-		public static void TrimExcess<T1, T2>(this Dictionary<T1, T2> _) { } // no-op
+		public static void TrimExcess<TKey, TValue>(this Dictionary<TKey, TValue> _) { } // no-op
 #endif
 	}
 }

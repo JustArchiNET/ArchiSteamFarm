@@ -731,4 +731,10 @@
   <data name="UpdateCleanup" xml:space="preserve">
     <value>正在清理更新后过时的文件……</value>
   </data>
+  <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
+    <value>正在生成 Steam 家庭监护代码，这可能需要一段时间，建议您将此代码写到配置文件中……</value>
+  </data>
+  <data name="IPCConfigChanged" xml:space="preserve">
+    <value>IPC 配置文件已被更改！</value>
+  </data>
 </root>

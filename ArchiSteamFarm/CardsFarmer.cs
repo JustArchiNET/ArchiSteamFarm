@@ -47,7 +47,7 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public static readonly ImmutableHashSet<uint> SalesBlacklist = ImmutableHashSet.Create<uint>(267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900, 762800, 876740, 991980);
 
-		private static readonly ConcurrentDictionary<uint, DateTime> IgnoredAppIDs = new ConcurrentDictionary<uint, DateTime>(); // Reserved for unreleased games
+		private static readonly ConcurrentDictionary<uint, DateTime> GloballyIgnoredAppIDs = new ConcurrentDictionary<uint, DateTime>(); // Reserved for unreleased games
 
 		// Games that were confirmed to show false status on general badges page
 		private static readonly ImmutableHashSet<uint> UntrustedAppIDs = ImmutableHashSet.Create<uint>(440, 570, 730);
@@ -56,7 +56,7 @@ namespace ArchiSteamFarm {
 		internal readonly ConcurrentHashSet<Game> CurrentGamesFarming = new ConcurrentHashSet<Game>();
 
 		[JsonProperty]
-		internal readonly ConcurrentSortedHashSet<Game> GamesToFarm = new ConcurrentSortedHashSet<Game>();
+		internal readonly ConcurrentList<Game> GamesToFarm = new ConcurrentList<Game>();
 
 		[JsonProperty]
 		internal TimeSpan TimeRemaining =>
@@ -71,6 +71,14 @@ namespace ArchiSteamFarm {
 		private readonly SemaphoreSlim FarmingInitializationSemaphore = new SemaphoreSlim(1, 1);
 		private readonly SemaphoreSlim FarmingResetSemaphore = new SemaphoreSlim(0, 1);
 		private readonly Timer IdleFarmingTimer;
+		private readonly ConcurrentDictionary<uint, DateTime> LocallyIgnoredAppIDs = new ConcurrentDictionary<uint, DateTime>();
+
+		private IEnumerable<ConcurrentDictionary<uint, DateTime>> SourcesOfIgnoredAppIDs {
+			get {
+				yield return GloballyIgnoredAppIDs;
+				yield return LocallyIgnoredAppIDs;
+			}
+		}
 
 		internal bool NowFarming { get; private set; }
 
@@ -100,7 +108,6 @@ namespace ArchiSteamFarm {
 			EventSemaphore.Dispose();
 			FarmingInitializationSemaphore.Dispose();
 			FarmingResetSemaphore.Dispose();
-			GamesToFarm.Dispose();
 
 			// Those are objects that might be null and the check should be in-place
 			IdleFarmingTimer?.Dispose();
@@ -115,6 +122,9 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task OnNewGameAdded() {
+			// This update has a potential to modify local ignores, therefore we need to purge our cache
+			LocallyIgnoredAppIDs.Clear();
+
 			ShouldResumeFarming = true;
 
 			// We aim to have a maximum of 2 tasks, one already parsing, and one waiting in the queue
@@ -405,14 +415,26 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				if (IgnoredAppIDs.TryGetValue(appID, out DateTime ignoredUntil)) {
-					if (ignoredUntil < DateTime.UtcNow) {
-						// This game served its time as being ignored
-						IgnoredAppIDs.TryRemove(appID, out _);
-					} else {
-						// This game is still ignored
+				bool ignored = false;
+
+				foreach (ConcurrentDictionary<uint, DateTime> sourceOfIgnoredAppIDs in SourcesOfIgnoredAppIDs) {
+					if (!sourceOfIgnoredAppIDs.TryGetValue(appID, out DateTime ignoredUntil)) {
 						continue;
 					}
+
+					if (ignoredUntil > DateTime.UtcNow) {
+						// This game is still ignored
+						ignored = true;
+
+						break;
+					}
+
+					// This game served its time as being ignored
+					sourceOfIgnoredAppIDs.TryRemove(appID, out _);
+				}
+
+				if (ignored) {
+					continue;
 				}
 
 				// Cards
@@ -1020,10 +1042,12 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			(uint playableAppID, DateTime ignoredUntil) = await Bot.GetAppDataForIdling(game.AppID, game.HoursPlayed).ConfigureAwait(false);
+			(uint playableAppID, DateTime ignoredUntil, bool ignoredGlobally) = await Bot.GetAppDataForIdling(game.AppID, game.HoursPlayed).ConfigureAwait(false);
 
 			if (playableAppID == 0) {
-				IgnoredAppIDs[game.AppID] = ignoredUntil < DateTime.MaxValue ? ignoredUntil : DateTime.UtcNow.AddHours(HoursToIgnore);
+				ConcurrentDictionary<uint, DateTime> ignoredAppIDs = ignoredGlobally ? GloballyIgnoredAppIDs : LocallyIgnoredAppIDs;
+
+				ignoredAppIDs[game.AppID] = (ignoredUntil > DateTime.MinValue) && (ignoredUntil < DateTime.MaxValue) ? ignoredUntil : DateTime.UtcNow.AddHours(HoursToIgnore);
 				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.IdlingGameNotPossible, game.AppID, game.GameName));
 
 				return false;
@@ -1058,34 +1082,34 @@ namespace ArchiSteamFarm {
 
 		private async Task SortGamesToFarm() {
 			// Put priority idling appIDs on top
-			IOrderedEnumerable<Game> gamesToFarm = GamesToFarm.OrderByDescending(game => Bot.IsPriorityIdling(game.AppID));
+			IOrderedEnumerable<Game> orderedGamesToFarm = GamesToFarm.OrderByDescending(game => Bot.IsPriorityIdling(game.AppID));
 
 			foreach (BotConfig.EFarmingOrder farmingOrder in Bot.BotConfig.FarmingOrders) {
 				switch (farmingOrder) {
 					case BotConfig.EFarmingOrder.Unordered:
 						break;
 					case BotConfig.EFarmingOrder.AppIDsAscending:
-						gamesToFarm = gamesToFarm.ThenBy(game => game.AppID);
+						orderedGamesToFarm = orderedGamesToFarm.ThenBy(game => game.AppID);
 
 						break;
 					case BotConfig.EFarmingOrder.AppIDsDescending:
-						gamesToFarm = gamesToFarm.ThenByDescending(game => game.AppID);
+						orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(game => game.AppID);
 
 						break;
 					case BotConfig.EFarmingOrder.BadgeLevelsAscending:
-						gamesToFarm = gamesToFarm.ThenBy(game => game.BadgeLevel);
+						orderedGamesToFarm = orderedGamesToFarm.ThenBy(game => game.BadgeLevel);
 
 						break;
 					case BotConfig.EFarmingOrder.BadgeLevelsDescending:
-						gamesToFarm = gamesToFarm.ThenByDescending(game => game.BadgeLevel);
+						orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(game => game.BadgeLevel);
 
 						break;
 					case BotConfig.EFarmingOrder.CardDropsAscending:
-						gamesToFarm = gamesToFarm.ThenBy(game => game.CardsRemaining);
+						orderedGamesToFarm = orderedGamesToFarm.ThenBy(game => game.CardsRemaining);
 
 						break;
 					case BotConfig.EFarmingOrder.CardDropsDescending:
-						gamesToFarm = gamesToFarm.ThenByDescending(game => game.CardsRemaining);
+						orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(game => game.CardsRemaining);
 
 						break;
 					case BotConfig.EFarmingOrder.MarketableAscending:
@@ -1095,11 +1119,11 @@ namespace ArchiSteamFarm {
 						if ((marketableAppIDs != null) && (marketableAppIDs.Count > 0)) {
 							switch (farmingOrder) {
 								case BotConfig.EFarmingOrder.MarketableAscending:
-									gamesToFarm = gamesToFarm.ThenBy(game => marketableAppIDs.Contains(game.AppID));
+									orderedGamesToFarm = orderedGamesToFarm.ThenBy(game => marketableAppIDs.Contains(game.AppID));
 
 									break;
 								case BotConfig.EFarmingOrder.MarketableDescending:
-									gamesToFarm = gamesToFarm.ThenByDescending(game => marketableAppIDs.Contains(game.AppID));
+									orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(game => marketableAppIDs.Contains(game.AppID));
 
 									break;
 								default:
@@ -1111,23 +1135,23 @@ namespace ArchiSteamFarm {
 
 						break;
 					case BotConfig.EFarmingOrder.HoursAscending:
-						gamesToFarm = gamesToFarm.ThenBy(game => game.HoursPlayed);
+						orderedGamesToFarm = orderedGamesToFarm.ThenBy(game => game.HoursPlayed);
 
 						break;
 					case BotConfig.EFarmingOrder.HoursDescending:
-						gamesToFarm = gamesToFarm.ThenByDescending(game => game.HoursPlayed);
+						orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(game => game.HoursPlayed);
 
 						break;
 					case BotConfig.EFarmingOrder.NamesAscending:
-						gamesToFarm = gamesToFarm.ThenBy(game => game.GameName);
+						orderedGamesToFarm = orderedGamesToFarm.ThenBy(game => game.GameName);
 
 						break;
 					case BotConfig.EFarmingOrder.NamesDescending:
-						gamesToFarm = gamesToFarm.ThenByDescending(game => game.GameName);
+						orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(game => game.GameName);
 
 						break;
 					case BotConfig.EFarmingOrder.Random:
-						gamesToFarm = gamesToFarm.ThenBy(game => Utilities.RandomNext());
+						orderedGamesToFarm = orderedGamesToFarm.ThenBy(game => Utilities.RandomNext());
 
 						break;
 					case BotConfig.EFarmingOrder.RedeemDateTimesAscending:
@@ -1136,12 +1160,14 @@ namespace ArchiSteamFarm {
 
 						foreach (Game game in GamesToFarm) {
 							DateTime redeemDate = DateTime.MinValue;
-							HashSet<uint> packageIDs = ASF.GlobalDatabase.GetPackageIDs(game.AppID);
+							HashSet<uint> packageIDs = ASF.GlobalDatabase.GetPackageIDs(game.AppID, Bot.OwnedPackageIDs.Keys);
 
 							if (packageIDs != null) {
 								foreach (uint packageID in packageIDs) {
 									if (!Bot.OwnedPackageIDs.TryGetValue(packageID, out (EPaymentMethod PaymentMethod, DateTime TimeCreated) packageData)) {
-										continue;
+										Bot.ArchiLogger.LogNullError(nameof(packageData));
+
+										return;
 									}
 
 									if (packageData.TimeCreated > redeemDate) {
@@ -1155,11 +1181,11 @@ namespace ArchiSteamFarm {
 
 						switch (farmingOrder) {
 							case BotConfig.EFarmingOrder.RedeemDateTimesAscending:
-								gamesToFarm = gamesToFarm.ThenBy(game => redeemDates[game.AppID]);
+								orderedGamesToFarm = orderedGamesToFarm.ThenBy(game => redeemDates[game.AppID]);
 
 								break;
 							case BotConfig.EFarmingOrder.RedeemDateTimesDescending:
-								gamesToFarm = gamesToFarm.ThenByDescending(game => redeemDates[game.AppID]);
+								orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(game => redeemDates[game.AppID]);
 
 								break;
 							default:
@@ -1176,8 +1202,9 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			// We must call ToList() here as we can't replace items while enumerating
-			GamesToFarm.ReplaceWith(gamesToFarm.ToList());
+			// We must call ToList() here as we can't do in-place replace
+			List<Game> gamesToFarm = orderedGamesToFarm.ToList();
+			GamesToFarm.ReplaceWith(gamesToFarm);
 		}
 
 		internal sealed class Game : IEquatable<Game> {

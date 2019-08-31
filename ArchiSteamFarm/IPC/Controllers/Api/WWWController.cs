@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -71,47 +70,36 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		/// <summary>
-		///     Fetches newest GitHub releases of ASF project.
+		///     Fetches the most recent GitHub release of ASF project.
 		/// </summary>
 		/// <remarks>
 		///     This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW endpoints as they can disappear and change anytime.
 		/// </remarks>
-		[HttpGet("GitHub/Releases")]
-		[ProducesResponseType(typeof(GenericResponse<IReadOnlyCollection<GitHubReleaseResponse>>), (int) HttpStatusCode.OK)]
-		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+		[HttpGet("GitHub/Release")]
+		[ProducesResponseType(typeof(GenericResponse<GitHubReleaseResponse>), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
-		public async Task<ActionResult<GenericResponse>> GitHubReleasesGet([FromQuery] byte count = 10) {
-			if (count == 0) {
-				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(count))));
-			}
+		public async Task<ActionResult<GenericResponse>> GitHubReleaseGet() {
+			GitHub.ReleaseResponse releaseResponse = await GitHub.GetLatestRelease(false).ConfigureAwait(false);
 
-			ImmutableList<GitHub.ReleaseResponse> response = await GitHub.GetReleases(count).ConfigureAwait(false);
-
-			if ((response == null) || (response.Count == 0)) {
-				return StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
-			}
-
-			List<GitHubReleaseResponse> result = response.Select(singleResponse => new GitHubReleaseResponse(singleResponse)).ToList();
-
-			return Ok(new GenericResponse<IReadOnlyCollection<GitHubReleaseResponse>>(result));
+			return releaseResponse != null ? Ok(new GenericResponse<GitHubReleaseResponse>(new GitHubReleaseResponse(releaseResponse))) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
 		}
 
 		/// <summary>
-		///     Fetches specific GitHub release of ASF project.
+		///     Fetches specific GitHub release of ASF project. Use "latest" for latest stable release.
 		/// </summary>
 		/// <remarks>
 		///     This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW endpoints as they can disappear and change anytime.
 		/// </remarks>
-		[HttpGet("GitHub/Releases/{version:required}")]
+		[HttpGet("GitHub/Release/{version:required}")]
 		[ProducesResponseType(typeof(GenericResponse<GitHubReleaseResponse>), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
-		public async Task<ActionResult<GenericResponse>> GitHubReleasesGet(string version) {
+		public async Task<ActionResult<GenericResponse>> GitHubReleaseGet(string version) {
 			if (string.IsNullOrEmpty(version)) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(version))));
 			}
 
-			GitHub.ReleaseResponse releaseResponse = await GitHub.GetRelease(version).ConfigureAwait(false);
+			GitHub.ReleaseResponse releaseResponse = version.Equals("latest", StringComparison.OrdinalIgnoreCase) ? await GitHub.GetLatestRelease().ConfigureAwait(false) : await GitHub.GetRelease(version).ConfigureAwait(false);
 
 			return releaseResponse != null ? Ok(new GenericResponse<GitHubReleaseResponse>(new GitHubReleaseResponse(releaseResponse))) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
 		}

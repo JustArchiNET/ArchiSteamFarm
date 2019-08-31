@@ -728,4 +728,6 @@
   <data name="UpdateCleanup" xml:space="preserve">
     <value>更新後に古いファイルをクリーンアップしています…</value>
   </data>
+  
+  
 </root>

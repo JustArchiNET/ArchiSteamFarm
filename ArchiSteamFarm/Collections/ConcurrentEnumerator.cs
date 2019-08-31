@@ -22,7 +22,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Collections {
@@ -30,22 +29,24 @@ namespace ArchiSteamFarm.Collections {
 		public T Current => Enumerator.Current;
 
 		private readonly IEnumerator<T> Enumerator;
-		private readonly SemaphoreSlim Semaphore;
+		private readonly IDisposable Lock;
 
 		object IEnumerator.Current => Current;
 
-		internal ConcurrentEnumerator([NotNull] IReadOnlyCollection<T> collection, [NotNull] SemaphoreSlim semaphore) {
-			if ((collection == null) || (semaphore == null)) {
-				throw new ArgumentNullException(nameof(collection) + " || " + nameof(semaphore));
+		internal ConcurrentEnumerator([NotNull] IReadOnlyCollection<T> collection, [NotNull] IDisposable @lock) {
+			if ((collection == null) || (@lock == null)) {
+				throw new ArgumentNullException(nameof(collection) + " || " + nameof(@lock));
 			}
 
-			Semaphore = semaphore;
-			semaphore.Wait();
-
+			Lock = @lock;
 			Enumerator = collection.GetEnumerator();
 		}
 
-		public void Dispose() => Semaphore.Release();
+		public void Dispose() {
+			Enumerator.Dispose();
+			Lock.Dispose();
+		}
+
 		public bool MoveNext() => Enumerator.MoveNext();
 		public void Reset() => Enumerator.Reset();
 	}

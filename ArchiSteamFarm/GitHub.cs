@@ -58,19 +58,6 @@ namespace ArchiSteamFarm {
 			return await GetReleaseFromURL(SharedInfo.GithubReleaseURL + "/tags/" + version).ConfigureAwait(false);
 		}
 
-		[ItemCanBeNull]
-		internal static async Task<ImmutableList<ReleaseResponse>> GetReleases(byte count) {
-			if (count == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(count));
-
-				return null;
-			}
-
-			string releaseURL = SharedInfo.GithubReleaseURL + "?per_page=" + count;
-
-			return await GetReleasesFromURL(releaseURL).ConfigureAwait(false);
-		}
-
 		private static MarkdownDocument ExtractChangelogFromBody(string markdownText) {
 			if (string.IsNullOrEmpty(markdownText)) {
 				ASF.ArchiLogger.LogNullError(nameof(markdownText));
@@ -92,7 +79,7 @@ namespace ArchiSteamFarm {
 
 		[ItemCanBeNull]
 		private static async Task<ReleaseResponse> GetReleaseFromURL(string releaseURL) {
-			if (string.IsNullOrEmpty(nameof(releaseURL))) {
+			if (string.IsNullOrEmpty(releaseURL)) {
 				ASF.ArchiLogger.LogNullError(nameof(releaseURL));
 
 				return null;
@@ -105,7 +92,7 @@ namespace ArchiSteamFarm {
 
 		[ItemCanBeNull]
 		private static async Task<ImmutableList<ReleaseResponse>> GetReleasesFromURL(string releaseURL) {
-			if (string.IsNullOrEmpty(nameof(releaseURL))) {
+			if (string.IsNullOrEmpty(releaseURL)) {
 				ASF.ArchiLogger.LogNullError(nameof(releaseURL));
 
 				return null;
@@ -132,8 +119,8 @@ namespace ArchiSteamFarm {
 
 			internal string ChangelogHTML {
 				get {
-					if (_ChangelogHTML != null) {
-						return _ChangelogHTML;
+					if (BackingChangelogHTML != null) {
+						return BackingChangelogHTML;
 					}
 
 					if (Changelog == null) {
@@ -147,15 +134,15 @@ namespace ArchiSteamFarm {
 						renderer.Render(Changelog);
 						writer.Flush();
 
-						return _ChangelogHTML = writer.ToString();
+						return BackingChangelogHTML = writer.ToString();
 					}
 				}
 			}
 
 			internal string ChangelogPlainText {
 				get {
-					if (_ChangelogPlainText != null) {
-						return _ChangelogPlainText;
+					if (BackingChangelogPlainText != null) {
+						return BackingChangelogPlainText;
 					}
 
 					if (Changelog == null) {
@@ -173,7 +160,7 @@ namespace ArchiSteamFarm {
 						renderer.Render(Changelog);
 						writer.Flush();
 
-						return _ChangelogPlainText = writer.ToString();
+						return BackingChangelogPlainText = writer.ToString();
 					}
 				}
 			}
@@ -185,17 +172,17 @@ namespace ArchiSteamFarm {
 
 			private MarkdownDocument Changelog {
 				get {
-					if (_Changelog != null) {
-						return _Changelog;
+					if (BackingChangelog != null) {
+						return BackingChangelog;
 					}
 
-					return _Changelog = ExtractChangelogFromBody(MarkdownBody);
+					return BackingChangelog = ExtractChangelogFromBody(MarkdownBody);
 				}
 			}
 
-			private MarkdownDocument _Changelog;
-			private string _ChangelogHTML;
-			private string _ChangelogPlainText;
+			private MarkdownDocument BackingChangelog;
+			private string BackingChangelogHTML;
+			private string BackingChangelogPlainText;
 
 			[JsonConstructor]
 			private ReleaseResponse() { }

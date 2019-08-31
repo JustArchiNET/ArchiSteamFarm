@@ -19,7 +19,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(OS)' == 'Windows_NT' OR '$(ASFNetFramework)' != ''">
-    <TargetFrameworks>netcoreapp2.2;net472</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.2;net48</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(OS)' != 'Windows_NT' AND '$(ASFNetFramework)' == ''">
@@ -34,12 +34,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="3.0.0">
+    <PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="4.0.0">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.1.1" />
-    <PackageReference Include="MSTest.TestAdapter" Version="1.4.0" />
-    <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.3.0-preview-20190808-03" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.0.0-beta4" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.0.0-beta4" />
   </ItemGroup>
 
   <ItemGroup>
