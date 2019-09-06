@@ -61,7 +61,7 @@
     </PackageReference>
     <PackageReference Include="CryptSharpStandard" Version="1.0.0" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.12" />
-    <PackageReference Include="Humanizer" Version="2.6.2" />
+    <PackageReference Include="Humanizer" Version="2.7.2" />
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.3" />
     <PackageReference Include="Markdig.Signed" Version="0.17.1" />
     <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
