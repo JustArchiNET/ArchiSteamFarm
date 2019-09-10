@@ -615,7 +615,7 @@ namespace ArchiSteamFarm {
 				return ParseTradeResult.EResult.TryAgain;
 			}
 
-			bool accept = IsTradeNeutralOrBetter(inventory, tradeOffer.ItemsToGive, tradeOffer.ItemsToReceive);
+			bool accept = IsTradeNeutralOrBetter(inventory, tradeOffer.ItemsToGive.Select(item => item.CreateShallowCopy()).ToHashSet(), tradeOffer.ItemsToReceive.Select(item => item.CreateShallowCopy()).ToHashSet());
 
 			// We're now sure whether the trade is neutral+ for us or not
 			return accept ? ParseTradeResult.EResult.Accepted : ParseTradeResult.EResult.Rejected;
