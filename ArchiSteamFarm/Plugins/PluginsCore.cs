@@ -197,6 +197,31 @@ namespace ArchiSteamFarm.Plugins {
 			return string.Join(Environment.NewLine, responses.Where(response => !string.IsNullOrEmpty(response)));
 		}
 
+		[ItemCanBeNull]
+		internal static async Task<byte[]> OnBotCustomMachineIDQuery(Bot bot) {
+			if (bot == null) {
+				ASF.ArchiLogger.LogNullError(nameof(bot));
+
+				return null;
+			}
+
+			if (!HasActivePluginsLoaded) {
+				return null;
+			}
+
+			IList<byte[]> responses;
+
+			try {
+				responses = await Utilities.InParallel(ActivePlugins.OfType<IBotCustomMachineID>().Select(plugin => plugin.OnBotCustomMachineIDQuery(bot))).ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+
+				return null;
+			}
+
+			return responses.FirstOrDefault(response => (response != null) && (response.Length > 0));
+		}
+
 		internal static async Task OnBotDestroy(Bot bot) {
 			if (bot == null) {
 				ASF.ArchiLogger.LogNullError(nameof(bot));

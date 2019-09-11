@@ -361,6 +361,51 @@ namespace ArchiSteamFarm {
 			return response.Result == EResult.OK;
 		}
 
+		internal void LogOnWithCustomMachineID(SteamUser.LogOnDetails details, byte[] customMachineID) {
+			if ((details == null) || (customMachineID == null) || (customMachineID.Length == 0)) {
+				ArchiLogger.LogNullError(nameof(details) + " || " + nameof(customMachineID));
+
+				return;
+			}
+
+			// Try to keep the logic below in-sync with SK2
+			ClientMsgProtobuf<CMsgClientLogon> logon = new ClientMsgProtobuf<CMsgClientLogon>(EMsg.ClientLogon) {
+				Body = {
+					obfustucated_private_ip = details.LoginID.GetValueOrDefault(),
+
+					account_name = details.Username,
+					password = details.Password,
+					should_remember_password = details.ShouldRememberPassword,
+
+					protocol_version = MsgClientLogon.CurrentProtocol,
+					client_os_type = (uint) details.ClientOSType,
+					client_language = details.ClientLanguage,
+					cell_id = details.CellID,
+
+					steam2_ticket_request = details.RequestSteam2Ticket,
+
+					client_package_version = 1771,
+					supports_rate_limit_response = true,
+					machine_id = customMachineID,
+
+					auth_code = details.AuthCode,
+					two_factor_code = details.TwoFactorCode,
+
+					login_key = details.LoginKey,
+
+					sha_sentryfile = details.SentryFileHash,
+					eresult_sentryfile = (int) (details.SentryFileHash != null ? EResult.OK : EResult.FileNotFound)
+				},
+
+				ProtoHeader = {
+					client_sessionid = 0,
+					steamid = new SteamID(details.AccountID, details.AccountInstance, Client.Universe, EAccountType.Individual)
+				}
+			};
+
+			Client.Send(logon);
+		}
+
 		internal async Task PlayGames(IEnumerable<uint> gameIDs, string gameName = null) {
 			if (gameIDs == null) {
 				ArchiLogger.LogNullError(nameof(gameIDs));

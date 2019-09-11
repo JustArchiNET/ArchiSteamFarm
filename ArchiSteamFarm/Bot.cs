@@ -2031,7 +2031,13 @@ namespace ArchiSteamFarm {
 				OSType = logOnDetails.ClientOSType;
 			}
 
-			SteamUser.LogOn(logOnDetails);
+			byte[] customMachineID = await PluginsCore.OnBotCustomMachineIDQuery(this).ConfigureAwait(false);
+
+			if ((customMachineID != null) && (customMachineID.Length > 0)) {
+				ArchiHandler.LogOnWithCustomMachineID(logOnDetails, customMachineID);
+			} else {
+				SteamUser.LogOn(logOnDetails);
+			}
 		}
 
 		private async void OnDisconnected(SteamClient.DisconnectedCallback callback) {
