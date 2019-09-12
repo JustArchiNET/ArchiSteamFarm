@@ -143,6 +143,7 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		public readonly string WebProxyUsername = DefaultWebProxyUsername;
 
+		[JsonIgnore]
 		[PublicAPI]
 		public WebProxy WebProxy {
 			get {
