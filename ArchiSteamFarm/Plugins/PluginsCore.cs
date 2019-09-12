@@ -125,6 +125,7 @@ namespace ArchiSteamFarm.Plugins {
 			ActivePlugins = activePlugins.ToImmutableHashSet();
 			ASF.ArchiLogger.LogGenericInfo(Strings.PluginsWarning);
 
+			// Loading plugins changes the program identifier, refresh the console title
 			Console.Title = SharedInfo.ProgramIdentifier;
 
 			return invalidPlugins.Count == 0;
