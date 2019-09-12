@@ -143,7 +143,8 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		public readonly string WebProxyUsername = DefaultWebProxyUsername;
 
-		internal WebProxy WebProxy {
+		[PublicAPI]
+		public WebProxy WebProxy {
 			get {
 				if (BackingWebProxy != null) {
 					return BackingWebProxy;
@@ -163,7 +164,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				BackingWebProxy = new WebProxy {
+				WebProxy proxy = new WebProxy {
 					Address = uri,
 					BypassProxyOnLocal = true
 				};
@@ -179,10 +180,12 @@ namespace ArchiSteamFarm {
 						credentials.Password = WebProxyPassword;
 					}
 
-					BackingWebProxy.Credentials = credentials;
+					proxy.Credentials = credentials;
 				}
 
-				return BackingWebProxy;
+				BackingWebProxy = proxy;
+
+				return proxy;
 			}
 		}
 
