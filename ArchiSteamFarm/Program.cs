@@ -303,7 +303,7 @@ namespace ArchiSteamFarm {
 
 			// If debugging is on, we prepare debug directory prior to running
 			if (Debugging.IsUserDebugging) {
-				if (!Debugging.IsDebugBuild) {
+				if (Debugging.IsDebugConfigured) {
 					ASF.ArchiLogger.LogGenericDebug(globalDatabaseFile + ": " + JsonConvert.SerializeObject(ASF.GlobalDatabase, Formatting.Indented));
 				}
 
