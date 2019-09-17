@@ -29,7 +29,9 @@ namespace ArchiSteamFarm {
 		internal static bool IsDebugBuild => false;
 #endif
 
-		internal static bool IsUserDebugging => IsDebugBuild || ASF.GlobalConfig.Debug;
+		internal static bool IsDebugConfigured => ASF.GlobalConfig.Debug;
+
+		internal static bool IsUserDebugging => IsDebugBuild || IsDebugConfigured;
 
 		internal sealed class DebugListener : IDebugListener {
 			public void WriteLine(string category, string msg) {

@@ -211,7 +211,7 @@ namespace ArchiSteamFarm {
 
 			ASF.InitGlobalConfig(globalConfig);
 
-			if (Debugging.IsUserDebugging) {
+			if (Debugging.IsDebugConfigured) {
 				ASF.ArchiLogger.LogGenericDebug(globalConfigFile + ": " + JsonConvert.SerializeObject(ASF.GlobalConfig, Formatting.Indented));
 			}
 
@@ -303,7 +303,10 @@ namespace ArchiSteamFarm {
 
 			// If debugging is on, we prepare debug directory prior to running
 			if (Debugging.IsUserDebugging) {
-				ASF.ArchiLogger.LogGenericDebug(globalDatabaseFile + ": " + JsonConvert.SerializeObject(ASF.GlobalDatabase, Formatting.Indented));
+				if (!Debugging.IsDebugBuild) {
+					ASF.ArchiLogger.LogGenericDebug(globalDatabaseFile + ": " + JsonConvert.SerializeObject(ASF.GlobalDatabase, Formatting.Indented));
+				}
+
 				Logging.EnableTraceLogging();
 
 				DebugLog.AddListener(new Debugging.DebugListener());

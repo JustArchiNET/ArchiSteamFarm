@@ -1046,7 +1046,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (Debugging.IsUserDebugging) {
+			if (Debugging.IsDebugConfigured) {
 				ASF.ArchiLogger.LogGenericDebug(configFilePath + ": " + JsonConvert.SerializeObject(botConfig, Formatting.Indented));
 			}
 
@@ -1066,7 +1066,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (Debugging.IsUserDebugging) {
+			if (Debugging.IsDebugConfigured) {
 				ASF.ArchiLogger.LogGenericDebug(databaseFilePath + ": " + JsonConvert.SerializeObject(botDatabase, Formatting.Indented));
 			}
 
