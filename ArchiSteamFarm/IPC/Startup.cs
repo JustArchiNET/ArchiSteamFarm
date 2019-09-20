@@ -139,7 +139,6 @@ namespace ArchiSteamFarm.IPC {
 						}
 					);
 
-					c.DescribeAllEnumsAsStrings();
 					c.EnableAnnotations();
 
 					c.SwaggerDoc(
