@@ -175,13 +175,13 @@ namespace ArchiSteamFarm.NLog {
 				}
 
 				FileTarget fileTarget = new FileTarget("File") {
-					ArchiveFileName = Path.Combine(SharedInfo.ArchivalLogsDirectory, SharedInfo.ArchivalLogFile),
+					ArchiveFileName = Path.Combine("${currentdir}", SharedInfo.ArchivalLogsDirectory, SharedInfo.ArchivalLogFile),
 					ArchiveNumbering = ArchiveNumberingMode.Rolling,
 					ArchiveOldFileOnStartup = true,
 					CleanupFileName = false,
 					ConcurrentWrites = false,
 					DeleteOldFileOnStartup = true,
-					FileName = SharedInfo.LogFile,
+					FileName = Path.Combine("${currentdir}", SharedInfo.LogFile),
 					Layout = GeneralLayout,
 					MaxArchiveFiles = 10
 				};
