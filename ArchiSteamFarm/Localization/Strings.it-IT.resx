@@ -715,10 +715,24 @@
     <value>Il bot ha {0} giochi rimanenti nella coda di background.</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
   </data>
-  
-  
-  
-  
-  
-  
+  <data name="ErrorSingleInstanceRequired" xml:space="preserve">
+    <value>ASF è già in esecuzione per questa cartella di lavoro, interrompo!</value>
+  </data>
+  <data name="BotHandledConfirmations" xml:space="preserve">
+    <value>{0} conferme gestite con successo!</value>
+    <comment>{0} will be replaced by number of confirmations</comment>
+  </data>
+  <data name="BotExtraIdlingCooldown" xml:space="preserve">
+    <value>In attesa di {0} prima di poter iniziare a raccogliere le carte...</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+  </data>
+  <data name="UpdateCleanup" xml:space="preserve">
+    <value>Pulizia dei vecchi file dopo l'aggiornamento...</value>
+  </data>
+  <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
+    <value>Genero un parental code per Steam, può volerci un po' di tempo, si consiglia invece di inserirlo direttamente nella configurazione...</value>
+  </data>
+  <data name="IPCConfigChanged" xml:space="preserve">
+    <value>Configurazione IPC modificata!</value>
+  </data>
 </root>

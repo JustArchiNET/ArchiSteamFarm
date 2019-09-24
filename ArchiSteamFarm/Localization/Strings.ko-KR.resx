@@ -731,6 +731,10 @@ StackTrace:
   <data name="UpdateCleanup" xml:space="preserve">
     <value>업데이트 후 예전 파일을 삭제합니다...</value>
   </data>
-  
-  
+  <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
+    <value>Steam 부모 코드를 생성합니다. 시간이 좀 걸릴 수 있으므로 환경설정에 넣어놓는 것을 고려해보십시오.</value>
+  </data>
+  <data name="IPCConfigChanged" xml:space="preserve">
+    <value>IPC 환경설정이 변경되었습니다.</value>
+  </data>
 </root>
