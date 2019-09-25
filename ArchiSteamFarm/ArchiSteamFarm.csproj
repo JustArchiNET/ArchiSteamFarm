@@ -48,7 +48,6 @@
 
   <ItemGroup>
     <LinkerRootDescriptors Include="rootDescriptor.xml" />
-    <TrimmerRootAssembly Include="Humanizer" />
   </ItemGroup>
 
   <ItemGroup>
