@@ -24,7 +24,6 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -2775,7 +2774,7 @@ namespace ArchiSteamFarm {
 			WalletCurrency = callback.Currency;
 		}
 
-		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
 		private async Task RedeemGamesInBackground() {
 			if (!await GamesRedeemerInBackgroundSemaphore.WaitAsync(0).ConfigureAwait(false)) {
 				return;

@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -1623,7 +1622,7 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 
-		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
 		private async Task<(string Response, Dictionary<string, string> OwnedGames)> ResponseOwns(ulong steamID, string query) {
 			if ((steamID == 0) || string.IsNullOrEmpty(query)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(query));
@@ -2142,7 +2141,7 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 
-		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
 		private async Task<string> ResponseRedeem(ulong steamID, string keysText, ERedeemFlags redeemFlags = ERedeemFlags.None) {
 			if ((steamID == 0) || string.IsNullOrEmpty(keysText)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(keysText));

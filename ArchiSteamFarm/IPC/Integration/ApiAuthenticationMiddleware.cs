@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -31,7 +30,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 
 namespace ArchiSteamFarm.IPC.Integration {
-	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+	[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 	internal sealed class ApiAuthenticationMiddleware {
 		internal const string HeadersField = "Authentication";
 

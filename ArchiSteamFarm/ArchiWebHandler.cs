@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -123,7 +122,7 @@ namespace ArchiSteamFarm {
 
 		[ItemCanBeNull]
 		[PublicAPI]
-		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
 		public async Task<HashSet<Steam.Asset>> GetInventory(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, bool? marketable = null, bool? tradable = null, IReadOnlyCollection<uint> wantedRealAppIDs = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> wantedSets = null) {
 			if ((appID == 0) || (contextID == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));

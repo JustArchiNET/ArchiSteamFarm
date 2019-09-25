@@ -30,12 +30,20 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
 
+#if !NETFRAMEWORK
+using Microsoft.Extensions.Hosting;
+#endif
+
 namespace ArchiSteamFarm.IPC {
 	internal static class ArchiKestrel {
 		internal static HistoryTarget HistoryTarget { get; private set; }
 		internal static string WebsiteDirectory { get; private set; } = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.WebsiteDirectory);
 
+#if NETFRAMEWORK
 		private static IWebHost KestrelWebHost;
+#else
+		private static IHost KestrelWebHost;
+#endif
 
 		internal static void OnNewHistoryTarget(HistoryTarget historyTarget = null) {
 			if (HistoryTarget != null) {
@@ -57,7 +65,11 @@ namespace ArchiSteamFarm.IPC {
 			ASF.ArchiLogger.LogGenericInfo(Strings.IPCStarting);
 
 			// The order of dependency injection matters, pay attention to it
-			IWebHostBuilder builder = new WebHostBuilder();
+#if NETFRAMEWORK
+			WebHostBuilder builder = new WebHostBuilder();
+#else
+			HostBuilder builder = new HostBuilder();
+#endif
 
 			string customDirectory = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.WebsiteDirectory);
 
@@ -65,40 +77,55 @@ namespace ArchiSteamFarm.IPC {
 				WebsiteDirectory = customDirectory;
 			}
 
-			// Set default directories
+			// Set default content root
 			builder.UseContentRoot(SharedInfo.HomeDirectory);
-			builder.UseWebRoot(WebsiteDirectory);
-
-			// Check if custom config is available
-			string absoluteConfigDirectory = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.ConfigDirectory);
 
 			// Firstly initialize settings that user is free to override
 			builder.ConfigureLogging(logging => logging.SetMinimumLevel(Debugging.IsUserDebugging ? LogLevel.Trace : LogLevel.Warning));
 
-			// Now conditionally initialize settings that are not possible to override
-			if (File.Exists(Path.Combine(absoluteConfigDirectory, SharedInfo.IPCConfigFile))) {
-				// Set up custom config to be used
-				builder.UseConfiguration(new ConfigurationBuilder().SetBasePath(absoluteConfigDirectory).AddJsonFile(SharedInfo.IPCConfigFile, false, true).Build());
+			// Check if custom config is available
+			string absoluteConfigDirectory = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.ConfigDirectory);
+			bool customConfigExists = File.Exists(Path.Combine(absoluteConfigDirectory, SharedInfo.IPCConfigFile));
 
-				// Use custom config for Kestrel and Logging configuration
-				builder.UseKestrel((builderContext, options) => options.Configure(builderContext.Configuration.GetSection("Kestrel")));
+			if (customConfigExists) {
+				// Use custom config for logging configuration
 				builder.ConfigureLogging((hostingContext, logging) => logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging")));
-			} else {
-				// Use ASF defaults for Kestrel
-				builder.UseKestrel(options => options.ListenLocalhost(1242));
 			}
 
 			// Enable NLog integration for logging
 			builder.UseNLog();
 
-			// Specify Startup class for IPC
-			builder.UseStartup<Startup>();
+			builder.ConfigureWebHostDefaults(
+				webBuilder => {
+					// Set default web root
+					webBuilder.UseWebRoot(WebsiteDirectory);
+
+					// Now conditionally initialize settings that are not possible to override
+					if (customConfigExists) {
+						// Set up custom config to be used
+						webBuilder.UseConfiguration(new ConfigurationBuilder().SetBasePath(absoluteConfigDirectory).AddJsonFile(SharedInfo.IPCConfigFile, false, true).Build());
+
+						// Use custom config for Kestrel configuration
+						webBuilder.UseKestrel((builderContext, options) => options.Configure(builderContext.Configuration.GetSection("Kestrel")));
+					} else {
+						// Use ASF defaults for Kestrel
+						webBuilder.UseKestrel(options => options.ListenLocalhost(1242));
+					}
+
+					// Specify Startup class for IPC
+					webBuilder.UseStartup<Startup>();
+				}
+			);
 
 			// Init history logger for /Api/Log usage
 			Logging.InitHistoryLogger();
 
 			// Start the server
+#if NETFRAMEWORK
 			IWebHost kestrelWebHost = null;
+#else
+			IHost kestrelWebHost = null;
+#endif
 
 			try {
 				kestrelWebHost = builder.Build();

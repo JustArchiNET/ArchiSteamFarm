@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -706,7 +705,7 @@ namespace ArchiSteamFarm {
 			Client.PostCallback(new VanityURLChangedCallback(packetMsg.TargetJobID, response.Body));
 		}
 
-		[SuppressMessage("ReSharper", "MemberCanBeInternal")]
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "MemberCanBeInternal")]
 		public sealed class PurchaseResponseCallback : CallbackMsg {
 			public readonly Dictionary<uint, string> Items;
 

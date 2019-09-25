@@ -6,9 +6,9 @@ RUN echo "node: $(node --version)" && \
     npm ci && \
     npm run-script deploy
 
-FROM mcr.microsoft.com/dotnet/core/sdk:2.2 AS build-dotnet
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS build-dotnet
 ENV CONFIGURATION Release
-ENV NET_CORE_VERSION netcoreapp2.2
+ENV NET_CORE_VERSION netcoreapp3.0
 WORKDIR /app
 COPY --from=build-node /app/dist ASF-ui/dist
 COPY ArchiSteamFarm ArchiSteamFarm
@@ -19,10 +19,10 @@ RUN dotnet --info && \
     if [ -f "ArchiSteamFarm/Localization/Strings.zh-TW.resx" ]; then ln -s "Strings.zh-TW.resx" "ArchiSteamFarm/Localization/Strings.zh-Hant.resx"; fi && \
     dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/source' /nologo && \
     dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/source' /nologo && \
-    dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/publish' /nologo /p:ASFVariant=generic /p:LinkDuringPublish=false && \
+    dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/publish' /nologo /p:ASFVariant=generic /p:PublishTrimmed=false && \
     cp "ArchiSteamFarm/overlay/generic/ArchiSteamFarm-Service.sh" "ArchiSteamFarm/out/publish/ArchiSteamFarm-Service.sh"
 
-FROM mcr.microsoft.com/dotnet/core/runtime:2.2-stretch-slim-arm32v7 AS runtime
+FROM mcr.microsoft.com/dotnet/core/runtime:3.0-buster-slim-arm32v7 AS runtime
 ENV ASPNETCORE_URLS=
 LABEL maintainer="JustArchi <JustArchi@JustArchi.net>"
 EXPOSE 1242

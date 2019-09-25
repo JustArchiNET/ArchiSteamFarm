@@ -18,11 +18,11 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(OS)' == 'Windows_NT' OR '$(ASFNetFramework)' != ''">
-    <TargetFrameworks>netcoreapp2.2;net48</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.0;net48</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(OS)' != 'Windows_NT' AND '$(ASFNetFramework)' == ''">
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
