@@ -13,7 +13,7 @@ environment:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_INSTALL_DIR: tools\dotnet
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-  NET_CORE_VERSION: netcoreapp2.2
+  NET_CORE_VERSION: netcoreapp3.0
   NET_FRAMEWORK_VERSION: net48
   VARIANTS: generic generic-netf linux-arm linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
 matrix:
