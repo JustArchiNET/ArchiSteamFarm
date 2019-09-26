@@ -154,7 +154,7 @@ after_test:
             # TODO: Workaround https://github.com/mono/linker/issues/286 (don't forget to remove it from docker files too)
             dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" --no-restore /nologo "/p:ASFVariant=$variant" "/p:LinkDuringPublish=false"
         } else {
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" -r "$variant" --no-restore /nologo "/p:ASFVariant=$variant"
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" -r "$variant" --no-restore /nologo "/p:ASFVariant=$variant" "/p:LinkDuringPublish=false"
         }
 
         if ($LastExitCode -ne 0) {
