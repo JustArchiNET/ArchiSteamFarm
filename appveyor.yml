@@ -11,7 +11,7 @@ environment:
   CROWDIN_PROJECT_IDENTIFIER: archisteamfarm
   DOTNET_CHANNEL: 2.2
   DOTNET_CLI_TELEMETRY_OPTOUT: true
-  DOTNET_INSTALL_DIR: tools\dotnet
+  DOTNET_INSTALL_DIR: C:\Program Files\dotnet
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   NET_CORE_VERSION: netcoreapp2.2
   NET_FRAMEWORK_VERSION: net48
@@ -40,7 +40,6 @@ install:
         dotnet --info
 
         &([scriptblock]::Create((Invoke-WebRequest 'https://dot.net/v1/dotnet-install.ps1'))) -Channel "$env:DOTNET_CHANNEL" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
-        $env:Path = "$pwd\$env:DOTNET_INSTALL_DIR;$env:Path"
     }
 before_build:
 - pwsh: >-
@@ -49,11 +48,6 @@ before_build:
     $ErrorActionPreference = 'Stop'
 
     $ProgressPreference = 'SilentlyContinue'
-
-
-    if (Test-Path "$env:DOTNET_INSTALL_DIR" -PathType Container) {
-        $env:Path = "$pwd\$env:DOTNET_INSTALL_DIR;$env:Path"
-    }
 
 
     dotnet --info
@@ -79,11 +73,6 @@ build_script:
     $ProgressPreference = 'SilentlyContinue'
 
 
-    if (Test-Path "$env:DOTNET_INSTALL_DIR" -PathType Container) {
-        $env:Path = "$pwd\$env:DOTNET_INSTALL_DIR;$env:Path"
-    }
-
-
     Push-Location ASF-ui
 
 
@@ -106,7 +95,7 @@ build_script:
     Pop-Location
 
 
-    dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -o 'out\source' /nologo
+    dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" /nologo
 
 
     if ($LastExitCode -ne 0) {
@@ -114,7 +103,7 @@ build_script:
     }
 
 
-    dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -o 'out\source' /nologo
+    dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" /nologo
 
 
     if ($LastExitCode -ne 0) {
@@ -129,12 +118,7 @@ test_script:
     $ProgressPreference = 'SilentlyContinue'
 
 
-    if (Test-Path "$env:DOTNET_INSTALL_DIR" -PathType Container) {
-        $env:Path = "$pwd\$env:DOTNET_INSTALL_DIR;$env:Path"
-    }
-
-
-    dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -o 'out\source' /nologo
+    dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" /nologo
 
 
     if ($LastExitCode -ne 0) {
@@ -147,11 +131,6 @@ after_test:
     $ErrorActionPreference = 'Stop'
 
     $ProgressPreference = 'SilentlyContinue'
-
-
-    if (Test-Path "$env:DOTNET_INSTALL_DIR" -PathType Container) {
-        $env:Path = "$pwd\$env:DOTNET_INSTALL_DIR;$env:Path"
-    }
 
 
     $PublishBlock = {
@@ -175,7 +154,7 @@ after_test:
             # TODO: Workaround https://github.com/mono/linker/issues/286 (don't forget to remove it from docker files too)
             dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" --no-restore /nologo "/p:ASFVariant=$variant" "/p:LinkDuringPublish=false"
         } else {
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" -r "$variant" --no-restore /nologo "/p:ASFVariant=$variant"
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" -r "$variant" --no-restore /nologo "/p:ASFVariant=$variant" "/p:LinkDuringPublish=false"
         }
 
         if ($LastExitCode -ne 0) {
@@ -184,19 +163,19 @@ after_test:
 
         # If we include any overlay for this variant, copy it output directory
         if (Test-Path "ArchiSteamFarm\overlay\$variant" -PathType Container) {
-            Copy-Item "ArchiSteamFarm\overlay\$variant\*" "ArchiSteamFarm\out\$variant"
+            Copy-Item "ArchiSteamFarm\overlay\$variant\*" "out\$variant"
         }
 
         # Until https://github.com/dotnet/cli/issues/3267 happens, we'll hack dotnet binary icon on Windows and include .ico file on other platforms
         if ($targetFramework -ne "$env:NET_FRAMEWORK_VERSION") {
-            if (Test-Path "ArchiSteamFarm\out\$variant\ArchiSteamFarm.exe" -PathType Leaf) {
-                tools\rcedit\rcedit-x64.exe "ArchiSteamFarm\out\$variant\ArchiSteamFarm.exe" --set-icon 'resources\ASF.ico'
+            if (Test-Path "out\$variant\ArchiSteamFarm.exe" -PathType Leaf) {
+                tools\rcedit\rcedit-x64.exe "out\$variant\ArchiSteamFarm.exe" --set-icon 'resources\ASF.ico'
 
                 if ($LastExitCode -ne 0) {
                     throw "Last command failed."
                 }
             } else {
-                Copy-Item 'resources\ASF.ico' "ArchiSteamFarm\out\$variant\ArchiSteamFarm.ico"
+                Copy-Item 'resources\ASF.ico' "out\$variant\ArchiSteamFarm.ico"
             }
         }
 
@@ -206,8 +185,8 @@ after_test:
         # Include extra logic for builds marked for release
         if ($env:APPVEYOR_REPO_TAG -eq 'true') {
             # Update link in Changelog.html accordingly
-            if (Test-Path "ArchiSteamFarm\out\$variant\Changelog.html" -PathType Leaf) {
-                (Get-Content "ArchiSteamFarm\out\$variant\Changelog.html").Replace('ArchiSteamFarm/commits/master', "ArchiSteamFarm/releases/tag/$env:APPVEYOR_REPO_TAG_NAME") | Set-Content "ArchiSteamFarm\out\$variant\Changelog.html"
+            if (Test-Path "out\$variant\Changelog.html" -PathType Leaf) {
+                (Get-Content "out\$variant\Changelog.html").Replace('ArchiSteamFarm/commits/master', "ArchiSteamFarm/releases/tag/$env:APPVEYOR_REPO_TAG_NAME") | Set-Content "out\$variant\Changelog.html"
             }
 
             # If this build is going to be deployed further, prefer maximum compression
@@ -222,14 +201,14 @@ after_test:
             }
         }
 
-        7z a -bd -tzip "-mm=$compressionMethod" $compressionArgs "ArchiSteamFarm\out\ASF-$variant.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$variant\*"
+        7z a -bd -tzip "-mm=$compressionMethod" $compressionArgs "out\ASF-$variant.zip" "$env:APPVEYOR_BUILD_FOLDER\out\$variant\*"
 
         if ($LastExitCode -ne 0) {
             throw "Last command failed."
         }
 
         # TODO: Change me to Push-AppveyorArtifact once https://github.com/appveyor/ci/issues/2183 is fixed
-        appveyor PushArtifact "ArchiSteamFarm\out\ASF-$variant.zip" -FileName "ASF-$variant.zip" -DeploymentName "ASF-$variant.zip"
+        appveyor PushArtifact "out\ASF-$variant.zip" -FileName "ASF-$variant.zip" -DeploymentName "ASF-$variant.zip"
     }
 
 
