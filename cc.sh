@@ -100,7 +100,7 @@ if [[ "$TEST" -eq 1 ]]; then
 	dotnet test "$TESTS_PROJECT" "${DOTNET_FLAGS[@]}"
 fi
 
-dotnet publish "$MAIN_PROJECT" "${DOTNET_FLAGS[@]}" -o "$OUT"
+dotnet publish "$MAIN_PROJECT" -o "$OUT" "${DOTNET_FLAGS[@]}"
 
 echo
 echo "SUCCESS: Compilation finished successfully! :)"
