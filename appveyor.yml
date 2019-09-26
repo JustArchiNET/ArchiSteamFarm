@@ -11,7 +11,7 @@ environment:
   CROWDIN_PROJECT_IDENTIFIER: archisteamfarm
   DOTNET_CHANNEL: 2.2
   DOTNET_CLI_TELEMETRY_OPTOUT: true
-  DOTNET_INSTALL_DIR: tools\dotnet
+  DOTNET_INSTALL_DIR: C:\Program Files\dotnet
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   NET_CORE_VERSION: netcoreapp2.2
   NET_FRAMEWORK_VERSION: net48
@@ -40,7 +40,6 @@ install:
         dotnet --info
 
         &([scriptblock]::Create((Invoke-WebRequest 'https://dot.net/v1/dotnet-install.ps1'))) -Channel "$env:DOTNET_CHANNEL" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
-        $env:Path = "$pwd\$env:DOTNET_INSTALL_DIR;$env:Path"
     }
 before_build:
 - pwsh: >-
@@ -49,11 +48,6 @@ before_build:
     $ErrorActionPreference = 'Stop'
 
     $ProgressPreference = 'SilentlyContinue'
-
-
-    if (Test-Path "$env:DOTNET_INSTALL_DIR" -PathType Container) {
-        $env:Path = "$pwd\$env:DOTNET_INSTALL_DIR;$env:Path"
-    }
 
 
     dotnet --info
@@ -77,11 +71,6 @@ build_script:
     $ErrorActionPreference = 'Stop'
 
     $ProgressPreference = 'SilentlyContinue'
-
-
-    if (Test-Path "$env:DOTNET_INSTALL_DIR" -PathType Container) {
-        $env:Path = "$pwd\$env:DOTNET_INSTALL_DIR;$env:Path"
-    }
 
 
     Push-Location ASF-ui
@@ -129,11 +118,6 @@ test_script:
     $ProgressPreference = 'SilentlyContinue'
 
 
-    if (Test-Path "$env:DOTNET_INSTALL_DIR" -PathType Container) {
-        $env:Path = "$pwd\$env:DOTNET_INSTALL_DIR;$env:Path"
-    }
-
-
     dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -o 'out\source' /nologo
 
 
@@ -147,11 +131,6 @@ after_test:
     $ErrorActionPreference = 'Stop'
 
     $ProgressPreference = 'SilentlyContinue'
-
-
-    if (Test-Path "$env:DOTNET_INSTALL_DIR" -PathType Container) {
-        $env:Path = "$pwd\$env:DOTNET_INSTALL_DIR;$env:Path"
-    }
 
 
     $PublishBlock = {
