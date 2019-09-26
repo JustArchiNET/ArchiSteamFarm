@@ -48,9 +48,9 @@ script:
         set -eu # We no longer need +eu on OSX
     fi
 
-    dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/source' /nologo
-    dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/source' /nologo
-    dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/source' /nologo
+    dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" /nologo
+    dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "$CONFIGURATION" -f "$NET_CORE_VERSION" /nologo
+    dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -f "$NET_CORE_VERSION" /nologo
 
     publish() {
         if [ "$1" = 'generic' ]; then
@@ -62,7 +62,7 @@ script:
 
         # If we include any overlay for this variant, copy it to output directory
         if [ -d "ArchiSteamFarm/overlay/${1}" ]; then
-            cp "ArchiSteamFarm/overlay/${1}/"* "ArchiSteamFarm/out/${1}"
+            cp "ArchiSteamFarm/overlay/${1}/"* "out/${1}"
         fi
     }
 
@@ -81,9 +81,9 @@ matrix:
     # We're building ASF with dotnet on latest versions of Linux and OS X
     # Sadly, travis is still missing support for selecting latest images: https://github.com/travis-ci/travis-ci/issues/8922
     - os: linux
-      # Ref: https://docs.travis-ci.com/user/reference/xenial
-      dist: xenial
+      # Ref: https://docs.travis-ci.com/user/reference/bionic
+      dist: bionic
     - os: osx
       # Ref: https://docs.travis-ci.com/user/reference/osx
-      dotnet: 2.2.300 # For OSX, we need absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
-      osx_image: xcode10.2
+      dotnet: 2.2.402 # For OSX, we need absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
+      osx_image: xcode11
