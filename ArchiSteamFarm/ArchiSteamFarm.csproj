@@ -14,6 +14,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <LangVersion>latest</LangVersion>
     <NoWarn>1591</NoWarn>
+    <OpenApiGenerateDocuments>false</OpenApiGenerateDocuments>
     <OutputType>Exe</OutputType>
     <PackageIconUrl>https://github.com/JustArchiNET/ArchiSteamFarm/raw/master/resources/ASF.ico</PackageIconUrl>
     <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
