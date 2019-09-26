@@ -6,7 +6,6 @@
     <Authors>JustArchi</Authors>
     <Company>JustArchi</Company>
     <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
-    <CrossGenDuringPublish>false</CrossGenDuringPublish>
     <Copyright>Copyright © ArchiSteamFarm 2015-2019</Copyright>
     <DefaultItemExcludes>$(DefaultItemExcludes);config/**;debug/**;out/**;overlay/**</DefaultItemExcludes>
     <Description>ASF is an application that allows you to farm steam cards using multiple steam accounts simultaneously.</Description>
