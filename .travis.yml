@@ -69,7 +69,7 @@ script:
     dotnet restore ArchiSteamFarm
 
     for variant in $VARIANTS; do
-        publish "$variant"
+        publish "$variant" &
     done
 
     wait
