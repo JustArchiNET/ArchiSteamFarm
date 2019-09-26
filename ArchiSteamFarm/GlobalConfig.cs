@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net;
 using System.Threading;
@@ -34,7 +33,7 @@ using Newtonsoft.Json.Linq;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
-	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+	[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	public sealed class GlobalConfig {
 		internal const byte DefaultConnectionTimeout = 90;
 		internal const byte DefaultLoginLimiterDelay = 10;

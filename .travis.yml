@@ -10,7 +10,7 @@ git:
 group: travis_latest
 
 # ASF is based on .NET Core platform, we're not building with Mono
-dotnet: 2.2
+dotnet: 3.0
 mono: none
 
 env:
@@ -18,7 +18,7 @@ env:
     - CONFIGURATION: Release
     - DOTNET_CLI_TELEMETRY_OPTOUT: 1
     - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-    - NET_CORE_VERSION: netcoreapp2.2
+    - NET_CORE_VERSION: netcoreapp3.0
     - VARIANTS="generic linux-arm linux-x64 osx-x64 win-x64" # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
 before_script:
   - |
@@ -48,21 +48,21 @@ script:
         set -eu # We no longer need +eu on OSX
     fi
 
-    dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/source' /nologo
-    dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/source' /nologo
-    dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out/source' /nologo
+    dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" /nologo
+    dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "$CONFIGURATION" -f "$NET_CORE_VERSION" /nologo
+    dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -f "$NET_CORE_VERSION" /nologo
 
     publish() {
         if [ "$1" = 'generic' ]; then
             # TODO: Workaround https://github.com/mono/linker/issues/286 (don't forget to remove it from docker files too)
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" --no-restore /nologo "/p:ASFVariant=$1" "/p:LinkDuringPublish=false"
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" --no-restore /nologo "/p:ASFVariant=$1" "/p:PublishTrimmed=false" "/p:UseAppHost=false"
         else
             dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" -r "$1" --no-restore /nologo "/p:ASFVariant=$1"
         fi
 
         # If we include any overlay for this variant, copy it to output directory
         if [ -d "ArchiSteamFarm/overlay/${1}" ]; then
-            cp "ArchiSteamFarm/overlay/${1}/"* "ArchiSteamFarm/out/${1}"
+            cp "ArchiSteamFarm/overlay/${1}/"* "out/${1}"
         fi
     }
 
@@ -75,15 +75,18 @@ script:
     wait
     set +u # This is needed to continue Travis build
 matrix:
+  # TODO: Remove failure allow once linux works with 3.0
+  allow_failures:
+    - os: linux
   # We can use fast finish, as we don't need to wait for allow_failures builds to mark build as success
   fast_finish: true
   include:
     # We're building ASF with dotnet on latest versions of Linux and OS X
     # Sadly, travis is still missing support for selecting latest images: https://github.com/travis-ci/travis-ci/issues/8922
     - os: linux
-      # Ref: https://docs.travis-ci.com/user/reference/xenial
-      dist: xenial
+      # Ref: https://docs.travis-ci.com/user/reference/bionic
+      dist: bionic
     - os: osx
       # Ref: https://docs.travis-ci.com/user/reference/osx
-      dotnet: 2.2.402 # For OSX, we need absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
+      dotnet: 3.0.100 # For OSX, we need absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
       osx_image: xcode11

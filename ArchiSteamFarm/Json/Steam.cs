@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using ArchiSteamFarm.Localization;
 using HtmlAgilityPack;
@@ -214,7 +213,7 @@ namespace ArchiSteamFarm.Json {
 			}
 		}
 
-		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		public class BooleanResponse {
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
 			public readonly bool Success;
@@ -223,7 +222,7 @@ namespace ArchiSteamFarm.Json {
 			protected BooleanResponse() { }
 		}
 
-		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		public sealed class ConfirmationDetails : BooleanResponse {
 			internal MobileAuthenticator.Confirmation Confirmation { get; set; }
 			internal ulong TradeOfferID { get; private set; }
@@ -317,7 +316,7 @@ namespace ArchiSteamFarm.Json {
 			}
 		}
 
-		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		public class EResultResponse {
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
 			public readonly EResult Result;
@@ -326,7 +325,7 @@ namespace ArchiSteamFarm.Json {
 			protected EResultResponse() { }
 		}
 
-		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		public class NumberResponse {
 			[PublicAPI]
 			public bool Success { get; private set; }
@@ -416,7 +415,7 @@ namespace ArchiSteamFarm.Json {
 			}
 		}
 
-		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class InventoryResponse : NumberResponse {
 			[JsonProperty(PropertyName = "assets", Required = Required.DisallowNull)]
 			internal readonly ImmutableHashSet<Asset> Assets;
@@ -669,7 +668,7 @@ namespace ArchiSteamFarm.Json {
 			}
 		}
 
-		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class NewDiscoveryQueueResponse {
 			[JsonProperty(PropertyName = "queue", Required = Required.Always)]
 			internal readonly ImmutableHashSet<uint> Queue;
@@ -678,7 +677,7 @@ namespace ArchiSteamFarm.Json {
 			private NewDiscoveryQueueResponse() { }
 		}
 
-		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class RedeemWalletResponse : EResultResponse {
 			[JsonProperty(PropertyName = "wallet", Required = Required.DisallowNull)]
 			internal readonly InternalKeyDetails KeyDetails;
@@ -701,7 +700,7 @@ namespace ArchiSteamFarm.Json {
 			}
 		}
 
-		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class TradeOfferAcceptResponse {
 			[JsonProperty(PropertyName = "needs_mobile_confirmation", Required = Required.DisallowNull)]
 			internal readonly bool RequiresMobileConfirmation;
@@ -723,7 +722,7 @@ namespace ArchiSteamFarm.Json {
 			}
 		}
 
-		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class TradeOfferSendResponse {
 			[JsonProperty(PropertyName = "needs_mobile_confirmation", Required = Required.DisallowNull)]
 			internal readonly bool RequiresMobileConfirmation;
@@ -755,7 +754,7 @@ namespace ArchiSteamFarm.Json {
 			private TradeOfferSendResponse() { }
 		}
 
-		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class UserPrivacy {
 			[JsonProperty(PropertyName = "eCommentPermission", Required = Required.Always)]
 			internal readonly ECommentPermission CommentPermission;

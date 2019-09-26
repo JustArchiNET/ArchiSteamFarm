@@ -25,6 +25,7 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 
 #if NETFRAMEWORK
+using Microsoft.AspNetCore.Hosting;
 using System.Collections.Generic;
 using System.Net.WebSockets;
 using System.Threading;
@@ -119,6 +120,13 @@ namespace ArchiSteamFarm {
 		}
 
 #if NETFRAMEWORK
+		[NotNull]
+		internal static IWebHostBuilder ConfigureWebHostDefaults([NotNull] this IWebHostBuilder builder, [NotNull] Action<IWebHostBuilder> configure) {
+			configure(builder);
+
+			return builder;
+		}
+
 		public static void Deconstruct<TKey, TValue>(this KeyValuePair<TKey, TValue> kv, out TKey key, out TValue value) {
 			key = kv.Key;
 			value = kv.Value;

@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -35,7 +34,7 @@ using Newtonsoft.Json.Linq;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
-	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+	[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	public sealed class BotConfig {
 		internal const byte SteamParentalCodeLength = 4;
 

@@ -43,16 +43,24 @@ namespace ArchiSteamFarm.IPC {
 
 		public Startup([NotNull] IConfiguration configuration) => Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 
+#if NETFRAMEWORK
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
+#else
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+#endif
 			if ((app == null) || (env == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(app) + " || " + nameof(env));
 
 				return;
 			}
 
+			if (Debugging.IsUserDebugging) {
+				app.UseDeveloperExceptionPage();
+			}
+
 			// The order of dependency injection matters, pay attention to it
 
-			// Add workaround for missing PathBase feature, https://github.com/aspnet/Hosting/issues/1120
+			// TODO: Try to get rid of this workaround for missing PathBase feature, https://github.com/aspnet/AspNetCore/issues/5898
 			PathString pathBase = Configuration.GetSection("Kestrel").GetValue<PathString>("PathBase");
 
 			if (!string.IsNullOrEmpty(pathBase) && (pathBase != "/")) {
@@ -65,6 +73,18 @@ namespace ArchiSteamFarm.IPC {
 			// Add support for response compression
 			app.UseResponseCompression();
 
+			// We need static files support for IPC GUI
+			app.UseDefaultFiles();
+			app.UseStaticFiles();
+
+			// We need WebSockets support for /Api/Log
+			app.UseWebSockets();
+
+#if !NETFRAMEWORK
+			// Add support for routing
+			app.UseRouting();
+#endif
+
 			if (!string.IsNullOrEmpty(ASF.GlobalConfig.IPCPassword)) {
 				// We need ApiAuthenticationMiddleware for IPCPassword
 				app.UseWhen(context => context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), appBuilder => appBuilder.UseMiddleware<ApiAuthenticationMiddleware>());
@@ -74,24 +94,21 @@ namespace ArchiSteamFarm.IPC {
 				app.UseCors();
 			}
 
-			// We need WebSockets support for /Api/Log
-			app.UseWebSockets();
-
-			// We need MVC for /Api
+			// Add support for mapping controllers
+#if NETFRAMEWORK
 			app.UseMvcWithDefaultRoute();
+#else
+			app.UseEndpoints(endpoints => endpoints.MapControllers());
+#endif
 
 			// Use swagger for automatic API documentation generation
 			app.UseSwagger();
 
 			// Use friendly swagger UI
-			app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/" + SharedInfo.ASF + "/swagger.json", SharedInfo.ASF + " API"));
+			app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/" + SharedInfo.ASF + "/swagger.json", SharedInfo.ASF + " API"));
 
 			// We're using index for URL routing in our static files so re-execute all non-API calls on /
 			app.UseWhen(context => !context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), appBuilder => appBuilder.UseStatusCodePagesWithReExecute("/"));
-
-			// We need static files support for IPC GUI
-			app.UseDefaultFiles();
-			app.UseStaticFiles();
 		}
 
 		public void ConfigureServices(IServiceCollection services) {
@@ -110,12 +127,12 @@ namespace ArchiSteamFarm.IPC {
 			services.AddResponseCompression();
 
 			// Add CORS to allow userscripts and third-party apps
-			services.AddCors(builder => builder.AddDefaultPolicy(policyBuilder => policyBuilder.AllowAnyOrigin()));
+			services.AddCors(options => options.AddDefaultPolicy(policyBuilder => policyBuilder.AllowAnyOrigin()));
 
 			// Add swagger documentation generation
 			services.AddSwaggerGen(
-				c => {
-					c.AddSecurityDefinition(
+				options => {
+					options.AddSecurityDefinition(
 						nameof(GlobalConfig.IPCPassword), new OpenApiSecurityScheme {
 							Description = nameof(GlobalConfig.IPCPassword) + " authentication using request headers. Check " + SharedInfo.ProjectURL + "/wiki/IPC#authentication for more info.",
 							In = ParameterLocation.Header,
@@ -124,7 +141,7 @@ namespace ArchiSteamFarm.IPC {
 						}
 					);
 
-					c.AddSecurityRequirement(
+					options.AddSecurityRequirement(
 						new OpenApiSecurityRequirement {
 							{
 								new OpenApiSecurityScheme {
@@ -139,9 +156,9 @@ namespace ArchiSteamFarm.IPC {
 						}
 					);
 
-					c.EnableAnnotations();
+					options.EnableAnnotations();
 
-					c.SwaggerDoc(
+					options.SwaggerDoc(
 						SharedInfo.ASF, new OpenApiInfo {
 							Contact = new OpenApiContact {
 								Name = SharedInfo.GithubRepo,
@@ -160,13 +177,17 @@ namespace ArchiSteamFarm.IPC {
 					string xmlDocumentationFile = Path.Combine(AppContext.BaseDirectory, SharedInfo.AssemblyDocumentation);
 
 					if (File.Exists(xmlDocumentationFile)) {
-						c.IncludeXmlComments(xmlDocumentationFile);
+						options.IncludeXmlComments(xmlDocumentationFile);
 					}
 				}
 			);
 
 			// We need MVC for /Api, but we're going to use only a small subset of all available features
+#if NETFRAMEWORK
 			IMvcCoreBuilder mvc = services.AddMvcCore();
+#else
+			IMvcBuilder mvc = services.AddControllers();
+#endif
 
 			// Add support for controllers declared in custom plugins
 			HashSet<Assembly> assemblies = PluginsCore.LoadAssemblies();
@@ -177,21 +198,26 @@ namespace ArchiSteamFarm.IPC {
 				}
 			}
 
-			// Add API explorer for swagger
-			mvc.AddApiExplorer();
-
 			// Use latest compatibility version for MVC
 			mvc.SetCompatibilityVersion(CompatibilityVersion.Latest);
 
-			// Add standard formatters that can be used for serializing/deserializing requests/responses, they're already available in the core
+#if NETFRAMEWORK
+			// Add standard formatters
 			mvc.AddFormatterMappings();
 
+			// Add API explorer for swagger
+			mvc.AddApiExplorer();
+#endif
+
 			// Add JSON formatters that will be used as default ones if no specific formatters are asked for
+			// Fix default contract resolver to use original names and not a camel case and add debugging aid while we're at it
+#if NETFRAMEWORK
 			mvc.AddJsonFormatters();
 
-			// Fix default contract resolver to use original names and not a camel case
-			// Also add debugging aid while we're at it
 			mvc.AddJsonOptions(
+#else
+			mvc.AddNewtonsoftJson(
+#endif
 				options => {
 					options.SerializerSettings.ContractResolver = new DefaultContractResolver();
 

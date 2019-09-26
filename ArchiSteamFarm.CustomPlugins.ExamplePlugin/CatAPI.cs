@@ -20,7 +20,6 @@
 // limitations under the License.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -51,7 +50,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 			return Uri.EscapeUriString(response.Content.Link);
 		}
 
-		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		private sealed class MeowResponse {
 #pragma warning disable 649
 			[JsonProperty(PropertyName = "file", Required = Required.Always)]

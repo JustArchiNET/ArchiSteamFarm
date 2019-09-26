@@ -1,23 +1,23 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-TARGET_FRAMEWORK="netcoreapp2.2"
+TARGET_FRAMEWORK="netcoreapp3.0"
 
 MAIN_PROJECT="ArchiSteamFarm"
 TESTS_PROJECT="${MAIN_PROJECT}.Tests"
 SOLUTION="${MAIN_PROJECT}.sln"
 CONFIGURATION="Release"
-OUT="out/source"
+OUT="out"
 
 ASF_UI=1
 CLEAN=0
-LINK_DURING_PUBLISH=0
+PUBLISH_TRIMMED=0
 PULL=1
 SHARED_COMPILATION=1
 TEST=1
 
 PRINT_USAGE() {
-	echo "Usage: $0 [--clean] [--link-during-publish] [--no-asf-ui] [--no-pull] [--no-shared-compilation] [--no-test] [debug/release]"
+	echo "Usage: $0 [--clean] [--publish-trimmed] [--no-asf-ui] [--no-pull] [--no-shared-compilation] [--no-test] [debug/release]"
 }
 
 cd "$(dirname "$(readlink -f "$0")")"
@@ -30,8 +30,8 @@ for ARG in "$@"; do
 		--no-asf-ui) ASF_UI=0 ;;
 		--clean) CLEAN=1 ;;
 		--no-clean) CLEAN=0 ;;
-		--link-during-publish) LINK_DURING_PUBLISH=1 ;;
-		--no-link-during-publish) LINK_DURING_PUBLISH=0 ;;
+		--publish-trimmed) PUBLISH_TRIMMED=1 ;;
+		--no-publish-trimmed) PUBLISH_TRIMMED=0 ;;
 		--pull) PULL=1 ;;
 		--no-pull) PULL=0 ;;
 		--shared-compilation) SHARED_COMPILATION=1 ;;
@@ -75,16 +75,16 @@ if [[ "$ASF_UI" -eq 1 ]]; then
 		)
 
 		# ASF's output www folder needs cleaning as well
-		rm -rf "${MAIN_PROJECT}/${OUT}/www"
+		rm -rf "${OUT}/www"
 	else
 		echo "WARNING: ASF-ui dependencies are missing, skipping build of ASF-ui..."
 	fi
 fi
 
-DOTNET_FLAGS=(-c "$CONFIGURATION" -f "$TARGET_FRAMEWORK" -o "$OUT" '/nologo')
+DOTNET_FLAGS=(-c "$CONFIGURATION" -f "$TARGET_FRAMEWORK" '/nologo')
 
-if [[ "$LINK_DURING_PUBLISH" -eq 0 ]]; then
-	DOTNET_FLAGS+=('/p:LinkDuringPublish=false')
+if [[ "$PUBLISH_TRIMMED" -eq 0 ]]; then
+	DOTNET_FLAGS+=('/p:PublishTrimmed=false')
 fi
 
 if [[ "$SHARED_COMPILATION" -eq 0 ]]; then
@@ -93,14 +93,14 @@ fi
 
 if [[ "$CLEAN" -eq 1 ]]; then
 	dotnet clean "${DOTNET_FLAGS[@]}"
-	rm -rf "${MAIN_PROJECT:?}/${OUT}" "${TESTS_PROJECT:?}/${OUT}"
+	rm -rf "$OUT"
 fi
 
 if [[ "$TEST" -eq 1 ]]; then
 	dotnet test "$TESTS_PROJECT" "${DOTNET_FLAGS[@]}"
 fi
 
-dotnet publish "$MAIN_PROJECT" "${DOTNET_FLAGS[@]}"
+dotnet publish "$MAIN_PROJECT" "${DOTNET_FLAGS[@]}" -o "$OUT"
 
 echo
 echo "SUCCESS: Compilation finished successfully! :)"

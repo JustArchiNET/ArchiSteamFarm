@@ -23,7 +23,6 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using JetBrains.Annotations;
 
@@ -47,7 +46,7 @@ namespace ArchiSteamFarm.Collections {
 		public bool Add(T item) => BackingCollection.TryAdd(item, true);
 		public void Clear() => BackingCollection.Clear();
 
-		[SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
 		public bool Contains(T item) => BackingCollection.ContainsKey(item);
 
 		public void CopyTo(T[] array, int arrayIndex) => BackingCollection.Keys.CopyTo(array, arrayIndex);
@@ -98,7 +97,7 @@ namespace ArchiSteamFarm.Collections {
 			return otherSet.Any(Contains);
 		}
 
-		[SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
 		public bool Remove(T item) => BackingCollection.TryRemove(item, out _);
 
 		public bool SetEquals(IEnumerable<T> other) {
@@ -127,8 +126,8 @@ namespace ArchiSteamFarm.Collections {
 			}
 		}
 
-		[SuppressMessage("ReSharper", "AnnotationConflictInHierarchy")]
-		[SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "AnnotationConflictInHierarchy")]
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
 		void ICollection<T>.Add([NotNull] T item) => Add(item);
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

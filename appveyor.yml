@@ -9,11 +9,11 @@ environment:
   CROWDIN_API_KEY:
     secure: oGuZaQo2z5/JkEYaKrD9Ing+TgwZ3qQVf+9Jdz73Fephy04z5rWPGCCtkjaMLTcY
   CROWDIN_PROJECT_IDENTIFIER: archisteamfarm
-  DOTNET_CHANNEL: 2.2
+  DOTNET_CHANNEL: 3.0
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_INSTALL_DIR: C:\Program Files\dotnet
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-  NET_CORE_VERSION: netcoreapp2.2
+  NET_CORE_VERSION: netcoreapp3.0
   NET_FRAMEWORK_VERSION: net48
   VARIANTS: generic generic-netf linux-arm linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
 matrix:
@@ -152,7 +152,7 @@ after_test:
 
         if ($variant -like 'generic*') {
             # TODO: Workaround https://github.com/mono/linker/issues/286 (don't forget to remove it from docker files too)
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" --no-restore /nologo "/p:ASFVariant=$variant" "/p:LinkDuringPublish=false"
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" --no-restore /nologo "/p:ASFVariant=$variant" "/p:PublishTrimmed=false" "/p:UseAppHost=false"
         } else {
             dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" -r "$variant" --no-restore /nologo "/p:ASFVariant=$variant" "/p:LinkDuringPublish=false"
         }
@@ -168,13 +168,7 @@ after_test:
 
         # Until https://github.com/dotnet/cli/issues/3267 happens, we'll hack dotnet binary icon on Windows and include .ico file on other platforms
         if ($targetFramework -ne "$env:NET_FRAMEWORK_VERSION") {
-            if (Test-Path "out\$variant\ArchiSteamFarm.exe" -PathType Leaf) {
-                tools\rcedit\rcedit-x64.exe "out\$variant\ArchiSteamFarm.exe" --set-icon 'resources\ASF.ico'
-
-                if ($LastExitCode -ne 0) {
-                    throw "Last command failed."
-                }
-            } else {
+            if (!(Test-Path "out\$variant\ArchiSteamFarm.exe" -PathType Leaf)) {
                 Copy-Item 'resources\ASF.ico' "out\$variant\ArchiSteamFarm.ico"
             }
         }
