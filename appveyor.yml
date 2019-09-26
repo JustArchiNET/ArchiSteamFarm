@@ -106,7 +106,7 @@ build_script:
     Pop-Location
 
 
-    dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -o 'out\source' /nologo
+    dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" /nologo
 
 
     if ($LastExitCode -ne 0) {
@@ -114,7 +114,7 @@ build_script:
     }
 
 
-    dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -o 'out\source' /nologo
+    dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" /nologo
 
 
     if ($LastExitCode -ne 0) {
@@ -134,7 +134,7 @@ test_script:
     }
 
 
-    dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -o 'out\source' /nologo
+    dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" /nologo
 
 
     if ($LastExitCode -ne 0) {
@@ -173,7 +173,7 @@ after_test:
 
         if ($variant -like 'generic*') {
             # TODO: Workaround https://github.com/mono/linker/issues/286 (don't forget to remove it from docker files too)
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" --no-restore /nologo "/p:ASFVariant=$variant" "/p:PublishTrimmed=false"
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" --no-restore /nologo "/p:ASFVariant=$variant" "/p:PublishTrimmed=false" "/p:UseAppHost=false"
         } else {
             dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" -r "$variant" --no-restore /nologo "/p:ASFVariant=$variant"
         }
@@ -184,13 +184,13 @@ after_test:
 
         # If we include any overlay for this variant, copy it output directory
         if (Test-Path "ArchiSteamFarm\overlay\$variant" -PathType Container) {
-            Copy-Item "ArchiSteamFarm\overlay\$variant\*" "ArchiSteamFarm\out\$variant"
+            Copy-Item "ArchiSteamFarm\overlay\$variant\*" "out\$variant"
         }
 
         # Until https://github.com/dotnet/cli/issues/3267 happens, we'll hack dotnet binary icon on Windows and include .ico file on other platforms
         if ($targetFramework -ne "$env:NET_FRAMEWORK_VERSION") {
-            if (!(Test-Path "ArchiSteamFarm\out\$variant\ArchiSteamFarm.exe" -PathType Leaf)) {
-                Copy-Item 'resources\ASF.ico' "ArchiSteamFarm\out\$variant\ArchiSteamFarm.ico"
+            if (!(Test-Path "out\$variant\ArchiSteamFarm.exe" -PathType Leaf)) {
+                Copy-Item 'resources\ASF.ico' "out\$variant\ArchiSteamFarm.ico"
             }
         }
 
@@ -200,8 +200,8 @@ after_test:
         # Include extra logic for builds marked for release
         if ($env:APPVEYOR_REPO_TAG -eq 'true') {
             # Update link in Changelog.html accordingly
-            if (Test-Path "ArchiSteamFarm\out\$variant\Changelog.html" -PathType Leaf) {
-                (Get-Content "ArchiSteamFarm\out\$variant\Changelog.html").Replace('ArchiSteamFarm/commits/master', "ArchiSteamFarm/releases/tag/$env:APPVEYOR_REPO_TAG_NAME") | Set-Content "ArchiSteamFarm\out\$variant\Changelog.html"
+            if (Test-Path "out\$variant\Changelog.html" -PathType Leaf) {
+                (Get-Content "out\$variant\Changelog.html").Replace('ArchiSteamFarm/commits/master', "ArchiSteamFarm/releases/tag/$env:APPVEYOR_REPO_TAG_NAME") | Set-Content "out\$variant\Changelog.html"
             }
 
             # If this build is going to be deployed further, prefer maximum compression
@@ -216,14 +216,14 @@ after_test:
             }
         }
 
-        7z a -bd -tzip "-mm=$compressionMethod" $compressionArgs "ArchiSteamFarm\out\ASF-$variant.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$variant\*"
+        7z a -bd -tzip "-mm=$compressionMethod" $compressionArgs "out\ASF-$variant.zip" "$env:APPVEYOR_BUILD_FOLDER\out\$variant\*"
 
         if ($LastExitCode -ne 0) {
             throw "Last command failed."
         }
 
         # TODO: Change me to Push-AppveyorArtifact once https://github.com/appveyor/ci/issues/2183 is fixed
-        appveyor PushArtifact "ArchiSteamFarm\out\ASF-$variant.zip" -FileName "ASF-$variant.zip" -DeploymentName "ASF-$variant.zip"
+        appveyor PushArtifact "out\ASF-$variant.zip" -FileName "ASF-$variant.zip" -DeploymentName "ASF-$variant.zip"
     }
 
 

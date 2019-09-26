@@ -7,7 +7,7 @@ MAIN_PROJECT="ArchiSteamFarm"
 TESTS_PROJECT="${MAIN_PROJECT}.Tests"
 SOLUTION="${MAIN_PROJECT}.sln"
 CONFIGURATION="Release"
-OUT="out/source"
+OUT="out"
 
 ASF_UI=1
 CLEAN=0
@@ -75,13 +75,13 @@ if [[ "$ASF_UI" -eq 1 ]]; then
 		)
 
 		# ASF's output www folder needs cleaning as well
-		rm -rf "${MAIN_PROJECT}/${OUT}/www"
+		rm -rf "${OUT}/www"
 	else
 		echo "WARNING: ASF-ui dependencies are missing, skipping build of ASF-ui..."
 	fi
 fi
 
-DOTNET_FLAGS=(-c "$CONFIGURATION" -f "$TARGET_FRAMEWORK" -o "$OUT" '/nologo')
+DOTNET_FLAGS=(-c "$CONFIGURATION" -f "$TARGET_FRAMEWORK" '/nologo')
 
 if [[ "$PUBLISH_TRIMMED" -eq 0 ]]; then
 	DOTNET_FLAGS+=('/p:PublishTrimmed=false')
@@ -93,14 +93,14 @@ fi
 
 if [[ "$CLEAN" -eq 1 ]]; then
 	dotnet clean "${DOTNET_FLAGS[@]}"
-	rm -rf "${MAIN_PROJECT:?}/${OUT}" "${TESTS_PROJECT:?}/${OUT}"
+	rm -rf "$OUT"
 fi
 
 if [[ "$TEST" -eq 1 ]]; then
 	dotnet test "$TESTS_PROJECT" "${DOTNET_FLAGS[@]}"
 fi
 
-dotnet publish "$MAIN_PROJECT" "${DOTNET_FLAGS[@]}"
+dotnet publish "$MAIN_PROJECT" "${DOTNET_FLAGS[@]}" -o "$OUT"
 
 echo
 echo "SUCCESS: Compilation finished successfully! :)"

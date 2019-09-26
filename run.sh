@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-BINARY_PATH="$(dirname "$(readlink -f "$0")")/ArchiSteamFarm/out/source"
+BINARY_PATH="$(dirname "$(readlink -f "$0")")/out"
 CONFIG_PATH="config/ASF.json"
 
 if [[ ! -d "$BINARY_PATH" ]]; then
