@@ -86,9 +86,9 @@ namespace ArchiSteamFarm.Plugins {
 			HashSet<IPlugin> activePlugins;
 
 			try {
-				using (CompositionHost container = configuration.CreateContainer()) {
-					activePlugins = container.GetExports<IPlugin>().ToHashSet();
-				}
+				using CompositionHost container = configuration.CreateContainer();
+
+				activePlugins = container.GetExports<IPlugin>().ToHashSet();
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 

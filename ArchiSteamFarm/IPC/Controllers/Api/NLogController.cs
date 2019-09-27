@@ -55,40 +55,40 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			// From now on we can return only EmptyResult as the response stream is already being used by existing websocket connection
 
 			try {
-				using (WebSocket webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync().ConfigureAwait(false)) {
-					SemaphoreSlim sendSemaphore = new SemaphoreSlim(1, 1);
+				using WebSocket webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync().ConfigureAwait(false);
 
-					if (!ActiveLogWebSockets.TryAdd(webSocket, sendSemaphore)) {
-						sendSemaphore.Dispose();
+				SemaphoreSlim sendSemaphore = new SemaphoreSlim(1, 1);
 
-						return new EmptyResult();
+				if (!ActiveLogWebSockets.TryAdd(webSocket, sendSemaphore)) {
+					sendSemaphore.Dispose();
+
+					return new EmptyResult();
+				}
+
+				try {
+					// Push initial history if available
+					if (ArchiKestrel.HistoryTarget != null) {
+						// ReSharper disable once AccessToDisposedClosure - we're waiting for completion with Task.WhenAll(), we're not going to exit using block
+						await Task.WhenAll(ArchiKestrel.HistoryTarget.ArchivedMessages.Select(archivedMessage => PostLoggedMessageUpdate(webSocket, sendSemaphore, archivedMessage))).ConfigureAwait(false);
 					}
 
-					try {
-						// Push initial history if available
-						if (ArchiKestrel.HistoryTarget != null) {
-							// ReSharper disable once AccessToDisposedClosure - we're waiting for completion with Task.WhenAll(), we're not going to exit using block
-							await Task.WhenAll(ArchiKestrel.HistoryTarget.ArchivedMessages.Select(archivedMessage => PostLoggedMessageUpdate(webSocket, sendSemaphore, archivedMessage))).ConfigureAwait(false);
-						}
+					while (webSocket.State == WebSocketState.Open) {
+						WebSocketReceiveResult result = await webSocket.ReceiveAsync(new byte[0], CancellationToken.None).ConfigureAwait(false);
 
-						while (webSocket.State == WebSocketState.Open) {
-							WebSocketReceiveResult result = await webSocket.ReceiveAsync(new byte[0], CancellationToken.None).ConfigureAwait(false);
-
-							if (result.MessageType != WebSocketMessageType.Close) {
-								await webSocket.CloseAsync(WebSocketCloseStatus.InvalidMessageType, "You're not supposed to be sending any message but Close!", CancellationToken.None).ConfigureAwait(false);
-
-								break;
-							}
-
-							await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None).ConfigureAwait(false);
+						if (result.MessageType != WebSocketMessageType.Close) {
+							await webSocket.CloseAsync(WebSocketCloseStatus.InvalidMessageType, "You're not supposed to be sending any message but Close!", CancellationToken.None).ConfigureAwait(false);
 
 							break;
 						}
-					} finally {
-						if (ActiveLogWebSockets.TryRemove(webSocket, out SemaphoreSlim closedSemaphore)) {
-							await closedSemaphore.WaitAsync().ConfigureAwait(false); // Ensure that our semaphore is truly closed by now
-							closedSemaphore.Dispose();
-						}
+
+						await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None).ConfigureAwait(false);
+
+						break;
+					}
+				} finally {
+					if (ActiveLogWebSockets.TryRemove(webSocket, out SemaphoreSlim closedSemaphore)) {
+						await closedSemaphore.WaitAsync().ConfigureAwait(false); // Ensure that our semaphore is truly closed by now
+						closedSemaphore.Dispose();
 					}
 				}
 			} catch (WebSocketException e) {

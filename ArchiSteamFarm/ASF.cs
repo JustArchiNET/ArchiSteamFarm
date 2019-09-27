@@ -259,10 +259,10 @@ namespace ArchiSteamFarm {
 				}
 
 				try {
-					using (ZipArchive zipArchive = new ZipArchive(new MemoryStream(response.Content))) {
-						if (!UpdateFromArchive(zipArchive, SharedInfo.HomeDirectory)) {
-							ArchiLogger.LogGenericError(Strings.WarningFailed);
-						}
+					using ZipArchive zipArchive = new ZipArchive(new MemoryStream(response.Content));
+
+					if (!UpdateFromArchive(zipArchive, SharedInfo.HomeDirectory)) {
+						ArchiLogger.LogGenericError(Strings.WarningFailed);
 					}
 				} catch (Exception e) {
 					ArchiLogger.LogGenericException(e);

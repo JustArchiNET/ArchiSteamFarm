@@ -129,13 +129,13 @@ namespace ArchiSteamFarm {
 						return null;
 					}
 
-					using (StringWriter writer = new StringWriter()) {
-						HtmlRenderer renderer = new HtmlRenderer(writer);
-						renderer.Render(Changelog);
-						writer.Flush();
+					using StringWriter writer = new StringWriter();
 
-						return BackingChangelogHTML = writer.ToString();
-					}
+					HtmlRenderer renderer = new HtmlRenderer(writer);
+					renderer.Render(Changelog);
+					writer.Flush();
+
+					return BackingChangelogHTML = writer.ToString();
 				}
 			}
 
@@ -151,17 +151,17 @@ namespace ArchiSteamFarm {
 						return null;
 					}
 
-					using (StringWriter writer = new StringWriter()) {
-						HtmlRenderer renderer = new HtmlRenderer(writer) {
-							EnableHtmlForBlock = false,
-							EnableHtmlForInline = false
-						};
+					using StringWriter writer = new StringWriter();
 
-						renderer.Render(Changelog);
-						writer.Flush();
+					HtmlRenderer renderer = new HtmlRenderer(writer) {
+						EnableHtmlForBlock = false,
+						EnableHtmlForInline = false
+					};
 
-						return BackingChangelogPlainText = writer.ToString();
-					}
+					renderer.Render(Changelog);
+					writer.Flush();
+
+					return BackingChangelogPlainText = writer.ToString();
 				}
 			}
 

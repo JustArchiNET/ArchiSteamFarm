@@ -304,27 +304,27 @@ namespace ArchiSteamFarm {
 			KeyValue response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-				using (WebAPI.AsyncInterface iPlayerService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(IPlayerService)) {
-					iPlayerService.Timeout = WebBrowser.Timeout;
+				using WebAPI.AsyncInterface iPlayerService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(IPlayerService);
 
-					try {
-						response = await WebLimitRequest(
-							WebAPI.DefaultBaseAddress.Host,
+				iPlayerService.Timeout = WebBrowser.Timeout;
 
-							// ReSharper disable once AccessToDisposedClosure
-							async () => await iPlayerService.CallAsync(
-								HttpMethod.Get, "GetOwnedGames", args: new Dictionary<string, object>(3, StringComparer.Ordinal) {
+				try {
+					response = await WebLimitRequest(
+						WebAPI.DefaultBaseAddress.Host,
+
+						// ReSharper disable once AccessToDisposedClosure
+						async () => await iPlayerService.CallAsync(
+							HttpMethod.Get, "GetOwnedGames", args: new Dictionary<string, object>(3, StringComparer.Ordinal) {
 									{ "include_appinfo", 1 },
 									{ "key", steamApiKey },
 									{ "steamid", steamID }
-								}
-							).ConfigureAwait(false)
-						).ConfigureAwait(false);
-					} catch (TaskCanceledException e) {
-						Bot.ArchiLogger.LogGenericDebuggingException(e);
-					} catch (Exception e) {
-						Bot.ArchiLogger.LogGenericWarningException(e);
-					}
+							}
+						).ConfigureAwait(false)
+					).ConfigureAwait(false);
+				} catch (TaskCanceledException e) {
+					Bot.ArchiLogger.LogGenericDebuggingException(e);
+				} catch (Exception e) {
+					Bot.ArchiLogger.LogGenericWarningException(e);
 				}
 			}
 
@@ -1356,26 +1356,26 @@ namespace ArchiSteamFarm {
 			KeyValue response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-				using (WebAPI.AsyncInterface iEconService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(IEconService)) {
-					iEconService.Timeout = WebBrowser.Timeout;
+				using WebAPI.AsyncInterface iEconService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(IEconService);
 
-					try {
-						response = await WebLimitRequest(
-							WebAPI.DefaultBaseAddress.Host,
+				iEconService.Timeout = WebBrowser.Timeout;
 
-							// ReSharper disable once AccessToDisposedClosure
-							async () => await iEconService.CallAsync(
-								HttpMethod.Post, "DeclineTradeOffer", args: new Dictionary<string, object>(2, StringComparer.Ordinal) {
+				try {
+					response = await WebLimitRequest(
+						WebAPI.DefaultBaseAddress.Host,
+
+						// ReSharper disable once AccessToDisposedClosure
+						async () => await iEconService.CallAsync(
+							HttpMethod.Post, "DeclineTradeOffer", args: new Dictionary<string, object>(2, StringComparer.Ordinal) {
 									{ "key", steamApiKey },
 									{ "tradeofferid", tradeID }
-								}
-							).ConfigureAwait(false)
-						).ConfigureAwait(false);
-					} catch (TaskCanceledException e) {
-						Bot.ArchiLogger.LogGenericDebuggingException(e);
-					} catch (Exception e) {
-						Bot.ArchiLogger.LogGenericWarningException(e);
-					}
+							}
+						).ConfigureAwait(false)
+					).ConfigureAwait(false);
+				} catch (TaskCanceledException e) {
+					Bot.ArchiLogger.LogGenericDebuggingException(e);
+				} catch (Exception e) {
+					Bot.ArchiLogger.LogGenericWarningException(e);
 				}
 			}
 
@@ -1414,29 +1414,29 @@ namespace ArchiSteamFarm {
 			KeyValue response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-				using (WebAPI.AsyncInterface iEconService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(IEconService)) {
-					iEconService.Timeout = WebBrowser.Timeout;
+				using WebAPI.AsyncInterface iEconService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(IEconService);
 
-					try {
-						response = await WebLimitRequest(
-							WebAPI.DefaultBaseAddress.Host,
+				iEconService.Timeout = WebBrowser.Timeout;
 
-							// ReSharper disable once AccessToDisposedClosure
-							async () => await iEconService.CallAsync(
-								HttpMethod.Get, "GetTradeOffers", args: new Dictionary<string, object>(5, StringComparer.Ordinal) {
+				try {
+					response = await WebLimitRequest(
+						WebAPI.DefaultBaseAddress.Host,
+
+						// ReSharper disable once AccessToDisposedClosure
+						async () => await iEconService.CallAsync(
+							HttpMethod.Get, "GetTradeOffers", args: new Dictionary<string, object>(5, StringComparer.Ordinal) {
 									{ "active_only", 1 },
 									{ "get_descriptions", 1 },
 									{ "get_received_offers", 1 },
 									{ "key", steamApiKey },
 									{ "time_historical_cutoff", uint.MaxValue }
-								}
-							).ConfigureAwait(false)
-						).ConfigureAwait(false);
-					} catch (TaskCanceledException e) {
-						Bot.ArchiLogger.LogGenericDebuggingException(e);
-					} catch (Exception e) {
-						Bot.ArchiLogger.LogGenericWarningException(e);
-					}
+							}
+						).ConfigureAwait(false)
+					).ConfigureAwait(false);
+				} catch (TaskCanceledException e) {
+					Bot.ArchiLogger.LogGenericDebuggingException(e);
+				} catch (Exception e) {
+					Bot.ArchiLogger.LogGenericWarningException(e);
 				}
 			}
 
@@ -1570,21 +1570,21 @@ namespace ArchiSteamFarm {
 			KeyValue response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-				using (WebAPI.AsyncInterface iSteamApps = Bot.SteamConfiguration.GetAsyncWebAPIInterface(ISteamApps)) {
-					iSteamApps.Timeout = WebBrowser.Timeout;
+				using WebAPI.AsyncInterface iSteamApps = Bot.SteamConfiguration.GetAsyncWebAPIInterface(ISteamApps);
 
-					try {
-						response = await WebLimitRequest(
-							WebAPI.DefaultBaseAddress.Host,
+				iSteamApps.Timeout = WebBrowser.Timeout;
 
-							// ReSharper disable once AccessToDisposedClosure
-							async () => await iSteamApps.CallAsync(HttpMethod.Get, "GetAppList", 2).ConfigureAwait(false)
-						).ConfigureAwait(false);
-					} catch (TaskCanceledException e) {
-						Bot.ArchiLogger.LogGenericDebuggingException(e);
-					} catch (Exception e) {
-						Bot.ArchiLogger.LogGenericWarningException(e);
-					}
+				try {
+					response = await WebLimitRequest(
+						WebAPI.DefaultBaseAddress.Host,
+
+						// ReSharper disable once AccessToDisposedClosure
+						async () => await iSteamApps.CallAsync(HttpMethod.Get, "GetAppList", 2).ConfigureAwait(false)
+					).ConfigureAwait(false);
+				} catch (TaskCanceledException e) {
+					Bot.ArchiLogger.LogGenericDebuggingException(e);
+				} catch (Exception e) {
+					Bot.ArchiLogger.LogGenericWarningException(e);
 				}
 			}
 
@@ -1779,21 +1779,21 @@ namespace ArchiSteamFarm {
 			KeyValue response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-				using (WebAPI.AsyncInterface iTwoFactorService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(ITwoFactorService)) {
-					iTwoFactorService.Timeout = WebBrowser.Timeout;
+				using WebAPI.AsyncInterface iTwoFactorService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(ITwoFactorService);
 
-					try {
-						response = await WebLimitRequest(
-							WebAPI.DefaultBaseAddress.Host,
+				iTwoFactorService.Timeout = WebBrowser.Timeout;
 
-							// ReSharper disable once AccessToDisposedClosure
-							async () => await iTwoFactorService.CallAsync(HttpMethod.Post, "QueryTime").ConfigureAwait(false)
-						).ConfigureAwait(false);
-					} catch (TaskCanceledException e) {
-						Bot.ArchiLogger.LogGenericDebuggingException(e);
-					} catch (Exception e) {
-						Bot.ArchiLogger.LogGenericWarningException(e);
-					}
+				try {
+					response = await WebLimitRequest(
+						WebAPI.DefaultBaseAddress.Host,
+
+						// ReSharper disable once AccessToDisposedClosure
+						async () => await iTwoFactorService.CallAsync(HttpMethod.Post, "QueryTime").ConfigureAwait(false)
+					).ConfigureAwait(false);
+				} catch (TaskCanceledException e) {
+					Bot.ArchiLogger.LogGenericDebuggingException(e);
+				} catch (Exception e) {
+					Bot.ArchiLogger.LogGenericWarningException(e);
 				}
 			}
 
@@ -1897,21 +1897,21 @@ namespace ArchiSteamFarm {
 			KeyValue response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-				using (WebAPI.AsyncInterface iEconService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(IEconService)) {
-					iEconService.Timeout = WebBrowser.Timeout;
+				using WebAPI.AsyncInterface iEconService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(IEconService);
 
-					try {
-						response = await WebLimitRequest(
-							WebAPI.DefaultBaseAddress.Host,
+				iEconService.Timeout = WebBrowser.Timeout;
 
-							// ReSharper disable once AccessToDisposedClosure
-							async () => await iEconService.CallAsync(HttpMethod.Get, "GetTradeHoldDurations", args: arguments).ConfigureAwait(false)
-						).ConfigureAwait(false);
-					} catch (TaskCanceledException e) {
-						Bot.ArchiLogger.LogGenericDebuggingException(e);
-					} catch (Exception e) {
-						Bot.ArchiLogger.LogGenericWarningException(e);
-					}
+				try {
+					response = await WebLimitRequest(
+						WebAPI.DefaultBaseAddress.Host,
+
+						// ReSharper disable once AccessToDisposedClosure
+						async () => await iEconService.CallAsync(HttpMethod.Get, "GetTradeHoldDurations", args: arguments).ConfigureAwait(false)
+					).ConfigureAwait(false);
+				} catch (TaskCanceledException e) {
+					Bot.ArchiLogger.LogGenericDebuggingException(e);
+				} catch (Exception e) {
+					Bot.ArchiLogger.LogGenericWarningException(e);
 				}
 			}
 

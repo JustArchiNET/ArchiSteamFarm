@@ -448,12 +448,11 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			switch (permission) {
-				case BotConfig.EPermission.FamilySharing when SteamFamilySharingIDs.Contains(steamID):
-					return true;
-				default:
-					return BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EPermission realPermission) && (realPermission >= permission);
-			}
+			return permission switch
+			{
+				BotConfig.EPermission.FamilySharing when SteamFamilySharingIDs.Contains(steamID) => true,
+				_ => BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EPermission realPermission) && (realPermission >= permission),
+			};
 		}
 
 		internal void AddGamesToRedeemInBackground(IOrderedDictionary gamesToRedeemInBackground) {
@@ -1586,33 +1585,33 @@ namespace ArchiSteamFarm {
 			Dictionary<string, string> keys = new Dictionary<string, string>(StringComparer.Ordinal);
 
 			try {
-				using (StreamReader reader = new StreamReader(filePath)) {
-					string line;
+				using StreamReader reader = new StreamReader(filePath);
 
-					while ((line = await reader.ReadLineAsync().ConfigureAwait(false)) != null) {
-						if (line.Length == 0) {
-							continue;
-						}
+				string line;
 
-						string[] parsedArgs = line.Split(DefaultBackgroundKeysRedeemerSeparator, StringSplitOptions.RemoveEmptyEntries);
-
-						if (parsedArgs.Length < 3) {
-							ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, line));
-
-							continue;
-						}
-
-						string key = parsedArgs[parsedArgs.Length - 1];
-
-						if (!Utilities.IsValidCdKey(key)) {
-							ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, key));
-
-							continue;
-						}
-
-						string name = parsedArgs[0];
-						keys[key] = name;
+				while ((line = await reader.ReadLineAsync().ConfigureAwait(false)) != null) {
+					if (line.Length == 0) {
+						continue;
 					}
+
+					string[] parsedArgs = line.Split(DefaultBackgroundKeysRedeemerSeparator, StringSplitOptions.RemoveEmptyEntries);
+
+					if (parsedArgs.Length < 3) {
+						ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, line));
+
+						continue;
+					}
+
+					string key = parsedArgs[parsedArgs.Length - 1];
+
+					if (!Utilities.IsValidCdKey(key)) {
+						ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, key));
+
+						continue;
+					}
+
+					string name = parsedArgs[0];
+					keys[key] = name;
 				}
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
@@ -2574,18 +2573,18 @@ namespace ArchiSteamFarm {
 			byte[] sentryHash;
 
 			try {
-				using (FileStream fileStream = File.Open(sentryFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite)) {
-					fileStream.Seek(callback.Offset, SeekOrigin.Begin);
+				using FileStream fileStream = File.Open(sentryFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
 
-					await fileStream.WriteAsync(callback.Data, 0, callback.BytesToWrite).ConfigureAwait(false);
+				fileStream.Seek(callback.Offset, SeekOrigin.Begin);
 
-					fileSize = fileStream.Length;
-					fileStream.Seek(0, SeekOrigin.Begin);
+				await fileStream.WriteAsync(callback.Data, 0, callback.BytesToWrite).ConfigureAwait(false);
 
-					using (SHA1CryptoServiceProvider sha = new SHA1CryptoServiceProvider()) {
-						sentryHash = sha.ComputeHash(fileStream);
-					}
-				}
+				fileSize = fileStream.Length;
+				fileStream.Seek(0, SeekOrigin.Begin);
+
+				using SHA1CryptoServiceProvider sha = new SHA1CryptoServiceProvider();
+
+				sentryHash = sha.ComputeHash(fileStream);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 

@@ -48,9 +48,9 @@ namespace ArchiSteamFarm {
 				}
 #endif
 
-				using (Process process = Process.GetCurrentProcess()) {
-					return process.StartTime;
-				}
+				using Process process = Process.GetCurrentProcess();
+
+				return process.StartTime;
 			}
 		}
 

@@ -36,10 +36,10 @@ namespace ArchiSteamFarm.CMsgs {
 				return;
 			}
 
-			using (BinaryReader binaryReader = new BinaryReader(stream, Encoding.UTF8, true)) {
-				ClanID = binaryReader.ReadUInt64();
-				AcceptInvite = binaryReader.ReadBoolean();
-			}
+			using BinaryReader binaryReader = new BinaryReader(stream, Encoding.UTF8, true);
+
+			ClanID = binaryReader.ReadUInt64();
+			AcceptInvite = binaryReader.ReadBoolean();
 		}
 
 		EMsg ISteamSerializableMessage.GetEMsg() => EMsg.ClientAcknowledgeClanInvite;
@@ -51,10 +51,10 @@ namespace ArchiSteamFarm.CMsgs {
 				return;
 			}
 
-			using (BinaryWriter binaryWriter = new BinaryWriter(stream, Encoding.UTF8, true)) {
-				binaryWriter.Write(ClanID);
-				binaryWriter.Write(AcceptInvite);
-			}
+			using BinaryWriter binaryWriter = new BinaryWriter(stream, Encoding.UTF8, true);
+
+			binaryWriter.Write(ClanID);
+			binaryWriter.Write(AcceptInvite);
 		}
 	}
 }

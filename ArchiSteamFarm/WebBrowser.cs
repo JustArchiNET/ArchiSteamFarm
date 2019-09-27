@@ -81,6 +81,9 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public HttpClient GenerateDisposableHttpClient(bool extendedTimeout = false) {
 			HttpClient result = new HttpClient(HttpClientHandler, false) {
+#if !NETFRAMEWORK
+				DefaultRequestVersion = new Version(2, 0),
+#endif
 				Timeout = TimeSpan.FromSeconds(extendedTimeout ? ExtendedTimeoutMultiplier * ASF.GlobalConfig.ConnectionTimeout : ASF.GlobalConfig.ConnectionTimeout)
 			};
 
@@ -225,21 +228,21 @@ namespace ArchiSteamFarm {
 			BasicResponse result = null;
 
 			for (byte i = 0; i < maxTries; i++) {
-				using (HttpResponseMessage response = await InternalHead(request, referer).ConfigureAwait(false)) {
-					if (response == null) {
-						continue;
-					}
+				using HttpResponseMessage response = await InternalHead(request, referer).ConfigureAwait(false);
 
-					if (response.StatusCode.IsClientErrorCode()) {
-						if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-							result = new BasicResponse(response);
-						}
-
-						break;
-					}
-
-					return new BasicResponse(response);
+				if (response == null) {
+					continue;
 				}
+
+				if (response.StatusCode.IsClientErrorCode()) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						result = new BasicResponse(response);
+					}
+
+					break;
+				}
+
+				return new BasicResponse(response);
 			}
 
 			if (maxTries > 1) {
@@ -262,21 +265,21 @@ namespace ArchiSteamFarm {
 			BasicResponse result = null;
 
 			for (byte i = 0; i < maxTries; i++) {
-				using (HttpResponseMessage response = await InternalPost(request, data, referer).ConfigureAwait(false)) {
-					if (response == null) {
-						continue;
-					}
+				using HttpResponseMessage response = await InternalPost(request, data, referer).ConfigureAwait(false);
 
-					if (response.StatusCode.IsClientErrorCode()) {
-						if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-							result = new BasicResponse(response);
-						}
-
-						break;
-					}
-
-					return new BasicResponse(response);
+				if (response == null) {
+					continue;
 				}
+
+				if (response.StatusCode.IsClientErrorCode()) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						result = new BasicResponse(response);
+					}
+
+					break;
+				}
+
+				return new BasicResponse(response);
 			}
 
 			if (maxTries > 1) {
@@ -399,64 +402,64 @@ namespace ArchiSteamFarm {
 				const byte printPercentage = 10;
 				const byte maxBatches = 99 / printPercentage;
 
-				using (HttpResponseMessage response = await InternalGet(request, referer, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false)) {
-					if (response == null) {
-						continue;
-					}
+				using HttpResponseMessage response = await InternalGet(request, referer, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
-					if (response.StatusCode.IsClientErrorCode()) {
-						if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-							result = new BinaryResponse(response);
-						}
-
-						break;
-					}
-
-					ArchiLogger.LogGenericDebug("0%...");
-
-					uint contentLength = (uint) response.Content.Headers.ContentLength.GetValueOrDefault();
-
-					using (MemoryStream ms = new MemoryStream((int) contentLength)) {
-						try {
-							using (Stream contentStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false)) {
-								byte batch = 0;
-								uint readThisBatch = 0;
-								byte[] buffer = new byte[8192]; // This is HttpClient's buffer, using more doesn't make sense
-
-								while (contentStream.CanRead) {
-									int read = await contentStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
-
-									if (read == 0) {
-										break;
-									}
-
-									await ms.WriteAsync(buffer, 0, read).ConfigureAwait(false);
-
-									if ((contentLength == 0) || (batch >= maxBatches)) {
-										continue;
-									}
-
-									readThisBatch += (uint) read;
-
-									if (readThisBatch < contentLength / printPercentage) {
-										continue;
-									}
-
-									readThisBatch -= contentLength / printPercentage;
-									ArchiLogger.LogGenericDebug((++batch * printPercentage) + "%...");
-								}
-							}
-						} catch (Exception e) {
-							ArchiLogger.LogGenericDebuggingException(e);
-
-							return null;
-						}
-
-						ArchiLogger.LogGenericDebug("100%");
-
-						return new BinaryResponse(response, ms.ToArray());
-					}
+				if (response == null) {
+					continue;
 				}
+
+				if (response.StatusCode.IsClientErrorCode()) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						result = new BinaryResponse(response);
+					}
+
+					break;
+				}
+
+				ArchiLogger.LogGenericDebug("0%...");
+
+				uint contentLength = (uint) response.Content.Headers.ContentLength.GetValueOrDefault();
+
+				using MemoryStream ms = new MemoryStream((int) contentLength);
+
+				try {
+					using Stream contentStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+
+					byte batch = 0;
+					uint readThisBatch = 0;
+					byte[] buffer = new byte[8192]; // This is HttpClient's buffer, using more doesn't make sense
+
+					while (contentStream.CanRead) {
+						int read = await contentStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+
+						if (read == 0) {
+							break;
+						}
+
+						await ms.WriteAsync(buffer, 0, read).ConfigureAwait(false);
+
+						if ((contentLength == 0) || (batch >= maxBatches)) {
+							continue;
+						}
+
+						readThisBatch += (uint) read;
+
+						if (readThisBatch < contentLength / printPercentage) {
+							continue;
+						}
+
+						readThisBatch -= contentLength / printPercentage;
+						ArchiLogger.LogGenericDebug((++batch * printPercentage) + "%...");
+					}
+				} catch (Exception e) {
+					ArchiLogger.LogGenericDebuggingException(e);
+
+					return null;
+				}
+
+				ArchiLogger.LogGenericDebug("100%");
+
+				return new BinaryResponse(response, ms.ToArray());
 			}
 
 			if (maxTries > 1) {
@@ -478,21 +481,21 @@ namespace ArchiSteamFarm {
 			StringResponse result = null;
 
 			for (byte i = 0; i < maxTries; i++) {
-				using (HttpResponseMessage response = await InternalGet(request, referer).ConfigureAwait(false)) {
-					if (response == null) {
-						continue;
-					}
+				using HttpResponseMessage response = await InternalGet(request, referer).ConfigureAwait(false);
 
-					if (response.StatusCode.IsClientErrorCode()) {
-						if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-							result = new StringResponse(response);
-						}
-
-						break;
-					}
-
-					return new StringResponse(response, await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+				if (response == null) {
+					continue;
 				}
+
+				if (response.StatusCode.IsClientErrorCode()) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						result = new StringResponse(response);
+					}
+
+					break;
+				}
+
+				return new StringResponse(response, await response.Content.ReadAsStringAsync().ConfigureAwait(false));
 			}
 
 			if (maxTries > 1) {
@@ -647,21 +650,21 @@ namespace ArchiSteamFarm {
 			StringResponse result = null;
 
 			for (byte i = 0; i < maxTries; i++) {
-				using (HttpResponseMessage response = await InternalPost(request, data, referer).ConfigureAwait(false)) {
-					if (response == null) {
-						continue;
-					}
+				using HttpResponseMessage response = await InternalPost(request, data, referer).ConfigureAwait(false);
 
-					if (response.StatusCode.IsClientErrorCode()) {
-						if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-							result = new StringResponse(response);
-						}
-
-						break;
-					}
-
-					return new StringResponse(response, await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+				if (response == null) {
+					continue;
 				}
+
+				if (response.StatusCode.IsClientErrorCode()) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						result = new StringResponse(response);
+					}
+
+					break;
+				}
+
+				return new StringResponse(response, await response.Content.ReadAsStringAsync().ConfigureAwait(false));
 			}
 
 			if (maxTries > 1) {
