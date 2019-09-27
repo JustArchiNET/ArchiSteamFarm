@@ -73,12 +73,15 @@ namespace ArchiSteamFarm.IPC {
 			// Add support for response compression
 			app.UseResponseCompression();
 
+			// Add support for websockets used in /Api/NLog
+			app.UseWebSockets();
+
+			// We're using index for URL routing in our static files so re-execute all non-API calls on /
+			app.UseWhen(context => !context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), appBuilder => appBuilder.UseStatusCodePagesWithReExecute("/"));
+
 			// We need static files support for IPC GUI
 			app.UseDefaultFiles();
 			app.UseStaticFiles();
-
-			// We need WebSockets support for /Api/Log
-			app.UseWebSockets();
 
 #if !NETFRAMEWORK
 			// Add support for routing
@@ -106,9 +109,6 @@ namespace ArchiSteamFarm.IPC {
 
 			// Use friendly swagger UI
 			app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/" + SharedInfo.ASF + "/swagger.json", SharedInfo.ASF + " API"));
-
-			// We're using index for URL routing in our static files so re-execute all non-API calls on /
-			app.UseWhen(context => !context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), appBuilder => appBuilder.UseStatusCodePagesWithReExecute("/"));
 		}
 
 		public void ConfigureServices(IServiceCollection services) {
