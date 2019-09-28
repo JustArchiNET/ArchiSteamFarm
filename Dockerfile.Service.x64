@@ -22,7 +22,7 @@ RUN dotnet --info && \
     dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out' /nologo /p:ASFVariant=generic /p:PublishTrimmed=false /p:UseAppHost=false && \
     cp "ArchiSteamFarm/overlay/generic/ArchiSteamFarm-Service.sh" "out/ArchiSteamFarm-Service.sh"
 
-FROM mcr.microsoft.com/dotnet/core/runtime:3.0-buster-slim AS runtime
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-buster-slim AS runtime
 ENV ASPNETCORE_URLS=
 LABEL maintainer="JustArchi <JustArchi@JustArchi.net>"
 EXPOSE 1242
