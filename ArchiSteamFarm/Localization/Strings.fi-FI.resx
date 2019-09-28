@@ -284,7 +284,7 @@ StackTrace:
     <value>IPC-palvelin on valmiina!</value>
   </data>
   <data name="IPCStarting" xml:space="preserve">
-    <value>Käynnistetään IPC serveriä...</value>
+    <value>Käynnistetään IPC-palvelinta...</value>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Tämä botti on jo pysäytetty!</value>
