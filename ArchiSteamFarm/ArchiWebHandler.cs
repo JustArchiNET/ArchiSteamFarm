@@ -315,9 +315,9 @@ namespace ArchiSteamFarm {
 						// ReSharper disable once AccessToDisposedClosure
 						async () => await iPlayerService.CallAsync(
 							HttpMethod.Get, "GetOwnedGames", args: new Dictionary<string, object>(3, StringComparer.Ordinal) {
-									{ "include_appinfo", 1 },
-									{ "key", steamApiKey },
-									{ "steamid", steamID }
+								{ "include_appinfo", 1 },
+								{ "key", steamApiKey },
+								{ "steamid", steamID }
 							}
 						).ConfigureAwait(false)
 					).ConfigureAwait(false);
@@ -1367,8 +1367,8 @@ namespace ArchiSteamFarm {
 						// ReSharper disable once AccessToDisposedClosure
 						async () => await iEconService.CallAsync(
 							HttpMethod.Post, "DeclineTradeOffer", args: new Dictionary<string, object>(2, StringComparer.Ordinal) {
-									{ "key", steamApiKey },
-									{ "tradeofferid", tradeID }
+								{ "key", steamApiKey },
+								{ "tradeofferid", tradeID }
 							}
 						).ConfigureAwait(false)
 					).ConfigureAwait(false);
@@ -1425,11 +1425,11 @@ namespace ArchiSteamFarm {
 						// ReSharper disable once AccessToDisposedClosure
 						async () => await iEconService.CallAsync(
 							HttpMethod.Get, "GetTradeOffers", args: new Dictionary<string, object>(5, StringComparer.Ordinal) {
-									{ "active_only", 1 },
-									{ "get_descriptions", 1 },
-									{ "get_received_offers", 1 },
-									{ "key", steamApiKey },
-									{ "time_historical_cutoff", uint.MaxValue }
+								{ "active_only", 1 },
+								{ "get_descriptions", 1 },
+								{ "get_received_offers", 1 },
+								{ "key", steamApiKey },
+								{ "time_historical_cutoff", uint.MaxValue }
 							}
 						).ConfigureAwait(false)
 					).ConfigureAwait(false);

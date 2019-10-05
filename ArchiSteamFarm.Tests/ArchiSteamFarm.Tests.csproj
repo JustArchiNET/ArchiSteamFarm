@@ -7,7 +7,7 @@
     <DefaultItemExcludes>$(DefaultItemExcludes);debug/**;out/**</DefaultItemExcludes>
     <Description>ASF is an application that allows you to farm steam cards using multiple steam accounts simultaneously.</Description>
     <ErrorReport>none</ErrorReport>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>8.0</LangVersion>
     <NoWarn />
     <OutputType>Library</OutputType>
     <PackageIconUrl>https://github.com/JustArchiNET/ArchiSteamFarm/raw/master/resources/ASF.ico</PackageIconUrl>

@@ -6,7 +6,7 @@
     <Copyright>Copyright © ArchiSteamFarm 2015-2019</Copyright>
     <DefaultItemExcludes>$(DefaultItemExcludes);debug/**;out/**</DefaultItemExcludes>
     <ErrorReport>none</ErrorReport>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>8.0</LangVersion>
     <NoWarn />
     <OutputType>Library</OutputType>
     <PackageIconUrl>https://github.com/JustArchiNET/ArchiSteamFarm/raw/master/resources/ASF.ico</PackageIconUrl>

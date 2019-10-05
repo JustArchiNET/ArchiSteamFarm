@@ -448,8 +448,7 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			return permission switch
-			{
+			return permission switch {
 				BotConfig.EPermission.FamilySharing when SteamFamilySharingIDs.Contains(steamID) => true,
 				_ => BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EPermission realPermission) && (realPermission >= permission),
 			};
@@ -1866,15 +1865,14 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			switch (paymentMethod) {
-				case EPaymentMethod.ActivationCode:
-				case EPaymentMethod.Complimentary: // This is also a flag
-				case EPaymentMethod.GuestPass:
-				case EPaymentMethod.HardwarePromo:
-					return false;
-				default:
-					return !paymentMethod.HasFlag(EPaymentMethod.Complimentary);
-			}
+			// Complimentary is also a flag
+			return paymentMethod switch {
+				EPaymentMethod.ActivationCode => false,
+				EPaymentMethod.Complimentary => false,
+				EPaymentMethod.GuestPass => false,
+				EPaymentMethod.HardwarePromo => false,
+				_ => !paymentMethod.HasFlag(EPaymentMethod.Complimentary)
+			};
 		}
 
 		private async Task JoinMasterChatGroupID() {
