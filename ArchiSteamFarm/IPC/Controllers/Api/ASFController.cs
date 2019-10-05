@@ -132,7 +132,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				message = success ? Strings.Success : Strings.WarningFailed;
 			}
 
-			return Ok(new GenericResponse<string>(success, message, version.ToString()));
+			return Ok(new GenericResponse<string>(success, message, version?.ToString()));
 		}
 	}
 }
