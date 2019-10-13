@@ -313,7 +313,8 @@ namespace ArchiSteamFarm.Json {
 				Market,
 
 				// We're missing information about definition of number 4 type
-				ChangePhoneNumber = 5
+				PhoneNumberChange = 5,
+				AccountRecovery = 6
 			}
 		}
 
