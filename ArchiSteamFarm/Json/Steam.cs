@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using ArchiSteamFarm.Localization;
 using HtmlAgilityPack;
@@ -71,7 +72,7 @@ namespace ArchiSteamFarm.Json {
 
 #pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "amount", Required = Required.Always)]
-			[NotNull]
+			[JetBrains.Annotations.NotNull]
 			private string AmountText {
 				get => Amount.ToString();
 
@@ -94,7 +95,7 @@ namespace ArchiSteamFarm.Json {
 #pragma warning restore IDE0051
 
 			[JsonProperty(PropertyName = "assetid", Required = Required.DisallowNull)]
-			[NotNull]
+			[JetBrains.Annotations.NotNull]
 			private string AssetIDText {
 				get => AssetID.ToString();
 
@@ -117,7 +118,7 @@ namespace ArchiSteamFarm.Json {
 
 #pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "classid", Required = Required.DisallowNull)]
-			[NotNull]
+			[JetBrains.Annotations.NotNull]
 			private string ClassIDText {
 				get => ClassID.ToString();
 
@@ -139,7 +140,7 @@ namespace ArchiSteamFarm.Json {
 
 #pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "contextid", Required = Required.DisallowNull)]
-			[NotNull]
+			[JetBrains.Annotations.NotNull]
 			private string ContextIDText {
 				get => ContextID.ToString();
 
@@ -163,7 +164,7 @@ namespace ArchiSteamFarm.Json {
 
 #pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "id", Required = Required.DisallowNull)]
-			[NotNull]
+			[JetBrains.Annotations.NotNull]
 			private string IDText {
 				get => AssetIDText;
 				set => AssetIDText = value;
@@ -189,7 +190,7 @@ namespace ArchiSteamFarm.Json {
 			[JsonConstructor]
 			private Asset() { }
 
-			[NotNull]
+			[JetBrains.Annotations.NotNull]
 			internal Asset CreateShallowCopy() => (Asset) MemberwiseClone();
 
 			public enum ERarity : byte {
@@ -213,7 +214,7 @@ namespace ArchiSteamFarm.Json {
 			}
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		public class BooleanResponse {
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
 			public readonly bool Success;
@@ -222,7 +223,7 @@ namespace ArchiSteamFarm.Json {
 			protected BooleanResponse() { }
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		public sealed class ConfirmationDetails : BooleanResponse {
 			internal MobileAuthenticator.Confirmation Confirmation { get; set; }
 			internal ulong TradeOfferID { get; private set; }
@@ -316,7 +317,7 @@ namespace ArchiSteamFarm.Json {
 			}
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		public class EResultResponse {
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
 			public readonly EResult Result;
@@ -325,7 +326,7 @@ namespace ArchiSteamFarm.Json {
 			protected EResultResponse() { }
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		public class NumberResponse {
 			[PublicAPI]
 			public bool Success { get; private set; }
@@ -415,7 +416,7 @@ namespace ArchiSteamFarm.Json {
 			}
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class InventoryResponse : NumberResponse {
 			[JsonProperty(PropertyName = "assets", Required = Required.DisallowNull)]
 			internal readonly ImmutableHashSet<Asset> Assets;
@@ -653,7 +654,7 @@ namespace ArchiSteamFarm.Json {
 					[JsonProperty(PropertyName = "internal_name", Required = Required.Always)]
 					internal readonly string Value;
 
-					internal Tag([NotNull] string identifier, [NotNull] string value) {
+					internal Tag([JetBrains.Annotations.NotNull] string identifier, [JetBrains.Annotations.NotNull] string value) {
 						if (string.IsNullOrEmpty(identifier) || string.IsNullOrEmpty(value)) {
 							throw new ArgumentNullException(nameof(identifier) + " || " + nameof(value));
 						}
@@ -668,7 +669,7 @@ namespace ArchiSteamFarm.Json {
 			}
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class NewDiscoveryQueueResponse {
 			[JsonProperty(PropertyName = "queue", Required = Required.Always)]
 			internal readonly ImmutableHashSet<uint> Queue;
@@ -677,7 +678,7 @@ namespace ArchiSteamFarm.Json {
 			private NewDiscoveryQueueResponse() { }
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class RedeemWalletResponse : EResultResponse {
 			[JsonProperty(PropertyName = "wallet", Required = Required.DisallowNull)]
 			internal readonly InternalKeyDetails KeyDetails;
@@ -700,7 +701,7 @@ namespace ArchiSteamFarm.Json {
 			}
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class TradeOfferAcceptResponse {
 			[JsonProperty(PropertyName = "needs_mobile_confirmation", Required = Required.DisallowNull)]
 			internal readonly bool RequiresMobileConfirmation;
@@ -722,7 +723,7 @@ namespace ArchiSteamFarm.Json {
 			}
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class TradeOfferSendResponse {
 			[JsonProperty(PropertyName = "needs_mobile_confirmation", Required = Required.DisallowNull)]
 			internal readonly bool RequiresMobileConfirmation;
@@ -754,7 +755,7 @@ namespace ArchiSteamFarm.Json {
 			private TradeOfferSendResponse() { }
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class UserPrivacy {
 			[JsonProperty(PropertyName = "eCommentPermission", Required = Required.Always)]
 			internal readonly ECommentPermission CommentPermission;
@@ -763,7 +764,7 @@ namespace ArchiSteamFarm.Json {
 			internal readonly PrivacySettings Settings;
 
 			// Constructed from privacy change request
-			internal UserPrivacy([NotNull] PrivacySettings settings, ECommentPermission commentPermission) {
+			internal UserPrivacy([JetBrains.Annotations.NotNull] PrivacySettings settings, ECommentPermission commentPermission) {
 				Settings = settings ?? throw new ArgumentNullException(nameof(settings));
 				CommentPermission = commentPermission;
 			}

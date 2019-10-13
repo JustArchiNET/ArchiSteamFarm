@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -46,7 +47,7 @@ namespace ArchiSteamFarm {
 
 		internal DateTime LastPacketReceived { get; private set; }
 
-		internal ArchiHandler([NotNull] ArchiLogger archiLogger, [NotNull] SteamUnifiedMessages steamUnifiedMessages) {
+		internal ArchiHandler([JetBrains.Annotations.NotNull] ArchiLogger archiLogger, [JetBrains.Annotations.NotNull] SteamUnifiedMessages steamUnifiedMessages) {
 			if ((archiLogger == null) || (steamUnifiedMessages == null)) {
 				throw new ArgumentNullException(nameof(archiLogger) + " || " + nameof(steamUnifiedMessages));
 			}
@@ -705,7 +706,7 @@ namespace ArchiSteamFarm {
 			Client.PostCallback(new VanityURLChangedCallback(packetMsg.TargetJobID, response.Body));
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "MemberCanBeInternal")]
+		[SuppressMessage("ReSharper", "MemberCanBeInternal")]
 		public sealed class PurchaseResponseCallback : CallbackMsg {
 			public readonly Dictionary<uint, string> Items;
 
@@ -721,7 +722,7 @@ namespace ArchiSteamFarm {
 				PurchaseResultDetail = purchaseResult;
 			}
 
-			internal PurchaseResponseCallback([NotNull] JobID jobID, [NotNull] CMsgClientPurchaseResponse msg) {
+			internal PurchaseResponseCallback([JetBrains.Annotations.NotNull] JobID jobID, [JetBrains.Annotations.NotNull] CMsgClientPurchaseResponse msg) {
 				if ((jobID == null) || (msg == null)) {
 					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
 				}
@@ -787,7 +788,7 @@ namespace ArchiSteamFarm {
 		internal sealed class PlayingSessionStateCallback : CallbackMsg {
 			internal readonly bool PlayingBlocked;
 
-			internal PlayingSessionStateCallback([NotNull] JobID jobID, [NotNull] CMsgClientPlayingSessionState msg) {
+			internal PlayingSessionStateCallback([JetBrains.Annotations.NotNull] JobID jobID, [JetBrains.Annotations.NotNull] CMsgClientPlayingSessionState msg) {
 				if ((jobID == null) || (msg == null)) {
 					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
 				}
@@ -800,7 +801,7 @@ namespace ArchiSteamFarm {
 		internal sealed class RedeemGuestPassResponseCallback : CallbackMsg {
 			internal readonly EResult Result;
 
-			internal RedeemGuestPassResponseCallback([NotNull] JobID jobID, [NotNull] CMsgClientRedeemGuestPassResponse msg) {
+			internal RedeemGuestPassResponseCallback([JetBrains.Annotations.NotNull] JobID jobID, [JetBrains.Annotations.NotNull] CMsgClientRedeemGuestPassResponse msg) {
 				if ((jobID == null) || (msg == null)) {
 					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
 				}
@@ -813,7 +814,7 @@ namespace ArchiSteamFarm {
 		internal sealed class SharedLibraryLockStatusCallback : CallbackMsg {
 			internal readonly ulong LibraryLockedBySteamID;
 
-			internal SharedLibraryLockStatusCallback([NotNull] JobID jobID, [NotNull] CMsgClientSharedLibraryLockStatus msg) {
+			internal SharedLibraryLockStatusCallback([JetBrains.Annotations.NotNull] JobID jobID, [JetBrains.Annotations.NotNull] CMsgClientSharedLibraryLockStatus msg) {
 				if ((jobID == null) || (msg == null)) {
 					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
 				}
@@ -831,7 +832,7 @@ namespace ArchiSteamFarm {
 		internal sealed class UserNotificationsCallback : CallbackMsg {
 			internal readonly Dictionary<EUserNotification, uint> Notifications;
 
-			internal UserNotificationsCallback([NotNull] JobID jobID, [NotNull] CMsgClientUserNotifications msg) {
+			internal UserNotificationsCallback([JetBrains.Annotations.NotNull] JobID jobID, [JetBrains.Annotations.NotNull] CMsgClientUserNotifications msg) {
 				if ((jobID == null) || (msg == null)) {
 					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
 				}
@@ -870,7 +871,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			internal UserNotificationsCallback([NotNull] JobID jobID, [NotNull] CMsgClientItemAnnouncements msg) {
+			internal UserNotificationsCallback([JetBrains.Annotations.NotNull] JobID jobID, [JetBrains.Annotations.NotNull] CMsgClientItemAnnouncements msg) {
 				if ((jobID == null) || (msg == null)) {
 					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
 				}
@@ -899,7 +900,7 @@ namespace ArchiSteamFarm {
 		internal sealed class VanityURLChangedCallback : CallbackMsg {
 			internal readonly string VanityURL;
 
-			internal VanityURLChangedCallback([NotNull] JobID jobID, [NotNull] CMsgClientVanityURLChangedNotification msg) {
+			internal VanityURLChangedCallback([JetBrains.Annotations.NotNull] JobID jobID, [JetBrains.Annotations.NotNull] CMsgClientVanityURLChangedNotification msg) {
 				if ((jobID == null) || (msg == null)) {
 					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
 				}

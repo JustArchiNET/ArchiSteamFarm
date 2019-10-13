@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net;
 using System.Threading;
@@ -33,7 +34,7 @@ using Newtonsoft.Json.Linq;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
-	[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	public sealed class GlobalConfig {
 		internal const byte DefaultConnectionTimeout = 90;
 		internal const byte DefaultLoginLimiterDelay = 10;
@@ -217,7 +218,7 @@ namespace ArchiSteamFarm {
 		private bool ShouldSerializeSensitiveDetails = true;
 
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamOwnerID), Required = Required.DisallowNull)]
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		private string SSteamOwnerID {
 			get => SteamOwnerID.ToString();
 
@@ -267,7 +268,7 @@ namespace ArchiSteamFarm {
 			return Enum.IsDefined(typeof(EUpdateChannel), UpdateChannel) ? (true, null) : (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(UpdateChannel), UpdateChannel));
 		}
 
-		[NotNull]
+		[JetBrains.Annotations.NotNull]
 		internal static GlobalConfig Create() =>
 			new GlobalConfig {
 				ShouldSerializeEverything = false,

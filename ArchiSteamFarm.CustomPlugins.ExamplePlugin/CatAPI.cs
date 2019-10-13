@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -32,7 +33,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 		private const string URL = "https://aws.random.cat";
 
 		[ItemCanBeNull]
-		internal static async Task<string> GetRandomCatURL([NotNull] WebBrowser webBrowser) {
+		internal static async Task<string> GetRandomCatURL([JetBrains.Annotations.NotNull] WebBrowser webBrowser) {
 			const string request = URL + "/meow";
 
 			WebBrowser.ObjectResponse<MeowResponse> response = await webBrowser.UrlGetToJsonObject<MeowResponse>(request).ConfigureAwait(false);
@@ -50,7 +51,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 			return Uri.EscapeUriString(response.Content.Link);
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		private sealed class MeowResponse {
 #pragma warning disable 649
 			[JsonProperty(PropertyName = "file", Required = Required.Always)]

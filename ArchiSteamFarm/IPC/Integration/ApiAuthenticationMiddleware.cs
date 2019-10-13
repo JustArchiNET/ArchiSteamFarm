@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -30,7 +31,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 
 namespace ArchiSteamFarm.IPC.Integration {
-	[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 	internal sealed class ApiAuthenticationMiddleware {
 		internal const string HeadersField = "Authentication";
 
@@ -44,7 +45,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 
 		private readonly RequestDelegate Next;
 
-		public ApiAuthenticationMiddleware([NotNull] RequestDelegate next) {
+		public ApiAuthenticationMiddleware([JetBrains.Annotations.NotNull] RequestDelegate next) {
 			Next = next ?? throw new ArgumentNullException(nameof(next));
 
 			lock (FailedAuthorizations) {

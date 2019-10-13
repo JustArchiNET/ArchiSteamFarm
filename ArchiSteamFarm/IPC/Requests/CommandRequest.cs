@@ -21,11 +21,11 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using JetBrains.Annotations;
+using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Requests {
-	[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	public sealed class CommandRequest {
 		/// <summary>
 		///     Specifies the command that will be executed by ASF.
@@ -34,7 +34,7 @@ namespace ArchiSteamFarm.IPC.Requests {
 		[Required]
 		public readonly string Command;
 
-		internal CommandRequest([NotNull] string command) {
+		internal CommandRequest([JetBrains.Annotations.NotNull] string command) {
 			if (string.IsNullOrEmpty(command)) {
 				throw new ArgumentNullException(nameof(command));
 			}

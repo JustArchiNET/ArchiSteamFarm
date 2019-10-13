@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -58,7 +59,7 @@ namespace ArchiSteamFarm {
 		private DateTime LastPersonaStateRequest;
 		private bool ShouldSendHeartBeats;
 
-		internal Statistics([NotNull] Bot bot) {
+		internal Statistics([JetBrains.Annotations.NotNull] Bot bot) {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 			MatchActivelyTimer = new Timer(
@@ -340,7 +341,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
+		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
 		private async Task<bool> MatchActivelyRound(IReadOnlyCollection<Steam.Asset.EType> acceptedMatchableTypes, IDictionary<ulong, (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs)> triedSteamIDs) {
 			if ((acceptedMatchableTypes == null) || (acceptedMatchableTypes.Count == 0) || (triedSteamIDs == null)) {
 				Bot.ArchiLogger.LogNullError(nameof(acceptedMatchableTypes) + " || " + nameof(triedSteamIDs));
@@ -663,7 +664,7 @@ namespace ArchiSteamFarm {
 			return skippedSetsThisRound.Count > 0;
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		private sealed class ListedUser {
 			internal readonly HashSet<Steam.Asset.EType> MatchableTypes = new HashSet<Steam.Asset.EType>();
 

@@ -21,7 +21,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using JetBrains.Annotations;
+using System.Diagnostics.CodeAnalysis;
 using Nito.AsyncEx;
 
 namespace ArchiSteamFarm.Collections {
@@ -80,8 +80,8 @@ namespace ArchiSteamFarm.Collections {
 			}
 		}
 
-		[NotNull]
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "AnnotationRedundancyInHierarchy")]
+		[JetBrains.Annotations.NotNull]
+		[SuppressMessage("ReSharper", "AnnotationRedundancyInHierarchy")]
 		public IEnumerator<T> GetEnumerator() => new ConcurrentEnumerator<T>(BackingCollection, Lock.ReaderLock());
 
 		public int IndexOf(T item) {
@@ -108,11 +108,11 @@ namespace ArchiSteamFarm.Collections {
 			}
 		}
 
-		[NotNull]
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "AnnotationRedundancyInHierarchy")]
+		[JetBrains.Annotations.NotNull]
+		[SuppressMessage("ReSharper", "AnnotationRedundancyInHierarchy")]
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		internal void ReplaceWith([NotNull] IEnumerable<T> collection) {
+		internal void ReplaceWith([JetBrains.Annotations.NotNull] IEnumerable<T> collection) {
 			using (Lock.WriterLock()) {
 				BackingCollection.Clear();
 				BackingCollection.AddRange(collection);
