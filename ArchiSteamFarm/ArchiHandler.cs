@@ -712,6 +712,15 @@ namespace ArchiSteamFarm {
 			public EPurchaseResultDetail PurchaseResultDetail { get; internal set; }
 			public EResult Result { get; internal set; }
 
+			internal PurchaseResponseCallback(EResult result, EPurchaseResultDetail purchaseResult) {
+				if (!Enum.IsDefined(typeof(EResult), result) || !Enum.IsDefined(typeof(EPurchaseResultDetail), purchaseResult)) {
+					throw new ArgumentNullException(nameof(result) + " || " + nameof(purchaseResult));
+				}
+
+				Result = result;
+				PurchaseResultDetail = purchaseResult;
+			}
+
 			internal PurchaseResponseCallback([NotNull] JobID jobID, [NotNull] CMsgClientPurchaseResponse msg) {
 				if ((jobID == null) || (msg == null)) {
 					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));

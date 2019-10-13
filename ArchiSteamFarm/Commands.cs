@@ -2182,7 +2182,7 @@ namespace ArchiSteamFarm {
 				while (!string.IsNullOrEmpty(key)) {
 					string startingKey = key;
 
-					using (IEnumerator<Bot> botsEnumerator = Bot.Bots.Where(bot => (bot.Value != Bot) && !rateLimitedBots.Contains(bot.Value) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.HasPermission(steamID, BotConfig.EPermission.Operator)).OrderByDescending(bot => Bot.BotsComparer.Compare(bot.Key, Bot.BotName) > 0).ThenBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value).GetEnumerator()) {
+					using (IEnumerator<Bot> botsEnumerator = Bot.Bots.Where(bot => (bot.Value != Bot) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.HasPermission(steamID, BotConfig.EPermission.Operator)).OrderByDescending(bot => Bot.BotsComparer.Compare(bot.Key, Bot.BotName) > 0).ThenBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value).GetEnumerator()) {
 						Bot currentBot = Bot;
 
 						while (!string.IsNullOrEmpty(key) && (currentBot != null)) {
@@ -2194,11 +2194,11 @@ namespace ArchiSteamFarm {
 								continue;
 							}
 
-							if ((currentBot == Bot) && (redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || rateLimitedBots.Contains(currentBot))) {
+							if ((currentBot == Bot) && redeemFlags.HasFlag(ERedeemFlags.SkipInitial)) {
 								// Either bot will be changed, or loop aborted
 								currentBot = null;
 							} else {
-								ArchiHandler.PurchaseResponseCallback result = await currentBot.Actions.RedeemKey(key).ConfigureAwait(false);
+								ArchiHandler.PurchaseResponseCallback result = rateLimitedBots.Contains(currentBot) ? new ArchiHandler.PurchaseResponseCallback(EResult.Fail, EPurchaseResultDetail.RateLimited) : await currentBot.Actions.RedeemKey(key).ConfigureAwait(false);
 
 								if (result == null) {
 									response.AppendLine(FormatBotResponse(string.Format(Strings.BotRedeem, key, EPurchaseResultDetail.Timeout), currentBot.BotName));
@@ -2221,18 +2221,18 @@ namespace ArchiSteamFarm {
 										}
 									}
 
+									if ((result.Items != null) && (result.Items.Count > 0)) {
+										response.AppendLine(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, result.Result + "/" + result.PurchaseResultDetail, string.Join(", ", result.Items)), currentBot.BotName));
+									} else if (!rateLimitedBots.Contains(currentBot)) {
+										response.AppendLine(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail), currentBot.BotName));
+									}
+
 									switch (result.PurchaseResultDetail) {
 										case EPurchaseResultDetail.BadActivationCode:
 										case EPurchaseResultDetail.CannotRedeemCodeFromClient:
 										case EPurchaseResultDetail.DuplicateActivationCode:
 										case EPurchaseResultDetail.NoDetail: // OK
 										case EPurchaseResultDetail.Timeout:
-											if ((result.Items != null) && (result.Items.Count > 0)) {
-												response.AppendLine(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, result.Result + "/" + result.PurchaseResultDetail, string.Join(", ", result.Items)), currentBot.BotName));
-											} else {
-												response.AppendLine(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail), currentBot.BotName));
-											}
-
 											if ((result.Result != EResult.Timeout) && (result.PurchaseResultDetail != EPurchaseResultDetail.Timeout)) {
 												unusedKeys.Remove(key);
 											}
@@ -2251,12 +2251,6 @@ namespace ArchiSteamFarm {
 										case EPurchaseResultDetail.AlreadyPurchased:
 										case EPurchaseResultDetail.DoesNotOwnRequiredApp:
 										case EPurchaseResultDetail.RestrictedCountry:
-											if ((result.Items != null) && (result.Items.Count > 0)) {
-												response.AppendLine(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, result.Result + "/" + result.PurchaseResultDetail, string.Join(", ", result.Items)), currentBot.BotName));
-											} else {
-												response.AppendLine(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail), currentBot.BotName));
-											}
-
 											if (!forward || (keepMissingGames && (result.PurchaseResultDetail != EPurchaseResultDetail.AlreadyPurchased))) {
 												// Next key
 												key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null;
@@ -2328,12 +2322,6 @@ namespace ArchiSteamFarm {
 											goto case EPurchaseResultDetail.AccountLocked;
 										default:
 											ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.PurchaseResultDetail), result.PurchaseResultDetail));
-
-											if ((result.Items != null) && (result.Items.Count > 0)) {
-												response.AppendLine(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, result.Result + "/" + result.PurchaseResultDetail, string.Join(", ", result.Items)), currentBot.BotName));
-											} else {
-												response.AppendLine(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail), currentBot.BotName));
-											}
 
 											unusedKeys.Remove(key);
 
