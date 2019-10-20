@@ -28,7 +28,7 @@ namespace ArchiSteamFarm.Plugins {
 		///     ASF will call this method when cards farming module is finished on given bot instance. This method will also be called when there is nothing to idle or idling is unavailable, you can use provided boolean value for determining that.
 		/// </summary>
 		/// <param name="bot">Bot object related to this callback.</param>
-		/// <param name="farmedSomething">Bool value indicating whether the module has confirmed to drop at least one card during the process.</param>
+		/// <param name="farmedSomething">Bool value indicating whether the module has finished successfully, so when there was at least one card to drop, and nothing has interrupted us in the meantime.</param>
 		void OnBotFarmingFinished(Bot bot, bool farmedSomething);
 
 		/// <summary>
