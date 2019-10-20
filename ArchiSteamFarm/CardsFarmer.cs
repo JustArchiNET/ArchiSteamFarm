@@ -31,6 +31,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.Plugins;
 using HtmlAgilityPack;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -52,19 +53,25 @@ namespace ArchiSteamFarm {
 		// Games that were confirmed to show false status on general badges page
 		private static readonly ImmutableHashSet<uint> UntrustedAppIDs = ImmutableHashSet.Create<uint>(440, 570, 730);
 
-		[JsonProperty]
-		internal readonly ConcurrentHashSet<Game> CurrentGamesFarming = new ConcurrentHashSet<Game>();
+		[JsonProperty(PropertyName = "CurrentGamesFarming")]
+		[PublicAPI]
+		public IReadOnlyCollection<Game> CurrentGamesFarmingReadOnly => CurrentGamesFarming;
+
+		[JsonProperty(PropertyName = "GamesToFarm")]
+		[PublicAPI]
+		public IReadOnlyCollection<Game> GamesToFarmReadOnly => GamesToFarm;
 
 		[JsonProperty]
-		internal readonly ConcurrentList<Game> GamesToFarm = new ConcurrentList<Game>();
-
-		[JsonProperty]
-		internal TimeSpan TimeRemaining =>
+		[PublicAPI]
+		public TimeSpan TimeRemaining =>
 			new TimeSpan(
 				Bot.BotConfig.HoursUntilCardDrops > 0 ? (ushort) Math.Ceiling(GamesToFarm.Count / (float) ArchiHandler.MaxGamesPlayedConcurrently) * Bot.BotConfig.HoursUntilCardDrops : 0,
 				30 * GamesToFarm.Sum(game => game.CardsRemaining),
 				0
 			);
+
+		internal readonly ConcurrentHashSet<Game> CurrentGamesFarming = new ConcurrentHashSet<Game>();
+		internal readonly ConcurrentList<Game> GamesToFarm = new ConcurrentList<Game>();
 
 		private readonly Bot Bot;
 		private readonly SemaphoreSlim EventSemaphore = new SemaphoreSlim(1, 1);
@@ -80,10 +87,11 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal bool NowFarming { get; private set; }
-
 		[JsonProperty]
-		internal bool Paused { get; private set; }
+		[PublicAPI]
+		public bool Paused { get; private set; }
+
+		internal bool NowFarming { get; private set; }
 
 		private bool KeepFarming;
 		private bool ParsingScheduled;
@@ -293,6 +301,8 @@ namespace ArchiSteamFarm {
 
 				KeepFarming = NowFarming = true;
 				Utilities.InBackground(Farm, true);
+
+				await PluginsCore.OnBotFarmingStarted(Bot).ConfigureAwait(false);
 			} finally {
 				FarmingInitializationSemaphore.Release();
 			}
@@ -1207,20 +1217,20 @@ namespace ArchiSteamFarm {
 			GamesToFarm.ReplaceWith(gamesToFarm);
 		}
 
-		internal sealed class Game : IEquatable<Game> {
+		public sealed class Game : IEquatable<Game> {
 			[JsonProperty]
-			internal readonly uint AppID;
+			public readonly uint AppID;
+
+			[JsonProperty]
+			public readonly string GameName;
 
 			internal readonly byte BadgeLevel;
 
 			[JsonProperty]
-			internal readonly string GameName;
+			public ushort CardsRemaining { get; internal set; }
 
 			[JsonProperty]
-			internal ushort CardsRemaining { get; set; }
-
-			[JsonProperty]
-			internal float HoursPlayed { get; set; }
+			public float HoursPlayed { get; internal set; }
 
 			internal uint PlayableAppID { get; set; }
 

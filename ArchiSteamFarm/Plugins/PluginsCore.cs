@@ -234,6 +234,60 @@ namespace ArchiSteamFarm.Plugins {
 			}
 		}
 
+		internal static async Task OnBotFarmingStarted(Bot bot) {
+			if (bot == null) {
+				ASF.ArchiLogger.LogNullError(nameof(bot));
+
+				return;
+			}
+
+			if (!HasActivePluginsLoaded) {
+				return;
+			}
+
+			try {
+				await Utilities.InParallel(ActivePlugins.OfType<IBotCardsFarmerInfo>().Select(plugin => Task.Run(() => plugin.OnBotFarmingStarted(bot)))).ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+			}
+		}
+
+		internal static async Task OnBotFarmingStopped(Bot bot) {
+			if (bot == null) {
+				ASF.ArchiLogger.LogNullError(nameof(bot));
+
+				return;
+			}
+
+			if (!HasActivePluginsLoaded) {
+				return;
+			}
+
+			try {
+				await Utilities.InParallel(ActivePlugins.OfType<IBotCardsFarmerInfo>().Select(plugin => Task.Run(() => plugin.OnBotFarmingStopped(bot)))).ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+			}
+		}
+
+		internal static async Task OnBotFarmingFinished(Bot bot, bool farmedSomething) {
+			if (bot == null) {
+				ASF.ArchiLogger.LogNullError(nameof(bot));
+
+				return;
+			}
+
+			if (!HasActivePluginsLoaded) {
+				return;
+			}
+
+			try {
+				await Utilities.InParallel(ActivePlugins.OfType<IBotCardsFarmerInfo>().Select(plugin => Task.Run(() => plugin.OnBotFarmingFinished(bot, farmedSomething)))).ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+			}
+		}
+
 		internal static async Task<bool> OnBotFriendRequest(Bot bot, ulong steamID) {
 			if ((bot == null) || (steamID == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID));

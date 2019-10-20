@@ -982,9 +982,14 @@ namespace ArchiSteamFarm {
 			if (BotConfig.ShutdownOnFarmingFinished) {
 				Stop();
 			}
+
+			await PluginsCore.OnBotFarmingFinished(this, farmedSomething).ConfigureAwait(false);
 		}
 
-		internal async Task OnFarmingStopped() => await ResetGamesPlayed().ConfigureAwait(false);
+		internal async Task OnFarmingStopped() {
+			await ResetGamesPlayed().ConfigureAwait(false);
+			await PluginsCore.OnBotFarmingStopped(this).ConfigureAwait(false);
+		}
 
 		internal async Task<bool> RefreshSession() {
 			if (!IsConnectedAndLoggedOn) {
