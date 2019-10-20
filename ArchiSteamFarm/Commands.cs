@@ -2557,17 +2557,17 @@ namespace ArchiSteamFarm {
 				return (FormatBotResponse(Strings.BotStatusLocked), Bot);
 			}
 
-			if (!Bot.CardsFarmer.NowFarming || (Bot.CardsFarmer.CurrentGamesFarming.Count == 0)) {
+			if (!Bot.CardsFarmer.NowFarming || (Bot.CardsFarmer.CurrentGamesFarmingReadOnly.Count == 0)) {
 				return (FormatBotResponse(Strings.BotStatusNotIdling), Bot);
 			}
 
-			if (Bot.CardsFarmer.CurrentGamesFarming.Count > 1) {
-				return (FormatBotResponse(string.Format(Strings.BotStatusIdlingList, string.Join(", ", Bot.CardsFarmer.CurrentGamesFarming.Select(game => game.AppID + " (" + game.GameName + ")")), Bot.CardsFarmer.GamesToFarm.Count, Bot.CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining), Bot.CardsFarmer.TimeRemaining.ToHumanReadable())), Bot);
+			if (Bot.CardsFarmer.CurrentGamesFarmingReadOnly.Count > 1) {
+				return (FormatBotResponse(string.Format(Strings.BotStatusIdlingList, string.Join(", ", Bot.CardsFarmer.CurrentGamesFarmingReadOnly.Select(game => game.AppID + " (" + game.GameName + ")")), Bot.CardsFarmer.GamesToFarmReadOnly.Count, Bot.CardsFarmer.GamesToFarmReadOnly.Sum(game => game.CardsRemaining), Bot.CardsFarmer.TimeRemaining.ToHumanReadable())), Bot);
 			}
 
-			CardsFarmer.Game soloGame = Bot.CardsFarmer.CurrentGamesFarming.First();
+			CardsFarmer.Game soloGame = Bot.CardsFarmer.CurrentGamesFarmingReadOnly.First();
 
-			return (FormatBotResponse(string.Format(Strings.BotStatusIdling, soloGame.AppID, soloGame.GameName, soloGame.CardsRemaining, Bot.CardsFarmer.GamesToFarm.Count, Bot.CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining), Bot.CardsFarmer.TimeRemaining.ToHumanReadable())), Bot);
+			return (FormatBotResponse(string.Format(Strings.BotStatusIdling, soloGame.AppID, soloGame.GameName, soloGame.CardsRemaining, Bot.CardsFarmer.GamesToFarmReadOnly.Count, Bot.CardsFarmer.GamesToFarmReadOnly.Sum(game => game.CardsRemaining), Bot.CardsFarmer.TimeRemaining.ToHumanReadable())), Bot);
 		}
 
 		[ItemCanBeNull]
@@ -2594,7 +2594,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<Bot> botsRunning = validResults.Where(result => result.Bot.KeepRunning).Select(result => result.Bot).ToHashSet();
 
-			string extraResponse = string.Format(Strings.BotStatusOverview, botsRunning.Count, validResults.Count, botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarm.Count), botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining)));
+			string extraResponse = string.Format(Strings.BotStatusOverview, botsRunning.Count, validResults.Count, botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarmReadOnly.Count), botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarmReadOnly.Sum(game => game.CardsRemaining)));
 
 			return string.Join(Environment.NewLine, validResults.Select(result => result.Response).Union(extraResponse.ToEnumerable()));
 		}

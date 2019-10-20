@@ -70,13 +70,12 @@ namespace ArchiSteamFarm {
 				0
 			);
 
-		internal readonly ConcurrentHashSet<Game> CurrentGamesFarming = new ConcurrentHashSet<Game>();
-		internal readonly ConcurrentList<Game> GamesToFarm = new ConcurrentList<Game>();
-
 		private readonly Bot Bot;
+		private readonly ConcurrentHashSet<Game> CurrentGamesFarming = new ConcurrentHashSet<Game>();
 		private readonly SemaphoreSlim EventSemaphore = new SemaphoreSlim(1, 1);
 		private readonly SemaphoreSlim FarmingInitializationSemaphore = new SemaphoreSlim(1, 1);
 		private readonly SemaphoreSlim FarmingResetSemaphore = new SemaphoreSlim(0, 1);
+		private readonly ConcurrentList<Game> GamesToFarm = new ConcurrentList<Game>();
 		private readonly Timer IdleFarmingTimer;
 		private readonly ConcurrentDictionary<uint, DateTime> LocallyIgnoredAppIDs = new ConcurrentDictionary<uint, DateTime>();
 
