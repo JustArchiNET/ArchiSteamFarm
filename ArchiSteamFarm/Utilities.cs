@@ -64,7 +64,7 @@ namespace ArchiSteamFarm {
 		public static uint GetUnixTime() => (uint) DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
 		[PublicAPI]
-		public static void InBackground(Action action, bool longRunning = false) {
+		public static async void InBackground(Action action, bool longRunning = false) {
 			if (action == null) {
 				ASF.ArchiLogger.LogNullError(nameof(action));
 
@@ -77,11 +77,11 @@ namespace ArchiSteamFarm {
 				options |= TaskCreationOptions.LongRunning | TaskCreationOptions.PreferFairness;
 			}
 
-			Task.Factory.StartNew(action, CancellationToken.None, options, TaskScheduler.Default);
+			await Task.Factory.StartNew(action, CancellationToken.None, options, TaskScheduler.Default).ConfigureAwait(false);
 		}
 
 		[PublicAPI]
-		public static void InBackground<T>(Func<T> function, bool longRunning = false) {
+		public static async void InBackground<T>(Func<T> function, bool longRunning = false) {
 			if (function == null) {
 				ASF.ArchiLogger.LogNullError(nameof(function));
 
@@ -94,7 +94,7 @@ namespace ArchiSteamFarm {
 				options |= TaskCreationOptions.LongRunning | TaskCreationOptions.PreferFairness;
 			}
 
-			Task.Factory.StartNew(function, CancellationToken.None, options, TaskScheduler.Default);
+			await Task.Factory.StartNew(function, CancellationToken.None, options, TaskScheduler.Default).ConfigureAwait(false);
 		}
 
 		[PublicAPI]
