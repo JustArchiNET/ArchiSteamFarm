@@ -370,9 +370,9 @@ namespace ArchiSteamFarm {
 			await StartFarming().ConfigureAwait(false);
 		}
 
-		private async Task CheckPage(HtmlDocument htmlDocument) {
-			if (htmlDocument == null) {
-				Bot.ArchiLogger.LogNullError(nameof(htmlDocument));
+		private async Task CheckPage(HtmlDocument htmlDocument, ISet<uint> parsedAppIDs) {
+			if ((htmlDocument == null) || (parsedAppIDs == null)) {
+				Bot.ArchiLogger.LogNullError(nameof(htmlDocument) + " || " + nameof(parsedAppIDs));
 
 				return;
 			}
@@ -416,6 +416,11 @@ namespace ArchiSteamFarm {
 				if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
 					Bot.ArchiLogger.LogNullError(nameof(appID));
 
+					continue;
+				}
+
+				if (!parsedAppIDs.Add(appID)) {
+					// Another task has already handled this appID
 					continue;
 				}
 
@@ -680,9 +685,9 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async Task CheckPage(byte page) {
-			if (page == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(page));
+		private async Task CheckPage(byte page, ISet<uint> parsedAppIDs) {
+			if ((page == 0) || (parsedAppIDs == null)) {
+				Bot.ArchiLogger.LogNullError(nameof(page) + " || " + nameof(parsedAppIDs));
 
 				return;
 			}
@@ -693,7 +698,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			await CheckPage(htmlDocument).ConfigureAwait(false);
+			await CheckPage(htmlDocument, parsedAppIDs).ConfigureAwait(false);
 		}
 
 		private async Task Farm() {
@@ -999,7 +1004,9 @@ namespace ArchiSteamFarm {
 
 			GamesToFarm.Clear();
 
-			Task mainTask = CheckPage(htmlDocument);
+			ConcurrentHashSet<uint> parsedAppIDs = new ConcurrentHashSet<uint>();
+
+			Task mainTask = CheckPage(htmlDocument, parsedAppIDs);
 
 			switch (ASF.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -1009,7 +1016,7 @@ namespace ArchiSteamFarm {
 						Bot.ArchiLogger.LogGenericInfo(Strings.CheckingOtherBadgePages);
 
 						for (byte page = 2; page <= maxPages; page++) {
-							await CheckPage(page).ConfigureAwait(false);
+							await CheckPage(page, parsedAppIDs).ConfigureAwait(false);
 						}
 					}
 
@@ -1023,7 +1030,7 @@ namespace ArchiSteamFarm {
 						for (byte page = 2; page <= maxPages; page++) {
 							// We need a copy of variable being passed when in for loops, as loop will proceed before our task is launched
 							byte currentPage = page;
-							tasks.Add(CheckPage(currentPage));
+							tasks.Add(CheckPage(currentPage, parsedAppIDs));
 						}
 					}
 
