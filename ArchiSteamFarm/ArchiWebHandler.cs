@@ -154,7 +154,7 @@ namespace ArchiSteamFarm {
 			string request = "/inventory/" + steamID + "/" + appID + "/" + contextID + "?count=" + MaxItemsInSingleInventoryRequest + "&l=english";
 			ulong startAssetID = 0;
 
-			HashSet<Steam.Asset> result = new HashSet<Steam.Asset>();
+			Dictionary<ulong, Steam.Asset> result = new Dictionary<ulong, Steam.Asset>();
 
 			while (true) {
 				await InventorySemaphore.WaitAsync().ConfigureAwait(false);
@@ -174,7 +174,7 @@ namespace ArchiSteamFarm {
 
 					if (response.TotalInventoryCount == 0) {
 						// Empty inventory
-						return result;
+						return new HashSet<Steam.Asset>(0);
 					}
 
 					if ((response.Assets == null) || (response.Assets.Count == 0) || (response.Descriptions == null) || (response.Descriptions.Count == 0)) {
@@ -214,11 +214,11 @@ namespace ArchiSteamFarm {
 							continue;
 						}
 
-						result.Add(asset);
+						result[asset.AssetID] = asset;
 					}
 
 					if (!response.MoreItems) {
-						return result;
+						return result.Values.ToHashSet();
 					}
 
 					if (response.LastAssetID == 0) {
