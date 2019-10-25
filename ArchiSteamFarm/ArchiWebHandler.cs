@@ -174,7 +174,7 @@ namespace ArchiSteamFarm {
 
 					if (response.TotalInventoryCount == 0) {
 						// Empty inventory
-						return new HashSet<Steam.Asset>(0);
+						return result.Values.ToHashSet();
 					}
 
 					if ((response.Assets == null) || (response.Assets.Count == 0) || (response.Descriptions == null) || (response.Descriptions.Count == 0)) {
