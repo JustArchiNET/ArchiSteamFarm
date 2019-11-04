@@ -2202,7 +2202,10 @@ namespace ArchiSteamFarm {
 			}
 
 			// Under normal circumstances, timestamp must always be greater than 0, but Steam already proved that it's capable of going against the logic
-			if ((notification.steamid_sender != SteamID) && (notification.timestamp > 0) && BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkReceivedMessagesAsRead)) {
+			if ((notification.steamid_sender != SteamID) && (notification.timestamp > 0) &&
+				(BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkReceivedMessagesAsRead) ||
+					(BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkBotsMessagesAsRead) &&
+					(Bot.Bots.Values.FirstOrDefault(bot => bot.SteamID == notification.steamid_sender) != null)))) {
 				Utilities.InBackground(() => ArchiHandler.AckChatMessage(notification.chat_group_id, notification.chat_id, notification.timestamp));
 			}
 
@@ -2242,12 +2245,14 @@ namespace ArchiSteamFarm {
 			}
 
 			// Under normal circumstances, timestamp must always be greater than 0, but Steam already proved that it's capable of going against the logic
-			if (!notification.local_echo && (notification.rtime32_server_timestamp > 0))
-				if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkReceivedMessagesAsRead) ||
-					((Bot.Bots.Values.FirstOrDefault(bot => bot.SteamID == notification.steamid_friend) != null) &&
-					 BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkBotsMessagesAsRead))) {
-					Utilities.InBackground(() => ArchiHandler.AckMessage(notification.steamid_friend, notification.rtime32_server_timestamp));
-				}
+			if (!notification.local_echo && (notification.rtime32_server_timestamp > 0) &&
+				(BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkReceivedMessagesAsRead) ||
+					(BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkBotsMessagesAsRead) &&
+					(Bot.Bots.Values.FirstOrDefault(bot => bot.SteamID == notification.steamid_friend) != null)) ||
+					(BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkTradeMessagesAsRead) &&
+					notification.message.StartsWith("[tradeoffer", StringComparison.Ordinal)))) {
+				Utilities.InBackground(() => ArchiHandler.AckMessage(notification.steamid_friend, notification.rtime32_server_timestamp));
+			}
 
 			string message;
 
