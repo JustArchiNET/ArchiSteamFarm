@@ -1736,13 +1736,18 @@ namespace ArchiSteamFarm {
 			const string request = "/account/managedevices?l=english";
 			HtmlDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamStoreURL, request).ConfigureAwait(false);
 
-			HtmlNodeCollection htmlNodes = htmlDocument?.DocumentNode.SelectNodes("(//table[@class='accountTable'])[last()]//a/@data-miniprofile");
-
-			if (htmlNodes == null) {
-				return null; // OK, no authorized steamIDs
+			if (htmlDocument == null) {
+				return null;
 			}
 
+			HtmlNodeCollection htmlNodes = htmlDocument.DocumentNode.SelectNodes("(//table[@class='accountTable'])[2]//a/@data-miniprofile");
+
 			HashSet<ulong> result = new HashSet<ulong>();
+
+			if (htmlNodes == null) {
+				// OK, no authorized steamIDs
+				return result;
+			}
 
 			foreach (string miniProfile in htmlNodes.Select(htmlNode => htmlNode.GetAttributeValue("data-miniprofile", null))) {
 				if (string.IsNullOrEmpty(miniProfile)) {

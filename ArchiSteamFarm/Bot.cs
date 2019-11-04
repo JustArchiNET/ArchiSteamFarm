@@ -1754,11 +1754,11 @@ namespace ArchiSteamFarm {
 		private async Task InitializeFamilySharing() {
 			HashSet<ulong> steamIDs = await ArchiWebHandler.GetFamilySharingSteamIDs().ConfigureAwait(false);
 
-			if ((steamIDs == null) || (steamIDs.Count == 0)) {
+			if (steamIDs == null) {
 				return;
 			}
 
-			SteamFamilySharingIDs.ReplaceIfNeededWith(steamIDs);
+			SteamFamilySharingIDs.ReplaceWith(steamIDs);
 		}
 
 		private async Task<bool> InitLoginAndPassword(bool requiresPassword) {
