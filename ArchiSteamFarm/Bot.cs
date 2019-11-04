@@ -36,6 +36,7 @@ using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Plugins;
 using JetBrains.Annotations;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using SteamKit2;
 using SteamKit2.Unified.Internal;
@@ -2194,6 +2195,32 @@ namespace ArchiSteamFarm {
 			await Actions.AcceptGuestPasses(guestPassIDs).ConfigureAwait(false);
 		}
 
+		private bool ShouldMarkGroupChatMessage(ulong steamID) {
+			if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkReceivedMessagesAsRead)) {
+				return true;
+			}
+
+			if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkBotMessagesAsRead) &&
+				Bots.Values.Any(bot => bot.SteamID == steamID)) {
+				return true;
+			}
+
+			return false;
+		}
+
+		private bool ShouldMarkPrivateChatMessage(ulong steamID, string message) {
+			if (ShouldMarkGroupChatMessage(steamID)) {
+				return true;
+			}
+
+			if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkTradeMessagesAsRead) &&
+				message.StartsWith("[tradeoffer", StringComparison.Ordinal)) {
+				return true;
+			}
+
+			return false;
+		}
+
 		private async Task OnIncomingChatMessage(CChatRoom_IncomingChatMessage_Notification notification) {
 			if (notification == null) {
 				ArchiLogger.LogNullError(nameof(notification));
@@ -2202,11 +2229,10 @@ namespace ArchiSteamFarm {
 			}
 
 			// Under normal circumstances, timestamp must always be greater than 0, but Steam already proved that it's capable of going against the logic
-			if ((notification.steamid_sender != SteamID) && (notification.timestamp > 0) &&
-				(BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkReceivedMessagesAsRead) ||
-					(BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkBotMessagesAsRead) &&
-					Bots.Values.Any(bot => bot.SteamID == notification.steamid_sender)))) {
-				Utilities.InBackground(() => ArchiHandler.AckChatMessage(notification.chat_group_id, notification.chat_id, notification.timestamp));
+			if ((notification.steamid_sender != SteamID) && (notification.timestamp > 0)) {
+				if (ShouldMarkGroupChatMessage(notification.steamid_sender)) {
+					Utilities.InBackground(() => ArchiHandler.AckChatMessage(notification.chat_group_id, notification.chat_id, notification.timestamp));
+				}
 			}
 
 			string message;
@@ -2245,13 +2271,10 @@ namespace ArchiSteamFarm {
 			}
 
 			// Under normal circumstances, timestamp must always be greater than 0, but Steam already proved that it's capable of going against the logic
-			if (!notification.local_echo && (notification.rtime32_server_timestamp > 0) &&
-				(BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkReceivedMessagesAsRead) ||
-					(BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkBotMessagesAsRead) &&
-					Bots.Values.Any(bot => bot.SteamID == notification.steamid_friend)) ||
-					(BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkTradeMessagesAsRead) &&
-					notification.message.StartsWith("[tradeoffer", StringComparison.Ordinal)))) {
-				Utilities.InBackground(() => ArchiHandler.AckMessage(notification.steamid_friend, notification.rtime32_server_timestamp));
+			if (!notification.local_echo && (notification.rtime32_server_timestamp > 0)) {
+				if (ShouldMarkPrivateChatMessage(notification.steamid_friend, notification.message)) {
+					Utilities.InBackground(() => ArchiHandler.AckMessage(notification.steamid_friend, notification.rtime32_server_timestamp));
+				}
 			}
 
 			string message;
