@@ -58,7 +58,7 @@
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.6.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3-beta2" />
     <PackageReference Include="Nito.AsyncEx.Coordination" Version="5.0.0" />
-    <PackageReference Include="NLog" Version="4.6.7" />
+    <PackageReference Include="NLog" Version="4.6.8" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.9.0" />
     <PackageReference Include="protobuf-net" Version="3.0.0-alpha.43" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc4" />
