@@ -2195,7 +2195,7 @@ namespace ArchiSteamFarm {
 			await Actions.AcceptGuestPasses(guestPassIDs).ConfigureAwait(false);
 		}
 
-		private bool ShouldMarkGroupChatMessage(ulong steamID) {
+		private bool ShouldAckGroupChatMessage(ulong steamID) {
 			if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkReceivedMessagesAsRead)) {
 				return true;
 			}
@@ -2208,8 +2208,8 @@ namespace ArchiSteamFarm {
 			return false;
 		}
 
-		private bool ShouldMarkPrivateChatMessage(ulong steamID, string message) {
-			if (ShouldMarkGroupChatMessage(steamID)) {
+		private bool ShouldAckPrivateChatMessage(ulong steamID, string message) {
+			if (ShouldAckGroupChatMessage(steamID)) {
 				return true;
 			}
 
@@ -2230,7 +2230,7 @@ namespace ArchiSteamFarm {
 
 			// Under normal circumstances, timestamp must always be greater than 0, but Steam already proved that it's capable of going against the logic
 			if ((notification.steamid_sender != SteamID) && (notification.timestamp > 0)) {
-				if (ShouldMarkGroupChatMessage(notification.steamid_sender)) {
+				if (ShouldAckGroupChatMessage(notification.steamid_sender)) {
 					Utilities.InBackground(() => ArchiHandler.AckChatMessage(notification.chat_group_id, notification.chat_id, notification.timestamp));
 				}
 			}
@@ -2272,7 +2272,7 @@ namespace ArchiSteamFarm {
 
 			// Under normal circumstances, timestamp must always be greater than 0, but Steam already proved that it's capable of going against the logic
 			if (!notification.local_echo && (notification.rtime32_server_timestamp > 0)) {
-				if (ShouldMarkPrivateChatMessage(notification.steamid_friend, notification.message)) {
+				if (ShouldAckPrivateChatMessage(notification.steamid_friend, notification.message)) {
 					Utilities.InBackground(() => ArchiHandler.AckMessage(notification.steamid_friend, notification.rtime32_server_timestamp));
 				}
 			}
