@@ -82,7 +82,7 @@ matrix:
     # Sadly, travis is still missing support for selecting latest images: https://github.com/travis-ci/travis-ci/issues/8922
     - os: linux
       # Ref: https://docs.travis-ci.com/user/reference/linux
-      # For linux, we need xenial distro until https://github.com/dotnet/core-setup/issues/4187 is resolved
+      # For linux, we need xenial distro until https://travis-ci.community/t/is-net-core-3-0-supported/5630 is resolved
       dist: xenial
     - os: osx
       # Ref: https://docs.travis-ci.com/user/reference/osx
