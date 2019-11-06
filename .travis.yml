@@ -53,6 +53,8 @@ script:
     dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -f "$NET_CORE_VERSION" /nologo
 
     publish() {
+        echo "Building $1 variant..."
+
         if [ "$1" = 'generic' ]; then
             # TODO: Workaround https://github.com/mono/linker/issues/286 (don't forget to remove it from docker files too)
             dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" --no-restore /nologo "/p:ASFVariant=$1" "/p:PublishTrimmed=false" "/p:UseAppHost=false"
@@ -64,6 +66,8 @@ script:
         if [ -d "ArchiSteamFarm/overlay/${1}" ]; then
             cp "ArchiSteamFarm/overlay/${1}/"* "out/${1}"
         fi
+
+        echo "Finished building $1 variant"
     }
 
     dotnet restore ArchiSteamFarm
