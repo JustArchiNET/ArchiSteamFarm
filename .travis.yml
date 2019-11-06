@@ -10,7 +10,7 @@ git:
 group: travis_latest
 
 # ASF is based on .NET Core platform, we're not building with Mono
-dotnet: 3.0
+#dotnet: 3.0
 mono: none
 
 env:
