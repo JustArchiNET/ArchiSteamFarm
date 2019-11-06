@@ -2203,7 +2203,7 @@ namespace ArchiSteamFarm {
 
 			// Under normal circumstances, timestamp must always be greater than 0, but Steam already proved that it's capable of going against the logic
 			if ((notification.steamid_sender != SteamID) && (notification.timestamp > 0)) {
-				if (ShouldAckGroupChatMessage(notification.steamid_sender)) {
+				if (ShouldAckChatMessage(notification.steamid_sender)) {
 					Utilities.InBackground(() => ArchiHandler.AckChatMessage(notification.chat_group_id, notification.chat_id, notification.timestamp));
 				}
 			}
@@ -2245,7 +2245,7 @@ namespace ArchiSteamFarm {
 
 			// Under normal circumstances, timestamp must always be greater than 0, but Steam already proved that it's capable of going against the logic
 			if (!notification.local_echo && (notification.rtime32_server_timestamp > 0)) {
-				if (ShouldAckPrivateChatMessage(notification.steamid_friend, notification.message)) {
+				if (ShouldAckChatMessage(notification.steamid_friend)) {
 					Utilities.InBackground(() => ArchiHandler.AckMessage(notification.steamid_friend, notification.rtime32_server_timestamp));
 				}
 			}
@@ -2928,7 +2928,7 @@ namespace ArchiSteamFarm {
 			StopPlayingWasBlockedTimer();
 		}
 
-		private bool ShouldAckGroupChatMessage(ulong steamID) {
+		private bool ShouldAckChatMessage(ulong steamID) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 				ArchiLogger.LogNullError(nameof(steamID));
 
@@ -2940,20 +2940,6 @@ namespace ArchiSteamFarm {
 			}
 
 			return BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkBotMessagesAsRead) && Bots.Values.Any(bot => bot.SteamID == steamID);
-		}
-
-		private bool ShouldAckPrivateChatMessage(ulong steamID, string message) {
-			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || string.IsNullOrEmpty(message)) {
-				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(message));
-
-				return false;
-			}
-
-			if (ShouldAckGroupChatMessage(steamID)) {
-				return true;
-			}
-
-			return BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkTradeMessagesAsRead) && message.StartsWith("[tradeoffer", StringComparison.Ordinal);
 		}
 
 		private void StopConnectionFailureTimer() {
