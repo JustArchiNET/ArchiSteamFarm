@@ -84,7 +84,7 @@ matrix:
       # Ref: https://docs.travis-ci.com/user/reference/linux
       # For linux, we need xenial and absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
       dist: xenial
-      dotnet: 3.0.100
+      dotnet: 3.0
     - os: osx
       # Ref: https://docs.travis-ci.com/user/reference/osx
       dotnet: 3.0.100 # For OSX, we need absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
