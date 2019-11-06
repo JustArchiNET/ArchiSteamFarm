@@ -10,7 +10,7 @@ git:
 group: travis_latest
 
 # ASF is based on .NET Core platform, we're not building with Mono
-#dotnet: 3.0
+dotnet: 3.0
 mono: none
 
 env:
@@ -75,6 +75,9 @@ script:
     wait
     set +u # This is needed to continue Travis build
 matrix:
+  # TODO: Remove failure allow once linux works with 3.0
+  allow_failures:
+    - os: linux
   # We can use fast finish, as we don't need to wait for allow_failures builds to mark build as success
   fast_finish: true
   include:
@@ -83,7 +86,6 @@ matrix:
     - os: linux
       # Ref: https://docs.travis-ci.com/user/reference/bionic
       dist: bionic
-      dotnet: 3.0.100 # For linux, we need absolute dotnet version until https://travis-ci.community/t/is-net-core-3-0-supported/5630 is resolved
     - os: osx
       # Ref: https://docs.travis-ci.com/user/reference/osx
       dotnet: 3.0.100 # For OSX, we need absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
