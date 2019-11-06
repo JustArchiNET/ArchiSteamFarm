@@ -19,7 +19,7 @@ env:
     - DOTNET_CLI_TELEMETRY_OPTOUT: 1
     - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
     - NET_CORE_VERSION: netcoreapp3.0
-    - VARIANTS="generic linux-arm linux-x64 osx-x64 win-x64" # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
+    - VARIANTS="generic linux-arm linux-x64 osx-x64" # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
 before_script:
   - |
     set -euo pipefail
@@ -69,9 +69,7 @@ script:
     dotnet restore ArchiSteamFarm
 
     for variant in $VARIANTS; do
-        # TODO: We could execute those blocks in parallel, but Linux is currently freezing for some reason if we do that
-        # Perhaps it'll be solved in the future
-        publish "$variant"
+        publish "$variant" &
     done
 
     wait
