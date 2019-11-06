@@ -69,7 +69,9 @@ script:
     dotnet restore ArchiSteamFarm
 
     for variant in $VARIANTS; do
-        publish "$variant" &
+        # TODO: We could execute those blocks in parallel, but Linux is currently freezing for some reason if we do that
+        # Perhaps it'll be solved in the future
+        publish "$variant"
     done
 
     wait
