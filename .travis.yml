@@ -75,17 +75,16 @@ script:
     wait
     set +u # This is needed to continue Travis build
 matrix:
-  # TODO: Remove failure allow once linux works with 3.0
-  allow_failures:
-    - os: linux
   # We can use fast finish, as we don't need to wait for allow_failures builds to mark build as success
   fast_finish: true
   include:
     # We're building ASF with dotnet on latest versions of Linux and OS X
     # Sadly, travis is still missing support for selecting latest images: https://github.com/travis-ci/travis-ci/issues/8922
     - os: linux
-      # Ref: https://docs.travis-ci.com/user/reference/bionic
-      dist: bionic
+      # Ref: https://docs.travis-ci.com/user/reference/linux
+      # For linux, we need xenial and absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
+      dist: xenial
+      dotnet: 3.0.100
     - os: osx
       # Ref: https://docs.travis-ci.com/user/reference/osx
       dotnet: 3.0.100 # For OSX, we need absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
