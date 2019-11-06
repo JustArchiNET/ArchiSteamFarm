@@ -9,8 +9,8 @@
     <LangVersion>8.0</LangVersion>
     <NoWarn />
     <OutputType>Library</OutputType>
-    <PackageIconUrl>https://github.com/JustArchiNET/ArchiSteamFarm/raw/master/resources/ASF.ico</PackageIconUrl>
-    <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
+    <PackageIcon>../resources/ASF.ico</PackageIcon>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/JustArchiNET/ArchiSteamFarm</PackageProjectUrl>
     <RepositoryType>Git</RepositoryType>
     <RepositoryUrl>https://github.com/JustArchi/ArchiSteamFarm.git</RepositoryUrl>
