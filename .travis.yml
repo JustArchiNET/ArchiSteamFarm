@@ -82,9 +82,8 @@ matrix:
     # Sadly, travis is still missing support for selecting latest images: https://github.com/travis-ci/travis-ci/issues/8922
     - os: linux
       # Ref: https://docs.travis-ci.com/user/reference/linux
-      # For linux, we need xenial and absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
+      # For linux, we need xenial distro until https://github.com/dotnet/core-setup/issues/4187 is resolved
       dist: xenial
-      dotnet: 3.0
     - os: osx
       # Ref: https://docs.travis-ci.com/user/reference/osx
       dotnet: 3.0.100 # For OSX, we need absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
