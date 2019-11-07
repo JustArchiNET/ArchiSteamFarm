@@ -7,7 +7,7 @@ git:
   depth: 10
 
 # Use latest images for building: https://blog.travis-ci.com/2017-12-01-new-update-schedule-for-linux-build-images
-group: travis_latest
+#group: travis_latest
 
 # ASF is based on .NET Core platform, we're not building with Mono
 dotnet: 3.0
@@ -19,8 +19,7 @@ env:
     - DOTNET_CLI_TELEMETRY_OPTOUT: 1
     - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
     - NET_CORE_VERSION: netcoreapp3.0
-    # TODO: We're not building win-x64 right now due to weird freeze in xenial environment, try to add it back later
-    - VARIANTS="generic linux-arm linux-x64 osx-x64" # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
+    - VARIANTS="generic linux-arm linux-x64 osx-x64 win-x64" # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
 before_script:
   - |
     set -euo pipefail
