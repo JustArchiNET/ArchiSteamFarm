@@ -16,8 +16,8 @@
     <NoWarn>1591</NoWarn>
     <OpenApiGenerateDocuments>false</OpenApiGenerateDocuments>
     <OutputType>Exe</OutputType>
-    <PackageIconUrl>https://github.com/JustArchiNET/ArchiSteamFarm/raw/master/resources/ASF.ico</PackageIconUrl>
-    <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
+    <PackageIcon>../resources/ASF.ico</PackageIcon>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/JustArchiNET/ArchiSteamFarm</PackageProjectUrl>
     <PublishTrimmed>false</PublishTrimmed>
     <RepositoryType>Git</RepositoryType>

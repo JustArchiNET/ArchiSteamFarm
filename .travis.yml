@@ -6,9 +6,6 @@ solution: ArchiSteamFarm.sln
 git:
   depth: 10
 
-# Use latest images for building: https://blog.travis-ci.com/2017-12-01-new-update-schedule-for-linux-build-images
-group: travis_latest
-
 # ASF is based on .NET Core platform, we're not building with Mono
 dotnet: 3.0
 mono: none
@@ -57,7 +54,7 @@ script:
             # TODO: Workaround https://github.com/mono/linker/issues/286 (don't forget to remove it from docker files too)
             dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" --no-restore /nologo "/p:ASFVariant=$1" "/p:PublishTrimmed=false" "/p:UseAppHost=false"
         else
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" -r "$1" --no-restore /nologo "/p:ASFVariant=$1"
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" -r "$1" --no-restore /nologo "/p:ASFVariant=$1" "/p:LinkDuringPublish=false"
         fi
 
         # If we include any overlay for this variant, copy it to output directory
@@ -75,7 +72,7 @@ script:
     wait
     set +u # This is needed to continue Travis build
 matrix:
-  # TODO: Remove failure allow once linux works with 3.0
+  # TODO: Remove failure allow once Linux works with 3.0
   allow_failures:
     - os: linux
   # We can use fast finish, as we don't need to wait for allow_failures builds to mark build as success
@@ -84,7 +81,7 @@ matrix:
     # We're building ASF with dotnet on latest versions of Linux and OS X
     # Sadly, travis is still missing support for selecting latest images: https://github.com/travis-ci/travis-ci/issues/8922
     - os: linux
-      # Ref: https://docs.travis-ci.com/user/reference/bionic
+      # Ref: https://docs.travis-ci.com/user/reference/linux
       dist: bionic
     - os: osx
       # Ref: https://docs.travis-ci.com/user/reference/osx
