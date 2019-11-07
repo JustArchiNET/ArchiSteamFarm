@@ -55,9 +55,9 @@ script:
     publish() {
         if [ "$1" = 'generic' ]; then
             # TODO: Workaround https://github.com/mono/linker/issues/286 (don't forget to remove it from docker files too)
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" --no-restore /nologo "/p:ASFVariant=$1" "/p:PublishTrimmed=false" "/p:UseAppHost=false"
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" --no-restore /nologo "/p:ASFVariant=$1" "/p:PublishTrimmed=false" "/p:UseAppHost=false" "/p:UseSharedCompilation=false"
         else
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" -r "$1" --no-restore /nologo "/p:ASFVariant=$1" "/p:LinkDuringPublish=false"
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" -r "$1" --no-restore /nologo "/p:ASFVariant=$1" "/p:LinkDuringPublish=false" "/p:UseSharedCompilation=false"
         fi
 
         # If we include any overlay for this variant, copy it to output directory
