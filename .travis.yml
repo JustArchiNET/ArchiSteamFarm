@@ -83,7 +83,7 @@ matrix:
     - os: linux
       # Ref: https://docs.travis-ci.com/user/reference/linux
       # For linux, we need xenial distro until https://travis-ci.community/t/is-net-core-3-0-supported/5630 is resolved
-      dist: xenial
+      dist: bionic
     - os: osx
       # Ref: https://docs.travis-ci.com/user/reference/osx
       dotnet: 3.0.100 # For OSX, we need absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
