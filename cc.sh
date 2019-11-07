@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/usr/bin/env sh
+set -eu
 
 TARGET_FRAMEWORK="netcoreapp3.0"
 
@@ -43,26 +43,26 @@ for ARG in "$@"; do
 	esac
 done
 
-trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM
+trap "trap - TERM && kill -- -$$" INT TERM
 
-if ! hash dotnet 2>/dev/null; then
+if ! command -v dotnet >/dev/null; then
 	echo "ERROR: dotnet CLI tools are not installed!"
 	exit 1
 fi
 
 dotnet --info
 
-if [[ "$PULL" -eq 1 && -d ".git" ]] && hash git 2>/dev/null; then
+if [ "$PULL" -eq 1 ] && [ -d ".git" ] && command -v git >/dev/null; then
 	git pull --recurse-submodules=on-demand || true
 fi
 
-if [[ ! -f "$SOLUTION" ]]; then
+if [ ! -f "$SOLUTION" ]; then
 	echo "ERROR: $SOLUTION could not be found!"
 	exit 1
 fi
 
-if [[ "$ASF_UI" -eq 1 ]]; then
-	if [[ -f "ASF-ui/package.json" ]] && hash npm 2>/dev/null; then
+if [ "$ASF_UI" -eq 1 ]; then
+	if [ -f "ASF-ui/package.json" ] && command -v npm >/dev/null; then
 		echo "Building ASF-ui..."
 
 		# ASF-ui doesn't clean itself after old build
@@ -81,26 +81,26 @@ if [[ "$ASF_UI" -eq 1 ]]; then
 	fi
 fi
 
-DOTNET_FLAGS=(-c "$CONFIGURATION" -f "$TARGET_FRAMEWORK" '/nologo')
+DOTNET_FLAGS="-c $CONFIGURATION -f $TARGET_FRAMEWORK /nologo"
 
-if [[ "$PUBLISH_TRIMMED" -eq 0 ]]; then
-	DOTNET_FLAGS+=('/p:PublishTrimmed=false')
+if [ "$PUBLISH_TRIMMED" -eq 0 ]; then
+	DOTNET_FLAGS="$DOTNET_FLAGS /p:PublishTrimmed=false"
 fi
 
-if [[ "$SHARED_COMPILATION" -eq 0 ]]; then
-	DOTNET_FLAGS+=('/p:UseSharedCompilation=false')
+if [ "$SHARED_COMPILATION" -eq 0 ]; then
+	DOTNET_FLAGS="$DOTNET_FLAGS /p:UseSharedCompilation=false"
 fi
 
-if [[ "$CLEAN" -eq 1 ]]; then
-	dotnet clean "${DOTNET_FLAGS[@]}"
+if [ "$CLEAN" -eq 1 ]; then
+	dotnet clean $DOTNET_FLAGS
 	rm -rf "$OUT"
 fi
 
-if [[ "$TEST" -eq 1 ]]; then
-	dotnet test "$TESTS_PROJECT" "${DOTNET_FLAGS[@]}"
+if [ "$TEST" -eq 1 ]; then
+	dotnet test "$TESTS_PROJECT" $DOTNET_FLAGS
 fi
 
-dotnet publish "$MAIN_PROJECT" -o "$OUT" "${DOTNET_FLAGS[@]}"
+dotnet publish "$MAIN_PROJECT" -o "$OUT" $DOTNET_FLAGS
 
 echo
 echo "SUCCESS: Compilation finished successfully! :)"
