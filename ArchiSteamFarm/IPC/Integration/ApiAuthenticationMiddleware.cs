@@ -102,7 +102,13 @@ namespace ArchiSteamFarm.IPC.Integration {
 				return HttpStatusCode.Unauthorized;
 			}
 
-			bool authorized = passwords.First() == ASF.GlobalConfig.IPCPassword;
+			string inputPassword = passwords.FirstOrDefault(password => !string.IsNullOrEmpty(password));
+
+			if (string.IsNullOrEmpty(inputPassword)) {
+				return HttpStatusCode.Unauthorized;
+			}
+
+			bool authorized = inputPassword == ASF.GlobalConfig.IPCPassword;
 
 			await AuthorizationSemaphore.WaitAsync().ConfigureAwait(false);
 
