@@ -29,12 +29,21 @@ install:
     $ProgressPreference = 'SilentlyContinue'
 
 
+    git submodule sync
+
+
+    if ($LastExitCode -ne 0) {
+        throw "Last command failed."
+    }
+
+
     git submodule update --init --recursive
 
 
     if ($LastExitCode -ne 0) {
         throw "Last command failed."
     }
+
 
     if ($env:DOTNET_CHANNEL) {
         dotnet --info
