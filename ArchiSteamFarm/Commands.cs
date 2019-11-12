@@ -2173,6 +2173,7 @@ namespace ArchiSteamFarm {
 			HashSet<string> unusedKeys = pendingKeys.ToHashSet(StringComparer.Ordinal);
 
 			HashSet<Bot> rateLimitedBots = new HashSet<Bot>();
+			HashSet<Bot> triedInnerBots = new HashSet<Bot>();
 
 			StringBuilder response = new StringBuilder();
 
@@ -2182,11 +2183,18 @@ namespace ArchiSteamFarm {
 
 				while (!string.IsNullOrEmpty(key)) {
 					string startingKey = key;
+					string previousKey = key;
 
 					using (IEnumerator<Bot> botsEnumerator = Bot.Bots.Where(bot => (bot.Value != Bot) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.HasPermission(steamID, BotConfig.EPermission.Operator)).OrderByDescending(bot => Bot.BotsComparer.Compare(bot.Key, Bot.BotName) > 0).ThenBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value).GetEnumerator()) {
 						Bot currentBot = Bot;
 
 						while (!string.IsNullOrEmpty(key) && (currentBot != null)) {
+							if (previousKey != key) {
+								triedInnerBots.Clear();
+							}
+
+							previousKey = key;
+
 							if (redeemFlags.HasFlag(ERedeemFlags.Validate) && !Utilities.IsValidCdKey(key)) {
 								// Next key
 								key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null;
@@ -2269,7 +2277,7 @@ namespace ArchiSteamFarm {
 
 											bool alreadyHandled = false;
 
-											foreach (Bot innerBot in Bot.Bots.Where(bot => (bot.Value != currentBot) && (!redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || (bot.Value != Bot)) && !rateLimitedBots.Contains(bot.Value) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.HasPermission(steamID, BotConfig.EPermission.Operator) && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.ContainsKey(packageID)))).OrderBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value)) {
+											foreach (Bot innerBot in Bot.Bots.Where(bot => (bot.Value != currentBot) && (!redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || (bot.Value != Bot)) && !triedInnerBots.Contains(bot.Value) && !rateLimitedBots.Contains(bot.Value) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.HasPermission(steamID, BotConfig.EPermission.Operator) && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.ContainsKey(packageID)))).OrderBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value)) {
 												ArchiHandler.PurchaseResponseCallback otherResult = await innerBot.Actions.RedeemKey(key).ConfigureAwait(false);
 
 												if (otherResult == null) {
@@ -2277,6 +2285,8 @@ namespace ArchiSteamFarm {
 
 													continue;
 												}
+
+												triedInnerBots.Add(innerBot);
 
 												switch (otherResult.PurchaseResultDetail) {
 													case EPurchaseResultDetail.BadActivationCode:
