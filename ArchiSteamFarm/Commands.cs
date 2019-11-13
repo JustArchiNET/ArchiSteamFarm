@@ -2173,7 +2173,7 @@ namespace ArchiSteamFarm {
 			HashSet<string> unusedKeys = pendingKeys.ToHashSet(StringComparer.Ordinal);
 
 			HashSet<Bot> rateLimitedBots = new HashSet<Bot>();
-			HashSet<Bot> triedInnerBots = new HashSet<Bot>();
+			HashSet<Bot> triedBots = new HashSet<Bot>();
 
 			StringBuilder response = new StringBuilder();
 
@@ -2190,7 +2190,7 @@ namespace ArchiSteamFarm {
 
 						while (!string.IsNullOrEmpty(key) && (currentBot != null)) {
 							if (previousKey != key) {
-								triedInnerBots.Clear();
+								triedBots.Clear();
 							}
 
 							previousKey = key;
@@ -2207,7 +2207,9 @@ namespace ArchiSteamFarm {
 								// Either bot will be changed, or loop aborted
 								currentBot = null;
 							} else {
-								ArchiHandler.PurchaseResponseCallback result = rateLimitedBots.Contains(currentBot) ? new ArchiHandler.PurchaseResponseCallback(EResult.Fail, EPurchaseResultDetail.RateLimited) : await currentBot.Actions.RedeemKey(key).ConfigureAwait(false);
+								bool skipRequest = triedBots.Contains(currentBot) || rateLimitedBots.Contains(currentBot);
+
+								ArchiHandler.PurchaseResponseCallback result = skipRequest ? new ArchiHandler.PurchaseResponseCallback(EResult.Fail, EPurchaseResultDetail.CancelledByUser) : await currentBot.Actions.RedeemKey(key).ConfigureAwait(false);
 
 								if (result == null) {
 									response.AppendLine(FormatBotResponse(string.Format(Strings.BotRedeem, key, EPurchaseResultDetail.Timeout), currentBot.BotName));
@@ -2215,7 +2217,7 @@ namespace ArchiSteamFarm {
 									// Either bot will be changed, or loop aborted
 									currentBot = null;
 								} else {
-									triedInnerBots.Add(currentBot);
+									triedBots.Add(currentBot);
 
 									if (((result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) || ((result.PurchaseResultDetail == EPurchaseResultDetail.BadActivationCode) && assumeWalletKeyOnBadActivationCode)) && (Bot.WalletCurrency != ECurrencyCode.Invalid)) {
 										// If it's a wallet code, we try to redeem it first, then handle the inner result as our primary one
@@ -2234,7 +2236,7 @@ namespace ArchiSteamFarm {
 
 									if ((result.Items != null) && (result.Items.Count > 0)) {
 										response.AppendLine(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, result.Result + "/" + result.PurchaseResultDetail, string.Join(", ", result.Items)), currentBot.BotName));
-									} else if (!rateLimitedBots.Contains(currentBot)) {
+									} else if (!skipRequest) {
 										response.AppendLine(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail), currentBot.BotName));
 									}
 
@@ -2260,6 +2262,7 @@ namespace ArchiSteamFarm {
 											continue;
 										case EPurchaseResultDetail.AccountLocked:
 										case EPurchaseResultDetail.AlreadyPurchased:
+										case EPurchaseResultDetail.CancelledByUser:
 										case EPurchaseResultDetail.DoesNotOwnRequiredApp:
 										case EPurchaseResultDetail.RestrictedCountry:
 											if (!forward || (keepMissingGames && (result.PurchaseResultDetail != EPurchaseResultDetail.AlreadyPurchased))) {
@@ -2279,7 +2282,7 @@ namespace ArchiSteamFarm {
 
 											bool alreadyHandled = false;
 
-											foreach (Bot innerBot in Bot.Bots.Where(bot => (bot.Value != currentBot) && (!redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || (bot.Value != Bot)) && !triedInnerBots.Contains(bot.Value) && !rateLimitedBots.Contains(bot.Value) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.HasPermission(steamID, BotConfig.EPermission.Operator) && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.ContainsKey(packageID)))).OrderBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value)) {
+											foreach (Bot innerBot in Bot.Bots.Where(bot => (bot.Value != currentBot) && (!redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || (bot.Value != Bot)) && !triedBots.Contains(bot.Value) && !rateLimitedBots.Contains(bot.Value) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.HasPermission(steamID, BotConfig.EPermission.Operator) && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.ContainsKey(packageID)))).OrderBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value)) {
 												ArchiHandler.PurchaseResponseCallback otherResult = await innerBot.Actions.RedeemKey(key).ConfigureAwait(false);
 
 												if (otherResult == null) {
@@ -2288,7 +2291,7 @@ namespace ArchiSteamFarm {
 													continue;
 												}
 
-												triedInnerBots.Add(innerBot);
+												triedBots.Add(innerBot);
 
 												switch (otherResult.PurchaseResultDetail) {
 													case EPurchaseResultDetail.BadActivationCode:
@@ -2332,7 +2335,7 @@ namespace ArchiSteamFarm {
 										case EPurchaseResultDetail.RateLimited:
 											rateLimitedBots.Add(currentBot);
 
-											goto case EPurchaseResultDetail.AccountLocked;
+											goto case EPurchaseResultDetail.CancelledByUser;
 										default:
 											ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.PurchaseResultDetail), result.PurchaseResultDetail));
 
