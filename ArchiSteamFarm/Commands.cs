@@ -2191,9 +2191,8 @@ namespace ArchiSteamFarm {
 						while (!string.IsNullOrEmpty(key) && (currentBot != null)) {
 							if (previousKey != key) {
 								triedBots.Clear();
+								previousKey = key;
 							}
-
-							previousKey = key;
 
 							if (redeemFlags.HasFlag(ERedeemFlags.Validate) && !Utilities.IsValidCdKey(key)) {
 								// Next key
