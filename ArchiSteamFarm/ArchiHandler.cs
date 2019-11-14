@@ -795,14 +795,13 @@ namespace ArchiSteamFarm {
 
 				JobID = jobID;
 
-				if (msg.notifications == null) {
-					// We might get null body here, and that means there are no notifications related to trading
-					Notifications = new Dictionary<EUserNotification, uint>(1) { { EUserNotification.Trading, 0 } };
+				// We might get null body here, and that means there are no notifications related to trading
+				// TODO: Check if this workaround is still needed
+				Notifications = new Dictionary<EUserNotification, uint> { { EUserNotification.Trading, 0 } };
 
+				if (msg.notifications == null) {
 					return;
 				}
-
-				Notifications = new Dictionary<EUserNotification, uint>(msg.notifications.Count);
 
 				foreach (CMsgClientUserNotifications.Notification notification in msg.notifications) {
 					EUserNotification type = (EUserNotification) notification.user_notification_type;
