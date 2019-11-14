@@ -175,8 +175,8 @@ namespace ArchiSteamFarm.Plugins {
 
 		[ItemCanBeNull]
 		internal static async Task<string> OnBotCommand(Bot bot, ulong steamID, string message, string[] args) {
-			if ((bot == null) || (steamID == 0) || string.IsNullOrEmpty(message) || (args == null) || (args.Length == 0)) {
-				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(args));
+			if ((bot == null) || (steamID == 0) || !new SteamID(steamID).IsIndividualAccount || string.IsNullOrEmpty(message) || (args == null) || (args.Length == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID) + " || " + nameof(message) + " || " + nameof(args));
 
 				return null;
 			}
@@ -289,7 +289,7 @@ namespace ArchiSteamFarm.Plugins {
 		}
 
 		internal static async Task<bool> OnBotFriendRequest(Bot bot, ulong steamID) {
-			if ((bot == null) || (steamID == 0)) {
+			if ((bot == null) || (steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID));
 
 				return false;
@@ -368,8 +368,8 @@ namespace ArchiSteamFarm.Plugins {
 
 		[ItemCanBeNull]
 		internal static async Task<string> OnBotMessage(Bot bot, ulong steamID, string message) {
-			if ((bot == null) || (steamID == 0) || string.IsNullOrEmpty(message)) {
-				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(message));
+			if ((bot == null) || (steamID == 0) || !new SteamID(steamID).IsIndividualAccount || string.IsNullOrEmpty(message)) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID) + " || " + nameof(message));
 
 				return null;
 			}
