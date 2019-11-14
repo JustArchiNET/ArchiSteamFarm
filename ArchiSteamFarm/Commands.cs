@@ -2180,10 +2180,10 @@ namespace ArchiSteamFarm {
 			using (HashSet<string>.Enumerator keysEnumerator = pendingKeys.GetEnumerator()) {
 				// Initial key
 				string key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null;
+				string previousKey = key;
 
 				while (!string.IsNullOrEmpty(key)) {
 					string startingKey = key;
-					string previousKey = key;
 
 					using (IEnumerator<Bot> botsEnumerator = Bot.Bots.Where(bot => (bot.Value != Bot) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.HasPermission(steamID, BotConfig.EPermission.Operator)).OrderByDescending(bot => Bot.BotsComparer.Compare(bot.Key, Bot.BotName) > 0).ThenBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value).GetEnumerator()) {
 						Bot currentBot = Bot;
