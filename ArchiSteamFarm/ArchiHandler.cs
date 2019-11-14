@@ -785,6 +785,76 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		public sealed class UserNotificationsCallback : CallbackMsg {
+			internal readonly Dictionary<EUserNotification, uint> Notifications;
+
+			internal UserNotificationsCallback([JetBrains.Annotations.NotNull] JobID jobID, [JetBrains.Annotations.NotNull] CMsgClientUserNotifications msg) {
+				if ((jobID == null) || (msg == null)) {
+					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
+				}
+
+				JobID = jobID;
+
+				if (msg.notifications == null) {
+					// We might get null body here, and that means there are no notifications related to trading
+					Notifications = new Dictionary<EUserNotification, uint>(1) { { EUserNotification.Trading, 0 } };
+
+					return;
+				}
+
+				Notifications = new Dictionary<EUserNotification, uint>(msg.notifications.Count);
+
+				foreach (CMsgClientUserNotifications.Notification notification in msg.notifications) {
+					EUserNotification type = (EUserNotification) notification.user_notification_type;
+
+					switch (type) {
+						case EUserNotification.AccountAlerts:
+						case EUserNotification.Chat:
+						case EUserNotification.Comments:
+						case EUserNotification.GameTurns:
+						case EUserNotification.Gifts:
+						case EUserNotification.HelpRequestReplies:
+						case EUserNotification.Invites:
+						case EUserNotification.Items:
+						case EUserNotification.ModeratorMessages:
+						case EUserNotification.Trading:
+							break;
+						default:
+							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(type), type));
+
+							break;
+					}
+
+					Notifications[type] = notification.count;
+				}
+			}
+
+			internal UserNotificationsCallback([JetBrains.Annotations.NotNull] JobID jobID, [JetBrains.Annotations.NotNull] CMsgClientItemAnnouncements msg) {
+				if ((jobID == null) || (msg == null)) {
+					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
+				}
+
+				JobID = jobID;
+				Notifications = new Dictionary<EUserNotification, uint>(1) { { EUserNotification.Items, msg.count_new_items } };
+			}
+
+			[PublicAPI]
+			public enum EUserNotification : byte {
+				Unknown,
+				Trading,
+				GameTurns,
+				ModeratorMessages,
+				Comments,
+				Items,
+				Invites,
+				Unknown7, // No clue what 7 stands for, and I doubt we can find out
+				Gifts,
+				Chat,
+				HelpRequestReplies,
+				AccountAlerts
+			}
+		}
+
 		internal sealed class PlayingSessionStateCallback : CallbackMsg {
 			internal readonly bool PlayingBlocked;
 
@@ -826,74 +896,6 @@ namespace ArchiSteamFarm {
 				}
 
 				LibraryLockedBySteamID = new SteamID(msg.own_library_locked_by, EUniverse.Public, EAccountType.Individual);
-			}
-		}
-
-		internal sealed class UserNotificationsCallback : CallbackMsg {
-			internal readonly Dictionary<EUserNotification, uint> Notifications;
-
-			internal UserNotificationsCallback([JetBrains.Annotations.NotNull] JobID jobID, [JetBrains.Annotations.NotNull] CMsgClientUserNotifications msg) {
-				if ((jobID == null) || (msg == null)) {
-					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
-				}
-
-				JobID = jobID;
-
-				// We might get null body here, and that means there are no notifications related to trading
-				Notifications = new Dictionary<EUserNotification, uint> { { EUserNotification.Trading, 0 } };
-
-				if (msg.notifications == null) {
-					return;
-				}
-
-				foreach (CMsgClientUserNotifications.Notification notification in msg.notifications) {
-					EUserNotification type = (EUserNotification) notification.user_notification_type;
-
-					switch (type) {
-						case EUserNotification.AccountAlerts:
-						case EUserNotification.Chat:
-						case EUserNotification.Comments:
-						case EUserNotification.GameTurns:
-						case EUserNotification.Gifts:
-						case EUserNotification.HelpRequestReplies:
-						case EUserNotification.Invites:
-						case EUserNotification.Items:
-						case EUserNotification.ModeratorMessages:
-						case EUserNotification.Trading:
-							break;
-						default:
-							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(type), type));
-
-							continue;
-					}
-
-					Notifications[type] = notification.count;
-				}
-			}
-
-			internal UserNotificationsCallback([JetBrains.Annotations.NotNull] JobID jobID, [JetBrains.Annotations.NotNull] CMsgClientItemAnnouncements msg) {
-				if ((jobID == null) || (msg == null)) {
-					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
-				}
-
-				JobID = jobID;
-				Notifications = new Dictionary<EUserNotification, uint>(1) { { EUserNotification.Items, msg.count_new_items } };
-			}
-
-			[PublicAPI]
-			internal enum EUserNotification : byte {
-				Unknown,
-				Trading,
-				GameTurns,
-				ModeratorMessages,
-				Comments,
-				Items,
-				Invites,
-				Unknown7, // No clue what 7 stands for, and I doubt we can find out
-				Gifts,
-				Chat,
-				HelpRequestReplies,
-				AccountAlerts
 			}
 		}
 

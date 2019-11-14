@@ -118,6 +118,7 @@ namespace ArchiSteamFarm {
 		private readonly Timer HeartBeatTimer;
 		private readonly SemaphoreSlim InitializationSemaphore = new SemaphoreSlim(1, 1);
 		private readonly SemaphoreSlim MessagingSemaphore = new SemaphoreSlim(1, 1);
+		private readonly ConcurrentDictionary<ArchiHandler.UserNotificationsCallback.EUserNotification, uint> PastNotifications = new ConcurrentDictionary<ArchiHandler.UserNotificationsCallback.EUserNotification, uint>();
 		private readonly SemaphoreSlim PICSSemaphore = new SemaphoreSlim(1, 1);
 		private readonly Statistics Statistics;
 		private readonly SteamClient SteamClient;
@@ -182,9 +183,7 @@ namespace ArchiSteamFarm {
 		private string DeviceID;
 		private bool FirstTradeSent;
 		private Timer GamesRedeemerInBackgroundTimer;
-		private uint GiftsCount;
 		private byte HeartBeatFailures;
-		private uint ItemsCount;
 		private EResult LastLogOnResult;
 		private DateTime LastLogonSessionReplaced;
 		private bool LibraryLocked;
@@ -194,7 +193,6 @@ namespace ArchiSteamFarm {
 		private Timer SendItemsTimer;
 		private bool SteamParentalActive = true;
 		private SteamSaleEvent SteamSaleEvent;
-		private uint TradesCount;
 		private string TwoFactorCode;
 		private byte TwoFactorCodeFailures;
 
@@ -2045,7 +2043,7 @@ namespace ArchiSteamFarm {
 
 			EResult lastLogOnResult = LastLogOnResult;
 			LastLogOnResult = EResult.Invalid;
-			ItemsCount = TradesCount = HeartBeatFailures = 0;
+			HeartBeatFailures = 0;
 			SteamParentalActive = true;
 			StopConnectionFailureTimer();
 			StopPlayingWasBlockedTimer();
@@ -2053,6 +2051,7 @@ namespace ArchiSteamFarm {
 			ArchiLogger.LogGenericInfo(Strings.BotDisconnected);
 
 			OwnedPackageIDs.Clear();
+			PastNotifications.Clear();
 
 			Actions.OnDisconnected();
 			ArchiWebHandler.OnDisconnected();
@@ -2720,43 +2719,47 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			HashSet<ArchiHandler.UserNotificationsCallback.EUserNotification> newPluginNotifications = new HashSet<ArchiHandler.UserNotificationsCallback.EUserNotification>();
+
 			foreach ((ArchiHandler.UserNotificationsCallback.EUserNotification notification, uint count) in callback.Notifications) {
+				bool newNotification;
+
+				if (count > 0) {
+					newNotification = !PastNotifications.TryGetValue(notification, out uint previousCount) || (count > previousCount);
+					PastNotifications[notification] = count;
+
+					if (newNotification) {
+						newPluginNotifications.Add(notification);
+					}
+				} else {
+					newNotification = false;
+					PastNotifications.TryRemove(notification, out _);
+				}
+
+				ArchiLogger.LogGenericTrace(notification + " = " + count);
+
 				switch (notification) {
-					case ArchiHandler.UserNotificationsCallback.EUserNotification.Gifts:
-						bool newGifts = count > GiftsCount;
-						GiftsCount = count;
+					case ArchiHandler.UserNotificationsCallback.EUserNotification.Gifts when newNotification && BotConfig.AcceptGifts:
+						Utilities.InBackground(Actions.AcceptDigitalGiftCards);
 
-						if (newGifts && BotConfig.AcceptGifts) {
-							ArchiLogger.LogGenericTrace(nameof(ArchiHandler.UserNotificationsCallback.EUserNotification.Gifts));
-							Utilities.InBackground(Actions.AcceptDigitalGiftCards);
+						break;
+					case ArchiHandler.UserNotificationsCallback.EUserNotification.Items when newNotification:
+						Utilities.InBackground(CardsFarmer.OnNewItemsNotification);
+
+						if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.DismissInventoryNotifications)) {
+							Utilities.InBackground(ArchiWebHandler.MarkInventory);
 						}
 
 						break;
-					case ArchiHandler.UserNotificationsCallback.EUserNotification.Items:
-						bool newItems = count > ItemsCount;
-						ItemsCount = count;
-
-						if (newItems) {
-							ArchiLogger.LogGenericTrace(nameof(ArchiHandler.UserNotificationsCallback.EUserNotification.Items));
-							Utilities.InBackground(CardsFarmer.OnNewItemsNotification);
-
-							if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.DismissInventoryNotifications)) {
-								Utilities.InBackground(ArchiWebHandler.MarkInventory);
-							}
-						}
-
-						break;
-					case ArchiHandler.UserNotificationsCallback.EUserNotification.Trading:
-						bool newTrades = count > TradesCount;
-						TradesCount = count;
-
-						if (newTrades) {
-							ArchiLogger.LogGenericTrace(nameof(ArchiHandler.UserNotificationsCallback.EUserNotification.Trading));
-							Utilities.InBackground(Trading.OnNewTrade);
-						}
+					case ArchiHandler.UserNotificationsCallback.EUserNotification.Trading when newNotification:
+						Utilities.InBackground(Trading.OnNewTrade);
 
 						break;
 				}
+			}
+
+			if (newPluginNotifications.Count > 0) {
+				Utilities.InBackground(() => PluginsCore.OnBotUserNotifications(this, newPluginNotifications));
 			}
 		}
 

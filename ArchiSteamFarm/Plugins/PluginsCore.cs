@@ -234,6 +234,24 @@ namespace ArchiSteamFarm.Plugins {
 			}
 		}
 
+		internal static async Task OnBotFarmingFinished(Bot bot, bool farmedSomething) {
+			if (bot == null) {
+				ASF.ArchiLogger.LogNullError(nameof(bot));
+
+				return;
+			}
+
+			if (!HasActivePluginsLoaded) {
+				return;
+			}
+
+			try {
+				await Utilities.InParallel(ActivePlugins.OfType<IBotCardsFarmerInfo>().Select(plugin => Task.Run(() => plugin.OnBotFarmingFinished(bot, farmedSomething)))).ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+			}
+		}
+
 		internal static async Task OnBotFarmingStarted(Bot bot) {
 			if (bot == null) {
 				ASF.ArchiLogger.LogNullError(nameof(bot));
@@ -265,24 +283,6 @@ namespace ArchiSteamFarm.Plugins {
 
 			try {
 				await Utilities.InParallel(ActivePlugins.OfType<IBotCardsFarmerInfo>().Select(plugin => Task.Run(() => plugin.OnBotFarmingStopped(bot)))).ConfigureAwait(false);
-			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericException(e);
-			}
-		}
-
-		internal static async Task OnBotFarmingFinished(Bot bot, bool farmedSomething) {
-			if (bot == null) {
-				ASF.ArchiLogger.LogNullError(nameof(bot));
-
-				return;
-			}
-
-			if (!HasActivePluginsLoaded) {
-				return;
-			}
-
-			try {
-				await Utilities.InParallel(ActivePlugins.OfType<IBotCardsFarmerInfo>().Select(plugin => Task.Run(() => plugin.OnBotFarmingFinished(bot, farmedSomething)))).ConfigureAwait(false);
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 			}
@@ -470,6 +470,24 @@ namespace ArchiSteamFarm.Plugins {
 
 			try {
 				await Utilities.InParallel(ActivePlugins.OfType<IBotTradeOfferResults>().Select(plugin => Task.Run(() => plugin.OnBotTradeOfferResults(bot, tradeResults)))).ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+			}
+		}
+
+		internal static async Task OnBotUserNotifications(Bot bot, IReadOnlyCollection<ArchiHandler.UserNotificationsCallback.EUserNotification> newNotifications) {
+			if ((bot == null) || (newNotifications == null) || (newNotifications.Count == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(newNotifications));
+
+				return;
+			}
+
+			if (!HasActivePluginsLoaded) {
+				return;
+			}
+
+			try {
+				await Utilities.InParallel(ActivePlugins.OfType<IBotUserNotifications>().Select(plugin => Task.Run(() => plugin.OnBotUserNotifications(bot, newNotifications)))).ConfigureAwait(false);
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 			}
