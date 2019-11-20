@@ -86,7 +86,7 @@
             <summary>
             Represents a protobuf backed client message.
             </summary>
-            <typeparam name="BodyType">The body type of this message.</typeparam>
+            <typeparam name="TBody">The body type of this message.</typeparam>
         </member>
         <member name="P:SteamKit2.ClientMsgProtobuf`1.Body">
             <summary>
@@ -135,7 +135,7 @@
             <summary>
             Represents a struct backed client message.
             </summary>
-            <typeparam name="BodyType">The body type of this message.</typeparam>
+            <typeparam name="TBody">The body type of this message.</typeparam>
         </member>
         <member name="P:SteamKit2.ClientMsg`1.IsProto">
             <summary>
@@ -230,7 +230,7 @@
             <summary>
             Represents a struct backed message without session or client info.
             </summary>
-            <typeparam name="BodyType">The body type of this message.</typeparam>
+            <typeparam name="TBody">The body type of this message.</typeparam>
         </member>
         <member name="P:SteamKit2.Msg`1.IsProto">
             <summary>
@@ -327,7 +327,7 @@
             <summary>
             Represents a protobuf backed game coordinator message.
             </summary>
-            <typeparam name="BodyType">The body type of this message.</typeparam>
+            <typeparam name="TBody">The body type of this message.</typeparam>
         </member>
         <member name="P:SteamKit2.GC.ClientGCMsgProtobuf`1.IsProto">
             <summary>
@@ -414,7 +414,7 @@
             <summary>
             Represents a struct backed game coordinator message.
             </summary>
-            <typeparam name="BodyType">The body type of this message.</typeparam>
+            <typeparam name="TBody">The body type of this message.</typeparam>
         </member>
         <member name="P:SteamKit2.GC.ClientGCMsg`1.IsProto">
             <summary>
@@ -543,7 +543,7 @@
             This is the abstract base class for all available game coordinator messages.
             It's used to maintain packet payloads and provide a header for all gc messages.
             </summary>
-            <typeparam name="HdrType">The header type for this gc message.</typeparam>
+            <typeparam name="THeader">The header type for this gc message.</typeparam>
         </member>
         <member name="P:SteamKit2.GC.GCMsgBase`1.IsProto">
             <summary>
@@ -760,6 +760,11 @@
             The configuration for this client.
             </summary>
         </member>
+        <member name="P:SteamKit2.Internal.CMClient.ID">
+            <summary>
+            A unique identifier for this client instance.
+            </summary>
+        </member>
         <member name="P:SteamKit2.Internal.CMClient.Servers">
             <summary>
             Bootstrap list of CM servers.
@@ -838,12 +843,14 @@
             For your convenience, you can use <see cref="T:SteamKit2.NetHookNetworkListener"/> class.
             </summary>
         </member>
-        <member name="M:SteamKit2.Internal.CMClient.#ctor(SteamKit2.SteamConfiguration)">
+        <member name="M:SteamKit2.Internal.CMClient.#ctor(SteamKit2.SteamConfiguration,System.String)">
             <summary>
             Initializes a new instance of the <see cref="T:SteamKit2.Internal.CMClient"/> class with a specific configuration.
             </summary>
             <param name="configuration">The configuration to use for this client.</param>
-            <exception cref="T:System.ArgumentNullException">The configuration object is <c>null</c></exception>
+            <param name="identifier">A specific identifier to be used to uniquely identify this instance.</param>
+            <exception cref="T:System.ArgumentNullException">The configuration object or identifier is <c>null</c></exception>
+            <exception cref="T:System.ArgumentException">The identifier is an empty string</exception>
         </member>
         <member name="M:SteamKit2.Internal.CMClient.Connect(SteamKit2.Discovery.ServerRecord)">
             <summary>
@@ -872,12 +879,13 @@
             </summary>
             <param name="msg">The client message to send.</param>
         </member>
-        <member name="M:SteamKit2.Internal.CMClient.GetServersOfType(SteamKit2.EServerType)">
+        <member name="M:SteamKit2.Internal.CMClient.LogDebug(System.String,System.String,System.Object[])">
             <summary>
-            Returns the list of servers matching the given type
+            Writes a line to the debug log, informing all listeners.
             </summary>
-            <param name="type">Server type requested</param>
-            <returns>List of server endpoints</returns>
+            <param name="category">The category of the message.</param>
+            <param name="message">A composite format string.</param>
+            <param name="args">An array containing zero or more objects to format.</param>
         </member>
         <member name="M:SteamKit2.Internal.CMClient.OnClientMsgReceived(SteamKit2.IPacketMsg)">
             <summary>
@@ -1223,7 +1231,7 @@
             This is the abstract base class for all available client messages.
             It's used to maintain packet payloads and provide a header for all client messages.
             </summary>
-            <typeparam name="HdrType">The header type for this client message.</typeparam>
+            <typeparam name="THeader">The header type for this client message.</typeparam>
         </member>
         <member name="P:SteamKit2.MsgBase`1.IsProto">
             <summary>
@@ -1933,6 +1941,13 @@
             Gets the underlying data for this chunk.
             </summary>
         </member>
+        <member name="M:SteamKit2.CDNClient.DepotChunk.#ctor(SteamKit2.DepotManifest.ChunkData,System.Byte[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:SteamKit2.CDNClient.DepotChunk"/> class.
+            </summary>
+            <param name="info">The manifest chunk information associated with this chunk.</param>
+            <param name="data">The underlying data for this chunk.</param>
+        </member>
         <member name="M:SteamKit2.CDNClient.DepotChunk.Process(System.Byte[])">
             <summary>
             Processes the specified depot key by decrypting the data with the given depot encryption key, and then by decompressing the data.
@@ -1946,51 +1961,17 @@
             Default timeout to use when making requests
             </summary>
         </member>
-        <member name="M:SteamKit2.CDNClient.#ctor(SteamKit2.SteamClient,System.Byte[])">
+        <member name="M:SteamKit2.CDNClient.#ctor(SteamKit2.SteamClient)">
             <summary>
             Initializes a new instance of the <see cref="T:SteamKit2.CDNClient"/> class.
             </summary>
             <param name="steamClient">
             The <see cref="T:SteamKit2.SteamClient"/> this instance will be associated with.
             The SteamClient instance must be connected and logged onto Steam.</param>
-            <param name="appTicket">
-            The optional appticket for the depot that will be downloaded.
-            This must be present when connected to steam non-anonymously.
-            </param>
         </member>
-        <member name="M:SteamKit2.CDNClient.FetchServerListAsync(System.Net.IPEndPoint,System.Nullable{System.UInt32},System.Int32)">
+        <member name="M:SteamKit2.CDNClient.AuthenticateDepot(System.UInt32,System.Byte[],System.String)">
             <summary>
-            Fetches a list of content servers.
-            </summary>
-            <param name="csServer">
-            The optional Steam3 content server to fetch the list from.
-            If this parameter is not specified, a random CS server will be selected.
-            </param>
-            <param name="cellId">
-            The optional CellID used to specify which regional servers should be returned in the list.
-            If this parameter is not specified, Steam's GeoIP suggested CellID will be used instead.
-            </param>
-            <param name="maxServers">The maximum amount of servers to request.</param>
-            <returns>A list of servers.</returns>
-            <exception cref="T:System.InvalidOperationException">
-            No Steam CS servers available, or the suggested CellID is unavailable.
-            Check that the <see cref="T:SteamKit2.SteamClient"/> associated with this <see cref="T:SteamKit2.CDNClient"/> instance is logged onto Steam.
-            </exception>
-            <exception cref="T:System.Net.Http.HttpRequestException">An network error occurred when performing the request.</exception>
-            <exception cref="T:SteamKit2.SteamKitWebRequestException">A network error occurred when performing the request.</exception>
-        </member>
-        <member name="M:SteamKit2.CDNClient.ConnectAsync(SteamKit2.CDNClient.Server)">
-            <summary>
-            Connects and initializes a session to the specified content server.
-            </summary>
-            <param name="csServer">The content server to connect to.</param>
-            <exception cref="T:System.ArgumentNullException">csServer was null.</exception>
-            <exception cref="T:System.Net.Http.HttpRequestException">An network error occurred when performing the request.</exception>
-            <exception cref="T:SteamKit2.SteamKitWebRequestException">A network error occurred when performing the request.</exception>
-        </member>
-        <member name="M:SteamKit2.CDNClient.AuthenticateDepotAsync(System.UInt32,System.Byte[],System.String)">
-            <summary>
-            Authenticate a CDNClient to a depot in the connected session
+            Authenticate a CDNClient to a depot.
             </summary>
             <param name="depotid">The id of the depot being accessed.</param>
             <param name="depotKey">
@@ -1998,16 +1979,16 @@
             This is used for decrypting filenames (if needed) in depot manifests, and processing depot chunks.
             </param>
             <param name="cdnAuthToken">CDN auth token for CDN content server endpoints.</param>
-            <exception cref="T:System.Net.Http.HttpRequestException">An network error occurred when performing the request.</exception>
-            <exception cref="T:SteamKit2.SteamKitWebRequestException">A network error occurred when performing the request.</exception>
         </member>
-        <member name="M:SteamKit2.CDNClient.DownloadManifestAsync(System.UInt32,System.UInt64)">
+        <member name="M:SteamKit2.CDNClient.DownloadManifestAsync(System.UInt32,System.UInt64,SteamKit2.CDNClient.Server)">
             <summary>
             Downloads the depot manifest specified by the given manifest ID, and optionally decrypts the manifest's filenames if the depot decryption key has been provided.
             </summary>
             <param name="depotId">The id of the depot being accessed.</param>
             <param name="manifestId">The unique identifier of the manifest to be downloaded.</param>
+            <param name="server">CDN server to download from.</param>
             <returns>A <see cref="T:SteamKit2.DepotManifest"/> instance that contains information about the files present within a depot.</returns>
+            <exception cref="T:System.ArgumentNullException"><see ref="server"/> was null.</exception>
             <exception cref="T:System.Net.Http.HttpRequestException">An network error occurred when performing the request.</exception>
             <exception cref="T:SteamKit2.SteamKitWebRequestException">A network error occurred when performing the request.</exception>
         </member>
@@ -2040,10 +2021,11 @@
             This is used for decrypting filenames (if needed) in depot manifests, and processing depot chunks.
             </param>
             <returns>A <see cref="T:SteamKit2.DepotManifest"/> instance that contains information about the files present within a depot.</returns>
+            <exception cref="T:System.ArgumentNullException"><see ref="server"/> was null.</exception>
             <exception cref="T:System.Net.Http.HttpRequestException">An network error occurred when performing the request.</exception>
             <exception cref="T:SteamKit2.SteamKitWebRequestException">A network error occurred when performing the request.</exception>
         </member>
-        <member name="M:SteamKit2.CDNClient.DownloadDepotChunkAsync(System.UInt32,SteamKit2.DepotManifest.ChunkData)">
+        <member name="M:SteamKit2.CDNClient.DownloadDepotChunkAsync(System.UInt32,SteamKit2.DepotManifest.ChunkData,SteamKit2.CDNClient.Server)">
             <summary>
             Downloads the specified depot chunk, and optionally processes the chunk and verifies the checksum if the depot decryption key has been provided.
             </summary>
@@ -2056,8 +2038,9 @@
             A <see cref="T:SteamKit2.DepotManifest.ChunkData"/> instance that represents the chunk to download.
             This value should come from a manifest downloaded with <see cref="o:DownloadManifestAsync"/>.
             </param>
+            <param name="server">CDN server to download from.</param>
             <returns>A <see cref="T:SteamKit2.CDNClient.DepotChunk"/> instance that contains the data for the given chunk.</returns>
-            <exception cref="T:System.ArgumentNullException">chunk's <see cref="P:SteamKit2.DepotManifest.ChunkData.ChunkID"/> was null.</exception>
+            <exception cref="T:System.ArgumentNullException">chunk's <see cref="P:SteamKit2.DepotManifest.ChunkData.ChunkID"/> or <see ref="connectedServer"/> was null.</exception>
             <exception cref="T:System.IO.InvalidDataException">Thrown if the downloaded data does not match the expected length.</exception>
             <exception cref="T:System.Net.Http.HttpRequestException">An network error occurred when performing the request.</exception>
             <exception cref="T:SteamKit2.SteamKitWebRequestException">A network error occurred when performing the request.</exception>
@@ -2840,7 +2823,7 @@
             The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <param name="depotid">The DepotID to request a decryption key for.</param>
-            <param name="appid">The AppID to request the decryption key for.</param>
+            <param name="appid">The AppID parent of the DepotID.</param>
             <returns>The Job ID of the request. This can be used to find the appropriate <see cref="T:SteamKit2.SteamApps.DepotKeyCallback"/>.</returns>
         </member>
         <member name="M:SteamKit2.SteamApps.PICSGetAccessTokens(System.Nullable{System.UInt32},System.Nullable{System.UInt32})">
@@ -4606,7 +4589,6 @@
             <summary>
             Initializes a new instance of the <see cref="T:SteamKit2.SteamMatchmaking.Lobby.SlotsAvailableFilter"/> class.
             </summary>
-            <param name="key">The metadata key this filter pertains to.</param>
             <param name="slotsAvailable">Integer value to compare against.</param>
         </member>
         <member name="M:SteamKit2.SteamMatchmaking.Lobby.SlotsAvailableFilter.Serialize">
@@ -4825,6 +4807,47 @@
             <param name="appId">The ID of the app this message pertains to.</param>
         </member>
         <member name="M:SteamKit2.SteamMatchmaking.HandleMsg(SteamKit2.IPacketMsg)">
+            <summary>
+            Handles a client message. This should not be called directly.
+            </summary>
+            <param name="packetMsg">The packet message that contains the data.</param>
+        </member>
+        <member name="T:SteamKit2.SteamNetworking">
+            <summary>
+            This handler is used for Steam networking sockets
+            </summary>
+        </member>
+        <member name="T:SteamKit2.SteamNetworking.NetworkingCertificateCallback">
+            <summary>
+            This callback is recieved in response to calling <see cref="M:SteamKit2.SteamNetworking.RequestNetworkingCertificate(System.UInt32,System.Byte[])"/>. This can be used to populate a CMsgSteamDatagramCertificateSigned for socket communication.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamNetworking.NetworkingCertificateCallback.Certificate">
+            <summary>
+            The certificate signed by the Steam CA. This contains a CMsgSteamDatagramCertificate with the supplied public key.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamNetworking.NetworkingCertificateCallback.CAKeyID">
+            <summary>
+            the ID of the CA used to sign this certificate.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamNetworking.NetworkingCertificateCallback.CASignature">
+            <summary>
+            The signature used to verify <see cref="P:SteamKit2.SteamNetworking.NetworkingCertificateCallback.Certificate"/>.
+            </summary>
+        </member>
+        <member name="M:SteamKit2.SteamNetworking.RequestNetworkingCertificate(System.UInt32,System.Byte[])">
+            <summary>
+            Request a signed networking certificate from Steam for your Ed25519 public key for the given app id.
+            Results are returned in a <see cref="T:SteamKit2.SteamNetworking.NetworkingCertificateCallback"/>.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
+            </summary>
+            <param name="appId">The App ID the certificate will be generated for</param>
+            <param name="publicKey">Your Ed25519 public key</param>
+            <returns>The Job ID of the request. This can be used to find the appropriate <see cref="T:SteamKit2.SteamNetworking.NetworkingCertificateCallback"/>.</returns>
+        </member>
+        <member name="M:SteamKit2.SteamNetworking.HandleMsg(SteamKit2.IPacketMsg)">
             <summary>
             Handles a client message. This should not be called directly.
             </summary>
@@ -6378,21 +6401,16 @@
             Gets the CM server list.
             </summary>
         </member>
-        <member name="T:SteamKit2.SteamClient.ServerListCallback">
-            <summary>
-            This callback is fired when the client receives a list of all publically available Steam3 servers.
-            This callback may be fired multiple times for different server lists.
-            </summary>
-        </member>
-        <member name="P:SteamKit2.SteamClient.ServerListCallback.Servers">
-            <summary>
-            Gets the server list.
-            </summary>
-        </member>
         <member name="M:SteamKit2.SteamClient.#ctor">
             <summary>
             Initializes a new instance of the <see cref="T:SteamKit2.SteamClient"/> class with the default configuration.
             </summary>
+        </member>
+        <member name="M:SteamKit2.SteamClient.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SteamKit2.SteamClient"/> class a specific identifier.
+            </summary>
+            <param name="identifier">A specific identifier to be used to uniquely identify this instance.</param>
         </member>
         <member name="M:SteamKit2.SteamClient.#ctor(SteamKit2.SteamConfiguration)">
             <summary>
@@ -6400,6 +6418,15 @@
             </summary>
             <param name="configuration">The configuration to use for this client.</param>
             <exception cref="T:System.ArgumentNullException">The configuration object is <c>null</c></exception>
+        </member>
+        <member name="M:SteamKit2.SteamClient.#ctor(SteamKit2.SteamConfiguration,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SteamKit2.SteamClient"/> class with a specific configuration and identifier
+            </summary>
+            <param name="configuration">The configuration to use for this client.</param>
+            <param name="identifier">A specific identifier to be used to uniquely identify this instance.</param>
+            <exception cref="T:System.ArgumentNullException">The configuration object or identifier is <c>null</c></exception>
+            <exception cref="T:System.ArgumentException">The identifier is an empty string</exception>
         </member>
         <member name="M:SteamKit2.SteamClient.AddHandler(SteamKit2.ClientMsgHandler)">
             <summary>
@@ -6679,212 +6706,6 @@
             The server list used for this configuration.
             If this configuration is used by multiple <see cref="T:SteamKit2.SteamClient"/> instances, they all share the server list.
             </summary>
-        </member>
-        <member name="T:SteamKit2.UFSClient">
-            <summary>
-            Represents a single client that connects to a UFS server.
-            </summary>
-        </member>
-        <member name="T:SteamKit2.UFSClient.ConnectedCallback">
-            <summary>
-            This callback is received after attempting to connect to the UFS server.
-            </summary>
-        </member>
-        <member name="T:SteamKit2.UFSClient.DisconnectedCallback">
-            <summary>
-            This callback is received when the client is physically disconnected from the UFS server.
-            </summary>
-        </member>
-        <member name="P:SteamKit2.UFSClient.DisconnectedCallback.UserInitiated">
-            <summary>
-            If true, the disconnection was initiated by calling <see cref="M:SteamKit2.UFSClient.Disconnect"/>.
-            If false, the disconnection was the cause of something not user-controlled, such as a network failure or
-            a forcible disconnection by the remote server.
-            </summary>
-        </member>
-        <member name="T:SteamKit2.UFSClient.LoggedOnCallback">
-            <summary>
-            This callback is returned in response to an attempt to log on to the UFS server through <see cref="T:SteamKit2.UFSClient"/>.
-            </summary>
-        </member>
-        <member name="P:SteamKit2.UFSClient.LoggedOnCallback.Result">
-            <summary>
-            Gets the result of the logon
-            </summary>
-        </member>
-        <member name="T:SteamKit2.UFSClient.UploadFileResponseCallback">
-            <summary>
-            This callback is returned in response to a request to upload a file through <see cref="T:SteamKit2.UFSClient"/>.
-            </summary>
-        </member>
-        <member name="P:SteamKit2.UFSClient.UploadFileResponseCallback.Result">
-            <summary>
-            Gets the result of the upload request
-            </summary>
-        </member>
-        <member name="P:SteamKit2.UFSClient.UploadFileResponseCallback.UseHttp">
-            <summary>
-            Gets whether or not the file upload should proceed over HTTP
-            </summary>
-        </member>
-        <member name="P:SteamKit2.UFSClient.UploadFileResponseCallback.UseHttps">
-            <summary>
-            Gets whether or not the file upload should proceed over HTTPS
-            </summary>
-        </member>
-        <member name="P:SteamKit2.UFSClient.UploadFileResponseCallback.EncryptFile">
-            <summary>
-            Gets whether or not the file should be encrypted during upload
-            </summary>
-        </member>
-        <member name="P:SteamKit2.UFSClient.UploadFileResponseCallback.ShaHash">
-            <summary>
-            Gets the SHA hash of the file to be uploaded
-            </summary>
-        </member>
-        <member name="P:SteamKit2.UFSClient.UploadFileResponseCallback.RemoteJobID">
-            <summary>
-            Gets the JobID on the UFS server.
-            </summary>
-        </member>
-        <member name="T:SteamKit2.UFSClient.UploadFileFinishedCallback">
-            <summary>
-            This callback is returned when a file upload through <see cref="T:SteamKit2.UFSClient"/> is completed.
-            </summary>
-        </member>
-        <member name="P:SteamKit2.UFSClient.UploadFileFinishedCallback.Result">
-            <summary>
-            Gets the result of the file upload
-            </summary>
-        </member>
-        <member name="P:SteamKit2.UFSClient.UploadFileFinishedCallback.ShaHash">
-            <summary>
-            Gets the SHA hash of the file that was uploaded
-            </summary>
-        </member>
-        <member name="P:SteamKit2.UFSClient.ConnectedUniverse">
-            <summary>
-            Gets the connected universe of this client.
-            This value will be <see cref="F:SteamKit2.EUniverse.Invalid"/> if the client is not connected to Steam.
-            </summary>
-            <value>The universe.</value>
-        </member>
-        <member name="P:SteamKit2.UFSClient.IsConnected">
-            <summary>
-            Gets a value indicating whether this instance is connected to the remote UFS server.
-            </summary>
-            <value>
-            	<c>true</c> if this instance is connected; otherwise, <c>false</c>.
-            </value>
-        </member>
-        <member name="P:SteamKit2.UFSClient.ConnectionTimeout">
-            <summary>
-            Gets or sets the connection timeout used when connecting to the UFS server.
-            The default value is 5 seconds.
-            </summary>
-            <value>
-            The connection timeout.
-            </value>
-        </member>
-        <member name="M:SteamKit2.UFSClient.#ctor(SteamKit2.SteamClient)">
-            <summary>
-            Initializes a new instance of the <see cref="T:SteamKit2.UFSClient"/> class.
-            </summary>
-            <param name="steamClient">
-            The parent <see cref="T:SteamKit2.SteamClient"/> instance that the UFS connection is for.
-            Callbacks will also be posted through this instance.
-            </param>
-        </member>
-        <member name="M:SteamKit2.UFSClient.Connect(System.Net.IPEndPoint)">
-            <summary>
-            Connects this client to a UFS server.
-            This begins the process of connecting and encrypting the data channel between the client and the UFS server.
-            Results are returned asynchronously in a <see cref="T:SteamKit2.UFSClient.ConnectedCallback"/>.
-            If the UFS server that this client attempts to connect to is down, a <see cref="T:SteamKit2.UFSClient.DisconnectedCallback"/> will be posted instead.
-            <see cref="T:SteamKit2.UFSClient"/> will not attempt to reconnect to Steam, you must handle this callback and call <see cref="M:SteamKit2.UFSClient.Connect(System.Net.IPEndPoint)"/> again, preferrably after a short delay.
-            In order to connect to the UFS server, the parent <see cref="T:SteamKit2.SteamClient"/> must be connected to the CM server.
-            </summary>
-            <param name="ufsServer">
-            The <see cref="T:System.Net.IPEndPoint"/> of the UFS server to connect to.
-            If <c>null</c>, <see cref="T:SteamKit2.UFSClient"/> will randomly select a UFS server from the <see cref="T:SteamKit2.SteamClient"/>'s list of servers.
-            </param>
-        </member>
-        <member name="M:SteamKit2.UFSClient.Disconnect">
-            <summary>
-            Disconnects this client from the UFS server.
-            a <see cref="T:SteamKit2.UFSClient.DisconnectedCallback"/> will be posted upon disconnection.
-            </summary>
-        </member>
-        <member name="T:SteamKit2.UFSClient.UploadDetails">
-            <summary>
-            Represents all the information required to upload a file to the UFS server.
-            </summary>
-        </member>
-        <member name="P:SteamKit2.UFSClient.UploadDetails.AppID">
-            <summary>
-            Gets or sets the AppID this upload request is for.
-            </summary>
-            <value>
-            The AppID.
-            </value>
-        </member>
-        <member name="P:SteamKit2.UFSClient.UploadDetails.FileName">
-            <summary>
-            Gets or sets the remote name of the file that is being uploaded.
-            </summary>
-            <value>
-            The name of the file.
-            </value>
-        </member>
-        <member name="P:SteamKit2.UFSClient.UploadDetails.FileData">
-            <summary>
-            Gets or sets the physical file data for this upload.
-            </summary>
-            <value>
-            The file data.
-            </value>
-        </member>
-        <member name="P:SteamKit2.UFSClient.UploadDetails.RemoteJobID">
-            <summary>
-            Gets or sets the JobID of this file upload. This value should be assigned from <see cref="P:SteamKit2.UFSClient.UploadFileResponseCallback.RemoteJobID"/>.
-            </summary>
-            <value>
-            The job ID.
-            </value>
-        </member>
-        <member name="M:SteamKit2.UFSClient.Logon(System.Collections.Generic.IEnumerable{System.UInt32})">
-            <summary>
-            Attempt to logon to the UFS and authorize the client for the given AppIDs.
-            The <see cref="T:SteamKit2.UFSClient"/> should be connected before this point.
-            Results are returned in a <see cref="T:SteamKit2.UFSClient.LoggedOnCallback"/>.
-            </summary>
-            <param name="appIds">The AppIDs to authorize when connecting to the UFS.</param>
-            <returns>The Job ID of the request. This can be used to find the appropriate <see cref="T:SteamKit2.UFSClient.LoggedOnCallback"/>.</returns>
-        </member>
-        <member name="M:SteamKit2.UFSClient.RequestFileUpload(SteamKit2.UFSClient.UploadDetails)">
-            <summary>
-            Begins a request to upload a file to the UFS.
-            The <see cref="T:SteamKit2.UFSClient"/> should be logged on before this point.
-            Results are returned in a <see cref="T:SteamKit2.UFSClient.UploadFileResponseCallback"/>.
-            </summary>
-            <param name="details">The details to use for uploading the file.</param>
-            <returns>The Job ID of the request. This can be used to find the appropriate <see cref="T:SteamKit2.UFSClient.UploadFileResponseCallback"/>.</returns>
-        </member>
-        <member name="M:SteamKit2.UFSClient.UploadFile(SteamKit2.UFSClient.UploadDetails)">
-            <summary>
-            Uploads the actual contents of a file to the UFS.
-            The <see cref="T:SteamKit2.UFSClient"/> should be logged on before this point, and the previous request to upload a file must have completed successfully.
-            Results are returned in a <see cref="T:SteamKit2.UFSClient.UploadFileFinishedCallback"/>.
-            </summary>
-            <param name="details">The details to use for uploading the file.</param>
-            <returns>The Job ID of the request. This can be used to find the appropriate <see cref="T:SteamKit2.UFSClient.UploadFileFinishedCallback"/>.</returns>
-        </member>
-        <member name="M:SteamKit2.UFSClient.Send(SteamKit2.IClientMsg)">
-            <summary>
-            Sends the specified client message to the UFS server.
-            This method will automatically assign the correct <see cref="P:SteamKit2.IClientMsg.SteamID"/> of the message, as given by the parent <see cref="T:SteamKit2.SteamClient"/>.
-            </summary>
-            <param name="msg">The client message to send.</param>
         </member>
         <member name="T:SteamKit2.ContentServerDirectoryService">
             <summary>
@@ -8780,16 +8601,18 @@
              Be careful with this, sensitive data may be written to the disk (such as your Steam password).
              </summary>
         </member>
-        <member name="M:SteamKit2.NetHookNetworkListener.#ctor">
+        <member name="M:SteamKit2.NetHookNetworkListener.#ctor(SteamKit2.ILogContext)">
             <summary>
             Will create a folder in path "%assembly%/nethook/%currenttime%/"
             </summary>
+            <param name="log">An optional logging context for log messages.</param>
         </member>
-        <member name="M:SteamKit2.NetHookNetworkListener.#ctor(System.String)">
+        <member name="M:SteamKit2.NetHookNetworkListener.#ctor(System.String,SteamKit2.ILogContext)">
             <summary>
             Log to your own folder.
             </summary>
             <param name="path">Path to folder.</param>
+            <param name="log">An optional logging context for log messages.</param>
         </member>
         <member name="M:SteamKit2.NetHookNetworkListener.OnIncomingNetworkMessage(SteamKit2.EMsg,System.Byte[])">
             <summary>
@@ -8804,6 +8627,19 @@
             </summary>
             <param name="msgType">Network message type of this packet message.</param>
             <param name="data">Raw packet data that will be sent.</param>
+        </member>
+        <member name="T:SteamKit2.ILogContext">
+            <summary>
+            A handle to write to the debug log in the context of a particular <see cref="T:SteamKit2.Internal.CMClient" />
+            </summary>
+        </member>
+        <member name="M:SteamKit2.ILogContext.LogDebug(System.String,System.String,System.Object[])">
+            <summary>
+            Writes a line to the debug log, informing all listeners.
+            </summary>
+            <param name="category">The category of the message.</param>
+            <param name="message">A composite format string.</param>
+            <param name="args">An array containing zero or more objects to format.</param>
         </member>
         <member name="T:SteamKit2.KeyDictionary">
             <summary>
