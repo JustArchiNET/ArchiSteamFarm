@@ -457,6 +457,8 @@ namespace ArchiSteamFarm {
 		public void SetUserInput(ASF.EUserInputType inputType, string inputValue) {
 			if ((inputType == ASF.EUserInputType.Unknown) || !Enum.IsDefined(typeof(ASF.EUserInputType), inputValue) || string.IsNullOrEmpty(inputValue)) {
 				ArchiLogger.LogNullError(nameof(inputType) + " || " + nameof(inputValue));
+
+				return;
 			}
 
 			// This switch should cover ONLY bot properties
