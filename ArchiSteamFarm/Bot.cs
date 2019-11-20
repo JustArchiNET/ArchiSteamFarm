@@ -2075,12 +2075,6 @@ namespace ArchiSteamFarm {
 				case EResult.InvalidPassword when string.IsNullOrEmpty(BotDatabase.LoginKey):
 					// Do not attempt to reconnect, those failures are permanent
 					return;
-				case EResult.Invalid:
-					// Invalid means that we didn't get OnLoggedOn() in the first place, so Steam is down
-					// Always reset one-time-only access tokens in this case, as OnLoggedOn() didn't do that for us
-					AuthCode = TwoFactorCode = null;
-
-					break;
 				case EResult.InvalidPassword:
 					BotDatabase.LoginKey = null;
 					ArchiLogger.LogGenericInfo(Strings.BotRemovedExpiredLoginKey);
@@ -2355,7 +2349,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			// Always reset one-time-only access tokens
+			// Always reset one-time-only access tokens when we get OnLoggedOn() response
 			AuthCode = TwoFactorCode = null;
 
 			// Keep LastLogOnResult for OnDisconnected()
