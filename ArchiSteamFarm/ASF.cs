@@ -820,12 +820,8 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		internal enum EFileType : byte {
-			Config,
-			Database
-		}
-
-		internal enum EUserInputType : byte {
+		[PublicAPI]
+		public enum EUserInputType : byte {
 			Unknown,
 			DeviceID,
 			Login,
@@ -833,6 +829,11 @@ namespace ArchiSteamFarm {
 			SteamGuard,
 			SteamParentalCode,
 			TwoFactorAuthentication
+		}
+
+		internal enum EFileType : byte {
+			Config,
+			Database
 		}
 	}
 }

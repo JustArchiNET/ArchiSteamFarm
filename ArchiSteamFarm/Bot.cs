@@ -453,6 +453,51 @@ namespace ArchiSteamFarm {
 			};
 		}
 
+		[PublicAPI]
+		public void SetUserInput(ASF.EUserInputType inputType, string inputValue) {
+			if ((inputType == ASF.EUserInputType.Unknown) || !Enum.IsDefined(typeof(ASF.EUserInputType), inputValue) || string.IsNullOrEmpty(inputValue)) {
+				ArchiLogger.LogNullError(nameof(inputType) + " || " + nameof(inputValue));
+			}
+
+			// This switch should cover ONLY bot properties
+			switch (inputType) {
+				case ASF.EUserInputType.DeviceID:
+					DeviceID = inputValue;
+
+					break;
+				case ASF.EUserInputType.Login:
+					if (BotConfig != null) {
+						BotConfig.SteamLogin = inputValue;
+					}
+
+					break;
+				case ASF.EUserInputType.Password:
+					if (BotConfig != null) {
+						BotConfig.DecryptedSteamPassword = inputValue;
+					}
+
+					break;
+				case ASF.EUserInputType.SteamGuard:
+					AuthCode = inputValue;
+
+					break;
+				case ASF.EUserInputType.SteamParentalCode:
+					if (BotConfig != null) {
+						BotConfig.SteamParentalCode = inputValue;
+					}
+
+					break;
+				case ASF.EUserInputType.TwoFactorAuthentication:
+					TwoFactorCode = inputValue;
+
+					break;
+				default:
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(inputType), inputType));
+
+					break;
+			}
+		}
+
 		internal void AddGamesToRedeemInBackground(IOrderedDictionary gamesToRedeemInBackground) {
 			if ((gamesToRedeemInBackground == null) || (gamesToRedeemInBackground.Count == 0)) {
 				ArchiLogger.LogNullError(nameof(gamesToRedeemInBackground));
@@ -1352,50 +1397,6 @@ namespace ArchiSteamFarm {
 			}
 
 			return await ArchiHandler.SendTypingStatus(steamID).ConfigureAwait(false) == EResult.OK;
-		}
-
-		internal void SetUserInput(ASF.EUserInputType inputType, string inputValue) {
-			if ((inputType == ASF.EUserInputType.Unknown) || string.IsNullOrEmpty(inputValue)) {
-				ArchiLogger.LogNullError(nameof(inputType) + " || " + nameof(inputValue));
-			}
-
-			// This switch should cover ONLY bot properties
-			switch (inputType) {
-				case ASF.EUserInputType.DeviceID:
-					DeviceID = inputValue;
-
-					break;
-				case ASF.EUserInputType.Login:
-					if (BotConfig != null) {
-						BotConfig.SteamLogin = inputValue;
-					}
-
-					break;
-				case ASF.EUserInputType.Password:
-					if (BotConfig != null) {
-						BotConfig.DecryptedSteamPassword = inputValue;
-					}
-
-					break;
-				case ASF.EUserInputType.SteamGuard:
-					AuthCode = inputValue;
-
-					break;
-				case ASF.EUserInputType.SteamParentalCode:
-					if (BotConfig != null) {
-						BotConfig.SteamParentalCode = inputValue;
-					}
-
-					break;
-				case ASF.EUserInputType.TwoFactorAuthentication:
-					TwoFactorCode = inputValue;
-
-					break;
-				default:
-					ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(inputType), inputType));
-
-					break;
-			}
 		}
 
 		internal async Task Start() {
