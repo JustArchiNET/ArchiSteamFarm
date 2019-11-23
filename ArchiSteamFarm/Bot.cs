@@ -455,7 +455,7 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public void SetUserInput(ASF.EUserInputType inputType, string inputValue) {
-			if ((inputType == ASF.EUserInputType.Unknown) || !Enum.IsDefined(typeof(ASF.EUserInputType), inputValue) || string.IsNullOrEmpty(inputValue)) {
+			if ((inputType == ASF.EUserInputType.Unknown) || !Enum.IsDefined(typeof(ASF.EUserInputType), inputType) || string.IsNullOrEmpty(inputValue)) {
 				ArchiLogger.LogNullError(nameof(inputType) + " || " + nameof(inputValue));
 
 				return;
