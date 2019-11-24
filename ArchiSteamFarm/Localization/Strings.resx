@@ -737,4 +737,8 @@ StackTrace:
   <data name="IPCConfigChanged" xml:space="preserve">
     <value>IPC config has been changed!</value>
   </data>
+  <data name="Checksum" xml:space="preserve">
+    <value>Checksum: {0}</value>
+    <comment>{0} will be replaced with checksum (string)</comment>
+  </data>
 </root>

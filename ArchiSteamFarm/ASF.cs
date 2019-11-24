@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.IPC;
@@ -673,6 +674,8 @@ namespace ArchiSteamFarm {
 
 				return;
 			}
+
+			ArchiLogger.LogGenericInfo(string.Format(Strings.Checksum, Convert.ToBase64String(Encoding.UTF8.GetBytes(SharedInfo.ProgramIdentifier + ", " + botNames.Count))));
 
 			if (botNames.Count > MaximumRecommendedBotsCount) {
 				ArchiLogger.LogGenericWarning(string.Format(Strings.WarningExcessiveBotsCount, MaximumRecommendedBotsCount));
