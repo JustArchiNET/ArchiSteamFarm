@@ -40,7 +40,7 @@ namespace ArchiSteamFarm.Collections {
 
 				BackingMaxCount = value;
 
-				while ((BackingQueue.Count > MaxCount) && BackingQueue.TryDequeue(out _)) { }
+				Resize();
 			}
 		}
 
@@ -60,11 +60,17 @@ namespace ArchiSteamFarm.Collections {
 		internal void Enqueue(T obj) {
 			BackingQueue.Enqueue(obj);
 
+			Resize();
+		}
+
+		private void Resize() {
 			if (BackingQueue.Count <= MaxCount) {
 				return;
 			}
 
-			BackingQueue.TryDequeue(out _);
+			lock (BackingQueue) {
+				while ((BackingQueue.Count > MaxCount) && BackingQueue.TryDequeue(out _)) { }
+			}
 		}
 	}
 }
