@@ -289,7 +289,7 @@ namespace ArchiSteamFarm.Plugins {
 		}
 
 		internal static async Task<bool> OnBotFriendRequest(Bot bot, ulong steamID) {
-			if ((bot == null) || (steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+			if ((bot == null) || (steamID == 0) || !new SteamID(steamID).IsValid) {
 				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(steamID));
 
 				return false;
