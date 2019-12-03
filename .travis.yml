@@ -7,7 +7,7 @@ git:
   depth: 10
 
 # ASF is based on .NET Core platform, we're not building with Mono
-dotnet: 3.0
+dotnet: 3.1
 mono: none
 
 env:
@@ -81,5 +81,5 @@ matrix:
       dist: bionic
     - os: osx
       # Ref: https://docs.travis-ci.com/user/reference/osx
-      dotnet: 3.0.100 # For OSX, we need absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
+      dotnet: 3.1.100 # For OSX, we need absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
       osx_image: xcode11.2
