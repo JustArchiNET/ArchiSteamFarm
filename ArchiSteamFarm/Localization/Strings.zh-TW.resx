@@ -410,7 +410,7 @@
     <value>你的 DeviceID 不正確或不存在！</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
-    <value>兩步驟驗證代碼：{0}</value>
+    <value>兩步驟驗證權杖：{0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
   <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
