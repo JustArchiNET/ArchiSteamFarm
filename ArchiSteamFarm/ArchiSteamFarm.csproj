@@ -63,7 +63,7 @@
     <PackageReference Include="protobuf-net" Version="3.0.0-alpha.43" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc4" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="5.0.0-rc4" />
-    <PackageReference Include="System.Composition" Version="1.3.0" />
+    <PackageReference Include="System.Composition" Version="1.4.0" />
     <Reference Include="SteamKit2">
       <HintPath>lib\SteamKit2.dll</HintPath>
     </Reference>
