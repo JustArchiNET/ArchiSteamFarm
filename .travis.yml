@@ -7,7 +7,7 @@ git:
   depth: 10
 
 # ASF is based on .NET Core platform, we're not building with Mono
-dotnet: 3.0
+dotnet: 3.1
 mono: none
 
 env:
@@ -15,7 +15,7 @@ env:
     - CONFIGURATION: Release
     - DOTNET_CLI_TELEMETRY_OPTOUT: 1
     - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-    - NET_CORE_VERSION: netcoreapp3.0
+    - NET_CORE_VERSION: netcoreapp3.1
     - VARIANTS="generic linux-arm linux-x64 osx-x64 win-x64" # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
 before_script:
   - |
@@ -81,5 +81,5 @@ matrix:
       dist: bionic
     - os: osx
       # Ref: https://docs.travis-ci.com/user/reference/osx
-      dotnet: 3.0.100 # For OSX, we need absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
+      dotnet: 3.1.100 # For OSX, we need absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
       osx_image: xcode11.2

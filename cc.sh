@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 set -eu
 
-TARGET_FRAMEWORK="netcoreapp3.0"
+TARGET_FRAMEWORK="netcoreapp3.1"
 
 MAIN_PROJECT="ArchiSteamFarm"
 TESTS_PROJECT="${MAIN_PROJECT}.Tests"
