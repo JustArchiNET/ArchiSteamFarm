@@ -82,10 +82,7 @@ build_script:
     $ProgressPreference = 'SilentlyContinue'
 
 
-    Push-Location ASF-ui
-
-
-    npm ci
+    npm ci --no-progress --prefix ASF-ui
 
 
     if ($LastExitCode -ne 0) {
@@ -93,15 +90,12 @@ build_script:
     }
 
 
-    npm run-script deploy
+    npm run-script deploy --no-progress --prefix ASF-ui
 
 
     if ($LastExitCode -ne 0) {
         throw "Last command failed."
     }
-
-
-    Pop-Location
 
 
     dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" /nologo

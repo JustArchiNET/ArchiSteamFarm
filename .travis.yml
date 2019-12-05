@@ -27,19 +27,9 @@ script:
   - |
     set -eu
 
-    if [ "$TRAVIS_OS_NAME" = "osx" ]; then
-        set +eu # This is needed to run below npm block on OSX
-    fi
-
-    (
-        cd ASF-ui
-        npm ci
-        npm run-script deploy
-    )
-
-    if [ "$TRAVIS_OS_NAME" = "osx" ]; then
-        set -eu # We no longer need +eu on OSX
-    fi
+    nvm install lts/*
+    npm ci --no-progress --prefix ASF-ui
+    npm run-script deploy --no-progress --prefix ASF-ui
 
     dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" /nologo
     dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "$CONFIGURATION" -f "$NET_CORE_VERSION" /nologo
@@ -61,16 +51,19 @@ script:
 
     dotnet restore ArchiSteamFarm
 
+    jobs=""
+
     for variant in $VARIANTS; do
         publish "$variant" &
+        jobs="$jobs $!"
     done
 
-    wait
+    for job in $jobs; do
+        wait "$job"
+    done
+
     set +u # This is needed to continue Travis build
 matrix:
-  # TODO: Remove failure allow once Linux works with 3.0
-  allow_failures:
-    - os: linux
   # We can use fast finish, as we don't need to wait for allow_failures builds to mark build as success
   fast_finish: true
   include:
