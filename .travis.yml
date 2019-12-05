@@ -35,12 +35,11 @@ script:
         fi
 
         npm ci --no-progress
+        npm run-script deploy --no-progress
 
         if [ "$TRAVIS_OS_NAME" = "osx" ]; then
             set -eu # We no longer need +eu on OSX
         fi
-
-        npm run-script deploy --no-progress
     )
 
     dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" /nologo
