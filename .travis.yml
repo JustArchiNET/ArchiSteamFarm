@@ -22,7 +22,7 @@ before_script:
     set -eu
 
     dotnet --info
-    set +u # This is needed to continue Travis build
+    #set +u # This is needed to continue Travis build
 script:
   - |
     set -eu
@@ -62,7 +62,7 @@ script:
         wait "$job"
     done
 
-    set +u # This is needed to continue Travis build
+    #set +u # This is needed to continue Travis build
 matrix:
   # We can use fast finish, as we don't need to wait for allow_failures builds to mark build as success
   fast_finish: true
