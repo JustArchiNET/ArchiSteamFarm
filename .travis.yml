@@ -29,12 +29,26 @@ script:
 
     nvm install lts/*
 
-    (
+    if [ "$TRAVIS_OS_NAME" = "osx" ]; then
+        echo "DEBUG1"
         cd ASF-ui
 
+        echo "DEBUG2"
         npm ci --no-progress
+        echo "DEBUG3"
         npm run-script deploy --no-progress
-    )
+        echo "DEBUG4"
+
+        cd ..
+        echo "DEBUG5"
+    else
+        (
+            cd ASF-ui
+
+            npm ci --no-progress
+            npm run-script deploy --no-progress
+        )
+    fi
 
     dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" /nologo
     dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "$CONFIGURATION" -f "$NET_CORE_VERSION" /nologo
