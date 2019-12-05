@@ -31,15 +31,16 @@ script:
         cd ASF-ui
 
         if [ "$TRAVIS_OS_NAME" = "osx" ]; then
-            set +e # This is needed to run below npm block on OSX
+            set +eu # This is needed to run below npm block on OSX
         fi
 
-        npm ci
-        npm run-script deploy
+        npm ci --no-progress
 
         if [ "$TRAVIS_OS_NAME" = "osx" ]; then
-            set -e # We no longer need +eu on OSX
+            set -eu # We no longer need +eu on OSX
         fi
+
+        npm run-script deploy --no-progress
     )
 
     dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" /nologo
