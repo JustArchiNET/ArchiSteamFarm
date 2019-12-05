@@ -37,7 +37,7 @@ using Microsoft.Extensions.Hosting;
 namespace ArchiSteamFarm.IPC {
 	internal static class ArchiKestrel {
 		internal static HistoryTarget HistoryTarget { get; private set; }
-		internal static string WebsiteDirectory { get; private set; } = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.WebsiteDirectory);
+		internal static string WebsiteDirectory { get; private set; } = Path.Combine(AppContext.BaseDirectory, SharedInfo.WebsiteDirectory);
 
 #if NETFRAMEWORK
 		private static IWebHost KestrelWebHost;
