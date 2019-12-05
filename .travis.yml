@@ -31,14 +31,14 @@ script:
         cd ASF-ui
 
         if [ "$TRAVIS_OS_NAME" = "osx" ]; then
-            set +u # This is needed to run below npm block on OSX
+            set +e # This is needed to run below npm block on OSX
         fi
 
         npm ci
         npm run-script deploy
 
         if [ "$TRAVIS_OS_NAME" = "osx" ]; then
-            set -u # We no longer need +eu on OSX
+            set -e # We no longer need +eu on OSX
         fi
     )
 
