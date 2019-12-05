@@ -11,13 +11,12 @@ OUT="out"
 
 ASF_UI=1
 CLEAN=0
-PUBLISH_TRIMMED=0
 PULL=1
 SHARED_COMPILATION=1
 TEST=1
 
 PRINT_USAGE() {
-	echo "Usage: $0 [--clean] [--publish-trimmed] [--no-asf-ui] [--no-pull] [--no-shared-compilation] [--no-test] [debug/release]"
+	echo "Usage: $0 [--clean] [--no-asf-ui] [--no-pull] [--no-shared-compilation] [--no-test] [debug/release]"
 }
 
 cd "$(dirname "$(readlink -f "$0")")"
@@ -30,8 +29,6 @@ for ARG in "$@"; do
 		--no-asf-ui) ASF_UI=0 ;;
 		--clean) CLEAN=1 ;;
 		--no-clean) CLEAN=0 ;;
-		--publish-trimmed) PUBLISH_TRIMMED=1 ;;
-		--no-publish-trimmed) PUBLISH_TRIMMED=0 ;;
 		--pull) PULL=1 ;;
 		--no-pull) PULL=0 ;;
 		--shared-compilation) SHARED_COMPILATION=1 ;;
@@ -82,10 +79,6 @@ if [ "$ASF_UI" -eq 1 ]; then
 fi
 
 DOTNET_FLAGS="-c $CONFIGURATION -f $TARGET_FRAMEWORK /nologo"
-
-if [ "$PUBLISH_TRIMMED" -eq 0 ]; then
-	DOTNET_FLAGS="$DOTNET_FLAGS /p:PublishTrimmed=false"
-fi
 
 if [ "$SHARED_COMPILATION" -eq 0 ]; then
 	DOTNET_FLAGS="$DOTNET_FLAGS /p:UseSharedCompilation=false"

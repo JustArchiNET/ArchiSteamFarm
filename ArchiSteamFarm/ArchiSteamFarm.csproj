@@ -8,7 +8,7 @@
     <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
     <Copyright>Copyright © ArchiSteamFarm 2015-2019</Copyright>
     <DefaultItemExcludes>$(DefaultItemExcludes);config/**;debug/**;out/**;overlay/**</DefaultItemExcludes>
-    <Description>ASF is an application that allows you to farm steam cards using multiple steam accounts simultaneously.</Description>
+    <Description>ASF is a C# application with primary purpose of idling Steam cards from multiple accounts simultaneously.</Description>
     <ErrorReport>none</ErrorReport>
     <FileVersion>4.1.0.9</FileVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -19,7 +19,6 @@
     <PackageIcon>../resources/ASF.ico</PackageIcon>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/JustArchiNET/ArchiSteamFarm</PackageProjectUrl>
-    <PublishTrimmed>false</PublishTrimmed>
     <RepositoryType>Git</RepositoryType>
     <RepositoryUrl>https://github.com/JustArchiNET/ArchiSteamFarm.git</RepositoryUrl>
     <RuntimeIdentifiers>linux-arm;linux-x64;osx-x64;win-x64</RuntimeIdentifiers>
@@ -110,12 +109,13 @@
 
   <ItemGroup>
     <Content Include="overlay\all\**\*.*">
-      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
     </Content>
     <Content Include="..\ASF-ui\dist\**\*.*" Exclude="**\README.md">
-      <Link>www\%(RecursiveDir)%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>www\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </Content>
   </ItemGroup>
 

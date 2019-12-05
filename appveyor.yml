@@ -98,7 +98,7 @@ build_script:
     }
 
 
-    dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" /nologo
+    dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" --nologo
 
 
     if ($LastExitCode -ne 0) {
@@ -106,7 +106,7 @@ build_script:
     }
 
 
-    dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" /nologo
+    dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" --nologo
 
 
     if ($LastExitCode -ne 0) {
@@ -121,7 +121,7 @@ test_script:
     $ProgressPreference = 'SilentlyContinue'
 
 
-    dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" /nologo
+    dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" --nologo
 
 
     if ($LastExitCode -ne 0) {
@@ -155,9 +155,9 @@ after_test:
 
         if ($variant -like 'generic*') {
             # TODO: Workaround https://github.com/mono/linker/issues/286 (don't forget to remove it from docker files too)
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" --no-restore /nologo "/p:ASFVariant=$variant" "/p:PublishTrimmed=false" "/p:UseAppHost=false"
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" --no-restore --nologo "/p:ASFVariant=$variant" "/p:UseAppHost=false"
         } else {
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" -r "$variant" --no-restore /nologo "/p:ASFVariant=$variant" "/p:LinkDuringPublish=false"
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" -r "$variant" --no-restore --nologo "/p:ASFVariant=$variant" "/p:PublishTrimmed=true" "/p:PublishSingleFile=true"
         }
 
         if ($LastExitCode -ne 0) {
@@ -209,7 +209,20 @@ after_test:
     }
 
 
+    dotnet clean ArchiSteamFarm -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" --nologo
+
+
+    if ($LastExitCode -ne 0) {
+        throw "Last command failed."
+    }
+
+
     dotnet restore ArchiSteamFarm
+
+
+    if ($LastExitCode -ne 0) {
+        throw "Last command failed."
+    }
 
 
     foreach ($variant in $env:VARIANTS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
