@@ -8,7 +8,7 @@
     <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
     <Copyright>Copyright © ArchiSteamFarm 2015-2019</Copyright>
     <DefaultItemExcludes>$(DefaultItemExcludes);config/**;debug/**;out/**;overlay/**</DefaultItemExcludes>
-    <Description>ASF is an application that allows you to farm steam cards using multiple steam accounts simultaneously.</Description>
+    <Description>ASF is a C# application with primary purpose of idling Steam cards from multiple accounts simultaneously.</Description>
     <ErrorReport>none</ErrorReport>
     <FileVersion>4.1.0.9</FileVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
