@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using ArchiSteamFarm.Plugins;
@@ -61,7 +62,34 @@ namespace ArchiSteamFarm {
 		internal const string UpdateDirectory = "_old";
 		internal const string WebsiteDirectory = "www";
 
-		internal static string HomeDirectory => Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location ?? throw new ArgumentNullException(nameof(HomeDirectory)));
+		internal static string HomeDirectory {
+			get {
+				// We're aiming to handle two possible cases here, classic publish and single-file publish
+				// Firstly, we'll get the path to the binary that is running our code
+				string binaryPath;
+
+				using (Process process = Process.GetCurrentProcess()) {
+					binaryPath = process.MainModule?.FileName;
+				}
+
+				if (string.IsNullOrEmpty(binaryPath)) {
+					throw new ArgumentNullException(nameof(binaryPath));
+				}
+
+				// Now we need to check what that binary actually is
+				return Path.GetFileNameWithoutExtension(binaryPath) switch {
+					// This path goes to our own binary, so the user is using OS-specific build, single-file or not, we'll return path to location of that binary then
+					AssemblyName => Path.GetDirectoryName(binaryPath),
+
+					// This path goes to third-party binary, so the user is using our generic build, we'll return our base directory then
+					"dotnet" => AppContext.BaseDirectory,
+					"mono" => AppContext.BaseDirectory,
+
+					// Unhandled case
+					_ => throw new ArgumentOutOfRangeException(nameof(binaryPath))
+				};
+			}
+		}
 
 		[NotNull]
 		internal static string ProgramIdentifier => PublicIdentifier + " V" + Version + " (" + BuildInfo.Variant + "/" + ModuleVersion + " | " + OS.Variant + ")";

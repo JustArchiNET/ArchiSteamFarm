@@ -11,13 +11,13 @@ OUT="out"
 
 ASF_UI=1
 CLEAN=0
-PUBLISH_TRIMMED=0
+PUBLISH_TRIMMED=1
 PULL=1
 SHARED_COMPILATION=1
 TEST=1
 
 PRINT_USAGE() {
-	echo "Usage: $0 [--clean] [--publish-trimmed] [--no-asf-ui] [--no-pull] [--no-shared-compilation] [--no-test] [debug/release]"
+	echo "Usage: $0 [--clean] [--no-asf-ui] [--no-publish-trimmed] [--no-pull] [--no-shared-compilation] [--no-test] [debug/release]"
 }
 
 cd "$(dirname "$(readlink -f "$0")")"

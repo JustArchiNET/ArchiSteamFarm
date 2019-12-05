@@ -155,9 +155,9 @@ after_test:
 
         if ($variant -like 'generic*') {
             # TODO: Workaround https://github.com/mono/linker/issues/286 (don't forget to remove it from docker files too)
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" --no-restore /nologo "/p:ASFVariant=$variant" "/p:PublishTrimmed=false" "/p:UseAppHost=false"
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" --no-restore /nologo "/p:ASFVariant=$variant" "/p:UseAppHost=false"
         } else {
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" -r "$variant" --no-restore /nologo "/p:ASFVariant=$variant" "/p:LinkDuringPublish=false"
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" -r "$variant" --no-restore /nologo "/p:ASFVariant=$variant" "/p:PublishSingleFile=true"
         }
 
         if ($LastExitCode -ne 0) {
