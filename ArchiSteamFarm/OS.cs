@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -30,6 +31,9 @@ using JetBrains.Annotations;
 
 namespace ArchiSteamFarm {
 	internal static class OS {
+		// We need to keep this one assigned and not calculated on-demand
+		internal static readonly string ProcessFileName = Process.GetCurrentProcess().MainModule?.FileName ?? throw new ArgumentNullException(nameof(ProcessFileName));
+
 		internal static bool IsUnix => RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
 
 		[NotNull]

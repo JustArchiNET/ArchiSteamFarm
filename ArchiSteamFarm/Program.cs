@@ -42,9 +42,6 @@ namespace ArchiSteamFarm {
 		internal static bool RestartAllowed { get; private set; } = true;
 		internal static bool ShutdownSequenceInitialized { get; private set; }
 
-		// We need to keep this one assigned and not calculated on-demand
-		private static readonly string ProcessFileName = Process.GetCurrentProcess().MainModule?.FileName ?? throw new ArgumentNullException(nameof(ProcessFileName));
-
 		private static readonly TaskCompletionSource<byte> ShutdownResetEvent = new TaskCompletionSource<byte>();
 		private static bool SystemRequired;
 
@@ -62,7 +59,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			string executableName = Path.GetFileNameWithoutExtension(ProcessFileName);
+			string executableName = Path.GetFileNameWithoutExtension(OS.ProcessFileName);
 
 			if (string.IsNullOrEmpty(executableName)) {
 				ASF.ArchiLogger.LogNullError(nameof(executableName));
@@ -73,7 +70,7 @@ namespace ArchiSteamFarm {
 			IEnumerable<string> arguments = Environment.GetCommandLineArgs().Skip(executableName.Equals(SharedInfo.AssemblyName) ? 1 : 0);
 
 			try {
-				Process.Start(ProcessFileName, string.Join(" ", arguments));
+				Process.Start(OS.ProcessFileName, string.Join(" ", arguments));
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 			}
