@@ -64,6 +64,10 @@ namespace ArchiSteamFarm {
 
 		internal static string HomeDirectory {
 			get {
+				if (!string.IsNullOrEmpty(CachedHomeDirectory)) {
+					return CachedHomeDirectory;
+				}
+
 				// We're aiming to handle two possible cases here, classic publish and single-file publish
 				// Firstly, we'll get the path to the binary that is running our code
 				string binaryPath;
@@ -77,7 +81,7 @@ namespace ArchiSteamFarm {
 				}
 
 				// Now we need to check what that binary actually is
-				return Path.GetFileNameWithoutExtension(binaryPath) switch {
+				CachedHomeDirectory = Path.GetFileNameWithoutExtension(binaryPath) switch {
 					// This path goes to our own binary, so the user is using OS-specific build, single-file or not, we'll return path to location of that binary then
 					AssemblyName => Path.GetDirectoryName(binaryPath),
 
@@ -88,6 +92,8 @@ namespace ArchiSteamFarm {
 					// Unhandled case
 					_ => throw new ArgumentOutOfRangeException(nameof(binaryPath))
 				};
+
+				return CachedHomeDirectory;
 			}
 		}
 
@@ -101,6 +107,8 @@ namespace ArchiSteamFarm {
 		internal static Version Version => Assembly.GetEntryAssembly()?.GetName().Version ?? throw new ArgumentNullException(nameof(Version));
 
 		private static Guid ModuleVersion => Assembly.GetEntryAssembly()?.ManifestModule.ModuleVersionId ?? throw new ArgumentNullException(nameof(ModuleVersion));
+
+		private static string CachedHomeDirectory;
 
 		internal static class BuildInfo {
 #if ASF_VARIANT_DOCKER
