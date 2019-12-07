@@ -35,10 +35,12 @@ namespace ArchiSteamFarm {
 		[NotNull]
 		internal static string Variant => RuntimeInformation.OSDescription.Trim();
 
+		private static bool IsWindows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+
 		private static Mutex SingleInstance;
 
 		internal static void CoreInit() {
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && !Console.IsOutputRedirected) {
+			if (IsWindows && !Console.IsOutputRedirected) {
 				// Normally we should use UTF-8 encoding as it's the most correct one for our case, and we already use it on other OSes such as Linux
 				// However, older Windows versions, mainly 7/8.1 can't into UTF-8 without appropriate console font, and expecting from users to change it manually is unwanted
 				// As irrational as it can sound, those versions actually can work with unicode encoding instead, as they magically map it into proper chars despite of incorrect font
@@ -47,7 +49,10 @@ namespace ArchiSteamFarm {
 				// See https://github.com/JustArchiNET/ArchiSteamFarm/issues/1289 for more details
 				Console.OutputEncoding = Encoding.Unicode;
 
-				DisableQuickEditMode();
+				// Quick edit mode will freeze when user start selecting something on the console until the selection is cancelled
+				// Users are very often doing it accidentally without any real purpose, and we want to avoid this common issue which causes the whole process to hang
+				// See http://stackoverflow.com/questions/30418886/how-and-why-does-quickedit-mode-in-command-prompt-freeze-applications for more details
+				WindowsDisableQuickEditMode();
 			}
 		}
 
@@ -58,9 +63,9 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+			if (IsWindows) {
 				if (systemRequired) {
-					KeepWindowsSystemActive();
+					WindowsKeepSystemActive();
 				}
 			}
 
@@ -107,6 +112,10 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			if (!IsUnix) {
+				return;
+			}
+
 			// Chmod() returns 0 on success, -1 on failure
 			if (NativeMethods.Chmod(path, (int) NativeMethods.UnixExecutePermission) != 0) {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningFailedWithError, Marshal.GetLastWin32Error()));
@@ -124,8 +133,11 @@ namespace ArchiSteamFarm {
 			SingleInstance = null;
 		}
 
-		private static void DisableQuickEditMode() {
-			// http://stackoverflow.com/questions/30418886/how-and-why-does-quickedit-mode-in-command-prompt-freeze-applications
+		private static void WindowsDisableQuickEditMode() {
+			if (!IsWindows) {
+				return;
+			}
+
 			IntPtr consoleHandle = NativeMethods.GetStdHandle(NativeMethods.StandardInputHandle);
 
 			if (!NativeMethods.GetConsoleMode(consoleHandle, out uint consoleMode)) {
@@ -141,10 +153,14 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static void KeepWindowsSystemActive() {
+		private static void WindowsKeepSystemActive() {
+			if (!IsWindows) {
+				return;
+			}
+
 			// This function calls unmanaged API in order to tell Windows OS that it should not enter sleep state while the program is running
 			// If user wishes to enter sleep mode, then he should use ShutdownOnFarmingFinished or manage ASF process with third-party tool or script
-			// More info: https://msdn.microsoft.com/library/windows/desktop/aa373208(v=vs.85).aspx
+			// See https://docs.microsoft.com/windows/win32/api/winbase/nf-winbase-setthreadexecutionstate for more details
 			NativeMethods.EExecutionState result = NativeMethods.SetThreadExecutionState(NativeMethods.AwakeExecutionState);
 
 			// SetThreadExecutionState() returns NULL on failure, which is mapped to 0 (EExecutionState.None) in our case
