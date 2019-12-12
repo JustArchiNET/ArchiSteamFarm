@@ -151,11 +151,11 @@
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>全域設定無法載入，請確保 {0} 存在且有效！如果仍有問題，請參閱 Wiki 中的「新手上路」指南。</value>
+    <value>無法載入全域設定檔，請確保 {0} 存在且有效！如果仍有問題，請參閱 Wiki 中的「新手上路」指南。</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
-    <value>{0} 無效 ！</value>
+    <value>{0} 無效！</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
@@ -186,7 +186,7 @@
     <value>無法進行更新，因為此版本沒有提供任何資產！</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>收到一個使用者輸入請求，但處理程序目前正以無介面模式執行！</value>
+    <value>收到一個使用者輸入請求，但行程目前正以無介面模式執行！</value>
   </data>
   <data name="Exiting" xml:space="preserve">
     <value>正在退出...</value>
@@ -234,11 +234,11 @@
     <value>正在檢查新版本...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>正在下載新版本：{0}（{1} MB）……等待期間，如果喜歡這個軟體，請考慮捐助 ASF！ :)</value>
+    <value>正在下載新版本：{0}（{1} MB）……等待期間，如果喜歡這個軟體，請考慮捐助 ASF！:)</value>
     <comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
-    <value>更新完成 ！</value>
+    <value>更新完成！</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
     <value>ASF 有新版本可用！請考慮手動更新！</value>
@@ -248,31 +248,31 @@
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
-    <value>請輸入你的行動驗證器裝置識別碼（包括「android:」）： </value>
+    <value>請輸入你的行動驗證器裝置辨識碼（包括「android:」）：</value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>請輸入你的 Steam Guard 行動驗證器上的兩步驟驗證代碼： </value>
+    <value>請輸入你的 Steam Guard 行動驗證器上的兩步驟驗證代碼：</value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>請輸入寄送至你的電子信箱的 Steam Guard 驗證代碼： </value>
+    <value>請輸入寄送至你的電子信箱的 Steam Guard 驗證代碼：</value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>請輸入你的 Steam 帳戶： </value>
+    <value>請輸入你的 Steam 帳戶：</value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalCode" xml:space="preserve">
-    <value>請輸入 Steam 家庭監護 PIN 碼： </value>
+    <value>請輸入 Steam 家庭監護 PIN 碼：</value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>請輸入你的 Steam 密碼： </value>
+    <value>請輸入你的 Steam 密碼：</value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
-    <value>請輸入未記錄的值 {0}： </value>
+    <value>請輸入未記錄的值 {0}：</value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
@@ -404,7 +404,7 @@
     <value>正在將 .maFile 轉換成 ASF 的檔案格式……</value>
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>已成功匯入行動驗證器 ！</value>
+    <value>已成功匯入行動驗證器！</value>
   </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>你的 DeviceID 不正確或不存在！</value>
@@ -596,7 +596,7 @@
     <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
   </data>
   <data name="BotAccountLocked" xml:space="preserve">
-    <value>此帳戶已被鎖定，永久無法掛卡 ！</value>
+    <value>此帳戶已被鎖定，永久無法掛卡！</value>
   </data>
   <data name="BotStatusLocked" xml:space="preserve">
     <value>BOT 已被鎖定，無法透過掛卡得到卡片。</value>
@@ -717,7 +717,7 @@
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
   </data>
   <data name="ErrorSingleInstanceRequired" xml:space="preserve">
-    <value>ASF 處理程序已執行於此工作目錄，正在中止！</value>
+    <value>ASF 行程已執行於此工作目錄，正在中止！</value>
   </data>
   <data name="BotHandledConfirmations" xml:space="preserve">
     <value>成功處理 {0} 個確認！</value>
