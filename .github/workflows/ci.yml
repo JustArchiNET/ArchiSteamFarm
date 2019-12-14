@@ -11,7 +11,7 @@ env:
 
 jobs:
   build:
-    runs-on: [macos-latest ubuntu-latest windows-latest]
+    runs-on: [macos-latest, ubuntu-latest, windows-latest]
 
     steps:
     - name: Checkout code
