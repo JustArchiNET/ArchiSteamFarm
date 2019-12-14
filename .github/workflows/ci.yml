@@ -92,4 +92,4 @@ jobs:
         for job in $jobs; do
             wait "$job"
         done
-    shell: bash
+      shell: bash
