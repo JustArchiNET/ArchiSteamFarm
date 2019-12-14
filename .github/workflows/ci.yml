@@ -1,0 +1,95 @@
+name: ASF CI
+
+on: [push, pull_request]
+
+env:
+  CONFIGURATION: Release
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  NET_CORE_VERSION: netcoreapp3.1
+  VARIANTS: generic generic-netf linux-arm linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
+
+jobs:
+  build:
+    runs-on: [macos-latest ubuntu-latest windows-latest]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v1
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1
+
+    - name: Verify .NET Core
+      run: dotnet --info
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v1.1.0
+      with:
+        version: lts
+
+    - name: Verify Node.js
+      run: node -v && npm -v
+
+    - name: Sync git submodules
+      run: git submodule sync
+
+    - name: Update git submodules
+      run: git submodule update --init --recursive
+
+    - name: Install npm modules for ASF-ui
+      run: npm ci --no-progress --prefix ASF-ui
+
+    - name: Build ASF-ui
+      run: npm run-script build:ci --no-progress
+
+    - name: Build ArchiSteamFarm
+      run: dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" --nologo
+
+    - name: Build ArchiSteamFarm.CustomPlugins.ExamplePlugin
+      run: dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "$CONFIGURATION" -f "$NET_CORE_VERSION" --nologo
+
+    - name: Run ArchiSteamFarm.Tests
+      run: dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -f "$NET_CORE_VERSION" --nologo
+
+    - name: Publish ArchiSteamFarm
+      run: |
+        set -eu
+
+        publish() {
+            if [ "$1" = 'generic' ]; then
+                local variantArgs="/p:UseAppHost=false"
+            else
+                local variantArgs="-r $1 /p:PublishTrimmed=true"
+
+                # TODO: https://github.com/dotnet/sdk/issues/4022
+                case "$1" in
+                    'win-'*) ;;
+                    *) local variantArgs="$variantArgs /p:PublishSingleFile=true" ;;
+                esac
+            fi
+
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" --no-restore --nologo "/p:ASFVariant=$1" $variantArgs
+
+            # If we include any overlay for this variant, copy it to output directory
+            if [ -d "ArchiSteamFarm/overlay/${1}" ]; then
+                cp "ArchiSteamFarm/overlay/${1}/"* "out/${1}"
+            fi
+        }
+
+        dotnet clean ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" --nologo
+        dotnet restore ArchiSteamFarm
+
+        jobs=""
+
+        for variant in $VARIANTS; do
+            publish "$variant" &
+            jobs="$jobs $!"
+        done
+
+        for job in $jobs; do
+            wait "$job"
+        done
+    shell: bash
