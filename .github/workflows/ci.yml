@@ -20,7 +20,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
 
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
@@ -31,15 +31,15 @@ jobs:
       run: dotnet --info
 
     - name: Setup Node.js
-      uses: actions/setup-node@v1.1.0
+      uses: actions/setup-node@v1
       with:
-        version: lts
+        node-version: lts
 
     - name: Verify Node.js
       run: node -v && npm -v
 
     - name: Sync git submodules
-      run: git submodule sync
+      run: git submodule sync --recursive
 
     - name: Update git submodules
       run: git submodule update --init --recursive
