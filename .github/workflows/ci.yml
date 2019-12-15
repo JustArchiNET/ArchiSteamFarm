@@ -11,8 +11,6 @@ env:
   NODE_JS_VERSION: 12.x
   VARIANTS: generic linux-arm linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
 
-shell: bash
-
 jobs:
   build:
     strategy:
@@ -57,13 +55,13 @@ jobs:
       run: npm run-script build:ci --no-progress --prefix ASF-ui
 
     - name: Build ArchiSteamFarm
-      run: dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" --nologo
+      run: dotnet build ArchiSteamFarm -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" --nologo
 
     - name: Build ArchiSteamFarm.CustomPlugins.ExamplePlugin
-      run: dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "$CONFIGURATION" -f "$NET_CORE_VERSION" --nologo
+      run: dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" --nologo
 
     - name: Run ArchiSteamFarm.Tests
-      run: dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -f "$NET_CORE_VERSION" --nologo
+      run: dotnet test ArchiSteamFarm.Tests -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" --nologo
 
     - name: Publish ArchiSteamFarm
       run: |
@@ -82,7 +80,7 @@ jobs:
                 esac
             fi
 
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" --no-restore --nologo "/p:ASFVariant=$1" $variantArgs
+            dotnet publish ArchiSteamFarm -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" -o "out/${1}" --no-restore --nologo "/p:ASFVariant=$1" $variantArgs
 
             # If we include any overlay for this variant, copy it to output directory
             if [ -d "ArchiSteamFarm/overlay/${1}" ]; then
@@ -90,7 +88,7 @@ jobs:
             fi
         }
 
-        dotnet clean ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" --nologo
+        dotnet clean ArchiSteamFarm -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" --nologo
         dotnet restore ArchiSteamFarm
 
         jobs=""
