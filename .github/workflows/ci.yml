@@ -160,10 +160,8 @@ jobs:
             }
 
             # Include .ico file for non-Windows targets
-            if ($targetFramework -ne "$env:NET_FRAMEWORK_VERSION") {
-                if (!(Test-Path "out\$variant\ArchiSteamFarm.exe" -PathType Leaf)) {
-                    Copy-Item 'resources\ASF.ico' "out\$variant\ArchiSteamFarm.ico"
-                }
+            if (!(Test-Path "out\$variant\ArchiSteamFarm.exe" -PathType Leaf)) {
+                Copy-Item 'resources\ASF.ico' "out\$variant\ArchiSteamFarm.ico"
             }
         }
 
