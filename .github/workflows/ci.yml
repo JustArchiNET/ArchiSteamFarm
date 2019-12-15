@@ -7,6 +7,7 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
   DOTNET_SDK_VERSION: 3.1.100
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  GITHUB_JOBS: 4 # 2-core CPU, assuming HT: https://help.github.com/en/actions/automating-your-workflow-with-github-actions/virtual-environments-for-github-hosted-runners#supported-runners-and-hardware-resources
   NET_CORE_VERSION: netcoreapp3.1
   NET_FRAMEWORK_VERSION: net48
   NODE_JS_VERSION: 12.x
@@ -28,7 +29,7 @@ jobs:
       run: git submodule sync --recursive
 
     - name: Update git submodules
-      run: git submodule update --init --recursive
+      run: git submodule update -j ${{ env.GITHUB_JOBS }} --init --recursive
 
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
