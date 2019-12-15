@@ -92,10 +92,8 @@ jobs:
                 cp "ArchiSteamFarm/overlay/${1}/"* "out/${1}"
             fi
 
-            # Include .ico file for non-Windows targets
-            if [ ! -f "out/${1}/ArchiSteamFarm.exe" ]; then
-                cp "resources/ASF.ico" "out/${1}/ArchiSteamFarm.ico"
-            fi
+            # Include .ico file for all platforms, since only Windows script can bundle it inside the exe
+            cp "resources/ASF.ico" "out/${1}/ArchiSteamFarm.ico"
         }
 
         dotnet clean ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" --nologo
