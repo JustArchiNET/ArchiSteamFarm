@@ -5,9 +5,10 @@ on: [push, pull_request]
 env:
   CONFIGURATION: Release
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
-  DOTNET_SDK: 3.1.100
+  DOTNET_SDK_VERSION: 3.1.100
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
   NET_CORE_VERSION: netcoreapp3.1
+  NODE_JS_VERSION: 12.x
   VARIANTS: generic linux-arm linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
 
 jobs:
@@ -20,20 +21,20 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@master
+      uses: actions/checkout@v2
 
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@master
+      uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: ${{ env.DOTNET_SDK }}
+        dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
 
     - name: Verify .NET Core
       run: dotnet --info
 
     - name: Setup Node.js
-      uses: actions/setup-node@master
+      uses: actions/setup-node@v1
       with:
-        node-version: lts
+        node-version: ${{ env.NODE_JS_VERSION }}
 
     - name: Verify Node.js
       run: node -v && npm -v
