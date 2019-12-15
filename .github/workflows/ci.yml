@@ -31,13 +31,16 @@ jobs:
     - name: Verify .NET Core
       run: dotnet --info
 
-    - name: Setup Node.js
+    - name: Setup Node.js with npm
       uses: actions/setup-node@v1
       with:
         node-version: ${{ env.NODE_JS_VERSION }}
 
     - name: Verify Node.js
-      run: node -v && npm -v
+      run: node -v
+
+    - name: Verify npm
+      run: npm -v
 
     - name: Sync git submodules
       run: git submodule sync --recursive
