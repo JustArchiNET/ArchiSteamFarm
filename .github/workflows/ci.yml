@@ -113,6 +113,8 @@ jobs:
         for job in $jobs; do
             wait "$job"
         done
+
+    - name: Publish ArchiSteamFarm
       if: startsWith(matrix.os, 'windows-')
       run: |
         Set-StrictMode -Version Latest
