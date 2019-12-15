@@ -65,119 +65,119 @@ jobs:
       run: dotnet test ArchiSteamFarm.Tests -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" --nologo
 
     - name: Publish ArchiSteamFarm
-    - if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest'
-          run: |
-            set -eu
+      if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
+      run: |
+        set -eu
 
-            publish() {
-                if [ "$1" = 'generic' ]; then
-                    local variantArgs="/p:UseAppHost=false"
-                else
-                    local variantArgs="-r $1 /p:PublishTrimmed=true"
+        publish() {
+            if [ "$1" = 'generic' ]; then
+                local variantArgs="/p:UseAppHost=false"
+            else
+                local variantArgs="-r $1 /p:PublishTrimmed=true"
 
-                    # TODO: https://github.com/dotnet/sdk/issues/4022
-                    case "$1" in
-                        'win-'*) ;;
-                        *) local variantArgs="$variantArgs /p:PublishSingleFile=true" ;;
-                    esac
-                fi
-
-                dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" --no-restore --nologo "/p:ASFVariant=$1" $variantArgs
-
-                # If we include any overlay for this variant, copy it to output directory
-                if [ -d "ArchiSteamFarm/overlay/${1}" ]; then
-                    cp "ArchiSteamFarm/overlay/${1}/"* "out/${1}"
-                fi
-
-                # Include .ico file for non-Windows targets
-                if [ ! -f "out/${1}/ArchiSteamFarm.exe" ]; then
-                    cp "resources/ASF.ico" "out/${1}/ArchiSteamFarm.ico"
-                fi
-            }
-
-            dotnet clean ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" --nologo
-            dotnet restore ArchiSteamFarm
-
-            jobs=""
-
-            for variant in $VARIANTS; do
-                case "$variant" in
-                    *-netf) echo "NOTE: Skipping publish of $variant variant due to lack of support on this platform ;;
-                    *)
-                        publish "$variant" &
-                        jobs="$jobs $!"
-                        ;;
+                # TODO: https://github.com/dotnet/sdk/issues/4022
+                case "$1" in
+                    'win-'*) ;;
+                    *) local variantArgs="$variantArgs /p:PublishSingleFile=true" ;;
                 esac
-            done
+            fi
 
-            for job in $jobs; do
-                wait "$job"
-            done
-    - if: matrix.os == 'windows-latest'
-          run: |
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" --no-restore --nologo "/p:ASFVariant=$1" $variantArgs
+
+            # If we include any overlay for this variant, copy it to output directory
+            if [ -d "ArchiSteamFarm/overlay/${1}" ]; then
+                cp "ArchiSteamFarm/overlay/${1}/"* "out/${1}"
+            fi
+
+            # Include .ico file for non-Windows targets
+            if [ ! -f "out/${1}/ArchiSteamFarm.exe" ]; then
+                cp "resources/ASF.ico" "out/${1}/ArchiSteamFarm.ico"
+            fi
+        }
+
+        dotnet clean ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" --nologo
+        dotnet restore ArchiSteamFarm
+
+        jobs=""
+
+        for variant in $VARIANTS; do
+            case "$variant" in
+                *-netf) echo "NOTE: Skipping publish of $variant variant due to lack of support on this platform ;;
+                *)
+                    publish "$variant" &
+                    jobs="$jobs $!"
+                    ;;
+            esac
+        done
+
+        for job in $jobs; do
+            wait "$job"
+        done
+      if: startsWith(matrix.os, 'windows-')
+      run: |
+        Set-StrictMode -Version Latest
+        $ErrorActionPreference = 'Stop'
+        $ProgressPreference = 'SilentlyContinue'
+
+        $PublishBlock = {
+            param($variant)
+
             Set-StrictMode -Version Latest
             $ErrorActionPreference = 'Stop'
             $ProgressPreference = 'SilentlyContinue'
 
-            $PublishBlock = {
-                param($variant)
+            if ($variant -like '*-netf') {
+                $compressionMethod = 'Deflate' # This depends on what ZipArchive supports on given platform
+                $targetFramework = $env:NET_FRAMEWORK_VERSION
+            } else {
+                $compressionMethod = 'Deflate64' # This depends on what ZipArchive supports on given platform
+                $targetFramework = $env:NET_CORE_VERSION
+            }
 
-                Set-StrictMode -Version Latest
-                $ErrorActionPreference = 'Stop'
-                $ProgressPreference = 'SilentlyContinue'
+            if ($variant -like 'generic*') {
+                $variantArgs = '/p:UseAppHost=false'
+            } else {
+                $variantArgs = '-r', "$variant", '/p:PublishTrimmed=true'
 
-                if ($variant -like '*-netf') {
-                    $compressionMethod = 'Deflate' # This depends on what ZipArchive supports on given platform
-                    $targetFramework = $env:NET_FRAMEWORK_VERSION
-                } else {
-                    $compressionMethod = 'Deflate64' # This depends on what ZipArchive supports on given platform
-                    $targetFramework = $env:NET_CORE_VERSION
-                }
-
-                if ($variant -like 'generic*') {
-                    $variantArgs = '/p:UseAppHost=false'
-                } else {
-                    $variantArgs = '-r', "$variant", '/p:PublishTrimmed=true'
-
-                    # TODO: https://github.com/dotnet/sdk/issues/4022
-                    if ($variant -NotLike 'win-*') {
-                        $variantArgs += '/p:PublishSingleFile=true'
-                    }
-                }
-
-                dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" --no-restore --nologo "/p:ASFVariant=$variant" $variantArgs
-
-                if ($LastExitCode -ne 0) {
-                    throw "Last command failed."
-                }
-
-                # If we include any overlay for this variant, copy it output directory
-                if (Test-Path "ArchiSteamFarm\overlay\$variant" -PathType Container) {
-                    Copy-Item "ArchiSteamFarm\overlay\$variant\*" "out\$variant"
-                }
-
-                # Include .ico file for non-Windows targets
-                if ($targetFramework -ne "$env:NET_FRAMEWORK_VERSION") {
-                    if (!(Test-Path "out\$variant\ArchiSteamFarm.exe" -PathType Leaf)) {
-                        Copy-Item 'resources\ASF.ico' "out\$variant\ArchiSteamFarm.ico"
-                    }
+                # TODO: https://github.com/dotnet/sdk/issues/4022
+                if ($variant -NotLike 'win-*') {
+                    $variantArgs += '/p:PublishSingleFile=true'
                 }
             }
 
-            dotnet clean ArchiSteamFarm -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" --nologo
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" --no-restore --nologo "/p:ASFVariant=$variant" $variantArgs
 
             if ($LastExitCode -ne 0) {
                 throw "Last command failed."
             }
 
-            dotnet restore ArchiSteamFarm
-
-            if ($LastExitCode -ne 0) {
-                throw "Last command failed."
+            # If we include any overlay for this variant, copy it output directory
+            if (Test-Path "ArchiSteamFarm\overlay\$variant" -PathType Container) {
+                Copy-Item "ArchiSteamFarm\overlay\$variant\*" "out\$variant"
             }
 
-            foreach ($variant in $env:VARIANTS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
-                Start-Job -Name "$variant" $PublishBlock -ArgumentList "$variant"
+            # Include .ico file for non-Windows targets
+            if ($targetFramework -ne "$env:NET_FRAMEWORK_VERSION") {
+                if (!(Test-Path "out\$variant\ArchiSteamFarm.exe" -PathType Leaf)) {
+                    Copy-Item 'resources\ASF.ico' "out\$variant\ArchiSteamFarm.ico"
+                }
             }
+        }
 
-            Get-Job | Receive-Job -Wait -AutoRemoveJob
+        dotnet clean ArchiSteamFarm -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" --nologo
+
+        if ($LastExitCode -ne 0) {
+            throw "Last command failed."
+        }
+
+        dotnet restore ArchiSteamFarm
+
+        if ($LastExitCode -ne 0) {
+            throw "Last command failed."
+        }
+
+        foreach ($variant in $env:VARIANTS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
+            Start-Job -Name "$variant" $PublishBlock -ArgumentList "$variant"
+        }
+
+        Get-Job | Receive-Job -Wait -AutoRemoveJob
