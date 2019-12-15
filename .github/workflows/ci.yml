@@ -8,7 +8,7 @@ env:
   DOTNET_SDK: 3.1.100
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
   NET_CORE_VERSION: netcoreapp3.1
-  VARIANTS: generic generic-netf linux-arm linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
+  VARIANTS: generic linux-arm linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
 
 jobs:
   build:
