@@ -11,6 +11,8 @@ env:
   NODE_JS_VERSION: 12.x
   VARIANTS: generic linux-arm linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
 
+shell: bash
+
 jobs:
   build:
     strategy:
