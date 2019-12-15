@@ -20,10 +20,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@master
 
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@master
       with:
         dotnet-version: ${{ env.DOTNET_SDK }}
 
@@ -31,7 +31,7 @@ jobs:
       run: dotnet --info
 
     - name: Setup Node.js
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@master
       with:
         node-version: lts
 
