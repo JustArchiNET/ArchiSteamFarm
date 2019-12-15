@@ -11,7 +11,6 @@ env:
   NET_CORE_VERSION: netcoreapp3.1
   NET_FRAMEWORK_VERSION: net48
   NODE_JS_VERSION: 12.x
-  VARIANTS: generic generic-netf linux-arm linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
 
 jobs:
   build:
@@ -67,6 +66,9 @@ jobs:
 
     - name: Publish ArchiSteamFarm on Unix
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
+      env:
+        VARIANTS: generic linux-arm linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
+      shell: sh
       run: |
         set -eu
 
@@ -102,13 +104,8 @@ jobs:
         jobs=""
 
         for variant in $VARIANTS; do
-            case "$variant" in
-                *-netf) echo "NOTE: Skipping publish of $variant variant due to lack of support on this platform" ;;
-                *)
-                    publish "$variant" &
-                    jobs="$jobs $!"
-                    ;;
-            esac
+            publish "$variant" &
+            jobs="$jobs $!"
         done
 
         for job in $jobs; do
@@ -117,6 +114,9 @@ jobs:
 
     - name: Publish ArchiSteamFarm on Windows
       if: startsWith(matrix.os, 'windows-')
+      env:
+        VARIANTS: generic generic-netf linux-arm linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
+      shell: pwsh
       run: |
         Set-StrictMode -Version Latest
         $ErrorActionPreference = 'Stop'
@@ -187,39 +187,39 @@ jobs:
 
         Get-Job | Receive-Job -Wait -AutoRemoveJob
 
-    - name: Upload ASF-generic
+    - name: Upload ASF-generic.zip
       uses: actions/upload-artifact@v1
       with:
-        name: ASF-generic
-        path: out/generic
+        name: ASF-generic.zip
+        path: out/generic/
 
-    - name: Upload ASF-generic-netf
+    - name: Upload ASF-generic-netf.zip
       if: startsWith(matrix.os, 'windows-')
       uses: actions/upload-artifact@v1
       with:
-        name: ASF-generic-netf
-        path: out/generic-netf
+        name: ASF-generic-netf.zip
+        path: out/generic-netf/
 
-    - name: Upload ASF-linux-arm
+    - name: Upload ASF-linux-arm.zip
       uses: actions/upload-artifact@v1
       with:
-        name: ASF-linux-arm
-        path: out/linux-arm
+        name: ASF-linux-arm.zip
+        path: out/linux-arm/
 
-    - name: Upload ASF-linux-x64
+    - name: Upload ASF-linux-x64.zip
       uses: actions/upload-artifact@v1
       with:
-        name: ASF-linux-x64
-        path: out/linux-x64
+        name: ASF-linux-x64.zip
+        path: out/linux-x64/
 
-    - name: Upload ASF-osx-x64
+    - name: Upload ASF-osx-x64.zip
       uses: actions/upload-artifact@v1
       with:
-        name: ASF-osx-x64
-        path: out/osx-x64
+        name: ASF-osx-x64.zip
+        path: out/osx-x64/
 
-    - name: Upload ASF-win-x64
+    - name: Upload ASF-win-x64.zip
       uses: actions/upload-artifact@v1
       with:
-        name: ASF-win-x64
-        path: out/win-x64
+        name: ASF-win-x64.zip
+        path: out/win-x64/
