@@ -1,4 +1,4 @@
-name: ASF CI
+name: ASF-CI
 
 on: [push, pull_request]
 

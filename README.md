@@ -1,5 +1,6 @@
 # ArchiSteamFarm
 
+[![Build status (GitHub)](https://img.shields.io/github/workflow/status/JustArchiNET/ArchiSteamFarm/ASF-CI/master?label=GitHub&maxAge=600)](https://github.com/JustArchiNET/ArchiSteamFarm/actions)
 [![Build status (Windows)](https://img.shields.io/appveyor/ci/JustArchi/ArchiSteamFarm/master.svg?label=Windows&maxAge=600)](https://ci.appveyor.com/project/JustArchi/ArchiSteamFarm)
 [![Build status (Unix)](https://img.shields.io/travis/com/JustArchiNET/ArchiSteamFarm/master.svg?label=Unix&maxAge=600)](https://travis-ci.com/JustArchiNET/ArchiSteamFarm)
 [![Build status (Docker)](https://img.shields.io/docker/cloud/build/justarchi/archisteamfarm.svg?label=Docker&maxAge=600)](https://hub.docker.com/r/justarchi/archisteamfarm)
