@@ -24,6 +24,14 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: DEBUG check cpuinfo (unix)
+      if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
+      run: cat /proc/cpuinfo
+
+    - name: DEBUG check cpuinfo (windows)
+      if: startsWith(matrix.os, 'windows-')
+      run: Get-WmiObject -class Win32_processor | select *
+
     - name: Sync git submodules
       run: git submodule sync --recursive
 
