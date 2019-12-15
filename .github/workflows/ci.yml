@@ -24,6 +24,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Sync git submodules
+      run: git submodule sync --recursive
+
+    - name: Update git submodules
+      run: git submodule update --init --recursive
+
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
@@ -42,12 +48,6 @@ jobs:
 
     - name: Verify npm
       run: npm -v
-
-    - name: Sync git submodules
-      run: git submodule sync --recursive
-
-    - name: Update git submodules
-      run: git submodule update --init --recursive
 
     - name: Install npm modules for ASF-ui
       run: npm ci --no-progress --prefix ASF-ui
