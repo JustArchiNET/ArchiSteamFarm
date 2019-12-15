@@ -187,39 +187,39 @@ jobs:
 
         Get-Job | Receive-Job -Wait -AutoRemoveJob
 
-    - name: Upload ASF-generic.zip
+    - name: Upload ASF-generic
       uses: actions/upload-artifact@v1
       with:
-        name: ASF-generic.zip
-        path: out/generic/
+        name: ${{ matrix.os }}_ASF-generic
+        path: out/generic
 
-    - name: Upload ASF-generic-netf.zip
+    - name: Upload ASF-generic-netf
       if: startsWith(matrix.os, 'windows-')
       uses: actions/upload-artifact@v1
       with:
-        name: ASF-generic-netf.zip
-        path: out/generic-netf/
+        name: ${{ matrix.os }}_ASF-generic-netf
+        path: out/generic-netf
 
-    - name: Upload ASF-linux-arm.zip
+    - name: Upload ASF-linux-arm
       uses: actions/upload-artifact@v1
       with:
-        name: ASF-linux-arm.zip
-        path: out/linux-arm/
+        name: ${{ matrix.os }}_ASF-linux-arm
+        path: out/linux-arm
 
-    - name: Upload ASF-linux-x64.zip
+    - name: Upload ASF-linux-x64
       uses: actions/upload-artifact@v1
       with:
-        name: ASF-linux-x64.zip
-        path: out/linux-x64/
+        name: ${{ matrix.os }}_ASF-linux-x64
+        path: out/linux-x64
 
-    - name: Upload ASF-osx-x64.zip
+    - name: Upload ASF-osx-x64
       uses: actions/upload-artifact@v1
       with:
-        name: ASF-osx-x64.zip
-        path: out/osx-x64/
+        name: ${{ matrix.os }}_ASF-osx-x64
+        path: out/osx-x64
 
-    - name: Upload ASF-win-x64.zip
+    - name: Upload ASF-win-x64
       uses: actions/upload-artifact@v1
       with:
-        name: ASF-win-x64.zip
-        path: out/win-x64/
+        name: ${{ matrix.os }}_ASF-win-x64
+        path: out/win-x64
