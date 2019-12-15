@@ -128,6 +128,8 @@ jobs:
             $ErrorActionPreference = 'Stop'
             $ProgressPreference = 'SilentlyContinue'
 
+            Set-Location "$env:GITHUB_WORKSPACE"
+
             if ($variant -like '*-netf') {
                 $compressionMethod = 'Deflate' # This depends on what ZipArchive supports on given platform
                 $targetFramework = $env:NET_FRAMEWORK_VERSION
