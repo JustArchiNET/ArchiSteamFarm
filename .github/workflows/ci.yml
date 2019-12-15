@@ -49,7 +49,7 @@ jobs:
       run: npm ci --no-progress --prefix ASF-ui
 
     - name: Build ASF-ui
-      run: npm run-script build:ci --no-progress
+      run: npm run-script build:ci --no-progress --prefix ASF-ui
 
     - name: Build ArchiSteamFarm
       run: dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" --nologo
