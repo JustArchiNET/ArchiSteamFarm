@@ -1,0 +1,221 @@
+name: ASF CI
+
+on: [push, pull_request]
+
+env:
+  CONFIGURATION: Release
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  DOTNET_SDK_VERSION: 3.1.100
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  GITHUB_JOBS: 2 # 2-core CPU, without HT: https://help.github.com/en/actions/automating-your-workflow-with-github-actions/virtual-environments-for-github-hosted-runners#supported-runners-and-hardware-resources
+  NET_CORE_VERSION: netcoreapp3.1
+  NET_FRAMEWORK_VERSION: net48
+  NODE_JS_VERSION: 12.x
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Sync git submodules
+      run: git submodule sync --recursive
+
+    - name: Update git submodules
+      run: git submodule update -j ${{ env.GITHUB_JOBS }} --init --recursive
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
+
+    - name: Verify .NET Core
+      run: dotnet --info
+
+    - name: Setup Node.js with npm
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ env.NODE_JS_VERSION }}
+
+    - name: Verify Node.js
+      run: node -v
+
+    - name: Verify npm
+      run: npm -v
+
+    - name: Install npm modules for ASF-ui
+      run: npm ci --no-progress --prefix ASF-ui
+
+    - name: Build ASF-ui
+      run: npm run-script build:ci --no-progress --prefix ASF-ui
+
+    - name: Build ArchiSteamFarm
+      run: dotnet build ArchiSteamFarm -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" --nologo
+
+    - name: Build ArchiSteamFarm.CustomPlugins.ExamplePlugin
+      run: dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" --nologo
+
+    - name: Run ArchiSteamFarm.Tests
+      run: dotnet test ArchiSteamFarm.Tests -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" --nologo
+
+    - name: Publish ArchiSteamFarm on Unix
+      if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
+      env:
+        VARIANTS: generic linux-arm linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
+      shell: sh
+      run: |
+        set -eu
+
+        publish() {
+            if [ "$1" = 'generic' ]; then
+                local variantArgs="/p:UseAppHost=false"
+            else
+                local variantArgs="-r $1 /p:PublishTrimmed=true"
+
+                # TODO: https://github.com/dotnet/sdk/issues/4022
+                case "$1" in
+                    'win-'*) ;;
+                    *) local variantArgs="$variantArgs /p:PublishSingleFile=true" ;;
+                esac
+            fi
+
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" --no-restore --nologo "/p:ASFVariant=$1" $variantArgs
+
+            # If we include any overlay for this variant, copy it to output directory
+            if [ -d "ArchiSteamFarm/overlay/${1}" ]; then
+                cp "ArchiSteamFarm/overlay/${1}/"* "out/${1}"
+            fi
+
+            # Include .ico file for all platforms, since only Windows script can bundle it inside the exe
+            cp "resources/ASF.ico" "out/${1}/ArchiSteamFarm.ico"
+        }
+
+        dotnet clean ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" --nologo
+        dotnet restore ArchiSteamFarm
+
+        jobs=""
+
+        for variant in $VARIANTS; do
+            publish "$variant" &
+            jobs="$jobs $!"
+        done
+
+        for job in $jobs; do
+            wait "$job"
+        done
+
+    - name: Publish ArchiSteamFarm on Windows
+      if: startsWith(matrix.os, 'windows-')
+      env:
+        VARIANTS: generic generic-netf linux-arm linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
+      shell: pwsh
+      run: |
+        Set-StrictMode -Version Latest
+        $ErrorActionPreference = 'Stop'
+        $ProgressPreference = 'SilentlyContinue'
+
+        $PublishBlock = {
+            param($variant)
+
+            Set-StrictMode -Version Latest
+            $ErrorActionPreference = 'Stop'
+            $ProgressPreference = 'SilentlyContinue'
+
+            Set-Location "$env:GITHUB_WORKSPACE"
+
+            if ($variant -like '*-netf') {
+                $compressionMethod = 'Deflate' # This depends on what ZipArchive supports on given platform
+                $targetFramework = $env:NET_FRAMEWORK_VERSION
+            } else {
+                $compressionMethod = 'Deflate64' # This depends on what ZipArchive supports on given platform
+                $targetFramework = $env:NET_CORE_VERSION
+            }
+
+            if ($variant -like 'generic*') {
+                $variantArgs = '/p:UseAppHost=false'
+            } else {
+                $variantArgs = '-r', "$variant", '/p:PublishTrimmed=true'
+
+                # TODO: https://github.com/dotnet/sdk/issues/4022
+                if ($variant -NotLike 'win-*') {
+                    $variantArgs += '/p:PublishSingleFile=true'
+                }
+            }
+
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" --no-restore --nologo "/p:ASFVariant=$variant" $variantArgs
+
+            if ($LastExitCode -ne 0) {
+                throw "Last command failed."
+            }
+
+            # If we include any overlay for this variant, copy it output directory
+            if (Test-Path "ArchiSteamFarm\overlay\$variant" -PathType Container) {
+                Copy-Item "ArchiSteamFarm\overlay\$variant\*" "out\$variant"
+            }
+
+            # Include .ico file for non-Windows targets
+            if (!(Test-Path "out\$variant\ArchiSteamFarm.exe" -PathType Leaf)) {
+                Copy-Item 'resources\ASF.ico' "out\$variant\ArchiSteamFarm.ico"
+            }
+        }
+
+        dotnet clean ArchiSteamFarm -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" --nologo
+
+        if ($LastExitCode -ne 0) {
+            throw "Last command failed."
+        }
+
+        dotnet restore ArchiSteamFarm
+
+        if ($LastExitCode -ne 0) {
+            throw "Last command failed."
+        }
+
+        foreach ($variant in $env:VARIANTS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
+            Start-Job -Name "$variant" $PublishBlock -ArgumentList "$variant"
+        }
+
+        Get-Job | Receive-Job -Wait -AutoRemoveJob
+
+    - name: Upload ASF-generic
+      uses: actions/upload-artifact@v1
+      with:
+        name: ${{ matrix.os }}_ASF-generic
+        path: out/generic
+
+    - name: Upload ASF-generic-netf
+      if: startsWith(matrix.os, 'windows-')
+      uses: actions/upload-artifact@v1
+      with:
+        name: ${{ matrix.os }}_ASF-generic-netf
+        path: out/generic-netf
+
+    - name: Upload ASF-linux-arm
+      uses: actions/upload-artifact@v1
+      with:
+        name: ${{ matrix.os }}_ASF-linux-arm
+        path: out/linux-arm
+
+    - name: Upload ASF-linux-x64
+      uses: actions/upload-artifact@v1
+      with:
+        name: ${{ matrix.os }}_ASF-linux-x64
+        path: out/linux-x64
+
+    - name: Upload ASF-osx-x64
+      uses: actions/upload-artifact@v1
+      with:
+        name: ${{ matrix.os }}_ASF-osx-x64
+        path: out/osx-x64
+
+    - name: Upload ASF-win-x64
+      uses: actions/upload-artifact@v1
+      with:
+        name: ${{ matrix.os }}_ASF-win-x64
+        path: out/win-x64
