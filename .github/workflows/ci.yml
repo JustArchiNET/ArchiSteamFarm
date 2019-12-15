@@ -64,7 +64,7 @@ jobs:
     - name: Run ArchiSteamFarm.Tests
       run: dotnet test ArchiSteamFarm.Tests -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" --nologo
 
-    - name: Publish ArchiSteamFarm
+    - name: Publish ArchiSteamFarm on Unix
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
       run: |
         set -eu
@@ -102,7 +102,7 @@ jobs:
 
         for variant in $VARIANTS; do
             case "$variant" in
-                *-netf) echo "NOTE: Skipping publish of $variant variant due to lack of support on this platform ;;
+                *-netf) echo "NOTE: Skipping publish of $variant variant due to lack of support on this platform" ;;
                 *)
                     publish "$variant" &
                     jobs="$jobs $!"
@@ -114,7 +114,7 @@ jobs:
             wait "$job"
         done
 
-    - name: Publish ArchiSteamFarm
+    - name: Publish ArchiSteamFarm on Windows
       if: startsWith(matrix.os, 'windows-')
       run: |
         Set-StrictMode -Version Latest
