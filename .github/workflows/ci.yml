@@ -7,7 +7,7 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
   DOTNET_SDK_VERSION: 3.1.100
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-  GITHUB_JOBS: 4 # 2-core CPU, assuming HT: https://help.github.com/en/actions/automating-your-workflow-with-github-actions/virtual-environments-for-github-hosted-runners#supported-runners-and-hardware-resources
+  GITHUB_JOBS: 2 # 2-core CPU, without HT: https://help.github.com/en/actions/automating-your-workflow-with-github-actions/virtual-environments-for-github-hosted-runners#supported-runners-and-hardware-resources
   NET_CORE_VERSION: netcoreapp3.1
   NET_FRAMEWORK_VERSION: net48
   NODE_JS_VERSION: 12.x
@@ -23,14 +23,6 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-
-    - name: DEBUG check cpuinfo (unix)
-      if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
-      run: nproc || lscpu || cat /proc/cpuinfo
-
-    - name: DEBUG check cpuinfo (windows)
-      if: startsWith(matrix.os, 'windows-')
-      run: Get-WmiObject -class Win32_processor | select *
 
     - name: Sync git submodules
       run: git submodule sync --recursive
