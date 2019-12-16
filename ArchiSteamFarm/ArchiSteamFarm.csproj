@@ -46,6 +46,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- Configuration needed for PublishTrimmed=true to work with custom plugins -->
+    <TrimmerRootAssembly Include="System.Threading.Tasks" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="4.0.0">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
