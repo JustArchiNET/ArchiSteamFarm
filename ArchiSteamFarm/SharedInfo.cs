@@ -68,19 +68,12 @@ namespace ArchiSteamFarm {
 					return CachedHomeDirectory;
 				}
 
-				// We're aiming to handle two possible cases here, classic publish and single-file publish
-				// In order to achieve that, we have to guess the case from the binary's name
-				CachedHomeDirectory = Path.GetFileNameWithoutExtension(OS.ProcessFileName) switch {
-					// This path goes to our own binary, so the user is using OS-specific build, single-file or not, we'll return path to location of that binary then
-					AssemblyName => Path.GetDirectoryName(OS.ProcessFileName),
-
-					// This path goes to third-party binary, so the user is using our generic build, we'll return our base directory then
-					"dotnet" => AppContext.BaseDirectory,
-					"mono" => AppContext.BaseDirectory,
-
-					// Unhandled case
-					_ => throw new ArgumentOutOfRangeException(nameof(OS.ProcessFileName))
-				};
+				// We're aiming to handle two possible cases here, classic publish and single-file publish which is possible with OS-specific builds
+				// In order to achieve that, we have to guess the case above from the binary's name
+				// We can't just return our base directory since it could lead to the (wrong) temporary directory of extracted files in a single-publish scenario
+				// If the path goes to our own binary, the user is using OS-specific build, single-file or not, we'll use path to location of that binary then
+				// Otherwise, this path goes to some third-party binary, likely dotnet/mono, the user is using our generic build or other custom binary, we need to trust our base directory then
+				CachedHomeDirectory = Path.GetFileNameWithoutExtension(OS.ProcessFileName) == AssemblyName ? Path.GetDirectoryName(OS.ProcessFileName) : AppContext.BaseDirectory;
 
 				return CachedHomeDirectory;
 			}
