@@ -157,11 +157,6 @@ after_test:
             $variantArgs = '/p:UseAppHost=false'
         } else {
             $variantArgs = '-r', "$variant", '/p:PublishTrimmed=true'
-
-            # TODO: https://github.com/dotnet/sdk/issues/4022
-            if ($variant -NotLike 'win-*') {
-                $variantArgs += '/p:PublishSingleFile=true'
-            }
         }
 
         dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" --no-restore --nologo "/p:ASFVariant=$variant" $variantArgs

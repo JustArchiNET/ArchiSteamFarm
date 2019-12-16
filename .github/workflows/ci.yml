@@ -77,12 +77,6 @@ jobs:
                 local variantArgs="/p:UseAppHost=false"
             else
                 local variantArgs="-r $1 /p:PublishTrimmed=true"
-
-                # TODO: https://github.com/dotnet/sdk/issues/4022
-                case "$1" in
-                    'win-'*) ;;
-                    *) local variantArgs="$variantArgs /p:PublishSingleFile=true" ;;
-                esac
             fi
 
             dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" --no-restore --nologo "/p:ASFVariant=$1" $variantArgs
@@ -141,11 +135,6 @@ jobs:
                 $variantArgs = '/p:UseAppHost=false'
             } else {
                 $variantArgs = '-r', "$variant", '/p:PublishTrimmed=true'
-
-                # TODO: https://github.com/dotnet/sdk/issues/4022
-                if ($variant -NotLike 'win-*') {
-                    $variantArgs += '/p:PublishSingleFile=true'
-                }
             }
 
             dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" --no-restore --nologo "/p:ASFVariant=$variant" $variantArgs
