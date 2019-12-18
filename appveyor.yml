@@ -29,7 +29,7 @@ install:
     $ProgressPreference = 'SilentlyContinue'
 
 
-    git submodule sync
+    git submodule sync --recursive
 
 
     if ($LastExitCode -ne 0) {
