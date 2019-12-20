@@ -210,7 +210,8 @@ namespace ArchiSteamFarm.Json {
 				SteamGems,
 				SaleItem,
 				Consumable,
-				ProfileModifier
+				ProfileModifier,
+				Sticker
 			}
 		}
 
@@ -633,6 +634,10 @@ namespace ArchiSteamFarm.Json {
 										break;
 									case "item_class_10":
 										type = Asset.EType.SaleItem;
+
+										break;
+									case "item_class_11":
+										type = Asset.EType.Sticker;
 
 										break;
 									default:
