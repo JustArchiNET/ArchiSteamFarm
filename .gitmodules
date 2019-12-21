@@ -4,6 +4,7 @@
 [submodule "ASF-ui"]
 	path = ASF-ui
 	url = https://github.com/JustArchiNET/ASF-ui.git
+	branch = docker-compatible
 [submodule "tools/ArchiCrowdin"]
 	path = tools/ArchiCrowdin
 	url = https://github.com/JustArchiNET/ArchiCrowdin.git
