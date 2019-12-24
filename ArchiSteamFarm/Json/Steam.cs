@@ -211,7 +211,8 @@ namespace ArchiSteamFarm.Json {
 				SaleItem,
 				Consumable,
 				ProfileModifier,
-				Sticker
+				Sticker,
+				ChatEffect
 			}
 		}
 
@@ -638,6 +639,10 @@ namespace ArchiSteamFarm.Json {
 										break;
 									case "item_class_11":
 										type = Asset.EType.Sticker;
+
+										break;
+									case "item_class_12":
+										type = Asset.EType.ChatEffect;
 
 										break;
 									default:
