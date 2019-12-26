@@ -280,6 +280,10 @@ namespace ArchiSteamFarm {
 							return await ResponseTransferByRealAppIDs(steamID, args[1], args[2], Utilities.GetArgsAsText(message, 3)).ConfigureAwait(false);
 						case "TRANSFER@" when args.Length > 2:
 							return await ResponseTransferByRealAppIDs(steamID, args[1], args[2]).ConfigureAwait(false);
+						case "TRANSFER%" when args.Length > 3:
+							return await ResponseTransferByRealAppIDs(steamID, args[1], args[2], Utilities.GetArgsAsText(message, 3), true).ConfigureAwait(false);
+						case "TRANSFER%" when args.Length > 2:
+							return await ResponseTransferByRealAppIDs(steamID, args[1], args[2], true).ConfigureAwait(false);
 						case "UNPACK":
 							return await ResponseUnpackBoosters(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						default:
@@ -2713,7 +2717,7 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 
-		private async Task<string> ResponseTransferByRealAppIDs(ulong steamID, IReadOnlyCollection<uint> realAppIDs, Bot targetBot) {
+		private async Task<string> ResponseTransferByRealAppIDs(ulong steamID, IReadOnlyCollection<uint> realAppIDs, Bot targetBot, bool exclude = false) {
 			if ((steamID == 0) || (realAppIDs == null) || (realAppIDs.Count == 0) || (targetBot == null)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(realAppIDs) + " || " + nameof(targetBot));
 
@@ -2740,12 +2744,12 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotSendingTradeToYourself);
 			}
 
-			(bool success, string message) = await Bot.Actions.SendTradeOffer(targetSteamID: targetBot.SteamID, wantedTypes: Bot.BotConfig.TransferableTypes, wantedRealAppIDs: realAppIDs).ConfigureAwait(false);
+			(bool success, string message) = await Bot.Actions.SendTradeOffer(targetSteamID: targetBot.SteamID, wantedTypes: Bot.BotConfig.TransferableTypes, wantedRealAppIDs: !exclude ? realAppIDs : null, unwantedRealAppIDs: exclude ? realAppIDs : null).ConfigureAwait(false);
 
 			return FormatBotResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
 
-		private async Task<string> ResponseTransferByRealAppIDs(ulong steamID, string realAppIDsText, string botNameTo) {
+		private async Task<string> ResponseTransferByRealAppIDs(ulong steamID, string realAppIDsText, string botNameTo, bool exclude = false) {
 			if ((steamID == 0) || string.IsNullOrEmpty(realAppIDsText) || string.IsNullOrEmpty(botNameTo)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(realAppIDsText) + " || " + nameof(botNameTo));
 
@@ -2778,10 +2782,10 @@ namespace ArchiSteamFarm {
 				realAppIDs.Add(appID);
 			}
 
-			return await ResponseTransferByRealAppIDs(steamID, realAppIDs, targetBot).ConfigureAwait(false);
+			return await ResponseTransferByRealAppIDs(steamID, realAppIDs, targetBot, exclude).ConfigureAwait(false);
 		}
 
-		private static async Task<string> ResponseTransferByRealAppIDs(ulong steamID, string botNames, string realAppIDsText, string botNameTo) {
+		private static async Task<string> ResponseTransferByRealAppIDs(ulong steamID, string botNames, string realAppIDsText, string botNameTo, bool exclude = false) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(realAppIDsText) || string.IsNullOrEmpty(botNameTo)) {
 				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames) + " || " + nameof(realAppIDsText) + " || " + nameof(botNameTo));
 
@@ -2816,7 +2820,7 @@ namespace ArchiSteamFarm {
 				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNameTo)) : null;
 			}
 
-			IList<string> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseTransferByRealAppIDs(steamID, realAppIDs, targetBot))).ConfigureAwait(false);
+			IList<string> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseTransferByRealAppIDs(steamID, realAppIDs, targetBot, exclude))).ConfigureAwait(false);
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 
