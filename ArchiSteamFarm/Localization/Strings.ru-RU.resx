@@ -564,7 +564,7 @@
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>Не удалось загрузить базу данных, если эта ошибка будет повтораться - пожалуйста, удалите {0} для пересоздания базы данных!</value>
+    <value>Не удалось загрузить базу данных, если эта ошибка будет повторяться - пожалуйста, удалите {0} для пересоздания базы данных!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
