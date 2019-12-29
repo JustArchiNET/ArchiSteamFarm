@@ -382,7 +382,7 @@ namespace ArchiSteamFarm.Json {
 
 			// Constructed from trades being received
 			internal TradeOffer(ulong tradeOfferID, uint otherSteamID3, ETradeOfferState state) {
-				if ((tradeOfferID == 0) || (otherSteamID3 == 0) || (state == ETradeOfferState.Unknown)) {
+				if ((tradeOfferID == 0) || (otherSteamID3 == 0) || !Enum.IsDefined(typeof(ETradeOfferState), state)) {
 					throw new ArgumentNullException(nameof(tradeOfferID) + " || " + nameof(otherSteamID3) + " || " + nameof(state));
 				}
 
@@ -400,22 +400,6 @@ namespace ArchiSteamFarm.Json {
 				}
 
 				return ItemsToGive.All(item => (item.AppID == Asset.SteamAppID) && (item.ContextID == Asset.SteamCommunityContextID) && acceptedTypes.Contains(item.Type));
-			}
-
-			[PublicAPI]
-			public enum ETradeOfferState : byte {
-				Unknown,
-				Invalid,
-				Active,
-				Accepted,
-				Countered,
-				Expired,
-				Canceled,
-				Declined,
-				InvalidItems,
-				EmailPending,
-				EmailCanceled,
-				OnHold
 			}
 		}
 

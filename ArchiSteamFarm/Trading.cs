@@ -30,6 +30,7 @@ using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Plugins;
 using JetBrains.Annotations;
+using SteamKit2;
 
 namespace ArchiSteamFarm {
 	public sealed class Trading : IDisposable {
@@ -439,7 +440,7 @@ namespace ArchiSteamFarm {
 				return (null, false);
 			}
 
-			if (tradeOffer.State != Steam.TradeOffer.ETradeOfferState.Active) {
+			if (tradeOffer.State != ETradeOfferState.Active) {
 				Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, tradeOffer.State));
 
 				return (null, false);

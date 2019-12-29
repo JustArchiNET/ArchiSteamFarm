@@ -1510,15 +1510,15 @@ namespace ArchiSteamFarm {
 			HashSet<Steam.TradeOffer> result = new HashSet<Steam.TradeOffer>();
 
 			foreach (KeyValue trade in response["trade_offers_received"].Children) {
-				Steam.TradeOffer.ETradeOfferState state = trade["trade_offer_state"].AsEnum<Steam.TradeOffer.ETradeOfferState>();
+				ETradeOfferState state = trade["trade_offer_state"].AsEnum<ETradeOfferState>();
 
-				if (state == Steam.TradeOffer.ETradeOfferState.Unknown) {
+				if (!Enum.IsDefined(typeof(ETradeOfferState), state)) {
 					Bot.ArchiLogger.LogNullError(nameof(state));
 
 					return null;
 				}
 
-				if (state != Steam.TradeOffer.ETradeOfferState.Active) {
+				if (state != ETradeOfferState.Active) {
 					continue;
 				}
 
