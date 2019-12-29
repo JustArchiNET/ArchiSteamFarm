@@ -35,6 +35,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 
 namespace ArchiSteamFarm.IPC {
@@ -108,7 +109,14 @@ namespace ArchiSteamFarm.IPC {
 			app.UseSwagger();
 
 			// Use friendly swagger UI
-			app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/" + SharedInfo.ASF + "/swagger.json", SharedInfo.ASF + " API"));
+			app.UseSwaggerUI(
+				options => {
+					options.DisplayRequestDuration();
+					options.EnableDeepLinking();
+					options.ShowExtensions();
+					options.SwaggerEndpoint("/swagger/" + SharedInfo.ASF + "/swagger.json", SharedInfo.ASF + " API");
+				}
+			);
 		}
 
 		public void ConfigureServices(IServiceCollection services) {
@@ -156,7 +164,7 @@ namespace ArchiSteamFarm.IPC {
 						}
 					);
 
-					options.EnableAnnotations();
+					options.EnableAnnotations(true);
 
 					options.SwaggerDoc(
 						SharedInfo.ASF, new OpenApiInfo {
@@ -181,6 +189,9 @@ namespace ArchiSteamFarm.IPC {
 					}
 				}
 			);
+
+			// Add Newtonsoft.Json support for SwaggerGen, this one must be executed after AddSwaggerGen()
+			services.AddSwaggerGenNewtonsoftSupport();
 
 			// We need MVC for /Api, but we're going to use only a small subset of all available features
 #if NETFRAMEWORK
@@ -220,6 +231,7 @@ namespace ArchiSteamFarm.IPC {
 #endif
 				options => {
 					options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+					options.SerializerSettings.Converters.Add(new StringEnumConverter());
 
 					if (Debugging.IsUserDebugging) {
 						options.SerializerSettings.Formatting = Formatting.Indented;
