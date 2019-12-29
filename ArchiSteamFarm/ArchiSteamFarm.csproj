@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <ApplicationIcon>ASF.ico</ApplicationIcon>
-    <AssemblyVersion>4.1.1.6</AssemblyVersion>
+    <AssemblyVersion>4.1.1.7</AssemblyVersion>
     <Authors>JustArchi</Authors>
     <Company>JustArchi</Company>
     <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
@@ -10,7 +10,7 @@
     <DefaultItemExcludes>$(DefaultItemExcludes);config/**;debug/**;out/**;overlay/**</DefaultItemExcludes>
     <Description>ASF is a C# application with primary purpose of idling Steam cards from multiple accounts simultaneously.</Description>
     <ErrorReport>none</ErrorReport>
-    <FileVersion>4.1.1.6</FileVersion>
+    <FileVersion>4.1.1.7</FileVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <LangVersion>8.0</LangVersion>
     <NoWarn>1591</NoWarn>
