@@ -1018,7 +1018,7 @@ namespace ArchiSteamFarm {
 		internal async Task OnFarmingFinished(bool farmedSomething) {
 			await OnFarmingStopped().ConfigureAwait(false);
 
-			if (BotConfig.SendOnFarmingFinished && (farmedSomething || !FirstTradeSent)) {
+			if (BotConfig.SendOnFarmingFinished && (BotConfig.LootableTypes.Count > 0) && (farmedSomething || !FirstTradeSent)) {
 				FirstTradeSent = true;
 
 				await Actions.SendTradeOffer(wantedTypes: BotConfig.LootableTypes).ConfigureAwait(false);
@@ -1800,7 +1800,7 @@ namespace ArchiSteamFarm {
 				SendItemsTimer = null;
 			}
 
-			if ((BotConfig.SendTradePeriod > 0) && BotConfig.SteamUserPermissions.Values.Any(permission => permission >= BotConfig.EPermission.Master)) {
+			if ((BotConfig.SendTradePeriod > 0) && (BotConfig.LootableTypes.Count > 0) && BotConfig.SteamUserPermissions.Values.Any(permission => permission >= BotConfig.EPermission.Master)) {
 				SendItemsTimer = new Timer(
 					async e => await Actions.SendTradeOffer(wantedTypes: BotConfig.LootableTypes).ConfigureAwait(false),
 					null,

@@ -358,7 +358,7 @@ namespace ArchiSteamFarm {
 					lootableTypesReceived = await ParseActiveTrades().ConfigureAwait(false);
 				}
 
-				if (lootableTypesReceived && Bot.BotConfig.SendOnFarmingFinished) {
+				if (lootableTypesReceived && Bot.BotConfig.SendOnFarmingFinished && (Bot.BotConfig.LootableTypes.Count > 0)) {
 					await Bot.Actions.SendTradeOffer(wantedTypes: Bot.BotConfig.LootableTypes).ConfigureAwait(false);
 				}
 			} finally {

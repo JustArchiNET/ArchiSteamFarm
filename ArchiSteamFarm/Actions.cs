@@ -241,6 +241,12 @@ namespace ArchiSteamFarm {
 				return (false, string.Format(Strings.ErrorObjectIsNull, nameof(appID) + " || " + nameof(contextID)));
 			}
 
+			if ((wantedRealAppIDs?.Count == 0) || (unwantedRealAppIDs?.Count == 0) || (wantedTypes?.Count == 0)) {
+				Bot.ArchiLogger.LogNullError(nameof(wantedRealAppIDs) + " || " + nameof(unwantedRealAppIDs) + " || " + nameof(wantedTypes));
+
+				return (false, string.Format(Strings.ErrorObjectIsNull, nameof(wantedRealAppIDs) + " || " + nameof(unwantedRealAppIDs) + " || " + nameof(wantedTypes)));
+			}
+
 			if (!Bot.IsConnectedAndLoggedOn) {
 				return (false, Strings.BotNotConnected);
 			}

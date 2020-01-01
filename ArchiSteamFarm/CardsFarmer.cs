@@ -189,7 +189,7 @@ namespace ArchiSteamFarm {
 
 			// If we're not farming, and we got new items, it's likely to be a booster pack or likewise
 			// In this case, perform a loot if user wants to do so
-			if (Bot.BotConfig.SendOnFarmingFinished) {
+			if (Bot.BotConfig.SendOnFarmingFinished && (Bot.BotConfig.LootableTypes.Count > 0)) {
 				await Bot.Actions.SendTradeOffer(wantedTypes: Bot.BotConfig.LootableTypes).ConfigureAwait(false);
 			}
 		}
