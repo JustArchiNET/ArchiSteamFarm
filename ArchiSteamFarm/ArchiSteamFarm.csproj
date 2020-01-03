@@ -49,6 +49,7 @@
     <!-- Configuration needed for PublishTrimmed=true to work with custom plugins -->
     <!-- TODO: https://github.com/mono/linker/issues/652 -->
     <TrimmerRootAssembly Include="System.Threading.Tasks" />
+    <TrimmerRootAssembly Include="System.Threading.Timer" />
   </ItemGroup>
 
   <ItemGroup>
