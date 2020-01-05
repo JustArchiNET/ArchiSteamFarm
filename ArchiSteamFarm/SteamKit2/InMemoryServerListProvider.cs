@@ -46,11 +46,9 @@ namespace ArchiSteamFarm.SteamKit2 {
 
 			HashSet<ServerRecordEndPoint> newServerRecords = endpoints.Select(ep => new ServerRecordEndPoint(ep.GetHost(), (ushort) ep.GetPort(), ep.ProtocolTypes)).ToHashSet();
 
-			if (!ServerRecords.ReplaceIfNeededWith(newServerRecords)) {
-				return Task.CompletedTask;
+			if (ServerRecords.ReplaceIfNeededWith(newServerRecords)) {
+				ServerListUpdated?.Invoke(this, EventArgs.Empty);
 			}
-
-			ServerListUpdated?.Invoke(this, EventArgs.Empty);
 
 			return Task.CompletedTask;
 		}
