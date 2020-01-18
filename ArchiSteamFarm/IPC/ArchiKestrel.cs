@@ -93,11 +93,14 @@ namespace ArchiSteamFarm.IPC {
 
 			if (customConfigExists) {
 				if (Debugging.IsDebugConfigured) {
-					string json = await RuntimeCompatibility.File.ReadAllTextAsync(customConfigPath).ConfigureAwait(false);
-
 					try {
-						JObject jObject = JObject.Parse(json);
-						ASF.ArchiLogger.LogGenericDebug(SharedInfo.IPCConfigFile + ": " + jObject.ToString(Formatting.Indented));
+						string json = await RuntimeCompatibility.File.ReadAllTextAsync(customConfigPath).ConfigureAwait(false);
+
+						if (!string.IsNullOrEmpty(json)) {
+							JObject jObject = JObject.Parse(json);
+
+							ASF.ArchiLogger.LogGenericDebug(SharedInfo.IPCConfigFile + ": " + jObject.ToString(Formatting.Indented));
+						}
 					} catch (Exception e) {
 						ASF.ArchiLogger.LogGenericException(e);
 					}
