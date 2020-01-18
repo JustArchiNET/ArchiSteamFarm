@@ -28,6 +28,8 @@ using ArchiSteamFarm.NLog;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NLog.Web;
 
 #if !NETFRAMEWORK
@@ -85,9 +87,22 @@ namespace ArchiSteamFarm.IPC {
 
 			// Check if custom config is available
 			string absoluteConfigDirectory = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.ConfigDirectory);
-			bool customConfigExists = File.Exists(Path.Combine(absoluteConfigDirectory, SharedInfo.IPCConfigFile));
+			string customConfigPath = Path.Combine(absoluteConfigDirectory, SharedInfo.IPCConfigFile);
+
+			bool customConfigExists = File.Exists(customConfigPath);
 
 			if (customConfigExists) {
+				if (Debugging.IsDebugConfigured) {
+					string json = await RuntimeCompatibility.File.ReadAllTextAsync(customConfigPath).ConfigureAwait(false);
+
+					try {
+						JObject jObject = JObject.Parse(json);
+						ASF.ArchiLogger.LogGenericDebug(SharedInfo.IPCConfigFile + ": " + jObject.ToString(Formatting.Indented));
+					} catch (Exception e) {
+						ASF.ArchiLogger.LogGenericException(e);
+					}
+				}
+
 				// Use custom config for logging configuration
 				builder.ConfigureLogging((hostingContext, logging) => logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging")));
 			}
