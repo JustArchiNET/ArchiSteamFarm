@@ -692,6 +692,7 @@ namespace ArchiSteamFarm {
 					case "DLC":
 					case "GUIDE":
 					case "HARDWARE":
+					case "MUSIC":
 						// Types that can't be idled
 						break;
 					default:
