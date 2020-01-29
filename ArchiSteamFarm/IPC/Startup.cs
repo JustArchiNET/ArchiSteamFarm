@@ -35,7 +35,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 
 namespace ArchiSteamFarm.IPC {
@@ -220,9 +219,8 @@ namespace ArchiSteamFarm.IPC {
 			mvc.AddApiExplorer();
 #endif
 
-			// Add JSON formatters that will be used as default ones if no specific formatters are asked for
-			// Fix default contract resolver to use original names and not a camel case and add debugging aid while we're at it
 #if NETFRAMEWORK
+			// Add JSON formatters that will be used as default ones if no specific formatters are asked for
 			mvc.AddJsonFormatters();
 
 			mvc.AddJsonOptions(
@@ -230,8 +228,11 @@ namespace ArchiSteamFarm.IPC {
 			mvc.AddNewtonsoftJson(
 #endif
 				options => {
+					// Fix default contract resolver to use original names and not a camel case
 					options.SerializerSettings.ContractResolver = new DefaultContractResolver();
-					options.SerializerSettings.Converters.Add(new StringEnumConverter());
+
+					// TODO: Enable this again once ASF-ui adds support in https://github.com/JustArchiNET/ASF-ui/issues/871
+					//options.SerializerSettings.Converters.Add(new StringEnumConverter());
 
 					if (Debugging.IsUserDebugging) {
 						options.SerializerSettings.Formatting = Formatting.Indented;
