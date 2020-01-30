@@ -78,7 +78,12 @@ namespace ArchiSteamFarm {
 		public readonly ArchiWebHandler ArchiWebHandler;
 
 		[JsonProperty]
+		[PublicAPI]
 		public readonly string BotName;
+
+		[JsonProperty]
+		[PublicAPI]
+		public readonly CardsFarmer CardsFarmer;
 
 		[JsonIgnore]
 		[PublicAPI]
@@ -89,19 +94,19 @@ namespace ArchiSteamFarm {
 		public readonly SteamConfiguration SteamConfiguration;
 
 		[JsonProperty]
+		[PublicAPI]
 		public uint GamesToRedeemInBackgroundCount => BotDatabase?.GamesToRedeemInBackgroundCount ?? 0;
 
 		[JsonProperty]
+		[PublicAPI]
 		public bool IsConnectedAndLoggedOn => SteamClient?.SteamID != null;
 
 		[JsonProperty]
+		[PublicAPI]
 		public bool IsPlayingPossible => !PlayingBlocked && !LibraryLocked;
 
 		internal readonly ArchiHandler ArchiHandler;
 		internal readonly BotDatabase BotDatabase;
-
-		[JsonProperty]
-		internal readonly CardsFarmer CardsFarmer;
 
 		internal readonly ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)> OwnedPackageIDs = new ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>();
 		internal readonly SteamApps SteamApps;
