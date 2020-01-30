@@ -53,11 +53,11 @@ namespace ArchiSteamFarm {
 		// Games that were confirmed to show false status on general badges page
 		private static readonly ImmutableHashSet<uint> UntrustedAppIDs = ImmutableHashSet.Create<uint>(440, 570, 730);
 
-		[JsonProperty(PropertyName = "CurrentGamesFarming")]
+		[JsonProperty(PropertyName = nameof(CurrentGamesFarming))]
 		[PublicAPI]
 		public IReadOnlyCollection<Game> CurrentGamesFarmingReadOnly => CurrentGamesFarming;
 
-		[JsonProperty(PropertyName = "GamesToFarm")]
+		[JsonProperty(PropertyName = nameof(GamesToFarm))]
 		[PublicAPI]
 		public IReadOnlyCollection<Game> GamesToFarmReadOnly => GamesToFarm;
 
