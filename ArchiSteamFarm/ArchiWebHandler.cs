@@ -183,7 +183,7 @@ namespace ArchiSteamFarm {
 						return null;
 					}
 
-					Dictionary<ulong, (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> descriptions = new Dictionary<ulong, (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)>();
+					Dictionary<(ulong ClassID, ulong InstanceID), (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> descriptions = new Dictionary<(ulong ClassID, ulong InstanceID), (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)>();
 
 					foreach (Steam.InventoryResponse.Description description in response.Descriptions.Where(description => description != null)) {
 						if (description.ClassID == 0) {
@@ -192,15 +192,11 @@ namespace ArchiSteamFarm {
 							return null;
 						}
 
-						if (descriptions.ContainsKey(description.ClassID)) {
-							continue;
-						}
-
-						descriptions[description.ClassID] = (description.Marketable, description.Tradable, description.RealAppID, description.Type, description.Rarity);
+						descriptions[(description.ClassID, description.InstanceID)] = (description.Marketable, description.Tradable, description.RealAppID, description.Type, description.Rarity);
 					}
 
 					foreach (Steam.Asset asset in response.Assets.Where(asset => asset != null)) {
-						if (descriptions.TryGetValue(asset.ClassID, out (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) description)) {
+						if (descriptions.TryGetValue((asset.ClassID, asset.InstanceID), out (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) description)) {
 							if ((marketable.HasValue && (description.Marketable != marketable.Value)) || (tradable.HasValue && (description.Tradable != tradable.Value)) || (wantedRealAppIDs?.Contains(description.RealAppID) == false) || (unwantedRealAppIDs?.Contains(description.RealAppID) == true) || (wantedTypes?.Contains(description.Type) == false) || (wantedSets?.Contains((description.RealAppID, description.Type, description.Rarity)) == false)) {
 								continue;
 							}
