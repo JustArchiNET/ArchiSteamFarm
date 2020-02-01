@@ -56,6 +56,9 @@ namespace ArchiSteamFarm.Json {
 			public ulong ContextID { get; private set; }
 
 			[PublicAPI]
+			public ulong InstanceID { get; private set; }
+
+			[PublicAPI]
 			public bool Marketable { get; internal set; }
 
 			[PublicAPI]
@@ -168,6 +171,25 @@ namespace ArchiSteamFarm.Json {
 			private string IDText {
 				get => AssetIDText;
 				set => AssetIDText = value;
+			}
+#pragma warning restore IDE0051
+
+#pragma warning disable IDE0051
+			[JsonProperty(PropertyName = "instanceid", Required = Required.DisallowNull)]
+			private string InstanceIDText {
+				set {
+					if (string.IsNullOrEmpty(value)) {
+						return;
+					}
+
+					if (!ulong.TryParse(value, out ulong instanceID)) {
+						ASF.ArchiLogger.LogNullError(nameof(instanceID));
+
+						return;
+					}
+
+					InstanceID = instanceID;
+				}
 			}
 #pragma warning restore IDE0051
 
@@ -456,6 +478,7 @@ namespace ArchiSteamFarm.Json {
 				internal readonly uint AppID;
 
 				internal ulong ClassID { get; private set; }
+				internal ulong InstanceID { get; private set; }
 				internal bool Marketable { get; private set; }
 				internal Asset.ERarity Rarity { get; private set; }
 				internal uint RealAppID { get; private set; }
@@ -479,6 +502,25 @@ namespace ArchiSteamFarm.Json {
 						}
 
 						ClassID = classID;
+					}
+				}
+#pragma warning restore IDE0051
+
+#pragma warning disable IDE0051
+				[JsonProperty(PropertyName = "instanceid", Required = Required.DisallowNull)]
+				private string InstanceIDText {
+					set {
+						if (string.IsNullOrEmpty(value)) {
+							return;
+						}
+
+						if (!ulong.TryParse(value, out ulong instanceID)) {
+							ASF.ArchiLogger.LogNullError(nameof(instanceID));
+
+							return;
+						}
+
+						InstanceID = instanceID;
 					}
 				}
 #pragma warning restore IDE0051
