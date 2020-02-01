@@ -192,7 +192,13 @@ namespace ArchiSteamFarm {
 							return null;
 						}
 
-						descriptions[(description.ClassID, description.InstanceID)] = (description.Marketable, description.Tradable, description.RealAppID, description.Type, description.Rarity);
+						(ulong ClassID, ulong InstanceID) key = (description.ClassID, description.InstanceID);
+
+						if (descriptions.ContainsKey(key)) {
+							continue;
+						}
+
+						descriptions[key] = (description.Marketable, description.Tradable, description.RealAppID, description.Type, description.Rarity);
 					}
 
 					foreach (Steam.Asset asset in response.Assets.Where(asset => asset != null)) {
@@ -1443,7 +1449,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			Dictionary<(uint AppID, ulong ClassID), (bool Marketable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> descriptions = new Dictionary<(uint AppID, ulong ClassID), (bool Marketable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)>();
+			Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), (bool Marketable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> descriptions = new Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), (bool Marketable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)>();
 
 			foreach (KeyValue description in response["descriptions"].Children) {
 				uint appID = description["appid"].AsUnsignedInteger();
@@ -1462,7 +1468,11 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				if (descriptions.ContainsKey((appID, classID))) {
+				ulong instanceID = description["instanceid"].AsUnsignedLong();
+
+				(uint AppID, ulong ClassID, ulong InstanceID) key = (appID, classID, instanceID);
+
+				if (descriptions.ContainsKey(key)) {
 					continue;
 				}
 
@@ -1500,7 +1510,7 @@ namespace ArchiSteamFarm {
 					(type, rarity, realAppID) = Steam.InventoryResponse.Description.InterpretTags(parsedTags);
 				}
 
-				descriptions[(appID, classID)] = (marketable, realAppID, type, rarity);
+				descriptions[key] = (marketable, realAppID, type, rarity);
 			}
 
 			HashSet<Steam.TradeOffer> result = new HashSet<Steam.TradeOffer>();
@@ -2414,7 +2424,7 @@ namespace ArchiSteamFarm {
 			return uri.AbsolutePath.StartsWith("/login", StringComparison.Ordinal) || uri.Host.Equals("lostauth");
 		}
 
-		private static bool ParseItems(IReadOnlyDictionary<(uint AppID, ulong ClassID), (bool Marketable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> descriptions, IReadOnlyCollection<KeyValue> input, ICollection<Steam.Asset> output) {
+		private static bool ParseItems(IReadOnlyDictionary<(uint AppID, ulong ClassID, ulong InstanceID), (bool Marketable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> descriptions, IReadOnlyCollection<KeyValue> input, ICollection<Steam.Asset> output) {
 			if ((descriptions == null) || (input == null) || (input.Count == 0) || (output == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(descriptions) + " || " + nameof(input) + " || " + nameof(output));
 
@@ -2446,6 +2456,10 @@ namespace ArchiSteamFarm {
 					return false;
 				}
 
+				ulong instanceID = item["instanceid"].AsUnsignedLong();
+
+				(uint AppID, ulong ClassID, ulong InstanceID) key = (appID, classID, instanceID);
+
 				uint amount = item["amount"].AsUnsignedInteger();
 
 				if (amount == 0) {
@@ -2459,14 +2473,14 @@ namespace ArchiSteamFarm {
 				Steam.Asset.EType type = Steam.Asset.EType.Unknown;
 				Steam.Asset.ERarity rarity = Steam.Asset.ERarity.Unknown;
 
-				if (descriptions.TryGetValue((appID, classID), out (bool Marketable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) description)) {
+				if (descriptions.TryGetValue(key, out (bool Marketable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) description)) {
 					marketable = description.Marketable;
 					realAppID = description.RealAppID;
 					type = description.Type;
 					rarity = description.Rarity;
 				}
 
-				Steam.Asset steamAsset = new Steam.Asset(appID, contextID, classID, amount, marketable, realAppID, type, rarity);
+				Steam.Asset steamAsset = new Steam.Asset(appID, contextID, classID, instanceID, amount, marketable, realAppID, type, rarity);
 				output.Add(steamAsset);
 			}
 

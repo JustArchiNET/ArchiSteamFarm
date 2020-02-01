@@ -194,7 +194,7 @@ namespace ArchiSteamFarm.Json {
 #pragma warning restore IDE0051
 
 			// Constructed from trades being received or plugins
-			public Asset(uint appID, ulong contextID, ulong classID, uint amount, bool marketable = true, uint realAppID = 0, EType type = EType.Unknown, ERarity rarity = ERarity.Unknown) {
+			public Asset(uint appID, ulong contextID, ulong classID, ulong instanceID, uint amount, bool marketable = true, uint realAppID = 0, EType type = EType.Unknown, ERarity rarity = ERarity.Unknown) {
 				if ((appID == 0) || (contextID == 0) || (classID == 0) || (amount == 0)) {
 					throw new ArgumentNullException(nameof(appID) + " || " + nameof(contextID) + " || " + nameof(classID) + " || " + nameof(amount));
 				}
@@ -202,6 +202,7 @@ namespace ArchiSteamFarm.Json {
 				AppID = appID;
 				ContextID = contextID;
 				ClassID = classID;
+				InstanceID = instanceID;
 				Amount = amount;
 				Marketable = marketable;
 				RealAppID = realAppID;
