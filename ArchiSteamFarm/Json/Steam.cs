@@ -478,8 +478,8 @@ namespace ArchiSteamFarm.Json {
 				internal readonly uint AppID;
 
 				internal ulong ClassID { get; private set; }
-				internal bool Marketable { get; private set; }
 				internal ulong InstanceID { get; private set; }
+				internal bool Marketable { get; private set; }
 				internal Asset.ERarity Rarity { get; private set; }
 				internal uint RealAppID { get; private set; }
 				internal bool Tradable { get; private set; }
