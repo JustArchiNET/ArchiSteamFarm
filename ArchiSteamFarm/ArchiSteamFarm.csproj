@@ -6,7 +6,7 @@
     <Authors>JustArchi</Authors>
     <Company>JustArchi</Company>
     <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
-    <Copyright>Copyright © ArchiSteamFarm 2015-2019</Copyright>
+    <Copyright>Copyright © ArchiSteamFarm 2015-2020</Copyright>
     <DefaultItemExcludes>$(DefaultItemExcludes);config/**;debug/**;out/**;overlay/**</DefaultItemExcludes>
     <Description>ASF is a C# application with primary purpose of idling Steam cards from multiple accounts simultaneously.</Description>
     <ErrorReport>none</ErrorReport>
