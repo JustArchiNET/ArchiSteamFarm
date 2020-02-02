@@ -235,7 +235,8 @@ namespace ArchiSteamFarm.Json {
 				Consumable,
 				ProfileModifier,
 				Sticker,
-				ChatEffect
+				ChatEffect,
+				MiniProfileBackground
 			}
 		}
 
@@ -670,6 +671,10 @@ namespace ArchiSteamFarm.Json {
 										break;
 									case "item_class_12":
 										type = Asset.EType.ChatEffect;
+
+										break;
+									case "item_class_13":
+										type = Asset.EType.MiniProfileBackground;
 
 										break;
 									default:
