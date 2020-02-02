@@ -176,7 +176,10 @@ namespace ArchiSteamFarm.Json {
 
 #pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "instanceid", Required = Required.DisallowNull)]
+			[JetBrains.Annotations.NotNull]
 			private string InstanceIDText {
+				get => InstanceID.ToString();
+
 				set {
 					if (string.IsNullOrEmpty(value)) {
 						return;
