@@ -34,7 +34,7 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	public sealed class Trading : IDisposable {
-		internal const byte MaxItemsPerTrade = byte.MaxValue; // This is due to limit on POST size in WebBrowser
+		internal const byte MaxItemsPerTrade = 200; // This is decided upon various factors, mainly limit on POST size in WebBrowser, as well as stability of Steam servers when dealing with huge trade offers
 		internal const byte MaxTradesPerAccount = 5; // This is limit introduced by Valve
 
 		private readonly Bot Bot;
