@@ -97,6 +97,7 @@ namespace ArchiSteamFarm.Json {
 			}
 #pragma warning restore IDE0051
 
+#pragma warning disable IDE0052
 			[JsonProperty(PropertyName = "assetid", Required = Required.DisallowNull)]
 			[JetBrains.Annotations.NotNull]
 			private string AssetIDText {
@@ -118,13 +119,12 @@ namespace ArchiSteamFarm.Json {
 					AssetID = assetID;
 				}
 			}
+#pragma warning restore IDE0052
 
 #pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "classid", Required = Required.DisallowNull)]
 			[JetBrains.Annotations.NotNull]
 			private string ClassIDText {
-				get => ClassID.ToString();
-
 				set {
 					if (string.IsNullOrEmpty(value)) {
 						ASF.ArchiLogger.LogNullError(nameof(value));
@@ -169,7 +169,6 @@ namespace ArchiSteamFarm.Json {
 			[JsonProperty(PropertyName = "id", Required = Required.DisallowNull)]
 			[JetBrains.Annotations.NotNull]
 			private string IDText {
-				get => AssetIDText;
 				set => AssetIDText = value;
 			}
 #pragma warning restore IDE0051
@@ -178,8 +177,6 @@ namespace ArchiSteamFarm.Json {
 			[JsonProperty(PropertyName = "instanceid", Required = Required.DisallowNull)]
 			[JetBrains.Annotations.NotNull]
 			private string InstanceIDText {
-				get => InstanceID.ToString();
-
 				set {
 					if (string.IsNullOrEmpty(value)) {
 						return;
