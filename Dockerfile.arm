@@ -4,7 +4,7 @@ COPY ASF-ui .
 RUN echo "node: $(node --version)" && \
     echo "npm: $(npm --version)" && \
     npm ci && \
-    npm run-script deploy
+    npm run deploy
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-dotnet
 ENV CONFIGURATION Release
