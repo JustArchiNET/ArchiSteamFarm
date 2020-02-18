@@ -78,7 +78,7 @@ if [ "$ASF_UI" -eq 1 ]; then
 	fi
 fi
 
-DOTNET_FLAGS="-c $CONFIGURATION -f $TARGET_FRAMEWORK /nologo"
+DOTNET_FLAGS="-c $CONFIGURATION -f $TARGET_FRAMEWORK --nologo"
 
 if [ "$SHARED_COMPILATION" -eq 0 ]; then
 	DOTNET_FLAGS="$DOTNET_FLAGS /p:UseSharedCompilation=false"
