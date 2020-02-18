@@ -5,7 +5,6 @@
     <AssemblyVersion>4.1.2.2</AssemblyVersion>
     <Authors>JustArchi</Authors>
     <Company>JustArchi</Company>
-    <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
     <Copyright>Copyright © ArchiSteamFarm 2015-2020</Copyright>
     <DefaultItemExcludes>$(DefaultItemExcludes);config/**;debug/**;out/**;overlay/**</DefaultItemExcludes>
     <Description>ASF is a C# application with primary purpose of idling Steam cards from multiple accounts simultaneously.</Description>
@@ -22,7 +21,6 @@
     <RepositoryType>Git</RepositoryType>
     <RepositoryUrl>https://github.com/JustArchiNET/ArchiSteamFarm.git</RepositoryUrl>
     <RuntimeIdentifiers>linux-arm;linux-x64;osx-x64;win-x64</RuntimeIdentifiers>
-    <ServerGarbageCollection>false</ServerGarbageCollection>
     <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
   </PropertyGroup>
 
