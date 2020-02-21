@@ -139,7 +139,8 @@ namespace ArchiSteamFarm {
 						(!tradable.HasValue || (item.Tradable == tradable.Value)) &&
 						(wantedRealAppIDs?.Contains(item.RealAppID) != false) &&
 						(unwantedRealAppIDs?.Contains(item.RealAppID) != true) &&
-						(wantedTypes?.Contains(item.Type) != false)
+						(wantedTypes?.Contains(item.Type) != false) &&
+						(wantedSets?.Contains((item.RealAppID, item.Type, item.Rarity)) != false)
 				).ToHashSetAsync().ConfigureAwait(false);
 			} catch (IOException) {
 				return null;
