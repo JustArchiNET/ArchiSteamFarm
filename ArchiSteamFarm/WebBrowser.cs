@@ -82,7 +82,7 @@ namespace ArchiSteamFarm {
 		public HttpClient GenerateDisposableHttpClient(bool extendedTimeout = false) {
 			HttpClient result = new HttpClient(HttpClientHandler, false) {
 #if !NETFRAMEWORK
-				DefaultRequestVersion = new Version(2, 0),
+				DefaultRequestVersion = HttpVersion.Version20,
 #endif
 				Timeout = TimeSpan.FromSeconds(extendedTimeout ? ExtendedTimeoutMultiplier * ASF.GlobalConfig.ConnectionTimeout : ASF.GlobalConfig.ConnectionTimeout)
 			};
