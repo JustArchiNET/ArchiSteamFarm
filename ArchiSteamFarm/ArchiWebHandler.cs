@@ -123,12 +123,33 @@ namespace ArchiSteamFarm {
 
 		[ItemCanBeNull]
 		[PublicAPI]
-		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
 		public async Task<HashSet<Steam.Asset>> GetInventory(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, bool? marketable = null, bool? tradable = null, IReadOnlyCollection<uint> wantedRealAppIDs = null, IReadOnlyCollection<uint> unwantedRealAppIDs = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> wantedSets = null) {
 			if ((appID == 0) || (contextID == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
 
 				return null;
+			}
+
+			try {
+				return await GetInventoryEnumerable(steamID, appID, contextID, marketable, tradable, wantedRealAppIDs, unwantedRealAppIDs, wantedTypes, wantedSets, false).ToHashSetAsync().ConfigureAwait(false);
+			} catch (Exception e) {
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, e.Message));
+
+				return null;
+			}
+		}
+
+		[PublicAPI]
+		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
+		public async IAsyncEnumerable<Steam.Asset> GetInventoryEnumerable(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, bool? marketable = null, bool? tradable = null, IReadOnlyCollection<uint> wantedRealAppIDs = null, IReadOnlyCollection<uint> unwantedRealAppIDs = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> wantedSets = null, bool suppressExceptions = true) {
+			if ((appID == 0) || (contextID == 0)) {
+				if (!suppressExceptions) {
+					throw new Exception(string.Format(Strings.ErrorObjectIsNull, nameof(appID) + " || " + nameof(contextID)));
+				}
+
+				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
+
+				yield break;
 			}
 
 			if (steamID == 0) {
@@ -138,23 +159,29 @@ namespace ArchiSteamFarm {
 					}
 
 					if (!Initialized) {
+						if (!suppressExceptions) {
+							throw new Exception(Strings.WarningFailed);
+						}
+
 						Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
-						return null;
+						yield break;
 					}
 				}
 
 				steamID = Bot.SteamID;
 			} else if (!new SteamID(steamID).IsIndividualAccount) {
+				if (!suppressExceptions) {
+					throw new Exception(string.Format(Strings.ErrorObjectIsNull, nameof(steamID)));
+				}
+
 				Bot.ArchiLogger.LogNullError(nameof(steamID));
 
-				return null;
+				yield break;
 			}
 
 			string request = "/inventory/" + steamID + "/" + appID + "/" + contextID + "?count=" + MaxItemsInSingleInventoryRequest + "&l=english";
 			ulong startAssetID = 0;
-
-			Dictionary<ulong, Steam.Asset> result = new Dictionary<ulong, Steam.Asset>();
 
 			while (true) {
 				await InventorySemaphore.WaitAsync().ConfigureAwait(false);
@@ -163,33 +190,51 @@ namespace ArchiSteamFarm {
 					Steam.InventoryResponse response = await UrlGetToJsonObjectWithSession<Steam.InventoryResponse>(SteamCommunityURL, request + (startAssetID > 0 ? "&start_assetid=" + startAssetID : "")).ConfigureAwait(false);
 
 					if (response == null) {
-						return null;
+						if (!suppressExceptions) {
+							throw new Exception(string.Format(Strings.ErrorObjectIsNull, nameof(response)));
+						}
+
+						yield break;
 					}
 
 					if (!response.Success) {
-						Bot.ArchiLogger.LogGenericWarning(!string.IsNullOrEmpty(response.Error) ? string.Format(Strings.WarningFailedWithError, response.Error) : Strings.WarningFailed);
+						string errorMessage = !string.IsNullOrEmpty(response.Error) ? string.Format(Strings.WarningFailedWithError, response.Error) : Strings.WarningFailed;
 
-						return null;
+						if (!suppressExceptions) {
+							throw new Exception(errorMessage);
+						}
+
+						Bot.ArchiLogger.LogGenericWarning(errorMessage);
+
+						yield break;
 					}
 
 					if (response.TotalInventoryCount == 0) {
 						// Empty inventory
-						return result.Values.ToHashSet();
+						yield break;
 					}
 
 					if ((response.Assets == null) || (response.Assets.Count == 0) || (response.Descriptions == null) || (response.Descriptions.Count == 0)) {
+						if (!suppressExceptions) {
+							throw new Exception(string.Format(Strings.ErrorObjectIsNull, nameof(response.Assets) + " || " + nameof(response.Descriptions)));
+						}
+
 						Bot.ArchiLogger.LogNullError(nameof(response.Assets) + " || " + nameof(response.Descriptions));
 
-						return null;
+						yield break;
 					}
 
 					Dictionary<(ulong ClassID, ulong InstanceID), (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> descriptions = new Dictionary<(ulong ClassID, ulong InstanceID), (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)>();
 
 					foreach (Steam.InventoryResponse.Description description in response.Descriptions.Where(description => description != null)) {
 						if (description.ClassID == 0) {
+							if (!suppressExceptions) {
+								throw new Exception(string.Format(Strings.ErrorObjectIsNull, nameof(description.ClassID)));
+							}
+
 							Bot.ArchiLogger.LogNullError(nameof(description.ClassID));
 
-							return null;
+							yield break;
 						}
 
 						(ulong ClassID, ulong InstanceID) key = (description.ClassID, description.InstanceID);
@@ -202,31 +247,35 @@ namespace ArchiSteamFarm {
 					}
 
 					foreach (Steam.Asset asset in response.Assets.Where(asset => asset != null)) {
-						if (descriptions.TryGetValue((asset.ClassID, asset.InstanceID), out (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) description)) {
-							if ((marketable.HasValue && (description.Marketable != marketable.Value)) || (tradable.HasValue && (description.Tradable != tradable.Value)) || (wantedRealAppIDs?.Contains(description.RealAppID) == false) || (unwantedRealAppIDs?.Contains(description.RealAppID) == true) || (wantedTypes?.Contains(description.Type) == false) || (wantedSets?.Contains((description.RealAppID, description.Type, description.Rarity)) == false)) {
-								continue;
-							}
-
-							asset.Marketable = description.Marketable;
-							asset.Tradable = description.Tradable;
-							asset.RealAppID = description.RealAppID;
-							asset.Type = description.Type;
-							asset.Rarity = description.Rarity;
-						} else if (marketable.HasValue || tradable.HasValue || (wantedRealAppIDs != null) || (unwantedRealAppIDs != null) || (wantedTypes != null) || (wantedSets != null)) {
+						if (!descriptions.TryGetValue((asset.ClassID, asset.InstanceID), out (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) description)) {
 							continue;
 						}
 
-						result[asset.AssetID] = asset;
+						if ((marketable.HasValue && (description.Marketable != marketable.Value)) || (tradable.HasValue && (description.Tradable != tradable.Value)) || (wantedRealAppIDs?.Contains(description.RealAppID) == false) || (unwantedRealAppIDs?.Contains(description.RealAppID) == true) || (wantedTypes?.Contains(description.Type) == false) || (wantedSets?.Contains((description.RealAppID, description.Type, description.Rarity)) == false)) {
+							continue;
+						}
+
+						asset.Marketable = description.Marketable;
+						asset.Tradable = description.Tradable;
+						asset.RealAppID = description.RealAppID;
+						asset.Type = description.Type;
+						asset.Rarity = description.Rarity;
+
+						yield return asset;
 					}
 
 					if (!response.MoreItems) {
-						return result.Values.ToHashSet();
+						yield break;
 					}
 
 					if (response.LastAssetID == 0) {
+						if (!suppressExceptions) {
+							throw new Exception(string.Format(Strings.ErrorObjectIsNull, nameof(response.LastAssetID)));
+						}
+
 						Bot.ArchiLogger.LogNullError(nameof(response.LastAssetID));
 
-						return null;
+						yield break;
 					}
 
 					startAssetID = response.LastAssetID;
