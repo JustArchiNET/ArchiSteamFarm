@@ -122,6 +122,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[ItemCanBeNull]
+		[Obsolete]
 		[PublicAPI]
 		public async Task<HashSet<Steam.Asset>> GetInventory(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID) {
 			if ((appID == 0) || (contextID == 0)) {
@@ -165,6 +166,9 @@ namespace ArchiSteamFarm {
 			string request = "/inventory/" + steamID + "/" + appID + "/" + contextID + "?count=" + MaxItemsInSingleInventoryRequest + "&l=english";
 			ulong startAssetID = 0;
 
+			// We need to store asset IDs to make sure we won't get duplicate items
+			HashSet<ulong> assetIDs = new HashSet<ulong>();
+
 			while (true) {
 				await InventorySemaphore.WaitAsync().ConfigureAwait(false);
 
@@ -205,7 +209,7 @@ namespace ArchiSteamFarm {
 					}
 
 					foreach (Steam.Asset asset in response.Assets.Where(asset => asset != null)) {
-						if (!descriptions.TryGetValue((asset.ClassID, asset.InstanceID), out (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) description)) {
+						if (!descriptions.TryGetValue((asset.ClassID, asset.InstanceID), out (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) description) || assetIDs.Contains(asset.AssetID)) {
 							continue;
 						}
 
@@ -214,6 +218,7 @@ namespace ArchiSteamFarm {
 						asset.RealAppID = description.RealAppID;
 						asset.Type = description.Type;
 						asset.Rarity = description.Rarity;
+						assetIDs.Add(asset.AssetID);
 
 						yield return asset;
 					}

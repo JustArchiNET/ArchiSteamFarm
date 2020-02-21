@@ -2857,18 +2857,10 @@ namespace ArchiSteamFarm {
 
 			// It'd also make sense to run all of this in parallel, but it seems that Steam has a lot of problems with inventory-related parallel requests | https://steamcommunity.com/groups/ascfarm/discussions/1/3559414588264550284/
 			try {
-				HashSet<ulong> unpackedAssets = new HashSet<ulong>();
-
 				await foreach (Steam.Asset item in Bot.ArchiWebHandler.GetInventoryEnumerable(Bot.SteamID).Where(x => x.Type == Steam.Asset.EType.BoosterPack).ConfigureAwait(false)) {
-					if (unpackedAssets.Contains(item.AssetID)) {
-						continue;
-					}
-
 					if (!await Bot.ArchiWebHandler.UnpackBooster(item.RealAppID, item.AssetID).ConfigureAwait(false)) {
 						completeSuccess = false;
 					}
-
-					unpackedAssets.Add(item.AssetID);
 				}
 			} catch (Exception e) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, e.Message));
