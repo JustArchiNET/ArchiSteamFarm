@@ -617,7 +617,7 @@ namespace ArchiSteamFarm {
 				return ParseTradeResult.EResult.TryAgain;
 			} catch (Exception e) {
 				// If we can't check our inventory when not using MatchEverything, this is a temporary failure, try again later
-				Bot.ArchiLogger.LogGenericWarningException(e);
+				Bot.ArchiLogger.LogGenericException(e);
 
 				return ParseTradeResult.EResult.TryAgain;
 			}

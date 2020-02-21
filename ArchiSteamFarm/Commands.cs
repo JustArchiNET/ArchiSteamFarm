@@ -2866,7 +2866,7 @@ namespace ArchiSteamFarm {
 			} catch (IOException) {
 				completeSuccess = false;
 			} catch (Exception e) {
-				Bot.ArchiLogger.LogGenericWarningException(e);
+				Bot.ArchiLogger.LogGenericException(e);
 
 				completeSuccess = false;
 			}

@@ -144,7 +144,7 @@ namespace ArchiSteamFarm {
 			} catch (IOException) {
 				return null;
 			} catch (Exception e) {
-				Bot.ArchiLogger.LogGenericWarningException(e);
+				Bot.ArchiLogger.LogGenericException(e);
 
 				return null;
 			}

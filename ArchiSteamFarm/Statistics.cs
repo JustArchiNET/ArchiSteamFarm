@@ -185,7 +185,7 @@ namespace ArchiSteamFarm {
 
 					return;
 				} catch (Exception e) {
-					Bot.ArchiLogger.LogGenericWarningException(e);
+					Bot.ArchiLogger.LogGenericException(e);
 
 					// This is actually inventory failure, so we'll stop sending heartbeats but not record it as valid check
 					ShouldSendHeartBeats = false;
@@ -366,7 +366,7 @@ namespace ArchiSteamFarm {
 			} catch (IOException) {
 				return false;
 			} catch (Exception e) {
-				Bot.ArchiLogger.LogGenericWarningException(e);
+				Bot.ArchiLogger.LogGenericException(e);
 
 				return false;
 			}
@@ -424,7 +424,7 @@ namespace ArchiSteamFarm {
 				} catch (IOException) {
 					continue;
 				} catch (Exception e) {
-					Bot.ArchiLogger.LogGenericWarningException(e);
+					Bot.ArchiLogger.LogGenericException(e);
 
 					continue;
 				}
