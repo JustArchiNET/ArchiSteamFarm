@@ -23,8 +23,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Json;
@@ -179,7 +179,7 @@ namespace ArchiSteamFarm {
 
 				try {
 					inventory = await Bot.ArchiWebHandler.GetInventoryAsync().Where(item => item.Tradable && acceptedMatchableTypes.Contains(item.Type)).ToHashSetAsync().ConfigureAwait(false);
-				} catch (IOException) {
+				} catch (HttpRequestException) {
 					// This is actually inventory failure, so we'll stop sending heartbeats but not record it as valid check
 					ShouldSendHeartBeats = false;
 
@@ -363,7 +363,7 @@ namespace ArchiSteamFarm {
 
 			try {
 				ourInventory = await Bot.ArchiWebHandler.GetInventoryAsync().Where(item => acceptedMatchableTypes.Contains(item.Type)).ToHashSetAsync().ConfigureAwait(false);
-			} catch (IOException) {
+			} catch (HttpRequestException) {
 				return false;
 			} catch (Exception e) {
 				Bot.ArchiLogger.LogGenericException(e);
@@ -421,7 +421,7 @@ namespace ArchiSteamFarm {
 
 				try {
 					theirInventory = await Bot.ArchiWebHandler.GetInventoryAsync(listedUser.SteamID).Where(item => (!listedUser.MatchEverything || item.Tradable) && wantedSets.Contains((item.RealAppID, item.Type, item.Rarity))).ToHashSetAsync().ConfigureAwait(false);
-				} catch (IOException) {
+				} catch (HttpRequestException) {
 					continue;
 				} catch (Exception e) {
 					Bot.ArchiLogger.LogGenericException(e);

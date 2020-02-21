@@ -22,8 +22,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
@@ -612,7 +612,7 @@ namespace ArchiSteamFarm {
 
 			try {
 				inventory = await Bot.ArchiWebHandler.GetInventoryAsync(Bot.SteamID).Where(item => wantedSets.Contains((item.RealAppID, item.Type, item.Rarity))).ToHashSetAsync().ConfigureAwait(false);
-			} catch (IOException) {
+			} catch (HttpRequestException) {
 				// If we can't check our inventory when not using MatchEverything, this is a temporary failure, try again later
 				return ParseTradeResult.EResult.TryAgain;
 			} catch (Exception e) {

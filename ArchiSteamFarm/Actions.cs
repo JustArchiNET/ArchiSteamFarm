@@ -22,8 +22,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
@@ -287,7 +287,7 @@ namespace ArchiSteamFarm {
 
 				try {
 					inventory = await Bot.ArchiWebHandler.GetInventoryAsync(Bot.SteamID, appID, contextID).Where(item => item.Tradable && (wantedRealAppIDs?.Contains(item.RealAppID) != false) && (unwantedRealAppIDs?.Contains(item.RealAppID) != true) && (wantedTypes?.Contains(item.Type) != false)).ToHashSetAsync().ConfigureAwait(false);
-				} catch (IOException e) {
+				} catch (HttpRequestException e) {
 					return (false, string.Format(Strings.WarningFailedWithError, e.Message));
 				} catch (Exception e) {
 					Bot.ArchiLogger.LogGenericException(e);
