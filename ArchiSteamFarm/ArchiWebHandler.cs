@@ -140,6 +140,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		[JetBrains.Annotations.NotNull]
 		[PublicAPI]
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
 		public async IAsyncEnumerable<Steam.Asset> GetInventoryEnumerable(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID) {

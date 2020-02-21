@@ -174,15 +174,13 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				HashSet<Steam.Asset> inventory = null;
+				HashSet<Steam.Asset> inventory;
 
 				try {
 					inventory = await Bot.ArchiWebHandler.GetInventoryEnumerable().Where(item => item.Tradable && acceptedMatchableTypes.Contains(item.Type)).ToHashSetAsync().ConfigureAwait(false);
 				} catch (Exception e) {
 					Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, e.Message));
-				}
 
-				if (inventory == null) {
 					// This is actually inventory failure, so we'll stop sending heartbeats but not record it as valid check
 					ShouldSendHeartBeats = false;
 
@@ -361,9 +359,11 @@ namespace ArchiSteamFarm {
 				ourInventory = await Bot.ArchiWebHandler.GetInventoryEnumerable().Where(item => acceptedMatchableTypes.Contains(item.Type)).ToHashSetAsync().ConfigureAwait(false);
 			} catch (Exception e) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, e.Message));
+
+				return false;
 			}
 
-			if ((ourInventory == null) || (ourInventory.Count == 0)) {
+			if (ourInventory.Count == 0) {
 				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(ourInventory)));
 
 				return false;
@@ -409,15 +409,17 @@ namespace ArchiSteamFarm {
 
 				Bot.ArchiLogger.LogGenericTrace(listedUser.SteamID + "...");
 
-				HashSet<Steam.Asset> theirInventory = null;
+				HashSet<Steam.Asset> theirInventory;
 
 				try {
 					theirInventory = await Bot.ArchiWebHandler.GetInventoryEnumerable(listedUser.SteamID).Where(item => (!listedUser.MatchEverything || item.Tradable) && wantedSets.Contains((item.RealAppID, item.Type, item.Rarity))).ToHashSetAsync().ConfigureAwait(false);
 				} catch (Exception e) {
 					Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, e.Message));
+
+					continue;
 				}
 
-				if ((theirInventory == null) || (theirInventory.Count == 0)) {
+				if (theirInventory.Count == 0) {
 					Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(theirInventory)));
 
 					continue;

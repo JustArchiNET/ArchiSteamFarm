@@ -607,15 +607,18 @@ namespace ArchiSteamFarm {
 			}
 
 			// Now check if it's worth for us to do the trade
-			HashSet<Steam.Asset> inventory = null;
+			HashSet<Steam.Asset> inventory;
 
 			try {
 				inventory = await Bot.ArchiWebHandler.GetInventoryEnumerable(Bot.SteamID).Where(item => wantedSets.Contains((item.RealAppID, item.Type, item.Rarity))).ToHashSetAsync().ConfigureAwait(false);
 			} catch (Exception e) {
+				// If we can't check our inventory when not using MatchEverything, this is a temporary failure, try again later
 				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, e.Message));
+
+				return ParseTradeResult.EResult.TryAgain;
 			}
 
-			if ((inventory == null) || (inventory.Count == 0)) {
+			if (inventory.Count == 0) {
 				// If we can't check our inventory when not using MatchEverything, this is a temporary failure, try again later
 				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
 

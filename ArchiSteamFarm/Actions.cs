@@ -285,12 +285,12 @@ namespace ArchiSteamFarm {
 				HashSet<Steam.Asset> inventory;
 
 				try {
-					inventory = await Bot.ArchiWebHandler.GetInventoryEnumerable(Bot.SteamID, appID, contextID).Where(item => item.Tradable && (wantedRealAppIDs?.Contains(item.RealAppID)).GetValueOrDefault(true) && !(unwantedRealAppIDs?.Contains(item.RealAppID)).GetValueOrDefault(false) && (wantedTypes?.Contains(item.Type)).GetValueOrDefault(true)).ToHashSetAsync().ConfigureAwait(false);
+					inventory = await Bot.ArchiWebHandler.GetInventoryEnumerable(Bot.SteamID, appID, contextID).Where(item => item.Tradable && (wantedRealAppIDs?.Contains(item.RealAppID) != false) && (unwantedRealAppIDs?.Contains(item.RealAppID) != true) && (wantedTypes?.Contains(item.Type) != false)).ToHashSetAsync().ConfigureAwait(false);
 				} catch (Exception e) {
 					return (false, string.Format(Strings.WarningFailedWithError, e.Message));
 				}
 
-				if ((inventory == null) || (inventory.Count == 0)) {
+				if (inventory.Count == 0) {
 					return (false, string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
 				}
 
