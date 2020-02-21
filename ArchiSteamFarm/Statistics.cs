@@ -174,7 +174,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetInventory(tradable: true, wantedTypes: acceptedMatchableTypes).ConfigureAwait(false);
+				HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetInventoryEnumerable().Where(item => item.Tradable && acceptedMatchableTypes.Contains(item.Type)).ToHashSetAsync().ConfigureAwait(false);
 
 				if (inventory == null) {
 					// This is actually inventory failure, so we'll stop sending heartbeats but not record it as valid check
@@ -349,7 +349,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			HashSet<Steam.Asset> ourInventory = await Bot.ArchiWebHandler.GetInventory(wantedTypes: acceptedMatchableTypes).ConfigureAwait(false);
+			HashSet<Steam.Asset> ourInventory = await Bot.ArchiWebHandler.GetInventoryEnumerable().Where(item => acceptedMatchableTypes.Contains(item.Type)).ToHashSetAsync().ConfigureAwait(false);
 
 			if ((ourInventory == null) || (ourInventory.Count == 0)) {
 				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(ourInventory)));
@@ -397,7 +397,7 @@ namespace ArchiSteamFarm {
 
 				Bot.ArchiLogger.LogGenericTrace(listedUser.SteamID + "...");
 
-				HashSet<Steam.Asset> theirInventory = await Bot.ArchiWebHandler.GetInventory(listedUser.SteamID, tradable: listedUser.MatchEverything ? true : (bool?) null, wantedSets: wantedSets).ConfigureAwait(false);
+				HashSet<Steam.Asset> theirInventory = await Bot.ArchiWebHandler.GetInventoryEnumerable(listedUser.SteamID).Where(item => (!listedUser.MatchEverything || item.Tradable) && wantedSets.Contains((item.RealAppID, item.Type, item.Rarity))).ToHashSetAsync().ConfigureAwait(false);
 
 				if ((theirInventory == null) || (theirInventory.Count == 0)) {
 					Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(theirInventory)));

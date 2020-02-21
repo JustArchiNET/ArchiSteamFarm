@@ -282,7 +282,7 @@ namespace ArchiSteamFarm {
 					TradingScheduled = false;
 				}
 
-				HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetInventory(Bot.SteamID, appID, contextID, tradable: true, wantedRealAppIDs: wantedRealAppIDs, unwantedRealAppIDs: unwantedRealAppIDs, wantedTypes: wantedTypes).ConfigureAwait(false);
+				HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetInventoryEnumerable(Bot.SteamID, appID, contextID).Where(item => item.Tradable && (wantedRealAppIDs?.Contains(item.RealAppID)).GetValueOrDefault(true) && !(unwantedRealAppIDs?.Contains(item.RealAppID)).GetValueOrDefault(false) && (wantedTypes?.Contains(item.Type)).GetValueOrDefault(true)).ToHashSetAsync().ConfigureAwait(false);
 
 				if ((inventory == null) || (inventory.Count == 0)) {
 					return (false, string.Format(Strings.ErrorIsEmpty, nameof(inventory)));

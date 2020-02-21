@@ -123,7 +123,7 @@ namespace ArchiSteamFarm {
 
 		[ItemCanBeNull]
 		[PublicAPI]
-		public async Task<HashSet<Steam.Asset>> GetInventory(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, bool? marketable = null, bool? tradable = null, IReadOnlyCollection<uint> wantedRealAppIDs = null, IReadOnlyCollection<uint> unwantedRealAppIDs = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> wantedSets = null) {
+		public async Task<HashSet<Steam.Asset>> GetInventory(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID) {
 			if ((appID == 0) || (contextID == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
 
@@ -131,7 +131,7 @@ namespace ArchiSteamFarm {
 			}
 
 			try {
-				return await GetInventoryEnumerable(steamID, appID, contextID, marketable, tradable, wantedRealAppIDs, unwantedRealAppIDs, wantedTypes, wantedSets).ToHashSetAsync().ConfigureAwait(false);
+				return await GetInventoryEnumerable(steamID, appID, contextID).ToHashSetAsync().ConfigureAwait(false);
 			} catch (Exception e) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, e.Message));
 
@@ -141,7 +141,7 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
-		public async IAsyncEnumerable<Steam.Asset> GetInventoryEnumerable(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, bool? marketable = null, bool? tradable = null, IReadOnlyCollection<uint> wantedRealAppIDs = null, IReadOnlyCollection<uint> unwantedRealAppIDs = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> wantedSets = null) {
+		public async IAsyncEnumerable<Steam.Asset> GetInventoryEnumerable(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID) {
 			if ((appID == 0) || (contextID == 0)) {
 				throw new Exception(string.Format(Strings.ErrorObjectIsNull, nameof(appID) + " || " + nameof(contextID)));
 			}
@@ -206,10 +206,6 @@ namespace ArchiSteamFarm {
 
 					foreach (Steam.Asset asset in response.Assets.Where(asset => asset != null)) {
 						if (!descriptions.TryGetValue((asset.ClassID, asset.InstanceID), out (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) description)) {
-							continue;
-						}
-
-						if ((marketable.HasValue && (description.Marketable != marketable.Value)) || (tradable.HasValue && (description.Tradable != tradable.Value)) || (wantedRealAppIDs?.Contains(description.RealAppID) == false) || (unwantedRealAppIDs?.Contains(description.RealAppID) == true) || (wantedTypes?.Contains(description.Type) == false) || (wantedSets?.Contains((description.RealAppID, description.Type, description.Rarity)) == false)) {
 							continue;
 						}
 
