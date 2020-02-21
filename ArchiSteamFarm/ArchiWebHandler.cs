@@ -125,7 +125,7 @@ namespace ArchiSteamFarm {
 		[ItemCanBeNull]
 		[Obsolete]
 		[PublicAPI]
-		public async Task<HashSet<Steam.Asset>> GetInventory(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID) {
+		public async Task<HashSet<Steam.Asset>> GetInventory(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, bool? marketable = null, bool? tradable = null, IReadOnlyCollection<uint> wantedRealAppIDs = null, IReadOnlyCollection<uint> unwantedRealAppIDs = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> wantedSets = null) {
 			if ((appID == 0) || (contextID == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
 
@@ -133,7 +133,14 @@ namespace ArchiSteamFarm {
 			}
 
 			try {
-				return await GetInventoryEnumerable(steamID, appID, contextID).ToHashSetAsync().ConfigureAwait(false);
+				return await GetInventoryEnumerable(steamID, appID, contextID).Where(
+					item =>
+						(!marketable.HasValue || (item.Marketable == marketable.Value)) &&
+						(!tradable.HasValue || (item.Tradable == tradable.Value)) &&
+						(wantedRealAppIDs?.Contains(item.RealAppID) != false) &&
+						(unwantedRealAppIDs?.Contains(item.RealAppID) != true) &&
+						(wantedTypes?.Contains(item.Type) != false)
+				).ToHashSetAsync().ConfigureAwait(false);
 			} catch (IOException) {
 				return null;
 			} catch (Exception e) {
