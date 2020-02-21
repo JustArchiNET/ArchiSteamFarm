@@ -131,7 +131,7 @@ namespace ArchiSteamFarm {
 			}
 
 			try {
-				return await GetInventoryEnumerable(steamID, appID, contextID, marketable, tradable, wantedRealAppIDs, unwantedRealAppIDs, wantedTypes, wantedSets, false).ToHashSetAsync().ConfigureAwait(false);
+				return await GetInventoryEnumerable(steamID, appID, contextID, marketable, tradable, wantedRealAppIDs, unwantedRealAppIDs, wantedTypes, wantedSets).ToHashSetAsync().ConfigureAwait(false);
 			} catch (Exception e) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, e.Message));
 
@@ -141,15 +141,9 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
-		public async IAsyncEnumerable<Steam.Asset> GetInventoryEnumerable(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, bool? marketable = null, bool? tradable = null, IReadOnlyCollection<uint> wantedRealAppIDs = null, IReadOnlyCollection<uint> unwantedRealAppIDs = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> wantedSets = null, bool suppressExceptions = true) {
+		public async IAsyncEnumerable<Steam.Asset> GetInventoryEnumerable(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, bool? marketable = null, bool? tradable = null, IReadOnlyCollection<uint> wantedRealAppIDs = null, IReadOnlyCollection<uint> unwantedRealAppIDs = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> wantedSets = null) {
 			if ((appID == 0) || (contextID == 0)) {
-				if (!suppressExceptions) {
-					throw new Exception(string.Format(Strings.ErrorObjectIsNull, nameof(appID) + " || " + nameof(contextID)));
-				}
-
-				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
-
-				yield break;
+				throw new Exception(string.Format(Strings.ErrorObjectIsNull, nameof(appID) + " || " + nameof(contextID)));
 			}
 
 			if (steamID == 0) {
@@ -159,25 +153,13 @@ namespace ArchiSteamFarm {
 					}
 
 					if (!Initialized) {
-						if (!suppressExceptions) {
-							throw new Exception(Strings.WarningFailed);
-						}
-
-						Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-
-						yield break;
+						throw new Exception(Strings.WarningFailed);
 					}
 				}
 
 				steamID = Bot.SteamID;
 			} else if (!new SteamID(steamID).IsIndividualAccount) {
-				if (!suppressExceptions) {
-					throw new Exception(string.Format(Strings.ErrorObjectIsNull, nameof(steamID)));
-				}
-
-				Bot.ArchiLogger.LogNullError(nameof(steamID));
-
-				yield break;
+				throw new Exception(string.Format(Strings.ErrorObjectIsNull, nameof(steamID)));
 			}
 
 			string request = "/inventory/" + steamID + "/" + appID + "/" + contextID + "?count=" + MaxItemsInSingleInventoryRequest + "&l=english";
@@ -190,23 +172,11 @@ namespace ArchiSteamFarm {
 					Steam.InventoryResponse response = await UrlGetToJsonObjectWithSession<Steam.InventoryResponse>(SteamCommunityURL, request + (startAssetID > 0 ? "&start_assetid=" + startAssetID : "")).ConfigureAwait(false);
 
 					if (response == null) {
-						if (!suppressExceptions) {
-							throw new Exception(string.Format(Strings.ErrorObjectIsNull, nameof(response)));
-						}
-
-						yield break;
+						throw new Exception(string.Format(Strings.ErrorObjectIsNull, nameof(response)));
 					}
 
 					if (!response.Success) {
-						string errorMessage = !string.IsNullOrEmpty(response.Error) ? string.Format(Strings.WarningFailedWithError, response.Error) : Strings.WarningFailed;
-
-						if (!suppressExceptions) {
-							throw new Exception(errorMessage);
-						}
-
-						Bot.ArchiLogger.LogGenericWarning(errorMessage);
-
-						yield break;
+						throw new Exception(!string.IsNullOrEmpty(response.Error) ? string.Format(Strings.WarningFailedWithError, response.Error) : Strings.WarningFailed);
 					}
 
 					if (response.TotalInventoryCount == 0) {
@@ -215,26 +185,14 @@ namespace ArchiSteamFarm {
 					}
 
 					if ((response.Assets == null) || (response.Assets.Count == 0) || (response.Descriptions == null) || (response.Descriptions.Count == 0)) {
-						if (!suppressExceptions) {
-							throw new Exception(string.Format(Strings.ErrorObjectIsNull, nameof(response.Assets) + " || " + nameof(response.Descriptions)));
-						}
-
-						Bot.ArchiLogger.LogNullError(nameof(response.Assets) + " || " + nameof(response.Descriptions));
-
-						yield break;
+						throw new Exception(string.Format(Strings.ErrorObjectIsNull, nameof(response.Assets) + " || " + nameof(response.Descriptions)));
 					}
 
 					Dictionary<(ulong ClassID, ulong InstanceID), (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> descriptions = new Dictionary<(ulong ClassID, ulong InstanceID), (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)>();
 
 					foreach (Steam.InventoryResponse.Description description in response.Descriptions.Where(description => description != null)) {
 						if (description.ClassID == 0) {
-							if (!suppressExceptions) {
-								throw new Exception(string.Format(Strings.ErrorObjectIsNull, nameof(description.ClassID)));
-							}
-
-							Bot.ArchiLogger.LogNullError(nameof(description.ClassID));
-
-							yield break;
+							throw new Exception(string.Format(Strings.ErrorObjectIsNull, nameof(description.ClassID)));
 						}
 
 						(ulong ClassID, ulong InstanceID) key = (description.ClassID, description.InstanceID);
@@ -269,13 +227,7 @@ namespace ArchiSteamFarm {
 					}
 
 					if (response.LastAssetID == 0) {
-						if (!suppressExceptions) {
-							throw new Exception(string.Format(Strings.ErrorObjectIsNull, nameof(response.LastAssetID)));
-						}
-
-						Bot.ArchiLogger.LogNullError(nameof(response.LastAssetID));
-
-						yield break;
+						throw new Exception(string.Format(Strings.ErrorObjectIsNull, nameof(response.LastAssetID)));
 					}
 
 					startAssetID = response.LastAssetID;

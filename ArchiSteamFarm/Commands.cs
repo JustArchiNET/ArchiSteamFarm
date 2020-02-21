@@ -2856,10 +2856,15 @@ namespace ArchiSteamFarm {
 			bool completeSuccess = true;
 
 			// It'd also make sense to run all of this in parallel, but it seems that Steam has a lot of problems with inventory-related parallel requests | https://steamcommunity.com/groups/ascfarm/discussions/1/3559414588264550284/
-			await foreach (Steam.Asset item in Bot.ArchiWebHandler.GetInventoryEnumerable(Bot.SteamID, wantedTypes: new HashSet<Steam.Asset.EType> { Steam.Asset.EType.BoosterPack }).ConfigureAwait(false)) {
-				if (!await Bot.ArchiWebHandler.UnpackBooster(item.RealAppID, item.AssetID).ConfigureAwait(false)) {
-					completeSuccess = false;
+			try {
+				await foreach (Steam.Asset item in Bot.ArchiWebHandler.GetInventoryEnumerable(Bot.SteamID, wantedTypes: new HashSet<Steam.Asset.EType> { Steam.Asset.EType.BoosterPack }).ConfigureAwait(false)) {
+					if (!await Bot.ArchiWebHandler.UnpackBooster(item.RealAppID, item.AssetID).ConfigureAwait(false)) {
+						completeSuccess = false;
+					}
 				}
+			} catch (Exception e) {
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, e.Message));
+				completeSuccess = false;
 			}
 
 			return FormatBotResponse(completeSuccess ? Strings.Success : Strings.Done);
