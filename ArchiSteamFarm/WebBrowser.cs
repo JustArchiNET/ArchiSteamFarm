@@ -547,7 +547,7 @@ namespace ArchiSteamFarm {
 
 			using (HttpRequestMessage request = new HttpRequestMessage(httpMethod, requestUri)) {
 #if !NETFRAMEWORK
-				request.Version = HttpVersion.Version20;
+				request.Version = HttpClient.DefaultRequestVersion;
 #endif
 
 				if (data != null) {
