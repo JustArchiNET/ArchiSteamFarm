@@ -178,7 +178,7 @@ namespace ArchiSteamFarm {
 				HashSet<Steam.Asset> inventory;
 
 				try {
-					inventory = await Bot.ArchiWebHandler.GetInventoryEnumerable().Where(item => item.Tradable && acceptedMatchableTypes.Contains(item.Type)).ToHashSetAsync().ConfigureAwait(false);
+					inventory = await Bot.ArchiWebHandler.GetInventoryAsync().Where(item => item.Tradable && acceptedMatchableTypes.Contains(item.Type)).ToHashSetAsync().ConfigureAwait(false);
 				} catch (IOException) {
 					// This is actually inventory failure, so we'll stop sending heartbeats but not record it as valid check
 					ShouldSendHeartBeats = false;
@@ -362,7 +362,7 @@ namespace ArchiSteamFarm {
 			HashSet<Steam.Asset> ourInventory;
 
 			try {
-				ourInventory = await Bot.ArchiWebHandler.GetInventoryEnumerable().Where(item => acceptedMatchableTypes.Contains(item.Type)).ToHashSetAsync().ConfigureAwait(false);
+				ourInventory = await Bot.ArchiWebHandler.GetInventoryAsync().Where(item => acceptedMatchableTypes.Contains(item.Type)).ToHashSetAsync().ConfigureAwait(false);
 			} catch (IOException) {
 				return false;
 			} catch (Exception e) {
@@ -420,7 +420,7 @@ namespace ArchiSteamFarm {
 				HashSet<Steam.Asset> theirInventory;
 
 				try {
-					theirInventory = await Bot.ArchiWebHandler.GetInventoryEnumerable(listedUser.SteamID).Where(item => (!listedUser.MatchEverything || item.Tradable) && wantedSets.Contains((item.RealAppID, item.Type, item.Rarity))).ToHashSetAsync().ConfigureAwait(false);
+					theirInventory = await Bot.ArchiWebHandler.GetInventoryAsync(listedUser.SteamID).Where(item => (!listedUser.MatchEverything || item.Tradable) && wantedSets.Contains((item.RealAppID, item.Type, item.Rarity))).ToHashSetAsync().ConfigureAwait(false);
 				} catch (IOException) {
 					continue;
 				} catch (Exception e) {

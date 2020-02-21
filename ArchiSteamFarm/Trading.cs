@@ -611,7 +611,7 @@ namespace ArchiSteamFarm {
 			HashSet<Steam.Asset> inventory;
 
 			try {
-				inventory = await Bot.ArchiWebHandler.GetInventoryEnumerable(Bot.SteamID).Where(item => wantedSets.Contains((item.RealAppID, item.Type, item.Rarity))).ToHashSetAsync().ConfigureAwait(false);
+				inventory = await Bot.ArchiWebHandler.GetInventoryAsync(Bot.SteamID).Where(item => wantedSets.Contains((item.RealAppID, item.Type, item.Rarity))).ToHashSetAsync().ConfigureAwait(false);
 			} catch (IOException) {
 				// If we can't check our inventory when not using MatchEverything, this is a temporary failure, try again later
 				return ParseTradeResult.EResult.TryAgain;

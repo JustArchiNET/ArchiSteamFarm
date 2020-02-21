@@ -133,7 +133,7 @@ namespace ArchiSteamFarm {
 			}
 
 			try {
-				return await GetInventoryEnumerable(steamID, appID, contextID).Where(
+				return await GetInventoryAsync(steamID, appID, contextID).Where(
 					item =>
 						(!marketable.HasValue || (item.Marketable == marketable.Value)) &&
 						(!tradable.HasValue || (item.Tradable == tradable.Value)) &&
@@ -154,7 +154,7 @@ namespace ArchiSteamFarm {
 		[JetBrains.Annotations.NotNull]
 		[PublicAPI]
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
-		public async IAsyncEnumerable<Steam.Asset> GetInventoryEnumerable(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID) {
+		public async IAsyncEnumerable<Steam.Asset> GetInventoryAsync(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID) {
 			if ((appID == 0) || (contextID == 0)) {
 				throw new ArgumentException(string.Format(Strings.ErrorObjectIsNull, nameof(appID) + " || " + nameof(contextID)));
 			}
@@ -192,7 +192,7 @@ namespace ArchiSteamFarm {
 					}
 
 					if (!response.Success) {
-						throw new Exception(!string.IsNullOrEmpty(response.Error) ? string.Format(Strings.WarningFailedWithError, response.Error) : Strings.WarningFailed);
+						throw new IOException(!string.IsNullOrEmpty(response.Error) ? string.Format(Strings.WarningFailedWithError, response.Error) : Strings.WarningFailed);
 					}
 
 					if (response.TotalInventoryCount == 0) {

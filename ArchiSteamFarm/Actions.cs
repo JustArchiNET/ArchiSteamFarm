@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -285,9 +286,12 @@ namespace ArchiSteamFarm {
 				HashSet<Steam.Asset> inventory;
 
 				try {
-					inventory = await Bot.ArchiWebHandler.GetInventoryEnumerable(Bot.SteamID, appID, contextID).Where(item => item.Tradable && (wantedRealAppIDs?.Contains(item.RealAppID) != false) && (unwantedRealAppIDs?.Contains(item.RealAppID) != true) && (wantedTypes?.Contains(item.Type) != false)).ToHashSetAsync().ConfigureAwait(false);
+					inventory = await Bot.ArchiWebHandler.GetInventoryAsync(Bot.SteamID, appID, contextID).Where(item => item.Tradable && (wantedRealAppIDs?.Contains(item.RealAppID) != false) && (unwantedRealAppIDs?.Contains(item.RealAppID) != true) && (wantedTypes?.Contains(item.Type) != false)).ToHashSetAsync().ConfigureAwait(false);
+				} catch (IOException e) {
+					return (false, string.Format(Strings.WarningFailedWithError, e.Message));
 				} catch (Exception e) {
-					// Returning exception message instead of logging it
+					Bot.ArchiLogger.LogGenericException(e);
+
 					return (false, string.Format(Strings.WarningFailedWithError, e.Message));
 				}
 
