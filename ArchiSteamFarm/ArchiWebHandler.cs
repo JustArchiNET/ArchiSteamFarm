@@ -2660,13 +2660,9 @@ namespace ArchiSteamFarm {
 
 			Bot.ArchiLogger.LogGenericInfo(Strings.UnlockingParentalAccount);
 
-			if (!await UnlockParentalAccountForService(SteamCommunityURL, parentalCode).ConfigureAwait(false)) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+			bool[] results = await Task.WhenAll(UnlockParentalAccountForService(SteamCommunityURL, parentalCode), UnlockParentalAccountForService(SteamStoreURL, parentalCode)).ConfigureAwait(false);
 
-				return false;
-			}
-
-			if (!await UnlockParentalAccountForService(SteamStoreURL, parentalCode).ConfigureAwait(false)) {
+			if (results.Any(result => !result)) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
 				return false;
