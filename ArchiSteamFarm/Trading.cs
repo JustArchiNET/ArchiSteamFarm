@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -611,9 +612,12 @@ namespace ArchiSteamFarm {
 
 			try {
 				inventory = await Bot.ArchiWebHandler.GetInventoryEnumerable(Bot.SteamID).Where(item => wantedSets.Contains((item.RealAppID, item.Type, item.Rarity))).ToHashSetAsync().ConfigureAwait(false);
+			} catch (IOException) {
+				// If we can't check our inventory when not using MatchEverything, this is a temporary failure, try again later
+				return ParseTradeResult.EResult.TryAgain;
 			} catch (Exception e) {
 				// If we can't check our inventory when not using MatchEverything, this is a temporary failure, try again later
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, e.Message));
+				Bot.ArchiLogger.LogGenericWarningException(e);
 
 				return ParseTradeResult.EResult.TryAgain;
 			}

@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -178,8 +179,13 @@ namespace ArchiSteamFarm {
 
 				try {
 					inventory = await Bot.ArchiWebHandler.GetInventoryEnumerable().Where(item => item.Tradable && acceptedMatchableTypes.Contains(item.Type)).ToHashSetAsync().ConfigureAwait(false);
+				} catch (IOException) {
+					// This is actually inventory failure, so we'll stop sending heartbeats but not record it as valid check
+					ShouldSendHeartBeats = false;
+
+					return;
 				} catch (Exception e) {
-					Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, e.Message));
+					Bot.ArchiLogger.LogGenericWarningException(e);
 
 					// This is actually inventory failure, so we'll stop sending heartbeats but not record it as valid check
 					ShouldSendHeartBeats = false;
@@ -353,12 +359,14 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			HashSet<Steam.Asset> ourInventory = null;
+			HashSet<Steam.Asset> ourInventory;
 
 			try {
 				ourInventory = await Bot.ArchiWebHandler.GetInventoryEnumerable().Where(item => acceptedMatchableTypes.Contains(item.Type)).ToHashSetAsync().ConfigureAwait(false);
+			} catch (IOException) {
+				return false;
 			} catch (Exception e) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, e.Message));
+				Bot.ArchiLogger.LogGenericWarningException(e);
 
 				return false;
 			}
@@ -413,8 +421,10 @@ namespace ArchiSteamFarm {
 
 				try {
 					theirInventory = await Bot.ArchiWebHandler.GetInventoryEnumerable(listedUser.SteamID).Where(item => (!listedUser.MatchEverything || item.Tradable) && wantedSets.Contains((item.RealAppID, item.Type, item.Rarity))).ToHashSetAsync().ConfigureAwait(false);
+				} catch (IOException) {
+					continue;
 				} catch (Exception e) {
-					Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, e.Message));
+					Bot.ArchiLogger.LogGenericWarningException(e);
 
 					continue;
 				}

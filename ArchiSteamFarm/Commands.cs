@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -2862,8 +2863,11 @@ namespace ArchiSteamFarm {
 						completeSuccess = false;
 					}
 				}
+			} catch (IOException) {
+				completeSuccess = false;
 			} catch (Exception e) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, e.Message));
+				Bot.ArchiLogger.LogGenericWarningException(e);
+
 				completeSuccess = false;
 			}
 

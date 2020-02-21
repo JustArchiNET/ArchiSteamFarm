@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -133,8 +134,10 @@ namespace ArchiSteamFarm {
 
 			try {
 				return await GetInventoryEnumerable(steamID, appID, contextID).ToHashSetAsync().ConfigureAwait(false);
+			} catch (IOException) {
+				return null;
 			} catch (Exception e) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, e.Message));
+				Bot.ArchiLogger.LogGenericWarningException(e);
 
 				return null;
 			}
@@ -145,7 +148,7 @@ namespace ArchiSteamFarm {
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
 		public async IAsyncEnumerable<Steam.Asset> GetInventoryEnumerable(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID) {
 			if ((appID == 0) || (contextID == 0)) {
-				throw new Exception(string.Format(Strings.ErrorObjectIsNull, nameof(appID) + " || " + nameof(contextID)));
+				throw new ArgumentException(string.Format(Strings.ErrorObjectIsNull, nameof(appID) + " || " + nameof(contextID)));
 			}
 
 			if (steamID == 0) {
@@ -155,13 +158,13 @@ namespace ArchiSteamFarm {
 					}
 
 					if (!Initialized) {
-						throw new Exception(Strings.WarningFailed);
+						throw new IOException(Strings.WarningFailed);
 					}
 				}
 
 				steamID = Bot.SteamID;
 			} else if (!new SteamID(steamID).IsIndividualAccount) {
-				throw new Exception(string.Format(Strings.ErrorObjectIsNull, nameof(steamID)));
+				throw new ArgumentException(string.Format(Strings.ErrorObjectIsNull, nameof(steamID)));
 			}
 
 			string request = "/inventory/" + steamID + "/" + appID + "/" + contextID + "?count=" + MaxItemsInSingleInventoryRequest + "&l=english";
@@ -177,7 +180,7 @@ namespace ArchiSteamFarm {
 					Steam.InventoryResponse response = await UrlGetToJsonObjectWithSession<Steam.InventoryResponse>(SteamCommunityURL, request + (startAssetID > 0 ? "&start_assetid=" + startAssetID : "")).ConfigureAwait(false);
 
 					if (response == null) {
-						throw new Exception(string.Format(Strings.ErrorObjectIsNull, nameof(response)));
+						throw new IOException(string.Format(Strings.ErrorObjectIsNull, nameof(response)));
 					}
 
 					if (!response.Success) {
@@ -190,14 +193,14 @@ namespace ArchiSteamFarm {
 					}
 
 					if ((response.Assets == null) || (response.Assets.Count == 0) || (response.Descriptions == null) || (response.Descriptions.Count == 0)) {
-						throw new Exception(string.Format(Strings.ErrorObjectIsNull, nameof(response.Assets) + " || " + nameof(response.Descriptions)));
+						throw new ArgumentException(string.Format(Strings.ErrorObjectIsNull, nameof(response.Assets) + " || " + nameof(response.Descriptions)));
 					}
 
 					Dictionary<(ulong ClassID, ulong InstanceID), (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> descriptions = new Dictionary<(ulong ClassID, ulong InstanceID), (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)>();
 
 					foreach (Steam.InventoryResponse.Description description in response.Descriptions.Where(description => description != null)) {
 						if (description.ClassID == 0) {
-							throw new Exception(string.Format(Strings.ErrorObjectIsNull, nameof(description.ClassID)));
+							throw new ArgumentException(string.Format(Strings.ErrorObjectIsNull, nameof(description.ClassID)));
 						}
 
 						(ulong ClassID, ulong InstanceID) key = (description.ClassID, description.InstanceID);
@@ -229,7 +232,7 @@ namespace ArchiSteamFarm {
 					}
 
 					if (response.LastAssetID == 0) {
-						throw new Exception(string.Format(Strings.ErrorObjectIsNull, nameof(response.LastAssetID)));
+						throw new ArgumentException(string.Format(Strings.ErrorObjectIsNull, nameof(response.LastAssetID)));
 					}
 
 					startAssetID = response.LastAssetID;

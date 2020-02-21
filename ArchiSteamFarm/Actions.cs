@@ -287,6 +287,7 @@ namespace ArchiSteamFarm {
 				try {
 					inventory = await Bot.ArchiWebHandler.GetInventoryEnumerable(Bot.SteamID, appID, contextID).Where(item => item.Tradable && (wantedRealAppIDs?.Contains(item.RealAppID) != false) && (unwantedRealAppIDs?.Contains(item.RealAppID) != true) && (wantedTypes?.Contains(item.Type) != false)).ToHashSetAsync().ConfigureAwait(false);
 				} catch (Exception e) {
+					// Returning exception message instead of logging it
 					return (false, string.Format(Strings.WarningFailedWithError, e.Message));
 				}
 
