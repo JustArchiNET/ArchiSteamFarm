@@ -546,6 +546,10 @@ namespace ArchiSteamFarm {
 			HttpResponseMessage response;
 
 			using (HttpRequestMessage request = new HttpRequestMessage(httpMethod, requestUri)) {
+#if !NETFRAMEWORK
+				request.Version = HttpVersion.Version20;
+#endif
+
 				if (data != null) {
 					try {
 						request.Content = new FormUrlEncodedContent(data);
