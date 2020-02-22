@@ -360,7 +360,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if (lootableTypesReceived && Bot.BotConfig.SendOnFarmingFinished && (Bot.BotConfig.LootableTypes.Count > 0)) {
-					await Bot.Actions.SendTradeOfferAsync(filterFunction: item => Bot.BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
+					await Bot.Actions.SendInventory(filterFunction: item => Bot.BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
 				}
 			} finally {
 				TradesSemaphore.Release();

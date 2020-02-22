@@ -248,12 +248,12 @@ namespace ArchiSteamFarm {
 				return (false, string.Format(Strings.ErrorObjectIsNull, nameof(wantedRealAppIDs) + " || " + nameof(unwantedRealAppIDs) + " || " + nameof(wantedTypes)));
 			}
 
-			return await SendTradeOfferAsync(appID, contextID, targetSteamID, tradeToken, item => (wantedRealAppIDs?.Contains(item.RealAppID) != false) && (unwantedRealAppIDs?.Contains(item.RealAppID) != true) && (wantedTypes?.Contains(item.Type) != false)).ConfigureAwait(false);
+			return await SendInventory(appID, contextID, targetSteamID, tradeToken, item => (wantedRealAppIDs?.Contains(item.RealAppID) != false) && (unwantedRealAppIDs?.Contains(item.RealAppID) != true) && (wantedTypes?.Contains(item.Type) != false)).ConfigureAwait(false);
 		}
 
 		[PublicAPI]
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
-		public async Task<(bool Success, string Message)> SendTradeOfferAsync(uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, ulong targetSteamID = 0, string tradeToken = null, Func<Steam.Asset, bool> filterFunction = null) {
+		public async Task<(bool Success, string Message)> SendInventory(uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, ulong targetSteamID = 0, string tradeToken = null, Func<Steam.Asset, bool> filterFunction = null) {
 			if ((appID == 0) || (contextID == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
 
