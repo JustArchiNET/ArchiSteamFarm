@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Json;
@@ -174,9 +175,18 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetInventory(tradable: true, wantedTypes: acceptedMatchableTypes).ConfigureAwait(false);
+				HashSet<Steam.Asset> inventory;
 
-				if (inventory == null) {
+				try {
+					inventory = await Bot.ArchiWebHandler.GetInventoryAsync().Where(item => item.Tradable && acceptedMatchableTypes.Contains(item.Type)).ToHashSetAsync().ConfigureAwait(false);
+				} catch (HttpRequestException) {
+					// This is actually inventory failure, so we'll stop sending heartbeats but not record it as valid check
+					ShouldSendHeartBeats = false;
+
+					return;
+				} catch (Exception e) {
+					Bot.ArchiLogger.LogGenericException(e);
+
 					// This is actually inventory failure, so we'll stop sending heartbeats but not record it as valid check
 					ShouldSendHeartBeats = false;
 
@@ -349,9 +359,19 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			HashSet<Steam.Asset> ourInventory = await Bot.ArchiWebHandler.GetInventory(wantedTypes: acceptedMatchableTypes).ConfigureAwait(false);
+			HashSet<Steam.Asset> ourInventory;
 
-			if ((ourInventory == null) || (ourInventory.Count == 0)) {
+			try {
+				ourInventory = await Bot.ArchiWebHandler.GetInventoryAsync().Where(item => acceptedMatchableTypes.Contains(item.Type)).ToHashSetAsync().ConfigureAwait(false);
+			} catch (HttpRequestException) {
+				return false;
+			} catch (Exception e) {
+				Bot.ArchiLogger.LogGenericException(e);
+
+				return false;
+			}
+
+			if (ourInventory.Count == 0) {
 				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(ourInventory)));
 
 				return false;
@@ -397,9 +417,19 @@ namespace ArchiSteamFarm {
 
 				Bot.ArchiLogger.LogGenericTrace(listedUser.SteamID + "...");
 
-				HashSet<Steam.Asset> theirInventory = await Bot.ArchiWebHandler.GetInventory(listedUser.SteamID, tradable: listedUser.MatchEverything ? true : (bool?) null, wantedSets: wantedSets).ConfigureAwait(false);
+				HashSet<Steam.Asset> theirInventory;
 
-				if ((theirInventory == null) || (theirInventory.Count == 0)) {
+				try {
+					theirInventory = await Bot.ArchiWebHandler.GetInventoryAsync(listedUser.SteamID).Where(item => (!listedUser.MatchEverything || item.Tradable) && wantedSets.Contains((item.RealAppID, item.Type, item.Rarity))).ToHashSetAsync().ConfigureAwait(false);
+				} catch (HttpRequestException) {
+					continue;
+				} catch (Exception e) {
+					Bot.ArchiLogger.LogGenericException(e);
+
+					continue;
+				}
+
+				if (theirInventory.Count == 0) {
 					Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(theirInventory)));
 
 					continue;

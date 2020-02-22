@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
@@ -359,7 +360,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if (lootableTypesReceived && Bot.BotConfig.SendOnFarmingFinished && (Bot.BotConfig.LootableTypes.Count > 0)) {
-					await Bot.Actions.SendTradeOffer(wantedTypes: Bot.BotConfig.LootableTypes).ConfigureAwait(false);
+					await Bot.Actions.SendInventory(filterFunction: item => Bot.BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
 				}
 			} finally {
 				TradesSemaphore.Release();
@@ -607,9 +608,21 @@ namespace ArchiSteamFarm {
 			}
 
 			// Now check if it's worth for us to do the trade
-			HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetInventory(Bot.SteamID, wantedSets: wantedSets).ConfigureAwait(false);
+			HashSet<Steam.Asset> inventory;
 
-			if ((inventory == null) || (inventory.Count == 0)) {
+			try {
+				inventory = await Bot.ArchiWebHandler.GetInventoryAsync(Bot.SteamID).Where(item => wantedSets.Contains((item.RealAppID, item.Type, item.Rarity))).ToHashSetAsync().ConfigureAwait(false);
+			} catch (HttpRequestException) {
+				// If we can't check our inventory when not using MatchEverything, this is a temporary failure, try again later
+				return ParseTradeResult.EResult.TryAgain;
+			} catch (Exception e) {
+				// If we can't check our inventory when not using MatchEverything, this is a temporary failure, try again later
+				Bot.ArchiLogger.LogGenericException(e);
+
+				return ParseTradeResult.EResult.TryAgain;
+			}
+
+			if (inventory.Count == 0) {
 				// If we can't check our inventory when not using MatchEverything, this is a temporary failure, try again later
 				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
 

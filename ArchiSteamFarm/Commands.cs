@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -653,7 +654,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(contextID)));
 			}
 
-			(bool success, string message) = await Bot.Actions.SendTradeOffer(appID, contextID).ConfigureAwait(false);
+			(bool success, string message) = await Bot.Actions.SendInventory(appID, contextID).ConfigureAwait(false);
 
 			return FormatBotResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
@@ -798,7 +799,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.TargetBotNotConnected);
 			}
 
-			(bool success, string message) = await Bot.Actions.SendTradeOffer(appID, contextID, targetBot.SteamID).ConfigureAwait(false);
+			(bool success, string message) = await Bot.Actions.SendInventory(appID, contextID, targetBot.SteamID).ConfigureAwait(false);
 
 			return FormatBotResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
@@ -1503,7 +1504,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(Bot.BotConfig.LootableTypes)));
 			}
 
-			(bool success, string message) = await Bot.Actions.SendTradeOffer(wantedTypes: Bot.BotConfig.LootableTypes).ConfigureAwait(false);
+			(bool success, string message) = await Bot.Actions.SendInventory(filterFunction: item => Bot.BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
 
 			return FormatBotResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
@@ -1564,7 +1565,7 @@ namespace ArchiSteamFarm {
 				realAppIDs.Add(appID);
 			}
 
-			(bool success, string message) = await Bot.Actions.SendTradeOffer(wantedTypes: Bot.BotConfig.LootableTypes, wantedRealAppIDs: !exclude ? realAppIDs : null, unwantedRealAppIDs: exclude ? realAppIDs : null).ConfigureAwait(false);
+			(bool success, string message) = await Bot.Actions.SendInventory(filterFunction: item => Bot.BotConfig.LootableTypes.Contains(item.Type) && (exclude ^ realAppIDs.Contains(item.RealAppID))).ConfigureAwait(false);
 
 			return FormatBotResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
@@ -2691,7 +2692,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotSendingTradeToYourself);
 			}
 
-			(bool success, string message) = await Bot.Actions.SendTradeOffer(targetSteamID: targetBot.SteamID, wantedTypes: Bot.BotConfig.TransferableTypes).ConfigureAwait(false);
+			(bool success, string message) = await Bot.Actions.SendInventory(targetSteamID: targetBot.SteamID, filterFunction: item => Bot.BotConfig.TransferableTypes.Contains(item.Type)).ConfigureAwait(false);
 
 			return FormatBotResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
@@ -2744,7 +2745,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotSendingTradeToYourself);
 			}
 
-			(bool success, string message) = await Bot.Actions.SendTradeOffer(targetSteamID: targetBot.SteamID, wantedTypes: Bot.BotConfig.TransferableTypes, wantedRealAppIDs: !exclude ? realAppIDs : null, unwantedRealAppIDs: exclude ? realAppIDs : null).ConfigureAwait(false);
+			(bool success, string message) = await Bot.Actions.SendInventory(targetSteamID: targetBot.SteamID, filterFunction: item => Bot.BotConfig.TransferableTypes.Contains(item.Type) && (exclude ^ realAppIDs.Contains(item.RealAppID))).ConfigureAwait(false);
 
 			return FormatBotResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
@@ -2852,20 +2853,22 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
-			HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetInventory(Bot.SteamID, wantedTypes: new HashSet<Steam.Asset.EType> { Steam.Asset.EType.BoosterPack }).ConfigureAwait(false);
-
-			if ((inventory == null) || (inventory.Count == 0)) {
-				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
-			}
-
 			// It'd make sense here to actually check return code of ArchiWebHandler.UnpackBooster(), but it lies most of the time | https://github.com/JustArchi/ArchiSteamFarm/issues/704
 			bool completeSuccess = true;
 
 			// It'd also make sense to run all of this in parallel, but it seems that Steam has a lot of problems with inventory-related parallel requests | https://steamcommunity.com/groups/ascfarm/discussions/1/3559414588264550284/
-			foreach (Steam.Asset item in inventory) {
-				if (!await Bot.ArchiWebHandler.UnpackBooster(item.RealAppID, item.AssetID).ConfigureAwait(false)) {
-					completeSuccess = false;
+			try {
+				await foreach (Steam.Asset item in Bot.ArchiWebHandler.GetInventoryAsync(Bot.SteamID).Where(item => item.Type == Steam.Asset.EType.BoosterPack).ConfigureAwait(false)) {
+					if (!await Bot.ArchiWebHandler.UnpackBooster(item.RealAppID, item.AssetID).ConfigureAwait(false)) {
+						completeSuccess = false;
+					}
 				}
+			} catch (HttpRequestException) {
+				completeSuccess = false;
+			} catch (Exception e) {
+				Bot.ArchiLogger.LogGenericException(e);
+
+				completeSuccess = false;
 			}
 
 			return FormatBotResponse(completeSuccess ? Strings.Success : Strings.Done);
