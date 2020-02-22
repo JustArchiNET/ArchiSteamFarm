@@ -654,7 +654,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(contextID)));
 			}
 
-			(bool success, string message) = await Bot.Actions.SendTradeOffer(appID, contextID).ConfigureAwait(false);
+			(bool success, string message) = await Bot.Actions.SendTradeOfferAsync(appID, contextID).ConfigureAwait(false);
 
 			return FormatBotResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
@@ -799,7 +799,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.TargetBotNotConnected);
 			}
 
-			(bool success, string message) = await Bot.Actions.SendTradeOffer(appID, contextID, targetBot.SteamID).ConfigureAwait(false);
+			(bool success, string message) = await Bot.Actions.SendTradeOfferAsync(appID, contextID, targetBot.SteamID).ConfigureAwait(false);
 
 			return FormatBotResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
@@ -1504,7 +1504,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(Bot.BotConfig.LootableTypes)));
 			}
 
-			(bool success, string message) = await Bot.Actions.SendTradeOffer(wantedTypes: Bot.BotConfig.LootableTypes).ConfigureAwait(false);
+			(bool success, string message) = await Bot.Actions.SendTradeOfferAsync(filterFunction: item => Bot.BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
 
 			return FormatBotResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
@@ -1565,7 +1565,7 @@ namespace ArchiSteamFarm {
 				realAppIDs.Add(appID);
 			}
 
-			(bool success, string message) = await Bot.Actions.SendTradeOffer(wantedTypes: Bot.BotConfig.LootableTypes, wantedRealAppIDs: !exclude ? realAppIDs : null, unwantedRealAppIDs: exclude ? realAppIDs : null).ConfigureAwait(false);
+			(bool success, string message) = await Bot.Actions.SendTradeOfferAsync(filterFunction: item => Bot.BotConfig.LootableTypes.Contains(item.Type) && (exclude ^ realAppIDs.Contains(item.RealAppID))).ConfigureAwait(false);
 
 			return FormatBotResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
@@ -2692,7 +2692,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotSendingTradeToYourself);
 			}
 
-			(bool success, string message) = await Bot.Actions.SendTradeOffer(targetSteamID: targetBot.SteamID, wantedTypes: Bot.BotConfig.TransferableTypes).ConfigureAwait(false);
+			(bool success, string message) = await Bot.Actions.SendTradeOfferAsync(targetSteamID: targetBot.SteamID, filterFunction: item => Bot.BotConfig.TransferableTypes.Contains(item.Type)).ConfigureAwait(false);
 
 			return FormatBotResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
@@ -2745,7 +2745,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotSendingTradeToYourself);
 			}
 
-			(bool success, string message) = await Bot.Actions.SendTradeOffer(targetSteamID: targetBot.SteamID, wantedTypes: Bot.BotConfig.TransferableTypes, wantedRealAppIDs: !exclude ? realAppIDs : null, unwantedRealAppIDs: exclude ? realAppIDs : null).ConfigureAwait(false);
+			(bool success, string message) = await Bot.Actions.SendTradeOfferAsync(filterFunction: item => Bot.BotConfig.TransferableTypes.Contains(item.Type) && (exclude ^ realAppIDs.Contains(item.RealAppID))).ConfigureAwait(false);
 
 			return FormatBotResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}

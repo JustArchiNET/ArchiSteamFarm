@@ -233,8 +233,8 @@ namespace ArchiSteamFarm {
 			return (true, Strings.BotAutomaticIdlingNowResumed);
 		}
 
+		[Obsolete]
 		[PublicAPI]
-		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
 		public async Task<(bool Success, string Message)> SendTradeOffer(uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, ulong targetSteamID = 0, string tradeToken = null, IReadOnlyCollection<uint> wantedRealAppIDs = null, IReadOnlyCollection<uint> unwantedRealAppIDs = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null) {
 			if ((appID == 0) || (contextID == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
@@ -246,6 +246,18 @@ namespace ArchiSteamFarm {
 				Bot.ArchiLogger.LogNullError(nameof(wantedRealAppIDs) + " || " + nameof(unwantedRealAppIDs) + " || " + nameof(wantedTypes));
 
 				return (false, string.Format(Strings.ErrorObjectIsNull, nameof(wantedRealAppIDs) + " || " + nameof(unwantedRealAppIDs) + " || " + nameof(wantedTypes)));
+			}
+
+			return await SendTradeOfferAsync(appID, contextID, targetSteamID, tradeToken, item => (wantedRealAppIDs?.Contains(item.RealAppID) != false) && (unwantedRealAppIDs?.Contains(item.RealAppID) != true) && (wantedTypes?.Contains(item.Type) != false)).ConfigureAwait(false);
+		}
+
+		[PublicAPI]
+		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
+		public async Task<(bool Success, string Message)> SendTradeOfferAsync(uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, ulong targetSteamID = 0, string tradeToken = null, Func<Steam.Asset, bool> filterFunction = null) {
+			if ((appID == 0) || (contextID == 0)) {
+				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
+
+				return (false, string.Format(Strings.ErrorObjectIsNull, nameof(appID) + " || " + nameof(contextID)));
 			}
 
 			if (!Bot.IsConnectedAndLoggedOn) {
@@ -276,6 +288,7 @@ namespace ArchiSteamFarm {
 				TradingScheduled = true;
 			}
 
+			filterFunction ??= item => true;
 			await TradingSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
@@ -286,7 +299,7 @@ namespace ArchiSteamFarm {
 				HashSet<Steam.Asset> inventory;
 
 				try {
-					inventory = await Bot.ArchiWebHandler.GetInventoryAsync(Bot.SteamID, appID, contextID).Where(item => item.Tradable && (wantedRealAppIDs?.Contains(item.RealAppID) != false) && (unwantedRealAppIDs?.Contains(item.RealAppID) != true) && (wantedTypes?.Contains(item.Type) != false)).ToHashSetAsync().ConfigureAwait(false);
+					inventory = await Bot.ArchiWebHandler.GetInventoryAsync(Bot.SteamID, appID, contextID).Where(item => item.Tradable && filterFunction(item)).ToHashSetAsync().ConfigureAwait(false);
 				} catch (HttpRequestException e) {
 					return (false, string.Format(Strings.WarningFailedWithError, e.Message));
 				} catch (Exception e) {
