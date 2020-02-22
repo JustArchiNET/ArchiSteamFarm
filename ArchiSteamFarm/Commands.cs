@@ -2745,7 +2745,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotSendingTradeToYourself);
 			}
 
-			(bool success, string message) = await Bot.Actions.SendTradeOfferAsync(filterFunction: item => Bot.BotConfig.TransferableTypes.Contains(item.Type) && (exclude ^ realAppIDs.Contains(item.RealAppID))).ConfigureAwait(false);
+			(bool success, string message) = await Bot.Actions.SendTradeOfferAsync(targetSteamID: targetBot.SteamID, filterFunction: item => Bot.BotConfig.TransferableTypes.Contains(item.Type) && (exclude ^ realAppIDs.Contains(item.RealAppID))).ConfigureAwait(false);
 
 			return FormatBotResponse(success ? message : string.Format(Strings.WarningFailedWithError, message));
 		}
