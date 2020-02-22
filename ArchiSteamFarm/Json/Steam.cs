@@ -28,6 +28,7 @@ using ArchiSteamFarm.Localization;
 using HtmlAgilityPack;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SteamKit2;
 
 namespace ArchiSteamFarm.Json {
@@ -39,6 +40,9 @@ namespace ArchiSteamFarm.Json {
 
 			[PublicAPI]
 			public const ulong SteamCommunityContextID = 6;
+
+			[PublicAPI]
+			public Dictionary<string, JToken> AdditionalProperties { get; internal set; }
 
 			[PublicAPI]
 			public uint Amount { get; internal set; }
@@ -476,6 +480,9 @@ namespace ArchiSteamFarm.Json {
 			private InventoryResponse() { }
 
 			internal sealed class Description {
+				[JsonExtensionData]
+				internal Dictionary<string, JToken> AdditionalProperties;
+
 				[JsonProperty(PropertyName = "appid", Required = Required.Always)]
 				internal readonly uint AppID;
 
