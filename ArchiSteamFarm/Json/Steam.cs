@@ -42,7 +42,7 @@ namespace ArchiSteamFarm.Json {
 			public const ulong SteamCommunityContextID = 6;
 
 			[PublicAPI]
-			public Dictionary<string, JToken> AdditionalProperties { get; internal set; }
+			public ImmutableDictionary<string, JToken> AdditionalProperties { get; internal set; }
 
 			[PublicAPI]
 			public uint Amount { get; internal set; }
@@ -481,7 +481,7 @@ namespace ArchiSteamFarm.Json {
 
 			internal sealed class Description {
 				[JsonExtensionData]
-				internal Dictionary<string, JToken> AdditionalProperties;
+				internal readonly ImmutableDictionary<string, JToken> AdditionalProperties;
 
 				[JsonProperty(PropertyName = "appid", Required = Required.Always)]
 				internal readonly uint AppID;
