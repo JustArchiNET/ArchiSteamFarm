@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -553,10 +554,8 @@ namespace ArchiSteamFarm {
 				if (data != null) {
 					try {
 						request.Content = new FormUrlEncodedContent(data);
-					} catch (UriFormatException e) {
-						ArchiLogger.LogGenericException(e);
-
-						return null;
+					} catch (UriFormatException) {
+						request.Content = new StringContent(string.Join("&", data.Select(kv => WebUtility.UrlEncode(kv.Key) + "=" + WebUtility.UrlEncode(kv.Value))), null, "application/x-www-form-urlencoded");
 					}
 				}
 
