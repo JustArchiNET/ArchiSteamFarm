@@ -1464,7 +1464,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), (bool Marketable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> descriptions = new Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), (bool Marketable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)>();
+			Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), Steam.InventoryResponse.Description> descriptions = new Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), Steam.InventoryResponse.Description>();
 
 			foreach (KeyValue description in response["descriptions"].Children) {
 				uint appID = description["appid"].AsUnsignedInteger();
@@ -1491,11 +1491,13 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				bool marketable = description["marketable"].AsBoolean();
-
-				Steam.Asset.EType type = Steam.Asset.EType.Unknown;
-				Steam.Asset.ERarity rarity = Steam.Asset.ERarity.Unknown;
-				uint realAppID = 0;
+				Steam.InventoryResponse.Description parsedDescription = new Steam.InventoryResponse.Description {
+					AppID = appID,
+					ClassID = classID,
+					InstanceID = instanceID,
+					Marketable = description["marketable"].AsBoolean(),
+					Tradable = true // We're parsing active trade offers, we can assume as much
+				};
 
 				List<KeyValue> tags = description["tags"].Children;
 
@@ -1521,9 +1523,11 @@ namespace ArchiSteamFarm {
 
 						parsedTags.Add(new Steam.InventoryResponse.Description.Tag(identifier, value));
 					}
+
+					parsedDescription.Tags = parsedTags.ToImmutableHashSet();
 				}
 
-				descriptions[key] = (marketable, realAppID, type, rarity);
+				descriptions[key] = parsedDescription;
 			}
 
 			HashSet<Steam.TradeOffer> result = new HashSet<Steam.TradeOffer>();
@@ -2437,7 +2441,7 @@ namespace ArchiSteamFarm {
 			return uri.AbsolutePath.StartsWith("/login", StringComparison.Ordinal) || uri.Host.Equals("lostauth");
 		}
 
-		private static bool ParseItems(IReadOnlyDictionary<(uint AppID, ulong ClassID, ulong InstanceID), (bool Marketable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> descriptions, IReadOnlyCollection<KeyValue> input, ICollection<Steam.Asset> output) {
+		private static bool ParseItems(IReadOnlyDictionary<(uint AppID, ulong ClassID, ulong InstanceID), Steam.InventoryResponse.Description> descriptions, IReadOnlyCollection<KeyValue> input, ICollection<Steam.Asset> output) {
 			if ((descriptions == null) || (input == null) || (input.Count == 0) || (output == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(descriptions) + " || " + nameof(input) + " || " + nameof(output));
 
@@ -2482,18 +2486,20 @@ namespace ArchiSteamFarm {
 				}
 
 				bool marketable = true;
+				bool tradable = true;
 				uint realAppID = 0;
 				Steam.Asset.EType type = Steam.Asset.EType.Unknown;
 				Steam.Asset.ERarity rarity = Steam.Asset.ERarity.Unknown;
 
-				if (descriptions.TryGetValue(key, out (bool Marketable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) description)) {
+				if (descriptions.TryGetValue(key, out Steam.InventoryResponse.Description description)) {
 					marketable = description.Marketable;
+					tradable = description.Tradable;
 					realAppID = description.RealAppID;
 					type = description.Type;
 					rarity = description.Rarity;
 				}
 
-				Steam.Asset steamAsset = new Steam.Asset(appID, contextID, classID, instanceID, amount, marketable, realAppID, type, rarity);
+				Steam.Asset steamAsset = new Steam.Asset(appID, contextID, classID, instanceID, amount, marketable, tradable, realAppID, type, rarity);
 				output.Add(steamAsset);
 			}
 

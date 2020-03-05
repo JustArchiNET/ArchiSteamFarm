@@ -367,6 +367,6 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[NotNull]
-		private static Steam.Asset CreateItem(ulong classID, ulong instanceID = 0, uint amount = 1, bool marketable = true, uint realAppID = Steam.Asset.SteamAppID, Steam.Asset.EType type = Steam.Asset.EType.TradingCard, Steam.Asset.ERarity rarity = Steam.Asset.ERarity.Common) => new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, classID, instanceID, amount, marketable, realAppID, type, rarity);
+		private static Steam.Asset CreateItem(ulong classID, ulong instanceID = 0, uint amount = 1, bool marketable = true, bool tradable = true, uint realAppID = Steam.Asset.SteamAppID, Steam.Asset.EType type = Steam.Asset.EType.TradingCard, Steam.Asset.ERarity rarity = Steam.Asset.ERarity.Common) => new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, classID, instanceID, amount, marketable, tradable, realAppID, type, rarity);
 	}
 }

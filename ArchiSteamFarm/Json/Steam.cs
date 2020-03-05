@@ -198,7 +198,7 @@ namespace ArchiSteamFarm.Json {
 #pragma warning restore IDE0051
 
 			// Constructed from trades being received or plugins
-			public Asset(uint appID, ulong contextID, ulong classID, ulong instanceID, uint amount, bool marketable = true, uint realAppID = 0, EType type = EType.Unknown, ERarity rarity = ERarity.Unknown) {
+			public Asset(uint appID, ulong contextID, ulong classID, ulong instanceID, uint amount, bool marketable = true, bool tradable = true, uint realAppID = 0, EType type = EType.Unknown, ERarity rarity = ERarity.Unknown) {
 				if ((appID == 0) || (contextID == 0) || (classID == 0) || (amount == 0)) {
 					throw new ArgumentNullException(nameof(appID) + " || " + nameof(contextID) + " || " + nameof(classID) + " || " + nameof(amount));
 				}
@@ -209,6 +209,7 @@ namespace ArchiSteamFarm.Json {
 				InstanceID = instanceID;
 				Amount = amount;
 				Marketable = marketable;
+				Tradable = tradable;
 				RealAppID = realAppID;
 				Type = type;
 				Rarity = rarity;
@@ -485,12 +486,6 @@ namespace ArchiSteamFarm.Json {
 				internal readonly ImmutableDictionary<string, JToken> AdditionalProperties;
 #pragma warning restore 649
 
-				[JsonProperty(PropertyName = "appid", Required = Required.Always)]
-				internal readonly uint AppID;
-
-				[JsonProperty(PropertyName = "tags", Required = Required.DisallowNull)]
-				internal readonly ImmutableHashSet<Tag> Tags;
-
 				internal Asset.ERarity Rarity {
 					get {
 						foreach (Tag tag in Tags) {
@@ -606,10 +601,17 @@ namespace ArchiSteamFarm.Json {
 					}
 				}
 
-				internal ulong ClassID { get; private set; }
-				internal ulong InstanceID { get; private set; }
-				internal bool Marketable { get; private set; }
-				internal bool Tradable { get; private set; }
+				[JsonProperty(PropertyName = "appid", Required = Required.Always)]
+				internal uint AppID { get; set; }
+
+				internal ulong ClassID { get; set; }
+				internal ulong InstanceID { get; set; }
+				internal bool Marketable { get; set; }
+
+				[JsonProperty(PropertyName = "tags", Required = Required.DisallowNull)]
+				internal ImmutableHashSet<Tag> Tags { get; set; }
+
+				internal bool Tradable { get; set; }
 
 #pragma warning disable IDE0051
 				[JsonProperty(PropertyName = "classid", Required = Required.Always)]
@@ -666,7 +668,7 @@ namespace ArchiSteamFarm.Json {
 #pragma warning restore IDE0051
 
 				[JsonConstructor]
-				private Description() { }
+				internal Description() { }
 
 				internal sealed class Tag {
 					[JsonProperty(PropertyName = "category", Required = Required.Always)]
