@@ -482,7 +482,7 @@ namespace ArchiSteamFarm.Json {
 			internal sealed class Description {
 				[JsonExtensionData]
 #pragma warning disable 649
-				internal ImmutableDictionary<string, JToken> AdditionalProperties;
+				internal readonly ImmutableDictionary<string, JToken> AdditionalProperties;
 #pragma warning restore 649
 
 				[JsonProperty(PropertyName = "appid", Required = Required.Always)]
