@@ -481,7 +481,7 @@ namespace ArchiSteamFarm.Json {
 
 			internal sealed class Description {
 				[JsonExtensionData]
-				internal readonly ImmutableDictionary<string, JToken> AdditionalProperties;
+				internal ImmutableDictionary<string, JToken> AdditionalProperties;
 
 				[JsonProperty(PropertyName = "appid", Required = Required.Always)]
 				internal readonly uint AppID;
@@ -492,24 +492,16 @@ namespace ArchiSteamFarm.Json {
 
 				internal Asset.ERarity Rarity {
 					get {
-						Asset.ERarity rarity = Asset.ERarity.Unknown;
-
 						foreach (Tag tag in Tags) {
 							switch (tag.Identifier) {
 								case "droprate":
 									switch (tag.Value) {
 										case "droprate_0":
-											rarity = Asset.ERarity.Common;
-
-											break;
+											return Asset.ERarity.Common;
 										case "droprate_1":
-											rarity = Asset.ERarity.Uncommon;
-
-											break;
+											return Asset.ERarity.Uncommon;
 										case "droprate_2":
-											rarity = Asset.ERarity.Rare;
-
-											break;
+											return Asset.ERarity.Rare;
 										default:
 											ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
 
@@ -520,14 +512,12 @@ namespace ArchiSteamFarm.Json {
 							}
 						}
 
-						return rarity;
+						return Asset.ERarity.Unknown;
 					}
 				}
 
 				internal uint RealAppID {
 					get {
-						uint realAppID = 0;
-
 						foreach (Tag tag in Tags) {
 							switch (tag.Identifier) {
 								case "Game":
@@ -545,18 +535,16 @@ namespace ArchiSteamFarm.Json {
 										break;
 									}
 
-									realAppID = appID;
-
-									break;
+									return appID;
 							}
 						}
 
-						return realAppID;
+						return 0;
 					}
 				}
 
 				[JsonProperty(PropertyName = "tags", Required = Required.DisallowNull)]
-				internal ImmutableHashSet<Tag> Tags;
+				internal readonly ImmutableHashSet<Tag> Tags;
 
 				internal bool Tradable { get; private set; }
 
@@ -569,13 +557,9 @@ namespace ArchiSteamFarm.Json {
 								case "cardborder":
 									switch (tag.Value) {
 										case "cardborder_0":
-											type = Asset.EType.TradingCard;
-
-											break;
+											return Asset.EType.TradingCard;
 										case "cardborder_1":
-											type = Asset.EType.FoilTradingCard;
-
-											break;
+											return Asset.EType.FoilTradingCard;
 										default:
 											ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
 
@@ -593,45 +577,25 @@ namespace ArchiSteamFarm.Json {
 
 											break;
 										case "item_class_3":
-											type = Asset.EType.ProfileBackground;
-
-											break;
+											return Asset.EType.ProfileBackground;
 										case "item_class_4":
-											type = Asset.EType.Emoticon;
-
-											break;
+											return Asset.EType.Emoticon;
 										case "item_class_5":
-											type = Asset.EType.BoosterPack;
-
-											break;
+											return Asset.EType.BoosterPack;
 										case "item_class_6":
-											type = Asset.EType.Consumable;
-
-											break;
+											return Asset.EType.Consumable;
 										case "item_class_7":
-											type = Asset.EType.SteamGems;
-
-											break;
+											return Asset.EType.SteamGems;
 										case "item_class_8":
-											type = Asset.EType.ProfileModifier;
-
-											break;
+											return Asset.EType.ProfileModifier;
 										case "item_class_10":
-											type = Asset.EType.SaleItem;
-
-											break;
+											return Asset.EType.SaleItem;
 										case "item_class_11":
-											type = Asset.EType.Sticker;
-
-											break;
+											return Asset.EType.Sticker;
 										case "item_class_12":
-											type = Asset.EType.ChatEffect;
-
-											break;
+											return Asset.EType.ChatEffect;
 										case "item_class_13":
-											type = Asset.EType.MiniProfileBackground;
-
-											break;
+											return Asset.EType.MiniProfileBackground;
 										default:
 											ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
 
