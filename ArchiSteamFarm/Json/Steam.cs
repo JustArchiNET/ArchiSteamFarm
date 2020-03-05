@@ -480,8 +480,8 @@ namespace ArchiSteamFarm.Json {
 			private InventoryResponse() { }
 
 			internal sealed class Description {
-				[JsonExtensionData]
 #pragma warning disable 649
+				[JsonExtensionData]
 				internal readonly ImmutableDictionary<string, JToken> AdditionalProperties;
 #pragma warning restore 649
 
