@@ -1716,13 +1716,17 @@ namespace ArchiSteamFarm {
 			const string request = "/gifts";
 			HtmlDocument response = await UrlGetToHtmlDocumentWithSession(SteamStoreURL, request).ConfigureAwait(false);
 
-			HtmlNodeCollection htmlNodes = response?.DocumentNode.SelectNodes("//div[@class='pending_gift']/div[starts-with(@id, 'pending_gift_')][count(div[@class='pending_giftcard_leftcol']) > 0]/@id");
-
-			if (htmlNodes == null) {
+			if (response == null) {
 				return null;
 			}
 
-			HashSet<ulong> results = new HashSet<ulong>();
+			HtmlNodeCollection htmlNodes = response.DocumentNode.SelectNodes("//div[@class='pending_gift']/div[starts-with(@id, 'pending_gift_')][count(div[@class='pending_giftcard_leftcol']) > 0]/@id");
+
+			if (htmlNodes == null) {
+				return new HashSet<ulong>(0);
+			}
+
+			HashSet<ulong> results = new HashSet<ulong>(htmlNodes.Count);
 
 			foreach (string giftCardIDText in htmlNodes.Select(node => node.GetAttributeValue("id", null))) {
 				if (string.IsNullOrEmpty(giftCardIDText)) {
@@ -1766,12 +1770,12 @@ namespace ArchiSteamFarm {
 
 			HtmlNodeCollection htmlNodes = htmlDocument.DocumentNode.SelectNodes("(//table[@class='accountTable'])[2]//a/@data-miniprofile");
 
-			HashSet<ulong> result = new HashSet<ulong>();
-
 			if (htmlNodes == null) {
 				// OK, no authorized steamIDs
-				return result;
+				return new HashSet<ulong>(0);
 			}
+
+			HashSet<ulong> result = new HashSet<ulong>(htmlNodes.Count);
 
 			foreach (string miniProfile in htmlNodes.Select(htmlNode => htmlNode.GetAttributeValue("data-miniprofile", null))) {
 				if (string.IsNullOrEmpty(miniProfile)) {
