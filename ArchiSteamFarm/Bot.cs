@@ -816,7 +816,7 @@ namespace ArchiSteamFarm {
 						continue;
 					}
 
-					value.AppIDs = new HashSet<uint>();
+					value.AppIDs = new HashSet<uint>(appIDs.Children.Count);
 
 					foreach (string appIDText in appIDs.Children.Select(app => app.Value)) {
 						if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {

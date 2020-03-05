@@ -386,7 +386,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			List<Task> backgroundTasks = null;
+			HashSet<Task> backgroundTasks = null;
 
 			foreach (HtmlNode htmlNode in htmlNodes) {
 				HtmlNode statsNode = htmlNode.SelectSingleNode(".//div[@class='badge_title_stats_content']");
@@ -671,7 +671,7 @@ namespace ArchiSteamFarm {
 							break;
 						default:
 							if (backgroundTasks == null) {
-								backgroundTasks = new List<Task>();
+								backgroundTasks = new HashSet<Task>();
 							}
 
 							backgroundTasks.Add(task);
@@ -1024,7 +1024,7 @@ namespace ArchiSteamFarm {
 
 					break;
 				default:
-					List<Task> tasks = new List<Task>(maxPages) { mainTask };
+					HashSet<Task> tasks = new HashSet<Task>(maxPages) { mainTask };
 
 					if (maxPages > 1) {
 						Bot.ArchiLogger.LogGenericInfo(Strings.CheckingOtherBadgePages);
