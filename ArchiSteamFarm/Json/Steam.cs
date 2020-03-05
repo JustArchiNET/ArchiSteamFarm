@@ -609,7 +609,7 @@ namespace ArchiSteamFarm.Json {
 				internal bool Marketable { get; set; }
 
 				[JsonProperty(PropertyName = "tags", Required = Required.DisallowNull)]
-				internal ImmutableHashSet<Tag> Tags { get; set; }
+				internal ImmutableHashSet<Tag> Tags { get; set; } = ImmutableHashSet<Tag>.Empty;
 
 				internal bool Tradable { get; set; }
 
