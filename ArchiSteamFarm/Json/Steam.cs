@@ -77,7 +77,7 @@ namespace ArchiSteamFarm.Json {
 			[PublicAPI]
 			public EType Type { get; internal set; }
 
-			#pragma warning disable IDE0051
+#pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "amount", Required = Required.Always)]
 			[JetBrains.Annotations.NotNull]
 			private string AmountText {
@@ -99,9 +99,9 @@ namespace ArchiSteamFarm.Json {
 					Amount = amount;
 				}
 			}
-			#pragma warning restore IDE0051
+#pragma warning restore IDE0051
 
-			#pragma warning disable IDE0052
+#pragma warning disable IDE0052
 			[JsonProperty(PropertyName = "assetid", Required = Required.DisallowNull)]
 			[JetBrains.Annotations.NotNull]
 			private string AssetIDText {
@@ -123,9 +123,9 @@ namespace ArchiSteamFarm.Json {
 					AssetID = assetID;
 				}
 			}
-			#pragma warning restore IDE0052
+#pragma warning restore IDE0052
 
-			#pragma warning disable IDE0051
+#pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "classid", Required = Required.DisallowNull)]
 			[JetBrains.Annotations.NotNull]
 			private string ClassIDText {
@@ -143,9 +143,9 @@ namespace ArchiSteamFarm.Json {
 					ClassID = classID;
 				}
 			}
-			#pragma warning restore IDE0051
+#pragma warning restore IDE0051
 
-			#pragma warning disable IDE0051
+#pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "contextid", Required = Required.DisallowNull)]
 			[JetBrains.Annotations.NotNull]
 			private string ContextIDText {
@@ -167,17 +167,17 @@ namespace ArchiSteamFarm.Json {
 					ContextID = contextID;
 				}
 			}
-			#pragma warning restore IDE0051
+#pragma warning restore IDE0051
 
-			#pragma warning disable IDE0051
+#pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "id", Required = Required.DisallowNull)]
 			[JetBrains.Annotations.NotNull]
 			private string IDText {
 				set => AssetIDText = value;
 			}
-			#pragma warning restore IDE0051
+#pragma warning restore IDE0051
 
-			#pragma warning disable IDE0051
+#pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "instanceid", Required = Required.DisallowNull)]
 			[JetBrains.Annotations.NotNull]
 			private string InstanceIDText {
@@ -195,7 +195,7 @@ namespace ArchiSteamFarm.Json {
 					InstanceID = instanceID;
 				}
 			}
-			#pragma warning restore IDE0051
+#pragma warning restore IDE0051
 
 			// Constructed from trades being received or plugins
 			public Asset(uint appID, ulong contextID, ulong classID, ulong instanceID, uint amount, bool marketable = true, uint realAppID = 0, EType type = EType.Unknown, ERarity rarity = ERarity.Unknown) {
@@ -259,7 +259,7 @@ namespace ArchiSteamFarm.Json {
 			internal ulong TradeOfferID { get; private set; }
 			internal EType Type { get; private set; }
 
-			#pragma warning disable IDE0051
+#pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "html", Required = Required.DisallowNull)]
 			private string HTML {
 				set {
@@ -329,7 +329,7 @@ namespace ArchiSteamFarm.Json {
 					}
 				}
 			}
-			#pragma warning restore IDE0051
+#pragma warning restore IDE0051
 
 			[JsonConstructor]
 			private ConfirmationDetails() { }
@@ -362,7 +362,7 @@ namespace ArchiSteamFarm.Json {
 			[PublicAPI]
 			public bool Success { get; private set; }
 
-			#pragma warning disable IDE0051
+#pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
 			private byte SuccessNumber {
 				set {
@@ -382,7 +382,7 @@ namespace ArchiSteamFarm.Json {
 					}
 				}
 			}
-			#pragma warning restore IDE0051
+#pragma warning restore IDE0051
 
 			[JsonConstructor]
 			protected NumberResponse() { }
@@ -448,7 +448,7 @@ namespace ArchiSteamFarm.Json {
 			internal ulong LastAssetID { get; private set; }
 			internal bool MoreItems { get; private set; }
 
-			#pragma warning disable IDE0051
+#pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "last_assetid", Required = Required.DisallowNull)]
 			private string LastAssetIDText {
 				set {
@@ -467,24 +467,24 @@ namespace ArchiSteamFarm.Json {
 					LastAssetID = lastAssetID;
 				}
 			}
-			#pragma warning restore IDE0051
+#pragma warning restore IDE0051
 
-			#pragma warning disable IDE0051
+#pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "more_items", Required = Required.DisallowNull)]
 			private byte MoreItemsNumber {
 				set => MoreItems = value > 0;
 			}
-			#pragma warning restore IDE0051
+#pragma warning restore IDE0051
 
 			[JsonConstructor]
 			private InventoryResponse() { }
 
 			internal sealed class Description {
+				[JsonExtensionData]
+				internal readonly ImmutableDictionary<string, JToken> AdditionalProperties;
+
 				[JsonProperty(PropertyName = "appid", Required = Required.Always)]
 				internal readonly uint AppID;
-
-				[JsonExtensionData]
-				internal ImmutableDictionary<string, JToken> AdditionalProperties;
 
 				internal ulong ClassID { get; private set; }
 				internal ulong InstanceID { get; private set; }
@@ -517,7 +517,6 @@ namespace ArchiSteamFarm.Json {
 									}
 
 									break;
-
 							}
 						}
 
