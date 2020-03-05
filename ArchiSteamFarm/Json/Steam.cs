@@ -72,6 +72,9 @@ namespace ArchiSteamFarm.Json {
 			public uint RealAppID { get; internal set; }
 
 			[PublicAPI]
+			public ImmutableHashSet<Tag> Tags { get; internal set; } = ImmutableHashSet<Tag>.Empty;
+
+			[PublicAPI]
 			public bool Tradable { get; internal set; }
 
 			[PublicAPI]
@@ -198,7 +201,7 @@ namespace ArchiSteamFarm.Json {
 #pragma warning restore IDE0051
 
 			// Constructed from trades being received or plugins
-			public Asset(uint appID, ulong contextID, ulong classID, uint amount, ulong instanceID = 0, ulong assetID = 0, bool marketable = true, bool tradable = true, uint realAppID = 0, EType type = EType.Unknown, ERarity rarity = ERarity.Unknown) {
+			public Asset(uint appID, ulong contextID, ulong classID, uint amount, ulong instanceID = 0, ulong assetID = 0, bool marketable = true, bool tradable = true, ImmutableHashSet<Tag> tags = null, uint realAppID = 0, EType type = EType.Unknown, ERarity rarity = ERarity.Unknown) {
 				if ((appID == 0) || (contextID == 0) || (classID == 0) || (amount == 0)) {
 					throw new ArgumentNullException(nameof(appID) + " || " + nameof(contextID) + " || " + nameof(classID) + " || " + nameof(amount));
 				}
@@ -214,6 +217,10 @@ namespace ArchiSteamFarm.Json {
 				RealAppID = realAppID;
 				Type = type;
 				Rarity = rarity;
+
+				if ((tags != null) && (tags.Count > 0)) {
+					Tags = tags;
+				}
 			}
 
 			[JsonConstructor]
@@ -221,6 +228,28 @@ namespace ArchiSteamFarm.Json {
 
 			[JetBrains.Annotations.NotNull]
 			internal Asset CreateShallowCopy() => (Asset) MemberwiseClone();
+
+			public sealed class Tag {
+				[JsonProperty(PropertyName = "category", Required = Required.Always)]
+				[PublicAPI]
+				public readonly string Identifier;
+
+				[JsonProperty(PropertyName = "internal_name", Required = Required.Always)]
+				[PublicAPI]
+				public readonly string Value;
+
+				internal Tag([JetBrains.Annotations.NotNull] string identifier, [JetBrains.Annotations.NotNull] string value) {
+					if (string.IsNullOrEmpty(identifier) || string.IsNullOrEmpty(value)) {
+						throw new ArgumentNullException(nameof(identifier) + " || " + nameof(value));
+					}
+
+					Identifier = identifier;
+					Value = value;
+				}
+
+				[JsonConstructor]
+				private Tag() { }
+			}
 
 			public enum ERarity : byte {
 				Unknown,
@@ -489,7 +518,7 @@ namespace ArchiSteamFarm.Json {
 
 				internal Asset.ERarity Rarity {
 					get {
-						foreach (Tag tag in Tags) {
+						foreach (Asset.Tag tag in Tags) {
 							switch (tag.Identifier) {
 								case "droprate":
 									switch (tag.Value) {
@@ -515,7 +544,7 @@ namespace ArchiSteamFarm.Json {
 
 				internal uint RealAppID {
 					get {
-						foreach (Tag tag in Tags) {
+						foreach (Asset.Tag tag in Tags) {
 							switch (tag.Identifier) {
 								case "Game":
 									if ((tag.Value.Length <= 4) || !tag.Value.StartsWith("app_", StringComparison.Ordinal)) {
@@ -544,7 +573,7 @@ namespace ArchiSteamFarm.Json {
 					get {
 						Asset.EType type = Asset.EType.Unknown;
 
-						foreach (Tag tag in Tags) {
+						foreach (Asset.Tag tag in Tags) {
 							switch (tag.Identifier) {
 								case "cardborder":
 									switch (tag.Value) {
@@ -610,7 +639,7 @@ namespace ArchiSteamFarm.Json {
 				internal bool Marketable { get; set; }
 
 				[JsonProperty(PropertyName = "tags", Required = Required.DisallowNull)]
-				internal ImmutableHashSet<Tag> Tags { get; set; } = ImmutableHashSet<Tag>.Empty;
+				internal ImmutableHashSet<Asset.Tag> Tags { get; set; } = ImmutableHashSet<Asset.Tag>.Empty;
 
 				internal bool Tradable { get; set; }
 
@@ -670,26 +699,6 @@ namespace ArchiSteamFarm.Json {
 
 				[JsonConstructor]
 				internal Description() { }
-
-				internal sealed class Tag {
-					[JsonProperty(PropertyName = "category", Required = Required.Always)]
-					internal readonly string Identifier;
-
-					[JsonProperty(PropertyName = "internal_name", Required = Required.Always)]
-					internal readonly string Value;
-
-					internal Tag([JetBrains.Annotations.NotNull] string identifier, [JetBrains.Annotations.NotNull] string value) {
-						if (string.IsNullOrEmpty(identifier) || string.IsNullOrEmpty(value)) {
-							throw new ArgumentNullException(nameof(identifier) + " || " + nameof(value));
-						}
-
-						Identifier = identifier;
-						Value = value;
-					}
-
-					[JsonConstructor]
-					private Tag() { }
-				}
 			}
 		}
 

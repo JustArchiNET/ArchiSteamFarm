@@ -226,6 +226,7 @@ namespace ArchiSteamFarm {
 
 						asset.Marketable = description.Marketable;
 						asset.Tradable = description.Tradable;
+						asset.Tags = description.Tags;
 						asset.RealAppID = description.RealAppID;
 						asset.Type = description.Type;
 						asset.Rarity = description.Rarity;
@@ -1502,7 +1503,7 @@ namespace ArchiSteamFarm {
 				List<KeyValue> tags = description["tags"].Children;
 
 				if (tags.Count > 0) {
-					HashSet<Steam.InventoryResponse.Description.Tag> parsedTags = new HashSet<Steam.InventoryResponse.Description.Tag>();
+					HashSet<Steam.Asset.Tag> parsedTags = new HashSet<Steam.Asset.Tag>();
 
 					foreach (KeyValue tag in tags) {
 						string identifier = tag["category"].AsString();
@@ -1521,7 +1522,7 @@ namespace ArchiSteamFarm {
 							return null;
 						}
 
-						parsedTags.Add(new Steam.InventoryResponse.Description.Tag(identifier, value));
+						parsedTags.Add(new Steam.Asset.Tag(identifier, value));
 					}
 
 					parsedDescription.Tags = parsedTags.ToImmutableHashSet();
@@ -2489,6 +2490,7 @@ namespace ArchiSteamFarm {
 
 				bool marketable = true;
 				bool tradable = true;
+				ImmutableHashSet<Steam.Asset.Tag> tags = null;
 				uint realAppID = 0;
 				Steam.Asset.EType type = Steam.Asset.EType.Unknown;
 				Steam.Asset.ERarity rarity = Steam.Asset.ERarity.Unknown;
@@ -2496,12 +2498,13 @@ namespace ArchiSteamFarm {
 				if (descriptions.TryGetValue(key, out Steam.InventoryResponse.Description description)) {
 					marketable = description.Marketable;
 					tradable = description.Tradable;
+					tags = description.Tags;
 					realAppID = description.RealAppID;
 					type = description.Type;
 					rarity = description.Rarity;
 				}
 
-				Steam.Asset steamAsset = new Steam.Asset(appID, contextID, classID, amount, instanceID, assetID, marketable, tradable, realAppID, type, rarity);
+				Steam.Asset steamAsset = new Steam.Asset(appID, contextID, classID, amount, instanceID, assetID, marketable, tradable, tags, realAppID, type, rarity);
 				output.Add(steamAsset);
 			}
 
