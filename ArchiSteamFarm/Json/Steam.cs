@@ -488,9 +488,8 @@ namespace ArchiSteamFarm.Json {
 				[JsonProperty(PropertyName = "appid", Required = Required.Always)]
 				internal readonly uint AppID;
 
-				internal ulong ClassID { get; private set; }
-				internal ulong InstanceID { get; private set; }
-				internal bool Marketable { get; private set; }
+				[JsonProperty(PropertyName = "tags", Required = Required.DisallowNull)]
+				internal readonly ImmutableHashSet<Tag> Tags;
 
 				internal Asset.ERarity Rarity {
 					get {
@@ -544,11 +543,6 @@ namespace ArchiSteamFarm.Json {
 						return 0;
 					}
 				}
-
-				[JsonProperty(PropertyName = "tags", Required = Required.DisallowNull)]
-				internal readonly ImmutableHashSet<Tag> Tags;
-
-				internal bool Tradable { get; private set; }
 
 				internal Asset.EType Type {
 					get {
@@ -611,6 +605,11 @@ namespace ArchiSteamFarm.Json {
 						return type;
 					}
 				}
+
+				internal ulong ClassID { get; private set; }
+				internal ulong InstanceID { get; private set; }
+				internal bool Marketable { get; private set; }
+				internal bool Tradable { get; private set; }
 
 #pragma warning disable IDE0051
 				[JsonProperty(PropertyName = "classid", Required = Required.Always)]

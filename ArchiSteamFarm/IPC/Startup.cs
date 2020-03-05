@@ -44,8 +44,10 @@ namespace ArchiSteamFarm.IPC {
 		public Startup([NotNull] IConfiguration configuration) => Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 
 #if NETFRAMEWORK
+		[UsedImplicitly]
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
 #else
+		[UsedImplicitly]
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
 #endif
 			if ((app == null) || (env == null)) {

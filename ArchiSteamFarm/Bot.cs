@@ -454,7 +454,7 @@ namespace ArchiSteamFarm {
 
 			return permission switch {
 				BotConfig.EPermission.FamilySharing when SteamFamilySharingIDs.Contains(steamID) => true,
-				_ => BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EPermission realPermission) && (realPermission >= permission),
+				_ => BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EPermission realPermission) && (realPermission >= permission)
 			};
 		}
 

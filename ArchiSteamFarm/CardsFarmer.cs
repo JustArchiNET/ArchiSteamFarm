@@ -23,6 +23,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -97,7 +98,7 @@ namespace ArchiSteamFarm {
 		private bool PermanentlyPaused;
 		private bool ShouldResumeFarming = true;
 
-		internal CardsFarmer([NotNull] Bot bot) {
+		internal CardsFarmer([JetBrains.Annotations.NotNull] Bot bot) {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 			if (ASF.GlobalConfig.IdleFarmingPeriod > 0) {
@@ -370,6 +371,7 @@ namespace ArchiSteamFarm {
 			await StartFarming().ConfigureAwait(false);
 		}
 
+		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
 		private async Task CheckPage(HtmlDocument htmlDocument, ISet<uint> parsedAppIDs) {
 			if ((htmlDocument == null) || (parsedAppIDs == null)) {
 				Bot.ArchiLogger.LogNullError(nameof(htmlDocument) + " || " + nameof(parsedAppIDs));
@@ -1240,7 +1242,7 @@ namespace ArchiSteamFarm {
 
 			internal uint PlayableAppID { get; set; }
 
-			internal Game(uint appID, [NotNull] string gameName, float hoursPlayed, ushort cardsRemaining, byte badgeLevel) {
+			internal Game(uint appID, [JetBrains.Annotations.NotNull] string gameName, float hoursPlayed, ushort cardsRemaining, byte badgeLevel) {
 				if ((appID == 0) || string.IsNullOrEmpty(gameName) || (hoursPlayed < 0) || (cardsRemaining == 0)) {
 					throw new ArgumentOutOfRangeException(nameof(appID) + " || " + nameof(gameName) + " || " + nameof(hoursPlayed) + " || " + nameof(cardsRemaining));
 				}

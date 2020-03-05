@@ -233,24 +233,6 @@ namespace ArchiSteamFarm {
 			return (true, Strings.BotAutomaticIdlingNowResumed);
 		}
 
-		[Obsolete]
-		[PublicAPI]
-		public async Task<(bool Success, string Message)> SendTradeOffer(uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, ulong targetSteamID = 0, string tradeToken = null, IReadOnlyCollection<uint> wantedRealAppIDs = null, IReadOnlyCollection<uint> unwantedRealAppIDs = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null) {
-			if ((appID == 0) || (contextID == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
-
-				return (false, string.Format(Strings.ErrorObjectIsNull, nameof(appID) + " || " + nameof(contextID)));
-			}
-
-			if ((wantedRealAppIDs?.Count == 0) || (unwantedRealAppIDs?.Count == 0) || (wantedTypes?.Count == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(wantedRealAppIDs) + " || " + nameof(unwantedRealAppIDs) + " || " + nameof(wantedTypes));
-
-				return (false, string.Format(Strings.ErrorObjectIsNull, nameof(wantedRealAppIDs) + " || " + nameof(unwantedRealAppIDs) + " || " + nameof(wantedTypes)));
-			}
-
-			return await SendInventory(appID, contextID, targetSteamID, tradeToken, item => (wantedRealAppIDs?.Contains(item.RealAppID) != false) && (unwantedRealAppIDs?.Contains(item.RealAppID) != true) && (wantedTypes?.Contains(item.Type) != false)).ConfigureAwait(false);
-		}
-
 		[PublicAPI]
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
 		public async Task<(bool Success, string Message)> SendInventory(uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, ulong targetSteamID = 0, string tradeToken = null, Func<Steam.Asset, bool> filterFunction = null) {
@@ -342,6 +324,24 @@ namespace ArchiSteamFarm {
 			}
 
 			return (true, Strings.BotLootingSuccess);
+		}
+
+		[Obsolete]
+		[PublicAPI]
+		public async Task<(bool Success, string Message)> SendTradeOffer(uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, ulong targetSteamID = 0, string tradeToken = null, IReadOnlyCollection<uint> wantedRealAppIDs = null, IReadOnlyCollection<uint> unwantedRealAppIDs = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null) {
+			if ((appID == 0) || (contextID == 0)) {
+				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
+
+				return (false, string.Format(Strings.ErrorObjectIsNull, nameof(appID) + " || " + nameof(contextID)));
+			}
+
+			if ((wantedRealAppIDs?.Count == 0) || (unwantedRealAppIDs?.Count == 0) || (wantedTypes?.Count == 0)) {
+				Bot.ArchiLogger.LogNullError(nameof(wantedRealAppIDs) + " || " + nameof(unwantedRealAppIDs) + " || " + nameof(wantedTypes));
+
+				return (false, string.Format(Strings.ErrorObjectIsNull, nameof(wantedRealAppIDs) + " || " + nameof(unwantedRealAppIDs) + " || " + nameof(wantedTypes)));
+			}
+
+			return await SendInventory(appID, contextID, targetSteamID, tradeToken, item => (wantedRealAppIDs?.Contains(item.RealAppID) != false) && (unwantedRealAppIDs?.Contains(item.RealAppID) != true) && (wantedTypes?.Contains(item.Type) != false)).ConfigureAwait(false);
 		}
 
 		[PublicAPI]
