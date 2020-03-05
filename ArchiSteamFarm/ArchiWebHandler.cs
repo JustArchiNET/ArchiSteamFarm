@@ -2485,6 +2485,8 @@ namespace ArchiSteamFarm {
 					return false;
 				}
 
+				ulong assetID = item["assetid"].AsUnsignedLong();
+
 				bool marketable = true;
 				bool tradable = true;
 				uint realAppID = 0;
@@ -2499,7 +2501,7 @@ namespace ArchiSteamFarm {
 					rarity = description.Rarity;
 				}
 
-				Steam.Asset steamAsset = new Steam.Asset(appID, contextID, classID, instanceID, amount, marketable, tradable, realAppID, type, rarity);
+				Steam.Asset steamAsset = new Steam.Asset(appID, contextID, classID, amount, instanceID, assetID, marketable, tradable, realAppID, type, rarity);
 				output.Add(steamAsset);
 			}
 
