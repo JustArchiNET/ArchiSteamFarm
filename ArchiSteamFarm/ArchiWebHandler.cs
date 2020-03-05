@@ -1503,7 +1503,7 @@ namespace ArchiSteamFarm {
 				List<KeyValue> tags = description["tags"].Children;
 
 				if (tags.Count > 0) {
-					HashSet<Steam.Asset.Tag> parsedTags = new HashSet<Steam.Asset.Tag>();
+					HashSet<Steam.Asset.Tag> parsedTags = new HashSet<Steam.Asset.Tag>(tags.Count);
 
 					foreach (KeyValue tag in tags) {
 						string identifier = tag["category"].AsString();
