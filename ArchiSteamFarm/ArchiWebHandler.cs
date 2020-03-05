@@ -203,7 +203,7 @@ namespace ArchiSteamFarm {
 						throw new NotSupportedException(string.Format(Strings.ErrorObjectIsNull, nameof(response.Assets) + " || " + nameof(response.Descriptions)));
 					}
 
-					Dictionary<(ulong ClassID, ulong InstanceID), (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> descriptions = new Dictionary<(ulong ClassID, ulong InstanceID), (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)>();
+					Dictionary<(ulong ClassID, ulong InstanceID), Steam.InventoryResponse.Description> descriptions = new Dictionary<(ulong ClassID, ulong InstanceID), Steam.InventoryResponse.Description>();
 
 					foreach (Steam.InventoryResponse.Description description in response.Descriptions.Where(description => description != null)) {
 						if (description.ClassID == 0) {
@@ -216,11 +216,11 @@ namespace ArchiSteamFarm {
 							continue;
 						}
 
-						descriptions[key] = (description.Marketable, description.Tradable, description.RealAppID, description.Type, description.Rarity);
+						descriptions[key] = description;
 					}
 
 					foreach (Steam.Asset asset in response.Assets.Where(asset => asset != null)) {
-						if (!descriptions.TryGetValue((asset.ClassID, asset.InstanceID), out (bool Marketable, bool Tradable, uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) description) || assetIDs.Contains(asset.AssetID)) {
+						if (!descriptions.TryGetValue((asset.ClassID, asset.InstanceID), out Steam.InventoryResponse.Description description) || assetIDs.Contains(asset.AssetID)) {
 							continue;
 						}
 
@@ -229,6 +229,8 @@ namespace ArchiSteamFarm {
 						asset.RealAppID = description.RealAppID;
 						asset.Type = description.Type;
 						asset.Rarity = description.Rarity;
+						asset.AdditionalProperties = description.AdditionalProperties;
+
 						assetIDs.Add(asset.AssetID);
 
 						yield return asset;
@@ -1519,8 +1521,6 @@ namespace ArchiSteamFarm {
 
 						parsedTags.Add(new Steam.InventoryResponse.Description.Tag(identifier, value));
 					}
-
-					(type, rarity, realAppID) = Steam.InventoryResponse.Description.InterpretTags(parsedTags);
 				}
 
 				descriptions[key] = (marketable, realAppID, type, rarity);
