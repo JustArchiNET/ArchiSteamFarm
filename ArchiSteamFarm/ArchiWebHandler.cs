@@ -1521,8 +1521,6 @@ namespace ArchiSteamFarm {
 
 						parsedTags.Add(new Steam.InventoryResponse.Description.Tag(identifier, value));
 					}
-
-					(type, rarity, realAppID) = Steam.InventoryResponse.Description.InterpretTags(parsedTags);
 				}
 
 				descriptions[key] = (marketable, realAppID, type, rarity);

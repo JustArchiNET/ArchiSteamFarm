@@ -489,28 +489,163 @@ namespace ArchiSteamFarm.Json {
 				internal ulong ClassID { get; private set; }
 				internal ulong InstanceID { get; private set; }
 				internal bool Marketable { get; private set; }
-				internal Asset.ERarity Rarity { get; private set; }
-				internal uint RealAppID { get; private set; }
 
-				[JsonProperty(PropertyName = "tags", Required = Required.DisallowNull)]
-				internal ImmutableHashSet<Tag> Tags {
-					set {
-						if ((value == null) || (value.Count == 0)) {
-							ASF.ArchiLogger.LogNullError(nameof(value));
+				internal Asset.ERarity Rarity {
+					get {
+						Asset.ERarity rarity = Asset.ERarity.Unknown;
 
-							return;
+						foreach (Tag tag in Tags) {
+							switch (tag.Identifier) {
+								case "droprate":
+									switch (tag.Value) {
+										case "droprate_0":
+											rarity = Asset.ERarity.Common;
+
+											break;
+										case "droprate_1":
+											rarity = Asset.ERarity.Uncommon;
+
+											break;
+										case "droprate_2":
+											rarity = Asset.ERarity.Rare;
+
+											break;
+										default:
+											ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
+
+											break;
+									}
+
+									break;
+
+							}
 						}
 
-						(Type, Rarity, RealAppID) = InterpretTags(value);
-						BackingTags = value;
+						return rarity;
 					}
-					get => BackingTags;
 				}
 
-				internal bool Tradable { get; private set; }
-				internal Asset.EType Type { get; private set; }
+				internal uint RealAppID {
+					get {
+						uint realAppID = 0;
 
-				private ImmutableHashSet<Tag> BackingTags;
+						foreach (Tag tag in Tags) {
+							switch (tag.Identifier) {
+								case "Game":
+									if ((tag.Value.Length <= 4) || !tag.Value.StartsWith("app_", StringComparison.Ordinal)) {
+										ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
+
+										break;
+									}
+
+									string appIDText = tag.Value.Substring(4);
+
+									if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
+										ASF.ArchiLogger.LogNullError(nameof(appID));
+
+										break;
+									}
+
+									realAppID = appID;
+
+									break;
+							}
+						}
+
+						return realAppID;
+					}
+				}
+
+				[JsonProperty(PropertyName = "tags", Required = Required.DisallowNull)]
+				internal ImmutableHashSet<Tag> Tags;
+
+				internal bool Tradable { get; private set; }
+
+				internal Asset.EType Type {
+					get {
+						Asset.EType type = Asset.EType.Unknown;
+
+						foreach (Tag tag in Tags) {
+							switch (tag.Identifier) {
+								case "cardborder":
+									switch (tag.Value) {
+										case "cardborder_0":
+											type = Asset.EType.TradingCard;
+
+											break;
+										case "cardborder_1":
+											type = Asset.EType.FoilTradingCard;
+
+											break;
+										default:
+											ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
+
+											break;
+									}
+
+									break;
+								case "item_class":
+									switch (tag.Value) {
+										case "item_class_2":
+											if (type == Asset.EType.Unknown) {
+												// This is a fallback in case we'd have no cardborder available to interpret
+												type = Asset.EType.TradingCard;
+											}
+
+											break;
+										case "item_class_3":
+											type = Asset.EType.ProfileBackground;
+
+											break;
+										case "item_class_4":
+											type = Asset.EType.Emoticon;
+
+											break;
+										case "item_class_5":
+											type = Asset.EType.BoosterPack;
+
+											break;
+										case "item_class_6":
+											type = Asset.EType.Consumable;
+
+											break;
+										case "item_class_7":
+											type = Asset.EType.SteamGems;
+
+											break;
+										case "item_class_8":
+											type = Asset.EType.ProfileModifier;
+
+											break;
+										case "item_class_10":
+											type = Asset.EType.SaleItem;
+
+											break;
+										case "item_class_11":
+											type = Asset.EType.Sticker;
+
+											break;
+										case "item_class_12":
+											type = Asset.EType.ChatEffect;
+
+											break;
+										case "item_class_13":
+											type = Asset.EType.MiniProfileBackground;
+
+											break;
+										default:
+											ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
+
+											break;
+									}
+
+									break;
+							}
+						}
+
+						return type;
+					}
+				}
 
 #pragma warning disable IDE0051
 				[JsonProperty(PropertyName = "classid", Required = Required.Always)]
@@ -568,137 +703,6 @@ namespace ArchiSteamFarm.Json {
 
 				[JsonConstructor]
 				private Description() { }
-
-				internal static (Asset.EType Type, Asset.ERarity Rarity, uint RealAppID) InterpretTags(IReadOnlyCollection<Tag> tags) {
-					if ((tags == null) || (tags.Count == 0)) {
-						ASF.ArchiLogger.LogNullError(nameof(tags));
-
-						return (Asset.EType.Unknown, Asset.ERarity.Unknown, 0);
-					}
-
-					Asset.EType type = Asset.EType.Unknown;
-					Asset.ERarity rarity = Asset.ERarity.Unknown;
-					uint realAppID = 0;
-
-					foreach (Tag tag in tags) {
-						switch (tag.Identifier) {
-							case "cardborder":
-								switch (tag.Value) {
-									case "cardborder_0":
-										type = Asset.EType.TradingCard;
-
-										break;
-									case "cardborder_1":
-										type = Asset.EType.FoilTradingCard;
-
-										break;
-									default:
-										ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
-
-										break;
-								}
-
-								break;
-							case "droprate":
-								switch (tag.Value) {
-									case "droprate_0":
-										rarity = Asset.ERarity.Common;
-
-										break;
-									case "droprate_1":
-										rarity = Asset.ERarity.Uncommon;
-
-										break;
-									case "droprate_2":
-										rarity = Asset.ERarity.Rare;
-
-										break;
-									default:
-										ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
-
-										break;
-								}
-
-								break;
-							case "Game":
-								if ((tag.Value.Length <= 4) || !tag.Value.StartsWith("app_", StringComparison.Ordinal)) {
-									ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
-
-									break;
-								}
-
-								string appIDText = tag.Value.Substring(4);
-
-								if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
-									ASF.ArchiLogger.LogNullError(nameof(appID));
-
-									break;
-								}
-
-								realAppID = appID;
-
-								break;
-							case "item_class":
-								switch (tag.Value) {
-									case "item_class_2":
-										if (type == Asset.EType.Unknown) {
-											// This is a fallback in case we'd have no cardborder available to interpret
-											type = Asset.EType.TradingCard;
-										}
-
-										break;
-									case "item_class_3":
-										type = Asset.EType.ProfileBackground;
-
-										break;
-									case "item_class_4":
-										type = Asset.EType.Emoticon;
-
-										break;
-									case "item_class_5":
-										type = Asset.EType.BoosterPack;
-
-										break;
-									case "item_class_6":
-										type = Asset.EType.Consumable;
-
-										break;
-									case "item_class_7":
-										type = Asset.EType.SteamGems;
-
-										break;
-									case "item_class_8":
-										type = Asset.EType.ProfileModifier;
-
-										break;
-									case "item_class_10":
-										type = Asset.EType.SaleItem;
-
-										break;
-									case "item_class_11":
-										type = Asset.EType.Sticker;
-
-										break;
-									case "item_class_12":
-										type = Asset.EType.ChatEffect;
-
-										break;
-									case "item_class_13":
-										type = Asset.EType.MiniProfileBackground;
-
-										break;
-									default:
-										ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
-
-										break;
-								}
-
-								break;
-						}
-					}
-
-					return (type, rarity, realAppID);
-				}
 
 				internal sealed class Tag {
 					[JsonProperty(PropertyName = "category", Required = Required.Always)]
