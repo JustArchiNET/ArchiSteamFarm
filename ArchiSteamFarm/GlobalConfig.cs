@@ -197,7 +197,12 @@ namespace ArchiSteamFarm {
 		public ProtocolTypes SteamProtocols { get; private set; } = DefaultSteamProtocols;
 
 		[JsonExtensionData]
-		internal Dictionary<string, JToken> AdditionalProperties { get; set; }
+		internal Dictionary<string, JToken> AdditionalProperties {
+			get;
+
+			[UsedImplicitly]
+			set;
+		}
 
 		internal bool IsWebProxyPasswordSet { get; private set; }
 		internal bool ShouldSerializeEverything { private get; set; } = true;

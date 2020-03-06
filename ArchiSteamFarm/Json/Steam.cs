@@ -72,7 +72,7 @@ namespace ArchiSteamFarm.Json {
 			public uint RealAppID { get; internal set; }
 
 			[PublicAPI]
-			public ImmutableHashSet<Tag> Tags { get; internal set; } = ImmutableHashSet<Tag>.Empty;
+			public ImmutableHashSet<Tag> Tags { get; internal set; }
 
 			[PublicAPI]
 			public bool Tradable { get; internal set; }
@@ -511,13 +511,20 @@ namespace ArchiSteamFarm.Json {
 			private InventoryResponse() { }
 
 			internal sealed class Description {
-#pragma warning disable 649
 				[JsonExtensionData]
-				internal readonly ImmutableDictionary<string, JToken> AdditionalProperties;
-#pragma warning restore 649
+				internal Dictionary<string, JToken> AdditionalProperties {
+					get;
+
+					[UsedImplicitly]
+					set;
+				}
 
 				internal Asset.ERarity Rarity {
 					get {
+						if (Tags == null) {
+							return Asset.ERarity.Unknown;
+						}
+
 						foreach (Asset.Tag tag in Tags) {
 							switch (tag.Identifier) {
 								case "droprate":
@@ -544,6 +551,10 @@ namespace ArchiSteamFarm.Json {
 
 				internal uint RealAppID {
 					get {
+						if (Tags == null) {
+							return 0;
+						}
+
 						foreach (Asset.Tag tag in Tags) {
 							switch (tag.Identifier) {
 								case "Game":
@@ -571,6 +582,10 @@ namespace ArchiSteamFarm.Json {
 
 				internal Asset.EType Type {
 					get {
+						if (Tags == null) {
+							return Asset.EType.Unknown;
+						}
+
 						Asset.EType type = Asset.EType.Unknown;
 
 						foreach (Asset.Tag tag in Tags) {
@@ -584,10 +599,8 @@ namespace ArchiSteamFarm.Json {
 										default:
 											ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
 
-											break;
+											return Asset.EType.Unknown;
 									}
-
-									break;
 								case "item_class":
 									switch (tag.Value) {
 										case "item_class_2":
@@ -596,7 +609,7 @@ namespace ArchiSteamFarm.Json {
 												type = Asset.EType.TradingCard;
 											}
 
-											break;
+											continue;
 										case "item_class_3":
 											return Asset.EType.ProfileBackground;
 										case "item_class_4":
@@ -620,10 +633,8 @@ namespace ArchiSteamFarm.Json {
 										default:
 											ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
 
-											break;
+											return Asset.EType.Unknown;
 									}
-
-									break;
 							}
 						}
 
@@ -639,7 +650,7 @@ namespace ArchiSteamFarm.Json {
 				internal bool Marketable { get; set; }
 
 				[JsonProperty(PropertyName = "tags", Required = Required.DisallowNull)]
-				internal ImmutableHashSet<Asset.Tag> Tags { get; set; } = ImmutableHashSet<Asset.Tag>.Empty;
+				internal ImmutableHashSet<Asset.Tag> Tags { get; set; }
 
 				internal bool Tradable { get; set; }
 

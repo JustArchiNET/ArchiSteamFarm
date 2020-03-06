@@ -230,7 +230,10 @@ namespace ArchiSteamFarm {
 						asset.RealAppID = description.RealAppID;
 						asset.Type = description.Type;
 						asset.Rarity = description.Rarity;
-						asset.AdditionalProperties = description.AdditionalProperties;
+
+						if (description.AdditionalProperties != null) {
+							asset.AdditionalProperties = description.AdditionalProperties.ToImmutableDictionary();
+						}
 
 						assetIDs.Add(asset.AssetID);
 
