@@ -131,6 +131,8 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, nameof(GetInventory) + " (" + nameof(Plugins) + ")", nameof(GetInventoryAsync)));
+
 			try {
 				return await GetInventoryAsync(steamID, appID, contextID).Where(
 					item =>
