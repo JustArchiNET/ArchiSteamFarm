@@ -398,7 +398,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				string appIDText = appIDNode.GetNodeAttribute("id");
+				string appIDText = appIDNode.GetAttributeValue("id");
 
 				if (string.IsNullOrEmpty(appIDText)) {
 					Bot.ArchiLogger.LogNullError(nameof(appIDText));

@@ -1734,7 +1734,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<ulong> results = new HashSet<ulong>(htmlNodes.Count);
 
-			foreach (string giftCardIDText in htmlNodes.Select(node => node.GetNodeAttribute("id"))) {
+			foreach (string giftCardIDText in htmlNodes.Select(node => node.GetAttributeValue("id"))) {
 				if (string.IsNullOrEmpty(giftCardIDText)) {
 					Bot.ArchiLogger.LogNullError(nameof(giftCardIDText));
 
@@ -1783,7 +1783,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<ulong> result = new HashSet<ulong>(htmlNodes.Count);
 
-			foreach (string miniProfile in htmlNodes.Select(htmlNode => htmlNode.GetNodeAttribute("data-miniprofile"))) {
+			foreach (string miniProfile in htmlNodes.Select(htmlNode => htmlNode.GetAttributeValue("data-miniprofile"))) {
 				if (string.IsNullOrEmpty(miniProfile)) {
 					Bot.ArchiLogger.LogNullError(nameof(miniProfile));
 
@@ -2635,7 +2635,7 @@ namespace ArchiSteamFarm {
 				return (false, false);
 			}
 
-			string json = htmlNode.GetNodeAttribute("data-privacysettings");
+			string json = htmlNode.GetAttributeValue("data-privacysettings");
 
 			if (string.IsNullOrEmpty(json)) {
 				Bot.ArchiLogger.LogNullError(nameof(json));

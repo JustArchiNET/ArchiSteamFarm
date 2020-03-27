@@ -314,7 +314,7 @@ namespace ArchiSteamFarm.Json {
 							return;
 						}
 
-						string idText = tradeOfferNode.GetNodeAttribute("id");
+						string idText = tradeOfferNode.GetAttributeValue("id");
 
 						if (string.IsNullOrEmpty(idText)) {
 							ASF.ArchiLogger.LogNullError(nameof(idText));

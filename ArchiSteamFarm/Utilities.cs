@@ -61,7 +61,8 @@ namespace ArchiSteamFarm {
 			return args[args.Length - 1];
 		}
 
-		public static string GetNodeAttribute(this INode node, string attributeName) {
+		[PublicAPI]
+		public static string GetAttributeValue(this INode node, string attributeName) {
 			if ((node == null) || string.IsNullOrEmpty(attributeName)) {
 				ASF.ArchiLogger.LogNullError(nameof(node) + " || " + nameof(attributeName));
 
