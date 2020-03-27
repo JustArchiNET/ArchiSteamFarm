@@ -22,13 +22,15 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using AngleSharp.Dom;
+using AngleSharp.XPath;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
-using HtmlAgilityPack;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
@@ -155,9 +157,9 @@ namespace ArchiSteamFarm {
 
 			await LimitConfirmationsRequestsAsync().ConfigureAwait(false);
 
-			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetConfirmations(DeviceID, confirmationHash, time).ConfigureAwait(false);
+			IDocument htmlDocument = await Bot.ArchiWebHandler.GetConfirmations(DeviceID, confirmationHash, time).ConfigureAwait(false);
 
-			HtmlNodeCollection confirmationNodes = htmlDocument?.DocumentNode.SelectNodes("//div[@class='mobileconf_list_entry']");
+			List<INode> confirmationNodes = htmlDocument?.Body.SelectNodes("//div[@class='mobileconf_list_entry']");
 
 			if (confirmationNodes == null) {
 				return null;
@@ -165,8 +167,8 @@ namespace ArchiSteamFarm {
 
 			HashSet<Confirmation> result = new HashSet<Confirmation>();
 
-			foreach (HtmlNode confirmationNode in confirmationNodes) {
-				string idText = confirmationNode.GetAttributeValue("data-confid", null);
+			foreach (IElement confirmationNode in confirmationNodes.Cast<IElement>()) {
+				string idText = confirmationNode.GetAttribute("data-confid");
 
 				if (string.IsNullOrEmpty(idText)) {
 					Bot.ArchiLogger.LogNullError(nameof(idText));
@@ -180,7 +182,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				string keyText = confirmationNode.GetAttributeValue("data-key", null);
+				string keyText = confirmationNode.GetAttribute("data-key");
 
 				if (string.IsNullOrEmpty(keyText)) {
 					Bot.ArchiLogger.LogNullError(nameof(keyText));
@@ -194,7 +196,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				string typeText = confirmationNode.GetAttributeValue("data-type", null);
+				string typeText = confirmationNode.GetAttribute("data-type");
 
 				if (string.IsNullOrEmpty(typeText)) {
 					Bot.ArchiLogger.LogNullError(nameof(typeText));

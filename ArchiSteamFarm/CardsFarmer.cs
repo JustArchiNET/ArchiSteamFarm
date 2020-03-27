@@ -30,10 +30,11 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using AngleSharp.Dom;
+using AngleSharp.XPath;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Plugins;
-using HtmlAgilityPack;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SteamKit2;
@@ -372,14 +373,14 @@ namespace ArchiSteamFarm {
 		}
 
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
-		private async Task CheckPage(HtmlDocument htmlDocument, ISet<uint> parsedAppIDs) {
+		private async Task CheckPage(IDocument htmlDocument, ISet<uint> parsedAppIDs) {
 			if ((htmlDocument == null) || (parsedAppIDs == null)) {
 				Bot.ArchiLogger.LogNullError(nameof(htmlDocument) + " || " + nameof(parsedAppIDs));
 
 				return;
 			}
 
-			HtmlNodeCollection htmlNodes = htmlDocument.DocumentNode.SelectNodes("//div[@class='badge_row_inner']");
+			List<INode> htmlNodes = htmlDocument.Body.SelectNodes("//div[@class='badge_row_inner']");
 
 			if (htmlNodes == null) {
 				// No eligible badges whatsoever
@@ -388,16 +389,16 @@ namespace ArchiSteamFarm {
 
 			HashSet<Task> backgroundTasks = null;
 
-			foreach (HtmlNode htmlNode in htmlNodes) {
-				HtmlNode statsNode = htmlNode.SelectSingleNode(".//div[@class='badge_title_stats_content']");
-				HtmlNode appIDNode = statsNode?.SelectSingleNode(".//div[@class='card_drop_info_dialog']");
+			foreach (IElement htmlNode in htmlNodes.Cast<IElement>()) {
+				IElement statsNode = (IElement) htmlNode.SelectSingleNode(".//div[@class='badge_title_stats_content']");
+				IElement appIDNode = (IElement) statsNode?.SelectSingleNode(".//div[@class='card_drop_info_dialog']");
 
 				if (appIDNode == null) {
 					// It's just a badge, nothing more
 					continue;
 				}
 
-				string appIDText = appIDNode.GetAttributeValue("id", null);
+				string appIDText = appIDNode.GetAttribute("id");
 
 				if (string.IsNullOrEmpty(appIDText)) {
 					Bot.ArchiLogger.LogNullError(nameof(appIDText));
@@ -454,7 +455,7 @@ namespace ArchiSteamFarm {
 				}
 
 				// Cards
-				HtmlNode progressNode = statsNode.SelectSingleNode(".//span[@class='progress_info_bold']");
+				INode progressNode = statsNode.SelectSingleNode(".//span[@class='progress_info_bold']");
 
 				if (progressNode == null) {
 					Bot.ArchiLogger.LogNullError(nameof(progressNode));
@@ -462,7 +463,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				string progressText = progressNode.InnerText;
+				string progressText = progressNode.TextContent;
 
 				if (string.IsNullOrEmpty(progressText)) {
 					Bot.ArchiLogger.LogNullError(nameof(progressText));
@@ -493,7 +494,7 @@ namespace ArchiSteamFarm {
 					}
 
 					// To save us on extra work, check cards earned so far first
-					HtmlNode cardsEarnedNode = statsNode.SelectSingleNode(".//div[@class='card_drop_info_header']");
+					INode cardsEarnedNode = statsNode.SelectSingleNode(".//div[@class='card_drop_info_header']");
 
 					if (cardsEarnedNode == null) {
 						Bot.ArchiLogger.LogNullError(nameof(cardsEarnedNode));
@@ -501,7 +502,7 @@ namespace ArchiSteamFarm {
 						continue;
 					}
 
-					string cardsEarnedText = cardsEarnedNode.InnerText;
+					string cardsEarnedText = cardsEarnedNode.TextContent;
 
 					if (string.IsNullOrEmpty(cardsEarnedText)) {
 						Bot.ArchiLogger.LogNullError(nameof(cardsEarnedText));
@@ -538,7 +539,7 @@ namespace ArchiSteamFarm {
 				}
 
 				// Hours
-				HtmlNode timeNode = statsNode.SelectSingleNode(".//div[@class='badge_title_stats_playtime']");
+				INode timeNode = statsNode.SelectSingleNode(".//div[@class='badge_title_stats_playtime']");
 
 				if (timeNode == null) {
 					Bot.ArchiLogger.LogNullError(nameof(timeNode));
@@ -546,7 +547,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				string hoursText = timeNode.InnerText;
+				string hoursText = timeNode.TextContent;
 
 				if (string.IsNullOrEmpty(hoursText)) {
 					Bot.ArchiLogger.LogNullError(nameof(hoursText));
@@ -567,7 +568,7 @@ namespace ArchiSteamFarm {
 				}
 
 				// Names
-				HtmlNode nameNode = statsNode.SelectSingleNode("(.//div[@class='card_drop_info_body'])[last()]");
+				INode nameNode = statsNode.SelectSingleNode("(.//div[@class='card_drop_info_body'])[last()]");
 
 				if (nameNode == null) {
 					Bot.ArchiLogger.LogNullError(nameof(nameNode));
@@ -575,7 +576,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				string name = nameNode.InnerText;
+				string name = nameNode.TextContent;
 
 				if (string.IsNullOrEmpty(name)) {
 					Bot.ArchiLogger.LogNullError(nameof(name));
@@ -619,11 +620,11 @@ namespace ArchiSteamFarm {
 				// Levels
 				byte badgeLevel = 0;
 
-				HtmlNode levelNode = htmlNode.SelectSingleNode(".//div[@class='badge_info_description']/div[2]");
+				INode levelNode = htmlNode.SelectSingleNode(".//div[@class='badge_info_description']/div[2]");
 
 				if (levelNode != null) {
 					// There is no levelNode if we didn't craft that badge yet (level 0)
-					string levelText = levelNode.InnerText;
+					string levelText = levelNode.TextContent;
 
 					if (string.IsNullOrEmpty(levelText)) {
 						Bot.ArchiLogger.LogNullError(nameof(levelText));
@@ -694,7 +695,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
+			IDocument htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
 
 			if (htmlDocument == null) {
 				return;
@@ -942,15 +943,15 @@ namespace ArchiSteamFarm {
 				return 0;
 			}
 
-			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetGameCardsPage(appID).ConfigureAwait(false);
+			IDocument htmlDocument = await Bot.ArchiWebHandler.GetGameCardsPage(appID).ConfigureAwait(false);
 
-			HtmlNode progressNode = htmlDocument?.DocumentNode.SelectSingleNode("//span[@class='progress_info_bold']");
+			INode progressNode = htmlDocument?.Body.SelectSingleNode("//span[@class='progress_info_bold']");
 
 			if (progressNode == null) {
 				return null;
 			}
 
-			string progress = progressNode.InnerText;
+			string progress = progressNode.TextContent;
 
 			if (string.IsNullOrEmpty(progress)) {
 				Bot.ArchiLogger.LogNullError(nameof(progress));
@@ -976,7 +977,7 @@ namespace ArchiSteamFarm {
 		private async Task<bool?> IsAnythingToFarm() {
 			// Find the number of badge pages
 			Bot.ArchiLogger.LogGenericInfo(Strings.CheckingFirstBadgePage);
-			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
+			IDocument htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
 
 			if (htmlDocument == null) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningCouldNotCheckBadges);
@@ -986,10 +987,10 @@ namespace ArchiSteamFarm {
 
 			byte maxPages = 1;
 
-			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("(//a[@class='pagelink'])[last()]");
+			INode htmlNode = htmlDocument.Body.SelectSingleNode("(//a[@class='pagelink'])[last()]");
 
 			if (htmlNode != null) {
-				string lastPage = htmlNode.InnerText;
+				string lastPage = htmlNode.TextContent;
 
 				if (string.IsNullOrEmpty(lastPage)) {
 					Bot.ArchiLogger.LogNullError(nameof(lastPage));
