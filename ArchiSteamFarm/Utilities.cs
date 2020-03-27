@@ -27,6 +27,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using AngleSharp.Dom;
 using Humanizer;
 using Humanizer.Localisation;
 using JetBrains.Annotations;
@@ -58,6 +59,16 @@ namespace ArchiSteamFarm {
 			string[] args = text.Split((char[]) null, argsToSkip + 1, StringSplitOptions.RemoveEmptyEntries);
 
 			return args[args.Length - 1];
+		}
+
+		public static string GetNodeAttribute(this INode node, string attributeName) {
+			if ((node == null) || string.IsNullOrEmpty(attributeName)) {
+				ASF.ArchiLogger.LogNullError(nameof(node) + " || " + nameof(attributeName));
+
+				return null;
+			}
+
+			return node is IElement element ? element.GetAttribute(attributeName) : null;
 		}
 
 		[PublicAPI]

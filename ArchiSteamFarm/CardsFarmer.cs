@@ -391,14 +391,14 @@ namespace ArchiSteamFarm {
 
 			foreach (IElement htmlNode in htmlNodes.Cast<IElement>()) {
 				IElement statsNode = (IElement) htmlNode.SelectSingleNode(".//div[@class='badge_title_stats_content']");
-				IElement appIDNode = (IElement) statsNode?.SelectSingleNode(".//div[@class='card_drop_info_dialog']");
+				INode appIDNode = statsNode?.SelectSingleNode(".//div[@class='card_drop_info_dialog']");
 
 				if (appIDNode == null) {
 					// It's just a badge, nothing more
 					continue;
 				}
 
-				string appIDText = appIDNode.GetAttribute("id");
+				string appIDText = appIDNode.GetNodeAttribute("id");
 
 				if (string.IsNullOrEmpty(appIDText)) {
 					Bot.ArchiLogger.LogNullError(nameof(appIDText));

@@ -167,8 +167,8 @@ namespace ArchiSteamFarm {
 
 			HashSet<Confirmation> result = new HashSet<Confirmation>();
 
-			foreach (IElement confirmationNode in confirmationNodes.Cast<IElement>()) {
-				string idText = confirmationNode.GetAttribute("data-confid");
+			foreach (INode confirmationNode in confirmationNodes) {
+				string idText = confirmationNode.GetNodeAttribute("data-confid");
 
 				if (string.IsNullOrEmpty(idText)) {
 					Bot.ArchiLogger.LogNullError(nameof(idText));
@@ -182,7 +182,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				string keyText = confirmationNode.GetAttribute("data-key");
+				string keyText = confirmationNode.GetNodeAttribute("data-key");
 
 				if (string.IsNullOrEmpty(keyText)) {
 					Bot.ArchiLogger.LogNullError(nameof(keyText));
@@ -196,7 +196,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				string typeText = confirmationNode.GetAttribute("data-type");
+				string typeText = confirmationNode.GetNodeAttribute("data-type");
 
 				if (string.IsNullOrEmpty(typeText)) {
 					Bot.ArchiLogger.LogNullError(nameof(typeText));

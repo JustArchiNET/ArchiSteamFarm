@@ -306,7 +306,7 @@ namespace ArchiSteamFarm.Json {
 					if (htmlDocument.Body.SelectSingleNode("//div[@class='mobileconf_trade_area']") != null) {
 						Type = EType.Trade;
 
-						IElement tradeOfferNode = (IElement) htmlDocument.Body.SelectSingleNode("//div[@class='tradeoffer']");
+						INode tradeOfferNode = htmlDocument.Body.SelectSingleNode("//div[@class='tradeoffer']");
 
 						if (tradeOfferNode == null) {
 							ASF.ArchiLogger.LogNullError(nameof(tradeOfferNode));
@@ -314,7 +314,7 @@ namespace ArchiSteamFarm.Json {
 							return;
 						}
 
-						string idText = tradeOfferNode.GetAttribute("id");
+						string idText = tradeOfferNode.GetNodeAttribute("id");
 
 						if (string.IsNullOrEmpty(idText)) {
 							ASF.ArchiLogger.LogNullError(nameof(idText));
