@@ -1309,7 +1309,7 @@ namespace ArchiSteamFarm {
 
 			IDocument htmlDocument = await UrlPostToHtmlDocumentWithSession(SteamStoreURL, request, data).ConfigureAwait(false);
 
-			return htmlDocument.Body.SelectSingleNode("//div[@class='add_free_content_success_area']") != null;
+			return htmlDocument?.Body.SelectSingleNode("//div[@class='add_free_content_success_area']") != null;
 		}
 
 		internal async Task<bool> ChangePrivacySettings(Steam.UserPrivacy userPrivacy) {
