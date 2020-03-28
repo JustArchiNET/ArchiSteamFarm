@@ -105,7 +105,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			StreamResponse response = await UrlGetToStream(request, referer, requestOptions, maxTries).ConfigureAwait(false);
+			using StreamResponse response = await UrlGetToStream(request, referer, requestOptions, maxTries).ConfigureAwait(false);
 
 			return response != null ? await HtmlDocumentResponse.Create(response).ConfigureAwait(false) : null;
 		}
@@ -122,7 +122,7 @@ namespace ArchiSteamFarm {
 			ObjectResponse<T> result = null;
 
 			for (byte i = 0; i < maxTries; i++) {
-				StreamResponse response = await UrlGetToStream(request, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
+				using StreamResponse response = await UrlGetToStream(request, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
 				// ReSharper disable once UseNullPropagationWhenPossible - false check
 				if (response == null) {
@@ -182,7 +182,7 @@ namespace ArchiSteamFarm {
 			XmlDocumentResponse result = null;
 
 			for (byte i = 0; i < maxTries; i++) {
-				StreamResponse response = await UrlGetToStream(request, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
+				using StreamResponse response = await UrlGetToStream(request, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
 				// ReSharper disable once UseNullPropagationWhenPossible - false check
 				if (response == null) {
@@ -305,7 +305,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			StreamResponse response = await UrlPostToStream(request, data, referer, requestOptions, maxTries).ConfigureAwait(false);
+			using StreamResponse response = await UrlPostToStream(request, data, referer, requestOptions, maxTries).ConfigureAwait(false);
 
 			return response != null ? await HtmlDocumentResponse.Create(response).ConfigureAwait(false) : null;
 		}
@@ -322,7 +322,7 @@ namespace ArchiSteamFarm {
 			ObjectResponse<T> result = null;
 
 			for (byte i = 0; i < maxTries; i++) {
-				StreamResponse response = await UrlPostToStream(request, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
+				using StreamResponse response = await UrlPostToStream(request, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
 				if (response == null) {
 					return null;
@@ -753,7 +753,8 @@ namespace ArchiSteamFarm {
 
 			private HtmlDocumentResponse(BasicResponse streamResponse, IDocument document) : base(streamResponse) => Content = document;
 
-			internal static async Task<HtmlDocumentResponse> Create(StreamResponse streamResponse) {
+			[ItemNotNull]
+			internal static async Task<HtmlDocumentResponse> Create([NotNull] StreamResponse streamResponse) {
 				if (streamResponse == null) {
 					throw new ArgumentNullException(nameof(streamResponse));
 				}
@@ -815,8 +816,9 @@ namespace ArchiSteamFarm {
 			internal BinaryResponse([NotNull] HttpResponseMessage httpResponseMessage) : base(httpResponseMessage) { }
 		}
 
-		internal sealed class StreamResponse : BasicResponse {
+		internal sealed class StreamResponse : BasicResponse, IDisposable {
 			internal readonly Stream Content;
+			private readonly HttpResponseMessage ResponseMessage;
 
 			internal StreamResponse([NotNull] HttpResponseMessage httpResponseMessage, [NotNull] Stream content) : base(httpResponseMessage) {
 				if ((httpResponseMessage == null) || (content == null)) {
@@ -824,9 +826,15 @@ namespace ArchiSteamFarm {
 				}
 
 				Content = content;
+				ResponseMessage = httpResponseMessage;
 			}
 
 			internal StreamResponse([NotNull] HttpResponseMessage httpResponseMessage) : base(httpResponseMessage) { }
+
+			public void Dispose() {
+				Content.Dispose();
+				ResponseMessage.Dispose();
+			}
 		}
 
 		internal sealed class StringResponse : BasicResponse {

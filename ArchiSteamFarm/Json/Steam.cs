@@ -302,6 +302,12 @@ namespace ArchiSteamFarm.Json {
 
 					IDocument htmlDocument = WebBrowser.StringToHtmlDocument(value).Result;
 
+					if (htmlDocument == null) {
+						ASF.ArchiLogger.LogNullError(nameof(htmlDocument));
+
+						return;
+					}
+
 					if (htmlDocument.SelectSingleNode("//div[@class='mobileconf_trade_area']") != null) {
 						Type = EType.Trade;
 

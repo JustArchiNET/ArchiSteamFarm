@@ -2656,6 +2656,12 @@ namespace ArchiSteamFarm {
 				return (false, false);
 			}
 
+			if (userPrivacy == null) {
+				Bot.ArchiLogger.LogNullError(nameof(userPrivacy));
+
+				return (false, false);
+			}
+
 			switch (userPrivacy.Settings.Profile) {
 				case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.FriendsOnly:
 				case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private:
