@@ -122,7 +122,7 @@ namespace ArchiSteamFarm {
 			ObjectResponse<T> result = null;
 
 			for (byte i = 0; i < maxTries; i++) {
-				StringResponse response = await UrlGetToString(request, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
+				StreamResponse response = await UrlGetToStream(request, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
 				// ReSharper disable once UseNullPropagationWhenPossible - false check
 				if (response == null) {
@@ -137,14 +137,18 @@ namespace ArchiSteamFarm {
 					break;
 				}
 
-				if (string.IsNullOrEmpty(response.Content)) {
+				if (response.Content == null) {
 					continue;
 				}
 
 				T obj;
 
 				try {
-					obj = JsonConvert.DeserializeObject<T>(response.Content);
+					using StreamReader sr = new StreamReader(response.Content);
+					using JsonReader reader = new JsonTextReader(sr);
+					JsonSerializer serializer = new JsonSerializer();
+
+					obj = serializer.Deserialize<T>(reader);
 				} catch (JsonException e) {
 					ArchiLogger.LogGenericWarningException(e);
 
@@ -318,7 +322,7 @@ namespace ArchiSteamFarm {
 			ObjectResponse<T> result = null;
 
 			for (byte i = 0; i < maxTries; i++) {
-				StringResponse response = await UrlPostToString(request, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
+				StreamResponse response = await UrlPostToStream(request, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
 				if (response == null) {
 					return null;
@@ -332,14 +336,18 @@ namespace ArchiSteamFarm {
 					break;
 				}
 
-				if (string.IsNullOrEmpty(response.Content)) {
+				if (response.Content == null) {
 					continue;
 				}
 
 				T obj;
 
 				try {
-					obj = JsonConvert.DeserializeObject<T>(response.Content);
+					using StreamReader sr = new StreamReader(response.Content);
+					using JsonReader reader = new JsonTextReader(sr);
+					JsonSerializer serializer = new JsonSerializer();
+
+					obj = serializer.Deserialize<T>(reader);
 				} catch (JsonException e) {
 					ArchiLogger.LogGenericWarningException(e);
 
@@ -713,42 +721,6 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		[ItemCanBeNull]
-		private async Task<StringResponse> UrlPostToString(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
-			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
-				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
-
-				return null;
-			}
-
-			StringResponse result = null;
-
-			for (byte i = 0; i < maxTries; i++) {
-				using HttpResponseMessage response = await InternalPost(request, data, referer).ConfigureAwait(false);
-
-				if (response == null) {
-					continue;
-				}
-
-				if (response.StatusCode.IsClientErrorCode()) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						result = new StringResponse(response);
-					}
-
-					break;
-				}
-
-				return new StringResponse(response, await response.Content.ReadAsStringAsync().ConfigureAwait(false));
-			}
-
-			if (maxTries > 1) {
-				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
-				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
-			}
-
-			return result;
-		}
-
 		public class BasicResponse {
 			[PublicAPI]
 			public readonly HttpStatusCode StatusCode;
@@ -790,24 +762,15 @@ namespace ArchiSteamFarm {
 			}
 
 			private HtmlDocumentResponse(BasicResponse streamResponse, IDocument document) : base(streamResponse) => Content = document;
-			/*internal HtmlDocumentResponse([NotNull] StreamResponse stringResponse) : base(stringResponse) {
-				if (stringResponse == null) {
-					throw new ArgumentNullException(nameof(stringResponse));
-				}
-
-				if (stringResponse.Content != null) {
-					Content = StreamToHtmlDocument(stringResponse.Content);
-				}
-			}*/
 		}
 
 		public sealed class ObjectResponse<T> : BasicResponse {
 			[PublicAPI]
 			public readonly T Content;
 
-			internal ObjectResponse([NotNull] StringResponse stringResponse, T content) : base(stringResponse) {
-				if (stringResponse == null) {
-					throw new ArgumentNullException(nameof(stringResponse));
+			internal ObjectResponse([NotNull] StreamResponse streamResponse, T content) : base(streamResponse) {
+				if (streamResponse == null) {
+					throw new ArgumentNullException(nameof(streamResponse));
 				}
 
 				Content = content;
@@ -820,9 +783,9 @@ namespace ArchiSteamFarm {
 			[PublicAPI]
 			public readonly XmlDocument Content;
 
-			internal XmlDocumentResponse([NotNull] StreamResponse stringResponse, XmlDocument content) : base(stringResponse) {
-				if (stringResponse == null) {
-					throw new ArgumentNullException(nameof(stringResponse));
+			internal XmlDocumentResponse([NotNull] StreamResponse streamResponse, XmlDocument content) : base(streamResponse) {
+				if (streamResponse == null) {
+					throw new ArgumentNullException(nameof(streamResponse));
 				}
 
 				Content = content;
