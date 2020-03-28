@@ -24,7 +24,6 @@ using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
-using AngleSharp.XPath;
 using ArchiSteamFarm.Localization;
 using JetBrains.Annotations;
 
@@ -90,7 +89,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			INode htmlNode = htmlDocument.Body.SelectSingleNode("//div[@class='subtext']");
+			IElement htmlNode = htmlDocument.SelectSingleNode("//div[@class='subtext']");
 
 			if (htmlNode == null) {
 				// Valid, no cards for exploring the queue available

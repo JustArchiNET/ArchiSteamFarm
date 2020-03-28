@@ -31,7 +31,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
-using AngleSharp.XPath;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Plugins;
@@ -380,18 +379,18 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			List<INode> htmlNodes = htmlDocument.Body.SelectNodes("//div[@class='badge_row_inner']");
+			List<IElement> htmlNodes = htmlDocument.SelectNodes("//div[@class='badge_row_inner']");
 
-			if (htmlNodes == null) {
+			if (htmlNodes.Count == 0) {
 				// No eligible badges whatsoever
 				return;
 			}
 
 			HashSet<Task> backgroundTasks = null;
 
-			foreach (IElement htmlNode in htmlNodes.Cast<IElement>()) {
-				IElement statsNode = (IElement) htmlNode.SelectSingleNode(".//div[@class='badge_title_stats_content']");
-				INode appIDNode = statsNode?.SelectSingleNode(".//div[@class='card_drop_info_dialog']");
+			foreach (IElement htmlNode in htmlNodes) {
+				IElement statsNode = htmlNode.SelectSingleElementNode(".//div[@class='badge_title_stats_content']");
+				IElement appIDNode = statsNode?.SelectSingleElementNode(".//div[@class='card_drop_info_dialog']");
 
 				if (appIDNode == null) {
 					// It's just a badge, nothing more
@@ -455,7 +454,7 @@ namespace ArchiSteamFarm {
 				}
 
 				// Cards
-				INode progressNode = statsNode.SelectSingleNode(".//span[@class='progress_info_bold']");
+				IElement progressNode = statsNode.SelectSingleElementNode(".//span[@class='progress_info_bold']");
 
 				if (progressNode == null) {
 					Bot.ArchiLogger.LogNullError(nameof(progressNode));
@@ -494,7 +493,7 @@ namespace ArchiSteamFarm {
 					}
 
 					// To save us on extra work, check cards earned so far first
-					INode cardsEarnedNode = statsNode.SelectSingleNode(".//div[@class='card_drop_info_header']");
+					IElement cardsEarnedNode = statsNode.SelectSingleElementNode(".//div[@class='card_drop_info_header']");
 
 					if (cardsEarnedNode == null) {
 						Bot.ArchiLogger.LogNullError(nameof(cardsEarnedNode));
@@ -539,7 +538,7 @@ namespace ArchiSteamFarm {
 				}
 
 				// Hours
-				INode timeNode = statsNode.SelectSingleNode(".//div[@class='badge_title_stats_playtime']");
+				IElement timeNode = statsNode.SelectSingleElementNode(".//div[@class='badge_title_stats_playtime']");
 
 				if (timeNode == null) {
 					Bot.ArchiLogger.LogNullError(nameof(timeNode));
@@ -568,7 +567,7 @@ namespace ArchiSteamFarm {
 				}
 
 				// Names
-				INode nameNode = statsNode.SelectSingleNode("(.//div[@class='card_drop_info_body'])[last()]");
+				IElement nameNode = statsNode.SelectSingleElementNode("(.//div[@class='card_drop_info_body'])[last()]");
 
 				if (nameNode == null) {
 					Bot.ArchiLogger.LogNullError(nameof(nameNode));
@@ -620,7 +619,7 @@ namespace ArchiSteamFarm {
 				// Levels
 				byte badgeLevel = 0;
 
-				INode levelNode = htmlNode.SelectSingleNode(".//div[@class='badge_info_description']/div[2]");
+				IElement levelNode = htmlNode.SelectSingleElementNode(".//div[@class='badge_info_description']/div[2]");
 
 				if (levelNode != null) {
 					// There is no levelNode if we didn't craft that badge yet (level 0)
@@ -945,7 +944,7 @@ namespace ArchiSteamFarm {
 
 			IDocument htmlDocument = await Bot.ArchiWebHandler.GetGameCardsPage(appID).ConfigureAwait(false);
 
-			INode progressNode = htmlDocument?.Body.SelectSingleNode("//span[@class='progress_info_bold']");
+			IElement progressNode = htmlDocument?.SelectSingleNode("//span[@class='progress_info_bold']");
 
 			if (progressNode == null) {
 				return null;
@@ -987,7 +986,7 @@ namespace ArchiSteamFarm {
 
 			byte maxPages = 1;
 
-			INode htmlNode = htmlDocument.Body.SelectSingleNode("(//a[@class='pagelink'])[last()]");
+			IElement htmlNode = htmlDocument.SelectSingleNode("(//a[@class='pagelink'])[last()]");
 
 			if (htmlNode != null) {
 				string lastPage = htmlNode.TextContent;

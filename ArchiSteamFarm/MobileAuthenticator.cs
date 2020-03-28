@@ -22,13 +22,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
-using AngleSharp.XPath;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
 using JetBrains.Annotations;
@@ -159,9 +157,9 @@ namespace ArchiSteamFarm {
 
 			IDocument htmlDocument = await Bot.ArchiWebHandler.GetConfirmations(DeviceID, confirmationHash, time).ConfigureAwait(false);
 
-			List<INode> confirmationNodes = htmlDocument?.Body.SelectNodes("//div[@class='mobileconf_list_entry']");
+			List<IElement> confirmationNodes = htmlDocument?.SelectNodes("//div[@class='mobileconf_list_entry']");
 
-			if (confirmationNodes == null) {
+			if ((confirmationNodes == null) || (confirmationNodes.Count == 0)) {
 				return null;
 			}
 

@@ -31,7 +31,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using AngleSharp.Dom;
-using AngleSharp.XPath;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
@@ -1309,7 +1308,7 @@ namespace ArchiSteamFarm {
 
 			IDocument htmlDocument = await UrlPostToHtmlDocumentWithSession(SteamStoreURL, request, data).ConfigureAwait(false);
 
-			return htmlDocument?.Body.SelectSingleNode("//div[@class='add_free_content_success_area']") != null;
+			return htmlDocument?.SelectSingleNode("//div[@class='add_free_content_success_area']") != null;
 		}
 
 		internal async Task<bool> ChangePrivacySettings(Steam.UserPrivacy userPrivacy) {
@@ -1726,7 +1725,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			List<INode> htmlNodes = response.Body.SelectNodes("//div[@class='pending_gift']/div[starts-with(@id, 'pending_gift_')][count(div[@class='pending_giftcard_leftcol']) > 0]/@id");
+			List<IElement> htmlNodes = response.SelectNodes("//div[@class='pending_gift']/div[starts-with(@id, 'pending_gift_')][count(div[@class='pending_giftcard_leftcol']) > 0]/@id");
 
 			if (htmlNodes.Count == 0) {
 				return new HashSet<ulong>(0);
@@ -1774,7 +1773,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			List<INode> htmlNodes = htmlDocument.Body.SelectNodes("(//table[@class='accountTable'])[2]//a/@data-miniprofile");
+			List<IElement> htmlNodes = htmlDocument.SelectNodes("(//table[@class='accountTable'])[2]//a/@data-miniprofile");
 
 			if (htmlNodes.Count == 0) {
 				// OK, no authorized steamIDs
@@ -1865,7 +1864,7 @@ namespace ArchiSteamFarm {
 
 			IDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
 
-			INode htmlNode = htmlDocument?.Body.SelectSingleNode("//div[@class='pagecontent']/script");
+			IElement htmlNode = htmlDocument?.SelectSingleNode("//div[@class='pagecontent']/script");
 
 			if (htmlNode == null) {
 				// Trade can be no longer valid
@@ -2315,7 +2314,7 @@ namespace ArchiSteamFarm {
 			const string request = "/dev/apikey?l=english";
 			IDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
 
-			INode titleNode = htmlDocument?.Body.SelectSingleNode("//div[@id='mainContents']/h2");
+			IElement titleNode = htmlDocument?.SelectSingleNode("//div[@id='mainContents']/h2");
 
 			if (titleNode == null) {
 				return (ESteamApiKeyState.Timeout, null);
@@ -2333,7 +2332,7 @@ namespace ArchiSteamFarm {
 				return (ESteamApiKeyState.AccessDenied, null);
 			}
 
-			INode htmlNode = htmlDocument.Body.SelectSingleNode("//div[@id='bodyContents_ex']/p");
+			IElement htmlNode = htmlDocument.SelectSingleNode("//div[@id='bodyContents_ex']/p");
 
 			if (htmlNode == null) {
 				Bot.ArchiLogger.LogNullError(nameof(htmlNode));
@@ -2627,7 +2626,7 @@ namespace ArchiSteamFarm {
 				return (false, false);
 			}
 
-			INode htmlNode = htmlDocument.Body.SelectSingleNode("//div[@data-component='ProfilePrivacySettings']/@data-privacysettings");
+			IElement htmlNode = htmlDocument.SelectSingleNode("//div[@data-component='ProfilePrivacySettings']/@data-privacysettings");
 
 			if (htmlNode == null) {
 				Bot.ArchiLogger.LogNullError(nameof(htmlNode));

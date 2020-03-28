@@ -25,7 +25,6 @@ using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using AngleSharp.Dom;
-using AngleSharp.XPath;
 using ArchiSteamFarm.Localization;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -303,10 +302,10 @@ namespace ArchiSteamFarm.Json {
 
 					IDocument htmlDocument = WebBrowser.StringToHtmlDocument(value).Result;
 
-					if (htmlDocument.Body.SelectSingleNode("//div[@class='mobileconf_trade_area']") != null) {
+					if (htmlDocument.SelectSingleNode("//div[@class='mobileconf_trade_area']") != null) {
 						Type = EType.Trade;
 
-						INode tradeOfferNode = htmlDocument.Body.SelectSingleNode("//div[@class='tradeoffer']");
+						IElement tradeOfferNode = htmlDocument.SelectSingleNode("//div[@class='tradeoffer']");
 
 						if (tradeOfferNode == null) {
 							ASF.ArchiLogger.LogNullError(nameof(tradeOfferNode));
@@ -347,7 +346,7 @@ namespace ArchiSteamFarm.Json {
 						}
 
 						TradeOfferID = tradeOfferID;
-					} else if (htmlDocument.Body.SelectSingleNode("//div[@class='mobileconf_listing_prices']") != null) {
+					} else if (htmlDocument.SelectSingleNode("//div[@class='mobileconf_listing_prices']") != null) {
 						Type = EType.Market;
 					} else {
 						// Normally this should be reported, but under some specific circumstances we might actually receive this one
