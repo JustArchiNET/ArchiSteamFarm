@@ -196,9 +196,10 @@ namespace ArchiSteamFarm {
 			return (text.Length % 2 == 0) && text.All(Uri.IsHexDigit);
 		}
 
-		[CanBeNull]
+		[ItemNotNull]
+		[NotNull]
 		[PublicAPI]
-		public static IElement SelectSingleNode([NotNull] this IDocument document, string xpath) => (IElement) document.Body.SelectSingleNode(xpath);
+		public static List<IElement> SelectElementNodes([NotNull] this IElement element, string xpath) => element.SelectNodes(xpath).Cast<IElement>().ToList();
 
 		[ItemNotNull]
 		[NotNull]
@@ -209,10 +210,9 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public static IElement SelectSingleElementNode([NotNull] this IElement element, string xpath) => (IElement) element.SelectSingleNode(xpath);
 
-		[ItemNotNull]
-		[NotNull]
+		[CanBeNull]
 		[PublicAPI]
-		public static List<IElement> SelectElementNodes([NotNull] this IElement element, string xpath) => element.SelectNodes(xpath).Cast<IElement>().ToList();
+		public static IElement SelectSingleNode([NotNull] this IDocument document, string xpath) => (IElement) document.Body.SelectSingleNode(xpath);
 
 		[PublicAPI]
 		public static IEnumerable<T> ToEnumerable<T>(this T item) {
