@@ -480,7 +480,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[ItemCanBeNull]
-		internal async Task<StreamResponse> UrlGetToStream(string request, string referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
+		private async Task<StreamResponse> UrlGetToStream(string request, string referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
 
@@ -490,7 +490,7 @@ namespace ArchiSteamFarm {
 			StreamResponse result = null;
 
 			for (byte i = 0; i < maxTries; i++) {
-				HttpResponseMessage response = await InternalGet(request, referer).ConfigureAwait(false);
+				HttpResponseMessage response = await InternalGet(request, referer, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
 				if (response == null) {
 					continue;
@@ -551,14 +551,14 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		private async Task<HttpResponseMessage> InternalGet(string request, string referer = null, HttpCompletionOption httpCompletionOptions = HttpCompletionOption.ResponseContentRead) {
+		private async Task<HttpResponseMessage> InternalGet(string request, string referer = null, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead) {
 			if (string.IsNullOrEmpty(request)) {
 				ArchiLogger.LogNullError(nameof(request));
 
 				return null;
 			}
 
-			return await InternalRequest(new Uri(request), HttpMethod.Get, null, referer, httpCompletionOptions).ConfigureAwait(false);
+			return await InternalRequest(new Uri(request), HttpMethod.Get, null, referer, httpCompletionOption).ConfigureAwait(false);
 		}
 
 		private async Task<HttpResponseMessage> InternalHead(string request, string referer = null) {
@@ -571,14 +571,14 @@ namespace ArchiSteamFarm {
 			return await InternalRequest(new Uri(request), HttpMethod.Head, null, referer).ConfigureAwait(false);
 		}
 
-		private async Task<HttpResponseMessage> InternalPost(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null) {
+		private async Task<HttpResponseMessage> InternalPost(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead) {
 			if (string.IsNullOrEmpty(request)) {
 				ArchiLogger.LogNullError(nameof(request));
 
 				return null;
 			}
 
-			return await InternalRequest(new Uri(request), HttpMethod.Post, data, referer).ConfigureAwait(false);
+			return await InternalRequest(new Uri(request), HttpMethod.Post, data, referer, httpCompletionOption).ConfigureAwait(false);
 		}
 
 		private async Task<HttpResponseMessage> InternalRequest(Uri requestUri, HttpMethod httpMethod, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, byte maxRedirections = MaxTries) {
@@ -697,7 +697,7 @@ namespace ArchiSteamFarm {
 			StreamResponse result = null;
 
 			for (byte i = 0; i < maxTries; i++) {
-				HttpResponseMessage response = await InternalPost(request, data, referer).ConfigureAwait(false);
+				HttpResponseMessage response = await InternalPost(request, data, referer, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
 				if (response == null) {
 					continue;
