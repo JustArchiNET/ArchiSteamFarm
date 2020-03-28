@@ -157,15 +157,18 @@ namespace ArchiSteamFarm {
 
 			IDocument htmlDocument = await Bot.ArchiWebHandler.GetConfirmations(DeviceID, confirmationHash, time).ConfigureAwait(false);
 
-			List<IElement> confirmationNodes = htmlDocument?.SelectNodes("//div[@class='mobileconf_list_entry']");
-
-			if ((confirmationNodes == null) || (confirmationNodes.Count == 0)) {
+			if (htmlDocument == null) {
 				return null;
 			}
 
 			HashSet<Confirmation> result = new HashSet<Confirmation>();
+			List<IElement> confirmationNodes = htmlDocument.SelectNodes("//div[@class='mobileconf_list_entry']");
 
-			foreach (INode confirmationNode in confirmationNodes) {
+			if (confirmationNodes.Count == 0) {
+				return result;
+			}
+
+			foreach (IElement confirmationNode in confirmationNodes) {
 				string idText = confirmationNode.GetAttributeValue("data-confid");
 
 				if (string.IsNullOrEmpty(idText)) {

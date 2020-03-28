@@ -1879,7 +1879,8 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			int index = text.IndexOf("g_daysTheirEscrow = ", StringComparison.Ordinal);
+			const string daysTheirVariableName = "g_daysTheirEscrow = ";
+			int index = text.IndexOf(daysTheirVariableName, StringComparison.Ordinal);
 
 			if (index < 0) {
 				Bot.ArchiLogger.LogNullError(nameof(index));
@@ -1887,7 +1888,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			index += "g_daysTheirEscrow = ".Length;
+			index += daysTheirVariableName.Length;
 			text = text.Substring(index);
 
 			index = text.IndexOf(';');

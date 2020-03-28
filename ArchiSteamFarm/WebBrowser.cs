@@ -144,11 +144,11 @@ namespace ArchiSteamFarm {
 				T obj;
 
 				try {
-					using StreamReader sr = new StreamReader(response.Content);
-					using JsonReader reader = new JsonTextReader(sr);
+					using StreamReader streamReader = new StreamReader(response.Content);
+					using JsonReader jsonReader = new JsonTextReader(streamReader);
 					JsonSerializer serializer = new JsonSerializer();
 
-					obj = serializer.Deserialize<T>(reader);
+					obj = serializer.Deserialize<T>(jsonReader);
 				} catch (JsonException e) {
 					ArchiLogger.LogGenericWarningException(e);
 
@@ -343,11 +343,11 @@ namespace ArchiSteamFarm {
 				T obj;
 
 				try {
-					using StreamReader sr = new StreamReader(response.Content);
-					using JsonReader reader = new JsonTextReader(sr);
+					using StreamReader steamReader = new StreamReader(response.Content);
+					using JsonReader jsonReader = new JsonTextReader(steamReader);
 					JsonSerializer serializer = new JsonSerializer();
 
-					obj = serializer.Deserialize<T>(reader);
+					obj = serializer.Deserialize<T>(jsonReader);
 				} catch (JsonException e) {
 					ArchiLogger.LogGenericWarningException(e);
 
@@ -393,6 +393,7 @@ namespace ArchiSteamFarm {
 			}
 
 			IBrowsingContext context = BrowsingContext.New(Configuration.Default.WithXPath());
+
 			return await context.OpenAsync(req => req.Content(html)).ConfigureAwait(false);
 		}
 
