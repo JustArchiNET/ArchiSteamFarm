@@ -411,7 +411,8 @@ namespace ArchiSteamFarm {
 				const byte printPercentage = 10;
 				const byte maxBatches = 99 / printPercentage;
 
-				using HttpResponseMessage response = await InternalGet(request, referer, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+				//using HttpResponseMessage response = await InternalGet(request, referer, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+				using StreamResponse response = await UrlGetToStream(request, referer, requestOptions).ConfigureAwait(false);
 
 				if (response == null) {
 					continue;
@@ -427,12 +428,10 @@ namespace ArchiSteamFarm {
 
 				ArchiLogger.LogGenericDebug("0%...");
 
-				uint contentLength = (uint) response.Content.Headers.ContentLength.GetValueOrDefault();
-
-				using MemoryStream ms = new MemoryStream((int) contentLength);
+				using MemoryStream ms = new MemoryStream((int) response.Length);
 
 				try {
-					using Stream contentStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+					using Stream contentStream = response.Content;
 
 					byte batch = 0;
 					uint readThisBatch = 0;
@@ -447,17 +446,17 @@ namespace ArchiSteamFarm {
 
 						await ms.WriteAsync(buffer, 0, read).ConfigureAwait(false);
 
-						if ((contentLength == 0) || (batch >= maxBatches)) {
+						if ((response.Length == 0) || (batch >= maxBatches)) {
 							continue;
 						}
 
 						readThisBatch += (uint) read;
 
-						if (readThisBatch < contentLength / printPercentage) {
+						if (readThisBatch < response.Length / printPercentage) {
 							continue;
 						}
 
-						readThisBatch -= contentLength / printPercentage;
+						readThisBatch -= response.Length / printPercentage;
 						ArchiLogger.LogGenericDebug((++batch * printPercentage) + "%...");
 					}
 				} catch (Exception e) {
@@ -805,19 +804,20 @@ namespace ArchiSteamFarm {
 		internal sealed class BinaryResponse : BasicResponse {
 			internal readonly byte[] Content;
 
-			internal BinaryResponse([NotNull] HttpResponseMessage httpResponseMessage, [NotNull] byte[] content) : base(httpResponseMessage) {
-				if ((httpResponseMessage == null) || (content == null)) {
-					throw new ArgumentNullException(nameof(httpResponseMessage) + " || " + nameof(content));
+			internal BinaryResponse([NotNull] BasicResponse basicResponse, [NotNull] byte[] content) : base(basicResponse) {
+				if ((basicResponse == null) || (content == null)) {
+					throw new ArgumentNullException(nameof(basicResponse) + " || " + nameof(content));
 				}
 
 				Content = content;
 			}
 
-			internal BinaryResponse([NotNull] HttpResponseMessage httpResponseMessage) : base(httpResponseMessage) { }
+			internal BinaryResponse([NotNull] BasicResponse basicResponse) : base(basicResponse) { }
 		}
 
 		internal sealed class StreamResponse : BasicResponse, IDisposable {
 			internal readonly Stream Content;
+			internal readonly uint Length;
 			private readonly HttpResponseMessage ResponseMessage;
 
 			internal StreamResponse([NotNull] HttpResponseMessage httpResponseMessage, [NotNull] Stream content) : base(httpResponseMessage) {
@@ -826,6 +826,7 @@ namespace ArchiSteamFarm {
 				}
 
 				Content = content;
+				Length = (uint) httpResponseMessage.Content.Headers.ContentLength.GetValueOrDefault();
 				ResponseMessage = httpResponseMessage;
 			}
 
