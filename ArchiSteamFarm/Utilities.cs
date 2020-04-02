@@ -27,6 +27,8 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using AngleSharp.Dom;
+using AngleSharp.XPath;
 using Humanizer;
 using Humanizer.Localisation;
 using JetBrains.Annotations;
@@ -58,6 +60,17 @@ namespace ArchiSteamFarm {
 			string[] args = text.Split((char[]) null, argsToSkip + 1, StringSplitOptions.RemoveEmptyEntries);
 
 			return args[args.Length - 1];
+		}
+
+		[PublicAPI]
+		public static string GetAttributeValue(this INode node, string attributeName) {
+			if ((node == null) || string.IsNullOrEmpty(attributeName)) {
+				ASF.ArchiLogger.LogNullError(nameof(node) + " || " + nameof(attributeName));
+
+				return null;
+			}
+
+			return node is IElement element ? element.GetAttribute(attributeName) : null;
 		}
 
 		[PublicAPI]
@@ -182,6 +195,24 @@ namespace ArchiSteamFarm {
 
 			return (text.Length % 2 == 0) && text.All(Uri.IsHexDigit);
 		}
+
+		[ItemNotNull]
+		[NotNull]
+		[PublicAPI]
+		public static List<IElement> SelectElementNodes([NotNull] this IElement element, string xpath) => element.SelectNodes(xpath).Cast<IElement>().ToList();
+
+		[ItemNotNull]
+		[NotNull]
+		[PublicAPI]
+		public static List<IElement> SelectNodes([NotNull] this IDocument document, string xpath) => document.Body.SelectNodes(xpath).Cast<IElement>().ToList();
+
+		[CanBeNull]
+		[PublicAPI]
+		public static IElement SelectSingleElementNode([NotNull] this IElement element, string xpath) => (IElement) element.SelectSingleNode(xpath);
+
+		[CanBeNull]
+		[PublicAPI]
+		public static IElement SelectSingleNode([NotNull] this IDocument document, string xpath) => (IElement) document.Body.SelectSingleNode(xpath);
 
 		[PublicAPI]
 		public static IEnumerable<T> ToEnumerable<T>(this T item) {

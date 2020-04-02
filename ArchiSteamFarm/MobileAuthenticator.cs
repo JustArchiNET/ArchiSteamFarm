@@ -26,9 +26,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using AngleSharp.Dom;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
-using HtmlAgilityPack;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
@@ -155,18 +155,21 @@ namespace ArchiSteamFarm {
 
 			await LimitConfirmationsRequestsAsync().ConfigureAwait(false);
 
-			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetConfirmations(DeviceID, confirmationHash, time).ConfigureAwait(false);
+			IDocument htmlDocument = await Bot.ArchiWebHandler.GetConfirmations(DeviceID, confirmationHash, time).ConfigureAwait(false);
 
-			HtmlNodeCollection confirmationNodes = htmlDocument?.DocumentNode.SelectNodes("//div[@class='mobileconf_list_entry']");
-
-			if (confirmationNodes == null) {
+			if (htmlDocument == null) {
 				return null;
 			}
 
 			HashSet<Confirmation> result = new HashSet<Confirmation>();
+			List<IElement> confirmationNodes = htmlDocument.SelectNodes("//div[@class='mobileconf_list_entry']");
 
-			foreach (HtmlNode confirmationNode in confirmationNodes) {
-				string idText = confirmationNode.GetAttributeValue("data-confid", null);
+			if (confirmationNodes.Count == 0) {
+				return result;
+			}
+
+			foreach (IElement confirmationNode in confirmationNodes) {
+				string idText = confirmationNode.GetAttributeValue("data-confid");
 
 				if (string.IsNullOrEmpty(idText)) {
 					Bot.ArchiLogger.LogNullError(nameof(idText));
@@ -180,7 +183,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				string keyText = confirmationNode.GetAttributeValue("data-key", null);
+				string keyText = confirmationNode.GetAttributeValue("data-key");
 
 				if (string.IsNullOrEmpty(keyText)) {
 					Bot.ArchiLogger.LogNullError(nameof(keyText));
@@ -194,7 +197,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				string typeText = confirmationNode.GetAttributeValue("data-type", null);
+				string typeText = confirmationNode.GetAttributeValue("data-type");
 
 				if (string.IsNullOrEmpty(typeText)) {
 					Bot.ArchiLogger.LogNullError(nameof(typeText));

@@ -30,10 +30,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using AngleSharp.Dom;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
-using HtmlAgilityPack;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -456,7 +456,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<HtmlDocument> UrlGetToHtmlDocumentWithSession(string host, string request, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
+		public async Task<IDocument> UrlGetToHtmlDocumentWithSession(string host, string request, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
 				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
 
@@ -756,7 +756,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<HtmlDocument> UrlPostToHtmlDocumentWithSession(string host, string request, Dictionary<string, string> data = null, string referer = null, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
+		public async Task<IDocument> UrlPostToHtmlDocumentWithSession(string host, string request, Dictionary<string, string> data = null, string referer = null, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request) || !Enum.IsDefined(typeof(ESession), session)) {
 				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request) + " || " + nameof(session));
 
@@ -1306,9 +1306,9 @@ namespace ArchiSteamFarm {
 				{ "subid", subID.ToString() }
 			};
 
-			HtmlDocument htmlDocument = await UrlPostToHtmlDocumentWithSession(SteamStoreURL, request, data).ConfigureAwait(false);
+			IDocument htmlDocument = await UrlPostToHtmlDocumentWithSession(SteamStoreURL, request, data).ConfigureAwait(false);
 
-			return htmlDocument?.DocumentNode.SelectSingleNode("//div[@class='add_free_content_success_area']") != null;
+			return htmlDocument?.SelectSingleNode("//div[@class='add_free_content_success_area']") != null;
 		}
 
 		internal async Task<bool> ChangePrivacySettings(Steam.UserPrivacy userPrivacy) {
@@ -1647,7 +1647,7 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal async Task<HtmlDocument> GetBadgePage(byte page) {
+		internal async Task<IDocument> GetBadgePage(byte page) {
 			if (page == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(page));
 
@@ -1692,7 +1692,7 @@ namespace ArchiSteamFarm {
 			return response;
 		}
 
-		internal async Task<HtmlDocument> GetConfirmations(string deviceID, string confirmationHash, uint time) {
+		internal async Task<IDocument> GetConfirmations(string deviceID, string confirmationHash, uint time) {
 			if (string.IsNullOrEmpty(deviceID) || string.IsNullOrEmpty(confirmationHash) || (time == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time));
 
@@ -1719,21 +1719,21 @@ namespace ArchiSteamFarm {
 		[ItemCanBeNull]
 		internal async Task<HashSet<ulong>> GetDigitalGiftCards() {
 			const string request = "/gifts";
-			HtmlDocument response = await UrlGetToHtmlDocumentWithSession(SteamStoreURL, request).ConfigureAwait(false);
+			IDocument response = await UrlGetToHtmlDocumentWithSession(SteamStoreURL, request).ConfigureAwait(false);
 
 			if (response == null) {
 				return null;
 			}
 
-			HtmlNodeCollection htmlNodes = response.DocumentNode.SelectNodes("//div[@class='pending_gift']/div[starts-with(@id, 'pending_gift_')][count(div[@class='pending_giftcard_leftcol']) > 0]/@id");
+			List<IElement> htmlNodes = response.SelectNodes("//div[@class='pending_gift']/div[starts-with(@id, 'pending_gift_')][count(div[@class='pending_giftcard_leftcol']) > 0]/@id");
 
-			if (htmlNodes == null) {
+			if (htmlNodes.Count == 0) {
 				return new HashSet<ulong>(0);
 			}
 
 			HashSet<ulong> results = new HashSet<ulong>(htmlNodes.Count);
 
-			foreach (string giftCardIDText in htmlNodes.Select(node => node.GetAttributeValue("id", null))) {
+			foreach (string giftCardIDText in htmlNodes.Select(node => node.GetAttributeValue("id"))) {
 				if (string.IsNullOrEmpty(giftCardIDText)) {
 					Bot.ArchiLogger.LogNullError(nameof(giftCardIDText));
 
@@ -1758,7 +1758,7 @@ namespace ArchiSteamFarm {
 			return results;
 		}
 
-		internal async Task<HtmlDocument> GetDiscoveryQueuePage() {
+		internal async Task<IDocument> GetDiscoveryQueuePage() {
 			const string request = "/explore?l=english";
 
 			return await UrlGetToHtmlDocumentWithSession(SteamStoreURL, request).ConfigureAwait(false);
@@ -1767,22 +1767,22 @@ namespace ArchiSteamFarm {
 		[ItemCanBeNull]
 		internal async Task<HashSet<ulong>> GetFamilySharingSteamIDs() {
 			const string request = "/account/managedevices?l=english";
-			HtmlDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamStoreURL, request).ConfigureAwait(false);
+			IDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamStoreURL, request).ConfigureAwait(false);
 
 			if (htmlDocument == null) {
 				return null;
 			}
 
-			HtmlNodeCollection htmlNodes = htmlDocument.DocumentNode.SelectNodes("(//table[@class='accountTable'])[2]//a/@data-miniprofile");
+			List<IElement> htmlNodes = htmlDocument.SelectNodes("(//table[@class='accountTable'])[2]//a/@data-miniprofile");
 
-			if (htmlNodes == null) {
+			if (htmlNodes.Count == 0) {
 				// OK, no authorized steamIDs
 				return new HashSet<ulong>(0);
 			}
 
 			HashSet<ulong> result = new HashSet<ulong>(htmlNodes.Count);
 
-			foreach (string miniProfile in htmlNodes.Select(htmlNode => htmlNode.GetAttributeValue("data-miniprofile", null))) {
+			foreach (string miniProfile in htmlNodes.Select(htmlNode => htmlNode.GetAttributeValue("data-miniprofile"))) {
 				if (string.IsNullOrEmpty(miniProfile)) {
 					Bot.ArchiLogger.LogNullError(nameof(miniProfile));
 
@@ -1802,7 +1802,7 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal async Task<HtmlDocument> GetGameCardsPage(ulong appID) {
+		internal async Task<IDocument> GetGameCardsPage(ulong appID) {
 			if (appID == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(appID));
 
@@ -1862,16 +1862,16 @@ namespace ArchiSteamFarm {
 
 			string request = "/tradeoffer/" + tradeID + "?l=english";
 
-			HtmlDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
+			IDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
 
-			HtmlNode htmlNode = htmlDocument?.DocumentNode.SelectSingleNode("//div[@class='pagecontent']/script");
+			IElement htmlNode = htmlDocument?.SelectSingleNode("//div[@class='pagecontent']/script");
 
 			if (htmlNode == null) {
 				// Trade can be no longer valid
 				return null;
 			}
 
-			string text = htmlNode.InnerText;
+			string text = htmlNode.TextContent;
 
 			if (string.IsNullOrEmpty(text)) {
 				Bot.ArchiLogger.LogNullError(nameof(text));
@@ -1879,7 +1879,8 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			int index = text.IndexOf("g_daysTheirEscrow = ", StringComparison.Ordinal);
+			const string daysTheirVariableName = "g_daysTheirEscrow = ";
+			int index = text.IndexOf(daysTheirVariableName, StringComparison.Ordinal);
 
 			if (index < 0) {
 				Bot.ArchiLogger.LogNullError(nameof(index));
@@ -1887,7 +1888,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			index += 20;
+			index += daysTheirVariableName.Length;
 			text = text.Substring(index);
 
 			index = text.IndexOf(';');
@@ -2312,15 +2313,15 @@ namespace ArchiSteamFarm {
 
 		private async Task<(ESteamApiKeyState State, string Key)> GetApiKeyState() {
 			const string request = "/dev/apikey?l=english";
-			HtmlDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
+			IDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
 
-			HtmlNode titleNode = htmlDocument?.DocumentNode.SelectSingleNode("//div[@id='mainContents']/h2");
+			IElement titleNode = htmlDocument?.SelectSingleNode("//div[@id='mainContents']/h2");
 
 			if (titleNode == null) {
 				return (ESteamApiKeyState.Timeout, null);
 			}
 
-			string title = titleNode.InnerText;
+			string title = titleNode.TextContent;
 
 			if (string.IsNullOrEmpty(title)) {
 				Bot.ArchiLogger.LogNullError(nameof(title));
@@ -2332,7 +2333,7 @@ namespace ArchiSteamFarm {
 				return (ESteamApiKeyState.AccessDenied, null);
 			}
 
-			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@id='bodyContents_ex']/p");
+			IElement htmlNode = htmlDocument.SelectSingleNode("//div[@id='bodyContents_ex']/p");
 
 			if (htmlNode == null) {
 				Bot.ArchiLogger.LogNullError(nameof(htmlNode));
@@ -2340,7 +2341,7 @@ namespace ArchiSteamFarm {
 				return (ESteamApiKeyState.Error, null);
 			}
 
-			string text = htmlNode.InnerText;
+			string text = htmlNode.TextContent;
 
 			if (string.IsNullOrEmpty(text)) {
 				Bot.ArchiLogger.LogNullError(nameof(text));
@@ -2620,13 +2621,13 @@ namespace ArchiSteamFarm {
 
 		private async Task<(bool Success, bool Result)> ResolvePublicInventory() {
 			const string request = "/my/edit/settings?l=english";
-			HtmlDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
+			IDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
 
 			if (htmlDocument == null) {
 				return (false, false);
 			}
 
-			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@data-component='ProfilePrivacySettings']/@data-privacysettings");
+			IElement htmlNode = htmlDocument.SelectSingleNode("//div[@data-component='ProfilePrivacySettings']/@data-privacysettings");
 
 			if (htmlNode == null) {
 				Bot.ArchiLogger.LogNullError(nameof(htmlNode));
@@ -2634,7 +2635,7 @@ namespace ArchiSteamFarm {
 				return (false, false);
 			}
 
-			string json = htmlNode.GetAttributeValue("data-privacysettings", null);
+			string json = htmlNode.GetAttributeValue("data-privacysettings");
 
 			if (string.IsNullOrEmpty(json)) {
 				Bot.ArchiLogger.LogNullError(nameof(json));

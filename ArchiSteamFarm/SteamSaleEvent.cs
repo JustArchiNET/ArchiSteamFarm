@@ -23,8 +23,8 @@ using System;
 using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
+using AngleSharp.Dom;
 using ArchiSteamFarm.Localization;
-using HtmlAgilityPack;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm {
@@ -83,20 +83,20 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool?> IsDiscoveryQueueAvailable() {
-			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetDiscoveryQueuePage().ConfigureAwait(false);
+			IDocument htmlDocument = await Bot.ArchiWebHandler.GetDiscoveryQueuePage().ConfigureAwait(false);
 
 			if (htmlDocument == null) {
 				return null;
 			}
 
-			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@class='subtext']");
+			IElement htmlNode = htmlDocument.SelectSingleNode("//div[@class='subtext']");
 
 			if (htmlNode == null) {
 				// Valid, no cards for exploring the queue available
 				return false;
 			}
 
-			string text = htmlNode.InnerText;
+			string text = htmlNode.TextContent;
 
 			if (string.IsNullOrEmpty(text)) {
 				Bot.ArchiLogger.LogNullError(nameof(text));
