@@ -732,7 +732,7 @@ StackTrace:
     <value>Alte Dateien nach dem Update bereinigen...</value>
   </data>
   <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
-    <value>Erstelle Steam-Jugendschutz-Code, das kann einige Zeit dauern. Eventuell sollten Sie den Code in der Konfiguration hinterlegen...</value>
+    <value>Erstelle Steam-Jugendschutz-Code, das kann einige Zeit dauern. Eventuell sollten Sie stattdessen den Code in der Konfiguration hinterlegen...</value>
   </data>
   <data name="IPCConfigChanged" xml:space="preserve">
     <value>Die IPC-Konfiguration wurde geändert!</value>
