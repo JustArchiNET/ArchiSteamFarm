@@ -66,7 +66,7 @@
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.9.1" />
     <PackageReference Include="protobuf-net" Version="3.0.0-alpha.43" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.3.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="5.2.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="5.3.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="5.3.0" />
     <PackageReference Include="System.Composition" Version="1.4.0" />
     <PackageReference Include="System.Linq.Async" Version="4.0.0" />
