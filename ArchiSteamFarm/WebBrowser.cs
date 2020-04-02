@@ -411,7 +411,6 @@ namespace ArchiSteamFarm {
 				const byte printPercentage = 10;
 				const byte maxBatches = 99 / printPercentage;
 
-				//using HttpResponseMessage response = await InternalGet(request, referer, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 				using StreamResponse response = await UrlGetToStream(request, referer, requestOptions).ConfigureAwait(false);
 
 				if (response == null) {
@@ -818,6 +817,7 @@ namespace ArchiSteamFarm {
 		internal sealed class StreamResponse : BasicResponse, IDisposable {
 			internal readonly Stream Content;
 			internal readonly uint Length;
+
 			private readonly HttpResponseMessage ResponseMessage;
 
 			internal StreamResponse([NotNull] HttpResponseMessage httpResponseMessage, [NotNull] Stream content) : base(httpResponseMessage) {

@@ -162,6 +162,7 @@ namespace ArchiSteamFarm {
 			}
 
 			HashSet<Confirmation> result = new HashSet<Confirmation>();
+
 			List<IElement> confirmationNodes = htmlDocument.SelectNodes("//div[@class='mobileconf_list_entry']");
 
 			if (confirmationNodes.Count == 0) {

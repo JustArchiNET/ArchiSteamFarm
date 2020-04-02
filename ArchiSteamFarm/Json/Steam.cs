@@ -511,14 +511,6 @@ namespace ArchiSteamFarm.Json {
 			private InventoryResponse() { }
 
 			internal sealed class Description {
-				[JsonExtensionData]
-				internal Dictionary<string, JToken> AdditionalProperties {
-					get;
-
-					[UsedImplicitly]
-					set;
-				}
-
 				internal Asset.ERarity Rarity {
 					get {
 						if (Tags == null) {
@@ -640,6 +632,13 @@ namespace ArchiSteamFarm.Json {
 
 						return type;
 					}
+				}
+
+				[JsonExtensionData]
+				internal Dictionary<string, JToken> AdditionalProperties {
+					get;
+					[UsedImplicitly]
+					set;
 				}
 
 				[JsonProperty(PropertyName = "appid", Required = Required.Always)]

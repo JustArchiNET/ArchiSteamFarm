@@ -56,7 +56,7 @@ namespace ArchiSteamFarm.Tests {
 		public void MultiGameMultiTypeBadReject() {
 			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> {
 				CreateItem(1, 9),
-				CreateItem(3, 9, realAppID: 730, type: Steam.Asset.EType.Emoticon),
+				CreateItem(3, 9, 730, Steam.Asset.EType.Emoticon),
 				CreateItem(4, realAppID: 730, type: Steam.Asset.EType.Emoticon)
 			};
 

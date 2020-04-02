@@ -153,7 +153,6 @@ namespace ArchiSteamFarm {
 		[JsonExtensionData]
 		internal Dictionary<string, JToken> AdditionalProperties {
 			get;
-
 			[UsedImplicitly]
 			set;
 		}
