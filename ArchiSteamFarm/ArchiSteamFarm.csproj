@@ -68,7 +68,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="5.3.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="5.3.0" />
     <PackageReference Include="System.Composition" Version="1.4.0" />
-    <PackageReference Include="System.Linq.Async" Version="4.0.0" />
+    <PackageReference Include="System.Linq.Async" Version="4.1.1" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
