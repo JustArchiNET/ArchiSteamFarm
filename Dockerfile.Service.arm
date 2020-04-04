@@ -20,10 +20,10 @@ RUN dotnet --info && \
     dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" --nologo && \
     dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -f "$NET_CORE_VERSION" --nologo && \
     dotnet clean ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" --nologo && \
-    dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out' --nologo /p:ASFVariant=generic /p:UseAppHost=false && \
-    cp "ArchiSteamFarm/overlay/generic/ArchiSteamFarm-Service.sh" "out/ArchiSteamFarm-Service.sh"
+    dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out' -r 'linux-arm' --nologo /p:ASFVariant=linux-arm /p:PublishTrimmed=true && \
+    cp "ArchiSteamFarm/overlay/docker/ArchiSteamFarm-Service.sh" "out/ArchiSteamFarm-Service.sh"
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim-arm32v7 AS runtime
+FROM mcr.microsoft.com/dotnet/core/runtime-deps:3.1-buster-slim-arm32v7 AS runtime
 ENV ASPNETCORE_URLS=
 LABEL maintainer="JustArchi <JustArchi@JustArchi.net>"
 EXPOSE 1242
