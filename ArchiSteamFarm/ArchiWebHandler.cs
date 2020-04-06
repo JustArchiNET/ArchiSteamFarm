@@ -121,37 +121,6 @@ namespace ArchiSteamFarm {
 			return string.IsNullOrEmpty(VanityURL) ? "/profiles/" + Bot.SteamID : "/id/" + VanityURL;
 		}
 
-		[ItemCanBeNull]
-		[Obsolete]
-		[PublicAPI]
-		public async Task<HashSet<Steam.Asset>> GetInventory(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, bool? marketable = null, bool? tradable = null, IReadOnlyCollection<uint> wantedRealAppIDs = null, IReadOnlyCollection<uint> unwantedRealAppIDs = null, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> wantedSets = null) {
-			if ((appID == 0) || (contextID == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
-
-				return null;
-			}
-
-			Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, nameof(GetInventory) + " (" + nameof(Plugins) + ")", nameof(GetInventoryAsync)));
-
-			try {
-				return await GetInventoryAsync(steamID, appID, contextID).Where(
-					item =>
-						(!marketable.HasValue || (item.Marketable == marketable.Value)) &&
-						(!tradable.HasValue || (item.Tradable == tradable.Value)) &&
-						(wantedRealAppIDs?.Contains(item.RealAppID) != false) &&
-						(unwantedRealAppIDs?.Contains(item.RealAppID) != true) &&
-						(wantedTypes?.Contains(item.Type) != false) &&
-						(wantedSets?.Contains((item.RealAppID, item.Type, item.Rarity)) != false)
-				).ToHashSetAsync().ConfigureAwait(false);
-			} catch (HttpRequestException) {
-				return null;
-			} catch (Exception e) {
-				Bot.ArchiLogger.LogGenericException(e);
-
-				return null;
-			}
-		}
-
 		[JetBrains.Annotations.NotNull]
 		[PublicAPI]
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
