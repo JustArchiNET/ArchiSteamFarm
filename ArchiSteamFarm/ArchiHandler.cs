@@ -70,6 +70,10 @@ namespace ArchiSteamFarm {
 			LastPacketReceived = DateTime.UtcNow;
 
 			switch (packetMsg.MsgType) {
+				case EMsg.ClientCommentNotifications:
+					HandleCommentNotifications(packetMsg);
+
+					break;
 				case EMsg.ClientItemAnnouncements:
 					HandleItemAnnouncements(packetMsg);
 
@@ -629,6 +633,17 @@ namespace ArchiSteamFarm {
 			Client.Send(request);
 		}
 
+		private void HandleCommentNotifications(IPacketMsg packetMsg) {
+			if (packetMsg == null) {
+				ArchiLogger.LogNullError(nameof(packetMsg));
+
+				return;
+			}
+
+			ClientMsgProtobuf<CMsgClientCommentNotifications> response = new ClientMsgProtobuf<CMsgClientCommentNotifications>(packetMsg);
+			Client.PostCallback(new UserNotificationsCallback(packetMsg.TargetJobID, response.Body));
+		}
+
 		private void HandleItemAnnouncements(IPacketMsg packetMsg) {
 			if (packetMsg == null) {
 				ArchiLogger.LogNullError(nameof(packetMsg));
@@ -835,6 +850,15 @@ namespace ArchiSteamFarm {
 
 				JobID = jobID;
 				Notifications = new Dictionary<EUserNotification, uint>(1) { { EUserNotification.Items, msg.count_new_items } };
+			}
+
+			internal UserNotificationsCallback([JetBrains.Annotations.NotNull] JobID jobID, [JetBrains.Annotations.NotNull] CMsgClientCommentNotifications msg) {
+				if ((jobID == null) || (msg == null)) {
+					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
+				}
+
+				JobID = jobID;
+				Notifications = new Dictionary<EUserNotification, uint>(1) { { EUserNotification.Comments, msg.count_new_comments + msg.count_new_comments_owner + msg.count_new_comments_subscriptions } };
 			}
 
 			[PublicAPI]
