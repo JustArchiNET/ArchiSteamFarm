@@ -71,35 +71,43 @@ namespace ArchiSteamFarm {
 
 			switch (packetMsg.MsgType) {
 				case EMsg.ClientCommentNotifications:
-					HandleCommentNotifications(packetMsg);
+					ClientMsgProtobuf<CMsgClientCommentNotifications> commentNotifications = new ClientMsgProtobuf<CMsgClientCommentNotifications>(packetMsg);
+					Client.PostCallback(new UserNotificationsCallback(packetMsg.TargetJobID, commentNotifications.Body));
 
 					break;
 				case EMsg.ClientItemAnnouncements:
-					HandleItemAnnouncements(packetMsg);
+					ClientMsgProtobuf<CMsgClientItemAnnouncements> itemAnnouncements = new ClientMsgProtobuf<CMsgClientItemAnnouncements>(packetMsg);
+					Client.PostCallback(new UserNotificationsCallback(packetMsg.TargetJobID, itemAnnouncements.Body));
 
 					break;
 				case EMsg.ClientPlayingSessionState:
-					HandlePlayingSessionState(packetMsg);
+					ClientMsgProtobuf<CMsgClientPlayingSessionState> playingSessionState = new ClientMsgProtobuf<CMsgClientPlayingSessionState>(packetMsg);
+					Client.PostCallback(new PlayingSessionStateCallback(packetMsg.TargetJobID, playingSessionState.Body));
 
 					break;
 				case EMsg.ClientPurchaseResponse:
-					HandlePurchaseResponse(packetMsg);
+					ClientMsgProtobuf<CMsgClientPurchaseResponse> purchaseResponse = new ClientMsgProtobuf<CMsgClientPurchaseResponse>(packetMsg);
+					Client.PostCallback(new PurchaseResponseCallback(packetMsg.TargetJobID, purchaseResponse.Body));
 
 					break;
 				case EMsg.ClientRedeemGuestPassResponse:
-					HandleRedeemGuestPassResponse(packetMsg);
+					ClientMsgProtobuf<CMsgClientRedeemGuestPassResponse> redeemGuestPassResponse = new ClientMsgProtobuf<CMsgClientRedeemGuestPassResponse>(packetMsg);
+					Client.PostCallback(new RedeemGuestPassResponseCallback(packetMsg.TargetJobID, redeemGuestPassResponse.Body));
 
 					break;
 				case EMsg.ClientSharedLibraryLockStatus:
-					HandleSharedLibraryLockStatus(packetMsg);
+					ClientMsgProtobuf<CMsgClientSharedLibraryLockStatus> sharedLibraryLockStatus = new ClientMsgProtobuf<CMsgClientSharedLibraryLockStatus>(packetMsg);
+					Client.PostCallback(new SharedLibraryLockStatusCallback(packetMsg.TargetJobID, sharedLibraryLockStatus.Body));
 
 					break;
 				case EMsg.ClientUserNotifications:
-					HandleUserNotifications(packetMsg);
+					ClientMsgProtobuf<CMsgClientUserNotifications> userNotifications = new ClientMsgProtobuf<CMsgClientUserNotifications>(packetMsg);
+					Client.PostCallback(new UserNotificationsCallback(packetMsg.TargetJobID, userNotifications.Body));
 
 					break;
 				case EMsg.ClientVanityURLChangedNotification:
-					HandleVanityURLChangedNotification(packetMsg);
+					ClientMsgProtobuf<CMsgClientVanityURLChangedNotification> vanityURLChangedNotification = new ClientMsgProtobuf<CMsgClientVanityURLChangedNotification>(packetMsg);
+					Client.PostCallback(new VanityURLChangedCallback(packetMsg.TargetJobID, vanityURLChangedNotification.Body));
 
 					break;
 			}
@@ -631,94 +639,6 @@ namespace ArchiSteamFarm {
 
 			ClientMsgProtobuf<CMsgClientUIMode> request = new ClientMsgProtobuf<CMsgClientUIMode>(EMsg.ClientCurrentUIMode) { Body = { chat_mode = chatMode } };
 			Client.Send(request);
-		}
-
-		private void HandleCommentNotifications(IPacketMsg packetMsg) {
-			if (packetMsg == null) {
-				ArchiLogger.LogNullError(nameof(packetMsg));
-
-				return;
-			}
-
-			ClientMsgProtobuf<CMsgClientCommentNotifications> response = new ClientMsgProtobuf<CMsgClientCommentNotifications>(packetMsg);
-			Client.PostCallback(new UserNotificationsCallback(packetMsg.TargetJobID, response.Body));
-		}
-
-		private void HandleItemAnnouncements(IPacketMsg packetMsg) {
-			if (packetMsg == null) {
-				ArchiLogger.LogNullError(nameof(packetMsg));
-
-				return;
-			}
-
-			ClientMsgProtobuf<CMsgClientItemAnnouncements> response = new ClientMsgProtobuf<CMsgClientItemAnnouncements>(packetMsg);
-			Client.PostCallback(new UserNotificationsCallback(packetMsg.TargetJobID, response.Body));
-		}
-
-		private void HandlePlayingSessionState(IPacketMsg packetMsg) {
-			if (packetMsg == null) {
-				ArchiLogger.LogNullError(nameof(packetMsg));
-
-				return;
-			}
-
-			ClientMsgProtobuf<CMsgClientPlayingSessionState> response = new ClientMsgProtobuf<CMsgClientPlayingSessionState>(packetMsg);
-			Client.PostCallback(new PlayingSessionStateCallback(packetMsg.TargetJobID, response.Body));
-		}
-
-		private void HandlePurchaseResponse(IPacketMsg packetMsg) {
-			if (packetMsg == null) {
-				ArchiLogger.LogNullError(nameof(packetMsg));
-
-				return;
-			}
-
-			ClientMsgProtobuf<CMsgClientPurchaseResponse> response = new ClientMsgProtobuf<CMsgClientPurchaseResponse>(packetMsg);
-			Client.PostCallback(new PurchaseResponseCallback(packetMsg.TargetJobID, response.Body));
-		}
-
-		private void HandleRedeemGuestPassResponse(IPacketMsg packetMsg) {
-			if (packetMsg == null) {
-				ArchiLogger.LogNullError(nameof(packetMsg));
-
-				return;
-			}
-
-			ClientMsgProtobuf<CMsgClientRedeemGuestPassResponse> response = new ClientMsgProtobuf<CMsgClientRedeemGuestPassResponse>(packetMsg);
-			Client.PostCallback(new RedeemGuestPassResponseCallback(packetMsg.TargetJobID, response.Body));
-		}
-
-		private void HandleSharedLibraryLockStatus(IPacketMsg packetMsg) {
-			if (packetMsg == null) {
-				ArchiLogger.LogNullError(nameof(packetMsg));
-
-				return;
-			}
-
-			ClientMsgProtobuf<CMsgClientSharedLibraryLockStatus> response = new ClientMsgProtobuf<CMsgClientSharedLibraryLockStatus>(packetMsg);
-			Client.PostCallback(new SharedLibraryLockStatusCallback(packetMsg.TargetJobID, response.Body));
-		}
-
-		private void HandleUserNotifications(IPacketMsg packetMsg) {
-			if (packetMsg == null) {
-				ArchiLogger.LogNullError(nameof(packetMsg));
-
-				return;
-			}
-
-			ClientMsgProtobuf<CMsgClientUserNotifications> response = new ClientMsgProtobuf<CMsgClientUserNotifications>(packetMsg);
-			Client.PostCallback(new UserNotificationsCallback(packetMsg.TargetJobID, response.Body));
-		}
-
-		private void HandleVanityURLChangedNotification(IPacketMsg packetMsg) {
-			if (packetMsg == null) {
-				ArchiLogger.LogNullError(nameof(packetMsg));
-
-				return;
-			}
-
-			ClientMsgProtobuf<CMsgClientVanityURLChangedNotification> response = new ClientMsgProtobuf<CMsgClientVanityURLChangedNotification>(packetMsg);
-			Client.PostCallback(new VanityURLChangedCallback(packetMsg.TargetJobID, response.Body));
 		}
 
 		[SuppressMessage("ReSharper", "MemberCanBeInternal")]
