@@ -813,9 +813,9 @@ namespace ArchiSteamFarm {
 
 			internal HtmlDocumentResponse([NotNull] BasicResponse basicResponse) : base(basicResponse) { }
 
-			private HtmlDocumentResponse([NotNull] StreamResponse streamResponse, IDocument document) : base(streamResponse) {
-				if (streamResponse == null) {
-					throw new ArgumentNullException(nameof(streamResponse));
+			private HtmlDocumentResponse([NotNull] StreamResponse streamResponse, [NotNull] IDocument document) : base(streamResponse) {
+				if ((streamResponse == null) || (document == null)) {
+					throw new ArgumentNullException(nameof(streamResponse) + " || " + nameof(document));
 				}
 
 				Content = document;
