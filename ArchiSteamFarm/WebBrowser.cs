@@ -751,16 +751,23 @@ namespace ArchiSteamFarm {
 
 			private HtmlDocumentResponse(BasicResponse streamResponse, IDocument document) : base(streamResponse) => Content = document;
 
-			[ItemNotNull]
+			[ItemCanBeNull]
 			internal static async Task<HtmlDocumentResponse> Create([NotNull] StreamResponse streamResponse) {
 				if (streamResponse == null) {
 					throw new ArgumentNullException(nameof(streamResponse));
 				}
 
 				IBrowsingContext context = BrowsingContext.New(Configuration.Default.WithXPath());
-				IDocument document = await context.OpenAsync(req => req.Content(streamResponse.Content, true)).ConfigureAwait(false);
 
-				return new HtmlDocumentResponse(streamResponse, document);
+				try {
+					IDocument document = await context.OpenAsync(req => req.Content(streamResponse.Content, true)).ConfigureAwait(false);
+
+					return new HtmlDocumentResponse(streamResponse, document);
+				} catch (Exception e) {
+					ASF.ArchiLogger.LogGenericWarningException(e);
+
+					return null;
+				}
 			}
 		}
 
