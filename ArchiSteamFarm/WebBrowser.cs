@@ -105,9 +105,44 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			using StreamResponse response = await UrlGetToStream(request, referer, requestOptions, maxTries).ConfigureAwait(false);
+			HtmlDocumentResponse result = null;
 
-			return response != null ? await HtmlDocumentResponse.Create(response).ConfigureAwait(false) : null;
+			for (int i = 0; i < maxTries; i++) {
+				using StreamResponse response = await UrlGetToStream(request, referer, requestOptions, maxTries).ConfigureAwait(false);
+
+				if (response == null) {
+					return null;
+				}
+
+				if (response.StatusCode.IsClientErrorCode()) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						result = new HtmlDocumentResponse(response);
+					}
+
+					break;
+				}
+
+				if (response.Content == null) {
+					continue;
+				}
+
+				try {
+					result = await HtmlDocumentResponse.Create(response).ConfigureAwait(false);
+				} catch (Exception e) {
+					ArchiLogger.LogGenericWarningException(e);
+
+					continue;
+				}
+
+				return result;
+			}
+
+			if (maxTries > 1) {
+				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+			}
+
+			return result;
 		}
 
 		[ItemCanBeNull]
@@ -149,12 +184,8 @@ namespace ArchiSteamFarm {
 					JsonSerializer serializer = new JsonSerializer();
 
 					obj = serializer.Deserialize<T>(jsonReader);
-				} catch (JsonException e) {
+				} catch (Exception e) {
 					ArchiLogger.LogGenericWarningException(e);
-
-					if (Debugging.IsUserDebugging) {
-						ArchiLogger.LogGenericDebug(string.Format(Strings.Content, response.Content));
-					}
 
 					continue;
 				}
@@ -305,9 +336,44 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			using StreamResponse response = await UrlPostToStream(request, data, referer, requestOptions, maxTries).ConfigureAwait(false);
+			HtmlDocumentResponse result = null;
 
-			return response != null ? await HtmlDocumentResponse.Create(response).ConfigureAwait(false) : null;
+			for (int i = 0; i < maxTries; i++) {
+				using StreamResponse response = await UrlPostToStream(request, data, referer, requestOptions, maxTries).ConfigureAwait(false);
+
+				if (response == null) {
+					return null;
+				}
+
+				if (response.StatusCode.IsClientErrorCode()) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						result = new HtmlDocumentResponse(response);
+					}
+
+					break;
+				}
+
+				if (response.Content == null) {
+					continue;
+				}
+
+				try {
+					result = await HtmlDocumentResponse.Create(response).ConfigureAwait(false);
+				} catch (Exception e) {
+					ArchiLogger.LogGenericWarningException(e);
+
+					continue;
+				}
+
+				return result;
+			}
+
+			if (maxTries > 1) {
+				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+			}
+
+			return result;
 		}
 
 		[ItemCanBeNull]
@@ -348,12 +414,8 @@ namespace ArchiSteamFarm {
 					JsonSerializer serializer = new JsonSerializer();
 
 					obj = serializer.Deserialize<T>(jsonReader);
-				} catch (JsonException e) {
+				} catch (Exception e) {
 					ArchiLogger.LogGenericWarningException(e);
-
-					if (Debugging.IsUserDebugging) {
-						ArchiLogger.LogGenericDebug(string.Format(Strings.Content, response.Content));
-					}
 
 					continue;
 				}
@@ -749,7 +811,15 @@ namespace ArchiSteamFarm {
 			[PublicAPI]
 			public readonly IDocument Content;
 
-			private HtmlDocumentResponse(BasicResponse streamResponse, IDocument document) : base(streamResponse) => Content = document;
+			internal HtmlDocumentResponse([NotNull] BasicResponse basicResponse) : base(basicResponse) { }
+
+			private HtmlDocumentResponse([NotNull] StreamResponse streamResponse, IDocument document) : base(streamResponse) {
+				if (streamResponse == null) {
+					throw new ArgumentNullException(nameof(streamResponse));
+				}
+
+				Content = document;
+			}
 
 			[ItemCanBeNull]
 			internal static async Task<HtmlDocumentResponse> Create([NotNull] StreamResponse streamResponse) {
