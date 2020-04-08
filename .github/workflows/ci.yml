@@ -67,7 +67,7 @@ jobs:
     - name: Publish ArchiSteamFarm on Unix
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
       env:
-        VARIANTS: generic linux-arm linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
+        VARIANTS: generic linux-arm linux-arm64 linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
       shell: sh
       run: |
         set -eu
@@ -107,7 +107,7 @@ jobs:
     - name: Publish ArchiSteamFarm on Windows
       if: startsWith(matrix.os, 'windows-')
       env:
-        VARIANTS: generic generic-netf linux-arm linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
+        VARIANTS: generic generic-netf linux-arm linux-arm64 linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
       shell: pwsh
       run: |
         Set-StrictMode -Version Latest

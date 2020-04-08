@@ -112,6 +112,11 @@ namespace ArchiSteamFarm {
 
 			[NotNull]
 			internal static string Variant => "linux-arm";
+#elif ASF_VARIANT_LINUX_ARM64
+			internal static bool CanUpdate => true;
+
+			[NotNull]
+			internal static string Variant => "linux-arm64";
 #elif ASF_VARIANT_LINUX_X64
 			internal static bool CanUpdate => true;
 
