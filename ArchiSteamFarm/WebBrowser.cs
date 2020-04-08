@@ -811,9 +811,13 @@ namespace ArchiSteamFarm {
 			[PublicAPI]
 			public readonly IDocument Content;
 
-			internal HtmlDocumentResponse([NotNull] BasicResponse basicResponse) : base(basicResponse) { }
+			internal HtmlDocumentResponse([NotNull] BasicResponse basicResponse) : base(basicResponse) {
+				if (basicResponse == null) {
+					throw new ArgumentNullException(nameof(basicResponse));
+				}
+			}
 
-			private HtmlDocumentResponse([NotNull] StreamResponse streamResponse, [NotNull] IDocument document) : base(streamResponse) {
+			private HtmlDocumentResponse([NotNull] StreamResponse streamResponse, [NotNull] IDocument document) : this(streamResponse) {
 				if ((streamResponse == null) || (document == null)) {
 					throw new ArgumentNullException(nameof(streamResponse) + " || " + nameof(document));
 				}
@@ -845,7 +849,7 @@ namespace ArchiSteamFarm {
 			[PublicAPI]
 			public readonly T Content;
 
-			internal ObjectResponse([NotNull] StreamResponse streamResponse, T content) : base(streamResponse) {
+			internal ObjectResponse([NotNull] StreamResponse streamResponse, T content) : this(streamResponse) {
 				if (streamResponse == null) {
 					throw new ArgumentNullException(nameof(streamResponse));
 				}
@@ -853,14 +857,18 @@ namespace ArchiSteamFarm {
 				Content = content;
 			}
 
-			internal ObjectResponse([NotNull] BasicResponse basicResponse) : base(basicResponse) { }
+			internal ObjectResponse([NotNull] BasicResponse basicResponse) : base(basicResponse) {
+				if (basicResponse == null) {
+					throw new ArgumentNullException(nameof(basicResponse));
+				}
+			}
 		}
 
 		public sealed class XmlDocumentResponse : BasicResponse {
 			[PublicAPI]
 			public readonly XmlDocument Content;
 
-			internal XmlDocumentResponse([NotNull] StreamResponse streamResponse, XmlDocument content) : base(streamResponse) {
+			internal XmlDocumentResponse([NotNull] StreamResponse streamResponse, XmlDocument content) : this(streamResponse) {
 				if (streamResponse == null) {
 					throw new ArgumentNullException(nameof(streamResponse));
 				}
@@ -868,7 +876,11 @@ namespace ArchiSteamFarm {
 				Content = content;
 			}
 
-			internal XmlDocumentResponse([NotNull] BasicResponse basicResponse) : base(basicResponse) { }
+			internal XmlDocumentResponse([NotNull] BasicResponse basicResponse) : base(basicResponse) {
+				if (basicResponse == null) {
+					throw new ArgumentNullException(nameof(basicResponse));
+				}
+			}
 		}
 
 		[Flags]
@@ -880,7 +892,7 @@ namespace ArchiSteamFarm {
 		internal sealed class BinaryResponse : BasicResponse {
 			internal readonly byte[] Content;
 
-			internal BinaryResponse([NotNull] BasicResponse basicResponse, [NotNull] byte[] content) : base(basicResponse) {
+			internal BinaryResponse([NotNull] BasicResponse basicResponse, [NotNull] byte[] content) : this(basicResponse) {
 				if ((basicResponse == null) || (content == null)) {
 					throw new ArgumentNullException(nameof(basicResponse) + " || " + nameof(content));
 				}
@@ -888,7 +900,11 @@ namespace ArchiSteamFarm {
 				Content = content;
 			}
 
-			internal BinaryResponse([NotNull] BasicResponse basicResponse) : base(basicResponse) { }
+			internal BinaryResponse([NotNull] BasicResponse basicResponse) : base(basicResponse) {
+				if (basicResponse == null) {
+					throw new ArgumentNullException(nameof(basicResponse));
+				}
+			}
 		}
 
 		internal sealed class StreamResponse : BasicResponse, IDisposable {
@@ -897,17 +913,22 @@ namespace ArchiSteamFarm {
 
 			private readonly HttpResponseMessage ResponseMessage;
 
-			internal StreamResponse([NotNull] HttpResponseMessage httpResponseMessage, [NotNull] Stream content) : base(httpResponseMessage) {
+			internal StreamResponse([NotNull] HttpResponseMessage httpResponseMessage, [NotNull] Stream content) : this(httpResponseMessage) {
 				if ((httpResponseMessage == null) || (content == null)) {
 					throw new ArgumentNullException(nameof(httpResponseMessage) + " || " + nameof(content));
 				}
 
 				Content = content;
+			}
+
+			internal StreamResponse([NotNull] HttpResponseMessage httpResponseMessage) : base(httpResponseMessage) {
+				if (httpResponseMessage == null) {
+					throw new ArgumentNullException(nameof(httpResponseMessage));
+				}
+
 				Length = (uint) httpResponseMessage.Content.Headers.ContentLength.GetValueOrDefault();
 				ResponseMessage = httpResponseMessage;
 			}
-
-			internal StreamResponse([NotNull] HttpResponseMessage httpResponseMessage) : base(httpResponseMessage) { }
 
 			public void Dispose() {
 				Content.Dispose();
@@ -918,7 +939,7 @@ namespace ArchiSteamFarm {
 		internal sealed class StringResponse : BasicResponse {
 			internal readonly string Content;
 
-			internal StringResponse([NotNull] HttpResponseMessage httpResponseMessage, [NotNull] string content) : base(httpResponseMessage) {
+			internal StringResponse([NotNull] HttpResponseMessage httpResponseMessage, [NotNull] string content) : this(httpResponseMessage) {
 				if ((httpResponseMessage == null) || (content == null)) {
 					throw new ArgumentNullException(nameof(httpResponseMessage) + " || " + nameof(content));
 				}
@@ -926,7 +947,11 @@ namespace ArchiSteamFarm {
 				Content = content;
 			}
 
-			internal StringResponse([NotNull] HttpResponseMessage httpResponseMessage) : base(httpResponseMessage) { }
+			internal StringResponse([NotNull] HttpResponseMessage httpResponseMessage) : base(httpResponseMessage) {
+				if (httpResponseMessage == null) {
+					throw new ArgumentNullException(nameof(httpResponseMessage));
+				}
+			}
 		}
 	}
 }
