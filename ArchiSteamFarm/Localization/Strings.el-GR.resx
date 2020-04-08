@@ -643,7 +643,10 @@ StackTrace:
   
   
   
-  
+  <data name="BotLevel" xml:space="preserve">
+    <value>Το bot βρίσκεται στο επίπεδο {0}.</value>
+    <comment>{0} will be replaced by bot's level</comment>
+  </data>
   
   
   <data name="ErrorAborted" xml:space="preserve">
@@ -651,7 +654,10 @@ StackTrace:
   </data>
   
   
-  
+  <data name="PluginLoaded" xml:space="preserve">
+    <value>{0} φορτώθηκε με επιτυχία!</value>
+    <comment>{0} will be replaced by the name of the custom ASF plugin</comment>
+  </data>
   <data name="PluginLoading" xml:space="preserve">
     <value>Φόρτωση του {0} Εκδ.{1}...</value>
     <comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
