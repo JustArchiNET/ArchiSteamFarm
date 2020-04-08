@@ -931,7 +931,8 @@ namespace ArchiSteamFarm {
 			}
 
 			public void Dispose() {
-				Content.Dispose();
+				Content?.Dispose();
+
 				ResponseMessage.Dispose();
 			}
 		}
