@@ -191,6 +191,12 @@ jobs:
         name: ${{ matrix.os }}_ASF-linux-arm
         path: out/linux-arm
 
+    - name: Upload ASF-linux-arm64
+      uses: actions/upload-artifact@v1
+      with:
+        name: ${{ matrix.os }}_ASF-linux-arm64
+        path: out/linux-arm64
+
     - name: Upload ASF-linux-x64
       uses: actions/upload-artifact@v1
       with:
