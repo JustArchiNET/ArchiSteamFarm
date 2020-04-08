@@ -108,7 +108,7 @@ namespace ArchiSteamFarm {
 			HtmlDocumentResponse result = null;
 
 			for (int i = 0; i < maxTries; i++) {
-				using StreamResponse response = await UrlGetToStream(request, referer, requestOptions, maxTries).ConfigureAwait(false);
+				using StreamResponse response = await UrlGetToStream(request, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
 				if (response == null) {
 					return null;
@@ -339,7 +339,7 @@ namespace ArchiSteamFarm {
 			HtmlDocumentResponse result = null;
 
 			for (int i = 0; i < maxTries; i++) {
-				using StreamResponse response = await UrlPostToStream(request, data, referer, requestOptions, maxTries).ConfigureAwait(false);
+				using StreamResponse response = await UrlPostToStream(request, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
 				if (response == null) {
 					return null;
@@ -473,7 +473,7 @@ namespace ArchiSteamFarm {
 				const byte printPercentage = 10;
 				const byte maxBatches = 99 / printPercentage;
 
-				using StreamResponse response = await UrlGetToStream(request, referer, requestOptions).ConfigureAwait(false);
+				using StreamResponse response = await UrlGetToStream(request, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
 				if (response == null) {
 					continue;
