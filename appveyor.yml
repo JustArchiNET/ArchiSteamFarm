@@ -146,10 +146,8 @@ after_test:
         Set-Location "$env:APPVEYOR_BUILD_FOLDER"
 
         if ($variant -like '*-netf') {
-            $compressionMethod = 'Deflate' # This depends on what ZipArchive supports on given platform
             $targetFramework = $env:NET_FRAMEWORK_VERSION
         } else {
-            $compressionMethod = 'Deflate64' # This depends on what ZipArchive supports on given platform
             $targetFramework = $env:NET_CORE_VERSION
         }
 
@@ -189,17 +187,11 @@ after_test:
 
             # If this build is going to be deployed further, prefer maximum compression
             if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq 'Visual Studio 2019') {
-                $compressionArgs = '-mx=9', '-mpass=15'
-
-                if ($compressionMethod -eq 'Deflate64') {
-                    $compressionArgs += '-mfb=257'
-                } else {
-                    $compressionArgs += '-mfb=258'
-                }
+                $compressionArgs = '-mx=9', '-mfb=258', '-mpass=15'
             }
         }
 
-        7z a -bd -tzip "-mm=$compressionMethod" $compressionArgs "out\ASF-$variant.zip" "$env:APPVEYOR_BUILD_FOLDER\out\$variant\*"
+        7z a -bd -slp -tzip -mm=Deflate $compressionArgs "out\ASF-$variant.zip" "$env:APPVEYOR_BUILD_FOLDER\out\$variant\*"
 
         if ($LastExitCode -ne 0) {
             throw "Last command failed."
