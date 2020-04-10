@@ -22,7 +22,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading;
+using Nito.AsyncEx;
 
 namespace ArchiSteamFarm.Collections {
 	internal sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
@@ -30,125 +30,81 @@ namespace ArchiSteamFarm.Collections {
 
 		internal int Count {
 			get {
-				Lock.EnterReadLock();
-
-				try {
+				using (Lock.ReaderLock()) {
 					return BackingCollection.Count;
-				} finally {
-					Lock.ExitReadLock();
 				}
 			}
 		}
 
 		private readonly List<T> BackingCollection = new List<T>();
-		private readonly ReaderWriterLockSlim Lock = new ReaderWriterLockSlim();
+		private readonly AsyncReaderWriterLock Lock = new AsyncReaderWriterLock();
 
 		int ICollection<T>.Count => Count;
 		int IReadOnlyCollection<T>.Count => Count;
 
 		public T this[int index] {
 			get {
-				Lock.EnterReadLock();
-
-				try {
+				using (Lock.ReaderLock()) {
 					return BackingCollection[index];
-				} finally {
-					Lock.ExitReadLock();
 				}
 			}
 
 			set {
-				Lock.EnterWriteLock();
-
-				try {
+				using (Lock.WriterLock()) {
 					BackingCollection[index] = value;
-				} finally {
-					Lock.ExitWriteLock();
 				}
 			}
 		}
 
 		public void Add(T item) {
-			Lock.EnterWriteLock();
-
-			try {
+			using (Lock.WriterLock()) {
 				BackingCollection.Add(item);
-			} finally {
-				Lock.ExitWriteLock();
 			}
 		}
 
 		public void Clear() {
-			Lock.EnterWriteLock();
-
-			try {
+			using (Lock.WriterLock()) {
 				BackingCollection.Clear();
-			} finally {
-				Lock.ExitWriteLock();
 			}
 		}
 
 		public bool Contains(T item) {
-			Lock.EnterReadLock();
-
-			try {
+			using (Lock.ReaderLock()) {
 				return BackingCollection.Contains(item);
-			} finally {
-				Lock.ExitReadLock();
 			}
 		}
 
 		public void CopyTo(T[] array, int arrayIndex) {
-			Lock.EnterReadLock();
-
-			try {
+			using (Lock.ReaderLock()) {
 				BackingCollection.CopyTo(array, arrayIndex);
-			} finally {
-				Lock.ExitReadLock();
 			}
 		}
 
 		[JetBrains.Annotations.NotNull]
 		[SuppressMessage("ReSharper", "AnnotationRedundancyInHierarchy")]
-		public IEnumerator<T> GetEnumerator() => new ConcurrentEnumerator<T>(BackingCollection, Lock);
+		public IEnumerator<T> GetEnumerator() => new ConcurrentEnumerator<T>(BackingCollection, Lock.ReaderLock());
 
 		public int IndexOf(T item) {
-			Lock.EnterReadLock();
-
-			try {
+			using (Lock.ReaderLock()) {
 				return BackingCollection.IndexOf(item);
-			} finally {
-				Lock.ExitReadLock();
 			}
 		}
 
 		public void Insert(int index, T item) {
-			Lock.EnterWriteLock();
-
-			try {
+			using (Lock.WriterLock()) {
 				BackingCollection.Insert(index, item);
-			} finally {
-				Lock.ExitWriteLock();
 			}
 		}
 
 		public bool Remove(T item) {
-			Lock.EnterWriteLock();
-
-			try {
+			using (Lock.WriterLock()) {
 				return BackingCollection.Remove(item);
-			} finally {
-				Lock.ExitWriteLock();
 			}
 		}
 
 		public void RemoveAt(int index) {
-			Lock.EnterWriteLock();
-
-			try {
+			using (Lock.WriterLock()) {
 				BackingCollection.RemoveAt(index);
-			} finally {
-				Lock.ExitWriteLock();
 			}
 		}
 
@@ -157,13 +113,9 @@ namespace ArchiSteamFarm.Collections {
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 		internal void ReplaceWith([JetBrains.Annotations.NotNull] IEnumerable<T> collection) {
-			Lock.EnterWriteLock();
-
-			try {
+			using (Lock.WriterLock()) {
 				BackingCollection.Clear();
 				BackingCollection.AddRange(collection);
-			} finally {
-				Lock.ExitWriteLock();
 			}
 		}
 	}
