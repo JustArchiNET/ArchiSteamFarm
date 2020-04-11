@@ -1179,6 +1179,15 @@ namespace ArchiSteamFarm {
 
 			Bot.BotDatabase.AddIdlingBlacklistedAppIDs(appIDs);
 
+			if (Bot.CardsFarmer.NowFarming && Bot.CardsFarmer.GamesToFarmReadOnly.Any(game => appIDs.Contains(game.AppID))) {
+				Utilities.InBackground(
+					async () => {
+						await Bot.CardsFarmer.StopFarming().ConfigureAwait(false);
+						await Bot.CardsFarmer.StartFarming().ConfigureAwait(false);
+					}
+				);
+			}
+
 			return FormatBotResponse(Strings.Done);
 		}
 
