@@ -106,7 +106,7 @@ namespace ArchiSteamFarm {
 
 			InitBotsComparer(botsComparer);
 
-			if (!GlobalConfig.Headless) {
+			if (!GlobalConfig.Headless && !Console.IsInputRedirected) {
 				Logging.StartInteractiveConsole();
 			}
 
