@@ -139,7 +139,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 		// You can use either ASF's default functions for that, or implement your own logic as you please
 		// If you do not intend to return any response to user, just return null/empty and ASF will proceed with the silence as usual
 		public Task<string> OnBotMessage(Bot bot, ulong steamID, string message) {
-			// Normally ASF will expect from you async-capable responses, such as Task<string>. This allows you to make your code fully asynchronous which is a core fundament on which ASF is built upon
+			// Normally ASF will expect from you async-capable responses, such as Task<string>. This allows you to make your code fully asynchronous which is a core foundation on which ASF is built upon
 			// Since in this method we're not doing any async stuff, instead of defining this method as async (pointless), we just need to wrap our responses in Task.FromResult<>()
 
 			// As a starter, we can for example ignore messages sent from our own bots, since otherwise they can run into a possible infinite loop of answering themselves
