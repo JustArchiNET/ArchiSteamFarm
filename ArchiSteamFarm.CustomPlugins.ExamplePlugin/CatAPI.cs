@@ -33,7 +33,11 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 		private const string URL = "https://aws.random.cat";
 
 		[ItemCanBeNull]
-		internal static async Task<string> GetRandomCatURL([JetBrains.Annotations.NotNull] WebBrowser webBrowser) {
+		internal static async Task<string> GetRandomCatURL([NotNull] WebBrowser webBrowser) {
+			if (webBrowser == null) {
+				throw new ArgumentNullException(nameof(webBrowser));
+			}
+
 			const string request = URL + "/meow";
 
 			WebBrowser.ObjectResponse<MeowResponse> response = await webBrowser.UrlGetToJsonObject<MeowResponse>(request).ConfigureAwait(false);
