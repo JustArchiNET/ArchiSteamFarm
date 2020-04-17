@@ -837,7 +837,7 @@ namespace ArchiSteamFarm {
 					throw new ArgumentNullException(nameof(streamResponse));
 				}
 
-				using IBrowsingContext context = BrowsingContext.New(Configuration.Default);
+				IBrowsingContext context = BrowsingContext.New();
 
 				try {
 					IDocument document = await context.OpenAsync(req => req.Content(streamResponse.Content)).ConfigureAwait(false);
