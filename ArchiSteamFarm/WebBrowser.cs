@@ -840,7 +840,7 @@ namespace ArchiSteamFarm {
 				IBrowsingContext context = BrowsingContext.New();
 
 				try {
-					IDocument document = await context.OpenAsync(req => req.Content(streamResponse.Content)).ConfigureAwait(false);
+					IDocument document = await context.OpenAsync(req => req.Content(streamResponse.Content, true)).ConfigureAwait(false);
 
 					return new HtmlDocumentResponse(streamResponse, document);
 				} catch (Exception e) {
