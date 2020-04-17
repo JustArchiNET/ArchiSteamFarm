@@ -58,7 +58,13 @@ namespace ArchiSteamFarm {
 
 			HttpClientHandler = new HttpClientHandler {
 				AllowAutoRedirect = false, // This must be false if we want to handle custom redirection schemes such as "steammobile://"
+
+#if !NETFRAMEWORK
+				AutomaticDecompression = DecompressionMethods.All,
+#else
 				AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
+#endif
+
 				CookieContainer = CookieContainer
 			};
 
