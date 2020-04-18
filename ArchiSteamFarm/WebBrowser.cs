@@ -501,17 +501,12 @@ namespace ArchiSteamFarm {
 					using MemoryStream ms = new MemoryStream((int) response.Length);
 
 				try {
-#if !NETFRAMEWORK
-					await
-#endif
-						using Stream contentStream = response.Content;
-
 					byte batch = 0;
 					uint readThisBatch = 0;
 					byte[] buffer = new byte[8192]; // This is HttpClient's buffer, using more doesn't make sense
 
-					while (contentStream.CanRead) {
-						int read = await contentStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+					while (response.Content.CanRead) {
+						int read = await response.Content.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
 
 						if (read == 0) {
 							break;
