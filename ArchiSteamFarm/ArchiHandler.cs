@@ -67,6 +67,12 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			if (Client == null) {
+				ASF.ArchiLogger.LogNullError(nameof(Client));
+
+				return;
+			}
+
 			LastPacketReceived = DateTime.UtcNow;
 
 			switch (packetMsg.MsgType) {
@@ -196,12 +202,6 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (response == null) {
-				ArchiLogger.LogNullError(nameof(response));
-
-				return false;
-			}
-
 			return response.Result == EResult.OK;
 		}
 
@@ -231,12 +231,6 @@ namespace ArchiSteamFarm {
 				return 0;
 			}
 
-			if (response == null) {
-				ArchiLogger.LogNullError(nameof(response));
-
-				return 0;
-			}
-
 			if (response.Result != EResult.OK) {
 				return 0;
 			}
@@ -258,12 +252,6 @@ namespace ArchiSteamFarm {
 				response = await UnifiedPlayerService.SendMessage(x => x.GetGameBadgeLevels(request));
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
-
-				return null;
-			}
-
-			if (response == null) {
-				ArchiLogger.LogNullError(nameof(response));
 
 				return null;
 			}
@@ -294,12 +282,6 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (response == null) {
-				ArchiLogger.LogNullError(nameof(response));
-
-				return null;
-			}
-
 			if (response.Result != EResult.OK) {
 				return null;
 			}
@@ -322,12 +304,6 @@ namespace ArchiSteamFarm {
 				response = await UnifiedEconService.SendMessage(x => x.GetTradeOfferAccessToken(request));
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
-
-				return null;
-			}
-
-			if (response == null) {
-				ArchiLogger.LogNullError(nameof(response));
 
 				return null;
 			}
@@ -360,12 +336,6 @@ namespace ArchiSteamFarm {
 				response = await UnifiedChatRoomService.SendMessage(x => x.JoinChatRoomGroup(request));
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
-
-				return false;
-			}
-
-			if (response == null) {
-				ArchiLogger.LogNullError(nameof(response));
 
 				return false;
 			}
@@ -500,12 +470,6 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (response == null) {
-				ArchiLogger.LogNullError(nameof(response));
-
-				return false;
-			}
-
 			return response.Result == EResult.OK;
 		}
 
@@ -546,12 +510,6 @@ namespace ArchiSteamFarm {
 				return EResult.Timeout;
 			}
 
-			if (response == null) {
-				ArchiLogger.LogNullError(nameof(response));
-
-				return EResult.Fail;
-			}
-
 			return response.Result;
 		}
 
@@ -582,12 +540,6 @@ namespace ArchiSteamFarm {
 				return EResult.Timeout;
 			}
 
-			if (response == null) {
-				ArchiLogger.LogNullError(nameof(response));
-
-				return EResult.Fail;
-			}
-
 			return response.Result;
 		}
 
@@ -615,12 +567,6 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericWarningException(e);
 
 				return EResult.Timeout;
-			}
-
-			if (response == null) {
-				ArchiLogger.LogNullError(nameof(response));
-
-				return EResult.Fail;
 			}
 
 			return response.Result;

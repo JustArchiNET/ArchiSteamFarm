@@ -236,7 +236,7 @@ namespace ArchiSteamFarm {
 
 			SteamUnifiedMessages steamUnifiedMessages = SteamClient.GetHandler<SteamUnifiedMessages>();
 
-			ArchiHandler = new ArchiHandler(ArchiLogger, steamUnifiedMessages);
+			ArchiHandler = new ArchiHandler(ArchiLogger, steamUnifiedMessages ?? throw new ArgumentNullException(nameof(steamUnifiedMessages)));
 			SteamClient.AddHandler(ArchiHandler);
 
 			CallbackManager = new CallbackManager(SteamClient);
@@ -634,7 +634,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			if (productInfoResultSet == null) {
+			if (productInfoResultSet?.Results == null) {
 				return (optimisticDiscovery ? appID : 0, DateTime.MinValue, true);
 			}
 
@@ -794,7 +794,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			if (productInfoResultSet == null) {
+			if (productInfoResultSet?.Results == null) {
 				return null;
 			}
 
@@ -1058,7 +1058,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (string.IsNullOrEmpty(callback?.Nonce)) {
+			if (string.IsNullOrEmpty(callback.Nonce)) {
 				await Connect(true).ConfigureAwait(false);
 
 				return false;
@@ -1802,7 +1802,8 @@ namespace ArchiSteamFarm {
 			CardsFarmer.SetInitialState(BotConfig.Paused);
 
 			if (SendItemsTimer != null) {
-				SendItemsTimer.Dispose();
+				await SendItemsTimer.DisposeAsync().ConfigureAwait(false);
+
 				SendItemsTimer = null;
 			}
 
@@ -2544,8 +2545,14 @@ namespace ArchiSteamFarm {
 		}
 
 		private void OnLoginKey(SteamUser.LoginKeyCallback callback) {
-			if (string.IsNullOrEmpty(callback?.LoginKey)) {
-				ArchiLogger.LogNullError(nameof(callback) + " || " + nameof(callback.LoginKey));
+			if (callback == null) {
+				ArchiLogger.LogNullError(nameof(callback));
+
+				return;
+			}
+
+			if (string.IsNullOrEmpty(callback.LoginKey)) {
+				ArchiLogger.LogNullError(nameof(callback.LoginKey));
 
 				return;
 			}
@@ -2636,7 +2643,7 @@ namespace ArchiSteamFarm {
 
 			string avatarHash = null;
 
-			if ((callback.AvatarHash != null) && (callback.AvatarHash.Length > 0) && callback.AvatarHash.Any(singleByte => singleByte != 0)) {
+			if ((callback.AvatarHash.Length > 0) && callback.AvatarHash.Any(singleByte => singleByte != 0)) {
 				avatarHash = BitConverter.ToString(callback.AvatarHash).Replace("-", "").ToLowerInvariant();
 
 				if (string.IsNullOrEmpty(avatarHash) || avatarHash.All(singleChar => singleChar == '0')) {
@@ -2795,7 +2802,8 @@ namespace ArchiSteamFarm {
 
 			try {
 				if (GamesRedeemerInBackgroundTimer != null) {
-					GamesRedeemerInBackgroundTimer.Dispose();
+					await GamesRedeemerInBackgroundTimer.DisposeAsync().ConfigureAwait(false);
+
 					GamesRedeemerInBackgroundTimer = null;
 				}
 

@@ -49,14 +49,12 @@ namespace ArchiSteamFarm.IPC.Integration {
 			Next = next ?? throw new ArgumentNullException(nameof(next));
 
 			lock (FailedAuthorizations) {
-				if (ClearFailedAuthorizationsTimer == null) {
-					ClearFailedAuthorizationsTimer = new Timer(
-						e => FailedAuthorizations.Clear(),
-						null,
-						TimeSpan.FromHours(FailedAuthorizationsCooldownInHours), // Delay
-						TimeSpan.FromHours(FailedAuthorizationsCooldownInHours) // Period
-					);
-				}
+				ClearFailedAuthorizationsTimer ??= new Timer(
+					e => FailedAuthorizations.Clear(),
+					null,
+					TimeSpan.FromHours(FailedAuthorizationsCooldownInHours), // Delay
+					TimeSpan.FromHours(FailedAuthorizationsCooldownInHours) // Period
+				);
 			}
 		}
 

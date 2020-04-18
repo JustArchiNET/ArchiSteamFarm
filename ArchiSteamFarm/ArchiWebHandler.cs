@@ -1595,7 +1595,7 @@ namespace ArchiSteamFarm {
 
 			List<KeyValue> apps = response["apps"].Children;
 
-			if ((apps == null) || (apps.Count == 0)) {
+			if (apps.Count == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(apps));
 
 				return null;
@@ -2024,7 +2024,13 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(steamID.ToString()));
+			byte[] publicKey = KeyDictionary.GetPublicKey(universe);
+
+			if ((publicKey == null) || (publicKey.Length == 0)) {
+				Bot.ArchiLogger.LogNullError(nameof(publicKey));
+
+				return false;
+			}
 
 			// Generate a random 32-byte session key
 			byte[] sessionKey = CryptoHelper.GenerateRandomBlock(32);
@@ -2032,7 +2038,7 @@ namespace ArchiSteamFarm {
 			// RSA encrypt our session key with the public key for the universe we're on
 			byte[] encryptedSessionKey;
 
-			using (RSACrypto rsa = new RSACrypto(KeyDictionary.GetPublicKey(universe))) {
+			using (RSACrypto rsa = new RSACrypto(publicKey)) {
 				encryptedSessionKey = rsa.Encrypt(sessionKey);
 			}
 
@@ -2096,6 +2102,8 @@ namespace ArchiSteamFarm {
 
 				return false;
 			}
+
+			string sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(steamID.ToString()));
 
 			WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", "." + SteamCommunityHost));
 			WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", "." + SteamHelpHost));

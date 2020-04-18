@@ -132,6 +132,13 @@ namespace ArchiSteamFarm {
 			value = kv.Value;
 		}
 
+		[NotNull]
+		public static Task DisposeAsync([NotNull] this IDisposable disposable) {
+			disposable.Dispose();
+
+			return Task.CompletedTask;
+		}
+
 		public static async Task<WebSocketReceiveResult> ReceiveAsync([NotNull] this WebSocket webSocket, [NotNull] byte[] buffer, CancellationToken cancellationToken) => await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken).ConfigureAwait(false);
 		public static async Task SendAsync([NotNull] this WebSocket webSocket, [NotNull] byte[] buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) => await webSocket.SendAsync(new ArraySegment<byte>(buffer), messageType, endOfMessage, cancellationToken).ConfigureAwait(false);
 

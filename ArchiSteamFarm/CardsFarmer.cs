@@ -670,9 +670,7 @@ namespace ArchiSteamFarm {
 
 							break;
 						default:
-							if (backgroundTasks == null) {
-								backgroundTasks = new HashSet<Task>();
-							}
+							backgroundTasks ??= new HashSet<Task>();
 
 							backgroundTasks.Add(task);
 

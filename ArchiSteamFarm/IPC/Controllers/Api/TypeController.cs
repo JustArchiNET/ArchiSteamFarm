@@ -69,7 +69,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 					}
 				}
 
-				foreach (PropertyInfo property in targetType.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(property => property.CanRead && !property.GetMethod.IsPrivate)) {
+				foreach (PropertyInfo property in targetType.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(property => property.CanRead && (property.GetMethod?.IsPrivate == false))) {
 					JsonPropertyAttribute jsonProperty = property.GetCustomAttribute<JsonPropertyAttribute>();
 
 					if (jsonProperty != null) {
@@ -81,7 +81,15 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				underlyingType = enumType.GetUnifiedName();
 
 				foreach (object value in Enum.GetValues(targetType)) {
-					body[value.ToString()] = Convert.ChangeType(value, enumType).ToString();
+					string valueText = value.ToString();
+
+					if (string.IsNullOrEmpty(valueText)) {
+						ASF.ArchiLogger.LogNullError(nameof(valueText));
+
+						return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorObjectIsNull, nameof(valueText))));
+					}
+
+					body[valueText] = Convert.ChangeType(value, enumType).ToString();
 				}
 			}
 
