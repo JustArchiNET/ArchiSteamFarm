@@ -228,7 +228,7 @@ namespace ArchiSteamFarm {
 
 				try {
 					Directory.CreateDirectory(debugListenerPath);
-					SteamClient.DebugNetworkListener = new NetHookNetworkListener(debugListenerPath);
+					SteamClient.DebugNetworkListener = new NetHookNetworkListener(debugListenerPath, SteamClient);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericException(e);
 				}
