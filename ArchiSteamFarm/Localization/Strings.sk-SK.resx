@@ -340,7 +340,9 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Farmenie zastavené!</value>
   </data>
-  
+  <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
+    <value>Ignorujem požiadavku, pretože trvalé pozastavenie je zapnuté!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Na tomto účte nie je nič na farmenie!</value>
   </data>
@@ -659,28 +661,58 @@ StackTrace:
   
   
   
-  
+  <data name="PluginLoading" xml:space="preserve">
+    <value>Načítám {0} V{1}...</value>
+    <comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
+  </data>
   <data name="NothingFound" xml:space="preserve">
     <value>Nič sa nenašlo!</value>
   </data>
-  
-  
+  <data name="PluginsWarning" xml:space="preserve">
+    <value>Jeden alebo viac vlastných pluginov bolo načítané do ASF. Keďže nie sme schopní poskytnúť podporu pre modifikované nastavenie, prosím, v prípade problémov kontaktujte príslušné vývojárov daných pluginov.</value>
+  </data>
+  <data name="PleaseWait" xml:space="preserve">
+    <value>Čakajte prosím...</value>
+  </data>
   <data name="EnterCommand" xml:space="preserve">
     <value>Vlož príkaz: </value>
   </data>
-  
-  
-  
+  <data name="Executing" xml:space="preserve">
+    <value>Vykonávam...</value>
+  </data>
+  <data name="InteractiveConsoleEnabled" xml:space="preserve">
+    <value>Interaktivní konzole je nyní aktivní, napište "c" pro vstup do příkazového režimu.
+Interaktívna konzola je teraz aktívna, napíšte "c" pre vstup do príkazového režimu.</value>
+  </data>
+  <data name="InteractiveConsoleNotAvailable" xml:space="preserve">
+    <value>Interaktívna konzola nie je dostupná z dôvodu chýbajúcej {0} konfigurácie.</value>
+    <comment>{0} will be replaced by the name of the missing config property (string)</comment>
+  </data>
   <data name="Response" xml:space="preserve">
     <value>Odpoveď: {0}</value>
     <comment>{0} will be replaced by the generated response (string)</comment>
   </data>
-  
-  
-  
-  
-  
-  
+  <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
+    <value>Bot má {0} zostávajúcich hier vo fronte.</value>
+    <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
+  </data>
+  <data name="ErrorSingleInstanceRequired" xml:space="preserve">
+    <value>Proces ASF už beží v tejto pracovnej zložke, prerušujem!</value>
+  </data>
+  <data name="BotHandledConfirmations" xml:space="preserve">
+    <value>Úspešne vykonal {0} potvrdenie!</value>
+    <comment>{0} will be replaced by number of confirmations</comment>
+  </data>
+  <data name="BotExtraIdlingCooldown" xml:space="preserve">
+    <value>Čakanie až {0} aby sme zaistili že budeme môcť začať farmiť...</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+  </data>
+  <data name="UpdateCleanup" xml:space="preserve">
+    <value>Odstraňovanie starých súborov po aktualizácii...</value>
+  </data>
+  <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
+    <value>Generujem Steam parental code, toto môže nejakú chvíľku trvať, zvážte ho vložiť do nastavenia...</value>
+  </data>
   <data name="IPCConfigChanged" xml:space="preserve">
     <value>Konfigurácia IPC bola zmenená!</value>
   </data>
