@@ -33,7 +33,7 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
-	internal sealed class Statistics : IDisposable {
+	internal sealed class Statistics : IAsyncDisposable {
 		private const byte MaxMatchedBotsHard = 40; // Determines how many bots we can attempt to match in total, where match attempt is equal to analyzing bot's inventory
 		private const byte MaxMatchedBotsSoft = MaxMatchedBotsHard / 2; // Determines how many consecutive empty matches we need to get before we decide to skip bots from the same category
 		private const byte MaxMatchingRounds = 10; // Determines maximum amount of matching rounds we're going to consider before leaving the rest of work for the next batch
@@ -71,10 +71,11 @@ namespace ArchiSteamFarm {
 			);
 		}
 
-		public void Dispose() {
+		public async ValueTask DisposeAsync() {
 			MatchActivelySemaphore.Dispose();
-			MatchActivelyTimer.Dispose();
 			RequestsSemaphore.Dispose();
+
+			await MatchActivelyTimer.DisposeAsync().ConfigureAwait(false);
 		}
 
 		internal async Task OnHeartBeat() {

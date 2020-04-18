@@ -349,11 +349,9 @@ namespace ArchiSteamFarm {
 				Array.Copy(Encoding.UTF8.GetBytes(tag), 0, buffer, 8, bufferSize - 8);
 			}
 
-			byte[] hash;
+			using HMACSHA1 hmac = new HMACSHA1(identitySecret);
 
-			using (HMACSHA1 hmac = new HMACSHA1(identitySecret)) {
-				hash = hmac.ComputeHash(buffer);
-			}
+			byte[] hash = hmac.ComputeHash(buffer);
 
 			return Convert.ToBase64String(hash);
 		}

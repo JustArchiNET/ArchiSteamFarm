@@ -28,7 +28,7 @@ using ArchiSteamFarm.Localization;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm {
-	internal sealed class SteamSaleEvent : IDisposable {
+	internal sealed class SteamSaleEvent : IAsyncDisposable {
 		private const byte MaxSingleQueuesDaily = 3; // This is only a failsafe for infinite queue clearing
 
 		private readonly Bot Bot;
@@ -45,7 +45,7 @@ namespace ArchiSteamFarm {
 			);
 		}
 
-		public void Dispose() => SaleEventTimer.Dispose();
+		public async ValueTask DisposeAsync() => await SaleEventTimer.DisposeAsync().ConfigureAwait(false);
 
 		private async Task ExploreDiscoveryQueue() {
 			if (!Bot.IsConnectedAndLoggedOn) {

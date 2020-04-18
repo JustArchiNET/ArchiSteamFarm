@@ -41,7 +41,7 @@ using SteamKit2;
 using SteamKit2.Unified.Internal;
 
 namespace ArchiSteamFarm {
-	public sealed class Bot : IDisposable {
+	public sealed class Bot : IAsyncDisposable {
 		internal const ushort CallbackSleep = 500; // In milliseconds
 		internal const ushort MaxMessagePrefixLength = MaxMessageLength - ReservedMessageLength - 2; // 2 for a minimum of 2 characters (escape one and real one)
 		internal const byte MinPlayingBlockedTTL = 60; // Delay in seconds added when account was occupied during our disconnect, to not disconnect other Steam client session too soon
@@ -282,27 +282,46 @@ namespace ArchiSteamFarm {
 			);
 		}
 
-		public void Dispose() {
+		public async ValueTask DisposeAsync() {
 			// Those are objects that are always being created if constructor doesn't throw exception
-			Actions.Dispose();
+			ArchiWebHandler.Dispose();
 			CallbackSemaphore.Dispose();
 			GamesRedeemerInBackgroundSemaphore.Dispose();
 			InitializationSemaphore.Dispose();
 			MessagingSemaphore.Dispose();
 			PICSSemaphore.Dispose();
+			Trading.Dispose();
+
+			await Actions.DisposeAsync().ConfigureAwait(false);
+			await CardsFarmer.DisposeAsync().ConfigureAwait(false);
+			await HeartBeatTimer.DisposeAsync().ConfigureAwait(false);
 
 			// Those are objects that might be null and the check should be in-place
-			ArchiWebHandler?.Dispose();
 			BotDatabase?.Dispose();
-			CardsFarmer?.Dispose();
-			ConnectionFailureTimer?.Dispose();
-			GamesRedeemerInBackgroundTimer?.Dispose();
-			HeartBeatTimer?.Dispose();
-			PlayingWasBlockedTimer?.Dispose();
-			SendItemsTimer?.Dispose();
-			Statistics?.Dispose();
-			SteamSaleEvent?.Dispose();
-			Trading?.Dispose();
+
+			if (ConnectionFailureTimer != null) {
+				await ConnectionFailureTimer.DisposeAsync().ConfigureAwait(false);
+			}
+
+			if (GamesRedeemerInBackgroundTimer != null) {
+				await GamesRedeemerInBackgroundTimer.DisposeAsync().ConfigureAwait(false);
+			}
+
+			if (PlayingWasBlockedTimer != null) {
+				await PlayingWasBlockedTimer.DisposeAsync().ConfigureAwait(false);
+			}
+
+			if (SendItemsTimer != null) {
+				await SendItemsTimer.DisposeAsync().ConfigureAwait(false);
+			}
+
+			if (Statistics != null) {
+				await Statistics.DisposeAsync().ConfigureAwait(false);
+			}
+
+			if (SteamSaleEvent != null) {
+				await SteamSaleEvent.DisposeAsync().ConfigureAwait(false);
+			}
 		}
 
 		[PublicAPI]
@@ -1137,7 +1156,8 @@ namespace ArchiSteamFarm {
 
 				if (!Bots.TryAdd(botName, bot)) {
 					ASF.ArchiLogger.LogNullError(nameof(bot));
-					bot.Dispose();
+
+					await bot.DisposeAsync().ConfigureAwait(false);
 
 					return;
 				}
@@ -1817,7 +1837,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (SteamSaleEvent != null) {
-				SteamSaleEvent.Dispose();
+				await SteamSaleEvent.DisposeAsync().ConfigureAwait(false);
+
 				SteamSaleEvent = null;
 			}
 

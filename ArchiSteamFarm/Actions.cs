@@ -34,7 +34,7 @@ using JetBrains.Annotations;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
-	public sealed class Actions : IDisposable {
+	public sealed class Actions : IAsyncDisposable {
 		private static readonly SemaphoreSlim GiftCardsSemaphore = new SemaphoreSlim(1, 1);
 		private static readonly SemaphoreSlim GiftsSemaphore = new SemaphoreSlim(1, 1);
 
@@ -48,12 +48,14 @@ namespace ArchiSteamFarm {
 
 		internal Actions([JetBrains.Annotations.NotNull] Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
-		public void Dispose() {
+		public async ValueTask DisposeAsync() {
 			// Those are objects that are always being created if constructor doesn't throw exception
 			TradingSemaphore.Dispose();
 
 			// Those are objects that might be null and the check should be in-place
-			CardsFarmerResumeTimer?.Dispose();
+			if (CardsFarmerResumeTimer != null) {
+				await CardsFarmerResumeTimer.DisposeAsync().ConfigureAwait(false);
+			}
 		}
 
 		[PublicAPI]

@@ -39,7 +39,7 @@ using Newtonsoft.Json;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
-	public sealed class CardsFarmer : IDisposable {
+	public sealed class CardsFarmer : IAsyncDisposable {
 		internal const byte DaysForRefund = 14; // In how many days since payment we're allowed to refund
 		internal const byte HoursForRefund = 2; // Up to how many hours we're allowed to play for refund
 
@@ -111,14 +111,16 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		public void Dispose() {
+		public async ValueTask DisposeAsync() {
 			// Those are objects that are always being created if constructor doesn't throw exception
 			EventSemaphore.Dispose();
 			FarmingInitializationSemaphore.Dispose();
 			FarmingResetSemaphore.Dispose();
 
 			// Those are objects that might be null and the check should be in-place
-			IdleFarmingTimer?.Dispose();
+			if (IdleFarmingTimer != null) {
+				await IdleFarmingTimer.DisposeAsync().ConfigureAwait(false);
+			}
 		}
 
 		internal void OnDisconnected() {

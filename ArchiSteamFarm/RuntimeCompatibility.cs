@@ -127,16 +127,16 @@ namespace ArchiSteamFarm {
 			return builder;
 		}
 
+		// ReSharper disable once UseDeconstructionOnParameter - we actually implement deconstruction here
 		public static void Deconstruct<TKey, TValue>(this KeyValuePair<TKey, TValue> kv, out TKey key, out TValue value) {
 			key = kv.Key;
 			value = kv.Value;
 		}
 
-		[NotNull]
-		public static Task DisposeAsync([NotNull] this IDisposable disposable) {
+		public static ValueTask DisposeAsync([NotNull] this IDisposable disposable) {
 			disposable.Dispose();
 
-			return Task.CompletedTask;
+			return default;
 		}
 
 		public static async Task<WebSocketReceiveResult> ReceiveAsync([NotNull] this WebSocket webSocket, [NotNull] byte[] buffer, CancellationToken cancellationToken) => await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken).ConfigureAwait(false);
