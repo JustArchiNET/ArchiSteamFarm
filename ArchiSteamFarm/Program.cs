@@ -226,7 +226,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			using ResourceSet defaultResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.GetCultureInfo("en-US"), true, true);
+			// We can't dispose this resource set, as we can't be sure if it isn't used somewhere else, rely on GC in this case
+			ResourceSet defaultResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.GetCultureInfo("en-US"), true, true);
 
 			if (defaultResourceSet == null) {
 				ASF.ArchiLogger.LogNullError(nameof(defaultResourceSet));
@@ -242,7 +243,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			using ResourceSet currentResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+			// We can't dispose this resource set, as we can't be sure if it isn't used somewhere else, rely on GC in this case
+			ResourceSet currentResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
 
 			if (currentResourceSet == null) {
 				ASF.ArchiLogger.LogNullError(nameof(currentResourceSet));
