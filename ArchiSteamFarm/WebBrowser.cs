@@ -495,10 +495,16 @@ namespace ArchiSteamFarm {
 
 				ArchiLogger.LogGenericDebug("0%...");
 
-				using MemoryStream ms = new MemoryStream((int) response.Length);
+#if !NETFRAMEWORK
+				await
+#endif
+					using MemoryStream ms = new MemoryStream((int) response.Length);
 
 				try {
-					using Stream contentStream = response.Content;
+#if !NETFRAMEWORK
+					await
+#endif
+						using Stream contentStream = response.Content;
 
 					byte batch = 0;
 					uint readThisBatch = 0;

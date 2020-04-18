@@ -2611,7 +2611,10 @@ namespace ArchiSteamFarm {
 			byte[] sentryHash;
 
 			try {
-				using FileStream fileStream = File.Open(sentryFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+#if !NETFRAMEWORK
+				await
+#endif
+					using FileStream fileStream = File.Open(sentryFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
 
 				fileStream.Seek(callback.Offset, SeekOrigin.Begin);
 

@@ -259,7 +259,11 @@ namespace ArchiSteamFarm {
 				}
 
 				try {
-					using MemoryStream memoryStream = new MemoryStream(response.Content);
+#if !NETFRAMEWORK
+					await
+#endif
+						using MemoryStream memoryStream = new MemoryStream(response.Content);
+
 					using ZipArchive zipArchive = new ZipArchive(memoryStream);
 
 					if (!UpdateFromArchive(zipArchive, SharedInfo.HomeDirectory)) {
