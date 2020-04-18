@@ -387,7 +387,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// The last 4 bits of the mac say where the code starts
-			int start = hash[hash.Length - 1] & 0x0f;
+			int start = hash[^1] & 0x0f;
 
 			// Extract those 4 bytes
 			byte[] bytes = new byte[4];

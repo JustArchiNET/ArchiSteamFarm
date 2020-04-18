@@ -929,7 +929,7 @@ namespace ArchiSteamFarm {
 						}
 
 						string name = parsedArgs[0];
-						string key = parsedArgs[parsedArgs.Length - 1];
+						string key = parsedArgs[^1];
 
 						gamesToRedeemInBackground[key] = name;
 					}
@@ -1634,7 +1634,7 @@ namespace ArchiSteamFarm {
 						continue;
 					}
 
-					string key = parsedArgs[parsedArgs.Length - 1];
+					string key = parsedArgs[^1];
 
 					if (!Utilities.IsValidCdKey(key)) {
 						ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, key));

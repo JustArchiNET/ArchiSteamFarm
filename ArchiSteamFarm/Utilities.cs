@@ -59,7 +59,7 @@ namespace ArchiSteamFarm {
 
 			string[] args = text.Split((char[]) null, argsToSkip + 1, StringSplitOptions.RemoveEmptyEntries);
 
-			return args[args.Length - 1];
+			return args[^1];
 		}
 
 		[PublicAPI]
