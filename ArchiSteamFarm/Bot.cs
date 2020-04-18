@@ -221,7 +221,7 @@ namespace ArchiSteamFarm {
 			SteamConfiguration = SteamConfiguration.Create(builder => builder.WithProtocolTypes(ASF.GlobalConfig.SteamProtocols).WithCellID(ASF.GlobalDatabase.CellID).WithServerListProvider(ASF.GlobalDatabase.ServerListProvider).WithHttpClientFactory(ArchiWebHandler.GenerateDisposableHttpClient));
 
 			// Initialize
-			SteamClient = new SteamClient(SteamConfiguration);
+			SteamClient = new SteamClient(SteamConfiguration, botName);
 
 			if (Debugging.IsUserDebugging && Directory.Exists(SharedInfo.DebugDirectory)) {
 				string debugListenerPath = Path.Combine(SharedInfo.DebugDirectory, botName);
