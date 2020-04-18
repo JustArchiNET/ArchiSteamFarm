@@ -14,6 +14,7 @@
     <PackageProjectUrl>https://github.com/JustArchiNET/ArchiSteamFarm</PackageProjectUrl>
     <RepositoryType>Git</RepositoryType>
     <RepositoryUrl>https://github.com/JustArchi/ArchiSteamFarm.git</RepositoryUrl>
+    <RollForward>LatestMajor</RollForward>
     <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
   </PropertyGroup>
 
