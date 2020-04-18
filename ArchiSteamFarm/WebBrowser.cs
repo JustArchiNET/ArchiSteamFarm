@@ -460,7 +460,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			IBrowsingContext context = BrowsingContext.New(Configuration.Default.WithXPath());
+			IBrowsingContext context = BrowsingContext.New();
 
 			return await context.OpenAsync(req => req.Content(html)).ConfigureAwait(false);
 		}
