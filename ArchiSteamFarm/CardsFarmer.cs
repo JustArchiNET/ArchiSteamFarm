@@ -694,7 +694,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			IDocument htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
+			using IDocument htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
 
 			if (htmlDocument == null) {
 				return;
@@ -942,7 +942,7 @@ namespace ArchiSteamFarm {
 				return 0;
 			}
 
-			IDocument htmlDocument = await Bot.ArchiWebHandler.GetGameCardsPage(appID).ConfigureAwait(false);
+			using IDocument htmlDocument = await Bot.ArchiWebHandler.GetGameCardsPage(appID).ConfigureAwait(false);
 
 			IElement progressNode = htmlDocument?.SelectSingleNode("//span[@class='progress_info_bold']");
 
@@ -976,7 +976,8 @@ namespace ArchiSteamFarm {
 		private async Task<bool?> IsAnythingToFarm() {
 			// Find the number of badge pages
 			Bot.ArchiLogger.LogGenericInfo(Strings.CheckingFirstBadgePage);
-			IDocument htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
+
+			using IDocument htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
 
 			if (htmlDocument == null) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningCouldNotCheckBadges);

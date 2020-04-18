@@ -259,7 +259,8 @@ namespace ArchiSteamFarm {
 				}
 
 				try {
-					using ZipArchive zipArchive = new ZipArchive(new MemoryStream(response.Content));
+					using MemoryStream memoryStream = new MemoryStream(response.Content);
+					using ZipArchive zipArchive = new ZipArchive(memoryStream);
 
 					if (!UpdateFromArchive(zipArchive, SharedInfo.HomeDirectory)) {
 						ArchiLogger.LogGenericError(Strings.WarningFailed);

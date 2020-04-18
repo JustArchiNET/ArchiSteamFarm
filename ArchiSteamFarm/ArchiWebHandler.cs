@@ -242,7 +242,7 @@ namespace ArchiSteamFarm {
 
 			XmlDocument response = await UrlGetToXmlDocumentWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
 
-			XmlNodeList xmlNodeList = response?.SelectNodes("gamesList/games/game");
+			using XmlNodeList xmlNodeList = response?.SelectNodes("gamesList/games/game");
 
 			if ((xmlNodeList == null) || (xmlNodeList.Count == 0)) {
 				return null;
@@ -472,7 +472,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			WebBrowser.HtmlDocumentResponse response = await WebLimitRequest(host, async () => await WebBrowser.UrlGetToHtmlDocument(host + request).ConfigureAwait(false)).ConfigureAwait(false);
+			using WebBrowser.HtmlDocumentResponse response = await WebLimitRequest(host, async () => await WebBrowser.UrlGetToHtmlDocument(host + request).ConfigureAwait(false)).ConfigureAwait(false);
 
 			if (response == null) {
 				return null;
@@ -809,7 +809,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			WebBrowser.HtmlDocumentResponse response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToHtmlDocument(host + request, data, referer).ConfigureAwait(false)).ConfigureAwait(false);
+			using WebBrowser.HtmlDocumentResponse response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToHtmlDocument(host + request, data, referer).ConfigureAwait(false)).ConfigureAwait(false);
 
 			if (response == null) {
 				return null;
@@ -1275,7 +1275,7 @@ namespace ArchiSteamFarm {
 				{ "subid", subID.ToString() }
 			};
 
-			IDocument htmlDocument = await UrlPostToHtmlDocumentWithSession(SteamStoreURL, request, data).ConfigureAwait(false);
+			using IDocument htmlDocument = await UrlPostToHtmlDocumentWithSession(SteamStoreURL, request, data).ConfigureAwait(false);
 
 			return htmlDocument?.SelectSingleNode("//div[@class='add_free_content_success_area']") != null;
 		}
@@ -1688,7 +1688,8 @@ namespace ArchiSteamFarm {
 		[ItemCanBeNull]
 		internal async Task<HashSet<ulong>> GetDigitalGiftCards() {
 			const string request = "/gifts";
-			IDocument response = await UrlGetToHtmlDocumentWithSession(SteamStoreURL, request).ConfigureAwait(false);
+
+			using IDocument response = await UrlGetToHtmlDocumentWithSession(SteamStoreURL, request).ConfigureAwait(false);
 
 			if (response == null) {
 				return null;
@@ -1736,7 +1737,8 @@ namespace ArchiSteamFarm {
 		[ItemCanBeNull]
 		internal async Task<HashSet<ulong>> GetFamilySharingSteamIDs() {
 			const string request = "/account/managedevices?l=english";
-			IDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamStoreURL, request).ConfigureAwait(false);
+
+			using IDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamStoreURL, request).ConfigureAwait(false);
 
 			if (htmlDocument == null) {
 				return null;
@@ -1831,7 +1833,7 @@ namespace ArchiSteamFarm {
 
 			string request = "/tradeoffer/" + tradeID + "?l=english";
 
-			IDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
+			using IDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
 
 			IElement htmlNode = htmlDocument?.SelectSingleNode("//div[@class='pagecontent']/script");
 
@@ -2282,7 +2284,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<(ESteamApiKeyState State, string Key)> GetApiKeyState() {
 			const string request = "/dev/apikey?l=english";
-			IDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
+			using IDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
 
 			IElement titleNode = htmlDocument?.SelectSingleNode("//div[@id='mainContents']/h2");
 
@@ -2590,7 +2592,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<(bool Success, bool Result)> ResolvePublicInventory() {
 			const string request = "/my/edit/settings?l=english";
-			IDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
+			using IDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
 
 			if (htmlDocument == null) {
 				return (false, false);

@@ -813,7 +813,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		public sealed class HtmlDocumentResponse : BasicResponse {
+		public sealed class HtmlDocumentResponse : BasicResponse, IDisposable {
 			[PublicAPI]
 			public readonly IDocument Content;
 
@@ -830,6 +830,8 @@ namespace ArchiSteamFarm {
 
 				Content = document;
 			}
+
+			public void Dispose() => Content?.Dispose();
 
 			[ItemCanBeNull]
 			internal static async Task<HtmlDocumentResponse> Create([NotNull] StreamResponse streamResponse) {

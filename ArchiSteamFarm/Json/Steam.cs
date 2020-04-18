@@ -300,7 +300,7 @@ namespace ArchiSteamFarm.Json {
 						return;
 					}
 
-					IDocument htmlDocument = WebBrowser.StringToHtmlDocument(value).Result;
+					using IDocument htmlDocument = WebBrowser.StringToHtmlDocument(value).Result;
 
 					if (htmlDocument == null) {
 						ASF.ArchiLogger.LogNullError(nameof(htmlDocument));
