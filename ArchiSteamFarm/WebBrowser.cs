@@ -454,7 +454,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static async Task<IDocument> StringToHtmlDocument(string html) {
-			if (html == null) {
+			if (string.IsNullOrEmpty(html)) {
 				ASF.ArchiLogger.LogNullError(nameof(html));
 
 				return null;
