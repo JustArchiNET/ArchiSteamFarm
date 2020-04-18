@@ -1596,7 +1596,7 @@ namespace ArchiSteamFarm {
 			List<KeyValue> apps = response["apps"].Children;
 
 			if (apps.Count == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(apps));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsEmpty, nameof(apps)));
 
 				return null;
 			}
