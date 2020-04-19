@@ -97,6 +97,9 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public uint GamesToRedeemInBackgroundCount => BotDatabase?.GamesToRedeemInBackgroundCount ?? 0;
 
+		[PublicAPI]
+		public bool HasMobileAuthenticator => BotDatabase?.MobileAuthenticator != null;
+
 		[JsonProperty]
 		[PublicAPI]
 		public bool IsConnectedAndLoggedOn => SteamClient?.SteamID != null;
@@ -113,7 +116,6 @@ namespace ArchiSteamFarm {
 		internal readonly SteamFriends SteamFriends;
 
 		internal bool CanReceiveSteamCards => !IsAccountLimited && !IsAccountLocked;
-		internal bool HasMobileAuthenticator => BotDatabase?.MobileAuthenticator != null;
 		internal bool IsAccountLimited => AccountFlags.HasFlag(EAccountFlags.LimitedUser) || AccountFlags.HasFlag(EAccountFlags.LimitedUserForce);
 		internal bool IsAccountLocked => AccountFlags.HasFlag(EAccountFlags.Lockdown);
 
