@@ -58,18 +58,34 @@ if [ ! -f "$SOLUTION" ]; then
 	exit 1
 fi
 
+os_type="$(uname -s)"
+
+case "$os_type" in
+	"Darwin") os_type="osx" ;;
+	"Linux") os_type="linux" ;;
+	*) echo "ERROR: Unknown OS type: ${os_type}. If you believe that our script should work on your machine, please let us know."; exit 1
+esac
+
+cpu_architecture="$(uname -m)"
+
+case "$cpu_architecture" in
+	"aarch64") cpu_architecture="arm64" ;;
+	"armv7l") cpu_architecture="arm" ;;
+	"x86_64") cpu_architecture="x64" ;;
+	*) echo "ERROR: Unknown CPU architecture: ${cpu_architecture}. If you believe that our script should work on your machine, please let us know."; exit 1
+esac
+
+echo "INFO: Detected ${os_type}-${cpu_architecture} machine."
+
 if [ "$ASF_UI" -eq 1 ]; then
 	if [ -f "ASF-ui/package.json" ] && command -v npm >/dev/null; then
-		echo "Building ASF-ui..."
+		echo "INFO: Building ASF-ui..."
 
 		# ASF-ui doesn't clean itself after old build
 		rm -rf "ASF-ui/dist"
 
-		(
-			cd ASF-ui
-			npm ci
-			npm run-script deploy
-		)
+		npm ci --no-progress --prefix ASF-ui
+		npm run-script deploy --no-progress --prefix ASF-ui
 
 		# ASF's output www folder needs cleaning as well
 		rm -rf "${OUT}/www"
@@ -78,10 +94,10 @@ if [ "$ASF_UI" -eq 1 ]; then
 	fi
 fi
 
-DOTNET_FLAGS="-c $CONFIGURATION -f $TARGET_FRAMEWORK --nologo"
+DOTNET_FLAGS="-c $CONFIGURATION -f $TARGET_FRAMEWORK -p:UseAppHost=false -r ${os_type}-${cpu_architecture} --nologo --self-contained false"
 
 if [ "$SHARED_COMPILATION" -eq 0 ]; then
-	DOTNET_FLAGS="$DOTNET_FLAGS /p:UseSharedCompilation=false"
+	DOTNET_FLAGS="$DOTNET_FLAGS -p:UseSharedCompilation=false"
 fi
 
 if [ "$CLEAN" -eq 1 ]; then
