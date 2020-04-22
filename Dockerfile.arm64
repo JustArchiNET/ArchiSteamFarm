@@ -20,7 +20,7 @@ RUN dotnet --info && \
     dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" --nologo && \
     dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -f "$NET_CORE_VERSION" --nologo && \
     dotnet clean ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" --nologo && \
-    dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o 'out' --nologo /p:ASFVariant=docker /p:UseAppHost=false && \
+    dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o out -p:ASFVariant=docker -p:UseAppHost=false -r linux-arm64 --nologo --self-contained false && \
     cp "ArchiSteamFarm/overlay/generic/ArchiSteamFarm.sh" "out/ArchiSteamFarm.sh"
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim-arm64v8 AS runtime

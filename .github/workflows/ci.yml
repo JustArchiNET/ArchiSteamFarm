@@ -74,12 +74,12 @@ jobs:
 
         publish() {
             if [ "$1" = 'generic' ]; then
-                local variantArgs="/p:UseAppHost=false"
+                local variantArgs="-p:UseAppHost=false"
             else
-                local variantArgs="-r $1 /p:PublishTrimmed=true"
+                local variantArgs="-p:PublishTrimmed=true -r $1"
             fi
 
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" --no-restore --nologo "/p:ASFVariant=$1" $variantArgs
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" "-p:ASFVariant=$1" --no-restore --nologo $variantArgs
 
             # If we include any overlay for this variant, copy it to output directory
             if [ -d "ArchiSteamFarm/overlay/${1}" ]; then
@@ -124,20 +124,18 @@ jobs:
             Set-Location "$env:GITHUB_WORKSPACE"
 
             if ($variant -like '*-netf') {
-                $compressionMethod = 'Deflate' # This depends on what ZipArchive supports on given platform
                 $targetFramework = $env:NET_FRAMEWORK_VERSION
             } else {
-                $compressionMethod = 'Deflate64' # This depends on what ZipArchive supports on given platform
                 $targetFramework = $env:NET_CORE_VERSION
             }
 
             if ($variant -like 'generic*') {
-                $variantArgs = '/p:UseAppHost=false'
+                $variantArgs = '-p:UseAppHost=false'
             } else {
-                $variantArgs = '-r', "$variant", '/p:PublishTrimmed=true'
+                $variantArgs = '-p:PublishTrimmed=true', '-r', "$variant"
             }
 
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" --no-restore --nologo "/p:ASFVariant=$variant" $variantArgs
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" "-p:ASFVariant=$variant" --no-restore --nologo $variantArgs
 
             if ($LastExitCode -ne 0) {
                 throw "Last command failed."
@@ -148,9 +146,11 @@ jobs:
                 Copy-Item "ArchiSteamFarm\overlay\$variant\*" "out\$variant"
             }
 
-            # Include .ico file for non-Windows targets
-            if (!(Test-Path "out\$variant\ArchiSteamFarm.exe" -PathType Leaf)) {
-                Copy-Item 'resources\ASF.ico' "out\$variant\ArchiSteamFarm.ico"
+            # Until https://github.com/dotnet/cli/issues/3267 happens, we'll hack dotnet binary icon on Windows and include .ico file on other platforms
+            if ($targetFramework -ne "$env:NET_FRAMEWORK_VERSION") {
+                if (!(Test-Path "out\$variant\ArchiSteamFarm.exe" -PathType Leaf)) {
+                    Copy-Item 'resources\ASF.ico' "out\$variant\ArchiSteamFarm.ico"
+                }
             }
         }
 

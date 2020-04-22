@@ -152,12 +152,12 @@ after_test:
         }
 
         if ($variant -like 'generic*') {
-            $variantArgs = '/p:UseAppHost=false'
+            $variantArgs = '-p:UseAppHost=false'
         } else {
-            $variantArgs = '-r', "$variant", '/p:PublishTrimmed=true'
+            $variantArgs = '-p:PublishTrimmed=true', '-r', "$variant"
         }
 
-        dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" --no-restore --nologo "/p:ASFVariant=$variant" $variantArgs
+        dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" "-p:ASFVariant=$variant" --no-restore --nologo $variantArgs
 
         if ($LastExitCode -ne 0) {
             throw "Last command failed."
