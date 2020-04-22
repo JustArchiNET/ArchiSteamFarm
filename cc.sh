@@ -94,7 +94,7 @@ if [ "$ASF_UI" -eq 1 ]; then
 	fi
 fi
 
-DOTNET_FLAGS="-c $CONFIGURATION -f $TARGET_FRAMEWORK -p:UseAppHost=false -r ${os_type}-${cpu_architecture} --nologo --self-contained false"
+DOTNET_FLAGS="-c $CONFIGURATION -f $TARGET_FRAMEWORK -p:SelfContained=false -p:UseAppHost=false -r ${os_type}-${cpu_architecture} --nologo"
 
 if [ "$SHARED_COMPILATION" -eq 0 ]; then
 	DOTNET_FLAGS="$DOTNET_FLAGS -p:UseSharedCompilation=false"
