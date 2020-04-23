@@ -610,7 +610,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				name = WebUtility.HtmlDecode(name.Substring(nameStartIndex, nameEndIndex - nameStartIndex));
+				name = WebUtility.HtmlDecode(name[nameStartIndex..nameEndIndex]);
 
 				if (string.IsNullOrEmpty(name)) {
 					Bot.ArchiLogger.LogNullError(nameof(name));
