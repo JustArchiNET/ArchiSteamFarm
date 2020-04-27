@@ -1,7 +1,7 @@
 <!--
 I fully read and understood contributing guidelines of ASF available under https://github.com/JustArchiNET/ArchiSteamFarm/blob/master/.github/CONTRIBUTING.md and I believe that my issue is valid - it requires a response from ASF development team, and not ASF support.
 
-I understand that if my issue is not meeting contributing guidelines specified above, especially if it's a question or technical issue that is not related to ASF development in any way, then it will be closed and left unanswered.
+I UNDERSTAND THAT IF MY ISSUE IS NOT MEETING CONTRIBUTING GUIDELINES SPECIFIED ABOVE, ESPECIALLY IF IT'S A QUESTION OR TECHNICAL ISSUE THAT IS NOT RELATED TO ASF DEVELOPMENT IN ANY WAY, THEN IT WILL BE CLOSED AND LEFT UNANSWERED.
 
 Feel free to remove our notice and fill the template below with your details.
 -->
