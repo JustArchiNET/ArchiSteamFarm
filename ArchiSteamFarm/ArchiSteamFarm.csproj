@@ -118,7 +118,7 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
     </Content>
-    <Content Include="..\ASF-ui\dist\**\*.*" Exclude="**\README.md">
+    <Content Include="..\ASF-ui\dist\**\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>www\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </Content>
