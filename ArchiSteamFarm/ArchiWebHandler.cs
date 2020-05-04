@@ -1773,7 +1773,7 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal async Task<IDocument> GetGameCardsPage(ulong appID) {
+		internal async Task<IDocument> GetGameCardsPage(uint appID) {
 			if (appID == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(appID));
 

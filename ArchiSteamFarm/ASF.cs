@@ -324,7 +324,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void InitEvents() {
-			if ((FileSystemWatcher != null) || (LastWriteEvents != null)) {
+			if ((FileSystemWatcher != null) || (LastWriteEvents != null) || !Directory.Exists(SharedInfo.ConfigDirectory)) {
 				return;
 			}
 
