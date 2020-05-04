@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <ApplicationIcon>ASF.ico</ApplicationIcon>
+    <ApplicationIcon>../resources/ASF.ico</ApplicationIcon>
     <AssemblyVersion>4.2.0.7</AssemblyVersion>
     <Authors>JustArchi</Authors>
     <Company>JustArchi</Company>
