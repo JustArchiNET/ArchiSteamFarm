@@ -2541,7 +2541,7 @@ namespace ArchiSteamFarm {
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new Dictionary<string, string>(4, StringComparer.Ordinal) {
 				{ "agreeToTerms", "agreed" },
-				{ "domain", "localhost" },
+				{ "domain", "generated.by." + SharedInfo.AssemblyName.ToLowerInvariant() + ".localhost" },
 				{ "Submit", "Register" }
 			};
 
