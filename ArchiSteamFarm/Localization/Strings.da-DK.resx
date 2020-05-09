@@ -156,17 +156,17 @@ StackTrace:
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
-    <value>{0} er gyldig!</value>
+    <value>{0} er ikke gyldig!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>Nægter at udføre denne funktion på grund af ugyldig DeviceID i ASF 2FA!</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>Ingen botter er defineret. Har du glemt at konfigurere din ASF?</value>
+    <value>Ingen bots er defineret. Har du glemt at konfigurere din ASF?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} er nul!</value>
+    <value>{0} er null!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
@@ -178,7 +178,7 @@ StackTrace:
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>Kunne ikke undersøge seneste version!</value>
+    <value>Kunne ikke tjekke seneste version!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
     <value>Kunne ikke fortsætte med opdateringen da der ikke er noget aktiv der relaterer til den kørende version! Automatisk opdatering til den version er ikke mulig.</value>
@@ -193,7 +193,7 @@ StackTrace:
     <value>Forlader...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
-    <value>Fejlede!</value>
+    <value>Mislykkede!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
     <value>Global konfigureringsfil er blevet ændret!</value>
@@ -202,21 +202,21 @@ StackTrace:
     <value>Global konfigureringsfil er blevet fjernet!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
-    <value>Ignorere handel: {0}</value>
+    <value>Ignorere bytte: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
-    <value>Logger ind til {0}...</value>
+    <value>Logger ind på {0}...</value>
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>Ingen botter køre, forlader...</value>
+    <value>Ingen bots køre, forlader...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
-    <value>Nægter vores session!</value>
+    <value>Opfrisker vores session!</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
-    <value>Afviser handel: {0}</value>
+    <value>Afviser bytte: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
@@ -226,30 +226,30 @@ StackTrace:
     <value>Starter...</value>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>Success!</value>
+    <value>Succes!</value>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Låser forældre konto op...</value>
+    <value>Låser forældre-konto op...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
-    <value>Undersøger for ny version...</value>
+    <value>Tjekker for ny version...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Downloader ny version: {0} ({1} MB)... Mens du venter, overvej at donere hvis du sætter pris på vores arbejde! :)</value>
+    <value>Downloader ny version: {0} ({1} MB)... Imens du venter, overvej at donere hvis du sætter pris på vores arbejde! :)</value>
     <comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
-    <value>Opdateringsprocessen er færdig!</value>
+    <value>Opdateringsprocessen færdig!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>Ny ASF version er ledig! Overvej at opdatér!</value>
+    <value>Ny ASF version er tilgængelig! Overvej at opdatér det selv!</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>Lokal version: {0} | Fjernversion: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
-    <value>Venligst indtast din mobil autentificering enhed ID ("android" inkluderet:"): </value>
+    <value>Vær venlig at indtaste din mobils autentificering enhed ID (Også “Android:”): </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
@@ -265,7 +265,7 @@ StackTrace:
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalCode" xml:space="preserve">
-    <value>Venligst indtast Steam forældre kode: </value>
+    <value>Venligst indtast Steam forældre-kode: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
@@ -731,6 +731,10 @@ StackTrace:
   <data name="UpdateCleanup" xml:space="preserve">
     <value>Rydder op i de gamle filer efter opdateringen...</value>
   </data>
-  
-  
+  <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
+    <value>Generering af Steam-forældrekode, dette kan tage et stykke tid, overvej at sætte det i konfiguration i stedet...</value>
+  </data>
+  <data name="IPCConfigChanged" xml:space="preserve">
+    <value>IPC konfiguration er blevet ændret!</value>
+  </data>
 </root>

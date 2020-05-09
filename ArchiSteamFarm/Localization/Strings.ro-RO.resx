@@ -442,12 +442,18 @@ StackTrace:
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>Nu se pornește acestă instanță de bot deoarece este dezactivată în fișierul de configurare!</value>
   </data>
-  
+  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+    <value>Codul de eroare TwoFactorCodeMismatch primit de {0} ori la rând. Fie acreditările tale pentru 2FA nu mai sunt valide, fie ceasul tău nu este sincronizat, abandonat!</value>
+    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+  </data>
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Deconectat de la Steam: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  
+  <data name="BotLoggedOn" xml:space="preserve">
+    <value>Conectat cu succes ca {0}.</value>
+    <comment>{0} will be replaced by steam ID (number)</comment>
+  </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Se autentifică...</value>
   </data>
@@ -636,7 +642,10 @@ StackTrace:
     <value>Acceptat schimbul de donație: {0}</value>
     <comment>{0} will be replaced by trade's ID (number)</comment>
   </data>
-  
+  <data name="WarningWorkaroundTriggered" xml:space="preserve">
+    <value>A fost declanșat lucrul pentru {0} bug.</value>
+    <comment>{0} will be replaced by the bug's name provided by ASF</comment>
+  </data>
   <data name="TargetBotNotConnected" xml:space="preserve">
     <value>Instanța botului țintă nu este conectată!</value>
   </data>
@@ -651,14 +660,29 @@ StackTrace:
     <value>Botul are nivelul {0}.</value>
     <comment>{0} will be replaced by bot's level</comment>
   </data>
-  
-  
+  <data name="ActivelyMatchingItems" xml:space="preserve">
+    <value>Se potrivesc obiectele Steam, runda #{0}...</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="DoneActivelyMatchingItems" xml:space="preserve">
+    <value>Obiecte Steam care se potrivesc, runda #{0}.</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
   <data name="ErrorAborted" xml:space="preserve">
     <value>Abandonat!</value>
   </data>
-  
-  
-  
+  <data name="ActivelyMatchingItemsRound" xml:space="preserve">
+    <value>Potivim un total de {0} in această rundă.</value>
+    <comment>{0} will be replaced by number of sets traded</comment>
+  </data>
+  <data name="WarningExcessiveBotsCount" xml:space="preserve">
+    <value>Rulezi mai multe conturi de bot decât este limita maximă recomandată de noi ({0}). Te atenționăm că această configurație nu este suportată și ar putea cauza diverse probleme legate de Steam, inclusiv suspendări ale conturi. Verificați FAQ pentru mai multe detalii.</value>
+    <comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
+  </data>
+  <data name="PluginLoaded" xml:space="preserve">
+    <value>{0} a fost încărcat cu succes!</value>
+    <comment>{0} will be replaced by the name of the custom ASF plugin</comment>
+  </data>
   <data name="PluginLoading" xml:space="preserve">
     <value>Se încarcă {0} V{1}...</value>
     <comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
@@ -666,18 +690,51 @@ StackTrace:
   <data name="NothingFound" xml:space="preserve">
     <value>Nimic găsit!</value>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="PluginsWarning" xml:space="preserve">
+    <value>Ai încărcat unul sau mai multe plugin-uri personalizate în ASF. Deoarece nu putem oferi suport pentru configurări modificate, vă rugăm să contactați dezvoltatorii corespunzători ai plugin-urilor pe care ați decis să le utilizați în caz de probleme.</value>
+  </data>
+  <data name="PleaseWait" xml:space="preserve">
+    <value>Vă rugăm așteptați...</value>
+  </data>
+  <data name="EnterCommand" xml:space="preserve">
+    <value>Introduceți comanda: </value>
+  </data>
+  <data name="Executing" xml:space="preserve">
+    <value>În curs de execuție...</value>
+  </data>
+  <data name="InteractiveConsoleEnabled" xml:space="preserve">
+    <value>Consola interactivă este acum activă, tastați 'c' pentru a introduce modul de comandă.</value>
+  </data>
+  <data name="InteractiveConsoleNotAvailable" xml:space="preserve">
+    <value>Consola interactivă nu este disponibilă deoarece lipsesc {0} din configurare.</value>
+    <comment>{0} will be replaced by the name of the missing config property (string)</comment>
+  </data>
+  <data name="Response" xml:space="preserve">
+    <value>Răspuns: {0}</value>
+    <comment>{0} will be replaced by the generated response (string)</comment>
+  </data>
+  <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
+    <value>Botul are {0} jocuri rămase la rând în fundal.</value>
+    <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
+  </data>
+  <data name="ErrorSingleInstanceRequired" xml:space="preserve">
+    <value>Procesul ASF se desfășoară deja pentru acest fișier de lucru, eșuat!</value>
+  </data>
+  <data name="BotHandledConfirmations" xml:space="preserve">
+    <value>S-au gestionat cu succes {0} confirmări!</value>
+    <comment>{0} will be replaced by number of confirmations</comment>
+  </data>
+  <data name="BotExtraIdlingCooldown" xml:space="preserve">
+    <value>Se așteaptă până la {0} pentru a ne asigura că vom începe să farmăm...</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+  </data>
+  <data name="UpdateCleanup" xml:space="preserve">
+    <value>Curățare fișiere vechi după actualizare...</value>
+  </data>
+  <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
+    <value>Generarea codului parental Steam, acest lucru poate dura un timp, luați în considerare să-l introduceți în configurație...</value>
+  </data>
+  <data name="IPCConfigChanged" xml:space="preserve">
+    <value>Configurația IPC a fost schimbată!</value>
+  </data>
 </root>
