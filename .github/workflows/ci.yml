@@ -56,13 +56,19 @@ jobs:
       run: npm run-script build:ci --no-progress --prefix ASF-ui
 
     - name: Build ArchiSteamFarm
-      run: dotnet build ArchiSteamFarm -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" --nologo
+      run: dotnet build ArchiSteamFarm -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" -p:UseAppHost=false --nologo
 
     - name: Build ArchiSteamFarm.CustomPlugins.ExamplePlugin
-      run: dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" --nologo
+      run: dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" -p:UseAppHost=false --nologo
 
     - name: Run ArchiSteamFarm.Tests
-      run: dotnet test ArchiSteamFarm.Tests -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" --nologo
+      run: dotnet test ArchiSteamFarm.Tests -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" -p:UseAppHost=false --nologo
+
+    - name: Perform cleanup in preparation for publishing
+      run: dotnet clean ArchiSteamFarm -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" -p:UseAppHost=false --nologo
+
+    - name: Restore packages in preparation for publishing
+      run: dotnet restore ArchiSteamFarm
 
     - name: Publish ArchiSteamFarm on Unix
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
@@ -89,9 +95,6 @@ jobs:
             # Include .ico file for all platforms, since only Windows script can bundle it inside the exe
             cp "resources/ASF.ico" "out/${1}/ArchiSteamFarm.ico"
         }
-
-        dotnet clean ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" --nologo
-        dotnet restore ArchiSteamFarm
 
         jobs=""
 
@@ -152,18 +155,6 @@ jobs:
                     Copy-Item 'resources\ASF.ico' "out\$variant\ArchiSteamFarm.ico"
                 }
             }
-        }
-
-        dotnet clean ArchiSteamFarm -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" --nologo
-
-        if ($LastExitCode -ne 0) {
-            throw "Last command failed."
-        }
-
-        dotnet restore ArchiSteamFarm
-
-        if ($LastExitCode -ne 0) {
-            throw "Last command failed."
         }
 
         foreach ($variant in $env:VARIANTS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {

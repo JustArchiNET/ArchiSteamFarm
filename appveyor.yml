@@ -98,7 +98,7 @@ build_script:
     }
 
 
-    dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" --nologo
+    dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -p:UseAppHost=false --nologo
 
 
     if ($LastExitCode -ne 0) {
@@ -106,7 +106,7 @@ build_script:
     }
 
 
-    dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" --nologo
+    dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -p:UseAppHost=false --nologo
 
 
     if ($LastExitCode -ne 0) {
@@ -121,7 +121,7 @@ test_script:
     $ProgressPreference = 'SilentlyContinue'
 
 
-    dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" --nologo
+    dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -p:UseAppHost=false --nologo
 
 
     if ($LastExitCode -ne 0) {
@@ -134,6 +134,22 @@ after_test:
     $ErrorActionPreference = 'Stop'
 
     $ProgressPreference = 'SilentlyContinue'
+
+
+    dotnet clean ArchiSteamFarm -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -p:UseAppHost=false --nologo
+
+
+    if ($LastExitCode -ne 0) {
+        throw "Last command failed."
+    }
+
+
+    dotnet restore ArchiSteamFarm
+
+
+    if ($LastExitCode -ne 0) {
+        throw "Last command failed."
+    }
 
 
     $PublishBlock = {
@@ -199,22 +215,6 @@ after_test:
 
         # TODO: Change me to Push-AppveyorArtifact once https://github.com/appveyor/ci/issues/2183 is fixed
         appveyor PushArtifact "out\ASF-$variant.zip" -FileName "ASF-$variant.zip" -DeploymentName "ASF-$variant.zip"
-    }
-
-
-    dotnet clean ArchiSteamFarm -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" --nologo
-
-
-    if ($LastExitCode -ne 0) {
-        throw "Last command failed."
-    }
-
-
-    dotnet restore ArchiSteamFarm
-
-
-    if ($LastExitCode -ne 0) {
-        throw "Last command failed."
     }
 
 

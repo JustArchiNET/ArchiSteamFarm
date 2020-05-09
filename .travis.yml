@@ -31,9 +31,12 @@ script:
     npm ci --no-progress --prefix ASF-ui
     npm run-script deploy --no-progress --prefix ASF-ui
 
-    dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" --nologo
-    dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "$CONFIGURATION" -f "$NET_CORE_VERSION" --nologo
-    dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -f "$NET_CORE_VERSION" --nologo
+    dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -p:UseAppHost=false --nologo
+    dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -p:UseAppHost=false --nologo
+    dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -p:UseAppHost=false --nologo
+
+    dotnet clean ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -p:UseAppHost=false --nologo
+    dotnet restore ArchiSteamFarm
 
     publish() {
         if [ "$1" = 'generic' ]; then
@@ -49,9 +52,6 @@ script:
             cp "ArchiSteamFarm/overlay/${1}/"* "out/${1}"
         fi
     }
-
-    dotnet clean ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" --nologo
-    dotnet restore ArchiSteamFarm
 
     jobs=""
 
@@ -77,4 +77,4 @@ matrix:
     - os: osx
       # Ref: https://docs.travis-ci.com/user/reference/osx
       dotnet: 3.1.201 # For OSX, we need absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
-      osx_image: xcode11.3
+      osx_image: xcode11.4
