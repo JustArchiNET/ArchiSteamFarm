@@ -217,13 +217,18 @@ namespace ArchiSteamFarm {
 					// GetCultureInfo() would be better but we can't use it for specifying neutral cultures such as "en"
 					CultureInfo culture = CultureInfo.CreateSpecificCulture(ASF.GlobalConfig.CurrentCulture);
 					CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = culture;
-				} catch (Exception) {
+				} catch (Exception e) {
+					ASF.ArchiLogger.LogGenericWarningException(e);
+
 					ASF.ArchiLogger.LogGenericError(Strings.ErrorInvalidCurrentCulture);
 				}
 			}
 
-			if (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName.Equals("en")) {
-				return;
+			// Skip translation progress for English and invariant (such as "C") cultures
+			switch (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName) {
+				case "en":
+				case "iv":
+					return;
 			}
 
 			// We can't dispose this resource set, as we can't be sure if it isn't used somewhere else, rely on GC in this case
