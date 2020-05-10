@@ -657,8 +657,10 @@ namespace ArchiSteamFarm {
 				try {
 					await SteamDirectory.LoadAsync(steamConfiguration).ConfigureAwait(false);
 					ArchiLogger.LogGenericInfo(Strings.Success);
-				} catch {
+				} catch (Exception e) {
+					ArchiLogger.LogGenericWarningException(e);
 					ArchiLogger.LogGenericWarning(Strings.BotSteamDirectoryInitializationFailed);
+
 					await Task.Delay(5000).ConfigureAwait(false);
 				}
 			}
