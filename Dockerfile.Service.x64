@@ -34,6 +34,6 @@ LABEL maintainer="JustArchi <JustArchi@JustArchi.net>"
 EXPOSE 1242
 WORKDIR /app
 COPY --from=build-dotnet /app/out .
-VOLUME ["config", "logs", "plugins"]
+VOLUME ["/app/config", "/app/logs", "/app/plugins"]
 HEALTHCHECK CMD ["pidof", "-q", "ArchiSteamFarm"]
 ENTRYPOINT ["./ArchiSteamFarm-Service.sh", "--no-restart", "--process-required", "--system-required"]
