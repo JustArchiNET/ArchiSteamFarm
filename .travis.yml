@@ -17,6 +17,16 @@ env:
     - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
     - NET_CORE_VERSION: netcoreapp3.1
     - VARIANTS="generic linux-arm linux-arm64 linux-x64 osx-x64 win-x64" # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
+before_install:
+  - |
+    set -eu
+
+    if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+        brew update
+        brew install p7zip
+    fi
+
+    set +u # This is needed to continue Travis build
 before_script:
   - |
     set -eu
