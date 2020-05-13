@@ -165,7 +165,7 @@ jobs:
 
     - name: Upload ASF-generic
       continue-on-error: true
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.os }}_ASF-generic
         path: out/generic
@@ -173,42 +173,42 @@ jobs:
     - name: Upload ASF-generic-netf
       continue-on-error: true
       if: startsWith(matrix.os, 'windows-')
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.os }}_ASF-generic-netf
         path: out/generic-netf
 
     - name: Upload ASF-linux-arm
       continue-on-error: true
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.os }}_ASF-linux-arm
         path: out/linux-arm
 
     - name: Upload ASF-linux-arm64
       continue-on-error: true
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.os }}_ASF-linux-arm64
         path: out/linux-arm64
 
     - name: Upload ASF-linux-x64
       continue-on-error: true
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.os }}_ASF-linux-x64
         path: out/linux-x64
 
     - name: Upload ASF-osx-x64
       continue-on-error: true
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.os }}_ASF-osx-x64
         path: out/osx-x64
 
     - name: Upload ASF-win-x64
       continue-on-error: true
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.os }}_ASF-win-x64
         path: out/win-x64
