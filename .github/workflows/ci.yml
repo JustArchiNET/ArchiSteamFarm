@@ -95,7 +95,17 @@ jobs:
             # Include .ico file for all platforms, since only Windows script can bundle it inside the exe
             cp "resources/ASF.ico" "out/${1}/ArchiSteamFarm.ico"
 
-            7z a -bd -slp -tzip -mm=Deflate -mx=1 "out/ASF-${1}.zip" "${GITHUB_WORKSPACE}/out/${1}/*"
+            if command -v 7z >/dev/null; then
+                7z a -bd -slp -tzip -mm=Deflate -mx=1 "out/ASF-${1}.zip" "${GITHUB_WORKSPACE}/out/${1}/*"
+            elif command -v zip >/dev/null; then
+                (
+                    cd "${GITHUB_WORKSPACE}/out/${1}"
+                    zip -1 -r "../ASF-${1}.zip" .
+                )
+            else
+                echo "ERROR: No supported zip tool!"
+                return 1
+            fi
         }
 
         jobs=""
