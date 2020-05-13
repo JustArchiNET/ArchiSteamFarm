@@ -100,7 +100,7 @@ jobs:
             elif command -v zip >/dev/null; then
                 (
                     cd "${GITHUB_WORKSPACE}/out/${1}"
-                    zip -1 -r "../ASF-${1}.zip" .
+                    zip -1 -q -r "../ASF-${1}.zip" .
                 )
             else
                 echo "ERROR: No supported zip tool!"
@@ -185,7 +185,7 @@ jobs:
       continue-on-error: true
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ matrix.os }}_ASF-generic.zip
+        name: ${{ matrix.os }}_ASF-generic
         path: out/ASF-generic.zip
 
     - name: Upload ASF-generic-netf
@@ -193,40 +193,40 @@ jobs:
       if: startsWith(matrix.os, 'windows-')
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ matrix.os }}_ASF-generic-netf.zip
+        name: ${{ matrix.os }}_ASF-generic-netf
         path: out/ASF-generic-netf.zip
 
     - name: Upload ASF-linux-arm
       continue-on-error: true
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ matrix.os }}_ASF-linux-arm.zip
+        name: ${{ matrix.os }}_ASF-linux-arm
         path: out/ASF-linux-arm.zip
 
     - name: Upload ASF-linux-arm64
       continue-on-error: true
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ matrix.os }}_ASF-linux-arm64.zip
+        name: ${{ matrix.os }}_ASF-linux-arm64
         path: out/ASF-linux-arm64.zip
 
     - name: Upload ASF-linux-x64
       continue-on-error: true
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ matrix.os }}_ASF-linux-x64.zip
+        name: ${{ matrix.os }}_ASF-linux-x64
         path: out/ASF-linux-x64.zip
 
     - name: Upload ASF-osx-x64
       continue-on-error: true
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ matrix.os }}_ASF-osx-x64.zip
+        name: ${{ matrix.os }}_ASF-osx-x64
         path: out/ASF-osx-x64.zip
 
     - name: Upload ASF-win-x64
       continue-on-error: true
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ matrix.os }}_ASF-win-x64.zip
+        name: ${{ matrix.os }}_ASF-win-x64
         path: out/ASF-win-x64.zip
