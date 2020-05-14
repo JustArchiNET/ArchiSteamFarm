@@ -94,6 +94,18 @@ jobs:
 
             # Include .ico file for all platforms, since only Windows script can bundle it inside the exe
             cp "resources/ASF.ico" "out/${1}/ArchiSteamFarm.ico"
+
+            if command -v 7z >/dev/null; then
+                7z a -bd -slp -tzip -mm=Deflate -mx=1 "out/ASF-${1}.zip" "${GITHUB_WORKSPACE}/out/${1}/*"
+            elif command -v zip >/dev/null; then
+                (
+                    cd "${GITHUB_WORKSPACE}/out/${1}"
+                    zip -1 -q -r "../ASF-${1}.zip" .
+                )
+            else
+                echo "ERROR: No supported zip tool!"
+                return 1
+            fi
         }
 
         jobs=""
@@ -155,6 +167,12 @@ jobs:
                     Copy-Item 'resources\ASF.ico' "out\$variant\ArchiSteamFarm.ico"
                 }
             }
+
+            7z a -bd -slp -tzip -mm=Deflate -mx=1 "out\ASF-$variant.zip" "$env:GITHUB_WORKSPACE\out\$variant\*"
+
+            if ($LastExitCode -ne 0) {
+                throw "Last command failed."
+            }
         }
 
         foreach ($variant in $env:VARIANTS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
@@ -168,7 +186,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.os }}_ASF-generic
-        path: out/generic
+        path: out/ASF-generic.zip
 
     - name: Upload ASF-generic-netf
       continue-on-error: true
@@ -176,39 +194,39 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.os }}_ASF-generic-netf
-        path: out/generic-netf
+        path: out/ASF-generic-netf.zip
 
     - name: Upload ASF-linux-arm
       continue-on-error: true
       uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.os }}_ASF-linux-arm
-        path: out/linux-arm
+        path: out/ASF-linux-arm.zip
 
     - name: Upload ASF-linux-arm64
       continue-on-error: true
       uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.os }}_ASF-linux-arm64
-        path: out/linux-arm64
+        path: out/ASF-linux-arm64.zip
 
     - name: Upload ASF-linux-x64
       continue-on-error: true
       uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.os }}_ASF-linux-x64
-        path: out/linux-x64
+        path: out/ASF-linux-x64.zip
 
     - name: Upload ASF-osx-x64
       continue-on-error: true
       uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.os }}_ASF-osx-x64
-        path: out/osx-x64
+        path: out/ASF-osx-x64.zip
 
     - name: Upload ASF-win-x64
       continue-on-error: true
       uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.os }}_ASF-win-x64
-        path: out/win-x64
+        path: out/ASF-win-x64.zip

@@ -17,6 +17,9 @@ env:
     - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
     - NET_CORE_VERSION: netcoreapp3.1
     - VARIANTS="generic linux-arm linux-arm64 linux-x64 osx-x64 win-x64" # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
+addons:
+  homebrew:
+    packages: p7zip
 before_script:
   - |
     set -eu
@@ -50,6 +53,21 @@ script:
         # If we include any overlay for this variant, copy it to output directory
         if [ -d "ArchiSteamFarm/overlay/${1}" ]; then
             cp "ArchiSteamFarm/overlay/${1}/"* "out/${1}"
+        fi
+
+        # Include .ico file for all platforms, since only Windows script can bundle it inside the exe
+        cp "resources/ASF.ico" "out/${1}/ArchiSteamFarm.ico"
+
+        if command -v 7z >/dev/null; then
+            7z a -bd -slp -tzip -mm=Deflate -mx=1 "out/ASF-${1}.zip" "${TRAVIS_BUILD_DIR}/out/${1}/*"
+        elif command -v zip >/dev/null; then
+            (
+                cd "${TRAVIS_BUILD_DIR}/out/${1}"
+                zip -1 -q -r "../ASF-${1}.zip" .
+            )
+        else
+            echo "ERROR: No supported zip tool!"
+            return 1
         fi
     }
 
