@@ -170,7 +170,7 @@ after_test:
         if ($variant -like 'generic*') {
             $variantArgs = '-p:UseAppHost=false'
         } else {
-            $variantArgs = '-p:PublishTrimmed=true', '-r', "$variant"
+            $variantArgs = '-p:PublishSingleFile=true', '-p:PublishTrimmed=true', '-r', "$variant"
         }
 
         dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" "-p:ASFVariant=$variant" --no-restore --nologo $variantArgs

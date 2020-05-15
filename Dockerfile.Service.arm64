@@ -23,8 +23,8 @@ RUN dotnet --info && \
     dotnet build ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -p:SelfContained=false -p:UseAppHost=false -r linux-arm64 --nologo && \
     dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -p:SelfContained=false -p:UseAppHost=false -r linux-arm64 --nologo && \
     dotnet clean ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -p:SelfContained=false -p:UseAppHost=false -r linux-arm64 --nologo && \
-    dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o out -p:ASFVariant=linux-arm64 -p:PublishTrimmed=true -r linux-arm64 --nologo && \
-    cp "ArchiSteamFarm/overlay/linux-arm64/ArchiSteamFarm-Service.sh" "out/ArchiSteamFarm-Service.sh"
+    dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o out -p:ASFVariant=linux-arm64 -p:PublishSingleFile=true -p:PublishTrimmed=true -r linux-arm64 --nologo && \
+    if [ -d "ArchiSteamFarm/overlay/linux-arm64" ]; then cp "ArchiSteamFarm/overlay/linux-arm64/"* "out"; fi
 
 FROM mcr.microsoft.com/dotnet/core/runtime-deps:3.1-buster-slim-arm64v8 AS runtime
 ENV ASPNETCORE_URLS=

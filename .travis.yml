@@ -45,7 +45,7 @@ script:
         if [ "$1" = 'generic' ]; then
             local variantArgs="-p:UseAppHost=false"
         else
-            local variantArgs="-p:PublishTrimmed=true -r $1"
+            local variantArgs="-p:PublishSingleFile=true -p:PublishTrimmed=true -r $1"
         fi
 
         dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" "-p:ASFVariant=$1" --no-restore --nologo $variantArgs
@@ -94,5 +94,5 @@ matrix:
       dist: bionic
     - os: osx
       # Ref: https://docs.travis-ci.com/user/reference/osx
-      dotnet: 3.1.201 # For OSX, we need absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
+      dotnet: 3.1.202 # For OSX, we need absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
       osx_image: xcode11.4
