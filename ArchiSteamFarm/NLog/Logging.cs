@@ -35,6 +35,8 @@ using NLog.Targets;
 
 namespace ArchiSteamFarm.NLog {
 	internal static class Logging {
+		internal const string NLogConfigurationFile = "NLog.config";
+
 		private const byte ConsoleResponsivenessDelay = 250; // In miliseconds
 		private const string GeneralLayout = @"${date:format=yyyy-MM-dd HH\:mm\:ss}|${processname}-${processid}|${level:uppercase=true}|" + LayoutMessage;
 		private const string LayoutMessage = @"${logger}|${message}${onexception:inner= ${exception:format=toString,Data}}";
@@ -142,8 +144,8 @@ namespace ArchiSteamFarm.NLog {
 
 		internal static void InitCoreLoggers(bool uniqueInstance) {
 			try {
-				if ((Directory.GetCurrentDirectory() != SharedInfo.HomeDirectory) && File.Exists("NLog.config")) {
-					LogManager.Configuration = new XmlLoggingConfiguration("NLog.config");
+				if ((Directory.GetCurrentDirectory() != AppContext.BaseDirectory) && File.Exists(NLogConfigurationFile)) {
+					LogManager.Configuration = new XmlLoggingConfiguration(NLogConfigurationFile);
 				}
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);

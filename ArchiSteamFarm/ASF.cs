@@ -753,8 +753,8 @@ namespace ArchiSteamFarm {
 					case "":
 						// No directory, root folder
 						switch (fileName) {
+							case Logging.NLogConfigurationFile:
 							case SharedInfo.LogFile:
-							case "NLog.config":
 								// Files with those names in root directory we want to keep
 								continue;
 						}
