@@ -160,7 +160,7 @@ namespace ArchiSteamFarm.Helpers {
 								return false;
 							}
 						} catch (AbandonedMutexException) {
-							// Ignored, this is fine
+							// Ignored, this is fine, other ASF process has been closed
 						}
 
 						ReleasedTask = new TaskCompletionSource<bool>();
