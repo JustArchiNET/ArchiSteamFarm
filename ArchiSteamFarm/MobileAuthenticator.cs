@@ -40,7 +40,6 @@ namespace ArchiSteamFarm {
 		private const byte SteamTimeTTL = 24; // For how many hours we can assume that SteamTimeDifference is correct
 
 		private static readonly char[] CodeCharacters = { '2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'T', 'V', 'W', 'X', 'Y' };
-		private static readonly SemaphoreSlim ConfirmationsSemaphore = new SemaphoreSlim(1, 1);
 		private static readonly SemaphoreSlim TimeSemaphore = new SemaphoreSlim(1, 1);
 
 		private static DateTime LastSteamTimeCheck;
@@ -439,16 +438,22 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task LimitConfirmationsRequestsAsync() {
+			if (ASF.ConfirmationsSemaphore == null) {
+				ASF.ArchiLogger.LogNullError(nameof(ASF.ConfirmationsSemaphore));
+
+				return;
+			}
+
 			if (ASF.GlobalConfig.ConfirmationsLimiterDelay == 0) {
 				return;
 			}
 
-			await ConfirmationsSemaphore.WaitAsync().ConfigureAwait(false);
+			await ASF.ConfirmationsSemaphore.WaitAsync().ConfigureAwait(false);
 
 			Utilities.InBackground(
 				async () => {
 					await Task.Delay(ASF.GlobalConfig.ConfirmationsLimiterDelay * 1000).ConfigureAwait(false);
-					ConfirmationsSemaphore.Release();
+					ASF.ConfirmationsSemaphore.Release();
 				}
 			);
 		}

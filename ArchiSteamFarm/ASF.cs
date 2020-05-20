@@ -22,11 +22,14 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.IPC;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
@@ -54,6 +57,12 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public static WebBrowser WebBrowser { get; internal set; }
+
+		internal static ICrossProcessSemaphore ConfirmationsSemaphore { get; private set; }
+		internal static ICrossProcessSemaphore GiftsSemaphore { get; private set; }
+		internal static ICrossProcessSemaphore InventorySemaphore { get; private set; }
+		internal static ICrossProcessSemaphore LoginRateLimitingSemaphore { get; private set; }
+		internal static ImmutableDictionary<string, (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)> WebLimitingSemaphores { get; private set; }
 
 		private static readonly SemaphoreSlim UpdateSemaphore = new SemaphoreSlim(1, 1);
 
@@ -131,6 +140,21 @@ namespace ArchiSteamFarm {
 			}
 
 			GlobalConfig = globalConfig;
+
+			string webProxyText = !string.IsNullOrEmpty(globalConfig.WebProxyText) ? "-" + Convert.ToBase64String(Encoding.UTF8.GetBytes(globalConfig.WebProxyText)) : "";
+
+			ConfirmationsSemaphore ??= OS.CreateCrossProcessSemaphore(nameof(ConfirmationsSemaphore) + webProxyText);
+			GiftsSemaphore ??= OS.CreateCrossProcessSemaphore(nameof(GiftsSemaphore) + webProxyText);
+			InventorySemaphore ??= OS.CreateCrossProcessSemaphore(nameof(InventorySemaphore) + webProxyText);
+			LoginRateLimitingSemaphore ??= OS.CreateCrossProcessSemaphore(nameof(LoginRateLimitingSemaphore) + webProxyText);
+
+			WebLimitingSemaphores ??= new Dictionary<string, (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)>(4, StringComparer.OrdinalIgnoreCase) {
+				{ nameof(ArchiWebHandler), (OS.CreateCrossProcessSemaphore(nameof(ArchiWebHandler) + webProxyText), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+				{ ArchiWebHandler.SteamCommunityURL, (OS.CreateCrossProcessSemaphore(nameof(ArchiWebHandler) + webProxyText + "-" + nameof(ArchiWebHandler.SteamCommunityURL)), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+				{ ArchiWebHandler.SteamHelpURL, (OS.CreateCrossProcessSemaphore(nameof(ArchiWebHandler) + webProxyText + "-" + nameof(ArchiWebHandler.SteamHelpURL)), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+				{ ArchiWebHandler.SteamStoreURL, (OS.CreateCrossProcessSemaphore(nameof(ArchiWebHandler) + webProxyText + "-" + nameof(ArchiWebHandler.SteamStoreURL)), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+				{ WebAPI.DefaultBaseAddress.Host, (OS.CreateCrossProcessSemaphore(nameof(ArchiWebHandler) + webProxyText + "-" + nameof(WebAPI)), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) }
+			}.ToImmutableDictionary(StringComparer.OrdinalIgnoreCase);
 		}
 
 		internal static void InitGlobalDatabase(GlobalDatabase globalDatabase) {

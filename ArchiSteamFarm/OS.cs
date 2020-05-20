@@ -26,6 +26,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
 using JetBrains.Annotations;
 
@@ -57,6 +58,25 @@ namespace ArchiSteamFarm {
 				// Users are very often doing it accidentally without any real purpose, and we want to avoid this common issue which causes the whole process to hang
 				// See http://stackoverflow.com/questions/30418886/how-and-why-does-quickedit-mode-in-command-prompt-freeze-applications for more details
 				WindowsDisableQuickEditMode();
+			}
+		}
+
+		internal static ICrossProcessSemaphore CreateCrossProcessSemaphore(string objectName) {
+			if (string.IsNullOrEmpty(objectName)) {
+				ASF.ArchiLogger.LogNullError(nameof(objectName));
+
+				return null;
+			}
+
+			string resourceName = GetOsResourceName(objectName);
+
+			try {
+				return new CrossProcessSemaphore(resourceName);
+			} catch (PlatformNotSupportedException e) {
+				// CrossProcessSemaphore is currently available only for Windows platforms, we use alternative synchronization for other OSes
+				ASF.ArchiLogger.LogGenericDebuggingException(e);
+
+				return new CrossProcessMutexBasedSemaphore(resourceName);
 			}
 		}
 
@@ -94,7 +114,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string uniqueName = "Global\\" + SharedInfo.AssemblyName + "-" + Convert.ToBase64String(Encoding.UTF8.GetBytes(Directory.GetCurrentDirectory()));
+			string uniqueName = "Global\\" + GetOsResourceName(nameof(SingleInstance)) + "-" + Convert.ToBase64String(Encoding.UTF8.GetBytes(Directory.GetCurrentDirectory()));
 
 			Mutex singleInstance = new Mutex(true, uniqueName, out bool result);
 
@@ -135,6 +155,16 @@ namespace ArchiSteamFarm {
 			// Instead, we'll dispose the mutex which should automatically release it by the CLR
 			SingleInstance.Dispose();
 			SingleInstance = null;
+		}
+
+		private static string GetOsResourceName(string objectName) {
+			if (string.IsNullOrEmpty(objectName)) {
+				ASF.ArchiLogger.LogNullError(nameof(objectName));
+
+				return null;
+			}
+
+			return SharedInfo.AssemblyName + "-" + objectName;
 		}
 
 		private static void WindowsDisableQuickEditMode() {

@@ -62,7 +62,6 @@ namespace ArchiSteamFarm {
 		internal static EOSType OSType { get; private set; } = EOSType.Unknown;
 
 		private static readonly SemaphoreSlim BotsSemaphore = new SemaphoreSlim(1, 1);
-		private static readonly SemaphoreSlim LoginRateLimitingSemaphore = new SemaphoreSlim(1, 1);
 		private static readonly SemaphoreSlim LoginSemaphore = new SemaphoreSlim(1, 1);
 
 		[JsonIgnore]
@@ -1939,9 +1938,15 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task LimitLoginRequestsAsync() {
+			if (ASF.LoginRateLimitingSemaphore == null) {
+				ASF.ArchiLogger.LogNullError(nameof(ASF.LoginRateLimitingSemaphore));
+
+				return;
+			}
+
 			if (ASF.GlobalConfig.LoginLimiterDelay == 0) {
-				await LoginRateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
-				LoginRateLimitingSemaphore.Release();
+				await ASF.LoginRateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
+				ASF.LoginRateLimitingSemaphore.Release();
 
 				return;
 			}
@@ -1949,8 +1954,8 @@ namespace ArchiSteamFarm {
 			await LoginSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				await LoginRateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
-				LoginRateLimitingSemaphore.Release();
+				await ASF.LoginRateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
+				ASF.LoginRateLimitingSemaphore.Release();
 			} finally {
 				Utilities.InBackground(
 					async () => {
@@ -2074,6 +2079,12 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			if (ASF.LoginRateLimitingSemaphore == null) {
+				ASF.ArchiLogger.LogNullError(nameof(ASF.LoginRateLimitingSemaphore));
+
+				return;
+			}
+
 			EResult lastLogOnResult = LastLogOnResult;
 			LastLogOnResult = EResult.Invalid;
 			HeartBeatFailures = 0;
@@ -2120,14 +2131,14 @@ namespace ArchiSteamFarm {
 				case EResult.RateLimitExceeded:
 					ArchiLogger.LogGenericInfo(string.Format(Strings.BotRateLimitExceeded, TimeSpan.FromMinutes(LoginCooldownInMinutes).ToHumanReadable()));
 
-					if (!await LoginRateLimitingSemaphore.WaitAsync(1000 * WebBrowser.MaxTries).ConfigureAwait(false)) {
+					if (!await ASF.LoginRateLimitingSemaphore.WaitAsync(1000 * WebBrowser.MaxTries).ConfigureAwait(false)) {
 						break;
 					}
 
 					try {
 						await Task.Delay(LoginCooldownInMinutes * 60 * 1000).ConfigureAwait(false);
 					} finally {
-						LoginRateLimitingSemaphore.Release();
+						ASF.LoginRateLimitingSemaphore.Release();
 					}
 
 					break;

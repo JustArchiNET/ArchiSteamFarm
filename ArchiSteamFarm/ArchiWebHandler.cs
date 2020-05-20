@@ -62,16 +62,6 @@ namespace ArchiSteamFarm {
 		private const string SteamHelpHost = "help.steampowered.com";
 		private const string SteamStoreHost = "store.steampowered.com";
 
-		private static readonly SemaphoreSlim InventorySemaphore = new SemaphoreSlim(1, 1);
-
-		private static readonly ImmutableDictionary<string, (SemaphoreSlim RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)> WebLimitingSemaphores = new Dictionary<string, (SemaphoreSlim RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)>(4, StringComparer.Ordinal) {
-			{ nameof(ArchiWebHandler), (new SemaphoreSlim(1, 1), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
-			{ SteamCommunityURL, (new SemaphoreSlim(1, 1), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
-			{ SteamHelpURL, (new SemaphoreSlim(1, 1), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
-			{ SteamStoreURL, (new SemaphoreSlim(1, 1), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
-			{ WebAPI.DefaultBaseAddress.Host, (new SemaphoreSlim(1, 1), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) }
-		}.ToImmutableDictionary(StringComparer.Ordinal);
-
 		[PublicAPI]
 		public readonly ArchiCacheable<string> CachedApiKey;
 
@@ -129,6 +119,10 @@ namespace ArchiSteamFarm {
 				throw new ArgumentException(string.Format(Strings.ErrorObjectIsNull, nameof(appID) + " || " + nameof(contextID)));
 			}
 
+			if (ASF.InventorySemaphore == null) {
+				throw new ArgumentNullException(nameof(ASF.InventorySemaphore));
+			}
+
 			if (steamID == 0) {
 				if (!Initialized) {
 					for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
@@ -152,7 +146,7 @@ namespace ArchiSteamFarm {
 			HashSet<ulong> assetIDs = new HashSet<ulong>();
 
 			while (true) {
-				await InventorySemaphore.WaitAsync().ConfigureAwait(false);
+				await ASF.InventorySemaphore.WaitAsync().ConfigureAwait(false);
 
 				try {
 					Steam.InventoryResponse response = await UrlGetToJsonObjectWithSession<Steam.InventoryResponse>(SteamCommunityURL, request + (startAssetID > 0 ? "&start_assetid=" + startAssetID : "")).ConfigureAwait(false);
@@ -222,12 +216,12 @@ namespace ArchiSteamFarm {
 					startAssetID = response.LastAssetID;
 				} finally {
 					if (ASF.GlobalConfig.InventoryLimiterDelay == 0) {
-						InventorySemaphore.Release();
+						ASF.InventorySemaphore.Release();
 					} else {
 						Utilities.InBackground(
 							async () => {
 								await Task.Delay(ASF.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
-								InventorySemaphore.Release();
+								ASF.InventorySemaphore.Release();
 							}
 						);
 					}
@@ -1183,14 +1177,20 @@ namespace ArchiSteamFarm {
 				return default;
 			}
 
+			if (ASF.WebLimitingSemaphores == null) {
+				ASF.ArchiLogger.LogNullError(nameof(ASF.WebLimitingSemaphores));
+
+				return default;
+			}
+
 			if (ASF.GlobalConfig.WebLimiterDelay == 0) {
 				return await function().ConfigureAwait(false);
 			}
 
-			if (!WebLimitingSemaphores.TryGetValue(service, out (SemaphoreSlim RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore) limiters)) {
+			if (!ASF.WebLimitingSemaphores.TryGetValue(service, out (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore) limiters)) {
 				ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(service), service));
 
-				if (!WebLimitingSemaphores.TryGetValue(nameof(ArchiWebHandler), out limiters)) {
+				if (!ASF.WebLimitingSemaphores.TryGetValue(nameof(ArchiWebHandler), out limiters)) {
 					ASF.ArchiLogger.LogNullError(nameof(limiters));
 
 					return await function().ConfigureAwait(false);
@@ -2155,9 +2155,15 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task MarkInventory() {
+			if (ASF.InventorySemaphore == null) {
+				Bot.ArchiLogger.LogNullError(nameof(ASF.InventorySemaphore));
+
+				return;
+			}
+
 			// We aim to have a maximum of 2 tasks, one already working, and one waiting in the queue
 			// This way we can call this function as many times as needed e.g. because of Steam events
-			lock (InventorySemaphore) {
+			lock (ASF.InventorySemaphore) {
 				if (MarkingInventoryScheduled) {
 					return;
 				}
@@ -2165,10 +2171,10 @@ namespace ArchiSteamFarm {
 				MarkingInventoryScheduled = true;
 			}
 
-			await InventorySemaphore.WaitAsync().ConfigureAwait(false);
+			await ASF.InventorySemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				lock (InventorySemaphore) {
+				lock (ASF.InventorySemaphore) {
 					MarkingInventoryScheduled = false;
 				}
 
@@ -2176,12 +2182,12 @@ namespace ArchiSteamFarm {
 				await UrlHeadWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
 			} finally {
 				if (ASF.GlobalConfig.InventoryLimiterDelay == 0) {
-					InventorySemaphore.Release();
+					ASF.InventorySemaphore.Release();
 				} else {
 					Utilities.InBackground(
 						async () => {
 							await Task.Delay(ASF.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
-							InventorySemaphore.Release();
+							ASF.InventorySemaphore.Release();
 						}
 					);
 				}

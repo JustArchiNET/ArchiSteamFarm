@@ -36,7 +36,6 @@ using SteamKit2;
 namespace ArchiSteamFarm {
 	public sealed class Actions : IAsyncDisposable {
 		private static readonly SemaphoreSlim GiftCardsSemaphore = new SemaphoreSlim(1, 1);
-		private static readonly SemaphoreSlim GiftsSemaphore = new SemaphoreSlim(1, 1);
 
 		private readonly Bot Bot;
 		private readonly ConcurrentHashSet<ulong> HandledGifts = new ConcurrentHashSet<ulong>();
@@ -440,16 +439,22 @@ namespace ArchiSteamFarm {
 		private ulong GetFirstSteamMasterID() => Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key != 0) && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderByDescending(steamID => steamID != Bot.SteamID).ThenBy(steamID => steamID).FirstOrDefault();
 
 		private static async Task LimitGiftsRequestsAsync() {
+			if (ASF.GiftsSemaphore == null) {
+				ASF.ArchiLogger.LogNullError(nameof(ASF.GiftsSemaphore));
+
+				return;
+			}
+
 			if (ASF.GlobalConfig.GiftsLimiterDelay == 0) {
 				return;
 			}
 
-			await GiftsSemaphore.WaitAsync().ConfigureAwait(false);
+			await ASF.GiftsSemaphore.WaitAsync().ConfigureAwait(false);
 
 			Utilities.InBackground(
 				async () => {
 					await Task.Delay(ASF.GlobalConfig.GiftsLimiterDelay * 1000).ConfigureAwait(false);
-					GiftsSemaphore.Release();
+					ASF.GiftsSemaphore.Release();
 				}
 			);
 		}
