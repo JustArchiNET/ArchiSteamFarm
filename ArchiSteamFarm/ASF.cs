@@ -62,6 +62,7 @@ namespace ArchiSteamFarm {
 		internal static ICrossProcessSemaphore GiftsSemaphore { get; private set; }
 		internal static ICrossProcessSemaphore InventorySemaphore { get; private set; }
 		internal static ICrossProcessSemaphore LoginRateLimitingSemaphore { get; private set; }
+		internal static ICrossProcessSemaphore LoginSemaphore { get; private set; }
 		internal static ImmutableDictionary<string, (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)> WebLimitingSemaphores { get; private set; }
 
 		private static readonly SemaphoreSlim UpdateSemaphore = new SemaphoreSlim(1, 1);
@@ -147,6 +148,7 @@ namespace ArchiSteamFarm {
 			GiftsSemaphore ??= OS.CreateCrossProcessSemaphore(nameof(GiftsSemaphore) + webProxyText);
 			InventorySemaphore ??= OS.CreateCrossProcessSemaphore(nameof(InventorySemaphore) + webProxyText);
 			LoginRateLimitingSemaphore ??= OS.CreateCrossProcessSemaphore(nameof(LoginRateLimitingSemaphore) + webProxyText);
+			LoginSemaphore ??= OS.CreateCrossProcessSemaphore(nameof(LoginSemaphore) + webProxyText);
 
 			WebLimitingSemaphores ??= new Dictionary<string, (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)>(4, StringComparer.OrdinalIgnoreCase) {
 				{ nameof(ArchiWebHandler), (OS.CreateCrossProcessSemaphore(nameof(ArchiWebHandler) + webProxyText), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },

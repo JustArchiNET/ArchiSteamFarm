@@ -62,7 +62,6 @@ namespace ArchiSteamFarm {
 		internal static EOSType OSType { get; private set; } = EOSType.Unknown;
 
 		private static readonly SemaphoreSlim BotsSemaphore = new SemaphoreSlim(1, 1);
-		private static readonly SemaphoreSlim LoginSemaphore = new SemaphoreSlim(1, 1);
 
 		[JsonIgnore]
 		[PublicAPI]
@@ -1938,8 +1937,8 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task LimitLoginRequestsAsync() {
-			if (ASF.LoginRateLimitingSemaphore == null) {
-				ASF.ArchiLogger.LogNullError(nameof(ASF.LoginRateLimitingSemaphore));
+			if ((ASF.LoginSemaphore == null) || (ASF.LoginRateLimitingSemaphore == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(ASF.LoginSemaphore) + " || " + nameof(ASF.LoginRateLimitingSemaphore));
 
 				return;
 			}
@@ -1951,7 +1950,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			await LoginSemaphore.WaitAsync().ConfigureAwait(false);
+			await ASF.LoginSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
 				await ASF.LoginRateLimitingSemaphore.WaitAsync().ConfigureAwait(false);
@@ -1960,7 +1959,7 @@ namespace ArchiSteamFarm {
 				Utilities.InBackground(
 					async () => {
 						await Task.Delay(ASF.GlobalConfig.LoginLimiterDelay * 1000).ConfigureAwait(false);
-						LoginSemaphore.Release();
+						ASF.LoginSemaphore.Release();
 					}
 				);
 			}
