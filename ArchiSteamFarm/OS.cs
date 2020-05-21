@@ -76,10 +76,7 @@ namespace ArchiSteamFarm {
 				// CrossProcessSemaphore is currently available only for Windows platforms, we use alternative synchronization for other OSes
 				ASF.ArchiLogger.LogGenericDebuggingException(e);
 
-				// CrossProcessMutexBasedSemaphore disabled until reason for segfault on Linux is found
-				//return new CrossProcessMutexBasedSemaphore(resourceName);
-
-				return new NonCrossProcessLocalSemaphore(resourceName);
+				return new CrossProcessFileBasedSemaphore(resourceName);
 			}
 		}
 
@@ -132,7 +129,7 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		internal static void UnixSetFileAccessExecutable(string path) {
+		internal static void UnixSetFileAccess(string path, EUnixPermission permission) {
 			if (string.IsNullOrEmpty(path) || !File.Exists(path)) {
 				ASF.ArchiLogger.LogNullError(nameof(path));
 
@@ -144,7 +141,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Chmod() returns 0 on success, -1 on failure
-			if (NativeMethods.Chmod(path, (int) NativeMethods.UnixExecutePermission) != 0) {
+			if (NativeMethods.Chmod(path, (int) permission) != 0) {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningFailedWithError, Marshal.GetLastWin32Error()));
 			}
 		}
@@ -206,11 +203,25 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		[Flags]
+		internal enum EUnixPermission : ushort {
+			OtherExecute = 0x1,
+			OtherWrite = 0x2,
+			OtherRead = 0x4,
+			GroupExecute = 0x8,
+			GroupWrite = 0x10,
+			GroupRead = 0x20,
+			UserExecute = 0x40,
+			UserWrite = 0x80,
+			UserRead = 0x100,
+			Combined755 = UserRead | UserWrite | UserExecute | GroupRead | GroupExecute | OtherRead | OtherExecute,
+			Combined777 = UserRead | UserWrite | UserExecute | GroupRead | GroupWrite | GroupExecute | OtherRead | OtherWrite | OtherExecute
+		}
+
 		private static class NativeMethods {
 			internal const EExecutionState AwakeExecutionState = EExecutionState.SystemRequired | EExecutionState.AwayModeRequired | EExecutionState.Continuous;
 			internal const uint EnableQuickEditMode = 0x0040;
 			internal const sbyte StandardInputHandle = -10;
-			internal const EUnixPermission UnixExecutePermission = EUnixPermission.UserRead | EUnixPermission.UserWrite | EUnixPermission.UserExecute | EUnixPermission.GroupRead | EUnixPermission.GroupExecute | EUnixPermission.OtherRead | EUnixPermission.OtherExecute;
 
 			[DllImport("libc", EntryPoint = "chmod", SetLastError = true)]
 			internal static extern int Chmod(string path, int mode);
@@ -233,22 +244,6 @@ namespace ArchiSteamFarm {
 				SystemRequired = 0x00000001,
 				AwayModeRequired = 0x00000040,
 				Continuous = 0x80000000
-			}
-
-			[Flags]
-			internal enum EUnixPermission : ushort {
-				OtherExecute = 0x1,
-				OtherRead = 0x4,
-				GroupExecute = 0x8,
-				GroupRead = 0x20,
-				UserExecute = 0x40,
-				UserWrite = 0x80,
-				UserRead = 0x100
-
-				/*
-				OtherWrite = 0x2
-				GroupWrite = 0x10
-				*/
 			}
 		}
 	}

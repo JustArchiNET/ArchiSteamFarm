@@ -305,7 +305,7 @@ namespace ArchiSteamFarm {
 					string executable = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.AssemblyName);
 
 					if (File.Exists(executable)) {
-						OS.UnixSetFileAccessExecutable(executable);
+						OS.UnixSetFileAccess(executable, OS.EUnixPermission.Combined755);
 					}
 				}
 
