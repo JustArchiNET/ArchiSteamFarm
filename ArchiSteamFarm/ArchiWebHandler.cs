@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -78,7 +77,7 @@ namespace ArchiSteamFarm {
 		private bool MarkingInventoryScheduled;
 		private string VanityURL;
 
-		internal ArchiWebHandler([JetBrains.Annotations.NotNull] Bot bot) {
+		internal ArchiWebHandler([NotNull] Bot bot) {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 			CachedApiKey = new ArchiCacheable<string>(ResolveApiKey);
@@ -111,9 +110,8 @@ namespace ArchiSteamFarm {
 			return string.IsNullOrEmpty(VanityURL) ? "/profiles/" + Bot.SteamID : "/id/" + VanityURL;
 		}
 
-		[JetBrains.Annotations.NotNull]
+		[NotNull]
 		[PublicAPI]
-		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
 		public async IAsyncEnumerable<Steam.Asset> GetInventoryAsync(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID) {
 			if ((appID == 0) || (contextID == 0)) {
 				throw new ArgumentException(string.Format(Strings.ErrorObjectIsNull, nameof(appID) + " || " + nameof(contextID)));
@@ -1381,7 +1379,7 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		[JetBrains.Annotations.NotNull]
+		[NotNull]
 		internal HttpClient GenerateDisposableHttpClient() => WebBrowser.GenerateDisposableHttpClient();
 
 		[ItemCanBeNull]

@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
@@ -45,7 +44,7 @@ namespace ArchiSteamFarm {
 		private bool ProcessingGiftsScheduled;
 		private bool TradingScheduled;
 
-		internal Actions([JetBrains.Annotations.NotNull] Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+		internal Actions([NotNull] Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 		public async ValueTask DisposeAsync() {
 			// Those are objects that are always being created if constructor doesn't throw exception
@@ -235,7 +234,6 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
 		public async Task<(bool Success, string Message)> SendInventory(uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, ulong targetSteamID = 0, string tradeToken = null, Func<Steam.Asset, bool> filterFunction = null) {
 			if ((appID == 0) || (contextID == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));

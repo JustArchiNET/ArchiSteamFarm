@@ -24,7 +24,6 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -149,7 +148,7 @@ namespace ArchiSteamFarm {
 
 #pragma warning disable IDE0051
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamID))]
-		[JetBrains.Annotations.NotNull]
+		[NotNull]
 		private string SSteamID => SteamID.ToString();
 #pragma warning restore IDE0051
 
@@ -201,7 +200,7 @@ namespace ArchiSteamFarm {
 		private string TwoFactorCode;
 		private byte TwoFactorCodeFailures;
 
-		private Bot([JetBrains.Annotations.NotNull] string botName, [JetBrains.Annotations.NotNull] BotConfig botConfig, [JetBrains.Annotations.NotNull] BotDatabase botDatabase) {
+		private Bot([NotNull] string botName, [NotNull] BotConfig botConfig, [NotNull] BotDatabase botDatabase) {
 			if (string.IsNullOrEmpty(botName) || (botConfig == null) || (botDatabase == null)) {
 				throw new ArgumentNullException(nameof(botName) + " || " + nameof(botConfig) + " || " + nameof(botDatabase));
 			}
@@ -2830,7 +2829,6 @@ namespace ArchiSteamFarm {
 			WalletCurrency = callback.Currency;
 		}
 
-		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
 		private async Task RedeemGamesInBackground() {
 			if (!await GamesRedeemerInBackgroundSemaphore.WaitAsync(0).ConfigureAwait(false)) {
 				return;
