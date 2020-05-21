@@ -142,7 +142,7 @@ namespace ArchiSteamFarm {
 
 			GlobalConfig = globalConfig;
 
-			string webProxyText = !string.IsNullOrEmpty(globalConfig.WebProxyText) ? "-" + Convert.ToBase64String(Encoding.UTF8.GetBytes(globalConfig.WebProxyText)) : "";
+			string webProxyText = !string.IsNullOrEmpty(globalConfig.WebProxyText) ? "-" + BitConverter.ToString(Encoding.UTF8.GetBytes(globalConfig.WebProxyText)).Replace("-", "") : "";
 
 			ConfirmationsSemaphore ??= OS.CreateCrossProcessSemaphore(nameof(ConfirmationsSemaphore) + webProxyText);
 			GiftsSemaphore ??= OS.CreateCrossProcessSemaphore(nameof(GiftsSemaphore) + webProxyText);

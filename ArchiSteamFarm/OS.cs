@@ -114,7 +114,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string uniqueName = "Global\\" + GetOsResourceName(nameof(SingleInstance)) + "-" + Convert.ToBase64String(Encoding.UTF8.GetBytes(Directory.GetCurrentDirectory()));
+			string uniqueName = "Global\\" + GetOsResourceName(nameof(SingleInstance)) + "-" + BitConverter.ToString(Encoding.UTF8.GetBytes(Directory.GetCurrentDirectory())).Replace("-", "");
 
 			Mutex singleInstance = new Mutex(true, uniqueName, out bool result);
 
