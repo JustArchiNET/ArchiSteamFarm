@@ -29,7 +29,7 @@ using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Helpers {
 	internal sealed class CrossProcessFileBasedSemaphore : ICrossProcessSemaphore {
-		private const int SpinLockDelay = 1000; // In milliseconds
+		private const ushort SpinLockDelay = 1000; // In milliseconds
 
 		private readonly string FilePath;
 		private readonly SemaphoreSlim LocalSemaphore = new SemaphoreSlim(1, 1);
