@@ -153,12 +153,32 @@ namespace ArchiSteamFarm.Helpers {
 		}
 
 		private void EnsureFileExists() {
-			Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
-
 			FileInfo fileInfo = new FileInfo(FilePath);
 
 			if (fileInfo.Exists) {
 				return;
+			}
+
+			string directoryPath = Path.GetDirectoryName(FilePath);
+
+			if (string.IsNullOrEmpty(directoryPath)) {
+				ASF.ArchiLogger.LogNullError(nameof(directoryPath));
+
+				return;
+			}
+
+			DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
+
+			if (!directoryInfo.Exists) {
+				Directory.CreateDirectory(directoryPath);
+
+				if (OS.IsUnix) {
+					OS.UnixSetFileAccess(directoryPath, OS.EUnixPermission.Combined777);
+				} else {
+					DirectorySecurity directorySecurity = new DirectorySecurity(FilePath, AccessControlSections.All);
+
+					directoryInfo.SetAccessControl(directorySecurity);
+				}
 			}
 
 			try {
