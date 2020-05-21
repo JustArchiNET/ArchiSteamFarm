@@ -1911,7 +1911,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task JoinMasterChatGroupID() {
-			if (BotConfig.SteamMasterClanID == 0) {
+			if ((BotConfig.SteamMasterClanID == 0) || IsAccountLimited) {
 				return;
 			}
 
