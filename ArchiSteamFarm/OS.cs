@@ -76,7 +76,10 @@ namespace ArchiSteamFarm {
 				// CrossProcessSemaphore is currently available only for Windows platforms, we use alternative synchronization for other OSes
 				ASF.ArchiLogger.LogGenericDebuggingException(e);
 
-				return new CrossProcessMutexBasedSemaphore(resourceName);
+				// CrossProcessMutexBasedSemaphore disabled until reason for segfault on Linux is found
+				//return new CrossProcessMutexBasedSemaphore(resourceName);
+
+				return new NonCrossProcessLocalSemaphore(resourceName);
 			}
 		}
 
