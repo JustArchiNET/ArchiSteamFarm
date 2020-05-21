@@ -23,6 +23,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -114,7 +115,14 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string uniqueName = "Global\\" + GetOsResourceName(nameof(SingleInstance)) + "-" + BitConverter.ToString(Encoding.UTF8.GetBytes(Directory.GetCurrentDirectory())).Replace("-", "");
+			string uniqueName;
+
+			// The only purpose of using hashingAlgorithm here is to cut on a potential size of the resource name - paths can be really long, and we almost certainly have some upper limit on the resource name we can allocate
+			// At the same time it'd be the best if we avoided all special characters, such as '/' found e.g. in base64, as we can't be sure that it's not a prohibited character in regards to native OS implementation
+			// Because of that, MD5 is sufficient for our case, as it generates alphanumeric characters only, and is barely 128-bit long. We don't need any kind of complex cryptography or collision detection here, any hashing algorithm will do, and the shorter the better
+			using (MD5 hashingAlgorithm = MD5.Create()) {
+				uniqueName = "Global\\" + GetOsResourceName(nameof(SingleInstance)) + "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(Directory.GetCurrentDirectory()))).Replace("-", "");
+			}
 
 			Mutex singleInstance = new Mutex(true, uniqueName, out bool result);
 
