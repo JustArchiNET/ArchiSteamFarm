@@ -71,22 +71,22 @@ namespace ArchiSteamFarm.Helpers {
 			bool success = false;
 
 			try {
-				lock (LocalSemaphore) {
-					if (FileLock != null) {
-						throw new ArgumentNullException(nameof(FileLock));
-					}
+				while (true) {
+					try {
+						lock (LocalSemaphore) {
+							if (FileLock != null) {
+								throw new ArgumentNullException(nameof(FileLock));
+							}
 
-					while (true) {
-						EnsureFileExists();
+							EnsureFileExists();
 
-						try {
 							FileLock = new FileStream(FilePath, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None);
 							success = true;
 
 							return;
-						} catch (IOException) {
-							Thread.Sleep(SpinLockDelay);
 						}
+					} catch (IOException) {
+						await Task.Delay(SpinLockDelay).ConfigureAwait(false);
 					}
 				}
 			} finally {
@@ -116,27 +116,33 @@ namespace ArchiSteamFarm.Helpers {
 					return false;
 				}
 
-				lock (LocalSemaphore) {
-					if (FileLock != null) {
-						throw new ArgumentNullException(nameof(FileLock));
-					}
-
+				try {
 					while (true) {
-						EnsureFileExists();
-
 						try {
-							FileLock = new FileStream(FilePath, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None);
-							success = true;
+							lock (LocalSemaphore) {
+								if (FileLock != null) {
+									throw new ArgumentNullException(nameof(FileLock));
+								}
 
-							return true;
+								EnsureFileExists();
+
+								FileLock = new FileStream(FilePath, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None);
+								success = true;
+
+								return true;
+							}
 						} catch (IOException) {
 							if (millisecondsTimeout <= SpinLockDelay) {
 								return false;
 							}
 
-							Thread.Sleep(SpinLockDelay);
+							await Task.Delay(SpinLockDelay).ConfigureAwait(false);
 							millisecondsTimeout -= SpinLockDelay;
 						}
+					}
+				} finally {
+					if (!success) {
+						LocalSemaphore.Release();
 					}
 				}
 			} finally {
