@@ -105,44 +105,38 @@ namespace ArchiSteamFarm.Helpers {
 				return false;
 			}
 
-			stopwatch.Stop();
-
 			bool success = false;
 
 			try {
+				stopwatch.Stop();
+
 				millisecondsTimeout -= (int) stopwatch.ElapsedMilliseconds;
 
 				if (millisecondsTimeout <= 0) {
 					return false;
 				}
 
-				try {
-					while (true) {
-						try {
-							lock (LocalSemaphore) {
-								if (FileLock != null) {
-									throw new ArgumentNullException(nameof(FileLock));
-								}
-
-								EnsureFileExists();
-
-								FileLock = new FileStream(FilePath, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None);
-								success = true;
-
-								return true;
-							}
-						} catch (IOException) {
-							if (millisecondsTimeout <= SpinLockDelay) {
-								return false;
+				while (true) {
+					try {
+						lock (LocalSemaphore) {
+							if (FileLock != null) {
+								throw new ArgumentNullException(nameof(FileLock));
 							}
 
-							await Task.Delay(SpinLockDelay).ConfigureAwait(false);
-							millisecondsTimeout -= SpinLockDelay;
+							EnsureFileExists();
+
+							FileLock = new FileStream(FilePath, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None);
+							success = true;
+
+							return true;
 						}
-					}
-				} finally {
-					if (!success) {
-						LocalSemaphore.Release();
+					} catch (IOException) {
+						if (millisecondsTimeout <= SpinLockDelay) {
+							return false;
+						}
+
+						await Task.Delay(SpinLockDelay).ConfigureAwait(false);
+						millisecondsTimeout -= SpinLockDelay;
 					}
 				}
 			} finally {
