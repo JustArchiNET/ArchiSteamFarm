@@ -61,6 +61,9 @@ jobs:
     - name: Build ArchiSteamFarm.CustomPlugins.ExamplePlugin
       run: dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" -p:UseAppHost=false --nologo
 
+    - name: Build ArchiSteamFarm.CustomPlugins.PeriodicGC
+      run: dotnet build ArchiSteamFarm.CustomPlugins.PeriodicGC -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" -p:UseAppHost=false --nologo
+
     - name: Run ArchiSteamFarm.Tests
       run: dotnet test ArchiSteamFarm.Tests -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" -p:UseAppHost=false --nologo
 

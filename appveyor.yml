@@ -112,6 +112,14 @@ build_script:
     if ($LastExitCode -ne 0) {
         throw "Last command failed."
     }
+
+
+    dotnet build ArchiSteamFarm.CustomPlugins.PeriodicGC -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -p:UseAppHost=false --nologo
+
+
+    if ($LastExitCode -ne 0) {
+        throw "Last command failed."
+    }
 test_script:
 - pwsh: >-
     Set-StrictMode -Version Latest
