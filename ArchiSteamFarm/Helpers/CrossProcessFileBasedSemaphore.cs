@@ -153,9 +153,7 @@ namespace ArchiSteamFarm.Helpers {
 		}
 
 		private void EnsureFileExists() {
-			FileInfo fileInfo = new FileInfo(FilePath);
-
-			if (fileInfo.Exists) {
+			if (File.Exists(FilePath)) {
 				return;
 			}
 
@@ -167,14 +165,13 @@ namespace ArchiSteamFarm.Helpers {
 				return;
 			}
 
-			DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
-
-			if (!directoryInfo.Exists) {
+			if (!Directory.Exists(directoryPath)) {
 				Directory.CreateDirectory(directoryPath);
 
 				if (OS.IsUnix) {
 					OS.UnixSetFileAccess(directoryPath, OS.EUnixPermission.Combined777);
 				} else {
+					DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
 					DirectorySecurity directorySecurity = new DirectorySecurity(FilePath, AccessControlSections.All);
 
 					directoryInfo.SetAccessControl(directorySecurity);
@@ -187,6 +184,7 @@ namespace ArchiSteamFarm.Helpers {
 				if (OS.IsUnix) {
 					OS.UnixSetFileAccess(FilePath, OS.EUnixPermission.Combined777);
 				} else {
+					FileInfo fileInfo = new FileInfo(FilePath);
 					FileSecurity fileSecurity = new FileSecurity(FilePath, AccessControlSections.All);
 
 					fileInfo.SetAccessControl(fileSecurity);
