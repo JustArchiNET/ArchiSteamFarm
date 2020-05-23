@@ -24,8 +24,8 @@
 
 [![GitHub sponsor](https://img.shields.io/badge/GitHub-sponsor-yellow.svg?logo=github)](https://github.com/sponsors/JustArchi)
 [![Patreon support](https://img.shields.io/badge/Patreon-support-yellow.svg?logo=patreon)](https://www.patreon.com/JustArchi)
-[![Paypal.me donate](https://img.shields.io/badge/Paypal.me-donate-yellow.svg?logo=paypal)](https://www.paypal.me/JustArchi/5eur)
-[![Paypal donate](https://img.shields.io/badge/Paypal-donate-yellow.svg?logo=paypal)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HD2P2P3WGS5Y4)
+[![PayPal.me donate](https://img.shields.io/badge/PayPal.me-donate-yellow.svg?logo=paypal)](https://www.paypal.me/JustArchi/5eur)
+[![PayPal donate](https://img.shields.io/badge/PayPal-donate-yellow.svg?logo=paypal)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HD2P2P3WGS5Y4)
 [![Bitcoin donate](https://img.shields.io/badge/Bitcoin-donate-yellow.svg?logo=bitcoin)](https://blockstream.info/address/bc1q8archy9jneaqw6s3cs44azt6duyqdt8c6quml0)
 [![Steam donate](https://img.shields.io/badge/Steam-donate-yellow.svg?logo=steam)](https://steamcommunity.com/tradeoffer/new/?partner=46697991&token=0ix2Ruv_)
 
