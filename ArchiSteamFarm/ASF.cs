@@ -294,6 +294,8 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
+				await ArchiKestrel.Stop().ConfigureAwait(false);
+
 				try {
 #if !NETFRAMEWORK
 					await
