@@ -138,13 +138,19 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void UnixSetFileAccess(string path, EUnixPermission permission) {
-			if (string.IsNullOrEmpty(path) || !File.Exists(path)) {
+			if (string.IsNullOrEmpty(path)) {
 				ASF.ArchiLogger.LogNullError(nameof(path));
 
 				return;
 			}
 
 			if (!IsUnix) {
+				return;
+			}
+
+			if (!File.Exists(path) && !Directory.Exists(path)) {
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningFailedWithError, "!" + nameof(path)));
+
 				return;
 			}
 
