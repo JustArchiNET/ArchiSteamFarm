@@ -1,37 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <Authors>JustArchi</Authors>
-    <Company>JustArchi</Company>
-    <Copyright>Copyright © ArchiSteamFarm 2015-2020</Copyright>
-    <DefaultItemExcludes>$(DefaultItemExcludes);debug/**;out/**</DefaultItemExcludes>
-    <Description>ASF is an application that allows you to farm steam cards using multiple steam accounts simultaneously.</Description>
-    <ErrorReport>none</ErrorReport>
-    <LangVersion>8.0</LangVersion>
-    <NoWarn />
     <OutputType>Library</OutputType>
-    <PackageIcon>../resources/ASF.ico</PackageIcon>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/JustArchiNET/ArchiSteamFarm</PackageProjectUrl>
-    <RepositoryType>Git</RepositoryType>
-    <RepositoryUrl>https://github.com/JustArchiNET/ArchiSteamFarm.git</RepositoryUrl>
-    <RollForward>LatestMajor</RollForward>
-    <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(OS)' == 'Windows_NT' OR '$(ASFNetFramework)' != ''">
-    <TargetFrameworks>netcoreapp3.1;net48</TargetFrameworks>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(OS)' != 'Windows_NT' AND '$(ASFNetFramework)' == ''">
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <DebugSymbols>false</DebugSymbols>
-    <DebugType>none</DebugType>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors />
   </PropertyGroup>
 
   <ItemGroup>
@@ -46,5 +15,4 @@
   <ItemGroup>
     <ProjectReference Include="..\ArchiSteamFarm\ArchiSteamFarm.csproj" />
   </ItemGroup>
-
 </Project>
