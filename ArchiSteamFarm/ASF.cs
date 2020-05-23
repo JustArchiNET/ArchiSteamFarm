@@ -294,6 +294,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
+				// We disable ArchiKestrel here as the update process moves the core files and might result in IPC crash
 				await ArchiKestrel.Stop().ConfigureAwait(false);
 
 				try {
