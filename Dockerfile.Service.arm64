@@ -16,6 +16,7 @@ COPY --from=build-node /app/dist ASF-ui/dist
 COPY ArchiSteamFarm ArchiSteamFarm
 COPY ArchiSteamFarm.Tests ArchiSteamFarm.Tests
 COPY resources resources
+COPY Directory.Build.props Directory.Build.props
 RUN dotnet --info && \
     # TODO: Remove workaround for https://github.com/microsoft/msbuild/issues/3897 when it's no longer needed
     if [ -f "ArchiSteamFarm/Localization/Strings.zh-CN.resx" ]; then ln -s "Strings.zh-CN.resx" "ArchiSteamFarm/Localization/Strings.zh-Hans.resx"; fi && \
