@@ -504,7 +504,7 @@ namespace ArchiSteamFarm {
 							pathNext = false;
 							HandlePathArgument(arg);
 						} else if ((arg.Length > 16) && arg.StartsWith("--network-group=", StringComparison.Ordinal)) {
-							HandleNetworkGroupArgument(arg.Substring(7));
+							HandleNetworkGroupArgument(arg.Substring(16));
 						} else if ((arg.Length > 7) && arg.StartsWith("--path=", StringComparison.Ordinal)) {
 							HandlePathArgument(arg.Substring(7));
 						}
