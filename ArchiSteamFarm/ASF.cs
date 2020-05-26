@@ -143,24 +143,20 @@ namespace ArchiSteamFarm {
 
 			GlobalConfig = globalConfig;
 
-			StringBuilder networkGroupBuilder = new StringBuilder();
-
 			// The only purpose of using hashingAlgorithm below is to cut on a potential size of the resource name - paths can be really long, and we almost certainly have some upper limit on the resource name we can allocate
 			// At the same time it'd be the best if we avoided all special characters, such as '/' found e.g. in base64, as we can't be sure that it's not a prohibited character in regards to native OS implementation
 			// Because of that, MD5 is sufficient for our case, as it generates alphanumeric characters only, and is barely 128-bit long. We don't need any kind of complex cryptography or collision detection here, any hashing algorithm will do, and the shorter the better
+			string networkGroupText = "";
+
 			if (!string.IsNullOrEmpty(Program.NetworkGroup)) {
 				using MD5 hashingAlgorithm = MD5.Create();
 
-				networkGroupBuilder.Append("-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(Program.NetworkGroup))).Replace("-", ""));
-			}
-
-			if (!string.IsNullOrEmpty(globalConfig.WebProxyText)) {
+				networkGroupText = "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(Program.NetworkGroup))).Replace("-", "");
+			} else if (!string.IsNullOrEmpty(globalConfig.WebProxyText)) {
 				using MD5 hashingAlgorithm = MD5.Create();
 
-				networkGroupBuilder.Append("-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(globalConfig.WebProxyText))).Replace("-", ""));
+				networkGroupText = "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(globalConfig.WebProxyText))).Replace("-", "");
 			}
-
-			string networkGroupText = networkGroupBuilder.ToString();
 
 			ConfirmationsSemaphore ??= OS.CreateCrossProcessSemaphore(nameof(ConfirmationsSemaphore) + networkGroupText);
 			GiftsSemaphore ??= OS.CreateCrossProcessSemaphore(nameof(GiftsSemaphore) + networkGroupText);
