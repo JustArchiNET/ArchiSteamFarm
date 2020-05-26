@@ -38,6 +38,7 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	internal static class Program {
+		internal static string NetworkGroup { get; private set; }
 		internal static bool ProcessRequired { get; private set; }
 		internal static bool RestartAllowed { get; private set; } = true;
 		internal static bool ShutdownSequenceInitialized { get; private set; }
@@ -90,6 +91,16 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiCryptoHelper.SetEncryptionKey(cryptKey);
+		}
+
+		private static void HandleNetworkGroupArgument(string networkGroup) {
+			if (string.IsNullOrEmpty(networkGroup)) {
+				ASF.ArchiLogger.LogNullError(nameof(networkGroup));
+
+				return;
+			}
+
+			NetworkGroup = networkGroup;
 		}
 
 		private static void HandlePathArgument(string path) {
@@ -457,6 +468,12 @@ namespace ArchiSteamFarm {
 			}
 
 			try {
+				string envNetworkGroup = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableNetworkGroup);
+
+				if (!string.IsNullOrEmpty(envNetworkGroup)) {
+					HandleNetworkGroupArgument(envNetworkGroup);
+				}
+
 				string envPath = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariablePath);
 
 				if (!string.IsNullOrEmpty(envPath)) {
@@ -466,18 +483,28 @@ namespace ArchiSteamFarm {
 				ASF.ArchiLogger.LogGenericException(e);
 			}
 
+			bool networkGroupNext = false;
 			bool pathNext = false;
 
 			foreach (string arg in args) {
 				switch (arg) {
+					case "--network-group" when !networkGroupNext:
+						networkGroupNext = true;
+
+						break;
 					case "--path" when !pathNext:
 						pathNext = true;
 
 						break;
 					default:
-						if (pathNext) {
+						if (networkGroupNext) {
+							networkGroupNext = false;
+							HandleNetworkGroupArgument(arg);
+						} else if (pathNext) {
 							pathNext = false;
 							HandlePathArgument(arg);
+						} else if ((arg.Length > 16) && arg.StartsWith("--network-group=", StringComparison.Ordinal)) {
+							HandleNetworkGroupArgument(arg.Substring(7));
 						} else if ((arg.Length > 7) && arg.StartsWith("--path=", StringComparison.Ordinal)) {
 							HandlePathArgument(arg.Substring(7));
 						}

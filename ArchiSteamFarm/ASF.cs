@@ -143,29 +143,37 @@ namespace ArchiSteamFarm {
 
 			GlobalConfig = globalConfig;
 
-			string webProxyText = "";
+			StringBuilder networkGroupBuilder = new StringBuilder();
 
-			if (!string.IsNullOrEmpty(globalConfig.WebProxyText)) {
-				// The only purpose of using hashingAlgorithm here is to cut on a potential size of the resource name - paths can be really long, and we almost certainly have some upper limit on the resource name we can allocate
-				// At the same time it'd be the best if we avoided all special characters, such as '/' found e.g. in base64, as we can't be sure that it's not a prohibited character in regards to native OS implementation
-				// Because of that, MD5 is sufficient for our case, as it generates alphanumeric characters only, and is barely 128-bit long. We don't need any kind of complex cryptography or collision detection here, any hashing algorithm will do, and the shorter the better
+			// The only purpose of using hashingAlgorithm below is to cut on a potential size of the resource name - paths can be really long, and we almost certainly have some upper limit on the resource name we can allocate
+			// At the same time it'd be the best if we avoided all special characters, such as '/' found e.g. in base64, as we can't be sure that it's not a prohibited character in regards to native OS implementation
+			// Because of that, MD5 is sufficient for our case, as it generates alphanumeric characters only, and is barely 128-bit long. We don't need any kind of complex cryptography or collision detection here, any hashing algorithm will do, and the shorter the better
+			if (!string.IsNullOrEmpty(Program.NetworkGroup)) {
 				using MD5 hashingAlgorithm = MD5.Create();
 
-				webProxyText = "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(globalConfig.WebProxyText))).Replace("-", "");
+				networkGroupBuilder.Append("-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(Program.NetworkGroup))).Replace("-", ""));
 			}
 
-			ConfirmationsSemaphore ??= OS.CreateCrossProcessSemaphore(nameof(ConfirmationsSemaphore) + webProxyText);
-			GiftsSemaphore ??= OS.CreateCrossProcessSemaphore(nameof(GiftsSemaphore) + webProxyText);
-			InventorySemaphore ??= OS.CreateCrossProcessSemaphore(nameof(InventorySemaphore) + webProxyText);
-			LoginRateLimitingSemaphore ??= OS.CreateCrossProcessSemaphore(nameof(LoginRateLimitingSemaphore) + webProxyText);
-			LoginSemaphore ??= OS.CreateCrossProcessSemaphore(nameof(LoginSemaphore) + webProxyText);
+			if (!string.IsNullOrEmpty(globalConfig.WebProxyText)) {
+				using MD5 hashingAlgorithm = MD5.Create();
+
+				networkGroupBuilder.Append("-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(globalConfig.WebProxyText))).Replace("-", ""));
+			}
+
+			string networkGroupText = networkGroupBuilder.ToString();
+
+			ConfirmationsSemaphore ??= OS.CreateCrossProcessSemaphore(nameof(ConfirmationsSemaphore) + networkGroupText);
+			GiftsSemaphore ??= OS.CreateCrossProcessSemaphore(nameof(GiftsSemaphore) + networkGroupText);
+			InventorySemaphore ??= OS.CreateCrossProcessSemaphore(nameof(InventorySemaphore) + networkGroupText);
+			LoginRateLimitingSemaphore ??= OS.CreateCrossProcessSemaphore(nameof(LoginRateLimitingSemaphore) + networkGroupText);
+			LoginSemaphore ??= OS.CreateCrossProcessSemaphore(nameof(LoginSemaphore) + networkGroupText);
 
 			WebLimitingSemaphores ??= new Dictionary<string, (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)>(4, StringComparer.OrdinalIgnoreCase) {
-				{ nameof(ArchiWebHandler), (OS.CreateCrossProcessSemaphore(nameof(ArchiWebHandler) + webProxyText), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
-				{ ArchiWebHandler.SteamCommunityURL, (OS.CreateCrossProcessSemaphore(nameof(ArchiWebHandler) + webProxyText + "-" + nameof(ArchiWebHandler.SteamCommunityURL)), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
-				{ ArchiWebHandler.SteamHelpURL, (OS.CreateCrossProcessSemaphore(nameof(ArchiWebHandler) + webProxyText + "-" + nameof(ArchiWebHandler.SteamHelpURL)), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
-				{ ArchiWebHandler.SteamStoreURL, (OS.CreateCrossProcessSemaphore(nameof(ArchiWebHandler) + webProxyText + "-" + nameof(ArchiWebHandler.SteamStoreURL)), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
-				{ WebAPI.DefaultBaseAddress.Host, (OS.CreateCrossProcessSemaphore(nameof(ArchiWebHandler) + webProxyText + "-" + nameof(WebAPI)), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) }
+				{ nameof(ArchiWebHandler), (OS.CreateCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+				{ ArchiWebHandler.SteamCommunityURL, (OS.CreateCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(ArchiWebHandler.SteamCommunityURL)), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+				{ ArchiWebHandler.SteamHelpURL, (OS.CreateCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(ArchiWebHandler.SteamHelpURL)), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+				{ ArchiWebHandler.SteamStoreURL, (OS.CreateCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(ArchiWebHandler.SteamStoreURL)), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+				{ WebAPI.DefaultBaseAddress.Host, (OS.CreateCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(WebAPI)), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) }
 			}.ToImmutableDictionary(StringComparer.OrdinalIgnoreCase);
 		}
 
