@@ -116,11 +116,7 @@ namespace ArchiSteamFarm {
 			for (int i = 0; i < maxTries; i++) {
 				await using StreamResponse response = await UrlGetToStream(request, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
-				if (response == null) {
-					return null;
-				}
-
-				if (response.StatusCode.IsClientErrorCode()) {
+				if (response?.StatusCode.IsClientErrorCode() == true) {
 					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
 						result = new HtmlDocumentResponse(response);
 					}
@@ -128,7 +124,7 @@ namespace ArchiSteamFarm {
 					break;
 				}
 
-				if (response.Content == null) {
+				if (response?.Content == null) {
 					continue;
 				}
 
@@ -337,11 +333,7 @@ namespace ArchiSteamFarm {
 			for (int i = 0; i < maxTries; i++) {
 				await using StreamResponse response = await UrlPostToStream(request, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
-				if (response == null) {
-					return null;
-				}
-
-				if (response.StatusCode.IsClientErrorCode()) {
+				if (response?.StatusCode.IsClientErrorCode() == true) {
 					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
 						result = new HtmlDocumentResponse(response);
 					}
@@ -349,7 +341,7 @@ namespace ArchiSteamFarm {
 					break;
 				}
 
-				if (response.Content == null) {
+				if (response?.Content == null) {
 					continue;
 				}
 
@@ -386,11 +378,7 @@ namespace ArchiSteamFarm {
 			for (byte i = 0; i < maxTries; i++) {
 				await using StreamResponse response = await UrlPostToStream(request, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
-				if (response == null) {
-					return null;
-				}
-
-				if (response.StatusCode.IsClientErrorCode()) {
+				if (response?.StatusCode.IsClientErrorCode() == true) {
 					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
 						result = new ObjectResponse<T>(response);
 					}
@@ -398,7 +386,7 @@ namespace ArchiSteamFarm {
 					break;
 				}
 
-				if (response.Content == null) {
+				if (response?.Content == null) {
 					continue;
 				}
 
@@ -471,16 +459,16 @@ namespace ArchiSteamFarm {
 
 				await using StreamResponse response = await UrlGetToStream(request, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
-				if (response == null) {
-					continue;
-				}
-
-				if (response.StatusCode.IsClientErrorCode()) {
+				if (response?.StatusCode.IsClientErrorCode() == true) {
 					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
 						result = new BinaryResponse(response);
 					}
 
 					break;
+				}
+
+				if (response?.Content == null) {
+					continue;
 				}
 
 				ArchiLogger.LogGenericDebug("0%...");
@@ -549,16 +537,16 @@ namespace ArchiSteamFarm {
 			for (byte i = 0; i < maxTries; i++) {
 				using HttpResponseMessage response = await InternalGet(request, referer).ConfigureAwait(false);
 
-				if (response == null) {
-					continue;
-				}
-
-				if (response.StatusCode.IsClientErrorCode()) {
+				if (response?.StatusCode.IsClientErrorCode() == true) {
 					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
 						result = new StringResponse(response);
 					}
 
 					break;
+				}
+
+				if (response?.Content == null) {
+					continue;
 				}
 
 				return new StringResponse(response, await response.Content.ReadAsStringAsync().ConfigureAwait(false));
@@ -720,16 +708,16 @@ namespace ArchiSteamFarm {
 			for (byte i = 0; i < maxTries; i++) {
 				HttpResponseMessage response = await InternalGet(request, referer, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
-				if (response == null) {
-					continue;
-				}
-
-				if (response.StatusCode.IsClientErrorCode()) {
+				if (response?.StatusCode.IsClientErrorCode() == true) {
 					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
 						result = new StreamResponse(response);
 					}
 
 					break;
+				}
+
+				if (response?.Content == null) {
+					continue;
 				}
 
 				return new StreamResponse(response, await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
@@ -756,16 +744,16 @@ namespace ArchiSteamFarm {
 			for (byte i = 0; i < maxTries; i++) {
 				HttpResponseMessage response = await InternalPost(request, data, referer, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
-				if (response == null) {
-					continue;
-				}
-
-				if (response.StatusCode.IsClientErrorCode()) {
+				if (response?.StatusCode.IsClientErrorCode() == true) {
 					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
 						result = new StreamResponse(response);
 					}
 
 					break;
+				}
+
+				if (response?.Content == null) {
+					continue;
 				}
 
 				return new StreamResponse(response, await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
