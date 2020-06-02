@@ -15,6 +15,7 @@ environment:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   NET_CORE_VERSION: netcoreapp3.1
   NET_FRAMEWORK_VERSION: net48
+  NODE_JS_VERSION: lts
   VARIANTS: generic generic-netf linux-arm linux-arm64 linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
 matrix:
   allow_failures:
@@ -50,6 +51,7 @@ install:
 
         &([scriptblock]::Create((Invoke-WebRequest 'https://dot.net/v1/dotnet-install.ps1'))) -Channel "$env:DOTNET_CHANNEL" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
     }
+- ps: Install-Product node "$env:NODE_JS_VERSION"
 before_build:
 - pwsh: >-
     Set-StrictMode -Version Latest
