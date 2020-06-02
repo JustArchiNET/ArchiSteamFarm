@@ -894,7 +894,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			await ArchiHandler.PlayGames(games.Select(game => game.PlayableAppID), BotConfig.CustomGamePlayedWhileFarming).ConfigureAwait(false);
+			await ArchiHandler.PlayGames(games.Select(game => game.PlayableAppID), string.Format(BotConfig.CustomGamePlayedWhileFarming, string.Join(", ", games.Select(game => game.AppID)), string.Join(", ", games.Select(game => game.GameName)))).ConfigureAwait(false);
 		}
 
 		internal async Task ImportKeysToRedeem(string filePath) {
