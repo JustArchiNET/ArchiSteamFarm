@@ -884,7 +884,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			await ArchiHandler.PlayGames(game.PlayableAppID.ToEnumerable(), BotConfig.CustomGamePlayedWhileFarming).ConfigureAwait(false);
+			await ArchiHandler.PlayGames(game.PlayableAppID.ToEnumerable(), string.Format(BotConfig.CustomGamePlayedWhileFarming, game.AppID, game.GameName)).ConfigureAwait(false);
 		}
 
 		internal async Task IdleGames(IReadOnlyCollection<CardsFarmer.Game> games) {
