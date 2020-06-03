@@ -153,7 +153,7 @@ namespace ArchiSteamFarm {
 						throw new HttpRequestException(string.Format(Strings.ErrorObjectIsNull, nameof(response)));
 					}
 
-					if (!response.Success) {
+					if (response.Result != EResult.OK) {
 						throw new HttpRequestException(!string.IsNullOrEmpty(response.Error) ? string.Format(Strings.WarningFailedWithError, response.Error) : Strings.WarningFailed);
 					}
 
@@ -1232,9 +1232,19 @@ namespace ArchiSteamFarm {
 				{ "giftcardid", giftCardID.ToString() }
 			};
 
-			Steam.NumberResponse result = await UrlPostToJsonObjectWithSession<Steam.NumberResponse>(SteamStoreURL, request, data).ConfigureAwait(false);
+			Steam.EResultResponse response = await UrlPostToJsonObjectWithSession<Steam.EResultResponse>(SteamStoreURL, request, data).ConfigureAwait(false);
 
-			return result?.Success == true;
+			if (response == null) {
+				return false;
+			}
+
+			if (response.Result != EResult.OK) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+
+				return false;
+			}
+
+			return true;
 		}
 
 		internal async Task<(bool Success, bool RequiresMobileConfirmation)> AcceptTradeOffer(ulong tradeID) {
@@ -1301,13 +1311,13 @@ namespace ArchiSteamFarm {
 				{ "Privacy", JsonConvert.SerializeObject(userPrivacy.Settings) }
 			};
 
-			Steam.NumberResponse response = await UrlPostToJsonObjectWithSession<Steam.NumberResponse>(SteamCommunityURL, request, data).ConfigureAwait(false);
+			Steam.EResultResponse response = await UrlPostToJsonObjectWithSession<Steam.EResultResponse>(SteamCommunityURL, request, data).ConfigureAwait(false);
 
 			if (response == null) {
 				return false;
 			}
 
-			if (!response.Success) {
+			if (response.Result != EResult.OK) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
 				return false;

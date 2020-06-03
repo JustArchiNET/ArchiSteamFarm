@@ -400,38 +400,6 @@ namespace ArchiSteamFarm.Json {
 			protected EResultResponse() { }
 		}
 
-		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		public class NumberResponse {
-			[JsonIgnore]
-			[PublicAPI]
-			public bool Success { get; private set; }
-
-#pragma warning disable IDE0051
-			[JsonProperty(PropertyName = "success", Required = Required.Always)]
-			private byte SuccessNumber {
-				set {
-					switch (value) {
-						case 0:
-							Success = false;
-
-							break;
-						case 1:
-							Success = true;
-
-							break;
-						default:
-							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(value), value));
-
-							return;
-					}
-				}
-			}
-#pragma warning restore IDE0051
-
-			[JsonConstructor]
-			protected NumberResponse() { }
-		}
-
 		// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer
 		public sealed class TradeOffer {
 			[PublicAPI]
@@ -476,7 +444,7 @@ namespace ArchiSteamFarm.Json {
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		internal sealed class InventoryResponse : NumberResponse {
+		internal sealed class InventoryResponse : EResultResponse {
 			[JsonProperty(PropertyName = "assets", Required = Required.DisallowNull)]
 			internal readonly ImmutableHashSet<Asset> Assets;
 
