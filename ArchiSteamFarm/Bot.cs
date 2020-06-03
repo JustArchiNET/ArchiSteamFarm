@@ -94,6 +94,7 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public uint GamesToRedeemInBackgroundCount => BotDatabase?.GamesToRedeemInBackgroundCount ?? 0;
 
+		[JsonProperty]
 		[PublicAPI]
 		public bool HasMobileAuthenticator => BotDatabase?.MobileAuthenticator != null;
 
@@ -153,23 +154,34 @@ namespace ArchiSteamFarm {
 #pragma warning restore IDE0051
 
 		[JsonProperty]
+		[PublicAPI]
 		public EAccountFlags AccountFlags { get; private set; }
 
 		[JsonProperty]
+		[PublicAPI]
 		public BotConfig BotConfig { get; private set; }
 
 		[JsonProperty]
+		[PublicAPI]
 		public bool KeepRunning { get; private set; }
 
 		[JsonProperty]
+		[PublicAPI]
 		public string Nickname { get; private set; }
 
+		[JsonProperty]
+		[PublicAPI]
+		public ASF.EUserInputType RequiredInput { get; private set; }
+
+		[JsonProperty]
 		[PublicAPI]
 		public ulong SteamID { get; private set; }
 
+		[JsonProperty]
 		[PublicAPI]
 		public long WalletBalance { get; private set; }
 
+		[JsonProperty]
 		[PublicAPI]
 		public ECurrencyCode WalletCurrency { get; private set; }
 
@@ -477,11 +489,11 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public void SetUserInput(ASF.EUserInputType inputType, string inputValue) {
-			if ((inputType == ASF.EUserInputType.Unknown) || !Enum.IsDefined(typeof(ASF.EUserInputType), inputType) || string.IsNullOrEmpty(inputValue)) {
+		public bool SetUserInput(ASF.EUserInputType inputType, string inputValue) {
+			if ((inputType == ASF.EUserInputType.None) || !Enum.IsDefined(typeof(ASF.EUserInputType), inputType) || string.IsNullOrEmpty(inputValue)) {
 				ArchiLogger.LogNullError(nameof(inputType) + " || " + nameof(inputValue));
 
-				return;
+				return false;
 			}
 
 			// This switch should cover ONLY bot properties
@@ -491,15 +503,19 @@ namespace ArchiSteamFarm {
 
 					break;
 				case ASF.EUserInputType.Login:
-					if (BotConfig != null) {
-						BotConfig.SteamLogin = inputValue;
+					if (BotConfig == null) {
+						return false;
 					}
+
+					BotConfig.SteamLogin = inputValue;
 
 					break;
 				case ASF.EUserInputType.Password:
-					if (BotConfig != null) {
-						BotConfig.DecryptedSteamPassword = inputValue;
+					if (BotConfig == null) {
+						return false;
 					}
+
+					BotConfig.DecryptedSteamPassword = inputValue;
 
 					break;
 				case ASF.EUserInputType.SteamGuard:
@@ -507,9 +523,11 @@ namespace ArchiSteamFarm {
 
 					break;
 				case ASF.EUserInputType.SteamParentalCode:
-					if (BotConfig != null) {
-						BotConfig.SteamParentalCode = inputValue;
+					if (BotConfig == null) {
+						return false;
 					}
+
+					BotConfig.SteamParentalCode = inputValue;
 
 					break;
 				case ASF.EUserInputType.TwoFactorAuthentication:
@@ -521,6 +539,12 @@ namespace ArchiSteamFarm {
 
 					break;
 			}
+
+			if (RequiredInput == inputType) {
+				RequiredInput = ASF.EUserInputType.None;
+			}
+
+			return true;
 		}
 
 		internal void AddGamesToRedeemInBackground(IOrderedDictionary gamesToRedeemInBackground) {
@@ -1733,13 +1757,13 @@ namespace ArchiSteamFarm {
 					ArchiLogger.LogGenericWarning(Strings.BotAuthenticatorInvalidDeviceID);
 
 					if (string.IsNullOrEmpty(DeviceID)) {
+						RequiredInput = ASF.EUserInputType.DeviceID;
+
 						string deviceID = await Logging.GetUserInput(ASF.EUserInputType.DeviceID, BotName).ConfigureAwait(false);
 
-						if (string.IsNullOrEmpty(deviceID)) {
+						if (string.IsNullOrEmpty(deviceID) || !SetUserInput(ASF.EUserInputType.DeviceID, deviceID)) {
 							return;
 						}
-
-						SetUserInput(ASF.EUserInputType.DeviceID, deviceID);
 					}
 
 					if (!MobileAuthenticator.IsValidDeviceID(DeviceID)) {
@@ -1789,23 +1813,23 @@ namespace ArchiSteamFarm {
 
 		private async Task<bool> InitLoginAndPassword(bool requiresPassword) {
 			if (string.IsNullOrEmpty(BotConfig.SteamLogin)) {
+				RequiredInput = ASF.EUserInputType.Login;
+
 				string steamLogin = await Logging.GetUserInput(ASF.EUserInputType.Login, BotName).ConfigureAwait(false);
 
-				if (string.IsNullOrEmpty(steamLogin)) {
+				if (string.IsNullOrEmpty(steamLogin) || !SetUserInput(ASF.EUserInputType.Login, steamLogin)) {
 					return false;
 				}
-
-				SetUserInput(ASF.EUserInputType.Login, steamLogin);
 			}
 
 			if (requiresPassword && string.IsNullOrEmpty(BotConfig.DecryptedSteamPassword)) {
+				RequiredInput = ASF.EUserInputType.Password;
+
 				string steamPassword = await Logging.GetUserInput(ASF.EUserInputType.Password, BotName).ConfigureAwait(false);
 
-				if (string.IsNullOrEmpty(steamPassword)) {
+				if (string.IsNullOrEmpty(steamPassword) || !SetUserInput(ASF.EUserInputType.Password, steamPassword)) {
 					return false;
 				}
-
-				SetUserInput(ASF.EUserInputType.Password, steamPassword);
 			}
 
 			return true;
@@ -1815,6 +1839,7 @@ namespace ArchiSteamFarm {
 			AccountFlags = EAccountFlags.NormalUser;
 			AvatarHash = Nickname = null;
 			MasterChatGroupID = 0;
+			RequiredInput = ASF.EUserInputType.None;
 			WalletBalance = 0;
 			WalletCurrency = ECurrencyCode.Invalid;
 
@@ -2406,28 +2431,24 @@ namespace ArchiSteamFarm {
 
 					break;
 				case EResult.AccountLogonDenied:
+					RequiredInput = ASF.EUserInputType.SteamGuard;
+
 					string authCode = await Logging.GetUserInput(ASF.EUserInputType.SteamGuard, BotName).ConfigureAwait(false);
 
-					if (string.IsNullOrEmpty(authCode)) {
+					if (string.IsNullOrEmpty(authCode) || !SetUserInput(ASF.EUserInputType.SteamGuard, authCode)) {
 						Stop();
-
-						break;
 					}
-
-					SetUserInput(ASF.EUserInputType.SteamGuard, authCode);
 
 					break;
 				case EResult.AccountLoginDeniedNeedTwoFactor:
 					if (!HasMobileAuthenticator) {
+						RequiredInput = ASF.EUserInputType.TwoFactorAuthentication;
+
 						string twoFactorCode = await Logging.GetUserInput(ASF.EUserInputType.TwoFactorAuthentication, BotName).ConfigureAwait(false);
 
-						if (string.IsNullOrEmpty(twoFactorCode)) {
+						if (string.IsNullOrEmpty(twoFactorCode) || !SetUserInput(ASF.EUserInputType.TwoFactorAuthentication, twoFactorCode)) {
 							Stop();
-
-							break;
 						}
-
-						SetUserInput(ASF.EUserInputType.TwoFactorAuthentication, twoFactorCode);
 					}
 
 					break;
@@ -2474,32 +2495,36 @@ namespace ArchiSteamFarm {
 
 							if (!string.IsNullOrEmpty(steamParentalCode)) {
 								if (BotConfig.SteamParentalCode != steamParentalCode) {
-									SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode);
+									if (!SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode)) {
+										Stop();
+
+										break;
+									}
 								}
 							} else if (string.IsNullOrEmpty(BotConfig.SteamParentalCode) || (BotConfig.SteamParentalCode.Length != BotConfig.SteamParentalCodeLength)) {
+								RequiredInput = ASF.EUserInputType.SteamParentalCode;
+
 								steamParentalCode = await Logging.GetUserInput(ASF.EUserInputType.SteamParentalCode, BotName).ConfigureAwait(false);
 
-								if (string.IsNullOrEmpty(steamParentalCode) || (steamParentalCode.Length != BotConfig.SteamParentalCodeLength)) {
+								if (string.IsNullOrEmpty(steamParentalCode) || (steamParentalCode.Length != BotConfig.SteamParentalCodeLength) || !SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode)) {
 									Stop();
 
 									break;
 								}
-
-								SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode);
 							}
 						} else {
 							SteamParentalActive = false;
 						}
 					} else if (SteamParentalActive && !string.IsNullOrEmpty(BotConfig.SteamParentalCode) && (BotConfig.SteamParentalCode.Length != BotConfig.SteamParentalCodeLength)) {
+						RequiredInput = ASF.EUserInputType.SteamParentalCode;
+
 						string steamParentalCode = await Logging.GetUserInput(ASF.EUserInputType.SteamParentalCode, BotName).ConfigureAwait(false);
 
-						if (string.IsNullOrEmpty(steamParentalCode) || (steamParentalCode.Length != BotConfig.SteamParentalCodeLength)) {
+						if (string.IsNullOrEmpty(steamParentalCode) || (steamParentalCode.Length != BotConfig.SteamParentalCodeLength) || !SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode)) {
 							Stop();
 
 							break;
 						}
-
-						SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode);
 					}
 
 					ArchiWebHandler.OnVanityURLChanged(callback.VanityURL);

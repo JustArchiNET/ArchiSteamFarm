@@ -243,6 +243,35 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		/// <summary>
+		///     Provides input value to given bot for next usage.
+		/// </summary>
+		[Consumes("application/json")]
+		[HttpPost("{botNames:required}/Input")]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+		public async Task<ActionResult<GenericResponse>> InputPost(string botNames, [FromBody] BotInputRequest request) {
+			if (string.IsNullOrEmpty(botNames) || (request == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(botNames) + " || " + nameof(request));
+
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames) + " || " + nameof(request))));
+			}
+
+			if ((request.Type == ASF.EUserInputType.None) || !Enum.IsDefined(typeof(ASF.EUserInputType), request.Type) || string.IsNullOrEmpty(request.Value)) {
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(request.Type) + " || " + nameof(request.Value))));
+			}
+
+			HashSet<Bot> bots = Bot.GetBots(botNames);
+
+			if ((bots == null) || (bots.Count == 0)) {
+				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
+			}
+
+			IList<bool> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.SetUserInput(request.Type, request.Value)))).ConfigureAwait(false);
+
+			return Ok(results.All(result => result) ? new GenericResponse(true) : new GenericResponse(false, Strings.WarningFailed));
+		}
+
+		/// <summary>
 		///     Pauses given bots.
 		/// </summary>
 		[Consumes("application/json")]

@@ -65,7 +65,9 @@ namespace ArchiSteamFarm.NLog {
 		}
 
 		internal static async Task<string> GetUserInput(ASF.EUserInputType userInputType, string botName = SharedInfo.ASF) {
-			if (userInputType == ASF.EUserInputType.Unknown) {
+			if ((userInputType == ASF.EUserInputType.None) || !Enum.IsDefined(typeof(ASF.EUserInputType), userInputType) || string.IsNullOrEmpty(botName)) {
+				ASF.ArchiLogger.LogNullError(nameof(userInputType) + " || " + nameof(botName));
+
 				return null;
 			}
 
@@ -118,10 +120,8 @@ namespace ArchiSteamFarm.NLog {
 							break;
 						default:
 							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(userInputType), userInputType));
-							Console.Write(Bot.FormatBotResponse(string.Format(Strings.UserInputUnknown, userInputType), botName));
-							result = ConsoleReadLine();
 
-							break;
+							return null;
 					}
 
 					if (!Console.IsOutputRedirected) {
@@ -132,9 +132,9 @@ namespace ArchiSteamFarm.NLog {
 					ASF.ArchiLogger.LogGenericException(e);
 
 					return null;
+				} finally {
+					OnUserInputEnd();
 				}
-
-				OnUserInputEnd();
 			} finally {
 				ConsoleSemaphore.Release();
 			}

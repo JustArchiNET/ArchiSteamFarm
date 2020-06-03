@@ -877,7 +877,7 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public enum EUserInputType : byte {
-			Unknown,
+			None,
 			DeviceID,
 			Login,
 			Password,
