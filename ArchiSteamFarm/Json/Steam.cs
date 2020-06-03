@@ -41,42 +41,54 @@ namespace ArchiSteamFarm.Json {
 			[PublicAPI]
 			public const ulong SteamCommunityContextID = 6;
 
+			[JsonIgnore]
 			[PublicAPI]
 			public ImmutableDictionary<string, JToken> AdditionalProperties { get; internal set; }
 
+			[JsonIgnore]
 			[PublicAPI]
 			public uint Amount { get; internal set; }
 
 			[JsonProperty(PropertyName = "appid", Required = Required.DisallowNull)]
 			public uint AppID { get; private set; }
 
+			[JsonIgnore]
 			[PublicAPI]
 			public ulong AssetID { get; private set; }
 
+			[JsonIgnore]
 			[PublicAPI]
 			public ulong ClassID { get; private set; }
 
+			[JsonIgnore]
 			[PublicAPI]
 			public ulong ContextID { get; private set; }
 
+			[JsonIgnore]
 			[PublicAPI]
 			public ulong InstanceID { get; private set; }
 
+			[JsonIgnore]
 			[PublicAPI]
 			public bool Marketable { get; internal set; }
 
+			[JsonIgnore]
 			[PublicAPI]
 			public ERarity Rarity { get; internal set; }
 
+			[JsonIgnore]
 			[PublicAPI]
 			public uint RealAppID { get; internal set; }
 
+			[JsonIgnore]
 			[PublicAPI]
 			public ImmutableHashSet<Tag> Tags { get; internal set; }
 
+			[JsonIgnore]
 			[PublicAPI]
 			public bool Tradable { get; internal set; }
 
+			[JsonIgnore]
 			[PublicAPI]
 			public EType Type { get; internal set; }
 
@@ -390,6 +402,7 @@ namespace ArchiSteamFarm.Json {
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		public class NumberResponse {
+			[JsonIgnore]
 			[PublicAPI]
 			public bool Success { get; private set; }
 
