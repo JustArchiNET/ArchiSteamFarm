@@ -272,10 +272,6 @@
     <value>請輸入您的 Steam 密碼: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputUnknown" xml:space="preserve">
-    <value>請輸入未記錄的值 {0}: </value>
-    <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
-  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>收到 {0} 的未知值，請回報這個問題：{1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>

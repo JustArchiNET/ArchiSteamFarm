@@ -272,10 +272,6 @@ StackTrace:
     <value>Εισάγετε τον κωδικό πρόσβαση του Steam: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputUnknown" xml:space="preserve">
-    <value>Εισάγετε τη μη τεκμηριωμένη τιμή του {0}: </value>
-    <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
-  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Λήφθηκε άγνωστη τιμή για το {0}, παρακαλούμε αναφέρετέ το: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -638,22 +634,47 @@ StackTrace:
     <value>Η χρήση του {0} είναι υπό απόσυρση και θα αφαιρεθεί σε μελλοντικές εκδόσεις του προγράμματος. Παρακαλώ χρησιμοποιήστε το {1}.</value>
     <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
   </data>
-  
-  
-  
-  
-  
+  <data name="BotAcceptedDonationTrade" xml:space="preserve">
+    <value>Accepted donation trade: {0}</value>
+    <comment>{0} will be replaced by trade's ID (number)</comment>
+  </data>
+  <data name="WarningWorkaroundTriggered" xml:space="preserve">
+    <value>Workaround for {0} bug has been triggered.</value>
+    <comment>{0} will be replaced by the bug's name provided by ASF</comment>
+  </data>
+  <data name="TargetBotNotConnected" xml:space="preserve">
+    <value>Target bot instance is not connected!</value>
+  </data>
+  <data name="BotWalletBalance" xml:space="preserve">
+    <value>Wallet balance: {0} {1}</value>
+    <comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
+  </data>
+  <data name="BotHasNoWallet" xml:space="preserve">
+    <value>Bot has no wallet.</value>
+  </data>
   <data name="BotLevel" xml:space="preserve">
     <value>Το bot βρίσκεται στο επίπεδο {0}.</value>
     <comment>{0} will be replaced by bot's level</comment>
   </data>
-  
-  
+  <data name="ActivelyMatchingItems" xml:space="preserve">
+    <value>Matching Steam items, round #{0}...</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="DoneActivelyMatchingItems" xml:space="preserve">
+    <value>Done matching Steam items, round #{0}.</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
   <data name="ErrorAborted" xml:space="preserve">
     <value>Ακυρώθηκε!</value>
   </data>
-  
-  
+  <data name="ActivelyMatchingItemsRound" xml:space="preserve">
+    <value>Matched a total of {0} sets this round.</value>
+    <comment>{0} will be replaced by number of sets traded</comment>
+  </data>
+  <data name="WarningExcessiveBotsCount" xml:space="preserve">
+    <value>You're running more personal bot accounts than our upper recommended limit ({0}). Be advised that this setup is not supported and might cause various Steam-related issues, including account suspensions. Check out the FAQ for more details.</value>
+    <comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
+  </data>
   <data name="PluginLoaded" xml:space="preserve">
     <value>{0} φορτώθηκε με επιτυχία!</value>
     <comment>{0} will be replaced by the name of the custom ASF plugin</comment>
@@ -665,7 +686,9 @@ StackTrace:
   <data name="NothingFound" xml:space="preserve">
     <value>Δεν βρέθηκε τίποτα!</value>
   </data>
-  
+  <data name="PluginsWarning" xml:space="preserve">
+    <value>You've loaded one or more of custom plugins into the ASF. Since we're unable to offer a support for modded setups, please reach the appropriate developers of the plugins that you decided to use in case of any issues.</value>
+  </data>
   <data name="PleaseWait" xml:space="preserve">
     <value>Παρακαλώ περιμένετε...</value>
   </data>
@@ -704,6 +727,10 @@ StackTrace:
   <data name="UpdateCleanup" xml:space="preserve">
     <value>Εκκαθάριση παλιών αρχείων μετά την ενημέρωση...</value>
   </data>
-  
-  
+  <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
+    <value>Generating Steam parental code, this can take a while, consider putting it in the config instead...</value>
+  </data>
+  <data name="IPCConfigChanged" xml:space="preserve">
+    <value>IPC config has been changed!</value>
+  </data>
 </root>

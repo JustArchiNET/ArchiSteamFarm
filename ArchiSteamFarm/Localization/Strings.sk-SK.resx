@@ -272,10 +272,6 @@ StackTrace:
     <value>Zadaj Steam heslo: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputUnknown" xml:space="preserve">
-    <value>Zadaj nezdokumentovanú hodnotu {0}: </value>
-    <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
-  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Prijatá neznáma hodnota {0}, hodnota na nahlásenie: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -646,7 +642,9 @@ StackTrace:
     <value>Riešenie pre obídenie chyby {0} bolo spustené.</value>
     <comment>{0} will be replaced by the bug's name provided by ASF</comment>
   </data>
-  
+  <data name="TargetBotNotConnected" xml:space="preserve">
+    <value>Target bot instance is not connected!</value>
+  </data>
   <data name="BotWalletBalance" xml:space="preserve">
     <value>Stav peňaženky: {0} {1}</value>
     <comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
@@ -658,12 +656,29 @@ StackTrace:
     <value>Bot má level {0}.</value>
     <comment>{0} will be replaced by bot's level</comment>
   </data>
-  
-  
-  
-  
-  
-  
+  <data name="ActivelyMatchingItems" xml:space="preserve">
+    <value>Matching Steam items, round #{0}...</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="DoneActivelyMatchingItems" xml:space="preserve">
+    <value>Done matching Steam items, round #{0}.</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
+  <data name="ErrorAborted" xml:space="preserve">
+    <value>Aborted!</value>
+  </data>
+  <data name="ActivelyMatchingItemsRound" xml:space="preserve">
+    <value>Matched a total of {0} sets this round.</value>
+    <comment>{0} will be replaced by number of sets traded</comment>
+  </data>
+  <data name="WarningExcessiveBotsCount" xml:space="preserve">
+    <value>You're running more personal bot accounts than our upper recommended limit ({0}). Be advised that this setup is not supported and might cause various Steam-related issues, including account suspensions. Check out the FAQ for more details.</value>
+    <comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
+  </data>
+  <data name="PluginLoaded" xml:space="preserve">
+    <value>{0} has been loaded successfully!</value>
+    <comment>{0} will be replaced by the name of the custom ASF plugin</comment>
+  </data>
   <data name="PluginLoading" xml:space="preserve">
     <value>Načítám {0} V{1}...</value>
     <comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>

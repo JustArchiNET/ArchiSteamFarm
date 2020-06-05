@@ -272,10 +272,6 @@
     <value>Пожалуйста, введите ваш пароль Steam: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputUnknown" xml:space="preserve">
-    <value>Пожалуйста, введите недокументированное значение {0}: </value>
-    <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
-  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Получено неизвестное значение для {0}, пожалуйста, сообщите об этом: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>

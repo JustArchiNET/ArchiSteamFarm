@@ -270,10 +270,6 @@ StackTrace: {2}</value>
     <value>Add meg a Steames felhasználód jelszavát: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputUnknown" xml:space="preserve">
-    <value>Add meg a {0} dokumentálatlan értékét: </value>
-    <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
-  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>{0} ismeretlen értéket kapott, kérlek, jelentsd ezt: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>

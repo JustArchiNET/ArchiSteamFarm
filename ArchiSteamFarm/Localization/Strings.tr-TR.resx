@@ -272,10 +272,6 @@ Yığın izleme:
     <value>Lütfen Steam parolanızı girin: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputUnknown" xml:space="preserve">
-    <value>Lütfen belgelenmemiş {0} değerini girin: </value>
-    <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
-  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>{0} için bilinmeyen değer alındı, lütfen bunu bildirin: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
