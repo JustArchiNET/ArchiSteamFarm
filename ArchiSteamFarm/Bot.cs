@@ -37,7 +37,7 @@ using ArchiSteamFarm.Plugins;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SteamKit2;
-using SteamKit2.Unified.Internal;
+using SteamKit2.Internal;
 
 namespace ArchiSteamFarm {
 	public sealed class Bot : IAsyncDisposable {
@@ -109,7 +109,7 @@ namespace ArchiSteamFarm {
 		internal readonly ArchiHandler ArchiHandler;
 		internal readonly BotDatabase BotDatabase;
 
-		internal readonly ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)> OwnedPackageIDs = new ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>();
+		internal readonly ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated, ulong AccessToken)> OwnedPackageIDs = new ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated, ulong AccessToken)>();
 		internal readonly SteamApps SteamApps;
 		internal readonly SteamFriends SteamFriends;
 
@@ -644,7 +644,7 @@ namespace ArchiSteamFarm {
 				DateTime mostRecent = DateTime.MinValue;
 
 				foreach (uint packageID in packageIDs) {
-					if (!OwnedPackageIDs.TryGetValue(packageID, out (EPaymentMethod PaymentMethod, DateTime TimeCreated) packageData)) {
+					if (!OwnedPackageIDs.TryGetValue(packageID, out (EPaymentMethod PaymentMethod, DateTime TimeCreated, ulong AccessToken) packageData)) {
 						continue;
 					}
 
@@ -828,7 +828,7 @@ namespace ArchiSteamFarm {
 				await PICSSemaphore.WaitAsync().ConfigureAwait(false);
 
 				try {
-					productInfoResultSet = await SteamApps.PICSGetProductInfo(Enumerable.Empty<uint>(), packageIDs);
+					productInfoResultSet = await SteamApps.PICSGetProductInfo(Enumerable.Empty<SteamApps.PICSRequest>(), packageIDs.Select(packageID => new SteamApps.PICSRequest(packageID, OwnedPackageIDs.TryGetValue(packageID, out (EPaymentMethod PaymentMethod, DateTime TimeCreated, ulong AccessToken) value) ? value.AccessToken : 0, false)));
 				} catch (Exception e) {
 					ArchiLogger.LogGenericWarningException(e);
 				} finally {
@@ -2361,7 +2361,7 @@ namespace ArchiSteamFarm {
 			Dictionary<uint, uint> packagesToRefresh = new Dictionary<uint, uint>();
 
 			foreach (SteamApps.LicenseListCallback.License license in callback.LicenseList.Where(license => license.PackageID != 0)) {
-				OwnedPackageIDs[license.PackageID] = (license.PaymentMethod, license.TimeCreated);
+				OwnedPackageIDs[license.PackageID] = (license.PaymentMethod, license.TimeCreated, license.AccessToken);
 
 				if (!ASF.GlobalDatabase.PackagesData.TryGetValue(license.PackageID, out (uint ChangeNumber, HashSet<uint> _) packageData) || (packageData.ChangeNumber < license.LastChangeNumber)) {
 					packagesToRefresh[license.PackageID] = (uint) license.LastChangeNumber;
