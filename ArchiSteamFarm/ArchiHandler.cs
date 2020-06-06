@@ -32,7 +32,6 @@ using ArchiSteamFarm.NLog;
 using JetBrains.Annotations;
 using SteamKit2;
 using SteamKit2.Internal;
-using SteamKit2.Unified.Internal;
 
 namespace ArchiSteamFarm {
 	public sealed class ArchiHandler : ClientMsgHandler {
