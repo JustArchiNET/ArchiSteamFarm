@@ -908,7 +908,13 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			await ArchiHandler.PlayGames(game.PlayableAppID.ToEnumerable(), string.Format(BotConfig.CustomGamePlayedWhileFarming, game.AppID, game.GameName)).ConfigureAwait(false);
+			string gameName = null;
+
+			if (!string.IsNullOrEmpty(BotConfig.CustomGamePlayedWhileFarming)) {
+				gameName = string.Format(BotConfig.CustomGamePlayedWhileFarming, game.AppID, game.GameName);
+			}
+
+			await ArchiHandler.PlayGames(game.PlayableAppID.ToEnumerable(), gameName).ConfigureAwait(false);
 		}
 
 		internal async Task IdleGames(IReadOnlyCollection<CardsFarmer.Game> games) {
@@ -918,7 +924,13 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			await ArchiHandler.PlayGames(games.Select(game => game.PlayableAppID), string.Format(BotConfig.CustomGamePlayedWhileFarming, string.Join(", ", games.Select(game => game.AppID)), string.Join(", ", games.Select(game => game.GameName)))).ConfigureAwait(false);
+			string gameName = null;
+
+			if (!string.IsNullOrEmpty(BotConfig.CustomGamePlayedWhileFarming)) {
+				gameName = string.Format(BotConfig.CustomGamePlayedWhileFarming, string.Join(", ", games.Select(game => game.AppID)), string.Join(", ", games.Select(game => game.GameName)));
+			}
+
+			await ArchiHandler.PlayGames(games.Select(game => game.PlayableAppID), gameName).ConfigureAwait(false);
 		}
 
 		internal async Task ImportKeysToRedeem(string filePath) {
