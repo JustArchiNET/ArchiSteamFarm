@@ -324,15 +324,17 @@ namespace ArchiSteamFarm {
 
 				Logging.EnableTraceLogging();
 
-				DebugLog.AddListener(new Debugging.DebugListener());
-				DebugLog.Enabled = true;
+				if (Debugging.IsDebugConfigured) {
+					DebugLog.AddListener(new Debugging.DebugListener());
+					DebugLog.Enabled = true;
 
-				if (Directory.Exists(SharedInfo.DebugDirectory)) {
-					try {
-						Directory.Delete(SharedInfo.DebugDirectory, true);
-						await Task.Delay(1000).ConfigureAwait(false); // Dirty workaround giving Windows some time to sync
-					} catch (Exception e) {
-						ASF.ArchiLogger.LogGenericException(e);
+					if (Directory.Exists(SharedInfo.DebugDirectory)) {
+						try {
+							Directory.Delete(SharedInfo.DebugDirectory, true);
+							await Task.Delay(1000).ConfigureAwait(false); // Dirty workaround giving Windows some time to sync
+						} catch (Exception e) {
+							ASF.ArchiLogger.LogGenericException(e);
+						}
 					}
 				}
 
