@@ -268,7 +268,7 @@ namespace ArchiSteamFarm {
 				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(MatchableTypes), matchableType));
 			}
 
-			if (OnlineStatus < EPersonaState.Offline) {
+			if (!Enum.IsDefined(typeof(EPersonaState), OnlineStatus)) {
 				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(OnlineStatus), OnlineStatus));
 			}
 
