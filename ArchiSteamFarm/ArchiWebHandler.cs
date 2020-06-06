@@ -913,7 +913,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			WebBrowser.ObjectResponse<T> response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToJsonObject<T>(host + request, data, referer).ConfigureAwait(false)).ConfigureAwait(false);
+			WebBrowser.ObjectResponse<T> response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToJsonObject<T, Dictionary<string, string>>(host + request, data, referer).ConfigureAwait(false)).ConfigureAwait(false);
 
 			if (response == null) {
 				return null;
@@ -1028,7 +1028,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			WebBrowser.ObjectResponse<T> response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToJsonObject<T>(host + request, data, referer).ConfigureAwait(false)).ConfigureAwait(false);
+			WebBrowser.ObjectResponse<T> response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToJsonObject<T, List<KeyValuePair<string, string>>>(host + request, data, referer).ConfigureAwait(false)).ConfigureAwait(false);
 
 			if (response == null) {
 				return null;

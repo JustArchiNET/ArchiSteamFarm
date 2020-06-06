@@ -25,6 +25,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using AngleSharp;
@@ -284,7 +285,7 @@ namespace ArchiSteamFarm {
 
 		[ItemCanBeNull]
 		[PublicAPI]
-		public async Task<BasicResponse> UrlPost(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
+		public async Task<BasicResponse> UrlPost<T>(string request, T data = null, string referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) where T : class {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
 
@@ -321,7 +322,7 @@ namespace ArchiSteamFarm {
 
 		[ItemCanBeNull]
 		[PublicAPI]
-		public async Task<HtmlDocumentResponse> UrlPostToHtmlDocument(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
+		public async Task<HtmlDocumentResponse> UrlPostToHtmlDocument<T>(string request, T data = null, string referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) where T : class {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
 
@@ -366,21 +367,21 @@ namespace ArchiSteamFarm {
 
 		[ItemCanBeNull]
 		[PublicAPI]
-		public async Task<ObjectResponse<T>> UrlPostToJsonObject<T>(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) where T : class {
+		public async Task<ObjectResponse<TResult>> UrlPostToJsonObject<TResult, TData>(string request, TData data = null, string referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) where TResult : class where TData : class {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
 
 				return null;
 			}
 
-			ObjectResponse<T> result = null;
+			ObjectResponse<TResult> result = null;
 
 			for (byte i = 0; i < maxTries; i++) {
 				await using StreamResponse response = await UrlPostToStream(request, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
 				if (response?.StatusCode.IsClientErrorCode() == true) {
 					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						result = new ObjectResponse<T>(response);
+						result = new ObjectResponse<TResult>(response);
 					}
 
 					break;
@@ -390,21 +391,21 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				T obj;
+				TResult obj;
 
 				try {
 					using StreamReader steamReader = new StreamReader(response.Content);
 					using JsonReader jsonReader = new JsonTextReader(steamReader);
 					JsonSerializer serializer = new JsonSerializer();
 
-					obj = serializer.Deserialize<T>(jsonReader);
+					obj = serializer.Deserialize<TResult>(jsonReader);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericWarningException(e);
 
 					continue;
 				}
 
-				return new ObjectResponse<T>(response, obj);
+				return new ObjectResponse<TResult>(response, obj);
 			}
 
 			if (maxTries > 1) {
@@ -567,7 +568,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			return await InternalRequest(new Uri(request), HttpMethod.Get, null, referer, httpCompletionOption).ConfigureAwait(false);
+			return await InternalRequest<object>(new Uri(request), HttpMethod.Get, null, referer, httpCompletionOption).ConfigureAwait(false);
 		}
 
 		private async Task<HttpResponseMessage> InternalHead(string request, string referer = null) {
@@ -577,10 +578,10 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			return await InternalRequest(new Uri(request), HttpMethod.Head, null, referer).ConfigureAwait(false);
+			return await InternalRequest<object>(new Uri(request), HttpMethod.Head, null, referer).ConfigureAwait(false);
 		}
 
-		private async Task<HttpResponseMessage> InternalPost(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead) {
+		private async Task<HttpResponseMessage> InternalPost<T>(string request, T data = null, string referer = null, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead) where T : class {
 			if (string.IsNullOrEmpty(request)) {
 				ArchiLogger.LogNullError(nameof(request));
 
@@ -590,7 +591,7 @@ namespace ArchiSteamFarm {
 			return await InternalRequest(new Uri(request), HttpMethod.Post, data, referer, httpCompletionOption).ConfigureAwait(false);
 		}
 
-		private async Task<HttpResponseMessage> InternalRequest(Uri requestUri, HttpMethod httpMethod, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, byte maxRedirections = MaxTries) {
+		private async Task<HttpResponseMessage> InternalRequest<T>(Uri requestUri, HttpMethod httpMethod, T data = null, string referer = null, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, byte maxRedirections = MaxTries) where T : class {
 			if ((requestUri == null) || (httpMethod == null)) {
 				ArchiLogger.LogNullError(nameof(requestUri) + " || " + nameof(httpMethod));
 
@@ -605,10 +606,23 @@ namespace ArchiSteamFarm {
 #endif
 
 				if (data != null) {
-					try {
-						request.Content = new FormUrlEncodedContent(data);
-					} catch (UriFormatException) {
-						request.Content = new StringContent(string.Join("&", data.Select(kv => WebUtility.UrlEncode(kv.Key) + "=" + WebUtility.UrlEncode(kv.Value))), null, "application/x-www-form-urlencoded");
+					switch (data) {
+						case IReadOnlyCollection<KeyValuePair<string, string>> dictionary:
+							try {
+								request.Content = new FormUrlEncodedContent(dictionary);
+							} catch (UriFormatException) {
+								request.Content = new StringContent(string.Join("&", dictionary.Select(kv => WebUtility.UrlEncode(kv.Key) + "=" + WebUtility.UrlEncode(kv.Value))), null, "application/x-www-form-urlencoded");
+							}
+
+							break;
+						case string text:
+							request.Content = new StringContent(text);
+
+							break;
+						default:
+							request.Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+
+							break;
 					}
 				}
 
@@ -732,7 +746,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[ItemCanBeNull]
-		private async Task<StreamResponse> UrlPostToStream(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
+		private async Task<StreamResponse> UrlPostToStream<T>(string request, T data = null, string referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) where T : class {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(maxTries));
 
