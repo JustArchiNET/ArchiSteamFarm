@@ -63,7 +63,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		[JsonProperty(PropertyName = "_CellID", Required = Required.DisallowNull)]
+		[JsonProperty(PropertyName = "_" + nameof(CellID), Required = Required.DisallowNull)]
 		private uint BackingCellID;
 
 		private GlobalDatabase([NotNull] string filePath) : this() {

@@ -84,10 +84,10 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		[JsonProperty(PropertyName = "_LoginKey")]
+		[JsonProperty(PropertyName = "_" + nameof(LoginKey))]
 		private string BackingLoginKey;
 
-		[JsonProperty(PropertyName = "_MobileAuthenticator")]
+		[JsonProperty(PropertyName = "_" + nameof(MobileAuthenticator))]
 		private MobileAuthenticator BackingMobileAuthenticator;
 
 		private BotDatabase([NotNull] string filePath) {
