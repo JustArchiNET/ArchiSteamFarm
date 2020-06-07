@@ -38,6 +38,7 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public readonly Guid Guid = Guid.NewGuid();
 
+		[JsonIgnore]
 		[PublicAPI]
 		public IReadOnlyDictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)> PackagesDataReadOnly => PackagesData;
 
