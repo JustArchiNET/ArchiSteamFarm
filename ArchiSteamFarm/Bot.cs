@@ -2363,7 +2363,7 @@ namespace ArchiSteamFarm {
 			foreach (SteamApps.LicenseListCallback.License license in callback.LicenseList.Where(license => license.PackageID != 0)) {
 				OwnedPackageIDs[license.PackageID] = (license.PaymentMethod, license.TimeCreated, license.AccessToken);
 
-				if (!ASF.GlobalDatabase.PackagesData.TryGetValue(license.PackageID, out (uint ChangeNumber, HashSet<uint> AppIDs) packageData) || (packageData.ChangeNumber < license.LastChangeNumber) || (packageData.AppIDs == null)) {
+				if (!ASF.GlobalDatabase.PackagesDataReadOnly.TryGetValue(license.PackageID, out (uint ChangeNumber, HashSet<uint> AppIDs) packageData) || (packageData.ChangeNumber < license.LastChangeNumber) || (packageData.AppIDs == null)) {
 					packagesToRefresh[license.PackageID] = (uint) license.LastChangeNumber;
 				}
 			}

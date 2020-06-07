@@ -35,13 +35,17 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm {
 	public sealed class GlobalDatabase : SerializableFile {
 		[JsonProperty(Required = Required.DisallowNull)]
+		[PublicAPI]
 		public readonly Guid Guid = Guid.NewGuid();
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ConcurrentDictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)> PackagesData = new ConcurrentDictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)>();
+		[PublicAPI]
+		public IReadOnlyDictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)> PackagesDataReadOnly => PackagesData;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly InMemoryServerListProvider ServerListProvider = new InMemoryServerListProvider();
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		private readonly ConcurrentDictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)> PackagesData = new ConcurrentDictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)>();
 
 		private readonly SemaphoreSlim PackagesRefreshSemaphore = new SemaphoreSlim(1, 1);
 
