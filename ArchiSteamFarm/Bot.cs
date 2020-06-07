@@ -88,7 +88,15 @@ namespace ArchiSteamFarm {
 
 		[JsonIgnore]
 		[PublicAPI]
+		public readonly SteamApps SteamApps;
+
+		[JsonIgnore]
+		[PublicAPI]
 		public readonly SteamConfiguration SteamConfiguration;
+
+		[JsonIgnore]
+		[PublicAPI]
+		public readonly SteamFriends SteamFriends;
 
 		[JsonProperty]
 		[PublicAPI]
@@ -110,8 +118,6 @@ namespace ArchiSteamFarm {
 		internal readonly BotDatabase BotDatabase;
 
 		internal readonly ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated, ulong AccessToken)> OwnedPackageIDs = new ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated, ulong AccessToken)>();
-		internal readonly SteamApps SteamApps;
-		internal readonly SteamFriends SteamFriends;
 
 		internal bool CanReceiveSteamCards => !IsAccountLimited && !IsAccountLocked;
 		internal bool IsAccountLimited => AccountFlags.HasFlag(EAccountFlags.LimitedUser) || AccountFlags.HasFlag(EAccountFlags.LimitedUserForce);
