@@ -607,6 +607,10 @@ namespace ArchiSteamFarm {
 
 				if (data != null) {
 					switch (data) {
+						case HttpContent content:
+							request.Content = content;
+
+							break;
 						case IReadOnlyCollection<KeyValuePair<string, string>> dictionary:
 							try {
 								request.Content = new FormUrlEncodedContent(dictionary);
