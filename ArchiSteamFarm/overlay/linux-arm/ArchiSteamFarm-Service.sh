@@ -70,8 +70,8 @@ if [ -n "${DOTNET_RUNNING_IN_CONTAINER-}" ] && [ "$DOTNET_RUNNING_IN_CONTAINER" 
 		while [ "$loops" -gt 0 ]; do
 			sleep 10
 
-			if [ -d "/var/tmp/.net/ArchiSteamFarm" ]; then
-				find "/var/tmp/.net/ArchiSteamFarm" -mindepth 2 -maxdepth 2 -name '*\\*' | while IFS="" read -r broken_path; do
+			if [ -d "/var/tmp/.net" ]; then
+				find "/var/tmp/.net" -mindepth 2 -name '*\\*' | while IFS="" read -r broken_path; do
 					fixed_path="$(echo "$broken_path" | sed 's/\\/\//g')"
 
 					mkdir -p "$(dirname "$fixed_path")"
