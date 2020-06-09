@@ -125,6 +125,10 @@ namespace ArchiSteamFarm {
 				await ArchiKestrel.Start().ConfigureAwait(false);
 			}
 
+			uint changeNumberToStartFrom = await PluginsCore.GetChangeNumberToStartFrom().ConfigureAwait(false);
+
+			SteamPICSChanges.Init(changeNumberToStartFrom);
+
 			await RegisterBots().ConfigureAwait(false);
 
 			InitEvents();

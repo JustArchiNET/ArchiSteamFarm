@@ -63,6 +63,30 @@ namespace ArchiSteamFarm.Plugins {
 			return result ?? StringComparer.Ordinal;
 		}
 
+		internal static async Task<uint> GetChangeNumberToStartFrom() {
+			if (!HasActivePluginsLoaded) {
+				return 0;
+			}
+
+			IList<uint> results;
+
+			try {
+				results = await Utilities.InParallel(ActivePlugins.OfType<ISteamPICSChanges>().Select(plugin => plugin.GetPreferredChangeNumberToStartFrom())).ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+
+				return 0;
+			}
+
+			uint changeNumberToStartFrom = uint.MaxValue;
+
+			foreach (uint result in results.Where(result => (result > 0) && (result < changeNumberToStartFrom))) {
+				changeNumberToStartFrom = result;
+			}
+
+			return changeNumberToStartFrom == uint.MaxValue ? 0 : changeNumberToStartFrom;
+		}
+
 		internal static bool InitPlugins() {
 			if (HasActivePluginsLoaded) {
 				return false;
@@ -488,6 +512,42 @@ namespace ArchiSteamFarm.Plugins {
 
 			try {
 				await Utilities.InParallel(ActivePlugins.OfType<IBotUserNotifications>().Select(plugin => Task.Run(() => plugin.OnBotUserNotifications(bot, newNotifications)))).ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+			}
+		}
+
+		internal static async Task OnPICSChanges(uint currentChangeNumber, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> appChanges, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> packageChanges) {
+			if ((currentChangeNumber == 0) || (appChanges == null) || (packageChanges == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(currentChangeNumber) + " || " + nameof(appChanges) + " || " + nameof(packageChanges));
+
+				return;
+			}
+
+			if (!HasActivePluginsLoaded) {
+				return;
+			}
+
+			try {
+				await Utilities.InParallel(ActivePlugins.OfType<ISteamPICSChanges>().Select(plugin => Task.Run(() => plugin.OnPICSChanges(currentChangeNumber, appChanges, packageChanges)))).ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+			}
+		}
+
+		internal static async Task OnPICSChangesRestart(uint currentChangeNumber) {
+			if (currentChangeNumber == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(currentChangeNumber));
+
+				return;
+			}
+
+			if (!HasActivePluginsLoaded) {
+				return;
+			}
+
+			try {
+				await Utilities.InParallel(ActivePlugins.OfType<ISteamPICSChanges>().Select(plugin => Task.Run(() => plugin.OnPICSChangesRestart(currentChangeNumber)))).ConfigureAwait(false);
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 			}

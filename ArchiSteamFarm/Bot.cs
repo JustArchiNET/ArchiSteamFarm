@@ -117,7 +117,7 @@ namespace ArchiSteamFarm {
 		internal readonly ArchiHandler ArchiHandler;
 		internal readonly BotDatabase BotDatabase;
 
-		internal readonly ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated, ulong AccessToken)> OwnedPackageIDs = new ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated, ulong AccessToken)>();
+		internal readonly ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)> OwnedPackageIDs = new ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>();
 
 		internal bool CanReceiveSteamCards => !IsAccountLimited && !IsAccountLocked;
 		internal bool IsAccountLimited => AccountFlags.HasFlag(EAccountFlags.LimitedUser) || AccountFlags.HasFlag(EAccountFlags.LimitedUserForce);
@@ -648,7 +648,7 @@ namespace ArchiSteamFarm {
 				DateTime mostRecent = DateTime.MinValue;
 
 				foreach (uint packageID in packageIDs) {
-					if (!OwnedPackageIDs.TryGetValue(packageID, out (EPaymentMethod PaymentMethod, DateTime TimeCreated, ulong AccessToken) packageData)) {
+					if (!OwnedPackageIDs.TryGetValue(packageID, out (EPaymentMethod PaymentMethod, DateTime TimeCreated) packageData)) {
 						continue;
 					}
 
@@ -822,11 +822,21 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			HashSet<SteamApps.PICSRequest> packageRequests = new HashSet<SteamApps.PICSRequest>();
+
+			foreach (uint packageID in packageIDs) {
+				if (!ASF.GlobalDatabase.PackageAccessTokensReadOnly.TryGetValue(packageID, out ulong packageAccessToken)) {
+					continue;
+				}
+
+				packageRequests.Add(new SteamApps.PICSRequest(packageID, packageAccessToken, false));
+			}
+
 			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfoResultSet = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (productInfoResultSet == null) && IsConnectedAndLoggedOn; i++) {
 				try {
-					productInfoResultSet = await SteamApps.PICSGetProductInfo(Enumerable.Empty<SteamApps.PICSRequest>(), packageIDs.Select(packageID => new SteamApps.PICSRequest(packageID, OwnedPackageIDs.TryGetValue(packageID, out (EPaymentMethod PaymentMethod, DateTime TimeCreated, ulong AccessToken) value) ? value.AccessToken : 0, false)));
+					productInfoResultSet = await SteamApps.PICSGetProductInfo(Enumerable.Empty<SteamApps.PICSRequest>(), packageRequests);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericWarningException(e);
 				}
@@ -2354,14 +2364,23 @@ namespace ArchiSteamFarm {
 			Commands.OnNewLicenseList();
 			OwnedPackageIDs.Clear();
 
+			Dictionary<uint, ulong> packageAccessTokens = new Dictionary<uint, ulong>();
 			Dictionary<uint, uint> packagesToRefresh = new Dictionary<uint, uint>();
 
-			foreach (SteamApps.LicenseListCallback.License license in callback.LicenseList.Where(license => license.PackageID != 0)) {
-				OwnedPackageIDs[license.PackageID] = (license.PaymentMethod, license.TimeCreated, license.AccessToken);
+			foreach (SteamApps.LicenseListCallback.License license in callback.LicenseList) {
+				OwnedPackageIDs[license.PackageID] = (license.PaymentMethod, license.TimeCreated);
 
-				if (!ASF.GlobalDatabase.PackagesDataReadOnly.TryGetValue(license.PackageID, out (uint ChangeNumber, HashSet<uint> AppIDs) packageData) || (packageData.ChangeNumber < license.LastChangeNumber) || (packageData.AppIDs == null)) {
+				if (!ASF.GlobalDatabase.PackageAccessTokensReadOnly.TryGetValue(license.PackageID, out ulong packageAccessToken) || (packageAccessToken != license.AccessToken)) {
+					packageAccessTokens[license.PackageID] = license.AccessToken;
+				}
+
+				if (!ASF.GlobalDatabase.PackagesDataReadOnly.TryGetValue(license.PackageID, out (uint ChangeNumber, HashSet<uint> AppIDs) packageData) || (packageData.ChangeNumber < license.LastChangeNumber)) {
 					packagesToRefresh[license.PackageID] = (uint) license.LastChangeNumber;
 				}
+			}
+
+			if (packageAccessTokens.Count > 0) {
+				ASF.GlobalDatabase.RefreshPackageAccessTokens(packageAccessTokens);
 			}
 
 			if (packagesToRefresh.Count > 0) {
@@ -2577,6 +2596,8 @@ namespace ArchiSteamFarm {
 							}
 						);
 					}
+
+					SteamPICSChanges.OnBotLoggedOn();
 
 					await PluginsCore.OnBotLoggedOn(this).ConfigureAwait(false);
 

@@ -1181,7 +1181,7 @@ namespace ArchiSteamFarm {
 
 							if (packageIDs != null) {
 								foreach (uint packageID in packageIDs) {
-									if (!Bot.OwnedPackageIDs.TryGetValue(packageID, out (EPaymentMethod PaymentMethod, DateTime TimeCreated, ulong AccessToken) packageData)) {
+									if (!Bot.OwnedPackageIDs.TryGetValue(packageID, out (EPaymentMethod PaymentMethod, DateTime TimeCreated) packageData)) {
 										Bot.ArchiLogger.LogNullError(nameof(packageData));
 
 										return;
