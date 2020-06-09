@@ -130,7 +130,6 @@ namespace ArchiSteamFarm {
 		private readonly SemaphoreSlim InitializationSemaphore = new SemaphoreSlim(1, 1);
 		private readonly SemaphoreSlim MessagingSemaphore = new SemaphoreSlim(1, 1);
 		private readonly ConcurrentDictionary<ArchiHandler.UserNotificationsCallback.EUserNotification, uint> PastNotifications = new ConcurrentDictionary<ArchiHandler.UserNotificationsCallback.EUserNotification, uint>();
-		private readonly SemaphoreSlim PICSSemaphore = new SemaphoreSlim(1, 1);
 		private readonly Statistics Statistics;
 		private readonly SteamClient SteamClient;
 		private readonly ConcurrentHashSet<ulong> SteamFamilySharingIDs = new ConcurrentHashSet<ulong>();
@@ -306,7 +305,6 @@ namespace ArchiSteamFarm {
 			GamesRedeemerInBackgroundSemaphore.Dispose();
 			InitializationSemaphore.Dispose();
 			MessagingSemaphore.Dispose();
-			PICSSemaphore.Dispose();
 			Trading.Dispose();
 
 			await Actions.DisposeAsync().ConfigureAwait(false);
@@ -671,14 +669,10 @@ namespace ArchiSteamFarm {
 			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfoResultSet = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (productInfoResultSet == null) && IsConnectedAndLoggedOn; i++) {
-				await PICSSemaphore.WaitAsync().ConfigureAwait(false);
-
 				try {
 					productInfoResultSet = await SteamApps.PICSGetProductInfo(appID, null, false);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericWarningException(e);
-				} finally {
-					PICSSemaphore.Release();
 				}
 			}
 
@@ -831,14 +825,10 @@ namespace ArchiSteamFarm {
 			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfoResultSet = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (productInfoResultSet == null) && IsConnectedAndLoggedOn; i++) {
-				await PICSSemaphore.WaitAsync().ConfigureAwait(false);
-
 				try {
 					productInfoResultSet = await SteamApps.PICSGetProductInfo(Enumerable.Empty<SteamApps.PICSRequest>(), packageIDs.Select(packageID => new SteamApps.PICSRequest(packageID, OwnedPackageIDs.TryGetValue(packageID, out (EPaymentMethod PaymentMethod, DateTime TimeCreated, ulong AccessToken) value) ? value.AccessToken : 0, false)));
 				} catch (Exception e) {
 					ArchiLogger.LogGenericWarningException(e);
-				} finally {
-					PICSSemaphore.Release();
 				}
 			}
 
