@@ -832,6 +832,10 @@ namespace ArchiSteamFarm {
 				packageRequests.Add(new SteamApps.PICSRequest(packageID, packageAccessToken, false));
 			}
 
+			if (packageRequests.Count == 0) {
+				return new Dictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)>(0);
+			}
+
 			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfoResultSet = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (productInfoResultSet == null) && IsConnectedAndLoggedOn; i++) {
