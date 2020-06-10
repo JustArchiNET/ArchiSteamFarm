@@ -195,17 +195,26 @@ namespace ArchiSteamFarm {
 
 				Dictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)> packagesData = await bot.GetPackagesData(packageIDs).ConfigureAwait(false);
 
-				if ((packagesData == null) || (packagesData.Count == 0)) {
+				if (packagesData == null) {
 					bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
 					return;
 				}
 
+				bool save = false;
+
 				foreach ((uint packageID, (uint ChangeNumber, HashSet<uint> AppIDs) packageData) in packagesData) {
+					if (PackagesData.TryGetValue(packageID, out (uint ChangeNumber, HashSet<uint> AppIDs) previousData) && (packageData.ChangeNumber <= previousData.ChangeNumber)) {
+						continue;
+					}
+
 					PackagesData[packageID] = packageData;
+					save = true;
 				}
 
-				Utilities.InBackground(Save);
+				if (save) {
+					Utilities.InBackground(Save);
+				}
 			} finally {
 				PackagesRefreshSemaphore.Release();
 			}
