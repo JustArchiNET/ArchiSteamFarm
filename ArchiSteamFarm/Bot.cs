@@ -114,6 +114,11 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public bool IsPlayingPossible => !PlayingBlocked && !LibraryLocked;
 
+		[NotNull]
+		[JsonIgnore]
+		[PublicAPI]
+		public IReadOnlyCollection<uint> OwnedPackageIDsReadOnly => OwnedPackageIDs.Keys.ToHashSet();
+
 		internal readonly ArchiHandler ArchiHandler;
 		internal readonly BotDatabase BotDatabase;
 
