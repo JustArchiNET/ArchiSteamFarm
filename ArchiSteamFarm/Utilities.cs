@@ -196,6 +196,43 @@ namespace ArchiSteamFarm {
 			return (text.Length % 2 == 0) && text.All(Uri.IsHexDigit);
 		}
 
+		[PublicAPI]
+		public static int RandomNext() {
+			lock (Random) {
+				return Random.Next();
+			}
+		}
+
+		[PublicAPI]
+		public static int RandomNext(int maxValue) {
+			if (maxValue < 0) {
+				throw new ArgumentOutOfRangeException(nameof(maxValue));
+			}
+
+			if (maxValue <= 1) {
+				return maxValue;
+			}
+
+			lock (Random) {
+				return Random.Next(maxValue);
+			}
+		}
+
+		[PublicAPI]
+		public static int RandomNext(int minValue, int maxValue) {
+			if (minValue > maxValue) {
+				throw new ArgumentOutOfRangeException(nameof(minValue) + " && " + nameof(maxValue));
+			}
+
+			if (minValue >= maxValue - 1) {
+				return minValue;
+			}
+
+			lock (Random) {
+				return Random.Next(minValue, maxValue);
+			}
+		}
+
 		[ItemNotNull]
 		[NotNull]
 		[PublicAPI]
@@ -266,12 +303,6 @@ namespace ArchiSteamFarm {
 			CookieCollection cookies = cookieContainer.GetCookies(uri);
 
 			return cookies.Count > 0 ? (from Cookie cookie in cookies where cookie.Name.Equals(name) select cookie.Value).FirstOrDefault() : null;
-		}
-
-		internal static int RandomNext() {
-			lock (Random) {
-				return Random.Next();
-			}
 		}
 
 		internal static bool RelativeDirectoryStartsWith(string directory, params string[] prefixes) {
