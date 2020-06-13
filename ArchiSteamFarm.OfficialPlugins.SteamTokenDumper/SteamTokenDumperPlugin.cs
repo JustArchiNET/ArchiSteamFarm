@@ -197,7 +197,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				throw new ArgumentNullException(nameof(GlobalCache));
 			}
 
-			Dictionary<uint, ulong> packageTokens = callback.LicenseList.ToDictionary(license => license.PackageID, license => license.AccessToken);
+			Dictionary<uint, ulong> packageTokens = callback.LicenseList.GroupBy(license => license.PackageID).ToDictionary(group => group.Key, group => group.OrderByDescending(license => license.TimeCreated).First().AccessToken);
 
 			await GlobalCache.UpdatePackageTokens(packageTokens).ConfigureAwait(false);
 			await Refresh(bot, packageTokens.Keys).ConfigureAwait(false);
