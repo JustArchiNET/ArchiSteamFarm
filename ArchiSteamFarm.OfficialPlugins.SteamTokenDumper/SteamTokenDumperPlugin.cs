@@ -52,14 +52,18 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 		public Task<uint> GetPreferredChangeNumberToStartFrom() => Task.FromResult(IsEnabled ? GlobalCache?.LastChangeNumber ?? 0 : 0);
 
 		public void OnASFInit(IReadOnlyDictionary<string, JToken> additionalConfigProperties = null) {
-			const string enabledProperty = nameof(SteamTokenDumperPlugin) + "Enabled";
+			if (!SharedInfo.HasValidToken) {
+				ASF.ArchiLogger.LogGenericError($"{Name} has been disabled due to missing build token.");
+
+				return;
+			}
 
 			bool enabled = false;
 
 			if (additionalConfigProperties != null) {
 				foreach ((string configProperty, JToken configValue) in additionalConfigProperties) {
 					try {
-						if (configProperty == enabledProperty) {
+						if (configProperty == SharedInfo.ConfigurationPropertyEnabled) {
 							enabled = configValue.Value<bool>();
 						}
 					} catch (Exception e) {
