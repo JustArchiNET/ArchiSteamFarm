@@ -356,8 +356,6 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 				synchronization.RefreshTimer.Change(timeSpan, timeSpan);
 				synchronization.RefreshSemaphore.Release();
-
-				Utilities.InBackground(SubmitData);
 			}
 		}
 
