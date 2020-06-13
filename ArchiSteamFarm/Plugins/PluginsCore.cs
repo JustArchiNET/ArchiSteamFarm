@@ -37,7 +37,9 @@ using SteamKit2;
 
 namespace ArchiSteamFarm.Plugins {
 	internal static class PluginsCore {
-		internal static bool HasActivePluginsLoaded => ActivePlugins?.Count > 0;
+		internal static bool HasCustomPluginsLoaded => !HasActivePluginsLoaded || ActivePlugins.All(plugin => plugin is OfficialPlugin officialPlugin && officialPlugin.HasSameVersion());
+
+		private static bool HasActivePluginsLoaded => ActivePlugins?.Count > 0;
 
 		[ImportMany]
 		private static ImmutableHashSet<IPlugin> ActivePlugins { get; set; }
@@ -147,10 +149,13 @@ namespace ArchiSteamFarm.Plugins {
 			}
 
 			ActivePlugins = activePlugins.ToImmutableHashSet();
-			ASF.ArchiLogger.LogGenericInfo(Strings.PluginsWarning);
 
-			// Loading plugins changes the program identifier, refresh the console title
-			Console.Title = SharedInfo.ProgramIdentifier;
+			if (HasCustomPluginsLoaded) {
+				ASF.ArchiLogger.LogGenericInfo(Strings.PluginsWarning);
+
+				// Loading plugins changes the program identifier, refresh the console title
+				Console.Title = SharedInfo.ProgramIdentifier;
+			}
 
 			return invalidPlugins.Count == 0;
 		}

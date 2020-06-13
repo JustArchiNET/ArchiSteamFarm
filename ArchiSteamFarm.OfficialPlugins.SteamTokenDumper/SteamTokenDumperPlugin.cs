@@ -36,7 +36,7 @@ using SteamKit2;
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 	[Export(typeof(IPlugin))]
 	[UsedImplicitly]
-	internal sealed class SteamTokenDumperPlugin : IASF, IBot, IBotSteamClient, ISteamPICSChanges {
+	internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotSteamClient, ISteamPICSChanges {
 		private static readonly ConcurrentDictionary<Bot, IDisposable> BotSubscriptions = new ConcurrentDictionary<Bot, IDisposable>();
 		private static readonly ConcurrentDictionary<Bot, (SemaphoreSlim RefreshSemaphore, Timer RefreshTimer)> BotSynchronizations = new ConcurrentDictionary<Bot, (SemaphoreSlim RefreshSemaphore, Timer RefreshTimer)>();
 		private static readonly SemaphoreSlim SubmissionSemaphore = new SemaphoreSlim(1, 1);
@@ -45,9 +45,9 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 		private static GlobalCache GlobalCache;
 		private static bool IsEnabled;
 
-		public string Name => nameof(SteamTokenDumperPlugin);
+		public override string Name => nameof(SteamTokenDumperPlugin);
 
-		public Version Version => typeof(SteamTokenDumperPlugin).Assembly.GetName().Version ?? throw new ArgumentNullException(nameof(Version));
+		public override Version Version => typeof(SteamTokenDumperPlugin).Assembly.GetName().Version ?? throw new ArgumentNullException(nameof(Version));
 
 		public Task<uint> GetPreferredChangeNumberToStartFrom() => Task.FromResult(IsEnabled ? GlobalCache?.LastChangeNumber ?? 0 : 0);
 
@@ -146,7 +146,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 		public IReadOnlyCollection<ClientMsgHandler> OnBotSteamHandlersInit(Bot bot) => null;
 
-		public void OnLoaded() { }
+		public override void OnLoaded() { }
 
 		public async void OnPICSChanges(uint currentChangeNumber, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> appChanges, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> packageChanges) {
 			if ((currentChangeNumber == 0) || (appChanges == null) || (packageChanges == null)) {

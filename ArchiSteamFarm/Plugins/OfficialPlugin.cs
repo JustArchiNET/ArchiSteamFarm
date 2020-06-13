@@ -19,7 +19,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Runtime.CompilerServices;
+using System;
 
-[assembly: InternalsVisibleTo("ArchiSteamFarm.Tests")]
-[assembly: InternalsVisibleTo("ArchiSteamFarm.OfficialPlugins.SteamTokenDumper")]
+namespace ArchiSteamFarm.Plugins {
+	internal abstract class OfficialPlugin : IPlugin {
+		public abstract string Name { get; }
+		public abstract Version Version { get; }
+		public abstract void OnLoaded();
+
+		internal bool HasSameVersion() => Version == SharedInfo.Version;
+	}
+}
