@@ -832,7 +832,7 @@ namespace ArchiSteamFarm {
 				Directory.CreateDirectory(targetBackupDirectory);
 
 				string targetBackupFile = Path.Combine(targetBackupDirectory, fileName);
-				File.Move(file, targetBackupFile);
+				File.Move(file, targetBackupFile, true);
 			}
 
 			// We can now get rid of directories that are empty
@@ -848,8 +848,8 @@ namespace ArchiSteamFarm {
 
 				if (File.Exists(file)) {
 					// This is possible only with files that we decided to leave in place during our backup function
-					// Those files should never be overwritten with anything, ignore
-					continue;
+					string targetBackupFile = file + ".bak";
+					File.Move(file, targetBackupFile, true);
 				}
 
 				// Check if this file requires its own folder
