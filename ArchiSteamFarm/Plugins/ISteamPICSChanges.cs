@@ -31,6 +31,7 @@ namespace ArchiSteamFarm.Plugins {
 		///     ASF uses this method for determining the point in time from which it should keep history going upon a restart. The actual point in time that will be used is calculated as the lowest change number from all loaded plugins, to guarantee that no plugin will miss any changes, while allowing possible duplicates for those plugins that were already synchronized with newer changes. If you don't care about persistent state and just want to receive the ongoing history, you should return 0 (which is equal to "I'm fine with any"). If there won't be any plugin asking for a specific point in time, ASF will start returning entries since the start of the program.
 		/// </summary>
 		/// <returns>The most recent change number from which you're fine to receive <see cref="OnPICSChanges" /></returns>
+		[NotNull]
 		Task<uint> GetPreferredChangeNumberToStartFrom();
 
 		/// <summary>

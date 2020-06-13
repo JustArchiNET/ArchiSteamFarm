@@ -16,6 +16,8 @@ environment:
   NET_CORE_VERSION: netcoreapp3.1
   NET_FRAMEWORK_VERSION: net48
   NODE_JS_VERSION: lts
+  STEAM_TOKEN_DUMPER_TOKEN:
+    secure: uttQUE9ZK7BIa9SIbDkpUTMx7Slnl3zAPkRNzE465YgwxLdLEwv6yYR5QXCSZolb5Qq23Z/LmZNGd3M6B0+hbx3waWOeW2AiWvfCcnUmuT+3wfLJsgLbf1g4agFS7zsDgeRPfnNMzOxD8etelnA5YOOUMNB3RLw3fIdznNd+Fs6R0Ou3/1UavDuHKkbh1+A5
   VARIANTS: generic generic-netf linux-arm linux-arm64 linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
 matrix:
   allow_failures:

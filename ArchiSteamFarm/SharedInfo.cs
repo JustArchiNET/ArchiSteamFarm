@@ -26,7 +26,10 @@ using ArchiSteamFarm.Plugins;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm {
-	internal static class SharedInfo {
+	public static class SharedInfo {
+		[PublicAPI]
+		public const string ConfigDirectory = "config";
+
 		internal const ulong ArchiSteamID = 76561198006963719;
 		internal const string ArchivalLogFile = "log.{#}.txt";
 		internal const string ArchivalLogsDirectory = "logs";
@@ -34,7 +37,6 @@ namespace ArchiSteamFarm {
 		internal const ulong ASFGroupSteamID = 103582791440160998;
 		internal const string AssemblyDocumentation = AssemblyName + ".xml";
 		internal const string AssemblyName = nameof(ArchiSteamFarm);
-		internal const string ConfigDirectory = "config";
 		internal const string DatabaseExtension = ".db";
 		internal const string DebugDirectory = "debug";
 		internal const string EnvironmentVariableCryptKey = ASF + "_CRYPTKEY";

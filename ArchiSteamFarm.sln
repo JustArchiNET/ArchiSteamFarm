@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchiSteamFarm.Tests", "Arc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchiSteamFarm.CustomPlugins.ExamplePlugin", "ArchiSteamFarm.CustomPlugins.ExamplePlugin\ArchiSteamFarm.CustomPlugins.ExamplePlugin.csproj", "{2E2C26B6-7C1D-4BAF-BCF9-79286DA08F82}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiSteamFarm.CustomPlugins.PeriodicGC", "ArchiSteamFarm.CustomPlugins.PeriodicGC\ArchiSteamFarm.CustomPlugins.PeriodicGC.csproj", "{2C935C25-1B03-4C55-81C9-DF1D472D72F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchiSteamFarm.CustomPlugins.PeriodicGC", "ArchiSteamFarm.CustomPlugins.PeriodicGC\ArchiSteamFarm.CustomPlugins.PeriodicGC.csproj", "{2C935C25-1B03-4C55-81C9-DF1D472D72F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper", "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper\ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.csproj", "{A9299EE5-AF67-4FCB-8D03-263B41819504}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,12 +35,16 @@ Global
 		{2C935C25-1B03-4C55-81C9-DF1D472D72F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C935C25-1B03-4C55-81C9-DF1D472D72F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C935C25-1B03-4C55-81C9-DF1D472D72F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9299EE5-AF67-4FCB-8D03-263B41819504}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9299EE5-AF67-4FCB-8D03-263B41819504}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9299EE5-AF67-4FCB-8D03-263B41819504}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9299EE5-AF67-4FCB-8D03-263B41819504}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {D7D54143-C857-4B76-A219-0E98C5BC4895}
 		RESX_ShowErrorsInErrorList = False
+		SolutionGuid = {D7D54143-C857-4B76-A219-0E98C5BC4895}
 	EndGlobalSection
 EndGlobal
