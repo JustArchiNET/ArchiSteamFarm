@@ -1,24 +1,13 @@
-#!/bin/bash
+#!/usr/bin/env sh
+set -eu
 
-# no - in tag means we build amd64
-if [[ $DOCKER_TAG =~ "-" ]]; then
-  case ${DOCKER_TAG#*-} in
-    arm)
-      BUILD_ARCH=arm
-      TAG_ARCH="-arm32v7"
-      ;;
-    arm64)
-      BUILD_ARCH=arm64
-      TAG_ARCH="-arm64v8"
-      ;;
-  esac
-else
-  BUILD_ARCH=x64
-  # needs to be blank cause dotnet images have no suffix for amd64
-  TAG_ARCH=
-fi
+asf_arch="$(echo "$DOCKER_TAG" | cut -d '-' -f 2)"
+dotnet_arch=""
 
-docker build -f $DOCKERFILE_PATH -t $IMAGE_NAME . \
-  --build-arg STEAM_TOKEN_DUMPER_TOKEN=$STEAM_TOKEN_DUMPER_TOKEN \
-  --build-arg BUILD_ARCH=$BUILD_ARCH \
-  --build-arg TAG_ARCH=$TAG_ARCH
+case "$asf_arch" in
+	"arm") dotnet_arch="-arm32v7" ;;
+	"arm64") dotnet_arch="-arm64v8" ;;
+	*) asf_arch="x64" ;;
+esac
+
+docker build -f "$DOCKERFILE_PATH" -t "$IMAGE_NAME" --build-arg "STEAM_TOKEN_DUMPER_TOKEN=${STEAM_TOKEN_DUMPER_TOKEN-}" --build-arg "ASF_ARCH=${asf_arch}" --build-arg "DOTNET_ARCH=${dotnet_arch}" .
