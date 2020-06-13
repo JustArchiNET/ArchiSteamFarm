@@ -10,6 +10,7 @@ env:
   NET_CORE_VERSION: netcoreapp3.1
   NET_FRAMEWORK_VERSION: net48
   NODE_JS_VERSION: 12
+  STEAM_TOKEN_DUMPER_NAME: ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
 
 jobs:
   build:
@@ -51,21 +52,31 @@ jobs:
       run: npm run-script build:ci --no-progress --prefix ASF-ui
 
     - name: Build ArchiSteamFarm
-      run: dotnet build ArchiSteamFarm -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" -p:UseAppHost=false --nologo
+      run: dotnet build ArchiSteamFarm -c "${{ env.CONFIGURATION }}" -p:UseAppHost=false --nologo
 
     - name: Build ArchiSteamFarm.CustomPlugins.ExamplePlugin
-      run: dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" -p:UseAppHost=false --nologo
+      run: dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "${{ env.CONFIGURATION }}" -p:UseAppHost=false --nologo
 
     - name: Build ArchiSteamFarm.CustomPlugins.PeriodicGC
-      run: dotnet build ArchiSteamFarm.CustomPlugins.PeriodicGC -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" -p:UseAppHost=false --nologo
+      run: dotnet build ArchiSteamFarm.CustomPlugins.PeriodicGC -c "${{ env.CONFIGURATION }}" -p:UseAppHost=false --nologo
+
+    - name: Build ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
+      run: dotnet build ArchiSteamFarm.OfficialPlugins.SteamTokenDumper -c "${{ env.CONFIGURATION }}" -p:UseAppHost=false --nologo
 
     - name: Run ArchiSteamFarm.Tests
-      run: dotnet test ArchiSteamFarm.Tests -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" -p:UseAppHost=false --nologo
+      run: dotnet test ArchiSteamFarm.Tests -c "${{ env.CONFIGURATION }}" -p:UseAppHost=false --nologo
 
-    - name: Perform cleanup in preparation for publishing
-      run: dotnet clean ArchiSteamFarm -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" -p:UseAppHost=false --nologo
+    - name: Publish ArchiSteamFarm.OfficialPlugins.SteamTokenDumper for .NET Core
+      run: dotnet publish "${{ env.STEAM_TOKEN_DUMPER_NAME }}" -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" -o "out/${{ env.STEAM_TOKEN_DUMPER_NAME }}/${{ env.NET_CORE_VERSION }}" -p:UseAppHost=false --nologo
 
-    - name: Restore packages in preparation for publishing
+    - name: Publish ArchiSteamFarm.OfficialPlugins.SteamTokenDumper for .NET Framework
+      if: startsWith(matrix.os, 'windows-')
+      run: dotnet publish "${{ env.STEAM_TOKEN_DUMPER_NAME }}" -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_FRAMEWORK_VERSION }}" -o "out/${{ env.STEAM_TOKEN_DUMPER_NAME }}/${{ env.NET_FRAMEWORK_VERSION }}" -p:UseAppHost=false --nologo
+
+    - name: Perform cleanup of ArchiSteamFarm in preparation for publishing
+      run: dotnet clean ArchiSteamFarm -c "${{ env.CONFIGURATION }}" -p:UseAppHost=false --nologo
+
+    - name: Restore packages in preparation for ArchiSteamFarm publishing
       run: dotnet restore ArchiSteamFarm
 
     - name: Publish ArchiSteamFarm on Unix
@@ -85,9 +96,15 @@ jobs:
 
             dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" "-p:ASFVariant=$1" --no-restore --nologo $variantArgs
 
-            # If we include any overlay for this variant, copy it to output directory
+            # If we're including any overlay for this variant, copy it to output directory
             if [ -d "ArchiSteamFarm/overlay/${1}" ]; then
                 cp "ArchiSteamFarm/overlay/${1}/"* "out/${1}"
+            fi
+
+            # If we're including SteamTokenDumper plugin for this framework, copy it to output directory
+            if [ -f "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}/${STEAM_TOKEN_DUMPER_NAME}.dll" ]; then
+                mkdir -p "out/${1}/plugins/${STEAM_TOKEN_DUMPER_NAME}"
+                cp "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}/${STEAM_TOKEN_DUMPER_NAME}.dll" "out/${1}/plugins/${STEAM_TOKEN_DUMPER_NAME}"
             fi
 
             # Include .ico file for all platforms, since only Windows script can bundle it inside the exe
@@ -154,9 +171,18 @@ jobs:
                 throw "Last command failed."
             }
 
-            # If we include any overlay for this variant, copy it output directory
+            # If we're including any overlay for this variant, copy it to output directory
             if (Test-Path "ArchiSteamFarm\overlay\$variant" -PathType Container) {
                 Copy-Item "ArchiSteamFarm\overlay\$variant\*" "out\$variant"
+            }
+
+            # If we're including SteamTokenDumper plugin for this framework, copy it to output directory
+            if (Test-Path "out\$env:STEAM_TOKEN_DUMPER_NAME\$targetFramework\$env:STEAM_TOKEN_DUMPER_NAME.dll" -PathType Leaf) {
+                if (!(Test-Path "out\$variant\plugins\$env:STEAM_TOKEN_DUMPER_NAME" -PathType Container)) {
+                    New-Item -ItemType Directory -Path "out\$variant\plugins\$env:STEAM_TOKEN_DUMPER_NAME" > $null
+                }
+
+                Copy-Item "out\$env:STEAM_TOKEN_DUMPER_NAME\$targetFramework\$env:STEAM_TOKEN_DUMPER_NAME.dll" "out\$variant\plugins\$env:STEAM_TOKEN_DUMPER_NAME"
             }
 
             # Until https://github.com/dotnet/cli/issues/3267 happens, we'll hack dotnet binary icon on Windows and include .ico file on other platforms
