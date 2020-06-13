@@ -1,0 +1,2 @@
+#!/bin/bash
+docker build -f $DOCKERFILE_PATH -t $IMAGE_NAME --build-arg STEAM_TOKEN_DUMPER_TOKEN=$STEAM_TOKEN_DUMPER_TOKEN .
