@@ -1,2 +1,24 @@
 #!/bin/bash
-docker build -f $DOCKERFILE_PATH -t $IMAGE_NAME --build-arg STEAM_TOKEN_DUMPER_TOKEN=$STEAM_TOKEN_DUMPER_TOKEN .
+
+# no - in tag means we build amd64
+if [[ $DOCKER_TAG =~ "-" ]]; then
+  case ${DOCKER_TAG#*-} in
+    arm)
+      BUILD_ARCH=arm
+      TAG_ARCH="-arm32v7"
+      ;;
+    arm64)
+      BUILD_ARCH=arm64
+      TAG_ARCH="-arm64v8"
+      ;;
+  esac
+else
+  BUILD_ARCH=x64
+  # needs to be blank cause dotnet images have no suffix for amd64
+  TAG_ARCH=
+fi
+
+docker build -f $DOCKERFILE_PATH -t $IMAGE_NAME . \
+  --build-arg STEAM_TOKEN_DUMPER_TOKEN=$STEAM_TOKEN_DUMPER_TOKEN \
+  --build-arg BUILD_ARCH=$BUILD_ARCH \
+  --build-arg TAG_ARCH=$TAG_ARCH

@@ -7,6 +7,7 @@ RUN echo "node: $(node --version)" && \
     npm run deploy
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-dotnet
+ARG BUILD_ARCH=x64
 ARG STEAM_TOKEN_DUMPER_TOKEN
 ENV CONFIGURATION Release
 ENV DOTNET_CLI_TELEMETRY_OPTOUT 1
@@ -24,13 +25,14 @@ RUN dotnet --info && \
     if [ -f "ArchiSteamFarm/Localization/Strings.zh-CN.resx" ]; then ln -s "Strings.zh-CN.resx" "ArchiSteamFarm/Localization/Strings.zh-Hans.resx"; fi && \
     if [ -f "ArchiSteamFarm/Localization/Strings.zh-TW.resx" ]; then ln -s "Strings.zh-TW.resx" "ArchiSteamFarm/Localization/Strings.zh-Hant.resx"; fi && \
     if [ -n "${STEAM_TOKEN_DUMPER_TOKEN-}" ] && [ -f "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs" ]; then sed -i "s/STEAM_TOKEN_DUMPER_TOKEN/${STEAM_TOKEN_DUMPER_TOKEN}/g" "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs"; fi && \
-    dotnet publish "${STEAM_TOKEN_DUMPER_NAME}" -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}" -p:SelfContained=false -p:UseAppHost=false -r linux-x64 --nologo && \
-    dotnet clean ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -p:SelfContained=false -p:UseAppHost=false -r linux-x64 --nologo && \
-    dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/result" -p:ASFVariant=docker -p:SelfContained=false -p:UseAppHost=false -r linux-x64 --nologo && \
+    dotnet publish "${STEAM_TOKEN_DUMPER_NAME}" -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}" -p:SelfContained=false -p:UseAppHost=false -r linux-$BUILD_ARCH --nologo && \
+    dotnet clean ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -p:SelfContained=false -p:UseAppHost=false -r linux-$BUILD_ARCH --nologo && \
+    dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/result" -p:ASFVariant=docker -p:SelfContained=false -p:UseAppHost=false -r linux-$BUILD_ARCH --nologo && \
     if [ -d "ArchiSteamFarm/overlay/generic" ]; then cp "ArchiSteamFarm/overlay/generic/"* "out/result"; fi && \
     if [ -f "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}/${STEAM_TOKEN_DUMPER_NAME}.dll" ]; then mkdir -p "out/result/plugins/${STEAM_TOKEN_DUMPER_NAME}"; cp "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}/${STEAM_TOKEN_DUMPER_NAME}.dll" "out/result/plugins/${STEAM_TOKEN_DUMPER_NAME}"; fi
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS runtime
+ARG TAG_ARCH=""
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim$TAG_ARCH AS runtime
 ENV ASPNETCORE_URLS=
 ENV DOTNET_CLI_TELEMETRY_OPTOUT 1
 ENV DOTNET_SKIP_FIRST_TIME_EXPERIENCE 1
