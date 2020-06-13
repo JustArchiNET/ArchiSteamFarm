@@ -72,7 +72,8 @@ jobs:
       shell: sh
       run: |
           if [ -n "${STEAM_TOKEN_DUMPER_TOKEN-}" ] && [ -f "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs" ]; then
-              sed -i "s/STEAM_TOKEN_DUMPER_TOKEN/${STEAM_TOKEN_DUMPER_TOKEN}/g" "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs";
+              sed "s/STEAM_TOKEN_DUMPER_TOKEN/${STEAM_TOKEN_DUMPER_TOKEN}/g" "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs" > "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs.new";
+              mv "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs.new" "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs"
           fi
     - name: Prepare ArchiSteamFarm.OfficialPlugins.SteamTokenDumper on Windows
       if: startsWith(matrix.os, 'windows-')
