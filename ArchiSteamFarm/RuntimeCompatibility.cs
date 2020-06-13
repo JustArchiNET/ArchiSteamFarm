@@ -67,7 +67,7 @@ namespace ArchiSteamFarm {
 #pragma warning disable IDE0022
 			public static void Move([NotNull] string sourceFileName, [NotNull] string destFileName, bool overwrite) {
 #if NETFRAMEWORK
-				if (System.IO.File.Exists(destFileName)) {
+				if (overwrite && System.IO.File.Exists(destFileName)) {
 					System.IO.File.Delete(destFileName);
 				}
 
