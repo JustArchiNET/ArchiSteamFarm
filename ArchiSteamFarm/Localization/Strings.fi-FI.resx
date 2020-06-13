@@ -716,14 +716,8 @@ StackTrace:
   <data name="ErrorSingleInstanceRequired" xml:space="preserve">
     <value>ASF prosessi on jo käynnissä tässä työhakemistossa. Keskeytetään!</value>
   </data>
-  <data name="BotHandledConfirmations" xml:space="preserve">
-    <value>Successfully handled {0} confirmations!</value>
-    <comment>{0} will be replaced by number of confirmations</comment>
-  </data>
-  <data name="BotExtraIdlingCooldown" xml:space="preserve">
-    <value>Waiting up to {0} to ensure that we're free to start idling...</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
-  </data>
+  
+  
   <data name="UpdateCleanup" xml:space="preserve">
     <value>Siivotaan vanhat tiedostot päivityksen jälkeen...</value>
   </data>

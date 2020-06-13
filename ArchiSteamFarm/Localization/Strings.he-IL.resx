@@ -264,10 +264,7 @@ StackTrace:
     <value>נא הזינו את משתמש ה- Steam שלכם: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputSteamParentalCode" xml:space="preserve">
-    <value>Please enter Steam parental code: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>אנא הקישו את הסיסמה הנוכחית שלכם: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -279,9 +276,7 @@ StackTrace:
   <data name="IPCReady" xml:space="preserve">
     <value>שרת IPC מוכן!</value>
   </data>
-  <data name="IPCStarting" xml:space="preserve">
-    <value>Starting IPC server...</value>
-  </data>
+  
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>בוט זה כבר הפסיק!</value>
   </data>
@@ -336,9 +331,7 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>הרצה נעצרה!</value>
   </data>
-  <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
-    <value>Ignoring this request, as permanent pause is enabled!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>אין שום דבר להריץ בחשבון זה!</value>
   </data>
@@ -438,18 +431,12 @@ StackTrace:
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>לא מריץ את הבוט הזה כי הוא אינו מופעל בקובץ ההגדרה!</value>
   </data>
-  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Received TwoFactorCodeMismatch error code {0} times in a row. Either your 2FA credentials are no longer valid, or your clock is out of sync, aborting!</value>
-    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
-  </data>
+  
   <data name="BotLoggedOff" xml:space="preserve">
     <value>ניתוק מסטים: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
-  <data name="BotLoggedOn" xml:space="preserve">
-    <value>Successfully logged on as {0}.</value>
-    <comment>{0} will be replaced by steam ID (number)</comment>
-  </data>
+  
   <data name="BotLoggingIn" xml:space="preserve">
     <value>מתחבר...</value>
   </data>
@@ -642,95 +629,30 @@ StackTrace:
     <value>הדרך לעקיפת הבעיה עבור {0} באגים הופעלה.</value>
     <comment>{0} will be replaced by the bug's name provided by ASF</comment>
   </data>
-  <data name="TargetBotNotConnected" xml:space="preserve">
-    <value>Target bot instance is not connected!</value>
-  </data>
-  <data name="BotWalletBalance" xml:space="preserve">
-    <value>Wallet balance: {0} {1}</value>
-    <comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
-  </data>
-  <data name="BotHasNoWallet" xml:space="preserve">
-    <value>Bot has no wallet.</value>
-  </data>
-  <data name="BotLevel" xml:space="preserve">
-    <value>Bot has level {0}.</value>
-    <comment>{0} will be replaced by bot's level</comment>
-  </data>
-  <data name="ActivelyMatchingItems" xml:space="preserve">
-    <value>Matching Steam items, round #{0}...</value>
-    <comment>{0} will be replaced by round number</comment>
-  </data>
-  <data name="DoneActivelyMatchingItems" xml:space="preserve">
-    <value>Done matching Steam items, round #{0}.</value>
-    <comment>{0} will be replaced by round number</comment>
-  </data>
-  <data name="ErrorAborted" xml:space="preserve">
-    <value>Aborted!</value>
-  </data>
-  <data name="ActivelyMatchingItemsRound" xml:space="preserve">
-    <value>Matched a total of {0} sets this round.</value>
-    <comment>{0} will be replaced by number of sets traded</comment>
-  </data>
-  <data name="WarningExcessiveBotsCount" xml:space="preserve">
-    <value>You're running more personal bot accounts than our upper recommended limit ({0}). Be advised that this setup is not supported and might cause various Steam-related issues, including account suspensions. Check out the FAQ for more details.</value>
-    <comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
-  </data>
-  <data name="PluginLoaded" xml:space="preserve">
-    <value>{0} has been loaded successfully!</value>
-    <comment>{0} will be replaced by the name of the custom ASF plugin</comment>
-  </data>
-  <data name="PluginLoading" xml:space="preserve">
-    <value>Loading {0} V{1}...</value>
-    <comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
-  </data>
-  <data name="NothingFound" xml:space="preserve">
-    <value>Nothing found!</value>
-  </data>
-  <data name="PluginsWarning" xml:space="preserve">
-    <value>You've loaded one or more of custom plugins into the ASF. Since we're unable to offer a support for modded setups, please reach the appropriate developers of the plugins that you decided to use in case of any issues.</value>
-  </data>
-  <data name="PleaseWait" xml:space="preserve">
-    <value>Please wait...</value>
-  </data>
-  <data name="EnterCommand" xml:space="preserve">
-    <value>Enter command: </value>
-  </data>
-  <data name="Executing" xml:space="preserve">
-    <value>Executing...</value>
-  </data>
-  <data name="InteractiveConsoleEnabled" xml:space="preserve">
-    <value>Interactive console is now active, type 'c' in order to enter command mode.</value>
-  </data>
-  <data name="InteractiveConsoleNotAvailable" xml:space="preserve">
-    <value>Interactive console is not available due to missing {0} config property.</value>
-    <comment>{0} will be replaced by the name of the missing config property (string)</comment>
-  </data>
-  <data name="Response" xml:space="preserve">
-    <value>Response: {0}</value>
-    <comment>{0} will be replaced by the generated response (string)</comment>
-  </data>
-  <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
-    <value>Bot has {0} games remaining in its background queue.</value>
-    <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
-  </data>
-  <data name="ErrorSingleInstanceRequired" xml:space="preserve">
-    <value>ASF process is already running for this working directory, aborting!</value>
-  </data>
-  <data name="BotHandledConfirmations" xml:space="preserve">
-    <value>Successfully handled {0} confirmations!</value>
-    <comment>{0} will be replaced by number of confirmations</comment>
-  </data>
-  <data name="BotExtraIdlingCooldown" xml:space="preserve">
-    <value>Waiting up to {0} to ensure that we're free to start idling...</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
-  </data>
-  <data name="UpdateCleanup" xml:space="preserve">
-    <value>Cleaning up old files after update...</value>
-  </data>
-  <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
-    <value>Generating Steam parental code, this can take a while, consider putting it in the config instead...</value>
-  </data>
-  <data name="IPCConfigChanged" xml:space="preserve">
-    <value>IPC config has been changed!</value>
-  </data>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 </root>
