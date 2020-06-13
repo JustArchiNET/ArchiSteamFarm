@@ -2381,9 +2381,10 @@ namespace ArchiSteamFarm {
 
 				if (!ASF.GlobalDatabase.PackageAccessTokensReadOnly.TryGetValue(license.PackageID, out ulong packageAccessToken) || (packageAccessToken != license.AccessToken)) {
 					packageAccessTokens[license.PackageID] = license.AccessToken;
-				}
 
-				if (!ASF.GlobalDatabase.PackagesDataReadOnly.TryGetValue(license.PackageID, out (uint ChangeNumber, HashSet<uint> AppIDs) packageData) || (packageData.ChangeNumber < license.LastChangeNumber)) {
+					// Package is always due to refresh with access token change
+					packagesToRefresh[license.PackageID] = (uint) license.LastChangeNumber;
+				} else if (!ASF.GlobalDatabase.PackagesDataReadOnly.TryGetValue(license.PackageID, out (uint ChangeNumber, HashSet<uint> AppIDs) packageData) || (packageData.ChangeNumber < license.LastChangeNumber)) {
 					packagesToRefresh[license.PackageID] = (uint) license.LastChangeNumber;
 				}
 			}
