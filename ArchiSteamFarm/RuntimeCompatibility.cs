@@ -64,6 +64,20 @@ namespace ArchiSteamFarm {
 				await System.IO.File.AppendAllTextAsync(path, contents).ConfigureAwait(false);
 #endif
 
+#pragma warning disable IDE0022
+			public static void Move([NotNull] string sourceFileName, [NotNull] string destFileName, bool overwrite) {
+#if NETFRAMEWORK
+				if (System.IO.File.Exists(destFileName)) {
+					System.IO.File.Delete(destFileName);
+				}
+
+				System.IO.File.Move(sourceFileName, destFileName);
+#else
+				System.IO.File.Move(sourceFileName, destFileName, overwrite);
+#endif
+			}
+#pragma warning restore IDE0022
+
 			[ItemNotNull]
 			public static async Task<byte[]> ReadAllBytesAsync([NotNull] string path) =>
 #if NETFRAMEWORK
