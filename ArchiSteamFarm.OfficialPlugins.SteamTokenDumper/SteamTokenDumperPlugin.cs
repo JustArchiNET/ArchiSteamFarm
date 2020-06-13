@@ -230,7 +230,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				HashSet<uint> appIDsToRefresh = new HashSet<uint>();
 
 				foreach (uint packageID in packageIDs) {
-					if (!ASF.GlobalDatabase.PackagesDataReadOnly.TryGetValue(packageID, out (uint ChangeNumber, HashSet<uint> AppIDs) packageData)) {
+					if (!ASF.GlobalDatabase.PackagesDataReadOnly.TryGetValue(packageID, out (uint ChangeNumber, HashSet<uint> AppIDs) packageData) || (packageData.AppIDs == null)) {
 						// ASF might not have the package info for us at the moment, we'll retry later
 						continue;
 					}
