@@ -41,6 +41,10 @@ script:
     dotnet build ArchiSteamFarm.OfficialPlugins.SteamTokenDumper -c "$CONFIGURATION" -p:UseAppHost=false --nologo
     dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -p:UseAppHost=false --nologo
 
+    if [ -n "${STEAM_TOKEN_DUMPER_TOKEN-}" ] && [ -f "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs" ]; then
+        sed -i "s/STEAM_TOKEN_DUMPER_TOKEN/${STEAM_TOKEN_DUMPER_TOKEN}/g" "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs";
+    fi
+
     dotnet publish "$STEAM_TOKEN_DUMPER_NAME" -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}" -p:UseAppHost=false --nologo
 
     dotnet clean ArchiSteamFarm -c "$CONFIGURATION" -p:UseAppHost=false --nologo

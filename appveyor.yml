@@ -157,6 +157,11 @@ after_test:
     $ProgressPreference = 'SilentlyContinue'
 
 
+    if ((Test-Path env:STEAM_TOKEN_DUMPER_TOKEN) -and (Test-Path 'ArchiSteamFarm.OfficialPlugins.SteamTokenDumper\SharedInfo.cs' -PathType Leaf)) {
+        (Get-Content 'ArchiSteamFarm.OfficialPlugins.SteamTokenDumper\SharedInfo.cs').Replace('STEAM_TOKEN_DUMPER_TOKEN', "$env:STEAM_TOKEN_DUMPER_TOKEN") | Set-Content 'ArchiSteamFarm.OfficialPlugins.SteamTokenDumper\SharedInfo.cs'
+    }
+
+
     dotnet publish "$env:STEAM_TOKEN_DUMPER_NAME" -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -o "out/$env:STEAM_TOKEN_DUMPER_NAME/$env:NET_CORE_VERSION" -p:UseAppHost=false --nologo
 
 
