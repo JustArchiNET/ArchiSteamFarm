@@ -1,13 +1,14 @@
 #!/usr/bin/env sh
+# This hook is used by Docker Hub as an instruction on how to build the ASF release
+# See: https://docs.docker.com/docker-hub/builds/advanced
 set -eu
 
 asf_arch="$(echo "$DOCKER_TAG" | cut -d '-' -f 2)"
-dotnet_arch=""
 
 case "$asf_arch" in
 	"arm") dotnet_arch="-arm32v7" ;;
 	"arm64") dotnet_arch="-arm64v8" ;;
-	*) asf_arch="x64" ;;
+	*) dotnet_arch=""; asf_arch="x64" ;;
 esac
 
 docker build -f "$DOCKERFILE_PATH" -t "$IMAGE_NAME" --build-arg "STEAM_TOKEN_DUMPER_TOKEN=${STEAM_TOKEN_DUMPER_TOKEN-}" --build-arg "ASF_ARCH=${asf_arch}" --build-arg "DOTNET_ARCH=${dotnet_arch}" .
