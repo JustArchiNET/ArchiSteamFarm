@@ -77,7 +77,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			IsEnabled = enabled;
 
 			if (!enabled) {
-				ASF.ArchiLogger.LogGenericInfo($"{Name} is currently disabled. If you'd like to help SteamDB in data submission, check out our wiki.");
+				ASF.ArchiLogger.LogGenericInfo($"{Name} is currently disabled. If you'd like to help SteamDB in data submission, check out our wiki for {nameof(SteamTokenDumperPlugin)}.");
 
 				return;
 			}
