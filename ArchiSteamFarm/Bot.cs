@@ -2376,7 +2376,7 @@ namespace ArchiSteamFarm {
 			Dictionary<uint, ulong> packageAccessTokens = new Dictionary<uint, ulong>();
 			Dictionary<uint, uint> packagesToRefresh = new Dictionary<uint, uint>();
 
-			foreach (SteamApps.LicenseListCallback.License license in callback.LicenseList.GroupBy(license => license.PackageID).Select(group => group.OrderByDescending(license => license.TimeCreated).First())) {
+			foreach (SteamApps.LicenseListCallback.License license in callback.LicenseList.GroupBy(license => license.PackageID, (packageID, licenses) => licenses.OrderByDescending(license => license.TimeCreated).First())) {
 				OwnedPackageIDs[license.PackageID] = (license.PaymentMethod, license.TimeCreated);
 
 				if (!ASF.GlobalDatabase.PackageAccessTokensReadOnly.TryGetValue(license.PackageID, out ulong packageAccessToken) || (packageAccessToken != license.AccessToken)) {
