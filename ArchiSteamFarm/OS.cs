@@ -71,14 +71,7 @@ namespace ArchiSteamFarm {
 
 			string resourceName = GetOsResourceName(objectName);
 
-			try {
-				return new CrossProcessSemaphore(resourceName);
-			} catch (PlatformNotSupportedException e) {
-				// CrossProcessSemaphore is currently available only for Windows platforms, we use alternative synchronization for other OSes
-				ASF.ArchiLogger.LogGenericDebuggingException(e);
-
-				return new CrossProcessFileBasedSemaphore(resourceName);
-			}
+			return new CrossProcessFileBasedSemaphore(resourceName);
 		}
 
 		internal static void Init(bool systemRequired, GlobalConfig.EOptimizationMode optimizationMode) {
