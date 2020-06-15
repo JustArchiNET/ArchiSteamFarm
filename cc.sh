@@ -16,11 +16,10 @@ ASF_UI=1
 CLEAN=0
 PULL=1
 SHARED_COMPILATION=1
-STEAM_TOKEN_DUMPER=1
 TEST=1
 
 PRINT_USAGE() {
-	echo "Usage: $0 [--clean] [--no-asf-ui] [--no-pull] [--no-shared-compilation] [--no-steam-token-dumper] [--no-test] [debug/release]"
+	echo "Usage: $0 [--clean] [--no-asf-ui] [--no-pull] [--no-shared-compilation] [--no-test] [debug/release]"
 }
 
 cd "$(dirname "$(readlink -f "$0")")"
@@ -37,8 +36,6 @@ for ARG in "$@"; do
 		--no-pull) PULL=0 ;;
 		--shared-compilation) SHARED_COMPILATION=1 ;;
 		--no-shared-compilation) SHARED_COMPILATION=0 ;;
-		--steam-token-dumper) STEAM_TOKEN_DUMPER=1 ;;
-		--no-steam-token-dumper) STEAM_TOKEN_DUMPER=0 ;;
 		--test) TEST=1 ;;
 		--no-test) TEST=0 ;;
 		--help) PRINT_USAGE; exit 0 ;;
@@ -117,11 +114,18 @@ fi
 
 dotnet publish "$MAIN_PROJECT" -o "$OUT_ASF" $DOTNET_FLAGS
 
-if [ "$STEAM_TOKEN_DUMPER" -eq 1 ]; then
+if [ -n "${STEAM_TOKEN_DUMPER_TOKEN-}" ] && [ -f "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs" ]; then
+	git checkout -- "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs"
+	sed "s/STEAM_TOKEN_DUMPER_TOKEN/${STEAM_TOKEN_DUMPER_TOKEN}/g" "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs" > "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs.new";
+	mv "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs.new" "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs"
+
 	dotnet publish "$STEAM_TOKEN_DUMPER_NAME" -o "$OUT_STD" $DOTNET_FLAGS
+	git checkout -- "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs"
 
 	mkdir -p "${OUT_ASF}/plugins/${STEAM_TOKEN_DUMPER_NAME}"
 	cp "${OUT_STD}/${STEAM_TOKEN_DUMPER_NAME}.dll" "${OUT_ASF}/plugins/${STEAM_TOKEN_DUMPER_NAME}"
+else
+	echo "WARNING: STEAM_TOKEN_DUMPER_TOKEN is missing, skipping build of ${STEAM_TOKEN_DUMPER_NAME}..."
 fi
 
 echo

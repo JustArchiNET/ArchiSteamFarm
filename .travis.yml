@@ -38,12 +38,12 @@ script:
     dotnet build ArchiSteamFarm -c "$CONFIGURATION" -p:UseAppHost=false --nologo
     dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "$CONFIGURATION" -p:UseAppHost=false --nologo
     dotnet build ArchiSteamFarm.CustomPlugins.PeriodicGC -c "$CONFIGURATION" -p:UseAppHost=false --nologo
-    dotnet build ArchiSteamFarm.OfficialPlugins.SteamTokenDumper -c "$CONFIGURATION" -p:UseAppHost=false --nologo
+    dotnet build "$STEAM_TOKEN_DUMPER_NAME" -c "$CONFIGURATION" -p:UseAppHost=false --nologo
     dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -p:UseAppHost=false --nologo
 
-    if [ -n "${STEAM_TOKEN_DUMPER_TOKEN-}" ] && [ -f "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs" ]; then
-        sed "s/STEAM_TOKEN_DUMPER_TOKEN/${STEAM_TOKEN_DUMPER_TOKEN}/g" "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs" > "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs.new";
-        mv "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs.new" "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs"
+    if [ -n "${STEAM_TOKEN_DUMPER_TOKEN-}" ] && [ -f "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs" ]; then
+        sed "s/STEAM_TOKEN_DUMPER_TOKEN/${STEAM_TOKEN_DUMPER_TOKEN}/g" "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs" > "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs.new";
+        mv "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs.new" "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs"
     fi
 
     dotnet publish "$STEAM_TOKEN_DUMPER_NAME" -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}" -p:UseAppHost=false --nologo

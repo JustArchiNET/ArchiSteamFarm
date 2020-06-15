@@ -62,7 +62,7 @@ jobs:
       run: dotnet build ArchiSteamFarm.CustomPlugins.PeriodicGC -c "${{ env.CONFIGURATION }}" -p:UseAppHost=false --nologo
 
     - name: Build ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
-      run: dotnet build ArchiSteamFarm.OfficialPlugins.SteamTokenDumper -c "${{ env.CONFIGURATION }}" -p:UseAppHost=false --nologo
+      run: dotnet build "${{ env.STEAM_TOKEN_DUMPER_NAME }}" -c "${{ env.CONFIGURATION }}" -p:UseAppHost=false --nologo
 
     - name: Run ArchiSteamFarm.Tests
       run: dotnet test ArchiSteamFarm.Tests -c "${{ env.CONFIGURATION }}" -p:UseAppHost=false --nologo
@@ -71,9 +71,9 @@ jobs:
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
       shell: sh
       run: |
-          if [ -n "${STEAM_TOKEN_DUMPER_TOKEN-}" ] && [ -f "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs" ]; then
-              sed "s/STEAM_TOKEN_DUMPER_TOKEN/${STEAM_TOKEN_DUMPER_TOKEN}/g" "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs" > "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs.new";
-              mv "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs.new" "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/SharedInfo.cs"
+          if [ -n "${STEAM_TOKEN_DUMPER_TOKEN-}" ] && [ -f "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs" ]; then
+              sed "s/STEAM_TOKEN_DUMPER_TOKEN/${STEAM_TOKEN_DUMPER_TOKEN}/g" "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs" > "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs.new";
+              mv "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs.new" "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs"
           fi
     - name: Prepare ArchiSteamFarm.OfficialPlugins.SteamTokenDumper on Windows
       if: startsWith(matrix.os, 'windows-')
@@ -83,8 +83,8 @@ jobs:
         $ErrorActionPreference = 'Stop'
         $ProgressPreference = 'SilentlyContinue'
 
-        if ((Test-Path env:STEAM_TOKEN_DUMPER_TOKEN) -and (Test-Path 'ArchiSteamFarm.OfficialPlugins.SteamTokenDumper\SharedInfo.cs' -PathType Leaf)) {
-            (Get-Content 'ArchiSteamFarm.OfficialPlugins.SteamTokenDumper\SharedInfo.cs').Replace('STEAM_TOKEN_DUMPER_TOKEN', "$env:STEAM_TOKEN_DUMPER_TOKEN") | Set-Content 'ArchiSteamFarm.OfficialPlugins.SteamTokenDumper\SharedInfo.cs'
+        if ((Test-Path env:STEAM_TOKEN_DUMPER_TOKEN) -and (Test-Path "$env:STEAM_TOKEN_DUMPER_NAME\SharedInfo.cs" -PathType Leaf)) {
+            (Get-Content "$env:STEAM_TOKEN_DUMPER_NAME\SharedInfo.cs").Replace('STEAM_TOKEN_DUMPER_TOKEN', "$env:STEAM_TOKEN_DUMPER_TOKEN") | Set-Content "$env:STEAM_TOKEN_DUMPER_NAME\SharedInfo.cs"
         }
     - name: Publish ArchiSteamFarm.OfficialPlugins.SteamTokenDumper for .NET Core
       run: dotnet publish "${{ env.STEAM_TOKEN_DUMPER_NAME }}" -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" -o "out/${{ env.STEAM_TOKEN_DUMPER_NAME }}/${{ env.NET_CORE_VERSION }}" -p:UseAppHost=false --nologo
