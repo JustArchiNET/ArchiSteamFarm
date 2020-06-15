@@ -267,7 +267,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 						SteamApps.PICSTokensCallback response;
 
 						try {
-							response = await bot.SteamApps.PICSGetAccessTokens(appIDsThisRound, Enumerable.Empty<uint>());
+							response = await bot.SteamApps.PICSGetAccessTokens(appIDsThisRound, Enumerable.Empty<uint>()).ToLongRunningTask().ConfigureAwait(false);
 						} catch (Exception e) {
 							bot.ArchiLogger.LogGenericWarningException(e);
 
@@ -302,7 +302,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 						AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet response;
 
 						try {
-							response = await bot.SteamApps.PICSGetProductInfo(appIDsThisRound.Select(appID => new SteamApps.PICSRequest { ID = appID, AccessToken = GlobalCache.GetAppToken(appID), Public = false }), Enumerable.Empty<SteamApps.PICSRequest>());
+							response = await bot.SteamApps.PICSGetProductInfo(appIDsThisRound.Select(appID => new SteamApps.PICSRequest { ID = appID, AccessToken = GlobalCache.GetAppToken(appID), Public = false }), Enumerable.Empty<SteamApps.PICSRequest>()).ToLongRunningTask().ConfigureAwait(false);
 						} catch (Exception e) {
 							bot.ArchiLogger.LogGenericWarningException(e);
 

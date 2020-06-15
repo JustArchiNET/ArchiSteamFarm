@@ -675,7 +675,7 @@ namespace ArchiSteamFarm {
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (tokenCallback == null) && IsConnectedAndLoggedOn; i++) {
 				try {
-					tokenCallback = await SteamApps.PICSGetAccessTokens(appID, null);
+					tokenCallback = await SteamApps.PICSGetAccessTokens(appID, null).ToLongRunningTask().ConfigureAwait(false);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericWarningException(e);
 				}
@@ -691,7 +691,7 @@ namespace ArchiSteamFarm {
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (productInfoResultSet == null) && IsConnectedAndLoggedOn; i++) {
 				try {
-					productInfoResultSet = await SteamApps.PICSGetProductInfo(request.ToEnumerable(), Enumerable.Empty<SteamApps.PICSRequest>());
+					productInfoResultSet = await SteamApps.PICSGetProductInfo(request.ToEnumerable(), Enumerable.Empty<SteamApps.PICSRequest>()).ToLongRunningTask().ConfigureAwait(false);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericWarningException(e);
 				}
@@ -861,7 +861,7 @@ namespace ArchiSteamFarm {
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (productInfoResultSet == null) && IsConnectedAndLoggedOn; i++) {
 				try {
-					productInfoResultSet = await SteamApps.PICSGetProductInfo(Enumerable.Empty<SteamApps.PICSRequest>(), packageRequests);
+					productInfoResultSet = await SteamApps.PICSGetProductInfo(Enumerable.Empty<SteamApps.PICSRequest>(), packageRequests).ToLongRunningTask().ConfigureAwait(false);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericWarningException(e);
 				}
@@ -1135,7 +1135,7 @@ namespace ArchiSteamFarm {
 			SteamUser.WebAPIUserNonceCallback callback;
 
 			try {
-				callback = await SteamUser.RequestWebAPIUserNonce();
+				callback = await SteamUser.RequestWebAPIUserNonce().ToLongRunningTask().ConfigureAwait(false);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
 				await Connect(true).ConfigureAwait(false);
@@ -1749,7 +1749,7 @@ namespace ArchiSteamFarm {
 
 			try {
 				if (DateTime.UtcNow.Subtract(ArchiHandler.LastPacketReceived).TotalSeconds > ASF.GlobalConfig.ConnectionTimeout) {
-					await SteamFriends.RequestProfileInfo(SteamID);
+					await SteamFriends.RequestProfileInfo(SteamID).ToLongRunningTask().ConfigureAwait(false);
 				}
 
 				HeartBeatFailures = 0;

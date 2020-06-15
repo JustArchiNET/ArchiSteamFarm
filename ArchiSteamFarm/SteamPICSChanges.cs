@@ -71,7 +71,7 @@ namespace ArchiSteamFarm {
 					}
 
 					try {
-						picsChanges = await refreshBot.SteamApps.PICSGetChangesSince(LastChangeNumber, true, true);
+						picsChanges = await refreshBot.SteamApps.PICSGetChangesSince(LastChangeNumber, true, true).ToLongRunningTask().ConfigureAwait(false);
 					} catch (Exception e) {
 						refreshBot.ArchiLogger.LogGenericWarningException(e);
 					}

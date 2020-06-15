@@ -32,9 +32,12 @@ using AngleSharp.XPath;
 using Humanizer;
 using Humanizer.Localisation;
 using JetBrains.Annotations;
+using SteamKit2;
 
 namespace ArchiSteamFarm {
 	public static class Utilities {
+		private const byte TimeoutForLongRunningTasksInSeconds = 60;
+
 		// Normally we wouldn't need to use this singleton, but we want to ensure decent randomness across entire program's lifetime
 		private static readonly Random Random = new Random();
 
@@ -258,6 +261,30 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public static string ToHumanReadable(this TimeSpan timeSpan) => timeSpan.Humanize(3, maxUnit: TimeUnit.Year, minUnit: TimeUnit.Second);
+
+		[NotNull]
+		[PublicAPI]
+		public static Task<T> ToLongRunningTask<T>([NotNull] this AsyncJob<T> job) where T : CallbackMsg {
+			if (job == null) {
+				throw new ArgumentNullException(nameof(job));
+			}
+
+			job.Timeout = TimeSpan.FromSeconds(TimeoutForLongRunningTasksInSeconds);
+
+			return job.ToTask();
+		}
+
+		[NotNull]
+		[PublicAPI]
+		public static Task<AsyncJobMultiple<T>.ResultSet> ToLongRunningTask<T>([NotNull] this AsyncJobMultiple<T> job) where T : CallbackMsg {
+			if (job == null) {
+				throw new ArgumentNullException(nameof(job));
+			}
+
+			job.Timeout = TimeSpan.FromSeconds(TimeoutForLongRunningTasksInSeconds);
+
+			return job.ToTask();
+		}
 
 		internal static void DeleteEmptyDirectoriesRecursively(string directory) {
 			if (string.IsNullOrEmpty(directory)) {

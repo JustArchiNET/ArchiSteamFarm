@@ -576,7 +576,7 @@ namespace ArchiSteamFarm {
 						SteamApps.FreeLicenseCallback callback;
 
 						try {
-							callback = await Bot.SteamApps.RequestFreeLicense(gameID);
+							callback = await Bot.SteamApps.RequestFreeLicense(gameID).ToLongRunningTask().ConfigureAwait(false);
 						} catch (Exception e) {
 							Bot.ArchiLogger.LogGenericWarningException(e);
 							response.AppendLine(FormatBotResponse(string.Format(Strings.BotAddLicense, "app/" + gameID, EResult.Timeout)));

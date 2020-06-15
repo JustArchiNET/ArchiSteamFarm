@@ -218,7 +218,7 @@ namespace ArchiSteamFarm {
 			SteamUnifiedMessages.ServiceMethodResponse response;
 
 			try {
-				response = await UnifiedPlayerService.SendMessage(x => x.AddFriend(request));
+				response = await UnifiedPlayerService.SendMessage(x => x.AddFriend(request)).ToLongRunningTask().ConfigureAwait(false);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
 
@@ -253,7 +253,7 @@ namespace ArchiSteamFarm {
 			SteamUnifiedMessages.ServiceMethodResponse response;
 
 			try {
-				response = await UnifiedClanChatRoomsService.SendMessage(x => x.GetClanChatRoomInfo(request));
+				response = await UnifiedClanChatRoomsService.SendMessage(x => x.GetClanChatRoomInfo(request)).ToLongRunningTask().ConfigureAwait(false);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
 
@@ -284,7 +284,7 @@ namespace ArchiSteamFarm {
 			SteamUnifiedMessages.ServiceMethodResponse response;
 
 			try {
-				response = await UnifiedPlayerService.SendMessage(x => x.GetGameBadgeLevels(request));
+				response = await UnifiedPlayerService.SendMessage(x => x.GetGameBadgeLevels(request)).ToLongRunningTask().ConfigureAwait(false);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
 
@@ -316,7 +316,7 @@ namespace ArchiSteamFarm {
 			SteamUnifiedMessages.ServiceMethodResponse response;
 
 			try {
-				response = await UnifiedChatRoomService.SendMessage(x => x.GetMyChatRoomGroups(request));
+				response = await UnifiedChatRoomService.SendMessage(x => x.GetMyChatRoomGroups(request)).ToLongRunningTask().ConfigureAwait(false);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
 
@@ -348,7 +348,7 @@ namespace ArchiSteamFarm {
 			SteamUnifiedMessages.ServiceMethodResponse response;
 
 			try {
-				response = await UnifiedEconService.SendMessage(x => x.GetTradeOfferAccessToken(request));
+				response = await UnifiedEconService.SendMessage(x => x.GetTradeOfferAccessToken(request)).ToLongRunningTask().ConfigureAwait(false);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
 
@@ -386,7 +386,7 @@ namespace ArchiSteamFarm {
 			SteamUnifiedMessages.ServiceMethodResponse response;
 
 			try {
-				response = await UnifiedChatRoomService.SendMessage(x => x.JoinChatRoomGroup(request));
+				response = await UnifiedChatRoomService.SendMessage(x => x.JoinChatRoomGroup(request)).ToLongRunningTask().ConfigureAwait(false);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
 
@@ -477,7 +477,7 @@ namespace ArchiSteamFarm {
 			Client.Send(request);
 
 			try {
-				return await new AsyncJob<RedeemGuestPassResponseCallback>(Client, request.SourceJobID);
+				return await new AsyncJob<RedeemGuestPassResponseCallback>(Client, request.SourceJobID).ToLongRunningTask().ConfigureAwait(false);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 
@@ -510,7 +510,7 @@ namespace ArchiSteamFarm {
 			Client.Send(request);
 
 			try {
-				return await new AsyncJob<PurchaseResponseCallback>(Client, request.SourceJobID);
+				return await new AsyncJob<PurchaseResponseCallback>(Client, request.SourceJobID).ToLongRunningTask().ConfigureAwait(false);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 
@@ -540,7 +540,7 @@ namespace ArchiSteamFarm {
 			SteamUnifiedMessages.ServiceMethodResponse response;
 
 			try {
-				response = await UnifiedPlayerService.SendMessage(x => x.RemoveFriend(request));
+				response = await UnifiedPlayerService.SendMessage(x => x.RemoveFriend(request)).ToLongRunningTask().ConfigureAwait(false);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
 
@@ -592,7 +592,7 @@ namespace ArchiSteamFarm {
 			SteamUnifiedMessages.ServiceMethodResponse response;
 
 			try {
-				response = await UnifiedFriendMessagesService.SendMessage(x => x.SendMessage(request));
+				response = await UnifiedFriendMessagesService.SendMessage(x => x.SendMessage(request)).ToLongRunningTask().ConfigureAwait(false);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
 
@@ -628,7 +628,7 @@ namespace ArchiSteamFarm {
 			SteamUnifiedMessages.ServiceMethodResponse response;
 
 			try {
-				response = await UnifiedChatRoomService.SendMessage(x => x.SendChatMessage(request));
+				response = await UnifiedChatRoomService.SendMessage(x => x.SendChatMessage(request)).ToLongRunningTask().ConfigureAwait(false);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
 
@@ -663,7 +663,7 @@ namespace ArchiSteamFarm {
 			SteamUnifiedMessages.ServiceMethodResponse response;
 
 			try {
-				response = await UnifiedFriendMessagesService.SendMessage(x => x.SendMessage(request));
+				response = await UnifiedFriendMessagesService.SendMessage(x => x.SendMessage(request)).ToLongRunningTask().ConfigureAwait(false);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
 
