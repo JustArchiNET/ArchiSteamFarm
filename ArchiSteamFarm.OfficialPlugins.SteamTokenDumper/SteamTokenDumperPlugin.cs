@@ -250,11 +250,11 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 				bot.ArchiLogger.LogGenericInfo($"Retrieving a total of {appIDsToRefresh.Count} app access tokens...");
 
-				HashSet<uint> appIDsThisRound = new HashSet<uint>(Math.Min(appIDsToRefresh.Count, SharedInfo.ItemsPerSingleRequest));
+				HashSet<uint> appIDsThisRound = new HashSet<uint>(Math.Min(appIDsToRefresh.Count, SharedInfo.AppInfosPerSingleRequest));
 
 				using (HashSet<uint>.Enumerator enumerator = appIDsToRefresh.GetEnumerator()) {
 					while (true) {
-						while ((appIDsThisRound.Count < SharedInfo.ItemsPerSingleRequest) && enumerator.MoveNext()) {
+						while ((appIDsThisRound.Count < SharedInfo.AppInfosPerSingleRequest) && enumerator.MoveNext()) {
 							appIDsThisRound.Add(enumerator.Current);
 						}
 
@@ -289,7 +289,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 				using (HashSet<uint>.Enumerator enumerator = appIDsToRefresh.GetEnumerator()) {
 					while (true) {
-						while ((appIDsThisRound.Count < SharedInfo.ItemsPerSingleRequest) && enumerator.MoveNext()) {
+						while ((appIDsThisRound.Count < SharedInfo.AppInfosPerSingleRequest) && enumerator.MoveNext()) {
 							appIDsThisRound.Add(enumerator.Current);
 						}
 
@@ -320,6 +320,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 						appIDsThisRound.Clear();
 
 						Dictionary<uint, uint> appChangeNumbers = new Dictionary<uint, uint>();
+
 						HashSet<Task<SteamApps.DepotKeyCallback>> depotTasks = new HashSet<Task<SteamApps.DepotKeyCallback>>();
 
 						foreach (SteamApps.PICSProductInfoCallback.PICSProductInfo app in response.Results.SelectMany(result => result.Apps.Values)) {
