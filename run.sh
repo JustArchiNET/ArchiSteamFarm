@@ -1,20 +1,20 @@
 #!/usr/bin/env sh
 set -eu
 
-BINARY_PATH="$(dirname "$(readlink -f "$0")")/out"
+BINARY_DIR="$(dirname "$(readlink -f "$0")")/out/result"
 CONFIG_PATH="config/ASF.json"
 
-if [ ! -d "$BINARY_PATH" ]; then
-	echo "ERROR: $BINARY_PATH could not be found!"
+if [ ! -d "$BINARY_DIR" ]; then
+	echo "ERROR: $BINARY_DIR could not be found!"
 	exit 1
 fi
 
-cd "$BINARY_PATH"
+cd "$BINARY_DIR"
 
-BINARY="$(pwd)/ArchiSteamFarm.dll"
+BINARY_PATH="$(pwd)/ArchiSteamFarm.dll"
 
-if [ ! -f "$BINARY" ]; then
-	echo "ERROR: $BINARY could not be found!"
+if [ ! -f "$BINARY_PATH" ]; then
+	echo "ERROR: $BINARY_PATH could not be found!"
 	exit 1
 fi
 
@@ -74,9 +74,9 @@ dotnet --info
 
 if [ -f "$CONFIG_PATH" ] && grep -Eq '"Headless":\s+?true' "$CONFIG_PATH"; then
 	# We're running ASF in headless mode so we don't need STDIN
-	dotnet "$BINARY" $BINARY_ARGS & # Start ASF in the background, trap will work properly due to non-blocking call
+	dotnet "$BINARY_PATH" $BINARY_ARGS & # Start ASF in the background, trap will work properly due to non-blocking call
 	wait $! # This will forward dotnet error code, set -e will abort the script if it's non-zero
 else
 	# We're running ASF in non-headless mode, so we need STDIN to be operative
-	dotnet "$BINARY" $BINARY_ARGS # Start ASF in the foreground, trap won't work until process exit
+	dotnet "$BINARY_PATH" $BINARY_ARGS # Start ASF in the foreground, trap won't work until process exit
 fi

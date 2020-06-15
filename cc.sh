@@ -4,19 +4,23 @@ set -eu
 TARGET_FRAMEWORK="netcoreapp3.1"
 
 MAIN_PROJECT="ArchiSteamFarm"
+STEAM_TOKEN_DUMPER_NAME="${MAIN_PROJECT}.OfficialPlugins.SteamTokenDumper"
 TESTS_PROJECT="${MAIN_PROJECT}.Tests"
 SOLUTION="${MAIN_PROJECT}.sln"
 CONFIGURATION="Release"
 OUT="out"
+OUT_ASF="${OUT}/result"
+OUT_STD="${OUT}/${STEAM_TOKEN_DUMPER_NAME}"
 
 ASF_UI=1
 CLEAN=0
 PULL=1
 SHARED_COMPILATION=1
+STEAM_TOKEN_DUMPER=1
 TEST=1
 
 PRINT_USAGE() {
-	echo "Usage: $0 [--clean] [--no-asf-ui] [--no-pull] [--no-shared-compilation] [--no-test] [debug/release]"
+	echo "Usage: $0 [--clean] [--no-asf-ui] [--no-pull] [--no-shared-compilation] [--no-steam-token-dumper] [--no-test] [debug/release]"
 }
 
 cd "$(dirname "$(readlink -f "$0")")"
@@ -33,6 +37,8 @@ for ARG in "$@"; do
 		--no-pull) PULL=0 ;;
 		--shared-compilation) SHARED_COMPILATION=1 ;;
 		--no-shared-compilation) SHARED_COMPILATION=0 ;;
+		--steam-token-dumper) STEAM_TOKEN_DUMPER=1 ;;
+		--no-steam-token-dumper) STEAM_TOKEN_DUMPER=0 ;;
 		--test) TEST=1 ;;
 		--no-test) TEST=0 ;;
 		--help) PRINT_USAGE; exit 0 ;;
@@ -88,7 +94,7 @@ if [ "$ASF_UI" -eq 1 ]; then
 		npm run-script deploy --no-progress --prefix ASF-ui
 
 		# ASF's output www folder needs cleaning as well
-		rm -rf "${OUT}/www"
+		rm -rf "${OUT_ASF}/www"
 	else
 		echo "WARNING: ASF-ui dependencies are missing, skipping build of ASF-ui..."
 	fi
@@ -109,7 +115,14 @@ if [ "$TEST" -eq 1 ]; then
 	dotnet test "$TESTS_PROJECT" $DOTNET_FLAGS
 fi
 
-dotnet publish "$MAIN_PROJECT" -o "$OUT" $DOTNET_FLAGS
+dotnet publish "$MAIN_PROJECT" -o "$OUT_ASF" $DOTNET_FLAGS
+
+if [ "$STEAM_TOKEN_DUMPER" -eq 1 ]; then
+	dotnet publish "$STEAM_TOKEN_DUMPER_NAME" -o "$OUT_STD" $DOTNET_FLAGS
+
+	mkdir -p "${OUT_ASF}/plugins/${STEAM_TOKEN_DUMPER_NAME}"
+	cp "${OUT_STD}/${STEAM_TOKEN_DUMPER_NAME}.dll" "${OUT_ASF}/plugins/${STEAM_TOKEN_DUMPER_NAME}"
+fi
 
 echo
 echo "SUCCESS: Compilation finished successfully! :)"
