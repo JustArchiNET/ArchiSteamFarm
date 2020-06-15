@@ -671,11 +671,27 @@ namespace ArchiSteamFarm {
 				}
 			}
 
+			SteamApps.PICSTokensCallback tokenCallback = null;
+
+			for (byte i = 0; (i < WebBrowser.MaxTries) && (tokenCallback == null) && IsConnectedAndLoggedOn; i++) {
+				try {
+					tokenCallback = await SteamApps.PICSGetAccessTokens(appID, null);
+				} catch (Exception e) {
+					ArchiLogger.LogGenericWarningException(e);
+				}
+			}
+
+			if (tokenCallback == null) {
+				return (optimisticDiscovery ? appID : 0, DateTime.MinValue, true);
+			}
+
+			SteamApps.PICSRequest request = new SteamApps.PICSRequest(appID, tokenCallback.AppTokens.TryGetValue(appID, out ulong accessToken) ? accessToken : 0, false);
+
 			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfoResultSet = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (productInfoResultSet == null) && IsConnectedAndLoggedOn; i++) {
 				try {
-					productInfoResultSet = await SteamApps.PICSGetProductInfo(appID, null, false);
+					productInfoResultSet = await SteamApps.PICSGetProductInfo(request.ToEnumerable(), Enumerable.Empty<SteamApps.PICSRequest>());
 				} catch (Exception e) {
 					ArchiLogger.LogGenericWarningException(e);
 				}
