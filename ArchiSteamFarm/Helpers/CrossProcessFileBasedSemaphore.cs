@@ -166,9 +166,15 @@ namespace ArchiSteamFarm.Helpers {
 					OS.UnixSetFileAccess(directoryPath, OS.EUnixPermission.Combined777);
 				} else {
 					DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
-					DirectorySecurity directorySecurity = new DirectorySecurity(FilePath, AccessControlSections.All);
 
-					directoryInfo.SetAccessControl(directorySecurity);
+					try {
+						DirectorySecurity directorySecurity = new DirectorySecurity(directoryPath, AccessControlSections.All);
+
+						directoryInfo.SetAccessControl(directorySecurity);
+					} catch (PrivilegeNotHeldException e) {
+						// Non-critical, user might have no rights to manage the resource
+						ASF.ArchiLogger.LogGenericDebuggingException(e);
+					}
 				}
 			}
 
@@ -179,9 +185,15 @@ namespace ArchiSteamFarm.Helpers {
 					OS.UnixSetFileAccess(FilePath, OS.EUnixPermission.Combined777);
 				} else {
 					FileInfo fileInfo = new FileInfo(FilePath);
-					FileSecurity fileSecurity = new FileSecurity(FilePath, AccessControlSections.All);
 
-					fileInfo.SetAccessControl(fileSecurity);
+					try {
+						FileSecurity fileSecurity = new FileSecurity(FilePath, AccessControlSections.All);
+
+						fileInfo.SetAccessControl(fileSecurity);
+					} catch (PrivilegeNotHeldException e) {
+						// Non-critical, user might have no rights to manage the resource
+						ASF.ArchiLogger.LogGenericDebuggingException(e);
+					}
 				}
 			} catch (IOException) {
 				// Ignored, if the file was already created in the meantime by another instance, this is fine
