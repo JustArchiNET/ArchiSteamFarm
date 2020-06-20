@@ -40,7 +40,7 @@ Feel free to remove our notice and fill the template below with your details.
 
 ### Full log.txt recorded during reproducing the problem
 
-```
+```text
 Paste here, in-between triple backtick tags
 
 Ensure that your log is complete and was NOT recorded in Debug mode, as debug log may contain sensitive information that should not be shared publicly, as per our wiki statement. Standard ASF log does not include sensitive information.
