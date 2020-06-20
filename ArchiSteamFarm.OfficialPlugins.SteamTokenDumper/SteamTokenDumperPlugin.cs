@@ -262,6 +262,10 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 							break;
 						}
 
+						if (!bot.IsConnectedAndLoggedOn) {
+							return;
+						}
+
 						bot.ArchiLogger.LogGenericInfo($"Retrieving {appIDsThisRound.Count} app access tokens...");
 
 						SteamApps.PICSTokensCallback response;
@@ -270,6 +274,12 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 							response = await bot.SteamApps.PICSGetAccessTokens(appIDsThisRound, Enumerable.Empty<uint>()).ToLongRunningTask().ConfigureAwait(false);
 						} catch (Exception e) {
 							bot.ArchiLogger.LogGenericWarningException(e);
+
+							return;
+						}
+
+						if (response == null) {
+							bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, nameof(response)));
 
 							return;
 						}
@@ -295,6 +305,10 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 						if (appIDsThisRound.Count == 0) {
 							break;
+						}
+
+						if (!bot.IsConnectedAndLoggedOn) {
+							return;
 						}
 
 						bot.ArchiLogger.LogGenericInfo($"Retrieving {appIDsThisRound.Count} app infos...");
