@@ -675,7 +675,7 @@ namespace ArchiSteamFarm {
 			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ActivelyMatchingItemsRound, skippedSetsThisRound.Count));
 
 			// Keep matching when we either traded something this round (so it makes sense for a refresh) or if we didn't try all available bots yet (so it makes sense to keep going)
-			return (skippedSetsThisRound.Count > 0) || triedSteamIDs.Values.All(data => data.Tries < 2);
+			return (totalMatches > 0) && ((skippedSetsThisRound.Count > 0) || triedSteamIDs.Values.All(data => data.Tries < 2));
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
