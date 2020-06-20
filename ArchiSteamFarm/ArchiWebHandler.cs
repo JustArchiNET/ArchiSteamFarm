@@ -50,12 +50,13 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public const string SteamStoreURL = "https://" + SteamStoreHost;
 
+		internal const ushort MaxItemsInSingleInventoryRequest = 5000;
+
 		private const string IEconService = "IEconService";
 		private const string IPlayerService = "IPlayerService";
 		private const string ISteamApps = "ISteamApps";
 		private const string ISteamUserAuth = "ISteamUserAuth";
 		private const string ITwoFactorService = "ITwoFactorService";
-		private const ushort MaxItemsInSingleInventoryRequest = 5000;
 		private const byte MinSessionValidityInSeconds = GlobalConfig.DefaultConnectionTimeout / 6;
 		private const string SteamCommunityHost = "steamcommunity.com";
 		private const string SteamHelpHost = "help.steampowered.com";
