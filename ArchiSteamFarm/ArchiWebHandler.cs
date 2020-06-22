@@ -57,7 +57,6 @@ namespace ArchiSteamFarm {
 		private const string ISteamApps = "ISteamApps";
 		private const string ISteamUserAuth = "ISteamUserAuth";
 		private const string ITwoFactorService = "ITwoFactorService";
-		private const byte MinSessionValidityInSeconds = GlobalConfig.DefaultConnectionTimeout / 6;
 		private const string SteamCommunityHost = "steamcommunity.com";
 		private const string SteamHelpHost = "help.steampowered.com";
 		private const string SteamStoreHost = "store.steampowered.com";
@@ -2393,14 +2392,16 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool?> IsSessionExpired() {
-			if (DateTime.UtcNow < LastSessionCheck.AddSeconds(MinSessionValidityInSeconds)) {
+			DateTime triggeredAt = DateTime.UtcNow;
+
+			if (triggeredAt < LastSessionCheck) {
 				return LastSessionCheck != LastSessionRefresh;
 			}
 
 			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				if (DateTime.UtcNow < LastSessionCheck.AddSeconds(MinSessionValidityInSeconds)) {
+				if (triggeredAt < LastSessionCheck) {
 					return LastSessionCheck != LastSessionRefresh;
 				}
 
@@ -2522,15 +2523,15 @@ namespace ArchiSteamFarm {
 
 			DateTime triggeredAt = DateTime.UtcNow;
 
-			if (triggeredAt < LastSessionRefresh.AddSeconds(MinSessionValidityInSeconds)) {
-				return true;
+			if (triggeredAt < LastSessionCheck) {
+				return LastSessionCheck == LastSessionRefresh;
 			}
 
 			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				if (triggeredAt < LastSessionRefresh.AddSeconds(MinSessionValidityInSeconds)) {
-					return true;
+				if (triggeredAt < LastSessionCheck) {
+					return LastSessionCheck == LastSessionRefresh;
 				}
 
 				if (!Bot.IsConnectedAndLoggedOn) {
@@ -2540,9 +2541,13 @@ namespace ArchiSteamFarm {
 				Bot.ArchiLogger.LogGenericInfo(Strings.RefreshingOurSession);
 				bool result = await Bot.RefreshSession().ConfigureAwait(false);
 
+				DateTime now = DateTime.UtcNow;
+
 				if (result) {
-					LastSessionCheck = LastSessionRefresh = DateTime.UtcNow;
+					LastSessionRefresh = now;
 				}
+
+				LastSessionCheck = now;
 
 				return result;
 			} finally {
