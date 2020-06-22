@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
@@ -122,8 +123,6 @@ namespace ArchiSteamFarm {
 		internal readonly ArchiHandler ArchiHandler;
 		internal readonly BotDatabase BotDatabase;
 
-		internal readonly ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)> OwnedPackageIDs = new ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>();
-
 		internal bool CanReceiveSteamCards => !IsAccountLimited && !IsAccountLocked;
 		internal bool IsAccountLimited => AccountFlags.HasFlag(EAccountFlags.LimitedUser) || AccountFlags.HasFlag(EAccountFlags.LimitedUserForce);
 		internal bool IsAccountLocked => AccountFlags.HasFlag(EAccountFlags.Lockdown);
@@ -195,6 +194,7 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public ECurrencyCode WalletCurrency { get; private set; }
 
+		internal ImmutableDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)> OwnedPackageIDs { get; private set; } = ImmutableDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>.Empty;
 		internal bool PlayingBlocked { get; private set; }
 		internal bool PlayingWasBlocked { get; private set; }
 
@@ -2160,7 +2160,6 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogGenericInfo(Strings.BotDisconnected);
 
-			OwnedPackageIDs.Clear();
 			PastNotifications.Clear();
 
 			Actions.OnDisconnected();
@@ -2384,16 +2383,21 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			bool initialLogin = OwnedPackageIDs.Count == 0;
+			if (callback.LicenseList.Count == 0) {
+				ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsEmpty, nameof(callback.LicenseList)));
+
+				return;
+			}
 
 			Commands.OnNewLicenseList();
-			OwnedPackageIDs.Clear();
+
+			Dictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)> ownedPackageIDs = new Dictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>();
 
 			Dictionary<uint, ulong> packageAccessTokens = new Dictionary<uint, ulong>();
 			Dictionary<uint, uint> packagesToRefresh = new Dictionary<uint, uint>();
 
 			foreach (SteamApps.LicenseListCallback.License license in callback.LicenseList.GroupBy(license => license.PackageID, (packageID, licenses) => licenses.OrderByDescending(license => license.TimeCreated).First())) {
-				OwnedPackageIDs[license.PackageID] = (license.PaymentMethod, license.TimeCreated);
+				ownedPackageIDs[license.PackageID] = (license.PaymentMethod, license.TimeCreated);
 
 				if (!ASF.GlobalDatabase.PackageAccessTokensReadOnly.TryGetValue(license.PackageID, out ulong packageAccessToken) || (packageAccessToken != license.AccessToken)) {
 					packageAccessTokens[license.PackageID] = license.AccessToken;
@@ -2405,6 +2409,8 @@ namespace ArchiSteamFarm {
 				}
 			}
 
+			OwnedPackageIDs = ownedPackageIDs.ToImmutableDictionary();
+
 			if (packageAccessTokens.Count > 0) {
 				ASF.GlobalDatabase.RefreshPackageAccessTokens(packageAccessTokens);
 			}
@@ -2413,11 +2419,6 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericTrace(Strings.BotRefreshingPackagesData);
 				await ASF.GlobalDatabase.RefreshPackages(this, packagesToRefresh).ConfigureAwait(false);
 				ArchiLogger.LogGenericTrace(Strings.Done);
-			}
-
-			if (initialLogin && CardsFarmer.Paused) {
-				// Emit initial game playing status in this case
-				await ResetGamesPlayed().ConfigureAwait(false);
 			}
 
 			await CardsFarmer.OnNewGameAdded().ConfigureAwait(false);
@@ -2621,6 +2622,11 @@ namespace ArchiSteamFarm {
 								await JoinMasterChatGroupID().ConfigureAwait(false);
 							}
 						);
+					}
+
+					if (CardsFarmer.Paused) {
+						// Emit initial game playing status in this case
+						Utilities.InBackground(ResetGamesPlayed);
 					}
 
 					SteamPICSChanges.OnBotLoggedOn();

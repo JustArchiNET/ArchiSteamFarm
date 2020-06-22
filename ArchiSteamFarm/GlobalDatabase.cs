@@ -136,8 +136,8 @@ namespace ArchiSteamFarm {
 			return globalDatabase;
 		}
 
-		internal HashSet<uint> GetPackageIDs(uint appID, ICollection<uint> packageIDs) {
-			if ((appID == 0) || (packageIDs == null) || (packageIDs.Count == 0)) {
+		internal HashSet<uint> GetPackageIDs(uint appID, IEnumerable<uint> packageIDs) {
+			if ((appID == 0) || (packageIDs == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(packageIDs));
 
 				return null;
