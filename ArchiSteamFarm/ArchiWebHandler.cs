@@ -2394,14 +2394,14 @@ namespace ArchiSteamFarm {
 		private async Task<bool?> IsSessionExpired() {
 			DateTime triggeredAt = DateTime.UtcNow;
 
-			if (triggeredAt < LastSessionCheck) {
+			if (triggeredAt <= LastSessionCheck) {
 				return LastSessionCheck != LastSessionRefresh;
 			}
 
 			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				if (triggeredAt < LastSessionCheck) {
+				if (triggeredAt <= LastSessionCheck) {
 					return LastSessionCheck != LastSessionRefresh;
 				}
 
@@ -2523,14 +2523,14 @@ namespace ArchiSteamFarm {
 
 			DateTime triggeredAt = DateTime.UtcNow;
 
-			if (triggeredAt < LastSessionCheck) {
+			if (triggeredAt <= LastSessionCheck) {
 				return LastSessionCheck == LastSessionRefresh;
 			}
 
 			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				if (triggeredAt < LastSessionCheck) {
+				if (triggeredAt <= LastSessionCheck) {
 					return LastSessionCheck == LastSessionRefresh;
 				}
 
