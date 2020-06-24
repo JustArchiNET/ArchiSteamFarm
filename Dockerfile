@@ -1,3 +1,5 @@
+ARG DOTNET_ARCH=
+
 FROM node:lts AS build-node
 WORKDIR /app
 COPY ASF-ui .
@@ -31,7 +33,6 @@ RUN dotnet --info && \
     if [ -d "ArchiSteamFarm/overlay/generic" ]; then cp "ArchiSteamFarm/overlay/generic/"* "out/result"; fi && \
     if [ -f "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}/${STEAM_TOKEN_DUMPER_NAME}.dll" ]; then mkdir -p "out/result/plugins/${STEAM_TOKEN_DUMPER_NAME}"; cp "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}/${STEAM_TOKEN_DUMPER_NAME}.dll" "out/result/plugins/${STEAM_TOKEN_DUMPER_NAME}"; fi
 
-ARG DOTNET_ARCH=
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim${DOTNET_ARCH} AS runtime
 ENV ASPNETCORE_URLS=
 ENV DOTNET_CLI_TELEMETRY_OPTOUT 1
