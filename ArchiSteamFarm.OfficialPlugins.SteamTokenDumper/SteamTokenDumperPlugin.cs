@@ -43,6 +43,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 		private static readonly Timer SubmissionTimer = new Timer(async e => await SubmitData().ConfigureAwait(false));
 
 		private static GlobalCache GlobalCache;
+
 		private static bool IsEnabled;
 
 		public override string Name => nameof(SteamTokenDumperPlugin);
@@ -63,7 +64,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			if (additionalConfigProperties != null) {
 				foreach ((string configProperty, JToken configValue) in additionalConfigProperties) {
 					try {
-						if (configProperty == SharedInfo.ConfigurationPropertyEnabled) {
+						if (configProperty == nameof(GlobalConfigExtension.SteamTokenDumperPluginEnabled)) {
 							enabled = configValue.Value<bool>();
 						}
 					} catch (Exception e) {
