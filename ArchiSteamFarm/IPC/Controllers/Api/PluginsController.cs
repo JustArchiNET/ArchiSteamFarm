@@ -19,33 +19,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using JetBrains.Annotations;
-using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Net;
+using ArchiSteamFarm.IPC.Responses;
+using ArchiSteamFarm.Plugins;
+using Microsoft.AspNetCore.Mvc;
 
-namespace ArchiSteamFarm.Plugins {
-	[PublicAPI]
-	public interface IPlugin {
-		/// <summary>
-		///     ASF will use this property as general plugin identifier for the user.
-		/// </summary>
-		/// <returns>String that will be used as the name of this plugin.</returns>
-		[JsonProperty]
-		[NotNull]
-		string Name { get; }
+namespace ArchiSteamFarm.IPC.Controllers.Api {
+	[Route("Api/Plugins")]
+	public sealed class PluginsController : ArchiController {
+		[HttpGet]
+		[ProducesResponseType(typeof(GenericResponse<IReadOnlyCollection<IPlugin>>), (int) HttpStatusCode.OK)]
+		public ActionResult<GenericResponse<IReadOnlyCollection<IPlugin>>> PluginsGet() {
+			IReadOnlyCollection<IPlugin> activePlugins = PluginsCore.ActivePlugins ?? (IReadOnlyCollection<IPlugin>) new IPlugin[0];
 
-		/// <summary>
-		///     ASF will use this property as version indicator of your plugin to the user.
-		///     You have a freedom in deciding what versioning you want to use, this is for identification purposes only.
-		/// </summary>
-		/// <returns>Version that will be shown to the user when plugin is loaded.</returns>
-		[JsonProperty]
-		[NotNull]
-		Version Version { get; }
-
-		/// <summary>
-		///     ASF will call this method right after plugin initialization.
-		/// </summary>
-		void OnLoaded();
+			return Ok(new GenericResponse<IReadOnlyCollection<IPlugin>>(activePlugins));
+		}
 	}
 }

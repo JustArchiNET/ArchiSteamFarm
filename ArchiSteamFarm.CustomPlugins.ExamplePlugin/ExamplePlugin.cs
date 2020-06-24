@@ -26,6 +26,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Plugins;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
 
@@ -38,6 +39,10 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 	// This will keep your code compact, efficient and less dependent. You can always add additional interfaces when you'll need them, this example project will inherit quite a bit of them to show you potential usage
 	// ReSharper disable once UnusedType.Global - this is example plugin class that isn't used in our main code
 	internal sealed class ExamplePlugin : IASF, IBot, IBotCommand, IBotConnection, IBotFriendRequest, IBotMessage, IBotModules, IBotTradeOffer {
+		// Plugins can expose custom properties for our GET /Api/Plugins API call, simply annotate them with [JsonProperty] (or keep public)
+		[JsonProperty]
+		public readonly bool CustomIsEnabledField = true;
+
 		// This is used for identification purposes, typically you want to use a friendly name of your plugin here, such as the name of your main class
 		// Please note that this property can have direct dependencies only on structures that were initialized by the constructor, as it's possible to be called before OnLoaded() takes place
 		public string Name => nameof(ExamplePlugin);

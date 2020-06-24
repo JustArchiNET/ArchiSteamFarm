@@ -30,6 +30,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Plugins;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
 
@@ -44,10 +45,13 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 		private static GlobalCache GlobalCache;
 
+		[JsonProperty]
 		private static bool IsEnabled;
 
+		[JsonProperty]
 		public override string Name => nameof(SteamTokenDumperPlugin);
 
+		[JsonProperty]
 		public override Version Version => typeof(SteamTokenDumperPlugin).Assembly.GetName().Version ?? throw new ArgumentNullException(nameof(Version));
 
 		public Task<uint> GetPreferredChangeNumberToStartFrom() => Task.FromResult(IsEnabled ? GlobalCache?.LastChangeNumber ?? 0 : 0);
