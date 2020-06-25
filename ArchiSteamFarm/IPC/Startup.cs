@@ -168,6 +168,7 @@ namespace ArchiSteamFarm.IPC {
 					);
 
 					options.EnableAnnotations(true);
+					options.SchemaFilter<EnumFlagsSchemaFilter>();
 
 					options.SwaggerDoc(
 						SharedInfo.ASF, new OpenApiInfo {
