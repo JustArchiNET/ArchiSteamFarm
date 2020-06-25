@@ -35,7 +35,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 
 namespace ArchiSteamFarm.IPC {
@@ -168,7 +167,7 @@ namespace ArchiSteamFarm.IPC {
 					);
 
 					options.EnableAnnotations(true);
-					options.SchemaFilter<EnumFlagsSchemaFilter>();
+					options.SchemaFilter<EnumSchemaFilter>();
 
 					options.SwaggerDoc(
 						SharedInfo.ASF, new OpenApiInfo {
@@ -235,9 +234,6 @@ namespace ArchiSteamFarm.IPC {
 				options => {
 					// Fix default contract resolver to use original names and not a camel case
 					options.SerializerSettings.ContractResolver = new DefaultContractResolver();
-
-					// Use friendly names for enums instead of numbers
-					options.SerializerSettings.Converters.Add(new StringEnumConverter());
 
 					if (Debugging.IsUserDebugging) {
 						options.SerializerSettings.Formatting = Formatting.Indented;

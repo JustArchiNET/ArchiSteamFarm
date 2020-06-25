@@ -21,22 +21,70 @@
 
 using System;
 using JetBrains.Annotations;
+using Microsoft.OpenApi.Any;
+using Microsoft.OpenApi.Extensions;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace ArchiSteamFarm.IPC.Integration {
 	[UsedImplicitly]
-	internal sealed class EnumFlagsSchemaFilter : ISchemaFilter {
+	internal sealed class EnumSchemaFilter : ISchemaFilter {
 		public void Apply([NotNull] OpenApiSchema schema, [NotNull] SchemaFilterContext context) {
 			if ((schema == null) || (context == null)) {
 				throw new ArgumentNullException(nameof(schema) + " || " + nameof(context));
 			}
 
-			if (!context.Type.IsEnum || !context.Type.IsDefined(typeof(FlagsAttribute), false)) {
+			if (!context.Type.IsEnum) {
 				return;
 			}
 
-			schema.Format = "flags";
+			if (context.Type.IsDefined(typeof(FlagsAttribute), false)) {
+				schema.Format = "flags";
+			}
+
+			OpenApiArray definition = new OpenApiArray();
+
+			foreach (object enumValue in context.Type.GetEnumValues()) {
+				string enumName = Enum.GetName(context.Type, enumValue);
+
+				if (string.IsNullOrEmpty(enumName)) {
+					enumName = enumValue.ToString();
+
+					if (string.IsNullOrEmpty(enumName)) {
+						continue;
+					}
+				}
+
+				IOpenApiAny enumObject;
+
+				if (TryCast(enumValue, out int intValue)) {
+					enumObject = new OpenApiInteger(intValue);
+				} else if (TryCast(enumValue, out long longValue)) {
+					enumObject = new OpenApiLong(longValue);
+				} else if (TryCast(enumValue, out float floatValue)) {
+					enumObject = new OpenApiFloat(floatValue);
+				} else {
+					enumObject = new OpenApiString(enumValue.ToString());
+				}
+
+				OpenApiObject enumDefinition = new OpenApiObject { { enumName, enumObject } };
+
+				definition.Add(enumDefinition);
+			}
+
+			schema.AddExtension("x-definition", definition);
+		}
+
+		private static bool TryCast<T>(object value, out T typedValue) {
+			try {
+				typedValue = (T) Convert.ChangeType(value, typeof(T));
+
+				return true;
+			} catch (InvalidCastException) {
+				typedValue = default;
+
+				return false;
+			}
 		}
 	}
 }
