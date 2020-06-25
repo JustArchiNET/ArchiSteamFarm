@@ -283,7 +283,9 @@ namespace ArchiSteamFarm.Json {
 				ProfileModifier,
 				Sticker,
 				ChatEffect,
-				MiniProfileBackground
+				MiniProfileBackground,
+				AvatarProfileFrame,
+				AnimatedAvatar
 			}
 		}
 
@@ -603,6 +605,10 @@ namespace ArchiSteamFarm.Json {
 											return Asset.EType.ChatEffect;
 										case "item_class_13":
 											return Asset.EType.MiniProfileBackground;
+										case "item_class_14":
+											return Asset.EType.AvatarProfileFrame;
+										case "item_class_15":
+											return Asset.EType.AnimatedAvatar;
 										default:
 											ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
 
