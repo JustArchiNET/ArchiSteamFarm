@@ -50,7 +50,7 @@ jobs:
       run: npm ci --no-progress --prefix ASF-ui
 
     - name: Build ASF-ui
-      run: npm run-script build:ci --no-progress --prefix ASF-ui
+      run: npm run-script deploy --no-progress --prefix ASF-ui
 
     - name: Build ArchiSteamFarm
       run: dotnet build ArchiSteamFarm -c "${{ env.CONFIGURATION }}" -p:UseAppHost=false --nologo
