@@ -66,8 +66,9 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, errorMessage));
 			}
 
-			request.GlobalConfig.ShouldSerializeEverything = false;
+			request.GlobalConfig.ShouldSerializeDefaultValues = false;
 			request.GlobalConfig.ShouldSerializeHelperProperties = false;
+			request.GlobalConfig.ShouldSerializeSensitiveDetails = true;
 
 			if (!request.GlobalConfig.IsWebProxyPasswordSet && ASF.GlobalConfig.IsWebProxyPasswordSet) {
 				request.GlobalConfig.WebProxyPassword = ASF.GlobalConfig.WebProxyPassword;

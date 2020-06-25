@@ -214,7 +214,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 			} else {
-				globalConfig = GlobalConfig.Create();
+				globalConfig = new GlobalConfig();
 			}
 
 			ASF.InitGlobalConfig(globalConfig);

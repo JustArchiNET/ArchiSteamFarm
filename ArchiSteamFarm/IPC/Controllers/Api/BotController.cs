@@ -100,8 +100,9 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, errorMessage));
 			}
 
-			request.BotConfig.ShouldSerializeEverything = false;
+			request.BotConfig.ShouldSerializeDefaultValues = false;
 			request.BotConfig.ShouldSerializeHelperProperties = false;
+			request.BotConfig.ShouldSerializeSensitiveDetails = true;
 
 			HashSet<string> bots = botNames.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Where(botName => botName != SharedInfo.ASF).ToHashSet(Bot.BotsComparer);
 
