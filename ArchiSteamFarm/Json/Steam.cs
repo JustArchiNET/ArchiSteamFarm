@@ -705,7 +705,10 @@ namespace ArchiSteamFarm.Json {
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class ProfileEditData {
 			[JsonProperty(PropertyName = "Privacy", Required = Required.Always)]
-			internal UserPrivacy Privacy;
+			internal readonly UserPrivacy Privacy;
+
+			[JsonConstructor]
+			private ProfileEditData() { }
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]

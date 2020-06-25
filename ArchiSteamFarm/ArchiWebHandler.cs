@@ -2648,7 +2648,7 @@ namespace ArchiSteamFarm {
 			Steam.UserPrivacy userPrivacy;
 
 			try {
-				userPrivacy = JsonConvert.DeserializeObject<Steam.ProfileEditData>(json).Privacy;
+				userPrivacy = JsonConvert.DeserializeObject<Steam.ProfileEditData>(json)?.Privacy;
 			} catch (JsonException e) {
 				Bot.ArchiLogger.LogGenericException(e);
 
