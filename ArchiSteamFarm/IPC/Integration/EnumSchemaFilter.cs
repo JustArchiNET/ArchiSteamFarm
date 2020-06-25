@@ -61,10 +61,11 @@ namespace ArchiSteamFarm.IPC.Integration {
 					enumObject = new OpenApiInteger(intValue);
 				} else if (TryCast(enumValue, out long longValue)) {
 					enumObject = new OpenApiLong(longValue);
-				} else if (TryCast(enumValue, out float floatValue)) {
-					enumObject = new OpenApiFloat(floatValue);
+				} else if (TryCast(enumValue, out ulong ulongValue)) {
+					// OpenApi spec doesn't support ulongs as of now
+					enumObject = new OpenApiString(ulongValue.ToString());
 				} else {
-					enumObject = new OpenApiString(enumValue.ToString());
+					throw new ArgumentOutOfRangeException(nameof(enumValue));
 				}
 
 				definition.Add(enumName, enumObject);
