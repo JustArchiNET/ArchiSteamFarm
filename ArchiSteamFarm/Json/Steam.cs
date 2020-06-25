@@ -703,6 +703,12 @@ namespace ArchiSteamFarm.Json {
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		internal sealed class ProfileEditData {
+			[JsonProperty(PropertyName = "Privacy", Required = Required.Always)]
+			internal UserPrivacy Privacy;
+		}
+
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class RedeemWalletResponse : EResultResponse {
 			[JsonProperty(PropertyName = "wallet", Required = Required.DisallowNull)]
 			internal readonly InternalKeyDetails KeyDetails;
@@ -777,11 +783,6 @@ namespace ArchiSteamFarm.Json {
 
 			[JsonConstructor]
 			private TradeOfferSendResponse() { }
-		}
-
-		internal sealed class ProfileEditData {
-			[JsonProperty(PropertyName = "Privacy", Required = Required.Always)]
-			internal UserPrivacy Privacy;
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
