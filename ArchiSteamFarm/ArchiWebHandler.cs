@@ -2626,7 +2626,7 @@ namespace ArchiSteamFarm {
 				return (false, false);
 			}
 
-			IElement htmlNode = htmlDocument.SelectSingleNode("//div[@data-component='ProfilePrivacySettings']/@data-privacysettings");
+			IElement htmlNode = htmlDocument.SelectSingleNode("//div[@id='profile_edit_config']");
 
 			if (htmlNode == null) {
 				Bot.ArchiLogger.LogNullError(nameof(htmlNode));
@@ -2634,7 +2634,7 @@ namespace ArchiSteamFarm {
 				return (false, false);
 			}
 
-			string json = htmlNode.GetAttributeValue("data-privacysettings");
+			string json = htmlNode.GetAttributeValue("data-profile-edit");
 
 			if (string.IsNullOrEmpty(json)) {
 				Bot.ArchiLogger.LogNullError(nameof(json));
@@ -2648,7 +2648,7 @@ namespace ArchiSteamFarm {
 			Steam.UserPrivacy userPrivacy;
 
 			try {
-				userPrivacy = JsonConvert.DeserializeObject<Steam.UserPrivacy>(json);
+				userPrivacy = JsonConvert.DeserializeObject<Steam.ProfileEditData>(json).Privacy;
 			} catch (JsonException e) {
 				Bot.ArchiLogger.LogGenericException(e);
 

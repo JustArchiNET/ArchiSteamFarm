@@ -779,6 +779,11 @@ namespace ArchiSteamFarm.Json {
 			private TradeOfferSendResponse() { }
 		}
 
+		internal sealed class ProfileEditData {
+			[JsonProperty(PropertyName = "Privacy", Required = Required.Always)]
+			internal UserPrivacy Privacy;
+		}
+
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class UserPrivacy {
 			[JsonProperty(PropertyName = "eCommentPermission", Required = Required.Always)]
