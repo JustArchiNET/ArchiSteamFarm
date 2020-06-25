@@ -42,7 +42,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 				schema.Format = "flags";
 			}
 
-			OpenApiArray definition = new OpenApiArray();
+			OpenApiObject definition = new OpenApiObject();
 
 			foreach (object enumValue in context.Type.GetEnumValues()) {
 				string enumName = Enum.GetName(context.Type, enumValue);
@@ -67,9 +67,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 					enumObject = new OpenApiString(enumValue.ToString());
 				}
 
-				OpenApiObject enumDefinition = new OpenApiObject { { enumName, enumObject } };
-
-				definition.Add(enumDefinition);
+				definition.Add(enumName, enumObject);
 			}
 
 			schema.AddExtension("x-definition", definition);
