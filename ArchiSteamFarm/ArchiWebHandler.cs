@@ -2645,40 +2645,40 @@ namespace ArchiSteamFarm {
 			// This json is encoded as html attribute, don't forget to decode it
 			json = WebUtility.HtmlDecode(json);
 
-			Steam.UserPrivacy userPrivacy;
+			Steam.ProfileEditData profileEditData;
 
 			try {
-				userPrivacy = JsonConvert.DeserializeObject<Steam.ProfileEditData>(json)?.Privacy;
+				profileEditData = JsonConvert.DeserializeObject<Steam.ProfileEditData>(json);
 			} catch (JsonException e) {
 				Bot.ArchiLogger.LogGenericException(e);
 
 				return (false, false);
 			}
 
-			if (userPrivacy == null) {
-				Bot.ArchiLogger.LogNullError(nameof(userPrivacy));
+			if (profileEditData == null) {
+				Bot.ArchiLogger.LogNullError(nameof(profileEditData));
 
 				return (false, false);
 			}
 
-			switch (userPrivacy.Settings.Profile) {
+			switch (profileEditData.Privacy.Settings.Profile) {
 				case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.FriendsOnly:
 				case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private:
 					return (true, false);
 				case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Public:
-					switch (userPrivacy.Settings.Inventory) {
+					switch (profileEditData.Privacy.Settings.Inventory) {
 						case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.FriendsOnly:
 						case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private:
 							return (true, false);
 						case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Public:
 							return (true, true);
 						default:
-							Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(userPrivacy.Settings.Inventory), userPrivacy.Settings.Inventory));
+							Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(profileEditData.Privacy.Settings.Inventory), profileEditData.Privacy.Settings.Inventory));
 
 							return (false, false);
 					}
 				default:
-					Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(userPrivacy.Settings.Profile), userPrivacy.Settings.Profile));
+					Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(profileEditData.Privacy.Settings.Profile), profileEditData.Privacy.Settings.Profile));
 
 					return (false, false);
 			}
