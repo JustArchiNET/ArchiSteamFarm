@@ -2425,7 +2425,9 @@ namespace ArchiSteamFarm {
 
 				DateTime now = DateTime.UtcNow;
 
-				if (!result) {
+				if (result) {
+					Initialized = false;
+				} else {
 					LastSessionRefresh = now;
 				}
 
