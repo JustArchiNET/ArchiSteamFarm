@@ -2534,6 +2534,8 @@ namespace ArchiSteamFarm {
 					return LastSessionCheck == LastSessionRefresh;
 				}
 
+				Initialized = false;
+
 				if (!Bot.IsConnectedAndLoggedOn) {
 					return false;
 				}
