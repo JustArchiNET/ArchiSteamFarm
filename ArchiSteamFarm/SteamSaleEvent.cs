@@ -29,7 +29,7 @@ using JetBrains.Annotations;
 
 namespace ArchiSteamFarm {
 	internal sealed class SteamSaleEvent : IAsyncDisposable {
-		private const byte MaxSingleQueuesDaily = 3; // This is only a failsafe for infinite queue clearing
+		private const byte MaxSingleQueuesDaily = 3; // This is only a failsafe for infinite queue clearing (in case IsDiscoveryQueueAvailable() would fail us)
 
 		private readonly Bot Bot;
 		private readonly Timer SaleEventTimer;
