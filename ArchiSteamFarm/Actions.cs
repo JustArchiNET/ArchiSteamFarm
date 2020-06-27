@@ -434,7 +434,11 @@ namespace ArchiSteamFarm {
 
 		internal void OnDisconnected() => HandledGifts.Clear();
 
-		private ulong GetFirstSteamMasterID() => Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key != 0) && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderByDescending(steamID => steamID != Bot.SteamID).ThenBy(steamID => steamID).FirstOrDefault();
+		private ulong GetFirstSteamMasterID() {
+			ulong steamMasterID = Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key != 0) && (kv.Key != Bot.SteamID) && new SteamID(kv.Key).IsIndividualAccount && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderBy(steamID => steamID).FirstOrDefault();
+
+			return steamMasterID > 0 ? steamMasterID : (ASF.GlobalConfig.SteamOwnerID != 0) && new SteamID(ASF.GlobalConfig.SteamOwnerID).IsIndividualAccount ? ASF.GlobalConfig.SteamOwnerID : 0;
+		}
 
 		private static async Task LimitGiftsRequestsAsync() {
 			if (ASF.GiftsSemaphore == null) {
