@@ -528,11 +528,15 @@ namespace ArchiSteamFarm {
 
 					break;
 				case ASF.EUserInputType.SteamGuard:
+					if (inputValue.Length != 5) {
+						return false;
+					}
+
 					AuthCode = inputValue;
 
 					break;
 				case ASF.EUserInputType.SteamParentalCode:
-					if (BotConfig == null) {
+					if ((BotConfig == null) || (inputValue.Length != BotConfig.SteamParentalCodeLength)) {
 						return false;
 					}
 
@@ -540,6 +544,10 @@ namespace ArchiSteamFarm {
 
 					break;
 				case ASF.EUserInputType.TwoFactorAuthentication:
+					if (inputValue.Length != MobileAuthenticator.CodeDigits) {
+						return false;
+					}
+
 					TwoFactorCode = inputValue;
 
 					break;
@@ -1805,6 +1813,8 @@ namespace ArchiSteamFarm {
 						string deviceID = await Logging.GetUserInput(ASF.EUserInputType.DeviceID, BotName).ConfigureAwait(false);
 
 						if (string.IsNullOrEmpty(deviceID) || !SetUserInput(ASF.EUserInputType.DeviceID, deviceID)) {
+							ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid), nameof(deviceID));
+
 							return;
 						}
 					}
@@ -1861,6 +1871,8 @@ namespace ArchiSteamFarm {
 				string steamLogin = await Logging.GetUserInput(ASF.EUserInputType.Login, BotName).ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(steamLogin) || !SetUserInput(ASF.EUserInputType.Login, steamLogin)) {
+					ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid), nameof(steamLogin));
+
 					return false;
 				}
 			}
@@ -1871,6 +1883,8 @@ namespace ArchiSteamFarm {
 				string steamPassword = await Logging.GetUserInput(ASF.EUserInputType.Password, BotName).ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(steamPassword) || !SetUserInput(ASF.EUserInputType.Password, steamPassword)) {
+					ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid), nameof(steamPassword));
+
 					return false;
 				}
 			}
@@ -2490,6 +2504,8 @@ namespace ArchiSteamFarm {
 					string authCode = await Logging.GetUserInput(ASF.EUserInputType.SteamGuard, BotName).ConfigureAwait(false);
 
 					if (string.IsNullOrEmpty(authCode) || !SetUserInput(ASF.EUserInputType.SteamGuard, authCode)) {
+						ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid), nameof(authCode));
+
 						Stop();
 					}
 
@@ -2501,6 +2517,8 @@ namespace ArchiSteamFarm {
 						string twoFactorCode = await Logging.GetUserInput(ASF.EUserInputType.TwoFactorAuthentication, BotName).ConfigureAwait(false);
 
 						if (string.IsNullOrEmpty(twoFactorCode) || !SetUserInput(ASF.EUserInputType.TwoFactorAuthentication, twoFactorCode)) {
+							ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid), nameof(twoFactorCode));
+
 							Stop();
 						}
 					}
@@ -2550,6 +2568,8 @@ namespace ArchiSteamFarm {
 							if (!string.IsNullOrEmpty(steamParentalCode)) {
 								if (BotConfig.SteamParentalCode != steamParentalCode) {
 									if (!SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode)) {
+										ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid), nameof(steamParentalCode));
+
 										Stop();
 
 										break;
@@ -2560,7 +2580,9 @@ namespace ArchiSteamFarm {
 
 								steamParentalCode = await Logging.GetUserInput(ASF.EUserInputType.SteamParentalCode, BotName).ConfigureAwait(false);
 
-								if (string.IsNullOrEmpty(steamParentalCode) || (steamParentalCode.Length != BotConfig.SteamParentalCodeLength) || !SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode)) {
+								if (string.IsNullOrEmpty(steamParentalCode) || !SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode)) {
+									ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid), nameof(steamParentalCode));
+
 									Stop();
 
 									break;
@@ -2574,7 +2596,9 @@ namespace ArchiSteamFarm {
 
 						string steamParentalCode = await Logging.GetUserInput(ASF.EUserInputType.SteamParentalCode, BotName).ConfigureAwait(false);
 
-						if (string.IsNullOrEmpty(steamParentalCode) || (steamParentalCode.Length != BotConfig.SteamParentalCodeLength) || !SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode)) {
+						if (string.IsNullOrEmpty(steamParentalCode) || !SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode)) {
+							ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid), nameof(steamParentalCode));
+
 							Stop();
 
 							break;

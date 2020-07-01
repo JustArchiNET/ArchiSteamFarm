@@ -35,7 +35,8 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	internal sealed class MobileAuthenticator {
-		private const byte CodeDigits = 5;
+		internal const byte CodeDigits = 5;
+
 		private const byte CodeInterval = 30;
 		private const byte SteamTimeTTL = 24; // For how many hours we can assume that SteamTimeDifference is correct
 

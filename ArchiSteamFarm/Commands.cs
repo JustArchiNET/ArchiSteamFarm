@@ -1420,9 +1420,9 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(inputType)));
 			}
 
-			Bot.SetUserInput(inputType, inputValue);
+			bool result = Bot.SetUserInput(inputType, inputValue);
 
-			return FormatBotResponse(Strings.Done);
+			return FormatBotResponse(result ? Strings.Done : Strings.WarningFailed);
 		}
 
 		[ItemCanBeNull]
