@@ -695,6 +695,10 @@ namespace ArchiSteamFarm {
 				return await InternalRequest(redirectUri, httpMethod, data, referer, httpCompletionOption, --maxRedirections).ConfigureAwait(false);
 			}
 
+			if (!Debugging.IsUserDebugging) {
+				ArchiLogger.LogGenericDebug(response.StatusCode + " <- " + httpMethod + " " + requestUri);
+			}
+
 			if (response.StatusCode.IsClientErrorCode()) {
 				if (Debugging.IsUserDebugging) {
 					ArchiLogger.LogGenericDebug(string.Format(Strings.Content, await response.Content.ReadAsStringAsync().ConfigureAwait(false)));
