@@ -88,11 +88,6 @@ namespace ArchiSteamFarm.NLog {
 					Console.Beep();
 
 					switch (userInputType) {
-						case ASF.EUserInputType.DeviceID:
-							Console.Write(Bot.FormatBotResponse(Strings.UserInputDeviceID, botName));
-							result = ConsoleReadLine();
-
-							break;
 						case ASF.EUserInputType.Login:
 							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamLogin, botName));
 							result = ConsoleReadLine();

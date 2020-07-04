@@ -43,6 +43,7 @@ namespace ArchiSteamFarm {
 		private readonly SteamUnifiedMessages.UnifiedService<IEcon> UnifiedEconService;
 		private readonly SteamUnifiedMessages.UnifiedService<IFriendMessages> UnifiedFriendMessagesService;
 		private readonly SteamUnifiedMessages.UnifiedService<IPlayer> UnifiedPlayerService;
+		private readonly SteamUnifiedMessages.UnifiedService<ITwoFactor> UnifiedTwoFactorService;
 
 		internal DateTime LastPacketReceived { get; private set; }
 
@@ -57,6 +58,7 @@ namespace ArchiSteamFarm {
 			UnifiedEconService = steamUnifiedMessages.CreateService<IEcon>();
 			UnifiedFriendMessagesService = steamUnifiedMessages.CreateService<IFriendMessages>();
 			UnifiedPlayerService = steamUnifiedMessages.CreateService<IPlayer>();
+			UnifiedTwoFactorService = steamUnifiedMessages.CreateService<ITwoFactor>();
 		}
 
 		public override void HandleMsg(IPacketMsg packetMsg) {
@@ -394,6 +396,46 @@ namespace ArchiSteamFarm {
 			CEcon_GetTradeOfferAccessToken_Response body = response.GetDeserializedResponse<CEcon_GetTradeOfferAccessToken_Response>();
 
 			return body.trade_offer_access_token;
+		}
+
+		internal async Task<string> GetTwoFactorDeviceIdentifier(ulong steamID) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+				ArchiLogger.LogNullError(nameof(steamID));
+
+				return null;
+			}
+
+			if (Client == null) {
+				ArchiLogger.LogNullError(nameof(Client));
+
+				return null;
+			}
+
+			if (!Client.IsConnected) {
+				return null;
+			}
+
+			CTwoFactor_Status_Request request = new CTwoFactor_Status_Request {
+				steamid = steamID
+			};
+
+			SteamUnifiedMessages.ServiceMethodResponse response;
+
+			try {
+				response = await UnifiedTwoFactorService.SendMessage(x => x.QueryStatus(request)).ToLongRunningTask().ConfigureAwait(false);
+			} catch (Exception e) {
+				ArchiLogger.LogGenericWarningException(e);
+
+				return null;
+			}
+
+			if (response.Result != EResult.OK) {
+				return null;
+			}
+
+			CTwoFactor_Status_Response body = response.GetDeserializedResponse<CTwoFactor_Status_Response>();
+
+			return body.device_identifier;
 		}
 
 		internal async Task<bool> JoinChatRoomGroup(ulong chatGroupID) {

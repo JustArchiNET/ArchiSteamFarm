@@ -882,7 +882,6 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public enum EUserInputType : byte {
 			None,
-			DeviceID,
 			Login,
 			Password,
 			SteamGuard,

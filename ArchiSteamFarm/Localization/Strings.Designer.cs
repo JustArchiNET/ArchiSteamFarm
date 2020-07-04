@@ -205,15 +205,6 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Your DeviceID is incorrect or doesn&apos;t exist!.
-        /// </summary>
-        public static string BotAuthenticatorInvalidDeviceID {
-            get {
-                return ResourceManager.GetString("BotAuthenticatorInvalidDeviceID", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu 2FA Token: {0}.
         /// </summary>
         public static string BotAuthenticatorToken {
@@ -947,15 +938,6 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Refusing to execute this function due to invalid DeviceID in ASF 2FA!.
-        /// </summary>
-        public static string ErrorMobileAuthenticatorInvalidDeviceID {
-            get {
-                return ResourceManager.GetString("ErrorMobileAuthenticatorInvalidDeviceID", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu No bots are defined. Did you forget to configure your ASF?.
         /// </summary>
         public static string ErrorNoBotsDefined {
@@ -1483,15 +1465,6 @@ namespace ArchiSteamFarm.Localization {
         public static string UpdateVersionInfo {
             get {
                 return ResourceManager.GetString("UpdateVersionInfo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Please enter your mobile authenticator device ID (including &quot;android:&quot;): .
-        /// </summary>
-        public static string UserInputDeviceID {
-            get {
-                return ResourceManager.GetString("UserInputDeviceID", resourceCulture);
             }
         }
         

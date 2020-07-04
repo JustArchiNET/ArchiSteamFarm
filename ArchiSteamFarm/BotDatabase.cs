@@ -101,6 +101,12 @@ namespace ArchiSteamFarm {
 		[JsonConstructor]
 		private BotDatabase() { }
 
+		public override void Dispose() {
+			BackingMobileAuthenticator?.Dispose();
+
+			base.Dispose();
+		}
+
 		internal void AddBlacklistedFromTradesSteamIDs(IReadOnlyCollection<ulong> steamIDs) {
 			if ((steamIDs == null) || (steamIDs.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(steamIDs));

@@ -27,6 +27,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
+using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
 using JetBrains.Annotations;
@@ -34,7 +35,7 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	internal sealed class MobileAuthenticator {
+	internal sealed class MobileAuthenticator : IDisposable {
 		internal const byte CodeDigits = 5;
 
 		private const byte CodeInterval = 30;
@@ -46,7 +47,7 @@ namespace ArchiSteamFarm {
 		private static DateTime LastSteamTimeCheck;
 		private static int? SteamTimeDifference;
 
-		internal bool HasValidDeviceID => !string.IsNullOrEmpty(DeviceID) && IsValidDeviceID(DeviceID);
+		private readonly ArchiCacheable<string> CachedDeviceID;
 
 #pragma warning disable 649
 		[JsonProperty(PropertyName = "identity_secret", Required = Required.Always)]
@@ -60,27 +61,10 @@ namespace ArchiSteamFarm {
 
 		private Bot Bot;
 
-		[JsonProperty(PropertyName = "device_id")]
-		private string DeviceID;
-
 		[JsonConstructor]
-		private MobileAuthenticator() { }
+		private MobileAuthenticator() => CachedDeviceID = new ArchiCacheable<string>(ResolveDeviceID);
 
-		internal void CorrectDeviceID(string deviceID) {
-			if (string.IsNullOrEmpty(deviceID)) {
-				Bot.ArchiLogger.LogNullError(nameof(deviceID));
-
-				return;
-			}
-
-			if (!IsValidDeviceID(deviceID)) {
-				Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(deviceID)));
-
-				return;
-			}
-
-			DeviceID = deviceID;
-		}
+		public void Dispose() => CachedDeviceID.Dispose();
 
 		internal async Task<string> GenerateToken() {
 			uint time = await GetSteamTime().ConfigureAwait(false);
@@ -102,8 +86,10 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!HasValidDeviceID) {
-				Bot.ArchiLogger.LogGenericError(Strings.ErrorMobileAuthenticatorInvalidDeviceID);
+			(bool success, string deviceID) = await CachedDeviceID.GetValue().ConfigureAwait(false);
+
+			if (!success || string.IsNullOrEmpty(deviceID)) {
+				Bot.ArchiLogger.LogGenericError(Strings.WarningFailedWithError, nameof(deviceID));
 
 				return null;
 			}
@@ -124,15 +110,17 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			Steam.ConfirmationDetails response = await Bot.ArchiWebHandler.GetConfirmationDetails(DeviceID, confirmationHash, time, confirmation).ConfigureAwait(false);
+			Steam.ConfirmationDetails response = await Bot.ArchiWebHandler.GetConfirmationDetails(deviceID, confirmationHash, time, confirmation).ConfigureAwait(false);
 
 			return response?.Success == true ? response : null;
 		}
 
 		[ItemCanBeNull]
 		internal async Task<HashSet<Confirmation>> GetConfirmations(Steam.ConfirmationDetails.EType? acceptedType = null) {
-			if (!HasValidDeviceID) {
-				Bot.ArchiLogger.LogGenericError(Strings.ErrorMobileAuthenticatorInvalidDeviceID);
+			(bool success, string deviceID) = await CachedDeviceID.GetValue().ConfigureAwait(false);
+
+			if (!success || string.IsNullOrEmpty(deviceID)) {
+				Bot.ArchiLogger.LogGenericError(Strings.WarningFailedWithError, nameof(deviceID));
 
 				return null;
 			}
@@ -155,7 +143,7 @@ namespace ArchiSteamFarm {
 
 			await LimitConfirmationsRequestsAsync().ConfigureAwait(false);
 
-			using IDocument htmlDocument = await Bot.ArchiWebHandler.GetConfirmations(DeviceID, confirmationHash, time).ConfigureAwait(false);
+			using IDocument htmlDocument = await Bot.ArchiWebHandler.GetConfirmations(deviceID, confirmationHash, time).ConfigureAwait(false);
 
 			if (htmlDocument == null) {
 				return null;
@@ -235,8 +223,10 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (!HasValidDeviceID) {
-				Bot.ArchiLogger.LogGenericError(Strings.ErrorMobileAuthenticatorInvalidDeviceID);
+			(bool success, string deviceID) = await CachedDeviceID.GetValue().ConfigureAwait(false);
+
+			if (!success || string.IsNullOrEmpty(deviceID)) {
+				Bot.ArchiLogger.LogGenericError(Strings.WarningFailedWithError, nameof(deviceID));
 
 				return false;
 			}
@@ -257,7 +247,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			bool? result = await Bot.ArchiWebHandler.HandleConfirmations(DeviceID, confirmationHash, time, confirmations, accept).ConfigureAwait(false);
+			bool? result = await Bot.ArchiWebHandler.HandleConfirmations(deviceID, confirmationHash, time, confirmations, accept).ConfigureAwait(false);
 
 			if (!result.HasValue) {
 				// Request timed out
@@ -273,7 +263,7 @@ namespace ArchiSteamFarm {
 			// In this case, we'll accept all pending confirmations one-by-one, synchronously (as Steam can't handle them in parallel)
 			// We totally ignore actual result returned by those calls, abort only if request timed out
 			foreach (Confirmation confirmation in confirmations) {
-				bool? confirmationResult = await Bot.ArchiWebHandler.HandleConfirmation(DeviceID, confirmationHash, time, confirmation.ID, confirmation.Key, accept).ConfigureAwait(false);
+				bool? confirmationResult = await Bot.ArchiWebHandler.HandleConfirmation(deviceID, confirmationHash, time, confirmation.ID, confirmation.Key, accept).ConfigureAwait(false);
 
 				if (!confirmationResult.HasValue) {
 					return false;
@@ -284,32 +274,6 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void Init([JetBrains.Annotations.NotNull] Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
-
-		internal static bool IsValidDeviceID(string deviceID) {
-			if (string.IsNullOrEmpty(deviceID)) {
-				ASF.ArchiLogger.LogNullError(nameof(deviceID));
-
-				return false;
-			}
-
-			// This one is optional
-			int deviceIdentifierIndex = deviceID.IndexOf(':');
-
-			if (deviceIdentifierIndex >= 0) {
-				deviceIdentifierIndex++;
-
-				if (deviceID.Length <= deviceIdentifierIndex) {
-					return false;
-				}
-
-				deviceID = deviceID.Substring(deviceIdentifierIndex);
-			}
-
-			// Dashes are optional in the ID, strip them off for comparison
-			string hash = deviceID.Replace("-", "");
-
-			return (hash.Length > 0) && (Utilities.IsValidDigitsText(hash) || Utilities.IsValidHexadecimalText(hash));
-		}
 
 		private string GenerateConfirmationHash(uint time, string tag = null) {
 			if (time == 0) {
@@ -457,6 +421,18 @@ namespace ArchiSteamFarm {
 					ASF.ConfirmationsSemaphore.Release();
 				}
 			);
+		}
+
+		private async Task<(bool Success, string Result)> ResolveDeviceID() {
+			string deviceID = await Bot.ArchiHandler.GetTwoFactorDeviceIdentifier(Bot.SteamID).ConfigureAwait(false);
+
+			if (string.IsNullOrEmpty(deviceID)) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+
+				return (false, null);
+			}
+
+			return (true, deviceID);
 		}
 
 		internal sealed class Confirmation {

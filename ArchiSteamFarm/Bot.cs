@@ -206,7 +206,6 @@ namespace ArchiSteamFarm {
 #pragma warning restore IDE0052
 
 		private Timer ConnectionFailureTimer;
-		private string DeviceID;
 		private bool FirstTradeSent;
 		private Timer GamesRedeemerInBackgroundTimer;
 		private byte HeartBeatFailures;
@@ -507,10 +506,6 @@ namespace ArchiSteamFarm {
 
 			// This switch should cover ONLY bot properties
 			switch (inputType) {
-				case ASF.EUserInputType.DeviceID:
-					DeviceID = inputValue;
-
-					break;
 				case ASF.EUserInputType.Login:
 					if (BotConfig == null) {
 						return false;
@@ -1818,30 +1813,6 @@ namespace ArchiSteamFarm {
 					ArchiLogger.LogNullError(nameof(authenticator));
 
 					return;
-				}
-
-				if (!authenticator.HasValidDeviceID) {
-					ArchiLogger.LogGenericWarning(Strings.BotAuthenticatorInvalidDeviceID);
-
-					if (string.IsNullOrEmpty(DeviceID)) {
-						RequiredInput = ASF.EUserInputType.DeviceID;
-
-						string deviceID = await Logging.GetUserInput(ASF.EUserInputType.DeviceID, BotName).ConfigureAwait(false);
-
-						if (string.IsNullOrEmpty(deviceID) || !SetUserInput(ASF.EUserInputType.DeviceID, deviceID)) {
-							ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid), nameof(deviceID));
-
-							return;
-						}
-					}
-
-					if (!MobileAuthenticator.IsValidDeviceID(DeviceID)) {
-						ArchiLogger.LogGenericWarning(Strings.BotAuthenticatorInvalidDeviceID);
-
-						return;
-					}
-
-					authenticator.CorrectDeviceID(DeviceID);
 				}
 
 				authenticator.Init(this);
