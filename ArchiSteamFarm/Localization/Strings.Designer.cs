@@ -583,7 +583,8 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Current memory usage: {0} MB..
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Current memory usage: {0} MB.
+        ///Process uptime: {1}.
         /// </summary>
         public static string BotStats {
             get {

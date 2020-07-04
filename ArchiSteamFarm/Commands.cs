@@ -2545,8 +2545,9 @@ namespace ArchiSteamFarm {
 			}
 
 			ushort memoryInMegabytes = (ushort) (GC.GetTotalMemory(false) / 1024 / 1024);
+			TimeSpan uptime = DateTime.UtcNow.Subtract(RuntimeCompatibility.ProcessStartTime);
 
-			return FormatBotResponse(string.Format(Strings.BotStats, memoryInMegabytes));
+			return FormatBotResponse(string.Format(Strings.BotStats, memoryInMegabytes, uptime.ToHumanReadable()));
 		}
 
 		private (string Response, Bot Bot) ResponseStatus(ulong steamID) {
