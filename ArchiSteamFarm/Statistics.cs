@@ -254,10 +254,10 @@ namespace ArchiSteamFarm {
 			}
 
 			// Bot must have public inventory
-			bool? hasPublicInventory = await Bot.ArchiWebHandler.HasPublicInventory().ConfigureAwait(false);
+			bool? hasPublicInventory = await Bot.HasPublicInventory().ConfigureAwait(false);
 
 			if (hasPublicInventory != true) {
-				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.ArchiWebHandler.HasPublicInventory) + ": " + (hasPublicInventory?.ToString() ?? "null")));
+				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.HasPublicInventory) + ": " + (hasPublicInventory?.ToString() ?? "null")));
 
 				return hasPublicInventory;
 			}

@@ -332,6 +332,38 @@ namespace ArchiSteamFarm {
 			return body.chat_room_groups.Select(chatRoom => chatRoom.group_summary.chat_group_id).ToHashSet();
 		}
 
+		internal async Task<CPrivacySettings> GetPrivacySettings() {
+			if (Client == null) {
+				ArchiLogger.LogNullError(nameof(Client));
+
+				return null;
+			}
+
+			if (!Client.IsConnected) {
+				return null;
+			}
+
+			CPlayer_GetPrivacySettings_Request request = new CPlayer_GetPrivacySettings_Request();
+
+			SteamUnifiedMessages.ServiceMethodResponse response;
+
+			try {
+				response = await UnifiedPlayerService.SendMessage(x => x.GetPrivacySettings(request)).ToLongRunningTask().ConfigureAwait(false);
+			} catch (Exception e) {
+				ArchiLogger.LogGenericWarningException(e);
+
+				return null;
+			}
+
+			if (response.Result != EResult.OK) {
+				return null;
+			}
+
+			CPlayer_GetPrivacySettings_Response body = response.GetDeserializedResponse<CPlayer_GetPrivacySettings_Response>();
+
+			return body.privacy_settings;
+		}
+
 		internal async Task<string> GetTradeToken() {
 			if (Client == null) {
 				ArchiLogger.LogNullError(nameof(Client));
@@ -906,6 +938,13 @@ namespace ArchiSteamFarm {
 				JobID = jobID;
 				VanityURL = msg.vanity_url;
 			}
+		}
+
+		internal enum EPrivacySetting : byte {
+			Unknown,
+			Private,
+			FriendsOnly,
+			Public
 		}
 	}
 }

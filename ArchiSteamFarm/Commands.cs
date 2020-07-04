@@ -2026,17 +2026,17 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(privacySettingsArgs)));
 			}
 
-			Steam.UserPrivacy.PrivacySettings.EPrivacySetting profile = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
-			Steam.UserPrivacy.PrivacySettings.EPrivacySetting ownedGames = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
-			Steam.UserPrivacy.PrivacySettings.EPrivacySetting playtime = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
-			Steam.UserPrivacy.PrivacySettings.EPrivacySetting friendsList = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
-			Steam.UserPrivacy.PrivacySettings.EPrivacySetting inventory = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
-			Steam.UserPrivacy.PrivacySettings.EPrivacySetting inventoryGifts = Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private;
+			ArchiHandler.EPrivacySetting profile = ArchiHandler.EPrivacySetting.Private;
+			ArchiHandler.EPrivacySetting ownedGames = ArchiHandler.EPrivacySetting.Private;
+			ArchiHandler.EPrivacySetting playtime = ArchiHandler.EPrivacySetting.Private;
+			ArchiHandler.EPrivacySetting friendsList = ArchiHandler.EPrivacySetting.Private;
+			ArchiHandler.EPrivacySetting inventory = ArchiHandler.EPrivacySetting.Private;
+			ArchiHandler.EPrivacySetting inventoryGifts = ArchiHandler.EPrivacySetting.Private;
 			Steam.UserPrivacy.ECommentPermission comments = Steam.UserPrivacy.ECommentPermission.Private;
 
 			// Converting digits to enum
 			for (byte index = 0; index < privacySettingsArgs.Length; index++) {
-				if (!Enum.TryParse(privacySettingsArgs[index], true, out Steam.UserPrivacy.PrivacySettings.EPrivacySetting privacySetting) || (privacySetting == Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Unknown) || !Enum.IsDefined(typeof(Steam.UserPrivacy.PrivacySettings.EPrivacySetting), privacySetting)) {
+				if (!Enum.TryParse(privacySettingsArgs[index], true, out ArchiHandler.EPrivacySetting privacySetting) || (privacySetting == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(typeof(ArchiHandler.EPrivacySetting), privacySetting)) {
 					return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(privacySettingsArgs)));
 				}
 
@@ -2100,15 +2100,15 @@ namespace ArchiSteamFarm {
 
 						// Comments use different numbers than everything else, but we want to have this command consistent for end-user, so we'll map them
 						switch (privacySetting) {
-							case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.FriendsOnly:
+							case ArchiHandler.EPrivacySetting.FriendsOnly:
 								comments = Steam.UserPrivacy.ECommentPermission.FriendsOnly;
 
 								break;
-							case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private:
+							case ArchiHandler.EPrivacySetting.Private:
 								comments = Steam.UserPrivacy.ECommentPermission.Private;
 
 								break;
-							case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Public:
+							case ArchiHandler.EPrivacySetting.Public:
 								comments = Steam.UserPrivacy.ECommentPermission.Public;
 
 								break;

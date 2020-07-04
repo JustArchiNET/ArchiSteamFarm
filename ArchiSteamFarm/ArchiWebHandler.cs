@@ -68,7 +68,6 @@ namespace ArchiSteamFarm {
 		public readonly WebBrowser WebBrowser;
 
 		private readonly Bot Bot;
-		private readonly ArchiCacheable<bool> CachedPublicInventory;
 		private readonly SemaphoreSlim SessionSemaphore = new SemaphoreSlim(1, 1);
 
 		private bool Initialized;
@@ -81,13 +80,11 @@ namespace ArchiSteamFarm {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 			CachedApiKey = new ArchiCacheable<string>(ResolveApiKey);
-			CachedPublicInventory = new ArchiCacheable<bool>(ResolvePublicInventory);
 			WebBrowser = new WebBrowser(bot.ArchiLogger, ASF.GlobalConfig.WebProxy);
 		}
 
 		public void Dispose() {
 			CachedApiKey.Dispose();
-			CachedPublicInventory.Dispose();
 			SessionSemaphore.Dispose();
 			WebBrowser.Dispose();
 		}
@@ -2019,12 +2016,6 @@ namespace ArchiSteamFarm {
 			return response?.Success;
 		}
 
-		internal async Task<bool?> HasPublicInventory() {
-			(bool success, bool hasPublicInventory) = await CachedPublicInventory.GetValue().ConfigureAwait(false);
-
-			return success ? hasPublicInventory : (bool?) null;
-		}
-
 		internal async Task<bool> Init(ulong steamID, EUniverse universe, string webAPIUserNonce, string parentalCode = null) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || (universe == EUniverse.Invalid) || !Enum.IsDefined(typeof(EUniverse), universe) || string.IsNullOrEmpty(webAPIUserNonce)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(universe) + " || " + nameof(webAPIUserNonce));
@@ -2211,7 +2202,6 @@ namespace ArchiSteamFarm {
 		internal void OnDisconnected() {
 			Initialized = false;
 			Utilities.InBackground(CachedApiKey.Reset);
-			Utilities.InBackground(CachedPublicInventory.Reset);
 		}
 
 		internal void OnVanityURLChanged(string vanityURL = null) => VanityURL = !string.IsNullOrEmpty(vanityURL) ? vanityURL : null;
@@ -2619,72 +2609,6 @@ namespace ArchiSteamFarm {
 					Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.State), result.State));
 
 					return (false, null);
-			}
-		}
-
-		private async Task<(bool Success, bool Result)> ResolvePublicInventory() {
-			const string request = "/my/edit/settings?l=english";
-			using IDocument htmlDocument = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
-
-			if (htmlDocument == null) {
-				return (false, false);
-			}
-
-			IElement htmlNode = htmlDocument.SelectSingleNode("//div[@id='profile_edit_config']");
-
-			if (htmlNode == null) {
-				Bot.ArchiLogger.LogNullError(nameof(htmlNode));
-
-				return (false, false);
-			}
-
-			string json = htmlNode.GetAttributeValue("data-profile-edit");
-
-			if (string.IsNullOrEmpty(json)) {
-				Bot.ArchiLogger.LogNullError(nameof(json));
-
-				return (false, false);
-			}
-
-			// This json is encoded as html attribute, don't forget to decode it
-			json = WebUtility.HtmlDecode(json);
-
-			Steam.ProfileEditData profileEditData;
-
-			try {
-				profileEditData = JsonConvert.DeserializeObject<Steam.ProfileEditData>(json);
-			} catch (JsonException e) {
-				Bot.ArchiLogger.LogGenericException(e);
-
-				return (false, false);
-			}
-
-			if (profileEditData == null) {
-				Bot.ArchiLogger.LogNullError(nameof(profileEditData));
-
-				return (false, false);
-			}
-
-			switch (profileEditData.Privacy.Settings.Profile) {
-				case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.FriendsOnly:
-				case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private:
-					return (true, false);
-				case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Public:
-					switch (profileEditData.Privacy.Settings.Inventory) {
-						case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.FriendsOnly:
-						case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Private:
-							return (true, false);
-						case Steam.UserPrivacy.PrivacySettings.EPrivacySetting.Public:
-							return (true, true);
-						default:
-							Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(profileEditData.Privacy.Settings.Inventory), profileEditData.Privacy.Settings.Inventory));
-
-							return (false, false);
-					}
-				default:
-					Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(profileEditData.Privacy.Settings.Profile), profileEditData.Privacy.Settings.Profile));
-
-					return (false, false);
 			}
 		}
 

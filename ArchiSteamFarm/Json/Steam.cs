@@ -709,15 +709,6 @@ namespace ArchiSteamFarm.Json {
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		internal sealed class ProfileEditData {
-			[JsonProperty(PropertyName = "Privacy", Required = Required.Always)]
-			internal readonly UserPrivacy Privacy;
-
-			[JsonConstructor]
-			private ProfileEditData() { }
-		}
-
-		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class RedeemWalletResponse : EResultResponse {
 			[JsonProperty(PropertyName = "wallet", Required = Required.DisallowNull)]
 			internal readonly InternalKeyDetails KeyDetails;
@@ -813,26 +804,26 @@ namespace ArchiSteamFarm.Json {
 
 			internal sealed class PrivacySettings {
 				[JsonProperty(PropertyName = "PrivacyFriendsList", Required = Required.Always)]
-				internal readonly EPrivacySetting FriendsList;
+				internal readonly ArchiHandler.EPrivacySetting FriendsList;
 
 				[JsonProperty(PropertyName = "PrivacyInventory", Required = Required.Always)]
-				internal readonly EPrivacySetting Inventory;
+				internal readonly ArchiHandler.EPrivacySetting Inventory;
 
 				[JsonProperty(PropertyName = "PrivacyInventoryGifts", Required = Required.Always)]
-				internal readonly EPrivacySetting InventoryGifts;
+				internal readonly ArchiHandler.EPrivacySetting InventoryGifts;
 
 				[JsonProperty(PropertyName = "PrivacyOwnedGames", Required = Required.Always)]
-				internal readonly EPrivacySetting OwnedGames;
+				internal readonly ArchiHandler.EPrivacySetting OwnedGames;
 
 				[JsonProperty(PropertyName = "PrivacyPlaytime", Required = Required.Always)]
-				internal readonly EPrivacySetting Playtime;
+				internal readonly ArchiHandler.EPrivacySetting Playtime;
 
 				[JsonProperty(PropertyName = "PrivacyProfile", Required = Required.Always)]
-				internal readonly EPrivacySetting Profile;
+				internal readonly ArchiHandler.EPrivacySetting Profile;
 
 				// Constructed from privacy change request
-				internal PrivacySettings(EPrivacySetting profile, EPrivacySetting ownedGames, EPrivacySetting playtime, EPrivacySetting friendsList, EPrivacySetting inventory, EPrivacySetting inventoryGifts) {
-					if ((profile == EPrivacySetting.Unknown) || (ownedGames == EPrivacySetting.Unknown) || (playtime == EPrivacySetting.Unknown) || (friendsList == EPrivacySetting.Unknown) || (inventory == EPrivacySetting.Unknown) || (inventoryGifts == EPrivacySetting.Unknown)) {
+				internal PrivacySettings(ArchiHandler.EPrivacySetting profile, ArchiHandler.EPrivacySetting ownedGames, ArchiHandler.EPrivacySetting playtime, ArchiHandler.EPrivacySetting friendsList, ArchiHandler.EPrivacySetting inventory, ArchiHandler.EPrivacySetting inventoryGifts) {
+					if ((profile == ArchiHandler.EPrivacySetting.Unknown) || (ownedGames == ArchiHandler.EPrivacySetting.Unknown) || (playtime == ArchiHandler.EPrivacySetting.Unknown) || (friendsList == ArchiHandler.EPrivacySetting.Unknown) || (inventory == ArchiHandler.EPrivacySetting.Unknown) || (inventoryGifts == ArchiHandler.EPrivacySetting.Unknown)) {
 						throw new ArgumentNullException(nameof(profile) + " || " + nameof(ownedGames) + " || " + nameof(playtime) + " || " + nameof(friendsList) + " || " + nameof(inventory) + " || " + nameof(inventoryGifts));
 					}
 
@@ -846,13 +837,6 @@ namespace ArchiSteamFarm.Json {
 
 				[JsonConstructor]
 				private PrivacySettings() { }
-
-				internal enum EPrivacySetting : byte {
-					Unknown,
-					Private,
-					FriendsOnly,
-					Public
-				}
 			}
 
 			internal enum ECommentPermission : byte {

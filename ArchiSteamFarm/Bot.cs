@@ -940,6 +940,22 @@ namespace ArchiSteamFarm {
 			return (results[0], results[1]);
 		}
 
+		internal async Task<bool?> HasPublicInventory() {
+			if (!IsConnectedAndLoggedOn) {
+				return null;
+			}
+
+			CPrivacySettings privacySettings = await ArchiHandler.GetPrivacySettings().ConfigureAwait(false);
+
+			if (privacySettings == null) {
+				ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+
+				return null;
+			}
+
+			return ((ArchiHandler.EPrivacySetting) privacySettings.privacy_state == ArchiHandler.EPrivacySetting.Public) && ((ArchiHandler.EPrivacySetting) privacySettings.privacy_state_inventory == ArchiHandler.EPrivacySetting.Public);
+		}
+
 		internal async Task IdleGame(CardsFarmer.Game game) {
 			if (game == null) {
 				ArchiLogger.LogNullError(nameof(game));
