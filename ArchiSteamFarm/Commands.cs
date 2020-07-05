@@ -2545,7 +2545,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ushort memoryInMegabytes = (ushort) (GC.GetTotalMemory(false) / 1024 / 1024);
-			TimeSpan uptime = DateTime.UtcNow.Subtract(RuntimeCompatibility.ProcessStartTime);
+			TimeSpan uptime = DateTime.UtcNow.Subtract(RuntimeCompatibility.ProcessStartTime.ToUniversalTime());
 
 			return FormatBotResponse(string.Format(Strings.BotStats, memoryInMegabytes, uptime.ToHumanReadable()));
 		}
