@@ -89,7 +89,7 @@ namespace ArchiSteamFarm {
 
 				LastChangeNumber = picsChanges.CurrentChangeNumber;
 
-				if ((picsChanges.AppChanges.Count == 0) && (picsChanges.PackageChanges.Count == 0)) {
+				if (picsChanges.RequiresFullAppUpdate || picsChanges.RequiresFullPackageUpdate || ((picsChanges.AppChanges.Count == 0) && (picsChanges.PackageChanges.Count == 0))) {
 					await PluginsCore.OnPICSChangesRestart(picsChanges.CurrentChangeNumber).ConfigureAwait(false);
 
 					return;
