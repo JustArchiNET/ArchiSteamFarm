@@ -89,7 +89,7 @@ namespace ArchiSteamFarm {
 			(bool success, string deviceID) = await CachedDeviceID.GetValue().ConfigureAwait(false);
 
 			if (!success || string.IsNullOrEmpty(deviceID)) {
-				Bot.ArchiLogger.LogGenericError(Strings.WarningFailedWithError, nameof(deviceID));
+				Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningFailedWithError, nameof(deviceID)));
 
 				return null;
 			}
@@ -120,7 +120,7 @@ namespace ArchiSteamFarm {
 			(bool success, string deviceID) = await CachedDeviceID.GetValue().ConfigureAwait(false);
 
 			if (!success || string.IsNullOrEmpty(deviceID)) {
-				Bot.ArchiLogger.LogGenericError(Strings.WarningFailedWithError, nameof(deviceID));
+				Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningFailedWithError, nameof(deviceID)));
 
 				return null;
 			}
@@ -226,7 +226,7 @@ namespace ArchiSteamFarm {
 			(bool success, string deviceID) = await CachedDeviceID.GetValue().ConfigureAwait(false);
 
 			if (!success || string.IsNullOrEmpty(deviceID)) {
-				Bot.ArchiLogger.LogGenericError(Strings.WarningFailedWithError, nameof(deviceID));
+				Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningFailedWithError, nameof(deviceID)));
 
 				return false;
 			}
