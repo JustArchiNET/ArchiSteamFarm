@@ -157,9 +157,6 @@ StackTrace: {2}</value>
     <value>Érvénytelen {0}!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Ez a funkció nem hajtható végre, mivel a DeviceID érvénytelen az ASF 2FA-ban!</value>
-  </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>Nincsenek definiált botok. Elfelejtetted bekonfigurálni az ASF-et?</value>
   </data>
@@ -245,10 +242,6 @@ StackTrace: {2}</value>
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>Lokális verzió: {0} | Távoli verzió: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
-  </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>Add meg a mobil hitelesítőd azonosítóját (az "android:"-al együtt): </value>
-    <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
     <value>Add meg a 2FA kódot a Steam hitelesítő alkalmazásból: </value>
@@ -400,9 +393,6 @@ StackTrace: {2}</value>
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
     <value>A mobil hitelesítő importálása sikeres!</value>
-  </data>
-  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>A DeviceID-d inkorrekt, vagy nem létezik!</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>2FA Token: {0}</value>
@@ -609,10 +599,7 @@ StackTrace: {2}</value>
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>Egy olyan verziót használsz, ami újabb, mint a legfrissebb verzió a frissítési csatornádban. Kérlek vedd figyelembe, hogy az megjelenés előtti verziók olyan felhasználóknak vannak, akik tudnak hibákat bejelenteni, meg tudják oldani a problémákat, és visszajelzéseket küldenek - nem fogsz kapni technikai segítséget.</value>
   </data>
-  <data name="BotStats" xml:space="preserve">
-    <value>Jelenlegi memóriahasználat: {0} MB.</value>
-    <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
-  </data>
+  
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
     <value>{0}-s számú Steam Felfedezési Várólista tisztítása...</value>
     <comment>{0} will be replaced by queue number</comment>

@@ -159,9 +159,6 @@ StackTrace :
     <value>{0} est invalide !</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Refus d’exécution de cette fonction en raison d'un DeviceID invalide dans ASF 2FA !</value>
-  </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>Aucun bot de défini. Avez-vous omis de configurer ASF ?</value>
   </data>
@@ -247,10 +244,6 @@ StackTrace :
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>Version locale : {0} | Version la plus récente : {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
-  </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>Veuillez entrer l'ID de votre périphérique mobile d'authentification (« android : » inclus) : </value>
-    <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
     <value>Veuillez entrer votre code 2FA généré par votre application d'authentification de Steam : </value>
@@ -402,9 +395,6 @@ StackTrace :
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
     <value>Importation de l'authentificateur mobile effectuée avec succès !</value>
-  </data>
-  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Votre DeviceID est incorrect ou n’existe pas !</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>Code 2FA : {0}</value>
@@ -611,10 +601,7 @@ StackTrace :
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>Vous utilisez une version qui est plus récente que la dernière version pour votre canal de mise à jour. Veuillez noter que les pré-versions sont réservées aux utilisateurs qui savent comment signaler un bogue, gérer les soucis et donner un retour - aucun support technique ne sera fourni.</value>
   </data>
-  <data name="BotStats" xml:space="preserve">
-    <value>Mémoire actuellement utilisée : {0} MB.</value>
-    <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
-  </data>
+  
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
     <value>Consultation de la liste de découvertes en cours #{0}...</value>
     <comment>{0} will be replaced by queue number</comment>

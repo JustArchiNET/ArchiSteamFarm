@@ -156,9 +156,6 @@
     <value>{0} е невалиден!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Отказва да изпълни тази функцията, поради невалиден DeviceID в ASF 2FA!</value>
-  </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>Няма настроени ботове. Да не би да сте забравили да настроите ASF?</value>
   </data>
@@ -244,10 +241,6 @@
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>Версия на компютъра Ви: {0} | Версия на сървъра: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
-  </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>Моля, въведете името на устройството за вашият mobile authenticator (включително "android:): </value>
-    <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
     <value>Моля въведете Вашият 2FA код от Steam authenticator приложението: </value>
@@ -399,9 +392,6 @@
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
     <value>Успешно приключи въвеждането на мобилното потвърждение!</value>
-  </data>
-  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Вашият DeviceID е неправилен или не съществува!</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>2FA Token: {0}</value>
@@ -609,8 +599,9 @@
     <value>Вие използвате версия, която е по-нова от последната версия за актуализация. Моля, имайте предвид, че предварителните версии са посветени на потребителите, които знаят как да докладват за бъгове, да се справят с проблеми и да дават обратна връзка - няма да ви бъде осигурена техническа подръжка.</value>
   </data>
   <data name="BotStats" xml:space="preserve">
-    <value>В момента се ползва памет: {0} MB.</value>
-    <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
+    <value>Текущо използване на паметта: {0} MB.
+Работно време на процеса: {1}</value>
+    <comment>{0} will be replaced by number (in megabytes) of memory being used, {1} will be replaced by translated TimeSpan string (such as "25 minutes"). Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
     <value>Изчистване на предложенията на Steam #{0}...</value>

@@ -159,9 +159,6 @@ StackTrace:
     <value>{0} אינה חוקית!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>פונקציה זו לא תבוצע בגלל DeviceID לא חוקי ב- ASF 2FA!</value>
-  </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>אין בוטים מוגדרים. שכחת להגדיר את ASF?</value>
   </data>
@@ -247,10 +244,6 @@ StackTrace:
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>גירסה מקומית: {0} | הגירסה המרוחקת: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
-  </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>הכנס את מזהה המכשיר שלך בבקשה (הכולל ": android:"): </value>
-    <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
     <value>אנא הכנס את קוד האימות מאפליקציית המאמת של Steam: </value>
@@ -395,9 +388,6 @@ StackTrace:
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
     <value>הסתיימה בהצלחה ייבוא מאמת הניידים!</value>
-  </data>
-  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>ה- DeviceID שלך שגוי או אינו קיים!</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>אסימון 2FA: {0}</value>
@@ -598,10 +588,7 @@ StackTrace:
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>אתה משתמש בגירסה חדשה יותר מאשר הגירסה הזמינה. אנא שים לב כי גירסאות קדם הפצה נועדו עבור משתמשים אשר יודעים כיצד לדווח על באגים, להתמודד עם בעיות ולתת משוב - תמיכה טכנית לא תינתן.</value>
   </data>
-  <data name="BotStats" xml:space="preserve">
-    <value>השימוש בזיכרון הנוכחי: {0} MB.</value>
-    <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
-  </data>
+  
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
     <value>ניקוי תור גילוי סטים #{0}...</value>
     <comment>{0} will be replaced by queue number</comment>

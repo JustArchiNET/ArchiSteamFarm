@@ -159,9 +159,6 @@ StackTrace:
     <value>{0} không hợp lệ!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Từ chối thực hiện chức năng này do DeviceID không hợp lệ trong ASF 2FA!</value>
-  </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>Không có bot nào được tìm thấy. Bạn có quên thiết lập ASF?</value>
   </data>
@@ -247,10 +244,6 @@ StackTrace:
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>Phiên bản đang chạy: {0} | Phiên bản ngoài: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
-  </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>Xin vui lòng nhập Device ID (bao gồm cả "android:"): </value>
-    <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
     <value>Xin vui lòng nhập mã 2FA từ ứng dụng Steam Authenticator của bạn: </value>
@@ -402,9 +395,6 @@ StackTrace:
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
     <value>Thành công hoàn thành nhập xác thực điện thoại di động!</value>
-  </data>
-  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>DeviceID của bạn không chính xác hoặc không tồn tại!</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>2FA Token: {0}</value>
@@ -611,10 +601,7 @@ StackTrace:
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>Bạn đang dùng phiên bản mới hơn phiên bản chính thức mới nhất. Hãy chú ý rằng phiên bản phát hành trước là dành cho người dùng biết cách báo lỗi, xử lý vấn đề và gửi phản hồi - sẽ không có hỗ trợ kỹ thuật.</value>
   </data>
-  <data name="BotStats" xml:space="preserve">
-    <value>Bộ nhớ đang được sử dụng: {0} MB.</value>
-    <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
-  </data>
+  
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
     <value>Đã xóa hàng đợi khám phá Steam số #{0}...</value>
     <comment>{0} will be replaced by queue number</comment>

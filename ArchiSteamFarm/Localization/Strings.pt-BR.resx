@@ -159,9 +159,6 @@ StackTrace:
     <value>{0} é inválido!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Recusando a execução desta função devido a um DeviceID inválido no ASF 2FA!</value>
-  </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>Nenhum bot definido. Você se esqueceu de configurar seu ASF?</value>
   </data>
@@ -247,10 +244,6 @@ StackTrace:
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>Versão local: {0} | Versão remota: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
-  </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>Por favor, insira o ID do seu dispositivo de autenticador móvel (incluindo "android:"): </value>
-    <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
     <value>Por favor, insira o código gerado pelo autenticador móvel do Steam: </value>
@@ -402,9 +395,6 @@ StackTrace:
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
     <value>Verificação do autenticador móvel concluída com sucesso!</value>
-  </data>
-  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>O DeviceID está incorreto ou não existe!</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>Código de autenticação: {0}</value>
@@ -611,10 +601,7 @@ StackTrace:
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>Você está usando uma versão que é mais nova que a última lançada para o seu canal de atualizações. Por favor, tenha em mente que versões de pré-lançamento são dedicadas a usuários que sabem como relatar bugs, lidar com problemas e dar feedback - nenhum apoio técnico será fornecido.</value>
   </data>
-  <data name="BotStats" xml:space="preserve">
-    <value>Uso de memória atual: {0} MB.</value>
-    <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
-  </data>
+  
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
     <value>Limpando a lista de descobrimento #{0}...</value>
     <comment>{0} will be replaced by queue number</comment>

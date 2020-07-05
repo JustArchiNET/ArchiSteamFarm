@@ -156,9 +156,6 @@
     <value>{0} は無効です！</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>ASF 二次認証のデバイスIDが無効なため、この機能は実行されません！</value>
-  </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>Botが定義されていません。ASFの設定を忘れていませんか？</value>
   </data>
@@ -244,10 +241,6 @@
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>現在のバージョン: {0} | 最新バージョン: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
-  </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>あなたのモバイル認証Device IDを入力してください。("android:"を含む): </value>
-    <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
     <value>Steam認証アプリの二次認証コードを入力してください: </value>
@@ -399,9 +392,6 @@
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
     <value>モバイル認証のインポートを完了しました！</value>
-  </data>
-  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>あなたのDeviceIDは正しくないか、存在しません！</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>二次認証トークン: {0}</value>
@@ -608,10 +598,7 @@
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>あなたの指定した更新チャンネルよりも新しいバージョンを使用しています。プレリリースバージョンはバグの報告と問題への対処、フィードバックのできるユーザー向けであることに留意してください - テクニカルサポートは行われません。</value>
   </data>
-  <data name="BotStats" xml:space="preserve">
-    <value>現在のメモリ使用量: {0} MB。</value>
-    <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
-  </data>
+  
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
     <value>Steamディスカバリーキューをクリア中 #{0}...</value>
     <comment>{0} will be replaced by queue number</comment>

@@ -159,9 +159,6 @@ StackTrace:
     <value>{0} jest nieprawidłowy!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Odmawiam wykonania tej funkcji z powodu nieprawidłowego DeviceID w ASF 2FA!</value>
-  </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>Żadne boty nie zostały zdefiniowane. Czy zapomniałeś o konfiguracji ASF?</value>
   </data>
@@ -247,10 +244,6 @@ StackTrace:
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>Lokalna wersja: {0} | Wersja zdalna: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
-  </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>Wprowadź identyfikator urządzenia (device ID) twojego mobilnego tokena uwierzytelnienia (w tym "android:"): </value>
-    <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
     <value>Wprowadź kod uwierzytelnienia dwuskładnikowego z twojego mobilnego tokena Steam: </value>
@@ -402,9 +395,6 @@ StackTrace:
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
     <value>Zakończono importowanie mobilnego tokenu uwierzytelnienia!</value>
-  </data>
-  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Twój identyfikator urządzenia jest niepoprawny lub nie istnieje!</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>Kod uwierzytelnienia dwuskładnikowego: {0}</value>
@@ -612,8 +602,9 @@ StackTrace:
     <value>Używasz wersji, która jest nowsza niż aktualna wersja dostępna na Twoim kanale aktualizacyjnym. Pamiętaj, że wersje wstępne są przeznaczone dla użytkowników, którzy wiedzą jak zgłaszać błędy, rozwiązywać problemy i przesyłać opinie - nie świadczymy dla nich pomocy technicznej.</value>
   </data>
   <data name="BotStats" xml:space="preserve">
-    <value>Aktualne wykorzystanie pamięci: {0} MB.</value>
-    <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
+    <value>Bieżące użycie pamięci: {0} MB.
+Czas procesu: {1}</value>
+    <comment>{0} will be replaced by number (in megabytes) of memory being used, {1} will be replaced by translated TimeSpan string (such as "25 minutes"). Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
     <value>Czyszczenie #{0} kolejki odkryć Steam...</value>

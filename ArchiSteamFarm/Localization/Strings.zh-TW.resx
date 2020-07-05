@@ -158,9 +158,6 @@
     <value>{0} 無效！</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>ASF 兩步驟驗證中設定的 DeviceID 無效，該功能無法執行！</value>
-  </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>沒有設定任何 BOT。你忘記設定 ASF 了嗎？</value>
   </data>
@@ -246,10 +243,6 @@
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>目前版本：{0} | 最新版本：{1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
-  </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>請輸入你的行動驗證器裝置辨識碼（包括「android:」）：</value>
-    <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
     <value>請輸入你的 Steam Guard 行動驗證器上的兩步驟驗證代碼：</value>
@@ -401,9 +394,6 @@
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
     <value>已成功匯入行動驗證器！</value>
-  </data>
-  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>你的 DeviceID 不正確或不存在！</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>兩步驟驗證權杖：{0}</value>
@@ -610,10 +600,7 @@
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>你目前使用的版本高於最新的穩定版本。請注意：預覽版本是專門給了解如何回報錯誤、處理問題並提供回饋的使用者使用，並不提供任何技術支援。</value>
   </data>
-  <data name="BotStats" xml:space="preserve">
-    <value>當前記憶體使用量：{0} MB。</value>
-    <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
-  </data>
+  
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
     <value>正在瀏覽 Steam 探索佇列 #{0}……</value>
     <comment>{0} will be replaced by queue number</comment>

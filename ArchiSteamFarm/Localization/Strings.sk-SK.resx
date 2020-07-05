@@ -159,9 +159,6 @@ StackTrace:
     <value>{0} nie je platný!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Odmietnutie spustenia funkcie z dôvodu neplatného DeviceID identifikátoru v ASF 2FA!</value>
-  </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>Nie je definovaný žiadny bot. Zabudol si nakonfigurovať ASF?</value>
   </data>
@@ -247,10 +244,6 @@ StackTrace:
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>Lokálna verzia: {0} | Vzdialená verzia: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
-  </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>Zadaj prosím ID zariadenia mobilného autentifikátora (vrátane "android:"): </value>
-    <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
     <value>Zadaj autentifikačný 2FA kód z aplikácie Steam: </value>
@@ -402,9 +395,6 @@ StackTrace:
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
     <value>Import autentifikátora bol úspešný!</value>
-  </data>
-  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>DeviceID je nesprávne alebo neexistuje!</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>2FA token: {0}</value>
@@ -611,10 +601,7 @@ StackTrace:
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>Je používaná verzia, ktorá je novšia ako posledná vydaná verzia pre tento aktualizačný kanál. Verzie pred vydaním sú určené pre užívateľov, ktorí vedia nahlasovať chyby, riešiť problémy a poskytovať spätnú väzbu - pre nich nie je poskytovaná žiadna technická podpora.</value>
   </data>
-  <data name="BotStats" xml:space="preserve">
-    <value>Aktuálne použitie pamäte: {0} MB.</value>
-    <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
-  </data>
+  
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
     <value>Prechádzanie {0}. fronty doporučenia...</value>
     <comment>{0} will be replaced by queue number</comment>

@@ -157,9 +157,6 @@
     <value>{0} non è valido!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Rifiutando di eseguire questa funzione a causa di un DeviceID invalido in ASF 2FA!</value>
-  </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>Nessun bot è definito. Hai dimenticato di configurare il tuo ASF?</value>
   </data>
@@ -245,10 +242,6 @@
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>Versione locale: {0} | Versione remota: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
-  </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>Inserisci il tuo ID dispositivo (device ID) dell'autenticatore mobile (incluso "android:"): </value>
-    <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
     <value>Inserisci il codice 2FA dell'autenticatore mobile di Steam: </value>
@@ -400,9 +393,6 @@
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
     <value>L'importazione dell'autenticatore mobile terminata con successo!</value>
-  </data>
-  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Il tuo DeviceID non è corretto o non esiste!</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>Token 2FA: {0}</value>
@@ -609,10 +599,7 @@
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>Stai utilizzando una versione più recente dell'ultima versione rilasciata per il tuo canale di aggiornamento. Sei pregato di notare che le versioni pre-release sono dedicate agli utenti che sono capaci di segnalare bug, affrontare problemi e lasciare feedback - non sarà dato nessun supporto tecnico.</value>
   </data>
-  <data name="BotStats" xml:space="preserve">
-    <value>Utilizzo di memoria corrente: {0} MB.</value>
-    <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
-  </data>
+  
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
     <value>Inizio coda #{0} dell'elenco scoperte Steam...</value>
     <comment>{0} will be replaced by queue number</comment>

@@ -159,9 +159,6 @@ StackTrace:
     <value>Το {0} δεν είναι έγκυρο!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Άρνηση εκτέλεσης αυτής της λειτουργίας λόγω μη έγκυρου DeviceID στο ASF 2FA!</value>
-  </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>Δεν έχουν οριστεί bots. Μήπως ξεχάσατε να ρυθμίσετε το ASF σας;</value>
   </data>
@@ -247,10 +244,6 @@ StackTrace:
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>Τοπική έκδοση: {0} | Απομακρυσμένη έκδοση: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
-  </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>Εισάγετε το ID συσκευής επαληθευτή κινητού σας (συμπεριλαμβάνοντας το «android:»): </value>
-    <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
     <value>Εισάγετε τον κωδικό από την εφαρμογή επαληθευτή Steam σας: </value>
@@ -402,9 +395,6 @@ StackTrace:
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
     <value>Η εισαγωγή του επαληθευτή κινητού ολοκληρώθηκε επιτυχώς!</value>
-  </data>
-  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Το DeviceID σας δεν είναι σωστό ή δεν υπάρχει!</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>2FA Token: {0}</value>
@@ -611,10 +601,7 @@ StackTrace:
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>Χρησιμοποιείτε μια έκδοση η οποία είναι νεότερη από την τελευταία έκδοση που κυκλοφόρησε για το κανάλι ενημερώσεών σας. Παρακαλούμε να θυμάστε ότι οι εκδόσεις που δεν έχουν κυκλοφορήσει ακόμη προορίζονται για χρήστες που γνωρίζουν πώς να αναφέρουν σφάλματα, να αντιμετωπίζουν προβλήματα και να στέλνουν σχόλια - δεν θα σας παρέχεται τεχνική υποστήριξη.</value>
   </data>
-  <data name="BotStats" xml:space="preserve">
-    <value>Τρέχουσα χρήση μνήμης: {0} MB.</value>
-    <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
-  </data>
+  
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
     <value>Εκκαθάριση σειράς ανακαλύψεων Steam #{0}...</value>
     <comment>{0} will be replaced by queue number</comment>

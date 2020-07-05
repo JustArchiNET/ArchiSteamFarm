@@ -146,7 +146,6 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   
-  
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} é nulo!</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -208,10 +207,6 @@ StackTrace:
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>Versão local: {0} | Versão remota: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
-  </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>Por favor, digite o seu ID de dispositivo (incluindo "android:"): </value>
-    <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
     <value>Por favor, digite o seu código de autenticação de dois fatores da app de autenticador da Steam: </value>
@@ -301,9 +296,6 @@ StackTrace:
     <value>A converter ficheiro .maFile em formato ASF...</value>
   </data>
   
-  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>O DeviceID está incorreto ou não existe!</value>
-  </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>Token 2FA: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
@@ -486,10 +478,7 @@ StackTrace:
     <value>Acesso negado!</value>
   </data>
   
-  <data name="BotStats" xml:space="preserve">
-    <value>Uso de memória atual: {0} MB.</value>
-    <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
-  </data>
+  
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
     <value>A limpar a fila de descoberta da Steam #{0}...</value>
     <comment>{0} will be replaced by queue number</comment>

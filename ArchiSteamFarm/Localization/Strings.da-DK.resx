@@ -159,9 +159,6 @@ StackTrace:
     <value>{0} er ikke gyldig!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Nægter at udføre denne funktion på grund af ugyldig DeviceID i ASF 2FA!</value>
-  </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>Ingen bots er defineret. Har du glemt at konfigurere din ASF?</value>
   </data>
@@ -247,10 +244,6 @@ StackTrace:
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>Lokal version: {0} | Fjernversion: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
-  </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>Vær venlig at indtaste din mobils autentificering enhed ID (Også “Android:”): </value>
-    <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
     <value>Venligst indtast din 2FA kode fra din steam autentificering app: </value>
@@ -402,9 +395,6 @@ StackTrace:
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
     <value>Det lykkedes at importere mobilautentificering!</value>
-  </data>
-  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Din DeviceID er forkert eller eksisterer ikke!</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>2FA Token: {0}</value>
@@ -611,10 +601,7 @@ StackTrace:
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>Du bruger en version, der er nyere end nyeste version for din opdaterings kanal. Bemærk venligst at pre-release versioner er dedikeret til brugere, der forstår at rapportere fejl, behandle spørgsmål og give feedback - ingen teknisk support vil blive givet.</value>
   </data>
-  <data name="BotStats" xml:space="preserve">
-    <value>Aktuel hukommelses brug: {0} MB.</value>
-    <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
-  </data>
+  
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
     <value>Renser Steam opdagelses kø #{0}...</value>
     <comment>{0} will be replaced by queue number</comment>

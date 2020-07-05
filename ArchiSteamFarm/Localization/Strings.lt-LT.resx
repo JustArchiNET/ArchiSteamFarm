@@ -159,9 +159,6 @@ StackTrace:
     <value>{0} yra neteisingas!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Atsisakoma vykdyti šią funkciją dėl netinkamo ASF 2FA įrenginio ID!</value>
-  </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>Nėra apibrėžta nei vieno boto. Galbūt pamiršote sukonfigūruoti ASF?</value>
   </data>
@@ -247,10 +244,6 @@ StackTrace:
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>Vietinė versija: {0} | Versija serveryje: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
-  </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>Prašome įvesti savo mobilaus autentifikatoriaus ID (įskaitant „Android:“): </value>
-    <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
     <value>Prašome įvesti 2FA kodą iš jūsų Steam autentifikavimo programėlės: </value>
@@ -402,9 +395,6 @@ StackTrace:
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
     <value>Mobilusis autentifikatorius sėkmingai baigtas importuoti!</value>
-  </data>
-  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Jūsų įrenginio ID yra neteisingas arba neegzistuoja!</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>2FA kodas: {0}</value>
@@ -611,10 +601,7 @@ StackTrace:
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>Jūs naudojate versija kuri yra naujesnė nei paskutinė išleista versija jūsų naujinimo kanale. Atkreipkite dėmesį, kad išankstinio išleidimo versija yra skirta vartotojams, kurie žino, kaip pranešti apie klaidas, problemas - techninė parama nebus suteikiama.</value>
   </data>
-  <data name="BotStats" xml:space="preserve">
-    <value>Šiuo metu naudojama atminties: {0} MB.</value>
-    <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
-  </data>
+  
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
     <value>Peržiūrima Steam "Discovery queue" #{0}...</value>
     <comment>{0} will be replaced by queue number</comment>

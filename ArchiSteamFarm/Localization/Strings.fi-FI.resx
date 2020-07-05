@@ -159,9 +159,6 @@ StackTrace:
     <value>{0} on virheellinen!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Kieltäydään suorittamasta tätä toimintoa virheellisen DeviceID:n takia ASF 2-vaiheisessa authentikoinnissa!</value>
-  </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>Botteja ei ole määritelty. Unohditko tehdä asetukset ASF varten?</value>
   </data>
@@ -247,10 +244,6 @@ StackTrace:
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>Paikallinen versio: {0} | Etäkäyttöversio: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
-  </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>Syötä mobiilivarmennuksen laitetunnus (sisältäen "android:"): </value>
-    <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
     <value>Syötä 2FA koodi Steam varmennus sovelluksesta: </value>
@@ -402,9 +395,6 @@ StackTrace:
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
     <value>Mobiili authentikaattorin tuonti onnistui!</value>
-  </data>
-  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Sinun DeviceID on virheellinen tai sitä ei ole olemassa!</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>2FA Koodi: {0}</value>
@@ -611,10 +601,7 @@ StackTrace:
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>Käytät versiota joka on uudempi kuin uusin julkaistu versio käyttämälläsi päivityskanavalla. Huomoithan että esi-julkaistut versiot ovat kehittyneille käyttäjille jotka osaavat raportoida virheistä, toimia ongelmien kanssa sekä antaa palautetta - teknistä tukea ei anneta.</value>
   </data>
-  <data name="BotStats" xml:space="preserve">
-    <value>Nykyisen muistinkäyttö: {0} MB.</value>
-    <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
-  </data>
+  
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
     <value>Tyhjennetään Steamin discovery-jonoa #{0}...</value>
     <comment>{0} will be replaced by queue number</comment>

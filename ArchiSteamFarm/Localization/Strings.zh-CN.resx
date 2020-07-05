@@ -159,9 +159,6 @@
     <value>{0} 无效！</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>ASF 两步验证中的 DeviceID 无效，拒绝执行此功能！</value>
-  </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>没有配置任何机器人，您是否忘记配置 ASF 了？</value>
   </data>
@@ -247,10 +244,6 @@
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>当前版本：{0} | 最新版本：{1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
-  </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>请输入您的手机验证器 DeviceID（包括 "android:" 前缀）: </value>
-    <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
     <value>请输入 Steam 手机验证器上的两步验证代码: </value>
@@ -402,9 +395,6 @@
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
     <value>成功导入手机验证器！</value>
-  </data>
-  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>您的 DeviceID 不正确或者不存在！</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>两步验证令牌: {0}</value>
@@ -612,8 +602,9 @@
     <value>您选择的更新通道中的版本比稳定版更新，预览版仅供了解如何汇报漏洞、处理问题、提交反馈的用户使用——我们不会为此提供技术支持。</value>
   </data>
   <data name="BotStats" xml:space="preserve">
-    <value>当前内存用量：{0} MB。</value>
-    <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
+    <value>当前内存用量：{0} MB。
+进程运行时间：{1}</value>
+    <comment>{0} will be replaced by number (in megabytes) of memory being used, {1} will be replaced by translated TimeSpan string (such as "25 minutes"). Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
     <value>正在浏览 Steam 探索队列 #{0}……</value>

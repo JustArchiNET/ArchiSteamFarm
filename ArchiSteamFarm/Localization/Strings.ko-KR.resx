@@ -159,9 +159,6 @@ StackTrace:
     <value>{0} 값이 유효하지 않습니다!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>ASF 2FA의 잘못된 DeviceID로 인해 이 기능의 실행이 거절되었습니다!</value>
-  </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>봇이 정의되지 않았습니다. ASF를 설정하는 걸 잊으셨나요?</value>
   </data>
@@ -247,10 +244,6 @@ StackTrace:
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>로컬 버전: {0} | 원격 버전: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
-  </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>모바일 인증기 장치 ID를 입력하세요. ("android:"를 포함): </value>
-    <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
     <value>Steam 인증 어플의 2차 인증 코드를 입력하세요: </value>
@@ -402,9 +395,6 @@ StackTrace:
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
     <value>모바일 인증기 가져오기를 성공적으로 마쳤습니다!</value>
-  </data>
-  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>DeviceID가 올바르지 않거나 존재하지 않습니다!</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>2FA 토큰: {0}</value>
@@ -611,10 +601,7 @@ StackTrace:
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>마지막으로 릴리즈된 버전보다 최신 버전을 사용 중입니다. 시험판 버전은 버그 리포트, 문제 해결, 피드백을 제공하는 법을 아는 유저에게만 제공됩니다. - 기술 지원은 제공되지 않습니다.</value>
   </data>
-  <data name="BotStats" xml:space="preserve">
-    <value>현재 메모리 사용량: {0} MB.</value>
-    <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
-  </data>
+  
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
     <value>스팀 맞춤 대기열 #{0}을 지우는 중...</value>
     <comment>{0} will be replaced by queue number</comment>
