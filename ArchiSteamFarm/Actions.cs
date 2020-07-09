@@ -89,7 +89,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<(bool Success, string Message)> HandleTwoFactorAuthenticationConfirmations(bool accept, Steam.ConfirmationDetails.EType? acceptedType = null, IReadOnlyCollection<ulong> acceptedTradeOfferIDs = null, bool waitIfNeeded = false) {
+		public async Task<(bool Success, string Message)> HandleTwoFactorAuthenticationConfirmations(bool accept, MobileAuthenticator.Confirmation.EType? acceptedType = null, IReadOnlyCollection<ulong> acceptedTradeOfferIDs = null, bool waitIfNeeded = false) {
 			if (!Bot.HasMobileAuthenticator) {
 				return (false, Strings.BotNoASFAuthenticator);
 			}
@@ -98,6 +98,7 @@ namespace ArchiSteamFarm {
 				return (false, Strings.BotNotConnected);
 			}
 
+			ushort handledConfirmationsCount = 0;
 			HashSet<ulong> handledTradeOfferIDs = null;
 
 			for (byte i = 0; (i == 0) || ((i < WebBrowser.MaxTries) && waitIfNeeded); i++) {
@@ -105,48 +106,51 @@ namespace ArchiSteamFarm {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
-				HashSet<MobileAuthenticator.Confirmation> confirmations = await Bot.BotDatabase.MobileAuthenticator.GetConfirmations(acceptedType).ConfigureAwait(false);
+				HashSet<MobileAuthenticator.Confirmation> confirmations = await Bot.BotDatabase.MobileAuthenticator.GetConfirmations().ConfigureAwait(false);
 
 				if ((confirmations == null) || (confirmations.Count == 0)) {
 					continue;
 				}
 
-				// If we can skip asking for details, we can handle confirmations right away
-				if ((acceptedTradeOfferIDs == null) || (acceptedTradeOfferIDs.Count == 0)) {
-					bool result = await Bot.BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false);
+				if (acceptedType.HasValue) {
+					confirmations.RemoveWhere(confirmation => confirmation.Type != acceptedType.Value);
 
-					return (result, result ? string.Format(Strings.BotHandledConfirmations, confirmations.Count) : Strings.WarningFailed);
+					if (confirmations.Count == 0) {
+						continue;
+					}
 				}
 
-				IList<Steam.ConfirmationDetails> results = await Utilities.InParallel(confirmations.Select(Bot.BotDatabase.MobileAuthenticator.GetConfirmationDetails)).ConfigureAwait(false);
+				if ((acceptedTradeOfferIDs != null) && (acceptedTradeOfferIDs.Count > 0)) {
+					confirmations.RemoveWhere(confirmation => (confirmation.Type != MobileAuthenticator.Confirmation.EType.Trade) || !acceptedTradeOfferIDs.Contains(confirmation.Creator));
 
-				foreach (MobileAuthenticator.Confirmation confirmation in results.Where(details => (details != null) && ((acceptedType.HasValue && (acceptedType.Value != details.Type)) || ((details.TradeOfferID != 0) && !acceptedTradeOfferIDs.Contains(details.TradeOfferID)))).Select(details => details.Confirmation)) {
-					confirmations.Remove(confirmation);
-				}
-
-				if (confirmations.Count == 0) {
-					continue;
+					if (confirmations.Count == 0) {
+						continue;
+					}
 				}
 
 				if (!await Bot.BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false)) {
 					return (false, Strings.WarningFailed);
 				}
 
-				IEnumerable<ulong> handledTradeOfferIDsThisRound = results.Where(details => (details != null) && (details.TradeOfferID != 0)).Select(result => result.TradeOfferID);
+				handledConfirmationsCount += (ushort) confirmations.Count;
 
-				if (handledTradeOfferIDs != null) {
-					handledTradeOfferIDs.UnionWith(handledTradeOfferIDsThisRound);
-				} else {
-					handledTradeOfferIDs = handledTradeOfferIDsThisRound.ToHashSet();
-				}
+				if ((acceptedTradeOfferIDs != null) && (acceptedTradeOfferIDs.Count > 0)) {
+					IEnumerable<ulong> handledTradeOfferIDsThisRound = confirmations.Where(confirmation => (confirmation.Type == MobileAuthenticator.Confirmation.EType.Trade) && acceptedTradeOfferIDs.Contains(confirmation.Creator)).Select(confirmation => confirmation.Creator);
 
-				// Check if those are all that we were expected to confirm
-				if (acceptedTradeOfferIDs.All(handledTradeOfferIDs.Contains)) {
-					return (true, string.Format(Strings.BotHandledConfirmations, acceptedTradeOfferIDs.Count));
+					if (handledTradeOfferIDs != null) {
+						handledTradeOfferIDs.UnionWith(handledTradeOfferIDsThisRound);
+					} else {
+						handledTradeOfferIDs = handledTradeOfferIDsThisRound.ToHashSet();
+					}
+
+					// Check if those are all that we were expected to confirm
+					if (handledTradeOfferIDs.SetEquals(acceptedTradeOfferIDs)) {
+						return (true, string.Format(Strings.BotHandledConfirmations, handledConfirmationsCount));
+					}
 				}
 			}
 
-			return (!waitIfNeeded, !waitIfNeeded ? Strings.Success : string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+			return (!waitIfNeeded, !waitIfNeeded ? string.Format(Strings.BotHandledConfirmations, handledConfirmationsCount) : string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
 		}
 
 		[PublicAPI]
@@ -308,7 +312,7 @@ namespace ArchiSteamFarm {
 				(bool success, HashSet<ulong> mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(targetSteamID, inventory, token: tradeToken).ConfigureAwait(false);
 
 				if ((mobileTradeOfferIDs != null) && (mobileTradeOfferIDs.Count > 0) && Bot.HasMobileAuthenticator) {
-					(bool twoFactorSuccess, _) = await HandleTwoFactorAuthenticationConfirmations(true, Steam.ConfirmationDetails.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
+					(bool twoFactorSuccess, _) = await HandleTwoFactorAuthenticationConfirmations(true, MobileAuthenticator.Confirmation.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
 
 					if (!twoFactorSuccess) {
 						return (false, Strings.BotLootingFailed);

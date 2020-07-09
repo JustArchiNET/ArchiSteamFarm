@@ -28,14 +28,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
 using ArchiSteamFarm.Helpers;
-using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	internal sealed class MobileAuthenticator : IDisposable {
+	public sealed class MobileAuthenticator : IDisposable {
 		internal const byte CodeDigits = 5;
 
 		private const byte CodeInterval = 30;
@@ -79,44 +78,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[ItemCanBeNull]
-		internal async Task<Steam.ConfirmationDetails> GetConfirmationDetails(Confirmation confirmation) {
-			if (confirmation == null) {
-				Bot.ArchiLogger.LogNullError(nameof(confirmation));
-
-				return null;
-			}
-
-			(bool success, string deviceID) = await CachedDeviceID.GetValue().ConfigureAwait(false);
-
-			if (!success || string.IsNullOrEmpty(deviceID)) {
-				Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningFailedWithError, nameof(deviceID)));
-
-				return null;
-			}
-
-			uint time = await GetSteamTime().ConfigureAwait(false);
-
-			if (time == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(time));
-
-				return null;
-			}
-
-			string confirmationHash = GenerateConfirmationHash(time, "conf");
-
-			if (string.IsNullOrEmpty(confirmationHash)) {
-				Bot.ArchiLogger.LogNullError(nameof(confirmationHash));
-
-				return null;
-			}
-
-			Steam.ConfirmationDetails response = await Bot.ArchiWebHandler.GetConfirmationDetails(deviceID, confirmationHash, time, confirmation).ConfigureAwait(false);
-
-			return response?.Success == true ? response : null;
-		}
-
-		[ItemCanBeNull]
-		internal async Task<HashSet<Confirmation>> GetConfirmations(Steam.ConfirmationDetails.EType? acceptedType = null) {
+		internal async Task<HashSet<Confirmation>> GetConfirmations() {
 			(bool success, string deviceID) = await CachedDeviceID.GetValue().ConfigureAwait(false);
 
 			if (!success || string.IsNullOrEmpty(deviceID)) {
@@ -186,6 +148,20 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
+				string creatorText = confirmationNode.GetAttributeValue("data-creator");
+
+				if (string.IsNullOrEmpty(creatorText)) {
+					Bot.ArchiLogger.LogNullError(nameof(creatorText));
+
+					return null;
+				}
+
+				if (!ulong.TryParse(creatorText, out ulong creator) || (creator == 0)) {
+					Bot.ArchiLogger.LogNullError(nameof(creator));
+
+					return null;
+				}
+
 				string typeText = confirmationNode.GetAttributeValue("data-type");
 
 				if (string.IsNullOrEmpty(typeText)) {
@@ -194,23 +170,19 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				if (!Enum.TryParse(typeText, out Steam.ConfirmationDetails.EType type) || (type == Steam.ConfirmationDetails.EType.Unknown)) {
+				if (!Enum.TryParse(typeText, out Confirmation.EType type) || (type == Confirmation.EType.Unknown)) {
 					Bot.ArchiLogger.LogNullError(nameof(type));
 
 					return null;
 				}
 
-				if (!Enum.IsDefined(typeof(Steam.ConfirmationDetails.EType), type)) {
+				if (!Enum.IsDefined(typeof(Confirmation.EType), type)) {
 					Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(type), type));
 
 					return null;
 				}
 
-				if (acceptedType.HasValue && (acceptedType.Value != type)) {
-					continue;
-				}
-
-				result.Add(new Confirmation(id, key));
+				result.Add(new Confirmation(id, key, creator, type));
 			}
 
 			return result;
@@ -435,17 +407,34 @@ namespace ArchiSteamFarm {
 			return (true, deviceID);
 		}
 
-		internal sealed class Confirmation {
+		public sealed class Confirmation {
+			internal readonly ulong Creator;
 			internal readonly ulong ID;
 			internal readonly ulong Key;
+			internal readonly EType Type;
 
-			internal Confirmation(ulong id, ulong key) {
-				if ((id == 0) || (key == 0)) {
-					throw new ArgumentNullException(nameof(id) + " || " + nameof(key));
+			internal Confirmation(ulong id, ulong key, ulong creator, EType type) {
+				if ((id == 0) || (key == 0) || (creator == 0) || !Enum.IsDefined(typeof(EType), type)) {
+					throw new ArgumentNullException(nameof(id) + " || " + nameof(key) + " || " + nameof(creator) + " || " + nameof(type));
 				}
 
 				ID = id;
 				Key = key;
+				Creator = creator;
+				Type = type;
+			}
+
+			// REF: Internal documentation
+			[PublicAPI]
+			public enum EType : byte {
+				Unknown,
+				Generic,
+				Trade,
+				Market,
+
+				// We're missing information about definition of number 4 type
+				PhoneNumberChange = 5,
+				AccountRecovery = 6
 			}
 		}
 	}

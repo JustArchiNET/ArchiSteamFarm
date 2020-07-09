@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using AngleSharp.Dom;
 using ArchiSteamFarm.Localization;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -289,6 +288,7 @@ namespace ArchiSteamFarm.Json {
 			}
 		}
 
+		[PublicAPI]
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		public class BooleanResponse {
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
@@ -298,101 +298,7 @@ namespace ArchiSteamFarm.Json {
 			protected BooleanResponse() { }
 		}
 
-		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		public sealed class ConfirmationDetails : BooleanResponse {
-			internal MobileAuthenticator.Confirmation Confirmation { get; set; }
-			internal ulong TradeOfferID { get; private set; }
-			internal EType Type { get; private set; }
-
-#pragma warning disable IDE0051
-			[JsonProperty(PropertyName = "html", Required = Required.DisallowNull)]
-			private string HTML {
-				set {
-					if (string.IsNullOrEmpty(value)) {
-						ASF.ArchiLogger.LogNullError(nameof(value));
-
-						return;
-					}
-
-					using IDocument htmlDocument = WebBrowser.StringToHtmlDocument(value).Result;
-
-					if (htmlDocument == null) {
-						ASF.ArchiLogger.LogNullError(nameof(htmlDocument));
-
-						return;
-					}
-
-					if (htmlDocument.SelectSingleNode("//div[@class='mobileconf_trade_area']") != null) {
-						Type = EType.Trade;
-
-						IElement tradeOfferNode = htmlDocument.SelectSingleNode("//div[@class='tradeoffer']");
-
-						if (tradeOfferNode == null) {
-							ASF.ArchiLogger.LogNullError(nameof(tradeOfferNode));
-
-							return;
-						}
-
-						string idText = tradeOfferNode.GetAttributeValue("id");
-
-						if (string.IsNullOrEmpty(idText)) {
-							ASF.ArchiLogger.LogNullError(nameof(idText));
-
-							return;
-						}
-
-						int index = idText.IndexOf('_');
-
-						if (index < 0) {
-							ASF.ArchiLogger.LogNullError(nameof(index));
-
-							return;
-						}
-
-						index++;
-
-						if (idText.Length <= index) {
-							ASF.ArchiLogger.LogNullError(nameof(idText.Length));
-
-							return;
-						}
-
-						idText = idText.Substring(index);
-
-						if (!ulong.TryParse(idText, out ulong tradeOfferID) || (tradeOfferID == 0)) {
-							ASF.ArchiLogger.LogNullError(nameof(tradeOfferID));
-
-							return;
-						}
-
-						TradeOfferID = tradeOfferID;
-					} else if (htmlDocument.SelectSingleNode("//div[@class='mobileconf_listing_prices']") != null) {
-						Type = EType.Market;
-					} else {
-						// Normally this should be reported, but under some specific circumstances we might actually receive this one
-						Type = EType.Generic;
-					}
-				}
-			}
-#pragma warning restore IDE0051
-
-			[JsonConstructor]
-			private ConfirmationDetails() { }
-
-			// REF: Internal documentation
-			[PublicAPI]
-			public enum EType : byte {
-				Unknown,
-				Generic,
-				Trade,
-				Market,
-
-				// We're missing information about definition of number 4 type
-				PhoneNumberChange = 5,
-				AccountRecovery = 6
-			}
-		}
-
+		[PublicAPI]
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		public class EResultResponse {
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]

@@ -1633,39 +1633,6 @@ namespace ArchiSteamFarm {
 			return await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
 		}
 
-		[ItemCanBeNull]
-		internal async Task<Steam.ConfirmationDetails> GetConfirmationDetails(string deviceID, string confirmationHash, uint time, MobileAuthenticator.Confirmation confirmation) {
-			if (string.IsNullOrEmpty(deviceID) || string.IsNullOrEmpty(confirmationHash) || (time == 0) || (confirmation == null)) {
-				Bot.ArchiLogger.LogNullError(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time) + " || " + nameof(confirmation));
-
-				return null;
-			}
-
-			if (!Initialized) {
-				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
-					await Task.Delay(1000).ConfigureAwait(false);
-				}
-
-				if (!Initialized) {
-					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-
-					return null;
-				}
-			}
-
-			string request = "/mobileconf/details/" + confirmation.ID + "?a=" + Bot.SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&l=english&m=android&p=" + WebUtility.UrlEncode(deviceID) + "&t=" + time + "&tag=conf";
-
-			Steam.ConfirmationDetails response = await UrlGetToJsonObjectWithSession<Steam.ConfirmationDetails>(SteamCommunityURL, request).ConfigureAwait(false);
-
-			if (response?.Success != true) {
-				return null;
-			}
-
-			response.Confirmation = confirmation;
-
-			return response;
-		}
-
 		internal async Task<IDocument> GetConfirmations(string deviceID, string confirmationHash, uint time) {
 			if (string.IsNullOrEmpty(deviceID) || string.IsNullOrEmpty(confirmationHash) || (time == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time));
