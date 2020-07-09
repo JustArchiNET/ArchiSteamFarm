@@ -89,7 +89,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<(bool Success, string Message)> HandleTwoFactorAuthenticationConfirmations(bool accept, MobileAuthenticator.Confirmation.EType? acceptedType = null, IReadOnlyCollection<ulong> acceptedTradeOfferIDs = null, bool waitIfNeeded = false) {
+		public async Task<(bool Success, string Message)> HandleTwoFactorAuthenticationConfirmations(bool accept, MobileAuthenticator.Confirmation.EType? acceptedType = null, IReadOnlyCollection<ulong> acceptedCreatorIDs = null, bool waitIfNeeded = false) {
 			if (!Bot.HasMobileAuthenticator) {
 				return (false, Strings.BotNoASFAuthenticator);
 			}
@@ -99,7 +99,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ushort handledConfirmationsCount = 0;
-			HashSet<ulong> handledTradeOfferIDs = null;
+			HashSet<ulong> handledCreatorIDs = null;
 
 			for (byte i = 0; (i == 0) || ((i < WebBrowser.MaxTries) && waitIfNeeded); i++) {
 				if (i > 0) {
@@ -120,8 +120,8 @@ namespace ArchiSteamFarm {
 					}
 				}
 
-				if ((acceptedTradeOfferIDs != null) && (acceptedTradeOfferIDs.Count > 0)) {
-					if (confirmations.RemoveWhere(confirmation => (confirmation.Type != MobileAuthenticator.Confirmation.EType.Trade) || !acceptedTradeOfferIDs.Contains(confirmation.Creator)) > 0) {
+				if ((acceptedCreatorIDs != null) && (acceptedCreatorIDs.Count > 0)) {
+					if (confirmations.RemoveWhere(confirmation => !acceptedCreatorIDs.Contains(confirmation.Creator)) > 0) {
 						if (confirmations.Count == 0) {
 							continue;
 						}
@@ -134,17 +134,17 @@ namespace ArchiSteamFarm {
 
 				handledConfirmationsCount += (ushort) confirmations.Count;
 
-				if ((acceptedTradeOfferIDs != null) && (acceptedTradeOfferIDs.Count > 0)) {
-					IEnumerable<ulong> handledTradeOfferIDsThisRound = confirmations.Where(confirmation => (confirmation.Type == MobileAuthenticator.Confirmation.EType.Trade) && acceptedTradeOfferIDs.Contains(confirmation.Creator)).Select(confirmation => confirmation.Creator);
+				if ((acceptedCreatorIDs != null) && (acceptedCreatorIDs.Count > 0)) {
+					IEnumerable<ulong> handledCreatorIDsThisRound = confirmations.Select(confirmation => confirmation.Creator).Where(acceptedCreatorIDs.Contains);
 
-					if (handledTradeOfferIDs != null) {
-						handledTradeOfferIDs.UnionWith(handledTradeOfferIDsThisRound);
+					if (handledCreatorIDs != null) {
+						handledCreatorIDs.UnionWith(handledCreatorIDsThisRound);
 					} else {
-						handledTradeOfferIDs = handledTradeOfferIDsThisRound.ToHashSet();
+						handledCreatorIDs = handledCreatorIDsThisRound.ToHashSet();
 					}
 
 					// Check if those are all that we were expected to confirm
-					if (handledTradeOfferIDs.SetEquals(acceptedTradeOfferIDs)) {
+					if (handledCreatorIDs.SetEquals(acceptedCreatorIDs)) {
 						return (true, string.Format(Strings.BotHandledConfirmations, handledConfirmationsCount));
 					}
 				}
