@@ -113,18 +113,18 @@ namespace ArchiSteamFarm {
 				}
 
 				if (acceptedType.HasValue) {
-					confirmations.RemoveWhere(confirmation => confirmation.Type != acceptedType.Value);
-
-					if (confirmations.Count == 0) {
-						continue;
+					if (confirmations.RemoveWhere(confirmation => confirmation.Type != acceptedType.Value) > 0) {
+						if (confirmations.Count == 0) {
+							continue;
+						}
 					}
 				}
 
 				if ((acceptedTradeOfferIDs != null) && (acceptedTradeOfferIDs.Count > 0)) {
-					confirmations.RemoveWhere(confirmation => (confirmation.Type != MobileAuthenticator.Confirmation.EType.Trade) || !acceptedTradeOfferIDs.Contains(confirmation.Creator));
-
-					if (confirmations.Count == 0) {
-						continue;
+					if (confirmations.RemoveWhere(confirmation => (confirmation.Type != MobileAuthenticator.Confirmation.EType.Trade) || !acceptedTradeOfferIDs.Contains(confirmation.Creator)) > 0) {
+						if (confirmations.Count == 0) {
+							continue;
+						}
 					}
 				}
 
