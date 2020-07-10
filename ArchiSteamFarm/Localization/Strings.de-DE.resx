@@ -601,7 +601,11 @@ StackTrace:
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>Du verwendest eine Version, die neuer ist als die zuletzt veröffentlichte Version deines Aktualisierungskanals. Bitte bedenke, dass Vorabversionen nur für Benutzer gedacht sind, die wissen wie man Fehler meldet, mit Problemen umgeht und Rückmeldung gibt - es wird keine technische Unterstützung geben.</value>
   </data>
-  
+  <data name="BotStats" xml:space="preserve">
+    <value>Aktuelle Speichernutzung: {0} MB.
+Prozesslaufzeit: {1}</value>
+    <comment>{0} will be replaced by number (in megabytes) of memory being used, {1} will be replaced by translated TimeSpan string (such as "25 minutes"). Please note that this string should include newlines for formatting.</comment>
+  </data>
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
     <value>Lösche Steam-Entdeckungsliste #{0}...</value>
     <comment>{0} will be replaced by queue number</comment>
@@ -715,7 +719,7 @@ StackTrace:
     <value>Alte Dateien nach dem Update bereinigen...</value>
   </data>
   <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
-    <value>Erstelle Steam-Jugendschutz-Code, das kann einige Zeit dauern. Eventuell sollten Sie stattdessen den Code in der Konfiguration hinterlegen...</value>
+    <value>Erstelle Steam-Jugendschutz-Code, das kann einige Zeit dauern. Eventuell solltest du stattdessen den Code in der Konfiguration hinterlegen...</value>
   </data>
   <data name="IPCConfigChanged" xml:space="preserve">
     <value>Die IPC-Konfiguration wurde geändert!</value>

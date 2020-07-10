@@ -246,27 +246,27 @@ StackTrace:
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>Por favor, insira o código gerado pelo autenticador móvel do Steam: </value>
+    <value>Insira o código gerado pelo autenticador móvel do Steam: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>Por favor, insira o código de autenticação do Steam Guard enviado por e-mail: </value>
+    <value>Insira o código de autenticação do Steam Guard enviado por e-mail: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>Por favor, insira o seu nome de usuário Steam: </value>
+    <value>Insira o seu nome de usuário Steam: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalCode" xml:space="preserve">
-    <value>Por favor, insira o código do modo família: </value>
+    <value>Insira o código do modo família: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>Por favor, insira a sua senha do Steam: </value>
+    <value>Insira a senha da sua conta Steam: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
-    <value>O valor recebido para {0} é desconhecido, por favor informe: {1}</value>
+    <value>O valor recebido para {0} é desconhecido. Relate o seguinte: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
   <data name="IPCReady" xml:space="preserve">
@@ -546,7 +546,7 @@ StackTrace:
     <value>Parando...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>A configuração do bot é inválida. Por favor, verifique o arquivo {0} e tente novamente!</value>
+    <value>A configuração do bot é inválida. Verifique o arquivo {0} e tente novamente!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
@@ -558,7 +558,7 @@ StackTrace:
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>Por favor revise a seção de política de privacidade na nossa wiki se você está preocupado com o que o ASF realmente está fazendo!</value>
+    <value>Consulte a nossa seção de política de privacidade na wiki caso esteja preocupado com o que o ASF está fazendo!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
     <value>Parece que é a sua primeira vez abrindo o programa, bem-vindo(a)!</value>
@@ -599,15 +599,19 @@ StackTrace:
     <value>Acesso negado!</value>
   </data>
   <data name="WarningPreReleaseVersion" xml:space="preserve">
-    <value>Você está usando uma versão que é mais nova que a última lançada para o seu canal de atualizações. Por favor, tenha em mente que versões de pré-lançamento são dedicadas a usuários que sabem como relatar bugs, lidar com problemas e dar feedback - nenhum apoio técnico será fornecido.</value>
+    <value>Você está usando uma versão que é mais nova que a última lançada para o seu canal de atualizações. Tenha em mente que versões de pré-lançamento são dedicadas a usuários que sabem como relatar bugs, lidar com problemas e dar feedback - nenhum apoio técnico será fornecido.</value>
   </data>
-  
+  <data name="BotStats" xml:space="preserve">
+    <value>Uso de memória atual: {0} MB.
+Tempo de execução: {1}</value>
+    <comment>{0} will be replaced by number (in megabytes) of memory being used, {1} will be replaced by translated TimeSpan string (such as "25 minutes"). Please note that this string should include newlines for formatting.</comment>
+  </data>
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
-    <value>Limpando a lista de descobrimento #{0}...</value>
+    <value>Limpando lista de descobrimento de nº {0}...</value>
     <comment>{0} will be replaced by queue number</comment>
   </data>
   <data name="DoneClearingDiscoveryQueue" xml:space="preserve">
-    <value>Limpeza da lista de descobrimento #{0} concluída.</value>
+    <value>Limpeza da lista de descobrimento de nº {0} concluída.</value>
     <comment>{0} will be replaced by queue number</comment>
   </data>
   <data name="BotOwnsOverviewPerGame" xml:space="preserve">
@@ -677,7 +681,7 @@ StackTrace:
     <value>Você carregou um ou mais plugins personalizados no ASF. Como não podemos oferecer suporte para configurações modificadas, por favor contate os desenvolvedores do plugin que você decidiu usar em caso de problemas.</value>
   </data>
   <data name="PleaseWait" xml:space="preserve">
-    <value>Por favor, aguarde...</value>
+    <value>Aguarde...</value>
   </data>
   <data name="EnterCommand" xml:space="preserve">
     <value>Digite o comando: </value>
@@ -715,7 +719,7 @@ StackTrace:
     <value>Limpando arquivos antigos após a atualização...</value>
   </data>
   <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
-    <value>Gerando o código do Modo Família, isso pode levar um tempo. Considere colocá-lo no arquivo de configuração...</value>
+    <value>Gerando o código do modo família, isso pode levar algum tempo. Considere salvá-lo no arquivo de configuração...</value>
   </data>
   <data name="IPCConfigChanged" xml:space="preserve">
     <value>A configuração IPC foi alterada!</value>

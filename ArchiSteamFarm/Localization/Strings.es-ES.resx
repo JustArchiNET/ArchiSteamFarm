@@ -600,7 +600,11 @@ Trazo de pila:
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>Está utilizando una versión más reciente que la última versión publicada para su canal de actualización. Por favor, tenga en cuenta que las versiones preliminares están dedicadas a usuarios que saben cómo reportar errores, tratar con problemas y dar sus comentarios - no se dará soporte técnico.</value>
   </data>
-  
+  <data name="BotStats" xml:space="preserve">
+    <value>Uso de memoria actual: {0} MB.
+Tiempo de actividad del proceso: {1}</value>
+    <comment>{0} will be replaced by number (in megabytes) of memory being used, {1} will be replaced by translated TimeSpan string (such as "25 minutes"). Please note that this string should include newlines for formatting.</comment>
+  </data>
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
     <value>Despejando la lista de descubrimientos de Steam #{0}...</value>
     <comment>{0} will be replaced by queue number</comment>

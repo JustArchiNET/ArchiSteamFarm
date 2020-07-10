@@ -600,7 +600,11 @@ StackTrace:
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>Je gebruikt een nieuwere versie dan de laatste versie van je update kanaal. Hou er rekening mee dat pre-release versies alleen geschikt zijn voor gebruikers die weten hoe ze bugs moeten rapporteren, kunnen omgaan met problemen en feedback kunnen geven. Er wordt geen technische ondersteuning geboden.</value>
   </data>
-  
+  <data name="BotStats" xml:space="preserve">
+    <value>Huidig geheugengebruik: {0} MB.
+Proces uptime: {1}</value>
+    <comment>{0} will be replaced by number (in megabytes) of memory being used, {1} will be replaced by translated TimeSpan string (such as "25 minutes"). Please note that this string should include newlines for formatting.</comment>
+  </data>
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
     <value>Steam-ontdekkingswachtrij afwerken #{0}...</value>
     <comment>{0} will be replaced by queue number</comment>
