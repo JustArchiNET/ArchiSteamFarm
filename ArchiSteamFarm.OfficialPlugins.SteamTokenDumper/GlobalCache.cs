@@ -207,7 +207,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			}
 		}
 
-		internal async Task UpdateDepotKeys([NotNull] IReadOnlyCollection<SteamApps.DepotKeyCallback> depotKeyResults) {
+		internal async Task UpdateDepotKeys([NotNull] ICollection<SteamApps.DepotKeyCallback> depotKeyResults) {
 			if (depotKeyResults == null) {
 				throw new ArgumentNullException(nameof(depotKeyResults));
 			}

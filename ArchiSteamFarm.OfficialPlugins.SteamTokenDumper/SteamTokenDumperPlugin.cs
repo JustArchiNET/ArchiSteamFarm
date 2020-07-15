@@ -361,10 +361,10 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 						if (depotTasks.Count > 0) {
 							bot.ArchiLogger.LogGenericInfo($"Retrieving {depotTasks.Count} depot keys...");
 
-							SteamApps.DepotKeyCallback[] results;
+							IList<SteamApps.DepotKeyCallback> results;
 
 							try {
-								results = await Task.WhenAll(depotTasks).ConfigureAwait(false);
+								results = await Utilities.InParallel(depotTasks).ConfigureAwait(false);
 							} catch (Exception e) {
 								bot.ArchiLogger.LogGenericWarningException(e);
 
