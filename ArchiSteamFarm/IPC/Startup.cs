@@ -37,6 +37,10 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
+#if NETFRAMEWORK
+using ArchiSteamFarm.Json;
+#endif
+
 namespace ArchiSteamFarm.IPC {
 	internal sealed class Startup {
 		private readonly IConfiguration Configuration;
@@ -238,6 +242,11 @@ namespace ArchiSteamFarm.IPC {
 					if (Debugging.IsUserDebugging) {
 						options.SerializerSettings.Formatting = Formatting.Indented;
 					}
+
+#if NETFRAMEWORK
+					// .NET Framework serializes Version as object by default, serialize it as string just like .NET Core
+					options.SerializerSettings.Converters.Add(new VersionStringConverter());
+#endif
 				}
 			);
 		}
