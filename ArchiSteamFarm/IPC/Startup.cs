@@ -38,7 +38,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
 #if NETFRAMEWORK
-using ArchiSteamFarm.Json;
+using Newtonsoft.Json.Converters;
 #endif
 
 namespace ArchiSteamFarm.IPC {
@@ -245,7 +245,7 @@ namespace ArchiSteamFarm.IPC {
 
 #if NETFRAMEWORK
 					// .NET Framework serializes Version as object by default, serialize it as string just like .NET Core
-					options.SerializerSettings.Converters.Add(new VersionStringConverter());
+					options.SerializerSettings.Converters.Add(new VersionConverter());
 #endif
 				}
 			);
