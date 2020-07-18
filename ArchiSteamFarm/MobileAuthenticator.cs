@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 using System.Text;
@@ -35,12 +36,14 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	public sealed class MobileAuthenticator : IDisposable {
+		internal const byte BackupCodeDigits = 7;
 		internal const byte CodeDigits = 5;
 
 		private const byte CodeInterval = 30;
 		private const byte SteamTimeTTL = 24; // For how many hours we can assume that SteamTimeDifference is correct
 
-		private static readonly char[] CodeCharacters = { '2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'T', 'V', 'W', 'X', 'Y' };
+		internal static readonly ImmutableSortedSet<char> CodeCharacters = ImmutableSortedSet.Create('2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'T', 'V', 'W', 'X', 'Y');
+
 		private static readonly SemaphoreSlim TimeSemaphore = new SemaphoreSlim(1, 1);
 
 		private static DateTime LastSteamTimeCheck;
@@ -271,7 +274,7 @@ namespace ArchiSteamFarm {
 				bufferSize += (byte) Math.Min(32, tag.Length);
 			}
 
-			byte[] timeArray = BitConverter.GetBytes((long) time);
+			byte[] timeArray = BitConverter.GetBytes((ulong) time);
 
 			if (BitConverter.IsLittleEndian) {
 				Array.Reverse(timeArray);
@@ -310,7 +313,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			byte[] timeArray = BitConverter.GetBytes((long) time / CodeInterval);
+			byte[] timeArray = BitConverter.GetBytes((ulong) (time / CodeInterval));
 
 			if (BitConverter.IsLittleEndian) {
 				Array.Reverse(timeArray);
@@ -337,14 +340,14 @@ namespace ArchiSteamFarm {
 			uint fullCode = BitConverter.ToUInt32(bytes, 0) & 0x7fffffff;
 
 			// Build the alphanumeric code
-			StringBuilder code = new StringBuilder(CodeDigits, CodeDigits);
+			char[] code = new char[CodeDigits];
 
 			for (byte i = 0; i < CodeDigits; i++) {
-				code.Append(CodeCharacters[fullCode % CodeCharacters.Length]);
-				fullCode /= (uint) CodeCharacters.Length;
+				code[i] = CodeCharacters[(byte) (fullCode % CodeCharacters.Count)];
+				fullCode /= (byte) CodeCharacters.Count;
 			}
 
-			return code.ToString();
+			return new string(code);
 		}
 
 		private async Task<uint> GetSteamTime() {
