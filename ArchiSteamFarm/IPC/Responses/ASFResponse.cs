@@ -59,7 +59,7 @@ namespace ArchiSteamFarm.IPC.Responses {
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public readonly string Version;
+		public readonly Version Version;
 
 		internal ASFResponse([NotNull] string buildVariant, [NotNull] GlobalConfig globalConfig, uint memoryUsage, DateTime processStartTime, [NotNull] Version version) {
 			if (string.IsNullOrEmpty(buildVariant) || (globalConfig == null) || (memoryUsage == 0) || (processStartTime == DateTime.MinValue) || (version == null)) {
@@ -70,7 +70,7 @@ namespace ArchiSteamFarm.IPC.Responses {
 			GlobalConfig = globalConfig;
 			MemoryUsage = memoryUsage;
 			ProcessStartTime = processStartTime;
-			Version = version.ToString();
+			Version = version;
 		}
 	}
 }
