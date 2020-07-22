@@ -1376,8 +1376,10 @@ namespace ArchiSteamFarm {
 						EResult result = await ArchiHandler.SendMessage(steamID, messagePart).ConfigureAwait(false);
 
 						switch (result) {
+							case EResult.Busy:
 							case EResult.Fail:
 							case EResult.RateLimitExceeded:
+							case EResult.ServiceUnavailable:
 							case EResult.Timeout:
 								await Task.Delay(5000).ConfigureAwait(false);
 
@@ -1466,8 +1468,10 @@ namespace ArchiSteamFarm {
 						EResult result = await ArchiHandler.SendMessage(chatGroupID, chatID, messagePart).ConfigureAwait(false);
 
 						switch (result) {
+							case EResult.Busy:
 							case EResult.Fail:
 							case EResult.RateLimitExceeded:
+							case EResult.ServiceUnavailable:
 							case EResult.Timeout:
 								await Task.Delay(5000).ConfigureAwait(false);
 
