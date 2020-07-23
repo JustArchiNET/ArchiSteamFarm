@@ -685,6 +685,17 @@ namespace ArchiSteamFarm {
 					redirectUri = new Uri(requestUri, redirectUri);
 				}
 
+				switch (response.StatusCode) {
+					case HttpStatusCode.SeeOther:
+						// Per https://tools.ietf.org/html/rfc7231#section-6.4.4, a 303 redirect should be performed with a GET request
+						httpMethod = HttpMethod.Get;
+
+						// Data doesn't make any sense for a GET request, clear it
+						data = null;
+
+						break;
+				}
+
 				response.Dispose();
 
 				// Per https://tools.ietf.org/html/rfc7231#section-7.1.2, a redirect location without a fragment should inherit the fragment from the original URI
