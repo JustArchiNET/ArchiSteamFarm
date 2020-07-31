@@ -4,8 +4,6 @@ on: [push, pull_request]
 
 env:
   CONFIGURATION: Release
-  CROWDIN_API_KEY: ${{ secrets.ASF_CROWDIN_API_KEY }}
-  CROWDIN_PROJECT_IDENTIFIER: archisteamfarm
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
   DOTNET_SDK_VERSION: 3.1.x
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
@@ -71,22 +69,12 @@ jobs:
 
     - name: Upload latest strings for translation on Crowdin
       continue-on-error: true
-      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && startsWith(matrix.os, 'windows-') }}
-      shell: pwsh
-      run: |
-        Set-StrictMode -Version Latest
-        $ErrorActionPreference = 'Stop'
-        $ProgressPreference = 'SilentlyContinue'
-
-        if ((Test-Path 'crowdin.yml' -PathType Leaf) -and (Test-Path 'tools\ArchiCrowdin\crowdin_identity_example.yml' -PathType Leaf) -and (Test-Path 'tools\ArchiCrowdin\archi.ps1' -PathType Leaf)) {
-            (Get-Content 'tools\ArchiCrowdin\crowdin_identity_example.yml').Replace('CROWDIN_API_KEY', "$env:CROWDIN_API_KEY").Replace('CROWDIN_PROJECT_IDENTIFIER', "$env:CROWDIN_PROJECT_IDENTIFIER") | Set-Content 'tools\ArchiCrowdin\crowdin_identity.yml'
-
-            try {
-                & tools\ArchiCrowdin\archi.ps1 -u
-            } finally {
-                Remove-Item 'tools\ArchiCrowdin\crowdin_identity.yml'
-            }
-        }
+      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' && startsWith(matrix.os, 'ubuntu-') }}
+      uses: crowdin/github-action@1.0.9
+      with:
+        crowdin_branch_name: master
+        project_id: ${{ secrets.ASF_CROWDIN_PROJECT_ID }}
+        token: ${{ secrets.ASF_CROWDIN_API_TOKEN }}
 
     - name: Prepare ArchiSteamFarm.OfficialPlugins.SteamTokenDumper on Unix
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
