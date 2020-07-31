@@ -6,6 +6,13 @@
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 
+  <!-- dotnet deb properties -->
+  <PropertyGroup>
+    <CreateUser>true</CreateUser>
+    <InstallService>true</InstallService>
+    <UserName>asf</UserName>
+  </PropertyGroup>
+
   <ItemGroup>
     <!-- Configuration needed for PublishTrimmed=true to work with custom plugins -->
     <!-- TODO: https://github.com/mono/linker/issues/652 -->
@@ -26,10 +33,18 @@
     <PackageReference Include="Nito.AsyncEx.Coordination" Version="5.0.0" />
     <PackageReference Include="NLog" Version="4.7.2" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.9.2" />
+<<<<<<< HEAD
     <PackageReference Include="SteamKit2" Version="2.3.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="5.5.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="5.5.1" />
+=======
+    <PackageReference Include="Packaging.Targets" Version="0.1.155" />
+    <PackageReference Include="SteamKit2" Version="2.3.0-Beta.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.4.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="5.4.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="5.4.1" />
+>>>>>>> hg/deb-experiments
     <PackageReference Include="System.Composition" Version="1.4.1" />
     <PackageReference Include="System.Linq.Async" Version="4.1.1" />
   </ItemGroup>
