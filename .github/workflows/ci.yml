@@ -14,7 +14,7 @@ env:
   STEAM_TOKEN_DUMPER_TOKEN: ${{ secrets.STEAM_TOKEN_DUMPER_TOKEN }}
 
 jobs:
-  build:
+  main:
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
@@ -204,14 +204,28 @@ jobs:
                 Copy-Item "out\$env:STEAM_TOKEN_DUMPER_NAME\$targetFramework\$env:STEAM_TOKEN_DUMPER_NAME.dll" "out\$variant\plugins\$env:STEAM_TOKEN_DUMPER_NAME"
             }
 
-            # Until https://github.com/dotnet/cli/issues/3267 happens, we'll hack dotnet binary icon on Windows and include .ico file on other platforms
-            if ($targetFramework -ne "$env:NET_FRAMEWORK_VERSION") {
-                if (!(Test-Path "out\$variant\ArchiSteamFarm.exe" -PathType Leaf)) {
-                    Copy-Item 'resources\ASF.ico' "out\$variant\ArchiSteamFarm.ico"
+            # Icon is available only in .NET Framework and .NET Core Windows build, we'll bundle the .ico file for other flavours
+            if (($targetFramework -eq "$env:NET_CORE_VERSION") -and !(Test-Path "out\$variant\ArchiSteamFarm.exe" -PathType Leaf)) {
+                Copy-Item 'resources\ASF.ico' "out\$variant\ArchiSteamFarm.ico"
+            }
+
+            # By default use fastest compression
+            $compressionArgs = '-mx=1'
+
+            # Include extra logic for builds marked for release
+            if ($env:GITHUB_REF -like 'refs/tags/*') {
+                $tag = $env:GITHUB_REF.Substring(10)
+
+                # Tweak compression args for release publishing
+                $compressionArgs = '-mx=9', '-mfb=258', '-mpass=15'
+
+                # Update link in Changelog.html accordingly
+                if (Test-Path "out\$variant\Changelog.html" -PathType Leaf) {
+                    (Get-Content "out\$variant\Changelog.html").Replace('ArchiSteamFarm/commits/master', "ArchiSteamFarm/releases/tag/$tag") | Set-Content "out\$variant\Changelog.html"
                 }
             }
 
-            7z a -bd -slp -tzip -mm=Deflate -mx=1 "out\ASF-$variant.zip" "$env:GITHUB_WORKSPACE\out\$variant\*"
+            7z a -bd -slp -tzip -mm=Deflate $compressionArgs "out\ASF-$variant.zip" "$env:GITHUB_WORKSPACE\out\$variant\*"
 
             if ($LastExitCode -ne 0) {
                 throw "Last command failed."
@@ -272,3 +286,92 @@ jobs:
       with:
         name: ${{ matrix.os }}_ASF-win-x64
         path: out/ASF-win-x64.zip
+
+    - name: Create ArchiSteamFarm GitHub release
+      id: github_release
+      if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && startsWith(matrix.os, 'windows-') }}
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: ArchiSteamFarm V${{ github.ref }}
+        body_path: .github/RELEASE_TEMPLATE.md
+        prerelease: true
+
+    - name: Upload ASF-generic to GitHub release
+      if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && startsWith(matrix.os, 'windows-') }}
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.github_release.outputs.upload_url }}
+        asset_path: out/ASF-generic.zip
+        asset_name: ASF-generic.zip
+        asset_content_type: application/zip
+
+    - name: Upload ASF-generic-netf to GitHub release
+      if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && startsWith(matrix.os, 'windows-') }}
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.github_release.outputs.upload_url }}
+        asset_path: out/ASF-generic-netf.zip
+        asset_name: ASF-generic-netf.zip
+        asset_content_type: application/zip
+
+    - name: Upload ASF-linux-arm to GitHub release
+      if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && startsWith(matrix.os, 'windows-') }}
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.github_release.outputs.upload_url }}
+        asset_path: out/ASF-linux-arm.zip
+        asset_name: ASF-linux-arm.zip
+        asset_content_type: application/zip
+
+    - name: Upload ASF-linux-arm64 to GitHub release
+      if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && startsWith(matrix.os, 'windows-') }}
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.github_release.outputs.upload_url }}
+        asset_path: out/ASF-linux-arm64.zip
+        asset_name: ASF-linux-arm64.zip
+        asset_content_type: application/zip
+
+    - name: Upload ASF-linux-x64 to GitHub release
+      if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && startsWith(matrix.os, 'windows-') }}
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.github_release.outputs.upload_url }}
+        asset_path: out/ASF-linux-x64.zip
+        asset_name: ASF-linux-x64.zip
+        asset_content_type: application/zip
+
+    - name: Upload ASF-osx-x64 to GitHub release
+      if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && startsWith(matrix.os, 'windows-') }}
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.github_release.outputs.upload_url }}
+        asset_path: out/ASF-osx-x64.zip
+        asset_name: ASF-osx-x64.zip
+        asset_content_type: application/zip
+
+    - name: Upload ASF-win-x64 to GitHub release
+      if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && startsWith(matrix.os, 'windows-') }}
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.github_release.outputs.upload_url }}
+        asset_path: out/ASF-win-x64.zip
+        asset_name: ASF-win-x64.zip
+        asset_content_type: application/zip
