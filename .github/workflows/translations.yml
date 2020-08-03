@@ -41,7 +41,7 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
 
-        git pull
+        git pull --depth=100
         git add -A "locale"
 
         if ! git diff --cached --quiet; then
