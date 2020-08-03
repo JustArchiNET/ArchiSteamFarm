@@ -18,6 +18,16 @@ jobs:
       with:
         submodules: recursive
 
+    - name: Reset wiki to follow origin
+      shell: sh
+      run: |
+        set -eu
+
+        cd wiki
+
+        git fetch --depth=1 origin master
+        git reset --hard origin/master
+
     - name: Download latest translations from Crowdin
       uses: crowdin/github-action@1.0.9
       with:
@@ -41,12 +51,12 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
 
-        git pull --depth=100
         git add -A "locale"
 
         if ! git diff --cached --quiet; then
             git commit -m "Automatic translations update"
         fi
+
     - name: Push changes to wiki
       uses: ad-m/github-push-action@master
       with:
@@ -67,6 +77,7 @@ jobs:
         if ! git diff --cached --quiet; then
             git commit -m "Automatic translations update"
         fi
+
     - name: Push changes to ASF
       uses: ad-m/github-push-action@master
       with:
