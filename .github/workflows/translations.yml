@@ -62,7 +62,7 @@ jobs:
       with:
         directory: wiki
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        repository: JustArchiNET/ArchiSteamFarm.wiki
+        repository: ${{ github.repository }}.wiki
 
     - name: Commit the changes to ASF
       shell: sh
