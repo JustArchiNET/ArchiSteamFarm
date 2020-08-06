@@ -412,10 +412,26 @@ namespace ArchiSteamFarm {
 
 				Bot.ArchiLogger.LogGenericTrace(listedUser.SteamID + "...");
 
+				byte? holdDuration = await Bot.ArchiWebHandler.GetTradeHoldDurationForUser(listedUser.SteamID, listedUser.TradeToken).ConfigureAwait(false);
+
+				if (!holdDuration.HasValue) {
+					Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(holdDuration)));
+
+					continue;
+				}
+
+				if (holdDuration.Value > 0) {
+					if (holdDuration.Value > ASF.GlobalConfig.MaxTradeHoldDuration) {
+						Bot.ArchiLogger.LogGenericTrace(holdDuration.Value + " > " + ASF.GlobalConfig.MaxTradeHoldDuration);
+
+						continue;
+					}
+				}
+
 				HashSet<Steam.Asset> theirInventory;
 
 				try {
-					theirInventory = await Bot.ArchiWebHandler.GetInventoryAsync(listedUser.SteamID).Where(item => (!listedUser.MatchEverything || item.Tradable) && wantedSets.Contains((item.RealAppID, item.Type, item.Rarity))).ToHashSetAsync().ConfigureAwait(false);
+					theirInventory = await Bot.ArchiWebHandler.GetInventoryAsync(listedUser.SteamID).Where(item => (!listedUser.MatchEverything || item.Tradable) && wantedSets.Contains((item.RealAppID, item.Type, item.Rarity)) && ((holdDuration.Value == 0) || !(((item.Type == Steam.Asset.EType.FoilTradingCard) || (item.Type == Steam.Asset.EType.TradingCard)) && CardsFarmer.SalesBlacklist.Contains(item.RealAppID)))).ToHashSetAsync().ConfigureAwait(false);
 				} catch (HttpRequestException) {
 					continue;
 				} catch (Exception e) {
