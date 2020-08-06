@@ -282,7 +282,7 @@ namespace ArchiSteamFarm {
 
 			// Bot must have at least one accepted matchable type set
 			if ((Bot.BotConfig.MatchableTypes.Count == 0) || Bot.BotConfig.MatchableTypes.All(type => !AcceptedMatchableTypes.Contains(type))) {
-				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.BotConfig.MatchableTypes) + ": " + Bot.BotConfig.MatchableTypes));
+				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.BotConfig.MatchableTypes) + ": " + string.Join(", ", Bot.BotConfig.MatchableTypes)));
 
 				return false;
 			}
