@@ -62,6 +62,7 @@ namespace ArchiSteamFarm {
 		private const string DefaultSteamTradeToken = null;
 		private const ETradingPreferences DefaultTradingPreferences = ETradingPreferences.None;
 		private const bool DefaultUseLoginKeys = true;
+		private const byte SteamTradeTokenLength = 8;
 
 		private static readonly ImmutableList<EFarmingOrder> DefaultFarmingOrders = ImmutableList<EFarmingOrder>.Empty;
 		private static readonly ImmutableHashSet<uint> DefaultGamesPlayedWhileIdle = ImmutableHashSet<uint>.Empty;
@@ -286,6 +287,10 @@ namespace ArchiSteamFarm {
 
 			if (!string.IsNullOrEmpty(SteamParentalCode) && (SteamParentalCode != "0") && (SteamParentalCode.Length != SteamParentalCodeLength)) {
 				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(SteamParentalCode), SteamParentalCode));
+			}
+
+			if (!string.IsNullOrEmpty(SteamTradeToken) && (SteamTradeToken.Length != SteamTradeTokenLength)) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(SteamTradeToken), SteamTradeToken));
 			}
 
 			foreach ((ulong steamID, EPermission permission) in SteamUserPermissions) {
