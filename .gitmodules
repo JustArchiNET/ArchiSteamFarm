@@ -1,6 +1,3 @@
-[submodule "ASF-WebConfigGenerator"]
-	path = ASF-WebConfigGenerator
-	url = https://github.com/JustArchiNET/ASF-WebConfigGenerator.git
 [submodule "ASF-ui"]
 	path = ASF-ui
 	url = https://github.com/JustArchiNET/ASF-ui.git
