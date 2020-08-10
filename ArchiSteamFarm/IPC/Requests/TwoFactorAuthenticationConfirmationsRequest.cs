@@ -28,7 +28,7 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Requests {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	public sealed class TwoFactorAuthenticationConfirmationsHandleRequest {
+	public sealed class TwoFactorAuthenticationConfirmationsRequest {
 		/// <summary>
 		///     Specifies the target action, whether we should accept the confirmations (true), or decline them (false).
 		/// </summary>
@@ -82,9 +82,9 @@ namespace ArchiSteamFarm.IPC.Requests {
 		}
 
 		[Obsolete]
-		internal TwoFactorAuthenticationConfirmationsHandleRequest(bool accept) => Accept = accept;
+		internal TwoFactorAuthenticationConfirmationsRequest(bool accept) => Accept = accept;
 
 		[JsonConstructor]
-		private TwoFactorAuthenticationConfirmationsHandleRequest() { }
+		private TwoFactorAuthenticationConfirmationsRequest() { }
 	}
 }

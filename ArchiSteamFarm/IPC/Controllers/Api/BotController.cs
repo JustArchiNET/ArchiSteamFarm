@@ -450,9 +450,9 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse>>), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		public async Task<ActionResult<GenericResponse>> TwoFactorAuthenticationConfirmationsAcceptPost(string botNames) {
-			ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, nameof(TwoFactorAuthenticationConfirmationsAcceptPost), nameof(TwoFactorAuthenticationConfirmationsHandlePost)));
+			ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, nameof(TwoFactorAuthenticationConfirmationsAcceptPost), nameof(TwoFactorAuthenticationConfirmationsPost)));
 
-			return await TwoFactorAuthenticationConfirmationsHandlePost(botNames, new TwoFactorAuthenticationConfirmationsHandleRequest(true)).ConfigureAwait(false);
+			return await TwoFactorAuthenticationConfirmationsPost(botNames, new TwoFactorAuthenticationConfirmationsRequest(true)).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -463,18 +463,18 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse>>), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		public async Task<ActionResult<GenericResponse>> TwoFactorAuthenticationConfirmationsCancelPost(string botNames) {
-			ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, nameof(TwoFactorAuthenticationConfirmationsCancelPost), nameof(TwoFactorAuthenticationConfirmationsHandlePost)));
+			ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, nameof(TwoFactorAuthenticationConfirmationsCancelPost), nameof(TwoFactorAuthenticationConfirmationsPost)));
 
-			return await TwoFactorAuthenticationConfirmationsHandlePost(botNames, new TwoFactorAuthenticationConfirmationsHandleRequest(false)).ConfigureAwait(false);
+			return await TwoFactorAuthenticationConfirmationsPost(botNames, new TwoFactorAuthenticationConfirmationsRequest(false)).ConfigureAwait(false);
 		}
 
 		/// <summary>
 		///     Handles 2FA confirmations of given bots, requires ASF 2FA module to be active on them.
 		/// </summary>
-		[HttpPost("{botNames:required}/TwoFactorAuthentication/Confirmations/Handle")]
+		[HttpPost("{botNames:required}/TwoFactorAuthentication/Confirmations")]
 		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse>>), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-		public async Task<ActionResult<GenericResponse>> TwoFactorAuthenticationConfirmationsHandlePost(string botNames, [FromBody] TwoFactorAuthenticationConfirmationsHandleRequest request) {
+		public async Task<ActionResult<GenericResponse>> TwoFactorAuthenticationConfirmationsPost(string botNames, [FromBody] TwoFactorAuthenticationConfirmationsRequest request) {
 			if (string.IsNullOrEmpty(botNames) || (request == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
 
