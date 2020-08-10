@@ -57,7 +57,7 @@ namespace ArchiSteamFarm.IPC.Requests {
 		///     A helper property which works the same as <see cref="AcceptedCreatorIDs" /> but with values written as strings - for javascript compatibility purposes. Use either this one, or <see cref="AcceptedCreatorIDs" />, not both.
 		/// </summary>
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(AcceptedCreatorIDs), Required = Required.DisallowNull)]
-		private ImmutableHashSet<string> SAcceptedCreatorIDs {
+		public ImmutableHashSet<string> SAcceptedCreatorIDs {
 			set {
 				if (value == null) {
 					ASF.ArchiLogger.LogNullError(nameof(value));
