@@ -170,6 +170,7 @@ namespace ArchiSteamFarm.IPC {
 						}
 					);
 
+					options.CustomSchemaIds(type => type.FullName);
 					options.EnableAnnotations(true);
 					options.SchemaFilter<EnumSchemaFilter>();
 
