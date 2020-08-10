@@ -7,7 +7,7 @@ contact_links:
     url: https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Localization
     about: Please use our crowdin platform.
   - name: Support question or technical issue
-    url: https://github.com/JustArchiNET/ArchiSteamFarm/blob/master/SUPPORT.md
+    url: https://github.com/JustArchiNET/ArchiSteamFarm/blob/master/.github/SUPPORT.md
     about: Please review our support guidelines.
   - name: Negative feedback, complaints and demands
     url: https://www.youtube.com/watch?v=dQw4w9WgXcQ
