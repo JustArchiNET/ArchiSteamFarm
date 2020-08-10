@@ -446,17 +446,62 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		///     Accepts 2FA confirmations of given bots, requires ASF 2FA module to be active on them.
 		/// </summary>
 		[HttpPost("{botNames:required}/TwoFactorAuthentication/Confirmations/Accept")]
+		[Obsolete]
 		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse>>), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-		public async Task<ActionResult<GenericResponse>> TwoFactorAuthenticationConfirmationsAcceptPost(string botNames, [FromBody] TwoFactorAuthenticationConfirmationsRequest request) => await TwoFactorAuthenticationConfirmationsPost(botNames, request, true).ConfigureAwait(false);
+		public async Task<ActionResult<GenericResponse>> TwoFactorAuthenticationConfirmationsAcceptPost(string botNames) {
+			ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, nameof(TwoFactorAuthenticationConfirmationsAcceptPost), nameof(TwoFactorAuthenticationConfirmationsHandlePost)));
+
+			return await TwoFactorAuthenticationConfirmationsHandlePost(botNames, new TwoFactorAuthenticationConfirmationsHandleRequest(true)).ConfigureAwait(false);
+		}
 
 		/// <summary>
 		///     Denies 2FA confirmations of given bots, requires ASF 2FA module to be active on them.
 		/// </summary>
 		[HttpPost("{botNames:required}/TwoFactorAuthentication/Confirmations/Cancel")]
+		[Obsolete]
 		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse>>), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-		public async Task<ActionResult<GenericResponse>> TwoFactorAuthenticationConfirmationsCancelPost(string botNames, [FromBody] TwoFactorAuthenticationConfirmationsRequest request) => await TwoFactorAuthenticationConfirmationsPost(botNames, request, false).ConfigureAwait(false);
+		public async Task<ActionResult<GenericResponse>> TwoFactorAuthenticationConfirmationsCancelPost(string botNames) {
+			ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, nameof(TwoFactorAuthenticationConfirmationsCancelPost), nameof(TwoFactorAuthenticationConfirmationsHandlePost)));
+
+			return await TwoFactorAuthenticationConfirmationsHandlePost(botNames, new TwoFactorAuthenticationConfirmationsHandleRequest(false)).ConfigureAwait(false);
+		}
+
+		/// <summary>
+		///     Handles 2FA confirmations of given bots, requires ASF 2FA module to be active on them.
+		/// </summary>
+		[HttpPost("{botNames:required}/TwoFactorAuthentication/Confirmations/Handle")]
+		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse>>), (int) HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+		public async Task<ActionResult<GenericResponse>> TwoFactorAuthenticationConfirmationsHandlePost(string botNames, [FromBody] TwoFactorAuthenticationConfirmationsHandleRequest request) {
+			if (string.IsNullOrEmpty(botNames) || (request == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(botNames));
+
+				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GenericResponse>>(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames) + " || " + nameof(request))));
+			}
+
+			if (request.AcceptedType.HasValue && ((request.AcceptedType.Value == MobileAuthenticator.Confirmation.EType.Unknown) || !Enum.IsDefined(typeof(MobileAuthenticator.Confirmation.EType), request.AcceptedType.Value))) {
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(request.AcceptedType))));
+			}
+
+			HashSet<Bot> bots = Bot.GetBots(botNames);
+
+			if ((bots == null) || (bots.Count == 0)) {
+				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GenericResponse>>(false, string.Format(Strings.BotNotFound, botNames)));
+			}
+
+			IList<(bool Success, string Message)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.HandleTwoFactorAuthenticationConfirmations(request.Accept, request.AcceptedType, request.AcceptedCreatorIDs?.Count > 0 ? request.AcceptedCreatorIDs : null, request.WaitIfNeeded))).ConfigureAwait(false);
+
+			Dictionary<string, GenericResponse> result = new Dictionary<string, GenericResponse>(bots.Count, Bot.BotsComparer);
+
+			foreach (Bot bot in bots) {
+				(bool success, string message) = results[result.Count];
+				result[bot.BotName] = new GenericResponse(success, message);
+			}
+
+			return Ok(new GenericResponse<IReadOnlyDictionary<string, GenericResponse>>(result));
+		}
 
 		/// <summary>
 		///     Fetches 2FA tokens of given bots, requires ASF 2FA module to be active on them.
@@ -487,35 +532,6 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			return Ok(new GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>(result));
-		}
-
-		private async Task<ActionResult<GenericResponse>> TwoFactorAuthenticationConfirmationsPost(string botNames, TwoFactorAuthenticationConfirmationsRequest request, bool accept) {
-			if (string.IsNullOrEmpty(botNames) || (request == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(botNames));
-
-				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GenericResponse>>(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames) + " || " + nameof(request))));
-			}
-
-			if (request.AcceptedType.HasValue && ((request.AcceptedType.Value == MobileAuthenticator.Confirmation.EType.Unknown) || !Enum.IsDefined(typeof(MobileAuthenticator.Confirmation.EType), request.AcceptedType.Value))) {
-				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(request.AcceptedType))));
-			}
-
-			HashSet<Bot> bots = Bot.GetBots(botNames);
-
-			if ((bots == null) || (bots.Count == 0)) {
-				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GenericResponse>>(false, string.Format(Strings.BotNotFound, botNames)));
-			}
-
-			IList<(bool Success, string Message)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.HandleTwoFactorAuthenticationConfirmations(accept, request.AcceptedType, request.AcceptedCreatorIDs?.Count > 0 ? request.AcceptedCreatorIDs : null, request.WaitIfNeeded))).ConfigureAwait(false);
-
-			Dictionary<string, GenericResponse> result = new Dictionary<string, GenericResponse>(bots.Count, Bot.BotsComparer);
-
-			foreach (Bot bot in bots) {
-				(bool success, string message) = results[result.Count];
-				result[bot.BotName] = new GenericResponse(success, message);
-			}
-
-			return Ok(new GenericResponse<IReadOnlyDictionary<string, GenericResponse>>(result));
 		}
 	}
 }

@@ -19,6 +19,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
@@ -27,9 +28,15 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Requests {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	public sealed class TwoFactorAuthenticationConfirmationsRequest {
+	public sealed class TwoFactorAuthenticationConfirmationsHandleRequest {
 		/// <summary>
-		///     Specifies the accepted type of confirmations to handle. If not provided, all confirmation types are considered for an action.
+		///     Specifies the target action, whether we should accept the confirmations (true), or decline them (false).
+		/// </summary>
+		[JsonProperty(Required = Required.Always)]
+		public readonly bool Accept;
+
+		/// <summary>
+		///     Specifies the type of confirmations to handle. If not provided, all confirmation types are considered for an action.
 		/// </summary>
 		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly MobileAuthenticator.Confirmation.EType? AcceptedType;
@@ -41,7 +48,7 @@ namespace ArchiSteamFarm.IPC.Requests {
 		public readonly bool WaitIfNeeded;
 
 		/// <summary>
-		///     Specifies IDs of the confirmations that we're supposed to handle. CreatorID of the confirmation is equal to ID of the object that triggered it - e.g. ID of the trade offer, or ID of market listing. If not provided, or empty array, all confirmation IDs are considered for an action.
+		///     Specifies IDs of the confirmations that we're supposed to handle. CreatorID of the confirmation is equal to ID of the object that triggered it - e.g. ID of the trade offer, or ID of the market listing. If not provided, or empty array, all confirmation IDs are considered for an action.
 		/// </summary>
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ImmutableHashSet<ulong> AcceptedCreatorIDs { get; private set; }
@@ -74,7 +81,10 @@ namespace ArchiSteamFarm.IPC.Requests {
 			}
 		}
 
+		[Obsolete]
+		internal TwoFactorAuthenticationConfirmationsHandleRequest(bool accept) => Accept = accept;
+
 		[JsonConstructor]
-		private TwoFactorAuthenticationConfirmationsRequest() { }
+		private TwoFactorAuthenticationConfirmationsHandleRequest() { }
 	}
 }
