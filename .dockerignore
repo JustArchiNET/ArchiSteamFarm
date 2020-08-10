@@ -15,9 +15,6 @@ ArchiSteamFarm/logs
 # Ignore standard out folders for publishing
 **/out
 
-# Ignore crowdin CLI secret (if exists)
-tools/ArchiCrowdin/crowdin_identity.yml
-
 #     _    ____  _____     ____             _
 #    / \  / ___||  ___|   |  _ \  ___   ___| | _____ _ __
 #   / _ \ \___ \| |_ _____| | | |/ _ \ / __| |/ / _ \ '__|
