@@ -448,7 +448,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[HttpPost("{botNames:required}/TwoFactorAuthentication/Confirmations/Accept")]
 		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse>>), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-		public async Task<ActionResult<GenericResponse>> TwoFactorAuthenticationConfirmationsAcceptPost(string botNames) => await TwoFactorAuthenticationConfirmationsPost(botNames, true).ConfigureAwait(false);
+		public async Task<ActionResult<GenericResponse>> TwoFactorAuthenticationConfirmationsAcceptPost(string botNames, [FromBody] TwoFactorAuthenticationConfirmationsRequest request) => await TwoFactorAuthenticationConfirmationsPost(botNames, request, true).ConfigureAwait(false);
 
 		/// <summary>
 		///     Denies 2FA confirmations of given bots, requires ASF 2FA module to be active on them.
@@ -456,7 +456,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[HttpPost("{botNames:required}/TwoFactorAuthentication/Confirmations/Cancel")]
 		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse>>), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-		public async Task<ActionResult<GenericResponse>> TwoFactorAuthenticationConfirmationsCancelPost(string botNames) => await TwoFactorAuthenticationConfirmationsPost(botNames, false).ConfigureAwait(false);
+		public async Task<ActionResult<GenericResponse>> TwoFactorAuthenticationConfirmationsCancelPost(string botNames, [FromBody] TwoFactorAuthenticationConfirmationsRequest request) => await TwoFactorAuthenticationConfirmationsPost(botNames, request, false).ConfigureAwait(false);
 
 		/// <summary>
 		///     Fetches 2FA tokens of given bots, requires ASF 2FA module to be active on them.
@@ -489,11 +489,15 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			return Ok(new GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>(result));
 		}
 
-		private async Task<ActionResult<GenericResponse>> TwoFactorAuthenticationConfirmationsPost(string botNames, bool accept) {
-			if (string.IsNullOrEmpty(botNames)) {
+		private async Task<ActionResult<GenericResponse>> TwoFactorAuthenticationConfirmationsPost(string botNames, TwoFactorAuthenticationConfirmationsRequest request, bool accept) {
+			if (string.IsNullOrEmpty(botNames) || (request == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames));
 
-				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GenericResponse>>(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
+				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GenericResponse>>(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames) + " || " + nameof(request))));
+			}
+
+			if (request.AcceptedType.HasValue && ((request.AcceptedType.Value == MobileAuthenticator.Confirmation.EType.Unknown) || !Enum.IsDefined(typeof(MobileAuthenticator.Confirmation.EType), request.AcceptedType.Value))) {
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(request.AcceptedType))));
 			}
 
 			HashSet<Bot> bots = Bot.GetBots(botNames);
@@ -502,7 +506,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GenericResponse>>(false, string.Format(Strings.BotNotFound, botNames)));
 			}
 
-			IList<(bool Success, string Message)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.HandleTwoFactorAuthenticationConfirmations(accept))).ConfigureAwait(false);
+			IList<(bool Success, string Message)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.HandleTwoFactorAuthenticationConfirmations(accept, request.AcceptedType, request.AcceptedCreatorIDs.Count > 0 ? request.AcceptedCreatorIDs : null, request.WaitIfNeeded))).ConfigureAwait(false);
 
 			Dictionary<string, GenericResponse> result = new Dictionary<string, GenericResponse>(bots.Count, Bot.BotsComparer);
 
