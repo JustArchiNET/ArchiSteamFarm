@@ -726,6 +726,6 @@ Process uptime: {1}</value>
   </data>
   <data name="BotTradeOfferResult" xml:space="preserve">
     <value>The trade offer {0} is determined to be {1} due to {2}.</value>
-    <comment>{0} will be replaced by trade offer ID (number), {1} will be replaced by internal ASF enum name, {2} will be replaced by unique identifier of an object's name that caused the state to happen</comment>
+    <comment>{0} will be replaced by trade offer ID (number), {1} will be replaced by internal ASF enum name, {2} will be replaced by technical reason why the trade was determined to be in this state</comment>
   </data>
 </root>
