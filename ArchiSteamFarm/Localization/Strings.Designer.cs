@@ -692,6 +692,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu The trade offer {0} is determined to be {1} due to {2}..
+        /// </summary>
+        public static string BotTradeOfferResult {
+            get {
+                return ResourceManager.GetString("BotTradeOfferResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Unable to login to Steam: {0}/{1}.
         /// </summary>
         public static string BotUnableToLogin {

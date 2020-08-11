@@ -286,6 +286,8 @@ namespace ArchiSteamFarm {
 				try {
 					inventory = await Bot.ArchiWebHandler.GetInventoryAsync(Bot.SteamID, appID, contextID).Where(item => item.Tradable && filterFunction(item)).ToHashSetAsync().ConfigureAwait(false);
 				} catch (HttpRequestException e) {
+					Bot.ArchiLogger.LogGenericWarningException(e);
+
 					return (false, string.Format(Strings.WarningFailedWithError, e.Message));
 				} catch (Exception e) {
 					Bot.ArchiLogger.LogGenericException(e);

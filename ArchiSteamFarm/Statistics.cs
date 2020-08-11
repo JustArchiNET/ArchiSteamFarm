@@ -180,7 +180,9 @@ namespace ArchiSteamFarm {
 
 				try {
 					inventory = await Bot.ArchiWebHandler.GetInventoryAsync().Where(item => item.Tradable && acceptedMatchableTypes.Contains(item.Type)).ToHashSetAsync().ConfigureAwait(false);
-				} catch (HttpRequestException) {
+				} catch (HttpRequestException e) {
+					Bot.ArchiLogger.LogGenericWarningException(e);
+
 					// This is actually inventory failure, so we'll stop sending heartbeats but not record it as valid check
 					ShouldSendHeartBeats = false;
 
@@ -364,7 +366,9 @@ namespace ArchiSteamFarm {
 
 			try {
 				ourInventory = await Bot.ArchiWebHandler.GetInventoryAsync().Where(item => acceptedMatchableTypes.Contains(item.Type)).ToHashSetAsync().ConfigureAwait(false);
-			} catch (HttpRequestException) {
+			} catch (HttpRequestException e) {
+				Bot.ArchiLogger.LogGenericWarningException(e);
+
 				return (false, false);
 			} catch (Exception e) {
 				Bot.ArchiLogger.LogGenericException(e);
@@ -432,7 +436,9 @@ namespace ArchiSteamFarm {
 
 				try {
 					theirInventory = await Bot.ArchiWebHandler.GetInventoryAsync(listedUser.SteamID).Where(item => (!listedUser.MatchEverything || item.Tradable) && wantedSets.Contains((item.RealAppID, item.Type, item.Rarity)) && ((holdDuration.Value == 0) || !(((item.Type == Steam.Asset.EType.FoilTradingCard) || (item.Type == Steam.Asset.EType.TradingCard)) && CardsFarmer.SalesBlacklist.Contains(item.RealAppID)))).ToHashSetAsync().ConfigureAwait(false);
-				} catch (HttpRequestException) {
+				} catch (HttpRequestException e) {
+					Bot.ArchiLogger.LogGenericWarningException(e);
+
 					continue;
 				} catch (Exception e) {
 					Bot.ArchiLogger.LogGenericException(e);

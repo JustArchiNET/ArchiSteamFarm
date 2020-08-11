@@ -139,6 +139,28 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[TestMethod]
+		public void SingleGameAbrynosWasWrongNeutralAccept() {
+			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> {
+				CreateItem(1),
+				CreateItem(2, 2),
+				CreateItem(3),
+				CreateItem(4),
+				CreateItem(5)
+			};
+
+			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> {
+				CreateItem(2)
+			};
+
+			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> {
+				CreateItem(3)
+			};
+
+			Assert.IsTrue(IsFairExchange(itemsToGive, itemsToReceive));
+			Assert.IsTrue(IsTradeNeutralOrBetter(inventory, itemsToGive, itemsToReceive));
+		}
+
+		[TestMethod]
 		public void SingleGameDonationAccept() {
 			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> {
 				CreateItem(1)
