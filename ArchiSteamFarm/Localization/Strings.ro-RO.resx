@@ -724,4 +724,5 @@ Proces: {1}</value>
   <data name="IPCConfigChanged" xml:space="preserve">
     <value>Configurația IPC a fost schimbată!</value>
   </data>
+  
 </root>

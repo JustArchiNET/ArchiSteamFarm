@@ -723,4 +723,5 @@ Proces uptime: {1}</value>
   <data name="IPCConfigChanged" xml:space="preserve">
     <value>IPC-configuratie is gewijzigd!</value>
   </data>
+  
 </root>

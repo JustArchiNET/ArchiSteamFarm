@@ -724,4 +724,5 @@ Tempo de execução: {1}</value>
   <data name="IPCConfigChanged" xml:space="preserve">
     <value>A configuração IPC foi alterada!</value>
   </data>
+  
 </root>

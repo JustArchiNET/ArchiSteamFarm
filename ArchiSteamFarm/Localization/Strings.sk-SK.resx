@@ -702,4 +702,5 @@ Interaktívna konzola je teraz aktívna, napíšte "c" pre vstup do príkazovéh
   <data name="IPCConfigChanged" xml:space="preserve">
     <value>Konfigurácia IPC bola zmenená!</value>
   </data>
+  
 </root>

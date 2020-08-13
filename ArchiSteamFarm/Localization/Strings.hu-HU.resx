@@ -718,4 +718,5 @@ StackTrace: {2}</value>
   <data name="IPCConfigChanged" xml:space="preserve">
     <value>Az IPC konfig megváltozott!</value>
   </data>
+  
 </root>

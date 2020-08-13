@@ -720,4 +720,5 @@ StackTrace:
   <data name="IPCConfigChanged" xml:space="preserve">
     <value>IPC nastavení bylo změněno!</value>
   </data>
+  
 </root>

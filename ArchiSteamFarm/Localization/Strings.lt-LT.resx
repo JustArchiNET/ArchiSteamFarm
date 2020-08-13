@@ -720,4 +720,5 @@ StackTrace:
   <data name="IPCConfigChanged" xml:space="preserve">
     <value>IPC konfigūracija buvo pakeista!</value>
   </data>
+  
 </root>

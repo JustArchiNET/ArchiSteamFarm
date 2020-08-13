@@ -721,4 +721,5 @@
   <data name="IPCConfigChanged" xml:space="preserve">
     <value>IPC настройките са били променени!</value>
   </data>
+  
 </root>

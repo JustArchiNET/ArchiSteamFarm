@@ -724,4 +724,5 @@ Süreç çalışma zamanı: {1}</value>
   <data name="IPCConfigChanged" xml:space="preserve">
     <value>IPC yapılandırması değiştirildi!</value>
   </data>
+  
 </root>
