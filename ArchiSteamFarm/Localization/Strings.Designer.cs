@@ -376,6 +376,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Received InvalidPassword error code {0} times in a row. Your password for this account is most likely wrong, aborting!.
+        /// </summary>
+        public static string BotInvalidPasswordDuringLogin {
+            get {
+                return ResourceManager.GetString("BotInvalidPasswordDuringLogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Bot has level {0}..
         /// </summary>
         public static string BotLevel {

@@ -49,6 +49,7 @@ namespace ArchiSteamFarm {
 		private const char DefaultBackgroundKeysRedeemerSeparator = '\t';
 		private const byte LoginCooldownInMinutes = 25; // Captcha disappears after around 20 minutes, so we make it 25
 		private const uint LoginID = 1242; // This must be the same for all ASF bots and all ASF processes
+		private const byte MaxInvalidPasswordFailures = WebBrowser.MaxTries; // Max InvalidPassword failures in a row before we determine that our password is invalid (because Steam wrongly returns those, of course)
 		private const ushort MaxMessageLength = 5000; // This is a limitation enforced by Steam
 		private const byte MaxTwoFactorCodeFailures = WebBrowser.MaxTries; // Max TwoFactorCodeMismatch failures in a row before we determine that our 2FA credentials are invalid (because Steam wrongly returns those, of course)
 		private const byte RedeemCooldownInHours = 1; // 1 hour since first redeem attempt, this is a limitation enforced by Steam
@@ -209,6 +210,7 @@ namespace ArchiSteamFarm {
 		private bool FirstTradeSent;
 		private Timer GamesRedeemerInBackgroundTimer;
 		private byte HeartBeatFailures;
+		private byte InvalidPasswordFailures;
 		private EResult LastLogOnResult;
 		private DateTime LastLogonSessionReplaced;
 		private bool LibraryLocked;
@@ -2183,18 +2185,19 @@ namespace ArchiSteamFarm {
 
 			switch (lastLogOnResult) {
 				case EResult.AccountDisabled:
-				case EResult.InvalidPassword when string.IsNullOrEmpty(BotDatabase.LoginKey):
 					// Do not attempt to reconnect, those failures are permanent
 					return;
-				case EResult.InvalidPassword:
+				case EResult.InvalidPassword when !string.IsNullOrEmpty(BotDatabase.LoginKey):
 					BotDatabase.LoginKey = null;
 					ArchiLogger.LogGenericInfo(Strings.BotRemovedExpiredLoginKey);
 
 					break;
+				case EResult.InvalidPassword:
 				case EResult.NoConnection:
 				case EResult.ServiceUnavailable:
 				case EResult.Timeout:
 				case EResult.TryAnotherCM:
+				case EResult.TwoFactorCodeMismatch:
 					await Task.Delay(5000).ConfigureAwait(false);
 
 					break;
@@ -2522,7 +2525,7 @@ namespace ArchiSteamFarm {
 					ArchiLogger.LogGenericInfo(string.Format(Strings.BotLoggedOn, SteamID + (!string.IsNullOrEmpty(callback.VanityURL) ? "/" + callback.VanityURL : "")));
 
 					// Old status for these doesn't matter, we'll update them if needed
-					TwoFactorCodeFailures = 0;
+					InvalidPasswordFailures = TwoFactorCodeFailures = 0;
 					LibraryLocked = PlayingBlocked = false;
 
 					if (PlayingWasBlocked && (PlayingWasBlockedTimer == null)) {
@@ -2659,17 +2662,25 @@ namespace ArchiSteamFarm {
 				case EResult.TwoFactorCodeMismatch:
 					ArchiLogger.LogGenericWarning(string.Format(Strings.BotUnableToLogin, callback.Result, callback.ExtendedResult));
 
-					if ((callback.Result == EResult.TwoFactorCodeMismatch) && HasMobileAuthenticator) {
-						if (++TwoFactorCodeFailures >= MaxTwoFactorCodeFailures) {
+					switch (callback.Result) {
+						case EResult.InvalidPassword when string.IsNullOrEmpty(BotDatabase.LoginKey) && (++InvalidPasswordFailures >= MaxInvalidPasswordFailures):
+							InvalidPasswordFailures = 0;
+							ArchiLogger.LogGenericError(string.Format(Strings.BotInvalidPasswordDuringLogin, MaxInvalidPasswordFailures));
+							Stop();
+
+							break;
+						case EResult.TwoFactorCodeMismatch when HasMobileAuthenticator && (++TwoFactorCodeFailures >= MaxTwoFactorCodeFailures):
 							TwoFactorCodeFailures = 0;
 							ArchiLogger.LogGenericError(string.Format(Strings.BotInvalidAuthenticatorDuringLogin, MaxTwoFactorCodeFailures));
 							Stop();
-						}
+
+							break;
 					}
 
 					break;
 				default:
 					// Unexpected result, shutdown immediately
+					ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(callback.Result), callback.Result));
 					ArchiLogger.LogGenericError(string.Format(Strings.BotUnableToLogin, callback.Result, callback.ExtendedResult));
 					Stop();
 
