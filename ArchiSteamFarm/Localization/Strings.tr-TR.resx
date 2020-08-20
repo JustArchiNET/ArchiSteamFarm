@@ -724,6 +724,12 @@ Süreç çalışma zamanı: {1}</value>
   <data name="IPCConfigChanged" xml:space="preserve">
     <value>IPC yapılandırması değiştirildi!</value>
   </data>
-  
-  
+  <data name="BotTradeOfferResult" xml:space="preserve">
+    <value>{0} takas teklifi, {2} sebebiyle {1} olarak belirlendi.</value>
+    <comment>{0} will be replaced by trade offer ID (number), {1} will be replaced by internal ASF enum name, {2} will be replaced by technical reason why the trade was determined to be in this state</comment>
+  </data>
+  <data name="BotInvalidPasswordDuringLogin" xml:space="preserve">
+    <value>Arka arkaya {0} kere InvalidPassword hata kodu alındı. Bu hesap için parolanız muhtemelen yanlış, iptal ediliyor!</value>
+    <comment>{0} will be replaced by maximum allowed number of failed login attempts</comment>
+  </data>
 </root>
