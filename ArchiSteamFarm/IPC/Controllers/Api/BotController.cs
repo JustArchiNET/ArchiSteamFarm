@@ -443,32 +443,6 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		/// <summary>
-		///     Accepts 2FA confirmations of given bots, requires ASF 2FA module to be active on them.
-		/// </summary>
-		[HttpPost("{botNames:required}/TwoFactorAuthentication/Confirmations/Accept")]
-		[Obsolete]
-		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse>>), (int) HttpStatusCode.OK)]
-		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-		public async Task<ActionResult<GenericResponse>> TwoFactorAuthenticationConfirmationsAcceptPost(string botNames) {
-			ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, nameof(TwoFactorAuthenticationConfirmationsAcceptPost), nameof(TwoFactorAuthenticationConfirmationsPost)));
-
-			return await TwoFactorAuthenticationConfirmationsPost(botNames, new TwoFactorAuthenticationConfirmationsRequest(true)).ConfigureAwait(false);
-		}
-
-		/// <summary>
-		///     Denies 2FA confirmations of given bots, requires ASF 2FA module to be active on them.
-		/// </summary>
-		[HttpPost("{botNames:required}/TwoFactorAuthentication/Confirmations/Cancel")]
-		[Obsolete]
-		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse>>), (int) HttpStatusCode.OK)]
-		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-		public async Task<ActionResult<GenericResponse>> TwoFactorAuthenticationConfirmationsCancelPost(string botNames) {
-			ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningDeprecated, nameof(TwoFactorAuthenticationConfirmationsCancelPost), nameof(TwoFactorAuthenticationConfirmationsPost)));
-
-			return await TwoFactorAuthenticationConfirmationsPost(botNames, new TwoFactorAuthenticationConfirmationsRequest(false)).ConfigureAwait(false);
-		}
-
-		/// <summary>
 		///     Handles 2FA confirmations of given bots, requires ASF 2FA module to be active on them.
 		/// </summary>
 		[HttpPost("{botNames:required}/TwoFactorAuthentication/Confirmations")]

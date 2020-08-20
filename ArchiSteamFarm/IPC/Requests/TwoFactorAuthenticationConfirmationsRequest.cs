@@ -19,7 +19,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
@@ -80,9 +79,6 @@ namespace ArchiSteamFarm.IPC.Requests {
 				AcceptedCreatorIDs = acceptedCreatorIDs.ToImmutableHashSet();
 			}
 		}
-
-		[Obsolete]
-		internal TwoFactorAuthenticationConfirmationsRequest(bool accept) => Accept = accept;
 
 		[JsonConstructor]
 		private TwoFactorAuthenticationConfirmationsRequest() { }
