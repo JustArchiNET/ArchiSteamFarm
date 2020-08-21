@@ -257,7 +257,7 @@ namespace ArchiSteamFarm {
 				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(OptimizationMode), OptimizationMode));
 			}
 
-			if (!string.IsNullOrEmpty(SteamMessagePrefix) && (SteamMessagePrefix.Length > Bot.MaxMessagePrefixLength)) {
+			if (!string.IsNullOrEmpty(SteamMessagePrefix) && (SteamMessagePrefix!.Length > Bot.MaxMessagePrefixLength)) {
 				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(SteamMessagePrefix), SteamMessagePrefix));
 			}
 
@@ -309,7 +309,7 @@ namespace ArchiSteamFarm {
 
 			if (!valid) {
 				if (!string.IsNullOrEmpty(errorMessage)) {
-					ASF.ArchiLogger.LogGenericError(errorMessage);
+					ASF.ArchiLogger.LogGenericError(errorMessage!);
 				}
 
 				return null;
