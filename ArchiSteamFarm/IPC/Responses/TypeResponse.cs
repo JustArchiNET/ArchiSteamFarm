@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Responses {
@@ -46,7 +45,7 @@ namespace ArchiSteamFarm.IPC.Responses {
 		[Required]
 		public readonly TypeProperties Properties;
 
-		internal TypeResponse([NotNull] Dictionary<string, string> body, [NotNull] TypeProperties properties) {
+		internal TypeResponse(Dictionary<string, string> body, TypeProperties properties) {
 			if ((body == null) || (properties == null)) {
 				throw new ArgumentNullException(nameof(body) + " || " + nameof(properties));
 			}
@@ -63,7 +62,7 @@ namespace ArchiSteamFarm.IPC.Responses {
 			///     This can be used for determining how <see cref="Body" /> should be interpreted.
 			/// </remarks>
 			[JsonProperty]
-			public readonly string BaseType;
+			public readonly string? BaseType;
 
 			/// <summary>
 			///     Custom attributes of given type, if available.
@@ -72,7 +71,7 @@ namespace ArchiSteamFarm.IPC.Responses {
 			///     This can be used for determining main enum type if <see cref="BaseType" /> is <see cref="Enum" />.
 			/// </remarks>
 			[JsonProperty]
-			public readonly HashSet<string> CustomAttributes;
+			public readonly HashSet<string>? CustomAttributes;
 
 			/// <summary>
 			///     Underlying type of given type, if available.
@@ -81,9 +80,9 @@ namespace ArchiSteamFarm.IPC.Responses {
 			///     This can be used for determining underlying enum type if <see cref="BaseType" /> is <see cref="Enum" />.
 			/// </remarks>
 			[JsonProperty]
-			public readonly string UnderlyingType;
+			public readonly string? UnderlyingType;
 
-			internal TypeProperties(string baseType = null, HashSet<string> customAttributes = null, string underlyingType = null) {
+			internal TypeProperties(string? baseType = null, HashSet<string>? customAttributes = null, string? underlyingType = null) {
 				BaseType = baseType;
 				CustomAttributes = customAttributes;
 				UnderlyingType = underlyingType;

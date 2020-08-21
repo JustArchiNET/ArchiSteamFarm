@@ -31,23 +31,23 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog.Web;
-
 #if !NETFRAMEWORK
 using Microsoft.Extensions.Hosting;
+
 #endif
 
 namespace ArchiSteamFarm.IPC {
 	internal static class ArchiKestrel {
-		internal static HistoryTarget HistoryTarget { get; private set; }
+		internal static HistoryTarget? HistoryTarget { get; private set; }
 		internal static string WebsiteDirectory { get; private set; } = Path.Combine(AppContext.BaseDirectory, SharedInfo.WebsiteDirectory);
 
 #if NETFRAMEWORK
-		private static IWebHost KestrelWebHost;
+		private static IWebHost? KestrelWebHost;
 #else
-		private static IHost KestrelWebHost;
+		private static IHost? KestrelWebHost;
 #endif
 
-		internal static void OnNewHistoryTarget(HistoryTarget historyTarget = null) {
+		internal static void OnNewHistoryTarget(HistoryTarget? historyTarget = null) {
 			if (HistoryTarget != null) {
 				HistoryTarget.NewHistoryEntry -= NLogController.OnNewHistoryEntry;
 				HistoryTarget = null;
@@ -140,9 +140,9 @@ namespace ArchiSteamFarm.IPC {
 
 			// Start the server
 #if NETFRAMEWORK
-			IWebHost kestrelWebHost = null;
+			IWebHost? kestrelWebHost = null;
 #else
-			IHost kestrelWebHost = null;
+			IHost? kestrelWebHost = null;
 #endif
 
 			try {

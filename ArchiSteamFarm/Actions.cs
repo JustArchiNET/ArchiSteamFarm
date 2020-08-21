@@ -40,11 +40,11 @@ namespace ArchiSteamFarm {
 		private readonly ConcurrentHashSet<ulong> HandledGifts = new ConcurrentHashSet<ulong>();
 		private readonly SemaphoreSlim TradingSemaphore = new SemaphoreSlim(1, 1);
 
-		private Timer CardsFarmerResumeTimer;
+		private Timer? CardsFarmerResumeTimer;
 		private bool ProcessingGiftsScheduled;
 		private bool TradingScheduled;
 
-		internal Actions([NotNull] Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+		internal Actions(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 		public async ValueTask DisposeAsync() {
 			// Those are objects that are always being created if constructor doesn't throw exception
@@ -70,12 +70,12 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<(bool Success, string Token, string Message)> GenerateTwoFactorAuthenticationToken() {
+		public async Task<(bool Success, string? Token, string Message)> GenerateTwoFactorAuthenticationToken() {
 			if (!Bot.HasMobileAuthenticator) {
 				return (false, null, Strings.BotNoASFAuthenticator);
 			}
 
-			string token = await Bot.BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
+			string? token = await Bot.BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
 
 			return (true, token, Strings.Success);
 		}
@@ -89,7 +89,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<(bool Success, string Message)> HandleTwoFactorAuthenticationConfirmations(bool accept, MobileAuthenticator.Confirmation.EType? acceptedType = null, IReadOnlyCollection<ulong> acceptedCreatorIDs = null, bool waitIfNeeded = false) {
+		public async Task<(bool Success, string Message)> HandleTwoFactorAuthenticationConfirmations(bool accept, MobileAuthenticator.Confirmation.EType? acceptedType = null, IReadOnlyCollection<ulong>? acceptedCreatorIDs = null, bool waitIfNeeded = false) {
 			if (!Bot.HasMobileAuthenticator) {
 				return (false, Strings.BotNoASFAuthenticator);
 			}
@@ -99,14 +99,14 @@ namespace ArchiSteamFarm {
 			}
 
 			ushort handledConfirmationsCount = 0;
-			HashSet<ulong> handledCreatorIDs = null;
+			HashSet<ulong>? handledCreatorIDs = null;
 
 			for (byte i = 0; (i == 0) || ((i < WebBrowser.MaxTries) && waitIfNeeded); i++) {
 				if (i > 0) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
-				HashSet<MobileAuthenticator.Confirmation> confirmations = await Bot.BotDatabase.MobileAuthenticator.GetConfirmations().ConfigureAwait(false);
+				HashSet<MobileAuthenticator.Confirmation>? confirmations = await Bot.BotDatabase.MobileAuthenticator.GetConfirmations().ConfigureAwait(false);
 
 				if ((confirmations == null) || (confirmations.Count == 0)) {
 					continue;
@@ -135,7 +135,7 @@ namespace ArchiSteamFarm {
 				handledConfirmationsCount += (ushort) confirmations.Count;
 
 				if ((acceptedCreatorIDs != null) && (acceptedCreatorIDs.Count > 0)) {
-					IEnumerable<ulong> handledCreatorIDsThisRound = confirmations.Select(confirmation => confirmation.Creator).Where(acceptedCreatorIDs.Contains);
+					IEnumerable<ulong> handledCreatorIDsThisRound = confirmations.Select(confirmation => confirmation.Creator).Where(acceptedCreatorIDs.Contains!);
 
 					if (handledCreatorIDs != null) {
 						handledCreatorIDs.UnionWith(handledCreatorIDsThisRound);
@@ -186,7 +186,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<(bool Success, string Message)> Play(IEnumerable<uint> gameIDs, string gameName = null) {
+		public async Task<(bool Success, string Message)> Play(IEnumerable<uint> gameIDs, string? gameName = null) {
 			if (gameIDs == null) {
 				Bot.ArchiLogger.LogNullError(nameof(gameIDs));
 
@@ -207,7 +207,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<ArchiHandler.PurchaseResponseCallback> RedeemKey(string key) {
+		public async Task<ArchiHandler.PurchaseResponseCallback?> RedeemKey(string key) {
 			await LimitGiftsRequestsAsync().ConfigureAwait(false);
 
 			return await Bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
@@ -238,7 +238,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<(bool Success, string Message)> SendInventory(uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, ulong targetSteamID = 0, string tradeToken = null, Func<Steam.Asset, bool> filterFunction = null) {
+		public async Task<(bool Success, string Message)> SendInventory(uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, ulong targetSteamID = 0, string? tradeToken = null, Func<Steam.Asset, bool>? filterFunction = null) {
 			if ((appID == 0) || (contextID == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
 
@@ -311,7 +311,7 @@ namespace ArchiSteamFarm {
 					}
 				}
 
-				(bool success, HashSet<ulong> mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(targetSteamID, inventory, token: tradeToken).ConfigureAwait(false);
+				(bool success, HashSet<ulong>? mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(targetSteamID, inventory, token: tradeToken).ConfigureAwait(false);
 
 				if ((mobileTradeOfferIDs != null) && (mobileTradeOfferIDs.Count > 0) && Bot.HasMobileAuthenticator) {
 					(bool twoFactorSuccess, _) = await HandleTwoFactorAuthenticationConfirmations(true, MobileAuthenticator.Confirmation.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
@@ -354,8 +354,8 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public static async Task<(bool Success, string Message, Version Version)> Update() {
-			Version version = await ASF.Update(true).ConfigureAwait(false);
+		public static async Task<(bool Success, string? Message, Version? Version)> Update() {
+			Version? version = await ASF.Update(true).ConfigureAwait(false);
 
 			if (version == null) {
 				return (false, null, null);
@@ -386,7 +386,7 @@ namespace ArchiSteamFarm {
 					ProcessingGiftsScheduled = false;
 				}
 
-				HashSet<ulong> giftCardIDs = await Bot.ArchiWebHandler.GetDigitalGiftCards().ConfigureAwait(false);
+				HashSet<ulong>? giftCardIDs = await Bot.ArchiWebHandler.GetDigitalGiftCards().ConfigureAwait(false);
 
 				if ((giftCardIDs == null) || (giftCardIDs.Count == 0)) {
 					return;
@@ -424,7 +424,7 @@ namespace ArchiSteamFarm {
 				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.BotAcceptingGift, guestPassID));
 				await LimitGiftsRequestsAsync().ConfigureAwait(false);
 
-				ArchiHandler.RedeemGuestPassResponseCallback response = await Bot.ArchiHandler.RedeemGuestPass(guestPassID).ConfigureAwait(false);
+				ArchiHandler.RedeemGuestPassResponseCallback? response = await Bot.ArchiHandler.RedeemGuestPass(guestPassID).ConfigureAwait(false);
 
 				if (response != null) {
 					if (response.Result == EResult.OK) {
@@ -441,12 +441,20 @@ namespace ArchiSteamFarm {
 		internal void OnDisconnected() => HandledGifts.Clear();
 
 		private ulong GetFirstSteamMasterID() {
+			if (ASF.GlobalConfig == null) {
+				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
+			}
+
 			ulong steamMasterID = Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key != 0) && (kv.Key != Bot.SteamID) && new SteamID(kv.Key).IsIndividualAccount && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderBy(steamID => steamID).FirstOrDefault();
 
 			return steamMasterID > 0 ? steamMasterID : (ASF.GlobalConfig.SteamOwnerID != 0) && new SteamID(ASF.GlobalConfig.SteamOwnerID).IsIndividualAccount ? ASF.GlobalConfig.SteamOwnerID : 0;
 		}
 
 		private static async Task LimitGiftsRequestsAsync() {
+			if (ASF.GlobalConfig == null) {
+				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
+			}
+
 			if (ASF.GiftsSemaphore == null) {
 				ASF.ArchiLogger.LogNullError(nameof(ASF.GiftsSemaphore));
 

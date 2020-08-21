@@ -43,6 +43,10 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		public async Task<ActionResult<GenericResponse>> CommandPost([FromBody] CommandRequest request) {
+			if (ASF.GlobalConfig == null) {
+				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
+			}
+
 			if (request == null) {
 				ASF.ArchiLogger.LogNullError(nameof(request));
 
@@ -63,10 +67,10 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, Strings.ErrorNoBotsDefined));
 			}
 
-			string command = request.Command;
+			string command = request.Command!;
 
 			if (!string.IsNullOrEmpty(ASF.GlobalConfig.CommandPrefix) && command.StartsWith(ASF.GlobalConfig.CommandPrefix, StringComparison.Ordinal)) {
-				command = command.Substring(ASF.GlobalConfig.CommandPrefix.Length);
+				command = command.Substring(ASF.GlobalConfig.CommandPrefix!.Length);
 
 				if (string.IsNullOrEmpty(command)) {
 					return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(command))));

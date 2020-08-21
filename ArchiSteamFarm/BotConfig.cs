@@ -230,7 +230,7 @@ namespace ArchiSteamFarm {
 		private string BackingSteamPassword = DefaultSteamPassword;
 
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamMasterClanID), Required = Required.DisallowNull)]
-		[JetBrains.Annotations.NotNull]
+		
 		private string SSteamMasterClanID {
 			get => SteamMasterClanID.ToString();
 
@@ -306,7 +306,7 @@ namespace ArchiSteamFarm {
 			return TradingPreferences <= ETradingPreferences.All ? (true, null) : (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(TradingPreferences), TradingPreferences));
 		}
 
-		[ItemCanBeNull]
+		
 		internal static async Task<BotConfig> Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(filePath));

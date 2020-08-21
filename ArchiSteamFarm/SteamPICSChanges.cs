@@ -55,13 +55,17 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task RefreshChanges() {
+			if (ASF.GlobalDatabase == null) {
+				throw new ArgumentNullException(nameof(ASF.GlobalDatabase));
+			}
+
 			if (!await RefreshSemaphore.WaitAsync(0).ConfigureAwait(false)) {
 				return;
 			}
 
 			try {
-				Bot refreshBot = null;
-				SteamApps.PICSChangesCallback picsChanges = null;
+				Bot? refreshBot = null;
+				SteamApps.PICSChangesCallback? picsChanges = null;
 
 				for (byte i = 0; (i < WebBrowser.MaxTries) && (picsChanges == null); i++) {
 					refreshBot = Bot.Bots.Values.FirstOrDefault(bot => bot.IsConnectedAndLoggedOn);

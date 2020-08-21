@@ -67,7 +67,7 @@ namespace ArchiSteamFarm {
 		internal static string HomeDirectory {
 			get {
 				if (!string.IsNullOrEmpty(CachedHomeDirectory)) {
-					return CachedHomeDirectory;
+					return CachedHomeDirectory!;
 				}
 
 				// We're aiming to handle two possible cases here, classic publish and single-file publish which is possible with OS-specific builds
@@ -75,70 +75,49 @@ namespace ArchiSteamFarm {
 				// We can't just return our base directory since it could lead to the (wrong) temporary directory of extracted files in a single-publish scenario
 				// If the path goes to our own binary, the user is using OS-specific build, single-file or not, we'll use path to location of that binary then
 				// Otherwise, this path goes to some third-party binary, likely dotnet/mono, the user is using our generic build or other custom binary, we need to trust our base directory then
-				CachedHomeDirectory = Path.GetFileNameWithoutExtension(OS.ProcessFileName) == AssemblyName ? Path.GetDirectoryName(OS.ProcessFileName) : AppContext.BaseDirectory;
+				CachedHomeDirectory = Path.GetFileNameWithoutExtension(OS.ProcessFileName) == AssemblyName ? Path.GetDirectoryName(OS.ProcessFileName) ?? AppContext.BaseDirectory : AppContext.BaseDirectory;
 
 				return CachedHomeDirectory;
 			}
 		}
 
-		[NotNull]
 		internal static string ProgramIdentifier => PublicIdentifier + " V" + Version + " (" + BuildInfo.Variant + "/" + ModuleVersion + " | " + OS.Variant + ")";
 
-		[NotNull]
 		internal static string PublicIdentifier => AssemblyName + (BuildInfo.IsCustomBuild ? "-custom" : PluginsCore.HasCustomPluginsLoaded ? "-modded" : "");
 
-		[NotNull]
 		internal static Version Version => Assembly.GetEntryAssembly()?.GetName().Version ?? throw new ArgumentNullException(nameof(Version));
 
 		private static Guid ModuleVersion => Assembly.GetEntryAssembly()?.ManifestModule.ModuleVersionId ?? throw new ArgumentNullException(nameof(ModuleVersion));
 
-		private static string CachedHomeDirectory;
+		private static string? CachedHomeDirectory;
 
 		internal static class BuildInfo {
 #if ASF_VARIANT_DOCKER
 			internal static bool CanUpdate => false;
-
-			[NotNull]
 			internal static string Variant => "docker";
 #elif ASF_VARIANT_GENERIC
 			internal static bool CanUpdate => true;
-
-			[NotNull]
 			internal static string Variant => "generic";
 #elif ASF_VARIANT_GENERIC_NETF
 			internal static bool CanUpdate => true;
-
-			[NotNull]
 			internal static string Variant => "generic-netf";
 #elif ASF_VARIANT_LINUX_ARM
 			internal static bool CanUpdate => true;
-
-			[NotNull]
 			internal static string Variant => "linux-arm";
 #elif ASF_VARIANT_LINUX_ARM64
 			internal static bool CanUpdate => true;
-
-			[NotNull]
 			internal static string Variant => "linux-arm64";
 #elif ASF_VARIANT_LINUX_X64
 			internal static bool CanUpdate => true;
-
-			[NotNull]
 			internal static string Variant => "linux-x64";
 #elif ASF_VARIANT_OSX_X64
 			internal static bool CanUpdate => true;
-
-			[NotNull]
 			internal static string Variant => "osx-x64";
 #elif ASF_VARIANT_WIN_X64
 			internal static bool CanUpdate => true;
-
-			[NotNull]
 			internal static string Variant => "win-x64";
 #else
 			internal static bool CanUpdate => false;
-
-			[NotNull]
 			internal static string Variant => SourceVariant;
 #endif
 

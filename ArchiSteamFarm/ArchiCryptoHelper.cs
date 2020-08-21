@@ -26,7 +26,6 @@ using System.Security.Cryptography;
 using System.Text;
 using ArchiSteamFarm.Localization;
 using CryptSharp.Utility;
-using JetBrains.Annotations;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
@@ -35,10 +34,8 @@ namespace ArchiSteamFarm {
 		private const byte SteamParentalSCryptBlocksCount = 8;
 		private const ushort SteamParentalSCryptIterations = 8192;
 
-		[NotNull]
 		private static IEnumerable<byte> SteamParentalCharacters => Enumerable.Range('0', 10).Select(character => (byte) character);
 
-		[NotNull]
 		private static IEnumerable<byte[]> SteamParentalCodes {
 			get {
 				HashSet<byte> steamParentalCharacters = SteamParentalCharacters.ToHashSet();
@@ -49,7 +46,7 @@ namespace ArchiSteamFarm {
 
 		private static byte[] EncryptionKey = Encoding.UTF8.GetBytes(nameof(ArchiSteamFarm));
 
-		internal static string Decrypt(ECryptoMethod cryptoMethod, string encrypted) {
+		internal static string? Decrypt(ECryptoMethod cryptoMethod, string encrypted) {
 			if (!Enum.IsDefined(typeof(ECryptoMethod), cryptoMethod) || string.IsNullOrEmpty(encrypted)) {
 				ASF.ArchiLogger.LogNullError(nameof(cryptoMethod) + " || " + nameof(encrypted));
 
@@ -70,7 +67,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static string Encrypt(ECryptoMethod cryptoMethod, string decrypted) {
+		internal static string? Encrypt(ECryptoMethod cryptoMethod, string decrypted) {
 			if (!Enum.IsDefined(typeof(ECryptoMethod), cryptoMethod) || string.IsNullOrEmpty(decrypted)) {
 				ASF.ArchiLogger.LogNullError(nameof(cryptoMethod) + " || " + nameof(decrypted));
 
@@ -91,7 +88,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static IEnumerable<byte> GenerateSteamParentalHash(byte[] password, byte[] salt, byte hashLength, ESteamParentalAlgorithm steamParentalAlgorithm) {
+		internal static IEnumerable<byte>? GenerateSteamParentalHash(byte[] password, byte[] salt, byte hashLength, ESteamParentalAlgorithm steamParentalAlgorithm) {
 			if ((password == null) || (salt == null) || (hashLength == 0) || !Enum.IsDefined(typeof(ESteamParentalAlgorithm), steamParentalAlgorithm)) {
 				ASF.ArchiLogger.LogNullError(nameof(password) + " || " + nameof(salt) + " || " + nameof(hashLength) + " || " + nameof(steamParentalAlgorithm));
 
@@ -112,7 +109,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static string RecoverSteamParentalCode(byte[] passwordHash, byte[] salt, ESteamParentalAlgorithm steamParentalAlgorithm) {
+		internal static string? RecoverSteamParentalCode(byte[] passwordHash, byte[] salt, ESteamParentalAlgorithm steamParentalAlgorithm) {
 			if ((passwordHash == null) || (salt == null) || !Enum.IsDefined(typeof(ESteamParentalAlgorithm), steamParentalAlgorithm)) {
 				ASF.ArchiLogger.LogNullError(nameof(passwordHash) + " || " + nameof(salt) + " || " + nameof(steamParentalAlgorithm));
 
@@ -134,7 +131,7 @@ namespace ArchiSteamFarm {
 			EncryptionKey = Encoding.UTF8.GetBytes(key);
 		}
 
-		private static string DecryptAES(string encrypted) {
+		private static string? DecryptAES(string encrypted) {
 			if (string.IsNullOrEmpty(encrypted)) {
 				ASF.ArchiLogger.LogNullError(nameof(encrypted));
 
@@ -159,7 +156,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static string DecryptProtectedDataForCurrentUser(string encrypted) {
+		private static string? DecryptProtectedDataForCurrentUser(string encrypted) {
 			if (string.IsNullOrEmpty(encrypted)) {
 				ASF.ArchiLogger.LogNullError(nameof(encrypted));
 
@@ -185,7 +182,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static string EncryptAES(string decrypted) {
+		private static string? EncryptAES(string decrypted) {
 			if (string.IsNullOrEmpty(decrypted)) {
 				ASF.ArchiLogger.LogNullError(nameof(decrypted));
 
@@ -210,7 +207,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static string EncryptProtectedDataForCurrentUser(string decrypted) {
+		private static string? EncryptProtectedDataForCurrentUser(string decrypted) {
 			if (string.IsNullOrEmpty(decrypted)) {
 				ASF.ArchiLogger.LogNullError(nameof(decrypted));
 

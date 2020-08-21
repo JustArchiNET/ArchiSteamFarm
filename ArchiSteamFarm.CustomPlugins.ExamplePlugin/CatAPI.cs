@@ -22,7 +22,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
@@ -32,15 +31,14 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 	internal static class CatAPI {
 		private const string URL = "https://aws.random.cat";
 
-		[ItemCanBeNull]
-		internal static async Task<string> GetRandomCatURL([JetBrains.Annotations.NotNull] WebBrowser webBrowser) {
+		internal static async Task<string?> GetRandomCatURL(WebBrowser webBrowser) {
 			if (webBrowser == null) {
 				throw new ArgumentNullException(nameof(webBrowser));
 			}
 
 			const string request = URL + "/meow";
 
-			WebBrowser.ObjectResponse<MeowResponse> response = await webBrowser.UrlGetToJsonObject<MeowResponse>(request).ConfigureAwait(false);
+			WebBrowser.ObjectResponse<MeowResponse>? response = await webBrowser.UrlGetToJsonObject<MeowResponse>(request).ConfigureAwait(false);
 
 			if (response?.Content == null) {
 				return null;
@@ -59,7 +57,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 		private sealed class MeowResponse {
 #pragma warning disable 649
 			[JsonProperty(PropertyName = "file", Required = Required.Always)]
-			internal readonly string Link;
+			internal readonly string? Link;
 #pragma warning restore 649
 
 			[JsonConstructor]

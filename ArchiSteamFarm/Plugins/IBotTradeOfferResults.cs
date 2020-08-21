@@ -30,6 +30,6 @@ namespace ArchiSteamFarm.Plugins {
 		/// </summary>
 		/// <param name="bot">Bot object related to this callback.</param>
 		/// <param name="tradeResults">Trade results related to this callback.</param>
-		void OnBotTradeOfferResults([NotNull] Bot bot, [NotNull] IReadOnlyCollection<Trading.ParseTradeResult> tradeResults);
+		void OnBotTradeOfferResults(Bot bot, IReadOnlyCollection<Trading.ParseTradeResult> tradeResults);
 	}
 }

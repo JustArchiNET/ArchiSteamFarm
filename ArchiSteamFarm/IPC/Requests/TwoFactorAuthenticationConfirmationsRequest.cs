@@ -50,7 +50,7 @@ namespace ArchiSteamFarm.IPC.Requests {
 		///     Specifies IDs of the confirmations that we're supposed to handle. CreatorID of the confirmation is equal to ID of the object that triggered it - e.g. ID of the trade offer, or ID of the market listing. If not provided, or empty array, all confirmation IDs are considered for an action.
 		/// </summary>
 		[JsonProperty(Required = Required.DisallowNull)]
-		public ImmutableHashSet<ulong> AcceptedCreatorIDs { get; private set; }
+		public ImmutableHashSet<ulong>? AcceptedCreatorIDs { get; private set; }
 
 		/// <summary>
 		///     A helper property which works the same as <see cref="AcceptedCreatorIDs" /> but with values written as strings - for javascript compatibility purposes. Use either this one, or <see cref="AcceptedCreatorIDs" />, not both.

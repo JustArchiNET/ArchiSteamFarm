@@ -19,6 +19,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
@@ -29,7 +30,7 @@ namespace ArchiSteamFarm {
 		internal static bool IsDebugBuild => false;
 #endif
 
-		internal static bool IsDebugConfigured => ASF.GlobalConfig.Debug;
+		internal static bool IsDebugConfigured => ASF.GlobalConfig?.Debug ?? throw new ArgumentNullException(nameof(ASF.GlobalConfig));
 
 		internal static bool IsUserDebugging => IsDebugBuild || IsDebugConfigured;
 

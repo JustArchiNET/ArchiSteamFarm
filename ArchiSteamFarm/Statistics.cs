@@ -29,7 +29,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
@@ -60,7 +59,7 @@ namespace ArchiSteamFarm {
 		private DateTime LastPersonaStateRequest;
 		private bool ShouldSendHeartBeats;
 
-		internal Statistics([JetBrains.Annotations.NotNull] Bot bot) {
+		internal Statistics(Bot bot) {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 			MatchActivelyTimer = new Timer(
@@ -79,6 +78,10 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task OnHeartBeat() {
+			if (ASF.GlobalDatabase == null) {
+				throw new ArgumentNullException(nameof(ASF.GlobalDatabase));
+			}
+
 			// Request persona update if needed
 			if ((DateTime.UtcNow > LastPersonaStateRequest.AddHours(MinPersonaStateTTL)) && (DateTime.UtcNow > LastAnnouncementCheck.AddHours(MinAnnouncementCheckTTL))) {
 				LastPersonaStateRequest = DateTime.UtcNow;
@@ -103,7 +106,7 @@ namespace ArchiSteamFarm {
 					{ "SteamID", Bot.SteamID.ToString() }
 				};
 
-				WebBrowser.BasicResponse response = await Bot.ArchiWebHandler.WebBrowser.UrlPost(request, data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
+				WebBrowser.BasicResponse? response = await Bot.ArchiWebHandler.WebBrowser.UrlPost(request, data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
 
 				if (response == null) {
 					return;
@@ -128,7 +131,11 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task OnPersonaState(string nickname = null, string avatarHash = null) {
+		internal async Task OnPersonaState(string? nickname = null, string? avatarHash = null) {
+			if (ASF.GlobalDatabase == null) {
+				throw new ArgumentNullException(nameof(ASF.GlobalDatabase));
+			}
+
 			if ((DateTime.UtcNow < LastAnnouncementCheck.AddHours(MinAnnouncementCheckTTL)) && (ShouldSendHeartBeats || (LastHeartBeat == DateTime.MinValue))) {
 				return;
 			}
@@ -157,7 +164,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				string tradeToken = await Bot.ArchiHandler.GetTradeToken().ConfigureAwait(false);
+				string? tradeToken = await Bot.ArchiHandler.GetTradeToken().ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(tradeToken)) {
 					// This is actually network failure, so we'll stop sending heartbeats but not record it as valid check
@@ -216,10 +223,10 @@ namespace ArchiSteamFarm {
 					{ "MatchEverything", Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) ? "1" : "0" },
 					{ "Nickname", nickname ?? "" },
 					{ "SteamID", Bot.SteamID.ToString() },
-					{ "TradeToken", tradeToken }
+					{ "TradeToken", tradeToken! }
 				};
 
-				WebBrowser.BasicResponse response = await Bot.ArchiWebHandler.WebBrowser.UrlPost(request, data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
+				WebBrowser.BasicResponse? response = await Bot.ArchiWebHandler.WebBrowser.UrlPost(request, data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
 
 				if (response == null) {
 					return;
@@ -239,11 +246,10 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		[ItemCanBeNull]
-		private async Task<ImmutableHashSet<ListedUser>> GetListedUsers() {
+		private async Task<ImmutableHashSet<ListedUser>?> GetListedUsers() {
 			const string request = URL + "/Api/Bots";
 
-			WebBrowser.ObjectResponse<ImmutableHashSet<ListedUser>> objectResponse = await Bot.ArchiWebHandler.WebBrowser.UrlGetToJsonObject<ImmutableHashSet<ListedUser>>(request).ConfigureAwait(false);
+			WebBrowser.ObjectResponse<ImmutableHashSet<ListedUser>>? objectResponse = await Bot.ArchiWebHandler.WebBrowser.UrlGetToJsonObject<ImmutableHashSet<ListedUser>>(request).ConfigureAwait(false);
 
 			return objectResponse?.Content;
 		}
@@ -325,7 +331,7 @@ namespace ArchiSteamFarm {
 			try {
 				Bot.ArchiLogger.LogGenericTrace(Strings.Starting);
 
-				Dictionary<ulong, (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs)> triedSteamIDs = new Dictionary<ulong, (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs)>();
+				Dictionary<ulong, (byte Tries, ISet<ulong>? GivenAssetIDs, ISet<ulong>? ReceivedAssetIDs)> triedSteamIDs = new Dictionary<ulong, (byte Tries, ISet<ulong>? GivenAssetIDs, ISet<ulong>? ReceivedAssetIDs)>();
 
 				bool shouldContinueMatching = true;
 				bool tradedSomething = false;
@@ -355,7 +361,11 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async Task<(bool ShouldContinueMatching, bool TradedSomething)> MatchActivelyRound(IReadOnlyCollection<Steam.Asset.EType> acceptedMatchableTypes, IDictionary<ulong, (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs)> triedSteamIDs) {
+		private async Task<(bool ShouldContinueMatching, bool TradedSomething)> MatchActivelyRound(IReadOnlyCollection<Steam.Asset.EType> acceptedMatchableTypes, IDictionary<ulong, (byte Tries, ISet<ulong>? GivenAssetIDs, ISet<ulong>? ReceivedAssetIDs)> triedSteamIDs) {
+			if (ASF.GlobalConfig == null) {
+				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
+			}
+
 			if ((acceptedMatchableTypes == null) || (acceptedMatchableTypes.Count == 0) || (triedSteamIDs == null)) {
 				Bot.ArchiLogger.LogNullError(nameof(acceptedMatchableTypes) + " || " + nameof(triedSteamIDs));
 
@@ -391,7 +401,7 @@ namespace ArchiSteamFarm {
 				return (false, false);
 			}
 
-			ImmutableHashSet<ListedUser> listedUsers = await GetListedUsers().ConfigureAwait(false);
+			ImmutableHashSet<ListedUser>? listedUsers = await GetListedUsers().ConfigureAwait(false);
 
 			if ((listedUsers == null) || (listedUsers.Count == 0)) {
 				Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(listedUsers)));
@@ -403,7 +413,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> skippedSetsThisRound = new HashSet<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)>();
 
-			foreach (ListedUser listedUser in listedUsers.Where(listedUser => (listedUser.SteamID != Bot.SteamID) && acceptedMatchableTypes.Any(listedUser.MatchableTypes.Contains) && (!triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs) attempt) || (attempt.Tries < byte.MaxValue)) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderBy(listedUser => triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs) attempt) ? attempt.Tries : 0).ThenByDescending(listedUser => listedUser.MatchEverything).ThenByDescending(listedUser => listedUser.MatchEverything || (listedUser.ItemsCount < MaxItemsForFairBots)).ThenByDescending(listedUser => listedUser.Score)) {
+			foreach (ListedUser listedUser in listedUsers.Where(listedUser => (listedUser.SteamID != Bot.SteamID) && acceptedMatchableTypes.Any(listedUser.MatchableTypes.Contains) && (!triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong>? GivenAssetIDs, ISet<ulong>? ReceivedAssetIDs) attempt) || (attempt.Tries < byte.MaxValue)) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderBy(listedUser => triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong>? GivenAssetIDs, ISet<ulong>? ReceivedAssetIDs) attempt) ? attempt.Tries : 0).ThenByDescending(listedUser => listedUser.MatchEverything).ThenByDescending(listedUser => listedUser.MatchEverything || (listedUser.ItemsCount < MaxItemsForFairBots)).ThenByDescending(listedUser => listedUser.Score)) {
 				HashSet<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> wantedSets = ourTradableState.Keys.Where(set => !skippedSetsThisRound.Contains(set) && listedUser.MatchableTypes.Contains(set.Type)).ToHashSet();
 
 				if (wantedSets.Count == 0) {
@@ -467,11 +477,11 @@ namespace ArchiSteamFarm {
 					Dictionary<ulong, uint> fairClassIDsToReceive = new Dictionary<ulong, uint>();
 
 					foreach (((uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) set, Dictionary<ulong, uint> ourFullItems) in ourFullState.Where(set => !skippedSetsThisUser.Contains(set.Key) && listedUser.MatchableTypes.Contains(set.Key.Type) && set.Value.Values.Any(count => count > 1))) {
-						if (!ourTradableState.TryGetValue(set, out Dictionary<ulong, uint> ourTradableItems) || (ourTradableItems.Count == 0)) {
+						if (!ourTradableState.TryGetValue(set, out Dictionary<ulong, uint>? ourTradableItems) || (ourTradableItems.Count == 0)) {
 							continue;
 						}
 
-						if (!theirTradableState.TryGetValue(set, out Dictionary<ulong, uint> theirTradableItems) || (theirTradableItems.Count == 0)) {
+						if (!theirTradableState.TryGetValue(set, out Dictionary<ulong, uint>? theirTradableItems) || (theirTradableItems.Count == 0)) {
 							continue;
 						}
 
@@ -480,7 +490,7 @@ namespace ArchiSteamFarm {
 						Dictionary<ulong, uint> ourTradableSet = new Dictionary<ulong, uint>(ourTradableItems);
 
 						// We also have to take into account changes that happened in previous trades with this user, so this block will adapt to that
-						if (inventoryStateChanges.TryGetValue(set, out Dictionary<ulong, uint> pastChanges) && (pastChanges.Count > 0)) {
+						if (inventoryStateChanges.TryGetValue(set, out Dictionary<ulong, uint>? pastChanges) && (pastChanges.Count > 0)) {
 							foreach ((ulong classID, uint amount) in pastChanges) {
 								if (!ourFullSet.TryGetValue(classID, out uint fullAmount) || (fullAmount == 0) || (fullAmount < amount)) {
 									Bot.ArchiLogger.LogNullError(nameof(fullAmount));
@@ -566,7 +576,7 @@ namespace ArchiSteamFarm {
 									classIDsToGive[ourItem] = classIDsToGive.TryGetValue(ourItem, out uint ourGivenAmount) ? ourGivenAmount + 1 : 1;
 									ourFullSet[ourItem] = ourFullAmount - 1; // We don't need to remove anything here because we can guarantee that ourItem.Value is at least 2
 
-									if (inventoryStateChanges.TryGetValue(set, out Dictionary<ulong, uint> currentChanges)) {
+									if (inventoryStateChanges.TryGetValue(set, out Dictionary<ulong, uint>? currentChanges)) {
 										currentChanges[ourItem] = currentChanges.TryGetValue(ourItem, out uint amount) ? amount + 1 : 1;
 									} else {
 										inventoryStateChanges[set] = new Dictionary<ulong, uint> {
@@ -626,8 +636,8 @@ namespace ArchiSteamFarm {
 						return (false, skippedSetsThisRound.Count > 0);
 					}
 
-					if (triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong> GivenAssetIDs, ISet<ulong> ReceivedAssetIDs) previousAttempt)) {
-						if (itemsToGive.Select(item => item.AssetID).All(previousAttempt.GivenAssetIDs.Contains) && itemsToReceive.Select(item => item.AssetID).All(previousAttempt.ReceivedAssetIDs.Contains)) {
+					if (triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong>? GivenAssetIDs, ISet<ulong>? ReceivedAssetIDs) previousAttempt)) {
+						if ((previousAttempt.GivenAssetIDs == null) || (previousAttempt.ReceivedAssetIDs == null) || (itemsToGive.Select(item => item.AssetID).All(previousAttempt.GivenAssetIDs.Contains) && itemsToReceive.Select(item => item.AssetID).All(previousAttempt.ReceivedAssetIDs.Contains))) {
 							// This user didn't respond in our previous round, avoid him for remaining ones
 							triedSteamIDs[listedUser.SteamID] = (byte.MaxValue, previousAttempt.GivenAssetIDs, previousAttempt.ReceivedAssetIDs);
 
@@ -645,7 +655,7 @@ namespace ArchiSteamFarm {
 
 					Bot.ArchiLogger.LogGenericTrace(Bot.SteamID + " <- " + string.Join(", ", itemsToReceive.Select(item => item.RealAppID + "/" + item.Type + "-" + item.ClassID + " #" + item.Amount)) + " | " + string.Join(", ", itemsToGive.Select(item => item.RealAppID + "/" + item.Type + "-" + item.ClassID + " #" + item.Amount)) + " -> " + listedUser.SteamID);
 
-					(bool success, HashSet<ulong> mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(listedUser.SteamID, itemsToGive, itemsToReceive, listedUser.TradeToken, true).ConfigureAwait(false);
+					(bool success, HashSet<ulong>? mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(listedUser.SteamID, itemsToGive, itemsToReceive, listedUser.TradeToken, true).ConfigureAwait(false);
 
 					if ((mobileTradeOfferIDs != null) && (mobileTradeOfferIDs.Count > 0) && Bot.HasMobileAuthenticator) {
 						(bool twoFactorSuccess, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, MobileAuthenticator.Confirmation.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
@@ -717,7 +727,7 @@ namespace ArchiSteamFarm {
 
 #pragma warning disable 649
 			[JsonProperty(PropertyName = "trade_token", Required = Required.Always)]
-			internal readonly string TradeToken;
+			internal readonly string? TradeToken;
 #pragma warning restore 649
 
 			internal float Score => GamesCount / (float) ItemsCount;

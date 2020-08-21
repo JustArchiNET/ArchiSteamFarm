@@ -30,6 +30,6 @@ namespace ArchiSteamFarm.Plugins {
 		/// </summary>
 		/// <param name="bot">Bot object related to this callback.</param>
 		/// <param name="newNotifications">Collection containing those notification types that are new (that is, when new count > previous count of that notification type).</param>
-		void OnBotUserNotifications([NotNull] Bot bot, [NotNull] IReadOnlyCollection<ArchiHandler.UserNotificationsCallback.EUserNotification> newNotifications);
+		void OnBotUserNotifications(Bot bot, IReadOnlyCollection<ArchiHandler.UserNotificationsCallback.EUserNotification> newNotifications);
 	}
 }

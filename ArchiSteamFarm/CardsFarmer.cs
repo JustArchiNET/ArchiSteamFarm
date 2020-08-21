@@ -97,7 +97,7 @@ namespace ArchiSteamFarm {
 		private bool PermanentlyPaused;
 		private bool ShouldResumeFarming = true;
 
-		internal CardsFarmer([NotNull] Bot bot) {
+		internal CardsFarmer( Bot bot) {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 			if (ASF.GlobalConfig.IdleFarmingPeriod > 0) {
@@ -397,7 +397,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				string appIDText = appIDNode.GetAttributeValue("id");
+				string appIDText = appIDNode.GetAttribute("id");
 
 				if (string.IsNullOrEmpty(appIDText)) {
 					Bot.ArchiLogger.LogNullError(nameof(appIDText));
@@ -1241,7 +1241,7 @@ namespace ArchiSteamFarm {
 
 			internal uint PlayableAppID { get; set; }
 
-			internal Game(uint appID, [NotNull] string gameName, float hoursPlayed, ushort cardsRemaining, byte badgeLevel) {
+			internal Game(uint appID,  string gameName, float hoursPlayed, ushort cardsRemaining, byte badgeLevel) {
 				if ((appID == 0) || string.IsNullOrEmpty(gameName) || (hoursPlayed < 0) || (cardsRemaining == 0)) {
 					throw new ArgumentOutOfRangeException(nameof(appID) + " || " + nameof(gameName) + " || " + nameof(hoursPlayed) + " || " + nameof(cardsRemaining));
 				}

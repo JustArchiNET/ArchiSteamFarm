@@ -25,7 +25,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
 using ArchiSteamFarm.Localization;
-using JetBrains.Annotations;
 
 namespace ArchiSteamFarm {
 	internal sealed class SteamSaleEvent : IAsyncDisposable {
@@ -34,7 +33,7 @@ namespace ArchiSteamFarm {
 		private readonly Bot Bot;
 		private readonly Timer SaleEventTimer;
 
-		internal SteamSaleEvent([NotNull] Bot bot) {
+		internal SteamSaleEvent(Bot bot) {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 			SaleEventTimer = new Timer(
@@ -55,7 +54,7 @@ namespace ArchiSteamFarm {
 			Bot.ArchiLogger.LogGenericTrace(Strings.Starting);
 
 			for (byte i = 0; (i < MaxSingleQueuesDaily) && (await IsDiscoveryQueueAvailable().ConfigureAwait(false)).GetValueOrDefault(); i++) {
-				ImmutableHashSet<uint> queue = await Bot.ArchiWebHandler.GenerateNewDiscoveryQueue().ConfigureAwait(false);
+				ImmutableHashSet<uint>? queue = await Bot.ArchiWebHandler.GenerateNewDiscoveryQueue().ConfigureAwait(false);
 
 				if ((queue == null) || (queue.Count == 0)) {
 					Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(queue)));
@@ -83,7 +82,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool?> IsDiscoveryQueueAvailable() {
-			using IDocument htmlDocument = await Bot.ArchiWebHandler.GetDiscoveryQueuePage().ConfigureAwait(false);
+			using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetDiscoveryQueuePage().ConfigureAwait(false);
 
 			if (htmlDocument == null) {
 				return null;

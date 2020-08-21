@@ -32,7 +32,7 @@ namespace ArchiSteamFarm.IPC.Requests {
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public readonly ImmutableHashSet<string> KeysToRedeem;
+		public readonly ImmutableHashSet<string>? KeysToRedeem;
 
 		[JsonConstructor]
 		private BotRedeemRequest() { }

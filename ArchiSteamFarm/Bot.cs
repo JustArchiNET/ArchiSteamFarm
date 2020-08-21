@@ -59,7 +59,7 @@ namespace ArchiSteamFarm {
 		public static IReadOnlyDictionary<string, Bot> BotsReadOnly => Bots;
 
 		internal static ConcurrentDictionary<string, Bot> Bots { get; private set; }
-		internal static StringComparer BotsComparer { get; private set; }
+		internal static StringComparer? BotsComparer { get; private set; }
 		internal static EOSType OSType { get; private set; } = EOSType.Unknown;
 
 		private static readonly SemaphoreSlim BotsSemaphore = new SemaphoreSlim(1, 1);
@@ -116,7 +116,7 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public bool IsPlayingPossible => !PlayingBlocked && !LibraryLocked;
 
-		[NotNull]
+		
 		[JsonIgnore]
 		[PublicAPI]
 		public IReadOnlyCollection<uint> OwnedPackageIDsReadOnly => OwnedPackageIDs.Keys.ToHashSet();
@@ -159,7 +159,7 @@ namespace ArchiSteamFarm {
 
 #pragma warning disable IDE0051
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamID))]
-		[NotNull]
+		
 		private string SSteamID => SteamID.ToString();
 #pragma warning restore IDE0051
 
@@ -223,7 +223,7 @@ namespace ArchiSteamFarm {
 		private string TwoFactorCode;
 		private byte TwoFactorCodeFailures;
 
-		private Bot([NotNull] string botName, [NotNull] BotConfig botConfig, [NotNull] BotDatabase botDatabase) {
+		private Bot( string botName,  BotConfig botConfig,  BotDatabase botDatabase) {
 			if (string.IsNullOrEmpty(botName) || (botConfig == null) || (botDatabase == null)) {
 				throw new ArgumentNullException(nameof(botName) + " || " + nameof(botConfig) + " || " + nameof(botDatabase));
 			}
@@ -725,7 +725,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				string releaseState = commonProductInfo["ReleaseState"].Value;
+				string releaseState = commonProductInfo["ReleaseState"].AsString();
 
 				if (!string.IsNullOrEmpty(releaseState)) {
 					// We must convert this to uppercase, since Valve doesn't stick to any convention and we can have a case mismatch
@@ -742,7 +742,7 @@ namespace ArchiSteamFarm {
 					}
 				}
 
-				string type = commonProductInfo["type"].Value;
+				string type = commonProductInfo["type"].AsString();
 
 				if (string.IsNullOrEmpty(type)) {
 					return (appID, DateTime.MinValue, true);
@@ -778,7 +778,7 @@ namespace ArchiSteamFarm {
 					return (0, DateTime.MinValue, true);
 				}
 
-				string listOfDlc = productInfo["extended"]["listofdlc"].Value;
+				string listOfDlc = productInfo["extended"]["listofdlc"].AsString();
 
 				if (string.IsNullOrEmpty(listOfDlc)) {
 					return (appID, DateTime.MinValue, true);
@@ -837,10 +837,10 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		[ItemCanBeNull]
+		
 		internal async Task<HashSet<uint>> GetMarketableAppIDs() => await ArchiWebHandler.GetAppList().ConfigureAwait(false);
 
-		[ItemCanBeNull]
+		
 		internal async Task<Dictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)>> GetPackagesData(IReadOnlyCollection<uint> packageIDs) {
 			if ((packageIDs == null) || (packageIDs.Count == 0)) {
 				ArchiLogger.LogNullError(nameof(packageIDs));
@@ -1693,7 +1693,7 @@ namespace ArchiSteamFarm {
 			return GetFilePath(BotName, fileType);
 		}
 
-		[ItemCanBeNull]
+		
 		private async Task<Dictionary<string, string>> GetKeysFromFile(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				ArchiLogger.LogNullError(nameof(filePath));

@@ -41,11 +41,11 @@ namespace ArchiSteamFarm.IPC.Integration {
 		private static readonly SemaphoreSlim AuthorizationSemaphore = new SemaphoreSlim(1, 1);
 		private static readonly ConcurrentDictionary<IPAddress, byte> FailedAuthorizations = new ConcurrentDictionary<IPAddress, byte>();
 
-		private static Timer ClearFailedAuthorizationsTimer;
+		private static Timer? ClearFailedAuthorizationsTimer;
 
 		private readonly RequestDelegate Next;
 
-		public ApiAuthenticationMiddleware([JetBrains.Annotations.NotNull] RequestDelegate next) {
+		public ApiAuthenticationMiddleware(RequestDelegate next) {
 			Next = next ?? throw new ArgumentNullException(nameof(next));
 
 			lock (FailedAuthorizations) {
@@ -78,8 +78,12 @@ namespace ArchiSteamFarm.IPC.Integration {
 		}
 
 		private static async Task<HttpStatusCode> GetAuthenticationStatus(HttpContext context) {
-			if (context == null) {
-				ASF.ArchiLogger.LogNullError(nameof(context));
+			if (ASF.GlobalConfig == null) {
+				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
+			}
+
+			if ((context == null) || (ClearFailedAuthorizationsTimer == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(context) + " || " + nameof(ClearFailedAuthorizationsTimer));
 
 				return HttpStatusCode.InternalServerError;
 			}

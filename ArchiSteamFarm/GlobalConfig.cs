@@ -75,7 +75,7 @@ namespace ArchiSteamFarm {
 		public readonly ImmutableHashSet<uint> Blacklist = DefaultBlacklist;
 
 		[JsonProperty]
-		public readonly string CommandPrefix = DefaultCommandPrefix;
+		public readonly string? CommandPrefix = DefaultCommandPrefix;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly byte ConfirmationsLimiterDelay = DefaultConfirmationsLimiterDelay;
@@ -84,7 +84,7 @@ namespace ArchiSteamFarm {
 		public readonly byte ConnectionTimeout = DefaultConnectionTimeout;
 
 		[JsonProperty]
-		public readonly string CurrentCulture = DefaultCurrentCulture;
+		public readonly string? CurrentCulture = DefaultCurrentCulture;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly bool Debug = DefaultDebug;
@@ -108,7 +108,7 @@ namespace ArchiSteamFarm {
 		public readonly bool IPC = DefaultIPC;
 
 		[JsonProperty]
-		public readonly string IPCPassword = DefaultIPCPassword;
+		public readonly string? IPCPassword = DefaultIPCPassword;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly byte LoginLimiterDelay = DefaultLoginLimiterDelay;
@@ -126,7 +126,7 @@ namespace ArchiSteamFarm {
 		public readonly bool Statistics = DefaultStatistics;
 
 		[JsonProperty]
-		public readonly string SteamMessagePrefix = DefaultSteamMessagePrefix;
+		public readonly string? SteamMessagePrefix = DefaultSteamMessagePrefix;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly EUpdateChannel UpdateChannel = DefaultUpdateChannel;
@@ -138,14 +138,14 @@ namespace ArchiSteamFarm {
 		public readonly ushort WebLimiterDelay = DefaultWebLimiterDelay;
 
 		[JsonProperty(PropertyName = nameof(WebProxy))]
-		public readonly string WebProxyText = DefaultWebProxyText;
+		public readonly string? WebProxyText = DefaultWebProxyText;
 
 		[JsonProperty]
-		public readonly string WebProxyUsername = DefaultWebProxyUsername;
+		public readonly string? WebProxyUsername = DefaultWebProxyUsername;
 
 		[JsonIgnore]
 		[PublicAPI]
-		public WebProxy WebProxy {
+		public WebProxy? WebProxy {
 			get {
 				if (BackingWebProxy != null) {
 					return BackingWebProxy;
@@ -197,7 +197,7 @@ namespace ArchiSteamFarm {
 		public ProtocolTypes SteamProtocols { get; private set; } = DefaultSteamProtocols;
 
 		[JsonExtensionData]
-		internal Dictionary<string, JToken> AdditionalProperties {
+		internal Dictionary<string, JToken>? AdditionalProperties {
 			get;
 			[UsedImplicitly]
 			set;
@@ -209,7 +209,7 @@ namespace ArchiSteamFarm {
 		internal bool ShouldSerializeSensitiveDetails { private get; set; }
 
 		[JsonProperty]
-		internal string WebProxyPassword {
+		internal string? WebProxyPassword {
 			get => BackingWebProxyPassword;
 
 			set {
@@ -218,11 +218,11 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private WebProxy BackingWebProxy;
-		private string BackingWebProxyPassword = DefaultWebProxyPassword;
+		private WebProxy? BackingWebProxy;
+		private string? BackingWebProxyPassword = DefaultWebProxyPassword;
 
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamOwnerID), Required = Required.DisallowNull)]
-		[JetBrains.Annotations.NotNull]
+
 		private string SSteamOwnerID {
 			get => SteamOwnerID.ToString();
 
@@ -240,7 +240,7 @@ namespace ArchiSteamFarm {
 		[JsonConstructor]
 		internal GlobalConfig() { }
 
-		internal (bool Valid, string ErrorMessage) CheckValidation() {
+		internal (bool Valid, string? ErrorMessage) CheckValidation() {
 			if (ConnectionTimeout == 0) {
 				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(ConnectionTimeout), ConnectionTimeout));
 			}
@@ -269,15 +269,12 @@ namespace ArchiSteamFarm {
 				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(SteamProtocols), SteamProtocols));
 			}
 
-			return Enum.IsDefined(typeof(EUpdateChannel), UpdateChannel) ? (true, null) : (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(UpdateChannel), UpdateChannel));
+			return Enum.IsDefined(typeof(EUpdateChannel), UpdateChannel) ? (true, (string?) null) : (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(UpdateChannel), UpdateChannel));
 		}
 
-		[ItemCanBeNull]
-		internal static async Task<GlobalConfig> Load(string filePath) {
+		internal static async Task<GlobalConfig?> Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
-				ASF.ArchiLogger.LogNullError(nameof(filePath));
-
-				return null;
+				throw new ArgumentNullException(nameof(filePath));
 			}
 
 			if (!File.Exists(filePath)) {
@@ -308,10 +305,12 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			(bool valid, string errorMessage) = globalConfig.CheckValidation();
+			(bool valid, string? errorMessage) = globalConfig.CheckValidation();
 
 			if (!valid) {
-				ASF.ArchiLogger.LogGenericError(errorMessage);
+				if (!string.IsNullOrEmpty(errorMessage)) {
+					ASF.ArchiLogger.LogGenericError(errorMessage);
+				}
 
 				return null;
 			}

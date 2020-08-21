@@ -42,7 +42,7 @@ namespace ArchiSteamFarm.Json {
 
 			[JsonIgnore]
 			[PublicAPI]
-			public ImmutableDictionary<string, JToken> AdditionalProperties { get; internal set; }
+			public ImmutableDictionary<string, JToken>? AdditionalProperties { get; internal set; }
 
 			[JsonIgnore]
 			[PublicAPI]
@@ -81,7 +81,7 @@ namespace ArchiSteamFarm.Json {
 
 			[JsonIgnore]
 			[PublicAPI]
-			public ImmutableHashSet<Tag> Tags { get; internal set; }
+			public ImmutableHashSet<Tag>? Tags { get; internal set; }
 
 			[JsonIgnore]
 			[PublicAPI]
@@ -93,7 +93,6 @@ namespace ArchiSteamFarm.Json {
 
 #pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "amount", Required = Required.Always)]
-			[JetBrains.Annotations.NotNull]
 			private string AmountText {
 				get => Amount.ToString();
 
@@ -117,7 +116,6 @@ namespace ArchiSteamFarm.Json {
 
 #pragma warning disable IDE0052
 			[JsonProperty(PropertyName = "assetid", Required = Required.DisallowNull)]
-			[JetBrains.Annotations.NotNull]
 			private string AssetIDText {
 				get => AssetID.ToString();
 
@@ -141,7 +139,6 @@ namespace ArchiSteamFarm.Json {
 
 #pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "classid", Required = Required.DisallowNull)]
-			[JetBrains.Annotations.NotNull]
 			private string ClassIDText {
 				set {
 					if (string.IsNullOrEmpty(value)) {
@@ -161,7 +158,6 @@ namespace ArchiSteamFarm.Json {
 
 #pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "contextid", Required = Required.DisallowNull)]
-			[JetBrains.Annotations.NotNull]
 			private string ContextIDText {
 				get => ContextID.ToString();
 
@@ -185,7 +181,6 @@ namespace ArchiSteamFarm.Json {
 
 #pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "id", Required = Required.DisallowNull)]
-			[JetBrains.Annotations.NotNull]
 			private string IDText {
 				set => AssetIDText = value;
 			}
@@ -193,7 +188,6 @@ namespace ArchiSteamFarm.Json {
 
 #pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "instanceid", Required = Required.DisallowNull)]
-			[JetBrains.Annotations.NotNull]
 			private string InstanceIDText {
 				set {
 					if (string.IsNullOrEmpty(value)) {
@@ -212,7 +206,7 @@ namespace ArchiSteamFarm.Json {
 #pragma warning restore IDE0051
 
 			// Constructed from trades being received or plugins
-			public Asset(uint appID, ulong contextID, ulong classID, uint amount, ulong instanceID = 0, ulong assetID = 0, bool marketable = true, bool tradable = true, ImmutableHashSet<Tag> tags = null, uint realAppID = 0, EType type = EType.Unknown, ERarity rarity = ERarity.Unknown) {
+			public Asset(uint appID, ulong contextID, ulong classID, uint amount, ulong instanceID = 0, ulong assetID = 0, bool marketable = true, bool tradable = true, ImmutableHashSet<Tag>? tags = null, uint realAppID = 0, EType type = EType.Unknown, ERarity rarity = ERarity.Unknown) {
 				if ((appID == 0) || (contextID == 0) || (classID == 0) || (amount == 0)) {
 					throw new ArgumentNullException(nameof(appID) + " || " + nameof(contextID) + " || " + nameof(classID) + " || " + nameof(amount));
 				}
@@ -237,19 +231,18 @@ namespace ArchiSteamFarm.Json {
 			[JsonConstructor]
 			private Asset() { }
 
-			[JetBrains.Annotations.NotNull]
 			internal Asset CreateShallowCopy() => (Asset) MemberwiseClone();
 
 			public sealed class Tag {
 				[JsonProperty(PropertyName = "category", Required = Required.Always)]
 				[PublicAPI]
-				public readonly string Identifier;
+				public readonly string? Identifier;
 
 				[JsonProperty(PropertyName = "internal_name", Required = Required.Always)]
 				[PublicAPI]
-				public readonly string Value;
+				public readonly string? Value;
 
-				internal Tag([JetBrains.Annotations.NotNull] string identifier, [JetBrains.Annotations.NotNull] string value) {
+				internal Tag(string identifier, string value) {
 					if (string.IsNullOrEmpty(identifier) || string.IsNullOrEmpty(value)) {
 						throw new ArgumentNullException(nameof(identifier) + " || " + nameof(value));
 					}
@@ -354,13 +347,13 @@ namespace ArchiSteamFarm.Json {
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class InventoryResponse : EResultResponse {
 			[JsonProperty(PropertyName = "assets", Required = Required.DisallowNull)]
-			internal readonly ImmutableHashSet<Asset> Assets;
+			internal readonly ImmutableHashSet<Asset>? Assets;
 
 			[JsonProperty(PropertyName = "descriptions", Required = Required.DisallowNull)]
-			internal readonly ImmutableHashSet<Description> Descriptions;
+			internal readonly ImmutableHashSet<Description>? Descriptions;
 
 			[JsonProperty(PropertyName = "error", Required = Required.DisallowNull)]
-			internal readonly string Error;
+			internal readonly string? Error;
 
 			[JsonProperty(PropertyName = "total_inventory_count", Required = Required.DisallowNull)]
 			internal readonly uint TotalInventoryCount;
@@ -439,7 +432,7 @@ namespace ArchiSteamFarm.Json {
 						foreach (Asset.Tag tag in Tags) {
 							switch (tag.Identifier) {
 								case "Game":
-									if ((tag.Value.Length <= 4) || !tag.Value.StartsWith("app_", StringComparison.Ordinal)) {
+									if (string.IsNullOrEmpty(tag.Value) || (tag.Value!.Length <= 4) || !tag.Value.StartsWith("app_", StringComparison.Ordinal)) {
 										ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
 
 										break;
@@ -528,7 +521,7 @@ namespace ArchiSteamFarm.Json {
 				}
 
 				[JsonExtensionData]
-				internal Dictionary<string, JToken> AdditionalProperties {
+				internal Dictionary<string, JToken>? AdditionalProperties {
 					get;
 					[UsedImplicitly]
 					set;
@@ -542,7 +535,7 @@ namespace ArchiSteamFarm.Json {
 				internal bool Marketable { get; set; }
 
 				[JsonProperty(PropertyName = "tags", Required = Required.DisallowNull)]
-				internal ImmutableHashSet<Asset.Tag> Tags { get; set; }
+				internal ImmutableHashSet<Asset.Tag>? Tags { get; set; }
 
 				internal bool Tradable { get; set; }
 
@@ -608,7 +601,7 @@ namespace ArchiSteamFarm.Json {
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class NewDiscoveryQueueResponse {
 			[JsonProperty(PropertyName = "queue", Required = Required.Always)]
-			internal readonly ImmutableHashSet<uint> Queue;
+			internal readonly ImmutableHashSet<uint>? Queue;
 
 			[JsonConstructor]
 			private NewDiscoveryQueueResponse() { }
@@ -617,7 +610,7 @@ namespace ArchiSteamFarm.Json {
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class RedeemWalletResponse : EResultResponse {
 			[JsonProperty(PropertyName = "wallet", Required = Required.DisallowNull)]
-			internal readonly InternalKeyDetails KeyDetails;
+			internal readonly InternalKeyDetails? KeyDetails;
 
 			[JsonProperty(PropertyName = "detail", Required = Required.DisallowNull)]
 			internal readonly EPurchaseResultDetail? PurchaseResultDetail;
@@ -697,10 +690,10 @@ namespace ArchiSteamFarm.Json {
 			internal readonly ECommentPermission CommentPermission;
 
 			[JsonProperty(PropertyName = "PrivacySettings", Required = Required.Always)]
-			internal readonly PrivacySettings Settings;
+			internal readonly PrivacySettings? Settings;
 
 			// Constructed from privacy change request
-			internal UserPrivacy([JetBrains.Annotations.NotNull] PrivacySettings settings, ECommentPermission commentPermission) {
+			internal UserPrivacy(PrivacySettings settings, ECommentPermission commentPermission) {
 				Settings = settings ?? throw new ArgumentNullException(nameof(settings));
 				CommentPermission = commentPermission;
 			}

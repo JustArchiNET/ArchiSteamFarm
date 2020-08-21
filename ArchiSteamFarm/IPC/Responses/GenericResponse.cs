@@ -32,12 +32,12 @@ namespace ArchiSteamFarm.IPC.Responses {
 		///     The type of the result depends on the API endpoint that you've called.
 		/// </remarks>
 		[JsonProperty]
-		public readonly T Result;
+		public readonly T? Result;
 
-		public GenericResponse(T result) : base(result != null) => Result = result;
+		public GenericResponse(T? result) : base(result != null) => Result = result;
 		public GenericResponse(bool success, string message) : base(success, message) { }
-		public GenericResponse(bool success, T result) : base(success) => Result = result;
-		public GenericResponse(bool success, string message, T result) : base(success, message) => Result = result;
+		public GenericResponse(bool success, T? result) : base(success) => Result = result;
+		public GenericResponse(bool success, string message, T? result) : base(success, message) => Result = result;
 	}
 
 	public class GenericResponse {
@@ -57,16 +57,10 @@ namespace ArchiSteamFarm.IPC.Responses {
 		[Required]
 		public readonly bool Success;
 
-		public GenericResponse(bool success, string message = null) {
+		public GenericResponse(bool success, string? message = null) {
 			Success = success;
 
-			if (!string.IsNullOrEmpty(message)) {
-				Message = message;
-
-				return;
-			}
-
-			Message = success ? "OK" : Strings.WarningFailed;
+			Message = !string.IsNullOrEmpty(message) ? message! : success ? "OK" : Strings.WarningFailed;
 		}
 	}
 }

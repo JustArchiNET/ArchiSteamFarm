@@ -77,7 +77,9 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(bots))));
 			}
 
+#pragma warning disable 8620
 			return Ok(new GenericResponse<IReadOnlyDictionary<string, Bot>>(bots.ToDictionary(bot => bot.BotName, bot => bot, Bot.BotsComparer)));
+#pragma warning restore 8620
 		}
 
 		/// <summary>
@@ -88,8 +90,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, bool>>), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		public async Task<ActionResult<GenericResponse>> BotPost(string botNames, [FromBody] BotRequest request) {
-			if (string.IsNullOrEmpty(botNames) || (request == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(botNames) + " || " + nameof(request));
+			if (string.IsNullOrEmpty(botNames) || (request?.BotConfig == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(botNames) + " || " + nameof(request) + " || " + nameof(request.BotConfig));
 
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames) + " || " + nameof(request))));
 			}
@@ -109,7 +111,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			Dictionary<string, bool> result = new Dictionary<string, bool>(bots.Count, Bot.BotsComparer);
 
 			foreach (string botName in bots) {
-				if (Bot.Bots.TryGetValue(botName, out Bot bot)) {
+				if (Bot.Bots.TryGetValue(botName, out Bot? bot)) {
 					if (!request.BotConfig.IsSteamLoginSet && bot.BotConfig.IsSteamLoginSet) {
 						request.BotConfig.SteamLogin = bot.BotConfig.SteamLogin;
 					}
@@ -210,8 +212,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, IOrderedDictionary>>), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		public async Task<ActionResult<GenericResponse>> GamesToRedeemInBackgroundPost(string botNames, [FromBody] BotGamesToRedeemInBackgroundRequest request) {
-			if (string.IsNullOrEmpty(botNames) || (request == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(botNames) + " || " + nameof(request));
+			if (string.IsNullOrEmpty(botNames) || (request?.GamesToRedeemInBackground == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(botNames) + " || " + nameof(request) + " || " + nameof(request.GamesToRedeemInBackground));
 
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames) + " || " + nameof(request))));
 			}
@@ -267,7 +269,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
 			}
 
-			IList<bool> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.SetUserInput(request.Type, request.Value)))).ConfigureAwait(false);
+			IList<bool> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.SetUserInput(request.Type, request.Value!)))).ConfigureAwait(false);
 
 			return Ok(results.All(result => result) ? new GenericResponse(true) : new GenericResponse(false, Strings.WarningFailed));
 		}
@@ -309,8 +311,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>>), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		public async Task<ActionResult<GenericResponse>> RedeemPost(string botNames, [FromBody] BotRedeemRequest request) {
-			if (string.IsNullOrEmpty(botNames) || (request == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(botNames) + " || " + nameof(request));
+			if (string.IsNullOrEmpty(botNames) || (request?.KeysToRedeem == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(botNames) + " || " + nameof(request) + " || " + nameof(request.KeysToRedeem));
 
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames) + " || " + nameof(request))));
 			}
@@ -325,14 +327,14 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
 			}
 
-			IList<ArchiHandler.PurchaseResponseCallback> results = await Utilities.InParallel(bots.Select(bot => request.KeysToRedeem.Select(key => bot.Actions.RedeemKey(key))).SelectMany(task => task)).ConfigureAwait(false);
+			IList<ArchiHandler.PurchaseResponseCallback?> results = await Utilities.InParallel(bots.Select(bot => request.KeysToRedeem.Select(key => bot.Actions.RedeemKey(key))).SelectMany(task => task)).ConfigureAwait(false);
 
-			Dictionary<string, IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>> result = new Dictionary<string, IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>(bots.Count, Bot.BotsComparer);
+			Dictionary<string, IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback?>> result = new Dictionary<string, IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback?>>(bots.Count, Bot.BotsComparer);
 
 			int count = 0;
 
 			foreach (Bot bot in bots) {
-				Dictionary<string, ArchiHandler.PurchaseResponseCallback> responses = new Dictionary<string, ArchiHandler.PurchaseResponseCallback>(request.KeysToRedeem.Count, StringComparer.Ordinal);
+				Dictionary<string, ArchiHandler.PurchaseResponseCallback?> responses = new Dictionary<string, ArchiHandler.PurchaseResponseCallback?>(request.KeysToRedeem.Count, StringComparer.Ordinal);
 				result[bot.BotName] = responses;
 
 				foreach (string key in request.KeysToRedeem) {
@@ -340,7 +342,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				}
 			}
 
-			return Ok(new GenericResponse<IReadOnlyDictionary<string, IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback>>>(result.Values.SelectMany(responses => responses.Values).All(value => value != null), result));
+			return Ok(new GenericResponse<IReadOnlyDictionary<string, IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback?>>>(result.Values.SelectMany(responses => responses.Values).All(value => value != null), result));
 		}
 
 		/// <summary>
@@ -357,11 +359,11 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botName) + " || " + nameof(request))));
 			}
 
-			if (string.IsNullOrEmpty(request.NewName) || request.NewName.Equals(SharedInfo.ASF) || Bot.Bots.ContainsKey(request.NewName)) {
+			if (string.IsNullOrEmpty(request.NewName) || request.NewName!.Equals(SharedInfo.ASF) || Bot.Bots.ContainsKey(request.NewName)) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(request.NewName))));
 			}
 
-			if (!Bot.Bots.TryGetValue(botName, out Bot bot)) {
+			if (!Bot.Bots.TryGetValue(botName, out Bot? bot)) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botName)));
 			}
 
@@ -496,12 +498,12 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>(false, string.Format(Strings.BotNotFound, botNames)));
 			}
 
-			IList<(bool Success, string Token, string Message)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.GenerateTwoFactorAuthenticationToken())).ConfigureAwait(false);
+			IList<(bool Success, string? Token, string Message)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.GenerateTwoFactorAuthenticationToken())).ConfigureAwait(false);
 
 			Dictionary<string, GenericResponse<string>> result = new Dictionary<string, GenericResponse<string>>(bots.Count, Bot.BotsComparer);
 
 			foreach (Bot bot in bots) {
-				(bool success, string token, string message) = results[result.Count];
+				(bool success, string? token, string message) = results[result.Count];
 				result[bot.BotName] = new GenericResponse<string>(success, message, token);
 			}
 

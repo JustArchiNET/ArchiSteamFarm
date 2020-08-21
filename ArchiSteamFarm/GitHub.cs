@@ -25,7 +25,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 using Markdig;
 using Markdig.Renderers;
 using Markdig.Syntax;
@@ -34,21 +33,19 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	internal static class GitHub {
-		[ItemCanBeNull]
-		internal static async Task<ReleaseResponse> GetLatestRelease(bool stable = true) {
+		internal static async Task<ReleaseResponse?> GetLatestRelease(bool stable = true) {
 			string releaseURL = SharedInfo.GithubReleaseURL + (stable ? "/latest" : "?per_page=1");
 
 			if (stable) {
 				return await GetReleaseFromURL(releaseURL).ConfigureAwait(false);
 			}
 
-			ImmutableList<ReleaseResponse> response = await GetReleasesFromURL(releaseURL).ConfigureAwait(false);
+			ImmutableList<ReleaseResponse>? response = await GetReleasesFromURL(releaseURL).ConfigureAwait(false);
 
 			return response?.FirstOrDefault();
 		}
 
-		[ItemCanBeNull]
-		internal static async Task<ReleaseResponse> GetRelease(string version) {
+		internal static async Task<ReleaseResponse?> GetRelease(string version) {
 			if (string.IsNullOrEmpty(version)) {
 				ASF.ArchiLogger.LogNullError(nameof(version));
 
@@ -58,7 +55,7 @@ namespace ArchiSteamFarm {
 			return await GetReleaseFromURL(SharedInfo.GithubReleaseURL + "/tags/" + version).ConfigureAwait(false);
 		}
 
-		private static MarkdownDocument ExtractChangelogFromBody(string markdownText) {
+		private static MarkdownDocument? ExtractChangelogFromBody(string markdownText) {
 			if (string.IsNullOrEmpty(markdownText)) {
 				ASF.ArchiLogger.LogNullError(nameof(markdownText));
 
@@ -77,28 +74,34 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		[ItemCanBeNull]
-		private static async Task<ReleaseResponse> GetReleaseFromURL(string releaseURL) {
+		private static async Task<ReleaseResponse?> GetReleaseFromURL(string releaseURL) {
+			if (ASF.WebBrowser == null) {
+				throw new ArgumentNullException(nameof(ASF.WebBrowser));
+			}
+
 			if (string.IsNullOrEmpty(releaseURL)) {
 				ASF.ArchiLogger.LogNullError(nameof(releaseURL));
 
 				return null;
 			}
 
-			WebBrowser.ObjectResponse<ReleaseResponse> objectResponse = await ASF.WebBrowser.UrlGetToJsonObject<ReleaseResponse>(releaseURL).ConfigureAwait(false);
+			WebBrowser.ObjectResponse<ReleaseResponse>? objectResponse = await ASF.WebBrowser.UrlGetToJsonObject<ReleaseResponse>(releaseURL).ConfigureAwait(false);
 
 			return objectResponse?.Content;
 		}
 
-		[ItemCanBeNull]
-		private static async Task<ImmutableList<ReleaseResponse>> GetReleasesFromURL(string releaseURL) {
+		private static async Task<ImmutableList<ReleaseResponse>?> GetReleasesFromURL(string releaseURL) {
+			if (ASF.WebBrowser == null) {
+				throw new ArgumentNullException(nameof(ASF.WebBrowser));
+			}
+
 			if (string.IsNullOrEmpty(releaseURL)) {
 				ASF.ArchiLogger.LogNullError(nameof(releaseURL));
 
 				return null;
 			}
 
-			WebBrowser.ObjectResponse<ImmutableList<ReleaseResponse>> objectResponse = await ASF.WebBrowser.UrlGetToJsonObject<ImmutableList<ReleaseResponse>>(releaseURL).ConfigureAwait(false);
+			WebBrowser.ObjectResponse<ImmutableList<ReleaseResponse>>? objectResponse = await ASF.WebBrowser.UrlGetToJsonObject<ImmutableList<ReleaseResponse>>(releaseURL).ConfigureAwait(false);
 
 			return objectResponse?.Content;
 		}
@@ -106,7 +109,7 @@ namespace ArchiSteamFarm {
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class ReleaseResponse {
 			[JsonProperty(PropertyName = "assets", Required = Required.Always)]
-			internal readonly ImmutableHashSet<Asset> Assets;
+			internal readonly ImmutableHashSet<Asset>? Assets;
 
 			[JsonProperty(PropertyName = "prerelease", Required = Required.Always)]
 			internal readonly bool IsPreRelease;
@@ -115,9 +118,9 @@ namespace ArchiSteamFarm {
 			internal readonly DateTime PublishedAt;
 
 			[JsonProperty(PropertyName = "tag_name", Required = Required.Always)]
-			internal readonly string Tag;
+			internal readonly string? Tag;
 
-			internal string ChangelogHTML {
+			internal string? ChangelogHTML {
 				get {
 					if (BackingChangelogHTML != null) {
 						return BackingChangelogHTML;
@@ -139,7 +142,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			internal string ChangelogPlainText {
+			internal string? ChangelogPlainText {
 				get {
 					if (BackingChangelogPlainText != null) {
 						return BackingChangelogPlainText;
@@ -167,32 +170,38 @@ namespace ArchiSteamFarm {
 
 #pragma warning disable 649
 			[JsonProperty(PropertyName = "body", Required = Required.Always)]
-			private readonly string MarkdownBody;
+			private readonly string? MarkdownBody;
 #pragma warning restore 649
 
-			private MarkdownDocument Changelog {
+			private MarkdownDocument? Changelog {
 				get {
 					if (BackingChangelog != null) {
 						return BackingChangelog;
 					}
 
-					return BackingChangelog = ExtractChangelogFromBody(MarkdownBody);
+					if (string.IsNullOrEmpty(MarkdownBody)) {
+						ASF.ArchiLogger.LogNullError(nameof(MarkdownBody));
+
+						return null;
+					}
+
+					return BackingChangelog = ExtractChangelogFromBody(MarkdownBody!);
 				}
 			}
 
-			private MarkdownDocument BackingChangelog;
-			private string BackingChangelogHTML;
-			private string BackingChangelogPlainText;
+			private MarkdownDocument? BackingChangelog;
+			private string? BackingChangelogHTML;
+			private string? BackingChangelogPlainText;
 
 			[JsonConstructor]
 			private ReleaseResponse() { }
 
 			internal sealed class Asset {
 				[JsonProperty(PropertyName = "browser_download_url", Required = Required.Always)]
-				internal readonly string DownloadURL;
+				internal readonly string? DownloadURL;
 
 				[JsonProperty(PropertyName = "name", Required = Required.Always)]
-				internal readonly string Name;
+				internal readonly string? Name;
 
 				[JsonProperty(PropertyName = "size", Required = Required.Always)]
 				internal readonly uint Size;

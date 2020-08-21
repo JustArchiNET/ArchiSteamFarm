@@ -36,7 +36,7 @@ namespace ArchiSteamFarm.NLog {
 
 		// This is NLog config property, it must have public get() and set() capabilities
 		[PublicAPI]
-		public string BotName { get; set; }
+		public string? BotName { get; set; }
 
 		// This is NLog config property, it must have public get() and set() capabilities
 		[PublicAPI]
@@ -71,10 +71,10 @@ namespace ArchiSteamFarm.NLog {
 				return;
 			}
 
-			Bot bot = null;
+			Bot? bot = null;
 
 			if (!string.IsNullOrEmpty(BotName)) {
-				bot = Bot.GetBot(BotName);
+				bot = Bot.GetBot(BotName!);
 
 				if (bot?.IsConnectedAndLoggedOn != true) {
 					return;
@@ -88,7 +88,7 @@ namespace ArchiSteamFarm.NLog {
 			}
 		}
 
-		private async Task SendGroupMessage(string message, Bot bot = null) {
+		private async Task SendGroupMessage(string message, Bot? bot = null) {
 			if (string.IsNullOrEmpty(message)) {
 				ASF.ArchiLogger.LogNullError(nameof(message));
 
@@ -108,7 +108,7 @@ namespace ArchiSteamFarm.NLog {
 			}
 		}
 
-		private async Task SendPrivateMessage(string message, Bot bot = null) {
+		private async Task SendPrivateMessage(string message, Bot? bot = null) {
 			if (string.IsNullOrEmpty(message)) {
 				ASF.ArchiLogger.LogNullError(nameof(message));
 

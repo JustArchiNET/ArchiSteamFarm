@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SteamKit2;
 
@@ -40,7 +39,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 #pragma warning disable IDE0052
 		[JsonProperty(PropertyName = "guid", Required = Required.Always)]
-		private readonly string Guid = ASF.GlobalDatabase.Guid.ToString("N");
+		private readonly string Guid = ASF.GlobalDatabase?.Guid.ToString("N") ?? throw new ArgumentNullException(nameof(ASF.GlobalDatabase.Guid));
 #pragma warning restore IDE0052
 
 		private readonly ulong SteamID;
@@ -62,11 +61,10 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 #pragma warning disable IDE0051
 		[JsonProperty(PropertyName = "steamid", Required = Required.Always)]
-		[NotNull]
 		private string SteamIDText => new SteamID(SteamID).Render();
 #pragma warning restore IDE0051
 
-		internal RequestData(ulong steamID, [NotNull] IEnumerable<KeyValuePair<uint, ulong>> apps, [NotNull] IEnumerable<KeyValuePair<uint, ulong>> accessTokens, [NotNull] IEnumerable<KeyValuePair<uint, string>> depots) {
+		internal RequestData(ulong steamID, IEnumerable<KeyValuePair<uint, ulong>> apps, IEnumerable<KeyValuePair<uint, ulong>> accessTokens, IEnumerable<KeyValuePair<uint, string>> depots) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || (apps == null) || (accessTokens == null) || (depots == null)) {
 				throw new ArgumentNullException(nameof(steamID) + " || " + nameof(apps) + " || " + nameof(accessTokens) + " || " + nameof(depots));
 			}

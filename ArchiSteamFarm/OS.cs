@@ -29,7 +29,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
-using JetBrains.Annotations;
 
 namespace ArchiSteamFarm {
 	internal static class OS {
@@ -37,13 +36,11 @@ namespace ArchiSteamFarm {
 		internal static readonly string ProcessFileName = Process.GetCurrentProcess().MainModule?.FileName ?? throw new ArgumentNullException(nameof(ProcessFileName));
 
 		internal static bool IsUnix => RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
-
-		[NotNull]
 		internal static string Variant => RuntimeInformation.OSDescription.Trim();
 
 		private static bool IsWindows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
-		private static Mutex SingleInstance;
+		private static Mutex? SingleInstance;
 
 		internal static void CoreInit() {
 			if (IsWindows && !Console.IsOutputRedirected) {
@@ -64,9 +61,7 @@ namespace ArchiSteamFarm {
 
 		internal static ICrossProcessSemaphore CreateCrossProcessSemaphore(string objectName) {
 			if (string.IsNullOrEmpty(objectName)) {
-				ASF.ArchiLogger.LogNullError(nameof(objectName));
-
-				return null;
+				throw new ArgumentNullException(nameof(objectName));
 			}
 
 			string resourceName = GetOsResourceName(objectName);
@@ -166,9 +161,7 @@ namespace ArchiSteamFarm {
 
 		private static string GetOsResourceName(string objectName) {
 			if (string.IsNullOrEmpty(objectName)) {
-				ASF.ArchiLogger.LogNullError(nameof(objectName));
-
-				return null;
+				throw new ArgumentNullException(nameof(objectName));
 			}
 
 			return SharedInfo.AssemblyName + "-" + objectName;

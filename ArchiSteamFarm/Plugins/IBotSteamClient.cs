@@ -31,14 +31,13 @@ namespace ArchiSteamFarm.Plugins {
 		/// </summary>
 		/// <param name="bot">Bot object related to this callback.</param>
 		/// <param name="callbackManager">Callback manager object which can be used for establishing subscriptions to standard and custom callbacks.</param>
-		void OnBotSteamCallbacksInit([NotNull] Bot bot, [NotNull] CallbackManager callbackManager);
+		void OnBotSteamCallbacksInit(Bot bot, CallbackManager callbackManager);
 
 		/// <summary>
 		///     ASF will call this method right after bot initialization in order to allow you hooking custom SK2 client handlers into the SteamClient.
 		/// </summary>
 		/// <param name="bot">Bot object related to this callback.</param>
-		/// <returns>Collection of custom client handlers that are supposed to be hooked into the SteamClient by ASF. If you do not require any, just return null.</returns>
-		[CanBeNull]
-		IReadOnlyCollection<ClientMsgHandler> OnBotSteamHandlersInit([NotNull] Bot bot);
+		/// <returns>Collection of custom client handlers that are supposed to be hooked into the SteamClient by ASF. If you do not require any, just return null or empty collection.</returns>
+		IReadOnlyCollection<ClientMsgHandler>? OnBotSteamHandlersInit(Bot bot);
 	}
 }

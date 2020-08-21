@@ -22,7 +22,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Collections {
 	internal sealed class ConcurrentEnumerator<T> : IEnumerator<T> {
@@ -31,9 +30,9 @@ namespace ArchiSteamFarm.Collections {
 		private readonly IEnumerator<T> Enumerator;
 		private readonly IDisposable Lock;
 
-		object IEnumerator.Current => Current;
+		object? IEnumerator.Current => Current;
 
-		internal ConcurrentEnumerator([NotNull] IReadOnlyCollection<T> collection, [NotNull] IDisposable @lock) {
+		internal ConcurrentEnumerator(IReadOnlyCollection<T> collection, IDisposable @lock) {
 			if ((collection == null) || (@lock == null)) {
 				throw new ArgumentNullException(nameof(collection) + " || " + nameof(@lock));
 			}

@@ -47,7 +47,7 @@ namespace ArchiSteamFarm {
 
 		internal DateTime LastPacketReceived { get; private set; }
 
-		internal ArchiHandler([JetBrains.Annotations.NotNull] ArchiLogger archiLogger, [JetBrains.Annotations.NotNull] SteamUnifiedMessages steamUnifiedMessages) {
+		internal ArchiHandler(ArchiLogger archiLogger, SteamUnifiedMessages steamUnifiedMessages) {
 			if ((archiLogger == null) || (steamUnifiedMessages == null)) {
 				throw new ArgumentNullException(nameof(archiLogger) + " || " + nameof(steamUnifiedMessages));
 			}
@@ -302,7 +302,7 @@ namespace ArchiSteamFarm {
 			return body.player_level;
 		}
 
-		internal async Task<HashSet<ulong>> GetMyChatGroupIDs() {
+		internal async Task<HashSet<ulong>?> GetMyChatGroupIDs() {
 			if (Client == null) {
 				ArchiLogger.LogNullError(nameof(Client));
 
@@ -334,7 +334,7 @@ namespace ArchiSteamFarm {
 			return body.chat_room_groups.Select(chatRoom => chatRoom.group_summary.chat_group_id).ToHashSet();
 		}
 
-		internal async Task<CPrivacySettings> GetPrivacySettings() {
+		internal async Task<CPrivacySettings?> GetPrivacySettings() {
 			if (Client == null) {
 				ArchiLogger.LogNullError(nameof(Client));
 
@@ -366,7 +366,7 @@ namespace ArchiSteamFarm {
 			return body.privacy_settings;
 		}
 
-		internal async Task<string> GetTradeToken() {
+		internal async Task<string?> GetTradeToken() {
 			if (Client == null) {
 				ArchiLogger.LogNullError(nameof(Client));
 
@@ -398,7 +398,7 @@ namespace ArchiSteamFarm {
 			return body.trade_offer_access_token;
 		}
 
-		internal async Task<string> GetTwoFactorDeviceIdentifier(ulong steamID) {
+		internal async Task<string?> GetTwoFactorDeviceIdentifier(ulong steamID) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 				ArchiLogger.LogNullError(nameof(steamID));
 
@@ -470,7 +470,7 @@ namespace ArchiSteamFarm {
 			return response.Result == EResult.OK;
 		}
 
-		internal async Task PlayGames(IEnumerable<uint> gameIDs, string gameName = null) {
+		internal async Task PlayGames(IEnumerable<uint> gameIDs, string? gameName = null) {
 			if (gameIDs == null) {
 				ArchiLogger.LogNullError(nameof(gameIDs));
 
@@ -526,7 +526,7 @@ namespace ArchiSteamFarm {
 			Client.Send(request);
 		}
 
-		internal async Task<RedeemGuestPassResponseCallback> RedeemGuestPass(ulong guestPassID) {
+		internal async Task<RedeemGuestPassResponseCallback?> RedeemGuestPass(ulong guestPassID) {
 			if (guestPassID == 0) {
 				ArchiLogger.LogNullError(nameof(guestPassID));
 
@@ -559,7 +559,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task<PurchaseResponseCallback> RedeemKey(string key) {
+		internal async Task<PurchaseResponseCallback?> RedeemKey(string key) {
 			if (string.IsNullOrEmpty(key)) {
 				ArchiLogger.LogNullError(nameof(key));
 
@@ -770,7 +770,7 @@ namespace ArchiSteamFarm {
 
 		[SuppressMessage("ReSharper", "MemberCanBeInternal")]
 		public sealed class PurchaseResponseCallback : CallbackMsg {
-			public readonly Dictionary<uint, string> Items;
+			public readonly Dictionary<uint, string>? Items;
 
 			public EPurchaseResultDetail PurchaseResultDetail { get; internal set; }
 			public EResult Result { get; internal set; }
@@ -784,7 +784,7 @@ namespace ArchiSteamFarm {
 				PurchaseResultDetail = purchaseResult;
 			}
 
-			internal PurchaseResponseCallback([JetBrains.Annotations.NotNull] JobID jobID, [JetBrains.Annotations.NotNull] CMsgClientPurchaseResponse msg) {
+			internal PurchaseResponseCallback(JobID jobID, CMsgClientPurchaseResponse msg) {
 				if ((jobID == null) || (msg == null)) {
 					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
 				}
@@ -832,7 +832,7 @@ namespace ArchiSteamFarm {
 						}
 					}
 
-					string gameName = lineItem["ItemDescription"].Value;
+					string? gameName = lineItem["ItemDescription"].AsString();
 
 					if (string.IsNullOrEmpty(gameName)) {
 						ASF.ArchiLogger.LogNullError(nameof(gameName));
@@ -850,7 +850,7 @@ namespace ArchiSteamFarm {
 		public sealed class UserNotificationsCallback : CallbackMsg {
 			internal readonly Dictionary<EUserNotification, uint> Notifications;
 
-			internal UserNotificationsCallback([JetBrains.Annotations.NotNull] JobID jobID, [JetBrains.Annotations.NotNull] CMsgClientUserNotifications msg) {
+			internal UserNotificationsCallback(JobID jobID, CMsgClientUserNotifications msg) {
 				if ((jobID == null) || (msg == null)) {
 					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
 				}
@@ -890,7 +890,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			internal UserNotificationsCallback([JetBrains.Annotations.NotNull] JobID jobID, [JetBrains.Annotations.NotNull] CMsgClientItemAnnouncements msg) {
+			internal UserNotificationsCallback(JobID jobID, CMsgClientItemAnnouncements msg) {
 				if ((jobID == null) || (msg == null)) {
 					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
 				}
@@ -899,7 +899,7 @@ namespace ArchiSteamFarm {
 				Notifications = new Dictionary<EUserNotification, uint>(1) { { EUserNotification.Items, msg.count_new_items } };
 			}
 
-			internal UserNotificationsCallback([JetBrains.Annotations.NotNull] JobID jobID, [JetBrains.Annotations.NotNull] CMsgClientCommentNotifications msg) {
+			internal UserNotificationsCallback(JobID jobID, CMsgClientCommentNotifications msg) {
 				if ((jobID == null) || (msg == null)) {
 					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
 				}
@@ -928,7 +928,7 @@ namespace ArchiSteamFarm {
 		internal sealed class PlayingSessionStateCallback : CallbackMsg {
 			internal readonly bool PlayingBlocked;
 
-			internal PlayingSessionStateCallback([JetBrains.Annotations.NotNull] JobID jobID, [JetBrains.Annotations.NotNull] CMsgClientPlayingSessionState msg) {
+			internal PlayingSessionStateCallback(JobID jobID, CMsgClientPlayingSessionState msg) {
 				if ((jobID == null) || (msg == null)) {
 					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
 				}
@@ -941,7 +941,7 @@ namespace ArchiSteamFarm {
 		internal sealed class RedeemGuestPassResponseCallback : CallbackMsg {
 			internal readonly EResult Result;
 
-			internal RedeemGuestPassResponseCallback([JetBrains.Annotations.NotNull] JobID jobID, [JetBrains.Annotations.NotNull] CMsgClientRedeemGuestPassResponse msg) {
+			internal RedeemGuestPassResponseCallback(JobID jobID, CMsgClientRedeemGuestPassResponse msg) {
 				if ((jobID == null) || (msg == null)) {
 					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
 				}
@@ -954,7 +954,7 @@ namespace ArchiSteamFarm {
 		internal sealed class SharedLibraryLockStatusCallback : CallbackMsg {
 			internal readonly ulong LibraryLockedBySteamID;
 
-			internal SharedLibraryLockStatusCallback([JetBrains.Annotations.NotNull] JobID jobID, [JetBrains.Annotations.NotNull] CMsgClientSharedLibraryLockStatus msg) {
+			internal SharedLibraryLockStatusCallback(JobID jobID, CMsgClientSharedLibraryLockStatus msg) {
 				if ((jobID == null) || (msg == null)) {
 					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
 				}
@@ -972,7 +972,7 @@ namespace ArchiSteamFarm {
 		internal sealed class VanityURLChangedCallback : CallbackMsg {
 			internal readonly string VanityURL;
 
-			internal VanityURLChangedCallback([JetBrains.Annotations.NotNull] JobID jobID, [JetBrains.Annotations.NotNull] CMsgClientVanityURLChangedNotification msg) {
+			internal VanityURLChangedCallback(JobID jobID, CMsgClientVanityURLChangedNotification msg) {
 				if ((jobID == null) || (msg == null)) {
 					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
 				}

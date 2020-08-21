@@ -86,7 +86,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 						break;
 					}
 				} finally {
-					if (ActiveLogWebSockets.TryRemove(webSocket, out SemaphoreSlim closedSemaphore)) {
+					if (ActiveLogWebSockets.TryRemove(webSocket, out SemaphoreSlim? closedSemaphore)) {
 						await closedSemaphore.WaitAsync().ConfigureAwait(false); // Ensure that our semaphore is truly closed by now
 						closedSemaphore.Dispose();
 					}
@@ -98,7 +98,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			return new EmptyResult();
 		}
 
-		internal static async void OnNewHistoryEntry(object sender, HistoryTarget.NewHistoryEntryArgs newHistoryEntryArgs) {
+		internal static async void OnNewHistoryEntry(object? sender, HistoryTarget.NewHistoryEntryArgs newHistoryEntryArgs) {
 			if ((sender == null) || (newHistoryEntryArgs == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(newHistoryEntryArgs));
 

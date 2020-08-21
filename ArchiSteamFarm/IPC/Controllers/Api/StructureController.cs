@@ -44,13 +44,13 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(structure))));
 			}
 
-			Type targetType = WebUtilities.ParseType(structure);
+			Type? targetType = WebUtilities.ParseType(structure);
 
 			if (targetType == null) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, structure)));
 			}
 
-			object obj;
+			object? obj;
 
 			try {
 				obj = Activator.CreateInstance(targetType, true);

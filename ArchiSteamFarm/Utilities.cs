@@ -44,9 +44,7 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public static string GetArgsAsText(string[] args, byte argsToSkip, string delimiter) {
 			if ((args == null) || (args.Length <= argsToSkip) || string.IsNullOrEmpty(delimiter)) {
-				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(argsToSkip) + " || " + nameof(delimiter));
-
-				return null;
+				throw new ArgumentNullException(nameof(args) + " || " + nameof(argsToSkip) + " || " + nameof(delimiter));
 			}
 
 			return string.Join(delimiter, args.Skip(argsToSkip));
@@ -55,25 +53,12 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public static string GetArgsAsText(string text, byte argsToSkip) {
 			if (string.IsNullOrEmpty(text)) {
-				ASF.ArchiLogger.LogNullError(nameof(text));
-
-				return null;
+				throw new ArgumentNullException(nameof(text));
 			}
 
-			string[] args = text.Split((char[]) null, argsToSkip + 1, StringSplitOptions.RemoveEmptyEntries);
+			string[] args = text.Split(new char[0], argsToSkip + 1, StringSplitOptions.RemoveEmptyEntries);
 
 			return args[^1];
-		}
-
-		[PublicAPI]
-		public static string GetAttributeValue(this INode node, string attributeName) {
-			if ((node == null) || string.IsNullOrEmpty(attributeName)) {
-				ASF.ArchiLogger.LogNullError(nameof(node) + " || " + nameof(attributeName));
-
-				return null;
-			}
-
-			return node is IElement element ? element.GetAttribute(attributeName) : null;
 		}
 
 		[PublicAPI]
@@ -115,10 +100,8 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public static async Task<IList<T>> InParallel<T>(IEnumerable<Task<T>> tasks) {
-			if (tasks == null) {
-				ASF.ArchiLogger.LogNullError(nameof(tasks));
-
-				return null;
+			if ((tasks == null) || (ASF.GlobalConfig == null)) {
+				throw new ArgumentNullException(nameof(tasks) + " || " + nameof(ASF.GlobalConfig));
 			}
 
 			IList<T> results;
@@ -143,10 +126,8 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public static async Task InParallel(IEnumerable<Task> tasks) {
-			if (tasks == null) {
-				ASF.ArchiLogger.LogNullError(nameof(tasks));
-
-				return;
+			if ((tasks == null) || (ASF.GlobalConfig == null)) {
+				throw new ArgumentNullException(nameof(tasks) + " || " + nameof(ASF.GlobalConfig));
 			}
 
 			switch (ASF.GlobalConfig.OptimizationMode) {
@@ -226,22 +207,18 @@ namespace ArchiSteamFarm {
 		}
 
 		[ItemNotNull]
-		[NotNull]
 		[PublicAPI]
-		public static List<IElement> SelectElementNodes([NotNull] this IElement element, string xpath) => element.SelectNodes(xpath).Cast<IElement>().ToList();
+		public static List<IElement> SelectElementNodes(this IElement element, string xpath) => element.SelectNodes(xpath).Cast<IElement>().ToList();
 
 		[ItemNotNull]
-		[NotNull]
 		[PublicAPI]
-		public static List<IElement> SelectNodes([NotNull] this IDocument document, string xpath) => document.Body.SelectNodes(xpath).Cast<IElement>().ToList();
+		public static List<IElement> SelectNodes(this IDocument document, string xpath) => document.Body.SelectNodes(xpath).Cast<IElement>().ToList();
 
-		[CanBeNull]
 		[PublicAPI]
-		public static IElement SelectSingleElementNode([NotNull] this IElement element, string xpath) => (IElement) element.SelectSingleNode(xpath);
+		public static IElement SelectSingleElementNode(this IElement element, string xpath) => (IElement) element.SelectSingleNode(xpath);
 
-		[CanBeNull]
 		[PublicAPI]
-		public static IElement SelectSingleNode([NotNull] this IDocument document, string xpath) => (IElement) document.Body.SelectSingleNode(xpath);
+		public static IElement SelectSingleNode(this IDocument document, string xpath) => (IElement) document.Body.SelectSingleNode(xpath);
 
 		[PublicAPI]
 		public static IEnumerable<T> ToEnumerable<T>(this T item) {
@@ -251,9 +228,8 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public static string ToHumanReadable(this TimeSpan timeSpan) => timeSpan.Humanize(3, maxUnit: TimeUnit.Year, minUnit: TimeUnit.Second);
 
-		[NotNull]
 		[PublicAPI]
-		public static Task<T> ToLongRunningTask<T>([NotNull] this AsyncJob<T> job) where T : CallbackMsg {
+		public static Task<T> ToLongRunningTask<T>(this AsyncJob<T> job) where T : CallbackMsg {
 			if (job == null) {
 				throw new ArgumentNullException(nameof(job));
 			}
@@ -263,9 +239,8 @@ namespace ArchiSteamFarm {
 			return job.ToTask();
 		}
 
-		[NotNull]
 		[PublicAPI]
-		public static Task<AsyncJobMultiple<T>.ResultSet> ToLongRunningTask<T>([NotNull] this AsyncJobMultiple<T> job) where T : CallbackMsg {
+		public static Task<AsyncJobMultiple<T>.ResultSet> ToLongRunningTask<T>(this AsyncJobMultiple<T> job) where T : CallbackMsg {
 			if (job == null) {
 				throw new ArgumentNullException(nameof(job));
 			}
@@ -299,7 +274,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static string GetCookieValue(this CookieContainer cookieContainer, string url, string name) {
+		internal static string? GetCookieValue(this CookieContainer cookieContainer, string url, string name) {
 			if ((cookieContainer == null) || string.IsNullOrEmpty(url) || string.IsNullOrEmpty(name)) {
 				ASF.ArchiLogger.LogNullError(nameof(cookieContainer) + " || " + nameof(url) + " || " + nameof(name));
 

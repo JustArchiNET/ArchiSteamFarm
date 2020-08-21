@@ -73,7 +73,7 @@ namespace ArchiSteamFarm {
 		[JsonProperty(PropertyName = "_" + nameof(CellID), Required = Required.DisallowNull)]
 		private uint BackingCellID;
 
-		private GlobalDatabase([NotNull] string filePath) : this() {
+		private GlobalDatabase(string filePath) : this() {
 			if (string.IsNullOrEmpty(filePath)) {
 				throw new ArgumentNullException(nameof(filePath));
 			}
@@ -95,12 +95,9 @@ namespace ArchiSteamFarm {
 			base.Dispose();
 		}
 
-		[ItemCanBeNull]
-		internal static async Task<GlobalDatabase> CreateOrLoad(string filePath) {
+		internal static async Task<GlobalDatabase?> CreateOrLoad(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
-				ASF.ArchiLogger.LogNullError(nameof(filePath));
-
-				return null;
+				throw new ArgumentNullException(nameof(filePath));
 			}
 
 			if (!File.Exists(filePath)) {
@@ -138,9 +135,7 @@ namespace ArchiSteamFarm {
 
 		internal HashSet<uint> GetPackageIDs(uint appID, IEnumerable<uint> packageIDs) {
 			if ((appID == 0) || (packageIDs == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(packageIDs));
-
-				return null;
+				throw new ArgumentNullException(nameof(appID) + " || " + nameof(packageIDs));
 			}
 
 			HashSet<uint> result = new HashSet<uint>();
@@ -220,7 +215,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async void OnServerListUpdated(object sender, EventArgs e) => await Save().ConfigureAwait(false);
+		private async void OnServerListUpdated(object? sender, EventArgs e) => await Save().ConfigureAwait(false);
 
 		// ReSharper disable UnusedMember.Global
 		public bool ShouldSerializeCellID() => CellID != 0;

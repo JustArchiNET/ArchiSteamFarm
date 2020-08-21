@@ -43,7 +43,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 		private static readonly SemaphoreSlim SubmissionSemaphore = new SemaphoreSlim(1, 1);
 		private static readonly Timer SubmissionTimer = new Timer(async e => await SubmitData().ConfigureAwait(false));
 
-		private static GlobalCache GlobalCache;
+		private static GlobalCache? GlobalCache;
 
 		[JsonProperty]
 		private static bool IsEnabled;
@@ -56,7 +56,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 		public Task<uint> GetPreferredChangeNumberToStartFrom() => Task.FromResult(IsEnabled ? GlobalCache?.LastChangeNumber ?? 0 : 0);
 
-		public void OnASFInit(IReadOnlyDictionary<string, JToken> additionalConfigProperties = null) {
+		public void OnASFInit(IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null) {
 			if (!SharedInfo.HasValidToken) {
 				ASF.ArchiLogger.LogGenericError($"{Name} has been disabled due to missing build token.");
 
@@ -103,7 +103,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				throw new ArgumentNullException(nameof(bot));
 			}
 
-			if (BotSubscriptions.TryRemove(bot, out IDisposable subscription)) {
+			if (BotSubscriptions.TryRemove(bot, out IDisposable? subscription)) {
 				subscription.Dispose();
 			}
 
@@ -138,7 +138,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				throw new ArgumentNullException(nameof(bot) + " || " + nameof(callbackManager));
 			}
 
-			if (BotSubscriptions.TryRemove(bot, out IDisposable subscription)) {
+			if (BotSubscriptions.TryRemove(bot, out IDisposable? subscription)) {
 				subscription.Dispose();
 			}
 
@@ -153,7 +153,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			}
 		}
 
-		public IReadOnlyCollection<ClientMsgHandler> OnBotSteamHandlersInit(Bot bot) => null;
+		public IReadOnlyCollection<ClientMsgHandler>? OnBotSteamHandlersInit(Bot bot) => null;
 
 		public override void OnLoaded() { }
 
@@ -208,7 +208,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			await Refresh(bot, packageTokens.Keys).ConfigureAwait(false);
 		}
 
-		private static async Task Refresh([NotNull] Bot bot, IReadOnlyCollection<uint> packageIDs = null) {
+		private static async Task Refresh([NotNull] Bot bot, IReadOnlyCollection<uint>? packageIDs = null) {
 			if (bot == null) {
 				throw new ArgumentNullException(nameof(bot));
 			}
@@ -217,8 +217,8 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				return;
 			}
 
-			if (GlobalCache == null) {
-				throw new ArgumentNullException(nameof(GlobalCache));
+			if ((ASF.GlobalDatabase == null) || (GlobalCache == null)) {
+				throw new ArgumentNullException(nameof(ASF.GlobalDatabase) + " || " + nameof(GlobalCache));
 			}
 
 			if (!BotSynchronizations.TryGetValue(bot, out (SemaphoreSlim RefreshSemaphore, Timer RefreshTimer) synchronization)) {
@@ -394,8 +394,8 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				return;
 			}
 
-			if (GlobalCache == null) {
-				throw new ArgumentNullException(nameof(GlobalCache));
+			if ((ASF.GlobalConfig == null) || (ASF.WebBrowser == null) || (GlobalCache == null)) {
+				throw new ArgumentNullException(nameof(ASF.GlobalConfig) + " || " + nameof(ASF.WebBrowser) + " || " + nameof(GlobalCache));
 			}
 
 			if (!await SubmissionSemaphore.WaitAsync(0).ConfigureAwait(false)) {
@@ -427,9 +427,9 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 				ASF.ArchiLogger.LogGenericInfo($"Submitting registered apps/subs/depots: {appTokens.Count}/{packageTokens.Count}/{depotKeys.Count}...");
 
-				WebBrowser.ObjectResponse<ResponseData> response = await ASF.WebBrowser.UrlPostToJsonObject<ResponseData, RequestData>(request, requestData, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
+				WebBrowser.ObjectResponse<ResponseData>? response = await ASF.WebBrowser.UrlPostToJsonObject<ResponseData, RequestData>(request, requestData, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
 
-				if ((response?.Content == null) || response.StatusCode.IsClientErrorCode()) {
+				if ((response?.Content?.Data == null) || response.StatusCode.IsClientErrorCode()) {
 					ASF.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
 #if NETFRAMEWORK

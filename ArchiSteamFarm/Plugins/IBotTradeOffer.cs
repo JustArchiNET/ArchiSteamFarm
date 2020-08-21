@@ -32,7 +32,6 @@ namespace ArchiSteamFarm.Plugins {
 		/// <param name="bot">Bot object related to this callback.</param>
 		/// <param name="tradeOffer">Trade offer related to this callback.</param>
 		/// <returns>True if the trade offer should be accepted as part of this plugin, false otherwise.</returns>
-		[NotNull]
-		Task<bool> OnBotTradeOffer([NotNull] Bot bot, [NotNull] Steam.TradeOffer tradeOffer);
+		Task<bool> OnBotTradeOffer(Bot bot, Steam.TradeOffer tradeOffer);
 	}
 }

@@ -20,14 +20,13 @@
 // limitations under the License.
 
 using System;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SteamKit2;
 
 namespace ArchiSteamFarm.SteamKit2 {
 	internal sealed class ServerRecordEndPoint : IEquatable<ServerRecordEndPoint> {
 		[JsonProperty(Required = Required.Always)]
-		internal readonly string Host;
+		internal readonly string? Host;
 
 		[JsonProperty(Required = Required.Always)]
 		internal readonly ushort Port;
@@ -35,7 +34,7 @@ namespace ArchiSteamFarm.SteamKit2 {
 		[JsonProperty(Required = Required.Always)]
 		internal readonly ProtocolTypes ProtocolTypes;
 
-		internal ServerRecordEndPoint([NotNull] string host, ushort port, ProtocolTypes protocolTypes) {
+		internal ServerRecordEndPoint(string host, ushort port, ProtocolTypes protocolTypes) {
 			if (string.IsNullOrEmpty(host) || (port == 0) || (protocolTypes == 0)) {
 				throw new ArgumentNullException(nameof(host) + " || " + nameof(port) + " || " + nameof(protocolTypes));
 			}
@@ -48,8 +47,8 @@ namespace ArchiSteamFarm.SteamKit2 {
 		[JsonConstructor]
 		private ServerRecordEndPoint() { }
 
-		public bool Equals(ServerRecordEndPoint other) => (other != null) && (ReferenceEquals(other, this) || ((Host == other.Host) && (Port == other.Port) && (ProtocolTypes == other.ProtocolTypes)));
-		public override bool Equals(object obj) => (obj != null) && ((obj == this) || (obj is ServerRecordEndPoint serverRecord && Equals(serverRecord)));
+		public bool Equals(ServerRecordEndPoint? other) => (other != null) && (ReferenceEquals(other, this) || ((Host == other.Host) && (Port == other.Port) && (ProtocolTypes == other.ProtocolTypes)));
+		public override bool Equals(object? obj) => (obj != null) && ((obj == this) || (obj is ServerRecordEndPoint serverRecord && Equals(serverRecord)));
 		public override int GetHashCode() => RuntimeCompatibility.HashCode.Combine(Host, Port, ProtocolTypes);
 	}
 }

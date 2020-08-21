@@ -31,7 +31,7 @@ namespace ArchiSteamFarm.NLog {
 	public sealed class ArchiLogger {
 		private readonly Logger Logger;
 
-		public ArchiLogger([NotNull] string name) {
+		public ArchiLogger(string name) {
 			if (string.IsNullOrEmpty(name)) {
 				throw new ArgumentNullException(nameof(name));
 			}
@@ -40,7 +40,7 @@ namespace ArchiSteamFarm.NLog {
 		}
 
 		[PublicAPI]
-		public void LogGenericDebug(string message, [CallerMemberName] string previousMethodName = null) {
+		public void LogGenericDebug(string message, [CallerMemberName] string? previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
 				LogNullError(nameof(message));
 
@@ -51,7 +51,7 @@ namespace ArchiSteamFarm.NLog {
 		}
 
 		[PublicAPI]
-		public void LogGenericDebuggingException(Exception exception, [CallerMemberName] string previousMethodName = null) {
+		public void LogGenericDebuggingException(Exception exception, [CallerMemberName] string? previousMethodName = null) {
 			if (exception == null) {
 				LogNullError(nameof(exception));
 
@@ -66,7 +66,7 @@ namespace ArchiSteamFarm.NLog {
 		}
 
 		[PublicAPI]
-		public void LogGenericError(string message, [CallerMemberName] string previousMethodName = null) {
+		public void LogGenericError(string message, [CallerMemberName] string? previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
 				LogNullError(nameof(message));
 
@@ -77,7 +77,7 @@ namespace ArchiSteamFarm.NLog {
 		}
 
 		[PublicAPI]
-		public void LogGenericException(Exception exception, [CallerMemberName] string previousMethodName = null) {
+		public void LogGenericException(Exception exception, [CallerMemberName] string? previousMethodName = null) {
 			if (exception == null) {
 				LogNullError(nameof(exception));
 
@@ -88,7 +88,7 @@ namespace ArchiSteamFarm.NLog {
 		}
 
 		[PublicAPI]
-		public void LogGenericInfo(string message, [CallerMemberName] string previousMethodName = null) {
+		public void LogGenericInfo(string message, [CallerMemberName] string? previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
 				LogNullError(nameof(message));
 
@@ -99,7 +99,7 @@ namespace ArchiSteamFarm.NLog {
 		}
 
 		[PublicAPI]
-		public void LogGenericTrace(string message, [CallerMemberName] string previousMethodName = null) {
+		public void LogGenericTrace(string message, [CallerMemberName] string? previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
 				LogNullError(nameof(message));
 
@@ -110,7 +110,7 @@ namespace ArchiSteamFarm.NLog {
 		}
 
 		[PublicAPI]
-		public void LogGenericWarning(string message, [CallerMemberName] string previousMethodName = null) {
+		public void LogGenericWarning(string message, [CallerMemberName] string? previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
 				LogNullError(nameof(message));
 
@@ -121,7 +121,7 @@ namespace ArchiSteamFarm.NLog {
 		}
 
 		[PublicAPI]
-		public void LogGenericWarningException(Exception exception, [CallerMemberName] string previousMethodName = null) {
+		public void LogGenericWarningException(Exception exception, [CallerMemberName] string? previousMethodName = null) {
 			if (exception == null) {
 				LogNullError(nameof(exception));
 
@@ -132,7 +132,7 @@ namespace ArchiSteamFarm.NLog {
 		}
 
 		[PublicAPI]
-		public void LogNullError(string nullObjectName, [CallerMemberName] string previousMethodName = null) {
+		public void LogNullError(string nullObjectName, [CallerMemberName] string? previousMethodName = null) {
 			if (string.IsNullOrEmpty(nullObjectName)) {
 				return;
 			}
@@ -140,7 +140,7 @@ namespace ArchiSteamFarm.NLog {
 			LogGenericError(string.Format(Strings.ErrorObjectIsNull, nullObjectName), previousMethodName);
 		}
 
-		internal void LogChatMessage(bool echo, string message, ulong chatGroupID = 0, ulong chatID = 0, ulong steamID = 0, [CallerMemberName] string previousMethodName = null) {
+		internal void LogChatMessage(bool echo, string message, ulong chatGroupID = 0, ulong chatID = 0, ulong steamID = 0, [CallerMemberName] string? previousMethodName = null) {
 			if (string.IsNullOrEmpty(message) || (((chatGroupID == 0) || (chatID == 0)) && (steamID == 0))) {
 				LogNullError(nameof(message) + " || " + "((" + nameof(chatGroupID) + " || " + nameof(chatID) + ") && " + nameof(steamID) + ")");
 
@@ -169,7 +169,7 @@ namespace ArchiSteamFarm.NLog {
 			Logger.Log(logEventInfo);
 		}
 
-		internal async Task LogFatalException(Exception exception, [CallerMemberName] string previousMethodName = null) {
+		internal async Task LogFatalException(Exception exception, [CallerMemberName] string? previousMethodName = null) {
 			if (exception == null) {
 				LogNullError(nameof(exception));
 

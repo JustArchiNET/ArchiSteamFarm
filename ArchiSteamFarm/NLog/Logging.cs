@@ -28,7 +28,6 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.IPC;
 using ArchiSteamFarm.Localization;
-using JetBrains.Annotations;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
@@ -64,7 +63,11 @@ namespace ArchiSteamFarm.NLog {
 			}
 		}
 
-		internal static async Task<string> GetUserInput(ASF.EUserInputType userInputType, string botName = SharedInfo.ASF) {
+		internal static async Task<string?> GetUserInput(ASF.EUserInputType userInputType, string botName = SharedInfo.ASF) {
+			if (ASF.GlobalConfig == null) {
+				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
+			}
+
 			if ((userInputType == ASF.EUserInputType.None) || !Enum.IsDefined(typeof(ASF.EUserInputType), userInputType) || string.IsNullOrEmpty(botName)) {
 				ASF.ArchiLogger.LogNullError(nameof(userInputType) + " || " + nameof(botName));
 
@@ -214,6 +217,10 @@ namespace ArchiSteamFarm.NLog {
 		}
 
 		internal static void StartInteractiveConsole() {
+			if (ASF.GlobalConfig == null) {
+				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
+			}
+
 			if (ASF.GlobalConfig.SteamOwnerID == 0) {
 				ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.InteractiveConsoleNotAvailable, nameof(ASF.GlobalConfig.SteamOwnerID)));
 
@@ -230,7 +237,6 @@ namespace ArchiSteamFarm.NLog {
 			return Console.ReadLine();
 		}
 
-		[NotNull]
 		private static string ConsoleReadLineMasked(char mask = '*') {
 			StringBuilder result = new StringBuilder();
 
@@ -262,6 +268,10 @@ namespace ArchiSteamFarm.NLog {
 		}
 
 		private static async Task HandleConsoleInteractively() {
+			if (ASF.GlobalConfig == null) {
+				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
+			}
+
 			while (!Program.ShutdownSequenceInitialized) {
 				try {
 					if (IsWaitingForUserInput || !Console.KeyAvailable) {
@@ -288,7 +298,7 @@ namespace ArchiSteamFarm.NLog {
 							}
 
 							if (!string.IsNullOrEmpty(ASF.GlobalConfig.CommandPrefix) && command.StartsWith(ASF.GlobalConfig.CommandPrefix, StringComparison.Ordinal)) {
-								command = command.Substring(ASF.GlobalConfig.CommandPrefix.Length);
+								command = command.Substring(ASF.GlobalConfig.CommandPrefix!.Length);
 
 								if (string.IsNullOrEmpty(command)) {
 									continue;
@@ -339,7 +349,7 @@ namespace ArchiSteamFarm.NLog {
 			}
 		}
 
-		private static void OnConfigurationChanged(object sender, LoggingConfigurationChangedEventArgs e) {
+		private static void OnConfigurationChanged(object? sender, LoggingConfigurationChangedEventArgs e) {
 			if ((sender == null) || (e == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
 

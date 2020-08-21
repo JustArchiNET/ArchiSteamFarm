@@ -45,7 +45,7 @@ namespace ArchiSteamFarm.IPC {
 	internal sealed class Startup {
 		private readonly IConfiguration Configuration;
 
-		public Startup([NotNull] IConfiguration configuration) => Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+		public Startup(IConfiguration configuration) => Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 
 #if NETFRAMEWORK
 		[UsedImplicitly]
@@ -54,6 +54,10 @@ namespace ArchiSteamFarm.IPC {
 		[UsedImplicitly]
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
 #endif
+			if (ASF.GlobalConfig == null) {
+				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
+			}
+
 			if ((app == null) || (env == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(app) + " || " + nameof(env));
 
@@ -124,6 +128,10 @@ namespace ArchiSteamFarm.IPC {
 		}
 
 		public void ConfigureServices(IServiceCollection services) {
+			if (ASF.GlobalConfig == null) {
+				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
+			}
+
 			if (services == null) {
 				ASF.ArchiLogger.LogNullError(nameof(services));
 
@@ -209,7 +217,7 @@ namespace ArchiSteamFarm.IPC {
 #endif
 
 			// Add support for controllers declared in custom plugins
-			HashSet<Assembly> assemblies = PluginsCore.LoadAssemblies();
+			HashSet<Assembly>? assemblies = PluginsCore.LoadAssemblies();
 
 			if (assemblies != null) {
 				foreach (Assembly assembly in assemblies) {

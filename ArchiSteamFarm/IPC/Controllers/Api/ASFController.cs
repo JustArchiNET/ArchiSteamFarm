@@ -39,6 +39,10 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[HttpGet]
 		[ProducesResponseType(typeof(GenericResponse<ASFResponse>), (int) HttpStatusCode.OK)]
 		public ActionResult<GenericResponse<ASFResponse>> ASFGet() {
+			if (ASF.GlobalConfig == null) {
+				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
+			}
+
 			uint memoryUsage = (uint) GC.GetTotalMemory(false) / 1024;
 
 			ASFResponse result = new ASFResponse(SharedInfo.BuildInfo.Variant, ASF.GlobalConfig, memoryUsage, RuntimeCompatibility.ProcessStartTime, SharedInfo.Version);
@@ -54,13 +58,17 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		public async Task<ActionResult<GenericResponse>> ASFPost([FromBody] ASFRequest request) {
-			if (request == null) {
-				ASF.ArchiLogger.LogNullError(nameof(request));
+			if (ASF.GlobalConfig == null) {
+				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
+			}
+
+			if (request?.GlobalConfig == null) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(request.GlobalConfig));
 
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(request))));
 			}
 
-			(bool valid, string errorMessage) = request.GlobalConfig.CheckValidation();
+			(bool valid, string? errorMessage) = request.GlobalConfig.CheckValidation();
 
 			if (!valid) {
 				return BadRequest(new GenericResponse(false, errorMessage));
@@ -125,13 +133,13 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[HttpPost("Update")]
 		[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
 		public async Task<ActionResult<GenericResponse<string>>> UpdatePost() {
-			(bool success, string message, Version version) = await Actions.Update().ConfigureAwait(false);
+			(bool success, string? message, Version? version) = await Actions.Update().ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(message)) {
 				message = success ? Strings.Success : Strings.WarningFailed;
 			}
 
-			return Ok(new GenericResponse<string>(success, message, version?.ToString()));
+			return Ok(new GenericResponse<string>(success, message!, version?.ToString()));
 		}
 	}
 }
