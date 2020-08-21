@@ -541,7 +541,7 @@ namespace ArchiSteamFarm {
 
 					break;
 				case ASF.EUserInputType.TwoFactorAuthentication:
-					if (((inputValue.Length != MobileAuthenticator.CodeDigits) && (inputValue.Length != MobileAuthenticator.BackupCodeDigits)) || inputValue.Any(character => !MobileAuthenticator.CodeCharacters.Contains(character))) {
+					if (((inputValue.Length != MobileAuthenticator.CodeDigits) && (inputValue.Length != MobileAuthenticator.BackupCodeDigits)) || inputValue.Any(character => !MobileAuthenticator.CodeCharacters.Contains(char.ToUpperInvariant(character)))) {
 						return false;
 					}
 
