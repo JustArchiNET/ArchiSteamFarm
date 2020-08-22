@@ -44,6 +44,7 @@ namespace ArchiSteamFarm {
 		internal static bool ShutdownSequenceInitialized { get; private set; }
 
 		private static readonly TaskCompletionSource<byte> ShutdownResetEvent = new TaskCompletionSource<byte>();
+
 		private static bool SystemRequired;
 
 		internal static async Task Exit(byte exitCode = 0) {
@@ -60,12 +61,10 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			string executableName = Path.GetFileNameWithoutExtension(OS.ProcessFileName);
+			string? executableName = Path.GetFileNameWithoutExtension(OS.ProcessFileName);
 
 			if (string.IsNullOrEmpty(executableName)) {
-				ASF.ArchiLogger.LogNullError(nameof(executableName));
-
-				return;
+				throw new ArgumentNullException(nameof(executableName));
 			}
 
 			IEnumerable<string> arguments = Environment.GetCommandLineArgs().Skip(executableName.Equals(SharedInfo.AssemblyName) ? 1 : 0);
@@ -85,9 +84,7 @@ namespace ArchiSteamFarm {
 
 		private static void HandleCryptKeyArgument(string cryptKey) {
 			if (string.IsNullOrEmpty(cryptKey)) {
-				ASF.ArchiLogger.LogNullError(nameof(cryptKey));
-
-				return;
+				throw new ArgumentNullException(nameof(cryptKey));
 			}
 
 			ArchiCryptoHelper.SetEncryptionKey(cryptKey);
@@ -95,9 +92,7 @@ namespace ArchiSteamFarm {
 
 		private static void HandleNetworkGroupArgument(string networkGroup) {
 			if (string.IsNullOrEmpty(networkGroup)) {
-				ASF.ArchiLogger.LogNullError(nameof(networkGroup));
-
-				return;
+				throw new ArgumentNullException(nameof(networkGroup));
 			}
 
 			NetworkGroup = networkGroup;
@@ -105,9 +100,7 @@ namespace ArchiSteamFarm {
 
 		private static void HandlePathArgument(string path) {
 			if (string.IsNullOrEmpty(path)) {
-				ASF.ArchiLogger.LogNullError(nameof(path));
-
-				return;
+				throw new ArgumentNullException(nameof(path));
 			}
 
 			try {
@@ -117,7 +110,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static async Task Init(IReadOnlyCollection<string> args) {
+		private static async Task Init(IReadOnlyCollection<string>? args) {
 			AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
 			AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 			TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
@@ -135,7 +128,7 @@ namespace ArchiSteamFarm {
 			await InitASF(args).ConfigureAwait(false);
 		}
 
-		private static async Task InitASF(IReadOnlyCollection<string> args) {
+		private static async Task InitASF(IReadOnlyCollection<string>? args) {
 			OS.CoreInit();
 
 			Console.Title = SharedInfo.ProgramIdentifier;
@@ -160,7 +153,7 @@ namespace ArchiSteamFarm {
 			await ASF.Init().ConfigureAwait(false);
 		}
 
-		private static async Task<bool> InitCore(IReadOnlyCollection<string> args) {
+		private static async Task<bool> InitCore(IReadOnlyCollection<string>? args) {
 			Directory.SetCurrentDirectory(SharedInfo.HomeDirectory);
 
 			// Allow loading configs from source tree if it's a debug build
@@ -202,9 +195,7 @@ namespace ArchiSteamFarm {
 			string globalConfigFile = ASF.GetFilePath(ASF.EFileType.Config);
 
 			if (string.IsNullOrEmpty(globalConfigFile)) {
-				ASF.ArchiLogger.LogNullError(nameof(globalConfigFile));
-
-				return false;
+				throw new ArgumentNullException(nameof(globalConfigFile));
 			}
 
 			GlobalConfig? globalConfig;
@@ -229,14 +220,10 @@ namespace ArchiSteamFarm {
 				ASF.ArchiLogger.LogGenericDebug(globalConfigFile + ": " + JsonConvert.SerializeObject(ASF.GlobalConfig, Formatting.Indented));
 			}
 
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
-			if (!string.IsNullOrEmpty(ASF.GlobalConfig.CurrentCulture)) {
+			if (!string.IsNullOrEmpty(ASF.GlobalConfig?.CurrentCulture)) {
 				try {
 					// GetCultureInfo() would be better but we can't use it for specifying neutral cultures such as "en"
-					CultureInfo culture = CultureInfo.CreateSpecificCulture(ASF.GlobalConfig.CurrentCulture);
+					CultureInfo culture = CultureInfo.CreateSpecificCulture(ASF.GlobalConfig!.CurrentCulture);
 					CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = culture;
 				} catch (Exception e) {
 					ASF.ArchiLogger.LogGenericWarningException(e);
@@ -304,9 +291,7 @@ namespace ArchiSteamFarm {
 			string globalDatabaseFile = ASF.GetFilePath(ASF.EFileType.Database);
 
 			if (string.IsNullOrEmpty(globalDatabaseFile)) {
-				ASF.ArchiLogger.LogNullError(nameof(globalDatabaseFile));
-
-				return;
+				throw new ArgumentNullException(nameof(globalDatabaseFile));
 			}
 
 			if (!File.Exists(globalDatabaseFile)) {
@@ -389,7 +374,7 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		private static async Task<int> Main(string[] args) {
+		private static async Task<int> Main(string[]? args) {
 			// Initialize
 			await Init(args).ConfigureAwait(false);
 
@@ -401,9 +386,7 @@ namespace ArchiSteamFarm {
 
 		private static async void OnUnhandledException(object? sender, UnhandledExceptionEventArgs e) {
 			if (e?.ExceptionObject == null) {
-				ASF.ArchiLogger.LogNullError(nameof(e) + " || " + nameof(e.ExceptionObject));
-
-				return;
+				throw new ArgumentNullException(nameof(e) + " || " + nameof(e.ExceptionObject));
 			}
 
 			await ASF.ArchiLogger.LogFatalException((Exception) e.ExceptionObject).ConfigureAwait(false);
@@ -412,9 +395,7 @@ namespace ArchiSteamFarm {
 
 		private static async void OnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e) {
 			if (e?.Exception == null) {
-				ASF.ArchiLogger.LogNullError(nameof(e) + " || " + nameof(e.Exception));
-
-				return;
+				throw new ArgumentNullException(nameof(e) + " || " + nameof(e.Exception));
 			}
 
 			await ASF.ArchiLogger.LogFatalException(e.Exception).ConfigureAwait(false);
@@ -426,9 +407,7 @@ namespace ArchiSteamFarm {
 
 		private static void ParsePostInitArgs(IReadOnlyCollection<string> args) {
 			if (args == null) {
-				ASF.ArchiLogger.LogNullError(nameof(args));
-
-				return;
+				throw new ArgumentNullException(nameof(args));
 			}
 
 			try {
@@ -476,9 +455,7 @@ namespace ArchiSteamFarm {
 
 		private static void ParsePreInitArgs(IReadOnlyCollection<string> args) {
 			if (args == null) {
-				ASF.ArchiLogger.LogNullError(nameof(args));
-
-				return;
+				throw new ArgumentNullException(nameof(args));
 			}
 
 			try {

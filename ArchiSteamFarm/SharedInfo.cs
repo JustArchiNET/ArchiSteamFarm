@@ -82,9 +82,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static string ProgramIdentifier => PublicIdentifier + " V" + Version + " (" + BuildInfo.Variant + "/" + ModuleVersion + " | " + OS.Variant + ")";
-
 		internal static string PublicIdentifier => AssemblyName + (BuildInfo.IsCustomBuild ? "-custom" : PluginsCore.HasCustomPluginsLoaded ? "-modded" : "");
-
 		internal static Version Version => Assembly.GetEntryAssembly()?.GetName().Version ?? throw new ArgumentNullException(nameof(Version));
 
 		private static Guid ModuleVersion => Assembly.GetEntryAssembly()?.ManifestModule.ModuleVersionId ?? throw new ArgumentNullException(nameof(ModuleVersion));

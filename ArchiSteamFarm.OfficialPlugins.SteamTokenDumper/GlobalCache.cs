@@ -63,9 +63,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 		internal ulong GetAppToken(uint appID) => AppTokens[appID];
 
 		internal Dictionary<uint, ulong> GetAppTokensForSubmission() => AppTokens.Where(appToken => !SubmittedAppIDs.Contains(appToken.Key)).ToDictionary(appToken => appToken.Key, appToken => appToken.Value);
-
 		internal Dictionary<uint, string> GetDepotKeysForSubmission() => DepotKeys.Where(depotKey => !SubmittedDepotIDs.Contains(depotKey.Key)).ToDictionary(depotKey => depotKey.Key, depotKey => depotKey.Value);
-
 		internal Dictionary<uint, ulong> GetPackageTokensForSubmission() => PackageTokens.Where(packageToken => !SubmittedPackageIDs.Contains(packageToken.Key)).ToDictionary(packageToken => packageToken.Key, packageToken => packageToken.Value);
 
 		internal static async Task<GlobalCache> Load() {
@@ -121,7 +119,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 		internal async Task OnPICSChangesRestart(uint currentChangeNumber) {
 			if (currentChangeNumber == 0) {
-				throw new ArgumentNullException();
+				throw new ArgumentNullException(nameof(currentChangeNumber));
 			}
 
 			if (currentChangeNumber <= LastChangeNumber) {

@@ -43,41 +43,38 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		public async Task<ActionResult<GenericResponse>> CommandPost([FromBody] CommandRequest request) {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
 			if (request == null) {
-				ASF.ArchiLogger.LogNullError(nameof(request));
-
-				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(request))));
+				throw new ArgumentNullException(nameof(request));
 			}
 
 			if (string.IsNullOrEmpty(request.Command)) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(request.Command))));
 			}
 
-			if (ASF.GlobalConfig.SteamOwnerID == 0) {
+			ulong steamOwnerID = ASF.GlobalConfig?.SteamOwnerID ?? GlobalConfig.DefaultSteamOwnerID;
+
+			if (steamOwnerID == 0) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(ASF.GlobalConfig.SteamOwnerID))));
 			}
 
-			Bot targetBot = Bot.Bots.OrderBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value).FirstOrDefault();
+			Bot? targetBot = Bot.Bots.OrderBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value).FirstOrDefault();
 
 			if (targetBot == null) {
 				return BadRequest(new GenericResponse(false, Strings.ErrorNoBotsDefined));
 			}
 
 			string command = request.Command!;
+			string? commandPrefix = ASF.GlobalConfig?.CommandPrefix ?? GlobalConfig.DefaultCommandPrefix;
 
-			if (!string.IsNullOrEmpty(ASF.GlobalConfig.CommandPrefix) && command.StartsWith(ASF.GlobalConfig.CommandPrefix, StringComparison.Ordinal)) {
-				command = command.Substring(ASF.GlobalConfig.CommandPrefix!.Length);
+			if (!string.IsNullOrEmpty(commandPrefix) && command.StartsWith(commandPrefix, StringComparison.Ordinal)) {
+				command = command.Substring(commandPrefix!.Length);
 
 				if (string.IsNullOrEmpty(command)) {
 					return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(command))));
 				}
 			}
 
-			string? response = await targetBot.Commands.Response(ASF.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
+			string? response = await targetBot.Commands.Response(steamOwnerID, command).ConfigureAwait(false);
 
 			return Ok(new GenericResponse<string>(response));
 		}

@@ -45,9 +45,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.InternalServerError)]
 		public ActionResult<GenericResponse> DirectoryGet(string directory) {
 			if (string.IsNullOrEmpty(directory)) {
-				ASF.ArchiLogger.LogNullError(nameof(directory));
-
-				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(directory))));
+				throw new ArgumentNullException(directory);
 			}
 
 			string directoryPath = Path.Combine(ArchiKestrel.WebsiteDirectory, directory);
@@ -96,10 +94,25 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
 		public async Task<ActionResult<GenericResponse>> GitHubReleaseGet(string version) {
 			if (string.IsNullOrEmpty(version)) {
-				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(version))));
+				throw new ArgumentNullException(nameof(version));
 			}
 
-			GitHub.ReleaseResponse? releaseResponse = version.Equals("latest", StringComparison.OrdinalIgnoreCase) ? await GitHub.GetLatestRelease().ConfigureAwait(false) : await GitHub.GetRelease(version).ConfigureAwait(false);
+			GitHub.ReleaseResponse? releaseResponse;
+
+			switch (version.ToUpperInvariant()) {
+				case "LATEST":
+					releaseResponse = await GitHub.GetLatestRelease().ConfigureAwait(false);
+
+					break;
+				default:
+					if (!Version.TryParse(version, out Version? parsedVersion)) {
+						return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(version))));
+					}
+
+					releaseResponse = await GitHub.GetRelease(parsedVersion.ToString(4)).ConfigureAwait(false);
+
+					break;
+			}
 
 			return releaseResponse != null ? Ok(new GenericResponse<GitHubReleaseResponse>(new GitHubReleaseResponse(releaseResponse))) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
 		}
@@ -116,14 +129,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
 		public async Task<ActionResult<GenericResponse>> SendPost([FromBody] WWWSendRequest request) {
-			if (ASF.WebBrowser == null) {
-				throw new ArgumentNullException(nameof(ASF.WebBrowser));
-			}
-
-			if (request == null) {
-				ASF.ArchiLogger.LogNullError(nameof(request));
-
-				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(request))));
+			if ((request == null) || (ASF.WebBrowser == null)) {
+				throw new ArgumentNullException(nameof(request) + " || " + nameof(ASF.WebBrowser));
 			}
 
 			if (string.IsNullOrEmpty(request.URL) || !Uri.TryCreate(request.URL, UriKind.Absolute, out Uri? uri) || !uri.Scheme.Equals(Uri.UriSchemeHttps)) {

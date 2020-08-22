@@ -36,31 +36,31 @@ using SteamKit2;
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	public sealed class GlobalConfig {
+		internal const string DefaultCommandPrefix = "!";
+		internal const byte DefaultConfirmationsLimiterDelay = 10;
+		internal const byte DefaultConnectionTimeout = 90;
+		internal const byte DefaultFarmingDelay = 15;
+		internal const byte DefaultGiftsLimiterDelay = 1;
+		internal const bool DefaultHeadless = false;
+		internal const byte DefaultIdleFarmingPeriod = 8;
+		internal const byte DefaultInventoryLimiterDelay = 3;
+		internal const string DefaultIPCPassword = null;
 		internal const byte DefaultLoginLimiterDelay = 10;
+		internal const byte DefaultMaxFarmingTime = 10;
+		internal const byte DefaultMaxTradeHoldDuration = 15;
+		internal const string DefaultSteamMessagePrefix = "/me ";
+		internal const ulong DefaultSteamOwnerID = 0;
+		internal const ushort DefaultWebLimiterDelay = 300;
 
 		private const bool DefaultAutoRestart = true;
-		private const string DefaultCommandPrefix = "!";
-		private const byte DefaultConfirmationsLimiterDelay = 10;
-		private const byte DefaultConnectionTimeout = 90;
 		private const string DefaultCurrentCulture = null;
 		private const bool DefaultDebug = false;
-		private const byte DefaultFarmingDelay = 15;
-		private const byte DefaultGiftsLimiterDelay = 1;
-		private const bool DefaultHeadless = false;
-		private const byte DefaultIdleFarmingPeriod = 8;
-		private const byte DefaultInventoryLimiterDelay = 3;
 		private const bool DefaultIPC = false;
-		private const string DefaultIPCPassword = null;
-		private const byte DefaultMaxFarmingTime = 10;
-		private const byte DefaultMaxTradeHoldDuration = 15;
 		private const EOptimizationMode DefaultOptimizationMode = EOptimizationMode.MaxPerformance;
 		private const bool DefaultStatistics = true;
-		private const string DefaultSteamMessagePrefix = "/me ";
-		private const ulong DefaultSteamOwnerID = 0;
 		private const ProtocolTypes DefaultSteamProtocols = ProtocolTypes.All;
 		private const EUpdateChannel DefaultUpdateChannel = EUpdateChannel.Stable;
 		private const byte DefaultUpdatePeriod = 24;
-		private const ushort DefaultWebLimiterDelay = 300;
 		private const string DefaultWebProxyPassword = null;
 		private const string DefaultWebProxyText = null;
 		private const string DefaultWebProxyUsername = null;
@@ -320,9 +320,7 @@ namespace ArchiSteamFarm {
 
 		internal static async Task<bool> Write(string filePath, GlobalConfig globalConfig) {
 			if (string.IsNullOrEmpty(filePath) || (globalConfig == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(filePath) + " || " + nameof(globalConfig));
-
-				return false;
+				throw new ArgumentNullException(nameof(filePath) + " || " + nameof(globalConfig));
 			}
 
 			string json = JsonConvert.SerializeObject(globalConfig, Formatting.Indented);

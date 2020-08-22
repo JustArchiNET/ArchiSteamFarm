@@ -74,17 +74,11 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public static bool IsOwner(ulong steamID) {
-			if (GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(GlobalConfig));
-			}
-
 			if (steamID == 0) {
-				ArchiLogger.LogNullError(nameof(steamID));
-
-				return false;
+				throw new ArgumentNullException(nameof(steamID));
 			}
 
-			return (steamID == GlobalConfig.SteamOwnerID) || (Debugging.IsDebugBuild && (steamID == SharedInfo.ArchiSteamID));
+			return (steamID == GlobalConfig?.SteamOwnerID) || (Debugging.IsDebugBuild && (steamID == SharedInfo.ArchiSteamID));
 		}
 
 		internal static string GetFilePath(EFileType fileType) {
@@ -284,7 +278,7 @@ namespace ArchiSteamFarm {
 				}
 
 				string targetFile = SharedInfo.ASF + "-" + SharedInfo.BuildInfo.Variant + ".zip";
-				GitHub.ReleaseResponse.Asset binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => !string.IsNullOrEmpty(asset.Name) && asset.Name!.Equals(targetFile, StringComparison.OrdinalIgnoreCase));
+				GitHub.ReleaseResponse.Asset? binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => !string.IsNullOrEmpty(asset.Name) && asset.Name!.Equals(targetFile, StringComparison.OrdinalIgnoreCase));
 
 				if (binaryAsset == null) {
 					ArchiLogger.LogGenericWarning(Strings.ErrorUpdateNoAssetForThisVersion);
@@ -353,14 +347,8 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task<bool> CanHandleWriteEvent(string filePath) {
-			if (LastWriteEvents == null) {
-				throw new ArgumentNullException(nameof(LastWriteEvents));
-			}
-
-			if (string.IsNullOrEmpty(filePath)) {
-				ArchiLogger.LogNullError(nameof(filePath));
-
-				return false;
+			if (string.IsNullOrEmpty(filePath) || (LastWriteEvents == null)) {
+				throw new ArgumentNullException(nameof(filePath) + " || " + nameof(LastWriteEvents));
 			}
 
 			// Save our event in dictionary
@@ -376,9 +364,7 @@ namespace ArchiSteamFarm {
 
 		private static void InitBotsComparer(StringComparer botsComparer) {
 			if (botsComparer == null) {
-				ArchiLogger.LogNullError(nameof(botsComparer));
-
-				return;
+				throw new ArgumentNullException(nameof(botsComparer));
 			}
 
 			if (Bot.Bots != null) {
@@ -407,9 +393,7 @@ namespace ArchiSteamFarm {
 
 		private static bool IsValidBotName(string botName) {
 			if (string.IsNullOrEmpty(botName)) {
-				ArchiLogger.LogNullError(nameof(botName));
-
-				return false;
+				throw new ArgumentNullException(nameof(botName));
 			}
 
 			if (botName[0] == '.') {
@@ -421,9 +405,7 @@ namespace ArchiSteamFarm {
 
 		private static async void OnChanged(object sender, FileSystemEventArgs e) {
 			if ((sender == null) || (e == null)) {
-				ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
-
-				return;
+				throw new ArgumentNullException(nameof(sender) + " || " + nameof(e));
 			}
 
 			await OnChangedFile(e.Name, e.FullPath).ConfigureAwait(false);
@@ -431,9 +413,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task OnChangedConfigFile(string name, string fullPath) {
 			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
-				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
-
-				return;
+				throw new ArgumentNullException(nameof(name) + " || " + nameof(fullPath));
 			}
 
 			await OnCreatedConfigFile(name, fullPath).ConfigureAwait(false);
@@ -441,9 +421,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task OnChangedConfigFile(string name) {
 			if (string.IsNullOrEmpty(name)) {
-				ArchiLogger.LogNullError(nameof(name));
-
-				return;
+				throw new ArgumentNullException(nameof(name));
 			}
 
 			if (!name.Equals(SharedInfo.IPCConfigFile) || (GlobalConfig?.IPC != true)) {
@@ -460,6 +438,10 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task OnChangedFile(string name, string fullPath) {
+			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
+				throw new ArgumentNullException(nameof(name) + " || " + nameof(fullPath));
+			}
+
 			string extension = Path.GetExtension(name);
 
 			switch (extension) {
@@ -477,9 +459,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task OnChangedKeysFile(string name, string fullPath) {
 			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
-				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
-
-				return;
+				throw new ArgumentNullException(nameof(name) + " || " + nameof(fullPath));
 			}
 
 			await OnCreatedKeysFile(name, fullPath).ConfigureAwait(false);
@@ -487,9 +467,7 @@ namespace ArchiSteamFarm {
 
 		private static async void OnCreated(object sender, FileSystemEventArgs e) {
 			if ((sender == null) || (e == null)) {
-				ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
-
-				return;
+				throw new ArgumentNullException(nameof(sender) + " || " + nameof(e));
 			}
 
 			await OnCreatedFile(e.Name, e.FullPath).ConfigureAwait(false);
@@ -497,9 +475,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task OnCreatedConfigFile(string name, string fullPath) {
 			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
-				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
-
-				return;
+				throw new ArgumentNullException(nameof(name) + " || " + nameof(fullPath));
 			}
 
 			string extension = Path.GetExtension(name);
@@ -518,9 +494,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task OnCreatedFile(string name, string fullPath) {
 			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
-				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
-
-				return;
+				throw new ArgumentNullException(nameof(name) + " || " + nameof(fullPath));
 			}
 
 			string extension = Path.GetExtension(name);
@@ -539,14 +513,8 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task OnCreatedJsonFile(string name, string fullPath) {
-			if (Bot.Bots == null) {
-				throw new ArgumentNullException(nameof(Bot.Bots));
-			}
-
-			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
-				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
-
-				return;
+			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath) || (Bot.Bots == null)) {
+				throw new ArgumentNullException(nameof(name) + " || " + nameof(fullPath) + " || " + nameof(Bot.Bots));
 			}
 
 			string botName = Path.GetFileNameWithoutExtension(name);
@@ -582,14 +550,8 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task OnCreatedKeysFile(string name, string fullPath) {
-			if (Bot.Bots == null) {
-				throw new ArgumentNullException(nameof(Bot.Bots));
-			}
-
-			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
-				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
-
-				return;
+			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath) || (Bot.Bots == null)) {
+				throw new ArgumentNullException(nameof(name) + " || " + nameof(fullPath) + " || " + nameof(Bot.Bots));
 			}
 
 			string botName = Path.GetFileNameWithoutExtension(name);
@@ -611,9 +573,7 @@ namespace ArchiSteamFarm {
 
 		private static async void OnDeleted(object sender, FileSystemEventArgs e) {
 			if ((sender == null) || (e == null)) {
-				ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
-
-				return;
+				throw new ArgumentNullException(nameof(sender) + " || " + nameof(e));
 			}
 
 			await OnDeletedFile(e.Name, e.FullPath).ConfigureAwait(false);
@@ -621,9 +581,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task OnDeletedConfigFile(string name, string fullPath) {
 			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
-				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
-
-				return;
+				throw new ArgumentNullException(nameof(name) + " || " + nameof(fullPath));
 			}
 
 			string extension = Path.GetExtension(name);
@@ -642,9 +600,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task OnDeletedFile(string name, string fullPath) {
 			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
-				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
-
-				return;
+				throw new ArgumentNullException(nameof(name) + " || " + nameof(fullPath));
 			}
 
 			string extension = Path.GetExtension(name);
@@ -659,14 +615,8 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task OnDeletedJsonConfigFile(string name, string fullPath) {
-			if (Bot.Bots == null) {
-				throw new ArgumentNullException(nameof(Bot.Bots));
-			}
-
-			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
-				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
-
-				return;
+			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath) || (Bot.Bots == null)) {
+				throw new ArgumentNullException(nameof(name) + " || " + nameof(fullPath) + " || " + nameof(Bot.Bots));
 			}
 
 			string botName = Path.GetFileNameWithoutExtension(name);
@@ -709,9 +659,7 @@ namespace ArchiSteamFarm {
 
 		private static async void OnRenamed(object sender, RenamedEventArgs e) {
 			if ((sender == null) || (e == null)) {
-				ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
-
-				return;
+				throw new ArgumentNullException(nameof(sender) + " || " + nameof(e));
 			}
 
 			await OnDeletedFile(e.OldName, e.OldFullPath).ConfigureAwait(false);
@@ -799,9 +747,7 @@ namespace ArchiSteamFarm {
 
 		private static bool UpdateFromArchive(ZipArchive archive, string targetDirectory) {
 			if ((archive == null) || string.IsNullOrEmpty(targetDirectory)) {
-				ArchiLogger.LogNullError(nameof(archive) + " || " + nameof(targetDirectory));
-
-				return false;
+				throw new ArgumentNullException(nameof(archive) + " || " + nameof(targetDirectory));
 			}
 
 			// Firstly we'll move all our existing files to a backup directory

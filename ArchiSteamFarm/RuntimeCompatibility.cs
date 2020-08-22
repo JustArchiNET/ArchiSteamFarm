@@ -29,6 +29,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.Collections.Generic;
 using System.Net.WebSockets;
 using System.Threading;
+
 #endif
 
 namespace ArchiSteamFarm {
@@ -38,7 +39,11 @@ namespace ArchiSteamFarm {
 		private static readonly DateTime SavedProcessStartTime = DateTime.UtcNow;
 #endif
 
+#if NETFRAMEWORK
 		public static bool IsRunningOnMono => Type.GetType("Mono.Runtime") != null;
+#else
+		public static bool IsRunningOnMono => false;
+#endif
 
 		public static DateTime ProcessStartTime {
 			get {

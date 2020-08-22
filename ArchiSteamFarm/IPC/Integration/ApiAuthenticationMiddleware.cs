@@ -61,9 +61,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 		[PublicAPI]
 		public async Task InvokeAsync(HttpContext context) {
 			if (context == null) {
-				ASF.ArchiLogger.LogNullError(nameof(context));
-
-				return;
+				throw new ArgumentNullException(nameof(context));
 			}
 
 			HttpStatusCode authenticationStatus = await GetAuthenticationStatus(context).ConfigureAwait(false);
@@ -78,17 +76,13 @@ namespace ArchiSteamFarm.IPC.Integration {
 		}
 
 		private static async Task<HttpStatusCode> GetAuthenticationStatus(HttpContext context) {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
 			if ((context == null) || (ClearFailedAuthorizationsTimer == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(context) + " || " + nameof(ClearFailedAuthorizationsTimer));
-
-				return HttpStatusCode.InternalServerError;
+				throw new ArgumentNullException(nameof(context) + " || " + nameof(ClearFailedAuthorizationsTimer));
 			}
 
-			if (string.IsNullOrEmpty(ASF.GlobalConfig.IPCPassword)) {
+			string? ipcPassword = ASF.GlobalConfig?.IPCPassword ?? GlobalConfig.DefaultIPCPassword;
+
+			if (string.IsNullOrEmpty(ipcPassword)) {
 				return HttpStatusCode.OK;
 			}
 
@@ -104,13 +98,13 @@ namespace ArchiSteamFarm.IPC.Integration {
 				return HttpStatusCode.Unauthorized;
 			}
 
-			string inputPassword = passwords.FirstOrDefault(password => !string.IsNullOrEmpty(password));
+			string? inputPassword = passwords.FirstOrDefault(password => !string.IsNullOrEmpty(password));
 
 			if (string.IsNullOrEmpty(inputPassword)) {
 				return HttpStatusCode.Unauthorized;
 			}
 
-			bool authorized = inputPassword == ASF.GlobalConfig.IPCPassword;
+			bool authorized = inputPassword == ipcPassword;
 
 			await AuthorizationSemaphore.WaitAsync().ConfigureAwait(false);
 

@@ -47,9 +47,7 @@ namespace ArchiSteamFarm {
 
 		internal static async Task<ReleaseResponse?> GetRelease(string version) {
 			if (string.IsNullOrEmpty(version)) {
-				ASF.ArchiLogger.LogNullError(nameof(version));
-
-				return null;
+				throw new ArgumentNullException(nameof(version));
 			}
 
 			return await GetReleaseFromURL(SharedInfo.GithubReleaseURL + "/tags/" + version).ConfigureAwait(false);
@@ -57,9 +55,7 @@ namespace ArchiSteamFarm {
 
 		private static MarkdownDocument? ExtractChangelogFromBody(string markdownText) {
 			if (string.IsNullOrEmpty(markdownText)) {
-				ASF.ArchiLogger.LogNullError(nameof(markdownText));
-
-				return null;
+				throw new ArgumentNullException(nameof(markdownText));
 			}
 
 			MarkdownDocument markdownDocument = Markdown.Parse(markdownText);
@@ -75,14 +71,8 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task<ReleaseResponse?> GetReleaseFromURL(string releaseURL) {
-			if (ASF.WebBrowser == null) {
-				throw new ArgumentNullException(nameof(ASF.WebBrowser));
-			}
-
-			if (string.IsNullOrEmpty(releaseURL)) {
-				ASF.ArchiLogger.LogNullError(nameof(releaseURL));
-
-				return null;
+			if ((ASF.WebBrowser == null) || string.IsNullOrEmpty(releaseURL)) {
+				throw new ArgumentNullException(nameof(ASF.WebBrowser) + " || " + nameof(releaseURL));
 			}
 
 			WebBrowser.ObjectResponse<ReleaseResponse>? objectResponse = await ASF.WebBrowser.UrlGetToJsonObject<ReleaseResponse>(releaseURL).ConfigureAwait(false);
@@ -91,14 +81,8 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task<ImmutableList<ReleaseResponse>?> GetReleasesFromURL(string releaseURL) {
-			if (ASF.WebBrowser == null) {
-				throw new ArgumentNullException(nameof(ASF.WebBrowser));
-			}
-
-			if (string.IsNullOrEmpty(releaseURL)) {
-				ASF.ArchiLogger.LogNullError(nameof(releaseURL));
-
-				return null;
+			if ((ASF.WebBrowser == null) || string.IsNullOrEmpty(releaseURL)) {
+				throw new ArgumentNullException(nameof(ASF.WebBrowser) + " || " + nameof(releaseURL));
 			}
 
 			WebBrowser.ObjectResponse<ImmutableList<ReleaseResponse>>? objectResponse = await ASF.WebBrowser.UrlGetToJsonObject<ImmutableList<ReleaseResponse>>(releaseURL).ConfigureAwait(false);

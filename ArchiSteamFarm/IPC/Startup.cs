@@ -39,6 +39,7 @@ using Newtonsoft.Json.Serialization;
 
 #if NETFRAMEWORK
 using Newtonsoft.Json.Converters;
+
 #endif
 
 namespace ArchiSteamFarm.IPC {
@@ -54,14 +55,8 @@ namespace ArchiSteamFarm.IPC {
 		[UsedImplicitly]
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
 #endif
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
 			if ((app == null) || (env == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(app) + " || " + nameof(env));
-
-				return;
+				throw new ArgumentNullException(nameof(app) + " || " + nameof(env));
 			}
 
 			if (Debugging.IsUserDebugging) {
@@ -97,7 +92,9 @@ namespace ArchiSteamFarm.IPC {
 			app.UseRouting();
 #endif
 
-			if (!string.IsNullOrEmpty(ASF.GlobalConfig.IPCPassword)) {
+			string? ipcPassword = ASF.GlobalConfig?.IPCPassword ?? GlobalConfig.DefaultIPCPassword;
+
+			if (!string.IsNullOrEmpty(ipcPassword)) {
 				// We need ApiAuthenticationMiddleware for IPCPassword
 				app.UseWhen(context => context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), appBuilder => appBuilder.UseMiddleware<ApiAuthenticationMiddleware>());
 
@@ -128,14 +125,8 @@ namespace ArchiSteamFarm.IPC {
 		}
 
 		public void ConfigureServices(IServiceCollection services) {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
 			if (services == null) {
-				ASF.ArchiLogger.LogNullError(nameof(services));
-
-				return;
+				throw new ArgumentNullException(nameof(services));
 			}
 
 			// The order of dependency injection matters, pay attention to it
@@ -146,8 +137,10 @@ namespace ArchiSteamFarm.IPC {
 			// Add support for response compression
 			services.AddResponseCompression();
 
+			string? ipcPassword = ASF.GlobalConfig?.IPCPassword ?? GlobalConfig.DefaultIPCPassword;
+
 			// Add CORS to allow userscripts and third-party apps
-			if (!string.IsNullOrEmpty(ASF.GlobalConfig.IPCPassword)) {
+			if (!string.IsNullOrEmpty(ipcPassword)) {
 				services.AddCors(options => options.AddDefaultPolicy(policyBuilder => policyBuilder.AllowAnyOrigin()));
 			}
 

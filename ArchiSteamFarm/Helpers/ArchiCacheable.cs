@@ -48,9 +48,7 @@ namespace ArchiSteamFarm.Helpers {
 		[PublicAPI]
 		public async Task<(bool Success, T? Result)> GetValue(EFallback fallback = EFallback.DefaultForType) {
 			if (!Enum.IsDefined(typeof(EFallback), fallback)) {
-				ASF.ArchiLogger.LogNullError(nameof(fallback));
-
-				return (false, default);
+				throw new ArgumentNullException(nameof(fallback));
 			}
 
 			if (IsInitialized && IsRecent) {

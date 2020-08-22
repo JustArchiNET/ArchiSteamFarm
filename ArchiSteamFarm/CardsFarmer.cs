@@ -98,22 +98,16 @@ namespace ArchiSteamFarm {
 		private bool ShouldResumeFarming = true;
 
 		internal CardsFarmer(Bot bot) {
-			if (Bot.Bots == null) {
-				throw new ArgumentNullException(nameof(Bot.Bots));
-			}
-
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
-			if (ASF.GlobalConfig.IdleFarmingPeriod > 0) {
+			byte idleFarmingPeriod = ASF.GlobalConfig?.IdleFarmingPeriod ?? GlobalConfig.DefaultIdleFarmingPeriod;
+
+			if (idleFarmingPeriod > 0) {
 				IdleFarmingTimer = new Timer(
 					async e => await CheckGamesForFarming().ConfigureAwait(false),
 					null,
-					TimeSpan.FromHours(ASF.GlobalConfig.IdleFarmingPeriod) + TimeSpan.FromSeconds(ASF.LoadBalancingDelay * Bot.Bots.Count), // Delay
-					TimeSpan.FromHours(ASF.GlobalConfig.IdleFarmingPeriod) // Period
+					TimeSpan.FromHours(idleFarmingPeriod) + TimeSpan.FromSeconds(ASF.LoadBalancingDelay * Bot.Bots?.Count ?? 0), // Delay
+					TimeSpan.FromHours(idleFarmingPeriod) // Period
 				);
 			}
 		}
@@ -352,9 +346,7 @@ namespace ArchiSteamFarm {
 
 		private async Task CheckGame(uint appID, string name, float hours, byte badgeLevel) {
 			if ((appID == 0) || string.IsNullOrEmpty(name) || (hours < 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(name) + " || " + nameof(hours));
-
-				return;
+				throw new ArgumentNullException(nameof(appID) + " || " + nameof(name) + " || " + nameof(hours));
 			}
 
 			ushort? cardsRemaining = await GetCardsRemaining(appID).ConfigureAwait(false);
@@ -381,14 +373,8 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task CheckPage(IDocument htmlDocument, ISet<uint> parsedAppIDs) {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
 			if ((htmlDocument == null) || (parsedAppIDs == null)) {
-				Bot.ArchiLogger.LogNullError(nameof(htmlDocument) + " || " + nameof(parsedAppIDs));
-
-				return;
+				throw new ArgumentNullException(nameof(htmlDocument) + " || " + nameof(parsedAppIDs));
 			}
 
 			List<IElement> htmlNodes = htmlDocument.SelectNodes("//div[@class='badge_row_inner']");
@@ -401,7 +387,7 @@ namespace ArchiSteamFarm {
 			HashSet<Task>? backgroundTasks = null;
 
 			foreach (IElement htmlNode in htmlNodes) {
-				IElement statsNode = htmlNode.SelectSingleElementNode(".//div[@class='badge_title_stats_content']");
+				IElement? statsNode = htmlNode.SelectSingleElementNode(".//div[@class='badge_title_stats_content']");
 				IElement? appIDNode = statsNode?.SelectSingleElementNode(".//div[@class='card_drop_info_dialog']");
 
 				if (appIDNode == null) {
@@ -409,7 +395,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				string appIDText = appIDNode.GetAttribute("id");
+				string? appIDText = appIDNode.GetAttribute("id");
 
 				if (string.IsNullOrEmpty(appIDText)) {
 					Bot.ArchiLogger.LogNullError(nameof(appIDText));
@@ -438,7 +424,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				if (SalesBlacklist.Contains(appID) || ASF.GlobalConfig.Blacklist.Contains(appID) || Bot.IsBlacklistedFromIdling(appID) || (Bot.BotConfig.IdlePriorityQueueOnly && !Bot.IsPriorityIdling(appID))) {
+				if (SalesBlacklist.Contains(appID) || (ASF.GlobalConfig?.Blacklist.Contains(appID) == true) || Bot.IsBlacklistedFromIdling(appID) || (Bot.BotConfig.IdlePriorityQueueOnly && !Bot.IsPriorityIdling(appID))) {
 					// We're configured to ignore this appID, so skip it
 					continue;
 				}
@@ -631,7 +617,7 @@ namespace ArchiSteamFarm {
 				// Levels
 				byte badgeLevel = 0;
 
-				IElement levelNode = htmlNode.SelectSingleElementNode(".//div[@class='badge_info_description']/div[2]");
+				IElement? levelNode = htmlNode.SelectSingleElementNode(".//div[@class='badge_info_description']/div[2]");
 
 				if (levelNode != null) {
 					// There is no levelNode if we didn't craft that badge yet (level 0)
@@ -676,7 +662,7 @@ namespace ArchiSteamFarm {
 				} else {
 					Task task = CheckGame(appID, name, hours, badgeLevel);
 
-					switch (ASF.GlobalConfig.OptimizationMode) {
+					switch (ASF.GlobalConfig?.OptimizationMode) {
 						case GlobalConfig.EOptimizationMode.MinMemoryUsage:
 							await task.ConfigureAwait(false);
 
@@ -699,9 +685,7 @@ namespace ArchiSteamFarm {
 
 		private async Task CheckPage(byte page, ISet<uint> parsedAppIDs) {
 			if ((page == 0) || (parsedAppIDs == null)) {
-				Bot.ArchiLogger.LogNullError(nameof(page) + " || " + nameof(parsedAppIDs));
-
-				return;
+				throw new ArgumentNullException(nameof(page) + " || " + nameof(parsedAppIDs));
 			}
 
 			using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
@@ -813,14 +797,8 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool> FarmCards(Game game) {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
 			if (game == null) {
-				Bot.ArchiLogger.LogNullError(nameof(game));
-
-				return false;
+				throw new ArgumentNullException(nameof(game));
 			}
 
 			if (game.AppID != game.PlayableAppID) {
@@ -830,14 +808,14 @@ namespace ArchiSteamFarm {
 			await Bot.IdleGame(game).ConfigureAwait(false);
 
 			bool success = true;
-			DateTime endFarmingDate = DateTime.UtcNow.AddHours(ASF.GlobalConfig.MaxFarmingTime);
+			DateTime endFarmingDate = DateTime.UtcNow.AddHours(ASF.GlobalConfig?.MaxFarmingTime ?? GlobalConfig.DefaultMaxFarmingTime);
 
 			while ((DateTime.UtcNow < endFarmingDate) && (await ShouldFarm(game).ConfigureAwait(false)).GetValueOrDefault(true)) {
 				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.StillIdling, game.AppID, game.GameName));
 
 				DateTime startFarmingPeriod = DateTime.UtcNow;
 
-				if (await FarmingResetSemaphore.WaitAsync((ASF.GlobalConfig.FarmingDelay * 60 * 1000) + (ExtraFarmingDelaySeconds * 1000)).ConfigureAwait(false)) {
+				if (await FarmingResetSemaphore.WaitAsync((ASF.GlobalConfig?.FarmingDelay ?? GlobalConfig.DefaultFarmingDelay * 60 * 1000) + (ExtraFarmingDelaySeconds * 1000)).ConfigureAwait(false)) {
 					success = KeepFarming;
 				}
 
@@ -855,14 +833,8 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool> FarmHours(IReadOnlyCollection<Game> games) {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
 			if ((games == null) || (games.Count == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(games));
-
-				return false;
+				throw new ArgumentNullException(nameof(games));
 			}
 
 			float maxHour = games.Max(game => game.HoursPlayed);
@@ -888,7 +860,7 @@ namespace ArchiSteamFarm {
 
 				DateTime startFarmingPeriod = DateTime.UtcNow;
 
-				if (await FarmingResetSemaphore.WaitAsync((ASF.GlobalConfig.FarmingDelay * 60 * 1000) + (ExtraFarmingDelaySeconds * 1000)).ConfigureAwait(false)) {
+				if (await FarmingResetSemaphore.WaitAsync((ASF.GlobalConfig?.FarmingDelay ?? GlobalConfig.DefaultFarmingDelay * 60 * 1000) + (ExtraFarmingDelaySeconds * 1000)).ConfigureAwait(false)) {
 					success = KeepFarming;
 				}
 
@@ -913,9 +885,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<bool> FarmMultiple(IReadOnlyCollection<Game> games) {
 			if ((games == null) || (games.Count == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(games));
-
-				return false;
+				throw new ArgumentNullException(nameof(games));
 			}
 
 			CurrentGamesFarming.ReplaceWith(games);
@@ -930,9 +900,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<bool> FarmSolo(Game game) {
 			if (game == null) {
-				Bot.ArchiLogger.LogNullError(nameof(game));
-
-				return true;
+				throw new ArgumentNullException(nameof(game));
 			}
 
 			CurrentGamesFarming.Add(game);
@@ -955,9 +923,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<ushort?> GetCardsRemaining(uint appID) {
 			if (appID == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(appID));
-
-				return 0;
+				throw new ArgumentNullException(nameof(appID));
 			}
 
 			using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetGameCardsPage(appID).ConfigureAwait(false);
@@ -992,10 +958,6 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool?> IsAnythingToFarm() {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
 			// Find the number of badge pages
 			Bot.ArchiLogger.LogGenericInfo(Strings.CheckingFirstBadgePage);
 
@@ -1009,7 +971,7 @@ namespace ArchiSteamFarm {
 
 			byte maxPages = 1;
 
-			IElement htmlNode = htmlDocument.SelectSingleNode("(//a[@class='pagelink'])[last()]");
+			IElement? htmlNode = htmlDocument.SelectSingleNode("(//a[@class='pagelink'])[last()]");
 
 			if (htmlNode != null) {
 				string lastPage = htmlNode.TextContent;
@@ -1033,7 +995,7 @@ namespace ArchiSteamFarm {
 
 			Task mainTask = CheckPage(htmlDocument, parsedAppIDs);
 
-			switch (ASF.GlobalConfig.OptimizationMode) {
+			switch (ASF.GlobalConfig?.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
 					await mainTask.ConfigureAwait(false);
 
@@ -1078,9 +1040,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<bool> IsPlayableGame(Game game) {
 			if (game == null) {
-				Bot.ArchiLogger.LogNullError(nameof(game));
-
-				return false;
+				throw new ArgumentNullException(nameof(game));
 			}
 
 			(uint playableAppID, DateTime ignoredUntil, bool ignoredGlobally) = await Bot.GetAppDataForIdling(game.AppID, game.HoursPlayed).ConfigureAwait(false);
@@ -1101,9 +1061,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<bool?> ShouldFarm(Game game) {
 			if (game == null) {
-				Bot.ArchiLogger.LogNullError(nameof(game));
-
-				return false;
+				throw new ArgumentNullException(nameof(game));
 			}
 
 			ushort? cardsRemaining = await GetCardsRemaining(game.AppID).ConfigureAwait(false);
@@ -1122,10 +1080,6 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task SortGamesToFarm() {
-			if (ASF.GlobalDatabase == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalDatabase));
-			}
-
 			// Put priority idling appIDs on top
 			IOrderedEnumerable<Game> orderedGamesToFarm = GamesToFarm.OrderByDescending(game => Bot.IsPriorityIdling(game.AppID));
 
@@ -1162,13 +1116,15 @@ namespace ArchiSteamFarm {
 						HashSet<uint>? marketableAppIDs = await Bot.GetMarketableAppIDs().ConfigureAwait(false);
 
 						if ((marketableAppIDs != null) && (marketableAppIDs.Count > 0)) {
+							ImmutableHashSet<uint> immutableMarketableAppIDs = marketableAppIDs.ToImmutableHashSet();
+
 							switch (farmingOrder) {
 								case BotConfig.EFarmingOrder.MarketableAscending:
-									orderedGamesToFarm = orderedGamesToFarm.ThenBy(game => marketableAppIDs.Contains(game.AppID));
+									orderedGamesToFarm = orderedGamesToFarm.ThenBy(game => immutableMarketableAppIDs.Contains(game.AppID));
 
 									break;
 								case BotConfig.EFarmingOrder.MarketableDescending:
-									orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(game => marketableAppIDs.Contains(game.AppID));
+									orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(game => immutableMarketableAppIDs.Contains(game.AppID));
 
 									break;
 								default:
@@ -1205,7 +1161,7 @@ namespace ArchiSteamFarm {
 
 						foreach (Game game in GamesToFarm) {
 							DateTime redeemDate = DateTime.MinValue;
-							HashSet<uint> packageIDs = ASF.GlobalDatabase.GetPackageIDs(game.AppID, Bot.OwnedPackageIDs.Keys);
+							HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(game.AppID, Bot.OwnedPackageIDs.Keys);
 
 							if (packageIDs != null) {
 								foreach (uint packageID in packageIDs) {
@@ -1224,13 +1180,17 @@ namespace ArchiSteamFarm {
 							redeemDates[game.AppID] = redeemDate;
 						}
 
+						ImmutableDictionary<uint, DateTime> immutableRedeemDates = redeemDates.ToImmutableDictionary();
+
 						switch (farmingOrder) {
 							case BotConfig.EFarmingOrder.RedeemDateTimesAscending:
-								orderedGamesToFarm = orderedGamesToFarm.ThenBy(game => redeemDates[game.AppID]);
+								// ReSharper disable once AccessToModifiedClosure - you're wrong
+								orderedGamesToFarm = orderedGamesToFarm.ThenBy(game => immutableRedeemDates[game.AppID]);
 
 								break;
 							case BotConfig.EFarmingOrder.RedeemDateTimesDescending:
-								orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(game => redeemDates[game.AppID]);
+								// ReSharper disable once AccessToModifiedClosure - you're wrong
+								orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(game => immutableRedeemDates[game.AppID]);
 
 								break;
 							default:

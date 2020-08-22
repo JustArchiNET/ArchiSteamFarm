@@ -60,16 +60,12 @@ namespace ArchiSteamFarm {
 		private bool ShouldSendHeartBeats;
 
 		internal Statistics(Bot bot) {
-			if (Bot.Bots == null) {
-				throw new ArgumentNullException(nameof(Bot.Bots));
-			}
-
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 			MatchActivelyTimer = new Timer(
 				async e => await MatchActively().ConfigureAwait(false),
 				null,
-				TimeSpan.FromHours(1) + TimeSpan.FromSeconds(ASF.LoadBalancingDelay * Bot.Bots.Count), // Delay
+				TimeSpan.FromHours(1) + TimeSpan.FromSeconds(ASF.LoadBalancingDelay * Bot.Bots?.Count ?? 0), // Delay
 				TimeSpan.FromHours(8) // Period
 			);
 		}
@@ -82,10 +78,6 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task OnHeartBeat() {
-			if (ASF.GlobalDatabase == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalDatabase));
-			}
-
 			// Request persona update if needed
 			if ((DateTime.UtcNow > LastPersonaStateRequest.AddHours(MinPersonaStateTTL)) && (DateTime.UtcNow > LastAnnouncementCheck.AddHours(MinAnnouncementCheckTTL))) {
 				LastPersonaStateRequest = DateTime.UtcNow;
@@ -106,7 +98,7 @@ namespace ArchiSteamFarm {
 				const string request = URL + "/Api/HeartBeat";
 
 				Dictionary<string, string> data = new Dictionary<string, string>(2, StringComparer.Ordinal) {
-					{ "Guid", ASF.GlobalDatabase.Guid.ToString("N") },
+					{ "Guid", (ASF.GlobalDatabase?.Guid ?? Guid.NewGuid()).ToString("N") },
 					{ "SteamID", Bot.SteamID.ToString() }
 				};
 
@@ -136,10 +128,6 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task OnPersonaState(string? nickname = null, string? avatarHash = null) {
-			if (ASF.GlobalDatabase == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalDatabase));
-			}
-
 			if ((DateTime.UtcNow < LastAnnouncementCheck.AddHours(MinAnnouncementCheckTTL)) && (ShouldSendHeartBeats || (LastHeartBeat == DateTime.MinValue))) {
 				return;
 			}
@@ -221,7 +209,7 @@ namespace ArchiSteamFarm {
 				Dictionary<string, string> data = new Dictionary<string, string>(9, StringComparer.Ordinal) {
 					{ "AvatarHash", avatarHash ?? "" },
 					{ "GamesCount", inventory.Select(item => item.RealAppID).Distinct().Count().ToString() },
-					{ "Guid", ASF.GlobalDatabase.Guid.ToString("N") },
+					{ "Guid", (ASF.GlobalDatabase?.Guid ?? Guid.NewGuid()).ToString("N") },
 					{ "ItemsCount", inventory.Count.ToString() },
 					{ "MatchableTypes", JsonConvert.SerializeObject(acceptedMatchableTypes) },
 					{ "MatchEverything", Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) ? "1" : "0" },
@@ -366,10 +354,6 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<(bool ShouldContinueMatching, bool TradedSomething)> MatchActivelyRound(IReadOnlyCollection<Steam.Asset.EType> acceptedMatchableTypes, IDictionary<ulong, (byte Tries, ISet<ulong>? GivenAssetIDs, ISet<ulong>? ReceivedAssetIDs)> triedSteamIDs) {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
 			if ((acceptedMatchableTypes == null) || (acceptedMatchableTypes.Count == 0) || (triedSteamIDs == null)) {
 				Bot.ArchiLogger.LogNullError(nameof(acceptedMatchableTypes) + " || " + nameof(triedSteamIDs));
 
@@ -413,6 +397,7 @@ namespace ArchiSteamFarm {
 				return (false, false);
 			}
 
+			byte maxTradeHoldDuration = ASF.GlobalConfig?.MaxTradeHoldDuration ?? GlobalConfig.DefaultMaxTradeHoldDuration;
 			byte totalMatches = 0;
 
 			HashSet<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> skippedSetsThisRound = new HashSet<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)>();
@@ -439,8 +424,8 @@ namespace ArchiSteamFarm {
 				}
 
 				if (holdDuration.Value > 0) {
-					if (holdDuration.Value > ASF.GlobalConfig.MaxTradeHoldDuration) {
-						Bot.ArchiLogger.LogGenericTrace(holdDuration.Value + " > " + ASF.GlobalConfig.MaxTradeHoldDuration);
+					if (holdDuration.Value > maxTradeHoldDuration) {
+						Bot.ArchiLogger.LogGenericTrace(holdDuration.Value + " > " + maxTradeHoldDuration);
 
 						continue;
 					}

@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using ArchiSteamFarm.Localization;
 using CryptSharp.Utility;
 using SteamKit2;
 
@@ -48,51 +47,33 @@ namespace ArchiSteamFarm {
 
 		internal static string? Decrypt(ECryptoMethod cryptoMethod, string encrypted) {
 			if (!Enum.IsDefined(typeof(ECryptoMethod), cryptoMethod) || string.IsNullOrEmpty(encrypted)) {
-				ASF.ArchiLogger.LogNullError(nameof(cryptoMethod) + " || " + nameof(encrypted));
-
-				return null;
+				throw new ArgumentNullException(nameof(cryptoMethod) + " || " + nameof(encrypted));
 			}
 
-			switch (cryptoMethod) {
-				case ECryptoMethod.PlainText:
-					return encrypted;
-				case ECryptoMethod.AES:
-					return DecryptAES(encrypted);
-				case ECryptoMethod.ProtectedDataForCurrentUser:
-					return DecryptProtectedDataForCurrentUser(encrypted);
-				default:
-					ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(cryptoMethod), cryptoMethod));
-
-					return null;
-			}
+			return cryptoMethod switch {
+				ECryptoMethod.PlainText => encrypted,
+				ECryptoMethod.AES => DecryptAES(encrypted),
+				ECryptoMethod.ProtectedDataForCurrentUser => DecryptProtectedDataForCurrentUser(encrypted),
+				_ => throw new ArgumentOutOfRangeException(nameof(cryptoMethod))
+			};
 		}
 
 		internal static string? Encrypt(ECryptoMethod cryptoMethod, string decrypted) {
 			if (!Enum.IsDefined(typeof(ECryptoMethod), cryptoMethod) || string.IsNullOrEmpty(decrypted)) {
-				ASF.ArchiLogger.LogNullError(nameof(cryptoMethod) + " || " + nameof(decrypted));
-
-				return null;
+				throw new ArgumentNullException(nameof(cryptoMethod) + " || " + nameof(decrypted));
 			}
 
-			switch (cryptoMethod) {
-				case ECryptoMethod.PlainText:
-					return decrypted;
-				case ECryptoMethod.AES:
-					return EncryptAES(decrypted);
-				case ECryptoMethod.ProtectedDataForCurrentUser:
-					return EncryptProtectedDataForCurrentUser(decrypted);
-				default:
-					ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(cryptoMethod), cryptoMethod));
-
-					return null;
-			}
+			return cryptoMethod switch {
+				ECryptoMethod.PlainText => decrypted,
+				ECryptoMethod.AES => EncryptAES(decrypted),
+				ECryptoMethod.ProtectedDataForCurrentUser => EncryptProtectedDataForCurrentUser(decrypted),
+				_ => throw new ArgumentOutOfRangeException(nameof(cryptoMethod))
+			};
 		}
 
 		internal static IEnumerable<byte>? GenerateSteamParentalHash(byte[] password, byte[] salt, byte hashLength, ESteamParentalAlgorithm steamParentalAlgorithm) {
 			if ((password == null) || (salt == null) || (hashLength == 0) || !Enum.IsDefined(typeof(ESteamParentalAlgorithm), steamParentalAlgorithm)) {
-				ASF.ArchiLogger.LogNullError(nameof(password) + " || " + nameof(salt) + " || " + nameof(hashLength) + " || " + nameof(steamParentalAlgorithm));
-
-				return null;
+				throw new ArgumentNullException(nameof(password) + " || " + nameof(salt) + " || " + nameof(hashLength) + " || " + nameof(steamParentalAlgorithm));
 			}
 
 			switch (steamParentalAlgorithm) {
@@ -103,29 +84,23 @@ namespace ArchiSteamFarm {
 				case ESteamParentalAlgorithm.SCrypt:
 					return SCrypt.ComputeDerivedKey(password, salt, SteamParentalSCryptIterations, SteamParentalSCryptBlocksCount, 1, null, hashLength);
 				default:
-					ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(steamParentalAlgorithm), steamParentalAlgorithm));
-
-					return null;
+					throw new ArgumentOutOfRangeException(nameof(steamParentalAlgorithm));
 			}
 		}
 
 		internal static string? RecoverSteamParentalCode(byte[] passwordHash, byte[] salt, ESteamParentalAlgorithm steamParentalAlgorithm) {
 			if ((passwordHash == null) || (salt == null) || !Enum.IsDefined(typeof(ESteamParentalAlgorithm), steamParentalAlgorithm)) {
-				ASF.ArchiLogger.LogNullError(nameof(passwordHash) + " || " + nameof(salt) + " || " + nameof(steamParentalAlgorithm));
-
-				return null;
+				throw new ArgumentNullException(nameof(passwordHash) + " || " + nameof(salt) + " || " + nameof(steamParentalAlgorithm));
 			}
 
-			byte[] password = SteamParentalCodes.AsParallel().FirstOrDefault(passwordToTry => GenerateSteamParentalHash(passwordToTry, salt, (byte) passwordHash.Length, steamParentalAlgorithm)?.SequenceEqual(passwordHash) == true);
+			byte[]? password = SteamParentalCodes.AsParallel().FirstOrDefault(passwordToTry => GenerateSteamParentalHash(passwordToTry, salt, (byte) passwordHash.Length, steamParentalAlgorithm)?.SequenceEqual(passwordHash) == true);
 
 			return password != null ? Encoding.UTF8.GetString(password) : null;
 		}
 
 		internal static void SetEncryptionKey(string key) {
 			if (string.IsNullOrEmpty(key)) {
-				ASF.ArchiLogger.LogNullError(nameof(key));
-
-				return;
+				throw new ArgumentNullException(nameof(key));
 			}
 
 			EncryptionKey = Encoding.UTF8.GetBytes(key);
@@ -133,9 +108,7 @@ namespace ArchiSteamFarm {
 
 		private static string? DecryptAES(string encrypted) {
 			if (string.IsNullOrEmpty(encrypted)) {
-				ASF.ArchiLogger.LogNullError(nameof(encrypted));
-
-				return null;
+				throw new ArgumentNullException(nameof(encrypted));
 			}
 
 			try {
@@ -158,9 +131,7 @@ namespace ArchiSteamFarm {
 
 		private static string? DecryptProtectedDataForCurrentUser(string encrypted) {
 			if (string.IsNullOrEmpty(encrypted)) {
-				ASF.ArchiLogger.LogNullError(nameof(encrypted));
-
-				return null;
+				throw new ArgumentNullException(nameof(encrypted));
 			}
 
 			try {
@@ -184,9 +155,7 @@ namespace ArchiSteamFarm {
 
 		private static string? EncryptAES(string decrypted) {
 			if (string.IsNullOrEmpty(decrypted)) {
-				ASF.ArchiLogger.LogNullError(nameof(decrypted));
-
-				return null;
+				throw new ArgumentNullException(nameof(decrypted));
 			}
 
 			try {
@@ -209,9 +178,7 @@ namespace ArchiSteamFarm {
 
 		private static string? EncryptProtectedDataForCurrentUser(string decrypted) {
 			if (string.IsNullOrEmpty(decrypted)) {
-				ASF.ArchiLogger.LogNullError(nameof(decrypted));
-
-				return null;
+				throw new ArgumentNullException(nameof(decrypted));
 			}
 
 			try {

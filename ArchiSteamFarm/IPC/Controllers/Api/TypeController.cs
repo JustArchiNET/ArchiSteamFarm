@@ -43,9 +43,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		public ActionResult<GenericResponse> TypeGet(string type) {
 			if (string.IsNullOrEmpty(type)) {
-				ASF.ArchiLogger.LogNullError(nameof(type));
-
-				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(type))));
+				throw new ArgumentNullException(nameof(type));
 			}
 
 			Type? targetType = WebUtilities.ParseType(type);

@@ -26,8 +26,8 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 	// This is example class that shows how you can call third-party services within your plugin
-	// You always wanted from your ASF to post cats, right? Now is your chance!
-	// P.S. The code is almost 1:1 copy from the one I use in ArchiBoT, you can thank me later
+	// You've always wanted from your ASF to post cats, right? Now is your chance!
+	// P.S. The code is almost 1:1 copy from the one I use in ArchiBot, you can thank me later
 	internal static class CatAPI {
 		private const string URL = "https://aws.random.cat";
 
@@ -45,9 +45,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 			}
 
 			if (string.IsNullOrEmpty(response.Content.Link)) {
-				ASF.ArchiLogger.LogNullError(nameof(response.Content.Link));
-
-				return null;
+				throw new ArgumentNullException(nameof(response.Content.Link));
 			}
 
 			return Uri.EscapeUriString(response.Content.Link);

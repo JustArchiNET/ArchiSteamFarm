@@ -19,6 +19,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -99,10 +100,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		internal static async void OnNewHistoryEntry(object? sender, HistoryTarget.NewHistoryEntryArgs newHistoryEntryArgs) {
-			if ((sender == null) || (newHistoryEntryArgs == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(newHistoryEntryArgs));
-
-				return;
+			if (newHistoryEntryArgs == null) {
+				throw new ArgumentNullException(nameof(newHistoryEntryArgs));
 			}
 
 			if (ActiveLogWebSockets.Count == 0) {
@@ -110,14 +109,13 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			string json = JsonConvert.SerializeObject(new GenericResponse<string>(newHistoryEntryArgs.Message));
+
 			await Task.WhenAll(ActiveLogWebSockets.Where(kv => kv.Key.State == WebSocketState.Open).Select(kv => PostLoggedJsonUpdate(kv.Key, kv.Value, json))).ConfigureAwait(false);
 		}
 
 		private static async Task PostLoggedJsonUpdate(WebSocket webSocket, SemaphoreSlim sendSemaphore, string json) {
 			if ((webSocket == null) || (sendSemaphore == null) || string.IsNullOrEmpty(json)) {
-				ASF.ArchiLogger.LogNullError(nameof(webSocket) + " || " + nameof(sendSemaphore) + " || " + nameof(json));
-
-				return;
+				throw new ArgumentNullException(nameof(webSocket) + " || " + nameof(sendSemaphore) + " || " + nameof(json));
 			}
 
 			if (webSocket.State != WebSocketState.Open) {
@@ -141,9 +139,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 
 		private static async Task PostLoggedMessageUpdate(WebSocket webSocket, SemaphoreSlim sendSemaphore, string loggedMessage) {
 			if ((webSocket == null) || (sendSemaphore == null) || string.IsNullOrEmpty(loggedMessage)) {
-				ASF.ArchiLogger.LogNullError(nameof(webSocket) + " || " + nameof(sendSemaphore) + " || " + nameof(loggedMessage));
-
-				return;
+				throw new ArgumentNullException(nameof(webSocket) + " || " + nameof(sendSemaphore) + " || " + nameof(loggedMessage));
 			}
 
 			if (webSocket.State != WebSocketState.Open) {
@@ -151,6 +147,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			string response = JsonConvert.SerializeObject(new GenericResponse<string>(loggedMessage));
+
 			await PostLoggedJsonUpdate(webSocket, sendSemaphore, response).ConfigureAwait(false);
 		}
 	}

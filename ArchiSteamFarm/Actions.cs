@@ -187,9 +187,7 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public async Task<(bool Success, string Message)> Play(IEnumerable<uint> gameIDs, string? gameName = null) {
 			if (gameIDs == null) {
-				Bot.ArchiLogger.LogNullError(nameof(gameIDs));
-
-				return (false, string.Format(Strings.ErrorObjectIsNull, nameof(gameIDs)));
+				throw new ArgumentNullException(nameof(gameIDs));
 			}
 
 			if (!Bot.IsConnectedAndLoggedOn) {
@@ -238,14 +236,8 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<(bool Success, string Message)> SendInventory(uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, ulong targetSteamID = 0, string? tradeToken = null, Func<Steam.Asset, bool>? filterFunction = null) {
-			if (Bot.Bots == null) {
-				throw new ArgumentNullException(nameof(Bot.Bots));
-			}
-
 			if ((appID == 0) || (contextID == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
-
-				return (false, string.Format(Strings.ErrorObjectIsNull, nameof(appID) + " || " + nameof(contextID)));
+				throw new ArgumentNullException(nameof(appID) + " || " + nameof(contextID));
 			}
 
 			if (!Bot.IsConnectedAndLoggedOn) {
@@ -307,7 +299,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if (string.IsNullOrEmpty(tradeToken) && (Bot.SteamFriends.GetFriendRelationship(targetSteamID) != EFriendRelationship.Friend)) {
-					Bot targetBot = Bot.Bots.Values.FirstOrDefault(bot => bot.SteamID == targetSteamID);
+					Bot? targetBot = Bot.Bots?.Values.FirstOrDefault(bot => bot.SteamID == targetSteamID);
 
 					if (targetBot?.IsConnectedAndLoggedOn == true) {
 						tradeToken = await targetBot.ArchiHandler.GetTradeToken().ConfigureAwait(false);
@@ -416,9 +408,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task AcceptGuestPasses(IReadOnlyCollection<ulong> guestPassIDs) {
 			if ((guestPassIDs == null) || (guestPassIDs.Count == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(guestPassIDs));
-
-				return;
+				throw new ArgumentNullException(nameof(guestPassIDs));
 			}
 
 			foreach (ulong guestPassID in guestPassIDs.Where(guestPassID => !HandledGifts.Contains(guestPassID))) {
@@ -444,27 +434,25 @@ namespace ArchiSteamFarm {
 		internal void OnDisconnected() => HandledGifts.Clear();
 
 		private ulong GetFirstSteamMasterID() {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
+			ulong steamMasterID = Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key > 0) && (kv.Key != Bot.SteamID) && new SteamID(kv.Key).IsIndividualAccount && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderBy(steamID => steamID).FirstOrDefault();
+
+			if (steamMasterID > 0) {
+				return steamMasterID;
 			}
 
-			ulong steamMasterID = Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key != 0) && (kv.Key != Bot.SteamID) && new SteamID(kv.Key).IsIndividualAccount && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderBy(steamID => steamID).FirstOrDefault();
+			ulong steamOwnerID = ASF.GlobalConfig?.SteamOwnerID ?? GlobalConfig.DefaultSteamOwnerID;
 
-			return steamMasterID > 0 ? steamMasterID : (ASF.GlobalConfig.SteamOwnerID != 0) && new SteamID(ASF.GlobalConfig.SteamOwnerID).IsIndividualAccount ? ASF.GlobalConfig.SteamOwnerID : 0;
+			return (steamOwnerID > 0) && new SteamID(steamOwnerID).IsIndividualAccount ? steamOwnerID : 0;
 		}
 
 		private static async Task LimitGiftsRequestsAsync() {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
 			if (ASF.GiftsSemaphore == null) {
-				ASF.ArchiLogger.LogNullError(nameof(ASF.GiftsSemaphore));
-
-				return;
+				throw new ArgumentNullException(nameof(ASF.GiftsSemaphore));
 			}
 
-			if (ASF.GlobalConfig.GiftsLimiterDelay == 0) {
+			byte giftsLimiterDelay = ASF.GlobalConfig?.GiftsLimiterDelay ?? GlobalConfig.DefaultGiftsLimiterDelay;
+
+			if (giftsLimiterDelay == 0) {
 				return;
 			}
 
@@ -472,7 +460,7 @@ namespace ArchiSteamFarm {
 
 			Utilities.InBackground(
 				async () => {
-					await Task.Delay(ASF.GlobalConfig.GiftsLimiterDelay * 1000).ConfigureAwait(false);
+					await Task.Delay(giftsLimiterDelay * 1000).ConfigureAwait(false);
 					ASF.GiftsSemaphore.Release();
 				}
 			);

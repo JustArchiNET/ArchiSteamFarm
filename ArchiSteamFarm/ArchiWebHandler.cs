@@ -77,14 +77,10 @@ namespace ArchiSteamFarm {
 		private string? VanityURL;
 
 		internal ArchiWebHandler(Bot bot) {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 			CachedApiKey = new ArchiCacheable<string>(ResolveApiKey);
-			WebBrowser = new WebBrowser(bot.ArchiLogger, ASF.GlobalConfig.WebProxy);
+			WebBrowser = new WebBrowser(bot.ArchiLogger, ASF.GlobalConfig?.WebProxy);
 		}
 
 		public void Dispose() {
@@ -95,12 +91,10 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<string?> GetAbsoluteProfileURL(bool waitForInitialization = true) {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
 			if (waitForInitialization && !Initialized) {
-				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
+				byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
+
+				for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
@@ -116,21 +110,15 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async IAsyncEnumerable<Steam.Asset> GetInventoryAsync(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID) {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
-			if ((appID == 0) || (contextID == 0)) {
-				throw new ArgumentException(string.Format(Strings.ErrorObjectIsNull, nameof(appID) + " || " + nameof(contextID)));
-			}
-
-			if (ASF.InventorySemaphore == null) {
-				throw new ArgumentNullException(nameof(ASF.InventorySemaphore));
+			if ((appID == 0) || (contextID == 0) || (ASF.InventorySemaphore == null)) {
+				throw new ArgumentNullException(nameof(appID) + " || " + nameof(contextID) + " || " + nameof(ASF.InventorySemaphore));
 			}
 
 			if (steamID == 0) {
 				if (!Initialized) {
-					for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
+					byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
+
+					for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
 						await Task.Delay(1000).ConfigureAwait(false);
 					}
 
@@ -220,12 +208,14 @@ namespace ArchiSteamFarm {
 
 					startAssetID = response.LastAssetID;
 				} finally {
-					if (ASF.GlobalConfig.InventoryLimiterDelay == 0) {
+					byte inventoryLimiterDelay = ASF.GlobalConfig?.InventoryLimiterDelay ?? GlobalConfig.DefaultInventoryLimiterDelay;
+
+					if (inventoryLimiterDelay == 0) {
 						ASF.InventorySemaphore.Release();
 					} else {
 						Utilities.InBackground(
 							async () => {
-								await Task.Delay(ASF.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
+								await Task.Delay(inventoryLimiterDelay * 1000).ConfigureAwait(false);
 								ASF.InventorySemaphore.Release();
 							}
 						);
@@ -286,9 +276,7 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public async Task<Dictionary<uint, string>?> GetOwnedGames(ulong steamID) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-				Bot.ArchiLogger.LogNullError(nameof(steamID));
-
-				return null;
+				throw new ArgumentNullException(nameof(steamID));
 			}
 
 			(bool success, string? steamApiKey) = await CachedApiKey.GetValue().ConfigureAwait(false);
@@ -367,9 +355,7 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public async Task<(bool Success, HashSet<ulong>? MobileTradeOfferIDs)> SendTradeOffer(ulong steamID, IReadOnlyCollection<Steam.Asset>? itemsToGive = null, IReadOnlyCollection<Steam.Asset>? itemsToReceive = null, string? token = null, bool forcedSingleOffer = false) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || (((itemsToGive == null) || (itemsToGive.Count == 0)) && ((itemsToReceive == null) || (itemsToReceive.Count == 0)))) {
-				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || (" + nameof(itemsToGive) + " && " + nameof(itemsToReceive) + ")");
-
-				return (false, null);
+				throw new ArgumentNullException(nameof(steamID) + " || (" + nameof(itemsToGive) + " && " + nameof(itemsToReceive) + ")");
 			}
 
 			Steam.TradeOfferSendRequest singleTrade = new Steam.TradeOfferSendRequest();
@@ -437,14 +423,8 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<IDocument?> UrlGetToHtmlDocumentWithSession(string host, string request, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
-				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
-
-				return null;
+				throw new ArgumentNullException(nameof(host) + " || " + nameof(request));
 			}
 
 			if (maxTries == 0) {
@@ -475,7 +455,9 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!Initialized) {
-				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
+				byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
+
+				for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
@@ -516,14 +498,8 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<T?> UrlGetToJsonObjectWithSession<T>(string host, string request, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) where T : class {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
-				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
-
-				return default;
+				throw new ArgumentNullException(nameof(host) + " || " + nameof(request));
 			}
 
 			if (maxTries == 0) {
@@ -554,7 +530,9 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!Initialized) {
-				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
+				byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
+
+				for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
@@ -595,14 +573,8 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<XmlDocument?> UrlGetToXmlDocumentWithSession(string host, string request, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
-				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
-
-				return null;
+				throw new ArgumentNullException(nameof(host) + " || " + nameof(request));
 			}
 
 			if (maxTries == 0) {
@@ -633,7 +605,9 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!Initialized) {
-				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
+				byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
+
+				for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
@@ -674,14 +648,8 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<bool> UrlHeadWithSession(string host, string request, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
-				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
-
-				return false;
+				throw new ArgumentNullException(nameof(host) + " || " + nameof(request));
 			}
 
 			if (maxTries == 0) {
@@ -712,7 +680,9 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!Initialized) {
-				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
+				byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
+
+				for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
@@ -753,14 +723,8 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<IDocument?> UrlPostToHtmlDocumentWithSession(string host, string request, IDictionary<string, string>? data = null, string? referer = null, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request) || !Enum.IsDefined(typeof(ESession), session)) {
-				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request) + " || " + nameof(session));
-
-				return null;
+				throw new ArgumentNullException(nameof(host) + " || " + nameof(request) + " || " + nameof(session));
 			}
 
 			if (maxTries == 0) {
@@ -791,7 +755,9 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!Initialized) {
-				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
+				byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
+
+				for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
@@ -812,26 +778,12 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				string sessionName;
-
-				switch (session) {
-					case ESession.CamelCase:
-						sessionName = "sessionID";
-
-						break;
-					case ESession.Lowercase:
-						sessionName = "sessionid";
-
-						break;
-					case ESession.PascalCase:
-						sessionName = "SessionID";
-
-						break;
-					default:
-						Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(session), session));
-
-						return null;
-				}
+				string sessionName = session switch {
+					ESession.CamelCase => "sessionID",
+					ESession.Lowercase => "sessionid",
+					ESession.PascalCase => "SessionID",
+					_ => throw new ArgumentOutOfRangeException(nameof(session))
+				};
 
 				if (data != null) {
 					data[sessionName] = sessionID!;
@@ -869,14 +821,8 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<T?> UrlPostToJsonObjectWithSession<T>(string host, string request, IDictionary<string, string>? data = null, string? referer = null, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) where T : class {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request) || !Enum.IsDefined(typeof(ESession), session)) {
-				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request) + " || " + nameof(session));
-
-				return null;
+				throw new ArgumentNullException(nameof(host) + " || " + nameof(request) + " || " + nameof(session));
 			}
 
 			if (maxTries == 0) {
@@ -907,7 +853,9 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!Initialized) {
-				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
+				byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
+
+				for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
@@ -928,26 +876,12 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				string sessionName;
-
-				switch (session) {
-					case ESession.CamelCase:
-						sessionName = "sessionID";
-
-						break;
-					case ESession.Lowercase:
-						sessionName = "sessionid";
-
-						break;
-					case ESession.PascalCase:
-						sessionName = "SessionID";
-
-						break;
-					default:
-						Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(session), session));
-
-						return null;
-				}
+				string sessionName = session switch {
+					ESession.CamelCase => "sessionID",
+					ESession.Lowercase => "sessionid",
+					ESession.PascalCase => "SessionID",
+					_ => throw new ArgumentOutOfRangeException(nameof(session))
+				};
 
 				if (data != null) {
 					data[sessionName] = sessionID!;
@@ -985,14 +919,8 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<T?> UrlPostToJsonObjectWithSession<T>(string host, string request, ICollection<KeyValuePair<string, string>>? data = null, string? referer = null, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) where T : class {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request) || !Enum.IsDefined(typeof(ESession), session)) {
-				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request) + " || " + nameof(session));
-
-				return null;
+				throw new ArgumentNullException(nameof(host) + " || " + nameof(request) + " || " + nameof(session));
 			}
 
 			if (maxTries == 0) {
@@ -1023,7 +951,9 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!Initialized) {
-				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
+				byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
+
+				for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
@@ -1044,26 +974,12 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				string sessionName;
-
-				switch (session) {
-					case ESession.CamelCase:
-						sessionName = "sessionID";
-
-						break;
-					case ESession.Lowercase:
-						sessionName = "sessionid";
-
-						break;
-					case ESession.PascalCase:
-						sessionName = "SessionID";
-
-						break;
-					default:
-						Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(session), session));
-
-						return null;
-				}
+				string sessionName = session switch {
+					ESession.CamelCase => "sessionID",
+					ESession.Lowercase => "sessionid",
+					ESession.PascalCase => "SessionID",
+					_ => throw new ArgumentOutOfRangeException(nameof(session))
+				};
 
 				KeyValuePair<string, string> sessionValue = new KeyValuePair<string, string>(sessionName, sessionID!);
 
@@ -1104,14 +1020,8 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<bool> UrlPostWithSession(string host, string request, IDictionary<string, string>? data = null, string? referer = null, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
 			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request) || !Enum.IsDefined(typeof(ESession), session)) {
-				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request) + " || " + nameof(session));
-
-				return false;
+				throw new ArgumentNullException(nameof(host) + " || " + nameof(request) + " || " + nameof(session));
 			}
 
 			if (maxTries == 0) {
@@ -1142,7 +1052,9 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!Initialized) {
-				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
+				byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
+
+				for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
@@ -1163,26 +1075,12 @@ namespace ArchiSteamFarm {
 					return false;
 				}
 
-				string sessionName;
-
-				switch (session) {
-					case ESession.CamelCase:
-						sessionName = "sessionID";
-
-						break;
-					case ESession.Lowercase:
-						sessionName = "sessionid";
-
-						break;
-					case ESession.PascalCase:
-						sessionName = "SessionID";
-
-						break;
-					default:
-						Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(session), session));
-
-						return false;
-				}
+				string sessionName = session switch {
+					ESession.CamelCase => "sessionID",
+					ESession.Lowercase => "sessionid",
+					ESession.PascalCase => "SessionID",
+					_ => throw new ArgumentOutOfRangeException(nameof(session))
+				};
 
 				if (data != null) {
 					data[sessionName] = sessionID!;
@@ -1220,23 +1118,13 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public static async Task<T?> WebLimitRequest<T>(string service, Func<Task<T?>> function) where T : class {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
+			if (string.IsNullOrEmpty(service) || (function == null) || (ASF.WebLimitingSemaphores == null)) {
+				throw new ArgumentNullException(nameof(service) + " || " + nameof(function) + " || " + nameof(ASF.WebLimitingSemaphores));
 			}
 
-			if (string.IsNullOrEmpty(service) || (function == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(service) + " || " + nameof(function));
+			ushort webLimiterDelay = ASF.GlobalConfig?.WebLimiterDelay ?? GlobalConfig.DefaultWebLimiterDelay;
 
-				return default;
-			}
-
-			if (ASF.WebLimitingSemaphores == null) {
-				ASF.ArchiLogger.LogNullError(nameof(ASF.WebLimitingSemaphores));
-
-				return default;
-			}
-
-			if (ASF.GlobalConfig.WebLimiterDelay == 0) {
+			if (webLimiterDelay == 0) {
 				return await function().ConfigureAwait(false);
 			}
 
@@ -1260,7 +1148,7 @@ namespace ArchiSteamFarm {
 				// We release rate-limiter semaphore regardless of our task completion, since we use that one only to guarantee rate-limiting of their creation
 				Utilities.InBackground(
 					async () => {
-						await Task.Delay(ASF.GlobalConfig.WebLimiterDelay).ConfigureAwait(false);
+						await Task.Delay(webLimiterDelay).ConfigureAwait(false);
 						limiters.RateLimitingSemaphore.Release();
 					}
 				);
@@ -1274,9 +1162,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> AcceptDigitalGiftCard(ulong giftCardID) {
 			if (giftCardID == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(giftCardID));
-
-				return false;
+				throw new ArgumentNullException(nameof(giftCardID));
 			}
 
 			const string request = "/gifts/0/resolvegiftcard";
@@ -1304,9 +1190,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<(bool Success, bool RequiresMobileConfirmation)> AcceptTradeOffer(ulong tradeID) {
 			if (tradeID == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(tradeID));
-
-				return (false, false);
+				throw new ArgumentNullException(nameof(tradeID));
 			}
 
 			string request = "/tradeoffer/" + tradeID + "/accept";
@@ -1325,9 +1209,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> AddFreeLicense(uint subID) {
 			if (subID == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(subID));
-
-				return false;
+				throw new ArgumentNullException(nameof(subID));
 			}
 
 			const string request = "/checkout/addfreelicense";
@@ -1345,9 +1227,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> ChangePrivacySettings(Steam.UserPrivacy userPrivacy) {
 			if (userPrivacy == null) {
-				Bot.ArchiLogger.LogNullError(nameof(userPrivacy));
-
-				return false;
+				throw new ArgumentNullException(nameof(userPrivacy));
 			}
 
 			string? profileURL = await GetAbsoluteProfileURL().ConfigureAwait(false);
@@ -1383,9 +1263,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> ClearFromDiscoveryQueue(uint appID) {
 			if (appID == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(appID));
-
-				return false;
+				throw new ArgumentNullException(nameof(appID));
 			}
 
 			string request = "/app/" + appID;
@@ -1398,9 +1276,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> DeclineTradeOffer(ulong tradeID) {
 			if (tradeID == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(tradeID));
-
-				return false;
+				throw new ArgumentNullException(nameof(tradeID));
 			}
 
 			(bool success, string? steamApiKey) = await CachedApiKey.GetValue().ConfigureAwait(false);
@@ -1677,9 +1553,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<IDocument?> GetBadgePage(byte page) {
 			if (page == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(page));
-
-				return null;
+				throw new ArgumentNullException(nameof(page));
 			}
 
 			string request = "/my/badges?l=english&p=" + page;
@@ -1688,18 +1562,14 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<IDocument?> GetConfirmations(string deviceID, string confirmationHash, uint time) {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
 			if (string.IsNullOrEmpty(deviceID) || string.IsNullOrEmpty(confirmationHash) || (time == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time));
-
-				return null;
+				throw new ArgumentNullException(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time));
 			}
 
 			if (!Initialized) {
-				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
+				byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
+
+				for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
@@ -1732,7 +1602,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<ulong> results = new HashSet<ulong>(htmlNodes.Count);
 
-			foreach (string giftCardIDText in htmlNodes.Select(node => node.GetAttribute("id"))) {
+			foreach (string? giftCardIDText in htmlNodes.Select(node => node.GetAttribute("id"))) {
 				if (string.IsNullOrEmpty(giftCardIDText)) {
 					Bot.ArchiLogger.LogNullError(nameof(giftCardIDText));
 
@@ -1781,7 +1651,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<ulong> result = new HashSet<ulong>(htmlNodes.Count);
 
-			foreach (string miniProfile in htmlNodes.Select(htmlNode => htmlNode.GetAttribute("data-miniprofile"))) {
+			foreach (string? miniProfile in htmlNodes.Select(htmlNode => htmlNode.GetAttribute("data-miniprofile"))) {
 				if (string.IsNullOrEmpty(miniProfile)) {
 					Bot.ArchiLogger.LogNullError(nameof(miniProfile));
 
@@ -1803,9 +1673,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<IDocument?> GetGameCardsPage(uint appID) {
 			if (appID == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(appID));
-
-				return null;
+				throw new ArgumentNullException(nameof(appID));
 			}
 
 			string request = "/my/gamecards/" + appID + "?l=english";
@@ -1854,9 +1722,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<byte?> GetTradeHoldDurationForTrade(ulong tradeID) {
 			if (tradeID == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(tradeID));
-
-				return null;
+				throw new ArgumentNullException(nameof(tradeID));
 			}
 
 			string request = "/tradeoffer/" + tradeID + "?l=english";
@@ -1911,9 +1777,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<byte?> GetTradeHoldDurationForUser(ulong steamID, string? tradeToken = null) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-				Bot.ArchiLogger.LogNullError(nameof(steamID));
-
-				return null;
+				throw new ArgumentNullException(nameof(steamID));
 			}
 
 			(bool success, string? steamApiKey) = await CachedApiKey.GetValue().ConfigureAwait(false);
@@ -1970,18 +1834,14 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool?> HandleConfirmation(string deviceID, string confirmationHash, uint time, ulong confirmationID, ulong confirmationKey, bool accept) {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
 			if (string.IsNullOrEmpty(deviceID) || string.IsNullOrEmpty(confirmationHash) || (time == 0) || (confirmationID == 0) || (confirmationKey == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time) + " || " + nameof(confirmationID) + " || " + nameof(confirmationKey));
-
-				return null;
+				throw new ArgumentNullException(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time) + " || " + nameof(confirmationID) + " || " + nameof(confirmationKey));
 			}
 
 			if (!Initialized) {
-				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
+				byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
+
+				for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
@@ -2000,18 +1860,14 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool?> HandleConfirmations(string deviceID, string confirmationHash, uint time, IReadOnlyCollection<MobileAuthenticator.Confirmation> confirmations, bool accept) {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
 			if (string.IsNullOrEmpty(deviceID) || string.IsNullOrEmpty(confirmationHash) || (time == 0) || (confirmations == null) || (confirmations.Count == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time) + " || " + nameof(confirmations));
-
-				return null;
+				throw new ArgumentNullException(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time) + " || " + nameof(confirmations));
 			}
 
 			if (!Initialized) {
-				for (byte i = 0; (i < ASF.GlobalConfig.ConnectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
+				byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
+
+				for (byte i = 0; (i < connectionTimeout) && !Initialized && Bot.IsConnectedAndLoggedOn; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
@@ -2047,9 +1903,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> Init(ulong steamID, EUniverse universe, string webAPIUserNonce, string? parentalCode = null) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || (universe == EUniverse.Invalid) || !Enum.IsDefined(typeof(EUniverse), universe) || string.IsNullOrEmpty(webAPIUserNonce)) {
-				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(universe) + " || " + nameof(webAPIUserNonce));
-
-				return false;
+				throw new ArgumentNullException(nameof(steamID) + " || " + nameof(universe) + " || " + nameof(webAPIUserNonce));
 			}
 
 			byte[]? publicKey = KeyDictionary.GetPublicKey(universe);
@@ -2169,9 +2023,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> JoinGroup(ulong groupID) {
 			if ((groupID == 0) || !new SteamID(groupID).IsClanAccount) {
-				Bot.ArchiLogger.LogNullError(nameof(groupID));
-
-				return false;
+				throw new ArgumentNullException(nameof(groupID));
 			}
 
 			string request = "/gid/" + groupID;
@@ -2183,14 +2035,8 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task MarkInventory() {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
 			if (ASF.InventorySemaphore == null) {
-				Bot.ArchiLogger.LogNullError(nameof(ASF.InventorySemaphore));
-
-				return;
+				throw new ArgumentNullException(nameof(ASF.InventorySemaphore));
 			}
 
 			// We aim to have a maximum of 2 tasks, one already working, and one waiting in the queue
@@ -2213,12 +2059,14 @@ namespace ArchiSteamFarm {
 				const string request = "/my/inventory";
 				await UrlHeadWithSession(SteamCommunityURL, request, false).ConfigureAwait(false);
 			} finally {
-				if (ASF.GlobalConfig.InventoryLimiterDelay == 0) {
+				byte inventoryLimiterDelay = ASF.GlobalConfig?.InventoryLimiterDelay ?? GlobalConfig.DefaultInventoryLimiterDelay;
+
+				if (inventoryLimiterDelay == 0) {
 					ASF.InventorySemaphore.Release();
 				} else {
 					Utilities.InBackground(
 						async () => {
-							await Task.Delay(ASF.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
+							await Task.Delay(inventoryLimiterDelay * 1000).ConfigureAwait(false);
 							ASF.InventorySemaphore.Release();
 						}
 					);
@@ -2241,9 +2089,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<(EResult Result, EPurchaseResultDetail? PurchaseResult)?> RedeemWalletKey(string key) {
 			if (string.IsNullOrEmpty(key)) {
-				Bot.ArchiLogger.LogNullError(nameof(key));
-
-				return null;
+				throw new ArgumentNullException(nameof(key));
 			}
 
 			// ASF should redeem wallet key only in case of existing wallet
@@ -2301,9 +2147,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> UnpackBooster(uint appID, ulong itemID) {
 			if ((appID == 0) || (itemID == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(itemID));
-
-				return false;
+				throw new ArgumentNullException(nameof(appID) + " || " + nameof(itemID));
 			}
 
 			string? profileURL = await GetAbsoluteProfileURL().ConfigureAwait(false);
@@ -2398,9 +2242,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<bool> IsProfileUri(Uri uri, bool waitForInitialization = true) {
 			if (uri == null) {
-				ASF.ArchiLogger.LogNullError(nameof(uri));
-
-				return false;
+				throw new ArgumentNullException(nameof(uri));
 			}
 
 			string? profileURL = await GetAbsoluteProfileURL(waitForInitialization).ConfigureAwait(false);
@@ -2464,9 +2306,7 @@ namespace ArchiSteamFarm {
 
 		private static bool IsSessionExpiredUri(Uri uri) {
 			if (uri == null) {
-				ASF.ArchiLogger.LogNullError(nameof(uri));
-
-				return false;
+				throw new ArgumentNullException(nameof(uri));
 			}
 
 			return uri.AbsolutePath.StartsWith("/login", StringComparison.Ordinal) || uri.Host.Equals("lostauth");
@@ -2474,9 +2314,7 @@ namespace ArchiSteamFarm {
 
 		private static bool ParseItems(IReadOnlyDictionary<(uint AppID, ulong ClassID, ulong InstanceID), Steam.InventoryResponse.Description> descriptions, IReadOnlyCollection<KeyValue> input, ICollection<Steam.Asset> output) {
 			if ((descriptions == null) || (input == null) || (input.Count == 0) || (output == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(descriptions) + " || " + nameof(input) + " || " + nameof(output));
-
-				return false;
+				throw new ArgumentNullException(nameof(descriptions) + " || " + nameof(input) + " || " + nameof(output));
 			}
 
 			foreach (KeyValue item in input) {
@@ -2647,9 +2485,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<bool> UnlockParentalAccount(string parentalCode) {
 			if (string.IsNullOrEmpty(parentalCode)) {
-				Bot.ArchiLogger.LogNullError(nameof(parentalCode));
-
-				return false;
+				throw new ArgumentNullException(nameof(parentalCode));
 			}
 
 			Bot.ArchiLogger.LogGenericInfo(Strings.UnlockingParentalAccount);
@@ -2669,9 +2505,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<bool> UnlockParentalAccountForService(string serviceURL, string parentalCode, byte maxTries = WebBrowser.MaxTries) {
 			if (string.IsNullOrEmpty(serviceURL) || string.IsNullOrEmpty(parentalCode)) {
-				Bot.ArchiLogger.LogNullError(nameof(serviceURL) + " || " + nameof(parentalCode));
-
-				return false;
+				throw new ArgumentNullException(nameof(serviceURL) + " || " + nameof(parentalCode));
 			}
 
 			const string request = "/parental/ajaxunlock";

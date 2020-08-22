@@ -34,16 +34,12 @@ namespace ArchiSteamFarm {
 		private readonly Timer SaleEventTimer;
 
 		internal SteamSaleEvent(Bot bot) {
-			if (Bot.Bots == null) {
-				throw new ArgumentNullException(nameof(Bot.Bots));
-			}
-
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 			SaleEventTimer = new Timer(
 				async e => await ExploreDiscoveryQueue().ConfigureAwait(false),
 				null,
-				TimeSpan.FromHours(1.1) + TimeSpan.FromSeconds(ASF.LoadBalancingDelay * Bot.Bots.Count), // Delay
+				TimeSpan.FromHours(1.1) + TimeSpan.FromSeconds(ASF.LoadBalancingDelay * Bot.Bots?.Count ?? 0), // Delay
 				TimeSpan.FromHours(8.1) // Period
 			);
 		}
@@ -92,7 +88,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			IElement htmlNode = htmlDocument.SelectSingleNode("//div[@class='subtext']");
+			IElement? htmlNode = htmlDocument.SelectSingleNode("//div[@class='subtext']");
 
 			if (htmlNode == null) {
 				// Valid, no cards for exploring the queue available

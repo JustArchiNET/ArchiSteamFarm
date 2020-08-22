@@ -29,14 +29,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Plugins;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 	[Export(typeof(IPlugin))]
-	[UsedImplicitly]
 	internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotSteamClient, ISteamPICSChanges {
 		private static readonly ConcurrentDictionary<Bot, IDisposable> BotSubscriptions = new ConcurrentDictionary<Bot, IDisposable>();
 		private static readonly ConcurrentDictionary<Bot, (SemaphoreSlim RefreshSemaphore, Timer RefreshTimer)> BotSynchronizations = new ConcurrentDictionary<Bot, (SemaphoreSlim RefreshSemaphore, Timer RefreshTimer)>();
@@ -189,7 +187,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			await GlobalCache.OnPICSChangesRestart(currentChangeNumber).ConfigureAwait(false);
 		}
 
-		private static async void OnLicenseList([NotNull] Bot bot, [NotNull] SteamApps.LicenseListCallback callback) {
+		private static async void OnLicenseList(Bot bot, SteamApps.LicenseListCallback callback) {
 			if ((bot == null) || (callback == null)) {
 				throw new ArgumentNullException(nameof(callback));
 			}
@@ -208,7 +206,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			await Refresh(bot, packageTokens.Keys).ConfigureAwait(false);
 		}
 
-		private static async Task Refresh([NotNull] Bot bot, IReadOnlyCollection<uint>? packageIDs = null) {
+		private static async Task Refresh(Bot bot, IReadOnlyCollection<uint>? packageIDs = null) {
 			if (bot == null) {
 				throw new ArgumentNullException(nameof(bot));
 			}
@@ -217,8 +215,8 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				return;
 			}
 
-			if ((ASF.GlobalDatabase == null) || (GlobalCache == null)) {
-				throw new ArgumentNullException(nameof(ASF.GlobalDatabase) + " || " + nameof(GlobalCache));
+			if ((GlobalCache == null) || (ASF.GlobalDatabase == null)) {
+				throw new ArgumentNullException(nameof(GlobalCache) + " || " + nameof(ASF.GlobalDatabase));
 			}
 
 			if (!BotSynchronizations.TryGetValue(bot, out (SemaphoreSlim RefreshSemaphore, Timer RefreshTimer) synchronization)) {

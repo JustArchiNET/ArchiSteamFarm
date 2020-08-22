@@ -153,9 +153,7 @@ namespace ArchiSteamFarm {
 
 		internal void RefreshPackageAccessTokens(IReadOnlyDictionary<uint, ulong> packageAccessTokens) {
 			if ((packageAccessTokens == null) || (packageAccessTokens.Count == 0)) {
-				ASF.ArchiLogger.LogNullError(nameof(packageAccessTokens));
-
-				return;
+				throw new ArgumentNullException(nameof(packageAccessTokens));
 			}
 
 			bool save = false;
@@ -174,9 +172,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task RefreshPackages(Bot bot, IReadOnlyDictionary<uint, uint> packages) {
 			if ((bot == null) || (packages == null) || (packages.Count == 0)) {
-				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(packages));
-
-				return;
+				throw new ArgumentNullException(nameof(bot) + " || " + nameof(packages));
 			}
 
 			await PackagesRefreshSemaphore.WaitAsync().ConfigureAwait(false);

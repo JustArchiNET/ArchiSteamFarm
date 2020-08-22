@@ -55,14 +55,6 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task RefreshChanges() {
-			if (Bot.Bots == null) {
-				throw new ArgumentNullException(nameof(Bot.Bots));
-			}
-
-			if (ASF.GlobalDatabase == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalDatabase));
-			}
-
 			if (!await RefreshSemaphore.WaitAsync(0).ConfigureAwait(false)) {
 				return;
 			}
@@ -72,7 +64,7 @@ namespace ArchiSteamFarm {
 				SteamApps.PICSChangesCallback? picsChanges = null;
 
 				for (byte i = 0; (i < WebBrowser.MaxTries) && (picsChanges == null); i++) {
-					refreshBot = Bot.Bots.Values.FirstOrDefault(bot => bot.IsConnectedAndLoggedOn);
+					refreshBot = Bot.Bots?.Values.FirstOrDefault(bot => bot.IsConnectedAndLoggedOn);
 
 					if (refreshBot == null) {
 						return;
@@ -103,7 +95,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				if (picsChanges.PackageChanges.Count > 0) {
+				if ((picsChanges.PackageChanges.Count > 0) && (ASF.GlobalDatabase != null)) {
 					await ASF.GlobalDatabase.RefreshPackages(refreshBot, picsChanges.PackageChanges.ToDictionary(package => package.Key, package => package.Value.ChangeNumber)).ConfigureAwait(false);
 				}
 

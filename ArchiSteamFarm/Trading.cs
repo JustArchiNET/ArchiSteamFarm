@@ -51,9 +51,7 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public static bool IsFairExchange(IReadOnlyCollection<Steam.Asset> itemsToGive, IReadOnlyCollection<Steam.Asset> itemsToReceive) {
 			if ((itemsToGive == null) || (itemsToGive.Count == 0) || (itemsToReceive == null) || (itemsToReceive.Count == 0)) {
-				ASF.ArchiLogger.LogNullError(nameof(itemsToGive) + " || " + nameof(itemsToReceive));
-
-				return false;
+				throw new ArgumentNullException(nameof(itemsToGive) + " || " + nameof(itemsToReceive));
 			}
 
 			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), uint> itemsToGiveAmounts = new Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), uint>();
@@ -83,9 +81,7 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public static bool IsTradeNeutralOrBetter(HashSet<Steam.Asset> inventory, ISet<Steam.Asset> itemsToGive, ISet<Steam.Asset> itemsToReceive) {
 			if ((inventory == null) || (inventory.Count == 0) || (itemsToGive == null) || (itemsToGive.Count == 0) || (itemsToReceive == null) || (itemsToReceive.Count == 0)) {
-				ASF.ArchiLogger.LogNullError(nameof(inventory) + " || " + nameof(itemsToGive) + " || " + nameof(itemsToReceive));
-
-				return false;
+				throw new ArgumentNullException(nameof(inventory) + " || " + nameof(itemsToGive) + " || " + nameof(itemsToReceive));
 			}
 
 			// Input of this function is items we're expected to give/receive and our inventory (limited to realAppIDs of itemsToGive/itemsToReceive)
@@ -118,9 +114,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if (amountToGive > 0) {
-					ASF.ArchiLogger.LogNullError(nameof(amountToGive));
-
-					return false;
+					throw new ArgumentNullException(nameof(amountToGive));
 				}
 
 				if (itemsToRemove.Count > 0) {
@@ -267,16 +261,12 @@ namespace ArchiSteamFarm {
 
 		internal static bool IsEmptyForMatching(IReadOnlyDictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> fullState, IReadOnlyDictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> tradableState) {
 			if ((fullState == null) || (tradableState == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(fullState) + " || " + nameof(tradableState));
-
-				return false;
+				throw new ArgumentNullException(nameof(fullState) + " || " + nameof(tradableState));
 			}
 
 			foreach (((uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) set, Dictionary<ulong, uint> state) in tradableState) {
 				if (!fullState.TryGetValue(set, out Dictionary<ulong, uint>? fullSet) || (fullSet == null) || (fullSet.Count == 0)) {
-					ASF.ArchiLogger.LogNullError(nameof(fullSet));
-
-					return false;
+					throw new ArgumentNullException(nameof(fullSet));
 				}
 
 				if (!IsEmptyForMatching(fullSet, state)) {
@@ -290,24 +280,18 @@ namespace ArchiSteamFarm {
 
 		internal static bool IsEmptyForMatching(IReadOnlyDictionary<ulong, uint> fullSet, IReadOnlyDictionary<ulong, uint> tradableSet) {
 			if ((fullSet == null) || (tradableSet == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(fullSet) + " || " + nameof(tradableSet));
-
-				return false;
+				throw new ArgumentNullException(nameof(fullSet) + " || " + nameof(tradableSet));
 			}
 
 			foreach ((ulong classID, uint amount) in tradableSet) {
 				switch (amount) {
 					case 0:
 						// No tradable items, this should never happen, dictionary should not have this key to begin with
-						ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(amount), amount));
-
-						return false;
+						throw new ArgumentOutOfRangeException(nameof(amount));
 					case 1:
 						// Single tradable item, can be matchable or not depending on the rest of the inventory
 						if (!fullSet.TryGetValue(classID, out uint fullAmount) || (fullAmount == 0) || (fullAmount < amount)) {
-							ASF.ArchiLogger.LogNullError(nameof(fullAmount));
-
-							return false;
+							throw new ArgumentNullException(nameof(fullAmount));
 						}
 
 						if (fullAmount > 1) {
@@ -430,9 +414,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<(ParseTradeResult? TradeResult, bool RequiresMobileConfirmation)> ParseTrade(Steam.TradeOffer tradeOffer) {
 			if (tradeOffer == null) {
-				Bot.ArchiLogger.LogNullError(nameof(tradeOffer));
-
-				return (null, false);
+				throw new ArgumentNullException(nameof(tradeOffer));
 			}
 
 			if (tradeOffer.State != ETradeOfferState.Active) {

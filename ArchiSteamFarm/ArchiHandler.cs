@@ -62,14 +62,8 @@ namespace ArchiSteamFarm {
 		}
 
 		public override void HandleMsg(IPacketMsg packetMsg) {
-			if (packetMsg == null) {
-				ArchiLogger.LogNullError(nameof(packetMsg));
-
-				return;
-			}
-
-			if (Client == null) {
-				ArchiLogger.LogNullError(nameof(Client));
+			if ((packetMsg == null) || (Client == null)) {
+				ArchiLogger.LogNullError(nameof(packetMsg) + " || " + nameof(Client));
 
 				return;
 			}
@@ -122,9 +116,7 @@ namespace ArchiSteamFarm {
 
 		internal void AckChatMessage(ulong chatGroupID, ulong chatID, uint timestamp) {
 			if ((chatGroupID == 0) || (chatID == 0) || (timestamp == 0)) {
-				ArchiLogger.LogNullError(nameof(chatGroupID) + " || " + nameof(chatID) + " || " + nameof(timestamp));
-
-				return;
+				throw new ArgumentNullException(nameof(chatGroupID) + " || " + nameof(chatID) + " || " + nameof(timestamp));
 			}
 
 			if (Client == null) {
@@ -148,9 +140,7 @@ namespace ArchiSteamFarm {
 
 		internal void AckMessage(ulong steamID, uint timestamp) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || (timestamp == 0)) {
-				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(timestamp));
-
-				return;
+				throw new ArgumentNullException(nameof(steamID) + " || " + nameof(timestamp));
 			}
 
 			if (Client == null) {
@@ -173,9 +163,7 @@ namespace ArchiSteamFarm {
 
 		internal void AcknowledgeClanInvite(ulong steamID, bool acceptInvite) {
 			if ((steamID == 0) || !new SteamID(steamID).IsClanAccount) {
-				ArchiLogger.LogNullError(nameof(steamID));
-
-				return;
+				throw new ArgumentNullException(nameof(steamID));
 			}
 
 			if (Client == null) {
@@ -200,9 +188,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> AddFriend(ulong steamID) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-				ArchiLogger.LogNullError(nameof(steamID));
-
-				return false;
+				throw new ArgumentNullException(nameof(steamID));
 			}
 
 			if (Client == null) {
@@ -232,9 +218,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<ulong> GetClanChatGroupID(ulong steamID) {
 			if ((steamID == 0) || !new SteamID(steamID).IsClanAccount) {
-				ArchiLogger.LogNullError(nameof(steamID));
-
-				return 0;
+				throw new ArgumentNullException(nameof(steamID));
 			}
 
 			if (Client == null) {
@@ -400,9 +384,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<string?> GetTwoFactorDeviceIdentifier(ulong steamID) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-				ArchiLogger.LogNullError(nameof(steamID));
-
-				return null;
+				throw new ArgumentNullException(nameof(steamID));
 			}
 
 			if (Client == null) {
@@ -440,9 +422,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> JoinChatRoomGroup(ulong chatGroupID) {
 			if (chatGroupID == 0) {
-				ArchiLogger.LogNullError(nameof(chatGroupID));
-
-				return false;
+				throw new ArgumentNullException(nameof(chatGroupID));
 			}
 
 			if (Client == null) {
@@ -472,9 +452,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task PlayGames(IEnumerable<uint> gameIDs, string? gameName = null) {
 			if (gameIDs == null) {
-				ArchiLogger.LogNullError(nameof(gameIDs));
-
-				return;
+				throw new ArgumentNullException(nameof(gameIDs));
 			}
 
 			if (Client == null) {
@@ -528,9 +506,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<RedeemGuestPassResponseCallback?> RedeemGuestPass(ulong guestPassID) {
 			if (guestPassID == 0) {
-				ArchiLogger.LogNullError(nameof(guestPassID));
-
-				return null;
+				throw new ArgumentNullException(nameof(guestPassID));
 			}
 
 			if (Client == null) {
@@ -561,9 +537,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<PurchaseResponseCallback?> RedeemKey(string key) {
 			if (string.IsNullOrEmpty(key)) {
-				ArchiLogger.LogNullError(nameof(key));
-
-				return null;
+				throw new ArgumentNullException(nameof(key));
 			}
 
 			if (Client == null) {
@@ -594,9 +568,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> RemoveFriend(ulong steamID) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-				ArchiLogger.LogNullError(nameof(steamID));
-
-				return false;
+				throw new ArgumentNullException(nameof(steamID));
 			}
 
 			if (Client == null) {
@@ -641,9 +613,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<EResult> SendMessage(ulong steamID, string message) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || string.IsNullOrEmpty(message)) {
-				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(message));
-
-				return EResult.Invalid;
+				throw new ArgumentNullException(nameof(steamID) + " || " + nameof(message));
 			}
 
 			if (Client == null) {
@@ -678,9 +648,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<EResult> SendMessage(ulong chatGroupID, ulong chatID, string message) {
 			if ((chatGroupID == 0) || (chatID == 0) || string.IsNullOrEmpty(message)) {
-				ArchiLogger.LogNullError(nameof(chatGroupID) + " || " + nameof(chatID) + " || " + nameof(message));
-
-				return EResult.Invalid;
+				throw new ArgumentNullException(nameof(chatGroupID) + " || " + nameof(chatID) + " || " + nameof(message));
 			}
 
 			if (Client == null) {
@@ -714,9 +682,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<EResult> SendTypingStatus(ulong steamID) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-				ArchiLogger.LogNullError(nameof(steamID));
-
-				return EResult.Invalid;
+				throw new ArgumentNullException(nameof(steamID));
 			}
 
 			if (Client == null) {
@@ -749,9 +715,7 @@ namespace ArchiSteamFarm {
 
 		internal void SetCurrentMode(uint chatMode) {
 			if (chatMode == 0) {
-				ArchiLogger.LogNullError(nameof(chatMode));
-
-				return;
+				throw new ArgumentNullException(nameof(chatMode));
 			}
 
 			if (Client == null) {
@@ -911,17 +875,16 @@ namespace ArchiSteamFarm {
 			[PublicAPI]
 			public enum EUserNotification : byte {
 				Unknown,
-				Trading,
-				GameTurns,
-				ModeratorMessages,
-				Comments,
-				Items,
-				Invites,
-				Unknown7, // No clue what 7 stands for, and I doubt we can find out
-				Gifts,
-				Chat,
-				HelpRequestReplies,
-				AccountAlerts
+				Trading = 1,
+				GameTurns = 2,
+				ModeratorMessages = 3,
+				Comments = 4,
+				Items = 5,
+				Invites = 6,
+				Gifts = 8,
+				Chat = 9,
+				HelpRequestReplies = 10,
+				AccountAlerts = 11
 			}
 		}
 

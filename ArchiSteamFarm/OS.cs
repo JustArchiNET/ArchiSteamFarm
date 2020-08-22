@@ -71,9 +71,7 @@ namespace ArchiSteamFarm {
 
 		internal static void Init(bool systemRequired, GlobalConfig.EOptimizationMode optimizationMode) {
 			if (!Enum.IsDefined(typeof(GlobalConfig.EOptimizationMode), optimizationMode)) {
-				ASF.ArchiLogger.LogNullError(nameof(optimizationMode));
-
-				return;
+				throw new ArgumentNullException(nameof(optimizationMode));
 			}
 
 			if (IsWindows) {
@@ -92,9 +90,7 @@ namespace ArchiSteamFarm {
 
 					break;
 				default:
-					ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(optimizationMode), optimizationMode));
-
-					return;
+					throw new ArgumentOutOfRangeException(nameof(optimizationMode));
 			}
 		}
 
@@ -127,9 +123,7 @@ namespace ArchiSteamFarm {
 
 		internal static void UnixSetFileAccess(string path, EUnixPermission permission) {
 			if (string.IsNullOrEmpty(path)) {
-				ASF.ArchiLogger.LogNullError(nameof(path));
-
-				return;
+				throw new ArgumentNullException(nameof(path));
 			}
 
 			if (!IsUnix) {

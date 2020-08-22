@@ -308,9 +308,7 @@ namespace ArchiSteamFarm {
 
 		internal static async Task<BotConfig?> Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
-				ASF.ArchiLogger.LogNullError(nameof(filePath));
-
-				return null;
+				throw new ArgumentNullException(nameof(filePath));
 			}
 
 			if (!File.Exists(filePath)) {
@@ -356,9 +354,7 @@ namespace ArchiSteamFarm {
 
 		internal static async Task<bool> Write(string filePath, BotConfig botConfig) {
 			if (string.IsNullOrEmpty(filePath) || (botConfig == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(filePath) + " || " + nameof(botConfig));
-
-				return false;
+				throw new ArgumentNullException(nameof(filePath) + " || " + nameof(botConfig));
 			}
 
 			string json = JsonConvert.SerializeObject(botConfig, Formatting.Indented);

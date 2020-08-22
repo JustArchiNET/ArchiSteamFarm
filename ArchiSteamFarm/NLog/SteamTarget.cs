@@ -90,18 +90,12 @@ namespace ArchiSteamFarm.NLog {
 		}
 
 		private async Task SendGroupMessage(string message, Bot? bot = null) {
-			if (Bot.Bots == null) {
-				throw new ArgumentNullException(nameof(Bot.Bots));
-			}
-
 			if (string.IsNullOrEmpty(message)) {
-				ASF.ArchiLogger.LogNullError(nameof(message));
-
-				return;
+				throw new ArgumentNullException(nameof(message));
 			}
 
 			if (bot == null) {
-				bot = Bot.Bots.Values.FirstOrDefault(targetBot => targetBot.IsConnectedAndLoggedOn);
+				bot = Bot.Bots?.Values.FirstOrDefault(targetBot => targetBot.IsConnectedAndLoggedOn);
 
 				if (bot == null) {
 					return;
@@ -114,18 +108,12 @@ namespace ArchiSteamFarm.NLog {
 		}
 
 		private async Task SendPrivateMessage(string message, Bot? bot = null) {
-			if (Bot.Bots == null) {
-				throw new ArgumentNullException(nameof(Bot.Bots));
-			}
-
 			if (string.IsNullOrEmpty(message)) {
-				ASF.ArchiLogger.LogNullError(nameof(message));
-
-				return;
+				throw new ArgumentNullException(nameof(message));
 			}
 
 			if (bot == null) {
-				bot = Bot.Bots.Values.FirstOrDefault(targetBot => targetBot.IsConnectedAndLoggedOn && (targetBot.SteamID != SteamID));
+				bot = Bot.Bots?.Values.FirstOrDefault(targetBot => targetBot.IsConnectedAndLoggedOn && (targetBot.SteamID != SteamID));
 
 				if (bot == null) {
 					return;

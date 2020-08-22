@@ -76,9 +76,7 @@ namespace ArchiSteamFarm {
 			uint time = await GetSteamTime().ConfigureAwait(false);
 
 			if (time == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(time));
-
-				return null;
+				throw new ArgumentNullException(nameof(time));
 			}
 
 			return GenerateTokenForTime(time);
@@ -100,9 +98,7 @@ namespace ArchiSteamFarm {
 			uint time = await GetSteamTime().ConfigureAwait(false);
 
 			if (time == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(time));
-
-				return null;
+				throw new ArgumentNullException(nameof(time));
 			}
 
 			string? confirmationHash = GenerateConfirmationHash(time, "conf");
@@ -130,7 +126,7 @@ namespace ArchiSteamFarm {
 			}
 
 			foreach (IElement confirmationNode in confirmationNodes) {
-				string idText = confirmationNode.GetAttribute("data-confid");
+				string? idText = confirmationNode.GetAttribute("data-confid");
 
 				if (string.IsNullOrEmpty(idText)) {
 					Bot.ArchiLogger.LogNullError(nameof(idText));
@@ -144,7 +140,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				string keyText = confirmationNode.GetAttribute("data-key");
+				string? keyText = confirmationNode.GetAttribute("data-key");
 
 				if (string.IsNullOrEmpty(keyText)) {
 					Bot.ArchiLogger.LogNullError(nameof(keyText));
@@ -158,7 +154,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				string creatorText = confirmationNode.GetAttribute("data-creator");
+				string? creatorText = confirmationNode.GetAttribute("data-creator");
 
 				if (string.IsNullOrEmpty(creatorText)) {
 					Bot.ArchiLogger.LogNullError(nameof(creatorText));
@@ -172,7 +168,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				string typeText = confirmationNode.GetAttribute("data-type");
+				string? typeText = confirmationNode.GetAttribute("data-type");
 
 				if (string.IsNullOrEmpty(typeText)) {
 					Bot.ArchiLogger.LogNullError(nameof(typeText));
@@ -199,14 +195,8 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> HandleConfirmations(IReadOnlyCollection<Confirmation> confirmations, bool accept) {
-			if (Bot == null) {
-				throw new ArgumentNullException(nameof(Bot));
-			}
-
-			if ((confirmations == null) || (confirmations.Count == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(confirmations));
-
-				return false;
+			if ((confirmations == null) || (confirmations.Count == 0) || (Bot == null)) {
+				throw new ArgumentNullException(nameof(confirmations) + " || " + nameof(Bot));
 			}
 
 			(bool success, string? deviceID) = await CachedDeviceID.GetValue().ConfigureAwait(false);
@@ -220,9 +210,7 @@ namespace ArchiSteamFarm {
 			uint time = await GetSteamTime().ConfigureAwait(false);
 
 			if (time == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(time));
-
-				return false;
+				throw new ArgumentNullException(nameof(time));
 			}
 
 			string? confirmationHash = GenerateConfirmationHash(time, "conf");
@@ -262,14 +250,8 @@ namespace ArchiSteamFarm {
 		internal void Init(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 		private string? GenerateConfirmationHash(uint time, string? tag = null) {
-			if ((Bot == null) || string.IsNullOrEmpty(IdentitySecret)) {
-				throw new ArgumentNullException(nameof(Bot) + " || " + nameof(IdentitySecret));
-			}
-
-			if (time == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(time));
-
-				return null;
+			if ((time == 0) || (Bot == null) || string.IsNullOrEmpty(IdentitySecret)) {
+				throw new ArgumentNullException(nameof(time) + " || " + nameof(Bot) + " || " + nameof(IdentitySecret));
 			}
 
 			byte[] identitySecret;
@@ -311,14 +293,8 @@ namespace ArchiSteamFarm {
 		}
 
 		private string? GenerateTokenForTime(uint time) {
-			if ((Bot == null) || string.IsNullOrEmpty(SharedSecret)) {
-				throw new ArgumentNullException(nameof(Bot) + " || " + nameof(SharedSecret));
-			}
-
-			if (time == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(time));
-
-				return null;
+			if ((time == 0) || (Bot == null) || string.IsNullOrEmpty(SharedSecret)) {
+				throw new ArgumentNullException(nameof(time) + " || " + nameof(Bot) + " || " + nameof(SharedSecret));
 			}
 
 			byte[] sharedSecret;
@@ -401,17 +377,13 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task LimitConfirmationsRequestsAsync() {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
-			}
-
 			if (ASF.ConfirmationsSemaphore == null) {
-				ASF.ArchiLogger.LogNullError(nameof(ASF.ConfirmationsSemaphore));
-
-				return;
+				throw new ArgumentNullException(nameof(ASF.ConfirmationsSemaphore));
 			}
 
-			if (ASF.GlobalConfig.ConfirmationsLimiterDelay == 0) {
+			byte confirmationsLimiterDelay = ASF.GlobalConfig?.ConfirmationsLimiterDelay ?? GlobalConfig.DefaultConfirmationsLimiterDelay;
+
+			if (confirmationsLimiterDelay == 0) {
 				return;
 			}
 
@@ -419,7 +391,7 @@ namespace ArchiSteamFarm {
 
 			Utilities.InBackground(
 				async () => {
-					await Task.Delay(ASF.GlobalConfig.ConfirmationsLimiterDelay * 1000).ConfigureAwait(false);
+					await Task.Delay(confirmationsLimiterDelay * 1000).ConfigureAwait(false);
 					ASF.ConfirmationsSemaphore.Release();
 				}
 			);

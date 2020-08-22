@@ -58,14 +58,12 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		public async Task<ActionResult<GenericResponse>> ASFPost([FromBody] ASFRequest request) {
-			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
+			if ((request == null) || (ASF.GlobalConfig == null)) {
+				throw new ArgumentNullException(nameof(request) + " || " + nameof(ASF.GlobalConfig));
 			}
 
-			if (request?.GlobalConfig == null) {
-				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(request.GlobalConfig));
-
-				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(request))));
+			if (request.GlobalConfig == null) {
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(request.GlobalConfig))));
 			}
 
 			(bool valid, string? errorMessage) = request.GlobalConfig.CheckValidation();
