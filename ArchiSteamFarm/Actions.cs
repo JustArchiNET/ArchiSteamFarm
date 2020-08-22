@@ -71,7 +71,7 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<(bool Success, string? Token, string Message)> GenerateTwoFactorAuthenticationToken() {
-			if (!Bot.HasMobileAuthenticator) {
+			if (Bot.BotDatabase.MobileAuthenticator == null) {
 				return (false, null, Strings.BotNoASFAuthenticator);
 			}
 
@@ -80,7 +80,6 @@ namespace ArchiSteamFarm {
 			return (true, token, Strings.Success);
 		}
 
-		[ItemNotNull]
 		[PublicAPI]
 		public async Task<IDisposable> GetTradingLock() {
 			await TradingSemaphore.WaitAsync().ConfigureAwait(false);
@@ -90,7 +89,7 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<(bool Success, string Message)> HandleTwoFactorAuthenticationConfirmations(bool accept, MobileAuthenticator.Confirmation.EType? acceptedType = null, IReadOnlyCollection<ulong>? acceptedCreatorIDs = null, bool waitIfNeeded = false) {
-			if (!Bot.HasMobileAuthenticator) {
+			if (Bot.BotDatabase.MobileAuthenticator == null) {
 				return (false, Strings.BotNoASFAuthenticator);
 			}
 
@@ -239,6 +238,10 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<(bool Success, string Message)> SendInventory(uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, ulong targetSteamID = 0, string? tradeToken = null, Func<Steam.Asset, bool>? filterFunction = null) {
+			if (Bot.Bots == null) {
+				throw new ArgumentNullException(nameof(Bot.Bots));
+			}
+
 			if ((appID == 0) || (contextID == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
 

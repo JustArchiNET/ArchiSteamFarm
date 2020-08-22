@@ -146,6 +146,9 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 		public Task<string?> OnBotMessage(Bot bot, ulong steamID, string message) {
 			// Normally ASF will expect from you async-capable responses, such as Task<string>. This allows you to make your code fully asynchronous which is a core foundation on which ASF is built upon
 			// Since in this method we're not doing any async stuff, instead of defining this method as async (pointless), we just need to wrap our responses in Task.FromResult<>()
+			if (Bot.BotsReadOnly == null) {
+				throw new ArgumentNullException(nameof(Bot.BotsReadOnly));
+			}
 
 			// As a starter, we can for example ignore messages sent from our own bots, since otherwise they can run into a possible infinite loop of answering themselves
 			if (Bot.BotsReadOnly.Values.Any(existingBot => existingBot.SteamID == steamID)) {

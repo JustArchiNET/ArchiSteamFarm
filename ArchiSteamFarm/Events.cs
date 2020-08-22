@@ -19,6 +19,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
@@ -26,6 +27,10 @@ using ArchiSteamFarm.Localization;
 namespace ArchiSteamFarm {
 	internal static class Events {
 		internal static async Task OnBotShutdown() {
+			if (Bot.Bots == null) {
+				throw new ArgumentNullException(nameof(Bot.Bots));
+			}
+
 			if (Program.ProcessRequired || Bot.Bots.Values.Any(bot => bot.KeepRunning)) {
 				return;
 			}

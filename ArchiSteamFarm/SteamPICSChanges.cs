@@ -55,6 +55,10 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task RefreshChanges() {
+			if (Bot.Bots == null) {
+				throw new ArgumentNullException(nameof(Bot.Bots));
+			}
+
 			if (ASF.GlobalDatabase == null) {
 				throw new ArgumentNullException(nameof(ASF.GlobalDatabase));
 			}

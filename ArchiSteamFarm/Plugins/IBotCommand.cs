@@ -33,7 +33,6 @@ namespace ArchiSteamFarm.Plugins {
 		/// <param name="message">Command message in its raw format, stripped of <see cref="GlobalConfig.CommandPrefix" />.</param>
 		/// <param name="args">Pre-parsed message using standard ASF delimiters.</param>
 		/// <returns>Response to the command, or null/empty (as the task value) if the command isn't handled by this plugin.</returns>
-		
-		Task<string?> OnBotCommand(Bot bot, ulong steamID, string message, [ItemNotNull] string[] args);
+		Task<string?> OnBotCommand(Bot bot, ulong steamID, string message, string[] args);
 	}
 }

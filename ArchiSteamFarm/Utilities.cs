@@ -206,11 +206,9 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		[ItemNotNull]
 		[PublicAPI]
 		public static List<IElement> SelectElementNodes(this IElement element, string xpath) => element.SelectNodes(xpath).Cast<IElement>().ToList();
 
-		[ItemNotNull]
 		[PublicAPI]
 		public static List<IElement> SelectNodes(this IDocument document, string xpath) => document.Body.SelectNodes(xpath).Cast<IElement>().ToList();
 

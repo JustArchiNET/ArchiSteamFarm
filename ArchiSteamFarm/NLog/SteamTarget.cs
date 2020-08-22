@@ -19,6 +19,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
@@ -89,6 +90,10 @@ namespace ArchiSteamFarm.NLog {
 		}
 
 		private async Task SendGroupMessage(string message, Bot? bot = null) {
+			if (Bot.Bots == null) {
+				throw new ArgumentNullException(nameof(Bot.Bots));
+			}
+
 			if (string.IsNullOrEmpty(message)) {
 				ASF.ArchiLogger.LogNullError(nameof(message));
 
@@ -109,6 +114,10 @@ namespace ArchiSteamFarm.NLog {
 		}
 
 		private async Task SendPrivateMessage(string message, Bot? bot = null) {
+			if (Bot.Bots == null) {
+				throw new ArgumentNullException(nameof(Bot.Bots));
+			}
+
 			if (string.IsNullOrEmpty(message)) {
 				ASF.ArchiLogger.LogNullError(nameof(message));
 

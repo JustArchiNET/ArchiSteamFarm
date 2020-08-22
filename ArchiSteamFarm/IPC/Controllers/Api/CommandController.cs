@@ -77,7 +77,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				}
 			}
 
-			string response = await targetBot.Commands.Response(ASF.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
+			string? response = await targetBot.Commands.Response(ASF.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
 
 			return Ok(new GenericResponse<string>(response));
 		}

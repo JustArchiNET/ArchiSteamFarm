@@ -78,7 +78,6 @@ namespace ArchiSteamFarm {
 			}
 #pragma warning restore IDE0022
 
-			[ItemNotNull]
 			public static async Task<byte[]> ReadAllBytesAsync(string path) =>
 #if NETFRAMEWORK
 				System.IO.File.ReadAllBytes(path);
@@ -86,7 +85,6 @@ namespace ArchiSteamFarm {
 				await System.IO.File.ReadAllBytesAsync(path).ConfigureAwait(false);
 #endif
 
-			[ItemNotNull]
 			public static async Task<string> ReadAllTextAsync(string path) =>
 #if NETFRAMEWORK
 				System.IO.File.ReadAllText(path);

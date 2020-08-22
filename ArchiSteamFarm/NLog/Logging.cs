@@ -315,7 +315,7 @@ namespace ArchiSteamFarm.NLog {
 
 							Console.WriteLine(@"<> " + Strings.Executing);
 
-							string response = await targetBot.Commands.Response(ASF.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
+							string? response = await targetBot.Commands.Response(ASF.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
 
 							if (string.IsNullOrEmpty(response)) {
 								ASF.ArchiLogger.LogNullError(nameof(response));

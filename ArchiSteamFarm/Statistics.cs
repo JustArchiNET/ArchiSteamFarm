@@ -60,6 +60,10 @@ namespace ArchiSteamFarm {
 		private bool ShouldSendHeartBeats;
 
 		internal Statistics(Bot bot) {
+			if (Bot.Bots == null) {
+				throw new ArgumentNullException(nameof(Bot.Bots));
+			}
+
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 			MatchActivelyTimer = new Timer(

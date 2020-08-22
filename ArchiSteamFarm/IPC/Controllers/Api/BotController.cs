@@ -47,7 +47,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
 			}
 
-			HashSet<Bot> bots = Bot.GetBots(botNames);
+			HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 			if ((bots == null) || (bots.Count == 0)) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
@@ -71,7 +71,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
 			}
 
-			HashSet<Bot> bots = Bot.GetBots(botNames);
+			HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 			if (bots == null) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(bots))));
@@ -90,13 +90,17 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, bool>>), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		public async Task<ActionResult<GenericResponse>> BotPost(string botNames, [FromBody] BotRequest request) {
+			if (Bot.Bots == null) {
+				throw new ArgumentNullException(nameof(Bot.Bots));
+			}
+
 			if (string.IsNullOrEmpty(botNames) || (request?.BotConfig == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(botNames) + " || " + nameof(request) + " || " + nameof(request.BotConfig));
 
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames) + " || " + nameof(request))));
 			}
 
-			(bool valid, string errorMessage) = request.BotConfig.CheckValidation();
+			(bool valid, string? errorMessage) = request.BotConfig.CheckValidation();
 
 			if (!valid) {
 				return BadRequest(new GenericResponse(false, errorMessage));
@@ -162,7 +166,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
 			}
 
-			HashSet<Bot> bots = Bot.GetBots(botNames);
+			HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 			if ((bots == null) || (bots.Count == 0)) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
@@ -186,18 +190,18 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
 			}
 
-			HashSet<Bot> bots = Bot.GetBots(botNames);
+			HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 			if ((bots == null) || (bots.Count == 0)) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
 			}
 
-			IList<(Dictionary<string, string> UnusedKeys, Dictionary<string, string> UsedKeys)> results = await Utilities.InParallel(bots.Select(bot => bot.GetUsedAndUnusedKeys())).ConfigureAwait(false);
+			IList<(Dictionary<string, string>? UnusedKeys, Dictionary<string, string>? UsedKeys)> results = await Utilities.InParallel(bots.Select(bot => bot.GetUsedAndUnusedKeys())).ConfigureAwait(false);
 
 			Dictionary<string, GamesToRedeemInBackgroundResponse> result = new Dictionary<string, GamesToRedeemInBackgroundResponse>(bots.Count, Bot.BotsComparer);
 
 			foreach (Bot bot in bots) {
-				(Dictionary<string, string> unusedKeys, Dictionary<string, string> usedKeys) = results[result.Count];
+				(Dictionary<string, string>? unusedKeys, Dictionary<string, string>? usedKeys) = results[result.Count];
 				result[bot.BotName] = new GamesToRedeemInBackgroundResponse(unusedKeys, usedKeys);
 			}
 
@@ -222,7 +226,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(request.GamesToRedeemInBackground))));
 			}
 
-			HashSet<Bot> bots = Bot.GetBots(botNames);
+			HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 			if ((bots == null) || (bots.Count == 0)) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
@@ -263,7 +267,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(request.Type) + " || " + nameof(request.Value))));
 			}
 
-			HashSet<Bot> bots = Bot.GetBots(botNames);
+			HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 			if ((bots == null) || (bots.Count == 0)) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
@@ -288,7 +292,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames) + " || " + nameof(request))));
 			}
 
-			HashSet<Bot> bots = Bot.GetBots(botNames);
+			HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 			if ((bots == null) || (bots.Count == 0)) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
@@ -321,7 +325,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(request.KeysToRedeem))));
 			}
 
-			HashSet<Bot> bots = Bot.GetBots(botNames);
+			HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 			if ((bots == null) || (bots.Count == 0)) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
@@ -353,6 +357,10 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		public async Task<ActionResult<GenericResponse>> RenamePost(string botName, [FromBody] BotRenameRequest request) {
+			if (Bot.Bots == null) {
+				throw new ArgumentNullException(nameof(Bot.Bots));
+			}
+
 			if (string.IsNullOrEmpty(botName) || (request == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(botName) + " || " + nameof(request));
 
@@ -385,7 +393,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
 			}
 
-			HashSet<Bot> bots = Bot.GetBots(botNames);
+			HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 			if ((bots == null) || (bots.Count == 0)) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
@@ -409,7 +417,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
 			}
 
-			HashSet<Bot> bots = Bot.GetBots(botNames);
+			HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 			if ((bots == null) || (bots.Count == 0)) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
@@ -433,7 +441,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
 			}
 
-			HashSet<Bot> bots = Bot.GetBots(botNames);
+			HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 			if ((bots == null) || (bots.Count == 0)) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)));
@@ -461,7 +469,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(request.AcceptedType))));
 			}
 
-			HashSet<Bot> bots = Bot.GetBots(botNames);
+			HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 			if ((bots == null) || (bots.Count == 0)) {
 				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GenericResponse>>(false, string.Format(Strings.BotNotFound, botNames)));
@@ -492,7 +500,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>(false, string.Format(Strings.ErrorIsEmpty, nameof(botNames))));
 			}
 
-			HashSet<Bot> bots = Bot.GetBots(botNames);
+			HashSet<Bot>? bots = Bot.GetBots(botNames);
 
 			if ((bots == null) || (bots.Count == 0)) {
 				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>(false, string.Format(Strings.BotNotFound, botNames)));

@@ -539,6 +539,10 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task OnCreatedJsonFile(string name, string fullPath) {
+			if (Bot.Bots == null) {
+				throw new ArgumentNullException(nameof(Bot.Bots));
+			}
+
 			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
 				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
 
@@ -578,6 +582,10 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task OnCreatedKeysFile(string name, string fullPath) {
+			if (Bot.Bots == null) {
+				throw new ArgumentNullException(nameof(Bot.Bots));
+			}
+
 			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
 				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
 
@@ -651,6 +659,10 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task OnDeletedJsonConfigFile(string name, string fullPath) {
+			if (Bot.Bots == null) {
+				throw new ArgumentNullException(nameof(Bot.Bots));
+			}
+
 			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
 				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
 
@@ -709,10 +721,6 @@ namespace ArchiSteamFarm {
 		private static async Task RegisterBots() {
 			if ((GlobalConfig == null) || (GlobalDatabase == null) || (WebBrowser == null)) {
 				throw new ArgumentNullException(nameof(GlobalConfig) + " || " + nameof(GlobalDatabase) + " || " + nameof(WebBrowser));
-			}
-
-			if (Bot.Bots.Count > 0) {
-				return;
 			}
 
 			// Ensure that we ask for a list of servers if we don't have any saved servers available

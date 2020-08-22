@@ -34,6 +34,10 @@ namespace ArchiSteamFarm {
 		private readonly Timer SaleEventTimer;
 
 		internal SteamSaleEvent(Bot bot) {
+			if (Bot.Bots == null) {
+				throw new ArgumentNullException(nameof(Bot.Bots));
+			}
+
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 			SaleEventTimer = new Timer(

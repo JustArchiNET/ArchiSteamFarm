@@ -512,6 +512,10 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<ParseTradeResult.EResult> ShouldAcceptTrade(Steam.TradeOffer tradeOffer) {
+			if (Bot.Bots == null) {
+				throw new ArgumentNullException(nameof(Bot.Bots));
+			}
+
 			if ((tradeOffer == null) || (ASF.GlobalConfig == null)) {
 				throw new ArgumentNullException(nameof(tradeOffer) + " || " + nameof(ASF.GlobalConfig));
 			}

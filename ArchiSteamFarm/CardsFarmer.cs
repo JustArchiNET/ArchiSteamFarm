@@ -76,7 +76,7 @@ namespace ArchiSteamFarm {
 		private readonly SemaphoreSlim FarmingInitializationSemaphore = new SemaphoreSlim(1, 1);
 		private readonly SemaphoreSlim FarmingResetSemaphore = new SemaphoreSlim(0, 1);
 		private readonly ConcurrentList<Game> GamesToFarm = new ConcurrentList<Game>();
-		private readonly Timer IdleFarmingTimer;
+		private readonly Timer? IdleFarmingTimer;
 		private readonly ConcurrentDictionary<uint, DateTime> LocallyIgnoredAppIDs = new ConcurrentDictionary<uint, DateTime>();
 
 		private IEnumerable<ConcurrentDictionary<uint, DateTime>> SourcesOfIgnoredAppIDs {
@@ -97,7 +97,15 @@ namespace ArchiSteamFarm {
 		private bool PermanentlyPaused;
 		private bool ShouldResumeFarming = true;
 
-		internal CardsFarmer( Bot bot) {
+		internal CardsFarmer(Bot bot) {
+			if (Bot.Bots == null) {
+				throw new ArgumentNullException(nameof(Bot.Bots));
+			}
+
+			if (ASF.GlobalConfig == null) {
+				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
+			}
+
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 			if (ASF.GlobalConfig.IdleFarmingPeriod > 0) {
@@ -373,6 +381,10 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task CheckPage(IDocument htmlDocument, ISet<uint> parsedAppIDs) {
+			if (ASF.GlobalConfig == null) {
+				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
+			}
+
 			if ((htmlDocument == null) || (parsedAppIDs == null)) {
 				Bot.ArchiLogger.LogNullError(nameof(htmlDocument) + " || " + nameof(parsedAppIDs));
 
@@ -386,11 +398,11 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			HashSet<Task> backgroundTasks = null;
+			HashSet<Task>? backgroundTasks = null;
 
 			foreach (IElement htmlNode in htmlNodes) {
 				IElement statsNode = htmlNode.SelectSingleElementNode(".//div[@class='badge_title_stats_content']");
-				IElement appIDNode = statsNode?.SelectSingleElementNode(".//div[@class='card_drop_info_dialog']");
+				IElement? appIDNode = statsNode?.SelectSingleElementNode(".//div[@class='card_drop_info_dialog']");
 
 				if (appIDNode == null) {
 					// It's just a badge, nothing more
@@ -454,7 +466,7 @@ namespace ArchiSteamFarm {
 				}
 
 				// Cards
-				IElement progressNode = statsNode.SelectSingleElementNode(".//span[@class='progress_info_bold']");
+				IElement? progressNode = statsNode?.SelectSingleElementNode(".//span[@class='progress_info_bold']");
 
 				if (progressNode == null) {
 					Bot.ArchiLogger.LogNullError(nameof(progressNode));
@@ -493,7 +505,7 @@ namespace ArchiSteamFarm {
 					}
 
 					// To save us on extra work, check cards earned so far first
-					IElement cardsEarnedNode = statsNode.SelectSingleElementNode(".//div[@class='card_drop_info_header']");
+					IElement? cardsEarnedNode = statsNode?.SelectSingleElementNode(".//div[@class='card_drop_info_header']");
 
 					if (cardsEarnedNode == null) {
 						Bot.ArchiLogger.LogNullError(nameof(cardsEarnedNode));
@@ -538,7 +550,7 @@ namespace ArchiSteamFarm {
 				}
 
 				// Hours
-				IElement timeNode = statsNode.SelectSingleElementNode(".//div[@class='badge_title_stats_playtime']");
+				IElement? timeNode = statsNode?.SelectSingleElementNode(".//div[@class='badge_title_stats_playtime']");
 
 				if (timeNode == null) {
 					Bot.ArchiLogger.LogNullError(nameof(timeNode));
@@ -567,7 +579,7 @@ namespace ArchiSteamFarm {
 				}
 
 				// Names
-				IElement nameNode = statsNode.SelectSingleElementNode("(.//div[@class='card_drop_info_body'])[last()]");
+				IElement? nameNode = statsNode?.SelectSingleElementNode("(.//div[@class='card_drop_info_body'])[last()]");
 
 				if (nameNode == null) {
 					Bot.ArchiLogger.LogNullError(nameof(nameNode));
@@ -692,7 +704,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			using IDocument htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
+			using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
 
 			if (htmlDocument == null) {
 				return;
@@ -801,6 +813,10 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool> FarmCards(Game game) {
+			if (ASF.GlobalConfig == null) {
+				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
+			}
+
 			if (game == null) {
 				Bot.ArchiLogger.LogNullError(nameof(game));
 
@@ -839,6 +855,10 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool> FarmHours(IReadOnlyCollection<Game> games) {
+			if (ASF.GlobalConfig == null) {
+				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
+			}
+
 			if ((games == null) || (games.Count == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(games));
 
@@ -940,9 +960,9 @@ namespace ArchiSteamFarm {
 				return 0;
 			}
 
-			using IDocument htmlDocument = await Bot.ArchiWebHandler.GetGameCardsPage(appID).ConfigureAwait(false);
+			using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetGameCardsPage(appID).ConfigureAwait(false);
 
-			IElement progressNode = htmlDocument?.SelectSingleNode("//span[@class='progress_info_bold']");
+			IElement? progressNode = htmlDocument?.SelectSingleNode("//span[@class='progress_info_bold']");
 
 			if (progressNode == null) {
 				return null;
@@ -972,10 +992,14 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool?> IsAnythingToFarm() {
+			if (ASF.GlobalConfig == null) {
+				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
+			}
+
 			// Find the number of badge pages
 			Bot.ArchiLogger.LogGenericInfo(Strings.CheckingFirstBadgePage);
 
-			using IDocument htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
+			using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
 
 			if (htmlDocument == null) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningCouldNotCheckBadges);
@@ -1098,6 +1122,10 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task SortGamesToFarm() {
+			if (ASF.GlobalDatabase == null) {
+				throw new ArgumentNullException(nameof(ASF.GlobalDatabase));
+			}
+
 			// Put priority idling appIDs on top
 			IOrderedEnumerable<Game> orderedGamesToFarm = GamesToFarm.OrderByDescending(game => Bot.IsPriorityIdling(game.AppID));
 
@@ -1131,7 +1159,7 @@ namespace ArchiSteamFarm {
 						break;
 					case BotConfig.EFarmingOrder.MarketableAscending:
 					case BotConfig.EFarmingOrder.MarketableDescending:
-						HashSet<uint> marketableAppIDs = await Bot.GetMarketableAppIDs().ConfigureAwait(false);
+						HashSet<uint>? marketableAppIDs = await Bot.GetMarketableAppIDs().ConfigureAwait(false);
 
 						if ((marketableAppIDs != null) && (marketableAppIDs.Count > 0)) {
 							switch (farmingOrder) {
@@ -1241,7 +1269,7 @@ namespace ArchiSteamFarm {
 
 			internal uint PlayableAppID { get; set; }
 
-			internal Game(uint appID,  string gameName, float hoursPlayed, ushort cardsRemaining, byte badgeLevel) {
+			internal Game(uint appID, string gameName, float hoursPlayed, ushort cardsRemaining, byte badgeLevel) {
 				if ((appID == 0) || string.IsNullOrEmpty(gameName) || (hoursPlayed < 0) || (cardsRemaining == 0)) {
 					throw new ArgumentOutOfRangeException(nameof(appID) + " || " + nameof(gameName) + " || " + nameof(hoursPlayed) + " || " + nameof(cardsRemaining));
 				}
@@ -1255,8 +1283,8 @@ namespace ArchiSteamFarm {
 				PlayableAppID = appID;
 			}
 
-			public bool Equals(Game other) => (other != null) && (ReferenceEquals(other, this) || ((AppID == other.AppID) && (BadgeLevel == other.BadgeLevel) && (GameName == other.GameName)));
-			public override bool Equals(object obj) => (obj != null) && ((obj == this) || (obj is Game game && Equals(game)));
+			public bool Equals(Game? other) => (other != null) && (ReferenceEquals(other, this) || ((AppID == other.AppID) && (BadgeLevel == other.BadgeLevel) && (GameName == other.GameName)));
+			public override bool Equals(object? obj) => (obj != null) && ((obj == this) || (obj is Game game && Equals(game)));
 			public override int GetHashCode() => RuntimeCompatibility.HashCode.Combine(AppID, BadgeLevel, GameName);
 		}
 	}

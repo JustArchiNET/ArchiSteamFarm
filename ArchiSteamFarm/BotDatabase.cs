@@ -29,7 +29,6 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SteamKit2;
 
@@ -58,7 +57,7 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		private readonly ConcurrentHashSet<uint> IdlingPriorityAppIDs = new ConcurrentHashSet<uint>();
 
-		internal string LoginKey {
+		internal string? LoginKey {
 			get => BackingLoginKey;
 
 			set {
@@ -71,7 +70,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal MobileAuthenticator MobileAuthenticator {
+		internal MobileAuthenticator? MobileAuthenticator {
 			get => BackingMobileAuthenticator;
 
 			set {
@@ -85,12 +84,12 @@ namespace ArchiSteamFarm {
 		}
 
 		[JsonProperty(PropertyName = "_" + nameof(LoginKey))]
-		private string BackingLoginKey;
+		private string? BackingLoginKey;
 
 		[JsonProperty(PropertyName = "_" + nameof(MobileAuthenticator))]
-		private MobileAuthenticator BackingMobileAuthenticator;
+		private MobileAuthenticator? BackingMobileAuthenticator;
 
-		private BotDatabase( string filePath) {
+		private BotDatabase(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				throw new ArgumentNullException(nameof(filePath));
 			}
@@ -164,8 +163,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		
-		internal static async Task<BotDatabase> CreateOrLoad(string filePath) {
+		internal static async Task<BotDatabase?> CreateOrLoad(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(filePath));
 
@@ -207,10 +205,10 @@ namespace ArchiSteamFarm {
 
 		internal IReadOnlyCollection<ulong> GetBlacklistedFromTradesSteamIDs() => BlacklistedFromTradesSteamIDs;
 
-		internal (string Key, string Name) GetGameToRedeemInBackground() {
+		internal (string? Key, string? Name) GetGameToRedeemInBackground() {
 			lock (GamesToRedeemInBackground) {
-				foreach (DictionaryEntry game in GamesToRedeemInBackground) {
-					return (game.Key as string, game.Value as string);
+				foreach (DictionaryEntry? game in GamesToRedeemInBackground) {
+					return (game?.Key as string, game?.Value as string);
 				}
 			}
 
