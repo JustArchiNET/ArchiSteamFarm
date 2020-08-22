@@ -39,13 +39,14 @@ using Newtonsoft.Json.Serialization;
 
 #if NETFRAMEWORK
 using Newtonsoft.Json.Converters;
+
 #endif
 
 namespace ArchiSteamFarm.IPC {
 	internal sealed class Startup {
 		private readonly IConfiguration Configuration;
 
-		public Startup([NotNull] IConfiguration configuration) => Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+		public Startup(IConfiguration configuration) => Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 
 #if NETFRAMEWORK
 		[UsedImplicitly]
@@ -55,9 +56,7 @@ namespace ArchiSteamFarm.IPC {
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
 #endif
 			if ((app == null) || (env == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(app) + " || " + nameof(env));
-
-				return;
+				throw new ArgumentNullException(nameof(app) + " || " + nameof(env));
 			}
 
 			if (Debugging.IsUserDebugging) {
@@ -93,7 +92,9 @@ namespace ArchiSteamFarm.IPC {
 			app.UseRouting();
 #endif
 
-			if (!string.IsNullOrEmpty(ASF.GlobalConfig.IPCPassword)) {
+			string? ipcPassword = ASF.GlobalConfig?.IPCPassword ?? GlobalConfig.DefaultIPCPassword;
+
+			if (!string.IsNullOrEmpty(ipcPassword)) {
 				// We need ApiAuthenticationMiddleware for IPCPassword
 				app.UseWhen(context => context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), appBuilder => appBuilder.UseMiddleware<ApiAuthenticationMiddleware>());
 
@@ -125,9 +126,7 @@ namespace ArchiSteamFarm.IPC {
 
 		public void ConfigureServices(IServiceCollection services) {
 			if (services == null) {
-				ASF.ArchiLogger.LogNullError(nameof(services));
-
-				return;
+				throw new ArgumentNullException(nameof(services));
 			}
 
 			// The order of dependency injection matters, pay attention to it
@@ -138,8 +137,10 @@ namespace ArchiSteamFarm.IPC {
 			// Add support for response compression
 			services.AddResponseCompression();
 
+			string? ipcPassword = ASF.GlobalConfig?.IPCPassword ?? GlobalConfig.DefaultIPCPassword;
+
 			// Add CORS to allow userscripts and third-party apps
-			if (!string.IsNullOrEmpty(ASF.GlobalConfig.IPCPassword)) {
+			if (!string.IsNullOrEmpty(ipcPassword)) {
 				services.AddCors(options => options.AddDefaultPolicy(policyBuilder => policyBuilder.AllowAnyOrigin()));
 			}
 
@@ -209,7 +210,7 @@ namespace ArchiSteamFarm.IPC {
 #endif
 
 			// Add support for controllers declared in custom plugins
-			HashSet<Assembly> assemblies = PluginsCore.LoadAssemblies();
+			HashSet<Assembly>? assemblies = PluginsCore.LoadAssemblies();
 
 			if (assemblies != null) {
 				foreach (Assembly assembly in assemblies) {

@@ -43,45 +43,55 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		public ActionResult<GenericResponse> TypeGet(string type) {
 			if (string.IsNullOrEmpty(type)) {
-				ASF.ArchiLogger.LogNullError(nameof(type));
-
-				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(type))));
+				throw new ArgumentNullException(nameof(type));
 			}
 
-			Type targetType = WebUtilities.ParseType(type);
+			Type? targetType = WebUtilities.ParseType(type);
 
 			if (targetType == null) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, type)));
 			}
 
-			string baseType = targetType.BaseType?.GetUnifiedName();
-			HashSet<string> customAttributes = targetType.CustomAttributes.Select(attribute => attribute.AttributeType.GetUnifiedName()).ToHashSet(StringComparer.Ordinal);
-			string underlyingType = null;
+			string? baseType = targetType.BaseType?.GetUnifiedName();
+			HashSet<string> customAttributes = targetType.CustomAttributes.Select(attribute => attribute.AttributeType.GetUnifiedName()).Where(customAttribute => !string.IsNullOrEmpty(customAttribute)).ToHashSet(StringComparer.Ordinal)!;
+			string? underlyingType = null;
 
 			Dictionary<string, string> body = new Dictionary<string, string>(StringComparer.Ordinal);
 
 			if (targetType.IsClass) {
 				foreach (FieldInfo field in targetType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(field => !field.IsPrivate)) {
-					JsonPropertyAttribute jsonProperty = field.GetCustomAttribute<JsonPropertyAttribute>();
+					JsonPropertyAttribute? jsonProperty = field.GetCustomAttribute<JsonPropertyAttribute>();
 
 					if (jsonProperty != null) {
-						body[jsonProperty.PropertyName ?? field.Name] = field.FieldType.GetUnifiedName();
+						string? unifiedName = field.FieldType.GetUnifiedName();
+
+						if (!string.IsNullOrEmpty(unifiedName)) {
+							body[jsonProperty.PropertyName ?? field.Name] = unifiedName!;
+						}
 					}
 				}
 
 				foreach (PropertyInfo property in targetType.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(property => property.CanRead && (property.GetMethod?.IsPrivate == false))) {
-					JsonPropertyAttribute jsonProperty = property.GetCustomAttribute<JsonPropertyAttribute>();
+					JsonPropertyAttribute? jsonProperty = property.GetCustomAttribute<JsonPropertyAttribute>();
 
 					if (jsonProperty != null) {
-						body[jsonProperty.PropertyName ?? property.Name] = property.PropertyType.GetUnifiedName();
+						string? unifiedName = property.PropertyType.GetUnifiedName();
+
+						if (!string.IsNullOrEmpty(unifiedName)) {
+							body[jsonProperty.PropertyName ?? property.Name] = unifiedName!;
+						}
 					}
 				}
 			} else if (targetType.IsEnum) {
 				Type enumType = Enum.GetUnderlyingType(targetType);
 				underlyingType = enumType.GetUnifiedName();
 
-				foreach (object value in Enum.GetValues(targetType)) {
-					string valueText = value.ToString();
+				foreach (object? value in Enum.GetValues(targetType)) {
+					if (value == null) {
+						continue;
+					}
+
+					string? valueText = value.ToString();
 
 					if (string.IsNullOrEmpty(valueText)) {
 						ASF.ArchiLogger.LogNullError(nameof(valueText));
@@ -89,7 +99,13 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 						return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorObjectIsNull, nameof(valueText))));
 					}
 
-					body[valueText] = Convert.ChangeType(value, enumType).ToString();
+					string? valueObjText = Convert.ChangeType(value, enumType)?.ToString();
+
+					if (string.IsNullOrEmpty(valueObjText)) {
+						continue;
+					}
+
+					body[valueText] = valueObjText!;
 				}
 			}
 

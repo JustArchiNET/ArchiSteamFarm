@@ -29,6 +29,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.Collections.Generic;
 using System.Net.WebSockets;
 using System.Threading;
+
 #endif
 
 namespace ArchiSteamFarm {
@@ -38,7 +39,11 @@ namespace ArchiSteamFarm {
 		private static readonly DateTime SavedProcessStartTime = DateTime.UtcNow;
 #endif
 
+#if NETFRAMEWORK
 		public static bool IsRunningOnMono => Type.GetType("Mono.Runtime") != null;
+#else
+		public static bool IsRunningOnMono => false;
+#endif
 
 		public static DateTime ProcessStartTime {
 			get {
@@ -57,7 +62,7 @@ namespace ArchiSteamFarm {
 #pragma warning disable 1998
 		[PublicAPI]
 		public static class File {
-			public static async Task AppendAllTextAsync([NotNull] string path, string contents) =>
+			public static async Task AppendAllTextAsync(string path, string contents) =>
 #if NETFRAMEWORK
 				System.IO.File.AppendAllText(path, contents);
 #else
@@ -65,7 +70,7 @@ namespace ArchiSteamFarm {
 #endif
 
 #pragma warning disable IDE0022
-			public static void Move([NotNull] string sourceFileName, [NotNull] string destFileName, bool overwrite) {
+			public static void Move(string sourceFileName, string destFileName, bool overwrite) {
 #if NETFRAMEWORK
 				if (overwrite && System.IO.File.Exists(destFileName)) {
 					System.IO.File.Delete(destFileName);
@@ -78,23 +83,21 @@ namespace ArchiSteamFarm {
 			}
 #pragma warning restore IDE0022
 
-			[ItemNotNull]
-			public static async Task<byte[]> ReadAllBytesAsync([NotNull] string path) =>
+			public static async Task<byte[]> ReadAllBytesAsync(string path) =>
 #if NETFRAMEWORK
 				System.IO.File.ReadAllBytes(path);
 #else
 				await System.IO.File.ReadAllBytesAsync(path).ConfigureAwait(false);
 #endif
 
-			[ItemNotNull]
-			public static async Task<string> ReadAllTextAsync([NotNull] string path) =>
+			public static async Task<string> ReadAllTextAsync(string path) =>
 #if NETFRAMEWORK
 				System.IO.File.ReadAllText(path);
 #else
 				await System.IO.File.ReadAllTextAsync(path).ConfigureAwait(false);
 #endif
 
-			public static async Task WriteAllTextAsync([NotNull] string path, string contents) =>
+			public static async Task WriteAllTextAsync(string path, string contents) =>
 #if NETFRAMEWORK
 				System.IO.File.WriteAllText(path, contents);
 #else
@@ -115,8 +118,7 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public static class Path {
-			[NotNull]
-			public static string GetRelativePath([NotNull] string relativeTo, [NotNull] string path) {
+			public static string GetRelativePath(string relativeTo, string path) {
 #if NETFRAMEWORK
 				if (!path.StartsWith(relativeTo, StringComparison.Ordinal)) {
 					throw new NotImplementedException();
@@ -134,8 +136,7 @@ namespace ArchiSteamFarm {
 		}
 
 #if NETFRAMEWORK
-		[NotNull]
-		internal static IWebHostBuilder ConfigureWebHostDefaults([NotNull] this IWebHostBuilder builder, [NotNull] Action<IWebHostBuilder> configure) {
+		internal static IWebHostBuilder ConfigureWebHostDefaults(this IWebHostBuilder builder, Action<IWebHostBuilder> configure) {
 			configure(builder);
 
 			return builder;
@@ -147,17 +148,16 @@ namespace ArchiSteamFarm {
 			value = kv.Value;
 		}
 
-		public static ValueTask DisposeAsync([NotNull] this IDisposable disposable) {
+		public static ValueTask DisposeAsync(this IDisposable disposable) {
 			disposable.Dispose();
 
 			return default;
 		}
 
-		public static async Task<WebSocketReceiveResult> ReceiveAsync([NotNull] this WebSocket webSocket, [NotNull] byte[] buffer, CancellationToken cancellationToken) => await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken).ConfigureAwait(false);
-		public static async Task SendAsync([NotNull] this WebSocket webSocket, [NotNull] byte[] buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) => await webSocket.SendAsync(new ArraySegment<byte>(buffer), messageType, endOfMessage, cancellationToken).ConfigureAwait(false);
+		public static async Task<WebSocketReceiveResult> ReceiveAsync(this WebSocket webSocket, byte[] buffer, CancellationToken cancellationToken) => await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken).ConfigureAwait(false);
+		public static async Task SendAsync(this WebSocket webSocket, byte[] buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) => await webSocket.SendAsync(new ArraySegment<byte>(buffer), messageType, endOfMessage, cancellationToken).ConfigureAwait(false);
 
-		[NotNull]
-		public static string[] Split([NotNull] this string text, char separator, StringSplitOptions options = StringSplitOptions.None) => text.Split(new[] { separator }, options);
+		public static string[] Split(this string text, char separator, StringSplitOptions options = StringSplitOptions.None) => text.Split(new[] { separator }, options);
 
 		public static void TrimExcess<TKey, TValue>(this Dictionary<TKey, TValue> _) { } // no-op
 #endif

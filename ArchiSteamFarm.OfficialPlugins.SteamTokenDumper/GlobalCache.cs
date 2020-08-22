@@ -27,13 +27,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Helpers;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 	internal sealed class GlobalCache : SerializableFile {
-		[NotNull]
 		private static string SharedFilePath => Path.Combine(ArchiSteamFarm.SharedInfo.ConfigDirectory, nameof(SteamTokenDumper) + ".cache");
 
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -64,22 +62,16 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 		internal ulong GetAppToken(uint appID) => AppTokens[appID];
 
-		[NotNull]
 		internal Dictionary<uint, ulong> GetAppTokensForSubmission() => AppTokens.Where(appToken => !SubmittedAppIDs.Contains(appToken.Key)).ToDictionary(appToken => appToken.Key, appToken => appToken.Value);
-
-		[NotNull]
 		internal Dictionary<uint, string> GetDepotKeysForSubmission() => DepotKeys.Where(depotKey => !SubmittedDepotIDs.Contains(depotKey.Key)).ToDictionary(depotKey => depotKey.Key, depotKey => depotKey.Value);
-
-		[NotNull]
 		internal Dictionary<uint, ulong> GetPackageTokensForSubmission() => PackageTokens.Where(packageToken => !SubmittedPackageIDs.Contains(packageToken.Key)).ToDictionary(packageToken => packageToken.Key, packageToken => packageToken.Value);
 
-		[ItemNotNull]
 		internal static async Task<GlobalCache> Load() {
 			if (!File.Exists(SharedFilePath)) {
 				return new GlobalCache();
 			}
 
-			GlobalCache globalCache = null;
+			GlobalCache? globalCache = null;
 
 			try {
 				string json = await RuntimeCompatibility.File.ReadAllTextAsync(SharedFilePath).ConfigureAwait(false);
@@ -100,7 +92,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			return globalCache;
 		}
 
-		internal async Task OnPICSChanges(uint currentChangeNumber, [NotNull] IReadOnlyCollection<KeyValuePair<uint, SteamApps.PICSChangesCallback.PICSChangeData>> appChanges) {
+		internal async Task OnPICSChanges(uint currentChangeNumber, IReadOnlyCollection<KeyValuePair<uint, SteamApps.PICSChangesCallback.PICSChangeData>> appChanges) {
 			if ((currentChangeNumber == 0) || (appChanges == null)) {
 				throw new ArgumentNullException(nameof(appChanges));
 			}
@@ -127,7 +119,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 		internal async Task OnPICSChangesRestart(uint currentChangeNumber) {
 			if (currentChangeNumber == 0) {
-				throw new ArgumentNullException();
+				throw new ArgumentNullException(nameof(currentChangeNumber));
 			}
 
 			if (currentChangeNumber <= LastChangeNumber) {
@@ -146,7 +138,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 		internal bool ShouldRefreshAppInfo(uint appID) => !AppChangeNumbers.ContainsKey(appID);
 		internal bool ShouldRefreshDepotKey(uint depotID) => !DepotKeys.ContainsKey(depotID);
 
-		internal async Task UpdateAppChangeNumbers([NotNull] IReadOnlyCollection<KeyValuePair<uint, uint>> appChangeNumbers) {
+		internal async Task UpdateAppChangeNumbers(IReadOnlyCollection<KeyValuePair<uint, uint>> appChangeNumbers) {
 			if (appChangeNumbers == null) {
 				throw new ArgumentNullException(nameof(appChangeNumbers));
 			}
@@ -167,7 +159,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			}
 		}
 
-		internal async Task UpdateAppTokens([NotNull] IReadOnlyCollection<KeyValuePair<uint, ulong>> appTokens, [NotNull] IReadOnlyCollection<uint> publicAppIDs) {
+		internal async Task UpdateAppTokens(IReadOnlyCollection<KeyValuePair<uint, ulong>> appTokens, IReadOnlyCollection<uint> publicAppIDs) {
 			if ((appTokens == null) || (publicAppIDs == null)) {
 				throw new ArgumentNullException(nameof(appTokens) + " || " + nameof(publicAppIDs));
 			}
@@ -207,7 +199,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			}
 		}
 
-		internal async Task UpdateDepotKeys([NotNull] ICollection<SteamApps.DepotKeyCallback> depotKeyResults) {
+		internal async Task UpdateDepotKeys(ICollection<SteamApps.DepotKeyCallback> depotKeyResults) {
 			if (depotKeyResults == null) {
 				throw new ArgumentNullException(nameof(depotKeyResults));
 			}
@@ -221,7 +213,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 				string depotKey = BitConverter.ToString(depotKeyResult.DepotKey).Replace("-", "");
 
-				if (DepotKeys.TryGetValue(depotKeyResult.DepotID, out string previousDepotKey) && (previousDepotKey == depotKey)) {
+				if (DepotKeys.TryGetValue(depotKeyResult.DepotID, out string? previousDepotKey) && (previousDepotKey == depotKey)) {
 					continue;
 				}
 
@@ -240,7 +232,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			}
 		}
 
-		internal async Task UpdatePackageTokens([NotNull] IReadOnlyCollection<KeyValuePair<uint, ulong>> packageTokens) {
+		internal async Task UpdatePackageTokens(IReadOnlyCollection<KeyValuePair<uint, ulong>> packageTokens) {
 			if (packageTokens == null) {
 				throw new ArgumentNullException(nameof(packageTokens));
 			}
@@ -267,7 +259,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			}
 		}
 
-		internal async Task UpdateSubmittedData([NotNull] IReadOnlyCollection<uint> appIDs, [NotNull] IReadOnlyCollection<uint> packageIDs, [NotNull] IReadOnlyCollection<uint> depotIDs) {
+		internal async Task UpdateSubmittedData(IReadOnlyCollection<uint> appIDs, IReadOnlyCollection<uint> packageIDs, IReadOnlyCollection<uint> depotIDs) {
 			if ((appIDs == null) || (packageIDs == null) || (depotIDs == null)) {
 				throw new ArgumentNullException(nameof(appIDs) + " || " + nameof(packageIDs) + " || " + nameof(depotIDs));
 			}

@@ -41,11 +41,11 @@ namespace ArchiSteamFarm.IPC.Integration {
 		private static readonly SemaphoreSlim AuthorizationSemaphore = new SemaphoreSlim(1, 1);
 		private static readonly ConcurrentDictionary<IPAddress, byte> FailedAuthorizations = new ConcurrentDictionary<IPAddress, byte>();
 
-		private static Timer ClearFailedAuthorizationsTimer;
+		private static Timer? ClearFailedAuthorizationsTimer;
 
 		private readonly RequestDelegate Next;
 
-		public ApiAuthenticationMiddleware([JetBrains.Annotations.NotNull] RequestDelegate next) {
+		public ApiAuthenticationMiddleware(RequestDelegate next) {
 			Next = next ?? throw new ArgumentNullException(nameof(next));
 
 			lock (FailedAuthorizations) {
@@ -61,9 +61,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 		[PublicAPI]
 		public async Task InvokeAsync(HttpContext context) {
 			if (context == null) {
-				ASF.ArchiLogger.LogNullError(nameof(context));
-
-				return;
+				throw new ArgumentNullException(nameof(context));
 			}
 
 			HttpStatusCode authenticationStatus = await GetAuthenticationStatus(context).ConfigureAwait(false);
@@ -78,13 +76,13 @@ namespace ArchiSteamFarm.IPC.Integration {
 		}
 
 		private static async Task<HttpStatusCode> GetAuthenticationStatus(HttpContext context) {
-			if (context == null) {
-				ASF.ArchiLogger.LogNullError(nameof(context));
-
-				return HttpStatusCode.InternalServerError;
+			if ((context == null) || (ClearFailedAuthorizationsTimer == null)) {
+				throw new ArgumentNullException(nameof(context) + " || " + nameof(ClearFailedAuthorizationsTimer));
 			}
 
-			if (string.IsNullOrEmpty(ASF.GlobalConfig.IPCPassword)) {
+			string? ipcPassword = ASF.GlobalConfig?.IPCPassword ?? GlobalConfig.DefaultIPCPassword;
+
+			if (string.IsNullOrEmpty(ipcPassword)) {
 				return HttpStatusCode.OK;
 			}
 
@@ -100,13 +98,13 @@ namespace ArchiSteamFarm.IPC.Integration {
 				return HttpStatusCode.Unauthorized;
 			}
 
-			string inputPassword = passwords.FirstOrDefault(password => !string.IsNullOrEmpty(password));
+			string? inputPassword = passwords.FirstOrDefault(password => !string.IsNullOrEmpty(password));
 
 			if (string.IsNullOrEmpty(inputPassword)) {
 				return HttpStatusCode.Unauthorized;
 			}
 
-			bool authorized = inputPassword == ASF.GlobalConfig.IPCPassword;
+			bool authorized = inputPassword == ipcPassword;
 
 			await AuthorizationSemaphore.WaitAsync().ConfigureAwait(false);
 

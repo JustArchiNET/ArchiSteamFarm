@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SteamKit2.Discovery;
 
@@ -33,10 +32,8 @@ namespace ArchiSteamFarm.SteamKit2 {
 		[JsonProperty(Required = Required.DisallowNull)]
 		private readonly ConcurrentHashSet<ServerRecordEndPoint> ServerRecords = new ConcurrentHashSet<ServerRecordEndPoint>();
 
-		[NotNull]
-		public Task<IEnumerable<ServerRecord>> FetchServerListAsync() => Task.FromResult(ServerRecords.Select(server => ServerRecord.CreateServer(server.Host, server.Port, server.ProtocolTypes)));
+		public Task<IEnumerable<ServerRecord>> FetchServerListAsync() => Task.FromResult(ServerRecords.Where(server => !string.IsNullOrEmpty(server.Host) && (server.Port > 0) && (server.ProtocolTypes > 0)).Select(server => ServerRecord.CreateServer(server.Host!, server.Port, server.ProtocolTypes)));
 
-		[NotNull]
 		public Task UpdateServerListAsync(IEnumerable<ServerRecord> endpoints) {
 			if (endpoints == null) {
 				ASF.ArchiLogger.LogNullError(nameof(endpoints));
@@ -55,6 +52,6 @@ namespace ArchiSteamFarm.SteamKit2 {
 
 		public bool ShouldSerializeServerRecords() => ServerRecords.Count > 0;
 
-		internal event EventHandler ServerListUpdated;
+		internal event EventHandler? ServerListUpdated;
 	}
 }

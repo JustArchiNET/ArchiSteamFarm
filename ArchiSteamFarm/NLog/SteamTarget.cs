@@ -19,6 +19,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,7 +37,7 @@ namespace ArchiSteamFarm.NLog {
 
 		// This is NLog config property, it must have public get() and set() capabilities
 		[PublicAPI]
-		public string BotName { get; set; }
+		public string? BotName { get; set; }
 
 		// This is NLog config property, it must have public get() and set() capabilities
 		[PublicAPI]
@@ -71,10 +72,10 @@ namespace ArchiSteamFarm.NLog {
 				return;
 			}
 
-			Bot bot = null;
+			Bot? bot = null;
 
 			if (!string.IsNullOrEmpty(BotName)) {
-				bot = Bot.GetBot(BotName);
+				bot = Bot.GetBot(BotName!);
 
 				if (bot?.IsConnectedAndLoggedOn != true) {
 					return;
@@ -88,15 +89,13 @@ namespace ArchiSteamFarm.NLog {
 			}
 		}
 
-		private async Task SendGroupMessage(string message, Bot bot = null) {
+		private async Task SendGroupMessage(string message, Bot? bot = null) {
 			if (string.IsNullOrEmpty(message)) {
-				ASF.ArchiLogger.LogNullError(nameof(message));
-
-				return;
+				throw new ArgumentNullException(nameof(message));
 			}
 
 			if (bot == null) {
-				bot = Bot.Bots.Values.FirstOrDefault(targetBot => targetBot.IsConnectedAndLoggedOn);
+				bot = Bot.Bots?.Values.FirstOrDefault(targetBot => targetBot.IsConnectedAndLoggedOn);
 
 				if (bot == null) {
 					return;
@@ -108,15 +107,13 @@ namespace ArchiSteamFarm.NLog {
 			}
 		}
 
-		private async Task SendPrivateMessage(string message, Bot bot = null) {
+		private async Task SendPrivateMessage(string message, Bot? bot = null) {
 			if (string.IsNullOrEmpty(message)) {
-				ASF.ArchiLogger.LogNullError(nameof(message));
-
-				return;
+				throw new ArgumentNullException(nameof(message));
 			}
 
 			if (bot == null) {
-				bot = Bot.Bots.Values.FirstOrDefault(targetBot => targetBot.IsConnectedAndLoggedOn && (targetBot.SteamID != SteamID));
+				bot = Bot.Bots?.Values.FirstOrDefault(targetBot => targetBot.IsConnectedAndLoggedOn && (targetBot.SteamID != SteamID));
 
 				if (bot == null) {
 					return;

@@ -1,4 +1,4 @@
-﻿//     _                _      _  ____   _                           _____
+//     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
@@ -29,9 +29,7 @@ namespace ArchiSteamFarm.IPC {
 	internal static class WebUtilities {
 		internal static async Task Generate(this HttpResponse httpResponse, HttpStatusCode statusCode) {
 			if (httpResponse == null) {
-				ASF.ArchiLogger.LogNullError(nameof(httpResponse));
-
-				return;
+				throw new ArgumentNullException(nameof(httpResponse));
 			}
 
 			ushort statusCodeNumber = (ushort) statusCode;
@@ -40,24 +38,20 @@ namespace ArchiSteamFarm.IPC {
 			await httpResponse.WriteAsync(statusCodeNumber + " - " + statusCode).ConfigureAwait(false);
 		}
 
-		internal static string GetUnifiedName(this Type type) {
+		internal static string? GetUnifiedName(this Type type) {
 			if (type == null) {
-				ASF.ArchiLogger.LogNullError(nameof(type));
-
-				return null;
+				throw new ArgumentNullException(nameof(type));
 			}
 
 			return type.GenericTypeArguments.Length == 0 ? type.FullName : type.Namespace + "." + type.Name + string.Join("", type.GenericTypeArguments.Select(innerType => '[' + innerType.GetUnifiedName() + ']'));
 		}
 
-		internal static Type ParseType(string typeText) {
+		internal static Type? ParseType(string typeText) {
 			if (string.IsNullOrEmpty(typeText)) {
-				ASF.ArchiLogger.LogNullError(nameof(typeText));
-
-				return null;
+				throw new ArgumentNullException(nameof(typeText));
 			}
 
-			Type targetType = Type.GetType(typeText);
+			Type? targetType = Type.GetType(typeText);
 
 			if (targetType != null) {
 				return targetType;

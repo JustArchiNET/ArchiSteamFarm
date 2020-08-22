@@ -26,19 +26,19 @@ using ArchiSteamFarm.Localization;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Helpers {
-	public sealed class ArchiCacheable<T> : IDisposable {
+	public sealed class ArchiCacheable<T> : IDisposable where T : class {
 		private readonly TimeSpan CacheLifetime;
 		private readonly SemaphoreSlim InitSemaphore = new SemaphoreSlim(1, 1);
-		private readonly Func<Task<(bool Success, T Result)>> ResolveFunction;
+		private readonly Func<Task<(bool Success, T? Result)>> ResolveFunction;
 
 		private bool IsInitialized => InitializedAt > DateTime.MinValue;
 		private bool IsPermanentCache => CacheLifetime == Timeout.InfiniteTimeSpan;
 		private bool IsRecent => IsPermanentCache || (DateTime.UtcNow.Subtract(InitializedAt) < CacheLifetime);
 
 		private DateTime InitializedAt;
-		private T InitializedValue;
+		private T? InitializedValue;
 
-		public ArchiCacheable([NotNull] Func<Task<(bool Success, T Result)>> resolveFunction, TimeSpan? cacheLifetime = null) {
+		public ArchiCacheable(Func<Task<(bool Success, T? Result)>> resolveFunction, TimeSpan? cacheLifetime = null) {
 			ResolveFunction = resolveFunction ?? throw new ArgumentNullException(nameof(resolveFunction));
 			CacheLifetime = cacheLifetime ?? Timeout.InfiniteTimeSpan;
 		}
@@ -46,11 +46,9 @@ namespace ArchiSteamFarm.Helpers {
 		public void Dispose() => InitSemaphore.Dispose();
 
 		[PublicAPI]
-		public async Task<(bool Success, T Result)> GetValue(EFallback fallback = EFallback.DefaultForType) {
+		public async Task<(bool Success, T? Result)> GetValue(EFallback fallback = EFallback.DefaultForType) {
 			if (!Enum.IsDefined(typeof(EFallback), fallback)) {
-				ASF.ArchiLogger.LogNullError(nameof(fallback));
-
-				return (false, default);
+				throw new ArgumentNullException(nameof(fallback));
 			}
 
 			if (IsInitialized && IsRecent) {
@@ -64,7 +62,7 @@ namespace ArchiSteamFarm.Helpers {
 					return (true, InitializedValue);
 				}
 
-				(bool success, T result) = await ResolveFunction().ConfigureAwait(false);
+				(bool success, T? result) = await ResolveFunction().ConfigureAwait(false);
 
 				if (!success) {
 					switch (fallback) {

@@ -44,7 +44,7 @@ namespace ArchiSteamFarm {
 
 		[JsonIgnore]
 		[PublicAPI]
-		public IReadOnlyDictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)> PackagesDataReadOnly => PackagesData;
+		public IReadOnlyDictionary<uint, (uint ChangeNumber, HashSet<uint>? AppIDs)> PackagesDataReadOnly => PackagesData;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly InMemoryServerListProvider ServerListProvider = new InMemoryServerListProvider();
@@ -53,7 +53,7 @@ namespace ArchiSteamFarm {
 		private readonly ConcurrentDictionary<uint, ulong> PackagesAccessTokens = new ConcurrentDictionary<uint, ulong>();
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentDictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)> PackagesData = new ConcurrentDictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)>();
+		private readonly ConcurrentDictionary<uint, (uint ChangeNumber, HashSet<uint>? AppIDs)> PackagesData = new ConcurrentDictionary<uint, (uint ChangeNumber, HashSet<uint>? AppIDs)>();
 
 		private readonly SemaphoreSlim PackagesRefreshSemaphore = new SemaphoreSlim(1, 1);
 
@@ -73,7 +73,7 @@ namespace ArchiSteamFarm {
 		[JsonProperty(PropertyName = "_" + nameof(CellID), Required = Required.DisallowNull)]
 		private uint BackingCellID;
 
-		private GlobalDatabase([NotNull] string filePath) : this() {
+		private GlobalDatabase(string filePath) : this() {
 			if (string.IsNullOrEmpty(filePath)) {
 				throw new ArgumentNullException(nameof(filePath));
 			}
@@ -95,12 +95,9 @@ namespace ArchiSteamFarm {
 			base.Dispose();
 		}
 
-		[ItemCanBeNull]
-		internal static async Task<GlobalDatabase> CreateOrLoad(string filePath) {
+		internal static async Task<GlobalDatabase?> CreateOrLoad(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
-				ASF.ArchiLogger.LogNullError(nameof(filePath));
-
-				return null;
+				throw new ArgumentNullException(nameof(filePath));
 			}
 
 			if (!File.Exists(filePath)) {
@@ -138,15 +135,13 @@ namespace ArchiSteamFarm {
 
 		internal HashSet<uint> GetPackageIDs(uint appID, IEnumerable<uint> packageIDs) {
 			if ((appID == 0) || (packageIDs == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(packageIDs));
-
-				return null;
+				throw new ArgumentNullException(nameof(appID) + " || " + nameof(packageIDs));
 			}
 
 			HashSet<uint> result = new HashSet<uint>();
 
 			foreach (uint packageID in packageIDs.Where(packageID => packageID != 0)) {
-				if (!PackagesData.TryGetValue(packageID, out (uint ChangeNumber, HashSet<uint> AppIDs) packagesData) || (packagesData.AppIDs?.Contains(appID) != true)) {
+				if (!PackagesData.TryGetValue(packageID, out (uint ChangeNumber, HashSet<uint>? AppIDs) packagesData) || (packagesData.AppIDs?.Contains(appID) != true)) {
 					continue;
 				}
 
@@ -158,9 +153,7 @@ namespace ArchiSteamFarm {
 
 		internal void RefreshPackageAccessTokens(IReadOnlyDictionary<uint, ulong> packageAccessTokens) {
 			if ((packageAccessTokens == null) || (packageAccessTokens.Count == 0)) {
-				ASF.ArchiLogger.LogNullError(nameof(packageAccessTokens));
-
-				return;
+				throw new ArgumentNullException(nameof(packageAccessTokens));
 			}
 
 			bool save = false;
@@ -179,21 +172,19 @@ namespace ArchiSteamFarm {
 
 		internal async Task RefreshPackages(Bot bot, IReadOnlyDictionary<uint, uint> packages) {
 			if ((bot == null) || (packages == null) || (packages.Count == 0)) {
-				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(packages));
-
-				return;
+				throw new ArgumentNullException(nameof(bot) + " || " + nameof(packages));
 			}
 
 			await PackagesRefreshSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				HashSet<uint> packageIDs = packages.Where(package => (package.Key != 0) && (!PackagesData.TryGetValue(package.Key, out (uint ChangeNumber, HashSet<uint> AppIDs) packageData) || (packageData.ChangeNumber < package.Value))).Select(package => package.Key).ToHashSet();
+				HashSet<uint> packageIDs = packages.Where(package => (package.Key != 0) && (!PackagesData.TryGetValue(package.Key, out (uint ChangeNumber, HashSet<uint>? AppIDs) packageData) || (packageData.ChangeNumber < package.Value))).Select(package => package.Key).ToHashSet();
 
 				if (packageIDs.Count == 0) {
 					return;
 				}
 
-				Dictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)> packagesData = await bot.GetPackagesData(packageIDs).ConfigureAwait(false);
+				Dictionary<uint, (uint ChangeNumber, HashSet<uint>? AppIDs)>? packagesData = await bot.GetPackagesData(packageIDs).ConfigureAwait(false);
 
 				if (packagesData == null) {
 					bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -203,8 +194,8 @@ namespace ArchiSteamFarm {
 
 				bool save = false;
 
-				foreach ((uint packageID, (uint ChangeNumber, HashSet<uint> AppIDs) packageData) in packagesData) {
-					if (PackagesData.TryGetValue(packageID, out (uint ChangeNumber, HashSet<uint> AppIDs) previousData) && (packageData.ChangeNumber < previousData.ChangeNumber)) {
+				foreach ((uint packageID, (uint ChangeNumber, HashSet<uint>? AppIDs) packageData) in packagesData) {
+					if (PackagesData.TryGetValue(packageID, out (uint ChangeNumber, HashSet<uint>? AppIDs) previousData) && (packageData.ChangeNumber < previousData.ChangeNumber)) {
 						continue;
 					}
 
@@ -220,7 +211,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async void OnServerListUpdated(object sender, EventArgs e) => await Save().ConfigureAwait(false);
+		private async void OnServerListUpdated(object? sender, EventArgs e) => await Save().ConfigureAwait(false);
 
 		// ReSharper disable UnusedMember.Global
 		public bool ShouldSerializeCellID() => CellID != 0;

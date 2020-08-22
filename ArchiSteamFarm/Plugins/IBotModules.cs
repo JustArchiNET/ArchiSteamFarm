@@ -32,6 +32,6 @@ namespace ArchiSteamFarm.Plugins {
 		/// </summary>
 		/// <param name="bot">Bot object related to this callback.</param>
 		/// <param name="additionalConfigProperties">Extra config properties made out of <see cref="JsonExtensionDataAttribute" />. Can be null if no extra properties are found.</param>
-		void OnBotInitModules([NotNull] Bot bot, [CanBeNull] IReadOnlyDictionary<string, JToken> additionalConfigProperties = null);
+		void OnBotInitModules(Bot bot, IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null);
 	}
 }

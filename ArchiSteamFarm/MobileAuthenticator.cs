@@ -53,36 +53,41 @@ namespace ArchiSteamFarm {
 
 #pragma warning disable 649
 		[JsonProperty(PropertyName = "identity_secret", Required = Required.Always)]
-		private readonly string IdentitySecret;
+		private readonly string? IdentitySecret;
 #pragma warning restore 649
 
 #pragma warning disable 649
 		[JsonProperty(PropertyName = "shared_secret", Required = Required.Always)]
-		private readonly string SharedSecret;
+		private readonly string? SharedSecret;
 #pragma warning restore 649
 
-		private Bot Bot;
+		private Bot? Bot;
 
 		[JsonConstructor]
 		private MobileAuthenticator() => CachedDeviceID = new ArchiCacheable<string>(ResolveDeviceID);
 
 		public void Dispose() => CachedDeviceID.Dispose();
 
-		internal async Task<string> GenerateToken() {
+		internal async Task<string?> GenerateToken() {
+			if (Bot == null) {
+				throw new ArgumentNullException(nameof(Bot));
+			}
+
 			uint time = await GetSteamTime().ConfigureAwait(false);
 
 			if (time == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(time));
-
-				return null;
+				throw new ArgumentNullException(nameof(time));
 			}
 
 			return GenerateTokenForTime(time);
 		}
 
-		[ItemCanBeNull]
-		internal async Task<HashSet<Confirmation>> GetConfirmations() {
-			(bool success, string deviceID) = await CachedDeviceID.GetValue().ConfigureAwait(false);
+		internal async Task<HashSet<Confirmation>?> GetConfirmations() {
+			if (Bot == null) {
+				throw new ArgumentNullException(nameof(Bot));
+			}
+
+			(bool success, string? deviceID) = await CachedDeviceID.GetValue().ConfigureAwait(false);
 
 			if (!success || string.IsNullOrEmpty(deviceID)) {
 				Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningFailedWithError, nameof(deviceID)));
@@ -93,12 +98,10 @@ namespace ArchiSteamFarm {
 			uint time = await GetSteamTime().ConfigureAwait(false);
 
 			if (time == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(time));
-
-				return null;
+				throw new ArgumentNullException(nameof(time));
 			}
 
-			string confirmationHash = GenerateConfirmationHash(time, "conf");
+			string? confirmationHash = GenerateConfirmationHash(time, "conf");
 
 			if (string.IsNullOrEmpty(confirmationHash)) {
 				Bot.ArchiLogger.LogNullError(nameof(confirmationHash));
@@ -108,7 +111,7 @@ namespace ArchiSteamFarm {
 
 			await LimitConfirmationsRequestsAsync().ConfigureAwait(false);
 
-			using IDocument htmlDocument = await Bot.ArchiWebHandler.GetConfirmations(deviceID, confirmationHash, time).ConfigureAwait(false);
+			using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetConfirmations(deviceID!, confirmationHash!, time).ConfigureAwait(false);
 
 			if (htmlDocument == null) {
 				return null;
@@ -123,7 +126,7 @@ namespace ArchiSteamFarm {
 			}
 
 			foreach (IElement confirmationNode in confirmationNodes) {
-				string idText = confirmationNode.GetAttributeValue("data-confid");
+				string? idText = confirmationNode.GetAttribute("data-confid");
 
 				if (string.IsNullOrEmpty(idText)) {
 					Bot.ArchiLogger.LogNullError(nameof(idText));
@@ -137,7 +140,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				string keyText = confirmationNode.GetAttributeValue("data-key");
+				string? keyText = confirmationNode.GetAttribute("data-key");
 
 				if (string.IsNullOrEmpty(keyText)) {
 					Bot.ArchiLogger.LogNullError(nameof(keyText));
@@ -151,7 +154,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				string creatorText = confirmationNode.GetAttributeValue("data-creator");
+				string? creatorText = confirmationNode.GetAttribute("data-creator");
 
 				if (string.IsNullOrEmpty(creatorText)) {
 					Bot.ArchiLogger.LogNullError(nameof(creatorText));
@@ -165,7 +168,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				string typeText = confirmationNode.GetAttributeValue("data-type");
+				string? typeText = confirmationNode.GetAttribute("data-type");
 
 				if (string.IsNullOrEmpty(typeText)) {
 					Bot.ArchiLogger.LogNullError(nameof(typeText));
@@ -192,13 +195,11 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> HandleConfirmations(IReadOnlyCollection<Confirmation> confirmations, bool accept) {
-			if ((confirmations == null) || (confirmations.Count == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(confirmations));
-
-				return false;
+			if ((confirmations == null) || (confirmations.Count == 0) || (Bot == null)) {
+				throw new ArgumentNullException(nameof(confirmations) + " || " + nameof(Bot));
 			}
 
-			(bool success, string deviceID) = await CachedDeviceID.GetValue().ConfigureAwait(false);
+			(bool success, string? deviceID) = await CachedDeviceID.GetValue().ConfigureAwait(false);
 
 			if (!success || string.IsNullOrEmpty(deviceID)) {
 				Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningFailedWithError, nameof(deviceID)));
@@ -209,12 +210,10 @@ namespace ArchiSteamFarm {
 			uint time = await GetSteamTime().ConfigureAwait(false);
 
 			if (time == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(time));
-
-				return false;
+				throw new ArgumentNullException(nameof(time));
 			}
 
-			string confirmationHash = GenerateConfirmationHash(time, "conf");
+			string? confirmationHash = GenerateConfirmationHash(time, "conf");
 
 			if (string.IsNullOrEmpty(confirmationHash)) {
 				Bot.ArchiLogger.LogNullError(nameof(confirmationHash));
@@ -222,7 +221,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			bool? result = await Bot.ArchiWebHandler.HandleConfirmations(deviceID, confirmationHash, time, confirmations, accept).ConfigureAwait(false);
+			bool? result = await Bot.ArchiWebHandler.HandleConfirmations(deviceID!, confirmationHash!, time, confirmations, accept).ConfigureAwait(false);
 
 			if (!result.HasValue) {
 				// Request timed out
@@ -238,7 +237,7 @@ namespace ArchiSteamFarm {
 			// In this case, we'll accept all pending confirmations one-by-one, synchronously (as Steam can't handle them in parallel)
 			// We totally ignore actual result returned by those calls, abort only if request timed out
 			foreach (Confirmation confirmation in confirmations) {
-				bool? confirmationResult = await Bot.ArchiWebHandler.HandleConfirmation(deviceID, confirmationHash, time, confirmation.ID, confirmation.Key, accept).ConfigureAwait(false);
+				bool? confirmationResult = await Bot.ArchiWebHandler.HandleConfirmation(deviceID!, confirmationHash!, time, confirmation.ID, confirmation.Key, accept).ConfigureAwait(false);
 
 				if (!confirmationResult.HasValue) {
 					return false;
@@ -248,13 +247,11 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		internal void Init([JetBrains.Annotations.NotNull] Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+		internal void Init(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
-		private string GenerateConfirmationHash(uint time, string tag = null) {
-			if (time == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(time));
-
-				return null;
+		private string? GenerateConfirmationHash(uint time, string? tag = null) {
+			if ((time == 0) || (Bot == null) || string.IsNullOrEmpty(IdentitySecret)) {
+				throw new ArgumentNullException(nameof(time) + " || " + nameof(Bot) + " || " + nameof(IdentitySecret));
 			}
 
 			byte[] identitySecret;
@@ -271,7 +268,7 @@ namespace ArchiSteamFarm {
 			byte bufferSize = 8;
 
 			if (!string.IsNullOrEmpty(tag)) {
-				bufferSize += (byte) Math.Min(32, tag.Length);
+				bufferSize += (byte) Math.Min(32, tag!.Length);
 			}
 
 			byte[] timeArray = BitConverter.GetBytes((ulong) time);
@@ -295,11 +292,9 @@ namespace ArchiSteamFarm {
 			return Convert.ToBase64String(hash);
 		}
 
-		private string GenerateTokenForTime(uint time) {
-			if (time == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(time));
-
-				return null;
+		private string? GenerateTokenForTime(uint time) {
+			if ((time == 0) || (Bot == null) || string.IsNullOrEmpty(SharedSecret)) {
+				throw new ArgumentNullException(nameof(time) + " || " + nameof(Bot) + " || " + nameof(SharedSecret));
 			}
 
 			byte[] sharedSecret;
@@ -351,6 +346,10 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<uint> GetSteamTime() {
+			if (Bot == null) {
+				throw new ArgumentNullException(nameof(Bot));
+			}
+
 			if (SteamTimeDifference.HasValue && (DateTime.UtcNow.Subtract(LastSteamTimeCheck).TotalHours < SteamTimeTTL)) {
 				return (uint) (Utilities.GetUnixTime() + SteamTimeDifference.Value);
 			}
@@ -379,12 +378,12 @@ namespace ArchiSteamFarm {
 
 		private static async Task LimitConfirmationsRequestsAsync() {
 			if (ASF.ConfirmationsSemaphore == null) {
-				ASF.ArchiLogger.LogNullError(nameof(ASF.ConfirmationsSemaphore));
-
-				return;
+				throw new ArgumentNullException(nameof(ASF.ConfirmationsSemaphore));
 			}
 
-			if (ASF.GlobalConfig.ConfirmationsLimiterDelay == 0) {
+			byte confirmationsLimiterDelay = ASF.GlobalConfig?.ConfirmationsLimiterDelay ?? GlobalConfig.DefaultConfirmationsLimiterDelay;
+
+			if (confirmationsLimiterDelay == 0) {
 				return;
 			}
 
@@ -392,14 +391,18 @@ namespace ArchiSteamFarm {
 
 			Utilities.InBackground(
 				async () => {
-					await Task.Delay(ASF.GlobalConfig.ConfirmationsLimiterDelay * 1000).ConfigureAwait(false);
+					await Task.Delay(confirmationsLimiterDelay * 1000).ConfigureAwait(false);
 					ASF.ConfirmationsSemaphore.Release();
 				}
 			);
 		}
 
-		private async Task<(bool Success, string Result)> ResolveDeviceID() {
-			string deviceID = await Bot.ArchiHandler.GetTwoFactorDeviceIdentifier(Bot.SteamID).ConfigureAwait(false);
+		private async Task<(bool Success, string? Result)> ResolveDeviceID() {
+			if (Bot == null) {
+				throw new ArgumentNullException(nameof(Bot));
+			}
+
+			string? deviceID = await Bot.ArchiHandler.GetTwoFactorDeviceIdentifier(Bot.SteamID).ConfigureAwait(false);
 
 			if (string.IsNullOrEmpty(deviceID)) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);

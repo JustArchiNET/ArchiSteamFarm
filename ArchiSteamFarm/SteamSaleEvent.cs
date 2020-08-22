@@ -25,7 +25,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
 using ArchiSteamFarm.Localization;
-using JetBrains.Annotations;
 
 namespace ArchiSteamFarm {
 	internal sealed class SteamSaleEvent : IAsyncDisposable {
@@ -34,13 +33,13 @@ namespace ArchiSteamFarm {
 		private readonly Bot Bot;
 		private readonly Timer SaleEventTimer;
 
-		internal SteamSaleEvent([NotNull] Bot bot) {
+		internal SteamSaleEvent(Bot bot) {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 			SaleEventTimer = new Timer(
 				async e => await ExploreDiscoveryQueue().ConfigureAwait(false),
 				null,
-				TimeSpan.FromHours(1.1) + TimeSpan.FromSeconds(ASF.LoadBalancingDelay * Bot.Bots.Count), // Delay
+				TimeSpan.FromHours(1.1) + TimeSpan.FromSeconds(ASF.LoadBalancingDelay * Bot.Bots?.Count ?? 0), // Delay
 				TimeSpan.FromHours(8.1) // Period
 			);
 		}
@@ -55,7 +54,7 @@ namespace ArchiSteamFarm {
 			Bot.ArchiLogger.LogGenericTrace(Strings.Starting);
 
 			for (byte i = 0; (i < MaxSingleQueuesDaily) && (await IsDiscoveryQueueAvailable().ConfigureAwait(false)).GetValueOrDefault(); i++) {
-				ImmutableHashSet<uint> queue = await Bot.ArchiWebHandler.GenerateNewDiscoveryQueue().ConfigureAwait(false);
+				ImmutableHashSet<uint>? queue = await Bot.ArchiWebHandler.GenerateNewDiscoveryQueue().ConfigureAwait(false);
 
 				if ((queue == null) || (queue.Count == 0)) {
 					Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(queue)));
@@ -83,13 +82,13 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool?> IsDiscoveryQueueAvailable() {
-			using IDocument htmlDocument = await Bot.ArchiWebHandler.GetDiscoveryQueuePage().ConfigureAwait(false);
+			using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetDiscoveryQueuePage().ConfigureAwait(false);
 
 			if (htmlDocument == null) {
 				return null;
 			}
 
-			IElement htmlNode = htmlDocument.SelectSingleNode("//div[@class='subtext']");
+			IElement? htmlNode = htmlDocument.SelectSingleNode("//div[@class='subtext']");
 
 			if (htmlNode == null) {
 				// Valid, no cards for exploring the queue available

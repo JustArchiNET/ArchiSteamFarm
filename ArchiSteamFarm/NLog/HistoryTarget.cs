@@ -75,12 +75,12 @@ namespace ArchiSteamFarm.NLog {
 			NewHistoryEntry?.Invoke(this, new NewHistoryEntryArgs(message));
 		}
 
-		internal event EventHandler<NewHistoryEntryArgs> NewHistoryEntry;
+		internal event EventHandler<NewHistoryEntryArgs>? NewHistoryEntry;
 
 		internal sealed class NewHistoryEntryArgs : EventArgs {
 			internal readonly string Message;
 
-			internal NewHistoryEntryArgs([NotNull] string message) => Message = message ?? throw new ArgumentNullException(nameof(message));
+			internal NewHistoryEntryArgs(string message) => Message = message ?? throw new ArgumentNullException(nameof(message));
 		}
 	}
 }

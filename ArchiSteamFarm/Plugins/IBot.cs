@@ -30,13 +30,13 @@ namespace ArchiSteamFarm.Plugins {
 		///     Doing so will allow the garbage collector to dispose the bot afterwards, refraining from doing so will create a "memory leak" by keeping the reference alive.
 		/// </summary>
 		/// <param name="bot">Bot object related to this callback.</param>
-		void OnBotDestroy([NotNull] Bot bot);
+		void OnBotDestroy(Bot bot);
 
 		/// <summary>
 		///     ASF will call this method after creating the bot object, e.g. after config creation.
 		///     Bot config is not yet available at this stage. This function will execute only once for every bot object.
 		/// </summary>
 		/// <param name="bot">Bot object related to this callback.</param>
-		void OnBotInit([NotNull] Bot bot);
+		void OnBotInit(Bot bot);
 	}
 }

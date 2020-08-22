@@ -31,7 +31,7 @@ namespace ArchiSteamFarm.IPC.Requests {
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public readonly string NewName;
+		public readonly string? NewName;
 
 		[JsonConstructor]
 		private BotRenameRequest() { }

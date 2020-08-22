@@ -29,9 +29,11 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 namespace ArchiSteamFarm.IPC.Integration {
 	[UsedImplicitly]
 	internal sealed class EnumSchemaFilter : ISchemaFilter {
-		public void Apply([NotNull] OpenApiSchema schema, [NotNull] SchemaFilterContext context) {
+		public void Apply(OpenApiSchema schema, SchemaFilterContext context) {
 			if ((schema == null) || (context == null)) {
-				throw new ArgumentNullException(nameof(schema) + " || " + nameof(context));
+				ASF.ArchiLogger.LogNullError(nameof(schema) + " || " + nameof(context));
+
+				return;
 			}
 
 			if (!context.Type.IsEnum) {
@@ -44,8 +46,12 @@ namespace ArchiSteamFarm.IPC.Integration {
 
 			OpenApiObject definition = new OpenApiObject();
 
-			foreach (object enumValue in context.Type.GetEnumValues()) {
-				string enumName = Enum.GetName(context.Type, enumValue);
+			foreach (object? enumValue in context.Type.GetEnumValues()) {
+				if (enumValue == null) {
+					continue;
+				}
+
+				string? enumName = Enum.GetName(context.Type, enumValue);
 
 				if (string.IsNullOrEmpty(enumName)) {
 					enumName = enumValue.ToString();
@@ -74,7 +80,11 @@ namespace ArchiSteamFarm.IPC.Integration {
 			schema.AddExtension("x-definition", definition);
 		}
 
-		private static bool TryCast<T>(object value, out T typedValue) {
+		private static bool TryCast<T>(object value, out T typedValue) where T : struct {
+			if (value == null) {
+				throw new ArgumentNullException(nameof(value));
+			}
+
 			try {
 				typedValue = (T) Convert.ChangeType(value, typeof(T));
 

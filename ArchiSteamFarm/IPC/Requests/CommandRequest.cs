@@ -32,9 +32,9 @@ namespace ArchiSteamFarm.IPC.Requests {
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public readonly string Command;
+		public readonly string? Command;
 
-		internal CommandRequest([JetBrains.Annotations.NotNull] string command) {
+		internal CommandRequest(string command) {
 			if (string.IsNullOrEmpty(command)) {
 				throw new ArgumentNullException(nameof(command));
 			}

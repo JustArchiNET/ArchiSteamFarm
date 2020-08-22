@@ -34,7 +34,7 @@ namespace ArchiSteamFarm.IPC.Requests {
 		/// </remarks>
 		[Required]
 		[JsonProperty(Required = Required.Always)]
-		public readonly string URL;
+		public readonly string? URL;
 
 		[JsonConstructor]
 		private WWWSendRequest() { }

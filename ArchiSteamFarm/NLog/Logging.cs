@@ -28,7 +28,6 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.IPC;
 using ArchiSteamFarm.Localization;
-using JetBrains.Annotations;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
@@ -64,14 +63,12 @@ namespace ArchiSteamFarm.NLog {
 			}
 		}
 
-		internal static async Task<string> GetUserInput(ASF.EUserInputType userInputType, string botName = SharedInfo.ASF) {
+		internal static async Task<string?> GetUserInput(ASF.EUserInputType userInputType, string botName = SharedInfo.ASF) {
 			if ((userInputType == ASF.EUserInputType.None) || !Enum.IsDefined(typeof(ASF.EUserInputType), userInputType) || string.IsNullOrEmpty(botName)) {
-				ASF.ArchiLogger.LogNullError(nameof(userInputType) + " || " + nameof(botName));
-
-				return null;
+				throw new ArgumentNullException(nameof(userInputType) + " || " + nameof(botName));
 			}
 
-			if (ASF.GlobalConfig.Headless) {
+			if (ASF.GlobalConfig?.Headless ?? GlobalConfig.DefaultHeadless) {
 				ASF.ArchiLogger.LogGenericWarning(Strings.ErrorUserInputRunningInHeadlessMode);
 
 				return null;
@@ -196,7 +193,7 @@ namespace ArchiSteamFarm.NLog {
 				return;
 			}
 
-			HistoryTarget historyTarget = LogManager.Configuration.AllTargets.OfType<HistoryTarget>().FirstOrDefault();
+			HistoryTarget? historyTarget = LogManager.Configuration.AllTargets.OfType<HistoryTarget>().FirstOrDefault();
 
 			if ((historyTarget == null) && !IsUsingCustomConfiguration) {
 				historyTarget = new HistoryTarget("History") {
@@ -214,7 +211,7 @@ namespace ArchiSteamFarm.NLog {
 		}
 
 		internal static void StartInteractiveConsole() {
-			if (ASF.GlobalConfig.SteamOwnerID == 0) {
+			if ((ASF.GlobalConfig?.SteamOwnerID ?? GlobalConfig.DefaultSteamOwnerID) == 0) {
 				ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.InteractiveConsoleNotAvailable, nameof(ASF.GlobalConfig.SteamOwnerID)));
 
 				return;
@@ -230,7 +227,6 @@ namespace ArchiSteamFarm.NLog {
 			return Console.ReadLine();
 		}
 
-		[NotNull]
 		private static string ConsoleReadLineMasked(char mask = '*') {
 			StringBuilder result = new StringBuilder();
 
@@ -287,15 +283,17 @@ namespace ArchiSteamFarm.NLog {
 								continue;
 							}
 
-							if (!string.IsNullOrEmpty(ASF.GlobalConfig.CommandPrefix) && command.StartsWith(ASF.GlobalConfig.CommandPrefix, StringComparison.Ordinal)) {
-								command = command.Substring(ASF.GlobalConfig.CommandPrefix.Length);
+							string commandPrefix = ASF.GlobalConfig?.CommandPrefix ?? GlobalConfig.DefaultCommandPrefix;
+
+							if (!string.IsNullOrEmpty(commandPrefix) && command.StartsWith(commandPrefix, StringComparison.Ordinal)) {
+								command = command.Substring(commandPrefix.Length);
 
 								if (string.IsNullOrEmpty(command)) {
 									continue;
 								}
 							}
 
-							Bot targetBot = Bot.Bots.OrderBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value).FirstOrDefault();
+							Bot? targetBot = Bot.Bots.OrderBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value).FirstOrDefault();
 
 							if (targetBot == null) {
 								Console.WriteLine(@"<< " + Strings.ErrorNoBotsDefined);
@@ -305,7 +303,9 @@ namespace ArchiSteamFarm.NLog {
 
 							Console.WriteLine(@"<> " + Strings.Executing);
 
-							string response = await targetBot.Commands.Response(ASF.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
+							ulong steamOwnerID = ASF.GlobalConfig?.SteamOwnerID ?? GlobalConfig.DefaultSteamOwnerID;
+
+							string? response = await targetBot.Commands.Response(steamOwnerID, command).ConfigureAwait(false);
 
 							if (string.IsNullOrEmpty(response)) {
 								ASF.ArchiLogger.LogNullError(nameof(response));
@@ -339,9 +339,9 @@ namespace ArchiSteamFarm.NLog {
 			}
 		}
 
-		private static void OnConfigurationChanged(object sender, LoggingConfigurationChangedEventArgs e) {
-			if ((sender == null) || (e == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
+		private static void OnConfigurationChanged(object? sender, LoggingConfigurationChangedEventArgs e) {
+			if (e == null) {
+				ASF.ArchiLogger.LogNullError(nameof(e));
 
 				return;
 			}
@@ -352,7 +352,7 @@ namespace ArchiSteamFarm.NLog {
 				OnUserInputStart();
 			}
 
-			HistoryTarget historyTarget = LogManager.Configuration.AllTargets.OfType<HistoryTarget>().FirstOrDefault();
+			HistoryTarget? historyTarget = LogManager.Configuration.AllTargets.OfType<HistoryTarget>().FirstOrDefault();
 			ArchiKestrel.OnNewHistoryTarget(historyTarget);
 		}
 

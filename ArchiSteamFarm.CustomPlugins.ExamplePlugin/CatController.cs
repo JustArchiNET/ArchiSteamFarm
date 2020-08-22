@@ -19,6 +19,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Net;
 using System.Threading.Tasks;
 using ArchiSteamFarm.IPC.Controllers.Api;
@@ -38,7 +39,11 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 		[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
 		public async Task<ActionResult<GenericResponse>> CatGet() {
-			string link = await CatAPI.GetRandomCatURL(ASF.WebBrowser).ConfigureAwait(false);
+			if (ASF.WebBrowser == null) {
+				throw new ArgumentNullException(nameof(ASF.WebBrowser));
+			}
+
+			string? link = await CatAPI.GetRandomCatURL(ASF.WebBrowser).ConfigureAwait(false);
 
 			return !string.IsNullOrEmpty(link) ? Ok(new GenericResponse<string>(link)) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false));
 		}

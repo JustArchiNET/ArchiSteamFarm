@@ -29,21 +29,19 @@ using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Plugins;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 	[Export(typeof(IPlugin))]
-	[UsedImplicitly]
 	internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotSteamClient, ISteamPICSChanges {
 		private static readonly ConcurrentDictionary<Bot, IDisposable> BotSubscriptions = new ConcurrentDictionary<Bot, IDisposable>();
 		private static readonly ConcurrentDictionary<Bot, (SemaphoreSlim RefreshSemaphore, Timer RefreshTimer)> BotSynchronizations = new ConcurrentDictionary<Bot, (SemaphoreSlim RefreshSemaphore, Timer RefreshTimer)>();
 		private static readonly SemaphoreSlim SubmissionSemaphore = new SemaphoreSlim(1, 1);
 		private static readonly Timer SubmissionTimer = new Timer(async e => await SubmitData().ConfigureAwait(false));
 
-		private static GlobalCache GlobalCache;
+		private static GlobalCache? GlobalCache;
 
 		[JsonProperty]
 		private static bool IsEnabled;
@@ -56,7 +54,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 		public Task<uint> GetPreferredChangeNumberToStartFrom() => Task.FromResult(IsEnabled ? GlobalCache?.LastChangeNumber ?? 0 : 0);
 
-		public void OnASFInit(IReadOnlyDictionary<string, JToken> additionalConfigProperties = null) {
+		public void OnASFInit(IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null) {
 			if (!SharedInfo.HasValidToken) {
 				ASF.ArchiLogger.LogGenericError($"{Name} has been disabled due to missing build token.");
 
@@ -103,7 +101,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				throw new ArgumentNullException(nameof(bot));
 			}
 
-			if (BotSubscriptions.TryRemove(bot, out IDisposable subscription)) {
+			if (BotSubscriptions.TryRemove(bot, out IDisposable? subscription)) {
 				subscription.Dispose();
 			}
 
@@ -138,7 +136,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				throw new ArgumentNullException(nameof(bot) + " || " + nameof(callbackManager));
 			}
 
-			if (BotSubscriptions.TryRemove(bot, out IDisposable subscription)) {
+			if (BotSubscriptions.TryRemove(bot, out IDisposable? subscription)) {
 				subscription.Dispose();
 			}
 
@@ -153,7 +151,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			}
 		}
 
-		public IReadOnlyCollection<ClientMsgHandler> OnBotSteamHandlersInit(Bot bot) => null;
+		public IReadOnlyCollection<ClientMsgHandler>? OnBotSteamHandlersInit(Bot bot) => null;
 
 		public override void OnLoaded() { }
 
@@ -189,7 +187,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			await GlobalCache.OnPICSChangesRestart(currentChangeNumber).ConfigureAwait(false);
 		}
 
-		private static async void OnLicenseList([NotNull] Bot bot, [NotNull] SteamApps.LicenseListCallback callback) {
+		private static async void OnLicenseList(Bot bot, SteamApps.LicenseListCallback callback) {
 			if ((bot == null) || (callback == null)) {
 				throw new ArgumentNullException(nameof(callback));
 			}
@@ -208,7 +206,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			await Refresh(bot, packageTokens.Keys).ConfigureAwait(false);
 		}
 
-		private static async Task Refresh([NotNull] Bot bot, IReadOnlyCollection<uint> packageIDs = null) {
+		private static async Task Refresh(Bot bot, IReadOnlyCollection<uint>? packageIDs = null) {
 			if (bot == null) {
 				throw new ArgumentNullException(nameof(bot));
 			}
@@ -217,8 +215,8 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				return;
 			}
 
-			if (GlobalCache == null) {
-				throw new ArgumentNullException(nameof(GlobalCache));
+			if ((GlobalCache == null) || (ASF.GlobalDatabase == null)) {
+				throw new ArgumentNullException(nameof(GlobalCache) + " || " + nameof(ASF.GlobalDatabase));
 			}
 
 			if (!BotSynchronizations.TryGetValue(bot, out (SemaphoreSlim RefreshSemaphore, Timer RefreshTimer) synchronization)) {
@@ -239,7 +237,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				HashSet<uint> appIDsToRefresh = new HashSet<uint>();
 
 				foreach (uint packageID in packageIDs) {
-					if (!ASF.GlobalDatabase.PackagesDataReadOnly.TryGetValue(packageID, out (uint ChangeNumber, HashSet<uint> AppIDs) packageData) || (packageData.AppIDs == null)) {
+					if (!ASF.GlobalDatabase.PackagesDataReadOnly.TryGetValue(packageID, out (uint ChangeNumber, HashSet<uint>? AppIDs) packageData) || (packageData.AppIDs == null)) {
 						// ASF might not have the package info for us at the moment, we'll retry later
 						continue;
 					}
@@ -388,14 +386,18 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 		}
 
 		private static async Task SubmitData() {
+			if (Bot.Bots == null) {
+				throw new ArgumentNullException(nameof(Bot.Bots));
+			}
+
 			const string request = SharedInfo.ServerURL + "/submit";
 
 			if (!IsEnabled) {
 				return;
 			}
 
-			if (GlobalCache == null) {
-				throw new ArgumentNullException(nameof(GlobalCache));
+			if ((ASF.GlobalConfig == null) || (ASF.WebBrowser == null) || (GlobalCache == null)) {
+				throw new ArgumentNullException(nameof(ASF.GlobalConfig) + " || " + nameof(ASF.WebBrowser) + " || " + nameof(GlobalCache));
 			}
 
 			if (!await SubmissionSemaphore.WaitAsync(0).ConfigureAwait(false)) {
@@ -415,7 +417,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 					return;
 				}
 
-				ulong contributorSteamID = (ASF.GlobalConfig.SteamOwnerID > 0) && new SteamID(ASF.GlobalConfig.SteamOwnerID).IsIndividualAccount ? ASF.GlobalConfig.SteamOwnerID : Bot.BotsReadOnly.Values.Where(bot => bot.SteamID > 0).OrderByDescending(bot => bot.OwnedPackageIDsReadOnly.Count).FirstOrDefault()?.SteamID ?? 0;
+				ulong contributorSteamID = (ASF.GlobalConfig.SteamOwnerID > 0) && new SteamID(ASF.GlobalConfig.SteamOwnerID).IsIndividualAccount ? ASF.GlobalConfig.SteamOwnerID : Bot.Bots.Values.Where(bot => bot.SteamID > 0).OrderByDescending(bot => bot.OwnedPackageIDsReadOnly.Count).FirstOrDefault()?.SteamID ?? 0;
 
 				if (contributorSteamID == 0) {
 					ASF.ArchiLogger.LogGenericError($"Skipped {nameof(SubmitData)} trigger because there is no valid steamID we could classify as a contributor. Consider setting up {nameof(ASF.GlobalConfig.SteamOwnerID)} property.");
@@ -427,9 +429,9 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 				ASF.ArchiLogger.LogGenericInfo($"Submitting registered apps/subs/depots: {appTokens.Count}/{packageTokens.Count}/{depotKeys.Count}...");
 
-				WebBrowser.ObjectResponse<ResponseData> response = await ASF.WebBrowser.UrlPostToJsonObject<ResponseData, RequestData>(request, requestData, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
+				WebBrowser.ObjectResponse<ResponseData>? response = await ASF.WebBrowser.UrlPostToJsonObject<ResponseData, RequestData>(request, requestData, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
 
-				if ((response?.Content == null) || response.StatusCode.IsClientErrorCode()) {
+				if ((response?.Content?.Data == null) || response.StatusCode.IsClientErrorCode()) {
 					ASF.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
 #if NETFRAMEWORK

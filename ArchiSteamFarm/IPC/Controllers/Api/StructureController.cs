@@ -39,18 +39,16 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		public ActionResult<GenericResponse> StructureGet(string structure) {
 			if (string.IsNullOrEmpty(structure)) {
-				ASF.ArchiLogger.LogNullError(nameof(structure));
-
-				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(structure))));
+				throw new ArgumentNullException(nameof(structure));
 			}
 
-			Type targetType = WebUtilities.ParseType(structure);
+			Type? targetType = WebUtilities.ParseType(structure);
 
 			if (targetType == null) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, structure)));
 			}
 
-			object obj;
+			object? obj;
 
 			try {
 				obj = Activator.CreateInstance(targetType, true);

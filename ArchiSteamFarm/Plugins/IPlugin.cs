@@ -31,7 +31,6 @@ namespace ArchiSteamFarm.Plugins {
 		/// </summary>
 		/// <returns>String that will be used as the name of this plugin.</returns>
 		[JsonProperty]
-		[NotNull]
 		string Name { get; }
 
 		/// <summary>
@@ -40,7 +39,6 @@ namespace ArchiSteamFarm.Plugins {
 		/// </summary>
 		/// <returns>Version that will be shown to the user when plugin is loaded.</returns>
 		[JsonProperty]
-		[NotNull]
 		Version Version { get; }
 
 		/// <summary>

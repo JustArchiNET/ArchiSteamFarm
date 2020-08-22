@@ -38,12 +38,13 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	internal static class Program {
-		internal static string NetworkGroup { get; private set; }
+		internal static string? NetworkGroup { get; private set; }
 		internal static bool ProcessRequired { get; private set; }
 		internal static bool RestartAllowed { get; private set; } = true;
 		internal static bool ShutdownSequenceInitialized { get; private set; }
 
 		private static readonly TaskCompletionSource<byte> ShutdownResetEvent = new TaskCompletionSource<byte>();
+
 		private static bool SystemRequired;
 
 		internal static async Task Exit(byte exitCode = 0) {
@@ -60,12 +61,10 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			string executableName = Path.GetFileNameWithoutExtension(OS.ProcessFileName);
+			string? executableName = Path.GetFileNameWithoutExtension(OS.ProcessFileName);
 
 			if (string.IsNullOrEmpty(executableName)) {
-				ASF.ArchiLogger.LogNullError(nameof(executableName));
-
-				return;
+				throw new ArgumentNullException(nameof(executableName));
 			}
 
 			IEnumerable<string> arguments = Environment.GetCommandLineArgs().Skip(executableName.Equals(SharedInfo.AssemblyName) ? 1 : 0);
@@ -85,9 +84,7 @@ namespace ArchiSteamFarm {
 
 		private static void HandleCryptKeyArgument(string cryptKey) {
 			if (string.IsNullOrEmpty(cryptKey)) {
-				ASF.ArchiLogger.LogNullError(nameof(cryptKey));
-
-				return;
+				throw new ArgumentNullException(nameof(cryptKey));
 			}
 
 			ArchiCryptoHelper.SetEncryptionKey(cryptKey);
@@ -95,9 +92,7 @@ namespace ArchiSteamFarm {
 
 		private static void HandleNetworkGroupArgument(string networkGroup) {
 			if (string.IsNullOrEmpty(networkGroup)) {
-				ASF.ArchiLogger.LogNullError(nameof(networkGroup));
-
-				return;
+				throw new ArgumentNullException(nameof(networkGroup));
 			}
 
 			NetworkGroup = networkGroup;
@@ -105,9 +100,7 @@ namespace ArchiSteamFarm {
 
 		private static void HandlePathArgument(string path) {
 			if (string.IsNullOrEmpty(path)) {
-				ASF.ArchiLogger.LogNullError(nameof(path));
-
-				return;
+				throw new ArgumentNullException(nameof(path));
 			}
 
 			try {
@@ -117,7 +110,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static async Task Init(IReadOnlyCollection<string> args) {
+		private static async Task Init(IReadOnlyCollection<string>? args) {
 			AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
 			AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 			TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
@@ -135,13 +128,19 @@ namespace ArchiSteamFarm {
 			await InitASF(args).ConfigureAwait(false);
 		}
 
-		private static async Task InitASF(IReadOnlyCollection<string> args) {
+		private static async Task InitASF(IReadOnlyCollection<string>? args) {
 			OS.CoreInit();
 
 			Console.Title = SharedInfo.ProgramIdentifier;
 			ASF.ArchiLogger.LogGenericInfo(SharedInfo.ProgramIdentifier);
 
-			await InitGlobalConfigAndLanguage().ConfigureAwait(false);
+			if (!await InitGlobalConfigAndLanguage().ConfigureAwait(false)) {
+				return;
+			}
+
+			if (ASF.GlobalConfig == null) {
+				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
+			}
 
 			// Parse post-init args
 			if (args != null) {
@@ -154,7 +153,7 @@ namespace ArchiSteamFarm {
 			await ASF.Init().ConfigureAwait(false);
 		}
 
-		private static async Task<bool> InitCore(IReadOnlyCollection<string> args) {
+		private static async Task<bool> InitCore(IReadOnlyCollection<string>? args) {
 			Directory.SetCurrentDirectory(SharedInfo.HomeDirectory);
 
 			// Allow loading configs from source tree if it's a debug build
@@ -192,16 +191,14 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		private static async Task InitGlobalConfigAndLanguage() {
+		private static async Task<bool> InitGlobalConfigAndLanguage() {
 			string globalConfigFile = ASF.GetFilePath(ASF.EFileType.Config);
 
 			if (string.IsNullOrEmpty(globalConfigFile)) {
-				ASF.ArchiLogger.LogNullError(nameof(globalConfigFile));
-
-				return;
+				throw new ArgumentNullException(nameof(globalConfigFile));
 			}
 
-			GlobalConfig globalConfig;
+			GlobalConfig? globalConfig;
 
 			if (File.Exists(globalConfigFile)) {
 				globalConfig = await GlobalConfig.Load(globalConfigFile).ConfigureAwait(false);
@@ -211,7 +208,7 @@ namespace ArchiSteamFarm {
 					await Task.Delay(5 * 1000).ConfigureAwait(false);
 					await Exit(1).ConfigureAwait(false);
 
-					return;
+					return false;
 				}
 			} else {
 				globalConfig = new GlobalConfig();
@@ -223,10 +220,10 @@ namespace ArchiSteamFarm {
 				ASF.ArchiLogger.LogGenericDebug(globalConfigFile + ": " + JsonConvert.SerializeObject(ASF.GlobalConfig, Formatting.Indented));
 			}
 
-			if (!string.IsNullOrEmpty(ASF.GlobalConfig.CurrentCulture)) {
+			if (!string.IsNullOrEmpty(ASF.GlobalConfig?.CurrentCulture)) {
 				try {
 					// GetCultureInfo() would be better but we can't use it for specifying neutral cultures such as "en"
-					CultureInfo culture = CultureInfo.CreateSpecificCulture(ASF.GlobalConfig.CurrentCulture);
+					CultureInfo culture = CultureInfo.CreateSpecificCulture(ASF.GlobalConfig!.CurrentCulture);
 					CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = culture;
 				} catch (Exception e) {
 					ASF.ArchiLogger.LogGenericWarningException(e);
@@ -239,16 +236,16 @@ namespace ArchiSteamFarm {
 			switch (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName) {
 				case "en":
 				case "iv":
-					return;
+					return true;
 			}
 
 			// We can't dispose this resource set, as we can't be sure if it isn't used somewhere else, rely on GC in this case
-			ResourceSet defaultResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.GetCultureInfo("en-US"), true, true);
+			ResourceSet? defaultResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.GetCultureInfo("en-US"), true, true);
 
 			if (defaultResourceSet == null) {
 				ASF.ArchiLogger.LogNullError(nameof(defaultResourceSet));
 
-				return;
+				return true;
 			}
 
 			HashSet<DictionaryEntry> defaultStringObjects = defaultResourceSet.Cast<DictionaryEntry>().ToHashSet();
@@ -256,16 +253,16 @@ namespace ArchiSteamFarm {
 			if (defaultStringObjects.Count == 0) {
 				ASF.ArchiLogger.LogNullError(nameof(defaultStringObjects));
 
-				return;
+				return true;
 			}
 
 			// We can't dispose this resource set, as we can't be sure if it isn't used somewhere else, rely on GC in this case
-			ResourceSet currentResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+			ResourceSet? currentResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
 
 			if (currentResourceSet == null) {
 				ASF.ArchiLogger.LogNullError(nameof(currentResourceSet));
 
-				return;
+				return true;
 			}
 
 			HashSet<DictionaryEntry> currentStringObjects = currentResourceSet.Cast<DictionaryEntry>().ToHashSet();
@@ -286,15 +283,15 @@ namespace ArchiSteamFarm {
 				float translationCompleteness = currentStringObjects.Count / (float) defaultStringObjects.Count;
 				ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.TranslationIncomplete, CultureInfo.CurrentUICulture.Name, translationCompleteness.ToString("P1")));
 			}
+
+			return true;
 		}
 
 		private static async Task InitGlobalDatabaseAndServices() {
 			string globalDatabaseFile = ASF.GetFilePath(ASF.EFileType.Database);
 
 			if (string.IsNullOrEmpty(globalDatabaseFile)) {
-				ASF.ArchiLogger.LogNullError(nameof(globalDatabaseFile));
-
-				return;
+				throw new ArgumentNullException(nameof(globalDatabaseFile));
 			}
 
 			if (!File.Exists(globalDatabaseFile)) {
@@ -304,7 +301,7 @@ namespace ArchiSteamFarm {
 				await Task.Delay(5 * 1000).ConfigureAwait(false);
 			}
 
-			GlobalDatabase globalDatabase = await GlobalDatabase.CreateOrLoad(globalDatabaseFile).ConfigureAwait(false);
+			GlobalDatabase? globalDatabase = await GlobalDatabase.CreateOrLoad(globalDatabaseFile).ConfigureAwait(false);
 
 			if (globalDatabase == null) {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorDatabaseInvalid, globalDatabaseFile));
@@ -377,7 +374,7 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		private static async Task<int> Main(string[] args) {
+		private static async Task<int> Main(string[]? args) {
 			// Initialize
 			await Init(args).ConfigureAwait(false);
 
@@ -385,24 +382,20 @@ namespace ArchiSteamFarm {
 			return await ShutdownResetEvent.Task.ConfigureAwait(false);
 		}
 
-		private static async void OnProcessExit(object sender, EventArgs e) => await Shutdown().ConfigureAwait(false);
+		private static async void OnProcessExit(object? sender, EventArgs e) => await Shutdown().ConfigureAwait(false);
 
-		private static async void OnUnhandledException(object sender, UnhandledExceptionEventArgs e) {
+		private static async void OnUnhandledException(object? sender, UnhandledExceptionEventArgs e) {
 			if (e?.ExceptionObject == null) {
-				ASF.ArchiLogger.LogNullError(nameof(e) + " || " + nameof(e.ExceptionObject));
-
-				return;
+				throw new ArgumentNullException(nameof(e) + " || " + nameof(e.ExceptionObject));
 			}
 
 			await ASF.ArchiLogger.LogFatalException((Exception) e.ExceptionObject).ConfigureAwait(false);
 			await Exit(1).ConfigureAwait(false);
 		}
 
-		private static async void OnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e) {
+		private static async void OnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e) {
 			if (e?.Exception == null) {
-				ASF.ArchiLogger.LogNullError(nameof(e) + " || " + nameof(e.Exception));
-
-				return;
+				throw new ArgumentNullException(nameof(e) + " || " + nameof(e.Exception));
 			}
 
 			await ASF.ArchiLogger.LogFatalException(e.Exception).ConfigureAwait(false);
@@ -414,13 +407,11 @@ namespace ArchiSteamFarm {
 
 		private static void ParsePostInitArgs(IReadOnlyCollection<string> args) {
 			if (args == null) {
-				ASF.ArchiLogger.LogNullError(nameof(args));
-
-				return;
+				throw new ArgumentNullException(nameof(args));
 			}
 
 			try {
-				string envCryptKey = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableCryptKey);
+				string? envCryptKey = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableCryptKey);
 
 				if (!string.IsNullOrEmpty(envCryptKey)) {
 					HandleCryptKeyArgument(envCryptKey);
@@ -464,19 +455,17 @@ namespace ArchiSteamFarm {
 
 		private static void ParsePreInitArgs(IReadOnlyCollection<string> args) {
 			if (args == null) {
-				ASF.ArchiLogger.LogNullError(nameof(args));
-
-				return;
+				throw new ArgumentNullException(nameof(args));
 			}
 
 			try {
-				string envNetworkGroup = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableNetworkGroup);
+				string? envNetworkGroup = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableNetworkGroup);
 
 				if (!string.IsNullOrEmpty(envNetworkGroup)) {
 					HandleNetworkGroupArgument(envNetworkGroup);
 				}
 
-				string envPath = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariablePath);
+				string? envPath = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariablePath);
 
 				if (!string.IsNullOrEmpty(envPath)) {
 					HandlePathArgument(envPath);
