@@ -125,6 +125,14 @@ namespace ArchiSteamFarm {
 					break;
 				}
 
+				if (response?.StatusCode.IsServerErrorCode() == true) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						result = new HtmlDocumentResponse(response);
+					}
+
+					break;
+				}
+
 				if (response?.Content == null) {
 					continue;
 				}
@@ -161,6 +169,14 @@ namespace ArchiSteamFarm {
 
 				if (response?.StatusCode.IsClientErrorCode() == true) {
 					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						result = new ObjectResponse<T>(response);
+					}
+
+					break;
+				}
+
+				if (response?.StatusCode.IsServerErrorCode() == true) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
 						result = new ObjectResponse<T>(response);
 					}
 
@@ -221,6 +237,14 @@ namespace ArchiSteamFarm {
 					break;
 				}
 
+				if (response?.StatusCode.IsServerErrorCode() == true) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						result = new XmlDocumentResponse(response);
+					}
+
+					break;
+				}
+
 				if (response?.Content == null) {
 					continue;
 				}
@@ -269,6 +293,14 @@ namespace ArchiSteamFarm {
 					break;
 				}
 
+				if (response.StatusCode.IsServerErrorCode()) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						result = new BasicResponse(response);
+					}
+
+					break;
+				}
+
 				return new BasicResponse(response);
 			}
 
@@ -303,6 +335,14 @@ namespace ArchiSteamFarm {
 					break;
 				}
 
+				if (response.StatusCode.IsServerErrorCode()) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						result = new BasicResponse(response);
+					}
+
+					break;
+				}
+
 				return new BasicResponse(response);
 			}
 
@@ -327,6 +367,14 @@ namespace ArchiSteamFarm {
 
 				if (response?.StatusCode.IsClientErrorCode() == true) {
 					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						result = new HtmlDocumentResponse(response);
+					}
+
+					break;
+				}
+
+				if (response?.StatusCode.IsServerErrorCode() == true) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
 						result = new HtmlDocumentResponse(response);
 					}
 
@@ -369,6 +417,14 @@ namespace ArchiSteamFarm {
 
 				if (response?.StatusCode.IsClientErrorCode() == true) {
 					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						result = new ObjectResponse<TResult>(response);
+					}
+
+					break;
+				}
+
+				if (response?.StatusCode.IsServerErrorCode() == true) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
 						result = new ObjectResponse<TResult>(response);
 					}
 
@@ -438,6 +494,14 @@ namespace ArchiSteamFarm {
 
 				if (response?.StatusCode.IsClientErrorCode() == true) {
 					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						result = new BinaryResponse(response);
+					}
+
+					break;
+				}
+
+				if (response?.StatusCode.IsServerErrorCode() == true) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
 						result = new BinaryResponse(response);
 					}
 
@@ -522,6 +586,14 @@ namespace ArchiSteamFarm {
 					break;
 				}
 
+				if (response?.StatusCode.IsServerErrorCode() == true) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						result = new StringResponse(response);
+					}
+
+					break;
+				}
+
 				if (response?.Content == null) {
 					continue;
 				}
@@ -537,31 +609,31 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		private async Task<HttpResponseMessage?> InternalGet(string request, string? referer = null, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead) {
+		private async Task<HttpResponseMessage?> InternalGet(string request, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead) {
 			if (string.IsNullOrEmpty(request)) {
 				throw new ArgumentNullException(nameof(request));
 			}
 
-			return await InternalRequest<object>(new Uri(request), HttpMethod.Get, null, referer, httpCompletionOption).ConfigureAwait(false);
+			return await InternalRequest<object>(new Uri(request), HttpMethod.Get, null, referer, requestOptions, httpCompletionOption).ConfigureAwait(false);
 		}
 
-		private async Task<HttpResponseMessage?> InternalHead(string request, string? referer = null) {
+		private async Task<HttpResponseMessage?> InternalHead(string request, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead) {
 			if (string.IsNullOrEmpty(request)) {
 				throw new ArgumentNullException(nameof(request));
 			}
 
-			return await InternalRequest<object>(new Uri(request), HttpMethod.Head, null, referer).ConfigureAwait(false);
+			return await InternalRequest<object>(new Uri(request), HttpMethod.Head, null, referer, requestOptions, httpCompletionOption).ConfigureAwait(false);
 		}
 
-		private async Task<HttpResponseMessage?> InternalPost<T>(string request, T? data = null, string? referer = null, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead) where T : class {
+		private async Task<HttpResponseMessage?> InternalPost<T>(string request, T? data = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead) where T : class {
 			if (string.IsNullOrEmpty(request)) {
 				throw new ArgumentNullException(nameof(request));
 			}
 
-			return await InternalRequest(new Uri(request), HttpMethod.Post, data, referer, httpCompletionOption).ConfigureAwait(false);
+			return await InternalRequest(new Uri(request), HttpMethod.Post, data, referer, requestOptions, httpCompletionOption).ConfigureAwait(false);
 		}
 
-		private async Task<HttpResponseMessage?> InternalRequest<T>(Uri requestUri, HttpMethod httpMethod, T? data = null, string? referer = null, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, byte maxRedirections = MaxTries) where T : class {
+		private async Task<HttpResponseMessage?> InternalRequest<T>(Uri requestUri, HttpMethod httpMethod, T? data = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, byte maxRedirections = MaxTries) where T : class {
 			if ((requestUri == null) || (httpMethod == null)) {
 				throw new ArgumentNullException(nameof(requestUri) + " || " + nameof(httpMethod));
 			}
@@ -671,7 +743,7 @@ namespace ArchiSteamFarm {
 					redirectUri = new UriBuilder(redirectUri) { Fragment = requestUri.Fragment }.Uri;
 				}
 
-				return await InternalRequest(redirectUri, httpMethod, data, referer, httpCompletionOption, --maxRedirections).ConfigureAwait(false);
+				return await InternalRequest(redirectUri, httpMethod, data, referer, requestOptions, httpCompletionOption, --maxRedirections).ConfigureAwait(false);
 			}
 
 			if (!Debugging.IsUserDebugging) {
@@ -684,6 +756,11 @@ namespace ArchiSteamFarm {
 				}
 
 				// Do not retry on client errors
+				return response;
+			}
+
+			if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors) && response.StatusCode.IsServerErrorCode()) {
+				// Do not retry on server errors in this case
 				return response;
 			}
 
@@ -704,10 +781,18 @@ namespace ArchiSteamFarm {
 			StreamResponse? result = null;
 
 			for (byte i = 0; i < maxTries; i++) {
-				HttpResponseMessage? response = await InternalGet(request, referer, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+				HttpResponseMessage? response = await InternalGet(request, referer, requestOptions, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
 				if (response?.StatusCode.IsClientErrorCode() == true) {
 					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						result = new StreamResponse(response);
+					}
+
+					break;
+				}
+
+				if (response?.StatusCode.IsServerErrorCode() == true) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
 						result = new StreamResponse(response);
 					}
 
@@ -737,10 +822,18 @@ namespace ArchiSteamFarm {
 			StreamResponse? result = null;
 
 			for (byte i = 0; i < maxTries; i++) {
-				HttpResponseMessage? response = await InternalPost(request, data, referer, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+				HttpResponseMessage? response = await InternalPost(request, data, referer, requestOptions, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
 				if (response?.StatusCode.IsClientErrorCode() == true) {
 					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						result = new StreamResponse(response);
+					}
+
+					break;
+				}
+
+				if (response?.StatusCode.IsServerErrorCode() == true) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
 						result = new StreamResponse(response);
 					}
 
@@ -867,7 +960,8 @@ namespace ArchiSteamFarm {
 		[Flags]
 		public enum ERequestOptions : byte {
 			None = 0,
-			ReturnClientErrors = 1
+			ReturnClientErrors = 1,
+			ReturnServerErrors = 2
 		}
 
 		internal sealed class BinaryResponse : BasicResponse {

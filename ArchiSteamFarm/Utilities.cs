@@ -144,6 +144,9 @@ namespace ArchiSteamFarm {
 		public static bool IsClientErrorCode(this HttpStatusCode statusCode) => (statusCode >= HttpStatusCode.BadRequest) && (statusCode < HttpStatusCode.InternalServerError);
 
 		[PublicAPI]
+		public static bool IsServerErrorCode(this HttpStatusCode statusCode) => (statusCode >= HttpStatusCode.InternalServerError) && (statusCode < (HttpStatusCode) 600);
+
+		[PublicAPI]
 		public static bool IsValidCdKey(string key) {
 			if (string.IsNullOrEmpty(key)) {
 				throw new ArgumentNullException(nameof(key));

@@ -111,7 +111,7 @@ namespace ArchiSteamFarm {
 
 			await LimitConfirmationsRequestsAsync().ConfigureAwait(false);
 
-			using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetConfirmations(deviceID!, confirmationHash!, time).ConfigureAwait(false);
+			using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetConfirmationsPage(deviceID!, confirmationHash!, time).ConfigureAwait(false);
 
 			if (htmlDocument == null) {
 				return null;
