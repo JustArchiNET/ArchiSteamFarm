@@ -426,7 +426,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task<BinaryResponse?> UrlGetToBinary(string request, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, IProgress<int>? progressReporter = null) {
+		internal async Task<BinaryResponse?> UrlGetToBinary(string request, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, IProgress<byte>? progressReporter = null) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				throw new ArgumentNullException(nameof(request) + " || " + nameof(maxTries));
 			}
@@ -434,9 +434,6 @@ namespace ArchiSteamFarm {
 			BinaryResponse? result = null;
 
 			for (byte i = 0; i < maxTries; i++) {
-				const byte printPercentage = 10;
-				const byte maxBatches = 99 / printPercentage;
-
 				await using StreamResponse? response = await UrlGetToStream(request, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
 				if (response?.StatusCode.IsClientErrorCode() == true) {
@@ -462,6 +459,8 @@ namespace ArchiSteamFarm {
 				try {
 					byte batch = 0;
 					uint readThisBatch = 0;
+					uint batchIncreaseSize = response.Length / 100;
+
 					byte[] buffer = new byte[8192]; // This is HttpClient's buffer, using more doesn't make sense
 
 					while (response.Content.CanRead) {
@@ -473,18 +472,18 @@ namespace ArchiSteamFarm {
 
 						await ms.WriteAsync(buffer, 0, read).ConfigureAwait(false);
 
-						if ((response.Length == 0) || (batch >= maxBatches)) {
+						if ((batchIncreaseSize == 0) || (batch >= 99)) {
 							continue;
 						}
 
 						readThisBatch += (uint) read;
 
-						if (readThisBatch < response.Length / printPercentage) {
+						if (readThisBatch < batchIncreaseSize) {
 							continue;
 						}
 
-						readThisBatch -= response.Length / printPercentage;
-						progressReporter?.Report(++batch * printPercentage);
+						readThisBatch -= batchIncreaseSize;
+						progressReporter?.Report(++batch);
 					}
 				} catch (Exception e) {
 					ArchiLogger.LogGenericDebuggingException(e);

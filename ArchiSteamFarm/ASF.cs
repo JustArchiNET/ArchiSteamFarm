@@ -298,16 +298,16 @@ namespace ArchiSteamFarm {
 
 				ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateDownloadingNewVersion, newVersion, binaryAsset.Size / 1024 / 1024));
 
-				Progress<int> progressReporter = new Progress<int>();
+				Progress<byte> progressReporter = new Progress<byte>();
 
-				progressReporter.ProgressChanged += ReportHandler;
+				progressReporter.ProgressChanged += OnProgressChanged;
 
 				WebBrowser.BinaryResponse? response;
 
 				try {
 					response = await WebBrowser.UrlGetToBinary(binaryAsset.DownloadURL!, progressReporter: progressReporter).ConfigureAwait(false);
 				} finally {
-					progressReporter.ProgressChanged -= ReportHandler;
+					progressReporter.ProgressChanged -= OnProgressChanged;
 				}
 
 				if (response?.Content == null) {
@@ -354,8 +354,6 @@ namespace ArchiSteamFarm {
 			} finally {
 				UpdateSemaphore.Release();
 			}
-
-			static void ReportHandler(object? sender, int progressPercentage) => ArchiLogger.LogGenericDebug($"{progressPercentage}%...");
 		}
 
 		private static async Task<bool> CanHandleWriteEvent(string filePath) {
@@ -667,6 +665,16 @@ namespace ArchiSteamFarm {
 			if (Bot.Bots.TryGetValue(botName, out Bot? bot)) {
 				await bot.OnConfigChanged(true).ConfigureAwait(false);
 			}
+		}
+
+		private static void OnProgressChanged(object? sender, byte progressPercentage) {
+			const byte printEveryPercentage = 10;
+
+			if (progressPercentage % printEveryPercentage != 0) {
+				return;
+			}
+
+			ArchiLogger.LogGenericDebug($"{progressPercentage}%...");
 		}
 
 		private static async void OnRenamed(object sender, RenamedEventArgs e) {
