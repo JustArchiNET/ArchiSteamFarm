@@ -299,11 +299,16 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateDownloadingNewVersion, newVersion, binaryAsset.Size / 1024 / 1024));
 
 				Progress<int> progressReporter = new Progress<int>();
+
 				progressReporter.ProgressChanged += ReportHandler;
 
-				WebBrowser.BinaryResponse? response = await WebBrowser.UrlGetToBinary(binaryAsset.DownloadURL!, progressReporter: progressReporter).ConfigureAwait(false);
+				WebBrowser.BinaryResponse? response;
 
-				progressReporter.ProgressChanged -= ReportHandler;
+				try {
+					response = await WebBrowser.UrlGetToBinary(binaryAsset.DownloadURL!, progressReporter: progressReporter).ConfigureAwait(false);
+				} finally {
+					progressReporter.ProgressChanged -= ReportHandler;
+				}
 
 				if (response?.Content == null) {
 					return null;

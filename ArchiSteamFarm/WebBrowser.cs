@@ -452,6 +452,7 @@ namespace ArchiSteamFarm {
 				}
 
 				progressReporter?.Report(0);
+
 #if NETFRAMEWORK
 				using MemoryStream ms = new MemoryStream((int) response.Length);
 #else
