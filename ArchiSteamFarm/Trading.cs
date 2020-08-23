@@ -265,7 +265,7 @@ namespace ArchiSteamFarm {
 			}
 
 			foreach (((uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) set, Dictionary<ulong, uint> state) in tradableState) {
-				if (!fullState.TryGetValue(set, out Dictionary<ulong, uint>? fullSet) || (fullSet == null) || (fullSet.Count == 0)) {
+				if (!fullState.TryGetValue(set, out Dictionary<ulong, uint>? fullSet) || (fullSet.Count == 0)) {
 					throw new ArgumentNullException(nameof(fullSet));
 				}
 

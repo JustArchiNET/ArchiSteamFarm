@@ -80,7 +80,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 				throw new ArgumentNullException(nameof(context) + " || " + nameof(ClearFailedAuthorizationsTimer));
 			}
 
-			string? ipcPassword = ASF.GlobalConfig?.IPCPassword ?? GlobalConfig.DefaultIPCPassword;
+			string? ipcPassword = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPassword : GlobalConfig.DefaultIPCPassword;
 
 			if (string.IsNullOrEmpty(ipcPassword)) {
 				return HttpStatusCode.OK;

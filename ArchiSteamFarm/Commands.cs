@@ -289,10 +289,10 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(steamID) + " || " + nameof(message));
 			}
 
-			string commandPrefix = ASF.GlobalConfig?.CommandPrefix ?? GlobalConfig.DefaultCommandPrefix;
+			string? commandPrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.CommandPrefix : GlobalConfig.DefaultCommandPrefix;
 
 			if (!string.IsNullOrEmpty(commandPrefix)) {
-				if (!message.StartsWith(commandPrefix, StringComparison.OrdinalIgnoreCase)) {
+				if (!message.StartsWith(commandPrefix!, StringComparison.OrdinalIgnoreCase)) {
 					string? pluginsResponse = await PluginsCore.OnBotMessage(Bot, steamID, message).ConfigureAwait(false);
 
 					if (!string.IsNullOrEmpty(pluginsResponse)) {
@@ -305,7 +305,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				message = message.Substring(commandPrefix.Length);
+				message = message.Substring(commandPrefix!.Length);
 			}
 
 			Task<string?> responseTask = Response(steamID, message);
@@ -346,10 +346,10 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(chatGroupID) + " || " + nameof(chatID) + " || " + nameof(steamID) + " || " + nameof(message));
 			}
 
-			string commandPrefix = ASF.GlobalConfig?.CommandPrefix ?? GlobalConfig.DefaultCommandPrefix;
+			string? commandPrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.CommandPrefix : GlobalConfig.DefaultCommandPrefix;
 
 			if (!string.IsNullOrEmpty(commandPrefix)) {
-				if (!message.StartsWith(commandPrefix, StringComparison.OrdinalIgnoreCase)) {
+				if (!message.StartsWith(commandPrefix!, StringComparison.OrdinalIgnoreCase)) {
 					string? pluginsResponse = await PluginsCore.OnBotMessage(Bot, steamID, message).ConfigureAwait(false);
 
 					if (!string.IsNullOrEmpty(pluginsResponse)) {
@@ -362,7 +362,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				message = message.Substring(commandPrefix.Length);
+				message = message.Substring(commandPrefix!.Length);
 			}
 
 			Task<string?> responseTask = Response(steamID, message);
@@ -1680,7 +1680,7 @@ namespace ArchiSteamFarm {
 
 			Dictionary<string, (ushort Count, string GameName)> ownedGamesStats = new Dictionary<string, (ushort Count, string GameName)>();
 
-			foreach ((string gameID, string gameName) in validResults.Where(validResult => (validResult.OwnedGames != null) && (validResult.OwnedGames.Count > 0)).SelectMany(validResult => validResult.OwnedGames)) {
+			foreach ((string gameID, string gameName) in validResults.Where(validResult => validResult.OwnedGames.Count > 0).SelectMany(validResult => validResult.OwnedGames)) {
 				if (ownedGamesStats.TryGetValue(gameID, out (ushort Count, string GameName) ownedGameStats)) {
 					ownedGameStats.Count++;
 				} else {
@@ -2003,8 +2003,8 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<string?> ResponseRedeem(ulong steamID, string keysText, ERedeemFlags redeemFlags = ERedeemFlags.None) {
-			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || string.IsNullOrEmpty(keysText)) {
-				throw new ArgumentNullException(nameof(steamID) + " || " + nameof(keysText));
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || string.IsNullOrEmpty(keysText) || (Bot.Bots == null)) {
+				throw new ArgumentNullException(nameof(steamID) + " || " + nameof(keysText) + " || " + nameof(Bot.Bots));
 			}
 
 			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Operator)) {

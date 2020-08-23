@@ -122,6 +122,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			// ReSharper disable once ConditionIsAlwaysTrueOrFalse - wrong, "null" json serializes into null object
 			if (globalDatabase == null) {
 				ASF.ArchiLogger.LogNullError(nameof(globalDatabase));
 

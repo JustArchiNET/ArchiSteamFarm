@@ -220,7 +220,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 
 			IOrderedDictionary validGamesToRedeemInBackground = Bot.ValidateGamesToRedeemInBackground(request.GamesToRedeemInBackground);
 
-			if ((validGamesToRedeemInBackground == null) || (validGamesToRedeemInBackground.Count == 0)) {
+			if (validGamesToRedeemInBackground.Count == 0) {
 				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(validGamesToRedeemInBackground))));
 			}
 

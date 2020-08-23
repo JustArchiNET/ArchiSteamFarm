@@ -158,7 +158,7 @@ namespace ArchiSteamFarm {
 				Uri uri;
 
 				try {
-					uri = new Uri(WebProxyText);
+					uri = new Uri(WebProxyText!);
 				} catch (UriFormatException e) {
 					ASF.ArchiLogger.LogGenericException(e);
 
@@ -299,6 +299,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			// ReSharper disable once ConditionIsAlwaysTrueOrFalse - wrong, "null" json serializes into null object
 			if (globalConfig == null) {
 				ASF.ArchiLogger.LogNullError(nameof(globalConfig));
 

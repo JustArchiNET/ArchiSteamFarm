@@ -671,7 +671,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if (!string.IsNullOrEmpty(referer)) {
-					request.Headers.Referrer = new Uri(referer);
+					request.Headers.Referrer = new Uri(referer!);
 				}
 
 				if (Debugging.IsUserDebugging) {

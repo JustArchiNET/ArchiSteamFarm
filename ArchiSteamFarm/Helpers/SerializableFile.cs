@@ -78,9 +78,9 @@ namespace ArchiSteamFarm.Helpers {
 				await RuntimeCompatibility.File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
 				if (File.Exists(FilePath)) {
-					File.Replace(newFilePath, FilePath, null);
+					File.Replace(newFilePath, FilePath!, null);
 				} else {
-					File.Move(newFilePath, FilePath);
+					File.Move(newFilePath, FilePath!);
 				}
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);

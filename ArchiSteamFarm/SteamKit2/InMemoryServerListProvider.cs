@@ -36,9 +36,7 @@ namespace ArchiSteamFarm.SteamKit2 {
 
 		public Task UpdateServerListAsync(IEnumerable<ServerRecord> endpoints) {
 			if (endpoints == null) {
-				ASF.ArchiLogger.LogNullError(nameof(endpoints));
-
-				return Task.CompletedTask;
+				throw new ArgumentNullException(nameof(endpoints));
 			}
 
 			HashSet<ServerRecordEndPoint> newServerRecords = endpoints.Select(ep => new ServerRecordEndPoint(ep.GetHost(), (ushort) ep.GetPort(), ep.ProtocolTypes)).ToHashSet();

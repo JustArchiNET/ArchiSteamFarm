@@ -87,11 +87,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				underlyingType = enumType.GetUnifiedName();
 
 				foreach (object? value in Enum.GetValues(targetType)) {
-					if (value == null) {
-						continue;
-					}
-
-					string? valueText = value.ToString();
+					string? valueText = value?.ToString();
 
 					if (string.IsNullOrEmpty(valueText)) {
 						ASF.ArchiLogger.LogNullError(nameof(valueText));
@@ -105,7 +101,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 						continue;
 					}
 
-					body[valueText] = valueObjText!;
+					body[valueText!] = valueObjText!;
 				}
 			}
 

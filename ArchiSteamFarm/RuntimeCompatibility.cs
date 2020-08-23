@@ -29,7 +29,6 @@ using Microsoft.AspNetCore.Hosting;
 using System.Collections.Generic;
 using System.Net.WebSockets;
 using System.Threading;
-
 #endif
 
 namespace ArchiSteamFarm {

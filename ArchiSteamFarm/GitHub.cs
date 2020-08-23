@@ -53,7 +53,7 @@ namespace ArchiSteamFarm {
 			return await GetReleaseFromURL(SharedInfo.GithubReleaseURL + "/tags/" + version).ConfigureAwait(false);
 		}
 
-		private static MarkdownDocument? ExtractChangelogFromBody(string markdownText) {
+		private static MarkdownDocument ExtractChangelogFromBody(string markdownText) {
 			if (string.IsNullOrEmpty(markdownText)) {
 				throw new ArgumentNullException(nameof(markdownText));
 			}

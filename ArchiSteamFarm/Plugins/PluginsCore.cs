@@ -36,15 +36,13 @@ using SteamKit2;
 
 namespace ArchiSteamFarm.Plugins {
 	internal static class PluginsCore {
-		internal static bool HasCustomPluginsLoaded => HasActivePluginsLoaded && ActivePlugins.Any(plugin => !(plugin is OfficialPlugin officialPlugin) || !officialPlugin.HasSameVersion());
+		internal static bool HasCustomPluginsLoaded => ActivePlugins?.Any(plugin => !(plugin is OfficialPlugin officialPlugin) || !officialPlugin.HasSameVersion()) == true;
 
 		[ImportMany]
 		internal static ImmutableHashSet<IPlugin>? ActivePlugins { get; private set; }
 
-		private static bool HasActivePluginsLoaded => ActivePlugins?.Count > 0;
-
 		internal static async Task<StringComparer> GetBotsComparer() {
-			if (!HasActivePluginsLoaded) {
+			if (ActivePlugins == null) {
 				return StringComparer.Ordinal;
 			}
 
@@ -64,7 +62,7 @@ namespace ArchiSteamFarm.Plugins {
 		}
 
 		internal static async Task<uint> GetChangeNumberToStartFrom() {
-			if (!HasActivePluginsLoaded) {
+			if (ActivePlugins == null) {
 				return 0;
 			}
 
@@ -88,7 +86,7 @@ namespace ArchiSteamFarm.Plugins {
 		}
 
 		internal static bool InitPlugins() {
-			if (HasActivePluginsLoaded) {
+			if (ActivePlugins != null) {
 				return false;
 			}
 
@@ -189,7 +187,7 @@ namespace ArchiSteamFarm.Plugins {
 		}
 
 		internal static async Task OnASFInitModules(IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null) {
-			if (!HasActivePluginsLoaded) {
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 				return;
 			}
 
@@ -205,7 +203,7 @@ namespace ArchiSteamFarm.Plugins {
 				throw new ArgumentNullException(nameof(bot) + " || " + nameof(steamID) + " || " + nameof(message) + " || " + nameof(args));
 			}
 
-			if (!HasActivePluginsLoaded) {
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 				return null;
 			}
 
@@ -227,7 +225,7 @@ namespace ArchiSteamFarm.Plugins {
 				throw new ArgumentNullException(nameof(bot));
 			}
 
-			if (!HasActivePluginsLoaded) {
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 				return;
 			}
 
@@ -243,7 +241,7 @@ namespace ArchiSteamFarm.Plugins {
 				throw new ArgumentNullException(nameof(bot));
 			}
 
-			if (!HasActivePluginsLoaded) {
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 				return;
 			}
 
@@ -259,7 +257,7 @@ namespace ArchiSteamFarm.Plugins {
 				throw new ArgumentNullException(nameof(bot));
 			}
 
-			if (!HasActivePluginsLoaded) {
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 				return;
 			}
 
@@ -275,7 +273,7 @@ namespace ArchiSteamFarm.Plugins {
 				throw new ArgumentNullException(nameof(bot));
 			}
 
-			if (!HasActivePluginsLoaded) {
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 				return;
 			}
 
@@ -291,7 +289,7 @@ namespace ArchiSteamFarm.Plugins {
 				throw new ArgumentNullException(nameof(bot));
 			}
 
-			if (!HasActivePluginsLoaded) {
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 				return;
 			}
 
@@ -307,7 +305,7 @@ namespace ArchiSteamFarm.Plugins {
 				throw new ArgumentNullException(nameof(bot) + " || " + nameof(steamID));
 			}
 
-			if (!HasActivePluginsLoaded) {
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 				return false;
 			}
 
@@ -329,7 +327,7 @@ namespace ArchiSteamFarm.Plugins {
 				throw new ArgumentNullException(nameof(bot));
 			}
 
-			if (!HasActivePluginsLoaded) {
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 				return;
 			}
 
@@ -345,7 +343,7 @@ namespace ArchiSteamFarm.Plugins {
 				throw new ArgumentNullException(nameof(bot));
 			}
 
-			if (!HasActivePluginsLoaded) {
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 				return;
 			}
 
@@ -361,7 +359,7 @@ namespace ArchiSteamFarm.Plugins {
 				throw new ArgumentNullException(nameof(bot));
 			}
 
-			if (!HasActivePluginsLoaded) {
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 				return;
 			}
 
@@ -377,7 +375,7 @@ namespace ArchiSteamFarm.Plugins {
 				throw new ArgumentNullException(nameof(bot) + " || " + nameof(steamID) + " || " + nameof(message));
 			}
 
-			if (!HasActivePluginsLoaded) {
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 				return null;
 			}
 
@@ -399,7 +397,7 @@ namespace ArchiSteamFarm.Plugins {
 				throw new ArgumentNullException(nameof(bot) + " || " + nameof(callbackManager));
 			}
 
-			if (!HasActivePluginsLoaded) {
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 				return;
 			}
 
@@ -415,7 +413,7 @@ namespace ArchiSteamFarm.Plugins {
 				throw new ArgumentNullException(nameof(bot));
 			}
 
-			if (!HasActivePluginsLoaded) {
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 				return null;
 			}
 
@@ -437,7 +435,7 @@ namespace ArchiSteamFarm.Plugins {
 				throw new ArgumentNullException(nameof(bot) + " || " + nameof(tradeOffer));
 			}
 
-			if (!HasActivePluginsLoaded) {
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 				return false;
 			}
 
@@ -459,7 +457,7 @@ namespace ArchiSteamFarm.Plugins {
 				throw new ArgumentNullException(nameof(bot) + " || " + nameof(tradeResults));
 			}
 
-			if (!HasActivePluginsLoaded) {
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 				return;
 			}
 
@@ -475,7 +473,7 @@ namespace ArchiSteamFarm.Plugins {
 				throw new ArgumentNullException(nameof(bot) + " || " + nameof(newNotifications));
 			}
 
-			if (!HasActivePluginsLoaded) {
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 				return;
 			}
 
@@ -491,7 +489,7 @@ namespace ArchiSteamFarm.Plugins {
 				throw new ArgumentNullException(nameof(currentChangeNumber) + " || " + nameof(appChanges) + " || " + nameof(packageChanges));
 			}
 
-			if (!HasActivePluginsLoaded) {
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 				return;
 			}
 
@@ -507,7 +505,7 @@ namespace ArchiSteamFarm.Plugins {
 				throw new ArgumentNullException(nameof(currentChangeNumber));
 			}
 
-			if (!HasActivePluginsLoaded) {
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
 				return;
 			}
 

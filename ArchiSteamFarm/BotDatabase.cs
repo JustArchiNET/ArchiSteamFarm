@@ -182,6 +182,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			// ReSharper disable once ConditionIsAlwaysTrueOrFalse - wrong, "null" json serializes into null object
 			if (botDatabase == null) {
 				ASF.ArchiLogger.LogNullError(nameof(botDatabase));
 
@@ -195,15 +196,17 @@ namespace ArchiSteamFarm {
 
 		internal IReadOnlyCollection<ulong> GetBlacklistedFromTradesSteamIDs() => BlacklistedFromTradesSteamIDs;
 
+#pragma warning disable CS8605
 		internal (string? Key, string? Name) GetGameToRedeemInBackground() {
 			lock (GamesToRedeemInBackground) {
-				foreach (DictionaryEntry? game in GamesToRedeemInBackground) {
-					return (game?.Key as string, game?.Value as string);
+				foreach (DictionaryEntry game in GamesToRedeemInBackground) {
+					return (game.Key as string, game.Value as string);
 				}
 			}
 
 			return (null, null);
 		}
+#pragma warning restore CS8605
 
 		internal IReadOnlyCollection<uint> GetIdlingBlacklistedAppIDs() => IdlingBlacklistedAppIDs;
 		internal IReadOnlyCollection<uint> GetIdlingPriorityAppIDs() => IdlingPriorityAppIDs;

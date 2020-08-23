@@ -19,6 +19,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.IO;
 using System.Text;
 using SteamKit2;
@@ -31,9 +32,7 @@ namespace ArchiSteamFarm.CMsgs {
 
 		void ISteamSerializable.Deserialize(Stream stream) {
 			if (stream == null) {
-				ASF.ArchiLogger.LogNullError(nameof(stream));
-
-				return;
+				throw new ArgumentNullException(nameof(stream));
 			}
 
 			using BinaryReader binaryReader = new BinaryReader(stream, Encoding.UTF8, true);
@@ -46,9 +45,7 @@ namespace ArchiSteamFarm.CMsgs {
 
 		void ISteamSerializable.Serialize(Stream stream) {
 			if (stream == null) {
-				ASF.ArchiLogger.LogNullError(nameof(stream));
-
-				return;
+				throw new ArgumentNullException(nameof(stream));
 			}
 
 			using BinaryWriter binaryWriter = new BinaryWriter(stream, Encoding.UTF8, true);

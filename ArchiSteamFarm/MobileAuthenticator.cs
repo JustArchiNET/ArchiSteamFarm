@@ -257,7 +257,7 @@ namespace ArchiSteamFarm {
 			byte[] identitySecret;
 
 			try {
-				identitySecret = Convert.FromBase64String(IdentitySecret);
+				identitySecret = Convert.FromBase64String(IdentitySecret!);
 			} catch (FormatException e) {
 				Bot.ArchiLogger.LogGenericException(e);
 				Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(IdentitySecret)));
@@ -282,7 +282,7 @@ namespace ArchiSteamFarm {
 			Array.Copy(timeArray, buffer, 8);
 
 			if (!string.IsNullOrEmpty(tag)) {
-				Array.Copy(Encoding.UTF8.GetBytes(tag), 0, buffer, 8, bufferSize - 8);
+				Array.Copy(Encoding.UTF8.GetBytes(tag!), 0, buffer, 8, bufferSize - 8);
 			}
 
 			using HMACSHA1 hmac = new HMACSHA1(identitySecret);
@@ -300,7 +300,7 @@ namespace ArchiSteamFarm {
 			byte[] sharedSecret;
 
 			try {
-				sharedSecret = Convert.FromBase64String(SharedSecret);
+				sharedSecret = Convert.FromBase64String(SharedSecret!);
 			} catch (FormatException e) {
 				Bot.ArchiLogger.LogGenericException(e);
 				Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(SharedSecret)));

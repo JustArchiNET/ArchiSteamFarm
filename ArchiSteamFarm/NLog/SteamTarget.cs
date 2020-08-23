@@ -55,9 +55,7 @@ namespace ArchiSteamFarm.NLog {
 
 		protected override async void Write(LogEventInfo logEvent) {
 			if (logEvent == null) {
-				ASF.ArchiLogger.LogNullError(nameof(logEvent));
-
-				return;
+				throw new ArgumentNullException(nameof(logEvent));
 			}
 
 			base.Write(logEvent);

@@ -39,7 +39,6 @@ using Newtonsoft.Json.Serialization;
 
 #if NETFRAMEWORK
 using Newtonsoft.Json.Converters;
-
 #endif
 
 namespace ArchiSteamFarm.IPC {
@@ -92,7 +91,7 @@ namespace ArchiSteamFarm.IPC {
 			app.UseRouting();
 #endif
 
-			string? ipcPassword = ASF.GlobalConfig?.IPCPassword ?? GlobalConfig.DefaultIPCPassword;
+			string? ipcPassword = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPassword : GlobalConfig.DefaultIPCPassword;
 
 			if (!string.IsNullOrEmpty(ipcPassword)) {
 				// We need ApiAuthenticationMiddleware for IPCPassword
@@ -137,7 +136,7 @@ namespace ArchiSteamFarm.IPC {
 			// Add support for response compression
 			services.AddResponseCompression();
 
-			string? ipcPassword = ASF.GlobalConfig?.IPCPassword ?? GlobalConfig.DefaultIPCPassword;
+			string? ipcPassword = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPassword : GlobalConfig.DefaultIPCPassword;
 
 			// Add CORS to allow userscripts and third-party apps
 			if (!string.IsNullOrEmpty(ipcPassword)) {

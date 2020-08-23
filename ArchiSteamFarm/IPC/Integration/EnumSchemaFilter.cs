@@ -31,9 +31,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 	internal sealed class EnumSchemaFilter : ISchemaFilter {
 		public void Apply(OpenApiSchema schema, SchemaFilterContext context) {
 			if ((schema == null) || (context == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(schema) + " || " + nameof(context));
-
-				return;
+				throw new ArgumentNullException(nameof(schema) + " || " + nameof(context));
 			}
 
 			if (!context.Type.IsEnum) {
@@ -74,7 +72,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 					throw new ArgumentOutOfRangeException(nameof(enumValue));
 				}
 
-				definition.Add(enumName, enumObject);
+				definition.Add(enumName!, enumObject);
 			}
 
 			schema.AddExtension("x-definition", definition);

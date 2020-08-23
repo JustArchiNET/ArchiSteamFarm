@@ -159,15 +159,15 @@ namespace ArchiSteamFarm.Helpers {
 			}
 
 			if (!Directory.Exists(directoryPath)) {
-				Directory.CreateDirectory(directoryPath);
+				Directory.CreateDirectory(directoryPath!);
 
 				if (OS.IsUnix) {
-					OS.UnixSetFileAccess(directoryPath, OS.EUnixPermission.Combined777);
+					OS.UnixSetFileAccess(directoryPath!, OS.EUnixPermission.Combined777);
 				} else {
-					DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath);
+					DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath!);
 
 					try {
-						DirectorySecurity directorySecurity = new DirectorySecurity(directoryPath, AccessControlSections.All);
+						DirectorySecurity directorySecurity = new DirectorySecurity(directoryPath!, AccessControlSections.All);
 
 						directoryInfo.SetAccessControl(directorySecurity);
 					} catch (PrivilegeNotHeldException e) {

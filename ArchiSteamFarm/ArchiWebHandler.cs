@@ -245,7 +245,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				XmlNode appNode = xmlNode.SelectSingleNode("appID");
+				XmlNode? appNode = xmlNode.SelectSingleNode("appID");
 
 				if (appNode == null) {
 					Bot.ArchiLogger.LogNullError(nameof(appNode));
@@ -259,7 +259,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				XmlNode nameNode = xmlNode.SelectSingleNode("name");
+				XmlNode? nameNode = xmlNode.SelectSingleNode("name");
 
 				if (nameNode == null) {
 					Bot.ArchiLogger.LogNullError(nameof(nameNode));

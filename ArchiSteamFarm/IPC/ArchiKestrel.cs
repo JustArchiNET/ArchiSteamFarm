@@ -31,9 +31,9 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog.Web;
+
 #if !NETFRAMEWORK
 using Microsoft.Extensions.Hosting;
-
 #endif
 
 namespace ArchiSteamFarm.IPC {

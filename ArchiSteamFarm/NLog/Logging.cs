@@ -76,7 +76,7 @@ namespace ArchiSteamFarm.NLog {
 
 			await ConsoleSemaphore.WaitAsync().ConfigureAwait(false);
 
-			string result;
+			string? result;
 
 			try {
 				OnUserInputStart();
@@ -131,7 +131,7 @@ namespace ArchiSteamFarm.NLog {
 				ConsoleSemaphore.Release();
 			}
 
-			return !string.IsNullOrEmpty(result) ? result.Trim() : null;
+			return !string.IsNullOrEmpty(result) ? result!.Trim() : null;
 		}
 
 		internal static void InitCoreLoggers(bool uniqueInstance) {
@@ -221,7 +221,7 @@ namespace ArchiSteamFarm.NLog {
 			ASF.ArchiLogger.LogGenericInfo(Strings.InteractiveConsoleEnabled);
 		}
 
-		private static string ConsoleReadLine() {
+		private static string? ConsoleReadLine() {
 			Console.Beep();
 
 			return Console.ReadLine();
@@ -277,23 +277,23 @@ namespace ArchiSteamFarm.NLog {
 
 						try {
 							Console.Write(@">> " + Strings.EnterCommand);
-							string command = ConsoleReadLine();
+							string? command = ConsoleReadLine();
 
 							if (string.IsNullOrEmpty(command)) {
 								continue;
 							}
 
-							string commandPrefix = ASF.GlobalConfig?.CommandPrefix ?? GlobalConfig.DefaultCommandPrefix;
+							string? commandPrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.CommandPrefix : GlobalConfig.DefaultCommandPrefix;
 
-							if (!string.IsNullOrEmpty(commandPrefix) && command.StartsWith(commandPrefix, StringComparison.Ordinal)) {
-								command = command.Substring(commandPrefix.Length);
+							if (!string.IsNullOrEmpty(commandPrefix) && command!.StartsWith(commandPrefix!, StringComparison.Ordinal)) {
+								command = command.Substring(commandPrefix!.Length);
 
 								if (string.IsNullOrEmpty(command)) {
 									continue;
 								}
 							}
 
-							Bot? targetBot = Bot.Bots.OrderBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value).FirstOrDefault();
+							Bot? targetBot = Bot.Bots?.OrderBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value).FirstOrDefault();
 
 							if (targetBot == null) {
 								Console.WriteLine(@"<< " + Strings.ErrorNoBotsDefined);
@@ -305,7 +305,7 @@ namespace ArchiSteamFarm.NLog {
 
 							ulong steamOwnerID = ASF.GlobalConfig?.SteamOwnerID ?? GlobalConfig.DefaultSteamOwnerID;
 
-							string? response = await targetBot.Commands.Response(steamOwnerID, command).ConfigureAwait(false);
+							string? response = await targetBot.Commands.Response(steamOwnerID, command!).ConfigureAwait(false);
 
 							if (string.IsNullOrEmpty(response)) {
 								ASF.ArchiLogger.LogNullError(nameof(response));
@@ -341,9 +341,7 @@ namespace ArchiSteamFarm.NLog {
 
 		private static void OnConfigurationChanged(object? sender, LoggingConfigurationChangedEventArgs e) {
 			if (e == null) {
-				ASF.ArchiLogger.LogNullError(nameof(e));
-
-				return;
+				throw new ArgumentNullException(nameof(e));
 			}
 
 			InitConsoleLoggers();

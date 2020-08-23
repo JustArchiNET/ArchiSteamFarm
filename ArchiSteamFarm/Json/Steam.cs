@@ -335,9 +335,7 @@ namespace ArchiSteamFarm.Json {
 			[PublicAPI]
 			public bool IsValidSteamItemsRequest(IReadOnlyCollection<Asset.EType> acceptedTypes) {
 				if ((acceptedTypes == null) || (acceptedTypes.Count == 0)) {
-					ASF.ArchiLogger.LogNullError(nameof(acceptedTypes));
-
-					return false;
+					throw new ArgumentNullException(nameof(acceptedTypes));
 				}
 
 				return ItemsToGive.All(item => (item.AppID == Asset.SteamAppID) && (item.ContextID == Asset.SteamCommunityContextID) && acceptedTypes.Contains(item.Type));

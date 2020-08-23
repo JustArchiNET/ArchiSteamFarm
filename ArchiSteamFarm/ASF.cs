@@ -131,9 +131,7 @@ namespace ArchiSteamFarm {
 
 		internal static void InitGlobalConfig(GlobalConfig globalConfig) {
 			if (globalConfig == null) {
-				ArchiLogger.LogNullError(nameof(globalConfig));
-
-				return;
+				throw new ArgumentNullException(nameof(globalConfig));
 			}
 
 			if (GlobalConfig != null) {
@@ -150,11 +148,11 @@ namespace ArchiSteamFarm {
 			if (!string.IsNullOrEmpty(Program.NetworkGroup)) {
 				using MD5 hashingAlgorithm = MD5.Create();
 
-				networkGroupText = "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(Program.NetworkGroup))).Replace("-", "");
+				networkGroupText = "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(Program.NetworkGroup!))).Replace("-", "");
 			} else if (!string.IsNullOrEmpty(globalConfig.WebProxyText)) {
 				using MD5 hashingAlgorithm = MD5.Create();
 
-				networkGroupText = "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(globalConfig.WebProxyText))).Replace("-", "");
+				networkGroupText = "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(globalConfig.WebProxyText!))).Replace("-", "");
 			}
 
 			ConfirmationsSemaphore ??= OS.CreateCrossProcessSemaphore(nameof(ConfirmationsSemaphore) + networkGroupText);
@@ -174,9 +172,7 @@ namespace ArchiSteamFarm {
 
 		internal static void InitGlobalDatabase(GlobalDatabase globalDatabase) {
 			if (globalDatabase == null) {
-				ArchiLogger.LogNullError(nameof(globalDatabase));
-
-				return;
+				throw new ArgumentNullException(nameof(globalDatabase));
 			}
 
 			if (GlobalDatabase != null) {
@@ -250,7 +246,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				Version newVersion = new Version(releaseResponse.Tag);
+				Version newVersion = new Version(releaseResponse.Tag!);
 
 				ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateVersionInfo, SharedInfo.Version, newVersion));
 
@@ -387,6 +383,10 @@ namespace ArchiSteamFarm {
 		private static void InitEvents() {
 			if ((FileSystemWatcher != null) || (LastWriteEvents != null) || !Directory.Exists(SharedInfo.ConfigDirectory)) {
 				return;
+			}
+
+			if (Bot.BotsComparer == null) {
+				throw new ArgumentNullException(nameof(Bot.BotsComparer));
 			}
 
 			FileSystemWatcher = new FileSystemWatcher(SharedInfo.ConfigDirectory) { NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite };
@@ -858,7 +858,7 @@ namespace ArchiSteamFarm {
 					}
 
 					if (!Directory.Exists(directory)) {
-						Directory.CreateDirectory(directory);
+						Directory.CreateDirectory(directory!);
 					}
 
 					// We're not interested in extracting placeholder files (but we still want directories created for them, done above)

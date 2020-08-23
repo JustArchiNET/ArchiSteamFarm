@@ -48,7 +48,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 				throw new ArgumentNullException(nameof(response.Content.Link));
 			}
 
-			return Uri.EscapeUriString(response.Content.Link);
+			return Uri.EscapeUriString(response.Content!.Link!);
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]

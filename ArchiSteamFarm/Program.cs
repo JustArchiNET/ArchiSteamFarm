@@ -61,7 +61,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			string? executableName = Path.GetFileNameWithoutExtension(OS.ProcessFileName);
+			string executableName = Path.GetFileNameWithoutExtension(OS.ProcessFileName);
 
 			if (string.IsNullOrEmpty(executableName)) {
 				throw new ArgumentNullException(nameof(executableName));
@@ -223,7 +223,7 @@ namespace ArchiSteamFarm {
 			if (!string.IsNullOrEmpty(ASF.GlobalConfig?.CurrentCulture)) {
 				try {
 					// GetCultureInfo() would be better but we can't use it for specifying neutral cultures such as "en"
-					CultureInfo culture = CultureInfo.CreateSpecificCulture(ASF.GlobalConfig!.CurrentCulture);
+					CultureInfo culture = CultureInfo.CreateSpecificCulture(ASF.GlobalConfig!.CurrentCulture!);
 					CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = culture;
 				} catch (Exception e) {
 					ASF.ArchiLogger.LogGenericWarningException(e);
@@ -385,8 +385,12 @@ namespace ArchiSteamFarm {
 		private static async void OnProcessExit(object? sender, EventArgs e) => await Shutdown().ConfigureAwait(false);
 
 		private static async void OnUnhandledException(object? sender, UnhandledExceptionEventArgs e) {
-			if (e?.ExceptionObject == null) {
-				throw new ArgumentNullException(nameof(e) + " || " + nameof(e.ExceptionObject));
+			if (e == null) {
+				throw new ArgumentNullException(nameof(e));
+			}
+
+			if (e.ExceptionObject == null) {
+				throw new ArgumentNullException(nameof(e.ExceptionObject));
 			}
 
 			await ASF.ArchiLogger.LogFatalException((Exception) e.ExceptionObject).ConfigureAwait(false);
@@ -394,8 +398,12 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async void OnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e) {
-			if (e?.Exception == null) {
-				throw new ArgumentNullException(nameof(e) + " || " + nameof(e.Exception));
+			if (e == null) {
+				throw new ArgumentNullException(nameof(e));
+			}
+
+			if (e.Exception == null) {
+				throw new ArgumentNullException(nameof(e.Exception));
 			}
 
 			await ASF.ArchiLogger.LogFatalException(e.Exception).ConfigureAwait(false);
@@ -414,7 +422,7 @@ namespace ArchiSteamFarm {
 				string? envCryptKey = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableCryptKey);
 
 				if (!string.IsNullOrEmpty(envCryptKey)) {
-					HandleCryptKeyArgument(envCryptKey);
+					HandleCryptKeyArgument(envCryptKey!);
 				}
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
@@ -462,13 +470,13 @@ namespace ArchiSteamFarm {
 				string? envNetworkGroup = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableNetworkGroup);
 
 				if (!string.IsNullOrEmpty(envNetworkGroup)) {
-					HandleNetworkGroupArgument(envNetworkGroup);
+					HandleNetworkGroupArgument(envNetworkGroup!);
 				}
 
 				string? envPath = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariablePath);
 
 				if (!string.IsNullOrEmpty(envPath)) {
-					HandlePathArgument(envPath);
+					HandlePathArgument(envPath!);
 				}
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
