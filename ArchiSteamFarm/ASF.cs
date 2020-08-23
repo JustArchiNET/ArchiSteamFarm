@@ -298,7 +298,12 @@ namespace ArchiSteamFarm {
 
 				ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateDownloadingNewVersion, newVersion, binaryAsset.Size / 1024 / 1024));
 
-				WebBrowser.BinaryResponse? response = await WebBrowser.UrlGetToBinaryWithProgress(binaryAsset.DownloadURL!).ConfigureAwait(false);
+				Progress<int> progressReporter = new Progress<int>();
+				progressReporter.ProgressChanged += ReportHandler;
+
+				WebBrowser.BinaryResponse? response = await WebBrowser.UrlGetToBinary(binaryAsset.DownloadURL!, progressReporter: progressReporter).ConfigureAwait(false);
+
+				progressReporter.ProgressChanged -= ReportHandler;
 
 				if (response?.Content == null) {
 					return null;
@@ -344,6 +349,8 @@ namespace ArchiSteamFarm {
 			} finally {
 				UpdateSemaphore.Release();
 			}
+
+			static void ReportHandler(object? sender, int progressPercentage) => ArchiLogger.LogGenericDebug($"{progressPercentage}%...");
 		}
 
 		private static async Task<bool> CanHandleWriteEvent(string filePath) {
