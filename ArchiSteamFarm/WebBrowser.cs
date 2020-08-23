@@ -426,7 +426,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task<BinaryResponse?> UrlGetToBinaryWithProgress(string request, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
+		internal async Task<BinaryResponse?> UrlGetToBinary(string request, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, IProgress<int>? progressReporter = null) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				throw new ArgumentNullException(nameof(request) + " || " + nameof(maxTries));
 			}
@@ -451,8 +451,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				ArchiLogger.LogGenericDebug("0%...");
-
+				progressReporter?.Report(0);
 #if NETFRAMEWORK
 				using MemoryStream ms = new MemoryStream((int) response.Length);
 #else
@@ -484,7 +483,7 @@ namespace ArchiSteamFarm {
 						}
 
 						readThisBatch -= response.Length / printPercentage;
-						ArchiLogger.LogGenericDebug((++batch * printPercentage) + "%...");
+						progressReporter?.Report(++batch * printPercentage);
 					}
 				} catch (Exception e) {
 					ArchiLogger.LogGenericDebuggingException(e);
@@ -492,7 +491,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				ArchiLogger.LogGenericDebug("100%");
+				progressReporter?.Report(100);
 
 				return new BinaryResponse(response, ms.ToArray());
 			}
