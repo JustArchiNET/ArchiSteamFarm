@@ -253,7 +253,7 @@ namespace ArchiSteamFarm {
 
 				try {
 					xmlDocument.Load(response.Content);
-				} catch (XmlException e) {
+				} catch (Exception e) {
 					ArchiLogger.LogGenericWarningException(e);
 
 					continue;
