@@ -815,7 +815,7 @@ namespace ArchiSteamFarm {
 
 				DateTime startFarmingPeriod = DateTime.UtcNow;
 
-				if (await FarmingResetSemaphore.WaitAsync((ASF.GlobalConfig?.FarmingDelay ?? GlobalConfig.DefaultFarmingDelay * 60 * 1000) + (ExtraFarmingDelaySeconds * 1000)).ConfigureAwait(false)) {
+				if (await FarmingResetSemaphore.WaitAsync(((ASF.GlobalConfig?.FarmingDelay ?? GlobalConfig.DefaultFarmingDelay) * 60 * 1000) + (ExtraFarmingDelaySeconds * 1000)).ConfigureAwait(false)) {
 					success = KeepFarming;
 				}
 
@@ -860,7 +860,7 @@ namespace ArchiSteamFarm {
 
 				DateTime startFarmingPeriod = DateTime.UtcNow;
 
-				if (await FarmingResetSemaphore.WaitAsync((ASF.GlobalConfig?.FarmingDelay ?? GlobalConfig.DefaultFarmingDelay * 60 * 1000) + (ExtraFarmingDelaySeconds * 1000)).ConfigureAwait(false)) {
+				if (await FarmingResetSemaphore.WaitAsync(((ASF.GlobalConfig?.FarmingDelay ?? GlobalConfig.DefaultFarmingDelay) * 60 * 1000) + (ExtraFarmingDelaySeconds * 1000)).ConfigureAwait(false)) {
 					success = KeepFarming;
 				}
 
