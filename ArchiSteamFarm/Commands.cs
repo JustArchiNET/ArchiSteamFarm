@@ -166,6 +166,8 @@ namespace ArchiSteamFarm {
 							return await ResponseBlacklistRemove(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
 						case "BLRM":
 							return ResponseBlacklistRemove(steamID, args[1]);
+						case "ENCRYPT" when args.Length > 2:
+							return ResponseEncrypt(steamID, args[1], Utilities.GetArgsAsText(message, 2));
 						case "FARM":
 							return await ResponseFarm(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "INPUT" when args.Length > 3:
@@ -972,6 +974,24 @@ namespace ArchiSteamFarm {
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+		}
+
+		private static string? ResponseEncrypt(ulong steamID, string cryptoMethodText, string stringToEncrypt) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || string.IsNullOrEmpty(cryptoMethodText) || string.IsNullOrEmpty(stringToEncrypt)) {
+				throw new ArgumentNullException(nameof(steamID) + " || " + nameof(cryptoMethodText) + " || " + nameof(stringToEncrypt));
+			}
+
+			if (!ASF.IsOwner(steamID)) {
+				return null;
+			}
+
+			if (!Enum.TryParse(cryptoMethodText, true, out ArchiCryptoHelper.ECryptoMethod cryptoMethod)) {
+				return FormatStaticResponse(string.Format(Strings.ErrorIsInvalid, nameof(cryptoMethod)));
+			}
+
+			string? encryptedString = Actions.Encrypt(cryptoMethod, stringToEncrypt);
+
+			return FormatStaticResponse(!string.IsNullOrEmpty(encryptedString) ? string.Format(Strings.Result, encryptedString) : Strings.WarningFailed);
 		}
 
 		private static string? ResponseExit(ulong steamID) {

@@ -57,6 +57,15 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
+		public static string? Encrypt(ArchiCryptoHelper.ECryptoMethod cryptoMethod, string stringToEncrypt) {
+			if (!Enum.IsDefined(typeof(ArchiCryptoHelper.ECryptoMethod), cryptoMethod) || string.IsNullOrEmpty(stringToEncrypt)) {
+				throw new ArgumentNullException(nameof(cryptoMethod) + " || " + nameof(stringToEncrypt));
+			}
+
+			return ArchiCryptoHelper.Encrypt(cryptoMethod, stringToEncrypt);
+		}
+
+		[PublicAPI]
 		public static (bool Success, string Message) Exit() {
 			// Schedule the task after some time so user can receive response
 			Utilities.InBackground(

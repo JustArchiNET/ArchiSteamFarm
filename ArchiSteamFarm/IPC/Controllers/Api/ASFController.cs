@@ -34,6 +34,27 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[Route("Api/ASF")]
 	public sealed class ASFController : ArchiController {
 		/// <summary>
+		///     Encrypts data with ASF encryption mechanisms using provided details.
+		/// </summary>
+		[Consumes("application/json")]
+		[HttpPost("Encrypt")]
+		[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+		public ActionResult<GenericResponse> ASFEncryptPost([FromBody] ASFEncryptRequest request) {
+			if (request == null) {
+				throw new ArgumentNullException(nameof(request));
+			}
+
+			if (string.IsNullOrEmpty(request.StringToEncrypt)) {
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(request.StringToEncrypt))));
+			}
+
+			string? encryptedString = Actions.Encrypt(request.CryptoMethod, request.StringToEncrypt!);
+
+			return Ok(new GenericResponse<string>(encryptedString));
+		}
+
+		/// <summary>
 		///     Fetches common info related to ASF as a whole.
 		/// </summary>
 		[HttpGet]
