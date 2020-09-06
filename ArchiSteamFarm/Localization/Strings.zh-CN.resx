@@ -732,4 +732,8 @@
     <value>连续收到无效密码（InvalidPassword）错误代码 {0} 次。您对此帐户的密码很可能是错误的，正在中止操作！</value>
     <comment>{0} will be replaced by maximum allowed number of failed login attempts</comment>
   </data>
+  <data name="Result" xml:space="preserve">
+    <value>结果：{0}</value>
+    <comment>{0} will be replaced by generic result of various functions that use this string</comment>
+  </data>
 </root>

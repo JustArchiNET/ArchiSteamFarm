@@ -732,4 +732,8 @@ Czas procesu: {1}</value>
     <value>Otrzymano kod błędu InvalidPassword {0} razy z rzędu. Twoje hasło do tego konta jest najprawdopodobniej błędne, przerywam!</value>
     <comment>{0} will be replaced by maximum allowed number of failed login attempts</comment>
   </data>
+  <data name="Result" xml:space="preserve">
+    <value>Wynik: {0}</value>
+    <comment>{0} will be replaced by generic result of various functions that use this string</comment>
+  </data>
 </root>

@@ -732,4 +732,8 @@
     <value>Код ошибки InvalidPassword получен {0} раз подряд. Ваш пароль для этого аккаунта скорее всего неверен, прекращаем работу!</value>
     <comment>{0} will be replaced by maximum allowed number of failed login attempts</comment>
   </data>
+  <data name="Result" xml:space="preserve">
+    <value>Результат: {0}</value>
+    <comment>{0} will be replaced by generic result of various functions that use this string</comment>
+  </data>
 </root>
