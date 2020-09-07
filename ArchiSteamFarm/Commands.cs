@@ -1368,12 +1368,12 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(steamID));
 			}
 
-			if (!Bot.IsConnectedAndLoggedOn) {
-				return FormatBotResponse(Strings.BotNotConnected);
-			}
-
 			if (!Bot.HasPermission(steamID, BotConfig.EPermission.Master)) {
 				return null;
+			}
+
+			if (!Bot.IsConnectedAndLoggedOn) {
+				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
 			uint? level = await Bot.ArchiHandler.GetLevel().ConfigureAwait(false);
