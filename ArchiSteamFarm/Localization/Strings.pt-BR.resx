@@ -732,5 +732,8 @@ Tempo de execução: {1}</value>
     <value>O código de erro InvalidPassword foi recebido {0} vezes seguidas. A sua senha para essa conta provavelmente está errada, abortando!</value>
     <comment>{0} will be replaced by maximum allowed number of failed login attempts</comment>
   </data>
-  
+  <data name="Result" xml:space="preserve">
+    <value>Resultado: {0}</value>
+    <comment>{0} will be replaced by generic result of various functions that use this string</comment>
+  </data>
 </root>
