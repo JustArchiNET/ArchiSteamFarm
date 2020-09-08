@@ -36,36 +36,90 @@ using SteamKit2;
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	public sealed class GlobalConfig {
-		internal const string DefaultCommandPrefix = "!";
-		internal const byte DefaultConfirmationsLimiterDelay = 10;
-		internal const byte DefaultConnectionTimeout = 90;
-		internal const byte DefaultFarmingDelay = 15;
-		internal const byte DefaultGiftsLimiterDelay = 1;
-		internal const bool DefaultHeadless = false;
-		internal const byte DefaultIdleFarmingPeriod = 8;
-		internal const byte DefaultInventoryLimiterDelay = 3;
-		internal const string DefaultIPCPassword = null;
-		internal const byte DefaultLoginLimiterDelay = 10;
-		internal const byte DefaultMaxFarmingTime = 10;
-		internal const byte DefaultMaxTradeHoldDuration = 15;
-		internal const string DefaultSteamMessagePrefix = "/me ";
-		internal const ulong DefaultSteamOwnerID = 0;
-		internal const ushort DefaultWebLimiterDelay = 300;
+		[PublicAPI]
+		public const bool DefaultAutoRestart = true;
 
-		private const bool DefaultAutoRestart = true;
-		private const string DefaultCurrentCulture = null;
-		private const bool DefaultDebug = false;
-		private const bool DefaultIPC = false;
-		private const EOptimizationMode DefaultOptimizationMode = EOptimizationMode.MaxPerformance;
-		private const bool DefaultStatistics = true;
-		private const ProtocolTypes DefaultSteamProtocols = ProtocolTypes.All;
-		private const EUpdateChannel DefaultUpdateChannel = EUpdateChannel.Stable;
-		private const byte DefaultUpdatePeriod = 24;
-		private const string DefaultWebProxyPassword = null;
-		private const string DefaultWebProxyText = null;
-		private const string DefaultWebProxyUsername = null;
+		[PublicAPI]
+		public const string DefaultCommandPrefix = "!";
 
-		private static readonly ImmutableHashSet<uint> DefaultBlacklist = ImmutableHashSet.Create<uint>();
+		[PublicAPI]
+		public const byte DefaultConfirmationsLimiterDelay = 10;
+
+		[PublicAPI]
+		public const byte DefaultConnectionTimeout = 90;
+
+		[PublicAPI]
+		public const string DefaultCurrentCulture = null;
+
+		[PublicAPI]
+		public const bool DefaultDebug = false;
+
+		[PublicAPI]
+		public const byte DefaultFarmingDelay = 15;
+
+		[PublicAPI]
+		public const byte DefaultGiftsLimiterDelay = 1;
+
+		[PublicAPI]
+		public const bool DefaultHeadless = false;
+
+		[PublicAPI]
+		public const byte DefaultIdleFarmingPeriod = 8;
+
+		[PublicAPI]
+		public const byte DefaultInventoryLimiterDelay = 3;
+
+		[PublicAPI]
+		public const bool DefaultIPC = false;
+
+		[PublicAPI]
+		public const string DefaultIPCPassword = null;
+
+		[PublicAPI]
+		public const byte DefaultLoginLimiterDelay = 10;
+
+		[PublicAPI]
+		public const byte DefaultMaxFarmingTime = 10;
+
+		[PublicAPI]
+		public const byte DefaultMaxTradeHoldDuration = 15;
+
+		[PublicAPI]
+		public const EOptimizationMode DefaultOptimizationMode = EOptimizationMode.MaxPerformance;
+
+		[PublicAPI]
+		public const bool DefaultStatistics = true;
+
+		[PublicAPI]
+		public const string DefaultSteamMessagePrefix = "/me ";
+
+		[PublicAPI]
+		public const ulong DefaultSteamOwnerID = 0;
+
+		[PublicAPI]
+		public const ProtocolTypes DefaultSteamProtocols = ProtocolTypes.All;
+
+		[PublicAPI]
+		public const EUpdateChannel DefaultUpdateChannel = EUpdateChannel.Stable;
+
+		[PublicAPI]
+		public const byte DefaultUpdatePeriod = 24;
+
+		[PublicAPI]
+		public const ushort DefaultWebLimiterDelay = 300;
+
+		[PublicAPI]
+		public const string DefaultWebProxyPassword = null;
+
+		[PublicAPI]
+		public const string DefaultWebProxyText = null;
+
+		[PublicAPI]
+		public const string DefaultWebProxyUsername = null;
+
+		[PublicAPI]
+		public static readonly ImmutableHashSet<uint> DefaultBlacklist = ImmutableHashSet.Create<uint>();
+
 		private static readonly SemaphoreSlim WriteSemaphore = new SemaphoreSlim(1, 1);
 
 		[JsonProperty(Required = Required.DisallowNull)]

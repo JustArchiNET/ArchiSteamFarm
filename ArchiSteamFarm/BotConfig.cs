@@ -37,39 +37,96 @@ using SteamKit2;
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	public sealed class BotConfig {
+		[PublicAPI]
+		public const bool DefaultAcceptGifts = false;
+
+		[PublicAPI]
+		public const bool DefaultAutoSteamSaleEvent = false;
+
+		[PublicAPI]
+		public const EBotBehaviour DefaultBotBehaviour = EBotBehaviour.None;
+
+		[PublicAPI]
+		public const string DefaultCustomGamePlayedWhileFarming = null;
+
+		[PublicAPI]
+		public const string DefaultCustomGamePlayedWhileIdle = null;
+
+		[PublicAPI]
+		public const bool DefaultEnabled = false;
+
+		[PublicAPI]
+		public const byte DefaultHoursUntilCardDrops = 3;
+
+		[PublicAPI]
+		public const bool DefaultIdlePriorityQueueOnly = false;
+
+		[PublicAPI]
+		public const bool DefaultIdleRefundableGames = true;
+
+		[PublicAPI]
+		public const EPersonaState DefaultOnlineStatus = EPersonaState.Online;
+
+		[PublicAPI]
+		public const ArchiCryptoHelper.ECryptoMethod DefaultPasswordFormat = ArchiCryptoHelper.ECryptoMethod.PlainText;
+
+		[PublicAPI]
+		public const bool DefaultPaused = false;
+
+		[PublicAPI]
+		public const ERedeemingPreferences DefaultRedeemingPreferences = ERedeemingPreferences.None;
+
+		[PublicAPI]
+		public const bool DefaultSendOnFarmingFinished = false;
+
+		[PublicAPI]
+		public const byte DefaultSendTradePeriod = 0;
+
+		[PublicAPI]
+		public const bool DefaultShutdownOnFarmingFinished = false;
+
+		[PublicAPI]
+		public const string DefaultSteamLogin = null;
+
+		[PublicAPI]
+		public const ulong DefaultSteamMasterClanID = 0;
+
+		[PublicAPI]
+		public const string DefaultSteamParentalCode = null;
+
+		[PublicAPI]
+		public const string DefaultSteamPassword = null;
+
+		[PublicAPI]
+		public const string DefaultSteamTradeToken = null;
+
+		[PublicAPI]
+		public const ETradingPreferences DefaultTradingPreferences = ETradingPreferences.None;
+
+		[PublicAPI]
+		public const bool DefaultUseLoginKeys = true;
+
 		internal const byte SteamParentalCodeLength = 4;
 
-		private const bool DefaultAcceptGifts = false;
-		private const bool DefaultAutoSteamSaleEvent = false;
-		private const EBotBehaviour DefaultBotBehaviour = EBotBehaviour.None;
-		private const string DefaultCustomGamePlayedWhileFarming = null;
-		private const string DefaultCustomGamePlayedWhileIdle = null;
-		private const bool DefaultEnabled = false;
-		private const byte DefaultHoursUntilCardDrops = 3;
-		private const bool DefaultIdlePriorityQueueOnly = false;
-		private const bool DefaultIdleRefundableGames = true;
-		private const EPersonaState DefaultOnlineStatus = EPersonaState.Online;
-		private const ArchiCryptoHelper.ECryptoMethod DefaultPasswordFormat = ArchiCryptoHelper.ECryptoMethod.PlainText;
-		private const bool DefaultPaused = false;
-		private const ERedeemingPreferences DefaultRedeemingPreferences = ERedeemingPreferences.None;
-		private const bool DefaultSendOnFarmingFinished = false;
-		private const byte DefaultSendTradePeriod = 0;
-		private const bool DefaultShutdownOnFarmingFinished = false;
-		private const string DefaultSteamLogin = null;
-		private const ulong DefaultSteamMasterClanID = 0;
-		private const string DefaultSteamParentalCode = null;
-		private const string DefaultSteamPassword = null;
-		private const string DefaultSteamTradeToken = null;
-		private const ETradingPreferences DefaultTradingPreferences = ETradingPreferences.None;
-		private const bool DefaultUseLoginKeys = true;
 		private const byte SteamTradeTokenLength = 8;
 
-		private static readonly ImmutableList<EFarmingOrder> DefaultFarmingOrders = ImmutableList<EFarmingOrder>.Empty;
-		private static readonly ImmutableHashSet<uint> DefaultGamesPlayedWhileIdle = ImmutableHashSet<uint>.Empty;
-		private static readonly ImmutableHashSet<Steam.Asset.EType> DefaultLootableTypes = ImmutableHashSet.Create(Steam.Asset.EType.BoosterPack, Steam.Asset.EType.FoilTradingCard, Steam.Asset.EType.TradingCard);
-		private static readonly ImmutableHashSet<Steam.Asset.EType> DefaultMatchableTypes = ImmutableHashSet.Create(Steam.Asset.EType.TradingCard);
-		private static readonly ImmutableDictionary<ulong, EPermission> DefaultSteamUserPermissions = ImmutableDictionary<ulong, EPermission>.Empty;
-		private static readonly ImmutableHashSet<Steam.Asset.EType> DefaultTransferableTypes = ImmutableHashSet.Create(Steam.Asset.EType.BoosterPack, Steam.Asset.EType.FoilTradingCard, Steam.Asset.EType.TradingCard);
+		[PublicAPI]
+		public static readonly ImmutableList<EFarmingOrder> DefaultFarmingOrders = ImmutableList<EFarmingOrder>.Empty;
+
+		[PublicAPI]
+		public static readonly ImmutableHashSet<uint> DefaultGamesPlayedWhileIdle = ImmutableHashSet<uint>.Empty;
+
+		[PublicAPI]
+		public static readonly ImmutableHashSet<Steam.Asset.EType> DefaultLootableTypes = ImmutableHashSet.Create(Steam.Asset.EType.BoosterPack, Steam.Asset.EType.FoilTradingCard, Steam.Asset.EType.TradingCard);
+
+		[PublicAPI]
+		public static readonly ImmutableHashSet<Steam.Asset.EType> DefaultMatchableTypes = ImmutableHashSet.Create(Steam.Asset.EType.TradingCard);
+
+		[PublicAPI]
+		public static readonly ImmutableDictionary<ulong, EPermission> DefaultSteamUserPermissions = ImmutableDictionary<ulong, EPermission>.Empty;
+
+		[PublicAPI]
+		public static readonly ImmutableHashSet<Steam.Asset.EType> DefaultTransferableTypes = ImmutableHashSet.Create(Steam.Asset.EType.BoosterPack, Steam.Asset.EType.FoilTradingCard, Steam.Asset.EType.TradingCard);
 
 		private static readonly SemaphoreSlim WriteSemaphore = new SemaphoreSlim(1, 1);
 
