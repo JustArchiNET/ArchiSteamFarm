@@ -42,7 +42,7 @@ namespace ArchiSteamFarm.Json {
 
 			[JsonIgnore]
 			[PublicAPI]
-			public ImmutableDictionary<string, JToken>? AdditionalProperties { get; internal set; }
+			public IReadOnlyDictionary<string, JToken>? AdditionalPropertiesReadOnly => AdditionalProperties;
 
 			[JsonIgnore]
 			[PublicAPI]
@@ -90,6 +90,9 @@ namespace ArchiSteamFarm.Json {
 			[JsonIgnore]
 			[PublicAPI]
 			public EType Type { get; internal set; }
+
+			[JsonExtensionData]
+			internal Dictionary<string, JToken>? AdditionalProperties { private get; set; }
 
 #pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "amount", Required = Required.Always)]

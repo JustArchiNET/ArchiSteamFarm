@@ -190,7 +190,7 @@ namespace ArchiSteamFarm {
 						asset.Rarity = description.Rarity;
 
 						if (description.AdditionalProperties != null) {
-							asset.AdditionalProperties = description.AdditionalProperties.ToImmutableDictionary();
+							asset.AdditionalProperties = description.AdditionalProperties;
 						}
 
 						assetIDs.Add(asset.AssetID);
