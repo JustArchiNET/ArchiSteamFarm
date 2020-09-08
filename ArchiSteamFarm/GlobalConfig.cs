@@ -118,14 +118,14 @@ namespace ArchiSteamFarm {
 		public const string DefaultWebProxyUsername = null;
 
 		[PublicAPI]
-		public static readonly ImmutableHashSet<uint> DefaultBlacklist = ImmutableHashSet.Create<uint>();
+		public static readonly ImmutableHashSet<uint> DefaultBlacklist = ImmutableHashSet<uint>.Empty;
 
 		private static readonly SemaphoreSlim WriteSemaphore = new SemaphoreSlim(1, 1);
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly bool AutoRestart = DefaultAutoRestart;
 
-		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
+		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly ImmutableHashSet<uint> Blacklist = DefaultBlacklist;
 
 		[JsonProperty]

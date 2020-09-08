@@ -148,10 +148,10 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly bool Enabled = DefaultEnabled;
 
-		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
+		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly ImmutableList<EFarmingOrder> FarmingOrders = DefaultFarmingOrders;
 
-		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
+		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly ImmutableHashSet<uint> GamesPlayedWhileIdle = DefaultGamesPlayedWhileIdle;
 
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -163,10 +163,10 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly bool IdleRefundableGames = DefaultIdleRefundableGames;
 
-		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
+		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly ImmutableHashSet<Steam.Asset.EType> LootableTypes = DefaultLootableTypes;
 
-		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
+		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly ImmutableHashSet<Steam.Asset.EType> MatchableTypes = DefaultMatchableTypes;
 
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -193,13 +193,13 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		public readonly string? SteamTradeToken = DefaultSteamTradeToken;
 
-		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
+		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly ImmutableDictionary<ulong, EPermission> SteamUserPermissions = DefaultSteamUserPermissions;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly ETradingPreferences TradingPreferences = DefaultTradingPreferences;
 
-		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
+		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly ImmutableHashSet<Steam.Asset.EType> TransferableTypes = DefaultTransferableTypes;
 
 		[JsonProperty(Required = Required.DisallowNull)]
