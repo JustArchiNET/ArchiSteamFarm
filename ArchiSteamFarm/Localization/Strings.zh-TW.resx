@@ -725,5 +725,8 @@
   </data>
   
   
-  
+  <data name="Result" xml:space="preserve">
+    <value>結果：{0}</value>
+    <comment>{0} will be replaced by generic result of various functions that use this string</comment>
+  </data>
 </root>

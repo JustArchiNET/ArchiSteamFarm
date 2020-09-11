@@ -732,5 +732,8 @@ Süreç çalışma zamanı: {1}</value>
     <value>Arka arkaya {0} kere InvalidPassword hata kodu alındı. Bu hesap için parolanız muhtemelen yanlış, iptal ediliyor!</value>
     <comment>{0} will be replaced by maximum allowed number of failed login attempts</comment>
   </data>
-  
+  <data name="Result" xml:space="preserve">
+    <value>Sonuç: {0}</value>
+    <comment>{0} will be replaced by generic result of various functions that use this string</comment>
+  </data>
 </root>
