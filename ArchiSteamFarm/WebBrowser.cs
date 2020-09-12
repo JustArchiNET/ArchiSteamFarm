@@ -684,6 +684,11 @@ namespace ArchiSteamFarm {
 					ArchiLogger.LogGenericDebuggingException(e);
 
 					return null;
+				} finally {
+					if (data is HttpContent) {
+						// We reset the request content to null, as our http content will get disposed otherwise, and we still need it for subsequent calls, such as redirections or retries
+						request.Content = null;
+					}
 				}
 			}
 
@@ -726,11 +731,13 @@ namespace ArchiSteamFarm {
 				}
 
 				switch (response.StatusCode) {
-					case HttpStatusCode.SeeOther:
-						// Per https://tools.ietf.org/html/rfc7231#section-6.4.4, a 303 redirect should be performed with a GET request
-						httpMethod = HttpMethod.Get;
+					case HttpStatusCode.Redirect: // Per https://tools.ietf.org/html/rfc7231#section-6.4.3, a 302 redirect may be performed using a GET request
+					case HttpStatusCode.SeeOther: // Per https://tools.ietf.org/html/rfc7231#section-6.4.4, a 303 redirect should be performed using a GET request
+						if (httpMethod != HttpMethod.Head) {
+							httpMethod = HttpMethod.Get;
+						}
 
-						// Data doesn't make any sense for a GET request, clear it
+						// Data doesn't make any sense for a fetch request, clear it in case it's being used
 						data = null;
 
 						break;
