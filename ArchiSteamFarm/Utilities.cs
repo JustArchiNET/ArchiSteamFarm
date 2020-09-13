@@ -62,6 +62,21 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
+		public static string? GetCookieValue(this CookieContainer cookieContainer, string url, string name) {
+			if ((cookieContainer == null) || string.IsNullOrEmpty(url) || string.IsNullOrEmpty(name)) {
+				throw new ArgumentNullException(nameof(cookieContainer) + " || " + nameof(url) + " || " + nameof(name));
+			}
+
+			CookieCollection cookies = cookieContainer.GetCookies(new Uri(url));
+
+#if NETFRAMEWORK
+			return cookies.Count > 0 ? (from Cookie cookie in cookies where cookie.Name == name select cookie.Value).FirstOrDefault() : null;
+#else
+			return cookies.Count > 0 ? cookies.FirstOrDefault(cookie => cookie.Name == name)?.Value : null;
+#endif
+		}
+
+		[PublicAPI]
 		public static uint GetUnixTime() => (uint) DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
 		[PublicAPI]
@@ -263,16 +278,6 @@ namespace ArchiSteamFarm {
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 			}
-		}
-
-		internal static string? GetCookieValue(this CookieContainer cookieContainer, string url, string name) {
-			if ((cookieContainer == null) || string.IsNullOrEmpty(url) || string.IsNullOrEmpty(name)) {
-				throw new ArgumentNullException(nameof(cookieContainer) + " || " + nameof(url) + " || " + nameof(name));
-			}
-
-			CookieCollection cookies = cookieContainer.GetCookies(new Uri(url));
-
-			return cookies.Count > 0 ? (from Cookie cookie in cookies where cookie.Name.Equals(name) select cookie.Value).FirstOrDefault() : null;
 		}
 
 		internal static bool RelativeDirectoryStartsWith(string directory, params string[] prefixes) {

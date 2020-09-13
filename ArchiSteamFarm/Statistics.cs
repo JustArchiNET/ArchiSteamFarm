@@ -102,7 +102,7 @@ namespace ArchiSteamFarm {
 					{ "SteamID", Bot.SteamID.ToString() }
 				};
 
-				WebBrowser.BasicResponse? response = await Bot.ArchiWebHandler.WebBrowser.UrlPost(request, data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
+				WebBrowser.BasicResponse? response = await Bot.ArchiWebHandler.WebBrowser.UrlPost(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
 
 				if (response == null) {
 					return;
@@ -218,7 +218,7 @@ namespace ArchiSteamFarm {
 					{ "TradeToken", tradeToken! }
 				};
 
-				WebBrowser.BasicResponse? response = await Bot.ArchiWebHandler.WebBrowser.UrlPost(request, data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
+				WebBrowser.BasicResponse? response = await Bot.ArchiWebHandler.WebBrowser.UrlPost(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
 
 				if (response == null) {
 					return;

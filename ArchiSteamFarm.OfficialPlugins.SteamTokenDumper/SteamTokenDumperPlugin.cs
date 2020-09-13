@@ -429,7 +429,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 				ASF.ArchiLogger.LogGenericInfo($"Submitting registered apps/subs/depots: {appTokens.Count}/{packageTokens.Count}/{depotKeys.Count}...");
 
-				WebBrowser.ObjectResponse<ResponseData>? response = await ASF.WebBrowser.UrlPostToJsonObject<ResponseData, RequestData>(request, requestData, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
+				WebBrowser.ObjectResponse<ResponseData>? response = await ASF.WebBrowser.UrlPostToJsonObject<ResponseData, RequestData>(request, data: requestData, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
 
 				if ((response?.Content?.Data == null) || response.StatusCode.IsClientErrorCode()) {
 					ASF.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
