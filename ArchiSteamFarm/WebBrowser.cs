@@ -928,12 +928,12 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			private HtmlDocumentResponse(StreamResponse streamResponse, IDocument document) : this(streamResponse) {
-				if ((streamResponse == null) || (document == null)) {
-					throw new ArgumentNullException(nameof(streamResponse) + " || " + nameof(document));
+			private HtmlDocumentResponse(BasicResponse basicResponse, IDocument content) : this(basicResponse) {
+				if ((basicResponse == null) || (content == null)) {
+					throw new ArgumentNullException(nameof(basicResponse) + " || " + nameof(content));
 				}
 
-				Content = document;
+				Content = content;
 			}
 
 			public void Dispose() => Content?.Dispose();
@@ -962,9 +962,9 @@ namespace ArchiSteamFarm {
 			[PublicAPI]
 			public readonly T? Content;
 
-			public ObjectResponse(StreamResponse streamResponse, T content) : this(streamResponse) {
-				if (streamResponse == null) {
-					throw new ArgumentNullException(nameof(streamResponse));
+			public ObjectResponse(BasicResponse basicResponse, T content) : this(basicResponse) {
+				if (basicResponse == null) {
+					throw new ArgumentNullException(nameof(basicResponse));
 				}
 
 				Content = content;
@@ -1035,9 +1035,9 @@ namespace ArchiSteamFarm {
 			[PublicAPI]
 			public readonly XmlDocument? Content;
 
-			public XmlDocumentResponse(StreamResponse streamResponse, XmlDocument content) : this(streamResponse) {
-				if (streamResponse == null) {
-					throw new ArgumentNullException(nameof(streamResponse));
+			public XmlDocumentResponse(BasicResponse basicResponse, XmlDocument content) : this(basicResponse) {
+				if ((basicResponse == null) || (content == null)) {
+					throw new ArgumentNullException(nameof(basicResponse) + " || " + nameof(content));
 				}
 
 				Content = content;
