@@ -166,7 +166,7 @@ namespace ArchiSteamFarm {
 							continue;
 						}
 
-						readThisBatch += (uint) read;
+						readThisBatch += read;
 
 						if (readThisBatch < batchIncreaseSize) {
 							continue;
