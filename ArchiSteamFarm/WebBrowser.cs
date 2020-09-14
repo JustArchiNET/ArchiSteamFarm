@@ -108,6 +108,93 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
+		public async Task<BinaryResponse?> UrlGetToBinary(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, IProgress<byte>? progressReporter = null) {
+			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
+				throw new ArgumentNullException(nameof(request) + " || " + nameof(maxTries));
+			}
+
+			BinaryResponse? result = null;
+
+			for (byte i = 0; i < maxTries; i++) {
+				await using StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
+
+				if (response?.StatusCode.IsClientErrorCode() == true) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						result = new BinaryResponse(response);
+					}
+
+					break;
+				}
+
+				if (response?.StatusCode.IsServerErrorCode() == true) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						result = new BinaryResponse(response);
+					}
+
+					break;
+				}
+
+				if (response?.Content == null) {
+					continue;
+				}
+
+				progressReporter?.Report(0);
+
+#if NETFRAMEWORK
+				using MemoryStream ms = new MemoryStream((int) response.Length);
+#else
+				await using MemoryStream ms = new MemoryStream((int) response.Length);
+#endif
+
+				try {
+					byte batch = 0;
+					uint readThisBatch = 0;
+					uint batchIncreaseSize = response.Length / 100;
+
+					byte[] buffer = new byte[8192]; // This is HttpClient's buffer, using more doesn't make sense
+
+					while (response.Content.CanRead) {
+						int read = await response.Content.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+
+						if (read == 0) {
+							break;
+						}
+
+						await ms.WriteAsync(buffer, 0, read).ConfigureAwait(false);
+
+						if ((batchIncreaseSize == 0) || (batch >= 99)) {
+							continue;
+						}
+
+						readThisBatch += (uint) read;
+
+						if (readThisBatch < batchIncreaseSize) {
+							continue;
+						}
+
+						readThisBatch -= batchIncreaseSize;
+						progressReporter?.Report(++batch);
+					}
+				} catch (Exception e) {
+					ArchiLogger.LogGenericDebuggingException(e);
+
+					return null;
+				}
+
+				progressReporter?.Report(100);
+
+				return new BinaryResponse(response, ms.ToArray());
+			}
+
+			if (maxTries > 1) {
+				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+			}
+
+			return result;
+		}
+
+		[PublicAPI]
 		public async Task<HtmlDocumentResponse?> UrlGetToHtmlDocument(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
 				throw new ArgumentNullException(nameof(request) + " || " + nameof(maxTries));
@@ -209,6 +296,90 @@ namespace ArchiSteamFarm {
 				}
 
 				return new ObjectResponse<T>(response, obj);
+			}
+
+			if (maxTries > 1) {
+				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+			}
+
+			return result;
+		}
+
+		[PublicAPI]
+		public async Task<StreamResponse?> UrlGetToStream(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
+			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
+				throw new ArgumentNullException(nameof(request) + " || " + nameof(maxTries));
+			}
+
+			StreamResponse? result = null;
+
+			for (byte i = 0; i < maxTries; i++) {
+				HttpResponseMessage? response = await InternalGet(request, headers, referer, requestOptions, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+
+				if (response?.StatusCode.IsClientErrorCode() == true) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						result = new StreamResponse(response);
+					}
+
+					break;
+				}
+
+				if (response?.StatusCode.IsServerErrorCode() == true) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						result = new StreamResponse(response);
+					}
+
+					break;
+				}
+
+				if (response?.Content == null) {
+					continue;
+				}
+
+				return new StreamResponse(response, await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
+			}
+
+			if (maxTries > 1) {
+				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+			}
+
+			return result;
+		}
+
+		[PublicAPI]
+		public async Task<StringResponse?> UrlGetToString(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
+			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
+				throw new ArgumentNullException(nameof(request) + " || " + nameof(maxTries));
+			}
+
+			StringResponse? result = null;
+
+			for (byte i = 0; i < maxTries; i++) {
+				using HttpResponseMessage? response = await InternalGet(request, headers, referer).ConfigureAwait(false);
+
+				if (response?.StatusCode.IsClientErrorCode() == true) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						result = new StringResponse(response);
+					}
+
+					break;
+				}
+
+				if (response?.StatusCode.IsServerErrorCode() == true) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						result = new StringResponse(response);
+					}
+
+					break;
+				}
+
+				if (response?.Content == null) {
+					continue;
+				}
+
+				return new StringResponse(response, await response.Content.ReadAsStringAsync().ConfigureAwait(false));
 			}
 
 			if (maxTries > 1) {
@@ -467,6 +638,48 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
+		[PublicAPI]
+		public async Task<StreamResponse?> UrlPostToStream<T>(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) where T : class {
+			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
+				throw new ArgumentNullException(nameof(request) + " || " + nameof(maxTries));
+			}
+
+			StreamResponse? result = null;
+
+			for (byte i = 0; i < maxTries; i++) {
+				HttpResponseMessage? response = await InternalPost(request, headers, data, referer, requestOptions, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+
+				if (response?.StatusCode.IsClientErrorCode() == true) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						result = new StreamResponse(response);
+					}
+
+					break;
+				}
+
+				if (response?.StatusCode.IsServerErrorCode() == true) {
+					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						result = new StreamResponse(response);
+					}
+
+					break;
+				}
+
+				if (response?.Content == null) {
+					continue;
+				}
+
+				return new StreamResponse(response, await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
+			}
+
+			if (maxTries > 1) {
+				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+			}
+
+			return result;
+		}
+
 		internal static void Init() {
 			// Set max connection limit from default of 2 to desired value
 			ServicePointManager.DefaultConnectionLimit = MaxConnections;
@@ -481,133 +694,6 @@ namespace ArchiSteamFarm {
 			if (!RuntimeCompatibility.IsRunningOnMono) {
 				ServicePointManager.ReusePort = true;
 			}
-		}
-
-		internal async Task<BinaryResponse?> UrlGetToBinary(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, IProgress<byte>? progressReporter = null) {
-			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
-				throw new ArgumentNullException(nameof(request) + " || " + nameof(maxTries));
-			}
-
-			BinaryResponse? result = null;
-
-			for (byte i = 0; i < maxTries; i++) {
-				await using StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
-
-				if (response?.StatusCode.IsClientErrorCode() == true) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						result = new BinaryResponse(response);
-					}
-
-					break;
-				}
-
-				if (response?.StatusCode.IsServerErrorCode() == true) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						result = new BinaryResponse(response);
-					}
-
-					break;
-				}
-
-				if (response?.Content == null) {
-					continue;
-				}
-
-				progressReporter?.Report(0);
-
-#if NETFRAMEWORK
-				using MemoryStream ms = new MemoryStream((int) response.Length);
-#else
-				await using MemoryStream ms = new MemoryStream((int) response.Length);
-#endif
-
-				try {
-					byte batch = 0;
-					uint readThisBatch = 0;
-					uint batchIncreaseSize = response.Length / 100;
-
-					byte[] buffer = new byte[8192]; // This is HttpClient's buffer, using more doesn't make sense
-
-					while (response.Content.CanRead) {
-						int read = await response.Content.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
-
-						if (read == 0) {
-							break;
-						}
-
-						await ms.WriteAsync(buffer, 0, read).ConfigureAwait(false);
-
-						if ((batchIncreaseSize == 0) || (batch >= 99)) {
-							continue;
-						}
-
-						readThisBatch += (uint) read;
-
-						if (readThisBatch < batchIncreaseSize) {
-							continue;
-						}
-
-						readThisBatch -= batchIncreaseSize;
-						progressReporter?.Report(++batch);
-					}
-				} catch (Exception e) {
-					ArchiLogger.LogGenericDebuggingException(e);
-
-					return null;
-				}
-
-				progressReporter?.Report(100);
-
-				return new BinaryResponse(response, ms.ToArray());
-			}
-
-			if (maxTries > 1) {
-				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
-				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
-			}
-
-			return result;
-		}
-
-		internal async Task<StringResponse?> UrlGetToString(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
-			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
-				throw new ArgumentNullException(nameof(request) + " || " + nameof(maxTries));
-			}
-
-			StringResponse? result = null;
-
-			for (byte i = 0; i < maxTries; i++) {
-				using HttpResponseMessage? response = await InternalGet(request, headers, referer).ConfigureAwait(false);
-
-				if (response?.StatusCode.IsClientErrorCode() == true) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						result = new StringResponse(response);
-					}
-
-					break;
-				}
-
-				if (response?.StatusCode.IsServerErrorCode() == true) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						result = new StringResponse(response);
-					}
-
-					break;
-				}
-
-				if (response?.Content == null) {
-					continue;
-				}
-
-				return new StringResponse(response, await response.Content.ReadAsStringAsync().ConfigureAwait(false));
-			}
-
-			if (maxTries > 1) {
-				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
-				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
-			}
-
-			return result;
 		}
 
 		private async Task<HttpResponseMessage?> InternalGet(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead) {
@@ -788,88 +874,6 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async Task<StreamResponse?> UrlGetToStream(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
-			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
-				throw new ArgumentNullException(nameof(request) + " || " + nameof(maxTries));
-			}
-
-			StreamResponse? result = null;
-
-			for (byte i = 0; i < maxTries; i++) {
-				HttpResponseMessage? response = await InternalGet(request, headers, referer, requestOptions, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
-
-				if (response?.StatusCode.IsClientErrorCode() == true) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						result = new StreamResponse(response);
-					}
-
-					break;
-				}
-
-				if (response?.StatusCode.IsServerErrorCode() == true) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						result = new StreamResponse(response);
-					}
-
-					break;
-				}
-
-				if (response?.Content == null) {
-					continue;
-				}
-
-				return new StreamResponse(response, await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
-			}
-
-			if (maxTries > 1) {
-				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
-				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
-			}
-
-			return result;
-		}
-
-		private async Task<StreamResponse?> UrlPostToStream<T>(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) where T : class {
-			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
-				throw new ArgumentNullException(nameof(request) + " || " + nameof(maxTries));
-			}
-
-			StreamResponse? result = null;
-
-			for (byte i = 0; i < maxTries; i++) {
-				HttpResponseMessage? response = await InternalPost(request, headers, data, referer, requestOptions, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
-
-				if (response?.StatusCode.IsClientErrorCode() == true) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						result = new StreamResponse(response);
-					}
-
-					break;
-				}
-
-				if (response?.StatusCode.IsServerErrorCode() == true) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						result = new StreamResponse(response);
-					}
-
-					break;
-				}
-
-				if (response?.Content == null) {
-					continue;
-				}
-
-				return new StreamResponse(response, await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
-			}
-
-			if (maxTries > 1) {
-				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
-				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
-			}
-
-			return result;
-		}
-
 		public class BasicResponse {
 			[PublicAPI]
 			public readonly HttpStatusCode StatusCode;
@@ -892,6 +896,24 @@ namespace ArchiSteamFarm {
 
 				FinalUri = basicResponse.FinalUri;
 				StatusCode = basicResponse.StatusCode;
+			}
+		}
+
+		public sealed class BinaryResponse : BasicResponse {
+			internal readonly byte[]? Content;
+
+			internal BinaryResponse(BasicResponse basicResponse, byte[] content) : this(basicResponse) {
+				if ((basicResponse == null) || (content == null)) {
+					throw new ArgumentNullException(nameof(basicResponse) + " || " + nameof(content));
+				}
+
+				Content = content;
+			}
+
+			internal BinaryResponse(BasicResponse basicResponse) : base(basicResponse) {
+				if (basicResponse == null) {
+					throw new ArgumentNullException(nameof(basicResponse));
+				}
 			}
 		}
 
@@ -953,51 +975,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		public sealed class XmlDocumentResponse : BasicResponse {
-			[PublicAPI]
-			public readonly XmlDocument? Content;
-
-			internal XmlDocumentResponse(StreamResponse streamResponse, XmlDocument content) : this(streamResponse) {
-				if (streamResponse == null) {
-					throw new ArgumentNullException(nameof(streamResponse));
-				}
-
-				Content = content;
-			}
-
-			internal XmlDocumentResponse(BasicResponse basicResponse) : base(basicResponse) {
-				if (basicResponse == null) {
-					throw new ArgumentNullException(nameof(basicResponse));
-				}
-			}
-		}
-
-		[Flags]
-		public enum ERequestOptions : byte {
-			None = 0,
-			ReturnClientErrors = 1,
-			ReturnServerErrors = 2
-		}
-
-		internal sealed class BinaryResponse : BasicResponse {
-			internal readonly byte[]? Content;
-
-			internal BinaryResponse(BasicResponse basicResponse, byte[] content) : this(basicResponse) {
-				if ((basicResponse == null) || (content == null)) {
-					throw new ArgumentNullException(nameof(basicResponse) + " || " + nameof(content));
-				}
-
-				Content = content;
-			}
-
-			internal BinaryResponse(BasicResponse basicResponse) : base(basicResponse) {
-				if (basicResponse == null) {
-					throw new ArgumentNullException(nameof(basicResponse));
-				}
-			}
-		}
-
-		internal sealed class StreamResponse : BasicResponse, IAsyncDisposable {
+		public sealed class StreamResponse : BasicResponse, IAsyncDisposable {
 			internal readonly Stream? Content;
 			internal readonly uint Length;
 
@@ -1029,7 +1007,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal sealed class StringResponse : BasicResponse {
+		public sealed class StringResponse : BasicResponse {
 			internal readonly string? Content;
 
 			internal StringResponse(HttpResponseMessage httpResponseMessage, string content) : this(httpResponseMessage) {
@@ -1045,6 +1023,32 @@ namespace ArchiSteamFarm {
 					throw new ArgumentNullException(nameof(httpResponseMessage));
 				}
 			}
+		}
+
+		public sealed class XmlDocumentResponse : BasicResponse {
+			[PublicAPI]
+			public readonly XmlDocument? Content;
+
+			internal XmlDocumentResponse(StreamResponse streamResponse, XmlDocument content) : this(streamResponse) {
+				if (streamResponse == null) {
+					throw new ArgumentNullException(nameof(streamResponse));
+				}
+
+				Content = content;
+			}
+
+			internal XmlDocumentResponse(BasicResponse basicResponse) : base(basicResponse) {
+				if (basicResponse == null) {
+					throw new ArgumentNullException(nameof(basicResponse));
+				}
+			}
+		}
+
+		[Flags]
+		public enum ERequestOptions : byte {
+			None = 0,
+			ReturnClientErrors = 1,
+			ReturnServerErrors = 2
 		}
 	}
 }
