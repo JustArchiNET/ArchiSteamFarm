@@ -148,8 +148,8 @@ namespace ArchiSteamFarm {
 
 				try {
 					byte batch = 0;
-					uint readThisBatch = 0;
-					uint batchIncreaseSize = response.Length / 100;
+					long readThisBatch = 0;
+					long batchIncreaseSize = response.Length / 100;
 
 					byte[] buffer = new byte[8192]; // This is HttpClient's buffer, using more doesn't make sense
 
@@ -900,7 +900,8 @@ namespace ArchiSteamFarm {
 		}
 
 		public sealed class BinaryResponse : BasicResponse {
-			internal readonly byte[]? Content;
+			[PublicAPI]
+			public readonly byte[]? Content;
 
 			internal BinaryResponse(BasicResponse basicResponse, byte[] content) : this(basicResponse) {
 				if ((basicResponse == null) || (content == null)) {
@@ -976,8 +977,11 @@ namespace ArchiSteamFarm {
 		}
 
 		public sealed class StreamResponse : BasicResponse, IAsyncDisposable {
-			internal readonly Stream? Content;
-			internal readonly uint Length;
+			[PublicAPI]
+			public readonly Stream? Content;
+
+			[PublicAPI]
+			public readonly long Length;
 
 			private readonly HttpResponseMessage ResponseMessage;
 
@@ -994,7 +998,7 @@ namespace ArchiSteamFarm {
 					throw new ArgumentNullException(nameof(httpResponseMessage));
 				}
 
-				Length = (uint) httpResponseMessage.Content.Headers.ContentLength.GetValueOrDefault();
+				Length = httpResponseMessage.Content.Headers.ContentLength.GetValueOrDefault();
 				ResponseMessage = httpResponseMessage;
 			}
 
@@ -1008,7 +1012,8 @@ namespace ArchiSteamFarm {
 		}
 
 		public sealed class StringResponse : BasicResponse {
-			internal readonly string? Content;
+			[PublicAPI]
+			public readonly string? Content;
 
 			internal StringResponse(HttpResponseMessage httpResponseMessage, string content) : this(httpResponseMessage) {
 				if ((httpResponseMessage == null) || (content == null)) {
