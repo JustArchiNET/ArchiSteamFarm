@@ -903,7 +903,7 @@ namespace ArchiSteamFarm {
 			[PublicAPI]
 			public readonly byte[]? Content;
 
-			internal BinaryResponse(BasicResponse basicResponse, byte[] content) : this(basicResponse) {
+			public BinaryResponse(BasicResponse basicResponse, byte[] content) : this(basicResponse) {
 				if ((basicResponse == null) || (content == null)) {
 					throw new ArgumentNullException(nameof(basicResponse) + " || " + nameof(content));
 				}
@@ -911,7 +911,7 @@ namespace ArchiSteamFarm {
 				Content = content;
 			}
 
-			internal BinaryResponse(BasicResponse basicResponse) : base(basicResponse) {
+			public BinaryResponse(BasicResponse basicResponse) : base(basicResponse) {
 				if (basicResponse == null) {
 					throw new ArgumentNullException(nameof(basicResponse));
 				}
@@ -922,7 +922,7 @@ namespace ArchiSteamFarm {
 			[PublicAPI]
 			public readonly IDocument? Content;
 
-			internal HtmlDocumentResponse(BasicResponse basicResponse) : base(basicResponse) {
+			public HtmlDocumentResponse(BasicResponse basicResponse) : base(basicResponse) {
 				if (basicResponse == null) {
 					throw new ArgumentNullException(nameof(basicResponse));
 				}
@@ -938,7 +938,8 @@ namespace ArchiSteamFarm {
 
 			public void Dispose() => Content?.Dispose();
 
-			internal static async Task<HtmlDocumentResponse?> Create(StreamResponse streamResponse) {
+			[PublicAPI]
+			public static async Task<HtmlDocumentResponse?> Create(StreamResponse streamResponse) {
 				if (streamResponse == null) {
 					throw new ArgumentNullException(nameof(streamResponse));
 				}
@@ -961,7 +962,7 @@ namespace ArchiSteamFarm {
 			[PublicAPI]
 			public readonly T? Content;
 
-			internal ObjectResponse(StreamResponse streamResponse, T content) : this(streamResponse) {
+			public ObjectResponse(StreamResponse streamResponse, T content) : this(streamResponse) {
 				if (streamResponse == null) {
 					throw new ArgumentNullException(nameof(streamResponse));
 				}
@@ -969,7 +970,7 @@ namespace ArchiSteamFarm {
 				Content = content;
 			}
 
-			internal ObjectResponse(BasicResponse basicResponse) : base(basicResponse) {
+			public ObjectResponse(BasicResponse basicResponse) : base(basicResponse) {
 				if (basicResponse == null) {
 					throw new ArgumentNullException(nameof(basicResponse));
 				}
@@ -1034,7 +1035,7 @@ namespace ArchiSteamFarm {
 			[PublicAPI]
 			public readonly XmlDocument? Content;
 
-			internal XmlDocumentResponse(StreamResponse streamResponse, XmlDocument content) : this(streamResponse) {
+			public XmlDocumentResponse(StreamResponse streamResponse, XmlDocument content) : this(streamResponse) {
 				if (streamResponse == null) {
 					throw new ArgumentNullException(nameof(streamResponse));
 				}
@@ -1042,7 +1043,7 @@ namespace ArchiSteamFarm {
 				Content = content;
 			}
 
-			internal XmlDocumentResponse(BasicResponse basicResponse) : base(basicResponse) {
+			public XmlDocumentResponse(BasicResponse basicResponse) : base(basicResponse) {
 				if (basicResponse == null) {
 					throw new ArgumentNullException(nameof(basicResponse));
 				}
