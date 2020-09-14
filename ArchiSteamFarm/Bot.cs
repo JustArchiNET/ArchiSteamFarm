@@ -1518,7 +1518,7 @@ namespace ArchiSteamFarm {
 					ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, nameof(name)));
 				}
 
-				if (invalid && !string.IsNullOrEmpty(key)) {
+				if (invalid && !(key is null)) {
 					invalidKeys.Add(key!);
 				}
 			}
