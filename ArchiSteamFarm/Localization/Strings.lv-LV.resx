@@ -468,7 +468,9 @@ StackTrace:
   <data name="BotHeartBeatFailed" xml:space="preserve">
     <value>Nav iespējams atvienoties no klienta. Šis bots tiek pamests!</value>
   </data>
-  
+  <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
+    <value>Nevarēja inicializēt SteamDirectory: notiek savienošanās ar Steam Network ilgāk kā parasti!</value>
+  </data>
   <data name="BotStopping" xml:space="preserve">
     <value>Tiek apturēts...</value>
   </data>
@@ -476,19 +478,32 @@ StackTrace:
     <value>Bota konfigurācija ir nederīga. Lūdzu, pārbaudi {0} iestatījumus un mēģini atkal!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
-  
+  <data name="ErrorDatabaseInvalid" xml:space="preserve">
+    <value>Databāze nevar tikt ielādēta. Ja kļūda atkārtojas, lūdzu izdzēs {0}, lai izveidotu datubāzi pa jaunam!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   <data name="Initializing" xml:space="preserve">
     <value>Inicializē {0}...</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
-  
+  <data name="WarningPrivacyPolicy" xml:space="preserve">
+    <value>Lūdzu pārskati mūsu konfidencialitātes politikas sekciju wiki lapā, ja vēlies zināt ko īsti ASF dara.</value>
+  </data>
   <data name="Welcome" xml:space="preserve">
     <value>Izskatās, ka šī ir pirmā programmas palaišanas reize, lapni lūdzam!</value>
   </data>
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Tavs piedāvātais CurrentCulture nav derīgs, ASF izmantos noklusējuma vērtību!</value>
+  </data>
+  <data name="TranslationIncomplete" xml:space="preserve">
+    <value>ASF izmanto izvēlēto {0} valodu, bet tulkojums ir tikai pabeigts par {1}. Iespējams, ka vari palīdzēt pārtulkot ASF savā valodā?</value>
+    <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
+  </data>
   
-  
-  
-  
+  <data name="WarningIdlingGameMismatch" xml:space="preserve">
+    <value>ASF atradis ID {0} ({1}) nesakritības un izmantos ID {2}.</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
+  </data>
   <data name="BotVersion" xml:space="preserve">
     <value>{0} V{1}</value>
     <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
@@ -505,7 +520,9 @@ StackTrace:
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Pieeja aizliegta!</value>
   </data>
-  
+  <data name="WarningPreReleaseVersion" xml:space="preserve">
+    <value>Tiek izmantota versija, kas ir jaunāka par pašlaik pieejamo esošajā atjauninājumu kanālā. Lūdzu, ņem vērā, ka pirmsizlaides programmatūras versija ir domāta lietotājiem, kas zin kā ziņot par kļūdām, saskarties ar problēmām un dot atsauksmes. Nekāds tehniskais atbalsts nav pieejams šīm versijām.</value>
+  </data>
   <data name="BotStats" xml:space="preserve">
     <value>Izmantotā atmiņa: {0} MB
 Darbspējas laiks: {1}</value>
@@ -526,13 +543,21 @@ Darbspējas laiks: {1}</value>
   <data name="BotRefreshingPackagesData" xml:space="preserve">
     <value>Atsvaidzina paktoņu datus...</value>
   </data>
-  
+  <data name="WarningDeprecated" xml:space="preserve">
+    <value>{0} lietošana ir novecojusi un tas tiks izņemts no turpmākajām programmas versijām. Lūdzu, izmanto {1}.</value>
+    <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
+  </data>
   <data name="BotAcceptedDonationTrade" xml:space="preserve">
     <value>Tika pieņemts ziedojuma tipa darījums: {0}</value>
     <comment>{0} will be replaced by trade's ID (number)</comment>
   </data>
-  
-  
+  <data name="WarningWorkaroundTriggered" xml:space="preserve">
+    <value>Ir palaists {0} kļūdas apiešanas risinājums.</value>
+    <comment>{0} will be replaced by the bug's name provided by ASF</comment>
+  </data>
+  <data name="TargetBotNotConnected" xml:space="preserve">
+    <value>Nav savienojums ar šo botu!</value>
+  </data>
   <data name="BotWalletBalance" xml:space="preserve">
     <value>Maka vērtība: {0} {1}</value>
     <comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
@@ -548,12 +573,21 @@ Darbspējas laiks: {1}</value>
     <value>Salīdzina Steam preces, #{0}. raunds...</value>
     <comment>{0} will be replaced by round number</comment>
   </data>
-  
+  <data name="DoneActivelyMatchingItems" xml:space="preserve">
+    <value>Salīdzinātas Steam preces, #{0}. raunds.</value>
+    <comment>{0} will be replaced by round number</comment>
+  </data>
   <data name="ErrorAborted" xml:space="preserve">
     <value>Atcelts!</value>
   </data>
-  
-  
+  <data name="ActivelyMatchingItemsRound" xml:space="preserve">
+    <value>Kopā salīdzināti {0} seti šajā raundā.</value>
+    <comment>{0} will be replaced by number of sets traded</comment>
+  </data>
+  <data name="WarningExcessiveBotsCount" xml:space="preserve">
+    <value>Tiek izmantoti vairāki bota konti kā noteikts maksimālajā ieteiktā limitā ({0}). Ņem vērā, ka šāda konfigurācija nav atbalstīta un var novest pie visādām Steam saistītām kļūdām, ieskaitot konta iesaldēšanu. Sīkāku informāciju vari atrast BUJ.</value>
+    <comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
+  </data>
   <data name="PluginLoaded" xml:space="preserve">
     <value>{0} tika veiksmīgi ielādēta!</value>
     <comment>{0} will be replaced by the name of the custom ASF plugin</comment>
@@ -565,7 +599,9 @@ Darbspējas laiks: {1}</value>
   <data name="NothingFound" xml:space="preserve">
     <value>Nekas netika atrasts!</value>
   </data>
-  
+  <data name="PluginsWarning" xml:space="preserve">
+    <value>Ir ielādīts viens vai vairāki ASF paplašinājumi. Tā kā mēs nepiedāvājam atbalstu specializētām konfigurācijām, tad, lūdzu, sazinies ar paplašinājuma izstrādājumu, ja saskaries ar kādām kļūdām.</value>
+  </data>
   <data name="PleaseWait" xml:space="preserve">
     <value>Lūdzu, uzgaidiet...</value>
   </data>
@@ -575,18 +611,35 @@ Darbspējas laiks: {1}</value>
   <data name="Executing" xml:space="preserve">
     <value>Izpilda...</value>
   </data>
-  
-  
+  <data name="InteractiveConsoleEnabled" xml:space="preserve">
+    <value>Interaktīvā konsole ir pieejama, raksti 'c', lai piekļūtu komandu rindai.</value>
+  </data>
+  <data name="InteractiveConsoleNotAvailable" xml:space="preserve">
+    <value>Interaktīvā konsole nav pieejama, jo konfigurācijā trūkst {0} vērtība.</value>
+    <comment>{0} will be replaced by the name of the missing config property (string)</comment>
+  </data>
   <data name="Response" xml:space="preserve">
     <value>Atbilde: {0}</value>
     <comment>{0} will be replaced by the generated response (string)</comment>
   </data>
+  <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
+    <value>Botam palikušas {0} rindā stāvošas spēles.</value>
+    <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
+  </data>
+  <data name="ErrorSingleInstanceRequired" xml:space="preserve">
+    <value>ASF ir jau palaists šajā direktorijā!</value>
+  </data>
+  <data name="BotHandledConfirmations" xml:space="preserve">
+    <value>Veiksmīgi tikts galā ar {0} apstiprinājumiem!</value>
+    <comment>{0} will be replaced by number of confirmations</comment>
+  </data>
   
-  
-  
-  
-  
-  
+  <data name="UpdateCleanup" xml:space="preserve">
+    <value>Tiek tīrīti vecie faili, kas palikuši pēc atjaunināšanas...</value>
+  </data>
+  <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
+    <value>Tiek ģenerēts Steam vecāku kontroles kods. Tā kā tas var aizņemt laiciņu, apsver to ievadīt konfigurācijas failā...</value>
+  </data>
   <data name="IPCConfigChanged" xml:space="preserve">
     <value>IPC konfigurācija ir izmainīta!</value>
   </data>
@@ -598,5 +651,8 @@ Darbspējas laiks: {1}</value>
     <value>Saņemts InvalidPassword kļūdas kods {0} reizes pēc kārtas. Visticamāk, ka ievadītā parole ir nepareiza!</value>
     <comment>{0} will be replaced by maximum allowed number of failed login attempts</comment>
   </data>
-  
+  <data name="Result" xml:space="preserve">
+    <value>Rezultāts: {0}</value>
+    <comment>{0} will be replaced by generic result of various functions that use this string</comment>
+  </data>
 </root>
