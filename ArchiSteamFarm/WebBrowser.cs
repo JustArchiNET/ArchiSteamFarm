@@ -127,8 +127,8 @@ namespace ArchiSteamFarm {
 
 				if (response.StatusCode.IsClientErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						// We're not handling this error, try again
-						continue;
+						// We're not handling this error, do not try again
+						break;
 					}
 
 					handleError = true;
@@ -227,8 +227,8 @@ namespace ArchiSteamFarm {
 
 				if (response.StatusCode.IsClientErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						// We're not handling this error, try again
-						continue;
+						// We're not handling this error, do not try again
+						break;
 					}
 
 					handleError = true;
@@ -290,8 +290,8 @@ namespace ArchiSteamFarm {
 
 				if (response.StatusCode.IsClientErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						// We're not handling this error, try again
-						continue;
+						// We're not handling this error, do not try again
+						break;
 					}
 
 					handleError = true;
@@ -365,8 +365,8 @@ namespace ArchiSteamFarm {
 
 				if (response.StatusCode.IsClientErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						// We're not handling this error, try again
-						continue;
+						// We're not handling this error, do not try again
+						break;
 					}
 
 					handleError = true;
@@ -420,8 +420,8 @@ namespace ArchiSteamFarm {
 
 				if (response.StatusCode.IsClientErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						// We're not handling this error, try again
-						continue;
+						// We're not handling this error, do not try again
+						break;
 					}
 
 					handleError = true;
@@ -475,8 +475,8 @@ namespace ArchiSteamFarm {
 
 				if (response.StatusCode.IsClientErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						// We're not handling this error, try again
-						continue;
+						// We're not handling this error, do not try again
+						break;
 					}
 
 					handleError = true;
@@ -548,7 +548,7 @@ namespace ArchiSteamFarm {
 						result = new BasicResponse(response);
 					}
 
-					break;
+					continue;
 				}
 
 				return new BasicResponse(response);
@@ -590,7 +590,7 @@ namespace ArchiSteamFarm {
 						result = new BasicResponse(response);
 					}
 
-					break;
+					continue;
 				}
 
 				return new BasicResponse(response);
@@ -624,8 +624,8 @@ namespace ArchiSteamFarm {
 
 				if (response.StatusCode.IsClientErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						// We're not handling this error, try again
-						continue;
+						// We're not handling this error, do not try again
+						break;
 					}
 
 					handleError = true;
@@ -687,8 +687,8 @@ namespace ArchiSteamFarm {
 
 				if (response.StatusCode.IsClientErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						// We're not handling this error, try again
-						continue;
+						// We're not handling this error, do not try again
+						break;
 					}
 
 					handleError = true;
@@ -762,8 +762,8 @@ namespace ArchiSteamFarm {
 
 				if (response.StatusCode.IsClientErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						// We're not handling this error, try again
-						continue;
+						// We're not handling this error, do not try again
+						break;
 					}
 
 					handleError = true;
