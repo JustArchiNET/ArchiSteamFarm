@@ -118,23 +118,36 @@ namespace ArchiSteamFarm {
 			for (byte i = 0; i < maxTries; i++) {
 				await using StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
-				if (response?.StatusCode.IsClientErrorCode() == true) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						result = new BinaryResponse(response);
-					}
-
-					break;
+				if (response == null) {
+					// Request timed out, try again
+					continue;
 				}
 
-				if (response?.StatusCode.IsServerErrorCode() == true) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						result = new BinaryResponse(response);
+				bool handleError = false;
+
+				if (response.StatusCode.IsClientErrorCode()) {
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						// We're not handling this error, try again
+						continue;
 					}
 
-					break;
+					handleError = true;
+				} else if (response.StatusCode.IsServerErrorCode()) {
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						// We're not handling this error, try again
+						continue;
+					}
+
+					handleError = true;
 				}
 
-				if (response?.Content == null) {
+				if (response.Content == null) {
+					if (handleError) {
+						// We're handling this error, the content isn't available, deal with it
+						return new BinaryResponse(response);
+					}
+
+					// The content isn't available and it's not an error, try again
 					continue;
 				}
 
@@ -205,23 +218,36 @@ namespace ArchiSteamFarm {
 			for (byte i = 0; i < maxTries; i++) {
 				await using StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
-				if (response?.StatusCode.IsClientErrorCode() == true) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						result = new HtmlDocumentResponse(response);
-					}
-
-					break;
+				if (response == null) {
+					// Request timed out, try again
+					continue;
 				}
 
-				if (response?.StatusCode.IsServerErrorCode() == true) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						result = new HtmlDocumentResponse(response);
+				bool handleError = false;
+
+				if (response.StatusCode.IsClientErrorCode()) {
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						// We're not handling this error, try again
+						continue;
 					}
 
-					break;
+					handleError = true;
+				} else if (response.StatusCode.IsServerErrorCode()) {
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						// We're not handling this error, try again
+						continue;
+					}
+
+					handleError = true;
 				}
 
-				if (response?.Content == null) {
+				if (response.Content == null) {
+					if (handleError) {
+						// We're handling this error, the content isn't available, deal with it
+						return new HtmlDocumentResponse(response);
+					}
+
+					// The content isn't available and it's not an error, try again
 					continue;
 				}
 
@@ -255,23 +281,36 @@ namespace ArchiSteamFarm {
 			for (byte i = 0; i < maxTries; i++) {
 				await using StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
-				if (response?.StatusCode.IsClientErrorCode() == true) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						result = new ObjectResponse<T>(response);
-					}
-
-					break;
+				if (response == null) {
+					// Request timed out, try again
+					continue;
 				}
 
-				if (response?.StatusCode.IsServerErrorCode() == true) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						result = new ObjectResponse<T>(response);
+				bool handleError = false;
+
+				if (response.StatusCode.IsClientErrorCode()) {
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						// We're not handling this error, try again
+						continue;
 					}
 
-					break;
+					handleError = true;
+				} else if (response.StatusCode.IsServerErrorCode()) {
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						// We're not handling this error, try again
+						continue;
+					}
+
+					handleError = true;
 				}
 
-				if (response?.Content == null) {
+				if (response.Content == null) {
+					if (handleError) {
+						// We're handling this error, the content isn't available, deal with it
+						return new ObjectResponse<T>(response);
+					}
+
+					// The content isn't available and it's not an error, try again
 					continue;
 				}
 
@@ -317,23 +356,36 @@ namespace ArchiSteamFarm {
 			for (byte i = 0; i < maxTries; i++) {
 				HttpResponseMessage? response = await InternalGet(request, headers, referer, requestOptions, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
-				if (response?.StatusCode.IsClientErrorCode() == true) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						result = new StreamResponse(response);
-					}
-
-					break;
+				if (response == null) {
+					// Request timed out, try again
+					continue;
 				}
 
-				if (response?.StatusCode.IsServerErrorCode() == true) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						result = new StreamResponse(response);
+				bool handleError = false;
+
+				if (response.StatusCode.IsClientErrorCode()) {
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						// We're not handling this error, try again
+						continue;
 					}
 
-					break;
+					handleError = true;
+				} else if (response.StatusCode.IsServerErrorCode()) {
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						// We're not handling this error, try again
+						continue;
+					}
+
+					handleError = true;
 				}
 
-				if (response?.Content == null) {
+				if (response.Content == null) {
+					if (handleError) {
+						// We're handling this error, the content isn't available, deal with it
+						return new StreamResponse(response);
+					}
+
+					// The content isn't available and it's not an error, try again
 					continue;
 				}
 
@@ -359,23 +411,36 @@ namespace ArchiSteamFarm {
 			for (byte i = 0; i < maxTries; i++) {
 				using HttpResponseMessage? response = await InternalGet(request, headers, referer).ConfigureAwait(false);
 
-				if (response?.StatusCode.IsClientErrorCode() == true) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						result = new StringResponse(response);
-					}
-
-					break;
+				if (response == null) {
+					// Request timed out, try again
+					continue;
 				}
 
-				if (response?.StatusCode.IsServerErrorCode() == true) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						result = new StringResponse(response);
+				bool handleError = false;
+
+				if (response.StatusCode.IsClientErrorCode()) {
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						// We're not handling this error, try again
+						continue;
 					}
 
-					break;
+					handleError = true;
+				} else if (response.StatusCode.IsServerErrorCode()) {
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						// We're not handling this error, try again
+						continue;
+					}
+
+					handleError = true;
 				}
 
-				if (response?.Content == null) {
+				if (response.Content == null) {
+					if (handleError) {
+						// We're handling this error, the content isn't available, deal with it
+						return new StringResponse(response);
+					}
+
+					// The content isn't available and it's not an error, try again
 					continue;
 				}
 
@@ -401,23 +466,36 @@ namespace ArchiSteamFarm {
 			for (byte i = 0; i < maxTries; i++) {
 				await using StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
-				if (response?.StatusCode.IsClientErrorCode() == true) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						result = new XmlDocumentResponse(response);
-					}
-
-					break;
+				if (response == null) {
+					// Request timed out, try again
+					continue;
 				}
 
-				if (response?.StatusCode.IsServerErrorCode() == true) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						result = new XmlDocumentResponse(response);
+				bool handleError = false;
+
+				if (response.StatusCode.IsClientErrorCode()) {
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						// We're not handling this error, try again
+						continue;
 					}
 
-					break;
+					handleError = true;
+				} else if (response.StatusCode.IsServerErrorCode()) {
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						// We're not handling this error, try again
+						continue;
+					}
+
+					handleError = true;
 				}
 
-				if (response?.Content == null) {
+				if (response.Content == null) {
+					if (handleError) {
+						// We're handling this error, the content isn't available, deal with it
+						return new XmlDocumentResponse(response);
+					}
+
+					// The content isn't available and it's not an error, try again
 					continue;
 				}
 
@@ -537,23 +615,36 @@ namespace ArchiSteamFarm {
 			for (byte i = 0; i < maxTries; i++) {
 				await using StreamResponse? response = await UrlPostToStream(request, headers, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
-				if (response?.StatusCode.IsClientErrorCode() == true) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						result = new HtmlDocumentResponse(response);
-					}
-
-					break;
+				if (response == null) {
+					// Request timed out, try again
+					continue;
 				}
 
-				if (response?.StatusCode.IsServerErrorCode() == true) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						result = new HtmlDocumentResponse(response);
+				bool handleError = false;
+
+				if (response.StatusCode.IsClientErrorCode()) {
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						// We're not handling this error, try again
+						continue;
 					}
 
-					break;
+					handleError = true;
+				} else if (response.StatusCode.IsServerErrorCode()) {
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						// We're not handling this error, try again
+						continue;
+					}
+
+					handleError = true;
 				}
 
-				if (response?.Content == null) {
+				if (response.Content == null) {
+					if (handleError) {
+						// We're handling this error, the content isn't available, deal with it
+						return new HtmlDocumentResponse(response);
+					}
+
+					// The content isn't available and it's not an error, try again
 					continue;
 				}
 
@@ -584,26 +675,39 @@ namespace ArchiSteamFarm {
 
 			ObjectResponse<TResult>? result = null;
 
-			for (byte i = 0; i < maxTries; i++) {
+			for (byte i = 0; (i < maxTries) && (result == null); i++) {
 				await using StreamResponse? response = await UrlPostToStream(request, headers, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
-				if (response?.StatusCode.IsClientErrorCode() == true) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						result = new ObjectResponse<TResult>(response);
-					}
-
-					break;
+				if (response == null) {
+					// Request timed out, try again
+					continue;
 				}
 
-				if (response?.StatusCode.IsServerErrorCode() == true) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						result = new ObjectResponse<TResult>(response);
+				bool handleError = false;
+
+				if (response.StatusCode.IsClientErrorCode()) {
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						// We're not handling this error, try again
+						continue;
 					}
 
-					break;
+					handleError = true;
+				} else if (response.StatusCode.IsServerErrorCode()) {
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						// We're not handling this error, try again
+						continue;
+					}
+
+					handleError = true;
 				}
 
-				if (response?.Content == null) {
+				if (response.Content == null) {
+					if (handleError) {
+						// We're handling this error, the content isn't available, deal with it
+						return new ObjectResponse<TResult>(response);
+					}
+
+					// The content isn't available and it's not an error, try again
 					continue;
 				}
 
@@ -649,23 +753,36 @@ namespace ArchiSteamFarm {
 			for (byte i = 0; i < maxTries; i++) {
 				HttpResponseMessage? response = await InternalPost(request, headers, data, referer, requestOptions, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
 
-				if (response?.StatusCode.IsClientErrorCode() == true) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						result = new StreamResponse(response);
-					}
-
-					break;
+				if (response == null) {
+					// Request timed out, try again
+					continue;
 				}
 
-				if (response?.StatusCode.IsServerErrorCode() == true) {
-					if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						result = new StreamResponse(response);
+				bool handleError = false;
+
+				if (response.StatusCode.IsClientErrorCode()) {
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+						// We're not handling this error, try again
+						continue;
 					}
 
-					break;
+					handleError = true;
+				} else if (response.StatusCode.IsServerErrorCode()) {
+					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+						// We're not handling this error, try again
+						continue;
+					}
+
+					handleError = true;
 				}
 
-				if (response?.Content == null) {
+				if (response.Content == null) {
+					if (handleError) {
+						// We're handling this error, the content isn't available, deal with it
+						return new StreamResponse(response);
+					}
+
+					// The content isn't available and it's not an error, try again
 					continue;
 				}
 
