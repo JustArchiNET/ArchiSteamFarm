@@ -521,7 +521,13 @@ namespace ArchiSteamFarm {
 
 					break;
 				case ASF.EUserInputType.TwoFactorAuthentication:
-					if (((inputValue.Length != MobileAuthenticator.CodeDigits) && (inputValue.Length != MobileAuthenticator.BackupCodeDigits)) || inputValue.Any(character => !MobileAuthenticator.CodeCharacters.Contains(char.ToUpperInvariant(character)))) {
+					if ((inputValue.Length != MobileAuthenticator.CodeDigits) && (inputValue.Length != MobileAuthenticator.BackupCodeDigits)) {
+						return false;
+					}
+
+					inputValue = inputValue.ToUpperInvariant();
+
+					if (inputValue.Any(character => !MobileAuthenticator.CodeCharacters.Contains(character))) {
 						return false;
 					}
 
@@ -1518,7 +1524,7 @@ namespace ArchiSteamFarm {
 					ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, nameof(name)));
 				}
 
-				if (invalid && key != null) {
+				if (invalid && (key != null)) {
 					invalidKeys.Add(key);
 				}
 			}
