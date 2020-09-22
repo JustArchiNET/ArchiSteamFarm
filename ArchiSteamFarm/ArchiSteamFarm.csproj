@@ -28,7 +28,7 @@
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.9.3" />
     <PackageReference Include="SteamKit2" Version="2.3.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.2" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="5.6.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="5.6.2" />
     <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="5.6.1" />
     <PackageReference Include="System.Composition" Version="1.4.1" />
     <PackageReference Include="System.Linq.Async" Version="4.1.1" />
