@@ -27,6 +27,7 @@ using ArchiSteamFarm.Localization;
 using JetBrains.Annotations;
 using NLog;
 using NLog.Config;
+using NLog.Layouts;
 using NLog.Targets;
 
 namespace ArchiSteamFarm.NLog {
@@ -37,7 +38,7 @@ namespace ArchiSteamFarm.NLog {
 
 		// This is NLog config property, it must have public get() and set() capabilities
 		[PublicAPI]
-		public string? BotName { get; set; }
+		public Layout? BotName { get; set; }
 
 		// This is NLog config property, it must have public get() and set() capabilities
 		[PublicAPI]
@@ -72,8 +73,10 @@ namespace ArchiSteamFarm.NLog {
 
 			Bot? bot = null;
 
-			if (!string.IsNullOrEmpty(BotName)) {
-				bot = Bot.GetBot(BotName!);
+			string? botName = BotName?.Render(logEvent);
+
+			if (!string.IsNullOrEmpty(botName)) {
+				bot = Bot.GetBot(botName);
 
 				if (bot?.IsConnectedAndLoggedOn != true) {
 					return;
