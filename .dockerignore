@@ -27,10 +27,8 @@ ArchiSteamFarm/logs
 **/[Bb]in/
 **/[Oo]bj/
 
-ArchiSteamFarm.CustomPlugins.ExamplePlugin
-ASF-WebConfigGenerator
+ArchiSteamFarm.CustomPlugins.*
 ASF-ui/dist
-ASF-ui/tools
 tools
 wiki
 
