@@ -2131,7 +2131,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			const string requestValidateCode = "/account/validatewalletcode";
+			const string requestValidateCode = "/account/ajaxredeemwalletcode";
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new Dictionary<string, string>(2, StringComparer.Ordinal) { { "wallet_code", key } };
@@ -2147,35 +2147,7 @@ namespace ArchiSteamFarm {
 				return (responseValidateCode.Content.Result == EResult.OK ? EResult.Fail : responseValidateCode.Content.Result, responseValidateCode.Content.PurchaseResultDetail);
 			}
 
-			if (responseValidateCode.Content.KeyDetails == null) {
-				Bot.ArchiLogger.LogNullError(nameof(responseValidateCode.Content.KeyDetails));
-
-				return null;
-			}
-
-			if (responseValidateCode.Content.WalletCurrencyCode != responseValidateCode.Content.KeyDetails.CurrencyCode) {
-				const string requestCheckFunds = "/account/createwalletandcheckfunds";
-				WebBrowser.ObjectResponse<Steam.EResultResponse>? responseCheckFunds = await UrlPostToJsonObjectWithSession<Steam.EResultResponse>(SteamStoreURL, requestCheckFunds, data: data).ConfigureAwait(false);
-
-				if (responseCheckFunds?.Content == null) {
-					return null;
-				}
-
-				if (responseCheckFunds.Content.Result != EResult.OK) {
-					return (responseCheckFunds.Content.Result, null);
-				}
-			}
-
-			const string requestConfirmRedeem = "/account/confirmredeemwalletcode";
-
-			WebBrowser.ObjectResponse<Steam.RedeemWalletResponse>? responseConfirmRedeem = await UrlPostToJsonObjectWithSession<Steam.RedeemWalletResponse>(SteamStoreURL, requestConfirmRedeem, data: data).ConfigureAwait(false);
-
-			if (responseConfirmRedeem?.Content == null) {
-				return null;
-			}
-
-			// Same, returning OK EResult only if PurchaseResultDetail is NoDetail (no error occured)
-			return ((responseConfirmRedeem.Content.PurchaseResultDetail == EPurchaseResultDetail.NoDetail) && (responseConfirmRedeem.Content.Result == EResult.OK) ? responseConfirmRedeem.Content.Result : EResult.Fail, responseConfirmRedeem.Content.PurchaseResultDetail);
+			return (EResult.OK, EPurchaseResultDetail.NoDetail);
 		}
 
 		internal async Task<bool> UnpackBooster(uint appID, ulong itemID) {
