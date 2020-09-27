@@ -1,0 +1,26 @@
+name: ASF-auto-merge
+
+on:
+  check_suite:
+    types:
+      - completed
+  pull_request:
+    types:
+      - edited
+      - labeled
+      - opened
+      - ready_for_review
+      - reopened
+      - synchronize
+      - unlabeled
+      - unlocked
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto-merge PR if deemed appropriate
+        uses: ridedott/merge-me-action@v1.6.7
+        with:
+          GITHUB_TOKEN: ${{ secrets.ASF_GITHUB_PERSONAL_TOKEN }}
+          PRESET: DEPENDABOT_MINOR

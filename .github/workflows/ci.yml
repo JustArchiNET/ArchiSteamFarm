@@ -388,3 +388,13 @@ jobs:
         asset_path: out/ASF-win-x64.zip
         asset_name: ASF-win-x64.zip
         asset_content_type: application/zip
+  auto-merge:
+    needs:
+      - main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto-merge PR if deemed appropriate
+        uses: ridedott/merge-me-action@v1.6.7
+        with:
+          GITHUB_TOKEN: ${{ secrets.ASF_GITHUB_PERSONAL_TOKEN }}
+          PRESET: DEPENDABOT_MINOR
