@@ -1,26 +1,18 @@
 name: ASF-auto-merge
 
 on:
-  check_suite:
-    types:
-      - completed
   pull_request:
-    types:
-      - edited
-      - labeled
-      - opened
-      - ready_for_review
-      - reopened
-      - synchronize
-      - unlabeled
-      - unlocked
 
 jobs:
   auto-merge:
     runs-on: ubuntu-latest
     steps:
-      - name: Auto-merge PR if deemed appropriate
-        uses: ridedott/merge-me-action@v1.6.7
+      - name: Checkout code
+        uses: actions/checkout@v2
         with:
-          GITHUB_TOKEN: ${{ secrets.ASF_GITHUB_PERSONAL_TOKEN }}
-          PRESET: DEPENDABOT_MINOR
+          submodules: recursive
+      - name: Auto-merge PR if deemed appropriate
+        uses: ahmadnassri/action-dependabot-auto-merge@v2
+        with:
+          github-token: ${{ secrets.ASF_GITHUB_PERSONAL_TOKEN }}
+          target: minor
