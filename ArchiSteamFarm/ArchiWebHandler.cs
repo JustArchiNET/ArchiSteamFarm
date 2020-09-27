@@ -2131,7 +2131,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			const string requestValidateCode = "/account/ajaxredeemwalletcode/";
+			const string requestValidateCode = "/account/ajaxredeemwalletcode";
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new Dictionary<string, string>(2, StringComparer.Ordinal) { { "wallet_code", key } };
