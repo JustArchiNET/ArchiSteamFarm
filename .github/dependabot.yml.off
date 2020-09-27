@@ -1,0 +1,34 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "01:00"
+    labels:
+      - "Automatic"
+    open-pull-requests-limit: 99
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "01:15"
+    labels:
+      - "Automatic"
+    open-pull-requests-limit: 99
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "01:30"
+    labels:
+      - "Automatic"
+    open-pull-requests-limit: 99
+  - package-ecosystem: "gitsubmodule"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "02:00"
+    labels:
+      - "Automatic"
+    open-pull-requests-limit: 99

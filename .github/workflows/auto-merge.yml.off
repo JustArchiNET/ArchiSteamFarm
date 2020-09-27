@@ -15,4 +15,4 @@ jobs:
         uses: ahmadnassri/action-dependabot-auto-merge@v2
         with:
           github-token: ${{ secrets.ASF_GITHUB_PERSONAL_TOKEN }}
-          target: minor
+          target: digest # https://github.com/ahmadnassri/action-dependabot-auto-merge/issues/25
