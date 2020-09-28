@@ -14,7 +14,7 @@ env:
   global:
     - CONFIGURATION: Release
     - DOTNET_CLI_TELEMETRY_OPTOUT: 1
-    - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+    - DOTNET_NOLOGO: 1
     - NET_CORE_VERSION: netcoreapp3.1
     - STEAM_TOKEN_DUMPER_NAME: ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
     - VARIANTS="generic linux-arm linux-arm64 linux-x64 osx-x64 win-x64" # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
