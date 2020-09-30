@@ -69,7 +69,15 @@ before_build:
     }
 
 
-    java -version
+    node -v
+
+
+    if ($LastExitCode -ne 0) {
+        throw "Last command failed."
+    }
+
+
+    npm -v
 
 
     if ($LastExitCode -ne 0) {
