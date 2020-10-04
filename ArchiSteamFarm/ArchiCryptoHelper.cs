@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using CryptSharp.Utility;
@@ -134,6 +135,10 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(encrypted));
 			}
 
+			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+				return null;
+			}
+
 			try {
 				byte[] decryptedData = ProtectedData.Unprotect(
 					Convert.FromBase64String(encrypted),
@@ -179,6 +184,10 @@ namespace ArchiSteamFarm {
 		private static string? EncryptProtectedDataForCurrentUser(string decrypted) {
 			if (string.IsNullOrEmpty(decrypted)) {
 				throw new ArgumentNullException(nameof(decrypted));
+			}
+
+			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+				return null;
 			}
 
 			try {
