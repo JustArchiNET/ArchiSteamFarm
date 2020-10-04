@@ -163,7 +163,7 @@ namespace ArchiSteamFarm {
 
 					Dictionary<(ulong ClassID, ulong InstanceID), Steam.InventoryResponse.Description> descriptions = new Dictionary<(ulong ClassID, ulong InstanceID), Steam.InventoryResponse.Description>();
 
-					foreach (Steam.InventoryResponse.Description description in response.Content.Descriptions.Where(description => description != null)) {
+					foreach (Steam.InventoryResponse.Description description in response.Content.Descriptions) {
 						if (description.ClassID == 0) {
 							throw new NotSupportedException(string.Format(Strings.ErrorObjectIsNull, nameof(description.ClassID)));
 						}
@@ -177,7 +177,7 @@ namespace ArchiSteamFarm {
 						descriptions[key] = description;
 					}
 
-					foreach (Steam.Asset asset in response.Content.Assets.Where(asset => asset != null)) {
+					foreach (Steam.Asset asset in response.Content.Assets) {
 						if (!descriptions.TryGetValue((asset.ClassID, asset.InstanceID), out Steam.InventoryResponse.Description? description) || assetIDs.Contains(asset.AssetID)) {
 							continue;
 						}

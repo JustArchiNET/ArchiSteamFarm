@@ -7,13 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Configuration needed for PublishTrimmed=true to work with custom plugins -->
-    <!-- TODO: https://github.com/mono/linker/issues/652 -->
-    <TrimmerRootAssembly Include="System.Threading.Tasks" />
-    <TrimmerRootAssembly Include="System.Threading.Timer" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AngleSharp.XPath" Version="1.1.7" />
     <PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="4.0.0">
       <PrivateAssets>all</PrivateAssets>
@@ -34,7 +27,7 @@
     <PackageReference Include="System.Linq.Async" Version="4.1.1" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+  <ItemGroup Condition="'$(TargetFramework)' != 'net48'">
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.8" />
     <PackageReference Include="System.IO.FileSystem.AccessControl" Version="4.7.0" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.7.0" />

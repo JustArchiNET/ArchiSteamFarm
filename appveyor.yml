@@ -6,11 +6,11 @@ image: Visual Studio 2019
 configuration: Release
 clone_depth: 10
 environment:
-  DOTNET_CHANNEL: 3.1
+  DOTNET_CHANNEL: 5.0
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_INSTALL_DIR: C:\Program Files\dotnet
   DOTNET_NOLOGO: true
-  NET_CORE_VERSION: netcoreapp3.1
+  NET_CORE_VERSION: net5.0
   NET_FRAMEWORK_VERSION: net48
   NODE_JS_VERSION: lts
   STEAM_TOKEN_DUMPER_NAME: ArchiSteamFarm.OfficialPlugins.SteamTokenDumper

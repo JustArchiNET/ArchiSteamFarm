@@ -56,7 +56,7 @@ namespace ArchiSteamFarm.Plugins {
 				return StringComparer.Ordinal;
 			}
 
-			StringComparer? result = results.FirstOrDefault(comparer => comparer != null);
+			StringComparer? result = results.FirstOrDefault();
 
 			return result ?? StringComparer.Ordinal;
 		}
@@ -427,7 +427,7 @@ namespace ArchiSteamFarm.Plugins {
 				return null;
 			}
 
-			return responses.Where(response => response != null).SelectMany(handler => handler).Where(handler => handler != null).ToHashSet();
+			return responses.Where(response => response != null).SelectMany(handlers => handlers ?? Enumerable.Empty<ClientMsgHandler>()).ToHashSet();
 		}
 
 		internal static async Task<bool> OnBotTradeOffer(Bot bot, Steam.TradeOffer tradeOffer) {

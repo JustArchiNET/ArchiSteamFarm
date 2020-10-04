@@ -27,7 +27,9 @@ using JetBrains.Annotations;
 #if NETFRAMEWORK
 using Microsoft.AspNetCore.Hosting;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.WebSockets;
+using System.Security.Cryptography;
 using System.Threading;
 #endif
 
@@ -135,6 +137,8 @@ namespace ArchiSteamFarm {
 		}
 
 #if NETFRAMEWORK
+		internal static Task<byte[]> ComputeHashAsync(this HashAlgorithm hashAlgorithm, Stream inputStream) => Task.FromResult(hashAlgorithm.ComputeHash(inputStream));
+
 		internal static IWebHostBuilder ConfigureWebHostDefaults(this IWebHostBuilder builder, Action<IWebHostBuilder> configure) {
 			configure(builder);
 

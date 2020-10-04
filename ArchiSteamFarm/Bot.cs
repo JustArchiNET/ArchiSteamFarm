@@ -2670,7 +2670,7 @@ namespace ArchiSteamFarm {
 
 				using SHA1CryptoServiceProvider sha = new SHA1CryptoServiceProvider();
 
-				sentryHash = sha.ComputeHash(fileStream);
+				sentryHash = await sha.ComputeHashAsync(fileStream).ConfigureAwait(false);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 
