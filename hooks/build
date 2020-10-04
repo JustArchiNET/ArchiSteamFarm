@@ -3,7 +3,7 @@
 # See: https://docs.docker.com/docker-hub/builds/advanced
 set -eu
 
-asf_arch="$(echo "$DOCKER_TAG" | cut -d '-' -f 2)"
+asf_arch="$(echo "$DOCKER_TAG" | rev | cut -d '-' -f 1 | rev)"
 
 case "$asf_arch" in
 	"arm") dotnet_arch="-arm32v7" ;;
