@@ -6,10 +6,11 @@ image: Visual Studio 2019
 configuration: Release
 clone_depth: 10
 environment:
-  DOTNET_CHANNEL: 5.0
+#  DOTNET_CHANNEL: 5.0
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_INSTALL_DIR: C:\Program Files\dotnet
   DOTNET_NOLOGO: true
+  DOTNET_SDK: 5.0.100-rc.1.20452.10
   NET_CORE_VERSION: net5.0
   NET_FRAMEWORK_VERSION: net48
   NODE_JS_VERSION: lts
@@ -50,6 +51,13 @@ install:
         dotnet --info
 
         &([scriptblock]::Create((Invoke-WebRequest 'https://dot.net/v1/dotnet-install.ps1'))) -Channel "$env:DOTNET_CHANNEL" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
+    }
+
+
+    if ($env:DOTNET_SDK) {
+        dotnet --info
+
+        &([scriptblock]::Create((Invoke-WebRequest 'https://dot.net/v1/dotnet-install.ps1'))) -Channel 'Current' -Version "$env:DOTNET_SDK" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
     }
 - ps: Install-Product node "$env:NODE_JS_VERSION"
 before_build:
