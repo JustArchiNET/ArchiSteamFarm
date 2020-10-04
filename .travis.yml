@@ -7,7 +7,7 @@ git:
   depth: 10
 
 # ASF is based on .NET Core platform, we're not building with Mono
-dotnet: 5.0.100-rc.1.20452.10
+dotnet: 5.0
 mono: none
 
 env:
@@ -100,9 +100,10 @@ script:
 
     set +u # This is needed to continue Travis build
 matrix:
-  # TODO: Remove once Linux works with 5.0
+  # TODO: Remove once Travis works with 5.0
   allow_failures:
     - os: linux
+    - os: osx
   # We can use fast finish, as we don't need to wait for allow_failures builds to mark build as success
   fast_finish: true
   include:
