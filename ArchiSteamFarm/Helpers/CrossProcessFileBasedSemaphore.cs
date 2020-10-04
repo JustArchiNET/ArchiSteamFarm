@@ -22,6 +22,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Threading;
 using System.Threading.Tasks;
@@ -161,9 +162,7 @@ namespace ArchiSteamFarm.Helpers {
 			if (!Directory.Exists(directoryPath)) {
 				Directory.CreateDirectory(directoryPath!);
 
-				if (OS.IsUnix) {
-					OS.UnixSetFileAccess(directoryPath!, OS.EUnixPermission.Combined777);
-				} else {
+				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
 					DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath!);
 
 					try {
@@ -174,15 +173,15 @@ namespace ArchiSteamFarm.Helpers {
 						// Non-critical, user might have no rights to manage the resource
 						ASF.ArchiLogger.LogGenericDebuggingException(e);
 					}
+				} else {
+					OS.UnixSetFileAccess(directoryPath!, OS.EUnixPermission.Combined777);
 				}
 			}
 
 			try {
 				using (new FileStream(FilePath, FileMode.CreateNew)) { }
 
-				if (OS.IsUnix) {
-					OS.UnixSetFileAccess(FilePath, OS.EUnixPermission.Combined777);
-				} else {
+				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
 					FileInfo fileInfo = new FileInfo(FilePath);
 
 					try {
@@ -193,6 +192,8 @@ namespace ArchiSteamFarm.Helpers {
 						// Non-critical, user might have no rights to manage the resource
 						ASF.ArchiLogger.LogGenericDebuggingException(e);
 					}
+				} else {
+					OS.UnixSetFileAccess(FilePath, OS.EUnixPermission.Combined777);
 				}
 			} catch (IOException) {
 				// Ignored, if the file was already created in the meantime by another instance, this is fine
