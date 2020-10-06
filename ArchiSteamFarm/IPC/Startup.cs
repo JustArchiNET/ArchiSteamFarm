@@ -22,8 +22,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Net;
 using System.Reflection;
 using ArchiSteamFarm.IPC.Integration;
+using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Plugins;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
@@ -130,8 +133,38 @@ namespace ArchiSteamFarm.IPC {
 
 			// The order of dependency injection matters, pay attention to it
 
+			// Add support for custom reverse proxy endpoints
+			List<string>? knownProxiesText = Configuration.GetSection("Kestrel").GetValue<List<string>?>("KnownProxies");
+
+			List<IPAddress>? knownProxies = null;
+
+			if (knownProxiesText != null) {
+				knownProxies = new List<IPAddress>(knownProxiesText.Count);
+
+				foreach (string ipAddressText in knownProxiesText) {
+					if (!IPAddress.TryParse(ipAddressText, out var ipAddress)) {
+						ASF.ArchiLogger.LogGenericError(Strings.ErrorIsInvalid, nameof(ipAddress));
+						ASF.ArchiLogger.LogGenericDebug(nameof(ipAddress) + ": " + ipAddressText);
+
+						break;
+					}
+
+					knownProxies.Add(ipAddress);
+				}
+			}
+
 			// Add support for proxies
-			services.Configure<ForwardedHeadersOptions>(options => options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto);
+			services.Configure<ForwardedHeadersOptions>(
+				options => {
+					options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+
+					if (knownProxies != null) {
+						foreach (IPAddress knownProxy in knownProxies) {
+							options.KnownProxies.Add(knownProxy);
+						}
+					}
+				}
+			);
 
 			// Add support for response compression
 			services.AddResponseCompression();
