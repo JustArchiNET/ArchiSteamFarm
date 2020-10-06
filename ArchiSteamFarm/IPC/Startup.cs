@@ -134,22 +134,31 @@ namespace ArchiSteamFarm.IPC {
 			// The order of dependency injection matters, pay attention to it
 
 			// Add support for custom reverse proxy endpoints
-			List<string>? knownProxiesText = Configuration.GetSection("Kestrel").GetValue<List<string>?>("KnownProxies");
+			HashSet<string>? knownNetworksText = Configuration.GetSection("Kestrel:KnownNetworks").Get<HashSet<string>>();
 
-			List<IPAddress>? knownProxies = null;
+			HashSet<IPNetwork>? knownNetworks = null;
 
-			if (knownProxiesText != null) {
-				knownProxies = new List<IPAddress>(knownProxiesText.Count);
+			if (knownNetworksText != null) {
+				knownNetworks = new HashSet<IPNetwork>(knownNetworksText.Count);
 
-				foreach (string ipAddressText in knownProxiesText) {
-					if (!IPAddress.TryParse(ipAddressText, out var ipAddress)) {
-						ASF.ArchiLogger.LogGenericError(Strings.ErrorIsInvalid, nameof(ipAddress));
-						ASF.ArchiLogger.LogGenericDebug(nameof(ipAddress) + ": " + ipAddressText);
+				foreach (string ipAddressText in knownNetworksText) {
+					string[] addressParts = ipAddressText.Split('/');
+
+					if ((addressParts.Length < 2) || !IPAddress.TryParse(addressParts[0], out IPAddress? ipAddress)) {
+						ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(ipAddressText)));
+						ASF.ArchiLogger.LogGenericDebug(nameof(ipAddressText) + ": " + ipAddressText);
 
 						break;
 					}
 
-					knownProxies.Add(ipAddress);
+					if (!int.TryParse(addressParts[1], out int prefixLength)) {
+						ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(prefixLength)));
+						ASF.ArchiLogger.LogGenericDebug(nameof(ipAddressText) + ": " + ipAddressText);
+
+						break;
+					}
+
+					knownNetworks.Add(new IPNetwork(ipAddress, prefixLength));
 				}
 			}
 
@@ -158,9 +167,9 @@ namespace ArchiSteamFarm.IPC {
 				options => {
 					options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
 
-					if (knownProxies != null) {
-						foreach (IPAddress knownProxy in knownProxies) {
-							options.KnownProxies.Add(knownProxy);
+					if (knownNetworks != null) {
+						foreach (IPNetwork knownNetwork in knownNetworks) {
+							options.KnownNetworks.Add(knownNetwork);
 						}
 					}
 				}
