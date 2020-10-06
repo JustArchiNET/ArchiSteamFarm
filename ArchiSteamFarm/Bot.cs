@@ -2849,23 +2849,25 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async Task SendCompletedSets() {
+		private async Task<HashSet<uint>> GetCompletedBadgeAppIDs() {
+			// TODO - extract logic from CardsFarmer and check all pages containing less than **150** craftable badges
 			IDocument? badgePage = await ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
 
 			if (badgePage == null) {
 				ArchiLogger.LogGenericWarning(Strings.WarningCouldNotCheckBadges);
 
-				return;
+				return new HashSet<uint>(0);
 			}
 
 			List<IElement> craftButtons = badgePage.SelectNodes("//a[@class='badge_craft_button']");
 
 			if (craftButtons.Count == 0) {
 				// no craftable badges
-				return;
+				return new HashSet<uint>(0);
 			}
 
-			HashSet<ulong> appIds = new HashSet<ulong>(craftButtons.Count);
+			HashSet<uint> result = new HashSet<uint>(craftButtons.Count);
+			const string uriSegmentBeforeAppId = "/gamecards/";
 
 			foreach (string? badgeUri in craftButtons.Select(htmlNode => htmlNode.GetAttribute("href"))) {
 				if (string.IsNullOrEmpty(badgeUri)) {
@@ -2874,7 +2876,6 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				const string uriSegmentBeforeAppId = "/gamecards/";
 				int index = badgeUri.LastIndexOf(uriSegmentBeforeAppId, StringComparison.Ordinal);
 
 				if (index < 0) {
@@ -2891,18 +2892,25 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
+				// TODO - clean up
 				string? appIdText = string.Concat(badgeUri.Skip(index).TakeWhile(char.IsDigit));
 
-				if (string.IsNullOrEmpty(appIdText) || !ulong.TryParse(appIdText, out ulong appId)) {
+				if (string.IsNullOrEmpty(appIdText) || !uint.TryParse(appIdText, out uint appId)) {
 					ArchiLogger.LogNullError($"{nameof(appIdText)} || {nameof(appId)}");
 
 					continue;
 				}
 
-				appIds.Add(appId);
+				result.Add(appId);
 			}
 
-			if (appIds.Count == 0) {
+			return result;
+		}
+
+		private async Task SendCompletedSets() {
+			HashSet<uint> appIDs = await GetCompletedBadgeAppIDs().ConfigureAwait(false);
+
+			if (appIDs.Count == 0) {
 				// Could not extract appIds for craftable badges - No need to load the inventory at this point
 				return;
 			}
@@ -2912,7 +2920,7 @@ namespace ArchiSteamFarm {
 			try {
 				inventory = await ArchiWebHandler.GetInventoryAsync(SteamID)
 					.Where(item => (item.Type == Steam.Asset.EType.TradingCard) || (item.Type == Steam.Asset.EType.FoilTradingCard))
-					.Where(item => appIds.Contains(item.RealAppID))
+					.Where(item => appIDs.Contains(item.RealAppID))
 					.ToHashSetAsync()
 					.ConfigureAwait(false);
 			} catch (HttpRequestException e) {

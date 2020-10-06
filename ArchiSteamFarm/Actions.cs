@@ -244,9 +244,9 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<(bool Success, string Message)> SendInventory(uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, ulong targetSteamID = 0, string? tradeToken = null, Func<Steam.Asset, bool>? filterFunction = null, IReadOnlyCollection<Steam.Asset>? inventory = null) {
-			if ((appID == 0) || (contextID == 0)) {
-				throw new ArgumentNullException(nameof(appID) + " || " + nameof(contextID));
+		public async Task<(bool Success, string Message)> SendInventory(ulong targetSteamID = 0, string? tradeToken = null, IReadOnlyCollection<Steam.Asset>? inventory = null) {
+			if ((inventory == null) || (inventory.Count == 0)) {
+				return (false, string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
 			}
 
 			if (!Bot.IsConnectedAndLoggedOn) {
@@ -277,30 +277,11 @@ namespace ArchiSteamFarm {
 				TradingScheduled = true;
 			}
 
-			filterFunction ??= item => true;
 			await TradingSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
 				lock (TradingSemaphore) {
 					TradingScheduled = false;
-				}
-
-				if (inventory == null) {
-					try {
-						inventory = await Bot.ArchiWebHandler.GetInventoryAsync(Bot.SteamID, appID, contextID).Where(item => item.Tradable && filterFunction(item)).ToHashSetAsync().ConfigureAwait(false);
-					} catch (HttpRequestException e) {
-						Bot.ArchiLogger.LogGenericWarningException(e);
-
-						return (false, string.Format(Strings.WarningFailedWithError, e.Message));
-					} catch (Exception e) {
-						Bot.ArchiLogger.LogGenericException(e);
-
-						return (false, string.Format(Strings.WarningFailedWithError, e.Message));
-					}
-				}
-
-				if (inventory.Count == 0) {
-					return (false, string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
 				}
 
 				if (!await Bot.ArchiWebHandler.MarkSentTrades().ConfigureAwait(false)) {
@@ -333,6 +314,35 @@ namespace ArchiSteamFarm {
 			}
 
 			return (true, Strings.BotLootingSuccess);
+		}
+
+		[PublicAPI]
+		public async Task<(bool Success, string Message)> SendInventory(uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, ulong targetSteamID = 0, string? tradeToken = null, Func<Steam.Asset, bool>? filterFunction = null) {
+			if ((appID == 0) || (contextID == 0)) {
+				throw new ArgumentNullException(nameof(appID) + " || " + nameof(contextID));
+			}
+
+			if (!Bot.IsConnectedAndLoggedOn) {
+				return (false, Strings.BotNotConnected);
+			}
+
+			filterFunction ??= item => true;
+
+			HashSet<Steam.Asset> inventory;
+
+			try {
+				inventory = await Bot.ArchiWebHandler.GetInventoryAsync(Bot.SteamID, appID, contextID).Where(item => item.Tradable && filterFunction(item)).ToHashSetAsync().ConfigureAwait(false);
+			} catch (HttpRequestException e) {
+				Bot.ArchiLogger.LogGenericWarningException(e);
+
+				return (false, string.Format(Strings.WarningFailedWithError, e.Message));
+			} catch (Exception e) {
+				Bot.ArchiLogger.LogGenericException(e);
+
+				return (false, string.Format(Strings.WarningFailedWithError, e.Message));
+			}
+
+			return await SendInventory(targetSteamID, tradeToken, inventory).ConfigureAwait(false);
 		}
 
 		[PublicAPI]
