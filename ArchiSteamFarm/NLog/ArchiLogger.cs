@@ -26,6 +26,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using JetBrains.Annotations;
 using NLog;
+using SteamKit2;
 
 namespace ArchiSteamFarm.NLog {
 	public sealed class ArchiLogger {
@@ -147,6 +148,20 @@ namespace ArchiSteamFarm.NLog {
 			logEventInfo.Properties["ChatGroupID"] = chatGroupID;
 			logEventInfo.Properties["ChatID"] = chatID;
 			logEventInfo.Properties["SteamID"] = steamID;
+
+			Logger.Log(logEventInfo);
+		}
+
+		internal void LogInvite(ulong steamID, EAccountType accountType,  [CallerMemberName] string? previousMethodName = null) {
+			if ((accountType == EAccountType.Invalid) || (steamID == 0)) {
+				throw new ArgumentNullException(nameof(accountType) + " || " + nameof(steamID));
+			}
+
+			string loggedMessage = previousMethodName + "() " + Enum.GetName(typeof(EAccountType), accountType) + " " + Strings.Invite + " " + steamID.ToString();
+
+			LogEventInfo logEventInfo = new LogEventInfo(LogLevel.Trace, Logger.Name, loggedMessage.ToString());
+			logEventInfo.Properties["SteamID"] = steamID;
+			logEventInfo.Properties["AccountType"] = Enum.GetName(typeof(EAccountType), accountType);
 
 			Logger.Log(logEventInfo);
 		}
