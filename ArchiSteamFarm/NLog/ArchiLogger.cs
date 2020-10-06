@@ -152,16 +152,16 @@ namespace ArchiSteamFarm.NLog {
 			Logger.Log(logEventInfo);
 		}
 
-		internal void LogInvite(ulong steamID, EAccountType accountType,  [CallerMemberName] string? previousMethodName = null) {
-			if ((accountType == EAccountType.Invalid) || (steamID == 0)) {
-				throw new ArgumentNullException(nameof(accountType) + " || " + nameof(steamID));
+		internal void LogInvite(SteamID steamID,  [CallerMemberName] string? previousMethodName = null) {
+			if ((steamID.AccountType == EAccountType.Invalid) || (steamID == 0)) {
+				throw new ArgumentNullException(nameof(steamID) + " || " + nameof(steamID.AccountType));
 			}
 
-			string loggedMessage = previousMethodName + "() " + Enum.GetName(typeof(EAccountType), accountType) + " " + Strings.Invite + " " + steamID.ToString();
+			string loggedMessage = previousMethodName + "() " + Enum.GetName(typeof(EAccountType), steamID.AccountType) + " " + steamID.ConvertToUInt64().ToString();
 
-			LogEventInfo logEventInfo = new LogEventInfo(LogLevel.Trace, Logger.Name, loggedMessage.ToString());
-			logEventInfo.Properties["SteamID"] = steamID;
-			logEventInfo.Properties["AccountType"] = Enum.GetName(typeof(EAccountType), accountType);
+			LogEventInfo logEventInfo = new LogEventInfo(LogLevel.Trace, Logger.Name, loggedMessage);
+			logEventInfo.Properties["SteamID"] = steamID.ConvertToUInt64();
+			logEventInfo.Properties["AccountType"] = steamID.AccountType;
 
 			Logger.Log(logEventInfo);
 		}

@@ -1172,15 +1172,6 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to invite.
-        /// </summary>
-        public static string Invite {
-            get {
-                return ResourceManager.GetString("Invite", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to IPC config has been changed!.
         /// </summary>
         public static string IPCConfigChanged {
