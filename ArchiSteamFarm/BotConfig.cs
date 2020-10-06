@@ -80,6 +80,9 @@ namespace ArchiSteamFarm {
 		public const bool DefaultSendOnFarmingFinished = false;
 
 		[PublicAPI]
+		public const bool DefaultSendSetsOnCompleted = false;
+
+		[PublicAPI]
 		public const byte DefaultSendTradePeriod = 0;
 
 		[PublicAPI]
@@ -183,6 +186,9 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly bool SendOnFarmingFinished = DefaultSendOnFarmingFinished;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		public readonly bool SendSetsOnCompleted = DefaultSendSetsOnCompleted;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly byte SendTradePeriod = DefaultSendTradePeriod;

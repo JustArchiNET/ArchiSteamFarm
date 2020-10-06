@@ -27,11 +27,16 @@ using System.Collections.Immutable;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using AngleSharp.Dom;
+using AngleSharp.Text;
 using ArchiSteamFarm.Collections;
+using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Plugins;
@@ -2817,11 +2822,7 @@ namespace ArchiSteamFarm {
 
 						break;
 					case ArchiHandler.UserNotificationsCallback.EUserNotification.Items when newNotification:
-						Utilities.InBackground(CardsFarmer.OnNewItemsNotification);
-
-						if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.DismissInventoryNotifications)) {
-							Utilities.InBackground(ArchiWebHandler.MarkInventory);
-						}
+						OnInventoryChanged();
 
 						break;
 					case ArchiHandler.UserNotificationsCallback.EUserNotification.Trading when newNotification:
@@ -2834,6 +2835,136 @@ namespace ArchiSteamFarm {
 			if (newPluginNotifications.Count > 0) {
 				Utilities.InBackground(() => PluginsCore.OnBotUserNotifications(this, newPluginNotifications));
 			}
+		}
+
+		private void OnInventoryChanged() {
+			Utilities.InBackground(CardsFarmer.OnNewItemsNotification);
+
+			if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.DismissInventoryNotifications)) {
+				Utilities.InBackground(ArchiWebHandler.MarkInventory);
+			}
+
+			if (BotConfig.SendSetsOnCompleted) {
+				Utilities.InBackground(SendCompletedSets);
+			}
+		}
+
+		private async Task SendCompletedSets() {
+			IDocument? badgePage = await ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
+
+			if (badgePage == null) {
+				ArchiLogger.LogGenericWarning(Strings.WarningCouldNotCheckBadges);
+
+				return;
+			}
+
+			List<IElement> craftButtons = badgePage.SelectNodes("//a[@class='badge_craft_button']");
+
+			if (craftButtons.Count == 0) {
+				// no craftable badges
+				return;
+			}
+
+			HashSet<ulong> appIds = new HashSet<ulong>(craftButtons.Count);
+
+			foreach (string? badgeUri in craftButtons.Select(htmlNode => htmlNode.GetAttribute("href"))) {
+				if (string.IsNullOrEmpty(badgeUri)) {
+					ArchiLogger.LogNullError(nameof(badgeUri));
+
+					continue;
+				}
+
+				const string uriSegmentBeforeAppId = "/gamecards/";
+				int index = badgeUri.LastIndexOf(uriSegmentBeforeAppId, StringComparison.Ordinal);
+
+				if (index < 0) {
+					ArchiLogger.LogNullError(nameof(index));
+
+					continue;
+				}
+
+				index += uriSegmentBeforeAppId.Length;
+
+				if (index >= badgeUri.Length) {
+					ArchiLogger.LogNullError(nameof(index));
+
+					continue;
+				}
+
+				string? appIdText = string.Concat(badgeUri.Skip(index).TakeWhile(char.IsDigit));
+
+				if (string.IsNullOrEmpty(appIdText) || !ulong.TryParse(appIdText, out ulong appId)) {
+					ArchiLogger.LogNullError($"{nameof(appIdText)} || {nameof(appId)}");
+
+					continue;
+				}
+
+				appIds.Add(appId);
+			}
+
+			if (appIds.Count == 0) {
+				// Could not extract appIds for craftable badges - No need to load the inventory at this point
+				return;
+			}
+
+			HashSet<Steam.Asset> inventory;
+
+			try {
+				inventory = await ArchiWebHandler.GetInventoryAsync(SteamID)
+					.Where(item => (item.Type == Steam.Asset.EType.TradingCard) || (item.Type == Steam.Asset.EType.FoilTradingCard))
+					.Where(item => appIds.Contains(item.RealAppID))
+					.ToHashSetAsync()
+					.ConfigureAwait(false);
+			} catch (HttpRequestException e) {
+				ArchiLogger.LogGenericWarningException(e);
+
+				return;
+			} catch (Exception e) {
+				ArchiLogger.LogGenericException(e);
+
+				return;
+			}
+
+			if (inventory.Count == 0) {
+				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsEmpty), nameof(inventory));
+
+				return;
+			}
+
+			HashSet<Steam.Asset> itemsToGive = inventory.GroupBy(item => (item.RealAppID, item.Type)).Select(
+				cardsOfAppAndType => {
+					// We still need untradable items here, as otherwise we could wrongfully assume that the set consists only of cards A, B and C due to all cards of classId D being untradable
+					Dictionary<ulong, List<Steam.Asset>> cardsPerClassId = cardsOfAppAndType.GroupBy(item => item.ClassID).ToDictionary(grouping => grouping.Key, grouping => grouping.OrderByDescending(item => item.Amount).ToList());
+
+					uint completedSets = cardsPerClassId.Values.Select(items => items.Count).Select(Convert.ToUInt32).Min();
+
+					HashSet<Steam.Asset> itemsOfAppAndTypeToGive = new HashSet<Steam.Asset>();
+
+					foreach (List<Steam.Asset> itemsOfClass in cardsPerClassId.Values) {
+						uint remainingForClass = completedSets;
+
+						foreach (Steam.Asset item in itemsOfClass.Where(item => item.Tradable)) {
+							if (remainingForClass >= item.Amount) {
+								remainingForClass -= item.Amount;
+								itemsOfAppAndTypeToGive.Add(item);
+							} else if (remainingForClass == 0) {
+								break;
+							}
+						}
+
+						if (remainingForClass > 0) {
+							// we cannot send this set, because one of two possibilities:
+							// - we want to send only one set, but all our items of one class ID have higher amounts
+							// - we have only untradable invariants of one of the class IDs
+							return new HashSet<Steam.Asset>(0);
+						}
+					}
+
+					return itemsOfAppAndTypeToGive;
+				}
+			).SelectMany(itemsToGivePerAppAndType => itemsToGivePerAppAndType).ToHashSet();
+
+			await Actions.SendInventory(inventory: itemsToGive).ConfigureAwait(false);
 		}
 
 		private void OnVanityURLChangedCallback(ArchiHandler.VanityURLChangedCallback callback) {
