@@ -157,7 +157,7 @@ namespace ArchiSteamFarm.NLog {
 				throw new ArgumentNullException(nameof(steamID) + " || " + nameof(steamID.AccountType));
 			}
 
-			string loggedMessage = previousMethodName + "() " + Enum.GetName(typeof(EAccountType), steamID.AccountType) + " " + steamID.ConvertToUInt64().ToString();
+			string loggedMessage = previousMethodName + "() " + steamID.AccountType + " " + steamID.ConvertToUInt64().ToString();
 
 			LogEventInfo logEventInfo = new LogEventInfo(LogLevel.Trace, Logger.Name, loggedMessage);
 			logEventInfo.Properties["SteamID"] = steamID.ConvertToUInt64();
