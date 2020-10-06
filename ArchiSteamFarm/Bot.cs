@@ -2849,9 +2849,8 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async Task<HashSet<uint>> GetCompletedBadgeAppIDs() {
-			// TODO - extract logic from CardsFarmer and check all pages containing less than **150** craftable badges
-			IDocument? badgePage = await ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
+		private async Task<ISet<uint>> GetCompletedBadgeAppIDs() {
+			using IDocument? badgePage = await ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
 
 			if (badgePage == null) {
 				ArchiLogger.LogGenericWarning(Strings.WarningCouldNotCheckBadges);
@@ -2859,6 +2858,50 @@ namespace ArchiSteamFarm {
 				return new HashSet<uint>(0);
 			}
 
+			ISet<uint> appIDs = GetCompletedBadgeAppIDs(badgePage);
+
+			byte maxPages = 1;
+			IElement? htmlNode = badgePage.SelectSingleNode("(//a[@class='pagelink'])[last()]");
+
+			if (htmlNode != null) {
+				string lastPage = htmlNode.TextContent;
+
+				if (string.IsNullOrEmpty(lastPage)) {
+					ArchiLogger.LogNullError(nameof(lastPage));
+
+					return new HashSet<uint>(0);
+				}
+
+				if (!byte.TryParse(lastPage, out maxPages) || (maxPages == 0)) {
+					ArchiLogger.LogNullError(nameof(maxPages));
+
+					return new HashSet<uint>(0);
+				}
+			}
+
+			const byte maxBadgesPerPage = 150;
+			byte currentPage = 2;
+
+			while ((currentPage < maxBadgesPerPage) && (appIDs.Count == currentPage * maxBadgesPerPage)) {
+				appIDs.UnionWith(await GetCompletedBadgeAppIDs(currentPage++).ConfigureAwait(false));
+			}
+
+			return appIDs;
+		}
+
+		private async Task<ISet<uint>> GetCompletedBadgeAppIDs(byte page) {
+			using IDocument? badgePage = await ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
+
+			if (badgePage == null) {
+				ArchiLogger.LogGenericWarning(Strings.WarningCouldNotCheckBadges);
+
+				return new HashSet<uint>(0);
+			}
+
+			return GetCompletedBadgeAppIDs(badgePage);
+		}
+
+		private ISet<uint> GetCompletedBadgeAppIDs(IDocument badgePage) {
 			List<IElement> craftButtons = badgePage.SelectNodes("//a[@class='badge_craft_button']");
 
 			if (craftButtons.Count == 0) {
@@ -2867,7 +2910,6 @@ namespace ArchiSteamFarm {
 			}
 
 			HashSet<uint> result = new HashSet<uint>(craftButtons.Count);
-			const string uriSegmentBeforeAppId = "/gamecards/";
 
 			foreach (string? badgeUri in craftButtons.Select(htmlNode => htmlNode.GetAttribute("href"))) {
 				if (string.IsNullOrEmpty(badgeUri)) {
@@ -2876,39 +2918,22 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				int index = badgeUri.LastIndexOf(uriSegmentBeforeAppId, StringComparison.Ordinal);
+				string? appIDText = badgeUri.Split('/', StringSplitOptions.RemoveEmptyEntries).Last();
 
-				if (index < 0) {
-					ArchiLogger.LogNullError(nameof(index));
-
-					continue;
-				}
-
-				index += uriSegmentBeforeAppId.Length;
-
-				if (index >= badgeUri.Length) {
-					ArchiLogger.LogNullError(nameof(index));
+				if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
+					ArchiLogger.LogNullError(nameof(appID));
 
 					continue;
 				}
 
-				// TODO - clean up
-				string? appIdText = string.Concat(badgeUri.Skip(index).TakeWhile(char.IsDigit));
-
-				if (string.IsNullOrEmpty(appIdText) || !uint.TryParse(appIdText, out uint appId)) {
-					ArchiLogger.LogNullError($"{nameof(appIdText)} || {nameof(appId)}");
-
-					continue;
-				}
-
-				result.Add(appId);
+				result.Add(appID);
 			}
 
 			return result;
 		}
 
 		private async Task SendCompletedSets() {
-			HashSet<uint> appIDs = await GetCompletedBadgeAppIDs().ConfigureAwait(false);
+			ISet<uint> appIDs = await GetCompletedBadgeAppIDs().ConfigureAwait(false);
 
 			if (appIDs.Count == 0) {
 				// Could not extract appIds for craftable badges - No need to load the inventory at this point
@@ -2919,6 +2944,7 @@ namespace ArchiSteamFarm {
 
 			try {
 				inventory = await ArchiWebHandler.GetInventoryAsync(SteamID)
+					.Where(item => item.Tradable)
 					.Where(item => (item.Type == Steam.Asset.EType.TradingCard) || (item.Type == Steam.Asset.EType.FoilTradingCard))
 					.Where(item => appIDs.Contains(item.RealAppID))
 					.ToHashSetAsync()
@@ -2939,6 +2965,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			// TODO - Refactor to use with ArchiWebHandler.GetCardCountForGame(appID)
 			HashSet<Steam.Asset> itemsToGive = inventory.GroupBy(item => (item.RealAppID, item.Type)).Select(
 				cardsOfAppAndType => {
 					// We still need untradable items here, as otherwise we could wrongfully assume that the set consists only of cards A, B and C due to all cards of classId D being untradable
@@ -2951,7 +2978,7 @@ namespace ArchiSteamFarm {
 					foreach (List<Steam.Asset> itemsOfClass in cardsPerClassId.Values) {
 						uint remainingForClass = completedSets;
 
-						foreach (Steam.Asset item in itemsOfClass.Where(item => item.Tradable)) {
+						foreach (Steam.Asset item in itemsOfClass) {
 							if (remainingForClass >= item.Amount) {
 								remainingForClass -= item.Amount;
 								itemsOfAppAndTypeToGive.Add(item);

@@ -1701,6 +1701,30 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
+		internal async Task<byte> GetCardCountForGame(uint appID) {
+			if (appID == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(appID));
+
+				return 0;
+			}
+
+			using IDocument? htmlDocument = await GetGameCardsPage(appID).ConfigureAwait(false);
+
+			if (htmlDocument == null) {
+				return 0;
+			}
+
+			List<IElement> htmlNodes = htmlDocument.SelectNodes("//div[@class='badge_detail_tasks']//div[@class='badge_card_set_text ellipsis']");
+
+			if ((htmlNodes.Count == 0) || (htmlNodes.Count % 2 != 0)) {
+				Bot.ArchiLogger.LogNullError(nameof(htmlNodes));
+
+				return 0;
+			}
+
+			return (byte) (htmlNodes.Count / 2);
+		}
+
 		internal async Task<IDocument?> GetGameCardsPage(uint appID) {
 			if (appID == 0) {
 				throw new ArgumentNullException(nameof(appID));
