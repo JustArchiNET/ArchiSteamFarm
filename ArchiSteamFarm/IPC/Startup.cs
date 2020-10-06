@@ -142,16 +142,16 @@ namespace ArchiSteamFarm.IPC {
 				knownNetworks = new HashSet<IPNetwork>(knownNetworksText.Count);
 
 				foreach (string ipAddressText in knownNetworksText) {
-					string[] addressParts = ipAddressText.Split('/');
+					string[] addressParts = ipAddressText.Split('/', StringSplitOptions.RemoveEmptyEntries);
 
-					if ((addressParts.Length < 2) || !IPAddress.TryParse(addressParts[0], out IPAddress? ipAddress)) {
+					if ((addressParts.Length != 2) || !IPAddress.TryParse(addressParts[0], out IPAddress? ipAddress)) {
 						ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(ipAddressText)));
 						ASF.ArchiLogger.LogGenericDebug(nameof(ipAddressText) + ": " + ipAddressText);
 
 						break;
 					}
 
-					if (!int.TryParse(addressParts[1], out int prefixLength)) {
+					if (!byte.TryParse(addressParts[1], out byte prefixLength)) {
 						ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(prefixLength)));
 						ASF.ArchiLogger.LogGenericDebug(nameof(ipAddressText) + ": " + ipAddressText);
 
