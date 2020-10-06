@@ -2849,7 +2849,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async Task<ISet<uint>> GetCompletedBadgeAppIDs() {
+		private async Task<HashSet<uint>> GetCompletedBadgeAppIDs() {
 			using IDocument? badgePage = await ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
 
 			if (badgePage == null) {
@@ -2858,7 +2858,7 @@ namespace ArchiSteamFarm {
 				return new HashSet<uint>(0);
 			}
 
-			ISet<uint> appIDs = GetCompletedBadgeAppIDs(badgePage);
+			HashSet<uint> appIDs = GetCompletedBadgeAppIDs(badgePage);
 
 			byte maxPages = 1;
 			IElement? htmlNode = badgePage.SelectSingleNode("(//a[@class='pagelink'])[last()]");
@@ -2889,7 +2889,7 @@ namespace ArchiSteamFarm {
 			return appIDs;
 		}
 
-		private async Task<ISet<uint>> GetCompletedBadgeAppIDs(byte page) {
+		private async Task<HashSet<uint>> GetCompletedBadgeAppIDs(byte page) {
 			using IDocument? badgePage = await ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
 
 			if (badgePage == null) {
@@ -2901,7 +2901,7 @@ namespace ArchiSteamFarm {
 			return GetCompletedBadgeAppIDs(badgePage);
 		}
 
-		private ISet<uint> GetCompletedBadgeAppIDs(IDocument badgePage) {
+		private HashSet<uint> GetCompletedBadgeAppIDs(IDocument badgePage) {
 			List<IElement> craftButtons = badgePage.SelectNodes("//a[@class='badge_craft_button']");
 
 			if (craftButtons.Count == 0) {
@@ -2965,18 +2965,21 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			// TODO - Refactor to use with ArchiWebHandler.GetCardCountForGame(appID)
 			HashSet<Steam.Asset> itemsToGive = inventory.GroupBy(item => (item.RealAppID, item.Type)).Select(
 				cardsOfAppAndType => {
-					// We still need untradable items here, as otherwise we could wrongfully assume that the set consists only of cards A, B and C due to all cards of classId D being untradable
 					Dictionary<ulong, List<Steam.Asset>> cardsPerClassId = cardsOfAppAndType.GroupBy(item => item.ClassID).ToDictionary(grouping => grouping.Key, grouping => grouping.OrderByDescending(item => item.Amount).ToList());
 
-					uint completedSets = cardsPerClassId.Values.Select(items => items.Count).Select(Convert.ToUInt32).Min();
+					if (cardsPerClassId.Keys.Count != Convert.ToInt32(ArchiWebHandler.GetCardCountForGame(cardsOfAppAndType.Key.RealAppID))) {
+						// This can happen if cards are not tradable
+						return new HashSet<Steam.Asset>(0);
+					}
+
+					uint completedTradableSets = cardsPerClassId.Values.Select(items => items.Select(item => item.Amount).Aggregate((a, b) => a + b)).Min();
 
 					HashSet<Steam.Asset> itemsOfAppAndTypeToGive = new HashSet<Steam.Asset>();
 
 					foreach (List<Steam.Asset> itemsOfClass in cardsPerClassId.Values) {
-						uint remainingForClass = completedSets;
+						uint remainingForClass = completedTradableSets;
 
 						foreach (Steam.Asset item in itemsOfClass) {
 							if (remainingForClass >= item.Amount) {
