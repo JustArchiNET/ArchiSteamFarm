@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Reflection;
 using ArchiSteamFarm.IPC.Integration;
@@ -134,28 +133,21 @@ namespace ArchiSteamFarm.IPC {
 			// The order of dependency injection matters, pay attention to it
 
 			// Add support for custom reverse proxy endpoints
-			HashSet<string>? knownNetworksText = Configuration.GetSection("Kestrel:KnownNetworks").Get<HashSet<string>>();
+			HashSet<string>? knownNetworksTexts = Configuration.GetSection("Kestrel:KnownNetworks").Get<HashSet<string>>();
 
 			HashSet<IPNetwork>? knownNetworks = null;
 
-			if (knownNetworksText != null) {
-				knownNetworks = new HashSet<IPNetwork>(knownNetworksText.Count);
+			if ((knownNetworksTexts != null) && (knownNetworksTexts.Count > 0)) {
+				knownNetworks = new HashSet<IPNetwork>(knownNetworksTexts.Count);
 
-				foreach (string ipAddressText in knownNetworksText) {
-					string[] addressParts = ipAddressText.Split('/', StringSplitOptions.RemoveEmptyEntries);
+				foreach (string knownNetworkText in knownNetworksTexts) {
+					string[] addressParts = knownNetworkText.Split('/', StringSplitOptions.RemoveEmptyEntries);
 
-					if ((addressParts.Length != 2) || !IPAddress.TryParse(addressParts[0], out IPAddress? ipAddress)) {
-						ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(ipAddressText)));
-						ASF.ArchiLogger.LogGenericDebug(nameof(ipAddressText) + ": " + ipAddressText);
+					if ((addressParts.Length != 2) || !IPAddress.TryParse(addressParts[0], out IPAddress? ipAddress) || !byte.TryParse(addressParts[1], out byte prefixLength)) {
+						ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(knownNetworkText)));
+						ASF.ArchiLogger.LogGenericDebug(nameof(knownNetworkText) + ": " + knownNetworkText);
 
-						break;
-					}
-
-					if (!byte.TryParse(addressParts[1], out byte prefixLength)) {
-						ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(prefixLength)));
-						ASF.ArchiLogger.LogGenericDebug(nameof(ipAddressText) + ": " + ipAddressText);
-
-						break;
+						continue;
 					}
 
 					knownNetworks.Add(new IPNetwork(ipAddress, prefixLength));
@@ -165,7 +157,7 @@ namespace ArchiSteamFarm.IPC {
 			// Add support for proxies
 			services.Configure<ForwardedHeadersOptions>(
 				options => {
-					options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+					options.ForwardedHeaders = ForwardedHeaders.All;
 
 					if (knownNetworks != null) {
 						foreach (IPNetwork knownNetwork in knownNetworks) {
