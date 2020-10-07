@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -41,7 +42,7 @@ using Formatting = Newtonsoft.Json.Formatting;
 
 namespace ArchiSteamFarm {
 	public sealed class ArchiWebHandler : IDisposable {
-		private static readonly Dictionary<uint, byte> CachedCardCountsForGame = new Dictionary<uint, byte>();
+		private static readonly ConcurrentDictionary<uint, byte> CachedCardCountsForGame = new ConcurrentDictionary<uint, byte>();
 
 		[PublicAPI]
 		public const string SteamCommunityURL = "https://" + SteamCommunityHost;
@@ -1723,7 +1724,7 @@ namespace ArchiSteamFarm {
 			}
 
 			result = (byte) htmlNodes.Count;
-			CachedCardCountsForGame.Add(appID, result);
+			CachedCardCountsForGame.TryAdd(appID, result);
 
 			return result;
 		}
