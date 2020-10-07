@@ -2992,6 +2992,10 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static HashSet<Steam.Asset> GetItemsForFullBadge(IReadOnlyCollection<Steam.Asset> availableItems, byte cardsPerBadge) {
+			if ((availableItems.GroupBy(item => item.RealAppID).Count() > 1) || (availableItems.GroupBy(item => item.Type).Count() > 1)) {
+				throw new ArgumentException(nameof(availableItems));
+			}
+
 			Dictionary<ulong, List<Steam.Asset>> itemsPerClassId = availableItems.GroupBy(item => item.ClassID).ToDictionary(grouping => grouping.Key, grouping => grouping.OrderByDescending(item => item.Amount).ToList());
 
 			if (itemsPerClassId.Keys.Count != cardsPerBadge) {
