@@ -2161,6 +2161,8 @@ namespace ArchiSteamFarm {
 			}
 
 			foreach (SteamFriends.FriendsListCallback.Friend friend in callback.FriendList.Where(friend => friend.Relationship == EFriendRelationship.RequestRecipient)) {
+				ArchiLogger.LogInvite(friend.SteamID);
+
 				switch (friend.SteamID.AccountType) {
 					case EAccountType.Clan when IsMasterClanID(friend.SteamID):
 						ArchiHandler.AcknowledgeClanInvite(friend.SteamID, true);
