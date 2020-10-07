@@ -244,9 +244,9 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<(bool Success, string Message)> SendInventory(ulong targetSteamID = 0, string? tradeToken = null, IReadOnlyCollection<Steam.Asset>? inventory = null) {
-			if ((inventory == null) || (inventory.Count == 0)) {
-				return (false, string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
+		public async Task<(bool Success, string Message)> SendInventory(IReadOnlyCollection<Steam.Asset> items, ulong targetSteamID = 0, string? tradeToken = null) {
+			if (items.Count == 0) {
+				return (false, string.Format(Strings.ErrorIsEmpty, nameof(items)));
 			}
 
 			if (!Bot.IsConnectedAndLoggedOn) {
@@ -296,7 +296,7 @@ namespace ArchiSteamFarm {
 					}
 				}
 
-				(bool success, HashSet<ulong>? mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(targetSteamID, inventory, token: tradeToken).ConfigureAwait(false);
+				(bool success, HashSet<ulong>? mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(targetSteamID, items, token: tradeToken).ConfigureAwait(false);
 
 				if ((mobileTradeOfferIDs != null) && (mobileTradeOfferIDs.Count > 0) && Bot.HasMobileAuthenticator) {
 					(bool twoFactorSuccess, _) = await HandleTwoFactorAuthenticationConfirmations(true, MobileAuthenticator.Confirmation.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
@@ -342,7 +342,7 @@ namespace ArchiSteamFarm {
 				return (false, string.Format(Strings.WarningFailedWithError, e.Message));
 			}
 
-			return await SendInventory(targetSteamID, tradeToken, inventory).ConfigureAwait(false);
+			return await SendInventory(inventory, targetSteamID, tradeToken).ConfigureAwait(false);
 		}
 
 		[PublicAPI]

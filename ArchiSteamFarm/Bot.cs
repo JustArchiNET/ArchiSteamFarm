@@ -34,6 +34,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
 using ArchiSteamFarm.Collections;
+using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
@@ -2965,16 +2966,10 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			HashSet<Steam.Asset> result = new HashSet<Steam.Asset>();
-
-			foreach (uint appID in appIDs) {
-				HashSet<Steam.Asset> itemsForAppBadges = await GetItemsForFullBadge(inventory, appID).ConfigureAwait(false);
-
-				result.UnionWith(itemsForAppBadges);
-			}
+			HashSet<Steam.Asset> result = (await Utilities.InParallel(appIDs.Select(appID => GetItemsForFullBadge(inventory, appID))).ConfigureAwait(false)).SelectMany(set => set).ToHashSet();
 
 			if (result.Count > 0) {
-				await Actions.SendInventory(inventory: result).ConfigureAwait(false);
+				await Actions.SendInventory(result).ConfigureAwait(false);
 			}
 		}
 
@@ -2996,7 +2991,7 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		private static HashSet<Steam.Asset> GetItemsForFullBadge(IReadOnlyCollection<Steam.Asset> availableItems, byte cardsPerBadge) {
+		internal static HashSet<Steam.Asset> GetItemsForFullBadge(IReadOnlyCollection<Steam.Asset> availableItems, byte cardsPerBadge) {
 			Dictionary<ulong, List<Steam.Asset>> itemsPerClassId = availableItems.GroupBy(item => item.ClassID).ToDictionary(grouping => grouping.Key, grouping => grouping.OrderByDescending(item => item.Amount).ToList());
 
 			if (itemsPerClassId.Keys.Count != cardsPerBadge) {
@@ -3013,7 +3008,7 @@ namespace ArchiSteamFarm {
 				HashSet<Steam.Asset>? itemsToGive = new HashSet<Steam.Asset>();
 
 				foreach (List<Steam.Asset> itemsOfClass in itemsPerClassId.Values) {
-					bool[] usedItems = itemsOfClass.Select(item => false).ToArray();
+					bool[] usedItems = new bool[itemsOfClass.Count];
 
 					if (!IsPossibleToSendAmountN(maximumSetCount, itemsOfClass, usedItems)) {
 						itemsToGive = null;

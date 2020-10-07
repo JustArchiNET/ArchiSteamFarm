@@ -41,6 +41,8 @@ using Formatting = Newtonsoft.Json.Formatting;
 
 namespace ArchiSteamFarm {
 	public sealed class ArchiWebHandler : IDisposable {
+		private static readonly Dictionary<uint, byte> CachedCardCountsForGame = new Dictionary<uint, byte>();
+
 		[PublicAPI]
 		public const string SteamCommunityURL = "https://" + SteamCommunityHost;
 
@@ -1702,10 +1704,8 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<byte> GetCardCountForGame(uint appID) {
-			if (appID == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(appID));
-
-				return 0;
+			if (CachedCardCountsForGame.TryGetValue(appID, out byte result)) {
+				return result;
 			}
 
 			using IDocument? htmlDocument = await GetGameCardsPage(appID).ConfigureAwait(false);
@@ -1714,15 +1714,18 @@ namespace ArchiSteamFarm {
 				return 0;
 			}
 
-			List<IElement> htmlNodes = htmlDocument.SelectNodes("//div[@class='badge_detail_tasks']//div[@class='badge_card_set_text ellipsis']");
+			List<IElement> htmlNodes = htmlDocument.SelectNodes("//div[@class='badge_card_set_cards']/div[starts-with(@class, 'badge_card_set_card')]");
 
-			if ((htmlNodes.Count == 0) || (htmlNodes.Count % 2 != 0)) {
+			if (htmlNodes.Count == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(htmlNodes));
 
 				return 0;
 			}
 
-			return (byte) (htmlNodes.Count / 2);
+			result = (byte) htmlNodes.Count;
+			CachedCardCountsForGame.Add(appID, result);
+
+			return result;
 		}
 
 		internal async Task<IDocument?> GetGameCardsPage(uint appID) {
