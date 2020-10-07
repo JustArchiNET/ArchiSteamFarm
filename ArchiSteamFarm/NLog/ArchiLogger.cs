@@ -152,20 +152,6 @@ namespace ArchiSteamFarm.NLog {
 			Logger.Log(logEventInfo);
 		}
 
-		internal void LogInvite(SteamID steamID,  [CallerMemberName] string? previousMethodName = null) {
-			if ((steamID.AccountType == EAccountType.Invalid) || (steamID == 0)) {
-				throw new ArgumentNullException(nameof(steamID) + " || " + nameof(steamID.AccountType));
-			}
-
-			string loggedMessage = previousMethodName + "() " + steamID.AccountType + " " + steamID.ConvertToUInt64().ToString();
-
-			LogEventInfo logEventInfo = new LogEventInfo(LogLevel.Trace, Logger.Name, loggedMessage);
-			logEventInfo.Properties["SteamID"] = steamID.ConvertToUInt64();
-			logEventInfo.Properties["AccountType"] = steamID.AccountType;
-
-			Logger.Log(logEventInfo);
-		}
-
 		internal async Task LogFatalException(Exception exception, [CallerMemberName] string? previousMethodName = null) {
 			if (exception == null) {
 				throw new ArgumentNullException(nameof(exception));
@@ -216,6 +202,22 @@ namespace ArchiSteamFarm.NLog {
 
 				break;
 			}
+		}
+
+		internal void LogInvite(SteamID steamID, [CallerMemberName] string? previousMethodName = null) {
+			if ((steamID == null) || (steamID.AccountType == EAccountType.Invalid)) {
+				throw new ArgumentNullException(nameof(steamID));
+			}
+
+			ulong steamID64 = steamID;
+
+			string loggedMessage = previousMethodName + "() " + steamID.AccountType + " " + steamID64;
+
+			LogEventInfo logEventInfo = new LogEventInfo(LogLevel.Trace, Logger.Name, loggedMessage);
+			logEventInfo.Properties["AccountType"] = steamID.AccountType;
+			logEventInfo.Properties["SteamID"] = steamID64;
+
+			Logger.Log(logEventInfo);
 		}
 	}
 }
