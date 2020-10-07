@@ -28,13 +28,11 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
-using AngleSharp.Text;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
@@ -2858,7 +2856,8 @@ namespace ArchiSteamFarm {
 				return new HashSet<uint>(0);
 			}
 
-			HashSet<uint> appIDs = GetCompletedBadgeAppIDs(badgePage);
+			// We need a collection that does not discard duplicates, as we will get the same ID for normal as well as foil badges
+			List<uint> appIDs = GetCompletedBadgeAppIDs(badgePage);
 
 			byte maxPages = 1;
 			IElement? htmlNode = badgePage.SelectSingleNode("(//a[@class='pagelink'])[last()]");
@@ -2882,34 +2881,34 @@ namespace ArchiSteamFarm {
 			const byte maxBadgesPerPage = 150;
 			byte currentPage = 2;
 
-			while ((currentPage < maxBadgesPerPage) && (appIDs.Count == currentPage * maxBadgesPerPage)) {
-				appIDs.UnionWith(await GetCompletedBadgeAppIDs(currentPage++).ConfigureAwait(false));
+			while ((currentPage < maxPages) && (appIDs.Count == currentPage * maxBadgesPerPage)) {
+				appIDs.AddRange(await GetCompletedBadgeAppIDs(currentPage++).ConfigureAwait(false));
 			}
 
-			return appIDs;
+			return appIDs.ToHashSet();
 		}
 
-		private async Task<HashSet<uint>> GetCompletedBadgeAppIDs(byte page) {
+		private async Task<List<uint>> GetCompletedBadgeAppIDs(byte page) {
 			using IDocument? badgePage = await ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
 
 			if (badgePage == null) {
 				ArchiLogger.LogGenericWarning(Strings.WarningCouldNotCheckBadges);
 
-				return new HashSet<uint>(0);
+				return new List<uint>(0);
 			}
 
 			return GetCompletedBadgeAppIDs(badgePage);
 		}
 
-		private HashSet<uint> GetCompletedBadgeAppIDs(IDocument badgePage) {
+		private List<uint> GetCompletedBadgeAppIDs(IDocument badgePage) {
 			List<IElement> craftButtons = badgePage.SelectNodes("//a[@class='badge_craft_button']");
 
 			if (craftButtons.Count == 0) {
 				// no craftable badges
-				return new HashSet<uint>(0);
+				return new List<uint>(0);
 			}
 
-			HashSet<uint> result = new HashSet<uint>(craftButtons.Count);
+			List<uint> result = new List<uint>(craftButtons.Count);
 
 			foreach (string? badgeUri in craftButtons.Select(htmlNode => htmlNode.GetAttribute("href"))) {
 				if (string.IsNullOrEmpty(badgeUri)) {
@@ -2918,7 +2917,8 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				string? appIDText = badgeUri.Split('/', StringSplitOptions.RemoveEmptyEntries).Last();
+				// URIs to foil badges are the same as for normal badges except they end with "?border=1"
+				string? appIDText = badgeUri.Replace("?border=1", "").Split('/', StringSplitOptions.RemoveEmptyEntries).Last();
 
 				if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
 					ArchiLogger.LogNullError(nameof(appID));
@@ -2965,44 +2965,100 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			HashSet<Steam.Asset> itemsToGive = inventory.GroupBy(item => (item.RealAppID, item.Type)).Select(
-				cardsOfAppAndType => {
-					Dictionary<ulong, List<Steam.Asset>> cardsPerClassId = cardsOfAppAndType.GroupBy(item => item.ClassID).ToDictionary(grouping => grouping.Key, grouping => grouping.OrderByDescending(item => item.Amount).ToList());
+			HashSet<Steam.Asset> result = new HashSet<Steam.Asset>();
 
-					if (cardsPerClassId.Keys.Count != Convert.ToInt32(ArchiWebHandler.GetCardCountForGame(cardsOfAppAndType.Key.RealAppID))) {
-						// This can happen if cards are not tradable
-						return new HashSet<Steam.Asset>(0);
+			foreach (uint appID in appIDs) {
+				HashSet<Steam.Asset> itemsForAppBadges = await GetItemsForFullBadge(inventory, appID).ConfigureAwait(false);
+
+				result.UnionWith(itemsForAppBadges);
+			}
+
+			if (result.Count > 0) {
+				await Actions.SendInventory(inventory: result).ConfigureAwait(false);
+			}
+		}
+
+		private async Task<HashSet<Steam.Asset>> GetItemsForFullBadge(IReadOnlyCollection<Steam.Asset> inventory, uint appID) {
+			byte requiredCards = await ArchiWebHandler.GetCardCountForGame(appID).ConfigureAwait(false);
+
+			Dictionary<Steam.Asset.EType, HashSet<Steam.Asset>> inventoryForAppIDPerType = inventory.Where(item => item.RealAppID == appID).GroupBy(item => item.Type).ToDictionary(grouping => grouping.Key, grouping => grouping.ToHashSet());
+
+			HashSet<Steam.Asset> result = new HashSet<Steam.Asset>(0);
+
+			if (inventoryForAppIDPerType.TryGetValue(Steam.Asset.EType.TradingCard, out HashSet<Steam.Asset>? availableTradingCards)) {
+				result.UnionWith(GetItemsForFullBadge(availableTradingCards, requiredCards));
+			}
+
+			if (inventoryForAppIDPerType.TryGetValue(Steam.Asset.EType.FoilTradingCard, out HashSet<Steam.Asset>? availableFoilCards)) {
+				result.UnionWith(GetItemsForFullBadge(availableFoilCards, requiredCards));
+			}
+
+			return result;
+		}
+
+		private static HashSet<Steam.Asset> GetItemsForFullBadge(IReadOnlyCollection<Steam.Asset> availableItems, byte cardsPerBadge) {
+			Dictionary<ulong, List<Steam.Asset>> itemsPerClassId = availableItems.GroupBy(item => item.ClassID).ToDictionary(grouping => grouping.Key, grouping => grouping.OrderByDescending(item => item.Amount).ToList());
+
+			if (itemsPerClassId.Keys.Count != cardsPerBadge) {
+				// This can happen if cards are not tradable or we traded away a card between checking which badges are craftable and what our inventory state is
+				return new HashSet<Steam.Asset>(0);
+			}
+
+			// "maximum" as it could happen, that we need to send less sets than exist in our inventory. This only is possible if Valve ever decides to send us Assets with other amount than 1
+			// example: We have a set that is craftable 7 times. In our inventory we have item with class id 0 and amount 5 twice  and class id 1 4 times with amount 2. All other class ids are available seven times with an amount of 1 each.
+			// In this case we need to send 0 sets, but if we also have item with class id 0 and amount 1 once, we can send 6 sets
+			uint maximumSetCount = itemsPerClassId.Values.Select(items => items.Select(item => item.Amount).Aggregate((a, b) => a + b)).Min();
+
+			while (maximumSetCount > 0) {
+				HashSet<Steam.Asset>? itemsToGive = new HashSet<Steam.Asset>();
+
+				foreach (List<Steam.Asset> itemsOfClass in itemsPerClassId.Values) {
+					bool[] usedItems = itemsOfClass.Select(item => false).ToArray();
+
+					if (!IsPossibleToSendAmountN(maximumSetCount, itemsOfClass, usedItems)) {
+						itemsToGive = null;
+
+						break;
 					}
 
-					uint completedTradableSets = cardsPerClassId.Values.Select(items => items.Select(item => item.Amount).Aggregate((a, b) => a + b)).Min();
-
-					HashSet<Steam.Asset> itemsOfAppAndTypeToGive = new HashSet<Steam.Asset>();
-
-					foreach (List<Steam.Asset> itemsOfClass in cardsPerClassId.Values) {
-						uint remainingForClass = completedTradableSets;
-
-						foreach (Steam.Asset item in itemsOfClass) {
-							if (remainingForClass >= item.Amount) {
-								remainingForClass -= item.Amount;
-								itemsOfAppAndTypeToGive.Add(item);
-							} else if (remainingForClass == 0) {
-								break;
-							}
-						}
-
-						if (remainingForClass > 0) {
-							// we cannot send this set, because one of two possibilities:
-							// - we want to send only one set, but all our items of one class ID have higher amounts
-							// - we have only untradable invariants of one of the class IDs
-							return new HashSet<Steam.Asset>(0);
-						}
-					}
-
-					return itemsOfAppAndTypeToGive;
+					HashSet<Steam.Asset> possibleCombination = itemsOfClass.Select((item, index) => (Item: item, Index: index)).Where(tuple => usedItems[tuple.Index]).Select(tuple => tuple.Item).ToHashSet();
+					itemsToGive.UnionWith(possibleCombination);
 				}
-			).SelectMany(itemsToGivePerAppAndType => itemsToGivePerAppAndType).ToHashSet();
 
-			await Actions.SendInventory(inventory: itemsToGive).ConfigureAwait(false);
+				if (itemsToGive != null) {
+					return itemsToGive;
+				}
+
+				// We cannot combine the items of at least one of the class ids for their total amount to be maximumSetCount
+				--maximumSetCount;
+			}
+
+			return new HashSet<Steam.Asset>(0);
+		}
+
+		private static bool IsPossibleToSendAmountN(long n, IReadOnlyList<Steam.Asset> items, IList<bool> usedItems) {
+			// try all combinations that do not go beyond n recursively and mark the used items
+			for (int i = 0; i < items.Count; ++i) {
+				if (usedItems[i]) {
+					continue;
+				}
+
+				long remaining = n - items[i].Amount;
+
+				if (remaining < 0) {
+					continue;
+				}
+
+				usedItems[i] = true;
+
+				if ((remaining == 0) || IsPossibleToSendAmountN(remaining, items, usedItems)) {
+					return true;
+				}
+
+				usedItems[i] = false;
+			}
+
+			return false;
 		}
 
 		private void OnVanityURLChangedCallback(ArchiHandler.VanityURLChangedCallback callback) {
