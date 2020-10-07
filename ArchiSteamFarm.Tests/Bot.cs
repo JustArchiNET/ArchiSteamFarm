@@ -123,19 +123,19 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[TestMethod]
+		[ExpectedException(typeof(ArgumentException))]
 		public void SeveralRealAppIDs() {
 			HashSet<Steam.Asset> items = new HashSet<Steam.Asset> {
 				CreateCard(1, realAppID: 42),
 				CreateCard(1, realAppID: 43)
 			};
 
-			try {
-				GetItemsForFullBadge(items, 2);
-				Assert.Fail();
-			} catch (ArgumentException) { }
+			GetItemsForFullBadge(items, 2);
+			Assert.Fail();
 		}
 
 		[TestMethod]
+		[ExpectedException(typeof(ArgumentException))]
 		public void SeveralAssetTypes() {
 			HashSet<Steam.Asset> items = new HashSet<Steam.Asset> {
 				CreateCard(1, type: Steam.Asset.EType.TradingCard),
@@ -143,10 +143,8 @@ namespace ArchiSteamFarm.Tests {
 				CreateCard(1, type: Steam.Asset.EType.Emoticon)
 			};
 
-			try {
-				GetItemsForFullBadge(items, 42);
-				Assert.Fail();
-			} catch (ArgumentException) { }
+			GetItemsForFullBadge(items, 42);
+			Assert.Fail();
 		}
 
 		private static Steam.Asset CreateCard(ulong classID, uint amount = 1, uint realAppID = 42, Steam.Asset.EType type = Steam.Asset.EType.TradingCard) => new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, classID, amount, realAppID: realAppID, type: type, rarity: Steam.Asset.ERarity.Common);
