@@ -2857,9 +2857,6 @@ namespace ArchiSteamFarm {
 				return new HashSet<uint>(0);
 			}
 
-			// We need a collection that does not discard duplicates, as we will get the same ID for normal as well as foil badges
-			List<uint> appIDs = GetCompletedBadgeAppIDs(badgePage);
-
 			byte maxPages = 1;
 			IElement? htmlNode = badgePage.SelectSingleNode("(//a[@class='pagelink'])[last()]");
 
@@ -2878,6 +2875,9 @@ namespace ArchiSteamFarm {
 					return new HashSet<uint>(0);
 				}
 			}
+
+			// We need a collection that does not discard duplicates, as we will get the same ID for normal as well as foil badges
+			List<uint> appIDs = GetCompletedBadgeAppIDs(badgePage);
 
 			const byte maxBadgesPerPage = 150;
 			byte currentPage = 1;
