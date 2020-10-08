@@ -2880,10 +2880,10 @@ namespace ArchiSteamFarm {
 			}
 
 			const byte maxBadgesPerPage = 150;
-			byte currentPage = 2;
+			byte currentPage = 1;
 
-			while ((currentPage < maxPages) && (appIDs.Count == currentPage * maxBadgesPerPage)) {
-				appIDs.AddRange(await GetCompletedBadgeAppIDs(currentPage++).ConfigureAwait(false));
+			while ((currentPage <= maxPages) && (appIDs.Count == currentPage * maxBadgesPerPage)) {
+				appIDs.AddRange(await GetCompletedBadgeAppIDs(++currentPage).ConfigureAwait(false));
 			}
 
 			return appIDs.ToHashSet();
