@@ -3035,7 +3035,7 @@ namespace ArchiSteamFarm {
 			return new HashSet<Steam.Asset>(0);
 		}
 
-		private static bool IsPossibleToSendAmountN(long n, IReadOnlyList<Steam.Asset> items, IList<bool> usedItems) {
+		private static bool IsPossibleToSendAmountN(long n, IList<Steam.Asset> items, IList<bool> usedItems) {
 			// try all combinations that do not go beyond n recursively and mark the used items
 			for (int i = 0; i < items.Count; ++i) {
 				if (usedItems[i]) {
@@ -3045,7 +3045,30 @@ namespace ArchiSteamFarm {
 				long remaining = n - items[i].Amount;
 
 				if (remaining < 0) {
-					continue;
+					Steam.Asset splittableItem = items[i];
+
+					items.RemoveAt(i);
+					usedItems.RemoveAt(i);
+
+					Steam.Asset splitItem = new Steam.Asset(
+						splittableItem.AppID,
+						splittableItem.ContextID,
+						splittableItem.ClassID,
+						Convert.ToUInt32(n),
+						splittableItem.InstanceID,
+						splittableItem.AssetID,
+						splittableItem.Marketable,
+						splittableItem.Tradable,
+						splittableItem.Tags,
+						splittableItem.RealAppID,
+						splittableItem.Type,
+						splittableItem.Rarity
+					);
+
+					items.Add(splitItem);
+					usedItems.Add(true);
+
+					return true;
 				}
 
 				usedItems[i] = true;
