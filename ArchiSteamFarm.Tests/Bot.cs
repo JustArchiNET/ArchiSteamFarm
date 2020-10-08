@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ArchiSteamFarm.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static ArchiSteamFarm.Bot;
@@ -35,9 +36,8 @@ namespace ArchiSteamFarm.Tests {
 				CreateCard(2)
 			};
 
-			HashSet<Steam.Asset>? itemsToSend = GetItemsForFullBadge(items, 3);
-			Assert.IsNotNull(itemsToSend);
-			Assert.IsTrue(itemsToSend.Count == 0);
+			HashSet<Steam.Asset> itemsToSend = GetItemsForFullBadge(items, 3).ToHashSet();
+			AssertFullSets(itemsToSend, 3, 0);
 		}
 
 		[TestMethod]
@@ -47,9 +47,8 @@ namespace ArchiSteamFarm.Tests {
 				CreateCard(2)
 			};
 
-			HashSet<Steam.Asset>? itemsToSend = GetItemsForFullBadge(items, 2);
-			Assert.IsNotNull(itemsToSend);
-			Assert.IsTrue(itemsToSend.Count == items.Count);
+			HashSet<Steam.Asset> itemsToSend = GetItemsForFullBadge(items, 2).ToHashSet();
+			AssertFullSets(itemsToSend, 2, 1);
 		}
 
 		[TestMethod]
@@ -61,9 +60,8 @@ namespace ArchiSteamFarm.Tests {
 				CreateCard(2)
 			};
 
-			HashSet<Steam.Asset>? itemsToSend = GetItemsForFullBadge(items, 2);
-			Assert.IsNotNull(itemsToSend);
-			Assert.IsTrue(itemsToSend.Count == items.Count);
+			HashSet<Steam.Asset> itemsToSend = GetItemsForFullBadge(items, 2).ToHashSet();
+			AssertFullSets(itemsToSend, 2, 2);
 		}
 
 		[TestMethod]
@@ -74,9 +72,8 @@ namespace ArchiSteamFarm.Tests {
 				CreateCard(2)
 			};
 
-			HashSet<Steam.Asset>? itemsToSend = GetItemsForFullBadge(items, 2);
-			Assert.IsNotNull(itemsToSend);
-			Assert.IsTrue(itemsToSend.Count == items.Count);
+			HashSet<Steam.Asset> itemsToSend = GetItemsForFullBadge(items, 2).ToHashSet();
+			AssertFullSets(itemsToSend, 2, 2);
 		}
 
 		[TestMethod]
@@ -88,9 +85,8 @@ namespace ArchiSteamFarm.Tests {
 				CreateCard(3),
 			};
 
-			HashSet<Steam.Asset>? itemsToSend = GetItemsForFullBadge(items, 3);
-			Assert.IsNotNull(itemsToSend);
-			Assert.IsTrue(itemsToSend.Count == 3);
+			HashSet<Steam.Asset> itemsToSend = GetItemsForFullBadge(items, 3).ToHashSet();
+			AssertFullSets(itemsToSend, 3, 1);
 		}
 
 		[TestMethod]
@@ -100,9 +96,8 @@ namespace ArchiSteamFarm.Tests {
 				CreateCard(2)
 			};
 
-			HashSet<Steam.Asset>? itemsToSend = GetItemsForFullBadge(items, 2);
-			Assert.IsNotNull(itemsToSend);
-			Assert.IsTrue(itemsToSend.Count == 0);
+			HashSet<Steam.Asset> itemsToSend = GetItemsForFullBadge(items, 2).ToHashSet();
+			AssertFullSets(itemsToSend, 2, 1);
 		}
 
 		[TestMethod]
@@ -117,9 +112,8 @@ namespace ArchiSteamFarm.Tests {
 				CreateCard(2, 2),
 			};
 
-			HashSet<Steam.Asset>? itemsToSend = GetItemsForFullBadge(items, 2);
-			Assert.IsNotNull(itemsToSend);
-			Assert.IsTrue(itemsToSend.Count == 5);
+			HashSet<Steam.Asset> itemsToSend = GetItemsForFullBadge(items, 2).ToHashSet();
+			AssertFullSets(itemsToSend, 2, 8);
 		}
 
 		[TestMethod]
@@ -130,7 +124,8 @@ namespace ArchiSteamFarm.Tests {
 				CreateCard(1, realAppID: 43)
 			};
 
-			GetItemsForFullBadge(items, 2);
+			// ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+			GetItemsForFullBadge(items, 2).ToHashSet();
 			Assert.Fail();
 		}
 
@@ -143,10 +138,30 @@ namespace ArchiSteamFarm.Tests {
 				CreateCard(1, type: Steam.Asset.EType.Emoticon)
 			};
 
-			GetItemsForFullBadge(items, 42);
+			// ReSharper disable once ReturnValueOfPureMethodIsNotUsed
+			GetItemsForFullBadge(items, 42).ToHashSet();
 			Assert.Fail();
 		}
 
 		private static Steam.Asset CreateCard(ulong classID, uint amount = 1, uint realAppID = 42, Steam.Asset.EType type = Steam.Asset.EType.TradingCard) => new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, classID, amount, realAppID: realAppID, type: type, rarity: Steam.Asset.ERarity.Common);
+
+		private static void AssertFullSets(HashSet<Steam.Asset> itemsToSend, byte cardsInSet, byte expectedSets) {
+			if (expectedSets > 0) {
+				AssertAllCardsPresent(itemsToSend, cardsInSet);
+				AssertEqualAmounts(itemsToSend);
+				AssertEqualRealAppID(itemsToSend);
+				AssertEqualType(itemsToSend);
+			}
+
+			Assert.AreEqual(expectedSets, itemsToSend.GroupBy(item => item.ClassID).FirstOrDefault()?.Select(item => item.Amount).Aggregate((a, b) => a + b) ?? 0);
+		}
+
+		private static void AssertEqualAmounts(HashSet<Steam.Asset> itemsToSend) => Assert.AreEqual(1, itemsToSend.GroupBy(item => item.ClassID).Select(group => group.Select(item => item.Amount).Aggregate((a, b) => a + b)).GroupBy(count => count).Count());
+
+		private static void AssertEqualRealAppID(HashSet<Steam.Asset> itemsToSend) => Assert.AreEqual(1, itemsToSend.GroupBy(item => item.RealAppID).Count());
+
+		private static void AssertEqualType(HashSet<Steam.Asset> itemsToSend) => Assert.AreEqual(1, itemsToSend.GroupBy(anyItem => anyItem.Type).Count());
+
+		private static void AssertAllCardsPresent(HashSet<Steam.Asset> itemsToSend, byte cardsInSet) => Assert.AreEqual(cardsInSet, itemsToSend.GroupBy(item => item.ClassID).Count());
 	}
 }

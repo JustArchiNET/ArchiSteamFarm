@@ -2991,7 +2991,7 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal static HashSet<Steam.Asset> GetItemsForFullBadge(IReadOnlyCollection<Steam.Asset> availableItems, byte cardsPerBadge) {
+		internal static IEnumerable<Steam.Asset> GetItemsForFullBadge(IReadOnlyCollection<Steam.Asset> availableItems, byte cardsPerBadge) {
 			if ((availableItems.GroupBy(item => item.RealAppID).Count() > 1) || (availableItems.GroupBy(item => item.Type).Count() > 1)) {
 				throw new ArgumentException(nameof(availableItems));
 			}
@@ -3000,87 +3000,46 @@ namespace ArchiSteamFarm {
 
 			if (itemsPerClassId.Keys.Count != cardsPerBadge) {
 				// This can happen if cards are not tradable or we traded away a card between checking which badges are craftable and what our inventory state is
-				return new HashSet<Steam.Asset>(0);
+				yield break;
 			}
 
 			// "maximum" as it could happen, that we need to send less sets than exist in our inventory. This only is possible if Valve ever decides to send us Assets with other amount than 1
 			// example: We have a set that is craftable 7 times. In our inventory we have item with class id 0 and amount 5 twice  and class id 1 4 times with amount 2. All other class ids are available seven times with an amount of 1 each.
 			// In this case we need to send 0 sets, but if we also have item with class id 0 and amount 1 once, we can send 6 sets
-			uint maximumSetCount = itemsPerClassId.Values.Select(items => items.Select(item => item.Amount).Aggregate((a, b) => a + b)).Min();
+			uint setCount = itemsPerClassId.Values.Select(items => items.Select(item => item.Amount).Aggregate((a, b) => a + b)).Min();
 
-			while (maximumSetCount > 0) {
-				HashSet<Steam.Asset>? itemsToGive = new HashSet<Steam.Asset>();
+			foreach (List<Steam.Asset> itemsOfClass in itemsPerClassId.Values) {
+				long classRequired = setCount;
+				int i = 0;
 
-				foreach (List<Steam.Asset> itemsOfClass in itemsPerClassId.Values) {
-					bool[] usedItems = new bool[itemsOfClass.Count];
+				while (classRequired > 0) {
+					Steam.Asset item = itemsOfClass[i++];
 
-					if (!IsPossibleToSendAmountN(maximumSetCount, itemsOfClass, usedItems)) {
-						itemsToGive = null;
+					if (classRequired - item.Amount < 0) {
+						long newAmount = classRequired;
+						classRequired = 0;
 
-						break;
+						yield return new Steam.Asset(
+							item.AppID,
+							item.ContextID,
+							item.ClassID,
+							Convert.ToUInt32(newAmount),
+							item.InstanceID,
+							item.AssetID,
+							item.Marketable,
+							item.Tradable,
+							item.Tags,
+							item.RealAppID,
+							item.Type,
+							item.Rarity
+						);
+					} else {
+						classRequired -= item.Amount;
+
+						yield return item;
 					}
-
-					HashSet<Steam.Asset> possibleCombination = itemsOfClass.Select((item, index) => (Item: item, Index: index)).Where(tuple => usedItems[tuple.Index]).Select(tuple => tuple.Item).ToHashSet();
-					itemsToGive.UnionWith(possibleCombination);
 				}
-
-				if (itemsToGive != null) {
-					return itemsToGive;
-				}
-
-				// We cannot combine the items of at least one of the class ids for their total amount to be maximumSetCount
-				--maximumSetCount;
 			}
-
-			return new HashSet<Steam.Asset>(0);
-		}
-
-		private static bool IsPossibleToSendAmountN(long n, IList<Steam.Asset> items, IList<bool> usedItems) {
-			// try all combinations that do not go beyond n recursively and mark the used items
-			for (int i = 0; i < items.Count; ++i) {
-				if (usedItems[i]) {
-					continue;
-				}
-
-				long remaining = n - items[i].Amount;
-
-				if (remaining < 0) {
-					Steam.Asset splittableItem = items[i];
-
-					items.RemoveAt(i);
-					usedItems.RemoveAt(i);
-
-					Steam.Asset splitItem = new Steam.Asset(
-						splittableItem.AppID,
-						splittableItem.ContextID,
-						splittableItem.ClassID,
-						Convert.ToUInt32(n),
-						splittableItem.InstanceID,
-						splittableItem.AssetID,
-						splittableItem.Marketable,
-						splittableItem.Tradable,
-						splittableItem.Tags,
-						splittableItem.RealAppID,
-						splittableItem.Type,
-						splittableItem.Rarity
-					);
-
-					items.Add(splitItem);
-					usedItems.Add(true);
-
-					return true;
-				}
-
-				usedItems[i] = true;
-
-				if ((remaining == 0) || IsPossibleToSendAmountN(remaining, items, usedItems)) {
-					return true;
-				}
-
-				usedItems[i] = false;
-			}
-
-			return false;
 		}
 
 		private void OnVanityURLChangedCallback(ArchiHandler.VanityURLChangedCallback callback) {
