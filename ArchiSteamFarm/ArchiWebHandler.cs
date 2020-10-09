@@ -142,7 +142,7 @@ namespace ArchiSteamFarm {
 				await ASF.InventorySemaphore.WaitAsync().ConfigureAwait(false);
 
 				try {
-					WebBrowser.ObjectResponse<Steam.InventoryResponse>? response = await UrlGetToJsonObjectWithSession<Steam.InventoryResponse>(SteamCommunityURL, request + (startAssetID > 0 ? "&start_assetid=" + startAssetID : "")).ConfigureAwait(false);
+					WebBrowser.ObjectResponse<Steam.InventoryResponse>? response = await UrlGetToJsonObjectWithSession<Steam.InventoryResponse>(SteamCommunityURL, request + (startAssetID > 0 ? "&start_assetid=" + startAssetID : ""), requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors).ConfigureAwait(false);
 
 					if (response?.Content == null) {
 						throw new HttpRequestException(string.Format(Strings.ErrorObjectIsNull, nameof(response)));
@@ -410,6 +410,12 @@ namespace ArchiSteamFarm {
 				WebBrowser.ObjectResponse<Steam.TradeOfferSendResponse>? response = await UrlPostToJsonObjectWithSession<Steam.TradeOfferSendResponse>(SteamCommunityURL, request, data: data, referer: referer).ConfigureAwait(false);
 
 				if (response?.Content == null) {
+					return (false, mobileTradeOfferIDs);
+				}
+
+				if (response.StatusCode.IsServerErrorCode() && !string.IsNullOrEmpty(response.Content.ErrorText)) {
+					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningFailedWithError, response.Content.ErrorText));
+
 					return (false, mobileTradeOfferIDs);
 				}
 
