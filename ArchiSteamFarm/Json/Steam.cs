@@ -237,13 +237,23 @@ namespace ArchiSteamFarm.Json {
 			internal Asset CreateShallowCopy() => (Asset) MemberwiseClone();
 
 			public sealed class Tag {
+				private string? IdentifierBackingValue;
+
 				[JsonProperty(PropertyName = "category", Required = Required.Always)]
 				[PublicAPI]
-				public readonly string? Identifier;
+				public string? Identifier {
+					get => IdentifierBackingValue;
+					private set => IdentifierBackingValue = value != null ? string.Intern(value) : null;
+				}
+
+				private string? ValueBackingValue;
 
 				[JsonProperty(PropertyName = "internal_name", Required = Required.Always)]
 				[PublicAPI]
-				public readonly string? Value;
+				public string? Value {
+					get => ValueBackingValue;
+					private set => ValueBackingValue = value != null ? string.Intern(value) : null;
+				}
 
 				internal Tag(string identifier, string value) {
 					if (string.IsNullOrEmpty(identifier) || string.IsNullOrEmpty(value)) {
@@ -521,11 +531,14 @@ namespace ArchiSteamFarm.Json {
 					}
 				}
 
+				private Dictionary<string, JToken>? AdditionalPropertiesBackingValue;
+
 				[JsonExtensionData]
 				internal Dictionary<string, JToken>? AdditionalProperties {
-					get;
+					get => AdditionalPropertiesBackingValue;
+
 					[UsedImplicitly]
-					set;
+					set => AdditionalPropertiesBackingValue = value?.ToDictionary(x => string.Intern(x.Key), x => x.Value);
 				}
 
 				[JsonProperty(PropertyName = "appid", Required = Required.Always)]
