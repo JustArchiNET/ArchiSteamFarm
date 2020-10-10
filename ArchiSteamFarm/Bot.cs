@@ -2907,11 +2907,15 @@ namespace ArchiSteamFarm {
 
 					IList<HashSet<uint>?> results = await Utilities.InParallel(tasks).ConfigureAwait(false);
 
-					if (results.Any(result => result == null)) {
-						return null;
+					foreach (HashSet<uint>? result in results) {
+						if (result == null) {
+							return null;
+						}
+
+						firstPageResult.UnionWith(result);
 					}
 
-					return firstPageResult.Concat(results.SelectMany(result => result)).ToHashSet();
+					return firstPageResult;
 			}
 		}
 
