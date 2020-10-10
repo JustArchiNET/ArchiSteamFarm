@@ -2877,28 +2877,42 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			HashSet<uint>? firstPageIDs = GetPossiblyCompletedBadgeAppIDs(badgePage);
+			HashSet<uint>? firstPageResult = GetPossiblyCompletedBadgeAppIDs(badgePage);
 
-			if (firstPageIDs == null) {
+			if (firstPageResult == null) {
 				return null;
 			}
 
-			// We need to check all badge pages, as a badge which we already crafted to max level might hide somewhere in the back
-			HashSet<Task<HashSet<uint>?>> tasks = new HashSet<Task<HashSet<uint>?>>(maxPages - 1);
+			switch (ASF.GlobalConfig?.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					for (byte page = 2; page <= maxPages; page++) {
+						HashSet<uint>? pageIDs = await GetPossiblyCompletedBadgeAppIDs(page).ConfigureAwait(false);
 
-			for (byte page = 2; page < maxPages; ++page) {
-				// We need a copy of variable being passed when in for loops, as loop will proceed before our task is launched
-				byte currentPage = page;
-				tasks.Add(GetPossiblyCompletedBadgeAppIDs(currentPage));
+						if (pageIDs == null) {
+							return null;
+						}
+
+						firstPageResult.UnionWith(pageIDs);
+					}
+
+					return firstPageResult;
+				default:
+					HashSet<Task<HashSet<uint>?>> tasks = new HashSet<Task<HashSet<uint>?>>(maxPages - 1);
+
+					for (byte page = 2; page <= maxPages; page++) {
+						// We need a copy of variable being passed when in for loops, as loop will proceed before our task is launched
+						byte currentPage = page;
+						tasks.Add(GetPossiblyCompletedBadgeAppIDs(currentPage));
+					}
+
+					IList<HashSet<uint>?> results = await Utilities.InParallel(tasks).ConfigureAwait(false);
+
+					if (results.Any(result => result == null)) {
+						return null;
+					}
+
+					return firstPageResult.Concat(results.SelectMany(result => result)).ToHashSet();
 			}
-
-			IList<HashSet<uint>?> results = await Utilities.InParallel(tasks).ConfigureAwait(false);
-
-			if (results.Any(result => result == null)) {
-				return null;
-			}
-
-			return firstPageIDs.Concat(results.SelectMany(result => result)).ToHashSet();
 		}
 
 		private async Task<HashSet<uint>?> GetPossiblyCompletedBadgeAppIDs(byte page) {
@@ -2942,7 +2956,7 @@ namespace ArchiSteamFarm {
 				}
 
 				// URIs to foil badges are the same as for normal badges except they end with "?border=1"
-				string? appIDText = badgeUri.Split('/', StringSplitOptions.RemoveEmptyEntries).Last().Split('?', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+				string? appIDText = badgeUri.Split('/', StringSplitOptions.RemoveEmptyEntries)[^1].Split('?', StringSplitOptions.RemoveEmptyEntries)[0];
 
 				if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
 					ArchiLogger.LogNullError(nameof(appID));
@@ -2956,10 +2970,24 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
+		private bool CompleteSetLootScheduled;
+
 		private async Task SendCompletedSets() {
+			lock (SendCompleteSetsSemaphore) {
+				if (CompleteSetLootScheduled) {
+					return;
+				}
+
+				CompleteSetLootScheduled = true;
+			}
+
 			await SendCompleteSetsSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
+				lock (SendCompleteSetsSemaphore) {
+					CompleteSetLootScheduled = false;
+				}
+
 				HashSet<uint>? appIDs = await GetPossiblyCompletedBadgeAppIDs().ConfigureAwait(false);
 
 				if ((appIDs == null) || (appIDs.Count == 0)) {
