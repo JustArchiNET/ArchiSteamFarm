@@ -34,7 +34,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
 using ArchiSteamFarm.Collections;
-using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
@@ -2848,7 +2847,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async Task<HashSet<uint>> GetCompletedBadgeAppIDs() {
+		private async Task<HashSet<uint>> GetPossiblyCompletedBadgeAppIDs() {
 			using IDocument? badgePage = await ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
 
 			if (badgePage == null) {
@@ -2876,42 +2875,43 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			// We need a collection that does not discard duplicates, as we will get the same ID for normal as well as foil badges
-			List<uint> appIDs = GetCompletedBadgeAppIDs(badgePage);
-
-			const byte maxBadgesPerPage = 150;
+			HashSet<uint> appIDs = GetPossiblyCompletedBadgeAppIDs(badgePage);
 			byte currentPage = 1;
 
-			while ((currentPage <= maxPages) && (appIDs.Count == currentPage * maxBadgesPerPage)) {
-				appIDs.AddRange(await GetCompletedBadgeAppIDs(++currentPage).ConfigureAwait(false));
+			// We need to check all badge pages, as a badge which we already crafted to max level might hide somewhere in the back
+			while (currentPage <= maxPages) {
+				appIDs.UnionWith(await GetPossiblyCompletedBadgeAppIDs(++currentPage).ConfigureAwait(false));
 			}
 
-			return appIDs.ToHashSet();
+			return appIDs;
 		}
 
-		private async Task<List<uint>> GetCompletedBadgeAppIDs(byte page) {
+		private async Task<HashSet<uint>> GetPossiblyCompletedBadgeAppIDs(byte page) {
 			using IDocument? badgePage = await ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
 
 			if (badgePage == null) {
 				ArchiLogger.LogGenericWarning(Strings.WarningCouldNotCheckBadges);
 
-				return new List<uint>(0);
+				return new HashSet<uint>(0);
 			}
 
-			return GetCompletedBadgeAppIDs(badgePage);
+			return GetPossiblyCompletedBadgeAppIDs(badgePage);
 		}
 
-		private List<uint> GetCompletedBadgeAppIDs(IDocument badgePage) {
-			List<IElement> craftButtons = badgePage.SelectNodes("//a[@class='badge_craft_button']");
+		private HashSet<uint> GetPossiblyCompletedBadgeAppIDs(IDocument badgePage) {
+			List<IElement> linkElements = badgePage.SelectNodes("//a[@class='badge_craft_button']");
 
-			if (craftButtons.Count == 0) {
-				// no craftable badges
-				return new List<uint>(0);
+			// We need to also select all badges that we have max level, as those will not display with a craft button
+			// Level 5 is maximum level for card badges according to https://steamcommunity.com/tradingcards/faq
+			linkElements.AddRange(badgePage.SelectNodes("//div[contains(@class, 'badge_row') and .//div[@class='badge_info_description']/div[contains(text(), 'Level 5')]]/a[@class='badge_row_overlay']"));
+
+			if (linkElements.Count == 0) {
+				return new HashSet<uint>(0);
 			}
 
-			List<uint> result = new List<uint>(craftButtons.Count);
+			HashSet<uint> result = new HashSet<uint>(linkElements.Count);
 
-			foreach (string? badgeUri in craftButtons.Select(htmlNode => htmlNode.GetAttribute("href"))) {
+			foreach (string? badgeUri in linkElements.Select(htmlNode => htmlNode.GetAttribute("href"))) {
 				if (string.IsNullOrEmpty(badgeUri)) {
 					ArchiLogger.LogNullError(nameof(badgeUri));
 
@@ -2934,7 +2934,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task SendCompletedSets() {
-			ISet<uint> appIDs = await GetCompletedBadgeAppIDs().ConfigureAwait(false);
+			ISet<uint> appIDs = await GetPossiblyCompletedBadgeAppIDs().ConfigureAwait(false);
 
 			if (appIDs.Count == 0) {
 				// Could not extract appIds for craftable badges - No need to load the inventory at this point
@@ -2966,50 +2966,31 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			HashSet<Steam.Asset> result = (await Utilities.InParallel(appIDs.Select(appID => GetItemsForFullBadge(inventory, appID))).ConfigureAwait(false)).SelectMany(set => set).ToHashSet();
+			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), uint> inventorySets = Trading.GetInventorySets(inventory).ToDictionary(entry => entry.Key, entry => entry.Value.FirstOrDefault());
+			HashSet<Steam.Asset> result = (await Utilities.InParallel(inventorySets.Select(async set => GetItemsForFullBadge(inventory, set.Key.RealAppID, set.Key.Type, set.Key.Rarity, await ArchiWebHandler.GetCardCountForGame(set.Key.RealAppID).ConfigureAwait(false), set.Value))).ConfigureAwait(false)).SelectMany(set => set).ToHashSet();
 
 			if (result.Count > 0) {
 				await Actions.SendInventory(result).ConfigureAwait(false);
 			}
 		}
 
-		private async Task<HashSet<Steam.Asset>> GetItemsForFullBadge(IReadOnlyCollection<Steam.Asset> inventory, uint appID) {
-			byte requiredCards = await ArchiWebHandler.GetCardCountForGame(appID).ConfigureAwait(false);
-
-			Dictionary<Steam.Asset.EType, HashSet<Steam.Asset>> inventoryForAppIDPerType = inventory.Where(item => item.RealAppID == appID).GroupBy(item => item.Type).ToDictionary(grouping => grouping.Key, grouping => grouping.ToHashSet());
-
-			HashSet<Steam.Asset> result = new HashSet<Steam.Asset>(0);
-
-			if (inventoryForAppIDPerType.TryGetValue(Steam.Asset.EType.TradingCard, out HashSet<Steam.Asset>? availableTradingCards)) {
-				result.UnionWith(GetItemsForFullBadge(availableTradingCards, requiredCards));
-			}
-
-			if (inventoryForAppIDPerType.TryGetValue(Steam.Asset.EType.FoilTradingCard, out HashSet<Steam.Asset>? availableFoilCards)) {
-				result.UnionWith(GetItemsForFullBadge(availableFoilCards, requiredCards));
-			}
-
-			return result;
-		}
-
-		internal static IEnumerable<Steam.Asset> GetItemsForFullBadge(IReadOnlyCollection<Steam.Asset> availableItems, byte cardsPerBadge) {
-			if ((availableItems.GroupBy(item => item.RealAppID).Count() > 1) || (availableItems.GroupBy(item => item.Type).Count() > 1)) {
-				throw new ArgumentException(nameof(availableItems));
-			}
-
-			Dictionary<ulong, List<Steam.Asset>> itemsPerClassId = availableItems.GroupBy(item => item.ClassID).ToDictionary(grouping => grouping.Key, grouping => grouping.OrderByDescending(item => item.Amount).ToList());
-
-			if (itemsPerClassId.Keys.Count != cardsPerBadge) {
-				// This can happen if cards are not tradable or we traded away a card between checking which badges are craftable and what our inventory state is
+		internal static IEnumerable<Steam.Asset> GetItemsForFullBadge(IReadOnlyCollection<Steam.Asset> inventory, uint appID, Steam.Asset.EType type, Steam.Asset.ERarity rarity, byte cardsPerSet, uint amountPerCard) {
+			if ((cardsPerSet == 0) || (amountPerCard == 0)) {
 				yield break;
 			}
 
-			// "maximum" as it could happen, that we need to send less sets than exist in our inventory. This only is possible if Valve ever decides to send us Assets with other amount than 1
-			// example: We have a set that is craftable 7 times. In our inventory we have item with class id 0 and amount 5 twice  and class id 1 4 times with amount 2. All other class ids are available seven times with an amount of 1 each.
-			// In this case we need to send 0 sets, but if we also have item with class id 0 and amount 1 once, we can send 6 sets
-			uint setCount = itemsPerClassId.Values.Select(items => items.Select(item => item.Amount).Aggregate((a, b) => a + b)).Min();
+			Dictionary<ulong, List<Steam.Asset>> itemsPerClassID = inventory.Where(item => item.RealAppID == appID)
+				.Where(item => item.Type == type)
+				.Where(item => item.Rarity == rarity)
+				.GroupBy(item => item.ClassID)
+				.ToDictionary(grouping => grouping.Key, grouping => grouping.ToList());
 
-			foreach (List<Steam.Asset> itemsOfClass in itemsPerClassId.Values) {
-				long classRequired = setCount;
+			if (cardsPerSet != itemsPerClassID.Count) {
+				yield break;
+			}
+
+			foreach (List<Steam.Asset> itemsOfClass in itemsPerClassID.Values) {
+				long classRequired = amountPerCard;
 				int i = 0;
 
 				while (classRequired > 0) {
