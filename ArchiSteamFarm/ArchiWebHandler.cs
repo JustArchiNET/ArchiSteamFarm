@@ -1705,6 +1705,10 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<byte> GetCardCountForGame(uint appID) {
+			if (appID == 0) {
+				throw new ArgumentNullException(nameof(appID));
+			}
+
 			if (CachedCardCountsForGame.TryGetValue(appID, out byte result)) {
 				return result;
 			}

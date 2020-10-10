@@ -19,6 +19,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ArchiSteamFarm.Json;
@@ -86,11 +87,44 @@ namespace ArchiSteamFarm.Tests {
 				CreateCard(1),
 				CreateCard(1),
 				CreateCard(2),
-				CreateCard(3),
+				CreateCard(3)
 			};
 
 			HashSet<Steam.Asset> itemsToSend = GetItemsForFullBadge(items, cardsPerSet: 3, amountPerCard: 1);
 			AssertFullSets(itemsToSend, 3, 1);
+		}
+
+		[TestMethod]
+		public void CardsWithOtherRarity() {
+			HashSet<Steam.Asset> items = new HashSet<Steam.Asset> {
+				CreateCard(1, rarity: DefaultRarity),
+				CreateCard(1, rarity: Steam.Asset.ERarity.Rare)
+			};
+
+			HashSet<Steam.Asset> itemsToSend = GetItemsForFullBadge(items, cardsPerSet: 1, amountPerCard: 1);
+			AssertFullSets(itemsToSend, 1, 1);
+		}
+
+		[TestMethod]
+		public void CardsWithOtherType() {
+			HashSet<Steam.Asset> items = new HashSet<Steam.Asset> {
+				CreateCard(1, type: DefaultAssetType),
+				CreateCard(1, type: Steam.Asset.EType.FoilTradingCard)
+			};
+
+			HashSet<Steam.Asset> itemsToSend = GetItemsForFullBadge(items, cardsPerSet: 1, amountPerCard: 1);
+			AssertFullSets(itemsToSend, 1, 1);
+		}
+
+		[TestMethod]
+		public void CardsWithOtherAppID() {
+			HashSet<Steam.Asset> items = new HashSet<Steam.Asset> {
+				CreateCard(1, DefaultRealAppID),
+				CreateCard(1, DefaultRealAppID + 1),
+			};
+
+			HashSet<Steam.Asset> itemsToSend = GetItemsForFullBadge(items, cardsPerSet: 1, amountPerCard: 1);
+			AssertFullSets(itemsToSend, 1, 1);
 		}
 
 		[TestMethod]
@@ -104,9 +138,14 @@ namespace ArchiSteamFarm.Tests {
 			AssertFullSets(itemsToSend, 2, 1);
 		}
 
-		private static HashSet<Steam.Asset> GetItemsForFullBadge(IReadOnlyCollection<Steam.Asset> inventory, uint appID = DefaultRealAppID, Steam.Asset.EType type = DefaultAssetType, Steam.Asset.ERarity rarity = DefaultRarity, byte cardsPerSet = DefaultCardsPerSet, uint amountPerCard = DefaultAmountPerCard) => ArchiSteamFarm.Bot.GetItemsForFullBadge(inventory, appID, type, rarity, cardsPerSet, amountPerCard).ToHashSet();
+		private static HashSet<Steam.Asset> GetItemsForFullBadge(IReadOnlyCollection<Steam.Asset> inventory, uint appID = DefaultRealAppID, Steam.Asset.EType type = DefaultAssetType, Steam.Asset.ERarity rarity = DefaultRarity, byte cardsPerSet = DefaultCardsPerSet, uint amountPerCard = DefaultAmountPerCard) =>
+			ArchiSteamFarm.Bot.GetItemsForFullBadge(
+				inventory, new Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), (uint SetsToExtract, byte CardsPerSet)> {
+					{ (appID, type, rarity), (amountPerCard, cardsPerSet) }
+				}
+			).ToHashSet();
 
-		private static Steam.Asset CreateCard(ulong classID, uint amount = 1, uint realAppID = 42, Steam.Asset.EType type = Steam.Asset.EType.TradingCard) => new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, classID, amount, realAppID: realAppID, type: type, rarity: Steam.Asset.ERarity.Common);
+		private static Steam.Asset CreateCard(ulong classID, uint amount = 1, uint realAppID = DefaultRealAppID, Steam.Asset.EType type = DefaultAssetType, Steam.Asset.ERarity rarity = DefaultRarity) => new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, classID, amount, realAppID: realAppID, type: type, rarity: rarity);
 
 		private static void AssertFullSets(HashSet<Steam.Asset> itemsToSend, byte cardsInSet, byte expectedSets) {
 			if (expectedSets > 0) {

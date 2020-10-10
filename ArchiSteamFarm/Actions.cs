@@ -245,8 +245,8 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<(bool Success, string Message)> SendInventory(IReadOnlyCollection<Steam.Asset> items, ulong targetSteamID = 0, string? tradeToken = null) {
-			if (items.Count == 0) {
-				return (false, string.Format(Strings.ErrorIsEmpty, nameof(items)));
+			if ((items == null) || (items.Count == 0)) {
+				throw new ArgumentNullException(nameof(items));
 			}
 
 			if (!Bot.IsConnectedAndLoggedOn) {

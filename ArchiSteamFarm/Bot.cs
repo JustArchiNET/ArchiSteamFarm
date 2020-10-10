@@ -133,6 +133,7 @@ namespace ArchiSteamFarm {
 		private readonly CallbackManager CallbackManager;
 		private readonly SemaphoreSlim CallbackSemaphore = new SemaphoreSlim(1, 1);
 		private readonly SemaphoreSlim GamesRedeemerInBackgroundSemaphore = new SemaphoreSlim(1, 1);
+		private readonly SemaphoreSlim SendCompleteSetsSemaphore = new SemaphoreSlim(1, 1);
 		private readonly Timer HeartBeatTimer;
 		private readonly SemaphoreSlim InitializationSemaphore = new SemaphoreSlim(1, 1);
 		private readonly SemaphoreSlim MessagingSemaphore = new SemaphoreSlim(1, 1);
@@ -312,6 +313,7 @@ namespace ArchiSteamFarm {
 			BotDatabase.Dispose();
 			CallbackSemaphore.Dispose();
 			GamesRedeemerInBackgroundSemaphore.Dispose();
+			SendCompleteSetsSemaphore.Dispose();
 			InitializationSemaphore.Dispose();
 			MessagingSemaphore.Dispose();
 			Trading.Dispose();
@@ -2847,13 +2849,13 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async Task<HashSet<uint>> GetPossiblyCompletedBadgeAppIDs() {
+		private async Task<HashSet<uint>?> GetPossiblyCompletedBadgeAppIDs() {
 			using IDocument? badgePage = await ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
 
 			if (badgePage == null) {
 				ArchiLogger.LogGenericWarning(Strings.WarningCouldNotCheckBadges);
 
-				return new HashSet<uint>(0);
+				return null;
 			}
 
 			byte maxPages = 1;
@@ -2865,40 +2867,61 @@ namespace ArchiSteamFarm {
 				if (string.IsNullOrEmpty(lastPage)) {
 					ArchiLogger.LogNullError(nameof(lastPage));
 
-					return new HashSet<uint>(0);
+					return null;
 				}
 
 				if (!byte.TryParse(lastPage, out maxPages) || (maxPages == 0)) {
 					ArchiLogger.LogNullError(nameof(maxPages));
 
-					return new HashSet<uint>(0);
+					return null;
 				}
 			}
 
-			HashSet<uint> appIDs = GetPossiblyCompletedBadgeAppIDs(badgePage);
-			byte currentPage = 1;
+			HashSet<uint>? firstPageIDs = GetPossiblyCompletedBadgeAppIDs(badgePage);
 
-			// We need to check all badge pages, as a badge which we already crafted to max level might hide somewhere in the back
-			while (currentPage <= maxPages) {
-				appIDs.UnionWith(await GetPossiblyCompletedBadgeAppIDs(++currentPage).ConfigureAwait(false));
+			if (firstPageIDs == null) {
+				return null;
 			}
 
-			return appIDs;
+			// We need to check all badge pages, as a badge which we already crafted to max level might hide somewhere in the back
+			HashSet<Task<HashSet<uint>?>> tasks = new HashSet<Task<HashSet<uint>?>>(maxPages - 1);
+
+			for (byte page = 2; page < maxPages; ++page) {
+				// We need a copy of variable being passed when in for loops, as loop will proceed before our task is launched
+				byte currentPage = page;
+				tasks.Add(GetPossiblyCompletedBadgeAppIDs(currentPage));
+			}
+
+			IList<HashSet<uint>?> results = await Utilities.InParallel(tasks).ConfigureAwait(false);
+
+			if (results.Any(result => result == null)) {
+				return null;
+			}
+
+			return firstPageIDs.Concat(results.SelectMany(result => result)).ToHashSet();
 		}
 
-		private async Task<HashSet<uint>> GetPossiblyCompletedBadgeAppIDs(byte page) {
+		private async Task<HashSet<uint>?> GetPossiblyCompletedBadgeAppIDs(byte page) {
+			if (page == 0) {
+				throw new ArgumentNullException(nameof(page));
+			}
+
 			using IDocument? badgePage = await ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
 
 			if (badgePage == null) {
 				ArchiLogger.LogGenericWarning(Strings.WarningCouldNotCheckBadges);
 
-				return new HashSet<uint>(0);
+				return null;
 			}
 
 			return GetPossiblyCompletedBadgeAppIDs(badgePage);
 		}
 
-		private HashSet<uint> GetPossiblyCompletedBadgeAppIDs(IDocument badgePage) {
+		private HashSet<uint>? GetPossiblyCompletedBadgeAppIDs(IDocument badgePage) {
+			if (badgePage == null) {
+				throw new ArgumentNullException(nameof(badgePage));
+			}
+
 			List<IElement> linkElements = badgePage.SelectNodes("//a[@class='badge_craft_button']");
 
 			// We need to also select all badges that we have max level, as those will not display with a craft button
@@ -2915,16 +2938,16 @@ namespace ArchiSteamFarm {
 				if (string.IsNullOrEmpty(badgeUri)) {
 					ArchiLogger.LogNullError(nameof(badgeUri));
 
-					continue;
+					return null;
 				}
 
 				// URIs to foil badges are the same as for normal badges except they end with "?border=1"
-				string? appIDText = badgeUri.Replace("?border=1", "").Split('/', StringSplitOptions.RemoveEmptyEntries).Last();
+				string? appIDText = badgeUri.Split('/', StringSplitOptions.RemoveEmptyEntries).Last().Split('?', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
 
 				if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
 					ArchiLogger.LogNullError(nameof(appID));
 
-					continue;
+					return null;
 				}
 
 				result.Add(appID);
@@ -2934,93 +2957,110 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task SendCompletedSets() {
-			ISet<uint> appIDs = await GetPossiblyCompletedBadgeAppIDs().ConfigureAwait(false);
-
-			if (appIDs.Count == 0) {
-				// Could not extract appIds for craftable badges - No need to load the inventory at this point
-				return;
-			}
-
-			HashSet<Steam.Asset> inventory;
+			await SendCompleteSetsSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				inventory = await ArchiWebHandler.GetInventoryAsync(SteamID)
-					.Where(item => item.Tradable)
-					.Where(item => (item.Type == Steam.Asset.EType.TradingCard) || (item.Type == Steam.Asset.EType.FoilTradingCard))
-					.Where(item => appIDs.Contains(item.RealAppID))
-					.ToHashSetAsync()
-					.ConfigureAwait(false);
-			} catch (HttpRequestException e) {
-				ArchiLogger.LogGenericWarningException(e);
+				HashSet<uint>? appIDs = await GetPossiblyCompletedBadgeAppIDs().ConfigureAwait(false);
 
-				return;
-			} catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
+				if ((appIDs == null) || (appIDs.Count == 0)) {
+					return;
+				}
 
-				return;
-			}
+				HashSet<Steam.Asset> inventory;
 
-			if (inventory.Count == 0) {
-				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsEmpty), nameof(inventory));
+				try {
+					inventory = await ArchiWebHandler.GetInventoryAsync(SteamID)
+						.Where(item => item.Tradable)
+						.Where(item => (item.Type == Steam.Asset.EType.TradingCard) || (item.Type == Steam.Asset.EType.FoilTradingCard))
+						.Where(item => appIDs.Contains(item.RealAppID))
+						.ToHashSetAsync()
+						.ConfigureAwait(false);
+				} catch (HttpRequestException e) {
+					ArchiLogger.LogGenericWarningException(e);
 
-				return;
-			}
+					return;
+				} catch (Exception e) {
+					ArchiLogger.LogGenericException(e);
 
-			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), uint> inventorySets = Trading.GetInventorySets(inventory).ToDictionary(entry => entry.Key, entry => entry.Value.FirstOrDefault());
-			HashSet<Steam.Asset> result = (await Utilities.InParallel(inventorySets.Select(async set => GetItemsForFullBadge(inventory, set.Key.RealAppID, set.Key.Type, set.Key.Rarity, await ArchiWebHandler.GetCardCountForGame(set.Key.RealAppID).ConfigureAwait(false), set.Value))).ConfigureAwait(false)).SelectMany(set => set).ToHashSet();
+					return;
+				}
 
-			if (result.Count > 0) {
-				await Actions.SendInventory(result).ConfigureAwait(false);
+				if (inventory.Count == 0) {
+					ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsEmpty), nameof(inventory));
+
+					return;
+				}
+
+				Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), List<uint>> inventorySets = Trading.GetInventorySets(inventory);
+				List<Task<((uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) Key, (uint Sets, byte CardsPerBadge) Value)>> loadCardCountsTasks = inventorySets.Select(async kv => (kv.Key, (Sets: kv.Value.FirstOrDefault(), CardsPerBadge: await ArchiWebHandler.GetCardCountForGame(kv.Key.RealAppID).ConfigureAwait(false)))).ToList();
+				Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), (uint Sets, byte CardsPerSet)> itemsToTakePerInventorySet = (await Utilities.InParallel(loadCardCountsTasks).ConfigureAwait(false)).ToDictionary(entry => entry.Key, entry => entry.Value);
+				HashSet<Steam.Asset> result = GetItemsForFullBadge(inventory, itemsToTakePerInventorySet);
+
+				if (result.Count > 0) {
+					await Actions.SendInventory(result).ConfigureAwait(false);
+				}
+			} finally {
+				SendCompleteSetsSemaphore.Release();
 			}
 		}
 
-		internal static IEnumerable<Steam.Asset> GetItemsForFullBadge(IReadOnlyCollection<Steam.Asset> inventory, uint appID, Steam.Asset.EType type, Steam.Asset.ERarity rarity, byte cardsPerSet, uint amountPerCard) {
-			if ((cardsPerSet == 0) || (amountPerCard == 0)) {
-				yield break;
+		internal static HashSet<Steam.Asset> GetItemsForFullBadge(IReadOnlyCollection<Steam.Asset> inventory, Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), (uint SetsToExtract, byte CardsPerSet)> amountsToExtract) {
+			if ((inventory == null) || (amountsToExtract == null)) {
+				throw new ArgumentNullException($"{nameof(inventory)} || {nameof(amountsToExtract)}");
 			}
 
-			Dictionary<ulong, List<Steam.Asset>> itemsPerClassID = inventory.Where(item => item.RealAppID == appID)
-				.Where(item => item.Type == type)
-				.Where(item => item.Rarity == rarity)
-				.GroupBy(item => item.ClassID)
-				.ToDictionary(grouping => grouping.Key, grouping => grouping.ToList());
-
-			if (cardsPerSet != itemsPerClassID.Count) {
-				yield break;
+			if ((amountsToExtract.Count == 0) || (inventory.Count == 0)) {
+				return new HashSet<Steam.Asset>(0);
 			}
 
-			foreach (List<Steam.Asset> itemsOfClass in itemsPerClassID.Values) {
-				long classRequired = amountPerCard;
-				int i = 0;
+			HashSet<Steam.Asset> result = new HashSet<Steam.Asset>(Convert.ToInt32(amountsToExtract.Values.Select(setInformation => setInformation.SetsToExtract * setInformation.CardsPerSet).Aggregate((a, b) => a + b)));
+			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, List<Steam.Asset>>> itemsPerClassIDPerSet = inventory.GroupBy(item => (item.RealAppID, item.Type, item.Rarity)).ToDictionary(grouping => grouping.Key, grouping => grouping.GroupBy(item => item.ClassID).ToDictionary(group => group.Key, group => group.ToList()));
 
-				while (classRequired > 0) {
-					Steam.Asset item = itemsOfClass[i++];
+			foreach (((uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) set, (uint setsToExtract, byte cardsPerSet)) in amountsToExtract) {
+				if (!itemsPerClassIDPerSet.TryGetValue(set, out Dictionary<ulong, List<Steam.Asset>>? itemsPerClassID)) {
+					continue;
+				}
 
-					if (classRequired - item.Amount < 0) {
-						long newAmount = classRequired;
-						classRequired = 0;
+				if (cardsPerSet != itemsPerClassID.Count) {
+					continue;
+				}
 
-						yield return new Steam.Asset(
-							item.AppID,
-							item.ContextID,
-							item.ClassID,
-							Convert.ToUInt32(newAmount),
-							item.InstanceID,
-							item.AssetID,
-							item.Marketable,
-							item.Tradable,
-							item.Tags,
-							item.RealAppID,
-							item.Type,
-							item.Rarity
-						);
-					} else {
-						classRequired -= item.Amount;
+				foreach (List<Steam.Asset> itemsOfClass in itemsPerClassID.Values) {
+					long classRemaining = setsToExtract;
+					int i = 0;
 
-						yield return item;
+					while ((classRemaining > 0) && (i < itemsOfClass.Count)) {
+						Steam.Asset item = itemsOfClass[i++];
+
+						if (classRemaining - item.Amount < 0) {
+							result.Add(
+								new Steam.Asset(
+									item.AppID,
+									item.ContextID,
+									item.ClassID,
+									Convert.ToUInt32(classRemaining),
+									item.InstanceID,
+									item.AssetID,
+									item.Marketable,
+									item.Tradable,
+									item.Tags,
+									item.RealAppID,
+									item.Type,
+									item.Rarity
+								)
+							);
+
+							classRemaining = 0;
+						} else {
+							result.Add(item);
+
+							classRemaining -= item.Amount;
+						}
 					}
 				}
 			}
+
+			return result;
 		}
 
 		private void OnVanityURLChangedCallback(ArchiHandler.VanityURLChangedCallback callback) {
