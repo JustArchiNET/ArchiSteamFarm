@@ -190,6 +190,7 @@ namespace ArchiSteamFarm.Tests {
 
 		private static void AssertResultMatchesExpectation(Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult, IEnumerable<Steam.Asset> itemsToSend) {
 			Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), long> realResult = itemsToSend.GroupBy(asset => (asset.RealAppID, asset.ContextID, asset.ClassID)).ToDictionary(group => group.Key, group => group.Sum(asset => asset.Amount));
+			Assert.AreEqual(expectedResult.Count, realResult.Count);
 			Assert.IsTrue(expectedResult.All(expectation => realResult.TryGetValue(expectation.Key, out long reality) && (expectation.Value == reality)));
 		}
 	}
