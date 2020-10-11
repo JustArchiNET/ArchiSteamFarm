@@ -225,6 +225,60 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[TestMethod]
+		public void MutliRarityAndType() {
+			HashSet<Steam.Asset> items = new HashSet<Steam.Asset> {
+				CreateCard(1, type: Steam.Asset.EType.TradingCard, rarity: Steam.Asset.ERarity.Common),
+				CreateCard(2, type: Steam.Asset.EType.TradingCard, rarity: Steam.Asset.ERarity.Common),
+
+				CreateCard(1, type: Steam.Asset.EType.Unknown, rarity: Steam.Asset.ERarity.Common),
+				CreateCard(2, type: Steam.Asset.EType.Unknown, rarity: Steam.Asset.ERarity.Common),
+				CreateCard(3, type: Steam.Asset.EType.Unknown, rarity: Steam.Asset.ERarity.Common),
+				CreateCard(4, type: Steam.Asset.EType.Unknown, rarity: Steam.Asset.ERarity.Common),
+
+				CreateCard(1, type: Steam.Asset.EType.FoilTradingCard, rarity: Steam.Asset.ERarity.Uncommon),
+				CreateCard(2, type: Steam.Asset.EType.FoilTradingCard, rarity: Steam.Asset.ERarity.Uncommon),
+
+				CreateCard(1, type: Steam.Asset.EType.Unknown, rarity: Steam.Asset.ERarity.Uncommon),
+				CreateCard(2, type: Steam.Asset.EType.Unknown, rarity: Steam.Asset.ERarity.Uncommon),
+				CreateCard(3, type: Steam.Asset.EType.Unknown, rarity: Steam.Asset.ERarity.Uncommon),
+				CreateCard(4, type: Steam.Asset.EType.Unknown, rarity: Steam.Asset.ERarity.Uncommon),
+
+				CreateCard(1, type: Steam.Asset.EType.TradingCard, rarity: Steam.Asset.ERarity.Rare),
+				CreateCard(2, type: Steam.Asset.EType.TradingCard, rarity: Steam.Asset.ERarity.Rare),
+				CreateCard(3, type: Steam.Asset.EType.TradingCard, rarity: Steam.Asset.ERarity.Rare),
+				CreateCard(4, type: Steam.Asset.EType.TradingCard, rarity: Steam.Asset.ERarity.Rare),
+
+				CreateCard(1, type: Steam.Asset.EType.FoilTradingCard, rarity: Steam.Asset.ERarity.Rare),
+				CreateCard(2, type: Steam.Asset.EType.FoilTradingCard, rarity: Steam.Asset.ERarity.Rare),
+
+				// for better readability and easier verification when thinking about this test the items that shall be selected for sending are the ones below this comment
+				CreateCard(1, type: Steam.Asset.EType.TradingCard, rarity: Steam.Asset.ERarity.Uncommon),
+				CreateCard(2, type: Steam.Asset.EType.TradingCard, rarity: Steam.Asset.ERarity.Uncommon),
+				CreateCard(3, type: Steam.Asset.EType.TradingCard, rarity: Steam.Asset.ERarity.Uncommon),
+
+				CreateCard(1, type: Steam.Asset.EType.FoilTradingCard, rarity: Steam.Asset.ERarity.Common),
+				CreateCard(3, type: Steam.Asset.EType.FoilTradingCard, rarity: Steam.Asset.ERarity.Common),
+				CreateCard(7, type: Steam.Asset.EType.FoilTradingCard, rarity: Steam.Asset.ERarity.Common),
+
+				CreateCard(2, type: Steam.Asset.EType.Unknown, rarity: Steam.Asset.ERarity.Rare),
+				CreateCard(3, type: Steam.Asset.EType.Unknown, rarity: Steam.Asset.ERarity.Rare),
+				CreateCard(4, type: Steam.Asset.EType.Unknown, rarity: Steam.Asset.ERarity.Rare)
+			};
+
+			HashSet<Steam.Asset> itemsToSend = GetItemsForFullBadge(items, cardsPerSet: 3);
+
+			Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult = new Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> {
+				{ (42, Steam.Asset.SteamCommunityContextID, 1), 2 },
+				{ (42, Steam.Asset.SteamCommunityContextID, 2), 2 },
+				{ (42, Steam.Asset.SteamCommunityContextID, 3), 3 },
+				{ (42, Steam.Asset.SteamCommunityContextID, 4), 1 },
+				{ (42, Steam.Asset.SteamCommunityContextID, 7), 1 }
+			};
+
+			AssertResultMatchesExpectation(expectedResult, itemsToSend);
+		}
+
+		[TestMethod]
 		public void OtherAppIDFullSets() {
 			HashSet<Steam.Asset> items = new HashSet<Steam.Asset> {
 				CreateCard(1, realAppID: 42),
