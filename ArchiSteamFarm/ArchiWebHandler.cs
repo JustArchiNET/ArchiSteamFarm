@@ -1716,6 +1716,8 @@ namespace ArchiSteamFarm {
 			using IDocument? htmlDocument = await GetGameCardsPage(appID).ConfigureAwait(false);
 
 			if (htmlDocument == null) {
+				Bot.ArchiLogger.LogNullError(nameof(htmlDocument));
+
 				return 0;
 			}
 
