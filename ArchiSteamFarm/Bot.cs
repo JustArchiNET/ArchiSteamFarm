@@ -2945,7 +2945,7 @@ namespace ArchiSteamFarm {
 
 			// We need to also select all badges that we have max level, as those will not display with a craft button
 			// Level 5 is maximum level for card badges according to https://steamcommunity.com/tradingcards/faq
-			linkElements.AddRange(badgePage.SelectNodes("//div[contains(@class, 'badge_row') and .//div[@class='badge_info_description']/div[contains(text(), 'Level 5')]]/a[@class='badge_row_overlay']"));
+			linkElements.AddRange(badgePage.SelectNodes("//div[@class='badges_sheet']/div[contains(@class, 'badge_row') and .//div[@class='badge_info_description']/div[contains(text(), 'Level 5')]]/a[@class='badge_row_overlay']"));
 
 			if (linkElements.Count == 0) {
 				return new HashSet<uint>(0);
