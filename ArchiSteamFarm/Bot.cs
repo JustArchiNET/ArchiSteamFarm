@@ -3050,7 +3050,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async Task<Dictionary<uint, byte>?> LoadCardsPerSet(HashSet<uint> appIDs) {
+		private async Task<Dictionary<uint, byte>?> LoadCardsPerSet(IReadOnlyCollection<uint> appIDs) {
 			if (appIDs == null) {
 				throw new ArgumentNullException(nameof(appIDs));
 			}
@@ -3082,7 +3082,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static HashSet<Steam.Asset> GetItemsForFullBadge(IReadOnlyCollection<Steam.Asset> inventory, Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), (uint SetsToExtract, byte CardsPerSet)> amountsToExtract) {
+		internal static HashSet<Steam.Asset> GetItemsForFullBadge(IReadOnlyCollection<Steam.Asset> inventory, IReadOnlyDictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), (uint SetsToExtract, byte CardsPerSet)> amountsToExtract) {
 			if ((inventory == null) || (amountsToExtract == null) || (amountsToExtract.Count == 0) || (inventory.Count == 0)) {
 				throw new ArgumentNullException($"{nameof(inventory)} || {nameof(amountsToExtract)}");
 			}
