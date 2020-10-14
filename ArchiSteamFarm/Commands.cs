@@ -307,7 +307,12 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				message = message.Substring(commandPrefix!.Length);
+				if (message.Length == commandPrefix!.Length) {
+					// If the message starts with command prefix and is of the same length as command prefix, then it's just empty command trigger, useless
+					return;
+				}
+
+				message = message.Substring(commandPrefix.Length);
 			}
 
 			Task<string?> responseTask = Response(steamID, message);
@@ -364,7 +369,12 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				message = message.Substring(commandPrefix!.Length);
+				if (message.Length == commandPrefix!.Length) {
+					// If the message starts with command prefix and is of the same length as command prefix, then it's just empty command trigger, useless
+					return;
+				}
+
+				message = message.Substring(commandPrefix.Length);
 			}
 
 			Task<string?> responseTask = Response(steamID, message);

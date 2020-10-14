@@ -2241,6 +2241,12 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(notification));
 			}
 
+			if ((notification.chat_group_id == 0) || (notification.chat_id == 0) || (notification.steamid_sender == 0)) {
+				ArchiLogger.LogNullError(nameof(notification.chat_group_id) + " || " + nameof(notification.chat_id) + " || " + nameof(notification.steamid_sender));
+
+				return;
+			}
+
 			// Under normal circumstances, timestamp must always be greater than 0, but Steam already proved that it's capable of going against the logic
 			if ((notification.steamid_sender != SteamID) && (notification.timestamp > 0)) {
 				if (ShouldAckChatMessage(notification.steamid_sender)) {
@@ -2275,6 +2281,12 @@ namespace ArchiSteamFarm {
 		private async Task OnIncomingMessage(CFriendMessages_IncomingMessage_Notification notification) {
 			if (notification == null) {
 				throw new ArgumentNullException(nameof(notification));
+			}
+
+			if (notification.steamid_friend == 0) {
+				ArchiLogger.LogNullError(nameof(notification.steamid_friend));
+
+				return;
 			}
 
 			if ((EChatEntryType) notification.chat_entry_type != EChatEntryType.ChatMsg) {
