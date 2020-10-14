@@ -294,7 +294,7 @@ namespace ArchiSteamFarm {
 			string? commandPrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.CommandPrefix : GlobalConfig.DefaultCommandPrefix;
 
 			if (!string.IsNullOrEmpty(commandPrefix)) {
-				if (!message.StartsWith(commandPrefix!, StringComparison.OrdinalIgnoreCase)) {
+				if (!message.StartsWith(commandPrefix!, StringComparison.Ordinal)) {
 					string? pluginsResponse = await PluginsCore.OnBotMessage(Bot, steamID, message).ConfigureAwait(false);
 
 					if (!string.IsNullOrEmpty(pluginsResponse)) {
@@ -356,7 +356,7 @@ namespace ArchiSteamFarm {
 			string? commandPrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.CommandPrefix : GlobalConfig.DefaultCommandPrefix;
 
 			if (!string.IsNullOrEmpty(commandPrefix)) {
-				if (!message.StartsWith(commandPrefix!, StringComparison.OrdinalIgnoreCase)) {
+				if (!message.StartsWith(commandPrefix!, StringComparison.Ordinal)) {
 					string? pluginsResponse = await PluginsCore.OnBotMessage(Bot, steamID, message).ConfigureAwait(false);
 
 					if (!string.IsNullOrEmpty(pluginsResponse)) {
