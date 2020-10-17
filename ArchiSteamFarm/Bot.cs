@@ -2846,7 +2846,7 @@ namespace ArchiSteamFarm {
 				Utilities.InBackground(ArchiWebHandler.MarkInventory);
 			}
 
-			if (BotConfig.SendSetsOnCompleted && !BotConfig.SetTypesToComplete.IsEmpty) {
+			if (!BotConfig.CompleteTypesToSend.IsEmpty) {
 				Utilities.InBackground(SendCompletedSets);
 			}
 		}
@@ -3009,7 +3009,7 @@ namespace ArchiSteamFarm {
 
 				try {
 					inventory = await ArchiWebHandler.GetInventoryAsync(SteamID)
-						.Where(item => item.Tradable && (BotConfig.SetTypesToComplete.Contains(item.Type) && appIDs.Contains(item.RealAppID)))
+						.Where(item => item.Tradable && (BotConfig.CompleteTypesToSend.Contains(item.Type) && appIDs.Contains(item.RealAppID)))
 						.ToHashSetAsync()
 						.ConfigureAwait(false);
 				} catch (HttpRequestException e) {

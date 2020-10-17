@@ -80,9 +80,6 @@ namespace ArchiSteamFarm {
 		public const bool DefaultSendOnFarmingFinished = false;
 
 		[PublicAPI]
-		public const bool DefaultSendSetsOnCompleted = false;
-
-		[PublicAPI]
 		public const byte DefaultSendTradePeriod = 0;
 
 		[PublicAPI]
@@ -123,7 +120,7 @@ namespace ArchiSteamFarm {
 		public static readonly ImmutableHashSet<Steam.Asset.EType> DefaultLootableTypes = ImmutableHashSet.Create(Steam.Asset.EType.BoosterPack, Steam.Asset.EType.FoilTradingCard, Steam.Asset.EType.TradingCard);
 
 		[PublicAPI]
-		public static readonly ImmutableHashSet<Steam.Asset.EType> DefaultSetTypesToComplete = ImmutableHashSet.Create(Steam.Asset.EType.TradingCard, Steam.Asset.EType.FoilTradingCard);
+		public static readonly ImmutableHashSet<Steam.Asset.EType> DefaultCompleteTypesToSend = ImmutableHashSet<Steam.Asset.EType>.Empty;
 
 		[PublicAPI]
 		public static readonly ImmutableHashSet<Steam.Asset.EType> DefaultMatchableTypes = ImmutableHashSet.Create(Steam.Asset.EType.TradingCard);
@@ -191,10 +188,7 @@ namespace ArchiSteamFarm {
 		public readonly bool SendOnFarmingFinished = DefaultSendOnFarmingFinished;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public readonly bool SendSetsOnCompleted = DefaultSendSetsOnCompleted;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		public readonly ImmutableHashSet<Steam.Asset.EType> SetTypesToComplete = DefaultSetTypesToComplete;
+		public readonly ImmutableHashSet<Steam.Asset.EType> CompleteTypesToSend = DefaultCompleteTypesToSend;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly byte SendTradePeriod = DefaultSendTradePeriod;
