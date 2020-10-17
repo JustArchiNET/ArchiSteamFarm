@@ -19,6 +19,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ArchiSteamFarm.Json;
@@ -155,11 +156,7 @@ namespace ArchiSteamFarm.Tests {
 				CreateCard(2, AppID1, rarity: Steam.Asset.ERarity.Common),
 				CreateCard(1, AppID1, rarity: Steam.Asset.ERarity.Uncommon),
 				CreateCard(2, AppID1, rarity: Steam.Asset.ERarity.Uncommon),
-				CreateCard(3, AppID1, rarity: Steam.Asset.ERarity.Uncommon),
-				CreateCard(1, AppID1, rarity: Steam.Asset.ERarity.Rare),
-				CreateCard(2, AppID1, rarity: Steam.Asset.ERarity.Rare),
-				CreateCard(3, AppID1, rarity: Steam.Asset.ERarity.Rare),
-				CreateCard(4, AppID1, rarity: Steam.Asset.ERarity.Rare)
+				CreateCard(3, AppID1, rarity: Steam.Asset.ERarity.Uncommon)
 			};
 
 			HashSet<Steam.Asset> itemsToSend = GetItemsForFullBadge(items, 3, AppID1);
@@ -210,11 +207,7 @@ namespace ArchiSteamFarm.Tests {
 				CreateCard(2, AppID1, type: Steam.Asset.EType.TradingCard),
 				CreateCard(1, AppID1, type: Steam.Asset.EType.FoilTradingCard),
 				CreateCard(2, AppID1, type: Steam.Asset.EType.FoilTradingCard),
-				CreateCard(3, AppID1, type: Steam.Asset.EType.FoilTradingCard),
-				CreateCard(1, AppID1, type: Steam.Asset.EType.Unknown),
-				CreateCard(2, AppID1, type: Steam.Asset.EType.Unknown),
-				CreateCard(3, AppID1, type: Steam.Asset.EType.Unknown),
-				CreateCard(4, AppID1, type: Steam.Asset.EType.Unknown)
+				CreateCard(3, AppID1, type: Steam.Asset.EType.FoilTradingCard)
 			};
 
 			HashSet<Steam.Asset> itemsToSend = GetItemsForFullBadge(items, 3, AppID1);
@@ -234,23 +227,8 @@ namespace ArchiSteamFarm.Tests {
 				CreateCard(1, AppID1, type: Steam.Asset.EType.TradingCard, rarity: Steam.Asset.ERarity.Common),
 				CreateCard(2, AppID1, type: Steam.Asset.EType.TradingCard, rarity: Steam.Asset.ERarity.Common),
 
-				CreateCard(1, AppID1, type: Steam.Asset.EType.Unknown, rarity: Steam.Asset.ERarity.Common),
-				CreateCard(2, AppID1, type: Steam.Asset.EType.Unknown, rarity: Steam.Asset.ERarity.Common),
-				CreateCard(3, AppID1, type: Steam.Asset.EType.Unknown, rarity: Steam.Asset.ERarity.Common),
-				CreateCard(4, AppID1, type: Steam.Asset.EType.Unknown, rarity: Steam.Asset.ERarity.Common),
-
 				CreateCard(1, AppID1, type: Steam.Asset.EType.FoilTradingCard, rarity: Steam.Asset.ERarity.Uncommon),
 				CreateCard(2, AppID1, type: Steam.Asset.EType.FoilTradingCard, rarity: Steam.Asset.ERarity.Uncommon),
-
-				CreateCard(1, AppID1, type: Steam.Asset.EType.Unknown, rarity: Steam.Asset.ERarity.Uncommon),
-				CreateCard(2, AppID1, type: Steam.Asset.EType.Unknown, rarity: Steam.Asset.ERarity.Uncommon),
-				CreateCard(3, AppID1, type: Steam.Asset.EType.Unknown, rarity: Steam.Asset.ERarity.Uncommon),
-				CreateCard(4, AppID1, type: Steam.Asset.EType.Unknown, rarity: Steam.Asset.ERarity.Uncommon),
-
-				CreateCard(1, AppID1, type: Steam.Asset.EType.TradingCard, rarity: Steam.Asset.ERarity.Rare),
-				CreateCard(2, AppID1, type: Steam.Asset.EType.TradingCard, rarity: Steam.Asset.ERarity.Rare),
-				CreateCard(3, AppID1, type: Steam.Asset.EType.TradingCard, rarity: Steam.Asset.ERarity.Rare),
-				CreateCard(4, AppID1, type: Steam.Asset.EType.TradingCard, rarity: Steam.Asset.ERarity.Rare),
 
 				CreateCard(1, AppID1, type: Steam.Asset.EType.FoilTradingCard, rarity: Steam.Asset.ERarity.Rare),
 				CreateCard(2, AppID1, type: Steam.Asset.EType.FoilTradingCard, rarity: Steam.Asset.ERarity.Rare),
@@ -324,17 +302,35 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[TestMethod]
+		[ExpectedException(typeof(ArgumentException))]
+		public void TooManyCardsPerSet() {
+			HashSet<Steam.Asset> items = new HashSet<Steam.Asset> {
+				CreateCard(1, AppID1),
+				CreateCard(2, AppID1),
+				CreateCard(3, AppID1),
+				CreateCard(4, AppID1)
+			};
+
+			GetItemsForFullBadge(
+				items, new Dictionary<uint, byte> {
+					{ AppID1, 3 },
+					{ AppID2, 3 },
+					{ AppID3, 3 }
+				}
+			);
+
+			Assert.Fail();
+		}
+
+		[TestMethod]
 		public void OtherAppIDOneSet() {
 			HashSet<Steam.Asset> items = new HashSet<Steam.Asset> {
 				CreateCard(1, realAppID: AppID1),
 				CreateCard(2, realAppID: AppID1),
+
 				CreateCard(1, realAppID: AppID2),
 				CreateCard(2, realAppID: AppID2),
-				CreateCard(3, realAppID: AppID2),
-				CreateCard(1, realAppID: AppID3),
-				CreateCard(2, realAppID: AppID3),
-				CreateCard(3, realAppID: AppID3),
-				CreateCard(4, realAppID: AppID3)
+				CreateCard(3, realAppID: AppID2)
 			};
 
 			HashSet<Steam.Asset> itemsToSend = GetItemsForFullBadge(
