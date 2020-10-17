@@ -302,7 +302,7 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(ArgumentException))]
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
 		public void TooManyCardsPerSet() {
 			HashSet<Steam.Asset> items = new HashSet<Steam.Asset> {
 				CreateCard(1, AppID1),
