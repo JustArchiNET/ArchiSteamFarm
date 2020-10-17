@@ -3096,7 +3096,11 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				if (cardsPerSet != itemsPerClassID.Count) {
+				if (cardsPerSet < itemsPerClassID.Count) {
+					throw new ArgumentException(nameof(inventory) + " || " + nameof(amountsToExtract));
+				}
+
+				if (cardsPerSet > itemsPerClassID.Count) {
 					continue;
 				}
 
