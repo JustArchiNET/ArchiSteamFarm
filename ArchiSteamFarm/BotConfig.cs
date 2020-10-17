@@ -123,6 +123,9 @@ namespace ArchiSteamFarm {
 		public static readonly ImmutableHashSet<Steam.Asset.EType> DefaultLootableTypes = ImmutableHashSet.Create(Steam.Asset.EType.BoosterPack, Steam.Asset.EType.FoilTradingCard, Steam.Asset.EType.TradingCard);
 
 		[PublicAPI]
+		public static readonly ImmutableHashSet<Steam.Asset.EType> DefaultSetTypesToComplete = ImmutableHashSet.Create(Steam.Asset.EType.TradingCard, Steam.Asset.EType.FoilTradingCard);
+
+		[PublicAPI]
 		public static readonly ImmutableHashSet<Steam.Asset.EType> DefaultMatchableTypes = ImmutableHashSet.Create(Steam.Asset.EType.TradingCard);
 
 		[PublicAPI]
@@ -189,6 +192,9 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly bool SendSetsOnCompleted = DefaultSendSetsOnCompleted;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		public readonly ImmutableHashSet<Steam.Asset.EType> SetTypesToComplete = DefaultSetTypesToComplete;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly byte SendTradePeriod = DefaultSendTradePeriod;

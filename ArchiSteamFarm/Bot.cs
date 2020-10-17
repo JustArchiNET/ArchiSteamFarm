@@ -32,6 +32,7 @@ using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using AngleSharp;
 using AngleSharp.Common;
 using AngleSharp.Dom;
 using ArchiSteamFarm.Collections;
@@ -2845,7 +2846,7 @@ namespace ArchiSteamFarm {
 				Utilities.InBackground(ArchiWebHandler.MarkInventory);
 			}
 
-			if (BotConfig.SendSetsOnCompleted) {
+			if (BotConfig.SendSetsOnCompleted && !BotConfig.SetTypesToComplete.IsEmpty) {
 				Utilities.InBackground(SendCompletedSets);
 			}
 		}
@@ -2980,6 +2981,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private bool CompleteSetLootScheduled;
+		private const byte MinCardsPerBadge = 5;
 
 		private async Task SendCompletedSets() {
 			lock (SendCompleteSetsSemaphore) {
@@ -3007,7 +3009,7 @@ namespace ArchiSteamFarm {
 
 				try {
 					inventory = await ArchiWebHandler.GetInventoryAsync(SteamID)
-						.Where(item => item.Tradable && ((item.Type == Steam.Asset.EType.TradingCard) || (item.Type == Steam.Asset.EType.FoilTradingCard)) && appIDs.Contains(item.RealAppID))
+						.Where(item => item.Tradable && (BotConfig.SetTypesToComplete.Contains(item.Type) && appIDs.Contains(item.RealAppID)))
 						.ToHashSetAsync()
 						.ConfigureAwait(false);
 				} catch (HttpRequestException e) {
@@ -3026,17 +3028,16 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				const byte minCardsPerBadge = 5;
 				Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), List<uint>> inventorySets = Trading.GetInventorySets(inventory);
 				Dictionary<uint, byte>? cardCountPerAppID = await LoadCardsPerSet(appIDs).ConfigureAwait(false);
 
-				if (cardCountPerAppID == null) {
+				if ((cardCountPerAppID == null) || (cardCountPerAppID.Count == 0)) {
 					return;
 				}
 
-				Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), (uint Sets, byte CardsPerSet)> itemsToTakePerInventorySet = inventorySets.Where(kv => kv.Value.Count >= minCardsPerBadge).ToDictionary(kv => kv.Key, kv => (kv.Value[0], cardCountPerAppID[kv.Key.RealAppID]));
+				Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), (uint Sets, byte CardsPerSet)> itemsToTakePerInventorySet = inventorySets.Where(kv => kv.Value.Count >= MinCardsPerBadge).ToDictionary(kv => kv.Key, kv => (kv.Value[0], cardCountPerAppID[kv.Key.RealAppID]));
 
-				if (itemsToTakePerInventorySet.Values.Sum(value => value.Sets) == 0) {
+				if (itemsToTakePerInventorySet.Values.All(value => value.Sets == 0)) {
 					return;
 				}
 
@@ -3050,8 +3051,8 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async Task<Dictionary<uint, byte>?> LoadCardsPerSet(IReadOnlyCollection<uint> appIDs) {
-			if (appIDs == null) {
+		private async Task<Dictionary<uint, byte>?> LoadCardsPerSet(ISet<uint> appIDs) {
+			if ((appIDs == null) || (appIDs.Count == 0)) {
 				throw new ArgumentNullException(nameof(appIDs));
 			}
 
@@ -3074,7 +3075,7 @@ namespace ArchiSteamFarm {
 					IEnumerable<Task<(uint AppID, byte Cards)>> tasks = appIDs.Select(async appID => (AppID: appID, Cards: await ArchiWebHandler.GetCardCountForGame(appID).ConfigureAwait(false)));
 					IList<(uint AppID, byte Cards)> results = await Utilities.InParallel(tasks).ConfigureAwait(false);
 
-					if (results.Select(tuple => tuple.Cards).Any(cards => cards == 0)) {
+					if (results.Any(tuple => tuple.Cards == 0)) {
 						return null;
 					}
 
@@ -3083,8 +3084,8 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static HashSet<Steam.Asset> GetItemsForFullBadge(IReadOnlyCollection<Steam.Asset> inventory, IReadOnlyDictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), (uint SetsToExtract, byte CardsPerSet)> amountsToExtract) {
-			if ((inventory == null) || (amountsToExtract == null) || (amountsToExtract.Count == 0) || (inventory.Count == 0)) {
-				throw new ArgumentNullException($"{nameof(inventory)} || {nameof(amountsToExtract)}");
+			if ((inventory == null) || (inventory.Count == 0) || (amountsToExtract == null) || (amountsToExtract.Count == 0)) {
+				throw new ArgumentNullException(nameof(inventory) + " || " + nameof(amountsToExtract));
 			}
 
 			HashSet<Steam.Asset> result = new HashSet<Steam.Asset>();
@@ -3101,12 +3102,11 @@ namespace ArchiSteamFarm {
 
 				foreach (List<Steam.Asset> itemsOfClass in itemsPerClassID.Values) {
 					long classRemaining = setsToExtract;
-					int i = 0;
 
-					while ((classRemaining > 0) && (i < itemsOfClass.Count)) {
-						Steam.Asset item = itemsOfClass[i++];
+					for (int i = 0; (classRemaining > 0) && (i < itemsOfClass.Count); ++i) {
+						Steam.Asset item = itemsOfClass[i];
 
-						if (classRemaining - item.Amount < 0) {
+						if (item.Amount > classRemaining) {
 							Steam.Asset itemToSend = item.CreateShallowCopy();
 							itemToSend.Amount = (uint) classRemaining;
 							result.Add(itemToSend);
