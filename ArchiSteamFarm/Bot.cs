@@ -3097,7 +3097,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if (cardsPerSet < itemsPerClassID.Count) {
-					throw new ArgumentException(nameof(inventory) + " || " + nameof(amountsToExtract));
+					throw new ArgumentOutOfRangeException(nameof(inventory) + " && " + nameof(amountsToExtract));
 				}
 
 				if (cardsPerSet > itemsPerClassID.Count) {
@@ -3105,14 +3105,14 @@ namespace ArchiSteamFarm {
 				}
 
 				foreach (List<Steam.Asset> itemsOfClass in itemsPerClassID.Values) {
-					long classRemaining = setsToExtract;
+					uint classRemaining = setsToExtract;
 
-					for (int i = 0; (classRemaining > 0) && (i < itemsOfClass.Count); ++i) {
+					for (int i = 0; (classRemaining > 0) && (i < itemsOfClass.Count); i++) {
 						Steam.Asset item = itemsOfClass[i];
 
 						if (item.Amount > classRemaining) {
 							Steam.Asset itemToSend = item.CreateShallowCopy();
-							itemToSend.Amount = (uint) classRemaining;
+							itemToSend.Amount = classRemaining;
 							result.Add(itemToSend);
 
 							classRemaining = 0;
