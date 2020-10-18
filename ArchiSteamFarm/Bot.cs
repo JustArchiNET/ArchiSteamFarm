@@ -3105,11 +3105,7 @@ namespace ArchiSteamFarm {
 				foreach (HashSet<Steam.Asset> itemsOfClass in itemsPerClassID.Values) {
 					uint classRemaining = setsToExtract;
 
-					foreach (Steam.Asset item in itemsOfClass) {
-						if (classRemaining <= 0) {
-							break;
-						}
-
+					foreach (Steam.Asset item in itemsOfClass.TakeWhile(item => classRemaining > 0)) {
 						if (item.Amount > classRemaining) {
 							Steam.Asset itemToSend = item.CreateShallowCopy();
 							itemToSend.Amount = classRemaining;
