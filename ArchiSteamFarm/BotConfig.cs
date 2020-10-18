@@ -111,6 +111,9 @@ namespace ArchiSteamFarm {
 		private const byte SteamTradeTokenLength = 8;
 
 		[PublicAPI]
+		public static readonly ImmutableHashSet<Steam.Asset.EType> AllowedCompleteTypesToSend = ImmutableHashSet.Create(Steam.Asset.EType.TradingCard, Steam.Asset.EType.FoilTradingCard);
+
+		[PublicAPI]
 		public static readonly ImmutableList<EFarmingOrder> DefaultFarmingOrders = ImmutableList<EFarmingOrder>.Empty;
 
 		[PublicAPI]
@@ -328,6 +331,10 @@ namespace ArchiSteamFarm {
 				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(LootableTypes), lootableType));
 			}
 
+			foreach (Steam.Asset.EType completableType in CompleteTypesToSend.Where(completableType => !Enum.IsDefined(typeof(Steam.Asset.EType), completableType) || !AllowedCompleteTypesToSend.Contains(completableType))) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(CompleteTypesToSend), completableType));
+			}
+
 			foreach (Steam.Asset.EType matchableType in MatchableTypes.Where(matchableType => !Enum.IsDefined(typeof(Steam.Asset.EType), matchableType))) {
 				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(MatchableTypes), matchableType));
 			}
@@ -535,6 +542,8 @@ namespace ArchiSteamFarm {
 		public bool ShouldSerializeTradingPreferences() => ShouldSerializeDefaultValues || (TradingPreferences != DefaultTradingPreferences);
 		public bool ShouldSerializeTransferableTypes() => ShouldSerializeDefaultValues || ((TransferableTypes != DefaultTransferableTypes) && !TransferableTypes.SetEquals(DefaultTransferableTypes));
 		public bool ShouldSerializeUseLoginKeys() => ShouldSerializeDefaultValues || (UseLoginKeys != DefaultUseLoginKeys);
+
+		public bool ShouldSerializeCompleteTypesToSend() => ShouldSerializeDefaultValues || ((CompleteTypesToSend != DefaultCompleteTypesToSend) && !CompleteTypesToSend.SetEquals(DefaultCompleteTypesToSend));
 
 		// ReSharper restore UnusedMember.Global
 	}

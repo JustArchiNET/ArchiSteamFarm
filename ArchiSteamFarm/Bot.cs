@@ -32,8 +32,6 @@ using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using AngleSharp;
-using AngleSharp.Common;
 using AngleSharp.Dom;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Json;
@@ -57,6 +55,7 @@ namespace ArchiSteamFarm {
 		private const byte MaxInvalidPasswordFailures = WebBrowser.MaxTries; // Max InvalidPassword failures in a row before we determine that our password is invalid (because Steam wrongly returns those, of course)
 		private const ushort MaxMessageLength = 5000; // This is a limitation enforced by Steam
 		private const byte MaxTwoFactorCodeFailures = WebBrowser.MaxTries; // Max TwoFactorCodeMismatch failures in a row before we determine that our 2FA credentials are invalid (because Steam wrongly returns those, of course)
+		private const byte MinimumCardsPerBadge = 5;
 		private const byte RedeemCooldownInHours = 1; // 1 hour since first redeem attempt, this is a limitation enforced by Steam
 		private const byte ReservedMessageLength = 2; // 2 for 2x optional …
 
@@ -135,7 +134,7 @@ namespace ArchiSteamFarm {
 		private readonly CallbackManager CallbackManager;
 		private readonly SemaphoreSlim CallbackSemaphore = new SemaphoreSlim(1, 1);
 		private readonly SemaphoreSlim GamesRedeemerInBackgroundSemaphore = new SemaphoreSlim(1, 1);
-		private readonly SemaphoreSlim SendCompleteSetsSemaphore = new SemaphoreSlim(1, 1);
+		private readonly SemaphoreSlim SendCompleteTypesSemaphore = new SemaphoreSlim(1, 1);
 		private readonly Timer HeartBeatTimer;
 		private readonly SemaphoreSlim InitializationSemaphore = new SemaphoreSlim(1, 1);
 		private readonly SemaphoreSlim MessagingSemaphore = new SemaphoreSlim(1, 1);
@@ -145,6 +144,8 @@ namespace ArchiSteamFarm {
 		private readonly ConcurrentHashSet<ulong> SteamFamilySharingIDs = new ConcurrentHashSet<ulong>();
 		private readonly SteamUser SteamUser;
 		private readonly Trading Trading;
+
+		private bool SendCompleteTypesScheduled;
 
 #pragma warning disable CS8605
 		private IEnumerable<(string FilePath, EFileType FileType)> RelatedFiles {
@@ -315,7 +316,7 @@ namespace ArchiSteamFarm {
 			BotDatabase.Dispose();
 			CallbackSemaphore.Dispose();
 			GamesRedeemerInBackgroundSemaphore.Dispose();
-			SendCompleteSetsSemaphore.Dispose();
+			SendCompleteTypesSemaphore.Dispose();
 			InitializationSemaphore.Dispose();
 			MessagingSemaphore.Dispose();
 			Trading.Dispose();
@@ -2980,23 +2981,20 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		private bool CompleteSetLootScheduled;
-		private const byte MinCardsPerBadge = 5;
-
 		private async Task SendCompletedSets() {
-			lock (SendCompleteSetsSemaphore) {
-				if (CompleteSetLootScheduled) {
+			lock (SendCompleteTypesSemaphore) {
+				if (SendCompleteTypesScheduled) {
 					return;
 				}
 
-				CompleteSetLootScheduled = true;
+				SendCompleteTypesScheduled = true;
 			}
 
-			await SendCompleteSetsSemaphore.WaitAsync().ConfigureAwait(false);
+			await SendCompleteTypesSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				lock (SendCompleteSetsSemaphore) {
-					CompleteSetLootScheduled = false;
+				lock (SendCompleteTypesSemaphore) {
+					SendCompleteTypesScheduled = false;
 				}
 
 				HashSet<uint>? appIDs = await GetPossiblyCompletedBadgeAppIDs().ConfigureAwait(false);
@@ -3035,7 +3033,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), (uint Sets, byte CardsPerSet)> itemsToTakePerInventorySet = inventorySets.Where(kv => kv.Value.Count >= MinCardsPerBadge).ToDictionary(kv => kv.Key, kv => (kv.Value[0], cardCountPerAppID[kv.Key.RealAppID]));
+				Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), (uint Sets, byte CardsPerSet)> itemsToTakePerInventorySet = inventorySets.Where(kv => kv.Value.Count >= MinimumCardsPerBadge).ToDictionary(kv => kv.Key, kv => (kv.Value[0], cardCountPerAppID[kv.Key.RealAppID]));
 
 				if (itemsToTakePerInventorySet.Values.All(value => value.Sets == 0)) {
 					return;
@@ -3047,7 +3045,7 @@ namespace ArchiSteamFarm {
 					await Actions.SendInventory(result).ConfigureAwait(false);
 				}
 			} finally {
-				SendCompleteSetsSemaphore.Release();
+				SendCompleteTypesSemaphore.Release();
 			}
 		}
 
@@ -3089,10 +3087,10 @@ namespace ArchiSteamFarm {
 			}
 
 			HashSet<Steam.Asset> result = new HashSet<Steam.Asset>();
-			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, List<Steam.Asset>>> itemsPerClassIDPerSet = inventory.GroupBy(item => (item.RealAppID, item.Type, item.Rarity)).ToDictionary(grouping => grouping.Key, grouping => grouping.GroupBy(item => item.ClassID).ToDictionary(group => group.Key, group => group.ToList()));
+			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, HashSet<Steam.Asset>>> itemsPerClassIDPerSet = inventory.GroupBy(item => (item.RealAppID, item.Type, item.Rarity)).ToDictionary(grouping => grouping.Key, grouping => grouping.GroupBy(item => item.ClassID).ToDictionary(group => group.Key, group => group.ToHashSet()));
 
 			foreach (((uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) set, (uint setsToExtract, byte cardsPerSet)) in amountsToExtract) {
-				if (!itemsPerClassIDPerSet.TryGetValue(set, out Dictionary<ulong, List<Steam.Asset>>? itemsPerClassID)) {
+				if (!itemsPerClassIDPerSet.TryGetValue(set, out Dictionary<ulong, HashSet<Steam.Asset>>? itemsPerClassID)) {
 					continue;
 				}
 
@@ -3104,11 +3102,13 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				foreach (List<Steam.Asset> itemsOfClass in itemsPerClassID.Values) {
+				foreach (HashSet<Steam.Asset> itemsOfClass in itemsPerClassID.Values) {
 					uint classRemaining = setsToExtract;
 
-					for (int i = 0; (classRemaining > 0) && (i < itemsOfClass.Count); i++) {
-						Steam.Asset item = itemsOfClass[i];
+					foreach (Steam.Asset item in itemsOfClass) {
+						if (classRemaining <= 0) {
+							break;
+						}
 
 						if (item.Amount > classRemaining) {
 							Steam.Asset itemToSend = item.CreateShallowCopy();
