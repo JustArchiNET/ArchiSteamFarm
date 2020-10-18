@@ -33,6 +33,13 @@ namespace ArchiSteamFarm.IPC.Responses {
 		public readonly string BuildVariant;
 
 		/// <summary>
+		///     A value specifying whether this variant of ASF is capable of auto-update.
+		/// </summary>
+		[JsonProperty(Required = Required.Always)]
+		[Required]
+		public readonly bool CanUpdate;
+
+		/// <summary>
 		///     Currently loaded ASF's global config.
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
@@ -60,12 +67,13 @@ namespace ArchiSteamFarm.IPC.Responses {
 		[Required]
 		public readonly Version Version;
 
-		internal ASFResponse(string buildVariant, GlobalConfig globalConfig, uint memoryUsage, DateTime processStartTime, Version version) {
+		internal ASFResponse(string buildVariant, bool canUpdate, GlobalConfig globalConfig, uint memoryUsage, DateTime processStartTime, Version version) {
 			if (string.IsNullOrEmpty(buildVariant) || (globalConfig == null) || (memoryUsage == 0) || (processStartTime == DateTime.MinValue) || (version == null)) {
 				throw new ArgumentNullException(nameof(buildVariant) + " || " + nameof(globalConfig) + " || " + nameof(memoryUsage) + " || " + nameof(processStartTime) + " || " + nameof(version));
 			}
 
 			BuildVariant = buildVariant;
+			CanUpdate = canUpdate;
 			GlobalConfig = globalConfig;
 			MemoryUsage = memoryUsage;
 			ProcessStartTime = processStartTime;
