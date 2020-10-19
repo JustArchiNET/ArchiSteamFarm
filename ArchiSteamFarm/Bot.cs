@@ -3006,7 +3006,7 @@ namespace ArchiSteamFarm {
 				HashSet<Steam.Asset> inventory;
 
 				try {
-					inventory = await ArchiWebHandler.GetInventoryAsync(SteamID)
+					inventory = await ArchiWebHandler.GetInventoryAsync()
 						.Where(item => item.Tradable && appIDs.Contains(item.RealAppID) && BotConfig.CompleteTypesToSend.Contains(item.Type))
 						.ToHashSetAsync()
 						.ConfigureAwait(false);
