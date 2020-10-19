@@ -2852,7 +2852,8 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async Task<HashSet<uint>?> GetPossiblyCompletedBadgeAppIDs() {
+		[PublicAPI]
+		public async Task<HashSet<uint>?> GetPossiblyCompletedBadgeAppIDs() {
 			using IDocument? badgePage = await ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
 
 			if (badgePage == null) {
