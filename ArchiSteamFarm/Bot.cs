@@ -2967,7 +2967,7 @@ namespace ArchiSteamFarm {
 				}
 
 				// URIs to foil badges are the same as for normal badges except they end with "?border=1"
-				string? appIDText = badgeUri.Split('/', StringSplitOptions.RemoveEmptyEntries)[^1].Split('?', StringSplitOptions.RemoveEmptyEntries)[0];
+				string? appIDText = badgeUri.Split('?', StringSplitOptions.RemoveEmptyEntries)[0].Split('/', StringSplitOptions.RemoveEmptyEntries)[^1];
 
 				if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
 					ArchiLogger.LogNullError(nameof(appID));
@@ -3040,7 +3040,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				HashSet<Steam.Asset> result = GetItemsForFullBadge(inventory, itemsToTakePerInventorySet);
+				HashSet<Steam.Asset> result = GetItemsForFullSets(inventory, itemsToTakePerInventorySet);
 
 				if (result.Count > 0) {
 					await Actions.SendInventory(result).ConfigureAwait(false);
@@ -3082,7 +3082,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static HashSet<Steam.Asset> GetItemsForFullBadge(IReadOnlyCollection<Steam.Asset> inventory, IReadOnlyDictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), (uint SetsToExtract, byte CardsPerSet)> amountsToExtract) {
+		internal static HashSet<Steam.Asset> GetItemsForFullSets(IReadOnlyCollection<Steam.Asset> inventory, IReadOnlyDictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), (uint SetsToExtract, byte ItemsPerSet)> amountsToExtract) {
 			if ((inventory == null) || (inventory.Count == 0) || (amountsToExtract == null) || (amountsToExtract.Count == 0)) {
 				throw new ArgumentNullException(nameof(inventory) + " || " + nameof(amountsToExtract));
 			}
@@ -3090,16 +3090,16 @@ namespace ArchiSteamFarm {
 			HashSet<Steam.Asset> result = new HashSet<Steam.Asset>();
 			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, HashSet<Steam.Asset>>> itemsPerClassIDPerSet = inventory.GroupBy(item => (item.RealAppID, item.Type, item.Rarity)).ToDictionary(grouping => grouping.Key, grouping => grouping.GroupBy(item => item.ClassID).ToDictionary(group => group.Key, group => group.ToHashSet()));
 
-			foreach (((uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) set, (uint setsToExtract, byte cardsPerSet)) in amountsToExtract) {
+			foreach (((uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) set, (uint setsToExtract, byte itemsPerSet)) in amountsToExtract) {
 				if (!itemsPerClassIDPerSet.TryGetValue(set, out Dictionary<ulong, HashSet<Steam.Asset>>? itemsPerClassID)) {
 					continue;
 				}
 
-				if (cardsPerSet < itemsPerClassID.Count) {
+				if (itemsPerSet < itemsPerClassID.Count) {
 					throw new ArgumentOutOfRangeException(nameof(inventory) + " && " + nameof(amountsToExtract));
 				}
 
-				if (cardsPerSet > itemsPerClassID.Count) {
+				if (itemsPerSet > itemsPerClassID.Count) {
 					continue;
 				}
 
