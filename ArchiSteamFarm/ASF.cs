@@ -788,10 +788,10 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(archive) + " || " + nameof(targetDirectory));
 			}
 
-			string assemblyPath = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.AssemblyPath);
+			string steamKit2Path = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.SteamKit2Path);
 
-			if (File.Exists(assemblyPath)) {
-				// We're running a build that includes our binary in its generic dll form
+			if (File.Exists(steamKit2Path)) {
+				// We're running a build that includes our dependencies in their generic forms
 				// Before actually moving files in update procedure, let's minimize the risk of some assembly not being loaded that we may need in the process
 				LoadAssembliesRecursively(Assembly.GetExecutingAssembly());
 			}

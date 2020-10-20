@@ -37,7 +37,6 @@ namespace ArchiSteamFarm {
 		internal const ulong ASFGroupSteamID = 103582791440160998;
 		internal const string AssemblyDocumentation = AssemblyName + ".xml";
 		internal const string AssemblyName = nameof(ArchiSteamFarm);
-		internal const string AssemblyPath = AssemblyName + ".dll";
 		internal const string DatabaseExtension = ".db";
 		internal const string DebugDirectory = "debug";
 		internal const string EnvironmentVariableCryptKey = ASF + "_CRYPTKEY";
@@ -61,6 +60,7 @@ namespace ArchiSteamFarm {
 		internal const string ProjectURL = "https://github.com/" + GithubRepo;
 		internal const string SentryHashExtension = ".bin";
 		internal const string StatisticsServer = "asf.justarchi.net";
+		internal const string SteamKit2Path = nameof(SteamKit2) + ".dll";
 		internal const string UlongCompatibilityStringPrefix = "s_";
 		internal const string UpdateDirectory = "_old";
 		internal const string WebsiteDirectory = "www";
