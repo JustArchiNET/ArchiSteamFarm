@@ -60,7 +60,6 @@ namespace ArchiSteamFarm {
 		internal const string ProjectURL = "https://github.com/" + GithubRepo;
 		internal const string SentryHashExtension = ".bin";
 		internal const string StatisticsServer = "asf.justarchi.net";
-		internal const string SteamKit2Path = nameof(SteamKit2) + ".dll";
 		internal const string UlongCompatibilityStringPrefix = "s_";
 		internal const string UpdateDirectory = "_old";
 		internal const string WebsiteDirectory = "www";

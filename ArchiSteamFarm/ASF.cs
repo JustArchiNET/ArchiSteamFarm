@@ -788,10 +788,8 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(archive) + " || " + nameof(targetDirectory));
 			}
 
-			string steamKit2Path = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.SteamKit2Path);
-
-			if (File.Exists(steamKit2Path)) {
-				// We're running a build that includes our dependencies in their generic forms
+			if (SharedInfo.HomeDirectory == AppContext.BaseDirectory) {
+				// We're running a build that includes our dependencies in ASF's home
 				// Before actually moving files in update procedure, let's minimize the risk of some assembly not being loaded that we may need in the process
 				LoadAssembliesRecursively(Assembly.GetExecutingAssembly());
 			}
