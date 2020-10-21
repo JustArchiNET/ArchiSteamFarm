@@ -245,8 +245,8 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<(bool Success, string Message)> SendInventory(IReadOnlyCollection<Steam.Asset> items, ulong targetSteamID = 0, string? tradeToken = null, ushort itemsPerTrade = Trading.MaxItemsPerTrade) {
-			if ((items == null) || (items.Count == 0)) {
-				throw new ArgumentNullException(nameof(items));
+			if ((items == null) || (items.Count == 0) || (itemsPerTrade < 2)) {
+				throw new ArgumentNullException(nameof(items) + " || " + nameof(itemsPerTrade));
 			}
 
 			if (!Bot.IsConnectedAndLoggedOn) {
@@ -317,9 +317,9 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<(bool Success, string Message)> SendInventory(uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, ulong targetSteamID = 0, string? tradeToken = null, Func<Steam.Asset, bool>? filterFunction = null) {
-			if ((appID == 0) || (contextID == 0)) {
-				throw new ArgumentNullException(nameof(appID) + " || " + nameof(contextID));
+		public async Task<(bool Success, string Message)> SendInventory(uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, ulong targetSteamID = 0, string? tradeToken = null, Func<Steam.Asset, bool>? filterFunction = null, ushort itemsPerTrade = Trading.MaxItemsPerTrade) {
+			if ((appID == 0) || (contextID == 0) || (itemsPerTrade < 2)) {
+				throw new ArgumentNullException(nameof(appID) + " || " + nameof(contextID) + " || " + nameof(itemsPerTrade));
 			}
 
 			if (!Bot.IsConnectedAndLoggedOn) {
@@ -342,7 +342,7 @@ namespace ArchiSteamFarm {
 				return (false, string.Format(Strings.WarningFailedWithError, e.Message));
 			}
 
-			return await SendInventory(inventory, targetSteamID, tradeToken).ConfigureAwait(false);
+			return await SendInventory(inventory, targetSteamID, tradeToken, itemsPerTrade).ConfigureAwait(false);
 		}
 
 		[PublicAPI]
