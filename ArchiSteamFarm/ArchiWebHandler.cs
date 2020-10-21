@@ -61,6 +61,7 @@ namespace ArchiSteamFarm {
 		private const string SteamCommunityHost = "steamcommunity.com";
 		private const string SteamHelpHost = "help.steampowered.com";
 		private const string SteamStoreHost = "store.steampowered.com";
+
 		private static readonly ConcurrentDictionary<uint, byte> CachedCardCountsForGame = new ConcurrentDictionary<uint, byte>();
 
 		[PublicAPI]

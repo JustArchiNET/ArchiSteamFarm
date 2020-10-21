@@ -223,7 +223,6 @@ namespace ArchiSteamFarm {
 		private ulong MasterChatGroupID;
 		private Timer? PlayingWasBlockedTimer;
 		private bool ReconnectOnUserInitiated;
-
 		private bool SendCompleteTypesScheduled;
 		private Timer? SendItemsTimer;
 		private bool SteamParentalActive = true;

@@ -515,6 +515,7 @@ namespace ArchiSteamFarm {
 		public bool ShouldSerializeAcceptGifts() => ShouldSerializeDefaultValues || (AcceptGifts != DefaultAcceptGifts);
 		public bool ShouldSerializeAutoSteamSaleEvent() => ShouldSerializeDefaultValues || (AutoSteamSaleEvent != DefaultAutoSteamSaleEvent);
 		public bool ShouldSerializeBotBehaviour() => ShouldSerializeDefaultValues || (BotBehaviour != DefaultBotBehaviour);
+		public bool ShouldSerializeCompleteTypesToSend() => ShouldSerializeDefaultValues || ((CompleteTypesToSend != DefaultCompleteTypesToSend) && !CompleteTypesToSend.SetEquals(DefaultCompleteTypesToSend));
 		public bool ShouldSerializeCustomGamePlayedWhileFarming() => ShouldSerializeDefaultValues || (CustomGamePlayedWhileFarming != DefaultCustomGamePlayedWhileFarming);
 		public bool ShouldSerializeCustomGamePlayedWhileIdle() => ShouldSerializeDefaultValues || (CustomGamePlayedWhileIdle != DefaultCustomGamePlayedWhileIdle);
 		public bool ShouldSerializeEnabled() => ShouldSerializeDefaultValues || (Enabled != DefaultEnabled);
@@ -542,8 +543,6 @@ namespace ArchiSteamFarm {
 		public bool ShouldSerializeTradingPreferences() => ShouldSerializeDefaultValues || (TradingPreferences != DefaultTradingPreferences);
 		public bool ShouldSerializeTransferableTypes() => ShouldSerializeDefaultValues || ((TransferableTypes != DefaultTransferableTypes) && !TransferableTypes.SetEquals(DefaultTransferableTypes));
 		public bool ShouldSerializeUseLoginKeys() => ShouldSerializeDefaultValues || (UseLoginKeys != DefaultUseLoginKeys);
-
-		public bool ShouldSerializeCompleteTypesToSend() => ShouldSerializeDefaultValues || ((CompleteTypesToSend != DefaultCompleteTypesToSend) && !CompleteTypesToSend.SetEquals(DefaultCompleteTypesToSend));
 
 		// ReSharper restore UnusedMember.Global
 	}
