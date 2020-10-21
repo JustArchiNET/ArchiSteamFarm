@@ -356,9 +356,9 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<(bool Success, HashSet<ulong>? MobileTradeOfferIDs)> SendTradeOffer(ulong steamID, IReadOnlyCollection<Steam.Asset>? itemsToGive = null, IReadOnlyCollection<Steam.Asset>? itemsToReceive = null, string? token = null, bool forcedSingleOffer = false) {
-			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || (((itemsToGive == null) || (itemsToGive.Count == 0)) && ((itemsToReceive == null) || (itemsToReceive.Count == 0)))) {
-				throw new ArgumentNullException(nameof(steamID) + " || (" + nameof(itemsToGive) + " && " + nameof(itemsToReceive) + ")");
+		public async Task<(bool Success, HashSet<ulong>? MobileTradeOfferIDs)> SendTradeOffer(ulong steamID, IReadOnlyCollection<Steam.Asset>? itemsToGive = null, IReadOnlyCollection<Steam.Asset>? itemsToReceive = null, string? token = null, bool forcedSingleOffer = false, ushort itemsPerTrade = Trading.MaxItemsPerTrade) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || (((itemsToGive == null) || (itemsToGive.Count == 0)) && ((itemsToReceive == null) || (itemsToReceive.Count == 0))) || (itemsPerTrade < 2)) {
+				throw new ArgumentNullException(nameof(steamID) + " || (" + nameof(itemsToGive) + " && " + nameof(itemsToReceive) + ") || " + nameof(itemsPerTrade));
 			}
 
 			Steam.TradeOfferSendRequest singleTrade = new Steam.TradeOfferSendRequest();
@@ -366,7 +366,7 @@ namespace ArchiSteamFarm {
 
 			if (itemsToGive != null) {
 				foreach (Steam.Asset itemToGive in itemsToGive) {
-					if (!forcedSingleOffer && (singleTrade.ItemsToGive.Assets.Count + singleTrade.ItemsToReceive.Assets.Count >= Trading.MaxItemsPerTrade)) {
+					if (!forcedSingleOffer && (singleTrade.ItemsToGive.Assets.Count + singleTrade.ItemsToReceive.Assets.Count >= itemsPerTrade)) {
 						if (trades.Count >= Trading.MaxTradesPerAccount) {
 							break;
 						}
@@ -381,7 +381,7 @@ namespace ArchiSteamFarm {
 
 			if (itemsToReceive != null) {
 				foreach (Steam.Asset itemToReceive in itemsToReceive) {
-					if (!forcedSingleOffer && (singleTrade.ItemsToGive.Assets.Count + singleTrade.ItemsToReceive.Assets.Count >= Trading.MaxItemsPerTrade)) {
+					if (!forcedSingleOffer && (singleTrade.ItemsToGive.Assets.Count + singleTrade.ItemsToReceive.Assets.Count >= itemsPerTrade)) {
 						if (trades.Count >= Trading.MaxTradesPerAccount) {
 							break;
 						}
