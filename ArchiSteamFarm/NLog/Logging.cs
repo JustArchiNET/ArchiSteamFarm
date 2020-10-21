@@ -286,11 +286,12 @@ namespace ArchiSteamFarm.NLog {
 							string? commandPrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.CommandPrefix : GlobalConfig.DefaultCommandPrefix;
 
 							if (!string.IsNullOrEmpty(commandPrefix) && command!.StartsWith(commandPrefix!, StringComparison.Ordinal)) {
-								command = command.Substring(commandPrefix!.Length);
-
-								if (string.IsNullOrEmpty(command)) {
+								if (command.Length == commandPrefix!.Length) {
+									// If the message starts with command prefix and is of the same length as command prefix, then it's just empty command trigger, useless
 									continue;
 								}
+
+								command = command.Substring(commandPrefix!.Length);
 							}
 
 							Bot? targetBot = Bot.Bots?.OrderBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value).FirstOrDefault();

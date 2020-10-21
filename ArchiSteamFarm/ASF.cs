@@ -26,6 +26,7 @@ using System.Collections.Immutable;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -413,6 +414,23 @@ namespace ArchiSteamFarm {
 			return !botName.Equals(SharedInfo.ASF, StringComparison.OrdinalIgnoreCase);
 		}
 
+		private static void LoadAssembliesRecursively(Assembly assembly, HashSet<string>? loadedAssembliesNames = null) {
+			if (assembly == null) {
+				throw new ArgumentNullException(nameof(assembly));
+			}
+
+			if (loadedAssembliesNames == null) {
+				Assembly[] loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+				loadedAssembliesNames = loadedAssemblies.Select(loadedAssembly => loadedAssembly.FullName).Where(name => !string.IsNullOrEmpty(name)).ToHashSet()!;
+			}
+
+			foreach (AssemblyName assemblyName in assembly.GetReferencedAssemblies().Where(assemblyName => !loadedAssembliesNames.Contains(assemblyName.FullName))) {
+				loadedAssembliesNames.Add(assemblyName.FullName);
+
+				LoadAssembliesRecursively(Assembly.Load(assemblyName), loadedAssembliesNames);
+			}
+		}
+
 		private static async void OnChanged(object sender, FileSystemEventArgs e) {
 			if ((sender == null) || (e == null)) {
 				throw new ArgumentNullException(nameof(sender) + " || " + nameof(e));
@@ -768,6 +786,12 @@ namespace ArchiSteamFarm {
 		private static bool UpdateFromArchive(ZipArchive archive, string targetDirectory) {
 			if ((archive == null) || string.IsNullOrEmpty(targetDirectory)) {
 				throw new ArgumentNullException(nameof(archive) + " || " + nameof(targetDirectory));
+			}
+
+			if (SharedInfo.HomeDirectory == AppContext.BaseDirectory) {
+				// We're running a build that includes our dependencies in ASF's home
+				// Before actually moving files in update procedure, let's minimize the risk of some assembly not being loaded that we may need in the process
+				LoadAssembliesRecursively(Assembly.GetExecutingAssembly());
 			}
 
 			// Firstly we'll move all our existing files to a backup directory
