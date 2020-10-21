@@ -111,6 +111,9 @@ namespace ArchiSteamFarm {
 		private const byte SteamTradeTokenLength = 8;
 
 		[PublicAPI]
+		public static readonly ImmutableHashSet<Steam.Asset.EType> AllowedCompleteTypesToSend = ImmutableHashSet.Create(Steam.Asset.EType.TradingCard, Steam.Asset.EType.FoilTradingCard);
+
+		[PublicAPI]
 		public static readonly ImmutableList<EFarmingOrder> DefaultFarmingOrders = ImmutableList<EFarmingOrder>.Empty;
 
 		[PublicAPI]
@@ -118,6 +121,9 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public static readonly ImmutableHashSet<Steam.Asset.EType> DefaultLootableTypes = ImmutableHashSet.Create(Steam.Asset.EType.BoosterPack, Steam.Asset.EType.FoilTradingCard, Steam.Asset.EType.TradingCard);
+
+		[PublicAPI]
+		public static readonly ImmutableHashSet<Steam.Asset.EType> DefaultCompleteTypesToSend = ImmutableHashSet<Steam.Asset.EType>.Empty;
 
 		[PublicAPI]
 		public static readonly ImmutableHashSet<Steam.Asset.EType> DefaultMatchableTypes = ImmutableHashSet.Create(Steam.Asset.EType.TradingCard);
@@ -183,6 +189,9 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly bool SendOnFarmingFinished = DefaultSendOnFarmingFinished;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		public readonly ImmutableHashSet<Steam.Asset.EType> CompleteTypesToSend = DefaultCompleteTypesToSend;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly byte SendTradePeriod = DefaultSendTradePeriod;
@@ -320,6 +329,10 @@ namespace ArchiSteamFarm {
 
 			foreach (Steam.Asset.EType lootableType in LootableTypes.Where(lootableType => !Enum.IsDefined(typeof(Steam.Asset.EType), lootableType))) {
 				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(LootableTypes), lootableType));
+			}
+
+			foreach (Steam.Asset.EType completableType in CompleteTypesToSend.Where(completableType => !Enum.IsDefined(typeof(Steam.Asset.EType), completableType) || !AllowedCompleteTypesToSend.Contains(completableType))) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(CompleteTypesToSend), completableType));
 			}
 
 			foreach (Steam.Asset.EType matchableType in MatchableTypes.Where(matchableType => !Enum.IsDefined(typeof(Steam.Asset.EType), matchableType))) {
@@ -529,6 +542,8 @@ namespace ArchiSteamFarm {
 		public bool ShouldSerializeTradingPreferences() => ShouldSerializeDefaultValues || (TradingPreferences != DefaultTradingPreferences);
 		public bool ShouldSerializeTransferableTypes() => ShouldSerializeDefaultValues || ((TransferableTypes != DefaultTransferableTypes) && !TransferableTypes.SetEquals(DefaultTransferableTypes));
 		public bool ShouldSerializeUseLoginKeys() => ShouldSerializeDefaultValues || (UseLoginKeys != DefaultUseLoginKeys);
+
+		public bool ShouldSerializeCompleteTypesToSend() => ShouldSerializeDefaultValues || ((CompleteTypesToSend != DefaultCompleteTypesToSend) && !CompleteTypesToSend.SetEquals(DefaultCompleteTypesToSend));
 
 		// ReSharper restore UnusedMember.Global
 	}
