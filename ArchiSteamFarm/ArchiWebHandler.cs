@@ -42,8 +42,6 @@ using Formatting = Newtonsoft.Json.Formatting;
 
 namespace ArchiSteamFarm {
 	public sealed class ArchiWebHandler : IDisposable {
-		private static readonly ConcurrentDictionary<uint, byte> CachedCardCountsForGame = new ConcurrentDictionary<uint, byte>();
-
 		[PublicAPI]
 		public const string SteamCommunityURL = "https://" + SteamCommunityHost;
 
@@ -63,6 +61,7 @@ namespace ArchiSteamFarm {
 		private const string SteamCommunityHost = "steamcommunity.com";
 		private const string SteamHelpHost = "help.steampowered.com";
 		private const string SteamStoreHost = "store.steampowered.com";
+		private static readonly ConcurrentDictionary<uint, byte> CachedCardCountsForGame = new ConcurrentDictionary<uint, byte>();
 
 		[PublicAPI]
 		public readonly ArchiCacheable<string> CachedApiKey;
@@ -1590,6 +1589,37 @@ namespace ArchiSteamFarm {
 			return response?.Content;
 		}
 
+		internal async Task<byte> GetCardCountForGame(uint appID) {
+			if (appID == 0) {
+				throw new ArgumentNullException(nameof(appID));
+			}
+
+			if (CachedCardCountsForGame.TryGetValue(appID, out byte result)) {
+				return result;
+			}
+
+			using IDocument? htmlDocument = await GetGameCardsPage(appID).ConfigureAwait(false);
+
+			if (htmlDocument == null) {
+				Bot.ArchiLogger.LogNullError(nameof(htmlDocument));
+
+				return 0;
+			}
+
+			List<IElement> htmlNodes = htmlDocument.SelectNodes("//div[@class='badge_card_set_cards']/div[starts-with(@class, 'badge_card_set_card')]");
+
+			if (htmlNodes.Count == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(htmlNodes));
+
+				return 0;
+			}
+
+			result = (byte) htmlNodes.Count;
+			CachedCardCountsForGame.TryAdd(appID, result);
+
+			return result;
+		}
+
 		internal async Task<IDocument?> GetConfirmationsPage(string deviceID, string confirmationHash, uint time) {
 			if (string.IsNullOrEmpty(deviceID) || string.IsNullOrEmpty(confirmationHash) || (time == 0)) {
 				throw new ArgumentNullException(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time));
@@ -1700,37 +1730,6 @@ namespace ArchiSteamFarm {
 				ulong steamID = new SteamID(steamID3, EUniverse.Public, EAccountType.Individual);
 				result.Add(steamID);
 			}
-
-			return result;
-		}
-
-		internal async Task<byte> GetCardCountForGame(uint appID) {
-			if (appID == 0) {
-				throw new ArgumentNullException(nameof(appID));
-			}
-
-			if (CachedCardCountsForGame.TryGetValue(appID, out byte result)) {
-				return result;
-			}
-
-			using IDocument? htmlDocument = await GetGameCardsPage(appID).ConfigureAwait(false);
-
-			if (htmlDocument == null) {
-				Bot.ArchiLogger.LogNullError(nameof(htmlDocument));
-
-				return 0;
-			}
-
-			List<IElement> htmlNodes = htmlDocument.SelectNodes("//div[@class='badge_card_set_cards']/div[starts-with(@class, 'badge_card_set_card')]");
-
-			if (htmlNodes.Count == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(htmlNodes));
-
-				return 0;
-			}
-
-			result = (byte) htmlNodes.Count;
-			CachedCardCountsForGame.TryAdd(appID, result);
 
 			return result;
 		}

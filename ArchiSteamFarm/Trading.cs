@@ -49,6 +49,17 @@ namespace ArchiSteamFarm {
 		public void Dispose() => TradesSemaphore.Dispose();
 
 		[PublicAPI]
+		public static Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), List<uint>> GetInventorySets(IReadOnlyCollection<Steam.Asset> inventory) {
+			if ((inventory == null) || (inventory.Count == 0)) {
+				throw new ArgumentNullException(nameof(inventory));
+			}
+
+			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> sets = GetInventoryState(inventory);
+
+			return sets.ToDictionary(set => set.Key, set => set.Value.Values.OrderBy(amount => amount).ToList());
+		}
+
+		[PublicAPI]
 		public static bool IsFairExchange(IReadOnlyCollection<Steam.Asset> itemsToGive, IReadOnlyCollection<Steam.Asset> itemsToReceive) {
 			if ((itemsToGive == null) || (itemsToGive.Count == 0) || (itemsToReceive == null) || (itemsToReceive.Count == 0)) {
 				throw new ArgumentNullException(nameof(itemsToGive) + " || " + nameof(itemsToReceive));
@@ -343,17 +354,6 @@ namespace ArchiSteamFarm {
 			} finally {
 				TradesSemaphore.Release();
 			}
-		}
-
-		[PublicAPI]
-		public static Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), List<uint>> GetInventorySets(IReadOnlyCollection<Steam.Asset> inventory) {
-			if ((inventory == null) || (inventory.Count == 0)) {
-				throw new ArgumentNullException(nameof(inventory));
-			}
-
-			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> sets = GetInventoryState(inventory);
-
-			return sets.ToDictionary(set => set.Key, set => set.Value.Values.OrderBy(amount => amount).ToList());
 		}
 
 		private static Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> GetInventoryState(IReadOnlyCollection<Steam.Asset> inventory) {

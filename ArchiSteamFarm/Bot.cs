@@ -134,18 +134,16 @@ namespace ArchiSteamFarm {
 		private readonly CallbackManager CallbackManager;
 		private readonly SemaphoreSlim CallbackSemaphore = new SemaphoreSlim(1, 1);
 		private readonly SemaphoreSlim GamesRedeemerInBackgroundSemaphore = new SemaphoreSlim(1, 1);
-		private readonly SemaphoreSlim SendCompleteTypesSemaphore = new SemaphoreSlim(1, 1);
 		private readonly Timer HeartBeatTimer;
 		private readonly SemaphoreSlim InitializationSemaphore = new SemaphoreSlim(1, 1);
 		private readonly SemaphoreSlim MessagingSemaphore = new SemaphoreSlim(1, 1);
 		private readonly ConcurrentDictionary<ArchiHandler.UserNotificationsCallback.EUserNotification, uint> PastNotifications = new ConcurrentDictionary<ArchiHandler.UserNotificationsCallback.EUserNotification, uint>();
+		private readonly SemaphoreSlim SendCompleteTypesSemaphore = new SemaphoreSlim(1, 1);
 		private readonly Statistics? Statistics;
 		private readonly SteamClient SteamClient;
 		private readonly ConcurrentHashSet<ulong> SteamFamilySharingIDs = new ConcurrentHashSet<ulong>();
 		private readonly SteamUser SteamUser;
 		private readonly Trading Trading;
-
-		private bool SendCompleteTypesScheduled;
 
 #pragma warning disable CS8605
 		private IEnumerable<(string FilePath, EFileType FileType)> RelatedFiles {
@@ -225,6 +223,8 @@ namespace ArchiSteamFarm {
 		private ulong MasterChatGroupID;
 		private Timer? PlayingWasBlockedTimer;
 		private bool ReconnectOnUserInitiated;
+
+		private bool SendCompleteTypesScheduled;
 		private Timer? SendItemsTimer;
 		private bool SteamParentalActive = true;
 		private SteamSaleEvent? SteamSaleEvent;
@@ -2982,7 +2982,7 @@ namespace ArchiSteamFarm {
 				}
 
 				// URIs to foil badges are the same as for normal badges except they end with "?border=1"
-				string? appIDText = badgeUri.Split('?', StringSplitOptions.RemoveEmptyEntries)[0].Split('/', StringSplitOptions.RemoveEmptyEntries)[^1];
+				string appIDText = badgeUri.Split('?', StringSplitOptions.RemoveEmptyEntries)[0].Split('/', StringSplitOptions.RemoveEmptyEntries)[^1];
 
 				if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
 					ArchiLogger.LogNullError(nameof(appID));
@@ -3090,11 +3090,7 @@ namespace ArchiSteamFarm {
 					IEnumerable<Task<(uint AppID, byte Cards)>> tasks = appIDs.Select(async appID => (AppID: appID, Cards: await ArchiWebHandler.GetCardCountForGame(appID).ConfigureAwait(false)));
 					IList<(uint AppID, byte Cards)> results = await Utilities.InParallel(tasks).ConfigureAwait(false);
 
-					if (results.Any(tuple => tuple.Cards == 0)) {
-						return null;
-					}
-
-					return results.ToDictionary(res => res.AppID, res => res.Cards);
+					return results.All(tuple => tuple.Cards > 0) ? results.ToDictionary(res => res.AppID, res => res.Cards) : null;
 			}
 		}
 
