@@ -342,6 +342,10 @@ namespace ArchiSteamFarm {
 				return (false, string.Format(Strings.WarningFailedWithError, e.Message));
 			}
 
+			if (inventory.Count == 0) {
+				return (false, string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
+			}
+
 			return await SendInventory(inventory, targetSteamID, tradeToken, itemsPerTrade).ConfigureAwait(false);
 		}
 
