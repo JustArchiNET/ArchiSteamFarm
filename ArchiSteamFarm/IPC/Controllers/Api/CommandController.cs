@@ -67,11 +67,12 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			string? commandPrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.CommandPrefix : GlobalConfig.DefaultCommandPrefix;
 
 			if (!string.IsNullOrEmpty(commandPrefix) && command.StartsWith(commandPrefix!, StringComparison.Ordinal)) {
-				command = command.Substring(commandPrefix!.Length);
-
-				if (string.IsNullOrEmpty(command)) {
+				if (command.Length == commandPrefix!.Length) {
+					// If the message starts with command prefix and is of the same length as command prefix, then it's just empty command trigger, useless
 					return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(command))));
 				}
+
+				command = command.Substring(commandPrefix!.Length);
 			}
 
 			string? response = await targetBot.Commands.Response(steamOwnerID, command).ConfigureAwait(false);

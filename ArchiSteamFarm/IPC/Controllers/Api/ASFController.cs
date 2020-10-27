@@ -66,7 +66,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 
 			uint memoryUsage = (uint) GC.GetTotalMemory(false) / 1024;
 
-			ASFResponse result = new ASFResponse(SharedInfo.BuildInfo.Variant, ASF.GlobalConfig, memoryUsage, RuntimeCompatibility.ProcessStartTime, SharedInfo.Version);
+			ASFResponse result = new ASFResponse(SharedInfo.BuildInfo.Variant, SharedInfo.BuildInfo.CanUpdate, ASF.GlobalConfig, memoryUsage, RuntimeCompatibility.ProcessStartTime, SharedInfo.Version);
 
 			return Ok(new GenericResponse<ASFResponse>(result));
 		}

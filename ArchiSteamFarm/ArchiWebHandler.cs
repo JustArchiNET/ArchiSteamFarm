@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -60,6 +61,8 @@ namespace ArchiSteamFarm {
 		private const string SteamCommunityHost = "steamcommunity.com";
 		private const string SteamHelpHost = "help.steampowered.com";
 		private const string SteamStoreHost = "store.steampowered.com";
+
+		private static readonly ConcurrentDictionary<uint, byte> CachedCardCountsForGame = new ConcurrentDictionary<uint, byte>();
 
 		[PublicAPI]
 		public readonly ArchiCacheable<string> CachedApiKey;
@@ -353,9 +356,9 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<(bool Success, HashSet<ulong>? MobileTradeOfferIDs)> SendTradeOffer(ulong steamID, IReadOnlyCollection<Steam.Asset>? itemsToGive = null, IReadOnlyCollection<Steam.Asset>? itemsToReceive = null, string? token = null, bool forcedSingleOffer = false) {
-			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || (((itemsToGive == null) || (itemsToGive.Count == 0)) && ((itemsToReceive == null) || (itemsToReceive.Count == 0)))) {
-				throw new ArgumentNullException(nameof(steamID) + " || (" + nameof(itemsToGive) + " && " + nameof(itemsToReceive) + ")");
+		public async Task<(bool Success, HashSet<ulong>? MobileTradeOfferIDs)> SendTradeOffer(ulong steamID, IReadOnlyCollection<Steam.Asset>? itemsToGive = null, IReadOnlyCollection<Steam.Asset>? itemsToReceive = null, string? token = null, bool forcedSingleOffer = false, ushort itemsPerTrade = Trading.MaxItemsPerTrade) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || (((itemsToGive == null) || (itemsToGive.Count == 0)) && ((itemsToReceive == null) || (itemsToReceive.Count == 0))) || (itemsPerTrade < 2)) {
+				throw new ArgumentNullException(nameof(steamID) + " || (" + nameof(itemsToGive) + " && " + nameof(itemsToReceive) + ") || " + nameof(itemsPerTrade));
 			}
 
 			Steam.TradeOfferSendRequest singleTrade = new Steam.TradeOfferSendRequest();
@@ -363,7 +366,7 @@ namespace ArchiSteamFarm {
 
 			if (itemsToGive != null) {
 				foreach (Steam.Asset itemToGive in itemsToGive) {
-					if (!forcedSingleOffer && (singleTrade.ItemsToGive.Assets.Count + singleTrade.ItemsToReceive.Assets.Count >= Trading.MaxItemsPerTrade)) {
+					if (!forcedSingleOffer && (singleTrade.ItemsToGive.Assets.Count + singleTrade.ItemsToReceive.Assets.Count >= itemsPerTrade)) {
 						if (trades.Count >= Trading.MaxTradesPerAccount) {
 							break;
 						}
@@ -378,7 +381,7 @@ namespace ArchiSteamFarm {
 
 			if (itemsToReceive != null) {
 				foreach (Steam.Asset itemToReceive in itemsToReceive) {
-					if (!forcedSingleOffer && (singleTrade.ItemsToGive.Assets.Count + singleTrade.ItemsToReceive.Assets.Count >= Trading.MaxItemsPerTrade)) {
+					if (!forcedSingleOffer && (singleTrade.ItemsToGive.Assets.Count + singleTrade.ItemsToReceive.Assets.Count >= itemsPerTrade)) {
 						if (trades.Count >= Trading.MaxTradesPerAccount) {
 							break;
 						}
@@ -1585,6 +1588,37 @@ namespace ArchiSteamFarm {
 			WebBrowser.HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request, checkSessionPreemptively: false).ConfigureAwait(false);
 
 			return response?.Content;
+		}
+
+		internal async Task<byte> GetCardCountForGame(uint appID) {
+			if (appID == 0) {
+				throw new ArgumentNullException(nameof(appID));
+			}
+
+			if (CachedCardCountsForGame.TryGetValue(appID, out byte result)) {
+				return result;
+			}
+
+			using IDocument? htmlDocument = await GetGameCardsPage(appID).ConfigureAwait(false);
+
+			if (htmlDocument == null) {
+				Bot.ArchiLogger.LogNullError(nameof(htmlDocument));
+
+				return 0;
+			}
+
+			List<IElement> htmlNodes = htmlDocument.SelectNodes("//div[@class='badge_card_set_cards']/div[starts-with(@class, 'badge_card_set_card')]");
+
+			if (htmlNodes.Count == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(htmlNodes));
+
+				return 0;
+			}
+
+			result = (byte) htmlNodes.Count;
+			CachedCardCountsForGame.TryAdd(appID, result);
+
+			return result;
 		}
 
 		internal async Task<IDocument?> GetConfirmationsPage(string deviceID, string confirmationHash, uint time) {

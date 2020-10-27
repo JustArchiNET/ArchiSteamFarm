@@ -719,7 +719,7 @@ Czas procesu: {1}</value>
     <value>Czyszczenie starych plików po aktualizacji...</value>
   </data>
   <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
-    <value>Generowanie kodu rodzicielskiego Steam, może to chwilę potrwać, zamiast tego rozważ umieszczenie go w konfiguracji...</value>
+    <value>Generowanie kodu kontroli rodzicielskiej Steam, może to chwilę potrwać, zamiast tego rozważ umieszczenie go w konfiguracji...</value>
   </data>
   <data name="IPCConfigChanged" xml:space="preserve">
     <value>Konfiguracja IPC została zmieniona!</value>

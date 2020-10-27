@@ -111,6 +111,12 @@ namespace ArchiSteamFarm {
 		private const byte SteamTradeTokenLength = 8;
 
 		[PublicAPI]
+		public static readonly ImmutableHashSet<Steam.Asset.EType> AllowedCompleteTypesToSend = ImmutableHashSet.Create(Steam.Asset.EType.TradingCard, Steam.Asset.EType.FoilTradingCard);
+
+		[PublicAPI]
+		public static readonly ImmutableHashSet<Steam.Asset.EType> DefaultCompleteTypesToSend = ImmutableHashSet<Steam.Asset.EType>.Empty;
+
+		[PublicAPI]
 		public static readonly ImmutableList<EFarmingOrder> DefaultFarmingOrders = ImmutableList<EFarmingOrder>.Empty;
 
 		[PublicAPI]
@@ -138,6 +144,9 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly EBotBehaviour BotBehaviour = DefaultBotBehaviour;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		public readonly ImmutableHashSet<Steam.Asset.EType> CompleteTypesToSend = DefaultCompleteTypesToSend;
 
 		[JsonProperty]
 		public readonly string? CustomGamePlayedWhileFarming = DefaultCustomGamePlayedWhileFarming;
@@ -322,6 +331,10 @@ namespace ArchiSteamFarm {
 				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(LootableTypes), lootableType));
 			}
 
+			foreach (Steam.Asset.EType completableType in CompleteTypesToSend.Where(completableType => !Enum.IsDefined(typeof(Steam.Asset.EType), completableType) || !AllowedCompleteTypesToSend.Contains(completableType))) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(CompleteTypesToSend), completableType));
+			}
+
 			foreach (Steam.Asset.EType matchableType in MatchableTypes.Where(matchableType => !Enum.IsDefined(typeof(Steam.Asset.EType), matchableType))) {
 				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(MatchableTypes), matchableType));
 			}
@@ -502,6 +515,7 @@ namespace ArchiSteamFarm {
 		public bool ShouldSerializeAcceptGifts() => ShouldSerializeDefaultValues || (AcceptGifts != DefaultAcceptGifts);
 		public bool ShouldSerializeAutoSteamSaleEvent() => ShouldSerializeDefaultValues || (AutoSteamSaleEvent != DefaultAutoSteamSaleEvent);
 		public bool ShouldSerializeBotBehaviour() => ShouldSerializeDefaultValues || (BotBehaviour != DefaultBotBehaviour);
+		public bool ShouldSerializeCompleteTypesToSend() => ShouldSerializeDefaultValues || ((CompleteTypesToSend != DefaultCompleteTypesToSend) && !CompleteTypesToSend.SetEquals(DefaultCompleteTypesToSend));
 		public bool ShouldSerializeCustomGamePlayedWhileFarming() => ShouldSerializeDefaultValues || (CustomGamePlayedWhileFarming != DefaultCustomGamePlayedWhileFarming);
 		public bool ShouldSerializeCustomGamePlayedWhileIdle() => ShouldSerializeDefaultValues || (CustomGamePlayedWhileIdle != DefaultCustomGamePlayedWhileIdle);
 		public bool ShouldSerializeEnabled() => ShouldSerializeDefaultValues || (Enabled != DefaultEnabled);
