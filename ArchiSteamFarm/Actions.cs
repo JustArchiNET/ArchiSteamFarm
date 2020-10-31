@@ -269,51 +269,29 @@ namespace ArchiSteamFarm {
 				return (false, Strings.BotSendingTradeToYourself);
 			}
 
-			lock (TradingSemaphore) {
-				if (TradingScheduled) {
-					return (false, Strings.ErrorAborted);
-				}
-
-				TradingScheduled = true;
+			if (!await Bot.ArchiWebHandler.MarkSentTrades().ConfigureAwait(false)) {
+				return (false, Strings.BotLootingFailed);
 			}
 
-			await TradingSemaphore.WaitAsync().ConfigureAwait(false);
+			if (string.IsNullOrEmpty(tradeToken) && (Bot.SteamFriends.GetFriendRelationship(targetSteamID) != EFriendRelationship.Friend)) {
+				Bot? targetBot = Bot.Bots?.Values.FirstOrDefault(bot => bot.SteamID == targetSteamID);
 
-			try {
-				lock (TradingSemaphore) {
-					TradingScheduled = false;
+				if (targetBot?.IsConnectedAndLoggedOn == true) {
+					tradeToken = await targetBot.ArchiHandler.GetTradeToken().ConfigureAwait(false);
 				}
-
-				if (!await Bot.ArchiWebHandler.MarkSentTrades().ConfigureAwait(false)) {
-					return (false, Strings.BotLootingFailed);
-				}
-
-				if (string.IsNullOrEmpty(tradeToken) && (Bot.SteamFriends.GetFriendRelationship(targetSteamID) != EFriendRelationship.Friend)) {
-					Bot? targetBot = Bot.Bots?.Values.FirstOrDefault(bot => bot.SteamID == targetSteamID);
-
-					if (targetBot?.IsConnectedAndLoggedOn == true) {
-						tradeToken = await targetBot.ArchiHandler.GetTradeToken().ConfigureAwait(false);
-					}
-				}
-
-				(bool success, HashSet<ulong>? mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(targetSteamID, items, token: tradeToken, itemsPerTrade: itemsPerTrade).ConfigureAwait(false);
-
-				if ((mobileTradeOfferIDs != null) && (mobileTradeOfferIDs.Count > 0) && Bot.HasMobileAuthenticator) {
-					(bool twoFactorSuccess, _) = await HandleTwoFactorAuthenticationConfirmations(true, MobileAuthenticator.Confirmation.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
-
-					if (!twoFactorSuccess) {
-						return (false, Strings.BotLootingFailed);
-					}
-				}
-
-				if (!success) {
-					return (false, Strings.BotLootingFailed);
-				}
-			} finally {
-				TradingSemaphore.Release();
 			}
 
-			return (true, Strings.BotLootingSuccess);
+			(bool success, HashSet<ulong>? mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(targetSteamID, items, token: tradeToken, itemsPerTrade: itemsPerTrade).ConfigureAwait(false);
+
+			if ((mobileTradeOfferIDs != null) && (mobileTradeOfferIDs.Count > 0) && Bot.HasMobileAuthenticator) {
+				(bool twoFactorSuccess, _) = await HandleTwoFactorAuthenticationConfirmations(true, MobileAuthenticator.Confirmation.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
+
+				if (!twoFactorSuccess) {
+					return (false, Strings.BotLootingFailed);
+				}
+			}
+
+			return success ? (true, Strings.BotLootingSuccess) : (false, Strings.BotLootingFailed);
 		}
 
 		[PublicAPI]
@@ -330,7 +308,21 @@ namespace ArchiSteamFarm {
 
 			HashSet<Steam.Asset> inventory;
 
+			lock (TradingSemaphore) {
+				if (TradingScheduled) {
+					return (false, Strings.ErrorAborted);
+				}
+
+				TradingScheduled = true;
+			}
+
+			await TradingSemaphore.WaitAsync().ConfigureAwait(false);
+
 			try {
+				lock (TradingSemaphore) {
+					TradingScheduled = false;
+				}
+
 				inventory = await Bot.ArchiWebHandler.GetInventoryAsync(Bot.SteamID, appID, contextID).Where(item => item.Tradable && filterFunction(item)).ToHashSetAsync().ConfigureAwait(false);
 			} catch (HttpRequestException e) {
 				Bot.ArchiLogger.LogGenericWarningException(e);
@@ -340,6 +332,8 @@ namespace ArchiSteamFarm {
 				Bot.ArchiLogger.LogGenericException(e);
 
 				return (false, string.Format(Strings.WarningFailedWithError, e.Message));
+			} finally {
+				TradingSemaphore.Release();
 			}
 
 			if (inventory.Count == 0) {
