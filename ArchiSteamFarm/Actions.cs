@@ -162,6 +162,15 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
+		public static string Hash(ArchiCryptoHelper.EHashingMethod hashingMethod, string stringToHash) {
+			if (!Enum.IsDefined(typeof(ArchiCryptoHelper.EHashingMethod), hashingMethod) || string.IsNullOrEmpty(stringToHash)) {
+				throw new ArgumentNullException(nameof(hashingMethod) + " || " + nameof(stringToHash));
+			}
+
+			return ArchiCryptoHelper.Hash(hashingMethod, stringToHash);
+		}
+
+		[PublicAPI]
 		public async Task<(bool Success, string Message)> Pause(bool permanent, ushort resumeInSeconds = 0) {
 			if (Bot.CardsFarmer.Paused) {
 				return (false, Strings.BotAutomaticIdlingPausedAlready);

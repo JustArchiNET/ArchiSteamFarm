@@ -3356,15 +3356,15 @@ namespace ArchiSteamFarm {
 				return (false, null);
 			}
 
-			ArchiCryptoHelper.ESteamParentalAlgorithm steamParentalAlgorithm;
+			ArchiCryptoHelper.EHashingMethod steamParentalHashingMethod;
 
 			switch (settings.passwordhashtype) {
 				case 4:
-					steamParentalAlgorithm = ArchiCryptoHelper.ESteamParentalAlgorithm.Pbkdf2;
+					steamParentalHashingMethod = ArchiCryptoHelper.EHashingMethod.Pbkdf2;
 
 					break;
 				case 6:
-					steamParentalAlgorithm = ArchiCryptoHelper.ESteamParentalAlgorithm.SCrypt;
+					steamParentalHashingMethod = ArchiCryptoHelper.EHashingMethod.SCrypt;
 
 					break;
 				default:
@@ -3382,9 +3382,9 @@ namespace ArchiSteamFarm {
 				}
 
 				if (i >= steamParentalCode.Length) {
-					IEnumerable<byte>? passwordHash = ArchiCryptoHelper.GenerateSteamParentalHash(password, settings.salt, (byte) settings.passwordhash.Length, steamParentalAlgorithm);
+					byte[] passwordHash = ArchiCryptoHelper.Hash(password, settings.salt, (byte) settings.passwordhash.Length, steamParentalHashingMethod);
 
-					if (passwordHash?.SequenceEqual(settings.passwordhash) == true) {
+					if (passwordHash.SequenceEqual(settings.passwordhash)) {
 						return (true, steamParentalCode);
 					}
 				}
@@ -3392,7 +3392,7 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogGenericInfo(Strings.BotGeneratingSteamParentalCode);
 
-			steamParentalCode = ArchiCryptoHelper.RecoverSteamParentalCode(settings.passwordhash, settings.salt, steamParentalAlgorithm);
+			steamParentalCode = ArchiCryptoHelper.RecoverSteamParentalCode(settings.passwordhash, settings.salt, steamParentalHashingMethod);
 
 			ArchiLogger.LogGenericInfo(Strings.Done);
 

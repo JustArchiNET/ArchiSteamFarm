@@ -104,7 +104,11 @@ namespace ArchiSteamFarm.IPC.Integration {
 				return HttpStatusCode.Unauthorized;
 			}
 
-			bool authorized = inputPassword == ipcPassword;
+			ArchiCryptoHelper.EHashingMethod ipcPasswordFormat = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPasswordFormat : GlobalConfig.DefaultIPCPasswordFormat;
+
+			string inputHash = ArchiCryptoHelper.Hash(ipcPasswordFormat, inputPassword!);
+
+			bool authorized = ipcPassword == inputHash;
 
 			await AuthorizationSemaphore.WaitAsync().ConfigureAwait(false);
 

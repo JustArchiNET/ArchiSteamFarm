@@ -76,6 +76,9 @@ namespace ArchiSteamFarm {
 		public const string DefaultIPCPassword = null;
 
 		[PublicAPI]
+		public const ArchiCryptoHelper.EHashingMethod DefaultIPCPasswordFormat = ArchiCryptoHelper.EHashingMethod.PlainText;
+
+		[PublicAPI]
 		public const byte DefaultLoginLimiterDelay = 10;
 
 		[PublicAPI]
@@ -161,8 +164,8 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly bool IPC = DefaultIPC;
 
-		[JsonProperty]
-		public readonly string? IPCPassword = DefaultIPCPassword;
+		[JsonProperty(Required = Required.DisallowNull)]
+		public readonly ArchiCryptoHelper.EHashingMethod IPCPasswordFormat = DefaultIPCPasswordFormat;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public readonly byte LoginLimiterDelay = DefaultLoginLimiterDelay;
@@ -244,6 +247,9 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		[JsonProperty]
+		internal readonly string? IPCPassword = DefaultIPCPassword;
+
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ulong SteamOwnerID { get; private set; } = DefaultSteamOwnerID;
 
@@ -301,6 +307,10 @@ namespace ArchiSteamFarm {
 
 			if (FarmingDelay == 0) {
 				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(FarmingDelay), FarmingDelay));
+			}
+
+			if (!Enum.IsDefined(typeof(ArchiCryptoHelper.EHashingMethod), IPCPasswordFormat)) {
+				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(IPCPasswordFormat), IPCPasswordFormat));
 			}
 
 			if (MaxFarmingTime == 0) {
@@ -429,7 +439,8 @@ namespace ArchiSteamFarm {
 		public bool ShouldSerializeIdleFarmingPeriod() => ShouldSerializeDefaultValues || (IdleFarmingPeriod != DefaultIdleFarmingPeriod);
 		public bool ShouldSerializeInventoryLimiterDelay() => ShouldSerializeDefaultValues || (InventoryLimiterDelay != DefaultInventoryLimiterDelay);
 		public bool ShouldSerializeIPC() => ShouldSerializeDefaultValues || (IPC != DefaultIPC);
-		public bool ShouldSerializeIPCPassword() => ShouldSerializeDefaultValues || (IPCPassword != DefaultIPCPassword);
+		public bool ShouldSerializeIPCPassword() => ShouldSerializeSensitiveDetails && (ShouldSerializeDefaultValues || (IPCPassword != DefaultIPCPassword));
+		public bool ShouldSerializeIPCPasswordFormat() => ShouldSerializeDefaultValues || (IPCPasswordFormat != DefaultIPCPasswordFormat);
 		public bool ShouldSerializeLoginLimiterDelay() => ShouldSerializeDefaultValues || (LoginLimiterDelay != DefaultLoginLimiterDelay);
 		public bool ShouldSerializeMaxFarmingTime() => ShouldSerializeDefaultValues || (MaxFarmingTime != DefaultMaxFarmingTime);
 		public bool ShouldSerializeMaxTradeHoldDuration() => ShouldSerializeDefaultValues || (MaxTradeHoldDuration != DefaultMaxTradeHoldDuration);
