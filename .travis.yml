@@ -100,6 +100,8 @@ script:
 
     set +u # This is needed to continue Travis build
 matrix:
+  allow_failures:
+    - os: osx
   # We can use fast finish, as we don't need to wait for allow_failures builds to mark build as success
   fast_finish: true
   include:
