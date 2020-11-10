@@ -72,6 +72,27 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		/// <summary>
+		///     Encrypts data with ASF encryption mechanisms using provided details.
+		/// </summary>
+		[Consumes("application/json")]
+		[HttpPost("Hash")]
+		[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+		public ActionResult<GenericResponse> ASFHashPost([FromBody] ASFHashRequest request) {
+			if (request == null) {
+				throw new ArgumentNullException(nameof(request));
+			}
+
+			if (string.IsNullOrEmpty(request.StringToHash)) {
+				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(request.StringToHash))));
+			}
+
+			string hash = Actions.Hash(request.HashingMethod, request.StringToHash!);
+
+			return Ok(new GenericResponse<string>(hash));
+		}
+
+		/// <summary>
 		///     Updates ASF's global config.
 		/// </summary>
 		[Consumes("application/json")]

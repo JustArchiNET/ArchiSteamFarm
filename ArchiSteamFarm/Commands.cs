@@ -170,6 +170,8 @@ namespace ArchiSteamFarm {
 							return ResponseEncrypt(steamID, args[1], Utilities.GetArgsAsText(message, 2));
 						case "FARM":
 							return await ResponseFarm(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
+						case "HASH" when args.Length > 2:
+							return ResponseHash(steamID, args[1], Utilities.GetArgsAsText(message, 2));
 						case "INPUT" when args.Length > 3:
 							return await ResponseInput(steamID, args[1], args[2], Utilities.GetArgsAsText(message, 3)).ConfigureAwait(false);
 						case "INPUT" when args.Length > 2:
@@ -1056,6 +1058,24 @@ namespace ArchiSteamFarm {
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+		}
+
+		private static string? ResponseHash(ulong steamID, string hashingMethodText, string stringToHash) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || string.IsNullOrEmpty(hashingMethodText) || string.IsNullOrEmpty(stringToHash)) {
+				throw new ArgumentNullException(nameof(steamID) + " || " + nameof(hashingMethodText) + " || " + nameof(stringToHash));
+			}
+
+			if (!ASF.IsOwner(steamID)) {
+				return null;
+			}
+
+			if (!Enum.TryParse(hashingMethodText, true, out ArchiCryptoHelper.EHashingMethod hashingMethod)) {
+				return FormatStaticResponse(string.Format(Strings.ErrorIsInvalid, nameof(hashingMethod)));
+			}
+
+			string hash = Actions.Hash(hashingMethod, stringToHash);
+
+			return FormatStaticResponse(!string.IsNullOrEmpty(hash) ? string.Format(Strings.Result, hash) : Strings.WarningFailed);
 		}
 
 		private string? ResponseHelp(ulong steamID) {

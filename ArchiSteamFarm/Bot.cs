@@ -3007,57 +3007,59 @@ namespace ArchiSteamFarm {
 			await SendCompleteTypesSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				lock (SendCompleteTypesSemaphore) {
-					SendCompleteTypesScheduled = false;
-				}
+				using (await Actions.GetTradingLock().ConfigureAwait(false)) {
+					lock (SendCompleteTypesSemaphore) {
+						SendCompleteTypesScheduled = false;
+					}
 
-				HashSet<uint>? appIDs = await GetPossiblyCompletedBadgeAppIDs().ConfigureAwait(false);
+					HashSet<uint>? appIDs = await GetPossiblyCompletedBadgeAppIDs().ConfigureAwait(false);
 
-				if ((appIDs == null) || (appIDs.Count == 0)) {
-					return;
-				}
+					if ((appIDs == null) || (appIDs.Count == 0)) {
+						return;
+					}
 
-				HashSet<Steam.Asset> inventory;
+					HashSet<Steam.Asset> inventory;
 
-				try {
-					inventory = await ArchiWebHandler.GetInventoryAsync()
-						.Where(item => item.Tradable && appIDs.Contains(item.RealAppID) && BotConfig.CompleteTypesToSend.Contains(item.Type))
-						.ToHashSetAsync()
-						.ConfigureAwait(false);
-				} catch (HttpRequestException e) {
-					ArchiLogger.LogGenericWarningException(e);
+					try {
+						inventory = await ArchiWebHandler.GetInventoryAsync()
+							.Where(item => item.Tradable && appIDs.Contains(item.RealAppID) && BotConfig.CompleteTypesToSend.Contains(item.Type))
+							.ToHashSetAsync()
+							.ConfigureAwait(false);
+					} catch (HttpRequestException e) {
+						ArchiLogger.LogGenericWarningException(e);
 
-					return;
-				} catch (Exception e) {
-					ArchiLogger.LogGenericException(e);
+						return;
+					} catch (Exception e) {
+						ArchiLogger.LogGenericException(e);
 
-					return;
-				}
+						return;
+					}
 
-				if (inventory.Count == 0) {
-					ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsEmpty), nameof(inventory));
+					if (inventory.Count == 0) {
+						ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsEmpty), nameof(inventory));
 
-					return;
-				}
+						return;
+					}
 
-				Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), List<uint>> inventorySets = Trading.GetInventorySets(inventory);
-				appIDs.IntersectWith(inventorySets.Where(kv => kv.Value.Count >= MinimumCardsPerBadge).Select(kv => kv.Key.RealAppID));
-				Dictionary<uint, byte>? cardCountPerAppID = await LoadCardsPerSet(appIDs).ConfigureAwait(false);
+					Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), List<uint>> inventorySets = Trading.GetInventorySets(inventory);
+					appIDs.IntersectWith(inventorySets.Where(kv => kv.Value.Count >= MinimumCardsPerBadge).Select(kv => kv.Key.RealAppID));
+					Dictionary<uint, byte>? cardCountPerAppID = await LoadCardsPerSet(appIDs).ConfigureAwait(false);
 
-				if ((cardCountPerAppID == null) || (cardCountPerAppID.Count == 0)) {
-					return;
-				}
+					if ((cardCountPerAppID == null) || (cardCountPerAppID.Count == 0)) {
+						return;
+					}
 
-				Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), (uint Sets, byte CardsPerSet)> itemsToTakePerInventorySet = inventorySets.Where(kv => appIDs.Contains(kv.Key.RealAppID)).ToDictionary(kv => kv.Key, kv => (kv.Value[0], cardCountPerAppID[kv.Key.RealAppID]));
+					Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), (uint Sets, byte CardsPerSet)> itemsToTakePerInventorySet = inventorySets.Where(kv => appIDs.Contains(kv.Key.RealAppID)).ToDictionary(kv => kv.Key, kv => (kv.Value[0], cardCountPerAppID[kv.Key.RealAppID]));
 
-				if (itemsToTakePerInventorySet.Values.All(value => value.Sets == 0)) {
-					return;
-				}
+					if (itemsToTakePerInventorySet.Values.All(value => value.Sets == 0)) {
+						return;
+					}
 
-				HashSet<Steam.Asset> result = GetItemsForFullSets(inventory, itemsToTakePerInventorySet);
+					HashSet<Steam.Asset> result = GetItemsForFullSets(inventory, itemsToTakePerInventorySet);
 
-				if (result.Count > 0) {
-					await Actions.SendInventory(result).ConfigureAwait(false);
+					if (result.Count > 0) {
+						await Actions.SendInventory(result).ConfigureAwait(false);
+					}
 				}
 			} finally {
 				SendCompleteTypesSemaphore.Release();
@@ -3354,15 +3356,15 @@ namespace ArchiSteamFarm {
 				return (false, null);
 			}
 
-			ArchiCryptoHelper.ESteamParentalAlgorithm steamParentalAlgorithm;
+			ArchiCryptoHelper.EHashingMethod steamParentalHashingMethod;
 
 			switch (settings.passwordhashtype) {
 				case 4:
-					steamParentalAlgorithm = ArchiCryptoHelper.ESteamParentalAlgorithm.Pbkdf2;
+					steamParentalHashingMethod = ArchiCryptoHelper.EHashingMethod.Pbkdf2;
 
 					break;
 				case 6:
-					steamParentalAlgorithm = ArchiCryptoHelper.ESteamParentalAlgorithm.SCrypt;
+					steamParentalHashingMethod = ArchiCryptoHelper.EHashingMethod.SCrypt;
 
 					break;
 				default:
@@ -3380,9 +3382,9 @@ namespace ArchiSteamFarm {
 				}
 
 				if (i >= steamParentalCode.Length) {
-					IEnumerable<byte>? passwordHash = ArchiCryptoHelper.GenerateSteamParentalHash(password, settings.salt, (byte) settings.passwordhash.Length, steamParentalAlgorithm);
+					byte[] passwordHash = ArchiCryptoHelper.Hash(password, settings.salt, (byte) settings.passwordhash.Length, steamParentalHashingMethod);
 
-					if (passwordHash?.SequenceEqual(settings.passwordhash) == true) {
+					if (passwordHash.SequenceEqual(settings.passwordhash)) {
 						return (true, steamParentalCode);
 					}
 				}
@@ -3390,7 +3392,7 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogGenericInfo(Strings.BotGeneratingSteamParentalCode);
 
-			steamParentalCode = ArchiCryptoHelper.RecoverSteamParentalCode(settings.passwordhash, settings.salt, steamParentalAlgorithm);
+			steamParentalCode = ArchiCryptoHelper.RecoverSteamParentalCode(settings.passwordhash, settings.salt, steamParentalHashingMethod);
 
 			ArchiLogger.LogGenericInfo(Strings.Done);
 

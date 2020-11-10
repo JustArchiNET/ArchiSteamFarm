@@ -30,6 +30,7 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	public static class ArchiCryptoHelper {
+		private const byte DefaultHashLength = 32;
 		private const ushort SteamParentalPbkdf2Iterations = 10000;
 		private const byte SteamParentalSCryptBlocksCount = 8;
 		private const ushort SteamParentalSCryptIterations = 8192;
@@ -72,29 +73,46 @@ namespace ArchiSteamFarm {
 			};
 		}
 
-		internal static IEnumerable<byte>? GenerateSteamParentalHash(byte[] password, byte[] salt, byte hashLength, ESteamParentalAlgorithm steamParentalAlgorithm) {
-			if ((password == null) || (salt == null) || (hashLength == 0) || !Enum.IsDefined(typeof(ESteamParentalAlgorithm), steamParentalAlgorithm)) {
-				throw new ArgumentNullException(nameof(password) + " || " + nameof(salt) + " || " + nameof(hashLength) + " || " + nameof(steamParentalAlgorithm));
+		internal static string Hash(EHashingMethod hashingMethod, string password) {
+			if (!Enum.IsDefined(typeof(EHashingMethod), hashingMethod) || string.IsNullOrEmpty(password)) {
+				throw new ArgumentNullException(nameof(hashingMethod) + " || " + nameof(password));
 			}
 
-			switch (steamParentalAlgorithm) {
-				case ESteamParentalAlgorithm.Pbkdf2:
+			if (hashingMethod == EHashingMethod.PlainText) {
+				return password;
+			}
+
+			byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
+			byte[] hashBytes = Hash(passwordBytes, EncryptionKey, DefaultHashLength, hashingMethod);
+
+			return Convert.ToBase64String(hashBytes);
+		}
+
+		internal static byte[] Hash(byte[] password, byte[] salt, byte hashLength, EHashingMethod hashingMethod) {
+			if ((password == null) || (salt == null) || (hashLength == 0) || !Enum.IsDefined(typeof(EHashingMethod), hashingMethod)) {
+				throw new ArgumentNullException(nameof(password) + " || " + nameof(salt) + " || " + nameof(hashLength) + " || " + nameof(hashingMethod));
+			}
+
+			switch (hashingMethod) {
+				case EHashingMethod.PlainText:
+					return password;
+				case EHashingMethod.SCrypt:
+					return SCrypt.ComputeDerivedKey(password, salt, SteamParentalSCryptIterations, SteamParentalSCryptBlocksCount, 1, null, hashLength);
+				case EHashingMethod.Pbkdf2:
 					using (HMACSHA256 hmacAlgorithm = new HMACSHA256(password)) {
 						return Pbkdf2.ComputeDerivedKey(hmacAlgorithm, salt, SteamParentalPbkdf2Iterations, hashLength);
 					}
-				case ESteamParentalAlgorithm.SCrypt:
-					return SCrypt.ComputeDerivedKey(password, salt, SteamParentalSCryptIterations, SteamParentalSCryptBlocksCount, 1, null, hashLength);
 				default:
-					throw new ArgumentOutOfRangeException(nameof(steamParentalAlgorithm));
+					throw new ArgumentOutOfRangeException(nameof(hashingMethod));
 			}
 		}
 
-		internal static string? RecoverSteamParentalCode(byte[] passwordHash, byte[] salt, ESteamParentalAlgorithm steamParentalAlgorithm) {
-			if ((passwordHash == null) || (salt == null) || !Enum.IsDefined(typeof(ESteamParentalAlgorithm), steamParentalAlgorithm)) {
+		internal static string? RecoverSteamParentalCode(byte[] passwordHash, byte[] salt, EHashingMethod steamParentalAlgorithm) {
+			if ((passwordHash == null) || (salt == null) || !Enum.IsDefined(typeof(EHashingMethod), steamParentalAlgorithm)) {
 				throw new ArgumentNullException(nameof(passwordHash) + " || " + nameof(salt) + " || " + nameof(steamParentalAlgorithm));
 			}
 
-			byte[]? password = SteamParentalCodes.AsParallel().FirstOrDefault(passwordToTry => GenerateSteamParentalHash(passwordToTry, salt, (byte) passwordHash.Length, steamParentalAlgorithm)?.SequenceEqual(passwordHash) == true);
+			byte[]? password = SteamParentalCodes.AsParallel().FirstOrDefault(passwordToTry => Hash(passwordToTry, salt, (byte) passwordHash.Length, steamParentalAlgorithm).SequenceEqual(passwordHash));
 
 			return password != null ? Encoding.UTF8.GetString(password) : null;
 		}
@@ -207,7 +225,8 @@ namespace ArchiSteamFarm {
 			ProtectedDataForCurrentUser
 		}
 
-		internal enum ESteamParentalAlgorithm : byte {
+		public enum EHashingMethod : byte {
+			PlainText,
 			SCrypt,
 			Pbkdf2
 		}
