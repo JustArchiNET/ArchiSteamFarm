@@ -35,15 +35,12 @@ namespace ArchiSteamFarm {
 		// We need to keep this one assigned and not calculated on-demand
 		internal static readonly string ProcessFileName = Process.GetCurrentProcess().MainModule?.FileName ?? throw new ArgumentNullException(nameof(ProcessFileName));
 
-		internal static bool IsUnix => RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
 		internal static string Variant => RuntimeInformation.OSDescription.Trim();
-
-		private static bool IsWindows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
 		private static Mutex? SingleInstance;
 
 		internal static void CoreInit() {
-			if (IsWindows && !Console.IsOutputRedirected) {
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && !Console.IsOutputRedirected) {
 				// Normally we should use UTF-8 encoding as it's the most correct one for our case, and we already use it on other OSes such as Linux
 				// However, older Windows versions, mainly 7/8.1 can't into UTF-8 without appropriate console font, and expecting from users to change it manually is unwanted
 				// As irrational as it can sound, those versions actually can work with unicode encoding instead, as they magically map it into proper chars despite of incorrect font
@@ -74,7 +71,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(optimizationMode));
 			}
 
-			if (IsWindows) {
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
 				if (systemRequired) {
 					WindowsKeepSystemActive();
 				}
@@ -126,7 +123,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(path));
 			}
 
-			if (!IsUnix) {
+			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && !RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
 				return;
 			}
 
@@ -162,7 +159,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void WindowsDisableQuickEditMode() {
-			if (!IsWindows) {
+			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
 				return;
 			}
 
@@ -182,7 +179,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void WindowsKeepSystemActive() {
-			if (!IsWindows) {
+			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
 				return;
 			}
 

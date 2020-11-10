@@ -27,6 +27,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -337,7 +338,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				if (OS.IsUnix) {
+				if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
 					string executable = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.AssemblyName);
 
 					if (File.Exists(executable)) {
@@ -436,6 +437,10 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(sender) + " || " + nameof(e));
 			}
 
+			if (string.IsNullOrEmpty(e.Name)) {
+				throw new ArgumentNullException(nameof(e.Name));
+			}
+
 			await OnChangedFile(e.Name, e.FullPath).ConfigureAwait(false);
 		}
 
@@ -496,6 +501,10 @@ namespace ArchiSteamFarm {
 		private static async void OnCreated(object sender, FileSystemEventArgs e) {
 			if ((sender == null) || (e == null)) {
 				throw new ArgumentNullException(nameof(sender) + " || " + nameof(e));
+			}
+
+			if (string.IsNullOrEmpty(e.Name)) {
+				throw new ArgumentNullException(nameof(e.Name));
 			}
 
 			await OnCreatedFile(e.Name, e.FullPath).ConfigureAwait(false);
@@ -604,6 +613,10 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(sender) + " || " + nameof(e));
 			}
 
+			if (string.IsNullOrEmpty(e.Name)) {
+				throw new ArgumentNullException(nameof(e.Name));
+			}
+
 			await OnDeletedFile(e.Name, e.FullPath).ConfigureAwait(false);
 		}
 
@@ -698,6 +711,10 @@ namespace ArchiSteamFarm {
 		private static async void OnRenamed(object sender, RenamedEventArgs e) {
 			if ((sender == null) || (e == null)) {
 				throw new ArgumentNullException(nameof(sender) + " || " + nameof(e));
+			}
+
+			if (string.IsNullOrEmpty(e.OldName) || string.IsNullOrEmpty(e.Name)) {
+				throw new ArgumentNullException(nameof(e.OldName) + " || " + nameof(e.Name));
 			}
 
 			await OnDeletedFile(e.OldName, e.OldFullPath).ConfigureAwait(false);

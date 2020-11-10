@@ -7,7 +7,6 @@
     <PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="4.0.0">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="System.Composition.AttributedModel" Version="*" />
   </ItemGroup>
 
   <ItemGroup>

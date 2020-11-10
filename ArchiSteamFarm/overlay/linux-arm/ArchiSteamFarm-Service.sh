@@ -62,28 +62,6 @@ CONFIG_PATH="$(pwd)/${CONFIG_PATH}"
 # Kill underlying ASF process on shell process exit
 trap "trap - TERM && kill -- -$$" INT TERM
 
-# TODO: Workaround for https://github.com/JustArchiNET/ArchiSteamFarm/issues/1812
-if [ -n "${DOTNET_RUNNING_IN_CONTAINER-}" ] && [ "$DOTNET_RUNNING_IN_CONTAINER" = "true" ]; then
-	(
-		loops=6 # Maximum of 60 seconds for unpack
-
-		while [ "$loops" -gt 0 ]; do
-			sleep 10
-
-			if [ -d "/var/tmp/.net" ]; then
-				find "/var/tmp/.net" -mindepth 2 -name '*\\*' | while IFS="" read -r broken_path; do
-					fixed_path="$(echo "$broken_path" | sed 's/\\/\//g')"
-
-					mkdir -p "$(dirname "$fixed_path")"
-					mv "$broken_path" "$fixed_path"
-				done
-			fi
-
-			loops="$((loops-1))"
-		done
-	) &
-fi
-
 while :; do
 	if [ -f "$CONFIG_PATH" ] && grep -Eq '"Headless":\s+?true' "$CONFIG_PATH"; then
 		# We're running ASF in headless mode so we don't need STDIN

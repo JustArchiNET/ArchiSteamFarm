@@ -124,7 +124,7 @@ namespace ArchiSteamFarm {
 			bool save = false;
 
 			lock (GamesToRedeemInBackground) {
-				foreach (DictionaryEntry game in games.Cast<DictionaryEntry>().Where(game => !GamesToRedeemInBackground.Contains(game.Key))) {
+				foreach (DictionaryEntry game in games.OfType<DictionaryEntry>().Where(game => !GamesToRedeemInBackground.Contains(game.Key))) {
 					GamesToRedeemInBackground.Add(game.Key, game.Value);
 					save = true;
 				}

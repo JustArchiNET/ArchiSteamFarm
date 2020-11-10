@@ -361,32 +361,24 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				bool handleError = false;
-
 				if (response.StatusCode.IsClientErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
 						// We're not handling this error, do not try again
 						break;
 					}
 
-					handleError = true;
-				} else if (response.StatusCode.IsServerErrorCode()) {
+					// We're handling this error, the content isn't available, deal with it
+					return new StreamResponse(response);
+				}
+
+				if (response.StatusCode.IsServerErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
 						// We're not handling this error, try again
 						continue;
 					}
 
-					handleError = true;
-				}
-
-				if (response.Content == null) {
-					if (handleError) {
-						// We're handling this error, the content isn't available, deal with it
-						return new StreamResponse(response);
-					}
-
-					// The content isn't available and it's not an error, try again
-					continue;
+					// We're handling this error, the content isn't available, deal with it
+					return new StreamResponse(response);
 				}
 
 				return new StreamResponse(response, await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
@@ -416,32 +408,24 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				bool handleError = false;
-
 				if (response.StatusCode.IsClientErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
 						// We're not handling this error, do not try again
 						break;
 					}
 
-					handleError = true;
-				} else if (response.StatusCode.IsServerErrorCode()) {
+					// We're handling this error, the content isn't available, deal with it
+					return new StringResponse(response);
+				}
+
+				if (response.StatusCode.IsServerErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
 						// We're not handling this error, try again
 						continue;
 					}
 
-					handleError = true;
-				}
-
-				if (response.Content == null) {
-					if (handleError) {
-						// We're handling this error, the content isn't available, deal with it
-						return new StringResponse(response);
-					}
-
-					// The content isn't available and it's not an error, try again
-					continue;
+					// We're handling this error, the content isn't available, deal with it
+					return new StringResponse(response);
 				}
 
 				return new StringResponse(response, await response.Content.ReadAsStringAsync().ConfigureAwait(false));
@@ -758,32 +742,24 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				bool handleError = false;
-
 				if (response.StatusCode.IsClientErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
 						// We're not handling this error, do not try again
 						break;
 					}
 
-					handleError = true;
-				} else if (response.StatusCode.IsServerErrorCode()) {
+					// We're handling this error, the content isn't available, deal with it
+					return new StreamResponse(response);
+				}
+
+				if (response.StatusCode.IsServerErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
 						// We're not handling this error, try again
 						continue;
 					}
 
-					handleError = true;
-				}
-
-				if (response.Content == null) {
-					if (handleError) {
-						// We're handling this error, the content isn't available, deal with it
-						return new StreamResponse(response);
-					}
-
-					// The content isn't available and it's not an error, try again
-					continue;
+					// We're handling this error, the content isn't available, deal with it
+					return new StreamResponse(response);
 				}
 
 				return new StreamResponse(response, await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
@@ -861,7 +837,7 @@ namespace ArchiSteamFarm {
 							request.Content = content;
 
 							break;
-						case IReadOnlyCollection<KeyValuePair<string, string>> dictionary:
+						case IReadOnlyCollection<KeyValuePair<string?, string?>> dictionary:
 							try {
 								request.Content = new FormUrlEncodedContent(dictionary);
 							} catch (UriFormatException) {
@@ -920,7 +896,13 @@ namespace ArchiSteamFarm {
 
 			// WARNING: We still have not disposed response by now, make sure to dispose it ASAP if we're not returning it!
 			if ((response.StatusCode >= HttpStatusCode.Ambiguous) && (response.StatusCode < HttpStatusCode.BadRequest) && (maxRedirections > 0)) {
-				Uri redirectUri = response.Headers.Location;
+				Uri? redirectUri = response.Headers.Location;
+
+				if (redirectUri == null) {
+					ArchiLogger.LogNullError(nameof(redirectUri));
+
+					return null;
+				}
 
 				if (redirectUri.IsAbsoluteUri) {
 					switch (redirectUri.Scheme) {
@@ -1002,7 +984,7 @@ namespace ArchiSteamFarm {
 					throw new ArgumentNullException(nameof(httpResponseMessage));
 				}
 
-				FinalUri = httpResponseMessage.Headers.Location ?? httpResponseMessage.RequestMessage.RequestUri;
+				FinalUri = httpResponseMessage.Headers.Location ?? httpResponseMessage.RequestMessage?.RequestUri ?? throw new ArgumentNullException(nameof(FinalUri));
 				StatusCode = httpResponseMessage.StatusCode;
 			}
 

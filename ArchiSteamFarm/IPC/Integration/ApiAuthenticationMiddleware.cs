@@ -86,7 +86,11 @@ namespace ArchiSteamFarm.IPC.Integration {
 				return HttpStatusCode.OK;
 			}
 
-			IPAddress clientIP = context.Connection.RemoteIpAddress;
+			IPAddress? clientIP = context.Connection.RemoteIpAddress;
+
+			if (clientIP == null) {
+				throw new ArgumentNullException(nameof(context.Connection.RemoteIpAddress));
+			}
 
 			if (FailedAuthorizations.TryGetValue(clientIP, out byte attempts)) {
 				if (attempts >= MaxFailedAuthorizationAttempts) {
