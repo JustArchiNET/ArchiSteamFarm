@@ -114,5 +114,5 @@ matrix:
       dist: bionic
     - os: osx
       # Ref: https://docs.travis-ci.com/user/reference/osx
-      dotnet: 5.0.100-rc.1.20452.10 # For OSX, we need absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
+      dotnet: 5.0.100 # For OSX, we need absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
       osx_image: xcode11.4
