@@ -21,6 +21,7 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
@@ -61,7 +62,7 @@ namespace ArchiSteamFarm.NLog {
 
 			base.Write(logEvent);
 
-			if ((SteamID == 0) || (Bot.Bots == null) || (Bot.Bots.Count == 0)) {
+			if ((SteamID == 0) || (Bot.Bots == null) || (Bot.Bots.IsEmpty)) {
 				return;
 			}
 
@@ -85,7 +86,7 @@ namespace ArchiSteamFarm.NLog {
 
 			if (ChatGroupID != 0) {
 				await SendGroupMessage(message, bot).ConfigureAwait(false);
-			} else if ((bot == null) || (bot.SteamID != SteamID)) {
+			} else if (bot?.SteamID != SteamID) {
 				await SendPrivateMessage(message, bot).ConfigureAwait(false);
 			}
 		}
@@ -104,7 +105,7 @@ namespace ArchiSteamFarm.NLog {
 			}
 
 			if (!await bot.SendMessage(ChatGroupID, SteamID, message).ConfigureAwait(false)) {
-				bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
+				bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
 			}
 		}
 
@@ -122,7 +123,7 @@ namespace ArchiSteamFarm.NLog {
 			}
 
 			if (!await bot.SendMessage(SteamID, message).ConfigureAwait(false)) {
-				bot.ArchiLogger.LogGenericTrace(string.Format(Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
+				bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
 			}
 		}
 	}

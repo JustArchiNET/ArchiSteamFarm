@@ -22,7 +22,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using ArchiSteamFarm.Localization;
 using JetBrains.Annotations;
@@ -97,7 +99,7 @@ namespace ArchiSteamFarm.Json {
 #pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "amount", Required = Required.Always)]
 			private string AmountText {
-				get => Amount.ToString();
+				get => Amount.ToString(CultureInfo.InvariantCulture);
 
 				set {
 					if (string.IsNullOrEmpty(value)) {
@@ -120,7 +122,7 @@ namespace ArchiSteamFarm.Json {
 #pragma warning disable IDE0052
 			[JsonProperty(PropertyName = "assetid", Required = Required.DisallowNull)]
 			private string AssetIDText {
-				get => AssetID.ToString();
+				get => AssetID.ToString(CultureInfo.InvariantCulture);
 
 				set {
 					if (string.IsNullOrEmpty(value)) {
@@ -162,7 +164,7 @@ namespace ArchiSteamFarm.Json {
 #pragma warning disable IDE0051
 			[JsonProperty(PropertyName = "contextid", Required = Required.DisallowNull)]
 			private string ContextIDText {
-				get => ContextID.ToString();
+				get => ContextID.ToString(CultureInfo.InvariantCulture);
 
 				set {
 					if (string.IsNullOrEmpty(value)) {
@@ -210,8 +212,20 @@ namespace ArchiSteamFarm.Json {
 
 			// Constructed from trades being received or plugins
 			public Asset(uint appID, ulong contextID, ulong classID, uint amount, ulong instanceID = 0, ulong assetID = 0, bool marketable = true, bool tradable = true, ImmutableHashSet<Tag>? tags = null, uint realAppID = 0, EType type = EType.Unknown, ERarity rarity = ERarity.Unknown) {
-				if ((appID == 0) || (contextID == 0) || (classID == 0) || (amount == 0)) {
-					throw new ArgumentNullException(nameof(appID) + " || " + nameof(contextID) + " || " + nameof(classID) + " || " + nameof(amount));
+				if (appID == 0) {
+					throw new ArgumentOutOfRangeException(nameof(appID));
+				}
+
+				if (contextID == 0) {
+					throw new ArgumentOutOfRangeException(nameof(contextID));
+				}
+
+				if (classID == 0) {
+					throw new ArgumentOutOfRangeException(nameof(classID));
+				}
+
+				if (amount == 0) {
+					throw new ArgumentOutOfRangeException(nameof(amount));
 				}
 
 				AppID = appID;
@@ -226,7 +240,7 @@ namespace ArchiSteamFarm.Json {
 				Type = type;
 				Rarity = rarity;
 
-				if ((tags != null) && (tags.Count > 0)) {
+				if (tags?.Count > 0) {
 					Tags = tags;
 				}
 			}
@@ -239,19 +253,15 @@ namespace ArchiSteamFarm.Json {
 			public sealed class Tag {
 				[JsonProperty(PropertyName = "category", Required = Required.Always)]
 				[PublicAPI]
-				public readonly string? Identifier;
+				public string? Identifier { get; private set; }
 
 				[JsonProperty(PropertyName = "internal_name", Required = Required.Always)]
 				[PublicAPI]
-				public readonly string? Value;
+				public string? Value { get; private set; }
 
 				internal Tag(string identifier, string value) {
-					if (string.IsNullOrEmpty(identifier) || string.IsNullOrEmpty(value)) {
-						throw new ArgumentNullException(nameof(identifier) + " || " + nameof(value));
-					}
-
-					Identifier = identifier;
-					Value = value;
+					Identifier = !string.IsNullOrEmpty(identifier) ? identifier : throw new ArgumentNullException(nameof(identifier));
+					Value = !string.IsNullOrEmpty(value) ? value : throw new ArgumentNullException(nameof(value));
 				}
 
 				[JsonConstructor]
@@ -288,7 +298,7 @@ namespace ArchiSteamFarm.Json {
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		public class BooleanResponse {
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
-			public readonly bool Success;
+			public bool Success { get; private set; }
 
 			[JsonConstructor]
 			protected BooleanResponse() { }
@@ -298,7 +308,7 @@ namespace ArchiSteamFarm.Json {
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		public class EResultResponse {
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
-			public readonly EResult Result;
+			public EResult Result { get; private set; }
 
 			[JsonConstructor]
 			protected EResultResponse() { }
@@ -306,15 +316,6 @@ namespace ArchiSteamFarm.Json {
 
 		// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer
 		public sealed class TradeOffer {
-			[PublicAPI]
-			public readonly ulong OtherSteamID64;
-
-			[PublicAPI]
-			public readonly ETradeOfferState State;
-
-			[PublicAPI]
-			public readonly ulong TradeOfferID;
-
 			[PublicAPI]
 			public IReadOnlyCollection<Asset> ItemsToGiveReadOnly => ItemsToGive;
 
@@ -324,10 +325,27 @@ namespace ArchiSteamFarm.Json {
 			internal readonly HashSet<Asset> ItemsToGive = new HashSet<Asset>();
 			internal readonly HashSet<Asset> ItemsToReceive = new HashSet<Asset>();
 
+			[PublicAPI]
+			public ulong OtherSteamID64 { get; private set; }
+
+			[PublicAPI]
+			public ETradeOfferState State { get; private set; }
+
+			[PublicAPI]
+			public ulong TradeOfferID { get; private set; }
+
 			// Constructed from trades being received
 			internal TradeOffer(ulong tradeOfferID, uint otherSteamID3, ETradeOfferState state) {
-				if ((tradeOfferID == 0) || (otherSteamID3 == 0) || !Enum.IsDefined(typeof(ETradeOfferState), state)) {
-					throw new ArgumentNullException(nameof(tradeOfferID) + " || " + nameof(otherSteamID3) + " || " + nameof(state));
+				if (tradeOfferID == 0) {
+					throw new ArgumentOutOfRangeException(nameof(tradeOfferID));
+				}
+
+				if (otherSteamID3 == 0) {
+					throw new ArgumentOutOfRangeException(nameof(otherSteamID3));
+				}
+
+				if (!Enum.IsDefined(typeof(ETradeOfferState), state)) {
+					throw new InvalidEnumArgumentException(nameof(state), (int) state, typeof(ETradeOfferState));
 				}
 
 				TradeOfferID = tradeOfferID;
@@ -411,7 +429,7 @@ namespace ArchiSteamFarm.Json {
 										case "droprate_2":
 											return Asset.ERarity.Rare;
 										default:
-											ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
+											ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
 
 											break;
 									}
@@ -434,7 +452,7 @@ namespace ArchiSteamFarm.Json {
 							switch (tag.Identifier) {
 								case "Game":
 									if (string.IsNullOrEmpty(tag.Value) || (tag.Value!.Length <= 4) || !tag.Value.StartsWith("app_", StringComparison.Ordinal)) {
-										ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
+										ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
 
 										break;
 									}
@@ -472,7 +490,7 @@ namespace ArchiSteamFarm.Json {
 										case "cardborder_1":
 											return Asset.EType.FoilTradingCard;
 										default:
-											ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
+											ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
 
 											return Asset.EType.Unknown;
 									}
@@ -510,7 +528,7 @@ namespace ArchiSteamFarm.Json {
 										case "item_class_15":
 											return Asset.EType.AnimatedAvatar;
 										default:
-											ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
+											ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
 
 											return Asset.EType.Unknown;
 									}
@@ -712,8 +730,28 @@ namespace ArchiSteamFarm.Json {
 
 				// Constructed from privacy change request
 				internal PrivacySettings(ArchiHandler.EPrivacySetting profile, ArchiHandler.EPrivacySetting ownedGames, ArchiHandler.EPrivacySetting playtime, ArchiHandler.EPrivacySetting friendsList, ArchiHandler.EPrivacySetting inventory, ArchiHandler.EPrivacySetting inventoryGifts) {
-					if ((profile == ArchiHandler.EPrivacySetting.Unknown) || (ownedGames == ArchiHandler.EPrivacySetting.Unknown) || (playtime == ArchiHandler.EPrivacySetting.Unknown) || (friendsList == ArchiHandler.EPrivacySetting.Unknown) || (inventory == ArchiHandler.EPrivacySetting.Unknown) || (inventoryGifts == ArchiHandler.EPrivacySetting.Unknown)) {
-						throw new ArgumentNullException(nameof(profile) + " || " + nameof(ownedGames) + " || " + nameof(playtime) + " || " + nameof(friendsList) + " || " + nameof(inventory) + " || " + nameof(inventoryGifts));
+					if ((profile == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(typeof(ArchiHandler.EPrivacySetting), profile)) {
+						throw new InvalidEnumArgumentException(nameof(profile), (int) profile, typeof(ArchiHandler.EPrivacySetting));
+					}
+
+					if ((ownedGames == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(typeof(ArchiHandler.EPrivacySetting), ownedGames)) {
+						throw new InvalidEnumArgumentException(nameof(ownedGames), (int) ownedGames, typeof(ArchiHandler.EPrivacySetting));
+					}
+
+					if ((playtime == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(typeof(ArchiHandler.EPrivacySetting), playtime)) {
+						throw new InvalidEnumArgumentException(nameof(playtime), (int) playtime, typeof(ArchiHandler.EPrivacySetting));
+					}
+
+					if ((friendsList == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(typeof(ArchiHandler.EPrivacySetting), friendsList)) {
+						throw new InvalidEnumArgumentException(nameof(friendsList), (int) friendsList, typeof(ArchiHandler.EPrivacySetting));
+					}
+
+					if ((inventory == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(typeof(ArchiHandler.EPrivacySetting), inventory)) {
+						throw new InvalidEnumArgumentException(nameof(inventory), (int) inventory, typeof(ArchiHandler.EPrivacySetting));
+					}
+
+					if ((inventoryGifts == ArchiHandler.EPrivacySetting.Unknown) || !Enum.IsDefined(typeof(ArchiHandler.EPrivacySetting), inventoryGifts)) {
+						throw new InvalidEnumArgumentException(nameof(inventoryGifts), (int) inventoryGifts, typeof(ArchiHandler.EPrivacySetting));
 					}
 
 					Profile = profile;

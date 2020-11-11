@@ -20,6 +20,8 @@
 // limitations under the License.
 
 using System;
+using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -64,8 +66,12 @@ namespace ArchiSteamFarm.NLog {
 		}
 
 		internal static async Task<string?> GetUserInput(ASF.EUserInputType userInputType, string botName = SharedInfo.ASF) {
-			if ((userInputType == ASF.EUserInputType.None) || !Enum.IsDefined(typeof(ASF.EUserInputType), userInputType) || string.IsNullOrEmpty(botName)) {
-				throw new ArgumentNullException(nameof(userInputType) + " || " + nameof(botName));
+			if ((userInputType == ASF.EUserInputType.None) || !Enum.IsDefined(typeof(ASF.EUserInputType), userInputType)) {
+				throw new InvalidEnumArgumentException(nameof(userInputType), (int) userInputType, typeof(ASF.EUserInputType));
+			}
+
+			if (string.IsNullOrEmpty(botName)) {
+				throw new ArgumentNullException(nameof(botName));
 			}
 
 			if (ASF.GlobalConfig?.Headless ?? GlobalConfig.DefaultHeadless) {
@@ -111,7 +117,7 @@ namespace ArchiSteamFarm.NLog {
 
 							break;
 						default:
-							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(userInputType), userInputType));
+							ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(userInputType), userInputType));
 
 							return null;
 					}
@@ -212,7 +218,7 @@ namespace ArchiSteamFarm.NLog {
 
 		internal static void StartInteractiveConsole() {
 			if ((ASF.GlobalConfig?.SteamOwnerID ?? GlobalConfig.DefaultSteamOwnerID) == 0) {
-				ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.InteractiveConsoleNotAvailable, nameof(ASF.GlobalConfig.SteamOwnerID)));
+				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.InteractiveConsoleNotAvailable, nameof(ASF.GlobalConfig.SteamOwnerID)));
 
 				return;
 			}

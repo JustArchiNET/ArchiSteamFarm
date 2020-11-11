@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -122,12 +123,16 @@ namespace ArchiSteamFarm.NLog {
 				throw new ArgumentNullException(nameof(nullObjectName));
 			}
 
-			LogGenericError(string.Format(Strings.ErrorObjectIsNull, nullObjectName), previousMethodName);
+			LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nullObjectName), previousMethodName);
 		}
 
 		internal void LogChatMessage(bool echo, string message, ulong chatGroupID = 0, ulong chatID = 0, ulong steamID = 0, [CallerMemberName] string? previousMethodName = null) {
-			if (string.IsNullOrEmpty(message) || (((chatGroupID == 0) || (chatID == 0)) && (steamID == 0))) {
-				throw new ArgumentNullException(nameof(message) + " || " + "((" + nameof(chatGroupID) + " || " + nameof(chatID) + ") && " + nameof(steamID) + ")");
+			if (string.IsNullOrEmpty(message)) {
+				throw new ArgumentNullException(nameof(message));
+			}
+
+			if (((chatGroupID == 0) || (chatID == 0)) && (steamID == 0)) {
+				throw new InvalidOperationException("((" + nameof(chatGroupID) + " || " + nameof(chatID) + ") && " + nameof(steamID) + ")");
 			}
 
 			StringBuilder loggedMessage = new StringBuilder(previousMethodName + "() " + message + " " + (echo ? "->" : "<-") + " ");
@@ -165,7 +170,7 @@ namespace ArchiSteamFarm.NLog {
 			}
 
 			// Otherwise, we ran into fatal exception before logging module could even get initialized, so activate fallback logging that involves file and console
-			string message = string.Format(DateTime.Now + " " + Strings.ErrorEarlyFatalExceptionInfo, SharedInfo.Version) + Environment.NewLine;
+			string message = string.Format(CultureInfo.CurrentCulture, DateTime.Now + " " + Strings.ErrorEarlyFatalExceptionInfo, SharedInfo.Version) + Environment.NewLine;
 
 			try {
 				await RuntimeCompatibility.File.WriteAllTextAsync(SharedInfo.LogFile, message).ConfigureAwait(false);
@@ -180,7 +185,7 @@ namespace ArchiSteamFarm.NLog {
 			}
 
 			while (true) {
-				message = string.Format(Strings.ErrorEarlyFatalExceptionPrint, previousMethodName, exception.Message, exception.StackTrace) + Environment.NewLine;
+				message = string.Format(CultureInfo.CurrentCulture, Strings.ErrorEarlyFatalExceptionPrint, previousMethodName, exception.Message, exception.StackTrace) + Environment.NewLine;
 
 				try {
 					await RuntimeCompatibility.File.AppendAllTextAsync(SharedInfo.LogFile, message).ConfigureAwait(false);

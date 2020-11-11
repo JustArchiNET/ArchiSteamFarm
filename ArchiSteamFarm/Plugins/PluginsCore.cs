@@ -25,6 +25,7 @@ using System.Collections.Immutable;
 using System.Composition;
 using System.Composition.Convention;
 using System.Composition.Hosting;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -98,7 +99,7 @@ namespace ArchiSteamFarm.Plugins {
 				return true;
 			}
 
-			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.Initializing, nameof(Plugins)));
+			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.Initializing, nameof(Plugins)));
 
 			ConventionBuilder conventions = new ConventionBuilder();
 			conventions.ForTypesDerivedFrom<IPlugin>().Export<IPlugin>();
@@ -127,9 +128,9 @@ namespace ArchiSteamFarm.Plugins {
 				try {
 					string pluginName = plugin.Name;
 
-					ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.PluginLoading, pluginName, plugin.Version));
+					ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginLoading, pluginName, plugin.Version));
 					plugin.OnLoaded();
-					ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.PluginLoaded, pluginName));
+					ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginLoaded, pluginName));
 				} catch (Exception e) {
 					ASF.ArchiLogger.LogGenericException(e);
 					invalidPlugins.Add(plugin);
@@ -164,7 +165,7 @@ namespace ArchiSteamFarm.Plugins {
 			if (Directory.Exists(pluginsPath)) {
 				HashSet<Assembly>? loadedAssemblies = LoadAssembliesFrom(pluginsPath);
 
-				if ((loadedAssemblies != null) && (loadedAssemblies.Count > 0)) {
+				if (loadedAssemblies?.Count > 0) {
 					assemblies = loadedAssemblies;
 				}
 			}
@@ -174,8 +175,8 @@ namespace ArchiSteamFarm.Plugins {
 			if (Directory.Exists(customPluginsPath)) {
 				HashSet<Assembly>? loadedAssemblies = LoadAssembliesFrom(customPluginsPath);
 
-				if ((loadedAssemblies != null) && (loadedAssemblies.Count > 0)) {
-					if ((assemblies != null) && (assemblies.Count > 0)) {
+				if (loadedAssemblies?.Count > 0) {
+					if (assemblies?.Count > 0) {
 						assemblies.UnionWith(loadedAssemblies);
 					} else {
 						assemblies = loadedAssemblies;
@@ -199,8 +200,20 @@ namespace ArchiSteamFarm.Plugins {
 		}
 
 		internal static async Task<string?> OnBotCommand(Bot bot, ulong steamID, string message, string[] args) {
-			if ((bot == null) || (steamID == 0) || !new SteamID(steamID).IsIndividualAccount || string.IsNullOrEmpty(message) || (args == null) || (args.Length == 0)) {
-				throw new ArgumentNullException(nameof(bot) + " || " + nameof(steamID) + " || " + nameof(message) + " || " + nameof(args));
+			if (bot == null) {
+				throw new ArgumentNullException(nameof(bot));
+			}
+
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+				throw new ArgumentOutOfRangeException(nameof(steamID));
+			}
+
+			if (string.IsNullOrEmpty(message)) {
+				throw new ArgumentNullException(nameof(message));
+			}
+
+			if ((args == null) || (args.Length == 0)) {
+				throw new ArgumentNullException(nameof(args));
 			}
 
 			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
@@ -301,8 +314,12 @@ namespace ArchiSteamFarm.Plugins {
 		}
 
 		internal static async Task<bool> OnBotFriendRequest(Bot bot, ulong steamID) {
-			if ((bot == null) || (steamID == 0) || !new SteamID(steamID).IsValid) {
-				throw new ArgumentNullException(nameof(bot) + " || " + nameof(steamID));
+			if (bot == null) {
+				throw new ArgumentNullException(nameof(bot));
+			}
+
+			if ((steamID == 0) || !new SteamID(steamID).IsValid) {
+				throw new ArgumentOutOfRangeException(nameof(steamID));
 			}
 
 			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
@@ -371,8 +388,16 @@ namespace ArchiSteamFarm.Plugins {
 		}
 
 		internal static async Task<string?> OnBotMessage(Bot bot, ulong steamID, string message) {
-			if ((bot == null) || (steamID == 0) || !new SteamID(steamID).IsIndividualAccount || string.IsNullOrEmpty(message)) {
-				throw new ArgumentNullException(nameof(bot) + " || " + nameof(steamID) + " || " + nameof(message));
+			if (bot == null) {
+				throw new ArgumentNullException(nameof(bot));
+			}
+
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+				throw new ArgumentOutOfRangeException(nameof(steamID));
+			}
+
+			if (string.IsNullOrEmpty(message)) {
+				throw new ArgumentNullException(nameof(message));
 			}
 
 			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
@@ -393,8 +418,12 @@ namespace ArchiSteamFarm.Plugins {
 		}
 
 		internal static async Task OnBotSteamCallbacksInit(Bot bot, CallbackManager callbackManager) {
-			if ((bot == null) || (callbackManager == null)) {
-				throw new ArgumentNullException(nameof(bot) + " || " + nameof(callbackManager));
+			if (bot == null) {
+				throw new ArgumentNullException(nameof(bot));
+			}
+
+			if (callbackManager == null) {
+				throw new ArgumentNullException(nameof(callbackManager));
 			}
 
 			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
@@ -431,8 +460,12 @@ namespace ArchiSteamFarm.Plugins {
 		}
 
 		internal static async Task<bool> OnBotTradeOffer(Bot bot, Steam.TradeOffer tradeOffer) {
-			if ((bot == null) || (tradeOffer == null)) {
-				throw new ArgumentNullException(nameof(bot) + " || " + nameof(tradeOffer));
+			if ((bot == null)) {
+				throw new ArgumentNullException(nameof(bot));
+			}
+
+			if (tradeOffer == null) {
+				throw new ArgumentNullException(nameof(tradeOffer));
 			}
 
 			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
@@ -453,8 +486,12 @@ namespace ArchiSteamFarm.Plugins {
 		}
 
 		internal static async Task OnBotTradeOfferResults(Bot bot, IReadOnlyCollection<Trading.ParseTradeResult> tradeResults) {
-			if ((bot == null) || (tradeResults == null) || (tradeResults.Count == 0)) {
-				throw new ArgumentNullException(nameof(bot) + " || " + nameof(tradeResults));
+			if (bot == null) {
+				throw new ArgumentNullException(nameof(bot));
+			}
+
+			if ((tradeResults == null) || (tradeResults.Count == 0)) {
+				throw new ArgumentNullException(nameof(tradeResults));
 			}
 
 			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
@@ -469,8 +506,12 @@ namespace ArchiSteamFarm.Plugins {
 		}
 
 		internal static async Task OnBotUserNotifications(Bot bot, IReadOnlyCollection<ArchiHandler.UserNotificationsCallback.EUserNotification> newNotifications) {
-			if ((bot == null) || (newNotifications == null) || (newNotifications.Count == 0)) {
-				throw new ArgumentNullException(nameof(bot) + " || " + nameof(newNotifications));
+			if ((bot == null)) {
+				throw new ArgumentNullException(nameof(bot));
+			}
+
+			if ((newNotifications == null) || (newNotifications.Count == 0)) {
+				throw new ArgumentNullException(nameof(newNotifications));
 			}
 
 			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
@@ -485,8 +526,16 @@ namespace ArchiSteamFarm.Plugins {
 		}
 
 		internal static async Task OnPICSChanges(uint currentChangeNumber, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> appChanges, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> packageChanges) {
-			if ((currentChangeNumber == 0) || (appChanges == null) || (packageChanges == null)) {
-				throw new ArgumentNullException(nameof(currentChangeNumber) + " || " + nameof(appChanges) + " || " + nameof(packageChanges));
+			if (currentChangeNumber == 0) {
+				throw new ArgumentOutOfRangeException(nameof(currentChangeNumber));
+			}
+
+			if (appChanges == null) {
+				throw new ArgumentNullException(nameof(appChanges));
+			}
+
+			if (packageChanges == null) {
+				throw new ArgumentNullException(nameof(packageChanges));
 			}
 
 			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
@@ -534,7 +583,7 @@ namespace ArchiSteamFarm.Plugins {
 					try {
 						assembly = Assembly.LoadFrom(assemblyPath);
 					} catch (Exception e) {
-						ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, assemblyPath));
+						ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, assemblyPath));
 						ASF.ArchiLogger.LogGenericWarningException(e);
 
 						continue;
