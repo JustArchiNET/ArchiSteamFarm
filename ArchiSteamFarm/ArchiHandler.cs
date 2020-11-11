@@ -21,7 +21,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -48,11 +50,11 @@ namespace ArchiSteamFarm {
 		internal DateTime LastPacketReceived { get; private set; }
 
 		internal ArchiHandler(ArchiLogger archiLogger, SteamUnifiedMessages steamUnifiedMessages) {
-			if ((archiLogger == null) || (steamUnifiedMessages == null)) {
-				throw new ArgumentNullException(nameof(archiLogger) + " || " + nameof(steamUnifiedMessages));
+			if (steamUnifiedMessages == null) {
+				throw new ArgumentNullException(nameof(steamUnifiedMessages));
 			}
 
-			ArchiLogger = archiLogger;
+			ArchiLogger = archiLogger ?? throw new ArgumentNullException(nameof(archiLogger));
 			UnifiedChatRoomService = steamUnifiedMessages.CreateService<IChatRoom>();
 			UnifiedClanChatRoomsService = steamUnifiedMessages.CreateService<IClanChatRooms>();
 			UnifiedEconService = steamUnifiedMessages.CreateService<IEcon>();
@@ -62,8 +64,12 @@ namespace ArchiSteamFarm {
 		}
 
 		public override void HandleMsg(IPacketMsg packetMsg) {
-			if ((packetMsg == null) || (Client == null)) {
-				throw new ArgumentNullException(nameof(packetMsg) + " || " + nameof(Client));
+			if (packetMsg == null) {
+				throw new ArgumentNullException(nameof(packetMsg));
+			}
+
+			if (Client == null) {
+				throw new InvalidOperationException(nameof(Client));
 			}
 
 			LastPacketReceived = DateTime.UtcNow;
@@ -113,8 +119,20 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void AckChatMessage(ulong chatGroupID, ulong chatID, uint timestamp) {
-			if ((chatGroupID == 0) || (chatID == 0) || (timestamp == 0)) {
-				throw new ArgumentNullException(nameof(chatGroupID) + " || " + nameof(chatID) + " || " + nameof(timestamp));
+			if (chatGroupID == 0) {
+				throw new ArgumentOutOfRangeException(nameof(chatGroupID));
+			}
+
+			if (chatID == 0) {
+				throw new ArgumentOutOfRangeException(nameof(chatID));
+			}
+
+			if (timestamp == 0) {
+				throw new ArgumentOutOfRangeException(nameof(timestamp));
+			}
+
+			if (Client == null) {
+				throw new InvalidOperationException(nameof(Client));
 			}
 
 			if (!Client.IsConnected) {
@@ -131,8 +149,16 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void AckMessage(ulong steamID, uint timestamp) {
-			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || (timestamp == 0)) {
-				throw new ArgumentNullException(nameof(steamID) + " || " + nameof(timestamp));
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+				throw new ArgumentOutOfRangeException(nameof(steamID));
+			}
+
+			if (timestamp == 0) {
+				throw new ArgumentOutOfRangeException(nameof(timestamp));
+			}
+
+			if (Client == null) {
+				throw new InvalidOperationException(nameof(Client));
 			}
 
 			if (!Client.IsConnected) {
@@ -149,7 +175,11 @@ namespace ArchiSteamFarm {
 
 		internal void AcknowledgeClanInvite(ulong steamID, bool acceptInvite) {
 			if ((steamID == 0) || !new SteamID(steamID).IsClanAccount) {
-				throw new ArgumentNullException(nameof(steamID));
+				throw new ArgumentOutOfRangeException(nameof(steamID));
+			}
+
+			if (Client == null) {
+				throw new InvalidOperationException(nameof(Client));
 			}
 
 			if (!Client.IsConnected) {
@@ -168,7 +198,11 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> AddFriend(ulong steamID) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-				throw new ArgumentNullException(nameof(steamID));
+				throw new ArgumentOutOfRangeException(nameof(steamID));
+			}
+
+			if (Client == null) {
+				throw new InvalidOperationException(nameof(Client));
 			}
 
 			if (!Client.IsConnected) {
@@ -192,7 +226,11 @@ namespace ArchiSteamFarm {
 
 		internal async Task<ulong> GetClanChatGroupID(ulong steamID) {
 			if ((steamID == 0) || !new SteamID(steamID).IsClanAccount) {
-				throw new ArgumentNullException(nameof(steamID));
+				throw new ArgumentOutOfRangeException(nameof(steamID));
+			}
+
+			if (Client == null) {
+				throw new InvalidOperationException(nameof(Client));
 			}
 
 			if (!Client.IsConnected) {
@@ -224,6 +262,10 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<uint?> GetLevel() {
+			if (Client == null) {
+				throw new InvalidOperationException(nameof(Client));
+			}
+
 			if (!Client.IsConnected) {
 				return null;
 			}
@@ -249,6 +291,10 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<HashSet<ulong>?> GetMyChatGroupIDs() {
+			if (Client == null) {
+				throw new InvalidOperationException(nameof(Client));
+			}
+
 			if (!Client.IsConnected) {
 				return null;
 			}
@@ -275,6 +321,10 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<CPrivacySettings?> GetPrivacySettings() {
+			if (Client == null) {
+				throw new InvalidOperationException(nameof(Client));
+			}
+
 			if (!Client.IsConnected) {
 				return null;
 			}
@@ -301,6 +351,10 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<string?> GetTradeToken() {
+			if (Client == null) {
+				throw new InvalidOperationException(nameof(Client));
+			}
+
 			if (!Client.IsConnected) {
 				return null;
 			}
@@ -328,7 +382,11 @@ namespace ArchiSteamFarm {
 
 		internal async Task<string?> GetTwoFactorDeviceIdentifier(ulong steamID) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-				throw new ArgumentNullException(nameof(steamID));
+				throw new ArgumentOutOfRangeException(nameof(steamID));
+			}
+
+			if (Client == null) {
+				throw new InvalidOperationException(nameof(Client));
 			}
 
 			if (!Client.IsConnected) {
@@ -360,7 +418,11 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> JoinChatRoomGroup(ulong chatGroupID) {
 			if (chatGroupID == 0) {
-				throw new ArgumentNullException(nameof(chatGroupID));
+				throw new ArgumentOutOfRangeException(nameof(chatGroupID));
+			}
+
+			if (Client == null) {
+				throw new InvalidOperationException(nameof(Client));
 			}
 
 			if (!Client.IsConnected) {
@@ -385,6 +447,10 @@ namespace ArchiSteamFarm {
 		internal async Task PlayGames(IEnumerable<uint> gameIDs, string? gameName = null) {
 			if (gameIDs == null) {
 				throw new ArgumentNullException(nameof(gameIDs));
+			}
+
+			if (Client == null) {
+				throw new InvalidOperationException(nameof(Client));
 			}
 
 			if (!Client.IsConnected) {
@@ -432,7 +498,11 @@ namespace ArchiSteamFarm {
 
 		internal async Task<RedeemGuestPassResponseCallback?> RedeemGuestPass(ulong guestPassID) {
 			if (guestPassID == 0) {
-				throw new ArgumentNullException(nameof(guestPassID));
+				throw new ArgumentOutOfRangeException(nameof(guestPassID));
+			}
+
+			if (Client == null) {
+				throw new InvalidOperationException(nameof(Client));
 			}
 
 			if (!Client.IsConnected) {
@@ -460,6 +530,10 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(key));
 			}
 
+			if (Client == null) {
+				throw new InvalidOperationException(nameof(Client));
+			}
+
 			if (!Client.IsConnected) {
 				return null;
 			}
@@ -482,7 +556,11 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> RemoveFriend(ulong steamID) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-				throw new ArgumentNullException(nameof(steamID));
+				throw new ArgumentOutOfRangeException(nameof(steamID));
+			}
+
+			if (Client == null) {
+				throw new InvalidOperationException(nameof(Client));
 			}
 
 			if (!Client.IsConnected) {
@@ -505,6 +583,10 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void RequestItemAnnouncements() {
+			if (Client == null) {
+				throw new InvalidOperationException(nameof(Client));
+			}
+
 			if (!Client.IsConnected) {
 				return;
 			}
@@ -514,8 +596,16 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<EResult> SendMessage(ulong steamID, string message) {
-			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || string.IsNullOrEmpty(message)) {
-				throw new ArgumentNullException(nameof(steamID) + " || " + nameof(message));
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+				throw new ArgumentOutOfRangeException(nameof(steamID));
+			}
+
+			if (string.IsNullOrEmpty(message)) {
+				throw new ArgumentNullException(nameof(message));
+			}
+
+			if (Client == null) {
+				throw new InvalidOperationException(nameof(Client));
 			}
 
 			if (!Client.IsConnected) {
@@ -543,8 +633,20 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<EResult> SendMessage(ulong chatGroupID, ulong chatID, string message) {
-			if ((chatGroupID == 0) || (chatID == 0) || string.IsNullOrEmpty(message)) {
-				throw new ArgumentNullException(nameof(chatGroupID) + " || " + nameof(chatID) + " || " + nameof(message));
+			if (chatGroupID == 0) {
+				throw new ArgumentOutOfRangeException(nameof(chatGroupID));
+			}
+
+			if (chatID == 0) {
+				throw new ArgumentOutOfRangeException(nameof(chatID));
+			}
+
+			if (string.IsNullOrEmpty(message)) {
+				throw new ArgumentNullException(nameof(message));
+			}
+
+			if (Client == null) {
+				throw new InvalidOperationException(nameof(Client));
 			}
 
 			if (!Client.IsConnected) {
@@ -572,7 +674,11 @@ namespace ArchiSteamFarm {
 
 		internal async Task<EResult> SendTypingStatus(ulong steamID) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-				throw new ArgumentNullException(nameof(steamID));
+				throw new ArgumentOutOfRangeException(nameof(steamID));
+			}
+
+			if (Client == null) {
+				throw new InvalidOperationException(nameof(Client));
 			}
 
 			if (!Client.IsConnected) {
@@ -599,7 +705,11 @@ namespace ArchiSteamFarm {
 
 		internal void SetCurrentMode(uint chatMode) {
 			if (chatMode == 0) {
-				throw new ArgumentNullException(nameof(chatMode));
+				throw new ArgumentOutOfRangeException(nameof(chatMode));
+			}
+
+			if (Client == null) {
+				throw new InvalidOperationException(nameof(Client));
 			}
 
 			if (!Client.IsConnected) {
@@ -612,14 +722,18 @@ namespace ArchiSteamFarm {
 
 		[SuppressMessage("ReSharper", "MemberCanBeInternal")]
 		public sealed class PurchaseResponseCallback : CallbackMsg {
-			public readonly Dictionary<uint, string>? Items;
+			public Dictionary<uint, string>? Items { get; }
 
 			public EPurchaseResultDetail PurchaseResultDetail { get; internal set; }
 			public EResult Result { get; internal set; }
 
 			internal PurchaseResponseCallback(EResult result, EPurchaseResultDetail purchaseResult) {
-				if (!Enum.IsDefined(typeof(EResult), result) || !Enum.IsDefined(typeof(EPurchaseResultDetail), purchaseResult)) {
-					throw new ArgumentNullException(nameof(result) + " || " + nameof(purchaseResult));
+				if (!Enum.IsDefined(typeof(EResult), result)) {
+					throw new InvalidEnumArgumentException(nameof(result), (int) result, typeof(EResult));
+				}
+
+				if (!Enum.IsDefined(typeof(EPurchaseResultDetail), purchaseResult)) {
+					throw new InvalidEnumArgumentException(nameof(purchaseResult), (int) purchaseResult, typeof(EPurchaseResultDetail));
 				}
 
 				Result = result;
@@ -627,8 +741,12 @@ namespace ArchiSteamFarm {
 			}
 
 			internal PurchaseResponseCallback(JobID jobID, CMsgClientPurchaseResponse msg) {
-				if ((jobID == null) || (msg == null)) {
-					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
+				if (jobID == null) {
+					throw new ArgumentNullException(nameof(jobID));
+				}
+
+				if (msg == null) {
+					throw new ArgumentNullException(nameof(msg));
 				}
 
 				JobID = jobID;
@@ -693,8 +811,12 @@ namespace ArchiSteamFarm {
 			internal readonly Dictionary<EUserNotification, uint> Notifications;
 
 			internal UserNotificationsCallback(JobID jobID, CMsgClientUserNotifications msg) {
-				if ((jobID == null) || (msg == null)) {
-					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
+				if (jobID == null) {
+					throw new ArgumentNullException(nameof(jobID));
+				}
+
+				if (msg == null) {
+					throw new ArgumentNullException(nameof(msg));
 				}
 
 				JobID = jobID;
@@ -723,7 +845,7 @@ namespace ArchiSteamFarm {
 						case EUserNotification.Trading:
 							break;
 						default:
-							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(type), type));
+							ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(type), type));
 
 							break;
 					}
@@ -733,8 +855,12 @@ namespace ArchiSteamFarm {
 			}
 
 			internal UserNotificationsCallback(JobID jobID, CMsgClientItemAnnouncements msg) {
-				if ((jobID == null) || (msg == null)) {
-					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
+				if (jobID == null) {
+					throw new ArgumentNullException(nameof(jobID));
+				}
+
+				if (msg == null) {
+					throw new ArgumentNullException(nameof(msg));
 				}
 
 				JobID = jobID;
@@ -742,8 +868,12 @@ namespace ArchiSteamFarm {
 			}
 
 			internal UserNotificationsCallback(JobID jobID, CMsgClientCommentNotifications msg) {
-				if ((jobID == null) || (msg == null)) {
-					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
+				if (jobID == null) {
+					throw new ArgumentNullException(nameof(jobID));
+				}
+
+				if (msg == null) {
+					throw new ArgumentNullException(nameof(msg));
 				}
 
 				JobID = jobID;
@@ -770,8 +900,12 @@ namespace ArchiSteamFarm {
 			internal readonly bool PlayingBlocked;
 
 			internal PlayingSessionStateCallback(JobID jobID, CMsgClientPlayingSessionState msg) {
-				if ((jobID == null) || (msg == null)) {
-					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
+				if (jobID == null) {
+					throw new ArgumentNullException(nameof(jobID));
+				}
+
+				if (msg == null) {
+					throw new ArgumentNullException(nameof(msg));
 				}
 
 				JobID = jobID;
@@ -783,8 +917,12 @@ namespace ArchiSteamFarm {
 			internal readonly EResult Result;
 
 			internal RedeemGuestPassResponseCallback(JobID jobID, CMsgClientRedeemGuestPassResponse msg) {
-				if ((jobID == null) || (msg == null)) {
-					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
+				if (jobID == null) {
+					throw new ArgumentNullException(nameof(jobID));
+				}
+
+				if (msg == null) {
+					throw new ArgumentNullException(nameof(msg));
 				}
 
 				JobID = jobID;
@@ -796,8 +934,12 @@ namespace ArchiSteamFarm {
 			internal readonly ulong LibraryLockedBySteamID;
 
 			internal SharedLibraryLockStatusCallback(JobID jobID, CMsgClientSharedLibraryLockStatus msg) {
-				if ((jobID == null) || (msg == null)) {
-					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
+				if (jobID == null) {
+					throw new ArgumentNullException(nameof(jobID));
+				}
+
+				if (msg == null) {
+					throw new ArgumentNullException(nameof(msg));
 				}
 
 				JobID = jobID;
@@ -814,8 +956,12 @@ namespace ArchiSteamFarm {
 			internal readonly string VanityURL;
 
 			internal VanityURLChangedCallback(JobID jobID, CMsgClientVanityURLChangedNotification msg) {
-				if ((jobID == null) || (msg == null)) {
-					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
+				if (jobID == null) {
+					throw new ArgumentNullException(nameof(jobID));
+				}
+
+				if (msg == null) {
+					throw new ArgumentNullException(nameof(msg));
 				}
 
 				JobID = jobID;

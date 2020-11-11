@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -47,50 +48,74 @@ namespace ArchiSteamFarm {
 
 		private static byte[] EncryptionKey = Encoding.UTF8.GetBytes(nameof(ArchiSteamFarm));
 
-		internal static string? Decrypt(ECryptoMethod cryptoMethod, string encrypted) {
-			if (!Enum.IsDefined(typeof(ECryptoMethod), cryptoMethod) || string.IsNullOrEmpty(encrypted)) {
-				throw new ArgumentNullException(nameof(cryptoMethod) + " || " + nameof(encrypted));
+		internal static string? Decrypt(ECryptoMethod cryptoMethod, string encryptedString) {
+			if (!Enum.IsDefined(typeof(ECryptoMethod), cryptoMethod)) {
+				throw new InvalidEnumArgumentException(nameof(cryptoMethod), (int) cryptoMethod, typeof(ECryptoMethod));
+			}
+
+			if (string.IsNullOrEmpty(encryptedString)) {
+				throw new ArgumentNullException(nameof(encryptedString));
 			}
 
 			return cryptoMethod switch {
-				ECryptoMethod.PlainText => encrypted,
-				ECryptoMethod.AES => DecryptAES(encrypted),
-				ECryptoMethod.ProtectedDataForCurrentUser => DecryptProtectedDataForCurrentUser(encrypted),
+				ECryptoMethod.PlainText => encryptedString,
+				ECryptoMethod.AES => DecryptAES(encryptedString),
+				ECryptoMethod.ProtectedDataForCurrentUser => DecryptProtectedDataForCurrentUser(encryptedString),
 				_ => throw new ArgumentOutOfRangeException(nameof(cryptoMethod))
 			};
 		}
 
-		internal static string? Encrypt(ECryptoMethod cryptoMethod, string decrypted) {
-			if (!Enum.IsDefined(typeof(ECryptoMethod), cryptoMethod) || string.IsNullOrEmpty(decrypted)) {
-				throw new ArgumentNullException(nameof(cryptoMethod) + " || " + nameof(decrypted));
+		internal static string? Encrypt(ECryptoMethod cryptoMethod, string decryptedString) {
+			if (!Enum.IsDefined(typeof(ECryptoMethod), cryptoMethod)) {
+				throw new InvalidEnumArgumentException(nameof(cryptoMethod), (int) cryptoMethod, typeof(ECryptoMethod));
+			}
+
+			if (string.IsNullOrEmpty(decryptedString)) {
+				throw new ArgumentNullException(nameof(decryptedString));
 			}
 
 			return cryptoMethod switch {
-				ECryptoMethod.PlainText => decrypted,
-				ECryptoMethod.AES => EncryptAES(decrypted),
-				ECryptoMethod.ProtectedDataForCurrentUser => EncryptProtectedDataForCurrentUser(decrypted),
+				ECryptoMethod.PlainText => decryptedString,
+				ECryptoMethod.AES => EncryptAES(decryptedString),
+				ECryptoMethod.ProtectedDataForCurrentUser => EncryptProtectedDataForCurrentUser(decryptedString),
 				_ => throw new ArgumentOutOfRangeException(nameof(cryptoMethod))
 			};
 		}
 
-		internal static string Hash(EHashingMethod hashingMethod, string password) {
-			if (!Enum.IsDefined(typeof(EHashingMethod), hashingMethod) || string.IsNullOrEmpty(password)) {
-				throw new ArgumentNullException(nameof(hashingMethod) + " || " + nameof(password));
+		internal static string Hash(EHashingMethod hashingMethod, string stringToHash) {
+			if (!Enum.IsDefined(typeof(EHashingMethod), hashingMethod)) {
+				throw new InvalidEnumArgumentException(nameof(hashingMethod), (int) hashingMethod, typeof(EHashingMethod));
+			}
+
+			if (string.IsNullOrEmpty(stringToHash)) {
+				throw new ArgumentNullException(nameof(stringToHash));
 			}
 
 			if (hashingMethod == EHashingMethod.PlainText) {
-				return password;
+				return stringToHash;
 			}
 
-			byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
+			byte[] passwordBytes = Encoding.UTF8.GetBytes(stringToHash);
 			byte[] hashBytes = Hash(passwordBytes, EncryptionKey, DefaultHashLength, hashingMethod);
 
 			return Convert.ToBase64String(hashBytes);
 		}
 
 		internal static byte[] Hash(byte[] password, byte[] salt, byte hashLength, EHashingMethod hashingMethod) {
-			if ((password == null) || (salt == null) || (hashLength == 0) || !Enum.IsDefined(typeof(EHashingMethod), hashingMethod)) {
-				throw new ArgumentNullException(nameof(password) + " || " + nameof(salt) + " || " + nameof(hashLength) + " || " + nameof(hashingMethod));
+			if ((password == null) || (password.Length == 0)) {
+				throw new ArgumentNullException(nameof(password));
+			}
+
+			if ((salt == null) || (salt.Length == 0)) {
+				throw new ArgumentNullException(nameof(salt));
+			}
+
+			if (hashLength == 0) {
+				throw new ArgumentOutOfRangeException(nameof(hashLength));
+			}
+
+			if (!Enum.IsDefined(typeof(EHashingMethod), hashingMethod)) {
+				throw new InvalidEnumArgumentException(nameof(hashingMethod), (int) hashingMethod, typeof(EHashingMethod));
 			}
 
 			switch (hashingMethod) {
@@ -107,12 +132,20 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static string? RecoverSteamParentalCode(byte[] passwordHash, byte[] salt, EHashingMethod steamParentalAlgorithm) {
-			if ((passwordHash == null) || (salt == null) || !Enum.IsDefined(typeof(EHashingMethod), steamParentalAlgorithm)) {
-				throw new ArgumentNullException(nameof(passwordHash) + " || " + nameof(salt) + " || " + nameof(steamParentalAlgorithm));
+		internal static string? RecoverSteamParentalCode(byte[] passwordHash, byte[] salt, EHashingMethod hashingMethod) {
+			if ((passwordHash == null) || (passwordHash.Length == 0)) {
+				throw new ArgumentNullException(nameof(passwordHash));
 			}
 
-			byte[]? password = SteamParentalCodes.AsParallel().FirstOrDefault(passwordToTry => Hash(passwordToTry, salt, (byte) passwordHash.Length, steamParentalAlgorithm).SequenceEqual(passwordHash));
+			if ((salt == null) || (salt.Length == 0)) {
+				throw new ArgumentNullException(nameof(salt));
+			}
+
+			if (!Enum.IsDefined(typeof(EHashingMethod), hashingMethod)) {
+				throw new InvalidEnumArgumentException(nameof(hashingMethod), (int) hashingMethod, typeof(EHashingMethod));
+			}
+
+			byte[]? password = SteamParentalCodes.AsParallel().FirstOrDefault(passwordToTry => Hash(passwordToTry, salt, (byte) passwordHash.Length, hashingMethod).SequenceEqual(passwordHash));
 
 			return password != null ? Encoding.UTF8.GetString(password) : null;
 		}
@@ -125,9 +158,9 @@ namespace ArchiSteamFarm {
 			EncryptionKey = Encoding.UTF8.GetBytes(key);
 		}
 
-		private static string? DecryptAES(string encrypted) {
-			if (string.IsNullOrEmpty(encrypted)) {
-				throw new ArgumentNullException(nameof(encrypted));
+		private static string? DecryptAES(string encryptedString) {
+			if (string.IsNullOrEmpty(encryptedString)) {
+				throw new ArgumentNullException(nameof(encryptedString));
 			}
 
 			try {
@@ -137,7 +170,7 @@ namespace ArchiSteamFarm {
 					key = sha256.ComputeHash(EncryptionKey);
 				}
 
-				byte[] decryptedData = Convert.FromBase64String(encrypted);
+				byte[] decryptedData = Convert.FromBase64String(encryptedString);
 				decryptedData = CryptoHelper.SymmetricDecrypt(decryptedData, key);
 
 				return Encoding.UTF8.GetString(decryptedData);
@@ -148,9 +181,9 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static string? DecryptProtectedDataForCurrentUser(string encrypted) {
-			if (string.IsNullOrEmpty(encrypted)) {
-				throw new ArgumentNullException(nameof(encrypted));
+		private static string? DecryptProtectedDataForCurrentUser(string encryptedString) {
+			if (string.IsNullOrEmpty(encryptedString)) {
+				throw new ArgumentNullException(nameof(encryptedString));
 			}
 
 			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
@@ -159,8 +192,8 @@ namespace ArchiSteamFarm {
 
 			try {
 				byte[] decryptedData = ProtectedData.Unprotect(
-					Convert.FromBase64String(encrypted),
-					EncryptionKey, // This is used as salt only and it's fine that it's known
+					Convert.FromBase64String(encryptedString),
+					EncryptionKey,
 					DataProtectionScope.CurrentUser
 				);
 
@@ -172,9 +205,9 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static string? EncryptAES(string decrypted) {
-			if (string.IsNullOrEmpty(decrypted)) {
-				throw new ArgumentNullException(nameof(decrypted));
+		private static string? EncryptAES(string decryptedString) {
+			if (string.IsNullOrEmpty(decryptedString)) {
+				throw new ArgumentNullException(nameof(decryptedString));
 			}
 
 			try {
@@ -184,7 +217,7 @@ namespace ArchiSteamFarm {
 					key = sha256.ComputeHash(EncryptionKey);
 				}
 
-				byte[] encryptedData = Encoding.UTF8.GetBytes(decrypted);
+				byte[] encryptedData = Encoding.UTF8.GetBytes(decryptedString);
 				encryptedData = CryptoHelper.SymmetricEncrypt(encryptedData, key);
 
 				return Convert.ToBase64String(encryptedData);
@@ -195,9 +228,9 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static string? EncryptProtectedDataForCurrentUser(string decrypted) {
-			if (string.IsNullOrEmpty(decrypted)) {
-				throw new ArgumentNullException(nameof(decrypted));
+		private static string? EncryptProtectedDataForCurrentUser(string decryptedString) {
+			if (string.IsNullOrEmpty(decryptedString)) {
+				throw new ArgumentNullException(nameof(decryptedString));
 			}
 
 			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
@@ -206,8 +239,8 @@ namespace ArchiSteamFarm {
 
 			try {
 				byte[] encryptedData = ProtectedData.Protect(
-					Encoding.UTF8.GetBytes(decrypted),
-					EncryptionKey, // This is used as salt only and it's fine that it's known
+					Encoding.UTF8.GetBytes(decryptedString),
+					EncryptionKey,
 					DataProtectionScope.CurrentUser
 				);
 

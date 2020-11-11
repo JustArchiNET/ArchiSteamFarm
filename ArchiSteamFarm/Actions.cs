@@ -21,6 +21,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
@@ -58,8 +60,12 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public static string? Encrypt(ArchiCryptoHelper.ECryptoMethod cryptoMethod, string stringToEncrypt) {
-			if (!Enum.IsDefined(typeof(ArchiCryptoHelper.ECryptoMethod), cryptoMethod) || string.IsNullOrEmpty(stringToEncrypt)) {
-				throw new ArgumentNullException(nameof(cryptoMethod) + " || " + nameof(stringToEncrypt));
+			if (!Enum.IsDefined(typeof(ArchiCryptoHelper.ECryptoMethod), cryptoMethod)) {
+				throw new InvalidEnumArgumentException(nameof(cryptoMethod), (int) cryptoMethod, typeof(ArchiCryptoHelper.ECryptoMethod));
+			}
+
+			if (string.IsNullOrEmpty(stringToEncrypt)) {
+				throw new ArgumentNullException(nameof(stringToEncrypt));
 			}
 
 			return ArchiCryptoHelper.Encrypt(cryptoMethod, stringToEncrypt);
@@ -128,7 +134,7 @@ namespace ArchiSteamFarm {
 					}
 				}
 
-				if ((acceptedCreatorIDs != null) && (acceptedCreatorIDs.Count > 0)) {
+				if (acceptedCreatorIDs?.Count > 0) {
 					if (confirmations.RemoveWhere(confirmation => !acceptedCreatorIDs.Contains(confirmation.Creator)) > 0) {
 						if (confirmations.Count == 0) {
 							continue;
@@ -142,7 +148,7 @@ namespace ArchiSteamFarm {
 
 				handledConfirmationsCount += (ushort) confirmations.Count;
 
-				if ((acceptedCreatorIDs != null) && (acceptedCreatorIDs.Count > 0)) {
+				if (acceptedCreatorIDs?.Count > 0) {
 					IEnumerable<ulong> handledCreatorIDsThisRound = confirmations.Select(confirmation => confirmation.Creator).Where(acceptedCreatorIDs.Contains!);
 
 					if (handledCreatorIDs != null) {
@@ -153,18 +159,22 @@ namespace ArchiSteamFarm {
 
 					// Check if those are all that we were expected to confirm
 					if (handledCreatorIDs.SetEquals(acceptedCreatorIDs)) {
-						return (true, string.Format(Strings.BotHandledConfirmations, handledConfirmationsCount));
+						return (true, string.Format(CultureInfo.CurrentCulture, Strings.BotHandledConfirmations, handledConfirmationsCount));
 					}
 				}
 			}
 
-			return (!waitIfNeeded, !waitIfNeeded ? string.Format(Strings.BotHandledConfirmations, handledConfirmationsCount) : string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+			return (!waitIfNeeded, !waitIfNeeded ? string.Format(CultureInfo.CurrentCulture, Strings.BotHandledConfirmations, handledConfirmationsCount) : string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
 		}
 
 		[PublicAPI]
 		public static string Hash(ArchiCryptoHelper.EHashingMethod hashingMethod, string stringToHash) {
-			if (!Enum.IsDefined(typeof(ArchiCryptoHelper.EHashingMethod), hashingMethod) || string.IsNullOrEmpty(stringToHash)) {
-				throw new ArgumentNullException(nameof(hashingMethod) + " || " + nameof(stringToHash));
+			if (!Enum.IsDefined(typeof(ArchiCryptoHelper.EHashingMethod), hashingMethod)) {
+				throw new InvalidEnumArgumentException(nameof(hashingMethod), (int) hashingMethod, typeof(ArchiCryptoHelper.EHashingMethod));
+			}
+
+			if (string.IsNullOrEmpty(stringToHash)) {
+				throw new ArgumentNullException(nameof(stringToHash));
 			}
 
 			return ArchiCryptoHelper.Hash(hashingMethod, stringToHash);
@@ -254,8 +264,12 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<(bool Success, string Message)> SendInventory(IReadOnlyCollection<Steam.Asset> items, ulong targetSteamID = 0, string? tradeToken = null, ushort itemsPerTrade = Trading.MaxItemsPerTrade) {
-			if ((items == null) || (items.Count == 0) || (itemsPerTrade < 2)) {
-				throw new ArgumentNullException(nameof(items) + " || " + nameof(itemsPerTrade));
+			if ((items == null) || (items.Count == 0)) {
+				throw new ArgumentNullException(nameof(items));
+			}
+
+			if (itemsPerTrade < 2) {
+				throw new ArgumentOutOfRangeException(nameof(itemsPerTrade));
 			}
 
 			if (!Bot.IsConnectedAndLoggedOn) {
@@ -272,6 +286,8 @@ namespace ArchiSteamFarm {
 				if (string.IsNullOrEmpty(tradeToken) && !string.IsNullOrEmpty(Bot.BotConfig.SteamTradeToken)) {
 					tradeToken = Bot.BotConfig.SteamTradeToken;
 				}
+			} else if (!new SteamID(targetSteamID).IsIndividualAccount) {
+				throw new ArgumentOutOfRangeException(nameof(targetSteamID));
 			}
 
 			if (targetSteamID == Bot.SteamID) {
@@ -292,7 +308,7 @@ namespace ArchiSteamFarm {
 
 			(bool success, HashSet<ulong>? mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(targetSteamID, items, token: tradeToken, itemsPerTrade: itemsPerTrade).ConfigureAwait(false);
 
-			if ((mobileTradeOfferIDs != null) && (mobileTradeOfferIDs.Count > 0) && Bot.HasMobileAuthenticator) {
+			if ((mobileTradeOfferIDs?.Count > 0) && Bot.HasMobileAuthenticator) {
 				(bool twoFactorSuccess, _) = await HandleTwoFactorAuthenticationConfirmations(true, MobileAuthenticator.Confirmation.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
 
 				if (!twoFactorSuccess) {
@@ -305,8 +321,12 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<(bool Success, string Message)> SendInventory(uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, ulong targetSteamID = 0, string? tradeToken = null, Func<Steam.Asset, bool>? filterFunction = null, ushort itemsPerTrade = Trading.MaxItemsPerTrade) {
-			if ((appID == 0) || (contextID == 0) || (itemsPerTrade < 2)) {
-				throw new ArgumentNullException(nameof(appID) + " || " + nameof(contextID) + " || " + nameof(itemsPerTrade));
+			if (appID == 0) {
+				throw new ArgumentOutOfRangeException(nameof(appID));
+			}
+
+			if (contextID == 0) {
+				throw new ArgumentOutOfRangeException(nameof(contextID));
 			}
 
 			if (!Bot.IsConnectedAndLoggedOn) {
@@ -336,17 +356,17 @@ namespace ArchiSteamFarm {
 			} catch (HttpRequestException e) {
 				Bot.ArchiLogger.LogGenericWarningException(e);
 
-				return (false, string.Format(Strings.WarningFailedWithError, e.Message));
+				return (false, string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, e.Message));
 			} catch (Exception e) {
 				Bot.ArchiLogger.LogGenericException(e);
 
-				return (false, string.Format(Strings.WarningFailedWithError, e.Message));
+				return (false, string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, e.Message));
 			} finally {
 				TradingSemaphore.Release();
 			}
 
 			if (inventory.Count == 0) {
-				return (false, string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
+				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(inventory)));
 			}
 
 			return await SendInventory(inventory, targetSteamID, tradeToken, itemsPerTrade).ConfigureAwait(false);
@@ -416,7 +436,7 @@ namespace ArchiSteamFarm {
 				foreach (ulong giftCardID in giftCardIDs.Where(gid => !HandledGifts.Contains(gid))) {
 					HandledGifts.Add(giftCardID);
 
-					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.BotAcceptingGift, giftCardID));
+					Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotAcceptingGift, giftCardID));
 					await LimitGiftsRequestsAsync().ConfigureAwait(false);
 
 					bool result = await Bot.ArchiWebHandler.AcceptDigitalGiftCard(giftCardID).ConfigureAwait(false);
@@ -440,7 +460,7 @@ namespace ArchiSteamFarm {
 			foreach (ulong guestPassID in guestPassIDs.Where(guestPassID => !HandledGifts.Contains(guestPassID))) {
 				HandledGifts.Add(guestPassID);
 
-				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.BotAcceptingGift, guestPassID));
+				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotAcceptingGift, guestPassID));
 				await LimitGiftsRequestsAsync().ConfigureAwait(false);
 
 				ArchiHandler.RedeemGuestPassResponseCallback? response = await Bot.ArchiHandler.RedeemGuestPass(guestPassID).ConfigureAwait(false);
@@ -449,7 +469,7 @@ namespace ArchiSteamFarm {
 					if (response.Result == EResult.OK) {
 						Bot.ArchiLogger.LogGenericInfo(Strings.Success);
 					} else {
-						Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, response.Result));
+						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Result));
 					}
 				} else {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -473,7 +493,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task LimitGiftsRequestsAsync() {
 			if (ASF.GiftsSemaphore == null) {
-				throw new ArgumentNullException(nameof(ASF.GiftsSemaphore));
+				throw new InvalidOperationException(nameof(ASF.GiftsSemaphore));
 			}
 
 			byte giftsLimiterDelay = ASF.GlobalConfig?.GiftsLimiterDelay ?? GlobalConfig.DefaultGiftsLimiterDelay;

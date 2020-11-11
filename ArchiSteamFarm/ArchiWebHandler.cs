@@ -23,6 +23,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -65,10 +67,10 @@ namespace ArchiSteamFarm {
 		private static readonly ConcurrentDictionary<uint, byte> CachedCardCountsForGame = new ConcurrentDictionary<uint, byte>();
 
 		[PublicAPI]
-		public readonly ArchiCacheable<string> CachedApiKey;
+		public ArchiCacheable<string> CachedApiKey { get; }
 
 		[PublicAPI]
-		public readonly WebBrowser WebBrowser;
+		public WebBrowser WebBrowser { get; }
 
 		private readonly Bot Bot;
 		private readonly SemaphoreSlim SessionSemaphore = new SemaphoreSlim(1, 1);
@@ -113,8 +115,16 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async IAsyncEnumerable<Steam.Asset> GetInventoryAsync(ulong steamID = 0, uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID) {
-			if ((appID == 0) || (contextID == 0) || (ASF.InventorySemaphore == null)) {
-				throw new ArgumentNullException(nameof(appID) + " || " + nameof(contextID) + " || " + nameof(ASF.InventorySemaphore));
+			if (appID == 0) {
+				throw new ArgumentOutOfRangeException(nameof(appID));
+			}
+
+			if (contextID == 0) {
+				throw new ArgumentOutOfRangeException(nameof(contextID));
+			}
+
+			if (ASF.InventorySemaphore == null) {
+				throw new InvalidOperationException(nameof(ASF.InventorySemaphore));
 			}
 
 			if (steamID == 0) {
@@ -132,7 +142,7 @@ namespace ArchiSteamFarm {
 
 				steamID = Bot.SteamID;
 			} else if (!new SteamID(steamID).IsIndividualAccount) {
-				throw new NotSupportedException(string.Format(Strings.ErrorObjectIsNull, nameof(steamID)));
+				throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(steamID)));
 			}
 
 			string request = "/inventory/" + steamID + "/" + appID + "/" + contextID + "?count=" + MaxItemsInSingleInventoryRequest + "&l=english";
@@ -148,11 +158,11 @@ namespace ArchiSteamFarm {
 					WebBrowser.ObjectResponse<Steam.InventoryResponse>? response = await UrlGetToJsonObjectWithSession<Steam.InventoryResponse>(SteamCommunityURL, request + (startAssetID > 0 ? "&start_assetid=" + startAssetID : "")).ConfigureAwait(false);
 
 					if (response?.Content == null) {
-						throw new HttpRequestException(string.Format(Strings.ErrorObjectIsNull, nameof(response)));
+						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response)));
 					}
 
 					if (response.Content.Result != EResult.OK) {
-						throw new HttpRequestException(!string.IsNullOrEmpty(response.Content.Error) ? string.Format(Strings.WarningFailedWithError, response.Content.Error) : Strings.WarningFailed);
+						throw new HttpRequestException(!string.IsNullOrEmpty(response.Content.Error) ? string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.Error) : Strings.WarningFailed);
 					}
 
 					if (response.Content.TotalInventoryCount == 0) {
@@ -161,14 +171,14 @@ namespace ArchiSteamFarm {
 					}
 
 					if ((response.Content.Assets == null) || (response.Content.Assets.Count == 0) || (response.Content.Descriptions == null) || (response.Content.Descriptions.Count == 0)) {
-						throw new NotSupportedException(string.Format(Strings.ErrorObjectIsNull, nameof(response.Content.Assets) + " || " + nameof(response.Content.Descriptions)));
+						throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response.Content.Assets) + " || " + nameof(response.Content.Descriptions)));
 					}
 
 					Dictionary<(ulong ClassID, ulong InstanceID), Steam.InventoryResponse.Description> descriptions = new Dictionary<(ulong ClassID, ulong InstanceID), Steam.InventoryResponse.Description>();
 
 					foreach (Steam.InventoryResponse.Description description in response.Content.Descriptions) {
 						if (description.ClassID == 0) {
-							throw new NotSupportedException(string.Format(Strings.ErrorObjectIsNull, nameof(description.ClassID)));
+							throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(description.ClassID)));
 						}
 
 						(ulong ClassID, ulong InstanceID) key = (description.ClassID, description.InstanceID);
@@ -206,7 +216,7 @@ namespace ArchiSteamFarm {
 					}
 
 					if (response.Content.LastAssetID == 0) {
-						throw new NotSupportedException(string.Format(Strings.ErrorObjectIsNull, nameof(response.Content.LastAssetID)));
+						throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response.Content.LastAssetID)));
 					}
 
 					startAssetID = response.Content.LastAssetID;
@@ -279,7 +289,7 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public async Task<Dictionary<uint, string>?> GetOwnedGames(ulong steamID) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-				throw new ArgumentNullException(nameof(steamID));
+				throw new ArgumentOutOfRangeException(nameof(steamID));
 			}
 
 			(bool success, string? steamApiKey) = await CachedApiKey.GetValue().ConfigureAwait(false);
@@ -316,7 +326,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (response == null) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
 
 				return null;
 			}
@@ -357,8 +367,16 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<(bool Success, HashSet<ulong>? MobileTradeOfferIDs)> SendTradeOffer(ulong steamID, IReadOnlyCollection<Steam.Asset>? itemsToGive = null, IReadOnlyCollection<Steam.Asset>? itemsToReceive = null, string? token = null, bool forcedSingleOffer = false, ushort itemsPerTrade = Trading.MaxItemsPerTrade) {
-			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || (((itemsToGive == null) || (itemsToGive.Count == 0)) && ((itemsToReceive == null) || (itemsToReceive.Count == 0))) || (itemsPerTrade < 2)) {
-				throw new ArgumentNullException(nameof(steamID) + " || (" + nameof(itemsToGive) + " && " + nameof(itemsToReceive) + ") || " + nameof(itemsPerTrade));
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+				throw new ArgumentOutOfRangeException(nameof(steamID));
+			}
+
+			if (((itemsToGive == null) || (itemsToGive.Count == 0)) && ((itemsToReceive == null) || (itemsToReceive.Count == 0))) {
+				throw new ArgumentException(nameof(itemsToGive) + " && " + nameof(itemsToReceive));
+			}
+
+			if (itemsPerTrade <= 2) {
+				throw new ArgumentOutOfRangeException(nameof(itemsPerTrade));
 			}
 
 			Steam.TradeOfferSendRequest singleTrade = new Steam.TradeOfferSendRequest();
@@ -399,7 +417,7 @@ namespace ArchiSteamFarm {
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new Dictionary<string, string>(6, StringComparer.Ordinal) {
-				{ "partner", steamID.ToString() },
+				{ "partner", steamID.ToString(CultureInfo.InvariantCulture) },
 				{ "serverid", "1" },
 				{ "trade_offer_create_params", !string.IsNullOrEmpty(token) ? new JObject { { "trade_offer_access_token", token } }.ToString(Formatting.None) : "" },
 				{ "tradeoffermessage", "Sent by " + SharedInfo.PublicIdentifier + "/" + SharedInfo.Version }
@@ -426,13 +444,17 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<WebBrowser.HtmlDocumentResponse?> UrlGetToHtmlDocumentWithSession(string host, string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
-			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
-				throw new ArgumentNullException(nameof(host) + " || " + nameof(request));
+			if (string.IsNullOrEmpty(host)) {
+				throw new ArgumentNullException(nameof(host));
+			}
+
+			if (string.IsNullOrEmpty(request)) {
+				throw new ArgumentNullException(nameof(request));
 			}
 
 			if (maxTries == 0) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 				return null;
 			}
@@ -447,7 +469,7 @@ namespace ArchiSteamFarm {
 					}
 
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 					return null;
 				}
@@ -466,7 +488,7 @@ namespace ArchiSteamFarm {
 
 				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 					return null;
 				}
@@ -484,14 +506,14 @@ namespace ArchiSteamFarm {
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 				return null;
 			}
 
 			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
 			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
 
 				return await UrlGetToHtmlDocumentWithSession(host, request, headers, referer, requestOptions, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 			}
@@ -501,13 +523,17 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<WebBrowser.ObjectResponse<T>?> UrlGetToJsonObjectWithSession<T>(string host, string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) where T : class {
-			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
-				throw new ArgumentNullException(nameof(host) + " || " + nameof(request));
+			if (string.IsNullOrEmpty(host)) {
+				throw new ArgumentNullException(nameof(host));
+			}
+
+			if (string.IsNullOrEmpty(request)) {
+				throw new ArgumentNullException(nameof(request));
 			}
 
 			if (maxTries == 0) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 				return default;
 			}
@@ -522,7 +548,7 @@ namespace ArchiSteamFarm {
 					}
 
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 					return null;
 				}
@@ -541,7 +567,7 @@ namespace ArchiSteamFarm {
 
 				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 					return default;
 				}
@@ -559,14 +585,14 @@ namespace ArchiSteamFarm {
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 				return null;
 			}
 
 			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
 			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
 
 				return await UrlGetToJsonObjectWithSession<T>(host, request, headers, referer, requestOptions, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 			}
@@ -576,13 +602,17 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<WebBrowser.XmlDocumentResponse?> UrlGetToXmlDocumentWithSession(string host, string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
-			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
-				throw new ArgumentNullException(nameof(host) + " || " + nameof(request));
+			if (string.IsNullOrEmpty(host)) {
+				throw new ArgumentNullException(nameof(host));
+			}
+
+			if (string.IsNullOrEmpty(request)) {
+				throw new ArgumentNullException(nameof(request));
 			}
 
 			if (maxTries == 0) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 				return null;
 			}
@@ -597,7 +627,7 @@ namespace ArchiSteamFarm {
 					}
 
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 					return null;
 				}
@@ -616,7 +646,7 @@ namespace ArchiSteamFarm {
 
 				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 					return null;
 				}
@@ -634,14 +664,14 @@ namespace ArchiSteamFarm {
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 				return null;
 			}
 
 			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
 			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
 
 				return await UrlGetToXmlDocumentWithSession(host, request, headers, referer, requestOptions, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 			}
@@ -651,13 +681,17 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<bool> UrlHeadWithSession(string host, string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
-			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
-				throw new ArgumentNullException(nameof(host) + " || " + nameof(request));
+			if (string.IsNullOrEmpty(host)) {
+				throw new ArgumentNullException(nameof(host));
+			}
+
+			if (string.IsNullOrEmpty(request)) {
+				throw new ArgumentNullException(nameof(request));
 			}
 
 			if (maxTries == 0) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 				return false;
 			}
@@ -672,7 +706,7 @@ namespace ArchiSteamFarm {
 					}
 
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 					return false;
 				}
@@ -691,7 +725,7 @@ namespace ArchiSteamFarm {
 
 				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 					return false;
 				}
@@ -709,14 +743,14 @@ namespace ArchiSteamFarm {
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 				return false;
 			}
 
 			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
 			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
 
 				return await UrlHeadWithSession(host, request, headers, referer, requestOptions, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 			}
@@ -726,13 +760,21 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<WebBrowser.HtmlDocumentResponse?> UrlPostToHtmlDocumentWithSession(string host, string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, string? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
-			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request) || !Enum.IsDefined(typeof(ESession), session)) {
-				throw new ArgumentNullException(nameof(host) + " || " + nameof(request) + " || " + nameof(session));
+			if (string.IsNullOrEmpty(host)) {
+				throw new ArgumentNullException(nameof(host));
+			}
+
+			if (string.IsNullOrEmpty(request)) {
+				throw new ArgumentNullException(nameof(request));
+			}
+
+			if (!Enum.IsDefined(typeof(ESession), session)) {
+				throw new InvalidEnumArgumentException(nameof(session), (int) session, typeof(ESession));
 			}
 
 			if (maxTries == 0) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 				return null;
 			}
@@ -747,7 +789,7 @@ namespace ArchiSteamFarm {
 					}
 
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 					return null;
 				}
@@ -766,7 +808,7 @@ namespace ArchiSteamFarm {
 
 				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 					return null;
 				}
@@ -807,14 +849,14 @@ namespace ArchiSteamFarm {
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 				return null;
 			}
 
 			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
 			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
 
 				return await UrlPostToHtmlDocumentWithSession(host, request, headers, data, referer, requestOptions, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 			}
@@ -824,13 +866,21 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<WebBrowser.ObjectResponse<T>?> UrlPostToJsonObjectWithSession<T>(string host, string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, string? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) where T : class {
-			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request) || !Enum.IsDefined(typeof(ESession), session)) {
-				throw new ArgumentNullException(nameof(host) + " || " + nameof(request) + " || " + nameof(session));
+			if (string.IsNullOrEmpty(host)) {
+				throw new ArgumentNullException(nameof(host));
+			}
+
+			if (string.IsNullOrEmpty(request)) {
+				throw new ArgumentNullException(nameof(request));
+			}
+
+			if (!Enum.IsDefined(typeof(ESession), session)) {
+				throw new InvalidEnumArgumentException(nameof(session), (int) session, typeof(ESession));
 			}
 
 			if (maxTries == 0) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 				return null;
 			}
@@ -845,7 +895,7 @@ namespace ArchiSteamFarm {
 					}
 
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 					return null;
 				}
@@ -864,7 +914,7 @@ namespace ArchiSteamFarm {
 
 				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 					return null;
 				}
@@ -905,14 +955,14 @@ namespace ArchiSteamFarm {
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 				return null;
 			}
 
 			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
 			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
 
 				return await UrlPostToJsonObjectWithSession<T>(host, request, headers, data, referer, requestOptions, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 			}
@@ -922,13 +972,21 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<WebBrowser.ObjectResponse<T>?> UrlPostToJsonObjectWithSession<T>(string host, string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, ICollection<KeyValuePair<string, string>>? data = null, string? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) where T : class {
-			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request) || !Enum.IsDefined(typeof(ESession), session)) {
-				throw new ArgumentNullException(nameof(host) + " || " + nameof(request) + " || " + nameof(session));
+			if (string.IsNullOrEmpty(host)) {
+				throw new ArgumentNullException(nameof(host));
+			}
+
+			if (string.IsNullOrEmpty(request)) {
+				throw new ArgumentNullException(nameof(request));
+			}
+
+			if (!Enum.IsDefined(typeof(ESession), session)) {
+				throw new InvalidEnumArgumentException(nameof(session), (int) session, typeof(ESession));
 			}
 
 			if (maxTries == 0) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 				return null;
 			}
@@ -943,7 +1001,7 @@ namespace ArchiSteamFarm {
 					}
 
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 					return null;
 				}
@@ -962,7 +1020,7 @@ namespace ArchiSteamFarm {
 
 				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 					return null;
 				}
@@ -1006,14 +1064,14 @@ namespace ArchiSteamFarm {
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 				return null;
 			}
 
 			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
 			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
 
 				return await UrlPostToJsonObjectWithSession<T>(host, request, headers, data, referer, requestOptions, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 			}
@@ -1023,13 +1081,21 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<bool> UrlPostWithSession(string host, string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, string? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
-			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request) || !Enum.IsDefined(typeof(ESession), session)) {
-				throw new ArgumentNullException(nameof(host) + " || " + nameof(request) + " || " + nameof(session));
+			if (string.IsNullOrEmpty(host)) {
+				throw new ArgumentNullException(nameof(host));
+			}
+
+			if (string.IsNullOrEmpty(request)) {
+				throw new ArgumentNullException(nameof(request));
+			}
+
+			if (!Enum.IsDefined(typeof(ESession), session)) {
+				throw new InvalidEnumArgumentException(nameof(session), (int) session, typeof(ESession));
 			}
 
 			if (maxTries == 0) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 				return false;
 			}
@@ -1044,7 +1110,7 @@ namespace ArchiSteamFarm {
 					}
 
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 					return false;
 				}
@@ -1063,7 +1129,7 @@ namespace ArchiSteamFarm {
 
 				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 					return false;
 				}
@@ -1104,14 +1170,14 @@ namespace ArchiSteamFarm {
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
 				return false;
 			}
 
 			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
 			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
 
 				return await UrlPostWithSession(host, request, headers, data, referer, requestOptions, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 			}
@@ -1121,8 +1187,16 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public static async Task<T?> WebLimitRequest<T>(string service, Func<Task<T?>> function) where T : class {
-			if (string.IsNullOrEmpty(service) || (function == null) || (ASF.WebLimitingSemaphores == null)) {
-				throw new ArgumentNullException(nameof(service) + " || " + nameof(function) + " || " + nameof(ASF.WebLimitingSemaphores));
+			if (string.IsNullOrEmpty(service)) {
+				throw new ArgumentNullException(nameof(service));
+			}
+
+			if (function == null) {
+				throw new ArgumentNullException(nameof(function));
+			}
+
+			if (ASF.WebLimitingSemaphores == null) {
+				throw new InvalidOperationException(nameof(ASF.WebLimitingSemaphores));
 			}
 
 			ushort webLimiterDelay = ASF.GlobalConfig?.WebLimiterDelay ?? GlobalConfig.DefaultWebLimiterDelay;
@@ -1132,7 +1206,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!ASF.WebLimitingSemaphores.TryGetValue(service, out (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore) limiters)) {
-				ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(service), service));
+				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(service), service));
 
 				if (!ASF.WebLimitingSemaphores.TryGetValue(nameof(ArchiWebHandler), out limiters)) {
 					ASF.ArchiLogger.LogNullError(nameof(limiters));
@@ -1165,7 +1239,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> AcceptDigitalGiftCard(ulong giftCardID) {
 			if (giftCardID == 0) {
-				throw new ArgumentNullException(nameof(giftCardID));
+				throw new ArgumentOutOfRangeException(nameof(giftCardID));
 			}
 
 			const string request = "/gifts/0/resolvegiftcard";
@@ -1173,7 +1247,7 @@ namespace ArchiSteamFarm {
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new Dictionary<string, string>(3, StringComparer.Ordinal) {
 				{ "accept", "1" },
-				{ "giftcardid", giftCardID.ToString() }
+				{ "giftcardid", giftCardID.ToString(CultureInfo.InvariantCulture) }
 			};
 
 			WebBrowser.ObjectResponse<Steam.EResultResponse>? response = await UrlPostToJsonObjectWithSession<Steam.EResultResponse>(SteamStoreURL, request, data: data).ConfigureAwait(false);
@@ -1193,14 +1267,14 @@ namespace ArchiSteamFarm {
 
 		internal async Task<(bool Success, bool RequiresMobileConfirmation)> AcceptTradeOffer(ulong tradeID, byte maxTries = WebBrowser.MaxTries) {
 			if (tradeID == 0) {
-				throw new ArgumentNullException(nameof(tradeID));
+				throw new ArgumentOutOfRangeException(nameof(tradeID));
 			}
 
 			string request = "/tradeoffer/" + tradeID + "/accept";
 
 			if (maxTries == 0) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, SteamCommunityURL + request));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, SteamCommunityURL + request));
 
 				return (false, false);
 			}
@@ -1210,7 +1284,7 @@ namespace ArchiSteamFarm {
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new Dictionary<string, string>(3, StringComparer.Ordinal) {
 				{ "serverid", "1" },
-				{ "tradeofferid", tradeID.ToString() }
+				{ "tradeofferid", tradeID.ToString(CultureInfo.InvariantCulture) }
 			};
 
 			WebBrowser.ObjectResponse<Steam.TradeOfferAcceptResponse>? response = await UrlPostToJsonObjectWithSession<Steam.TradeOfferAcceptResponse>(SteamCommunityURL, request, data: data, referer: referer, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors).ConfigureAwait(false);
@@ -1226,7 +1300,7 @@ namespace ArchiSteamFarm {
 				}
 
 				// This is actually client error with a reason, so it doesn't make sense to retry
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningFailedWithError, response.Content!.ErrorText));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content!.ErrorText));
 
 				return (false, false);
 			}
@@ -1236,7 +1310,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> AddFreeLicense(uint subID) {
 			if (subID == 0) {
-				throw new ArgumentNullException(nameof(subID));
+				throw new ArgumentOutOfRangeException(nameof(subID));
 			}
 
 			const string request = "/checkout/addfreelicense";
@@ -1244,7 +1318,7 @@ namespace ArchiSteamFarm {
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new Dictionary<string, string>(3, StringComparer.Ordinal) {
 				{ "action", "add_to_cart" },
-				{ "subid", subID.ToString() }
+				{ "subid", subID.ToString(CultureInfo.InvariantCulture) }
 			};
 
 			using WebBrowser.HtmlDocumentResponse? response = await UrlPostToHtmlDocumentWithSession(SteamStoreURL, request, data: data).ConfigureAwait(false);
@@ -1269,7 +1343,7 @@ namespace ArchiSteamFarm {
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new Dictionary<string, string>(3, StringComparer.Ordinal) {
-				{ "eCommentPermission", ((byte) userPrivacy.CommentPermission).ToString() },
+				{ "eCommentPermission", ((byte) userPrivacy.CommentPermission).ToString(CultureInfo.InvariantCulture) },
 				{ "Privacy", JsonConvert.SerializeObject(userPrivacy.Settings) }
 			};
 
@@ -1290,20 +1364,20 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> ClearFromDiscoveryQueue(uint appID) {
 			if (appID == 0) {
-				throw new ArgumentNullException(nameof(appID));
+				throw new ArgumentOutOfRangeException(nameof(appID));
 			}
 
 			string request = "/app/" + appID;
 
 			// Extra entry for sessionID
-			Dictionary<string, string> data = new Dictionary<string, string>(2, StringComparer.Ordinal) { { "appid_to_clear_from_queue", appID.ToString() } };
+			Dictionary<string, string> data = new Dictionary<string, string>(2, StringComparer.Ordinal) { { "appid_to_clear_from_queue", appID.ToString(CultureInfo.InvariantCulture) } };
 
 			return await UrlPostWithSession(SteamStoreURL, request, data: data).ConfigureAwait(false);
 		}
 
 		internal async Task<bool> DeclineTradeOffer(ulong tradeID) {
 			if (tradeID == 0) {
-				throw new ArgumentNullException(nameof(tradeID));
+				throw new ArgumentOutOfRangeException(nameof(tradeID));
 			}
 
 			(bool success, string? steamApiKey) = await CachedApiKey.GetValue().ConfigureAwait(false);
@@ -1339,7 +1413,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (response == null) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
 
 				return false;
 			}
@@ -1397,7 +1471,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (response == null) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
 
 				return null;
 			}
@@ -1505,7 +1579,7 @@ namespace ArchiSteamFarm {
 
 				if (itemsToGive.Count > 0) {
 					if (!ParseItems(descriptions, itemsToGive, tradeOffer.ItemsToGive)) {
-						Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorParsingObject, nameof(itemsToGive)));
+						Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorParsingObject, nameof(itemsToGive)));
 
 						return null;
 					}
@@ -1515,7 +1589,7 @@ namespace ArchiSteamFarm {
 
 				if (itemsToReceive.Count > 0) {
 					if (!ParseItems(descriptions, itemsToReceive, tradeOffer.ItemsToReceive)) {
-						Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorParsingObject, nameof(itemsToReceive)));
+						Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorParsingObject, nameof(itemsToReceive)));
 
 						return null;
 					}
@@ -1550,7 +1624,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (response == null) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
 
 				return null;
 			}
@@ -1558,7 +1632,7 @@ namespace ArchiSteamFarm {
 			List<KeyValue> apps = response["apps"].Children;
 
 			if (apps.Count == 0) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsEmpty, nameof(apps)));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(apps)));
 
 				return null;
 			}
@@ -1580,7 +1654,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<IDocument?> GetBadgePage(byte page) {
 			if (page == 0) {
-				throw new ArgumentNullException(nameof(page));
+				throw new ArgumentOutOfRangeException(nameof(page));
 			}
 
 			string request = "/my/badges?l=english&p=" + page;
@@ -1592,7 +1666,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<byte> GetCardCountForGame(uint appID) {
 			if (appID == 0) {
-				throw new ArgumentNullException(nameof(appID));
+				throw new ArgumentOutOfRangeException(nameof(appID));
 			}
 
 			if (CachedCardCountsForGame.TryGetValue(appID, out byte result)) {
@@ -1622,8 +1696,16 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<IDocument?> GetConfirmationsPage(string deviceID, string confirmationHash, uint time) {
-			if (string.IsNullOrEmpty(deviceID) || string.IsNullOrEmpty(confirmationHash) || (time == 0)) {
-				throw new ArgumentNullException(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time));
+			if (string.IsNullOrEmpty(deviceID)) {
+				throw new ArgumentNullException(nameof(deviceID));
+			}
+
+			if (string.IsNullOrEmpty(confirmationHash)) {
+				throw new ArgumentNullException(nameof(confirmationHash));
+			}
+
+			if (time == 0) {
+				throw new ArgumentOutOfRangeException(nameof(time));
 			}
 
 			if (!Initialized) {
@@ -1672,13 +1754,13 @@ namespace ArchiSteamFarm {
 				}
 
 				if (giftCardIDText.Length <= 13) {
-					Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(giftCardIDText)));
+					Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(giftCardIDText)));
 
 					return null;
 				}
 
 				if (!ulong.TryParse(giftCardIDText.Substring(13), out ulong giftCardID) || (giftCardID == 0)) {
-					Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorParsingObject, nameof(giftCardID)));
+					Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorParsingObject, nameof(giftCardID)));
 
 					return null;
 				}
@@ -1737,7 +1819,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<IDocument?> GetGameCardsPage(uint appID) {
 			if (appID == 0) {
-				throw new ArgumentNullException(nameof(appID));
+				throw new ArgumentOutOfRangeException(nameof(appID));
 			}
 
 			string request = "/my/gamecards/" + appID + "?l=english";
@@ -1770,7 +1852,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (response == null) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
 
 				return 0;
 			}
@@ -1788,7 +1870,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<byte?> GetTradeHoldDurationForTrade(ulong tradeID) {
 			if (tradeID == 0) {
-				throw new ArgumentNullException(nameof(tradeID));
+				throw new ArgumentOutOfRangeException(nameof(tradeID));
 			}
 
 			string request = "/tradeoffer/" + tradeID + "?l=english";
@@ -1843,7 +1925,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<byte?> GetTradeHoldDurationForUser(ulong steamID, string? tradeToken = null) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-				throw new ArgumentNullException(nameof(steamID));
+				throw new ArgumentOutOfRangeException(nameof(steamID));
 			}
 
 			(bool success, string? steamApiKey) = await CachedApiKey.GetValue().ConfigureAwait(false);
@@ -1883,7 +1965,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (response == null) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
 
 				return null;
 			}
@@ -1900,8 +1982,24 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool?> HandleConfirmation(string deviceID, string confirmationHash, uint time, ulong confirmationID, ulong confirmationKey, bool accept) {
-			if (string.IsNullOrEmpty(deviceID) || string.IsNullOrEmpty(confirmationHash) || (time == 0) || (confirmationID == 0) || (confirmationKey == 0)) {
-				throw new ArgumentNullException(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time) + " || " + nameof(confirmationID) + " || " + nameof(confirmationKey));
+			if (string.IsNullOrEmpty(deviceID)) {
+				throw new ArgumentNullException(nameof(deviceID));
+			}
+
+			if (string.IsNullOrEmpty(confirmationHash)) {
+				throw new ArgumentNullException(nameof(confirmationHash));
+			}
+
+			if (time == 0) {
+				throw new ArgumentOutOfRangeException(nameof(time));
+			}
+
+			if (confirmationID == 0) {
+				throw new ArgumentOutOfRangeException(nameof(confirmationID));
+			}
+
+			if (confirmationKey == 0) {
+				throw new ArgumentOutOfRangeException(nameof(confirmationKey));
 			}
 
 			if (!Initialized) {
@@ -1926,8 +2024,20 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool?> HandleConfirmations(string deviceID, string confirmationHash, uint time, IReadOnlyCollection<MobileAuthenticator.Confirmation> confirmations, bool accept) {
-			if (string.IsNullOrEmpty(deviceID) || string.IsNullOrEmpty(confirmationHash) || (time == 0) || (confirmations == null) || (confirmations.Count == 0)) {
-				throw new ArgumentNullException(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time) + " || " + nameof(confirmations));
+			if (string.IsNullOrEmpty(deviceID)) {
+				throw new ArgumentNullException(nameof(deviceID));
+			}
+
+			if (string.IsNullOrEmpty(confirmationHash)) {
+				throw new ArgumentNullException(nameof(confirmationHash));
+			}
+
+			if (time == 0) {
+				throw new ArgumentOutOfRangeException(nameof(time));
+			}
+
+			if ((confirmations == null) || (confirmations.Count == 0)) {
+				throw new ArgumentNullException(nameof(confirmations));
 			}
 
 			if (!Initialized) {
@@ -1948,18 +2058,18 @@ namespace ArchiSteamFarm {
 
 			// Extra entry for sessionID
 			List<KeyValuePair<string, string>> data = new List<KeyValuePair<string, string>>(8 + (confirmations.Count * 2)) {
-				new KeyValuePair<string, string>("a", Bot.SteamID.ToString()),
+				new KeyValuePair<string, string>("a", Bot.SteamID.ToString(CultureInfo.InvariantCulture)),
 				new KeyValuePair<string, string>("k", confirmationHash),
 				new KeyValuePair<string, string>("m", "android"),
 				new KeyValuePair<string, string>("op", accept ? "allow" : "cancel"),
 				new KeyValuePair<string, string>("p", deviceID),
-				new KeyValuePair<string, string>("t", time.ToString()),
+				new KeyValuePair<string, string>("t", time.ToString(CultureInfo.InvariantCulture)),
 				new KeyValuePair<string, string>("tag", "conf")
 			};
 
 			foreach (MobileAuthenticator.Confirmation confirmation in confirmations) {
-				data.Add(new KeyValuePair<string, string>("cid[]", confirmation.ID.ToString()));
-				data.Add(new KeyValuePair<string, string>("ck[]", confirmation.Key.ToString()));
+				data.Add(new KeyValuePair<string, string>("cid[]", confirmation.ID.ToString(CultureInfo.InvariantCulture)));
+				data.Add(new KeyValuePair<string, string>("ck[]", confirmation.Key.ToString(CultureInfo.InvariantCulture)));
 			}
 
 			WebBrowser.ObjectResponse<Steam.BooleanResponse>? response = await UrlPostToJsonObjectWithSession<Steam.BooleanResponse>(SteamCommunityURL, request, data: data).ConfigureAwait(false);
@@ -1968,8 +2078,16 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> Init(ulong steamID, EUniverse universe, string webAPIUserNonce, string? parentalCode = null) {
-			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || (universe == EUniverse.Invalid) || !Enum.IsDefined(typeof(EUniverse), universe) || string.IsNullOrEmpty(webAPIUserNonce)) {
-				throw new ArgumentNullException(nameof(steamID) + " || " + nameof(universe) + " || " + nameof(webAPIUserNonce));
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+				throw new ArgumentOutOfRangeException(nameof(steamID));
+			}
+
+			if ((universe == EUniverse.Invalid) || !Enum.IsDefined(typeof(EUniverse), universe)) {
+				throw new InvalidEnumArgumentException(nameof(universe), (int) universe, typeof(EUniverse));
+			}
+
+			if (string.IsNullOrEmpty(webAPIUserNonce)) {
+				throw new ArgumentNullException(nameof(webAPIUserNonce));
 			}
 
 			byte[]? publicKey = KeyDictionary.GetPublicKey(universe);
@@ -1997,7 +2115,7 @@ namespace ArchiSteamFarm {
 			byte[] encryptedLoginKey = CryptoHelper.SymmetricEncrypt(loginKey, sessionKey);
 
 			// We're now ready to send the data to Steam API
-			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.LoggingIn, ISteamUserAuth));
+			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.LoggingIn, ISteamUserAuth));
 
 			KeyValue? response;
 
@@ -2051,7 +2169,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(steamID.ToString()));
+			string sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(steamID.ToString(CultureInfo.InvariantCulture)));
 
 			WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", "." + SteamCommunityHost));
 			WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", "." + SteamHelpHost));
@@ -2075,7 +2193,7 @@ namespace ArchiSteamFarm {
 			Bot.ArchiLogger.LogGenericInfo(Strings.Success);
 
 			// Unlock Steam Parental if needed
-			if ((parentalCode != null) && (parentalCode.Length == 4)) {
+			if (parentalCode?.Length == BotConfig.SteamParentalCodeLength) {
 				if (!await UnlockParentalAccount(parentalCode).ConfigureAwait(false)) {
 					return false;
 				}
@@ -2089,7 +2207,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> JoinGroup(ulong groupID) {
 			if ((groupID == 0) || !new SteamID(groupID).IsClanAccount) {
-				throw new ArgumentNullException(nameof(groupID));
+				throw new ArgumentOutOfRangeException(nameof(groupID));
 			}
 
 			string request = "/gid/" + groupID;
@@ -2102,7 +2220,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task MarkInventory() {
 			if (ASF.InventorySemaphore == null) {
-				throw new ArgumentNullException(nameof(ASF.InventorySemaphore));
+				throw new InvalidOperationException(nameof(ASF.InventorySemaphore));
 			}
 
 			// We aim to have a maximum of 2 tasks, one already working, and one waiting in the queue
@@ -2185,8 +2303,12 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> UnpackBooster(uint appID, ulong itemID) {
-			if ((appID == 0) || (itemID == 0)) {
-				throw new ArgumentNullException(nameof(appID) + " || " + nameof(itemID));
+			if (appID == 0) {
+				throw new ArgumentOutOfRangeException(nameof(appID));
+			}
+
+			if (itemID == 0) {
+				throw new ArgumentOutOfRangeException(nameof(itemID));
 			}
 
 			string? profileURL = await GetAbsoluteProfileURL().ConfigureAwait(false);
@@ -2201,8 +2323,8 @@ namespace ArchiSteamFarm {
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new Dictionary<string, string>(3, StringComparer.Ordinal) {
-				{ "appid", appID.ToString() },
-				{ "communityitemid", itemID.ToString() }
+				{ "appid", appID.ToString(CultureInfo.InvariantCulture) },
+				{ "communityitemid", itemID.ToString(CultureInfo.InvariantCulture) }
 			};
 
 			WebBrowser.ObjectResponse<Steam.EResultResponse>? response = await UrlPostToJsonObjectWithSession<Steam.EResultResponse>(SteamCommunityURL, request, data: data).ConfigureAwait(false);
@@ -2293,7 +2415,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			return uri.AbsolutePath.Equals(profileURL);
+			return uri.AbsolutePath.Equals(profileURL, StringComparison.OrdinalIgnoreCase);
 		}
 
 		private async Task<bool?> IsSessionExpired() {
@@ -2349,12 +2471,20 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(uri));
 			}
 
-			return uri.AbsolutePath.StartsWith("/login", StringComparison.Ordinal) || uri.Host.Equals("lostauth");
+			return uri.AbsolutePath.StartsWith("/login", StringComparison.OrdinalIgnoreCase) || uri.Host.Equals("lostauth", StringComparison.OrdinalIgnoreCase);
 		}
 
 		private static bool ParseItems(IReadOnlyDictionary<(uint AppID, ulong ClassID, ulong InstanceID), Steam.InventoryResponse.Description> descriptions, IReadOnlyCollection<KeyValue> input, ICollection<Steam.Asset> output) {
-			if ((descriptions == null) || (input == null) || (input.Count == 0) || (output == null)) {
-				throw new ArgumentNullException(nameof(descriptions) + " || " + nameof(input) + " || " + nameof(output));
+			if (descriptions == null) {
+				throw new ArgumentNullException(nameof(descriptions));
+			}
+
+			if ((input == null) || (input.Count == 0)) {
+				throw new ArgumentNullException(nameof(input));
+			}
+
+			if (output == null) {
+				throw new ArgumentNullException(nameof(output));
 			}
 
 			foreach (KeyValue item in input) {
@@ -2517,7 +2647,7 @@ namespace ArchiSteamFarm {
 					return (false, null);
 				default:
 					// We got an unhandled error, this should never happen
-					Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.State), result.State));
+					Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(result.State), result.State));
 
 					return (false, null);
 			}
@@ -2544,15 +2674,19 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool> UnlockParentalAccountForService(string serviceURL, string parentalCode, byte maxTries = WebBrowser.MaxTries) {
-			if (string.IsNullOrEmpty(serviceURL) || string.IsNullOrEmpty(parentalCode)) {
-				throw new ArgumentNullException(nameof(serviceURL) + " || " + nameof(parentalCode));
+			if (string.IsNullOrEmpty(serviceURL)) {
+				throw new ArgumentNullException(nameof(serviceURL));
+			}
+
+			if (string.IsNullOrEmpty(parentalCode)) {
+				throw new ArgumentNullException(nameof(parentalCode));
 			}
 
 			const string request = "/parental/ajaxunlock";
 
 			if (maxTries == 0) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, serviceURL + request));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, serviceURL + request));
 
 				return false;
 			}
@@ -2580,7 +2714,7 @@ namespace ArchiSteamFarm {
 
 			// Under special brain-damaged circumstances, Steam might just return our own profile as a response to the request, for absolutely no reason whatsoever - just try again in this case
 			if (await IsProfileUri(response.FinalUri, false).ConfigureAwait(false)) {
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
 
 				return await UnlockParentalAccountForService(serviceURL, parentalCode, --maxTries).ConfigureAwait(false);
 			}

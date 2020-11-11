@@ -111,7 +111,11 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			request.BotConfig.ShouldSerializeHelperProperties = false;
 			request.BotConfig.ShouldSerializeSensitiveDetails = true;
 
-			HashSet<string> bots = botNames.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Where(botName => botName != SharedInfo.ASF).ToHashSet(Bot.BotsComparer);
+			HashSet<string> bots = botNames.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToHashSet(Bot.BotsComparer);
+
+			if (bots.Any(botName => !ASF.IsValidBotName(botName))) {
+				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(botNames))));
+			}
 
 			Dictionary<string, bool> result = new Dictionary<string, bool>(bots.Count, Bot.BotsComparer);
 
@@ -374,7 +378,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				throw new InvalidOperationException(nameof(Bot.Bots));
 			}
 
-			if (string.IsNullOrEmpty(request.NewName) || request.NewName!.Equals(SharedInfo.ASF, StringComparison.OrdinalIgnoreCase) || Bot.Bots.ContainsKey(request.NewName)) {
+			if (string.IsNullOrEmpty(request.NewName) || !ASF.IsValidBotName(request.NewName!) || Bot.Bots.ContainsKey(request.NewName!)) {
 				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(request.NewName))));
 			}
 
@@ -382,7 +386,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botName)));
 			}
 
-			bool result = await bot.Rename(request.NewName).ConfigureAwait(false);
+			bool result = await bot.Rename(request.NewName!).ConfigureAwait(false);
 
 			return Ok(new GenericResponse(result));
 		}

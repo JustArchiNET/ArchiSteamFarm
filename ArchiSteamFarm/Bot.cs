@@ -1195,7 +1195,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<ClientMsgHandler>? customHandlers = await PluginsCore.OnBotSteamHandlersInit(bot).ConfigureAwait(false);
 
-			if ((customHandlers != null) && (customHandlers.Count > 0)) {
+			if (customHandlers?.Count > 0) {
 				foreach (ClientMsgHandler customHandler in customHandlers) {
 					bot.SteamClient.AddHandler(customHandler);
 				}
@@ -3236,11 +3236,11 @@ namespace ArchiSteamFarm {
 					BotDatabase.RemoveGameToRedeemInBackground(key!);
 
 					// If user omitted the name or intentionally provided the same name as key, replace it with the Steam result
-					if (name!.Equals(key) && (result.Items != null) && (result.Items.Count > 0)) {
+					if (name!.Equals(key) && (result.Items?.Count > 0)) {
 						name = string.Join(", ", result.Items.Values);
 					}
 
-					string logEntry = name + DefaultBackgroundKeysRedeemerSeparator + "[" + result.PurchaseResultDetail + "]" + ((result.Items != null) && (result.Items.Count > 0) ? DefaultBackgroundKeysRedeemerSeparator + string.Join(", ", result.Items) : "") + DefaultBackgroundKeysRedeemerSeparator + key;
+					string logEntry = name + DefaultBackgroundKeysRedeemerSeparator + "[" + result.PurchaseResultDetail + "]" + (result.Items?.Count > 0 ? DefaultBackgroundKeysRedeemerSeparator + string.Join(", ", result.Items) : "") + DefaultBackgroundKeysRedeemerSeparator + key;
 
 					string filePath = GetFilePath(redeemed ? EFileType.KeysToRedeemUsed : EFileType.KeysToRedeemUnused);
 
@@ -3373,7 +3373,7 @@ namespace ArchiSteamFarm {
 					return (true, null);
 			}
 
-			if ((steamParentalCode != null) && (steamParentalCode.Length == BotConfig.SteamParentalCodeLength)) {
+			if (steamParentalCode?.Length == BotConfig.SteamParentalCodeLength) {
 				byte i = 0;
 				byte[] password = new byte[steamParentalCode.Length];
 

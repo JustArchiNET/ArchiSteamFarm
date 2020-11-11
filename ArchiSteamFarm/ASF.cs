@@ -23,6 +23,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -77,7 +79,7 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public static bool IsOwner(ulong steamID) {
 			if (steamID == 0) {
-				throw new ArgumentNullException(nameof(steamID));
+				throw new ArgumentOutOfRangeException(nameof(steamID));
 			}
 
 			return (steamID == GlobalConfig?.SteamOwnerID) || (Debugging.IsDebugBuild && (steamID == SharedInfo.ArchiSteamID));
@@ -85,7 +87,7 @@ namespace ArchiSteamFarm {
 
 		internal static string GetFilePath(EFileType fileType) {
 			if (!Enum.IsDefined(typeof(EFileType), fileType)) {
-				throw new ArgumentNullException(nameof(fileType));
+				throw new InvalidEnumArgumentException(nameof(fileType), (int) fileType, typeof(EFileType));
 			}
 
 			return fileType switch {
@@ -97,7 +99,7 @@ namespace ArchiSteamFarm {
 
 		internal static async Task Init() {
 			if (GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(GlobalConfig));
+				throw new InvalidOperationException(nameof(GlobalConfig));
 			}
 
 			if (!PluginsCore.InitPlugins()) {
@@ -144,15 +146,15 @@ namespace ArchiSteamFarm {
 
 			// The only purpose of using hashingAlgorithm below is to cut on a potential size of the resource name - paths can be really long, and we almost certainly have some upper limit on the resource name we can allocate
 			// At the same time it'd be the best if we avoided all special characters, such as '/' found e.g. in base64, as we can't be sure that it's not a prohibited character in regards to native OS implementation
-			// Because of that, MD5 is sufficient for our case, as it generates alphanumeric characters only, and is barely 128-bit long. We don't need any kind of complex cryptography or collision detection here, any hashing algorithm will do, and the shorter the better
+			// Because of that, SHA256 is sufficient for our case, as it generates alphanumeric characters only, and is barely 256-bit long. We don't need any kind of complex cryptography or collision detection here, any hashing algorithm will do, and the shorter the better
 			string networkGroupText = "";
 
 			if (!string.IsNullOrEmpty(Program.NetworkGroup)) {
-				using MD5 hashingAlgorithm = MD5.Create();
+				using SHA256CryptoServiceProvider hashingAlgorithm = new SHA256CryptoServiceProvider();
 
 				networkGroupText = "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(Program.NetworkGroup!))).Replace("-", "");
 			} else if (!string.IsNullOrEmpty(globalConfig.WebProxyText)) {
-				using MD5 hashingAlgorithm = MD5.Create();
+				using SHA256CryptoServiceProvider hashingAlgorithm = new SHA256CryptoServiceProvider();
 
 				networkGroupText = "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(globalConfig.WebProxyText!))).Replace("-", "");
 			}
@@ -184,9 +186,21 @@ namespace ArchiSteamFarm {
 			GlobalDatabase = globalDatabase;
 		}
 
+		internal static bool IsValidBotName(string botName) {
+			if (string.IsNullOrEmpty(botName)) {
+				throw new ArgumentNullException(nameof(botName));
+			}
+
+			if (botName[0] == '.') {
+				return false;
+			}
+
+			return !botName.Equals(SharedInfo.ASF, StringComparison.OrdinalIgnoreCase);
+		}
+
 		internal static async Task RestartOrExit() {
 			if (GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(GlobalConfig));
+				throw new InvalidOperationException(nameof(GlobalConfig));
 			}
 
 			if (Program.RestartAllowed && GlobalConfig.AutoRestart) {
@@ -201,8 +215,12 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static async Task<Version?> Update(bool updateOverride = false) {
-			if ((GlobalConfig == null) || (WebBrowser == null)) {
-				throw new ArgumentNullException(nameof(GlobalConfig) + " || " + nameof(WebBrowser));
+			if (GlobalConfig == null) {
+				throw new InvalidOperationException(nameof(GlobalConfig));
+			}
+
+			if (WebBrowser == null) {
+				throw new InvalidOperationException(nameof(WebBrowser));
 			}
 
 			if (!SharedInfo.BuildInfo.CanUpdate || (GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None)) {
@@ -250,7 +268,7 @@ namespace ArchiSteamFarm {
 
 				Version newVersion = new Version(releaseResponse.Tag!);
 
-				ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateVersionInfo, SharedInfo.Version, newVersion));
+				ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.UpdateVersionInfo, SharedInfo.Version, newVersion));
 
 				if (SharedInfo.Version >= newVersion) {
 					if (SharedInfo.Version > newVersion) {
@@ -294,7 +312,7 @@ namespace ArchiSteamFarm {
 					ArchiLogger.LogGenericInfo(releaseResponse.ChangelogPlainText!);
 				}
 
-				ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateDownloadingNewVersion, newVersion, binaryAsset.Size / 1024 / 1024));
+				ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.UpdateDownloadingNewVersion, newVersion, binaryAsset.Size / 1024 / 1024));
 
 				Progress<byte> progressReporter = new Progress<byte>();
 
@@ -355,8 +373,12 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task<bool> CanHandleWriteEvent(string filePath) {
-			if (string.IsNullOrEmpty(filePath) || (LastWriteEvents == null)) {
-				throw new ArgumentNullException(nameof(filePath) + " || " + nameof(LastWriteEvents));
+			if (string.IsNullOrEmpty(filePath)) {
+				throw new ArgumentNullException(nameof(filePath));
+			}
+
+			if (LastWriteEvents == null) {
+				throw new InvalidOperationException(nameof(LastWriteEvents));
 			}
 
 			// Save our event in dictionary
@@ -388,7 +410,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (Bot.BotsComparer == null) {
-				throw new ArgumentNullException(nameof(Bot.BotsComparer));
+				throw new InvalidOperationException(nameof(Bot.BotsComparer));
 			}
 
 			FileSystemWatcher = new FileSystemWatcher(SharedInfo.ConfigDirectory) { NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite };
@@ -401,18 +423,6 @@ namespace ArchiSteamFarm {
 			LastWriteEvents = new ConcurrentDictionary<string, object>(Bot.BotsComparer);
 
 			FileSystemWatcher.EnableRaisingEvents = true;
-		}
-
-		private static bool IsValidBotName(string botName) {
-			if (string.IsNullOrEmpty(botName)) {
-				throw new ArgumentNullException(nameof(botName));
-			}
-
-			if (botName[0] == '.') {
-				return false;
-			}
-
-			return !botName.Equals(SharedInfo.ASF, StringComparison.OrdinalIgnoreCase);
 		}
 
 		private static void LoadAssembliesRecursively(Assembly assembly, HashSet<string>? loadedAssembliesNames = null) {
@@ -433,20 +443,32 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async void OnChanged(object sender, FileSystemEventArgs e) {
-			if ((sender == null) || (e == null)) {
-				throw new ArgumentNullException(nameof(sender) + " || " + nameof(e));
+			if (sender == null) {
+				throw new ArgumentNullException(nameof(sender));
+			}
+
+			if (e == null) {
+				throw new ArgumentNullException(nameof(e));
 			}
 
 			if (string.IsNullOrEmpty(e.Name)) {
-				throw new ArgumentNullException(nameof(e.Name));
+				throw new InvalidOperationException(nameof(e.Name));
+			}
+
+			if (string.IsNullOrEmpty(e.FullPath)) {
+				throw new InvalidOperationException(nameof(e.FullPath));
 			}
 
 			await OnChangedFile(e.Name, e.FullPath).ConfigureAwait(false);
 		}
 
 		private static async Task OnChangedConfigFile(string name, string fullPath) {
-			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
-				throw new ArgumentNullException(nameof(name) + " || " + nameof(fullPath));
+			if (string.IsNullOrEmpty(name)) {
+				throw new ArgumentNullException(nameof(name));
+			}
+
+			if (string.IsNullOrEmpty(fullPath)) {
+				throw new ArgumentNullException(nameof(fullPath));
 			}
 
 			await OnCreatedConfigFile(name, fullPath).ConfigureAwait(false);
@@ -457,7 +479,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(name));
 			}
 
-			if (!name.Equals(SharedInfo.IPCConfigFile) || (GlobalConfig?.IPC != true)) {
+			if (!name.Equals(SharedInfo.IPCConfigFile, StringComparison.OrdinalIgnoreCase) || (GlobalConfig?.IPC != true)) {
 				return;
 			}
 
@@ -471,8 +493,12 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task OnChangedFile(string name, string fullPath) {
-			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
-				throw new ArgumentNullException(nameof(name) + " || " + nameof(fullPath));
+			if (string.IsNullOrEmpty(name)) {
+				throw new ArgumentNullException(nameof(name));
+			}
+
+			if (string.IsNullOrEmpty(fullPath)) {
+				throw new ArgumentNullException(nameof(fullPath));
 			}
 
 			string extension = Path.GetExtension(name);
@@ -491,28 +517,44 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task OnChangedKeysFile(string name, string fullPath) {
-			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
-				throw new ArgumentNullException(nameof(name) + " || " + nameof(fullPath));
+			if (string.IsNullOrEmpty(name)) {
+				throw new ArgumentNullException(nameof(name));
+			}
+
+			if (string.IsNullOrEmpty(fullPath)) {
+				throw new ArgumentNullException(nameof(fullPath));
 			}
 
 			await OnCreatedKeysFile(name, fullPath).ConfigureAwait(false);
 		}
 
 		private static async void OnCreated(object sender, FileSystemEventArgs e) {
-			if ((sender == null) || (e == null)) {
-				throw new ArgumentNullException(nameof(sender) + " || " + nameof(e));
+			if (sender == null) {
+				throw new ArgumentNullException(nameof(sender));
+			}
+
+			if (e == null) {
+				throw new ArgumentNullException(nameof(e));
 			}
 
 			if (string.IsNullOrEmpty(e.Name)) {
-				throw new ArgumentNullException(nameof(e.Name));
+				throw new InvalidOperationException(nameof(e.Name));
+			}
+
+			if (string.IsNullOrEmpty(e.FullPath)) {
+				throw new InvalidOperationException(nameof(e.FullPath));
 			}
 
 			await OnCreatedFile(e.Name, e.FullPath).ConfigureAwait(false);
 		}
 
 		private static async Task OnCreatedConfigFile(string name, string fullPath) {
-			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
-				throw new ArgumentNullException(nameof(name) + " || " + nameof(fullPath));
+			if (string.IsNullOrEmpty(name)) {
+				throw new ArgumentNullException(nameof(name));
+			}
+
+			if (string.IsNullOrEmpty(fullPath)) {
+				throw new ArgumentNullException(nameof(fullPath));
 			}
 
 			string extension = Path.GetExtension(name);
@@ -530,8 +572,12 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task OnCreatedFile(string name, string fullPath) {
-			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
-				throw new ArgumentNullException(nameof(name) + " || " + nameof(fullPath));
+			if (string.IsNullOrEmpty(name)) {
+				throw new ArgumentNullException(nameof(name));
+			}
+
+			if (string.IsNullOrEmpty(fullPath)) {
+				throw new ArgumentNullException(nameof(fullPath));
 			}
 
 			string extension = Path.GetExtension(name);
@@ -550,8 +596,16 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task OnCreatedJsonFile(string name, string fullPath) {
-			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath) || (Bot.Bots == null)) {
-				throw new ArgumentNullException(nameof(name) + " || " + nameof(fullPath) + " || " + nameof(Bot.Bots));
+			if (string.IsNullOrEmpty(name)) {
+				throw new ArgumentNullException(nameof(name));
+			}
+
+			if (string.IsNullOrEmpty(fullPath)) {
+				throw new ArgumentNullException(nameof(fullPath));
+			}
+
+			if (Bot.Bots == null) {
+				throw new InvalidOperationException(nameof(Bot.Bots));
 			}
 
 			string botName = Path.GetFileNameWithoutExtension(name);
@@ -581,14 +635,22 @@ namespace ArchiSteamFarm {
 				await Bot.RegisterBot(botName).ConfigureAwait(false);
 
 				if (Bot.Bots.Count > MaximumRecommendedBotsCount) {
-					ArchiLogger.LogGenericWarning(string.Format(Strings.WarningExcessiveBotsCount, MaximumRecommendedBotsCount));
+					ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningExcessiveBotsCount, MaximumRecommendedBotsCount));
 				}
 			}
 		}
 
 		private static async Task OnCreatedKeysFile(string name, string fullPath) {
-			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath) || (Bot.Bots == null)) {
-				throw new ArgumentNullException(nameof(name) + " || " + nameof(fullPath) + " || " + nameof(Bot.Bots));
+			if (string.IsNullOrEmpty(name)) {
+				throw new ArgumentNullException(nameof(name));
+			}
+
+			if (string.IsNullOrEmpty(fullPath)) {
+				throw new ArgumentNullException(nameof(fullPath));
+			}
+
+			if (Bot.Bots == null) {
+				throw new InvalidOperationException(nameof(Bot.Bots));
 			}
 
 			string botName = Path.GetFileNameWithoutExtension(name);
@@ -609,20 +671,32 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async void OnDeleted(object sender, FileSystemEventArgs e) {
-			if ((sender == null) || (e == null)) {
-				throw new ArgumentNullException(nameof(sender) + " || " + nameof(e));
+			if (sender == null) {
+				throw new ArgumentNullException(nameof(sender));
+			}
+
+			if (e == null) {
+				throw new ArgumentNullException(nameof(e));
 			}
 
 			if (string.IsNullOrEmpty(e.Name)) {
-				throw new ArgumentNullException(nameof(e.Name));
+				throw new InvalidOperationException(nameof(e.Name));
+			}
+
+			if (string.IsNullOrEmpty(e.FullPath)) {
+				throw new InvalidOperationException(nameof(e.FullPath));
 			}
 
 			await OnDeletedFile(e.Name, e.FullPath).ConfigureAwait(false);
 		}
 
 		private static async Task OnDeletedConfigFile(string name, string fullPath) {
-			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
-				throw new ArgumentNullException(nameof(name) + " || " + nameof(fullPath));
+			if (string.IsNullOrEmpty(name)) {
+				throw new ArgumentNullException(nameof(name));
+			}
+
+			if (string.IsNullOrEmpty(fullPath)) {
+				throw new ArgumentNullException(nameof(fullPath));
 			}
 
 			string extension = Path.GetExtension(name);
@@ -640,8 +714,12 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task OnDeletedFile(string name, string fullPath) {
-			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
-				throw new ArgumentNullException(nameof(name) + " || " + nameof(fullPath));
+			if (string.IsNullOrEmpty(name)) {
+				throw new ArgumentNullException(nameof(name));
+			}
+
+			if (string.IsNullOrEmpty(fullPath)) {
+				throw new ArgumentNullException(nameof(fullPath));
 			}
 
 			string extension = Path.GetExtension(name);
@@ -656,8 +734,16 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task OnDeletedJsonConfigFile(string name, string fullPath) {
-			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath) || (Bot.Bots == null)) {
-				throw new ArgumentNullException(nameof(name) + " || " + nameof(fullPath) + " || " + nameof(Bot.Bots));
+			if (string.IsNullOrEmpty(name)) {
+				throw new ArgumentNullException(nameof(name));
+			}
+
+			if (string.IsNullOrEmpty(fullPath)) {
+				throw new ArgumentNullException(nameof(fullPath));
+			}
+
+			if (Bot.Bots == null) {
+				throw new InvalidOperationException(nameof(Bot.Bots));
 			}
 
 			string botName = Path.GetFileNameWithoutExtension(name);
@@ -709,12 +795,28 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async void OnRenamed(object sender, RenamedEventArgs e) {
-			if ((sender == null) || (e == null)) {
-				throw new ArgumentNullException(nameof(sender) + " || " + nameof(e));
+			if (sender == null) {
+				throw new ArgumentNullException(nameof(sender));
 			}
 
-			if (string.IsNullOrEmpty(e.OldName) || string.IsNullOrEmpty(e.Name)) {
-				throw new ArgumentNullException(nameof(e.OldName) + " || " + nameof(e.Name));
+			if (e == null) {
+				throw new ArgumentNullException(nameof(e));
+			}
+
+			if (string.IsNullOrEmpty(e.OldName)) {
+				throw new InvalidOperationException(nameof(e.OldName));
+			}
+
+			if (string.IsNullOrEmpty(e.OldFullPath)) {
+				throw new InvalidOperationException(nameof(e.OldFullPath));
+			}
+
+			if (string.IsNullOrEmpty(e.Name)) {
+				throw new InvalidOperationException(nameof(e.Name));
+			}
+
+			if (string.IsNullOrEmpty(e.FullPath)) {
+				throw new InvalidOperationException(nameof(e.FullPath));
 			}
 
 			await OnDeletedFile(e.OldName, e.OldFullPath).ConfigureAwait(false);
@@ -730,7 +832,7 @@ namespace ArchiSteamFarm {
 			IEnumerable<ServerRecord> servers = await GlobalDatabase.ServerListProvider.FetchServerListAsync().ConfigureAwait(false);
 
 			if (servers?.Any() != true) {
-				ArchiLogger.LogGenericInfo(string.Format(Strings.Initializing, nameof(SteamDirectory)));
+				ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.Initializing, nameof(SteamDirectory)));
 
 				SteamConfiguration steamConfiguration = SteamConfiguration.Create(builder => builder.WithProtocolTypes(GlobalConfig.SteamProtocols).WithCellID(GlobalDatabase.CellID).WithServerListProvider(GlobalDatabase.ServerListProvider).WithHttpClientFactory(() => WebBrowser.GenerateDisposableHttpClient()));
 
@@ -762,7 +864,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (botNames.Count > MaximumRecommendedBotsCount) {
-				ArchiLogger.LogGenericWarning(string.Format(Strings.WarningExcessiveBotsCount, MaximumRecommendedBotsCount));
+				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningExcessiveBotsCount, MaximumRecommendedBotsCount));
 				await Task.Delay(10000).ConfigureAwait(false);
 			}
 
@@ -788,7 +890,7 @@ namespace ArchiSteamFarm {
 					autoUpdatePeriod // Period
 				);
 
-				ArchiLogger.LogGenericInfo(string.Format(Strings.AutoUpdateCheckInfo, autoUpdatePeriod.ToHumanReadable()));
+				ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.AutoUpdateCheckInfo, autoUpdatePeriod.ToHumanReadable()));
 			}
 
 			Version? newVersion = await Update().ConfigureAwait(false);
@@ -801,8 +903,12 @@ namespace ArchiSteamFarm {
 		}
 
 		private static bool UpdateFromArchive(ZipArchive archive, string targetDirectory) {
-			if ((archive == null) || string.IsNullOrEmpty(targetDirectory)) {
-				throw new ArgumentNullException(nameof(archive) + " || " + nameof(targetDirectory));
+			if (archive == null) {
+				throw new ArgumentNullException(nameof(archive));
+			}
+
+			if (string.IsNullOrEmpty(targetDirectory)) {
+				throw new ArgumentNullException(nameof(targetDirectory));
 			}
 
 			if (SharedInfo.HomeDirectory == AppContext.BaseDirectory) {
