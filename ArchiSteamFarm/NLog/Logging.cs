@@ -88,8 +88,6 @@ namespace ArchiSteamFarm.NLog {
 				OnUserInputStart();
 
 				try {
-					Console.Beep();
-
 					switch (userInputType) {
 						case ASF.EUserInputType.Login:
 							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamLogin, botName));
@@ -227,40 +225,72 @@ namespace ArchiSteamFarm.NLog {
 			ASF.ArchiLogger.LogGenericInfo(Strings.InteractiveConsoleEnabled);
 		}
 
-		private static string? ConsoleReadLine() {
-			Console.Beep();
+		private static async Task BeepUntilCanceled(CancellationToken cancellationToken, byte secondsDelay = 30) {
+			if (secondsDelay == 0) {
+				throw new ArgumentOutOfRangeException(nameof(secondsDelay));
+			}
 
-			return Console.ReadLine();
+			while (true) {
+				try {
+					await Task.Delay(secondsDelay * 1000, cancellationToken).ConfigureAwait(false);
+				} catch (TaskCanceledException) {
+					return;
+				}
+
+				Console.Beep();
+			}
+		}
+
+		private static string? ConsoleReadLine() {
+			using CancellationTokenSource cts = new CancellationTokenSource();
+
+			try {
+				CancellationToken token = cts.Token;
+
+				Utilities.InBackground(() => BeepUntilCanceled(token));
+
+				return Console.ReadLine();
+			} finally {
+				cts.Cancel();
+			}
 		}
 
 		private static string ConsoleReadLineMasked(char mask = '*') {
 			StringBuilder result = new StringBuilder();
 
-			Console.Beep();
+			using CancellationTokenSource cts = new CancellationTokenSource();
 
-			ConsoleKeyInfo keyInfo;
+			try {
+				CancellationToken token = cts.Token;
 
-			while ((keyInfo = Console.ReadKey(true)).Key != ConsoleKey.Enter) {
-				if (!char.IsControl(keyInfo.KeyChar)) {
-					result.Append(keyInfo.KeyChar);
-					Console.Write(mask);
-				} else if ((keyInfo.Key == ConsoleKey.Backspace) && (result.Length > 0)) {
-					result.Length--;
+				Utilities.InBackground(() => BeepUntilCanceled(token));
 
-					if (Console.CursorLeft == 0) {
-						Console.SetCursorPosition(Console.BufferWidth - 1, Console.CursorTop - 1);
-						Console.Write(' ');
-						Console.SetCursorPosition(Console.BufferWidth - 1, Console.CursorTop - 1);
-					} else {
-						// There are two \b characters here
-						Console.Write(@" ");
+				ConsoleKeyInfo keyInfo;
+
+				while ((keyInfo = Console.ReadKey(true)).Key != ConsoleKey.Enter) {
+					if (!char.IsControl(keyInfo.KeyChar)) {
+						result.Append(keyInfo.KeyChar);
+						Console.Write(mask);
+					} else if ((keyInfo.Key == ConsoleKey.Backspace) && (result.Length > 0)) {
+						result.Length--;
+
+						if (Console.CursorLeft == 0) {
+							Console.SetCursorPosition(Console.BufferWidth - 1, Console.CursorTop - 1);
+							Console.Write(' ');
+							Console.SetCursorPosition(Console.BufferWidth - 1, Console.CursorTop - 1);
+						} else {
+							// There are two \b characters here
+							Console.Write(@" ");
+						}
 					}
 				}
+
+				Console.WriteLine();
+
+				return result.ToString();
+			} finally {
+				cts.Cancel();
 			}
-
-			Console.WriteLine();
-
-			return result.ToString();
 		}
 
 		private static async Task HandleConsoleInteractively() {
