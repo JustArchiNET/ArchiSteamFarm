@@ -256,14 +256,14 @@ namespace ArchiSteamFarm.NLog {
 		}
 
 		private static string ConsoleReadLineMasked(char mask = '*') {
-			StringBuilder result = new StringBuilder();
-
 			using CancellationTokenSource cts = new CancellationTokenSource();
 
 			try {
 				CancellationToken token = cts.Token;
 
 				Utilities.InBackground(() => BeepUntilCanceled(token));
+
+				StringBuilder result = new StringBuilder();
 
 				ConsoleKeyInfo keyInfo;
 
