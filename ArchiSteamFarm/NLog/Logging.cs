@@ -230,7 +230,7 @@ namespace ArchiSteamFarm.NLog {
 				throw new ArgumentOutOfRangeException(nameof(secondsDelay));
 			}
 
-			while (true) {
+			while (!cancellationToken.IsCancellationRequested) {
 				try {
 					await Task.Delay(secondsDelay * 1000, cancellationToken).ConfigureAwait(false);
 				} catch (TaskCanceledException) {
