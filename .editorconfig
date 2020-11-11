@@ -25,7 +25,7 @@ csharp_new_line_between_query_expression_clauses = false
 
 csharp_prefer_braces = true:suggestion
 
-csharp_preferred_modifier_order = public,private,protected,internal,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,volatile,async:suggestion
+csharp_preferred_modifier_order = public,protected,internal,private,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,volatile,async:suggestion
 
 csharp_preserve_single_line_statements = false
 
