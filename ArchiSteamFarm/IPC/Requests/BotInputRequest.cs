@@ -29,13 +29,13 @@ namespace ArchiSteamFarm.IPC.Requests {
 		///     Specifies the type of the input.
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
-		public readonly ASF.EUserInputType Type;
+		public ASF.EUserInputType Type { get; private set; }
 
 		/// <summary>
 		///     Specifies the value for given input type (declared in <see cref="Type" />)
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
-		public readonly string? Value;
+		public string? Value { get; private set; }
 
 		[JsonConstructor]
 		private BotInputRequest() { }

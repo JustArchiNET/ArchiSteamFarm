@@ -31,7 +31,7 @@ namespace ArchiSteamFarm.IPC.Requests {
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public readonly BotConfig? BotConfig;
+		public BotConfig? BotConfig { get; private set; }
 
 		[JsonConstructor]
 		private BotRequest() { }

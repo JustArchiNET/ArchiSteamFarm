@@ -31,14 +31,14 @@ namespace ArchiSteamFarm.IPC.Requests {
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public readonly ArchiCryptoHelper.EHashingMethod HashingMethod;
+		public ArchiCryptoHelper.EHashingMethod HashingMethod { get; private set; }
 
 		/// <summary>
 		///     String to hash with provided <see cref="HashingMethod" />.
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public readonly string? StringToHash;
+		public string? StringToHash { get; private set; }
 
 		[JsonConstructor]
 		private ASFHashRequest() { }

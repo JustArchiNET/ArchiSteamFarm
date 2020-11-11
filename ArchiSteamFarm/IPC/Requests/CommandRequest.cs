@@ -32,7 +32,7 @@ namespace ArchiSteamFarm.IPC.Requests {
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public readonly string? Command;
+		public string? Command { get; private set; }
 
 		internal CommandRequest(string command) {
 			if (string.IsNullOrEmpty(command)) {

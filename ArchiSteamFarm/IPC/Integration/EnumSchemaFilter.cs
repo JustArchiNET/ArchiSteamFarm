@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.Globalization;
 using JetBrains.Annotations;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Extensions;
@@ -30,11 +31,15 @@ namespace ArchiSteamFarm.IPC.Integration {
 	[UsedImplicitly]
 	internal sealed class EnumSchemaFilter : ISchemaFilter {
 		public void Apply(OpenApiSchema schema, SchemaFilterContext context) {
-			if ((schema == null) || (context == null)) {
-				throw new ArgumentNullException(nameof(schema) + " || " + nameof(context));
+			if (schema == null) {
+				throw new ArgumentNullException(nameof(schema));
 			}
 
-			if (!context.Type.IsEnum) {
+			if (context == null) {
+				throw new ArgumentNullException(nameof(context));
+			}
+
+			if ((context.Type == null) || !context.Type.IsEnum) {
 				return;
 			}
 
@@ -67,9 +72,9 @@ namespace ArchiSteamFarm.IPC.Integration {
 					enumObject = new OpenApiLong(longValue);
 				} else if (TryCast(enumValue, out ulong ulongValue)) {
 					// OpenApi spec doesn't support ulongs as of now
-					enumObject = new OpenApiString(ulongValue.ToString());
+					enumObject = new OpenApiString(ulongValue.ToString(CultureInfo.InvariantCulture));
 				} else {
-					throw new ArgumentOutOfRangeException(nameof(enumValue));
+					throw new InvalidOperationException(nameof(enumValue));
 				}
 
 				definition.Add(enumName!, enumObject);
@@ -84,7 +89,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 			}
 
 			try {
-				typedValue = (T) Convert.ChangeType(value, typeof(T));
+				typedValue = (T) Convert.ChangeType(value, typeof(T), CultureInfo.InvariantCulture);
 
 				return true;
 			} catch (InvalidCastException) {

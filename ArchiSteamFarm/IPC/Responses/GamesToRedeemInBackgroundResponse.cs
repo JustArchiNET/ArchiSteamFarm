@@ -28,13 +28,13 @@ namespace ArchiSteamFarm.IPC.Responses {
 		///     Keys that were redeemed and not used during the process, if available.
 		/// </summary>
 		[JsonProperty]
-		public readonly Dictionary<string, string>? UnusedKeys;
+		public Dictionary<string, string>? UnusedKeys { get; private set; }
 
 		/// <summary>
 		///     Keys that were redeemed and used during the process, if available.
 		/// </summary>
 		[JsonProperty]
-		public readonly Dictionary<string, string>? UsedKeys;
+		public Dictionary<string, string>? UsedKeys { get; private set; }
 
 		internal GamesToRedeemInBackgroundResponse(Dictionary<string, string>? unusedKeys = null, Dictionary<string, string>? usedKeys = null) {
 			UnusedKeys = unusedKeys;

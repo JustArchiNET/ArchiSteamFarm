@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Responses {
@@ -36,22 +37,18 @@ namespace ArchiSteamFarm.IPC.Responses {
 		/// </remarks>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public readonly Dictionary<string, string> Body;
+		public Dictionary<string, string> Body { get; private set; }
 
 		/// <summary>
 		///     Metadata of given type.
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public readonly TypeProperties Properties;
+		public TypeProperties Properties { get; private set; }
 
-		internal TypeResponse(Dictionary<string, string> body, TypeProperties properties) {
-			if ((body == null) || (properties == null)) {
-				throw new ArgumentNullException(nameof(body) + " || " + nameof(properties));
-			}
-
-			Body = body;
-			Properties = properties;
+		internal TypeResponse([NotNull] Dictionary<string, string> body, [NotNull] TypeProperties properties) {
+			Body = body ?? throw new ArgumentNullException(nameof(body));
+			Properties = properties ?? throw new ArgumentNullException(nameof(properties));
 		}
 
 		public sealed class TypeProperties {
@@ -62,7 +59,7 @@ namespace ArchiSteamFarm.IPC.Responses {
 			///     This can be used for determining how <see cref="Body" /> should be interpreted.
 			/// </remarks>
 			[JsonProperty]
-			public readonly string? BaseType;
+			public string? BaseType { get; private set; }
 
 			/// <summary>
 			///     Custom attributes of given type, if available.
@@ -71,7 +68,7 @@ namespace ArchiSteamFarm.IPC.Responses {
 			///     This can be used for determining main enum type if <see cref="BaseType" /> is <see cref="Enum" />.
 			/// </remarks>
 			[JsonProperty]
-			public readonly HashSet<string>? CustomAttributes;
+			public HashSet<string>? CustomAttributes { get; private set; }
 
 			/// <summary>
 			///     Underlying type of given type, if available.
@@ -80,7 +77,7 @@ namespace ArchiSteamFarm.IPC.Responses {
 			///     This can be used for determining underlying enum type if <see cref="BaseType" /> is <see cref="Enum" />.
 			/// </remarks>
 			[JsonProperty]
-			public readonly string? UnderlyingType;
+			public string? UnderlyingType { get; private set; }
 
 			internal TypeProperties(string? baseType = null, HashSet<string>? customAttributes = null, string? underlyingType = null) {
 				BaseType = baseType;

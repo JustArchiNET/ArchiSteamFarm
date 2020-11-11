@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -51,7 +52,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			string directoryPath = Path.Combine(ArchiKestrel.WebsiteDirectory, directory);
 
 			if (!Directory.Exists(directoryPath)) {
-				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, directory)));
+				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, directory)));
 			}
 
 			string[] files;
@@ -59,7 +60,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			try {
 				files = Directory.GetFiles(directoryPath);
 			} catch (Exception e) {
-				return StatusCode((int) HttpStatusCode.InternalServerError, new GenericResponse(false, string.Format(Strings.ErrorParsingObject, nameof(files)) + Environment.NewLine + e));
+				return StatusCode((int) HttpStatusCode.InternalServerError, new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorParsingObject, nameof(files)) + Environment.NewLine + e));
 			}
 
 			HashSet<string> result = files.Select(Path.GetFileName).Where(fileName => !string.IsNullOrEmpty(fileName)).ToHashSet()!;
@@ -79,7 +80,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		public async Task<ActionResult<GenericResponse>> GitHubReleaseGet() {
 			GitHub.ReleaseResponse? releaseResponse = await GitHub.GetLatestRelease(false).ConfigureAwait(false);
 
-			return releaseResponse != null ? Ok(new GenericResponse<GitHubReleaseResponse>(new GitHubReleaseResponse(releaseResponse))) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
+			return releaseResponse != null ? Ok(new GenericResponse<GitHubReleaseResponse>(new GitHubReleaseResponse(releaseResponse))) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
 		}
 
 		/// <summary>
@@ -106,7 +107,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 					break;
 				default:
 					if (!Version.TryParse(version, out Version? parsedVersion)) {
-						return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(version))));
+						return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(version))));
 					}
 
 					releaseResponse = await GitHub.GetRelease(parsedVersion.ToString(4)).ConfigureAwait(false);
@@ -114,7 +115,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 					break;
 			}
 
-			return releaseResponse != null ? Ok(new GenericResponse<GitHubReleaseResponse>(new GitHubReleaseResponse(releaseResponse))) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
+			return releaseResponse != null ? Ok(new GenericResponse<GitHubReleaseResponse>(new GitHubReleaseResponse(releaseResponse))) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
 		}
 
 		/// <summary>
@@ -129,17 +130,21 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
 		public async Task<ActionResult<GenericResponse>> SendPost([FromBody] WWWSendRequest request) {
-			if ((request == null) || (ASF.WebBrowser == null)) {
-				throw new ArgumentNullException(nameof(request) + " || " + nameof(ASF.WebBrowser));
+			if ((request == null)) {
+				throw new ArgumentNullException(nameof(request));
 			}
 
-			if (string.IsNullOrEmpty(request.URL) || !Uri.TryCreate(request.URL, UriKind.Absolute, out Uri? uri) || !uri.Scheme.Equals(Uri.UriSchemeHttps)) {
-				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(request.URL))));
+			if (ASF.WebBrowser == null) {
+				throw new InvalidOperationException(nameof(ASF.WebBrowser));
+			}
+
+			if (string.IsNullOrEmpty(request.URL) || !Uri.TryCreate(request.URL, UriKind.Absolute, out Uri? uri) || !uri.Scheme.Equals(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase)) {
+				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(request.URL))));
 			}
 
 			WebBrowser.StringResponse? urlResponse = await ASF.WebBrowser.UrlGetToString(request.URL!).ConfigureAwait(false);
 
-			return urlResponse?.Content != null ? Ok(new GenericResponse<string>(urlResponse.Content)) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
+			return urlResponse?.Content != null ? Ok(new GenericResponse<string>(urlResponse.Content)) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
 		}
 	}
 }

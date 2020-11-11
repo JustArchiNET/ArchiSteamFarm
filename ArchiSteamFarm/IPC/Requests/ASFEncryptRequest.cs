@@ -31,14 +31,14 @@ namespace ArchiSteamFarm.IPC.Requests {
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public readonly ArchiCryptoHelper.ECryptoMethod CryptoMethod;
+		public ArchiCryptoHelper.ECryptoMethod CryptoMethod { get; private set; }
 
 		/// <summary>
 		///     String to encrypt with provided <see cref="CryptoMethod" />.
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public readonly string? StringToEncrypt;
+		public string? StringToEncrypt { get; private set; }
 
 		[JsonConstructor]
 		private ASFEncryptRequest() { }

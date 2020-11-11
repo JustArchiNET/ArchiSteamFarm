@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -48,13 +49,13 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			if (string.IsNullOrEmpty(request.Command)) {
-				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(request.Command))));
+				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(request.Command))));
 			}
 
 			ulong steamOwnerID = ASF.GlobalConfig?.SteamOwnerID ?? GlobalConfig.DefaultSteamOwnerID;
 
 			if (steamOwnerID == 0) {
-				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(ASF.GlobalConfig.SteamOwnerID))));
+				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(ASF.GlobalConfig.SteamOwnerID))));
 			}
 
 			Bot? targetBot = Bot.Bots?.OrderBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value).FirstOrDefault();
@@ -69,7 +70,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			if (!string.IsNullOrEmpty(commandPrefix) && command.StartsWith(commandPrefix!, StringComparison.Ordinal)) {
 				if (command.Length == commandPrefix!.Length) {
 					// If the message starts with command prefix and is of the same length as command prefix, then it's just empty command trigger, useless
-					return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(command))));
+					return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(command))));
 				}
 
 				command = command.Substring(commandPrefix!.Length);

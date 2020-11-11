@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -49,7 +50,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			Type? targetType = WebUtilities.ParseType(type);
 
 			if (targetType == null) {
-				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, type)));
+				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, type)));
 			}
 
 			string? baseType = targetType.BaseType?.GetUnifiedName();
@@ -92,10 +93,10 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 					if (string.IsNullOrEmpty(valueText)) {
 						ASF.ArchiLogger.LogNullError(nameof(valueText));
 
-						return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorObjectIsNull, nameof(valueText))));
+						return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(valueText))));
 					}
 
-					string? valueObjText = Convert.ChangeType(value, enumType)?.ToString();
+					string? valueObjText = Convert.ChangeType(value, enumType, CultureInfo.InvariantCulture)?.ToString();
 
 					if (string.IsNullOrEmpty(valueObjText)) {
 						continue;

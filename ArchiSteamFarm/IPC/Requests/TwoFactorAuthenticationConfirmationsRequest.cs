@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using ArchiSteamFarm.Localization;
 using Newtonsoft.Json;
 
@@ -33,19 +34,19 @@ namespace ArchiSteamFarm.IPC.Requests {
 		///     Specifies the target action, whether we should accept the confirmations (true), or decline them (false).
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
-		public readonly bool Accept;
+		public bool Accept { get; private set; }
 
 		/// <summary>
 		///     Specifies the type of confirmations to handle. If not provided, all confirmation types are considered for an action.
 		/// </summary>
 		[JsonProperty(Required = Required.DisallowNull)]
-		public readonly MobileAuthenticator.Confirmation.EType? AcceptedType;
+		public MobileAuthenticator.Confirmation.EType? AcceptedType { get; private set; }
 
 		/// <summary>
 		///     Specifies whether we should wait for the confirmations to arrive, in case they're not available immediately. This option makes sense only if <see cref="AcceptedCreatorIDs" /> is specified as well, and in this case ASF will add a few more tries if needed to ensure that all specified IDs are handled. Useful if confirmations are generated with a delay on Steam network side, which happens fairly often.
 		/// </summary>
 		[JsonProperty(Required = Required.DisallowNull)]
-		public readonly bool WaitIfNeeded;
+		public bool WaitIfNeeded { get; private set; }
 
 		/// <summary>
 		///     Specifies IDs of the confirmations that we're supposed to handle. CreatorID of the confirmation is equal to ID of the object that triggered it - e.g. ID of the trade offer, or ID of the market listing. If not provided, or empty array, all confirmation IDs are considered for an action.
@@ -67,7 +68,7 @@ namespace ArchiSteamFarm.IPC.Requests {
 
 				foreach (string creatorIDText in value) {
 					if (!ulong.TryParse(creatorIDText, out ulong creatorID) || (creatorID == 0)) {
-						ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(SAcceptedCreatorIDs)));
+						ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(SAcceptedCreatorIDs)));
 
 						return;
 					}

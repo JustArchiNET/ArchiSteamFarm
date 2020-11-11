@@ -28,22 +28,22 @@ namespace ArchiSteamFarm.Collections {
 		public T Current => Enumerator.Current;
 
 		private readonly IEnumerator<T> Enumerator;
-		private readonly IDisposable Lock;
+		private readonly IDisposable LockObject;
 
 		object? IEnumerator.Current => Current;
 
-		internal ConcurrentEnumerator(IReadOnlyCollection<T> collection, IDisposable @lock) {
-			if ((collection == null) || (@lock == null)) {
-				throw new ArgumentNullException(nameof(collection) + " || " + nameof(@lock));
+		internal ConcurrentEnumerator(IReadOnlyCollection<T> collection, IDisposable lockObject) {
+			if (collection == null) {
+				throw new ArgumentNullException(nameof(collection));
 			}
 
-			Lock = @lock;
+			LockObject = lockObject ?? throw new ArgumentNullException(nameof(lockObject));
 			Enumerator = collection.GetEnumerator();
 		}
 
 		public void Dispose() {
 			Enumerator.Dispose();
-			Lock.Dispose();
+			LockObject.Dispose();
 		}
 
 		public bool MoveNext() => Enumerator.MoveNext();

@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Reflection;
@@ -56,8 +57,12 @@ namespace ArchiSteamFarm.IPC {
 		[UsedImplicitly]
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
 #endif
-			if ((app == null) || (env == null)) {
-				throw new ArgumentNullException(nameof(app) + " || " + nameof(env));
+			if (app == null) {
+				throw new ArgumentNullException(nameof(app));
+			}
+
+			if (env == null) {
+				throw new ArgumentNullException(nameof(env));
 			}
 
 			if (Debugging.IsUserDebugging) {
@@ -137,14 +142,14 @@ namespace ArchiSteamFarm.IPC {
 
 			HashSet<IPNetwork>? knownNetworks = null;
 
-			if ((knownNetworksTexts != null) && (knownNetworksTexts.Count > 0)) {
+			if (knownNetworksTexts?.Count > 0) {
 				knownNetworks = new HashSet<IPNetwork>(knownNetworksTexts.Count);
 
 				foreach (string knownNetworkText in knownNetworksTexts) {
 					string[] addressParts = knownNetworkText.Split('/', StringSplitOptions.RemoveEmptyEntries);
 
 					if ((addressParts.Length != 2) || !IPAddress.TryParse(addressParts[0], out IPAddress? ipAddress) || !byte.TryParse(addressParts[1], out byte prefixLength)) {
-						ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(knownNetworkText)));
+						ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(knownNetworkText)));
 						ASF.ArchiLogger.LogGenericDebug(nameof(knownNetworkText) + ": " + knownNetworkText);
 
 						continue;
@@ -199,7 +204,7 @@ namespace ArchiSteamFarm.IPC {
 									}
 								},
 
-								new string[0]
+								Array.Empty<string>()
 							}
 						}
 					);

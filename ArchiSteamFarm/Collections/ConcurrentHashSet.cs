@@ -128,13 +128,27 @@ namespace ArchiSteamFarm.Collections {
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		// We use Count() and not Any() because we must ensure full loop pass
 		[PublicAPI]
-		public bool AddRange(IEnumerable<T> items) => items.Count(Add) > 0;
+		public bool AddRange(IEnumerable<T> items) {
+			bool result = false;
 
-		// We use Count() and not Any() because we must ensure full loop pass
+			foreach (T _ in items.Where(Add)) {
+				result = true;
+			}
+
+			return result;
+		}
+
 		[PublicAPI]
-		public bool RemoveRange(IEnumerable<T> items) => items.Count(Remove) > 0;
+		public bool RemoveRange(IEnumerable<T> items) {
+			bool result = false;
+
+			foreach (T _ in items.Where(Remove)) {
+				result = true;
+			}
+
+			return result;
+		}
 
 		[PublicAPI]
 		public bool ReplaceIfNeededWith(IReadOnlyCollection<T> other) {

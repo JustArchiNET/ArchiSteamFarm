@@ -29,13 +29,13 @@ namespace ArchiSteamFarm.IPC.Requests {
 		///     Specifies if pause is permanent or temporary (default).
 		/// </summary>
 		[JsonProperty(Required = Required.DisallowNull)]
-		public readonly bool Permanent;
+		public bool Permanent { get; private set; }
 
 		/// <summary>
 		///     Specifies automatic resume action in given seconds. Default value of 0 disables automatic resume.
 		/// </summary>
 		[JsonProperty(Required = Required.DisallowNull)]
-		public readonly ushort ResumeInSeconds;
+		public ushort ResumeInSeconds { get; private set; }
 
 		[JsonConstructor]
 		private BotPauseRequest() { }

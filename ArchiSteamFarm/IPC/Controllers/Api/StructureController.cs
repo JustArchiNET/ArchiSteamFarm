@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.Globalization;
 using System.Net;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
@@ -45,7 +46,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			Type? targetType = WebUtilities.ParseType(structure);
 
 			if (targetType == null) {
-				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, structure)));
+				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, structure)));
 			}
 
 			object? obj;
@@ -53,7 +54,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			try {
 				obj = Activator.CreateInstance(targetType, true);
 			} catch (Exception e) {
-				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorParsingObject, nameof(targetType)) + Environment.NewLine + e));
+				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorParsingObject, nameof(targetType)) + Environment.NewLine + e));
 			}
 
 			return Ok(new GenericResponse<object>(obj));

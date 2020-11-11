@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -46,7 +47,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			if (string.IsNullOrEmpty(request.StringToEncrypt)) {
-				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(request.StringToEncrypt))));
+				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(request.StringToEncrypt))));
 			}
 
 			string? encryptedString = Actions.Encrypt(request.CryptoMethod, request.StringToEncrypt!);
@@ -84,7 +85,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			if (string.IsNullOrEmpty(request.StringToHash)) {
-				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(request.StringToHash))));
+				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(request.StringToHash))));
 			}
 
 			string hash = Actions.Hash(request.HashingMethod, request.StringToHash!);
@@ -100,12 +101,16 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		public async Task<ActionResult<GenericResponse>> ASFPost([FromBody] ASFRequest request) {
-			if ((request == null) || (ASF.GlobalConfig == null)) {
-				throw new ArgumentNullException(nameof(request) + " || " + nameof(ASF.GlobalConfig));
+			if (request == null) {
+				throw new ArgumentNullException(nameof(request));
+			}
+
+			if (ASF.GlobalConfig == null) {
+				throw new InvalidOperationException(nameof(ASF.GlobalConfig));
 			}
 
 			if (request.GlobalConfig == null) {
-				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(request.GlobalConfig))));
+				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(request.GlobalConfig))));
 			}
 
 			(bool valid, string? errorMessage) = request.GlobalConfig.CheckValidation();
@@ -137,7 +142,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			if (string.IsNullOrEmpty(filePath)) {
 				ASF.ArchiLogger.LogNullError(filePath);
 
-				return BadRequest(new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(filePath))));
+				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(filePath))));
 			}
 
 			bool result = await GlobalConfig.Write(filePath, request.GlobalConfig).ConfigureAwait(false);

@@ -76,8 +76,12 @@ namespace ArchiSteamFarm.IPC.Integration {
 		}
 
 		private static async Task<HttpStatusCode> GetAuthenticationStatus(HttpContext context) {
-			if ((context == null) || (ClearFailedAuthorizationsTimer == null)) {
-				throw new ArgumentNullException(nameof(context) + " || " + nameof(ClearFailedAuthorizationsTimer));
+			if ((context == null)) {
+				throw new ArgumentNullException(nameof(context));
+			}
+
+			if (ClearFailedAuthorizationsTimer == null) {
+				throw new InvalidOperationException(nameof(ClearFailedAuthorizationsTimer));
 			}
 
 			string? ipcPassword = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPassword : GlobalConfig.DefaultIPCPassword;
@@ -89,7 +93,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 			IPAddress? clientIP = context.Connection.RemoteIpAddress;
 
 			if (clientIP == null) {
-				throw new ArgumentNullException(nameof(context.Connection.RemoteIpAddress));
+				throw new InvalidOperationException(nameof(clientIP));
 			}
 
 			if (FailedAuthorizations.TryGetValue(clientIP, out byte attempts)) {

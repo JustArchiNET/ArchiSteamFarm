@@ -55,7 +55,7 @@ namespace ArchiSteamFarm.Helpers {
 		void ICrossProcessSemaphore.Release() {
 			lock (LocalSemaphore) {
 				if (FileLock == null) {
-					throw new ArgumentNullException(nameof(FileLock));
+					throw new InvalidOperationException(nameof(FileLock));
 				}
 
 				FileLock.Dispose();
@@ -75,7 +75,7 @@ namespace ArchiSteamFarm.Helpers {
 					try {
 						lock (LocalSemaphore) {
 							if (FileLock != null) {
-								throw new ArgumentNullException(nameof(FileLock));
+								throw new InvalidOperationException(nameof(FileLock));
 							}
 
 							EnsureFileExists();
@@ -120,7 +120,7 @@ namespace ArchiSteamFarm.Helpers {
 					try {
 						lock (LocalSemaphore) {
 							if (FileLock != null) {
-								throw new ArgumentNullException(nameof(FileLock));
+								throw new InvalidOperationException(nameof(FileLock));
 							}
 
 							EnsureFileExists();

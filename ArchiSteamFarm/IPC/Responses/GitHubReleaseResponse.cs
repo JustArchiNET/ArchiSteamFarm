@@ -30,28 +30,28 @@ namespace ArchiSteamFarm.IPC.Responses {
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public readonly string? ChangelogHTML;
+		public string? ChangelogHTML { get; private set; }
 
 		/// <summary>
 		///     Date of the release.
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public readonly DateTime ReleasedAt;
+		public DateTime ReleasedAt { get; private set; }
 
 		/// <summary>
 		///     Boolean value that specifies whether the build is stable or not (pre-release).
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public readonly bool Stable;
+		public bool Stable { get; private set; }
 
 		/// <summary>
 		///     Version of the release.
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public readonly string? Version;
+		public string? Version { get; private set; }
 
 		internal GitHubReleaseResponse(GitHub.ReleaseResponse releaseResponse) {
 			if (releaseResponse == null) {

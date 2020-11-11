@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
@@ -73,7 +74,7 @@ namespace ArchiSteamFarm.Helpers {
 						case EFallback.SuccessPreviously:
 							return (false, InitializedValue);
 						default:
-							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(fallback), fallback));
+							ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(fallback), fallback));
 
 							goto case EFallback.DefaultForType;
 					}

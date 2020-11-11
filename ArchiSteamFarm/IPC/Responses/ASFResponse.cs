@@ -30,54 +30,50 @@ namespace ArchiSteamFarm.IPC.Responses {
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public readonly string BuildVariant;
+		public string BuildVariant { get; private set; }
 
 		/// <summary>
 		///     A value specifying whether this variant of ASF is capable of auto-update.
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public readonly bool CanUpdate;
+		public bool CanUpdate { get; private set; }
 
 		/// <summary>
 		///     Currently loaded ASF's global config.
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public readonly GlobalConfig GlobalConfig;
+		public GlobalConfig GlobalConfig { get; private set; }
 
 		/// <summary>
 		///     Current amount of managed memory being used by the process, in kilobytes.
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public readonly uint MemoryUsage;
+		public uint MemoryUsage { get; private set; }
 
 		/// <summary>
 		///     Start date of the process.
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public readonly DateTime ProcessStartTime;
+		public DateTime ProcessStartTime { get; private set; }
 
 		/// <summary>
 		///     ASF version of currently running binary.
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public readonly Version Version;
+		public Version Version { get; private set; }
 
 		internal ASFResponse(string buildVariant, bool canUpdate, GlobalConfig globalConfig, uint memoryUsage, DateTime processStartTime, Version version) {
-			if (string.IsNullOrEmpty(buildVariant) || (globalConfig == null) || (memoryUsage == 0) || (processStartTime == DateTime.MinValue) || (version == null)) {
-				throw new ArgumentNullException(nameof(buildVariant) + " || " + nameof(globalConfig) + " || " + nameof(memoryUsage) + " || " + nameof(processStartTime) + " || " + nameof(version));
-			}
-
-			BuildVariant = buildVariant;
+			BuildVariant = !string.IsNullOrEmpty(buildVariant) ? buildVariant : throw new ArgumentNullException(nameof(buildVariant));
 			CanUpdate = canUpdate;
-			GlobalConfig = globalConfig;
-			MemoryUsage = memoryUsage;
-			ProcessStartTime = processStartTime;
-			Version = version;
+			GlobalConfig = globalConfig ?? throw new ArgumentNullException(nameof(globalConfig));
+			MemoryUsage = memoryUsage > 0 ? memoryUsage : throw new ArgumentOutOfRangeException(nameof(memoryUsage));
+			ProcessStartTime = processStartTime > DateTime.MinValue ? processStartTime : throw new ArgumentOutOfRangeException(nameof(processStartTime));
+			Version = version ?? throw new ArgumentNullException(nameof(version));
 		}
 	}
 }

@@ -31,7 +31,7 @@ namespace ArchiSteamFarm.IPC.Requests {
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public readonly GlobalConfig? GlobalConfig;
+		public GlobalConfig? GlobalConfig { get; private set; }
 
 		[JsonConstructor]
 		private ASFRequest() { }

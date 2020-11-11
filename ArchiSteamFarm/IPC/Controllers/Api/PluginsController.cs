@@ -19,6 +19,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.Net;
 using ArchiSteamFarm.IPC.Responses;
@@ -31,7 +32,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[HttpGet]
 		[ProducesResponseType(typeof(GenericResponse<IReadOnlyCollection<IPlugin>>), (int) HttpStatusCode.OK)]
 		public ActionResult<GenericResponse<IReadOnlyCollection<IPlugin>>> PluginsGet() {
-			IReadOnlyCollection<IPlugin> activePlugins = PluginsCore.ActivePlugins ?? (IReadOnlyCollection<IPlugin>) new IPlugin[0];
+			IReadOnlyCollection<IPlugin> activePlugins = PluginsCore.ActivePlugins ?? (IReadOnlyCollection<IPlugin>) Array.Empty<IPlugin>();
 
 			return Ok(new GenericResponse<IReadOnlyCollection<IPlugin>>(activePlugins));
 		}

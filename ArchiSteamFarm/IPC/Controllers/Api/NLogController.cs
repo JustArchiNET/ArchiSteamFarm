@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.WebSockets;
@@ -49,8 +50,12 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[ProducesResponseType(typeof(IEnumerable<GenericResponse<string>>), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		public async Task<ActionResult> NLogGet() {
+			if (HttpContext == null) {
+				throw new InvalidOperationException(nameof(HttpContext));
+			}
+
 			if (!HttpContext.WebSockets.IsWebSocketRequest) {
-				return BadRequest(new GenericResponse(false, string.Format(Strings.WarningFailedWithError, nameof(HttpContext.WebSockets.IsWebSocketRequest) + ": " + HttpContext.WebSockets.IsWebSocketRequest)));
+				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError!, nameof(HttpContext.WebSockets.IsWebSocketRequest) + ": " + HttpContext.WebSockets.IsWebSocketRequest)));
 			}
 
 			// From now on we can return only EmptyResult as the response stream is already being used by existing websocket connection
@@ -74,7 +79,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 					}
 
 					while (webSocket.State == WebSocketState.Open) {
-						WebSocketReceiveResult result = await webSocket.ReceiveAsync(new byte[0], CancellationToken.None).ConfigureAwait(false);
+						WebSocketReceiveResult result = await webSocket.ReceiveAsync(Array.Empty<byte>(), CancellationToken.None).ConfigureAwait(false);
 
 						if (result.MessageType != WebSocketMessageType.Close) {
 							await webSocket.CloseAsync(WebSocketCloseStatus.InvalidMessageType, "You're not supposed to be sending any message but Close!", CancellationToken.None).ConfigureAwait(false);
@@ -104,7 +109,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				throw new ArgumentNullException(nameof(newHistoryEntryArgs));
 			}
 
-			if (ActiveLogWebSockets.Count == 0) {
+			if (ActiveLogWebSockets.IsEmpty) {
 				return;
 			}
 
@@ -114,8 +119,16 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		private static async Task PostLoggedJsonUpdate(WebSocket webSocket, SemaphoreSlim sendSemaphore, string json) {
-			if ((webSocket == null) || (sendSemaphore == null) || string.IsNullOrEmpty(json)) {
-				throw new ArgumentNullException(nameof(webSocket) + " || " + nameof(sendSemaphore) + " || " + nameof(json));
+			if (webSocket == null) {
+				throw new ArgumentNullException(nameof(webSocket));
+			}
+
+			if (sendSemaphore == null) {
+				throw new ArgumentNullException(nameof(sendSemaphore));
+			}
+
+			if (string.IsNullOrEmpty(json)) {
+				throw new ArgumentNullException(nameof(json));
 			}
 
 			if (webSocket.State != WebSocketState.Open) {
@@ -138,8 +151,16 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		private static async Task PostLoggedMessageUpdate(WebSocket webSocket, SemaphoreSlim sendSemaphore, string loggedMessage) {
-			if ((webSocket == null) || (sendSemaphore == null) || string.IsNullOrEmpty(loggedMessage)) {
-				throw new ArgumentNullException(nameof(webSocket) + " || " + nameof(sendSemaphore) + " || " + nameof(loggedMessage));
+			if (webSocket == null) {
+				throw new ArgumentNullException(nameof(webSocket));
+			}
+
+			if (sendSemaphore == null) {
+				throw new ArgumentNullException(nameof(sendSemaphore));
+			}
+
+			if (string.IsNullOrEmpty(loggedMessage)) {
+				throw new ArgumentNullException(nameof(loggedMessage));
 			}
 
 			if (webSocket.State != WebSocketState.Open) {
