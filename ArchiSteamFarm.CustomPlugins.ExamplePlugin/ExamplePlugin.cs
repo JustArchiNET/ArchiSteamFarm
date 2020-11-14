@@ -41,7 +41,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 	internal sealed class ExamplePlugin : IASF, IBot, IBotCommand, IBotConnection, IBotFriendRequest, IBotMessage, IBotModules, IBotTradeOffer {
 		// Plugins can expose custom properties for our GET /Api/Plugins API call, simply annotate them with [JsonProperty] (or keep public)
 		[JsonProperty]
-		public readonly bool CustomIsEnabledField = true;
+		public bool CustomIsEnabledField { get; private set; } = true;
 
 		// This is used for identification purposes, typically you want to use a friendly name of your plugin here, such as the name of your main class
 		// Please note that this property can have direct dependencies only on structures that were initialized by the constructor, as it's possible to be called before OnLoaded() takes place

@@ -37,7 +37,7 @@ namespace ArchiSteamFarm {
 	public sealed class GlobalDatabase : SerializableFile {
 		[JsonProperty(Required = Required.DisallowNull)]
 		[PublicAPI]
-		public Guid Identifier { get; } = Guid.NewGuid();
+		public Guid Identifier { get; private set; } = Guid.NewGuid();
 
 		[JsonIgnore]
 		[PublicAPI]

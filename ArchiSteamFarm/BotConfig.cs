@@ -138,82 +138,82 @@ namespace ArchiSteamFarm {
 		private static readonly SemaphoreSlim WriteSemaphore = new(1, 1);
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool AcceptGifts { get; } = DefaultAcceptGifts;
+		public bool AcceptGifts { get; private set; } = DefaultAcceptGifts;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool AutoSteamSaleEvent { get; } = DefaultAutoSteamSaleEvent;
+		public bool AutoSteamSaleEvent { get; private set; } = DefaultAutoSteamSaleEvent;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public EBotBehaviour BotBehaviour { get; } = DefaultBotBehaviour;
+		public EBotBehaviour BotBehaviour { get; private set; } = DefaultBotBehaviour;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public ImmutableHashSet<Steam.Asset.EType> CompleteTypesToSend { get; } = DefaultCompleteTypesToSend;
+		public ImmutableHashSet<Steam.Asset.EType> CompleteTypesToSend { get; private set; } = DefaultCompleteTypesToSend;
 
 		[JsonProperty]
-		public string? CustomGamePlayedWhileFarming { get; } = DefaultCustomGamePlayedWhileFarming;
+		public string? CustomGamePlayedWhileFarming { get; private set; } = DefaultCustomGamePlayedWhileFarming;
 
 		[JsonProperty]
-		public string? CustomGamePlayedWhileIdle { get; } = DefaultCustomGamePlayedWhileIdle;
+		public string? CustomGamePlayedWhileIdle { get; private set; } = DefaultCustomGamePlayedWhileIdle;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool Enabled { get; } = DefaultEnabled;
+		public bool Enabled { get; private set; } = DefaultEnabled;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public ImmutableList<EFarmingOrder> FarmingOrders { get; } = DefaultFarmingOrders;
+		public ImmutableList<EFarmingOrder> FarmingOrders { get; private set; } = DefaultFarmingOrders;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public ImmutableHashSet<uint> GamesPlayedWhileIdle { get; } = DefaultGamesPlayedWhileIdle;
+		public ImmutableHashSet<uint> GamesPlayedWhileIdle { get; private set; } = DefaultGamesPlayedWhileIdle;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public byte HoursUntilCardDrops { get; } = DefaultHoursUntilCardDrops;
+		public byte HoursUntilCardDrops { get; private set; } = DefaultHoursUntilCardDrops;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool IdlePriorityQueueOnly { get; } = DefaultIdlePriorityQueueOnly;
+		public bool IdlePriorityQueueOnly { get; private set; } = DefaultIdlePriorityQueueOnly;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool IdleRefundableGames { get; } = DefaultIdleRefundableGames;
+		public bool IdleRefundableGames { get; private set; } = DefaultIdleRefundableGames;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public ImmutableHashSet<Steam.Asset.EType> LootableTypes { get; } = DefaultLootableTypes;
+		public ImmutableHashSet<Steam.Asset.EType> LootableTypes { get; private set; } = DefaultLootableTypes;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public ImmutableHashSet<Steam.Asset.EType> MatchableTypes { get; } = DefaultMatchableTypes;
+		public ImmutableHashSet<Steam.Asset.EType> MatchableTypes { get; private set; } = DefaultMatchableTypes;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public EPersonaState OnlineStatus { get; } = DefaultOnlineStatus;
+		public EPersonaState OnlineStatus { get; private set; } = DefaultOnlineStatus;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public ArchiCryptoHelper.ECryptoMethod PasswordFormat { get; } = DefaultPasswordFormat;
+		public ArchiCryptoHelper.ECryptoMethod PasswordFormat { get; private set; } = DefaultPasswordFormat;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool Paused { get; } = DefaultPaused;
+		public bool Paused { get; private set; } = DefaultPaused;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public ERedeemingPreferences RedeemingPreferences { get; } = DefaultRedeemingPreferences;
+		public ERedeemingPreferences RedeemingPreferences { get; private set; } = DefaultRedeemingPreferences;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool SendOnFarmingFinished { get; } = DefaultSendOnFarmingFinished;
+		public bool SendOnFarmingFinished { get; private set; } = DefaultSendOnFarmingFinished;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public byte SendTradePeriod { get; } = DefaultSendTradePeriod;
+		public byte SendTradePeriod { get; private set; } = DefaultSendTradePeriod;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool ShutdownOnFarmingFinished { get; } = DefaultShutdownOnFarmingFinished;
+		public bool ShutdownOnFarmingFinished { get; private set; } = DefaultShutdownOnFarmingFinished;
 
 		[JsonProperty]
-		public string? SteamTradeToken { get; } = DefaultSteamTradeToken;
+		public string? SteamTradeToken { get; private set; } = DefaultSteamTradeToken;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public ImmutableDictionary<ulong, EAccess> SteamUserPermissions { get; } = DefaultSteamUserPermissions;
+		public ImmutableDictionary<ulong, EAccess> SteamUserPermissions { get; private set; } = DefaultSteamUserPermissions;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public ETradingPreferences TradingPreferences { get; } = DefaultTradingPreferences;
+		public ETradingPreferences TradingPreferences { get; private set; } = DefaultTradingPreferences;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public ImmutableHashSet<Steam.Asset.EType> TransferableTypes { get; } = DefaultTransferableTypes;
+		public ImmutableHashSet<Steam.Asset.EType> TransferableTypes { get; private set; } = DefaultTransferableTypes;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool UseLoginKeys { get; } = DefaultUseLoginKeys;
+		public bool UseLoginKeys { get; private set; } = DefaultUseLoginKeys;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ulong SteamMasterClanID { get; private set; } = DefaultSteamMasterClanID;

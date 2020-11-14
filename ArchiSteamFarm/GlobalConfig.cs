@@ -127,73 +127,73 @@ namespace ArchiSteamFarm {
 		private static readonly SemaphoreSlim WriteSemaphore = new(1, 1);
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool AutoRestart { get; } = DefaultAutoRestart;
+		public bool AutoRestart { get; private set; } = DefaultAutoRestart;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public ImmutableHashSet<uint> Blacklist { get; } = DefaultBlacklist;
+		public ImmutableHashSet<uint> Blacklist { get; private set; } = DefaultBlacklist;
 
 		[JsonProperty]
-		public string? CommandPrefix { get; } = DefaultCommandPrefix;
+		public string? CommandPrefix { get; private set; } = DefaultCommandPrefix;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public byte ConfirmationsLimiterDelay { get; } = DefaultConfirmationsLimiterDelay;
+		public byte ConfirmationsLimiterDelay { get; private set; } = DefaultConfirmationsLimiterDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public byte ConnectionTimeout { get; } = DefaultConnectionTimeout;
+		public byte ConnectionTimeout { get; private set; } = DefaultConnectionTimeout;
 
 		[JsonProperty]
-		public string? CurrentCulture { get; } = DefaultCurrentCulture;
+		public string? CurrentCulture { get; private set; } = DefaultCurrentCulture;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool Debug { get; } = DefaultDebug;
+		public bool Debug { get; private set; } = DefaultDebug;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public byte FarmingDelay { get; } = DefaultFarmingDelay;
+		public byte FarmingDelay { get; private set; } = DefaultFarmingDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public byte GiftsLimiterDelay { get; } = DefaultGiftsLimiterDelay;
+		public byte GiftsLimiterDelay { get; private set; } = DefaultGiftsLimiterDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool Headless { get; } = DefaultHeadless;
+		public bool Headless { get; private set; } = DefaultHeadless;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public byte IdleFarmingPeriod { get; } = DefaultIdleFarmingPeriod;
+		public byte IdleFarmingPeriod { get; private set; } = DefaultIdleFarmingPeriod;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public byte InventoryLimiterDelay { get; } = DefaultInventoryLimiterDelay;
+		public byte InventoryLimiterDelay { get; private set; } = DefaultInventoryLimiterDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool IPC { get; } = DefaultIPC;
+		public bool IPC { get; private set; } = DefaultIPC;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public ArchiCryptoHelper.EHashingMethod IPCPasswordFormat { get; } = DefaultIPCPasswordFormat;
+		public ArchiCryptoHelper.EHashingMethod IPCPasswordFormat { get; private set; } = DefaultIPCPasswordFormat;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public byte LoginLimiterDelay { get; } = DefaultLoginLimiterDelay;
+		public byte LoginLimiterDelay { get; private set; } = DefaultLoginLimiterDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public byte MaxFarmingTime { get; } = DefaultMaxFarmingTime;
+		public byte MaxFarmingTime { get; private set; } = DefaultMaxFarmingTime;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public byte MaxTradeHoldDuration { get; } = DefaultMaxTradeHoldDuration;
+		public byte MaxTradeHoldDuration { get; private set; } = DefaultMaxTradeHoldDuration;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public EOptimizationMode OptimizationMode { get; } = DefaultOptimizationMode;
+		public EOptimizationMode OptimizationMode { get; private set; } = DefaultOptimizationMode;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool Statistics { get; } = DefaultStatistics;
+		public bool Statistics { get; private set; } = DefaultStatistics;
 
 		[JsonProperty]
-		public string? SteamMessagePrefix { get; } = DefaultSteamMessagePrefix;
+		public string? SteamMessagePrefix { get; private set; } = DefaultSteamMessagePrefix;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public EUpdateChannel UpdateChannel { get; } = DefaultUpdateChannel;
+		public EUpdateChannel UpdateChannel { get; private set; } = DefaultUpdateChannel;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public byte UpdatePeriod { get; } = DefaultUpdatePeriod;
+		public byte UpdatePeriod { get; private set; } = DefaultUpdatePeriod;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public ushort WebLimiterDelay { get; } = DefaultWebLimiterDelay;
+		public ushort WebLimiterDelay { get; private set; } = DefaultWebLimiterDelay;
 
 		[JsonIgnore]
 		[PublicAPI]
@@ -243,10 +243,10 @@ namespace ArchiSteamFarm {
 		}
 
 		[JsonProperty(PropertyName = nameof(WebProxy))]
-		public string? WebProxyText { get; } = DefaultWebProxyText;
+		public string? WebProxyText { get; private set; } = DefaultWebProxyText;
 
 		[JsonProperty]
-		public string? WebProxyUsername { get; } = DefaultWebProxyUsername;
+		public string? WebProxyUsername { get; private set; } = DefaultWebProxyUsername;
 
 		[JsonProperty]
 		internal readonly string? IPCPassword = DefaultIPCPassword;
