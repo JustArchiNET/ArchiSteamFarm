@@ -50,6 +50,11 @@
     </Reference>
   </ItemGroup>
 
+  <!-- Assemblies to include in trimmed builds for plugins usage -->
+  <ItemGroup>
+    <TrimmerRootAssembly Include="System.Runtime" />
+  </ItemGroup>
+
   <ItemGroup>
     <Compile Update="Localization\Strings.Designer.cs">
       <AutoGen>True</AutoGen>
