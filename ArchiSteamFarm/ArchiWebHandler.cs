@@ -64,7 +64,7 @@ namespace ArchiSteamFarm {
 		private const string SteamHelpHost = "help.steampowered.com";
 		private const string SteamStoreHost = "store.steampowered.com";
 
-		private static readonly ConcurrentDictionary<uint, byte> CachedCardCountsForGame = new ConcurrentDictionary<uint, byte>();
+		private static readonly ConcurrentDictionary<uint, byte> CachedCardCountsForGame = new();
 
 		[PublicAPI]
 		public ArchiCacheable<string> CachedApiKey { get; }
@@ -73,7 +73,7 @@ namespace ArchiSteamFarm {
 		public WebBrowser WebBrowser { get; }
 
 		private readonly Bot Bot;
-		private readonly SemaphoreSlim SessionSemaphore = new SemaphoreSlim(1, 1);
+		private readonly SemaphoreSlim SessionSemaphore = new(1, 1);
 
 		private bool Initialized;
 		private DateTime LastSessionCheck;
@@ -149,7 +149,7 @@ namespace ArchiSteamFarm {
 			ulong startAssetID = 0;
 
 			// We need to store asset IDs to make sure we won't get duplicate items
-			HashSet<ulong> assetIDs = new HashSet<ulong>();
+			HashSet<ulong> assetIDs = new();
 
 			while (true) {
 				await ASF.InventorySemaphore.WaitAsync().ConfigureAwait(false);
@@ -174,7 +174,7 @@ namespace ArchiSteamFarm {
 						throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response.Content.Assets) + " || " + nameof(response.Content.Descriptions)));
 					}
 
-					Dictionary<(ulong ClassID, ulong InstanceID), Steam.InventoryResponse.Description> descriptions = new Dictionary<(ulong ClassID, ulong InstanceID), Steam.InventoryResponse.Description>();
+					Dictionary<(ulong ClassID, ulong InstanceID), Steam.InventoryResponse.Description> descriptions = new();
 
 					foreach (Steam.InventoryResponse.Description description in response.Content.Descriptions) {
 						if (description.ClassID == 0) {
@@ -249,7 +249,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			Dictionary<uint, string> result = new Dictionary<uint, string>(xmlNodeList.Count);
+			Dictionary<uint, string> result = new(xmlNodeList.Count);
 
 			foreach (XmlNode? xmlNode in xmlNodeList) {
 				if (xmlNode == null) {
@@ -333,7 +333,7 @@ namespace ArchiSteamFarm {
 
 			List<KeyValue> games = response["games"].Children;
 
-			Dictionary<uint, string> result = new Dictionary<uint, string>(games.Count);
+			Dictionary<uint, string> result = new(games.Count);
 
 			foreach (KeyValue game in games) {
 				uint appID = game["appid"].AsUnsignedInteger();
@@ -379,8 +379,8 @@ namespace ArchiSteamFarm {
 				throw new ArgumentOutOfRangeException(nameof(itemsPerTrade));
 			}
 
-			Steam.TradeOfferSendRequest singleTrade = new Steam.TradeOfferSendRequest();
-			HashSet<Steam.TradeOfferSendRequest> trades = new HashSet<Steam.TradeOfferSendRequest> { singleTrade };
+			Steam.TradeOfferSendRequest singleTrade = new();
+			HashSet<Steam.TradeOfferSendRequest> trades = new() { singleTrade };
 
 			if (itemsToGive != null) {
 				foreach (Steam.Asset itemToGive in itemsToGive) {
@@ -416,14 +416,14 @@ namespace ArchiSteamFarm {
 			const string referer = SteamCommunityURL + "/tradeoffer/new";
 
 			// Extra entry for sessionID
-			Dictionary<string, string> data = new Dictionary<string, string>(6, StringComparer.Ordinal) {
+			Dictionary<string, string> data = new(6, StringComparer.Ordinal) {
 				{ "partner", steamID.ToString(CultureInfo.InvariantCulture) },
 				{ "serverid", "1" },
 				{ "trade_offer_create_params", !string.IsNullOrEmpty(token) ? new JObject { { "trade_offer_access_token", token } }.ToString(Formatting.None) : "" },
 				{ "tradeoffermessage", "Sent by " + SharedInfo.PublicIdentifier + "/" + SharedInfo.Version }
 			};
 
-			HashSet<ulong> mobileTradeOfferIDs = new HashSet<ulong>();
+			HashSet<ulong> mobileTradeOfferIDs = new();
 
 			foreach (Steam.TradeOfferSendRequest trade in trades) {
 				data["json_tradeoffer"] = JsonConvert.SerializeObject(trade);
@@ -535,7 +535,7 @@ namespace ArchiSteamFarm {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
 				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
-				return default;
+				return default(WebBrowser.ObjectResponse<T>?);
 			}
 
 			if (checkSessionPreemptively) {
@@ -569,14 +569,14 @@ namespace ArchiSteamFarm {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
 
-					return default;
+					return default(WebBrowser.ObjectResponse<T>?);
 				}
 			}
 
 			WebBrowser.ObjectResponse<T>? response = await WebLimitRequest(host, async () => await WebBrowser.UrlGetToJsonObject<T>(host + request, headers, referer, requestOptions).ConfigureAwait(false)).ConfigureAwait(false);
 
 			if (response == null) {
-				return default;
+				return default(WebBrowser.ObjectResponse<T>?);
 			}
 
 			if (IsSessionExpiredUri(response.FinalUri)) {
@@ -1042,7 +1042,7 @@ namespace ArchiSteamFarm {
 					_ => throw new ArgumentOutOfRangeException(nameof(session))
 				};
 
-				KeyValuePair<string, string> sessionValue = new KeyValuePair<string, string>(sessionName, sessionID!);
+				KeyValuePair<string, string> sessionValue = new(sessionName, sessionID!);
 
 				if (data != null) {
 					data.Remove(sessionValue);
@@ -1245,7 +1245,7 @@ namespace ArchiSteamFarm {
 			const string request = "/gifts/0/resolvegiftcard";
 
 			// Extra entry for sessionID
-			Dictionary<string, string> data = new Dictionary<string, string>(3, StringComparer.Ordinal) {
+			Dictionary<string, string> data = new(3, StringComparer.Ordinal) {
 				{ "accept", "1" },
 				{ "giftcardid", giftCardID.ToString(CultureInfo.InvariantCulture) }
 			};
@@ -1282,7 +1282,7 @@ namespace ArchiSteamFarm {
 			string referer = SteamCommunityURL + "/tradeoffer/" + tradeID;
 
 			// Extra entry for sessionID
-			Dictionary<string, string> data = new Dictionary<string, string>(3, StringComparer.Ordinal) {
+			Dictionary<string, string> data = new(3, StringComparer.Ordinal) {
 				{ "serverid", "1" },
 				{ "tradeofferid", tradeID.ToString(CultureInfo.InvariantCulture) }
 			};
@@ -1316,7 +1316,7 @@ namespace ArchiSteamFarm {
 			const string request = "/checkout/addfreelicense";
 
 			// Extra entry for sessionID
-			Dictionary<string, string> data = new Dictionary<string, string>(3, StringComparer.Ordinal) {
+			Dictionary<string, string> data = new(3, StringComparer.Ordinal) {
 				{ "action", "add_to_cart" },
 				{ "subid", subID.ToString(CultureInfo.InvariantCulture) }
 			};
@@ -1342,7 +1342,7 @@ namespace ArchiSteamFarm {
 			string request = profileURL + "/ajaxsetprivacy";
 
 			// Extra entry for sessionID
-			Dictionary<string, string> data = new Dictionary<string, string>(3, StringComparer.Ordinal) {
+			Dictionary<string, string> data = new(3, StringComparer.Ordinal) {
 				{ "eCommentPermission", ((byte) userPrivacy.CommentPermission).ToString(CultureInfo.InvariantCulture) },
 				{ "Privacy", JsonConvert.SerializeObject(userPrivacy.Settings) }
 			};
@@ -1370,7 +1370,7 @@ namespace ArchiSteamFarm {
 			string request = "/app/" + appID;
 
 			// Extra entry for sessionID
-			Dictionary<string, string> data = new Dictionary<string, string>(2, StringComparer.Ordinal) { { "appid_to_clear_from_queue", appID.ToString(CultureInfo.InvariantCulture) } };
+			Dictionary<string, string> data = new(2, StringComparer.Ordinal) { { "appid_to_clear_from_queue", appID.ToString(CultureInfo.InvariantCulture) } };
 
 			return await UrlPostWithSession(SteamStoreURL, request, data: data).ConfigureAwait(false);
 		}
@@ -1427,7 +1427,7 @@ namespace ArchiSteamFarm {
 			const string request = "/explore/generatenewdiscoveryqueue";
 
 			// Extra entry for sessionID
-			Dictionary<string, string> data = new Dictionary<string, string>(2, StringComparer.Ordinal) { { "queuetype", "0" } };
+			Dictionary<string, string> data = new(2, StringComparer.Ordinal) { { "queuetype", "0" } };
 
 			WebBrowser.ObjectResponse<Steam.NewDiscoveryQueueResponse>? response = await UrlPostToJsonObjectWithSession<Steam.NewDiscoveryQueueResponse>(SteamStoreURL, request, data: data).ConfigureAwait(false);
 
@@ -1476,7 +1476,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), Steam.InventoryResponse.Description> descriptions = new Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), Steam.InventoryResponse.Description>();
+			Dictionary<(uint AppID, ulong ClassID, ulong InstanceID), Steam.InventoryResponse.Description> descriptions = new();
 
 			foreach (KeyValue description in response["descriptions"].Children) {
 				uint appID = description["appid"].AsUnsignedInteger();
@@ -1503,7 +1503,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				Steam.InventoryResponse.Description parsedDescription = new Steam.InventoryResponse.Description {
+				Steam.InventoryResponse.Description parsedDescription = new() {
 					AppID = appID,
 					ClassID = classID,
 					InstanceID = instanceID,
@@ -1514,7 +1514,7 @@ namespace ArchiSteamFarm {
 				List<KeyValue> tags = description["tags"].Children;
 
 				if (tags.Count > 0) {
-					HashSet<Steam.Asset.Tag> parsedTags = new HashSet<Steam.Asset.Tag>(tags.Count);
+					HashSet<Steam.Asset.Tag> parsedTags = new(tags.Count);
 
 					foreach (KeyValue tag in tags) {
 						string? identifier = tag["category"].AsString();
@@ -1542,7 +1542,7 @@ namespace ArchiSteamFarm {
 				descriptions[key] = parsedDescription;
 			}
 
-			HashSet<Steam.TradeOffer> result = new HashSet<Steam.TradeOffer>();
+			HashSet<Steam.TradeOffer> result = new();
 
 			foreach (KeyValue trade in response["trade_offers_received"].Children) {
 				ETradeOfferState state = trade["trade_offer_state"].AsEnum<ETradeOfferState>();
@@ -1573,7 +1573,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				Steam.TradeOffer tradeOffer = new Steam.TradeOffer(tradeOfferID, otherSteamID3, state);
+				Steam.TradeOffer tradeOffer = new(tradeOfferID, otherSteamID3, state);
 
 				List<KeyValue> itemsToGive = trade["items_to_give"].Children;
 
@@ -1637,7 +1637,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			HashSet<uint> result = new HashSet<uint>(apps.Count);
+			HashSet<uint> result = new(apps.Count);
 
 			foreach (uint appID in apps.Select(app => app["appid"].AsUnsignedInteger())) {
 				if (appID == 0) {
@@ -1744,7 +1744,7 @@ namespace ArchiSteamFarm {
 				return new HashSet<ulong>(0);
 			}
 
-			HashSet<ulong> results = new HashSet<ulong>(htmlNodes.Count);
+			HashSet<ulong> results = new(htmlNodes.Count);
 
 			foreach (string? giftCardIDText in htmlNodes.Select(node => node.GetAttribute("id"))) {
 				if (string.IsNullOrEmpty(giftCardIDText)) {
@@ -1795,7 +1795,7 @@ namespace ArchiSteamFarm {
 				return new HashSet<ulong>(0);
 			}
 
-			HashSet<ulong> result = new HashSet<ulong>(htmlNodes.Count);
+			HashSet<ulong> result = new(htmlNodes.Count);
 
 			foreach (string? miniProfile in htmlNodes.Select(htmlNode => htmlNode.GetAttribute("data-miniprofile"))) {
 				if (string.IsNullOrEmpty(miniProfile)) {
@@ -1934,7 +1934,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			Dictionary<string, object> arguments = new Dictionary<string, object>(!string.IsNullOrEmpty(tradeToken) ? 3 : 2, StringComparer.Ordinal) {
+			Dictionary<string, object> arguments = new(!string.IsNullOrEmpty(tradeToken) ? 3 : 2, StringComparer.Ordinal) {
 				{ "key", steamApiKey! },
 				{ "steamid_target", steamID }
 			};
@@ -2057,7 +2057,7 @@ namespace ArchiSteamFarm {
 			const string request = "/mobileconf/multiajaxop";
 
 			// Extra entry for sessionID
-			List<KeyValuePair<string, string>> data = new List<KeyValuePair<string, string>>(8 + (confirmations.Count * 2)) {
+			List<KeyValuePair<string, string>> data = new(8 + (confirmations.Count * 2)) {
 				new KeyValuePair<string, string>("a", Bot.SteamID.ToString(CultureInfo.InvariantCulture)),
 				new KeyValuePair<string, string>("k", confirmationHash),
 				new KeyValuePair<string, string>("m", "android"),
@@ -2104,7 +2104,7 @@ namespace ArchiSteamFarm {
 			// RSA encrypt our session key with the public key for the universe we're on
 			byte[] encryptedSessionKey;
 
-			using (RSACrypto rsa = new RSACrypto(publicKey)) {
+			using (RSACrypto rsa = new(publicKey)) {
 				encryptedSessionKey = rsa.Encrypt(sessionKey);
 			}
 
@@ -2213,7 +2213,7 @@ namespace ArchiSteamFarm {
 			string request = "/gid/" + groupID;
 
 			// Extra entry for sessionID
-			Dictionary<string, string> data = new Dictionary<string, string>(2, StringComparer.Ordinal) { { "action", "join" } };
+			Dictionary<string, string> data = new(2, StringComparer.Ordinal) { { "action", "join" } };
 
 			return await UrlPostWithSession(SteamCommunityURL, request, data: data, session: ESession.CamelCase).ConfigureAwait(false);
 		}
@@ -2286,7 +2286,7 @@ namespace ArchiSteamFarm {
 			const string requestValidateCode = "/account/ajaxredeemwalletcode";
 
 			// Extra entry for sessionID
-			Dictionary<string, string> data = new Dictionary<string, string>(2, StringComparer.Ordinal) { { "wallet_code", key } };
+			Dictionary<string, string> data = new(2, StringComparer.Ordinal) { { "wallet_code", key } };
 
 			WebBrowser.ObjectResponse<Steam.RedeemWalletResponse>? responseValidateCode = await UrlPostToJsonObjectWithSession<Steam.RedeemWalletResponse>(SteamStoreURL, requestValidateCode, data: data).ConfigureAwait(false);
 
@@ -2322,7 +2322,7 @@ namespace ArchiSteamFarm {
 			string request = profileURL + "/ajaxunpackbooster";
 
 			// Extra entry for sessionID
-			Dictionary<string, string> data = new Dictionary<string, string>(3, StringComparer.Ordinal) {
+			Dictionary<string, string> data = new(3, StringComparer.Ordinal) {
 				{ "appid", appID.ToString(CultureInfo.InvariantCulture) },
 				{ "communityitemid", itemID.ToString(CultureInfo.InvariantCulture) }
 			};
@@ -2542,7 +2542,7 @@ namespace ArchiSteamFarm {
 					rarity = description.Rarity;
 				}
 
-				Steam.Asset steamAsset = new Steam.Asset(appID, contextID, classID, amount, instanceID, assetID, marketable, tradable, tags, realAppID, type, rarity);
+				Steam.Asset steamAsset = new(appID, contextID, classID, amount, instanceID, assetID, marketable, tradable, tags, realAppID, type, rarity);
 				output.Add(steamAsset);
 			}
 
@@ -2594,7 +2594,7 @@ namespace ArchiSteamFarm {
 			const string request = "/dev/registerkey";
 
 			// Extra entry for sessionID
-			Dictionary<string, string> data = new Dictionary<string, string>(4, StringComparer.Ordinal) {
+			Dictionary<string, string> data = new(4, StringComparer.Ordinal) {
 				{ "agreeToTerms", "agreed" },
 				{ "domain", "generated.by." + SharedInfo.AssemblyName.ToLowerInvariant() + ".localhost" },
 				{ "Submit", "Register" }
@@ -2699,7 +2699,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			Dictionary<string, string> data = new Dictionary<string, string>(2, StringComparer.Ordinal) {
+			Dictionary<string, string> data = new(2, StringComparer.Ordinal) {
 				{ "pin", parentalCode },
 				{ "sessionid", sessionID! }
 			};

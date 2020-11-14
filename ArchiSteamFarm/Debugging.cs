@@ -37,7 +37,7 @@ namespace ArchiSteamFarm {
 		internal sealed class DebugListener : IDebugListener {
 			public void WriteLine(string category, string msg) {
 				if (string.IsNullOrEmpty(category) && string.IsNullOrEmpty(msg)) {
-					throw new ArgumentNullException(nameof(category) + " && " + nameof(msg));
+					throw new InvalidOperationException(nameof(category) + " && " + nameof(msg));
 				}
 
 				ASF.ArchiLogger.LogGenericDebug(category + " | " + msg);

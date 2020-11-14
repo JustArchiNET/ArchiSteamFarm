@@ -22,7 +22,6 @@
 using System;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Plugins;
 using SteamKit2;
@@ -31,8 +30,8 @@ namespace ArchiSteamFarm {
 	internal static class SteamPICSChanges {
 		private const byte RefreshTimerInMinutes = 5;
 
-		private static readonly SemaphoreSlim RefreshSemaphore = new SemaphoreSlim(1, 1);
-		private static readonly Timer RefreshTimer = new Timer(async e => await RefreshChanges().ConfigureAwait(false));
+		private static readonly SemaphoreSlim RefreshSemaphore = new(1, 1);
+		private static readonly Timer RefreshTimer = new(RefreshChanges);
 
 		private static uint LastChangeNumber;
 		private static bool TimerAlreadySet;
@@ -54,7 +53,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static async Task RefreshChanges() {
+		private static async void RefreshChanges(object? state) {
 			if (!await RefreshSemaphore.WaitAsync(0).ConfigureAwait(false)) {
 				return;
 			}

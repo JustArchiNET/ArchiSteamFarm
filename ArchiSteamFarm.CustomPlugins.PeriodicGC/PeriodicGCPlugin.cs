@@ -32,7 +32,7 @@ namespace ArchiSteamFarm.CustomPlugins.PeriodicGC {
 	internal sealed class PeriodicGCPlugin : IPlugin {
 		private const byte GCPeriod = 60; // In seconds
 
-		private static readonly Timer PeriodicGCTimer = new Timer(PerformGC);
+		private static readonly Timer PeriodicGCTimer = new(PerformGC);
 
 		public string Name => nameof(PeriodicGCPlugin);
 

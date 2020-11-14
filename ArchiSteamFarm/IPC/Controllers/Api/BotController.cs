@@ -117,7 +117,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(botNames))));
 			}
 
-			Dictionary<string, bool> result = new Dictionary<string, bool>(bots.Count, Bot.BotsComparer);
+			Dictionary<string, bool> result = new(bots.Count, Bot.BotsComparer);
 
 			foreach (string botName in bots) {
 				if (Bot.Bots.TryGetValue(botName, out Bot? bot)) {
@@ -199,7 +199,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 
 			IList<(Dictionary<string, string>? UnusedKeys, Dictionary<string, string>? UsedKeys)> results = await Utilities.InParallel(bots.Select(bot => bot.GetUsedAndUnusedKeys())).ConfigureAwait(false);
 
-			Dictionary<string, GamesToRedeemInBackgroundResponse> result = new Dictionary<string, GamesToRedeemInBackgroundResponse>(bots.Count, Bot.BotsComparer);
+			Dictionary<string, GamesToRedeemInBackgroundResponse> result = new(bots.Count, Bot.BotsComparer);
 
 			foreach (Bot bot in bots) {
 				(Dictionary<string, string>? unusedKeys, Dictionary<string, string>? usedKeys) = results[result.Count];
@@ -243,7 +243,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 
 			await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.AddGamesToRedeemInBackground(validGamesToRedeemInBackground)))).ConfigureAwait(false);
 
-			Dictionary<string, IOrderedDictionary> result = new Dictionary<string, IOrderedDictionary>(bots.Count, Bot.BotsComparer);
+			Dictionary<string, IOrderedDictionary> result = new(bots.Count, Bot.BotsComparer);
 
 			foreach (Bot bot in bots) {
 				result[bot.BotName] = validGamesToRedeemInBackground;
@@ -342,12 +342,12 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 
 			IList<ArchiHandler.PurchaseResponseCallback?> results = await Utilities.InParallel(bots.Select(bot => request.KeysToRedeem.Select(key => bot.Actions.RedeemKey(key))).SelectMany(task => task)).ConfigureAwait(false);
 
-			Dictionary<string, IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback?>> result = new Dictionary<string, IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback?>>(bots.Count, Bot.BotsComparer);
+			Dictionary<string, IReadOnlyDictionary<string, ArchiHandler.PurchaseResponseCallback?>> result = new(bots.Count, Bot.BotsComparer);
 
 			int count = 0;
 
 			foreach (Bot bot in bots) {
-				Dictionary<string, ArchiHandler.PurchaseResponseCallback?> responses = new Dictionary<string, ArchiHandler.PurchaseResponseCallback?>(request.KeysToRedeem.Count, StringComparer.Ordinal);
+				Dictionary<string, ArchiHandler.PurchaseResponseCallback?> responses = new(request.KeysToRedeem.Count, StringComparer.Ordinal);
 				result[bot.BotName] = responses;
 
 				foreach (string key in request.KeysToRedeem) {
@@ -484,7 +484,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 
 			IList<(bool Success, string Message)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.HandleTwoFactorAuthenticationConfirmations(request.Accept, request.AcceptedType, request.AcceptedCreatorIDs?.Count > 0 ? request.AcceptedCreatorIDs : null, request.WaitIfNeeded))).ConfigureAwait(false);
 
-			Dictionary<string, GenericResponse> result = new Dictionary<string, GenericResponse>(bots.Count, Bot.BotsComparer);
+			Dictionary<string, GenericResponse> result = new(bots.Count, Bot.BotsComparer);
 
 			foreach (Bot bot in bots) {
 				(bool success, string message) = results[result.Count];
@@ -513,7 +513,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 
 			IList<(bool Success, string? Token, string Message)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.GenerateTwoFactorAuthenticationToken())).ConfigureAwait(false);
 
-			Dictionary<string, GenericResponse<string>> result = new Dictionary<string, GenericResponse<string>>(bots.Count, Bot.BotsComparer);
+			Dictionary<string, GenericResponse<string>> result = new(bots.Count, Bot.BotsComparer);
 
 			foreach (Bot bot in bots) {
 				(bool success, string? token, string message) = results[result.Count];

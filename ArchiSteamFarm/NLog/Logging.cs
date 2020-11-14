@@ -42,8 +42,8 @@ namespace ArchiSteamFarm.NLog {
 		private const string GeneralLayout = @"${date:format=yyyy-MM-dd HH\:mm\:ss}|${processname}-${processid}|${level:uppercase=true}|" + LayoutMessage;
 		private const string LayoutMessage = @"${logger}|${message}${onexception:inner= ${exception:format=toString,Data}}";
 
-		private static readonly ConcurrentHashSet<LoggingRule> ConsoleLoggingRules = new ConcurrentHashSet<LoggingRule>();
-		private static readonly SemaphoreSlim ConsoleSemaphore = new SemaphoreSlim(1, 1);
+		private static readonly ConcurrentHashSet<LoggingRule> ConsoleLoggingRules = new();
+		private static readonly SemaphoreSlim ConsoleSemaphore = new(1, 1);
 
 		private static bool IsUsingCustomConfiguration;
 		private static bool IsWaitingForUserInput;
@@ -156,9 +156,9 @@ namespace ArchiSteamFarm.NLog {
 			}
 
 			ConfigurationItemFactory.Default.ParseMessageTemplates = false;
-			LoggingConfiguration config = new LoggingConfiguration();
+			LoggingConfiguration config = new();
 
-			ColoredConsoleTarget coloredConsoleTarget = new ColoredConsoleTarget("ColoredConsole") { Layout = GeneralLayout };
+			ColoredConsoleTarget coloredConsoleTarget = new("ColoredConsole") { Layout = GeneralLayout };
 
 			config.AddTarget(coloredConsoleTarget);
 			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, coloredConsoleTarget));
@@ -172,7 +172,7 @@ namespace ArchiSteamFarm.NLog {
 					ASF.ArchiLogger.LogGenericException(e);
 				}
 
-				FileTarget fileTarget = new FileTarget("File") {
+				FileTarget fileTarget = new("File") {
 					ArchiveFileName = Path.Combine("${currentdir}", SharedInfo.ArchivalLogsDirectory, SharedInfo.ArchivalLogFile),
 					ArchiveNumbering = ArchiveNumberingMode.Rolling,
 					ArchiveOldFileOnStartup = true,
@@ -242,7 +242,7 @@ namespace ArchiSteamFarm.NLog {
 		}
 
 		private static string? ConsoleReadLine() {
-			using CancellationTokenSource cts = new CancellationTokenSource();
+			using CancellationTokenSource cts = new();
 
 			try {
 				CancellationToken token = cts.Token;
@@ -256,14 +256,14 @@ namespace ArchiSteamFarm.NLog {
 		}
 
 		private static string ConsoleReadLineMasked(char mask = '*') {
-			using CancellationTokenSource cts = new CancellationTokenSource();
+			using CancellationTokenSource cts = new();
 
 			try {
 				CancellationToken token = cts.Token;
 
 				Utilities.InBackground(() => BeepUntilCanceled(token));
 
-				StringBuilder result = new StringBuilder();
+				StringBuilder result = new();
 
 				ConsoleKeyInfo keyInfo;
 

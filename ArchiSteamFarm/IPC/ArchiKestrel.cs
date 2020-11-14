@@ -68,9 +68,9 @@ namespace ArchiSteamFarm.IPC {
 
 			// The order of dependency injection matters, pay attention to it
 #if NETFRAMEWORK
-			WebHostBuilder builder = new WebHostBuilder();
+			WebHostBuilder builder = new();
 #else
-			HostBuilder builder = new HostBuilder();
+			HostBuilder builder = new();
 #endif
 
 			string customDirectory = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.WebsiteDirectory);

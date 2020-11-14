@@ -29,7 +29,7 @@ using JetBrains.Annotations;
 namespace ArchiSteamFarm.Helpers {
 	public sealed class ArchiCacheable<T> : IDisposable where T : class {
 		private readonly TimeSpan CacheLifetime;
-		private readonly SemaphoreSlim InitSemaphore = new SemaphoreSlim(1, 1);
+		private readonly SemaphoreSlim InitSemaphore = new(1, 1);
 		private readonly Func<Task<(bool Success, T? Result)>> ResolveFunction;
 
 		private bool IsInitialized => InitializedAt > DateTime.MinValue;
@@ -68,7 +68,7 @@ namespace ArchiSteamFarm.Helpers {
 				if (!success) {
 					switch (fallback) {
 						case EFallback.DefaultForType:
-							return (false, default);
+							return (false, default(T?));
 						case EFallback.FailedNow:
 							return (false, result);
 						case EFallback.SuccessPreviously:
@@ -103,7 +103,7 @@ namespace ArchiSteamFarm.Helpers {
 				}
 
 				InitializedAt = DateTime.MinValue;
-				InitializedValue = default;
+				InitializedValue = default(T?);
 			} finally {
 				InitSemaphore.Release();
 			}

@@ -26,7 +26,7 @@ using System.Collections.Generic;
 
 namespace ArchiSteamFarm.Collections {
 	internal sealed class FixedSizeConcurrentQueue<T> : IEnumerable<T> {
-		private readonly ConcurrentQueue<T> BackingQueue = new ConcurrentQueue<T>();
+		private readonly ConcurrentQueue<T> BackingQueue = new();
 
 		internal byte MaxCount {
 			get => BackingMaxCount;

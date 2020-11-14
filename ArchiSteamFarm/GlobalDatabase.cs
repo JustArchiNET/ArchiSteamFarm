@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -36,7 +37,7 @@ namespace ArchiSteamFarm {
 	public sealed class GlobalDatabase : SerializableFile {
 		[JsonProperty(Required = Required.DisallowNull)]
 		[PublicAPI]
-		public readonly Guid Guid = Guid.NewGuid();
+		public Guid Identifier { get; } = Guid.NewGuid();
 
 		[JsonIgnore]
 		[PublicAPI]
@@ -47,15 +48,15 @@ namespace ArchiSteamFarm {
 		public IReadOnlyDictionary<uint, (uint ChangeNumber, HashSet<uint>? AppIDs)> PackagesDataReadOnly => PackagesData;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly InMemoryServerListProvider ServerListProvider = new InMemoryServerListProvider();
+		internal readonly InMemoryServerListProvider ServerListProvider = new();
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentDictionary<uint, ulong> PackagesAccessTokens = new ConcurrentDictionary<uint, ulong>();
+		private readonly ConcurrentDictionary<uint, ulong> PackagesAccessTokens = new();
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentDictionary<uint, (uint ChangeNumber, HashSet<uint>? AppIDs)> PackagesData = new ConcurrentDictionary<uint, (uint ChangeNumber, HashSet<uint>? AppIDs)>();
+		private readonly ConcurrentDictionary<uint, (uint ChangeNumber, HashSet<uint>? AppIDs)> PackagesData = new();
 
-		private readonly SemaphoreSlim PackagesRefreshSemaphore = new SemaphoreSlim(1, 1);
+		private readonly SemaphoreSlim PackagesRefreshSemaphore = new(1, 1);
 
 		internal uint CellID {
 			get => BackingCellID;
@@ -110,7 +111,7 @@ namespace ArchiSteamFarm {
 				string json = await RuntimeCompatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(json)) {
-					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsEmpty, nameof(json)));
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
 
 					return null;
 				}
@@ -135,11 +136,15 @@ namespace ArchiSteamFarm {
 		}
 
 		internal HashSet<uint> GetPackageIDs(uint appID, IEnumerable<uint> packageIDs) {
-			if ((appID == 0) || (packageIDs == null)) {
-				throw new ArgumentNullException(nameof(appID) + " || " + nameof(packageIDs));
+			if (appID == 0) {
+				throw new ArgumentOutOfRangeException(nameof(appID));
 			}
 
-			HashSet<uint> result = new HashSet<uint>();
+			if (packageIDs == null) {
+				throw new ArgumentNullException(nameof(packageIDs));
+			}
+
+			HashSet<uint> result = new();
 
 			foreach (uint packageID in packageIDs.Where(packageID => packageID != 0)) {
 				if (!PackagesData.TryGetValue(packageID, out (uint ChangeNumber, HashSet<uint>? AppIDs) packagesData) || (packagesData.AppIDs?.Contains(appID) != true)) {
@@ -172,8 +177,12 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task RefreshPackages(Bot bot, IReadOnlyDictionary<uint, uint> packages) {
-			if ((bot == null) || (packages == null) || (packages.Count == 0)) {
-				throw new ArgumentNullException(nameof(bot) + " || " + nameof(packages));
+			if (bot == null) {
+				throw new ArgumentNullException(nameof(bot));
+			}
+
+			if ((packages == null) || (packages.Count == 0)) {
+				throw new ArgumentNullException(nameof(packages));
 			}
 
 			await PackagesRefreshSemaphore.WaitAsync().ConfigureAwait(false);
@@ -216,7 +225,7 @@ namespace ArchiSteamFarm {
 
 		// ReSharper disable UnusedMember.Global
 		public bool ShouldSerializeCellID() => CellID != 0;
-		public bool ShouldSerializePackagesData() => PackagesData.Count > 0;
+		public bool ShouldSerializePackagesData() => !PackagesData.IsEmpty;
 		public bool ShouldSerializeServerListProvider() => ServerListProvider.ShouldSerializeServerRecords();
 
 		// ReSharper restore UnusedMember.Global

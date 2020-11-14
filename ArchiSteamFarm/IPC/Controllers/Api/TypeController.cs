@@ -57,7 +57,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			HashSet<string> customAttributes = targetType.CustomAttributes.Select(attribute => attribute.AttributeType.GetUnifiedName()).Where(customAttribute => !string.IsNullOrEmpty(customAttribute)).ToHashSet(StringComparer.Ordinal)!;
 			string? underlyingType = null;
 
-			Dictionary<string, string> body = new Dictionary<string, string>(StringComparer.Ordinal);
+			Dictionary<string, string> body = new(StringComparer.Ordinal);
 
 			if (targetType.IsClass) {
 				foreach (FieldInfo field in targetType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(field => !field.IsPrivate)) {
@@ -106,9 +106,9 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				}
 			}
 
-			TypeResponse.TypeProperties properties = new TypeResponse.TypeProperties(baseType, customAttributes.Count > 0 ? customAttributes : null, underlyingType);
+			TypeResponse.TypeProperties properties = new(baseType, customAttributes.Count > 0 ? customAttributes : null, underlyingType);
 
-			TypeResponse response = new TypeResponse(body, properties);
+			TypeResponse response = new(body, properties);
 
 			return Ok(new GenericResponse<TypeResponse>(response));
 		}

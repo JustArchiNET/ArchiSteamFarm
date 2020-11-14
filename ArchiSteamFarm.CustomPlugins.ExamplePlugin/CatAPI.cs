@@ -45,7 +45,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 			}
 
 			if (string.IsNullOrEmpty(response.Content.Link)) {
-				throw new ArgumentNullException(nameof(response.Content.Link));
+				throw new InvalidOperationException(nameof(response.Content.Link));
 			}
 
 			return Uri.EscapeUriString(response.Content!.Link!);

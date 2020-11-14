@@ -35,7 +35,7 @@ namespace ArchiSteamFarm.NLog {
 
 		internal IEnumerable<string> ArchivedMessages => HistoryQueue;
 
-		private readonly FixedSizeConcurrentQueue<string> HistoryQueue = new FixedSizeConcurrentQueue<string>(DefaultMaxCount);
+		private readonly FixedSizeConcurrentQueue<string> HistoryQueue = new(DefaultMaxCount);
 
 		// This is NLog config property, it must have public get() and set() capabilities
 		[PublicAPI]

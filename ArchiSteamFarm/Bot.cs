@@ -25,6 +25,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -66,43 +68,31 @@ namespace ArchiSteamFarm {
 		internal static StringComparer? BotsComparer { get; private set; }
 		internal static EOSType OSType { get; private set; } = EOSType.Unknown;
 
-		private static readonly SemaphoreSlim BotsSemaphore = new SemaphoreSlim(1, 1);
+		private static readonly SemaphoreSlim BotsSemaphore = new(1, 1);
 
 		[JsonIgnore]
 		[PublicAPI]
-		public readonly Actions Actions;
+		public Actions Actions { get; }
 
 		[JsonIgnore]
 		[PublicAPI]
-		public readonly ArchiLogger ArchiLogger;
+		public ArchiLogger ArchiLogger { get; }
 
 		[JsonIgnore]
 		[PublicAPI]
-		public readonly ArchiWebHandler ArchiWebHandler;
+		public ArchiWebHandler ArchiWebHandler { get; }
 
 		[JsonProperty]
 		[PublicAPI]
-		public readonly string BotName;
+		public string BotName { get; }
 
 		[JsonProperty]
 		[PublicAPI]
-		public readonly CardsFarmer CardsFarmer;
+		public CardsFarmer CardsFarmer { get; }
 
 		[JsonIgnore]
 		[PublicAPI]
-		public readonly Commands Commands;
-
-		[JsonIgnore]
-		[PublicAPI]
-		public readonly SteamApps SteamApps;
-
-		[JsonIgnore]
-		[PublicAPI]
-		public readonly SteamConfiguration SteamConfiguration;
-
-		[JsonIgnore]
-		[PublicAPI]
-		public readonly SteamFriends SteamFriends;
+		public Commands Commands { get; }
 
 		[JsonProperty]
 		[PublicAPI]
@@ -124,6 +114,18 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public IReadOnlyCollection<uint> OwnedPackageIDsReadOnly => OwnedPackageIDs.Keys.ToHashSet();
 
+		[JsonIgnore]
+		[PublicAPI]
+		public SteamApps SteamApps { get; }
+
+		[JsonIgnore]
+		[PublicAPI]
+		public SteamConfiguration SteamConfiguration { get; }
+
+		[JsonIgnore]
+		[PublicAPI]
+		public SteamFriends SteamFriends { get; }
+
 		internal readonly ArchiHandler ArchiHandler;
 		internal readonly BotDatabase BotDatabase;
 
@@ -132,16 +134,16 @@ namespace ArchiSteamFarm {
 		internal bool IsAccountLocked => AccountFlags.HasFlag(EAccountFlags.Lockdown);
 
 		private readonly CallbackManager CallbackManager;
-		private readonly SemaphoreSlim CallbackSemaphore = new SemaphoreSlim(1, 1);
-		private readonly SemaphoreSlim GamesRedeemerInBackgroundSemaphore = new SemaphoreSlim(1, 1);
+		private readonly SemaphoreSlim CallbackSemaphore = new(1, 1);
+		private readonly SemaphoreSlim GamesRedeemerInBackgroundSemaphore = new(1, 1);
 		private readonly Timer HeartBeatTimer;
-		private readonly SemaphoreSlim InitializationSemaphore = new SemaphoreSlim(1, 1);
-		private readonly SemaphoreSlim MessagingSemaphore = new SemaphoreSlim(1, 1);
-		private readonly ConcurrentDictionary<ArchiHandler.UserNotificationsCallback.EUserNotification, uint> PastNotifications = new ConcurrentDictionary<ArchiHandler.UserNotificationsCallback.EUserNotification, uint>();
-		private readonly SemaphoreSlim SendCompleteTypesSemaphore = new SemaphoreSlim(1, 1);
+		private readonly SemaphoreSlim InitializationSemaphore = new(1, 1);
+		private readonly SemaphoreSlim MessagingSemaphore = new(1, 1);
+		private readonly ConcurrentDictionary<ArchiHandler.UserNotificationsCallback.EUserNotification, uint> PastNotifications = new();
+		private readonly SemaphoreSlim SendCompleteTypesSemaphore = new(1, 1);
 		private readonly Statistics? Statistics;
 		private readonly SteamClient SteamClient;
-		private readonly ConcurrentHashSet<ulong> SteamFamilySharingIDs = new ConcurrentHashSet<ulong>();
+		private readonly ConcurrentHashSet<ulong> SteamFamilySharingIDs = new();
 		private readonly SteamUser SteamUser;
 		private readonly Trading Trading;
 
@@ -166,7 +168,7 @@ namespace ArchiSteamFarm {
 #pragma warning disable IDE0051
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamID))]
 
-		private string SSteamID => SteamID.ToString();
+		private string SSteamID => SteamID.ToString(CultureInfo.InvariantCulture);
 #pragma warning restore IDE0051
 
 		[JsonProperty]
@@ -231,13 +233,17 @@ namespace ArchiSteamFarm {
 		private byte TwoFactorCodeFailures;
 
 		private Bot(string botName, BotConfig botConfig, BotDatabase botDatabase) {
-			if (string.IsNullOrEmpty(botName) || (botConfig == null) || (botDatabase == null) || (Bots == null) || (ASF.GlobalConfig == null) || (ASF.GlobalDatabase == null)) {
-				throw new ArgumentNullException(nameof(botName) + " || " + nameof(botConfig) + " || " + nameof(botDatabase) + " || " + nameof(Bots) + " || " + nameof(ASF.GlobalConfig) + " || " + nameof(ASF.GlobalDatabase));
+			BotName = !string.IsNullOrEmpty(botName) ? botName : throw new ArgumentNullException(nameof(botName));
+			BotConfig = botConfig ?? throw new ArgumentNullException(nameof(botConfig));
+			BotDatabase = botDatabase ?? throw new ArgumentNullException(nameof(botDatabase));
+
+			if (ASF.GlobalConfig == null) {
+				throw new InvalidOperationException(nameof(ASF.GlobalConfig));
 			}
 
-			BotName = botName;
-			BotConfig = botConfig;
-			BotDatabase = botDatabase;
+			if (ASF.GlobalDatabase == null) {
+				throw new InvalidOperationException(nameof(ASF.GlobalDatabase));
+			}
 
 			ArchiLogger = new ArchiLogger(botName);
 
@@ -263,24 +269,24 @@ namespace ArchiSteamFarm {
 
 			SteamUnifiedMessages? steamUnifiedMessages = SteamClient.GetHandler<SteamUnifiedMessages>();
 
-			ArchiHandler = new ArchiHandler(ArchiLogger, steamUnifiedMessages ?? throw new ArgumentNullException(nameof(steamUnifiedMessages)));
+			ArchiHandler = new ArchiHandler(ArchiLogger, steamUnifiedMessages ?? throw new InvalidOperationException(nameof(steamUnifiedMessages)));
 			SteamClient.AddHandler(ArchiHandler);
 
 			CallbackManager = new CallbackManager(SteamClient);
 			CallbackManager.Subscribe<SteamClient.ConnectedCallback>(OnConnected);
 			CallbackManager.Subscribe<SteamClient.DisconnectedCallback>(OnDisconnected);
 
-			SteamApps = SteamClient.GetHandler<SteamApps>() ?? throw new ArgumentNullException(nameof(SteamApps));
+			SteamApps = SteamClient.GetHandler<SteamApps>() ?? throw new InvalidOperationException(nameof(SteamApps));
 			CallbackManager.Subscribe<SteamApps.GuestPassListCallback>(OnGuestPassList);
 			CallbackManager.Subscribe<SteamApps.LicenseListCallback>(OnLicenseList);
 
-			SteamFriends = SteamClient.GetHandler<SteamFriends>() ?? throw new ArgumentNullException(nameof(SteamFriends));
+			SteamFriends = SteamClient.GetHandler<SteamFriends>() ?? throw new InvalidOperationException(nameof(SteamFriends));
 			CallbackManager.Subscribe<SteamFriends.FriendsListCallback>(OnFriendsList);
 			CallbackManager.Subscribe<SteamFriends.PersonaStateCallback>(OnPersonaState);
 
 			CallbackManager.Subscribe<SteamUnifiedMessages.ServiceMethodNotification>(OnServiceMethod);
 
-			SteamUser = SteamClient.GetHandler<SteamUser>() ?? throw new ArgumentNullException(nameof(SteamUser));
+			SteamUser = SteamClient.GetHandler<SteamUser>() ?? throw new InvalidOperationException(nameof(SteamUser));
 			CallbackManager.Subscribe<SteamUser.LoggedOffCallback>(OnLoggedOff);
 			CallbackManager.Subscribe<SteamUser.LoggedOnCallback>(OnLoggedOn);
 			CallbackManager.Subscribe<SteamUser.LoginKeyCallback>(OnLoginKey);
@@ -302,9 +308,9 @@ namespace ArchiSteamFarm {
 			}
 
 			HeartBeatTimer = new Timer(
-				async e => await HeartBeat().ConfigureAwait(false),
+				HeartBeat,
 				null,
-				TimeSpan.FromMinutes(1) + TimeSpan.FromSeconds(ASF.LoadBalancingDelay * Bots.Count), // Delay
+				TimeSpan.FromMinutes(1) + TimeSpan.FromSeconds(ASF.LoadBalancingDelay * Bots?.Count ?? 0), // Delay
 				TimeSpan.FromMinutes(1) // Period
 			);
 		}
@@ -352,8 +358,12 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public static Bot? GetBot(string botName) {
-			if (string.IsNullOrEmpty(botName) || (Bots == null)) {
-				throw new ArgumentNullException(nameof(botName) + " || " + nameof(Bots));
+			if (string.IsNullOrEmpty(botName)) {
+				throw new ArgumentNullException(nameof(botName));
+			}
+
+			if (Bots == null) {
+				throw new InvalidOperationException(nameof(Bots));
 			}
 
 			if (Bots.TryGetValue(botName, out Bot? targetBot)) {
@@ -369,13 +379,17 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public static HashSet<Bot>? GetBots(string args) {
-			if (string.IsNullOrEmpty(args) || (Bots == null)) {
-				throw new ArgumentNullException(nameof(args) + " || " + nameof(Bots));
+			if (string.IsNullOrEmpty(args)) {
+				throw new ArgumentNullException(nameof(args));
+			}
+
+			if (Bots == null) {
+				throw new InvalidOperationException(nameof(Bots));
 			}
 
 			string[] botNames = args.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
-			HashSet<Bot> result = new HashSet<Bot>();
+			HashSet<Bot> result = new();
 
 			foreach (string botName in botNames) {
 				if (botName.Equals(SharedInfo.ASF, StringComparison.OrdinalIgnoreCase)) {
@@ -450,8 +464,16 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<byte?> GetTradeHoldDuration(ulong steamID, ulong tradeID) {
-			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || (tradeID == 0) || (Bots == null)) {
-				throw new ArgumentNullException(nameof(steamID) + " || " + nameof(tradeID) + " || " + nameof(Bots));
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+				throw new ArgumentOutOfRangeException(nameof(steamID));
+			}
+
+			if (tradeID == 0) {
+				throw new ArgumentOutOfRangeException(nameof(tradeID));
+			}
+
+			if (Bots == null) {
+				throw new InvalidOperationException(nameof(Bots));
 			}
 
 			if (SteamFriends.GetFriendRelationship(steamID) == EFriendRelationship.Friend) {
@@ -480,25 +502,33 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public bool HasPermission(ulong steamID, BotConfig.EPermission permission) {
-			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || (permission == BotConfig.EPermission.None) || !Enum.IsDefined(typeof(BotConfig.EPermission), permission)) {
-				throw new ArgumentNullException(nameof(steamID) + " || " + nameof(permission));
+		public bool HasAccess(ulong steamID, BotConfig.EAccess access) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+				throw new ArgumentNullException(nameof(steamID));
+			}
+
+			if ((access == BotConfig.EAccess.None) || !Enum.IsDefined(typeof(BotConfig.EAccess), access)) {
+				throw new InvalidEnumArgumentException(nameof(access), (int) access, typeof(BotConfig.EAccess));
 			}
 
 			if (ASF.IsOwner(steamID)) {
 				return true;
 			}
 
-			return permission switch {
-				BotConfig.EPermission.FamilySharing when SteamFamilySharingIDs.Contains(steamID) => true,
-				_ => BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EPermission realPermission) && (realPermission >= permission)
+			return access switch {
+				BotConfig.EAccess.FamilySharing when SteamFamilySharingIDs.Contains(steamID) => true,
+				_ => BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EAccess realPermission) && (realPermission >= access)
 			};
 		}
 
 		[PublicAPI]
 		public bool SetUserInput(ASF.EUserInputType inputType, string inputValue) {
-			if ((inputType == ASF.EUserInputType.None) || !Enum.IsDefined(typeof(ASF.EUserInputType), inputType) || string.IsNullOrEmpty(inputValue)) {
-				throw new ArgumentNullException(nameof(inputType) + " || " + nameof(inputValue));
+			if ((inputType == ASF.EUserInputType.None) || !Enum.IsDefined(typeof(ASF.EUserInputType), inputType)) {
+				throw new InvalidEnumArgumentException(nameof(inputType), (int) inputType, typeof(ASF.EUserInputType));
+			}
+
+			if (string.IsNullOrEmpty(inputValue)) {
+				throw new ArgumentNullException(nameof(inputValue));
 			}
 
 			// This switch should cover ONLY bot properties
@@ -564,7 +594,7 @@ namespace ArchiSteamFarm {
 			BotDatabase.AddGamesToRedeemInBackground(gamesToRedeemInBackground);
 
 			if ((GamesRedeemerInBackgroundTimer == null) && BotDatabase.HasGamesToRedeemInBackground && IsConnectedAndLoggedOn) {
-				Utilities.InBackground(RedeemGamesInBackground);
+				Utilities.InBackground(() => RedeemGamesInBackground(this));
 			}
 		}
 
@@ -625,18 +655,24 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static string FormatBotResponse(string response, string botName) {
-			if (string.IsNullOrEmpty(response) || string.IsNullOrEmpty(botName)) {
-				throw new ArgumentNullException(nameof(response) + " || " + nameof(botName));
+			if (string.IsNullOrEmpty(response)) {
+				throw new ArgumentNullException(nameof(response));
+			}
+
+			if (string.IsNullOrEmpty(botName)) {
+				throw new ArgumentNullException(nameof(botName));
 			}
 
 			return Environment.NewLine + "<" + botName + "> " + response;
 		}
 
 		internal async Task<(uint PlayableAppID, DateTime IgnoredUntil, bool IgnoredGlobally)> GetAppDataForIdling(uint appID, float hoursPlayed, bool allowRecursiveDiscovery = true, bool optimisticDiscovery = true) {
-			if ((appID == 0) || (hoursPlayed < 0)) {
-				ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(hoursPlayed));
+			if (appID == 0) {
+				throw new ArgumentOutOfRangeException(nameof(appID));
+			}
 
-				return (0, DateTime.MaxValue, true);
+			if (hoursPlayed < 0) {
+				throw new ArgumentOutOfRangeException(nameof(hoursPlayed));
 			}
 
 			HashSet<uint>? packageIDs = ASF.GlobalDatabase?.GetPackageIDs(appID, OwnedPackageIDs.Keys);
@@ -681,7 +717,7 @@ namespace ArchiSteamFarm {
 				return (optimisticDiscovery ? appID : 0, DateTime.MinValue, true);
 			}
 
-			SteamApps.PICSRequest request = new SteamApps.PICSRequest(appID, tokenCallback.AppTokens.TryGetValue(appID, out ulong accessToken) ? accessToken : 0, false);
+			SteamApps.PICSRequest request = new(appID, tokenCallback.AppTokens.TryGetValue(appID, out ulong accessToken) ? accessToken : 0, false);
 
 			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet? productInfoResultSet = null;
 
@@ -727,7 +763,7 @@ namespace ArchiSteamFarm {
 						case "PRERELEASE":
 							return (0, DateTime.MaxValue, true);
 						default:
-							ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(releaseState), releaseState));
+							ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(releaseState), releaseState));
 
 							break;
 					}
@@ -760,7 +796,7 @@ namespace ArchiSteamFarm {
 						// Types that can't be idled
 						break;
 					default:
-						ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(type), type));
+						ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(type), type));
 
 						break;
 				}
@@ -798,8 +834,12 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static string GetFilePath(string botName, EFileType fileType) {
-			if (string.IsNullOrEmpty(botName) || !Enum.IsDefined(typeof(EFileType), fileType)) {
-				throw new ArgumentNullException(nameof(botName) + " || " + nameof(fileType));
+			if (string.IsNullOrEmpty(botName)) {
+				throw new ArgumentNullException(nameof(botName));
+			}
+
+			if (!Enum.IsDefined(typeof(EFileType), fileType)) {
+				throw new InvalidEnumArgumentException(nameof(fileType), (int) fileType, typeof(EFileType));
 			}
 
 			string botPath = Path.Combine(SharedInfo.ConfigDirectory, botName);
@@ -819,11 +859,15 @@ namespace ArchiSteamFarm {
 		internal async Task<HashSet<uint>?> GetMarketableAppIDs() => await ArchiWebHandler.GetAppList().ConfigureAwait(false);
 
 		internal async Task<Dictionary<uint, (uint ChangeNumber, HashSet<uint>? AppIDs)>?> GetPackagesData(IReadOnlyCollection<uint> packageIDs) {
-			if ((packageIDs == null) || (packageIDs.Count == 0) || (ASF.GlobalDatabase == null)) {
-				throw new ArgumentNullException(nameof(packageIDs) + " || " + nameof(ASF.GlobalDatabase));
+			if ((packageIDs == null) || (packageIDs.Count == 0)) {
+				throw new ArgumentNullException(nameof(packageIDs));
 			}
 
-			HashSet<SteamApps.PICSRequest> packageRequests = new HashSet<SteamApps.PICSRequest>();
+			if (ASF.GlobalDatabase == null) {
+				throw new InvalidOperationException(nameof(ASF.GlobalDatabase));
+			}
+
+			HashSet<SteamApps.PICSRequest> packageRequests = new();
 
 			foreach (uint packageID in packageIDs) {
 				if (!ASF.GlobalDatabase.PackageAccessTokensReadOnly.TryGetValue(packageID, out ulong packageAccessToken)) {
@@ -851,7 +895,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			Dictionary<uint, (uint ChangeNumber, HashSet<uint>? AppIDs)> result = new Dictionary<uint, (uint ChangeNumber, HashSet<uint>? AppIDs)>();
+			Dictionary<uint, (uint ChangeNumber, HashSet<uint>? AppIDs)> result = new();
 
 			foreach (SteamApps.PICSProductInfoCallback.PICSProductInfo productInfo in productInfoResultSet.Results.SelectMany(productInfoResult => productInfoResult.Packages).Where(productInfoPackages => productInfoPackages.Key != 0).Select(productInfoPackages => productInfoPackages.Value)) {
 				if (productInfo.KeyValues == KeyValue.Invalid) {
@@ -920,7 +964,7 @@ namespace ArchiSteamFarm {
 			string? gameName = null;
 
 			if (!string.IsNullOrEmpty(BotConfig.CustomGamePlayedWhileFarming)) {
-				gameName = string.Format(BotConfig.CustomGamePlayedWhileFarming!, game.AppID, game.GameName);
+				gameName = string.Format(CultureInfo.CurrentCulture, BotConfig.CustomGamePlayedWhileFarming!, game.AppID, game.GameName);
 			}
 
 			await ArchiHandler.PlayGames(game.PlayableAppID.ToEnumerable(), gameName).ConfigureAwait(false);
@@ -934,7 +978,7 @@ namespace ArchiSteamFarm {
 			string? gameName = null;
 
 			if (!string.IsNullOrEmpty(BotConfig.CustomGamePlayedWhileFarming)) {
-				gameName = string.Format(BotConfig.CustomGamePlayedWhileFarming!, string.Join(", ", games.Select(game => game.AppID)), string.Join(", ", games.Select(game => game.GameName)));
+				gameName = string.Format(CultureInfo.CurrentCulture, BotConfig.CustomGamePlayedWhileFarming!, string.Join(", ", games.Select(game => game.AppID)), string.Join(", ", games.Select(game => game.GameName)));
 			}
 
 			await ArchiHandler.PlayGames(games.Select(game => game.PlayableAppID), gameName).ConfigureAwait(false);
@@ -946,9 +990,9 @@ namespace ArchiSteamFarm {
 			}
 
 			try {
-				OrderedDictionary gamesToRedeemInBackground = new OrderedDictionary();
+				OrderedDictionary gamesToRedeemInBackground = new();
 
-				using (StreamReader reader = new StreamReader(filePath)) {
+				using (StreamReader reader = new(filePath)) {
 					string? line;
 
 					while ((line = await reader.ReadLineAsync().ConfigureAwait(false)) != null) {
@@ -963,7 +1007,7 @@ namespace ArchiSteamFarm {
 						string[] parsedArgs = line.Split(DefaultBackgroundKeysRedeemerSeparator, StringSplitOptions.RemoveEmptyEntries);
 
 						if (parsedArgs.Length < 1) {
-							ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, line));
+							ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, line));
 
 							continue;
 						}
@@ -991,9 +1035,7 @@ namespace ArchiSteamFarm {
 
 		internal static void Init(StringComparer botsComparer) {
 			if (Bots != null) {
-				ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);
-
-				return;
+				throw new InvalidOperationException(nameof(Bots));
 			}
 
 			BotsComparer = botsComparer ?? throw new ArgumentNullException(nameof(botsComparer));
@@ -1002,7 +1044,7 @@ namespace ArchiSteamFarm {
 
 		internal bool IsBlacklistedFromIdling(uint appID) {
 			if (appID == 0) {
-				throw new ArgumentNullException(nameof(appID));
+				throw new ArgumentOutOfRangeException(nameof(appID));
 			}
 
 			return BotDatabase.IsBlacklistedFromIdling(appID);
@@ -1010,7 +1052,7 @@ namespace ArchiSteamFarm {
 
 		internal bool IsBlacklistedFromTrades(ulong steamID) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-				throw new ArgumentNullException(nameof(steamID));
+				throw new ArgumentOutOfRangeException(nameof(steamID));
 			}
 
 			return BotDatabase.IsBlacklistedFromTrades(steamID);
@@ -1018,7 +1060,7 @@ namespace ArchiSteamFarm {
 
 		internal bool IsPriorityIdling(uint appID) {
 			if (appID == 0) {
-				throw new ArgumentNullException(nameof(appID));
+				throw new ArgumentOutOfRangeException(nameof(appID));
 			}
 
 			return BotDatabase.IsPriorityIdling(appID);
@@ -1121,8 +1163,12 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static async Task RegisterBot(string botName) {
-			if (string.IsNullOrEmpty(botName) || (Bots == null)) {
-				throw new ArgumentNullException(nameof(botName) + " || " + nameof(Bots));
+			if (string.IsNullOrEmpty(botName)) {
+				throw new ArgumentNullException(nameof(botName));
+			}
+
+			if (Bots == null) {
+				throw new InvalidOperationException(nameof(Bots));
 			}
 
 			if (Bots.ContainsKey(botName)) {
@@ -1140,7 +1186,7 @@ namespace ArchiSteamFarm {
 			BotConfig? botConfig = await BotConfig.Load(configFilePath).ConfigureAwait(false);
 
 			if (botConfig == null) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorBotConfigInvalid, configFilePath));
+				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorBotConfigInvalid, configFilePath));
 
 				return;
 			}
@@ -1160,7 +1206,7 @@ namespace ArchiSteamFarm {
 			BotDatabase? botDatabase = await BotDatabase.CreateOrLoad(databaseFilePath).ConfigureAwait(false);
 
 			if (botDatabase == null) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorDatabaseInvalid, databaseFilePath));
+				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorDatabaseInvalid, databaseFilePath));
 
 				return;
 			}
@@ -1209,11 +1255,15 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> Rename(string newBotName) {
-			if (string.IsNullOrEmpty(newBotName) || (Bots == null)) {
-				throw new ArgumentNullException(nameof(newBotName) + " || " + nameof(Bots));
+			if (string.IsNullOrEmpty(newBotName)) {
+				throw new ArgumentNullException(nameof(newBotName));
 			}
 
-			if (newBotName.Equals(SharedInfo.ASF) || Bots.ContainsKey(newBotName)) {
+			if (Bots == null) {
+				throw new InvalidOperationException(nameof(Bots));
+			}
+
+			if (!ASF.IsValidBotName(newBotName) || Bots.ContainsKey(newBotName)) {
 				return false;
 			}
 
@@ -1254,8 +1304,12 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> SendMessage(ulong steamID, string message) {
-			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount || string.IsNullOrEmpty(message)) {
-				throw new ArgumentNullException(nameof(steamID) + " || " + nameof(message));
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+				throw new ArgumentOutOfRangeException(nameof(steamID));
+			}
+
+			if (string.IsNullOrEmpty(message)) {
+				throw new ArgumentNullException(nameof(message));
 			}
 
 			if (!IsConnectedAndLoggedOn) {
@@ -1327,7 +1381,7 @@ namespace ArchiSteamFarm {
 
 								break;
 							default:
-								ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result), result));
+								ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(result), result));
 
 								return false;
 						}
@@ -1349,8 +1403,16 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> SendMessage(ulong chatGroupID, ulong chatID, string message) {
-			if ((chatGroupID == 0) || (chatID == 0) || string.IsNullOrEmpty(message)) {
-				throw new ArgumentNullException(nameof(chatGroupID) + " || " + nameof(chatID) + " || " + nameof(message));
+			if (chatGroupID == 0) {
+				throw new ArgumentOutOfRangeException(nameof(chatGroupID));
+			}
+
+			if (chatID == 0) {
+				throw new ArgumentOutOfRangeException(nameof(chatID));
+			}
+
+			if (string.IsNullOrEmpty(message)) {
+				throw new ArgumentNullException(nameof(message));
 			}
 
 			if (!IsConnectedAndLoggedOn) {
@@ -1418,7 +1480,7 @@ namespace ArchiSteamFarm {
 
 								break;
 							default:
-								ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result), result));
+								ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(result), result));
 
 								return false;
 						}
@@ -1441,7 +1503,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> SendTypingMessage(ulong steamID) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-				throw new ArgumentNullException(nameof(steamID));
+				throw new ArgumentOutOfRangeException(nameof(steamID));
 			}
 
 			if (!IsConnectedAndLoggedOn) {
@@ -1513,7 +1575,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(gamesToRedeemInBackground));
 			}
 
-			HashSet<object> invalidKeys = new HashSet<object>();
+			HashSet<object> invalidKeys = new();
 
 			foreach (DictionaryEntry game in gamesToRedeemInBackground) {
 				bool invalid = false;
@@ -1522,17 +1584,17 @@ namespace ArchiSteamFarm {
 
 				if (string.IsNullOrEmpty(key)) {
 					invalid = true;
-					ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, nameof(key)));
+					ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(key)));
 				} else if (!Utilities.IsValidCdKey(key!)) {
 					invalid = true;
-					ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, key));
+					ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, key));
 				}
 
 				string? name = game.Value as string;
 
 				if (string.IsNullOrEmpty(name)) {
 					invalid = true;
-					ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, nameof(name)));
+					ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(name)));
 				}
 
 				if (invalid && (key != null)) {
@@ -1589,7 +1651,7 @@ namespace ArchiSteamFarm {
 
 		private async Task Destroy(bool force = false) {
 			if (Bots == null) {
-				throw new ArgumentNullException(nameof(Bots));
+				throw new InvalidOperationException(nameof(Bots));
 			}
 
 			if (KeepRunning) {
@@ -1635,10 +1697,10 @@ namespace ArchiSteamFarm {
 				return new Dictionary<string, string>(0, StringComparer.Ordinal);
 			}
 
-			Dictionary<string, string> keys = new Dictionary<string, string>(StringComparer.Ordinal);
+			Dictionary<string, string> keys = new(StringComparer.Ordinal);
 
 			try {
-				using StreamReader reader = new StreamReader(filePath);
+				using StreamReader reader = new(filePath);
 
 				string? line;
 
@@ -1650,7 +1712,7 @@ namespace ArchiSteamFarm {
 					string[] parsedArgs = line.Split(DefaultBackgroundKeysRedeemerSeparator, StringSplitOptions.RemoveEmptyEntries);
 
 					if (parsedArgs.Length < 3) {
-						ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, line));
+						ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, line));
 
 						continue;
 					}
@@ -1658,7 +1720,7 @@ namespace ArchiSteamFarm {
 					string key = parsedArgs[^1];
 
 					if (!Utilities.IsValidCdKey(key)) {
-						ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, key));
+						ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, key));
 
 						continue;
 					}
@@ -1681,7 +1743,7 @@ namespace ArchiSteamFarm {
 			while (KeepRunning || SteamClient.IsConnected) {
 				if (!CallbackSemaphore.Wait(0)) {
 					if (Debugging.IsUserDebugging) {
-						ArchiLogger.LogGenericDebug(string.Format(Strings.WarningFailedWithError, nameof(CallbackSemaphore)));
+						ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(CallbackSemaphore)));
 					}
 
 					return;
@@ -1697,9 +1759,9 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async Task HeartBeat() {
+		private async void HeartBeat(object? state) {
 			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
+				throw new InvalidOperationException(nameof(ASF.GlobalConfig));
 			}
 
 			if (!KeepRunning || !IsConnectedAndLoggedOn || (HeartBeatFailures == byte.MaxValue)) {
@@ -1742,7 +1804,7 @@ namespace ArchiSteamFarm {
 				string json = await RuntimeCompatibility.File.ReadAllTextAsync(maFilePath).ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(json)) {
-					ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsEmpty, nameof(json)));
+					ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
 
 					return;
 				}
@@ -1777,7 +1839,7 @@ namespace ArchiSteamFarm {
 			byte connectionTimeout = ASF.GlobalConfig?.ConnectionTimeout ?? GlobalConfig.DefaultConnectionTimeout;
 
 			ConnectionFailureTimer = new Timer(
-				async e => await InitPermanentConnectionFailure().ConfigureAwait(false),
+				InitPermanentConnectionFailure,
 				null,
 				TimeSpan.FromMinutes(Math.Ceiling(connectionTimeout / 30.0)), // Delay
 				Timeout.InfiniteTimeSpan // Period
@@ -1801,7 +1863,7 @@ namespace ArchiSteamFarm {
 				string? steamLogin = await Logging.GetUserInput(ASF.EUserInputType.Login, BotName).ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(steamLogin) || !SetUserInput(ASF.EUserInputType.Login, steamLogin!)) {
-					ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(steamLogin)));
+					ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(steamLogin)));
 
 					return false;
 				}
@@ -1813,7 +1875,7 @@ namespace ArchiSteamFarm {
 				string? steamPassword = await Logging.GetUserInput(ASF.EUserInputType.Password, BotName).ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(steamPassword) || !SetUserInput(ASF.EUserInputType.Password, steamPassword!)) {
-					ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(steamPassword)));
+					ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(steamPassword)));
 
 					return false;
 				}
@@ -1824,7 +1886,7 @@ namespace ArchiSteamFarm {
 
 		private async Task InitModules() {
 			if (Bots == null) {
-				throw new ArgumentNullException(nameof(Bots));
+				throw new InvalidOperationException(nameof(Bots));
 			}
 
 			AccountFlags = EAccountFlags.NormalUser;
@@ -1842,9 +1904,9 @@ namespace ArchiSteamFarm {
 				SendItemsTimer = null;
 			}
 
-			if ((BotConfig.SendTradePeriod > 0) && (BotConfig.LootableTypes.Count > 0) && BotConfig.SteamUserPermissions.Values.Any(permission => permission >= BotConfig.EPermission.Master)) {
+			if ((BotConfig.SendTradePeriod > 0) && (BotConfig.LootableTypes.Count > 0) && BotConfig.SteamUserPermissions.Values.Any(permission => permission >= BotConfig.EAccess.Master)) {
 				SendItemsTimer = new Timer(
-					async e => await Actions.SendInventory(filterFunction: item => BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false),
+					async _ => await Actions.SendInventory(filterFunction: item => BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false),
 					null,
 					TimeSpan.FromHours(BotConfig.SendTradePeriod) + TimeSpan.FromSeconds(ASF.LoadBalancingDelay * Bots.Count), // Delay
 					TimeSpan.FromHours(BotConfig.SendTradePeriod) // Period
@@ -1864,7 +1926,7 @@ namespace ArchiSteamFarm {
 			await PluginsCore.OnBotInitModules(this, BotConfig.AdditionalProperties).ConfigureAwait(false);
 		}
 
-		private async Task InitPermanentConnectionFailure() {
+		private async void InitPermanentConnectionFailure(object? state) {
 			if (!KeepRunning) {
 				return;
 			}
@@ -1880,7 +1942,7 @@ namespace ArchiSteamFarm {
 			}
 
 			PlayingWasBlockedTimer = new Timer(
-				e => ResetPlayingWasBlockedWithTimer(),
+				ResetPlayingWasBlockedWithTimer,
 				null,
 				TimeSpan.FromSeconds(MinPlayingBlockedTTL), // Delay
 				Timeout.InfiniteTimeSpan // Period
@@ -1911,14 +1973,15 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(paymentMethod));
 			}
 
-			// Complimentary is also a flag
+#pragma warning disable CA2248
 			return paymentMethod switch {
 				EPaymentMethod.ActivationCode => false,
 				EPaymentMethod.Complimentary => false,
 				EPaymentMethod.GuestPass => false,
 				EPaymentMethod.HardwarePromo => false,
-				_ => !paymentMethod.HasFlag(EPaymentMethod.Complimentary)
+				_ => !paymentMethod.HasFlag(EPaymentMethod.Complimentary) // Complimentary is also a flag, for fuck sake
 			};
+#pragma warning restore CA2248
 		}
 
 		private async Task JoinMasterChatGroupID() {
@@ -1943,7 +2006,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!await ArchiHandler.JoinChatRoomGroup(MasterChatGroupID).ConfigureAwait(false)) {
-				ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, nameof(ArchiHandler.JoinChatRoomGroup)));
+				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(ArchiHandler.JoinChatRoomGroup)));
 			}
 		}
 
@@ -2045,7 +2108,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (string.IsNullOrEmpty(BotConfig.SteamLogin)) {
-				throw new ArgumentNullException(nameof(BotConfig.SteamLogin));
+				throw new InvalidOperationException(nameof(BotConfig.SteamLogin));
 			}
 
 			// Steam login and password fields can contain ASCII characters only, including spaces
@@ -2067,7 +2130,7 @@ namespace ArchiSteamFarm {
 
 			InitConnectionFailureTimer();
 
-			SteamUser.LogOnDetails logOnDetails = new SteamUser.LogOnDetails {
+			SteamUser.LogOnDetails logOnDetails = new() {
 				AuthCode = AuthCode,
 				CellID = ASF.GlobalDatabase?.CellID,
 				LoginID = LoginID,
@@ -2087,8 +2150,12 @@ namespace ArchiSteamFarm {
 		}
 
 		private async void OnDisconnected(SteamClient.DisconnectedCallback callback) {
-			if ((callback == null) || (ASF.LoginRateLimitingSemaphore == null)) {
-				throw new ArgumentNullException(nameof(callback) + " || " + nameof(ASF.LoginRateLimitingSemaphore));
+			if (callback == null) {
+				throw new ArgumentNullException(nameof(callback));
+			}
+
+			if (ASF.LoginRateLimitingSemaphore == null) {
+				throw new InvalidOperationException(nameof(ASF.LoginRateLimitingSemaphore));
 			}
 
 			EResult lastLogOnResult = LastLogOnResult;
@@ -2135,7 +2202,7 @@ namespace ArchiSteamFarm {
 
 					break;
 				case EResult.RateLimitExceeded:
-					ArchiLogger.LogGenericInfo(string.Format(Strings.BotRateLimitExceeded, TimeSpan.FromMinutes(LoginCooldownInMinutes).ToHumanReadable()));
+					ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotRateLimitExceeded, TimeSpan.FromMinutes(LoginCooldownInMinutes).ToHumanReadable()));
 
 					if (!await ASF.LoginRateLimitingSemaphore.WaitAsync(1000 * WebBrowser.MaxTries).ConfigureAwait(false)) {
 						break;
@@ -2164,7 +2231,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (callback.FriendList == null) {
-				throw new ArgumentNullException(nameof(callback.FriendList));
+				throw new ArgumentNullException(nameof(callback));
 			}
 
 			foreach (SteamFriends.FriendsListCallback.Friend friend in callback.FriendList.Where(friend => friend.Relationship == EFriendRelationship.RequestRecipient)) {
@@ -2192,9 +2259,9 @@ namespace ArchiSteamFarm {
 
 						break;
 					default:
-						if (HasPermission(friend.SteamID, BotConfig.EPermission.FamilySharing)) {
+						if (HasAccess(friend.SteamID, BotConfig.EAccess.FamilySharing)) {
 							if (!await ArchiHandler.AddFriend(friend.SteamID).ConfigureAwait(false)) {
-								ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, nameof(ArchiHandler.AddFriend)));
+								ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(ArchiHandler.AddFriend)));
 							}
 
 							break;
@@ -2204,7 +2271,7 @@ namespace ArchiSteamFarm {
 
 						if (acceptFriendRequest) {
 							if (!await ArchiHandler.AddFriend(friend.SteamID).ConfigureAwait(false)) {
-								ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, nameof(ArchiHandler.AddFriend)));
+								ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(ArchiHandler.AddFriend)));
 							}
 
 							break;
@@ -2212,7 +2279,7 @@ namespace ArchiSteamFarm {
 
 						if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidFriendInvites)) {
 							if (!await ArchiHandler.RemoveFriend(friend.SteamID).ConfigureAwait(false)) {
-								ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, nameof(ArchiHandler.RemoveFriend)));
+								ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(ArchiHandler.RemoveFriend)));
 							}
 						}
 
@@ -2227,7 +2294,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (callback.GuestPasses == null) {
-				throw new ArgumentNullException(nameof(callback.GuestPasses));
+				throw new ArgumentNullException(nameof(callback));
 			}
 
 			if ((callback.CountGuestPassesToRedeem == 0) || (callback.GuestPasses.Count == 0) || !BotConfig.AcceptGifts) {
@@ -2337,27 +2404,27 @@ namespace ArchiSteamFarm {
 			}
 
 			if (callback.LicenseList == null) {
-				throw new ArgumentNullException(nameof(callback.LicenseList));
+				throw new ArgumentNullException(nameof(callback));
 			}
 
 			if (ASF.GlobalDatabase == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalDatabase));
+				throw new InvalidOperationException(nameof(ASF.GlobalDatabase));
 			}
 
 			if (callback.LicenseList.Count == 0) {
-				ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsEmpty, nameof(callback.LicenseList)));
+				ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(callback.LicenseList)));
 
 				return;
 			}
 
 			Commands.OnNewLicenseList();
 
-			Dictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)> ownedPackageIDs = new Dictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>();
+			Dictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)> ownedPackageIDs = new();
 
-			Dictionary<uint, ulong> packageAccessTokens = new Dictionary<uint, ulong>();
-			Dictionary<uint, uint> packagesToRefresh = new Dictionary<uint, uint>();
+			Dictionary<uint, ulong> packageAccessTokens = new();
+			Dictionary<uint, uint> packagesToRefresh = new();
 
-			foreach (SteamApps.LicenseListCallback.License license in callback.LicenseList.GroupBy(license => license.PackageID, (packageID, licenses) => licenses.OrderByDescending(license => license.TimeCreated).First())) {
+			foreach (SteamApps.LicenseListCallback.License license in callback.LicenseList.GroupBy(license => license.PackageID, (_, licenses) => licenses.OrderByDescending(license => license.TimeCreated).First())) {
 				ownedPackageIDs[license.PackageID] = (license.PaymentMethod, license.TimeCreated);
 
 				if (!ASF.GlobalDatabase.PackageAccessTokensReadOnly.TryGetValue(license.PackageID, out ulong packageAccessToken) || (packageAccessToken != license.AccessToken)) {
@@ -2392,7 +2459,7 @@ namespace ArchiSteamFarm {
 
 			LastLogOnResult = callback.Result;
 
-			ArchiLogger.LogGenericInfo(string.Format(Strings.BotLoggedOff, callback.Result));
+			ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotLoggedOff, callback.Result));
 
 			switch (callback.Result) {
 				case EResult.LoggedInElsewhere:
@@ -2436,7 +2503,7 @@ namespace ArchiSteamFarm {
 			switch (callback.Result) {
 				case EResult.AccountDisabled:
 					// Those failures are permanent, we should Stop() the bot if any of those happen
-					ArchiLogger.LogGenericWarning(string.Format(Strings.BotUnableToLogin, callback.Result, callback.ExtendedResult));
+					ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.BotUnableToLogin, callback.Result, callback.ExtendedResult));
 					Stop();
 
 					break;
@@ -2446,7 +2513,7 @@ namespace ArchiSteamFarm {
 					string? authCode = await Logging.GetUserInput(ASF.EUserInputType.SteamGuard, BotName).ConfigureAwait(false);
 
 					if (string.IsNullOrEmpty(authCode) || !SetUserInput(ASF.EUserInputType.SteamGuard, authCode!)) {
-						ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(authCode)));
+						ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(authCode)));
 
 						Stop();
 					}
@@ -2459,7 +2526,7 @@ namespace ArchiSteamFarm {
 						string? twoFactorCode = await Logging.GetUserInput(ASF.EUserInputType.TwoFactorAuthentication, BotName).ConfigureAwait(false);
 
 						if (string.IsNullOrEmpty(twoFactorCode) || !SetUserInput(ASF.EUserInputType.TwoFactorAuthentication, twoFactorCode!)) {
-							ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(twoFactorCode)));
+							ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(twoFactorCode)));
 
 							Stop();
 						}
@@ -2468,9 +2535,9 @@ namespace ArchiSteamFarm {
 					break;
 				case EResult.OK:
 					AccountFlags = callback.AccountFlags;
-					SteamID = callback.ClientSteamID ?? throw new ArgumentNullException(nameof(callback.ClientSteamID));
+					SteamID = callback.ClientSteamID ?? throw new InvalidOperationException(nameof(callback.ClientSteamID));
 
-					ArchiLogger.LogGenericInfo(string.Format(Strings.BotLoggedOn, SteamID + (!string.IsNullOrEmpty(callback.VanityURL) ? "/" + callback.VanityURL : "")));
+					ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotLoggedOn, SteamID + (!string.IsNullOrEmpty(callback.VanityURL) ? "/" + callback.VanityURL : "")));
 
 					// Old status for these doesn't matter, we'll update them if needed
 					InvalidPasswordFailures = TwoFactorCodeFailures = 0;
@@ -2510,7 +2577,7 @@ namespace ArchiSteamFarm {
 							if (!string.IsNullOrEmpty(steamParentalCode)) {
 								if (BotConfig.SteamParentalCode != steamParentalCode) {
 									if (!SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode!)) {
-										ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(steamParentalCode)));
+										ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(steamParentalCode)));
 
 										Stop();
 
@@ -2523,7 +2590,7 @@ namespace ArchiSteamFarm {
 								steamParentalCode = await Logging.GetUserInput(ASF.EUserInputType.SteamParentalCode, BotName).ConfigureAwait(false);
 
 								if (string.IsNullOrEmpty(steamParentalCode) || !SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode!)) {
-									ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(steamParentalCode)));
+									ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(steamParentalCode)));
 
 									Stop();
 
@@ -2539,7 +2606,7 @@ namespace ArchiSteamFarm {
 						string? steamParentalCode = await Logging.GetUserInput(ASF.EUserInputType.SteamParentalCode, BotName).ConfigureAwait(false);
 
 						if (string.IsNullOrEmpty(steamParentalCode) || !SetUserInput(ASF.EUserInputType.SteamParentalCode, steamParentalCode!)) {
-							ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(steamParentalCode)));
+							ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(steamParentalCode)));
 
 							Stop();
 
@@ -2549,7 +2616,7 @@ namespace ArchiSteamFarm {
 
 					ArchiWebHandler.OnVanityURLChanged(callback.VanityURL);
 
-					if (!await ArchiWebHandler.Init(SteamID, SteamClient.Universe, callback.WebAPIUserNonce ?? throw new ArgumentNullException(nameof(callback.WebAPIUserNonce)), SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
+					if (!await ArchiWebHandler.Init(SteamID, SteamClient.Universe, callback.WebAPIUserNonce ?? throw new InvalidOperationException(nameof(callback.WebAPIUserNonce)), SteamParentalActive ? BotConfig.SteamParentalCode : null).ConfigureAwait(false)) {
 						if (!await RefreshSession().ConfigureAwait(false)) {
 							break;
 						}
@@ -2559,7 +2626,7 @@ namespace ArchiSteamFarm {
 					Utilities.InBackground(ArchiWebHandler.HasValidApiKey);
 
 					if ((GamesRedeemerInBackgroundTimer == null) && BotDatabase.HasGamesToRedeemInBackground) {
-						Utilities.InBackground(RedeemGamesInBackground);
+						Utilities.InBackground(() => RedeemGamesInBackground(this));
 					}
 
 					ArchiHandler.SetCurrentMode(2);
@@ -2582,7 +2649,7 @@ namespace ArchiSteamFarm {
 						Utilities.InBackground(
 							async () => {
 								if (!await ArchiWebHandler.JoinGroup(BotConfig.SteamMasterClanID).ConfigureAwait(false)) {
-									ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, nameof(ArchiWebHandler.JoinGroup)));
+									ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(ArchiWebHandler.JoinGroup)));
 								}
 
 								await JoinMasterChatGroupID().ConfigureAwait(false);
@@ -2608,18 +2675,18 @@ namespace ArchiSteamFarm {
 				case EResult.Timeout:
 				case EResult.TryAnotherCM:
 				case EResult.TwoFactorCodeMismatch:
-					ArchiLogger.LogGenericWarning(string.Format(Strings.BotUnableToLogin, callback.Result, callback.ExtendedResult));
+					ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.BotUnableToLogin, callback.Result, callback.ExtendedResult));
 
 					switch (callback.Result) {
 						case EResult.InvalidPassword when string.IsNullOrEmpty(BotDatabase.LoginKey) && (++InvalidPasswordFailures >= MaxInvalidPasswordFailures):
 							InvalidPasswordFailures = 0;
-							ArchiLogger.LogGenericError(string.Format(Strings.BotInvalidPasswordDuringLogin, MaxInvalidPasswordFailures));
+							ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.BotInvalidPasswordDuringLogin, MaxInvalidPasswordFailures));
 							Stop();
 
 							break;
 						case EResult.TwoFactorCodeMismatch when HasMobileAuthenticator && (++TwoFactorCodeFailures >= MaxTwoFactorCodeFailures):
 							TwoFactorCodeFailures = 0;
-							ArchiLogger.LogGenericError(string.Format(Strings.BotInvalidAuthenticatorDuringLogin, MaxTwoFactorCodeFailures));
+							ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.BotInvalidAuthenticatorDuringLogin, MaxTwoFactorCodeFailures));
 							Stop();
 
 							break;
@@ -2628,8 +2695,8 @@ namespace ArchiSteamFarm {
 					break;
 				default:
 					// Unexpected result, shutdown immediately
-					ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(callback.Result), callback.Result));
-					ArchiLogger.LogGenericError(string.Format(Strings.BotUnableToLogin, callback.Result, callback.ExtendedResult));
+					ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(callback.Result), callback.Result));
+					ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.BotUnableToLogin, callback.Result, callback.ExtendedResult));
 					Stop();
 
 					break;
@@ -2642,7 +2709,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (string.IsNullOrEmpty(callback.LoginKey)) {
-				throw new ArgumentNullException(nameof(callback.LoginKey));
+				throw new ArgumentNullException(nameof(callback));
 			}
 
 			if (!BotConfig.UseLoginKeys) {
@@ -2684,14 +2751,20 @@ namespace ArchiSteamFarm {
 
 				fileStream.Seek(callback.Offset, SeekOrigin.Begin);
 
+#if NETFRAMEWORK
 				await fileStream.WriteAsync(callback.Data, 0, callback.BytesToWrite).ConfigureAwait(false);
+#else
+				await fileStream.WriteAsync(callback.Data.AsMemory(0, callback.BytesToWrite)).ConfigureAwait(false);
+#endif
 
 				fileSize = fileStream.Length;
 				fileStream.Seek(0, SeekOrigin.Begin);
 
-				using SHA1CryptoServiceProvider sha = new SHA1CryptoServiceProvider();
+#pragma warning disable CA5350
+				using SHA1CryptoServiceProvider sha = new();
 
 				sentryHash = await sha.ComputeHashAsync(fileStream).ConfigureAwait(false);
+#pragma warning restore CA5350
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 
@@ -2813,7 +2886,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			HashSet<ArchiHandler.UserNotificationsCallback.EUserNotification> newPluginNotifications = new HashSet<ArchiHandler.UserNotificationsCallback.EUserNotification>();
+			HashSet<ArchiHandler.UserNotificationsCallback.EUserNotification> newPluginNotifications = new();
 
 			foreach ((ArchiHandler.UserNotificationsCallback.EUserNotification notification, uint count) in callback.Notifications) {
 				bool newNotification;
@@ -2918,7 +2991,7 @@ namespace ArchiSteamFarm {
 
 					return firstPageResult;
 				default:
-					HashSet<Task<HashSet<uint>?>> tasks = new HashSet<Task<HashSet<uint>?>>(maxPages - 1);
+					HashSet<Task<HashSet<uint>?>> tasks = new(maxPages - 1);
 
 					for (byte page = 2; page <= maxPages; page++) {
 						// We need a copy of variable being passed when in for loops, as loop will proceed before our task is launched
@@ -2942,7 +3015,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<HashSet<uint>?> GetPossiblyCompletedBadgeAppIDs(byte page) {
 			if (page == 0) {
-				throw new ArgumentNullException(nameof(page));
+				throw new ArgumentOutOfRangeException(nameof(page));
 			}
 
 			using IDocument? badgePage = await ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
@@ -2971,7 +3044,7 @@ namespace ArchiSteamFarm {
 				return new HashSet<uint>(0);
 			}
 
-			HashSet<uint> result = new HashSet<uint>(linkElements.Count);
+			HashSet<uint> result = new(linkElements.Count);
 
 			foreach (string? badgeUri in linkElements.Select(htmlNode => htmlNode.GetAttribute("href"))) {
 				if (string.IsNullOrEmpty(badgeUri)) {
@@ -3036,7 +3109,7 @@ namespace ArchiSteamFarm {
 					}
 
 					if (inventory.Count == 0) {
-						ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsEmpty), nameof(inventory));
+						ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty), nameof(inventory));
 
 						return;
 					}
@@ -3067,16 +3140,18 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<Dictionary<uint, byte>?> LoadCardsPerSet(ISet<uint> appIDs) {
+		public async Task<Dictionary<uint, byte>?> LoadCardsPerSet(IReadOnlyCollection<uint> appIDs) {
 			if ((appIDs == null) || (appIDs.Count == 0)) {
 				throw new ArgumentNullException(nameof(appIDs));
 			}
 
+			ISet<uint> uniqueAppIDs = appIDs as ISet<uint> ?? appIDs.ToHashSet();
+
 			switch (ASF.GlobalConfig?.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					Dictionary<uint, byte> result = new Dictionary<uint, byte>(appIDs.Count);
+					Dictionary<uint, byte> result = new(uniqueAppIDs.Count);
 
-					foreach (uint appID in appIDs) {
+					foreach (uint appID in uniqueAppIDs) {
 						byte cardCount = await ArchiWebHandler.GetCardCountForGame(appID).ConfigureAwait(false);
 
 						if (cardCount == 0) {
@@ -3088,7 +3163,7 @@ namespace ArchiSteamFarm {
 
 					return result;
 				default:
-					IEnumerable<Task<(uint AppID, byte Cards)>> tasks = appIDs.Select(async appID => (AppID: appID, Cards: await ArchiWebHandler.GetCardCountForGame(appID).ConfigureAwait(false)));
+					IEnumerable<Task<(uint AppID, byte Cards)>> tasks = uniqueAppIDs.Select(async appID => (AppID: appID, Cards: await ArchiWebHandler.GetCardCountForGame(appID).ConfigureAwait(false)));
 					IList<(uint AppID, byte Cards)> results = await Utilities.InParallel(tasks).ConfigureAwait(false);
 
 					return results.All(tuple => tuple.Cards > 0) ? results.ToDictionary(res => res.AppID, res => res.Cards) : null;
@@ -3097,11 +3172,15 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public static HashSet<Steam.Asset> GetItemsForFullSets(IReadOnlyCollection<Steam.Asset> inventory, IReadOnlyDictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), (uint SetsToExtract, byte ItemsPerSet)> amountsToExtract) {
-			if ((inventory == null) || (inventory.Count == 0) || (amountsToExtract == null) || (amountsToExtract.Count == 0)) {
-				throw new ArgumentNullException(nameof(inventory) + " || " + nameof(amountsToExtract));
+			if ((inventory == null) || (inventory.Count == 0)) {
+				throw new ArgumentNullException(nameof(inventory));
 			}
 
-			HashSet<Steam.Asset> result = new HashSet<Steam.Asset>();
+			if ((amountsToExtract == null) || (amountsToExtract.Count == 0)) {
+				throw new ArgumentNullException(nameof(amountsToExtract));
+			}
+
+			HashSet<Steam.Asset> result = new();
 			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, HashSet<Steam.Asset>>> itemsPerClassIDPerSet = inventory.GroupBy(item => (item.RealAppID, item.Type, item.Rarity)).ToDictionary(grouping => grouping.Key, grouping => grouping.GroupBy(item => item.ClassID).ToDictionary(group => group.Key, group => group.ToHashSet()));
 
 			foreach (((uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) set, (uint setsToExtract, byte itemsPerSet)) in amountsToExtract) {
@@ -3110,7 +3189,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if (itemsPerSet < itemsPerClassID.Count) {
-					throw new ArgumentOutOfRangeException(nameof(inventory) + " && " + nameof(amountsToExtract));
+					throw new InvalidOperationException(nameof(inventory) + " && " + nameof(amountsToExtract));
 				}
 
 				if (itemsPerSet > itemsPerClassID.Count) {
@@ -3120,7 +3199,7 @@ namespace ArchiSteamFarm {
 				foreach (HashSet<Steam.Asset> itemsOfClass in itemsPerClassID.Values) {
 					uint classRemaining = setsToExtract;
 
-					foreach (Steam.Asset item in itemsOfClass.TakeWhile(item => classRemaining > 0)) {
+					foreach (Steam.Asset item in itemsOfClass.TakeWhile(_ => classRemaining > 0)) {
 						if (item.Amount > classRemaining) {
 							Steam.Asset itemToSend = item.CreateShallowCopy();
 							itemToSend.Amount = classRemaining;
@@ -3156,7 +3235,7 @@ namespace ArchiSteamFarm {
 			WalletCurrency = callback.Currency;
 		}
 
-		private async Task RedeemGamesInBackground() {
+		private async void RedeemGamesInBackground(object? state) {
 			if (!await GamesRedeemerInBackgroundSemaphore.WaitAsync(0).ConfigureAwait(false)) {
 				return;
 			}
@@ -3200,7 +3279,7 @@ namespace ArchiSteamFarm {
 						}
 					}
 
-					ArchiLogger.LogGenericDebug(string.Format(Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail));
+					ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail));
 
 					bool rateLimited = false;
 					bool redeemed = false;
@@ -3224,7 +3303,7 @@ namespace ArchiSteamFarm {
 
 							break;
 						default:
-							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.PurchaseResultDetail), result.PurchaseResultDetail));
+							ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(result.PurchaseResultDetail), result.PurchaseResultDetail));
 
 							break;
 					}
@@ -3236,7 +3315,7 @@ namespace ArchiSteamFarm {
 					BotDatabase.RemoveGameToRedeemInBackground(key!);
 
 					// If user omitted the name or intentionally provided the same name as key, replace it with the Steam result
-					if (name!.Equals(key) && (result.Items?.Count > 0)) {
+					if (name!.Equals(key, StringComparison.OrdinalIgnoreCase) && (result.Items?.Count > 0)) {
 						name = string.Join(", ", result.Items.Values);
 					}
 
@@ -3254,17 +3333,17 @@ namespace ArchiSteamFarm {
 						await RuntimeCompatibility.File.AppendAllTextAsync(filePath, logEntry + Environment.NewLine).ConfigureAwait(false);
 					} catch (Exception e) {
 						ArchiLogger.LogGenericException(e);
-						ArchiLogger.LogGenericError(string.Format(Strings.Content, logEntry));
+						ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.Content, logEntry));
 
 						break;
 					}
 				}
 
 				if (IsConnectedAndLoggedOn && BotDatabase.HasGamesToRedeemInBackground) {
-					ArchiLogger.LogGenericInfo(string.Format(Strings.BotRateLimitExceeded, TimeSpan.FromHours(RedeemCooldownInHours).ToHumanReadable()));
+					ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotRateLimitExceeded, TimeSpan.FromHours(RedeemCooldownInHours).ToHumanReadable()));
 
 					GamesRedeemerInBackgroundTimer = new Timer(
-						async e => await RedeemGamesInBackground().ConfigureAwait(false),
+						RedeemGamesInBackground,
 						null,
 						TimeSpan.FromHours(RedeemCooldownInHours), // Delay
 						Timeout.InfiniteTimeSpan // Period
@@ -3298,20 +3377,18 @@ namespace ArchiSteamFarm {
 			await ArchiHandler.PlayGames(BotConfig.GamesPlayedWhileIdle, BotConfig.CustomGamePlayedWhileIdle).ConfigureAwait(false);
 		}
 
-		private void ResetPlayingWasBlockedWithTimer() {
+		private void ResetPlayingWasBlockedWithTimer(object? state) {
 			PlayingWasBlocked = false;
 			StopPlayingWasBlockedTimer();
 		}
 
 		private bool ShouldAckChatMessage(ulong steamID) {
-			if (Bots == null) {
-				throw new ArgumentNullException(nameof(Bots));
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+				throw new ArgumentOutOfRangeException(nameof(steamID));
 			}
 
-			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-				ArchiLogger.LogNullError(nameof(steamID));
-
-				return false;
+			if (Bots == null) {
+				throw new InvalidOperationException(nameof(Bots));
 			}
 
 			if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.MarkReceivedMessagesAsRead)) {
@@ -3368,7 +3445,7 @@ namespace ArchiSteamFarm {
 
 					break;
 				default:
-					ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(settings.passwordhashtype), settings.passwordhashtype));
+					ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(settings.passwordhashtype), settings.passwordhashtype));
 
 					return (true, null);
 			}

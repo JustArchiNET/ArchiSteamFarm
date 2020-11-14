@@ -32,7 +32,7 @@ namespace ArchiSteamFarm.Helpers {
 		private const ushort SpinLockDelay = 1000; // In milliseconds
 
 		private readonly string FilePath;
-		private readonly SemaphoreSlim LocalSemaphore = new SemaphoreSlim(1, 1);
+		private readonly SemaphoreSlim LocalSemaphore = new(1, 1);
 
 		private FileStream? FileLock;
 
@@ -163,10 +163,10 @@ namespace ArchiSteamFarm.Helpers {
 				Directory.CreateDirectory(directoryPath!);
 
 				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-					DirectoryInfo directoryInfo = new DirectoryInfo(directoryPath!);
+					DirectoryInfo directoryInfo = new(directoryPath!);
 
 					try {
-						DirectorySecurity directorySecurity = new DirectorySecurity(directoryPath!, AccessControlSections.All);
+						DirectorySecurity directorySecurity = new(directoryPath!, AccessControlSections.All);
 
 						directoryInfo.SetAccessControl(directorySecurity);
 					} catch (PrivilegeNotHeldException e) {
@@ -182,10 +182,10 @@ namespace ArchiSteamFarm.Helpers {
 				using (new FileStream(FilePath, FileMode.CreateNew)) { }
 
 				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-					FileInfo fileInfo = new FileInfo(FilePath);
+					FileInfo fileInfo = new(FilePath);
 
 					try {
-						FileSecurity fileSecurity = new FileSecurity(FilePath, AccessControlSections.All);
+						FileSecurity fileSecurity = new(FilePath, AccessControlSections.All);
 
 						fileInfo.SetAccessControl(fileSecurity);
 					} catch (PrivilegeNotHeldException e) {

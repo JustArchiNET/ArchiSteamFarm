@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -46,16 +47,16 @@ namespace ArchiSteamFarm {
 		internal bool HasIdlingPriorityAppIDs => IdlingPriorityAppIDs.Count > 0;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentHashSet<ulong> BlacklistedFromTradesSteamIDs = new ConcurrentHashSet<ulong>();
+		private readonly ConcurrentHashSet<ulong> BlacklistedFromTradesSteamIDs = new();
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly OrderedDictionary GamesToRedeemInBackground = new OrderedDictionary();
+		private readonly OrderedDictionary GamesToRedeemInBackground = new();
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentHashSet<uint> IdlingBlacklistedAppIDs = new ConcurrentHashSet<uint>();
+		private readonly ConcurrentHashSet<uint> IdlingBlacklistedAppIDs = new();
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentHashSet<uint> IdlingPriorityAppIDs = new ConcurrentHashSet<uint>();
+		private readonly ConcurrentHashSet<uint> IdlingPriorityAppIDs = new();
 
 		internal string? LoginKey {
 			get => BackingLoginKey;
@@ -170,7 +171,7 @@ namespace ArchiSteamFarm {
 				string json = await RuntimeCompatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(json)) {
-					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsEmpty, nameof(json)));
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
 
 					return null;
 				}
@@ -213,7 +214,7 @@ namespace ArchiSteamFarm {
 
 		internal bool IsBlacklistedFromIdling(uint appID) {
 			if (appID == 0) {
-				throw new ArgumentNullException(nameof(appID));
+				throw new ArgumentOutOfRangeException(nameof(appID));
 			}
 
 			return IdlingBlacklistedAppIDs.Contains(appID);
@@ -221,7 +222,7 @@ namespace ArchiSteamFarm {
 
 		internal bool IsBlacklistedFromTrades(ulong steamID) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-				throw new ArgumentNullException(nameof(steamID));
+				throw new ArgumentOutOfRangeException(nameof(steamID));
 			}
 
 			return BlacklistedFromTradesSteamIDs.Contains(steamID);
@@ -229,7 +230,7 @@ namespace ArchiSteamFarm {
 
 		internal bool IsPriorityIdling(uint appID) {
 			if (appID == 0) {
-				throw new ArgumentNullException(nameof(appID));
+				throw new ArgumentOutOfRangeException(nameof(appID));
 			}
 
 			return IdlingPriorityAppIDs.Contains(appID);

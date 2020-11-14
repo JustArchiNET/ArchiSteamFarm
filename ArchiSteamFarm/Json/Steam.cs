@@ -322,8 +322,8 @@ namespace ArchiSteamFarm.Json {
 			[PublicAPI]
 			public IReadOnlyCollection<Asset> ItemsToReceiveReadOnly => ItemsToReceive;
 
-			internal readonly HashSet<Asset> ItemsToGive = new HashSet<Asset>();
-			internal readonly HashSet<Asset> ItemsToReceive = new HashSet<Asset>();
+			internal readonly HashSet<Asset> ItemsToGive = new();
+			internal readonly HashSet<Asset> ItemsToReceive = new();
 
 			[PublicAPI]
 			public ulong OtherSteamID64 { get; private set; }
@@ -649,14 +649,14 @@ namespace ArchiSteamFarm.Json {
 
 		internal sealed class TradeOfferSendRequest {
 			[JsonProperty(PropertyName = "me", Required = Required.Always)]
-			internal readonly ItemList ItemsToGive = new ItemList();
+			internal readonly ItemList ItemsToGive = new();
 
 			[JsonProperty(PropertyName = "them", Required = Required.Always)]
-			internal readonly ItemList ItemsToReceive = new ItemList();
+			internal readonly ItemList ItemsToReceive = new();
 
 			internal sealed class ItemList {
 				[JsonProperty(PropertyName = "assets", Required = Required.Always)]
-				internal readonly HashSet<Asset> Assets = new HashSet<Asset>();
+				internal readonly HashSet<Asset> Assets = new();
 			}
 		}
 

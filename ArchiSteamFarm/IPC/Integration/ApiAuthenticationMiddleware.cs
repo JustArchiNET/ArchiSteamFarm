@@ -38,8 +38,8 @@ namespace ArchiSteamFarm.IPC.Integration {
 		private const byte FailedAuthorizationsCooldownInHours = 1;
 		private const byte MaxFailedAuthorizationAttempts = 5;
 
-		private static readonly SemaphoreSlim AuthorizationSemaphore = new SemaphoreSlim(1, 1);
-		private static readonly ConcurrentDictionary<IPAddress, byte> FailedAuthorizations = new ConcurrentDictionary<IPAddress, byte>();
+		private static readonly SemaphoreSlim AuthorizationSemaphore = new(1, 1);
+		private static readonly ConcurrentDictionary<IPAddress, byte> FailedAuthorizations = new();
 
 		private static Timer? ClearFailedAuthorizationsTimer;
 
@@ -50,7 +50,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 
 			lock (FailedAuthorizations) {
 				ClearFailedAuthorizationsTimer ??= new Timer(
-					e => FailedAuthorizations.Clear(),
+					_ => FailedAuthorizations.Clear(),
 					null,
 					TimeSpan.FromHours(FailedAuthorizationsCooldownInHours), // Delay
 					TimeSpan.FromHours(FailedAuthorizationsCooldownInHours) // Period
@@ -76,7 +76,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 		}
 
 		private static async Task<HttpStatusCode> GetAuthenticationStatus(HttpContext context) {
-			if ((context == null)) {
+			if (context == null) {
 				throw new ArgumentNullException(nameof(context));
 			}
 

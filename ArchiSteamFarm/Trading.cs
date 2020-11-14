@@ -22,6 +22,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
@@ -39,8 +41,8 @@ namespace ArchiSteamFarm {
 		internal const byte MaxTradesPerAccount = 5; // This is limit introduced by Valve
 
 		private readonly Bot Bot;
-		private readonly ConcurrentHashSet<ulong> HandledTradeOfferIDs = new ConcurrentHashSet<ulong>();
-		private readonly SemaphoreSlim TradesSemaphore = new SemaphoreSlim(1, 1);
+		private readonly ConcurrentHashSet<ulong> HandledTradeOfferIDs = new();
+		private readonly SemaphoreSlim TradesSemaphore = new(1, 1);
 
 		private bool ParsingScheduled;
 
@@ -61,18 +63,22 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public static bool IsFairExchange(IReadOnlyCollection<Steam.Asset> itemsToGive, IReadOnlyCollection<Steam.Asset> itemsToReceive) {
-			if ((itemsToGive == null) || (itemsToGive.Count == 0) || (itemsToReceive == null) || (itemsToReceive.Count == 0)) {
-				throw new ArgumentNullException(nameof(itemsToGive) + " || " + nameof(itemsToReceive));
+			if ((itemsToGive == null) || (itemsToGive.Count == 0)) {
+				throw new ArgumentNullException(nameof(itemsToGive));
 			}
 
-			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), uint> itemsToGiveAmounts = new Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), uint>();
+			if ((itemsToReceive == null) || (itemsToReceive.Count == 0)) {
+				throw new ArgumentNullException(nameof(itemsToReceive));
+			}
+
+			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), uint> itemsToGiveAmounts = new();
 
 			foreach (Steam.Asset item in itemsToGive) {
 				(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
 				itemsToGiveAmounts[key] = itemsToGiveAmounts.TryGetValue(key, out uint amount) ? amount + item.Amount : item.Amount;
 			}
 
-			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), uint> itemsToReceiveAmounts = new Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), uint>();
+			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), uint> itemsToReceiveAmounts = new();
 
 			foreach (Steam.Asset item in itemsToReceive) {
 				(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
@@ -90,9 +96,17 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public static bool IsTradeNeutralOrBetter(HashSet<Steam.Asset> inventory, ISet<Steam.Asset> itemsToGive, ISet<Steam.Asset> itemsToReceive) {
-			if ((inventory == null) || (inventory.Count == 0) || (itemsToGive == null) || (itemsToGive.Count == 0) || (itemsToReceive == null) || (itemsToReceive.Count == 0)) {
-				throw new ArgumentNullException(nameof(inventory) + " || " + nameof(itemsToGive) + " || " + nameof(itemsToReceive));
+		public static bool IsTradeNeutralOrBetter(HashSet<Steam.Asset> inventory, IReadOnlyCollection<Steam.Asset> itemsToGive, IReadOnlyCollection<Steam.Asset> itemsToReceive) {
+			if ((inventory == null) || (inventory.Count == 0)) {
+				throw new ArgumentNullException(nameof(inventory));
+			}
+
+			if ((itemsToGive == null) || (itemsToGive.Count == 0)) {
+				throw new ArgumentNullException(nameof(itemsToGive));
+			}
+
+			if ((itemsToReceive == null) || (itemsToReceive.Count == 0)) {
+				throw new ArgumentNullException(nameof(itemsToReceive));
 			}
 
 			// Input of this function is items we're expected to give/receive and our inventory (limited to realAppIDs of itemsToGive/itemsToReceive)
@@ -107,7 +121,7 @@ namespace ArchiSteamFarm {
 			// This loop is a bit more complex due to the fact that we might have a mix of the same item splitted into different amounts
 			foreach (Steam.Asset itemToGive in itemsToGive) {
 				uint amountToGive = itemToGive.Amount;
-				HashSet<Steam.Asset> itemsToRemove = new HashSet<Steam.Asset>();
+				HashSet<Steam.Asset> itemsToRemove = new();
 
 				// Keep in mind that ClassID is unique only within appID scope - we can do it like this because we're not dealing with non-Steam items here (otherwise we'd need to check appID too)
 				foreach (Steam.Asset item in inventory.Where(item => item.ClassID == itemToGive.ClassID)) {
@@ -125,7 +139,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if (amountToGive > 0) {
-					throw new ArgumentNullException(nameof(amountToGive));
+					throw new InvalidOperationException(nameof(amountToGive));
 				}
 
 				if (itemsToRemove.Count > 0) {
@@ -196,8 +210,8 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(inventory));
 			}
 
-			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> fullState = new Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>>();
-			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> tradableState = new Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>>();
+			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> fullState = new();
+			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> tradableState = new();
 
 			foreach (Steam.Asset item in inventory) {
 				(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
@@ -227,7 +241,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(inventory));
 			}
 
-			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> tradableState = new Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>>();
+			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> tradableState = new();
 
 			foreach (Steam.Asset item in inventory.Where(item => item.Tradable)) {
 				(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
@@ -242,12 +256,16 @@ namespace ArchiSteamFarm {
 			return tradableState;
 		}
 
-		internal static HashSet<Steam.Asset> GetTradableItemsFromInventory(ISet<Steam.Asset> inventory, IDictionary<ulong, uint> classIDs) {
-			if ((inventory == null) || (inventory.Count == 0) || (classIDs == null) || (classIDs.Count == 0)) {
-				throw new ArgumentNullException(nameof(inventory) + " || " + nameof(classIDs));
+		internal static HashSet<Steam.Asset> GetTradableItemsFromInventory(IReadOnlyCollection<Steam.Asset> inventory, IDictionary<ulong, uint> classIDs) {
+			if ((inventory == null) || (inventory.Count == 0)) {
+				throw new ArgumentNullException(nameof(inventory));
 			}
 
-			HashSet<Steam.Asset> result = new HashSet<Steam.Asset>();
+			if ((classIDs == null) || (classIDs.Count == 0)) {
+				throw new ArgumentNullException(nameof(classIDs));
+			}
+
+			HashSet<Steam.Asset> result = new();
 
 			foreach (Steam.Asset item in inventory.Where(item => item.Tradable)) {
 				if (!classIDs.TryGetValue(item.ClassID, out uint amount)) {
@@ -271,13 +289,17 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static bool IsEmptyForMatching(IReadOnlyDictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> fullState, IReadOnlyDictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> tradableState) {
-			if ((fullState == null) || (tradableState == null)) {
-				throw new ArgumentNullException(nameof(fullState) + " || " + nameof(tradableState));
+			if (fullState == null) {
+				throw new ArgumentNullException(nameof(fullState));
 			}
 
-			foreach (((uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) set, Dictionary<ulong, uint> state) in tradableState) {
+			if (tradableState == null) {
+				throw new ArgumentNullException(nameof(tradableState));
+			}
+
+			foreach (((uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) set, IReadOnlyDictionary<ulong, uint> state) in tradableState) {
 				if (!fullState.TryGetValue(set, out Dictionary<ulong, uint>? fullSet) || (fullSet.Count == 0)) {
-					throw new ArgumentNullException(nameof(fullSet));
+					throw new InvalidOperationException(nameof(fullSet));
 				}
 
 				if (!IsEmptyForMatching(fullSet, state)) {
@@ -290,19 +312,23 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static bool IsEmptyForMatching(IReadOnlyDictionary<ulong, uint> fullSet, IReadOnlyDictionary<ulong, uint> tradableSet) {
-			if ((fullSet == null) || (tradableSet == null)) {
-				throw new ArgumentNullException(nameof(fullSet) + " || " + nameof(tradableSet));
+			if (fullSet == null) {
+				throw new ArgumentNullException(nameof(fullSet));
+			}
+
+			if (tradableSet == null) {
+				throw new ArgumentNullException(nameof(tradableSet));
 			}
 
 			foreach ((ulong classID, uint amount) in tradableSet) {
 				switch (amount) {
 					case 0:
 						// No tradable items, this should never happen, dictionary should not have this key to begin with
-						throw new ArgumentOutOfRangeException(nameof(amount));
+						throw new InvalidOperationException(nameof(amount));
 					case 1:
 						// Single tradable item, can be matchable or not depending on the rest of the inventory
 						if (!fullSet.TryGetValue(classID, out uint fullAmount) || (fullAmount == 0) || (fullAmount < amount)) {
-							throw new ArgumentNullException(nameof(fullAmount));
+							throw new InvalidOperationException(nameof(fullAmount));
 						}
 
 						if (fullAmount > 1) {
@@ -361,7 +387,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(inventory));
 			}
 
-			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> state = new Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>>();
+			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, uint>> state = new();
 
 			foreach (Steam.Asset item in inventory) {
 				(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
@@ -391,7 +417,7 @@ namespace ArchiSteamFarm {
 			IList<(ParseTradeResult? TradeResult, bool RequiresMobileConfirmation)> results = await Utilities.InParallel(tasks).ConfigureAwait(false);
 
 			if (Bot.HasMobileAuthenticator) {
-				HashSet<ulong> mobileTradeOfferIDs = results.Where(result => (result.TradeResult != null) && (result.TradeResult.Result == ParseTradeResult.EResult.Accepted) && result.RequiresMobileConfirmation).Select(result => result.TradeResult!.TradeOfferID).ToHashSet();
+				HashSet<ulong> mobileTradeOfferIDs = results.Where(result => (result.TradeResult?.Result == ParseTradeResult.EResult.Accepted) && result.RequiresMobileConfirmation).Select(result => result.TradeResult!.TradeOfferID).ToHashSet();
 
 				if (mobileTradeOfferIDs.Count > 0) {
 					(bool twoFactorSuccess, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, MobileAuthenticator.Confirmation.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
@@ -410,7 +436,7 @@ namespace ArchiSteamFarm {
 				await PluginsCore.OnBotTradeOfferResults(Bot, validTradeResults).ConfigureAwait(false);
 			}
 
-			return results.Any(result => (result.TradeResult != null) && (result.TradeResult.Result == ParseTradeResult.EResult.Accepted) && (!result.RequiresMobileConfirmation || Bot.HasMobileAuthenticator) && (result.TradeResult.ReceivedItemTypes?.Any(receivedItemType => Bot.BotConfig.LootableTypes.Contains(receivedItemType)) == true));
+			return results.Any(result => (result.TradeResult?.Result == ParseTradeResult.EResult.Accepted) && (!result.RequiresMobileConfirmation || Bot.HasMobileAuthenticator) && (result.TradeResult.ReceivedItemTypes?.Any(receivedItemType => Bot.BotConfig.LootableTypes.Contains(receivedItemType)) == true));
 		}
 
 		private async Task<(ParseTradeResult? TradeResult, bool RequiresMobileConfirmation)> ParseTrade(Steam.TradeOffer tradeOffer) {
@@ -419,14 +445,14 @@ namespace ArchiSteamFarm {
 			}
 
 			if (tradeOffer.State != ETradeOfferState.Active) {
-				Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, tradeOffer.State));
+				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, tradeOffer.State));
 
 				return (null, false);
 			}
 
 			if (!HandledTradeOfferIDs.Add(tradeOffer.TradeOfferID)) {
 				// We've already seen this trade, this should not happen
-				Bot.ArchiLogger.LogGenericError(string.Format(Strings.IgnoringTrade, tradeOffer.TradeOfferID));
+				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.IgnoringTrade, tradeOffer.TradeOfferID));
 
 				return (new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.Ignored, tradeOffer.ItemsToReceive), false);
 			}
@@ -448,7 +474,7 @@ namespace ArchiSteamFarm {
 
 			switch (result) {
 				case ParseTradeResult.EResult.Accepted:
-					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.AcceptingTrade, tradeOffer.TradeOfferID));
+					Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.AcceptingTrade, tradeOffer.TradeOfferID));
 
 					(bool success, bool requiresMobileConfirmation) = await Bot.ArchiWebHandler.AcceptTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false);
 
@@ -459,7 +485,7 @@ namespace ArchiSteamFarm {
 					}
 
 					if (tradeOffer.ItemsToReceive.Sum(item => item.Amount) > tradeOffer.ItemsToGive.Sum(item => item.Amount)) {
-						Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.BotAcceptedDonationTrade, tradeOffer.TradeOfferID));
+						Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.BotAcceptedDonationTrade, tradeOffer.TradeOfferID));
 					}
 
 					tradeRequiresMobileConfirmation = requiresMobileConfirmation;
@@ -467,7 +493,7 @@ namespace ArchiSteamFarm {
 					break;
 				case ParseTradeResult.EResult.Blacklisted:
 				case ParseTradeResult.EResult.Rejected when Bot.BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidTrades):
-					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.RejectingTrade, tradeOffer.TradeOfferID));
+					Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.RejectingTrade, tradeOffer.TradeOfferID));
 
 					if (!await Bot.ArchiWebHandler.DeclineTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false)) {
 						result = ParseTradeResult.EResult.TryAgain;
@@ -478,7 +504,7 @@ namespace ArchiSteamFarm {
 					break;
 				case ParseTradeResult.EResult.Ignored:
 				case ParseTradeResult.EResult.Rejected:
-					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.IgnoringTrade, tradeOffer.TradeOfferID));
+					Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.IgnoringTrade, tradeOffer.TradeOfferID));
 
 					break;
 				case ParseTradeResult.EResult.TryAgain:
@@ -486,7 +512,7 @@ namespace ArchiSteamFarm {
 
 					goto case ParseTradeResult.EResult.Ignored;
 				default:
-					Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result), result));
+					Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(result), result));
 
 					return (null, false);
 			}
@@ -495,25 +521,29 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<ParseTradeResult.EResult> ShouldAcceptTrade(Steam.TradeOffer tradeOffer) {
-			if (Bot.Bots == null) {
-				throw new ArgumentNullException(nameof(Bot.Bots));
+			if (tradeOffer == null) {
+				throw new ArgumentNullException(nameof(tradeOffer));
 			}
 
-			if ((tradeOffer == null) || (ASF.GlobalConfig == null)) {
-				throw new ArgumentNullException(nameof(tradeOffer) + " || " + nameof(ASF.GlobalConfig));
+			if (ASF.GlobalConfig == null) {
+				throw new InvalidOperationException(nameof(ASF.GlobalConfig));
+			}
+
+			if (Bot.Bots == null) {
+				throw new InvalidOperationException(nameof(Bot.Bots));
 			}
 
 			if (tradeOffer.OtherSteamID64 != 0) {
 				// Always accept trades from SteamMasterID
-				if (Bot.HasPermission(tradeOffer.OtherSteamID64, BotConfig.EPermission.Master)) {
-					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Accepted, nameof(tradeOffer.OtherSteamID64) + " " + tradeOffer.OtherSteamID64 + ": " + BotConfig.EPermission.Master));
+				if (Bot.HasAccess(tradeOffer.OtherSteamID64, BotConfig.EAccess.Master)) {
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Accepted, nameof(tradeOffer.OtherSteamID64) + " " + tradeOffer.OtherSteamID64 + ": " + BotConfig.EAccess.Master));
 
 					return ParseTradeResult.EResult.Accepted;
 				}
 
 				// Always deny trades from blacklisted steamIDs
 				if (Bot.IsBlacklistedFromTrades(tradeOffer.OtherSteamID64)) {
-					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Blacklisted, nameof(tradeOffer.OtherSteamID64) + " " + tradeOffer.OtherSteamID64));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Blacklisted, nameof(tradeOffer.OtherSteamID64) + " " + tradeOffer.OtherSteamID64));
 
 					return ParseTradeResult.EResult.Blacklisted;
 				}
@@ -523,7 +553,7 @@ namespace ArchiSteamFarm {
 			switch (tradeOffer.ItemsToGive.Count) {
 				case 0 when tradeOffer.ItemsToReceive.Count == 0:
 					// If it's steam issue, try again later
-					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.TryAgain, nameof(tradeOffer.ItemsToReceive.Count) + " = 0"));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.TryAgain, nameof(tradeOffer.ItemsToReceive.Count) + " = 0"));
 
 					return ParseTradeResult.EResult.TryAgain;
 				case 0:
@@ -531,18 +561,18 @@ namespace ArchiSteamFarm {
 					bool acceptDonations = Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.AcceptDonations);
 					bool acceptBotTrades = !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.DontAcceptBotTrades);
 
-					// If we accept donations and bot trades, accept it right away
-					if (acceptDonations && acceptBotTrades) {
-						Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Accepted, nameof(acceptDonations) + " = " + true + " && " + nameof(acceptBotTrades) + " = " + true));
+					switch (acceptDonations) {
+						case true when acceptBotTrades:
+							// If we accept donations and bot trades, accept it right away
+							Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Accepted, nameof(acceptDonations) + " = " + true + " && " + nameof(acceptBotTrades) + " = " + true));
 
-						return ParseTradeResult.EResult.Accepted;
-					}
+							return ParseTradeResult.EResult.Accepted;
 
-					// If we don't accept donations, neither bot trades, deny it right away
-					if (!acceptDonations && !acceptBotTrades) {
-						Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, nameof(acceptDonations) + " = " + false + " && " + nameof(acceptBotTrades) + " = " + false));
+						case false when !acceptBotTrades:
+							// If we don't accept donations, neither bot trades, deny it right away
+							Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, nameof(acceptDonations) + " = " + false + " && " + nameof(acceptBotTrades) + " = " + false));
 
-						return ParseTradeResult.EResult.Rejected;
+							return ParseTradeResult.EResult.Rejected;
 					}
 
 					// Otherwise we either accept donations but not bot trades, or we accept bot trades but not donations
@@ -550,28 +580,28 @@ namespace ArchiSteamFarm {
 
 					ParseTradeResult.EResult result = (acceptDonations && !isBotTrade) || (acceptBotTrades && isBotTrade) ? ParseTradeResult.EResult.Accepted : ParseTradeResult.EResult.Rejected;
 
-					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, result, nameof(acceptDonations) + " = " + acceptDonations + " && " + nameof(acceptBotTrades) + " = " + acceptBotTrades + " && " + nameof(isBotTrade) + " = " + isBotTrade));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, result, nameof(acceptDonations) + " = " + acceptDonations + " && " + nameof(acceptBotTrades) + " = " + acceptBotTrades + " && " + nameof(isBotTrade) + " = " + isBotTrade));
 
 					return result;
 			}
 
 			// If we don't have SteamTradeMatcher enabled, this is the end for us
 			if (!Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher)) {
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, nameof(BotConfig.ETradingPreferences.SteamTradeMatcher) + " = " + false));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, nameof(BotConfig.ETradingPreferences.SteamTradeMatcher) + " = " + false));
 
 				return ParseTradeResult.EResult.Rejected;
 			}
 
 			// Decline trade if we're giving more count-wise, this is a very naive pre-check, it'll be strengthened in more detailed fair types exchange next
 			if (tradeOffer.ItemsToGive.Count > tradeOffer.ItemsToReceive.Count) {
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, nameof(tradeOffer.ItemsToGive.Count) + ": " + tradeOffer.ItemsToGive.Count + " > " + tradeOffer.ItemsToReceive.Count));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, nameof(tradeOffer.ItemsToGive.Count) + ": " + tradeOffer.ItemsToGive.Count + " > " + tradeOffer.ItemsToReceive.Count));
 
 				return ParseTradeResult.EResult.Rejected;
 			}
 
 			// Decline trade if we're requested to handle any not-accepted item type or if it's not fair games/types exchange
 			if (!tradeOffer.IsValidSteamItemsRequest(Bot.BotConfig.MatchableTypes) || !IsFairExchange(tradeOffer.ItemsToGive, tradeOffer.ItemsToReceive)) {
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, nameof(tradeOffer.IsValidSteamItemsRequest) + " || " + nameof(IsFairExchange)));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, nameof(tradeOffer.IsValidSteamItemsRequest) + " || " + nameof(IsFairExchange)));
 
 				return ParseTradeResult.EResult.Rejected;
 			}
@@ -581,32 +611,30 @@ namespace ArchiSteamFarm {
 			// Fetch trade hold duration
 			byte? holdDuration = await Bot.GetTradeHoldDuration(tradeOffer.OtherSteamID64, tradeOffer.TradeOfferID).ConfigureAwait(false);
 
-			if (!holdDuration.HasValue) {
-				// If we can't get trade hold duration, try again later
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.TryAgain, nameof(holdDuration)));
+			switch (holdDuration) {
+				case null:
+					// If we can't get trade hold duration, try again later
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.TryAgain, nameof(holdDuration)));
 
-				return ParseTradeResult.EResult.TryAgain;
-			}
+					return ParseTradeResult.EResult.TryAgain;
 
-			// If user has a trade hold, we add extra logic
-			if (holdDuration.Value > 0) {
+				// If user has a trade hold, we add extra logic
 				// If trade hold duration exceeds our max, or user asks for cards with short lifespan, reject the trade
-				if ((holdDuration.Value > ASF.GlobalConfig.MaxTradeHoldDuration) || tradeOffer.ItemsToGive.Any(item => ((item.Type == Steam.Asset.EType.FoilTradingCard) || (item.Type == Steam.Asset.EType.TradingCard)) && CardsFarmer.SalesBlacklist.Contains(item.RealAppID))) {
-					Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, nameof(holdDuration) + " > 0: " + holdDuration.Value));
+				case > 0 when (holdDuration.Value > ASF.GlobalConfig.MaxTradeHoldDuration) || tradeOffer.ItemsToGive.Any(item => ((item.Type == Steam.Asset.EType.FoilTradingCard) || (item.Type == Steam.Asset.EType.TradingCard)) && CardsFarmer.SalesBlacklist.Contains(item.RealAppID)):
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, nameof(holdDuration) + " > 0: " + holdDuration.Value));
 
 					return ParseTradeResult.EResult.Rejected;
-				}
 			}
 
 			// If we're matching everything, this is enough for us
 			if (Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything)) {
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Accepted, BotConfig.ETradingPreferences.MatchEverything));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Accepted, BotConfig.ETradingPreferences.MatchEverything));
 
 				return ParseTradeResult.EResult.Accepted;
 			}
 
 			// Get sets we're interested in
-			HashSet<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> wantedSets = new HashSet<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)>();
+			HashSet<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity)> wantedSets = new();
 
 			foreach (Steam.Asset item in tradeOffer.ItemsToGive) {
 				wantedSets.Add((item.RealAppID, item.Type, item.Rarity));
@@ -620,21 +648,21 @@ namespace ArchiSteamFarm {
 			} catch (HttpRequestException e) {
 				// If we can't check our inventory when not using MatchEverything, this is a temporary failure, try again later
 				Bot.ArchiLogger.LogGenericWarningException(e);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.TryAgain, nameof(inventory)));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.TryAgain, nameof(inventory)));
 
 				return ParseTradeResult.EResult.TryAgain;
 			} catch (Exception e) {
 				// If we can't check our inventory when not using MatchEverything, this is a temporary failure, try again later
 				Bot.ArchiLogger.LogGenericException(e);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.TryAgain, nameof(inventory)));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.TryAgain, nameof(inventory)));
 
 				return ParseTradeResult.EResult.TryAgain;
 			}
 
 			if (inventory.Count == 0) {
 				// If we can't check our inventory when not using MatchEverything, this is a temporary failure, try again later
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.TryAgain, nameof(inventory)));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(inventory)));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.TryAgain, nameof(inventory)));
 
 				return ParseTradeResult.EResult.TryAgain;
 			}
@@ -644,29 +672,33 @@ namespace ArchiSteamFarm {
 			// We're now sure whether the trade is neutral+ for us or not
 			ParseTradeResult.EResult acceptResult = accept ? ParseTradeResult.EResult.Accepted : ParseTradeResult.EResult.Rejected;
 
-			Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, acceptResult, nameof(IsTradeNeutralOrBetter)));
+			Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, acceptResult, nameof(IsTradeNeutralOrBetter)));
 
 			return acceptResult;
 		}
 
 		public sealed class ParseTradeResult {
 			[PublicAPI]
-			public readonly EResult Result;
+			public EResult Result { get; }
 
 			[PublicAPI]
-			public readonly ulong TradeOfferID;
+			public ulong TradeOfferID { get; }
 
 			internal readonly ImmutableHashSet<Steam.Asset.EType>? ReceivedItemTypes;
 
 			internal ParseTradeResult(ulong tradeOfferID, EResult result, IReadOnlyCollection<Steam.Asset>? itemsToReceive = null) {
-				if ((tradeOfferID == 0) || (result == EResult.Unknown)) {
-					throw new ArgumentNullException(nameof(tradeOfferID) + " || " + nameof(result));
+				if (tradeOfferID == 0) {
+					throw new ArgumentOutOfRangeException(nameof(tradeOfferID));
+				}
+
+				if ((result == EResult.Unknown) || !Enum.IsDefined(typeof(EResult), result)) {
+					throw new InvalidEnumArgumentException(nameof(result), (int) result, typeof(EResult));
 				}
 
 				TradeOfferID = tradeOfferID;
 				Result = result;
 
-				if ((itemsToReceive != null) && (itemsToReceive.Count > 0)) {
+				if (itemsToReceive?.Count > 0) {
 					ReceivedItemTypes = itemsToReceive.Select(item => item.Type).ToImmutableHashSet();
 				}
 			}

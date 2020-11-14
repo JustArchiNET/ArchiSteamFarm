@@ -59,9 +59,9 @@ namespace ArchiSteamFarm {
 			}
 
 			MarkdownDocument markdownDocument = Markdown.Parse(markdownText);
-			MarkdownDocument result = new MarkdownDocument();
+			MarkdownDocument result = new();
 
-			foreach (Block block in markdownDocument.SkipWhile(block => !(block is HeadingBlock headingBlock) || (headingBlock.Inline.FirstChild == null) || !(headingBlock.Inline.FirstChild is LiteralInline literalInline) || (literalInline.Content.ToString() != "Changelog")).Skip(1).TakeWhile(block => !(block is ThematicBreakBlock)).ToList()) {
+			foreach (Block block in markdownDocument.SkipWhile(block => block is not HeadingBlock headingBlock || headingBlock.Inline.FirstChild is not LiteralInline literalInline || (literalInline.Content.ToString() != "Changelog")).Skip(1).TakeWhile(block => block is not ThematicBreakBlock).ToList()) {
 				// All blocks that we're interested in must be removed from original markdownDocument firstly
 				markdownDocument.Remove(block);
 				result.Add(block);
@@ -71,8 +71,12 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task<ReleaseResponse?> GetReleaseFromURL(string releaseURL) {
-			if ((ASF.WebBrowser == null) || string.IsNullOrEmpty(releaseURL)) {
-				throw new ArgumentNullException(nameof(ASF.WebBrowser) + " || " + nameof(releaseURL));
+			if (string.IsNullOrEmpty(releaseURL)) {
+				throw new ArgumentNullException(nameof(releaseURL));
+			}
+
+			if (ASF.WebBrowser == null) {
+				throw new InvalidOperationException(nameof(ASF.WebBrowser));
 			}
 
 			WebBrowser.ObjectResponse<ReleaseResponse>? objectResponse = await ASF.WebBrowser.UrlGetToJsonObject<ReleaseResponse>(releaseURL).ConfigureAwait(false);
@@ -81,8 +85,12 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task<ImmutableList<ReleaseResponse>?> GetReleasesFromURL(string releaseURL) {
-			if ((ASF.WebBrowser == null) || string.IsNullOrEmpty(releaseURL)) {
-				throw new ArgumentNullException(nameof(ASF.WebBrowser) + " || " + nameof(releaseURL));
+			if (string.IsNullOrEmpty(releaseURL)) {
+				throw new ArgumentNullException(nameof(releaseURL));
+			}
+
+			if (ASF.WebBrowser == null) {
+				throw new InvalidOperationException(nameof(ASF.WebBrowser));
 			}
 
 			WebBrowser.ObjectResponse<ImmutableList<ReleaseResponse>>? objectResponse = await ASF.WebBrowser.UrlGetToJsonObject<ImmutableList<ReleaseResponse>>(releaseURL).ConfigureAwait(false);
@@ -116,9 +124,9 @@ namespace ArchiSteamFarm {
 						return null;
 					}
 
-					using StringWriter writer = new StringWriter();
+					using StringWriter writer = new();
 
-					HtmlRenderer renderer = new HtmlRenderer(writer);
+					HtmlRenderer renderer = new(writer);
 					renderer.Render(Changelog);
 					writer.Flush();
 
@@ -138,9 +146,9 @@ namespace ArchiSteamFarm {
 						return null;
 					}
 
-					using StringWriter writer = new StringWriter();
+					using StringWriter writer = new();
 
-					HtmlRenderer renderer = new HtmlRenderer(writer) {
+					HtmlRenderer renderer = new(writer) {
 						EnableHtmlForBlock = false,
 						EnableHtmlForInline = false
 					};

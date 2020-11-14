@@ -35,7 +35,7 @@ namespace ArchiSteamFarm.CMsgs {
 				throw new ArgumentNullException(nameof(stream));
 			}
 
-			using BinaryReader binaryReader = new BinaryReader(stream, Encoding.UTF8, true);
+			using BinaryReader binaryReader = new(stream, Encoding.UTF8, true);
 
 			ClanID = binaryReader.ReadUInt64();
 			AcceptInvite = binaryReader.ReadBoolean();
@@ -48,7 +48,7 @@ namespace ArchiSteamFarm.CMsgs {
 				throw new ArgumentNullException(nameof(stream));
 			}
 
-			using BinaryWriter binaryWriter = new BinaryWriter(stream, Encoding.UTF8, true);
+			using BinaryWriter binaryWriter = new(stream, Encoding.UTF8, true);
 
 			binaryWriter.Write(ClanID);
 			binaryWriter.Write(AcceptInvite);

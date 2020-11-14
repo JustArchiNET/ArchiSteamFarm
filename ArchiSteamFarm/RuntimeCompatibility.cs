@@ -137,13 +137,15 @@ namespace ArchiSteamFarm {
 		}
 
 #if NETFRAMEWORK
-		internal static Task<byte[]> ComputeHashAsync(this HashAlgorithm hashAlgorithm, Stream inputStream) => Task.FromResult(hashAlgorithm.ComputeHash(inputStream));
+		public static Task<byte[]> ComputeHashAsync(this HashAlgorithm hashAlgorithm, Stream inputStream) => Task.FromResult(hashAlgorithm.ComputeHash(inputStream));
 
-		internal static IWebHostBuilder ConfigureWebHostDefaults(this IWebHostBuilder builder, Action<IWebHostBuilder> configure) {
+		public static IWebHostBuilder ConfigureWebHostDefaults(this IWebHostBuilder builder, Action<IWebHostBuilder> configure) {
 			configure(builder);
 
 			return builder;
 		}
+
+		public static bool Contains(this string input, string value, StringComparison comparisonType) => input.IndexOf(value, comparisonType) >= 0;
 
 		// ReSharper disable once UseDeconstructionOnParameter - we actually implement deconstruction here
 		public static void Deconstruct<TKey, TValue>(this KeyValuePair<TKey, TValue> kv, out TKey key, out TValue value) {
@@ -154,7 +156,7 @@ namespace ArchiSteamFarm {
 		public static ValueTask DisposeAsync(this IDisposable disposable) {
 			disposable.Dispose();
 
-			return default;
+			return default(ValueTask);
 		}
 
 		public static async Task<WebSocketReceiveResult> ReceiveAsync(this WebSocket webSocket, byte[] buffer, CancellationToken cancellationToken) => await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken).ConfigureAwait(false);

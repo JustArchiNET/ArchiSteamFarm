@@ -36,11 +36,11 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	public sealed class Actions : IAsyncDisposable {
-		private static readonly SemaphoreSlim GiftCardsSemaphore = new SemaphoreSlim(1, 1);
+		private static readonly SemaphoreSlim GiftCardsSemaphore = new(1, 1);
 
 		private readonly Bot Bot;
-		private readonly ConcurrentHashSet<ulong> HandledGifts = new ConcurrentHashSet<ulong>();
-		private readonly SemaphoreSlim TradingSemaphore = new SemaphoreSlim(1, 1);
+		private readonly ConcurrentHashSet<ulong> HandledGifts = new();
+		private readonly SemaphoreSlim TradingSemaphore = new(1, 1);
 
 		private Timer? CardsFarmerResumeTimer;
 		private bool ProcessingGiftsScheduled;
@@ -199,7 +199,7 @@ namespace ArchiSteamFarm {
 			if (resumeInSeconds > 0) {
 				if (CardsFarmerResumeTimer == null) {
 					CardsFarmerResumeTimer = new Timer(
-						e => Resume(),
+						_ => Resume(),
 						null,
 						TimeSpan.FromSeconds(resumeInSeconds), // Delay
 						Timeout.InfiniteTimeSpan // Period
@@ -333,7 +333,7 @@ namespace ArchiSteamFarm {
 				return (false, Strings.BotNotConnected);
 			}
 
-			filterFunction ??= item => true;
+			filterFunction ??= _ => true;
 
 			HashSet<Steam.Asset> inventory;
 
@@ -480,7 +480,7 @@ namespace ArchiSteamFarm {
 		internal void OnDisconnected() => HandledGifts.Clear();
 
 		private ulong GetFirstSteamMasterID() {
-			ulong steamMasterID = Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key > 0) && (kv.Key != Bot.SteamID) && new SteamID(kv.Key).IsIndividualAccount && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderBy(steamID => steamID).FirstOrDefault()!;
+			ulong steamMasterID = Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key > 0) && (kv.Key != Bot.SteamID) && new SteamID(kv.Key).IsIndividualAccount && (kv.Value == BotConfig.EAccess.Master)).Select(kv => kv.Key).OrderBy(steamID => steamID).FirstOrDefault()!;
 
 			if (steamMasterID > 0) {
 				return steamMasterID;

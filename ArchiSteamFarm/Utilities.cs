@@ -39,12 +39,20 @@ namespace ArchiSteamFarm {
 		private const byte TimeoutForLongRunningTasksInSeconds = 60;
 
 		// Normally we wouldn't need to use this singleton, but we want to ensure decent randomness across entire program's lifetime
-		private static readonly Random Random = new Random();
+		private static readonly Random Random = new();
 
 		[PublicAPI]
 		public static string GetArgsAsText(string[] args, byte argsToSkip, string delimiter) {
-			if ((args == null) || (args.Length <= argsToSkip) || string.IsNullOrEmpty(delimiter)) {
-				throw new ArgumentNullException(nameof(args) + " || " + nameof(argsToSkip) + " || " + nameof(delimiter));
+			if (args == null) {
+				throw new ArgumentNullException(nameof(args));
+			}
+
+			if (args.Length <= argsToSkip) {
+				throw new InvalidOperationException(nameof(args.Length) + " && " + nameof(argsToSkip));
+			}
+
+			if (string.IsNullOrEmpty(delimiter)) {
+				throw new ArgumentNullException(nameof(delimiter));
 			}
 
 			return string.Join(delimiter, args.Skip(argsToSkip));
@@ -56,15 +64,23 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(text));
 			}
 
-			string[] args = text.Split(new char[0], argsToSkip + 1, StringSplitOptions.RemoveEmptyEntries);
+			string[] args = text.Split(Array.Empty<char>(), argsToSkip + 1, StringSplitOptions.RemoveEmptyEntries);
 
 			return args[^1];
 		}
 
 		[PublicAPI]
 		public static string? GetCookieValue(this CookieContainer cookieContainer, string url, string name) {
-			if ((cookieContainer == null) || string.IsNullOrEmpty(url) || string.IsNullOrEmpty(name)) {
-				throw new ArgumentNullException(nameof(cookieContainer) + " || " + nameof(url) + " || " + nameof(name));
+			if (cookieContainer == null) {
+				throw new ArgumentNullException(nameof(cookieContainer));
+			}
+
+			if (string.IsNullOrEmpty(url)) {
+				throw new ArgumentNullException(nameof(url));
+			}
+
+			if (string.IsNullOrEmpty(name)) {
+				throw new ArgumentNullException(nameof(name));
 			}
 
 			CookieCollection cookies = cookieContainer.GetCookies(new Uri(url));
@@ -188,23 +204,22 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public static int RandomNext(int maxValue) {
-			if (maxValue < 0) {
-				throw new ArgumentOutOfRangeException(nameof(maxValue));
-			}
-
-			if (maxValue <= 1) {
-				return maxValue;
-			}
-
-			lock (Random) {
-				return Random.Next(maxValue);
+			switch (maxValue) {
+				case < 0:
+					throw new ArgumentOutOfRangeException(nameof(maxValue));
+				case <= 1:
+					return maxValue;
+				default:
+					lock (Random) {
+						return Random.Next(maxValue);
+					}
 			}
 		}
 
 		[PublicAPI]
 		public static int RandomNext(int minValue, int maxValue) {
 			if (minValue > maxValue) {
-				throw new ArgumentOutOfRangeException(nameof(minValue) + " && " + nameof(maxValue));
+				throw new InvalidOperationException(nameof(minValue) + " && " + nameof(maxValue));
 			}
 
 			if (minValue >= maxValue - 1) {
@@ -281,8 +296,12 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static bool RelativeDirectoryStartsWith(string directory, params string[] prefixes) {
-			if (string.IsNullOrEmpty(directory) || (prefixes == null) || (prefixes.Length == 0)) {
-				throw new ArgumentNullException(nameof(directory) + " || " + nameof(prefixes));
+			if (string.IsNullOrEmpty(directory)) {
+				throw new ArgumentNullException(nameof(directory));
+			}
+
+			if ((prefixes == null) || (prefixes.Length == 0)) {
+				throw new ArgumentNullException(nameof(prefixes));
 			}
 
 			return (from prefix in prefixes where directory.Length > prefix.Length let pathSeparator = directory[prefix.Length] where (pathSeparator == Path.DirectorySeparatorChar) || (pathSeparator == Path.AltDirectorySeparatorChar) select prefix).Any(prefix => directory.StartsWith(prefix, StringComparison.Ordinal));

@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -46,7 +47,7 @@ namespace ArchiSteamFarm {
 		private const byte MaxIdleTime = 15; // Defines in seconds, how long socket is allowed to stay in CLOSE_WAIT state after there are no connections to it
 
 		[PublicAPI]
-		public readonly CookieContainer CookieContainer = new CookieContainer();
+		public CookieContainer CookieContainer { get; } = new();
 
 		[PublicAPI]
 		public TimeSpan Timeout => HttpClient.Timeout;
@@ -90,10 +91,10 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public HttpClient GenerateDisposableHttpClient(bool extendedTimeout = false) {
 			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
+				throw new InvalidOperationException(nameof(ASF.GlobalConfig));
 			}
 
-			HttpClient result = new HttpClient(HttpClientHandler, false) {
+			HttpClient result = new(HttpClientHandler, false) {
 #if !NETFRAMEWORK
 				DefaultRequestVersion = HttpVersion.Version20,
 #endif
@@ -109,8 +110,12 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<BinaryResponse?> UrlGetToBinary(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, IProgress<byte>? progressReporter = null) {
-			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
-				throw new ArgumentNullException(nameof(request) + " || " + nameof(maxTries));
+			if (string.IsNullOrEmpty(request)) {
+				throw new ArgumentNullException(nameof(request));
+			}
+
+			if (maxTries == 0) {
+				throw new ArgumentOutOfRangeException(nameof(maxTries));
 			}
 
 			BinaryResponse? result = null;
@@ -154,9 +159,9 @@ namespace ArchiSteamFarm {
 				progressReporter?.Report(0);
 
 #if NETFRAMEWORK
-				using MemoryStream ms = new MemoryStream((int) response.Length);
+				using MemoryStream ms = new((int) response.Length);
 #else
-				await using MemoryStream ms = new MemoryStream((int) response.Length);
+				await using MemoryStream ms = new((int) response.Length);
 #endif
 
 				try {
@@ -167,13 +172,21 @@ namespace ArchiSteamFarm {
 					byte[] buffer = new byte[8192]; // This is HttpClient's buffer, using more doesn't make sense
 
 					while (response.Content.CanRead) {
+#if NETFRAMEWORK
 						int read = await response.Content.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+#else
+						int read = await response.Content.ReadAsync(buffer.AsMemory(0, buffer.Length)).ConfigureAwait(false);
+#endif
 
 						if (read == 0) {
 							break;
 						}
 
+#if NETFRAMEWORK
 						await ms.WriteAsync(buffer, 0, read).ConfigureAwait(false);
+#else
+						await ms.WriteAsync(buffer.AsMemory(0, read)).ConfigureAwait(false);
+#endif
 
 						if ((batchIncreaseSize == 0) || (batch >= 99)) {
 							continue;
@@ -200,8 +213,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxTries > 1) {
-				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
-				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 			}
 
 			return result;
@@ -209,8 +222,12 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<HtmlDocumentResponse?> UrlGetToHtmlDocument(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
-			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
-				throw new ArgumentNullException(nameof(request) + " || " + nameof(maxTries));
+			if (string.IsNullOrEmpty(request)) {
+				throw new ArgumentNullException(nameof(request));
+			}
+
+			if (maxTries == 0) {
+				throw new ArgumentOutOfRangeException(nameof(maxTries));
 			}
 
 			HtmlDocumentResponse? result = null;
@@ -263,8 +280,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxTries > 1) {
-				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
-				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 			}
 
 			return result;
@@ -272,8 +289,12 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<ObjectResponse<T>?> UrlGetToJsonObject<T>(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) where T : class {
-			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
-				throw new ArgumentNullException(nameof(request) + " || " + nameof(maxTries));
+			if (string.IsNullOrEmpty(request)) {
+				throw new ArgumentNullException(nameof(request));
+			}
+
+			if (maxTries == 0) {
+				throw new ArgumentOutOfRangeException(nameof(maxTries));
 			}
 
 			ObjectResponse<T>? result = null;
@@ -317,14 +338,15 @@ namespace ArchiSteamFarm {
 				T? obj;
 
 				try {
-					using StreamReader streamReader = new StreamReader(response.Content);
-					using JsonReader jsonReader = new JsonTextReader(streamReader);
-					JsonSerializer serializer = new JsonSerializer();
+					using StreamReader streamReader = new(response.Content);
+					using JsonTextReader jsonReader = new(streamReader);
+
+					JsonSerializer serializer = new();
 
 					obj = serializer.Deserialize<T>(jsonReader);
 
 					if (obj == null) {
-						ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsEmpty, nameof(obj)));
+						ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(obj)));
 
 						continue;
 					}
@@ -338,8 +360,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxTries > 1) {
-				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
-				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 			}
 
 			return result;
@@ -347,8 +369,12 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<StreamResponse?> UrlGetToStream(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
-			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
-				throw new ArgumentNullException(nameof(request) + " || " + nameof(maxTries));
+			if (string.IsNullOrEmpty(request)) {
+				throw new ArgumentNullException(nameof(request));
+			}
+
+			if (maxTries == 0) {
+				throw new ArgumentOutOfRangeException(nameof(maxTries));
 			}
 
 			StreamResponse? result = null;
@@ -385,8 +411,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxTries > 1) {
-				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
-				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 			}
 
 			return result;
@@ -394,8 +420,12 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<StringResponse?> UrlGetToString(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
-			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
-				throw new ArgumentNullException(nameof(request) + " || " + nameof(maxTries));
+			if (string.IsNullOrEmpty(request)) {
+				throw new ArgumentNullException(nameof(request));
+			}
+
+			if (maxTries == 0) {
+				throw new ArgumentOutOfRangeException(nameof(maxTries));
 			}
 
 			StringResponse? result = null;
@@ -432,8 +462,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxTries > 1) {
-				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
-				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 			}
 
 			return result;
@@ -441,8 +471,12 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<XmlDocumentResponse?> UrlGetToXmlDocument(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
-			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
-				throw new ArgumentNullException(nameof(request) + " || " + nameof(maxTries));
+			if (string.IsNullOrEmpty(request)) {
+				throw new ArgumentNullException(nameof(request));
+			}
+
+			if (maxTries == 0) {
+				throw new ArgumentOutOfRangeException(nameof(maxTries));
 			}
 
 			XmlDocumentResponse? result = null;
@@ -483,7 +517,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				XmlDocument xmlDocument = new XmlDocument();
+				XmlDocument xmlDocument = new();
 
 				try {
 					xmlDocument.Load(response.Content);
@@ -497,8 +531,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxTries > 1) {
-				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
-				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 			}
 
 			return result;
@@ -506,8 +540,12 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<BasicResponse?> UrlHead(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
-			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
-				throw new ArgumentNullException(nameof(request) + " || " + nameof(maxTries));
+			if (string.IsNullOrEmpty(request)) {
+				throw new ArgumentNullException(nameof(request));
+			}
+
+			if (maxTries == 0) {
+				throw new ArgumentOutOfRangeException(nameof(maxTries));
 			}
 
 			BasicResponse? result = null;
@@ -539,8 +577,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxTries > 1) {
-				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
-				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 			}
 
 			return result;
@@ -548,8 +586,12 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<BasicResponse?> UrlPost<T>(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) where T : class {
-			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
-				throw new ArgumentNullException(nameof(request) + " || " + nameof(maxTries));
+			if (string.IsNullOrEmpty(request)) {
+				throw new ArgumentNullException(nameof(request));
+			}
+
+			if (maxTries == 0) {
+				throw new ArgumentOutOfRangeException(nameof(maxTries));
 			}
 
 			BasicResponse? result = null;
@@ -581,8 +623,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxTries > 1) {
-				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
-				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 			}
 
 			return result;
@@ -590,8 +632,12 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<HtmlDocumentResponse?> UrlPostToHtmlDocument<T>(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) where T : class {
-			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
-				throw new ArgumentNullException(nameof(request) + " || " + nameof(maxTries));
+			if (string.IsNullOrEmpty(request)) {
+				throw new ArgumentNullException(nameof(request));
+			}
+
+			if (maxTries == 0) {
+				throw new ArgumentOutOfRangeException(nameof(maxTries));
 			}
 
 			HtmlDocumentResponse? result = null;
@@ -644,8 +690,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxTries > 1) {
-				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
-				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 			}
 
 			return result;
@@ -653,8 +699,12 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<ObjectResponse<TResult>?> UrlPostToJsonObject<TResult, TData>(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, TData? data = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) where TResult : class where TData : class {
-			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
-				throw new ArgumentNullException(nameof(request) + " || " + nameof(maxTries));
+			if (string.IsNullOrEmpty(request)) {
+				throw new ArgumentNullException(nameof(request));
+			}
+
+			if (maxTries == 0) {
+				throw new ArgumentOutOfRangeException(nameof(maxTries));
 			}
 
 			ObjectResponse<TResult>? result = null;
@@ -698,14 +748,14 @@ namespace ArchiSteamFarm {
 				TResult? obj;
 
 				try {
-					using StreamReader steamReader = new StreamReader(response.Content);
+					using StreamReader steamReader = new(response.Content);
 					using JsonReader jsonReader = new JsonTextReader(steamReader);
-					JsonSerializer serializer = new JsonSerializer();
+					JsonSerializer serializer = new();
 
 					obj = serializer.Deserialize<TResult>(jsonReader);
 
 					if (obj == null) {
-						ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsEmpty, nameof(obj)));
+						ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(obj)));
 
 						continue;
 					}
@@ -719,8 +769,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxTries > 1) {
-				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
-				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 			}
 
 			return result;
@@ -728,8 +778,12 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<StreamResponse?> UrlPostToStream<T>(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) where T : class {
-			if (string.IsNullOrEmpty(request) || (maxTries == 0)) {
-				throw new ArgumentNullException(nameof(request) + " || " + nameof(maxTries));
+			if (string.IsNullOrEmpty(request)) {
+				throw new ArgumentNullException(nameof(request));
+			}
+
+			if (maxTries == 0) {
+				throw new ArgumentOutOfRangeException(nameof(maxTries));
 			}
 
 			StreamResponse? result = null;
@@ -766,8 +820,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxTries > 1) {
-				ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, maxTries));
-				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
+				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 			}
 
 			return result;
@@ -814,13 +868,17 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<HttpResponseMessage?> InternalRequest<T>(Uri requestUri, HttpMethod httpMethod, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, byte maxRedirections = MaxTries) where T : class {
-			if ((requestUri == null) || (httpMethod == null)) {
-				throw new ArgumentNullException(nameof(requestUri) + " || " + nameof(httpMethod));
+			if (requestUri == null) {
+				throw new ArgumentNullException(nameof(requestUri));
+			}
+
+			if (httpMethod == null) {
+				throw new ArgumentNullException(nameof(httpMethod));
 			}
 
 			HttpResponseMessage response;
 
-			using (HttpRequestMessage request = new HttpRequestMessage(httpMethod, requestUri)) {
+			using (HttpRequestMessage request = new(httpMethod, requestUri)) {
 #if !NETFRAMEWORK
 				request.Version = HttpClient.DefaultRequestVersion;
 #endif
@@ -914,7 +972,7 @@ namespace ArchiSteamFarm {
 							return response;
 						default:
 							// We have no clue about those, but maybe HttpClient can handle them for us
-							ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(redirectUri.Scheme), redirectUri.Scheme));
+							ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(redirectUri.Scheme), redirectUri.Scheme));
 
 							break;
 					}
@@ -952,7 +1010,7 @@ namespace ArchiSteamFarm {
 
 			if (response.StatusCode.IsClientErrorCode()) {
 				if (Debugging.IsUserDebugging) {
-					ArchiLogger.LogGenericDebug(string.Format(Strings.Content, await response.Content.ReadAsStringAsync().ConfigureAwait(false)));
+					ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, await response.Content.ReadAsStringAsync().ConfigureAwait(false)));
 				}
 
 				// Do not retry on client errors
@@ -966,7 +1024,7 @@ namespace ArchiSteamFarm {
 
 			using (response) {
 				if (Debugging.IsUserDebugging) {
-					ArchiLogger.LogGenericDebug(string.Format(Strings.Content, await response.Content.ReadAsStringAsync().ConfigureAwait(false)));
+					ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, await response.Content.ReadAsStringAsync().ConfigureAwait(false)));
 				}
 
 				return null;
@@ -975,7 +1033,7 @@ namespace ArchiSteamFarm {
 
 		public class BasicResponse {
 			[PublicAPI]
-			public readonly HttpStatusCode StatusCode;
+			public HttpStatusCode StatusCode { get; }
 
 			internal readonly Uri FinalUri;
 
@@ -984,7 +1042,7 @@ namespace ArchiSteamFarm {
 					throw new ArgumentNullException(nameof(httpResponseMessage));
 				}
 
-				FinalUri = httpResponseMessage.Headers.Location ?? httpResponseMessage.RequestMessage?.RequestUri ?? throw new ArgumentNullException(nameof(FinalUri));
+				FinalUri = httpResponseMessage.Headers.Location ?? httpResponseMessage.RequestMessage?.RequestUri ?? throw new InvalidOperationException();
 				StatusCode = httpResponseMessage.StatusCode;
 			}
 
@@ -1000,14 +1058,14 @@ namespace ArchiSteamFarm {
 
 		public sealed class BinaryResponse : BasicResponse {
 			[PublicAPI]
-			public readonly byte[]? Content;
+			public byte[]? Content { get; }
 
 			public BinaryResponse(BasicResponse basicResponse, byte[] content) : this(basicResponse) {
-				if ((basicResponse == null) || (content == null)) {
-					throw new ArgumentNullException(nameof(basicResponse) + " || " + nameof(content));
+				if (basicResponse == null) {
+					throw new ArgumentNullException(nameof(basicResponse));
 				}
 
-				Content = content;
+				Content = content ?? throw new ArgumentNullException(nameof(content));
 			}
 
 			public BinaryResponse(BasicResponse basicResponse) : base(basicResponse) {
@@ -1019,7 +1077,7 @@ namespace ArchiSteamFarm {
 
 		public sealed class HtmlDocumentResponse : BasicResponse, IDisposable {
 			[PublicAPI]
-			public readonly IDocument? Content;
+			public IDocument? Content { get; }
 
 			public HtmlDocumentResponse(BasicResponse basicResponse) : base(basicResponse) {
 				if (basicResponse == null) {
@@ -1028,11 +1086,11 @@ namespace ArchiSteamFarm {
 			}
 
 			private HtmlDocumentResponse(BasicResponse basicResponse, IDocument content) : this(basicResponse) {
-				if ((basicResponse == null) || (content == null)) {
-					throw new ArgumentNullException(nameof(basicResponse) + " || " + nameof(content));
+				if (basicResponse == null) {
+					throw new ArgumentNullException(nameof(basicResponse));
 				}
 
-				Content = content;
+				Content = content ?? throw new ArgumentNullException(nameof(content));
 			}
 
 			public void Dispose() => Content?.Dispose();
@@ -1059,7 +1117,7 @@ namespace ArchiSteamFarm {
 
 		public sealed class ObjectResponse<T> : BasicResponse where T : class {
 			[PublicAPI]
-			public readonly T? Content;
+			public T? Content { get; }
 
 			public ObjectResponse(BasicResponse basicResponse, T content) : this(basicResponse) {
 				if (basicResponse == null) {
@@ -1078,19 +1136,19 @@ namespace ArchiSteamFarm {
 
 		public sealed class StreamResponse : BasicResponse, IAsyncDisposable {
 			[PublicAPI]
-			public readonly Stream? Content;
+			public Stream? Content { get; }
 
 			[PublicAPI]
-			public readonly long Length;
+			public long Length { get; }
 
 			private readonly HttpResponseMessage ResponseMessage;
 
 			internal StreamResponse(HttpResponseMessage httpResponseMessage, Stream content) : this(httpResponseMessage) {
-				if ((httpResponseMessage == null) || (content == null)) {
-					throw new ArgumentNullException(nameof(httpResponseMessage) + " || " + nameof(content));
+				if (httpResponseMessage == null) {
+					throw new ArgumentNullException(nameof(httpResponseMessage));
 				}
 
-				Content = content;
+				Content = content ?? throw new ArgumentNullException(nameof(content));
 			}
 
 			internal StreamResponse(HttpResponseMessage httpResponseMessage) : base(httpResponseMessage) {
@@ -1113,14 +1171,14 @@ namespace ArchiSteamFarm {
 
 		public sealed class StringResponse : BasicResponse {
 			[PublicAPI]
-			public readonly string? Content;
+			public string? Content { get; }
 
 			internal StringResponse(HttpResponseMessage httpResponseMessage, string content) : this(httpResponseMessage) {
-				if ((httpResponseMessage == null) || (content == null)) {
-					throw new ArgumentNullException(nameof(httpResponseMessage) + " || " + nameof(content));
+				if (httpResponseMessage == null) {
+					throw new ArgumentNullException(nameof(httpResponseMessage));
 				}
 
-				Content = content;
+				Content = content ?? throw new ArgumentNullException(nameof(content));
 			}
 
 			internal StringResponse(HttpResponseMessage httpResponseMessage) : base(httpResponseMessage) {
@@ -1132,14 +1190,14 @@ namespace ArchiSteamFarm {
 
 		public sealed class XmlDocumentResponse : BasicResponse {
 			[PublicAPI]
-			public readonly XmlDocument? Content;
+			public XmlDocument? Content { get; }
 
 			public XmlDocumentResponse(BasicResponse basicResponse, XmlDocument content) : this(basicResponse) {
-				if ((basicResponse == null) || (content == null)) {
-					throw new ArgumentNullException(nameof(basicResponse) + " || " + nameof(content));
+				if (basicResponse == null) {
+					throw new ArgumentNullException(nameof(basicResponse));
 				}
 
-				Content = content;
+				Content = content ?? throw new ArgumentNullException(nameof(content));
 			}
 
 			public XmlDocumentResponse(BasicResponse basicResponse) : base(basicResponse) {

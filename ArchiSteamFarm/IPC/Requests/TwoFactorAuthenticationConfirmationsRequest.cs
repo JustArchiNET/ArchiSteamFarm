@@ -64,7 +64,7 @@ namespace ArchiSteamFarm.IPC.Requests {
 					throw new ArgumentNullException(nameof(value));
 				}
 
-				HashSet<ulong> acceptedCreatorIDs = new HashSet<ulong>(value.Count);
+				HashSet<ulong> acceptedCreatorIDs = new();
 
 				foreach (string creatorIDText in value) {
 					if (!ulong.TryParse(creatorIDText, out ulong creatorID) || (creatorID == 0)) {

@@ -76,42 +76,42 @@ namespace ArchiSteamFarm {
 
 			switch (packetMsg.MsgType) {
 				case EMsg.ClientCommentNotifications:
-					ClientMsgProtobuf<CMsgClientCommentNotifications> commentNotifications = new ClientMsgProtobuf<CMsgClientCommentNotifications>(packetMsg);
+					ClientMsgProtobuf<CMsgClientCommentNotifications> commentNotifications = new(packetMsg);
 					Client.PostCallback(new UserNotificationsCallback(packetMsg.TargetJobID, commentNotifications.Body));
 
 					break;
 				case EMsg.ClientItemAnnouncements:
-					ClientMsgProtobuf<CMsgClientItemAnnouncements> itemAnnouncements = new ClientMsgProtobuf<CMsgClientItemAnnouncements>(packetMsg);
+					ClientMsgProtobuf<CMsgClientItemAnnouncements> itemAnnouncements = new(packetMsg);
 					Client.PostCallback(new UserNotificationsCallback(packetMsg.TargetJobID, itemAnnouncements.Body));
 
 					break;
 				case EMsg.ClientPlayingSessionState:
-					ClientMsgProtobuf<CMsgClientPlayingSessionState> playingSessionState = new ClientMsgProtobuf<CMsgClientPlayingSessionState>(packetMsg);
+					ClientMsgProtobuf<CMsgClientPlayingSessionState> playingSessionState = new(packetMsg);
 					Client.PostCallback(new PlayingSessionStateCallback(packetMsg.TargetJobID, playingSessionState.Body));
 
 					break;
 				case EMsg.ClientPurchaseResponse:
-					ClientMsgProtobuf<CMsgClientPurchaseResponse> purchaseResponse = new ClientMsgProtobuf<CMsgClientPurchaseResponse>(packetMsg);
+					ClientMsgProtobuf<CMsgClientPurchaseResponse> purchaseResponse = new(packetMsg);
 					Client.PostCallback(new PurchaseResponseCallback(packetMsg.TargetJobID, purchaseResponse.Body));
 
 					break;
 				case EMsg.ClientRedeemGuestPassResponse:
-					ClientMsgProtobuf<CMsgClientRedeemGuestPassResponse> redeemGuestPassResponse = new ClientMsgProtobuf<CMsgClientRedeemGuestPassResponse>(packetMsg);
+					ClientMsgProtobuf<CMsgClientRedeemGuestPassResponse> redeemGuestPassResponse = new(packetMsg);
 					Client.PostCallback(new RedeemGuestPassResponseCallback(packetMsg.TargetJobID, redeemGuestPassResponse.Body));
 
 					break;
 				case EMsg.ClientSharedLibraryLockStatus:
-					ClientMsgProtobuf<CMsgClientSharedLibraryLockStatus> sharedLibraryLockStatus = new ClientMsgProtobuf<CMsgClientSharedLibraryLockStatus>(packetMsg);
+					ClientMsgProtobuf<CMsgClientSharedLibraryLockStatus> sharedLibraryLockStatus = new(packetMsg);
 					Client.PostCallback(new SharedLibraryLockStatusCallback(packetMsg.TargetJobID, sharedLibraryLockStatus.Body));
 
 					break;
 				case EMsg.ClientUserNotifications:
-					ClientMsgProtobuf<CMsgClientUserNotifications> userNotifications = new ClientMsgProtobuf<CMsgClientUserNotifications>(packetMsg);
+					ClientMsgProtobuf<CMsgClientUserNotifications> userNotifications = new(packetMsg);
 					Client.PostCallback(new UserNotificationsCallback(packetMsg.TargetJobID, userNotifications.Body));
 
 					break;
 				case EMsg.ClientVanityURLChangedNotification:
-					ClientMsgProtobuf<CMsgClientVanityURLChangedNotification> vanityURLChangedNotification = new ClientMsgProtobuf<CMsgClientVanityURLChangedNotification>(packetMsg);
+					ClientMsgProtobuf<CMsgClientVanityURLChangedNotification> vanityURLChangedNotification = new(packetMsg);
 					Client.PostCallback(new VanityURLChangedCallback(packetMsg.TargetJobID, vanityURLChangedNotification.Body));
 
 					break;
@@ -139,7 +139,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			CChatRoom_AckChatMessage_Notification request = new CChatRoom_AckChatMessage_Notification {
+			CChatRoom_AckChatMessage_Notification request = new() {
 				chat_group_id = chatGroupID,
 				chat_id = chatID,
 				timestamp = timestamp
@@ -165,7 +165,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			CFriendMessages_AckMessage_Notification request = new CFriendMessages_AckMessage_Notification {
+			CFriendMessages_AckMessage_Notification request = new() {
 				steamid_partner = steamID,
 				timestamp = timestamp
 			};
@@ -186,7 +186,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ClientMsg<CMsgClientAcknowledgeClanInvite> request = new ClientMsg<CMsgClientAcknowledgeClanInvite> {
+			ClientMsg<CMsgClientAcknowledgeClanInvite> request = new() {
 				Body = {
 					ClanID = steamID,
 					AcceptInvite = acceptInvite
@@ -209,7 +209,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			CPlayer_AddFriend_Request request = new CPlayer_AddFriend_Request { steamid = steamID };
+			CPlayer_AddFriend_Request request = new() { steamid = steamID };
 
 			SteamUnifiedMessages.ServiceMethodResponse response;
 
@@ -237,7 +237,7 @@ namespace ArchiSteamFarm {
 				return 0;
 			}
 
-			CClanChatRooms_GetClanChatRoomInfo_Request request = new CClanChatRooms_GetClanChatRoomInfo_Request {
+			CClanChatRooms_GetClanChatRoomInfo_Request request = new() {
 				autocreate = true,
 				steamid = steamID
 			};
@@ -270,7 +270,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			CPlayer_GetGameBadgeLevels_Request request = new CPlayer_GetGameBadgeLevels_Request();
+			CPlayer_GetGameBadgeLevels_Request request = new();
 			SteamUnifiedMessages.ServiceMethodResponse response;
 
 			try {
@@ -299,7 +299,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			CChatRoom_GetMyChatRoomGroups_Request request = new CChatRoom_GetMyChatRoomGroups_Request();
+			CChatRoom_GetMyChatRoomGroups_Request request = new();
 
 			SteamUnifiedMessages.ServiceMethodResponse response;
 
@@ -329,7 +329,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			CPlayer_GetPrivacySettings_Request request = new CPlayer_GetPrivacySettings_Request();
+			CPlayer_GetPrivacySettings_Request request = new();
 
 			SteamUnifiedMessages.ServiceMethodResponse response;
 
@@ -359,7 +359,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			CEcon_GetTradeOfferAccessToken_Request request = new CEcon_GetTradeOfferAccessToken_Request();
+			CEcon_GetTradeOfferAccessToken_Request request = new();
 
 			SteamUnifiedMessages.ServiceMethodResponse response;
 
@@ -393,7 +393,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			CTwoFactor_Status_Request request = new CTwoFactor_Status_Request {
+			CTwoFactor_Status_Request request = new() {
 				steamid = steamID
 			};
 
@@ -429,7 +429,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			CChatRoom_JoinChatRoomGroup_Request request = new CChatRoom_JoinChatRoomGroup_Request { chat_group_id = chatGroupID };
+			CChatRoom_JoinChatRoomGroup_Request request = new() { chat_group_id = chatGroupID };
 
 			SteamUnifiedMessages.ServiceMethodResponse response;
 
@@ -457,7 +457,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ClientMsgProtobuf<CMsgClientGamesPlayed> request = new ClientMsgProtobuf<CMsgClientGamesPlayed>(EMsg.ClientGamesPlayedWithDataBlob) {
+			ClientMsgProtobuf<CMsgClientGamesPlayed> request = new(EMsg.ClientGamesPlayedWithDataBlob) {
 				Body = {
 					client_os_type = (uint) Bot.OSType
 				}
@@ -509,7 +509,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			ClientMsgProtobuf<CMsgClientRedeemGuestPass> request = new ClientMsgProtobuf<CMsgClientRedeemGuestPass>(EMsg.ClientRedeemGuestPass) {
+			ClientMsgProtobuf<CMsgClientRedeemGuestPass> request = new(EMsg.ClientRedeemGuestPass) {
 				SourceJobID = Client.GetNextJobID(),
 				Body = { guest_pass_id = guestPassID }
 			};
@@ -538,7 +538,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			ClientMsgProtobuf<CMsgClientRegisterKey> request = new ClientMsgProtobuf<CMsgClientRegisterKey>(EMsg.ClientRegisterKey) {
+			ClientMsgProtobuf<CMsgClientRegisterKey> request = new(EMsg.ClientRegisterKey) {
 				SourceJobID = Client.GetNextJobID(),
 				Body = { key = key }
 			};
@@ -567,7 +567,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			CPlayer_RemoveFriend_Request request = new CPlayer_RemoveFriend_Request { steamid = steamID };
+			CPlayer_RemoveFriend_Request request = new() { steamid = steamID };
 
 			SteamUnifiedMessages.ServiceMethodResponse response;
 
@@ -591,7 +591,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ClientMsgProtobuf<CMsgClientRequestItemAnnouncements> request = new ClientMsgProtobuf<CMsgClientRequestItemAnnouncements>(EMsg.ClientRequestItemAnnouncements);
+			ClientMsgProtobuf<CMsgClientRequestItemAnnouncements> request = new(EMsg.ClientRequestItemAnnouncements);
 			Client.Send(request);
 		}
 
@@ -612,7 +612,7 @@ namespace ArchiSteamFarm {
 				return EResult.NoConnection;
 			}
 
-			CFriendMessages_SendMessage_Request request = new CFriendMessages_SendMessage_Request {
+			CFriendMessages_SendMessage_Request request = new() {
 				chat_entry_type = (int) EChatEntryType.ChatMsg,
 				contains_bbcode = true,
 				message = message,
@@ -653,7 +653,7 @@ namespace ArchiSteamFarm {
 				return EResult.NoConnection;
 			}
 
-			CChatRoom_SendChatMessage_Request request = new CChatRoom_SendChatMessage_Request {
+			CChatRoom_SendChatMessage_Request request = new() {
 				chat_group_id = chatGroupID,
 				chat_id = chatID,
 				message = message
@@ -685,7 +685,7 @@ namespace ArchiSteamFarm {
 				return EResult.NoConnection;
 			}
 
-			CFriendMessages_SendMessage_Request request = new CFriendMessages_SendMessage_Request {
+			CFriendMessages_SendMessage_Request request = new() {
 				chat_entry_type = (int) EChatEntryType.Typing,
 				steamid = steamID
 			};
@@ -716,7 +716,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ClientMsgProtobuf<CMsgClientUIMode> request = new ClientMsgProtobuf<CMsgClientUIMode>(EMsg.ClientCurrentUIMode) { Body = { chat_mode = chatMode } };
+			ClientMsgProtobuf<CMsgClientUIMode> request = new(EMsg.ClientCurrentUIMode) { Body = { chat_mode = chatMode } };
 			Client.Send(request);
 		}
 
@@ -759,9 +759,9 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				KeyValue receiptInfo = new KeyValue();
+				KeyValue receiptInfo = new();
 
-				using (MemoryStream ms = new MemoryStream(msg.purchase_receipt_info)) {
+				using (MemoryStream ms = new(msg.purchase_receipt_info)) {
 					if (!receiptInfo.TryReadAsBinary(ms)) {
 						ASF.ArchiLogger.LogNullError(nameof(ms));
 

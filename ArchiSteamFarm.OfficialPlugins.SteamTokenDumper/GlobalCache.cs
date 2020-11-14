@@ -35,25 +35,25 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 		private static string SharedFilePath => Path.Combine(ArchiSteamFarm.SharedInfo.ConfigDirectory, nameof(SteamTokenDumper) + ".cache");
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentDictionary<uint, uint> AppChangeNumbers = new ConcurrentDictionary<uint, uint>();
+		private readonly ConcurrentDictionary<uint, uint> AppChangeNumbers = new();
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentDictionary<uint, ulong> AppTokens = new ConcurrentDictionary<uint, ulong>();
+		private readonly ConcurrentDictionary<uint, ulong> AppTokens = new();
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentDictionary<uint, string> DepotKeys = new ConcurrentDictionary<uint, string>();
+		private readonly ConcurrentDictionary<uint, string> DepotKeys = new();
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentDictionary<uint, ulong> PackageTokens = new ConcurrentDictionary<uint, ulong>();
+		private readonly ConcurrentDictionary<uint, ulong> PackageTokens = new();
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentHashSet<uint> SubmittedAppIDs = new ConcurrentHashSet<uint>();
+		private readonly ConcurrentHashSet<uint> SubmittedAppIDs = new();
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentHashSet<uint> SubmittedDepotIDs = new ConcurrentHashSet<uint>();
+		private readonly ConcurrentHashSet<uint> SubmittedDepotIDs = new();
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentHashSet<uint> SubmittedPackageIDs = new ConcurrentHashSet<uint>();
+		private readonly ConcurrentHashSet<uint> SubmittedPackageIDs = new();
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal uint LastChangeNumber { get; private set; }
@@ -93,7 +93,11 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 		}
 
 		internal async Task OnPICSChanges(uint currentChangeNumber, IReadOnlyCollection<KeyValuePair<uint, SteamApps.PICSChangesCallback.PICSChangeData>> appChanges) {
-			if ((currentChangeNumber == 0) || (appChanges == null)) {
+			if (currentChangeNumber == 0) {
+				throw new ArgumentOutOfRangeException(nameof(currentChangeNumber));
+			}
+
+			if (appChanges == null) {
 				throw new ArgumentNullException(nameof(appChanges));
 			}
 
@@ -119,7 +123,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 		internal async Task OnPICSChangesRestart(uint currentChangeNumber) {
 			if (currentChangeNumber == 0) {
-				throw new ArgumentNullException(nameof(currentChangeNumber));
+				throw new ArgumentOutOfRangeException(nameof(currentChangeNumber));
 			}
 
 			if (currentChangeNumber <= LastChangeNumber) {
@@ -160,8 +164,12 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 		}
 
 		internal async Task UpdateAppTokens(IReadOnlyCollection<KeyValuePair<uint, ulong>> appTokens, IReadOnlyCollection<uint> publicAppIDs) {
-			if ((appTokens == null) || (publicAppIDs == null)) {
-				throw new ArgumentNullException(nameof(appTokens) + " || " + nameof(publicAppIDs));
+			if (appTokens == null) {
+				throw new ArgumentNullException(nameof(appTokens));
+			}
+
+			if (publicAppIDs == null) {
+				throw new ArgumentNullException(nameof(publicAppIDs));
 			}
 
 			bool save = false;
@@ -207,7 +215,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			bool save = false;
 
 			foreach (SteamApps.DepotKeyCallback depotKeyResult in depotKeyResults) {
-				if ((depotKeyResult == null) || (depotKeyResult.Result != EResult.OK)) {
+				if (depotKeyResult?.Result != EResult.OK) {
 					continue;
 				}
 
@@ -260,8 +268,16 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 		}
 
 		internal async Task UpdateSubmittedData(IReadOnlyCollection<uint> appIDs, IReadOnlyCollection<uint> packageIDs, IReadOnlyCollection<uint> depotIDs) {
-			if ((appIDs == null) || (packageIDs == null) || (depotIDs == null)) {
-				throw new ArgumentNullException(nameof(appIDs) + " || " + nameof(packageIDs) + " || " + nameof(depotIDs));
+			if (appIDs == null) {
+				throw new ArgumentNullException(nameof(appIDs));
+			}
+
+			if (packageIDs == null) {
+				throw new ArgumentNullException(nameof(packageIDs));
+			}
+
+			if (depotIDs == null) {
+				throw new ArgumentNullException(nameof(depotIDs));
 			}
 
 			bool save = false;

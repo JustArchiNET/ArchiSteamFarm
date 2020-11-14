@@ -49,7 +49,7 @@ namespace ArchiSteamFarm {
 		private const byte MaximumRecommendedBotsCount = 10;
 
 		[PublicAPI]
-		public static readonly ArchiLogger ArchiLogger = new ArchiLogger(SharedInfo.ASF);
+		public static readonly ArchiLogger ArchiLogger = new(SharedInfo.ASF);
 
 		[PublicAPI]
 		public static byte LoadBalancingDelay => Math.Max(GlobalConfig?.LoginLimiterDelay ?? 0, GlobalConfig.DefaultLoginLimiterDelay);
@@ -70,7 +70,7 @@ namespace ArchiSteamFarm {
 		internal static ICrossProcessSemaphore? LoginSemaphore { get; private set; }
 		internal static ImmutableDictionary<string, (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)>? WebLimitingSemaphores { get; private set; }
 
-		private static readonly SemaphoreSlim UpdateSemaphore = new SemaphoreSlim(1, 1);
+		private static readonly SemaphoreSlim UpdateSemaphore = new(1, 1);
 
 		private static Timer? AutoUpdatesTimer;
 		private static FileSystemWatcher? FileSystemWatcher;
@@ -150,11 +150,11 @@ namespace ArchiSteamFarm {
 			string networkGroupText = "";
 
 			if (!string.IsNullOrEmpty(Program.NetworkGroup)) {
-				using SHA256CryptoServiceProvider hashingAlgorithm = new SHA256CryptoServiceProvider();
+				using SHA256CryptoServiceProvider hashingAlgorithm = new();
 
 				networkGroupText = "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(Program.NetworkGroup!))).Replace("-", "");
 			} else if (!string.IsNullOrEmpty(globalConfig.WebProxyText)) {
-				using SHA256CryptoServiceProvider hashingAlgorithm = new SHA256CryptoServiceProvider();
+				using SHA256CryptoServiceProvider hashingAlgorithm = new();
 
 				networkGroupText = "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(globalConfig.WebProxyText!))).Replace("-", "");
 			}
@@ -266,7 +266,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				Version newVersion = new Version(releaseResponse.Tag!);
+				Version newVersion = new(releaseResponse.Tag!);
 
 				ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.UpdateVersionInfo, SharedInfo.Version, newVersion));
 
@@ -314,7 +314,7 @@ namespace ArchiSteamFarm {
 
 				ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.UpdateDownloadingNewVersion, newVersion, binaryAsset.Size / 1024 / 1024));
 
-				Progress<byte> progressReporter = new Progress<byte>();
+				Progress<byte> progressReporter = new();
 
 				progressReporter.ProgressChanged += OnProgressChanged;
 
@@ -340,12 +340,12 @@ namespace ArchiSteamFarm {
 
 				try {
 #if NETFRAMEWORK
-					using MemoryStream memoryStream = new MemoryStream(response.Content);
+					using MemoryStream memoryStream = new(response.Content);
 #else
-					await using MemoryStream memoryStream = new MemoryStream(response.Content);
+					await using MemoryStream memoryStream = new(response.Content);
 #endif
 
-					using ZipArchive zipArchive = new ZipArchive(memoryStream);
+					using ZipArchive zipArchive = new(memoryStream);
 
 					if (!UpdateFromArchive(zipArchive, SharedInfo.HomeDirectory)) {
 						ArchiLogger.LogGenericError(Strings.WarningFailed);
@@ -382,7 +382,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Save our event in dictionary
-			object currentWriteEvent = new object();
+			object currentWriteEvent = new();
 			LastWriteEvents[filePath] = currentWriteEvent;
 
 			// Wait a second for eventual other events to arrive
@@ -857,15 +857,16 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (botNames.Count == 0) {
-				ArchiLogger.LogGenericWarning(Strings.ErrorNoBotsDefined);
+			switch (botNames.Count) {
+				case 0:
+					ArchiLogger.LogGenericWarning(Strings.ErrorNoBotsDefined);
 
-				return;
-			}
+					return;
+				case > MaximumRecommendedBotsCount:
+					ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningExcessiveBotsCount, MaximumRecommendedBotsCount));
+					await Task.Delay(10000).ConfigureAwait(false);
 
-			if (botNames.Count > MaximumRecommendedBotsCount) {
-				ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningExcessiveBotsCount, MaximumRecommendedBotsCount));
-				await Task.Delay(10000).ConfigureAwait(false);
+					break;
 			}
 
 			await Utilities.InParallel(botNames.OrderBy(botName => botName, Bot.BotsComparer).Select(Bot.RegisterBot)).ConfigureAwait(false);
@@ -884,7 +885,7 @@ namespace ArchiSteamFarm {
 				TimeSpan autoUpdatePeriod = TimeSpan.FromHours(GlobalConfig.UpdatePeriod);
 
 				AutoUpdatesTimer = new Timer(
-					async e => await UpdateAndRestart().ConfigureAwait(false),
+					async _ => await UpdateAndRestart().ConfigureAwait(false),
 					null,
 					autoUpdatePeriod, // Delay
 					autoUpdatePeriod // Period

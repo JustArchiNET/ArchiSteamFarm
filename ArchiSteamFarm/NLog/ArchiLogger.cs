@@ -135,7 +135,7 @@ namespace ArchiSteamFarm.NLog {
 				throw new InvalidOperationException("((" + nameof(chatGroupID) + " || " + nameof(chatID) + ") && " + nameof(steamID) + ")");
 			}
 
-			StringBuilder loggedMessage = new StringBuilder(previousMethodName + "() " + message + " " + (echo ? "->" : "<-") + " ");
+			StringBuilder loggedMessage = new(previousMethodName + "() " + message + " " + (echo ? "->" : "<-") + " ");
 
 			if ((chatGroupID != 0) && (chatID != 0)) {
 				loggedMessage.Append(chatGroupID + "-" + chatID);
@@ -147,7 +147,7 @@ namespace ArchiSteamFarm.NLog {
 				loggedMessage.Append(steamID);
 			}
 
-			LogEventInfo logEventInfo = new LogEventInfo(LogLevel.Trace, Logger.Name, loggedMessage.ToString());
+			LogEventInfo logEventInfo = new(LogLevel.Trace, Logger.Name, loggedMessage.ToString());
 			logEventInfo.Properties["Echo"] = echo;
 			logEventInfo.Properties["Message"] = message;
 			logEventInfo.Properties["ChatGroupID"] = chatGroupID;
@@ -218,7 +218,7 @@ namespace ArchiSteamFarm.NLog {
 
 			string loggedMessage = previousMethodName + "() " + steamID.AccountType + " " + steamID64;
 
-			LogEventInfo logEventInfo = new LogEventInfo(LogLevel.Trace, Logger.Name, loggedMessage);
+			LogEventInfo logEventInfo = new(LogLevel.Trace, Logger.Name, loggedMessage);
 			logEventInfo.Properties["AccountType"] = steamID.AccountType;
 			logEventInfo.Properties["SteamID"] = steamID64;
 

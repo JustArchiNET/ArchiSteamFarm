@@ -130,7 +130,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
 		public async Task<ActionResult<GenericResponse>> SendPost([FromBody] WWWSendRequest request) {
-			if ((request == null)) {
+			if (request == null) {
 				throw new ArgumentNullException(nameof(request));
 			}
 

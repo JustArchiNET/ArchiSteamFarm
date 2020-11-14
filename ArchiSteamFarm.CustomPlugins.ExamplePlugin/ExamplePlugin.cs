@@ -84,7 +84,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 			// In comparison with OnBotMessage(), we're using asynchronous CatAPI call here, so we declare our method as async and return the message as usual
 			// Notice how we handle access here as well, it'll work only for FamilySharing+
 			switch (args[0].ToUpperInvariant()) {
-				case "CAT" when bot.HasPermission(steamID, BotConfig.EPermission.FamilySharing):
+				case "CAT" when bot.HasAccess(steamID, BotConfig.EAccess.FamilySharing):
 					// Notice how we can decide whether to use bot's AWH WebBrowser or ASF's one. For Steam-related requests, AWH's one should always be used, for third-party requests like those it doesn't really matter
 					// Still, it makes sense to pass AWH's one, so in case you get some errors or alike, you know from which bot instance they come from. It's similar to using Bot's ArchiLogger compared to ASF's one
 					string? randomCatURL = await CatAPI.GetRandomCatURL(bot.ArchiWebHandler.WebBrowser).ConfigureAwait(false);
@@ -147,7 +147,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 			// Normally ASF will expect from you async-capable responses, such as Task<string>. This allows you to make your code fully asynchronous which is a core foundation on which ASF is built upon
 			// Since in this method we're not doing any async stuff, instead of defining this method as async (pointless), we just need to wrap our responses in Task.FromResult<>()
 			if (Bot.BotsReadOnly == null) {
-				throw new ArgumentNullException(nameof(Bot.BotsReadOnly));
+				throw new InvalidOperationException(nameof(Bot.BotsReadOnly));
 			}
 
 			// As a starter, we can for example ignore messages sent from our own bots, since otherwise they can run into a possible infinite loop of answering themselves

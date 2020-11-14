@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Threading;
@@ -123,82 +124,76 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public static readonly ImmutableHashSet<uint> DefaultBlacklist = ImmutableHashSet<uint>.Empty;
 
-		private static readonly SemaphoreSlim WriteSemaphore = new SemaphoreSlim(1, 1);
+		private static readonly SemaphoreSlim WriteSemaphore = new(1, 1);
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public readonly bool AutoRestart = DefaultAutoRestart;
+		public bool AutoRestart { get; } = DefaultAutoRestart;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public readonly ImmutableHashSet<uint> Blacklist = DefaultBlacklist;
+		public ImmutableHashSet<uint> Blacklist { get; } = DefaultBlacklist;
 
 		[JsonProperty]
-		public readonly string? CommandPrefix = DefaultCommandPrefix;
+		public string? CommandPrefix { get; } = DefaultCommandPrefix;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public readonly byte ConfirmationsLimiterDelay = DefaultConfirmationsLimiterDelay;
+		public byte ConfirmationsLimiterDelay { get; } = DefaultConfirmationsLimiterDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public readonly byte ConnectionTimeout = DefaultConnectionTimeout;
+		public byte ConnectionTimeout { get; } = DefaultConnectionTimeout;
 
 		[JsonProperty]
-		public readonly string? CurrentCulture = DefaultCurrentCulture;
+		public string? CurrentCulture { get; } = DefaultCurrentCulture;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public readonly bool Debug = DefaultDebug;
+		public bool Debug { get; } = DefaultDebug;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public readonly byte FarmingDelay = DefaultFarmingDelay;
+		public byte FarmingDelay { get; } = DefaultFarmingDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public readonly byte GiftsLimiterDelay = DefaultGiftsLimiterDelay;
+		public byte GiftsLimiterDelay { get; } = DefaultGiftsLimiterDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public readonly bool Headless = DefaultHeadless;
+		public bool Headless { get; } = DefaultHeadless;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public readonly byte IdleFarmingPeriod = DefaultIdleFarmingPeriod;
+		public byte IdleFarmingPeriod { get; } = DefaultIdleFarmingPeriod;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public readonly byte InventoryLimiterDelay = DefaultInventoryLimiterDelay;
+		public byte InventoryLimiterDelay { get; } = DefaultInventoryLimiterDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public readonly bool IPC = DefaultIPC;
+		public bool IPC { get; } = DefaultIPC;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public readonly ArchiCryptoHelper.EHashingMethod IPCPasswordFormat = DefaultIPCPasswordFormat;
+		public ArchiCryptoHelper.EHashingMethod IPCPasswordFormat { get; } = DefaultIPCPasswordFormat;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public readonly byte LoginLimiterDelay = DefaultLoginLimiterDelay;
+		public byte LoginLimiterDelay { get; } = DefaultLoginLimiterDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public readonly byte MaxFarmingTime = DefaultMaxFarmingTime;
+		public byte MaxFarmingTime { get; } = DefaultMaxFarmingTime;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public readonly byte MaxTradeHoldDuration = DefaultMaxTradeHoldDuration;
+		public byte MaxTradeHoldDuration { get; } = DefaultMaxTradeHoldDuration;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public readonly EOptimizationMode OptimizationMode = DefaultOptimizationMode;
+		public EOptimizationMode OptimizationMode { get; } = DefaultOptimizationMode;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public readonly bool Statistics = DefaultStatistics;
+		public bool Statistics { get; } = DefaultStatistics;
 
 		[JsonProperty]
-		public readonly string? SteamMessagePrefix = DefaultSteamMessagePrefix;
+		public string? SteamMessagePrefix { get; } = DefaultSteamMessagePrefix;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public readonly EUpdateChannel UpdateChannel = DefaultUpdateChannel;
+		public EUpdateChannel UpdateChannel { get; } = DefaultUpdateChannel;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public readonly byte UpdatePeriod = DefaultUpdatePeriod;
+		public byte UpdatePeriod { get; } = DefaultUpdatePeriod;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public readonly ushort WebLimiterDelay = DefaultWebLimiterDelay;
-
-		[JsonProperty(PropertyName = nameof(WebProxy))]
-		public readonly string? WebProxyText = DefaultWebProxyText;
-
-		[JsonProperty]
-		public readonly string? WebProxyUsername = DefaultWebProxyUsername;
+		public ushort WebLimiterDelay { get; } = DefaultWebLimiterDelay;
 
 		[JsonIgnore]
 		[PublicAPI]
@@ -222,13 +217,13 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				WebProxy proxy = new WebProxy {
+				WebProxy proxy = new() {
 					Address = uri,
 					BypassProxyOnLocal = true
 				};
 
 				if (!string.IsNullOrEmpty(WebProxyUsername) || !string.IsNullOrEmpty(WebProxyPassword)) {
-					NetworkCredential credentials = new NetworkCredential();
+					NetworkCredential credentials = new();
 
 					if (!string.IsNullOrEmpty(WebProxyUsername)) {
 						credentials.UserName = WebProxyUsername;
@@ -246,6 +241,12 @@ namespace ArchiSteamFarm {
 				return proxy;
 			}
 		}
+
+		[JsonProperty(PropertyName = nameof(WebProxy))]
+		public string? WebProxyText { get; } = DefaultWebProxyText;
+
+		[JsonProperty]
+		public string? WebProxyUsername { get; } = DefaultWebProxyUsername;
 
 		[JsonProperty]
 		internal readonly string? IPCPassword = DefaultIPCPassword;
@@ -284,11 +285,11 @@ namespace ArchiSteamFarm {
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamOwnerID), Required = Required.DisallowNull)]
 
 		private string SSteamOwnerID {
-			get => SteamOwnerID.ToString();
+			get => SteamOwnerID.ToString(CultureInfo.InvariantCulture);
 
 			set {
 				if (string.IsNullOrEmpty(value) || !ulong.TryParse(value, out ulong result)) {
-					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(SSteamOwnerID)));
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(SSteamOwnerID)));
 
 					return;
 				}
@@ -302,38 +303,38 @@ namespace ArchiSteamFarm {
 
 		internal (bool Valid, string? ErrorMessage) CheckValidation() {
 			if (ConnectionTimeout == 0) {
-				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(ConnectionTimeout), ConnectionTimeout));
+				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(ConnectionTimeout), ConnectionTimeout));
 			}
 
 			if (FarmingDelay == 0) {
-				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(FarmingDelay), FarmingDelay));
+				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(FarmingDelay), FarmingDelay));
 			}
 
 			if (!Enum.IsDefined(typeof(ArchiCryptoHelper.EHashingMethod), IPCPasswordFormat)) {
-				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(IPCPasswordFormat), IPCPasswordFormat));
+				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(IPCPasswordFormat), IPCPasswordFormat));
 			}
 
 			if (MaxFarmingTime == 0) {
-				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(MaxFarmingTime), MaxFarmingTime));
+				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(MaxFarmingTime), MaxFarmingTime));
 			}
 
 			if (!Enum.IsDefined(typeof(EOptimizationMode), OptimizationMode)) {
-				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(OptimizationMode), OptimizationMode));
+				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(OptimizationMode), OptimizationMode));
 			}
 
 			if (!string.IsNullOrEmpty(SteamMessagePrefix) && (SteamMessagePrefix!.Length > Bot.MaxMessagePrefixLength)) {
-				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(SteamMessagePrefix), SteamMessagePrefix));
+				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamMessagePrefix), SteamMessagePrefix));
 			}
 
 			if ((SteamOwnerID != 0) && !new SteamID(SteamOwnerID).IsIndividualAccount) {
-				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(SteamOwnerID), SteamOwnerID));
+				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamOwnerID), SteamOwnerID));
 			}
 
 			if ((SteamProtocols <= 0) || (SteamProtocols > ProtocolTypes.All)) {
-				return (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(SteamProtocols), SteamProtocols));
+				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamProtocols), SteamProtocols));
 			}
 
-			return Enum.IsDefined(typeof(EUpdateChannel), UpdateChannel) ? (true, (string?) null) : (false, string.Format(Strings.ErrorConfigPropertyInvalid, nameof(UpdateChannel), UpdateChannel));
+			return Enum.IsDefined(typeof(EUpdateChannel), UpdateChannel) ? (true, (string?) null) : (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(UpdateChannel), UpdateChannel));
 		}
 
 		internal static async Task<GlobalConfig?> Load(string filePath) {
@@ -351,7 +352,7 @@ namespace ArchiSteamFarm {
 				string json = await RuntimeCompatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(json)) {
-					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsEmpty, nameof(json)));
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
 
 					return null;
 				}
@@ -384,8 +385,12 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static async Task<bool> Write(string filePath, GlobalConfig globalConfig) {
-			if (string.IsNullOrEmpty(filePath) || (globalConfig == null)) {
-				throw new ArgumentNullException(nameof(filePath) + " || " + nameof(globalConfig));
+			if (string.IsNullOrEmpty(filePath)) {
+				throw new ArgumentNullException(nameof(filePath));
+			}
+
+			if (globalConfig == null) {
+				throw new ArgumentNullException(nameof(globalConfig));
 			}
 
 			string json = JsonConvert.SerializeObject(globalConfig, Formatting.Indented);

@@ -101,7 +101,7 @@ namespace ArchiSteamFarm.Plugins {
 
 			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.Initializing, nameof(Plugins)));
 
-			ConventionBuilder conventions = new ConventionBuilder();
+			ConventionBuilder conventions = new();
 			conventions.ForTypesDerivedFrom<IPlugin>().Export<IPlugin>();
 
 			ContainerConfiguration configuration = new ContainerConfiguration().WithAssemblies(assemblies, conventions);
@@ -122,7 +122,7 @@ namespace ArchiSteamFarm.Plugins {
 				return true;
 			}
 
-			HashSet<IPlugin> invalidPlugins = new HashSet<IPlugin>();
+			HashSet<IPlugin> invalidPlugins = new();
 
 			foreach (IPlugin plugin in activePlugins) {
 				try {
@@ -460,7 +460,7 @@ namespace ArchiSteamFarm.Plugins {
 		}
 
 		internal static async Task<bool> OnBotTradeOffer(Bot bot, Steam.TradeOffer tradeOffer) {
-			if ((bot == null)) {
+			if (bot == null) {
 				throw new ArgumentNullException(nameof(bot));
 			}
 
@@ -506,7 +506,7 @@ namespace ArchiSteamFarm.Plugins {
 		}
 
 		internal static async Task OnBotUserNotifications(Bot bot, IReadOnlyCollection<ArchiHandler.UserNotificationsCallback.EUserNotification> newNotifications) {
-			if ((bot == null)) {
+			if (bot == null) {
 				throw new ArgumentNullException(nameof(bot));
 			}
 
@@ -574,7 +574,7 @@ namespace ArchiSteamFarm.Plugins {
 				return null;
 			}
 
-			HashSet<Assembly> assemblies = new HashSet<Assembly>();
+			HashSet<Assembly> assemblies = new();
 
 			try {
 				foreach (string assemblyPath in Directory.EnumerateFiles(path, "*.dll", SearchOption.AllDirectories)) {

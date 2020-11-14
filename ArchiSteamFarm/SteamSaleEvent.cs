@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
@@ -37,7 +38,7 @@ namespace ArchiSteamFarm {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 			SaleEventTimer = new Timer(
-				async e => await ExploreDiscoveryQueue().ConfigureAwait(false),
+				ExploreDiscoveryQueue,
 				null,
 				TimeSpan.FromHours(1.1) + TimeSpan.FromSeconds(ASF.LoadBalancingDelay * Bot.Bots?.Count ?? 0), // Delay
 				TimeSpan.FromHours(8.1) // Period
@@ -46,23 +47,23 @@ namespace ArchiSteamFarm {
 
 		public async ValueTask DisposeAsync() => await SaleEventTimer.DisposeAsync().ConfigureAwait(false);
 
-		private async Task ExploreDiscoveryQueue() {
+		private async void ExploreDiscoveryQueue(object? state) {
 			if (!Bot.IsConnectedAndLoggedOn) {
 				return;
 			}
 
 			Bot.ArchiLogger.LogGenericTrace(Strings.Starting);
 
-			for (byte i = 0; (i < MaxSingleQueuesDaily) && (await IsDiscoveryQueueAvailable().ConfigureAwait(false)).GetValueOrDefault(); i++) {
+			for (byte i = 0; (i < MaxSingleQueuesDaily) && Bot.IsConnectedAndLoggedOn && (await IsDiscoveryQueueAvailable().ConfigureAwait(false)).GetValueOrDefault(); i++) {
 				ImmutableHashSet<uint>? queue = await Bot.ArchiWebHandler.GenerateNewDiscoveryQueue().ConfigureAwait(false);
 
 				if ((queue == null) || (queue.Count == 0)) {
-					Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(queue)));
+					Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(queue)));
 
 					break;
 				}
 
-				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ClearingDiscoveryQueue, i));
+				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.ClearingDiscoveryQueue, i));
 
 				// We could in theory do this in parallel, but who knows what would happen...
 				foreach (uint queuedAppID in queue) {
@@ -75,7 +76,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.DoneClearingDiscoveryQueue, i));
+				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.DoneClearingDiscoveryQueue, i));
 			}
 
 			Bot.ArchiLogger.LogGenericTrace(Strings.Done);

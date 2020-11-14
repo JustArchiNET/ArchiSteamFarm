@@ -47,7 +47,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 				schema.Format = "flags";
 			}
 
-			OpenApiObject definition = new OpenApiObject();
+			OpenApiObject definition = new();
 
 			foreach (object? enumValue in context.Type.GetEnumValues()) {
 				if (enumValue == null) {
@@ -93,7 +93,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 
 				return true;
 			} catch (InvalidCastException) {
-				typedValue = default;
+				typedValue = default(T);
 
 				return false;
 			}

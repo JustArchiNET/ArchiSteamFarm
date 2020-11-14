@@ -30,7 +30,7 @@ using SteamKit2.Discovery;
 namespace ArchiSteamFarm.SteamKit2 {
 	internal sealed class InMemoryServerListProvider : IServerListProvider {
 		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentHashSet<ServerRecordEndPoint> ServerRecords = new ConcurrentHashSet<ServerRecordEndPoint>();
+		private readonly ConcurrentHashSet<ServerRecordEndPoint> ServerRecords = new();
 
 		public Task<IEnumerable<ServerRecord>> FetchServerListAsync() => Task.FromResult(ServerRecords.Where(server => !string.IsNullOrEmpty(server.Host) && (server.Port > 0) && (server.ProtocolTypes > 0)).Select(server => ServerRecord.CreateServer(server.Host!, server.Port, server.ProtocolTypes)));
 

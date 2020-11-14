@@ -43,7 +43,7 @@ namespace ArchiSteamFarm {
 		internal static bool RestartAllowed { get; private set; } = true;
 		internal static bool ShutdownSequenceInitialized { get; private set; }
 
-		private static readonly TaskCompletionSource<byte> ShutdownResetEvent = new TaskCompletionSource<byte>();
+		private static readonly TaskCompletionSource<byte> ShutdownResetEvent = new();
 
 		private static bool SystemRequired;
 
@@ -67,7 +67,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(executableName));
 			}
 
-			IEnumerable<string> arguments = Environment.GetCommandLineArgs().Skip(executableName.Equals(SharedInfo.AssemblyName) ? 1 : 0);
+			IEnumerable<string> arguments = Environment.GetCommandLineArgs().Skip(executableName.Equals(SharedInfo.AssemblyName, StringComparison.Ordinal) ? 1 : 0);
 
 			try {
 				Process.Start(OS.ProcessFileName, string.Join(" ", arguments));
@@ -139,7 +139,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
+				throw new InvalidOperationException(nameof(ASF.GlobalConfig));
 			}
 
 			// Parse post-init args
@@ -204,7 +204,7 @@ namespace ArchiSteamFarm {
 				globalConfig = await GlobalConfig.Load(globalConfigFile).ConfigureAwait(false);
 
 				if (globalConfig == null) {
-					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorGlobalConfigNotLoaded, globalConfigFile));
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorGlobalConfigNotLoaded, globalConfigFile));
 					await Task.Delay(5 * 1000).ConfigureAwait(false);
 					await Exit(1).ConfigureAwait(false);
 
@@ -281,7 +281,7 @@ namespace ArchiSteamFarm {
 
 			if (currentStringObjects.Count < defaultStringObjects.Count) {
 				float translationCompleteness = currentStringObjects.Count / (float) defaultStringObjects.Count;
-				ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.TranslationIncomplete, CultureInfo.CurrentUICulture.Name, translationCompleteness.ToString("P1")));
+				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.TranslationIncomplete, CultureInfo.CurrentUICulture.Name, translationCompleteness.ToString("P1", CultureInfo.CurrentCulture)));
 			}
 
 			return true;
@@ -304,7 +304,7 @@ namespace ArchiSteamFarm {
 			GlobalDatabase? globalDatabase = await GlobalDatabase.CreateOrLoad(globalDatabaseFile).ConfigureAwait(false);
 
 			if (globalDatabase == null) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorDatabaseInvalid, globalDatabaseFile));
+				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorDatabaseInvalid, globalDatabaseFile));
 				await Task.Delay(5 * 1000).ConfigureAwait(false);
 				await Exit(1).ConfigureAwait(false);
 
@@ -390,7 +390,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (e.ExceptionObject == null) {
-				throw new ArgumentNullException(nameof(e.ExceptionObject));
+				throw new ArgumentNullException(nameof(e));
 			}
 
 			await ASF.ArchiLogger.LogFatalException((Exception) e.ExceptionObject).ConfigureAwait(false);
@@ -403,7 +403,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (e.Exception == null) {
-				throw new ArgumentNullException(nameof(e.Exception));
+				throw new ArgumentNullException(nameof(e));
 			}
 
 			await ASF.ArchiLogger.LogFatalException(e.Exception).ConfigureAwait(false);
@@ -487,11 +487,11 @@ namespace ArchiSteamFarm {
 
 			foreach (string arg in args) {
 				switch (arg) {
-					case "--network-group" when !networkGroupNext:
+					case "--network-group" when !networkGroupNext && !pathNext:
 						networkGroupNext = true;
 
 						break;
-					case "--path" when !pathNext:
+					case "--path" when !networkGroupNext && !pathNext:
 						pathNext = true;
 
 						break;
@@ -502,10 +502,17 @@ namespace ArchiSteamFarm {
 						} else if (pathNext) {
 							pathNext = false;
 							HandlePathArgument(arg);
-						} else if ((arg.Length > 16) && arg.StartsWith("--network-group=", StringComparison.Ordinal)) {
-							HandleNetworkGroupArgument(arg.Substring(16));
-						} else if ((arg.Length > 7) && arg.StartsWith("--path=", StringComparison.Ordinal)) {
-							HandlePathArgument(arg.Substring(7));
+						} else {
+							switch (arg.Length) {
+								case > 16 when arg.StartsWith("--network-group=", StringComparison.Ordinal):
+									HandleNetworkGroupArgument(arg.Substring(16));
+
+									break;
+								case > 7 when arg.StartsWith("--path=", StringComparison.Ordinal):
+									HandlePathArgument(arg.Substring(7));
+
+									break;
+							}
 						}
 
 						break;

@@ -38,7 +38,7 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[Route("Api/NLog")]
 	public sealed class NLogController : ArchiController {
-		private static readonly ConcurrentDictionary<WebSocket, SemaphoreSlim> ActiveLogWebSockets = new ConcurrentDictionary<WebSocket, SemaphoreSlim>();
+		private static readonly ConcurrentDictionary<WebSocket, SemaphoreSlim> ActiveLogWebSockets = new();
 
 		/// <summary>
 		///     Fetches ASF log in realtime.
@@ -63,7 +63,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			try {
 				using WebSocket webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync().ConfigureAwait(false);
 
-				SemaphoreSlim sendSemaphore = new SemaphoreSlim(1, 1);
+				SemaphoreSlim sendSemaphore = new(1, 1);
 
 				if (!ActiveLogWebSockets.TryAdd(webSocket, sendSemaphore)) {
 					sendSemaphore.Dispose();

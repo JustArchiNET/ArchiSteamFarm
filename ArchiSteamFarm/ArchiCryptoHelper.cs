@@ -124,7 +124,7 @@ namespace ArchiSteamFarm {
 				case EHashingMethod.SCrypt:
 					return SCrypt.ComputeDerivedKey(password, salt, SteamParentalSCryptIterations, SteamParentalSCryptBlocksCount, 1, null, hashLength);
 				case EHashingMethod.Pbkdf2:
-					using (HMACSHA256 hmacAlgorithm = new HMACSHA256(password)) {
+					using (HMACSHA256 hmacAlgorithm = new(password)) {
 						return Pbkdf2.ComputeDerivedKey(hmacAlgorithm, salt, SteamParentalPbkdf2Iterations, hashLength);
 					}
 				default:

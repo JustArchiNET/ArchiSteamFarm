@@ -22,7 +22,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -40,11 +42,13 @@ namespace ArchiSteamFarm {
 		internal const byte CodeDigits = 5;
 
 		private const byte CodeInterval = 30;
-		private const byte SteamTimeTTL = 24; // For how many hours we can assume that SteamTimeDifference is correct
+
+		// For how many hours we can assume that SteamTimeDifference is correct
+		private const byte SteamTimeTTL = 24;
 
 		internal static readonly ImmutableSortedSet<char> CodeCharacters = ImmutableSortedSet.Create('2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'T', 'V', 'W', 'X', 'Y');
 
-		private static readonly SemaphoreSlim TimeSemaphore = new SemaphoreSlim(1, 1);
+		private static readonly SemaphoreSlim TimeSemaphore = new(1, 1);
 
 		private static DateTime LastSteamTimeCheck;
 		private static int? SteamTimeDifference;
@@ -70,13 +74,13 @@ namespace ArchiSteamFarm {
 
 		internal async Task<string?> GenerateToken() {
 			if (Bot == null) {
-				throw new ArgumentNullException(nameof(Bot));
+				throw new InvalidOperationException(nameof(Bot));
 			}
 
 			uint time = await GetSteamTime().ConfigureAwait(false);
 
 			if (time == 0) {
-				throw new ArgumentNullException(nameof(time));
+				throw new InvalidOperationException(nameof(time));
 			}
 
 			return GenerateTokenForTime(time);
@@ -84,13 +88,13 @@ namespace ArchiSteamFarm {
 
 		internal async Task<HashSet<Confirmation>?> GetConfirmations() {
 			if (Bot == null) {
-				throw new ArgumentNullException(nameof(Bot));
+				throw new InvalidOperationException(nameof(Bot));
 			}
 
 			(bool success, string? deviceID) = await CachedDeviceID.GetValue().ConfigureAwait(false);
 
 			if (!success || string.IsNullOrEmpty(deviceID)) {
-				Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningFailedWithError, nameof(deviceID)));
+				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(deviceID)));
 
 				return null;
 			}
@@ -98,7 +102,7 @@ namespace ArchiSteamFarm {
 			uint time = await GetSteamTime().ConfigureAwait(false);
 
 			if (time == 0) {
-				throw new ArgumentNullException(nameof(time));
+				throw new InvalidOperationException(nameof(time));
 			}
 
 			string? confirmationHash = GenerateConfirmationHash(time, "conf");
@@ -117,7 +121,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			HashSet<Confirmation> result = new HashSet<Confirmation>();
+			HashSet<Confirmation> result = new();
 
 			List<IElement> confirmationNodes = htmlDocument.SelectNodes("//div[@class='mobileconf_list_entry']");
 
@@ -183,7 +187,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if (!Enum.IsDefined(typeof(Confirmation.EType), type)) {
-					Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(type), type));
+					Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(type), type));
 
 					return null;
 				}
@@ -195,14 +199,18 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> HandleConfirmations(IReadOnlyCollection<Confirmation> confirmations, bool accept) {
-			if ((confirmations == null) || (confirmations.Count == 0) || (Bot == null)) {
-				throw new ArgumentNullException(nameof(confirmations) + " || " + nameof(Bot));
+			if ((confirmations == null) || (confirmations.Count == 0)) {
+				throw new ArgumentNullException(nameof(confirmations));
+			}
+
+			if (Bot == null) {
+				throw new InvalidOperationException(nameof(Bot));
 			}
 
 			(bool success, string? deviceID) = await CachedDeviceID.GetValue().ConfigureAwait(false);
 
 			if (!success || string.IsNullOrEmpty(deviceID)) {
-				Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningFailedWithError, nameof(deviceID)));
+				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(deviceID)));
 
 				return false;
 			}
@@ -210,7 +218,7 @@ namespace ArchiSteamFarm {
 			uint time = await GetSteamTime().ConfigureAwait(false);
 
 			if (time == 0) {
-				throw new ArgumentNullException(nameof(time));
+				throw new InvalidOperationException(nameof(time));
 			}
 
 			string? confirmationHash = GenerateConfirmationHash(time, "conf");
@@ -250,8 +258,16 @@ namespace ArchiSteamFarm {
 		internal void Init(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 		private string? GenerateConfirmationHash(uint time, string? tag = null) {
-			if ((time == 0) || (Bot == null) || string.IsNullOrEmpty(IdentitySecret)) {
-				throw new ArgumentNullException(nameof(time) + " || " + nameof(Bot) + " || " + nameof(IdentitySecret));
+			if (time == 0) {
+				throw new ArgumentOutOfRangeException(nameof(time));
+			}
+
+			if (Bot == null) {
+				throw new InvalidOperationException(nameof(Bot));
+			}
+
+			if (string.IsNullOrEmpty(IdentitySecret)) {
+				throw new InvalidOperationException(nameof(IdentitySecret));
 			}
 
 			byte[] identitySecret;
@@ -260,7 +276,7 @@ namespace ArchiSteamFarm {
 				identitySecret = Convert.FromBase64String(IdentitySecret!);
 			} catch (FormatException e) {
 				Bot.ArchiLogger.LogGenericException(e);
-				Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(IdentitySecret)));
+				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(IdentitySecret)));
 
 				return null;
 			}
@@ -285,16 +301,28 @@ namespace ArchiSteamFarm {
 				Array.Copy(Encoding.UTF8.GetBytes(tag!), 0, buffer, 8, bufferSize - 8);
 			}
 
-			using HMACSHA1 hmac = new HMACSHA1(identitySecret);
+			byte[] hash;
 
-			byte[] hash = hmac.ComputeHash(buffer);
+#pragma warning disable CA5350
+			using (HMACSHA1 hmac = new(identitySecret)) {
+				hash = hmac.ComputeHash(buffer);
+			}
+#pragma warning restore CA5350
 
 			return Convert.ToBase64String(hash);
 		}
 
 		private string? GenerateTokenForTime(uint time) {
-			if ((time == 0) || (Bot == null) || string.IsNullOrEmpty(SharedSecret)) {
-				throw new ArgumentNullException(nameof(time) + " || " + nameof(Bot) + " || " + nameof(SharedSecret));
+			if (time == 0) {
+				throw new ArgumentOutOfRangeException(nameof(time));
+			}
+
+			if (Bot == null) {
+				throw new InvalidOperationException(nameof(Bot));
+			}
+
+			if (string.IsNullOrEmpty(SharedSecret)) {
+				throw new InvalidOperationException(nameof(SharedSecret));
 			}
 
 			byte[] sharedSecret;
@@ -303,7 +331,7 @@ namespace ArchiSteamFarm {
 				sharedSecret = Convert.FromBase64String(SharedSecret!);
 			} catch (FormatException e) {
 				Bot.ArchiLogger.LogGenericException(e);
-				Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(SharedSecret)));
+				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(SharedSecret)));
 
 				return null;
 			}
@@ -316,9 +344,11 @@ namespace ArchiSteamFarm {
 
 			byte[] hash;
 
-			using (HMACSHA1 hmac = new HMACSHA1(sharedSecret)) {
+#pragma warning disable CA5350
+			using (HMACSHA1 hmac = new(sharedSecret)) {
 				hash = hmac.ComputeHash(timeArray);
 			}
+#pragma warning restore CA5350
 
 			// The last 4 bits of the mac say where the code starts
 			int start = hash[^1] & 0x0f;
@@ -347,7 +377,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<uint> GetSteamTime() {
 			if (Bot == null) {
-				throw new ArgumentNullException(nameof(Bot));
+				throw new InvalidOperationException(nameof(Bot));
 			}
 
 			if (SteamTimeDifference.HasValue && (DateTime.UtcNow.Subtract(LastSteamTimeCheck).TotalHours < SteamTimeTTL)) {
@@ -378,7 +408,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task LimitConfirmationsRequestsAsync() {
 			if (ASF.ConfirmationsSemaphore == null) {
-				throw new ArgumentNullException(nameof(ASF.ConfirmationsSemaphore));
+				throw new InvalidOperationException(nameof(ASF.ConfirmationsSemaphore));
 			}
 
 			byte confirmationsLimiterDelay = ASF.GlobalConfig?.ConfirmationsLimiterDelay ?? GlobalConfig.DefaultConfirmationsLimiterDelay;
@@ -420,14 +450,10 @@ namespace ArchiSteamFarm {
 			internal readonly EType Type;
 
 			internal Confirmation(ulong id, ulong key, ulong creator, EType type) {
-				if ((id == 0) || (key == 0) || (creator == 0) || !Enum.IsDefined(typeof(EType), type)) {
-					throw new ArgumentNullException(nameof(id) + " || " + nameof(key) + " || " + nameof(creator) + " || " + nameof(type));
-				}
-
-				ID = id;
-				Key = key;
-				Creator = creator;
-				Type = type;
+				ID = id > 0 ? id : throw new ArgumentOutOfRangeException(nameof(id));
+				Key = key > 0 ? key : throw new ArgumentOutOfRangeException(nameof(key));
+				Creator = creator > 0 ? creator : throw new ArgumentOutOfRangeException(nameof(creator));
+				Type = Enum.IsDefined(typeof(EType), type) ? type : throw new InvalidEnumArgumentException(nameof(type), (int) type, typeof(EType));
 			}
 
 			// REF: Internal documentation

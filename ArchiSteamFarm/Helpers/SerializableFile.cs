@@ -27,7 +27,7 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Helpers {
 	public abstract class SerializableFile : IDisposable {
-		private readonly SemaphoreSlim FileSemaphore = new SemaphoreSlim(1, 1);
+		private readonly SemaphoreSlim FileSemaphore = new(1, 1);
 
 		protected string? FilePath { private get; set; }
 

@@ -35,8 +35,8 @@ namespace ArchiSteamFarm.Collections {
 			}
 		}
 
-		private readonly List<T> BackingCollection = new List<T>();
-		private readonly AsyncReaderWriterLock Lock = new AsyncReaderWriterLock();
+		private readonly List<T> BackingCollection = new();
+		private readonly AsyncReaderWriterLock Lock = new();
 
 		int ICollection<T>.Count => Count;
 		int IReadOnlyCollection<T>.Count => Count;
