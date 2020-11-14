@@ -379,7 +379,7 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(ArgumentOutOfRangeException))]
+		[ExpectedException(typeof(InvalidOperationException))]
 		public void TooManyCardsPerSet() {
 			const uint appID0 = 42;
 			const uint appID1 = 43;
