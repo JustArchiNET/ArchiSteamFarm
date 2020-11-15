@@ -28,11 +28,21 @@
     <DefineConstants>$(DefineConstants);ASF_VARIANT_$(ASFVariant.Replace('-', '_').ToUpperInvariant())</DefineConstants>
   </PropertyGroup>
 
+  <!-- Default configuration for release builds -->
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <DebugSymbols>false</DebugSymbols>
     <DebugType>none</DebugType>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
+  </PropertyGroup>
+
+  <!-- Trimming features as specified on https://docs.microsoft.com/dotnet/core/deploying/trimming-options#trimming-framework-library-features and https://github.com/dotnet/runtime/blob/master/docs/workflow/trimming/feature-switches.md -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DebuggerSupport>false</DebuggerSupport>
+    <EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
+    <EnableUnsafeUTF7Encoding>false</EnableUnsafeUTF7Encoding>
+    <EventSourceSupport>false</EventSourceSupport>
+    <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(OS)' == 'Windows_NT' OR '$(ASFNetFramework)' != ''">
