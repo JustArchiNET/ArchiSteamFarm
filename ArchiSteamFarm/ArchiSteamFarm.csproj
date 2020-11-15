@@ -50,7 +50,6 @@
     </Reference>
   </ItemGroup>
 
-  <!-- Assemblies to include in trimmed builds for plugins usage -->
   <ItemGroup>
     <TrimmerRootDescriptor Include="TrimmerRoots.xml" />
   </ItemGroup>

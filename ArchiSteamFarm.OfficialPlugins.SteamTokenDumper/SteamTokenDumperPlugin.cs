@@ -23,6 +23,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Composition;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -50,7 +51,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 		public override string Name => nameof(SteamTokenDumperPlugin);
 
 		[JsonProperty]
-		public override Version Version => typeof(SteamTokenDumperPlugin).Assembly.GetName().Version ?? throw new ArgumentNullException(nameof(Version));
+		public override Version Version => typeof(SteamTokenDumperPlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
 		public Task<uint> GetPreferredChangeNumberToStartFrom() => Task.FromResult(IsEnabled ? GlobalCache?.LastChangeNumber ?? 0 : 0);
 
@@ -177,7 +178,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			}
 
 			if (GlobalCache == null) {
-				throw new ArgumentNullException(nameof(GlobalCache));
+				throw new InvalidOperationException(nameof(GlobalCache));
 			}
 
 			await GlobalCache.OnPICSChanges(currentChangeNumber, appChanges).ConfigureAwait(false);
@@ -240,7 +241,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			}
 
 			if (!BotSynchronizations.TryGetValue(bot, out (SemaphoreSlim RefreshSemaphore, Timer RefreshTimer) synchronization)) {
-				throw new ArgumentNullException(nameof(synchronization));
+				throw new InvalidOperationException(nameof(synchronization));
 			}
 
 			if (!await synchronization.RefreshSemaphore.WaitAsync(0).ConfigureAwait(false)) {
@@ -302,7 +303,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 						}
 
 						if (response == null) {
-							bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, nameof(response)));
+							bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(response)));
 
 							return;
 						}
@@ -347,7 +348,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 						}
 
 						if (response.Results == null) {
-							bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, nameof(response.Results)));
+							bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(response.Results)));
 
 							return;
 						}
