@@ -36,7 +36,7 @@ namespace ArchiSteamFarm.CustomPlugins.PeriodicGC {
 
 		public string Name => nameof(PeriodicGCPlugin);
 
-		public Version Version => typeof(PeriodicGCPlugin).Assembly.GetName().Version ?? throw new ArgumentNullException(nameof(Version));
+		public Version Version => typeof(PeriodicGCPlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
 		public void OnLoaded() {
 			TimeSpan timeSpan = TimeSpan.FromSeconds(GCPeriod);
