@@ -28,7 +28,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace ArchiSteamFarm.Helpers {
-	internal sealed class CrossProcessFileBasedSemaphore : ICrossProcessSemaphore {
+	internal sealed class CrossProcessFileBasedSemaphore : ICrossProcessSemaphore, IDisposable {
 		private const ushort SpinLockDelay = 1000; // In milliseconds
 
 		private readonly string FilePath;
