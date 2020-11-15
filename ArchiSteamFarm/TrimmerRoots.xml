@@ -1,0 +1,4 @@
+<linker>
+  <!-- We include System.Runtime for plugins usage -->
+  <assembly fullname="System.Runtime" />
+</linker>

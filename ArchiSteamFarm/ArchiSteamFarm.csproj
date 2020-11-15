@@ -52,7 +52,7 @@
 
   <!-- Assemblies to include in trimmed builds for plugins usage -->
   <ItemGroup>
-    <TrimmerRootAssembly Include="System.Runtime" />
+    <TrimmerRootDescriptor Include="TrimmerRoots.xml" />
   </ItemGroup>
 
   <ItemGroup>
