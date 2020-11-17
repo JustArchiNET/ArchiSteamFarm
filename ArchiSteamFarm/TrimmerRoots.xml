@@ -1,4 +1,8 @@
 <linker>
-  <!-- We include System.Runtime for plugins usage -->
+  <!-- All below entries are dedicated to our official STD plugin -->
+  <assembly fullname="System.Collections.Immutable">
+    <type fullname="System.Collections.Immutable.ImmutableDictionary" />
+  </assembly>
+
   <assembly fullname="System.Runtime" />
 </linker>
