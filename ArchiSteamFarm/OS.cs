@@ -215,8 +215,10 @@ namespace ArchiSteamFarm {
 			internal const uint EnableQuickEditMode = 0x0040;
 			internal const sbyte StandardInputHandle = -10;
 
-			[DllImport("libc", CharSet = CharSet.Unicode, EntryPoint = "chmod", SetLastError = true)]
+#pragma warning disable CA2101
+			[DllImport("libc", EntryPoint = "chmod", SetLastError = true)]
 			internal static extern int Chmod(string path, int mode);
+#pragma warning restore CA2101
 
 			[DllImport("kernel32.dll")]
 			internal static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
