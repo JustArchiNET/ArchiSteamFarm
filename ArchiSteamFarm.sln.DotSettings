@@ -3,7 +3,7 @@
 	<s:Boolean x:Key="/Default/CodeEditing/TypingAssist/Asp/FormatOnEnter/@EntryValue">True</s:Boolean>
 	<s:String x:Key="/Default/CodeEditing/TypingAssist/FormatOnPaste/@EntryValue">FullFormat</s:String>
 	<s:Boolean x:Key="/Default/CodeEditing/TypingAssist/SmartIndentOnEnter/@EntryValue">True</s:Boolean>
-	<s:Boolean x:Key="/Default/CodeEditing/TypingAssist/VirtualSpaceOnEnter/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeEditing/TypingAssist/VirtualSpaceOnEnter/@EntryValue">False</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/ExcludedFiles/FileMasksToSkip/=Strings_002E_003F_003F_002D_003F_003F_002Eresx/@EntryIndexedValue">True</s:Boolean>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=CF84911C_002D2C4C_002D4195_002D8AF3_002DABBB6D3DE9AA_002Fd_003Awww/@EntryIndexedValue">ExplicitlyExcluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/GeneratedFilesAndFolders/=CF84911C_002D2C4C_002D4195_002D8AF3_002DABBB6D3DE9AA_002Fd_003Awww/@EntryIndexedValue">CF84911C-2C4C-4195-8AF3-ABBB6D3DE9AA/d:www</s:String>
