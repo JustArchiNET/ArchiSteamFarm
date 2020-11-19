@@ -136,7 +136,10 @@ namespace ArchiSteamFarm {
 
 			OS.Init(ASF.GlobalConfig.OptimizationMode);
 
-			await InitGlobalDatabaseAndServices().ConfigureAwait(false);
+			if (!await InitGlobalDatabaseAndServices().ConfigureAwait(false)) {
+				return false;
+			}
+
 			await ASF.Init().ConfigureAwait(false);
 
 			return true;
@@ -208,8 +211,7 @@ namespace ArchiSteamFarm {
 
 				if (globalConfig == null) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorGlobalConfigNotLoaded, globalConfigFile));
-					await Task.Delay(5 * 1000).ConfigureAwait(false);
-					await Exit(1).ConfigureAwait(false);
+					await Task.Delay(5000).ConfigureAwait(false);
 
 					return false;
 				}
@@ -290,7 +292,7 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		private static async Task InitGlobalDatabaseAndServices() {
+		private static async Task<bool> InitGlobalDatabaseAndServices() {
 			string globalDatabaseFile = ASF.GetFilePath(ASF.EFileType.Database);
 
 			if (string.IsNullOrEmpty(globalDatabaseFile)) {
@@ -299,19 +301,18 @@ namespace ArchiSteamFarm {
 
 			if (!File.Exists(globalDatabaseFile)) {
 				ASF.ArchiLogger.LogGenericInfo(Strings.Welcome);
-				await Task.Delay(10 * 1000).ConfigureAwait(false);
+				await Task.Delay(10000).ConfigureAwait(false);
 				ASF.ArchiLogger.LogGenericWarning(Strings.WarningPrivacyPolicy);
-				await Task.Delay(5 * 1000).ConfigureAwait(false);
+				await Task.Delay(5000).ConfigureAwait(false);
 			}
 
 			GlobalDatabase? globalDatabase = await GlobalDatabase.CreateOrLoad(globalDatabaseFile).ConfigureAwait(false);
 
 			if (globalDatabase == null) {
 				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorDatabaseInvalid, globalDatabaseFile));
-				await Task.Delay(5 * 1000).ConfigureAwait(false);
-				await Exit(1).ConfigureAwait(false);
+				await Task.Delay(5000).ConfigureAwait(false);
 
-				return;
+				return false;
 			}
 
 			ASF.InitGlobalDatabase(globalDatabase);
@@ -346,6 +347,8 @@ namespace ArchiSteamFarm {
 			}
 
 			WebBrowser.Init();
+
+			return true;
 		}
 
 		private static async Task<bool> InitShutdownSequence() {
