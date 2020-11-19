@@ -45,6 +45,7 @@ namespace ArchiSteamFarm {
 
 		private static readonly TaskCompletionSource<byte> ShutdownResetEvent = new();
 
+		private static bool IgnoreUnsupportedEnvironment;
 		private static bool SystemRequired;
 
 		internal static async Task Exit(byte exitCode = 0) {
@@ -119,38 +120,26 @@ namespace ArchiSteamFarm {
 			Target.Register<HistoryTarget>(HistoryTarget.TargetName);
 			Target.Register<SteamTarget>(SteamTarget.TargetName);
 
-			if (!await InitCore(args).ConfigureAwait(false)) {
+			if (!await InitCore(args).ConfigureAwait(false) || !await InitASF().ConfigureAwait(false)) {
 				await Exit(1).ConfigureAwait(false);
-
-				return;
 			}
-
-			await InitASF(args).ConfigureAwait(false);
 		}
 
-		private static async Task InitASF(IReadOnlyCollection<string>? args) {
-			OS.CoreInit();
-
-			Console.Title = SharedInfo.ProgramIdentifier;
-			ASF.ArchiLogger.LogGenericInfo(SharedInfo.ProgramIdentifier);
-
+		private static async Task<bool> InitASF() {
 			if (!await InitGlobalConfigAndLanguage().ConfigureAwait(false)) {
-				return;
+				return false;
 			}
 
 			if (ASF.GlobalConfig == null) {
 				throw new InvalidOperationException(nameof(ASF.GlobalConfig));
 			}
 
-			// Parse post-init args
-			if (args != null) {
-				ParsePostInitArgs(args);
-			}
-
-			OS.Init(SystemRequired, ASF.GlobalConfig.OptimizationMode);
+			OS.Init(ASF.GlobalConfig.OptimizationMode);
 
 			await InitGlobalDatabaseAndServices().ConfigureAwait(false);
 			await ASF.Init().ConfigureAwait(false);
+
+			return true;
 		}
 
 		private static async Task<bool> InitCore(IReadOnlyCollection<string>? args) {
@@ -173,9 +162,9 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			// Parse pre-init args
+			// Parse args
 			if (args != null) {
-				ParsePreInitArgs(args);
+				ParseArgs(args);
 			}
 
 			bool uniqueInstance = OS.RegisterProcess();
@@ -186,6 +175,20 @@ namespace ArchiSteamFarm {
 				await Task.Delay(5000).ConfigureAwait(false);
 
 				return false;
+			}
+
+			OS.CoreInit(SystemRequired);
+
+			Console.Title = SharedInfo.ProgramIdentifier;
+			ASF.ArchiLogger.LogGenericInfo(SharedInfo.ProgramIdentifier);
+
+			if (!IgnoreUnsupportedEnvironment) {
+				if (!OS.VerifyEnvironment()) {
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnsupportedEnvironment, SharedInfo.BuildInfo.Variant, OS.Variant));
+					await Task.Delay(10000).ConfigureAwait(false);
+
+					return false;
+				}
 			}
 
 			return true;
@@ -413,7 +416,7 @@ namespace ArchiSteamFarm {
 			e.SetObserved();
 		}
 
-		private static void ParsePostInitArgs(IReadOnlyCollection<string> args) {
+		private static void ParseArgs(IReadOnlyCollection<string> args) {
 			if (args == null) {
 				throw new ArgumentNullException(nameof(args));
 			}
@@ -424,49 +427,7 @@ namespace ArchiSteamFarm {
 				if (!string.IsNullOrEmpty(envCryptKey)) {
 					HandleCryptKeyArgument(envCryptKey!);
 				}
-			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericException(e);
-			}
 
-			bool cryptKeyNext = false;
-
-			foreach (string arg in args) {
-				switch (arg) {
-					case "--cryptkey" when !cryptKeyNext:
-						cryptKeyNext = true;
-
-						break;
-					case "--no-restart" when !cryptKeyNext:
-						RestartAllowed = false;
-
-						break;
-					case "--process-required" when !cryptKeyNext:
-						ProcessRequired = true;
-
-						break;
-					case "--system-required" when !cryptKeyNext:
-						SystemRequired = true;
-
-						break;
-					default:
-						if (cryptKeyNext) {
-							cryptKeyNext = false;
-							HandleCryptKeyArgument(arg);
-						} else if ((arg.Length > 11) && arg.StartsWith("--cryptkey=", StringComparison.Ordinal)) {
-							HandleCryptKeyArgument(arg.Substring(11));
-						}
-
-						break;
-				}
-			}
-		}
-
-		private static void ParsePreInitArgs(IReadOnlyCollection<string> args) {
-			if (args == null) {
-				throw new ArgumentNullException(nameof(args));
-			}
-
-			try {
 				string? envNetworkGroup = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableNetworkGroup);
 
 				if (!string.IsNullOrEmpty(envNetworkGroup)) {
@@ -482,21 +443,45 @@ namespace ArchiSteamFarm {
 				ASF.ArchiLogger.LogGenericException(e);
 			}
 
+			bool cryptKeyNext = false;
 			bool networkGroupNext = false;
 			bool pathNext = false;
 
 			foreach (string arg in args) {
 				switch (arg) {
-					case "--network-group" when !networkGroupNext && !pathNext:
+					case "--cryptkey" when !cryptKeyNext && !networkGroupNext && !pathNext:
+						cryptKeyNext = true;
+
+						break;
+					case "--ignore-unsupported-environment" when !cryptKeyNext && !networkGroupNext && !pathNext:
+						IgnoreUnsupportedEnvironment = true;
+
+						break;
+					case "--network-group" when !cryptKeyNext && !networkGroupNext && !pathNext:
 						networkGroupNext = true;
 
 						break;
-					case "--path" when !networkGroupNext && !pathNext:
+					case "--no-restart" when !cryptKeyNext && !networkGroupNext && !pathNext:
+						RestartAllowed = false;
+
+						break;
+					case "--process-required" when !cryptKeyNext && !networkGroupNext && !pathNext:
+						ProcessRequired = true;
+
+						break;
+					case "--path" when !cryptKeyNext && !networkGroupNext && !pathNext:
 						pathNext = true;
 
 						break;
+					case "--system-required" when !cryptKeyNext && !networkGroupNext && !pathNext:
+						SystemRequired = true;
+
+						break;
 					default:
-						if (networkGroupNext) {
+						if (cryptKeyNext) {
+							cryptKeyNext = false;
+							HandleCryptKeyArgument(arg);
+						} else if (networkGroupNext) {
 							networkGroupNext = false;
 							HandleNetworkGroupArgument(arg);
 						} else if (pathNext) {
@@ -508,8 +493,16 @@ namespace ArchiSteamFarm {
 									HandleNetworkGroupArgument(arg.Substring(16));
 
 									break;
+								case > 11 when arg.StartsWith("--cryptkey=", StringComparison.Ordinal):
+									HandleCryptKeyArgument(arg.Substring(11));
+
+									break;
 								case > 7 when arg.StartsWith("--path=", StringComparison.Ordinal):
 									HandlePathArgument(arg.Substring(7));
+
+									break;
+								default:
+									ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownCommandLineArgument, arg));
 
 									break;
 							}

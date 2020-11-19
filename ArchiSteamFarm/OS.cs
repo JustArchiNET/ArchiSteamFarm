@@ -40,20 +40,26 @@ namespace ArchiSteamFarm {
 
 		private static Mutex? SingleInstance;
 
-		internal static void CoreInit() {
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && !Console.IsOutputRedirected) {
-				// Normally we should use UTF-8 encoding as it's the most correct one for our case, and we already use it on other OSes such as Linux
-				// However, older Windows versions, mainly 7/8.1 can't into UTF-8 without appropriate console font, and expecting from users to change it manually is unwanted
-				// As irrational as it can sound, those versions actually can work with unicode encoding instead, as they magically map it into proper chars despite of incorrect font
-				// We could in theory conditionally use UTF-8 for Windows 10+ and unicode otherwise, but Windows version detection is simply not worth the hassle in this case
-				// Therefore, until we can drop support for Windows < 10, we'll stick with Unicode for all Windows boxes, unless there will be valid reasoning for conditional switch
-				// See https://github.com/JustArchiNET/ArchiSteamFarm/issues/1289 for more details
-				Console.OutputEncoding = Encoding.Unicode;
+		internal static void CoreInit(bool systemRequired) {
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+				if (systemRequired) {
+					WindowsKeepSystemActive();
+				}
 
-				// Quick edit mode will freeze when user start selecting something on the console until the selection is cancelled
-				// Users are very often doing it accidentally without any real purpose, and we want to avoid this common issue which causes the whole process to hang
-				// See http://stackoverflow.com/questions/30418886/how-and-why-does-quickedit-mode-in-command-prompt-freeze-applications for more details
-				WindowsDisableQuickEditMode();
+				if (!Console.IsOutputRedirected) {
+					// Normally we should use UTF-8 encoding as it's the most correct one for our case, and we already use it on other OSes such as Linux
+					// However, older Windows versions, mainly 7/8.1 can't into UTF-8 without appropriate console font, and expecting from users to change it manually is unwanted
+					// As irrational as it can sound, those versions actually can work with unicode encoding instead, as they magically map it into proper chars despite of incorrect font
+					// We could in theory conditionally use UTF-8 for Windows 10+ and unicode otherwise, but Windows version detection is simply not worth the hassle in this case
+					// Therefore, until we can drop support for Windows < 10, we'll stick with Unicode for all Windows boxes, unless there will be valid reasoning for conditional switch
+					// See https://github.com/JustArchiNET/ArchiSteamFarm/issues/1289 for more details
+					Console.OutputEncoding = Encoding.Unicode;
+
+					// Quick edit mode will freeze when user start selecting something on the console until the selection is cancelled
+					// Users are very often doing it accidentally without any real purpose, and we want to avoid this common issue which causes the whole process to hang
+					// See http://stackoverflow.com/questions/30418886/how-and-why-does-quickedit-mode-in-command-prompt-freeze-applications for more details
+					WindowsDisableQuickEditMode();
+				}
 			}
 		}
 
@@ -67,15 +73,39 @@ namespace ArchiSteamFarm {
 			return new CrossProcessFileBasedSemaphore(resourceName);
 		}
 
-		internal static void Init(bool systemRequired, GlobalConfig.EOptimizationMode optimizationMode) {
-			if (!Enum.IsDefined(typeof(GlobalConfig.EOptimizationMode), optimizationMode)) {
-				throw new ArgumentNullException(nameof(optimizationMode));
+		internal static bool VerifyEnvironment() {
+#if NETFRAMEWORK
+			// This is .NET Framework build, we support that one only on mono for platforms not supported by .NET Core
+
+			// We're not going to analyze source builds, as we don't know what changes the author has made, assume they have a point
+			if (SharedInfo.BuildInfo.IsCustomBuild) {
+				return true;
 			}
 
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-				if (systemRequired) {
-					WindowsKeepSystemActive();
-				}
+			// All windows variants have valid .NET Core build, and generic-netf is supported only on mono
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || !RuntimeCompatibility.IsRunningOnMono) {
+				return false;
+			}
+
+			return RuntimeInformation.OSArchitecture switch {
+				// Sadly we can't tell a difference between ARMv6 and ARMv7 reliably, we'll believe that this linux-arm user knows what he's doing and he's indeed in need of generic-netf on ARMv6
+				Architecture.Arm => true,
+
+				// Apart from real x86, this also covers all unknown architectures, such as sparc, ppc64, and anything else Mono might support, we're fine with that
+				Architecture.X86 => true,
+
+				// Everything else is covered by .NET Core
+				_ => false
+			};
+#else
+			// This is .NET Core build, we support all scenarios
+			return true;
+#endif
+		}
+
+		internal static void Init(GlobalConfig.EOptimizationMode optimizationMode) {
+			if (!Enum.IsDefined(typeof(GlobalConfig.EOptimizationMode), optimizationMode)) {
+				throw new ArgumentNullException(nameof(optimizationMode));
 			}
 
 			switch (optimizationMode) {
