@@ -736,10 +736,10 @@ Process uptime: {1}</value>
     <value>Result: {0}</value>
     <comment>{0} will be replaced by generic result of various functions that use this string</comment>
   </data>
-<data name="WarningUnsupportedEnvironment" xml:space="preserve">
-	<value>You're attempting to run {0} variant of ASF in unsupported environment: {1}. Supply --ignore-unsupported-environment argument if you really know what you're doing.</value>
-</data>
-<data name="WarningUnknownCommandLineArgument" xml:space="preserve">
-	<value>Unknown command-line argument: {0}</value>
-</data>
+  <data name="WarningUnsupportedEnvironment" xml:space="preserve">
+    <value>You're attempting to run {0} variant of ASF in unsupported environment: {1}. Supply --ignore-unsupported-environment argument if you really know what you're doing.</value>
+  </data>
+  <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
+    <value>Unknown command-line argument: {0}</value>
+  </data>
 </root>
