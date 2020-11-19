@@ -279,7 +279,7 @@ after_test:
     }
 
 
-    Get-Job | Receive-Job -Wait -AutoRemoveJob
+    Get-Job | Receive-Job -Wait
 deploy: off
 notifications:
 - provider: Webhook

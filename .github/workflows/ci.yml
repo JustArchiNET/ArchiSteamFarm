@@ -248,7 +248,7 @@ jobs:
             Start-Job -Name "$variant" $PublishBlock -ArgumentList "$variant"
         }
 
-        Get-Job | Receive-Job -AutoRemoveJob -NoRecurse -Wait
+        Get-Job | Receive-Job -Wait
 
     - name: Upload ASF-generic
       continue-on-error: true
