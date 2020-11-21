@@ -67,8 +67,8 @@ script:
 
         # If we're including SteamTokenDumper plugin for this framework, copy it to output directory
         if [ -d "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}" ]; then
-            mkdir -p "out/${1}/plugins"
-            cp -pRT "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}" "out/${1}/plugins/${STEAM_TOKEN_DUMPER_NAME}"
+            mkdir -p "out/${1}/plugins/${STEAM_TOKEN_DUMPER_NAME}"
+            cp -pR "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}/"* "out/${1}/plugins/${STEAM_TOKEN_DUMPER_NAME}"
         fi
 
         # Include .ico file for all platforms, since only Windows script can bundle it inside the exe
