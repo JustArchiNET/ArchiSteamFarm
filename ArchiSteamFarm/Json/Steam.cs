@@ -261,7 +261,7 @@ namespace ArchiSteamFarm.Json {
 
 				internal Tag(string identifier, string value) {
 					Identifier = !string.IsNullOrEmpty(identifier) ? identifier : throw new ArgumentNullException(nameof(identifier));
-					Value = value ?? throw new ArgumentNullException(nameof(identifier));
+					Value = value ?? throw new ArgumentNullException(nameof(value));
 				}
 
 				[JsonConstructor]
