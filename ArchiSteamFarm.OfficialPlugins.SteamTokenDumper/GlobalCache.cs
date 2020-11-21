@@ -61,9 +61,9 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 		internal ulong GetAppToken(uint appID) => AppTokens[appID];
 
-		internal Dictionary<uint, ulong> GetAppTokensForSubmission() => AppTokens.Where(appToken => !SubmittedApps.TryGetValue(appToken.Key, out ulong token) || (appToken.Value != token)).ToDictionary(appToken => appToken.Key, appToken => appToken.Value);
-		internal Dictionary<uint, string> GetDepotKeysForSubmission() => DepotKeys.Where(depotKey => !SubmittedDepots.TryGetValue(depotKey.Key, out string? key) || (depotKey.Value != key)).ToDictionary(depotKey => depotKey.Key, depotKey => depotKey.Value);
-		internal Dictionary<uint, ulong> GetPackageTokensForSubmission() => PackageTokens.Where(packageToken => !SubmittedPackages.TryGetValue(packageToken.Key, out ulong token) || (packageToken.Value != token)).ToDictionary(packageToken => packageToken.Key, packageToken => packageToken.Value);
+		internal Dictionary<uint, ulong> GetAppTokensForSubmission() => AppTokens.Where(appToken => (appToken.Value > 0) && (!SubmittedApps.TryGetValue(appToken.Key, out ulong token) || (appToken.Value != token))).ToDictionary(appToken => appToken.Key, appToken => appToken.Value);
+		internal Dictionary<uint, string> GetDepotKeysForSubmission() => DepotKeys.Where(depotKey => !string.IsNullOrEmpty(depotKey.Value) && (!SubmittedDepots.TryGetValue(depotKey.Key, out string? key) || (depotKey.Value != key))).ToDictionary(depotKey => depotKey.Key, depotKey => depotKey.Value);
+		internal Dictionary<uint, ulong> GetPackageTokensForSubmission() => PackageTokens.Where(packageToken => (packageToken.Value > 0) && (!SubmittedPackages.TryGetValue(packageToken.Key, out ulong token) || (packageToken.Value != token))).ToDictionary(packageToken => packageToken.Key, packageToken => packageToken.Value);
 
 		internal static async Task<GlobalCache> Load() {
 			if (!File.Exists(SharedFilePath)) {
@@ -179,12 +179,6 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				}
 
 				AppTokens[appID] = appToken;
-
-				if (appToken == 0) {
-					// Backend is not interested in zero access tokens
-					SubmittedApps[appID] = 0;
-				}
-
 				save = true;
 			}
 
@@ -194,10 +188,6 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				}
 
 				AppTokens[appID] = 0;
-
-				// Backend is not interested in zero access tokens
-				SubmittedApps[appID] = 0;
-
 				save = true;
 			}
 
@@ -225,12 +215,6 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				}
 
 				DepotKeys[depotKeyResult.DepotID] = depotKey;
-
-				if (string.IsNullOrEmpty(depotKey)) {
-					// Backend is not interested in zero depot keys
-					SubmittedDepots[depotKeyResult.DepotID] = depotKey;
-				}
-
 				save = true;
 			}
 
@@ -252,12 +236,6 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				}
 
 				PackageTokens[packageID] = packageToken;
-
-				if (packageToken == 0) {
-					// Backend is not interested in zero access tokens
-					SubmittedPackages[packageID] = 0;
-				}
-
 				save = true;
 			}
 
