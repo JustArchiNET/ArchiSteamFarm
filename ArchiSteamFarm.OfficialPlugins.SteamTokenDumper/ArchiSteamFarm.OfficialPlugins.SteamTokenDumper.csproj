@@ -4,12 +4,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="4.0.0">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+    <PackageReference Include="ConfigureAwaitChecker.Analyzer" PrivateAssets="all" Version="4.0.0" />
+    <PackageReference Include="Newtonsoft.Json" IncludeAssets="compile" Version="*" />
+    <PackageReference Include="SteamKit2" IncludeAssets="compile" Version="*" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" IncludeAssets="compile" Version="*" />
+    <PackageReference Include="System.Composition.AttributedModel" IncludeAssets="compile" Version="*" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <PackageReference Include="System.Collections.Immutable" IncludeAssets="compile" Version="*" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ArchiSteamFarm\ArchiSteamFarm.csproj" />
+    <ProjectReference Include="..\ArchiSteamFarm\ArchiSteamFarm.csproj" ExcludeAssets="all" Private="false" />
   </ItemGroup>
 </Project>

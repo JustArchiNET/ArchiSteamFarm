@@ -8,9 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="AngleSharp.XPath" Version="1.1.7" />
-    <PackageReference Include="ConfigureAwaitChecker.Analyzer" Version="4.0.0">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+    <PackageReference Include="ConfigureAwaitChecker.Analyzer" PrivateAssets="all" Version="4.0.0" />
     <PackageReference Include="CryptSharpStandard" Version="1.0.0" />
     <PackageReference Include="Humanizer" Version="2.8.26" />
     <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" />
@@ -42,12 +40,8 @@
     <PackageReference Include="Microsoft.AspNetCore.WebSockets" Version="2.2.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="5.0.0" />
-    <Reference Include="System.Net.Http">
-      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Net.Http.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Security">
-      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Security.dll</HintPath>
-    </Reference>
+    <Reference Include="System.Net.Http" HintPath="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Net.Http.dll" />
+    <Reference Include="System.Security" HintPath="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Security.dll" />
   </ItemGroup>
 
   <ItemGroup>
