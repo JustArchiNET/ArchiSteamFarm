@@ -25,7 +25,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Helpers;
 using Newtonsoft.Json;
 using SteamKit2;
@@ -47,13 +46,13 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 		private readonly ConcurrentDictionary<uint, ulong> PackageTokens = new();
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentHashSet<uint> SubmittedAppIDs = new();
+		private readonly ConcurrentDictionary<uint, ulong> SubmittedApps = new();
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentHashSet<uint> SubmittedDepotIDs = new();
+		private readonly ConcurrentDictionary<uint, string> SubmittedDepots = new();
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentHashSet<uint> SubmittedPackageIDs = new();
+		private readonly ConcurrentDictionary<uint, ulong> SubmittedPackages = new();
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal uint LastChangeNumber { get; private set; }
@@ -62,9 +61,9 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 		internal ulong GetAppToken(uint appID) => AppTokens[appID];
 
-		internal Dictionary<uint, ulong> GetAppTokensForSubmission() => AppTokens.Where(appToken => !SubmittedAppIDs.Contains(appToken.Key)).ToDictionary(appToken => appToken.Key, appToken => appToken.Value);
-		internal Dictionary<uint, string> GetDepotKeysForSubmission() => DepotKeys.Where(depotKey => !SubmittedDepotIDs.Contains(depotKey.Key)).ToDictionary(depotKey => depotKey.Key, depotKey => depotKey.Value);
-		internal Dictionary<uint, ulong> GetPackageTokensForSubmission() => PackageTokens.Where(packageToken => !SubmittedPackageIDs.Contains(packageToken.Key)).ToDictionary(packageToken => packageToken.Key, packageToken => packageToken.Value);
+		internal Dictionary<uint, ulong> GetAppTokensForSubmission() => AppTokens.Where(appToken => !SubmittedApps.TryGetValue(appToken.Key, out ulong token) || (appToken.Value != token)).ToDictionary(appToken => appToken.Key, appToken => appToken.Value);
+		internal Dictionary<uint, string> GetDepotKeysForSubmission() => DepotKeys.Where(depotKey => !SubmittedDepots.TryGetValue(depotKey.Key, out string? key) || (depotKey.Value != key)).ToDictionary(depotKey => depotKey.Key, depotKey => depotKey.Value);
+		internal Dictionary<uint, ulong> GetPackageTokensForSubmission() => PackageTokens.Where(packageToken => !SubmittedPackages.TryGetValue(packageToken.Key, out ulong token) || (packageToken.Value != token)).ToDictionary(packageToken => packageToken.Key, packageToken => packageToken.Value);
 
 		internal static async Task<GlobalCache> Load() {
 			if (!File.Exists(SharedFilePath)) {
@@ -183,7 +182,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 				if (appToken == 0) {
 					// Backend is not interested in zero access tokens
-					SubmittedAppIDs.Add(appID);
+					SubmittedApps[appID] = 0;
 				}
 
 				save = true;
@@ -197,7 +196,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				AppTokens[appID] = 0;
 
 				// Backend is not interested in zero access tokens
-				SubmittedAppIDs.Add(appID);
+				SubmittedApps[appID] = 0;
 
 				save = true;
 			}
@@ -229,7 +228,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 				if (string.IsNullOrEmpty(depotKey)) {
 					// Backend is not interested in zero depot keys
-					SubmittedDepotIDs.Add(depotKeyResult.DepotID);
+					SubmittedDepots[depotKeyResult.DepotID] = depotKey;
 				}
 
 				save = true;
@@ -256,7 +255,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 				if (packageToken == 0) {
 					// Backend is not interested in zero access tokens
-					SubmittedPackageIDs.Add(packageID);
+					SubmittedPackages[packageID] = 0;
 				}
 
 				save = true;
@@ -267,36 +266,32 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			}
 		}
 
-		internal async Task UpdateSubmittedData(IReadOnlyCollection<uint> appIDs, IReadOnlyCollection<uint> packageIDs, IReadOnlyCollection<uint> depotIDs) {
-			if (appIDs == null) {
-				throw new ArgumentNullException(nameof(appIDs));
+		internal async Task UpdateSubmittedData(IReadOnlyDictionary<uint, ulong> apps, IReadOnlyDictionary<uint, ulong> packages, IReadOnlyDictionary<uint, string> depots) {
+			if (apps == null) {
+				throw new ArgumentNullException(nameof(apps));
 			}
 
-			if (packageIDs == null) {
-				throw new ArgumentNullException(nameof(packageIDs));
+			if (packages == null) {
+				throw new ArgumentNullException(nameof(packages));
 			}
 
-			if (depotIDs == null) {
-				throw new ArgumentNullException(nameof(depotIDs));
+			if (depots == null) {
+				throw new ArgumentNullException(nameof(depots));
 			}
 
-			bool save = false;
-
-			foreach (uint _ in appIDs.Where(appID => SubmittedAppIDs.Add(appID))) {
-				save = true;
+			foreach ((uint appID, ulong token) in apps) {
+				SubmittedApps[appID] = token;
 			}
 
-			foreach (uint _ in packageIDs.Where(packageID => SubmittedPackageIDs.Add(packageID))) {
-				save = true;
+			foreach ((uint packageID, ulong token) in packages) {
+				SubmittedPackages[packageID] = token;
 			}
 
-			foreach (uint _ in depotIDs.Where(depotID => SubmittedDepotIDs.Add(depotID))) {
-				save = true;
+			foreach ((uint depotID, string key) in depots) {
+				SubmittedDepots[depotID] = key;
 			}
 
-			if (save) {
-				await Save().ConfigureAwait(false);
-			}
+			await Save().ConfigureAwait(false);
 		}
 	}
 }

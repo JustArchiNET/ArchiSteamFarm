@@ -482,7 +482,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 				ASF.ArchiLogger.LogGenericInfo($"Data successfully submitted. Newly registered apps/subs/depots: {response.Content.Data.NewAppsCount}/{response.Content.Data.NewSubsCount}/{response.Content.Data.NewDepotsCount}.");
 
-				await GlobalCache.UpdateSubmittedData(appTokens.Keys, packageTokens.Keys, depotKeys.Keys).ConfigureAwait(false);
+				await GlobalCache.UpdateSubmittedData(appTokens, packageTokens, depotKeys).ConfigureAwait(false);
 			} finally {
 				SubmissionSemaphore.Release();
 			}
