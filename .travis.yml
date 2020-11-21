@@ -109,8 +109,8 @@ matrix:
     # Sadly, travis is still missing support for selecting latest images: https://github.com/travis-ci/travis-ci/issues/8922
     - os: linux
       # Ref: https://docs.travis-ci.com/user/reference/linux
-      dist: bionic
+      dist: focal
     - os: osx
       # Ref: https://docs.travis-ci.com/user/reference/osx
       dotnet: 5.0.100 # For OSX, we need absolute dotnet version until https://github.com/dotnet/core-setup/issues/4187 is resolved
-      osx_image: xcode11.4
+      osx_image: xcode12.2
