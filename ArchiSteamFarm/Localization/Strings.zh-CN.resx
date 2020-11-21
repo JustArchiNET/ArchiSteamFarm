@@ -736,6 +736,10 @@
     <value>结果：{0}</value>
     <comment>{0} will be replaced by generic result of various functions that use this string</comment>
   </data>
-  
-  
+  <data name="WarningUnsupportedEnvironment" xml:space="preserve">
+    <value>您正尝试在不受支持的环境 {1} 中运行 ASF 的 {0} 版本。如果您了解自己在做什么，请提供 --ignore-unsupported-environment 参数。</value>
+  </data>
+  <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
+    <value>未知命令行参数：{0}</value>
+  </data>
 </root>

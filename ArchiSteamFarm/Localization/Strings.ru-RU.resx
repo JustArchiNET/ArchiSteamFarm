@@ -736,6 +736,10 @@
     <value>Результат: {0}</value>
     <comment>{0} will be replaced by generic result of various functions that use this string</comment>
   </data>
-  
-  
+  <data name="WarningUnsupportedEnvironment" xml:space="preserve">
+    <value>Вы пытаетесь запустить ASF в варианте {0} в неподдерживаемом окружении: {1}. Используйте аргумент --ignore-unsupported-environment если вы действительно понимаете, что делаете.</value>
+  </data>
+  <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
+    <value>Неизвестный аргумент командной строки: {0}</value>
+  </data>
 </root>
