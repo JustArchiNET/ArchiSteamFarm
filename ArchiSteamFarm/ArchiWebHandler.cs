@@ -1527,7 +1527,8 @@ namespace ArchiSteamFarm {
 
 						string? value = tag["internal_name"].AsString();
 
-						if (string.IsNullOrEmpty(value)) {
+						// Apparently, name can be empty, but not null
+						if (value == null) {
 							Bot.ArchiLogger.LogNullError(nameof(value));
 
 							return null;
