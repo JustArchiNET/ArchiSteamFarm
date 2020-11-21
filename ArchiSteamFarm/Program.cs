@@ -185,17 +185,13 @@ namespace ArchiSteamFarm {
 			Console.Title = SharedInfo.ProgramIdentifier;
 			ASF.ArchiLogger.LogGenericInfo(SharedInfo.ProgramIdentifier);
 
-			if (!OS.VerifyEnvironment()) {
-				string errorMessage = string.Format(CultureInfo.CurrentCulture, Strings.WarningUnsupportedEnvironment, SharedInfo.BuildInfo.Variant, OS.Variant);
-
-				if (!IgnoreUnsupportedEnvironment) {
-					ASF.ArchiLogger.LogGenericError(errorMessage);
+			if (!IgnoreUnsupportedEnvironment) {
+				if (!OS.VerifyEnvironment()) {
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnsupportedEnvironment, SharedInfo.BuildInfo.Variant, OS.Variant));
 					await Task.Delay(10000).ConfigureAwait(false);
 
 					return false;
 				}
-
-				ASF.ArchiLogger.LogGenericWarning(errorMessage);
 			}
 
 			return true;
