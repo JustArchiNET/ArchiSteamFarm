@@ -311,9 +311,10 @@ namespace ArchiSteamFarm {
 
 						// ReSharper disable once AccessToDisposedClosure
 						async () => await iPlayerService.CallAsync(
-							HttpMethod.Get, "GetOwnedGames", args: new Dictionary<string, object>(3, StringComparer.Ordinal) {
+							HttpMethod.Get, "GetOwnedGames", args: new Dictionary<string, object>(4, StringComparer.Ordinal) {
 								{ "include_appinfo", 1 },
 								{ "key", steamApiKey! },
+								{ "skip_unvetted_apps", "0" },
 								{ "steamid", steamID }
 							}
 						).ConfigureAwait(false)
