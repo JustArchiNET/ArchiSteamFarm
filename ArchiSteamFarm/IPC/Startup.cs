@@ -248,11 +248,13 @@ namespace ArchiSteamFarm.IPC {
 #endif
 
 			// Add support for controllers declared in custom plugins
-			HashSet<Assembly>? assemblies = PluginsCore.LoadAssemblies();
+			if (PluginsCore.ActivePlugins?.Count > 0) {
+				HashSet<Assembly>? assemblies = PluginsCore.LoadAssemblies();
 
-			if (assemblies != null) {
-				foreach (Assembly assembly in assemblies) {
-					mvc.AddApplicationPart(assembly);
+				if (assemblies != null) {
+					foreach (Assembly assembly in assemblies) {
+						mvc.AddApplicationPart(assembly);
+					}
 				}
 			}
 
