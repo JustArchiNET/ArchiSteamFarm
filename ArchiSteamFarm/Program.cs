@@ -286,7 +286,7 @@ namespace ArchiSteamFarm {
 
 			if (currentStringObjects.Count < defaultStringObjects.Count) {
 				float translationCompleteness = currentStringObjects.Count / (float) defaultStringObjects.Count;
-				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.TranslationIncomplete, CultureInfo.CurrentUICulture.Name, translationCompleteness.ToString("P1", CultureInfo.CurrentCulture)));
+				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.TranslationIncomplete, CultureInfo.CurrentUICulture.Name + " (" + CultureInfo.CurrentUICulture.EnglishName + ")", translationCompleteness.ToString("P1", CultureInfo.CurrentCulture)));
 			}
 
 			return true;
