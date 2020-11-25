@@ -101,6 +101,20 @@ namespace ArchiSteamFarm.Plugins {
 
 			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.Initializing, nameof(Plugins)));
 
+			foreach (Assembly assembly in assemblies) {
+				ASF.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Initializing, assembly.FullName));
+
+				try {
+					// This call is bare minimum to verify if the assembly can load itself
+					assembly.GetTypes();
+				} catch (Exception e) {
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, assembly.FullName));
+					ASF.ArchiLogger.LogGenericException(e);
+
+					return false;
+				}
+			}
+
 			ConventionBuilder conventions = new();
 			conventions.ForTypesDerivedFrom<IPlugin>().Export<IPlugin>();
 
