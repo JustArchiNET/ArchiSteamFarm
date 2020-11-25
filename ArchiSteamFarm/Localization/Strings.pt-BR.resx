@@ -736,6 +736,10 @@ Tempo de execução: {1}</value>
     <value>Resultado: {0}</value>
     <comment>{0} will be replaced by generic result of various functions that use this string</comment>
   </data>
-  
-  
+  <data name="WarningUnsupportedEnvironment" xml:space="preserve">
+    <value>Você está tentando executar a variante {0} do ASF em um ambiente não suportado: {1}. Forneça o arguimento --ignore-unsupported-environment se você realmente sabe o que está fazendo.</value>
+  </data>
+  <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
+    <value>Argumento de linha de comando desconhecido: {0}</value>
+  </data>
 </root>
