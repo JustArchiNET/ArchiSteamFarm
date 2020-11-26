@@ -170,7 +170,8 @@ namespace ArchiSteamFarm {
 				ParseArgs(args);
 			}
 
-			bool uniqueInstance = OS.RegisterProcess();
+			bool uniqueInstance = await OS.RegisterProcess().ConfigureAwait(false);
+
 			Logging.InitCoreLoggers(uniqueInstance);
 
 			if (!uniqueInstance) {

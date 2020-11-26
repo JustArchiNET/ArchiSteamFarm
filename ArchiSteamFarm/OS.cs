@@ -28,6 +28,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
 
@@ -92,7 +93,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static bool RegisterProcess() {
+		internal static async Task<bool> RegisterProcess() {
 			if (SingleInstance != null) {
 				return false;
 			}
@@ -106,11 +107,22 @@ namespace ArchiSteamFarm {
 				uniqueName = "Global\\" + GetOsResourceName(nameof(SingleInstance)) + "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(Directory.GetCurrentDirectory()))).Replace("-", "");
 			}
 
-			Mutex singleInstance = new(true, uniqueName, out bool result);
+			Mutex? singleInstance = null;
 
-			if (!result) {
+			for (byte i = 0; (i < WebBrowser.MaxTries) && (singleInstance == null); i++) {
+				singleInstance = new Mutex(true, uniqueName, out bool result);
+
+				if (result) {
+					break;
+				}
+
 				singleInstance.Dispose();
+				singleInstance = null;
 
+				await Task.Delay(1000).ConfigureAwait(false);
+			}
+
+			if (singleInstance == null) {
 				return false;
 			}
 
