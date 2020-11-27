@@ -736,6 +736,10 @@ Süreç çalışma zamanı: {1}</value>
     <value>Sonuç: {0}</value>
     <comment>{0} will be replaced by generic result of various functions that use this string</comment>
   </data>
-  
-  
+  <data name="WarningUnsupportedEnvironment" xml:space="preserve">
+    <value>Desteklenmeyen ortamda {0} ASF varyantını çalıştırmaya çalışıyorsunuz: {1}. Ne yaptığınızı gerçekten biliyorsanız, --ignore-unsupported-environment argümanını sağlayın.</value>
+  </data>
+  <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
+    <value>Bilinmeyen komut satırı bağımsız değişkeni: {0}</value>
+  </data>
 </root>
