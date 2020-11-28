@@ -118,8 +118,6 @@ namespace ArchiSteamFarm {
 				throw new ArgumentOutOfRangeException(nameof(maxTries));
 			}
 
-			BinaryResponse? result = null;
-
 			for (byte i = 0; i < maxTries; i++) {
 				await using StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
@@ -217,7 +215,7 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 			}
 
-			return result;
+			return null;
 		}
 
 		[PublicAPI]
@@ -229,8 +227,6 @@ namespace ArchiSteamFarm {
 			if (maxTries == 0) {
 				throw new ArgumentOutOfRangeException(nameof(maxTries));
 			}
-
-			HtmlDocumentResponse? result = null;
 
 			for (byte i = 0; i < maxTries; i++) {
 				await using StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
@@ -269,14 +265,10 @@ namespace ArchiSteamFarm {
 				}
 
 				try {
-					result = await HtmlDocumentResponse.Create(response).ConfigureAwait(false);
+					return await HtmlDocumentResponse.Create(response).ConfigureAwait(false);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericWarningException(e);
-
-					continue;
 				}
-
-				return result;
 			}
 
 			if (maxTries > 1) {
@@ -284,7 +276,7 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 			}
 
-			return result;
+			return null;
 		}
 
 		[PublicAPI]
@@ -296,8 +288,6 @@ namespace ArchiSteamFarm {
 			if (maxTries == 0) {
 				throw new ArgumentOutOfRangeException(nameof(maxTries));
 			}
-
-			ObjectResponse<T>? result = null;
 
 			for (byte i = 0; i < maxTries; i++) {
 				await using StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
@@ -364,7 +354,7 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 			}
 
-			return result;
+			return null;
 		}
 
 		[PublicAPI]
@@ -376,8 +366,6 @@ namespace ArchiSteamFarm {
 			if (maxTries == 0) {
 				throw new ArgumentOutOfRangeException(nameof(maxTries));
 			}
-
-			StreamResponse? result = null;
 
 			for (byte i = 0; i < maxTries; i++) {
 				HttpResponseMessage? response = await InternalGet(request, headers, referer, requestOptions, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
@@ -415,7 +403,7 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 			}
 
-			return result;
+			return null;
 		}
 
 		[PublicAPI]
@@ -427,8 +415,6 @@ namespace ArchiSteamFarm {
 			if (maxTries == 0) {
 				throw new ArgumentOutOfRangeException(nameof(maxTries));
 			}
-
-			StringResponse? result = null;
 
 			for (byte i = 0; i < maxTries; i++) {
 				using HttpResponseMessage? response = await InternalGet(request, headers, referer, requestOptions).ConfigureAwait(false);
@@ -466,7 +452,7 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 			}
 
-			return result;
+			return null;
 		}
 
 		[PublicAPI]
@@ -478,8 +464,6 @@ namespace ArchiSteamFarm {
 			if (maxTries == 0) {
 				throw new ArgumentOutOfRangeException(nameof(maxTries));
 			}
-
-			XmlDocumentResponse? result = null;
 
 			for (byte i = 0; i < maxTries; i++) {
 				await using StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
@@ -535,7 +519,7 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 			}
 
-			return result;
+			return null;
 		}
 
 		[PublicAPI]
@@ -640,8 +624,6 @@ namespace ArchiSteamFarm {
 				throw new ArgumentOutOfRangeException(nameof(maxTries));
 			}
 
-			HtmlDocumentResponse? result = null;
-
 			for (byte i = 0; i < maxTries; i++) {
 				await using StreamResponse? response = await UrlPostToStream(request, headers, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
@@ -679,14 +661,10 @@ namespace ArchiSteamFarm {
 				}
 
 				try {
-					result = await HtmlDocumentResponse.Create(response).ConfigureAwait(false);
+					return await HtmlDocumentResponse.Create(response).ConfigureAwait(false);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericWarningException(e);
-
-					continue;
 				}
-
-				return result;
 			}
 
 			if (maxTries > 1) {
@@ -694,7 +672,7 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 			}
 
-			return result;
+			return null;
 		}
 
 		[PublicAPI]
@@ -707,9 +685,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentOutOfRangeException(nameof(maxTries));
 			}
 
-			ObjectResponse<TResult>? result = null;
-
-			for (byte i = 0; (i < maxTries) && (result == null); i++) {
+			for (byte i = 0; i < maxTries; i++) {
 				await using StreamResponse? response = await UrlPostToStream(request, headers, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
 				if (response == null) {
@@ -773,7 +749,7 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 			}
 
-			return result;
+			return null;
 		}
 
 		[PublicAPI]
@@ -785,8 +761,6 @@ namespace ArchiSteamFarm {
 			if (maxTries == 0) {
 				throw new ArgumentOutOfRangeException(nameof(maxTries));
 			}
-
-			StreamResponse? result = null;
 
 			for (byte i = 0; i < maxTries; i++) {
 				HttpResponseMessage? response = await InternalPost(request, headers, data, referer, requestOptions, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
@@ -824,7 +798,7 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 			}
 
-			return result;
+			return null;
 		}
 
 		internal static void Init() {
