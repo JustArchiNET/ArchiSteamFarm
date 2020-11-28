@@ -1124,7 +1124,7 @@ namespace ArchiSteamFarm {
 					throw new ArgumentNullException(nameof(basicResponse));
 				}
 
-				Content = content;
+				Content = content ?? throw new ArgumentNullException(nameof(content));
 			}
 
 			public ObjectResponse(BasicResponse basicResponse) : base(basicResponse) {
