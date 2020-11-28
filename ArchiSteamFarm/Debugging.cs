@@ -30,7 +30,7 @@ namespace ArchiSteamFarm {
 		internal static bool IsDebugBuild => false;
 #endif
 
-		internal static bool IsDebugConfigured => ASF.GlobalConfig?.Debug ?? throw new ArgumentNullException(nameof(ASF.GlobalConfig));
+		internal static bool IsDebugConfigured => ASF.GlobalConfig?.Debug ?? throw new InvalidOperationException(nameof(ASF.GlobalConfig));
 
 		internal static bool IsUserDebugging => IsDebugBuild || IsDebugConfigured;
 

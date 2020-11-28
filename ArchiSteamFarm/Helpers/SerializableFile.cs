@@ -42,7 +42,7 @@ namespace ArchiSteamFarm.Helpers {
 
 		protected async Task Save() {
 			if (string.IsNullOrEmpty(FilePath)) {
-				throw new ArgumentNullException(nameof(FilePath));
+				throw new InvalidOperationException(nameof(FilePath));
 			}
 
 			if (ReadOnly) {

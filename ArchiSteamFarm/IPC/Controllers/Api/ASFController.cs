@@ -62,7 +62,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[ProducesResponseType(typeof(GenericResponse<ASFResponse>), (int) HttpStatusCode.OK)]
 		public ActionResult<GenericResponse<ASFResponse>> ASFGet() {
 			if (ASF.GlobalConfig == null) {
-				throw new ArgumentNullException(nameof(ASF.GlobalConfig));
+				throw new InvalidOperationException(nameof(ASF.GlobalConfig));
 			}
 
 			uint memoryUsage = (uint) GC.GetTotalMemory(false) / 1024;
