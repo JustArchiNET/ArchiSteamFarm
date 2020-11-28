@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.ComponentModel;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,7 +50,7 @@ namespace ArchiSteamFarm.Helpers {
 		[PublicAPI]
 		public async Task<(bool Success, T? Result)> GetValue(EFallback fallback = EFallback.DefaultForType) {
 			if (!Enum.IsDefined(typeof(EFallback), fallback)) {
-				throw new ArgumentNullException(nameof(fallback));
+				throw new InvalidEnumArgumentException(nameof(fallback), (int) fallback, typeof(EFallback));
 			}
 
 			if (IsInitialized && IsRecent) {
