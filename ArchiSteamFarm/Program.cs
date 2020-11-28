@@ -176,7 +176,7 @@ namespace ArchiSteamFarm {
 
 			if (!uniqueInstance) {
 				ASF.ArchiLogger.LogGenericError(Strings.ErrorSingleInstanceRequired);
-				await Task.Delay(5000).ConfigureAwait(false);
+				await Task.Delay(10000).ConfigureAwait(false);
 
 				return false;
 			}
@@ -193,6 +193,13 @@ namespace ArchiSteamFarm {
 
 					return false;
 				}
+			}
+
+			if (!Directory.Exists(SharedInfo.ConfigDirectory)) {
+				ASF.ArchiLogger.LogGenericError(Strings.ErrorConfigDirectoryNotFound);
+				await Task.Delay(10000).ConfigureAwait(false);
+
+				return false;
 			}
 
 			return true;

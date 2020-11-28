@@ -405,7 +405,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void InitEvents() {
-			if ((FileSystemWatcher != null) || (LastWriteEvents != null) || !Directory.Exists(SharedInfo.ConfigDirectory)) {
+			if ((FileSystemWatcher != null) || (LastWriteEvents != null)) {
 				return;
 			}
 
@@ -850,7 +850,7 @@ namespace ArchiSteamFarm {
 			HashSet<string> botNames;
 
 			try {
-				botNames = Directory.Exists(SharedInfo.ConfigDirectory) ? Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*" + SharedInfo.JsonConfigExtension).Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).ToHashSet(Bot.BotsComparer)! : new HashSet<string>(0);
+				botNames = Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*" + SharedInfo.JsonConfigExtension).Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).ToHashSet(Bot.BotsComparer)!;
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 

@@ -742,4 +742,7 @@ Process uptime: {1}</value>
   <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
     <value>Unknown command-line argument: {0}</value>
   </data>
+<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Config directory could not be found, aborting!</value>
+</data>
 </root>

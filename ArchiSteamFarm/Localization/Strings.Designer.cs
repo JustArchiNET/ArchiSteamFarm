@@ -846,6 +846,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Config directory could not be found, aborting!.
+        /// </summary>
+        public static string ErrorConfigDirectoryNotFound {
+            get {
+                return ResourceManager.GetString("ErrorConfigDirectoryNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Configured {0} property is invalid: {1}.
         /// </summary>
         public static string ErrorConfigPropertyInvalid {
