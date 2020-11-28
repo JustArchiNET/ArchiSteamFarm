@@ -431,7 +431,7 @@ namespace ArchiSteamFarm {
 			StringResponse? result = null;
 
 			for (byte i = 0; i < maxTries; i++) {
-				using HttpResponseMessage? response = await InternalGet(request, headers, referer).ConfigureAwait(false);
+				using HttpResponseMessage? response = await InternalGet(request, headers, referer, requestOptions).ConfigureAwait(false);
 
 				if (response == null) {
 					// Request timed out, try again
@@ -551,7 +551,7 @@ namespace ArchiSteamFarm {
 			BasicResponse? result = null;
 
 			for (byte i = 0; i < maxTries; i++) {
-				using HttpResponseMessage? response = await InternalHead(request, headers, referer).ConfigureAwait(false);
+				using HttpResponseMessage? response = await InternalHead(request, headers, referer, requestOptions).ConfigureAwait(false);
 
 				if (response == null) {
 					continue;
@@ -597,7 +597,7 @@ namespace ArchiSteamFarm {
 			BasicResponse? result = null;
 
 			for (byte i = 0; i < maxTries; i++) {
-				using HttpResponseMessage? response = await InternalPost(request, headers, data, referer).ConfigureAwait(false);
+				using HttpResponseMessage? response = await InternalPost(request, headers, data, referer, requestOptions).ConfigureAwait(false);
 
 				if (response == null) {
 					continue;
