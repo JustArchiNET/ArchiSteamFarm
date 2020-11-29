@@ -201,12 +201,12 @@ namespace ArchiSteamFarm {
 		private async void OnObjectModified(object? sender, EventArgs e) => await Save().ConfigureAwait(false);
 
 		// ReSharper disable UnusedMember.Global
+		public bool ShouldSerializeBackingLoginKey() => !string.IsNullOrEmpty(BackingLoginKey);
+		public bool ShouldSerializeBackingMobileAuthenticator() => BackingMobileAuthenticator != null;
 		public bool ShouldSerializeBlacklistedFromTradesSteamIDs() => BlacklistedFromTradesSteamIDs.Count > 0;
 		public bool ShouldSerializeGamesToRedeemInBackground() => HasGamesToRedeemInBackground;
 		public bool ShouldSerializeIdlingBlacklistedAppIDs() => IdlingBlacklistedAppIDs.Count > 0;
 		public bool ShouldSerializeIdlingPriorityAppIDs() => IdlingPriorityAppIDs.Count > 0;
-		public bool ShouldSerializeLoginKey() => !string.IsNullOrEmpty(LoginKey);
-		public bool ShouldSerializeMobileAuthenticator() => MobileAuthenticator != null;
 
 		// ReSharper restore UnusedMember.Global
 	}

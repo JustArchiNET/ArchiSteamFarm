@@ -224,7 +224,8 @@ namespace ArchiSteamFarm {
 		private async void OnObjectModified(object? sender, EventArgs e) => await Save().ConfigureAwait(false);
 
 		// ReSharper disable UnusedMember.Global
-		public bool ShouldSerializeCellID() => CellID != 0;
+		public bool ShouldSerializeBackingCellID() => BackingCellID != 0;
+		public bool ShouldSerializePackagesAccessTokens() => !PackagesAccessTokens.IsEmpty;
 		public bool ShouldSerializePackagesData() => !PackagesData.IsEmpty;
 		public bool ShouldSerializeServerListProvider() => ServerListProvider.ShouldSerializeServerRecords();
 
