@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
@@ -31,10 +30,18 @@ using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
 using Newtonsoft.Json;
-using SteamKit2;
 
 namespace ArchiSteamFarm {
 	internal sealed class BotDatabase : SerializableFile {
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly ConcurrentHashSet<ulong> BlacklistedFromTradesSteamIDs = new();
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly ConcurrentHashSet<uint> IdlingBlacklistedAppIDs = new();
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly ConcurrentHashSet<uint> IdlingPriorityAppIDs = new();
+
 		internal uint GamesToRedeemInBackgroundCount {
 			get {
 				lock (GamesToRedeemInBackground) {
@@ -44,19 +51,9 @@ namespace ArchiSteamFarm {
 		}
 
 		internal bool HasGamesToRedeemInBackground => GamesToRedeemInBackgroundCount > 0;
-		internal bool HasIdlingPriorityAppIDs => IdlingPriorityAppIDs.Count > 0;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentHashSet<ulong> BlacklistedFromTradesSteamIDs = new();
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		private readonly OrderedDictionary GamesToRedeemInBackground = new();
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentHashSet<uint> IdlingBlacklistedAppIDs = new();
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentHashSet<uint> IdlingPriorityAppIDs = new();
 
 		internal string? LoginKey {
 			get => BackingLoginKey;
@@ -99,22 +96,20 @@ namespace ArchiSteamFarm {
 		}
 
 		[JsonConstructor]
-		private BotDatabase() { }
+		private BotDatabase() {
+			BlacklistedFromTradesSteamIDs.OnModified += OnObjectModified;
+			IdlingBlacklistedAppIDs.OnModified += OnObjectModified;
+			IdlingPriorityAppIDs.OnModified += OnObjectModified;
+		}
 
 		public override void Dispose() {
+			BlacklistedFromTradesSteamIDs.OnModified -= OnObjectModified;
+			IdlingBlacklistedAppIDs.OnModified -= OnObjectModified;
+			IdlingPriorityAppIDs.OnModified -= OnObjectModified;
+
 			BackingMobileAuthenticator?.Dispose();
 
 			base.Dispose();
-		}
-
-		internal void AddBlacklistedFromTradesSteamIDs(IReadOnlyCollection<ulong> steamIDs) {
-			if ((steamIDs == null) || (steamIDs.Count == 0)) {
-				throw new ArgumentNullException(nameof(steamIDs));
-			}
-
-			if (BlacklistedFromTradesSteamIDs.AddRange(steamIDs)) {
-				Utilities.InBackground(Save);
-			}
 		}
 
 		internal void AddGamesToRedeemInBackground(IOrderedDictionary games) {
@@ -132,26 +127,6 @@ namespace ArchiSteamFarm {
 			}
 
 			if (save) {
-				Utilities.InBackground(Save);
-			}
-		}
-
-		internal void AddIdlingBlacklistedAppIDs(IReadOnlyCollection<uint> appIDs) {
-			if ((appIDs == null) || (appIDs.Count == 0)) {
-				throw new ArgumentNullException(nameof(appIDs));
-			}
-
-			if (IdlingBlacklistedAppIDs.AddRange(appIDs)) {
-				Utilities.InBackground(Save);
-			}
-		}
-
-		internal void AddIdlingPriorityAppIDs(IReadOnlyCollection<uint> appIDs) {
-			if ((appIDs == null) || (appIDs.Count == 0)) {
-				throw new ArgumentNullException(nameof(appIDs));
-			}
-
-			if (IdlingPriorityAppIDs.AddRange(appIDs)) {
 				Utilities.InBackground(Save);
 			}
 		}
@@ -195,8 +170,6 @@ namespace ArchiSteamFarm {
 			return botDatabase;
 		}
 
-		internal IReadOnlyCollection<ulong> GetBlacklistedFromTradesSteamIDs() => BlacklistedFromTradesSteamIDs;
-
 #pragma warning disable CS8605
 		internal (string? Key, string? Name) GetGameToRedeemInBackground() {
 			lock (GamesToRedeemInBackground) {
@@ -208,43 +181,6 @@ namespace ArchiSteamFarm {
 			return (null, null);
 		}
 #pragma warning restore CS8605
-
-		internal IReadOnlyCollection<uint> GetIdlingBlacklistedAppIDs() => IdlingBlacklistedAppIDs;
-		internal IReadOnlyCollection<uint> GetIdlingPriorityAppIDs() => IdlingPriorityAppIDs;
-
-		internal bool IsBlacklistedFromIdling(uint appID) {
-			if (appID == 0) {
-				throw new ArgumentOutOfRangeException(nameof(appID));
-			}
-
-			return IdlingBlacklistedAppIDs.Contains(appID);
-		}
-
-		internal bool IsBlacklistedFromTrades(ulong steamID) {
-			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-				throw new ArgumentOutOfRangeException(nameof(steamID));
-			}
-
-			return BlacklistedFromTradesSteamIDs.Contains(steamID);
-		}
-
-		internal bool IsPriorityIdling(uint appID) {
-			if (appID == 0) {
-				throw new ArgumentOutOfRangeException(nameof(appID));
-			}
-
-			return IdlingPriorityAppIDs.Contains(appID);
-		}
-
-		internal void RemoveBlacklistedFromTradesSteamIDs(IReadOnlyCollection<ulong> steamIDs) {
-			if ((steamIDs == null) || (steamIDs.Count == 0)) {
-				throw new ArgumentNullException(nameof(steamIDs));
-			}
-
-			if (BlacklistedFromTradesSteamIDs.RemoveRange(steamIDs)) {
-				Utilities.InBackground(Save);
-			}
-		}
 
 		internal void RemoveGameToRedeemInBackground(string key) {
 			if (string.IsNullOrEmpty(key)) {
@@ -262,25 +198,7 @@ namespace ArchiSteamFarm {
 			Utilities.InBackground(Save);
 		}
 
-		internal void RemoveIdlingBlacklistedAppIDs(IReadOnlyCollection<uint> appIDs) {
-			if ((appIDs == null) || (appIDs.Count == 0)) {
-				throw new ArgumentNullException(nameof(appIDs));
-			}
-
-			if (IdlingBlacklistedAppIDs.RemoveRange(appIDs)) {
-				Utilities.InBackground(Save);
-			}
-		}
-
-		internal void RemoveIdlingPriorityAppIDs(IReadOnlyCollection<uint> appIDs) {
-			if ((appIDs == null) || (appIDs.Count == 0)) {
-				throw new ArgumentNullException(nameof(appIDs));
-			}
-
-			if (IdlingPriorityAppIDs.RemoveRange(appIDs)) {
-				Utilities.InBackground(Save);
-			}
-		}
+		private async void OnObjectModified(object? sender, EventArgs e) => await Save().ConfigureAwait(false);
 
 		// ReSharper disable UnusedMember.Global
 		public bool ShouldSerializeBlacklistedFromTradesSteamIDs() => BlacklistedFromTradesSteamIDs.Count > 0;

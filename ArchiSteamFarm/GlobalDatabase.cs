@@ -35,10 +35,6 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	public sealed class GlobalDatabase : SerializableFile {
-		[JsonProperty(Required = Required.DisallowNull)]
-		[PublicAPI]
-		public Guid Identifier { get; private set; } = Guid.NewGuid();
-
 		[JsonIgnore]
 		[PublicAPI]
 		public IReadOnlyDictionary<uint, ulong> PackageAccessTokensReadOnly => PackagesAccessTokens;
@@ -57,6 +53,10 @@ namespace ArchiSteamFarm {
 		private readonly ConcurrentDictionary<uint, (uint ChangeNumber, HashSet<uint>? AppIDs)> PackagesData = new();
 
 		private readonly SemaphoreSlim PackagesRefreshSemaphore = new(1, 1);
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		[PublicAPI]
+		public Guid Identifier { get; private set; } = Guid.NewGuid();
 
 		internal uint CellID {
 			get => BackingCellID;
@@ -83,11 +83,11 @@ namespace ArchiSteamFarm {
 		}
 
 		[JsonConstructor]
-		private GlobalDatabase() => ServerListProvider.ServerListUpdated += OnServerListUpdated;
+		private GlobalDatabase() => ServerListProvider.ServerListUpdated += OnObjectModified;
 
 		public override void Dispose() {
 			// Events we registered
-			ServerListProvider.ServerListUpdated -= OnServerListUpdated;
+			ServerListProvider.ServerListUpdated -= OnObjectModified;
 
 			// Those are objects that are always being created if constructor doesn't throw exception
 			PackagesRefreshSemaphore.Dispose();
@@ -221,7 +221,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async void OnServerListUpdated(object? sender, EventArgs e) => await Save().ConfigureAwait(false);
+		private async void OnObjectModified(object? sender, EventArgs e) => await Save().ConfigureAwait(false);
 
 		// ReSharper disable UnusedMember.Global
 		public bool ShouldSerializeCellID() => CellID != 0;

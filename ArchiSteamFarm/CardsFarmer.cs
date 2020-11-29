@@ -248,7 +248,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (!Bot.CanReceiveSteamCards || (Bot.BotConfig.IdlePriorityQueueOnly && !Bot.BotDatabase.HasIdlingPriorityAppIDs)) {
+			if (!Bot.CanReceiveSteamCards || (Bot.BotConfig.IdlePriorityQueueOnly && (Bot.BotDatabase.IdlingPriorityAppIDs.Count == 0))) {
 				Bot.ArchiLogger.LogGenericInfo(Strings.NothingToIdle);
 				await Bot.OnFarmingFinished(false).ConfigureAwait(false);
 

@@ -28,6 +28,8 @@ using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Collections {
 	public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ISet<T> where T : notnull {
+		public event EventHandler? OnModified;
+
 		public int Count => BackingCollection.Count;
 		public bool IsReadOnly => false;
 
@@ -43,8 +45,25 @@ namespace ArchiSteamFarm.Collections {
 			BackingCollection = new ConcurrentDictionary<T, bool>(comparer);
 		}
 
-		public bool Add(T item) => BackingCollection.TryAdd(item, true);
-		public void Clear() => BackingCollection.Clear();
+		public bool Add(T item) {
+			if (!BackingCollection.TryAdd(item, true)) {
+				return false;
+			}
+
+			OnModified?.Invoke(this, EventArgs.Empty);
+
+			return true;
+		}
+
+		public void Clear() {
+			if (BackingCollection.IsEmpty) {
+				return;
+			}
+
+			BackingCollection.Clear();
+
+			OnModified?.Invoke(this, EventArgs.Empty);
+		}
 
 		public bool Contains(T item) => BackingCollection.ContainsKey(item);
 
@@ -96,7 +115,15 @@ namespace ArchiSteamFarm.Collections {
 			return otherSet.Any(Contains);
 		}
 
-		public bool Remove(T item) => BackingCollection.TryRemove(item, out _);
+		public bool Remove(T item) {
+			if (!BackingCollection.TryRemove(item, out _)) {
+				return false;
+			}
+
+			OnModified?.Invoke(this, EventArgs.Empty);
+
+			return true;
+		}
 
 		public bool SetEquals(IEnumerable<T> other) {
 			ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
@@ -163,11 +190,8 @@ namespace ArchiSteamFarm.Collections {
 
 		[PublicAPI]
 		public void ReplaceWith(IEnumerable<T> other) {
-			BackingCollection.Clear();
-
-			foreach (T item in other) {
-				BackingCollection[item] = true;
-			}
+			Clear();
+			UnionWith(other);
 		}
 	}
 }

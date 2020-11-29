@@ -1047,7 +1047,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentOutOfRangeException(nameof(appID));
 			}
 
-			return BotDatabase.IsBlacklistedFromIdling(appID);
+			return BotDatabase.IdlingBlacklistedAppIDs.Contains(appID);
 		}
 
 		internal bool IsBlacklistedFromTrades(ulong steamID) {
@@ -1055,7 +1055,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentOutOfRangeException(nameof(steamID));
 			}
 
-			return BotDatabase.IsBlacklistedFromTrades(steamID);
+			return BotDatabase.BlacklistedFromTradesSteamIDs.Contains(steamID);
 		}
 
 		internal bool IsPriorityIdling(uint appID) {
@@ -1063,7 +1063,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentOutOfRangeException(nameof(appID));
 			}
 
-			return BotDatabase.IsPriorityIdling(appID);
+			return BotDatabase.IdlingPriorityAppIDs.Contains(appID);
 		}
 
 		internal async Task OnConfigChanged(bool deleted) {

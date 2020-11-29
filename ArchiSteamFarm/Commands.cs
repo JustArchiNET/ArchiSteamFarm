@@ -994,13 +994,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentOutOfRangeException(nameof(steamID));
 			}
 
-			if (!Bot.HasAccess(steamID, BotConfig.EAccess.Master)) {
-				return null;
-			}
-
-			IReadOnlyCollection<ulong> blacklist = Bot.BotDatabase.GetBlacklistedFromTradesSteamIDs();
-
-			return FormatBotResponse(blacklist.Count > 0 ? string.Join(", ", blacklist) : string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(blacklist)));
+			return !Bot.HasAccess(steamID, BotConfig.EAccess.Master) ? null : FormatBotResponse(Bot.BotDatabase.BlacklistedFromTradesSteamIDs.Count == 0 ? string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(Bot.BotDatabase.BlacklistedFromTradesSteamIDs)) : string.Join(", ", Bot.BotDatabase.BlacklistedFromTradesSteamIDs));
 		}
 
 		private static async Task<string?> ResponseBlacklist(ulong steamID, string botNames) {
@@ -1054,9 +1048,7 @@ namespace ArchiSteamFarm {
 				targetIDs.Add(targetID);
 			}
 
-			Bot.BotDatabase.AddBlacklistedFromTradesSteamIDs(targetIDs);
-
-			return FormatBotResponse(Strings.Done);
+			return FormatBotResponse(Bot.BotDatabase.BlacklistedFromTradesSteamIDs.AddRange(targetIDs) ? Strings.Done : Strings.NothingFound);
 		}
 
 		private static async Task<string?> ResponseBlacklistAdd(ulong steamID, string botNames, string targetSteamIDs) {
@@ -1114,9 +1106,7 @@ namespace ArchiSteamFarm {
 				targetIDs.Add(targetID);
 			}
 
-			Bot.BotDatabase.RemoveBlacklistedFromTradesSteamIDs(targetIDs);
-
-			return FormatBotResponse(Strings.Done);
+			return FormatBotResponse(Bot.BotDatabase.BlacklistedFromTradesSteamIDs.RemoveRange(targetIDs) ? Strings.Done : Strings.NothingFound);
 		}
 
 		private static async Task<string?> ResponseBlacklistRemove(ulong steamID, string botNames, string targetSteamIDs) {
@@ -1268,13 +1258,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentOutOfRangeException(nameof(steamID));
 			}
 
-			if (!Bot.HasAccess(steamID, BotConfig.EAccess.Master)) {
-				return null;
-			}
-
-			IReadOnlyCollection<uint> idleBlacklist = Bot.BotDatabase.GetIdlingBlacklistedAppIDs();
-
-			return FormatBotResponse(idleBlacklist.Count > 0 ? string.Join(", ", idleBlacklist) : string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(idleBlacklist)));
+			return !Bot.HasAccess(steamID, BotConfig.EAccess.Master) ? null : FormatBotResponse(Bot.BotDatabase.IdlingBlacklistedAppIDs.Count == 0 ? string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(Bot.BotDatabase.IdlingBlacklistedAppIDs)) : string.Join(", ", Bot.BotDatabase.IdlingBlacklistedAppIDs));
 		}
 
 		private static async Task<string?> ResponseIdleBlacklist(ulong steamID, string botNames) {
@@ -1328,7 +1312,9 @@ namespace ArchiSteamFarm {
 				appIDs.Add(appID);
 			}
 
-			Bot.BotDatabase.AddIdlingBlacklistedAppIDs(appIDs);
+			if (!Bot.BotDatabase.IdlingBlacklistedAppIDs.AddRange(appIDs)) {
+				return FormatBotResponse(Strings.NothingFound);
+			}
 
 			if (Bot.CardsFarmer.NowFarming && Bot.CardsFarmer.GamesToFarmReadOnly.Any(game => appIDs.Contains(game.AppID))) {
 				Utilities.InBackground(
@@ -1397,7 +1383,13 @@ namespace ArchiSteamFarm {
 				appIDs.Add(appID);
 			}
 
-			Bot.BotDatabase.RemoveIdlingBlacklistedAppIDs(appIDs);
+			if (!Bot.BotDatabase.IdlingBlacklistedAppIDs.RemoveRange(appIDs)) {
+				return FormatBotResponse(Strings.NothingFound);
+			}
+
+			if (!Bot.CardsFarmer.NowFarming) {
+				Utilities.InBackground(Bot.CardsFarmer.StartFarming);
+			}
 
 			return FormatBotResponse(Strings.Done);
 		}
@@ -1433,13 +1425,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentOutOfRangeException(nameof(steamID));
 			}
 
-			if (!Bot.HasAccess(steamID, BotConfig.EAccess.Master)) {
-				return null;
-			}
-
-			IReadOnlyCollection<uint> idleQueue = Bot.BotDatabase.GetIdlingPriorityAppIDs();
-
-			return FormatBotResponse(idleQueue.Count > 0 ? string.Join(", ", idleQueue) : string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(idleQueue)));
+			return !Bot.HasAccess(steamID, BotConfig.EAccess.Master) ? null : FormatBotResponse(Bot.BotDatabase.IdlingPriorityAppIDs.Count == 0 ? string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(Bot.BotDatabase.IdlingPriorityAppIDs)) : string.Join(", ", Bot.BotDatabase.IdlingPriorityAppIDs));
 		}
 
 		private static async Task<string?> ResponseIdleQueue(ulong steamID, string botNames) {
@@ -1493,7 +1479,25 @@ namespace ArchiSteamFarm {
 				appIDs.Add(appID);
 			}
 
-			Bot.BotDatabase.AddIdlingPriorityAppIDs(appIDs);
+			if (!Bot.BotDatabase.IdlingPriorityAppIDs.AddRange(appIDs)) {
+				return FormatBotResponse(Strings.NothingFound);
+			}
+
+			switch (Bot.CardsFarmer.NowFarming) {
+				case false when Bot.BotConfig.IdlePriorityQueueOnly:
+					Utilities.InBackground(Bot.CardsFarmer.StartFarming);
+
+					break;
+				case true when Bot.CardsFarmer.GamesToFarmReadOnly.Any(game => appIDs.Contains(game.AppID)):
+					Utilities.InBackground(
+						async () => {
+							await Bot.CardsFarmer.StopFarming().ConfigureAwait(false);
+							await Bot.CardsFarmer.StartFarming().ConfigureAwait(false);
+						}
+					);
+
+					break;
+			}
 
 			return FormatBotResponse(Strings.Done);
 		}
@@ -1553,7 +1557,18 @@ namespace ArchiSteamFarm {
 				appIDs.Add(appID);
 			}
 
-			Bot.BotDatabase.RemoveIdlingPriorityAppIDs(appIDs);
+			if (!Bot.BotDatabase.IdlingPriorityAppIDs.RemoveRange(appIDs)) {
+				return FormatBotResponse(Strings.NothingFound);
+			}
+
+			if (Bot.CardsFarmer.NowFarming && Bot.CardsFarmer.GamesToFarmReadOnly.Any(game => appIDs.Contains(game.AppID))) {
+				Utilities.InBackground(
+					async () => {
+						await Bot.CardsFarmer.StopFarming().ConfigureAwait(false);
+						await Bot.CardsFarmer.StartFarming().ConfigureAwait(false);
+					}
+				);
+			}
 
 			return FormatBotResponse(Strings.Done);
 		}
