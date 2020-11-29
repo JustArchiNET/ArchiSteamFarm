@@ -736,6 +736,11 @@ Darbspējas laiks: {1}</value>
     <value>Rezultāts: {0}</value>
     <comment>{0} will be replaced by generic result of various functions that use this string</comment>
   </data>
-  
-  
+  <data name="WarningUnsupportedEnvironment" xml:space="preserve">
+    <value>Tiek mēģināts palaist {0} ASF versiju neatbalstītā vidē: {1}. Pievieno '---ignore-unsupported-environment argument' ja zini ko dari.</value>
+  </data>
+  <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
+    <value>Nezināms komandrindas arguments: {0}</value>
+  </data>
+
 </root>

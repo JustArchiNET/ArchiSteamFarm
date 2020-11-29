@@ -742,4 +742,5 @@ Süreç çalışma zamanı: {1}</value>
   <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
     <value>Bilinmeyen komut satırı bağımsız değişkeni: {0}</value>
   </data>
+
 </root>

@@ -742,4 +742,5 @@ Czas procesu: {1}</value>
   <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
     <value>Nieznany argument wiersza poleceń: {0}</value>
   </data>
+
 </root>

@@ -742,4 +742,5 @@ Tempo de execução: {1}</value>
   <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
     <value>Argumento de linha de comando desconhecido: {0}</value>
   </data>
+
 </root>
