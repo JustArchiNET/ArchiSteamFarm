@@ -200,6 +200,9 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool ShutdownOnFarmingFinished { get; private set; } = DefaultShutdownOnFarmingFinished;
 
+		[JsonProperty(Required = Required.DisallowNull)]
+		public ulong SteamMasterClanID { get; private set; } = DefaultSteamMasterClanID;
+
 		[JsonProperty]
 		public string? SteamTradeToken { get; private set; } = DefaultSteamTradeToken;
 
@@ -214,9 +217,6 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool UseLoginKeys { get; private set; } = DefaultUseLoginKeys;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		public ulong SteamMasterClanID { get; private set; } = DefaultSteamMasterClanID;
 
 		[JsonExtensionData]
 		internal Dictionary<string, JToken>? AdditionalProperties {

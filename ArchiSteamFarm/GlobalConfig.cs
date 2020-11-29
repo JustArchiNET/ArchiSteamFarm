@@ -126,6 +126,56 @@ namespace ArchiSteamFarm {
 
 		private static readonly SemaphoreSlim WriteSemaphore = new(1, 1);
 
+		[JsonIgnore]
+		[PublicAPI]
+		public WebProxy? WebProxy {
+			get {
+				if (BackingWebProxy != null) {
+					return BackingWebProxy;
+				}
+
+				if (string.IsNullOrEmpty(WebProxyText)) {
+					return null;
+				}
+
+				Uri uri;
+
+				try {
+					uri = new Uri(WebProxyText!);
+				} catch (UriFormatException e) {
+					ASF.ArchiLogger.LogGenericException(e);
+
+					return null;
+				}
+
+				WebProxy proxy = new() {
+					Address = uri,
+					BypassProxyOnLocal = true
+				};
+
+				if (!string.IsNullOrEmpty(WebProxyUsername) || !string.IsNullOrEmpty(WebProxyPassword)) {
+					NetworkCredential credentials = new();
+
+					if (!string.IsNullOrEmpty(WebProxyUsername)) {
+						credentials.UserName = WebProxyUsername;
+					}
+
+					if (!string.IsNullOrEmpty(WebProxyPassword)) {
+						credentials.Password = WebProxyPassword;
+					}
+
+					proxy.Credentials = credentials;
+				}
+
+				BackingWebProxy = proxy;
+
+				return proxy;
+			}
+		}
+
+		[JsonProperty]
+		internal readonly string? IPCPassword = DefaultIPCPassword;
+
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool AutoRestart { get; private set; } = DefaultAutoRestart;
 
@@ -187,6 +237,12 @@ namespace ArchiSteamFarm {
 		public string? SteamMessagePrefix { get; private set; } = DefaultSteamMessagePrefix;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		public ulong SteamOwnerID { get; private set; } = DefaultSteamOwnerID;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		public ProtocolTypes SteamProtocols { get; private set; } = DefaultSteamProtocols;
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		public EUpdateChannel UpdateChannel { get; private set; } = DefaultUpdateChannel;
 
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -195,67 +251,11 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ushort WebLimiterDelay { get; private set; } = DefaultWebLimiterDelay;
 
-		[JsonIgnore]
-		[PublicAPI]
-		public WebProxy? WebProxy {
-			get {
-				if (BackingWebProxy != null) {
-					return BackingWebProxy;
-				}
-
-				if (string.IsNullOrEmpty(WebProxyText)) {
-					return null;
-				}
-
-				Uri uri;
-
-				try {
-					uri = new Uri(WebProxyText!);
-				} catch (UriFormatException e) {
-					ASF.ArchiLogger.LogGenericException(e);
-
-					return null;
-				}
-
-				WebProxy proxy = new() {
-					Address = uri,
-					BypassProxyOnLocal = true
-				};
-
-				if (!string.IsNullOrEmpty(WebProxyUsername) || !string.IsNullOrEmpty(WebProxyPassword)) {
-					NetworkCredential credentials = new();
-
-					if (!string.IsNullOrEmpty(WebProxyUsername)) {
-						credentials.UserName = WebProxyUsername;
-					}
-
-					if (!string.IsNullOrEmpty(WebProxyPassword)) {
-						credentials.Password = WebProxyPassword;
-					}
-
-					proxy.Credentials = credentials;
-				}
-
-				BackingWebProxy = proxy;
-
-				return proxy;
-			}
-		}
-
 		[JsonProperty(PropertyName = nameof(WebProxy))]
 		public string? WebProxyText { get; private set; } = DefaultWebProxyText;
 
 		[JsonProperty]
 		public string? WebProxyUsername { get; private set; } = DefaultWebProxyUsername;
-
-		[JsonProperty]
-		internal readonly string? IPCPassword = DefaultIPCPassword;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		public ulong SteamOwnerID { get; private set; } = DefaultSteamOwnerID;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		public ProtocolTypes SteamProtocols { get; private set; } = DefaultSteamProtocols;
 
 		[JsonExtensionData]
 		internal Dictionary<string, JToken>? AdditionalProperties {
