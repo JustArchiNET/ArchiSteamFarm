@@ -742,5 +742,7 @@
   <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
     <value>未知命令行参数：{0}</value>
   </data>
-
+<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>无法找到配置文件目录，即将中止！</value>
+</data>
 </root>

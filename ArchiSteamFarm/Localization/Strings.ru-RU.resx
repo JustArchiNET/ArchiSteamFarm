@@ -742,5 +742,7 @@
   <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
     <value>Неизвестный аргумент командной строки: {0}</value>
   </data>
-
+<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Не удалось найти каталог с конфигурационными файлами, прекращаем работу!</value>
+</data>
 </root>
