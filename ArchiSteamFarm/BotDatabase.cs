@@ -198,7 +198,13 @@ namespace ArchiSteamFarm {
 			Utilities.InBackground(Save);
 		}
 
-		private async void OnObjectModified(object? sender, EventArgs e) => await Save().ConfigureAwait(false);
+		private async void OnObjectModified(object? sender, EventArgs e) {
+			if (string.IsNullOrEmpty(FilePath)) {
+				return;
+			}
+
+			await Save().ConfigureAwait(false);
+		}
 
 		// ReSharper disable UnusedMember.Global
 		public bool ShouldSerializeBackingLoginKey() => !string.IsNullOrEmpty(BackingLoginKey);
