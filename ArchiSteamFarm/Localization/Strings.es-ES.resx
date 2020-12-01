@@ -741,5 +741,7 @@ Tiempo de actividad del proceso: {1}</value>
   <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
     <value>Argumento de línea de comandos desconocido: {0}</value>
   </data>
-
+<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>¡No se pudo encontrar el directorio de configuración, abortando!</value>
+</data>
 </root>
