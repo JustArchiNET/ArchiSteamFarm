@@ -334,7 +334,7 @@ namespace ArchiSteamFarm {
 				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamProtocols), SteamProtocols));
 			}
 
-			return Enum.IsDefined(typeof(EUpdateChannel), UpdateChannel) ? (true, (string?) null) : (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(UpdateChannel), UpdateChannel));
+			return Enum.IsDefined(typeof(EUpdateChannel), UpdateChannel) ? (true, null) : (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(UpdateChannel), UpdateChannel));
 		}
 
 		internal static async Task<GlobalConfig?> Load(string filePath) {

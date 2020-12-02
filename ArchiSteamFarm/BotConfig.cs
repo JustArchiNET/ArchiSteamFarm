@@ -374,7 +374,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			return TradingPreferences <= ETradingPreferences.All ? (true, (string?) null) : (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(TradingPreferences), TradingPreferences));
+			return TradingPreferences <= ETradingPreferences.All ? (true, null) : (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(TradingPreferences), TradingPreferences));
 		}
 
 		internal static async Task<BotConfig?> Load(string filePath) {

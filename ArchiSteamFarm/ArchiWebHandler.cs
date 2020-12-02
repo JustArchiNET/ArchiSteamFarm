@@ -363,7 +363,7 @@ namespace ArchiSteamFarm {
 		public async Task<bool?> HasValidApiKey() {
 			(bool success, string? steamApiKey) = await CachedApiKey.GetValue().ConfigureAwait(false);
 
-			return success ? !string.IsNullOrEmpty(steamApiKey) : (bool?) null;
+			return success ? !string.IsNullOrEmpty(steamApiKey) : null;
 		}
 
 		[PublicAPI]
