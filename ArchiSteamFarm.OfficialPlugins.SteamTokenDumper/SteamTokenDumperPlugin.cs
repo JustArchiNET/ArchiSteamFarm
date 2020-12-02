@@ -55,7 +55,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 		public Task<uint> GetPreferredChangeNumberToStartFrom() => Task.FromResult(IsEnabled ? GlobalCache?.LastChangeNumber ?? 0 : 0);
 
-		public void OnASFInit(IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null) {
+		public async void OnASFInit(IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null) {
 			if (!SharedInfo.HasValidToken) {
 				ASF.ArchiLogger.LogGenericError($"{Name} has been disabled due to missing build token.");
 
@@ -86,7 +86,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				return;
 			}
 
-			GlobalCache ??= GlobalCache.Load().Result;
+			GlobalCache ??= await GlobalCache.Load().ConfigureAwait(false);
 
 			TimeSpan startIn = TimeSpan.FromMinutes(Utilities.RandomNext(SharedInfo.MinimumMinutesBeforeFirstUpload, SharedInfo.MaximumMinutesBeforeFirstUpload));
 
