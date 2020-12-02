@@ -327,7 +327,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				message = message.Substring(commandPrefix.Length);
+				message = message[commandPrefix.Length..];
 			}
 
 			Task<string?> responseTask = Response(steamID, message);
@@ -401,7 +401,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				message = message.Substring(commandPrefix.Length);
+				message = message[commandPrefix.Length..];
 			}
 
 			Task<string?> responseTask = Response(steamID, message);
@@ -584,13 +584,13 @@ namespace ArchiSteamFarm {
 				int index = entry.IndexOf('/');
 
 				if ((index > 0) && (entry.Length > index + 1)) {
-					if (!uint.TryParse(entry.Substring(index + 1), out gameID) || (gameID == 0)) {
+					if (!uint.TryParse(entry[(index + 1)..], out gameID) || (gameID == 0)) {
 						response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(gameID))));
 
 						continue;
 					}
 
-					type = entry.Substring(0, index);
+					type = entry[..index];
 				} else if (uint.TryParse(entry, out gameID) && (gameID > 0)) {
 					type = "SUB";
 				} else {
@@ -1892,8 +1892,8 @@ namespace ArchiSteamFarm {
 				int index = entry.IndexOf('/');
 
 				if ((index > 0) && (entry.Length > index + 1)) {
-					game = entry.Substring(index + 1);
-					type = entry.Substring(0, index);
+					game = entry[(index + 1)..];
+					type = entry[..index];
 				} else if (uint.TryParse(entry, out uint appID) && (appID > 0)) {
 					game = entry;
 					type = "APP";

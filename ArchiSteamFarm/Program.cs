@@ -501,15 +501,15 @@ namespace ArchiSteamFarm {
 						} else {
 							switch (arg.Length) {
 								case > 16 when arg.StartsWith("--network-group=", StringComparison.Ordinal):
-									HandleNetworkGroupArgument(arg.Substring(16));
+									HandleNetworkGroupArgument(arg[16..]);
 
 									break;
 								case > 11 when arg.StartsWith("--cryptkey=", StringComparison.Ordinal):
-									HandleCryptKeyArgument(arg.Substring(11));
+									HandleCryptKeyArgument(arg[11..]);
 
 									break;
 								case > 7 when arg.StartsWith("--path=", StringComparison.Ordinal):
-									HandlePathArgument(arg.Substring(7));
+									HandlePathArgument(arg[7..]);
 
 									break;
 								default:

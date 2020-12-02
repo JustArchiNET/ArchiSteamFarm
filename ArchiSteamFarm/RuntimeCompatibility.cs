@@ -125,9 +125,9 @@ namespace ArchiSteamFarm {
 					throw new NotImplementedException();
 				}
 
-				string result = path.Substring(relativeTo.Length);
+				string result = path[relativeTo.Length..];
 
-				return (result[0] == System.IO.Path.DirectorySeparatorChar) || (result[0] == System.IO.Path.AltDirectorySeparatorChar) ? result.Substring(1) : result;
+				return (result[0] == System.IO.Path.DirectorySeparatorChar) || (result[0] == System.IO.Path.AltDirectorySeparatorChar) ? result[1..] : result;
 #else
 #pragma warning disable IDE0022
 				return System.IO.Path.GetRelativePath(relativeTo, path);

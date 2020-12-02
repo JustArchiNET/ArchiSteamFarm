@@ -642,23 +642,31 @@ namespace ArchiSteamFarm {
 						continue;
 					}
 
-					int levelIndex = levelText.IndexOf("Level ", StringComparison.OrdinalIgnoreCase);
+					int levelStartIndex = levelText.IndexOf("Level ", StringComparison.OrdinalIgnoreCase);
 
-					if (levelIndex < 0) {
-						Bot.ArchiLogger.LogNullError(nameof(levelIndex));
-
-						continue;
-					}
-
-					levelIndex += 6;
-
-					if (levelText.Length <= levelIndex) {
-						Bot.ArchiLogger.LogNullError(nameof(levelIndex));
+					if (levelStartIndex < 0) {
+						Bot.ArchiLogger.LogNullError(nameof(levelStartIndex));
 
 						continue;
 					}
 
-					levelText = levelText.Substring(levelIndex, 1);
+					levelStartIndex += 6;
+
+					if (levelText.Length <= levelStartIndex) {
+						Bot.ArchiLogger.LogNullError(nameof(levelStartIndex));
+
+						continue;
+					}
+
+					int levelEndIndex = levelText.IndexOf(',', levelStartIndex);
+
+					if (levelEndIndex <= levelStartIndex) {
+						Bot.ArchiLogger.LogNullError(nameof(levelEndIndex));
+
+						continue;
+					}
+
+					levelText = levelText[levelStartIndex..levelEndIndex];
 
 					if (!byte.TryParse(levelText, out badgeLevel) || (badgeLevel == 0) || (badgeLevel > 5)) {
 						Bot.ArchiLogger.LogNullError(nameof(badgeLevel));

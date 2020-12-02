@@ -424,7 +424,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if (botName.StartsWith("r!", StringComparison.OrdinalIgnoreCase)) {
-					string botsPattern = botName.Substring(2);
+					string botsPattern = botName[2..];
 
 					RegexOptions botsRegex = RegexOptions.None;
 

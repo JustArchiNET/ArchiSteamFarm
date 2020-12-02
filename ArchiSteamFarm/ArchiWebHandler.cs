@@ -1761,7 +1761,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				if (!ulong.TryParse(giftCardIDText.Substring(13), out ulong giftCardID) || (giftCardID == 0)) {
+				if (!ulong.TryParse(giftCardIDText[13..], out ulong giftCardID) || (giftCardID == 0)) {
 					Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorParsingObject, nameof(giftCardID)));
 
 					return null;
@@ -1904,7 +1904,7 @@ namespace ArchiSteamFarm {
 			}
 
 			index += daysTheirVariableName.Length;
-			text = text.Substring(index);
+			text = text[index..];
 
 			index = text.IndexOf(';');
 
@@ -1914,7 +1914,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			text = text.Substring(0, index);
+			text = text[..index];
 
 			if (!byte.TryParse(text, out byte result)) {
 				Bot.ArchiLogger.LogNullError(nameof(result));
@@ -2393,7 +2393,7 @@ namespace ArchiSteamFarm {
 				return (ESteamApiKeyState.Error, null);
 			}
 
-			text = text.Substring(keyIndex);
+			text = text[keyIndex..];
 
 			if ((text.Length != 32) || !Utilities.IsValidHexadecimalText(text)) {
 				Bot.ArchiLogger.LogNullError(nameof(text));

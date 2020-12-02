@@ -327,7 +327,7 @@ namespace ArchiSteamFarm.NLog {
 									continue;
 								}
 
-								command = command.Substring(commandPrefix!.Length);
+								command = command[commandPrefix!.Length..];
 							}
 
 							Bot? targetBot = Bot.Bots?.OrderBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value).FirstOrDefault();

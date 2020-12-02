@@ -64,7 +64,7 @@ namespace ArchiSteamFarm.IPC {
 				return null;
 			}
 
-			return Type.GetType(typeText + "," + typeText.Substring(0, index));
+			return Type.GetType(typeText + "," + typeText[..index]);
 		}
 	}
 }

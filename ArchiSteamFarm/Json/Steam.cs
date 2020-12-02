@@ -457,7 +457,7 @@ namespace ArchiSteamFarm.Json {
 										break;
 									}
 
-									string appIDText = tag.Value.Substring(4);
+									string appIDText = tag.Value[4..];
 
 									if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
 										ASF.ArchiLogger.LogNullError(nameof(appID));

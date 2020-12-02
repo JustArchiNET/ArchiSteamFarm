@@ -73,7 +73,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 					return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(command))));
 				}
 
-				command = command.Substring(commandPrefix!.Length);
+				command = command[commandPrefix!.Length..];
 			}
 
 			string? response = await targetBot.Commands.Response(steamOwnerID, command).ConfigureAwait(false);
