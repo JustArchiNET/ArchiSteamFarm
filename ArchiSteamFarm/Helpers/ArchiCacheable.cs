@@ -28,7 +28,7 @@ using ArchiSteamFarm.Localization;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Helpers {
-	public sealed class ArchiCacheable<T> : IDisposable where T : class {
+	public sealed class ArchiCacheable<T> : IDisposable {
 		private readonly TimeSpan CacheLifetime;
 		private readonly SemaphoreSlim InitSemaphore = new(1, 1);
 		private readonly Func<Task<(bool Success, T? Result)>> ResolveFunction;
