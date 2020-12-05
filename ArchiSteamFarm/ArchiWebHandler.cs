@@ -170,7 +170,7 @@ namespace ArchiSteamFarm {
 						yield break;
 					}
 
-					if ((response.Content.Assets == null) || (response.Content.Assets.Count == 0) || (response.Content.Descriptions == null) || (response.Content.Descriptions.Count == 0)) {
+					if ((response.Content.Assets.Count == 0) || (response.Content.Descriptions.Count == 0)) {
 						throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response.Content.Assets) + " || " + nameof(response.Content.Descriptions)));
 					}
 

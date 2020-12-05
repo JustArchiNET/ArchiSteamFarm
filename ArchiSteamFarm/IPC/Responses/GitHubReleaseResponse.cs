@@ -30,7 +30,7 @@ namespace ArchiSteamFarm.IPC.Responses {
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public string? ChangelogHTML { get; private set; }
+		public string ChangelogHTML { get; private set; }
 
 		/// <summary>
 		///     Date of the release.
@@ -51,14 +51,14 @@ namespace ArchiSteamFarm.IPC.Responses {
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public string? Version { get; private set; }
+		public string Version { get; private set; }
 
 		internal GitHubReleaseResponse(GitHub.ReleaseResponse releaseResponse) {
 			if (releaseResponse == null) {
 				throw new ArgumentNullException(nameof(releaseResponse));
 			}
 
-			ChangelogHTML = releaseResponse.ChangelogHTML;
+			ChangelogHTML = releaseResponse.ChangelogHTML ?? "";
 			ReleasedAt = releaseResponse.PublishedAt;
 			Stable = !releaseResponse.IsPreRelease;
 			Version = releaseResponse.Tag;

@@ -283,7 +283,6 @@ namespace ArchiSteamFarm {
 		private string? BackingWebProxyPassword = DefaultWebProxyPassword;
 
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamOwnerID), Required = Required.DisallowNull)]
-
 		private string SSteamOwnerID {
 			get => SteamOwnerID.ToString(CultureInfo.InvariantCulture);
 

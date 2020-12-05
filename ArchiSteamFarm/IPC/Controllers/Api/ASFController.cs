@@ -109,10 +109,6 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				throw new InvalidOperationException(nameof(ASF.GlobalConfig));
 			}
 
-			if (request.GlobalConfig == null) {
-				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(request.GlobalConfig))));
-			}
-
 			(bool valid, string? errorMessage) = request.GlobalConfig.CheckValidation();
 
 			if (!valid) {

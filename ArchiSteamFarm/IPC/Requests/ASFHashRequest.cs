@@ -38,7 +38,7 @@ namespace ArchiSteamFarm.IPC.Requests {
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public string? StringToHash { get; private set; }
+		public string StringToHash { get; private set; } = "";
 
 		[JsonConstructor]
 		private ASFHashRequest() { }

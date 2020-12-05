@@ -253,11 +253,11 @@ namespace ArchiSteamFarm.Json {
 			public sealed class Tag {
 				[JsonProperty(PropertyName = "category", Required = Required.Always)]
 				[PublicAPI]
-				public string? Identifier { get; private set; }
+				public string Identifier { get; private set; } = "";
 
 				[JsonProperty(PropertyName = "internal_name", Required = Required.Always)]
 				[PublicAPI]
-				public string? Value { get; private set; }
+				public string Value { get; private set; } = "";
 
 				internal Tag(string identifier, string value) {
 					Identifier = !string.IsNullOrEmpty(identifier) ? identifier : throw new ArgumentNullException(nameof(identifier));
@@ -366,13 +366,13 @@ namespace ArchiSteamFarm.Json {
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class InventoryResponse : EResultResponse {
 			[JsonProperty(PropertyName = "assets", Required = Required.DisallowNull)]
-			internal readonly ImmutableHashSet<Asset>? Assets;
+			internal readonly ImmutableHashSet<Asset> Assets = ImmutableHashSet<Asset>.Empty;
 
 			[JsonProperty(PropertyName = "descriptions", Required = Required.DisallowNull)]
-			internal readonly ImmutableHashSet<Description>? Descriptions;
+			internal readonly ImmutableHashSet<Description> Descriptions = ImmutableHashSet<Description>.Empty;
 
 			[JsonProperty(PropertyName = "error", Required = Required.DisallowNull)]
-			internal readonly string? Error;
+			internal readonly string Error = "";
 
 			[JsonProperty(PropertyName = "total_inventory_count", Required = Required.DisallowNull)]
 			internal readonly uint TotalInventoryCount;
@@ -414,10 +414,6 @@ namespace ArchiSteamFarm.Json {
 			internal sealed class Description {
 				internal Asset.ERarity Rarity {
 					get {
-						if (Tags == null) {
-							return Asset.ERarity.Unknown;
-						}
-
 						foreach (Asset.Tag tag in Tags) {
 							switch (tag.Identifier) {
 								case "droprate":
@@ -444,10 +440,6 @@ namespace ArchiSteamFarm.Json {
 
 				internal uint RealAppID {
 					get {
-						if (Tags == null) {
-							return 0;
-						}
-
 						foreach (Asset.Tag tag in Tags) {
 							switch (tag.Identifier) {
 								case "Game":
@@ -475,10 +467,6 @@ namespace ArchiSteamFarm.Json {
 
 				internal Asset.EType Type {
 					get {
-						if (Tags == null) {
-							return Asset.EType.Unknown;
-						}
-
 						Asset.EType type = Asset.EType.Unknown;
 
 						foreach (Asset.Tag tag in Tags) {
@@ -554,7 +542,7 @@ namespace ArchiSteamFarm.Json {
 				internal bool Marketable { get; set; }
 
 				[JsonProperty(PropertyName = "tags", Required = Required.DisallowNull)]
-				internal ImmutableHashSet<Asset.Tag>? Tags { get; set; }
+				internal ImmutableHashSet<Asset.Tag> Tags { get; set; } = ImmutableHashSet<Asset.Tag>.Empty;
 
 				internal bool Tradable { get; set; }
 
@@ -620,7 +608,7 @@ namespace ArchiSteamFarm.Json {
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class NewDiscoveryQueueResponse {
 			[JsonProperty(PropertyName = "queue", Required = Required.Always)]
-			internal readonly ImmutableHashSet<uint>? Queue;
+			internal readonly ImmutableHashSet<uint> Queue = ImmutableHashSet<uint>.Empty;
 
 			[JsonConstructor]
 			private NewDiscoveryQueueResponse() { }
@@ -629,7 +617,7 @@ namespace ArchiSteamFarm.Json {
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class RedeemWalletResponse : EResultResponse {
 			[JsonProperty(PropertyName = "detail", Required = Required.DisallowNull)]
-			internal readonly EPurchaseResultDetail? PurchaseResultDetail;
+			internal readonly EPurchaseResultDetail PurchaseResultDetail;
 
 			[JsonConstructor]
 			private RedeemWalletResponse() { }
@@ -638,7 +626,7 @@ namespace ArchiSteamFarm.Json {
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class TradeOfferAcceptResponse {
 			[JsonProperty(PropertyName = "strError", Required = Required.DisallowNull)]
-			internal readonly string? ErrorText;
+			internal readonly string ErrorText = "";
 
 			[JsonProperty(PropertyName = "needs_mobile_confirmation", Required = Required.DisallowNull)]
 			internal readonly bool RequiresMobileConfirmation;
@@ -698,7 +686,7 @@ namespace ArchiSteamFarm.Json {
 			internal readonly ECommentPermission CommentPermission;
 
 			[JsonProperty(PropertyName = "PrivacySettings", Required = Required.Always)]
-			internal readonly PrivacySettings? Settings;
+			internal readonly PrivacySettings Settings = new();
 
 			// Constructed from privacy change request
 			internal UserPrivacy(PrivacySettings settings, ECommentPermission commentPermission) {
@@ -763,7 +751,7 @@ namespace ArchiSteamFarm.Json {
 				}
 
 				[JsonConstructor]
-				private PrivacySettings() { }
+				internal PrivacySettings() { }
 			}
 
 			internal enum ECommentPermission : byte {

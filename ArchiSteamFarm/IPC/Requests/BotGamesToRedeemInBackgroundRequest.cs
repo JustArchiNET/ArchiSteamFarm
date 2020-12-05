@@ -36,7 +36,7 @@ namespace ArchiSteamFarm.IPC.Requests {
 		/// </remarks>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public OrderedDictionary? GamesToRedeemInBackground { get; private set; }
+		public OrderedDictionary GamesToRedeemInBackground { get; private set; } = new();
 
 		[JsonConstructor]
 		private BotGamesToRedeemInBackgroundRequest() { }

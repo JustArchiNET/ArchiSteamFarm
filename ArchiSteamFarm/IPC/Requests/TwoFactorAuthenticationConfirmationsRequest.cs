@@ -40,12 +40,12 @@ namespace ArchiSteamFarm.IPC.Requests {
 		///     Specifies IDs of the confirmations that we're supposed to handle. CreatorID of the confirmation is equal to ID of the object that triggered it - e.g. ID of the trade offer, or ID of the market listing. If not provided, or empty array, all confirmation IDs are considered for an action.
 		/// </summary>
 		[JsonProperty(Required = Required.DisallowNull)]
-		public ImmutableHashSet<ulong>? AcceptedCreatorIDs { get; private set; }
+		public ImmutableHashSet<ulong> AcceptedCreatorIDs { get; private set; } = ImmutableHashSet<ulong>.Empty;
 
 		/// <summary>
 		///     Specifies the type of confirmations to handle. If not provided, all confirmation types are considered for an action.
 		/// </summary>
-		[JsonProperty(Required = Required.DisallowNull)]
+		[JsonProperty]
 		public MobileAuthenticator.Confirmation.EType? AcceptedType { get; private set; }
 
 		/// <summary>

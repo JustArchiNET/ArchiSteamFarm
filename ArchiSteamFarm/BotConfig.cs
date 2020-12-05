@@ -297,7 +297,6 @@ namespace ArchiSteamFarm {
 		private string? BackingSteamPassword = DefaultSteamPassword;
 
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamMasterClanID), Required = Required.DisallowNull)]
-
 		private string SSteamMasterClanID {
 			get => SteamMasterClanID.ToString(CultureInfo.InvariantCulture);
 
@@ -313,7 +312,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[JsonConstructor]
-		private BotConfig() { }
+		internal BotConfig() { }
 
 		internal (bool Valid, string? ErrorMessage) CheckValidation() {
 			if (BotBehaviour > EBotBehaviour.All) {

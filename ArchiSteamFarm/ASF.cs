@@ -287,7 +287,7 @@ namespace ArchiSteamFarm {
 				}
 
 				// Auto update logic starts here
-				if (releaseResponse.Assets == null) {
+				if (releaseResponse.Assets.IsEmpty) {
 					ArchiLogger.LogGenericWarning(Strings.ErrorUpdateNoAssets);
 
 					return null;

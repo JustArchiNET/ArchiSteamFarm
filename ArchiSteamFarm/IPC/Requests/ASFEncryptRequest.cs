@@ -38,7 +38,7 @@ namespace ArchiSteamFarm.IPC.Requests {
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
 		[Required]
-		public string? StringToEncrypt { get; private set; }
+		public string StringToEncrypt { get; private set; } = "";
 
 		[JsonConstructor]
 		private ASFEncryptRequest() { }

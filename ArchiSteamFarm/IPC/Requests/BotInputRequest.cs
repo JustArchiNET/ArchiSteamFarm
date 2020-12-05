@@ -35,7 +35,7 @@ namespace ArchiSteamFarm.IPC.Requests {
 		///     Specifies the value for given input type (declared in <see cref="Type" />)
 		/// </summary>
 		[JsonProperty(Required = Required.Always)]
-		public string? Value { get; private set; }
+		public string Value { get; private set; } = "";
 
 		[JsonConstructor]
 		private BotInputRequest() { }

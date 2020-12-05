@@ -101,7 +101,7 @@ namespace ArchiSteamFarm {
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class ReleaseResponse {
 			[JsonProperty(PropertyName = "assets", Required = Required.Always)]
-			internal readonly ImmutableHashSet<Asset>? Assets;
+			internal readonly ImmutableHashSet<Asset> Assets = ImmutableHashSet<Asset>.Empty;
 
 			[JsonProperty(PropertyName = "prerelease", Required = Required.Always)]
 			internal readonly bool IsPreRelease;
@@ -110,7 +110,7 @@ namespace ArchiSteamFarm {
 			internal readonly DateTime PublishedAt;
 
 			[JsonProperty(PropertyName = "tag_name", Required = Required.Always)]
-			internal readonly string? Tag;
+			internal readonly string Tag = "";
 
 			internal string? ChangelogHTML {
 				get {

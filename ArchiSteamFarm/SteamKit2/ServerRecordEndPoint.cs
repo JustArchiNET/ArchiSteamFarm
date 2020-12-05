@@ -27,7 +27,7 @@ using SteamKit2;
 namespace ArchiSteamFarm.SteamKit2 {
 	internal sealed class ServerRecordEndPoint : IEquatable<ServerRecordEndPoint> {
 		[JsonProperty(Required = Required.Always)]
-		internal readonly string? Host;
+		internal readonly string Host = "";
 
 		[JsonProperty(Required = Required.Always)]
 		internal readonly ushort Port;

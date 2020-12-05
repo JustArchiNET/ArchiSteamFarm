@@ -57,12 +57,12 @@ namespace ArchiSteamFarm {
 
 #pragma warning disable 649
 		[JsonProperty(PropertyName = "identity_secret", Required = Required.Always)]
-		private readonly string? IdentitySecret;
+		private readonly string IdentitySecret = "";
 #pragma warning restore 649
 
 #pragma warning disable 649
 		[JsonProperty(PropertyName = "shared_secret", Required = Required.Always)]
-		private readonly string? SharedSecret;
+		private readonly string SharedSecret = "";
 #pragma warning restore 649
 
 		private Bot? Bot;

@@ -716,7 +716,7 @@ namespace ArchiSteamFarm {
 
 #pragma warning disable 649
 			[JsonProperty(PropertyName = "trade_token", Required = Required.Always)]
-			internal readonly string? TradeToken;
+			internal readonly string TradeToken = "";
 #pragma warning restore 649
 
 			internal float Score => GamesCount / (float) ItemsCount;

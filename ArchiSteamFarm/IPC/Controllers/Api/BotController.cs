@@ -97,10 +97,6 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				throw new InvalidOperationException(nameof(Bot.Bots));
 			}
 
-			if (request.BotConfig == null) {
-				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(request.BotConfig))));
-			}
-
 			(bool valid, string? errorMessage) = request.BotConfig.CheckValidation();
 
 			if (!valid) {
@@ -225,7 +221,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				throw new ArgumentNullException(nameof(request));
 			}
 
-			if ((request.GamesToRedeemInBackground == null) || (request.GamesToRedeemInBackground.Count == 0)) {
+			if (request.GamesToRedeemInBackground.Count == 0) {
 				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(request.GamesToRedeemInBackground))));
 			}
 
@@ -330,7 +326,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				throw new ArgumentNullException(nameof(request));
 			}
 
-			if ((request.KeysToRedeem == null) || (request.KeysToRedeem.Count == 0)) {
+			if (request.KeysToRedeem.Count == 0) {
 				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(request.KeysToRedeem))));
 			}
 
@@ -482,7 +478,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GenericResponse>>(false, string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)));
 			}
 
-			IList<(bool Success, string Message)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.HandleTwoFactorAuthenticationConfirmations(request.Accept, request.AcceptedType, request.AcceptedCreatorIDs?.Count > 0 ? request.AcceptedCreatorIDs : null, request.WaitIfNeeded))).ConfigureAwait(false);
+			IList<(bool Success, string Message)> results = await Utilities.InParallel(bots.Select(bot => bot.Actions.HandleTwoFactorAuthenticationConfirmations(request.Accept, request.AcceptedType, request.AcceptedCreatorIDs.Count > 0 ? request.AcceptedCreatorIDs : null, request.WaitIfNeeded))).ConfigureAwait(false);
 
 			Dictionary<string, GenericResponse> result = new(bots.Count, Bot.BotsComparer);
 
