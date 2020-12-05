@@ -55,7 +55,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 		private sealed class MeowResponse {
 #pragma warning disable 649
 			[JsonProperty(PropertyName = "file", Required = Required.Always)]
-			internal readonly string? Link;
+			internal readonly string Link = "";
 #pragma warning restore 649
 
 			[JsonConstructor]

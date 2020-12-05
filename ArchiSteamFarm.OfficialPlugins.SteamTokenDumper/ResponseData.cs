@@ -27,7 +27,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 	internal sealed class ResponseData {
 #pragma warning disable 649
 		[JsonProperty(PropertyName = "data", Required = Required.Always)]
-		internal readonly InternalData? Data;
+		internal readonly InternalData Data = new();
 #pragma warning restore 649
 
 #pragma warning disable 649
@@ -55,7 +55,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 #pragma warning restore 649
 
 			[JsonConstructor]
-			private InternalData() { }
+			internal InternalData() { }
 		}
 	}
 }

@@ -460,7 +460,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 				WebBrowser.ObjectResponse<ResponseData>? response = await ASF.WebBrowser.UrlPostToJsonObject<ResponseData, RequestData>(request, data: requestData, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
 
-				if ((response?.Content?.Data == null) || response.StatusCode.IsClientErrorCode()) {
+				if ((response?.Content == null) || response.StatusCode.IsClientErrorCode()) {
 					ASF.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
 #if NETFRAMEWORK
