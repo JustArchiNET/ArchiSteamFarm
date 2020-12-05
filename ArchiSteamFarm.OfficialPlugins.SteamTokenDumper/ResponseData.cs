@@ -25,34 +25,32 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	internal sealed class ResponseData {
-#pragma warning disable 649
 		[JsonProperty(PropertyName = "data", Required = Required.Always)]
 		internal readonly InternalData Data = new();
-#pragma warning restore 649
 
-#pragma warning disable 649
+#pragma warning disable CS0649
 		[JsonProperty(PropertyName = "success", Required = Required.Always)]
 		internal readonly bool Success;
-#pragma warning restore 649
+#pragma warning restore CS0649
 
 		[JsonConstructor]
 		private ResponseData() { }
 
 		internal sealed class InternalData {
-#pragma warning disable 649
+#pragma warning disable CS0649
 			[JsonProperty(PropertyName = "new_apps", Required = Required.Always)]
 			internal readonly uint NewAppsCount;
-#pragma warning restore 649
+#pragma warning restore CS0649
 
-#pragma warning disable 649
+#pragma warning disable CS0649
 			[JsonProperty(PropertyName = "new_depots", Required = Required.Always)]
 			internal readonly uint NewDepotsCount;
-#pragma warning restore 649
+#pragma warning restore CS0649
 
-#pragma warning disable 649
+#pragma warning disable CS0649
 			[JsonProperty(PropertyName = "new_subs", Required = Required.Always)]
 			internal readonly uint NewSubsCount;
-#pragma warning restore 649
+#pragma warning restore CS0649
 
 			[JsonConstructor]
 			internal InternalData() { }

@@ -170,7 +170,6 @@ namespace ArchiSteamFarm {
 			return botDatabase;
 		}
 
-#pragma warning disable CS8605
 		internal (string? Key, string? Name) GetGameToRedeemInBackground() {
 			lock (GamesToRedeemInBackground) {
 				foreach (DictionaryEntry game in GamesToRedeemInBackground) {
@@ -180,7 +179,6 @@ namespace ArchiSteamFarm {
 
 			return (null, null);
 		}
-#pragma warning restore CS8605
 
 		internal void RemoveGameToRedeemInBackground(string key) {
 			if (string.IsNullOrEmpty(key)) {

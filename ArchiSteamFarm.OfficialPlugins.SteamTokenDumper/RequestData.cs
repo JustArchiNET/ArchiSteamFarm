@@ -27,42 +27,32 @@ using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 	internal sealed class RequestData {
-#pragma warning disable IDE0052
 		[JsonProperty(PropertyName = "apps", Required = Required.Always)]
 		private readonly ImmutableDictionary<string, string> Apps;
-#pragma warning restore IDE0052
 
-#pragma warning disable IDE0052
 		[JsonProperty(PropertyName = "depots", Required = Required.Always)]
 		private readonly ImmutableDictionary<string, string> Depots;
-#pragma warning restore IDE0052
 
-#pragma warning disable IDE0052
 		[JsonProperty(PropertyName = "guid", Required = Required.Always)]
 		private readonly string Guid = ASF.GlobalDatabase?.Identifier.ToString("N") ?? throw new InvalidOperationException(nameof(ASF.GlobalDatabase.Identifier));
-#pragma warning restore IDE0052
 
 		private readonly ulong SteamID;
 
-#pragma warning disable IDE0052
 		[JsonProperty(PropertyName = "subs", Required = Required.Always)]
 		private readonly ImmutableDictionary<string, string> Subs;
-#pragma warning restore IDE0052
 
-#pragma warning disable IDE0051, 414
+#pragma warning disable CS0414
 		[JsonProperty(PropertyName = "token", Required = Required.Always)]
 		private readonly string Token = SharedInfo.Token;
-#pragma warning restore IDE0051, 414
+#pragma warning restore CS0414
 
-#pragma warning disable IDE0051, 414
+#pragma warning disable CS0414
 		[JsonProperty(PropertyName = "v", Required = Required.Always)]
 		private readonly byte Version = SharedInfo.ApiVersion;
-#pragma warning restore IDE0051, 414
+#pragma warning restore CS0414
 
-#pragma warning disable IDE0051
 		[JsonProperty(PropertyName = "steamid", Required = Required.Always)]
 		private string SteamIDText => new SteamID(SteamID).Render();
-#pragma warning restore IDE0051
 
 		internal RequestData(ulong steamID, IReadOnlyCollection<KeyValuePair<uint, ulong>> apps, IReadOnlyCollection<KeyValuePair<uint, ulong>> accessTokens, IReadOnlyCollection<KeyValuePair<uint, string>> depots) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {

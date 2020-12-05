@@ -160,10 +160,8 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-#pragma warning disable 649
 			[JsonProperty(PropertyName = "body", Required = Required.Always)]
-			private readonly string? MarkdownBody;
-#pragma warning restore 649
+			private readonly string? MarkdownBody = "";
 
 			private MarkdownDocument? Changelog {
 				get {

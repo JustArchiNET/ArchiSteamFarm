@@ -147,7 +147,6 @@ namespace ArchiSteamFarm {
 		private readonly SteamUser SteamUser;
 		private readonly Trading Trading;
 
-#pragma warning disable CS8605
 		private IEnumerable<(string FilePath, EFileType FileType)> RelatedFiles {
 			get {
 				foreach (EFileType fileType in Enum.GetValues(typeof(EFileType))) {
@@ -163,13 +162,10 @@ namespace ArchiSteamFarm {
 				}
 			}
 		}
-#pragma warning restore CS8605
 
-#pragma warning disable IDE0051
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamID))]
 
 		private string SSteamID => SteamID.ToString(CultureInfo.InvariantCulture);
-#pragma warning restore IDE0051
 
 		[JsonProperty]
 		[PublicAPI]
@@ -209,10 +205,8 @@ namespace ArchiSteamFarm {
 
 		private string? AuthCode;
 
-#pragma warning disable IDE0052
 		[JsonProperty]
 		private string? AvatarHash;
-#pragma warning restore IDE0052
 
 		private Timer? ConnectionFailureTimer;
 		private bool FirstTradeSent;
@@ -1569,7 +1563,6 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-#pragma warning disable CS8605
 		internal static IOrderedDictionary ValidateGamesToRedeemInBackground(IOrderedDictionary gamesToRedeemInBackground) {
 			if ((gamesToRedeemInBackground == null) || (gamesToRedeemInBackground.Count == 0)) {
 				throw new ArgumentNullException(nameof(gamesToRedeemInBackground));
@@ -1610,7 +1603,6 @@ namespace ArchiSteamFarm {
 
 			return gamesToRedeemInBackground;
 		}
-#pragma warning restore CS8605
 
 		private async Task CheckOccupationStatus() {
 			StopPlayingWasBlockedTimer();

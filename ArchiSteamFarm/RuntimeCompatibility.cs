@@ -60,7 +60,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-#pragma warning disable 1998
+#pragma warning disable CS1998
 		[PublicAPI]
 		public static class File {
 			public static async Task AppendAllTextAsync(string path, string contents) =>
@@ -70,7 +70,6 @@ namespace ArchiSteamFarm {
 				await System.IO.File.AppendAllTextAsync(path, contents).ConfigureAwait(false);
 #endif
 
-#pragma warning disable IDE0022
 			public static void Move(string sourceFileName, string destFileName, bool overwrite) {
 #if NETFRAMEWORK
 				if (overwrite && System.IO.File.Exists(destFileName)) {
@@ -82,7 +81,6 @@ namespace ArchiSteamFarm {
 				System.IO.File.Move(sourceFileName, destFileName, overwrite);
 #endif
 			}
-#pragma warning restore IDE0022
 
 			public static async Task<byte[]> ReadAllBytesAsync(string path) =>
 #if NETFRAMEWORK
@@ -105,7 +103,7 @@ namespace ArchiSteamFarm {
 				await System.IO.File.WriteAllTextAsync(path, contents).ConfigureAwait(false);
 #endif
 		}
-#pragma warning restore 1998
+#pragma warning restore CS1998
 
 		[PublicAPI]
 		public static class HashCode {
@@ -129,9 +127,7 @@ namespace ArchiSteamFarm {
 
 				return (result[0] == System.IO.Path.DirectorySeparatorChar) || (result[0] == System.IO.Path.AltDirectorySeparatorChar) ? result[1..] : result;
 #else
-#pragma warning disable IDE0022
 				return System.IO.Path.GetRelativePath(relativeTo, path);
-#pragma warning restore IDE0022
 #endif
 			}
 		}
