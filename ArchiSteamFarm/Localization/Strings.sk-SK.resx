@@ -601,7 +601,11 @@ StackTrace:
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>Je používaná verzia, ktorá je novšia ako posledná vydaná verzia pre tento aktualizačný kanál. Verzie pred vydaním sú určené pre užívateľov, ktorí vedia nahlasovať chyby, riešiť problémy a poskytovať spätnú väzbu - pre nich nie je poskytovaná žiadna technická podpora.</value>
   </data>
-  
+  <data name="BotStats" xml:space="preserve">
+    <value>Aktuálne využitie pamäte: {0} MB.
+Doba prevádzky procesu: {1}</value>
+    <comment>{0} will be replaced by number (in megabytes) of memory being used, {1} will be replaced by translated TimeSpan string (such as "25 minutes"). Please note that this string should include newlines for formatting.</comment>
+  </data>
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
     <value>Prechádzanie {0}. fronty doporučenia...</value>
     <comment>{0} will be replaced by queue number</comment>
@@ -646,7 +650,10 @@ StackTrace:
   
   
   
-  
+  <data name="PluginLoaded" xml:space="preserve">
+    <value>{0} bol úspešne načítaný!</value>
+    <comment>{0} will be replaced by the name of the custom ASF plugin</comment>
+  </data>
   <data name="PluginLoading" xml:space="preserve">
     <value>Načítám {0} V{1}...</value>
     <comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
@@ -706,6 +713,10 @@ Interaktívna konzola je teraz aktívna, napíšte "c" pre vstup do príkazovéh
   
   
   
-  
-
+  <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
+    <value>Neznámy argument príkazového riadku: {0}</value>
+  </data>
+<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Konfiguračný adresár sa nepodarilo nájsť, prerušuje sa!</value>
+</data>
 </root>
