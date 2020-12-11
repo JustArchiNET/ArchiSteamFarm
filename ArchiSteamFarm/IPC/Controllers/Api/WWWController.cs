@@ -63,7 +63,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return StatusCode((int) HttpStatusCode.InternalServerError, new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorParsingObject, nameof(files)) + Environment.NewLine + e));
 			}
 
-			HashSet<string> result = files.Select(Path.GetFileName).Where(fileName => !string.IsNullOrEmpty(fileName)).ToHashSet()!;
+			HashSet<string> result = files.Select(Path.GetFileName).Where(fileName => !string.IsNullOrEmpty(fileName)).ToHashSet(StringComparer.Ordinal)!;
 
 			return Ok(new GenericResponse<IReadOnlyCollection<string>>(result));
 		}

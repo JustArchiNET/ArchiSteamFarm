@@ -1881,7 +1881,7 @@ namespace ArchiSteamFarm {
 			Dictionary<uint, string>? gamesOwned = await FetchGamesOwned(true).ConfigureAwait(false);
 
 			StringBuilder response = new();
-			Dictionary<string, string> result = new();
+			Dictionary<string, string> result = new(StringComparer.Ordinal);
 
 			string[] entries = query.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -2040,7 +2040,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			Dictionary<string, (ushort Count, string GameName)> ownedGamesStats = new();
+			Dictionary<string, (ushort Count, string GameName)> ownedGamesStats = new(StringComparer.Ordinal);
 
 			foreach ((string gameID, string gameName) in validResults.Where(validResult => validResult.OwnedGames.Count > 0).SelectMany(validResult => validResult.OwnedGames)) {
 				if (ownedGamesStats.TryGetValue(gameID, out (ushort Count, string GameName) ownedGameStats)) {
