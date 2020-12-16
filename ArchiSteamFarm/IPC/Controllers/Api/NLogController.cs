@@ -50,10 +50,6 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[ProducesResponseType(typeof(IEnumerable<GenericResponse<string>>), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		public async Task<ActionResult> NLogGet(CancellationToken cancellationToken) {
-			if (cancellationToken == null) {
-				throw new ArgumentNullException(nameof(cancellationToken));
-			}
-
 			if (HttpContext == null) {
 				throw new InvalidOperationException(nameof(HttpContext));
 			}
