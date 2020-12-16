@@ -99,7 +99,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				}
 			} catch (WebSocketException e) {
 				ASF.ArchiLogger.LogGenericDebuggingException(e);
-			}
+			} catch (TaskCanceledException) { }
 
 			return new EmptyResult();
 		}
