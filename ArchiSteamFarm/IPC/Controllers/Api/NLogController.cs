@@ -32,6 +32,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
+using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -97,7 +98,9 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 						closedSemaphore.Dispose();
 					}
 				}
-			} catch (TaskCanceledException e) {
+			} catch (ConnectionAbortedException e) {
+				ASF.ArchiLogger.LogGenericDebuggingException(e);
+			} catch (OperationCanceledException e) {
 				ASF.ArchiLogger.LogGenericDebuggingException(e);
 			} catch (WebSocketException e) {
 				ASF.ArchiLogger.LogGenericDebuggingException(e);
