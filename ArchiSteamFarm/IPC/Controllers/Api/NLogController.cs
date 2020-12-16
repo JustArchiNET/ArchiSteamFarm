@@ -49,7 +49,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[HttpGet]
 		[ProducesResponseType(typeof(IEnumerable<GenericResponse<string>>), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-		public async Task<ActionResult> NLogGet() {
+		public async Task<ActionResult> NLogGet(CancellationToken cancellationToken) {
 			if (HttpContext == null) {
 				throw new InvalidOperationException(nameof(HttpContext));
 			}
@@ -79,7 +79,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 					}
 
 					while (webSocket.State == WebSocketState.Open) {
-						WebSocketReceiveResult result = await webSocket.ReceiveAsync(Array.Empty<byte>(), CancellationToken.None).ConfigureAwait(false);
+						WebSocketReceiveResult result = await webSocket.ReceiveAsync(Array.Empty<byte>(), cancellationToken).ConfigureAwait(false);
 
 						if (result.MessageType != WebSocketMessageType.Close) {
 							await webSocket.CloseAsync(WebSocketCloseStatus.InvalidMessageType, "You're not supposed to be sending any message but Close!", CancellationToken.None).ConfigureAwait(false);
@@ -87,13 +87,13 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 							break;
 						}
 
-						await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None).ConfigureAwait(false);
+						await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", cancellationToken).ConfigureAwait(false);
 
 						break;
 					}
 				} finally {
 					if (ActiveLogWebSockets.TryRemove(webSocket, out SemaphoreSlim? closedSemaphore)) {
-						await closedSemaphore.WaitAsync().ConfigureAwait(false); // Ensure that our semaphore is truly closed by now
+						await closedSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false); // Ensure that our semaphore is truly closed by now
 						closedSemaphore.Dispose();
 					}
 				}
