@@ -125,7 +125,7 @@ namespace ArchiSteamFarm.IPC {
 					options.DisplayRequestDuration();
 					options.EnableDeepLinking();
 					options.ShowExtensions();
-					options.SwaggerEndpoint("/swagger/" + SharedInfo.ASF + "/swagger.json", SharedInfo.ASF + " API");
+					options.SwaggerEndpoint(SharedInfo.ASF + "/swagger.json", SharedInfo.ASF + " API");
 				}
 			);
 		}
