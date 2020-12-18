@@ -353,6 +353,23 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
+		public async Task<bool> DeleteAllRelatedFiles() {
+			await BotDatabase.MakeReadOnly().ConfigureAwait(false);
+
+			foreach (string filePath in RelatedFiles.Select(file => file.FilePath).Where(File.Exists)) {
+				try {
+					File.Delete(filePath);
+				} catch (Exception e) {
+					ArchiLogger.LogGenericException(e);
+
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		[PublicAPI]
 		public static Bot? GetBot(string botName) {
 			if (string.IsNullOrEmpty(botName)) {
 				throw new ArgumentNullException(nameof(botName));
@@ -492,6 +509,129 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
+		public static HashSet<Steam.Asset> GetItemsForFullSets(IReadOnlyCollection<Steam.Asset> inventory, IReadOnlyDictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), (uint SetsToExtract, byte ItemsPerSet)> amountsToExtract) {
+			if ((inventory == null) || (inventory.Count == 0)) {
+				throw new ArgumentNullException(nameof(inventory));
+			}
+
+			if ((amountsToExtract == null) || (amountsToExtract.Count == 0)) {
+				throw new ArgumentNullException(nameof(amountsToExtract));
+			}
+
+			HashSet<Steam.Asset> result = new();
+			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, HashSet<Steam.Asset>>> itemsPerClassIDPerSet = inventory.GroupBy(item => (item.RealAppID, item.Type, item.Rarity)).ToDictionary(grouping => grouping.Key, grouping => grouping.GroupBy(item => item.ClassID).ToDictionary(group => group.Key, group => group.ToHashSet()));
+
+			foreach (((uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) set, (uint setsToExtract, byte itemsPerSet)) in amountsToExtract) {
+				if (!itemsPerClassIDPerSet.TryGetValue(set, out Dictionary<ulong, HashSet<Steam.Asset>>? itemsPerClassID)) {
+					continue;
+				}
+
+				if (itemsPerSet < itemsPerClassID.Count) {
+					throw new InvalidOperationException(nameof(inventory) + " && " + nameof(amountsToExtract));
+				}
+
+				if (itemsPerSet > itemsPerClassID.Count) {
+					continue;
+				}
+
+				foreach (HashSet<Steam.Asset> itemsOfClass in itemsPerClassID.Values) {
+					uint classRemaining = setsToExtract;
+
+					foreach (Steam.Asset item in itemsOfClass.TakeWhile(_ => classRemaining > 0)) {
+						if (item.Amount > classRemaining) {
+							Steam.Asset itemToSend = item.CreateShallowCopy();
+							itemToSend.Amount = classRemaining;
+							result.Add(itemToSend);
+
+							classRemaining = 0;
+						} else {
+							result.Add(item);
+
+							classRemaining -= item.Amount;
+						}
+					}
+				}
+			}
+
+			return result;
+		}
+
+		[PublicAPI]
+		public async Task<HashSet<uint>?> GetPossiblyCompletedBadgeAppIDs() {
+			using IDocument? badgePage = await ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
+
+			if (badgePage == null) {
+				ArchiLogger.LogGenericWarning(Strings.WarningCouldNotCheckBadges);
+
+				return null;
+			}
+
+			byte maxPages = 1;
+			IElement? htmlNode = badgePage.SelectSingleNode("(//a[@class='pagelink'])[last()]");
+
+			if (htmlNode != null) {
+				string lastPage = htmlNode.TextContent;
+
+				if (string.IsNullOrEmpty(lastPage)) {
+					ArchiLogger.LogNullError(nameof(lastPage));
+
+					return null;
+				}
+
+				if (!byte.TryParse(lastPage, out maxPages) || (maxPages == 0)) {
+					ArchiLogger.LogNullError(nameof(maxPages));
+
+					return null;
+				}
+			}
+
+			HashSet<uint>? firstPageResult = GetPossiblyCompletedBadgeAppIDs(badgePage);
+
+			if (firstPageResult == null) {
+				return null;
+			}
+
+			if (maxPages == 1) {
+				return firstPageResult;
+			}
+
+			switch (ASF.GlobalConfig?.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					for (byte page = 2; page <= maxPages; page++) {
+						HashSet<uint>? pageIDs = await GetPossiblyCompletedBadgeAppIDs(page).ConfigureAwait(false);
+
+						if (pageIDs == null) {
+							return null;
+						}
+
+						firstPageResult.UnionWith(pageIDs);
+					}
+
+					return firstPageResult;
+				default:
+					HashSet<Task<HashSet<uint>?>> tasks = new(maxPages - 1);
+
+					for (byte page = 2; page <= maxPages; page++) {
+						// We need a copy of variable being passed when in for loops, as loop will proceed before our task is launched
+						byte currentPage = page;
+						tasks.Add(GetPossiblyCompletedBadgeAppIDs(currentPage));
+					}
+
+					IList<HashSet<uint>?> results = await Utilities.InParallel(tasks).ConfigureAwait(false);
+
+					foreach (HashSet<uint>? result in results) {
+						if (result == null) {
+							return null;
+						}
+
+						firstPageResult.UnionWith(result);
+					}
+
+					return firstPageResult;
+			}
+		}
+
+		[PublicAPI]
 		public async Task<byte?> GetTradeHoldDuration(ulong steamID, ulong tradeID) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 				throw new ArgumentOutOfRangeException(nameof(steamID));
@@ -548,6 +688,37 @@ namespace ArchiSteamFarm {
 				BotConfig.EAccess.FamilySharing when SteamFamilySharingIDs.Contains(steamID) => true,
 				_ => BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EAccess realPermission) && (realPermission >= access)
 			};
+		}
+
+		[PublicAPI]
+		public async Task<Dictionary<uint, byte>?> LoadCardsPerSet(IReadOnlyCollection<uint> appIDs) {
+			if ((appIDs == null) || (appIDs.Count == 0)) {
+				throw new ArgumentNullException(nameof(appIDs));
+			}
+
+			ISet<uint> uniqueAppIDs = appIDs as ISet<uint> ?? appIDs.ToHashSet();
+
+			switch (ASF.GlobalConfig?.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					Dictionary<uint, byte> result = new(uniqueAppIDs.Count);
+
+					foreach (uint appID in uniqueAppIDs) {
+						byte cardCount = await ArchiWebHandler.GetCardCountForGame(appID).ConfigureAwait(false);
+
+						if (cardCount == 0) {
+							return null;
+						}
+
+						result.Add(appID, cardCount);
+					}
+
+					return result;
+				default:
+					IEnumerable<Task<(uint AppID, byte Cards)>> tasks = uniqueAppIDs.Select(async appID => (AppID: appID, Cards: await ArchiWebHandler.GetCardCountForGame(appID).ConfigureAwait(false)));
+					IList<(uint AppID, byte Cards)> results = await Utilities.InParallel(tasks).ConfigureAwait(false);
+
+					return results.All(tuple => tuple.Cards > 0) ? results.ToDictionary(res => res.AppID, res => res.Cards) : null;
+			}
 		}
 
 		[PublicAPI]
@@ -614,6 +785,106 @@ namespace ArchiSteamFarm {
 						await Task.Delay(1000).ConfigureAwait(false);
 
 						EResult result = await ArchiHandler.SendMessage(steamID, messagePart).ConfigureAwait(false);
+
+						switch (result) {
+							case EResult.Busy:
+							case EResult.Fail:
+							case EResult.RateLimitExceeded:
+							case EResult.ServiceUnavailable:
+							case EResult.Timeout:
+								await Task.Delay(5000).ConfigureAwait(false);
+
+								continue;
+							case EResult.OK:
+								sent = true;
+
+								break;
+							default:
+								ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(result), result));
+
+								return false;
+						}
+					}
+
+					if (!sent) {
+						ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+
+						return false;
+					}
+				} finally {
+					MessagingSemaphore.Release();
+				}
+
+				i += partLength - (copyNewline ? Environment.NewLine.Length : 0);
+			}
+
+			return true;
+		}
+
+		[PublicAPI]
+		public async Task<bool> SendMessage(ulong chatGroupID, ulong chatID, string message) {
+			if (chatGroupID == 0) {
+				throw new ArgumentOutOfRangeException(nameof(chatGroupID));
+			}
+
+			if (chatID == 0) {
+				throw new ArgumentOutOfRangeException(nameof(chatID));
+			}
+
+			if (string.IsNullOrEmpty(message)) {
+				throw new ArgumentNullException(nameof(message));
+			}
+
+			if (!IsConnectedAndLoggedOn) {
+				return false;
+			}
+
+			ArchiLogger.LogChatMessage(true, message, chatGroupID, chatID);
+
+			string? steamMessagePrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.SteamMessagePrefix : GlobalConfig.DefaultSteamMessagePrefix;
+			ushort maxMessageLength = (ushort) (MaxMessageLength - ReservedMessageLength - (steamMessagePrefix?.Length ?? 0));
+
+			// We must escape our message prior to sending it
+			message = Escape(message);
+
+			int i = 0;
+
+			// ReSharper disable ArrangeMissingParentheses - conflict with Roslyn
+			while (i < message.Length) {
+				int partLength;
+				bool copyNewline = false;
+
+				if (message.Length - i > maxMessageLength) {
+					int lastNewLine = message.LastIndexOf(Environment.NewLine, i + maxMessageLength - Environment.NewLine.Length, maxMessageLength - Environment.NewLine.Length, StringComparison.Ordinal);
+
+					if (lastNewLine > i) {
+						partLength = lastNewLine - i + Environment.NewLine.Length;
+						copyNewline = true;
+					} else {
+						partLength = maxMessageLength;
+					}
+				} else {
+					partLength = message.Length - i;
+				}
+
+				// If our message is of max length and ends with a single '\' then we can't split it here, it escapes the next character
+				if ((partLength >= maxMessageLength) && (message[i + partLength - 1] == '\\') && (message[i + partLength - 2] != '\\')) {
+					// Instead, we'll cut this message one char short and include the rest in next iteration
+					partLength--;
+				}
+
+				// ReSharper restore ArrangeMissingParentheses
+				string messagePart = message.Substring(i, partLength);
+
+				messagePart = steamMessagePrefix + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
+
+				await MessagingSemaphore.WaitAsync().ConfigureAwait(false);
+
+				try {
+					bool sent = false;
+
+					for (byte j = 0; (j < WebBrowser.MaxTries) && !sent && IsConnectedAndLoggedOn; j++) {
+						EResult result = await ArchiHandler.SendMessage(chatGroupID, chatID, messagePart).ConfigureAwait(false);
 
 						switch (result) {
 							case EResult.Busy:
@@ -725,23 +996,6 @@ namespace ArchiSteamFarm {
 			if ((GamesRedeemerInBackgroundTimer == null) && BotDatabase.HasGamesToRedeemInBackground && IsConnectedAndLoggedOn) {
 				Utilities.InBackground(() => RedeemGamesInBackground(this));
 			}
-		}
-
-		[PublicAPI]
-		public async Task<bool> DeleteAllRelatedFiles() {
-			await BotDatabase.MakeReadOnly().ConfigureAwait(false);
-
-			foreach (string filePath in RelatedFiles.Select(file => file.FilePath).Where(File.Exists)) {
-				try {
-					File.Delete(filePath);
-				} catch (Exception e) {
-					ArchiLogger.LogGenericException(e);
-
-					return false;
-				}
-			}
-
-			return true;
 		}
 
 		internal bool DeleteRedeemedKeysFiles() {
@@ -1408,106 +1662,6 @@ namespace ArchiSteamFarm {
 			}
 
 			SteamFriends.RequestFriendInfo(SteamID, EClientPersonaStateFlag.PlayerName | EClientPersonaStateFlag.Presence);
-		}
-
-		[PublicAPI]
-		public async Task<bool> SendMessage(ulong chatGroupID, ulong chatID, string message) {
-			if (chatGroupID == 0) {
-				throw new ArgumentOutOfRangeException(nameof(chatGroupID));
-			}
-
-			if (chatID == 0) {
-				throw new ArgumentOutOfRangeException(nameof(chatID));
-			}
-
-			if (string.IsNullOrEmpty(message)) {
-				throw new ArgumentNullException(nameof(message));
-			}
-
-			if (!IsConnectedAndLoggedOn) {
-				return false;
-			}
-
-			ArchiLogger.LogChatMessage(true, message, chatGroupID, chatID);
-
-			string? steamMessagePrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.SteamMessagePrefix : GlobalConfig.DefaultSteamMessagePrefix;
-			ushort maxMessageLength = (ushort) (MaxMessageLength - ReservedMessageLength - (steamMessagePrefix?.Length ?? 0));
-
-			// We must escape our message prior to sending it
-			message = Escape(message);
-
-			int i = 0;
-
-			// ReSharper disable ArrangeMissingParentheses - conflict with Roslyn
-			while (i < message.Length) {
-				int partLength;
-				bool copyNewline = false;
-
-				if (message.Length - i > maxMessageLength) {
-					int lastNewLine = message.LastIndexOf(Environment.NewLine, i + maxMessageLength - Environment.NewLine.Length, maxMessageLength - Environment.NewLine.Length, StringComparison.Ordinal);
-
-					if (lastNewLine > i) {
-						partLength = lastNewLine - i + Environment.NewLine.Length;
-						copyNewline = true;
-					} else {
-						partLength = maxMessageLength;
-					}
-				} else {
-					partLength = message.Length - i;
-				}
-
-				// If our message is of max length and ends with a single '\' then we can't split it here, it escapes the next character
-				if ((partLength >= maxMessageLength) && (message[i + partLength - 1] == '\\') && (message[i + partLength - 2] != '\\')) {
-					// Instead, we'll cut this message one char short and include the rest in next iteration
-					partLength--;
-				}
-
-				// ReSharper restore ArrangeMissingParentheses
-				string messagePart = message.Substring(i, partLength);
-
-				messagePart = steamMessagePrefix + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
-
-				await MessagingSemaphore.WaitAsync().ConfigureAwait(false);
-
-				try {
-					bool sent = false;
-
-					for (byte j = 0; (j < WebBrowser.MaxTries) && !sent && IsConnectedAndLoggedOn; j++) {
-						EResult result = await ArchiHandler.SendMessage(chatGroupID, chatID, messagePart).ConfigureAwait(false);
-
-						switch (result) {
-							case EResult.Busy:
-							case EResult.Fail:
-							case EResult.RateLimitExceeded:
-							case EResult.ServiceUnavailable:
-							case EResult.Timeout:
-								await Task.Delay(5000).ConfigureAwait(false);
-
-								continue;
-							case EResult.OK:
-								sent = true;
-
-								break;
-							default:
-								ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(result), result));
-
-								return false;
-						}
-					}
-
-					if (!sent) {
-						ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-
-						return false;
-					}
-				} finally {
-					MessagingSemaphore.Release();
-				}
-
-				i += partLength - (copyNewline ? Environment.NewLine.Length : 0);
-			}
-
-			return true;
 		}
 
 		internal async Task<bool> SendTypingMessage(ulong steamID) {
@@ -2937,81 +3091,6 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		[PublicAPI]
-		public async Task<HashSet<uint>?> GetPossiblyCompletedBadgeAppIDs() {
-			using IDocument? badgePage = await ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
-
-			if (badgePage == null) {
-				ArchiLogger.LogGenericWarning(Strings.WarningCouldNotCheckBadges);
-
-				return null;
-			}
-
-			byte maxPages = 1;
-			IElement? htmlNode = badgePage.SelectSingleNode("(//a[@class='pagelink'])[last()]");
-
-			if (htmlNode != null) {
-				string lastPage = htmlNode.TextContent;
-
-				if (string.IsNullOrEmpty(lastPage)) {
-					ArchiLogger.LogNullError(nameof(lastPage));
-
-					return null;
-				}
-
-				if (!byte.TryParse(lastPage, out maxPages) || (maxPages == 0)) {
-					ArchiLogger.LogNullError(nameof(maxPages));
-
-					return null;
-				}
-			}
-
-			HashSet<uint>? firstPageResult = GetPossiblyCompletedBadgeAppIDs(badgePage);
-
-			if (firstPageResult == null) {
-				return null;
-			}
-
-			if (maxPages == 1) {
-				return firstPageResult;
-			}
-
-			switch (ASF.GlobalConfig?.OptimizationMode) {
-				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					for (byte page = 2; page <= maxPages; page++) {
-						HashSet<uint>? pageIDs = await GetPossiblyCompletedBadgeAppIDs(page).ConfigureAwait(false);
-
-						if (pageIDs == null) {
-							return null;
-						}
-
-						firstPageResult.UnionWith(pageIDs);
-					}
-
-					return firstPageResult;
-				default:
-					HashSet<Task<HashSet<uint>?>> tasks = new(maxPages - 1);
-
-					for (byte page = 2; page <= maxPages; page++) {
-						// We need a copy of variable being passed when in for loops, as loop will proceed before our task is launched
-						byte currentPage = page;
-						tasks.Add(GetPossiblyCompletedBadgeAppIDs(currentPage));
-					}
-
-					IList<HashSet<uint>?> results = await Utilities.InParallel(tasks).ConfigureAwait(false);
-
-					foreach (HashSet<uint>? result in results) {
-						if (result == null) {
-							return null;
-						}
-
-						firstPageResult.UnionWith(result);
-					}
-
-					return firstPageResult;
-			}
-		}
-
 		private async Task<HashSet<uint>?> GetPossiblyCompletedBadgeAppIDs(byte page) {
 			if (page == 0) {
 				throw new ArgumentOutOfRangeException(nameof(page));
@@ -3136,85 +3215,6 @@ namespace ArchiSteamFarm {
 			} finally {
 				SendCompleteTypesSemaphore.Release();
 			}
-		}
-
-		[PublicAPI]
-		public async Task<Dictionary<uint, byte>?> LoadCardsPerSet(IReadOnlyCollection<uint> appIDs) {
-			if ((appIDs == null) || (appIDs.Count == 0)) {
-				throw new ArgumentNullException(nameof(appIDs));
-			}
-
-			ISet<uint> uniqueAppIDs = appIDs as ISet<uint> ?? appIDs.ToHashSet();
-
-			switch (ASF.GlobalConfig?.OptimizationMode) {
-				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					Dictionary<uint, byte> result = new(uniqueAppIDs.Count);
-
-					foreach (uint appID in uniqueAppIDs) {
-						byte cardCount = await ArchiWebHandler.GetCardCountForGame(appID).ConfigureAwait(false);
-
-						if (cardCount == 0) {
-							return null;
-						}
-
-						result.Add(appID, cardCount);
-					}
-
-					return result;
-				default:
-					IEnumerable<Task<(uint AppID, byte Cards)>> tasks = uniqueAppIDs.Select(async appID => (AppID: appID, Cards: await ArchiWebHandler.GetCardCountForGame(appID).ConfigureAwait(false)));
-					IList<(uint AppID, byte Cards)> results = await Utilities.InParallel(tasks).ConfigureAwait(false);
-
-					return results.All(tuple => tuple.Cards > 0) ? results.ToDictionary(res => res.AppID, res => res.Cards) : null;
-			}
-		}
-
-		[PublicAPI]
-		public static HashSet<Steam.Asset> GetItemsForFullSets(IReadOnlyCollection<Steam.Asset> inventory, IReadOnlyDictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), (uint SetsToExtract, byte ItemsPerSet)> amountsToExtract) {
-			if ((inventory == null) || (inventory.Count == 0)) {
-				throw new ArgumentNullException(nameof(inventory));
-			}
-
-			if ((amountsToExtract == null) || (amountsToExtract.Count == 0)) {
-				throw new ArgumentNullException(nameof(amountsToExtract));
-			}
-
-			HashSet<Steam.Asset> result = new();
-			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, HashSet<Steam.Asset>>> itemsPerClassIDPerSet = inventory.GroupBy(item => (item.RealAppID, item.Type, item.Rarity)).ToDictionary(grouping => grouping.Key, grouping => grouping.GroupBy(item => item.ClassID).ToDictionary(group => group.Key, group => group.ToHashSet()));
-
-			foreach (((uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) set, (uint setsToExtract, byte itemsPerSet)) in amountsToExtract) {
-				if (!itemsPerClassIDPerSet.TryGetValue(set, out Dictionary<ulong, HashSet<Steam.Asset>>? itemsPerClassID)) {
-					continue;
-				}
-
-				if (itemsPerSet < itemsPerClassID.Count) {
-					throw new InvalidOperationException(nameof(inventory) + " && " + nameof(amountsToExtract));
-				}
-
-				if (itemsPerSet > itemsPerClassID.Count) {
-					continue;
-				}
-
-				foreach (HashSet<Steam.Asset> itemsOfClass in itemsPerClassID.Values) {
-					uint classRemaining = setsToExtract;
-
-					foreach (Steam.Asset item in itemsOfClass.TakeWhile(_ => classRemaining > 0)) {
-						if (item.Amount > classRemaining) {
-							Steam.Asset itemToSend = item.CreateShallowCopy();
-							itemToSend.Amount = classRemaining;
-							result.Add(itemToSend);
-
-							classRemaining = 0;
-						} else {
-							result.Add(item);
-
-							classRemaining -= item.Amount;
-						}
-					}
-				}
-			}
-
-			return result;
 		}
 
 		private void OnVanityURLChangedCallback(ArchiHandler.VanityURLChangedCallback callback) {
