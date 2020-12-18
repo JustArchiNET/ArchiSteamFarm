@@ -483,6 +483,15 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
+		public string GetFilePath(EFileType fileType) {
+			if (!Enum.IsDefined(typeof(EFileType), fileType)) {
+				throw new InvalidEnumArgumentException(nameof(fileType), (int) fileType, typeof(EFileType));
+			}
+
+			return GetFilePath(BotName, fileType);
+		}
+
+		[PublicAPI]
 		public async Task<byte?> GetTradeHoldDuration(ulong steamID, ulong tradeID) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 				throw new ArgumentOutOfRangeException(nameof(steamID));
@@ -1676,14 +1685,6 @@ namespace ArchiSteamFarm {
 			}
 
 			return message.Replace("\\", "\\\\").Replace("[", "\\[");
-		}
-
-		private string GetFilePath(EFileType fileType) {
-			if (!Enum.IsDefined(typeof(EFileType), fileType)) {
-				throw new ArgumentNullException(nameof(fileType));
-			}
-
-			return GetFilePath(BotName, fileType);
 		}
 
 		private async Task<Dictionary<string, string>?> GetKeysFromFile(string filePath) {
