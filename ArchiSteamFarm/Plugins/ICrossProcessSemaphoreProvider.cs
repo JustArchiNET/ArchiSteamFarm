@@ -1,4 +1,4 @@
-//     _                _      _  ____   _                           _____
+﻿//     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
@@ -20,13 +20,17 @@
 // limitations under the License.
 
 using System.Threading.Tasks;
+using ArchiSteamFarm.Helpers;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Helpers {
+namespace ArchiSteamFarm.Plugins {
 	[PublicAPI]
-	public interface ICrossProcessSemaphore {
-		internal void Release();
-		internal Task WaitAsync();
-		internal Task<bool> WaitAsync(int millisecondsTimeout);
+	public interface ICrossProcessSemaphoreProvider : IPlugin {
+		/// <summary>
+		///     ASF will call this method when initializing instance of <see cref="ICrossProcessSemaphore" /> for its internal limiters.
+		/// </summary>
+		/// <param name="resourceName">Unique resource name provided by ASF for identification purposes.</param>
+		/// <returns>Concrete implementation of <see cref="ICrossProcessSemaphore" /> providing required functionality. It's allowed to return null if you want to use ASF's default implementation for specified resource instead.</returns>
+		Task<ICrossProcessSemaphore?> GetCrossProcessSemaphore(string resourceName);
 	}
 }

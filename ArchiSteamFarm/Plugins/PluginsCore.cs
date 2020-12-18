@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
 using Newtonsoft.Json.Linq;
@@ -84,6 +85,30 @@ namespace ArchiSteamFarm.Plugins {
 			}
 
 			return changeNumberToStartFrom == uint.MaxValue ? 0 : changeNumberToStartFrom;
+		}
+
+		internal static async Task<ICrossProcessSemaphore> GetCrossProcessSemaphore(string objectName) {
+			if (string.IsNullOrEmpty(objectName)) {
+				throw new ArgumentNullException(nameof(objectName));
+			}
+
+			string resourceName = OS.GetOsResourceName(objectName);
+
+			if ((ActivePlugins == null) || (ActivePlugins.Count == 0)) {
+				return new CrossProcessFileBasedSemaphore(resourceName);
+			}
+
+			IList<ICrossProcessSemaphore?> responses;
+
+			try {
+				responses = await Utilities.InParallel(ActivePlugins.OfType<ICrossProcessSemaphoreProvider>().Select(plugin => plugin.GetCrossProcessSemaphore(resourceName))).ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+
+				return new CrossProcessFileBasedSemaphore(resourceName);
+			}
+
+			return responses.FirstOrDefault(response => response != null) ?? new CrossProcessFileBasedSemaphore(resourceName);
 		}
 
 		internal static bool InitPlugins() {

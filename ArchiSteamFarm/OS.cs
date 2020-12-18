@@ -29,7 +29,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
 
 namespace ArchiSteamFarm {
@@ -64,14 +63,12 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static ICrossProcessSemaphore CreateCrossProcessSemaphore(string objectName) {
+		internal static string GetOsResourceName(string objectName) {
 			if (string.IsNullOrEmpty(objectName)) {
 				throw new ArgumentNullException(nameof(objectName));
 			}
 
-			string resourceName = GetOsResourceName(objectName);
-
-			return new CrossProcessFileBasedSemaphore(resourceName);
+			return SharedInfo.AssemblyName + "-" + objectName;
 		}
 
 		internal static void Init(GlobalConfig.EOptimizationMode optimizationMode) {
@@ -193,14 +190,6 @@ namespace ArchiSteamFarm {
 			// This is .NET Core build, we support all scenarios
 			return true;
 #endif
-		}
-
-		private static string GetOsResourceName(string objectName) {
-			if (string.IsNullOrEmpty(objectName)) {
-				throw new ArgumentNullException(nameof(objectName));
-			}
-
-			return SharedInfo.AssemblyName + "-" + objectName;
 		}
 
 		private static void WindowsDisableQuickEditMode() {

@@ -74,6 +74,9 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public Actions Actions { get; }
 
+		[PublicAPI]
+		public ArchiHandler ArchiHandler { get; }
+
 		[JsonIgnore]
 		[PublicAPI]
 		public ArchiLogger ArchiLogger { get; }
@@ -126,7 +129,6 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public SteamFriends SteamFriends { get; }
 
-		internal readonly ArchiHandler ArchiHandler;
 		internal readonly BotDatabase BotDatabase;
 
 		internal bool CanReceiveSteamCards => !IsAccountLimited && !IsAccountLocked;
@@ -457,6 +459,30 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
+		public static string GetFilePath(string botName, EFileType fileType) {
+			if (string.IsNullOrEmpty(botName)) {
+				throw new ArgumentNullException(nameof(botName));
+			}
+
+			if (!Enum.IsDefined(typeof(EFileType), fileType)) {
+				throw new InvalidEnumArgumentException(nameof(fileType), (int) fileType, typeof(EFileType));
+			}
+
+			string botPath = Path.Combine(SharedInfo.ConfigDirectory, botName);
+
+			return fileType switch {
+				EFileType.Config => botPath + SharedInfo.JsonConfigExtension,
+				EFileType.Database => botPath + SharedInfo.DatabaseExtension,
+				EFileType.KeysToRedeem => botPath + SharedInfo.KeysExtension,
+				EFileType.KeysToRedeemUnused => botPath + SharedInfo.KeysExtension + SharedInfo.KeysUnusedExtension,
+				EFileType.KeysToRedeemUsed => botPath + SharedInfo.KeysExtension + SharedInfo.KeysUsedExtension,
+				EFileType.MobileAuthenticator => botPath + SharedInfo.MobileAuthenticatorExtension,
+				EFileType.SentryFile => botPath + SharedInfo.SentryHashExtension,
+				_ => throw new ArgumentOutOfRangeException(nameof(fileType))
+			};
+		}
+
+		[PublicAPI]
 		public async Task<byte?> GetTradeHoldDuration(ulong steamID, ulong tradeID) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 				throw new ArgumentOutOfRangeException(nameof(steamID));
@@ -513,6 +539,106 @@ namespace ArchiSteamFarm {
 				BotConfig.EAccess.FamilySharing when SteamFamilySharingIDs.Contains(steamID) => true,
 				_ => BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EAccess realPermission) && (realPermission >= access)
 			};
+		}
+
+		[PublicAPI]
+		public async Task<bool> SendMessage(ulong steamID, string message) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+				throw new ArgumentOutOfRangeException(nameof(steamID));
+			}
+
+			if (string.IsNullOrEmpty(message)) {
+				throw new ArgumentNullException(nameof(message));
+			}
+
+			if (!IsConnectedAndLoggedOn) {
+				return false;
+			}
+
+			ArchiLogger.LogChatMessage(true, message, steamID: steamID);
+
+			string? steamMessagePrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.SteamMessagePrefix : GlobalConfig.DefaultSteamMessagePrefix;
+			ushort maxMessageLength = (ushort) (MaxMessageLength - ReservedMessageLength - (steamMessagePrefix?.Length ?? 0));
+
+			// We must escape our message prior to sending it
+			message = Escape(message);
+
+			int i = 0;
+
+			while (i < message.Length) {
+				int partLength;
+				bool copyNewline = false;
+
+				// ReSharper disable ArrangeMissingParentheses - conflict with Roslyn
+				if (message.Length - i > maxMessageLength) {
+					int lastNewLine = message.LastIndexOf(Environment.NewLine, i + maxMessageLength - Environment.NewLine.Length, maxMessageLength - Environment.NewLine.Length, StringComparison.Ordinal);
+
+					if (lastNewLine > i) {
+						partLength = lastNewLine - i + Environment.NewLine.Length;
+						copyNewline = true;
+					} else {
+						partLength = maxMessageLength;
+					}
+				} else {
+					partLength = message.Length - i;
+				}
+
+				// If our message is of max length and ends with a single '\' then we can't split it here, it escapes the next character
+				if ((partLength >= maxMessageLength) && (message[i + partLength - 1] == '\\') && (message[i + partLength - 2] != '\\')) {
+					// Instead, we'll cut this message one char short and include the rest in next iteration
+					partLength--;
+				}
+
+				// ReSharper restore ArrangeMissingParentheses
+				string messagePart = message.Substring(i, partLength);
+
+				messagePart = steamMessagePrefix + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
+
+				await MessagingSemaphore.WaitAsync().ConfigureAwait(false);
+
+				try {
+					bool sent = false;
+
+					for (byte j = 0; (j < WebBrowser.MaxTries) && !sent && IsConnectedAndLoggedOn; j++) {
+						// We add a one-second delay here to avoid Steam screwup in form of a ghost notification
+						// The exact cause is unknown, but the theory is that Steam is confused when dealing with more than 1 message per second from the same user
+						await Task.Delay(1000).ConfigureAwait(false);
+
+						EResult result = await ArchiHandler.SendMessage(steamID, messagePart).ConfigureAwait(false);
+
+						switch (result) {
+							case EResult.Busy:
+							case EResult.Fail:
+							case EResult.RateLimitExceeded:
+							case EResult.ServiceUnavailable:
+							case EResult.Timeout:
+								await Task.Delay(5000).ConfigureAwait(false);
+
+								continue;
+							case EResult.OK:
+								sent = true;
+
+								break;
+							default:
+								ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(result), result));
+
+								return false;
+						}
+					}
+
+					if (!sent) {
+						ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+
+						return false;
+					}
+				} finally {
+					MessagingSemaphore.Release();
+				}
+
+				i += partLength - (copyNewline ? Environment.NewLine.Length : 0);
+			}
+
+			return true;
 		}
 
 		[PublicAPI]
@@ -592,7 +718,8 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task<bool> DeleteAllRelatedFiles() {
+		[PublicAPI]
+		public async Task<bool> DeleteAllRelatedFiles() {
 			await BotDatabase.MakeReadOnly().ConfigureAwait(false);
 
 			foreach (string filePath in RelatedFiles.Select(file => file.FilePath).Where(File.Exists)) {
@@ -825,29 +952,6 @@ namespace ArchiSteamFarm {
 			}
 
 			return ((productInfoResultSet.Complete && !productInfoResultSet.Failed) || optimisticDiscovery ? appID : 0, DateTime.MinValue, true);
-		}
-
-		internal static string GetFilePath(string botName, EFileType fileType) {
-			if (string.IsNullOrEmpty(botName)) {
-				throw new ArgumentNullException(nameof(botName));
-			}
-
-			if (!Enum.IsDefined(typeof(EFileType), fileType)) {
-				throw new InvalidEnumArgumentException(nameof(fileType), (int) fileType, typeof(EFileType));
-			}
-
-			string botPath = Path.Combine(SharedInfo.ConfigDirectory, botName);
-
-			return fileType switch {
-				EFileType.Config => botPath + SharedInfo.JsonConfigExtension,
-				EFileType.Database => botPath + SharedInfo.DatabaseExtension,
-				EFileType.KeysToRedeem => botPath + SharedInfo.KeysExtension,
-				EFileType.KeysToRedeemUnused => botPath + SharedInfo.KeysExtension + SharedInfo.KeysUnusedExtension,
-				EFileType.KeysToRedeemUsed => botPath + SharedInfo.KeysExtension + SharedInfo.KeysUsedExtension,
-				EFileType.MobileAuthenticator => botPath + SharedInfo.MobileAuthenticatorExtension,
-				EFileType.SentryFile => botPath + SharedInfo.SentryHashExtension,
-				_ => throw new ArgumentOutOfRangeException(nameof(fileType))
-			};
 		}
 
 		internal async Task<HashSet<uint>?> GetMarketableAppIDs() => await ArchiWebHandler.GetAppList().ConfigureAwait(false);
@@ -1297,106 +1401,8 @@ namespace ArchiSteamFarm {
 			SteamFriends.RequestFriendInfo(SteamID, EClientPersonaStateFlag.PlayerName | EClientPersonaStateFlag.Presence);
 		}
 
-		internal async Task<bool> SendMessage(ulong steamID, string message) {
-			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-				throw new ArgumentOutOfRangeException(nameof(steamID));
-			}
-
-			if (string.IsNullOrEmpty(message)) {
-				throw new ArgumentNullException(nameof(message));
-			}
-
-			if (!IsConnectedAndLoggedOn) {
-				return false;
-			}
-
-			ArchiLogger.LogChatMessage(true, message, steamID: steamID);
-
-			string? steamMessagePrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.SteamMessagePrefix : GlobalConfig.DefaultSteamMessagePrefix;
-			ushort maxMessageLength = (ushort) (MaxMessageLength - ReservedMessageLength - (steamMessagePrefix?.Length ?? 0));
-
-			// We must escape our message prior to sending it
-			message = Escape(message);
-
-			int i = 0;
-
-			while (i < message.Length) {
-				int partLength;
-				bool copyNewline = false;
-
-				// ReSharper disable ArrangeMissingParentheses - conflict with Roslyn
-				if (message.Length - i > maxMessageLength) {
-					int lastNewLine = message.LastIndexOf(Environment.NewLine, i + maxMessageLength - Environment.NewLine.Length, maxMessageLength - Environment.NewLine.Length, StringComparison.Ordinal);
-
-					if (lastNewLine > i) {
-						partLength = lastNewLine - i + Environment.NewLine.Length;
-						copyNewline = true;
-					} else {
-						partLength = maxMessageLength;
-					}
-				} else {
-					partLength = message.Length - i;
-				}
-
-				// If our message is of max length and ends with a single '\' then we can't split it here, it escapes the next character
-				if ((partLength >= maxMessageLength) && (message[i + partLength - 1] == '\\') && (message[i + partLength - 2] != '\\')) {
-					// Instead, we'll cut this message one char short and include the rest in next iteration
-					partLength--;
-				}
-
-				// ReSharper restore ArrangeMissingParentheses
-				string messagePart = message.Substring(i, partLength);
-
-				messagePart = steamMessagePrefix + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
-
-				await MessagingSemaphore.WaitAsync().ConfigureAwait(false);
-
-				try {
-					bool sent = false;
-
-					for (byte j = 0; (j < WebBrowser.MaxTries) && !sent && IsConnectedAndLoggedOn; j++) {
-						// We add a one-second delay here to avoid Steam screwup in form of a ghost notification
-						// The exact cause is unknown, but the theory is that Steam is confused when dealing with more than 1 message per second from the same user
-						await Task.Delay(1000).ConfigureAwait(false);
-
-						EResult result = await ArchiHandler.SendMessage(steamID, messagePart).ConfigureAwait(false);
-
-						switch (result) {
-							case EResult.Busy:
-							case EResult.Fail:
-							case EResult.RateLimitExceeded:
-							case EResult.ServiceUnavailable:
-							case EResult.Timeout:
-								await Task.Delay(5000).ConfigureAwait(false);
-
-								continue;
-							case EResult.OK:
-								sent = true;
-
-								break;
-							default:
-								ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(result), result));
-
-								return false;
-						}
-					}
-
-					if (!sent) {
-						ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-
-						return false;
-					}
-				} finally {
-					MessagingSemaphore.Release();
-				}
-
-				i += partLength - (copyNewline ? Environment.NewLine.Length : 0);
-			}
-
-			return true;
-		}
-
-		internal async Task<bool> SendMessage(ulong chatGroupID, ulong chatID, string message) {
+		[PublicAPI]
+		public async Task<bool> SendMessage(ulong chatGroupID, ulong chatID, string message) {
 			if (chatGroupID == 0) {
 				throw new ArgumentOutOfRangeException(nameof(chatGroupID));
 			}
@@ -3468,7 +3474,7 @@ namespace ArchiSteamFarm {
 			return (true, steamParentalCode);
 		}
 
-		internal enum EFileType : byte {
+		public enum EFileType : byte {
 			Config,
 			Database,
 			KeysToRedeem,

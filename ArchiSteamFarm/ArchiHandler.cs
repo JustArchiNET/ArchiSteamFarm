@@ -63,6 +63,35 @@ namespace ArchiSteamFarm {
 			UnifiedTwoFactorService = steamUnifiedMessages.CreateService<ITwoFactor>();
 		}
 
+		[PublicAPI]
+		public async Task<bool> AddFriend(ulong steamID) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+				throw new ArgumentOutOfRangeException(nameof(steamID));
+			}
+
+			if (Client == null) {
+				throw new InvalidOperationException(nameof(Client));
+			}
+
+			if (!Client.IsConnected) {
+				return false;
+			}
+
+			CPlayer_AddFriend_Request request = new() { steamid = steamID };
+
+			SteamUnifiedMessages.ServiceMethodResponse response;
+
+			try {
+				response = await UnifiedPlayerService.SendMessage(x => x.AddFriend(request)).ToLongRunningTask().ConfigureAwait(false);
+			} catch (Exception e) {
+				ArchiLogger.LogGenericWarningException(e);
+
+				return false;
+			}
+
+			return response.Result == EResult.OK;
+		}
+
 		public override void HandleMsg(IPacketMsg packetMsg) {
 			if (packetMsg == null) {
 				throw new ArgumentNullException(nameof(packetMsg));
@@ -116,6 +145,35 @@ namespace ArchiSteamFarm {
 
 					break;
 			}
+		}
+
+		[PublicAPI]
+		public async Task<bool> RemoveFriend(ulong steamID) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+				throw new ArgumentOutOfRangeException(nameof(steamID));
+			}
+
+			if (Client == null) {
+				throw new InvalidOperationException(nameof(Client));
+			}
+
+			if (!Client.IsConnected) {
+				return false;
+			}
+
+			CPlayer_RemoveFriend_Request request = new() { steamid = steamID };
+
+			SteamUnifiedMessages.ServiceMethodResponse response;
+
+			try {
+				response = await UnifiedPlayerService.SendMessage(x => x.RemoveFriend(request)).ToLongRunningTask().ConfigureAwait(false);
+			} catch (Exception e) {
+				ArchiLogger.LogGenericWarningException(e);
+
+				return false;
+			}
+
+			return response.Result == EResult.OK;
 		}
 
 		internal void AckChatMessage(ulong chatGroupID, ulong chatID, uint timestamp) {
@@ -194,34 +252,6 @@ namespace ArchiSteamFarm {
 			};
 
 			Client.Send(request);
-		}
-
-		internal async Task<bool> AddFriend(ulong steamID) {
-			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-				throw new ArgumentOutOfRangeException(nameof(steamID));
-			}
-
-			if (Client == null) {
-				throw new InvalidOperationException(nameof(Client));
-			}
-
-			if (!Client.IsConnected) {
-				return false;
-			}
-
-			CPlayer_AddFriend_Request request = new() { steamid = steamID };
-
-			SteamUnifiedMessages.ServiceMethodResponse response;
-
-			try {
-				response = await UnifiedPlayerService.SendMessage(x => x.AddFriend(request)).ToLongRunningTask().ConfigureAwait(false);
-			} catch (Exception e) {
-				ArchiLogger.LogGenericWarningException(e);
-
-				return false;
-			}
-
-			return response.Result == EResult.OK;
 		}
 
 		internal async Task<ulong> GetClanChatGroupID(ulong steamID) {
@@ -552,34 +582,6 @@ namespace ArchiSteamFarm {
 
 				return null;
 			}
-		}
-
-		internal async Task<bool> RemoveFriend(ulong steamID) {
-			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-				throw new ArgumentOutOfRangeException(nameof(steamID));
-			}
-
-			if (Client == null) {
-				throw new InvalidOperationException(nameof(Client));
-			}
-
-			if (!Client.IsConnected) {
-				return false;
-			}
-
-			CPlayer_RemoveFriend_Request request = new() { steamid = steamID };
-
-			SteamUnifiedMessages.ServiceMethodResponse response;
-
-			try {
-				response = await UnifiedPlayerService.SendMessage(x => x.RemoveFriend(request)).ToLongRunningTask().ConfigureAwait(false);
-			} catch (Exception e) {
-				ArchiLogger.LogGenericWarningException(e);
-
-				return false;
-			}
-
-			return response.Result == EResult.OK;
 		}
 
 		internal void RequestItemAnnouncements() {

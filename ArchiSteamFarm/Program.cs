@@ -227,7 +227,7 @@ namespace ArchiSteamFarm {
 				globalConfig = new GlobalConfig();
 			}
 
-			ASF.InitGlobalConfig(globalConfig);
+			await ASF.InitGlobalConfig(globalConfig).ConfigureAwait(false);
 
 			if (Debugging.IsDebugConfigured) {
 				ASF.ArchiLogger.LogGenericDebug(globalConfigFile + ": " + JsonConvert.SerializeObject(ASF.GlobalConfig, Formatting.Indented));

@@ -367,6 +367,20 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
+		public async Task<bool> JoinGroup(ulong groupID) {
+			if ((groupID == 0) || !new SteamID(groupID).IsClanAccount) {
+				throw new ArgumentOutOfRangeException(nameof(groupID));
+			}
+
+			string request = "/gid/" + groupID;
+
+			// Extra entry for sessionID
+			Dictionary<string, string> data = new(2, StringComparer.Ordinal) { { "action", "join" } };
+
+			return await UrlPostWithSession(SteamCommunityURL, request, data: data, session: ESession.CamelCase).ConfigureAwait(false);
+		}
+
+		[PublicAPI]
 		public async Task<(bool Success, HashSet<ulong>? MobileTradeOfferIDs)> SendTradeOffer(ulong steamID, IReadOnlyCollection<Steam.Asset>? itemsToGive = null, IReadOnlyCollection<Steam.Asset>? itemsToReceive = null, string? token = null, bool forcedSingleOffer = false, ushort itemsPerTrade = Trading.MaxItemsPerTrade) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 				throw new ArgumentOutOfRangeException(nameof(steamID));
@@ -2205,19 +2219,6 @@ namespace ArchiSteamFarm {
 			Initialized = true;
 
 			return true;
-		}
-
-		internal async Task<bool> JoinGroup(ulong groupID) {
-			if ((groupID == 0) || !new SteamID(groupID).IsClanAccount) {
-				throw new ArgumentOutOfRangeException(nameof(groupID));
-			}
-
-			string request = "/gid/" + groupID;
-
-			// Extra entry for sessionID
-			Dictionary<string, string> data = new(2, StringComparer.Ordinal) { { "action", "join" } };
-
-			return await UrlPostWithSession(SteamCommunityURL, request, data: data, session: ESession.CamelCase).ConfigureAwait(false);
 		}
 
 		internal async Task MarkInventory() {

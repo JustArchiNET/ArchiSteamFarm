@@ -133,7 +133,7 @@ namespace ArchiSteamFarm {
 			InitEvents();
 		}
 
-		internal static void InitGlobalConfig(GlobalConfig globalConfig) {
+		internal static async Task InitGlobalConfig(GlobalConfig globalConfig) {
 			if (globalConfig == null) {
 				throw new ArgumentNullException(nameof(globalConfig));
 			}
@@ -159,18 +159,18 @@ namespace ArchiSteamFarm {
 				networkGroupText = "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(globalConfig.WebProxyText!))).Replace("-", "");
 			}
 
-			ConfirmationsSemaphore ??= OS.CreateCrossProcessSemaphore(nameof(ConfirmationsSemaphore) + networkGroupText);
-			GiftsSemaphore ??= OS.CreateCrossProcessSemaphore(nameof(GiftsSemaphore) + networkGroupText);
-			InventorySemaphore ??= OS.CreateCrossProcessSemaphore(nameof(InventorySemaphore) + networkGroupText);
-			LoginRateLimitingSemaphore ??= OS.CreateCrossProcessSemaphore(nameof(LoginRateLimitingSemaphore) + networkGroupText);
-			LoginSemaphore ??= OS.CreateCrossProcessSemaphore(nameof(LoginSemaphore) + networkGroupText);
+			ConfirmationsSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(ConfirmationsSemaphore) + networkGroupText).ConfigureAwait(false);
+			GiftsSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(GiftsSemaphore) + networkGroupText).ConfigureAwait(false);
+			InventorySemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(InventorySemaphore) + networkGroupText).ConfigureAwait(false);
+			LoginRateLimitingSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(LoginRateLimitingSemaphore) + networkGroupText).ConfigureAwait(false);
+			LoginSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(LoginSemaphore) + networkGroupText).ConfigureAwait(false);
 
 			WebLimitingSemaphores ??= new Dictionary<string, (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)>(4, StringComparer.OrdinalIgnoreCase) {
-				{ nameof(ArchiWebHandler), (OS.CreateCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
-				{ ArchiWebHandler.SteamCommunityURL, (OS.CreateCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(ArchiWebHandler.SteamCommunityURL)), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
-				{ ArchiWebHandler.SteamHelpURL, (OS.CreateCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(ArchiWebHandler.SteamHelpURL)), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
-				{ ArchiWebHandler.SteamStoreURL, (OS.CreateCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(ArchiWebHandler.SteamStoreURL)), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
-				{ WebAPI.DefaultBaseAddress.Host, (OS.CreateCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(WebAPI)), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) }
+				{ nameof(ArchiWebHandler), (await PluginsCore.GetCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+				{ ArchiWebHandler.SteamCommunityURL, (await PluginsCore.GetCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(ArchiWebHandler.SteamCommunityURL)).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+				{ ArchiWebHandler.SteamHelpURL, (await PluginsCore.GetCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(ArchiWebHandler.SteamHelpURL)).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+				{ ArchiWebHandler.SteamStoreURL, (await PluginsCore.GetCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(ArchiWebHandler.SteamStoreURL)).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+				{ WebAPI.DefaultBaseAddress.Host, (await PluginsCore.GetCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(WebAPI)).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) }
 			}.ToImmutableDictionary(StringComparer.OrdinalIgnoreCase);
 		}
 

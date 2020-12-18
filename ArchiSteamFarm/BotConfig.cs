@@ -200,8 +200,38 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool ShutdownOnFarmingFinished { get; private set; } = DefaultShutdownOnFarmingFinished;
 
+		[JsonProperty]
+		public string? SteamLogin {
+			internal get => BackingSteamLogin;
+
+			set {
+				IsSteamLoginSet = true;
+				BackingSteamLogin = value;
+			}
+		}
+
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ulong SteamMasterClanID { get; private set; } = DefaultSteamMasterClanID;
+
+		[JsonProperty]
+		public string? SteamParentalCode {
+			internal get => BackingSteamParentalCode;
+
+			set {
+				IsSteamParentalCodeSet = true;
+				BackingSteamParentalCode = value;
+			}
+		}
+
+		[JsonProperty]
+		public string? SteamPassword {
+			internal get => BackingSteamPassword;
+
+			set {
+				IsSteamPasswordSet = true;
+				BackingSteamPassword = value;
+			}
+		}
 
 		[JsonProperty]
 		public string? SteamTradeToken { get; private set; } = DefaultSteamTradeToken;
@@ -262,36 +292,6 @@ namespace ArchiSteamFarm {
 		internal bool ShouldSerializeHelperProperties { private get; set; } = true;
 		internal bool ShouldSerializeSensitiveDetails { private get; set; }
 
-		[JsonProperty]
-		internal string? SteamLogin {
-			get => BackingSteamLogin;
-
-			set {
-				IsSteamLoginSet = true;
-				BackingSteamLogin = value;
-			}
-		}
-
-		[JsonProperty]
-		internal string? SteamParentalCode {
-			get => BackingSteamParentalCode;
-
-			set {
-				IsSteamParentalCodeSet = true;
-				BackingSteamParentalCode = value;
-			}
-		}
-
-		[JsonProperty]
-		internal string? SteamPassword {
-			get => BackingSteamPassword;
-
-			set {
-				IsSteamPasswordSet = true;
-				BackingSteamPassword = value;
-			}
-		}
-
 		private string? BackingSteamLogin = DefaultSteamLogin;
 		private string? BackingSteamParentalCode = DefaultSteamParentalCode;
 		private string? BackingSteamPassword = DefaultSteamPassword;
@@ -313,6 +313,40 @@ namespace ArchiSteamFarm {
 
 		[JsonConstructor]
 		internal BotConfig() { }
+
+		[PublicAPI]
+		public static async Task<bool> Write(string filePath, BotConfig botConfig) {
+			if (string.IsNullOrEmpty(filePath)) {
+				throw new ArgumentNullException(nameof(filePath));
+			}
+
+			if (botConfig == null) {
+				throw new ArgumentNullException(nameof(botConfig));
+			}
+
+			string json = JsonConvert.SerializeObject(botConfig, Formatting.Indented);
+			string newFilePath = filePath + ".new";
+
+			await WriteSemaphore.WaitAsync().ConfigureAwait(false);
+
+			try {
+				await RuntimeCompatibility.File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+
+				if (File.Exists(filePath)) {
+					File.Replace(newFilePath, filePath, null);
+				} else {
+					File.Move(newFilePath, filePath);
+				}
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+
+				return false;
+			} finally {
+				WriteSemaphore.Release();
+			}
+
+			return true;
+		}
 
 		internal (bool Valid, string? ErrorMessage) CheckValidation() {
 			if (BotBehaviour > EBotBehaviour.All) {
@@ -421,39 +455,6 @@ namespace ArchiSteamFarm {
 			}
 
 			return botConfig;
-		}
-
-		internal static async Task<bool> Write(string filePath, BotConfig botConfig) {
-			if (string.IsNullOrEmpty(filePath)) {
-				throw new ArgumentNullException(nameof(filePath));
-			}
-
-			if (botConfig == null) {
-				throw new ArgumentNullException(nameof(botConfig));
-			}
-
-			string json = JsonConvert.SerializeObject(botConfig, Formatting.Indented);
-			string newFilePath = filePath + ".new";
-
-			await WriteSemaphore.WaitAsync().ConfigureAwait(false);
-
-			try {
-				await RuntimeCompatibility.File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
-
-				if (File.Exists(filePath)) {
-					File.Replace(newFilePath, filePath, null);
-				} else {
-					File.Move(newFilePath, filePath);
-				}
-			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericException(e);
-
-				return false;
-			} finally {
-				WriteSemaphore.Release();
-			}
-
-			return true;
 		}
 
 		public enum EAccess : byte {
