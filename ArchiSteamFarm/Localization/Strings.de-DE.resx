@@ -736,7 +736,9 @@ Prozesslaufzeit: {1}</value>
     <value>Ergebnis: {0}</value>
     <comment>{0} will be replaced by generic result of various functions that use this string</comment>
   </data>
-  
+  <data name="WarningUnsupportedEnvironment" xml:space="preserve">
+    <value>Du versuchst, die Variante {0} von ASF in einer nicht unterstützten Umgebung auszuführen: {1}. Gib das Argument --ignore-unsupported-environment an, wenn du wirklich weißt, was du tust.</value>
+  </data>
   <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
     <value>Unbekanntes Kommandozeilenargument: {0}</value>
   </data>
