@@ -177,7 +177,9 @@ StackTrace:
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Neuspešno traženje nove verzije!</value>
   </data>
-  
+  <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
+    <value>Ni moguće nastaviti ažuriranje jer nema fajlova koji su asocirani sa trenutnom verzijom! Automatsko ažuriranje na tu verziju nije moguće.</value>
+  </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Nije moguće nastaviti sa ažuriranjem zato što ta verzija ne uključuje potrebne podatke!</value>
   </data>
@@ -229,7 +231,10 @@ StackTrace:
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Traženje nove verzije...</value>
   </data>
-  
+  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
+    <value>Preuzimanje nove verzije: {0} ({1} MB)... Dok čekate, razmislite o doniranju ovom projektu ako cenite uložen rad! :)</value>
+    <comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
+  </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Proces ažuriranja je završen!</value>
   </data>
@@ -252,7 +257,10 @@ StackTrace:
     <value>Molimo Vas unestie vašu Steam prijavu: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputSteamParentalCode" xml:space="preserve">
+    <value>Molimo Vas da unesete Steam roditeljski Pin: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>Molimo Vas da uneste vašu Steam lozinku: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -278,8 +286,14 @@ StackTrace:
     <value>{0}/{1} botova je pokrenuto, sa ukupno {2} igrica ({3} karata) preostalih da se idle-uje.</value>
     <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
   </data>
-  
-  
+  <data name="BotStatusIdling" xml:space="preserve">
+    <value>Bot idle-uje igricu: {0} ({1},{2} kartica preostalo) od ukupno {3} igrice ({4} kartice) je preostalo da se idle-uje (~{5} preostalo).</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle, {3} will be replaced by total number of games to idle, {4} will be replaced by total number of cards to idle, {5} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+  </data>
+  <data name="BotStatusIdlingList" xml:space="preserve">
+    <value>Bot idle-uje igrice: {0} od ukupno {1} igrice ({2} kartice) preostalo da se idle-uje (~{3} preostalo).</value>
+    <comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to idle, {2} will be replaced by total number of cards to idle, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+  </data>
   <data name="CheckingFirstBadgePage" xml:space="preserve">
     <value>Proveravanje prve stranje bedževa...</value>
   </data>
@@ -315,7 +329,9 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Idle-ovanje zaustavljeno!</value>
   </data>
-  
+  <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
+    <value>Zanemarivanje ovog zahteva, zato što je dugoročna pauza omogućena!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Ništa nije preostalo da se idle-uje na ovom nalogu!</value>
   </data>
@@ -349,7 +365,9 @@ StackTrace:
   <data name="UnknownCommand" xml:space="preserve">
     <value>Nepoznata komanda!</value>
   </data>
-  
+  <data name="WarningCouldNotCheckBadges" xml:space="preserve">
+    <value>Neuspešno dobijanje informacija o bedževima, kasnije ćemo ponovo pokušati!</value>
+  </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
     <value>Nije uspela provera status za: {0} ({1}), probaćemo kasnije!</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
@@ -358,7 +376,9 @@ StackTrace:
     <value>Prihvatanje poklona: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
-  
+  <data name="BotAccountLimited" xml:space="preserve">
+    <value>Ovaj nalog je limitiran, idle-ovanje je nemoguće dok se restrikcija ne ukloni!</value>
+  </data>
   <data name="BotAddLicense" xml:space="preserve">
     <value>ID: {0} | Status: {1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
@@ -367,7 +387,9 @@ StackTrace:
     <value>ID: {0} | Status: {1} | Stavke: {2}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string, {2} will be replaced by list of granted IDs (numbers), separated by a comma</comment>
   </data>
-  
+  <data name="BotAlreadyRunning" xml:space="preserve">
+    <value>Ovaj bot je već pokrenut!</value>
+  </data>
   <data name="BotAuthenticatorConverting" xml:space="preserve">
     <value>Konvertovanje .maFile u ASF format...</value>
   </data>
@@ -406,7 +428,10 @@ StackTrace:
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>Ovaj bot se ne započinje zato što je onemogućen u konfiguracionom fajlu!</value>
   </data>
-  
+  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+    <value>Primljena TwoFactorCodeMismatch greška {0} put uzastopno. Ili je vaši 2FA kredencijali nevalidni, ili je vaš sat unsinhronizovan, odustajanje!</value>
+    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+  </data>
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Odjavljen sa Steam-a: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
@@ -424,7 +449,9 @@ StackTrace:
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Ponuda za ramenu nije uspela!</value>
   </data>
-  
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>Razmenu nije moguće poslati zato što ne postoji korisnik sa master permission odrednicom!</value>
+  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Ponuda za razmenu je uspešno poslata!</value>
   </data>
@@ -437,9 +464,18 @@ StackTrace:
   <data name="BotNotConnected" xml:space="preserve">
     <value>Ova instanca bot-a nije povezana!</value>
   </data>
-  
-  
-  
+  <data name="BotNotOwnedYet" xml:space="preserve">
+    <value>Nije u vlasništvu: {0}</value>
+    <comment>{0} will be replaced by query (string)</comment>
+  </data>
+  <data name="BotOwnedAlreadyWithName" xml:space="preserve">
+    <value>U vlasništvu: {0} | {1}</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="BotRateLimitExceeded" xml:space="preserve">
+    <value>Stopa ograničenja je prevazićena, pokušaćemo ponovo nakon {0} čekanja...</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
+  </data>
   <data name="BotReconnecting" xml:space="preserve">
     <value>Ponovo povezivanje...</value>
   </data>
@@ -500,12 +536,19 @@ StackTrace:
   <data name="BotConnecting" xml:space="preserve">
     <value>Povezivanje...</value>
   </data>
-  
-  
+  <data name="BotHeartBeatFailed" xml:space="preserve">
+    <value>Nije uspelo diskonektovanje klijenta. Napuštanje ove instance bota-a!</value>
+  </data>
+  <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
+    <value>Nije moguće inicijalizovati SteamDirectory: povezivanje sa mrežom Steam-a može potrajati duže nego uobičajeno!</value>
+  </data>
   <data name="BotStopping" xml:space="preserve">
     <value>Zaustavljanje...</value>
   </data>
-  
+  <data name="ErrorBotConfigInvalid" xml:space="preserve">
+    <value>Vaša konfiguracija bot-a je nevažeća. Molimo vas proverite sadržaj {0} i pokušajte ponovo!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
     <value>Trajna baza podataka ne može biti učitana, ako se problem nastavi, molimo Vas da uklonite {0} da bi se baza podataka ponovo stvorila!</value>
     <comment>{0} will be replaced by file's path</comment>
