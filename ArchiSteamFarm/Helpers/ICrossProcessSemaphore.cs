@@ -25,8 +25,8 @@ using JetBrains.Annotations;
 namespace ArchiSteamFarm.Helpers {
 	[PublicAPI]
 	public interface ICrossProcessSemaphore {
-		internal void Release();
-		internal Task WaitAsync();
-		internal Task<bool> WaitAsync(int millisecondsTimeout);
+		void Release();
+		Task WaitAsync();
+		Task<bool> WaitAsync(int millisecondsTimeout);
 	}
 }
