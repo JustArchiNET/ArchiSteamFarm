@@ -3194,6 +3194,11 @@ namespace ArchiSteamFarm {
 
 					Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), List<uint>> inventorySets = Trading.GetInventorySets(inventory);
 					appIDs.IntersectWith(inventorySets.Where(kv => kv.Value.Count >= MinimumCardsPerBadge).Select(kv => kv.Key.RealAppID));
+
+					if (appIDs.Count == 0) {
+						return;
+					}
+
 					Dictionary<uint, byte>? cardCountPerAppID = await LoadCardsPerSet(appIDs).ConfigureAwait(false);
 
 					if ((cardCountPerAppID == null) || (cardCountPerAppID.Count == 0)) {
