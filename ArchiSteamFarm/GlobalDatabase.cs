@@ -102,7 +102,11 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!File.Exists(filePath)) {
-				return new GlobalDatabase(filePath);
+				GlobalDatabase result = new(filePath);
+
+				Utilities.InBackground(result.Save);
+
+				return result;
 			}
 
 			GlobalDatabase globalDatabase;
