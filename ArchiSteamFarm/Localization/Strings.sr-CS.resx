@@ -588,7 +588,9 @@ StackTrace:
   <data name="BotStatusLocked" xml:space="preserve">
     <value>Bot je zaključan i ne može da prikuplja kartice idle-ovanjem.</value>
   </data>
-  
+  <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
+    <value>Ova funkcija je dostupna tek onda kada omogućite headless mod!</value>
+  </data>
   <data name="BotOwnedAlready" xml:space="preserve">
     <value>U vlasništvu: {0}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
@@ -628,18 +630,38 @@ Vrijeme rada procesa: {1}</value>
     <comment>{0} will be replaced by trade's ID (number)</comment>
   </data>
   
+  <data name="TargetBotNotConnected" xml:space="preserve">
+    <value>Ovaj bot nije povezan!</value>
+  </data>
+  <data name="BotWalletBalance" xml:space="preserve">
+    <value>Stanje u novčaniku: {0} {1}</value>
+    <comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
+  </data>
+  <data name="BotHasNoWallet" xml:space="preserve">
+    <value>Bot nema novčanik.</value>
+  </data>
+  <data name="BotLevel" xml:space="preserve">
+    <value>Bot ima level {0}.</value>
+    <comment>{0} will be replaced by bot's level</comment>
+  </data>
   
   
+  <data name="ErrorAborted" xml:space="preserve">
+    <value>Obustavljeno!</value>
+  </data>
   
   
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="PluginLoaded" xml:space="preserve">
+    <value>{0} je uspješno učitan!</value>
+    <comment>{0} will be replaced by the name of the custom ASF plugin</comment>
+  </data>
+  <data name="PluginLoading" xml:space="preserve">
+    <value>Učitavanje {0} V{1}...</value>
+    <comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
+  </data>
+  <data name="NothingFound" xml:space="preserve">
+    <value>Ništa nije pronađeno!</value>
+  </data>
   
   
   

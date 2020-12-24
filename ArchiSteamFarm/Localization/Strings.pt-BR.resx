@@ -742,5 +742,7 @@ Tempo de execução: {1}</value>
   <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
     <value>Argumento de linha de comando desconhecido: {0}</value>
   </data>
-
+<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Diretório da configuração não encontrado, abortando!</value>
+</data>
 </root>
