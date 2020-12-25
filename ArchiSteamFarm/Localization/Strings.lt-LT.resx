@@ -723,7 +723,13 @@ StackTrace:
   
   
   
-  
-  
-
+  <data name="WarningUnsupportedEnvironment" xml:space="preserve">
+    <value>Jūs bandote paleisti {0} ASF versija, kuri yra nepalaikomoje aplinkoje: {1} Papildymas - ignoruokite-nepalaikomos-aplinkos argumentą, jeigu tikrai žinote ką darote.</value>
+  </data>
+  <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
+    <value>Nežinomas komandų-eilutės argumentas: {0}</value>
+  </data>
+<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Konfigūracijos vieta nerasta, nutraukiama!</value>
+</data>
 </root>
