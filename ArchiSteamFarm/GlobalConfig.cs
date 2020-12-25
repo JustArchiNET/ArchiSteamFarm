@@ -345,7 +345,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			GlobalConfig globalConfig;
+			GlobalConfig? globalConfig;
 
 			try {
 				string json = await RuntimeCompatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false);
@@ -363,7 +363,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			// ReSharper disable once ConditionIsAlwaysTrueOrFalse - wrong, "null" json serializes into null object
+			// ReSharper disable once ConditionIsAlwaysTrueOrFalse - wrong, "null" json deserializes into null object
 			if (globalConfig == null) {
 				ASF.ArchiLogger.LogNullError(nameof(globalConfig));
 

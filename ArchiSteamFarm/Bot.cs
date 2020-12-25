@@ -1964,7 +1964,7 @@ namespace ArchiSteamFarm {
 
 				MobileAuthenticator? authenticator = JsonConvert.DeserializeObject<MobileAuthenticator>(json);
 
-				// ReSharper disable once ConditionIsAlwaysTrueOrFalse - wrong, "null" json serializes into null object
+				// ReSharper disable once ConditionIsAlwaysTrueOrFalse - wrong, "null" json deserializes into null object
 				if (authenticator == null) {
 					ArchiLogger.LogNullError(nameof(authenticator));
 

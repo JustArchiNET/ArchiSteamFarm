@@ -109,7 +109,7 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			GlobalDatabase globalDatabase;
+			GlobalDatabase? globalDatabase;
 
 			try {
 				string json = await RuntimeCompatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false);
@@ -127,7 +127,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			// ReSharper disable once ConditionIsAlwaysTrueOrFalse - wrong, "null" json serializes into null object
+			// ReSharper disable once ConditionIsAlwaysTrueOrFalse - wrong, "null" json deserializes into null object
 			if (globalDatabase == null) {
 				ASF.ArchiLogger.LogNullError(nameof(globalDatabase));
 
