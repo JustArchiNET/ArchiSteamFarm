@@ -209,14 +209,14 @@ namespace ArchiSteamFarm.NLog {
 			}
 		}
 
-		internal void LogInvite(SteamID steamID, [CallerMemberName] string? previousMethodName = null) {
+		internal void LogInvite(SteamID steamID, bool? handled = null, [CallerMemberName] string? previousMethodName = null) {
 			if ((steamID == null) || (steamID.AccountType == EAccountType.Invalid)) {
 				throw new ArgumentNullException(nameof(steamID));
 			}
 
 			ulong steamID64 = steamID;
 
-			string loggedMessage = previousMethodName + "() " + steamID.AccountType + " " + steamID64;
+			string loggedMessage = previousMethodName + "() " + steamID.AccountType + " " + steamID64 + (handled.HasValue ? " = " + handled.Value : "");
 
 			LogEventInfo logEventInfo = new(LogLevel.Trace, Logger.Name, loggedMessage);
 			logEventInfo.Properties["AccountType"] = steamID.AccountType;

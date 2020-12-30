@@ -2388,10 +2388,10 @@ namespace ArchiSteamFarm {
 			}
 
 			foreach (SteamFriends.FriendsListCallback.Friend friend in callback.FriendList.Where(friend => friend.Relationship == EFriendRelationship.RequestRecipient)) {
-				ArchiLogger.LogInvite(friend.SteamID);
-
 				switch (friend.SteamID.AccountType) {
 					case EAccountType.Clan when IsMasterClanID(friend.SteamID):
+						ArchiLogger.LogInvite(friend.SteamID, true);
+
 						ArchiHandler.AcknowledgeClanInvite(friend.SteamID, true);
 						await JoinMasterChatGroupID().ConfigureAwait(false);
 
@@ -2400,6 +2400,8 @@ namespace ArchiSteamFarm {
 						bool acceptGroupRequest = await PluginsCore.OnBotFriendRequest(this, friend.SteamID).ConfigureAwait(false);
 
 						if (acceptGroupRequest) {
+							ArchiLogger.LogInvite(friend.SteamID, true);
+
 							ArchiHandler.AcknowledgeClanInvite(friend.SteamID, true);
 							await JoinMasterChatGroupID().ConfigureAwait(false);
 
@@ -2407,12 +2409,20 @@ namespace ArchiSteamFarm {
 						}
 
 						if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidGroupInvites)) {
+							ArchiLogger.LogInvite(friend.SteamID, false);
+
 							ArchiHandler.AcknowledgeClanInvite(friend.SteamID, false);
+
+							break;
 						}
+
+						ArchiLogger.LogInvite(friend.SteamID);
 
 						break;
 					default:
 						if (HasAccess(friend.SteamID, BotConfig.EAccess.FamilySharing)) {
+							ArchiLogger.LogInvite(friend.SteamID, true);
+
 							if (!await ArchiHandler.AddFriend(friend.SteamID).ConfigureAwait(false)) {
 								ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(ArchiHandler.AddFriend)));
 							}
@@ -2423,6 +2433,8 @@ namespace ArchiSteamFarm {
 						bool acceptFriendRequest = await PluginsCore.OnBotFriendRequest(this, friend.SteamID).ConfigureAwait(false);
 
 						if (acceptFriendRequest) {
+							ArchiLogger.LogInvite(friend.SteamID, true);
+
 							if (!await ArchiHandler.AddFriend(friend.SteamID).ConfigureAwait(false)) {
 								ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(ArchiHandler.AddFriend)));
 							}
@@ -2431,10 +2443,16 @@ namespace ArchiSteamFarm {
 						}
 
 						if (BotConfig.BotBehaviour.HasFlag(BotConfig.EBotBehaviour.RejectInvalidFriendInvites)) {
+							ArchiLogger.LogInvite(friend.SteamID, false);
+
 							if (!await ArchiHandler.RemoveFriend(friend.SteamID).ConfigureAwait(false)) {
 								ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(ArchiHandler.RemoveFriend)));
 							}
+
+							break;
 						}
+
+						ArchiLogger.LogInvite(friend.SteamID);
 
 						break;
 				}
