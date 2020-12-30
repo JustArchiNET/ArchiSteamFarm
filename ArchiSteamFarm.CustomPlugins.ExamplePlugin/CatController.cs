@@ -40,7 +40,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
 		public async Task<ActionResult<GenericResponse>> CatGet() {
 			if (ASF.WebBrowser == null) {
-				throw new ArgumentNullException(nameof(ASF.WebBrowser));
+				throw new InvalidOperationException(nameof(ASF.WebBrowser));
 			}
 
 			string? link = await CatAPI.GetRandomCatURL(ASF.WebBrowser).ConfigureAwait(false);
