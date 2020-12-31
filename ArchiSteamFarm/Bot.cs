@@ -2268,10 +2268,27 @@ namespace ArchiSteamFarm {
 			const string nonAsciiPattern = @"[^\u0000-\u007F]+";
 
 			string username = Regex.Replace(BotConfig.SteamLogin!, nonAsciiPattern, "", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+
+			if (string.IsNullOrEmpty(username)) {
+				ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(BotConfig.SteamLogin)));
+
+				Stop();
+
+				return;
+			}
+
 			string? password = BotConfig.DecryptedSteamPassword;
 
 			if (!string.IsNullOrEmpty(password)) {
 				password = Regex.Replace(password!, nonAsciiPattern, "", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+
+				if (string.IsNullOrEmpty(password)) {
+					ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(BotConfig.SteamPassword)));
+
+					Stop();
+
+					return;
+				}
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.BotLoggingIn);
