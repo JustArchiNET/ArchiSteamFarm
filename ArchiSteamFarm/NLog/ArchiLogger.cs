@@ -219,7 +219,9 @@ namespace ArchiSteamFarm.NLog {
 			string loggedMessage = previousMethodName + "() " + steamID.AccountType + " " + steamID64 + (handled.HasValue ? " = " + handled.Value : "");
 
 			LogEventInfo logEventInfo = new(LogLevel.Trace, Logger.Name, loggedMessage);
+
 			logEventInfo.Properties["AccountType"] = steamID.AccountType;
+			logEventInfo.Properties["Handled"] = handled;
 			logEventInfo.Properties["SteamID"] = steamID64;
 
 			Logger.Log(logEventInfo);
