@@ -6,7 +6,7 @@ RUN echo "node: $(node --version)" && \
     npm ci && \
     npm run deploy
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build-dotnet
+FROM --platform=linux/amd64 mcr.microsoft.com/dotnet/sdk:5.0 AS build-dotnet
 ARG TARGETOS=linux
 ARG TARGETARCH=amd64
 ARG STEAM_TOKEN_DUMPER_TOKEN
