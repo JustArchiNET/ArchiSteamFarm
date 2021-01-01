@@ -1,12 +1,11 @@
-name: ASF-docker-publish-master
+name: ASF-docker-publish-latest
 
 on:
-  push:
-    branches:
-    - master
+  release:
+    types: [released]
 
 env:
-  TAG: master
+  TAG: latest
 
 jobs:
   main:
@@ -38,6 +37,7 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v2
       with:
+        file: Dockerfile.Service
         platforms: linux/amd64,linux/arm,linux/arm64
         build-args: STEAM_TOKEN_DUMPER_TOKEN=${{ secrets.STEAM_TOKEN_DUMPER_TOKEN }}
         tags: |

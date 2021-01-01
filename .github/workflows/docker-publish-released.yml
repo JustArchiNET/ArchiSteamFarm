@@ -1,12 +1,12 @@
-name: ASF-docker-publish-master
+name: ASF-docker-publish-released
 
 on:
   push:
-    branches:
-    - master
+    tags:
+    - '*'
 
 env:
-  TAG: master
+  TAG: released
 
 jobs:
   main:
@@ -32,6 +32,7 @@ jobs:
     - name: Prepare environment outputs
       shell: sh
       run: |
+        echo "FIXED_TAG=$(echo ${{ github.ref }} | cut -d '/' -f 3" >> "$GITHUB_ENV"
         echo "GHCR_REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
         echo "DH_REPOSITORY=$(echo ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
 
@@ -42,5 +43,7 @@ jobs:
         build-args: STEAM_TOKEN_DUMPER_TOKEN=${{ secrets.STEAM_TOKEN_DUMPER_TOKEN }}
         tags: |
           ghcr.io/${{ env.GHCR_REPOSITORY }}:${{ env.TAG }}
+          ghcr.io/${{ env.GHCR_REPOSITORY }}:${{ env.FIXED_TAG }}
           ${{ env.DH_REPOSITORY }}:${{ env.TAG }}
+          ${{ env.DH_REPOSITORY }}:${{ env.FIXED_TAG }}
         push: true
