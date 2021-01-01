@@ -1,0 +1,37 @@
+name: ASF-ghcr-docker-released
+on:
+  push:
+#    tags:
+#      - '*'
+jobs:
+  main:
+    strategy:
+      matrix:
+        include:
+          - tag: released
+            asf-arch: x64
+            dotnet-arch: ''
+          - tag: released-arm
+            asf-arch: arm
+            dotnet-arch: '-arm32v7'
+          - tag: released-arm64
+            asf-arch: arm64
+            dotnet-arch: '-arm64v8'
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GH_PACKAGES_PAT }}
+          repository: ${{ github.repository }}
+          build_args: ASF_ARCH=${{ matrix.asf-arch }},DOTNET_ARCH=${{ matrix.dotnet-arch }},STEAM_TOKEN_DUMPER_TOKEN=${{ secrets.STEAM_TOKEN_DUMPER_TOKEN }}
+          tags: ${{ matrix.tag }}
