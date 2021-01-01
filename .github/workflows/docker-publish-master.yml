@@ -44,3 +44,10 @@ jobs:
           ghcr.io/${{ env.GHCR_REPOSITORY }}:${{ env.TAG }}
           ${{ env.DH_REPOSITORY }}:${{ env.TAG }}
         push: true
+
+    - name: Update DockerHub repository description
+      uses: peter-evans/dockerhub-description@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        repository: ${{ env.DH_REPOSITORY }}
