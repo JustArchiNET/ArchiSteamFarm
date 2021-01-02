@@ -38,6 +38,7 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	internal static class Program {
+		internal static bool ConfigWatch { get; private set; } = true;
 		internal static string? NetworkGroup { get; private set; }
 		internal static bool ProcessRequired { get; private set; }
 		internal static bool RestartAllowed { get; private set; } = true;
@@ -470,6 +471,10 @@ namespace ArchiSteamFarm {
 						break;
 					case "--network-group" when !cryptKeyNext && !networkGroupNext && !pathNext:
 						networkGroupNext = true;
+
+						break;
+					case "--no-config-watch" when !cryptKeyNext && !networkGroupNext && !pathNext:
+						ConfigWatch = false;
 
 						break;
 					case "--no-restart" when !cryptKeyNext && !networkGroupNext && !pathNext:

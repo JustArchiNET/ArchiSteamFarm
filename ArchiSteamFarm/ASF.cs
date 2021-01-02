@@ -130,7 +130,9 @@ namespace ArchiSteamFarm {
 
 			await RegisterBots().ConfigureAwait(false);
 
-			InitEvents();
+			if (Program.ConfigWatch) {
+				InitConfigWatchEvents();
+			}
 		}
 
 		internal static async Task InitGlobalConfig(GlobalConfig globalConfig) {
@@ -404,7 +406,7 @@ namespace ArchiSteamFarm {
 			Bot.Init(botsComparer);
 		}
 
-		private static void InitEvents() {
+		private static void InitConfigWatchEvents() {
 			if ((FileSystemWatcher != null) || (LastWriteEvents != null)) {
 				return;
 			}
