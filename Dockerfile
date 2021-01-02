@@ -1,4 +1,6 @@
-FROM --platform=$BUILDPLATFORM node:lts AS build-node
+ARG IMAGESUFFIX
+
+FROM --platform=$BUILDPLATFORM node:lts${IMAGESUFFIX} AS build-node
 WORKDIR /app
 COPY ASF-ui .
 RUN echo "node: $(node --version)" && \
@@ -6,7 +8,7 @@ RUN echo "node: $(node --version)" && \
     npm ci && \
     npm run deploy
 
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:5.0 AS build-dotnet
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:5.0${IMAGESUFFIX} AS build-dotnet
 ARG STEAM_TOKEN_DUMPER_TOKEN
 ARG TARGETARCH
 ARG TARGETOS
@@ -42,7 +44,7 @@ RUN dotnet --info && \
     if [ -d "ArchiSteamFarm/overlay/generic" ]; then cp "ArchiSteamFarm/overlay/generic/"* "out/result"; fi && \
     if [ -d "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}" ]; then mkdir -p "out/result/plugins/${STEAM_TOKEN_DUMPER_NAME}"; cp -pR "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}/"* "out/result/plugins/${STEAM_TOKEN_DUMPER_NAME}"; fi
 
-FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/aspnet:5.0 AS runtime
+FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/aspnet:5.0${IMAGESUFFIX} AS runtime
 ENV ASPNETCORE_URLS=
 ENV DOTNET_CLI_TELEMETRY_OPTOUT 1
 ENV DOTNET_NOLOGO 1
