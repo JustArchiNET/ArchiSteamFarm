@@ -6,11 +6,7 @@ on:
 
 jobs:
   update:
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
