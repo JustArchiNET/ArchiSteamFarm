@@ -39,6 +39,7 @@ jobs:
       run: |
         set -eu
 
+        echo "DATE_ISO8601=$(date --iso-8601=seconds --utc)" >> "$GITHUB_ENV"
         echo "GHCR_REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
         echo "DH_REPOSITORY=$(echo ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
 
@@ -47,6 +48,10 @@ jobs:
       with:
         platforms: linux/amd64,linux/arm,linux/arm64
         build-args: STEAM_TOKEN_DUMPER_TOKEN=${{ secrets.STEAM_TOKEN_DUMPER_TOKEN }}
+        labels: |
+          org.opencontainers.image.created=${{ env.DATE_ISO8601 }}
+          org.opencontainers.image.version=${{ github.sha }}
+          org.opencontainers.image.revision=${{ github.sha }}
         tags: |
           ghcr.io/${{ env.GHCR_REPOSITORY }}:${{ env.TAG }}
           ${{ env.DH_REPOSITORY }}:${{ env.TAG }}

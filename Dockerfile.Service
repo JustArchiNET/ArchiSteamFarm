@@ -48,7 +48,17 @@ FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/runtime-deps:5.0${IMAGE
 ENV ASPNETCORE_URLS=
 ENV DOTNET_CLI_TELEMETRY_OPTOUT 1
 ENV DOTNET_NOLOGO 1
-LABEL maintainer="JustArchi <JustArchi@JustArchi.net>"
+
+LABEL maintainer="JustArchi <JustArchi@JustArchi.net>" \
+    org.opencontainers.image.authors="JustArchi <JustArchi@JustArchi.net>" \
+    org.opencontainers.image.url="https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Docker" \
+    org.opencontainers.image.documentation="https://github.com/JustArchiNET/ArchiSteamFarm/wiki" \
+    org.opencontainers.image.source="https://github.com/JustArchiNET/ArchiSteamFarm" \
+    org.opencontainers.image.vendor="JustArchiNET" \
+    org.opencontainers.image.licenses="Apache-2.0" \
+    org.opencontainers.image.title="ArchiSteamFarm" \
+    org.opencontainers.image.description="C# application with primary purpose of idling Steam cards from multiple accounts simultaneously"
+
 EXPOSE 1242
 WORKDIR /app
 COPY --from=build-dotnet /app/out/result .
