@@ -39,7 +39,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.WebSockets" Version="2.2.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.*" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="3.1.*" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="5.0.*" />
     <Reference Include="System.Net.Http" HintPath="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Net.Http.dll" />
     <Reference Include="System.Security" HintPath="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Security.dll" />
   </ItemGroup>
