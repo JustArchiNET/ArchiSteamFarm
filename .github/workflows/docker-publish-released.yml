@@ -32,6 +32,8 @@ jobs:
     - name: Prepare environment outputs
       shell: sh
       run: |
+        set -eu
+
         echo "FIXED_TAG=$(echo ${{ github.ref }} | cut -d '/' -f 3)" >> "$GITHUB_ENV"
         echo "GHCR_REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
         echo "DH_REPOSITORY=$(echo ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
