@@ -135,7 +135,7 @@
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF Verzija {0} je naisla na fatalnu gresku pre nego sto je glavni modul za ulogovanje mogao da se pokrene!</value>
+    <value>ASF Verzija {0} je naišla na fatalnu gresku pre nego sto je glavni modul za prijavljivanje mogao da se pokrene!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
@@ -223,7 +223,7 @@ StackTrace:
     <value>Pokretanje...</value>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>Uspeh!</value>
+    <value>Uspješno!</value>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
     <value>Otključavanje roditeljskog naloga...</value>
@@ -246,19 +246,19 @@ StackTrace:
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>Molimo Vas unestie vaš 2FA kod iz Vaše Steam authenticator aplikacije: </value>
+    <value>Molimo Vas unestie vaš 2FA kod iz Vaše Steam autentikator aplikacije: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>Molimo Vas unesite vaš SteamGuard autentifikacioni kod koji poslat na vaš e-mail: </value>
+    <value>Molimo Vas unesite vaš SteamGuard autentikacioni kod koji poslat na vaš e-mail: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>Molimo Vas unestie vašu Steam prijavu: </value>
+    <value>Molimo Vas unestie vaše Steam korističko ime: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalCode" xml:space="preserve">
-    <value>Molimo Vas da unesete Steam roditeljski Pin: </value>
+    <value>Molimo Vas da unesete Steam roditeljski kod: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
@@ -270,7 +270,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
   <data name="IPCReady" xml:space="preserve">
-    <value>IPC server spreman!</value>
+    <value>IPC server je spreman!</value>
   </data>
   <data name="IPCStarting" xml:space="preserve">
     <value>Pokretanje IPC servera...</value>
@@ -413,7 +413,7 @@ StackTrace:
     <value>Automatsko idle-ovanje je već pokrenuto!</value>
   </data>
   <data name="BotConnected" xml:space="preserve">
-    <value>Povezan na Steam!</value>
+    <value>Povezani ste na Steam!</value>
   </data>
   <data name="BotDisconnected" xml:space="preserve">
     <value>Diskonektovan sa Steam-a!</value>
@@ -437,7 +437,7 @@ StackTrace:
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
   <data name="BotLoggedOn" xml:space="preserve">
-    <value>Uspešno ulogovani kao {0}.</value>
+    <value>Uspešno prijavljeni kao {0}.</value>
     <comment>{0} will be replaced by steam ID (number)</comment>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
@@ -509,7 +509,7 @@ StackTrace:
     <value>Bot je trenutno u upotrebi.</value>
   </data>
   <data name="BotUnableToLogin" xml:space="preserve">
-    <value>Nije moguće prijavljivanje na Steam: {0}{1}</value>
+    <value>Nije moguće prijavljivanje na Steam: {0}/{1}</value>
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
   </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
@@ -540,7 +540,7 @@ StackTrace:
     <value>Nije uspelo diskonektovanje klijenta. Napuštanje ove instance bota-a!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>Nije moguće inicijalizovati SteamDirectory: povezivanje sa mrežom Steam-a može potrajati duže nego uobičajeno!</value>
+    <value>Nije moguće inicijalizovati SteamDirectory: povezivanje sa Steam mrežom može potrajati duže nego uobičajeno!</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
     <value>Zaustavljanje...</value>
@@ -719,7 +719,7 @@ Vrijeme rada procesa: {1}</value>
     <value>Čišćenje starih fajlova nakon ažuriranja...</value>
   </data>
   <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
-    <value>Generisanje Steam parental koda, ovo može potrajati, uzmite u obzir da ga stavite u konfiguraciju...</value>
+    <value>Generisanje Steam parental koda, ovo može duže potrajati, uzmite u obzir da ga stavite u konfiguraciju...</value>
   </data>
   <data name="IPCConfigChanged" xml:space="preserve">
     <value>IPC kofiguracija je promijenjena!</value>
