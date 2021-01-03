@@ -98,8 +98,12 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				if ((picsChanges.PackageChanges.Count > 0) && (ASF.GlobalDatabase != null)) {
-					await ASF.GlobalDatabase.RefreshPackages(refreshBot, picsChanges.PackageChanges.ToDictionary(package => package.Key, package => package.Value.ChangeNumber)).ConfigureAwait(false);
+				if (ASF.GlobalDatabase != null) {
+					ASF.GlobalDatabase.LastChangeNumber = picsChanges.CurrentChangeNumber;
+
+					if (picsChanges.PackageChanges.Count > 0) {
+						await ASF.GlobalDatabase.RefreshPackages(refreshBot, picsChanges.PackageChanges.ToDictionary(package => package.Key, package => package.Value.ChangeNumber)).ConfigureAwait(false);
+					}
 				}
 
 				await PluginsCore.OnPICSChanges(picsChanges.CurrentChangeNumber, picsChanges.AppChanges, picsChanges.PackageChanges).ConfigureAwait(false);
