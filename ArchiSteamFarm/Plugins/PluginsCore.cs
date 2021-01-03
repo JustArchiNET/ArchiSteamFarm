@@ -66,7 +66,7 @@ namespace ArchiSteamFarm.Plugins {
 		internal static async Task<uint> GetChangeNumberToStartFrom() {
 			uint lastChangeNumber = ASF.GlobalDatabase?.LastChangeNumber ?? 0;
 
-			if (ActivePlugins == null) {
+			if ((lastChangeNumber == 0) || (ActivePlugins == null)) {
 				return lastChangeNumber;
 			}
 
