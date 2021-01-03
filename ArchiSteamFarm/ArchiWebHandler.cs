@@ -1308,20 +1308,12 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		internal async Task<(bool Success, bool RequiresMobileConfirmation)> AcceptTradeOffer(ulong tradeID, byte maxTries = WebBrowser.MaxTries) {
+		internal async Task<(bool Success, bool RequiresMobileConfirmation)> AcceptTradeOffer(ulong tradeID) {
 			if (tradeID == 0) {
 				throw new ArgumentOutOfRangeException(nameof(tradeID));
 			}
 
 			string request = "/tradeoffer/" + tradeID + "/accept";
-
-			if (maxTries == 0) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, SteamCommunityURL + request));
-
-				return (false, false);
-			}
-
 			string referer = SteamCommunityURL + "/tradeoffer/" + tradeID;
 
 			// Extra entry for sessionID
