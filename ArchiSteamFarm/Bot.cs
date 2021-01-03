@@ -2606,6 +2606,11 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			// Wait a short time for eventual LastChangeNumber initialization
+			for (byte i = 0; (i < WebBrowser.MaxTries) && (ASF.GlobalDatabase.LastChangeNumber == 0); i++) {
+				await Task.Delay(1000).ConfigureAwait(false);
+			}
+
 			Commands.OnNewLicenseList();
 
 			Dictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)> ownedPackageIDs = new();
