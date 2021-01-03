@@ -161,7 +161,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 		public override void OnLoaded() { }
 
-		public async void OnPICSChanges(uint currentChangeNumber, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> appChanges, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> packageChanges) {
+		public void OnPICSChanges(uint currentChangeNumber, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> appChanges, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> packageChanges) {
 			if (currentChangeNumber == 0) {
 				throw new ArgumentOutOfRangeException(nameof(currentChangeNumber));
 			}
@@ -182,10 +182,10 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				throw new InvalidOperationException(nameof(GlobalCache));
 			}
 
-			await GlobalCache.OnPICSChanges(currentChangeNumber, appChanges).ConfigureAwait(false);
+			GlobalCache.OnPICSChanges(currentChangeNumber, appChanges);
 		}
 
-		public async void OnPICSChangesRestart(uint currentChangeNumber) {
+		public void OnPICSChangesRestart(uint currentChangeNumber) {
 			if (currentChangeNumber == 0) {
 				throw new ArgumentOutOfRangeException(nameof(currentChangeNumber));
 			}
@@ -198,7 +198,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				throw new InvalidOperationException(nameof(GlobalCache));
 			}
 
-			await GlobalCache.OnPICSChangesRestart(currentChangeNumber).ConfigureAwait(false);
+			GlobalCache.OnPICSChangesRestart(currentChangeNumber);
 		}
 
 		private static async void OnLicenseList(Bot bot, SteamApps.LicenseListCallback callback) {
@@ -220,7 +220,8 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 			Dictionary<uint, ulong> packageTokens = callback.LicenseList.GroupBy(license => license.PackageID).ToDictionary(group => group.Key, group => group.OrderByDescending(license => license.TimeCreated).First().AccessToken);
 
-			await GlobalCache.UpdatePackageTokens(packageTokens).ConfigureAwait(false);
+			GlobalCache.UpdatePackageTokens(packageTokens);
+
 			await Refresh(bot, packageTokens.Keys).ConfigureAwait(false);
 		}
 
@@ -313,7 +314,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 						appIDsThisRound.Clear();
 
-						await GlobalCache.UpdateAppTokens(response.AppTokens, response.AppTokensDenied).ConfigureAwait(false);
+						GlobalCache.UpdateAppTokens(response.AppTokens, response.AppTokensDenied);
 					}
 				}
 
@@ -376,7 +377,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 							}
 						}
 
-						await GlobalCache.UpdateAppChangeNumbers(appChangeNumbers).ConfigureAwait(false);
+						GlobalCache.UpdateAppChangeNumbers(appChangeNumbers);
 
 						if (depotTasks.Count > 0) {
 							bot.ArchiLogger.LogGenericInfo($"Retrieving {depotTasks.Count} depot keys...");
@@ -393,7 +394,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 							bot.ArchiLogger.LogGenericInfo($"Finished retrieving {depotTasks.Count} depot keys.");
 
-							await GlobalCache.UpdateDepotKeys(results).ConfigureAwait(false);
+							GlobalCache.UpdateDepotKeys(results);
 						}
 					}
 				}
@@ -483,7 +484,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 				ASF.ArchiLogger.LogGenericInfo($"Data successfully submitted. Newly registered apps/subs/depots: {response.Content.Data.NewAppsCount}/{response.Content.Data.NewSubsCount}/{response.Content.Data.NewDepotsCount}.");
 
-				await GlobalCache.UpdateSubmittedData(appTokens, packageTokens, depotKeys).ConfigureAwait(false);
+				GlobalCache.UpdateSubmittedData(appTokens, packageTokens, depotKeys);
 			} finally {
 				SubmissionSemaphore.Release();
 			}

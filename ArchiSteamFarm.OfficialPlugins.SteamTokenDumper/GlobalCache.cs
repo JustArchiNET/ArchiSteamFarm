@@ -91,7 +91,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			return globalCache;
 		}
 
-		internal async Task OnPICSChanges(uint currentChangeNumber, IReadOnlyCollection<KeyValuePair<uint, SteamApps.PICSChangesCallback.PICSChangeData>> appChanges) {
+		internal void OnPICSChanges(uint currentChangeNumber, IReadOnlyCollection<KeyValuePair<uint, SteamApps.PICSChangesCallback.PICSChangeData>> appChanges) {
 			if (currentChangeNumber == 0) {
 				throw new ArgumentOutOfRangeException(nameof(currentChangeNumber));
 			}
@@ -117,10 +117,10 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				ASF.ArchiLogger.LogGenericTrace($"App needs refresh: {appID}");
 			}
 
-			await Save().ConfigureAwait(false);
+			Utilities.InBackground(Save);
 		}
 
-		internal async Task OnPICSChangesRestart(uint currentChangeNumber) {
+		internal void OnPICSChangesRestart(uint currentChangeNumber) {
 			if (currentChangeNumber == 0) {
 				throw new ArgumentOutOfRangeException(nameof(currentChangeNumber));
 			}
@@ -132,16 +132,15 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			ASF.ArchiLogger.LogGenericDebug($"RESET {LastChangeNumber} => {currentChangeNumber}");
 
 			LastChangeNumber = currentChangeNumber;
-
 			AppChangeNumbers.Clear();
 
-			await Save().ConfigureAwait(false);
+			Utilities.InBackground(Save);
 		}
 
 		internal bool ShouldRefreshAppInfo(uint appID) => !AppChangeNumbers.ContainsKey(appID);
 		internal bool ShouldRefreshDepotKey(uint depotID) => !DepotKeys.ContainsKey(depotID);
 
-		internal async Task UpdateAppChangeNumbers(IReadOnlyCollection<KeyValuePair<uint, uint>> appChangeNumbers) {
+		internal void UpdateAppChangeNumbers(IReadOnlyCollection<KeyValuePair<uint, uint>> appChangeNumbers) {
 			if (appChangeNumbers == null) {
 				throw new ArgumentNullException(nameof(appChangeNumbers));
 			}
@@ -158,11 +157,11 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			}
 
 			if (save) {
-				await Save().ConfigureAwait(false);
+				Utilities.InBackground(Save);
 			}
 		}
 
-		internal async Task UpdateAppTokens(IReadOnlyCollection<KeyValuePair<uint, ulong>> appTokens, IReadOnlyCollection<uint> publicAppIDs) {
+		internal void UpdateAppTokens(IReadOnlyCollection<KeyValuePair<uint, ulong>> appTokens, IReadOnlyCollection<uint> publicAppIDs) {
 			if (appTokens == null) {
 				throw new ArgumentNullException(nameof(appTokens));
 			}
@@ -192,11 +191,11 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			}
 
 			if (save) {
-				await Save().ConfigureAwait(false);
+				Utilities.InBackground(Save);
 			}
 		}
 
-		internal async Task UpdateDepotKeys(ICollection<SteamApps.DepotKeyCallback> depotKeyResults) {
+		internal void UpdateDepotKeys(ICollection<SteamApps.DepotKeyCallback> depotKeyResults) {
 			if (depotKeyResults == null) {
 				throw new ArgumentNullException(nameof(depotKeyResults));
 			}
@@ -219,11 +218,11 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			}
 
 			if (save) {
-				await Save().ConfigureAwait(false);
+				Utilities.InBackground(Save);
 			}
 		}
 
-		internal async Task UpdatePackageTokens(IReadOnlyCollection<KeyValuePair<uint, ulong>> packageTokens) {
+		internal void UpdatePackageTokens(IReadOnlyCollection<KeyValuePair<uint, ulong>> packageTokens) {
 			if (packageTokens == null) {
 				throw new ArgumentNullException(nameof(packageTokens));
 			}
@@ -240,11 +239,11 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			}
 
 			if (save) {
-				await Save().ConfigureAwait(false);
+				Utilities.InBackground(Save);
 			}
 		}
 
-		internal async Task UpdateSubmittedData(IReadOnlyDictionary<uint, ulong> apps, IReadOnlyDictionary<uint, ulong> packages, IReadOnlyDictionary<uint, string> depots) {
+		internal void UpdateSubmittedData(IReadOnlyDictionary<uint, ulong> apps, IReadOnlyDictionary<uint, ulong> packages, IReadOnlyDictionary<uint, string> depots) {
 			if (apps == null) {
 				throw new ArgumentNullException(nameof(apps));
 			}
@@ -269,7 +268,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				SubmittedDepots[depotID] = key;
 			}
 
-			await Save().ConfigureAwait(false);
+			Utilities.InBackground(Save);
 		}
 	}
 }
