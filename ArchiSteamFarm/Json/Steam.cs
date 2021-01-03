@@ -626,12 +626,15 @@ namespace ArchiSteamFarm.Json {
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class TradeOfferSendResponse {
+			[JsonProperty(PropertyName = "strError", Required = Required.DisallowNull)]
+			internal readonly string ErrorText = "";
+
 			[JsonProperty(PropertyName = "needs_mobile_confirmation", Required = Required.DisallowNull)]
 			internal readonly bool RequiresMobileConfirmation;
 
 			internal ulong TradeOfferID { get; private set; }
 
-			[JsonProperty(PropertyName = "tradeofferid", Required = Required.Always)]
+			[JsonProperty(PropertyName = "tradeofferid", Required = Required.DisallowNull)]
 			private string TradeOfferIDText {
 				set {
 					if (string.IsNullOrEmpty(value)) {

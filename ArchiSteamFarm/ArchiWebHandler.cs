@@ -443,9 +443,37 @@ namespace ArchiSteamFarm {
 			foreach (Steam.TradeOfferSendRequest trade in trades) {
 				data["json_tradeoffer"] = JsonConvert.SerializeObject(trade);
 
-				WebBrowser.ObjectResponse<Steam.TradeOfferSendResponse>? response = await UrlPostToJsonObjectWithSession<Steam.TradeOfferSendResponse>(SteamCommunityURL, request, data: data, referer: referer).ConfigureAwait(false);
+				WebBrowser.ObjectResponse<Steam.TradeOfferSendResponse>? response = null;
+
+				for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
+					response = await UrlPostToJsonObjectWithSession<Steam.TradeOfferSendResponse>(SteamCommunityURL, request, data: data, referer: referer, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors).ConfigureAwait(false);
+
+					if (response == null) {
+						return (false, mobileTradeOfferIDs);
+					}
+
+					if (response.StatusCode.IsServerErrorCode()) {
+						if (string.IsNullOrEmpty(response.Content?.ErrorText)) {
+							// This is a generic server error without a reason, try again
+							response = null;
+
+							continue;
+						}
+
+						// This is actually client error with a reason, so it doesn't make sense to retry
+						Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content!.ErrorText));
+
+						return (false, mobileTradeOfferIDs);
+					}
+				}
 
 				if (response?.Content == null) {
+					return (false, mobileTradeOfferIDs);
+				}
+
+				if (response.Content.TradeOfferID == 0) {
+					Bot.ArchiLogger.LogNullError(nameof(response.Content.TradeOfferID));
+
 					return (false, mobileTradeOfferIDs);
 				}
 
