@@ -461,7 +461,7 @@ namespace ArchiSteamFarm {
 						}
 
 						// This is actually client error with a reason, so it doesn't make sense to retry
-						Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content!.ErrorText));
+						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content!.ErrorText));
 
 						return (false, mobileTradeOfferIDs);
 					}
@@ -1330,25 +1330,31 @@ namespace ArchiSteamFarm {
 				{ "tradeofferid", tradeID.ToString(CultureInfo.InvariantCulture) }
 			};
 
-			WebBrowser.ObjectResponse<Steam.TradeOfferAcceptResponse>? response = await UrlPostToJsonObjectWithSession<Steam.TradeOfferAcceptResponse>(SteamCommunityURL, request, data: data, referer: referer, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors).ConfigureAwait(false);
+			WebBrowser.ObjectResponse<Steam.TradeOfferAcceptResponse>? response = null;
 
-			if (response == null) {
-				return (false, false);
-			}
+			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
+				response = await UrlPostToJsonObjectWithSession<Steam.TradeOfferAcceptResponse>(SteamCommunityURL, request, data: data, referer: referer, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors).ConfigureAwait(false);
 
-			if (response.StatusCode.IsServerErrorCode()) {
-				if (string.IsNullOrEmpty(response.Content?.ErrorText)) {
-					// This is a generic server error without a reason, try again
-					return await AcceptTradeOffer(tradeID, --maxTries).ConfigureAwait(false);
+				if (response == null) {
+					return (false, false);
 				}
 
-				// This is actually client error with a reason, so it doesn't make sense to retry
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content!.ErrorText));
+				if (response.StatusCode.IsServerErrorCode()) {
+					if (string.IsNullOrEmpty(response.Content?.ErrorText)) {
+						// This is a generic server error without a reason, try again
+						response = null;
 
-				return (false, false);
+						continue;
+					}
+
+					// This is actually client error with a reason, so it doesn't make sense to retry
+					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content!.ErrorText));
+
+					return (false, false);
+				}
 			}
 
-			return response.Content != null ? (true, response.Content.RequiresMobileConfirmation) : (false, false);
+			return response?.Content != null ? (true, response.Content.RequiresMobileConfirmation) : (false, false);
 		}
 
 		internal async Task<bool> AddFreeLicense(uint subID) {
