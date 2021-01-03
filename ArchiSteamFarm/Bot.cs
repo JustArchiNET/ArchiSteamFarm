@@ -2607,7 +2607,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Wait a short time for eventual LastChangeNumber initialization
-			for (byte i = 0; (i < WebBrowser.MaxTries) && (ASF.GlobalDatabase.LastChangeNumber == 0); i++) {
+			for (byte i = 0; (i < WebBrowser.MaxTries) && !SteamPICSChanges.LiveUpdate; i++) {
 				await Task.Delay(1000).ConfigureAwait(false);
 			}
 

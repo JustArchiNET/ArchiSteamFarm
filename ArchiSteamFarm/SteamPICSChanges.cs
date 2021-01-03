@@ -30,6 +30,8 @@ namespace ArchiSteamFarm {
 	internal static class SteamPICSChanges {
 		private const byte RefreshTimerInMinutes = 5;
 
+		internal static bool LiveUpdate { get; private set; }
+
 		private static readonly SemaphoreSlim RefreshSemaphore = new(1, 1);
 		private static readonly Timer RefreshTimer = new(RefreshChanges);
 
@@ -66,6 +68,8 @@ namespace ArchiSteamFarm {
 					refreshBot = Bot.Bots?.Values.Where(bot => bot.IsConnectedAndLoggedOn).OrderByDescending(bot => bot.OwnedPackageIDs.Count).FirstOrDefault();
 
 					if (refreshBot == null) {
+						LiveUpdate = false;
+
 						return;
 					}
 
@@ -77,12 +81,15 @@ namespace ArchiSteamFarm {
 				}
 
 				if ((refreshBot == null) || (picsChanges == null)) {
+					LiveUpdate = false;
 					ASF.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
 					return;
 				}
 
 				if (picsChanges.CurrentChangeNumber == picsChanges.LastChangeNumber) {
+					LiveUpdate = true;
+
 					return;
 				}
 
@@ -93,10 +100,14 @@ namespace ArchiSteamFarm {
 						await ASF.GlobalDatabase.OnPICSChangesRestart(refreshBot, picsChanges.CurrentChangeNumber).ConfigureAwait(false);
 					}
 
+					LiveUpdate = true;
+
 					await PluginsCore.OnPICSChangesRestart(picsChanges.CurrentChangeNumber).ConfigureAwait(false);
 
 					return;
 				}
+
+				LiveUpdate = true;
 
 				if (ASF.GlobalDatabase != null) {
 					ASF.GlobalDatabase.LastChangeNumber = picsChanges.CurrentChangeNumber;
