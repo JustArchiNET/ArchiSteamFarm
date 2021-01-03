@@ -72,8 +72,24 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal uint LastChangeNumber {
+			get => BackingLastChangeNumber;
+
+			set {
+				if (BackingLastChangeNumber == value) {
+					return;
+				}
+
+				BackingLastChangeNumber = value;
+				Utilities.InBackground(Save);
+			}
+		}
+
 		[JsonProperty(PropertyName = "_" + nameof(CellID), Required = Required.DisallowNull)]
 		private uint BackingCellID;
+
+		[JsonProperty(PropertyName = "_" + nameof(LastChangeNumber), Required = Required.DisallowNull)]
+		private uint BackingLastChangeNumber;
 
 		private GlobalDatabase(string filePath) : this() {
 			if (string.IsNullOrEmpty(filePath)) {
@@ -162,21 +178,31 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal void OnPICSChangesRestart() {
-			bool save = false;
+		internal async Task OnPICSChangesRestart([NotNull] Bot bot, uint currentChangeNumber) {
+			if (bot == null) {
+				throw new ArgumentNullException(nameof(bot));
+			}
+
+			if (currentChangeNumber == 0) {
+				throw new ArgumentOutOfRangeException(nameof(currentChangeNumber));
+			}
+
+			if (currentChangeNumber <= LastChangeNumber) {
+				return;
+			}
 
 			if (!PackagesData.IsEmpty) {
 				PackagesData.Clear();
-				save = true;
 			}
 
 			if (!PackagesAccessTokens.IsEmpty) {
 				PackagesAccessTokens.Clear();
-				save = true;
 			}
 
-			if (save) {
-				Utilities.InBackground(Save);
+			LastChangeNumber = currentChangeNumber;
+
+			if (bot.OwnedPackageIDs.Count > 0) {
+				await RefreshPackages(bot, bot.OwnedPackageIDs.Keys.ToDictionary(packageID => packageID, _ => uint.MinValue)).ConfigureAwait(false);
 			}
 		}
 

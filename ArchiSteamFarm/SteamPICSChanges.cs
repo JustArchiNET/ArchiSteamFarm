@@ -90,11 +90,7 @@ namespace ArchiSteamFarm {
 
 				if (picsChanges.RequiresFullAppUpdate || picsChanges.RequiresFullPackageUpdate || ((picsChanges.AppChanges.Count == 0) && (picsChanges.PackageChanges.Count == 0))) {
 					if (ASF.GlobalDatabase != null) {
-						ASF.GlobalDatabase.OnPICSChangesRestart();
-
-						if (refreshBot.OwnedPackageIDs.Count > 0) {
-							await ASF.GlobalDatabase.RefreshPackages(refreshBot, refreshBot.OwnedPackageIDs.Keys.ToDictionary(packageID => packageID, _ => uint.MinValue)).ConfigureAwait(false);
-						}
+						await ASF.GlobalDatabase.OnPICSChangesRestart(refreshBot, picsChanges.CurrentChangeNumber).ConfigureAwait(false);
 					}
 
 					await PluginsCore.OnPICSChangesRestart(picsChanges.CurrentChangeNumber).ConfigureAwait(false);

@@ -64,8 +64,10 @@ namespace ArchiSteamFarm.Plugins {
 		}
 
 		internal static async Task<uint> GetChangeNumberToStartFrom() {
+			uint lastChangeNumber = ASF.GlobalDatabase?.LastChangeNumber ?? 0;
+
 			if (ActivePlugins == null) {
-				return 0;
+				return lastChangeNumber;
 			}
 
 			IList<uint> results;
@@ -75,16 +77,14 @@ namespace ArchiSteamFarm.Plugins {
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 
-				return 0;
+				return lastChangeNumber;
 			}
 
-			uint changeNumberToStartFrom = uint.MaxValue;
-
-			foreach (uint result in results.Where(result => (result > 0) && (result < changeNumberToStartFrom))) {
-				changeNumberToStartFrom = result;
+			foreach (uint result in results.Where(result => (result > 0) && (result < lastChangeNumber))) {
+				lastChangeNumber = result;
 			}
 
-			return changeNumberToStartFrom == uint.MaxValue ? 0 : changeNumberToStartFrom;
+			return lastChangeNumber;
 		}
 
 		internal static async Task<ICrossProcessSemaphore> GetCrossProcessSemaphore(string objectName) {
