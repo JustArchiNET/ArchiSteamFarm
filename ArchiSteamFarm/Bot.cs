@@ -1219,7 +1219,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<HashSet<uint>?> GetMarketableAppIDs() => await ArchiWebHandler.GetAppList().ConfigureAwait(false);
 
-		internal async Task<Dictionary<uint, (uint ChangeNumber, HashSet<uint>? AppIDs)>?> GetPackagesData(IReadOnlyCollection<uint> packageIDs) {
+		internal async Task<Dictionary<uint, (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs)>?> GetPackagesData(IReadOnlyCollection<uint> packageIDs) {
 			if ((packageIDs == null) || (packageIDs.Count == 0)) {
 				throw new ArgumentNullException(nameof(packageIDs));
 			}
@@ -1239,7 +1239,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (packageRequests.Count == 0) {
-				return new Dictionary<uint, (uint ChangeNumber, HashSet<uint>? AppIDs)>(0);
+				return new Dictionary<uint, (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs)>(0);
 			}
 
 			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet? productInfoResultSet = null;
@@ -1256,7 +1256,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			Dictionary<uint, (uint ChangeNumber, HashSet<uint>? AppIDs)> result = new();
+			Dictionary<uint, (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs)> result = new();
 
 			foreach (SteamApps.PICSProductInfoCallback.PICSProductInfo productInfo in productInfoResultSet.Results.SelectMany(productInfoResult => productInfoResult.Packages).Where(productInfoPackages => productInfoPackages.Key != 0).Select(productInfoPackages => productInfoPackages.Value)) {
 				if (productInfo.KeyValues == KeyValue.Invalid) {
@@ -1265,28 +1265,29 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				(uint ChangeNumber, HashSet<uint>? AppIDs) value = (productInfo.ChangeNumber, null);
+				uint changeNumber = productInfo.ChangeNumber;
+				HashSet<uint>? appIDs = null;
 
 				try {
-					KeyValue appIDs = productInfo.KeyValues["appids"];
+					KeyValue appIDsKv = productInfo.KeyValues["appids"];
 
-					if (appIDs == KeyValue.Invalid) {
+					if (appIDsKv == KeyValue.Invalid) {
 						continue;
 					}
 
-					value.AppIDs = new HashSet<uint>(appIDs.Children.Count);
+					appIDs = new HashSet<uint>(appIDsKv.Children.Count);
 
-					foreach (string? appIDText in appIDs.Children.Select(app => app.Value)) {
+					foreach (string? appIDText in appIDsKv.Children.Select(app => app.Value)) {
 						if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
 							ArchiLogger.LogNullError(nameof(appID));
 
 							return null;
 						}
 
-						value.AppIDs.Add(appID);
+						appIDs.Add(appID);
 					}
 				} finally {
-					result[productInfo.ID] = value;
+					result[productInfo.ID] = (changeNumber, appIDs?.ToImmutableHashSet());
 				}
 			}
 
@@ -2620,7 +2621,7 @@ namespace ArchiSteamFarm {
 
 					// Package is always due to refresh with access token change
 					packagesToRefresh[license.PackageID] = (uint) license.LastChangeNumber;
-				} else if (!ASF.GlobalDatabase.PackagesDataReadOnly.TryGetValue(license.PackageID, out (uint ChangeNumber, HashSet<uint>? AppIDs) packageData) || (packageData.ChangeNumber < license.LastChangeNumber)) {
+				} else if (!ASF.GlobalDatabase.PackagesDataReadOnly.TryGetValue(license.PackageID, out (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs) packageData) || (packageData.ChangeNumber < license.LastChangeNumber)) {
 					packagesToRefresh[license.PackageID] = (uint) license.LastChangeNumber;
 				}
 			}

@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -41,7 +42,7 @@ namespace ArchiSteamFarm {
 
 		[JsonIgnore]
 		[PublicAPI]
-		public IReadOnlyDictionary<uint, (uint ChangeNumber, HashSet<uint>? AppIDs)> PackagesDataReadOnly => PackagesData;
+		public IReadOnlyDictionary<uint, (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs)> PackagesDataReadOnly => PackagesData;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly InMemoryServerListProvider ServerListProvider = new();
@@ -50,7 +51,7 @@ namespace ArchiSteamFarm {
 		private readonly ConcurrentDictionary<uint, ulong> PackagesAccessTokens = new();
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentDictionary<uint, (uint ChangeNumber, HashSet<uint>? AppIDs)> PackagesData = new();
+		private readonly ConcurrentDictionary<uint, (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs)> PackagesData = new();
 
 		private readonly SemaphoreSlim PackagesRefreshSemaphore = new(1, 1);
 
@@ -151,7 +152,7 @@ namespace ArchiSteamFarm {
 			HashSet<uint> result = new();
 
 			foreach (uint packageID in packageIDs.Where(packageID => packageID != 0)) {
-				if (!PackagesData.TryGetValue(packageID, out (uint ChangeNumber, HashSet<uint>? AppIDs) packagesData) || (packagesData.AppIDs?.Contains(appID) != true)) {
+				if (!PackagesData.TryGetValue(packageID, out (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs) packagesData) || (packagesData.AppIDs?.Contains(appID) != true)) {
 					continue;
 				}
 
@@ -159,6 +160,24 @@ namespace ArchiSteamFarm {
 			}
 
 			return result;
+		}
+
+		internal void OnPICSChangesRestart() {
+			bool save = false;
+
+			if (!PackagesData.IsEmpty) {
+				PackagesData.Clear();
+				save = true;
+			}
+
+			if (!PackagesAccessTokens.IsEmpty) {
+				PackagesAccessTokens.Clear();
+				save = true;
+			}
+
+			if (save) {
+				Utilities.InBackground(Save);
+			}
 		}
 
 		internal void RefreshPackageAccessTokens(IReadOnlyDictionary<uint, ulong> packageAccessTokens) {
@@ -192,13 +211,13 @@ namespace ArchiSteamFarm {
 			await PackagesRefreshSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				HashSet<uint> packageIDs = packages.Where(package => (package.Key != 0) && (!PackagesData.TryGetValue(package.Key, out (uint ChangeNumber, HashSet<uint>? AppIDs) packageData) || (packageData.ChangeNumber < package.Value))).Select(package => package.Key).ToHashSet();
+				HashSet<uint> packageIDs = packages.Where(package => (package.Key != 0) && (!PackagesData.TryGetValue(package.Key, out (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs) packageData) || (packageData.ChangeNumber < package.Value))).Select(package => package.Key).ToHashSet();
 
 				if (packageIDs.Count == 0) {
 					return;
 				}
 
-				Dictionary<uint, (uint ChangeNumber, HashSet<uint>? AppIDs)>? packagesData = await bot.GetPackagesData(packageIDs).ConfigureAwait(false);
+				Dictionary<uint, (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs)>? packagesData = await bot.GetPackagesData(packageIDs).ConfigureAwait(false);
 
 				if (packagesData == null) {
 					bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
@@ -208,8 +227,8 @@ namespace ArchiSteamFarm {
 
 				bool save = false;
 
-				foreach ((uint packageID, (uint ChangeNumber, HashSet<uint>? AppIDs) packageData) in packagesData) {
-					if (PackagesData.TryGetValue(packageID, out (uint ChangeNumber, HashSet<uint>? AppIDs) previousData) && (packageData.ChangeNumber < previousData.ChangeNumber)) {
+				foreach ((uint packageID, (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs) packageData) in packagesData) {
+					if (PackagesData.TryGetValue(packageID, out (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs) previousData) && (packageData.ChangeNumber < previousData.ChangeNumber)) {
 						continue;
 					}
 

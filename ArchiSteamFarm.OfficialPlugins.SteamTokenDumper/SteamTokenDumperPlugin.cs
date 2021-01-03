@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Composition;
 using System.Globalization;
 using System.Linq;
@@ -258,7 +259,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				HashSet<uint> appIDsToRefresh = new();
 
 				foreach (uint packageID in packageIDs) {
-					if (!ASF.GlobalDatabase.PackagesDataReadOnly.TryGetValue(packageID, out (uint ChangeNumber, HashSet<uint>? AppIDs) packageData) || (packageData.AppIDs == null)) {
+					if (!ASF.GlobalDatabase.PackagesDataReadOnly.TryGetValue(packageID, out (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs) packageData) || (packageData.AppIDs == null)) {
 						// ASF might not have the package info for us at the moment, we'll retry later
 						continue;
 					}

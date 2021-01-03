@@ -63,7 +63,7 @@ namespace ArchiSteamFarm {
 				SteamApps.PICSChangesCallback? picsChanges = null;
 
 				for (byte i = 0; (i < WebBrowser.MaxTries) && (picsChanges == null); i++) {
-					refreshBot = Bot.Bots?.Values.FirstOrDefault(bot => bot.IsConnectedAndLoggedOn);
+					refreshBot = Bot.Bots?.Values.Where(bot => bot.IsConnectedAndLoggedOn).OrderByDescending(bot => bot.OwnedPackageIDs.Count).FirstOrDefault();
 
 					if (refreshBot == null) {
 						return;
@@ -89,6 +89,14 @@ namespace ArchiSteamFarm {
 				LastChangeNumber = picsChanges.CurrentChangeNumber;
 
 				if (picsChanges.RequiresFullAppUpdate || picsChanges.RequiresFullPackageUpdate || ((picsChanges.AppChanges.Count == 0) && (picsChanges.PackageChanges.Count == 0))) {
+					if (ASF.GlobalDatabase != null) {
+						ASF.GlobalDatabase.OnPICSChangesRestart();
+
+						if (refreshBot.OwnedPackageIDs.Count > 0) {
+							await ASF.GlobalDatabase.RefreshPackages(refreshBot, refreshBot.OwnedPackageIDs.Keys.ToDictionary(packageID => packageID, _ => uint.MinValue)).ConfigureAwait(false);
+						}
+					}
+
 					await PluginsCore.OnPICSChangesRestart(picsChanges.CurrentChangeNumber).ConfigureAwait(false);
 
 					return;
