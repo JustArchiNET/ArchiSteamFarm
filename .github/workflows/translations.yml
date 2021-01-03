@@ -56,8 +56,9 @@ jobs:
     - name: Push changes to wiki
       uses: ad-m/github-push-action@master
       with:
-        directory: wiki
         github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}
+        directory: wiki
         repository: ${{ github.repository }}.wiki
 
     - name: Commit the changes to ASF
@@ -78,3 +79,4 @@ jobs:
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}
