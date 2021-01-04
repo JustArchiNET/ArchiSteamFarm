@@ -380,9 +380,7 @@ namespace ArchiSteamFarm {
 						// We're not handling this error, do not try again
 						break;
 					}
-				}
-
-				if (response.StatusCode.IsServerErrorCode()) {
+				} else if (response.StatusCode.IsServerErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
 						// We're not handling this error, try again
 						continue;
@@ -423,9 +421,7 @@ namespace ArchiSteamFarm {
 						// We're not handling this error, do not try again
 						break;
 					}
-				}
-
-				if (response.StatusCode.IsServerErrorCode()) {
+				} else if (response.StatusCode.IsServerErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
 						// We're not handling this error, try again
 						continue;
@@ -763,9 +759,7 @@ namespace ArchiSteamFarm {
 						// We're not handling this error, do not try again
 						break;
 					}
-				}
-
-				if (response.StatusCode.IsServerErrorCode()) {
+				} else if (response.StatusCode.IsServerErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
 						// We're not handling this error, try again
 						continue;
