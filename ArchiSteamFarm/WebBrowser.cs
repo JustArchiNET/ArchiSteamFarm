@@ -248,7 +248,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<ObjectResponse<T>?> UrlGetToJsonObject<T>(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) where T : class {
+		public async Task<ObjectResponse<T>?> UrlGetToJsonObject<T>(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
 			if (string.IsNullOrEmpty(request)) {
 				throw new ArgumentNullException(nameof(request));
 			}
@@ -287,7 +287,7 @@ namespace ArchiSteamFarm {
 
 					obj = serializer.Deserialize<T>(jsonReader);
 
-					if (obj == null) {
+					if (obj is null) {
 						ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(obj)));
 
 						continue;
@@ -580,7 +580,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<ObjectResponse<TResult>?> UrlPostToJsonObject<TResult, TData>(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, TData? data = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) where TResult : class where TData : class {
+		public async Task<ObjectResponse<TResult>?> UrlPostToJsonObject<TResult, TData>(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, TData? data = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) where TData : class {
 			if (string.IsNullOrEmpty(request)) {
 				throw new ArgumentNullException(nameof(request));
 			}
@@ -618,7 +618,7 @@ namespace ArchiSteamFarm {
 
 					obj = serializer.Deserialize<TResult>(jsonReader);
 
-					if (obj == null) {
+					if (obj is null) {
 						ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(obj)));
 
 						continue;

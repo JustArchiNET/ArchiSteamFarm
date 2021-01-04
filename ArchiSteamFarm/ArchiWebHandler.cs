@@ -565,7 +565,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<WebBrowser.ObjectResponse<T>?> UrlGetToJsonObjectWithSession<T>(string host, string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) where T : class {
+		public async Task<WebBrowser.ObjectResponse<T>?> UrlGetToJsonObjectWithSession<T>(string host, string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
 			if (string.IsNullOrEmpty(host)) {
 				throw new ArgumentNullException(nameof(host));
 			}
@@ -908,7 +908,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<WebBrowser.ObjectResponse<T>?> UrlPostToJsonObjectWithSession<T>(string host, string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, string? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) where T : class {
+		public async Task<WebBrowser.ObjectResponse<T>?> UrlPostToJsonObjectWithSession<T>(string host, string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, string? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
 			if (string.IsNullOrEmpty(host)) {
 				throw new ArgumentNullException(nameof(host));
 			}
@@ -1014,7 +1014,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<WebBrowser.ObjectResponse<T>?> UrlPostToJsonObjectWithSession<T>(string host, string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, ICollection<KeyValuePair<string, string>>? data = null, string? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) where T : class {
+		public async Task<WebBrowser.ObjectResponse<T>?> UrlPostToJsonObjectWithSession<T>(string host, string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, ICollection<KeyValuePair<string, string>>? data = null, string? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
 			if (string.IsNullOrEmpty(host)) {
 				throw new ArgumentNullException(nameof(host));
 			}
@@ -1229,7 +1229,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public static async Task<T?> WebLimitRequest<T>(string service, Func<Task<T?>> function) where T : class {
+		public static async Task<T> WebLimitRequest<T>(string service, Func<Task<T>> function) {
 			if (string.IsNullOrEmpty(service)) {
 				throw new ArgumentNullException(nameof(service));
 			}
