@@ -380,9 +380,6 @@ namespace ArchiSteamFarm {
 						// We're not handling this error, do not try again
 						break;
 					}
-
-					// We're handling this error, the content isn't available, deal with it
-					return new StreamResponse(response);
 				}
 
 				if (response.StatusCode.IsServerErrorCode()) {
@@ -390,9 +387,6 @@ namespace ArchiSteamFarm {
 						// We're not handling this error, try again
 						continue;
 					}
-
-					// We're handling this error, the content isn't available, deal with it
-					return new StreamResponse(response);
 				}
 
 				return new StreamResponse(response, await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
@@ -429,9 +423,6 @@ namespace ArchiSteamFarm {
 						// We're not handling this error, do not try again
 						break;
 					}
-
-					// We're handling this error, the content isn't available, deal with it
-					return new StringResponse(response);
 				}
 
 				if (response.StatusCode.IsServerErrorCode()) {
@@ -439,9 +430,6 @@ namespace ArchiSteamFarm {
 						// We're not handling this error, try again
 						continue;
 					}
-
-					// We're handling this error, the content isn't available, deal with it
-					return new StringResponse(response);
 				}
 
 				return new StringResponse(response, await response.Content.ReadAsStringAsync().ConfigureAwait(false));
@@ -775,9 +763,6 @@ namespace ArchiSteamFarm {
 						// We're not handling this error, do not try again
 						break;
 					}
-
-					// We're handling this error, the content isn't available, deal with it
-					return new StreamResponse(response);
 				}
 
 				if (response.StatusCode.IsServerErrorCode()) {
@@ -785,9 +770,6 @@ namespace ArchiSteamFarm {
 						// We're not handling this error, try again
 						continue;
 					}
-
-					// We're handling this error, the content isn't available, deal with it
-					return new StreamResponse(response);
 				}
 
 				return new StreamResponse(response, await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
@@ -1121,21 +1103,11 @@ namespace ArchiSteamFarm {
 
 			private readonly HttpResponseMessage ResponseMessage;
 
-			internal StreamResponse(HttpResponseMessage httpResponseMessage, Stream content) : this(httpResponseMessage) {
-				if (httpResponseMessage == null) {
-					throw new ArgumentNullException(nameof(httpResponseMessage));
-				}
-
+			internal StreamResponse(HttpResponseMessage httpResponseMessage, Stream content) : base(httpResponseMessage) {
+				ResponseMessage = httpResponseMessage ?? throw new ArgumentNullException(nameof(httpResponseMessage));
 				Content = content ?? throw new ArgumentNullException(nameof(content));
-			}
-
-			internal StreamResponse(HttpResponseMessage httpResponseMessage) : base(httpResponseMessage) {
-				if (httpResponseMessage == null) {
-					throw new ArgumentNullException(nameof(httpResponseMessage));
-				}
 
 				Length = httpResponseMessage.Content.Headers.ContentLength.GetValueOrDefault();
-				ResponseMessage = httpResponseMessage;
 			}
 
 			public async ValueTask DisposeAsync() {
