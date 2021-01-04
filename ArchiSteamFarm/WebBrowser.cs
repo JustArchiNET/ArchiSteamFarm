@@ -992,6 +992,10 @@ namespace ArchiSteamFarm {
 			}
 
 			if (requestOptions.HasFlag(ERequestOptions.ReturnServerErrors) && response.StatusCode.IsServerErrorCode()) {
+				if (Debugging.IsUserDebugging) {
+					ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, await response.Content.ReadAsStringAsync().ConfigureAwait(false)));
+				}
+
 				// Do not retry on server errors in this case
 				return response;
 			}
