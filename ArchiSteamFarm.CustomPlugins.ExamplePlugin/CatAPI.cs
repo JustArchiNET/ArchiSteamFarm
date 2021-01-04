@@ -40,7 +40,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 
 			WebBrowser.ObjectResponse<MeowResponse>? response = await webBrowser.UrlGetToJsonObject<MeowResponse>(request).ConfigureAwait(false);
 
-			if (response?.Content == null) {
+			if (response == null) {
 				return null;
 			}
 

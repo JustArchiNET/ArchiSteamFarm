@@ -144,7 +144,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 
 			WebBrowser.StringResponse? urlResponse = await ASF.WebBrowser.UrlGetToString(request.URL!).ConfigureAwait(false);
 
-			return urlResponse?.Content != null ? Ok(new GenericResponse<string>(urlResponse.Content)) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
+			return urlResponse != null ? Ok(new GenericResponse<string>(urlResponse.Content)) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
 		}
 	}
 }

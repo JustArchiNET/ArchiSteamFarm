@@ -157,7 +157,7 @@ namespace ArchiSteamFarm {
 				try {
 					WebBrowser.ObjectResponse<Steam.InventoryResponse>? response = await UrlGetToJsonObjectWithSession<Steam.InventoryResponse>(SteamCommunityURL, request + (startAssetID > 0 ? "&start_assetid=" + startAssetID : "")).ConfigureAwait(false);
 
-					if (response?.Content == null) {
+					if (response == null) {
 						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response)));
 					}
 
@@ -243,7 +243,7 @@ namespace ArchiSteamFarm {
 
 			WebBrowser.XmlDocumentResponse? response = await UrlGetToXmlDocumentWithSession(SteamCommunityURL, request, checkSessionPreemptively: false).ConfigureAwait(false);
 
-			using XmlNodeList? xmlNodeList = response?.Content?.SelectNodes("gamesList/games/game");
+			using XmlNodeList? xmlNodeList = response?.Content.SelectNodes("gamesList/games/game");
 
 			if ((xmlNodeList == null) || (xmlNodeList.Count == 0)) {
 				return null;
@@ -453,7 +453,7 @@ namespace ArchiSteamFarm {
 					}
 
 					if (response.StatusCode.IsServerErrorCode()) {
-						if (string.IsNullOrEmpty(response.Content?.ErrorText)) {
+						if (string.IsNullOrEmpty(response.Content.ErrorText)) {
 							// This is a generic server error without a reason, try again
 							response = null;
 
@@ -467,7 +467,7 @@ namespace ArchiSteamFarm {
 					}
 				}
 
-				if (response?.Content == null) {
+				if (response == null) {
 					return (false, mobileTradeOfferIDs);
 				}
 
@@ -1295,7 +1295,7 @@ namespace ArchiSteamFarm {
 
 			WebBrowser.ObjectResponse<Steam.EResultResponse>? response = await UrlPostToJsonObjectWithSession<Steam.EResultResponse>(SteamStoreURL, request, data: data).ConfigureAwait(false);
 
-			if (response?.Content == null) {
+			if (response == null) {
 				return false;
 			}
 
@@ -1332,7 +1332,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if (response.StatusCode.IsServerErrorCode()) {
-					if (string.IsNullOrEmpty(response.Content?.ErrorText)) {
+					if (string.IsNullOrEmpty(response.Content.ErrorText)) {
 						// This is a generic server error without a reason, try again
 						response = null;
 
@@ -1346,7 +1346,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			return response?.Content != null ? (true, response.Content.RequiresMobileConfirmation) : (false, false);
+			return response != null ? (true, response.Content.RequiresMobileConfirmation) : (false, false);
 		}
 
 		internal async Task<bool> AddFreeLicense(uint subID) {
@@ -1364,7 +1364,7 @@ namespace ArchiSteamFarm {
 
 			using WebBrowser.HtmlDocumentResponse? response = await UrlPostToHtmlDocumentWithSession(SteamStoreURL, request, data: data).ConfigureAwait(false);
 
-			return response?.Content?.SelectSingleNode("//div[@class='add_free_content_success_area']") != null;
+			return response?.Content.SelectSingleNode("//div[@class='add_free_content_success_area']") != null;
 		}
 
 		internal async Task<bool> ChangePrivacySettings(Steam.UserPrivacy userPrivacy) {
@@ -1390,7 +1390,7 @@ namespace ArchiSteamFarm {
 
 			WebBrowser.ObjectResponse<Steam.EResultResponse>? response = await UrlPostToJsonObjectWithSession<Steam.EResultResponse>(SteamCommunityURL, request, data: data).ConfigureAwait(false);
 
-			if (response?.Content == null) {
+			if (response == null) {
 				return false;
 			}
 
@@ -1472,7 +1472,7 @@ namespace ArchiSteamFarm {
 
 			WebBrowser.ObjectResponse<Steam.NewDiscoveryQueueResponse>? response = await UrlPostToJsonObjectWithSession<Steam.NewDiscoveryQueueResponse>(SteamStoreURL, request, data: data).ConfigureAwait(false);
 
-			return response?.Content?.Queue;
+			return response?.Content.Queue;
 		}
 
 		internal async Task<HashSet<Steam.TradeOffer>?> GetActiveTradeOffers() {
@@ -1776,7 +1776,7 @@ namespace ArchiSteamFarm {
 
 			using WebBrowser.HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(SteamStoreURL, request).ConfigureAwait(false);
 
-			if (response?.Content == null) {
+			if (response == null) {
 				return null;
 			}
 
@@ -1826,7 +1826,7 @@ namespace ArchiSteamFarm {
 
 			using WebBrowser.HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(SteamStoreURL, request).ConfigureAwait(false);
 
-			if (response?.Content == null) {
+			if (response == null) {
 				return null;
 			}
 
@@ -1919,7 +1919,7 @@ namespace ArchiSteamFarm {
 
 			using WebBrowser.HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
 
-			IElement? htmlNode = response?.Content?.SelectSingleNode("//div[@class='pagecontent']/script");
+			IElement? htmlNode = response?.Content.SelectSingleNode("//div[@class='pagecontent']/script");
 
 			if (htmlNode == null) {
 				// Trade can be no longer valid
@@ -2062,7 +2062,7 @@ namespace ArchiSteamFarm {
 
 			WebBrowser.ObjectResponse<Steam.BooleanResponse>? response = await UrlGetToJsonObjectWithSession<Steam.BooleanResponse>(SteamCommunityURL, request).ConfigureAwait(false);
 
-			return response?.Content?.Success;
+			return response?.Content.Success;
 		}
 
 		internal async Task<bool?> HandleConfirmations(string deviceID, string confirmationHash, uint time, IReadOnlyCollection<MobileAuthenticator.Confirmation> confirmations, bool accept) {
@@ -2116,7 +2116,7 @@ namespace ArchiSteamFarm {
 
 			WebBrowser.ObjectResponse<Steam.BooleanResponse>? response = await UrlPostToJsonObjectWithSession<Steam.BooleanResponse>(SteamCommunityURL, request, data: data).ConfigureAwait(false);
 
-			return response?.Content?.Success;
+			return response?.Content.Success;
 		}
 
 		internal async Task<bool> Init(ulong steamID, EUniverse universe, string webAPIUserNonce, string? parentalCode = null) {
@@ -2317,15 +2317,15 @@ namespace ArchiSteamFarm {
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new(2, StringComparer.Ordinal) { { "wallet_code", key } };
 
-			WebBrowser.ObjectResponse<Steam.RedeemWalletResponse>? responseValidateCode = await UrlPostToJsonObjectWithSession<Steam.RedeemWalletResponse>(SteamStoreURL, requestValidateCode, data: data).ConfigureAwait(false);
+			WebBrowser.ObjectResponse<Steam.RedeemWalletResponse>? response = await UrlPostToJsonObjectWithSession<Steam.RedeemWalletResponse>(SteamStoreURL, requestValidateCode, data: data).ConfigureAwait(false);
 
-			if (responseValidateCode?.Content == null) {
+			if (response == null) {
 				return null;
 			}
 
 			// We can not trust EResult response, because it is OK even in the case of error, so changing it to Fail in this case
-			if ((responseValidateCode.Content.Result != EResult.OK) || (responseValidateCode.Content.PurchaseResultDetail != EPurchaseResultDetail.NoDetail)) {
-				return (responseValidateCode.Content.Result == EResult.OK ? EResult.Fail : responseValidateCode.Content.Result, responseValidateCode.Content.PurchaseResultDetail);
+			if ((response.Content.Result != EResult.OK) || (response.Content.PurchaseResultDetail != EPurchaseResultDetail.NoDetail)) {
+				return (response.Content.Result == EResult.OK ? EResult.Fail : response.Content.Result, response.Content.PurchaseResultDetail);
 			}
 
 			return (EResult.OK, EPurchaseResultDetail.NoDetail);
@@ -2358,7 +2358,7 @@ namespace ArchiSteamFarm {
 
 			WebBrowser.ObjectResponse<Steam.EResultResponse>? response = await UrlPostToJsonObjectWithSession<Steam.EResultResponse>(SteamCommunityURL, request, data: data).ConfigureAwait(false);
 
-			return response?.Content?.Result == EResult.OK;
+			return response?.Content.Result == EResult.OK;
 		}
 
 		private async Task<(ESteamApiKeyState State, string? Key)> GetApiKeyState() {
@@ -2366,10 +2366,16 @@ namespace ArchiSteamFarm {
 
 			using WebBrowser.HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
 
-			IElement? titleNode = response?.Content?.SelectSingleNode("//div[@id='mainContents']/h2");
+			if (response == null) {
+				return (ESteamApiKeyState.Timeout, null);
+			}
+
+			IElement? titleNode = response.Content.SelectSingleNode("//div[@id='mainContents']/h2");
 
 			if (titleNode == null) {
-				return (ESteamApiKeyState.Timeout, null);
+				Bot.ArchiLogger.LogNullError(nameof(titleNode));
+
+				return (ESteamApiKeyState.Error, null);
 			}
 
 			string title = titleNode.TextContent;
@@ -2473,7 +2479,7 @@ namespace ArchiSteamFarm {
 
 				WebBrowser.BasicResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlHead(host + request).ConfigureAwait(false)).ConfigureAwait(false);
 
-				if (response?.FinalUri == null) {
+				if (response == null) {
 					return null;
 				}
 

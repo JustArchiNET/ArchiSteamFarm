@@ -328,7 +328,7 @@ namespace ArchiSteamFarm {
 					progressReporter.ProgressChanged -= OnProgressChanged;
 				}
 
-				if (response?.Content == null) {
+				if (response == null) {
 					return null;
 				}
 

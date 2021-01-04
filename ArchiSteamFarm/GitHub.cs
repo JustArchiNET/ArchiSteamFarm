@@ -79,9 +79,9 @@ namespace ArchiSteamFarm {
 				throw new InvalidOperationException(nameof(ASF.WebBrowser));
 			}
 
-			WebBrowser.ObjectResponse<ReleaseResponse>? objectResponse = await ASF.WebBrowser.UrlGetToJsonObject<ReleaseResponse>(releaseURL).ConfigureAwait(false);
+			WebBrowser.ObjectResponse<ReleaseResponse>? response = await ASF.WebBrowser.UrlGetToJsonObject<ReleaseResponse>(releaseURL).ConfigureAwait(false);
 
-			return objectResponse?.Content;
+			return response?.Content;
 		}
 
 		private static async Task<ImmutableList<ReleaseResponse>?> GetReleasesFromURL(string releaseURL) {
@@ -93,9 +93,9 @@ namespace ArchiSteamFarm {
 				throw new InvalidOperationException(nameof(ASF.WebBrowser));
 			}
 
-			WebBrowser.ObjectResponse<ImmutableList<ReleaseResponse>>? objectResponse = await ASF.WebBrowser.UrlGetToJsonObject<ImmutableList<ReleaseResponse>>(releaseURL).ConfigureAwait(false);
+			WebBrowser.ObjectResponse<ImmutableList<ReleaseResponse>>? response = await ASF.WebBrowser.UrlGetToJsonObject<ImmutableList<ReleaseResponse>>(releaseURL).ConfigureAwait(false);
 
-			return objectResponse?.Content;
+			return response?.Content;
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]

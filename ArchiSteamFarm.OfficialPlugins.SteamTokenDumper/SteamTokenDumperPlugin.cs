@@ -462,13 +462,19 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 				WebBrowser.ObjectResponse<ResponseData>? response = await ASF.WebBrowser.UrlPostToJsonObject<ResponseData, RequestData>(request, data: requestData, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
 
-				if ((response?.Content == null) || response.StatusCode.IsClientErrorCode()) {
+				if (response == null) {
 					ASF.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
+					return;
+				}
+
+				if (response.StatusCode.IsClientErrorCode()) {
+					ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
+
 #if NETFRAMEWORK
-					if (response?.StatusCode == (HttpStatusCode) 429) {
+					if (response.StatusCode == (HttpStatusCode) 429) {
 #else
-					if (response?.StatusCode == HttpStatusCode.TooManyRequests) {
+					if (response.StatusCode == HttpStatusCode.TooManyRequests) {
 #endif
 						TimeSpan startIn = TimeSpan.FromMinutes(Utilities.RandomNext(SharedInfo.MinimumMinutesBeforeFirstUpload, SharedInfo.MaximumMinutesBeforeFirstUpload));
 

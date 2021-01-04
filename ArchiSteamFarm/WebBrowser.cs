@@ -126,32 +126,16 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				bool handleError = false;
-
 				if (response.StatusCode.IsClientErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
 						// We're not handling this error, do not try again
 						break;
 					}
-
-					handleError = true;
 				} else if (response.StatusCode.IsServerErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
 						// We're not handling this error, try again
 						continue;
 					}
-
-					handleError = true;
-				}
-
-				if (response.Content == null) {
-					if (handleError) {
-						// We're handling this error, the content isn't available, deal with it
-						return new BinaryResponse(response);
-					}
-
-					// The content isn't available and it's not an error, try again
-					continue;
 				}
 
 				progressReporter?.Report(0);
@@ -236,32 +220,16 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				bool handleError = false;
-
 				if (response.StatusCode.IsClientErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
 						// We're not handling this error, do not try again
 						break;
 					}
-
-					handleError = true;
 				} else if (response.StatusCode.IsServerErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
 						// We're not handling this error, try again
 						continue;
 					}
-
-					handleError = true;
-				}
-
-				if (response.Content == null) {
-					if (handleError) {
-						// We're handling this error, the content isn't available, deal with it
-						return new HtmlDocumentResponse(response);
-					}
-
-					// The content isn't available and it's not an error, try again
-					continue;
 				}
 
 				try {
@@ -297,32 +265,16 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				bool handleError = false;
-
 				if (response.StatusCode.IsClientErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
 						// We're not handling this error, do not try again
 						break;
 					}
-
-					handleError = true;
 				} else if (response.StatusCode.IsServerErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
 						// We're not handling this error, try again
 						continue;
 					}
-
-					handleError = true;
-				}
-
-				if (response.Content == null) {
-					if (handleError) {
-						// We're handling this error, the content isn't available, deal with it
-						return new ObjectResponse<T>(response);
-					}
-
-					// The content isn't available and it's not an error, try again
-					continue;
 				}
 
 				T? obj;
@@ -457,32 +409,16 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				bool handleError = false;
-
 				if (response.StatusCode.IsClientErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
 						// We're not handling this error, do not try again
 						break;
 					}
-
-					handleError = true;
 				} else if (response.StatusCode.IsServerErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
 						// We're not handling this error, try again
 						continue;
 					}
-
-					handleError = true;
-				}
-
-				if (response.Content == null) {
-					if (handleError) {
-						// We're handling this error, the content isn't available, deal with it
-						return new XmlDocumentResponse(response);
-					}
-
-					// The content isn't available and it's not an error, try again
-					continue;
 				}
 
 				XmlDocument xmlDocument = new();
@@ -616,32 +552,16 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				bool handleError = false;
-
 				if (response.StatusCode.IsClientErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
 						// We're not handling this error, do not try again
 						break;
 					}
-
-					handleError = true;
 				} else if (response.StatusCode.IsServerErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
 						// We're not handling this error, try again
 						continue;
 					}
-
-					handleError = true;
-				}
-
-				if (response.Content == null) {
-					if (handleError) {
-						// We're handling this error, the content isn't available, deal with it
-						return new HtmlDocumentResponse(response);
-					}
-
-					// The content isn't available and it's not an error, try again
-					continue;
 				}
 
 				try {
@@ -677,32 +597,16 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				bool handleError = false;
-
 				if (response.StatusCode.IsClientErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
 						// We're not handling this error, do not try again
 						break;
 					}
-
-					handleError = true;
 				} else if (response.StatusCode.IsServerErrorCode()) {
 					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
 						// We're not handling this error, try again
 						continue;
 					}
-
-					handleError = true;
-				}
-
-				if (response.Content == null) {
-					if (handleError) {
-						// We're handling this error, the content isn't available, deal with it
-						return new ObjectResponse<TResult>(response);
-					}
-
-					// The content isn't available and it's not an error, try again
-					continue;
 				}
 
 				TResult? obj;
@@ -1012,34 +916,22 @@ namespace ArchiSteamFarm {
 
 		public sealed class BinaryResponse : BasicResponse {
 			[PublicAPI]
-			public byte[]? Content { get; }
+			public byte[] Content { get; }
 
-			public BinaryResponse(BasicResponse basicResponse, byte[] content) : this(basicResponse) {
+			public BinaryResponse(BasicResponse basicResponse, byte[] content) : base(basicResponse) {
 				if (basicResponse == null) {
 					throw new ArgumentNullException(nameof(basicResponse));
 				}
 
 				Content = content ?? throw new ArgumentNullException(nameof(content));
-			}
-
-			public BinaryResponse(BasicResponse basicResponse) : base(basicResponse) {
-				if (basicResponse == null) {
-					throw new ArgumentNullException(nameof(basicResponse));
-				}
 			}
 		}
 
 		public sealed class HtmlDocumentResponse : BasicResponse, IDisposable {
 			[PublicAPI]
-			public IDocument? Content { get; }
+			public IDocument Content { get; }
 
-			public HtmlDocumentResponse(BasicResponse basicResponse) : base(basicResponse) {
-				if (basicResponse == null) {
-					throw new ArgumentNullException(nameof(basicResponse));
-				}
-			}
-
-			private HtmlDocumentResponse(BasicResponse basicResponse, IDocument content) : this(basicResponse) {
+			private HtmlDocumentResponse(BasicResponse basicResponse, IDocument content) : base(basicResponse) {
 				if (basicResponse == null) {
 					throw new ArgumentNullException(nameof(basicResponse));
 				}
@@ -1047,7 +939,7 @@ namespace ArchiSteamFarm {
 				Content = content ?? throw new ArgumentNullException(nameof(content));
 			}
 
-			public void Dispose() => Content?.Dispose();
+			public void Dispose() => Content.Dispose();
 
 			[PublicAPI]
 			public static async Task<HtmlDocumentResponse?> Create(StreamResponse streamResponse) {
@@ -1069,28 +961,22 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		public sealed class ObjectResponse<T> : BasicResponse where T : class {
+		public sealed class ObjectResponse<T> : BasicResponse {
 			[PublicAPI]
-			public T? Content { get; }
+			public T Content { get; }
 
-			public ObjectResponse(BasicResponse basicResponse, T content) : this(basicResponse) {
+			public ObjectResponse(BasicResponse basicResponse, T content) : base(basicResponse) {
 				if (basicResponse == null) {
 					throw new ArgumentNullException(nameof(basicResponse));
 				}
 
 				Content = content ?? throw new ArgumentNullException(nameof(content));
 			}
-
-			public ObjectResponse(BasicResponse basicResponse) : base(basicResponse) {
-				if (basicResponse == null) {
-					throw new ArgumentNullException(nameof(basicResponse));
-				}
-			}
 		}
 
 		public sealed class StreamResponse : BasicResponse, IAsyncDisposable {
 			[PublicAPI]
-			public Stream? Content { get; }
+			public Stream Content { get; }
 
 			[PublicAPI]
 			public long Length { get; }
@@ -1105,9 +991,7 @@ namespace ArchiSteamFarm {
 			}
 
 			public async ValueTask DisposeAsync() {
-				if (Content != null) {
-					await Content.DisposeAsync().ConfigureAwait(false);
-				}
+				await Content.DisposeAsync().ConfigureAwait(false);
 
 				ResponseMessage.Dispose();
 			}
@@ -1115,7 +999,7 @@ namespace ArchiSteamFarm {
 
 		public sealed class StringResponse : BasicResponse {
 			[PublicAPI]
-			public string? Content { get; }
+			public string Content { get; }
 
 			internal StringResponse(HttpResponseMessage httpResponseMessage, string content) : base(httpResponseMessage) {
 				if (httpResponseMessage == null) {
@@ -1128,20 +1012,14 @@ namespace ArchiSteamFarm {
 
 		public sealed class XmlDocumentResponse : BasicResponse {
 			[PublicAPI]
-			public XmlDocument? Content { get; }
+			public XmlDocument Content { get; }
 
-			public XmlDocumentResponse(BasicResponse basicResponse, XmlDocument content) : this(basicResponse) {
+			public XmlDocumentResponse(BasicResponse basicResponse, XmlDocument content) : base(basicResponse) {
 				if (basicResponse == null) {
 					throw new ArgumentNullException(nameof(basicResponse));
 				}
 
 				Content = content ?? throw new ArgumentNullException(nameof(content));
-			}
-
-			public XmlDocumentResponse(BasicResponse basicResponse) : base(basicResponse) {
-				if (basicResponse == null) {
-					throw new ArgumentNullException(nameof(basicResponse));
-				}
 			}
 		}
 

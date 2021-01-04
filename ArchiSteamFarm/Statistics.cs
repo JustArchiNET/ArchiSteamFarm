@@ -242,9 +242,9 @@ namespace ArchiSteamFarm {
 		private async Task<ImmutableHashSet<ListedUser>?> GetListedUsers() {
 			const string request = URL + "/Api/Bots";
 
-			WebBrowser.ObjectResponse<ImmutableHashSet<ListedUser>>? objectResponse = await Bot.ArchiWebHandler.WebBrowser.UrlGetToJsonObject<ImmutableHashSet<ListedUser>>(request).ConfigureAwait(false);
+			WebBrowser.ObjectResponse<ImmutableHashSet<ListedUser>>? response = await Bot.ArchiWebHandler.WebBrowser.UrlGetToJsonObject<ImmutableHashSet<ListedUser>>(request).ConfigureAwait(false);
 
-			return objectResponse?.Content;
+			return response?.Content;
 		}
 
 		private async Task<bool?> IsEligibleForListing() {
