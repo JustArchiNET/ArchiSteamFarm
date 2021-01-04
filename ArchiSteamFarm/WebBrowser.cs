@@ -1123,18 +1123,12 @@ namespace ArchiSteamFarm {
 			[PublicAPI]
 			public string? Content { get; }
 
-			internal StringResponse(HttpResponseMessage httpResponseMessage, string content) : this(httpResponseMessage) {
+			internal StringResponse(HttpResponseMessage httpResponseMessage, string content) : base(httpResponseMessage) {
 				if (httpResponseMessage == null) {
 					throw new ArgumentNullException(nameof(httpResponseMessage));
 				}
 
 				Content = content ?? throw new ArgumentNullException(nameof(content));
-			}
-
-			internal StringResponse(HttpResponseMessage httpResponseMessage) : base(httpResponseMessage) {
-				if (httpResponseMessage == null) {
-					throw new ArgumentNullException(nameof(httpResponseMessage));
-				}
 			}
 		}
 
