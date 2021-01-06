@@ -41,7 +41,7 @@ RUN dotnet --info && \
     dotnet publish "${STEAM_TOKEN_DUMPER_NAME}" -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}" -p:SelfContained=false -p:UseAppHost=false -r "$asf_variant" --nologo && \
     dotnet clean ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -p:SelfContained=false -p:UseAppHost=false -r "$asf_variant" --nologo && \
     dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/result" -p:ASFVariant=docker -p:SelfContained=false -p:UseAppHost=false -r "$asf_variant" --nologo && \
-    if [ -d "ArchiSteamFarm/overlay/generic" ]; then cp "ArchiSteamFarm/overlay/generic/"* "out/result"; fi && \
+    if [ -d "ArchiSteamFarm/overlay/generic" ]; then cp -pR "ArchiSteamFarm/overlay/generic/"* "out/result"; fi && \
     if [ -d "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}" ]; then mkdir -p "out/result/plugins/${STEAM_TOKEN_DUMPER_NAME}"; cp -pR "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}/"* "out/result/plugins/${STEAM_TOKEN_DUMPER_NAME}"; fi
 
 FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/aspnet:5.0${IMAGESUFFIX} AS runtime

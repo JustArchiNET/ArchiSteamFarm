@@ -129,7 +129,7 @@ jobs:
 
             # If we're including any overlay for this variant, copy it to output directory
             if [ -d "ArchiSteamFarm/overlay/${1}" ]; then
-                cp "ArchiSteamFarm/overlay/${1}/"* "out/${1}"
+                cp -pR "ArchiSteamFarm/overlay/${1}/"* "out/${1}"
             fi
 
             # If we're including SteamTokenDumper plugin for this framework, copy it to output directory
