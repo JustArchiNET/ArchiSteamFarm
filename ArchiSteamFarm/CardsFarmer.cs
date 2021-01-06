@@ -325,15 +325,16 @@ namespace ArchiSteamFarm {
 
 				KeepFarming = false;
 
-				if (FarmingResetSemaphore.CurrentCount == 0) {
-					FarmingResetSemaphore.Release();
-				}
+				for (byte i = 0; (i < byte.MaxValue) && NowFarming; i++) {
+					if (FarmingResetSemaphore.CurrentCount == 0) {
+						FarmingResetSemaphore.Release();
+					}
 
-				for (byte i = 0; (i < WebBrowser.MaxTries) && NowFarming; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
 				if (NowFarming) {
+					Bot.ArchiLogger.LogGenericError(Strings.WarningFailed);
 					NowFarming = false;
 				}
 
