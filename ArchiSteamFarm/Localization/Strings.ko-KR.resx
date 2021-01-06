@@ -601,7 +601,11 @@ StackTrace:
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>마지막으로 릴리즈된 버전보다 최신 버전을 사용 중입니다. 시험판 버전은 버그 리포트, 문제 해결, 피드백을 제공하는 법을 아는 유저에게만 제공됩니다. - 기술 지원은 제공되지 않습니다.</value>
   </data>
-  
+  <data name="BotStats" xml:space="preserve">
+    <value>현재 메모리 사용량: {0} MB.
+프로세스 수행시간: {1}</value>
+    <comment>{0} will be replaced by number (in megabytes) of memory being used, {1} will be replaced by translated TimeSpan string (such as "25 minutes"). Please note that this string should include newlines for formatting.</comment>
+  </data>
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
     <value>스팀 맞춤 대기열 #{0}을 지우는 중...</value>
     <comment>{0} will be replaced by queue number</comment>
@@ -722,8 +726,13 @@ StackTrace:
   </data>
   
   
+  <data name="Result" xml:space="preserve">
+    <value>결과: {0}</value>
+    <comment>{0} will be replaced by generic result of various functions that use this string</comment>
+  </data>
   
   
-  
-
+<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>설정 디렉토리를 찾을 수 없습니다. 동작을 정지합니다.</value>
+</data>
 </root>
