@@ -152,7 +152,7 @@ StackTrace:
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Globale Konfiguration konnte nicht geladen werden. Stelle sicher, dass {0} existiert und gültig ist! Folge der Installationsanleitung im Wiki, falls etwas unklar sein sollte.</value>
+    <value>Globale Konfiguration konnte nicht geladen werden. Stellen Sie sicher, dass {0} existiert und gültig ist und Folgen Sie der Installationsanleitung im Wiki, falls etwas unklar sein sollte.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
@@ -160,7 +160,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>Es sind keine Bots definiert. Hast du vergessen ASF zu konfigurieren?</value>
+    <value>Es sind keine Bots definiert. Haben Sie ASF zu richtig konfiguriert?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} ist null!</value>
@@ -223,7 +223,7 @@ StackTrace:
     <value>Starte...</value>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>Erfolg!</value>
+    <value>Erledigt!</value>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
     <value>Entsperre Elternkonto...</value>
@@ -232,41 +232,41 @@ StackTrace:
     <value>Prüfe auf neue Version...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Lade neue Version herunter: {0} ({1} MB)... Während du wartest, denk darüber nach zu spenden, wenn du die geleistete Arbeit zu schätzen weißt! :)</value>
+    <value>Lade neue Version herunter: {0} ({1} MB)... Bitte überlegen Sie es sich, uns für unsere geleistete Arbeit eine Spende zu hinterlassen, während Sie warten. :)</value>
     <comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Aktualisierung abgeschlossen!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>Es ist eine neue ASF Version verfügbar! Überlege dir selbst zu aktualisieren!</value>
+    <value>Es ist eine neue ASF Version verfügbar! Sie können ein Update selbst starten.</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>Lokale Version: {0} | Verfügbare Version: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>Bitte gib deinen 2FA Code aus deinem Steam-Authentifikator ein: </value>
+    <value>Bitte geben Sie ihren 2FA-Code aus ihrer Steam-Authentifikator ein: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>Bitte gib den SteamGuard-Authentifizierungscode ein, der an deine E-Mail gesendet wurde: </value>
+    <value>Bitte geben Sie ihren Steam Guard Authentifikator-Code ein, welcher ihnen per E-Mail geschickt wurde: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>Bitte gib deinen Steam-Login ein: </value>
+    <value>Bitte geben Sie ihren Steam-Login ein: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalCode" xml:space="preserve">
-    <value>Bitte gib deinen Steam-Familienansicht-Code ein: </value>
+    <value>Bitte geben Sie ihre Steam-Familienansicht-PIN ein: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>Bitte gib dein Steam-Passwort ein: </value>
+    <value>Bitte geben Sie ihr Steam-Passwort ein: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
-    <value>Unbekannten Wert für {0} erhalten, bitte melde folgendes: {1}</value>
+    <value>Unbekannten Wert für {0} erhalten, bitte melden Sie folgendes: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
   <data name="IPCReady" xml:space="preserve">
@@ -456,10 +456,10 @@ StackTrace:
     <value>Handelsangebot erfolgreich gesendet!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
-    <value>Du kannst nicht mit dir selbst handeln!</value>
+    <value>Sie können nicht mit sich selbst handeln!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>Dieser Bot hat ASF 2FA nicht aktiviert! Hast du vergessen deinen Authentifikator als ASF 2FA zu importieren?</value>
+    <value>Dieser Bot hat ASF 2FA nicht aktiviert! Haben Sie vergessen ihren Authentifikator als ASF 2FA zu importieren?</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
     <value>Diese Bot-Instanz ist nicht verbunden!</value>
@@ -546,11 +546,11 @@ StackTrace:
     <value>Stoppen...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>Deine Bot-Konfiguration ist ungültig. Bitte überprüfe den Inhalt von {0} und versuche es erneut!</value>
+    <value>Deine Bot-Konfiguration ist ungültig. Bitte überprüfen Sie den Inhalt von {0} und versuchen Sie es erneut!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>Die permanente Datenbank konnte nicht geladen werden, wenn das Problem weiterhin besteht entferne bitte {0}, um die Datenbank neu zu erstellen!</value>
+    <value>Die permanente Datenbank konnte nicht geladen werden, wenn das Problem weiterhin besteht entfernen Sie bitte {0}, um die Datenbank neu zu erstellen!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
@@ -558,16 +558,16 @@ StackTrace:
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>Bitte lies den Abschnitt zu unseren Datenschutzrichtlinien im Wiki, wenn du wissen möchtest was ASF im Detail alles macht!</value>
+    <value>Bitte lesen Sie den Abschnitt zu unseren Datenschutzrichtlinien im Wiki, wenn Sie wissen möchten was ASF im Detail alles macht!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>Es sieht so aus, als ob du das Programm zum ersten Mal gestartet hast, willkommen!</value>
+    <value>Es sieht so aus, als ob Sie das Programm zum ersten Mal gestartet haben, willkommen!</value>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-    <value>Deine angegebene CurrentCulture ist ungültig, ASF wird weiterhin mit dem Standard laufen!</value>
+    <value>Ihre angegebene CurrentCulture ist ungültig, ASF wird weiterhin mit dem Standard laufen!</value>
   </data>
   <data name="TranslationIncomplete" xml:space="preserve">
-    <value>ASF wird versuchen deine bevorzugte Sprache {0} zu verwenden, jedoch wurde die Übersetzung in dieser Sprache nur zu {1} abgeschlossen. Kannst du uns vielleicht helfen die ASF-Übersetzung in deiner Sprache zu verbessern?</value>
+    <value>ASF wird versuchen Ihre bevorzugte Sprache {0} zu verwenden, jedoch wurde die Übersetzung in dieser Sprache nur zu {1} abgeschlossen. Können Sie uns vielleicht helfen die ASF-Übersetzung in ihrer Sprache zu verbessern?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
   <data name="IdlingGameNotPossible" xml:space="preserve">
@@ -599,7 +599,7 @@ StackTrace:
     <value>Zugriff verweigert!</value>
   </data>
   <data name="WarningPreReleaseVersion" xml:space="preserve">
-    <value>Du verwendest eine Version, die neuer ist als die zuletzt veröffentlichte Version deines Aktualisierungskanals. Bitte bedenke, dass Vorabversionen nur für Benutzer gedacht sind, die wissen wie man Fehler meldet, mit Problemen umgeht und Rückmeldung gibt - es wird keine technische Unterstützung geben.</value>
+    <value>Sie verwenden eine Version, die neuer ist als die zuletzt veröffentlichte Version ihres Aktualisierungskanals. Bitte bedenken Sie, dass Vorabversionen nur für Benutzer gedacht sind, die wissen wie man Fehler meldet, mit Problemen umgeht und Rückmeldung gibt - es wird keine technische Unterstützung geben.</value>
   </data>
   <data name="BotStats" xml:space="preserve">
     <value>Aktuelle Speichernutzung: {0} MB.
@@ -622,7 +622,7 @@ Prozesslaufzeit: {1}</value>
     <value>Aktualisiere Paket-Daten...</value>
   </data>
   <data name="WarningDeprecated" xml:space="preserve">
-    <value>Die Verwendung von {0} ist veraltet und wird in zukünftigen Versionen des Programms entfernt. Bitte verwende stattdessen {1}.</value>
+    <value>Die Verwendung von {0} ist veraltet und wird in zukünftigen Versionen des Programms entfernt. Bitte verwenden Sie stattdessen {1}.</value>
     <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
   </data>
   <data name="BotAcceptedDonationTrade" xml:space="preserve">
@@ -663,7 +663,7 @@ Prozesslaufzeit: {1}</value>
     <comment>{0} will be replaced by number of sets traded</comment>
   </data>
   <data name="WarningExcessiveBotsCount" xml:space="preserve">
-    <value>Du verwendest mehr persönliche Bot-Konten als unsere empfohlene Obergrenze ({0}). Bitte bedenke, dass dieses Setup nicht unterstützt wird und verschiedene Steam-bezogene Probleme verursachen kann, einschließlich Kontosperrungen. Weitere Informationen findest du in den FAQs.</value>
+    <value>Sie verwenden mehr persönliche Bot-Konten als unsere empfohlene Obergrenze ({0}). Bitte bedenken Sie, dass dieses Setup nicht unterstützt wird und verschiedene Steam-bezogene Probleme verursachen kann, einschließlich Kontosperrungen. Weitere Informationen gibt es in unseren FAQs.</value>
     <comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
   </data>
   <data name="PluginLoaded" xml:space="preserve">
@@ -678,7 +678,7 @@ Prozesslaufzeit: {1}</value>
     <value>Nichts gefunden!</value>
   </data>
   <data name="PluginsWarning" xml:space="preserve">
-    <value>Du hast ein oder mehrere benutzerdefinierte Plugins in ASF geladen. Da wir keine Unterstützung für modifizierte Setups anbieten können, wende dich bitte im Falle von Problemen an die entsprechenden Entwickler der Plugins die du verwendet hast.</value>
+    <value>Sie haben ein oder mehrere benutzerdefinierte Plugins in ASF geladen. Da wir keine Unterstützung für modifizierte Setups anbieten können, bitten wir Sie sich im Falle von Problemen an die entsprechenden Entwickler der Plugins zu wenden.</value>
   </data>
   <data name="PleaseWait" xml:space="preserve">
     <value>Bitte warte...</value>
@@ -690,7 +690,7 @@ Prozesslaufzeit: {1}</value>
     <value>Wird ausgeführt...</value>
   </data>
   <data name="InteractiveConsoleEnabled" xml:space="preserve">
-    <value>Die interaktive Konsole ist jetzt aktiv, tippe 'c' um in den Befehlsmodus zu wechseln.</value>
+    <value>Interaktive Konsole ist jetzt aktiv, geben Sie 'c' ein, um den Befehlsmodus zu wechseln.</value>
   </data>
   <data name="InteractiveConsoleNotAvailable" xml:space="preserve">
     <value>Die interaktive Konsole ist aufgrund der fehlenden Konfigurationseigenschaften {0} nicht verfügbar.</value>
@@ -729,7 +729,7 @@ Prozesslaufzeit: {1}</value>
     <comment>{0} will be replaced by trade offer ID (number), {1} will be replaced by internal ASF enum name, {2} will be replaced by technical reason why the trade was determined to be in this state</comment>
   </data>
   <data name="BotInvalidPasswordDuringLogin" xml:space="preserve">
-    <value>Fehlercode InvalidPassword {0} mal hintereinander erhalten. Dein Passwort für dieses Konto ist höchstwahrscheinlich falsch. Abbruch!</value>
+    <value>Fehlercode InvalidPassword {0} mal hintereinander erhalten. Ihr Passwort für dieses Konto ist höchstwahrscheinlich falsch. Abbruch!</value>
     <comment>{0} will be replaced by maximum allowed number of failed login attempts</comment>
   </data>
   <data name="Result" xml:space="preserve">
@@ -737,7 +737,7 @@ Prozesslaufzeit: {1}</value>
     <comment>{0} will be replaced by generic result of various functions that use this string</comment>
   </data>
   <data name="WarningUnsupportedEnvironment" xml:space="preserve">
-    <value>Du versuchst, die Variante {0} von ASF in einer nicht unterstützten Umgebung auszuführen: {1}. Gib das Argument --ignore-unsupported-environment an, wenn du wirklich weißt, was du tust.</value>
+    <value>Sie versuchen, die Variante {0} von ASF in einer nicht unterstützten Umgebung auszuführen: {1}. Geben Sie das Argument --ignore-unsupported-environment an, sofern Sie wirklich wissen, was Sie tun.</value>
   </data>
   <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
     <value>Unbekanntes Kommandozeilenargument: {0}</value>
