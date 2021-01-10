@@ -614,6 +614,7 @@ namespace ArchiSteamFarm {
 				try {
 					using StreamReader steamReader = new(response.Content);
 					using JsonReader jsonReader = new JsonTextReader(steamReader);
+
 					JsonSerializer serializer = new();
 
 					obj = serializer.Deserialize<TResult>(jsonReader);
