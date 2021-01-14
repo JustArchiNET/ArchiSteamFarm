@@ -65,6 +65,7 @@ os_type="$(uname -s)"
 
 case "$os_type" in
 	"Darwin") os_type="osx" ;;
+	"FreeBSD") os_type="freebsd" ;;
 	"Linux") os_type="linux" ;;
 	*) echo "ERROR: Unknown OS type: ${os_type}. If you believe that our script should work on your machine, please let us know."; exit 1
 esac
@@ -73,6 +74,7 @@ cpu_architecture="$(uname -m)"
 
 case "$cpu_architecture" in
 	"aarch64") cpu_architecture="arm64" ;;
+	"amd64") cpu_architecture="x64" ;;
 	"armv7l") cpu_architecture="arm" ;;
 	"x86_64") cpu_architecture="x64" ;;
 	*) echo "ERROR: Unknown CPU architecture: ${cpu_architecture}. If you believe that our script should work on your machine, please let us know."; exit 1
