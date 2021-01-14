@@ -21,10 +21,8 @@
 
 using System;
 using System.ComponentModel;
-using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
-using ArchiSteamFarm.Localization;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Helpers {
@@ -67,18 +65,12 @@ namespace ArchiSteamFarm.Helpers {
 				(bool success, T? result) = await ResolveFunction().ConfigureAwait(false);
 
 				if (!success) {
-					switch (fallback) {
-						case EFallback.DefaultForType:
-							return (false, default(T?));
-						case EFallback.FailedNow:
-							return (false, result);
-						case EFallback.SuccessPreviously:
-							return (false, InitializedValue);
-						default:
-							ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(fallback), fallback));
-
-							goto case EFallback.DefaultForType;
-					}
+					return fallback switch {
+						EFallback.DefaultForType => (false, default(T?)),
+						EFallback.FailedNow => (false, result),
+						EFallback.SuccessPreviously => (false, InitializedValue),
+						_ => throw new InvalidOperationException(nameof(fallback))
+					};
 				}
 
 				InitializedValue = result;
