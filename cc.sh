@@ -116,7 +116,7 @@ fi
 
 dotnet publish "$MAIN_PROJECT" -o "$OUT_ASF" $DOTNET_FLAGS
 
-if [ -n "${STEAM_TOKEN_DUMPER_TOKEN-}" ] && [ -f "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs" ]; then
+if [ -n "${STEAM_TOKEN_DUMPER_TOKEN-}" ] && [ -f "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs" ] && command -v git >/dev/null; then
 	git checkout -- "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs"
 	sed "s/STEAM_TOKEN_DUMPER_TOKEN/${STEAM_TOKEN_DUMPER_TOKEN}/g" "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs" > "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs.new";
 	mv "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs.new" "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs"
@@ -124,10 +124,11 @@ if [ -n "${STEAM_TOKEN_DUMPER_TOKEN-}" ] && [ -f "${STEAM_TOKEN_DUMPER_NAME}/Sha
 	dotnet publish "$STEAM_TOKEN_DUMPER_NAME" -o "$OUT_STD" $DOTNET_FLAGS
 	git checkout -- "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs"
 
+	rm -rf "${OUT_ASF}/plugins/${STEAM_TOKEN_DUMPER_NAME}"
 	mkdir -p "${OUT_ASF}/plugins/${STEAM_TOKEN_DUMPER_NAME}"
-	cp "${OUT_STD}/${STEAM_TOKEN_DUMPER_NAME}.dll" "${OUT_ASF}/plugins/${STEAM_TOKEN_DUMPER_NAME}"
+	cp -pR "${OUT_STD}/"*  "${OUT_ASF}/plugins/${STEAM_TOKEN_DUMPER_NAME}"
 else
-	echo "WARNING: STEAM_TOKEN_DUMPER_TOKEN is missing, skipping build of ${STEAM_TOKEN_DUMPER_NAME}..."
+	echo "WARNING: ${STEAM_TOKEN_DUMPER_NAME} dependencies are missing, skipping build of ${STEAM_TOKEN_DUMPER_NAME}..."
 fi
 
 echo
