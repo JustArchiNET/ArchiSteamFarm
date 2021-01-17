@@ -534,8 +534,17 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
+				uint maxSetsAllowed = Trading.MaxItemsPerTrade - (uint) result.Count;
+				maxSetsAllowed -= maxSetsAllowed % itemsPerSet;
+				maxSetsAllowed /= itemsPerSet;
+				uint realSetsToExtract = Math.Min(setsToExtract, maxSetsAllowed);
+
+				if (realSetsToExtract == 0) {
+					break;
+				}
+
 				foreach (HashSet<Steam.Asset> itemsOfClass in itemsPerClassID.Values) {
-					uint classRemaining = setsToExtract;
+					uint classRemaining = realSetsToExtract;
 
 					foreach (Steam.Asset item in itemsOfClass.TakeWhile(_ => classRemaining > 0)) {
 						if (item.Amount > classRemaining) {
