@@ -544,7 +544,7 @@ namespace ArchiSteamFarm {
 				}
 
 				foreach (HashSet<Steam.Asset> itemsOfClass in itemsPerClassID.Values) {
-					uint classRemaining = realSetsToExtract;
+					byte classRemaining = realSetsToExtract;
 
 					foreach (Steam.Asset item in itemsOfClass.TakeWhile(_ => classRemaining > 0)) {
 						if (item.Amount > classRemaining) {
@@ -556,7 +556,7 @@ namespace ArchiSteamFarm {
 						} else {
 							result.Add(item);
 
-							classRemaining -= item.Amount;
+							classRemaining -= (byte) item.Amount;
 						}
 					}
 				}
