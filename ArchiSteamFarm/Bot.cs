@@ -534,8 +534,8 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				uint maxSetsAllowed = Trading.MaxItemsPerTrade - (uint) result.Count;
-				maxSetsAllowed -= maxSetsAllowed % itemsPerSet;
+				byte maxSetsAllowed = (byte) (Trading.MaxItemsPerTrade - result.Count);
+				maxSetsAllowed -= (byte) (maxSetsAllowed % itemsPerSet);
 				maxSetsAllowed /= itemsPerSet;
 				uint realSetsToExtract = Math.Min(setsToExtract, maxSetsAllowed);
 

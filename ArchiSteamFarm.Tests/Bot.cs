@@ -56,7 +56,7 @@ namespace ArchiSteamFarm.Tests {
 
 			HashSet<Steam.Asset> items = new();
 
-			for (uint i = 0; i < ArchiSteamFarm.Trading.MaxItemsPerTrade; ++i) {
+			for (byte i = 0; i < ArchiSteamFarm.Trading.MaxItemsPerTrade; i++) {
 				items.Add(CreateCard(1, appID));
 				items.Add(CreateCard(2, appID));
 			}
