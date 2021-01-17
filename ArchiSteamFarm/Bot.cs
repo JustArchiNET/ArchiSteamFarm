@@ -509,13 +509,17 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public static HashSet<Steam.Asset> GetItemsForFullSets(IReadOnlyCollection<Steam.Asset> inventory, IReadOnlyDictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), (uint SetsToExtract, byte ItemsPerSet)> amountsToExtract) {
+		public static HashSet<Steam.Asset> GetItemsForFullSets(IReadOnlyCollection<Steam.Asset> inventory, IReadOnlyDictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), (uint SetsToExtract, byte ItemsPerSet)> amountsToExtract, ushort maxItems = Trading.MaxItemsPerTrade) {
 			if ((inventory == null) || (inventory.Count == 0)) {
 				throw new ArgumentNullException(nameof(inventory));
 			}
 
 			if ((amountsToExtract == null) || (amountsToExtract.Count == 0)) {
 				throw new ArgumentNullException(nameof(amountsToExtract));
+			}
+
+			if (maxItems < 5) {
+				throw new ArgumentOutOfRangeException(nameof(maxItems));
 			}
 
 			HashSet<Steam.Asset> result = new();
@@ -534,7 +538,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				byte maxSetsAllowed = (byte) (Trading.MaxItemsPerTrade - result.Count);
+				byte maxSetsAllowed = (byte) (maxItems - result.Count);
 				maxSetsAllowed -= (byte) (maxSetsAllowed % itemsPerSet);
 				maxSetsAllowed /= itemsPerSet;
 				byte realSetsToExtract = (byte) Math.Min(setsToExtract, maxSetsAllowed);
