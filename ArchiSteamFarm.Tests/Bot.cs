@@ -51,6 +51,22 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[TestMethod]
+		public void TooManyCardsForSingleTrade() {
+			const uint appID = 42;
+
+			HashSet<Steam.Asset> items = new();
+
+			for (uint i = 0; i < ArchiSteamFarm.Trading.MaxItemsPerTrade; ++i) {
+				items.Add(CreateCard(1, appID));
+				items.Add(CreateCard(2, appID));
+			}
+
+			HashSet<Steam.Asset> itemsToSend = GetItemsForFullBadge(items, 2, appID);
+
+			Assert.IsTrue(itemsToSend.Count <= ArchiSteamFarm.Trading.MaxItemsPerTrade);
+		}
+
+		[TestMethod]
 		public void MultipleSets() {
 			const uint appID = 42;
 
