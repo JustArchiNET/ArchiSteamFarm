@@ -560,7 +560,7 @@ namespace ArchiSteamFarm {
 						} else {
 							result.Add(item);
 
-							classRemaining -= (byte) item.Amount;
+							classRemaining -= (ushort) item.Amount;
 						}
 					}
 				}
