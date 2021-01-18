@@ -51,6 +51,32 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[TestMethod]
+		public void MaxItemsBarelyEnoughForOneSet() {
+			const uint relevantAppID = 42;
+
+			Dictionary<uint, byte> itemsPerSet = new() {
+				{ relevantAppID, ArchiSteamFarm.Bot.MinCardsPerBadge },
+				{ 43, ArchiSteamFarm.Bot.MinCardsPerBadge + 1 }
+			};
+
+			HashSet<Steam.Asset> items = new();
+
+			foreach ((uint appID, byte cards) in itemsPerSet) {
+				for (byte i = 1; i <= cards; ++i) {
+					items.Add(CreateCard(i, appID));
+				}
+			}
+
+			HashSet<Steam.Asset> itemsToSend = GetItemsForFullBadge(items, itemsPerSet, ArchiSteamFarm.Bot.MinCardsPerBadge);
+
+			Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult = items.Where(item => item.RealAppID == relevantAppID)
+				.GroupBy(item => (item.RealAppID, item.ContextID, item.ClassID))
+				.ToDictionary(grouping => grouping.Key, grouping => (uint) grouping.Sum(item => item.Amount));
+
+			AssertResultMatchesExpectation(expectedResult, itemsToSend);
+		}
+
+		[TestMethod]
 		[ExpectedException(typeof(ArgumentOutOfRangeException))]
 		public void MaxItemsTooSmall() {
 			const uint appID = 42;
@@ -60,7 +86,7 @@ namespace ArchiSteamFarm.Tests {
 				CreateCard(2, appID)
 			};
 
-			GetItemsForFullBadge(items, 2, appID, 4);
+			GetItemsForFullBadge(items, 2, appID, ArchiSteamFarm.Bot.MinCardsPerBadge - 1);
 
 			Assert.Fail();
 		}
