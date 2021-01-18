@@ -49,6 +49,7 @@ namespace ArchiSteamFarm {
 	public sealed class Bot : IAsyncDisposable {
 		internal const ushort CallbackSleep = 500; // In milliseconds
 		internal const ushort MaxMessagePrefixLength = MaxMessageLength - ReservedMessageLength - 2; // 2 for a minimum of 2 characters (escape one and real one)
+		internal const byte MinCardsPerBadge = 5;
 		internal const byte MinPlayingBlockedTTL = 60; // Delay in seconds added when account was occupied during our disconnect, to not disconnect other Steam client session too soon
 
 		private const char DefaultBackgroundKeysRedeemerSeparator = '\t';
@@ -57,7 +58,6 @@ namespace ArchiSteamFarm {
 		private const byte MaxInvalidPasswordFailures = WebBrowser.MaxTries; // Max InvalidPassword failures in a row before we determine that our password is invalid (because Steam wrongly returns those, of course)
 		private const ushort MaxMessageLength = 5000; // This is a limitation enforced by Steam
 		private const byte MaxTwoFactorCodeFailures = WebBrowser.MaxTries; // Max TwoFactorCodeMismatch failures in a row before we determine that our 2FA credentials are invalid (because Steam wrongly returns those, of course)
-		private const byte MinimumCardsPerBadge = 5;
 		private const byte RedeemCooldownInHours = 1; // 1 hour since first redeem attempt, this is a limitation enforced by Steam
 		private const byte ReservedMessageLength = 2; // 2 for 2x optional …
 
@@ -509,19 +509,23 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public static HashSet<Steam.Asset> GetItemsForFullSets(IReadOnlyCollection<Steam.Asset> inventory, IReadOnlyDictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), (uint SetsToExtract, byte ItemsPerSet)> amountsToExtract) {
+		public static HashSet<Steam.Asset> GetItemsForFullSets(IReadOnlyCollection<Steam.Asset> inventory, IReadOnlyDictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), (uint SetsToExtract, byte ItemsPerSet)> amountsToExtract, ushort maxItems = Trading.MaxItemsPerTrade) {
 			if ((inventory == null) || (inventory.Count == 0)) {
 				throw new ArgumentNullException(nameof(inventory));
 			}
 
-			if ((amountsToExtract == null) || (amountsToExtract.Count == 0)) {
+			if ((amountsToExtract == null) || (amountsToExtract.Count == 0) || amountsToExtract.Any(kv => kv.Value.SetsToExtract == 0)) {
 				throw new ArgumentNullException(nameof(amountsToExtract));
+			}
+
+			if (maxItems < MinCardsPerBadge) {
+				throw new ArgumentOutOfRangeException(nameof(maxItems));
 			}
 
 			HashSet<Steam.Asset> result = new();
 			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, HashSet<Steam.Asset>>> itemsPerClassIDPerSet = inventory.GroupBy(item => (item.RealAppID, item.Type, item.Rarity)).ToDictionary(grouping => grouping.Key, grouping => grouping.GroupBy(item => item.ClassID).ToDictionary(group => group.Key, group => group.ToHashSet()));
 
-			foreach (((uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) set, (uint setsToExtract, byte itemsPerSet)) in amountsToExtract) {
+			foreach (((uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) set, (uint setsToExtract, byte itemsPerSet)) in amountsToExtract.OrderBy(kv => kv.Value.ItemsPerSet)) {
 				if (!itemsPerClassIDPerSet.TryGetValue(set, out Dictionary<ulong, HashSet<Steam.Asset>>? itemsPerClassID)) {
 					continue;
 				}
@@ -534,8 +538,17 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
+				ushort maxSetsAllowed = (ushort) (maxItems - result.Count);
+				maxSetsAllowed -= (ushort) (maxSetsAllowed % itemsPerSet);
+				maxSetsAllowed /= itemsPerSet;
+				ushort realSetsToExtract = (ushort) Math.Min(setsToExtract, maxSetsAllowed);
+
+				if (realSetsToExtract == 0) {
+					break;
+				}
+
 				foreach (HashSet<Steam.Asset> itemsOfClass in itemsPerClassID.Values) {
-					uint classRemaining = setsToExtract;
+					ushort classRemaining = realSetsToExtract;
 
 					foreach (Steam.Asset item in itemsOfClass.TakeWhile(_ => classRemaining > 0)) {
 						if (item.Amount > classRemaining) {
@@ -547,7 +560,7 @@ namespace ArchiSteamFarm {
 						} else {
 							result.Add(item);
 
-							classRemaining -= item.Amount;
+							classRemaining -= (ushort) item.Amount;
 						}
 					}
 				}
@@ -3234,7 +3247,7 @@ namespace ArchiSteamFarm {
 					}
 
 					Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), List<uint>> inventorySets = Trading.GetInventorySets(inventory);
-					appIDs.IntersectWith(inventorySets.Where(kv => kv.Value.Count >= MinimumCardsPerBadge).Select(kv => kv.Key.RealAppID));
+					appIDs.IntersectWith(inventorySets.Where(kv => kv.Value.Count >= MinCardsPerBadge).Select(kv => kv.Key.RealAppID));
 
 					if (appIDs.Count == 0) {
 						return;

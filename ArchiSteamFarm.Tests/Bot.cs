@@ -51,6 +51,87 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[TestMethod]
+		public void MaxItemsBarelyEnoughForOneSet() {
+			const uint relevantAppID = 42;
+
+			Dictionary<uint, byte> itemsPerSet = new() {
+				{ relevantAppID, ArchiSteamFarm.Bot.MinCardsPerBadge },
+				{ 43, ArchiSteamFarm.Bot.MinCardsPerBadge + 1 }
+			};
+
+			HashSet<Steam.Asset> items = new();
+
+			foreach ((uint appID, byte cards) in itemsPerSet) {
+				for (byte i = 1; i <= cards; i++) {
+					items.Add(CreateCard(i, appID));
+				}
+			}
+
+			HashSet<Steam.Asset> itemsToSend = GetItemsForFullBadge(items, itemsPerSet, ArchiSteamFarm.Bot.MinCardsPerBadge);
+
+			Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult = items.Where(item => item.RealAppID == relevantAppID)
+				.GroupBy(item => (item.RealAppID, item.ContextID, item.ClassID))
+				.ToDictionary(grouping => grouping.Key, grouping => (uint) grouping.Sum(item => item.Amount));
+
+			AssertResultMatchesExpectation(expectedResult, itemsToSend);
+		}
+
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
+		public void MaxItemsTooSmall() {
+			const uint appID = 42;
+
+			HashSet<Steam.Asset> items = new() {
+				CreateCard(1, appID),
+				CreateCard(2, appID)
+			};
+
+			GetItemsForFullBadge(items, 2, appID, ArchiSteamFarm.Bot.MinCardsPerBadge - 1);
+
+			Assert.Fail();
+		}
+
+		[TestMethod]
+		public void TooManyCardsForSingleTrade() {
+			const uint appID = 42;
+
+			HashSet<Steam.Asset> items = new();
+
+			for (byte i = 0; i < ArchiSteamFarm.Trading.MaxItemsPerTrade; i++) {
+				items.Add(CreateCard(1, appID));
+				items.Add(CreateCard(2, appID));
+			}
+
+			HashSet<Steam.Asset> itemsToSend = GetItemsForFullBadge(items, 2, appID);
+
+			Assert.IsTrue(itemsToSend.Count <= ArchiSteamFarm.Trading.MaxItemsPerTrade);
+		}
+
+		[TestMethod]
+		public void TooManyCardsForSingleTradeMultipleAppIDs() {
+			const uint appID0 = 42;
+			const uint appID1 = 43;
+
+			HashSet<Steam.Asset> items = new();
+
+			for (byte i = 0; i < 100; i++) {
+				items.Add(CreateCard(1, appID0));
+				items.Add(CreateCard(2, appID0));
+				items.Add(CreateCard(1, appID1));
+				items.Add(CreateCard(2, appID1));
+			}
+
+			Dictionary<uint, byte> itemsPerSet = new() {
+				{ appID0, 2 },
+				{ appID1, 2 }
+			};
+
+			HashSet<Steam.Asset> itemsToSend = GetItemsForFullBadge(items, itemsPerSet);
+
+			Assert.IsTrue(itemsToSend.Count <= ArchiSteamFarm.Trading.MaxItemsPerTrade);
+		}
+
+		[TestMethod]
 		public void MultipleSets() {
 			const uint appID = 42;
 
@@ -419,12 +500,12 @@ namespace ArchiSteamFarm.Tests {
 
 		private static Steam.Asset CreateCard(ulong classID, uint realAppID, uint amount = 1, Steam.Asset.EType type = Steam.Asset.EType.TradingCard, Steam.Asset.ERarity rarity = Steam.Asset.ERarity.Common) => new(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, classID, amount, realAppID: realAppID, type: type, rarity: rarity);
 
-		private static HashSet<Steam.Asset> GetItemsForFullBadge(IReadOnlyCollection<Steam.Asset> inventory, byte cardsPerSet, uint appID) => GetItemsForFullBadge(inventory, new Dictionary<uint, byte> { { appID, cardsPerSet } });
+		private static HashSet<Steam.Asset> GetItemsForFullBadge(IReadOnlyCollection<Steam.Asset> inventory, byte cardsPerSet, uint appID, ushort maxItems = ArchiSteamFarm.Trading.MaxItemsPerTrade) => GetItemsForFullBadge(inventory, new Dictionary<uint, byte> { { appID, cardsPerSet } }, maxItems);
 
-		private static HashSet<Steam.Asset> GetItemsForFullBadge(IReadOnlyCollection<Steam.Asset> inventory, IDictionary<uint, byte> cardsPerSet) {
+		private static HashSet<Steam.Asset> GetItemsForFullBadge(IReadOnlyCollection<Steam.Asset> inventory, IDictionary<uint, byte> cardsPerSet, ushort maxItems = ArchiSteamFarm.Trading.MaxItemsPerTrade) {
 			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), List<uint>> inventorySets = ArchiSteamFarm.Trading.GetInventorySets(inventory);
 
-			return ArchiSteamFarm.Bot.GetItemsForFullSets(inventory, inventorySets.ToDictionary(kv => kv.Key, kv => (SetsToExtract: inventorySets[kv.Key][0], cardsPerSet[kv.Key.RealAppID]))).ToHashSet();
+			return ArchiSteamFarm.Bot.GetItemsForFullSets(inventory, inventorySets.ToDictionary(kv => kv.Key, kv => (SetsToExtract: inventorySets[kv.Key][0], cardsPerSet[kv.Key.RealAppID])), maxItems).ToHashSet();
 		}
 	}
 }
