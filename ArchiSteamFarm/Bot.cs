@@ -518,7 +518,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(amountsToExtract));
 			}
 
-			if (maxItems < 5) {
+			if (maxItems < MinimumCardsPerBadge) {
 				throw new ArgumentOutOfRangeException(nameof(maxItems));
 			}
 
