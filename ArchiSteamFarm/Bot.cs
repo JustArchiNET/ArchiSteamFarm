@@ -514,7 +514,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(inventory));
 			}
 
-			if ((amountsToExtract == null) || (amountsToExtract.Count == 0) || amountsToExtract.Any(kv => (kv.Value.ItemsPerSet < MinCardsPerBadge) || (kv.Value.SetsToExtract == 0))) {
+			if ((amountsToExtract == null) || (amountsToExtract.Count == 0) || amountsToExtract.Any(kv => kv.Value.SetsToExtract == 0)) {
 				throw new ArgumentNullException(nameof(amountsToExtract));
 			}
 
