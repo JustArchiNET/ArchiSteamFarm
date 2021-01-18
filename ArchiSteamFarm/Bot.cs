@@ -538,17 +538,17 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				byte maxSetsAllowed = (byte) (maxItems - result.Count);
-				maxSetsAllowed -= (byte) (maxSetsAllowed % itemsPerSet);
+				ushort maxSetsAllowed = (ushort) (maxItems - result.Count);
+				maxSetsAllowed -= (ushort) (maxSetsAllowed % itemsPerSet);
 				maxSetsAllowed /= itemsPerSet;
-				byte realSetsToExtract = (byte) Math.Min(setsToExtract, maxSetsAllowed);
+				ushort realSetsToExtract = (ushort) Math.Min(setsToExtract, maxSetsAllowed);
 
 				if (realSetsToExtract == 0) {
 					break;
 				}
 
 				foreach (HashSet<Steam.Asset> itemsOfClass in itemsPerClassID.Values) {
-					byte classRemaining = realSetsToExtract;
+					ushort classRemaining = realSetsToExtract;
 
 					foreach (Steam.Asset item in itemsOfClass.TakeWhile(_ => classRemaining > 0)) {
 						if (item.Amount > classRemaining) {
