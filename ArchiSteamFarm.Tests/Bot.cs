@@ -62,7 +62,7 @@ namespace ArchiSteamFarm.Tests {
 			HashSet<Steam.Asset> items = new();
 
 			foreach ((uint appID, byte cards) in itemsPerSet) {
-				for (byte i = 1; i <= cards; ++i) {
+				for (byte i = 1; i <= cards; i++) {
 					items.Add(CreateCard(i, appID));
 				}
 			}
