@@ -382,7 +382,7 @@ namespace ArchiSteamFarm {
 			await StartFarming().ConfigureAwait(false);
 		}
 
-		private async Task CheckPage(IDocument htmlDocument, ConcurrentHashSet<uint> parsedAppIDs) {
+		private async Task CheckPage(IDocument htmlDocument, ISet<uint> parsedAppIDs) {
 			if (htmlDocument == null) {
 				throw new ArgumentNullException(nameof(htmlDocument));
 			}
@@ -705,7 +705,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async Task CheckPage(byte page, ConcurrentHashSet<uint> parsedAppIDs) {
+		private async Task CheckPage(byte page, ISet<uint> parsedAppIDs) {
 			if (page == 0) {
 				throw new ArgumentOutOfRangeException(nameof(page));
 			}
