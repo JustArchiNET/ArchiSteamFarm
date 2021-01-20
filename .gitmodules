@@ -1,6 +1,8 @@
 [submodule "ASF-ui"]
 	path = ASF-ui
 	url = https://github.com/JustArchiNET/ASF-ui.git
+	branch = main
 [submodule "wiki"]
 	path = wiki
 	url = https://github.com/JustArchiNET/ArchiSteamFarm.wiki.git
+	branch = main

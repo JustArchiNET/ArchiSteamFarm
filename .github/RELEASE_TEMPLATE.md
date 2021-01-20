@@ -6,7 +6,7 @@
 
 ### Changelog
 
-This is automated GitHub deployment, human-readable changelog should be available soon. In the meantime please refer to **[GitHub commits](https://github.com/JustArchiNET/ArchiSteamFarm/commits/master)**.
+This is automated GitHub deployment, human-readable changelog should be available soon. In the meantime please refer to **[GitHub commits](https://github.com/JustArchiNET/ArchiSteamFarm/commits/main)**.
 
 ---
 

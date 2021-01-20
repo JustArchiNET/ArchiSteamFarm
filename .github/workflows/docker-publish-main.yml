@@ -1,12 +1,12 @@
-name: ASF-docker-publish-master
+name: ASF-docker-publish-main
 
 on:
   push:
     branches:
-    - master
+    - main
 
 env:
-  TAG: master
+  TAG: main
 
 jobs:
   main:
