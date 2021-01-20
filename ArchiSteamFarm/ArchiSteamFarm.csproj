@@ -15,7 +15,7 @@
     <PackageReference Include="Markdig.Signed" Version="0.23.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Nito.AsyncEx.Coordination" Version="5.1.0" />
-    <PackageReference Include="NLog" Version="4.7.6" />
+    <PackageReference Include="NLog" Version="4.7.7" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.10.0" />
     <PackageReference Include="SteamKit2" Version="2.3.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
