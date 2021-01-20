@@ -5,4 +5,4 @@
 [submodule "wiki"]
 	path = wiki
 	url = https://github.com/JustArchiNET/ArchiSteamFarm.wiki.git
-	branch = main
+	branch = master

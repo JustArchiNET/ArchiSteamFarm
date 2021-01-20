@@ -21,8 +21,8 @@ jobs:
 
         cd wiki
 
-        git fetch --depth=1 origin main
-        git reset --hard origin/main
+        git fetch --depth=1 origin master
+        git reset --hard origin/master
 
     - name: Download latest translations from Crowdin
       uses: crowdin/github-action@1.0.9
@@ -57,7 +57,7 @@ jobs:
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: ${{ github.ref }}
+        branch: master
         directory: wiki
         repository: ${{ github.repository }}.wiki
 
