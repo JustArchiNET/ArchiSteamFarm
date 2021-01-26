@@ -10,6 +10,8 @@ assignees: ''
 <!--
 I fully read and understood contributing guidelines of ASF available under https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/.github/CONTRIBUTING.md and I believe that my issue is valid - it requires a response from ASF development team, and not ASF support.
 
+ASF GITHUB ISSUES IS NOT A PROPER PLACE FOR ANY TECHNICAL SUPPORT RELATED TO USING THE PROGRAM.
+
 I UNDERSTAND THAT IF MY ISSUE IS NOT MEETING CONTRIBUTING GUIDELINES SPECIFIED ABOVE, ESPECIALLY IF IT'S A QUESTION OR TECHNICAL ISSUE THAT IS NOT RELATED TO ASF DEVELOPMENT IN ANY WAY, THEN IT WILL BE CLOSED AND LEFT UNANSWERED.
 
 Feel free to remove our notice and fill the template below with your details.
