@@ -456,7 +456,7 @@ StackTrace:
     <value>Trade offer sent successfully!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
-    <value>You can't send trade to yourself!</value>
+    <value>You can't send a trade to yourself!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>This bot doesn't have ASF 2FA enabled! Did you forget to import your authenticator as ASF 2FA?</value>
@@ -567,7 +567,7 @@ StackTrace:
     <value>Your provided CurrentCulture is invalid, ASF will keep running with the default one!</value>
   </data>
   <data name="TranslationIncomplete" xml:space="preserve">
-    <value>ASF will attempt to use your preferred {0} culture, but translation in that language was completed only in {1}. Perhaps you could help us improve ASF translation for your language?</value>
+    <value>ASF will attempt to use your preferred {0} culture, but translation into that language is only {1} complete. Perhaps you could help us improve the ASF translation for your language?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
   <data name="IdlingGameNotPossible" xml:space="preserve">
@@ -599,7 +599,7 @@ StackTrace:
     <value>Access denied!</value>
   </data>
   <data name="WarningPreReleaseVersion" xml:space="preserve">
-    <value>You're using a version that is newer than latest released version for your update channel. Please note that pre-release versions are dedicated to users who know how to report bugs, deal with issues and give feedback - no technical support will be given.</value>
+    <value>You're using a version that is newer than the latest released version for your update channel. Please note that pre-release versions are meant for users who know how to report bugs, deal with issues and give feedback - no technical support will be given.</value>
   </data>
   <data name="BotStats" xml:space="preserve">
     <value>Current memory usage: {0} MB.
@@ -678,7 +678,7 @@ Process uptime: {1}</value>
     <value>Nothing found!</value>
   </data>
   <data name="PluginsWarning" xml:space="preserve">
-    <value>You've loaded one or more of custom plugins into the ASF. Since we're unable to offer a support for modded setups, please reach the appropriate developers of the plugins that you decided to use in case of any issues.</value>
+    <value>You've loaded one or multiple custom plugins into ASF. Since we're unable to offer support for modded setups, please contact the appropriate developers of the plugins that you decided to use in case of any issues.</value>
   </data>
   <data name="PleaseWait" xml:space="preserve">
     <value>Please wait...</value>
@@ -737,7 +737,7 @@ Process uptime: {1}</value>
     <comment>{0} will be replaced by generic result of various functions that use this string</comment>
   </data>
   <data name="WarningUnsupportedEnvironment" xml:space="preserve">
-    <value>You're attempting to run {0} variant of ASF in unsupported environment: {1}. Supply --ignore-unsupported-environment argument if you really know what you're doing.</value>
+    <value>You're attempting to run {0} variant of ASF in an unsupported environment: {1}. Supply --ignore-unsupported-environment argument if you really know what you're doing.</value>
   </data>
   <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
     <value>Unknown command-line argument: {0}</value>
