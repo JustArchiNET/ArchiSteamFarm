@@ -455,7 +455,7 @@ Trazo de pila:
     <value>¡Oferta de intercambio enviada con éxito!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
-    <value>¡No puedes enviarte una petición de intercambio a ti mismo!</value>
+    <value>¡No puedes enviarte un intercambio a ti mismo!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>¡Este bot no tiene ASF 2FA habilitado! ¿Olvidaste importar el autenticador como ASF 2FA?</value>
@@ -566,7 +566,7 @@ Trazo de pila:
     <value>El CurrentCulture proporcionado no es válido, ¡ASF seguirá funcionando con el predeterminado!</value>
   </data>
   <data name="TranslationIncomplete" xml:space="preserve">
-    <value>ASF intentará utilizar tu idioma {0}, pero la traducción en este idioma está completa sólo en un {1}. ¿Tal vez podrías ayudarnos a mejorar la traducción de ASF para tu idioma?</value>
+    <value>ASF intentará utilizar tu idioma {0}, pero la traducción en este idioma solo está completa en un {1}. ¿Tal vez podrías ayudarnos a mejorar la traducción de ASF para tu idioma?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
   <data name="IdlingGameNotPossible" xml:space="preserve">
@@ -598,7 +598,7 @@ Trazo de pila:
     <value>¡Acceso denegado!</value>
   </data>
   <data name="WarningPreReleaseVersion" xml:space="preserve">
-    <value>Está utilizando una versión más reciente que la última versión publicada para su canal de actualización. Por favor, tenga en cuenta que las versiones preliminares están dedicadas a usuarios que saben cómo reportar errores, tratar con problemas y dar sus comentarios - no se dará soporte técnico.</value>
+    <value>Está utilizando una versión más reciente que la última versión publicada para su canal de actualizaciones. Por favor, tenga en cuenta que las versiones preliminares están destinadas a usuarios que saben cómo reportar errores, tratar con problemas y proporcionar comentarios - no se dará soporte técnico.</value>
   </data>
   <data name="BotStats" xml:space="preserve">
     <value>Uso de memoria actual: {0} MB.
@@ -677,7 +677,7 @@ Tiempo de actividad del proceso: {1}</value>
     <value>¡No se encontró nada!</value>
   </data>
   <data name="PluginsWarning" xml:space="preserve">
-    <value>Has cargado uno o más plugins personalizados en el ASF. Ya que no podemos ofrecer soporte a configuraciones alteradas, por favor, consulte a los desarrolladores apropiados de los plugins que has decidido usar en caso de que tengas problemas.</value>
+    <value>Has cargado uno o más plugins personalizados en ASF. Ya que no podemos ofrecer soporte a configuraciones modificadas, por favor, contacta a los desarrolladores de los plugins que decidiste usar en caso de cualquier problema.</value>
   </data>
   <data name="PleaseWait" xml:space="preserve">
     <value>Por favor espera...</value>

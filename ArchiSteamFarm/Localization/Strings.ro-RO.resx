@@ -455,9 +455,7 @@ StackTrace:
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Oferta de schimb a fost trimisă cu succes!</value>
   </data>
-  <data name="BotSendingTradeToYourself" xml:space="preserve">
-    <value>Nu poți să îți trimiți ție un schimb!</value>
-  </data>
+  
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Acest bot nu are ASF 2FA activat! Ai uitat să imporți autentificatorul ca ASF 2FA?</value>
   </data>
@@ -566,10 +564,7 @@ StackTrace:
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>CurrentCulture furnizată de tine nu este validă, ASF va continua să ruleze cu cea implicită!</value>
   </data>
-  <data name="TranslationIncomplete" xml:space="preserve">
-    <value>ASF va încerca să folosească cultura {0} preferată de tine, dar traducerea în această limbă a fost completată doar în proporție de {1}. Poate că ai putea ajuta la îmbunatățirea traducerii ASF pentru limba ta?</value>
-    <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
-  </data>
+  
   <data name="IdlingGameNotPossible" xml:space="preserve">
     <value>Farmatul {0} ({1}) este dezactivat temporar, deoarece ASF nu este capabil de a juca acest joc în acest moment.</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
@@ -598,9 +593,7 @@ StackTrace:
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Acces interzis!</value>
   </data>
-  <data name="WarningPreReleaseVersion" xml:space="preserve">
-    <value>Folosești o versiune care este mai nouă față de ultima versiune lansată pentru canalul tău de actualizare. Te rugăm să reții că versiunile preliminare sunt dedicate utilizatorilor care știu cum să raporteze defecțiuni, să abordeze problemele și să ofere feedback - nu va fi oferit suport tehnic.</value>
-  </data>
+  
   <data name="BotStats" xml:space="preserve">
     <value>Utilizare curentă a memoriei: {0} MB.
 Proces: {1}</value>
@@ -677,9 +670,7 @@ Proces: {1}</value>
   <data name="NothingFound" xml:space="preserve">
     <value>Nimic găsit!</value>
   </data>
-  <data name="PluginsWarning" xml:space="preserve">
-    <value>Ai încărcat unul sau mai multe plugin-uri personalizate în ASF. Deoarece nu putem oferi suport pentru configurări modificate, vă rugăm să contactați dezvoltatorii corespunzători ai plugin-urilor pe care ați decis să le utilizați în caz de probleme.</value>
-  </data>
+  
   <data name="PleaseWait" xml:space="preserve">
     <value>Vă rugăm așteptați...</value>
   </data>
@@ -736,9 +727,7 @@ Proces: {1}</value>
     <value>Rezultate: {0}</value>
     <comment>{0} will be replaced by generic result of various functions that use this string</comment>
   </data>
-  <data name="WarningUnsupportedEnvironment" xml:space="preserve">
-    <value>Încercaţi să rulaţi {0} variantă ASF în mediu nesuportat: {1}. Folosiţi argumentul --ignore-unsupported-environment dacă ştiţi cu adevărat ce faceţi.</value>
-  </data>
+  
   <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
     <value>Argument necunoscut de comandă-linie: {0}</value>
   </data>

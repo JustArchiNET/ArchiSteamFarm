@@ -455,9 +455,7 @@
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Обмін успішно надіслано!</value>
   </data>
-  <data name="BotSendingTradeToYourself" xml:space="preserve">
-    <value>Неможливо відправити обмін самому собі!</value>
-  </data>
+  
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Цей бот не має включеного ASF 2FA! Забули імпортувати автентифікатор у ASF 2FA?</value>
   </data>
@@ -566,10 +564,7 @@
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>Обраний вами CurrentCulture невірний, ASF буде працювати згідно з базовим налаштуванням!</value>
   </data>
-  <data name="TranslationIncomplete" xml:space="preserve">
-    <value>ASF намагатиметься використовувати обрану мову {0}, але переклад цією мову завершено лише на {1}. Можливо ви б змогли допомогти в перекладі ASF вашою мовою?</value>
-    <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
-  </data>
+  
   <data name="IdlingGameNotPossible" xml:space="preserve">
     <value>Обробленная {0} ({1}) тимчасово відключено, бо ASF не в змозі зараз запустити цю гру.</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
@@ -598,9 +593,7 @@
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Доступ заборонено!</value>
   </data>
-  <data name="WarningPreReleaseVersion" xml:space="preserve">
-    <value>Ви користуєтеся версією, яка новіша за останню версію у цьому каналі оновлення. Будь ласка, зверніть увагу, що підготовчі версії призначені для користувачів які вміють доповідати про помилки, вирішувати питання та надавати зворотній зв'язок - технічна підтримка не надається.</value>
-  </data>
+  
   <data name="BotStats" xml:space="preserve">
     <value>Поточне використання пам'яті: {0} МБ.
 Час роботи: {1}</value>
@@ -677,9 +670,7 @@
   <data name="NothingFound" xml:space="preserve">
     <value>Нічого не знайдено!</value>
   </data>
-  <data name="PluginsWarning" xml:space="preserve">
-    <value>Ви завантажили до ASF один чи більше плаґінів. Оскільки ми не в змозі надавати підтримку для модифікованих конфігурацій, будь ласка у разі якихось проблем звертайтеся до розробників відповідного плаґіну.</value>
-  </data>
+  
   <data name="PleaseWait" xml:space="preserve">
     <value>Будь ласка, зачекайте...</value>
   </data>
@@ -736,9 +727,7 @@
     <value>Результат: {0}</value>
     <comment>{0} will be replaced by generic result of various functions that use this string</comment>
   </data>
-  <data name="WarningUnsupportedEnvironment" xml:space="preserve">
-    <value>Ви намагаєтеся запустити ASF у варіанті {0} у непідтримуваному середовищі: {1}. Скористуйтеся аргументом --ignore-unsupported-environment якщо ви справді розумієте, що робите.</value>
-  </data>
+  
   <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
     <value>Невідомий аргумент командного рядка: {0}</value>
   </data>

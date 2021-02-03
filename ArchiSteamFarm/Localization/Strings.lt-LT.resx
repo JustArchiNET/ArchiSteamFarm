@@ -455,9 +455,7 @@ StackTrace:
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Mainai išsiųsti sėkmingai!</value>
   </data>
-  <data name="BotSendingTradeToYourself" xml:space="preserve">
-    <value>Jūs negalite siųsti mainų prašymo sau!</value>
-  </data>
+  
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Šis botas neturi įjungto ASF 2FA! Ar jūs pamiršote importuoti savo autentifikatorių kaip ASF 2FA?</value>
   </data>
@@ -566,10 +564,7 @@ StackTrace:
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>Jūsų pateikta CurrentCulture yra negaliojanti, ASF toliau veiks su numatytąja!</value>
   </data>
-  <data name="TranslationIncomplete" xml:space="preserve">
-    <value>ASF bandys naudoti jūsų pageidaujamą {0} lokalę, tačiau vertimas į tą kalba buvo užbaigtas tik {1}. Galbūt jūs galėtumėte mums padėti pagerinti ASF vertimą į šią kalbą?</value>
-    <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
-  </data>
+  
   <data name="IdlingGameNotPossible" xml:space="preserve">
     <value>Kortelių rinkimas iš {0} ({1}) laikinai sustabdytas, nes ASF šiuo momentu neturi galimybės paleisti to žaidimo.</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
@@ -598,9 +593,7 @@ StackTrace:
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Prieiga negalima!</value>
   </data>
-  <data name="WarningPreReleaseVersion" xml:space="preserve">
-    <value>Jūs naudojate versija kuri yra naujesnė nei paskutinė išleista versija jūsų naujinimo kanale. Atkreipkite dėmesį, kad išankstinio išleidimo versija yra skirta vartotojams, kurie žino, kaip pranešti apie klaidas, problemas - techninė parama nebus suteikiama.</value>
-  </data>
+  
   <data name="BotStats" xml:space="preserve">
     <value>Dabartinis atminties naudojimas: {0} MB.
 Proceso veikimo laikas: {1}</value>
@@ -677,9 +670,7 @@ Proceso veikimo laikas: {1}</value>
   <data name="NothingFound" xml:space="preserve">
     <value>Nieko nerasta!</value>
   </data>
-  <data name="PluginsWarning" xml:space="preserve">
-    <value>Jūs užkrovėte vieną ar daugiau trečiųjų šalių papildinių į ASF. Kadangi mes negalime teikti pagalbos modifikuotoms sąrankoms, kilus problemoms prašome kreiptis į jūsų naudojamų papildinių kūrėjus.</value>
-  </data>
+  
   <data name="PleaseWait" xml:space="preserve">
     <value>Prašome palaukti...</value>
   </data>
@@ -736,9 +727,7 @@ Proceso veikimo laikas: {1}</value>
     <value>Rezultatas: {0}</value>
     <comment>{0} will be replaced by generic result of various functions that use this string</comment>
   </data>
-  <data name="WarningUnsupportedEnvironment" xml:space="preserve">
-    <value>Jūs bandote paleisti {0} ASF versija, kuri yra nepalaikomoje aplinkoje: {1} Papildymas - ignoruokite-nepalaikomos-aplinkos argumentą, jeigu tikrai žinote ką darote.</value>
-  </data>
+  
   <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
     <value>Nežinomas komandų-eilutės argumentas: {0}</value>
   </data>

@@ -454,9 +454,7 @@ StackTrace:
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Ruilaanbod succesvol verzonden!</value>
   </data>
-  <data name="BotSendingTradeToYourself" xml:space="preserve">
-    <value>Je kan jezelf geen ruil aanbieden!</value>
-  </data>
+  
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Deze bot heeft ASF 2FA nog niet ingeschakeld! Ben je vergeten om je authenticator als ASF 2FA te importeren?</value>
   </data>
@@ -565,10 +563,7 @@ StackTrace:
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>De door jou ingevoerde CurrentCulture is ongeldig. ASF zal de standaardtaal blijven gebruiken!</value>
   </data>
-  <data name="TranslationIncomplete" xml:space="preserve">
-    <value>ASF zal de {0} taalmodule gebruiken. De vertaling, inclusief de Wiki, is {1} compleet. Misschien kun je ons helpen om ASF te vertalen in jouw taal?</value>
-    <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
-  </data>
+  
   <data name="IdlingGameNotPossible" xml:space="preserve">
     <value>Farmen {0} ({1}) is tijdelijk uitgeschakeld, omdat ASF momenteel niet in staat is om dit spel te spelen.</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
@@ -597,9 +592,7 @@ StackTrace:
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Toegang geweigerd!</value>
   </data>
-  <data name="WarningPreReleaseVersion" xml:space="preserve">
-    <value>Je gebruikt een nieuwere versie dan de laatste versie van je update kanaal. Hou er rekening mee dat pre-release versies alleen geschikt zijn voor gebruikers die weten hoe ze bugs moeten rapporteren, kunnen omgaan met problemen en feedback kunnen geven. Er wordt geen technische ondersteuning geboden.</value>
-  </data>
+  
   <data name="BotStats" xml:space="preserve">
     <value>Huidig geheugengebruik: {0} MB.
 Proces uptime: {1}</value>
@@ -676,9 +669,7 @@ Proces uptime: {1}</value>
   <data name="NothingFound" xml:space="preserve">
     <value>Niets gevonden!</value>
   </data>
-  <data name="PluginsWarning" xml:space="preserve">
-    <value>Je hebt een of meer aangepaste plugins geladen in ASF. Neem in geval van problemen contact op met de ontwikkelaars van deze plugins, aangezien we geen ondersteuning voor aangepaste instellingen kunnen bieden.</value>
-  </data>
+  
   <data name="PleaseWait" xml:space="preserve">
     <value>Een ogenblik geduld...</value>
   </data>

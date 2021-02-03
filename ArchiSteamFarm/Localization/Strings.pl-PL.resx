@@ -456,7 +456,7 @@ StackTrace:
     <value>Oferta wymiany została wysłana pomyślnie!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
-    <value>Nie możesz wysłać oferty do samego siebie!</value>
+    <value>Nie możesz wysłać oferty do siebie!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Ten bot nie ma ustawionego ASF 2FA! Być może zapomniałeś o zaimportowaniu swojego mobilnego tokena uwierzytelnienia jako ASF 2FA?</value>
@@ -567,7 +567,7 @@ StackTrace:
     <value>Twoja opcja CurrentCulture jest nieprawidłowa, ASF będzie działał z domyślnym ustawieniem!</value>
   </data>
   <data name="TranslationIncomplete" xml:space="preserve">
-    <value>ASF spróbuje użyć twojej preferowanej kultury {0}, ale tłumaczenie w tym języku zostało ukończone tylko w {1}. Być może mógłbyś pomóc nam w poprawieniu tłumaczenia ASF na Twój język?</value>
+    <value>ASF spróbuje użyć preferowanych ustawień regionalnych {0}, ale tłumaczenie na ten język jest tylko kompletne w {1}. Może pomożesz nam ulepszyć tłumaczenie ASF na Twój język?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
   <data name="IdlingGameNotPossible" xml:space="preserve">
@@ -599,7 +599,7 @@ StackTrace:
     <value>Odmowa dostępu!</value>
   </data>
   <data name="WarningPreReleaseVersion" xml:space="preserve">
-    <value>Używasz wersji, która jest nowsza niż aktualna wersja dostępna na Twoim kanale aktualizacyjnym. Pamiętaj, że wersje wstępne są przeznaczone dla użytkowników, którzy wiedzą jak zgłaszać błędy, rozwiązywać problemy i przesyłać opinie - nie świadczymy dla nich pomocy technicznej.</value>
+    <value>Używasz wersji, która jest nowsza niż ta dostępna na Twoim kanale aktualizacyjnym. Pamiętaj, że wersje wstępne są przeznaczone dla użytkowników, którzy wiedzą, jak zgłaszać błędy, rozwiązywać problemy i przesyłać opinie - nie świadczymy dla nich pomocy technicznej.</value>
   </data>
   <data name="BotStats" xml:space="preserve">
     <value>Bieżące użycie pamięci: {0} MB.
@@ -678,7 +678,7 @@ Czas procesu: {1}</value>
     <value>Nic nie znaleziono!</value>
   </data>
   <data name="PluginsWarning" xml:space="preserve">
-    <value>Uaktywniono jedną lub więcej niestandardowych wtyczek do ASF. Ponieważ nie jesteśmy w stanie zaoferować wsparcia dla zmodyfikowanych konfiguracji, skontaktuj się z odpowiednimi programistami wtyczek, z których zdecydowałeś się korzystać w przypadku jakichkolwiek problemów.</value>
+    <value>Uaktywniono jedną lub wiele niestandardowych wtyczek ASF. Ponieważ nie jesteśmy w stanie zaoferować wsparcia dla zmodyfikowanych konfiguracji, skontaktuj się z odpowiednimi programistami wtyczek, z których zdecydowałeś się korzystać, w przypadku jakichkolwiek problemów.</value>
   </data>
   <data name="PleaseWait" xml:space="preserve">
     <value>Proszę czekać...</value>

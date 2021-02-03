@@ -455,9 +455,7 @@ StackTrace:
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Nabídka k obchodování byla úspěšně odeslána!</value>
   </data>
-  <data name="BotSendingTradeToYourself" xml:space="preserve">
-    <value>Nemůžeš obchodovat sám se sebou!</value>
-  </data>
+  
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Tento bot nemá povoleno ASF 2FA. Nezapomněli jste svůj autentifikátor naimportovat jeho ASF 2FA?</value>
   </data>
@@ -566,10 +564,7 @@ StackTrace:
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>Váš zadaný CurrentCulture je neplatný, ASF bude spuštěný s výchozím.</value>
   </data>
-  <data name="TranslationIncomplete" xml:space="preserve">
-    <value>ASF se pokusí použít váš preferovaný jazyk {0}. Překlad tohoto jazyka je ale dokončen pouze z {1}. Možná chcete pomoci zlepšit překlad aplikace ASF pro váš jazyk?</value>
-    <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
-  </data>
+  
   <data name="IdlingGameNotPossible" xml:space="preserve">
     <value>Farmení {0} ({1}) je dočasně zablokováno, protože ASF právě nemůže danou hru spustit.</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
@@ -598,9 +593,7 @@ StackTrace:
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Přístup zamítnut.</value>
   </data>
-  <data name="WarningPreReleaseVersion" xml:space="preserve">
-    <value>Používáte verzi, která je novější než poslední vydaná verze pro váš kanál aktualizací. Vezměte prosím na vědomí, že verze před vydáním jsou určeny pro uživatele, kteří vědí, jak hlásit chyby, řešit problémy a poskytovat zpětnou vazbu - neposkytujeme pro ně žádnou technickou podporu.</value>
-  </data>
+  
   
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
     <value>Procházení fronty doporučení #{0}...</value>
@@ -673,9 +666,7 @@ StackTrace:
   <data name="NothingFound" xml:space="preserve">
     <value>Nic nenalezeno!</value>
   </data>
-  <data name="PluginsWarning" xml:space="preserve">
-    <value>Jeden nebo více vlastních pluginů bylo načteno do ASF. Jelikož nejsme schopni poskytnout podporu pro modifikované nastavení, prosím, v případě problémů kontaktujte příslušné vývojáře daných pluginů.</value>
-  </data>
+  
   <data name="PleaseWait" xml:space="preserve">
     <value>Čekejte prosím...</value>
   </data>

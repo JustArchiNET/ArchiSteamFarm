@@ -455,9 +455,7 @@
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>交易提案發送成功！</value>
   </data>
-  <data name="BotSendingTradeToYourself" xml:space="preserve">
-    <value>您無法發送交易給自己！</value>
-  </data>
+  
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>該機械人並未啟用 ASF 雙重驗證！您是否忘記將驗證器導入成 ASF 雙重驗證？</value>
   </data>
@@ -566,10 +564,7 @@
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>您提供的 CurrentCulture 無效，ASF 將以預設值繼續運行！</value>
   </data>
-  <data name="TranslationIncomplete" xml:space="preserve">
-    <value>ASF 將嘗試使用你的偏好語系 {0}，但該語言的翻譯僅完成了 {1}。也許您可以協助我們改善 ASF 的翻譯品質？</value>
-    <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
-  </data>
+  
   <data name="IdlingGameNotPossible" xml:space="preserve">
     <value>{0}（{1}）的掛卡被暫時禁用，因為 ASF 目前無法執行該遊戲。</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
@@ -598,9 +593,7 @@
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>訪問被拒！</value>
   </data>
-  <data name="WarningPreReleaseVersion" xml:space="preserve">
-    <value>您目前使用的版本高於最新的穩定版本。請注意：預發行版本專用於了解如何回報錯誤、處理問題並提供回饋的用戶——並不提供任何技術支援。</value>
-  </data>
+  
   
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
     <value>正在瀏覽 Steam 探索佇列 #{0}...</value>
@@ -673,9 +666,7 @@
   <data name="NothingFound" xml:space="preserve">
     <value>未找到任何內容！</value>
   </data>
-  <data name="PluginsWarning" xml:space="preserve">
-    <value>您已將一個或多個自訂外掛程式載入到 ASF 中。由於我們無法支援修改過的程序，如遭遇任何問題，請向相關外掛程式的開發者尋求協助。</value>
-  </data>
+  
   <data name="PleaseWait" xml:space="preserve">
     <value>請稍候……</value>
   </data>

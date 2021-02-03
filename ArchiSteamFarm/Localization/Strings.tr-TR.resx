@@ -455,9 +455,7 @@ Yığın izleme:
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Takas teklifi başarıyla gönderildi!</value>
   </data>
-  <data name="BotSendingTradeToYourself" xml:space="preserve">
-    <value>Kendinize takas teklifi gönderemezsiniz!</value>
-  </data>
+  
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Bu botta ASF 2-Adımlı-Doğrulama (2AD) etkin değil! Doğrulayıcınızı ASF 2AD olarak içe aktarmayı unuttunuz mu?</value>
   </data>
@@ -566,10 +564,7 @@ Yığın izleme:
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>Sağlanan CurrentCulture geçersiz, ASF varsayılan ile çalışmaya devam edecek!</value>
   </data>
-  <data name="TranslationIncomplete" xml:space="preserve">
-    <value>ASF tercih ettiğiniz {0} kültürünü kullanmaya çalışacak, ancak bu dildeki çeviri yalnızca {1} oranında tamamlanmış. Diliniz için ASF çevirisini geliştirmemize belki de yardımcı olabilirsiniz?</value>
-    <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
-  </data>
+  
   <data name="IdlingGameNotPossible" xml:space="preserve">
     <value>ASF oyunu şu anda oynayamadığından, {0} ({1}) düşürmesi geçici olarak devre dışı.</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
@@ -598,9 +593,7 @@ Yığın izleme:
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Erişim reddedildi!</value>
   </data>
-  <data name="WarningPreReleaseVersion" xml:space="preserve">
-    <value>Güncelleme kanalınız için yayınlanmış en son sürümden daha yeni bir sürüm kullanıyorsunuz. Lütfen ön yayın sürümlerinin, hata raporlamayı, sorunlarla başa çıkmayı ve geribildirim yapmayı bilen kişiler için olduğunu unutmayın. Teknik destek verilmeyecektir.</value>
-  </data>
+  
   <data name="BotStats" xml:space="preserve">
     <value>Geçerli bellek kullanımı: {0} MB.
 Süreç çalışma zamanı: {1}</value>
@@ -677,9 +670,7 @@ Süreç çalışma zamanı: {1}</value>
   <data name="NothingFound" xml:space="preserve">
     <value>Hiçbir şey bulunamadı!</value>
   </data>
-  <data name="PluginsWarning" xml:space="preserve">
-    <value>ASF'ye bir veya daha fazla özel eklenti yükledin. Modlu kurulumlar destek sunamayacağımız için, bir sorun olduğunda lütfen ilgili geliştiricilerle iletişime geç.</value>
-  </data>
+  
   <data name="PleaseWait" xml:space="preserve">
     <value>Lütfen bekleyin...</value>
   </data>
@@ -736,9 +727,7 @@ Süreç çalışma zamanı: {1}</value>
     <value>Sonuç: {0}</value>
     <comment>{0} will be replaced by generic result of various functions that use this string</comment>
   </data>
-  <data name="WarningUnsupportedEnvironment" xml:space="preserve">
-    <value>Desteklenmeyen ortamda {0} ASF varyantını çalıştırmaya çalışıyorsunuz: {1}. Ne yaptığınızı gerçekten biliyorsanız, --ignore-unsupported-environment argümanını sağlayın.</value>
-  </data>
+  
   <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
     <value>Bilinmeyen komut satırı bağımsız değişkeni: {0}</value>
   </data>
