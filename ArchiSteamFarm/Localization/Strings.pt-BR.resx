@@ -455,7 +455,9 @@ StackTrace:
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Proposta de troca enviada com sucesso!</value>
   </data>
-  
+  <data name="BotSendingTradeToYourself" xml:space="preserve">
+    <value>Você não pode enviar uma proposta de troca para você mesmo!</value>
+  </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Este bot não possui o ASF 2FA habilitado! Você se esqueceu de importar o autenticador como ASF 2FA?</value>
   </data>
