@@ -42,6 +42,9 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly ConcurrentHashSet<uint> IdlingPriorityAppIDs = new();
 
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly ConcurrentHashSet<uint> MatchActivelyBlacklistedAppIDs = new();
+
 		internal uint GamesToRedeemInBackgroundCount {
 			get {
 				lock (GamesToRedeemInBackground) {
