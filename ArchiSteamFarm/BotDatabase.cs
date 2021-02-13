@@ -103,12 +103,14 @@ namespace ArchiSteamFarm {
 			BlacklistedFromTradesSteamIDs.OnModified += OnObjectModified;
 			IdlingBlacklistedAppIDs.OnModified += OnObjectModified;
 			IdlingPriorityAppIDs.OnModified += OnObjectModified;
+			MatchActivelyBlacklistedAppIDs.OnModified += OnObjectModified;
 		}
 
 		public override void Dispose() {
 			BlacklistedFromTradesSteamIDs.OnModified -= OnObjectModified;
 			IdlingBlacklistedAppIDs.OnModified -= OnObjectModified;
 			IdlingPriorityAppIDs.OnModified -= OnObjectModified;
+			MatchActivelyBlacklistedAppIDs.OnModified -= OnObjectModified;
 
 			BackingMobileAuthenticator?.Dispose();
 
@@ -214,6 +216,7 @@ namespace ArchiSteamFarm {
 		public bool ShouldSerializeGamesToRedeemInBackground() => HasGamesToRedeemInBackground;
 		public bool ShouldSerializeIdlingBlacklistedAppIDs() => IdlingBlacklistedAppIDs.Count > 0;
 		public bool ShouldSerializeIdlingPriorityAppIDs() => IdlingPriorityAppIDs.Count > 0;
+		public bool ShouldSerializeMatchActivelyBlacklistedAppIDs() => MatchActivelyBlacklistedAppIDs.Count > 0;
 
 		// ReSharper restore UnusedMember.Global
 	}
