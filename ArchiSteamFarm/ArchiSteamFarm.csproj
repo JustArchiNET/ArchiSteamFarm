@@ -20,7 +20,7 @@
     <PackageReference Include="SteamKit2" Version="2.3.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.0.6" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.0.5" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.0.5" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.0.6" />
     <PackageReference Include="System.Composition" Version="5.0.1" />
     <PackageReference Include="System.Linq.Async" Version="5.0.0" />
   </ItemGroup>
