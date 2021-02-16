@@ -178,13 +178,13 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal async Task OnPICSChangesRestart([NotNull] Bot bot, uint currentChangeNumber) {
-			if (bot == null) {
-				throw new ArgumentNullException(nameof(bot));
-			}
-
+		internal async Task OnPICSChangesRestart(uint currentChangeNumber) {
 			if (currentChangeNumber == 0) {
 				throw new ArgumentOutOfRangeException(nameof(currentChangeNumber));
+			}
+
+			if (Bot.Bots == null) {
+				throw new InvalidOperationException(nameof(Bot.Bots));
 			}
 
 			if (currentChangeNumber <= LastChangeNumber) {
@@ -201,7 +201,7 @@ namespace ArchiSteamFarm {
 
 			LastChangeNumber = currentChangeNumber;
 
-			if (bot.OwnedPackageIDs.Count > 0) {
+			foreach (Bot bot in Bot.Bots.Values.Where(bot => bot.IsConnectedAndLoggedOn && !bot.OwnedPackageIDs.IsEmpty)) {
 				await RefreshPackages(bot, bot.OwnedPackageIDs.Keys.ToDictionary(packageID => packageID, _ => uint.MinValue)).ConfigureAwait(false);
 			}
 		}
