@@ -456,7 +456,7 @@ StackTrace:
     <value>Proposta de troca enviada com sucesso!</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
-    <value>Você não pode enviar uma proposta de troca para você mesmo!</value>
+    <value>Você não pode propor uma troca a si mesmo!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Este bot não possui o ASF 2FA habilitado! Você se esqueceu de importar o autenticador como ASF 2FA?</value>
@@ -480,11 +480,11 @@ StackTrace:
     <value>Reconectando...</value>
   </data>
   <data name="BotRedeem" xml:space="preserve">
-    <value>Key: {0} | Estado: {1}</value>
+    <value>Código: {0} | Estado: {1}</value>
     <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string</comment>
   </data>
   <data name="BotRedeemWithItems" xml:space="preserve">
-    <value>Key: {0} | Estado: {1} | Itens: {2}</value>
+    <value>Código: {0} | Estado: {1} | Itens: {2}</value>
     <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string, {2} will be replaced by list of key-value pairs, separated by a comma</comment>
   </data>
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
@@ -517,7 +517,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="UnusedKeys" xml:space="preserve">
-    <value>Keys não utilizadas: {0}</value>
+    <value>Códigos não ativados: {0}</value>
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
@@ -567,7 +567,7 @@ StackTrace:
     <value>O valor de CurrentCulture fornecido é inválido, o ASF continuará executando com o valor padrão!</value>
   </data>
   <data name="TranslationIncomplete" xml:space="preserve">
-    <value>O ASF tentará usar seu idioma {0} preferencial, mas a tradução para este idioma só está {1} concluída. Talvez você possa nos ajudar a melhorar a tradução do ASF para o seu idioma?</value>
+    <value>O ASF tentará usar o seu idioma preferido, {0}, mas a tradução para este idioma só está {1} concluída. Talvez você possa nos ajudar a melhorar a tradução do ASF para o seu idioma?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
   <data name="IdlingGameNotPossible" xml:space="preserve">
@@ -599,7 +599,7 @@ StackTrace:
     <value>Acesso negado!</value>
   </data>
   <data name="WarningPreReleaseVersion" xml:space="preserve">
-    <value>Você está usando uma versão que é mais nova que a última lançada para o seu canal de atualizações. Tenha em mente que versões de pré-lançamento são indicadas a usuários que sabem como relatar bugs, lidar com problemas e dar feedback - nenhum apoio técnico será fornecido.</value>
+    <value>Você está usando uma versão que é mais nova que a última lançada para o seu canal de atualizações. Tenha em mente que versões de pré-lançamento são dedicadas a usuários que sabem como relatar bugs, lidar com problemas e dar feedback - nenhum apoio técnico será fornecido.</value>
   </data>
   <data name="BotStats" xml:space="preserve">
     <value>Uso de memória atual: {0} MB.
@@ -648,11 +648,11 @@ Tempo de execução: {1}</value>
     <comment>{0} will be replaced by bot's level</comment>
   </data>
   <data name="ActivelyMatchingItems" xml:space="preserve">
-    <value>Correspondendo itens Steam, rodada #{0}...</value>
+    <value>Associando itens do Steam, {0}ª rodada...</value>
     <comment>{0} will be replaced by round number</comment>
   </data>
   <data name="DoneActivelyMatchingItems" xml:space="preserve">
-    <value>Itens Steam correspondidos, rodada #{0}.</value>
+    <value>Associação de itens do Steam concluída, {0}ª rodada.</value>
     <comment>{0} will be replaced by round number</comment>
   </data>
   <data name="ErrorAborted" xml:space="preserve">
@@ -678,7 +678,7 @@ Tempo de execução: {1}</value>
     <value>Nada encontrado!</value>
   </data>
   <data name="PluginsWarning" xml:space="preserve">
-    <value>Você carregou um ou mais plugins personalizados no ASF. Como não podemos oferecer suporte para configurações modificadas contate os desenvolvedores do plugin que você decidiu usar em caso de problemas.</value>
+    <value>Você carregou um ou mais plugins personalizados no ASF. Como não podemos oferecer suporte para configurações modificadas, você precisará entrar em contato com os desenvolvedores do plugin caso enfrente algum problema.</value>
   </data>
   <data name="PleaseWait" xml:space="preserve">
     <value>Aguarde...</value>
@@ -725,7 +725,7 @@ Tempo de execução: {1}</value>
     <value>A configuração IPC foi alterada!</value>
   </data>
   <data name="BotTradeOfferResult" xml:space="preserve">
-    <value>A oferta de troca {0} retornou o valor {1} devido às configurações: {2}.</value>
+    <value>A proposta de troca {0} retornou o valor {1} devido às configurações: {2}.</value>
     <comment>{0} will be replaced by trade offer ID (number), {1} will be replaced by internal ASF enum name, {2} will be replaced by technical reason why the trade was determined to be in this state</comment>
   </data>
   <data name="BotInvalidPasswordDuringLogin" xml:space="preserve">
@@ -743,6 +743,6 @@ Tempo de execução: {1}</value>
     <value>Argumento de linha de comando desconhecido: {0}</value>
   </data>
 <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
-    <value>Diretório da configuração não encontrado, abortando!</value>
+    <value>Diretório de configuração não encontrado, abortando!</value>
 </data>
 </root>
