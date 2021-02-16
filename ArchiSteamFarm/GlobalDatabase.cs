@@ -191,19 +191,21 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (!PackagesData.IsEmpty) {
-				PackagesData.Clear();
-			}
-
-			if (!PackagesAccessTokens.IsEmpty) {
-				PackagesAccessTokens.Clear();
-			}
-
 			LastChangeNumber = currentChangeNumber;
 
-			foreach (Bot bot in Bot.Bots.Values.Where(bot => bot.IsConnectedAndLoggedOn && !bot.OwnedPackageIDs.IsEmpty)) {
-				await RefreshPackages(bot, bot.OwnedPackageIDs.Keys.ToDictionary(packageID => packageID, _ => uint.MinValue)).ConfigureAwait(false);
+			Bot? refreshBot = Bot.Bots.Values.FirstOrDefault(bot => bot.IsConnectedAndLoggedOn);
+
+			if (refreshBot == null) {
+				return;
 			}
+
+			Dictionary<uint, uint> packageIDs = Bot.Bots.Values.SelectMany(bot => bot.OwnedPackageIDs.Keys).ToDictionary(packageID => packageID, _ => currentChangeNumber);
+
+			if (packageIDs.Count == 0) {
+				return;
+			}
+
+			await RefreshPackages(refreshBot, packageIDs).ConfigureAwait(false);
 		}
 
 		internal void RefreshPackageAccessTokens(IReadOnlyDictionary<uint, ulong> packageAccessTokens) {
@@ -237,7 +239,7 @@ namespace ArchiSteamFarm {
 			await PackagesRefreshSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				HashSet<uint> packageIDs = packages.Where(package => (package.Key != 0) && (!PackagesData.TryGetValue(package.Key, out (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs) packageData) || (packageData.ChangeNumber < package.Value))).Select(package => package.Key).ToHashSet();
+				HashSet<uint> packageIDs = packages.Where(package => (package.Key != 0) && (!PackagesData.TryGetValue(package.Key, out (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs) previousData) || (previousData.ChangeNumber < package.Value))).Select(package => package.Key).ToHashSet();
 
 				if (packageIDs.Count == 0) {
 					return;
