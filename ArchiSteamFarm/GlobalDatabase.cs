@@ -199,7 +199,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Dictionary<uint, uint> packageIDs = Bot.Bots.Values.SelectMany(bot => bot.OwnedPackageIDs.Keys).ToDictionary(packageID => packageID, _ => currentChangeNumber);
+			Dictionary<uint, uint> packageIDs = Bot.Bots.Values.SelectMany(bot => bot.OwnedPackageIDs.Keys).Distinct().ToDictionary(packageID => packageID, _ => currentChangeNumber);
 
 			if (packageIDs.Count == 0) {
 				return;
