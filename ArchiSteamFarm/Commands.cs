@@ -3299,7 +3299,7 @@ namespace ArchiSteamFarm {
 			// It'd make sense here to actually check return code of ArchiWebHandler.UnpackBooster(), but it lies most of the time | https://github.com/JustArchi/ArchiSteamFarm/issues/704
 			bool completeSuccess = true;
 
-			// It'd also make sense to run all of this in parallel, but it seems that Steam has a lot of problems with inventory-related parallel requests | https://steamcommunity.com/groups/ascfarm/discussions/1/3559414588264550284/
+			// It'd also make sense to run all of this in parallel, but it seems that Steam has a lot of problems with inventory-related parallel requests | https://steamcommunity.com/groups/archiasf/discussions/1/3559414588264550284/
 			try {
 				await foreach (Steam.Asset item in Bot.ArchiWebHandler.GetInventoryAsync().Where(item => item.Type == Steam.Asset.EType.BoosterPack).ConfigureAwait(false)) {
 					if (!await Bot.ArchiWebHandler.UnpackBooster(item.RealAppID, item.AssetID).ConfigureAwait(false)) {
