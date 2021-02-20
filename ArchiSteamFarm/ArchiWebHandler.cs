@@ -149,7 +149,7 @@ namespace ArchiSteamFarm {
 			ulong startAssetID = 0;
 
 			// We need to store asset IDs to make sure we won't get duplicate items
-			HashSet<ulong> assetIDs = new();
+			HashSet<ulong>? assetIDs = null;
 
 			while (true) {
 				await ASF.InventorySemaphore.WaitAsync().ConfigureAwait(false);
@@ -169,6 +169,8 @@ namespace ArchiSteamFarm {
 						// Empty inventory
 						yield break;
 					}
+
+					assetIDs ??= new HashSet<ulong>((int) response.Content.TotalInventoryCount);
 
 					if ((response.Content.Assets.Count == 0) || (response.Content.Descriptions.Count == 0)) {
 						throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response.Content.Assets) + " || " + nameof(response.Content.Descriptions)));
