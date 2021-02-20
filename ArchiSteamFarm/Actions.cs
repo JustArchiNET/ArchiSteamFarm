@@ -352,7 +352,7 @@ namespace ArchiSteamFarm {
 					TradingScheduled = false;
 				}
 
-				inventory = await Bot.ArchiWebHandler.GetInventoryAsync(Bot.SteamID, appID, contextID).Where(item => item.Tradable && filterFunction(item)).ToHashSetAsync().ConfigureAwait(false);
+				inventory = await Bot.ArchiWebHandler.GetInventoryAsync(appID: appID, contextID: contextID).Where(item => item.Tradable && filterFunction(item)).ToHashSetAsync().ConfigureAwait(false);
 			} catch (HttpRequestException e) {
 				Bot.ArchiLogger.LogGenericWarningException(e);
 
@@ -412,6 +412,10 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task AcceptDigitalGiftCards() {
+			if (!Bot.IsConnectedAndLoggedOn) {
+				return;
+			}
+
 			lock (GiftCardsSemaphore) {
 				if (ProcessingGiftsScheduled) {
 					return;
@@ -425,6 +429,10 @@ namespace ArchiSteamFarm {
 			try {
 				lock (GiftCardsSemaphore) {
 					ProcessingGiftsScheduled = false;
+				}
+
+				if (!Bot.IsConnectedAndLoggedOn) {
+					return;
 				}
 
 				HashSet<ulong>? giftCardIDs = await Bot.ArchiWebHandler.GetDigitalGiftCards().ConfigureAwait(false);
@@ -455,6 +463,10 @@ namespace ArchiSteamFarm {
 		internal async Task AcceptGuestPasses(IReadOnlyCollection<ulong> guestPassIDs) {
 			if ((guestPassIDs == null) || (guestPassIDs.Count == 0)) {
 				throw new ArgumentNullException(nameof(guestPassIDs));
+			}
+
+			if (!Bot.IsConnectedAndLoggedOn) {
+				return;
 			}
 
 			foreach (ulong guestPassID in guestPassIDs.Where(guestPassID => !HandledGifts.Contains(guestPassID))) {

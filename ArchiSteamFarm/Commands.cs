@@ -3301,7 +3301,7 @@ namespace ArchiSteamFarm {
 
 			// It'd also make sense to run all of this in parallel, but it seems that Steam has a lot of problems with inventory-related parallel requests | https://steamcommunity.com/groups/ascfarm/discussions/1/3559414588264550284/
 			try {
-				await foreach (Steam.Asset item in Bot.ArchiWebHandler.GetInventoryAsync(Bot.SteamID).Where(item => item.Type == Steam.Asset.EType.BoosterPack).ConfigureAwait(false)) {
+				await foreach (Steam.Asset item in Bot.ArchiWebHandler.GetInventoryAsync().Where(item => item.Type == Steam.Asset.EType.BoosterPack).ConfigureAwait(false)) {
 					if (!await Bot.ArchiWebHandler.UnpackBooster(item.RealAppID, item.AssetID).ConfigureAwait(false)) {
 						completeSuccess = false;
 					}
