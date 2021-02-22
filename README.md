@@ -2,7 +2,6 @@
 
 [![Build status (GitHub)](https://img.shields.io/github/workflow/status/JustArchiNET/ArchiSteamFarm/ASF-ci/main?label=GitHub&logo=github&maxAge=600)](https://github.com/JustArchiNET/ArchiSteamFarm/actions?query=workflow%3AASF-ci+branch%3Amain)
 [![Build status (AppVeyor)](https://img.shields.io/appveyor/ci/JustArchi/ArchiSteamFarm/main.svg?label=AppVeyor&logo=appveyor&maxAge=600)](https://ci.appveyor.com/project/JustArchi/ArchiSteamFarm)
-[![Build status (Travis)](https://img.shields.io/travis/com/JustArchiNET/ArchiSteamFarm/main.svg?label=Travis&logo=travis&maxAge=600)](https://travis-ci.com/JustArchiNET/ArchiSteamFarm)
 [![Build status (Docker)](https://img.shields.io/github/workflow/status/JustArchiNET/ArchiSteamFarm/ASF-docker-publish-main.svg?label=Docker&logo=docker&maxAge=600)](https://hub.docker.com/r/justarchi/archisteamfarm)
 [![Github last commit date](https://img.shields.io/github/last-commit/JustArchiNET/ArchiSteamFarm.svg?label=Updated&logo=github&maxAge=600)](https://github.com/JustArchiNET/ArchiSteamFarm/commits)
 [![License](https://img.shields.io/github/license/JustArchiNET/ArchiSteamFarm.svg?label=License&logo=apache&maxAge=2592000)](https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/LICENSE-2.0.txt)
