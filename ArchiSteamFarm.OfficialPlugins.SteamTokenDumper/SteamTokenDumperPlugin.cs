@@ -488,6 +488,12 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 					return;
 				}
 
+				if (response.Content.Data == null) {
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid), nameof(response.Content.Data));
+
+					return;
+				}
+
 				ASF.ArchiLogger.LogGenericInfo($"Data successfully submitted. Newly registered apps/subs/depots: {response.Content.Data.NewAppsCount}/{response.Content.Data.NewSubsCount}/{response.Content.Data.NewDepotsCount}.");
 
 				GlobalCache.UpdateSubmittedData(appTokens, packageTokens, depotKeys);
