@@ -488,6 +488,12 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 					return;
 				}
 
+				if (!response.Content.Success) {
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid), nameof(response.Content.Success));
+
+					return;
+				}
+
 				if (response.Content.Data == null) {
 					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid), nameof(response.Content.Data));
 
