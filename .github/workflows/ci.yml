@@ -36,7 +36,7 @@ jobs:
       run: dotnet --info
 
     - name: Setup Node.js with npm
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2
       with:
         node-version: ${{ env.NODE_JS_VERSION }}
 
@@ -70,7 +70,7 @@ jobs:
     - name: Upload latest strings for translation on Crowdin
       continue-on-error: true
       if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && startsWith(matrix.os, 'ubuntu-') }}
-      uses: crowdin/github-action@1.0.9
+      uses: crowdin/github-action@1.0.19
       with:
         crowdin_branch_name: main
         project_id: ${{ secrets.ASF_CROWDIN_PROJECT_ID }}

@@ -25,7 +25,7 @@ jobs:
         git reset --hard origin/master
 
     - name: Download latest translations from Crowdin
-      uses: crowdin/github-action@1.0.9
+      uses: crowdin/github-action@1.0.19
       with:
         upload_sources: false
         download_translations: true
@@ -34,8 +34,6 @@ jobs:
         crowdin_branch_name: main
         project_id: ${{ secrets.ASF_CROWDIN_PROJECT_ID }}
         token: ${{ secrets.ASF_CROWDIN_API_TOKEN }}
-      env:
-        GITHUB_TOKEN: 'not-used' # TODO: https://github.com/crowdin/github-action/pull/30
 
     - name: Commit the changes to wiki
       shell: sh
