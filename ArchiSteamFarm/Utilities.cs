@@ -208,7 +208,7 @@ namespace ArchiSteamFarm {
 				case < 0:
 					throw new ArgumentOutOfRangeException(nameof(maxValue));
 				case <= 1:
-					return maxValue;
+					return 0;
 				default:
 					lock (Random) {
 						return Random.Next(maxValue);
