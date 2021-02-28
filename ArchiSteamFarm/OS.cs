@@ -36,7 +36,7 @@ namespace ArchiSteamFarm {
 		// We need to keep this one assigned and not calculated on-demand
 		internal static readonly string ProcessFileName = Process.GetCurrentProcess().MainModule?.FileName ?? throw new InvalidOperationException(nameof(ProcessFileName));
 
-		internal static string Variant => RuntimeInformation.OSDescription.Trim();
+		internal static string Variant => RuntimeInformation.OSArchitecture + " " + RuntimeInformation.OSDescription.Trim();
 
 		private static Mutex? SingleInstance;
 
