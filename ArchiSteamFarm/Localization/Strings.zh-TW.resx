@@ -454,7 +454,9 @@
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>交易提案發送成功！</value>
   </data>
-  
+  <data name="BotSendingTradeToYourself" xml:space="preserve">
+    <value>你無法對自己發出交易請求！</value>
+  </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>BOT 並未啟用 ASF 兩步驟驗證！你是否忘記將驗證器匯入成 ASF 兩步驟驗證？</value>
   </data>
@@ -721,6 +723,10 @@
     <comment>{0} will be replaced by generic result of various functions that use this string</comment>
   </data>
   
-  
-
+  <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
+    <value>未知的命令行參數：{0}</value>
+  </data>
+<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>無法找到設定檔所在目錄，正在中止！</value>
+</data>
 </root>
