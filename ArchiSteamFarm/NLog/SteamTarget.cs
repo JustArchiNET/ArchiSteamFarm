@@ -84,7 +84,15 @@ namespace ArchiSteamFarm.NLog {
 				}
 			}
 
-			Task task = ChatGroupID == 0 ? SendPrivateMessage(message, bot) : SendGroupMessage(message, bot);
+			Task task;
+
+			if (ChatGroupID != 0) {
+				task = SendGroupMessage(message, bot);
+			} else if (bot?.SteamID != SteamID) {
+				task = SendPrivateMessage(message, bot);
+			} else {
+				return;
+			}
 
 			// TODO: Rewrite this into proper AsyncTaskTarget
 			task.Wait();
