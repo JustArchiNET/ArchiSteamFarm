@@ -55,7 +55,7 @@ namespace ArchiSteamFarm.NLog {
 		// Keeping date in default layout also doesn't make much sense (Steam offers that), so we remove it by default
 		public SteamTarget() => Layout = "${level:uppercase=true}|${logger}|${message}";
 
-		protected override async void Write(LogEventInfo logEvent) {
+		protected override void Write(LogEventInfo logEvent) {
 			if (logEvent == null) {
 				throw new ArgumentNullException(nameof(logEvent));
 			}
@@ -84,11 +84,10 @@ namespace ArchiSteamFarm.NLog {
 				}
 			}
 
-			if (ChatGroupID != 0) {
-				await SendGroupMessage(message, bot).ConfigureAwait(false);
-			} else if (bot?.SteamID != SteamID) {
-				await SendPrivateMessage(message, bot).ConfigureAwait(false);
-			}
+			Task task = ChatGroupID == 0 ? SendPrivateMessage(message, bot) : SendGroupMessage(message, bot);
+
+			// TODO: Rewrite this into proper AsyncTaskTarget
+			task.Wait();
 		}
 
 		private async Task SendGroupMessage(string message, Bot? bot = null) {
