@@ -23,6 +23,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using JetBrains.Annotations;
@@ -34,7 +35,7 @@ using NLog.Targets;
 namespace ArchiSteamFarm.NLog {
 	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 	[Target(TargetName)]
-	internal sealed class SteamTarget : TargetWithLayout {
+	internal sealed class SteamTarget : AsyncTaskTarget {
 		internal const string TargetName = "Steam";
 
 		// This is NLog config property, it must have public get() and set() capabilities
@@ -55,7 +56,7 @@ namespace ArchiSteamFarm.NLog {
 		// Keeping date in default layout also doesn't make much sense (Steam offers that), so we remove it by default
 		public SteamTarget() => Layout = "${level:uppercase=true}|${logger}|${message}";
 
-		protected override void Write(LogEventInfo logEvent) {
+		protected override async Task WriteAsyncTask(LogEventInfo logEvent, CancellationToken cancellationToken) {
 			if (logEvent == null) {
 				throw new ArgumentNullException(nameof(logEvent));
 			}
@@ -94,8 +95,7 @@ namespace ArchiSteamFarm.NLog {
 				return;
 			}
 
-			// TODO: Rewrite this into proper AsyncTaskTarget
-			task.Wait();
+			await task.ConfigureAwait(false);
 		}
 
 		private async Task SendGroupMessage(string message, Bot? bot = null) {
