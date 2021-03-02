@@ -99,11 +99,11 @@ jobs:
         }
 
     - name: Publish ArchiSteamFarm.OfficialPlugins.SteamTokenDumper for .NET Core
-      run: dotnet publish "${{ env.STEAM_TOKEN_DUMPER_NAME }}" -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" -o "out/${{ env.STEAM_TOKEN_DUMPER_NAME }}/${{ env.NET_CORE_VERSION }}" -p:UseAppHost=false --nologo
+      run: dotnet publish "${{ env.STEAM_TOKEN_DUMPER_NAME }}" -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" -o "out/${{ env.STEAM_TOKEN_DUMPER_NAME }}/${{ env.NET_CORE_VERSION }}" -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
 
     - name: Publish ArchiSteamFarm.OfficialPlugins.SteamTokenDumper for .NET Framework
       if: startsWith(matrix.os, 'windows-')
-      run: dotnet publish "${{ env.STEAM_TOKEN_DUMPER_NAME }}" -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_FRAMEWORK_VERSION }}" -o "out/${{ env.STEAM_TOKEN_DUMPER_NAME }}/${{ env.NET_FRAMEWORK_VERSION }}" -p:UseAppHost=false --nologo
+      run: dotnet publish "${{ env.STEAM_TOKEN_DUMPER_NAME }}" -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_FRAMEWORK_VERSION }}" -o "out/${{ env.STEAM_TOKEN_DUMPER_NAME }}/${{ env.NET_FRAMEWORK_VERSION }}" -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
 
     - name: Perform cleanup of ArchiSteamFarm in preparation for publishing
       run: dotnet clean ArchiSteamFarm -c "${{ env.CONFIGURATION }}" -p:UseAppHost=false --nologo
@@ -121,7 +121,7 @@ jobs:
 
         publish() {
             if [ "$1" = 'generic' ]; then
-                local variantArgs="-p:UseAppHost=false"
+                local variantArgs="-p:TargetLatestRuntimePatch=false -p:UseAppHost=false"
             else
                 local variantArgs="-p:PublishSingleFile=true -p:PublishTrimmed=true -r $1"
             fi
