@@ -192,7 +192,7 @@ jobs:
             }
 
             if ($variant -like 'generic*') {
-                $variantArgs = '-p:UseAppHost=false'
+                $variantArgs = '-p:TargetLatestRuntimePatch=false -p:UseAppHost=false'
             } else {
                 $variantArgs = '-p:PublishSingleFile=true', '-p:PublishTrimmed=true', '-r', "$variant"
             }
