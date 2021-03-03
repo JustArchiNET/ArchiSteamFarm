@@ -175,7 +175,7 @@ after_test:
     }
 
 
-    dotnet publish "$env:STEAM_TOKEN_DUMPER_NAME" -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -o "out/$env:STEAM_TOKEN_DUMPER_NAME/$env:NET_CORE_VERSION" -p:UseAppHost=false --nologo
+    dotnet publish "$env:STEAM_TOKEN_DUMPER_NAME" -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -o "out/$env:STEAM_TOKEN_DUMPER_NAME/$env:NET_CORE_VERSION" -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
 
 
     if ($LastExitCode -ne 0) {
@@ -183,7 +183,7 @@ after_test:
     }
 
 
-    dotnet publish "$env:STEAM_TOKEN_DUMPER_NAME" -c "$env:CONFIGURATION" -f "$env:NET_FRAMEWORK_VERSION" -o "out/$env:STEAM_TOKEN_DUMPER_NAME/$env:NET_FRAMEWORK_VERSION" -p:UseAppHost=false --nologo
+    dotnet publish "$env:STEAM_TOKEN_DUMPER_NAME" -c "$env:CONFIGURATION" -f "$env:NET_FRAMEWORK_VERSION" -o "out/$env:STEAM_TOKEN_DUMPER_NAME/$env:NET_FRAMEWORK_VERSION" -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
 
 
     if ($LastExitCode -ne 0) {
@@ -222,7 +222,7 @@ after_test:
         }
 
         if ($variant -like 'generic*') {
-            $variantArgs = '-p:UseAppHost=false'
+            $variantArgs = '-p:TargetLatestRuntimePatch=false', '-p:UseAppHost=false'
         } else {
             $variantArgs = '-p:PublishSingleFile=true', '-p:PublishTrimmed=true', '-r', "$variant"
         }
