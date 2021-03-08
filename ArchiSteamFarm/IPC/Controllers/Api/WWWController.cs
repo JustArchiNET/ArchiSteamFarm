@@ -20,10 +20,7 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using ArchiSteamFarm.IPC.Requests;
@@ -34,42 +31,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[Route("Api/WWW")]
 	public sealed class WWWController : ArchiController {
-		/// <summary>
-		///     Fetches files in given directory relative to WWW root.
-		/// </summary>
-		/// <remarks>
-		///     This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW endpoints as they can disappear and change anytime.
-		/// </remarks>
-		[HttpGet("Directory/{directory:required}")]
-		[ProducesResponseType(typeof(GenericResponse<IReadOnlyCollection<string>>), (int) HttpStatusCode.OK)]
-		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.InternalServerError)]
-		public ActionResult<GenericResponse> DirectoryGet(string directory) {
-			if (string.IsNullOrEmpty(directory)) {
-				throw new ArgumentNullException(directory);
-			}
-
-			string directoryPath = Path.Combine(ArchiKestrel.WebsiteDirectory, directory);
-
-			if (!Directory.Exists(directoryPath)) {
-				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, directory)));
-			}
-
-			string[] files;
-
-			try {
-				files = Directory.GetFiles(directoryPath);
-			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericException(e);
-
-				return StatusCode((int) HttpStatusCode.InternalServerError, new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorParsingObject, nameof(files)) + Environment.NewLine + e));
-			}
-
-			HashSet<string> result = files.Select(Path.GetFileName).Where(fileName => !string.IsNullOrEmpty(fileName)).ToHashSet(StringComparer.Ordinal)!;
-
-			return Ok(new GenericResponse<IReadOnlyCollection<string>>(result));
-		}
-
 		/// <summary>
 		///     Fetches the most recent GitHub release of ASF project.
 		/// </summary>
