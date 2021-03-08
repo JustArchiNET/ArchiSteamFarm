@@ -82,6 +82,31 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		/// <summary>
+		///     Fetches specific GitHub page of ASF project.
+		/// </summary>
+		/// <remarks>
+		///     This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW endpoints as they can disappear and change anytime.
+		///     Specifying revision is optional - when not specified, will fetch latest available. If specified revision is invalid, GitHub will automatically fetch the latest revision as well.
+		/// </remarks>
+		[HttpGet("GitHub/Wiki/Page/{page:required}")]
+		[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
+		public async Task<ActionResult<GenericResponse>> GitHubWikiPageGet(string page, [FromQuery] string? revision = null) {
+			if (string.IsNullOrEmpty(page)) {
+				throw new ArgumentNullException(nameof(page));
+			}
+
+			string? html = await GitHub.GetWikiPage(page, revision).ConfigureAwait(false);
+
+			return html switch {
+				null => StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries))),
+				"" => BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(page)))),
+				_ => Ok(new GenericResponse<string>(html))
+			};
+		}
+
+		/// <summary>
 		///     Sends a HTTPS request through ASF's built-in HttpClient.
 		/// </summary>
 		/// <remarks>

@@ -25,6 +25,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using AngleSharp.Dom;
 using Markdig;
 using Markdig.Renderers;
 using Markdig.Syntax;
@@ -51,6 +52,28 @@ namespace ArchiSteamFarm {
 			}
 
 			return await GetReleaseFromURL(SharedInfo.GithubReleaseURL + "/tags/" + version).ConfigureAwait(false);
+		}
+
+		internal static async Task<string?> GetWikiPage(string page, string? revision = null) {
+			if (string.IsNullOrEmpty(page)) {
+				throw new ArgumentNullException(nameof(page));
+			}
+
+			if (ASF.WebBrowser == null) {
+				throw new InvalidOperationException(nameof(ASF.WebBrowser));
+			}
+
+			string url = SharedInfo.GithubWikiURL + "/" + page + (!string.IsNullOrEmpty(revision) ? "/" + revision : "");
+
+			using WebBrowser.HtmlDocumentResponse? response = await ASF.WebBrowser.UrlGetToHtmlDocument(url).ConfigureAwait(false);
+
+			if (response == null) {
+				return null;
+			}
+
+			IElement? markdownBodyNode = response.Content.SelectSingleNode("//div[@class='markdown-body']");
+
+			return markdownBodyNode != null ? markdownBodyNode.InnerHtml : "";
 		}
 
 		private static MarkdownDocument ExtractChangelogFromBody(string markdownText) {
