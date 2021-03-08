@@ -136,6 +136,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// </remarks>
 		[Consumes("application/json")]
 		[HttpPost("Send")]
+		[Obsolete("ASF-ui should switch to new /Api/WWW/Github/{Release|Wiki} endpoints.")]
 		[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
@@ -147,6 +148,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			if (ASF.WebBrowser == null) {
 				throw new InvalidOperationException(nameof(ASF.WebBrowser));
 			}
+
+			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningDeprecated, nameof(SendPost), nameof(GitHubReleaseGet) + "/" + nameof(GitHubWikiHistoryGet) + "/" + nameof(GitHubWikiPageGet)));
 
 			if (string.IsNullOrEmpty(request.URL) || !Uri.TryCreate(request.URL, UriKind.Absolute, out Uri? uri) || !uri.Scheme.Equals(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase)) {
 				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(request.URL))));
