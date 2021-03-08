@@ -60,6 +60,8 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			try {
 				files = Directory.GetFiles(directoryPath);
 			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+
 				return StatusCode((int) HttpStatusCode.InternalServerError, new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorParsingObject, nameof(files)) + Environment.NewLine + e));
 			}
 
