@@ -44,7 +44,6 @@ namespace ArchiSteamFarm {
 		internal const string EnvironmentVariablePath = ASF + "_PATH";
 		internal const string GithubReleaseURL = "https://api.github.com/repos/" + GithubRepo + "/releases";
 		internal const string GithubRepo = "JustArchiNET/" + AssemblyName;
-		internal const string GithubWikiURL = "https://github.com/" + GithubRepo + "/wiki";
 		internal const string GlobalConfigFileName = ASF + JsonConfigExtension;
 		internal const string GlobalDatabaseFileName = ASF + DatabaseExtension;
 		internal const string IPCConfigExtension = ".config";

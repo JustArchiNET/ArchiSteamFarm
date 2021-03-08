@@ -63,7 +63,7 @@ namespace ArchiSteamFarm {
 				throw new InvalidOperationException(nameof(ASF.WebBrowser));
 			}
 
-			string url = SharedInfo.GithubWikiURL + "/" + page + (!string.IsNullOrEmpty(revision) ? "/" + revision : "");
+			string url = SharedInfo.ProjectURL + "/wiki/" + page + (!string.IsNullOrEmpty(revision) ? "/" + revision : "");
 
 			using WebBrowser.HtmlDocumentResponse? response = await ASF.WebBrowser.UrlGetToHtmlDocument(url).ConfigureAwait(false);
 
