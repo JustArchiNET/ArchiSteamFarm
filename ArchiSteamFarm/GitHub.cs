@@ -20,10 +20,13 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
 using Markdig;
@@ -52,6 +55,79 @@ namespace ArchiSteamFarm {
 			}
 
 			return await GetReleaseFromURL(SharedInfo.GithubReleaseURL + "/tags/" + version).ConfigureAwait(false);
+		}
+
+		internal static async Task<Dictionary<string, DateTime>?> GetWikiHistory(string page) {
+			if (string.IsNullOrEmpty(page)) {
+				throw new ArgumentNullException(nameof(page));
+			}
+
+			if (ASF.WebBrowser == null) {
+				throw new InvalidOperationException(nameof(ASF.WebBrowser));
+			}
+
+			string url = SharedInfo.ProjectURL + "/wiki/" + page + "/_history";
+
+			using WebBrowser.HtmlDocumentResponse? response = await ASF.WebBrowser.UrlGetToHtmlDocument(url, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
+
+			if (response == null) {
+				return null;
+			}
+
+			if (response.StatusCode.IsClientErrorCode()) {
+				return response.StatusCode switch {
+					HttpStatusCode.NotFound => new Dictionary<string, DateTime>(0),
+					_ => null
+				};
+			}
+
+			List<IElement> revisionNodes = response.Content.SelectNodes("//li[contains(@class, 'wiki-history-revision')]");
+
+			Dictionary<string, DateTime> result = new(revisionNodes.Count);
+
+			foreach (IElement revisionNode in revisionNodes) {
+				IElement? versionNode = revisionNode.SelectSingleElementNode(".//input/@value");
+
+				if (versionNode == null) {
+					ASF.ArchiLogger.LogNullError(nameof(versionNode));
+
+					return null;
+				}
+
+				string versionText = versionNode.GetAttribute("value");
+
+				if (string.IsNullOrEmpty(versionText)) {
+					ASF.ArchiLogger.LogNullError(nameof(versionText));
+
+					return null;
+				}
+
+				IElement? dateTimeNode = revisionNode.SelectSingleElementNode(".//relative-time/@datetime");
+
+				if (dateTimeNode == null) {
+					ASF.ArchiLogger.LogNullError(nameof(dateTimeNode));
+
+					return null;
+				}
+
+				string dateTimeText = dateTimeNode.GetAttribute("datetime");
+
+				if (string.IsNullOrEmpty(dateTimeText)) {
+					ASF.ArchiLogger.LogNullError(nameof(dateTimeText));
+
+					return null;
+				}
+
+				if (!DateTime.TryParse(dateTimeText, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal, out DateTime dateTime)) {
+					ASF.ArchiLogger.LogNullError(nameof(dateTime));
+
+					return null;
+				}
+
+				result[versionText] = dateTime.ToUniversalTime();
+			}
+
+			return result;
 		}
 
 		internal static async Task<string?> GetWikiPage(string page, string? revision = null) {
