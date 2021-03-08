@@ -149,7 +149,7 @@ namespace ArchiSteamFarm {
 
 			IElement? markdownBodyNode = response.Content.SelectSingleNode("//div[@class='markdown-body']");
 
-			return markdownBodyNode != null ? markdownBodyNode.InnerHtml : "";
+			return markdownBodyNode?.InnerHtml.Trim() ?? "";
 		}
 
 		private static MarkdownDocument ExtractChangelogFromBody(string markdownText) {
