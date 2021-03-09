@@ -3241,7 +3241,7 @@ namespace ArchiSteamFarm {
 					}
 
 					if (inventory.Count == 0) {
-						ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty), nameof(inventory));
+						ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(inventory)));
 
 						return;
 					}
