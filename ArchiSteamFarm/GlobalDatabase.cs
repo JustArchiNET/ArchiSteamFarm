@@ -282,6 +282,7 @@ namespace ArchiSteamFarm {
 
 		// ReSharper disable UnusedMember.Global
 		public bool ShouldSerializeBackingCellID() => BackingCellID != 0;
+		public bool ShouldSerializeBackingLastChangeNumber() => LastChangeNumber != 0;
 		public bool ShouldSerializePackagesAccessTokens() => !PackagesAccessTokens.IsEmpty;
 		public bool ShouldSerializePackagesData() => !PackagesData.IsEmpty;
 		public bool ShouldSerializeServerListProvider() => ServerListProvider.ShouldSerializeServerRecords();
