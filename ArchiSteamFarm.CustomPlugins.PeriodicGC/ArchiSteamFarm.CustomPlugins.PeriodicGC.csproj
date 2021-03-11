@@ -4,7 +4,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ConfigureAwaitChecker.Analyzer" PrivateAssets="all" Version="4.0.0" />
+    <PackageReference Include="ConfigureAwaitChecker.Analyzer" PrivateAssets="all" Version="5.0.0" />
     <PackageReference Include="System.Composition.AttributedModel" IncludeAssets="compile" Version="*" />
   </ItemGroup>
 
