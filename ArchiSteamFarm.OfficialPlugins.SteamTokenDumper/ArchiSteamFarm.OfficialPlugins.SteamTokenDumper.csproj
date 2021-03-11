@@ -4,7 +4,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ConfigureAwaitChecker.Analyzer" PrivateAssets="all" Version="4.0.0" />
+    <PackageReference Include="ConfigureAwaitChecker.Analyzer" PrivateAssets="all" Version="5.0.0" />
     <PackageReference Include="Newtonsoft.Json" IncludeAssets="compile" Version="*" />
     <PackageReference Include="SteamKit2" IncludeAssets="compile" Version="*" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" IncludeAssets="compile" Version="*" />
