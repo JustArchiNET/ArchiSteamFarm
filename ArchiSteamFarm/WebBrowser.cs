@@ -119,79 +119,81 @@ namespace ArchiSteamFarm {
 			}
 
 			for (byte i = 0; i < maxTries; i++) {
-				await using StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
+				StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
 				if (response == null) {
 					// Request timed out, try again
 					continue;
 				}
 
-				if (response.StatusCode.IsClientErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						// We're not handling this error, do not try again
-						break;
-					}
-				} else if (response.StatusCode.IsServerErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						// We're not handling this error, try again
-						continue;
-					}
-				}
-
-				progressReporter?.Report(0);
-
-#if NETFRAMEWORK
-				using MemoryStream ms = new((int) response.Length);
-#else
-				await using MemoryStream ms = new((int) response.Length);
-#endif
-
-				try {
-					byte batch = 0;
-					long readThisBatch = 0;
-					long batchIncreaseSize = response.Length / 100;
-
-					byte[] buffer = new byte[8192]; // This is HttpClient's buffer, using more doesn't make sense
-
-					while (response.Content.CanRead) {
-#if NETFRAMEWORK
-						int read = await response.Content.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
-#else
-						int read = await response.Content.ReadAsync(buffer.AsMemory(0, buffer.Length)).ConfigureAwait(false);
-#endif
-
-						if (read == 0) {
+				await using (response.ConfigureAwait(false)) {
+					if (response.StatusCode.IsClientErrorCode()) {
+						if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+							// We're not handling this error, do not try again
 							break;
 						}
+					} else if (response.StatusCode.IsServerErrorCode()) {
+						if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+							// We're not handling this error, try again
+							continue;
+						}
+					}
+
+					progressReporter?.Report(0);
 
 #if NETFRAMEWORK
-						await ms.WriteAsync(buffer, 0, read).ConfigureAwait(false);
+					using MemoryStream ms = new((int) response.Length);
 #else
-						await ms.WriteAsync(buffer.AsMemory(0, read)).ConfigureAwait(false);
+					await using MemoryStream ms = new((int) response.Length);
 #endif
 
-						if ((batchIncreaseSize == 0) || (batch >= 99)) {
-							continue;
+					try {
+						byte batch = 0;
+						long readThisBatch = 0;
+						long batchIncreaseSize = response.Length / 100;
+
+						byte[] buffer = new byte[8192]; // This is HttpClient's buffer, using more doesn't make sense
+
+						while (response.Content.CanRead) {
+#if NETFRAMEWORK
+							int read = await response.Content.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+#else
+							int read = await response.Content.ReadAsync(buffer.AsMemory(0, buffer.Length)).ConfigureAwait(false);
+#endif
+
+							if (read == 0) {
+								break;
+							}
+
+#if NETFRAMEWORK
+							await ms.WriteAsync(buffer, 0, read).ConfigureAwait(false);
+#else
+							await ms.WriteAsync(buffer.AsMemory(0, read)).ConfigureAwait(false);
+#endif
+
+							if ((batchIncreaseSize == 0) || (batch >= 99)) {
+								continue;
+							}
+
+							readThisBatch += read;
+
+							if (readThisBatch < batchIncreaseSize) {
+								continue;
+							}
+
+							readThisBatch -= batchIncreaseSize;
+							progressReporter?.Report(++batch);
 						}
+					} catch (Exception e) {
+						ArchiLogger.LogGenericDebuggingException(e);
 
-						readThisBatch += read;
-
-						if (readThisBatch < batchIncreaseSize) {
-							continue;
-						}
-
-						readThisBatch -= batchIncreaseSize;
-						progressReporter?.Report(++batch);
+						return null;
 					}
-				} catch (Exception e) {
-					ArchiLogger.LogGenericDebuggingException(e);
 
-					return null;
+					progressReporter?.Report(100);
+
+					return new BinaryResponse(response, ms.ToArray());
 				}
-
-				progressReporter?.Report(100);
-
-				return new BinaryResponse(response, ms.ToArray());
 			}
 
 			if (maxTries > 1) {
@@ -213,29 +215,31 @@ namespace ArchiSteamFarm {
 			}
 
 			for (byte i = 0; i < maxTries; i++) {
-				await using StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
+				StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
 				if (response == null) {
 					// Request timed out, try again
 					continue;
 				}
 
-				if (response.StatusCode.IsClientErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						// We're not handling this error, do not try again
-						break;
+				await using (response.ConfigureAwait(false)) {
+					if (response.StatusCode.IsClientErrorCode()) {
+						if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+							// We're not handling this error, do not try again
+							break;
+						}
+					} else if (response.StatusCode.IsServerErrorCode()) {
+						if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+							// We're not handling this error, try again
+							continue;
+						}
 					}
-				} else if (response.StatusCode.IsServerErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						// We're not handling this error, try again
-						continue;
-					}
-				}
 
-				try {
-					return await HtmlDocumentResponse.Create(response).ConfigureAwait(false);
-				} catch (Exception e) {
-					ArchiLogger.LogGenericWarningException(e);
+					try {
+						return await HtmlDocumentResponse.Create(response).ConfigureAwait(false);
+					} catch (Exception e) {
+						ArchiLogger.LogGenericWarningException(e);
+					}
 				}
 			}
 
@@ -258,47 +262,49 @@ namespace ArchiSteamFarm {
 			}
 
 			for (byte i = 0; i < maxTries; i++) {
-				await using StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
+				StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
 				if (response == null) {
 					// Request timed out, try again
 					continue;
 				}
 
-				if (response.StatusCode.IsClientErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						// We're not handling this error, do not try again
-						break;
+				await using (response.ConfigureAwait(false)) {
+					if (response.StatusCode.IsClientErrorCode()) {
+						if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+							// We're not handling this error, do not try again
+							break;
+						}
+					} else if (response.StatusCode.IsServerErrorCode()) {
+						if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+							// We're not handling this error, try again
+							continue;
+						}
 					}
-				} else if (response.StatusCode.IsServerErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						// We're not handling this error, try again
+
+					T? obj;
+
+					try {
+						using StreamReader streamReader = new(response.Content);
+						using JsonTextReader jsonReader = new(streamReader);
+
+						JsonSerializer serializer = new();
+
+						obj = serializer.Deserialize<T>(jsonReader);
+
+						if (obj is null) {
+							ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(obj)));
+
+							continue;
+						}
+					} catch (Exception e) {
+						ArchiLogger.LogGenericWarningException(e);
+
 						continue;
 					}
+
+					return new ObjectResponse<T>(response, obj);
 				}
-
-				T? obj;
-
-				try {
-					using StreamReader streamReader = new(response.Content);
-					using JsonTextReader jsonReader = new(streamReader);
-
-					JsonSerializer serializer = new();
-
-					obj = serializer.Deserialize<T>(jsonReader);
-
-					if (obj is null) {
-						ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(obj)));
-
-						continue;
-					}
-				} catch (Exception e) {
-					ArchiLogger.LogGenericWarningException(e);
-
-					continue;
-				}
-
-				return new ObjectResponse<T>(response, obj);
 			}
 
 			if (maxTries > 1) {
@@ -402,36 +408,38 @@ namespace ArchiSteamFarm {
 			}
 
 			for (byte i = 0; i < maxTries; i++) {
-				await using StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
+				StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
 				if (response == null) {
 					// Request timed out, try again
 					continue;
 				}
 
-				if (response.StatusCode.IsClientErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						// We're not handling this error, do not try again
-						break;
+				await using (response.ConfigureAwait(false)) {
+					if (response.StatusCode.IsClientErrorCode()) {
+						if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+							// We're not handling this error, do not try again
+							break;
+						}
+					} else if (response.StatusCode.IsServerErrorCode()) {
+						if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+							// We're not handling this error, try again
+							continue;
+						}
 					}
-				} else if (response.StatusCode.IsServerErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						// We're not handling this error, try again
+
+					XmlDocument xmlDocument = new();
+
+					try {
+						xmlDocument.Load(response.Content);
+					} catch (Exception e) {
+						ArchiLogger.LogGenericWarningException(e);
+
 						continue;
 					}
+
+					return new XmlDocumentResponse(response, xmlDocument);
 				}
-
-				XmlDocument xmlDocument = new();
-
-				try {
-					xmlDocument.Load(response.Content);
-				} catch (Exception e) {
-					ArchiLogger.LogGenericWarningException(e);
-
-					continue;
-				}
-
-				return new XmlDocumentResponse(response, xmlDocument);
 			}
 
 			if (maxTries > 1) {
@@ -545,29 +553,31 @@ namespace ArchiSteamFarm {
 			}
 
 			for (byte i = 0; i < maxTries; i++) {
-				await using StreamResponse? response = await UrlPostToStream(request, headers, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
+				StreamResponse? response = await UrlPostToStream(request, headers, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
 				if (response == null) {
 					// Request timed out, try again
 					continue;
 				}
 
-				if (response.StatusCode.IsClientErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						// We're not handling this error, do not try again
-						break;
+				await using (response.ConfigureAwait(false)) {
+					if (response.StatusCode.IsClientErrorCode()) {
+						if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+							// We're not handling this error, do not try again
+							break;
+						}
+					} else if (response.StatusCode.IsServerErrorCode()) {
+						if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+							// We're not handling this error, try again
+							continue;
+						}
 					}
-				} else if (response.StatusCode.IsServerErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						// We're not handling this error, try again
-						continue;
-					}
-				}
 
-				try {
-					return await HtmlDocumentResponse.Create(response).ConfigureAwait(false);
-				} catch (Exception e) {
-					ArchiLogger.LogGenericWarningException(e);
+					try {
+						return await HtmlDocumentResponse.Create(response).ConfigureAwait(false);
+					} catch (Exception e) {
+						ArchiLogger.LogGenericWarningException(e);
+					}
 				}
 			}
 
@@ -590,47 +600,49 @@ namespace ArchiSteamFarm {
 			}
 
 			for (byte i = 0; i < maxTries; i++) {
-				await using StreamResponse? response = await UrlPostToStream(request, headers, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
+				StreamResponse? response = await UrlPostToStream(request, headers, data, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
 
 				if (response == null) {
 					// Request timed out, try again
 					continue;
 				}
 
-				if (response.StatusCode.IsClientErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						// We're not handling this error, do not try again
-						break;
+				await using (response.ConfigureAwait(false)) {
+					if (response.StatusCode.IsClientErrorCode()) {
+						if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
+							// We're not handling this error, do not try again
+							break;
+						}
+					} else if (response.StatusCode.IsServerErrorCode()) {
+						if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
+							// We're not handling this error, try again
+							continue;
+						}
 					}
-				} else if (response.StatusCode.IsServerErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						// We're not handling this error, try again
+
+					TResult? obj;
+
+					try {
+						using StreamReader steamReader = new(response.Content);
+						using JsonReader jsonReader = new JsonTextReader(steamReader);
+
+						JsonSerializer serializer = new();
+
+						obj = serializer.Deserialize<TResult>(jsonReader);
+
+						if (obj is null) {
+							ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(obj)));
+
+							continue;
+						}
+					} catch (Exception e) {
+						ArchiLogger.LogGenericWarningException(e);
+
 						continue;
 					}
+
+					return new ObjectResponse<TResult>(response, obj);
 				}
-
-				TResult? obj;
-
-				try {
-					using StreamReader steamReader = new(response.Content);
-					using JsonReader jsonReader = new JsonTextReader(steamReader);
-
-					JsonSerializer serializer = new();
-
-					obj = serializer.Deserialize<TResult>(jsonReader);
-
-					if (obj is null) {
-						ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(obj)));
-
-						continue;
-					}
-				} catch (Exception e) {
-					ArchiLogger.LogGenericWarningException(e);
-
-					continue;
-				}
-
-				return new ObjectResponse<TResult>(response, obj);
 			}
 
 			if (maxTries > 1) {
