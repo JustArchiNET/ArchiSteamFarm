@@ -340,17 +340,19 @@ namespace ArchiSteamFarm {
 					ArchiLogger.LogGenericWarningException(e);
 				}
 
+				MemoryStream memoryStream = new(response.Content);
+
 				try {
 #if NETFRAMEWORK
-					using MemoryStream memoryStream = new(response.Content);
+					using (memoryStream) {
 #else
-					await using MemoryStream memoryStream = new(response.Content);
+					await using (memoryStream.ConfigureAwait(false)) {
 #endif
+						using ZipArchive zipArchive = new(memoryStream);
 
-					using ZipArchive zipArchive = new(memoryStream);
-
-					if (!UpdateFromArchive(zipArchive, SharedInfo.HomeDirectory)) {
-						ArchiLogger.LogGenericError(Strings.WarningFailed);
+						if (!UpdateFromArchive(zipArchive, SharedInfo.HomeDirectory)) {
+							ArchiLogger.LogGenericError(Strings.WarningFailed);
+						}
 					}
 				} catch (Exception e) {
 					ArchiLogger.LogGenericException(e);

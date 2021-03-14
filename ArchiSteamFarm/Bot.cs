@@ -2950,28 +2950,30 @@ namespace ArchiSteamFarm {
 			byte[] sentryHash;
 
 			try {
-#if NETFRAMEWORK
-				using FileStream fileStream = File.Open(sentryFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-#else
-				await using FileStream fileStream = File.Open(sentryFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-#endif
-
-				fileStream.Seek(callback.Offset, SeekOrigin.Begin);
+				FileStream fileStream = File.Open(sentryFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
 
 #if NETFRAMEWORK
-				await fileStream.WriteAsync(callback.Data, 0, callback.BytesToWrite).ConfigureAwait(false);
+				using (fileStream) {
 #else
-				await fileStream.WriteAsync(callback.Data.AsMemory(0, callback.BytesToWrite)).ConfigureAwait(false);
+				await using (fileStream.ConfigureAwait(false)) {
+#endif
+					fileStream.Seek(callback.Offset, SeekOrigin.Begin);
+
+#if NETFRAMEWORK
+					await fileStream.WriteAsync(callback.Data, 0, callback.BytesToWrite).ConfigureAwait(false);
+#else
+					await fileStream.WriteAsync(callback.Data.AsMemory(0, callback.BytesToWrite)).ConfigureAwait(false);
 #endif
 
-				fileSize = fileStream.Length;
-				fileStream.Seek(0, SeekOrigin.Begin);
+					fileSize = fileStream.Length;
+					fileStream.Seek(0, SeekOrigin.Begin);
 
 #pragma warning disable CA5350
-				using SHA1CryptoServiceProvider sha = new();
+					using SHA1CryptoServiceProvider sha = new();
 
-				sentryHash = await sha.ComputeHashAsync(fileStream).ConfigureAwait(false);
+					sentryHash = await sha.ComputeHashAsync(fileStream).ConfigureAwait(false);
 #pragma warning restore CA5350
+				}
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 
