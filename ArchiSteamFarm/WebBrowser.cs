@@ -141,58 +141,60 @@ namespace ArchiSteamFarm {
 
 					progressReporter?.Report(0);
 
-#if NETFRAMEWORK
-					using MemoryStream ms = new((int) response.Length);
-#else
-					await using MemoryStream ms = new((int) response.Length);
-#endif
-
-					try {
-						byte batch = 0;
-						long readThisBatch = 0;
-						long batchIncreaseSize = response.Length / 100;
-
-						byte[] buffer = new byte[8192]; // This is HttpClient's buffer, using more doesn't make sense
-
-						while (response.Content.CanRead) {
-#if NETFRAMEWORK
-							int read = await response.Content.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
-#else
-							int read = await response.Content.ReadAsync(buffer.AsMemory(0, buffer.Length)).ConfigureAwait(false);
-#endif
-
-							if (read == 0) {
-								break;
-							}
+					MemoryStream ms = new((int) response.Length);
 
 #if NETFRAMEWORK
-							await ms.WriteAsync(buffer, 0, read).ConfigureAwait(false);
+					using (ms) {
 #else
-							await ms.WriteAsync(buffer.AsMemory(0, read)).ConfigureAwait(false);
+					await using (ms.ConfigureAwait(false)) {
+#endif
+						try {
+							byte batch = 0;
+							long readThisBatch = 0;
+							long batchIncreaseSize = response.Length / 100;
+
+							byte[] buffer = new byte[8192]; // This is HttpClient's buffer, using more doesn't make sense
+
+							while (response.Content.CanRead) {
+#if NETFRAMEWORK
+								int read = await response.Content.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+#else
+								int read = await response.Content.ReadAsync(buffer.AsMemory(0, buffer.Length)).ConfigureAwait(false);
 #endif
 
-							if ((batchIncreaseSize == 0) || (batch >= 99)) {
-								continue;
+								if (read == 0) {
+									break;
+								}
+
+#if NETFRAMEWORK
+								await ms.WriteAsync(buffer, 0, read).ConfigureAwait(false);
+#else
+								await ms.WriteAsync(buffer.AsMemory(0, read)).ConfigureAwait(false);
+#endif
+
+								if ((batchIncreaseSize == 0) || (batch >= 99)) {
+									continue;
+								}
+
+								readThisBatch += read;
+
+								if (readThisBatch < batchIncreaseSize) {
+									continue;
+								}
+
+								readThisBatch -= batchIncreaseSize;
+								progressReporter?.Report(++batch);
 							}
+						} catch (Exception e) {
+							ArchiLogger.LogGenericDebuggingException(e);
 
-							readThisBatch += read;
-
-							if (readThisBatch < batchIncreaseSize) {
-								continue;
-							}
-
-							readThisBatch -= batchIncreaseSize;
-							progressReporter?.Report(++batch);
+							return null;
 						}
-					} catch (Exception e) {
-						ArchiLogger.LogGenericDebuggingException(e);
 
-						return null;
+						progressReporter?.Report(100);
+
+						return new BinaryResponse(response, ms.ToArray());
 					}
-
-					progressReporter?.Report(100);
-
-					return new BinaryResponse(response, ms.ToArray());
 				}
 			}
 
