@@ -50,14 +50,24 @@ install:
     if ($env:DOTNET_CHANNEL) {
         dotnet --info
 
-        &([scriptblock]::Create((Invoke-WebRequest 'https://dot.net/v1/dotnet-install.ps1'))) -Channel "$env:DOTNET_CHANNEL" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
+        try { 
+            &([scriptblock]::Create((Invoke-WebRequest 'https://dot.net/v1/dotnet-install.ps1'))) -Channel "$env:DOTNET_CHANNEL" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
+        } catch [System.Net.WebException],[System.IO.IOException] {
+            # Not fatal for the remaining part of the script
+            Write-Host $_
+        }
     }
 
 
     if ($env:DOTNET_SDK) {
         dotnet --info
 
-        &([scriptblock]::Create((Invoke-WebRequest 'https://dot.net/v1/dotnet-install.ps1'))) -Channel 'Current' -Version "$env:DOTNET_SDK" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
+        try { 
+            &([scriptblock]::Create((Invoke-WebRequest 'https://dot.net/v1/dotnet-install.ps1'))) -Channel 'Current' -Version "$env:DOTNET_SDK" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
+        } catch [System.Net.WebException],[System.IO.IOException] {
+            # Not fatal for the remaining part of the script
+            Write-Host $_
+        }
     }
 - ps: Install-Product node "$env:NODE_JS_VERSION"
 before_build:
