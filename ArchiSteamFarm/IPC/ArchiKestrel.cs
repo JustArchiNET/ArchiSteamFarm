@@ -39,7 +39,6 @@ using Microsoft.Extensions.Hosting;
 namespace ArchiSteamFarm.IPC {
 	internal static class ArchiKestrel {
 		internal static HistoryTarget? HistoryTarget { get; private set; }
-		internal static string WebsiteDirectory { get; private set; } = Path.Combine(AppContext.BaseDirectory, SharedInfo.WebsiteDirectory);
 
 #if NETFRAMEWORK
 		private static IWebHost? KestrelWebHost;
@@ -74,10 +73,7 @@ namespace ArchiSteamFarm.IPC {
 #endif
 
 			string customDirectory = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.WebsiteDirectory);
-
-			if (Directory.Exists(customDirectory)) {
-				WebsiteDirectory = customDirectory;
-			}
+			string websiteDirectory = Directory.Exists(customDirectory) ? customDirectory : Path.Combine(AppContext.BaseDirectory, SharedInfo.WebsiteDirectory);
 
 			// Set default content root
 			builder.UseContentRoot(SharedInfo.HomeDirectory);
@@ -116,7 +112,7 @@ namespace ArchiSteamFarm.IPC {
 			builder.ConfigureWebHostDefaults(
 				webBuilder => {
 					// Set default web root
-					webBuilder.UseWebRoot(WebsiteDirectory);
+					webBuilder.UseWebRoot(websiteDirectory);
 
 					// Now conditionally initialize settings that are not possible to override
 					if (customConfigExists) {

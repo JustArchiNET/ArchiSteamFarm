@@ -1884,11 +1884,7 @@ namespace ArchiSteamFarm {
 				appIDs.Add(appID);
 			}
 
-			if (!Bot.BotDatabase.IdlingBlacklistedAppIDs.AddRange(appIDs)) {
-				return FormatBotResponse(Strings.NothingFound);
-			}
-
-			return FormatBotResponse(Strings.Done);
+			return FormatBotResponse(Bot.BotDatabase.IdlingBlacklistedAppIDs.AddRange(appIDs) ? Strings.Done : Strings.NothingFound);
 		}
 
 		private static async Task<string?> ResponseMatchActivelyBlacklistAdd(ulong steamID, string botNames, string targetAppIDs) {
@@ -1946,11 +1942,7 @@ namespace ArchiSteamFarm {
 				appIDs.Add(appID);
 			}
 
-			if (!Bot.BotDatabase.IdlingBlacklistedAppIDs.RemoveRange(appIDs)) {
-				return FormatBotResponse(Strings.NothingFound);
-			}
-
-			return FormatBotResponse(Strings.Done);
+			return FormatBotResponse(Bot.BotDatabase.IdlingBlacklistedAppIDs.RemoveRange(appIDs) ? Strings.Done : Strings.NothingFound);
 		}
 
 		private static async Task<string?> ResponseMatchActivelyBlacklistRemove(ulong steamID, string botNames, string targetAppIDs) {
