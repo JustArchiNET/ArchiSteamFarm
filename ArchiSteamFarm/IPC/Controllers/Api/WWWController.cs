@@ -25,7 +25,6 @@ using System.Collections.Immutable;
 using System.Globalization;
 using System.Net;
 using System.Threading.Tasks;
-using ArchiSteamFarm.IPC.Requests;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
 using Microsoft.AspNetCore.Mvc;
@@ -126,38 +125,6 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			return releaseResponse != null ? Ok(new GenericResponse<GitHubReleaseResponse>(new GitHubReleaseResponse(releaseResponse))) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
-		}
-
-		/// <summary>
-		///     Sends a HTTPS request through ASF's built-in HttpClient.
-		/// </summary>
-		/// <remarks>
-		///     This is internal API being utilizied by our ASF-ui IPC frontend. You should not depend on existence of any /Api/WWW endpoints as they can disappear and change anytime.
-		/// </remarks>
-		[Consumes("application/json")]
-		[HttpPost("Send")]
-		[Obsolete("ASF-ui should switch to new /Api/WWW/Github/{Release|Wiki} endpoints.")]
-		[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
-		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
-		public async Task<ActionResult<GenericResponse>> SendPost([FromBody] WWWSendRequest request) {
-			if (request == null) {
-				throw new ArgumentNullException(nameof(request));
-			}
-
-			if (ASF.WebBrowser == null) {
-				throw new InvalidOperationException(nameof(ASF.WebBrowser));
-			}
-
-			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningDeprecated, nameof(SendPost), nameof(GitHubReleaseGet) + "/" + nameof(GitHubWikiHistoryGet) + "/" + nameof(GitHubWikiPageGet)));
-
-			if (string.IsNullOrEmpty(request.URL) || !Uri.TryCreate(request.URL, UriKind.Absolute, out Uri? uri) || !uri.Scheme.Equals(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase)) {
-				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(request.URL))));
-			}
-
-			WebBrowser.StringResponse? urlResponse = await ASF.WebBrowser.UrlGetToString(request.URL!).ConfigureAwait(false);
-
-			return urlResponse != null ? Ok(new GenericResponse<string>(urlResponse.Content)) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries)));
 		}
 	}
 }
