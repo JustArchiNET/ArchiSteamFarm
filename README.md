@@ -1,34 +1,35 @@
 # ArchiSteamFarm
 
-[![Build status (GitHub)](https://img.shields.io/github/workflow/status/JustArchiNET/ArchiSteamFarm/ASF-ci/main?label=GitHub&logo=github&maxAge=600)](https://github.com/JustArchiNET/ArchiSteamFarm/actions?query=workflow%3AASF-ci+branch%3Amain)
-[![Build status (AppVeyor)](https://img.shields.io/appveyor/ci/JustArchi/ArchiSteamFarm/main.svg?label=AppVeyor&logo=appveyor&maxAge=600)](https://ci.appveyor.com/project/JustArchi/ArchiSteamFarm)
-[![Build status (Docker)](https://img.shields.io/github/workflow/status/JustArchiNET/ArchiSteamFarm/ASF-docker-publish-main.svg?label=Docker&logo=docker&maxAge=600)](https://hub.docker.com/r/justarchi/archisteamfarm)
-[![Github last commit date](https://img.shields.io/github/last-commit/JustArchiNET/ArchiSteamFarm.svg?label=Updated&logo=github&maxAge=600)](https://github.com/JustArchiNET/ArchiSteamFarm/commits)
-[![Total downloads](https://img.shields.io/github/downloads/JustArchiNET/ArchiSteamFarm/total.svg?label=Downloads&logo=github&maxAge=600)](https://github.com/JustArchiNET/ArchiSteamFarm/releases)
-[![License](https://img.shields.io/github/license/JustArchiNET/ArchiSteamFarm.svg?label=License&logo=apache&maxAge=2592000)](https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/LICENSE-2.0.txt)
+[![Build status (GitHub)](https://img.shields.io/github/workflow/status/JustArchiNET/ArchiSteamFarm/ASF-ci/main?label=GitHub&logo=github&cacheSeconds=600)](https://github.com/JustArchiNET/ArchiSteamFarm/actions?query=workflow%3AASF-ci+branch%3Amain)
+[![Build status (AppVeyor)](https://img.shields.io/appveyor/ci/JustArchi/ArchiSteamFarm/main.svg?label=AppVeyor&logo=appveyor&cacheSeconds=600)](https://ci.appveyor.com/project/JustArchi/ArchiSteamFarm)
+[![Build status (Docker)](https://img.shields.io/github/workflow/status/JustArchiNET/ArchiSteamFarm/ASF-docker-publish-main.svg?label=Docker&logo=docker&cacheSeconds=600)](https://hub.docker.com/r/justarchi/archisteamfarm)
+[![Github last commit date](https://img.shields.io/github/last-commit/JustArchiNET/ArchiSteamFarm.svg?label=Updated&logo=github&cacheSeconds=600)](https://github.com/JustArchiNET/ArchiSteamFarm/commits)
+[![Total downloads](https://img.shields.io/github/downloads/JustArchiNET/ArchiSteamFarm/total.svg?label=Downloads&logo=github&cacheSeconds=600)](https://github.com/JustArchiNET/ArchiSteamFarm/releases)
+[![License](https://img.shields.io/github/license/JustArchiNET/ArchiSteamFarm.svg?label=License&logo=apache&cacheSeconds=2592000)](https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/LICENSE-2.0.txt)
 
 [![Localization](https://badges.crowdin.net/archisteamfarm/localized.svg)](https://crowdin.com/project/archisteamfarm)
-[![ConfigGenerator status](https://img.shields.io/website-up-down-green-red/https/justarchinet.github.io/ASF-WebConfigGenerator.svg?label=ConfigGenerator&logo=html5&maxAge=3600)](https://justarchinet.github.io/ASF-WebConfigGenerator)
-[![Statistics status](https://img.shields.io/website-up-down-green-red/https/asf.justarchi.net.svg?label=Statistics&logo=html5&maxAge=3600)](https://asf.justarchi.net)
+[![ConfigGenerator status](https://img.shields.io/website-up-down-green-red/https/justarchinet.github.io/ASF-WebConfigGenerator.svg?label=ConfigGenerator&logo=html5&cacheSeconds=3600)](https://justarchinet.github.io/ASF-WebConfigGenerator)
+[![Statistics status](https://img.shields.io/website-up-down-green-red/https/asf.justarchi.net.svg?label=Statistics&logo=html5&cacheSeconds=3600)](https://asf.justarchi.net)
 [![Steam group](https://img.shields.io/badge/Steam-group-yellowgreen.svg?logo=steam)](https://steamcommunity.com/groups/archiasf)
-[![Discord](https://img.shields.io/discord/267292556709068800.svg?label=Discord&logo=discord&maxAge=3600)](https://discord.gg/hSQgt8j)
+[![Discord](https://img.shields.io/discord/267292556709068800.svg?label=Discord&logo=discord&cacheSeconds=3600)](https://discord.gg/hSQgt8j)
 [![Wiki](https://img.shields.io/badge/Read-wiki-cc5490.svg?logo=github)](https://github.com/JustArchiNET/ArchiSteamFarm/wiki)
 
-[![GitHub stable release version](https://img.shields.io/github/release/JustArchiNET/ArchiSteamFarm.svg?label=Stable&logo=github&maxAge=600)](https://github.com/JustArchiNET/ArchiSteamFarm/releases/latest)
-[![GitHub stable release date](https://img.shields.io/github/release-date/JustArchiNET/ArchiSteamFarm.svg?label=Released&logo=github&maxAge=600)](https://github.com/JustArchiNET/ArchiSteamFarm/releases/latest)
-[![Github stable release downloads](https://img.shields.io/github/downloads/JustArchiNET/ArchiSteamFarm/latest/total.svg?label=Downloads&logo=github&maxAge=600)](https://github.com/JustArchiNET/ArchiSteamFarm/releases/latest)
+[![GitHub stable release version](https://img.shields.io/github/release/JustArchiNET/ArchiSteamFarm.svg?label=Stable&logo=github&cacheSeconds=600)](https://github.com/JustArchiNET/ArchiSteamFarm/releases/latest)
+[![GitHub stable release date](https://img.shields.io/github/release-date/JustArchiNET/ArchiSteamFarm.svg?label=Released&logo=github&cacheSeconds=600)](https://github.com/JustArchiNET/ArchiSteamFarm/releases/latest)
+[![Github stable release downloads](https://img.shields.io/github/downloads/JustArchiNET/ArchiSteamFarm/latest/total.svg?label=Downloads&logo=github&cacheSeconds=600)](https://github.com/JustArchiNET/ArchiSteamFarm/releases/latest)
 
-[![GitHub experimental release version](https://img.shields.io/github/release/JustArchiNET/ArchiSteamFarm/all.svg?label=Experimental&logo=github&maxAge=600)](https://github.com/JustArchiNET/ArchiSteamFarm/releases)
-[![GitHub experimental release date](https://img.shields.io/github/release-date-pre/JustArchiNET/ArchiSteamFarm.svg?label=Released&logo=github&maxAge=600)](https://github.com/JustArchiNET/ArchiSteamFarm/releases)
-[![Github experimental release downloads](https://img.shields.io/github/downloads-pre/JustArchiNET/ArchiSteamFarm/latest/total.svg?label=Downloads&logo=github&maxAge=600)](https://github.com/JustArchiNET/ArchiSteamFarm/releases)
+[![GitHub experimental release version](https://img.shields.io/github/release/JustArchiNET/ArchiSteamFarm/all.svg?label=Experimental&logo=github&cacheSeconds=600)](https://github.com/JustArchiNET/ArchiSteamFarm/releases)
+[![GitHub experimental release date](https://img.shields.io/github/release-date-pre/JustArchiNET/ArchiSteamFarm.svg?label=Released&logo=github&cacheSeconds=600)](https://github.com/JustArchiNET/ArchiSteamFarm/releases)
+[![Github experimental release downloads](https://img.shields.io/github/downloads-pre/JustArchiNET/ArchiSteamFarm/latest/total.svg?label=Downloads&logo=github&cacheSeconds=600)](https://github.com/JustArchiNET/ArchiSteamFarm/releases)
 
-[![GitHub sponsor](https://img.shields.io/badge/GitHub-sponsor-yellow.svg?logo=github-sponsors)](https://github.com/sponsors/JustArchi)
-[![Patreon support](https://img.shields.io/badge/Patreon-support-yellow.svg?logo=patreon)](https://www.patreon.com/JustArchi)
-[![PayPal.me donate](https://img.shields.io/badge/PayPal.me-donate-yellow.svg?logo=paypal)](https://www.paypal.me/JustArchi/5eur)
-[![PayPal donate](https://img.shields.io/badge/PayPal-donate-yellow.svg?logo=paypal)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HD2P2P3WGS5Y4)
-[![Revolut donate](https://img.shields.io/badge/Revolut-donate-yellow.svg?logo=revolut)](https://pay.revolut.com/profile/ukaszyxm)
-[![Crypto donate](https://img.shields.io/badge/Crypto-donate-yellow.svg?logo=bitcoin)](https://commerce.coinbase.com/checkout/0c23b844-c51b-45f4-9135-8db7c6fcf98e)
-[![Steam donate](https://img.shields.io/badge/Steam-donate-yellow.svg?logo=steam)](https://steamcommunity.com/tradeoffer/new/?partner=46697991&token=0ix2Ruv_)
+[![GitHub sponsor](https://img.shields.io/badge/GitHub-sponsor-ea4aaa.svg?logo=github-sponsors)](https://github.com/sponsors/JustArchi)
+[![Patreon support](https://img.shields.io/badge/Patreon-support-f96854.svg?logo=patreon)](https://www.patreon.com/JustArchi)
+
+[![PayPal.me donate](https://img.shields.io/badge/PayPal.me-donate-00457c.svg?logo=paypal)](https://www.paypal.me/JustArchi/5eur)
+[![PayPal donate](https://img.shields.io/badge/PayPal-donate-00457c.svg?logo=paypal)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HD2P2P3WGS5Y4)
+[![Revolut donate](https://img.shields.io/badge/Revolut-donate-0075eb.svg?logo=revolut)](https://pay.revolut.com/profile/ukaszyxm)
+[![Crypto donate](https://img.shields.io/badge/Crypto-donate-f7931a.svg?logo=bitcoin)](https://commerce.coinbase.com/checkout/0c23b844-c51b-45f4-9135-8db7c6fcf98e)
+[![Steam donate](https://img.shields.io/badge/Steam-donate-000000.svg?logo=steam)](https://steamcommunity.com/tradeoffer/new/?partner=46697991&token=0ix2Ruv_)
 
 ---
 
