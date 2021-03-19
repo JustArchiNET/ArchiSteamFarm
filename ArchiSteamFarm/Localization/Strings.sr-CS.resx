@@ -122,7 +122,7 @@
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF će automatski proveriti da li postoji nova verzija svakih {0} sati.</value>
+    <value>ASF će automatski proveriti da li postoji nova verzija svakih {0} sat/i.</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
   </data>
   <data name="Content" xml:space="preserve">
@@ -139,7 +139,7 @@
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
-    <value>Greška: {0}() {1}
+    <value>Exception: {0}() {1}
 StackTrace:
 {2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
@@ -190,7 +190,7 @@ StackTrace:
     <value>Izlaženje...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
-    <value>Neuspeh!</value>
+    <value>Neuspješno!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
     <value>Globalni konfiguracioni fajl je promenjen!</value>
@@ -242,7 +242,7 @@ StackTrace:
     <value>Nova ASF verzija je dostupna! Razmislite o ažuriranju!</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
-    <value>Lokalna verzija: {0} | Daljinska verzija: {1}</value>
+    <value>Lokalna verzija: {0} | Dostupna verzija: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
@@ -305,7 +305,7 @@ StackTrace:
     <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
-    <value>Završeno!</value>
+    <value>Gotovo!</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
     <value>Ukupno je preostalo {0} igrica ({1} kartica) da se idle-uje (~{2} preostaje)...</value>
@@ -344,7 +344,7 @@ StackTrace:
     <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
-    <value>Trenutno ne možemo da igramo igru, pokušaćemo kasnije!</value>
+    <value>Trenutno ne moguće igranje, pokušaćemo kasnije!</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
     <value>Još uvek se idle-uje: {0} ({1})</value>
