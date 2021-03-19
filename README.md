@@ -22,7 +22,7 @@
 [![GitHub experimental release date](https://img.shields.io/github/release-date-pre/JustArchiNET/ArchiSteamFarm.svg?label=Released&logo=github&maxAge=600)](https://github.com/JustArchiNET/ArchiSteamFarm/releases)
 [![Github experimental release downloads](https://img.shields.io/github/downloads-pre/JustArchiNET/ArchiSteamFarm/latest/total.svg?label=Downloads&logo=github&maxAge=600)](https://github.com/JustArchiNET/ArchiSteamFarm/releases)
 
-[![GitHub sponsor](https://img.shields.io/badge/GitHub-sponsor-yellow.svg?logo=githubsponsors)](https://github.com/sponsors/JustArchi)
+[![GitHub sponsor](https://img.shields.io/badge/GitHub-sponsor-yellow.svg?logo=github-sponsors)](https://github.com/sponsors/JustArchi)
 [![Patreon support](https://img.shields.io/badge/Patreon-support-yellow.svg?logo=patreon)](https://www.patreon.com/JustArchi)
 [![PayPal.me donate](https://img.shields.io/badge/PayPal.me-donate-yellow.svg?logo=paypal)](https://www.paypal.me/JustArchi/5eur)
 [![PayPal donate](https://img.shields.io/badge/PayPal-donate-yellow.svg?logo=paypal)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HD2P2P3WGS5Y4)
