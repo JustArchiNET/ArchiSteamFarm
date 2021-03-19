@@ -5,8 +5,9 @@
 [![Build status (Docker)](https://img.shields.io/github/workflow/status/JustArchiNET/ArchiSteamFarm/ASF-docker-publish-main.svg?label=Docker&logo=docker&maxAge=600)](https://hub.docker.com/r/justarchi/archisteamfarm)
 [![Github last commit date](https://img.shields.io/github/last-commit/JustArchiNET/ArchiSteamFarm.svg?label=Updated&logo=github&maxAge=600)](https://github.com/JustArchiNET/ArchiSteamFarm/commits)
 [![License](https://img.shields.io/github/license/JustArchiNET/ArchiSteamFarm.svg?label=License&logo=apache&maxAge=2592000)](https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/LICENSE-2.0.txt)
-[![Localization](https://badges.crowdin.net/archisteamfarm/localized.svg)](https://crowdin.com/project/archisteamfarm)
+[![Total downloads](https://img.shields.io/github/downloads/JustArchiNET/ArchiSteamFarm/total.svg?label=Downloads&logo=github&maxAge=600)](https://github.com/JustArchiNET/ArchiSteamFarm/releases)
 
+[![Localization](https://badges.crowdin.net/archisteamfarm/localized.svg)](https://crowdin.com/project/archisteamfarm)
 [![ConfigGenerator status](https://img.shields.io/website-up-down-green-red/https/justarchinet.github.io/ASF-WebConfigGenerator.svg?label=ConfigGenerator&logo=html5&maxAge=3600)](https://justarchinet.github.io/ASF-WebConfigGenerator)
 [![Statistics status](https://img.shields.io/website-up-down-green-red/https/asf.justarchi.net.svg?label=Statistics&logo=html5&maxAge=3600)](https://asf.justarchi.net)
 [![Steam group](https://img.shields.io/badge/Steam-group-yellowgreen.svg?logo=steam)](https://steamcommunity.com/groups/archiasf)
@@ -21,7 +22,7 @@
 [![GitHub experimental release date](https://img.shields.io/github/release-date-pre/JustArchiNET/ArchiSteamFarm.svg?label=Released&logo=github&maxAge=600)](https://github.com/JustArchiNET/ArchiSteamFarm/releases)
 [![Github experimental release downloads](https://img.shields.io/github/downloads-pre/JustArchiNET/ArchiSteamFarm/latest/total.svg?label=Downloads&logo=github&maxAge=600)](https://github.com/JustArchiNET/ArchiSteamFarm/releases)
 
-[![GitHub sponsor](https://img.shields.io/badge/GitHub-sponsor-yellow.svg?logo=github)](https://github.com/sponsors/JustArchi)
+[![GitHub sponsor](https://img.shields.io/badge/GitHub-sponsor-yellow.svg?logo=githubsponsors)](https://github.com/sponsors/JustArchi)
 [![Patreon support](https://img.shields.io/badge/Patreon-support-yellow.svg?logo=patreon)](https://www.patreon.com/JustArchi)
 [![PayPal.me donate](https://img.shields.io/badge/PayPal.me-donate-yellow.svg?logo=paypal)](https://www.paypal.me/JustArchi/5eur)
 [![PayPal donate](https://img.shields.io/badge/PayPal-donate-yellow.svg?logo=paypal)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HD2P2P3WGS5Y4)
