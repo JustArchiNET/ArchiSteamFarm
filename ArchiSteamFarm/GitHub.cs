@@ -160,7 +160,7 @@ namespace ArchiSteamFarm {
 			MarkdownDocument markdownDocument = Markdown.Parse(markdownText);
 			MarkdownDocument result = new();
 
-			foreach (Block block in markdownDocument.SkipWhile(block => block is not HeadingBlock headingBlock || headingBlock.Inline.FirstChild is not LiteralInline literalInline || (literalInline.Content.ToString() != "Changelog")).Skip(1).TakeWhile(block => block is not ThematicBreakBlock).ToList()) {
+			foreach (Block block in markdownDocument.SkipWhile(block => block is not HeadingBlock headingBlock || headingBlock.Inline?.FirstChild is not LiteralInline literalInline || !literalInline.Content.ToString().Equals("Changelog", StringComparison.OrdinalIgnoreCase)).Skip(1).TakeWhile(block => block is not ThematicBreakBlock).ToList()) {
 				// All blocks that we're interested in must be removed from original markdownDocument firstly
 				markdownDocument.Remove(block);
 				result.Add(block);
@@ -226,6 +226,7 @@ namespace ArchiSteamFarm {
 					using StringWriter writer = new();
 
 					HtmlRenderer renderer = new(writer);
+
 					renderer.Render(Changelog);
 					writer.Flush();
 
@@ -249,7 +250,8 @@ namespace ArchiSteamFarm {
 
 					HtmlRenderer renderer = new(writer) {
 						EnableHtmlForBlock = false,
-						EnableHtmlForInline = false
+						EnableHtmlForInline = false,
+						EnableHtmlEscape = false
 					};
 
 					renderer.Render(Changelog);
