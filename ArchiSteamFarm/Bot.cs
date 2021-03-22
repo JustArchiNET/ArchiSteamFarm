@@ -514,7 +514,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(inventory));
 			}
 
-			if ((amountsToExtract == null) || (amountsToExtract.Count == 0) || amountsToExtract.Values.Any(kv => kv.SetsToExtract == 0)) {
+			if ((amountsToExtract == null) || (amountsToExtract.Count == 0)) {
 				throw new ArgumentNullException(nameof(amountsToExtract));
 			}
 
@@ -762,12 +762,11 @@ namespace ArchiSteamFarm {
 				int partLength;
 				bool copyNewline = false;
 
-				// ReSharper disable ArrangeMissingParentheses - conflict with Roslyn
 				if (message.Length - i > maxMessageLength) {
-					int lastNewLine = message.LastIndexOf(Environment.NewLine, i + maxMessageLength - Environment.NewLine.Length, maxMessageLength - Environment.NewLine.Length, StringComparison.Ordinal);
+					int lastNewLine = message.LastIndexOf(Environment.NewLine, (i + maxMessageLength) - Environment.NewLine.Length, maxMessageLength - Environment.NewLine.Length, StringComparison.Ordinal);
 
 					if (lastNewLine > i) {
-						partLength = lastNewLine - i + Environment.NewLine.Length;
+						partLength = (lastNewLine - i) + Environment.NewLine.Length;
 						copyNewline = true;
 					} else {
 						partLength = maxMessageLength;
@@ -777,12 +776,11 @@ namespace ArchiSteamFarm {
 				}
 
 				// If our message is of max length and ends with a single '\' then we can't split it here, it escapes the next character
-				if ((partLength >= maxMessageLength) && (message[i + partLength - 1] == '\\') && (message[i + partLength - 2] != '\\')) {
+				if ((partLength >= maxMessageLength) && (message[(i + partLength) - 1] == '\\') && (message[(i + partLength) - 2] != '\\')) {
 					// Instead, we'll cut this message one char short and include the rest in next iteration
 					partLength--;
 				}
 
-				// ReSharper restore ArrangeMissingParentheses
 				string messagePart = message.Substring(i, partLength);
 
 				messagePart = steamMessagePrefix + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
@@ -862,16 +860,15 @@ namespace ArchiSteamFarm {
 
 			int i = 0;
 
-			// ReSharper disable ArrangeMissingParentheses - conflict with Roslyn
 			while (i < message.Length) {
 				int partLength;
 				bool copyNewline = false;
 
 				if (message.Length - i > maxMessageLength) {
-					int lastNewLine = message.LastIndexOf(Environment.NewLine, i + maxMessageLength - Environment.NewLine.Length, maxMessageLength - Environment.NewLine.Length, StringComparison.Ordinal);
+					int lastNewLine = message.LastIndexOf(Environment.NewLine, (i + maxMessageLength) - Environment.NewLine.Length, maxMessageLength - Environment.NewLine.Length, StringComparison.Ordinal);
 
 					if (lastNewLine > i) {
-						partLength = lastNewLine - i + Environment.NewLine.Length;
+						partLength = (lastNewLine - i) + Environment.NewLine.Length;
 						copyNewline = true;
 					} else {
 						partLength = maxMessageLength;
@@ -881,12 +878,11 @@ namespace ArchiSteamFarm {
 				}
 
 				// If our message is of max length and ends with a single '\' then we can't split it here, it escapes the next character
-				if ((partLength >= maxMessageLength) && (message[i + partLength - 1] == '\\') && (message[i + partLength - 2] != '\\')) {
+				if ((partLength >= maxMessageLength) && (message[(i + partLength) - 1] == '\\') && (message[(i + partLength) - 2] != '\\')) {
 					// Instead, we'll cut this message one char short and include the rest in next iteration
 					partLength--;
 				}
 
-				// ReSharper restore ArrangeMissingParentheses
 				string messagePart = message.Substring(i, partLength);
 
 				messagePart = steamMessagePrefix + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
@@ -1978,7 +1974,6 @@ namespace ArchiSteamFarm {
 
 				MobileAuthenticator? authenticator = JsonConvert.DeserializeObject<MobileAuthenticator>(json);
 
-				// ReSharper disable once ConditionIsAlwaysTrueOrFalse - wrong, "null" json deserializes into null object
 				if (authenticator == null) {
 					ArchiLogger.LogNullError(nameof(authenticator));
 

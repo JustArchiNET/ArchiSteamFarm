@@ -163,7 +163,6 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			// ReSharper disable once ConditionIsAlwaysTrueOrFalse - wrong, "null" json deserializes into null object
 			if (botDatabase == null) {
 				ASF.ArchiLogger.LogNullError(nameof(botDatabase));
 
