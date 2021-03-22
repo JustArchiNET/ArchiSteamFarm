@@ -13,7 +13,7 @@
     <PackageReference Include="Humanizer" Version="2.8.26" />
     <PackageReference Include="JetBrains.Annotations" Version="2020.3.0" />
     <PackageReference Include="Markdig.Signed" Version="0.24.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Nito.AsyncEx.Coordination" Version="5.1.0" />
     <PackageReference Include="NLog" Version="4.7.8" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.11.0" />
