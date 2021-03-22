@@ -459,7 +459,7 @@ StackTrace:
     <value>Sie können nicht mit sich selbst handeln!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>Dieser Bot hat ASF 2FA nicht aktiviert! Haben Sie vergessen ihren Authentifikator als ASF 2FA zu importieren?</value>
+    <value>Dieser Bot hat ASF-2FA nicht aktiviert! Haben Sie vergessen ihren Authentifikator als ASF 2FA zu importieren?</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
     <value>Diese Bot-Instanz ist nicht verbunden!</value>
