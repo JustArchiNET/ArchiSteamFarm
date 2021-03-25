@@ -358,6 +358,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Idling selected {0}: {1}.
+        /// </summary>
+        public static string BotIdlingSelectedGames {
+            get {
+                return ResourceManager.GetString("BotIdlingSelectedGames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Not starting this bot instance because it&apos;s disabled in config file!.
         /// </summary>
         public static string BotInstanceNotStartingBecauseDisabled {
@@ -574,7 +583,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can&apos;t send trade to yourself!.
+        ///   Looks up a localized string similar to You can&apos;t send a trade to yourself!.
         /// </summary>
         public static string BotSendingTradeToYourself {
             get {
@@ -1298,7 +1307,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You&apos;ve loaded one or more of custom plugins into the ASF. Since we&apos;re unable to offer a support for modded setups, please reach the appropriate developers of the plugins that you decided to use in case of any issues..
+        ///   Looks up a localized string similar to You&apos;ve loaded one or multiple custom plugins into ASF. Since we&apos;re unable to offer support for modded setups, please contact the appropriate developers of the plugins that you decided to use in case of any issues..
         /// </summary>
         public static string PluginsWarning {
             get {
@@ -1415,7 +1424,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ASF will attempt to use your preferred {0} culture, but translation in that language was completed only in {1}. Perhaps you could help us improve ASF translation for your language?.
+        ///   Looks up a localized string similar to ASF will attempt to use your preferred {0} culture, but translation into that language is only {1} complete. Perhaps you could help us improve the ASF translation for your language?.
         /// </summary>
         public static string TranslationIncomplete {
             get {
@@ -1613,7 +1622,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You&apos;re using a version that is newer than latest released version for your update channel. Please note that pre-release versions are dedicated to users who know how to report bugs, deal with issues and give feedback - no technical support will be given..
+        ///   Looks up a localized string similar to You&apos;re using a version that is newer than the latest released version for your update channel. Please note that pre-release versions are meant for users who know how to report bugs, deal with issues and give feedback - no technical support will be given..
         /// </summary>
         public static string WarningPreReleaseVersion {
             get {
@@ -1649,7 +1658,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You&apos;re attempting to run {0} variant of ASF in unsupported environment: {1}. Supply --ignore-unsupported-environment argument if you really know what you&apos;re doing..
+        ///   Looks up a localized string similar to You&apos;re attempting to run {0} variant of ASF in an unsupported environment: {1}. Supply --ignore-unsupported-environment argument if you really know what you&apos;re doing..
         /// </summary>
         public static string WarningUnsupportedEnvironment {
             get {

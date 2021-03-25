@@ -3427,6 +3427,8 @@ namespace ArchiSteamFarm {
 				if (CardsFarmer.NowFarming || !IsPlayingPossible) {
 					return;
 				}
+
+				ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotIdlingSelectedGames, nameof(BotConfig.GamesPlayedWhileIdle), string.Join(", ", BotConfig.GamesPlayedWhileIdle)));
 			}
 
 			await ArchiHandler.PlayGames(BotConfig.GamesPlayedWhileIdle, BotConfig.CustomGamePlayedWhileIdle).ConfigureAwait(false);
