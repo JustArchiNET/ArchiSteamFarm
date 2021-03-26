@@ -728,8 +728,10 @@
   
   <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
     <value>Непознат аргумент в командната линия: {0}</value>
+    <comment>{0} will be replaced by unrecognized command that has been provided</comment>
   </data>
-<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
     <value>Папката с настройките не може да бъде открита, прекратяване!</value>
-</data>
+  </data>
+  
 </root>

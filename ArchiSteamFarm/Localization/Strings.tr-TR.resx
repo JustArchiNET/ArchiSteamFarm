@@ -741,8 +741,10 @@ Süreç çalışma zamanı: {1}</value>
   </data>
   <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
     <value>Bilinmeyen komut satırı bağımsız değişkeni: {0}</value>
+    <comment>{0} will be replaced by unrecognized command that has been provided</comment>
   </data>
-<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
     <value>Config dizini bulunamadı, çıkılıyor!</value>
-</data>
+  </data>
+  
 </root>

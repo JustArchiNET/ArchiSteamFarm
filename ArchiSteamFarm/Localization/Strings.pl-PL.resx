@@ -741,8 +741,10 @@ Czas procesu: {1}</value>
   </data>
   <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
     <value>Nieznany argument wiersza poleceń: {0}</value>
+    <comment>{0} will be replaced by unrecognized command that has been provided</comment>
   </data>
-<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
     <value>Nie znaleziono katalogu z plikami konfiguracyjnymi, przerywam!</value>
-</data>
+  </data>
+  
 </root>

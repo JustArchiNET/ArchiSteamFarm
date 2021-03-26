@@ -741,8 +741,10 @@ Vrijeme rada procesa: {1}</value>
   </data>
   <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
     <value>Nepoznat komandni argument: {0}</value>
+    <comment>{0} will be replaced by unrecognized command that has been provided</comment>
   </data>
-<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
     <value>Nije pronađen config direktorijum, odustajanje!</value>
-</data>
+  </data>
+  
 </root>

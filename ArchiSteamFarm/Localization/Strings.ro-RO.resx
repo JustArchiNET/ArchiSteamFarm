@@ -730,8 +730,10 @@ Proces: {1}</value>
   
   <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
     <value>Argument necunoscut de comandă-linie: {0}</value>
+    <comment>{0} will be replaced by unrecognized command that has been provided</comment>
   </data>
-<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
     <value>Directorul de configurații nu a putut fi găsit, abandonare!</value>
-</data>
+  </data>
+  
 </root>

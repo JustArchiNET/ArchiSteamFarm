@@ -725,8 +725,10 @@
   
   <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
     <value>未知的命令行參數：{0}</value>
+    <comment>{0} will be replaced by unrecognized command that has been provided</comment>
   </data>
-<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
     <value>無法找到設定檔所在目錄，正在中止！</value>
-</data>
+  </data>
+  
 </root>

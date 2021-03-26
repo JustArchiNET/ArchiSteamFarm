@@ -706,8 +706,10 @@ Interaktívna konzola je teraz aktívna, napíšte "c" pre vstup do príkazovéh
   
   <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
     <value>Neznámy argument príkazového riadku: {0}</value>
+    <comment>{0} will be replaced by unrecognized command that has been provided</comment>
   </data>
-<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
     <value>Konfiguračný adresár sa nepodarilo nájsť, prerušuje sa!</value>
-</data>
+  </data>
+  
 </root>
