@@ -107,6 +107,9 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public const bool DefaultUseLoginKeys = true;
 
+		[PublicAPI]
+		public const ArchiHandler.EUserInterfaceMode DefaultUserInterfaceMode = ArchiHandler.EUserInterfaceMode.Default;
+
 		internal const byte SteamParentalCodeLength = 4;
 
 		private const byte SteamTradeTokenLength = 8;
@@ -247,6 +250,9 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool UseLoginKeys { get; private set; } = DefaultUseLoginKeys;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		public ArchiHandler.EUserInterfaceMode UserInterfaceMode { get; private set; } = DefaultUserInterfaceMode;
 
 		[JsonExtensionData]
 		internal Dictionary<string, JToken>? AdditionalProperties {
@@ -407,7 +413,11 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			return TradingPreferences <= ETradingPreferences.All ? (true, null) : (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(TradingPreferences), TradingPreferences));
+			if (TradingPreferences > ETradingPreferences.All) {
+				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(TradingPreferences), TradingPreferences));
+			}
+
+			return !Enum.IsDefined(typeof(ArchiHandler.EUserInterfaceMode), UserInterfaceMode) ? (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(UserInterfaceMode), UserInterfaceMode)) : (true, null);
 		}
 
 		internal static async Task<BotConfig?> Load(string filePath) {
@@ -547,6 +557,7 @@ namespace ArchiSteamFarm {
 		public bool ShouldSerializeTradingPreferences() => ShouldSerializeDefaultValues || (TradingPreferences != DefaultTradingPreferences);
 		public bool ShouldSerializeTransferableTypes() => ShouldSerializeDefaultValues || ((TransferableTypes != DefaultTransferableTypes) && !TransferableTypes.SetEquals(DefaultTransferableTypes));
 		public bool ShouldSerializeUseLoginKeys() => ShouldSerializeDefaultValues || (UseLoginKeys != DefaultUseLoginKeys);
+		public bool ShouldSerializeUserInterfaceMode() => ShouldSerializeDefaultValues || (UserInterfaceMode != DefaultUserInterfaceMode);
 
 		// ReSharper restore UnusedMember.Global
 	}

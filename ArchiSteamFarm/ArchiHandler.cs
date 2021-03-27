@@ -705,7 +705,11 @@ namespace ArchiSteamFarm {
 			return response.Result;
 		}
 
-		internal void SetCurrentMode(uint chatMode) {
+		internal void SetCurrentMode(EUserInterfaceMode userInterfaceMode, byte chatMode = 2) {
+			if (!Enum.IsDefined(typeof(EUserInterfaceMode), userInterfaceMode)) {
+				throw new InvalidEnumArgumentException(nameof(userInterfaceMode), (int) userInterfaceMode, typeof(EUserInterfaceMode));
+			}
+
 			if (chatMode == 0) {
 				throw new ArgumentOutOfRangeException(nameof(chatMode));
 			}
@@ -718,7 +722,13 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ClientMsgProtobuf<CMsgClientUIMode> request = new(EMsg.ClientCurrentUIMode) { Body = { chat_mode = chatMode } };
+			ClientMsgProtobuf<CMsgClientUIMode> request = new(EMsg.ClientCurrentUIMode) {
+				Body = {
+					uimode = (uint) userInterfaceMode,
+					chat_mode = chatMode
+				}
+			};
+
 			Client.Send(request);
 		}
 
@@ -896,6 +906,12 @@ namespace ArchiSteamFarm {
 				HelpRequestReplies = 10,
 				AccountAlerts = 11
 			}
+		}
+
+		[PublicAPI]
+		public enum EUserInterfaceMode : byte {
+			Default = 0,
+			BigPicture = 1
 		}
 
 		internal sealed class PlayingSessionStateCallback : CallbackMsg {

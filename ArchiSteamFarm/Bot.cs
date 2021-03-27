@@ -2831,7 +2831,7 @@ namespace ArchiSteamFarm {
 						Utilities.InBackground(() => RedeemGamesInBackground(this));
 					}
 
-					ArchiHandler.SetCurrentMode(2);
+					ArchiHandler.SetCurrentMode(BotConfig.UserInterfaceMode);
 					ArchiHandler.RequestItemAnnouncements();
 
 					// Sometimes Steam won't send us our own PersonaStateCallback, so request it explicitly
