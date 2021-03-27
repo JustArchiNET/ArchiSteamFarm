@@ -911,7 +911,8 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public enum EUserInterfaceMode : byte {
 			Default = 0,
-			BigPicture = 1
+			BigPicture = 1,
+			Mobile = 2
 		}
 
 		internal sealed class PlayingSessionStateCallback : CallbackMsg {
