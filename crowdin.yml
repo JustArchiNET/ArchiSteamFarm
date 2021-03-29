@@ -4,6 +4,7 @@
     "source": "/ArchiSteamFarm/Localization/Strings.resx",
     "translation": "/ArchiSteamFarm/Localization/Strings.%locale%.resx",
     "translation_replace": {
+      ".en-LOL.resx": ".qps-ploc.resx",
       ".sr-CS.resx": ".sr-Latn.resx"
     }
   },

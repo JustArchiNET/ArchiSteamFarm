@@ -244,12 +244,24 @@ namespace ArchiSteamFarm {
 
 					ASF.ArchiLogger.LogGenericError(Strings.ErrorInvalidCurrentCulture);
 				}
+			} else {
+				// April Fools easter egg
+				DateTime now = DateTime.Now;
+
+				if ((now.Month == 4) && (now.Day == 1)) {
+					try {
+						CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CreateSpecificCulture("qps-ploc");
+					} catch (Exception e) {
+						ASF.ArchiLogger.LogGenericDebuggingException(e);
+					}
+				}
 			}
 
 			// Skip translation progress for English and invariant (such as "C") cultures
 			switch (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName) {
 				case "en":
 				case "iv":
+				case "qps":
 					return true;
 			}
 
