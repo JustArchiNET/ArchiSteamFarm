@@ -134,12 +134,12 @@
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} se ha topado con una excepción fatal antes de que el módulo de registro principal pudiera inicializarse!</value>
+    <value>¡ASF V{0} encontró una excepción fatal antes de que el módulo de registro se pudiera inicializar!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
     <value>Excepción: {0}() {1}
-Trazo de pila:
+StackTrace:
 {2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
@@ -151,15 +151,15 @@ Trazo de pila:
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>La configuración global no pudo ser cargada, por favor asegúrese de que {0} existe y es válido! Sigue la 'guía de configuración' en la wiki si tienes dudas.</value>
+    <value>La configuración global no pudo ser cargada. ¡Asegúrate de que {0} existe y es válido! Sigue la guía de 'configuración' en la wiki si tienes dudas.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
-    <value>{0} es inválido!</value>
+    <value>¡{0} es inválido!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>No hay bots definidos, ¿has olvidado configurar ASF?</value>
+    <value>No hay bots definidos. ¿Olvidaste configurar ASF?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>¡{0} es nulo!</value>
@@ -177,13 +177,13 @@ Trazo de pila:
     <value>¡No se pudo comprobar la última versión!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
-    <value>No se ha podido proceder con la actualización porque no hay ninguna opción que se relacione con la versión actual! La actualización automática a esa versión no es posible.</value>
+    <value>¡No se pudo continuar con la actualización porque no hay ningún archivo que se relacione con la versión actual! La actualización automática a esa versión no es posible.</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>¡No se puede continuar con una actualización porque esa versión no incluye ningún recurso!</value>
+    <value>¡No se pudo continuar con una actualización porque esa versión no incluye ningún archivo!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Recibida una solicitud de entrada del usuario, ¡pero el proceso se está ejecutando en modo servidor!</value>
+    <value>Se recibió una solicitud de entrada del usuario, ¡pero el proceso se está ejecutando en modo servidor!</value>
   </data>
   <data name="Exiting" xml:space="preserve">
     <value>Terminando...</value>
@@ -192,7 +192,7 @@ Trazo de pila:
     <value>¡Fallo!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>¡El archivo de la configuración global ha sido cambiado!</value>
+    <value>¡El archivo de configuración global ha sido cambiado!</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
     <value>¡El archivo de configuración global ha sido eliminado!</value>
@@ -206,13 +206,13 @@ Trazo de pila:
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>No hay bots activos, terminando...</value>
+    <value>No hay bots activos, saliendo...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
     <value>¡Actualizando sesión!</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
-    <value>Rechazando el intercambio: {0}</value>
+    <value>Rechazando intercambio: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
@@ -231,7 +231,7 @@ Trazo de pila:
     <value>Comprobando si existe una nueva versión...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Descargando la nueva versión: {0} ({1} MB)... ¡Mientras espera, considere donar si aprecia el trabajo que se está realizando! :)</value>
+    <value>Descargando nueva versión: {0} ({1} MB)... ¡Mientras esperas, considera donar si aprecias el trabajo que se está realizando! :)</value>
     <comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
@@ -249,15 +249,15 @@ Trazo de pila:
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>Por favor ingrese su codigo de autentificación SteamGuard que ha sido enviado a su e-mail: </value>
+    <value>Por favor, introduce el código de autenticación SteamGuard que ha sido enviado a tu correo electrónico: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>Por favor ingresa tus credenciales de Steam: </value>
+    <value>Por favor, introduce tus credenciales de Steam: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalCode" xml:space="preserve">
-    <value>Por favor, ingrese su código parental de Steam: </value>
+    <value>Por favor, introduce el código parental de Steam: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
@@ -297,14 +297,14 @@ Trazo de pila:
     <value>Comprobando la primera página de las insignias...</value>
   </data>
   <data name="CheckingOtherBadgePages" xml:space="preserve">
-    <value>Comprobando otras paginas de insignias...</value>
+    <value>Comprobando otras páginas de insignias...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
     <value>Algoritmo de recolección elegido: {0}</value>
     <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
-    <value>¡Hecho!</value>
+    <value>¡Listo!</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
     <value>Tenemos un total de {0} juegos ({1} cromos) restantes por recolectar (~{2} restantes)...</value>
@@ -314,11 +314,11 @@ Trazo de pila:
     <value>¡Recolección finalizada!</value>
   </data>
   <data name="IdlingFinishedForGame" xml:space="preserve">
-    <value>Terminando recolección: {0} ({1}) después de {2} de juego!</value>
+    <value>¡Recolección finalizada: {0} ({1}) después de {2} de juego!</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
   </data>
   <data name="IdlingFinishedForGames" xml:space="preserve">
-    <value>Terminando recolección: {0}</value>
+    <value>Recolección finalizada: {0}</value>
     <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="IdlingStatusForGame" xml:space="preserve">
@@ -339,11 +339,11 @@ Trazo de pila:
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="NowIdlingList" xml:space="preserve">
-    <value>Ahora Recolectando: {0}</value>
+    <value>Actualmente recolectando: {0}</value>
     <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
-    <value>¡No es posible jugar actualmente, intentaremos mas tarde!</value>
+    <value>¡No es posible jugar actualmente, lo intentaremos de nuevo más tarde!</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
     <value>Aún recolectando: {0} ({1})</value>
@@ -365,7 +365,7 @@ Trazo de pila:
     <value>¡Comando desconocido!</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
-    <value>¡No se pudo obtener información de las insignias, volveremos a intentarlo más tarde!</value>
+    <value>No se pudo obtener información de las insignias, ¡lo intentaremos de nuevo más tarde!</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
     <value>No se pudo comprobar el estado de los cromos para: {0} ({1}), ¡lo intentaremos de nuevo más tarde!</value>
@@ -493,16 +493,16 @@ Trazo de pila:
     <value>El bot no está recolectando nada.</value>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>El bot esta limitado y no puede conseguir ningún cromo a través de la recolección.</value>
+    <value>El bot está limitado y no puede obtener ningún cromo a través de la recolección.</value>
   </data>
   <data name="BotStatusConnecting" xml:space="preserve">
-    <value>El bot se está conectando a la red Steam.</value>
+    <value>El bot se está conectando a la red de Steam.</value>
   </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
-    <value>El Bot no se está ejecutando.</value>
+    <value>El bot no se está ejecutando.</value>
   </data>
   <data name="BotStatusPaused" xml:space="preserve">
-    <value>El bot está pausado o funcionando en modo manual.</value>
+    <value>El bot está pausado o ejecutándose en modo manual.</value>
   </data>
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
     <value>El bot se está utilizando actualmente.</value>
@@ -527,7 +527,7 @@ Trazo de pila:
     <value>Conexión con la red de Steam perdida. Reconectando...</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
-    <value>La cuenta ya no está ocupada, ¡se ha reanudado el proceso de recolección!</value>
+    <value>La cuenta ya no está ocupada: ¡se ha reanudado el proceso de recolección!</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>La cuenta se está utilizando: ASF reanudará la recolección cuando esté disponible...</value>
@@ -557,7 +557,7 @@ Trazo de pila:
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>¡Por favor compruebe nuestra sección de política de privacidad en la wiki si le preocupa lo que ASF está haciendo!</value>
+    <value>¡Por favor, revisa nuestra sección de política de privacidad en la wiki si te preocupa lo que ASF está haciendo!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
     <value>Parecer ser la primera vez que inicia el programa, ¡bienvenido!</value>
@@ -582,10 +582,10 @@ Trazo de pila:
     <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
   </data>
   <data name="BotAccountLocked" xml:space="preserve">
-    <value>Esta cuenta está bloqueada, ¡el proceso de recolección está permanentemente indisponible!</value>
+    <value>Esta cuenta está bloqueada, ¡el proceso de recolección está permanentemente no disponible!</value>
   </data>
   <data name="BotStatusLocked" xml:space="preserve">
-    <value>El bot esta bloqueado y no puede conseguir ningún cromo a través de la recolección.</value>
+    <value>El bot está bloqueado y no puede obtener ningún cromo a través de la recolección.</value>
   </data>
   <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
     <value>¡Esta función está disponible unicamente en modo 'headless'!</value>
@@ -621,7 +621,7 @@ Tiempo de actividad del proceso: {1}</value>
     <value>Actualizando datos de los paquetes...</value>
   </data>
   <data name="WarningDeprecated" xml:space="preserve">
-    <value>Uso de {0} está desaprobado y se quitará en versiones futuras del programa. Utilice en su lugar {1}.</value>
+    <value>El uso de {0} está obsoleto y se quitará en futuras versiones del programa. Por favor, en su lugar usa {1}.</value>
     <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
   </data>
   <data name="BotAcceptedDonationTrade" xml:space="preserve">
@@ -647,15 +647,15 @@ Tiempo de actividad del proceso: {1}</value>
     <comment>{0} will be replaced by bot's level</comment>
   </data>
   <data name="ActivelyMatchingItems" xml:space="preserve">
-    <value>Buscando coincidencias en items de Steam, ronda #{0}...</value>
+    <value>Emparejando artículos de Steam, ronda #{0}...</value>
     <comment>{0} will be replaced by round number</comment>
   </data>
   <data name="DoneActivelyMatchingItems" xml:space="preserve">
-    <value>Finalizada búsqueda de coincidencias en items de Steam, ronda #{0}.</value>
+    <value>Emparejamiento de artículos de Steam terminado, ronda #{0}.</value>
     <comment>{0} will be replaced by round number</comment>
   </data>
   <data name="ErrorAborted" xml:space="preserve">
-    <value>Cancelado!</value>
+    <value>¡Cancelado!</value>
   </data>
   <data name="ActivelyMatchingItemsRound" xml:space="preserve">
     <value>Se emparejó un total de {0} sets durante esta ronda.</value>
@@ -680,7 +680,7 @@ Tiempo de actividad del proceso: {1}</value>
     <value>Has cargado uno o más plugins personalizados en ASF. Ya que no podemos ofrecer soporte a configuraciones modificadas, por favor, contacta a los desarrolladores de los plugins que decidiste usar en caso de cualquier problema.</value>
   </data>
   <data name="PleaseWait" xml:space="preserve">
-    <value>Por favor espera...</value>
+    <value>Por favor, espera...</value>
   </data>
   <data name="EnterCommand" xml:space="preserve">
     <value>Ingrese el comando: </value>
@@ -743,10 +743,10 @@ Tiempo de actividad del proceso: {1}</value>
     <comment>{0} will be replaced by unrecognized command that has been provided</comment>
   </data>
   <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
-    <value>¡No se pudo encontrar el directorio de configuración, abortando!</value>
+    <value>No se pudo encontrar el directorio de configuración, ¡abortando!</value>
   </data>
   <data name="BotIdlingSelectedGames" xml:space="preserve">
-    <value>Idleo seleccionado {0}:{1}</value>
+    <value>Recolección seleccionada {0}:{1}</value>
     <comment>{0} will be replaced by internal name of the config property (e.g. "GamesPlayedWhileIdle"), {1} will be replaced by comma-separated list of appIDs that user has chosen</comment>
   </data>
 </root>
