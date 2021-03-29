@@ -231,13 +231,13 @@ namespace ArchiSteamFarm {
 			await ASF.InitGlobalConfig(globalConfig).ConfigureAwait(false);
 
 			if (Debugging.IsDebugConfigured) {
-				ASF.ArchiLogger.LogGenericDebug(globalConfigFile + ": " + JsonConvert.SerializeObject(ASF.GlobalConfig, Formatting.Indented));
+				ASF.ArchiLogger.LogGenericDebug(globalConfigFile + ": " + JsonConvert.SerializeObject(globalConfig, Formatting.Indented));
 			}
 
-			if (!string.IsNullOrEmpty(ASF.GlobalConfig?.CurrentCulture)) {
+			if (!string.IsNullOrEmpty(globalConfig.CurrentCulture)) {
 				try {
 					// GetCultureInfo() would be better but we can't use it for specifying neutral cultures such as "en"
-					CultureInfo culture = CultureInfo.CreateSpecificCulture(ASF.GlobalConfig!.CurrentCulture!);
+					CultureInfo culture = CultureInfo.CreateSpecificCulture(globalConfig.CurrentCulture!);
 					CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = culture;
 				} catch (Exception e) {
 					ASF.ArchiLogger.LogGenericWarningException(e);
