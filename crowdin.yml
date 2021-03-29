@@ -2,7 +2,10 @@
 "files": [
   {
     "source": "/ArchiSteamFarm/Localization/Strings.resx",
-    "translation": "/ArchiSteamFarm/Localization/Strings.%locale%.resx"
+    "translation": "/ArchiSteamFarm/Localization/Strings.%locale%.resx",
+    "translation_replace": {
+      ".sr-CS.resx": ".sr-Latn.resx"
+    }
   },
   {
     "source": "/wiki/*.md",
