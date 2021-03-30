@@ -250,7 +250,7 @@ namespace ArchiSteamFarm {
 
 				if ((now.Month == 4) && (now.Day == 1)) {
 					try {
-						CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CreateSpecificCulture("qps-ploc");
+						CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CreateSpecificCulture("qps-Ploc");
 					} catch (Exception e) {
 						ASF.ArchiLogger.LogGenericDebuggingException(e);
 					}
