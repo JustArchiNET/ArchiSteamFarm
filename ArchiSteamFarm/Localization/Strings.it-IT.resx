@@ -453,7 +453,9 @@
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Offerta di scambio inviata con successo!</value>
   </data>
-  
+  <data name="BotSendingTradeToYourself" xml:space="preserve">
+    <value>Non puoi inviarti un'offerta da solo!</value>
+  </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Questo bot non ha abilitato ASF 2FA! Hai dimenticato di importare il tuo autenticatore come ASF 2FA?</value>
   </data>
@@ -562,7 +564,10 @@
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>Il valore CurrentCulture che hai fornito non è valido, ASF continuerà ad utilizzare quello di default!</value>
   </data>
-  
+  <data name="TranslationIncomplete" xml:space="preserve">
+    <value>ASF tenterà di usare la tua cultura preferita {0}, ma la traduzione in quella lingua è completa solo al {1}. Forse potresti aiutarci a migliorare la traduzione di ASF per la tua lingua?</value>
+    <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
+  </data>
   <data name="IdlingGameNotPossible" xml:space="preserve">
     <value>L'idling di {0} ({1}) è temporaneamente disabilitato, poiché ASF non è in grado di eseguire questo gioco al momento.</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
@@ -591,7 +596,9 @@
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Accesso negato!</value>
   </data>
-  
+  <data name="WarningPreReleaseVersion" xml:space="preserve">
+    <value>Stai usando una versione più recente dell'ultima rilasciata per il tuo canale di aggiornamento. Sei pregato di notare che le versioni pre-rilascio sono pensate per utenti che sanno come segnalare i bug, affrontare problemi e dare feedback - non sarà dato alcun supporto tecnico.</value>
+  </data>
   <data name="BotStats" xml:space="preserve">
     <value>Uso corrente della memoria: {0} MB.
 Tempo di attività: {1}</value>
@@ -668,7 +675,9 @@ Tempo di attività: {1}</value>
   <data name="NothingFound" xml:space="preserve">
     <value>Nessun risultato!</value>
   </data>
-  
+  <data name="PluginsWarning" xml:space="preserve">
+    <value>Hai caricato uno o più plugin in ASF. Poiché non possiamo offrire supporto per configurazioni moddate, sei pregato di contattare gli sviluppatori appropriati dei plugin che hai deciso di usare in caso di ogni problema.</value>
+  </data>
   <data name="PleaseWait" xml:space="preserve">
     <value>Attendere prego...</value>
   </data>
@@ -725,8 +734,15 @@ Tempo di attività: {1}</value>
     <value>Risultato: {0}</value>
     <comment>{0} will be replaced by generic result of various functions that use this string</comment>
   </data>
-  
-  
-  
+  <data name="WarningUnsupportedEnvironment" xml:space="preserve">
+    <value>Stai tentando di eseguire la variante {0} di ASF in un ambiente non supportato: {1}. Fornisci l'argomento --ignore-unsupported-environment se sai davvero cosa stai facendo.</value>
+  </data>
+  <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
+    <value>Argomento della riga di comando sconosciuto: {0}</value>
+    <comment>{0} will be replaced by unrecognized command that has been provided</comment>
+  </data>
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Impossibile trovare la cartella di configurazione, annullamento!</value>
+  </data>
   
 </root>

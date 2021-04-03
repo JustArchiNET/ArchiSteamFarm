@@ -598,7 +598,7 @@ StackTrace:
     <value>¡Acceso denegado!</value>
   </data>
   <data name="WarningPreReleaseVersion" xml:space="preserve">
-    <value>Está utilizando una versión más reciente que la última versión publicada para su canal de actualizaciones. Por favor, tenga en cuenta que las versiones preliminares están destinadas a usuarios que saben cómo reportar errores, tratar con problemas y proporcionar comentarios - no se dará soporte técnico.</value>
+    <value>Estás usando una versión más reciente que la última publicada para tu canal de actualizaciones. Por favor, ten en cuenta que las versiones preliminares están destinadas a usuarios que saben cómo reportar errores, tratar con problemas y proporcionar comentarios - no se dará soporte técnico.</value>
   </data>
   <data name="BotStats" xml:space="preserve">
     <value>Uso de memoria actual: {0} MB.
@@ -643,7 +643,7 @@ Tiempo de actividad del proceso: {1}</value>
     <value>El bot no tiene cartera.</value>
   </data>
   <data name="BotLevel" xml:space="preserve">
-    <value>Nivel del bot {0}.</value>
+    <value>El bot tiene nivel {0}.</value>
     <comment>{0} will be replaced by bot's level</comment>
   </data>
   <data name="ActivelyMatchingItems" xml:space="preserve">
@@ -662,7 +662,7 @@ Tiempo de actividad del proceso: {1}</value>
     <comment>{0} will be replaced by number of sets traded</comment>
   </data>
   <data name="WarningExcessiveBotsCount" xml:space="preserve">
-    <value>Se están ejecutando mas cuentas bots que nuestro limite recomendado ({0}). Tenga en cuenta que esta configuración no es compatible y puede causar varios problemas relacionados a steam, incluyendo suspensiones de cuenta. Revisa el FAQ para más detalles.</value>
+    <value>Estás ejecutando más cuentas bot que nuestro límite recomendado ({0}). Ten en cuenta que no se da soporte a esta configuración y puede causar varios problemas relacionados con Steam, incluyendo la suspensión de cuentas. Revisa las preguntas frecuentas para más detalles.</value>
     <comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
   </data>
   <data name="PluginLoaded" xml:space="preserve">
@@ -683,13 +683,13 @@ Tiempo de actividad del proceso: {1}</value>
     <value>Por favor, espera...</value>
   </data>
   <data name="EnterCommand" xml:space="preserve">
-    <value>Ingrese el comando: </value>
+    <value>Introducir comando: </value>
   </data>
   <data name="Executing" xml:space="preserve">
     <value>Ejecutando...</value>
   </data>
   <data name="InteractiveConsoleEnabled" xml:space="preserve">
-    <value>La consola interactiva está activa, escriba 'c' para ingresar al modo de comando.</value>
+    <value>La consola interactiva está activa, presiona 'c' para entrar al modo comando.</value>
   </data>
   <data name="InteractiveConsoleNotAvailable" xml:space="preserve">
     <value>La consola interactiva no está disponible debido a que falta la propiedad de configuración {0}.</value>
@@ -700,11 +700,11 @@ Tiempo de actividad del proceso: {1}</value>
     <comment>{0} will be replaced by the generated response (string)</comment>
   </data>
   <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
-    <value>El bot tiene {0} juegos restantes en su cola de fondo.</value>
+    <value>El bot tiene {0} juegos restantes en la cola en segundo plano.</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
   </data>
   <data name="ErrorSingleInstanceRequired" xml:space="preserve">
-    <value>El proceso ASF ya está ejecutándose para este directorio de trabajo, ¡abortando!</value>
+    <value>El proceso de ASF ya se está ejecutando para este directorio, ¡abortando!</value>
   </data>
   <data name="BotHandledConfirmations" xml:space="preserve">
     <value>¡Se atendieron correctamente {0} confirmaciones!</value>
@@ -718,7 +718,7 @@ Tiempo de actividad del proceso: {1}</value>
     <value>Limpiando archivos antiguos después de actualizar...</value>
   </data>
   <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
-    <value>Generando código parental de Steam, esto puede tomar un tiempo, considere ponerlo en la configuración...</value>
+    <value>Generando código parental de Steam, esto puede tomar un tiempo, considera ponerlo en la configuración...</value>
   </data>
   <data name="IPCConfigChanged" xml:space="preserve">
     <value>¡La configuración IPC ha sido cambiada!</value>
