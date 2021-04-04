@@ -286,11 +286,11 @@ StackTrace:
     <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
   </data>
   <data name="BotStatusIdling" xml:space="preserve">
-    <value>El bot está recolectando del juego: {0} ({1}, {2} cromos restantes) de un total de {3} juegos ({4} cromos) aún por recolectar (faltan ~{5}).</value>
+    <value>El bot está recolectando: {0} ({1}, {2} cromos restantes) de un total de {3} juegos ({4} cromos) aún por recolectar (faltan ~{5}).</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle, {3} will be replaced by total number of games to idle, {4} will be replaced by total number of cards to idle, {5} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
   </data>
   <data name="BotStatusIdlingList" xml:space="preserve">
-    <value>El bot está recolectando el juego: {0} de un total de {1} juegos ({2} cromos) aún por recolectar (faltan ~{3}).</value>
+    <value>El bot está recolectando: {0} de un total de {1} juegos ({2} cromos) aún por recolectar (faltan ~{3}).</value>
     <comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to idle, {2} will be replaced by total number of cards to idle, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
   </data>
   <data name="CheckingFirstBadgePage" xml:space="preserve">
@@ -425,7 +425,7 @@ StackTrace:
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
-    <value>¡No se ha iniciado esta instancia del bot porque está desactivado en el archivo de configuración!</value>
+    <value>¡No se ha iniciado esta instancia de bot porque está desactivado en el archivo de configuración!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
     <value>Se recibió el código de error TwoFactorCodeMismatch {0} veces seguidas. Tus credenciales de 2FA ya no son válidas, o tu reloj no está sincronizado, ¡abortando!</value>
@@ -449,7 +449,7 @@ StackTrace:
     <value>¡Oferta de intercambio fallida!</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>¡El intercambio no ha podido enviarse porque no hay ningún usuario con permisos de "master" definidos!</value>
+    <value>¡No se pudo enviar el intercambio porque no hay ningún usuario con permisos master definido!</value>
   </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>¡Oferta de intercambio enviada exitosamente!</value>
@@ -464,7 +464,7 @@ StackTrace:
     <value>¡Esta instancia de bot no está conectada!</value>
   </data>
   <data name="BotNotOwnedYet" xml:space="preserve">
-    <value>No lo posees todavía: {0}</value>
+    <value>Todavía no posees: {0}</value>
     <comment>{0} will be replaced by query (string)</comment>
   </data>
   <data name="BotOwnedAlreadyWithName" xml:space="preserve">
@@ -472,7 +472,7 @@ StackTrace:
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>Cuota excedida, se reintentará tras {0} de tiempo de espera...</value>
+    <value>Límite de tráfico excedido, lo intentaremos nuevamente dentro de {0}...</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
@@ -487,7 +487,7 @@ StackTrace:
     <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string, {2} will be replaced by list of key-value pairs, separated by a comma</comment>
   </data>
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
-    <value>¡Eliminada la contraseña caducada!</value>
+    <value>¡Se eliminó la clave de sesión expirada!</value>
   </data>
   <data name="BotStatusNotIdling" xml:space="preserve">
     <value>El bot no está recolectando nada.</value>
@@ -520,7 +520,7 @@ StackTrace:
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
-    <value>Fallo debido a un error: {0}</value>
+    <value>Fallo debido al error: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotConnectionLost" xml:space="preserve">
@@ -536,7 +536,7 @@ StackTrace:
     <value>Conectando...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>Falló al desconectar el cliente. ¡Abandonando la instancia de este bot!</value>
+    <value>Falló al desconectar el cliente. ¡Abandonando esta instancia de bot!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
     <value>No se pudo iniciar SteamDirectory: ¡la conexión con la red de Steam podría tardar más de lo habitual!</value>
@@ -549,7 +549,7 @@ StackTrace:
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>La base de datos persistente no se pudo cargar, si el problema persiste, ¡por favor elimine {0} para rehacer la base de datos!</value>
+    <value>La base de datos persistente no se pudo cargar, si el problema persiste, ¡por favor, elimina {0} para rehacer la base de datos!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
@@ -574,7 +574,7 @@ StackTrace:
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="WarningIdlingGameMismatch" xml:space="preserve">
-    <value>ASF detectó una inconsistencia en el ID {0} ({1}) y utilizará el ID de {2} en su lugar.</value>
+    <value>ASF detectó una inconsistencia de ID para {0} ({1}) y utilizará el ID de {2} en su lugar.</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
   </data>
   <data name="BotVersion" xml:space="preserve">
@@ -588,7 +588,7 @@ StackTrace:
     <value>El bot está bloqueado y no puede obtener ningún cromo a través de la recolección.</value>
   </data>
   <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
-    <value>¡Esta función está disponible unicamente en modo 'headless'!</value>
+    <value>¡Esta función solo está disponible en modo headless!</value>
   </data>
   <data name="BotOwnedAlready" xml:space="preserve">
     <value>Ya posees: {0}</value>
@@ -606,7 +606,7 @@ Tiempo de actividad del proceso: {1}</value>
     <comment>{0} will be replaced by number (in megabytes) of memory being used, {1} will be replaced by translated TimeSpan string (such as "25 minutes"). Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
-    <value>Despejando la lista de descubrimientos de Steam #{0}...</value>
+    <value>Explorando la lista de descubrimientos de Steam #{0}...</value>
     <comment>{0} will be replaced by queue number</comment>
   </data>
   <data name="DoneClearingDiscoveryQueue" xml:space="preserve">
@@ -614,7 +614,7 @@ Tiempo de actividad del proceso: {1}</value>
     <comment>{0} will be replaced by queue number</comment>
   </data>
   <data name="BotOwnsOverviewPerGame" xml:space="preserve">
-    <value>{0}/{1} bots ya tienen el juego {2}.</value>
+    <value>{0}/{1} bots ya poseen el juego {2}.</value>
     <comment>{0} will be replaced by number of bots that already own particular game being checked, {1} will be replaced by total number of bots that were checked during the process, {2} will be replaced by game's ID (number)</comment>
   </data>
   <data name="BotRefreshingPackagesData" xml:space="preserve">
@@ -629,11 +629,11 @@ Tiempo de actividad del proceso: {1}</value>
     <comment>{0} will be replaced by trade's ID (number)</comment>
   </data>
   <data name="WarningWorkaroundTriggered" xml:space="preserve">
-    <value>La solución al error {0} se está llevando a cabo.</value>
+    <value>La solución alternativa para el error {0} se ha activado.</value>
     <comment>{0} will be replaced by the bug's name provided by ASF</comment>
   </data>
   <data name="TargetBotNotConnected" xml:space="preserve">
-    <value>¡El bot seleccionado no esta conectado!</value>
+    <value>¡El bot seleccionado no está conectado!</value>
   </data>
   <data name="BotWalletBalance" xml:space="preserve">
     <value>Saldo de la cartera: {0} {1}</value>
