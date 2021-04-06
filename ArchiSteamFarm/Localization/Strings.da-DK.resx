@@ -455,7 +455,9 @@ StackTrace:
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Handel tilbud sendt med succes!</value>
   </data>
-  
+  <data name="BotSendingTradeToYourself" xml:space="preserve">
+    <value>Du kan ikke sende en handel til dig selv!</value>
+  </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Dette bot har ikke ASF 2FA aktiveret! Har du glemt at importere din autentificering som ASF 2FA?</value>
   </data>
@@ -564,7 +566,10 @@ StackTrace:
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>Din angivne CurrentCulture er ugyldig, ConfigGenerator vil køre med en standard!</value>
   </data>
-  
+  <data name="TranslationIncomplete" xml:space="preserve">
+    <value>ASF vil forsøge at bruge din foretrukne {0} kultur, men oversættelsen til det pågældende sprog er kun {1} komplet. Måske kan du hjælpe os med at forbedre oversættelsen af ASF til dit sprog?</value>
+    <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
+  </data>
   <data name="IdlingGameNotPossible" xml:space="preserve">
     <value>Idling {0} ({1}) er midlertidigt deaktiveret, da ASF ikke er i stand til at spille dette spil i øjeblikket.</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
@@ -593,8 +598,14 @@ StackTrace:
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Adgang nægtet!</value>
   </data>
-  
-  
+  <data name="WarningPreReleaseVersion" xml:space="preserve">
+    <value>Du bruger en version, der er nyere end den senest udgivne version til din opdateringskanal. Bemærk venligst, at før-udgivelsesversioner er beregnet til brugere, der ved, hvordan man rapporterer fejl, håndterer problemer og giver feedback - der vil ikke blive ydet teknisk support.</value>
+  </data>
+  <data name="BotStats" xml:space="preserve">
+    <value>Aktuel hukommelsesforbrug: {0} MB.
+Processens oppetid: {1}</value>
+    <comment>{0} will be replaced by number (in megabytes) of memory being used, {1} will be replaced by translated TimeSpan string (such as "25 minutes"). Please note that this string should include newlines for formatting.</comment>
+  </data>
   <data name="ClearingDiscoveryQueue" xml:space="preserve">
     <value>Renser Steam opdagelses kø #{0}...</value>
     <comment>{0} will be replaced by queue number</comment>
@@ -666,7 +677,9 @@ StackTrace:
   <data name="NothingFound" xml:space="preserve">
     <value>Intet fundet!</value>
   </data>
-  
+  <data name="PluginsWarning" xml:space="preserve">
+    <value>Du har indlæst et eller flere brugerdefinerede plugins i ASF. Da vi ikke kan tilbyde support for modificerede opsætninger, bedes du kontakte de relevante udviklere af de plugins, du har besluttet at bruge, hvis der opstår problemer.</value>
+  </data>
   <data name="PleaseWait" xml:space="preserve">
     <value>Vent venligst...</value>
   </data>
@@ -711,11 +724,30 @@ StackTrace:
   <data name="IPCConfigChanged" xml:space="preserve">
     <value>IPC konfiguration er blevet ændret!</value>
   </data>
-  
-  
-  
-  
-  
-  
-  
+  <data name="BotTradeOfferResult" xml:space="preserve">
+    <value>Handelstilbuddet {0} er bestemt til at være {1} på grund af {2}.</value>
+    <comment>{0} will be replaced by trade offer ID (number), {1} will be replaced by internal ASF enum name, {2} will be replaced by technical reason why the trade was determined to be in this state</comment>
+  </data>
+  <data name="BotInvalidPasswordDuringLogin" xml:space="preserve">
+    <value>Modtog fejlkode InvalidPassword {0} gange i træk. Din adgangskode til denne konto er sandsynligvis forkert, afbryder!</value>
+    <comment>{0} will be replaced by maximum allowed number of failed login attempts</comment>
+  </data>
+  <data name="Result" xml:space="preserve">
+    <value>Resultat: {0}</value>
+    <comment>{0} will be replaced by generic result of various functions that use this string</comment>
+  </data>
+  <data name="WarningUnsupportedEnvironment" xml:space="preserve">
+    <value>Du forsøger at køre {0} variant af ASF i et miljø, der ikke understøttes: {1}. Angiv --ignore-unsupported-environment-argumentet hvis du virkelig ved, hvad du laver.</value>
+  </data>
+  <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
+    <value>Ukendt kommandolinjeargument: {0}</value>
+    <comment>{0} will be replaced by unrecognized command that has been provided</comment>
+  </data>
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Konfigurationsmappen kunne ikke findes, afbryder!</value>
+  </data>
+  <data name="BotIdlingSelectedGames" xml:space="preserve">
+    <value>Idling valgt {0}: {1}</value>
+    <comment>{0} will be replaced by internal name of the config property (e.g. "GamesPlayedWhileIdle"), {1} will be replaced by comma-separated list of appIDs that user has chosen</comment>
+  </data>
 </root>
