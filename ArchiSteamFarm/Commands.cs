@@ -2650,9 +2650,7 @@ namespace ArchiSteamFarm {
 
 										if (walletResult != null) {
 											result.Result = walletResult.Value.Result;
-
-											// BadActivationCode is our smart guess in this case
-											result.PurchaseResultDetail = walletResult.Value.PurchaseResult.GetValueOrDefault(walletResult.Value.Result == EResult.OK ? EPurchaseResultDetail.NoDetail : EPurchaseResultDetail.BadActivationCode);
+											result.PurchaseResultDetail = walletResult.Value.PurchaseResult.GetValueOrDefault(walletResult.Value.Result == EResult.OK ? EPurchaseResultDetail.NoDetail : EPurchaseResultDetail.CannotRedeemCodeFromClient);
 										} else {
 											result.Result = EResult.Timeout;
 											result.PurchaseResultDetail = EPurchaseResultDetail.Timeout;
