@@ -2644,16 +2644,21 @@ namespace ArchiSteamFarm {
 								} else {
 									triedBots.Add(currentBot);
 
-									if (((result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) || ((result.PurchaseResultDetail == EPurchaseResultDetail.BadActivationCode) && assumeWalletKeyOnBadActivationCode)) && (Bot.WalletCurrency != ECurrencyCode.Invalid)) {
-										// If it's a wallet code, we try to redeem it first, then handle the inner result as our primary one
-										(EResult Result, EPurchaseResultDetail? PurchaseResult)? walletResult = await currentBot.ArchiWebHandler.RedeemWalletKey(key!).ConfigureAwait(false);
+									if ((result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) || ((result.PurchaseResultDetail == EPurchaseResultDetail.BadActivationCode) && assumeWalletKeyOnBadActivationCode)) {
+										if (Bot.WalletCurrency != ECurrencyCode.Invalid) {
+											// If it's a wallet code, we try to redeem it first, then handle the inner result as our primary one
+											(EResult Result, EPurchaseResultDetail? PurchaseResult)? walletResult = await currentBot.ArchiWebHandler.RedeemWalletKey(key!).ConfigureAwait(false);
 
-										if (walletResult != null) {
-											result.Result = walletResult.Value.Result;
-											result.PurchaseResultDetail = walletResult.Value.PurchaseResult.GetValueOrDefault(walletResult.Value.Result == EResult.OK ? EPurchaseResultDetail.NoDetail : EPurchaseResultDetail.CannotRedeemCodeFromClient);
+											if (walletResult != null) {
+												result.Result = walletResult.Value.Result;
+												result.PurchaseResultDetail = walletResult.Value.PurchaseResult.GetValueOrDefault(walletResult.Value.Result == EResult.OK ? EPurchaseResultDetail.NoDetail : EPurchaseResultDetail.CannotRedeemCodeFromClient);
+											} else {
+												result.Result = EResult.Timeout;
+												result.PurchaseResultDetail = EPurchaseResultDetail.Timeout;
+											}
 										} else {
-											result.Result = EResult.Timeout;
-											result.PurchaseResultDetail = EPurchaseResultDetail.Timeout;
+											// We're unable to redeem this code from the client due to missing currency information
+											result.PurchaseResultDetail = EPurchaseResultDetail.CannotRedeemCodeFromClient;
 										}
 									}
 
