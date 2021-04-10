@@ -434,7 +434,7 @@ namespace ArchiSteamFarm {
 				HashSet<Steam.Asset> theirInventory;
 
 				try {
-					theirInventory = await Bot.ArchiWebHandler.GetInventoryAsync(listedUser.SteamID).Where(item => (!listedUser.MatchEverything || item.Tradable) && wantedSets.Contains((item.RealAppID, item.Type, item.Rarity)) && ((holdDuration.Value == 0) || !(((item.Type == Steam.Asset.EType.FoilTradingCard) || (item.Type == Steam.Asset.EType.TradingCard)) && CardsFarmer.SalesBlacklist.Contains(item.RealAppID)))).ToHashSetAsync().ConfigureAwait(false);
+					theirInventory = await Bot.ArchiWebHandler.GetInventoryAsync(listedUser.SteamID).Where(item => (!listedUser.MatchEverything || item.Tradable) && wantedSets.Contains((item.RealAppID, item.Type, item.Rarity)) && ((holdDuration.Value == 0) || !(item.Type is Steam.Asset.EType.FoilTradingCard or Steam.Asset.EType.TradingCard && CardsFarmer.SalesBlacklist.Contains(item.RealAppID)))).ToHashSetAsync().ConfigureAwait(false);
 				} catch (HttpRequestException e) {
 					Bot.ArchiLogger.LogGenericWarningException(e);
 

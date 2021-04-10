@@ -29,28 +29,6 @@ namespace ArchiSteamFarm.Tests {
 	[TestClass]
 	public sealed class Bot {
 		[TestMethod]
-		public void MoreCardsThanNeeded() {
-			const uint appID = 42;
-
-			HashSet<Steam.Asset> items = new() {
-				CreateCard(1, appID),
-				CreateCard(1, appID),
-				CreateCard(2, appID),
-				CreateCard(3, appID)
-			};
-
-			HashSet<Steam.Asset> itemsToSend = GetItemsForFullBadge(items, 3, appID);
-
-			Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult = new() {
-				{ (appID, Steam.Asset.SteamCommunityContextID, 1), 1 },
-				{ (appID, Steam.Asset.SteamCommunityContextID, 2), 1 },
-				{ (appID, Steam.Asset.SteamCommunityContextID, 3), 1 }
-			};
-
-			AssertResultMatchesExpectation(expectedResult, itemsToSend);
-		}
-
-		[TestMethod]
 		public void MaxItemsBarelyEnoughForOneSet() {
 			const uint relevantAppID = 42;
 
@@ -92,43 +70,25 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[TestMethod]
-		public void TooManyCardsForSingleTrade() {
+		public void MoreCardsThanNeeded() {
 			const uint appID = 42;
 
-			HashSet<Steam.Asset> items = new();
-
-			for (byte i = 0; i < ArchiSteamFarm.Trading.MaxItemsPerTrade; i++) {
-				items.Add(CreateCard(1, appID));
-				items.Add(CreateCard(2, appID));
-			}
-
-			HashSet<Steam.Asset> itemsToSend = GetItemsForFullBadge(items, 2, appID);
-
-			Assert.IsTrue(itemsToSend.Count <= ArchiSteamFarm.Trading.MaxItemsPerTrade);
-		}
-
-		[TestMethod]
-		public void TooManyCardsForSingleTradeMultipleAppIDs() {
-			const uint appID0 = 42;
-			const uint appID1 = 43;
-
-			HashSet<Steam.Asset> items = new();
-
-			for (byte i = 0; i < 100; i++) {
-				items.Add(CreateCard(1, appID0));
-				items.Add(CreateCard(2, appID0));
-				items.Add(CreateCard(1, appID1));
-				items.Add(CreateCard(2, appID1));
-			}
-
-			Dictionary<uint, byte> itemsPerSet = new() {
-				{ appID0, 2 },
-				{ appID1, 2 }
+			HashSet<Steam.Asset> items = new() {
+				CreateCard(1, appID),
+				CreateCard(1, appID),
+				CreateCard(2, appID),
+				CreateCard(3, appID)
 			};
 
-			HashSet<Steam.Asset> itemsToSend = GetItemsForFullBadge(items, itemsPerSet);
+			HashSet<Steam.Asset> itemsToSend = GetItemsForFullBadge(items, 3, appID);
 
-			Assert.IsTrue(itemsToSend.Count <= ArchiSteamFarm.Trading.MaxItemsPerTrade);
+			Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult = new() {
+				{ (appID, Steam.Asset.SteamCommunityContextID, 1), 1 },
+				{ (appID, Steam.Asset.SteamCommunityContextID, 2), 1 },
+				{ (appID, Steam.Asset.SteamCommunityContextID, 3), 1 }
+			};
+
+			AssertResultMatchesExpectation(expectedResult, itemsToSend);
 		}
 
 		[TestMethod]
@@ -457,6 +417,46 @@ namespace ArchiSteamFarm.Tests {
 			};
 
 			AssertResultMatchesExpectation(expectedResult, itemsToSend);
+		}
+
+		[TestMethod]
+		public void TooManyCardsForSingleTrade() {
+			const uint appID = 42;
+
+			HashSet<Steam.Asset> items = new();
+
+			for (byte i = 0; i < ArchiSteamFarm.Trading.MaxItemsPerTrade; i++) {
+				items.Add(CreateCard(1, appID));
+				items.Add(CreateCard(2, appID));
+			}
+
+			HashSet<Steam.Asset> itemsToSend = GetItemsForFullBadge(items, 2, appID);
+
+			Assert.IsTrue(itemsToSend.Count <= ArchiSteamFarm.Trading.MaxItemsPerTrade);
+		}
+
+		[TestMethod]
+		public void TooManyCardsForSingleTradeMultipleAppIDs() {
+			const uint appID0 = 42;
+			const uint appID1 = 43;
+
+			HashSet<Steam.Asset> items = new();
+
+			for (byte i = 0; i < 100; i++) {
+				items.Add(CreateCard(1, appID0));
+				items.Add(CreateCard(2, appID0));
+				items.Add(CreateCard(1, appID1));
+				items.Add(CreateCard(2, appID1));
+			}
+
+			Dictionary<uint, byte> itemsPerSet = new() {
+				{ appID0, 2 },
+				{ appID1, 2 }
+			};
+
+			HashSet<Steam.Asset> itemsToSend = GetItemsForFullBadge(items, itemsPerSet);
+
+			Assert.IsTrue(itemsToSend.Count <= ArchiSteamFarm.Trading.MaxItemsPerTrade);
 		}
 
 		[TestMethod]

@@ -39,7 +39,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 				throw new ArgumentNullException(nameof(context));
 			}
 
-			if ((context.Type == null) || !context.Type.IsEnum) {
+			if (context.Type is not { IsEnum: true }) {
 				return;
 			}
 

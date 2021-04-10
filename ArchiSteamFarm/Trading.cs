@@ -620,7 +620,7 @@ namespace ArchiSteamFarm {
 
 				// If user has a trade hold, we add extra logic
 				// If trade hold duration exceeds our max, or user asks for cards with short lifespan, reject the trade
-				case > 0 when (holdDuration.Value > ASF.GlobalConfig.MaxTradeHoldDuration) || tradeOffer.ItemsToGive.Any(item => ((item.Type == Steam.Asset.EType.FoilTradingCard) || (item.Type == Steam.Asset.EType.TradingCard)) && CardsFarmer.SalesBlacklist.Contains(item.RealAppID)):
+				case > 0 when (holdDuration.Value > ASF.GlobalConfig.MaxTradeHoldDuration) || tradeOffer.ItemsToGive.Any(item => item.Type is Steam.Asset.EType.FoilTradingCard or Steam.Asset.EType.TradingCard && CardsFarmer.SalesBlacklist.Contains(item.RealAppID)):
 					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, nameof(holdDuration) + " > 0: " + holdDuration.Value));
 
 					return ParseTradeResult.EResult.Rejected;

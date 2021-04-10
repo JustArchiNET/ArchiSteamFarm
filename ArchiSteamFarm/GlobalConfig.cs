@@ -41,7 +41,7 @@ namespace ArchiSteamFarm {
 		public const bool DefaultAutoRestart = true;
 
 		[PublicAPI]
-		public const string DefaultCommandPrefix = "!";
+		public const string? DefaultCommandPrefix = "!";
 
 		[PublicAPI]
 		public const byte DefaultConfirmationsLimiterDelay = 10;
@@ -50,7 +50,7 @@ namespace ArchiSteamFarm {
 		public const byte DefaultConnectionTimeout = 90;
 
 		[PublicAPI]
-		public const string DefaultCurrentCulture = null;
+		public const string? DefaultCurrentCulture = null;
 
 		[PublicAPI]
 		public const bool DefaultDebug = false;
@@ -74,7 +74,7 @@ namespace ArchiSteamFarm {
 		public const bool DefaultIPC = false;
 
 		[PublicAPI]
-		public const string DefaultIPCPassword = null;
+		public const string? DefaultIPCPassword = null;
 
 		[PublicAPI]
 		public const ArchiCryptoHelper.EHashingMethod DefaultIPCPasswordFormat = ArchiCryptoHelper.EHashingMethod.PlainText;
@@ -95,7 +95,7 @@ namespace ArchiSteamFarm {
 		public const bool DefaultStatistics = true;
 
 		[PublicAPI]
-		public const string DefaultSteamMessagePrefix = "/me ";
+		public const string? DefaultSteamMessagePrefix = "/me ";
 
 		[PublicAPI]
 		public const ulong DefaultSteamOwnerID = 0;
@@ -113,13 +113,13 @@ namespace ArchiSteamFarm {
 		public const ushort DefaultWebLimiterDelay = 300;
 
 		[PublicAPI]
-		public const string DefaultWebProxyPassword = null;
+		public const string? DefaultWebProxyPassword = null;
 
 		[PublicAPI]
-		public const string DefaultWebProxyText = null;
+		public const string? DefaultWebProxyText = null;
 
 		[PublicAPI]
-		public const string DefaultWebProxyUsername = null;
+		public const string? DefaultWebProxyUsername = null;
 
 		[PublicAPI]
 		public static readonly ImmutableHashSet<uint> DefaultBlacklist = ImmutableHashSet<uint>.Empty;
@@ -329,7 +329,7 @@ namespace ArchiSteamFarm {
 				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamOwnerID), SteamOwnerID));
 			}
 
-			if ((SteamProtocols <= 0) || (SteamProtocols > ProtocolTypes.All)) {
+			if (SteamProtocols is <= 0 or > ProtocolTypes.All) {
 				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamProtocols), SteamProtocols));
 			}
 

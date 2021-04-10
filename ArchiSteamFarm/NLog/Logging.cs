@@ -371,7 +371,7 @@ namespace ArchiSteamFarm.NLog {
 		private static void InitConsoleLoggers() {
 			ConsoleLoggingRules.Clear();
 
-			foreach (LoggingRule loggingRule in LogManager.Configuration.LoggingRules.Where(loggingRule => loggingRule.Targets.Any(target => target is ColoredConsoleTarget || target is ConsoleTarget))) {
+			foreach (LoggingRule loggingRule in LogManager.Configuration.LoggingRules.Where(loggingRule => loggingRule.Targets.Any(target => target is ColoredConsoleTarget or ConsoleTarget))) {
 				ConsoleLoggingRules.Add(loggingRule);
 			}
 		}

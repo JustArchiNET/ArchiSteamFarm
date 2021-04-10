@@ -123,7 +123,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				request.GlobalConfig.WebProxyPassword = ASF.GlobalConfig.WebProxyPassword;
 			}
 
-			if ((ASF.GlobalConfig.AdditionalProperties != null) && (ASF.GlobalConfig.AdditionalProperties.Count > 0)) {
+			if (ASF.GlobalConfig.AdditionalProperties is { Count: > 0 }) {
 				request.GlobalConfig.AdditionalProperties ??= new Dictionary<string, JToken>(ASF.GlobalConfig.AdditionalProperties.Count, ASF.GlobalConfig.AdditionalProperties.Comparer);
 
 				foreach ((string key, JToken value) in ASF.GlobalConfig.AdditionalProperties.Where(property => !request.GlobalConfig.AdditionalProperties.ContainsKey(property.Key))) {

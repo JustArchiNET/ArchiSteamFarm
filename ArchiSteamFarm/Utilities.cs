@@ -172,10 +172,10 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public static bool IsClientErrorCode(this HttpStatusCode statusCode) => (statusCode >= HttpStatusCode.BadRequest) && (statusCode < HttpStatusCode.InternalServerError);
+		public static bool IsClientErrorCode(this HttpStatusCode statusCode) => statusCode is >= HttpStatusCode.BadRequest and < HttpStatusCode.InternalServerError;
 
 		[PublicAPI]
-		public static bool IsServerErrorCode(this HttpStatusCode statusCode) => (statusCode >= HttpStatusCode.InternalServerError) && (statusCode < (HttpStatusCode) 600);
+		public static bool IsServerErrorCode(this HttpStatusCode statusCode) => statusCode is >= HttpStatusCode.InternalServerError and < (HttpStatusCode) 600;
 
 		[PublicAPI]
 		public static bool IsValidCdKey(string key) {
