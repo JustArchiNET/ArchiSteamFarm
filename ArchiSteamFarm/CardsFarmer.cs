@@ -916,7 +916,12 @@ namespace ArchiSteamFarm {
 
 			CurrentGamesFarming.ReplaceWith(games);
 
-			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.NowIdlingList, string.Join(", ", games.Select(game => game.AppID))));
+			if (games.Count == 1) {
+				Game game = games.First();
+				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.NowIdling, game.AppID, game.GameName));
+			} else {
+				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.NowIdlingList, string.Join(", ", games.Select(game => game.AppID))));
+			}
 
 			bool result = await FarmHours(games).ConfigureAwait(false);
 			CurrentGamesFarming.Clear();
