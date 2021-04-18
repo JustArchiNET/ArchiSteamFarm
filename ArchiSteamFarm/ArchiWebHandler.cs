@@ -2193,10 +2193,6 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			if (response == null) {
-				return false;
-			}
-
 			string? steamLogin = response["token"].AsString();
 
 			if (string.IsNullOrEmpty(steamLogin)) {
@@ -2475,11 +2471,9 @@ namespace ArchiSteamFarm {
 				// The page should have as little internal dependencies as possible, since every extra chunk increases likelihood of broken functionality. We can only make a guess here based on the amount of content that the page returns to us
 				// It should also be URL with fairly fixed address that isn't going to disappear anytime soon, preferably something staple that is a dependency of other requests, so it's very unlikely to change in a way that would add overhead in the future
 				// Lastly, it should be a request that is preferably generic enough as a routine check, not something specialized and targetted, to make it very clear that we're just checking if session is up, and to further aid internal dependencies specified above by rendering as general Steam info as possible
-
-				const string host = SteamStoreURL;
 				const string request = "/account";
 
-				WebBrowser.BasicResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlHead(host + request).ConfigureAwait(false)).ConfigureAwait(false);
+				WebBrowser.BasicResponse? response = await WebLimitRequest(SteamStoreURL, async () => await WebBrowser.UrlHead(SteamStoreURL + request).ConfigureAwait(false)).ConfigureAwait(false);
 
 				if (response == null) {
 					return null;

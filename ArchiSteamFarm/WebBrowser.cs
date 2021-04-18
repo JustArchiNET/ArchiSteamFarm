@@ -805,14 +805,6 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			if (response == null) {
-				if (Debugging.IsUserDebugging) {
-					ArchiLogger.LogGenericDebug("null <- " + httpMethod + " " + requestUri);
-				}
-
-				return null;
-			}
-
 			if (Debugging.IsUserDebugging) {
 				ArchiLogger.LogGenericDebug(response.StatusCode + " <- " + httpMethod + " " + requestUri);
 			}
@@ -822,7 +814,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// WARNING: We still have not disposed response by now, make sure to dispose it ASAP if we're not returning it!
-			if ((response.StatusCode >= HttpStatusCode.Ambiguous) && (response.StatusCode < HttpStatusCode.BadRequest) && (maxRedirections > 0)) {
+			if (response.StatusCode is >= HttpStatusCode.Ambiguous and < HttpStatusCode.BadRequest && (maxRedirections > 0)) {
 				Uri? redirectUri = response.Headers.Location;
 
 				if (redirectUri == null) {

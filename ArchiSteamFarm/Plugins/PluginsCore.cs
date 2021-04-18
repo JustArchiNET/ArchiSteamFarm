@@ -38,7 +38,7 @@ using SteamKit2;
 
 namespace ArchiSteamFarm.Plugins {
 	internal static class PluginsCore {
-		internal static bool HasCustomPluginsLoaded => ActivePlugins?.Any(plugin => !(plugin is OfficialPlugin officialPlugin) || !officialPlugin.HasSameVersion()) == true;
+		internal static bool HasCustomPluginsLoaded => ActivePlugins?.Any(plugin => plugin is not OfficialPlugin officialPlugin || !officialPlugin.HasSameVersion()) == true;
 
 		[ImportMany]
 		internal static ImmutableHashSet<IPlugin>? ActivePlugins { get; private set; }

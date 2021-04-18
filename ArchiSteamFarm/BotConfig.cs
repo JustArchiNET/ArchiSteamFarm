@@ -48,10 +48,10 @@ namespace ArchiSteamFarm {
 		public const EBotBehaviour DefaultBotBehaviour = EBotBehaviour.None;
 
 		[PublicAPI]
-		public const string DefaultCustomGamePlayedWhileFarming = null;
+		public const string? DefaultCustomGamePlayedWhileFarming = null;
 
 		[PublicAPI]
-		public const string DefaultCustomGamePlayedWhileIdle = null;
+		public const string? DefaultCustomGamePlayedWhileIdle = null;
 
 		[PublicAPI]
 		public const bool DefaultEnabled = false;
@@ -87,19 +87,19 @@ namespace ArchiSteamFarm {
 		public const bool DefaultShutdownOnFarmingFinished = false;
 
 		[PublicAPI]
-		public const string DefaultSteamLogin = null;
+		public const string? DefaultSteamLogin = null;
 
 		[PublicAPI]
 		public const ulong DefaultSteamMasterClanID = 0;
 
 		[PublicAPI]
-		public const string DefaultSteamParentalCode = null;
+		public const string? DefaultSteamParentalCode = null;
 
 		[PublicAPI]
-		public const string DefaultSteamPassword = null;
+		public const string? DefaultSteamPassword = null;
 
 		[PublicAPI]
-		public const string DefaultSteamTradeToken = null;
+		public const string? DefaultSteamTradeToken = null;
 
 		[PublicAPI]
 		public const ETradingPreferences DefaultTradingPreferences = ETradingPreferences.None;

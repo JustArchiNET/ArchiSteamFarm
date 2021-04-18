@@ -669,7 +669,7 @@ namespace ArchiSteamFarm {
 
 					levelText = levelText[levelStartIndex..levelEndIndex];
 
-					if (!byte.TryParse(levelText, out badgeLevel) || (badgeLevel == 0) || (badgeLevel > 5)) {
+					if (!byte.TryParse(levelText, out badgeLevel) || badgeLevel is 0 or > 5) {
 						Bot.ArchiLogger.LogNullError(nameof(badgeLevel));
 
 						continue;
@@ -916,7 +916,12 @@ namespace ArchiSteamFarm {
 
 			CurrentGamesFarming.ReplaceWith(games);
 
-			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.NowIdlingList, string.Join(", ", games.Select(game => game.AppID))));
+			if (games.Count == 1) {
+				Game game = games.First();
+				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.NowIdling, game.AppID, game.GameName));
+			} else {
+				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.NowIdlingList, string.Join(", ", games.Select(game => game.AppID))));
+			}
 
 			bool result = await FarmHours(games).ConfigureAwait(false);
 			CurrentGamesFarming.Clear();
@@ -1041,7 +1046,7 @@ namespace ArchiSteamFarm {
 						Bot.ArchiLogger.LogGenericInfo(Strings.CheckingOtherBadgePages);
 
 						for (byte page = 2; page <= maxPages; page++) {
-							// We need a copy of variable being passed when in for loops, as loop will proceed before our task is launched
+							// ReSharper disable once InlineTemporaryVariable - we need a copy of variable being passed when in for loops, as loop will proceed before our task is launched
 							byte currentPage = page;
 							tasks.Add(CheckPage(currentPage, parsedAppIDs));
 						}
