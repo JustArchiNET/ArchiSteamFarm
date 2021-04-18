@@ -3258,7 +3258,7 @@ namespace ArchiSteamFarm {
 						}
 					}
 
-					ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail));
+					ArchiLogger.LogGenericDebug(result.Items?.Count > 0 ? string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, result.Result + "/" + result.PurchaseResultDetail, string.Join(", ", result.Items)) : string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail));
 
 					bool rateLimited = false;
 					bool redeemed = false;
