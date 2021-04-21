@@ -159,7 +159,9 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			return (!waitIfNeeded, handledConfirmations?.Values, !waitIfNeeded ? string.Format(CultureInfo.CurrentCulture, Strings.BotHandledConfirmations, handledConfirmations?.Count ?? 0) : string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+			bool success = !waitIfNeeded || ((handledConfirmations?.Count > 0) && ((acceptedCreatorIDs == null) || (acceptedCreatorIDs.Count == 0)));
+
+			return (success, handledConfirmations?.Values, success ? string.Format(CultureInfo.CurrentCulture, Strings.BotHandledConfirmations, handledConfirmations?.Count ?? 0) : string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
 		}
 
 		[PublicAPI]
