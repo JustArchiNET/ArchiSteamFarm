@@ -103,17 +103,16 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<(bool Success, string Message)> HandleTwoFactorAuthenticationConfirmations(bool accept, MobileAuthenticator.Confirmation.EType? acceptedType = null, IReadOnlyCollection<ulong>? acceptedCreatorIDs = null, bool waitIfNeeded = false) {
+		public async Task<(bool Success, IReadOnlyCollection<MobileAuthenticator.Confirmation>? HandledConfirmations, string Message)> HandleTwoFactorAuthenticationConfirmations(bool accept, MobileAuthenticator.Confirmation.EType? acceptedType = null, IReadOnlyCollection<ulong>? acceptedCreatorIDs = null, bool waitIfNeeded = false) {
 			if (Bot.BotDatabase.MobileAuthenticator == null) {
-				return (false, Strings.BotNoASFAuthenticator);
+				return (false, null, Strings.BotNoASFAuthenticator);
 			}
 
 			if (!Bot.IsConnectedAndLoggedOn) {
-				return (false, Strings.BotNotConnected);
+				return (false, null, Strings.BotNotConnected);
 			}
 
-			ushort handledConfirmationsCount = 0;
-			HashSet<ulong>? handledCreatorIDs = null;
+			Dictionary<ulong, MobileAuthenticator.Confirmation>? handledConfirmations = null;
 
 			for (byte i = 0; (i == 0) || ((i < WebBrowser.MaxTries) && waitIfNeeded); i++) {
 				if (i > 0) {
@@ -143,28 +142,24 @@ namespace ArchiSteamFarm {
 				}
 
 				if (!await Bot.BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false)) {
-					return (false, Strings.WarningFailed);
+					return (false, handledConfirmations?.Values, Strings.WarningFailed);
 				}
 
-				handledConfirmationsCount += (ushort) confirmations.Count;
+				handledConfirmations ??= new Dictionary<ulong, MobileAuthenticator.Confirmation>();
+
+				foreach (MobileAuthenticator.Confirmation? confirmation in confirmations) {
+					handledConfirmations[confirmation.Creator] = confirmation;
+				}
 
 				if (acceptedCreatorIDs?.Count > 0) {
-					IEnumerable<ulong> handledCreatorIDsThisRound = confirmations.Select(confirmation => confirmation.Creator).Where(acceptedCreatorIDs.Contains!);
-
-					if (handledCreatorIDs != null) {
-						handledCreatorIDs.UnionWith(handledCreatorIDsThisRound);
-					} else {
-						handledCreatorIDs = handledCreatorIDsThisRound.ToHashSet();
-					}
-
 					// Check if those are all that we were expected to confirm
-					if (handledCreatorIDs.SetEquals(acceptedCreatorIDs)) {
-						return (true, string.Format(CultureInfo.CurrentCulture, Strings.BotHandledConfirmations, handledConfirmationsCount));
+					if ((handledConfirmations.Count >= acceptedCreatorIDs.Count) && acceptedCreatorIDs.All(handledConfirmations.ContainsKey)) {
+						return (true, handledConfirmations.Values, string.Format(CultureInfo.CurrentCulture, Strings.BotHandledConfirmations, handledConfirmations.Count));
 					}
 				}
 			}
 
-			return (!waitIfNeeded, !waitIfNeeded ? string.Format(CultureInfo.CurrentCulture, Strings.BotHandledConfirmations, handledConfirmationsCount) : string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+			return (!waitIfNeeded, handledConfirmations?.Values, !waitIfNeeded ? string.Format(CultureInfo.CurrentCulture, Strings.BotHandledConfirmations, handledConfirmations?.Count ?? 0) : string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
 		}
 
 		[PublicAPI]
@@ -309,7 +304,7 @@ namespace ArchiSteamFarm {
 			(bool success, HashSet<ulong>? mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(targetSteamID, items, token: tradeToken, itemsPerTrade: itemsPerTrade).ConfigureAwait(false);
 
 			if ((mobileTradeOfferIDs?.Count > 0) && Bot.HasMobileAuthenticator) {
-				(bool twoFactorSuccess, _) = await HandleTwoFactorAuthenticationConfirmations(true, MobileAuthenticator.Confirmation.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
+				(bool twoFactorSuccess, _, _) = await HandleTwoFactorAuthenticationConfirmations(true, MobileAuthenticator.Confirmation.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
 
 				if (!twoFactorSuccess) {
 					return (false, Strings.BotLootingFailed);
