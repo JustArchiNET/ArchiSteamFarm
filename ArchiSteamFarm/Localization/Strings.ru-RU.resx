@@ -746,5 +746,8 @@
   <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
     <value>Не удалось найти каталог с конфигурационными файлами, прекращаем работу!</value>
   </data>
-  
+  <data name="BotIdlingSelectedGames" xml:space="preserve">
+    <value>Выбранный фарм {0}: {1}</value>
+    <comment>{0} will be replaced by internal name of the config property (e.g. "GamesPlayedWhileIdle"), {1} will be replaced by comma-separated list of appIDs that user has chosen</comment>
+  </data>
 </root>
