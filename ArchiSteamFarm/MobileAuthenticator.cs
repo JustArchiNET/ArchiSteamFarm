@@ -440,10 +440,17 @@ namespace ArchiSteamFarm {
 		}
 
 		public sealed class Confirmation {
-			internal readonly ulong Creator;
-			internal readonly ulong ID;
-			internal readonly ulong Key;
-			internal readonly EType Type;
+			[JsonProperty(Required = Required.Always)]
+			public ulong Creator { get; }
+
+			[JsonProperty(Required = Required.Always)]
+			public ulong ID { get; }
+
+			[JsonProperty(Required = Required.Always)]
+			public ulong Key { get; }
+
+			[JsonProperty(Required = Required.Always)]
+			public EType Type { get; }
 
 			internal Confirmation(ulong id, ulong key, ulong creator, EType type) {
 				ID = id > 0 ? id : throw new ArgumentOutOfRangeException(nameof(id));
