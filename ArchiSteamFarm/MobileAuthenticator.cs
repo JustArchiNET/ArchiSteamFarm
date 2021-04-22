@@ -254,12 +254,20 @@ namespace ArchiSteamFarm {
 		internal void Init(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 		internal static async Task ResetSteamTimeDifference() {
+			if ((SteamTimeDifference == null) && (LastSteamTimeCheck == DateTime.MinValue)) {
+				return;
+			}
+
 			if (!await TimeSemaphore.WaitAsync(0).ConfigureAwait(false)) {
 				// Resolve or reset is already in-progress
 				return;
 			}
 
 			try {
+				if ((SteamTimeDifference == null) && (LastSteamTimeCheck == DateTime.MinValue)) {
+					return;
+				}
+
 				SteamTimeDifference = null;
 				LastSteamTimeCheck = DateTime.MinValue;
 			} finally {
