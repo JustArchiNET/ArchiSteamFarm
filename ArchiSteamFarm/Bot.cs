@@ -2956,7 +2956,7 @@ namespace ArchiSteamFarm {
 						case EResult.TwoFactorCodeMismatch when HasMobileAuthenticator:
 							// There is a possibility that our cached time is no longer appropriate, so we should reset the cache in this case in order to fetch it upon the next login attempt
 							// Yes, this might as well be just invalid 2FA credentials, but we can't be sure about that, and we have MaxTwoFactorCodeFailures designed to verify that for us
-							MobileAuthenticator.ResetSteamTimeDifference();
+							await MobileAuthenticator.ResetSteamTimeDifference().ConfigureAwait(false);
 
 							if (++TwoFactorCodeFailures >= MaxTwoFactorCodeFailures) {
 								TwoFactorCodeFailures = 0;
