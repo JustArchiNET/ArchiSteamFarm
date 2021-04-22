@@ -253,6 +253,11 @@ namespace ArchiSteamFarm {
 
 		internal void Init(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
+		internal static void ResetSteamTimeDifference() {
+			SteamTimeDifference = null;
+			LastSteamTimeCheck = DateTime.MinValue;
+		}
+
 		private string? GenerateConfirmationHash(uint time, string? tag = null) {
 			if (time == 0) {
 				throw new ArgumentOutOfRangeException(nameof(time));
@@ -376,15 +381,19 @@ namespace ArchiSteamFarm {
 				throw new InvalidOperationException(nameof(Bot));
 			}
 
-			if (SteamTimeDifference.HasValue && (DateTime.UtcNow.Subtract(LastSteamTimeCheck).TotalHours < SteamTimeTTL)) {
-				return (uint) (Utilities.GetUnixTime() + SteamTimeDifference.Value);
+			int? steamTimeDifference = SteamTimeDifference;
+
+			if (steamTimeDifference.HasValue && (DateTime.UtcNow.Subtract(LastSteamTimeCheck).TotalHours < SteamTimeTTL)) {
+				return (uint) (Utilities.GetUnixTime() + steamTimeDifference.Value);
 			}
 
 			await TimeSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				if (SteamTimeDifference.HasValue && (DateTime.UtcNow.Subtract(LastSteamTimeCheck).TotalHours < SteamTimeTTL)) {
-					return (uint) (Utilities.GetUnixTime() + SteamTimeDifference.Value);
+				steamTimeDifference = SteamTimeDifference;
+
+				if (steamTimeDifference.HasValue && (DateTime.UtcNow.Subtract(LastSteamTimeCheck).TotalHours < SteamTimeTTL)) {
+					return (uint) (Utilities.GetUnixTime() + steamTimeDifference.Value);
 				}
 
 				uint serverTime = await Bot.ArchiWebHandler.GetServerTime().ConfigureAwait(false);
