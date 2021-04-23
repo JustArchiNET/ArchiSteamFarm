@@ -1334,15 +1334,6 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Response: {0}.
-        /// </summary>
-        public static string Response {
-            get {
-                return ResourceManager.GetString("Response", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Restarting....
         /// </summary>
         public static string Restarting {
