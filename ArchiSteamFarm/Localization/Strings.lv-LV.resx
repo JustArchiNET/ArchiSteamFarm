@@ -687,10 +687,6 @@ Darbspējas laiks: {1}</value>
     <value>Interaktīvā konsole nav pieejama, jo konfigurācijā trūkst {0} vērtība.</value>
     <comment>{0} will be replaced by the name of the missing config property (string)</comment>
   </data>
-  <data name="Response" xml:space="preserve">
-    <value>Atbilde: {0}</value>
-    <comment>{0} will be replaced by the generated response (string)</comment>
-  </data>
   <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
     <value>Botam palikušas {0} rindā stāvošas spēles.</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>

@@ -687,10 +687,6 @@ Proceso veikimo laikas: {1}</value>
     <value>Interaktyvi konsolė yra negalima dėl trūkstamų konfigūracinių parametrų: {0}</value>
     <comment>{0} will be replaced by the name of the missing config property (string)</comment>
   </data>
-  <data name="Response" xml:space="preserve">
-    <value>Atsakas: {0}</value>
-    <comment>{0} will be replaced by the generated response (string)</comment>
-  </data>
   <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
     <value>Boto foninėje eilėje yra likę {0} žaidimai.</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>

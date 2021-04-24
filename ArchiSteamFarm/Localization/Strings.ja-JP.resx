@@ -684,10 +684,6 @@ Process uptime: {1}</value>
     <value>{0} の設定が見つからないため、対話型コンソールが無効にしました。</value>
     <comment>{0} will be replaced by the name of the missing config property (string)</comment>
   </data>
-  <data name="Response" xml:space="preserve">
-    <value>応答: {0}</value>
-    <comment>{0} will be replaced by the generated response (string)</comment>
-  </data>
   <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
     <value>bot のバックグラウンドキューに {0} つのゲームが残っています。</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>

@@ -683,10 +683,6 @@
     <value>由於缺少 {0} 配置屬性，交互式主控台不可用。</value>
     <comment>{0} will be replaced by the name of the missing config property (string)</comment>
   </data>
-  <data name="Response" xml:space="preserve">
-    <value>應答：{0}</value>
-    <comment>{0} will be replaced by the generated response (string)</comment>
-  </data>
   <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
     <value>機械人的後台佇列中還有 {0} 個遊戲。</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>

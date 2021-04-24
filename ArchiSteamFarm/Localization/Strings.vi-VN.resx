@@ -683,10 +683,6 @@ StackTrace:
     <value>Bảng điều khiển tương tác không khả dụng do thiếu thuộc tính cấu hình {0}.</value>
     <comment>{0} will be replaced by the name of the missing config property (string)</comment>
   </data>
-  <data name="Response" xml:space="preserve">
-    <value>Phản hồi: {0}</value>
-    <comment>{0} will be replaced by the generated response (string)</comment>
-  </data>
   <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
     <value>Bot có {0} trò chơi còn lại trong hàng chờ.</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>

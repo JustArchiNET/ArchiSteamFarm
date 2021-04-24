@@ -649,10 +649,6 @@
   </data>
   
   
-  <data name="Response" xml:space="preserve">
-    <value>Respon: {0}</value>
-    <comment>{0} will be replaced by the generated response (string)</comment>
-  </data>
   <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
     <value>Bot mempunyai {0} game tersisa di dalam antrian.</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>

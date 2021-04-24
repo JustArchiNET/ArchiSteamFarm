@@ -683,10 +683,6 @@ StackTrace:
     <value>Interaktivní konzole není dostupná z důvodu chybějící {0} konfigurace.</value>
     <comment>{0} will be replaced by the name of the missing config property (string)</comment>
   </data>
-  <data name="Response" xml:space="preserve">
-    <value>Reakce: {0}</value>
-    <comment>{0} will be replaced by the generated response (string)</comment>
-  </data>
   <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
     <value>Bot má {0} zbývajících her ve frontě.</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>

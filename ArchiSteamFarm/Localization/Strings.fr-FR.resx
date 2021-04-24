@@ -696,10 +696,6 @@ Durée de fonctionnement : {1}</value>
     <value>La console interactive n'est pas disponible en raison de la propriété de configuration {0} manquante.</value>
     <comment>{0} will be replaced by the name of the missing config property (string)</comment>
   </data>
-  <data name="Response" xml:space="preserve">
-    <value>Réponse : {0}</value>
-    <comment>{0} will be replaced by the generated response (string)</comment>
-  </data>
   <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
     <value>Le bot a {0} jeux restants dans sa file d'attente.</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>

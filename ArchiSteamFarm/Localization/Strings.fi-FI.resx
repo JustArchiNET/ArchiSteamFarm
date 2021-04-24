@@ -683,10 +683,6 @@ StackTrace:
     <value>Vuorovaikutteinen konsoli ei ole käytettävissä, koska {0} asetus puuttuu.</value>
     <comment>{0} will be replaced by the name of the missing config property (string)</comment>
   </data>
-  <data name="Response" xml:space="preserve">
-    <value>Vastaus: {0}</value>
-    <comment>{0} will be replaced by the generated response (string)</comment>
-  </data>
   <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
     <value>Botilla on {0} peliä jäljellä taustajonossa.</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>

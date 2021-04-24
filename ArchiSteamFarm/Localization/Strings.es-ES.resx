@@ -695,10 +695,6 @@ Tiempo de actividad del proceso: {1}</value>
     <value>La consola interactiva no está disponible debido a que falta la propiedad de configuración {0}.</value>
     <comment>{0} will be replaced by the name of the missing config property (string)</comment>
   </data>
-  <data name="Response" xml:space="preserve">
-    <value>Respuesta: {0}</value>
-    <comment>{0} will be replaced by the generated response (string)</comment>
-  </data>
   <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
     <value>El bot tiene {0} juegos restantes en la cola en segundo plano.</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>

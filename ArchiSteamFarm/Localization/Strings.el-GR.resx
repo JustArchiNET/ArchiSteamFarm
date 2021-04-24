@@ -658,10 +658,6 @@ StackTrace:
     <value>Η διαδραστική κονσόλα δεν είναι διαθέσιμη διότι λείπει η ιδιότητα {0} από το αρχείο διαμόρφωσης.</value>
     <comment>{0} will be replaced by the name of the missing config property (string)</comment>
   </data>
-  <data name="Response" xml:space="preserve">
-    <value>Ανταπόκριση: {0}</value>
-    <comment>{0} will be replaced by the generated response (string)</comment>
-  </data>
   <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
     <value>Το bot έχει {0} παιχνίδια που απομένουν στην ουρά.</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
