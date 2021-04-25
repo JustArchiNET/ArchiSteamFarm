@@ -206,7 +206,7 @@ jobs:
 
             # If we're including any overlay for this variant, copy it to output directory
             if (Test-Path "ArchiSteamFarm\overlay\$variant" -PathType Container) {
-                Copy-Item "ArchiSteamFarm\overlay\$variant\*" "out\$variant"
+                Copy-Item "ArchiSteamFarm\overlay\$variant\*" "out\$variant" -Recurse
             }
 
             # If we're including SteamTokenDumper plugin for this framework, copy it to output directory
@@ -215,7 +215,7 @@ jobs:
                     New-Item -ItemType Directory -Path "out\$variant\plugins\$env:STEAM_TOKEN_DUMPER_NAME" > $null
                 }
 
-                Copy-Item "out\$env:STEAM_TOKEN_DUMPER_NAME\$targetFramework\*" "out\$variant\plugins\$env:STEAM_TOKEN_DUMPER_NAME"
+                Copy-Item "out\$env:STEAM_TOKEN_DUMPER_NAME\$targetFramework\*" "out\$variant\plugins\$env:STEAM_TOKEN_DUMPER_NAME" -Recurse
             }
 
             # Icon is available only in .NET Framework and .NET Core Windows build, we'll bundle the .ico file for other flavours
