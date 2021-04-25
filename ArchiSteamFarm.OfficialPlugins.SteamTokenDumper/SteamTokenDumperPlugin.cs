@@ -29,7 +29,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Localization;
 using ArchiSteamFarm.Plugins;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -58,7 +58,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 		public async void OnASFInit(IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null) {
 			if (!SharedInfo.HasValidToken) {
-				ASF.ArchiLogger.LogGenericError($"{Name} has been disabled due to missing build token.");
+				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.PluginDisabledMissingBuildToken, nameof(SteamTokenDumperPlugin)));
 
 				return;
 			}
@@ -70,6 +70,8 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 					try {
 						if (configProperty == nameof(GlobalConfigExtension.SteamTokenDumperPluginEnabled)) {
 							enabled = configValue.Value<bool>();
+
+							break;
 						}
 					} catch (Exception e) {
 						ASF.ArchiLogger.LogGenericException(e);
@@ -82,7 +84,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			IsEnabled = enabled;
 
 			if (!enabled) {
-				ASF.ArchiLogger.LogGenericInfo($"{Name} is currently disabled. If you'd like to help SteamDB in data submission, check out our wiki for {nameof(SteamTokenDumperPlugin)}.");
+				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginDisabledInConfig, nameof(SteamTokenDumperPlugin)));
 
 				return;
 			}
@@ -95,7 +97,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				SubmissionTimer.Change(startIn, TimeSpan.FromHours(SharedInfo.MinimumHoursBetweenUploads));
 			}
 
-			ASF.ArchiLogger.LogGenericInfo($"{Name} has been initialized successfully, thank you for your help. The first submission will happen in approximately {startIn.ToHumanReadable()} from now.");
+			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginInitializedAndEnabled, nameof(SteamTokenDumperPlugin), startIn.ToHumanReadable()));
 		}
 
 		public async void OnBotDestroy(Bot bot) {
@@ -304,12 +306,6 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 							return;
 						}
 
-						if (response == null) {
-							bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(response)));
-
-							return;
-						}
-
 						bot.ArchiLogger.LogGenericInfo($"Finished retrieving {appIDsThisRound.Count} app access tokens.");
 
 						appIDsThisRound.Clear();
@@ -350,7 +346,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 						}
 
 						if (response.Results == null) {
-							bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(response.Results)));
+							bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, nameof(response.Results)));
 
 							return;
 						}
@@ -463,13 +459,13 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				WebBrowser.ObjectResponse<ResponseData>? response = await ASF.WebBrowser.UrlPostToJsonObject<ResponseData, RequestData>(request, data: requestData, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
 
 				if (response == null) {
-					ASF.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					ASF.ArchiLogger.LogGenericWarning(ArchiSteamFarm.Localization.Strings.WarningFailed);
 
 					return;
 				}
 
 				if (response.StatusCode.IsClientErrorCode()) {
-					ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.StatusCode));
+					ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, response.StatusCode));
 
 #if NETFRAMEWORK
 					if (response.StatusCode == (HttpStatusCode) 429) {
@@ -489,13 +485,13 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				}
 
 				if (!response.Content.Success) {
-					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid), nameof(response.Content.Success));
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.ErrorIsInvalid), nameof(response.Content.Success));
 
 					return;
 				}
 
 				if (response.Content.Data == null) {
-					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid), nameof(response.Content.Data));
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.ErrorIsInvalid), nameof(response.Content.Data));
 
 					return;
 				}
