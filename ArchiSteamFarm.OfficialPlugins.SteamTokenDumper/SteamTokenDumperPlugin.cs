@@ -89,7 +89,17 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				return;
 			}
 
-			GlobalCache ??= await GlobalCache.Load().ConfigureAwait(false);
+			if (GlobalCache == null) {
+				GlobalCache? globalCache = await GlobalCache.Load().ConfigureAwait(false);
+
+				if (globalCache == null) {
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.FileCouldNotBeLoadedFreshInit, nameof(GlobalCache)));
+
+					globalCache = new GlobalCache();
+				}
+
+				GlobalCache = globalCache;
+			}
 
 			TimeSpan startIn = TimeSpan.FromMinutes(Utilities.RandomNext(SharedInfo.MinimumMinutesBeforeFirstUpload, SharedInfo.MaximumMinutesBeforeFirstUpload));
 
@@ -271,12 +281,12 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				}
 
 				if (appIDsToRefresh.Count == 0) {
-					bot.ArchiLogger.LogGenericDebug($"There are no apps to refresh for {bot.BotName}.");
+					bot.ArchiLogger.LogGenericDebug(Strings.BotNoAppsToRefresh);
 
 					return;
 				}
 
-				bot.ArchiLogger.LogGenericInfo($"Retrieving a total of {appIDsToRefresh.Count} app access tokens...");
+				bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotRetrievingTotalAppAccessTokens, appIDsToRefresh.Count));
 
 				HashSet<uint> appIDsThisRound = new(Math.Min(appIDsToRefresh.Count, SharedInfo.AppInfosPerSingleRequest));
 
@@ -294,7 +304,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 							return;
 						}
 
-						bot.ArchiLogger.LogGenericInfo($"Retrieving {appIDsThisRound.Count} app access tokens...");
+						bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotRetrievingAppAccessTokens, appIDsThisRound.Count));
 
 						SteamApps.PICSTokensCallback response;
 
@@ -306,7 +316,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 							return;
 						}
 
-						bot.ArchiLogger.LogGenericInfo($"Finished retrieving {appIDsThisRound.Count} app access tokens.");
+						bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotFinishedRetrievingAppAccessTokens, appIDsThisRound.Count));
 
 						appIDsThisRound.Clear();
 
@@ -314,10 +324,8 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 					}
 				}
 
-				bot.ArchiLogger.LogGenericInfo($"Finished retrieving a total of {appIDsToRefresh.Count} app access tokens.");
-				bot.ArchiLogger.LogGenericInfo($"Retrieving all depots for a total of {appIDsToRefresh.Count} apps...");
-
-				appIDsThisRound.Clear();
+				bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotFinishedRetrievingTotalAppAccessTokens, appIDsToRefresh.Count));
+				bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotRetrievingTotalDepots, appIDsToRefresh.Count));
 
 				using (HashSet<uint>.Enumerator enumerator = appIDsToRefresh.GetEnumerator()) {
 					while (true) {
@@ -333,7 +341,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 							return;
 						}
 
-						bot.ArchiLogger.LogGenericInfo($"Retrieving {appIDsThisRound.Count} app infos...");
+						bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotRetrievingAppInfos, appIDsThisRound.Count));
 
 						AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet response;
 
@@ -351,7 +359,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 							return;
 						}
 
-						bot.ArchiLogger.LogGenericInfo($"Finished retrieving {appIDsThisRound.Count} app infos.");
+						bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotFinishedRetrievingAppInfos, appIDsThisRound.Count));
 
 						appIDsThisRound.Clear();
 
@@ -376,7 +384,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 						GlobalCache.UpdateAppChangeNumbers(appChangeNumbers);
 
 						if (depotTasks.Count > 0) {
-							bot.ArchiLogger.LogGenericInfo($"Retrieving {depotTasks.Count} depot keys...");
+							bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotRetrievingDepotKeys, depotTasks.Count));
 
 							IList<SteamApps.DepotKeyCallback> results;
 
@@ -388,14 +396,14 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 								return;
 							}
 
-							bot.ArchiLogger.LogGenericInfo($"Finished retrieving {depotTasks.Count} depot keys.");
+							bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotFinishedRetrievingDepotKeys, depotTasks.Count));
 
 							GlobalCache.UpdateDepotKeys(results);
 						}
 					}
 				}
 
-				bot.ArchiLogger.LogGenericInfo($"Finished retrieving all depot keys for a total of {appIDsToRefresh.Count} apps.");
+				bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotFinishedRetrievingTotalDepots, appIDsToRefresh.Count));
 			} finally {
 				TimeSpan timeSpan = TimeSpan.FromHours(SharedInfo.MaximumHoursBetweenRefresh);
 
@@ -428,8 +436,6 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			}
 
 			if (!await SubmissionSemaphore.WaitAsync(0).ConfigureAwait(false)) {
-				ASF.ArchiLogger.LogGenericDebug($"Skipped {nameof(SubmitData)} trigger because there is already one in progress.");
-
 				return;
 			}
 
@@ -439,7 +445,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				Dictionary<uint, string> depotKeys = GlobalCache.GetDepotKeysForSubmission();
 
 				if ((appTokens.Count == 0) && (packageTokens.Count == 0) && (depotKeys.Count == 0)) {
-					ASF.ArchiLogger.LogGenericInfo("There is no new data to submit, everything up-to-date.");
+					ASF.ArchiLogger.LogGenericInfo(Strings.SubmissionNoNewData);
 
 					return;
 				}
@@ -447,14 +453,14 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				ulong contributorSteamID = (ASF.GlobalConfig.SteamOwnerID > 0) && new SteamID(ASF.GlobalConfig.SteamOwnerID).IsIndividualAccount ? ASF.GlobalConfig.SteamOwnerID : Bot.Bots.Values.Where(bot => bot.SteamID > 0).OrderByDescending(bot => bot.OwnedPackageIDsReadOnly.Count).FirstOrDefault()?.SteamID ?? 0;
 
 				if (contributorSteamID == 0) {
-					ASF.ArchiLogger.LogGenericError($"Skipped {nameof(SubmitData)} trigger because there is no valid steamID we could classify as a contributor. Consider setting up {nameof(ASF.GlobalConfig.SteamOwnerID)} property.");
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.SubmissionNoContributorSet, nameof(ASF.GlobalConfig.SteamOwnerID)));
 
 					return;
 				}
 
 				RequestData requestData = new(contributorSteamID, appTokens, packageTokens, depotKeys);
 
-				ASF.ArchiLogger.LogGenericInfo($"Submitting registered apps/subs/depots: {appTokens.Count}/{packageTokens.Count}/{depotKeys.Count}...");
+				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.SubmissionInProgress, appTokens.Count, packageTokens.Count, depotKeys.Count));
 
 				WebBrowser.ObjectResponse<ResponseData>? response = await ASF.WebBrowser.UrlPostToJsonObject<ResponseData, RequestData>(request, data: requestData, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
 
@@ -478,14 +484,14 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 							SubmissionTimer.Change(startIn, TimeSpan.FromHours(SharedInfo.MinimumHoursBetweenUploads));
 						}
 
-						ASF.ArchiLogger.LogGenericInfo($"The submission will happen in approximately {startIn.ToHumanReadable()} from now.");
+						ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.SubmissionFailedTooManyRequests, startIn.ToHumanReadable()));
 					}
 
 					return;
 				}
 
 				if (!response.Content.Success) {
-					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.ErrorIsInvalid), nameof(response.Content.Success));
+					ASF.ArchiLogger.LogGenericError(ArchiSteamFarm.Localization.Strings.WarningFailed);
 
 					return;
 				}
@@ -496,7 +502,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 					return;
 				}
 
-				ASF.ArchiLogger.LogGenericInfo($"Data successfully submitted. Newly registered apps/subs/depots: {response.Content.Data.NewAppsCount}/{response.Content.Data.NewSubsCount}/{response.Content.Data.NewDepotsCount}.");
+				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.SubmissionSuccessful, response.Content.Data.NewAppsCount, response.Content.Data.NewSubsCount, response.Content.Data.NewDepotsCount));
 
 				GlobalCache.UpdateSubmittedData(appTokens, packageTokens, depotKeys);
 			} finally {

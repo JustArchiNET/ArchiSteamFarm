@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Globalization;
 using Newtonsoft.Json;
 using SteamKit2;
 
@@ -73,9 +74,9 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 			SteamID = steamID;
 
-			Apps = apps.ToImmutableDictionary(app => app.Key.ToString(), app => app.Value.ToString());
-			Subs = accessTokens.ToImmutableDictionary(package => package.Key.ToString(), package => package.Value.ToString());
-			Depots = depots.ToImmutableDictionary(depot => depot.Key.ToString(), depot => depot.Value);
+			Apps = apps.ToImmutableDictionary(app => app.Key.ToString(CultureInfo.InvariantCulture), app => app.Value.ToString(CultureInfo.InvariantCulture));
+			Subs = accessTokens.ToImmutableDictionary(package => package.Key.ToString(CultureInfo.InvariantCulture), package => package.Value.ToString(CultureInfo.InvariantCulture));
+			Depots = depots.ToImmutableDictionary(depot => depot.Key.ToString(CultureInfo.InvariantCulture), depot => depot.Value);
 		}
 	}
 }

@@ -22,10 +22,12 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Helpers;
+using ArchiSteamFarm.Localization;
 using Newtonsoft.Json;
 using SteamKit2;
 
@@ -65,27 +67,37 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 		internal Dictionary<uint, string> GetDepotKeysForSubmission() => DepotKeys.Where(depotKey => !string.IsNullOrEmpty(depotKey.Value) && (!SubmittedDepots.TryGetValue(depotKey.Key, out string? key) || (depotKey.Value != key))).ToDictionary(depotKey => depotKey.Key, depotKey => depotKey.Value);
 		internal Dictionary<uint, ulong> GetPackageTokensForSubmission() => PackageTokens.Where(packageToken => (packageToken.Value > 0) && (!SubmittedPackages.TryGetValue(packageToken.Key, out ulong token) || (packageToken.Value != token))).ToDictionary(packageToken => packageToken.Key, packageToken => packageToken.Value);
 
-		internal static async Task<GlobalCache> Load() {
+		internal static async Task<GlobalCache?> Load() {
 			if (!File.Exists(SharedFilePath)) {
-				return new GlobalCache();
+				GlobalCache result = new();
+
+				Utilities.InBackground(result.Save);
+
+				return result;
 			}
 
-			GlobalCache? globalCache = null;
+			GlobalCache? globalCache;
 
 			try {
 				string json = await RuntimeCompatibility.File.ReadAllTextAsync(SharedFilePath).ConfigureAwait(false);
 
-				if (!string.IsNullOrEmpty(json)) {
-					globalCache = JsonConvert.DeserializeObject<GlobalCache>(json);
+				if (string.IsNullOrEmpty(json)) {
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
+
+					return null;
 				}
+
+				globalCache = JsonConvert.DeserializeObject<GlobalCache>(json);
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
+
+				return null;
 			}
 
 			if (globalCache == null) {
-				ASF.ArchiLogger.LogGenericError($"{nameof(GlobalCache)} could not be loaded, a fresh instance will be initialized.");
+				ASF.ArchiLogger.LogNullError(nameof(globalCache));
 
-				globalCache = new GlobalCache();
+				return null;
 			}
 
 			return globalCache;
@@ -104,8 +116,6 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				return;
 			}
 
-			ASF.ArchiLogger.LogGenericTrace($"{LastChangeNumber} => {currentChangeNumber}");
-
 			LastChangeNumber = currentChangeNumber;
 
 			foreach ((uint appID, SteamApps.PICSChangesCallback.PICSChangeData appData) in appChanges) {
@@ -114,7 +124,6 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				}
 
 				AppChangeNumbers.TryRemove(appID, out _);
-				ASF.ArchiLogger.LogGenericTrace($"App needs refresh: {appID}");
 			}
 
 			Utilities.InBackground(Save);
@@ -128,8 +137,6 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			if (currentChangeNumber <= LastChangeNumber) {
 				return;
 			}
-
-			ASF.ArchiLogger.LogGenericDebug($"RESET {LastChangeNumber} => {currentChangeNumber}");
 
 			LastChangeNumber = currentChangeNumber;
 			AppChangeNumbers.Clear();
@@ -203,7 +210,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			bool save = false;
 
 			foreach (SteamApps.DepotKeyCallback depotKeyResult in depotKeyResults) {
-				if (depotKeyResult?.Result != EResult.OK) {
+				if (depotKeyResult.Result != EResult.OK) {
 					continue;
 				}
 
