@@ -129,21 +129,70 @@
     <value>{0} 加载成功，感谢您的帮助。首次提交将会在大约 {1}后开始。</value>
     <comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
+    <value>{0} 无法加载，将初始化新实例……</value>
+    <comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>
+  </data>
+  <data name="BotNoAppsToRefresh" xml:space="preserve">
+    <value>此机器人实例没有需要刷新的 App。</value>
+  </data>
+  <data name="BotRetrievingTotalAppAccessTokens" xml:space="preserve">
+    <value>正在获取共计 {0} 个 App Token……</value>
+    <comment>{0} will be replaced by the number (total count) of app access tokens being retrieved</comment>
+  </data>
+  <data name="BotRetrievingAppAccessTokens" xml:space="preserve">
+    <value>正在获取 {0} 个 App Token……</value>
+    <comment>{0} will be replaced by the number (count this batch) of app access tokens being retrieved</comment>
+  </data>
+  <data name="BotFinishedRetrievingAppAccessTokens" xml:space="preserve">
+    <value>已完成获取 {0} 个 App Token。</value>
+    <comment>{0} will be replaced by the number (count this batch) of app access tokens retrieved</comment>
+  </data>
+  <data name="BotFinishedRetrievingTotalAppAccessTokens" xml:space="preserve">
+    <value>已完成获取共计 {0} 个 App Token。</value>
+    <comment>{0} will be replaced by the number (total count) of app access tokens retrieved</comment>
+  </data>
+  <data name="BotRetrievingTotalDepots" xml:space="preserve">
+    <value>正在获取共计 {0} 个 App 的所有 Depot……</value>
+    <comment>{0} will be replaced by the number (total count) of apps being retrieved</comment>
+  </data>
+  <data name="BotRetrievingAppInfos" xml:space="preserve">
+    <value>正在获取 {0} 个 App 的信息……</value>
+    <comment>{0} will be replaced by the number (count this batch) of app infos being retrieved</comment>
+  </data>
+  <data name="BotFinishedRetrievingAppInfos" xml:space="preserve">
+    <value>已完成获取 {0} 个 App 的信息。</value>
+    <comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
+  </data>
+  <data name="BotRetrievingDepotKeys" xml:space="preserve">
+    <value>正在获取 {0} 个 Depot Key……</value>
+    <comment>{0} will be replaced by the number (count this batch) of depot keys being retrieved</comment>
+  </data>
+  <data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
+    <value>已完成获取 {0} 个 Depot key。</value>
+    <comment>{0} will be replaced by the number (count this batch) of depot keys retrieved</comment>
+  </data>
+  <data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
+    <value>已完成获取共计 {0} 个 App 的所有 Depot Key。</value>
+    <comment>{0} will be replaced by the number (total count) of apps retrieved</comment>
+  </data>
+  <data name="SubmissionNoNewData" xml:space="preserve">
+    <value>没有可提交的新数据，所有数据都已更新。</value>
+  </data>
+  <data name="SubmissionNoContributorSet" xml:space="preserve">
+    <value>无法提交数据，因为尚未设置有效的 Steam ID 供我们识别贡献者。请考虑设置 {0} 属性。</value>
+    <comment>{0} will be replaced by the name of the config property (e.g. "SteamOwnerID") that the user is expected to set</comment>
+  </data>
+  <data name="SubmissionInProgress" xml:space="preserve">
+    <value>正在提交已注册的 App/Sub/Depot：共计 {0}/{1}/{2} 个……</value>
+    <comment>{0} will be replaced by the number of app access tokens being submitted, {1} will be replaced by the number of package access tokens being submitted, {2} will be replaced by the number of depot keys being submitted</comment>
+  </data>
+  <data name="SubmissionFailedTooManyRequests" xml:space="preserve">
+    <value>由于发送请求过多，提交失败，我们将会在大约 {0}后重试。</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+  </data>
+  <data name="SubmissionSuccessful" xml:space="preserve">
+    <value>数据已成功提交。服务器已注册新 App/Sub/Depot：共计 {0}/{1}/{2} 个。</value>
+    <comment>{0} will be replaced by the number of new app access tokens that the server has registered, {1} will be replaced by the number of new package access tokens that the server has registered, {2} will be replaced by the number of new depot keys that the server has registered</comment>
+  </data>
 </root>
