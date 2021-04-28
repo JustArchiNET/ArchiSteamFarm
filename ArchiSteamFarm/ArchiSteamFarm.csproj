@@ -10,7 +10,7 @@
     <PackageReference Include="AngleSharp.XPath" Version="1.1.7" />
     <PackageReference Include="ConfigureAwaitChecker.Analyzer" PrivateAssets="all" Version="5.0.0" />
     <PackageReference Include="CryptSharpStandard" Version="1.0.0" />
-    <PackageReference Include="Humanizer" Version="2.8.26" />
+    <PackageReference Include="Humanizer" Version="2.9.9" />
     <PackageReference Include="JetBrains.Annotations" Version="2021.1.0" />
     <PackageReference Include="Markdig.Signed" Version="0.24.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
