@@ -1,0 +1,50 @@
+version: 2
+updates:
+- package-ecosystem: gitsubmodule
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "00:00"
+  open-pull-requests-limit: 99
+  labels:
+  - Automatic
+- package-ecosystem: nuget
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "00:00"
+  open-pull-requests-limit: 99
+  labels:
+  - Automatic
+  ignore:
+  - dependency-name: Microsoft.Extensions.Configuration.Json
+    versions:
+    - "> 3.1.0"
+  - dependency-name: Microsoft.Extensions.Logging.Configuration
+    versions:
+    - "> 3.1.0"
+  - dependency-name: Humanizer
+    versions:
+    - 2.9.7
+  - dependency-name: Swashbuckle.AspNetCore
+    versions:
+    - 6.0.0
+  - dependency-name: Swashbuckle.AspNetCore.Newtonsoft
+    versions:
+    - 6.0.0
+- package-ecosystem: docker
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "00:00"
+  open-pull-requests-limit: 99
+  labels:
+  - Automatic
+- package-ecosystem: github-actions
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "00:00"
+  open-pull-requests-limit: 99
+  labels:
+  - Automatic
