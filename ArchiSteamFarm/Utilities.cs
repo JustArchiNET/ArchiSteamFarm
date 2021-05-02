@@ -253,7 +253,7 @@ namespace ArchiSteamFarm {
 		public static string ToHumanReadable(this TimeSpan timeSpan) {
 			try {
 				return timeSpan.Humanize(3, maxUnit: TimeUnit.Year, minUnit: TimeUnit.Second);
-			} catch (CultureNotFoundException) {
+			} catch {
 				// Workaround for lack of support at Humanizer side
 				return timeSpan.ToString();
 			}
