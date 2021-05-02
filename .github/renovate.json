@@ -1,0 +1,13 @@
+{
+  "extends": [
+    "config:base",
+    ":assignee(JustArchi)",
+    ":automergeDigest",
+    ":automergeMinor",
+    ":disableRateLimiting",
+    ":label(Automatic)"
+  ],
+  "git-submodules": {
+    "enabled": true
+  }
+}
