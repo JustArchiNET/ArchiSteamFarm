@@ -7,39 +7,39 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AngleSharp.XPath" Version="1.1.7" />
-    <PackageReference Include="ConfigureAwaitChecker.Analyzer" PrivateAssets="all" Version="5.0.0" />
-    <PackageReference Include="CryptSharpStandard" Version="1.0.0" />
-    <PackageReference Include="Humanizer" Version="2.9.9" />
-    <PackageReference Include="JetBrains.Annotations" Version="2021.1.0" />
-    <PackageReference Include="Markdig.Signed" Version="0.24.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Nito.AsyncEx.Coordination" Version="5.1.0" />
-    <PackageReference Include="NLog" Version="4.7.9" />
-    <PackageReference Include="NLog.Web.AspNetCore" Version="4.12.0" />
-    <PackageReference Include="SteamKit2" Version="2.3.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.1.4" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.1.4" />
-    <PackageReference Include="System.Composition" Version="5.0.1" />
-    <PackageReference Include="System.Linq.Async" Version="5.0.0" />
+    <PackageReference Include="AngleSharp.XPath" />
+    <PackageReference Include="ConfigureAwaitChecker.Analyzer" PrivateAssets="all" />
+    <PackageReference Include="CryptSharpStandard" />
+    <PackageReference Include="Humanizer" />
+    <PackageReference Include="JetBrains.Annotations" />
+    <PackageReference Include="Markdig.Signed" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="Nito.AsyncEx.Coordination" />
+    <PackageReference Include="NLog" />
+    <PackageReference Include="NLog.Web.AspNetCore" />
+    <PackageReference Include="SteamKit2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" />
+    <PackageReference Include="System.Composition" />
+    <PackageReference Include="System.Linq.Async" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' != 'net48'">
-    <PackageReference Include="System.IO.FileSystem.AccessControl" Version="5.0.0" />
-    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="5.0.0" />
+    <PackageReference Include="System.IO.FileSystem.AccessControl" />
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
-    <PackageReference Include="IndexRange" Version="1.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.HttpOverrides" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.WebSockets" Version="2.2.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.*" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="3.1.*" />
+    <PackageReference Include="IndexRange" />
+    <PackageReference Include="Microsoft.AspNetCore.Cors" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics" />
+    <PackageReference Include="Microsoft.AspNetCore.HttpOverrides" />
+    <PackageReference Include="Microsoft.AspNetCore.ResponseCompression" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" />
+    <PackageReference Include="Microsoft.AspNetCore.WebSockets" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" />
     <Reference Include="System.Net.Http" HintPath="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Net.Http.dll" />
     <Reference Include="System.Security" HintPath="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Security.dll" />
   </ItemGroup>

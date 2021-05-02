@@ -4,14 +4,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ConfigureAwaitChecker.Analyzer" PrivateAssets="all" Version="5.0.0" />
-    <PackageReference Include="Newtonsoft.Json" IncludeAssets="compile" Version="*" />
-    <PackageReference Include="SteamKit2" IncludeAssets="compile" Version="*" />
-    <PackageReference Include="System.Composition.AttributedModel" IncludeAssets="compile" Version="*" />
+    <PackageReference Include="ConfigureAwaitChecker.Analyzer" PrivateAssets="all" />
+    <PackageReference Include="Newtonsoft.Json" IncludeAssets="compile" />
+    <PackageReference Include="SteamKit2" IncludeAssets="compile" />
+    <PackageReference Include="System.Composition.AttributedModel" IncludeAssets="compile" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" IncludeAssets="compile" Version="*" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" IncludeAssets="compile" />
   </ItemGroup>
 
   <ItemGroup>
