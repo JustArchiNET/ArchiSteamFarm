@@ -23,6 +23,7 @@ COPY ArchiSteamFarm ArchiSteamFarm
 COPY ArchiSteamFarm.OfficialPlugins.SteamTokenDumper ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
 COPY resources resources
 COPY Directory.Build.props Directory.Build.props
+COPY Directory.Packages.props Directory.Packages.props
 RUN dotnet --info && \
     case "$TARGETOS" in \
       "linux") ;; \
