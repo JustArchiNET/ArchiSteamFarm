@@ -38,6 +38,9 @@ using SteamKit2;
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 	[Export(typeof(IPlugin))]
 	internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotSteamClient, ISteamPICSChanges {
+		[JsonProperty]
+		internal static SteamTokenDumperConfig? Config { get; private set; }
+
 		private static readonly ConcurrentDictionary<Bot, IDisposable> BotSubscriptions = new();
 		private static readonly ConcurrentDictionary<Bot, (SemaphoreSlim RefreshSemaphore, Timer RefreshTimer)> BotSynchronizations = new();
 		private static readonly SemaphoreSlim SubmissionSemaphore = new(1, 1);
@@ -46,15 +49,12 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 		private static GlobalCache? GlobalCache;
 
 		[JsonProperty]
-		private static bool IsEnabled;
-
-		[JsonProperty]
 		public override string Name => nameof(SteamTokenDumperPlugin);
 
 		[JsonProperty]
 		public override Version Version => typeof(SteamTokenDumperPlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
-		public Task<uint> GetPreferredChangeNumberToStartFrom() => Task.FromResult(IsEnabled ? GlobalCache?.LastChangeNumber ?? 0 : 0);
+		public Task<uint> GetPreferredChangeNumberToStartFrom() => Task.FromResult(Config?.Enabled == true ? GlobalCache?.LastChangeNumber ?? 0 : 0);
 
 		public async void OnASFInit(IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null) {
 			if (!SharedInfo.HasValidToken) {
@@ -63,30 +63,52 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				return;
 			}
 
-			bool enabled = false;
+			bool isEnabled = false;
+			SteamTokenDumperConfig? config = null;
 
 			if (additionalConfigProperties != null) {
 				foreach ((string configProperty, JToken configValue) in additionalConfigProperties) {
 					try {
-						if (configProperty == nameof(GlobalConfigExtension.SteamTokenDumperPluginEnabled)) {
-							enabled = configValue.Value<bool>();
+						switch (configProperty) {
+							case nameof(GlobalConfigExtension.SteamTokenDumper):
+								config = configValue.Value<SteamTokenDumperConfig>();
 
-							break;
+								break;
+							case nameof(GlobalConfigExtension.SteamTokenDumperPluginEnabled):
+								isEnabled = configValue.Value<bool>();
+
+								break;
 						}
 					} catch (Exception e) {
 						ASF.ArchiLogger.LogGenericException(e);
-
-						break;
 					}
 				}
 			}
 
-			IsEnabled = enabled;
+			config ??= new SteamTokenDumperConfig();
 
-			if (!enabled) {
+			if (isEnabled) {
+				config.Enabled = true;
+			}
+
+			Config = config;
+
+			if (!config.Enabled) {
 				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginDisabledInConfig, nameof(SteamTokenDumperPlugin)));
 
 				return;
+			}
+
+			if (!config.SecretAppIDs.IsEmpty) {
+				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginSecretListInitialized, nameof(config.SecretAppIDs), string.Join(", ", config.SecretAppIDs)));
+			}
+
+			if (!config.SecretPackageIDs.IsEmpty) {
+				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginSecretListInitialized, nameof(config.SecretPackageIDs), string.Join(", ", config.SecretPackageIDs)));
+			}
+
+			if (!config.SecretDepotIDs.IsEmpty) {
+				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.PluginSecretListInitialized, nameof(config.SecretDepotIDs), string.Join(", ", config.SecretDepotIDs)));
 			}
 
 			if (GlobalCache == null) {
@@ -131,7 +153,11 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				throw new ArgumentNullException(nameof(bot));
 			}
 
-			if (!IsEnabled) {
+			if (Config == null) {
+				throw new InvalidOperationException(nameof(Config));
+			}
+
+			if (!Config.Enabled) {
 				return;
 			}
 
@@ -158,7 +184,11 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				subscription.Dispose();
 			}
 
-			if (!IsEnabled) {
+			if (Config == null) {
+				throw new InvalidOperationException(nameof(Config));
+			}
+
+			if (!Config.Enabled) {
 				return;
 			}
 
@@ -186,7 +216,11 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				throw new ArgumentNullException(nameof(packageChanges));
 			}
 
-			if (!IsEnabled) {
+			if (Config == null) {
+				throw new InvalidOperationException(nameof(Config));
+			}
+
+			if (!Config.Enabled) {
 				return;
 			}
 
@@ -202,7 +236,11 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				throw new ArgumentOutOfRangeException(nameof(currentChangeNumber));
 			}
 
-			if (!IsEnabled) {
+			if (Config == null) {
+				throw new InvalidOperationException(nameof(Config));
+			}
+
+			if (!Config.Enabled) {
 				return;
 			}
 
@@ -222,7 +260,11 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				throw new ArgumentNullException(nameof(callback));
 			}
 
-			if (!IsEnabled) {
+			if (Config == null) {
+				throw new InvalidOperationException(nameof(Config));
+			}
+
+			if (!Config.Enabled) {
 				return;
 			}
 
@@ -230,7 +272,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				throw new InvalidOperationException(nameof(GlobalCache));
 			}
 
-			Dictionary<uint, ulong> packageTokens = callback.LicenseList.GroupBy(license => license.PackageID).ToDictionary(group => group.Key, group => group.OrderByDescending(license => license.TimeCreated).First().AccessToken);
+			Dictionary<uint, ulong> packageTokens = callback.LicenseList.Where(license => !Config.SecretPackageIDs.Contains(license.PackageID)).GroupBy(license => license.PackageID).ToDictionary(group => group.Key, group => group.OrderByDescending(license => license.TimeCreated).First().AccessToken);
 
 			GlobalCache.UpdatePackageTokens(packageTokens);
 
@@ -242,7 +284,11 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				throw new ArgumentNullException(nameof(bot));
 			}
 
-			if (!IsEnabled) {
+			if (Config == null) {
+				throw new InvalidOperationException(nameof(Config));
+			}
+
+			if (!Config.Enabled) {
 				return;
 			}
 
@@ -271,13 +317,13 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 				HashSet<uint> appIDsToRefresh = new();
 
-				foreach (uint packageID in packageIDs) {
+				foreach (uint packageID in packageIDs.Where(packageID => !Config.SecretPackageIDs.Contains(packageID))) {
 					if (!ASF.GlobalDatabase.PackagesDataReadOnly.TryGetValue(packageID, out (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs) packageData) || (packageData.AppIDs == null)) {
 						// ASF might not have the package info for us at the moment, we'll retry later
 						continue;
 					}
 
-					appIDsToRefresh.UnionWith(packageData.AppIDs.Where(appID => GlobalCache.ShouldRefreshAppInfo(appID)));
+					appIDsToRefresh.UnionWith(packageData.AppIDs.Where(appID => !Config.SecretAppIDs.Contains(appID) && GlobalCache.ShouldRefreshAppInfo(appID)));
 				}
 
 				if (appIDsToRefresh.Count == 0) {
@@ -375,7 +421,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 							}
 
 							foreach (KeyValue depot in app.KeyValues["depots"].Children) {
-								if (uint.TryParse(depot.Name, out uint depotID) && GlobalCache.ShouldRefreshDepotKey(depotID)) {
+								if (uint.TryParse(depot.Name, out uint depotID) && !Config.SecretDepotIDs.Contains(depotID) && GlobalCache.ShouldRefreshDepotKey(depotID)) {
 									depotTasks.Add(bot.SteamApps.GetDepotDecryptionKey(depotID, app.ID).ToLongRunningTask());
 								}
 							}
@@ -417,11 +463,15 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				throw new InvalidOperationException(nameof(Bot.Bots));
 			}
 
-			const string request = SharedInfo.ServerURL + "/submit";
+			if (Config == null) {
+				throw new InvalidOperationException(nameof(Config));
+			}
 
-			if (!IsEnabled) {
+			if (!Config.Enabled) {
 				return;
 			}
+
+			const string request = SharedInfo.ServerURL + "/submit";
 
 			if (GlobalCache == null) {
 				throw new InvalidOperationException(nameof(GlobalCache));

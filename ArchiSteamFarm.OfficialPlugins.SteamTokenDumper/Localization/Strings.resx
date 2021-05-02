@@ -195,4 +195,8 @@
     <value>The data has been successfully submitted. The server has registered a total of new apps/subs/depots: {0}/{1}/{2}.</value>
     <comment>{0} will be replaced by the number of new app access tokens that the server has registered, {1} will be replaced by the number of new package access tokens that the server has registered, {2} will be replaced by the number of new depot keys that the server has registered</comment>
   </data>
+  <data name="PluginSecretListInitialized" xml:space="preserve">
+    <value>{0} initialized, the plugin will not resolve any of those: {1}.</value>
+    <comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
+  </data>
 </root>

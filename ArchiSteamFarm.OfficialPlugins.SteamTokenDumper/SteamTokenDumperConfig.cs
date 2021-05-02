@@ -1,4 +1,4 @@
-//     _                _      _  ____   _                           _____
+﻿//     _                _      _  ____   _                           _____
 //    / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
 //   / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
 //  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
@@ -19,17 +19,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
-	public sealed class GlobalConfigExtension {
+	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+	public sealed class SteamTokenDumperConfig {
 		[JsonProperty(Required = Required.DisallowNull)]
-		public SteamTokenDumperConfig? SteamTokenDumper { get; private set; }
+		public bool Enabled { get; internal set; }
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool SteamTokenDumperPluginEnabled { get; private set; }
+		public ImmutableHashSet<uint> SecretAppIDs { get; private set; } = ImmutableHashSet<uint>.Empty;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		public ImmutableHashSet<uint> SecretDepotIDs { get; private set; } = ImmutableHashSet<uint>.Empty;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		public ImmutableHashSet<uint> SecretPackageIDs { get; private set; } = ImmutableHashSet<uint>.Empty;
 
 		[JsonConstructor]
-		internal GlobalConfigExtension() { }
+		internal SteamTokenDumperConfig() { }
 	}
 }

@@ -196,6 +196,15 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} initialized, the plugin will not resolve any of those: {1}..
+        /// </summary>
+        internal static string PluginSecretListInitialized {
+            get {
+                return ResourceManager.GetString("PluginSecretListInitialized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The submission has failed due to too many requests sent, we&apos;ll try again in approximately {0} from now..
         /// </summary>
         internal static string SubmissionFailedTooManyRequests {
