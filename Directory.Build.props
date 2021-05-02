@@ -12,6 +12,7 @@
     <Deterministic>true</Deterministic>
     <ErrorReport>none</ErrorReport>
     <LangVersion>latest</LangVersion>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <NoWarn>1591</NoWarn>
     <Nullable>enable</Nullable>
     <PackageIcon>../resources/ASF.ico</PackageIcon>
