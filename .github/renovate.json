@@ -1,0 +1,19 @@
+{
+  "extends": [
+    "config:base",
+    ":assignee(JustArchi)",
+    ":automergeDigest",
+    ":automergeMinor",
+    ":disableRateLimiting",
+    ":label(Automatic)"
+  ],
+  "git-submodules": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "allowedVersions": "<= 3.0",
+      "matchPackageNames": [ "Microsoft.Extensions.Configuration.Json", "Microsoft.Extensions.Logging.Configuration" ]
+    }
+  ]
+}
