@@ -195,4 +195,8 @@
     <value>数据已成功提交。服务器已注册新 App/Sub/Depot：共计 {0}/{1}/{2} 个。</value>
     <comment>{0} will be replaced by the number of new app access tokens that the server has registered, {1} will be replaced by the number of new package access tokens that the server has registered, {2} will be replaced by the number of new depot keys that the server has registered</comment>
   </data>
+  <data name="PluginSecretListInitialized" xml:space="preserve">
+    <value>{0} 已初始化，插件无法解析以下任何内容：{1}。</value>
+    <comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
+  </data>
 </root>

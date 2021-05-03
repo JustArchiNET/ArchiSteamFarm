@@ -246,23 +246,23 @@ StackTrace:
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>Bitte geben Sie ihren 2FA-Code aus ihrer Steam-Authentifikator ein: </value>
+    <value>Bitte geben Sie Ihren 2FA-Code aus Ihrer Steam-Authentifizierungs-App ein: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>Bitte geben Sie ihren Steam Guard Authentifikator-Code ein, welcher ihnen per E-Mail geschickt wurde: </value>
+    <value>Bitte geben Sie den Steam Guard Authentifizierungs-Code ein, welcher Ihnen per E-Mail geschickt wurde: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>Bitte geben Sie ihren Steam-Login ein: </value>
+    <value>Bitte geben Sie Ihre Steam-Anmeldedaten ein: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalCode" xml:space="preserve">
-    <value>Bitte geben Sie ihre Steam-Familienansicht-PIN ein: </value>
+    <value>Bitte geben Sie Ihre Steam-Familienansicht-PIN ein: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>Bitte geben Sie ihr Steam-Passwort ein: </value>
+    <value>Bitte geben Sie Ihr Steam-Passwort ein: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
@@ -459,7 +459,7 @@ StackTrace:
     <value>Sie können nicht mit sich selbst handeln!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>Dieser Bot hat ASF-2FA nicht aktiviert! Haben Sie vergessen ihren Authentifikator als ASF 2FA zu importieren?</value>
+    <value>Dieser Bot hat ASF-2FA nicht aktiviert! Haben Sie vergessen, Ihren Authentifikator als ASF-2FA zu importieren?</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
     <value>Diese Bot-Instanz ist nicht verbunden!</value>
@@ -567,7 +567,7 @@ StackTrace:
     <value>Ihre angegebene CurrentCulture ist ungültig, ASF wird weiterhin mit dem Standard laufen!</value>
   </data>
   <data name="TranslationIncomplete" xml:space="preserve">
-    <value>ASF wird versuchen Ihre bevorzugte Sprache {0} zu verwenden, jedoch wurde die Übersetzung in dieser Sprache nur zu {1} abgeschlossen. Können Sie uns vielleicht helfen die ASF-Übersetzung in ihrer Sprache zu verbessern?</value>
+    <value>ASF wird versuchen, Ihre bevorzugte Sprache {0} zu verwenden, jedoch wurde die Übersetzung in dieser Sprache nur zu {1} abgeschlossen. Können Sie uns vielleicht helfen, die ASF-Übersetzung in Ihrer Sprache zu verbessern?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
   <data name="IdlingGameNotPossible" xml:space="preserve">
@@ -599,7 +599,7 @@ StackTrace:
     <value>Zugriff verweigert!</value>
   </data>
   <data name="WarningPreReleaseVersion" xml:space="preserve">
-    <value>Sie verwenden eine Version, die neuer ist als die zuletzt veröffentlichte Version ihres Aktualisierungskanals. Bitte bedenken Sie, dass Vorabversionen nur für Benutzer gedacht sind, die wissen wie man Fehler meldet, mit Problemen umgeht und Rückmeldung gibt - es wird keine technische Unterstützung geben.</value>
+    <value>Sie verwenden eine Version, die neuer ist als die zuletzt veröffentlichte Version Ihres Aktualisierungskanals. Bitte bedenken Sie, dass Vorabversionen nur für Benutzer gedacht sind, die wissen wie man Fehler meldet, mit Problemen umgeht und Rückmeldung gibt - es wird keine technische Unterstützung geben.</value>
   </data>
   <data name="BotStats" xml:space="preserve">
     <value>Aktuelle Speichernutzung: {0} MB.

@@ -122,7 +122,7 @@
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF будет автоматически проверять обновления каждые {0}.</value>
+    <value>ASF будет автоматически проверять обновления с интервалом в {0}.</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
   </data>
   <data name="Content" xml:space="preserve">
