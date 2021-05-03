@@ -313,7 +313,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 					return;
 				}
 
-				packageIDs ??= bot.OwnedPackageIDsReadOnly;
+				packageIDs ??= bot.OwnedPackageIDs.Where(package => !Config.SecretPackageIDs.Contains(package.Key) && ((package.Value.PaymentMethod != EPaymentMethod.AutoGrant) || !Config.SkipAutoGrantPackages)).Select(package => package.Key).ToHashSet();
 
 				HashSet<uint> appIDsToRefresh = new();
 
@@ -500,7 +500,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 					return;
 				}
 
-				ulong contributorSteamID = (ASF.GlobalConfig.SteamOwnerID > 0) && new SteamID(ASF.GlobalConfig.SteamOwnerID).IsIndividualAccount ? ASF.GlobalConfig.SteamOwnerID : Bot.Bots.Values.Where(bot => bot.SteamID > 0).OrderByDescending(bot => bot.OwnedPackageIDsReadOnly.Count).FirstOrDefault()?.SteamID ?? 0;
+				ulong contributorSteamID = (ASF.GlobalConfig.SteamOwnerID > 0) && new SteamID(ASF.GlobalConfig.SteamOwnerID).IsIndividualAccount ? ASF.GlobalConfig.SteamOwnerID : Bot.Bots.Values.Where(bot => bot.SteamID > 0).OrderByDescending(bot => bot.OwnedPackageIDs.Count).FirstOrDefault()?.SteamID ?? 0;
 
 				if (contributorSteamID == 0) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.SubmissionNoContributorSet, nameof(ASF.GlobalConfig.SteamOwnerID)));

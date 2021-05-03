@@ -113,6 +113,7 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public bool IsPlayingPossible => !PlayingBlocked && !LibraryLocked;
 
+		[Obsolete("Use " + nameof(OwnedPackageIDs) + " instead")]
 		[JsonIgnore]
 		[PublicAPI]
 		public IReadOnlyCollection<uint> OwnedPackageIDsReadOnly => OwnedPackageIDs.Keys.ToHashSet();
@@ -185,6 +186,10 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public string? Nickname { get; private set; }
 
+		[JsonIgnore]
+		[PublicAPI]
+		public ImmutableDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)> OwnedPackageIDs { get; private set; } = ImmutableDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>.Empty;
+
 		[JsonProperty]
 		[PublicAPI]
 		public ASF.EUserInputType RequiredInput { get; private set; }
@@ -201,7 +206,6 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public ECurrencyCode WalletCurrency { get; private set; }
 
-		internal ImmutableDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)> OwnedPackageIDs { get; private set; } = ImmutableDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>.Empty;
 		internal bool PlayingBlocked { get; private set; }
 		internal bool PlayingWasBlocked { get; private set; }
 
