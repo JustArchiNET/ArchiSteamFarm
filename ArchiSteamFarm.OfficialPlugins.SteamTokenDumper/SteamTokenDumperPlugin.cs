@@ -272,7 +272,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				throw new InvalidOperationException(nameof(GlobalCache));
 			}
 
-			Dictionary<uint, ulong> packageTokens = callback.LicenseList.Where(license => !Config.SecretPackageIDs.Contains(license.PackageID)).GroupBy(license => license.PackageID).ToDictionary(group => group.Key, group => group.OrderByDescending(license => license.TimeCreated).First().AccessToken);
+			Dictionary<uint, ulong> packageTokens = callback.LicenseList.Where(license => !Config.SecretPackageIDs.Contains(license.PackageID) && ((license.PaymentMethod != EPaymentMethod.AutoGrant) || !Config.SkipAutoGrantPackages)).GroupBy(license => license.PackageID).ToDictionary(group => group.Key, group => group.OrderByDescending(license => license.TimeCreated).First().AccessToken);
 
 			GlobalCache.UpdatePackageTokens(packageTokens);
 

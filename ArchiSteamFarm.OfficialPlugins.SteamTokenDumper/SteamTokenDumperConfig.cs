@@ -38,6 +38,9 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ImmutableHashSet<uint> SecretPackageIDs { get; private set; } = ImmutableHashSet<uint>.Empty;
 
+		[JsonProperty(Required = Required.DisallowNull)]
+		public bool SkipAutoGrantPackages { get; private set; }
+
 		[JsonConstructor]
 		internal SteamTokenDumperConfig() { }
 	}
