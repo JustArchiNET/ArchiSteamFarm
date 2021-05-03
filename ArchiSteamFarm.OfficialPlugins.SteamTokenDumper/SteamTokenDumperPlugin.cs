@@ -70,7 +70,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				foreach ((string configProperty, JToken configValue) in additionalConfigProperties) {
 					try {
 						switch (configProperty) {
-							case nameof(GlobalConfigExtension.SteamTokenDumper):
+							case nameof(GlobalConfigExtension.SteamTokenDumperPlugin):
 								config = configValue.Value<SteamTokenDumperConfig>();
 
 								break;
