@@ -80,8 +80,8 @@ csharp_style_implicit_object_creation_when_type_is_apparent = true:warning
 csharp_style_inlined_variable_declaration = true:warning
 
 csharp_style_pattern_local_over_anonymous_function = true:warning
-csharp_style_pattern_matching_over_is_with_cast_check = true:warning
 csharp_style_pattern_matching_over_as_with_null_check = true:warning
+csharp_style_pattern_matching_over_is_with_cast_check = true:warning
 
 csharp_style_prefer_index_operator = true:warning
 csharp_style_prefer_not_pattern = true:warning
@@ -103,21 +103,55 @@ csharp_using_directive_placement = outside_namespace:warning
 [*.{cs,vb}]
 dotnet_code_quality_unused_parameters = all:warning
 
-# PascalCase for naming everything but parameters
-dotnet_naming_rule.all_members_must_be_capitalized.severity = warning
-dotnet_naming_rule.all_members_must_be_capitalized.style = all_symbols
-dotnet_naming_rule.all_members_must_be_capitalized.symbols = all_symbols
-dotnet_naming_style.all_symbols.capitalization = pascal_case
-dotnet_naming_symbols.all_symbols.applicable_accessibilities = *
-dotnet_naming_symbols.all_symbols.applicable_kinds = namespace,class,struct,interface,enum,property,method,field,event,delegate,type_parameter,local_function
+# Rule - almost everything
+dotnet_naming_rule.almost_everything_must_be_pascal_case.severity = warning
+dotnet_naming_rule.almost_everything_must_be_pascal_case.style = pascal_case
+dotnet_naming_rule.almost_everything_must_be_pascal_case.symbols = almost_everything
 
-# camelCase for naming parameters
-dotnet_naming_rule.parameters_must_be_camel_case.severity = warning
-dotnet_naming_rule.parameters_must_be_camel_case.style = params
-dotnet_naming_rule.parameters_must_be_camel_case.symbols = params
-dotnet_naming_style.params.capitalization = camel_case
-dotnet_naming_symbols.params.applicable_accessibilities = *
-dotnet_naming_symbols.params.applicable_kinds = parameter,local
+# Rule - interfaces
+dotnet_naming_rule.interfaces_must_be_i_pascal_case.severity = warning
+dotnet_naming_rule.interfaces_must_be_i_pascal_case.style = i_pascal_case
+dotnet_naming_rule.interfaces_must_be_i_pascal_case.symbols = interfaces
+
+# Rule - local parameters
+dotnet_naming_rule.local_parameters_must_be_camel_case.severity = warning
+dotnet_naming_rule.local_parameters_must_be_camel_case.style = camel_case
+dotnet_naming_rule.local_parameters_must_be_camel_case.symbols = local_parameters
+
+# Rule - type parameters
+dotnet_naming_rule.type_parameters_must_be_t_pascal_case.severity = warning
+dotnet_naming_rule.type_parameters_must_be_t_pascal_case.style = t_pascal_case
+dotnet_naming_rule.type_parameters_must_be_t_pascal_case.symbols = type_parameters
+
+# Style - camelCase
+dotnet_naming_style.camel_case.capitalization = camel_case
+
+# Style - IPascalCase
+dotnet_naming_style.i_pascal_case.capitalization = pascal_case
+dotnet_naming_style.i_pascal_case.required_prefix = I
+
+# Style - PascalCase
+dotnet_naming_style.pascal_case.capitalization = pascal_case
+
+# Style - TPascalCase
+dotnet_naming_style.t_pascal_case.capitalization = pascal_case
+dotnet_naming_style.t_pascal_case.required_prefix = T
+
+# Symbol - almost everything
+dotnet_naming_symbols.almost_everything.applicable_accessibilities = *
+dotnet_naming_symbols.almost_everything.applicable_kinds = namespace,class,struct,interface,enum,property,method,field,event,delegate,local_function
+
+# Symbol - interfaces
+dotnet_naming_symbols.interfaces.applicable_kinds = interface
+dotnet_naming_symbols.interfaces.applicable_accessibilities = *
+
+# Symbol - local parameters
+dotnet_naming_symbols.local_parameters.applicable_accessibilities = *
+dotnet_naming_symbols.local_parameters.applicable_kinds = parameter,local
+
+# Symbol - type parameters
+dotnet_naming_symbols.type_parameters.applicable_kinds = type_parameter
+dotnet_naming_symbols.type_parameters.applicable_accessibilities = *
 
 dotnet_remove_unnecessary_suppression_exclusions = none:warning
 dotnet_separate_import_directive_groups = false:warning
