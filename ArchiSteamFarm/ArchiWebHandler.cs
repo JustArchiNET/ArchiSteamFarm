@@ -45,25 +45,22 @@ using Formatting = Newtonsoft.Json.Formatting;
 
 namespace ArchiSteamFarm {
 	public sealed class ArchiWebHandler : IDisposable {
-		[PublicAPI]
-		public const string SteamCommunityURL = "https://" + SteamCommunityHost;
-
-		[PublicAPI]
-		public const string SteamHelpURL = "https://" + SteamHelpHost;
-
-		[PublicAPI]
-		public const string SteamStoreURL = "https://" + SteamStoreHost;
-
 		internal const ushort MaxItemsInSingleInventoryRequest = 5000;
 
 		private const string EconService = "IEconService";
 		private const string PlayerService = "IPlayerService";
 		private const string SteamAppsService = "ISteamApps";
-		private const string SteamCommunityHost = "steamcommunity.com";
-		private const string SteamHelpHost = "help.steampowered.com";
-		private const string SteamStoreHost = "store.steampowered.com";
 		private const string SteamUserAuthService = "ISteamUserAuth";
 		private const string TwoFactorService = "ITwoFactorService";
+
+		[PublicAPI]
+		public static Uri SteamCommunityURL => new("https://steamcommunity.com");
+
+		[PublicAPI]
+		public static Uri SteamHelpURL => new("https://help.steampowered.com");
+
+		[PublicAPI]
+		public static Uri SteamStoreURL => new("https://store.steampowered.com");
 
 		private static readonly ConcurrentDictionary<uint, byte> CachedCardCountsForGame = new();
 
@@ -146,7 +143,6 @@ namespace ArchiSteamFarm {
 				throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(steamID)));
 			}
 
-			string request = "/inventory/" + steamID + "/" + appID + "/" + contextID + "?count=" + MaxItemsInSingleInventoryRequest + "&l=english";
 			ulong startAssetID = 0;
 
 			// We need to store asset IDs to make sure we won't get duplicate items
@@ -156,7 +152,9 @@ namespace ArchiSteamFarm {
 				await ASF.InventorySemaphore.WaitAsync().ConfigureAwait(false);
 
 				try {
-					ObjectResponse<InventoryResponse>? response = await UrlGetToJsonObjectWithSession<InventoryResponse>(SteamCommunityURL, request + (startAssetID > 0 ? "&start_assetid=" + startAssetID : "")).ConfigureAwait(false);
+					Uri request = new(SteamCommunityURL, "/inventory/" + steamID + "/" + appID + "/" + contextID + "?count=" + MaxItemsInSingleInventoryRequest + "&l=english" + (startAssetID > 0 ? "&start_assetid=" + startAssetID : ""));
+
+					ObjectResponse<InventoryResponse>? response = await UrlGetToJsonObjectWithSession<InventoryResponse>(request).ConfigureAwait(false);
 
 					if (response == null) {
 						throw new HttpRequestException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response)));
@@ -242,9 +240,9 @@ namespace ArchiSteamFarm {
 
 		[PublicAPI]
 		public async Task<Dictionary<uint, string>?> GetMyOwnedGames() {
-			const string request = "/my/games?l=english&xml=1";
+			Uri request = new(SteamCommunityURL, "/my/games?l=english&xml=1");
 
-			XmlDocumentResponse? response = await UrlGetToXmlDocumentWithSession(SteamCommunityURL, request, checkSessionPreemptively: false).ConfigureAwait(false);
+			XmlDocumentResponse? response = await UrlGetToXmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
 
 			using XmlNodeList? xmlNodeList = response?.Content.SelectNodes("gamesList/games/game");
 
@@ -310,7 +308,7 @@ namespace ArchiSteamFarm {
 
 				try {
 					response = await WebLimitRequest(
-						WebAPI.DefaultBaseAddress.Host,
+						WebAPI.DefaultBaseAddress,
 
 						// ReSharper disable once AccessToDisposedClosure
 						async () => await playerService.CallAsync(
@@ -375,12 +373,12 @@ namespace ArchiSteamFarm {
 				throw new ArgumentOutOfRangeException(nameof(groupID));
 			}
 
-			string request = "/gid/" + groupID;
+			Uri request = new(SteamCommunityURL, "/gid/" + groupID);
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new(2, StringComparer.Ordinal) { { "action", "join" } };
 
-			return await UrlPostWithSession(SteamCommunityURL, request, data: data, session: ESession.CamelCase).ConfigureAwait(false);
+			return await UrlPostWithSession(request, data: data, session: ESession.CamelCase).ConfigureAwait(false);
 		}
 
 		[PublicAPI]
@@ -430,8 +428,8 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			const string request = "/tradeoffer/new/send";
-			const string referer = SteamCommunityURL + "/tradeoffer/new";
+			Uri request = new(SteamCommunityURL, "/tradeoffer/new/send");
+			Uri referer = new(SteamCommunityURL, "/tradeoffer/new");
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new(6, StringComparer.Ordinal) {
@@ -449,7 +447,7 @@ namespace ArchiSteamFarm {
 				ObjectResponse<TradeOfferSendResponse>? response = null;
 
 				for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-					response = await UrlPostToJsonObjectWithSession<TradeOfferSendResponse>(SteamCommunityURL, request, data: data, referer: referer, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors).ConfigureAwait(false);
+					response = await UrlPostToJsonObjectWithSession<TradeOfferSendResponse>(request, data: data, referer: referer, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors).ConfigureAwait(false);
 
 					if (response == null) {
 						return (false, mobileTradeOfferIDs);
@@ -489,18 +487,14 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<HtmlDocumentResponse?> UrlGetToHtmlDocumentWithSession(string host, string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
-			if (string.IsNullOrEmpty(host)) {
-				throw new ArgumentNullException(nameof(host));
-			}
-
-			if (string.IsNullOrEmpty(request)) {
+		public async Task<HtmlDocumentResponse?> UrlGetToHtmlDocumentWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
+			if (request == null) {
 				throw new ArgumentNullException(nameof(request));
 			}
 
 			if (maxTries == 0) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 				return null;
 			}
@@ -511,11 +505,11 @@ namespace ArchiSteamFarm {
 
 				if (sessionExpired.GetValueOrDefault(true)) {
 					if (await RefreshSession().ConfigureAwait(false)) {
-						return await UrlGetToHtmlDocumentWithSession(host, request, headers, referer, requestOptions, true, --maxTries).ConfigureAwait(false);
+						return await UrlGetToHtmlDocumentWithSession(request, headers, referer, requestOptions, true, --maxTries).ConfigureAwait(false);
 					}
 
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 					return null;
 				}
@@ -534,13 +528,15 @@ namespace ArchiSteamFarm {
 
 				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 					return null;
 				}
 			}
 
-			HtmlDocumentResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlGetToHtmlDocument(host + request, headers, referer, requestOptions).ConfigureAwait(false)).ConfigureAwait(false);
+			Uri host = new(request.Host);
+
+			HtmlDocumentResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlGetToHtmlDocument(request, headers, referer, requestOptions).ConfigureAwait(false)).ConfigureAwait(false);
 
 			if (response == null) {
 				return null;
@@ -548,11 +544,11 @@ namespace ArchiSteamFarm {
 
 			if (IsSessionExpiredUri(response.FinalUri)) {
 				if (await RefreshSession().ConfigureAwait(false)) {
-					return await UrlGetToHtmlDocumentWithSession(host, request, headers, referer, requestOptions, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
+					return await UrlGetToHtmlDocumentWithSession(request, headers, referer, requestOptions, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 				return null;
 			}
@@ -561,25 +557,21 @@ namespace ArchiSteamFarm {
 			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
 
-				return await UrlGetToHtmlDocumentWithSession(host, request, headers, referer, requestOptions, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
+				return await UrlGetToHtmlDocumentWithSession(request, headers, referer, requestOptions, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 			}
 
 			return response;
 		}
 
 		[PublicAPI]
-		public async Task<ObjectResponse<T>?> UrlGetToJsonObjectWithSession<T>(string host, string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
-			if (string.IsNullOrEmpty(host)) {
-				throw new ArgumentNullException(nameof(host));
-			}
-
-			if (string.IsNullOrEmpty(request)) {
+		public async Task<ObjectResponse<T>?> UrlGetToJsonObjectWithSession<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
+			if (request == null) {
 				throw new ArgumentNullException(nameof(request));
 			}
 
 			if (maxTries == 0) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 				return default(ObjectResponse<T>?);
 			}
@@ -590,11 +582,11 @@ namespace ArchiSteamFarm {
 
 				if (sessionExpired.GetValueOrDefault(true)) {
 					if (await RefreshSession().ConfigureAwait(false)) {
-						return await UrlGetToJsonObjectWithSession<T>(host, request, headers, referer, requestOptions, true, --maxTries).ConfigureAwait(false);
+						return await UrlGetToJsonObjectWithSession<T>(request, headers, referer, requestOptions, true, --maxTries).ConfigureAwait(false);
 					}
 
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 					return null;
 				}
@@ -613,13 +605,15 @@ namespace ArchiSteamFarm {
 
 				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 					return default(ObjectResponse<T>?);
 				}
 			}
 
-			ObjectResponse<T>? response = await WebLimitRequest(host, async () => await WebBrowser.UrlGetToJsonObject<T>(host + request, headers, referer, requestOptions).ConfigureAwait(false)).ConfigureAwait(false);
+			Uri host = new(request.Host);
+
+			ObjectResponse<T>? response = await WebLimitRequest(host, async () => await WebBrowser.UrlGetToJsonObject<T>(request, headers, referer, requestOptions).ConfigureAwait(false)).ConfigureAwait(false);
 
 			if (response == null) {
 				return default(ObjectResponse<T>?);
@@ -627,11 +621,11 @@ namespace ArchiSteamFarm {
 
 			if (IsSessionExpiredUri(response.FinalUri)) {
 				if (await RefreshSession().ConfigureAwait(false)) {
-					return await UrlGetToJsonObjectWithSession<T>(host, request, headers, referer, requestOptions, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
+					return await UrlGetToJsonObjectWithSession<T>(request, headers, referer, requestOptions, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 				return null;
 			}
@@ -640,25 +634,21 @@ namespace ArchiSteamFarm {
 			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
 
-				return await UrlGetToJsonObjectWithSession<T>(host, request, headers, referer, requestOptions, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
+				return await UrlGetToJsonObjectWithSession<T>(request, headers, referer, requestOptions, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 			}
 
 			return response;
 		}
 
 		[PublicAPI]
-		public async Task<XmlDocumentResponse?> UrlGetToXmlDocumentWithSession(string host, string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
-			if (string.IsNullOrEmpty(host)) {
-				throw new ArgumentNullException(nameof(host));
-			}
-
-			if (string.IsNullOrEmpty(request)) {
+		public async Task<XmlDocumentResponse?> UrlGetToXmlDocumentWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
+			if (request == null) {
 				throw new ArgumentNullException(nameof(request));
 			}
 
 			if (maxTries == 0) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 				return null;
 			}
@@ -669,11 +659,11 @@ namespace ArchiSteamFarm {
 
 				if (sessionExpired.GetValueOrDefault(true)) {
 					if (await RefreshSession().ConfigureAwait(false)) {
-						return await UrlGetToXmlDocumentWithSession(host, request, headers, referer, requestOptions, true, --maxTries).ConfigureAwait(false);
+						return await UrlGetToXmlDocumentWithSession(request, headers, referer, requestOptions, true, --maxTries).ConfigureAwait(false);
 					}
 
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 					return null;
 				}
@@ -692,13 +682,15 @@ namespace ArchiSteamFarm {
 
 				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 					return null;
 				}
 			}
 
-			XmlDocumentResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlGetToXmlDocument(host + request, headers, referer, requestOptions).ConfigureAwait(false)).ConfigureAwait(false);
+			Uri host = new(request.Host);
+
+			XmlDocumentResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlGetToXmlDocument(request, headers, referer, requestOptions).ConfigureAwait(false)).ConfigureAwait(false);
 
 			if (response == null) {
 				return null;
@@ -706,11 +698,11 @@ namespace ArchiSteamFarm {
 
 			if (IsSessionExpiredUri(response.FinalUri)) {
 				if (await RefreshSession().ConfigureAwait(false)) {
-					return await UrlGetToXmlDocumentWithSession(host, request, headers, referer, requestOptions, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
+					return await UrlGetToXmlDocumentWithSession(request, headers, referer, requestOptions, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 				return null;
 			}
@@ -719,25 +711,21 @@ namespace ArchiSteamFarm {
 			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
 
-				return await UrlGetToXmlDocumentWithSession(host, request, headers, referer, requestOptions, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
+				return await UrlGetToXmlDocumentWithSession(request, headers, referer, requestOptions, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 			}
 
 			return response;
 		}
 
 		[PublicAPI]
-		public async Task<bool> UrlHeadWithSession(string host, string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
-			if (string.IsNullOrEmpty(host)) {
-				throw new ArgumentNullException(nameof(host));
-			}
-
-			if (string.IsNullOrEmpty(request)) {
+		public async Task<bool> UrlHeadWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
+			if (request == null) {
 				throw new ArgumentNullException(nameof(request));
 			}
 
 			if (maxTries == 0) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 				return false;
 			}
@@ -748,11 +736,11 @@ namespace ArchiSteamFarm {
 
 				if (sessionExpired.GetValueOrDefault(true)) {
 					if (await RefreshSession().ConfigureAwait(false)) {
-						return await UrlHeadWithSession(host, request, headers, referer, requestOptions, true, --maxTries).ConfigureAwait(false);
+						return await UrlHeadWithSession(request, headers, referer, requestOptions, true, --maxTries).ConfigureAwait(false);
 					}
 
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 					return false;
 				}
@@ -771,13 +759,15 @@ namespace ArchiSteamFarm {
 
 				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 					return false;
 				}
 			}
 
-			BasicResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlHead(host + request, headers, referer, requestOptions).ConfigureAwait(false)).ConfigureAwait(false);
+			Uri host = new(request.Host);
+
+			BasicResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlHead(request, headers, referer, requestOptions).ConfigureAwait(false)).ConfigureAwait(false);
 
 			if (response == null) {
 				return false;
@@ -785,11 +775,11 @@ namespace ArchiSteamFarm {
 
 			if (IsSessionExpiredUri(response.FinalUri)) {
 				if (await RefreshSession().ConfigureAwait(false)) {
-					return await UrlHeadWithSession(host, request, headers, referer, requestOptions, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
+					return await UrlHeadWithSession(request, headers, referer, requestOptions, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 				return false;
 			}
@@ -798,19 +788,15 @@ namespace ArchiSteamFarm {
 			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
 
-				return await UrlHeadWithSession(host, request, headers, referer, requestOptions, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
+				return await UrlHeadWithSession(request, headers, referer, requestOptions, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 			}
 
 			return true;
 		}
 
 		[PublicAPI]
-		public async Task<HtmlDocumentResponse?> UrlPostToHtmlDocumentWithSession(string host, string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, string? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
-			if (string.IsNullOrEmpty(host)) {
-				throw new ArgumentNullException(nameof(host));
-			}
-
-			if (string.IsNullOrEmpty(request)) {
+		public async Task<HtmlDocumentResponse?> UrlPostToHtmlDocumentWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
+			if (request == null) {
 				throw new ArgumentNullException(nameof(request));
 			}
 
@@ -820,7 +806,7 @@ namespace ArchiSteamFarm {
 
 			if (maxTries == 0) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 				return null;
 			}
@@ -831,11 +817,11 @@ namespace ArchiSteamFarm {
 
 				if (sessionExpired.GetValueOrDefault(true)) {
 					if (await RefreshSession().ConfigureAwait(false)) {
-						return await UrlPostToHtmlDocumentWithSession(host, request, headers, data, referer, requestOptions, session, true, --maxTries).ConfigureAwait(false);
+						return await UrlPostToHtmlDocumentWithSession(request, headers, data, referer, requestOptions, session, true, --maxTries).ConfigureAwait(false);
 					}
 
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 					return null;
 				}
@@ -854,11 +840,13 @@ namespace ArchiSteamFarm {
 
 				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 					return null;
 				}
 			}
+
+			Uri host = new(request.Host);
 
 			if (session != ESession.None) {
 				string? sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
@@ -883,7 +871,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			HtmlDocumentResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToHtmlDocument(host + request, headers, data, referer, requestOptions).ConfigureAwait(false)).ConfigureAwait(false);
+			HtmlDocumentResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToHtmlDocument(request, headers, data, referer, requestOptions).ConfigureAwait(false)).ConfigureAwait(false);
 
 			if (response == null) {
 				return null;
@@ -891,11 +879,11 @@ namespace ArchiSteamFarm {
 
 			if (IsSessionExpiredUri(response.FinalUri)) {
 				if (await RefreshSession().ConfigureAwait(false)) {
-					return await UrlPostToHtmlDocumentWithSession(host, request, headers, data, referer, requestOptions, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
+					return await UrlPostToHtmlDocumentWithSession(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 				return null;
 			}
@@ -904,19 +892,15 @@ namespace ArchiSteamFarm {
 			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
 
-				return await UrlPostToHtmlDocumentWithSession(host, request, headers, data, referer, requestOptions, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
+				return await UrlPostToHtmlDocumentWithSession(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 			}
 
 			return response;
 		}
 
 		[PublicAPI]
-		public async Task<ObjectResponse<T>?> UrlPostToJsonObjectWithSession<T>(string host, string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, string? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
-			if (string.IsNullOrEmpty(host)) {
-				throw new ArgumentNullException(nameof(host));
-			}
-
-			if (string.IsNullOrEmpty(request)) {
+		public async Task<ObjectResponse<T>?> UrlPostToJsonObjectWithSession<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
+			if (request == null) {
 				throw new ArgumentNullException(nameof(request));
 			}
 
@@ -926,7 +910,7 @@ namespace ArchiSteamFarm {
 
 			if (maxTries == 0) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 				return null;
 			}
@@ -937,11 +921,11 @@ namespace ArchiSteamFarm {
 
 				if (sessionExpired.GetValueOrDefault(true)) {
 					if (await RefreshSession().ConfigureAwait(false)) {
-						return await UrlPostToJsonObjectWithSession<T>(host, request, headers, data, referer, requestOptions, session, true, --maxTries).ConfigureAwait(false);
+						return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, true, --maxTries).ConfigureAwait(false);
 					}
 
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 					return null;
 				}
@@ -960,11 +944,13 @@ namespace ArchiSteamFarm {
 
 				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 					return null;
 				}
 			}
+
+			Uri host = new(request.Host);
 
 			if (session != ESession.None) {
 				string? sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
@@ -989,7 +975,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			ObjectResponse<T>? response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToJsonObject<T, IDictionary<string, string>>(host + request, headers, data, referer, requestOptions).ConfigureAwait(false)).ConfigureAwait(false);
+			ObjectResponse<T>? response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToJsonObject<T, IDictionary<string, string>>(request, headers, data, referer, requestOptions).ConfigureAwait(false)).ConfigureAwait(false);
 
 			if (response == null) {
 				return null;
@@ -997,11 +983,11 @@ namespace ArchiSteamFarm {
 
 			if (IsSessionExpiredUri(response.FinalUri)) {
 				if (await RefreshSession().ConfigureAwait(false)) {
-					return await UrlPostToJsonObjectWithSession<T>(host, request, headers, data, referer, requestOptions, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
+					return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 				return null;
 			}
@@ -1010,19 +996,15 @@ namespace ArchiSteamFarm {
 			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
 
-				return await UrlPostToJsonObjectWithSession<T>(host, request, headers, data, referer, requestOptions, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
+				return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 			}
 
 			return response;
 		}
 
 		[PublicAPI]
-		public async Task<ObjectResponse<T>?> UrlPostToJsonObjectWithSession<T>(string host, string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, ICollection<KeyValuePair<string, string>>? data = null, string? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
-			if (string.IsNullOrEmpty(host)) {
-				throw new ArgumentNullException(nameof(host));
-			}
-
-			if (string.IsNullOrEmpty(request)) {
+		public async Task<ObjectResponse<T>?> UrlPostToJsonObjectWithSession<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, ICollection<KeyValuePair<string, string>>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
+			if (request == null) {
 				throw new ArgumentNullException(nameof(request));
 			}
 
@@ -1032,7 +1014,7 @@ namespace ArchiSteamFarm {
 
 			if (maxTries == 0) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 				return null;
 			}
@@ -1043,11 +1025,11 @@ namespace ArchiSteamFarm {
 
 				if (sessionExpired.GetValueOrDefault(true)) {
 					if (await RefreshSession().ConfigureAwait(false)) {
-						return await UrlPostToJsonObjectWithSession<T>(host, request, headers, data, referer, requestOptions, session, true, --maxTries).ConfigureAwait(false);
+						return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, true, --maxTries).ConfigureAwait(false);
 					}
 
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 					return null;
 				}
@@ -1066,11 +1048,13 @@ namespace ArchiSteamFarm {
 
 				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 					return null;
 				}
 			}
+
+			Uri host = new(request.Host);
 
 			if (session != ESession.None) {
 				string? sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
@@ -1098,7 +1082,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			ObjectResponse<T>? response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToJsonObject<T, ICollection<KeyValuePair<string, string>>>(host + request, headers, data, referer, requestOptions).ConfigureAwait(false)).ConfigureAwait(false);
+			ObjectResponse<T>? response = await WebLimitRequest(host, async () => await WebBrowser.UrlPostToJsonObject<T, ICollection<KeyValuePair<string, string>>>(request, headers, data, referer, requestOptions).ConfigureAwait(false)).ConfigureAwait(false);
 
 			if (response == null) {
 				return null;
@@ -1106,11 +1090,11 @@ namespace ArchiSteamFarm {
 
 			if (IsSessionExpiredUri(response.FinalUri)) {
 				if (await RefreshSession().ConfigureAwait(false)) {
-					return await UrlPostToJsonObjectWithSession<T>(host, request, headers, data, referer, requestOptions, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
+					return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 				return null;
 			}
@@ -1119,19 +1103,15 @@ namespace ArchiSteamFarm {
 			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
 
-				return await UrlPostToJsonObjectWithSession<T>(host, request, headers, data, referer, requestOptions, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
+				return await UrlPostToJsonObjectWithSession<T>(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 			}
 
 			return response;
 		}
 
 		[PublicAPI]
-		public async Task<bool> UrlPostWithSession(string host, string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, string? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
-			if (string.IsNullOrEmpty(host)) {
-				throw new ArgumentNullException(nameof(host));
-			}
-
-			if (string.IsNullOrEmpty(request)) {
+		public async Task<bool> UrlPostWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, IDictionary<string, string>? data = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, ESession session = ESession.Lowercase, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
+			if (request == null) {
 				throw new ArgumentNullException(nameof(request));
 			}
 
@@ -1141,7 +1121,7 @@ namespace ArchiSteamFarm {
 
 			if (maxTries == 0) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 				return false;
 			}
@@ -1152,11 +1132,11 @@ namespace ArchiSteamFarm {
 
 				if (sessionExpired.GetValueOrDefault(true)) {
 					if (await RefreshSession().ConfigureAwait(false)) {
-						return await UrlPostWithSession(host, request, headers, data, referer, requestOptions, session, true, --maxTries).ConfigureAwait(false);
+						return await UrlPostWithSession(request, headers, data, referer, requestOptions, session, true, --maxTries).ConfigureAwait(false);
 					}
 
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 					return false;
 				}
@@ -1175,11 +1155,13 @@ namespace ArchiSteamFarm {
 
 				if (!Initialized) {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 					return false;
 				}
 			}
+
+			Uri host = new(request.Host);
 
 			if (session != ESession.None) {
 				string? sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
@@ -1204,7 +1186,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			BasicResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlPost(host + request, headers, data, referer, requestOptions).ConfigureAwait(false)).ConfigureAwait(false);
+			BasicResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlPost(request, headers, data, referer, requestOptions).ConfigureAwait(false)).ConfigureAwait(false);
 
 			if (response == null) {
 				return false;
@@ -1212,11 +1194,11 @@ namespace ArchiSteamFarm {
 
 			if (IsSessionExpiredUri(response.FinalUri)) {
 				if (await RefreshSession().ConfigureAwait(false)) {
-					return await UrlPostWithSession(host, request, headers, data, referer, requestOptions, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
+					return await UrlPostWithSession(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 				}
 
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, host + request));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 				return false;
 			}
@@ -1225,20 +1207,24 @@ namespace ArchiSteamFarm {
 			if (await IsProfileUri(response.FinalUri).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
 
-				return await UrlPostWithSession(host, request, headers, data, referer, requestOptions, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
+				return await UrlPostWithSession(request, headers, data, referer, requestOptions, session, checkSessionPreemptively, --maxTries).ConfigureAwait(false);
 			}
 
 			return true;
 		}
 
 		[PublicAPI]
-		public static async Task<T> WebLimitRequest<T>(string service, Func<Task<T>> function) {
-			if (string.IsNullOrEmpty(service)) {
+		public static async Task<T> WebLimitRequest<T>(Uri service, Func<Task<T>> function) {
+			if (service == null) {
 				throw new ArgumentNullException(nameof(service));
 			}
 
 			if (function == null) {
 				throw new ArgumentNullException(nameof(function));
+			}
+
+			if (ASF.RateLimitingSemaphore == null) {
+				throw new InvalidOperationException(nameof(ASF.RateLimitingSemaphore));
 			}
 
 			if (ASF.WebLimitingSemaphores == null) {
@@ -1251,18 +1237,16 @@ namespace ArchiSteamFarm {
 				return await function().ConfigureAwait(false);
 			}
 
-			if (!ASF.WebLimitingSemaphores.TryGetValue(service, out (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore) limiters)) {
+			if (!ASF.WebLimitingSemaphores.TryGetValue(service, out (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim? OpenConnectionsSemaphore) limiters)) {
 				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(service), service));
 
-				if (!ASF.WebLimitingSemaphores.TryGetValue(nameof(ArchiWebHandler), out limiters)) {
-					ASF.ArchiLogger.LogNullError(nameof(limiters));
-
-					return await function().ConfigureAwait(false);
-				}
+				limiters.RateLimitingSemaphore = ASF.RateLimitingSemaphore;
 			}
 
 			// Sending a request opens a new connection
-			await limiters.OpenConnectionsSemaphore.WaitAsync().ConfigureAwait(false);
+			if (limiters.OpenConnectionsSemaphore != null) {
+				await limiters.OpenConnectionsSemaphore.WaitAsync().ConfigureAwait(false);
+			}
 
 			try {
 				// It also increases number of requests
@@ -1279,7 +1263,7 @@ namespace ArchiSteamFarm {
 				return await function().ConfigureAwait(false);
 			} finally {
 				// We release open connections semaphore only once we're indeed done sending a particular request
-				limiters.OpenConnectionsSemaphore.Release();
+				limiters.OpenConnectionsSemaphore?.Release();
 			}
 		}
 
@@ -1288,7 +1272,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentOutOfRangeException(nameof(giftCardID));
 			}
 
-			const string request = "/gifts/0/resolvegiftcard";
+			Uri request = new(SteamStoreURL, "/gifts/0/resolvegiftcard");
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new(3, StringComparer.Ordinal) {
@@ -1296,7 +1280,7 @@ namespace ArchiSteamFarm {
 				{ "giftcardid", giftCardID.ToString(CultureInfo.InvariantCulture) }
 			};
 
-			ObjectResponse<EResultResponse>? response = await UrlPostToJsonObjectWithSession<EResultResponse>(SteamStoreURL, request, data: data).ConfigureAwait(false);
+			ObjectResponse<EResultResponse>? response = await UrlPostToJsonObjectWithSession<EResultResponse>(request, data: data).ConfigureAwait(false);
 
 			if (response == null) {
 				return false;
@@ -1316,8 +1300,8 @@ namespace ArchiSteamFarm {
 				throw new ArgumentOutOfRangeException(nameof(tradeID));
 			}
 
-			string request = "/tradeoffer/" + tradeID + "/accept";
-			string referer = SteamCommunityURL + "/tradeoffer/" + tradeID;
+			Uri request = new(SteamCommunityURL, "/tradeoffer/" + tradeID + "/accept");
+			Uri referer = new(SteamCommunityURL, "/tradeoffer/" + tradeID);
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new(3, StringComparer.Ordinal) {
@@ -1328,7 +1312,7 @@ namespace ArchiSteamFarm {
 			ObjectResponse<TradeOfferAcceptResponse>? response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-				response = await UrlPostToJsonObjectWithSession<TradeOfferAcceptResponse>(SteamCommunityURL, request, data: data, referer: referer, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors).ConfigureAwait(false);
+				response = await UrlPostToJsonObjectWithSession<TradeOfferAcceptResponse>(request, data: data, referer: referer, requestOptions: WebBrowser.ERequestOptions.ReturnServerErrors).ConfigureAwait(false);
 
 				if (response == null) {
 					return (false, false);
@@ -1357,7 +1341,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentOutOfRangeException(nameof(subID));
 			}
 
-			const string request = "/checkout/addfreelicense";
+			Uri request = new(SteamStoreURL, "/checkout/addfreelicense");
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new(3, StringComparer.Ordinal) {
@@ -1365,7 +1349,7 @@ namespace ArchiSteamFarm {
 				{ "subid", subID.ToString(CultureInfo.InvariantCulture) }
 			};
 
-			using HtmlDocumentResponse? response = await UrlPostToHtmlDocumentWithSession(SteamStoreURL, request, data: data).ConfigureAwait(false);
+			using HtmlDocumentResponse? response = await UrlPostToHtmlDocumentWithSession(request, data: data).ConfigureAwait(false);
 
 			return response?.Content.SelectSingleNode("//div[@class='add_free_content_success_area']") != null;
 		}
@@ -1383,7 +1367,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string request = profileURL + "/ajaxsetprivacy";
+			Uri request = new(SteamCommunityURL, profileURL + "/ajaxsetprivacy");
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new(3, StringComparer.Ordinal) {
@@ -1391,7 +1375,7 @@ namespace ArchiSteamFarm {
 				{ "Privacy", JsonConvert.SerializeObject(userPrivacy.Settings) }
 			};
 
-			ObjectResponse<EResultResponse>? response = await UrlPostToJsonObjectWithSession<EResultResponse>(SteamCommunityURL, request, data: data).ConfigureAwait(false);
+			ObjectResponse<EResultResponse>? response = await UrlPostToJsonObjectWithSession<EResultResponse>(request, data: data).ConfigureAwait(false);
 
 			if (response == null) {
 				return false;
@@ -1411,12 +1395,12 @@ namespace ArchiSteamFarm {
 				throw new ArgumentOutOfRangeException(nameof(appID));
 			}
 
-			string request = "/app/" + appID;
+			Uri request = new(SteamStoreURL, "/app/" + appID);
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new(2, StringComparer.Ordinal) { { "appid_to_clear_from_queue", appID.ToString(CultureInfo.InvariantCulture) } };
 
-			return await UrlPostWithSession(SteamStoreURL, request, data: data).ConfigureAwait(false);
+			return await UrlPostWithSession(request, data: data).ConfigureAwait(false);
 		}
 
 		internal async Task<bool> DeclineTradeOffer(ulong tradeID) {
@@ -1439,7 +1423,7 @@ namespace ArchiSteamFarm {
 
 				try {
 					response = await WebLimitRequest(
-						WebAPI.DefaultBaseAddress.Host,
+						WebAPI.DefaultBaseAddress,
 
 						// ReSharper disable once AccessToDisposedClosure
 						async () => await econService.CallAsync(
@@ -1468,12 +1452,12 @@ namespace ArchiSteamFarm {
 		internal HttpClient GenerateDisposableHttpClient() => WebBrowser.GenerateDisposableHttpClient();
 
 		internal async Task<ImmutableHashSet<uint>?> GenerateNewDiscoveryQueue() {
-			const string request = "/explore/generatenewdiscoveryqueue";
+			Uri request = new(SteamStoreURL, "/explore/generatenewdiscoveryqueue");
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new(2, StringComparer.Ordinal) { { "queuetype", "0" } };
 
-			ObjectResponse<NewDiscoveryQueueResponse>? response = await UrlPostToJsonObjectWithSession<NewDiscoveryQueueResponse>(SteamStoreURL, request, data: data).ConfigureAwait(false);
+			ObjectResponse<NewDiscoveryQueueResponse>? response = await UrlPostToJsonObjectWithSession<NewDiscoveryQueueResponse>(request, data: data).ConfigureAwait(false);
 
 			return response?.Content.Queue;
 		}
@@ -1494,7 +1478,7 @@ namespace ArchiSteamFarm {
 
 				try {
 					response = await WebLimitRequest(
-						WebAPI.DefaultBaseAddress.Host,
+						WebAPI.DefaultBaseAddress,
 
 						// ReSharper disable once AccessToDisposedClosure
 						async () => await econService.CallAsync(
@@ -1656,7 +1640,7 @@ namespace ArchiSteamFarm {
 
 				try {
 					response = await WebLimitRequest(
-						WebAPI.DefaultBaseAddress.Host,
+						WebAPI.DefaultBaseAddress,
 
 						// ReSharper disable once AccessToDisposedClosure
 						async () => await steamAppsService.CallAsync(HttpMethod.Get, "GetAppList", 2).ConfigureAwait(false)
@@ -1702,9 +1686,9 @@ namespace ArchiSteamFarm {
 				throw new ArgumentOutOfRangeException(nameof(page));
 			}
 
-			string request = "/my/badges?l=english&p=" + page;
+			Uri request = new(SteamCommunityURL, "/my/badges?l=english&p=" + page);
 
-			HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request, checkSessionPreemptively: false).ConfigureAwait(false);
+			HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
 
 			return response?.Content;
 		}
@@ -1768,17 +1752,17 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			string request = "/mobileconf/conf?a=" + Bot.SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&l=english&m=android&p=" + WebUtility.UrlEncode(deviceID) + "&t=" + time + "&tag=conf";
+			Uri request = new(SteamCommunityURL, "/mobileconf/conf?a=" + Bot.SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&l=english&m=android&p=" + WebUtility.UrlEncode(deviceID) + "&t=" + time + "&tag=conf");
 
-			HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
+			HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request).ConfigureAwait(false);
 
 			return response?.Content;
 		}
 
 		internal async Task<HashSet<ulong>?> GetDigitalGiftCards() {
-			const string request = "/gifts";
+			Uri request = new(SteamStoreURL, "/gifts");
 
-			using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(SteamStoreURL, request).ConfigureAwait(false);
+			using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request).ConfigureAwait(false);
 
 			if (response == null) {
 				return null;
@@ -1814,17 +1798,17 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<IDocument?> GetDiscoveryQueuePage() {
-			const string request = "/explore?l=english";
+			Uri request = new(SteamStoreURL, "/explore?l=english");
 
-			HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(SteamStoreURL, request).ConfigureAwait(false);
+			HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request).ConfigureAwait(false);
 
 			return response?.Content;
 		}
 
 		internal async Task<HashSet<ulong>?> GetFamilySharingSteamIDs() {
-			const string request = "/account/managedevices?l=english";
+			Uri request = new(SteamStoreURL, "/account/managedevices?l=english");
 
-			using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(SteamStoreURL, request).ConfigureAwait(false);
+			using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request).ConfigureAwait(false);
 
 			if (response == null) {
 				return null;
@@ -1859,9 +1843,9 @@ namespace ArchiSteamFarm {
 				throw new ArgumentOutOfRangeException(nameof(appID));
 			}
 
-			string request = "/my/gamecards/" + appID + "?l=english";
+			Uri request = new(SteamCommunityURL, "/my/gamecards/" + appID + "?l=english");
 
-			HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request, checkSessionPreemptively: false).ConfigureAwait(false);
+			HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
 
 			return response?.Content;
 		}
@@ -1876,7 +1860,7 @@ namespace ArchiSteamFarm {
 
 				try {
 					response = await WebLimitRequest(
-						WebAPI.DefaultBaseAddress.Host,
+						WebAPI.DefaultBaseAddress,
 
 						// ReSharper disable once AccessToDisposedClosure
 						async () => await twoFactorService.CallAsync(HttpMethod.Post, "QueryTime").ConfigureAwait(false)
@@ -1910,9 +1894,9 @@ namespace ArchiSteamFarm {
 				throw new ArgumentOutOfRangeException(nameof(tradeID));
 			}
 
-			string request = "/tradeoffer/" + tradeID + "?l=english";
+			Uri request = new(SteamCommunityURL, "/tradeoffer/" + tradeID + "?l=english");
 
-			using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
+			using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request).ConfigureAwait(false);
 
 			IElement? htmlNode = response?.Content.SelectSingleNode("//div[@class='pagecontent']/script");
 
@@ -1989,7 +1973,7 @@ namespace ArchiSteamFarm {
 
 				try {
 					response = await WebLimitRequest(
-						WebAPI.DefaultBaseAddress.Host,
+						WebAPI.DefaultBaseAddress,
 
 						// ReSharper disable once AccessToDisposedClosure
 						async () => await econService.CallAsync(HttpMethod.Get, "GetTradeHoldDurations", args: arguments).ConfigureAwait(false)
@@ -2053,9 +2037,9 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			string request = "/mobileconf/ajaxop?a=" + Bot.SteamID + "&cid=" + confirmationID + "&ck=" + confirmationKey + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&l=english&m=android&op=" + (accept ? "allow" : "cancel") + "&p=" + WebUtility.UrlEncode(deviceID) + "&t=" + time + "&tag=conf";
+			Uri request = new(SteamCommunityURL, "/mobileconf/ajaxop?a=" + Bot.SteamID + "&cid=" + confirmationID + "&ck=" + confirmationKey + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&l=english&m=android&op=" + (accept ? "allow" : "cancel") + "&p=" + WebUtility.UrlEncode(deviceID) + "&t=" + time + "&tag=conf");
 
-			ObjectResponse<BooleanResponse>? response = await UrlGetToJsonObjectWithSession<BooleanResponse>(SteamCommunityURL, request).ConfigureAwait(false);
+			ObjectResponse<BooleanResponse>? response = await UrlGetToJsonObjectWithSession<BooleanResponse>(request).ConfigureAwait(false);
 
 			return response?.Content.Success;
 		}
@@ -2091,7 +2075,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			const string request = "/mobileconf/multiajaxop";
+			Uri request = new(SteamCommunityURL, "/mobileconf/multiajaxop");
 
 			// Extra entry for sessionID
 			List<KeyValuePair<string, string>> data = new(8 + (confirmations.Count * 2)) {
@@ -2109,7 +2093,7 @@ namespace ArchiSteamFarm {
 				data.Add(new KeyValuePair<string, string>("ck[]", confirmation.Key.ToString(CultureInfo.InvariantCulture)));
 			}
 
-			ObjectResponse<BooleanResponse>? response = await UrlPostToJsonObjectWithSession<BooleanResponse>(SteamCommunityURL, request, data: data).ConfigureAwait(false);
+			ObjectResponse<BooleanResponse>? response = await UrlPostToJsonObjectWithSession<BooleanResponse>(request, data: data).ConfigureAwait(false);
 
 			return response?.Content.Success;
 		}
@@ -2164,7 +2148,7 @@ namespace ArchiSteamFarm {
 
 				try {
 					response = await WebLimitRequest(
-						WebAPI.DefaultBaseAddress.Host,
+						WebAPI.DefaultBaseAddress,
 
 						// ReSharper disable once AccessToDisposedClosure
 						async () => await steamUserAuthService.CallAsync(
@@ -2204,24 +2188,24 @@ namespace ArchiSteamFarm {
 
 			string sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(steamID.ToString(CultureInfo.InvariantCulture)));
 
-			WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", "." + SteamCommunityHost));
-			WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", "." + SteamHelpHost));
-			WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", "." + SteamStoreHost));
+			WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", "." + SteamCommunityURL.Host));
+			WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", "." + SteamHelpURL.Host));
+			WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", "." + SteamStoreURL.Host));
 
-			WebBrowser.CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", "." + SteamCommunityHost));
-			WebBrowser.CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", "." + SteamHelpHost));
-			WebBrowser.CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", "." + SteamStoreHost));
+			WebBrowser.CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", "." + SteamCommunityURL.Host));
+			WebBrowser.CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", "." + SteamHelpURL.Host));
+			WebBrowser.CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", "." + SteamStoreURL.Host));
 
-			WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", "." + SteamCommunityHost));
-			WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", "." + SteamHelpHost));
-			WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", "." + SteamStoreHost));
+			WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", "." + SteamCommunityURL.Host));
+			WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", "." + SteamHelpURL.Host));
+			WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", "." + SteamStoreURL.Host));
 
 			// Report proper time when doing timezone-based calculations, see setTimezoneCookies() from https://steamcommunity-a.akamaihd.net/public/shared/javascript/shared_global.js
 			string timeZoneOffset = DateTimeOffset.Now.Offset.TotalSeconds + WebUtility.UrlEncode(",") + "0";
 
-			WebBrowser.CookieContainer.Add(new Cookie("timezoneOffset", timeZoneOffset, "/", "." + SteamCommunityHost));
-			WebBrowser.CookieContainer.Add(new Cookie("timezoneOffset", timeZoneOffset, "/", "." + SteamHelpHost));
-			WebBrowser.CookieContainer.Add(new Cookie("timezoneOffset", timeZoneOffset, "/", "." + SteamStoreHost));
+			WebBrowser.CookieContainer.Add(new Cookie("timezoneOffset", timeZoneOffset, "/", "." + SteamCommunityURL.Host));
+			WebBrowser.CookieContainer.Add(new Cookie("timezoneOffset", timeZoneOffset, "/", "." + SteamHelpURL.Host));
+			WebBrowser.CookieContainer.Add(new Cookie("timezoneOffset", timeZoneOffset, "/", "." + SteamStoreURL.Host));
 
 			Bot.ArchiLogger.LogGenericInfo(Strings.Success);
 
@@ -2260,8 +2244,9 @@ namespace ArchiSteamFarm {
 					MarkingInventoryScheduled = false;
 				}
 
-				const string request = "/my/inventory";
-				await UrlHeadWithSession(SteamCommunityURL, request, checkSessionPreemptively: false).ConfigureAwait(false);
+				Uri request = new(SteamCommunityURL, "/my/inventory");
+
+				await UrlHeadWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
 			} finally {
 				byte inventoryLimiterDelay = ASF.GlobalConfig?.InventoryLimiterDelay ?? GlobalConfig.DefaultInventoryLimiterDelay;
 
@@ -2279,9 +2264,9 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> MarkSentTrades() {
-			const string request = "/my/tradeoffers/sent";
+			Uri request = new(SteamCommunityURL, "/my/tradeoffers/sent");
 
-			return await UrlHeadWithSession(SteamCommunityURL, request, checkSessionPreemptively: false).ConfigureAwait(false);
+			return await UrlHeadWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
 		}
 
 		internal void OnDisconnected() {
@@ -2303,12 +2288,12 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			const string requestValidateCode = "/account/ajaxredeemwalletcode";
+			Uri request = new(SteamStoreURL, "/account/ajaxredeemwalletcode");
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new(2, StringComparer.Ordinal) { { "wallet_code", key } };
 
-			ObjectResponse<RedeemWalletResponse>? response = await UrlPostToJsonObjectWithSession<RedeemWalletResponse>(SteamStoreURL, requestValidateCode, data: data).ConfigureAwait(false);
+			ObjectResponse<RedeemWalletResponse>? response = await UrlPostToJsonObjectWithSession<RedeemWalletResponse>(request, data: data).ConfigureAwait(false);
 
 			if (response == null) {
 				return null;
@@ -2339,7 +2324,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string request = profileURL + "/ajaxunpackbooster";
+			Uri request = new(SteamCommunityURL, profileURL + "/ajaxunpackbooster");
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new(3, StringComparer.Ordinal) {
@@ -2347,15 +2332,15 @@ namespace ArchiSteamFarm {
 				{ "communityitemid", itemID.ToString(CultureInfo.InvariantCulture) }
 			};
 
-			ObjectResponse<EResultResponse>? response = await UrlPostToJsonObjectWithSession<EResultResponse>(SteamCommunityURL, request, data: data).ConfigureAwait(false);
+			ObjectResponse<EResultResponse>? response = await UrlPostToJsonObjectWithSession<EResultResponse>(request, data: data).ConfigureAwait(false);
 
 			return response?.Content.Result == EResult.OK;
 		}
 
 		private async Task<(ESteamApiKeyState State, string? Key)> GetApiKeyState() {
-			const string request = "/dev/apikey?l=english";
+			Uri request = new(SteamCommunityURL, "/dev/apikey?l=english");
 
-			using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(SteamCommunityURL, request).ConfigureAwait(false);
+			using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request).ConfigureAwait(false);
 
 			if (response == null) {
 				return (ESteamApiKeyState.Timeout, null);
@@ -2464,9 +2449,9 @@ namespace ArchiSteamFarm {
 				// The page should have as little internal dependencies as possible, since every extra chunk increases likelihood of broken functionality. We can only make a guess here based on the amount of content that the page returns to us
 				// It should also be URL with fairly fixed address that isn't going to disappear anytime soon, preferably something staple that is a dependency of other requests, so it's very unlikely to change in a way that would add overhead in the future
 				// Lastly, it should be a request that is preferably generic enough as a routine check, not something specialized and targetted, to make it very clear that we're just checking if session is up, and to further aid internal dependencies specified above by rendering as general Steam info as possible
-				const string request = "/account";
+				Uri request = new(SteamStoreURL, "/account");
 
-				BasicResponse? response = await WebLimitRequest(SteamStoreURL, async () => await WebBrowser.UrlHead(SteamStoreURL + request).ConfigureAwait(false)).ConfigureAwait(false);
+				BasicResponse? response = await WebLimitRequest(SteamStoreURL, async () => await WebBrowser.UrlHead(request).ConfigureAwait(false)).ConfigureAwait(false);
 
 				if (response == null) {
 					return null;
@@ -2615,7 +2600,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool> RegisterApiKey() {
-			const string request = "/dev/registerkey";
+			Uri request = new(SteamCommunityURL, "/dev/registerkey");
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new(4, StringComparer.Ordinal) {
@@ -2624,7 +2609,7 @@ namespace ArchiSteamFarm {
 				{ "Submit", "Register" }
 			};
 
-			return await UrlPostWithSession(SteamCommunityURL, request, data: data).ConfigureAwait(false);
+			return await UrlPostWithSession(request, data: data).ConfigureAwait(false);
 		}
 
 		private async Task<(bool Success, string? Result)> ResolveApiKey() {
@@ -2697,25 +2682,25 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		private async Task<bool> UnlockParentalAccountForService(string serviceURL, string parentalCode, byte maxTries = WebBrowser.MaxTries) {
-			if (string.IsNullOrEmpty(serviceURL)) {
-				throw new ArgumentNullException(nameof(serviceURL));
+		private async Task<bool> UnlockParentalAccountForService(Uri service, string parentalCode, byte maxTries = WebBrowser.MaxTries) {
+			if (service == null) {
+				throw new ArgumentNullException(nameof(service));
 			}
 
 			if (string.IsNullOrEmpty(parentalCode)) {
 				throw new ArgumentNullException(nameof(parentalCode));
 			}
 
-			const string request = "/parental/ajaxunlock";
+			Uri request = new(service, "/parental/ajaxunlock");
 
 			if (maxTries == 0) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, serviceURL + request));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 				return false;
 			}
 
-			string? sessionID = WebBrowser.CookieContainer.GetCookieValue(serviceURL, "sessionid");
+			string? sessionID = WebBrowser.CookieContainer.GetCookieValue(service, "sessionid");
 
 			if (string.IsNullOrEmpty(sessionID)) {
 				Bot.ArchiLogger.LogNullError(nameof(sessionID));
@@ -2729,7 +2714,7 @@ namespace ArchiSteamFarm {
 			};
 
 			// This request doesn't go through UrlPostRetryWithSession as we have no access to session refresh capability (this is in fact session initialization)
-			BasicResponse? response = await WebLimitRequest(serviceURL, async () => await WebBrowser.UrlPost(serviceURL + request, data: data, referer: serviceURL).ConfigureAwait(false)).ConfigureAwait(false);
+			BasicResponse? response = await WebLimitRequest(service, async () => await WebBrowser.UrlPost(request, data: data, referer: service).ConfigureAwait(false)).ConfigureAwait(false);
 
 			if ((response == null) || IsSessionExpiredUri(response.FinalUri)) {
 				// There is no session refresh capability at this stage
@@ -2740,7 +2725,7 @@ namespace ArchiSteamFarm {
 			if (await IsProfileUri(response.FinalUri, false).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.WarningWorkaroundTriggered, nameof(IsProfileUri)));
 
-				return await UnlockParentalAccountForService(serviceURL, parentalCode, --maxTries).ConfigureAwait(false);
+				return await UnlockParentalAccountForService(service, parentalCode, --maxTries).ConfigureAwait(false);
 			}
 
 			return true;

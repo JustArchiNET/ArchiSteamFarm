@@ -475,8 +475,6 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				return;
 			}
 
-			const string request = SharedInfo.ServerURL + "/submit";
-
 			if (GlobalCache == null) {
 				throw new InvalidOperationException(nameof(GlobalCache));
 			}
@@ -512,6 +510,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 					return;
 				}
 
+				Uri request = new(SharedInfo.ServerURL + "/submit");
 				RequestData requestData = new(contributorSteamID, appTokens, packageTokens, depotKeys);
 
 				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.SubmissionInProgress, appTokens.Count, packageTokens.Count, depotKeys.Count));

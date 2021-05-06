@@ -69,7 +69,8 @@ namespace ArchiSteamFarm {
 		internal static ICrossProcessSemaphore? InventorySemaphore { get; private set; }
 		internal static ICrossProcessSemaphore? LoginRateLimitingSemaphore { get; private set; }
 		internal static ICrossProcessSemaphore? LoginSemaphore { get; private set; }
-		internal static ImmutableDictionary<string, (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)>? WebLimitingSemaphores { get; private set; }
+		internal static ICrossProcessSemaphore? RateLimitingSemaphore { get; private set; }
+		internal static ImmutableDictionary<Uri, (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim? OpenConnectionsSemaphore)>? WebLimitingSemaphores { get; private set; }
 
 		private static readonly SemaphoreSlim UpdateSemaphore = new(1, 1);
 
@@ -167,14 +168,14 @@ namespace ArchiSteamFarm {
 			InventorySemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(InventorySemaphore) + networkGroupText).ConfigureAwait(false);
 			LoginRateLimitingSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(LoginRateLimitingSemaphore) + networkGroupText).ConfigureAwait(false);
 			LoginSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(LoginSemaphore) + networkGroupText).ConfigureAwait(false);
+			RateLimitingSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(RateLimitingSemaphore) + networkGroupText).ConfigureAwait(false);
 
-			WebLimitingSemaphores ??= new Dictionary<string, (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)>(4, StringComparer.OrdinalIgnoreCase) {
-				{ nameof(ArchiWebHandler), (await PluginsCore.GetCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+			WebLimitingSemaphores ??= new Dictionary<Uri, (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim? OpenConnectionsSemaphore)>(4) {
 				{ ArchiWebHandler.SteamCommunityURL, (await PluginsCore.GetCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(ArchiWebHandler.SteamCommunityURL)).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
 				{ ArchiWebHandler.SteamHelpURL, (await PluginsCore.GetCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(ArchiWebHandler.SteamHelpURL)).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
 				{ ArchiWebHandler.SteamStoreURL, (await PluginsCore.GetCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(ArchiWebHandler.SteamStoreURL)).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
-				{ WebAPI.DefaultBaseAddress.Host, (await PluginsCore.GetCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(WebAPI)).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) }
-			}.ToImmutableDictionary(StringComparer.OrdinalIgnoreCase);
+				{ WebAPI.DefaultBaseAddress, (await PluginsCore.GetCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(WebAPI)).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) }
+			}.ToImmutableDictionary();
 		}
 
 		internal static void InitGlobalDatabase(GlobalDatabase globalDatabase) {
@@ -305,7 +306,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				if (string.IsNullOrEmpty(binaryAsset.DownloadURL)) {
+				if (binaryAsset.DownloadURL == null) {
 					ArchiLogger.LogNullError(nameof(binaryAsset.DownloadURL));
 
 					return null;

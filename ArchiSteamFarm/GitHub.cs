@@ -39,13 +39,13 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm {
 	internal static class GitHub {
 		internal static async Task<ReleaseResponse?> GetLatestRelease(bool stable = true) {
-			string releaseURL = SharedInfo.GithubReleaseURL + (stable ? "/latest" : "?per_page=1");
+			Uri request = new(SharedInfo.GithubReleaseURL + (stable ? "/latest" : "?per_page=1"));
 
 			if (stable) {
-				return await GetReleaseFromURL(releaseURL).ConfigureAwait(false);
+				return await GetReleaseFromURL(request).ConfigureAwait(false);
 			}
 
-			ImmutableList<ReleaseResponse>? response = await GetReleasesFromURL(releaseURL).ConfigureAwait(false);
+			ImmutableList<ReleaseResponse>? response = await GetReleasesFromURL(request).ConfigureAwait(false);
 
 			return response?.FirstOrDefault();
 		}
@@ -55,7 +55,9 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(version));
 			}
 
-			return await GetReleaseFromURL(SharedInfo.GithubReleaseURL + "/tags/" + version).ConfigureAwait(false);
+			Uri request = new(SharedInfo.GithubReleaseURL + "/tags/" + version);
+
+			return await GetReleaseFromURL(request).ConfigureAwait(false);
 		}
 
 		internal static async Task<Dictionary<string, DateTime>?> GetWikiHistory(string page) {
@@ -67,9 +69,9 @@ namespace ArchiSteamFarm {
 				throw new InvalidOperationException(nameof(ASF.WebBrowser));
 			}
 
-			string url = SharedInfo.ProjectURL + "/wiki/" + page + "/_history";
+			Uri request = new(SharedInfo.ProjectURL + "/wiki/" + page + "/_history");
 
-			using HtmlDocumentResponse? response = await ASF.WebBrowser.UrlGetToHtmlDocument(url, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
+			using HtmlDocumentResponse? response = await ASF.WebBrowser.UrlGetToHtmlDocument(request, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
 
 			if (response == null) {
 				return null;
@@ -140,9 +142,9 @@ namespace ArchiSteamFarm {
 				throw new InvalidOperationException(nameof(ASF.WebBrowser));
 			}
 
-			string url = SharedInfo.ProjectURL + "/wiki/" + page + (!string.IsNullOrEmpty(revision) ? "/" + revision : "");
+			Uri request = new(SharedInfo.ProjectURL + "/wiki/" + page + (!string.IsNullOrEmpty(revision) ? "/" + revision : ""));
 
-			using HtmlDocumentResponse? response = await ASF.WebBrowser.UrlGetToHtmlDocument(url).ConfigureAwait(false);
+			using HtmlDocumentResponse? response = await ASF.WebBrowser.UrlGetToHtmlDocument(request).ConfigureAwait(false);
 
 			if (response == null) {
 				return null;
@@ -170,30 +172,30 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		private static async Task<ReleaseResponse?> GetReleaseFromURL(string releaseURL) {
-			if (string.IsNullOrEmpty(releaseURL)) {
-				throw new ArgumentNullException(nameof(releaseURL));
+		private static async Task<ReleaseResponse?> GetReleaseFromURL(Uri request) {
+			if (request == null) {
+				throw new ArgumentNullException(nameof(request));
 			}
 
 			if (ASF.WebBrowser == null) {
 				throw new InvalidOperationException(nameof(ASF.WebBrowser));
 			}
 
-			ObjectResponse<ReleaseResponse>? response = await ASF.WebBrowser.UrlGetToJsonObject<ReleaseResponse>(releaseURL).ConfigureAwait(false);
+			ObjectResponse<ReleaseResponse>? response = await ASF.WebBrowser.UrlGetToJsonObject<ReleaseResponse>(request).ConfigureAwait(false);
 
 			return response?.Content;
 		}
 
-		private static async Task<ImmutableList<ReleaseResponse>?> GetReleasesFromURL(string releaseURL) {
-			if (string.IsNullOrEmpty(releaseURL)) {
-				throw new ArgumentNullException(nameof(releaseURL));
+		private static async Task<ImmutableList<ReleaseResponse>?> GetReleasesFromURL(Uri request) {
+			if (request == null) {
+				throw new ArgumentNullException(nameof(request));
 			}
 
 			if (ASF.WebBrowser == null) {
 				throw new InvalidOperationException(nameof(ASF.WebBrowser));
 			}
 
-			ObjectResponse<ImmutableList<ReleaseResponse>>? response = await ASF.WebBrowser.UrlGetToJsonObject<ImmutableList<ReleaseResponse>>(releaseURL).ConfigureAwait(false);
+			ObjectResponse<ImmutableList<ReleaseResponse>>? response = await ASF.WebBrowser.UrlGetToJsonObject<ImmutableList<ReleaseResponse>>(request).ConfigureAwait(false);
 
 			return response?.Content;
 		}
@@ -290,7 +292,7 @@ namespace ArchiSteamFarm {
 
 			internal sealed class Asset {
 				[JsonProperty(PropertyName = "browser_download_url", Required = Required.Always)]
-				internal readonly string? DownloadURL;
+				internal readonly Uri? DownloadURL;
 
 				[JsonProperty(PropertyName = "name", Required = Required.Always)]
 				internal readonly string? Name;

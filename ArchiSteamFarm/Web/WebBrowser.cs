@@ -108,8 +108,8 @@ namespace ArchiSteamFarm.Web {
 		}
 
 		[PublicAPI]
-		public async Task<BinaryResponse?> UrlGetToBinary(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, IProgress<byte>? progressReporter = null) {
-			if (string.IsNullOrEmpty(request)) {
+		public async Task<BinaryResponse?> UrlGetToBinary(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries, IProgress<byte>? progressReporter = null) {
+			if (request == null) {
 				throw new ArgumentNullException(nameof(request));
 			}
 
@@ -206,8 +206,8 @@ namespace ArchiSteamFarm.Web {
 		}
 
 		[PublicAPI]
-		public async Task<HtmlDocumentResponse?> UrlGetToHtmlDocument(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
-			if (string.IsNullOrEmpty(request)) {
+		public async Task<HtmlDocumentResponse?> UrlGetToHtmlDocument(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
+			if (request == null) {
 				throw new ArgumentNullException(nameof(request));
 			}
 
@@ -253,8 +253,8 @@ namespace ArchiSteamFarm.Web {
 		}
 
 		[PublicAPI]
-		public async Task<ObjectResponse<T>?> UrlGetToJsonObject<T>(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
-			if (string.IsNullOrEmpty(request)) {
+		public async Task<ObjectResponse<T>?> UrlGetToJsonObject<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
+			if (request == null) {
 				throw new ArgumentNullException(nameof(request));
 			}
 
@@ -317,8 +317,8 @@ namespace ArchiSteamFarm.Web {
 		}
 
 		[PublicAPI]
-		public async Task<StreamResponse?> UrlGetToStream(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
-			if (string.IsNullOrEmpty(request)) {
+		public async Task<StreamResponse?> UrlGetToStream(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
+			if (request == null) {
 				throw new ArgumentNullException(nameof(request));
 			}
 
@@ -358,8 +358,8 @@ namespace ArchiSteamFarm.Web {
 		}
 
 		[PublicAPI]
-		public async Task<StringResponse?> UrlGetToString(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
-			if (string.IsNullOrEmpty(request)) {
+		public async Task<StringResponse?> UrlGetToString(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
+			if (request == null) {
 				throw new ArgumentNullException(nameof(request));
 			}
 
@@ -399,8 +399,8 @@ namespace ArchiSteamFarm.Web {
 		}
 
 		[PublicAPI]
-		public async Task<XmlDocumentResponse?> UrlGetToXmlDocument(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
-			if (string.IsNullOrEmpty(request)) {
+		public async Task<XmlDocumentResponse?> UrlGetToXmlDocument(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
+			if (request == null) {
 				throw new ArgumentNullException(nameof(request));
 			}
 
@@ -452,8 +452,8 @@ namespace ArchiSteamFarm.Web {
 		}
 
 		[PublicAPI]
-		public async Task<BasicResponse?> UrlHead(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
-			if (string.IsNullOrEmpty(request)) {
+		public async Task<BasicResponse?> UrlHead(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
+			if (request == null) {
 				throw new ArgumentNullException(nameof(request));
 			}
 
@@ -498,8 +498,8 @@ namespace ArchiSteamFarm.Web {
 		}
 
 		[PublicAPI]
-		public async Task<BasicResponse?> UrlPost<T>(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) where T : class {
-			if (string.IsNullOrEmpty(request)) {
+		public async Task<BasicResponse?> UrlPost<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) where T : class {
+			if (request == null) {
 				throw new ArgumentNullException(nameof(request));
 			}
 
@@ -544,8 +544,8 @@ namespace ArchiSteamFarm.Web {
 		}
 
 		[PublicAPI]
-		public async Task<HtmlDocumentResponse?> UrlPostToHtmlDocument<T>(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) where T : class {
-			if (string.IsNullOrEmpty(request)) {
+		public async Task<HtmlDocumentResponse?> UrlPostToHtmlDocument<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) where T : class {
+			if (request == null) {
 				throw new ArgumentNullException(nameof(request));
 			}
 
@@ -591,8 +591,8 @@ namespace ArchiSteamFarm.Web {
 		}
 
 		[PublicAPI]
-		public async Task<ObjectResponse<TResult>?> UrlPostToJsonObject<TResult, TData>(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, TData? data = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) where TData : class {
-			if (string.IsNullOrEmpty(request)) {
+		public async Task<ObjectResponse<TResult>?> UrlPostToJsonObject<TResult, TData>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, TData? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) where TData : class {
+			if (request == null) {
 				throw new ArgumentNullException(nameof(request));
 			}
 
@@ -655,8 +655,8 @@ namespace ArchiSteamFarm.Web {
 		}
 
 		[PublicAPI]
-		public async Task<StreamResponse?> UrlPostToStream<T>(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) where T : class {
-			if (string.IsNullOrEmpty(request)) {
+		public async Task<StreamResponse?> UrlPostToStream<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) where T : class {
+			if (request == null) {
 				throw new ArgumentNullException(nameof(request));
 			}
 
@@ -711,33 +711,33 @@ namespace ArchiSteamFarm.Web {
 			}
 		}
 
-		private async Task<HttpResponseMessage?> InternalGet(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead) {
-			if (string.IsNullOrEmpty(request)) {
+		private async Task<HttpResponseMessage?> InternalGet(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead) {
+			if (request == null) {
 				throw new ArgumentNullException(nameof(request));
 			}
 
-			return await InternalRequest<object>(new Uri(request), HttpMethod.Get, headers, null, referer, requestOptions, httpCompletionOption).ConfigureAwait(false);
+			return await InternalRequest<object>(request, HttpMethod.Get, headers, null, referer, requestOptions, httpCompletionOption).ConfigureAwait(false);
 		}
 
-		private async Task<HttpResponseMessage?> InternalHead(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead) {
-			if (string.IsNullOrEmpty(request)) {
+		private async Task<HttpResponseMessage?> InternalHead(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead) {
+			if (request == null) {
 				throw new ArgumentNullException(nameof(request));
 			}
 
-			return await InternalRequest<object>(new Uri(request), HttpMethod.Head, headers, null, referer, requestOptions, httpCompletionOption).ConfigureAwait(false);
+			return await InternalRequest<object>(request, HttpMethod.Head, headers, null, referer, requestOptions, httpCompletionOption).ConfigureAwait(false);
 		}
 
-		private async Task<HttpResponseMessage?> InternalPost<T>(string request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead) where T : class {
-			if (string.IsNullOrEmpty(request)) {
+		private async Task<HttpResponseMessage?> InternalPost<T>(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead) where T : class {
+			if (request == null) {
 				throw new ArgumentNullException(nameof(request));
 			}
 
-			return await InternalRequest(new Uri(request), HttpMethod.Post, headers, data, referer, requestOptions, httpCompletionOption).ConfigureAwait(false);
+			return await InternalRequest(request, HttpMethod.Post, headers, data, referer, requestOptions, httpCompletionOption).ConfigureAwait(false);
 		}
 
-		private async Task<HttpResponseMessage?> InternalRequest<T>(Uri requestUri, HttpMethod httpMethod, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, string? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, byte maxRedirections = MaxTries) where T : class {
-			if (requestUri == null) {
-				throw new ArgumentNullException(nameof(requestUri));
+		private async Task<HttpResponseMessage?> InternalRequest<T>(Uri request, HttpMethod httpMethod, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, T? data = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, byte maxRedirections = MaxTries) where T : class {
+			if (request == null) {
+				throw new ArgumentNullException(nameof(request));
 			}
 
 			if (httpMethod == null) {
@@ -746,52 +746,52 @@ namespace ArchiSteamFarm.Web {
 
 			HttpResponseMessage response;
 
-			using (HttpRequestMessage request = new(httpMethod, requestUri)) {
+			using (HttpRequestMessage requestMessage = new(httpMethod, request)) {
 #if !NETFRAMEWORK
-				request.Version = HttpClient.DefaultRequestVersion;
+				requestMessage.Version = HttpClient.DefaultRequestVersion;
 #endif
 
 				if (headers != null) {
 					foreach ((string header, string value) in headers) {
-						request.Headers.Add(header, value);
+						requestMessage.Headers.Add(header, value);
 					}
 				}
 
 				if (data != null) {
 					switch (data) {
 						case HttpContent content:
-							request.Content = content;
+							requestMessage.Content = content;
 
 							break;
 						case IReadOnlyCollection<KeyValuePair<string?, string?>> dictionary:
 							try {
-								request.Content = new FormUrlEncodedContent(dictionary);
+								requestMessage.Content = new FormUrlEncodedContent(dictionary);
 							} catch (UriFormatException) {
-								request.Content = new StringContent(string.Join("&", dictionary.Select(kv => WebUtility.UrlEncode(kv.Key) + "=" + WebUtility.UrlEncode(kv.Value))), null, "application/x-www-form-urlencoded");
+								requestMessage.Content = new StringContent(string.Join("&", dictionary.Select(kv => WebUtility.UrlEncode(kv.Key) + "=" + WebUtility.UrlEncode(kv.Value))), null, "application/x-www-form-urlencoded");
 							}
 
 							break;
 						case string text:
-							request.Content = new StringContent(text);
+							requestMessage.Content = new StringContent(text);
 
 							break;
 						default:
-							request.Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+							requestMessage.Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
 
 							break;
 					}
 				}
 
-				if (!string.IsNullOrEmpty(referer)) {
-					request.Headers.Referrer = new Uri(referer!);
+				if (referer != null) {
+					requestMessage.Headers.Referrer = referer;
 				}
 
 				if (Debugging.IsUserDebugging) {
-					ArchiLogger.LogGenericDebug(httpMethod + " " + requestUri);
+					ArchiLogger.LogGenericDebug(httpMethod + " " + request);
 				}
 
 				try {
-					response = await HttpClient.SendAsync(request, httpCompletionOption).ConfigureAwait(false);
+					response = await HttpClient.SendAsync(requestMessage, httpCompletionOption).ConfigureAwait(false);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericDebuggingException(e);
 
@@ -799,13 +799,13 @@ namespace ArchiSteamFarm.Web {
 				} finally {
 					if (data is HttpContent) {
 						// We reset the request content to null, as our http content will get disposed otherwise, and we still need it for subsequent calls, such as redirections or retries
-						request.Content = null;
+						requestMessage.Content = null;
 					}
 				}
 			}
 
 			if (Debugging.IsUserDebugging) {
-				ArchiLogger.LogGenericDebug(response.StatusCode + " <- " + httpMethod + " " + requestUri);
+				ArchiLogger.LogGenericDebug(response.StatusCode + " <- " + httpMethod + " " + request);
 			}
 
 			if (response.IsSuccessStatusCode) {
@@ -837,7 +837,7 @@ namespace ArchiSteamFarm.Web {
 							break;
 					}
 				} else {
-					redirectUri = new Uri(requestUri, redirectUri);
+					redirectUri = new Uri(request, redirectUri);
 				}
 
 				switch (response.StatusCode) {
@@ -857,15 +857,15 @@ namespace ArchiSteamFarm.Web {
 				response.Dispose();
 
 				// Per https://tools.ietf.org/html/rfc7231#section-7.1.2, a redirect location without a fragment should inherit the fragment from the original URI
-				if (!string.IsNullOrEmpty(requestUri.Fragment) && string.IsNullOrEmpty(redirectUri.Fragment)) {
-					redirectUri = new UriBuilder(redirectUri) { Fragment = requestUri.Fragment }.Uri;
+				if (!string.IsNullOrEmpty(request.Fragment) && string.IsNullOrEmpty(redirectUri.Fragment)) {
+					redirectUri = new UriBuilder(redirectUri) { Fragment = request.Fragment }.Uri;
 				}
 
 				return await InternalRequest(redirectUri, httpMethod, headers, data, referer, requestOptions, httpCompletionOption, --maxRedirections).ConfigureAwait(false);
 			}
 
 			if (!Debugging.IsUserDebugging) {
-				ArchiLogger.LogGenericDebug(response.StatusCode + " <- " + httpMethod + " " + requestUri);
+				ArchiLogger.LogGenericDebug(response.StatusCode + " <- " + httpMethod + " " + request);
 			}
 
 			if (response.StatusCode.IsClientErrorCode()) {

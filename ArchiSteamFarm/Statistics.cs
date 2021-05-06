@@ -100,7 +100,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				const string request = URL + "/Api/HeartBeat";
+				Uri request = new(URL + "/Api/HeartBeat");
 
 				Dictionary<string, string> data = new(2, StringComparer.Ordinal) {
 					{ "Guid", (ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid()).ToString("N") },
@@ -209,7 +209,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				const string request = URL + "/Api/Announce";
+				Uri request = new(URL + "/Api/Announce");
 
 				Dictionary<string, string> data = new(9, StringComparer.Ordinal) {
 					{ "AvatarHash", avatarHash ?? "" },
@@ -244,7 +244,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<ImmutableHashSet<ListedUser>?> GetListedUsers() {
-			const string request = URL + "/Api/Bots";
+			Uri request = new(URL + "/Api/Bots");
 
 			ObjectResponse<ImmutableHashSet<ListedUser>>? response = await Bot.ArchiWebHandler.WebBrowser.UrlGetToJsonObject<ImmutableHashSet<ListedUser>>(request).ConfigureAwait(false);
 

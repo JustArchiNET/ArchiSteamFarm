@@ -70,20 +70,20 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public static string? GetCookieValue(this CookieContainer cookieContainer, string url, string name) {
+		public static string? GetCookieValue(this CookieContainer cookieContainer, Uri uri, string name) {
 			if (cookieContainer == null) {
 				throw new ArgumentNullException(nameof(cookieContainer));
 			}
 
-			if (string.IsNullOrEmpty(url)) {
-				throw new ArgumentNullException(nameof(url));
+			if (uri == null) {
+				throw new ArgumentNullException(nameof(uri));
 			}
 
 			if (string.IsNullOrEmpty(name)) {
 				throw new ArgumentNullException(nameof(name));
 			}
 
-			CookieCollection cookies = cookieContainer.GetCookies(new Uri(url));
+			CookieCollection cookies = cookieContainer.GetCookies(uri);
 
 #if NETFRAMEWORK
 			return cookies.Count > 0 ? (from Cookie cookie in cookies where cookie.Name == name select cookie.Value).FirstOrDefault() : null;
