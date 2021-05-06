@@ -45,6 +45,8 @@ namespace ArchiSteamFarm.NLog {
 		private static readonly ConcurrentHashSet<LoggingRule> ConsoleLoggingRules = new();
 		private static readonly SemaphoreSlim ConsoleSemaphore = new(1, 1);
 
+		private static string Backspace => "\b \b";
+
 		private static bool IsUsingCustomConfiguration;
 		private static bool IsWaitingForUserInput;
 
@@ -279,8 +281,7 @@ namespace ArchiSteamFarm.NLog {
 							Console.Write(' ');
 							Console.SetCursorPosition(Console.BufferWidth - 1, Console.CursorTop - 1);
 						} else {
-							// There are two \b characters here
-							Console.Write(@" ");
+							Console.Write(Backspace);
 						}
 					}
 				}
