@@ -34,10 +34,15 @@ namespace ArchiSteamFarm.Helpers {
 		private bool ReadOnly;
 		private bool SavingScheduled;
 
-		public virtual void Dispose() {
-			FileSemaphore.Dispose();
-
+		public void Dispose() {
+			Dispose(true);
 			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing) {
+			if (disposing) {
+				FileSemaphore.Dispose();
+			}
 		}
 
 		protected async Task Save() {

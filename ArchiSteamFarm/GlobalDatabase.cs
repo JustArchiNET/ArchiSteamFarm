@@ -107,15 +107,17 @@ namespace ArchiSteamFarm {
 		[JsonConstructor]
 		private GlobalDatabase() => ServerListProvider.ServerListUpdated += OnObjectModified;
 
-		public override void Dispose() {
-			// Events we registered
-			ServerListProvider.ServerListUpdated -= OnObjectModified;
+		protected override void Dispose(bool disposing) {
+			if (disposing) {
+				// Events we registered
+				ServerListProvider.ServerListUpdated -= OnObjectModified;
 
-			// Those are objects that are always being created if constructor doesn't throw exception
-			PackagesRefreshSemaphore.Dispose();
+				// Those are objects that are always being created if constructor doesn't throw exception
+				PackagesRefreshSemaphore.Dispose();
+			}
 
 			// Base dispose
-			base.Dispose();
+			base.Dispose(disposing);
 		}
 
 		internal static async Task<GlobalDatabase?> CreateOrLoad(string filePath) {

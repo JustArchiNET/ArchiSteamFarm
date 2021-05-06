@@ -106,15 +106,20 @@ namespace ArchiSteamFarm {
 			MatchActivelyBlacklistedAppIDs.OnModified += OnObjectModified;
 		}
 
-		public override void Dispose() {
-			BlacklistedFromTradesSteamIDs.OnModified -= OnObjectModified;
-			IdlingBlacklistedAppIDs.OnModified -= OnObjectModified;
-			IdlingPriorityAppIDs.OnModified -= OnObjectModified;
-			MatchActivelyBlacklistedAppIDs.OnModified -= OnObjectModified;
+		protected override void Dispose(bool disposing) {
+			if (disposing) {
+				// Events we registered
+				BlacklistedFromTradesSteamIDs.OnModified -= OnObjectModified;
+				IdlingBlacklistedAppIDs.OnModified -= OnObjectModified;
+				IdlingPriorityAppIDs.OnModified -= OnObjectModified;
+				MatchActivelyBlacklistedAppIDs.OnModified -= OnObjectModified;
 
-			BackingMobileAuthenticator?.Dispose();
+				// Those are objects that might be null and the check should be in-place
+				BackingMobileAuthenticator?.Dispose();
+			}
 
-			base.Dispose();
+			// Base dispose
+			base.Dispose(disposing);
 		}
 
 		internal void AddGamesToRedeemInBackground(IOrderedDictionary games) {
