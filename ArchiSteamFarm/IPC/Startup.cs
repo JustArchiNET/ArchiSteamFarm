@@ -265,7 +265,6 @@ namespace ArchiSteamFarm.IPC {
 			mvc.SetCompatibilityVersion(CompatibilityVersion.Latest);
 
 #if NETFRAMEWORK
-
 			// Add standard formatters
 			mvc.AddFormatterMappings();
 
@@ -274,7 +273,6 @@ namespace ArchiSteamFarm.IPC {
 #endif
 
 #if NETFRAMEWORK
-
 			// Add JSON formatters that will be used as default ones if no specific formatters are asked for
 			mvc.AddJsonFormatters();
 
@@ -291,7 +289,6 @@ namespace ArchiSteamFarm.IPC {
 					}
 
 #if NETFRAMEWORK
-
 					// .NET Framework serializes Version as object by default, serialize it as string just like .NET Core
 					options.SerializerSettings.Converters.Add(new VersionConverter());
 #endif

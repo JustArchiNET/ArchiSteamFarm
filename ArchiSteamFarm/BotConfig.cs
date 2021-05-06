@@ -19,12 +19,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if NETFRAMEWORK
-using ArchiSteamFarm.RuntimeCompatibility;
-using File = System.IO.File;
-#else
-using System.IO;
-#endif
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -35,6 +29,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.RuntimeCompatibility;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -341,12 +336,12 @@ namespace ArchiSteamFarm {
 			await WriteSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				await RuntimeCompatibility.File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
-				if (File.Exists(filePath)) {
-					File.Replace(newFilePath, filePath, null);
+				if (System.IO.File.Exists(filePath)) {
+					System.IO.File.Replace(newFilePath, filePath, null);
 				} else {
-					File.Move(newFilePath, filePath);
+					System.IO.File.Move(newFilePath, filePath);
 				}
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
@@ -430,14 +425,14 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(filePath));
 			}
 
-			if (!File.Exists(filePath)) {
+			if (!System.IO.File.Exists(filePath)) {
 				return null;
 			}
 
 			BotConfig? botConfig;
 
 			try {
-				string json = await RuntimeCompatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+				string json = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(json)) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
