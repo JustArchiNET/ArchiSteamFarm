@@ -6,13 +6,12 @@ root = true
 
 [*]
 charset = utf-8
-file_header_template =     _                _      _  ____   _                           _____\n   / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___\n  / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \\n / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |\n/_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|\n|\nCopyright 2015-$CURRENT_YEAR$ Łukasz "JustArchi" Domeradzki\nContact: JustArchi@JustArchi.net\n|\nLicensed under the Apache License, Version 2.0 (the "License");\nyou may not use this file except in compliance with the License.\nYou may obtain a copy of the License at\n|\nhttp://www.apache.org/licenses/LICENSE-2.0\n|\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an "AS IS" BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific language governing permissions and\nlimitations under the License.
 indent_style = tab
 insert_final_newline = true
 trim_trailing_whitespace = true
 
 ###############################
-# .NET Coding Conventions     #
+# C# Coding Conventions      #
 ###############################
 
 [*.cs]
@@ -99,6 +98,10 @@ csharp_style_var_for_built_in_types = false:warning
 csharp_style_var_when_type_is_apparent = false:warning
 
 csharp_using_directive_placement = outside_namespace
+
+###############################
+# .NET Coding Conventions     #
+###############################
 
 [*.{cs,vb}]
 dotnet_analyzer_diagnostic.severity = warning
