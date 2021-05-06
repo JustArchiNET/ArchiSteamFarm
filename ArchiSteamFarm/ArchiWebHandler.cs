@@ -55,14 +55,14 @@ namespace ArchiSteamFarm {
 
 		internal const ushort MaxItemsInSingleInventoryRequest = 5000;
 
-		private const string IEconService = "IEconService";
-		private const string IPlayerService = "IPlayerService";
-		private const string ISteamApps = "ISteamApps";
-		private const string ISteamUserAuth = "ISteamUserAuth";
-		private const string ITwoFactorService = "ITwoFactorService";
+		private const string EconService = "IEconService";
+		private const string PlayerService = "IPlayerService";
+		private const string SteamAppsService = "ISteamApps";
 		private const string SteamCommunityHost = "steamcommunity.com";
 		private const string SteamHelpHost = "help.steampowered.com";
 		private const string SteamStoreHost = "store.steampowered.com";
+		private const string SteamUserAuthService = "ISteamUserAuth";
+		private const string TwoFactorService = "ITwoFactorService";
 
 		private static readonly ConcurrentDictionary<uint, byte> CachedCardCountsForGame = new();
 
@@ -303,16 +303,16 @@ namespace ArchiSteamFarm {
 			KeyValue? response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-				using WebAPI.AsyncInterface iPlayerService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(IPlayerService);
+				using WebAPI.AsyncInterface playerService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(PlayerService);
 
-				iPlayerService.Timeout = WebBrowser.Timeout;
+				playerService.Timeout = WebBrowser.Timeout;
 
 				try {
 					response = await WebLimitRequest(
 						WebAPI.DefaultBaseAddress.Host,
 
 						// ReSharper disable once AccessToDisposedClosure
-						async () => await iPlayerService.CallAsync(
+						async () => await playerService.CallAsync(
 							HttpMethod.Get, "GetOwnedGames", args: new Dictionary<string, object>(4, StringComparer.Ordinal) {
 								{ "include_appinfo", 1 },
 								{ "key", steamApiKey! },
@@ -1432,16 +1432,16 @@ namespace ArchiSteamFarm {
 			KeyValue? response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-				using WebAPI.AsyncInterface iEconService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(IEconService);
+				using WebAPI.AsyncInterface econService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(EconService);
 
-				iEconService.Timeout = WebBrowser.Timeout;
+				econService.Timeout = WebBrowser.Timeout;
 
 				try {
 					response = await WebLimitRequest(
 						WebAPI.DefaultBaseAddress.Host,
 
 						// ReSharper disable once AccessToDisposedClosure
-						async () => await iEconService.CallAsync(
+						async () => await econService.CallAsync(
 							HttpMethod.Post, "DeclineTradeOffer", args: new Dictionary<string, object>(2, StringComparer.Ordinal) {
 								{ "key", steamApiKey! },
 								{ "tradeofferid", tradeID }
@@ -1487,16 +1487,16 @@ namespace ArchiSteamFarm {
 			KeyValue? response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-				using WebAPI.AsyncInterface iEconService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(IEconService);
+				using WebAPI.AsyncInterface econService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(EconService);
 
-				iEconService.Timeout = WebBrowser.Timeout;
+				econService.Timeout = WebBrowser.Timeout;
 
 				try {
 					response = await WebLimitRequest(
 						WebAPI.DefaultBaseAddress.Host,
 
 						// ReSharper disable once AccessToDisposedClosure
-						async () => await iEconService.CallAsync(
+						async () => await econService.CallAsync(
 							HttpMethod.Get, "GetTradeOffers", args: new Dictionary<string, object>(5, StringComparer.Ordinal) {
 								{ "active_only", 1 },
 								{ "get_descriptions", 1 },
@@ -1649,16 +1649,16 @@ namespace ArchiSteamFarm {
 			KeyValue? response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-				using WebAPI.AsyncInterface iSteamApps = Bot.SteamConfiguration.GetAsyncWebAPIInterface(ISteamApps);
+				using WebAPI.AsyncInterface steamAppsService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(SteamAppsService);
 
-				iSteamApps.Timeout = WebBrowser.Timeout;
+				steamAppsService.Timeout = WebBrowser.Timeout;
 
 				try {
 					response = await WebLimitRequest(
 						WebAPI.DefaultBaseAddress.Host,
 
 						// ReSharper disable once AccessToDisposedClosure
-						async () => await iSteamApps.CallAsync(HttpMethod.Get, "GetAppList", 2).ConfigureAwait(false)
+						async () => await steamAppsService.CallAsync(HttpMethod.Get, "GetAppList", 2).ConfigureAwait(false)
 					).ConfigureAwait(false);
 				} catch (TaskCanceledException e) {
 					Bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -1877,16 +1877,16 @@ namespace ArchiSteamFarm {
 			KeyValue? response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-				using WebAPI.AsyncInterface iTwoFactorService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(ITwoFactorService);
+				using WebAPI.AsyncInterface twoFactorService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(TwoFactorService);
 
-				iTwoFactorService.Timeout = WebBrowser.Timeout;
+				twoFactorService.Timeout = WebBrowser.Timeout;
 
 				try {
 					response = await WebLimitRequest(
 						WebAPI.DefaultBaseAddress.Host,
 
 						// ReSharper disable once AccessToDisposedClosure
-						async () => await iTwoFactorService.CallAsync(HttpMethod.Post, "QueryTime").ConfigureAwait(false)
+						async () => await twoFactorService.CallAsync(HttpMethod.Post, "QueryTime").ConfigureAwait(false)
 					).ConfigureAwait(false);
 				} catch (TaskCanceledException e) {
 					Bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -1990,16 +1990,16 @@ namespace ArchiSteamFarm {
 			KeyValue? response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-				using WebAPI.AsyncInterface iEconService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(IEconService);
+				using WebAPI.AsyncInterface econService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(EconService);
 
-				iEconService.Timeout = WebBrowser.Timeout;
+				econService.Timeout = WebBrowser.Timeout;
 
 				try {
 					response = await WebLimitRequest(
 						WebAPI.DefaultBaseAddress.Host,
 
 						// ReSharper disable once AccessToDisposedClosure
-						async () => await iEconService.CallAsync(HttpMethod.Get, "GetTradeHoldDurations", args: arguments).ConfigureAwait(false)
+						async () => await econService.CallAsync(HttpMethod.Get, "GetTradeHoldDurations", args: arguments).ConfigureAwait(false)
 					).ConfigureAwait(false);
 				} catch (TaskCanceledException e) {
 					Bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -2159,22 +2159,22 @@ namespace ArchiSteamFarm {
 			byte[] encryptedLoginKey = CryptoHelper.SymmetricEncrypt(loginKey, sessionKey);
 
 			// We're now ready to send the data to Steam API
-			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.LoggingIn, ISteamUserAuth));
+			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.LoggingIn, SteamUserAuthService));
 
 			KeyValue? response;
 
 			// We do not use usual retry pattern here as webAPIUserNonce is valid only for a single request
 			// Even during timeout, webAPIUserNonce is most likely already invalid
 			// Instead, the caller is supposed to ask for new webAPIUserNonce and call Init() again on failure
-			using (WebAPI.AsyncInterface iSteamUserAuth = Bot.SteamConfiguration.GetAsyncWebAPIInterface(ISteamUserAuth)) {
-				iSteamUserAuth.Timeout = WebBrowser.Timeout;
+			using (WebAPI.AsyncInterface steamUserAuthService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(SteamUserAuthService)) {
+				steamUserAuthService.Timeout = WebBrowser.Timeout;
 
 				try {
 					response = await WebLimitRequest(
 						WebAPI.DefaultBaseAddress.Host,
 
 						// ReSharper disable once AccessToDisposedClosure
-						async () => await iSteamUserAuth.CallAsync(
+						async () => await steamUserAuthService.CallAsync(
 							HttpMethod.Post, "AuthenticateUser", args: new Dictionary<string, object>(3, StringComparer.Ordinal) {
 								{ "encrypted_loginkey", encryptedLoginKey },
 								{ "sessionkey", encryptedSessionKey },
