@@ -128,7 +128,9 @@ namespace ArchiSteamFarm.Plugins {
 			ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.Initializing, nameof(Plugins)));
 
 			foreach (Assembly assembly in assemblies) {
-				ASF.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Initializing, assembly.FullName));
+				if (Debugging.IsUserDebugging) {
+					ASF.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Initializing, assembly.FullName));
+				}
 
 				try {
 					// This call is bare minimum to verify if the assembly can load itself
