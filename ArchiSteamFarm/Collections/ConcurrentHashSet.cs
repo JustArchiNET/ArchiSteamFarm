@@ -70,6 +70,10 @@ namespace ArchiSteamFarm.Collections {
 		public void CopyTo(T[] array, int arrayIndex) => BackingCollection.Keys.CopyTo(array, arrayIndex);
 
 		public void ExceptWith(IEnumerable<T> other) {
+			if (other == null) {
+				throw new ArgumentNullException(nameof(other));
+			}
+
 			foreach (T item in other) {
 				Remove(item);
 			}
@@ -146,6 +150,10 @@ namespace ArchiSteamFarm.Collections {
 		}
 
 		public void UnionWith(IEnumerable<T> other) {
+			if (other == null) {
+				throw new ArgumentNullException(nameof(other));
+			}
+
 			foreach (T otherElement in other) {
 				Add(otherElement);
 			}

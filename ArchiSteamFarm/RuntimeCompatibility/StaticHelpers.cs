@@ -60,15 +60,31 @@ namespace ArchiSteamFarm.RuntimeCompatibility {
 		}
 
 #if NETFRAMEWORK
-		public static Task<byte[]> ComputeHashAsync(this HashAlgorithm hashAlgorithm, Stream inputStream) => Task.FromResult(hashAlgorithm.ComputeHash(inputStream));
+		public static Task<byte[]> ComputeHashAsync(this HashAlgorithm hashAlgorithm, Stream inputStream) {
+			if (hashAlgorithm == null) {
+				throw new ArgumentNullException(nameof(hashAlgorithm));
+			}
+
+			return Task.FromResult(hashAlgorithm.ComputeHash(inputStream));
+		}
 
 		public static IWebHostBuilder ConfigureWebHostDefaults(this IWebHostBuilder builder, Action<IWebHostBuilder> configure) {
+			if (configure == null) {
+				throw new ArgumentNullException(nameof(configure));
+			}
+
 			configure(builder);
 
 			return builder;
 		}
 
-		public static bool Contains(this string input, string value, StringComparison comparisonType) => input.IndexOf(value, comparisonType) >= 0;
+		public static bool Contains(this string input, string value, StringComparison comparisonType) {
+			if (input == null) {
+				throw new ArgumentNullException(nameof(input));
+			}
+
+			return input.IndexOf(value, comparisonType) >= 0;
+		}
 
 		// ReSharper disable once UseDeconstructionOnParameter - we actually implement deconstruction here
 		public static void Deconstruct<TKey, TValue>(this KeyValuePair<TKey, TValue> kv, out TKey key, out TValue value) {
@@ -77,15 +93,38 @@ namespace ArchiSteamFarm.RuntimeCompatibility {
 		}
 
 		public static ValueTask DisposeAsync(this IDisposable disposable) {
+			if (disposable == null) {
+				throw new ArgumentNullException(nameof(disposable));
+			}
+
 			disposable.Dispose();
 
 			return default(ValueTask);
 		}
 
-		public static async Task<WebSocketReceiveResult> ReceiveAsync(this WebSocket webSocket, byte[] buffer, CancellationToken cancellationToken) => await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken).ConfigureAwait(false);
-		public static async Task SendAsync(this WebSocket webSocket, byte[] buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) => await webSocket.SendAsync(new ArraySegment<byte>(buffer), messageType, endOfMessage, cancellationToken).ConfigureAwait(false);
+		public static async Task<WebSocketReceiveResult> ReceiveAsync(this WebSocket webSocket, byte[] buffer, CancellationToken cancellationToken) {
+			if (webSocket == null) {
+				throw new ArgumentNullException(nameof(webSocket));
+			}
 
-		public static string[] Split(this string text, char separator, StringSplitOptions options = StringSplitOptions.None) => text.Split(new[] { separator }, options);
+			return await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken).ConfigureAwait(false);
+		}
+
+		public static async Task SendAsync(this WebSocket webSocket, byte[] buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) {
+			if (webSocket == null) {
+				throw new ArgumentNullException(nameof(webSocket));
+			}
+
+			await webSocket.SendAsync(new ArraySegment<byte>(buffer), messageType, endOfMessage, cancellationToken).ConfigureAwait(false);
+		}
+
+		public static string[] Split(this string text, char separator, StringSplitOptions options = StringSplitOptions.None) {
+			if (text == null) {
+				throw new ArgumentNullException(nameof(text));
+			}
+
+			return text.Split(new[] { separator }, options);
+		}
 
 		public static void TrimExcess<TKey, TValue>(this Dictionary<TKey, TValue> _) { } // no-op
 #endif

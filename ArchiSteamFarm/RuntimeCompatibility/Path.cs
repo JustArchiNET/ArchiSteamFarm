@@ -29,6 +29,14 @@ namespace ArchiSteamFarm.RuntimeCompatibility {
 	public static class Path {
 		public static string GetRelativePath(string relativeTo, string path) {
 #if NETFRAMEWORK
+			if (relativeTo == null) {
+				throw new ArgumentNullException(nameof(relativeTo));
+			}
+
+			if (path == null) {
+				throw new ArgumentNullException(nameof(path));
+			}
+
 			if (!path.StartsWith(relativeTo, StringComparison.Ordinal)) {
 				throw new NotImplementedException();
 			}

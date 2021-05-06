@@ -235,13 +235,25 @@ namespace ArchiSteamFarm {
 		public static IEnumerable<IElement> SelectElementNodes(this IElement element, string xpath) => element.SelectNodes(xpath).OfType<IElement>();
 
 		[PublicAPI]
-		public static IEnumerable<IElement> SelectNodes(this IDocument document, string xpath) => document.Body.SelectNodes(xpath).OfType<IElement>();
+		public static IEnumerable<IElement> SelectNodes(this IDocument document, string xpath) {
+			if (document == null) {
+				throw new ArgumentNullException(nameof(document));
+			}
+
+			return document.Body.SelectNodes(xpath).OfType<IElement>();
+		}
 
 		[PublicAPI]
 		public static IElement? SelectSingleElementNode(this IElement element, string xpath) => (IElement?) element.SelectSingleNode(xpath);
 
 		[PublicAPI]
-		public static IElement? SelectSingleNode(this IDocument document, string xpath) => (IElement?) document.Body.SelectSingleNode(xpath);
+		public static IElement? SelectSingleNode(this IDocument document, string xpath) {
+			if (document == null) {
+				throw new ArgumentNullException(nameof(document));
+			}
+
+			return (IElement?) document.Body.SelectSingleNode(xpath);
+		}
 
 		[PublicAPI]
 		public static IEnumerable<T> ToEnumerable<T>(this T item) {
