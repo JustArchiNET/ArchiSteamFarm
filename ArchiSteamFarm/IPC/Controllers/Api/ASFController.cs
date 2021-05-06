@@ -28,6 +28,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.IPC.Requests;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.RuntimeCompatibility;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 
@@ -67,7 +68,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 
 			uint memoryUsage = (uint) GC.GetTotalMemory(false) / 1024;
 
-			ASFResponse result = new(SharedInfo.BuildInfo.Variant, SharedInfo.BuildInfo.CanUpdate, ASF.GlobalConfig, memoryUsage, RuntimeCompatibility.ProcessStartTime, SharedInfo.Version);
+			ASFResponse result = new(SharedInfo.BuildInfo.Variant, SharedInfo.BuildInfo.CanUpdate, ASF.GlobalConfig, memoryUsage, StaticHelpers.ProcessStartTime, SharedInfo.Version);
 
 			return Ok(new GenericResponse<ASFResponse>(result));
 		}

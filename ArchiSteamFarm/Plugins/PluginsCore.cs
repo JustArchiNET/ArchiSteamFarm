@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Callbacks;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
@@ -498,7 +499,7 @@ namespace ArchiSteamFarm.Plugins {
 			return responses.Where(response => response != null).SelectMany(handlers => handlers ?? Enumerable.Empty<ClientMsgHandler>()).ToHashSet();
 		}
 
-		internal static async Task<bool> OnBotTradeOffer(Bot bot, Steam.TradeOffer tradeOffer) {
+		internal static async Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer) {
 			if (bot == null) {
 				throw new ArgumentNullException(nameof(bot));
 			}
@@ -524,7 +525,7 @@ namespace ArchiSteamFarm.Plugins {
 			return responses.Any(response => response);
 		}
 
-		internal static async Task OnBotTradeOfferResults(Bot bot, IReadOnlyCollection<Trading.ParseTradeResult> tradeResults) {
+		internal static async Task OnBotTradeOfferResults(Bot bot, IReadOnlyCollection<ParseTradeResult> tradeResults) {
 			if (bot == null) {
 				throw new ArgumentNullException(nameof(bot));
 			}
@@ -544,7 +545,7 @@ namespace ArchiSteamFarm.Plugins {
 			}
 		}
 
-		internal static async Task OnBotUserNotifications(Bot bot, IReadOnlyCollection<ArchiHandler.UserNotificationsCallback.EUserNotification> newNotifications) {
+		internal static async Task OnBotUserNotifications(Bot bot, IReadOnlyCollection<UserNotificationsCallback.EUserNotification> newNotifications) {
 			if (bot == null) {
 				throw new ArgumentNullException(nameof(bot));
 			}

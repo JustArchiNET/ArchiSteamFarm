@@ -46,7 +46,7 @@ namespace ArchiSteamFarm.IPC.Requests {
 		///     Specifies the type of confirmations to handle. If not provided, all confirmation types are considered for an action.
 		/// </summary>
 		[JsonProperty]
-		public MobileAuthenticator.Confirmation.EType? AcceptedType { get; private set; }
+		public Confirmation.EType? AcceptedType { get; private set; }
 
 		/// <summary>
 		///     A helper property which works the same as <see cref="AcceptedCreatorIDs" /> but with values written as strings - for javascript compatibility purposes. Use either this one, or <see cref="AcceptedCreatorIDs" />, not both.

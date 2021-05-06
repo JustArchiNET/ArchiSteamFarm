@@ -23,13 +23,13 @@ using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
 using Newtonsoft.Json;
+using File = ArchiSteamFarm.RuntimeCompatibility.File;
 
 namespace ArchiSteamFarm {
 	internal sealed class BotDatabase : SerializableFile {
@@ -141,14 +141,14 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(filePath));
 			}
 
-			if (!File.Exists(filePath)) {
+			if (!System.IO.File.Exists(filePath)) {
 				return new BotDatabase(filePath);
 			}
 
 			BotDatabase? botDatabase;
 
 			try {
-				string json = await RuntimeCompatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+				string json = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(json)) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));

@@ -22,6 +22,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Web;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
@@ -38,7 +39,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 
 			const string request = URL + "/meow";
 
-			WebBrowser.ObjectResponse<MeowResponse>? response = await webBrowser.UrlGetToJsonObject<MeowResponse>(request).ConfigureAwait(false);
+			ObjectResponse<MeowResponse>? response = await webBrowser.UrlGetToJsonObject<MeowResponse>(request).ConfigureAwait(false);
 
 			if (response == null) {
 				return null;

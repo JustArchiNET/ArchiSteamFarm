@@ -21,21 +21,21 @@
 
 using System;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using JetBrains.Annotations;
 
 #if NETFRAMEWORK
-using Microsoft.AspNetCore.Hosting;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.WebSockets;
 using System.Security.Cryptography;
 using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 #endif
 
-namespace ArchiSteamFarm {
+namespace ArchiSteamFarm.RuntimeCompatibility {
 	[PublicAPI]
-	public static class RuntimeCompatibility {
+	public static class StaticHelpers {
 #if NETFRAMEWORK
 		private static readonly DateTime SavedProcessStartTime = DateTime.UtcNow;
 #endif
@@ -57,78 +57,6 @@ namespace ArchiSteamFarm {
 				using Process process = Process.GetCurrentProcess();
 
 				return process.StartTime;
-			}
-		}
-
-#pragma warning disable CS1998
-		[PublicAPI]
-		public static class File {
-			public static async Task AppendAllTextAsync(string path, string contents) =>
-#if NETFRAMEWORK
-				System.IO.File.AppendAllText(path, contents);
-#else
-				await System.IO.File.AppendAllTextAsync(path, contents).ConfigureAwait(false);
-#endif
-
-			public static void Move(string sourceFileName, string destFileName, bool overwrite) {
-#if NETFRAMEWORK
-				if (overwrite && System.IO.File.Exists(destFileName)) {
-					System.IO.File.Delete(destFileName);
-				}
-
-				System.IO.File.Move(sourceFileName, destFileName);
-#else
-				System.IO.File.Move(sourceFileName, destFileName, overwrite);
-#endif
-			}
-
-			public static async Task<byte[]> ReadAllBytesAsync(string path) =>
-#if NETFRAMEWORK
-				System.IO.File.ReadAllBytes(path);
-#else
-				await System.IO.File.ReadAllBytesAsync(path).ConfigureAwait(false);
-#endif
-
-			public static async Task<string> ReadAllTextAsync(string path) =>
-#if NETFRAMEWORK
-				System.IO.File.ReadAllText(path);
-#else
-				await System.IO.File.ReadAllTextAsync(path).ConfigureAwait(false);
-#endif
-
-			public static async Task WriteAllTextAsync(string path, string contents) =>
-#if NETFRAMEWORK
-				System.IO.File.WriteAllText(path, contents);
-#else
-				await System.IO.File.WriteAllTextAsync(path, contents).ConfigureAwait(false);
-#endif
-		}
-#pragma warning restore CS1998
-
-		[PublicAPI]
-		public static class HashCode {
-			public static int Combine<T1, T2, T3>(T1 value1, T2 value2, T3 value3) =>
-#if NETFRAMEWORK
-				(value1, value2, value3).GetHashCode();
-#else
-				System.HashCode.Combine(value1, value2, value3);
-#endif
-		}
-
-		[PublicAPI]
-		public static class Path {
-			public static string GetRelativePath(string relativeTo, string path) {
-#if NETFRAMEWORK
-				if (!path.StartsWith(relativeTo, StringComparison.Ordinal)) {
-					throw new NotImplementedException();
-				}
-
-				string result = path[relativeTo.Length..];
-
-				return (result[0] == System.IO.Path.DirectorySeparatorChar) || (result[0] == System.IO.Path.AltDirectorySeparatorChar) ? result[1..] : result;
-#else
-				return System.IO.Path.GetRelativePath(relativeTo, path);
-#endif
 			}
 		}
 

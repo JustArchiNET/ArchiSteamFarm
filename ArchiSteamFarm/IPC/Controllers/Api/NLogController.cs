@@ -36,6 +36,10 @@ using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
+#if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
+#endif
+
 namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[Route("Api/NLog")]
 	public sealed class NLogController : ArchiController {

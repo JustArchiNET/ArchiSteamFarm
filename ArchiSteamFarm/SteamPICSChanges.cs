@@ -24,6 +24,7 @@ using System.Linq;
 using System.Threading;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Plugins;
+using ArchiSteamFarm.Web;
 using SteamKit2;
 
 namespace ArchiSteamFarm {

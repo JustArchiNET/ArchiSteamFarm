@@ -50,40 +50,5 @@ namespace ArchiSteamFarm.IPC.Responses {
 			Body = body ?? throw new ArgumentNullException(nameof(body));
 			Properties = properties ?? throw new ArgumentNullException(nameof(properties));
 		}
-
-		public sealed class TypeProperties {
-			/// <summary>
-			///     Base type of given type, if available.
-			/// </summary>
-			/// <remarks>
-			///     This can be used for determining how <see cref="Body" /> should be interpreted.
-			/// </remarks>
-			[JsonProperty]
-			public string? BaseType { get; private set; }
-
-			/// <summary>
-			///     Custom attributes of given type, if available.
-			/// </summary>
-			/// <remarks>
-			///     This can be used for determining main enum type if <see cref="BaseType" /> is <see cref="Enum" />.
-			/// </remarks>
-			[JsonProperty]
-			public HashSet<string>? CustomAttributes { get; private set; }
-
-			/// <summary>
-			///     Underlying type of given type, if available.
-			/// </summary>
-			/// <remarks>
-			///     This can be used for determining underlying enum type if <see cref="BaseType" /> is <see cref="Enum" />.
-			/// </remarks>
-			[JsonProperty]
-			public string? UnderlyingType { get; private set; }
-
-			internal TypeProperties(string? baseType = null, HashSet<string>? customAttributes = null, string? underlyingType = null) {
-				BaseType = baseType;
-				CustomAttributes = customAttributes;
-				UnderlyingType = underlyingType;
-			}
-		}
 	}
 }

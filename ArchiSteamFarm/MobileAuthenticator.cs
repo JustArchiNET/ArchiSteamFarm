@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Security.Cryptography;
@@ -32,7 +31,6 @@ using System.Threading.Tasks;
 using AngleSharp.Dom;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
@@ -459,40 +457,6 @@ namespace ArchiSteamFarm {
 			}
 
 			return (true, deviceID);
-		}
-
-		public sealed class Confirmation {
-			[JsonProperty(Required = Required.Always)]
-			public ulong Creator { get; }
-
-			[JsonProperty(Required = Required.Always)]
-			public ulong ID { get; }
-
-			[JsonProperty(Required = Required.Always)]
-			public ulong Key { get; }
-
-			[JsonProperty(Required = Required.Always)]
-			public EType Type { get; }
-
-			internal Confirmation(ulong id, ulong key, ulong creator, EType type) {
-				ID = id > 0 ? id : throw new ArgumentOutOfRangeException(nameof(id));
-				Key = key > 0 ? key : throw new ArgumentOutOfRangeException(nameof(key));
-				Creator = creator > 0 ? creator : throw new ArgumentOutOfRangeException(nameof(creator));
-				Type = Enum.IsDefined(typeof(EType), type) ? type : throw new InvalidEnumArgumentException(nameof(type), (int) type, typeof(EType));
-			}
-
-			// REF: Internal documentation
-			[PublicAPI]
-			public enum EType : byte {
-				Unknown,
-				Generic,
-				Trade,
-				Market,
-
-				// We're missing information about definition of number 4 type
-				PhoneNumberChange = 5,
-				AccountRecovery = 6
-			}
 		}
 	}
 }

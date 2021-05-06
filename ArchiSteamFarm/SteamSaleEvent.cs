@@ -27,6 +27,10 @@ using System.Threading.Tasks;
 using AngleSharp.Dom;
 using ArchiSteamFarm.Localization;
 
+#if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
+#endif
+
 namespace ArchiSteamFarm {
 	internal sealed class SteamSaleEvent : IAsyncDisposable {
 		private const byte MaxSingleQueuesDaily = 3; // This is only a failsafe for infinite queue clearing (in case IsDiscoveryQueueAvailable() would fail us)

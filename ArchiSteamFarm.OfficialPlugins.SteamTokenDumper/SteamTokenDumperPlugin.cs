@@ -31,9 +31,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Localization;
 using ArchiSteamFarm.Plugins;
+using ArchiSteamFarm.Web;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
+
+#if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
+#endif
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 	[Export(typeof(IPlugin))]
@@ -512,7 +517,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.SubmissionInProgress, appTokens.Count, packageTokens.Count, depotKeys.Count));
 
-				WebBrowser.ObjectResponse<ResponseData>? response = await ASF.WebBrowser.UrlPostToJsonObject<ResponseData, RequestData>(request, data: requestData, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
+				ObjectResponse<ResponseData>? response = await ASF.WebBrowser.UrlPostToJsonObject<ResponseData, RequestData>(request, data: requestData, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
 
 				if (response == null) {
 					ASF.ArchiLogger.LogGenericWarning(ArchiSteamFarm.Localization.Strings.WarningFailed);

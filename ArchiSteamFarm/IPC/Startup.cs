@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Net;
 using System.Reflection;
 using ArchiSteamFarm.IPC.Integration;
@@ -41,6 +40,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
 #if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
 using Newtonsoft.Json.Converters;
 #endif
 
@@ -229,9 +229,9 @@ namespace ArchiSteamFarm.IPC {
 						}
 					);
 
-					string xmlDocumentationFile = Path.Combine(AppContext.BaseDirectory, SharedInfo.AssemblyDocumentation);
+					string xmlDocumentationFile = System.IO.Path.Combine(AppContext.BaseDirectory, SharedInfo.AssemblyDocumentation);
 
-					if (File.Exists(xmlDocumentationFile)) {
+					if (System.IO.File.Exists(xmlDocumentationFile)) {
 						options.IncludeXmlComments(xmlDocumentationFile);
 					}
 				}

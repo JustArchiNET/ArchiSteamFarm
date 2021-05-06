@@ -23,6 +23,7 @@ using System;
 using System.ComponentModel;
 using Newtonsoft.Json;
 using SteamKit2;
+using HashCode = ArchiSteamFarm.RuntimeCompatibility.HashCode;
 
 namespace ArchiSteamFarm.SteamKit2 {
 	internal sealed class ServerRecordEndPoint : IEquatable<ServerRecordEndPoint> {
@@ -58,6 +59,6 @@ namespace ArchiSteamFarm.SteamKit2 {
 
 		public bool Equals(ServerRecordEndPoint? other) => (other != null) && (ReferenceEquals(other, this) || ((Host == other.Host) && (Port == other.Port) && (ProtocolTypes == other.ProtocolTypes)));
 		public override bool Equals(object? obj) => (obj != null) && ((obj == this) || (obj is ServerRecordEndPoint serverRecord && Equals(serverRecord)));
-		public override int GetHashCode() => RuntimeCompatibility.HashCode.Combine(Host, Port, ProtocolTypes);
+		public override int GetHashCode() => HashCode.Combine(Host, Port, ProtocolTypes);
 	}
 }

@@ -27,11 +27,14 @@ using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Callbacks;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Plugins;
 using JetBrains.Annotations;
 using SteamKit2;
+
+using ArchiSteamFarm.RuntimeCompatibility;
 
 namespace ArchiSteamFarm {
 	public sealed class Commands {
@@ -2438,7 +2441,7 @@ namespace ArchiSteamFarm {
 			ArchiHandler.EPrivacySetting friendsList = ArchiHandler.EPrivacySetting.Private;
 			ArchiHandler.EPrivacySetting inventory = ArchiHandler.EPrivacySetting.Private;
 			ArchiHandler.EPrivacySetting inventoryGifts = ArchiHandler.EPrivacySetting.Private;
-			Steam.UserPrivacy.ECommentPermission comments = Steam.UserPrivacy.ECommentPermission.Private;
+			UserPrivacy.ECommentPermission comments = UserPrivacy.ECommentPermission.Private;
 
 			// Converting digits to enum
 			for (byte index = 0; index < privacySettingsArgs.Length; index++) {
@@ -2507,15 +2510,15 @@ namespace ArchiSteamFarm {
 						// Comments use different numbers than everything else, but we want to have this command consistent for end-user, so we'll map them
 						switch (privacySetting) {
 							case ArchiHandler.EPrivacySetting.FriendsOnly:
-								comments = Steam.UserPrivacy.ECommentPermission.FriendsOnly;
+								comments = UserPrivacy.ECommentPermission.FriendsOnly;
 
 								break;
 							case ArchiHandler.EPrivacySetting.Private:
-								comments = Steam.UserPrivacy.ECommentPermission.Private;
+								comments = UserPrivacy.ECommentPermission.Private;
 
 								break;
 							case ArchiHandler.EPrivacySetting.Public:
-								comments = Steam.UserPrivacy.ECommentPermission.Public;
+								comments = UserPrivacy.ECommentPermission.Public;
 
 								break;
 							default:
@@ -2532,7 +2535,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			Steam.UserPrivacy userPrivacy = new(new Steam.UserPrivacy.PrivacySettings(profile, ownedGames, playtime, friendsList, inventory, inventoryGifts), comments);
+			UserPrivacy userPrivacy = new(new UserPrivacy.PrivacySettings(profile, ownedGames, playtime, friendsList, inventory, inventoryGifts), comments);
 
 			return FormatBotResponse(await Bot.ArchiWebHandler.ChangePrivacySettings(userPrivacy).ConfigureAwait(false) ? Strings.Success : Strings.WarningFailed);
 		}
@@ -2634,7 +2637,7 @@ namespace ArchiSteamFarm {
 							} else {
 								bool skipRequest = triedBots.Contains(currentBot) || rateLimitedBots.Contains(currentBot);
 
-								ArchiHandler.PurchaseResponseCallback? result = skipRequest ? new ArchiHandler.PurchaseResponseCallback(EResult.Fail, EPurchaseResultDetail.CancelledByUser) : await currentBot.Actions.RedeemKey(key!).ConfigureAwait(false);
+								PurchaseResponseCallback? result = skipRequest ? new PurchaseResponseCallback(EResult.Fail, EPurchaseResultDetail.CancelledByUser) : await currentBot.Actions.RedeemKey(key!).ConfigureAwait(false);
 
 								if (result == null) {
 									response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, EPurchaseResultDetail.Timeout), currentBot.BotName));
@@ -2711,7 +2714,7 @@ namespace ArchiSteamFarm {
 											bool alreadyHandled = false;
 
 											foreach (Bot innerBot in Bot.Bots.Where(bot => (bot.Value != currentBot) && (!redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || (bot.Value != Bot)) && !triedBots.Contains(bot.Value) && !rateLimitedBots.Contains(bot.Value) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.HasAccess(steamID, BotConfig.EAccess.Operator) && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.ContainsKey(packageID)))).OrderBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value)) {
-												ArchiHandler.PurchaseResponseCallback? otherResult = await innerBot.Actions.RedeemKey(key!).ConfigureAwait(false);
+												PurchaseResponseCallback? otherResult = await innerBot.Actions.RedeemKey(key!).ConfigureAwait(false);
 
 												if (otherResult == null) {
 													response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, EResult.Timeout + "/" + EPurchaseResultDetail.Timeout), innerBot.BotName));
@@ -2959,7 +2962,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ushort memoryInMegabytes = (ushort) (GC.GetTotalMemory(false) / 1024 / 1024);
-			TimeSpan uptime = DateTime.UtcNow.Subtract(RuntimeCompatibility.ProcessStartTime.ToUniversalTime());
+			TimeSpan uptime = DateTime.UtcNow.Subtract(StaticHelpers.ProcessStartTime.ToUniversalTime());
 
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotStats, memoryInMegabytes, uptime.ToHumanReadable()));
 		}
@@ -3001,7 +3004,7 @@ namespace ArchiSteamFarm {
 				return (FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotStatusIdlingList, string.Join(", ", Bot.CardsFarmer.CurrentGamesFarmingReadOnly.Select(game => game.AppID + " (" + game.GameName + ")")), Bot.CardsFarmer.GamesToFarmReadOnly.Count, Bot.CardsFarmer.GamesToFarmReadOnly.Sum(game => game.CardsRemaining), Bot.CardsFarmer.TimeRemaining.ToHumanReadable())), Bot);
 			}
 
-			CardsFarmer.Game soloGame = Bot.CardsFarmer.CurrentGamesFarmingReadOnly.First();
+			Game soloGame = Bot.CardsFarmer.CurrentGamesFarmingReadOnly.First();
 
 			return (FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotStatusIdling, soloGame.AppID, soloGame.GameName, soloGame.CardsRemaining, Bot.CardsFarmer.GamesToFarmReadOnly.Count, Bot.CardsFarmer.GamesToFarmReadOnly.Sum(game => game.CardsRemaining), Bot.CardsFarmer.TimeRemaining.ToHumanReadable())), Bot);
 		}
@@ -3296,7 +3299,7 @@ namespace ArchiSteamFarm {
 
 			// It'd also make sense to run all of this in parallel, but it seems that Steam has a lot of problems with inventory-related parallel requests | https://steamcommunity.com/groups/archiasf/discussions/1/3559414588264550284/
 			try {
-				await foreach (Steam.Asset item in Bot.ArchiWebHandler.GetInventoryAsync().Where(item => item.Type == Steam.Asset.EType.BoosterPack).ConfigureAwait(false)) {
+				await foreach (Asset item in Bot.ArchiWebHandler.GetInventoryAsync().Where(item => item.Type == Asset.EType.BoosterPack).ConfigureAwait(false)) {
 					if (!await Bot.ArchiWebHandler.UnpackBooster(item.RealAppID, item.AssetID).ConfigureAwait(false)) {
 						completeSuccess = false;
 					}

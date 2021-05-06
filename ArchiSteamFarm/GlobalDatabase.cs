@@ -24,7 +24,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,6 +32,11 @@ using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.SteamKit2;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using File = ArchiSteamFarm.RuntimeCompatibility.File;
+
+#if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
+#endif
 
 namespace ArchiSteamFarm {
 	public sealed class GlobalDatabase : SerializableFile {
@@ -118,7 +122,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(filePath));
 			}
 
-			if (!File.Exists(filePath)) {
+			if (!System.IO.File.Exists(filePath)) {
 				GlobalDatabase result = new(filePath);
 
 				Utilities.InBackground(result.Save);
@@ -129,7 +133,7 @@ namespace ArchiSteamFarm {
 			GlobalDatabase? globalDatabase;
 
 			try {
-				string json = await RuntimeCompatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+				string json = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(json)) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));

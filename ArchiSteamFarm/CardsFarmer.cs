@@ -37,6 +37,10 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SteamKit2;
 
+#if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
+#endif
+
 namespace ArchiSteamFarm {
 	public sealed class CardsFarmer : IAsyncDisposable {
 		internal const byte DaysForRefund = 14; // In how many days since payment we're allowed to refund
@@ -1236,38 +1240,6 @@ namespace ArchiSteamFarm {
 			// We must call ToList() here as we can't do in-place replace
 			List<Game> gamesToFarm = orderedGamesToFarm.ToList();
 			GamesToFarm.ReplaceWith(gamesToFarm);
-		}
-
-		public sealed class Game : IEquatable<Game> {
-			[JsonProperty]
-			public uint AppID { get; }
-
-			[JsonProperty]
-			public string GameName { get; }
-
-			internal readonly byte BadgeLevel;
-
-			[JsonProperty]
-			public ushort CardsRemaining { get; internal set; }
-
-			[JsonProperty]
-			public float HoursPlayed { get; internal set; }
-
-			internal uint PlayableAppID { get; set; }
-
-			internal Game(uint appID, string gameName, float hoursPlayed, ushort cardsRemaining, byte badgeLevel) {
-				AppID = appID > 0 ? appID : throw new ArgumentOutOfRangeException(nameof(appID));
-				GameName = !string.IsNullOrEmpty(gameName) ? gameName : throw new ArgumentNullException(nameof(gameName));
-				HoursPlayed = hoursPlayed >= 0 ? hoursPlayed : throw new ArgumentOutOfRangeException(nameof(hoursPlayed));
-				CardsRemaining = cardsRemaining > 0 ? cardsRemaining : throw new ArgumentOutOfRangeException(nameof(cardsRemaining));
-				BadgeLevel = badgeLevel;
-
-				PlayableAppID = appID;
-			}
-
-			public bool Equals(Game? other) => (other != null) && (ReferenceEquals(other, this) || ((AppID == other.AppID) && (BadgeLevel == other.BadgeLevel) && (GameName == other.GameName)));
-			public override bool Equals(object? obj) => (obj != null) && ((obj == this) || (obj is Game game && Equals(game)));
-			public override int GetHashCode() => RuntimeCompatibility.HashCode.Combine(AppID, BadgeLevel, GameName);
 		}
 	}
 }

@@ -35,15 +35,24 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
+using ArchiSteamFarm.Callbacks;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Plugins;
+using ArchiSteamFarm.Web;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SteamKit2;
 using SteamKit2.Internal;
+
+#if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
+
+using File = System.IO.File;
+using Path = System.IO.Path;
+#endif
 
 namespace ArchiSteamFarm {
 	public sealed class Bot : IAsyncDisposable {
@@ -142,7 +151,7 @@ namespace ArchiSteamFarm {
 		private readonly Timer HeartBeatTimer;
 		private readonly SemaphoreSlim InitializationSemaphore = new(1, 1);
 		private readonly SemaphoreSlim MessagingSemaphore = new(1, 1);
-		private readonly ConcurrentDictionary<ArchiHandler.UserNotificationsCallback.EUserNotification, uint> PastNotifications = new();
+		private readonly ConcurrentDictionary<UserNotificationsCallback.EUserNotification, uint> PastNotifications = new();
 		private readonly SemaphoreSlim SendCompleteTypesSemaphore = new(1, 1);
 		private readonly Statistics? Statistics;
 		private readonly SteamClient SteamClient;
@@ -295,7 +304,7 @@ namespace ArchiSteamFarm {
 
 			CallbackManager.Subscribe<ArchiHandler.PlayingSessionStateCallback>(OnPlayingSessionState);
 			CallbackManager.Subscribe<ArchiHandler.SharedLibraryLockStatusCallback>(OnSharedLibraryLockStatus);
-			CallbackManager.Subscribe<ArchiHandler.UserNotificationsCallback>(OnUserNotifications);
+			CallbackManager.Subscribe<UserNotificationsCallback>(OnUserNotifications);
 			CallbackManager.Subscribe<ArchiHandler.VanityURLChangedCallback>(OnVanityURLChangedCallback);
 
 			Actions = new Actions(this);
@@ -513,7 +522,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public static HashSet<Steam.Asset> GetItemsForFullSets(IReadOnlyCollection<Steam.Asset> inventory, IReadOnlyDictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), (uint SetsToExtract, byte ItemsPerSet)> amountsToExtract, ushort maxItems = Trading.MaxItemsPerTrade) {
+		public static HashSet<Asset> GetItemsForFullSets(IReadOnlyCollection<Asset> inventory, IReadOnlyDictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), (uint SetsToExtract, byte ItemsPerSet)> amountsToExtract, ushort maxItems = Trading.MaxItemsPerTrade) {
 			if ((inventory == null) || (inventory.Count == 0)) {
 				throw new ArgumentNullException(nameof(inventory));
 			}
@@ -526,11 +535,11 @@ namespace ArchiSteamFarm {
 				throw new ArgumentOutOfRangeException(nameof(maxItems));
 			}
 
-			HashSet<Steam.Asset> result = new();
-			Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), Dictionary<ulong, HashSet<Steam.Asset>>> itemsPerClassIDPerSet = inventory.GroupBy(item => (item.RealAppID, item.Type, item.Rarity)).ToDictionary(grouping => grouping.Key, grouping => grouping.GroupBy(item => item.ClassID).ToDictionary(group => group.Key, group => group.ToHashSet()));
+			HashSet<Asset> result = new();
+			Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, HashSet<Asset>>> itemsPerClassIDPerSet = inventory.GroupBy(item => (item.RealAppID, item.Type, item.Rarity)).ToDictionary(grouping => grouping.Key, grouping => grouping.GroupBy(item => item.ClassID).ToDictionary(group => group.Key, group => group.ToHashSet()));
 
-			foreach (((uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity) set, (uint setsToExtract, byte itemsPerSet)) in amountsToExtract.OrderBy(kv => kv.Value.ItemsPerSet)) {
-				if (!itemsPerClassIDPerSet.TryGetValue(set, out Dictionary<ulong, HashSet<Steam.Asset>>? itemsPerClassID)) {
+			foreach (((uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) set, (uint setsToExtract, byte itemsPerSet)) in amountsToExtract.OrderBy(kv => kv.Value.ItemsPerSet)) {
+				if (!itemsPerClassIDPerSet.TryGetValue(set, out Dictionary<ulong, HashSet<Asset>>? itemsPerClassID)) {
 					continue;
 				}
 
@@ -551,12 +560,12 @@ namespace ArchiSteamFarm {
 					break;
 				}
 
-				foreach (HashSet<Steam.Asset> itemsOfClass in itemsPerClassID.Values) {
+				foreach (HashSet<Asset> itemsOfClass in itemsPerClassID.Values) {
 					ushort classRemaining = realSetsToExtract;
 
-					foreach (Steam.Asset item in itemsOfClass.TakeWhile(_ => classRemaining > 0)) {
+					foreach (Asset item in itemsOfClass.TakeWhile(_ => classRemaining > 0)) {
 						if (item.Amount > classRemaining) {
-							Steam.Asset itemToSend = item.CreateShallowCopy();
+							Asset itemToSend = item.CreateShallowCopy();
 							itemToSend.Amount = classRemaining;
 							result.Add(itemToSend);
 
@@ -1331,7 +1340,7 @@ namespace ArchiSteamFarm {
 			return ((ArchiHandler.EPrivacySetting) privacySettings.privacy_state == ArchiHandler.EPrivacySetting.Public) && ((ArchiHandler.EPrivacySetting) privacySettings.privacy_state_inventory == ArchiHandler.EPrivacySetting.Public);
 		}
 
-		internal async Task IdleGame(CardsFarmer.Game game) {
+		internal async Task IdleGame(Game game) {
 			if (game == null) {
 				throw new ArgumentNullException(nameof(game));
 			}
@@ -1345,7 +1354,7 @@ namespace ArchiSteamFarm {
 			await ArchiHandler.PlayGames(game.PlayableAppID.ToEnumerable(), gameName).ConfigureAwait(false);
 		}
 
-		internal async Task IdleGames(IReadOnlyCollection<CardsFarmer.Game> games) {
+		internal async Task IdleGames(IReadOnlyCollection<Game> games) {
 			if ((games == null) || (games.Count == 0)) {
 				throw new ArgumentNullException(nameof(games));
 			}
@@ -3148,7 +3157,7 @@ namespace ArchiSteamFarm {
 			await CheckOccupationStatus().ConfigureAwait(false);
 		}
 
-		private void OnUserNotifications(ArchiHandler.UserNotificationsCallback callback) {
+		private void OnUserNotifications(UserNotificationsCallback callback) {
 			if (callback == null) {
 				throw new ArgumentNullException(nameof(callback));
 			}
@@ -3161,9 +3170,9 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			HashSet<ArchiHandler.UserNotificationsCallback.EUserNotification> newPluginNotifications = new();
+			HashSet<UserNotificationsCallback.EUserNotification> newPluginNotifications = new();
 
-			foreach ((ArchiHandler.UserNotificationsCallback.EUserNotification notification, uint count) in callback.Notifications) {
+			foreach ((UserNotificationsCallback.EUserNotification notification, uint count) in callback.Notifications) {
 				bool newNotification;
 
 				if (count > 0) {
@@ -3181,15 +3190,15 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericTrace(notification + " = " + count);
 
 				switch (notification) {
-					case ArchiHandler.UserNotificationsCallback.EUserNotification.Gifts when newNotification && BotConfig.AcceptGifts:
+					case UserNotificationsCallback.EUserNotification.Gifts when newNotification && BotConfig.AcceptGifts:
 						Utilities.InBackground(Actions.AcceptDigitalGiftCards);
 
 						break;
-					case ArchiHandler.UserNotificationsCallback.EUserNotification.Items when newNotification:
+					case UserNotificationsCallback.EUserNotification.Items when newNotification:
 						OnInventoryChanged();
 
 						break;
-					case ArchiHandler.UserNotificationsCallback.EUserNotification.Trading when newNotification:
+					case UserNotificationsCallback.EUserNotification.Trading when newNotification:
 						Utilities.InBackground(Trading.OnNewTrade);
 
 						break;
@@ -3243,7 +3252,7 @@ namespace ArchiSteamFarm {
 						break;
 					}
 
-					ArchiHandler.PurchaseResponseCallback? result = await Actions.RedeemKey(key!).ConfigureAwait(false);
+					PurchaseResponseCallback? result = await Actions.RedeemKey(key!).ConfigureAwait(false);
 
 					if (result == null) {
 						continue;
@@ -3390,7 +3399,7 @@ namespace ArchiSteamFarm {
 						return;
 					}
 
-					HashSet<Steam.Asset> inventory;
+					HashSet<Asset> inventory;
 
 					try {
 						inventory = await ArchiWebHandler.GetInventoryAsync()
@@ -3413,7 +3422,7 @@ namespace ArchiSteamFarm {
 						return;
 					}
 
-					Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), List<uint>> inventorySets = Trading.GetInventorySets(inventory);
+					Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), List<uint>> inventorySets = Trading.GetInventorySets(inventory);
 					appIDs.IntersectWith(inventorySets.Where(kv => kv.Value.Count >= MinCardsPerBadge).Select(kv => kv.Key.RealAppID));
 
 					if (appIDs.Count == 0) {
@@ -3426,13 +3435,13 @@ namespace ArchiSteamFarm {
 						return;
 					}
 
-					Dictionary<(uint RealAppID, Steam.Asset.EType Type, Steam.Asset.ERarity Rarity), (uint Sets, byte CardsPerSet)> itemsToTakePerInventorySet = inventorySets.Where(kv => appIDs.Contains(kv.Key.RealAppID)).ToDictionary(kv => kv.Key, kv => (kv.Value[0], cardCountPerAppID[kv.Key.RealAppID]));
+					Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), (uint Sets, byte CardsPerSet)> itemsToTakePerInventorySet = inventorySets.Where(kv => appIDs.Contains(kv.Key.RealAppID)).ToDictionary(kv => kv.Key, kv => (kv.Value[0], cardCountPerAppID[kv.Key.RealAppID]));
 
 					if (itemsToTakePerInventorySet.Values.All(value => value.Sets == 0)) {
 						return;
 					}
 
-					HashSet<Steam.Asset> result = GetItemsForFullSets(inventory, itemsToTakePerInventorySet);
+					HashSet<Asset> result = GetItemsForFullSets(inventory, itemsToTakePerInventorySet);
 
 					if (result.Count > 0) {
 						await Actions.SendInventory(result).ConfigureAwait(false);

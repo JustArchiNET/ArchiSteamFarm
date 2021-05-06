@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,6 +33,14 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
+
+#if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
+
+using File = System.IO.File;
+#else
+using System.IO;
+#endif
 
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
@@ -115,10 +122,10 @@ namespace ArchiSteamFarm {
 		private const byte SteamTradeTokenLength = 8;
 
 		[PublicAPI]
-		public static readonly ImmutableHashSet<Steam.Asset.EType> AllowedCompleteTypesToSend = ImmutableHashSet.Create(Steam.Asset.EType.TradingCard, Steam.Asset.EType.FoilTradingCard);
+		public static readonly ImmutableHashSet<Asset.EType> AllowedCompleteTypesToSend = ImmutableHashSet.Create(Asset.EType.TradingCard, Asset.EType.FoilTradingCard);
 
 		[PublicAPI]
-		public static readonly ImmutableHashSet<Steam.Asset.EType> DefaultCompleteTypesToSend = ImmutableHashSet<Steam.Asset.EType>.Empty;
+		public static readonly ImmutableHashSet<Asset.EType> DefaultCompleteTypesToSend = ImmutableHashSet<Asset.EType>.Empty;
 
 		[PublicAPI]
 		public static readonly ImmutableList<EFarmingOrder> DefaultFarmingOrders = ImmutableList<EFarmingOrder>.Empty;
@@ -127,16 +134,16 @@ namespace ArchiSteamFarm {
 		public static readonly ImmutableHashSet<uint> DefaultGamesPlayedWhileIdle = ImmutableHashSet<uint>.Empty;
 
 		[PublicAPI]
-		public static readonly ImmutableHashSet<Steam.Asset.EType> DefaultLootableTypes = ImmutableHashSet.Create(Steam.Asset.EType.BoosterPack, Steam.Asset.EType.FoilTradingCard, Steam.Asset.EType.TradingCard);
+		public static readonly ImmutableHashSet<Asset.EType> DefaultLootableTypes = ImmutableHashSet.Create(Asset.EType.BoosterPack, Asset.EType.FoilTradingCard, Asset.EType.TradingCard);
 
 		[PublicAPI]
-		public static readonly ImmutableHashSet<Steam.Asset.EType> DefaultMatchableTypes = ImmutableHashSet.Create(Steam.Asset.EType.TradingCard);
+		public static readonly ImmutableHashSet<Asset.EType> DefaultMatchableTypes = ImmutableHashSet.Create(Asset.EType.TradingCard);
 
 		[PublicAPI]
 		public static readonly ImmutableDictionary<ulong, EAccess> DefaultSteamUserPermissions = ImmutableDictionary<ulong, EAccess>.Empty;
 
 		[PublicAPI]
-		public static readonly ImmutableHashSet<Steam.Asset.EType> DefaultTransferableTypes = ImmutableHashSet.Create(Steam.Asset.EType.BoosterPack, Steam.Asset.EType.FoilTradingCard, Steam.Asset.EType.TradingCard);
+		public static readonly ImmutableHashSet<Asset.EType> DefaultTransferableTypes = ImmutableHashSet.Create(Asset.EType.BoosterPack, Asset.EType.FoilTradingCard, Asset.EType.TradingCard);
 
 		private static readonly SemaphoreSlim WriteSemaphore = new(1, 1);
 
@@ -150,7 +157,7 @@ namespace ArchiSteamFarm {
 		public EBotBehaviour BotBehaviour { get; private set; } = DefaultBotBehaviour;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public ImmutableHashSet<Steam.Asset.EType> CompleteTypesToSend { get; private set; } = DefaultCompleteTypesToSend;
+		public ImmutableHashSet<Asset.EType> CompleteTypesToSend { get; private set; } = DefaultCompleteTypesToSend;
 
 		[JsonProperty]
 		public string? CustomGamePlayedWhileFarming { get; private set; } = DefaultCustomGamePlayedWhileFarming;
@@ -177,10 +184,10 @@ namespace ArchiSteamFarm {
 		public bool IdleRefundableGames { get; private set; } = DefaultIdleRefundableGames;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public ImmutableHashSet<Steam.Asset.EType> LootableTypes { get; private set; } = DefaultLootableTypes;
+		public ImmutableHashSet<Asset.EType> LootableTypes { get; private set; } = DefaultLootableTypes;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public ImmutableHashSet<Steam.Asset.EType> MatchableTypes { get; private set; } = DefaultMatchableTypes;
+		public ImmutableHashSet<Asset.EType> MatchableTypes { get; private set; } = DefaultMatchableTypes;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public EPersonaState OnlineStatus { get; private set; } = DefaultOnlineStatus;
@@ -246,7 +253,7 @@ namespace ArchiSteamFarm {
 		public ETradingPreferences TradingPreferences { get; private set; } = DefaultTradingPreferences;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public ImmutableHashSet<Steam.Asset.EType> TransferableTypes { get; private set; } = DefaultTransferableTypes;
+		public ImmutableHashSet<Asset.EType> TransferableTypes { get; private set; } = DefaultTransferableTypes;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool UseLoginKeys { get; private set; } = DefaultUseLoginKeys;
@@ -367,15 +374,15 @@ namespace ArchiSteamFarm {
 				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(GamesPlayedWhileIdle), GamesPlayedWhileIdle.Count + " > " + ArchiHandler.MaxGamesPlayedConcurrently));
 			}
 
-			foreach (Steam.Asset.EType lootableType in LootableTypes.Where(lootableType => !Enum.IsDefined(typeof(Steam.Asset.EType), lootableType))) {
+			foreach (Asset.EType lootableType in LootableTypes.Where(lootableType => !Enum.IsDefined(typeof(Asset.EType), lootableType))) {
 				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(LootableTypes), lootableType));
 			}
 
-			foreach (Steam.Asset.EType completableType in CompleteTypesToSend.Where(completableType => !Enum.IsDefined(typeof(Steam.Asset.EType), completableType) || !AllowedCompleteTypesToSend.Contains(completableType))) {
+			foreach (Asset.EType completableType in CompleteTypesToSend.Where(completableType => !Enum.IsDefined(typeof(Asset.EType), completableType) || !AllowedCompleteTypesToSend.Contains(completableType))) {
 				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(CompleteTypesToSend), completableType));
 			}
 
-			foreach (Steam.Asset.EType matchableType in MatchableTypes.Where(matchableType => !Enum.IsDefined(typeof(Steam.Asset.EType), matchableType))) {
+			foreach (Asset.EType matchableType in MatchableTypes.Where(matchableType => !Enum.IsDefined(typeof(Asset.EType), matchableType))) {
 				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(MatchableTypes), matchableType));
 			}
 

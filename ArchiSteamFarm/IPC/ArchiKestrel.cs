@@ -32,7 +32,11 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog.Web;
 
-#if !NETFRAMEWORK
+#if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
+using File = System.IO.File;
+using Path = System.IO.Path;
+#else
 using Microsoft.Extensions.Hosting;
 #endif
 

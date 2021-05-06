@@ -27,12 +27,19 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Callbacks;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.Web;
 using JetBrains.Annotations;
 using SteamKit2;
+
+#if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
+
+#endif
 
 namespace ArchiSteamFarm {
 	public sealed class Actions : IAsyncDisposable {
@@ -103,7 +110,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<(bool Success, IReadOnlyCollection<MobileAuthenticator.Confirmation>? HandledConfirmations, string Message)> HandleTwoFactorAuthenticationConfirmations(bool accept, MobileAuthenticator.Confirmation.EType? acceptedType = null, IReadOnlyCollection<ulong>? acceptedCreatorIDs = null, bool waitIfNeeded = false) {
+		public async Task<(bool Success, IReadOnlyCollection<Confirmation>? HandledConfirmations, string Message)> HandleTwoFactorAuthenticationConfirmations(bool accept, Confirmation.EType? acceptedType = null, IReadOnlyCollection<ulong>? acceptedCreatorIDs = null, bool waitIfNeeded = false) {
 			if (Bot.BotDatabase.MobileAuthenticator == null) {
 				return (false, null, Strings.BotNoASFAuthenticator);
 			}
@@ -112,14 +119,14 @@ namespace ArchiSteamFarm {
 				return (false, null, Strings.BotNotConnected);
 			}
 
-			Dictionary<ulong, MobileAuthenticator.Confirmation>? handledConfirmations = null;
+			Dictionary<ulong, Confirmation>? handledConfirmations = null;
 
 			for (byte i = 0; (i == 0) || ((i < WebBrowser.MaxTries) && waitIfNeeded); i++) {
 				if (i > 0) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
-				HashSet<MobileAuthenticator.Confirmation>? confirmations = await Bot.BotDatabase.MobileAuthenticator.GetConfirmations().ConfigureAwait(false);
+				HashSet<Confirmation>? confirmations = await Bot.BotDatabase.MobileAuthenticator.GetConfirmations().ConfigureAwait(false);
 
 				if ((confirmations == null) || (confirmations.Count == 0)) {
 					continue;
@@ -145,9 +152,9 @@ namespace ArchiSteamFarm {
 					return (false, handledConfirmations?.Values, Strings.WarningFailed);
 				}
 
-				handledConfirmations ??= new Dictionary<ulong, MobileAuthenticator.Confirmation>();
+				handledConfirmations ??= new Dictionary<ulong, Confirmation>();
 
-				foreach (MobileAuthenticator.Confirmation? confirmation in confirmations) {
+				foreach (Confirmation? confirmation in confirmations) {
 					handledConfirmations[confirmation.Creator] = confirmation;
 				}
 
@@ -229,7 +236,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<ArchiHandler.PurchaseResponseCallback?> RedeemKey(string key) {
+		public async Task<PurchaseResponseCallback?> RedeemKey(string key) {
 			await LimitGiftsRequestsAsync().ConfigureAwait(false);
 
 			return await Bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
@@ -260,7 +267,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<(bool Success, string Message)> SendInventory(IReadOnlyCollection<Steam.Asset> items, ulong targetSteamID = 0, string? tradeToken = null, ushort itemsPerTrade = Trading.MaxItemsPerTrade) {
+		public async Task<(bool Success, string Message)> SendInventory(IReadOnlyCollection<Asset> items, ulong targetSteamID = 0, string? tradeToken = null, ushort itemsPerTrade = Trading.MaxItemsPerTrade) {
 			if ((items == null) || (items.Count == 0)) {
 				throw new ArgumentNullException(nameof(items));
 			}
@@ -306,7 +313,7 @@ namespace ArchiSteamFarm {
 			(bool success, HashSet<ulong>? mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(targetSteamID, items, token: tradeToken, itemsPerTrade: itemsPerTrade).ConfigureAwait(false);
 
 			if ((mobileTradeOfferIDs?.Count > 0) && Bot.HasMobileAuthenticator) {
-				(bool twoFactorSuccess, _, _) = await HandleTwoFactorAuthenticationConfirmations(true, MobileAuthenticator.Confirmation.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
+				(bool twoFactorSuccess, _, _) = await HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
 
 				if (!twoFactorSuccess) {
 					return (false, Strings.BotLootingFailed);
@@ -317,7 +324,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public async Task<(bool Success, string Message)> SendInventory(uint appID = Steam.Asset.SteamAppID, ulong contextID = Steam.Asset.SteamCommunityContextID, ulong targetSteamID = 0, string? tradeToken = null, Func<Steam.Asset, bool>? filterFunction = null, ushort itemsPerTrade = Trading.MaxItemsPerTrade) {
+		public async Task<(bool Success, string Message)> SendInventory(uint appID = Asset.SteamAppID, ulong contextID = Asset.SteamCommunityContextID, ulong targetSteamID = 0, string? tradeToken = null, Func<Asset, bool>? filterFunction = null, ushort itemsPerTrade = Trading.MaxItemsPerTrade) {
 			if (appID == 0) {
 				throw new ArgumentOutOfRangeException(nameof(appID));
 			}
@@ -332,7 +339,7 @@ namespace ArchiSteamFarm {
 
 			filterFunction ??= _ => true;
 
-			HashSet<Steam.Asset> inventory;
+			HashSet<Asset> inventory;
 
 			lock (TradingSemaphore) {
 				if (TradingScheduled) {

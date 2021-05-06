@@ -29,14 +29,13 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using AngleSharp;
-using AngleSharp.Dom;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using ArchiSteamFarm.RuntimeCompatibility;
 
-namespace ArchiSteamFarm {
+namespace ArchiSteamFarm.Web {
 	public sealed class WebBrowser : IDisposable {
 		[PublicAPI]
 		public const byte MaxTries = 5; // Defines maximum number of recommended tries for a single request
@@ -76,7 +75,7 @@ namespace ArchiSteamFarm {
 				HttpClientHandler.UseProxy = true;
 			}
 
-			if (!RuntimeCompatibility.IsRunningOnMono) {
+			if (!StaticHelpers.IsRunningOnMono) {
 				HttpClientHandler.MaxConnectionsPerServer = MaxConnections;
 			}
 
@@ -707,7 +706,7 @@ namespace ArchiSteamFarm {
 			ServicePointManager.Expect100Continue = false;
 
 			// Reuse ports if possible
-			if (!RuntimeCompatibility.IsRunningOnMono) {
+			if (!StaticHelpers.IsRunningOnMono) {
 				ServicePointManager.ReusePort = true;
 			}
 		}
@@ -893,140 +892,6 @@ namespace ArchiSteamFarm {
 				}
 
 				return null;
-			}
-		}
-
-		public class BasicResponse {
-			[PublicAPI]
-			public HttpStatusCode StatusCode { get; }
-
-			internal readonly Uri FinalUri;
-
-			internal BasicResponse(HttpResponseMessage httpResponseMessage) {
-				if (httpResponseMessage == null) {
-					throw new ArgumentNullException(nameof(httpResponseMessage));
-				}
-
-				FinalUri = httpResponseMessage.Headers.Location ?? httpResponseMessage.RequestMessage?.RequestUri ?? throw new InvalidOperationException();
-				StatusCode = httpResponseMessage.StatusCode;
-			}
-
-			internal BasicResponse(BasicResponse basicResponse) {
-				if (basicResponse == null) {
-					throw new ArgumentNullException(nameof(basicResponse));
-				}
-
-				FinalUri = basicResponse.FinalUri;
-				StatusCode = basicResponse.StatusCode;
-			}
-		}
-
-		public sealed class BinaryResponse : BasicResponse {
-			[PublicAPI]
-			public byte[] Content { get; }
-
-			public BinaryResponse(BasicResponse basicResponse, byte[] content) : base(basicResponse) {
-				if (basicResponse == null) {
-					throw new ArgumentNullException(nameof(basicResponse));
-				}
-
-				Content = content ?? throw new ArgumentNullException(nameof(content));
-			}
-		}
-
-		public sealed class HtmlDocumentResponse : BasicResponse, IDisposable {
-			[PublicAPI]
-			public IDocument Content { get; }
-
-			private HtmlDocumentResponse(BasicResponse basicResponse, IDocument content) : base(basicResponse) {
-				if (basicResponse == null) {
-					throw new ArgumentNullException(nameof(basicResponse));
-				}
-
-				Content = content ?? throw new ArgumentNullException(nameof(content));
-			}
-
-			public void Dispose() => Content.Dispose();
-
-			[PublicAPI]
-			public static async Task<HtmlDocumentResponse?> Create(StreamResponse streamResponse) {
-				if (streamResponse == null) {
-					throw new ArgumentNullException(nameof(streamResponse));
-				}
-
-				IBrowsingContext context = BrowsingContext.New();
-
-				try {
-					IDocument document = await context.OpenAsync(req => req.Content(streamResponse.Content, true)).ConfigureAwait(false);
-
-					return new HtmlDocumentResponse(streamResponse, document);
-				} catch (Exception e) {
-					ASF.ArchiLogger.LogGenericWarningException(e);
-
-					return null;
-				}
-			}
-		}
-
-		public sealed class ObjectResponse<T> : BasicResponse {
-			[PublicAPI]
-			public T Content { get; }
-
-			public ObjectResponse(BasicResponse basicResponse, T content) : base(basicResponse) {
-				if (basicResponse == null) {
-					throw new ArgumentNullException(nameof(basicResponse));
-				}
-
-				Content = content ?? throw new ArgumentNullException(nameof(content));
-			}
-		}
-
-		public sealed class StreamResponse : BasicResponse, IAsyncDisposable {
-			[PublicAPI]
-			public Stream Content { get; }
-
-			[PublicAPI]
-			public long Length { get; }
-
-			private readonly HttpResponseMessage ResponseMessage;
-
-			internal StreamResponse(HttpResponseMessage httpResponseMessage, Stream content) : base(httpResponseMessage) {
-				ResponseMessage = httpResponseMessage ?? throw new ArgumentNullException(nameof(httpResponseMessage));
-				Content = content ?? throw new ArgumentNullException(nameof(content));
-
-				Length = httpResponseMessage.Content.Headers.ContentLength.GetValueOrDefault();
-			}
-
-			public async ValueTask DisposeAsync() {
-				await Content.DisposeAsync().ConfigureAwait(false);
-
-				ResponseMessage.Dispose();
-			}
-		}
-
-		public sealed class StringResponse : BasicResponse {
-			[PublicAPI]
-			public string Content { get; }
-
-			internal StringResponse(HttpResponseMessage httpResponseMessage, string content) : base(httpResponseMessage) {
-				if (httpResponseMessage == null) {
-					throw new ArgumentNullException(nameof(httpResponseMessage));
-				}
-
-				Content = content ?? throw new ArgumentNullException(nameof(content));
-			}
-		}
-
-		public sealed class XmlDocumentResponse : BasicResponse {
-			[PublicAPI]
-			public XmlDocument Content { get; }
-
-			public XmlDocumentResponse(BasicResponse basicResponse, XmlDocument content) : base(basicResponse) {
-				if (basicResponse == null) {
-					throw new ArgumentNullException(nameof(basicResponse));
-				}
-
-				Content = content ?? throw new ArgumentNullException(nameof(content));
 			}
 		}
 

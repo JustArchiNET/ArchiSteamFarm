@@ -30,6 +30,10 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
 
+#if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
+#endif
+
 namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 	// In order for your plugin to work, it must export generic ASF's IPlugin interface
 	[Export(typeof(IPlugin))]
@@ -59,12 +63,11 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 				return;
 			}
 
-			// ReSharper disable once UseDeconstruction - deconstruction is not available in .NET Framework
-			foreach (KeyValuePair<string, JToken> configProperty in additionalConfigProperties) {
+			foreach ((string configProperty, JToken configValue) in additionalConfigProperties) {
 				// It's a good idea to prefix your custom properties with the name of your plugin, so there will be no possible conflict of ASF or other plugins using the same name, neither now or in the future
-				switch (configProperty.Key) {
-					case nameof(ExamplePlugin) + "TestProperty" when configProperty.Value.Type == JTokenType.Boolean:
-						bool exampleBooleanValue = configProperty.Value.Value<bool>();
+				switch (configProperty) {
+					case nameof(ExamplePlugin) + "TestProperty" when configValue.Type == JTokenType.Boolean:
+						bool exampleBooleanValue = configValue.Value<bool>();
 						ASF.ArchiLogger.LogGenericInfo(nameof(ExamplePlugin) + "TestProperty boolean property has been found with a value of: " + exampleBooleanValue);
 
 						break;
@@ -164,7 +167,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 		// It allows you not only to analyze such trades, but generate a response whether ASF should accept it (true), or proceed like usual (false)
 		// Thanks to that, you can implement custom rules for all trades that aren't handled by ASF, for example cross-set trading on your own custom rules
 		// You'd implement your own logic here, as an example we'll allow all trades to be accepted if the bot's name starts from "TrashBot"
-		public Task<bool> OnBotTradeOffer(Bot bot, Steam.TradeOffer tradeOffer) => Task.FromResult(bot.BotName.StartsWith("TrashBot", StringComparison.OrdinalIgnoreCase));
+		public Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer) => Task.FromResult(bot.BotName.StartsWith("TrashBot", StringComparison.OrdinalIgnoreCase));
 
 		// This is the earliest method that will be called, right after loading the plugin, long before any bot initialization takes place
 		// It's a good place to initialize all potential (non-bot-specific) structures that you will need across lifetime of your plugin, such as global timers, concurrent dictionaries and alike

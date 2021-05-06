@@ -106,7 +106,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				}
 			}
 
-			TypeResponse.TypeProperties properties = new(baseType, customAttributes.Count > 0 ? customAttributes : null, underlyingType);
+			TypeProperties properties = new(baseType, customAttributes.Count > 0 ? customAttributes : null, underlyingType);
 
 			TypeResponse response = new(body, properties);
 

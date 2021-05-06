@@ -29,6 +29,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
+using ArchiSteamFarm.Web;
 using Markdig;
 using Markdig.Renderers;
 using Markdig.Syntax;
@@ -68,7 +69,7 @@ namespace ArchiSteamFarm {
 
 			string url = SharedInfo.ProjectURL + "/wiki/" + page + "/_history";
 
-			using WebBrowser.HtmlDocumentResponse? response = await ASF.WebBrowser.UrlGetToHtmlDocument(url, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
+			using HtmlDocumentResponse? response = await ASF.WebBrowser.UrlGetToHtmlDocument(url, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
 
 			if (response == null) {
 				return null;
@@ -141,7 +142,7 @@ namespace ArchiSteamFarm {
 
 			string url = SharedInfo.ProjectURL + "/wiki/" + page + (!string.IsNullOrEmpty(revision) ? "/" + revision : "");
 
-			using WebBrowser.HtmlDocumentResponse? response = await ASF.WebBrowser.UrlGetToHtmlDocument(url).ConfigureAwait(false);
+			using HtmlDocumentResponse? response = await ASF.WebBrowser.UrlGetToHtmlDocument(url).ConfigureAwait(false);
 
 			if (response == null) {
 				return null;
@@ -178,7 +179,7 @@ namespace ArchiSteamFarm {
 				throw new InvalidOperationException(nameof(ASF.WebBrowser));
 			}
 
-			WebBrowser.ObjectResponse<ReleaseResponse>? response = await ASF.WebBrowser.UrlGetToJsonObject<ReleaseResponse>(releaseURL).ConfigureAwait(false);
+			ObjectResponse<ReleaseResponse>? response = await ASF.WebBrowser.UrlGetToJsonObject<ReleaseResponse>(releaseURL).ConfigureAwait(false);
 
 			return response?.Content;
 		}
@@ -192,7 +193,7 @@ namespace ArchiSteamFarm {
 				throw new InvalidOperationException(nameof(ASF.WebBrowser));
 			}
 
-			WebBrowser.ObjectResponse<ImmutableList<ReleaseResponse>>? response = await ASF.WebBrowser.UrlGetToJsonObject<ImmutableList<ReleaseResponse>>(releaseURL).ConfigureAwait(false);
+			ObjectResponse<ImmutableList<ReleaseResponse>>? response = await ASF.WebBrowser.UrlGetToJsonObject<ImmutableList<ReleaseResponse>>(releaseURL).ConfigureAwait(false);
 
 			return response?.Content;
 		}

@@ -23,13 +23,20 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
 using Newtonsoft.Json;
 using SteamKit2;
+
+#if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
+using File = System.IO.File;
+using Path = System.IO.Path;
+#else
+using System.IO;
+#endif
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 	internal sealed class GlobalCache : SerializableFile {

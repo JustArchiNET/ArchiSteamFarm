@@ -30,6 +30,12 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.Web;
+
+#if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
+using File = System.IO.File;
+#endif
 
 namespace ArchiSteamFarm {
 	internal static class OS {
@@ -172,7 +178,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// All windows variants have valid .NET Core build, and generic-netf is supported only on mono
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || !RuntimeCompatibility.IsRunningOnMono) {
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || !StaticHelpers.IsRunningOnMono) {
 				return false;
 			}
 
