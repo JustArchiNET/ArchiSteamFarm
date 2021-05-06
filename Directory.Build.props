@@ -4,6 +4,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <ApplicationIcon>../resources/ASF.ico</ApplicationIcon>
     <Authors>JustArchi</Authors>
     <Company>JustArchiNET</Company>
@@ -13,6 +14,7 @@
     <ErrorReport>none</ErrorReport>
     <LangVersion>latest</LangVersion>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <NeutralLanguage>en</NeutralLanguage>
     <NoWarn>1591</NoWarn>
     <Nullable>enable</Nullable>
     <PackageIcon>../resources/ASF.ico</PackageIcon>
