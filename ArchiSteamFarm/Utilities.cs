@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -250,14 +249,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[PublicAPI]
-		public static string ToHumanReadable(this TimeSpan timeSpan) {
-			try {
-				return timeSpan.Humanize(3, maxUnit: TimeUnit.Year, minUnit: TimeUnit.Second);
-			} catch (TypeInitializationException e) when (e.InnerException is CultureNotFoundException) {
-				// TODO: Workaround for https://github.com/Humanizr/Humanizer/issues/1059
-				return timeSpan.ToString();
-			}
-		}
+		public static string ToHumanReadable(this TimeSpan timeSpan) => timeSpan.Humanize(3, maxUnit: TimeUnit.Year, minUnit: TimeUnit.Second);
 
 		[PublicAPI]
 		public static Task<T> ToLongRunningTask<T>(this AsyncJob<T> job) where T : CallbackMsg {
