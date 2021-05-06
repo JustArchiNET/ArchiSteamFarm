@@ -108,7 +108,6 @@ dotnet_analyzer_diagnostic.severity = warning
 dotnet_code_quality_unused_parameters = all:warning
 
 # TODO - one at a time
-dotnet_diagnostic.ca1027.severity = silent
 dotnet_diagnostic.ca1028.severity = silent
 dotnet_diagnostic.ca1031.severity = silent
 dotnet_diagnostic.ca1034.severity = silent

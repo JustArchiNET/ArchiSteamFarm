@@ -895,16 +895,17 @@ namespace ArchiSteamFarm {
 			[PublicAPI]
 			public enum EUserNotification : byte {
 				Unknown,
-				Trading = 1,
-				GameTurns = 2,
-				ModeratorMessages = 3,
-				Comments = 4,
-				Items = 5,
-				Invites = 6,
-				Gifts = 8,
-				Chat = 9,
-				HelpRequestReplies = 10,
-				AccountAlerts = 11
+				Trading,
+				GameTurns,
+				ModeratorMessages,
+				Comments,
+				Items,
+				Invites,
+				Unknown7, // Unknown type of notification, never seen in the wild
+				Gifts,
+				Chat,
+				HelpRequestReplies,
+				AccountAlerts
 			}
 		}
 
