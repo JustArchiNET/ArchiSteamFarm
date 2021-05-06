@@ -205,7 +205,7 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty]
 		public string? SteamLogin {
-			internal get => BackingSteamLogin;
+			get => BackingSteamLogin;
 
 			set {
 				IsSteamLoginSet = true;
@@ -218,7 +218,7 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty]
 		public string? SteamParentalCode {
-			internal get => BackingSteamParentalCode;
+			get => BackingSteamParentalCode;
 
 			set {
 				IsSteamParentalCodeSet = true;
@@ -228,7 +228,7 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty]
 		public string? SteamPassword {
-			internal get => BackingSteamPassword;
+			get => BackingSteamPassword;
 
 			set {
 				IsSteamPasswordSet = true;

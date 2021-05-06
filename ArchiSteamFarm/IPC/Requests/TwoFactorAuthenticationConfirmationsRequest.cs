@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Linq;
 using ArchiSteamFarm.Localization;
 using Newtonsoft.Json;
 
@@ -53,6 +54,7 @@ namespace ArchiSteamFarm.IPC.Requests {
 		/// </summary>
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(AcceptedCreatorIDs), Required = Required.DisallowNull)]
 		public ImmutableHashSet<string> SAcceptedCreatorIDs {
+			get => AcceptedCreatorIDs.Select(creatorID => creatorID.ToString(CultureInfo.InvariantCulture)).ToImmutableHashSet();
 			set {
 				if (value == null) {
 					throw new ArgumentNullException(nameof(value));
