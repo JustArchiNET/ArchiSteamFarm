@@ -19,11 +19,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using HashCode = ArchiSteamFarm.RuntimeCompatibility.HashCode;
+#endif
 using System;
 using System.ComponentModel;
 using Newtonsoft.Json;
 using SteamKit2;
-using HashCode = ArchiSteamFarm.RuntimeCompatibility.HashCode;
 
 namespace ArchiSteamFarm.SteamKit2 {
 	internal sealed class ServerRecordEndPoint : IEquatable<ServerRecordEndPoint> {

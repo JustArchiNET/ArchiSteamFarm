@@ -19,15 +19,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
+#endif
 using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
-
-#if NETFRAMEWORK
-using ArchiSteamFarm.RuntimeCompatibility;
-#endif
 
 namespace ArchiSteamFarm.Web {
 	public sealed class StreamResponse : BasicResponse, IAsyncDisposable {

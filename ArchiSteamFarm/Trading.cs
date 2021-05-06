@@ -19,6 +19,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
+#endif
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -32,10 +35,6 @@ using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Plugins;
 using JetBrains.Annotations;
 using SteamKit2;
-
-#if NETFRAMEWORK
-using ArchiSteamFarm.RuntimeCompatibility;
-#endif
 
 namespace ArchiSteamFarm {
 	public sealed class Trading : IDisposable {

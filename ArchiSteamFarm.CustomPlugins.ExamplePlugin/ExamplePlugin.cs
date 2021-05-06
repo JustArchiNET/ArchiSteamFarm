@@ -19,6 +19,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
+#endif
 using System;
 using System.Collections.Generic;
 using System.Composition;
@@ -29,10 +32,6 @@ using ArchiSteamFarm.Plugins;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
-
-#if NETFRAMEWORK
-using ArchiSteamFarm.RuntimeCompatibility;
-#endif
 
 namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 	// In order for your plugin to work, it must export generic ASF's IPlugin interface

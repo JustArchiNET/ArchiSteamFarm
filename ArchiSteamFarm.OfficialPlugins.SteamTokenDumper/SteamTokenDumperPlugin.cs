@@ -19,6 +19,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
+#endif
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -35,10 +38,6 @@ using ArchiSteamFarm.Web;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
-
-#if NETFRAMEWORK
-using ArchiSteamFarm.RuntimeCompatibility;
-#endif
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 	[Export(typeof(IPlugin))]

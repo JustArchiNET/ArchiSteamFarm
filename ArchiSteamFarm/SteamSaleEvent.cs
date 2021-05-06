@@ -19,6 +19,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
+#endif
 using System;
 using System.Collections.Immutable;
 using System.Globalization;
@@ -26,10 +29,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
 using ArchiSteamFarm.Localization;
-
-#if NETFRAMEWORK
-using ArchiSteamFarm.RuntimeCompatibility;
-#endif
 
 namespace ArchiSteamFarm {
 	internal sealed class SteamSaleEvent : IAsyncDisposable {

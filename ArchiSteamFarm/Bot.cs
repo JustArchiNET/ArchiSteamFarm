@@ -19,6 +19,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
+using File = System.IO.File;
+using Path = System.IO.Path;
+#endif
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -46,13 +51,6 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SteamKit2;
 using SteamKit2.Internal;
-
-#if NETFRAMEWORK
-using ArchiSteamFarm.RuntimeCompatibility;
-
-using File = System.IO.File;
-using Path = System.IO.Path;
-#endif
 
 namespace ArchiSteamFarm {
 	public sealed class Bot : IAsyncDisposable {

@@ -21,7 +21,6 @@
 
 #if NETFRAMEWORK
 using ArchiSteamFarm.RuntimeCompatibility;
-
 using File = System.IO.File;
 #else
 using System.IO;

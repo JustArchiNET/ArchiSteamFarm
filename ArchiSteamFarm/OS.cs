@@ -19,6 +19,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
+using File = System.IO.File;
+#endif
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -31,11 +35,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Web;
-
-#if NETFRAMEWORK
-using ArchiSteamFarm.RuntimeCompatibility;
-using File = System.IO.File;
-#endif
 
 namespace ArchiSteamFarm {
 	internal static class OS {
@@ -170,6 +169,7 @@ namespace ArchiSteamFarm {
 
 		internal static bool VerifyEnvironment() {
 #if NETFRAMEWORK
+
 			// This is .NET Framework build, we support that one only on mono for platforms not supported by .NET Core
 
 			// We're not going to analyze source builds, as we don't know what changes the author has made, assume they have a point
@@ -193,7 +193,6 @@ namespace ArchiSteamFarm {
 				_ => false
 			};
 #else
-
 			// This is .NET Core build, we support all scenarios
 			return true;
 #endif

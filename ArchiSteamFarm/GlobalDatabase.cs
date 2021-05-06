@@ -19,6 +19,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
+using File = System.IO.File;
+#else
+using System.IO;
+#endif
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -32,13 +38,6 @@ using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.SteamKit2;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
-
-#if NETFRAMEWORK
-using ArchiSteamFarm.RuntimeCompatibility;
-using File = System.IO.File;
-#else
-using System.IO;
-#endif
 
 namespace ArchiSteamFarm {
 	public sealed class GlobalDatabase : SerializableFile {

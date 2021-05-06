@@ -19,11 +19,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using JetBrains.Annotations;
-
 #if NETFRAMEWORK
 using System;
 #endif
+using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.RuntimeCompatibility {
 	[PublicAPI]

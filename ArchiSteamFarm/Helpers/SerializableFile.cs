@@ -20,9 +20,9 @@
 // limitations under the License.
 
 using System;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using ArchiSteamFarm.RuntimeCompatibility;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Helpers {
@@ -79,12 +79,12 @@ namespace ArchiSteamFarm.Helpers {
 				string newFilePath = FilePath + ".new";
 
 				// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
-				await RuntimeCompatibility.File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
-				if (File.Exists(FilePath)) {
-					File.Replace(newFilePath, FilePath!, null);
+				if (System.IO.File.Exists(FilePath)) {
+					System.IO.File.Replace(newFilePath, FilePath!, null);
 				} else {
-					File.Move(newFilePath, FilePath!);
+					System.IO.File.Move(newFilePath, FilePath!);
 				}
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);

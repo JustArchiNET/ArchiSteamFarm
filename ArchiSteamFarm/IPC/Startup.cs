@@ -19,6 +19,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
+using Newtonsoft.Json.Converters;
+using File = System.IO.File;
+using Path = System.IO.Path;
+#else
+using System.IO;
+#endif
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -38,15 +46,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-
-#if NETFRAMEWORK
-using ArchiSteamFarm.RuntimeCompatibility;
-using Newtonsoft.Json.Converters;
-using File = System.IO.File;
-using Path = System.IO.Path;
-#else
-using System.IO;
-#endif
 
 namespace ArchiSteamFarm.IPC {
 	internal sealed class Startup {
@@ -266,6 +265,7 @@ namespace ArchiSteamFarm.IPC {
 			mvc.SetCompatibilityVersion(CompatibilityVersion.Latest);
 
 #if NETFRAMEWORK
+
 			// Add standard formatters
 			mvc.AddFormatterMappings();
 
@@ -274,6 +274,7 @@ namespace ArchiSteamFarm.IPC {
 #endif
 
 #if NETFRAMEWORK
+
 			// Add JSON formatters that will be used as default ones if no specific formatters are asked for
 			mvc.AddJsonFormatters();
 
@@ -290,6 +291,7 @@ namespace ArchiSteamFarm.IPC {
 					}
 
 #if NETFRAMEWORK
+
 					// .NET Framework serializes Version as object by default, serialize it as string just like .NET Core
 					options.SerializerSettings.Converters.Add(new VersionConverter());
 #endif

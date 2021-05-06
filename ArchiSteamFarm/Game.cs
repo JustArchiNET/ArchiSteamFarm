@@ -19,9 +19,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using HashCode = ArchiSteamFarm.RuntimeCompatibility.HashCode;
+#endif
 using System;
 using Newtonsoft.Json;
-using HashCode = ArchiSteamFarm.RuntimeCompatibility.HashCode;
 
 namespace ArchiSteamFarm {
 	public sealed class Game : IEquatable<Game> {
