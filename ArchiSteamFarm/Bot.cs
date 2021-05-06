@@ -1925,17 +1925,11 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(badgePage));
 			}
 
-			List<IElement> linkElements = badgePage.SelectNodes("//a[@class='badge_craft_button']");
-
-			// We need to also select all badges that we have max level, as those will not display with a craft button
+			// We select badges that are ready to craft, as well as those that are already crafted to a maximum level, as those will not display with a craft button
 			// Level 5 is maximum level for card badges according to https://steamcommunity.com/tradingcards/faq
-			linkElements.AddRange(badgePage.SelectNodes("//div[@class='badges_sheet']/div[contains(@class, 'badge_row') and .//div[@class='badge_info_description']/div[contains(text(), 'Level 5')]]/a[@class='badge_row_overlay']"));
+			IEnumerable<IElement> linkElements = badgePage.SelectNodes("//a[@class='badge_craft_button'] | //div[@class='badges_sheet']/div[contains(@class, 'badge_row') and .//div[@class='badge_info_description']/div[contains(text(), 'Level 5')]]/a[@class='badge_row_overlay']");
 
-			if (linkElements.Count == 0) {
-				return new HashSet<uint>(0);
-			}
-
-			HashSet<uint> result = new(linkElements.Count);
+			HashSet<uint> result = new();
 
 			foreach (string? badgeUri in linkElements.Select(htmlNode => htmlNode.GetAttribute("href"))) {
 				if (string.IsNullOrEmpty(badgeUri)) {

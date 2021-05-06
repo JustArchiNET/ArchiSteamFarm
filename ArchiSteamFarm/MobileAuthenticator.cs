@@ -117,13 +117,9 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			IEnumerable<IElement> confirmationNodes = htmlDocument.SelectNodes("//div[@class='mobileconf_list_entry']");
+
 			HashSet<Confirmation> result = new();
-
-			List<IElement> confirmationNodes = htmlDocument.SelectNodes("//div[@class='mobileconf_list_entry']");
-
-			if (confirmationNodes.Count == 0) {
-				return result;
-			}
 
 			foreach (IElement confirmationNode in confirmationNodes) {
 				string? idText = confirmationNode.GetAttribute("data-confid");

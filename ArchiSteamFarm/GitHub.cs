@@ -81,9 +81,9 @@ namespace ArchiSteamFarm {
 				};
 			}
 
-			List<IElement> revisionNodes = response.Content.SelectNodes("//li[contains(@class, 'wiki-history-revision')]");
+			IEnumerable<IElement> revisionNodes = response.Content.SelectNodes("//li[contains(@class, 'wiki-history-revision')]");
 
-			Dictionary<string, DateTime> result = new(revisionNodes.Count);
+			Dictionary<string, DateTime> result = new();
 
 			foreach (IElement revisionNode in revisionNodes) {
 				IElement? versionNode = revisionNode.SelectSingleElementNode(".//input/@value");

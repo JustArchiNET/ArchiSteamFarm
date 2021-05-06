@@ -391,12 +391,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(parsedAppIDs));
 			}
 
-			List<IElement> htmlNodes = htmlDocument.SelectNodes("//div[@class='badge_row_inner']");
-
-			if (htmlNodes.Count == 0) {
-				// No eligible badges whatsoever
-				return;
-			}
+			IEnumerable<IElement> htmlNodes = htmlDocument.SelectNodes("//div[@class='badge_row_inner']");
 
 			HashSet<Task>? backgroundTasks = null;
 

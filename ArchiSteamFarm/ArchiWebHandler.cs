@@ -1725,15 +1725,16 @@ namespace ArchiSteamFarm {
 				return 0;
 			}
 
-			List<IElement> htmlNodes = htmlDocument.SelectNodes("//div[@class='badge_card_set_cards']/div[starts-with(@class, 'badge_card_set_card')]");
+			IEnumerable<IElement> htmlNodes = htmlDocument.SelectNodes("//div[@class='badge_card_set_cards']/div[starts-with(@class, 'badge_card_set_card')]");
 
-			if (htmlNodes.Count == 0) {
-				Bot.ArchiLogger.LogNullError(nameof(htmlNodes));
+			result = (byte) htmlNodes.Count();
+
+			if (result == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(result));
 
 				return 0;
 			}
 
-			result = (byte) htmlNodes.Count;
 			CachedCardCountsForGame.TryAdd(appID, result);
 
 			return result;
@@ -1782,13 +1783,9 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			List<IElement> htmlNodes = response.Content.SelectNodes("//div[@class='pending_gift']/div[starts-with(@id, 'pending_gift_')][count(div[@class='pending_giftcard_leftcol']) > 0]/@id");
+			IEnumerable<IElement> htmlNodes = response.Content.SelectNodes("//div[@class='pending_gift']/div[starts-with(@id, 'pending_gift_')][count(div[@class='pending_giftcard_leftcol']) > 0]/@id");
 
-			if (htmlNodes.Count == 0) {
-				return new HashSet<ulong>(0);
-			}
-
-			HashSet<ulong> results = new(htmlNodes.Count);
+			HashSet<ulong> results = new();
 
 			foreach (string? giftCardIDText in htmlNodes.Select(node => node.GetAttribute("id"))) {
 				if (string.IsNullOrEmpty(giftCardIDText)) {
@@ -1832,14 +1829,9 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			List<IElement> htmlNodes = response.Content.SelectNodes("(//table[@class='accountTable'])[2]//a/@data-miniprofile");
+			IEnumerable<IElement> htmlNodes = response.Content.SelectNodes("(//table[@class='accountTable'])[2]//a/@data-miniprofile");
 
-			if (htmlNodes.Count == 0) {
-				// OK, no authorized steamIDs
-				return new HashSet<ulong>(0);
-			}
-
-			HashSet<ulong> result = new(htmlNodes.Count);
+			HashSet<ulong> result = new();
 
 			foreach (string? miniProfile in htmlNodes.Select(htmlNode => htmlNode.GetAttribute("data-miniprofile"))) {
 				if (string.IsNullOrEmpty(miniProfile)) {
