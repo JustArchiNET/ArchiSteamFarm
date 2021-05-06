@@ -19,6 +19,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
+using File = System.IO.File;
+using Path = System.IO.Path;
+#else
+using Microsoft.Extensions.Hosting;
+#endif
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -31,14 +38,6 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NLog.Web;
-
-#if NETFRAMEWORK
-using ArchiSteamFarm.RuntimeCompatibility;
-using File = System.IO.File;
-using Path = System.IO.Path;
-#else
-using Microsoft.Extensions.Hosting;
-#endif
 
 namespace ArchiSteamFarm.IPC {
 	internal static class ArchiKestrel {

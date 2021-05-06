@@ -193,6 +193,7 @@ namespace ArchiSteamFarm {
 				_ => false
 			};
 #else
+
 			// This is .NET Core build, we support all scenarios
 			return true;
 #endif

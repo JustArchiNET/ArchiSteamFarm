@@ -19,6 +19,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
+
+using File = System.IO.File;
+#else
+using System.IO;
+#endif
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -33,14 +40,6 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
-
-#if NETFRAMEWORK
-using ArchiSteamFarm.RuntimeCompatibility;
-
-using File = System.IO.File;
-#else
-using System.IO;
-#endif
 
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]

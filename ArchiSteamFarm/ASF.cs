@@ -43,8 +43,6 @@ using ArchiSteamFarm.Web;
 using JetBrains.Annotations;
 using SteamKit2;
 using SteamKit2.Discovery;
-using File = ArchiSteamFarm.RuntimeCompatibility.File;
-using Path = ArchiSteamFarm.RuntimeCompatibility.Path;
 
 namespace ArchiSteamFarm {
 	public static class ASF {
@@ -94,8 +92,8 @@ namespace ArchiSteamFarm {
 			}
 
 			return fileType switch {
-				EFileType.Config => System.IO.Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName),
-				EFileType.Database => System.IO.Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalDatabaseFileName),
+				EFileType.Config => Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName),
+				EFileType.Database => Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalDatabaseFileName),
 				_ => throw new ArgumentOutOfRangeException(nameof(fileType))
 			};
 		}
@@ -236,7 +234,7 @@ namespace ArchiSteamFarm {
 
 			try {
 				// If backup directory from previous update exists, it's a good idea to purge it now
-				string backupDirectory = System.IO.Path.Combine(SharedInfo.HomeDirectory, SharedInfo.UpdateDirectory);
+				string backupDirectory = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.UpdateDirectory);
 
 				if (Directory.Exists(backupDirectory)) {
 					ArchiLogger.LogGenericInfo(Strings.UpdateCleanup);
@@ -364,9 +362,9 @@ namespace ArchiSteamFarm {
 				}
 
 				if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
-					string executable = System.IO.Path.Combine(SharedInfo.HomeDirectory, SharedInfo.AssemblyName);
+					string executable = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.AssemblyName);
 
-					if (System.IO.File.Exists(executable)) {
+					if (File.Exists(executable)) {
 						OS.UnixSetFileAccess(executable, OS.EUnixPermission.Combined755);
 					}
 				}
@@ -508,7 +506,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(fullPath));
 			}
 
-			string extension = System.IO.Path.GetExtension(name);
+			string extension = Path.GetExtension(name);
 
 			switch (extension) {
 				case SharedInfo.JsonConfigExtension:
@@ -564,7 +562,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(fullPath));
 			}
 
-			string extension = System.IO.Path.GetExtension(name);
+			string extension = Path.GetExtension(name);
 
 			switch (extension) {
 				case SharedInfo.IPCConfigExtension:
@@ -587,7 +585,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(fullPath));
 			}
 
-			string extension = System.IO.Path.GetExtension(name);
+			string extension = Path.GetExtension(name);
 
 			switch (extension) {
 				case SharedInfo.JsonConfigExtension:
@@ -615,7 +613,7 @@ namespace ArchiSteamFarm {
 				throw new InvalidOperationException(nameof(Bot.Bots));
 			}
 
-			string botName = System.IO.Path.GetFileNameWithoutExtension(name);
+			string botName = Path.GetFileNameWithoutExtension(name);
 
 			if (string.IsNullOrEmpty(botName) || (botName[0] == '.')) {
 				return;
@@ -660,7 +658,7 @@ namespace ArchiSteamFarm {
 				throw new InvalidOperationException(nameof(Bot.Bots));
 			}
 
-			string botName = System.IO.Path.GetFileNameWithoutExtension(name);
+			string botName = Path.GetFileNameWithoutExtension(name);
 
 			if (string.IsNullOrEmpty(botName) || (botName[0] == '.')) {
 				return;
@@ -706,7 +704,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(fullPath));
 			}
 
-			string extension = System.IO.Path.GetExtension(name);
+			string extension = Path.GetExtension(name);
 
 			switch (extension) {
 				case SharedInfo.IPCConfigExtension:
@@ -729,7 +727,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(fullPath));
 			}
 
-			string extension = System.IO.Path.GetExtension(name);
+			string extension = Path.GetExtension(name);
 
 			switch (extension) {
 				case SharedInfo.JsonConfigExtension:
@@ -753,7 +751,7 @@ namespace ArchiSteamFarm {
 				throw new InvalidOperationException(nameof(Bot.Bots));
 			}
 
-			string botName = System.IO.Path.GetFileNameWithoutExtension(name);
+			string botName = Path.GetFileNameWithoutExtension(name);
 
 			if (string.IsNullOrEmpty(botName)) {
 				return;
@@ -764,7 +762,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (botName.Equals(SharedInfo.ASF, StringComparison.OrdinalIgnoreCase)) {
-				if (System.IO.File.Exists(fullPath)) {
+				if (File.Exists(fullPath)) {
 					return;
 				}
 
@@ -772,7 +770,7 @@ namespace ArchiSteamFarm {
 				// If that's the case, we wait for maximum of 5 seconds before shutting down
 				await Task.Delay(5000).ConfigureAwait(false);
 
-				if (System.IO.File.Exists(fullPath)) {
+				if (File.Exists(fullPath)) {
 					return;
 				}
 
@@ -857,7 +855,7 @@ namespace ArchiSteamFarm {
 			HashSet<string> botNames;
 
 			try {
-				botNames = Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*" + SharedInfo.JsonConfigExtension).Select(System.IO.Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).ToHashSet(Bot.BotsComparer)!;
+				botNames = Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*" + SharedInfo.JsonConfigExtension).Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).ToHashSet(Bot.BotsComparer)!;
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 
@@ -926,10 +924,10 @@ namespace ArchiSteamFarm {
 			}
 
 			// Firstly we'll move all our existing files to a backup directory
-			string backupDirectory = System.IO.Path.Combine(targetDirectory, SharedInfo.UpdateDirectory);
+			string backupDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectory);
 
 			foreach (string file in Directory.EnumerateFiles(targetDirectory, "*", SearchOption.AllDirectories)) {
-				string fileName = System.IO.Path.GetFileName(file);
+				string fileName = Path.GetFileName(file);
 
 				if (string.IsNullOrEmpty(fileName)) {
 					ArchiLogger.LogNullError(nameof(fileName));
@@ -937,7 +935,7 @@ namespace ArchiSteamFarm {
 					return false;
 				}
 
-				string relativeFilePath = Path.GetRelativePath(targetDirectory, file);
+				string relativeFilePath = RuntimeCompatibility.Path.GetRelativePath(targetDirectory, file);
 
 				if (string.IsNullOrEmpty(relativeFilePath)) {
 					ArchiLogger.LogNullError(nameof(relativeFilePath));
@@ -945,7 +943,7 @@ namespace ArchiSteamFarm {
 					return false;
 				}
 
-				string? relativeDirectoryName = System.IO.Path.GetDirectoryName(relativeFilePath);
+				string? relativeDirectoryName = Path.GetDirectoryName(relativeFilePath);
 
 				switch (relativeDirectoryName) {
 					case null:
@@ -978,11 +976,11 @@ namespace ArchiSteamFarm {
 						break;
 				}
 
-				string targetBackupDirectory = relativeDirectoryName.Length > 0 ? System.IO.Path.Combine(backupDirectory, relativeDirectoryName) : backupDirectory;
+				string targetBackupDirectory = relativeDirectoryName.Length > 0 ? Path.Combine(backupDirectory, relativeDirectoryName) : backupDirectory;
 				Directory.CreateDirectory(targetBackupDirectory);
 
-				string targetBackupFile = System.IO.Path.Combine(targetBackupDirectory, fileName);
-				File.Move(file, targetBackupFile, true);
+				string targetBackupFile = Path.Combine(targetBackupDirectory, fileName);
+				RuntimeCompatibility.File.Move(file, targetBackupFile, true);
 			}
 
 			// We can now get rid of directories that are empty
@@ -994,17 +992,17 @@ namespace ArchiSteamFarm {
 
 			// Now enumerate over files in the zip archive, skip directory entries that we're not interested in (we can create them ourselves if needed)
 			foreach (ZipArchiveEntry zipFile in archive.Entries.Where(zipFile => !string.IsNullOrEmpty(zipFile.Name))) {
-				string file = System.IO.Path.Combine(targetDirectory, zipFile.FullName);
+				string file = Path.Combine(targetDirectory, zipFile.FullName);
 
-				if (System.IO.File.Exists(file)) {
+				if (File.Exists(file)) {
 					// This is possible only with files that we decided to leave in place during our backup function
 					string targetBackupFile = file + ".bak";
-					File.Move(file, targetBackupFile, true);
+					RuntimeCompatibility.File.Move(file, targetBackupFile, true);
 				}
 
 				// Check if this file requires its own folder
 				if (zipFile.Name != zipFile.FullName) {
-					string? directory = System.IO.Path.GetDirectoryName(file);
+					string? directory = Path.GetDirectoryName(file);
 
 					if (string.IsNullOrEmpty(directory)) {
 						ArchiLogger.LogNullError(nameof(directory));

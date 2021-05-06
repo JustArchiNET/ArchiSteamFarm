@@ -31,10 +31,9 @@ using ArchiSteamFarm.Callbacks;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Plugins;
+using ArchiSteamFarm.RuntimeCompatibility;
 using JetBrains.Annotations;
 using SteamKit2;
-
-using ArchiSteamFarm.RuntimeCompatibility;
 
 namespace ArchiSteamFarm {
 	public sealed class Commands {

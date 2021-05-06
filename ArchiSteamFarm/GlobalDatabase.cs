@@ -32,10 +32,12 @@ using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.SteamKit2;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
-using File = ArchiSteamFarm.RuntimeCompatibility.File;
 
 #if NETFRAMEWORK
 using ArchiSteamFarm.RuntimeCompatibility;
+using File = System.IO.File;
+#else
+using System.IO;
 #endif
 
 namespace ArchiSteamFarm {
@@ -122,7 +124,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(filePath));
 			}
 
-			if (!System.IO.File.Exists(filePath)) {
+			if (!File.Exists(filePath)) {
 				GlobalDatabase result = new(filePath);
 
 				Utilities.InBackground(result.Save);
@@ -133,7 +135,7 @@ namespace ArchiSteamFarm {
 			GlobalDatabase? globalDatabase;
 
 			try {
-				string json = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+				string json = await RuntimeCompatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(json)) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));

@@ -25,6 +25,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.RuntimeCompatibility;
 using JetBrains.Annotations;
 using NLog;
 using SteamKit2;
@@ -173,7 +174,7 @@ namespace ArchiSteamFarm.NLog {
 			string message = string.Format(CultureInfo.CurrentCulture, DateTime.Now + " " + Strings.ErrorEarlyFatalExceptionInfo, SharedInfo.Version) + Environment.NewLine;
 
 			try {
-				await RuntimeCompatibility.File.WriteAllTextAsync(SharedInfo.LogFile, message).ConfigureAwait(false);
+				await File.WriteAllTextAsync(SharedInfo.LogFile, message).ConfigureAwait(false);
 			} catch {
 				// Ignored, we can't do anything about this
 			}
@@ -188,7 +189,7 @@ namespace ArchiSteamFarm.NLog {
 				message = string.Format(CultureInfo.CurrentCulture, Strings.ErrorEarlyFatalExceptionPrint, previousMethodName, exception.Message, exception.StackTrace) + Environment.NewLine;
 
 				try {
-					await RuntimeCompatibility.File.AppendAllTextAsync(SharedInfo.LogFile, message).ConfigureAwait(false);
+					await File.AppendAllTextAsync(SharedInfo.LogFile, message).ConfigureAwait(false);
 				} catch {
 					// Ignored, we can't do anything about this
 				}

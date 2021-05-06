@@ -31,9 +31,9 @@ using System.Threading.Tasks;
 using System.Xml;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
+using ArchiSteamFarm.RuntimeCompatibility;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
-using ArchiSteamFarm.RuntimeCompatibility;
 
 namespace ArchiSteamFarm.Web {
 	public sealed class WebBrowser : IDisposable {
