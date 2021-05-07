@@ -347,7 +347,7 @@ namespace ArchiSteamFarm {
 					ArchiLogger.LogGenericWarningException(e);
 				}
 
-				MemoryStream memoryStream = new(response.Content);
+				MemoryStream memoryStream = new(response.Content as byte[] ?? response.Content.ToArray());
 
 				try {
 #if NETFRAMEWORK

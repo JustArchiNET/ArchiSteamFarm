@@ -20,19 +20,22 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Web {
 	public sealed class BinaryResponse : BasicResponse {
 		[PublicAPI]
-		public byte[] Content { get; }
+		public IReadOnlyCollection<byte> Content => Bytes;
 
-		public BinaryResponse(BasicResponse basicResponse, byte[] content) : base(basicResponse) {
+		private readonly byte[] Bytes;
+
+		public BinaryResponse(BasicResponse basicResponse, byte[] bytes) : base(basicResponse) {
 			if (basicResponse == null) {
 				throw new ArgumentNullException(nameof(basicResponse));
 			}
 
-			Content = content ?? throw new ArgumentNullException(nameof(content));
+			Bytes = bytes ?? throw new ArgumentNullException(nameof(bytes));
 		}
 	}
 }
