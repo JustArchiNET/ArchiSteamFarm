@@ -12,6 +12,7 @@ OUT="out"
 OUT_ASF="${OUT}/result"
 OUT_STD="${OUT}/${STEAM_TOKEN_DUMPER_NAME}"
 
+ANALYSIS=1
 ASF_UI=1
 CLEAN=0
 PULL=1
@@ -19,7 +20,7 @@ SHARED_COMPILATION=1
 TEST=1
 
 PRINT_USAGE() {
-	echo "Usage: $0 [--clean] [--no-asf-ui] [--no-pull] [--no-shared-compilation] [--no-test] [debug/release]"
+	echo "Usage: $0 [--clean] [--no-analysis] [--no-asf-ui] [--no-pull] [--no-shared-compilation] [--no-test] [debug/release]"
 }
 
 cd "$(dirname "$(readlink -f "$0")")"
@@ -28,6 +29,8 @@ for ARG in "$@"; do
 	case "$ARG" in
 		debug|Debug) CONFIGURATION="Debug" ;;
 		release|Release) CONFIGURATION="Release" ;;
+		--analysis) ANALYSIS=1 ;;
+		--no-analysis) ANALYSIS=0 ;;
 		--asf-ui) ASF_UI=1 ;;
 		--no-asf-ui) ASF_UI=0 ;;
 		--clean) CLEAN=1 ;;
@@ -100,6 +103,10 @@ if [ "$ASF_UI" -eq 1 ]; then
 fi
 
 DOTNET_FLAGS="-c $CONFIGURATION -f $TARGET_FRAMEWORK -p:SelfContained=false -p:UseAppHost=false -r ${os_type}-${cpu_architecture} --nologo"
+
+if [ "$ANALYSIS" -eq 0 ]; then
+	DOTNET_FLAGS="$DOTNET_FLAGS -p:AnalysisMode=AllDisabledByDefault"
+fi
 
 if [ "$SHARED_COMPILATION" -eq 0 ]; then
 	DOTNET_FLAGS="$DOTNET_FLAGS -p:UseSharedCompilation=false"
