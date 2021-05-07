@@ -537,7 +537,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			Uri host = new(request.Host);
+			Uri host = new(request.GetLeftPart(UriPartial.Authority));
 
 			HtmlDocumentResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlGetToHtmlDocument(request, headers, referer, requestOptions).ConfigureAwait(false)).ConfigureAwait(false);
 
@@ -614,7 +614,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			Uri host = new(request.Host);
+			Uri host = new(request.GetLeftPart(UriPartial.Authority));
 
 			ObjectResponse<T>? response = await WebLimitRequest(host, async () => await WebBrowser.UrlGetToJsonObject<T>(request, headers, referer, requestOptions).ConfigureAwait(false)).ConfigureAwait(false);
 
@@ -691,7 +691,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			Uri host = new(request.Host);
+			Uri host = new(request.GetLeftPart(UriPartial.Authority));
 
 			XmlDocumentResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlGetToXmlDocument(request, headers, referer, requestOptions).ConfigureAwait(false)).ConfigureAwait(false);
 
@@ -768,7 +768,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			Uri host = new(request.Host);
+			Uri host = new(request.GetLeftPart(UriPartial.Authority));
 
 			BasicResponse? response = await WebLimitRequest(host, async () => await WebBrowser.UrlHead(request, headers, referer, requestOptions).ConfigureAwait(false)).ConfigureAwait(false);
 
@@ -849,7 +849,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			Uri host = new(request.Host);
+			Uri host = new(request.GetLeftPart(UriPartial.Authority));
 
 			if (session != ESession.None) {
 				string? sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
@@ -953,7 +953,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			Uri host = new(request.Host);
+			Uri host = new(request.GetLeftPart(UriPartial.Authority));
 
 			if (session != ESession.None) {
 				string? sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
@@ -1057,7 +1057,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			Uri host = new(request.Host);
+			Uri host = new(request.GetLeftPart(UriPartial.Authority));
 
 			if (session != ESession.None) {
 				string? sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
@@ -1164,7 +1164,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			Uri host = new(request.Host);
+			Uri host = new(request.GetLeftPart(UriPartial.Authority));
 
 			if (session != ESession.None) {
 				string? sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
