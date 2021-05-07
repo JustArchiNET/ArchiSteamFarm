@@ -2608,7 +2608,9 @@ namespace ArchiSteamFarm {
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new(4, StringComparer.Ordinal) {
 				{ "agreeToTerms", "agreed" },
+#pragma warning disable CA1308
 				{ "domain", "generated.by." + SharedInfo.AssemblyName.ToLowerInvariant() + ".localhost" },
+#pragma warning restore CA1308
 				{ "Submit", "Register" }
 			};
 

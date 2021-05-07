@@ -3087,7 +3087,9 @@ namespace ArchiSteamFarm {
 			string? avatarHash = null;
 
 			if ((callback.AvatarHash.Length > 0) && callback.AvatarHash.Any(singleByte => singleByte != 0)) {
+#pragma warning disable CA1308
 				avatarHash = BitConverter.ToString(callback.AvatarHash).Replace("-", "", StringComparison.Ordinal).ToLowerInvariant();
+#pragma warning restore CA1308
 
 				if (string.IsNullOrEmpty(avatarHash) || avatarHash.All(singleChar => singleChar == '0')) {
 					avatarHash = null;
