@@ -1004,7 +1004,11 @@ namespace ArchiSteamFarm {
 
 			// Now enumerate over files in the zip archive, skip directory entries that we're not interested in (we can create them ourselves if needed)
 			foreach (ZipArchiveEntry zipFile in archive.Entries.Where(zipFile => !string.IsNullOrEmpty(zipFile.Name))) {
-				string file = Path.Combine(targetDirectory, zipFile.FullName);
+				string file = Path.GetFullPath(Path.Combine(targetDirectory, zipFile.FullName));
+
+				if (!file.StartsWith(targetDirectory, StringComparison.Ordinal)) {
+					throw new InvalidOperationException(nameof(file));
+				}
 
 				if (File.Exists(file)) {
 					// This is possible only with files that we decided to leave in place during our backup function
