@@ -28,29 +28,25 @@ using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 	internal sealed class RequestData {
+		[JsonProperty(PropertyName = "guid", Required = Required.Always)]
+		private static string Guid => ASF.GlobalDatabase?.Identifier.ToString("N") ?? throw new InvalidOperationException(nameof(ASF.GlobalDatabase.Identifier));
+
+		[JsonProperty(PropertyName = "token", Required = Required.Always)]
+		private static string Token => SharedInfo.Token;
+
+		[JsonProperty(PropertyName = "v", Required = Required.Always)]
+		private static byte Version => SharedInfo.ApiVersion;
+
 		[JsonProperty(PropertyName = "apps", Required = Required.Always)]
 		private readonly ImmutableDictionary<string, string> Apps;
 
 		[JsonProperty(PropertyName = "depots", Required = Required.Always)]
 		private readonly ImmutableDictionary<string, string> Depots;
 
-		[JsonProperty(PropertyName = "guid", Required = Required.Always)]
-		private readonly string Guid = ASF.GlobalDatabase?.Identifier.ToString("N") ?? throw new InvalidOperationException(nameof(ASF.GlobalDatabase.Identifier));
-
 		private readonly ulong SteamID;
 
 		[JsonProperty(PropertyName = "subs", Required = Required.Always)]
 		private readonly ImmutableDictionary<string, string> Subs;
-
-#pragma warning disable CS0414
-		[JsonProperty(PropertyName = "token", Required = Required.Always)]
-		private readonly string Token = SharedInfo.Token;
-#pragma warning restore CS0414
-
-#pragma warning disable CS0414
-		[JsonProperty(PropertyName = "v", Required = Required.Always)]
-		private readonly byte Version = SharedInfo.ApiVersion;
-#pragma warning restore CS0414
 
 		[JsonProperty(PropertyName = "steamid", Required = Required.Always)]
 		private string SteamIDText => new SteamID(SteamID).Render();
