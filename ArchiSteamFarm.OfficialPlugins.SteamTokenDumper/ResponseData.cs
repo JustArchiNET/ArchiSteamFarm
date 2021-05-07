@@ -23,6 +23,7 @@ using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
+#pragma warning disable CA1812 // False positive
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	internal sealed class ResponseData {
 #pragma warning disable CS0649
@@ -58,4 +59,5 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			private InternalData() { }
 		}
 	}
+#pragma warning restore CA1812 // False positive
 }
