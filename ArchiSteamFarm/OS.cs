@@ -255,19 +255,24 @@ namespace ArchiSteamFarm {
 			internal const sbyte StandardInputHandle = -10;
 
 #pragma warning disable CA2101
+			[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 			[DllImport("libc", EntryPoint = "chmod", SetLastError = true)]
 			internal static extern int Chmod(string path, int mode);
 #pragma warning restore CA2101
 
+			[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 			[DllImport("kernel32.dll")]
 			internal static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
 
+			[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 			[DllImport("kernel32.dll")]
 			internal static extern IntPtr GetStdHandle(int nStdHandle);
 
+			[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 			[DllImport("kernel32.dll")]
 			internal static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
 
+			[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 			[DllImport("kernel32.dll")]
 			internal static extern EExecutionState SetThreadExecutionState(EExecutionState executionState);
 
