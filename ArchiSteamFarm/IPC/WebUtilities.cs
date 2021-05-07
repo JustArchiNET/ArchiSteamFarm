@@ -19,6 +19,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
+#endif
 using System;
 using System.Linq;
 using System.Net;
@@ -58,7 +61,7 @@ namespace ArchiSteamFarm.IPC {
 			}
 
 			// We can try one more time by trying to smartly guess the assembly name from the namespace, this will work for custom libraries like SteamKit2
-			int index = typeText.IndexOf('.');
+			int index = typeText.IndexOf('.', StringComparison.Ordinal);
 
 			if ((index <= 0) || (index >= typeText.Length - 1)) {
 				return null;

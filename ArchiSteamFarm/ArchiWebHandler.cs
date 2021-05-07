@@ -19,6 +19,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
+#endif
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -1925,7 +1928,7 @@ namespace ArchiSteamFarm {
 			index += daysTheirVariableName.Length;
 			text = text[index..];
 
-			index = text.IndexOf(';');
+			index = text.IndexOf(';', StringComparison.Ordinal);
 
 			if (index < 0) {
 				Bot.ArchiLogger.LogNullError(nameof(index));
@@ -2362,7 +2365,7 @@ namespace ArchiSteamFarm {
 				return (ESteamApiKeyState.Error, null);
 			}
 
-			if (title.Contains("Access Denied") || title.Contains("Validated email address required")) {
+			if (title.Contains("Access Denied", StringComparison.OrdinalIgnoreCase) || title.Contains("Validated email address required", StringComparison.OrdinalIgnoreCase)) {
 				return (ESteamApiKeyState.AccessDenied, null);
 			}
 
@@ -2382,7 +2385,7 @@ namespace ArchiSteamFarm {
 				return (ESteamApiKeyState.Error, null);
 			}
 
-			if (text.Contains("Registering for a Steam Web API Key")) {
+			if (text.Contains("Registering for a Steam Web API Key", StringComparison.OrdinalIgnoreCase)) {
 				return (ESteamApiKeyState.NotRegisteredYet, null);
 			}
 

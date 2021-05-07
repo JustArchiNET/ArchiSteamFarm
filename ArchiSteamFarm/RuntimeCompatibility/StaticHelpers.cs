@@ -21,11 +21,13 @@
 
 #if NETFRAMEWORK
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Net.WebSockets;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Localization;
 using Microsoft.AspNetCore.Hosting;
 #endif
 using System;
@@ -102,12 +104,57 @@ namespace ArchiSteamFarm.RuntimeCompatibility {
 			return default(ValueTask);
 		}
 
+		public static int IndexOf(this string source, char value, StringComparison comparisonType) {
+			if (source == null) {
+				throw new ArgumentNullException(nameof(source));
+			}
+
+			return source.IndexOf(value.ToString(), comparisonType);
+		}
+
 		public static async Task<WebSocketReceiveResult> ReceiveAsync(this WebSocket webSocket, byte[] buffer, CancellationToken cancellationToken) {
 			if (webSocket == null) {
 				throw new ArgumentNullException(nameof(webSocket));
 			}
 
 			return await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken).ConfigureAwait(false);
+		}
+
+		public static string Replace(this string source, string oldValue, string? newValue, StringComparison comparisonType) {
+			if (source == null) {
+				throw new ArgumentNullException(nameof(source));
+			}
+
+			if (oldValue == null) {
+				throw new ArgumentNullException(nameof(oldValue));
+			}
+
+			if (oldValue.Length == 0) {
+				throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(oldValue)), nameof(oldValue));
+			}
+
+			int startIndex = 0;
+
+			while (true) {
+				if (source.Length == 0) {
+					return source;
+				}
+
+				int index = source.IndexOf(oldValue, startIndex, comparisonType);
+
+				if (index < 0) {
+					return source;
+				}
+
+				startIndex = index;
+
+				source = source.Remove(index, oldValue.Length);
+
+				if (!string.IsNullOrEmpty(newValue)) {
+					source = source.Insert(index, newValue!);
+					startIndex += newValue!.Length;
+				}
+			}
 		}
 
 		public static async Task SendAsync(this WebSocket webSocket, byte[] buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken) {

@@ -220,7 +220,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 					continue;
 				}
 
-				string depotKey = BitConverter.ToString(depotKeyResult.DepotKey).Replace("-", "");
+				string depotKey = BitConverter.ToString(depotKeyResult.DepotKey).Replace("-", "", StringComparison.Ordinal);
 
 				if (DepotKeys.TryGetValue(depotKeyResult.DepotID, out string? previousDepotKey) && (previousDepotKey == depotKey)) {
 					continue;

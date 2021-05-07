@@ -423,7 +423,7 @@ namespace ArchiSteamFarm {
 					return result;
 				}
 
-				if (botName.Contains("..")) {
+				if (botName.Contains("..", StringComparison.Ordinal)) {
 					string[] botRange = botName.Split(new[] { ".." }, StringSplitOptions.RemoveEmptyEntries);
 
 					if (botRange.Length == 2) {
@@ -1859,7 +1859,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(message));
 			}
 
-			return message.Replace("\\", "\\\\").Replace("[", "\\[");
+			return message.Replace("\\", "\\\\", StringComparison.Ordinal).Replace("[", "\\[", StringComparison.Ordinal);
 		}
 
 		private async Task<Dictionary<string, string>?> GetKeysFromFile(string filePath) {
@@ -3087,7 +3087,7 @@ namespace ArchiSteamFarm {
 			string? avatarHash = null;
 
 			if ((callback.AvatarHash.Length > 0) && callback.AvatarHash.Any(singleByte => singleByte != 0)) {
-				avatarHash = BitConverter.ToString(callback.AvatarHash).Replace("-", "").ToLowerInvariant();
+				avatarHash = BitConverter.ToString(callback.AvatarHash).Replace("-", "", StringComparison.Ordinal).ToLowerInvariant();
 
 				if (string.IsNullOrEmpty(avatarHash) || avatarHash.All(singleChar => singleChar == '0')) {
 					avatarHash = null;
@@ -3489,7 +3489,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(message));
 			}
 
-			return message.Replace("\\[", "[").Replace("\\\\", "\\");
+			return message.Replace("\\[", "[", StringComparison.Ordinal).Replace("\\\\", "\\", StringComparison.Ordinal);
 		}
 
 		private (bool IsSteamParentalEnabled, string? SteamParentalCode) ValidateSteamParental(ParentalSettings settings, string? steamParentalCode = null) {

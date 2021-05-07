@@ -19,6 +19,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
+using File = System.IO.File;
+using Path = System.IO.Path;
+#endif
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -156,11 +161,11 @@ namespace ArchiSteamFarm {
 			if (!string.IsNullOrEmpty(Program.NetworkGroup)) {
 				using SHA256CryptoServiceProvider hashingAlgorithm = new();
 
-				networkGroupText = "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(Program.NetworkGroup!))).Replace("-", "");
+				networkGroupText = "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(Program.NetworkGroup!))).Replace("-", "", StringComparison.Ordinal);
 			} else if (!string.IsNullOrEmpty(globalConfig.WebProxyText)) {
 				using SHA256CryptoServiceProvider hashingAlgorithm = new();
 
-				networkGroupText = "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(globalConfig.WebProxyText!))).Replace("-", "");
+				networkGroupText = "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(globalConfig.WebProxyText!))).Replace("-", "", StringComparison.Ordinal);
 			}
 
 			ConfirmationsSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(ConfirmationsSemaphore) + networkGroupText).ConfigureAwait(false);

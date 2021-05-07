@@ -595,7 +595,7 @@ namespace ArchiSteamFarm {
 				uint gameID;
 				string type;
 
-				int index = entry.IndexOf('/');
+				int index = entry.IndexOf('/', StringComparison.Ordinal);
 
 				if ((index > 0) && (entry.Length > index + 1)) {
 					if (!uint.TryParse(entry[(index + 1)..], out gameID) || (gameID == 0)) {
@@ -2049,7 +2049,7 @@ namespace ArchiSteamFarm {
 				string game;
 				string type;
 
-				int index = entry.IndexOf('/');
+				int index = entry.IndexOf('/', StringComparison.Ordinal);
 
 				if ((index > 0) && (entry.Length > index + 1)) {
 					game = entry[(index + 1)..];
