@@ -198,7 +198,9 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public static int RandomNext() {
 			lock (Random) {
+#pragma warning disable CA5394 // This call isn't used in a security-sensitive manner
 				return Random.Next();
+#pragma warning restore CA5394 // This call isn't used in a security-sensitive manner
 			}
 		}
 
@@ -211,7 +213,9 @@ namespace ArchiSteamFarm {
 					return 0;
 				default:
 					lock (Random) {
+#pragma warning disable CA5394 // This call isn't used in a security-sensitive manner
 						return Random.Next(maxValue);
+#pragma warning restore CA5394 // This call isn't used in a security-sensitive manner
 					}
 			}
 		}
@@ -227,7 +231,9 @@ namespace ArchiSteamFarm {
 			}
 
 			lock (Random) {
+#pragma warning disable CA5394 // This call isn't used in a security-sensitive manner
 				return Random.Next(minValue, maxValue);
+#pragma warning restore CA5394 // This call isn't used in a security-sensitive manner
 			}
 		}
 
