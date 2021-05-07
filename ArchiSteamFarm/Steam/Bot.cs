@@ -129,11 +129,6 @@ namespace ArchiSteamFarm.Steam {
 		[PublicAPI]
 		public bool IsPlayingPossible => !PlayingBlocked && !LibraryLocked;
 
-		[Obsolete("Use " + nameof(OwnedPackageIDs) + " instead")]
-		[JsonIgnore]
-		[PublicAPI]
-		public IReadOnlyCollection<uint> OwnedPackageIDsReadOnly => OwnedPackageIDs.Keys.ToHashSet();
-
 		[JsonIgnore]
 		[PublicAPI]
 		public SteamApps SteamApps { get; }
