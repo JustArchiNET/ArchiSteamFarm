@@ -20,7 +20,7 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using ArchiSteamFarm.RuntimeCompatibility;
+using ArchiSteamFarm.Compatibility;
 using File = System.IO.File;
 #endif
 using System;

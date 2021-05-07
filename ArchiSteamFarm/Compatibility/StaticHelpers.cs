@@ -34,7 +34,7 @@ using System;
 using System.Diagnostics;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.RuntimeCompatibility {
+namespace ArchiSteamFarm.Compatibility {
 	[PublicAPI]
 	public static class StaticHelpers {
 #if NETFRAMEWORK

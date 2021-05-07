@@ -21,7 +21,7 @@
 
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.RuntimeCompatibility {
+namespace ArchiSteamFarm.Compatibility {
 	[PublicAPI]
 	public static class HashCode {
 		public static int Combine<T1, T2, T3>(T1 value1, T2 value2, T3 value3) =>

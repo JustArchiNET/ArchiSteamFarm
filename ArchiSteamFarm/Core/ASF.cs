@@ -20,7 +20,7 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using ArchiSteamFarm.RuntimeCompatibility;
+using ArchiSteamFarm.Compatibility;
 using File = System.IO.File;
 using Path = System.IO.Path;
 #endif
@@ -212,7 +212,7 @@ namespace ArchiSteamFarm.Core {
 				return false;
 			}
 
-			return RuntimeCompatibility.Path.GetRelativePath(".", botName) == botName;
+			return Compatibility.Path.GetRelativePath(".", botName) == botName;
 		}
 
 		internal static async Task RestartOrExit() {
@@ -951,7 +951,7 @@ namespace ArchiSteamFarm.Core {
 					return false;
 				}
 
-				string relativeFilePath = RuntimeCompatibility.Path.GetRelativePath(targetDirectory, file);
+				string relativeFilePath = Compatibility.Path.GetRelativePath(targetDirectory, file);
 
 				if (string.IsNullOrEmpty(relativeFilePath)) {
 					ArchiLogger.LogNullError(nameof(relativeFilePath));
@@ -996,7 +996,7 @@ namespace ArchiSteamFarm.Core {
 				Directory.CreateDirectory(targetBackupDirectory);
 
 				string targetBackupFile = Path.Combine(targetBackupDirectory, fileName);
-				RuntimeCompatibility.File.Move(file, targetBackupFile, true);
+				Compatibility.File.Move(file, targetBackupFile, true);
 			}
 
 			// We can now get rid of directories that are empty
@@ -1017,7 +1017,7 @@ namespace ArchiSteamFarm.Core {
 				if (File.Exists(file)) {
 					// This is possible only with files that we decided to leave in place during our backup function
 					string targetBackupFile = file + ".bak";
-					RuntimeCompatibility.File.Move(file, targetBackupFile, true);
+					Compatibility.File.Move(file, targetBackupFile, true);
 				}
 
 				// Check if this file requires its own folder

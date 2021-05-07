@@ -22,7 +22,7 @@
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.RuntimeCompatibility {
+namespace ArchiSteamFarm.Compatibility {
 	[PublicAPI]
 	public static class File {
 		public static Task AppendAllTextAsync(string path, string contents) {

@@ -20,7 +20,7 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using ArchiSteamFarm.RuntimeCompatibility;
+using ArchiSteamFarm.Compatibility;
 using Newtonsoft.Json.Converters;
 using File = System.IO.File;
 using Path = System.IO.Path;

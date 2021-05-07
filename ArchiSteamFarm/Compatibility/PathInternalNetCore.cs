@@ -24,7 +24,7 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace ArchiSteamFarm.RuntimeCompatibility {
+namespace ArchiSteamFarm.Compatibility {
 	internal static class PathInternalNetCore {
 		private const string ExtendedDevicePathPrefix = @"\\?\";
 		private const string UncExtendedPathPrefix = @"\\?\UNC\";

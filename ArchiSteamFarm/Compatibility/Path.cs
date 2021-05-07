@@ -25,7 +25,7 @@ using System.Text;
 #endif
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.RuntimeCompatibility {
+namespace ArchiSteamFarm.Compatibility {
 	[PublicAPI]
 	public static class Path {
 		public static string GetRelativePath(string relativeTo, string path) {

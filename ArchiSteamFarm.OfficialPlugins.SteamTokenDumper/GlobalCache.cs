@@ -20,7 +20,7 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using ArchiSteamFarm.RuntimeCompatibility;
+using ArchiSteamFarm.Compatibility;
 using File = System.IO.File;
 using Path = System.IO.Path;
 #else
@@ -86,7 +86,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			GlobalCache? globalCache;
 
 			try {
-				string json = await RuntimeCompatibility.File.ReadAllTextAsync(SharedFilePath).ConfigureAwait(false);
+				string json = await Compatibility.File.ReadAllTextAsync(SharedFilePath).ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(json)) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));

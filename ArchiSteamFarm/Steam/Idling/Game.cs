@@ -20,7 +20,7 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using HashCode = ArchiSteamFarm.RuntimeCompatibility.HashCode;
+using HashCode = ArchiSteamFarm.Compatibility.HashCode;
 #endif
 using System;
 using Newtonsoft.Json;

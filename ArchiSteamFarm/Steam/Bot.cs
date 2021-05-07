@@ -20,7 +20,7 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using ArchiSteamFarm.RuntimeCompatibility;
+using ArchiSteamFarm.Compatibility;
 using File = System.IO.File;
 using Path = System.IO.Path;
 #endif
@@ -2035,7 +2035,7 @@ namespace ArchiSteamFarm.Steam {
 			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorConverting);
 
 			try {
-				string json = await RuntimeCompatibility.File.ReadAllTextAsync(maFilePath).ConfigureAwait(false);
+				string json = await Compatibility.File.ReadAllTextAsync(maFilePath).ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(json)) {
 					ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
@@ -2304,7 +2304,7 @@ namespace ArchiSteamFarm.Steam {
 
 			if (File.Exists(sentryFilePath)) {
 				try {
-					byte[] sentryFileContent = await RuntimeCompatibility.File.ReadAllBytesAsync(sentryFilePath).ConfigureAwait(false);
+					byte[] sentryFileContent = await Compatibility.File.ReadAllBytesAsync(sentryFilePath).ConfigureAwait(false);
 					sentryFileHash = CryptoHelper.SHAHash(sentryFileContent);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericException(e);
@@ -3335,7 +3335,7 @@ namespace ArchiSteamFarm.Steam {
 					}
 
 					try {
-						await RuntimeCompatibility.File.AppendAllTextAsync(filePath, logEntry + Environment.NewLine).ConfigureAwait(false);
+						await Compatibility.File.AppendAllTextAsync(filePath, logEntry + Environment.NewLine).ConfigureAwait(false);
 					} catch (Exception e) {
 						ArchiLogger.LogGenericException(e);
 						ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.Content, logEntry));
