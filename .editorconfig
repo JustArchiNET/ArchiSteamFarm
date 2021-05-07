@@ -106,14 +106,15 @@ csharp_using_directive_placement = outside_namespace
 [*.{cs,vb}]
 dotnet_analyzer_diagnostic.severity = warning
 
-dotnet_code_quality.ca3003.excluded_symbol_names = BotPost|RenamePost
+dotnet_code_quality.ca3003.excluded_symbol_names = BotController
+dotnet_code_quality.ca3012.excluded_symbol_names = BotController|CommandController
+
 dotnet_code_quality_unused_parameters = all:warning
 
 dotnet_diagnostic.ca1028.severity = silent
 dotnet_diagnostic.ca1031.severity = silent
 
 # TODO - one at a time
-dotnet_diagnostic.ca3012.severity = silent
 dotnet_diagnostic.ca3075.severity = silent
 dotnet_diagnostic.ca5389.severity = silent
 dotnet_diagnostic.ca5392.severity = silent
