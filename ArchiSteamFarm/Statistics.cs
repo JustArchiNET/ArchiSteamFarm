@@ -345,7 +345,9 @@ namespace ArchiSteamFarm {
 						break;
 					}
 
+#pragma warning disable CA2000 // False positive
 					using (await Bot.Actions.GetTradingLock().ConfigureAwait(false)) {
+#pragma warning restore CA2000 // False positive
 						Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.ActivelyMatchingItems, i));
 						(shouldContinueMatching, tradedSomething) = await MatchActivelyRound(acceptedMatchableTypes, triedSteamIDs).ConfigureAwait(false);
 						Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.DoneActivelyMatchingItems, i));

@@ -3025,12 +3025,14 @@ namespace ArchiSteamFarm {
 			byte[] sentryHash;
 
 			try {
-				FileStream fileStream = File.Open(sentryFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+				FileStream fileStream;
 
 #if NETFRAMEWORK
-				using (fileStream) {
+				using (fileStream = File.Open(sentryFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite)) {
 #else
-				await using (fileStream.ConfigureAwait(false)) {
+#pragma warning disable CA2000 // False positive
+				await using ((fileStream = File.Open(sentryFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite)).ConfigureAwait(false)) {
+#pragma warning restore CA2000 // False positive
 #endif
 					fileStream.Seek(callback.Offset, SeekOrigin.Begin);
 

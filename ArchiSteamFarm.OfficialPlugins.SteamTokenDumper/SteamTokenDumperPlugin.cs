@@ -121,10 +121,10 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				if (globalCache == null) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.FileCouldNotBeLoadedFreshInit, nameof(GlobalCache)));
 
-					globalCache = new GlobalCache();
+					GlobalCache = new GlobalCache();
+				} else {
+					GlobalCache = globalCache;
 				}
-
-				GlobalCache = globalCache;
 			}
 
 			TimeSpan startIn = TimeSpan.FromMinutes(Utilities.RandomNext(SharedInfo.MinimumMinutesBeforeFirstUpload, SharedInfo.MaximumMinutesBeforeFirstUpload));

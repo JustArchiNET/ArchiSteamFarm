@@ -140,14 +140,14 @@ namespace ArchiSteamFarm.Web {
 
 					progressReporter?.Report(0);
 
-					MemoryStream ms = new((int) response.Length);
+					MemoryStream ms;
 
 #if NETFRAMEWORK
-#pragma warning disable CA1508 // False positive
-					using (ms) {
-#pragma warning restore CA1508 // False positive
+					using (ms = new MemoryStream((int) response.Length)) {
 #else
-					await using (ms.ConfigureAwait(false)) {
+#pragma warning disable CA2000 // False positive
+					await using ((ms = new MemoryStream((int) response.Length)).ConfigureAwait(false)) {
+#pragma warning restore CA2000 // False positive
 #endif
 						try {
 							byte batch = 0;
