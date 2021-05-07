@@ -152,7 +152,9 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			try {
+#pragma warning disable CA1508 // False positive
 				if (cancellationToken.IsCancellationRequested || (webSocket.State != WebSocketState.Open)) {
+#pragma warning restore CA1508 // False positive
 					return;
 				}
 

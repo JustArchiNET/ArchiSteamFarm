@@ -351,7 +351,9 @@ namespace ArchiSteamFarm {
 
 				try {
 #if NETFRAMEWORK
+#pragma warning disable CA1508 // False positive
 					using (memoryStream) {
+#pragma warning restore CA1508 // False positive
 #else
 					await using (memoryStream.ConfigureAwait(false)) {
 #endif

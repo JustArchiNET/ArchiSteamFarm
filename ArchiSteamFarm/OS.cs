@@ -111,7 +111,7 @@ namespace ArchiSteamFarm {
 
 			Mutex? singleInstance = null;
 
-			for (byte i = 0; (i < WebBrowser.MaxTries) && (singleInstance == null); i++) {
+			for (byte i = 0; i < WebBrowser.MaxTries; i++) {
 				if (i > 0) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}

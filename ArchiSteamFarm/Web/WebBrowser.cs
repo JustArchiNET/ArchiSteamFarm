@@ -143,7 +143,9 @@ namespace ArchiSteamFarm.Web {
 					MemoryStream ms = new((int) response.Length);
 
 #if NETFRAMEWORK
+#pragma warning disable CA1508 // False positive
 					using (ms) {
+#pragma warning restore CA1508 // False positive
 #else
 					await using (ms.ConfigureAwait(false)) {
 #endif

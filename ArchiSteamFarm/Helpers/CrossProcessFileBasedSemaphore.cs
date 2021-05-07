@@ -179,7 +179,9 @@ namespace ArchiSteamFarm.Helpers {
 			}
 
 			try {
+#pragma warning disable CA1508 // False positive
 				using (new FileStream(FilePath, FileMode.CreateNew)) { }
+#pragma warning restore CA1508 // False positive
 
 				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
 					FileInfo fileInfo = new(FilePath);

@@ -96,7 +96,9 @@ namespace ArchiSteamFarm {
 
 				LastChangeNumber = picsChanges.CurrentChangeNumber;
 
+#pragma warning disable CA1508 // False positive
 				if (picsChanges.RequiresFullAppUpdate || picsChanges.RequiresFullPackageUpdate || ((picsChanges.AppChanges.Count == 0) && (picsChanges.PackageChanges.Count == 0))) {
+#pragma warning restore CA1508 // False positive
 					if (ASF.GlobalDatabase != null) {
 						await ASF.GlobalDatabase.OnPICSChangesRestart(picsChanges.CurrentChangeNumber).ConfigureAwait(false);
 					}

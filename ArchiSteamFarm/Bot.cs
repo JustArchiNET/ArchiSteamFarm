@@ -720,7 +720,9 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(appIDs));
 			}
 
+#pragma warning disable CA1508 // False positive
 			ISet<uint> uniqueAppIDs = appIDs as ISet<uint> ?? appIDs.ToHashSet();
+#pragma warning restore CA1508 // False positive
 
 			switch (ASF.GlobalConfig?.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
