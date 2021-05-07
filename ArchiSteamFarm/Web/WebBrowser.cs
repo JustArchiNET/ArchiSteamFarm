@@ -434,7 +434,9 @@ namespace ArchiSteamFarm.Web {
 					XmlDocument xmlDocument = new();
 
 					try {
-						xmlDocument.Load(response.Content);
+						using XmlReader xmlReader = XmlReader.Create(response.Content, new XmlReaderSettings { XmlResolver = null });
+
+						xmlDocument.Load(xmlReader);
 					} catch (Exception e) {
 						ArchiLogger.LogGenericWarningException(e);
 

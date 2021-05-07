@@ -115,7 +115,6 @@ dotnet_diagnostic.ca1028.severity = silent
 dotnet_diagnostic.ca1031.severity = silent
 
 # TODO - one at a time
-dotnet_diagnostic.ca3075.severity = silent
 dotnet_diagnostic.ca5389.severity = silent
 dotnet_diagnostic.ca5392.severity = silent
 dotnet_diagnostic.ca5394.severity = silent
