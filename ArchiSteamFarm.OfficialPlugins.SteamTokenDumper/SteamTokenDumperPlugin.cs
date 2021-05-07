@@ -129,7 +129,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 			TimeSpan startIn = TimeSpan.FromMinutes(Utilities.RandomNext(SharedInfo.MinimumMinutesBeforeFirstUpload, SharedInfo.MaximumMinutesBeforeFirstUpload));
 
-			lock (SubmissionTimer) {
+			lock (SubmissionSemaphore) {
 				SubmissionTimer.Change(startIn, TimeSpan.FromHours(SharedInfo.MinimumHoursBetweenUploads));
 			}
 
@@ -533,7 +533,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 #endif
 						TimeSpan startIn = TimeSpan.FromMinutes(Utilities.RandomNext(SharedInfo.MinimumMinutesBeforeFirstUpload, SharedInfo.MaximumMinutesBeforeFirstUpload));
 
-						lock (SubmissionTimer) {
+						lock (SubmissionSemaphore) {
 							SubmissionTimer.Change(startIn, TimeSpan.FromHours(SharedInfo.MinimumHoursBetweenUploads));
 						}
 

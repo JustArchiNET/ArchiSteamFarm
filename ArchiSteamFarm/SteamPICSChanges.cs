@@ -46,7 +46,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			lock (RefreshTimer) {
+			lock (RefreshSemaphore) {
 				if (TimerAlreadySet) {
 					return;
 				}
