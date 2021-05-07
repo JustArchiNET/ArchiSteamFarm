@@ -23,6 +23,7 @@ using System;
 using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
+using ArchiSteamFarm.Core;
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Web.Responses {

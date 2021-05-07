@@ -25,6 +25,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using ArchiSteamFarm.Core;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
 using Microsoft.AspNetCore.Mvc;

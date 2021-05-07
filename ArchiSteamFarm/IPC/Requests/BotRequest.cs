@@ -21,6 +21,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using ArchiSteamFarm.Steam.Storage;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Requests {

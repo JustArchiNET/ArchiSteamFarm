@@ -25,7 +25,9 @@ using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
+using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.Steam.Security;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Requests {

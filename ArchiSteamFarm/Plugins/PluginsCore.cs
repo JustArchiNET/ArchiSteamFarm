@@ -30,10 +30,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using ArchiSteamFarm.Callbacks;
+using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
-using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.Plugins.Interfaces;
+using ArchiSteamFarm.Steam;
+using ArchiSteamFarm.Steam.Data;
+using ArchiSteamFarm.Steam.Exchange;
+using ArchiSteamFarm.Steam.Integration.Callbacks;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
 

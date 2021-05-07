@@ -20,9 +20,9 @@
 // limitations under the License.
 
 using System.Collections.Generic;
-using ArchiSteamFarm.Json;
+using ArchiSteamFarm.Steam.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static ArchiSteamFarm.Trading;
+using static ArchiSteamFarm.Steam.Exchange.Trading;
 
 namespace ArchiSteamFarm.Tests {
 	[TestClass]

@@ -22,6 +22,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Core;
 using ArchiSteamFarm.RuntimeCompatibility;
 using Newtonsoft.Json;
 

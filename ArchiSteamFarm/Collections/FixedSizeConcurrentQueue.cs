@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using ArchiSteamFarm.Core;
 
 namespace ArchiSteamFarm.Collections {
 	internal sealed class FixedSizeConcurrentQueue<T> : IEnumerable<T> {

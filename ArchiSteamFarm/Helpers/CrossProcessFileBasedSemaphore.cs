@@ -26,6 +26,7 @@ using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Threading;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Core;
 
 namespace ArchiSteamFarm.Helpers {
 	internal sealed class CrossProcessFileBasedSemaphore : ICrossProcessSemaphore, IDisposable {

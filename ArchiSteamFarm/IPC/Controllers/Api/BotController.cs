@@ -29,10 +29,14 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using ArchiSteamFarm.Callbacks;
+using ArchiSteamFarm.Core;
 using ArchiSteamFarm.IPC.Requests;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.Steam;
+using ArchiSteamFarm.Steam.Integration.Callbacks;
+using ArchiSteamFarm.Steam.Security;
+using ArchiSteamFarm.Steam.Storage;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 

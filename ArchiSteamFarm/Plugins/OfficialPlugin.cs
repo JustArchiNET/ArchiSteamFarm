@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using ArchiSteamFarm.Plugins.Interfaces;
 
 namespace ArchiSteamFarm.Plugins {
 	internal abstract class OfficialPlugin : IPlugin {

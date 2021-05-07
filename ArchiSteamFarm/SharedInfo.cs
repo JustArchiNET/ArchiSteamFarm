@@ -22,6 +22,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Plugins;
 using JetBrains.Annotations;
 

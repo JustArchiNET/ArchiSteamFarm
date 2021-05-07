@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Net;
 using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Plugins;
+using ArchiSteamFarm.Plugins.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api {

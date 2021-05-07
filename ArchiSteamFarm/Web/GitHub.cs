@@ -29,6 +29,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
+using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Web.Responses;
 using Markdig;
 using Markdig.Renderers;

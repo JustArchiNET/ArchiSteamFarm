@@ -24,7 +24,8 @@ using System.Composition;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime;
 using System.Threading;
-using ArchiSteamFarm.Plugins;
+using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Plugins.Interfaces;
 
 namespace ArchiSteamFarm.CustomPlugins.PeriodicGC {
 	[Export(typeof(IPlugin))]

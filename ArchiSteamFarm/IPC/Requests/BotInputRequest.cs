@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System.Diagnostics.CodeAnalysis;
+using ArchiSteamFarm.Core;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC.Requests {

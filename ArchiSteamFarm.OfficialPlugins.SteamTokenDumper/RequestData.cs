@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
+using ArchiSteamFarm.Core;
 using Newtonsoft.Json;
 using SteamKit2;
 

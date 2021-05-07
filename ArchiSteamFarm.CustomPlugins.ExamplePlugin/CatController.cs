@@ -22,6 +22,7 @@
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Core;
 using ArchiSteamFarm.IPC.Controllers.Api;
 using ArchiSteamFarm.IPC.Responses;
 using Microsoft.AspNetCore.Mvc;

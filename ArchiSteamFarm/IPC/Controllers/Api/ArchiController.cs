@@ -21,6 +21,7 @@
 
 using System.Net;
 using ArchiSteamFarm.IPC.Responses;
+using ArchiSteamFarm.Storage;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
