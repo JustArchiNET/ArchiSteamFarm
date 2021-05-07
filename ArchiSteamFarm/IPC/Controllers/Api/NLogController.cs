@@ -152,9 +152,9 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			try {
-#pragma warning disable CA1508 // False positive
+#pragma warning disable CA1508 // False positive, webSocket state could change between our previous check and this one due to semaphore wait
 				if (cancellationToken.IsCancellationRequested || (webSocket.State != WebSocketState.Open)) {
-#pragma warning restore CA1508 // False positive
+#pragma warning restore CA1508 // False positive, webSocket state could change between our previous check and this one due to semaphore wait
 					return;
 				}
 

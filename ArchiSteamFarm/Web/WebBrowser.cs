@@ -140,14 +140,16 @@ namespace ArchiSteamFarm.Web {
 
 					progressReporter?.Report(0);
 
-					MemoryStream ms;
+#pragma warning disable CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
+					MemoryStream ms = new((int) response.Length);
+#pragma warning restore CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
 
 #if NETFRAMEWORK
-					using (ms = new MemoryStream((int) response.Length)) {
+#pragma warning disable CA1508 // False positive, ms is not null here indeed, but using clause is needed for dispose
+					using (ms) {
+#pragma warning restore CA1508 // False positive, ms is not null here indeed, but using clause is needed for dispose
 #else
-#pragma warning disable CA2000 // False positive
-					await using ((ms = new MemoryStream((int) response.Length)).ConfigureAwait(false)) {
-#pragma warning restore CA2000 // False positive
+					await using (ms.ConfigureAwait(false)) {
 #endif
 						try {
 							byte batch = 0;

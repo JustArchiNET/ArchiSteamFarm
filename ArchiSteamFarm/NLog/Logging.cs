@@ -160,9 +160,9 @@ namespace ArchiSteamFarm.NLog {
 			ConfigurationItemFactory.Default.ParseMessageTemplates = false;
 			LoggingConfiguration config = new();
 
-#pragma warning disable CA2000 // False positive
+#pragma warning disable CA2000 // False positive, we're adding this disposable object to the global scope, so we can't dispose it
 			ColoredConsoleTarget coloredConsoleTarget = new("ColoredConsole") { Layout = GeneralLayout };
-#pragma warning restore CA2000 // False positive
+#pragma warning restore CA2000 // False positive, we're adding this disposable object to the global scope, so we can't dispose it
 
 			config.AddTarget(coloredConsoleTarget);
 			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, coloredConsoleTarget));
@@ -176,7 +176,7 @@ namespace ArchiSteamFarm.NLog {
 					ASF.ArchiLogger.LogGenericException(e);
 				}
 
-#pragma warning disable CA2000 // False positive
+#pragma warning disable CA2000 // False positive, we're adding this disposable object to the global scope, so we can't dispose it
 				FileTarget fileTarget = new("File") {
 					ArchiveFileName = Path.Combine("${currentdir}", SharedInfo.ArchivalLogsDirectory, SharedInfo.ArchivalLogFile),
 					ArchiveNumbering = ArchiveNumberingMode.Rolling,
@@ -188,7 +188,7 @@ namespace ArchiSteamFarm.NLog {
 					Layout = GeneralLayout,
 					MaxArchiveFiles = 10
 				};
-#pragma warning restore CA2000 // False positive
+#pragma warning restore CA2000 // False positive, we're adding this disposable object to the global scope, so we can't dispose it
 
 				config.AddTarget(fileTarget);
 				config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, fileTarget));

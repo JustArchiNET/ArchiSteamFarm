@@ -23,41 +23,41 @@ using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
-#pragma warning disable CA1812 // False positive
+#pragma warning disable CA1812 // False positive, the class is used during json deserialization
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	internal sealed class ResponseData {
-#pragma warning disable CS0649
+#pragma warning disable CS0649 // False positive, the field is used during json deserialization
 		[JsonProperty(PropertyName = "data", Required = Required.DisallowNull)]
 		internal readonly InternalData? Data;
-#pragma warning restore CS0649
+#pragma warning restore CS0649 // False positive, the field is used during json deserialization
 
-#pragma warning disable CS0649
+#pragma warning disable CS0649 // False positive, the field is used during json deserialization
 		[JsonProperty(PropertyName = "success", Required = Required.Always)]
 		internal readonly bool Success;
-#pragma warning restore CS0649
+#pragma warning restore CS0649 // False positive, the field is used during json deserialization
 
 		[JsonConstructor]
 		private ResponseData() { }
 
 		internal sealed class InternalData {
-#pragma warning disable CS0649
+#pragma warning disable CS0649 // False positive, the field is used during json deserialization
 			[JsonProperty(PropertyName = "new_apps", Required = Required.Always)]
 			internal readonly uint NewAppsCount;
-#pragma warning restore CS0649
+#pragma warning restore CS0649 // False positive, the field is used during json deserialization
 
-#pragma warning disable CS0649
+#pragma warning disable CS0649 // False positive, the field is used during json deserialization
 			[JsonProperty(PropertyName = "new_depots", Required = Required.Always)]
 			internal readonly uint NewDepotsCount;
-#pragma warning restore CS0649
+#pragma warning restore CS0649 // False positive, the field is used during json deserialization
 
-#pragma warning disable CS0649
+#pragma warning disable CS0649 // False positive, the field is used during json deserialization
 			[JsonProperty(PropertyName = "new_subs", Required = Required.Always)]
 			internal readonly uint NewSubsCount;
-#pragma warning restore CS0649
+#pragma warning restore CS0649 // False positive, the field is used during json deserialization
 
 			[JsonConstructor]
 			private InternalData() { }
 		}
 	}
-#pragma warning restore CA1812 // False positive
+#pragma warning restore CA1812 // False positive, the class is used during json deserialization
 }

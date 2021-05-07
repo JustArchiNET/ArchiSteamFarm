@@ -720,9 +720,9 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(appIDs));
 			}
 
-#pragma warning disable CA1508 // False positive
+#pragma warning disable CA1508 // False positive, not every IReadOnlyCollection is ISet, and this is public API
 			ISet<uint> uniqueAppIDs = appIDs as ISet<uint> ?? appIDs.ToHashSet();
-#pragma warning restore CA1508 // False positive
+#pragma warning restore CA1508 // False positive, not every IReadOnlyCollection is ISet, and this is public API
 
 			switch (ASF.GlobalConfig?.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -2197,15 +2197,15 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(paymentMethod));
 			}
 
-#pragma warning disable CA2248
+#pragma warning disable CA2248 // This is actually a fair warning, EPaymentMethod is not a flags enum on itself, but there is nothing we can do about Steam using it like that here
 			return paymentMethod switch {
 				EPaymentMethod.ActivationCode => false,
 				EPaymentMethod.Complimentary => false,
 				EPaymentMethod.GuestPass => false,
 				EPaymentMethod.HardwarePromo => false,
-				_ => !paymentMethod.HasFlag(EPaymentMethod.Complimentary) // Complimentary is also a flag, for fuck sake
+				_ => !paymentMethod.HasFlag(EPaymentMethod.Complimentary) // Complimentary can also be a flag
 			};
-#pragma warning restore CA2248
+#pragma warning restore CA2248 // This is actually a fair warning, EPaymentMethod is not a flags enum on itself, but there is nothing we can do about Steam using it like that here
 		}
 
 		private async Task JoinMasterChatGroupID() {
@@ -3025,14 +3025,14 @@ namespace ArchiSteamFarm {
 			byte[] sentryHash;
 
 			try {
-				FileStream fileStream;
+#pragma warning disable CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
+				FileStream fileStream = File.Open(sentryFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+#pragma warning restore CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
 
 #if NETFRAMEWORK
-				using (fileStream = File.Open(sentryFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite)) {
+				using (fileStream) {
 #else
-#pragma warning disable CA2000 // False positive
-				await using ((fileStream = File.Open(sentryFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite)).ConfigureAwait(false)) {
-#pragma warning restore CA2000 // False positive
+				await using (fileStream.ConfigureAwait(false)) {
 #endif
 					fileStream.Seek(callback.Offset, SeekOrigin.Begin);
 
@@ -3045,11 +3045,11 @@ namespace ArchiSteamFarm {
 					fileSize = fileStream.Length;
 					fileStream.Seek(0, SeekOrigin.Begin);
 
-#pragma warning disable CA5350
+#pragma warning disable CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
 					using SHA1CryptoServiceProvider sha = new();
 
 					sentryHash = await sha.ComputeHashAsync(fileStream).ConfigureAwait(false);
-#pragma warning restore CA5350
+#pragma warning restore CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
 				}
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
@@ -3091,9 +3091,9 @@ namespace ArchiSteamFarm {
 			string? avatarHash = null;
 
 			if ((callback.AvatarHash.Length > 0) && callback.AvatarHash.Any(singleByte => singleByte != 0)) {
-#pragma warning disable CA1308
+#pragma warning disable CA1308 // False positive, we're intentionally converting this part to lowercase and it's not used for any security decisions based on the result of the normalization
 				avatarHash = BitConverter.ToString(callback.AvatarHash).Replace("-", "", StringComparison.Ordinal).ToLowerInvariant();
-#pragma warning restore CA1308
+#pragma warning restore CA1308 // False positive, we're intentionally converting this part to lowercase and it's not used for any security decisions based on the result of the normalization
 
 				if (string.IsNullOrEmpty(avatarHash) || avatarHash.All(singleChar => singleChar == '0')) {
 					avatarHash = null;

@@ -351,17 +351,17 @@ namespace ArchiSteamFarm {
 					ArchiLogger.LogGenericWarningException(e);
 				}
 
-				MemoryStream memoryStream = new(response.Content as byte[] ?? response.Content.ToArray());
+				MemoryStream ms = new(response.Content as byte[] ?? response.Content.ToArray());
 
 				try {
 #if NETFRAMEWORK
-#pragma warning disable CA1508 // False positive
-					using (memoryStream) {
-#pragma warning restore CA1508 // False positive
+#pragma warning disable CA1508 // False positive, ms is not null here indeed, but using clause is needed for dispose
+					using (ms) {
+#pragma warning restore CA1508 // False positive, ms is not null here indeed, but using clause is needed for dispose
 #else
-					await using (memoryStream.ConfigureAwait(false)) {
+					await using (ms.ConfigureAwait(false)) {
 #endif
-						using ZipArchive zipArchive = new(memoryStream);
+						using ZipArchive zipArchive = new(ms);
 
 						if (!UpdateFromArchive(zipArchive, SharedInfo.HomeDirectory)) {
 							ArchiLogger.LogGenericError(Strings.WarningFailed);

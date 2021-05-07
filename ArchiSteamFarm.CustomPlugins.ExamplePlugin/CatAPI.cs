@@ -52,7 +52,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 			return Uri.EscapeUriString(response.Content!.Link!);
 		}
 
-#pragma warning disable CA1812 // False positive
+#pragma warning disable CA1812 // False positive, the class is used during json deserialization
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		private sealed class MeowResponse {
 			[JsonProperty(PropertyName = "file", Required = Required.Always)]
@@ -61,6 +61,6 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 			[JsonConstructor]
 			private MeowResponse() { }
 		}
-#pragma warning restore CA1812 // False positive
+#pragma warning restore CA1812 // False positive, the class is used during json deserialization
 	}
 }

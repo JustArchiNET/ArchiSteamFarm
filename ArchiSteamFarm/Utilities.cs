@@ -318,9 +318,9 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(directory));
 			}
 
-#pragma warning disable CA1508 // False positive
+#pragma warning disable CA1508 // False positive, params could be null when explicitly set
 			if ((prefixes == null) || (prefixes.Length == 0)) {
-#pragma warning restore CA1508 // False positive
+#pragma warning restore CA1508 // False positive, params could be null when explicitly set
 				throw new ArgumentNullException(nameof(prefixes));
 			}
 

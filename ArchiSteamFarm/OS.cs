@@ -254,11 +254,11 @@ namespace ArchiSteamFarm {
 			internal const uint EnableQuickEditMode = 0x0040;
 			internal const sbyte StandardInputHandle = -10;
 
-#pragma warning disable CA2101
+#pragma warning disable CA2101 // False positive, we can't use unicode charset on Unix, and it uses UTF-8 by default anyway
 			[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 			[DllImport("libc", EntryPoint = "chmod", SetLastError = true)]
 			internal static extern int Chmod(string path, int mode);
-#pragma warning restore CA2101
+#pragma warning restore CA2101 // False positive, we can't use unicode charset on Unix, and it uses UTF-8 by default anyway
 
 			[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 			[DllImport("kernel32.dll")]

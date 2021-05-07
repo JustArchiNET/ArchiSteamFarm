@@ -22,16 +22,18 @@
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 
-#pragma warning disable CS1998
 namespace ArchiSteamFarm.RuntimeCompatibility {
 	[PublicAPI]
 	public static class File {
-		public static async Task AppendAllTextAsync(string path, string contents) =>
+		public static Task AppendAllTextAsync(string path, string contents) {
 #if NETFRAMEWORK
 			System.IO.File.AppendAllText(path, contents);
+
+			return Task.CompletedTask;
 #else
-			await System.IO.File.AppendAllTextAsync(path, contents).ConfigureAwait(false);
+			return System.IO.File.AppendAllTextAsync(path, contents);
 #endif
+		}
 
 		public static void Move(string sourceFileName, string destFileName, bool overwrite) {
 #if NETFRAMEWORK
@@ -45,26 +47,28 @@ namespace ArchiSteamFarm.RuntimeCompatibility {
 #endif
 		}
 
-		public static async Task<byte[]> ReadAllBytesAsync(string path) =>
+		public static Task<byte[]> ReadAllBytesAsync(string path) =>
 #if NETFRAMEWORK
-			System.IO.File.ReadAllBytes(path);
+			Task.FromResult(System.IO.File.ReadAllBytes(path));
 #else
-			await System.IO.File.ReadAllBytesAsync(path).ConfigureAwait(false);
+			System.IO.File.ReadAllBytesAsync(path);
 #endif
 
-		public static async Task<string> ReadAllTextAsync(string path) =>
+		public static Task<string> ReadAllTextAsync(string path) =>
 #if NETFRAMEWORK
-			System.IO.File.ReadAllText(path);
+			Task.FromResult(System.IO.File.ReadAllText(path));
 #else
-			await System.IO.File.ReadAllTextAsync(path).ConfigureAwait(false);
+			System.IO.File.ReadAllTextAsync(path);
 #endif
 
-		public static async Task WriteAllTextAsync(string path, string contents) =>
+		public static Task WriteAllTextAsync(string path, string contents) {
 #if NETFRAMEWORK
 			System.IO.File.WriteAllText(path, contents);
+
+			return Task.CompletedTask;
 #else
-			await System.IO.File.WriteAllTextAsync(path, contents).ConfigureAwait(false);
+			return System.IO.File.WriteAllTextAsync(path, contents);
 #endif
+		}
 	}
 }
-#pragma warning restore CS1998

@@ -315,11 +315,11 @@ namespace ArchiSteamFarm {
 
 			byte[] hash;
 
-#pragma warning disable CA5350
+#pragma warning disable CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
 			using (HMACSHA1 hmac = new(identitySecret)) {
 				hash = hmac.ComputeHash(buffer);
 			}
-#pragma warning restore CA5350
+#pragma warning restore CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
 
 			return Convert.ToBase64String(hash);
 		}
@@ -356,11 +356,11 @@ namespace ArchiSteamFarm {
 
 			byte[] hash;
 
-#pragma warning disable CA5350
+#pragma warning disable CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
 			using (HMACSHA1 hmac = new(sharedSecret)) {
 				hash = hmac.ComputeHash(timeArray);
 			}
-#pragma warning restore CA5350
+#pragma warning restore CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
 
 			// The last 4 bits of the mac say where the code starts
 			int start = hash[^1] & 0x0f;

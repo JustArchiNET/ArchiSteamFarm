@@ -179,9 +179,9 @@ namespace ArchiSteamFarm.Helpers {
 			}
 
 			try {
-#pragma warning disable CA1508 // False positive
+#pragma warning disable CA1508 // False positive, FileStream is not null here indeed, but using clause is needed for dispose
 				using (new FileStream(FilePath, FileMode.CreateNew)) { }
-#pragma warning restore CA1508 // False positive
+#pragma warning restore CA1508 // False positive, FileStream is not null here indeed, but using clause is needed for dispose
 
 				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
 					FileInfo fileInfo = new(FilePath);

@@ -345,9 +345,9 @@ namespace ArchiSteamFarm {
 						break;
 					}
 
-#pragma warning disable CA2000 // False positive
+#pragma warning disable CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
 					using (await Bot.Actions.GetTradingLock().ConfigureAwait(false)) {
-#pragma warning restore CA2000 // False positive
+#pragma warning restore CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
 						Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.ActivelyMatchingItems, i));
 						(shouldContinueMatching, tradedSomething) = await MatchActivelyRound(acceptedMatchableTypes, triedSteamIDs).ConfigureAwait(false);
 						Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.DoneActivelyMatchingItems, i));
@@ -708,27 +708,27 @@ namespace ArchiSteamFarm {
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		private sealed class ListedUser {
-#pragma warning disable CS0649
+#pragma warning disable CS0649 // False positive, it's a field set during json deserialization
 			[JsonProperty(PropertyName = "items_count", Required = Required.Always)]
 			internal readonly ushort ItemsCount;
-#pragma warning restore CS0649
+#pragma warning restore CS0649 // False positive, it's a field set during json deserialization
 
 			internal readonly HashSet<Asset.EType> MatchableTypes = new();
 
-#pragma warning disable CS0649
+#pragma warning disable CS0649 // False positive, it's a field set during json deserialization
 			[JsonProperty(PropertyName = "steam_id", Required = Required.Always)]
 			internal readonly ulong SteamID;
-#pragma warning restore CS0649
+#pragma warning restore CS0649 // False positive, it's a field set during json deserialization
 
 			[JsonProperty(PropertyName = "trade_token", Required = Required.Always)]
 			internal readonly string TradeToken = "";
 
 			internal float Score => GamesCount / (float) ItemsCount;
 
-#pragma warning disable CS0649
+#pragma warning disable CS0649 // False positive, it's a field set during json deserialization
 			[JsonProperty(PropertyName = "games_count", Required = Required.Always)]
 			private readonly ushort GamesCount;
-#pragma warning restore CS0649
+#pragma warning restore CS0649 // False positive, it's a field set during json deserialization
 
 			internal bool MatchEverything { get; private set; }
 
