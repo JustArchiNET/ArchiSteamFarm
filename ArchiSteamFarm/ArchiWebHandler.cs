@@ -40,6 +40,7 @@ using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Web;
+using ArchiSteamFarm.Web.Responses;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

@@ -19,36 +19,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if NETFRAMEWORK
-using ArchiSteamFarm.RuntimeCompatibility;
-#endif
 using System;
-using System.IO;
 using System.Net.Http;
-using System.Threading.Tasks;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Web {
-	public sealed class StreamResponse : BasicResponse, IAsyncDisposable {
+namespace ArchiSteamFarm.Web.Responses {
+	public sealed class StringResponse : BasicResponse {
 		[PublicAPI]
-		public Stream Content { get; }
+		public string Content { get; }
 
-		[PublicAPI]
-		public long Length { get; }
+		internal StringResponse(HttpResponseMessage httpResponseMessage, string content) : base(httpResponseMessage) {
+			if (httpResponseMessage == null) {
+				throw new ArgumentNullException(nameof(httpResponseMessage));
+			}
 
-		private readonly HttpResponseMessage ResponseMessage;
-
-		internal StreamResponse(HttpResponseMessage httpResponseMessage, Stream content) : base(httpResponseMessage) {
-			ResponseMessage = httpResponseMessage ?? throw new ArgumentNullException(nameof(httpResponseMessage));
 			Content = content ?? throw new ArgumentNullException(nameof(content));
-
-			Length = httpResponseMessage.Content.Headers.ContentLength.GetValueOrDefault();
-		}
-
-		public async ValueTask DisposeAsync() {
-			await Content.DisposeAsync().ConfigureAwait(false);
-
-			ResponseMessage.Dispose();
 		}
 	}
 }

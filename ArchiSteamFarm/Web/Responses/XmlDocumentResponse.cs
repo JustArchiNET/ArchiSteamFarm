@@ -23,7 +23,7 @@ using System;
 using System.Xml;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Web {
+namespace ArchiSteamFarm.Web.Responses {
 	public sealed class XmlDocumentResponse : BasicResponse {
 		[PublicAPI]
 		public XmlDocument Content { get; }

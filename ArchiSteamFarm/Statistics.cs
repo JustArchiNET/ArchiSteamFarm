@@ -34,6 +34,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Web;
+using ArchiSteamFarm.Web.Responses;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {

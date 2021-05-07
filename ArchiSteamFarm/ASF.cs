@@ -45,6 +45,7 @@ using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Web;
+using ArchiSteamFarm.Web.Responses;
 using JetBrains.Annotations;
 using SteamKit2;
 using SteamKit2.Discovery;

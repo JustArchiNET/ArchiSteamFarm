@@ -23,6 +23,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Web;
+using ArchiSteamFarm.Web.Responses;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {

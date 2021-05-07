@@ -35,6 +35,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Localization;
 using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Web;
+using ArchiSteamFarm.Web.Responses;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SteamKit2;

@@ -29,14 +29,14 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
-using ArchiSteamFarm.Web;
+using ArchiSteamFarm.Web.Responses;
 using Markdig;
 using Markdig.Renderers;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm {
+namespace ArchiSteamFarm.Web {
 	internal static class GitHub {
 		internal static async Task<ReleaseResponse?> GetLatestRelease(bool stable = true) {
 			Uri request = new(SharedInfo.GithubReleaseURL + (stable ? "/latest" : "?per_page=1"));

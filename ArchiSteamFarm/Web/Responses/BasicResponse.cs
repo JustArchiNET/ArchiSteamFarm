@@ -20,19 +20,33 @@
 // limitations under the License.
 
 using System;
+using System.Net;
+using System.Net.Http;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Web {
-	public sealed class ObjectResponse<T> : BasicResponse {
+namespace ArchiSteamFarm.Web.Responses {
+	public class BasicResponse {
 		[PublicAPI]
-		public T Content { get; }
+		public HttpStatusCode StatusCode { get; }
 
-		public ObjectResponse(BasicResponse basicResponse, T content) : base(basicResponse) {
+		internal readonly Uri FinalUri;
+
+		internal BasicResponse(HttpResponseMessage httpResponseMessage) {
+			if (httpResponseMessage == null) {
+				throw new ArgumentNullException(nameof(httpResponseMessage));
+			}
+
+			FinalUri = httpResponseMessage.Headers.Location ?? httpResponseMessage.RequestMessage?.RequestUri ?? throw new InvalidOperationException();
+			StatusCode = httpResponseMessage.StatusCode;
+		}
+
+		internal BasicResponse(BasicResponse basicResponse) {
 			if (basicResponse == null) {
 				throw new ArgumentNullException(nameof(basicResponse));
 			}
 
-			Content = content ?? throw new ArgumentNullException(nameof(content));
+			FinalUri = basicResponse.FinalUri;
+			StatusCode = basicResponse.StatusCode;
 		}
 	}
 }

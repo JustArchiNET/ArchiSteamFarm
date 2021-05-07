@@ -19,44 +19,36 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using ArchiSteamFarm.RuntimeCompatibility;
+#endif
 using System;
+using System.IO;
+using System.Net.Http;
 using System.Threading.Tasks;
-using AngleSharp;
-using AngleSharp.Dom;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Web {
-	public sealed class HtmlDocumentResponse : BasicResponse, IDisposable {
+namespace ArchiSteamFarm.Web.Responses {
+	public sealed class StreamResponse : BasicResponse, IAsyncDisposable {
 		[PublicAPI]
-		public IDocument Content { get; }
+		public Stream Content { get; }
 
-		private HtmlDocumentResponse(BasicResponse basicResponse, IDocument content) : base(basicResponse) {
-			if (basicResponse == null) {
-				throw new ArgumentNullException(nameof(basicResponse));
-			}
+		[PublicAPI]
+		public long Length { get; }
 
+		private readonly HttpResponseMessage ResponseMessage;
+
+		internal StreamResponse(HttpResponseMessage httpResponseMessage, Stream content) : base(httpResponseMessage) {
+			ResponseMessage = httpResponseMessage ?? throw new ArgumentNullException(nameof(httpResponseMessage));
 			Content = content ?? throw new ArgumentNullException(nameof(content));
+
+			Length = httpResponseMessage.Content.Headers.ContentLength.GetValueOrDefault();
 		}
 
-		public void Dispose() => Content.Dispose();
+		public async ValueTask DisposeAsync() {
+			await Content.DisposeAsync().ConfigureAwait(false);
 
-		[PublicAPI]
-		public static async Task<HtmlDocumentResponse?> Create(StreamResponse streamResponse) {
-			if (streamResponse == null) {
-				throw new ArgumentNullException(nameof(streamResponse));
-			}
-
-			IBrowsingContext context = BrowsingContext.New();
-
-			try {
-				IDocument document = await context.OpenAsync(req => req.Content(streamResponse.Content, true)).ConfigureAwait(false);
-
-				return new HtmlDocumentResponse(streamResponse, document);
-			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericWarningException(e);
-
-				return null;
-			}
+			ResponseMessage.Dispose();
 		}
 	}
 }

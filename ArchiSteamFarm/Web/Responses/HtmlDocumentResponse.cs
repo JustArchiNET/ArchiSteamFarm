@@ -20,33 +20,43 @@
 // limitations under the License.
 
 using System;
-using System.Net;
-using System.Net.Http;
+using System.Threading.Tasks;
+using AngleSharp;
+using AngleSharp.Dom;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Web {
-	public class BasicResponse {
+namespace ArchiSteamFarm.Web.Responses {
+	public sealed class HtmlDocumentResponse : BasicResponse, IDisposable {
 		[PublicAPI]
-		public HttpStatusCode StatusCode { get; }
+		public IDocument Content { get; }
 
-		internal readonly Uri FinalUri;
-
-		internal BasicResponse(HttpResponseMessage httpResponseMessage) {
-			if (httpResponseMessage == null) {
-				throw new ArgumentNullException(nameof(httpResponseMessage));
-			}
-
-			FinalUri = httpResponseMessage.Headers.Location ?? httpResponseMessage.RequestMessage?.RequestUri ?? throw new InvalidOperationException();
-			StatusCode = httpResponseMessage.StatusCode;
-		}
-
-		internal BasicResponse(BasicResponse basicResponse) {
+		private HtmlDocumentResponse(BasicResponse basicResponse, IDocument content) : base(basicResponse) {
 			if (basicResponse == null) {
 				throw new ArgumentNullException(nameof(basicResponse));
 			}
 
-			FinalUri = basicResponse.FinalUri;
-			StatusCode = basicResponse.StatusCode;
+			Content = content ?? throw new ArgumentNullException(nameof(content));
+		}
+
+		public void Dispose() => Content.Dispose();
+
+		[PublicAPI]
+		public static async Task<HtmlDocumentResponse?> Create(StreamResponse streamResponse) {
+			if (streamResponse == null) {
+				throw new ArgumentNullException(nameof(streamResponse));
+			}
+
+			IBrowsingContext context = BrowsingContext.New();
+
+			try {
+				IDocument document = await context.OpenAsync(req => req.Content(streamResponse.Content, true)).ConfigureAwait(false);
+
+				return new HtmlDocumentResponse(streamResponse, document);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericWarningException(e);
+
+				return null;
+			}
 		}
 	}
 }
