@@ -204,7 +204,11 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			return !botName.Equals(SharedInfo.ASF, StringComparison.OrdinalIgnoreCase);
+			if (botName.Equals(SharedInfo.ASF, StringComparison.OrdinalIgnoreCase)) {
+				return false;
+			}
+
+			return RuntimeCompatibility.Path.GetRelativePath(".", botName) == botName;
 		}
 
 		internal static async Task RestartOrExit() {

@@ -21,6 +21,7 @@
 
 #if NETFRAMEWORK
 using System;
+using System.Text;
 #endif
 using JetBrains.Annotations;
 
@@ -29,21 +30,97 @@ namespace ArchiSteamFarm.RuntimeCompatibility {
 	public static class Path {
 		public static string GetRelativePath(string relativeTo, string path) {
 #if NETFRAMEWORK
-			if (relativeTo == null) {
+			if (string.IsNullOrEmpty(relativeTo)) {
 				throw new ArgumentNullException(nameof(relativeTo));
 			}
 
-			if (path == null) {
+			if (string.IsNullOrEmpty(path)) {
 				throw new ArgumentNullException(nameof(path));
 			}
 
-			if (!path.StartsWith(relativeTo, StringComparison.Ordinal)) {
-				throw new NotImplementedException();
+			StringComparison comparisonType = PathInternalNetCore.StringComparison;
+
+			relativeTo = System.IO.Path.GetFullPath(relativeTo);
+			path = System.IO.Path.GetFullPath(path);
+
+			// Need to check if the roots are different- if they are we need to return the "to" path.
+			if (!PathInternalNetCore.AreRootsEqual(relativeTo, path, comparisonType)) {
+				return path;
 			}
 
-			string result = path[relativeTo.Length..];
+			int commonLength = PathInternalNetCore.GetCommonPathLength(
+				relativeTo, path,
+				comparisonType == StringComparison.OrdinalIgnoreCase
+			);
 
-			return (result[0] == System.IO.Path.DirectorySeparatorChar) || (result[0] == System.IO.Path.AltDirectorySeparatorChar) ? result[1..] : result;
+			// If there is nothing in common they can't share the same root, return the "to" path as is.
+			if (commonLength == 0) {
+				return path;
+			}
+
+			// Trailing separators aren't significant for comparison
+			int relativeToLength = relativeTo.Length;
+
+			if (PathInternalNetCore.EndsInDirectorySeparator(relativeTo)) {
+				relativeToLength--;
+			}
+
+			bool pathEndsInSeparator = PathInternalNetCore.EndsInDirectorySeparator(path);
+			int pathLength = path.Length;
+
+			if (pathEndsInSeparator) {
+				pathLength--;
+			}
+
+			// If we have effectively the same path, return "."
+			if ((relativeToLength == pathLength) && (commonLength >= relativeToLength)) {
+				return ".";
+			}
+
+			// We have the same root, we need to calculate the difference now using the
+			// common Length and Segment count past the length.
+			//
+			// Some examples:
+			//
+			//  C:\Foo C:\Bar L3, S1 -> ..\Bar
+			//  C:\Foo C:\Foo\Bar L6, S0 -> Bar
+			//  C:\Foo\Bar C:\Bar\Bar L3, S2 -> ..\..\Bar\Bar
+			//  C:\Foo\Foo C:\Foo\Bar L7, S1 -> ..\Bar
+
+			StringBuilder sb = new(); //StringBuilderCache.Acquire(Math.Max(relativeTo.Length, path.Length));
+
+			// Add parent segments for segments past the common on the "from" path
+			if (commonLength < relativeToLength) {
+				sb.Append("..");
+
+				for (int i = commonLength + 1; i < relativeToLength; i++) {
+					if (PathInternalNetCore.IsDirectorySeparator(relativeTo[i])) {
+						sb.Append(System.IO.Path.DirectorySeparatorChar);
+						sb.Append("..");
+					}
+				}
+			} else if (PathInternalNetCore.IsDirectorySeparator(path[commonLength])) {
+				// No parent segments and we need to eat the initial separator
+				//  (C:\Foo C:\Foo\Bar case)
+				commonLength++;
+			}
+
+			// Now add the rest of the "to" path, adding back the trailing separator
+			int differenceLength = pathLength - commonLength;
+
+			if (pathEndsInSeparator) {
+				differenceLength++;
+			}
+
+			if (differenceLength > 0) {
+				if (sb.Length > 0) {
+					sb.Append(System.IO.Path.DirectorySeparatorChar);
+				}
+
+				sb.Append(path, commonLength, differenceLength);
+			}
+
+			return sb.ToString(); //StringBuilderCache.GetStringAndRelease(sb);
 #else
 			return System.IO.Path.GetRelativePath(relativeTo, path);
 #endif
