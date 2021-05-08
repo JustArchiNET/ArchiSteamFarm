@@ -88,6 +88,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} config file will be migrated to the latest syntax....
+        /// </summary>
+        public static string AutomaticFileMigration {
+            get {
+                return ResourceManager.GetString("AutomaticFileMigration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ASF will automatically check for new versions every {0}..
         /// </summary>
         public static string AutoUpdateCheckInfo {

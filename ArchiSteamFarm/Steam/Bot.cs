@@ -1091,7 +1091,7 @@ namespace ArchiSteamFarm.Steam {
 				return (0, DateTime.MaxValue, true);
 			}
 
-			if ((hoursPlayed < CardsFarmer.HoursForRefund) && !BotConfig.IdleRefundableGames) {
+			if ((hoursPlayed < CardsFarmer.HoursForRefund) && BotConfig.FarmNonRefundableGamesOnly) {
 				DateTime mostRecent = DateTime.MinValue;
 
 				foreach (uint packageID in packageIDs) {
@@ -1469,7 +1469,7 @@ namespace ArchiSteamFarm.Steam {
 				return;
 			}
 
-			BotConfig? botConfig = await BotConfig.Load(configFile).ConfigureAwait(false);
+			(BotConfig? botConfig, _) = await BotConfig.Load(configFile).ConfigureAwait(false);
 
 			if (botConfig == null) {
 				await Destroy().ConfigureAwait(false);
@@ -1571,7 +1571,7 @@ namespace ArchiSteamFarm.Steam {
 				return;
 			}
 
-			BotConfig? botConfig = await BotConfig.Load(configFilePath).ConfigureAwait(false);
+			(BotConfig? botConfig, string? latestJson) = await BotConfig.Load(configFilePath).ConfigureAwait(false);
 
 			if (botConfig == null) {
 				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorBotConfigInvalid, configFilePath));
@@ -1581,6 +1581,17 @@ namespace ArchiSteamFarm.Steam {
 
 			if (Debugging.IsDebugConfigured) {
 				ASF.ArchiLogger.LogGenericDebug(configFilePath + ": " + JsonConvert.SerializeObject(botConfig, Formatting.Indented));
+			}
+
+			if (!string.IsNullOrEmpty(latestJson)) {
+				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.AutomaticFileMigration, configFilePath));
+
+				await SerializableFile.Write(configFilePath, latestJson!).ConfigureAwait(false);
+
+				// A little extra time in order to avoid unnecessary "config changed" event
+				await Task.Delay(5000).ConfigureAwait(false);
+
+				ASF.ArchiLogger.LogGenericInfo(Strings.Done);
 			}
 
 			string databaseFilePath = GetFilePath(botName, EFileType.Database);

@@ -26,7 +26,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
@@ -126,8 +125,6 @@ namespace ArchiSteamFarm.Storage {
 
 		[PublicAPI]
 		public static readonly ImmutableHashSet<uint> DefaultBlacklist = ImmutableHashSet<uint>.Empty;
-
-		private static readonly SemaphoreSlim WriteSemaphore = new(1, 1);
 
 		[JsonIgnore]
 		[PublicAPI]
@@ -395,27 +392,8 @@ namespace ArchiSteamFarm.Storage {
 			}
 
 			string json = JsonConvert.SerializeObject(globalConfig, Formatting.Indented);
-			string newFilePath = filePath + ".new";
 
-			await WriteSemaphore.WaitAsync().ConfigureAwait(false);
-
-			try {
-				await Compatibility.File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
-
-				if (File.Exists(filePath)) {
-					File.Replace(newFilePath, filePath, null);
-				} else {
-					File.Move(newFilePath, filePath);
-				}
-			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericException(e);
-
-				return false;
-			} finally {
-				WriteSemaphore.Release();
-			}
-
-			return true;
+			return await SerializableFile.Write(filePath, json).ConfigureAwait(false);
 		}
 
 		public enum EOptimizationMode : byte {

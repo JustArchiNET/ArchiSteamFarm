@@ -1504,7 +1504,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 			}
 
 			switch (Bot.CardsFarmer.NowFarming) {
-				case false when Bot.BotConfig.IdlePriorityQueueOnly:
+				case false when Bot.BotConfig.FarmPriorityQueueOnly:
 					Utilities.InBackground(Bot.CardsFarmer.StartFarming);
 
 					break;

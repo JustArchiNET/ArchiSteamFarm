@@ -28,6 +28,8 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Helpers {
 	public abstract class SerializableFile : IDisposable {
+		private static readonly SemaphoreSlim GlobalFileSemaphore = new(1, 1);
+
 		private readonly SemaphoreSlim FileSemaphore = new(1, 1);
 
 		protected string? FilePath { get; set; }
@@ -77,9 +79,7 @@ namespace ArchiSteamFarm.Helpers {
 				string json = JsonConvert.SerializeObject(this, Debugging.IsUserDebugging ? Formatting.Indented : Formatting.None);
 
 				if (string.IsNullOrEmpty(json)) {
-					ASF.ArchiLogger.LogNullError(nameof(json));
-
-					return;
+					throw new InvalidOperationException(nameof(json));
 				}
 
 				string newFilePath = FilePath + ".new";
@@ -115,6 +115,39 @@ namespace ArchiSteamFarm.Helpers {
 			} finally {
 				FileSemaphore.Release();
 			}
+		}
+
+		internal static async Task<bool> Write(string filePath, string json) {
+			if (string.IsNullOrEmpty(filePath)) {
+				throw new ArgumentNullException(nameof(filePath));
+			}
+
+			if (string.IsNullOrEmpty(json)) {
+				throw new ArgumentNullException(nameof(json));
+			}
+
+			string newFilePath = filePath + ".new";
+
+			await GlobalFileSemaphore.WaitAsync().ConfigureAwait(false);
+
+			try {
+				// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
+				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+
+				if (System.IO.File.Exists(filePath)) {
+					System.IO.File.Replace(newFilePath, filePath, null);
+				} else {
+					System.IO.File.Move(newFilePath, filePath);
+				}
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+
+				return false;
+			} finally {
+				GlobalFileSemaphore.Release();
+			}
+
+			return true;
 		}
 	}
 }

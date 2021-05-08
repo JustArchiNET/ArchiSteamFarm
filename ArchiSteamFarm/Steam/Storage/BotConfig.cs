@@ -19,15 +19,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using ArchiSteamFarm.Compatibility;
+using File = System.IO.File;
+#else
+using System.IO;
+#endif
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using ArchiSteamFarm.Compatibility;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
@@ -60,13 +64,13 @@ namespace ArchiSteamFarm.Steam.Storage {
 		public const bool DefaultEnabled = false;
 
 		[PublicAPI]
+		public const bool DefaultFarmNonRefundableGamesOnly = false;
+
+		[PublicAPI]
+		public const bool DefaultFarmPriorityQueueOnly = false;
+
+		[PublicAPI]
 		public const byte DefaultHoursUntilCardDrops = 3;
-
-		[PublicAPI]
-		public const bool DefaultIdlePriorityQueueOnly = false;
-
-		[PublicAPI]
-		public const bool DefaultIdleRefundableGames = true;
 
 		[PublicAPI]
 		public const EPersonaState DefaultOnlineStatus = EPersonaState.Online;
@@ -141,8 +145,6 @@ namespace ArchiSteamFarm.Steam.Storage {
 		[PublicAPI]
 		public static readonly ImmutableHashSet<Asset.EType> DefaultTransferableTypes = ImmutableHashSet.Create(Asset.EType.BoosterPack, Asset.EType.FoilTradingCard, Asset.EType.TradingCard);
 
-		private static readonly SemaphoreSlim WriteSemaphore = new(1, 1);
-
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool AcceptGifts { get; private set; } = DefaultAcceptGifts;
 
@@ -168,16 +170,16 @@ namespace ArchiSteamFarm.Steam.Storage {
 		public ImmutableList<EFarmingOrder> FarmingOrders { get; private set; } = DefaultFarmingOrders;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		public bool FarmNonRefundableGamesOnly { get; private set; } = DefaultFarmNonRefundableGamesOnly;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		public bool FarmPriorityQueueOnly { get; private set; } = DefaultFarmPriorityQueueOnly;
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		public ImmutableHashSet<uint> GamesPlayedWhileIdle { get; private set; } = DefaultGamesPlayedWhileIdle;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public byte HoursUntilCardDrops { get; private set; } = DefaultHoursUntilCardDrops;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		public bool IdlePriorityQueueOnly { get; private set; } = DefaultIdlePriorityQueueOnly;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		public bool IdleRefundableGames { get; private set; } = DefaultIdleRefundableGames;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ImmutableHashSet<Asset.EType> LootableTypes { get; private set; } = DefaultLootableTypes;
@@ -305,6 +307,26 @@ namespace ArchiSteamFarm.Steam.Storage {
 		private string? BackingSteamParentalCode = DefaultSteamParentalCode;
 		private string? BackingSteamPassword = DefaultSteamPassword;
 
+		[Obsolete]
+		[JsonProperty(Required = Required.DisallowNull)]
+		private bool IdlePriorityQueueOnly {
+			set {
+				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningDeprecated, nameof(IdlePriorityQueueOnly), nameof(FarmPriorityQueueOnly)));
+
+				FarmPriorityQueueOnly = value;
+			}
+		}
+
+		[Obsolete]
+		[JsonProperty(Required = Required.DisallowNull)]
+		private bool IdleRefundableGames {
+			set {
+				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningDeprecated, nameof(IdleRefundableGames), nameof(FarmNonRefundableGamesOnly)));
+
+				FarmNonRefundableGamesOnly = !value;
+			}
+		}
+
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamMasterClanID), Required = Required.DisallowNull)]
 		private string SSteamMasterClanID {
 			get => SteamMasterClanID.ToString(CultureInfo.InvariantCulture);
@@ -334,27 +356,8 @@ namespace ArchiSteamFarm.Steam.Storage {
 			}
 
 			string json = JsonConvert.SerializeObject(botConfig, Formatting.Indented);
-			string newFilePath = filePath + ".new";
 
-			await WriteSemaphore.WaitAsync().ConfigureAwait(false);
-
-			try {
-				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
-
-				if (System.IO.File.Exists(filePath)) {
-					System.IO.File.Replace(newFilePath, filePath, null);
-				} else {
-					System.IO.File.Move(newFilePath, filePath);
-				}
-			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericException(e);
-
-				return false;
-			} finally {
-				WriteSemaphore.Release();
-			}
-
-			return true;
+			return await SerializableFile.Write(filePath, json).ConfigureAwait(false);
 		}
 
 		internal (bool Valid, string? ErrorMessage) CheckValidation() {
@@ -423,37 +426,38 @@ namespace ArchiSteamFarm.Steam.Storage {
 			return !Enum.IsDefined(typeof(ArchiHandler.EUserInterfaceMode), UserInterfaceMode) ? (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(UserInterfaceMode), UserInterfaceMode)) : (true, null);
 		}
 
-		internal static async Task<BotConfig?> Load(string filePath) {
+		internal static async Task<(BotConfig? BotConfig, string? LatestJson)> Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				throw new ArgumentNullException(nameof(filePath));
 			}
 
-			if (!System.IO.File.Exists(filePath)) {
-				return null;
+			if (!File.Exists(filePath)) {
+				return (null, null);
 			}
 
+			string json;
 			BotConfig? botConfig;
 
 			try {
-				string json = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+				json = await Compatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(json)) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
 
-					return null;
+					return (null, null);
 				}
 
 				botConfig = JsonConvert.DeserializeObject<BotConfig>(json);
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 
-				return null;
+				return (null, null);
 			}
 
 			if (botConfig == null) {
 				ASF.ArchiLogger.LogNullError(nameof(botConfig));
 
-				return null;
+				return (null, null);
 			}
 
 			(bool valid, string? errorMessage) = botConfig.CheckValidation();
@@ -463,10 +467,12 @@ namespace ArchiSteamFarm.Steam.Storage {
 					ASF.ArchiLogger.LogGenericError(errorMessage!);
 				}
 
-				return null;
+				return (null, null);
 			}
 
-			return botConfig;
+			string latestJson = JsonConvert.SerializeObject(botConfig, Formatting.Indented);
+
+			return (botConfig, json != latestJson ? latestJson : null);
 		}
 
 		public enum EAccess : byte {
@@ -537,10 +543,10 @@ namespace ArchiSteamFarm.Steam.Storage {
 		public bool ShouldSerializeCustomGamePlayedWhileIdle() => ShouldSerializeDefaultValues || (CustomGamePlayedWhileIdle != DefaultCustomGamePlayedWhileIdle);
 		public bool ShouldSerializeEnabled() => ShouldSerializeDefaultValues || (Enabled != DefaultEnabled);
 		public bool ShouldSerializeFarmingOrders() => ShouldSerializeDefaultValues || ((FarmingOrders != DefaultFarmingOrders) && !FarmingOrders.SequenceEqual(DefaultFarmingOrders));
+		public bool ShouldSerializeFarmNonRefundableGamesOnly() => ShouldSerializeDefaultValues || (FarmNonRefundableGamesOnly != DefaultFarmNonRefundableGamesOnly);
+		public bool ShouldSerializeFarmPriorityQueueOnly() => ShouldSerializeDefaultValues || (FarmPriorityQueueOnly != DefaultFarmPriorityQueueOnly);
 		public bool ShouldSerializeGamesPlayedWhileIdle() => ShouldSerializeDefaultValues || ((GamesPlayedWhileIdle != DefaultGamesPlayedWhileIdle) && !GamesPlayedWhileIdle.SetEquals(DefaultGamesPlayedWhileIdle));
 		public bool ShouldSerializeHoursUntilCardDrops() => ShouldSerializeDefaultValues || (HoursUntilCardDrops != DefaultHoursUntilCardDrops);
-		public bool ShouldSerializeIdlePriorityQueueOnly() => ShouldSerializeDefaultValues || (IdlePriorityQueueOnly != DefaultIdlePriorityQueueOnly);
-		public bool ShouldSerializeIdleRefundableGames() => ShouldSerializeDefaultValues || (IdleRefundableGames != DefaultIdleRefundableGames);
 		public bool ShouldSerializeLootableTypes() => ShouldSerializeDefaultValues || ((LootableTypes != DefaultLootableTypes) && !LootableTypes.SetEquals(DefaultLootableTypes));
 		public bool ShouldSerializeMatchableTypes() => ShouldSerializeDefaultValues || ((MatchableTypes != DefaultMatchableTypes) && !MatchableTypes.SetEquals(DefaultMatchableTypes));
 		public bool ShouldSerializeOnlineStatus() => ShouldSerializeDefaultValues || (OnlineStatus != DefaultOnlineStatus);

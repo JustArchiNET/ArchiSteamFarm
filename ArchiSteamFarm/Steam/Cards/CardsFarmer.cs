@@ -255,7 +255,7 @@ namespace ArchiSteamFarm.Steam.Cards {
 				return;
 			}
 
-			if (!Bot.CanReceiveSteamCards || (Bot.BotConfig.IdlePriorityQueueOnly && (Bot.BotDatabase.IdlingPriorityAppIDs.Count == 0))) {
+			if (!Bot.CanReceiveSteamCards || (Bot.BotConfig.FarmPriorityQueueOnly && (Bot.BotDatabase.IdlingPriorityAppIDs.Count == 0))) {
 				Bot.ArchiLogger.LogGenericInfo(Strings.NothingToIdle);
 				await Bot.OnFarmingFinished(false).ConfigureAwait(false);
 
@@ -440,7 +440,7 @@ namespace ArchiSteamFarm.Steam.Cards {
 					continue;
 				}
 
-				if (SalesBlacklist.Contains(appID) || (ASF.GlobalConfig?.Blacklist.Contains(appID) == true) || Bot.IsBlacklistedFromIdling(appID) || (Bot.BotConfig.IdlePriorityQueueOnly && !Bot.IsPriorityIdling(appID))) {
+				if (SalesBlacklist.Contains(appID) || (ASF.GlobalConfig?.Blacklist.Contains(appID) == true) || Bot.IsBlacklistedFromIdling(appID) || (Bot.BotConfig.FarmPriorityQueueOnly && !Bot.IsPriorityIdling(appID))) {
 					// We're configured to ignore this appID, so skip it
 					continue;
 				}
