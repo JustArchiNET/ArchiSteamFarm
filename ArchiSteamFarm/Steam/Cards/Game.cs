@@ -25,7 +25,7 @@ using HashCode = ArchiSteamFarm.Compatibility.HashCode;
 using System;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.Steam.Idling {
+namespace ArchiSteamFarm.Steam.Cards {
 	public sealed class Game : IEquatable<Game> {
 		[JsonProperty]
 		public uint AppID { get; }

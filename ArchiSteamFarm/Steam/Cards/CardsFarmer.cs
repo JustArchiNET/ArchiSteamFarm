@@ -44,7 +44,7 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SteamKit2;
 
-namespace ArchiSteamFarm.Steam.Idling {
+namespace ArchiSteamFarm.Steam.Cards {
 	public sealed class CardsFarmer : IAsyncDisposable {
 		internal const byte DaysForRefund = 14; // In how many days since payment we're allowed to refund
 		internal const byte HoursForRefund = 2; // Up to how many hours we're allowed to play for refund
