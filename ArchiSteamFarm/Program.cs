@@ -219,10 +219,12 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(globalConfigFile));
 			}
 
+			string? latestJson = null;
+
 			GlobalConfig? globalConfig;
 
 			if (File.Exists(globalConfigFile)) {
-				globalConfig = await GlobalConfig.Load(globalConfigFile).ConfigureAwait(false);
+				(globalConfig, latestJson) = await GlobalConfig.Load(globalConfigFile).ConfigureAwait(false);
 
 				if (globalConfig == null) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorGlobalConfigNotLoaded, globalConfigFile));
@@ -234,9 +236,7 @@ namespace ArchiSteamFarm {
 				globalConfig = new GlobalConfig();
 			}
 
-			await ASF.InitGlobalConfig(globalConfig).ConfigureAwait(false);
-
-			if (Debugging.IsDebugConfigured) {
+			if (globalConfig.Debug) {
 				ASF.ArchiLogger.LogGenericDebug(globalConfigFile + ": " + JsonConvert.SerializeObject(globalConfig, Formatting.Indented));
 			}
 
@@ -262,6 +262,14 @@ namespace ArchiSteamFarm {
 					}
 				}
 			}
+
+			if (!string.IsNullOrEmpty(latestJson)) {
+				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.AutomaticFileMigration, globalConfigFile));
+				await SerializableFile.Write(globalConfigFile, latestJson!).ConfigureAwait(false);
+				ASF.ArchiLogger.LogGenericInfo(Strings.Done);
+			}
+
+			await ASF.InitGlobalConfig(globalConfig).ConfigureAwait(false);
 
 			// Skip translation progress for English and invariant (such as "C") cultures
 			switch (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName) {

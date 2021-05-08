@@ -1585,12 +1585,7 @@ namespace ArchiSteamFarm.Steam {
 
 			if (!string.IsNullOrEmpty(latestJson)) {
 				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.AutomaticFileMigration, configFilePath));
-
 				await SerializableFile.Write(configFilePath, latestJson!).ConfigureAwait(false);
-
-				// A little extra time in order to avoid unnecessary "config changed" event
-				await Task.Delay(5000).ConfigureAwait(false);
-
 				ASF.ArchiLogger.LogGenericInfo(Strings.Done);
 			}
 

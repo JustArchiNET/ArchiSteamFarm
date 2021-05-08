@@ -334,37 +334,38 @@ namespace ArchiSteamFarm.Storage {
 			return Enum.IsDefined(typeof(EUpdateChannel), UpdateChannel) ? (true, null) : (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(UpdateChannel), UpdateChannel));
 		}
 
-		internal static async Task<GlobalConfig?> Load(string filePath) {
+		internal static async Task<(GlobalConfig? GlobalConfig, string? LatestJson)> Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				throw new ArgumentNullException(nameof(filePath));
 			}
 
 			if (!File.Exists(filePath)) {
-				return null;
+				return (null, null);
 			}
 
+			string json;
 			GlobalConfig? globalConfig;
 
 			try {
-				string json = await Compatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+				json = await Compatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(json)) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
 
-					return null;
+					return (null, null);
 				}
 
 				globalConfig = JsonConvert.DeserializeObject<GlobalConfig>(json);
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 
-				return null;
+				return (null, null);
 			}
 
 			if (globalConfig == null) {
 				ASF.ArchiLogger.LogNullError(nameof(globalConfig));
 
-				return null;
+				return (null, null);
 			}
 
 			(bool valid, string? errorMessage) = globalConfig.CheckValidation();
@@ -374,10 +375,14 @@ namespace ArchiSteamFarm.Storage {
 					ASF.ArchiLogger.LogGenericError(errorMessage!);
 				}
 
-				return null;
+				return (null, null);
 			}
 
-			return globalConfig;
+			globalConfig.Saving = true;
+			string latestJson = JsonConvert.SerializeObject(globalConfig, Formatting.Indented);
+			globalConfig.Saving = false;
+
+			return (globalConfig, json != latestJson ? latestJson : null);
 		}
 
 		internal static async Task<bool> Write(string filePath, GlobalConfig globalConfig) {
