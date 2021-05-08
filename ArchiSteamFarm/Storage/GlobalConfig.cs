@@ -173,9 +173,6 @@ namespace ArchiSteamFarm.Storage {
 			}
 		}
 
-		[JsonProperty]
-		internal readonly string? IPCPassword = DefaultIPCPassword;
-
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool AutoRestart { get; private set; } = DefaultAutoRestart;
 
@@ -214,6 +211,9 @@ namespace ArchiSteamFarm.Storage {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool IPC { get; private set; } = DefaultIPC;
+
+		[JsonProperty]
+		public string? IPCPassword { get; private set; } = DefaultIPCPassword;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ArchiCryptoHelper.EHashingMethod IPCPasswordFormat { get; private set; } = DefaultIPCPasswordFormat;
