@@ -73,7 +73,7 @@ namespace ArchiSteamFarm.Storage {
 		public const byte DefaultInventoryLimiterDelay = 3;
 
 		[PublicAPI]
-		public const bool DefaultIPC = false;
+		public const bool DefaultIPC = true;
 
 		[PublicAPI]
 		public const string? DefaultIPCPassword = null;
