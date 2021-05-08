@@ -54,17 +54,8 @@ jobs:
     - name: Build ASF-ui
       run: npm run-script deploy --no-progress --prefix ASF-ui
 
-    - name: Build ArchiSteamFarm
-      run: dotnet build ArchiSteamFarm -c "${{ env.CONFIGURATION }}" -p:UseAppHost=false --nologo
-
-    - name: Build ArchiSteamFarm.CustomPlugins.ExamplePlugin
-      run: dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "${{ env.CONFIGURATION }}" -p:UseAppHost=false --nologo
-
-    - name: Build ArchiSteamFarm.CustomPlugins.PeriodicGC
-      run: dotnet build ArchiSteamFarm.CustomPlugins.PeriodicGC -c "${{ env.CONFIGURATION }}" -p:UseAppHost=false --nologo
-
-    - name: Build ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
-      run: dotnet build "${{ env.STEAM_TOKEN_DUMPER_NAME }}" -c "${{ env.CONFIGURATION }}" -p:UseAppHost=false --nologo
+    - name: Build ArchiSteamFarm and other projects
+      run: dotnet build -c "${{ env.CONFIGURATION }}" -p:UseAppHost=false --nologo
 
     - name: Run ArchiSteamFarm.Tests
       run: dotnet test ArchiSteamFarm.Tests -c "${{ env.CONFIGURATION }}" -p:UseAppHost=false --nologo

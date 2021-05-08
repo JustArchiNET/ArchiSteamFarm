@@ -126,31 +126,7 @@ build_script:
     }
 
 
-    dotnet build ArchiSteamFarm -c "$env:CONFIGURATION" -p:UseAppHost=false --nologo
-
-
-    if ($LastExitCode -ne 0) {
-        throw "Last command failed."
-    }
-
-
-    dotnet build ArchiSteamFarm.CustomPlugins.ExamplePlugin -c "$env:CONFIGURATION" -p:UseAppHost=false --nologo
-
-
-    if ($LastExitCode -ne 0) {
-        throw "Last command failed."
-    }
-
-
-    dotnet build ArchiSteamFarm.CustomPlugins.PeriodicGC -c "$env:CONFIGURATION" -p:UseAppHost=false --nologo
-
-
-    if ($LastExitCode -ne 0) {
-        throw "Last command failed."
-    }
-
-
-    dotnet build "$env:STEAM_TOKEN_DUMPER_NAME" -c "$env:CONFIGURATION" -p:UseAppHost=false --nologo
+    dotnet build -c "$env:CONFIGURATION" -p:UseAppHost=false --nologo
 
 
     if ($LastExitCode -ne 0) {
