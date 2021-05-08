@@ -126,7 +126,7 @@ build_script:
     }
 
 
-    dotnet build -c "$env:CONFIGURATION" -p:UseAppHost=false --nologo
+    dotnet build -c "$env:CONFIGURATION" -p:ContinuousIntegrationBuild=true -p:UseAppHost=false --nologo
 
 
     if ($LastExitCode -ne 0) {
@@ -141,7 +141,7 @@ test_script:
     $ProgressPreference = 'SilentlyContinue'
 
 
-    dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" -p:UseAppHost=false --nologo
+    dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" -p:ContinuousIntegrationBuild=true -p:UseAppHost=false --nologo
 
 
     if ($LastExitCode -ne 0) {
@@ -161,7 +161,7 @@ after_test:
     }
 
 
-    dotnet publish "$env:STEAM_TOKEN_DUMPER_NAME" -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -o "out/$env:STEAM_TOKEN_DUMPER_NAME/$env:NET_CORE_VERSION" -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
+    dotnet publish "$env:STEAM_TOKEN_DUMPER_NAME" -c "$env:CONFIGURATION" -f "$env:NET_CORE_VERSION" -o "out/$env:STEAM_TOKEN_DUMPER_NAME/$env:NET_CORE_VERSION" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
 
 
     if ($LastExitCode -ne 0) {
@@ -169,14 +169,14 @@ after_test:
     }
 
 
-    dotnet publish "$env:STEAM_TOKEN_DUMPER_NAME" -c "$env:CONFIGURATION" -f "$env:NET_FRAMEWORK_VERSION" -o "out/$env:STEAM_TOKEN_DUMPER_NAME/$env:NET_FRAMEWORK_VERSION" -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
+    dotnet publish "$env:STEAM_TOKEN_DUMPER_NAME" -c "$env:CONFIGURATION" -f "$env:NET_FRAMEWORK_VERSION" -o "out/$env:STEAM_TOKEN_DUMPER_NAME/$env:NET_FRAMEWORK_VERSION" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
 
 
     if ($LastExitCode -ne 0) {
         throw "Last command failed."
     }
 
-    dotnet clean ArchiSteamFarm -c "$env:CONFIGURATION" -p:UseAppHost=false --nologo
+    dotnet clean ArchiSteamFarm -c "$env:CONFIGURATION" -p:ContinuousIntegrationBuild=true -p:UseAppHost=false --nologo
 
 
     if ($LastExitCode -ne 0) {
@@ -184,7 +184,7 @@ after_test:
     }
 
 
-    dotnet restore ArchiSteamFarm
+    dotnet restore ArchiSteamFarm -p:ContinuousIntegrationBuild=true
 
 
     if ($LastExitCode -ne 0) {
@@ -213,7 +213,7 @@ after_test:
             $variantArgs = '-p:PublishSingleFile=true', '-p:PublishTrimmed=true', '-r', "$variant"
         }
 
-        dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" "-p:ASFVariant=$variant" --no-restore --nologo $variantArgs
+        dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" "-p:ASFVariant=$variant" -p:ContinuousIntegrationBuild=true --no-restore --nologo $variantArgs
 
         if ($LastExitCode -ne 0) {
             throw "Last command failed."

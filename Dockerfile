@@ -40,9 +40,9 @@ RUN dotnet --info && \
     if [ -f "ArchiSteamFarm/Localization/Strings.zh-CN.resx" ]; then ln -s "Strings.zh-CN.resx" "ArchiSteamFarm/Localization/Strings.zh-Hans.resx"; fi && \
     if [ -f "ArchiSteamFarm/Localization/Strings.zh-TW.resx" ]; then ln -s "Strings.zh-TW.resx" "ArchiSteamFarm/Localization/Strings.zh-Hant.resx"; fi && \
     if [ -n "${STEAM_TOKEN_DUMPER_TOKEN-}" ] && [ -f "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs" ]; then sed -i "s/STEAM_TOKEN_DUMPER_TOKEN/${STEAM_TOKEN_DUMPER_TOKEN}/g" "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs"; fi && \
-    dotnet publish "${STEAM_TOKEN_DUMPER_NAME}" -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}" -p:SelfContained=false -p:UseAppHost=false -r "$asf_variant" --nologo && \
-    dotnet clean ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -p:SelfContained=false -p:UseAppHost=false -r "$asf_variant" --nologo && \
-    dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/result" -p:ASFVariant=docker -p:SelfContained=false -p:UseAppHost=false -r "$asf_variant" --nologo && \
+    dotnet publish "${STEAM_TOKEN_DUMPER_NAME}" -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}" -p:ContinuousIntegrationBuild=true -p:SelfContained=false -p:UseAppHost=false -r "$asf_variant" --nologo && \
+    dotnet clean ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -p:ContinuousIntegrationBuild=true -p:SelfContained=false -p:UseAppHost=false -r "$asf_variant" --nologo && \
+    dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/result" -p:ASFVariant=docker -p:ContinuousIntegrationBuild=true -p:SelfContained=false -p:UseAppHost=false -r "$asf_variant" --nologo && \
     if [ -d "ArchiSteamFarm/overlay/generic" ]; then cp -pR "ArchiSteamFarm/overlay/generic/"* "out/result"; fi && \
     if [ -d "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}" ]; then mkdir -p "out/result/plugins/${STEAM_TOKEN_DUMPER_NAME}"; cp -pR "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}/"* "out/result/plugins/${STEAM_TOKEN_DUMPER_NAME}"; fi
 

@@ -55,10 +55,10 @@ jobs:
       run: npm run-script deploy --no-progress --prefix ASF-ui
 
     - name: Build ArchiSteamFarm and other projects
-      run: dotnet build -c "${{ env.CONFIGURATION }}" -p:UseAppHost=false --nologo
+      run: dotnet build -c "${{ env.CONFIGURATION }}" -p:ContinuousIntegrationBuild=true -p:UseAppHost=false --nologo
 
     - name: Run ArchiSteamFarm.Tests
-      run: dotnet test ArchiSteamFarm.Tests -c "${{ env.CONFIGURATION }}" -p:UseAppHost=false --nologo
+      run: dotnet test ArchiSteamFarm.Tests -c "${{ env.CONFIGURATION }}" -p:ContinuousIntegrationBuild=true -p:UseAppHost=false --nologo
 
     - name: Upload latest strings for translation on Crowdin
       continue-on-error: true
@@ -91,17 +91,17 @@ jobs:
         }
 
     - name: Publish ArchiSteamFarm.OfficialPlugins.SteamTokenDumper for .NET Core
-      run: dotnet publish "${{ env.STEAM_TOKEN_DUMPER_NAME }}" -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" -o "out/${{ env.STEAM_TOKEN_DUMPER_NAME }}/${{ env.NET_CORE_VERSION }}" -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
+      run: dotnet publish "${{ env.STEAM_TOKEN_DUMPER_NAME }}" -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_CORE_VERSION }}" -o "out/${{ env.STEAM_TOKEN_DUMPER_NAME }}/${{ env.NET_CORE_VERSION }}" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
 
     - name: Publish ArchiSteamFarm.OfficialPlugins.SteamTokenDumper for .NET Framework
       if: startsWith(matrix.os, 'windows-')
-      run: dotnet publish "${{ env.STEAM_TOKEN_DUMPER_NAME }}" -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_FRAMEWORK_VERSION }}" -o "out/${{ env.STEAM_TOKEN_DUMPER_NAME }}/${{ env.NET_FRAMEWORK_VERSION }}" -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
+      run: dotnet publish "${{ env.STEAM_TOKEN_DUMPER_NAME }}" -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_FRAMEWORK_VERSION }}" -o "out/${{ env.STEAM_TOKEN_DUMPER_NAME }}/${{ env.NET_FRAMEWORK_VERSION }}" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
 
     - name: Perform cleanup of ArchiSteamFarm in preparation for publishing
-      run: dotnet clean ArchiSteamFarm -c "${{ env.CONFIGURATION }}" -p:UseAppHost=false --nologo
+      run: dotnet clean ArchiSteamFarm -c "${{ env.CONFIGURATION }}" -p:ContinuousIntegrationBuild=true -p:UseAppHost=false --nologo
 
     - name: Restore packages in preparation for ArchiSteamFarm publishing
-      run: dotnet restore ArchiSteamFarm
+      run: dotnet restore ArchiSteamFarm -p:ContinuousIntegrationBuild=true
 
     - name: Publish ArchiSteamFarm on Unix
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
@@ -118,7 +118,7 @@ jobs:
                 local variantArgs="-p:PublishSingleFile=true -p:PublishTrimmed=true -r $1"
             fi
 
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" "-p:ASFVariant=$1" --no-restore --nologo $variantArgs
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" "-p:ASFVariant=$1" -p:ContinuousIntegrationBuild=true --no-restore --nologo $variantArgs
 
             # If we're including any overlay for this variant, copy it to output directory
             if [ -d "ArchiSteamFarm/overlay/${1}" ]; then
@@ -189,7 +189,7 @@ jobs:
                 $variantArgs = '-p:PublishSingleFile=true', '-p:PublishTrimmed=true', '-r', "$variant"
             }
 
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" "-p:ASFVariant=$variant" --no-restore --nologo $variantArgs
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" "-p:ASFVariant=$variant" -p:ContinuousIntegrationBuild=true --no-restore --nologo $variantArgs
 
             if ($LastExitCode -ne 0) {
                 throw "Last command failed."
