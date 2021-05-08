@@ -111,9 +111,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, errorMessage));
 			}
 
-			request.BotConfig.ShouldSerializeDefaultValues = false;
-			request.BotConfig.ShouldSerializeHelperProperties = false;
-			request.BotConfig.ShouldSerializeSensitiveDetails = true;
+			request.BotConfig.Saving = true;
 
 			HashSet<string> bots = botNames.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToHashSet(Bot.BotsComparer);
 

@@ -299,9 +299,7 @@ namespace ArchiSteamFarm.Steam.Storage {
 		internal bool IsSteamLoginSet { get; private set; }
 		internal bool IsSteamParentalCodeSet { get; private set; }
 		internal bool IsSteamPasswordSet { get; private set; }
-		internal bool ShouldSerializeDefaultValues { private get; set; } = true;
-		internal bool ShouldSerializeHelperProperties { private get; set; } = true;
-		internal bool ShouldSerializeSensitiveDetails { private get; set; }
+		internal bool Saving { get; set; }
 
 		private string? BackingSteamLogin = DefaultSteamLogin;
 		private string? BackingSteamParentalCode = DefaultSteamParentalCode;
@@ -470,7 +468,9 @@ namespace ArchiSteamFarm.Steam.Storage {
 				return (null, null);
 			}
 
+			botConfig.Saving = true;
 			string latestJson = JsonConvert.SerializeObject(botConfig, Formatting.Indented);
+			botConfig.Saving = false;
 
 			return (botConfig, json != latestJson ? latestJson : null);
 		}
@@ -535,38 +535,38 @@ namespace ArchiSteamFarm.Steam.Storage {
 		}
 
 		// ReSharper disable UnusedMember.Global
-		public bool ShouldSerializeAcceptGifts() => ShouldSerializeDefaultValues || (AcceptGifts != DefaultAcceptGifts);
-		public bool ShouldSerializeAutoSteamSaleEvent() => ShouldSerializeDefaultValues || (AutoSteamSaleEvent != DefaultAutoSteamSaleEvent);
-		public bool ShouldSerializeBotBehaviour() => ShouldSerializeDefaultValues || (BotBehaviour != DefaultBotBehaviour);
-		public bool ShouldSerializeCompleteTypesToSend() => ShouldSerializeDefaultValues || ((CompleteTypesToSend != DefaultCompleteTypesToSend) && !CompleteTypesToSend.SetEquals(DefaultCompleteTypesToSend));
-		public bool ShouldSerializeCustomGamePlayedWhileFarming() => ShouldSerializeDefaultValues || (CustomGamePlayedWhileFarming != DefaultCustomGamePlayedWhileFarming);
-		public bool ShouldSerializeCustomGamePlayedWhileIdle() => ShouldSerializeDefaultValues || (CustomGamePlayedWhileIdle != DefaultCustomGamePlayedWhileIdle);
-		public bool ShouldSerializeEnabled() => ShouldSerializeDefaultValues || (Enabled != DefaultEnabled);
-		public bool ShouldSerializeFarmingOrders() => ShouldSerializeDefaultValues || ((FarmingOrders != DefaultFarmingOrders) && !FarmingOrders.SequenceEqual(DefaultFarmingOrders));
-		public bool ShouldSerializeFarmNonRefundableGamesOnly() => ShouldSerializeDefaultValues || (FarmNonRefundableGamesOnly != DefaultFarmNonRefundableGamesOnly);
-		public bool ShouldSerializeFarmPriorityQueueOnly() => ShouldSerializeDefaultValues || (FarmPriorityQueueOnly != DefaultFarmPriorityQueueOnly);
-		public bool ShouldSerializeGamesPlayedWhileIdle() => ShouldSerializeDefaultValues || ((GamesPlayedWhileIdle != DefaultGamesPlayedWhileIdle) && !GamesPlayedWhileIdle.SetEquals(DefaultGamesPlayedWhileIdle));
-		public bool ShouldSerializeHoursUntilCardDrops() => ShouldSerializeDefaultValues || (HoursUntilCardDrops != DefaultHoursUntilCardDrops);
-		public bool ShouldSerializeLootableTypes() => ShouldSerializeDefaultValues || ((LootableTypes != DefaultLootableTypes) && !LootableTypes.SetEquals(DefaultLootableTypes));
-		public bool ShouldSerializeMatchableTypes() => ShouldSerializeDefaultValues || ((MatchableTypes != DefaultMatchableTypes) && !MatchableTypes.SetEquals(DefaultMatchableTypes));
-		public bool ShouldSerializeOnlineStatus() => ShouldSerializeDefaultValues || (OnlineStatus != DefaultOnlineStatus);
-		public bool ShouldSerializePasswordFormat() => ShouldSerializeDefaultValues || (PasswordFormat != DefaultPasswordFormat);
-		public bool ShouldSerializePaused() => ShouldSerializeDefaultValues || (Paused != DefaultPaused);
-		public bool ShouldSerializeRedeemingPreferences() => ShouldSerializeDefaultValues || (RedeemingPreferences != DefaultRedeemingPreferences);
-		public bool ShouldSerializeSendOnFarmingFinished() => ShouldSerializeDefaultValues || (SendOnFarmingFinished != DefaultSendOnFarmingFinished);
-		public bool ShouldSerializeSendTradePeriod() => ShouldSerializeDefaultValues || (SendTradePeriod != DefaultSendTradePeriod);
-		public bool ShouldSerializeShutdownOnFarmingFinished() => ShouldSerializeDefaultValues || (ShutdownOnFarmingFinished != DefaultShutdownOnFarmingFinished);
-		public bool ShouldSerializeSSteamMasterClanID() => ShouldSerializeDefaultValues || (ShouldSerializeHelperProperties && (SteamMasterClanID != DefaultSteamMasterClanID));
-		public bool ShouldSerializeSteamLogin() => ShouldSerializeSensitiveDetails && (ShouldSerializeDefaultValues || (SteamLogin != DefaultSteamLogin));
-		public bool ShouldSerializeSteamMasterClanID() => ShouldSerializeDefaultValues || (SteamMasterClanID != DefaultSteamMasterClanID);
-		public bool ShouldSerializeSteamParentalCode() => ShouldSerializeSensitiveDetails && (ShouldSerializeDefaultValues || (SteamParentalCode != DefaultSteamParentalCode));
-		public bool ShouldSerializeSteamPassword() => ShouldSerializeSensitiveDetails && (ShouldSerializeDefaultValues || (SteamPassword != DefaultSteamPassword));
-		public bool ShouldSerializeSteamTradeToken() => ShouldSerializeDefaultValues || (SteamTradeToken != DefaultSteamTradeToken);
-		public bool ShouldSerializeSteamUserPermissions() => ShouldSerializeDefaultValues || ((SteamUserPermissions != DefaultSteamUserPermissions) && ((SteamUserPermissions.Count != DefaultSteamUserPermissions.Count) || SteamUserPermissions.Except(DefaultSteamUserPermissions).Any()));
-		public bool ShouldSerializeTradingPreferences() => ShouldSerializeDefaultValues || (TradingPreferences != DefaultTradingPreferences);
-		public bool ShouldSerializeTransferableTypes() => ShouldSerializeDefaultValues || ((TransferableTypes != DefaultTransferableTypes) && !TransferableTypes.SetEquals(DefaultTransferableTypes));
-		public bool ShouldSerializeUseLoginKeys() => ShouldSerializeDefaultValues || (UseLoginKeys != DefaultUseLoginKeys);
-		public bool ShouldSerializeUserInterfaceMode() => ShouldSerializeDefaultValues || (UserInterfaceMode != DefaultUserInterfaceMode);
+		public bool ShouldSerializeAcceptGifts() => !Saving || (AcceptGifts != DefaultAcceptGifts);
+		public bool ShouldSerializeAutoSteamSaleEvent() => !Saving || (AutoSteamSaleEvent != DefaultAutoSteamSaleEvent);
+		public bool ShouldSerializeBotBehaviour() => !Saving || (BotBehaviour != DefaultBotBehaviour);
+		public bool ShouldSerializeCompleteTypesToSend() => !Saving || ((CompleteTypesToSend != DefaultCompleteTypesToSend) && !CompleteTypesToSend.SetEquals(DefaultCompleteTypesToSend));
+		public bool ShouldSerializeCustomGamePlayedWhileFarming() => !Saving || (CustomGamePlayedWhileFarming != DefaultCustomGamePlayedWhileFarming);
+		public bool ShouldSerializeCustomGamePlayedWhileIdle() => !Saving || (CustomGamePlayedWhileIdle != DefaultCustomGamePlayedWhileIdle);
+		public bool ShouldSerializeEnabled() => !Saving || (Enabled != DefaultEnabled);
+		public bool ShouldSerializeFarmingOrders() => !Saving || ((FarmingOrders != DefaultFarmingOrders) && !FarmingOrders.SequenceEqual(DefaultFarmingOrders));
+		public bool ShouldSerializeFarmNonRefundableGamesOnly() => !Saving || (FarmNonRefundableGamesOnly != DefaultFarmNonRefundableGamesOnly);
+		public bool ShouldSerializeFarmPriorityQueueOnly() => !Saving || (FarmPriorityQueueOnly != DefaultFarmPriorityQueueOnly);
+		public bool ShouldSerializeGamesPlayedWhileIdle() => !Saving || ((GamesPlayedWhileIdle != DefaultGamesPlayedWhileIdle) && !GamesPlayedWhileIdle.SetEquals(DefaultGamesPlayedWhileIdle));
+		public bool ShouldSerializeHoursUntilCardDrops() => !Saving || (HoursUntilCardDrops != DefaultHoursUntilCardDrops);
+		public bool ShouldSerializeLootableTypes() => !Saving || ((LootableTypes != DefaultLootableTypes) && !LootableTypes.SetEquals(DefaultLootableTypes));
+		public bool ShouldSerializeMatchableTypes() => !Saving || ((MatchableTypes != DefaultMatchableTypes) && !MatchableTypes.SetEquals(DefaultMatchableTypes));
+		public bool ShouldSerializeOnlineStatus() => !Saving || (OnlineStatus != DefaultOnlineStatus);
+		public bool ShouldSerializePasswordFormat() => !Saving || (PasswordFormat != DefaultPasswordFormat);
+		public bool ShouldSerializePaused() => !Saving || (Paused != DefaultPaused);
+		public bool ShouldSerializeRedeemingPreferences() => !Saving || (RedeemingPreferences != DefaultRedeemingPreferences);
+		public bool ShouldSerializeSendOnFarmingFinished() => !Saving || (SendOnFarmingFinished != DefaultSendOnFarmingFinished);
+		public bool ShouldSerializeSendTradePeriod() => !Saving || (SendTradePeriod != DefaultSendTradePeriod);
+		public bool ShouldSerializeShutdownOnFarmingFinished() => !Saving || (ShutdownOnFarmingFinished != DefaultShutdownOnFarmingFinished);
+		public bool ShouldSerializeSSteamMasterClanID() => !Saving;
+		public bool ShouldSerializeSteamLogin() => Saving && (SteamLogin != DefaultSteamLogin);
+		public bool ShouldSerializeSteamMasterClanID() => !Saving || (SteamMasterClanID != DefaultSteamMasterClanID);
+		public bool ShouldSerializeSteamParentalCode() => Saving && (SteamParentalCode != DefaultSteamParentalCode);
+		public bool ShouldSerializeSteamPassword() => Saving && (SteamPassword != DefaultSteamPassword);
+		public bool ShouldSerializeSteamTradeToken() => !Saving || (SteamTradeToken != DefaultSteamTradeToken);
+		public bool ShouldSerializeSteamUserPermissions() => !Saving || ((SteamUserPermissions != DefaultSteamUserPermissions) && ((SteamUserPermissions.Count != DefaultSteamUserPermissions.Count) || SteamUserPermissions.Except(DefaultSteamUserPermissions).Any()));
+		public bool ShouldSerializeTradingPreferences() => !Saving || (TradingPreferences != DefaultTradingPreferences);
+		public bool ShouldSerializeTransferableTypes() => !Saving || ((TransferableTypes != DefaultTransferableTypes) && !TransferableTypes.SetEquals(DefaultTransferableTypes));
+		public bool ShouldSerializeUseLoginKeys() => !Saving || (UseLoginKeys != DefaultUseLoginKeys);
+		public bool ShouldSerializeUserInterfaceMode() => !Saving || (UserInterfaceMode != DefaultUserInterfaceMode);
 
 		// ReSharper restore UnusedMember.Global
 	}
