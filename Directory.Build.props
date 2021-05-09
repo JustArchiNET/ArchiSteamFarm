@@ -22,8 +22,6 @@
     <PackageProjectUrl>https://github.com/JustArchiNET/ArchiSteamFarm</PackageProjectUrl>
     <RepositoryType>Git</RepositoryType>
     <RepositoryUrl>https://github.com/JustArchiNET/ArchiSteamFarm.git</RepositoryUrl>
-    <RestoreLockedMode Condition="'$(ContinuousIntegrationBuild)' == 'true'">true</RestoreLockedMode>
-    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <RollForward>LatestMajor</RollForward>
     <RuntimeIdentifiers>linux-arm;linux-arm64;linux-x64;osx-x64;win-x64</RuntimeIdentifiers>
     <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
