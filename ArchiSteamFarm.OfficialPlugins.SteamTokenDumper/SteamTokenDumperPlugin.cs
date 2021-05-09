@@ -161,11 +161,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				throw new ArgumentNullException(nameof(bot));
 			}
 
-			if (Config == null) {
-				throw new InvalidOperationException(nameof(Config));
-			}
-
-			if (!Config.Enabled) {
+			if (Config is not { Enabled: true }) {
 				return;
 			}
 
@@ -192,11 +188,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				subscription.Dispose();
 			}
 
-			if (Config == null) {
-				throw new InvalidOperationException(nameof(Config));
-			}
-
-			if (!Config.Enabled) {
+			if (Config is not { Enabled: true }) {
 				return;
 			}
 
@@ -224,11 +216,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				throw new ArgumentNullException(nameof(packageChanges));
 			}
 
-			if (Config == null) {
-				throw new InvalidOperationException(nameof(Config));
-			}
-
-			if (!Config.Enabled) {
+			if (Config is not { Enabled: true }) {
 				return;
 			}
 
@@ -244,11 +232,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				throw new ArgumentOutOfRangeException(nameof(currentChangeNumber));
 			}
 
-			if (Config == null) {
-				throw new InvalidOperationException(nameof(Config));
-			}
-
-			if (!Config.Enabled) {
+			if (Config is not { Enabled: true }) {
 				return;
 			}
 
@@ -268,11 +252,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				throw new ArgumentNullException(nameof(callback));
 			}
 
-			if (Config == null) {
-				throw new InvalidOperationException(nameof(Config));
-			}
-
-			if (!Config.Enabled) {
+			if (Config is not { Enabled: true }) {
 				return;
 			}
 
@@ -292,11 +272,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				throw new ArgumentNullException(nameof(bot));
 			}
 
-			if (Config == null) {
-				throw new InvalidOperationException(nameof(Config));
-			}
-
-			if (!Config.Enabled) {
+			if (Config is not { Enabled: true }) {
 				return;
 			}
 
@@ -471,11 +447,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				throw new InvalidOperationException(nameof(Bot.Bots));
 			}
 
-			if (Config == null) {
-				throw new InvalidOperationException(nameof(Config));
-			}
-
-			if (!Config.Enabled) {
+			if (Config is not { Enabled: true }) {
 				return;
 			}
 
