@@ -21,7 +21,7 @@
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 	internal static class SharedInfo {
-		internal const byte ApiVersion = 1;
+		internal const byte ApiVersion = 2;
 		internal const byte AppInfosPerSingleRequest = byte.MaxValue;
 		internal const byte MaximumHoursBetweenRefresh = 8; // Per single bot account, makes sense to be 2 or 3 times less than MinimumHoursBetweenUploads
 		internal const byte MaximumMinutesBeforeFirstUpload = 60; // Must be greater or equal to MinimumMinutesBeforeFirstUpload

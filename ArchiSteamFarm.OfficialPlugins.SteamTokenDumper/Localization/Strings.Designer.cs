@@ -214,7 +214,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Submitting a total of registered apps/subs/depots: {0}/{1}/{2}....
+        ///   Looks up a localized string similar to Submitting a total of registered apps/packages/depots: {0}/{1}/{2}....
         /// </summary>
         internal static string SubmissionInProgress {
             get {
@@ -241,11 +241,65 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The data has been successfully submitted. The server has registered a total of new apps/subs/depots: {0}/{1}/{2}..
+        ///   Looks up a localized string similar to The data has been successfully submitted. The server has registered a total of new apps/packages/depots: {0} ({1} verified)/{2} ({3} verified)/{4} ({5} verified)..
         /// </summary>
         internal static string SubmissionSuccessful {
             get {
                 return ResourceManager.GetString("SubmissionSuccessful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New apps: {0}.
+        /// </summary>
+        internal static string SubmissionSuccessfulNewApps {
+            get {
+                return ResourceManager.GetString("SubmissionSuccessfulNewApps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New depots: {0}.
+        /// </summary>
+        internal static string SubmissionSuccessfulNewDepots {
+            get {
+                return ResourceManager.GetString("SubmissionSuccessfulNewDepots", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New packages: {0}.
+        /// </summary>
+        internal static string SubmissionSuccessfulNewPackages {
+            get {
+                return ResourceManager.GetString("SubmissionSuccessfulNewPackages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Verified apps: {0}.
+        /// </summary>
+        internal static string SubmissionSuccessfulVerifiedApps {
+            get {
+                return ResourceManager.GetString("SubmissionSuccessfulVerifiedApps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Verified depots: {0}.
+        /// </summary>
+        internal static string SubmissionSuccessfulVerifiedDepots {
+            get {
+                return ResourceManager.GetString("SubmissionSuccessfulVerifiedDepots", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Verified packages: {0}.
+        /// </summary>
+        internal static string SubmissionSuccessfulVerifiedPackages {
+            get {
+                return ResourceManager.GetString("SubmissionSuccessfulVerifiedPackages", resourceCulture);
             }
         }
     }

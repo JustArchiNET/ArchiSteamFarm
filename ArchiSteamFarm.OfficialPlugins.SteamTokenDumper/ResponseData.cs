@@ -19,6 +19,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 
@@ -40,20 +41,23 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 		private ResponseData() { }
 
 		internal sealed class InternalData {
-#pragma warning disable CS0649 // False positive, the field is used during json deserialization
 			[JsonProperty(PropertyName = "new_apps", Required = Required.Always)]
-			internal readonly uint NewAppsCount;
-#pragma warning restore CS0649 // False positive, the field is used during json deserialization
+			internal readonly ImmutableHashSet<uint> NewApps = ImmutableHashSet<uint>.Empty;
 
-#pragma warning disable CS0649 // False positive, the field is used during json deserialization
 			[JsonProperty(PropertyName = "new_depots", Required = Required.Always)]
-			internal readonly uint NewDepotsCount;
-#pragma warning restore CS0649 // False positive, the field is used during json deserialization
+			internal readonly ImmutableHashSet<uint> NewDepots = ImmutableHashSet<uint>.Empty;
 
-#pragma warning disable CS0649 // False positive, the field is used during json deserialization
 			[JsonProperty(PropertyName = "new_subs", Required = Required.Always)]
-			internal readonly uint NewSubsCount;
-#pragma warning restore CS0649 // False positive, the field is used during json deserialization
+			internal readonly ImmutableHashSet<uint> NewPackages = ImmutableHashSet<uint>.Empty;
+
+			[JsonProperty(PropertyName = "verified_apps", Required = Required.Always)]
+			internal readonly ImmutableHashSet<uint> VerifiedApps = ImmutableHashSet<uint>.Empty;
+
+			[JsonProperty(PropertyName = "verified_depots", Required = Required.Always)]
+			internal readonly ImmutableHashSet<uint> VerifiedDepots = ImmutableHashSet<uint>.Empty;
+
+			[JsonProperty(PropertyName = "verified_subs", Required = Required.Always)]
+			internal readonly ImmutableHashSet<uint> VerifiedPackages = ImmutableHashSet<uint>.Empty;
 
 			[JsonConstructor]
 			private InternalData() { }
