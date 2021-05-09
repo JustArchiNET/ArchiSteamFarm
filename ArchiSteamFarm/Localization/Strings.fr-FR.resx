@@ -746,4 +746,8 @@ Durée de fonctionnement : {1}</value>
     <value>Traitement de la sélection {0}: {1}</value>
     <comment>{0} will be replaced by internal name of the config property (e.g. "GamesPlayedWhileIdle"), {1} will be replaced by comma-separated list of appIDs that user has chosen</comment>
   </data>
+  <data name="AutomaticFileMigration" xml:space="preserve">
+    <value>Le fichier de configuration de {0} sera migré vers la dernière syntaxe...</value>
+    <comment>{0} will be replaced with the relative path to the affected config file</comment>
+  </data>
 </root>

@@ -746,4 +746,5 @@ Tempo de execução: {1}</value>
     <value>Rodando o {0} selecionado: {1}</value>
     <comment>{0} will be replaced by internal name of the config property (e.g. "GamesPlayedWhileIdle"), {1} will be replaced by comma-separated list of appIDs that user has chosen</comment>
   </data>
+  
 </root>

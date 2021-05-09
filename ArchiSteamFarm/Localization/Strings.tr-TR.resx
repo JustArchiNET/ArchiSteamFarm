@@ -746,4 +746,5 @@ Süreç çalışma zamanı: {1}</value>
     <value>Boşta çalıştırılacak {0}:{1}</value>
     <comment>{0} will be replaced by internal name of the config property (e.g. "GamesPlayedWhileIdle"), {1} will be replaced by comma-separated list of appIDs that user has chosen</comment>
   </data>
+  
 </root>
