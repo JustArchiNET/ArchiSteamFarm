@@ -184,7 +184,7 @@
     <comment>{0} will be replaced by the name of the config property (e.g. "SteamOwnerID") that the user is expected to set</comment>
   </data>
   <data name="SubmissionInProgress" xml:space="preserve">
-    <value>Przesyłanie łącznej liczby zarejestrowanych aplikacji/subskrypcji/magazynów: {0}/{1}/{2}...</value>
+    <value>Przesyłanie wszystkich zarejestrowanych aplikacji/pakietów/magazynów: {0}/{1}/{2}...</value>
     <comment>{0} will be replaced by the number of app access tokens being submitted, {1} will be replaced by the number of package access tokens being submitted, {2} will be replaced by the number of depot keys being submitted</comment>
   </data>
   <data name="SubmissionFailedTooManyRequests" xml:space="preserve">
@@ -192,8 +192,32 @@
     <comment>{0} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
   </data>
   <data name="SubmissionSuccessful" xml:space="preserve">
-    <value>Dane zostały pomyślnie przesłane. Serwer zarejestrował łączną liczbę nowych aplikacji/subskrypcji/magazynów: {0}/{1}/{2}.</value>
-    <comment>{0} will be replaced by the number of new app access tokens that the server has registered, {1} will be replaced by the number of new package access tokens that the server has registered, {2} will be replaced by the number of new depot keys that the server has registered</comment>
+    <value>Dane zostały pomyślnie przesłane. Serwer zarejestrował nowe aplikacje/pakiety/magazyny w sumie: {0} ({1} zweryfikowane)/{2} ({3} zweryfikowane)/{4} ({5} zweryfikowane).</value>
+    <comment>{0} will be replaced by the number of new app access tokens that the server has registered, {1} will be replaced by the number of verified app access tokens that the server has registered, {2} will be replaced by the number of new package access tokens that the server has registered, {3} will be replaced by the number of verified package access tokens that the server has registered, {4} will be replaced by the number of new depot keys that the server has registered, {5} will be replaced by the number of verified depot keys that the server has registered</comment>
+  </data>
+  <data name="SubmissionSuccessfulNewApps" xml:space="preserve">
+    <value>Nowe aplikacje: {0}</value>
+    <comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="SubmissionSuccessfulVerifiedApps" xml:space="preserve">
+    <value>Zweryfikowane aplikacje: {0}</value>
+    <comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="SubmissionSuccessfulNewPackages" xml:space="preserve">
+    <value>Nowe pakiety: {0}</value>
+    <comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="SubmissionSuccessfulVerifiedPackages" xml:space="preserve">
+    <value>Zweryfikowane pakiety: {0}</value>
+    <comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="SubmissionSuccessfulNewDepots" xml:space="preserve">
+    <value>Nowe magazyny: {0}</value>
+    <comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="SubmissionSuccessfulVerifiedDepots" xml:space="preserve">
+    <value>Zweryfikowane magazyny: {0}</value>
+    <comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="PluginSecretListInitialized" xml:space="preserve">
     <value>{0} zainicjowano, wtyczka nie rozwiąże żadnego z tych: {1}.</value>

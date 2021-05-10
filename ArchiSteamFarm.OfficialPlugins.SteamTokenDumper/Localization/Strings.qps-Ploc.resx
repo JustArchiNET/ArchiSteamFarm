@@ -183,18 +183,18 @@
     <value>CUD NOT SUBMIT TEH DATA CUZ THAR IZ NO VALID STEAMID SET DAT WE CUD CLASIFY AS CONTRIBUTOR. CONSIDR SETTIN UP {0} PROPERTY.</value>
     <comment>{0} will be replaced by the name of the config property (e.g. "SteamOwnerID") that the user is expected to set</comment>
   </data>
-  <data name="SubmissionInProgress" xml:space="preserve">
-    <value>SUBMITTIN TOTAL OV REGISTERD APPS/SUBS/DEPOTS: {0}/{1}/{2}...</value>
-    <comment>{0} will be replaced by the number of app access tokens being submitted, {1} will be replaced by the number of package access tokens being submitted, {2} will be replaced by the number of depot keys being submitted</comment>
-  </data>
+  
   <data name="SubmissionFailedTooManyRequests" xml:space="preserve">
     <value>TEH SUBMISHUN HAS FAILD DUE 2 2 LOTZ DA REQUESTS SENT, WELL TRY AGAIN IN APPROXIMATELY {0} FRUM NAO.</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
   </data>
-  <data name="SubmissionSuccessful" xml:space="preserve">
-    <value>TEH DATA HAS BEEN SUCCESFULLY SUBMITTD. TEH SERVR HAS REGISTERD TOTAL OV NEW APPS/SUBS/DEPOTS: {0}/{1}/{2}.</value>
-    <comment>{0} will be replaced by the number of new app access tokens that the server has registered, {1} will be replaced by the number of new package access tokens that the server has registered, {2} will be replaced by the number of new depot keys that the server has registered</comment>
-  </data>
+  
+  
+  
+  
+  
+  
+  
   <data name="PluginSecretListInitialized" xml:space="preserve">
     <value>{0} INITIALIZD, TEH PLUGIN WILL NOT RESOLVE ANY OV DOSE: {1}.</value>
     <comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>

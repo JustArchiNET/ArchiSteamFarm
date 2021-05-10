@@ -184,7 +184,7 @@
     <comment>{0} will be replaced by the name of the config property (e.g. "SteamOwnerID") that the user is expected to set</comment>
   </data>
   <data name="SubmissionInProgress" xml:space="preserve">
-    <value>Enviando un total de apps/subs/depots registrados: {0}/{1}/{2}...</value>
+    <value>Enviando un total de aplicaciones/paquetes/depósitos registrados: {0}/{1}/{2}...</value>
     <comment>{0} will be replaced by the number of app access tokens being submitted, {1} will be replaced by the number of package access tokens being submitted, {2} will be replaced by the number of depot keys being submitted</comment>
   </data>
   <data name="SubmissionFailedTooManyRequests" xml:space="preserve">
@@ -192,8 +192,32 @@
     <comment>{0} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
   </data>
   <data name="SubmissionSuccessful" xml:space="preserve">
-    <value>Los datos se han enviado con éxito. El servidor ha registrado un total de nuevos apps/subs/depots: {0}/{1}/{2}.</value>
-    <comment>{0} will be replaced by the number of new app access tokens that the server has registered, {1} will be replaced by the number of new package access tokens that the server has registered, {2} will be replaced by the number of new depot keys that the server has registered</comment>
+    <value>La información se ha enviado correctamente. El servidor ha registrado un total de aplicaciones/paquetes/depósitos nuevos: {0} ({1} verificados)/{2} ({3} verificados)/{4} ({5} verificados).</value>
+    <comment>{0} will be replaced by the number of new app access tokens that the server has registered, {1} will be replaced by the number of verified app access tokens that the server has registered, {2} will be replaced by the number of new package access tokens that the server has registered, {3} will be replaced by the number of verified package access tokens that the server has registered, {4} will be replaced by the number of new depot keys that the server has registered, {5} will be replaced by the number of verified depot keys that the server has registered</comment>
+  </data>
+  <data name="SubmissionSuccessfulNewApps" xml:space="preserve">
+    <value>Nuevas aplicaciones: {0}</value>
+    <comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="SubmissionSuccessfulVerifiedApps" xml:space="preserve">
+    <value>Aplicaciones verificadas: {0}</value>
+    <comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="SubmissionSuccessfulNewPackages" xml:space="preserve">
+    <value>Nuevos paquetes: {0}</value>
+    <comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="SubmissionSuccessfulVerifiedPackages" xml:space="preserve">
+    <value>Paquetes verificados: {0}</value>
+    <comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="SubmissionSuccessfulNewDepots" xml:space="preserve">
+    <value>Nuevos depósitos: {0}</value>
+    <comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="SubmissionSuccessfulVerifiedDepots" xml:space="preserve">
+    <value>Depósitos verificados: {0}</value>
+    <comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="PluginSecretListInitialized" xml:space="preserve">
     <value>{0} iniciado, el plugin no resolverá ninguno de estos: {1}.</value>

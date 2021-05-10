@@ -156,18 +156,18 @@
     <value>Impossible de soumettre les données car il n'y a pas de SteamID valide que nous pourrions classer comme contributeur. Envisagez la configuration de la propriété {0}.</value>
     <comment>{0} will be replaced by the name of the config property (e.g. "SteamOwnerID") that the user is expected to set</comment>
   </data>
-  <data name="SubmissionInProgress" xml:space="preserve">
-    <value>Envoi d'un total de {0}/{1}/{2} apps/subs/dépôts enregistrés...</value>
-    <comment>{0} will be replaced by the number of app access tokens being submitted, {1} will be replaced by the number of package access tokens being submitted, {2} will be replaced by the number of depot keys being submitted</comment>
-  </data>
+  
   <data name="SubmissionFailedTooManyRequests" xml:space="preserve">
     <value>La soumission a échoué en raison d'un trop grand nombre de demandes envoyées, nous allons essayer à nouveau dans environ {0} à partir de maintenant.</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
   </data>
-  <data name="SubmissionSuccessful" xml:space="preserve">
-    <value>Les données ont été soumises avec succès. Le serveur a enregistré un total de nouvelles apps/subs/dépôts : {0}/{1}/{2}.</value>
-    <comment>{0} will be replaced by the number of new app access tokens that the server has registered, {1} will be replaced by the number of new package access tokens that the server has registered, {2} will be replaced by the number of new depot keys that the server has registered</comment>
-  </data>
+  
+  
+  
+  
+  
+  
+  
   <data name="PluginSecretListInitialized" xml:space="preserve">
     <value>{0} initialisé, le plugin ne résoudra aucun de ceux-ci : {1}.</value>
     <comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>

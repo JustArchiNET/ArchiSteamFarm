@@ -745,5 +745,8 @@ Tiempo de actividad del proceso: {1}</value>
     <value>Recolección seleccionada {0}:{1}</value>
     <comment>{0} will be replaced by internal name of the config property (e.g. "GamesPlayedWhileIdle"), {1} will be replaced by comma-separated list of appIDs that user has chosen</comment>
   </data>
-  
+  <data name="AutomaticFileMigration" xml:space="preserve">
+    <value>El archivo de configuración {0} será migrado a la sintaxis más reciente...</value>
+    <comment>{0} will be replaced with the relative path to the affected config file</comment>
+  </data>
 </root>
