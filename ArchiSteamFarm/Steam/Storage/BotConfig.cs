@@ -64,9 +64,6 @@ namespace ArchiSteamFarm.Steam.Storage {
 		public const bool DefaultEnabled = false;
 
 		[PublicAPI]
-		public const bool DefaultFarmNonRefundableGamesOnly = false;
-
-		[PublicAPI]
 		public const bool DefaultFarmPriorityQueueOnly = false;
 
 		[PublicAPI]
@@ -92,6 +89,9 @@ namespace ArchiSteamFarm.Steam.Storage {
 
 		[PublicAPI]
 		public const bool DefaultShutdownOnFarmingFinished = false;
+
+		[PublicAPI]
+		public const bool DefaultSkipRefundableGames = false;
 
 		[PublicAPI]
 		public const string? DefaultSteamLogin = null;
@@ -170,9 +170,6 @@ namespace ArchiSteamFarm.Steam.Storage {
 		public ImmutableList<EFarmingOrder> FarmingOrders { get; private set; } = DefaultFarmingOrders;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool FarmNonRefundableGamesOnly { get; private set; } = DefaultFarmNonRefundableGamesOnly;
-
-		[JsonProperty(Required = Required.DisallowNull)]
 		public bool FarmPriorityQueueOnly { get; private set; } = DefaultFarmPriorityQueueOnly;
 
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -207,6 +204,9 @@ namespace ArchiSteamFarm.Steam.Storage {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool ShutdownOnFarmingFinished { get; private set; } = DefaultShutdownOnFarmingFinished;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		public bool SkipRefundableGames { get; private set; } = DefaultSkipRefundableGames;
 
 		[JsonProperty]
 		public string? SteamLogin {
@@ -319,9 +319,9 @@ namespace ArchiSteamFarm.Steam.Storage {
 		[JsonProperty(Required = Required.DisallowNull)]
 		private bool IdleRefundableGames {
 			set {
-				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningDeprecated, nameof(IdleRefundableGames), nameof(FarmNonRefundableGamesOnly)));
+				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningDeprecated, nameof(IdleRefundableGames), nameof(SkipRefundableGames)));
 
-				FarmNonRefundableGamesOnly = !value;
+				SkipRefundableGames = !value;
 			}
 		}
 
@@ -543,7 +543,6 @@ namespace ArchiSteamFarm.Steam.Storage {
 		public bool ShouldSerializeCustomGamePlayedWhileIdle() => !Saving || (CustomGamePlayedWhileIdle != DefaultCustomGamePlayedWhileIdle);
 		public bool ShouldSerializeEnabled() => !Saving || (Enabled != DefaultEnabled);
 		public bool ShouldSerializeFarmingOrders() => !Saving || ((FarmingOrders != DefaultFarmingOrders) && !FarmingOrders.SequenceEqual(DefaultFarmingOrders));
-		public bool ShouldSerializeFarmNonRefundableGamesOnly() => !Saving || (FarmNonRefundableGamesOnly != DefaultFarmNonRefundableGamesOnly);
 		public bool ShouldSerializeFarmPriorityQueueOnly() => !Saving || (FarmPriorityQueueOnly != DefaultFarmPriorityQueueOnly);
 		public bool ShouldSerializeGamesPlayedWhileIdle() => !Saving || ((GamesPlayedWhileIdle != DefaultGamesPlayedWhileIdle) && !GamesPlayedWhileIdle.SetEquals(DefaultGamesPlayedWhileIdle));
 		public bool ShouldSerializeHoursUntilCardDrops() => !Saving || (HoursUntilCardDrops != DefaultHoursUntilCardDrops);
@@ -556,6 +555,7 @@ namespace ArchiSteamFarm.Steam.Storage {
 		public bool ShouldSerializeSendOnFarmingFinished() => !Saving || (SendOnFarmingFinished != DefaultSendOnFarmingFinished);
 		public bool ShouldSerializeSendTradePeriod() => !Saving || (SendTradePeriod != DefaultSendTradePeriod);
 		public bool ShouldSerializeShutdownOnFarmingFinished() => !Saving || (ShutdownOnFarmingFinished != DefaultShutdownOnFarmingFinished);
+		public bool ShouldSerializeSkipRefundableGames() => !Saving || (SkipRefundableGames != DefaultSkipRefundableGames);
 		public bool ShouldSerializeSSteamMasterClanID() => !Saving;
 		public bool ShouldSerializeSteamLogin() => Saving && (SteamLogin != DefaultSteamLogin);
 		public bool ShouldSerializeSteamMasterClanID() => !Saving || (SteamMasterClanID != DefaultSteamMasterClanID);

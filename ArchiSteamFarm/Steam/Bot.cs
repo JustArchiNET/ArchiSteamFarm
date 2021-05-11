@@ -1091,7 +1091,7 @@ namespace ArchiSteamFarm.Steam {
 				return (0, DateTime.MaxValue, true);
 			}
 
-			if ((hoursPlayed < CardsFarmer.HoursForRefund) && BotConfig.FarmNonRefundableGamesOnly) {
+			if ((hoursPlayed < CardsFarmer.HoursForRefund) && BotConfig.SkipRefundableGames) {
 				DateTime mostRecent = DateTime.MinValue;
 
 				foreach (uint packageID in packageIDs) {
