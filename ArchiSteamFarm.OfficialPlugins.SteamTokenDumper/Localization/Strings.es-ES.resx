@@ -137,23 +137,23 @@
     <value>No hay aplicaciones que requieran actualizarse en esta instancia de bot.</value>
   </data>
   <data name="BotRetrievingTotalAppAccessTokens" xml:space="preserve">
-    <value>Recuperando un total de {0} tokens de acceso de aplicación...</value>
+    <value>Recuperando un total de {0} tokens de acceso a la aplicación...</value>
     <comment>{0} will be replaced by the number (total count) of app access tokens being retrieved</comment>
   </data>
   <data name="BotRetrievingAppAccessTokens" xml:space="preserve">
-    <value>Recuperando {0} tokens de acceso de aplicación...</value>
+    <value>Recuperando {0} tokens de acceso a la aplicación...</value>
     <comment>{0} will be replaced by the number (count this batch) of app access tokens being retrieved</comment>
   </data>
   <data name="BotFinishedRetrievingAppAccessTokens" xml:space="preserve">
-    <value>Se han terminado de recuperar {0} tokens de acceso de aplicación.</value>
+    <value>Se han recuperado {0} tokens de acceso a la aplicación.</value>
     <comment>{0} will be replaced by the number (count this batch) of app access tokens retrieved</comment>
   </data>
   <data name="BotFinishedRetrievingTotalAppAccessTokens" xml:space="preserve">
-    <value>Se ha terminado de recuperar un total de {0} tokens de acceso de aplicación.</value>
+    <value>Se ha recuperado un total de {0} tokens de acceso a la aplicación.</value>
     <comment>{0} will be replaced by the number (total count) of app access tokens retrieved</comment>
   </data>
   <data name="BotRetrievingTotalDepots" xml:space="preserve">
-    <value>Recuperando todos los depots para un total de {0} aplicaciones...</value>
+    <value>Recuperando todos los depósitos para un total de {0} aplicaciones...</value>
     <comment>{0} will be replaced by the number (total count) of apps being retrieved</comment>
   </data>
   <data name="BotRetrievingAppInfos" xml:space="preserve">
@@ -161,19 +161,19 @@
     <comment>{0} will be replaced by the number (count this batch) of app infos being retrieved</comment>
   </data>
   <data name="BotFinishedRetrievingAppInfos" xml:space="preserve">
-    <value>Se han terminado de recuperar {0} datos de aplicación.</value>
+    <value>Se han recuperado {0} datos de aplicación.</value>
     <comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
   </data>
   <data name="BotRetrievingDepotKeys" xml:space="preserve">
-    <value>Recuperando {0} depot keys...</value>
+    <value>Recuperando {0} claves de depósito...</value>
     <comment>{0} will be replaced by the number (count this batch) of depot keys being retrieved</comment>
   </data>
   <data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
-    <value>Se han terminado de recuperar {0} depot keys.</value>
+    <value>Se han recuperado {0} claves de depósito.</value>
     <comment>{0} will be replaced by the number (count this batch) of depot keys retrieved</comment>
   </data>
   <data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
-    <value>Se han terminado de recuperar todos los depot keys para un total de {0} aplicaciones.</value>
+    <value>Se han recuperado todas las claves de depósito para un total de {0} aplicaciones.</value>
     <comment>{0} will be replaced by the number (total count) of apps retrieved</comment>
   </data>
   <data name="SubmissionNoNewData" xml:space="preserve">
@@ -220,7 +220,7 @@
     <comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="PluginSecretListInitialized" xml:space="preserve">
-    <value>{0} iniciado, el plugin no resolverá ninguno de estos: {1}.</value>
+    <value>{0} iniciado, el plugin no resolverá ninguno de los siguientes: {1}.</value>
     <comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
   </data>
 </root>
