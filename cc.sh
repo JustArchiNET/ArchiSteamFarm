@@ -23,7 +23,18 @@ PRINT_USAGE() {
 	echo "Usage: $0 [--clean] [--no-analysis] [--no-asf-ui] [--no-pull] [--no-shared-compilation] [--no-test] [debug/release]"
 }
 
-cd "$(dirname "$(readlink -f "$0")")"
+OS_TYPE="$(uname -s)"
+
+case "$OS_TYPE" in
+	"Darwin") SCRIPT_PATH="$(readlink "$0")" ;;
+	"FreeBSD") SCRIPT_PATH="$(readlink -f "$0")" ;;
+	"Linux") SCRIPT_PATH="$(readlink -f "$0")" ;;
+	*) echo "ERROR: Unknown OS type: ${OS_TYPE}. If you believe that our script should work on your machine, please let us know."; exit 1
+esac
+
+SCRIPT_DIR="$(dirname "$SCRIPT_PATH")"
+
+cd "$SCRIPT_DIR"
 
 for ARG in "$@"; do
 	case "$ARG" in
@@ -64,13 +75,11 @@ if [ ! -f "$SOLUTION" ]; then
 	exit 1
 fi
 
-os_type="$(uname -s)"
-
-case "$os_type" in
+case "$OS_TYPE" in
 	"Darwin") os_type="osx" ;;
 	"FreeBSD") os_type="freebsd" ;;
 	"Linux") os_type="linux" ;;
-	*) echo "ERROR: Unknown OS type: ${os_type}. If you believe that our script should work on your machine, please let us know."; exit 1
+	*) echo "ERROR: Unknown OS type: ${OS_TYPE}. If you believe that our script should work on your machine, please let us know."; exit 1
 esac
 
 cpu_architecture="$(uname -m)"

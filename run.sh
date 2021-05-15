@@ -1,22 +1,31 @@
 #!/usr/bin/env sh
 set -eu
 
-BINARY_DIR="$(dirname "$(readlink -f "$0")")/out/result"
 CONFIG_PATH="config/ASF.json"
+OS_TYPE="$(uname -s)"
+
+case "$OS_TYPE" in
+	"Darwin") SCRIPT_PATH="$(readlink "$0")" ;;
+	"FreeBSD") SCRIPT_PATH="$(readlink -f "$0")" ;;
+	"Linux") SCRIPT_PATH="$(readlink -f "$0")" ;;
+	*) echo "ERROR: Unknown OS type: ${OS_TYPE}. If you believe that our script should work on your machine, please let us know."; exit 1
+esac
+
+SCRIPT_DIR="$(dirname "$SCRIPT_PATH")"
+BINARY_DIR="${SCRIPT_DIR}/out/result"
+BINARY="${BINARY_DIR}/ArchiSteamFarm.dll"
 
 if [ ! -d "$BINARY_DIR" ]; then
 	echo "ERROR: $BINARY_DIR could not be found!"
 	exit 1
 fi
 
-cd "$BINARY_DIR"
-
-BINARY_PATH="$(pwd)/ArchiSteamFarm.dll"
-
-if [ ! -f "$BINARY_PATH" ]; then
-	echo "ERROR: $BINARY_PATH could not be found!"
+if [ ! -f "$BINARY" ]; then
+	echo "ERROR: $BINARY could not be found!"
 	exit 1
 fi
+
+cd "$BINARY_DIR"
 
 BINARY_ARGS=""
 PATH_NEXT=0
