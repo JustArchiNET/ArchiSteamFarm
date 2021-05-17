@@ -658,7 +658,7 @@ Tiempo de actividad del proceso: {1}</value>
     <value>¡Cancelado!</value>
   </data>
   <data name="ActivelyMatchingItemsRound" xml:space="preserve">
-    <value>Se emparejó un total de {0} sets durante esta ronda.</value>
+    <value>Se emparejaron {0} sets durante esta ronda.</value>
     <comment>{0} will be replaced by number of sets traded</comment>
   </data>
   <data name="WarningExcessiveBotsCount" xml:space="preserve">
