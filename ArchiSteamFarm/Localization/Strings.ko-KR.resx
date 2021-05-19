@@ -743,5 +743,8 @@ StackTrace:
     <value>설정 디렉토리를 찾을 수 없습니다. 동작을 정지합니다.</value>
   </data>
   
-  
+  <data name="AutomaticFileMigration" xml:space="preserve">
+    <value>{0} 설정 파일이 최신 버전으로 업데이트 됩니다</value>
+    <comment>{0} will be replaced with the relative path to the affected config file</comment>
+  </data>
 </root>
