@@ -23,6 +23,7 @@ jobs:
       with:
         context: .
         platforms: ${{ env.PLATFORMS }}
+        build-args: STEAM_TOKEN_DUMPER_TOKEN=${{ secrets.STEAM_TOKEN_DUMPER_TOKEN }}
 
     - name: Build Docker image from Dockerfile.Service
       uses: docker/build-push-action@v2
@@ -30,3 +31,4 @@ jobs:
         context: .
         file: Dockerfile.Service
         platforms: ${{ env.PLATFORMS }}
+        build-args: STEAM_TOKEN_DUMPER_TOKEN=${{ secrets.STEAM_TOKEN_DUMPER_TOKEN }}
