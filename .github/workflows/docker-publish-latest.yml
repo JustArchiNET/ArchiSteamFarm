@@ -5,6 +5,7 @@ on:
     types: [released]
 
 env:
+  PLATFORMS: linux/amd64,linux/arm,linux/arm64
   TAG: latest
 
 jobs:
@@ -43,12 +44,12 @@ jobs:
         echo "GHCR_REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
         echo "DH_REPOSITORY=$(echo ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
 
-    - name: Build and push Docker image
+    - name: Build and publish Docker image from Dockerfile.Service
       uses: docker/build-push-action@v2
       with:
         context: .
         file: Dockerfile.Service
-        platforms: linux/amd64,linux/arm,linux/arm64
+        platforms: ${{ env.PLATFORMS }}
         build-args: STEAM_TOKEN_DUMPER_TOKEN=${{ secrets.STEAM_TOKEN_DUMPER_TOKEN }}
         labels: |
           org.opencontainers.image.created=${{ env.DATE_ISO8601 }}
