@@ -468,6 +468,10 @@ namespace ArchiSteamFarm.Steam.Storage {
 				return (null, null);
 			}
 
+			if (!Program.ConfigMigrate) {
+				return (botConfig, null);
+			}
+
 			botConfig.Saving = true;
 			string latestJson = JsonConvert.SerializeObject(botConfig, Formatting.Indented);
 			botConfig.Saving = false;

@@ -45,6 +45,7 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	internal static class Program {
+		internal static bool ConfigMigrate { get; private set; } = true;
 		internal static bool ConfigWatch { get; private set; } = true;
 		internal static string? NetworkGroup { get; private set; }
 		internal static bool ProcessRequired { get; private set; }
@@ -501,6 +502,10 @@ namespace ArchiSteamFarm {
 						break;
 					case "--network-group" when !cryptKeyNext && !networkGroupNext && !pathNext:
 						networkGroupNext = true;
+
+						break;
+					case "--no-config-migrate" when !cryptKeyNext && !networkGroupNext && !pathNext:
+						ConfigMigrate = false;
 
 						break;
 					case "--no-config-watch" when !cryptKeyNext && !networkGroupNext && !pathNext:

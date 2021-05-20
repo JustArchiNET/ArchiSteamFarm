@@ -378,6 +378,10 @@ namespace ArchiSteamFarm.Storage {
 				return (null, null);
 			}
 
+			if (!Program.ConfigMigrate) {
+				return (globalConfig, null);
+			}
+
 			globalConfig.Saving = true;
 			string latestJson = JsonConvert.SerializeObject(globalConfig, Formatting.Indented);
 			globalConfig.Saving = false;
