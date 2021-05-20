@@ -5,8 +5,8 @@ WORKDIR /app
 COPY ASF-ui .
 RUN echo "node: $(node --version)" && \
     echo "npm: $(npm --version)" && \
-    npm ci && \
-    npm run deploy
+    npm ci --no-progress && \
+    npm run deploy --no-progress
 
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:5.0${IMAGESUFFIX} AS build-dotnet
 ARG STEAM_TOKEN_DUMPER_TOKEN
