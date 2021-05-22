@@ -3,44 +3,44 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.6.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchiSteamFarm", "ArchiSteamFarm\ArchiSteamFarm.csproj", "{CF84911C-2C4C-4195-8AF3-ABBB6D3DE9AA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiSteamFarm", "ArchiSteamFarm\ArchiSteamFarm.csproj", "{1501FF07-0114-473F-BDF2-7F8BA34C2948}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchiSteamFarm.Tests", "ArchiSteamFarm.Tests\ArchiSteamFarm.Tests.csproj", "{91DC4C4F-3C23-4716-8CB2-BC7EAB65D759}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiSteamFarm.Tests", "ArchiSteamFarm.Tests\ArchiSteamFarm.Tests.csproj", "{D552661C-1356-4B82-A019-B83DC260ECF4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchiSteamFarm.CustomPlugins.ExamplePlugin", "ArchiSteamFarm.CustomPlugins.ExamplePlugin\ArchiSteamFarm.CustomPlugins.ExamplePlugin.csproj", "{2E2C26B6-7C1D-4BAF-BCF9-79286DA08F82}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiSteamFarm.CustomPlugins.ExamplePlugin", "ArchiSteamFarm.CustomPlugins.ExamplePlugin\ArchiSteamFarm.CustomPlugins.ExamplePlugin.csproj", "{6AE042DA-1152-4F3F-A197-65FD7509E8C6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchiSteamFarm.CustomPlugins.PeriodicGC", "ArchiSteamFarm.CustomPlugins.PeriodicGC\ArchiSteamFarm.CustomPlugins.PeriodicGC.csproj", "{2C935C25-1B03-4C55-81C9-DF1D472D72F4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiSteamFarm.CustomPlugins.PeriodicGC", "ArchiSteamFarm.CustomPlugins.PeriodicGC\ArchiSteamFarm.CustomPlugins.PeriodicGC.csproj", "{0B8906EC-DF72-4CB8-9ECE-34961C056680}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper", "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper\ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.csproj", "{A9299EE5-AF67-4FCB-8D03-263B41819504}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper", "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper\ArchiSteamFarm.OfficialPlugins.SteamTokenDumper.csproj", "{324E42B1-3C5D-421D-A600-1BEEE7AF401A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CF84911C-2C4C-4195-8AF3-ABBB6D3DE9AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CF84911C-2C4C-4195-8AF3-ABBB6D3DE9AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CF84911C-2C4C-4195-8AF3-ABBB6D3DE9AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CF84911C-2C4C-4195-8AF3-ABBB6D3DE9AA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{91DC4C4F-3C23-4716-8CB2-BC7EAB65D759}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{91DC4C4F-3C23-4716-8CB2-BC7EAB65D759}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{91DC4C4F-3C23-4716-8CB2-BC7EAB65D759}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{91DC4C4F-3C23-4716-8CB2-BC7EAB65D759}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2E2C26B6-7C1D-4BAF-BCF9-79286DA08F82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2E2C26B6-7C1D-4BAF-BCF9-79286DA08F82}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2E2C26B6-7C1D-4BAF-BCF9-79286DA08F82}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2E2C26B6-7C1D-4BAF-BCF9-79286DA08F82}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2C935C25-1B03-4C55-81C9-DF1D472D72F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2C935C25-1B03-4C55-81C9-DF1D472D72F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2C935C25-1B03-4C55-81C9-DF1D472D72F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2C935C25-1B03-4C55-81C9-DF1D472D72F4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A9299EE5-AF67-4FCB-8D03-263B41819504}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A9299EE5-AF67-4FCB-8D03-263B41819504}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A9299EE5-AF67-4FCB-8D03-263B41819504}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A9299EE5-AF67-4FCB-8D03-263B41819504}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1501FF07-0114-473F-BDF2-7F8BA34C2948}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1501FF07-0114-473F-BDF2-7F8BA34C2948}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1501FF07-0114-473F-BDF2-7F8BA34C2948}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1501FF07-0114-473F-BDF2-7F8BA34C2948}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D552661C-1356-4B82-A019-B83DC260ECF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D552661C-1356-4B82-A019-B83DC260ECF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D552661C-1356-4B82-A019-B83DC260ECF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D552661C-1356-4B82-A019-B83DC260ECF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AE042DA-1152-4F3F-A197-65FD7509E8C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AE042DA-1152-4F3F-A197-65FD7509E8C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AE042DA-1152-4F3F-A197-65FD7509E8C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AE042DA-1152-4F3F-A197-65FD7509E8C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B8906EC-DF72-4CB8-9ECE-34961C056680}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B8906EC-DF72-4CB8-9ECE-34961C056680}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B8906EC-DF72-4CB8-9ECE-34961C056680}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B8906EC-DF72-4CB8-9ECE-34961C056680}.Release|Any CPU.Build.0 = Release|Any CPU
+		{324E42B1-3C5D-421D-A600-1BEEE7AF401A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{324E42B1-3C5D-421D-A600-1BEEE7AF401A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{324E42B1-3C5D-421D-A600-1BEEE7AF401A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{324E42B1-3C5D-421D-A600-1BEEE7AF401A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
