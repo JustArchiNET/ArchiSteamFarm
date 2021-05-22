@@ -1,7 +1,6 @@
 name: ASF-translations
 
 on:
-  push:
   schedule:
   - cron: '0 2 * * *'
 
@@ -43,7 +42,6 @@ jobs:
         gpg-private-key: ${{ secrets.ARCHIBOT_GPG_PRIVATE_KEY }}
         git-user-signingkey: true
         git-commit-gpgsign: true
-        git-tag-gpgsign: true
         workdir: wiki
 
     - name: Commit the changes to wiki
@@ -73,7 +71,6 @@ jobs:
         gpg-private-key: ${{ secrets.ARCHIBOT_GPG_PRIVATE_KEY }}
         git-user-signingkey: true
         git-commit-gpgsign: true
-        git-tag-gpgsign: true
 
     - name: Commit the changes to ASF
       shell: sh
