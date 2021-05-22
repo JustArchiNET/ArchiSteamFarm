@@ -2,7 +2,7 @@
 name: Wiki correction
 about: All issues related to our wiki documentation, mainly corrections and ideas
 title: ''
-labels: Wiki, Evaluation
+labels: 📕 Wiki, 👀 Evaluation
 assignees: ''
 
 ---

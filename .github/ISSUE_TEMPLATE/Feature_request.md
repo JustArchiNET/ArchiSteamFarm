@@ -2,7 +2,7 @@
 name: Feature request
 about: General idea for improving the project
 title: ''
-labels: Enhancement, Evaluation
+labels: ✨ Enhancement, 👀 Evaluation
 assignees: ''
 
 ---
