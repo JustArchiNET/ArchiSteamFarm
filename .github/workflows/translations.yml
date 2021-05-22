@@ -2,7 +2,7 @@ name: ASF-translations
 
 on:
   schedule:
-  - cron: '21 14 * * *'
+  - cron: '30 14 * * *'
 
 jobs:
   update:
@@ -43,7 +43,6 @@ jobs:
         git-user-signingkey: true
         git-commit-gpgsign: true
         git-tag-gpgsign: true
-        git-push-gpgsign: true
         workdir: wiki
 
     - name: Commit the changes to wiki
@@ -74,7 +73,6 @@ jobs:
         git-user-signingkey: true
         git-commit-gpgsign: true
         git-tag-gpgsign: true
-        git-push-gpgsign: true
 
     - name: Commit the changes to ASF
       shell: sh
