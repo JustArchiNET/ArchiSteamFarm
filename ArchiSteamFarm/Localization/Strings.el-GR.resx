@@ -455,7 +455,9 @@ StackTrace:
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Η πρόταση ανταλλαγής στάλθηκε επιτυχώς!</value>
   </data>
-  
+  <data name="BotSendingTradeToYourself" xml:space="preserve">
+    <value>Δεν μπορείτε να κάνετε trade με τον εαυτό σας!</value>
+  </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Αυτό το bot δεν έχει ενεργοποιημένο το ASF 2FA! Μήπως ξεχάσατε να εισάγετε τον επαληθευτή σας ως ASF 2FA;</value>
   </data>
