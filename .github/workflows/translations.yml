@@ -2,7 +2,7 @@ name: ASF-translations
 
 on:
   schedule:
-  - cron: '5 2 * * *'
+  - cron: '21 14 * * *'
 
 jobs:
   update:
@@ -36,15 +36,22 @@ jobs:
         project_id: ${{ secrets.ASF_CROWDIN_PROJECT_ID }}
         token: ${{ secrets.ASF_CROWDIN_API_TOKEN }}
 
+    - name: Import GPG key for wiki
+      uses: crazy-max/ghaction-import-gpg@v3
+      with:
+        gpg-private-key: ${{ secrets.ARCHIBOT_GPG_PRIVATE_KEY }}
+        git-user-signingkey: true
+        git-commit-gpgsign: true
+        git-tag-gpgsign: true
+        git-push-gpgsign: true
+        workdir: wiki
+
     - name: Commit the changes to wiki
       shell: sh
       run: |
         set -eu
 
         cd wiki
-
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
 
         git add -A "locale"
 
@@ -60,13 +67,19 @@ jobs:
         directory: wiki
         repository: ${{ github.repository }}.wiki
 
+    - name: Import GPG key for ASF
+      uses: crazy-max/ghaction-import-gpg@v3
+      with:
+        gpg-private-key: ${{ secrets.ARCHIBOT_GPG_PRIVATE_KEY }}
+        git-user-signingkey: true
+        git-commit-gpgsign: true
+        git-tag-gpgsign: true
+        git-push-gpgsign: true
+
     - name: Commit the changes to ASF
       shell: sh
       run: |
         set -eu
-
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
 
         git add -A "ArchiSteamFarm/Localization" "ArchiSteamFarm.OfficialPlugins.SteamTokenDumper/Localization" "wiki"
 
