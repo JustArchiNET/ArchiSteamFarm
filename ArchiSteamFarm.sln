@@ -1,7 +1,7 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.30114.105
+VisualStudioVersion = 16.6.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchiSteamFarm", "ArchiSteamFarm\ArchiSteamFarm.csproj", "{CF84911C-2C4C-4195-8AF3-ABBB6D3DE9AA}"
 EndProject
@@ -42,9 +42,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		RESX_ShowErrorsInErrorList = False
-		SolutionGuid = {D7D54143-C857-4B76-A219-0E98C5BC4895}
 	EndGlobalSection
 EndGlobal
