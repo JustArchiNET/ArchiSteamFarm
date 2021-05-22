@@ -66,3 +66,4 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
         repository: ${{ env.DH_REPOSITORY }}
+        short-description: ${{ github.event.repository.description }}
