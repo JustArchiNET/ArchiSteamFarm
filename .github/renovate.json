@@ -6,7 +6,7 @@
     ":automergeDigest",
     ":automergeMinor",
     ":disableRateLimiting",
-    ":label(Automatic)"
+    ":label(🤖 Automatic)"
   ],
   "git-submodules": {
     "enabled": true
