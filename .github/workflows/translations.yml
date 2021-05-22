@@ -1,8 +1,9 @@
 name: ASF-translations
 
 on:
+  push:
   schedule:
-  - cron: '30 14 * * *'
+  - cron: '0 2 * * *'
 
 jobs:
   update:
