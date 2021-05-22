@@ -176,13 +176,6 @@ after_test:
         throw "Last command failed."
     }
 
-    dotnet clean ArchiSteamFarm -c "$env:CONFIGURATION" -p:ContinuousIntegrationBuild=true -p:UseAppHost=false --nologo
-
-
-    if ($LastExitCode -ne 0) {
-        throw "Last command failed."
-    }
-
 
     dotnet restore ArchiSteamFarm -p:ContinuousIntegrationBuild=true
 
