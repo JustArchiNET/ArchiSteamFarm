@@ -1,5 +1,5 @@
 ---
-name: ✨ Enhancement
+name: ✨ Enhancement idea
 about: General idea for improving the project
 title: ''
 labels: ✨ Enhancement, 👀 Evaluation
