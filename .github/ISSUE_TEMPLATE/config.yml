@@ -2,13 +2,13 @@ blank_issues_enabled: false
 contact_links:
   - name: 🖥️ ASF-ui issue
     url: https://github.com/JustArchiNET/ASF-ui/issues/new/choose
-    about: Please open issue in ASF-ui repo.
+    about: Please open issue in ASF-ui repo
   - name: 🌐 Localization improvement
     url: https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Localization
-    about: Please use our crowdin platform.
+    about: Please use our crowdin platform
   - name: ❓ Support question or technical issue
     url: https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/.github/SUPPORT.md
-    about: Please review our support guidelines.
+    about: Please review our support guidelines
   - name: 🗯️ Negative feedback, complaints and demands
     url: https://www.youtube.com/watch?v=dQw4w9WgXcQ
-    about: We're taking those very seriously.
+    about: We're taking those very seriously
