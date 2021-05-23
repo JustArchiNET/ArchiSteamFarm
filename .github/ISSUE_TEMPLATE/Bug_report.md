@@ -1,5 +1,5 @@
 ---
-name: Bug report
+name: 🐛 Bug report
 about: Unexpected program behaviour that needs code correction
 title: ''
 labels: 🐛 Bug, 👀 Evaluation

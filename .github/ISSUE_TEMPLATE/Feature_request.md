@@ -1,5 +1,5 @@
 ---
-name: Feature request
+name: ✨ Enhancement
 about: General idea for improving the project
 title: ''
 labels: ✨ Enhancement, 👀 Evaluation
@@ -17,11 +17,11 @@ I UNDERSTAND THAT IF MY ISSUE IS NOT MEETING CONTRIBUTING GUIDELINES SPECIFIED A
 Feel free to remove our notice and fill the template below with your details.
 -->
 
-## Feature request
+## Enhancement
 
 ### Purpose
 
-<!-- Purpose of the feature request - if it solves some problem, precise in particular what. If it benefits the program in some other way, precise in particular why. Present the underlying reason why this feature request makes sense, and what is the context of it. -->
+<!-- Purpose of the enhancement - if it solves some problem, precise in particular what. If it benefits the program in some other way, precise in particular why. Present the underlying reason why this enhancement makes sense, and what is the context of it. -->
 
 ### Solution
 
