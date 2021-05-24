@@ -83,9 +83,9 @@ dotnet --info
 
 if [ -f "$CONFIG_PATH" ] && grep -Eq '"Headless":\s+?true' "$CONFIG_PATH"; then
 	# We're running ASF in headless mode so we don't need STDIN
-	dotnet "$BINARY_PATH" $BINARY_ARGS & # Start ASF in the background, trap will work properly due to non-blocking call
+	dotnet "$BINARY" $BINARY_ARGS & # Start ASF in the background, trap will work properly due to non-blocking call
 	wait $! # This will forward dotnet error code, set -e will abort the script if it's non-zero
 else
 	# We're running ASF in non-headless mode, so we need STDIN to be operative
-	dotnet "$BINARY_PATH" $BINARY_ARGS # Start ASF in the foreground, trap won't work until process exit
+	dotnet "$BINARY" $BINARY_ARGS # Start ASF in the foreground, trap won't work until process exit
 fi
