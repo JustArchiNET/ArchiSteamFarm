@@ -177,6 +177,11 @@ namespace ArchiSteamFarm.Steam {
 			}
 		}
 
+		/// <remarks>
+		///     Login keys are not guaranteed to be valid, we should use them only if we don't have full details available from the user
+		/// </remarks>
+		private bool ShouldUseLoginKeys => BotConfig.UseLoginKeys && (!BotConfig.IsSteamPasswordSet || string.IsNullOrEmpty(BotConfig.DecryptedSteamPassword) || !HasMobileAuthenticator);
+
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamID))]
 
 		private string SSteamID => SteamID.ToString(CultureInfo.InvariantCulture);
@@ -961,10 +966,12 @@ namespace ArchiSteamFarm.Steam {
 			switch (inputType) {
 				case ASF.EUserInputType.Login:
 					BotConfig.SteamLogin = inputValue;
+					BotConfig.IsSteamLoginSet = false;
 
 					break;
 				case ASF.EUserInputType.Password:
 					BotConfig.DecryptedSteamPassword = inputValue;
+					BotConfig.IsSteamPasswordSet = false;
 
 					break;
 				case ASF.EUserInputType.SteamGuard:
@@ -981,6 +988,7 @@ namespace ArchiSteamFarm.Steam {
 					}
 
 					BotConfig.SteamParentalCode = inputValue;
+					BotConfig.IsSteamParentalCodeSet = false;
 
 					break;
 				case ASF.EUserInputType.TwoFactorAuthentication:
@@ -2320,15 +2328,12 @@ namespace ArchiSteamFarm.Steam {
 
 			string? loginKey = null;
 
-			if (BotConfig.UseLoginKeys) {
-				// Login keys are not guaranteed to be valid, we should use them only if we don't have full details available from the user
-				if (string.IsNullOrEmpty(BotConfig.DecryptedSteamPassword) || (string.IsNullOrEmpty(AuthCode) && string.IsNullOrEmpty(TwoFactorCode) && !HasMobileAuthenticator)) {
-					loginKey = BotDatabase.LoginKey;
+			if (ShouldUseLoginKeys && string.IsNullOrEmpty(AuthCode) && string.IsNullOrEmpty(TwoFactorCode)) {
+				loginKey = BotDatabase.LoginKey;
 
-					// Decrypt login key if needed
-					if (!string.IsNullOrEmpty(loginKey) && (loginKey!.Length > 19) && (BotConfig.PasswordFormat != ArchiCryptoHelper.ECryptoMethod.PlainText)) {
-						loginKey = ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, loginKey);
-					}
+				// Decrypt login key if needed
+				if (!string.IsNullOrEmpty(loginKey) && (loginKey!.Length > 19) && (BotConfig.PasswordFormat != ArchiCryptoHelper.ECryptoMethod.PlainText)) {
+					loginKey = ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, loginKey);
 				}
 			} else {
 				// If we're not using login keys, ensure we don't have any saved
@@ -2388,7 +2393,7 @@ namespace ArchiSteamFarm.Steam {
 				LoginKey = loginKey,
 				Password = password,
 				SentryFileHash = sentryFileHash,
-				ShouldRememberPassword = BotConfig.UseLoginKeys,
+				ShouldRememberPassword = ShouldUseLoginKeys,
 				TwoFactorCode = TwoFactorCode,
 				Username = username
 			};
@@ -3004,7 +3009,7 @@ namespace ArchiSteamFarm.Steam {
 				throw new ArgumentNullException(nameof(callback));
 			}
 
-			if (!BotConfig.UseLoginKeys) {
+			if (!ShouldUseLoginKeys) {
 				return;
 			}
 

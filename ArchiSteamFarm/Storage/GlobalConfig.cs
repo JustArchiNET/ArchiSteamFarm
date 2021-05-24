@@ -444,7 +444,7 @@ namespace ArchiSteamFarm.Storage {
 		public bool ShouldSerializeUpdateChannel() => !Saving || (UpdateChannel != DefaultUpdateChannel);
 		public bool ShouldSerializeUpdatePeriod() => !Saving || (UpdatePeriod != DefaultUpdatePeriod);
 		public bool ShouldSerializeWebLimiterDelay() => !Saving || (WebLimiterDelay != DefaultWebLimiterDelay);
-		public bool ShouldSerializeWebProxyPassword() => Saving && (WebProxyPassword != DefaultWebProxyPassword);
+		public bool ShouldSerializeWebProxyPassword() => Saving && IsWebProxyPasswordSet && (WebProxyPassword != DefaultWebProxyPassword);
 		public bool ShouldSerializeWebProxyText() => !Saving || (WebProxyText != DefaultWebProxyText);
 		public bool ShouldSerializeWebProxyUsername() => !Saving || (WebProxyUsername != DefaultWebProxyUsername);
 

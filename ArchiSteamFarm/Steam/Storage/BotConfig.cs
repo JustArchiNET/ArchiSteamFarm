@@ -212,7 +212,7 @@ namespace ArchiSteamFarm.Steam.Storage {
 		public string? SteamLogin {
 			get => BackingSteamLogin;
 
-			set {
+			internal set {
 				IsSteamLoginSet = true;
 				BackingSteamLogin = value;
 			}
@@ -225,7 +225,7 @@ namespace ArchiSteamFarm.Steam.Storage {
 		public string? SteamParentalCode {
 			get => BackingSteamParentalCode;
 
-			set {
+			internal set {
 				IsSteamParentalCodeSet = true;
 				BackingSteamParentalCode = value;
 			}
@@ -235,7 +235,7 @@ namespace ArchiSteamFarm.Steam.Storage {
 		public string? SteamPassword {
 			get => BackingSteamPassword;
 
-			set {
+			internal set {
 				IsSteamPasswordSet = true;
 				BackingSteamPassword = value;
 			}
@@ -296,9 +296,9 @@ namespace ArchiSteamFarm.Steam.Storage {
 			}
 		}
 
-		internal bool IsSteamLoginSet { get; private set; }
-		internal bool IsSteamParentalCodeSet { get; private set; }
-		internal bool IsSteamPasswordSet { get; private set; }
+		internal bool IsSteamLoginSet { get; set; }
+		internal bool IsSteamParentalCodeSet { get; set; }
+		internal bool IsSteamPasswordSet { get; set; }
 		internal bool Saving { get; set; }
 
 		private string? BackingSteamLogin = DefaultSteamLogin;
@@ -561,10 +561,10 @@ namespace ArchiSteamFarm.Steam.Storage {
 		public bool ShouldSerializeShutdownOnFarmingFinished() => !Saving || (ShutdownOnFarmingFinished != DefaultShutdownOnFarmingFinished);
 		public bool ShouldSerializeSkipRefundableGames() => !Saving || (SkipRefundableGames != DefaultSkipRefundableGames);
 		public bool ShouldSerializeSSteamMasterClanID() => !Saving;
-		public bool ShouldSerializeSteamLogin() => Saving && (SteamLogin != DefaultSteamLogin);
+		public bool ShouldSerializeSteamLogin() => Saving && IsSteamLoginSet && (SteamLogin != DefaultSteamLogin);
 		public bool ShouldSerializeSteamMasterClanID() => !Saving || (SteamMasterClanID != DefaultSteamMasterClanID);
-		public bool ShouldSerializeSteamParentalCode() => Saving && (SteamParentalCode != DefaultSteamParentalCode);
-		public bool ShouldSerializeSteamPassword() => Saving && (SteamPassword != DefaultSteamPassword);
+		public bool ShouldSerializeSteamParentalCode() => Saving && IsSteamParentalCodeSet && (SteamParentalCode != DefaultSteamParentalCode);
+		public bool ShouldSerializeSteamPassword() => Saving && IsSteamPasswordSet && (SteamPassword != DefaultSteamPassword);
 		public bool ShouldSerializeSteamTradeToken() => !Saving || (SteamTradeToken != DefaultSteamTradeToken);
 		public bool ShouldSerializeSteamUserPermissions() => !Saving || ((SteamUserPermissions != DefaultSteamUserPermissions) && ((SteamUserPermissions.Count != DefaultSteamUserPermissions.Count) || SteamUserPermissions.Except(DefaultSteamUserPermissions).Any()));
 		public bool ShouldSerializeTradingPreferences() => !Saving || (TradingPreferences != DefaultTradingPreferences);
