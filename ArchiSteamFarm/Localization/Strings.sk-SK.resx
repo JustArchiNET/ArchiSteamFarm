@@ -163,7 +163,7 @@ StackTrace:
     <value>Nie je definovaný žiadny bot. Zabudol si nakonfigurovať ASF?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} je hodnoty null!</value>
+    <value>{0} má hodnotu null!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">

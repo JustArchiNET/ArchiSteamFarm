@@ -131,11 +131,11 @@
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Configuração da propriedade {0} inválida: {1}</value>
+    <value>A propriedade {0} possui valor inválido: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} encontrou uma exceção fatal antes mesmo que o módulo de registro fosse inicializado!</value>
+    <value>O ASF V{0} encontrou uma exceção fatal antes mesmo que o módulo de registro fosse inicializado!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
@@ -148,7 +148,7 @@ StackTrace:
     <value>Saindo com um código de erro diferente de zero!</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
-    <value>Falha na solicitação: {0}</value>
+    <value>Erro de solicitação: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
@@ -171,7 +171,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>Falha na solicitação após {0} tentativas!</value>
+    <value>Falha na solicitação após {0} tentativa(s)!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
@@ -637,14 +637,14 @@ Tempo de execução: {1}</value>
     <value>O bot de destino não está conectado!</value>
   </data>
   <data name="BotWalletBalance" xml:space="preserve">
-    <value>Saldo da Carteira: {0} {1}</value>
+    <value>Saldo na carteira: {0} {1}</value>
     <comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
   </data>
   <data name="BotHasNoWallet" xml:space="preserve">
-    <value>O bot não tem saldo na Carteira.</value>
+    <value>O bot está com a carteira vazia.</value>
   </data>
   <data name="BotLevel" xml:space="preserve">
-    <value>Nível Steam do bot: {0}.</value>
+    <value>O nível do bot é {0}.</value>
     <comment>{0} will be replaced by bot's level</comment>
   </data>
   <data name="ActivelyMatchingItems" xml:space="preserve">
@@ -690,14 +690,14 @@ Tempo de execução: {1}</value>
     <value>Executando...</value>
   </data>
   <data name="InteractiveConsoleEnabled" xml:space="preserve">
-    <value>O console interativo agora está ativo. Digite "c" para entrar no modo de comando.</value>
+    <value>O console interativo está ativo, digite 'c' para entrar no modo de comando.</value>
   </data>
   <data name="InteractiveConsoleNotAvailable" xml:space="preserve">
-    <value>O console interativo está indisponível porque a propriedade de configuração "{0}" está ausente.</value>
+    <value>O console interativo não está disponível devido à falta da propriedade de configuração {0}.</value>
     <comment>{0} will be replaced by the name of the missing config property (string)</comment>
   </data>
   <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
-    <value>Há {0} jogo(s) restante(s) na fila de ativação em segundo plano do bot.</value>
+    <value>Há {0} jogos restantes na lista de ativação em segundo plano desse bot.</value>
     <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
   </data>
   <data name="ErrorSingleInstanceRequired" xml:space="preserve">

@@ -742,6 +742,12 @@
   <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
     <value>Каталог з конфігураційними файлами не знайдено, припиняю роботу!</value>
   </data>
-  
-  
+  <data name="BotIdlingSelectedGames" xml:space="preserve">
+    <value>Запускаємо обрані у {0}: {1}</value>
+    <comment>{0} will be replaced by internal name of the config property (e.g. "GamesPlayedWhileIdle"), {1} will be replaced by comma-separated list of appIDs that user has chosen</comment>
+  </data>
+  <data name="AutomaticFileMigration" xml:space="preserve">
+    <value>Файл конфігурації {0} буде оновлено до поточного синтаксису...</value>
+    <comment>{0} will be replaced with the relative path to the affected config file</comment>
+  </data>
 </root>

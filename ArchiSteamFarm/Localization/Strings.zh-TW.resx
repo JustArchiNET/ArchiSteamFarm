@@ -458,7 +458,7 @@
     <value>你無法對自己發出交易請求！</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>BOT 並未啟用 ASF 兩步驟驗證！你是否忘記將驗證器匯入成 ASF 兩步驟驗證？</value>
+    <value>這個 BOT 並未啟用 ASF 二階段驗證！您是否忘記將二階段驗證導入至 ASF？</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
     <value>此 BOT 執行個體尚未連線！</value>
