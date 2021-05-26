@@ -429,7 +429,7 @@
     <value>您已在配置文件中禁用此机器人，该实例将不会启动！</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>连续收到 TwoFactorCodeMismatch 错误码 {0} 次。可能你的双重认证凭据已失效，或者你的设备时钟未及时同步。正在中止操作！</value>
+    <value>连续收到 TwoFactorCodeMismatch 错误码 {0} 次。可能您的双重认证凭据已失效，或者设备时钟未及时同步。正在中止操作！</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
@@ -473,7 +473,7 @@
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>达到频率限制，将在 {0} 后重试……</value>
+    <value>达到频率限制，将在 {0}后重试……</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">

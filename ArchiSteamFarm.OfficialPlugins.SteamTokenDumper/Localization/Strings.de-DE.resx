@@ -183,18 +183,42 @@
     <value>Konnte keine Daten einreichen, da keine SteamID identifiziert wurde, die als Einreichender valide ist. Bitte ziehe in Betracht {0} zu konfigurieren.</value>
     <comment>{0} will be replaced by the name of the config property (e.g. "SteamOwnerID") that the user is expected to set</comment>
   </data>
-  
+  <data name="SubmissionInProgress" xml:space="preserve">
+    <value>Reiche insgesamt folgende Applikationen/Pakete/Depots ein: {0}/{1}/{2}...</value>
+    <comment>{0} will be replaced by the number of app access tokens being submitted, {1} will be replaced by the number of package access tokens being submitted, {2} will be replaced by the number of depot keys being submitted</comment>
+  </data>
   <data name="SubmissionFailedTooManyRequests" xml:space="preserve">
     <value>Das Einreichen schlug fehl, weil wir zu viele Einreichungen in zu kurzer Zeit versuchten. Wir versuchen es in ungefähr {0} wieder.</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
   </data>
-  
-  
-  
-  
-  
-  
-  
+  <data name="SubmissionSuccessful" xml:space="preserve">
+    <value>Die Daten wurden erfolgreich übermittelt. Der Server hat insgesamt folgende Anzahl an neuen Applikationen/Paketen/Depots registriert: {0} ({1} verifiziert)/{2} ({3} verifiziert)/{4} ({5} verifiziert).</value>
+    <comment>{0} will be replaced by the number of new app access tokens that the server has registered, {1} will be replaced by the number of verified app access tokens that the server has registered, {2} will be replaced by the number of new package access tokens that the server has registered, {3} will be replaced by the number of verified package access tokens that the server has registered, {4} will be replaced by the number of new depot keys that the server has registered, {5} will be replaced by the number of verified depot keys that the server has registered</comment>
+  </data>
+  <data name="SubmissionSuccessfulNewApps" xml:space="preserve">
+    <value>Neue Applikationen: {0}</value>
+    <comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="SubmissionSuccessfulVerifiedApps" xml:space="preserve">
+    <value>Verifizierte Applikationen: {0}</value>
+    <comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="SubmissionSuccessfulNewPackages" xml:space="preserve">
+    <value>Neue Pakete: {0}</value>
+    <comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="SubmissionSuccessfulVerifiedPackages" xml:space="preserve">
+    <value>Verifizierte Pakete: {0}</value>
+    <comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="SubmissionSuccessfulNewDepots" xml:space="preserve">
+    <value>Neue Depots: {0}</value>
+    <comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="SubmissionSuccessfulVerifiedDepots" xml:space="preserve">
+    <value>Verifizierte Depots: {0}</value>
+    <comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
+  </data>
   <data name="PluginSecretListInitialized" xml:space="preserve">
     <value>{0} wurde konfiguriert, das Plugin wird keinen der folgenden Werte auflösen: {1}.</value>
     <comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
