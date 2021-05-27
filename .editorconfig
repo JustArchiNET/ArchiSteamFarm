@@ -11,7 +11,7 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 
 ###############################
-# C# Coding Conventions      #
+# C# Coding Conventions       #
 ###############################
 
 [*.cs]
