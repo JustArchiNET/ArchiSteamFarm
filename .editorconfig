@@ -119,6 +119,11 @@ dotnet_naming_rule.almost_everything_must_be_pascal_case.severity = warning
 dotnet_naming_rule.almost_everything_must_be_pascal_case.style = pascal_case
 dotnet_naming_rule.almost_everything_must_be_pascal_case.symbols = almost_everything
 
+# Rule - enums
+dotnet_naming_rule.enums_must_be_e_pascal_case.severity = warning
+dotnet_naming_rule.enums_must_be_e_pascal_case.style = e_pascal_case
+dotnet_naming_rule.enums_must_be_e_pascal_case.symbols = enums
+
 # Rule - interfaces
 dotnet_naming_rule.interfaces_must_be_i_pascal_case.severity = warning
 dotnet_naming_rule.interfaces_must_be_i_pascal_case.style = i_pascal_case
@@ -137,6 +142,10 @@ dotnet_naming_rule.type_parameters_must_be_t_pascal_case.symbols = type_paramete
 # Style - camelCase
 dotnet_naming_style.camel_case.capitalization = camel_case
 
+# Style - EPascalCase
+dotnet_naming_style.e_pascal_case.capitalization = pascal_case
+dotnet_naming_style.e_pascal_case.required_prefix = E
+
 # Style - IPascalCase
 dotnet_naming_style.i_pascal_case.capitalization = pascal_case
 dotnet_naming_style.i_pascal_case.required_prefix = I
@@ -150,19 +159,23 @@ dotnet_naming_style.t_pascal_case.required_prefix = T
 
 # Symbol - almost everything
 dotnet_naming_symbols.almost_everything.applicable_accessibilities = *
-dotnet_naming_symbols.almost_everything.applicable_kinds = namespace,class,struct,interface,enum,property,method,field,event,delegate,local_function
+dotnet_naming_symbols.almost_everything.applicable_kinds = namespace,class,struct,property,method,field,event,delegate
+
+# Symbol - enums
+dotnet_naming_symbols.enums.applicable_accessibilities = *
+dotnet_naming_symbols.enums.applicable_kinds = enum
 
 # Symbol - interfaces
-dotnet_naming_symbols.interfaces.applicable_kinds = interface
 dotnet_naming_symbols.interfaces.applicable_accessibilities = *
+dotnet_naming_symbols.interfaces.applicable_kinds = interface
 
 # Symbol - local parameters
 dotnet_naming_symbols.local_parameters.applicable_accessibilities = *
-dotnet_naming_symbols.local_parameters.applicable_kinds = parameter,local
+dotnet_naming_symbols.local_parameters.applicable_kinds = parameter,local,local_function
 
 # Symbol - type parameters
-dotnet_naming_symbols.type_parameters.applicable_kinds = type_parameter
 dotnet_naming_symbols.type_parameters.applicable_accessibilities = *
+dotnet_naming_symbols.type_parameters.applicable_kinds = type_parameter
 
 dotnet_remove_unnecessary_suppression_exclusions = none:warning
 dotnet_separate_import_directive_groups = false
