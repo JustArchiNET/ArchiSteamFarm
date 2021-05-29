@@ -308,6 +308,14 @@ namespace ArchiSteamFarm.Steam.Integration {
 				return null;
 			}
 
+			// Extra entry for format
+			Dictionary<string, object> arguments = new(5, StringComparer.Ordinal) {
+				{ "include_appinfo", 1 },
+				{ "key", steamApiKey! },
+				{ "skip_unvetted_apps", "0" },
+				{ "steamid", steamID }
+			};
+
 			KeyValue? response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
@@ -319,15 +327,9 @@ namespace ArchiSteamFarm.Steam.Integration {
 					response = await WebLimitRequest(
 						WebAPI.DefaultBaseAddress,
 
+						// TODO: Remove this ToDictionary() call after https://github.com/SteamRE/SteamKit/pull/992 is released
 						// ReSharper disable once AccessToDisposedClosure
-						async () => await playerService.CallAsync(
-							HttpMethod.Get, "GetOwnedGames", args: new Dictionary<string, object>(4, StringComparer.Ordinal) {
-								{ "include_appinfo", 1 },
-								{ "key", steamApiKey! },
-								{ "skip_unvetted_apps", "0" },
-								{ "steamid", steamID }
-							}
-						).ConfigureAwait(false)
+						async () => await playerService.CallAsync(HttpMethod.Get, "GetOwnedGames", args: arguments.ToDictionary(kv => kv.Key, kv => kv.Value)).ConfigureAwait(false)
 					).ConfigureAwait(false);
 				} catch (TaskCanceledException e) {
 					Bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -1423,6 +1425,12 @@ namespace ArchiSteamFarm.Steam.Integration {
 				return false;
 			}
 
+			// Extra entry for format
+			Dictionary<string, object> arguments = new(3, StringComparer.Ordinal) {
+				{ "key", steamApiKey! },
+				{ "tradeofferid", tradeID }
+			};
+
 			KeyValue? response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
@@ -1434,13 +1442,9 @@ namespace ArchiSteamFarm.Steam.Integration {
 					response = await WebLimitRequest(
 						WebAPI.DefaultBaseAddress,
 
+						// TODO: Remove this ToDictionary() call after https://github.com/SteamRE/SteamKit/pull/992 is released
 						// ReSharper disable once AccessToDisposedClosure
-						async () => await econService.CallAsync(
-							HttpMethod.Post, "DeclineTradeOffer", args: new Dictionary<string, object>(2, StringComparer.Ordinal) {
-								{ "key", steamApiKey! },
-								{ "tradeofferid", tradeID }
-							}
-						).ConfigureAwait(false)
+						async () => await econService.CallAsync(HttpMethod.Post, "DeclineTradeOffer", args: arguments.ToDictionary(kv => kv.Key, kv => kv.Value)).ConfigureAwait(false)
 					).ConfigureAwait(false);
 				} catch (TaskCanceledException e) {
 					Bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -1478,6 +1482,15 @@ namespace ArchiSteamFarm.Steam.Integration {
 				return null;
 			}
 
+			// Extra entry for format
+			Dictionary<string, object> arguments = new(6, StringComparer.Ordinal) {
+				{ "active_only", 1 },
+				{ "get_descriptions", 1 },
+				{ "get_received_offers", 1 },
+				{ "key", steamApiKey! },
+				{ "time_historical_cutoff", uint.MaxValue }
+			};
+
 			KeyValue? response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
@@ -1489,16 +1502,9 @@ namespace ArchiSteamFarm.Steam.Integration {
 					response = await WebLimitRequest(
 						WebAPI.DefaultBaseAddress,
 
+						// TODO: Remove this ToDictionary() call after https://github.com/SteamRE/SteamKit/pull/992 is released
 						// ReSharper disable once AccessToDisposedClosure
-						async () => await econService.CallAsync(
-							HttpMethod.Get, "GetTradeOffers", args: new Dictionary<string, object>(5, StringComparer.Ordinal) {
-								{ "active_only", 1 },
-								{ "get_descriptions", 1 },
-								{ "get_received_offers", 1 },
-								{ "key", steamApiKey! },
-								{ "time_historical_cutoff", uint.MaxValue }
-							}
-						).ConfigureAwait(false)
+						async () => await econService.CallAsync(HttpMethod.Get, "GetTradeOffers", args: arguments).ConfigureAwait(false)
 					).ConfigureAwait(false);
 				} catch (TaskCanceledException e) {
 					Bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -1964,7 +1970,8 @@ namespace ArchiSteamFarm.Steam.Integration {
 				return null;
 			}
 
-			Dictionary<string, object> arguments = new(!string.IsNullOrEmpty(tradeToken) ? 3 : 2, StringComparer.Ordinal) {
+			// Extra entry for format
+			Dictionary<string, object> arguments = new(!string.IsNullOrEmpty(tradeToken) ? 4 : 3, StringComparer.Ordinal) {
 				{ "key", steamApiKey! },
 				{ "steamid_target", steamID }
 			};
@@ -1984,8 +1991,9 @@ namespace ArchiSteamFarm.Steam.Integration {
 					response = await WebLimitRequest(
 						WebAPI.DefaultBaseAddress,
 
+						// TODO: Remove this ToDictionary() call after https://github.com/SteamRE/SteamKit/pull/992 is released
 						// ReSharper disable once AccessToDisposedClosure
-						async () => await econService.CallAsync(HttpMethod.Get, "GetTradeHoldDurations", args: arguments).ConfigureAwait(false)
+						async () => await econService.CallAsync(HttpMethod.Get, "GetTradeHoldDurations", args: arguments.ToDictionary(kv => kv.Key, kv => kv.Value)).ConfigureAwait(false)
 					).ConfigureAwait(false);
 				} catch (TaskCanceledException e) {
 					Bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -2144,6 +2152,13 @@ namespace ArchiSteamFarm.Steam.Integration {
 			// AES encrypt our login key with our session key
 			byte[] encryptedLoginKey = CryptoHelper.SymmetricEncrypt(loginKey, sessionKey);
 
+			// Extra entry for format
+			Dictionary<string, object> arguments = new(4, StringComparer.Ordinal) {
+				{ "encrypted_loginkey", encryptedLoginKey },
+				{ "sessionkey", encryptedSessionKey },
+				{ "steamid", steamID }
+			};
+
 			// We're now ready to send the data to Steam API
 			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.LoggingIn, SteamUserAuthService));
 
@@ -2160,13 +2175,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 						WebAPI.DefaultBaseAddress,
 
 						// ReSharper disable once AccessToDisposedClosure
-						async () => await steamUserAuthService.CallAsync(
-							HttpMethod.Post, "AuthenticateUser", args: new Dictionary<string, object>(3, StringComparer.Ordinal) {
-								{ "encrypted_loginkey", encryptedLoginKey },
-								{ "sessionkey", encryptedSessionKey },
-								{ "steamid", steamID }
-							}
-						).ConfigureAwait(false)
+						async () => await steamUserAuthService.CallAsync(HttpMethod.Post, "AuthenticateUser", args: arguments).ConfigureAwait(false)
 					).ConfigureAwait(false);
 				} catch (TaskCanceledException e) {
 					Bot.ArchiLogger.LogGenericDebuggingException(e);
