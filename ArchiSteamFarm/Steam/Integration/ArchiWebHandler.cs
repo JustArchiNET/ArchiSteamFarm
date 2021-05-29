@@ -1504,7 +1504,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 						// TODO: Remove this ToDictionary() call after https://github.com/SteamRE/SteamKit/pull/992 is released
 						// ReSharper disable once AccessToDisposedClosure
-						async () => await econService.CallAsync(HttpMethod.Get, "GetTradeOffers", args: arguments).ConfigureAwait(false)
+						async () => await econService.CallAsync(HttpMethod.Get, "GetTradeOffers", args: arguments.ToDictionary(kv => kv.Key, kv => kv.Value)).ConfigureAwait(false)
 					).ConfigureAwait(false);
 				} catch (TaskCanceledException e) {
 					Bot.ArchiLogger.LogGenericDebuggingException(e);
