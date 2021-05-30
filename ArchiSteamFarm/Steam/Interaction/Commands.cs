@@ -268,7 +268,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 						case "PLAY":
 							return await ResponsePlay(steamID, args[1]).ConfigureAwait(false);
 						case "POINTS":
-							return await ResponsePointsBalance(steamID, args[1]).ConfigureAwait(false);
+							return await ResponsePointsBalance(steamID, Utilities.GetArgsAsText(args, 1, ",")).ConfigureAwait(false);
 						case "PRIVACY" when args.Length > 2:
 							return await ResponsePrivacy(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
 						case "PRIVACY":
@@ -2428,7 +2428,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
-			int? points = await Bot.ArchiWebHandler.GetPointsBalance().ConfigureAwait(false);
+			uint? points = await Bot.ArchiWebHandler.GetPointsBalance().ConfigureAwait(false);
 
 			return FormatBotResponse(points.HasValue ? string.Format(CultureInfo.CurrentCulture, Strings.BotPointsBalance, points) : Strings.WarningFailed);
 		}

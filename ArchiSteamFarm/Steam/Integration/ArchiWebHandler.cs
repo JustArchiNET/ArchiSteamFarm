@@ -376,7 +376,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 		}
 
 		[PublicAPI]
-		public async Task<int?> GetPointsBalance() {
+		public async Task<uint?> GetPointsBalance() {
 			(bool success, string? accessToken) = await CachedAccessToken.GetValue().ConfigureAwait(false);
 
 			if (!success || string.IsNullOrEmpty(accessToken)) {
@@ -420,9 +420,9 @@ namespace ArchiSteamFarm.Steam.Integration {
 				return null;
 			}
 
-			int points = pointsInfo.AsInteger(int.MinValue);
+			uint points = pointsInfo.AsUnsignedInteger(uint.MaxValue);
 
-			return points != int.MinValue ? points : null;
+			return points != uint.MaxValue ? points : null;
 		}
 
 		[PublicAPI]
