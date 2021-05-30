@@ -57,11 +57,11 @@ namespace ArchiSteamFarm.Steam.Integration {
 		internal const ushort MaxItemsInSingleInventoryRequest = 5000;
 
 		private const string EconService = "IEconService";
+		private const string LoyaltyRewardsService = "ILoyaltyRewardsService";
 		private const string PlayerService = "IPlayerService";
 		private const string SteamAppsService = "ISteamApps";
 		private const string SteamUserAuthService = "ISteamUserAuth";
 		private const string TwoFactorService = "ITwoFactorService";
-		private const string LoyaltyRewardsService = "ILoyaltyRewardsService";
 
 		[PublicAPI]
 		public static Uri SteamCommunityURL => new("https://steamcommunity.com");
@@ -75,9 +75,10 @@ namespace ArchiSteamFarm.Steam.Integration {
 		private static readonly ConcurrentDictionary<uint, byte> CachedCardCountsForGame = new();
 
 		[PublicAPI]
-		public ArchiCacheable<string> CachedApiKey { get; }
-		[PublicAPI]
 		public ArchiCacheable<string> CachedAccessToken { get; }
+
+		[PublicAPI]
+		public ArchiCacheable<string> CachedApiKey { get; }
 
 		[PublicAPI]
 		public WebBrowser WebBrowser { get; }
@@ -385,6 +386,12 @@ namespace ArchiSteamFarm.Steam.Integration {
 				return null;
 			}
 
+			// Extra entry for format
+			Dictionary<string, object> arguments = new(3, StringComparer.Ordinal) {
+				{ "access_token", accessToken! },
+				{ "steamid", Bot.SteamID.ToString(CultureInfo.InvariantCulture) }
+			};
+
 			KeyValue? response = null;
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
@@ -396,13 +403,9 @@ namespace ArchiSteamFarm.Steam.Integration {
 					response = await WebLimitRequest(
 						WebAPI.DefaultBaseAddress,
 
+						// TODO: Remove this ToDictionary() call after https://github.com/SteamRE/SteamKit/pull/992 is released
 						// ReSharper disable once AccessToDisposedClosure
-						async () => await loyaltyRewardsService.CallAsync(
-							HttpMethod.Get, "GetSummary", args: new Dictionary<string, object>(2, StringComparer.Ordinal) {
-								{ "access_token", accessToken! },
-								{ "steamid", Bot.SteamID.ToString(CultureInfo.InvariantCulture) }
-							}
-						).ConfigureAwait(false)
+						async () => await loyaltyRewardsService.CallAsync(HttpMethod.Get, "GetSummary", args: arguments.ToDictionary(kv => kv.Key, kv => kv.Value)).ConfigureAwait(false)
 					).ConfigureAwait(false);
 				} catch (TaskCanceledException e) {
 					Bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -413,16 +416,27 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 			if (response == null) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+
 				return null;
 			}
 
 			KeyValue pointsInfo = response["summary"]["points"];
 
 			if (pointsInfo == KeyValue.Invalid) {
+				Bot.ArchiLogger.LogNullError(nameof(pointsInfo));
+
 				return null;
 			}
 
-			return uint.TryParse(pointsInfo.Value, out uint points) ? points : null;
+			uint result = pointsInfo.AsUnsignedInteger(uint.MaxValue);
+
+			if (result == uint.MaxValue) {
+				Bot.ArchiLogger.LogNullError(nameof(result));
+
+				return null;
+			}
+
+			return result;
 		}
 
 		[PublicAPI]
@@ -2686,6 +2700,14 @@ namespace ArchiSteamFarm.Steam.Integration {
 			return await UrlPostWithSession(request, data: data).ConfigureAwait(false);
 		}
 
+		private async Task<(bool Success, string? Result)> ResolveAccessToken() {
+			Uri request = new(SteamStoreURL, "/pointssummary/ajaxgetasyncconfig");
+
+			ObjectResponse<AccessTokenResponse>? response = await UrlGetToJsonObjectWithSession<AccessTokenResponse>(request).ConfigureAwait(false);
+
+			return !string.IsNullOrEmpty(response?.Content.Data.WebAPIToken) ? (true, response!.Content.Data.WebAPIToken) : (false, null);
+		}
+
 		private async Task<(bool Success, string? Result)> ResolveApiKey() {
 			if (Bot.IsAccountLimited) {
 				// API key is permanently unavailable for limited accounts
@@ -2734,17 +2756,6 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 					return (false, null);
 			}
-		}
-		private async Task<(bool Success, string? Result)> ResolveAccessToken() {
-			Uri request = new(SteamStoreURL, "/pointssummary/ajaxgetasyncconfig");
-
-			ObjectResponse<AccessTokenResponse>? response = await UrlGetToJsonObjectWithSession<AccessTokenResponse>(request).ConfigureAwait(false);
-
-			if (string.IsNullOrEmpty(response?.Content.AccessTokenData.WebAPIToken )) {
-				return (false, null);
-			}
-
-			return (true, response!.Content.AccessTokenData.WebAPIToken );
 		}
 
 		private async Task<bool> UnlockParentalAccount(string parentalCode) {
