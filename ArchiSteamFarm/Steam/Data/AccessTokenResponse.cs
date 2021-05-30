@@ -24,7 +24,7 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Steam.Data {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	internal sealed class AccessTokenResponse : EResultResponse {
+	internal sealed class AccessTokenResponse : ResultResponse {
 		[JsonProperty(PropertyName = "data", Required = Required.Always)]
 		internal readonly AccessTokenData Data = new();
 

@@ -27,12 +27,11 @@ using SteamKit2;
 namespace ArchiSteamFarm.Steam.Data {
 	[PublicAPI]
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	[SuppressMessage("ReSharper", "InconsistentNaming")]
-	public class EResultResponse {
+	public class ResultResponse {
 		[JsonProperty(PropertyName = "success", Required = Required.Always)]
 		public EResult Result { get; private set; }
 
 		[JsonConstructor]
-		protected EResultResponse() { }
+		protected ResultResponse() { }
 	}
 }

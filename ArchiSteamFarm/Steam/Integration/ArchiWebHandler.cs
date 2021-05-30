@@ -1359,7 +1359,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 				{ "giftcardid", giftCardID.ToString(CultureInfo.InvariantCulture) }
 			};
 
-			ObjectResponse<EResultResponse>? response = await UrlPostToJsonObjectWithSession<EResultResponse>(request, data: data).ConfigureAwait(false);
+			ObjectResponse<ResultResponse>? response = await UrlPostToJsonObjectWithSession<ResultResponse>(request, data: data).ConfigureAwait(false);
 
 			if (response == null) {
 				return false;
@@ -1454,7 +1454,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 				{ "Privacy", JsonConvert.SerializeObject(userPrivacy.Settings) }
 			};
 
-			ObjectResponse<EResultResponse>? response = await UrlPostToJsonObjectWithSession<EResultResponse>(request, data: data).ConfigureAwait(false);
+			ObjectResponse<ResultResponse>? response = await UrlPostToJsonObjectWithSession<ResultResponse>(request, data: data).ConfigureAwait(false);
 
 			if (response == null) {
 				return false;
@@ -2418,7 +2418,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 				{ "communityitemid", itemID.ToString(CultureInfo.InvariantCulture) }
 			};
 
-			ObjectResponse<EResultResponse>? response = await UrlPostToJsonObjectWithSession<EResultResponse>(request, data: data).ConfigureAwait(false);
+			ObjectResponse<ResultResponse>? response = await UrlPostToJsonObjectWithSession<ResultResponse>(request, data: data).ConfigureAwait(false);
 
 			return response?.Content.Result == EResult.OK;
 		}

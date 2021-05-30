@@ -25,7 +25,7 @@ using SteamKit2;
 
 namespace ArchiSteamFarm.Steam.Data {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	internal sealed class RedeemWalletResponse : EResultResponse {
+	internal sealed class RedeemWalletResponse : ResultResponse {
 		[JsonProperty(PropertyName = "detail", Required = Required.DisallowNull)]
 		internal readonly EPurchaseResultDetail PurchaseResultDetail;
 
