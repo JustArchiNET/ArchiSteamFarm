@@ -538,6 +538,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Points balance：{0}..
+        /// </summary>
+        public static string BotPointsBalance {
+            get {
+                return ResourceManager.GetString("BotPointsBalance", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Rate limit exceeded, we will retry after {0} of cooldown....
         /// </summary>
         public static string BotRateLimitExceeded {
