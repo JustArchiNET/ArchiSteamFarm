@@ -472,6 +472,10 @@ StackTrace:
     <value>Owned already: {0} | {1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
+  <data name="BotPointsBalance" xml:space="preserve">
+    <value>Points balance：{0}</value>
+    <comment>{0} will be replaced by the points balance value (integer)</comment>
+  </data>
   <data name="BotRateLimitExceeded" xml:space="preserve">
     <value>Rate limit exceeded, we will retry after {0} of cooldown...</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
