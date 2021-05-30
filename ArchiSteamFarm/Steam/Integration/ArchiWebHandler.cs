@@ -2733,11 +2733,11 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 			ObjectResponse<AccessTokenResponse>? response = await UrlGetToJsonObjectWithSession<AccessTokenResponse>(request).ConfigureAwait(false);
 
-			if (string.IsNullOrEmpty(response?.Content.AccessTokenData.Webapi_token)) {
+			if (string.IsNullOrEmpty(response?.Content.AccessTokenData.WebAPIToken )) {
 				return (false, null);
 			}
 
-			return (true, response!.Content.AccessTokenData.Webapi_token);
+			return (true, response!.Content.AccessTokenData.WebAPIToken );
 		}
 
 		private async Task<bool> UnlockParentalAccount(string parentalCode) {
