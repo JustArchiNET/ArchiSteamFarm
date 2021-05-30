@@ -2738,7 +2738,6 @@ namespace ArchiSteamFarm.Steam.Integration {
 			}
 
 			return (true, response!.Content.AccessTokenData.Webapi_token);
-
 		}
 
 		private async Task<bool> UnlockParentalAccount(string parentalCode) {
