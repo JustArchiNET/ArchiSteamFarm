@@ -420,9 +420,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 				return null;
 			}
 
-			uint points = pointsInfo.AsUnsignedInteger(uint.MaxValue);
-
-			return points != uint.MaxValue ? points : null;
+			return uint.TryParse(pointsInfo.Value, out uint points) ? points : null;
 		}
 
 		[PublicAPI]
