@@ -2777,7 +2777,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 													case EPurchaseResultDetail.BadActivationCode:
 													case EPurchaseResultDetail.DuplicateActivationCode:
 													case EPurchaseResultDetail.NoDetail: // OK
-																						 // This key is already handled, as we either redeemed it or we're sure it's dupe/invalid
+														// This key is already handled, as we either redeemed it or we're sure it's dupe/invalid
 														alreadyHandled = true;
 														unusedKeys.Remove(key!);
 
