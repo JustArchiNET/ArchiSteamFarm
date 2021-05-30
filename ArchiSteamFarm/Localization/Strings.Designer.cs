@@ -538,7 +538,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Points balance：{0}.
+        ///   Looks up a localized string similar to Points balance: {0}.
         /// </summary>
         public static string BotPointsBalance {
             get {
