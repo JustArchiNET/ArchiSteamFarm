@@ -771,11 +771,11 @@ namespace ArchiSteamFarm.Web {
 							requestMessage.Content = content;
 
 							break;
-						case IReadOnlyCollection<KeyValuePair<string?, string?>> dictionary:
+						case IReadOnlyCollection<KeyValuePair<string?, string?>> nameValueCollection:
 							try {
-								requestMessage.Content = new FormUrlEncodedContent(dictionary);
+								requestMessage.Content = new FormUrlEncodedContent(nameValueCollection);
 							} catch (UriFormatException) {
-								requestMessage.Content = new StringContent(string.Join("&", dictionary.Select(kv => WebUtility.UrlEncode(kv.Key) + "=" + WebUtility.UrlEncode(kv.Value))), null, "application/x-www-form-urlencoded");
+								requestMessage.Content = new StringContent(string.Join("&", nameValueCollection.Select(kv => WebUtility.UrlEncode(kv.Key) + "=" + WebUtility.UrlEncode(kv.Value))), null, "application/x-www-form-urlencoded");
 							}
 
 							break;

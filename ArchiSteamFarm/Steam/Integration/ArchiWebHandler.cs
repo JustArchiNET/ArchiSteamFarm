@@ -389,7 +389,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 			// Extra entry for format
 			Dictionary<string, object> arguments = new(3, StringComparer.Ordinal) {
 				{ "access_token", accessToken! },
-				{ "steamid", Bot.SteamID.ToString(CultureInfo.InvariantCulture) }
+				{ "steamid", Bot.SteamID }
 			};
 
 			KeyValue? response = null;
