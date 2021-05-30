@@ -132,6 +132,8 @@ namespace ArchiSteamFarm.Steam.Interaction {
 							return await ResponsePause(steamID, true).ConfigureAwait(false);
 						case "PAUSE~":
 							return await ResponsePause(steamID, false).ConfigureAwait(false);
+						case "POINTS":
+							return await ResponsePointsBalance(steamID).ConfigureAwait(false);
 						case "RESET":
 							return await ResponseReset(steamID).ConfigureAwait(false);
 						case "RESUME":
@@ -265,6 +267,8 @@ namespace ArchiSteamFarm.Steam.Interaction {
 							return await ResponsePlay(steamID, args[1], Utilities.GetArgsAsText(message, 2)).ConfigureAwait(false);
 						case "PLAY":
 							return await ResponsePlay(steamID, args[1]).ConfigureAwait(false);
+						case "POINTS":
+							return await ResponsePointsBalance(steamID, args[1]).ConfigureAwait(false);
 						case "PRIVACY" when args.Length > 2:
 							return await ResponsePrivacy(steamID, args[1], Utilities.GetArgsAsText(args, 2, ",")).ConfigureAwait(false);
 						case "PRIVACY":
@@ -2411,6 +2415,46 @@ namespace ArchiSteamFarm.Steam.Interaction {
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
 
+		private async Task<string?> ResponsePointsBalance(ulong steamID) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+				throw new ArgumentOutOfRangeException(nameof(steamID));
+			}
+
+			if (!Bot.HasAccess(steamID, BotConfig.EAccess.Master)) {
+				return null;
+			}
+
+			if (!Bot.IsConnectedAndLoggedOn) {
+				return FormatBotResponse(Strings.BotNotConnected);
+			}
+
+			int? points = await Bot.ArchiWebHandler.GetPointsBalance().ConfigureAwait(false);
+
+			return FormatBotResponse(points.HasValue ? string.Format(CultureInfo.CurrentCulture, Strings.BotPointsBalance, points) : Strings.WarningFailed);
+		}
+
+		private static async Task<string?> ResponsePointsBalance(ulong steamID, string botNames) {
+			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+				throw new ArgumentOutOfRangeException(nameof(steamID));
+			}
+
+			if (string.IsNullOrEmpty(botNames)) {
+				throw new ArgumentNullException(nameof(botNames));
+			}
+
+			HashSet<Bot>? bots = Bot.GetBots(botNames);
+
+			if ((bots == null) || (bots.Count == 0)) {
+				return ASF.IsOwner(steamID) ? FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)) : null;
+			}
+
+			IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePointsBalance(steamID))).ConfigureAwait(false);
+
+			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+
+			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
+		}
+
 		private async Task<string?> ResponsePrivacy(ulong steamID, string privacySettingsText) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 				throw new ArgumentOutOfRangeException(nameof(steamID));
@@ -2733,7 +2777,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 													case EPurchaseResultDetail.BadActivationCode:
 													case EPurchaseResultDetail.DuplicateActivationCode:
 													case EPurchaseResultDetail.NoDetail: // OK
-														// This key is already handled, as we either redeemed it or we're sure it's dupe/invalid
+																						 // This key is already handled, as we either redeemed it or we're sure it's dupe/invalid
 														alreadyHandled = true;
 														unusedKeys.Remove(key!);
 
