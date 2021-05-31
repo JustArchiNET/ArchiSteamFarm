@@ -144,8 +144,13 @@
   
   
   
+  <data name="Restarting" xml:space="preserve">
+    <value>რესტარტდება...</value>
+  </data>
   
-  
+  <data name="Success" xml:space="preserve">
+    <value>წარმატება!</value>
+  </data>
   
   
   

@@ -472,6 +472,10 @@
     <value>已拥有：{0} | {1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
+  <data name="BotPointsBalance" xml:space="preserve">
+    <value>点数余额：{0}</value>
+    <comment>{0} will be replaced by the points balance value (integer)</comment>
+  </data>
   <data name="BotRateLimitExceeded" xml:space="preserve">
     <value>达到频率限制，将在 {0}后重试……</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>

@@ -465,6 +465,7 @@
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   
+  
   <data name="BotReconnecting" xml:space="preserve">
     <value>Menyambungkan kembali...</value>
   </data>

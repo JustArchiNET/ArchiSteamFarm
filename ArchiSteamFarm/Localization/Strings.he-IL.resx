@@ -457,6 +457,7 @@ StackTrace:
     <value>בבעלותך כבר: {0} | {1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
+  
   <data name="BotRateLimitExceeded" xml:space="preserve">
     <value>חרגת מגבלת התעריפים, ננסה שוב לאחר {0} שניות/דקות...</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>

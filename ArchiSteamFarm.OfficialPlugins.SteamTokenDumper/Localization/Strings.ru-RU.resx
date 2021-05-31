@@ -117,6 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="PluginDisabledMissingBuildToken" xml:space="preserve">
+    <value>{0} был отключен из-за отсутствия токена сборки</value>
+    <comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
+  </data>
+  <data name="PluginDisabledInConfig" xml:space="preserve">
+    <value>{0} сейчас выключен в соответствии с вашей конфигурацией. Если вы хотите помочь SteamDB в сборе данных, пожалуйста посетите нашу wiki.</value>
+    <comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
+  </data>
+  <data name="PluginInitializedAndEnabled" xml:space="preserve">
+    <value>{0} был успешно инициализирован. Заранее благодарим за вашу помощь. Первый сбор будет примерно через {1}.</value>
+    <comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+  </data>
+  <data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
+    <value>{0} не может быть загружен, свежая копия будет инициализирована...</value>
+    <comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>
+  </data>
   
   
   
@@ -133,12 +149,14 @@
   
   
   
-  
-  
-  
-  
-  
-  
+  <data name="SubmissionSuccessfulNewApps" xml:space="preserve">
+    <value>Новые приложения: {0}</value>
+    <comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="SubmissionSuccessfulVerifiedApps" xml:space="preserve">
+    <value>Проверенные приложения: {0}</value>
+    <comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+  </data>
   
   
   
