@@ -89,6 +89,9 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 						}
 					} catch (Exception e) {
 						ASF.ArchiLogger.LogGenericException(e);
+						ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.PluginDisabledInConfig, nameof(SteamTokenDumperPlugin)));
+
+						return;
 					}
 				}
 			}
