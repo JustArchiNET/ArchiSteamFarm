@@ -79,7 +79,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 					try {
 						switch (configProperty) {
 							case nameof(GlobalConfigExtension.SteamTokenDumperPlugin):
-								config = configValue.Value<SteamTokenDumperConfig>();
+								config = configValue.ToObject<SteamTokenDumperConfig>();
 
 								break;
 							case nameof(GlobalConfigExtension.SteamTokenDumperPluginEnabled):
