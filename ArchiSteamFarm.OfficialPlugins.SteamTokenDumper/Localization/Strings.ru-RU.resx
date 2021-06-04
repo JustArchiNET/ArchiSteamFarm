@@ -144,7 +144,9 @@
   
   
   
-  
+  <data name="SubmissionNoNewData" xml:space="preserve">
+    <value>Нет новых данных для отправки, всё актуально.</value>
+  </data>
   
   
   
