@@ -133,7 +133,9 @@
     <value>{0} не может быть загружен, свежая копия будет инициализирована...</value>
     <comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>
   </data>
-  
+  <data name="BotNoAppsToRefresh" xml:space="preserve">
+    <value>Нет приложений, которые требуют обновления для этого бота.</value>
+  </data>
   
   
   
