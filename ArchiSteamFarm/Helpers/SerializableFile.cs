@@ -82,15 +82,23 @@ namespace ArchiSteamFarm.Helpers {
 					throw new InvalidOperationException(nameof(json));
 				}
 
+				// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
 				string newFilePath = FilePath + ".new";
 
-				// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
-				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
-
 				if (System.IO.File.Exists(FilePath)) {
-					System.IO.File.Replace(newFilePath, FilePath!, null);
+					string currentJson = await File.ReadAllTextAsync(FilePath!).ConfigureAwait(false);
+
+					if (json == currentJson) {
+						return;
+					}
+
+					await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+
+					System.IO.File.Replace(newFilePath, FilePath, null);
 				} else {
-					System.IO.File.Move(newFilePath, FilePath!);
+					await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+
+					System.IO.File.Move(newFilePath, FilePath);
 				}
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
@@ -132,13 +140,23 @@ namespace ArchiSteamFarm.Helpers {
 
 			try {
 				// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
-				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
-
 				if (System.IO.File.Exists(filePath)) {
+					string currentJson = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+
+					if (json == currentJson) {
+						return true;
+					}
+
+					await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+
 					System.IO.File.Replace(newFilePath, filePath, null);
 				} else {
+					await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+
 					System.IO.File.Move(newFilePath, filePath);
 				}
+
+				return true;
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 
@@ -146,8 +164,6 @@ namespace ArchiSteamFarm.Helpers {
 			} finally {
 				GlobalFileSemaphore.Release();
 			}
-
-			return true;
 		}
 	}
 }
