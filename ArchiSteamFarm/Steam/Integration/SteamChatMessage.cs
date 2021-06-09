@@ -30,11 +30,12 @@ using System.Text;
 
 namespace ArchiSteamFarm.Steam.Integration {
 	internal static class SteamChatMessage {
+		internal const char ContinuationCharacter = '…';
+		internal const ushort MaxMessageBytes = 2800; // This is a limitation enforced by Steam, together with MaxMessageLines
 		internal const ushort MaxMessagePrefixBytes = MaxMessageBytes - ReservedContinuationMessageBytes - ReservedEscapeMessageBytes; // Simplified calculation
+		internal const byte ReservedContinuationMessageBytes = 6; // 2x optional … (3 bytes each)
 
-		private const ushort MaxMessageBytes = 2800; // This is a limitation enforced by Steam, together with MaxMessageLines
 		private const byte MaxMessageLines = 60; // This is a limitation enforced by Steam, together with MaxMessageBytes
-		private const byte ReservedContinuationMessageBytes = 6; // 2x optional … (3 bytes each)
 		private const byte ReservedEscapeMessageBytes = 5; // 2 characters total, escape one '\' of 1 byte and real one of up to 4 bytes
 
 		internal static async IAsyncEnumerable<string> GetMessageParts(string message, string? steamMessagePrefix = null) {
@@ -45,6 +46,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 			// We must escape our message prior to sending it
 			message = Escape(message);
 
+			int bytes = 0;
 			int lines = 0;
 			StringBuilder messagePart = new();
 
@@ -88,26 +90,32 @@ namespace ArchiSteamFarm.Steam.Integration {
 						}
 
 						if (bytesRead > 0) {
-							messagePart.Append('…');
+							bytes++;
+							messagePart.Append(ContinuationCharacter);
 						}
 
-						bytesRead += Encoding.UTF8.GetByteCount(lineChunk, 0, charCount);
+						int lineChunkBytesCount = Encoding.UTF8.GetByteCount(lineChunk, 0, charCount);
 
+						bytesRead += lineChunkBytesCount;
+
+						bytes += lineChunkBytesCount;
 						messagePart.Append(lineChunk, 0, charCount);
 					} finally {
 						charPool.Return(lineChunk);
 					}
 
 					if (bytesRead < lineBytes.Length) {
-						messagePart.Append('…');
+						bytes++;
+						messagePart.Append(ContinuationCharacter);
 					}
 
-					if (lines < MaxMessageLines) {
+					if ((bytes < maxMessageBytes) && (lines < MaxMessageLines)) {
 						continue;
 					}
 
 					yield return messagePart.ToString();
 
+					bytes = 0;
 					lines = 0;
 					messagePart.Clear();
 				}

@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static ArchiSteamFarm.Steam.Integration.SteamChatMessage;
@@ -36,6 +37,26 @@ namespace ArchiSteamFarm.Tests {
 
 			Assert.AreEqual(1, output.Count);
 			Assert.AreEqual(message, output.First());
+		}
+
+		[TestMethod]
+		public async Task ProperlySplitsLongSingleLine() {
+			const ushort longLineLength = MaxMessageBytes - ReservedContinuationMessageBytes;
+
+			string longLine = new('a', longLineLength);
+			Assert.AreEqual(longLineLength, Encoding.UTF8.GetByteCount(longLine));
+
+			string message = longLine + longLine + longLine + longLine;
+			Assert.AreEqual(4 * longLineLength, Encoding.UTF8.GetByteCount(message));
+
+			List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
+
+			Assert.AreEqual(4, output.Count);
+
+			Assert.AreEqual(longLine + ContinuationCharacter, output[0]);
+			Assert.AreEqual(ContinuationCharacter + longLine + ContinuationCharacter, output[1]);
+			Assert.AreEqual(ContinuationCharacter + longLine + ContinuationCharacter, output[2]);
+			Assert.AreEqual(ContinuationCharacter + longLine, output[3]);
 		}
 	}
 }
