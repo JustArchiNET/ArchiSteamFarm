@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
-using ArchiSteamFarm.Steam;
+using ArchiSteamFarm.Steam.Integration;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -319,7 +319,7 @@ namespace ArchiSteamFarm.Storage {
 				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(OptimizationMode), OptimizationMode));
 			}
 
-			if (!string.IsNullOrEmpty(SteamMessagePrefix) && (SteamMessagePrefix!.Length > Bot.MaxMessagePrefixLength)) {
+			if (!string.IsNullOrEmpty(SteamMessagePrefix) && (SteamMessagePrefix!.Length > SteamChatMessage.MaxMessagePrefixLength)) {
 				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamMessagePrefix), SteamMessagePrefix));
 			}
 

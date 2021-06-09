@@ -36,7 +36,6 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -65,7 +64,6 @@ using SteamKit2.Internal;
 namespace ArchiSteamFarm.Steam {
 	public sealed class Bot : IAsyncDisposable {
 		internal const ushort CallbackSleep = 500; // In milliseconds
-		internal const ushort MaxMessagePrefixLength = MaxMessageWidth - ReservedMessageLength - 2; // 2 for a minimum of 2 characters (escape one and real one)
 		internal const byte MinCardsPerBadge = 5;
 		internal const byte MinPlayingBlockedTTL = 60; // Delay in seconds added when account was occupied during our disconnect, to not disconnect other Steam client session too soon
 
@@ -73,11 +71,8 @@ namespace ArchiSteamFarm.Steam {
 		private const byte LoginCooldownInMinutes = 25; // Captcha disappears after around 20 minutes, so we make it 25
 		private const uint LoginID = 1242; // This must be the same for all ASF bots and all ASF processes
 		private const byte MaxInvalidPasswordFailures = WebBrowser.MaxTries; // Max InvalidPassword failures in a row before we determine that our password is invalid (because Steam wrongly returns those, of course)
-		private const byte MaxMessageHeight = 45; // This is a limitation enforced by Steam, together with MaxMessageWidth
-		private const byte MaxMessageWidth = 80; // This is a limitation enforced by Steam, together with MaxMessageHeight
 		private const byte MaxTwoFactorCodeFailures = WebBrowser.MaxTries; // Max TwoFactorCodeMismatch failures in a row before we determine that our 2FA credentials are invalid (because Steam wrongly returns those, of course)
 		private const byte RedeemCooldownInHours = 1; // 1 hour since first redeem attempt, this is a limitation enforced by Steam
-		private const byte ReservedMessageLength = 2; // 2 for 2x optional …
 
 		[PublicAPI]
 		public static IReadOnlyDictionary<string, Bot>? BotsReadOnly => Bots;
@@ -776,73 +771,12 @@ namespace ArchiSteamFarm.Steam {
 
 			string? steamMessagePrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.SteamMessagePrefix : GlobalConfig.DefaultSteamMessagePrefix;
 
-			// We must escape our message prior to sending it
-			message = Escape(message);
+			await foreach (string messagePart in SteamChatMessage.GetMessageParts(message, steamMessagePrefix).ConfigureAwait(false)) {
+				if (!await SendMessagePart(steamID, messagePart).ConfigureAwait(false)) {
+					ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
-			StringBuilder messagePart = new();
-			int lines = 0;
-
-			using StringReader stringReader = new(message);
-
-			string? line;
-
-			while ((line = await stringReader.ReadLineAsync().ConfigureAwait(false)) != null) {
-				int maxMessageWidth;
-
-				for (int i = 0; i < line.Length; i += maxMessageWidth) {
-					maxMessageWidth = MaxMessageWidth - ReservedMessageLength;
-
-					if ((messagePart.Length == 0) && !string.IsNullOrEmpty(steamMessagePrefix)) {
-						maxMessageWidth -= steamMessagePrefix!.Length;
-						messagePart.Append(steamMessagePrefix);
-					}
-
-					string lineChunk = line[i..Math.Min(maxMessageWidth, line.Length - i)];
-
-					// If our message is of max length and ends with a single '\' then we can't split it here, it escapes the next character
-					if ((lineChunk.Length >= maxMessageWidth) && (lineChunk[^1] == '\\') && (lineChunk[^2] != '\\')) {
-						// Instead, we'll cut this message one char short and include the rest in next iteration
-						lineChunk = lineChunk.Remove(lineChunk.Length - 1);
-						i--;
-					}
-
-					if (++lines > 1) {
-						messagePart.AppendLine();
-					}
-
-					if (i > 0) {
-						messagePart.Append('…');
-					}
-
-					messagePart.Append(lineChunk);
-
-					if (maxMessageWidth < line.Length - i) {
-						messagePart.Append('…');
-					}
-
-					if (lines < MaxMessageHeight) {
-						continue;
-					}
-
-					if (!await SendMessagePart(steamID, messagePart.ToString()).ConfigureAwait(false)) {
-						ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-
-						return false;
-					}
-
-					messagePart.Clear();
-					lines = 0;
+					return false;
 				}
-			}
-
-			if (lines == 0) {
-				return true;
-			}
-
-			if (!await SendMessagePart(steamID, messagePart.ToString()).ConfigureAwait(false)) {
-				ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-
-				return false;
 			}
 
 			return true;
@@ -870,73 +804,12 @@ namespace ArchiSteamFarm.Steam {
 
 			string? steamMessagePrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.SteamMessagePrefix : GlobalConfig.DefaultSteamMessagePrefix;
 
-			// We must escape our message prior to sending it
-			message = Escape(message);
+			await foreach (string messagePart in SteamChatMessage.GetMessageParts(message, steamMessagePrefix).ConfigureAwait(false)) {
+				if (!await SendMessagePart(chatGroupID, chatID, messagePart).ConfigureAwait(false)) {
+					ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
-			StringBuilder messagePart = new();
-			int lines = 0;
-
-			using StringReader stringReader = new(message);
-
-			string? line;
-
-			while ((line = await stringReader.ReadLineAsync().ConfigureAwait(false)) != null) {
-				int maxMessageWidth;
-
-				for (int i = 0; i < line.Length; i += maxMessageWidth) {
-					maxMessageWidth = MaxMessageWidth - ReservedMessageLength;
-
-					if ((messagePart.Length == 0) && !string.IsNullOrEmpty(steamMessagePrefix)) {
-						maxMessageWidth -= steamMessagePrefix!.Length;
-						messagePart.Append(steamMessagePrefix);
-					}
-
-					string lineChunk = line[i..Math.Min(maxMessageWidth, line.Length - i)];
-
-					// If our message is of max length and ends with a single '\' then we can't split it here, it escapes the next character
-					if ((lineChunk.Length >= maxMessageWidth) && (lineChunk[^1] == '\\') && (lineChunk[^2] != '\\')) {
-						// Instead, we'll cut this message one char short and include the rest in next iteration
-						lineChunk = lineChunk.Remove(lineChunk.Length - 1);
-						i--;
-					}
-
-					if (++lines > 1) {
-						messagePart.AppendLine();
-					}
-
-					if (i > 0) {
-						messagePart.Append('…');
-					}
-
-					messagePart.Append(lineChunk);
-
-					if (maxMessageWidth < line.Length - i) {
-						messagePart.Append('…');
-					}
-
-					if (lines < MaxMessageHeight) {
-						continue;
-					}
-
-					if (!await SendMessagePart(chatGroupID, chatID, messagePart.ToString()).ConfigureAwait(false)) {
-						ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-
-						return false;
-					}
-
-					messagePart.Clear();
-					lines = 0;
+					return false;
 				}
-			}
-
-			if (lines == 0) {
-				return true;
-			}
-
-			if (!await SendMessagePart(chatGroupID, chatID, messagePart.ToString()).ConfigureAwait(false)) {
-				ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-
-				return false;
 			}
 
 			return true;
@@ -1864,14 +1737,6 @@ namespace ArchiSteamFarm.Steam {
 			SteamClient.Disconnect();
 		}
 
-		private static string Escape(string message) {
-			if (string.IsNullOrEmpty(message)) {
-				throw new ArgumentNullException(nameof(message));
-			}
-
-			return message.Replace("\\", "\\\\", StringComparison.Ordinal).Replace("[", "\\[", StringComparison.Ordinal);
-		}
-
 		private async Task<Dictionary<string, string>?> GetKeysFromFile(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				throw new ArgumentNullException(nameof(filePath));
@@ -2598,7 +2463,7 @@ namespace ArchiSteamFarm.Steam {
 			if (!string.IsNullOrEmpty(notification.message_no_bbcode)) {
 				message = notification.message_no_bbcode;
 			} else if (!string.IsNullOrEmpty(notification.message)) {
-				message = UnEscape(notification.message);
+				message = SteamChatMessage.Unescape(notification.message);
 			} else {
 				return;
 			}
@@ -2644,7 +2509,7 @@ namespace ArchiSteamFarm.Steam {
 			if (!string.IsNullOrEmpty(notification.message_no_bbcode)) {
 				message = notification.message_no_bbcode;
 			} else if (!string.IsNullOrEmpty(notification.message)) {
-				message = UnEscape(notification.message);
+				message = SteamChatMessage.Unescape(notification.message);
 			} else {
 				return;
 			}
@@ -3591,14 +3456,6 @@ namespace ArchiSteamFarm.Steam {
 
 			PlayingWasBlockedTimer.Dispose();
 			PlayingWasBlockedTimer = null;
-		}
-
-		private static string UnEscape(string message) {
-			if (string.IsNullOrEmpty(message)) {
-				throw new ArgumentNullException(nameof(message));
-			}
-
-			return message.Replace("\\[", "[", StringComparison.Ordinal).Replace("\\\\", "\\", StringComparison.Ordinal);
 		}
 
 		private (bool IsSteamParentalEnabled, string? SteamParentalCode) ValidateSteamParental(ParentalSettings settings, string? steamParentalCode = null) {
