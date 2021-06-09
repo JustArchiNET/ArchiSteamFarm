@@ -3342,11 +3342,7 @@ namespace ArchiSteamFarm.Steam {
 			await MessagingSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				if (!IsConnectedAndLoggedOn) {
-					return false;
-				}
-
-				for (byte j = 0; (j < WebBrowser.MaxTries) && IsConnectedAndLoggedOn; j++) {
+				for (byte i = 0; (i < WebBrowser.MaxTries) && IsConnectedAndLoggedOn; i++) {
 					EResult result = await ArchiHandler.SendMessage(steamID, messagePart).ConfigureAwait(false);
 
 					switch (result) {
@@ -3393,11 +3389,7 @@ namespace ArchiSteamFarm.Steam {
 			await MessagingSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				if (!IsConnectedAndLoggedOn) {
-					return false;
-				}
-
-				for (byte j = 0; (j < WebBrowser.MaxTries) && IsConnectedAndLoggedOn; j++) {
+				for (byte i = 0; (i < WebBrowser.MaxTries) && IsConnectedAndLoggedOn; i++) {
 					EResult result = await ArchiHandler.SendMessage(chatGroupID, chatID, messagePart).ConfigureAwait(false);
 
 					switch (result) {
