@@ -26,6 +26,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
@@ -319,8 +320,12 @@ namespace ArchiSteamFarm.Storage {
 				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(OptimizationMode), OptimizationMode));
 			}
 
-			if (!string.IsNullOrEmpty(SteamMessagePrefix) && (SteamMessagePrefix!.Length > SteamChatMessage.MaxMessagePrefixLength)) {
-				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamMessagePrefix), SteamMessagePrefix));
+			if (!string.IsNullOrEmpty(SteamMessagePrefix)) {
+				int sizeInBytes = Encoding.UTF8.GetByteCount(SteamMessagePrefix);
+
+				if (sizeInBytes > SteamChatMessage.MaxMessagePrefixBytes) {
+					return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamMessagePrefix), SteamMessagePrefix));
+				}
 			}
 
 			if ((SteamOwnerID != 0) && !new SteamID(SteamOwnerID).IsIndividualAccount) {

@@ -23,17 +23,19 @@
 using ArchiSteamFarm.Compatibility;
 #endif
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
 namespace ArchiSteamFarm.Steam.Integration {
 	internal static class SteamChatMessage {
-		internal const ushort MaxMessagePrefixLength = MaxMessageWidth - ReservedMessageLength - 2; // 2 for a minimum of 2 characters (escape one and real one)
+		internal const ushort MaxMessagePrefixBytes = MaxMessageBytes - ReservedContinuationMessageBytes - ReservedEscapeMessageBytes; // Simplified calculation
 
-		private const byte MaxMessageHeight = 45; // This is a limitation enforced by Steam, together with MaxMessageWidth
-		private const byte MaxMessageWidth = 80; // This is a limitation enforced by Steam, together with MaxMessageHeight
-		private const byte ReservedMessageLength = 2; // 2 for 2x optional …
+		private const ushort MaxMessageBytes = 2800; // This is a limitation enforced by Steam, together with MaxMessageLines
+		private const byte MaxMessageLines = 60; // This is a limitation enforced by Steam, together with MaxMessageBytes
+		private const byte ReservedContinuationMessageBytes = 6; // 2x optional … (3 bytes each)
+		private const byte ReservedEscapeMessageBytes = 5; // 2 characters total, escape one '\' of 1 byte and real one of up to 4 bytes
 
 		internal static async IAsyncEnumerable<string> GetMessageParts(string message, string? steamMessagePrefix = null) {
 			if (string.IsNullOrEmpty(message)) {
@@ -43,55 +45,71 @@ namespace ArchiSteamFarm.Steam.Integration {
 			// We must escape our message prior to sending it
 			message = Escape(message);
 
-			StringBuilder messagePart = new();
 			int lines = 0;
+			StringBuilder messagePart = new();
+
+			Decoder decoder = Encoding.UTF8.GetDecoder();
+			ArrayPool<char> charPool = ArrayPool<char>.Shared;
 
 			using StringReader stringReader = new(message);
 
 			string? line;
 
 			while ((line = await stringReader.ReadLineAsync().ConfigureAwait(false)) != null) {
-				int maxMessageWidth;
+				byte[] lineBytes = Encoding.UTF8.GetBytes(line);
 
-				for (int i = 0; i < line.Length; i += maxMessageWidth) {
-					maxMessageWidth = MaxMessageWidth - ReservedMessageLength;
+				for (int bytesRead = 0; bytesRead < lineBytes.Length;) {
+					int maxMessageBytes = MaxMessageBytes - ReservedContinuationMessageBytes;
 
 					if ((messagePart.Length == 0) && !string.IsNullOrEmpty(steamMessagePrefix)) {
-						maxMessageWidth -= steamMessagePrefix!.Length;
+						maxMessageBytes -= Encoding.UTF8.GetByteCount(steamMessagePrefix);
 						messagePart.Append(steamMessagePrefix);
 					}
 
-					string lineChunk = line[i..Math.Min(maxMessageWidth, line.Length - i)];
+					// We'll extract up to maxMessageBytes bytes, so also a maximum of maxMessageBytes 1-byte characters
+					char[] lineChunk = charPool.Rent(Math.Min(maxMessageBytes, lineBytes.Length - bytesRead));
 
-					// If our message is of max length and ends with a single '\' then we can't split it here, it escapes the next character
-					if ((lineChunk.Length >= maxMessageWidth) && (lineChunk[^1] == '\\') && (lineChunk[^2] != '\\')) {
-						// Instead, we'll cut this message one char short and include the rest in next iteration
-						lineChunk = lineChunk.Remove(lineChunk.Length - 1);
-						i--;
+					try {
+						int charCount = decoder.GetChars(lineBytes, bytesRead, Math.Min(maxMessageBytes, lineBytes.Length - bytesRead), lineChunk, 0);
+
+						switch (charCount) {
+							case <= 0:
+								throw new InvalidOperationException(nameof(charCount));
+							case >= 2 when (lineChunk[charCount - 1] == '\\') && (lineChunk[charCount - 2] != '\\'):
+								// If our message is of max length and ends with a single '\' then we can't split it here, it escapes the next character
+								// Instead, we'll cut this message one char short and include the rest in the next iteration
+								charCount--;
+
+								break;
+						}
+
+						if (++lines > 1) {
+							messagePart.AppendLine();
+						}
+
+						if (bytesRead > 0) {
+							messagePart.Append('…');
+						}
+
+						bytesRead += Encoding.UTF8.GetByteCount(lineChunk, 0, charCount);
+
+						messagePart.Append(lineChunk, 0, charCount);
+					} finally {
+						charPool.Return(lineChunk);
 					}
 
-					if (++lines > 1) {
-						messagePart.AppendLine();
-					}
-
-					if (i > 0) {
+					if (bytesRead < lineBytes.Length) {
 						messagePart.Append('…');
 					}
 
-					messagePart.Append(lineChunk);
-
-					if (maxMessageWidth < line.Length - i) {
-						messagePart.Append('…');
-					}
-
-					if (lines < MaxMessageHeight) {
+					if (lines < MaxMessageLines) {
 						continue;
 					}
 
 					yield return messagePart.ToString();
 
-					messagePart.Clear();
 					lines = 0;
+					messagePart.Clear();
 				}
 			}
 
