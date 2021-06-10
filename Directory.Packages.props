@@ -5,7 +5,7 @@
     <PackageVersion Include="CryptSharpStandard" Version="1.0.0" />
     <PackageVersion Include="Humanizer" Version="2.11.10" />
     <PackageVersion Include="JetBrains.Annotations" Version="2021.1.0" />
-    <PackageVersion Include="Markdig.Signed" Version="0.24.0" />
+    <PackageVersion Include="Markdig.Signed" Version="0.25.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="16.10.0" />
     <PackageVersion Include="MSTest.TestAdapter" Version="2.2.4" />
     <PackageVersion Include="MSTest.TestFramework" Version="2.2.4" />
