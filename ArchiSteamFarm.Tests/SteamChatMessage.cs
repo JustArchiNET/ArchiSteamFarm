@@ -51,7 +51,7 @@ namespace ArchiSteamFarm.Tests {
 			const ushort longLineLength = MaxMessageBytes - ReservedContinuationMessageBytes;
 			const string emoji = "😎";
 
-			string? longSequence = new('a', longLineLength - 1);
+			string longSequence = new('a', longLineLength - 1);
 			string message = longSequence + emoji;
 
 			List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);

@@ -74,7 +74,8 @@ namespace ArchiSteamFarm.Steam.Integration {
 					char[] lineChunk = charPool.Rent(Math.Max(bytesToTake, 2));
 
 					try {
-						decoder.Convert(lineBytes, lineBytesRead, bytesToTake, lineChunk, 0, bytesToTake, false, out int bytesUsed, out int charsUsed, out _);
+						decoder.Convert(lineBytes, lineBytesRead, bytesToTake, lineChunk, 0, bytesToTake, false, out _, out int charsUsed, out _);
+						decoder.Reset();
 
 						switch (charsUsed) {
 							case <= 0:
@@ -86,6 +87,8 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 								break;
 						}
+
+						int bytesUsed = Encoding.UTF8.GetByteCount(lineChunk, 0, charsUsed);
 
 						if (++lines > 1) {
 							messagePart.AppendLine();
