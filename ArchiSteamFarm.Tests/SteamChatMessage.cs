@@ -30,6 +30,39 @@ namespace ArchiSteamFarm.Tests {
 	[TestClass]
 	public sealed class SteamChatMessage {
 		[TestMethod]
+		public async Task CanSplitEvenWithStupidlyLongPrefix() {
+			string prefix = new('x', MaxMessagePrefixBytes);
+
+			const string emoji = "😎";
+			const string message = emoji + emoji + emoji + emoji;
+
+			List<string> output = await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false);
+
+			Assert.AreEqual(4, output.Count);
+
+			Assert.AreEqual(prefix + emoji + ContinuationCharacter, output[0]);
+			Assert.AreEqual(prefix + ContinuationCharacter + emoji + ContinuationCharacter, output[1]);
+			Assert.AreEqual(prefix + ContinuationCharacter + emoji + ContinuationCharacter, output[2]);
+			Assert.AreEqual(prefix + ContinuationCharacter + emoji, output[3]);
+		}
+
+		[TestMethod]
+		public async Task DoesntSplitInTheMiddleOfMultiByteChar() {
+			const ushort longLineLength = MaxMessageBytes - ReservedContinuationMessageBytes;
+			const string emoji = "😎";
+
+			string? longSequence = new('a', longLineLength - 1);
+			string message = longSequence + emoji;
+
+			List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
+
+			Assert.AreEqual(2, output.Count);
+
+			Assert.AreEqual(longSequence + ContinuationCharacter, output[0]);
+			Assert.AreEqual(ContinuationCharacter + emoji, output[1]);
+		}
+
+		[TestMethod]
 		public async Task NoNeedForAnySplitting() {
 			const string message = "abcdef";
 

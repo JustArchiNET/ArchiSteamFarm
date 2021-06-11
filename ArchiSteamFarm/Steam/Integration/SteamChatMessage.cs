@@ -60,7 +60,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 			while ((line = await stringReader.ReadLineAsync().ConfigureAwait(false)) != null) {
 				byte[] lineBytes = Encoding.UTF8.GetBytes(line);
 
-				for (int bytesRead = 0; bytesRead < lineBytes.Length;) {
+				for (int lineBytesRead = 0; lineBytesRead < lineBytes.Length;) {
 					int maxMessageBytes = MaxMessageBytes - ReservedContinuationMessageBytes;
 
 					if ((messagePart.Length == 0) && !string.IsNullOrEmpty(steamMessagePrefix)) {
@@ -68,19 +68,21 @@ namespace ArchiSteamFarm.Steam.Integration {
 						messagePart.Append(steamMessagePrefix);
 					}
 
-					// We'll extract up to maxMessageBytes bytes, so also a maximum of maxMessageBytes 1-byte characters
-					char[] lineChunk = charPool.Rent(Math.Min(maxMessageBytes, lineBytes.Length - bytesRead));
+					int bytesToTake = Math.Min(maxMessageBytes - bytes, lineBytes.Length - lineBytesRead);
+
+					// Convert() method fails if we ask for less than 2 chars, even if we can guarantee we don't need any more
+					char[] lineChunk = charPool.Rent(Math.Max(bytesToTake, 2));
 
 					try {
-						int charCount = decoder.GetChars(lineBytes, bytesRead, Math.Min(maxMessageBytes, lineBytes.Length - bytesRead), lineChunk, 0);
+						decoder.Convert(lineBytes, lineBytesRead, bytesToTake, lineChunk, 0, bytesToTake, false, out int bytesUsed, out int charsUsed, out _);
 
-						switch (charCount) {
+						switch (charsUsed) {
 							case <= 0:
-								throw new InvalidOperationException(nameof(charCount));
-							case >= 2 when (lineChunk[charCount - 1] == '\\') && (lineChunk[charCount - 2] != '\\'):
+								throw new InvalidOperationException(nameof(charsUsed));
+							case >= 2 when (lineChunk[charsUsed - 1] == '\\') && (lineChunk[charsUsed - 2] != '\\'):
 								// If our message is of max length and ends with a single '\' then we can't split it here, it escapes the next character
 								// Instead, we'll cut this message one char short and include the rest in the next iteration
-								charCount--;
+								charsUsed--;
 
 								break;
 						}
@@ -89,22 +91,20 @@ namespace ArchiSteamFarm.Steam.Integration {
 							messagePart.AppendLine();
 						}
 
-						if (bytesRead > 0) {
+						if (lineBytesRead > 0) {
 							bytes++;
 							messagePart.Append(ContinuationCharacter);
 						}
 
-						int lineChunkBytesCount = Encoding.UTF8.GetByteCount(lineChunk, 0, charCount);
+						lineBytesRead += bytesUsed;
+						bytes += bytesUsed;
 
-						bytesRead += lineChunkBytesCount;
-
-						bytes += lineChunkBytesCount;
-						messagePart.Append(lineChunk, 0, charCount);
+						messagePart.Append(lineChunk, 0, charsUsed);
 					} finally {
 						charPool.Return(lineChunk);
 					}
 
-					if (bytesRead < lineBytes.Length) {
+					if (lineBytesRead < lineBytes.Length) {
 						bytes++;
 						messagePart.Append(ContinuationCharacter);
 					}
