@@ -74,8 +74,9 @@ namespace ArchiSteamFarm.Steam.Integration {
 					char[] lineChunk = charPool.Rent(Math.Max(bytesToTake, 2));
 
 					try {
-						decoder.Convert(lineBytes, lineBytesRead, bytesToTake, lineChunk, 0, bytesToTake, false, out _, out int charsUsed, out _);
 						decoder.Reset();
+
+						int charsUsed = decoder.GetChars(lineBytes, lineBytesRead, bytesToTake, lineChunk, 0, false);
 
 						switch (charsUsed) {
 							case <= 0:
