@@ -70,8 +70,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 					int bytesToTake = Math.Min(maxMessageBytes - bytes, lineBytes.Length - lineBytesRead);
 
-					// Convert() method fails if we ask for less than 2 chars, even if we can guarantee we don't need any more
-					char[] lineChunk = charPool.Rent(Math.Max(bytesToTake, 2));
+					char[] lineChunk = charPool.Rent(bytesToTake);
 
 					try {
 						decoder.Reset();
