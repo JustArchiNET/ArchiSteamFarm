@@ -118,6 +118,14 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   
+  <data name="PluginDisabledInConfig" xml:space="preserve">
+    <value>{0} yapılandırmanıza göre şu anda devre dışı. SteamDB'ye veri gönderimi için yardımcı olmak isterseniz viki sayfamızı ziyaret edin.</value>
+    <comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
+  </data>
+  <data name="PluginInitializedAndEnabled" xml:space="preserve">
+    <value>{0} başarılı bir şekilde kuruldu, yardımınız için şimdiden teşekkürler. Ilk gönderim {1} içinde gerçekleşecektir.</value>
+    <comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+  </data>
   
   
   
@@ -133,14 +141,27 @@
   
   
   
+  <data name="SubmissionFailedTooManyRequests" xml:space="preserve">
+    <value>Teslim, çok fazla istek gönderildiği için başarısız oldu, yaklaşık {0} sonra tekrar deneyeceğiz.</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+  </data>
   
-  
-  
-  
-  
-  
-  
-  
+  <data name="SubmissionSuccessfulNewApps" xml:space="preserve">
+    <value>Yeni uygulamalar: {0}</value>
+    <comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="SubmissionSuccessfulVerifiedApps" xml:space="preserve">
+    <value>Doğrulanan uygulamalar: {0}</value>
+    <comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="SubmissionSuccessfulNewPackages" xml:space="preserve">
+    <value>Yeni paketler: {0}</value>
+    <comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="SubmissionSuccessfulVerifiedPackages" xml:space="preserve">
+    <value>Doğrulanan paketler: {0}</value>
+    <comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+  </data>
   
   
   

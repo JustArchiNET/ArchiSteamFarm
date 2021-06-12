@@ -203,7 +203,7 @@ Yığın izleme:
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
-    <value>Giriş Yapılıyor {0}...</value>
+    <value>{0}'a giriş yapılıyor...</value>
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
@@ -750,5 +750,8 @@ Süreç çalışma zamanı: {1}</value>
     <value>Boşta çalıştırılacak {0}:{1}</value>
     <comment>{0} will be replaced by internal name of the config property (e.g. "GamesPlayedWhileIdle"), {1} will be replaced by comma-separated list of appIDs that user has chosen</comment>
   </data>
-  
+  <data name="AutomaticFileMigration" xml:space="preserve">
+    <value>{0} yapılandırma dosyası en sondaki söz dizimine taşınacak...</value>
+    <comment>{0} will be replaced with the relative path to the affected config file</comment>
+  </data>
 </root>
