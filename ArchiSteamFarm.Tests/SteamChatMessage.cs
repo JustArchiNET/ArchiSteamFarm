@@ -140,7 +140,7 @@ namespace ArchiSteamFarm.Tests {
 
 		[TestMethod]
 		public async Task SplitsOnNewlinesWithoutContinuationCharacter() {
-			StringBuilder newlinePartBuilder = new((MaxMessageLines * Environment.NewLine.Length) - 1);
+			StringBuilder newlinePartBuilder = new(((MaxMessageLines - 1) * Environment.NewLine.Length) + MaxMessageLines);
 
 			for (byte i = 0; i < MaxMessageLines; i++) {
 				if (newlinePartBuilder.Length > 0) {
