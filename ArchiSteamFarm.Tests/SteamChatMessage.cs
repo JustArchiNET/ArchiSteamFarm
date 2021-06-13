@@ -64,6 +64,17 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[TestMethod]
+		public async Task DoesntSplitJustBecauseOfLastEscapableCharacter() {
+			const string message = "abcdef[";
+			const string escapedMessage = @"abcdef\[";
+
+			List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
+
+			Assert.AreEqual(1, output.Count);
+			Assert.AreEqual(escapedMessage, output.First());
+		}
+
+		[TestMethod]
 		public async Task DoesntSplitOnBackslashNotUsedForEscaping() {
 			const ushort longLineLength = MaxMessageBytes - ReservedContinuationMessageBytes;
 
