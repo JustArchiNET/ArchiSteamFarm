@@ -114,11 +114,12 @@ namespace ArchiSteamFarm.Tests {
 		[TestMethod]
 		public async Task ProperlyEscapesCharacters() {
 			const string message = @"[b]bold[/b] \n";
+			const string escapedMessage = @"\[b]bold\[/b] \\n";
 
 			List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
 
 			Assert.AreEqual(1, output.Count);
-			Assert.AreEqual(@"\[b]bold\[/b] \\n", output.First());
+			Assert.AreEqual(escapedMessage, output.First());
 		}
 
 		[TestMethod]
