@@ -32,10 +32,10 @@ namespace ArchiSteamFarm.Steam.Integration {
 	internal static class SteamChatMessage {
 		internal const char ContinuationCharacter = '…';
 		internal const ushort MaxMessageBytes = 2800; // This is a limitation enforced by Steam, together with MaxMessageLines
+		internal const byte MaxMessageLines = 60; // This is a limitation enforced by Steam, together with MaxMessageBytes
 		internal const ushort MaxMessagePrefixBytes = MaxMessageBytes - ReservedContinuationMessageBytes - ReservedEscapeMessageBytes; // Simplified calculation
 		internal const byte ReservedContinuationMessageBytes = 6; // 2x optional … (3 bytes each)
 
-		private const byte MaxMessageLines = 60; // This is a limitation enforced by Steam, together with MaxMessageBytes
 		private const byte ReservedEscapeMessageBytes = 5; // 2 characters total, escape one '\' of 1 byte and real one of up to 4 bytes
 
 		internal static async IAsyncEnumerable<string> GetMessageParts(string message, string? steamMessagePrefix = null) {

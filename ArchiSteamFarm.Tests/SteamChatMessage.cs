@@ -19,6 +19,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -63,7 +64,45 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[TestMethod]
-		public async Task NoNeedForAnySplitting() {
+		public async Task DoesntSplitOnBackslashNotUsedForEscaping() {
+			const ushort longLineLength = MaxMessageBytes - ReservedContinuationMessageBytes;
+
+			string longLine = new('a', longLineLength - 2);
+			string message = longLine + @"\";
+
+			List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
+
+			Assert.AreEqual(1, output.Count);
+			Assert.AreEqual(message + @"\", output.First());
+		}
+
+		[TestMethod]
+		public async Task DoesntSplitOnEscapeCharacter() {
+			const ushort longLineLength = MaxMessageBytes - ReservedContinuationMessageBytes;
+
+			string longLine = new('a', longLineLength - 1);
+			string message = longLine + "[";
+
+			List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
+
+			Assert.AreEqual(2, output.Count);
+
+			Assert.AreEqual(longLine + ContinuationCharacter, output[0]);
+			Assert.AreEqual(ContinuationCharacter + @"\[", output[1]);
+		}
+
+		[TestMethod]
+		public async Task NoNeedForAnySplittingWithNewlines() {
+			string message = "abcdef" + Environment.NewLine + "ghijkl" + Environment.NewLine + "mnopqr";
+
+			List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
+
+			Assert.AreEqual(1, output.Count);
+			Assert.AreEqual(message, output.First());
+		}
+
+		[TestMethod]
+		public async Task NoNeedForAnySplittingWithoutNewlines() {
 			const string message = "abcdef";
 
 			List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
@@ -73,14 +112,21 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[TestMethod]
+		public async Task ProperlyEscapesCharacters() {
+			const string message = @"[b]bold[/b] \n";
+
+			List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
+
+			Assert.AreEqual(1, output.Count);
+			Assert.AreEqual(@"\[b]bold\[/b] \\n", output.First());
+		}
+
+		[TestMethod]
 		public async Task ProperlySplitsLongSingleLine() {
 			const ushort longLineLength = MaxMessageBytes - ReservedContinuationMessageBytes;
 
 			string longLine = new('a', longLineLength);
-			Assert.AreEqual(longLineLength, Encoding.UTF8.GetByteCount(longLine));
-
 			string message = longLine + longLine + longLine + longLine;
-			Assert.AreEqual(4 * longLineLength, Encoding.UTF8.GetByteCount(message));
 
 			List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
 
@@ -90,6 +136,31 @@ namespace ArchiSteamFarm.Tests {
 			Assert.AreEqual(ContinuationCharacter + longLine + ContinuationCharacter, output[1]);
 			Assert.AreEqual(ContinuationCharacter + longLine + ContinuationCharacter, output[2]);
 			Assert.AreEqual(ContinuationCharacter + longLine, output[3]);
+		}
+
+		[TestMethod]
+		public async Task SplitsOnNewlinesWithoutContinuationCharacter() {
+			StringBuilder newlinePartBuilder = new((MaxMessageLines * Environment.NewLine.Length) - 1);
+
+			for (byte i = 0; i < MaxMessageLines; i++) {
+				if (newlinePartBuilder.Length > 0) {
+					newlinePartBuilder.Append(Environment.NewLine);
+				}
+
+				newlinePartBuilder.Append('a');
+			}
+
+			string newlinePart = newlinePartBuilder.ToString();
+			string message = newlinePart + Environment.NewLine + newlinePart + Environment.NewLine + newlinePart + Environment.NewLine + newlinePart;
+
+			List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
+
+			Assert.AreEqual(4, output.Count);
+
+			Assert.AreEqual(newlinePart, output[0]);
+			Assert.AreEqual(newlinePart, output[1]);
+			Assert.AreEqual(newlinePart, output[2]);
+			Assert.AreEqual(newlinePart, output[3]);
 		}
 	}
 }
