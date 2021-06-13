@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ArchiSteamFarm.Steam.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static ArchiSteamFarm.Steam.Bot;
 
 namespace ArchiSteamFarm.Tests {
 	[TestClass]
@@ -36,8 +37,8 @@ namespace ArchiSteamFarm.Tests {
 			const uint relevantAppID = 42;
 
 			Dictionary<uint, byte> itemsPerSet = new() {
-				{ relevantAppID, Steam.Bot.MinCardsPerBadge },
-				{ 43, Steam.Bot.MinCardsPerBadge + 1 }
+				{ relevantAppID, MinCardsPerBadge },
+				{ 43, MinCardsPerBadge + 1 }
 			};
 
 			HashSet<Asset> items = new();
@@ -48,7 +49,7 @@ namespace ArchiSteamFarm.Tests {
 				}
 			}
 
-			HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, itemsPerSet, Steam.Bot.MinCardsPerBadge);
+			HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, itemsPerSet, MinCardsPerBadge);
 
 			Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult = items.Where(item => item.RealAppID == relevantAppID)
 				.GroupBy(item => (item.RealAppID, item.ContextID, item.ClassID))
@@ -67,7 +68,7 @@ namespace ArchiSteamFarm.Tests {
 				CreateCard(2, appID)
 			};
 
-			GetItemsForFullBadge(items, 2, appID, Steam.Bot.MinCardsPerBadge - 1);
+			GetItemsForFullBadge(items, 2, appID, MinCardsPerBadge - 1);
 
 			Assert.Fail();
 		}
@@ -508,7 +509,7 @@ namespace ArchiSteamFarm.Tests {
 		private static HashSet<Asset> GetItemsForFullBadge(IReadOnlyCollection<Asset> inventory, IDictionary<uint, byte> cardsPerSet, ushort maxItems = Steam.Exchange.Trading.MaxItemsPerTrade) {
 			Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), List<uint>> inventorySets = Steam.Exchange.Trading.GetInventorySets(inventory);
 
-			return Steam.Bot.GetItemsForFullSets(inventory, inventorySets.ToDictionary(kv => kv.Key, kv => (SetsToExtract: inventorySets[kv.Key][0], cardsPerSet[kv.Key.RealAppID])), maxItems).ToHashSet();
+			return GetItemsForFullSets(inventory, inventorySets.ToDictionary(kv => kv.Key, kv => (SetsToExtract: inventorySets[kv.Key][0], cardsPerSet[kv.Key.RealAppID])), maxItems).ToHashSet();
 		}
 	}
 }
