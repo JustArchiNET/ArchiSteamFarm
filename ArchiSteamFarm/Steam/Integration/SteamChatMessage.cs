@@ -26,6 +26,7 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace ArchiSteamFarm.Steam.Integration {
@@ -41,6 +42,18 @@ namespace ArchiSteamFarm.Steam.Integration {
 		internal static async IAsyncEnumerable<string> GetMessageParts(string message, string? steamMessagePrefix = null) {
 			if (string.IsNullOrEmpty(message)) {
 				throw new ArgumentNullException(nameof(message));
+			}
+
+			int prefixBytes = 0;
+
+			if (!string.IsNullOrEmpty(steamMessagePrefix)) {
+				string[] prefixLines = steamMessagePrefix!.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+
+				prefixBytes = prefixLines.Where(prefixLine => prefixLine.Length > 0).Sum(Encoding.UTF8.GetByteCount) + ((prefixLines.Length - 1) * NewlineWeight);
+
+				if (prefixBytes > MaxMessagePrefixBytes) {
+					throw new ArgumentOutOfRangeException(nameof(steamMessagePrefix));
+				}
 			}
 
 			// We must escape our message prior to sending it
@@ -63,13 +76,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 					int maxMessageBytes = MaxMessageBytes - ReservedContinuationMessageBytes;
 
 					if (messagePart.Length == 0) {
-						if (!string.IsNullOrEmpty(steamMessagePrefix)) {
-							int prefixBytes = Encoding.UTF8.GetByteCount(steamMessagePrefix);
-
-							if (prefixBytes > MaxMessagePrefixBytes) {
-								throw new ArgumentOutOfRangeException(nameof(steamMessagePrefix));
-							}
-
+						if (prefixBytes > 0) {
 							maxMessageBytes -= prefixBytes;
 							messagePart.Append(steamMessagePrefix);
 						}

@@ -179,6 +179,18 @@ namespace ArchiSteamFarm.Tests {
 
 		[ExpectedException(typeof(ArgumentOutOfRangeException))]
 		[TestMethod]
+		public async Task ThrowsOnTooLongNewlinesPrefix() {
+			string prefix = new('\n', (MaxMessagePrefixBytes / NewlineWeight) + 1);
+
+			const string message = "asdf";
+
+			await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false);
+
+			Assert.Fail();
+		}
+
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
+		[TestMethod]
 		public async Task ThrowsOnTooLongPrefix() {
 			string prefix = new('x', MaxMessagePrefixBytes + 1);
 
