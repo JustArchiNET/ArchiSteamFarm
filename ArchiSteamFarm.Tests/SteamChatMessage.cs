@@ -48,6 +48,9 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[TestMethod]
+		public void ContinuationCharacterSizeIsProperlyCalculated() => Assert.AreEqual(ContinuationCharacterBytes, Encoding.UTF8.GetByteCount(ContinuationCharacter.ToString()));
+
+		[TestMethod]
 		public async Task DoesntSplitInTheMiddleOfMultiByteChar() {
 			const ushort longLineLength = MaxMessageBytes - ReservedContinuationMessageBytes;
 			const string emoji = "😎";
