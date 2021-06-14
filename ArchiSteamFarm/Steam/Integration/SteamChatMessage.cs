@@ -35,8 +35,9 @@ namespace ArchiSteamFarm.Steam.Integration {
 		internal const ushort MaxMessageBytes = 6449; // This is a limitation enforced by Steam
 		internal const ushort MaxMessagePrefixBytes = MaxMessageBytes - ReservedContinuationMessageBytes - ReservedEscapeMessageBytes; // Simplified calculation, nobody should be using prefixes even close to that anyway
 		internal const byte NewlineWeight = 61; // This defines how much weight a newline character is adding to the output, limitation enforced by Steam
-		internal const byte ReservedContinuationMessageBytes = 6; // 2x optional … (3 bytes each)
+		internal const byte ReservedContinuationMessageBytes = ContinuationCharacterBytes * 2; // Up to 2 optional continuation characters
 
+		private const byte ContinuationCharacterBytes = 3; // The continuation character specified above uses 3 bytes in UTF-8
 		private const byte ReservedEscapeMessageBytes = 5; // 2 characters total, escape one '\' of 1 byte and real one of up to 4 bytes
 
 		internal static async IAsyncEnumerable<string> GetMessageParts(string message, string? steamMessagePrefix = null) {
@@ -110,7 +111,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 						int bytesUsed = Encoding.UTF8.GetByteCount(lineChunk, 0, charsUsed);
 
 						if (lineBytesRead > 0) {
-							bytesRead++;
+							bytesRead += ContinuationCharacterBytes;
 							messagePart.Append(ContinuationCharacter);
 						}
 
@@ -123,7 +124,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 					}
 
 					if (lineBytesRead < lineBytes.Length) {
-						bytesRead++;
+						bytesRead += ContinuationCharacterBytes;
 						messagePart.Append(ContinuationCharacter);
 					}
 
