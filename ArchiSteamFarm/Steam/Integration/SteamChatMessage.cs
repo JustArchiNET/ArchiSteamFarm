@@ -30,10 +30,10 @@ using System.Text;
 
 namespace ArchiSteamFarm.Steam.Integration {
 	internal static class SteamChatMessage {
-		internal const char ContinuationCharacter = '…';
-		internal const ushort MaxMessageBytes = 6449; // This is a limitation enforced by Steam, together with MaxMessageLines
-		internal const ushort MaxMessagePrefixBytes = MaxMessageBytes - ReservedContinuationMessageBytes - ReservedEscapeMessageBytes; // Simplified calculation
-		internal const byte NewlineWeight = 61; // This defines how much weight a newline character is adding to the output
+		internal const char ContinuationCharacter = '…'; // A character used for indicating that the next newline part is a continuation of the previous line
+		internal const ushort MaxMessageBytes = 6449; // This is a limitation enforced by Steam
+		internal const ushort MaxMessagePrefixBytes = MaxMessageBytes - ReservedContinuationMessageBytes - ReservedEscapeMessageBytes; // Simplified calculation, nobody should be using prefixes even close to that anyway
+		internal const byte NewlineWeight = 61; // This defines how much weight a newline character is adding to the output, limitation enforced by Steam
 		internal const byte ReservedContinuationMessageBytes = 6; // 2x optional … (3 bytes each)
 
 		private const byte ReservedEscapeMessageBytes = 5; // 2 characters total, escape one '\' of 1 byte and real one of up to 4 bytes
