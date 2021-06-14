@@ -176,5 +176,17 @@ namespace ArchiSteamFarm.Tests {
 			Assert.AreEqual(newlinePart, output[2]);
 			Assert.AreEqual(newlinePart, output[3]);
 		}
+
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
+		[TestMethod]
+		public async Task ThrowsOnTooLongPrefix() {
+			string prefix = new('x', MaxMessagePrefixBytes + 1);
+
+			const string message = "asdf";
+
+			await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false);
+
+			Assert.Fail();
+		}
 	}
 }
