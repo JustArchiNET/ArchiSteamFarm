@@ -180,7 +180,7 @@
     <value>Nie ma nowych danych do przesłania, wszystko jest aktualne.</value>
   </data>
   <data name="SubmissionNoContributorSet" xml:space="preserve">
-    <value>Nie można przesłać danych, ponieważ nie ma poprawnego zestawu SteamID, który moglibyśmy sklasyfikować jako współtwórca. Rozważ ustawienie właściwości {0}.</value>
+    <value>Nie można przesłać danych, ponieważ nie ma poprawnego identyfikatora SteamID, który moglibyśmy zaklasyfikować jako współtwórcę. Rozważ ustawienie właściwości {0}.</value>
     <comment>{0} will be replaced by the name of the config property (e.g. "SteamOwnerID") that the user is expected to set</comment>
   </data>
   <data name="SubmissionInProgress" xml:space="preserve">

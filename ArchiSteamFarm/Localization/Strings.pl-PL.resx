@@ -571,7 +571,7 @@ StackTrace:
     <value>Twoja opcja CurrentCulture jest nieprawidłowa, ASF będzie działał z domyślnym ustawieniem!</value>
   </data>
   <data name="TranslationIncomplete" xml:space="preserve">
-    <value>ASF spróbuje użyć preferowanych ustawień regionalnych {0}, ale tłumaczenie na ten język jest tylko kompletne w {1}. Może pomożesz nam ulepszyć tłumaczenie ASF na Twój język?</value>
+    <value>ASF spróbuje użyć preferowanych ustawień regionalnych {0}, ale tłumaczenie w tym języku zostało ukończone jedynie w {1}. Być może pomógłbyś nam ulepszyć tłumaczenie ASF w tym języku?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
   <data name="IdlingGameNotPossible" xml:space="preserve">
@@ -712,7 +712,7 @@ Czas procesu: {1}</value>
     <comment>{0} will be replaced by number of confirmations</comment>
   </data>
   <data name="BotExtraIdlingCooldown" xml:space="preserve">
-    <value>{0} oczekiwania, aby upewnić się że jesteśmy w stanie rozpocząć farmienie...</value>
+    <value>Oczekiwanie {0}, aby upewnić się że jesteśmy w stanie rozpocząć farmienie...</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
   </data>
   <data name="UpdateCleanup" xml:space="preserve">

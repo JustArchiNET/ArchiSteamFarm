@@ -138,7 +138,9 @@
   
   
   
-  
+  <data name="SubmissionNoNewData" xml:space="preserve">
+    <value>Gönderilecek yeni veri yok, her şey güncel.</value>
+  </data>
   
   
   <data name="SubmissionFailedTooManyRequests" xml:space="preserve">
