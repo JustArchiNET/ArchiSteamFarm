@@ -31,9 +31,9 @@ using System.Text;
 namespace ArchiSteamFarm.Steam.Integration {
 	internal static class SteamChatMessage {
 		internal const char ContinuationCharacter = '…';
-		internal const ushort MaxMessageBytes = 2800; // This is a limitation enforced by Steam, together with MaxMessageLines
-		internal const byte MaxMessageLines = 60; // This is a limitation enforced by Steam, together with MaxMessageBytes
+		internal const ushort MaxMessageBytes = 6449; // This is a limitation enforced by Steam, together with MaxMessageLines
 		internal const ushort MaxMessagePrefixBytes = MaxMessageBytes - ReservedContinuationMessageBytes - ReservedEscapeMessageBytes; // Simplified calculation
+		internal const byte NewlineWeight = 61; // This defines how much weight a newline character is adding to the output
 		internal const byte ReservedContinuationMessageBytes = 6; // 2x optional … (3 bytes each)
 
 		private const byte ReservedEscapeMessageBytes = 5; // 2 characters total, escape one '\' of 1 byte and real one of up to 4 bytes
@@ -46,8 +46,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 			// We must escape our message prior to sending it
 			message = Escape(message);
 
-			int bytes = 0;
-			int lines = 0;
+			int bytesRead = 0;
 			StringBuilder messagePart = new();
 
 			Decoder decoder = Encoding.UTF8.GetDecoder();
@@ -63,16 +62,29 @@ namespace ArchiSteamFarm.Steam.Integration {
 				for (int lineBytesRead = 0; lineBytesRead < lineBytes.Length;) {
 					int maxMessageBytes = MaxMessageBytes - ReservedContinuationMessageBytes;
 
-					if ((messagePart.Length == 0) && !string.IsNullOrEmpty(steamMessagePrefix)) {
-						maxMessageBytes -= Encoding.UTF8.GetByteCount(steamMessagePrefix);
-						messagePart.Append(steamMessagePrefix);
+					if (messagePart.Length == 0) {
+						if (!string.IsNullOrEmpty(steamMessagePrefix)) {
+							int prefixBytes = Encoding.UTF8.GetByteCount(steamMessagePrefix);
+
+							if (prefixBytes > MaxMessagePrefixBytes) {
+								throw new ArgumentOutOfRangeException(nameof(steamMessagePrefix));
+							}
+
+							maxMessageBytes -= prefixBytes;
+							messagePart.Append(steamMessagePrefix);
+						}
+					} else {
+						bytesRead += NewlineWeight;
+						messagePart.AppendLine();
 					}
 
-					int bytesToTake = Math.Min(maxMessageBytes - bytes, lineBytes.Length - lineBytesRead);
+					int bytesToTake = Math.Min(maxMessageBytes - bytesRead, lineBytes.Length - lineBytesRead);
 
+					// We can never have more characters than bytes used, so this covers the worst case of 1-byte characters exclusively
 					char[] lineChunk = charPool.Rent(bytesToTake);
 
 					try {
+						// We have to reset the decoder prior to using it, as we must discard any amount of bytes read from previous incomplete character
 						decoder.Reset();
 
 						int charsUsed = decoder.GetChars(lineBytes, lineBytesRead, bytesToTake, lineChunk, 0, false);
@@ -81,7 +93,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 							case <= 0:
 								throw new InvalidOperationException(nameof(charsUsed));
 							case >= 2 when (lineChunk[charsUsed - 1] == '\\') && (lineChunk[charsUsed - 2] != '\\'):
-								// If our message is of max length and ends with a single '\' then we can't split it here, it escapes the next character
+								// If our message is of max length and ends with a single '\' then we can't split it here, because it escapes the next character
 								// Instead, we'll cut this message one char short and include the rest in the next iteration
 								charsUsed--;
 
@@ -90,17 +102,13 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 						int bytesUsed = Encoding.UTF8.GetByteCount(lineChunk, 0, charsUsed);
 
-						if (++lines > 1) {
-							messagePart.AppendLine();
-						}
-
 						if (lineBytesRead > 0) {
-							bytes++;
+							bytesRead++;
 							messagePart.Append(ContinuationCharacter);
 						}
 
 						lineBytesRead += bytesUsed;
-						bytes += bytesUsed;
+						bytesRead += bytesUsed;
 
 						messagePart.Append(lineChunk, 0, charsUsed);
 					} finally {
@@ -108,23 +116,23 @@ namespace ArchiSteamFarm.Steam.Integration {
 					}
 
 					if (lineBytesRead < lineBytes.Length) {
-						bytes++;
+						bytesRead++;
 						messagePart.Append(ContinuationCharacter);
 					}
 
-					if ((bytes < maxMessageBytes) && (lines < MaxMessageLines)) {
+					// Check if we still have room for one more line
+					if (bytesRead + NewlineWeight + ReservedEscapeMessageBytes <= maxMessageBytes) {
 						continue;
 					}
 
 					yield return messagePart.ToString();
 
-					bytes = 0;
-					lines = 0;
+					bytesRead = 0;
 					messagePart.Clear();
 				}
 			}
 
-			if (lines == 0) {
+			if (messagePart.Length == 0) {
 				yield break;
 			}
 

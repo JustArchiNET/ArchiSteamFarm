@@ -25,6 +25,7 @@ using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -322,6 +323,9 @@ namespace ArchiSteamFarm.Storage {
 
 			if (!string.IsNullOrEmpty(SteamMessagePrefix)) {
 				int sizeInBytes = Encoding.UTF8.GetByteCount(SteamMessagePrefix);
+
+				// Take into account newlines weight, if somebody is really awkward enough to put some in
+				sizeInBytes += SteamMessagePrefix.Count(c => c == '\n') * (SteamChatMessage.NewlineWeight - 1);
 
 				if (sizeInBytes > SteamChatMessage.MaxMessagePrefixBytes) {
 					return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamMessagePrefix), SteamMessagePrefix));
