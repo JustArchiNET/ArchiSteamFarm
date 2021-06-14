@@ -322,10 +322,10 @@ namespace ArchiSteamFarm.Storage {
 			}
 
 			if (!string.IsNullOrEmpty(SteamMessagePrefix)) {
-				int sizeInBytes = Encoding.UTF8.GetByteCount(SteamMessagePrefix);
+				// Take into account a possibility of newlines, if somebody is really awkward enough to put some in
+				string[] lines = SteamMessagePrefix!.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
 
-				// Take into account newlines weight, if somebody is really awkward enough to put some in
-				sizeInBytes += SteamMessagePrefix.Count(c => c == '\n') * (SteamChatMessage.NewlineWeight - 1);
+				int sizeInBytes = lines.Where(line => line.Length > 0).Sum(Encoding.UTF8.GetByteCount) + ((lines.Length - 1) * SteamChatMessage.NewlineWeight);
 
 				if (sizeInBytes > SteamChatMessage.MaxMessagePrefixBytes) {
 					return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamMessagePrefix), SteamMessagePrefix));
