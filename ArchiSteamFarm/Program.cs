@@ -26,6 +26,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
@@ -197,6 +198,12 @@ namespace ArchiSteamFarm {
 
 			Console.Title = SharedInfo.ProgramIdentifier;
 			ASF.ArchiLogger.LogGenericInfo(SharedInfo.ProgramIdentifier);
+
+			string? copyright = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyCopyrightAttribute>()?.Copyright;
+
+			if (!string.IsNullOrEmpty(copyright)) {
+				ASF.ArchiLogger.LogGenericInfo(copyright!);
+			}
 
 			if (!IgnoreUnsupportedEnvironment) {
 				if (!OS.VerifyEnvironment()) {
