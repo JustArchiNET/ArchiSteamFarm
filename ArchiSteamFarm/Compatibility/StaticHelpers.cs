@@ -136,7 +136,7 @@ namespace ArchiSteamFarm.Compatibility {
 			int startIndex = 0;
 
 			while (true) {
-				if (source.Length == 0) {
+				if (startIndex >= source.Length) {
 					return source;
 				}
 
