@@ -58,7 +58,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 				// We must escape our message prefix if needed
 				steamMessagePrefix = Escape(steamMessagePrefix!);
 
-				string[] prefixLines = steamMessagePrefix.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+				string[] prefixLines = steamMessagePrefix.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
 
 				prefixBytes = prefixLines.Where(prefixLine => prefixLine.Length > 0).Sum(Encoding.UTF8.GetByteCount) + ((prefixLines.Length - 1) * NewlineWeight);
 
