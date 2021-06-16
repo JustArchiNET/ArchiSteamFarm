@@ -772,7 +772,7 @@ namespace ArchiSteamFarm.Steam {
 			string? steamMessagePrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.SteamMessagePrefix : GlobalConfig.DefaultSteamMessagePrefix;
 
 			await foreach (string messagePart in SteamChatMessage.GetMessageParts(message, steamMessagePrefix).ConfigureAwait(false)) {
-				if (!await SendMessagePart(() => ArchiHandler.SendMessage(steamID, messagePart)).ConfigureAwait(false)) {
+				if (!await SendMessagePart(steamID, messagePart).ConfigureAwait(false)) {
 					ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
 					return false;
@@ -805,7 +805,7 @@ namespace ArchiSteamFarm.Steam {
 			string? steamMessagePrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.SteamMessagePrefix : GlobalConfig.DefaultSteamMessagePrefix;
 
 			await foreach (string messagePart in SteamChatMessage.GetMessageParts(message, steamMessagePrefix).ConfigureAwait(false)) {
-				if (!await SendMessagePart(() => ArchiHandler.SendMessage(chatGroupID, chatID, messagePart)).ConfigureAwait(false)) {
+				if (!await SendMessagePart(chatID, messagePart, chatGroupID).ConfigureAwait(false)) {
 					ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
 					return false;
@@ -3326,9 +3326,13 @@ namespace ArchiSteamFarm.Steam {
 			}
 		}
 
-		private async Task<bool> SendMessagePart(Func<Task<EResult>> sendingDelegate) {
-			if (sendingDelegate == null) {
-				throw new ArgumentNullException(nameof(sendingDelegate));
+		private async Task<bool> SendMessagePart(ulong steamID, string messagePart, ulong chatGroupID = 0) {
+			if ((steamID == 0) || ((chatGroupID == 0) && !new SteamID(steamID).IsIndividualAccount)) {
+				throw new ArgumentOutOfRangeException(nameof(steamID));
+			}
+
+			if (string.IsNullOrEmpty(messagePart)) {
+				throw new ArgumentNullException(nameof(messagePart));
 			}
 
 			if (!IsConnectedAndLoggedOn) {
@@ -3339,7 +3343,13 @@ namespace ArchiSteamFarm.Steam {
 
 			try {
 				for (byte i = 0; (i < WebBrowser.MaxTries) && IsConnectedAndLoggedOn; i++) {
-					EResult result = await sendingDelegate().ConfigureAwait(false);
+					EResult result;
+
+					if (chatGroupID == 0) {
+						result = await ArchiHandler.SendMessage(steamID, messagePart).ConfigureAwait(false);
+					} else {
+						result = await ArchiHandler.SendMessage(chatGroupID, steamID, messagePart).ConfigureAwait(false);
+					}
 
 					switch (result) {
 						case EResult.Busy:
