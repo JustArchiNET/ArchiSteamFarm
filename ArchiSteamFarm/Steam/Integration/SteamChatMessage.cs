@@ -53,10 +53,13 @@ namespace ArchiSteamFarm.Steam.Integration {
 			}
 
 			int prefixBytes = 0;
+			int prefixLength = 0;
 
 			if (!string.IsNullOrEmpty(steamMessagePrefix)) {
 				// We must escape our message prefix if needed
 				steamMessagePrefix = Escape(steamMessagePrefix!);
+
+				prefixLength = steamMessagePrefix.Length;
 
 				string[] prefixLines = steamMessagePrefix.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
 
@@ -72,8 +75,8 @@ namespace ArchiSteamFarm.Steam.Integration {
 			// We must escape our message prior to sending it
 			message = Escape(message);
 
-			int messagePartBytes = 0;
-			StringBuilder messagePart = new();
+			int messagePartBytes = prefixBytes;
+			StringBuilder messagePart = new(steamMessagePrefix);
 
 			Decoder decoder = Encoding.UTF8.GetDecoder();
 			ArrayPool<char> charPool = ArrayPool<char>.Shared;
@@ -85,12 +88,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 			while ((line = await stringReader.ReadLineAsync().ConfigureAwait(false)) != null) {
 				// Special case for empty newline
 				if (line.Length == 0) {
-					if (messagePart.Length == 0) {
-						if (prefixBytes > 0) {
-							messagePartBytes += prefixBytes;
-							messagePart.Append(steamMessagePrefix);
-						}
-					} else {
+					if (messagePart.Length > prefixLength) {
 						messagePartBytes += NewlineWeight;
 						messagePart.AppendLine();
 					}
@@ -99,8 +97,9 @@ namespace ArchiSteamFarm.Steam.Integration {
 					if (messagePartBytes + NewlineWeight + ReservedEscapeMessageBytes > maxMessageBytes) {
 						yield return messagePart.ToString();
 
-						messagePartBytes = 0;
+						messagePartBytes = prefixBytes;
 						messagePart.Clear();
+						messagePart.Append(steamMessagePrefix);
 					}
 
 					// Move on to the next line
@@ -110,12 +109,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 				byte[] lineBytes = Encoding.UTF8.GetBytes(line);
 
 				for (int lineBytesRead = 0; lineBytesRead < lineBytes.Length;) {
-					if (messagePart.Length == 0) {
-						if (prefixBytes > 0) {
-							messagePartBytes += prefixBytes;
-							messagePart.Append(steamMessagePrefix);
-						}
-					} else {
+					if (messagePart.Length > prefixLength) {
 						messagePartBytes += NewlineWeight;
 						messagePart.AppendLine();
 					}
@@ -169,12 +163,13 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 					yield return messagePart.ToString();
 
-					messagePartBytes = 0;
+					messagePartBytes = prefixBytes;
 					messagePart.Clear();
+					messagePart.Append(steamMessagePrefix);
 				}
 			}
 
-			if (messagePart.Length == 0) {
+			if (messagePart.Length <= prefixLength) {
 				yield break;
 			}
 
