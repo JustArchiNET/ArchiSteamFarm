@@ -177,6 +177,9 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[TestMethod]
+		public void ReservedSizeForEscapingIsProperlyCalculated() => Assert.AreEqual(ReservedEscapeMessageBytes, Encoding.UTF8.GetByteCount(@"\") + 4);
+
+		[TestMethod]
 		public async Task SplitsOnNewlinesWithoutContinuationCharacter() {
 			StringBuilder newlinePartBuilder = new();
 

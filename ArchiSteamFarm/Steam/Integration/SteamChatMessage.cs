@@ -37,8 +37,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 		internal const ushort MaxMessagePrefixBytes = MaxMessageBytes - ReservedContinuationMessageBytes - ReservedEscapeMessageBytes; // Simplified calculation, nobody should be using prefixes even close to that anyway
 		internal const byte NewlineWeight = 61; // This defines how much weight a newline character is adding to the output, limitation enforced by Steam
 		internal const byte ReservedContinuationMessageBytes = ContinuationCharacterBytes * 2; // Up to 2 optional continuation characters
-
-		private const byte ReservedEscapeMessageBytes = 5; // 2 characters total, escape one '\' of 1 byte and real one of up to 4 bytes
+		internal const byte ReservedEscapeMessageBytes = 5; // 2 characters total, escape one '\' of 1 byte and real one of up to 4 bytes
 
 		internal static string Escape(string message) {
 			if (string.IsNullOrEmpty(message)) {
