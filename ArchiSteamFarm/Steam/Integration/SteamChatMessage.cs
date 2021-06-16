@@ -73,7 +73,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 			// We must escape our message prior to sending it
 			message = Escape(message);
 
-			int bytesRead = 0;
+			int messagePartBytes = 0;
 			StringBuilder messagePart = new();
 
 			Decoder decoder = Encoding.UTF8.GetDecoder();
@@ -88,19 +88,19 @@ namespace ArchiSteamFarm.Steam.Integration {
 				if (line.Length == 0) {
 					if (messagePart.Length == 0) {
 						if (prefixBytes > 0) {
-							bytesRead += prefixBytes;
+							messagePartBytes += prefixBytes;
 							messagePart.Append(steamMessagePrefix);
 						}
 					} else {
-						bytesRead += NewlineWeight;
+						messagePartBytes += NewlineWeight;
 						messagePart.AppendLine();
 					}
 
 					// Check if we reached the limit for one message
-					if (bytesRead + NewlineWeight + ReservedEscapeMessageBytes > maxMessageBytes) {
+					if (messagePartBytes + NewlineWeight + ReservedEscapeMessageBytes > maxMessageBytes) {
 						yield return messagePart.ToString();
 
-						bytesRead = 0;
+						messagePartBytes = 0;
 						messagePart.Clear();
 					}
 
@@ -113,15 +113,15 @@ namespace ArchiSteamFarm.Steam.Integration {
 				for (int lineBytesRead = 0; lineBytesRead < lineBytes.Length;) {
 					if (messagePart.Length == 0) {
 						if (prefixBytes > 0) {
-							bytesRead += prefixBytes;
+							messagePartBytes += prefixBytes;
 							messagePart.Append(steamMessagePrefix);
 						}
 					} else {
-						bytesRead += NewlineWeight;
+						messagePartBytes += NewlineWeight;
 						messagePart.AppendLine();
 					}
 
-					int bytesToTake = Math.Min(maxMessageBytes - bytesRead, lineBytes.Length - lineBytesRead);
+					int bytesToTake = Math.Min(maxMessageBytes - messagePartBytes, lineBytes.Length - lineBytesRead);
 
 					// We can never have more characters than bytes used, so this covers the worst case of 1-byte characters exclusively
 					char[] lineChunk = charPool.Rent(bytesToTake);
@@ -146,31 +146,31 @@ namespace ArchiSteamFarm.Steam.Integration {
 						int bytesUsed = Encoding.UTF8.GetByteCount(lineChunk, 0, charsUsed);
 
 						if (lineBytesRead > 0) {
-							bytesRead += ContinuationCharacterBytes;
+							messagePartBytes += ContinuationCharacterBytes;
 							messagePart.Append(ContinuationCharacter);
 						}
 
 						lineBytesRead += bytesUsed;
-						bytesRead += bytesUsed;
 
+						messagePartBytes += bytesUsed;
 						messagePart.Append(lineChunk, 0, charsUsed);
 					} finally {
 						charPool.Return(lineChunk);
 					}
 
 					if (lineBytesRead < lineBytes.Length) {
-						bytesRead += ContinuationCharacterBytes;
+						messagePartBytes += ContinuationCharacterBytes;
 						messagePart.Append(ContinuationCharacter);
 					}
 
 					// Check if we still have room for one more line
-					if (bytesRead + NewlineWeight + ReservedEscapeMessageBytes <= maxMessageBytes) {
+					if (messagePartBytes + NewlineWeight + ReservedEscapeMessageBytes <= maxMessageBytes) {
 						continue;
 					}
 
 					yield return messagePart.ToString();
 
-					bytesRead = 0;
+					messagePartBytes = 0;
 					messagePart.Clear();
 				}
 			}
