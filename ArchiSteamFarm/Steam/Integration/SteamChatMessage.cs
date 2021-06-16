@@ -68,6 +68,8 @@ namespace ArchiSteamFarm.Steam.Integration {
 				}
 			}
 
+			const int maxMessageBytes = MaxMessageBytes - ReservedContinuationMessageBytes;
+
 			// We must escape our message prior to sending it
 			message = Escape(message);
 
@@ -84,12 +86,34 @@ namespace ArchiSteamFarm.Steam.Integration {
 			while ((line = await stringReader.ReadLineAsync().ConfigureAwait(false)) != null) {
 				byte[] lineBytes = Encoding.UTF8.GetBytes(line);
 
-				for (int lineBytesRead = 0; lineBytesRead < lineBytes.Length;) {
-					int maxMessageBytes = MaxMessageBytes - ReservedContinuationMessageBytes;
-
+				// Special case for empty newline
+				if (lineBytes.Length == 0) {
 					if (messagePart.Length == 0) {
 						if (prefixBytes > 0) {
-							maxMessageBytes -= prefixBytes;
+							bytesRead += prefixBytes;
+							messagePart.Append(steamMessagePrefix);
+						}
+					} else {
+						bytesRead += NewlineWeight;
+						messagePart.AppendLine();
+					}
+
+					// Check if we reached the limit for one message
+					if (bytesRead + NewlineWeight + ReservedEscapeMessageBytes > maxMessageBytes) {
+						yield return messagePart.ToString();
+
+						bytesRead = 0;
+						messagePart.Clear();
+					}
+
+					// Move on to the next line
+					continue;
+				}
+
+				for (int lineBytesRead = 0; lineBytesRead < lineBytes.Length;) {
+					if (messagePart.Length == 0) {
+						if (prefixBytes > 0) {
+							bytesRead += prefixBytes;
 							messagePart.Append(steamMessagePrefix);
 						}
 					} else {
