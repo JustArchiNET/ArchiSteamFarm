@@ -772,7 +772,7 @@ namespace ArchiSteamFarm.Steam {
 			string? steamMessagePrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.SteamMessagePrefix : GlobalConfig.DefaultSteamMessagePrefix;
 
 			await foreach (string messagePart in SteamChatMessage.GetMessageParts(message, steamMessagePrefix).ConfigureAwait(false)) {
-				if (!await SendMessagePart(steamID, messagePart).ConfigureAwait(false)) {
+				if (!await SendMessagePart(() => ArchiHandler.SendMessage(steamID, messagePart)).ConfigureAwait(false)) {
 					ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
 					return false;
@@ -805,7 +805,7 @@ namespace ArchiSteamFarm.Steam {
 			string? steamMessagePrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.SteamMessagePrefix : GlobalConfig.DefaultSteamMessagePrefix;
 
 			await foreach (string messagePart in SteamChatMessage.GetMessageParts(message, steamMessagePrefix).ConfigureAwait(false)) {
-				if (!await SendMessagePart(chatGroupID, chatID, messagePart).ConfigureAwait(false)) {
+				if (!await SendMessagePart(() => ArchiHandler.SendMessage(chatGroupID, chatID, messagePart)).ConfigureAwait(false)) {
 					ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
 					return false;
@@ -3326,35 +3326,11 @@ namespace ArchiSteamFarm.Steam {
 			}
 		}
 
-		private async Task<bool> SendMessagePart(ulong steamID, string messagePart) {
-			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-				throw new ArgumentOutOfRangeException(nameof(steamID));
-			}
-
-			if (string.IsNullOrEmpty(messagePart)) {
-				throw new ArgumentNullException(nameof(messagePart));
-			}
-			
-			return await SendMessagePart(() => ArchiHandler.SendMessage(steamID, messagePart));
-		}
-
-		private async Task<bool> SendMessagePart(ulong chatGroupID, ulong chatID, string messagePart) {
-				if (chatGroupID == 0) {
-					throw new ArgumentOutOfRangeException(nameof(chatGroupID));
-				}
-	
-				if (chatID == 0) {
-					throw new ArgumentOutOfRangeException(nameof(chatID));
-				}
-	
-				if (string.IsNullOrEmpty(messagePart)) {
-					throw new ArgumentNullException(nameof(messagePart));
-				}
-				
-				return await SendMessagePart(() => ArchiHandler.SendMessage(chatGroupID, chatID, messagePart));
-		}
-
 		private async Task<bool> SendMessagePart(Func<Task<EResult>> sendingDelegate) {
+			if (sendingDelegate == null) {
+				throw new ArgumentNullException(nameof(sendingDelegate));
+			}
+
 			if (!IsConnectedAndLoggedOn) {
 				return false;
 			}
