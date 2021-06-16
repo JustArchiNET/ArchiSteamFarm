@@ -40,6 +40,14 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 		private const byte ReservedEscapeMessageBytes = 5; // 2 characters total, escape one '\' of 1 byte and real one of up to 4 bytes
 
+		internal static string Escape(string message) {
+			if (string.IsNullOrEmpty(message)) {
+				throw new ArgumentNullException(nameof(message));
+			}
+
+			return message.Replace("\\", "\\\\", StringComparison.Ordinal).Replace("[", "\\[", StringComparison.Ordinal);
+		}
+
 		internal static async IAsyncEnumerable<string> GetMessageParts(string message, string? steamMessagePrefix = null) {
 			if (string.IsNullOrEmpty(message)) {
 				throw new ArgumentNullException(nameof(message));
@@ -48,7 +56,10 @@ namespace ArchiSteamFarm.Steam.Integration {
 			int prefixBytes = 0;
 
 			if (!string.IsNullOrEmpty(steamMessagePrefix)) {
-				string[] prefixLines = steamMessagePrefix!.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+				// We must escape our message prefix if needed
+				steamMessagePrefix = Escape(steamMessagePrefix!);
+
+				string[] prefixLines = steamMessagePrefix.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
 
 				prefixBytes = prefixLines.Where(prefixLine => prefixLine.Length > 0).Sum(Encoding.UTF8.GetByteCount) + ((prefixLines.Length - 1) * NewlineWeight);
 
@@ -153,14 +164,6 @@ namespace ArchiSteamFarm.Steam.Integration {
 			}
 
 			return message.Replace("\\[", "[", StringComparison.Ordinal).Replace("\\\\", "\\", StringComparison.Ordinal);
-		}
-
-		private static string Escape(string message) {
-			if (string.IsNullOrEmpty(message)) {
-				throw new ArgumentNullException(nameof(message));
-			}
-
-			return message.Replace("\\", "\\\\", StringComparison.Ordinal).Replace("[", "\\[", StringComparison.Ordinal);
 		}
 	}
 }

@@ -137,6 +137,19 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[TestMethod]
+		public async Task ProperlyEscapesSteamMessagePrefix() {
+			const string prefix = "/pre []";
+			const string escapedPrefix = @"/pre \[]";
+
+			const string message = "asdf";
+
+			List<string> output = await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false);
+
+			Assert.AreEqual(1, output.Count);
+			Assert.AreEqual(escapedPrefix + message, output.First());
+		}
+
+		[TestMethod]
 		public async Task ProperlySplitsLongSingleLine() {
 			const ushort longLineLength = MaxMessageBytes - ReservedContinuationMessageBytes;
 

@@ -322,8 +322,11 @@ namespace ArchiSteamFarm.Storage {
 			}
 
 			if (!string.IsNullOrEmpty(SteamMessagePrefix)) {
+				// We must escape our message prefix if needed
+				string escapedSteamMessagePrefix = SteamChatMessage.Escape(SteamMessagePrefix!);
+
 				// Take into account a possibility of newlines, if somebody is really awkward enough to put some in
-				string[] lines = SteamMessagePrefix!.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+				string[] lines = escapedSteamMessagePrefix.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
 
 				int sizeInBytes = lines.Where(line => line.Length > 0).Sum(Encoding.UTF8.GetByteCount) + ((lines.Length - 1) * SteamChatMessage.NewlineWeight);
 
