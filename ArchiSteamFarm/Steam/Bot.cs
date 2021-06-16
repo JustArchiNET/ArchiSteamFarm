@@ -3334,54 +3334,27 @@ namespace ArchiSteamFarm.Steam {
 			if (string.IsNullOrEmpty(messagePart)) {
 				throw new ArgumentNullException(nameof(messagePart));
 			}
-
-			if (!IsConnectedAndLoggedOn) {
-				return false;
-			}
-
-			await MessagingSemaphore.WaitAsync().ConfigureAwait(false);
-
-			try {
-				for (byte i = 0; (i < WebBrowser.MaxTries) && IsConnectedAndLoggedOn; i++) {
-					EResult result = await ArchiHandler.SendMessage(steamID, messagePart).ConfigureAwait(false);
-
-					switch (result) {
-						case EResult.Busy:
-						case EResult.Fail:
-						case EResult.RateLimitExceeded:
-						case EResult.ServiceUnavailable:
-						case EResult.Timeout:
-							await Task.Delay(5000).ConfigureAwait(false);
-
-							continue;
-						case EResult.OK:
-							return true;
-						default:
-							ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(result), result));
-
-							return false;
-					}
-				}
-
-				return false;
-			} finally {
-				MessagingSemaphore.Release();
-			}
+			
+			return await SendMessagePart(() => ArchiHandler.SendMessage(steamID, messagePart));
 		}
 
 		private async Task<bool> SendMessagePart(ulong chatGroupID, ulong chatID, string messagePart) {
-			if (chatGroupID == 0) {
-				throw new ArgumentOutOfRangeException(nameof(chatGroupID));
-			}
+				if (chatGroupID == 0) {
+					throw new ArgumentOutOfRangeException(nameof(chatGroupID));
+				}
+	
+				if (chatID == 0) {
+					throw new ArgumentOutOfRangeException(nameof(chatID));
+				}
+	
+				if (string.IsNullOrEmpty(messagePart)) {
+					throw new ArgumentNullException(nameof(messagePart));
+				}
+				
+				return await SendMessagePart(() => ArchiHandler.SendMessage(chatGroupID, chatID, messagePart));
+		}
 
-			if (chatID == 0) {
-				throw new ArgumentOutOfRangeException(nameof(chatID));
-			}
-
-			if (string.IsNullOrEmpty(messagePart)) {
-				throw new ArgumentNullException(nameof(messagePart));
-			}
-
+		private async Task<bool> SendMessagePart(Func<Task<EResult>> sendingDelegate) {
 			if (!IsConnectedAndLoggedOn) {
 				return false;
 			}
@@ -3390,7 +3363,7 @@ namespace ArchiSteamFarm.Steam {
 
 			try {
 				for (byte i = 0; (i < WebBrowser.MaxTries) && IsConnectedAndLoggedOn; i++) {
-					EResult result = await ArchiHandler.SendMessage(chatGroupID, chatID, messagePart).ConfigureAwait(false);
+					EResult result = await sendingDelegate().ConfigureAwait(false);
 
 					switch (result) {
 						case EResult.Busy:
