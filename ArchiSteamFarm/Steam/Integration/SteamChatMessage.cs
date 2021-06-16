@@ -84,10 +84,8 @@ namespace ArchiSteamFarm.Steam.Integration {
 			string? line;
 
 			while ((line = await stringReader.ReadLineAsync().ConfigureAwait(false)) != null) {
-				byte[] lineBytes = Encoding.UTF8.GetBytes(line);
-
 				// Special case for empty newline
-				if (lineBytes.Length == 0) {
+				if (line.Length == 0) {
 					if (messagePart.Length == 0) {
 						if (prefixBytes > 0) {
 							bytesRead += prefixBytes;
@@ -109,6 +107,8 @@ namespace ArchiSteamFarm.Steam.Integration {
 					// Move on to the next line
 					continue;
 				}
+
+				byte[] lineBytes = Encoding.UTF8.GetBytes(line);
 
 				for (int lineBytesRead = 0; lineBytesRead < lineBytes.Length;) {
 					if (messagePart.Length == 0) {
