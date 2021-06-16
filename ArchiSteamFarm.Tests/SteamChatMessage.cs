@@ -245,6 +245,8 @@ namespace ArchiSteamFarm.Tests {
 			foreach (string messagePart in output) {
 				if ((messagePart.Length <= prefix.Length) || !messagePart.StartsWith(prefix, StringComparison.Ordinal)) {
 					Assert.Fail();
+
+					return;
 				}
 
 				string[] lines = messagePart.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
@@ -253,6 +255,8 @@ namespace ArchiSteamFarm.Tests {
 
 				if (bytes > MaxMessageBytes) {
 					Assert.Fail();
+
+					return;
 				}
 			}
 		}
