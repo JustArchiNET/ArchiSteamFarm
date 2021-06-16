@@ -177,7 +177,7 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[TestMethod]
-		public void ReservedSizeForEscapingIsProperlyCalculated() => Assert.AreEqual(ReservedEscapeMessageBytes, Encoding.UTF8.GetByteCount(@"\") + 4);
+		public void ReservedSizeForEscapingIsProperlyCalculated() => Assert.AreEqual(ReservedEscapeMessageBytes, Encoding.UTF8.GetByteCount(@"\") + 4); // Maximum amount of bytes per single UTF-8 character is 4, not 6 as from Encoding.UTF8.GetMaxByteCount(1)
 
 		[TestMethod]
 		public async Task SplitsOnNewlinesWithoutContinuationCharacter() {
