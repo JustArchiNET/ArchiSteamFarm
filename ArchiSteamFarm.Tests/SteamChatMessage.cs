@@ -181,6 +181,8 @@ namespace ArchiSteamFarm.Tests {
 
 		[TestMethod]
 		public async Task RyzhehvostInitialTestForSplitting() {
+			const string prefix = "/me ";
+
 			const string message = @"<XLimited5> Уже имеет: app/1493800 | Aircraft Carrier Survival: Prolouge
 <XLimited5> Уже имеет: app/349520 | Armillo
 <XLimited5> Уже имеет: app/346330 | BrainBread 2
@@ -236,12 +238,22 @@ namespace ArchiSteamFarm.Tests {
 <ASF> 1/1 ботов уже имеют игру app/269710 | Tumblestone.
 <ASF> 1/1 ботов уже имеют игру app/304930 | Unturned.";
 
-			List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
+			List<string> output = await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false);
 
 			Assert.AreEqual(2, output.Count);
 
-			if (output.Select(messagePart => messagePart.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None)).Select(lines => lines.Where(line => line.Length > 0).Sum(Encoding.UTF8.GetByteCount) + ((lines.Length - 1) * NewlineWeight)).Any(bytes => bytes > MaxMessageBytes)) {
-				Assert.Fail();
+			foreach (string messagePart in output) {
+				if ((messagePart.Length <= prefix.Length) || !messagePart.StartsWith(prefix, StringComparison.Ordinal)) {
+					Assert.Fail();
+				}
+
+				string[] lines = messagePart.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+
+				int bytes = lines.Where(line => line.Length > 0).Sum(Encoding.UTF8.GetByteCount) + ((lines.Length - 1) * NewlineWeight);
+
+				if (bytes > MaxMessageBytes) {
+					Assert.Fail();
+				}
 			}
 		}
 
