@@ -62,7 +62,7 @@ namespace ArchiSteamFarm.Tests {
 
 		[DataRow(false)]
 		[DataRow(true)]
-		[TestMethod]
+		[DataTestMethod]
 		public async Task DoesntSplitInTheMiddleOfMultiByteChar(bool isAccountLimited) {
 			int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
 			int longLineLength = maxMessageBytes - ReservedContinuationMessageBytes;
@@ -93,7 +93,7 @@ namespace ArchiSteamFarm.Tests {
 
 		[DataRow(false)]
 		[DataRow(true)]
-		[TestMethod]
+		[DataTestMethod]
 		public async Task DoesntSplitOnBackslashNotUsedForEscaping(bool isAccountLimited) {
 			int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
 			int longLineLength = maxMessageBytes - ReservedContinuationMessageBytes;
@@ -109,7 +109,7 @@ namespace ArchiSteamFarm.Tests {
 
 		[DataRow(false)]
 		[DataRow(true)]
-		[TestMethod]
+		[DataTestMethod]
 		public async Task DoesntSplitOnEscapeCharacter(bool isAccountLimited) {
 			int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
 			int longLineLength = maxMessageBytes - ReservedContinuationMessageBytes;
@@ -171,7 +171,7 @@ namespace ArchiSteamFarm.Tests {
 
 		[DataRow(false)]
 		[DataRow(true)]
-		[TestMethod]
+		[DataTestMethod]
 		public async Task ProperlySplitsLongSingleLine(bool isAccountLimited) {
 			int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
 			int longLineLength = maxMessageBytes - ReservedContinuationMessageBytes;
@@ -276,7 +276,7 @@ namespace ArchiSteamFarm.Tests {
 
 		[DataRow(false)]
 		[DataRow(true)]
-		[TestMethod]
+		[DataTestMethod]
 		public async Task SplitsOnNewlinesWithoutContinuationCharacter(bool isAccountLimited) {
 			int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
 
