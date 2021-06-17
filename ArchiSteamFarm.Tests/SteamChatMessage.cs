@@ -37,7 +37,7 @@ namespace ArchiSteamFarm.Tests {
 			const string emoji = "😎";
 			const string message = emoji + emoji + emoji + emoji;
 
-			List<string> output = await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false);
+			List<string> output = await GetMessageParts(message, prefix, true).ToListAsync().ConfigureAwait(false);
 
 			Assert.AreEqual(4, output.Count);
 
@@ -60,15 +60,19 @@ namespace ArchiSteamFarm.Tests {
 			Assert.AreEqual(message, output.First());
 		}
 
+		[DataRow(false)]
+		[DataRow(true)]
 		[TestMethod]
-		public async Task DoesntSplitInTheMiddleOfMultiByteChar() {
-			const ushort longLineLength = MaxMessageBytes - ReservedContinuationMessageBytes;
+		public async Task DoesntSplitInTheMiddleOfMultiByteChar(bool isAccountLimited) {
+			int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
+			int longLineLength = maxMessageBytes - ReservedContinuationMessageBytes;
+
 			const string emoji = "😎";
 
 			string longSequence = new('a', longLineLength - 1);
 			string message = longSequence + emoji;
 
-			List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
+			List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync().ConfigureAwait(false);
 
 			Assert.AreEqual(2, output.Count);
 
@@ -87,27 +91,33 @@ namespace ArchiSteamFarm.Tests {
 			Assert.AreEqual(escapedMessage, output.First());
 		}
 
+		[DataRow(false)]
+		[DataRow(true)]
 		[TestMethod]
-		public async Task DoesntSplitOnBackslashNotUsedForEscaping() {
-			const ushort longLineLength = MaxMessageBytes - ReservedContinuationMessageBytes;
+		public async Task DoesntSplitOnBackslashNotUsedForEscaping(bool isAccountLimited) {
+			int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
+			int longLineLength = maxMessageBytes - ReservedContinuationMessageBytes;
 
 			string longLine = new('a', longLineLength - 2);
 			string message = longLine + @"\";
 
-			List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
+			List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync().ConfigureAwait(false);
 
 			Assert.AreEqual(1, output.Count);
 			Assert.AreEqual(message + @"\", output.First());
 		}
 
+		[DataRow(false)]
+		[DataRow(true)]
 		[TestMethod]
-		public async Task DoesntSplitOnEscapeCharacter() {
-			const ushort longLineLength = MaxMessageBytes - ReservedContinuationMessageBytes;
+		public async Task DoesntSplitOnEscapeCharacter(bool isAccountLimited) {
+			int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
+			int longLineLength = maxMessageBytes - ReservedContinuationMessageBytes;
 
 			string longLine = new('a', longLineLength - 1);
 			string message = longLine + "[";
 
-			List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
+			List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync().ConfigureAwait(false);
 
 			Assert.AreEqual(2, output.Count);
 
@@ -159,14 +169,17 @@ namespace ArchiSteamFarm.Tests {
 			Assert.AreEqual(escapedPrefix + message, output.First());
 		}
 
+		[DataRow(false)]
+		[DataRow(true)]
 		[TestMethod]
-		public async Task ProperlySplitsLongSingleLine() {
-			const ushort longLineLength = MaxMessageBytes - ReservedContinuationMessageBytes;
+		public async Task ProperlySplitsLongSingleLine(bool isAccountLimited) {
+			int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
+			int longLineLength = maxMessageBytes - ReservedContinuationMessageBytes;
 
 			string longLine = new('a', longLineLength);
 			string message = longLine + longLine + longLine + longLine;
 
-			List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
+			List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync().ConfigureAwait(false);
 
 			Assert.AreEqual(4, output.Count);
 
@@ -253,7 +266,7 @@ namespace ArchiSteamFarm.Tests {
 
 				int bytes = lines.Where(line => line.Length > 0).Sum(Encoding.UTF8.GetByteCount) + ((lines.Length - 1) * NewlineWeight);
 
-				if (bytes > MaxMessageBytes) {
+				if (bytes > MaxMessageBytesForUnlimitedAccounts) {
 					Assert.Fail();
 
 					return;
@@ -261,11 +274,15 @@ namespace ArchiSteamFarm.Tests {
 			}
 		}
 
+		[DataRow(false)]
+		[DataRow(true)]
 		[TestMethod]
-		public async Task SplitsOnNewlinesWithoutContinuationCharacter() {
+		public async Task SplitsOnNewlinesWithoutContinuationCharacter(bool isAccountLimited) {
+			int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
+
 			StringBuilder newlinePartBuilder = new();
 
-			for (ushort bytes = 0; bytes < MaxMessageBytes - ReservedContinuationMessageBytes - NewlineWeight;) {
+			for (ushort bytes = 0; bytes < maxMessageBytes - ReservedContinuationMessageBytes - NewlineWeight;) {
 				if (newlinePartBuilder.Length > 0) {
 					bytes += NewlineWeight;
 					newlinePartBuilder.Append(Environment.NewLine);
@@ -278,7 +295,7 @@ namespace ArchiSteamFarm.Tests {
 			string newlinePart = newlinePartBuilder.ToString();
 			string message = newlinePart + Environment.NewLine + newlinePart + Environment.NewLine + newlinePart + Environment.NewLine + newlinePart;
 
-			List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
+			List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync().ConfigureAwait(false);
 
 			Assert.AreEqual(4, output.Count);
 

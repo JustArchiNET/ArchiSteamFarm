@@ -33,13 +33,14 @@ namespace ArchiSteamFarm.Steam.Integration {
 	internal static class SteamChatMessage {
 		internal const char ContinuationCharacter = '…'; // A character used for indicating that the next newline part is a continuation of the previous line
 		internal const byte ContinuationCharacterBytes = 3; // The continuation character specified above uses 3 bytes in UTF-8
-		internal const ushort MaxMessageBytes = 6449; // This is a limitation enforced by Steam
-		internal const ushort MaxMessagePrefixBytes = MaxMessageBytes - ReservedContinuationMessageBytes - ReservedEscapeMessageBytes; // Simplified calculation, nobody should be using prefixes even close to that anyway
+		internal const ushort MaxMessageBytesForLimitedAccounts = 2400; // This is a limitation enforced by Steam
+		internal const ushort MaxMessageBytesForUnlimitedAccounts = 6340; // This is a limitation enforced by Steam
+		internal const ushort MaxMessagePrefixBytes = MaxMessageBytesForLimitedAccounts - ReservedContinuationMessageBytes - ReservedEscapeMessageBytes; // Simplified calculation, nobody should be using prefixes even close to that anyway
 		internal const byte NewlineWeight = 61; // This defines how much weight a newline character is adding to the output, limitation enforced by Steam
 		internal const byte ReservedContinuationMessageBytes = ContinuationCharacterBytes * 2; // Up to 2 optional continuation characters
 		internal const byte ReservedEscapeMessageBytes = 5; // 2 characters total, escape one '\' of 1 byte and real one of up to 4 bytes
 
-		internal static async IAsyncEnumerable<string> GetMessageParts(string message, string? steamMessagePrefix = null) {
+		internal static async IAsyncEnumerable<string> GetMessageParts(string message, string? steamMessagePrefix = null, bool isAccountLimited = false) {
 			if (string.IsNullOrEmpty(message)) {
 				throw new ArgumentNullException(nameof(message));
 			}
@@ -60,7 +61,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 				prefixLength = steamMessagePrefix.Length;
 			}
 
-			const int maxMessageBytes = MaxMessageBytes - ReservedContinuationMessageBytes;
+			int maxMessageBytes = (isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts) - ReservedContinuationMessageBytes;
 
 			// We must escape our message prior to sending it
 			message = Escape(message);
