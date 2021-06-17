@@ -51,7 +51,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 				// We must escape our message prefix if needed
 				steamMessagePrefix = Escape(steamMessagePrefix!);
 
-				prefixBytes = GetPrefixMesageBytes(steamMessagePrefix);
+				prefixBytes = GetMessagePrefixytes(steamMessagePrefix);
 
 				if (prefixBytes > MaxMessagePrefixBytes) {
 					throw new ArgumentOutOfRangeException(nameof(steamMessagePrefix));
@@ -171,7 +171,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 				throw new ArgumentNullException(nameof(steamMessagePrefix));
 			}
 
-			return GetPrefixMesageBytes(Escape(steamMessagePrefix)) <= MaxMessagePrefixBytes;
+			return GetMessagePrefixytes(Escape(steamMessagePrefix)) <= MaxMessagePrefixBytes;
 		}
 
 		internal static string Unescape(string message) {
@@ -190,7 +190,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 			return message.Replace("\\", "\\\\", StringComparison.Ordinal).Replace("[", "\\[", StringComparison.Ordinal);
 		}
 
-		private static int GetPrefixMesageBytes(string escapedSteamMessagePrefix) {
+		private static int GetMessagePrefixytes(string escapedSteamMessagePrefix) {
 			if (string.IsNullOrEmpty(escapedSteamMessagePrefix)) {
 				throw new ArgumentNullException(nameof(escapedSteamMessagePrefix));
 			}
