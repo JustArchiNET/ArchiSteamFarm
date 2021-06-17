@@ -39,14 +39,6 @@ namespace ArchiSteamFarm.Steam.Integration {
 		internal const byte ReservedContinuationMessageBytes = ContinuationCharacterBytes * 2; // Up to 2 optional continuation characters
 		internal const byte ReservedEscapeMessageBytes = 5; // 2 characters total, escape one '\' of 1 byte and real one of up to 4 bytes
 
-		internal static string Escape(string message) {
-			if (string.IsNullOrEmpty(message)) {
-				throw new ArgumentNullException(nameof(message));
-			}
-
-			return message.Replace("\\", "\\\\", StringComparison.Ordinal).Replace("[", "\\[", StringComparison.Ordinal);
-		}
-
 		internal static async IAsyncEnumerable<string> GetMessageParts(string message, string? steamMessagePrefix = null) {
 			if (string.IsNullOrEmpty(message)) {
 				throw new ArgumentNullException(nameof(message));
@@ -59,15 +51,13 @@ namespace ArchiSteamFarm.Steam.Integration {
 				// We must escape our message prefix if needed
 				steamMessagePrefix = Escape(steamMessagePrefix!);
 
-				prefixLength = steamMessagePrefix.Length;
-
-				string[] prefixLines = steamMessagePrefix.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-
-				prefixBytes = prefixLines.Where(prefixLine => prefixLine.Length > 0).Sum(Encoding.UTF8.GetByteCount) + ((prefixLines.Length - 1) * NewlineWeight);
+				prefixBytes = GetPrefixMesageBytes(steamMessagePrefix);
 
 				if (prefixBytes > MaxMessagePrefixBytes) {
 					throw new ArgumentOutOfRangeException(nameof(steamMessagePrefix));
 				}
+
+				prefixLength = steamMessagePrefix.Length;
 			}
 
 			const int maxMessageBytes = MaxMessageBytes - ReservedContinuationMessageBytes;
@@ -176,12 +166,38 @@ namespace ArchiSteamFarm.Steam.Integration {
 			yield return messagePart.ToString();
 		}
 
+		internal static bool IsValidPrefix(string steamMessagePrefix) {
+			if (string.IsNullOrEmpty(steamMessagePrefix)) {
+				throw new ArgumentNullException(nameof(steamMessagePrefix));
+			}
+
+			return GetPrefixMesageBytes(Escape(steamMessagePrefix)) <= MaxMessagePrefixBytes;
+		}
+
 		internal static string Unescape(string message) {
 			if (string.IsNullOrEmpty(message)) {
 				throw new ArgumentNullException(nameof(message));
 			}
 
 			return message.Replace("\\[", "[", StringComparison.Ordinal).Replace("\\\\", "\\", StringComparison.Ordinal);
+		}
+
+		private static string Escape(string message) {
+			if (string.IsNullOrEmpty(message)) {
+				throw new ArgumentNullException(nameof(message));
+			}
+
+			return message.Replace("\\", "\\\\", StringComparison.Ordinal).Replace("[", "\\[", StringComparison.Ordinal);
+		}
+
+		private static int GetPrefixMesageBytes(string escapedSteamMessagePrefix) {
+			if (string.IsNullOrEmpty(escapedSteamMessagePrefix)) {
+				throw new ArgumentNullException(nameof(escapedSteamMessagePrefix));
+			}
+
+			string[] prefixLines = escapedSteamMessagePrefix.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+
+			return prefixLines.Where(prefixLine => prefixLine.Length > 0).Sum(Encoding.UTF8.GetByteCount) + ((prefixLines.Length - 1) * NewlineWeight);
 		}
 	}
 }

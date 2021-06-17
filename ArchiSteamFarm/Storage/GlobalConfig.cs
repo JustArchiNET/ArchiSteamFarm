@@ -25,9 +25,7 @@ using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
@@ -321,18 +319,8 @@ namespace ArchiSteamFarm.Storage {
 				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(OptimizationMode), OptimizationMode));
 			}
 
-			if (!string.IsNullOrEmpty(SteamMessagePrefix)) {
-				// We must escape our message prefix if needed
-				string escapedSteamMessagePrefix = SteamChatMessage.Escape(SteamMessagePrefix!);
-
-				// Take into account a possibility of newlines, if somebody is really awkward enough to put some in
-				string[] lines = escapedSteamMessagePrefix.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-
-				int sizeInBytes = lines.Where(line => line.Length > 0).Sum(Encoding.UTF8.GetByteCount) + ((lines.Length - 1) * SteamChatMessage.NewlineWeight);
-
-				if (sizeInBytes > SteamChatMessage.MaxMessagePrefixBytes) {
-					return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamMessagePrefix), SteamMessagePrefix));
-				}
+			if (!string.IsNullOrEmpty(SteamMessagePrefix) && !SteamChatMessage.IsValidPrefix(SteamMessagePrefix!)) {
+				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(SteamMessagePrefix), SteamMessagePrefix));
 			}
 
 			if ((SteamOwnerID != 0) && !new SteamID(SteamOwnerID).IsIndividualAccount) {
