@@ -64,7 +64,6 @@ using SteamKit2.Internal;
 namespace ArchiSteamFarm.Steam {
 	public sealed class Bot : IAsyncDisposable {
 		internal const ushort CallbackSleep = 500; // In milliseconds
-		internal const ushort MaxMessagePrefixLength = MaxMessageLength - ReservedMessageLength - 2; // 2 for a minimum of 2 characters (escape one and real one)
 		internal const byte MinCardsPerBadge = 5;
 		internal const byte MinPlayingBlockedTTL = 60; // Delay in seconds added when account was occupied during our disconnect, to not disconnect other Steam client session too soon
 
@@ -72,10 +71,8 @@ namespace ArchiSteamFarm.Steam {
 		private const byte LoginCooldownInMinutes = 25; // Captcha disappears after around 20 minutes, so we make it 25
 		private const uint LoginID = 1242; // This must be the same for all ASF bots and all ASF processes
 		private const byte MaxInvalidPasswordFailures = WebBrowser.MaxTries; // Max InvalidPassword failures in a row before we determine that our password is invalid (because Steam wrongly returns those, of course)
-		private const ushort MaxMessageLength = 5000; // This is a limitation enforced by Steam
 		private const byte MaxTwoFactorCodeFailures = WebBrowser.MaxTries; // Max TwoFactorCodeMismatch failures in a row before we determine that our 2FA credentials are invalid (because Steam wrongly returns those, of course)
 		private const byte RedeemCooldownInHours = 1; // 1 hour since first redeem attempt, this is a limitation enforced by Steam
-		private const byte ReservedMessageLength = 2; // 2 for 2x optional …
 
 		[PublicAPI]
 		public static IReadOnlyDictionary<string, Bot>? BotsReadOnly => Bots;
@@ -773,82 +770,15 @@ namespace ArchiSteamFarm.Steam {
 			ArchiLogger.LogChatMessage(true, message, steamID: steamID);
 
 			string? steamMessagePrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.SteamMessagePrefix : GlobalConfig.DefaultSteamMessagePrefix;
-			ushort maxMessageLength = (ushort) (MaxMessageLength - ReservedMessageLength - (steamMessagePrefix?.Length ?? 0));
 
-			// We must escape our message prior to sending it
-			message = Escape(message);
+			await foreach (string messagePart in SteamChatMessage.GetMessageParts(message, steamMessagePrefix, IsAccountLimited).ConfigureAwait(false)) {
+				ArchiLogger.LogGenericDebug(messagePart);
 
-			int i = 0;
+				if (!await SendMessagePart(steamID, messagePart).ConfigureAwait(false)) {
+					ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
-			while (i < message.Length) {
-				int partLength;
-				bool copyNewline = false;
-
-				if (message.Length - i > maxMessageLength) {
-					int lastNewLine = message.LastIndexOf(Environment.NewLine, (i + maxMessageLength) - Environment.NewLine.Length, maxMessageLength - Environment.NewLine.Length, StringComparison.Ordinal);
-
-					if (lastNewLine > i) {
-						partLength = (lastNewLine - i) + Environment.NewLine.Length;
-						copyNewline = true;
-					} else {
-						partLength = maxMessageLength;
-					}
-				} else {
-					partLength = message.Length - i;
+					return false;
 				}
-
-				// If our message is of max length and ends with a single '\' then we can't split it here, it escapes the next character
-				if ((partLength >= maxMessageLength) && (message[(i + partLength) - 1] == '\\') && (message[(i + partLength) - 2] != '\\')) {
-					// Instead, we'll cut this message one char short and include the rest in next iteration
-					partLength--;
-				}
-
-				string messagePart = message.Substring(i, partLength);
-
-				messagePart = steamMessagePrefix + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
-
-				await MessagingSemaphore.WaitAsync().ConfigureAwait(false);
-
-				try {
-					bool sent = false;
-
-					for (byte j = 0; (j < WebBrowser.MaxTries) && !sent && IsConnectedAndLoggedOn; j++) {
-						// We add a one-second delay here to avoid Steam screwup in form of a ghost notification
-						// The exact cause is unknown, but the theory is that Steam is confused when dealing with more than 1 message per second from the same user
-						await Task.Delay(1000).ConfigureAwait(false);
-
-						EResult result = await ArchiHandler.SendMessage(steamID, messagePart).ConfigureAwait(false);
-
-						switch (result) {
-							case EResult.Busy:
-							case EResult.Fail:
-							case EResult.RateLimitExceeded:
-							case EResult.ServiceUnavailable:
-							case EResult.Timeout:
-								await Task.Delay(5000).ConfigureAwait(false);
-
-								continue;
-							case EResult.OK:
-								sent = true;
-
-								break;
-							default:
-								ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(result), result));
-
-								return false;
-						}
-					}
-
-					if (!sent) {
-						ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-
-						return false;
-					}
-				} finally {
-					MessagingSemaphore.Release();
-				}
-
-				i += partLength - (copyNewline ? Environment.NewLine.Length : 0);
 			}
 
 			return true;
@@ -875,78 +805,15 @@ namespace ArchiSteamFarm.Steam {
 			ArchiLogger.LogChatMessage(true, message, chatGroupID, chatID);
 
 			string? steamMessagePrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.SteamMessagePrefix : GlobalConfig.DefaultSteamMessagePrefix;
-			ushort maxMessageLength = (ushort) (MaxMessageLength - ReservedMessageLength - (steamMessagePrefix?.Length ?? 0));
 
-			// We must escape our message prior to sending it
-			message = Escape(message);
+			await foreach (string messagePart in SteamChatMessage.GetMessageParts(message, steamMessagePrefix, IsAccountLimited).ConfigureAwait(false)) {
+				ArchiLogger.LogGenericDebug(messagePart);
 
-			int i = 0;
+				if (!await SendMessagePart(chatID, messagePart, chatGroupID).ConfigureAwait(false)) {
+					ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
-			while (i < message.Length) {
-				int partLength;
-				bool copyNewline = false;
-
-				if (message.Length - i > maxMessageLength) {
-					int lastNewLine = message.LastIndexOf(Environment.NewLine, (i + maxMessageLength) - Environment.NewLine.Length, maxMessageLength - Environment.NewLine.Length, StringComparison.Ordinal);
-
-					if (lastNewLine > i) {
-						partLength = (lastNewLine - i) + Environment.NewLine.Length;
-						copyNewline = true;
-					} else {
-						partLength = maxMessageLength;
-					}
-				} else {
-					partLength = message.Length - i;
+					return false;
 				}
-
-				// If our message is of max length and ends with a single '\' then we can't split it here, it escapes the next character
-				if ((partLength >= maxMessageLength) && (message[(i + partLength) - 1] == '\\') && (message[(i + partLength) - 2] != '\\')) {
-					// Instead, we'll cut this message one char short and include the rest in next iteration
-					partLength--;
-				}
-
-				string messagePart = message.Substring(i, partLength);
-
-				messagePart = steamMessagePrefix + (i > 0 ? "…" : "") + messagePart + (maxMessageLength < message.Length - i ? "…" : "");
-
-				await MessagingSemaphore.WaitAsync().ConfigureAwait(false);
-
-				try {
-					bool sent = false;
-
-					for (byte j = 0; (j < WebBrowser.MaxTries) && !sent && IsConnectedAndLoggedOn; j++) {
-						EResult result = await ArchiHandler.SendMessage(chatGroupID, chatID, messagePart).ConfigureAwait(false);
-
-						switch (result) {
-							case EResult.Busy:
-							case EResult.Fail:
-							case EResult.RateLimitExceeded:
-							case EResult.ServiceUnavailable:
-							case EResult.Timeout:
-								await Task.Delay(5000).ConfigureAwait(false);
-
-								continue;
-							case EResult.OK:
-								sent = true;
-
-								break;
-							default:
-								ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(result), result));
-
-								return false;
-						}
-					}
-
-					if (!sent) {
-						ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-
-						return false;
-					}
-				} finally {
-					MessagingSemaphore.Release();
-				}
-
-				i += partLength - (copyNewline ? Environment.NewLine.Length : 0);
 			}
 
 			return true;
@@ -1874,14 +1741,6 @@ namespace ArchiSteamFarm.Steam {
 			SteamClient.Disconnect();
 		}
 
-		private static string Escape(string message) {
-			if (string.IsNullOrEmpty(message)) {
-				throw new ArgumentNullException(nameof(message));
-			}
-
-			return message.Replace("\\", "\\\\", StringComparison.Ordinal).Replace("[", "\\[", StringComparison.Ordinal);
-		}
-
 		private async Task<Dictionary<string, string>?> GetKeysFromFile(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				throw new ArgumentNullException(nameof(filePath));
@@ -2608,7 +2467,7 @@ namespace ArchiSteamFarm.Steam {
 			if (!string.IsNullOrEmpty(notification.message_no_bbcode)) {
 				message = notification.message_no_bbcode;
 			} else if (!string.IsNullOrEmpty(notification.message)) {
-				message = UnEscape(notification.message);
+				message = SteamChatMessage.Unescape(notification.message);
 			} else {
 				return;
 			}
@@ -2654,7 +2513,7 @@ namespace ArchiSteamFarm.Steam {
 			if (!string.IsNullOrEmpty(notification.message_no_bbcode)) {
 				message = notification.message_no_bbcode;
 			} else if (!string.IsNullOrEmpty(notification.message)) {
-				message = UnEscape(notification.message);
+				message = SteamChatMessage.Unescape(notification.message);
 			} else {
 				return;
 			}
@@ -3471,6 +3330,55 @@ namespace ArchiSteamFarm.Steam {
 			}
 		}
 
+		private async Task<bool> SendMessagePart(ulong steamID, string messagePart, ulong chatGroupID = 0) {
+			if ((steamID == 0) || ((chatGroupID == 0) && !new SteamID(steamID).IsIndividualAccount)) {
+				throw new ArgumentOutOfRangeException(nameof(steamID));
+			}
+
+			if (string.IsNullOrEmpty(messagePart)) {
+				throw new ArgumentNullException(nameof(messagePart));
+			}
+
+			if (!IsConnectedAndLoggedOn) {
+				return false;
+			}
+
+			await MessagingSemaphore.WaitAsync().ConfigureAwait(false);
+
+			try {
+				for (byte i = 0; (i < WebBrowser.MaxTries) && IsConnectedAndLoggedOn; i++) {
+					EResult result;
+
+					if (chatGroupID == 0) {
+						result = await ArchiHandler.SendMessage(steamID, messagePart).ConfigureAwait(false);
+					} else {
+						result = await ArchiHandler.SendMessage(chatGroupID, steamID, messagePart).ConfigureAwait(false);
+					}
+
+					switch (result) {
+						case EResult.Busy:
+						case EResult.Fail:
+						case EResult.RateLimitExceeded:
+						case EResult.ServiceUnavailable:
+						case EResult.Timeout:
+							await Task.Delay(5000).ConfigureAwait(false);
+
+							continue;
+						case EResult.OK:
+							return true;
+						default:
+							ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(result), result));
+
+							return false;
+					}
+				}
+
+				return false;
+			} finally {
+				MessagingSemaphore.Release();
+			}
+		}
+
 		private bool ShouldAckChatMessage(ulong steamID) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 				throw new ArgumentOutOfRangeException(nameof(steamID));
@@ -3503,14 +3411,6 @@ namespace ArchiSteamFarm.Steam {
 
 			PlayingWasBlockedTimer.Dispose();
 			PlayingWasBlockedTimer = null;
-		}
-
-		private static string UnEscape(string message) {
-			if (string.IsNullOrEmpty(message)) {
-				throw new ArgumentNullException(nameof(message));
-			}
-
-			return message.Replace("\\[", "[", StringComparison.Ordinal).Replace("\\\\", "\\", StringComparison.Ordinal);
 		}
 
 		private (bool IsSteamParentalEnabled, string? SteamParentalCode) ValidateSteamParental(ParentalSettings settings, string? steamParentalCode = null) {
