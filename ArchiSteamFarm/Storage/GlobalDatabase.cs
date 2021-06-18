@@ -113,6 +113,46 @@ namespace ArchiSteamFarm.Storage {
 		[JsonConstructor]
 		private GlobalDatabase() => ServerListProvider.ServerListUpdated += OnObjectModified;
 
+		[PublicAPI]
+		public void DeleteFromJsonStorage(string key) {
+			if (string.IsNullOrEmpty(key)) {
+				throw new ArgumentNullException(nameof(key));
+			}
+
+			if (!KeyValueJsonStorage.TryRemove(key, out _)) {
+				return;
+			}
+
+			Utilities.InBackground(Save);
+		}
+
+		[PublicAPI]
+		public JToken? LoadFromJsonStorage(string key) {
+			if (string.IsNullOrEmpty(key)) {
+				throw new ArgumentNullException(nameof(key));
+			}
+
+			return KeyValueJsonStorage.TryGetValue(key, out JToken? value) ? value : null;
+		}
+
+		[PublicAPI]
+		public void SaveToJsonStorage(string key, JToken value) {
+			if (string.IsNullOrEmpty(key)) {
+				throw new ArgumentNullException(nameof(key));
+			}
+
+			if (value == null) {
+				throw new ArgumentNullException(nameof(value));
+			}
+
+			if (KeyValueJsonStorage.TryGetValue(key, out JToken? currentValue) && JToken.DeepEquals(currentValue, value)) {
+				return;
+			}
+
+			KeyValueJsonStorage[key] = value;
+			Utilities.InBackground(Save);
+		}
+
 		protected override void Dispose(bool disposing) {
 			if (disposing) {
 				// Events we registered
@@ -168,18 +208,6 @@ namespace ArchiSteamFarm.Storage {
 			return globalDatabase;
 		}
 
-		internal void DeleteFromJsonStorage(string key) {
-			if (string.IsNullOrEmpty(key)) {
-				throw new ArgumentNullException(nameof(key));
-			}
-
-			if (!KeyValueJsonStorage.TryRemove(key, out _)) {
-				return;
-			}
-
-			Utilities.InBackground(Save);
-		}
-
 		internal HashSet<uint> GetPackageIDs(uint appID, IEnumerable<uint> packageIDs) {
 			if (appID == 0) {
 				throw new ArgumentOutOfRangeException(nameof(appID));
@@ -200,14 +228,6 @@ namespace ArchiSteamFarm.Storage {
 			}
 
 			return result;
-		}
-
-		internal JToken? LoadFromJsonStorage(string key) {
-			if (string.IsNullOrEmpty(key)) {
-				throw new ArgumentNullException(nameof(key));
-			}
-
-			return KeyValueJsonStorage.TryGetValue(key, out JToken? value) ? value : null;
 		}
 
 		internal async Task OnPICSChangesRestart(uint currentChangeNumber) {
@@ -302,23 +322,6 @@ namespace ArchiSteamFarm.Storage {
 			} finally {
 				PackagesRefreshSemaphore.Release();
 			}
-		}
-
-		internal void SaveToJsonStorage(string key, JToken value) {
-			if (string.IsNullOrEmpty(key)) {
-				throw new ArgumentNullException(nameof(key));
-			}
-
-			if (value == null) {
-				throw new ArgumentNullException(nameof(value));
-			}
-
-			if (KeyValueJsonStorage.TryGetValue(key, out JToken? currentValue) && JToken.DeepEquals(currentValue, value)) {
-				return;
-			}
-
-			KeyValueJsonStorage[key] = value;
-			Utilities.InBackground(Save);
 		}
 
 		private async void OnObjectModified(object? sender, EventArgs e) {
