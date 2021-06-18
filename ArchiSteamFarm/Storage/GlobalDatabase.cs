@@ -145,6 +145,12 @@ namespace ArchiSteamFarm.Storage {
 				throw new ArgumentNullException(nameof(value));
 			}
 
+			if (value.Type == JTokenType.Null) {
+				DeleteFromJsonStorage(key);
+
+				return;
+			}
+
 			if (KeyValueJsonStorage.TryGetValue(key, out JToken? currentValue) && JToken.DeepEquals(currentValue, value)) {
 				return;
 			}
