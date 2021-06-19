@@ -161,8 +161,14 @@
     <value>Проверенные приложения: {0}</value>
     <comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
   </data>
-  
-  
+  <data name="SubmissionSuccessfulNewPackages" xml:space="preserve">
+    <value>Новые пакеты: {0}</value>
+    <comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="SubmissionSuccessfulVerifiedPackages" xml:space="preserve">
+    <value>Проверенные пакеты: {0}</value>
+    <comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+  </data>
   
   
   
