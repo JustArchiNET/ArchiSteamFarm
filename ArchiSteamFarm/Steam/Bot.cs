@@ -772,8 +772,6 @@ namespace ArchiSteamFarm.Steam {
 			string? steamMessagePrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.SteamMessagePrefix : GlobalConfig.DefaultSteamMessagePrefix;
 
 			await foreach (string messagePart in SteamChatMessage.GetMessageParts(message, steamMessagePrefix, IsAccountLimited).ConfigureAwait(false)) {
-				ArchiLogger.LogGenericDebug(messagePart);
-
 				if (!await SendMessagePart(steamID, messagePart).ConfigureAwait(false)) {
 					ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
@@ -807,8 +805,6 @@ namespace ArchiSteamFarm.Steam {
 			string? steamMessagePrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.SteamMessagePrefix : GlobalConfig.DefaultSteamMessagePrefix;
 
 			await foreach (string messagePart in SteamChatMessage.GetMessageParts(message, steamMessagePrefix, IsAccountLimited).ConfigureAwait(false)) {
-				ArchiLogger.LogGenericDebug(messagePart);
-
 				if (!await SendMessagePart(chatID, messagePart, chatGroupID).ConfigureAwait(false)) {
 					ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
