@@ -51,16 +51,17 @@ namespace ArchiSteamFarm.IPC.Integration {
 
 			foreach (object? enumValue in context.Type.GetEnumValues()) {
 				if (enumValue == null) {
-					continue;
+					throw new InvalidOperationException(nameof(enumValue));
 				}
 
 				string? enumName = Enum.GetName(context.Type, enumValue);
 
 				if (string.IsNullOrEmpty(enumName)) {
+					// Fallback
 					enumName = enumValue.ToString();
 
 					if (string.IsNullOrEmpty(enumName)) {
-						continue;
+						throw new InvalidOperationException(nameof(enumName));
 					}
 				}
 
@@ -93,6 +94,10 @@ namespace ArchiSteamFarm.IPC.Integration {
 
 				return true;
 			} catch (InvalidCastException) {
+				typedValue = default(T);
+
+				return false;
+			} catch (OverflowException) {
 				typedValue = default(T);
 
 				return false;
