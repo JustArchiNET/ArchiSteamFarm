@@ -20,6 +20,7 @@
 // limitations under the License.
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -147,13 +148,16 @@ namespace ArchiSteamFarm.Web {
 #pragma warning restore CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
 
 					await using (ms.ConfigureAwait(false)) {
+						byte batch = 0;
+						long readThisBatch = 0;
+						long batchIncreaseSize = response.Length / 100;
+
+						ArrayPool<byte> bytePool = ArrayPool<byte>.Shared;
+
+						// This is HttpClient's buffer, using more doesn't make sense
+						byte[] buffer = bytePool.Rent(8192);
+
 						try {
-							byte batch = 0;
-							long readThisBatch = 0;
-							long batchIncreaseSize = response.Length / 100;
-
-							byte[] buffer = new byte[8192]; // This is HttpClient's buffer, using more doesn't make sense
-
 							while (response.Content.CanRead) {
 								int read = await response.Content.ReadAsync(buffer.AsMemory(0, buffer.Length)).ConfigureAwait(false);
 
@@ -163,23 +167,23 @@ namespace ArchiSteamFarm.Web {
 
 								await ms.WriteAsync(buffer.AsMemory(0, read)).ConfigureAwait(false);
 
-								if ((batchIncreaseSize == 0) || (batch >= 99)) {
+								if ((progressReporter == null) || (batchIncreaseSize == 0) || (batch >= 99)) {
 									continue;
 								}
 
 								readThisBatch += read;
 
-								if (readThisBatch < batchIncreaseSize) {
-									continue;
+								while ((readThisBatch >= batchIncreaseSize) && (batch < 99)) {
+									readThisBatch -= batchIncreaseSize;
+									progressReporter.Report(++batch);
 								}
-
-								readThisBatch -= batchIncreaseSize;
-								progressReporter?.Report(++batch);
 							}
 						} catch (Exception e) {
 							ArchiLogger.LogGenericDebuggingException(e);
 
 							return null;
+						} finally {
+							bytePool.Return(buffer);
 						}
 
 						progressReporter?.Report(100);
