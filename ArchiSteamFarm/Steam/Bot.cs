@@ -2899,11 +2899,7 @@ namespace ArchiSteamFarm.Steam {
 				FileStream fileStream = File.Open(sentryFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
 #pragma warning restore CA2000 // False positive, we're actually wrapping it in the using clause below exactly for that purpose
 
-#if NETFRAMEWORK
-				using (fileStream) {
-#else
 				await using (fileStream.ConfigureAwait(false)) {
-#endif
 					fileStream.Seek(callback.Offset, SeekOrigin.Begin);
 
 #if NETFRAMEWORK

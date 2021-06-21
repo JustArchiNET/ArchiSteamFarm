@@ -70,6 +70,14 @@ namespace ArchiSteamFarm.Compatibility {
 			return Task.FromResult(hashAlgorithm.ComputeHash(inputStream));
 		}
 
+		public static IAsyncDisposable ConfigureAwait(this IDisposable source, bool _) {
+			if (source == null) {
+				throw new ArgumentNullException(nameof(source));
+			}
+
+			return new AsyncDisposableWrapper(source);
+		}
+
 		public static IWebHostBuilder ConfigureWebHostDefaults(this IWebHostBuilder builder, Action<IWebHostBuilder> configure) {
 			if (configure == null) {
 				throw new ArgumentNullException(nameof(configure));
