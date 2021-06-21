@@ -518,11 +518,11 @@ namespace ArchiSteamFarm.Steam.Integration {
 #pragma warning restore CA1508 // False positive, not every IReadOnlyCollection is ISet
 
 				foreach (uint gameID in uniqueValidGameIDs) {
-					request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed { game_id = new GameID(gameID) });
-
 					if (request.Body.games_played.Count >= maxGamesCount) {
-						break;
+						throw new InvalidOperationException(nameof(maxGamesCount));
 					}
+
+					request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed { game_id = new GameID(gameID) });
 				}
 			}
 
