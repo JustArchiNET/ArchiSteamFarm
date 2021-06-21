@@ -120,6 +120,16 @@ namespace ArchiSteamFarm.Compatibility {
 			return source.IndexOf(value.ToString(), comparisonType);
 		}
 
+		public static async Task<int> ReadAsync(this Stream stream, ReadOnlyMemory<byte> buffer) {
+			if (stream == null) {
+				throw new ArgumentNullException(nameof(stream));
+			}
+
+			byte[] byteArray = buffer.ToArray();
+
+			return await stream.ReadAsync(byteArray, 0, byteArray.Length).ConfigureAwait(false);
+		}
+
 		public static async Task<WebSocketReceiveResult> ReceiveAsync(this WebSocket webSocket, byte[] buffer, CancellationToken cancellationToken) {
 			if (webSocket == null) {
 				throw new ArgumentNullException(nameof(webSocket));
@@ -182,6 +192,16 @@ namespace ArchiSteamFarm.Compatibility {
 		}
 
 		public static void TrimExcess<TKey, TValue>(this Dictionary<TKey, TValue> _) { } // no-op
+
+		public static async Task WriteAsync(this Stream stream, ReadOnlyMemory<byte> buffer) {
+			if (stream == null) {
+				throw new ArgumentNullException(nameof(stream));
+			}
+
+			byte[] byteArray = buffer.ToArray();
+
+			await stream.WriteAsync(byteArray, 0, byteArray.Length).ConfigureAwait(false);
+		}
 #endif
 	}
 }

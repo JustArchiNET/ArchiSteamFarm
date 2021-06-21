@@ -2902,11 +2902,7 @@ namespace ArchiSteamFarm.Steam {
 				await using (fileStream.ConfigureAwait(false)) {
 					fileStream.Seek(callback.Offset, SeekOrigin.Begin);
 
-#if NETFRAMEWORK
-					await fileStream.WriteAsync(callback.Data, 0, callback.BytesToWrite).ConfigureAwait(false);
-#else
 					await fileStream.WriteAsync(callback.Data.AsMemory(0, callback.BytesToWrite)).ConfigureAwait(false);
-#endif
 
 					fileSize = fileStream.Length;
 					fileStream.Seek(0, SeekOrigin.Begin);

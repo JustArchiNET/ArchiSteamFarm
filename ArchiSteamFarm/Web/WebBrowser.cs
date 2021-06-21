@@ -155,21 +155,13 @@ namespace ArchiSteamFarm.Web {
 							byte[] buffer = new byte[8192]; // This is HttpClient's buffer, using more doesn't make sense
 
 							while (response.Content.CanRead) {
-#if NETFRAMEWORK
-								int read = await response.Content.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
-#else
 								int read = await response.Content.ReadAsync(buffer.AsMemory(0, buffer.Length)).ConfigureAwait(false);
-#endif
 
 								if (read == 0) {
 									break;
 								}
 
-#if NETFRAMEWORK
-								await ms.WriteAsync(buffer, 0, read).ConfigureAwait(false);
-#else
 								await ms.WriteAsync(buffer.AsMemory(0, read)).ConfigureAwait(false);
-#endif
 
 								if ((batchIncreaseSize == 0) || (batch >= 99)) {
 									continue;
