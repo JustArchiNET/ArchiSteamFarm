@@ -141,8 +141,12 @@ namespace ArchiSteamFarm.Core {
 				throw new ArgumentNullException(nameof(path));
 			}
 
+#if NETFRAMEWORK
 			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && !RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
-				return;
+#else
+			if (!RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD) && !RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && !RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
+#endif
+				throw new PlatformNotSupportedException();
 			}
 
 			if (!File.Exists(path) && !Directory.Exists(path)) {
@@ -201,7 +205,7 @@ namespace ArchiSteamFarm.Core {
 
 		private static void WindowsDisableQuickEditMode() {
 			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-				return;
+				throw new PlatformNotSupportedException();
 			}
 
 			IntPtr consoleHandle = NativeMethods.GetStdHandle(NativeMethods.StandardInputHandle);
@@ -221,7 +225,7 @@ namespace ArchiSteamFarm.Core {
 
 		private static void WindowsKeepSystemActive() {
 			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-				return;
+				throw new PlatformNotSupportedException();
 			}
 
 			// This function calls unmanaged API in order to tell Windows OS that it should not enter sleep state while the program is running
