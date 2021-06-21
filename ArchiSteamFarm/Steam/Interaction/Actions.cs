@@ -221,7 +221,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 		}
 
 		[PublicAPI]
-		public async Task<(bool Success, string Message)> Play(IEnumerable<uint> gameIDs, string? gameName = null) {
+		public async Task<(bool Success, string Message)> Play(IReadOnlyCollection<uint> gameIDs, string? gameName = null) {
 			if (gameIDs == null) {
 				throw new ArgumentNullException(nameof(gameIDs));
 			}
@@ -236,7 +236,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			await Bot.ArchiHandler.PlayGames(gameIDs, gameName).ConfigureAwait(false);
 
-			return (true, Strings.Done);
+			return (true, gameIDs.Count > 0 ? string.Format(CultureInfo.CurrentCulture, Strings.BotIdlingSelectedGames, nameof(gameIDs), string.Join(", ", gameIDs)) : Strings.Done);
 		}
 
 		[PublicAPI]

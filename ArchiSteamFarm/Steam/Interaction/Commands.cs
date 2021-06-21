@@ -2888,7 +2888,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
-			(bool success, string message) = await Bot.Actions.Play(Enumerable.Empty<uint>(), Bot.BotConfig.CustomGamePlayedWhileIdle).ConfigureAwait(false);
+			(bool success, string message) = await Bot.Actions.Play(Array.Empty<uint>(), Bot.BotConfig.CustomGamePlayedWhileIdle).ConfigureAwait(false);
 
 			return FormatBotResponse(success ? message : string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, message));
 		}
