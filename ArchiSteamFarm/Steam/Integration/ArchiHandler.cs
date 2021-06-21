@@ -471,7 +471,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 			return response.Result == EResult.OK;
 		}
 
-		internal async Task PlayGames(IEnumerable<uint> gameIDs, string? gameName = null) {
+		internal async Task PlayGames(IReadOnlyCollection<uint> gameIDs, string? gameName = null) {
 			if (gameIDs == null) {
 				throw new ArgumentNullException(nameof(gameIDs));
 			}
@@ -512,11 +512,17 @@ namespace ArchiSteamFarm.Steam.Integration {
 				maxGamesCount++;
 			}
 
-			foreach (uint gameID in gameIDs.Where(gameID => gameID != 0)) {
-				request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed { game_id = new GameID(gameID) });
+			if (gameIDs.Count > 0) {
+#pragma warning disable CA1508 // False positive, not every IReadOnlyCollection is ISet
+				IEnumerable<uint> uniqueValidGameIDs = (gameIDs as ISet<uint> ?? gameIDs.Distinct()).Where(gameID => gameID > 0);
+#pragma warning restore CA1508 // False positive, not every IReadOnlyCollection is ISet
 
-				if (request.Body.games_played.Count >= maxGamesCount) {
-					break;
+				foreach (uint gameID in uniqueValidGameIDs) {
+					request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed { game_id = new GameID(gameID) });
+
+					if (request.Body.games_played.Count >= maxGamesCount) {
+						break;
+					}
 				}
 			}
 

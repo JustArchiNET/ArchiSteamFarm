@@ -1226,7 +1226,7 @@ namespace ArchiSteamFarm.Steam {
 				gameName = string.Format(CultureInfo.CurrentCulture, BotConfig.CustomGamePlayedWhileFarming!, game.AppID, game.GameName);
 			}
 
-			await ArchiHandler.PlayGames(game.PlayableAppID.ToEnumerable(), gameName).ConfigureAwait(false);
+			await ArchiHandler.PlayGames(new HashSet<uint>(1) { game.PlayableAppID }, gameName).ConfigureAwait(false);
 		}
 
 		internal async Task IdleGames(IReadOnlyCollection<Game> games) {
@@ -1240,7 +1240,7 @@ namespace ArchiSteamFarm.Steam {
 				gameName = string.Format(CultureInfo.CurrentCulture, BotConfig.CustomGamePlayedWhileFarming!, string.Join(", ", games.Select(game => game.AppID)), string.Join(", ", games.Select(game => game.GameName)));
 			}
 
-			await ArchiHandler.PlayGames(games.Select(game => game.PlayableAppID), gameName).ConfigureAwait(false);
+			await ArchiHandler.PlayGames(games.Select(game => game.PlayableAppID).ToHashSet(), gameName).ConfigureAwait(false);
 		}
 
 		internal async Task ImportKeysToRedeem(string filePath) {
