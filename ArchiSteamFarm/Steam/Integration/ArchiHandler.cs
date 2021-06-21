@@ -519,7 +519,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 				foreach (uint gameID in uniqueValidGameIDs) {
 					if (request.Body.games_played.Count >= maxGamesCount) {
-						throw new InvalidOperationException(nameof(maxGamesCount));
+						throw new ArgumentOutOfRangeException(nameof(gameIDs));
 					}
 
 					request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed { game_id = new GameID(gameID) });
