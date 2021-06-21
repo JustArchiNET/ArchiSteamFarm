@@ -33,7 +33,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 	internal static class SteamChatMessage {
 		internal const char ContinuationCharacter = '…'; // A character used for indicating that the next newline part is a continuation of the previous line
 		internal const byte ContinuationCharacterBytes = 3; // The continuation character specified above uses 3 bytes in UTF-8
-		internal const ushort MaxMessageBytesForLimitedAccounts = 2400; // This is a limitation enforced by Steam
+		internal const ushort MaxMessageBytesForLimitedAccounts = 1945; // This is a limitation enforced by Steam
 		internal const ushort MaxMessageBytesForUnlimitedAccounts = 6340; // This is a limitation enforced by Steam
 		internal const ushort MaxMessagePrefixBytes = MaxMessageBytesForLimitedAccounts - ReservedContinuationMessageBytes - ReservedEscapeMessageBytes; // Simplified calculation, nobody should be using prefixes even close to that anyway
 		internal const byte NewlineWeight = 61; // This defines how much weight a newline character is adding to the output, limitation enforced by Steam
