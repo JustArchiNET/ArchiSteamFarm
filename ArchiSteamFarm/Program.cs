@@ -36,6 +36,7 @@ using ArchiSteamFarm.IPC;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.NLog.Targets;
+using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
@@ -139,6 +140,10 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task<bool> InitASF() {
+			if (!PluginsCore.InitPlugins()) {
+				await Task.Delay(10000).ConfigureAwait(false);
+			}
+
 			if (!await InitGlobalConfigAndLanguage().ConfigureAwait(false)) {
 				return false;
 			}

@@ -113,10 +113,6 @@ namespace ArchiSteamFarm.Core {
 				throw new InvalidOperationException(nameof(GlobalConfig));
 			}
 
-			if (!PluginsCore.InitPlugins()) {
-				await Task.Delay(10000).ConfigureAwait(false);
-			}
-
 			WebBrowser = new WebBrowser(ArchiLogger, GlobalConfig.WebProxy, true);
 
 			await UpdateAndRestart().ConfigureAwait(false);
