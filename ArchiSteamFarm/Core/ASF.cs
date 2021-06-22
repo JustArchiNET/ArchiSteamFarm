@@ -117,8 +117,6 @@ namespace ArchiSteamFarm.Core {
 
 			await UpdateAndRestart().ConfigureAwait(false);
 
-			await PluginsCore.OnASFInitModules(GlobalConfig.AdditionalProperties).ConfigureAwait(false);
-
 			StringComparer botsComparer = await PluginsCore.GetBotsComparer().ConfigureAwait(false);
 
 			InitBotsComparer(botsComparer);
