@@ -263,6 +263,8 @@ namespace ArchiSteamFarm.IPC {
 				}
 			}
 
+			mvc.AddControllersAsServices();
+
 			// Use latest compatibility version for MVC
 			mvc.SetCompatibilityVersion(CompatibilityVersion.Latest);
 
