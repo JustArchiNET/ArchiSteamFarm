@@ -286,8 +286,6 @@ namespace ArchiSteamFarm {
 				ASF.ArchiLogger.LogGenericInfo(Strings.Done);
 			}
 
-			await PluginsCore.OnASFInitModules(globalConfig.AdditionalProperties).ConfigureAwait(false);
-
 			await ASF.InitGlobalConfig(globalConfig).ConfigureAwait(false);
 
 			// Skip translation progress for English and invariant (such as "C") cultures
