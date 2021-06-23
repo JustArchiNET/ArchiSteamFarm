@@ -895,6 +895,27 @@ namespace ArchiSteamFarm.Steam {
 			}
 		}
 
+		internal async Task CheckOccupationStatus() {
+			StopPlayingWasBlockedTimer();
+
+			if (!IsPlayingPossible) {
+				PlayingWasBlocked = true;
+				ArchiLogger.LogGenericInfo(Strings.BotAccountOccupied);
+
+				return;
+			}
+
+			if (PlayingWasBlocked && (PlayingWasBlockedTimer == null)) {
+				InitPlayingWasBlockedTimer();
+			}
+
+			ArchiLogger.LogGenericInfo(Strings.BotAccountFree);
+
+			if (!await CardsFarmer.Resume(false).ConfigureAwait(false)) {
+				await ResetGamesPlayed().ConfigureAwait(false);
+			}
+		}
+
 		internal bool DeleteRedeemedKeysFiles() {
 			string unusedKeysFilePath = GetFilePath(EFileType.KeysToRedeemUnused);
 
@@ -1675,27 +1696,6 @@ namespace ArchiSteamFarm.Steam {
 			}
 
 			return gamesToRedeemInBackground;
-		}
-
-		private async Task CheckOccupationStatus() {
-			StopPlayingWasBlockedTimer();
-
-			if (!IsPlayingPossible) {
-				PlayingWasBlocked = true;
-				ArchiLogger.LogGenericInfo(Strings.BotAccountOccupied);
-
-				return;
-			}
-
-			if (PlayingWasBlocked && (PlayingWasBlockedTimer == null)) {
-				InitPlayingWasBlockedTimer();
-			}
-
-			ArchiLogger.LogGenericInfo(Strings.BotAccountFree);
-
-			if (!await CardsFarmer.Resume(false).ConfigureAwait(false)) {
-				await ResetGamesPlayed().ConfigureAwait(false);
-			}
 		}
 
 		private async Task Connect(bool force = false) {

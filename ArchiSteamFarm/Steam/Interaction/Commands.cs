@@ -2888,9 +2888,9 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
-			(bool success, string message) = await Bot.Actions.Play(Array.Empty<uint>(), Bot.BotConfig.CustomGamePlayedWhileIdle).ConfigureAwait(false);
+			await Bot.CheckOccupationStatus().ConfigureAwait(false);
 
-			return FormatBotResponse(success ? message : string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, message));
+			return FormatBotResponse(Strings.Done);
 		}
 
 		private static async Task<string?> ResponseReset(ulong steamID, string botNames) {
