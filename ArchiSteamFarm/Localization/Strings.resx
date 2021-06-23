@@ -283,16 +283,16 @@ StackTrace:
     <comment>{0} will be replaced by bot's name query (string)</comment>
   </data>
   <data name="BotStatusOverview" xml:space="preserve">
-    <value>There are {0}/{1} bots running, with total of {2} games ({3} cards) left to idle.</value>
-    <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
+    <value>There are {0}/{1} bots running, with total of {2} games ({3} cards) left to farm.</value>
+    <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to farm, {3} will be replaced by total number of cards left to farm</comment>
   </data>
   <data name="BotStatusIdling" xml:space="preserve">
-    <value>Bot is idling game: {0} ({1}, {2} card drops remaining) from a total of {3} games ({4} cards) left to idle (~{5} remaining).</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle, {3} will be replaced by total number of games to idle, {4} will be replaced by total number of cards to idle, {5} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+    <value>Bot is farming game: {0} ({1}, {2} card drops remaining) from a total of {3} games ({4} cards) left to farm (~{5} remaining).</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to farm, {3} will be replaced by total number of games to farm, {4} will be replaced by total number of cards to farm, {5} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
   </data>
   <data name="BotStatusIdlingList" xml:space="preserve">
-    <value>Bot is idling games: {0} from a total of {1} games ({2} cards) left to idle (~{3} remaining).</value>
-    <comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to idle, {2} will be replaced by total number of cards to idle, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+    <value>Bot is farming games: {0} from a total of {1} games ({2} cards) left to farm (~{3} remaining).</value>
+    <comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to farm, {2} will be replaced by total number of cards to farm, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
   </data>
   <data name="CheckingFirstBadgePage" xml:space="preserve">
     <value>Checking first badge page...</value>
@@ -301,65 +301,65 @@ StackTrace:
     <value>Checking other badge pages...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>Chosen idling algorithm: {0}</value>
-    <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
+    <value>Chosen farming algorithm: {0}</value>
+    <comment>{0} will be replaced by the name of chosen farming algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
     <value>Done!</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
-    <value>We have a total of {0} games ({1} cards) left to idle (~{2} remaining)...</value>
+    <value>We have a total of {0} games ({1} cards) left to farm (~{2} remaining)...</value>
     <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
   </data>
   <data name="IdlingFinished" xml:space="preserve">
-    <value>Idling finished!</value>
+    <value>Farming finished!</value>
   </data>
   <data name="IdlingFinishedForGame" xml:space="preserve">
-    <value>Finished idling: {0} ({1}) after {2} of playtime!</value>
+    <value>Finished farming: {0} ({1}) after {2} of playtime!</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
   </data>
   <data name="IdlingFinishedForGames" xml:space="preserve">
-    <value>Finished idling games: {0}</value>
+    <value>Finished farming games: {0}</value>
     <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="IdlingStatusForGame" xml:space="preserve">
-    <value>Idling status for {0} ({1}): {2} cards remaining</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle</comment>
+    <value>Farming status for {0} ({1}): {2} cards remaining</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to farm</comment>
   </data>
   <data name="IdlingStopped" xml:space="preserve">
-    <value>Idling stopped!</value>
+    <value>Farming stopped!</value>
   </data>
   <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
     <value>Ignoring this request, as permanent pause is enabled!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
-    <value>We don't have anything to idle on this account!</value>
+    <value>We don't have anything to farm on this account!</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
-    <value>Now idling: {0} ({1})</value>
+    <value>Now farming: {0} ({1})</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="NowIdlingList" xml:space="preserve">
-    <value>Now idling: {0}</value>
+    <value>Now farming: {0}</value>
     <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
     <value>Playing is currently unavailable, we'll try again later!</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
-    <value>Still idling: {0} ({1})</value>
+    <value>Still farming: {0} ({1})</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StillIdlingList" xml:space="preserve">
-    <value>Still idling: {0}</value>
+    <value>Still farming: {0}</value>
     <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="StoppedIdling" xml:space="preserve">
-    <value>Stopped idling: {0} ({1})</value>
+    <value>Stopped farming: {0} ({1})</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StoppedIdlingList" xml:space="preserve">
-    <value>Stopped idling: {0}</value>
+    <value>Stopped farming: {0}</value>
     <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
@@ -377,7 +377,7 @@ StackTrace:
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>This account is limited, idling process is unavailable until the restriction is removed!</value>
+    <value>This account is limited, farming process is unavailable until the restriction is removed!</value>
   </data>
   <data name="BotAddLicense" xml:space="preserve">
     <value>ID: {0} | Status: {1}</value>
@@ -401,16 +401,16 @@ StackTrace:
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
   <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
-    <value>Automatic idling has paused!</value>
+    <value>Automatic farming has paused!</value>
   </data>
   <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-    <value>Automatic idling has resumed!</value>
+    <value>Automatic farming has resumed!</value>
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
-    <value>Automatic idling is paused already!</value>
+    <value>Automatic farming is paused already!</value>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
-    <value>Automatic idling is resumed already!</value>
+    <value>Automatic farming is resumed already!</value>
   </data>
   <data name="BotConnected" xml:space="preserve">
     <value>Connected to Steam!</value>
@@ -495,10 +495,10 @@ StackTrace:
     <value>Removed expired login key!</value>
   </data>
   <data name="BotStatusNotIdling" xml:space="preserve">
-    <value>Bot is not idling anything.</value>
+    <value>Bot is not farming anything.</value>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>Bot is limited and can't drop any cards through idling.</value>
+    <value>Bot is limited and can't drop any cards through farming.</value>
   </data>
   <data name="BotStatusConnecting" xml:space="preserve">
     <value>Bot is connecting to Steam network.</value>
@@ -532,10 +532,10 @@ StackTrace:
     <value>Connection to Steam Network lost. Reconnecting...</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
-    <value>Account is no longer occupied: idling process resumed!</value>
+    <value>Account is no longer occupied: farming process resumed!</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
-    <value>Account is currently being used: ASF will resume idling when it's free...</value>
+    <value>Account is currently being used: ASF will resume farming when it's free...</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Connecting...</value>
@@ -575,7 +575,7 @@ StackTrace:
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
   <data name="IdlingGameNotPossible" xml:space="preserve">
-    <value>Idling {0} ({1}) is temporarily disabled, as ASF is not able to play that game at the moment.</value>
+    <value>Farming {0} ({1}) is temporarily disabled, as ASF is not able to play that game at the moment.</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="WarningIdlingGameMismatch" xml:space="preserve">
@@ -587,10 +587,10 @@ StackTrace:
     <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
   </data>
   <data name="BotAccountLocked" xml:space="preserve">
-    <value>This account is locked, idling process is permanently unavailable!</value>
+    <value>This account is locked, farming process is permanently unavailable!</value>
   </data>
   <data name="BotStatusLocked" xml:space="preserve">
-    <value>Bot is locked and can't drop any cards through idling.</value>
+    <value>Bot is locked and can't drop any cards through farming.</value>
   </data>
   <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
     <value>This function is available only in headless mode!</value>
@@ -712,7 +712,7 @@ Process uptime: {1}</value>
     <comment>{0} will be replaced by number of confirmations</comment>
   </data>
   <data name="BotExtraIdlingCooldown" xml:space="preserve">
-    <value>Waiting up to {0} to ensure that we're free to start idling...</value>
+    <value>Waiting up to {0} to ensure that we're free to start farming...</value>
     <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
   </data>
   <data name="UpdateCleanup" xml:space="preserve">
@@ -747,7 +747,7 @@ Process uptime: {1}</value>
     <value>Config directory could not be found, aborting!</value>
   </data>
   <data name="BotIdlingSelectedGames" xml:space="preserve">
-    <value>Idling selected {0}: {1}</value>
+    <value>Playing selected {0}: {1}</value>
     <comment>{0} will be replaced by internal name of the config property (e.g. "GamesPlayedWhileIdle"), {1} will be replaced by comma-separated list of appIDs that user has chosen</comment>
   </data>
   <data name="AutomaticFileMigration" xml:space="preserve">

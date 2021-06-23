@@ -124,7 +124,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Account is no longer occupied: idling process resumed!.
+        ///   Looks up a localized string similar to Account is no longer occupied: farming process resumed!.
         /// </summary>
         public static string BotAccountFree {
             get {
@@ -133,7 +133,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This account is limited, idling process is unavailable until the restriction is removed!.
+        ///   Looks up a localized string similar to This account is limited, farming process is unavailable until the restriction is removed!.
         /// </summary>
         public static string BotAccountLimited {
             get {
@@ -142,7 +142,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This account is locked, idling process is permanently unavailable!.
+        ///   Looks up a localized string similar to This account is locked, farming process is permanently unavailable!.
         /// </summary>
         public static string BotAccountLocked {
             get {
@@ -151,7 +151,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Account is currently being used: ASF will resume idling when it&apos;s free....
+        ///   Looks up a localized string similar to Account is currently being used: ASF will resume farming when it&apos;s free....
         /// </summary>
         public static string BotAccountOccupied {
             get {
@@ -223,7 +223,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Automatic idling has paused!.
+        ///   Looks up a localized string similar to Automatic farming has paused!.
         /// </summary>
         public static string BotAutomaticIdlingNowPaused {
             get {
@@ -232,7 +232,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Automatic idling has resumed!.
+        ///   Looks up a localized string similar to Automatic farming has resumed!.
         /// </summary>
         public static string BotAutomaticIdlingNowResumed {
             get {
@@ -241,7 +241,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Automatic idling is paused already!.
+        ///   Looks up a localized string similar to Automatic farming is paused already!.
         /// </summary>
         public static string BotAutomaticIdlingPausedAlready {
             get {
@@ -250,7 +250,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Automatic idling is resumed already!.
+        ///   Looks up a localized string similar to Automatic farming is resumed already!.
         /// </summary>
         public static string BotAutomaticIdlingResumedAlready {
             get {
@@ -313,7 +313,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Waiting up to {0} to ensure that we&apos;re free to start idling....
+        ///   Looks up a localized string similar to Waiting up to {0} to ensure that we&apos;re free to start farming....
         /// </summary>
         public static string BotExtraIdlingCooldown {
             get {
@@ -367,7 +367,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Idling selected {0}: {1}.
+        ///   Looks up a localized string similar to Playing selected {0}: {1}.
         /// </summary>
         public static string BotIdlingSelectedGames {
             get {
@@ -629,7 +629,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bot is idling game: {0} ({1}, {2} card drops remaining) from a total of {3} games ({4} cards) left to idle (~{5} remaining)..
+        ///   Looks up a localized string similar to Bot is farming game: {0} ({1}, {2} card drops remaining) from a total of {3} games ({4} cards) left to farm (~{5} remaining)..
         /// </summary>
         public static string BotStatusIdling {
             get {
@@ -638,7 +638,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bot is idling games: {0} from a total of {1} games ({2} cards) left to idle (~{3} remaining)..
+        ///   Looks up a localized string similar to Bot is farming games: {0} from a total of {1} games ({2} cards) left to farm (~{3} remaining)..
         /// </summary>
         public static string BotStatusIdlingList {
             get {
@@ -647,7 +647,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bot is limited and can&apos;t drop any cards through idling..
+        ///   Looks up a localized string similar to Bot is limited and can&apos;t drop any cards through farming..
         /// </summary>
         public static string BotStatusLimited {
             get {
@@ -656,7 +656,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bot is locked and can&apos;t drop any cards through idling..
+        ///   Looks up a localized string similar to Bot is locked and can&apos;t drop any cards through farming..
         /// </summary>
         public static string BotStatusLocked {
             get {
@@ -665,7 +665,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bot is not idling anything..
+        ///   Looks up a localized string similar to Bot is not farming anything..
         /// </summary>
         public static string BotStatusNotIdling {
             get {
@@ -683,7 +683,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There are {0}/{1} bots running, with total of {2} games ({3} cards) left to idle..
+        ///   Looks up a localized string similar to There are {0}/{1} bots running, with total of {2} games ({3} cards) left to farm..
         /// </summary>
         public static string BotStatusOverview {
             get {
@@ -782,7 +782,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Chosen idling algorithm: {0}.
+        ///   Looks up a localized string similar to Chosen farming algorithm: {0}.
         /// </summary>
         public static string ChosenFarmingAlgorithm {
             get {
@@ -1091,7 +1091,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to We have a total of {0} games ({1} cards) left to idle (~{2} remaining)....
+        ///   Looks up a localized string similar to We have a total of {0} games ({1} cards) left to farm (~{2} remaining)....
         /// </summary>
         public static string GamesToIdle {
             get {
@@ -1109,7 +1109,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Idling finished!.
+        ///   Looks up a localized string similar to Farming finished!.
         /// </summary>
         public static string IdlingFinished {
             get {
@@ -1118,7 +1118,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Finished idling: {0} ({1}) after {2} of playtime!.
+        ///   Looks up a localized string similar to Finished farming: {0} ({1}) after {2} of playtime!.
         /// </summary>
         public static string IdlingFinishedForGame {
             get {
@@ -1127,7 +1127,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Finished idling games: {0}.
+        ///   Looks up a localized string similar to Finished farming games: {0}.
         /// </summary>
         public static string IdlingFinishedForGames {
             get {
@@ -1136,7 +1136,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Idling {0} ({1}) is temporarily disabled, as ASF is not able to play that game at the moment..
+        ///   Looks up a localized string similar to Farming {0} ({1}) is temporarily disabled, as ASF is not able to play that game at the moment..
         /// </summary>
         public static string IdlingGameNotPossible {
             get {
@@ -1145,7 +1145,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Idling status for {0} ({1}): {2} cards remaining.
+        ///   Looks up a localized string similar to Farming status for {0} ({1}): {2} cards remaining.
         /// </summary>
         public static string IdlingStatusForGame {
             get {
@@ -1154,7 +1154,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Idling stopped!.
+        ///   Looks up a localized string similar to Farming stopped!.
         /// </summary>
         public static string IdlingStopped {
             get {
@@ -1262,7 +1262,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to We don&apos;t have anything to idle on this account!.
+        ///   Looks up a localized string similar to We don&apos;t have anything to farm on this account!.
         /// </summary>
         public static string NothingToIdle {
             get {
@@ -1271,7 +1271,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Now idling: {0} ({1}).
+        ///   Looks up a localized string similar to Now farming: {0} ({1}).
         /// </summary>
         public static string NowIdling {
             get {
@@ -1280,7 +1280,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Now idling: {0}.
+        ///   Looks up a localized string similar to Now farming: {0}.
         /// </summary>
         public static string NowIdlingList {
             get {
@@ -1379,7 +1379,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Still idling: {0} ({1}).
+        ///   Looks up a localized string similar to Still farming: {0} ({1}).
         /// </summary>
         public static string StillIdling {
             get {
@@ -1388,7 +1388,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Still idling: {0}.
+        ///   Looks up a localized string similar to Still farming: {0}.
         /// </summary>
         public static string StillIdlingList {
             get {
@@ -1397,7 +1397,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Stopped idling: {0} ({1}).
+        ///   Looks up a localized string similar to Stopped farming: {0} ({1}).
         /// </summary>
         public static string StoppedIdling {
             get {
@@ -1406,7 +1406,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Stopped idling: {0}.
+        ///   Looks up a localized string similar to Stopped farming: {0}.
         /// </summary>
         public static string StoppedIdlingList {
             get {
