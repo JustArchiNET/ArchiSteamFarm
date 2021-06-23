@@ -65,13 +65,13 @@ namespace ArchiSteamFarm.Core {
 		public static byte LoadBalancingDelay => Math.Max(GlobalConfig?.LoginLimiterDelay ?? 0, GlobalConfig.DefaultLoginLimiterDelay);
 
 		[PublicAPI]
-		public static GlobalConfig? GlobalConfig { get; private set; }
+		public static GlobalConfig? GlobalConfig { get; internal set; }
 
 		[PublicAPI]
-		public static GlobalDatabase? GlobalDatabase { get; private set; }
+		public static GlobalDatabase? GlobalDatabase { get; internal set; }
 
 		[PublicAPI]
-		public static WebBrowser? WebBrowser { get; internal set; }
+		public static WebBrowser? WebBrowser { get; private set; }
 
 		internal static ICrossProcessSemaphore? ConfirmationsSemaphore { get; private set; }
 		internal static ICrossProcessSemaphore? GiftsSemaphore { get; private set; }
@@ -122,6 +122,7 @@ namespace ArchiSteamFarm.Core {
 			await UpdateAndRestart().ConfigureAwait(false);
 
 			await PluginsCore.OnASFInitModules(GlobalConfig.AdditionalProperties).ConfigureAwait(false);
+			await InitRateLimiters().ConfigureAwait(false);
 
 			StringComparer botsComparer = await PluginsCore.GetBotsComparer().ConfigureAwait(false);
 
@@ -144,59 +145,6 @@ namespace ArchiSteamFarm.Core {
 			if (Program.ConfigWatch) {
 				InitConfigWatchEvents();
 			}
-		}
-
-		internal static async Task InitGlobalConfig(GlobalConfig globalConfig) {
-			if (globalConfig == null) {
-				throw new ArgumentNullException(nameof(globalConfig));
-			}
-
-			if (GlobalConfig != null) {
-				return;
-			}
-
-			GlobalConfig = globalConfig;
-
-			// The only purpose of using hashingAlgorithm below is to cut on a potential size of the resource name - paths can be really long, and we almost certainly have some upper limit on the resource name we can allocate
-			// At the same time it'd be the best if we avoided all special characters, such as '/' found e.g. in base64, as we can't be sure that it's not a prohibited character in regards to native OS implementation
-			// Because of that, SHA256 is sufficient for our case, as it generates alphanumeric characters only, and is barely 256-bit long. We don't need any kind of complex cryptography or collision detection here, any hashing algorithm will do, and the shorter the better
-			string networkGroupText = "";
-
-			if (!string.IsNullOrEmpty(Program.NetworkGroup)) {
-				using SHA256CryptoServiceProvider hashingAlgorithm = new();
-
-				networkGroupText = "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(Program.NetworkGroup!))).Replace("-", "", StringComparison.Ordinal);
-			} else if (!string.IsNullOrEmpty(globalConfig.WebProxyText)) {
-				using SHA256CryptoServiceProvider hashingAlgorithm = new();
-
-				networkGroupText = "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(globalConfig.WebProxyText!))).Replace("-", "", StringComparison.Ordinal);
-			}
-
-			ConfirmationsSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(ConfirmationsSemaphore) + networkGroupText).ConfigureAwait(false);
-			GiftsSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(GiftsSemaphore) + networkGroupText).ConfigureAwait(false);
-			InventorySemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(InventorySemaphore) + networkGroupText).ConfigureAwait(false);
-			LoginRateLimitingSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(LoginRateLimitingSemaphore) + networkGroupText).ConfigureAwait(false);
-			LoginSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(LoginSemaphore) + networkGroupText).ConfigureAwait(false);
-			RateLimitingSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(RateLimitingSemaphore) + networkGroupText).ConfigureAwait(false);
-
-			WebLimitingSemaphores ??= new Dictionary<Uri, (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim? OpenConnectionsSemaphore)>(4) {
-				{ ArchiWebHandler.SteamCommunityURL, (await PluginsCore.GetCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(ArchiWebHandler.SteamCommunityURL)).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
-				{ ArchiWebHandler.SteamHelpURL, (await PluginsCore.GetCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(ArchiWebHandler.SteamHelpURL)).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
-				{ ArchiWebHandler.SteamStoreURL, (await PluginsCore.GetCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(ArchiWebHandler.SteamStoreURL)).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
-				{ WebAPI.DefaultBaseAddress, (await PluginsCore.GetCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(WebAPI)).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) }
-			}.ToImmutableDictionary();
-		}
-
-		internal static void InitGlobalDatabase(GlobalDatabase globalDatabase) {
-			if (globalDatabase == null) {
-				throw new ArgumentNullException(nameof(globalDatabase));
-			}
-
-			if (GlobalDatabase != null) {
-				return;
-			}
-
-			GlobalDatabase = globalDatabase;
 		}
 
 		internal static bool IsValidBotName(string botName) {
@@ -442,6 +390,41 @@ namespace ArchiSteamFarm.Core {
 			LastWriteEvents = new ConcurrentDictionary<string, object>(Bot.BotsComparer);
 
 			FileSystemWatcher.EnableRaisingEvents = true;
+		}
+
+		private static async Task InitRateLimiters() {
+			if (GlobalConfig == null) {
+				throw new InvalidOperationException(nameof(GlobalConfig));
+			}
+
+			// The only purpose of using hashingAlgorithm below is to cut on a potential size of the resource name - paths can be really long, and we almost certainly have some upper limit on the resource name we can allocate
+			// At the same time it'd be the best if we avoided all special characters, such as '/' found e.g. in base64, as we can't be sure that it's not a prohibited character in regards to native OS implementation
+			// Because of that, SHA256 is sufficient for our case, as it generates alphanumeric characters only, and is barely 256-bit long. We don't need any kind of complex cryptography or collision detection here, any hashing algorithm will do, and the shorter the better
+			string networkGroupText = "";
+
+			if (!string.IsNullOrEmpty(Program.NetworkGroup)) {
+				using SHA256CryptoServiceProvider hashingAlgorithm = new();
+
+				networkGroupText = "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(Program.NetworkGroup!))).Replace("-", "", StringComparison.Ordinal);
+			} else if (!string.IsNullOrEmpty(GlobalConfig.WebProxyText)) {
+				using SHA256CryptoServiceProvider hashingAlgorithm = new();
+
+				networkGroupText = "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(GlobalConfig.WebProxyText!))).Replace("-", "", StringComparison.Ordinal);
+			}
+
+			ConfirmationsSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(ConfirmationsSemaphore) + networkGroupText).ConfigureAwait(false);
+			GiftsSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(GiftsSemaphore) + networkGroupText).ConfigureAwait(false);
+			InventorySemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(InventorySemaphore) + networkGroupText).ConfigureAwait(false);
+			LoginRateLimitingSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(LoginRateLimitingSemaphore) + networkGroupText).ConfigureAwait(false);
+			LoginSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(LoginSemaphore) + networkGroupText).ConfigureAwait(false);
+			RateLimitingSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(RateLimitingSemaphore) + networkGroupText).ConfigureAwait(false);
+
+			WebLimitingSemaphores ??= new Dictionary<Uri, (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim? OpenConnectionsSemaphore)>(4) {
+				{ ArchiWebHandler.SteamCommunityURL, (await PluginsCore.GetCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(ArchiWebHandler.SteamCommunityURL)).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+				{ ArchiWebHandler.SteamHelpURL, (await PluginsCore.GetCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(ArchiWebHandler.SteamHelpURL)).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+				{ ArchiWebHandler.SteamStoreURL, (await PluginsCore.GetCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(ArchiWebHandler.SteamStoreURL)).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+				{ WebAPI.DefaultBaseAddress, (await PluginsCore.GetCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(WebAPI)).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) }
+			}.ToImmutableDictionary();
 		}
 
 		private static void LoadAssembliesRecursively(Assembly assembly, HashSet<string>? loadedAssembliesNames = null) {

@@ -281,7 +281,7 @@ namespace ArchiSteamFarm {
 				ASF.ArchiLogger.LogGenericInfo(Strings.Done);
 			}
 
-			await ASF.InitGlobalConfig(globalConfig).ConfigureAwait(false);
+			ASF.GlobalConfig = globalConfig;
 
 			// Skip translation progress for English and invariant (such as "C") cultures
 			switch (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName) {
@@ -362,7 +362,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			ASF.InitGlobalDatabase(globalDatabase);
+			ASF.GlobalDatabase = globalDatabase;
 
 			// If debugging is on, we prepare debug directory prior to running
 			if (Debugging.IsUserDebugging) {
