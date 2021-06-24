@@ -279,86 +279,38 @@
     <value>{0} という名前の bot を見つけられませんでした！</value>
     <comment>{0} will be replaced by bot's name query (string)</comment>
   </data>
-  <data name="BotStatusOverview" xml:space="preserve">
-    <value>{0}/{1} の bot が実行されています。合計 {2} つのゲーム ({3} 枚のカード) をアイドリングできます。</value>
-    <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
-  </data>
-  <data name="BotStatusIdling" xml:space="preserve">
-    <value>bot はアイドリングしています: {0} ({1}, 残りカード {2} 枚) 合計 {3} つのゲーム ( {4} 枚のカード) が残っています。 (あと~ {5} )</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle, {3} will be replaced by total number of games to idle, {4} will be replaced by total number of cards to idle, {5} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
-  </data>
-  <data name="BotStatusIdlingList" xml:space="preserve">
-    <value>botはアイドリングしています: {0} 合計 {1} つのゲーム ({2} 枚のカード) が残っています。 (あと~ {3})</value>
-    <comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to idle, {2} will be replaced by total number of cards to idle, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
-  </data>
+  
+  
+  
   <data name="CheckingFirstBadgePage" xml:space="preserve">
     <value>最初のバッジのページを確認しています...</value>
   </data>
   <data name="CheckingOtherBadgePages" xml:space="preserve">
     <value>他のバッジのページを確認しています...</value>
   </data>
-  <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>選択したアイドリングアルゴリズム: {0}</value>
-    <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
-  </data>
+  
   <data name="Done" xml:space="preserve">
     <value>完了！</value>
   </data>
-  <data name="GamesToIdle" xml:space="preserve">
-    <value>合計 {0} つのゲーム ({1} 枚のカード) をアイドリングできます (あと~ {2})...</value>
-    <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
-  </data>
-  <data name="IdlingFinished" xml:space="preserve">
-    <value>アイドリング完了！</value>
-  </data>
-  <data name="IdlingFinishedForGame" xml:space="preserve">
-    <value>アイドリングを完了: {0} ({1}) プレイ時間は {2}！</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
-  </data>
-  <data name="IdlingFinishedForGames" xml:space="preserve">
-    <value>ゲームのアイドリングを完了: {0}</value>
-    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
-  </data>
-  <data name="IdlingStatusForGame" xml:space="preserve">
-    <value>{0} ({1}) のアイドリング状態: 残りカード {2} 枚</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle</comment>
-  </data>
-  <data name="IdlingStopped" xml:space="preserve">
-    <value>アイドリング停止！</value>
-  </data>
+  
+  
+  
+  
+  
+  
   <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
     <value>永続的一時停止が有効なため、このリクエストを無視します！</value>
   </data>
-  <data name="NothingToIdle" xml:space="preserve">
-    <value>このアカウントにはアイドリングするものがありません！</value>
-  </data>
-  <data name="NowIdling" xml:space="preserve">
-    <value>アイドリング中: {0} ({1})</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
-  <data name="NowIdlingList" xml:space="preserve">
-    <value>アイドリング中: {0}</value>
-    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
-  </data>
+  
+  
+  
   <data name="PlayingNotAvailable" xml:space="preserve">
     <value>現在プレイできません。後で再試行します！</value>
   </data>
-  <data name="StillIdling" xml:space="preserve">
-    <value>アイドリングを継続中: {0} ({1})</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
-  <data name="StillIdlingList" xml:space="preserve">
-    <value>アイドリングを継続中: {0}</value>
-    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
-  </data>
-  <data name="StoppedIdling" xml:space="preserve">
-    <value>アイドリングを停止: {0} ({1})</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
-  <data name="StoppedIdlingList" xml:space="preserve">
-    <value>アイドリングを停止: {0}</value>
-    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
-  </data>
+  
+  
+  
+  
   <data name="UnknownCommand" xml:space="preserve">
     <value>不明なコマンドです！</value>
   </data>
@@ -373,9 +325,7 @@
     <value>ギフトを受領: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
-  <data name="BotAccountLimited" xml:space="preserve">
-    <value>このアカウントは制限されています。解除されるまでアイドリングは利用できません！</value>
-  </data>
+  
   <data name="BotAddLicense" xml:space="preserve">
     <value>ID: {0} | 状態: {1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
@@ -397,18 +347,10 @@
     <value>二次認証トークン: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
-  <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
-    <value>自動アイドリングを一時停止しました！</value>
-  </data>
-  <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-    <value>自動アイドリングを再開しました！</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
-    <value>自動アイドリングは既に一時停止されています！</value>
-  </data>
-  <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
-    <value>自動アイドリングはすでに再開されています！</value>
-  </data>
+  
+  
+  
+  
   <data name="BotConnected" xml:space="preserve">
     <value>Steam に接続しました！</value>
   </data>
@@ -486,12 +428,8 @@
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
     <value>期限切れのログインキーを削除しました！</value>
   </data>
-  <data name="BotStatusNotIdling" xml:space="preserve">
-    <value>bot は何もアイドリングしていません。</value>
-  </data>
-  <data name="BotStatusLimited" xml:space="preserve">
-    <value>bot は制限中のため、アイドリングでカードをドロップできません。</value>
-  </data>
+  
+  
   <data name="BotStatusConnecting" xml:space="preserve">
     <value>bot は Steam Network に接続しています。</value>
   </data>
@@ -523,12 +461,8 @@
   <data name="BotConnectionLost" xml:space="preserve">
     <value>Steam Network への接続が失われました。再接続しています...</value>
   </data>
-  <data name="BotAccountFree" xml:space="preserve">
-    <value>アカウントが開放されました。アイドリング処理を再開します！</value>
-  </data>
-  <data name="BotAccountOccupied" xml:space="preserve">
-    <value>現在アカウントが使用中です。アカウントが開放された時、ASFはアイドリングを再開します...</value>
-  </data>
+  
+  
   <data name="BotConnecting" xml:space="preserve">
     <value>接続中...</value>
   </data>
@@ -563,10 +497,7 @@
     <value>指定された CurrentCulture が有効ではありません。ASFはデフォルトで実行されます！</value>
   </data>
   
-  <data name="IdlingGameNotPossible" xml:space="preserve">
-    <value>そのゲームをプレイ出来ないため、{0} ({1}) のアイドリングは一時的に無効にされています。</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
+  
   <data name="WarningIdlingGameMismatch" xml:space="preserve">
     <value>ASFは {0} ({1}) のIDの不一致を検出しました。代わりに {2} のIDを使用します。</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
@@ -575,12 +506,8 @@
     <value>{0} V{1}</value>
     <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
   </data>
-  <data name="BotAccountLocked" xml:space="preserve">
-    <value>このアカウントはロックされています。アイドリングプロセスは永久的に利用できません！</value>
-  </data>
-  <data name="BotStatusLocked" xml:space="preserve">
-    <value>bot はロックされているため、アイドリングでカードをドロップできません。</value>
-  </data>
+  
+  
   <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
     <value>この機能は headless モードでのみ利用可能です！</value>
   </data>
@@ -696,10 +623,7 @@ Process uptime: {1}</value>
     <value>{0} 件の確認を正常に処理しました。</value>
     <comment>{0} will be replaced by number of confirmations</comment>
   </data>
-  <data name="BotExtraIdlingCooldown" xml:space="preserve">
-    <value>アイドル状態になったことを確認するために {0} まで待機しています…</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
-  </data>
+  
   <data name="UpdateCleanup" xml:space="preserve">
     <value>更新後に古いファイルをクリーンアップしています…</value>
   </data>

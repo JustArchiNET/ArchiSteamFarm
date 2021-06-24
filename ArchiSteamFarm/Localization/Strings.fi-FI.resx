@@ -282,86 +282,38 @@ StackTrace:
     <value>Bottia nimeltä {0} ei voitu löytää!</value>
     <comment>{0} will be replaced by bot's name query (string)</comment>
   </data>
-  <data name="BotStatusOverview" xml:space="preserve">
-    <value>Tällä hetkellä {0}/{1} bottia on käytössä, joilla on {2} peliä ({3} korttia) jäljellä idlattavaksi.</value>
-    <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
-  </data>
-  <data name="BotStatusIdling" xml:space="preserve">
-    <value>Botti idlaa peliä: {0} ({1}, {2} korttia jäljellä) jäljellä olevista {3} pelistä ({4} korttia. Idlausta jäljellä: ~{5}.</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle, {3} will be replaced by total number of games to idle, {4} will be replaced by total number of cards to idle, {5} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
-  </data>
-  <data name="BotStatusIdlingList" xml:space="preserve">
-    <value>Botti idlaa pelejä: {0} jäljellä olevista {1} pelistä ({2} korttia). Idlausta jäljellä: ~{3}.</value>
-    <comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to idle, {2} will be replaced by total number of cards to idle, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
-  </data>
+  
+  
+  
   <data name="CheckingFirstBadgePage" xml:space="preserve">
     <value>Tarkastellaan ensimmäistä badge sivua...</value>
   </data>
   <data name="CheckingOtherBadgePages" xml:space="preserve">
     <value>Tarkastellaan muita badge sivuja...</value>
   </data>
-  <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>Asetettu idlaamisen algoritmi: {0}</value>
-    <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
-  </data>
+  
   <data name="Done" xml:space="preserve">
     <value>Valmis!</value>
   </data>
-  <data name="GamesToIdle" xml:space="preserve">
-    <value>Idlattavana yhteensä {0} peliä joissa ({1} korttia). Arvioitu aika (~{2})...</value>
-    <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
-  </data>
-  <data name="IdlingFinished" xml:space="preserve">
-    <value>Idlaaminen valmis!</value>
-  </data>
-  <data name="IdlingFinishedForGame" xml:space="preserve">
-    <value>Idlaaminen valmis {0} ({1}) Kulunut aika: {2}!</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
-  </data>
-  <data name="IdlingFinishedForGames" xml:space="preserve">
-    <value>Idlaus valmistunut seuraavien pelien osalta: {0}</value>
-    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
-  </data>
-  <data name="IdlingStatusForGame" xml:space="preserve">
-    <value>Idlauksessa {0} ({1}): {2} korttia jäljellä</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle</comment>
-  </data>
-  <data name="IdlingStopped" xml:space="preserve">
-    <value>Idlaaminen pysäytetty!</value>
-  </data>
+  
+  
+  
+  
+  
+  
   <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
     <value>Tämä pyyntö jätetään huomioimatta, kun pysyvä tauko on päällä!</value>
   </data>
-  <data name="NothingToIdle" xml:space="preserve">
-    <value>Tällä tilillä ei ole mitään idlattavaa!</value>
-  </data>
-  <data name="NowIdling" xml:space="preserve">
-    <value>Nyt idlataan: {0} ({1})</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
-  <data name="NowIdlingList" xml:space="preserve">
-    <value>Idlauksessa: {0}</value>
-    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
-  </data>
+  
+  
+  
   <data name="PlayingNotAvailable" xml:space="preserve">
     <value>Pelaaminen ei ole tällä hetkellä mahdollista, yritetään myöhemmin uudestaan!</value>
   </data>
-  <data name="StillIdling" xml:space="preserve">
-    <value>Idlataan: {0} ({1})</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
-  <data name="StillIdlingList" xml:space="preserve">
-    <value>Idlataan: {0}</value>
-    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
-  </data>
-  <data name="StoppedIdling" xml:space="preserve">
-    <value>Idlaaminen pysäytetty: {0} ({1})</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
-  <data name="StoppedIdlingList" xml:space="preserve">
-    <value>Idlaaminen pysäytetty: {0}</value>
-    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
-  </data>
+  
+  
+  
+  
   <data name="UnknownCommand" xml:space="preserve">
     <value>Tuntematon komento!</value>
   </data>
@@ -376,9 +328,7 @@ StackTrace:
     <value>Hyväksytään lahjaa: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
-  <data name="BotAccountLimited" xml:space="preserve">
-    <value>Tämä tili on rajoitettu, idlaus ei ole mahdollista ennen kuin rajoitus poistetaan!</value>
-  </data>
+  
   <data name="BotAddLicense" xml:space="preserve">
     <value>ID: {0} | Tila: {1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
@@ -400,18 +350,10 @@ StackTrace:
     <value>2FA Koodi: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
-  <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
-    <value>Automattinen idlaus on pysäytetty!</value>
-  </data>
-  <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-    <value>Automaattista idlausta on jatkettu!</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
-    <value>Automattinen idlaus on jo pysäytetty!</value>
-  </data>
-  <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
-    <value>Automattista idlausta on jo jatkettu!</value>
-  </data>
+  
+  
+  
+  
   <data name="BotConnected" xml:space="preserve">
     <value>Yhdistetty Steamiin!</value>
   </data>
@@ -489,12 +431,8 @@ StackTrace:
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
     <value>Poistettu vanhentunut kirjautumisavain!</value>
   </data>
-  <data name="BotStatusNotIdling" xml:space="preserve">
-    <value>Botti ei idlaa mitään.</value>
-  </data>
-  <data name="BotStatusLimited" xml:space="preserve">
-    <value>Botti on rajoitettu eikä tämän takia voi saada yhtään korttia idlaamalla.</value>
-  </data>
+  
+  
   <data name="BotStatusConnecting" xml:space="preserve">
     <value>Botti yhdistää Steam-verkkoon.</value>
   </data>
@@ -526,12 +464,8 @@ StackTrace:
   <data name="BotConnectionLost" xml:space="preserve">
     <value>Yhteys Steam-verkkoon katkesi. Yhdistetään uudelleen...</value>
   </data>
-  <data name="BotAccountFree" xml:space="preserve">
-    <value>Tili ei ole enää muussa käytössä: idlaaminen jatkukoon!</value>
-  </data>
-  <data name="BotAccountOccupied" xml:space="preserve">
-    <value>Tiliä kautetään tällä hetkellä muualla: ASF jatkaa idlaamista kun tili vapautuu...</value>
-  </data>
+  
+  
   <data name="BotConnecting" xml:space="preserve">
     <value>Yhdistetään...</value>
   </data>
@@ -566,10 +500,7 @@ StackTrace:
     <value>Antamasi CurrentCulture on epäkelpo, ASF jatkaa toimintaa oletusarvolla!</value>
   </data>
   
-  <data name="IdlingGameNotPossible" xml:space="preserve">
-    <value>Pelin {0} ({1}) idlaus on väliaikaisesti poistettu käytöstä, koska ASF ei pysty pelaamaan kyseistä peliä tällä hetkellä.</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
+  
   <data name="WarningIdlingGameMismatch" xml:space="preserve">
     <value>ASF huomasi ID poikkeavuuden kohteessa {0} ({1}) ja käyttää ID:tä {2} tämän sijaan.</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
@@ -578,12 +509,8 @@ StackTrace:
     <value>{0} V{1}</value>
     <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
   </data>
-  <data name="BotAccountLocked" xml:space="preserve">
-    <value>Tämä tili on lukittu, idlaus on pysyvästi pois käytöstä!</value>
-  </data>
-  <data name="BotStatusLocked" xml:space="preserve">
-    <value>Botti on lukittu, eikä voi tämän takia saada yhtään korttia idlaamalla.</value>
-  </data>
+  
+  
   <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
     <value>Tämä funktio on käytettävissä vain headless-tilassa!</value>
   </data>

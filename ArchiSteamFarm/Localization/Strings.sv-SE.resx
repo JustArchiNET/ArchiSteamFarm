@@ -278,84 +278,36 @@ StackTrace:
     <value>Kunde inte hitta någon bot vid namn {0}!</value>
     <comment>{0} will be replaced by bot's name query (string)</comment>
   </data>
-  <data name="BotStatusOverview" xml:space="preserve">
-    <value>{0}/{1} bottar körs för tillfället, med totalt {2} spel ({3} kort) kvar.</value>
-    <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
-  </data>
-  <data name="BotStatusIdling" xml:space="preserve">
-    <value>Bot farmar spel: {0} ({1}, {2} kort-drops kvar) från totalt {3} spel ({4} kort) kvar att farma (~{5} kvar).</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle, {3} will be replaced by total number of games to idle, {4} will be replaced by total number of cards to idle, {5} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
-  </data>
-  <data name="BotStatusIdlingList" xml:space="preserve">
-    <value>Bot farmar spel: {0} från totalt {1} spel ({2} kort) kvar att farma (~{3} kvar).</value>
-    <comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to idle, {2} will be replaced by total number of cards to idle, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
-  </data>
+  
+  
+  
   <data name="CheckingFirstBadgePage" xml:space="preserve">
     <value>Kollar första märkessidan...</value>
   </data>
   <data name="CheckingOtherBadgePages" xml:space="preserve">
     <value>Kollar andra märkessidor...</value>
   </data>
-  <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>Vald farmning algoritm: {0}</value>
-    <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
-  </data>
+  
   <data name="Done" xml:space="preserve">
     <value>Klart!</value>
   </data>
-  <data name="GamesToIdle" xml:space="preserve">
-    <value>Vi har totalt {0} spel ({1} kort) kvar att farma (~{2} kvar)...</value>
-    <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
-  </data>
-  <data name="IdlingFinished" xml:space="preserve">
-    <value>Farmande färdigt!</value>
-  </data>
-  <data name="IdlingFinishedForGame" xml:space="preserve">
-    <value>Farmandet slutförd: {0} ({1}) efter {2} speltid!</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
-  </data>
-  <data name="IdlingFinishedForGames" xml:space="preserve">
-    <value>Färdig med att farma spel: {0}</value>
-    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
-  </data>
-  <data name="IdlingStatusForGame" xml:space="preserve">
-    <value>Farmstatus för {0} ({1}): {2} kort kvar</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle</comment>
-  </data>
-  <data name="IdlingStopped" xml:space="preserve">
-    <value>Farmandet stoppad!</value>
-  </data>
   
-  <data name="NothingToIdle" xml:space="preserve">
-    <value>Vi har inte något att farma på detta konto!</value>
-  </data>
-  <data name="NowIdling" xml:space="preserve">
-    <value>Farmar nu: {0} ({1})</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
-  <data name="NowIdlingList" xml:space="preserve">
-    <value>Farmar nu: {0}</value>
-    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
-  </data>
+  
+  
+  
+  
+  
+  
+  
+  
+  
   <data name="PlayingNotAvailable" xml:space="preserve">
     <value>Att spela är inte tillgänglig för tillfället, vi ska försöka igen senare!</value>
   </data>
-  <data name="StillIdling" xml:space="preserve">
-    <value>Farmar fortfarande: {0} ({1})</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
-  <data name="StillIdlingList" xml:space="preserve">
-    <value>Farmar fortfarande: {0}</value>
-    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
-  </data>
-  <data name="StoppedIdling" xml:space="preserve">
-    <value>Farmning stoppad: {0} ({1})</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
-  <data name="StoppedIdlingList" xml:space="preserve">
-    <value>Farming stoppad: {0}</value>
-    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
-  </data>
+  
+  
+  
+  
   <data name="UnknownCommand" xml:space="preserve">
     <value>Okänt kommando!</value>
   </data>
@@ -370,9 +322,7 @@ StackTrace:
     <value>Accepterar gåva: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
-  <data name="BotAccountLimited" xml:space="preserve">
-    <value>Detta konto är begränsad av Steam, farmning funktionaliteten är otillgänglig tills begränsningen tas bort!</value>
-  </data>
+  
   <data name="BotAddLicense" xml:space="preserve">
     <value>ID: {0} | Status: {1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
@@ -394,18 +344,10 @@ StackTrace:
     <value>2FA Token: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
-  <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
-    <value>Automatisk farmning är pausad!</value>
-  </data>
-  <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-    <value>Automatisk farmning är återupptagen!</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
-    <value>Automatisk farmning är redan pausad!</value>
-  </data>
-  <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
-    <value>Automatisk farmning är redan återupptagen!</value>
-  </data>
+  
+  
+  
+  
   <data name="BotConnected" xml:space="preserve">
     <value>Kopplad till Steam!</value>
   </data>
@@ -474,12 +416,8 @@ StackTrace:
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
     <value>Tog bort gammal inloggningsnyckel!</value>
   </data>
-  <data name="BotStatusNotIdling" xml:space="preserve">
-    <value>Bot farmar inte någonting.</value>
-  </data>
-  <data name="BotStatusLimited" xml:space="preserve">
-    <value>Botten är begrensad och kan inte få några kort via farmning.</value>
-  </data>
+  
+  
   <data name="BotStatusConnecting" xml:space="preserve">
     <value>Botten ansluter till Steam-nätverket.</value>
   </data>
@@ -511,12 +449,8 @@ StackTrace:
   <data name="BotConnectionLost" xml:space="preserve">
     <value>Anslutning till Steam-nätverket misslyckades, återansluter...</value>
   </data>
-  <data name="BotAccountFree" xml:space="preserve">
-    <value>Kontot är inte längre upptaget: fortsätter insamlingsprocessen!</value>
-  </data>
-  <data name="BotAccountOccupied" xml:space="preserve">
-    <value>Kontot används för närvarande: ASF återupptar farmandet när det är ledigt...</value>
-  </data>
+  
+  
   <data name="BotConnecting" xml:space="preserve">
     <value>Ansluter...</value>
   </data>
@@ -551,10 +485,7 @@ StackTrace:
     <value>Din angivna CurrentCulture variabel är ogiltig, ASF kommer fortsätta köras med standardvärdet!</value>
   </data>
   
-  <data name="IdlingGameNotPossible" xml:space="preserve">
-    <value>Farmning {0} ({1}) är tillfälligt inaktiverat då ASF inte kan spela detta spelet just nu.</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
+  
   <data name="WarningIdlingGameMismatch" xml:space="preserve">
     <value>ASF upptäckte ett ID-matchningsfel för {0} ({1}) och kommer använda ID't för {2} i stället.</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
@@ -563,12 +494,8 @@ StackTrace:
     <value>{0} V{1}</value>
     <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
   </data>
-  <data name="BotAccountLocked" xml:space="preserve">
-    <value>Detta konto är låst, farmning-processen är permanent otillgänglig!</value>
-  </data>
-  <data name="BotStatusLocked" xml:space="preserve">
-    <value>Botten är begrensad och kan inte få några kort via farmning.</value>
-  </data>
+  
+  
   <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
     <value>Denna funktion är tillgänglig endast i "headless"-läge!</value>
   </data>

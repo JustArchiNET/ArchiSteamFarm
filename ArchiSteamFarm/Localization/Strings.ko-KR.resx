@@ -282,86 +282,38 @@ StackTrace:
     <value>{0} 이름을 가진 봇을 찾을 수 없습니다!</value>
     <comment>{0} will be replaced by bot's name query (string)</comment>
   </data>
-  <data name="BotStatusOverview" xml:space="preserve">
-    <value>{0}/{1} 봇이 실행 중, 총 {2}개의 게임({3}개의 카드)이 남아있습니다.</value>
-    <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
-  </data>
-  <data name="BotStatusIdling" xml:space="preserve">
-    <value>봇이 농사중인 게임: {0} ({1}, {2}개의 카드 남음) / 전체 {3}개의 게임 ({4}개의 카드) 남음. (약 {5} 소요)</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle, {3} will be replaced by total number of games to idle, {4} will be replaced by total number of cards to idle, {5} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
-  </data>
-  <data name="BotStatusIdlingList" xml:space="preserve">
-    <value>봇이 농사 중인 게임들: {0} / 전체 {1} 개의 게임 ({2} 개의 카드) 남음(약 {3} 소요).</value>
-    <comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to idle, {2} will be replaced by total number of cards to idle, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
-  </data>
+  
+  
+  
   <data name="CheckingFirstBadgePage" xml:space="preserve">
     <value>첫 번째 배지 페이지를 확인하는 중...</value>
   </data>
   <data name="CheckingOtherBadgePages" xml:space="preserve">
     <value>나머지 배지 페이지를 확인하는 중...</value>
   </data>
-  <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>선택된 농사 기법: {0}</value>
-    <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
-  </data>
+  
   <data name="Done" xml:space="preserve">
     <value>완료!</value>
   </data>
-  <data name="GamesToIdle" xml:space="preserve">
-    <value>총 {0}개의 게임 ({1}개의 카드) 남음. (약 {2} 소요)...</value>
-    <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
-  </data>
-  <data name="IdlingFinished" xml:space="preserve">
-    <value>농사 완료!</value>
-  </data>
-  <data name="IdlingFinishedForGame" xml:space="preserve">
-    <value>농사 완료: {0} ({1}) - {2} 소요됨!</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
-  </data>
-  <data name="IdlingFinishedForGames" xml:space="preserve">
-    <value>농사 완료된 게임들: {0}</value>
-    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
-  </data>
-  <data name="IdlingStatusForGame" xml:space="preserve">
-    <value>{0} ({1}) 농사 상태: {2}개의 카드 남음.</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle</comment>
-  </data>
-  <data name="IdlingStopped" xml:space="preserve">
-    <value>농사 멈춤!</value>
-  </data>
+  
+  
+  
+  
+  
+  
   <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
     <value>일시정지가 켜져 있으므로 이 요청을 무시합니다.</value>
   </data>
-  <data name="NothingToIdle" xml:space="preserve">
-    <value>이 계정에는 농사지을 것이 없습니다!</value>
-  </data>
-  <data name="NowIdling" xml:space="preserve">
-    <value>현재 농사 중: {0} ({1})</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
-  <data name="NowIdlingList" xml:space="preserve">
-    <value>현재 농사 중: {0}</value>
-    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
-  </data>
+  
+  
+  
   <data name="PlayingNotAvailable" xml:space="preserve">
     <value>농사가 현재 불가능 합니다. 나중에 다시 시도합니다!</value>
   </data>
-  <data name="StillIdling" xml:space="preserve">
-    <value>아직 농사 중: {0} ({1})</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
-  <data name="StillIdlingList" xml:space="preserve">
-    <value>아직 농사 중: {0}</value>
-    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
-  </data>
-  <data name="StoppedIdling" xml:space="preserve">
-    <value>농사 멈춤: {0} ({1})</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
-  <data name="StoppedIdlingList" xml:space="preserve">
-    <value>농사 멈춤: {0}</value>
-    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
-  </data>
+  
+  
+  
+  
   <data name="UnknownCommand" xml:space="preserve">
     <value>알 수 없는 명령어!</value>
   </data>
@@ -376,9 +328,7 @@ StackTrace:
     <value>선물 수락: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
-  <data name="BotAccountLimited" xml:space="preserve">
-    <value>이 계정은 제한되어 있으므로, 제한이 풀릴 때까지 농사를 지을 수 없습니다!</value>
-  </data>
+  
   <data name="BotAddLicense" xml:space="preserve">
     <value>ID: {0} | 상태: {1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
@@ -400,18 +350,10 @@ StackTrace:
     <value>2FA 토큰: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
-  <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
-    <value>자동 농사가 일시 정지되었습니다!</value>
-  </data>
-  <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-    <value>자동 농사가 재개되었습니다!</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
-    <value>자동 농사가 이미 일시 정지되어 있습니다!</value>
-  </data>
-  <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
-    <value>자동 농사가 이미 재개되어 있습니다!</value>
-  </data>
+  
+  
+  
+  
   <data name="BotConnected" xml:space="preserve">
     <value>Steam에 연결되었습니다!</value>
   </data>
@@ -491,12 +433,8 @@ StackTrace:
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
     <value>만료된 로그인 키를 제거했습니다!</value>
   </data>
-  <data name="BotStatusNotIdling" xml:space="preserve">
-    <value>봇이 하라는 농사는 안하고 쉬고 있습니다.</value>
-  </data>
-  <data name="BotStatusLimited" xml:space="preserve">
-    <value>봇이 제한된 계정입니다. 농사로 카드를 얻을 수 없습니다.</value>
-  </data>
+  
+  
   <data name="BotStatusConnecting" xml:space="preserve">
     <value>봇이 Steam 네트워크에 연결 중입니다.</value>
   </data>
@@ -528,12 +466,8 @@ StackTrace:
   <data name="BotConnectionLost" xml:space="preserve">
     <value>Steam 네트워크 연결이 끊어졌습니다. 다시 연결 중...</value>
   </data>
-  <data name="BotAccountFree" xml:space="preserve">
-    <value>계정이 현재 사용되고 있지 않습니다 : 농사를 재개합니다!</value>
-  </data>
-  <data name="BotAccountOccupied" xml:space="preserve">
-    <value>계정이 현재 사용 중입니다. ASF는 계정이 아무 것도 하지 않고 있을 경우 농사를 재개할 것입니다...</value>
-  </data>
+  
+  
   <data name="BotConnecting" xml:space="preserve">
     <value>연결 중...</value>
   </data>
@@ -571,10 +505,7 @@ StackTrace:
     <value>ASF는 {0} 지역 언어를 사용하려고 시도했지만, 해당 언어의 번역이 {1} 만 완료되어 있습니다. 혹시 당신의 언어로 ASF 번역을 개선하는 것을 도와줄 수 있나요?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
-  <data name="IdlingGameNotPossible" xml:space="preserve">
-    <value>ASF가 해당 게임을 실행할 수 없어, {0} ({1})의 농사가 일시적으로 중단되었습니다.</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
+  
   <data name="WarningIdlingGameMismatch" xml:space="preserve">
     <value>ASF가 {0} ({1})의 ID 불일치를 감지했습니다. 대신 {2}의 ID를 사용할 것입니다.</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
@@ -583,12 +514,8 @@ StackTrace:
     <value>{0} V{1}</value>
     <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
   </data>
-  <data name="BotAccountLocked" xml:space="preserve">
-    <value>이 계정은 잠겨 있습니다. 농사 프로세스를 영구적으로 이용할 수 없습니다!</value>
-  </data>
-  <data name="BotStatusLocked" xml:space="preserve">
-    <value>봇이 잠겨 있습니다. 농사로 카드를 얻을 수 없습니다.</value>
-  </data>
+  
+  
   <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
     <value>이 기능은 Headless 모드에서만 사용 가능합니다!</value>
   </data>
@@ -708,10 +635,7 @@ StackTrace:
     <value>{0} 개의 확인이 성공적으로 처리되었습니다!</value>
     <comment>{0} will be replaced by number of confirmations</comment>
   </data>
-  <data name="BotExtraIdlingCooldown" xml:space="preserve">
-    <value>농사를 시작해도 될지 확인을 위해 최대 {0} 기다립니다.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
-  </data>
+  
   <data name="UpdateCleanup" xml:space="preserve">
     <value>업데이트 후 예전 파일을 삭제합니다...</value>
   </data>

@@ -277,84 +277,36 @@ StackTrace:
     <value>לא ניתן למצוא אף בוט בשם {0}!</value>
     <comment>{0} will be replaced by bot's name query (string)</comment>
   </data>
-  <data name="BotStatusOverview" xml:space="preserve">
-    <value>ישנם {0}/{1} בוטים רצים, עם סך של {2} משחקים ({3} קלפים) שנותרו להריץ.</value>
-    <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
-  </data>
-  <data name="BotStatusIdling" xml:space="preserve">
-    <value>הבוט מריץ את המשחק: {0} ({1}, {2} קלפים נותרו) מתוך {3} משחקים ({4} קלפים) שנותרו להרצה (~{5} נותרו).</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle, {3} will be replaced by total number of games to idle, {4} will be replaced by total number of cards to idle, {5} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
-  </data>
-  <data name="BotStatusIdlingList" xml:space="preserve">
-    <value>הבוט מריץ את המשחקים: {0} מתוך סך הכל של {1} משחקים ({2} קלפים) שנותרו להריץ (~{3} נותרו).</value>
-    <comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to idle, {2} will be replaced by total number of cards to idle, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
-  </data>
+  
+  
+  
   <data name="CheckingFirstBadgePage" xml:space="preserve">
     <value>בודק עמוד תגים ראשון...</value>
   </data>
   <data name="CheckingOtherBadgePages" xml:space="preserve">
     <value>בודק עמודי תגים אחרים...</value>
   </data>
-  <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>אלגוריתם הרצה נבחר: {0}</value>
-    <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
-  </data>
+  
   <data name="Done" xml:space="preserve">
     <value>הושלם!</value>
   </data>
-  <data name="GamesToIdle" xml:space="preserve">
-    <value>נשארו {0} משחקים ({1} קלפים) להריץ ({2} נותרו)...</value>
-    <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
-  </data>
-  <data name="IdlingFinished" xml:space="preserve">
-    <value>ההרצה הסתיימה!</value>
-  </data>
-  <data name="IdlingFinishedForGame" xml:space="preserve">
-    <value>סיימו לרוץ: {0} ({1}) לאחר {2} זמן משחק!</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
-  </data>
-  <data name="IdlingFinishedForGames" xml:space="preserve">
-    <value>הרצת המשחקים הסתיימה: {0}</value>
-    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
-  </data>
-  <data name="IdlingStatusForGame" xml:space="preserve">
-    <value>מצב הרצה עבור {0} ({1}): {2} קלפים נותרו</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle</comment>
-  </data>
-  <data name="IdlingStopped" xml:space="preserve">
-    <value>הרצה נעצרה!</value>
-  </data>
   
-  <data name="NothingToIdle" xml:space="preserve">
-    <value>אין שום דבר להריץ בחשבון זה!</value>
-  </data>
-  <data name="NowIdling" xml:space="preserve">
-    <value>עכשיו מריץ: {0} ({1})</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
-  <data name="NowIdlingList" xml:space="preserve">
-    <value>עכשיו מריץ: {0}</value>
-    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
-  </data>
+  
+  
+  
+  
+  
+  
+  
+  
+  
   <data name="PlayingNotAvailable" xml:space="preserve">
     <value>האפשרות לשחק אינה זמינה כעת. ננסה מאוחר יותר!</value>
   </data>
-  <data name="StillIdling" xml:space="preserve">
-    <value>עדיין מריץ: {0} ({1})</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
-  <data name="StillIdlingList" xml:space="preserve">
-    <value>עדיין מריץ: {0}</value>
-    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
-  </data>
-  <data name="StoppedIdling" xml:space="preserve">
-    <value>הפסיק להריץ: {0} ({1})</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
-  <data name="StoppedIdlingList" xml:space="preserve">
-    <value>הפסיק להריץ: {0}</value>
-    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
-  </data>
+  
+  
+  
+  
   <data name="UnknownCommand" xml:space="preserve">
     <value>פקודה לא מוכרת!</value>
   </data>
@@ -369,9 +321,7 @@ StackTrace:
     <value>מאשר מתנה: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
-  <data name="BotAccountLimited" xml:space="preserve">
-    <value>חשבון זה הוא מוגבל, התהליך אינו זמין עד להסרת ההגבלה!</value>
-  </data>
+  
   <data name="BotAddLicense" xml:space="preserve">
     <value>מזהה: {0} | סטטוס: {1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
@@ -393,18 +343,10 @@ StackTrace:
     <value>אסימון 2FA: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
-  <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
-    <value>הרצה אוטומטית נעצרה!</value>
-  </data>
-  <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-    <value>הרצה אוטומטית שבה לפעול!</value>
-  </data>
-  <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
-    <value>הרצה אוטומטית כבר בהשהיה!</value>
-  </data>
-  <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
-    <value>הרצה אוטומטית כבר שבה לפעול!</value>
-  </data>
+  
+  
+  
+  
   <data name="BotConnected" xml:space="preserve">
     <value>מחובר לסטים!</value>
   </data>
@@ -476,12 +418,8 @@ StackTrace:
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
     <value>הוסר מפתח התחברות שתוקפו פג!</value>
   </data>
-  <data name="BotStatusNotIdling" xml:space="preserve">
-    <value>הבוט לא מריץ דבר.</value>
-  </data>
-  <data name="BotStatusLimited" xml:space="preserve">
-    <value>הבוט מוגבל ולא יפיק קלפים בזמן ההרצה.</value>
-  </data>
+  
+  
   <data name="BotStatusConnecting" xml:space="preserve">
     <value>הבוט מתחבר לרשת Steam.</value>
   </data>
@@ -513,12 +451,8 @@ StackTrace:
   <data name="BotConnectionLost" xml:space="preserve">
     <value>החיבור לרשת Steam אבד. מתחבר מחדש...</value>
   </data>
-  <data name="BotAccountFree" xml:space="preserve">
-    <value>החשבון אינו עסוק יותר: תהליך ההרצה התחדש!</value>
-  </data>
-  <data name="BotAccountOccupied" xml:space="preserve">
-    <value>החשבון נמצא בשימוש כעת: ASF ימשיך לרוץ כשהוא יתפנה...</value>
-  </data>
+  
+  
   <data name="BotConnecting" xml:space="preserve">
     <value>מתחבר...</value>
   </data>
@@ -553,10 +487,7 @@ StackTrace:
     <value>ה- CurrentCulture המסופק שלך אינו חוקי, ASF ימשיך לפעול עם אפשרות ברירת המחדל!</value>
   </data>
   
-  <data name="IdlingGameNotPossible" xml:space="preserve">
-    <value>הרצת {0} ({1}) אינו זמין באופן זמני, כיוון שASF לא מסוגל להריץ את המשחק הזה כרגע.</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
+  
   <data name="WarningIdlingGameMismatch" xml:space="preserve">
     <value>ASF זיהה חוסר התאמה של מזהה עבור {0} ({1}) והשתמש במזהה {2} במקום זאת.</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
@@ -565,12 +496,8 @@ StackTrace:
     <value>{0} גרסה {1}</value>
     <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
   </data>
-  <data name="BotAccountLocked" xml:space="preserve">
-    <value>חשבון זה נעול, תהליך ההרצה אינו זמין לצמיתות!</value>
-  </data>
-  <data name="BotStatusLocked" xml:space="preserve">
-    <value>הבוט מוגבל ולא יפיק קלפים בזמן ההרצה.</value>
-  </data>
+  
+  
   <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
     <value>פונקציה זו זמינה רק במצב ללא ראש!</value>
   </data>
