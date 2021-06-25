@@ -92,7 +92,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 							break;
 						}
 
-						await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", cancellationToken).ConfigureAwait(false);
+						await webSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "", cancellationToken).ConfigureAwait(false);
 
 						break;
 					}
