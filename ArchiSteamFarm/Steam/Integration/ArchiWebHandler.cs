@@ -1316,16 +1316,14 @@ namespace ArchiSteamFarm.Steam.Integration {
 				return await function().ConfigureAwait(false);
 			}
 
-			if (!ASF.WebLimitingSemaphores.TryGetValue(service, out (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim? OpenConnectionsSemaphore) limiters)) {
+			if (!ASF.WebLimitingSemaphores.TryGetValue(service, out (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore) limiters)) {
 				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(service), service));
 
 				limiters.RateLimitingSemaphore = ASF.RateLimitingSemaphore;
 			}
 
 			// Sending a request opens a new connection
-			if (limiters.OpenConnectionsSemaphore != null) {
-				await limiters.OpenConnectionsSemaphore.WaitAsync().ConfigureAwait(false);
-			}
+			await limiters.OpenConnectionsSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
 				// It also increases number of requests
@@ -1342,7 +1340,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 				return await function().ConfigureAwait(false);
 			} finally {
 				// We release open connections semaphore only once we're indeed done sending a particular request
-				limiters.OpenConnectionsSemaphore?.Release();
+				limiters.OpenConnectionsSemaphore.Release();
 			}
 		}
 

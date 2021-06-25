@@ -27,12 +27,12 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api {
-	[Route("Api/Storage")]
+	[Route("Api/Storage/{key:required}")]
 	public sealed class StorageController : ArchiController {
 		/// <summary>
 		///     Deletes entry under specified key from ASF's persistent KeyValue JSON storage.
 		/// </summary>
-		[HttpDelete("{key:required}")]
+		[HttpDelete]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
 		public ActionResult<GenericResponse> StorageDelete(string key) {
 			if (string.IsNullOrEmpty(key)) {
@@ -51,7 +51,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// <summary>
 		///     Loads entry under specified key from ASF's persistent KeyValue JSON storage.
 		/// </summary>
-		[HttpGet("{key:required}")]
+		[HttpGet]
 		[ProducesResponseType(typeof(GenericResponse<JToken>), (int) HttpStatusCode.OK)]
 		public ActionResult<GenericResponse> StorageGet(string key) {
 			if (string.IsNullOrEmpty(key)) {
@@ -71,7 +71,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		///     Saves entry under specified key in ASF's persistent KeyValue JSON storage.
 		/// </summary>
 		[Consumes("application/json")]
-		[HttpPost("{key:required}")]
+		[HttpPost]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
 		public ActionResult<GenericResponse> StoragePost(string key, [FromBody] JToken value) {
 			if (string.IsNullOrEmpty(key)) {
