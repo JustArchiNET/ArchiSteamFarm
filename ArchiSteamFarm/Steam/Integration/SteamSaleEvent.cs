@@ -62,7 +62,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 				ImmutableHashSet<uint>? queue = await Bot.ArchiWebHandler.GenerateNewDiscoveryQueue().ConfigureAwait(false);
 
 				if ((queue == null) || (queue.Count == 0)) {
-					Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(queue)));
+					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(queue)));
 
 					break;
 				}
@@ -108,7 +108,9 @@ namespace ArchiSteamFarm.Steam.Integration {
 				return null;
 			}
 
-			Bot.ArchiLogger.LogGenericTrace(text);
+			if (Debugging.IsUserDebugging) {
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, text));
+			}
 
 			// It'd make more sense to check against "Come back tomorrow", but it might not cover out-of-the-event queue
 			return text.StartsWith("You can get ", StringComparison.Ordinal);
