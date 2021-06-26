@@ -84,7 +84,12 @@ namespace ArchiSteamFarm.IPC {
 			builder.UseContentRoot(SharedInfo.HomeDirectory);
 
 			// Firstly initialize settings that user is free to override
-			builder.ConfigureLogging(logging => logging.SetMinimumLevel(Debugging.IsUserDebugging ? LogLevel.Trace : LogLevel.Warning));
+			builder.ConfigureLogging(
+				logging => {
+					logging.ClearProviders();
+					logging.SetMinimumLevel(Debugging.IsUserDebugging ? LogLevel.Trace : LogLevel.Warning);
+				}
+			);
 
 			// Check if custom config is available
 			string absoluteConfigDirectory = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.ConfigDirectory);
@@ -122,7 +127,7 @@ namespace ArchiSteamFarm.IPC {
 					// Now conditionally initialize settings that are not possible to override
 					if (customConfigExists) {
 						// Set up custom config to be used
-						webBuilder.UseConfiguration(new ConfigurationBuilder().SetBasePath(absoluteConfigDirectory).AddJsonFile(SharedInfo.IPCConfigFile, false, true).Build());
+						webBuilder.UseConfiguration(new ConfigurationBuilder().SetBasePath(absoluteConfigDirectory).AddJsonFile(SharedInfo.IPCConfigFile, false, Program.ConfigWatch).Build());
 
 						// Use custom config for Kestrel configuration
 						webBuilder.UseKestrel((builderContext, options) => options.Configure(builderContext.Configuration.GetSection("Kestrel")));
