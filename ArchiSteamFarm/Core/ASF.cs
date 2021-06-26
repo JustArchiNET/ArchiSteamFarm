@@ -236,11 +236,6 @@ namespace ArchiSteamFarm.Core {
 				ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.UpdateVersionInfo, SharedInfo.Version, newVersion));
 
 				if (SharedInfo.Version >= newVersion) {
-					if (SharedInfo.Version > newVersion) {
-						ArchiLogger.LogGenericWarning(Strings.WarningPreReleaseVersion);
-						await Task.Delay(15 * 1000).ConfigureAwait(false);
-					}
-
 					return newVersion;
 				}
 
@@ -898,7 +893,16 @@ namespace ArchiSteamFarm.Core {
 
 			Version? newVersion = await Update().ConfigureAwait(false);
 
-			if ((newVersion == null) || (newVersion <= SharedInfo.Version)) {
+			if (newVersion == null) {
+				return;
+			}
+
+			if (SharedInfo.Version >= newVersion) {
+				if (SharedInfo.Version > newVersion) {
+					ArchiLogger.LogGenericWarning(Strings.WarningPreReleaseVersion);
+					await Task.Delay(15 * 1000).ConfigureAwait(false);
+				}
+
 				return;
 			}
 
