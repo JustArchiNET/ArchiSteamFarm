@@ -277,7 +277,7 @@ namespace ArchiSteamFarm.Tests {
 		[DataRow(false)]
 		[DataRow(true)]
 		[DataTestMethod]
-		public async Task SplitsOnNewlinesWithoutContinuationCharacter(bool isAccountLimited) {
+		public async Task SplitsOnNewlinesWithParagraphCharacter(bool isAccountLimited) {
 			int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
 
 			StringBuilder newlinePartBuilder = new();
@@ -299,9 +299,9 @@ namespace ArchiSteamFarm.Tests {
 
 			Assert.AreEqual(4, output.Count);
 
-			Assert.AreEqual(newlinePart, output[0]);
-			Assert.AreEqual(newlinePart, output[1]);
-			Assert.AreEqual(newlinePart, output[2]);
+			Assert.AreEqual(newlinePart + ParagraphCharacter, output[0]);
+			Assert.AreEqual(newlinePart + ParagraphCharacter, output[1]);
+			Assert.AreEqual(newlinePart + ParagraphCharacter, output[2]);
 			Assert.AreEqual(newlinePart, output[3]);
 		}
 
