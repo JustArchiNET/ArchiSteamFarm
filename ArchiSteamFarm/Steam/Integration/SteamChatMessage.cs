@@ -166,7 +166,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 						continue;
 					}
 
-					if (stringReader.Peek() != -1 && messagePart[^1] != ContinuationCharacter) {
+					if (stringReader.Peek() != -1 && messagePart[messagePart.Length-1] != ContinuationCharacter) {
 						messagePart.Append(ParagraphCharacter);
 					}
 
