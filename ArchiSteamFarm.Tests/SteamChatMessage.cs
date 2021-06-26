@@ -51,6 +51,9 @@ namespace ArchiSteamFarm.Tests {
 		public void ContinuationCharacterSizeIsProperlyCalculated() => Assert.AreEqual(ContinuationCharacterBytes, Encoding.UTF8.GetByteCount(ContinuationCharacter.ToString()));
 
 		[TestMethod]
+		public void ParagraphCharacterSizeIsLessOrEqualToContinuationCharacterSize() => Assert.IsTrue(ContinuationCharacterBytes >= Encoding.UTF8.GetByteCount(ParagraphCharacter.ToString()));
+
+		[TestMethod]
 		public async Task DoesntSkipEmptyNewlines() {
 			string message = "asdf" + Environment.NewLine + Environment.NewLine + "asdf";
 
