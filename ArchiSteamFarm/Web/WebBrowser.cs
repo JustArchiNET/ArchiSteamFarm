@@ -179,7 +179,8 @@ namespace ArchiSteamFarm.Web {
 								}
 							}
 						} catch (Exception e) {
-							ArchiLogger.LogGenericDebuggingException(e);
+							ArchiLogger.LogGenericWarningException(e);
+							ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 							return null;
 						} finally {
@@ -236,6 +237,7 @@ namespace ArchiSteamFarm.Web {
 						return await HtmlDocumentResponse.Create(response).ConfigureAwait(false);
 					} catch (Exception e) {
 						ArchiLogger.LogGenericWarningException(e);
+						ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 					}
 				}
 			}
@@ -296,6 +298,7 @@ namespace ArchiSteamFarm.Web {
 						}
 					} catch (Exception e) {
 						ArchiLogger.LogGenericWarningException(e);
+						ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 						continue;
 					}
@@ -433,6 +436,7 @@ namespace ArchiSteamFarm.Web {
 						xmlDocument.Load(xmlReader);
 					} catch (Exception e) {
 						ArchiLogger.LogGenericWarningException(e);
+						ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 						continue;
 					}
@@ -576,6 +580,7 @@ namespace ArchiSteamFarm.Web {
 						return await HtmlDocumentResponse.Create(response).ConfigureAwait(false);
 					} catch (Exception e) {
 						ArchiLogger.LogGenericWarningException(e);
+						ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 					}
 				}
 			}
@@ -636,6 +641,7 @@ namespace ArchiSteamFarm.Web {
 						}
 					} catch (Exception e) {
 						ArchiLogger.LogGenericWarningException(e);
+						ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
 
 						continue;
 					}
