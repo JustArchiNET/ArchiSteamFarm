@@ -13,8 +13,14 @@
   },
   "packageRules": [
     {
+      "comment": "https://steamcommunity.com/groups/archiasf/discussions/1/2997673517556002529/#c2998800559179074833",
       "allowedVersions": "<= 3.0",
       "matchPackageNames": [ "Microsoft.Extensions.Configuration.Json", "Microsoft.Extensions.Logging.Configuration" ]
+    },
+    {
+      "comment": "https://github.com/microsoft/testfx/issues/895",
+      "allowedVersions": "<= 2.2.4",
+      "matchPackageNames": [ "MSTest.TestAdapter" ]
     }
   ]
 }
