@@ -19,7 +19,7 @@
     {
       "allowedVersions": "<= 2.2.4",
       "groupName": "MSTest packages",
-      "matchPackagePatterns": ["^MSTest\..+"]
+      "matchPackagePatterns": ["^MSTest\\..+"]
     }
   ]
 }
