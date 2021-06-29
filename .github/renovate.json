@@ -18,7 +18,8 @@
     },
     {
       "allowedVersions": "<= 2.2.4",
-      "matchPackageNames": [ "MSTest.TestAdapter" ]
+      "groupName": "MSTest packages",
+      "matchPackagePatterns": ["^MSTest\..+"]
     }
   ]
 }
