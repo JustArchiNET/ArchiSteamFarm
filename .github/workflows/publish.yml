@@ -9,7 +9,7 @@ env:
   DOTNET_SDK_VERSION: 5.0.x
   NET_CORE_VERSION: net5.0
   NET_FRAMEWORK_VERSION: net48
-  NODE_JS_VERSION: 14 # Periodically bumped to follow latest LTS | https://github.com/actions/setup-node/issues/26
+  NODE_JS_VERSION: 'lts/*'
   STEAM_TOKEN_DUMPER_NAME: ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
   STEAM_TOKEN_DUMPER_TOKEN: ${{ secrets.STEAM_TOKEN_DUMPER_TOKEN }}
 
