@@ -125,9 +125,6 @@ namespace ArchiSteamFarm.Steam.Storage {
 		private const byte SteamTradeTokenLength = 8;
 
 		[PublicAPI]
-		public static readonly ImmutableHashSet<Asset.EType> AllowedCompleteTypesToSend = ImmutableHashSet.Create(Asset.EType.TradingCard, Asset.EType.FoilTradingCard);
-
-		[PublicAPI]
 		public static readonly ImmutableHashSet<Asset.EType> DefaultCompleteTypesToSend = ImmutableHashSet<Asset.EType>.Empty;
 
 		[PublicAPI]
