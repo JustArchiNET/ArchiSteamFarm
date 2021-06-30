@@ -87,7 +87,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 					// Check if we reached the limit for one message
 					if (messagePartBytes + NewlineWeight + ReservedEscapeMessageBytes > maxMessageBytes) {
-						if (stringReader.Peek() != -1) {
+						if (stringReader.Peek() >= 0) {
 							messagePart.Append(ParagraphCharacter);
 						}
 
@@ -171,7 +171,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 						continue;
 					}
 
-					if ((stringReader.Peek() != -1) && !midLineSplitting) {
+					if (!midLineSplitting && (stringReader.Peek() >= 0)) {
 						messagePart.Append(ParagraphCharacter);
 					}
 
