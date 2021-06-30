@@ -20,30 +20,12 @@
 // limitations under the License.
 
 using System;
-using System.Reflection;
 using JetBrains.Annotations;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace ArchiSteamFarm.IPC.Integration {
-	[UsedImplicitly]
-	internal sealed class CustomAttributesSchemaFilter : ISchemaFilter {
-		public void Apply(OpenApiSchema schema, SchemaFilterContext context) {
-			if (schema == null) {
-				throw new ArgumentNullException(nameof(schema));
-			}
-
-			if (context == null) {
-				throw new ArgumentNullException(nameof(context));
-			}
-
-			if (context.MemberInfo == null) {
-				return;
-			}
-
-			foreach (CustomSwaggerAttribute customSwaggerAttribute in context.MemberInfo.GetCustomAttributes<CustomSwaggerAttribute>()) {
-				customSwaggerAttribute.Apply(schema);
-			}
-		}
+	[PublicAPI]
+	public abstract class CustomSwaggerAttribute : Attribute {
+		public abstract void Apply(OpenApiSchema schema);
 	}
 }

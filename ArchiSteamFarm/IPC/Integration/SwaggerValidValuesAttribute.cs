@@ -20,7 +20,6 @@
 // limitations under the License.
 
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using JetBrains.Annotations;
 using Microsoft.OpenApi.Any;
@@ -30,11 +29,11 @@ using Microsoft.OpenApi.Models;
 namespace ArchiSteamFarm.IPC.Integration {
 	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property)]
 	[PublicAPI]
-	public sealed class SwaggerValidValuesAttribute : ValidationAttribute {
+	public sealed class SwaggerValidValuesAttribute : CustomSwaggerAttribute {
 		public int[]? ValidIntValues { get; set; }
 		public string[]? ValidStringValues { get; set; }
 
-		public void Apply(OpenApiSchema schema) {
+		public override void Apply(OpenApiSchema schema) {
 			if (schema == null) {
 				throw new ArgumentNullException(nameof(schema));
 			}

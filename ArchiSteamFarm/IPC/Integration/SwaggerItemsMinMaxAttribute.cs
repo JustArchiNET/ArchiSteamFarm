@@ -20,14 +20,13 @@
 // limitations under the License.
 
 using System;
-using System.ComponentModel.DataAnnotations;
 using JetBrains.Annotations;
 using Microsoft.OpenApi.Models;
 
 namespace ArchiSteamFarm.IPC.Integration {
 	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property)]
 	[PublicAPI]
-	public sealed class SwaggerItemsMinMaxAttribute : ValidationAttribute {
+	public sealed class SwaggerItemsMinMaxAttribute : CustomSwaggerAttribute {
 		public uint MaximumUint {
 			get => BackingMaximum.HasValue ? decimal.ToUInt32(BackingMaximum.Value) : default(uint);
 			set => BackingMaximum = value;
@@ -41,7 +40,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 		private decimal? BackingMaximum;
 		private decimal? BackingMinimum;
 
-		public void Apply(OpenApiSchema schema) {
+		public override void Apply(OpenApiSchema schema) {
 			if (schema == null) {
 				throw new ArgumentNullException(nameof(schema));
 			}

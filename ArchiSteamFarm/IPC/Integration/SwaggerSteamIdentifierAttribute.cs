@@ -20,7 +20,6 @@
 // limitations under the License.
 
 using System;
-using System.ComponentModel.DataAnnotations;
 using JetBrains.Annotations;
 using Microsoft.OpenApi.Models;
 using SteamKit2;
@@ -28,13 +27,13 @@ using SteamKit2;
 namespace ArchiSteamFarm.IPC.Integration {
 	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property)]
 	[PublicAPI]
-	public sealed class SwaggerSteamIdentifierAttribute : ValidationAttribute {
+	public sealed class SwaggerSteamIdentifierAttribute : CustomSwaggerAttribute {
 		public EAccountType AccountType { get; set; } = EAccountType.Individual;
 		public uint MaximumAccountID { get; set; } = uint.MaxValue;
 		public uint MinimumAccountID { get; set; } = 1;
 		public EUniverse Universe { get; set; } = EUniverse.Public;
 
-		public void Apply(OpenApiSchema schema) {
+		public override void Apply(OpenApiSchema schema) {
 			if (schema == null) {
 				throw new ArgumentNullException(nameof(schema));
 			}
