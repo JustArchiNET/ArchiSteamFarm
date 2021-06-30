@@ -28,6 +28,7 @@ using System.IO;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
@@ -173,9 +174,11 @@ namespace ArchiSteamFarm.Steam.Storage {
 		public bool FarmPriorityQueueOnly { get; private set; } = DefaultFarmPriorityQueueOnly;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		[MaxLength(ArchiHandler.MaxGamesPlayedConcurrently)]
 		public ImmutableHashSet<uint> GamesPlayedWhileIdle { get; private set; } = DefaultGamesPlayedWhileIdle;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		[Range(byte.MinValue, byte.MaxValue)]
 		public byte HoursUntilCardDrops { get; private set; } = DefaultHoursUntilCardDrops;
 
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -200,6 +203,7 @@ namespace ArchiSteamFarm.Steam.Storage {
 		public bool SendOnFarmingFinished { get; private set; } = DefaultSendOnFarmingFinished;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		[Range(byte.MinValue, byte.MaxValue)]
 		public byte SendTradePeriod { get; private set; } = DefaultSendTradePeriod;
 
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -222,6 +226,8 @@ namespace ArchiSteamFarm.Steam.Storage {
 		public ulong SteamMasterClanID { get; private set; } = DefaultSteamMasterClanID;
 
 		[JsonProperty]
+		[MaxLength(4)]
+		[MinLength(4)]
 		public string? SteamParentalCode {
 			get => BackingSteamParentalCode;
 
@@ -242,6 +248,8 @@ namespace ArchiSteamFarm.Steam.Storage {
 		}
 
 		[JsonProperty]
+		[MaxLength(8)]
+		[MinLength(8)]
 		public string? SteamTradeToken { get; private set; } = DefaultSteamTradeToken;
 
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -367,8 +375,12 @@ namespace ArchiSteamFarm.Steam.Storage {
 				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(FarmingOrders), farmingOrder));
 			}
 
+			if (GamesPlayedWhileIdle.Contains(0)) {
+				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(GamesPlayedWhileIdle), 0));
+			}
+
 			if (GamesPlayedWhileIdle.Count > ArchiHandler.MaxGamesPlayedConcurrently) {
-				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(GamesPlayedWhileIdle), GamesPlayedWhileIdle.Count + " > " + ArchiHandler.MaxGamesPlayedConcurrently));
+				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(GamesPlayedWhileIdle), nameof(GamesPlayedWhileIdle.Count) + " " + GamesPlayedWhileIdle.Count + " > " + ArchiHandler.MaxGamesPlayedConcurrently));
 			}
 
 			foreach (Asset.EType lootableType in LootableTypes.Where(lootableType => !Enum.IsDefined(typeof(Asset.EType), lootableType))) {

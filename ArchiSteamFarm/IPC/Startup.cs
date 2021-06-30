@@ -216,7 +216,10 @@ namespace ArchiSteamFarm.IPC {
 
 					options.CustomSchemaIds(type => type.GetUnifiedName());
 					options.EnableAnnotations(true, true);
+
+					options.SchemaFilter<BotConfigSchemaFilter>();
 					options.SchemaFilter<EnumSchemaFilter>();
+					options.SchemaFilter<GlobalConfigSchemaFilter>();
 
 					options.SwaggerDoc(
 						SharedInfo.ASF, new OpenApiInfo {

@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
@@ -183,9 +184,11 @@ namespace ArchiSteamFarm.Storage {
 		public string? CommandPrefix { get; private set; } = DefaultCommandPrefix;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		[Range(byte.MinValue, byte.MaxValue)]
 		public byte ConfirmationsLimiterDelay { get; private set; } = DefaultConfirmationsLimiterDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		[Range(1, byte.MaxValue)]
 		public byte ConnectionTimeout { get; private set; } = DefaultConnectionTimeout;
 
 		[JsonProperty]
@@ -195,18 +198,22 @@ namespace ArchiSteamFarm.Storage {
 		public bool Debug { get; private set; } = DefaultDebug;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		[Range(1, byte.MaxValue)]
 		public byte FarmingDelay { get; private set; } = DefaultFarmingDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		[Range(byte.MinValue, byte.MaxValue)]
 		public byte GiftsLimiterDelay { get; private set; } = DefaultGiftsLimiterDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool Headless { get; private set; } = DefaultHeadless;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		[Range(byte.MinValue, byte.MaxValue)]
 		public byte IdleFarmingPeriod { get; private set; } = DefaultIdleFarmingPeriod;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		[Range(byte.MinValue, byte.MaxValue)]
 		public byte InventoryLimiterDelay { get; private set; } = DefaultInventoryLimiterDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -219,12 +226,15 @@ namespace ArchiSteamFarm.Storage {
 		public ArchiCryptoHelper.EHashingMethod IPCPasswordFormat { get; private set; } = DefaultIPCPasswordFormat;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		[Range(byte.MinValue, byte.MaxValue)]
 		public byte LoginLimiterDelay { get; private set; } = DefaultLoginLimiterDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		[Range(1, byte.MaxValue)]
 		public byte MaxFarmingTime { get; private set; } = DefaultMaxFarmingTime;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		[Range(byte.MinValue, byte.MaxValue)]
 		public byte MaxTradeHoldDuration { get; private set; } = DefaultMaxTradeHoldDuration;
 
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -234,6 +244,7 @@ namespace ArchiSteamFarm.Storage {
 		public bool Statistics { get; private set; } = DefaultStatistics;
 
 		[JsonProperty]
+		[MaxLength(SteamChatMessage.MaxMessagePrefixBytes / 4)]
 		public string? SteamMessagePrefix { get; private set; } = DefaultSteamMessagePrefix;
 
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -246,9 +257,11 @@ namespace ArchiSteamFarm.Storage {
 		public EUpdateChannel UpdateChannel { get; private set; } = DefaultUpdateChannel;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		[Range(byte.MinValue, byte.MaxValue)]
 		public byte UpdatePeriod { get; private set; } = DefaultUpdatePeriod;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		[Range(ushort.MinValue, ushort.MaxValue)]
 		public ushort WebLimiterDelay { get; private set; } = DefaultWebLimiterDelay;
 
 		[JsonProperty(PropertyName = nameof(WebProxy))]
@@ -299,6 +312,10 @@ namespace ArchiSteamFarm.Storage {
 		internal GlobalConfig() { }
 
 		internal (bool Valid, string? ErrorMessage) CheckValidation() {
+			if (Blacklist.Contains(0)) {
+				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(Blacklist), 0));
+			}
+
 			if (ConnectionTimeout == 0) {
 				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(ConnectionTimeout), ConnectionTimeout));
 			}
