@@ -32,9 +32,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
+using ArchiSteamFarm.IPC.Integration;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Integration;
@@ -156,6 +158,7 @@ namespace ArchiSteamFarm.Steam.Storage {
 		public EBotBehaviour BotBehaviour { get; private set; } = DefaultBotBehaviour;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		[SwaggerValidValues(ValidIntValues = new[] { (int) Asset.EType.TradingCard, (int) Asset.EType.FoilTradingCard })]
 		public ImmutableHashSet<Asset.EType> CompleteTypesToSend { get; private set; } = DefaultCompleteTypesToSend;
 
 		[JsonProperty]
@@ -175,6 +178,7 @@ namespace ArchiSteamFarm.Steam.Storage {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		[MaxLength(ArchiHandler.MaxGamesPlayedConcurrently)]
+		[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
 		public ImmutableHashSet<uint> GamesPlayedWhileIdle { get; private set; } = DefaultGamesPlayedWhileIdle;
 
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -223,11 +227,14 @@ namespace ArchiSteamFarm.Steam.Storage {
 		}
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		[SwaggerSteamIdentifier(AccountType = EAccountType.Clan)]
+		[SwaggerValidValues(ValidIntValues = new[] { 0 })]
 		public ulong SteamMasterClanID { get; private set; } = DefaultSteamMasterClanID;
 
 		[JsonProperty]
 		[MaxLength(SteamParentalCodeLength)]
 		[MinLength(SteamParentalCodeLength)]
+		[SwaggerValidValues(ValidStringValues = new[] { "0" })]
 		public string? SteamParentalCode {
 			get => BackingSteamParentalCode;
 
@@ -387,8 +394,26 @@ namespace ArchiSteamFarm.Steam.Storage {
 				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(LootableTypes), lootableType));
 			}
 
-			foreach (Asset.EType completableType in CompleteTypesToSend.Where(completableType => !Enum.IsDefined(typeof(Asset.EType), completableType) || !AllowedCompleteTypesToSend.Contains(completableType))) {
-				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(CompleteTypesToSend), completableType));
+			HashSet<Asset.EType>? completeTypesToSendValidTypes = null;
+
+			foreach (Asset.EType completableType in CompleteTypesToSend) {
+				if (!Enum.IsDefined(typeof(Asset.EType), completableType)) {
+					return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(CompleteTypesToSend), completableType));
+				}
+
+				if (completeTypesToSendValidTypes == null) {
+					SwaggerValidValuesAttribute? completeTypesToSendValidValues = typeof(BotConfig).GetProperty(nameof(CompleteTypesToSend))?.GetCustomAttribute<SwaggerValidValuesAttribute>();
+
+					if (completeTypesToSendValidValues?.ValidIntValues == null) {
+						throw new InvalidOperationException(nameof(completeTypesToSendValidValues));
+					}
+
+					completeTypesToSendValidTypes = completeTypesToSendValidValues.ValidIntValues.Select(value => (Asset.EType) value).ToHashSet();
+				}
+
+				if (!completeTypesToSendValidTypes.Contains(completableType)) {
+					return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(CompleteTypesToSend), completableType));
+				}
 			}
 
 			foreach (Asset.EType matchableType in MatchableTypes.Where(matchableType => !Enum.IsDefined(typeof(Asset.EType), matchableType))) {

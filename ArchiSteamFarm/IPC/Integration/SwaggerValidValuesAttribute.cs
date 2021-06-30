@@ -20,47 +20,39 @@
 // limitations under the License.
 
 using System;
-using ArchiSteamFarm.Storage;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using JetBrains.Annotations;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Extensions;
 using Microsoft.OpenApi.Models;
-using SteamKit2;
-using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace ArchiSteamFarm.IPC.Integration {
-	[UsedImplicitly]
-	internal sealed class GlobalConfigSchemaFilter : ISchemaFilter {
-		public void Apply(OpenApiSchema schema, SchemaFilterContext context) {
+	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.Struct)]
+	[PublicAPI]
+	public sealed class SwaggerValidValuesAttribute : ValidationAttribute {
+		public int[]? ValidIntValues { get; set; }
+		public string[]? ValidStringValues { get; set; }
+
+		public void Apply(OpenApiSchema schema) {
 			if (schema == null) {
 				throw new ArgumentNullException(nameof(schema));
 			}
 
-			if (context == null) {
-				throw new ArgumentNullException(nameof(context));
+			OpenApiArray validValues = new();
+
+			if (ValidIntValues != null) {
+				validValues.AddRange(ValidIntValues.Select(type => new OpenApiInteger(type)));
 			}
 
-			if (context.MemberInfo?.DeclaringType != typeof(GlobalConfig)) {
-				return;
+			if (ValidStringValues != null) {
+				validValues.AddRange(ValidStringValues.Select(type => new OpenApiString(type)));
 			}
 
-			switch (context.MemberInfo.Name) {
-				case nameof(GlobalConfig.Blacklist):
-					schema.Items.Minimum = 1;
-					schema.Items.Maximum = uint.MaxValue;
-
-					break;
-				case nameof(GlobalConfig.SteamOwnerID):
-					schema.Minimum = new SteamID(1, EUniverse.Public, EAccountType.Individual);
-					schema.Maximum = new SteamID(uint.MaxValue, EUniverse.Public, EAccountType.Individual);
-
-					OpenApiArray validValues = new();
-
-					validValues.Add(new OpenApiInteger(0));
-
-					schema.AddExtension("x-valid-values", validValues);
-
-					break;
+			if (schema.Items is { Reference: null }) {
+				schema.Items.AddExtension("x-valid-values", validValues);
+			} else {
+				schema.AddExtension("x-valid-values", validValues);
 			}
 		}
 	}

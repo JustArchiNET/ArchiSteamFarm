@@ -30,6 +30,7 @@ using System.Net;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
+using ArchiSteamFarm.IPC.Integration;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam.Integration;
 using JetBrains.Annotations;
@@ -178,6 +179,7 @@ namespace ArchiSteamFarm.Storage {
 		public bool AutoRestart { get; private set; } = DefaultAutoRestart;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
 		public ImmutableHashSet<uint> Blacklist { get; private set; } = DefaultBlacklist;
 
 		[JsonProperty]
@@ -248,6 +250,8 @@ namespace ArchiSteamFarm.Storage {
 		public string? SteamMessagePrefix { get; private set; } = DefaultSteamMessagePrefix;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		[SwaggerSteamIdentifier]
+		[SwaggerValidValues(ValidIntValues = new[] { 0 })]
 		public ulong SteamOwnerID { get; private set; } = DefaultSteamOwnerID;
 
 		[JsonProperty(Required = Required.DisallowNull)]
