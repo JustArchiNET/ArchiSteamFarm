@@ -33,6 +33,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 	internal static class SteamChatMessage {
 		internal const char ContinuationCharacter = '…'; // A character used for indicating that the next newline part is a continuation of the previous line
 		internal const byte ContinuationCharacterBytes = 3; // The continuation character specified above uses 3 bytes in UTF-8
+		internal const char ParagraphCharacter = '¶'; // A character used for indicating that this is not the last part of message (2 bytes, so it fits in ContinuationCharacterBytes)
 		internal const ushort MaxMessageBytesForLimitedAccounts = 1945; // This is a limitation enforced by Steam
 		internal const ushort MaxMessageBytesForUnlimitedAccounts = 6340; // This is a limitation enforced by Steam
 		internal const ushort MaxMessagePrefixBytes = MaxMessageBytesForLimitedAccounts - ReservedContinuationMessageBytes - ReservedEscapeMessageBytes; // Simplified calculation, nobody should be using prefixes even close to that anyway
@@ -86,6 +87,10 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 					// Check if we reached the limit for one message
 					if (messagePartBytes + NewlineWeight + ReservedEscapeMessageBytes > maxMessageBytes) {
+						if (stringReader.Peek() != -1) {
+							messagePart.Append(ParagraphCharacter);
+						}
+
 						yield return messagePart.ToString();
 
 						messagePartBytes = prefixBytes;
@@ -101,8 +106,17 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 				for (int lineBytesRead = 0; lineBytesRead < lineBytes.Length;) {
 					if (messagePart.Length > prefixLength) {
-						messagePartBytes += NewlineWeight;
-						messagePart.AppendLine();
+						if (messagePartBytes + NewlineWeight + lineBytes.Length > maxMessageBytes) {
+							messagePart.Append(ParagraphCharacter);
+							yield return messagePart.ToString();
+
+							messagePartBytes = prefixBytes;
+							messagePart.Clear();
+							messagePart.Append(steamMessagePrefix);
+						} else {
+							messagePartBytes += NewlineWeight;
+							messagePart.AppendLine();
+						}
 					}
 
 					int bytesToTake = Math.Min(maxMessageBytes - messagePartBytes, lineBytes.Length - lineBytesRead);
@@ -150,6 +164,10 @@ namespace ArchiSteamFarm.Steam.Integration {
 					// Check if we still have room for one more line
 					if (messagePartBytes + NewlineWeight + ReservedEscapeMessageBytes <= maxMessageBytes) {
 						continue;
+					}
+
+					if (stringReader.Peek() != -1 && messagePart[messagePart.Length-1] != ContinuationCharacter) {
+						messagePart.Append(ParagraphCharacter);
 					}
 
 					yield return messagePart.ToString();
