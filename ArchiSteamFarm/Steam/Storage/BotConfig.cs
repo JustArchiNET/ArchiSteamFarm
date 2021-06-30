@@ -158,7 +158,7 @@ namespace ArchiSteamFarm.Steam.Storage {
 		public EBotBehaviour BotBehaviour { get; private set; } = DefaultBotBehaviour;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		[SwaggerValidValues(ValidIntValues = new[] { (int) Asset.EType.TradingCard, (int) Asset.EType.FoilTradingCard })]
+		[SwaggerValidValues(ValidIntValues = new[] { (int) Asset.EType.FoilTradingCard, (int) Asset.EType.TradingCard })]
 		public ImmutableHashSet<Asset.EType> CompleteTypesToSend { get; private set; } = DefaultCompleteTypesToSend;
 
 		[JsonProperty]
