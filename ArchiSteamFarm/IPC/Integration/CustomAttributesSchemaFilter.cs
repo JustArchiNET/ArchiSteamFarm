@@ -37,11 +37,17 @@ namespace ArchiSteamFarm.IPC.Integration {
 				throw new ArgumentNullException(nameof(context));
 			}
 
-			if (context.MemberInfo == null) {
+			ICustomAttributeProvider customSwaggerAttributes;
+
+			if (context.MemberInfo != null) {
+				customSwaggerAttributes = context.MemberInfo;
+			} else if (context.ParameterInfo != null) {
+				customSwaggerAttributes = context.ParameterInfo;
+			} else {
 				return;
 			}
 
-			foreach (CustomSwaggerAttribute customSwaggerAttribute in context.MemberInfo.GetCustomAttributes<CustomSwaggerAttribute>()) {
+			foreach (CustomSwaggerAttribute customSwaggerAttribute in customSwaggerAttributes.GetCustomAttributes(typeof(CustomSwaggerAttribute), true)) {
 				customSwaggerAttribute.Apply(schema);
 			}
 		}
