@@ -63,8 +63,8 @@ namespace ArchiSteamFarm.IPC.Integration {
 
 					break;
 				case nameof(BotConfig.SteamMasterClanID):
-					schema.Maximum = new SteamID(uint.MaxValue, EUniverse.Public, EAccountType.Clan);
 					schema.Minimum = new SteamID(1, EUniverse.Public, EAccountType.Clan);
+					schema.Maximum = new SteamID(uint.MaxValue, EUniverse.Public, EAccountType.Clan);
 
 					validValues = new OpenApiArray();
 

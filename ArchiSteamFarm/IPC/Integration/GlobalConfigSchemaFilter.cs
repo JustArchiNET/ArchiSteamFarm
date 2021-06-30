@@ -51,8 +51,8 @@ namespace ArchiSteamFarm.IPC.Integration {
 
 					break;
 				case nameof(GlobalConfig.SteamOwnerID):
-					schema.Maximum = new SteamID(uint.MaxValue, EUniverse.Public, EAccountType.Individual);
 					schema.Minimum = new SteamID(1, EUniverse.Public, EAccountType.Individual);
+					schema.Maximum = new SteamID(uint.MaxValue, EUniverse.Public, EAccountType.Individual);
 
 					OpenApiArray validValues = new();
 
