@@ -21,6 +21,7 @@
 
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
+using ArchiSteamFarm.IPC.Integration;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
@@ -30,12 +31,15 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 		public bool Enabled { get; internal set; }
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
 		public ImmutableHashSet<uint> SecretAppIDs { get; private set; } = ImmutableHashSet<uint>.Empty;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
 		public ImmutableHashSet<uint> SecretDepotIDs { get; private set; } = ImmutableHashSet<uint>.Empty;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
 		public ImmutableHashSet<uint> SecretPackageIDs { get; private set; } = ImmutableHashSet<uint>.Empty;
 
 		[JsonProperty(Required = Required.DisallowNull)]
