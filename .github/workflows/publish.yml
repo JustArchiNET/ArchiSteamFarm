@@ -24,12 +24,12 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v2.3.4
       with:
         submodules: recursive
 
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v1.8.1
       with:
         dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
 
@@ -37,7 +37,7 @@ jobs:
       run: dotnet --info
 
     - name: Setup Node.js with npm
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v2.2.0
       with:
         check-latest: true
         node-version: ${{ env.NODE_JS_VERSION }}
@@ -227,7 +227,7 @@ jobs:
 
     - name: Upload ASF-generic
       continue-on-error: true
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v2.2.4
       with:
         name: ${{ matrix.os }}_ASF-generic
         path: out/ASF-generic.zip
@@ -235,42 +235,42 @@ jobs:
     - name: Upload ASF-generic-netf
       continue-on-error: true
       if: startsWith(matrix.os, 'windows-')
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v2.2.4
       with:
         name: ${{ matrix.os }}_ASF-generic-netf
         path: out/ASF-generic-netf.zip
 
     - name: Upload ASF-linux-arm
       continue-on-error: true
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v2.2.4
       with:
         name: ${{ matrix.os }}_ASF-linux-arm
         path: out/ASF-linux-arm.zip
 
     - name: Upload ASF-linux-arm64
       continue-on-error: true
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v2.2.4
       with:
         name: ${{ matrix.os }}_ASF-linux-arm64
         path: out/ASF-linux-arm64.zip
 
     - name: Upload ASF-linux-x64
       continue-on-error: true
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v2.2.4
       with:
         name: ${{ matrix.os }}_ASF-linux-x64
         path: out/ASF-linux-x64.zip
 
     - name: Upload ASF-osx-x64
       continue-on-error: true
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v2.2.4
       with:
         name: ${{ matrix.os }}_ASF-osx-x64
         path: out/ASF-osx-x64.zip
 
     - name: Upload ASF-win-x64
       continue-on-error: true
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v2.2.4
       with:
         name: ${{ matrix.os }}_ASF-win-x64
         path: out/ASF-win-x64.zip
@@ -278,7 +278,7 @@ jobs:
     - name: Create ArchiSteamFarm GitHub release
       id: github_release
       if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && startsWith(matrix.os, 'windows-') }}
-      uses: actions/create-release@v1
+      uses: actions/create-release@v1.1.4
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -289,7 +289,7 @@ jobs:
 
     - name: Upload ASF-generic to GitHub release
       if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && startsWith(matrix.os, 'windows-') }}
-      uses: actions/upload-release-asset@v1
+      uses: actions/upload-release-asset@v1.0.2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -300,7 +300,7 @@ jobs:
 
     - name: Upload ASF-generic-netf to GitHub release
       if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && startsWith(matrix.os, 'windows-') }}
-      uses: actions/upload-release-asset@v1
+      uses: actions/upload-release-asset@v1.0.2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -311,7 +311,7 @@ jobs:
 
     - name: Upload ASF-linux-arm to GitHub release
       if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && startsWith(matrix.os, 'windows-') }}
-      uses: actions/upload-release-asset@v1
+      uses: actions/upload-release-asset@v1.0.2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -322,7 +322,7 @@ jobs:
 
     - name: Upload ASF-linux-arm64 to GitHub release
       if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && startsWith(matrix.os, 'windows-') }}
-      uses: actions/upload-release-asset@v1
+      uses: actions/upload-release-asset@v1.0.2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -333,7 +333,7 @@ jobs:
 
     - name: Upload ASF-linux-x64 to GitHub release
       if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && startsWith(matrix.os, 'windows-') }}
-      uses: actions/upload-release-asset@v1
+      uses: actions/upload-release-asset@v1.0.2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -344,7 +344,7 @@ jobs:
 
     - name: Upload ASF-osx-x64 to GitHub release
       if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && startsWith(matrix.os, 'windows-') }}
-      uses: actions/upload-release-asset@v1
+      uses: actions/upload-release-asset@v1.0.2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
@@ -355,7 +355,7 @@ jobs:
 
     - name: Upload ASF-win-x64 to GitHub release
       if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && startsWith(matrix.os, 'windows-') }}
-      uses: actions/upload-release-asset@v1
+      uses: actions/upload-release-asset@v1.0.2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
