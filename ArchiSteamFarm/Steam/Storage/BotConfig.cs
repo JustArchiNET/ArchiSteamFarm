@@ -226,8 +226,8 @@ namespace ArchiSteamFarm.Steam.Storage {
 		public ulong SteamMasterClanID { get; private set; } = DefaultSteamMasterClanID;
 
 		[JsonProperty]
-		[MaxLength(4)]
-		[MinLength(4)]
+		[MaxLength(SteamParentalCodeLength)]
+		[MinLength(SteamParentalCodeLength)]
 		public string? SteamParentalCode {
 			get => BackingSteamParentalCode;
 
@@ -248,8 +248,8 @@ namespace ArchiSteamFarm.Steam.Storage {
 		}
 
 		[JsonProperty]
-		[MaxLength(8)]
-		[MinLength(8)]
+		[MaxLength(SteamTradeTokenLength)]
+		[MinLength(SteamTradeTokenLength)]
 		public string? SteamTradeToken { get; private set; } = DefaultSteamTradeToken;
 
 		[JsonProperty(Required = Required.DisallowNull)]
