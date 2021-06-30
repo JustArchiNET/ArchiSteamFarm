@@ -28,7 +28,7 @@ using Microsoft.OpenApi.Extensions;
 using Microsoft.OpenApi.Models;
 
 namespace ArchiSteamFarm.IPC.Integration {
-	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.Struct)]
+	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property)]
 	[PublicAPI]
 	public sealed class SwaggerValidValuesAttribute : ValidationAttribute {
 		public int[]? ValidIntValues { get; set; }

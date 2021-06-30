@@ -26,7 +26,7 @@ using Microsoft.OpenApi.Models;
 using SteamKit2;
 
 namespace ArchiSteamFarm.IPC.Integration {
-	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.Struct)]
+	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property)]
 	[PublicAPI]
 	public sealed class SwaggerSteamIdentifierAttribute : ValidationAttribute {
 		public EAccountType AccountType { get; set; } = EAccountType.Individual;
