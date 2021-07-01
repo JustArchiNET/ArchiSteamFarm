@@ -301,7 +301,7 @@ StackTrace:
     <value>Verificando as demais páginas de insígnias...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>Selecione o algoritmo para farmar: {0}</value>
+    <value>Algoritmo de coleta escolhido: {0}</value>
     <comment>{0} will be replaced by the name of chosen farming algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
