@@ -246,7 +246,7 @@ namespace ArchiSteamFarm.Storage {
 		public bool Statistics { get; private set; } = DefaultStatistics;
 
 		[JsonProperty]
-		[MaxLength(SteamChatMessage.MaxMessagePrefixBytes / 4)]
+		[MaxLength(SteamChatMessage.MaxMessagePrefixBytes / SteamChatMessage.ReservedEscapeMessageBytes)]
 		public string? SteamMessagePrefix { get; private set; } = DefaultSteamMessagePrefix;
 
 		[JsonProperty(Required = Required.DisallowNull)]
