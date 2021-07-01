@@ -24,7 +24,6 @@ using JetBrains.Annotations;
 using Microsoft.OpenApi.Models;
 
 namespace ArchiSteamFarm.IPC.Integration {
-	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property)]
 	[PublicAPI]
 	public sealed class SwaggerItemsMinMaxAttribute : CustomSwaggerAttribute {
 		public uint MaximumUint {
