@@ -83,6 +83,11 @@ namespace ArchiSteamFarm.IPC {
 			// Add support for proxies, this one comes usually after developer exception page, but could be before
 			app.UseForwardedHeaders();
 
+			if (ASF.GlobalConfig?.OptimizationMode != GlobalConfig.EOptimizationMode.MinMemoryUsage) {
+				// Add support for response caching - must be called before static files as we want to cache those as well
+				app.UseResponseCaching();
+			}
+
 			// Add support for response compression - must be called before static files as we want to compress those as well
 			app.UseResponseCompression();
 
@@ -105,21 +110,34 @@ namespace ArchiSteamFarm.IPC {
 			app.UseStaticFiles(
 				new StaticFileOptions {
 					OnPrepareResponse = context => {
-						// Add support for SRI-protected static files
 						if (context.File.Exists && !context.File.IsDirectory && !string.IsNullOrEmpty(context.File.Name)) {
 							string extension = Path.GetExtension(context.File.Name);
+
+							CacheControlHeaderValue cacheControl = new();
 
 							switch (extension.ToUpperInvariant()) {
 								case ".CSS":
 								case ".JS":
-									ResponseHeaders headers = context.Context.Response.GetTypedHeaders();
+									// Add support for SRI-protected static files
+									// SRI requires from us to notify the caller (especially proxy) to avoid modifying the data
+									cacheControl.NoTransform = true;
 
-									headers.CacheControl = new CacheControlHeaderValue {
-										NoTransform = true
-									};
+									goto default;
+								default:
+									// Instruct the caller to always ask us first about every file it requests
+									// Contrary to the name, this doesn't prevent client from caching, but rather informs it that it must verify with us first that his cache is still up-to-date
+									// This is used to handle ASF and user updates to WWW root, we don't want from the client to ever use outdated scripts
+									cacheControl.NoCache = true;
+
+									// All static files are public by definition, we don't have any authorization here
+									cacheControl.Public = true;
 
 									break;
 							}
+
+							ResponseHeaders headers = context.Context.Response.GetTypedHeaders();
+
+							headers.CacheControl = cacheControl;
 						}
 					}
 				}
@@ -207,6 +225,11 @@ namespace ArchiSteamFarm.IPC {
 					}
 				}
 			);
+
+			if (ASF.GlobalConfig?.OptimizationMode != GlobalConfig.EOptimizationMode.MinMemoryUsage) {
+				// Add support for response caching
+				services.AddResponseCaching();
+			}
 
 			// Add support for response compression
 			services.AddResponseCompression();
