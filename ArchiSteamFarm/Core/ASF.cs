@@ -398,11 +398,11 @@ namespace ArchiSteamFarm.Core {
 			string networkGroupText = "";
 
 			if (!string.IsNullOrEmpty(Program.NetworkGroup)) {
-				using SHA256CryptoServiceProvider hashingAlgorithm = new();
+				using SHA256 hashingAlgorithm = SHA256.Create();
 
 				networkGroupText = "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(Program.NetworkGroup!))).Replace("-", "", StringComparison.Ordinal);
 			} else if (!string.IsNullOrEmpty(GlobalConfig.WebProxyText)) {
-				using SHA256CryptoServiceProvider hashingAlgorithm = new();
+				using SHA256 hashingAlgorithm = SHA256.Create();
 
 				networkGroupText = "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(GlobalConfig.WebProxyText!))).Replace("-", "", StringComparison.Ordinal);
 			}
