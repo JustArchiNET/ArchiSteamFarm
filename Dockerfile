@@ -8,14 +8,14 @@ RUN echo "node: $(node --version)" && \
     npm ci --no-progress && \
     npm run deploy --no-progress
 
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:5.0${IMAGESUFFIX} AS build-dotnet
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:6.0${IMAGESUFFIX} AS build-dotnet
 ARG STEAM_TOKEN_DUMPER_TOKEN
 ARG TARGETARCH
 ARG TARGETOS
 ENV CONFIGURATION Release
 ENV DOTNET_CLI_TELEMETRY_OPTOUT 1
 ENV DOTNET_NOLOGO 1
-ENV NET_CORE_VERSION net5.0
+ENV NET_CORE_VERSION net6.0
 ENV STEAM_TOKEN_DUMPER_NAME ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
 WORKDIR /app
 COPY --from=build-node /app/dist ASF-ui/dist
@@ -44,7 +44,7 @@ RUN dotnet --info && \
     if [ -d "ArchiSteamFarm/overlay/generic" ]; then cp -pR "ArchiSteamFarm/overlay/generic/"* "out/result"; fi && \
     if [ -d "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}" ]; then mkdir -p "out/result/plugins/${STEAM_TOKEN_DUMPER_NAME}"; cp -pR "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}/"* "out/result/plugins/${STEAM_TOKEN_DUMPER_NAME}"; fi
 
-FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/aspnet:5.0${IMAGESUFFIX} AS runtime
+FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/aspnet:6.0${IMAGESUFFIX} AS runtime
 ENV ASPNETCORE_URLS=
 ENV DOTNET_CLI_TELEMETRY_OPTOUT 1
 ENV DOTNET_NOLOGO 1
