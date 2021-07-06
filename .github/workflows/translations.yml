@@ -60,7 +60,7 @@ jobs:
     - name: Push changes to wiki
       uses: ad-m/github-push-action@v0.6.0
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.ARCHIBOT_GITHUB_TOKEN }}
         branch: master
         directory: wiki
         repository: ${{ github.repository }}.wiki
@@ -86,5 +86,5 @@ jobs:
     - name: Push changes to ASF
       uses: ad-m/github-push-action@v0.6.0
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.ARCHIBOT_GITHUB_TOKEN }}
         branch: ${{ github.ref }}
