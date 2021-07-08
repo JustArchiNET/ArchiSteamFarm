@@ -28,7 +28,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 		internal const byte MinimumHoursBetweenUploads = 24;
 		internal const byte MinimumMinutesBeforeFirstUpload = 10; // Must be less or equal to MaximumMinutesBeforeFirstUpload
 		internal const string ServerURL = "https://asf-token-dumper.xpaw.me";
-		internal const string Token = "STEAM_TOKEN_DUMPER_TOKEN";
+		internal const string Token = "STEAM_TOKEN_DUMPER_TOKEN"; // This is filled automatically during our CI build with API key provided by xPaw for ASF project
 
 		internal static bool HasValidToken => Token.Length == 128;
 	}
