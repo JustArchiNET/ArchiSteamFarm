@@ -13,6 +13,7 @@ jobs:
       uses: actions/checkout@v2.3.4
       with:
         submodules: recursive
+        token: ${{ secrets.ARCHIBOT_GITHUB_TOKEN }}
 
     - name: Reset wiki to follow origin
       shell: sh
