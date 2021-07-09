@@ -11,6 +11,5 @@ jobs:
       - name: Lock inactive threads
         uses: dessant/lock-threads@v2.1.1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           issue-lock-inactive-days: 30
           pr-lock-inactive-days: 30
