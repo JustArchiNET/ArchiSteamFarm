@@ -87,16 +87,20 @@ namespace ArchiSteamFarm.IPC.Integration {
 				throw new InvalidOperationException(nameof(ClearFailedAuthorizationsTimer));
 			}
 
-			string? ipcPassword = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPassword : GlobalConfig.DefaultIPCPassword;
-
-			if (string.IsNullOrEmpty(ipcPassword)) {
-				return HttpStatusCode.OK;
-			}
-
 			IPAddress? clientIP = context.Connection.RemoteIpAddress;
 
 			if (clientIP == null) {
 				throw new InvalidOperationException(nameof(clientIP));
+			}
+
+			string? ipcPassword = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPassword : GlobalConfig.DefaultIPCPassword;
+
+			if (string.IsNullOrEmpty(ipcPassword)) {
+				if (IPAddress.IsLoopback(clientIP) || Startup.KnownNetworks.Any(network => network.Contains(clientIP))) {
+					return HttpStatusCode.OK;
+				}
+
+				return HttpStatusCode.Forbidden;
 			}
 
 			if (FailedAuthorizations.TryGetValue(clientIP, out byte attempts)) {

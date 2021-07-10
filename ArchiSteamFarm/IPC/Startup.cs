@@ -29,6 +29,7 @@ using System.IO;
 #endif
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Globalization;
 using System.Net;
 using System.Reflection;
@@ -53,6 +54,8 @@ using Newtonsoft.Json.Serialization;
 
 namespace ArchiSteamFarm.IPC {
 	internal sealed class Startup {
+		internal static ImmutableHashSet<IPNetwork> KnownNetworks { get; private set; } = ImmutableHashSet<IPNetwork>.Empty;
+
 		private readonly IConfiguration Configuration;
 
 		public Startup(IConfiguration configuration) => Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
@@ -148,12 +151,12 @@ namespace ArchiSteamFarm.IPC {
 			app.UseRouting();
 #endif
 
+			// We want to protect our API with IPCPassword and additional security, this should be called after routing, so the middleware won't have to deal with API endpoints that do not exist
+			app.UseWhen(context => context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), appBuilder => appBuilder.UseMiddleware<ApiAuthenticationMiddleware>());
+
 			string? ipcPassword = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPassword : GlobalConfig.DefaultIPCPassword;
 
 			if (!string.IsNullOrEmpty(ipcPassword)) {
-				// We want to protect our API with IPCPassword, this should be called after routing, so the middleware won't have to deal with API endpoints that do not exist
-				app.UseWhen(context => context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), appBuilder => appBuilder.UseMiddleware<ApiAuthenticationMiddleware>());
-
 				// We want to apply CORS policy in order to allow userscripts and other third-party integrations to communicate with ASF API, this should be called before response compression, but can't be due to how our flow works
 				// We apply CORS policy only with IPCPassword set as an extra authentication measure
 				app.UseCors();
@@ -194,11 +197,10 @@ namespace ArchiSteamFarm.IPC {
 			// Prepare knownNetworks that we'll use in a second
 			HashSet<string>? knownNetworksTexts = Configuration.GetSection("Kestrel:KnownNetworks").Get<HashSet<string>>();
 
-			HashSet<IPNetwork>? knownNetworks = null;
+			HashSet<IPNetwork> knownNetworks = new();
 
 			if (knownNetworksTexts?.Count > 0) {
-				knownNetworks = new HashSet<IPNetwork>(knownNetworksTexts.Count);
-
+				// Use specified known networks
 				foreach (string knownNetworkText in knownNetworksTexts) {
 					string[] addressParts = knownNetworkText.Split('/', StringSplitOptions.RemoveEmptyEntries);
 
@@ -211,17 +213,22 @@ namespace ArchiSteamFarm.IPC {
 
 					knownNetworks.Add(new IPNetwork(ipAddress, prefixLength));
 				}
+			} else {
+				// Use private address space networks by default, https://datatracker.ietf.org/doc/html/rfc1918#section-3
+				knownNetworks.Add(new IPNetwork(IPAddress.Parse("10.0.0.0"), 8));
+				knownNetworks.Add(new IPNetwork(IPAddress.Parse("172.16.0.0"), 12));
+				knownNetworks.Add(new IPNetwork(IPAddress.Parse("192.168.0.0"), 16));
 			}
+
+			KnownNetworks = knownNetworks.ToImmutableHashSet();
 
 			// Add support for proxies
 			services.Configure<ForwardedHeadersOptions>(
 				options => {
 					options.ForwardedHeaders = ForwardedHeaders.All;
 
-					if (knownNetworks != null) {
-						foreach (IPNetwork knownNetwork in knownNetworks) {
-							options.KnownNetworks.Add(knownNetwork);
-						}
+					foreach (IPNetwork knownNetwork in KnownNetworks) {
+						options.KnownNetworks.Add(knownNetwork);
 					}
 				}
 			);
