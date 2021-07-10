@@ -254,6 +254,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 			}
 		}
 
+		[Obsolete("Use " + nameof(ArchiHandler) + "." + nameof(ArchiHandler.GetOwnedGames) + " instead")]
 		[PublicAPI]
 		public async Task<Dictionary<uint, string>?> GetMyOwnedGames() {
 			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningDeprecated, nameof(GetMyOwnedGames), nameof(ArchiHandler) + "." + nameof(ArchiHandler.GetOwnedGames)));
@@ -305,6 +306,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 			return result;
 		}
 
+		[Obsolete("Use " + nameof(ArchiHandler) + "." + nameof(ArchiHandler.GetOwnedGames) + " instead")]
 		[PublicAPI]
 		public async Task<Dictionary<uint, string>?> GetOwnedGames(ulong steamID) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
