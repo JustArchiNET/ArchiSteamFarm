@@ -254,8 +254,11 @@ namespace ArchiSteamFarm.Steam.Integration {
 			}
 		}
 
+		[Obsolete("Use " + nameof(ArchiHandler) + "." + nameof(ArchiHandler.GetOwnedGames) + " instead")]
 		[PublicAPI]
 		public async Task<Dictionary<uint, string>?> GetMyOwnedGames() {
+			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningDeprecated, nameof(GetMyOwnedGames), nameof(ArchiHandler) + "." + nameof(ArchiHandler.GetOwnedGames)));
+
 			Uri request = new(SteamCommunityURL, "/my/games?l=english&xml=1");
 
 			XmlDocumentResponse? response = await UrlGetToXmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
@@ -303,11 +306,14 @@ namespace ArchiSteamFarm.Steam.Integration {
 			return result;
 		}
 
+		[Obsolete("Use " + nameof(ArchiHandler) + "." + nameof(ArchiHandler.GetOwnedGames) + " instead")]
 		[PublicAPI]
 		public async Task<Dictionary<uint, string>?> GetOwnedGames(ulong steamID) {
 			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
 				throw new ArgumentOutOfRangeException(nameof(steamID));
 			}
+
+			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningDeprecated, nameof(GetOwnedGames), nameof(ArchiHandler) + "." + nameof(ArchiHandler.GetOwnedGames)));
 
 			(bool success, string? steamApiKey) = await CachedApiKey.GetValue().ConfigureAwait(false);
 

@@ -481,9 +481,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				return null;
 			}
 
-			bool? hasValidApiKey = await Bot.ArchiWebHandler.HasValidApiKey().ConfigureAwait(false);
-
-			Dictionary<uint, string>? gamesOwned = hasValidApiKey.GetValueOrDefault() ? await Bot.ArchiWebHandler.GetOwnedGames(Bot.SteamID).ConfigureAwait(false) : await Bot.ArchiWebHandler.GetMyOwnedGames().ConfigureAwait(false);
+			Dictionary<uint, string>? gamesOwned = await Bot.ArchiHandler.GetOwnedGames(Bot.SteamID).ConfigureAwait(false);
 
 			if (gamesOwned?.Count > 0) {
 				lock (CachedGamesOwned) {
