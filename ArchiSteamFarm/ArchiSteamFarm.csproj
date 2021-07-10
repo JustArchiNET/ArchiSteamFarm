@@ -69,6 +69,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="..\LICENSE-2.0.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Content>
     <Content Include="overlay\all\**\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
