@@ -25,6 +25,7 @@ COPY resources resources
 COPY .editorconfig .editorconfig
 COPY Directory.Build.props Directory.Build.props
 COPY Directory.Packages.props Directory.Packages.props
+COPY LICENSE-2.0.txt LICENSE-2.0.txt
 RUN dotnet --info && \
     case "$TARGETOS" in \
       "linux") ;; \
