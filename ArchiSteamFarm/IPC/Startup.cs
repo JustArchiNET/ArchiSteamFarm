@@ -197,10 +197,10 @@ namespace ArchiSteamFarm.IPC {
 			// Prepare knownNetworks that we'll use in a second
 			HashSet<string>? knownNetworksTexts = Configuration.GetSection("Kestrel:KnownNetworks").Get<HashSet<string>>();
 
-			HashSet<IPNetwork> knownNetworks = new();
-
 			if (knownNetworksTexts?.Count > 0) {
 				// Use specified known networks
+				HashSet<IPNetwork> knownNetworks = new();
+
 				foreach (string knownNetworkText in knownNetworksTexts) {
 					string[] addressParts = knownNetworkText.Split('/', StringSplitOptions.RemoveEmptyEntries);
 
@@ -213,14 +213,9 @@ namespace ArchiSteamFarm.IPC {
 
 					knownNetworks.Add(new IPNetwork(ipAddress, prefixLength));
 				}
-			} else {
-				// Use private address space networks by default, https://datatracker.ietf.org/doc/html/rfc1918#section-3
-				knownNetworks.Add(new IPNetwork(IPAddress.Parse("10.0.0.0"), 8));
-				knownNetworks.Add(new IPNetwork(IPAddress.Parse("172.16.0.0"), 12));
-				knownNetworks.Add(new IPNetwork(IPAddress.Parse("192.168.0.0"), 16));
-			}
 
-			KnownNetworks = knownNetworks.ToImmutableHashSet();
+				KnownNetworks = knownNetworks.ToImmutableHashSet();
+			}
 
 			// Add support for proxies
 			services.Configure<ForwardedHeadersOptions>(
