@@ -148,12 +148,12 @@ namespace ArchiSteamFarm.IPC {
 			app.UseRouting();
 #endif
 
+			// We want to protect our API with IPCPassword and additional security, this should be called after routing, so the middleware won't have to deal with API endpoints that do not exist
+			app.UseWhen(context => context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), appBuilder => appBuilder.UseMiddleware<ApiAuthenticationMiddleware>());
+
 			string? ipcPassword = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPassword : GlobalConfig.DefaultIPCPassword;
 
 			if (!string.IsNullOrEmpty(ipcPassword)) {
-				// We want to protect our API with IPCPassword, this should be called after routing, so the middleware won't have to deal with API endpoints that do not exist
-				app.UseWhen(context => context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), appBuilder => appBuilder.UseMiddleware<ApiAuthenticationMiddleware>());
-
 				// We want to apply CORS policy in order to allow userscripts and other third-party integrations to communicate with ASF API, this should be called before response compression, but can't be due to how our flow works
 				// We apply CORS policy only with IPCPassword set as an extra authentication measure
 				app.UseCors();
@@ -197,7 +197,8 @@ namespace ArchiSteamFarm.IPC {
 			HashSet<IPNetwork>? knownNetworks = null;
 
 			if (knownNetworksTexts?.Count > 0) {
-				knownNetworks = new HashSet<IPNetwork>(knownNetworksTexts.Count);
+				// Use specified known networks
+				knownNetworks = new HashSet<IPNetwork>();
 
 				foreach (string knownNetworkText in knownNetworksTexts) {
 					string[] addressParts = knownNetworkText.Split('/', StringSplitOptions.RemoveEmptyEntries);
