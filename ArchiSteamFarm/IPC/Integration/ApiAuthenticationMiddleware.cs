@@ -104,9 +104,15 @@ namespace ArchiSteamFarm.IPC.Integration {
 					return HttpStatusCode.Forbidden;
 				}
 
-				IPAddress mappedClientIP = clientIP.IsIPv4MappedToIPv6 ? clientIP.MapToIPv4() : clientIP;
+				if (clientIP.IsIPv4MappedToIPv6) {
+					IPAddress mappedClientIP = clientIP.MapToIPv4();
 
-				return Startup.KnownNetworks.Any(network => network.Contains(mappedClientIP)) ? HttpStatusCode.OK : HttpStatusCode.Forbidden;
+					if (Startup.KnownNetworks.Any(network => network.Contains(mappedClientIP))) {
+						return HttpStatusCode.OK;
+					}
+				}
+
+				return Startup.KnownNetworks.Any(network => network.Contains(clientIP)) ? HttpStatusCode.OK : HttpStatusCode.Forbidden;
 			}
 
 			if (FailedAuthorizations.TryGetValue(clientIP, out byte attempts)) {
