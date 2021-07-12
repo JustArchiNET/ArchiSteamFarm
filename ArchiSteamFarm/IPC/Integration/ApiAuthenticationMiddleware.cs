@@ -96,11 +96,17 @@ namespace ArchiSteamFarm.IPC.Integration {
 			string? ipcPassword = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPassword : GlobalConfig.DefaultIPCPassword;
 
 			if (string.IsNullOrEmpty(ipcPassword)) {
-				if (IPAddress.IsLoopback(clientIP) || Startup.KnownNetworks.Any(network => network.Contains(clientIP))) {
+				if (IPAddress.IsLoopback(clientIP)) {
 					return HttpStatusCode.OK;
 				}
 
-				return HttpStatusCode.Forbidden;
+				if (Startup.KnownNetworks.IsEmpty) {
+					return HttpStatusCode.Forbidden;
+				}
+
+				IPAddress mappedClientIP = clientIP.IsIPv4MappedToIPv6 ? clientIP.MapToIPv4() : clientIP;
+
+				return Startup.KnownNetworks.Any(network => network.Contains(mappedClientIP)) ? HttpStatusCode.OK : HttpStatusCode.Forbidden;
 			}
 
 			if (FailedAuthorizations.TryGetValue(clientIP, out byte attempts)) {
