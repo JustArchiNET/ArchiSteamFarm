@@ -30,7 +30,9 @@ using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Storage;
 using JetBrains.Annotations;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 
 namespace ArchiSteamFarm.IPC.Integration {
@@ -46,10 +48,17 @@ namespace ArchiSteamFarm.IPC.Integration {
 
 		private static Timer? ClearFailedAuthorizationsTimer;
 
+		private readonly ForwardedHeadersOptions ForwardedHeadersOptions;
 		private readonly RequestDelegate Next;
 
-		public ApiAuthenticationMiddleware(RequestDelegate next) {
+		public ApiAuthenticationMiddleware(RequestDelegate next, IOptions<ForwardedHeadersOptions> forwardedHeadersOptions) {
 			Next = next ?? throw new ArgumentNullException(nameof(next));
+
+			if (forwardedHeadersOptions == null) {
+				throw new ArgumentNullException(nameof(forwardedHeadersOptions));
+			}
+
+			ForwardedHeadersOptions = forwardedHeadersOptions.Value ?? throw new InvalidOperationException(nameof(forwardedHeadersOptions));
 
 			lock (FailedAuthorizations) {
 				ClearFailedAuthorizationsTimer ??= new Timer(
@@ -78,7 +87,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 			await Next(context).ConfigureAwait(false);
 		}
 
-		private static async Task<HttpStatusCode> GetAuthenticationStatus(HttpContext context) {
+		private async Task<HttpStatusCode> GetAuthenticationStatus(HttpContext context) {
 			if (context == null) {
 				throw new ArgumentNullException(nameof(context));
 			}
@@ -100,19 +109,19 @@ namespace ArchiSteamFarm.IPC.Integration {
 					return HttpStatusCode.OK;
 				}
 
-				if (Startup.KnownNetworks.IsEmpty) {
+				if (ForwardedHeadersOptions.KnownNetworks.Count == 0) {
 					return HttpStatusCode.Forbidden;
 				}
 
 				if (clientIP.IsIPv4MappedToIPv6) {
 					IPAddress mappedClientIP = clientIP.MapToIPv4();
 
-					if (Startup.KnownNetworks.Any(network => network.Contains(mappedClientIP))) {
+					if (ForwardedHeadersOptions.KnownNetworks.Any(network => network.Contains(mappedClientIP))) {
 						return HttpStatusCode.OK;
 					}
 				}
 
-				return Startup.KnownNetworks.Any(network => network.Contains(clientIP)) ? HttpStatusCode.OK : HttpStatusCode.Forbidden;
+				return ForwardedHeadersOptions.KnownNetworks.Any(network => network.Contains(clientIP)) ? HttpStatusCode.OK : HttpStatusCode.Forbidden;
 			}
 
 			if (FailedAuthorizations.TryGetValue(clientIP, out byte attempts)) {

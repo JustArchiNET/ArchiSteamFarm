@@ -29,7 +29,6 @@ using System.IO;
 #endif
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Globalization;
 using System.Net;
 using System.Reflection;
@@ -54,8 +53,6 @@ using Newtonsoft.Json.Serialization;
 
 namespace ArchiSteamFarm.IPC {
 	internal sealed class Startup {
-		internal static ImmutableHashSet<IPNetwork> KnownNetworks { get; private set; } = ImmutableHashSet<IPNetwork>.Empty;
-
 		private readonly IConfiguration Configuration;
 
 		public Startup(IConfiguration configuration) => Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
@@ -197,9 +194,11 @@ namespace ArchiSteamFarm.IPC {
 			// Prepare knownNetworks that we'll use in a second
 			HashSet<string>? knownNetworksTexts = Configuration.GetSection("Kestrel:KnownNetworks").Get<HashSet<string>>();
 
+			HashSet<IPNetwork>? knownNetworks = null;
+
 			if (knownNetworksTexts?.Count > 0) {
 				// Use specified known networks
-				HashSet<IPNetwork> knownNetworks = new();
+				knownNetworks = new HashSet<IPNetwork>();
 
 				foreach (string knownNetworkText in knownNetworksTexts) {
 					string[] addressParts = knownNetworkText.Split('/', StringSplitOptions.RemoveEmptyEntries);
@@ -213,8 +212,6 @@ namespace ArchiSteamFarm.IPC {
 
 					knownNetworks.Add(new IPNetwork(ipAddress, prefixLength));
 				}
-
-				KnownNetworks = knownNetworks.ToImmutableHashSet();
 			}
 
 			// Add support for proxies
@@ -222,8 +219,10 @@ namespace ArchiSteamFarm.IPC {
 				options => {
 					options.ForwardedHeaders = ForwardedHeaders.All;
 
-					foreach (IPNetwork knownNetwork in KnownNetworks) {
-						options.KnownNetworks.Add(knownNetwork);
+					if (knownNetworks != null) {
+						foreach (IPNetwork knownNetwork in knownNetworks) {
+							options.KnownNetworks.Add(knownNetwork);
+						}
 					}
 				}
 			);
