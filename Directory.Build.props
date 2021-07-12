@@ -1,59 +1,59 @@
 <Project>
-  <PropertyGroup>
-    <Version>5.1.2.2</Version>
-  </PropertyGroup>
+	<PropertyGroup>
+		<Version>5.1.2.2</Version>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
-    <ApplicationIcon>../resources/ASF.ico</ApplicationIcon>
-    <Authors>JustArchi</Authors>
-    <Company>JustArchiNET</Company>
-    <Copyright>Copyright © 2015-2021 JustArchiNET</Copyright>
-    <Description>ASF is a C# application with primary purpose of idling Steam cards from multiple accounts simultaneously.</Description>
-    <Deterministic>true</Deterministic>
-    <ErrorReport>none</ErrorReport>
-    <LangVersion>latest</LangVersion>
-    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <NeutralLanguage>en</NeutralLanguage>
-    <NoWarn>1591</NoWarn>
-    <Nullable>enable</Nullable>
-    <PackageIcon>../resources/ASF.ico</PackageIcon>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/JustArchiNET/ArchiSteamFarm</PackageProjectUrl>
-    <RepositoryType>Git</RepositoryType>
-    <RepositoryUrl>https://github.com/JustArchiNET/ArchiSteamFarm.git</RepositoryUrl>
-    <RollForward>LatestMajor</RollForward>
-    <RuntimeIdentifiers>linux-arm;linux-arm64;linux-x64;osx-x64;win-x64</RuntimeIdentifiers>
-    <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
-  </PropertyGroup>
+	<PropertyGroup>
+		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
+		<ApplicationIcon>../resources/ASF.ico</ApplicationIcon>
+		<Authors>JustArchi</Authors>
+		<Company>JustArchiNET</Company>
+		<Copyright>Copyright © 2015-2021 JustArchiNET</Copyright>
+		<Description>ASF is a C# application with primary purpose of idling Steam cards from multiple accounts simultaneously.</Description>
+		<Deterministic>true</Deterministic>
+		<ErrorReport>none</ErrorReport>
+		<LangVersion>latest</LangVersion>
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+		<NeutralLanguage>en</NeutralLanguage>
+		<NoWarn>1591</NoWarn>
+		<Nullable>enable</Nullable>
+		<PackageIcon>../resources/ASF.ico</PackageIcon>
+		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/JustArchiNET/ArchiSteamFarm</PackageProjectUrl>
+		<RepositoryType>Git</RepositoryType>
+		<RepositoryUrl>https://github.com/JustArchiNET/ArchiSteamFarm.git</RepositoryUrl>
+		<RollForward>LatestMajor</RollForward>
+		<RuntimeIdentifiers>linux-arm;linux-arm64;linux-x64;osx-x64;win-x64</RuntimeIdentifiers>
+		<TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(ASFVariant)' != ''">
-    <DefineConstants>$(DefineConstants);ASF_VARIANT_$(ASFVariant.Replace('-', '_').ToUpperInvariant())</DefineConstants>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(ASFVariant)' != ''">
+		<DefineConstants>$(DefineConstants);ASF_VARIANT_$(ASFVariant.Replace('-', '_').ToUpperInvariant())</DefineConstants>
+	</PropertyGroup>
 
-  <!-- Default configuration for release builds -->
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <DebugSymbols>false</DebugSymbols>
-    <DebugType>none</DebugType>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-  </PropertyGroup>
+	<!-- Default configuration for release builds -->
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+		<DebugSymbols>false</DebugSymbols>
+		<DebugType>none</DebugType>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<WarningsAsErrors/>
+	</PropertyGroup>
 
-  <!-- Trimming features as specified on https://docs.microsoft.com/dotnet/core/deploying/trimming-options#trimming-framework-library-features and https://github.com/dotnet/runtime/blob/master/docs/workflow/trimming/feature-switches.md -->
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <DebuggerSupport>false</DebuggerSupport>
-    <EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
-    <EnableUnsafeUTF7Encoding>false</EnableUnsafeUTF7Encoding>
-    <EventSourceSupport>false</EventSourceSupport>
-    <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
-    <TrimMode>link</TrimMode>
-  </PropertyGroup>
+	<!-- Trimming features as specified on https://docs.microsoft.com/dotnet/core/deploying/trimming-options#trimming-framework-library-features and https://github.com/dotnet/runtime/blob/master/docs/workflow/trimming/feature-switches.md -->
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+		<DebuggerSupport>false</DebuggerSupport>
+		<EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
+		<EnableUnsafeUTF7Encoding>false</EnableUnsafeUTF7Encoding>
+		<EventSourceSupport>false</EventSourceSupport>
+		<HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
+		<TrimMode>link</TrimMode>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(OS)' == 'Windows_NT' OR '$(ASFNetFramework)' != ''">
-    <TargetFrameworks>net5.0;net48</TargetFrameworks>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(OS)' == 'Windows_NT' OR '$(ASFNetFramework)' != ''">
+		<TargetFrameworks>net5.0;net48</TargetFrameworks>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(OS)' != 'Windows_NT' AND '$(ASFNetFramework)' == ''">
-    <TargetFramework>net5.0</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(OS)' != 'Windows_NT' AND '$(ASFNetFramework)' == ''">
+		<TargetFramework>net5.0</TargetFramework>
+	</PropertyGroup>
 </Project>

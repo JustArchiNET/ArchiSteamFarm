@@ -142,7 +142,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 
 			ArchiCryptoHelper.EHashingMethod ipcPasswordFormat = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPasswordFormat : GlobalConfig.DefaultIPCPasswordFormat;
 
-			string inputHash = ArchiCryptoHelper.Hash(ipcPasswordFormat, inputPassword!);
+			string inputHash = ArchiCryptoHelper.Hash(ipcPasswordFormat, inputPassword);
 
 			bool authorized = ipcPassword == inputHash;
 

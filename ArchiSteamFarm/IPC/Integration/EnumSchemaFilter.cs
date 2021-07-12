@@ -78,7 +78,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 					throw new InvalidOperationException(nameof(enumValue));
 				}
 
-				definition.Add(enumName!, enumObject);
+				definition.Add(enumName, enumObject);
 			}
 
 			schema.AddExtension("x-definition", definition);

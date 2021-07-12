@@ -393,6 +393,7 @@ namespace ArchiSteamFarm.Storage {
 
 			if (!valid) {
 				if (!string.IsNullOrEmpty(errorMessage)) {
+					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 					ASF.ArchiLogger.LogGenericError(errorMessage!);
 				}
 

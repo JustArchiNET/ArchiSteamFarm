@@ -231,7 +231,7 @@ namespace ArchiSteamFarm.Core {
 					return null;
 				}
 
-				Version newVersion = new(releaseResponse.Tag!);
+				Version newVersion = new(releaseResponse.Tag);
 
 				ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.UpdateVersionInfo, SharedInfo.Version, newVersion));
 
@@ -400,6 +400,7 @@ namespace ArchiSteamFarm.Core {
 			if (!string.IsNullOrEmpty(Program.NetworkGroup)) {
 				using SHA256 hashingAlgorithm = SHA256.Create();
 
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 				networkGroupText = "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(Program.NetworkGroup!))).Replace("-", "", StringComparison.Ordinal);
 			} else if (!string.IsNullOrEmpty(GlobalConfig.WebProxyText)) {
 				using SHA256 hashingAlgorithm = SHA256.Create();
@@ -429,6 +430,8 @@ namespace ArchiSteamFarm.Core {
 
 			if (loadedAssembliesNames == null) {
 				Assembly[] loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 				loadedAssembliesNames = loadedAssemblies.Select(loadedAssembly => loadedAssembly.FullName).Where(name => !string.IsNullOrEmpty(name)).ToHashSet()!;
 			}
 
@@ -438,6 +441,8 @@ namespace ArchiSteamFarm.Core {
 				LoadAssembliesRecursively(Assembly.Load(assemblyName), loadedAssembliesNames);
 			}
 		}
+
+		private static async void OnAutoUpdatesTimer(object? state) => await UpdateAndRestart().ConfigureAwait(false);
 
 		private static async void OnChanged(object sender, FileSystemEventArgs e) {
 			if (sender == null) {
@@ -882,7 +887,7 @@ namespace ArchiSteamFarm.Core {
 				TimeSpan autoUpdatePeriod = TimeSpan.FromHours(GlobalConfig.UpdatePeriod);
 
 				AutoUpdatesTimer = new Timer(
-					async _ => await UpdateAndRestart().ConfigureAwait(false),
+					OnAutoUpdatesTimer,
 					null,
 					autoUpdatePeriod, // Delay
 					autoUpdatePeriod // Period
@@ -1016,7 +1021,7 @@ namespace ArchiSteamFarm.Core {
 					}
 
 					if (!Directory.Exists(directory)) {
-						Directory.CreateDirectory(directory!);
+						Directory.CreateDirectory(directory);
 					}
 
 					// We're not interested in extracting placeholder files (but we still want directories created for them, done above)

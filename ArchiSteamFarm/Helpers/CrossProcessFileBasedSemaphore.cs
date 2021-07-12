@@ -161,13 +161,13 @@ namespace ArchiSteamFarm.Helpers {
 			}
 
 			if (!Directory.Exists(directoryPath)) {
-				Directory.CreateDirectory(directoryPath!);
+				Directory.CreateDirectory(directoryPath);
 
 				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-					DirectoryInfo directoryInfo = new(directoryPath!);
+					DirectoryInfo directoryInfo = new(directoryPath);
 
 					try {
-						DirectorySecurity directorySecurity = new(directoryPath!, AccessControlSections.All);
+						DirectorySecurity directorySecurity = new(directoryPath, AccessControlSections.All);
 
 						directoryInfo.SetAccessControl(directorySecurity);
 					} catch (PrivilegeNotHeldException e) {
@@ -179,7 +179,7 @@ namespace ArchiSteamFarm.Helpers {
 #else
 				} else if (RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
 #endif
-					OS.UnixSetFileAccess(directoryPath!, OS.EUnixPermission.Combined777);
+					OS.UnixSetFileAccess(directoryPath, OS.EUnixPermission.Combined777);
 				}
 			}
 

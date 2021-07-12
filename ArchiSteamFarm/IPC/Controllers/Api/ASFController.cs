@@ -54,7 +54,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(request.StringToEncrypt))));
 			}
 
-			string? encryptedString = Actions.Encrypt(request.CryptoMethod, request.StringToEncrypt!);
+			string? encryptedString = Actions.Encrypt(request.CryptoMethod, request.StringToEncrypt);
 
 			return Ok(new GenericResponse<string>(encryptedString));
 		}
@@ -92,7 +92,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(request.StringToHash))));
 			}
 
-			string hash = Actions.Hash(request.HashingMethod, request.StringToHash!);
+			string hash = Actions.Hash(request.HashingMethod, request.StringToHash);
 
 			return Ok(new GenericResponse<string>(hash));
 		}

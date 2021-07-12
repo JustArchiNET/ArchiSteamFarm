@@ -60,6 +60,7 @@ namespace ArchiSteamFarm.IPC.Responses {
 		public GenericResponse(bool success, string? message = null) {
 			Success = success;
 
+			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 			Message = !string.IsNullOrEmpty(message) ? message! : success ? "OK" : Strings.WarningFailed;
 		}
 	}

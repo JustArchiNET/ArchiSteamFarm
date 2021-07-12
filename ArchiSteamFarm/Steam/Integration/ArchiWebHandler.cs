@@ -324,7 +324,10 @@ namespace ArchiSteamFarm.Steam.Integration {
 			// Extra entry for format
 			Dictionary<string, object> arguments = new(5, StringComparer.Ordinal) {
 				{ "include_appinfo", 1 },
+
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 				{ "key", steamApiKey! },
+
 				{ "skip_unvetted_apps", "0" },
 				{ "steamid", steamID }
 			};
@@ -378,6 +381,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 					return null;
 				}
 
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 				result[appID] = gameName!;
 			}
 
@@ -394,7 +398,9 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 			// Extra entry for format
 			Dictionary<string, object> arguments = new(3, StringComparer.Ordinal) {
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 				{ "access_token", accessToken! },
+
 				{ "steamid", Bot.SteamID }
 			};
 
@@ -547,7 +553,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 						}
 
 						// This is actually client error with a reason, so it doesn't make sense to retry
-						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content!.ErrorText));
+						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText));
 
 						return (false, mobileTradeOfferIDs);
 					}
@@ -950,8 +956,10 @@ namespace ArchiSteamFarm.Steam.Integration {
 				};
 
 				if (data != null) {
+					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 					data[sessionName] = sessionID!;
 				} else {
+					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 					data = new Dictionary<string, string>(1, StringComparer.Ordinal) { { sessionName, sessionID! } };
 				}
 			}
@@ -1054,8 +1062,10 @@ namespace ArchiSteamFarm.Steam.Integration {
 				};
 
 				if (data != null) {
+					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 					data[sessionName] = sessionID!;
 				} else {
+					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 					data = new Dictionary<string, string>(1, StringComparer.Ordinal) { { sessionName, sessionID! } };
 				}
 			}
@@ -1157,6 +1167,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 					_ => throw new ArgumentOutOfRangeException(nameof(session))
 				};
 
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 				KeyValuePair<string, string> sessionValue = new(sessionName, sessionID!);
 
 				if (data != null) {
@@ -1265,8 +1276,10 @@ namespace ArchiSteamFarm.Steam.Integration {
 				};
 
 				if (data != null) {
+					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 					data[sessionName] = sessionID!;
 				} else {
+					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 					data = new Dictionary<string, string>(1, StringComparer.Ordinal) { { sessionName, sessionID! } };
 				}
 			}
@@ -1410,7 +1423,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 					}
 
 					// This is actually client error with a reason, so it doesn't make sense to retry
-					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content!.ErrorText));
+					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Content.ErrorText));
 
 					return (false, false);
 				}
@@ -1499,7 +1512,9 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 			// Extra entry for format
 			Dictionary<string, object> arguments = new(3, StringComparer.Ordinal) {
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 				{ "key", steamApiKey! },
+
 				{ "tradeofferid", tradeID }
 			};
 
@@ -1559,7 +1574,10 @@ namespace ArchiSteamFarm.Steam.Integration {
 				{ "active_only", 1 },
 				{ "get_descriptions", 1 },
 				{ "get_received_offers", 1 },
+
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 				{ "key", steamApiKey! },
+
 				{ "time_historical_cutoff", uint.MaxValue }
 			};
 
@@ -1649,7 +1667,8 @@ namespace ArchiSteamFarm.Steam.Integration {
 							return null;
 						}
 
-						parsedTags.Add(new Tag(identifier!, value!));
+						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+						parsedTags.Add(new Tag(identifier!, value));
 					}
 
 					parsedDescription.Tags = parsedTags.ToImmutableHashSet();
@@ -2044,11 +2063,14 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 			// Extra entry for format
 			Dictionary<string, object> arguments = new(!string.IsNullOrEmpty(tradeToken) ? 4 : 3, StringComparer.Ordinal) {
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 				{ "key", steamApiKey! },
+
 				{ "steamid_target", steamID }
 			};
 
 			if (!string.IsNullOrEmpty(tradeToken)) {
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 				arguments["trade_offer_access_token"] = tradeToken!;
 			}
 
@@ -2456,7 +2478,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 				return (ESteamApiKeyState.AccessDenied, null);
 			}
 
-			IElement? htmlNode = response!.Content!.SelectSingleNode("//div[@id='bodyContents_ex']/p");
+			IElement? htmlNode = response.Content.SelectSingleNode("//div[@id='bodyContents_ex']/p");
 
 			if (htmlNode == null) {
 				Bot.ArchiLogger.LogNullError(nameof(htmlNode));
@@ -2709,6 +2731,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 			ObjectResponse<AccessTokenResponse>? response = await UrlGetToJsonObjectWithSession<AccessTokenResponse>(request).ConfigureAwait(false);
 
+			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 			return !string.IsNullOrEmpty(response?.Content.Data.WebAPIToken) ? (true, response!.Content.Data.WebAPIToken) : (false, null);
 		}
 
@@ -2810,6 +2833,8 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 			Dictionary<string, string> data = new(2, StringComparer.Ordinal) {
 				{ "pin", parentalCode },
+
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 				{ "sessionid", sessionID! }
 			};
 

@@ -68,6 +68,7 @@ namespace ArchiSteamFarm {
 		internal static string HomeDirectory {
 			get {
 				if (!string.IsNullOrEmpty(CachedHomeDirectory)) {
+					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 					return CachedHomeDirectory!;
 				}
 

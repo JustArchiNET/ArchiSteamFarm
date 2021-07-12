@@ -202,6 +202,7 @@ namespace ArchiSteamFarm {
 			string? copyright = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyCopyrightAttribute>()?.Copyright;
 
 			if (!string.IsNullOrEmpty(copyright)) {
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 				ASF.ArchiLogger.LogGenericInfo(copyright!);
 			}
 
@@ -277,7 +278,10 @@ namespace ArchiSteamFarm {
 
 			if (!string.IsNullOrEmpty(latestJson)) {
 				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.AutomaticFileMigration, globalConfigFile));
+
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 				await SerializableFile.Write(globalConfigFile, latestJson!).ConfigureAwait(false);
+
 				ASF.ArchiLogger.LogGenericInfo(Strings.Done);
 			}
 
@@ -475,19 +479,19 @@ namespace ArchiSteamFarm {
 				string? envCryptKey = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableCryptKey);
 
 				if (!string.IsNullOrEmpty(envCryptKey)) {
-					HandleCryptKeyArgument(envCryptKey!);
+					HandleCryptKeyArgument(envCryptKey);
 				}
 
 				string? envNetworkGroup = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableNetworkGroup);
 
 				if (!string.IsNullOrEmpty(envNetworkGroup)) {
-					HandleNetworkGroupArgument(envNetworkGroup!);
+					HandleNetworkGroupArgument(envNetworkGroup);
 				}
 
 				string? envPath = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariablePath);
 
 				if (!string.IsNullOrEmpty(envPath)) {
-					HandlePathArgument(envPath!);
+					HandlePathArgument(envPath);
 				}
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);

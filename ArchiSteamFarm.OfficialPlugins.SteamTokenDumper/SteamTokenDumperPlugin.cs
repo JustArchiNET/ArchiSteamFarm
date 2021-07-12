@@ -169,7 +169,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			}
 
 			SemaphoreSlim refreshSemaphore = new(1, 1);
-			Timer refreshTimer = new(async _ => await Refresh(bot).ConfigureAwait(false));
+			Timer refreshTimer = new(OnBotRefreshTimer, bot, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
 
 			if (!BotSynchronizations.TryAdd(bot, (refreshSemaphore, refreshTimer))) {
 				refreshSemaphore.Dispose();
@@ -244,6 +244,14 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			}
 
 			GlobalCache.OnPICSChangesRestart(currentChangeNumber);
+		}
+
+		private static async void OnBotRefreshTimer(object? state) {
+			if (state is not Bot bot) {
+				throw new InvalidOperationException(nameof(state));
+			}
+
+			await Refresh(bot).ConfigureAwait(false);
 		}
 
 		private static async void OnLicenseList(Bot bot, SteamApps.LicenseListCallback callback) {

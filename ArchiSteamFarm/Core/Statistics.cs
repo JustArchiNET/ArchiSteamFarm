@@ -228,6 +228,8 @@ namespace ArchiSteamFarm.Core {
 					{ "MatchEverything", Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) ? "1" : "0" },
 					{ "Nickname", nickname ?? "" },
 					{ "SteamID", Bot.SteamID.ToString(CultureInfo.InvariantCulture) },
+
+					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 					{ "TradeToken", tradeToken! }
 				};
 
