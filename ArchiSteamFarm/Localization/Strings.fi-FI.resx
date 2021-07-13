@@ -1,640 +1,585 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
-    Microsoft ResX Schema
-
-    Version 2.0
-
-    The primary goals of this format is to allow a simple XML format
-    that is mostly human readable. The generation and parsing of the
-    various data types are done through the TypeConverter classes
-    associated with the data types.
-
-    Example:
-
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-
-    There are any number of "resheader" rows that contain simple
-    name/value pairs.
-
-    Each data row contains a name, and value. The row also contains a
-    type or mimetype. Type corresponds to a .NET class that support
-    text/value conversion through the TypeConverter architecture.
-    Classes that don't support this are serialized and stored with the
-    mimetype set.
-
-    The mimetype is used for serialized objects, and tells the
-    ResXResourceReader how to depersist the object. This is currently not
-    extensible. For a given mimetype the value must be set accordingly:
-
-    Note - application/x-microsoft.net.object.binary.base64 is the format
-    that the ResXResourceWriter will generate, however the reader can
-    read any of the formats listed below.
-
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
-  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string"/>
-              <xsd:attribute name="type" type="xsd:string"/>
-              <xsd:attribute name="mimetype" type="xsd:string"/>
-              <xsd:attribute ref="xml:space"/>
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string"/>
-              <xsd:attribute name="name" type="xsd:string"/>
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-              <xsd:attribute ref="xml:space"/>
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required"/>
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="AcceptingTrade" xml:space="preserve">
-    <value>Hyväksytään vaihtoa: {0}</value>
-    <comment>{0} will be replaced by trade number</comment>
-  </data>
-  <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF tarkistaa päivitykset automaattisesti {0} välein.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
-  </data>
-  <data name="Content" xml:space="preserve">
-    <value>Sisältö:
+	<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns="" id="root">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="metadata">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0"/>
+							</xsd:sequence>
+							<xsd:attribute name="name" use="required" type="xsd:string"/>
+							<xsd:attribute name="type" type="xsd:string"/>
+							<xsd:attribute name="mimetype" type="xsd:string"/>
+							<xsd:attribute ref="xml:space"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="assembly">
+						<xsd:complexType>
+							<xsd:attribute name="alias" type="xsd:string"/>
+							<xsd:attribute name="name" type="xsd:string"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+							<xsd:attribute ref="xml:space"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required"/>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+			PublicKeyToken=b77a5c561934e089
+		</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+			PublicKeyToken=b77a5c561934e089
+		</value>
+	</resheader>
+	<data name="AcceptingTrade" xml:space="preserve">
+		<value>Hyväksytään vaihtoa: {0}</value>
+		<comment>{0} will be replaced by trade number</comment>
+	</data>
+	<data name="AutoUpdateCheckInfo" xml:space="preserve">
+		<value>ASF tarkistaa päivitykset automaattisesti {0} välein.</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
+	</data>
+	<data name="Content" xml:space="preserve">
+		<value>Sisältö:
 {0}</value>
-    <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
-  </data>
-  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Kohdassa {0} muokattu arvo {1} on epäkelpo</value>
-    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
-  </data>
-  <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} on törmännyt ylitsepääsemättömään poikkeukseen ennen kuin ytimen lokinkirjaus moduuli ehdittiin käynnistää!</value>
-    <comment>{0} will be replaced by version number</comment>
-  </data>
-  <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
-    <value>Poikkeus: {0}() {1}
+		<comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
+	</data>
+	<data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+		<value>Kohdassa {0} muokattu arvo {1} on epäkelpo</value>
+		<comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+	</data>
+	<data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
+		<value>ASF V{0} on törmännyt ylitsepääsemättömään poikkeukseen ennen kuin ytimen lokinkirjaus moduuli ehdittiin käynnistää!</value>
+		<comment>{0} will be replaced by version number</comment>
+	</data>
+	<data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
+		<value>Poikkeus: {0}() {1}
 StackTrace:
 {2}</value>
-    <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
-  </data>
-  <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>Poistutaan muulla kuin 0 virhekoodilla!</value>
-  </data>
-  <data name="ErrorFailingRequest" xml:space="preserve">
-    <value>Pyyntö epäonnistuu: {0}</value>
-    <comment>{0} will be replaced by URL of the request</comment>
-  </data>
-  <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Yleisiä asetuksia ei voitu ladata. Tarkista että {0} on olemassa ja validi. Seuraa wikin 'setting up' ohjetta mikäli tarvitset apua.</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
-  <data name="ErrorIsInvalid" xml:space="preserve">
-    <value>{0} on virheellinen!</value>
-    <comment>{0} will be replaced by object's name</comment>
-  </data>
-  <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>Botteja ei ole määritelty. Unohditko tehdä asetukset ASF varten?</value>
-  </data>
-  <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} on ei mitään!</value>
-    <comment>{0} will be replaced by object's name</comment>
-  </data>
-  <data name="ErrorParsingObject" xml:space="preserve">
-    <value>{0} jäsentäminen epäonnistui!</value>
-    <comment>{0} will be replaced by object's name</comment>
-  </data>
-  <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>Pyyntö epäonnistui {0} yrityksen jälkeen!</value>
-    <comment>{0} will be replaced by maximum number of tries</comment>
-  </data>
-  <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>Viimeisimmän version tarkistus epäonnistui!</value>
-  </data>
-  <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
-    <value>Päivittämistä ei voitu jatkaa koska nykyistä versiota ei tunnistettu! Automaattiset päivitykset eivät ole mahdollisia.</value>
-  </data>
-  <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>Päivittämistä ei voitu jatkaa koska kyseinen versio ei sisällä yhtään tiedostoa!</value>
-  </data>
-  <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Huomasimme tarpeen käyttäjän toimille, mutta prosessi on käynnistetty headless-tilassa!</value>
-  </data>
-  <data name="Exiting" xml:space="preserve">
-    <value>Suljetaan...</value>
-  </data>
-  <data name="WarningFailed" xml:space="preserve">
-    <value>Virhe!</value>
-  </data>
-  <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>Globaalia asetustiedostoa muutettiin!</value>
-  </data>
-  <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>Globaali asetustiedosto poistettiin!</value>
-  </data>
-  <data name="IgnoringTrade" xml:space="preserve">
-    <value>Ohitetaan vaihto: {0}</value>
-    <comment>{0} will be replaced by trade number</comment>
-  </data>
-  <data name="LoggingIn" xml:space="preserve">
-    <value>Kirjaudutaan to {0}...</value>
-    <comment>{0} will be replaced by service's name</comment>
-  </data>
-  <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>Yhtään bottia ei ole käynnissä, poistutaan...</value>
-  </data>
-  <data name="RefreshingOurSession" xml:space="preserve">
-    <value>Virkistetään istuntomme!</value>
-  </data>
-  <data name="RejectingTrade" xml:space="preserve">
-    <value>Hylätään vaihto: {0}</value>
-    <comment>{0} will be replaced by trade number</comment>
-  </data>
-  <data name="Restarting" xml:space="preserve">
-    <value>Käynnistetään uudelleen...</value>
-  </data>
-  <data name="Starting" xml:space="preserve">
-    <value>Käynnistetään...</value>
-  </data>
-  <data name="Success" xml:space="preserve">
-    <value>Valmis!</value>
-  </data>
-  <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Avataan tilin lapsilukitus...</value>
-  </data>
-  <data name="UpdateCheckingNewVersion" xml:space="preserve">
-    <value>Tarkistetaan päivityksiä...</value>
-  </data>
-  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Ladataan uutta versiota: {0} ({1} Mt)... Odotellessa, harkitsethan lahjoittamista jos arvostat tekemäämme työtä! :)</value>
-    <comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
-  </data>
-  <data name="UpdateFinished" xml:space="preserve">
-    <value>Päivitys valmis!</value>
-  </data>
-  <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>Uusi ASF-versio on saatavilla! Suositellaan päivittämistä!</value>
-  </data>
-  <data name="UpdateVersionInfo" xml:space="preserve">
-    <value>Paikallinen versio: {0} | Etäkäyttöversio: {1}</value>
-    <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
-  </data>
-  <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>Syötä 2FA koodi Steam varmennus sovelluksesta: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>Syötä SteamGuard varmennuskoodi, joka lähetettiin sähköpostiisi: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>Syötä Steam-tilisi käyttäjätunnus: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamParentalCode" xml:space="preserve">
-    <value>Syötä Steam-tilisi lapsilukon Pin-koodi: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>Syötä Steam-tilisi salasana: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
-  <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
-    <value>Vastaanotettu tuntematon arvo {0}:lle, ole hyvä ja ilmoita tästä: {1}</value>
-    <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
-  </data>
-  <data name="IPCReady" xml:space="preserve">
-    <value>IPC-palvelin on valmiina!</value>
-  </data>
-  <data name="IPCStarting" xml:space="preserve">
-    <value>Käynnistetään IPC-palvelinta...</value>
-  </data>
-  <data name="BotAlreadyStopped" xml:space="preserve">
-    <value>Tämä botti on jo pysäytetty!</value>
-  </data>
-  <data name="BotNotFound" xml:space="preserve">
-    <value>Bottia nimeltä {0} ei voitu löytää!</value>
-    <comment>{0} will be replaced by bot's name query (string)</comment>
-  </data>
-  
-  
-  
-  <data name="CheckingFirstBadgePage" xml:space="preserve">
-    <value>Tarkastellaan ensimmäistä badge sivua...</value>
-  </data>
-  <data name="CheckingOtherBadgePages" xml:space="preserve">
-    <value>Tarkastellaan muita badge sivuja...</value>
-  </data>
-  
-  <data name="Done" xml:space="preserve">
-    <value>Valmis!</value>
-  </data>
-  
-  
-  
-  
-  
-  
-  <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
-    <value>Tämä pyyntö jätetään huomioimatta, kun pysyvä tauko on päällä!</value>
-  </data>
-  
-  
-  
-  <data name="PlayingNotAvailable" xml:space="preserve">
-    <value>Pelaaminen ei ole tällä hetkellä mahdollista, yritetään myöhemmin uudestaan!</value>
-  </data>
-  
-  
-  
-  
-  <data name="UnknownCommand" xml:space="preserve">
-    <value>Tuntematon komento!</value>
-  </data>
-  <data name="WarningCouldNotCheckBadges" xml:space="preserve">
-    <value>Merkkien hakeminen epäonnistui, yritetään myöhemmin uudestaan!</value>
-  </data>
-  <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
-    <value>Ei voitu tarkastaan korttien tilaa kohteelle: {0} ({1}), yritetään myöhemmin uudestaan!</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
-  <data name="BotAcceptingGift" xml:space="preserve">
-    <value>Hyväksytään lahjaa: {0}...</value>
-    <comment>{0} will be replaced by giftID (number)</comment>
-  </data>
-  
-  <data name="BotAddLicense" xml:space="preserve">
-    <value>ID: {0} | Tila: {1}</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
-  </data>
-  <data name="BotAddLicenseWithItems" xml:space="preserve">
-    <value>ID: {0} | Tila: {1} | Tuotteet: {2}</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string, {2} will be replaced by list of granted IDs (numbers), separated by a comma</comment>
-  </data>
-  <data name="BotAlreadyRunning" xml:space="preserve">
-    <value>Tämä botti on jo käynnissä!</value>
-  </data>
-  <data name="BotAuthenticatorConverting" xml:space="preserve">
-    <value>Muutetaan .maFile ASF:n käyttämään muotoon...</value>
-  </data>
-  <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>Mobiili authentikaattorin tuonti onnistui!</value>
-  </data>
-  <data name="BotAuthenticatorToken" xml:space="preserve">
-    <value>2FA Koodi: {0}</value>
-    <comment>{0} will be replaced by generated 2FA token (string)</comment>
-  </data>
-  
-  
-  
-  
-  <data name="BotConnected" xml:space="preserve">
-    <value>Yhdistetty Steamiin!</value>
-  </data>
-  <data name="BotDisconnected" xml:space="preserve">
-    <value>Katkaistu yhteys Steamista!</value>
-  </data>
-  <data name="BotDisconnecting" xml:space="preserve">
-    <value>Katkaistaan yhteyttä...</value>
-  </data>
-  <data name="BotEncryptedPassword" xml:space="preserve">
-    <value>[{0}] salasana: {1}</value>
-    <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
-  </data>
-  <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
-    <value>Ei käynnistetä tätä bottia koska se on poistettu käytöstä configuraatiossa!</value>
-  </data>
-  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Saimme TwoFactorCodeMismatch virhekoodin {0} kertaa putkeen. Joko 2FA tilitiedot eivät ole enää voimassa, tai kellosi ei ole synkronoitu, keskeytetään!</value>
-    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
-  </data>
-  <data name="BotLoggedOff" xml:space="preserve">
-    <value>Kirjauduttu ulos Steamista: {0}</value>
-    <comment>{0} will be replaced by logging off reason (string)</comment>
-  </data>
-  <data name="BotLoggedOn" xml:space="preserve">
-    <value>Kirjauduttu onnistuneesti käyttäjänä {0}.</value>
-    <comment>{0} will be replaced by steam ID (number)</comment>
-  </data>
-  <data name="BotLoggingIn" xml:space="preserve">
-    <value>Kirjaudutaan sisään...</value>
-  </data>
-  <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>Tämä käyttäjä vaikuttaisi olevan käytössä toisessa ASF instanssissa. Tällaista käyttäytymistä ei ole määritelty, kieltäydytään suorittamasta!</value>
-  </data>
-  <data name="BotLootingFailed" xml:space="preserve">
-    <value>Vaihtotarjous epäonnistui!</value>
-  </data>
-  <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Vaihtoa ei voitu lähettää koska yhtään käyttäjää master-oikeuksilla ei ole määritelty!</value>
-  </data>
-  <data name="BotLootingSuccess" xml:space="preserve">
-    <value>Vaihtopyyntö lähetetty onnistuneesti!</value>
-  </data>
-  
-  <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>Tällä botilla ei ole ASF 2FA käytössä! Unohditko ottaa ASF 2FA authentikaattorin käyttöön?</value>
-  </data>
-  <data name="BotNotConnected" xml:space="preserve">
-    <value>Tämä botti instanssi ei ole yhdistettynä!</value>
-  </data>
-  <data name="BotNotOwnedYet" xml:space="preserve">
-    <value>Omistamattomat: {0}</value>
-    <comment>{0} will be replaced by query (string)</comment>
-  </data>
-  <data name="BotOwnedAlreadyWithName" xml:space="preserve">
-    <value>Omistetut {0} | {1}</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
-  
-  <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>Yritysmäärä on ylitetty, yritetään uudelleen {0} jälkeen...</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
-  </data>
-  <data name="BotReconnecting" xml:space="preserve">
-    <value>Yhdistetään uudelleen...</value>
-  </data>
-  <data name="BotRedeem" xml:space="preserve">
-    <value>Avain: {0} | Tila: {1}</value>
-    <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string</comment>
-  </data>
-  <data name="BotRedeemWithItems" xml:space="preserve">
-    <value>Avain: {0} | Tila: {1} | Tuotteet: {2}</value>
-    <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string, {2} will be replaced by list of key-value pairs, separated by a comma</comment>
-  </data>
-  <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
-    <value>Poistettu vanhentunut kirjautumisavain!</value>
-  </data>
-  
-  
-  <data name="BotStatusConnecting" xml:space="preserve">
-    <value>Botti yhdistää Steam-verkkoon.</value>
-  </data>
-  <data name="BotStatusNotRunning" xml:space="preserve">
-    <value>Botti ei ole käynnissä.</value>
-  </data>
-  <data name="BotStatusPaused" xml:space="preserve">
-    <value>Botti on pysäytetty tai käynnissä manuaalisessa tilassa.</value>
-  </data>
-  <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
-    <value>Botti ei ole tällä hetkellä käytössä.</value>
-  </data>
-  <data name="BotUnableToLogin" xml:space="preserve">
-    <value>Steamiin kirjautuminen ei onnistunut: {0}/{1}</value>
-    <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
-  </data>
-  <data name="ErrorIsEmpty" xml:space="preserve">
-    <value>{0} on tyhjä!</value>
-    <comment>{0} will be replaced by object's name</comment>
-  </data>
-  <data name="UnusedKeys" xml:space="preserve">
-    <value>Käyttämättömät CD-keyt: {0}</value>
-    <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
-  </data>
-  <data name="WarningFailedWithError" xml:space="preserve">
-    <value>Epäonnistuminen virheen takia: {0}</value>
-    <comment>{0} will be replaced by failure reason (string)</comment>
-  </data>
-  <data name="BotConnectionLost" xml:space="preserve">
-    <value>Yhteys Steam-verkkoon katkesi. Yhdistetään uudelleen...</value>
-  </data>
-  
-  
-  <data name="BotConnecting" xml:space="preserve">
-    <value>Yhdistetään...</value>
-  </data>
-  <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>Yhteyden katkaisu clienttiin epäonnistui. Hylätään tämä botti instanssi!</value>
-  </data>
-  <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>Yhteys SteamDirectoryyn epäonnistui: Steam-verkkoon yhdistäminen saattaa kestää paljon kauemmin!</value>
-  </data>
-  <data name="BotStopping" xml:space="preserve">
-    <value>Pysäytetään...</value>
-  </data>
-  <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>Botti-tiedostosi ei ole validi. Tarkista {0} sisältö ja yritä uudestaan!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
-  <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>Pysyvää tietokantaa ei saatu ladattua, jos ongelma jatkuu, poista {0} luodaksesi uuden tietokannan!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
-  <data name="Initializing" xml:space="preserve">
-    <value>Alustetaan {0}...</value>
-    <comment>{0} will be replaced by service name that is being initialized</comment>
-  </data>
-  <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>Tutustu tietosuoja-osioon wikissä mikäli olet huolestunut siitä mitä ASF oikeasti tekee!</value>
-  </data>
-  <data name="Welcome" xml:space="preserve">
-    <value>Huomasin että käynnistit ohjelman ensimmäisen kerran, tervetuloa!</value>
-  </data>
-  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-    <value>Antamasi CurrentCulture on epäkelpo, ASF jatkaa toimintaa oletusarvolla!</value>
-  </data>
-  
-  
-  <data name="WarningIdlingGameMismatch" xml:space="preserve">
-    <value>ASF huomasi ID poikkeavuuden kohteessa {0} ({1}) ja käyttää ID:tä {2} tämän sijaan.</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
-  </data>
-  <data name="BotVersion" xml:space="preserve">
-    <value>{0} V{1}</value>
-    <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
-  </data>
-  
-  
-  <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
-    <value>Tämä funktio on käytettävissä vain headless-tilassa!</value>
-  </data>
-  <data name="BotOwnedAlready" xml:space="preserve">
-    <value>Jo omistetut: {0}</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
-  <data name="ErrorAccessDenied" xml:space="preserve">
-    <value>Pääsy kielletty!</value>
-  </data>
-  
-  
-  <data name="ClearingDiscoveryQueue" xml:space="preserve">
-    <value>Tyhjennetään Steamin discovery-jonoa #{0}...</value>
-    <comment>{0} will be replaced by queue number</comment>
-  </data>
-  <data name="DoneClearingDiscoveryQueue" xml:space="preserve">
-    <value>Steamin discovery-jono #{0} tyhjennetty.</value>
-    <comment>{0} will be replaced by queue number</comment>
-  </data>
-  <data name="BotOwnsOverviewPerGame" xml:space="preserve">
-    <value>{0}/{1} bottia omistaa jo pelin {2}.</value>
-    <comment>{0} will be replaced by number of bots that already own particular game being checked, {1} will be replaced by total number of bots that were checked during the process, {2} will be replaced by game's ID (number)</comment>
-  </data>
-  <data name="BotRefreshingPackagesData" xml:space="preserve">
-    <value>Päivitetään pakettien tietoja...</value>
-  </data>
-  <data name="WarningDeprecated" xml:space="preserve">
-    <value>{0}:n käyttö on vanhentunut ja poistetaan tulevissa versioissa. Käytä sen sijaan {1}.</value>
-    <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
-  </data>
-  <data name="BotAcceptedDonationTrade" xml:space="preserve">
-    <value>Hyväksyttiin lahjoitus: {0}</value>
-    <comment>{0} will be replaced by trade's ID (number)</comment>
-  </data>
-  <data name="WarningWorkaroundTriggered" xml:space="preserve">
-    <value>Kierto ongelmalle {0} on aloitettu.</value>
-    <comment>{0} will be replaced by the bug's name provided by ASF</comment>
-  </data>
-  <data name="TargetBotNotConnected" xml:space="preserve">
-    <value>Haluttu botti ei ole yhdistetty!</value>
-  </data>
-  <data name="BotWalletBalance" xml:space="preserve">
-    <value>Lompakon saldo: {0} {1}</value>
-    <comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
-  </data>
-  <data name="BotHasNoWallet" xml:space="preserve">
-    <value>Botilla ei ole lompakkoa.</value>
-  </data>
-  <data name="BotLevel" xml:space="preserve">
-    <value>Botin taso on {0}.</value>
-    <comment>{0} will be replaced by bot's level</comment>
-  </data>
-  <data name="ActivelyMatchingItems" xml:space="preserve">
-    <value>Vertaillaan Steam-esineitä, kierros #{0}...</value>
-    <comment>{0} will be replaced by round number</comment>
-  </data>
-  <data name="DoneActivelyMatchingItems" xml:space="preserve">
-    <value>Steam-esineiden vertailu valmis, kierros #{0}.</value>
-    <comment>{0} will be replaced by round number</comment>
-  </data>
-  <data name="ErrorAborted" xml:space="preserve">
-    <value>Keskeytetty!</value>
-  </data>
-  <data name="ActivelyMatchingItemsRound" xml:space="preserve">
-    <value>Vertailtiin yhteensä {0} settiä tällä kierroksella.</value>
-    <comment>{0} will be replaced by number of sets traded</comment>
-  </data>
-  <data name="WarningExcessiveBotsCount" xml:space="preserve">
-    <value>Ajat useampia botteja, kuin mitä suositeltumme raja, ({0}), mahdollistaa. Ota huomioon, että se ei ole tuettua ja saattaa aiheuttaa häiriöitä Steamin kanssa, mukaan lukien tilien jäähdytykset. Katso lisätietoja UKK: sta.</value>
-    <comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
-  </data>
-  <data name="PluginLoaded" xml:space="preserve">
-    <value>{0} ladattiin onnistuneesti!</value>
-    <comment>{0} will be replaced by the name of the custom ASF plugin</comment>
-  </data>
-  <data name="PluginLoading" xml:space="preserve">
-    <value>Ladataan {0} V{1}...</value>
-    <comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
-  </data>
-  <data name="NothingFound" xml:space="preserve">
-    <value>Mitään ei löytynyt!</value>
-  </data>
-  
-  <data name="PleaseWait" xml:space="preserve">
-    <value>Odota hetki...</value>
-  </data>
-  <data name="EnterCommand" xml:space="preserve">
-    <value>Syötä komento: </value>
-  </data>
-  <data name="Executing" xml:space="preserve">
-    <value>Suoritetaan...</value>
-  </data>
-  <data name="InteractiveConsoleEnabled" xml:space="preserve">
-    <value>Vuorovaikutteinen konsoli on nyt aktiivinen. Paina 'c' siirtyäksesi komento-tilaan.</value>
-  </data>
-  <data name="InteractiveConsoleNotAvailable" xml:space="preserve">
-    <value>Vuorovaikutteinen konsoli ei ole käytettävissä, koska {0} asetus puuttuu.</value>
-    <comment>{0} will be replaced by the name of the missing config property (string)</comment>
-  </data>
-  <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
-    <value>Botilla on {0} peliä jäljellä taustajonossa.</value>
-    <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
-  </data>
-  <data name="ErrorSingleInstanceRequired" xml:space="preserve">
-    <value>ASF prosessi on jo käynnissä tässä työhakemistossa. Keskeytetään!</value>
-  </data>
-  
-  
-  <data name="UpdateCleanup" xml:space="preserve">
-    <value>Siivotaan vanhat tiedostot päivityksen jälkeen...</value>
-  </data>
-  <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
-    <value>Luodaan Steam lapsilukon koodi. Tämä saattaa kestää hetken. Harkitse lapsilukon syöttämistä suoraan asetustiedostoon...</value>
-  </data>
-  <data name="IPCConfigChanged" xml:space="preserve">
-    <value>IPC asetusta on muutettu!</value>
-  </data>
-  
-  
-  
-  
-  
-  
-  
-  
+		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
+	</data>
+	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+		<value>Poistutaan muulla kuin 0 virhekoodilla!</value>
+	</data>
+	<data name="ErrorFailingRequest" xml:space="preserve">
+		<value>Pyyntö epäonnistuu: {0}</value>
+		<comment>{0} will be replaced by URL of the request</comment>
+	</data>
+	<data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
+		<value>Yleisiä asetuksia ei voitu ladata. Tarkista että {0} on olemassa ja validi. Seuraa wikin 'setting up' ohjetta mikäli tarvitset apua.</value>
+		<comment>{0} will be replaced by file's path</comment>
+	</data>
+	<data name="ErrorIsInvalid" xml:space="preserve">
+		<value>{0} on virheellinen!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	<data name="ErrorNoBotsDefined" xml:space="preserve">
+		<value>Botteja ei ole määritelty. Unohditko tehdä asetukset ASF varten?</value>
+	</data>
+	<data name="ErrorObjectIsNull" xml:space="preserve">
+		<value>{0} on ei mitään!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	<data name="ErrorParsingObject" xml:space="preserve">
+		<value>{0} jäsentäminen epäonnistui!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	<data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
+		<value>Pyyntö epäonnistui {0} yrityksen jälkeen!</value>
+		<comment>{0} will be replaced by maximum number of tries</comment>
+	</data>
+	<data name="ErrorUpdateCheckFailed" xml:space="preserve">
+		<value>Viimeisimmän version tarkistus epäonnistui!</value>
+	</data>
+	<data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
+		<value>Päivittämistä ei voitu jatkaa koska nykyistä versiota ei tunnistettu! Automaattiset päivitykset eivät ole mahdollisia.</value>
+	</data>
+	<data name="ErrorUpdateNoAssets" xml:space="preserve">
+		<value>Päivittämistä ei voitu jatkaa koska kyseinen versio ei sisällä yhtään tiedostoa!</value>
+	</data>
+	<data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
+		<value>Huomasimme tarpeen käyttäjän toimille, mutta prosessi on käynnistetty headless-tilassa!</value>
+	</data>
+	<data name="Exiting" xml:space="preserve">
+		<value>Suljetaan...</value>
+	</data>
+	<data name="WarningFailed" xml:space="preserve">
+		<value>Virhe!</value>
+	</data>
+	<data name="GlobalConfigChanged" xml:space="preserve">
+		<value>Globaalia asetustiedostoa muutettiin!</value>
+	</data>
+	<data name="ErrorGlobalConfigRemoved" xml:space="preserve">
+		<value>Globaali asetustiedosto poistettiin!</value>
+	</data>
+	<data name="IgnoringTrade" xml:space="preserve">
+		<value>Ohitetaan vaihto: {0}</value>
+		<comment>{0} will be replaced by trade number</comment>
+	</data>
+	<data name="LoggingIn" xml:space="preserve">
+		<value>Kirjaudutaan to {0}...</value>
+		<comment>{0} will be replaced by service's name</comment>
+	</data>
+	<data name="NoBotsAreRunning" xml:space="preserve">
+		<value>Yhtään bottia ei ole käynnissä, poistutaan...</value>
+	</data>
+	<data name="RefreshingOurSession" xml:space="preserve">
+		<value>Virkistetään istuntomme!</value>
+	</data>
+	<data name="RejectingTrade" xml:space="preserve">
+		<value>Hylätään vaihto: {0}</value>
+		<comment>{0} will be replaced by trade number</comment>
+	</data>
+	<data name="Restarting" xml:space="preserve">
+		<value>Käynnistetään uudelleen...</value>
+	</data>
+	<data name="Starting" xml:space="preserve">
+		<value>Käynnistetään...</value>
+	</data>
+	<data name="Success" xml:space="preserve">
+		<value>Valmis!</value>
+	</data>
+	<data name="UnlockingParentalAccount" xml:space="preserve">
+		<value>Avataan tilin lapsilukitus...</value>
+	</data>
+	<data name="UpdateCheckingNewVersion" xml:space="preserve">
+		<value>Tarkistetaan päivityksiä...</value>
+	</data>
+	<data name="UpdateDownloadingNewVersion" xml:space="preserve">
+		<value>Ladataan uutta versiota: {0} ({1} Mt)... Odotellessa, harkitsethan lahjoittamista jos arvostat tekemäämme työtä! :)</value>
+		<comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
+	</data>
+	<data name="UpdateFinished" xml:space="preserve">
+		<value>Päivitys valmis!</value>
+	</data>
+	<data name="UpdateNewVersionAvailable" xml:space="preserve">
+		<value>Uusi ASF-versio on saatavilla! Suositellaan päivittämistä!</value>
+	</data>
+	<data name="UpdateVersionInfo" xml:space="preserve">
+		<value>Paikallinen versio: {0} | Etäkäyttöversio: {1}</value>
+		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
+	</data>
+	<data name="UserInputSteam2FA" xml:space="preserve">
+		<value>Syötä 2FA koodi Steam varmennus sovelluksesta: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="UserInputSteamGuard" xml:space="preserve">
+		<value>Syötä SteamGuard varmennuskoodi, joka lähetettiin sähköpostiisi: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="UserInputSteamLogin" xml:space="preserve">
+		<value>Syötä Steam-tilisi käyttäjätunnus: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="UserInputSteamParentalCode" xml:space="preserve">
+		<value>Syötä Steam-tilisi lapsilukon Pin-koodi: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="UserInputSteamPassword" xml:space="preserve">
+		<value>Syötä Steam-tilisi salasana: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="WarningUnknownValuePleaseReport" xml:space="preserve">
+		<value>Vastaanotettu tuntematon arvo {0}:lle, ole hyvä ja ilmoita tästä: {1}</value>
+		<comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
+	</data>
+	<data name="IPCReady" xml:space="preserve">
+		<value>IPC-palvelin on valmiina!</value>
+	</data>
+	<data name="IPCStarting" xml:space="preserve">
+		<value>Käynnistetään IPC-palvelinta...</value>
+	</data>
+	<data name="BotAlreadyStopped" xml:space="preserve">
+		<value>Tämä botti on jo pysäytetty!</value>
+	</data>
+	<data name="BotNotFound" xml:space="preserve">
+		<value>Bottia nimeltä {0} ei voitu löytää!</value>
+		<comment>{0} will be replaced by bot's name query (string)</comment>
+	</data>
+	
+	
+	
+	<data name="CheckingFirstBadgePage" xml:space="preserve">
+		<value>Tarkastellaan ensimmäistä badge sivua...</value>
+	</data>
+	<data name="CheckingOtherBadgePages" xml:space="preserve">
+		<value>Tarkastellaan muita badge sivuja...</value>
+	</data>
+	
+	<data name="Done" xml:space="preserve">
+		<value>Valmis!</value>
+	</data>
+	
+	
+	
+	
+	
+	
+	<data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
+		<value>Tämä pyyntö jätetään huomioimatta, kun pysyvä tauko on päällä!</value>
+	</data>
+	
+	
+	
+	<data name="PlayingNotAvailable" xml:space="preserve">
+		<value>Pelaaminen ei ole tällä hetkellä mahdollista, yritetään myöhemmin uudestaan!</value>
+	</data>
+	
+	
+	
+	
+	<data name="UnknownCommand" xml:space="preserve">
+		<value>Tuntematon komento!</value>
+	</data>
+	<data name="WarningCouldNotCheckBadges" xml:space="preserve">
+		<value>Merkkien hakeminen epäonnistui, yritetään myöhemmin uudestaan!</value>
+	</data>
+	<data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
+		<value>Ei voitu tarkastaan korttien tilaa kohteelle: {0} ({1}), yritetään myöhemmin uudestaan!</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="BotAcceptingGift" xml:space="preserve">
+		<value>Hyväksytään lahjaa: {0}...</value>
+		<comment>{0} will be replaced by giftID (number)</comment>
+	</data>
+	
+	<data name="BotAddLicense" xml:space="preserve">
+		<value>ID: {0} | Tila: {1}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
+	</data>
+	<data name="BotAddLicenseWithItems" xml:space="preserve">
+		<value>ID: {0} | Tila: {1} | Tuotteet: {2}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string, {2} will be replaced by list of granted IDs (numbers), separated by a comma</comment>
+	</data>
+	<data name="BotAlreadyRunning" xml:space="preserve">
+		<value>Tämä botti on jo käynnissä!</value>
+	</data>
+	<data name="BotAuthenticatorConverting" xml:space="preserve">
+		<value>Muutetaan .maFile ASF:n käyttämään muotoon...</value>
+	</data>
+	<data name="BotAuthenticatorImportFinished" xml:space="preserve">
+		<value>Mobiili authentikaattorin tuonti onnistui!</value>
+	</data>
+	<data name="BotAuthenticatorToken" xml:space="preserve">
+		<value>2FA Koodi: {0}</value>
+		<comment>{0} will be replaced by generated 2FA token (string)</comment>
+	</data>
+	
+	
+	
+	
+	<data name="BotConnected" xml:space="preserve">
+		<value>Yhdistetty Steamiin!</value>
+	</data>
+	<data name="BotDisconnected" xml:space="preserve">
+		<value>Katkaistu yhteys Steamista!</value>
+	</data>
+	<data name="BotDisconnecting" xml:space="preserve">
+		<value>Katkaistaan yhteyttä...</value>
+	</data>
+	<data name="BotEncryptedPassword" xml:space="preserve">
+		<value>[{0}] salasana: {1}</value>
+		<comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
+	</data>
+	<data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
+		<value>Ei käynnistetä tätä bottia koska se on poistettu käytöstä configuraatiossa!</value>
+	</data>
+	<data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+		<value>Saimme TwoFactorCodeMismatch virhekoodin {0} kertaa putkeen. Joko 2FA tilitiedot eivät ole enää voimassa, tai kellosi ei ole synkronoitu, keskeytetään!</value>
+		<comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+	</data>
+	<data name="BotLoggedOff" xml:space="preserve">
+		<value>Kirjauduttu ulos Steamista: {0}</value>
+		<comment>{0} will be replaced by logging off reason (string)</comment>
+	</data>
+	<data name="BotLoggedOn" xml:space="preserve">
+		<value>Kirjauduttu onnistuneesti käyttäjänä {0}.</value>
+		<comment>{0} will be replaced by steam ID (number)</comment>
+	</data>
+	<data name="BotLoggingIn" xml:space="preserve">
+		<value>Kirjaudutaan sisään...</value>
+	</data>
+	<data name="BotLogonSessionReplaced" xml:space="preserve">
+		<value>Tämä käyttäjä vaikuttaisi olevan käytössä toisessa ASF instanssissa. Tällaista käyttäytymistä ei ole määritelty, kieltäydytään suorittamasta!</value>
+	</data>
+	<data name="BotLootingFailed" xml:space="preserve">
+		<value>Vaihtotarjous epäonnistui!</value>
+	</data>
+	<data name="BotLootingMasterNotDefined" xml:space="preserve">
+		<value>Vaihtoa ei voitu lähettää koska yhtään käyttäjää master-oikeuksilla ei ole määritelty!</value>
+	</data>
+	<data name="BotLootingSuccess" xml:space="preserve">
+		<value>Vaihtopyyntö lähetetty onnistuneesti!</value>
+	</data>
+	
+	<data name="BotNoASFAuthenticator" xml:space="preserve">
+		<value>Tällä botilla ei ole ASF 2FA käytössä! Unohditko ottaa ASF 2FA authentikaattorin käyttöön?</value>
+	</data>
+	<data name="BotNotConnected" xml:space="preserve">
+		<value>Tämä botti instanssi ei ole yhdistettynä!</value>
+	</data>
+	<data name="BotNotOwnedYet" xml:space="preserve">
+		<value>Omistamattomat: {0}</value>
+		<comment>{0} will be replaced by query (string)</comment>
+	</data>
+	<data name="BotOwnedAlreadyWithName" xml:space="preserve">
+		<value>Omistetut {0} | {1}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	
+	<data name="BotRateLimitExceeded" xml:space="preserve">
+		<value>Yritysmäärä on ylitetty, yritetään uudelleen {0} jälkeen...</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
+	</data>
+	<data name="BotReconnecting" xml:space="preserve">
+		<value>Yhdistetään uudelleen...</value>
+	</data>
+	<data name="BotRedeem" xml:space="preserve">
+		<value>Avain: {0} | Tila: {1}</value>
+		<comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string</comment>
+	</data>
+	<data name="BotRedeemWithItems" xml:space="preserve">
+		<value>Avain: {0} | Tila: {1} | Tuotteet: {2}</value>
+		<comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string, {2} will be replaced by list of key-value pairs, separated by a comma</comment>
+	</data>
+	<data name="BotRemovedExpiredLoginKey" xml:space="preserve">
+		<value>Poistettu vanhentunut kirjautumisavain!</value>
+	</data>
+	
+	
+	<data name="BotStatusConnecting" xml:space="preserve">
+		<value>Botti yhdistää Steam-verkkoon.</value>
+	</data>
+	<data name="BotStatusNotRunning" xml:space="preserve">
+		<value>Botti ei ole käynnissä.</value>
+	</data>
+	<data name="BotStatusPaused" xml:space="preserve">
+		<value>Botti on pysäytetty tai käynnissä manuaalisessa tilassa.</value>
+	</data>
+	<data name="BotStatusPlayingNotAvailable" xml:space="preserve">
+		<value>Botti ei ole tällä hetkellä käytössä.</value>
+	</data>
+	<data name="BotUnableToLogin" xml:space="preserve">
+		<value>Steamiin kirjautuminen ei onnistunut: {0}/{1}</value>
+		<comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
+	</data>
+	<data name="ErrorIsEmpty" xml:space="preserve">
+		<value>{0} on tyhjä!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	<data name="UnusedKeys" xml:space="preserve">
+		<value>Käyttämättömät CD-keyt: {0}</value>
+		<comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
+	</data>
+	<data name="WarningFailedWithError" xml:space="preserve">
+		<value>Epäonnistuminen virheen takia: {0}</value>
+		<comment>{0} will be replaced by failure reason (string)</comment>
+	</data>
+	<data name="BotConnectionLost" xml:space="preserve">
+		<value>Yhteys Steam-verkkoon katkesi. Yhdistetään uudelleen...</value>
+	</data>
+	
+	
+	<data name="BotConnecting" xml:space="preserve">
+		<value>Yhdistetään...</value>
+	</data>
+	<data name="BotHeartBeatFailed" xml:space="preserve">
+		<value>Yhteyden katkaisu clienttiin epäonnistui. Hylätään tämä botti instanssi!</value>
+	</data>
+	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
+		<value>Yhteys SteamDirectoryyn epäonnistui: Steam-verkkoon yhdistäminen saattaa kestää paljon kauemmin!</value>
+	</data>
+	<data name="BotStopping" xml:space="preserve">
+		<value>Pysäytetään...</value>
+	</data>
+	<data name="ErrorBotConfigInvalid" xml:space="preserve">
+		<value>Botti-tiedostosi ei ole validi. Tarkista {0} sisältö ja yritä uudestaan!</value>
+		<comment>{0} will be replaced by file's path</comment>
+	</data>
+	<data name="ErrorDatabaseInvalid" xml:space="preserve">
+		<value>Pysyvää tietokantaa ei saatu ladattua, jos ongelma jatkuu, poista {0} luodaksesi uuden tietokannan!</value>
+		<comment>{0} will be replaced by file's path</comment>
+	</data>
+	<data name="Initializing" xml:space="preserve">
+		<value>Alustetaan {0}...</value>
+		<comment>{0} will be replaced by service name that is being initialized</comment>
+	</data>
+	<data name="WarningPrivacyPolicy" xml:space="preserve">
+		<value>Tutustu tietosuoja-osioon wikissä mikäli olet huolestunut siitä mitä ASF oikeasti tekee!</value>
+	</data>
+	<data name="Welcome" xml:space="preserve">
+		<value>Huomasin että käynnistit ohjelman ensimmäisen kerran, tervetuloa!</value>
+	</data>
+	<data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+		<value>Antamasi CurrentCulture on epäkelpo, ASF jatkaa toimintaa oletusarvolla!</value>
+	</data>
+	
+	
+	<data name="WarningIdlingGameMismatch" xml:space="preserve">
+		<value>ASF huomasi ID poikkeavuuden kohteessa {0} ({1}) ja käyttää ID:tä {2} tämän sijaan.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
+	</data>
+	<data name="BotVersion" xml:space="preserve">
+		<value>{0} V{1}</value>
+		<comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
+	</data>
+	
+	
+	<data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
+		<value>Tämä funktio on käytettävissä vain headless-tilassa!</value>
+	</data>
+	<data name="BotOwnedAlready" xml:space="preserve">
+		<value>Jo omistetut: {0}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="ErrorAccessDenied" xml:space="preserve">
+		<value>Pääsy kielletty!</value>
+	</data>
+	
+	
+	<data name="ClearingDiscoveryQueue" xml:space="preserve">
+		<value>Tyhjennetään Steamin discovery-jonoa #{0}...</value>
+		<comment>{0} will be replaced by queue number</comment>
+	</data>
+	<data name="DoneClearingDiscoveryQueue" xml:space="preserve">
+		<value>Steamin discovery-jono #{0} tyhjennetty.</value>
+		<comment>{0} will be replaced by queue number</comment>
+	</data>
+	<data name="BotOwnsOverviewPerGame" xml:space="preserve">
+		<value>{0}/{1} bottia omistaa jo pelin {2}.</value>
+		<comment>{0} will be replaced by number of bots that already own particular game being checked, {1} will be replaced by total number of bots that were checked during the process, {2} will be replaced by game's ID (number)</comment>
+	</data>
+	<data name="BotRefreshingPackagesData" xml:space="preserve">
+		<value>Päivitetään pakettien tietoja...</value>
+	</data>
+	<data name="WarningDeprecated" xml:space="preserve">
+		<value>{0}:n käyttö on vanhentunut ja poistetaan tulevissa versioissa. Käytä sen sijaan {1}.</value>
+		<comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
+	</data>
+	<data name="BotAcceptedDonationTrade" xml:space="preserve">
+		<value>Hyväksyttiin lahjoitus: {0}</value>
+		<comment>{0} will be replaced by trade's ID (number)</comment>
+	</data>
+	<data name="WarningWorkaroundTriggered" xml:space="preserve">
+		<value>Kierto ongelmalle {0} on aloitettu.</value>
+		<comment>{0} will be replaced by the bug's name provided by ASF</comment>
+	</data>
+	<data name="TargetBotNotConnected" xml:space="preserve">
+		<value>Haluttu botti ei ole yhdistetty!</value>
+	</data>
+	<data name="BotWalletBalance" xml:space="preserve">
+		<value>Lompakon saldo: {0} {1}</value>
+		<comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
+	</data>
+	<data name="BotHasNoWallet" xml:space="preserve">
+		<value>Botilla ei ole lompakkoa.</value>
+	</data>
+	<data name="BotLevel" xml:space="preserve">
+		<value>Botin taso on {0}.</value>
+		<comment>{0} will be replaced by bot's level</comment>
+	</data>
+	<data name="ActivelyMatchingItems" xml:space="preserve">
+		<value>Vertaillaan Steam-esineitä, kierros #{0}...</value>
+		<comment>{0} will be replaced by round number</comment>
+	</data>
+	<data name="DoneActivelyMatchingItems" xml:space="preserve">
+		<value>Steam-esineiden vertailu valmis, kierros #{0}.</value>
+		<comment>{0} will be replaced by round number</comment>
+	</data>
+	<data name="ErrorAborted" xml:space="preserve">
+		<value>Keskeytetty!</value>
+	</data>
+	<data name="ActivelyMatchingItemsRound" xml:space="preserve">
+		<value>Vertailtiin yhteensä {0} settiä tällä kierroksella.</value>
+		<comment>{0} will be replaced by number of sets traded</comment>
+	</data>
+	<data name="WarningExcessiveBotsCount" xml:space="preserve">
+		<value>Ajat useampia botteja, kuin mitä suositeltumme raja, ({0}), mahdollistaa. Ota huomioon, että se ei ole tuettua ja saattaa aiheuttaa häiriöitä Steamin kanssa, mukaan lukien tilien jäähdytykset. Katso lisätietoja UKK: sta.</value>
+		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
+	</data>
+	<data name="PluginLoaded" xml:space="preserve">
+		<value>{0} ladattiin onnistuneesti!</value>
+		<comment>{0} will be replaced by the name of the custom ASF plugin</comment>
+	</data>
+	<data name="PluginLoading" xml:space="preserve">
+		<value>Ladataan {0} V{1}...</value>
+		<comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
+	</data>
+	<data name="NothingFound" xml:space="preserve">
+		<value>Mitään ei löytynyt!</value>
+	</data>
+	
+	<data name="PleaseWait" xml:space="preserve">
+		<value>Odota hetki...</value>
+	</data>
+	<data name="EnterCommand" xml:space="preserve">
+		<value>Syötä komento: </value>
+	</data>
+	<data name="Executing" xml:space="preserve">
+		<value>Suoritetaan...</value>
+	</data>
+	<data name="InteractiveConsoleEnabled" xml:space="preserve">
+		<value>Vuorovaikutteinen konsoli on nyt aktiivinen. Paina 'c' siirtyäksesi komento-tilaan.</value>
+	</data>
+	<data name="InteractiveConsoleNotAvailable" xml:space="preserve">
+		<value>Vuorovaikutteinen konsoli ei ole käytettävissä, koska {0} asetus puuttuu.</value>
+		<comment>{0} will be replaced by the name of the missing config property (string)</comment>
+	</data>
+	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
+		<value>Botilla on {0} peliä jäljellä taustajonossa.</value>
+		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
+	</data>
+	<data name="ErrorSingleInstanceRequired" xml:space="preserve">
+		<value>ASF prosessi on jo käynnissä tässä työhakemistossa. Keskeytetään!</value>
+	</data>
+	
+	
+	<data name="UpdateCleanup" xml:space="preserve">
+		<value>Siivotaan vanhat tiedostot päivityksen jälkeen...</value>
+	</data>
+	<data name="BotGeneratingSteamParentalCode" xml:space="preserve">
+		<value>Luodaan Steam lapsilukon koodi. Tämä saattaa kestää hetken. Harkitse lapsilukon syöttämistä suoraan asetustiedostoon...</value>
+	</data>
+	<data name="IPCConfigChanged" xml:space="preserve">
+		<value>IPC asetusta on muutettu!</value>
+	</data>
+	
+	
+	
+	
+	
+	
+	
+	
 </root>

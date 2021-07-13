@@ -1,616 +1,561 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
-    Microsoft ResX Schema
-
-    Version 2.0
-
-    The primary goals of this format is to allow a simple XML format
-    that is mostly human readable. The generation and parsing of the
-    various data types are done through the TypeConverter classes
-    associated with the data types.
-
-    Example:
-
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-
-    There are any number of "resheader" rows that contain simple
-    name/value pairs.
-
-    Each data row contains a name, and value. The row also contains a
-    type or mimetype. Type corresponds to a .NET class that support
-    text/value conversion through the TypeConverter architecture.
-    Classes that don't support this are serialized and stored with the
-    mimetype set.
-
-    The mimetype is used for serialized objects, and tells the
-    ResXResourceReader how to depersist the object. This is currently not
-    extensible. For a given mimetype the value must be set accordingly:
-
-    Note - application/x-microsoft.net.object.binary.base64 is the format
-    that the ResXResourceWriter will generate, however the reader can
-    read any of the formats listed below.
-
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
-  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string"/>
-              <xsd:attribute name="type" type="xsd:string"/>
-              <xsd:attribute name="mimetype" type="xsd:string"/>
-              <xsd:attribute ref="xml:space"/>
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string"/>
-              <xsd:attribute name="name" type="xsd:string"/>
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-              <xsd:attribute ref="xml:space"/>
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required"/>
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="AcceptingTrade" xml:space="preserve">
-    <value>Αποδοχή ανταλλαγής: {0}</value>
-    <comment>{0} will be replaced by trade number</comment>
-  </data>
-  <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>Το ASF θα ελέγχει αυτόματα για νέες εκδόσεις κάθε {0}.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
-  </data>
-  <data name="Content" xml:space="preserve">
-    <value>Περιεχόμενο:
+	<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns="" id="root">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="metadata">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0"/>
+							</xsd:sequence>
+							<xsd:attribute name="name" use="required" type="xsd:string"/>
+							<xsd:attribute name="type" type="xsd:string"/>
+							<xsd:attribute name="mimetype" type="xsd:string"/>
+							<xsd:attribute ref="xml:space"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="assembly">
+						<xsd:complexType>
+							<xsd:attribute name="alias" type="xsd:string"/>
+							<xsd:attribute name="name" type="xsd:string"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+							<xsd:attribute ref="xml:space"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required"/>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+			PublicKeyToken=b77a5c561934e089
+		</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+			PublicKeyToken=b77a5c561934e089
+		</value>
+	</resheader>
+	<data name="AcceptingTrade" xml:space="preserve">
+		<value>Αποδοχή ανταλλαγής: {0}</value>
+		<comment>{0} will be replaced by trade number</comment>
+	</data>
+	<data name="AutoUpdateCheckInfo" xml:space="preserve">
+		<value>Το ASF θα ελέγχει αυτόματα για νέες εκδόσεις κάθε {0}.</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
+	</data>
+	<data name="Content" xml:space="preserve">
+		<value>Περιεχόμενο:
 {0}</value>
-    <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
-  </data>
-  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Η ρυθμισμένη ιδιότητα {0} δεν είναι έγκυρη: {1}</value>
-    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
-  </data>
-  <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>Το ASF V{0} αντιμετώπισε κρίσιμο σφάλμα πριν καν ξεκινήσει η κύρια μονάδα καταγραφής σφαλμάτων!</value>
-    <comment>{0} will be replaced by version number</comment>
-  </data>
-  <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
-    <value>Εξαίρεση: {0}() {1}
+		<comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
+	</data>
+	<data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+		<value>Η ρυθμισμένη ιδιότητα {0} δεν είναι έγκυρη: {1}</value>
+		<comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+	</data>
+	<data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
+		<value>Το ASF V{0} αντιμετώπισε κρίσιμο σφάλμα πριν καν ξεκινήσει η κύρια μονάδα καταγραφής σφαλμάτων!</value>
+		<comment>{0} will be replaced by version number</comment>
+	</data>
+	<data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
+		<value>Εξαίρεση: {0}() {1}
 StackTrace:
 {2}</value>
-    <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
-  </data>
-  <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>Έξοδος με μη μηδενικό κωδικό σφάλματος!</value>
-  </data>
-  <data name="ErrorFailingRequest" xml:space="preserve">
-    <value>Αποτυχία αιτήματος: {0}</value>
-    <comment>{0} will be replaced by URL of the request</comment>
-  </data>
-  <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Αδυναμία φόρτωσης γενικής διαμόρφωσης. Βεβαιωθείτε ότι το {0} υπάρχει και είναι έγκυρο! Ακολουθήστε τον οδηγό ρύθμισης στο wiki εάν έχετε μπερδευτεί.</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
-  <data name="ErrorIsInvalid" xml:space="preserve">
-    <value>Το {0} δεν είναι έγκυρο!</value>
-    <comment>{0} will be replaced by object's name</comment>
-  </data>
-  <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>Δεν έχουν οριστεί bots. Μήπως ξεχάσατε να ρυθμίσετε το ASF σας;</value>
-  </data>
-  <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>Το {0} είναι null!</value>
-    <comment>{0} will be replaced by object's name</comment>
-  </data>
-  <data name="ErrorParsingObject" xml:space="preserve">
-    <value>Η ανάλυση του {0} απέτυχε!</value>
-    <comment>{0} will be replaced by object's name</comment>
-  </data>
-  <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>Το αίτημα απέτυχε έπειτα από {0} προσπάθειες!</value>
-    <comment>{0} will be replaced by maximum number of tries</comment>
-  </data>
-  <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>Αδυναμία ελέγχου για την τελευταία έκδοση!</value>
-  </data>
-  <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
-    <value>Αδυναμία συνέχειας με την ενημέρωση καθώς δεν υπάρχουν τα απαραίτητα αρχεία που σχετίζονται με την τρέχουσα έκδοση. Η αυτόματη ενημέρωση σε αυτή την έκδοση δεν είναι δυνατή.</value>
-  </data>
-  <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>Αδυναμία συνέχειας με την ενημέρωση γιατί η συγκεκριμένη έκδοση δεν περιέχει καθόλου αρχεία!</value>
-  </data>
-  <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Λήφθηκε αίτημα για είσοδο από τον χρήστη, αλλά η διεργασία εκτελείται σε σιωπηλή λειτουργία!</value>
-  </data>
-  <data name="Exiting" xml:space="preserve">
-    <value>Έξοδος...</value>
-  </data>
-  <data name="WarningFailed" xml:space="preserve">
-    <value>Αποτυχία!</value>
-  </data>
-  <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>Το αρχείο γενικής διαμόρφωσης έχει αλλάξει!</value>
-  </data>
-  <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>Το αρχείο γενικής διαμόρφωσης έχει αφαιρεθεί!</value>
-  </data>
-  <data name="IgnoringTrade" xml:space="preserve">
-    <value>Αγνόηση ανταλλαγής: {0}</value>
-    <comment>{0} will be replaced by trade number</comment>
-  </data>
-  <data name="LoggingIn" xml:space="preserve">
-    <value>Σύνδεση στο {0}...</value>
-    <comment>{0} will be replaced by service's name</comment>
-  </data>
-  <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>Δεν εκτελούνται bot, γίνεται έξοδος...</value>
-  </data>
-  <data name="RefreshingOurSession" xml:space="preserve">
-    <value>Ανανέωση της συνεδρίας!</value>
-  </data>
-  <data name="RejectingTrade" xml:space="preserve">
-    <value>Απόρριψη ανταλλαγής: {0}</value>
-    <comment>{0} will be replaced by trade number</comment>
-  </data>
-  <data name="Restarting" xml:space="preserve">
-    <value>Επανεκκίνηση...</value>
-  </data>
-  <data name="Starting" xml:space="preserve">
-    <value>Εκκίνηση...</value>
-  </data>
-  <data name="Success" xml:space="preserve">
-    <value>Επιτυχία!</value>
-  </data>
-  <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Ξεκλείδωμα γονικού λογαριασμού...</value>
-  </data>
-  <data name="UpdateCheckingNewVersion" xml:space="preserve">
-    <value>Έλεγχος για νέα έκδοση...</value>
-  </data>
-  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Λήψη νέας έκδοσης: {0} ({1} MB)... Όσο περιμένετε, σκεφτείτε να κάνετε μια δωρεά εάν εκτιμάτε τη δουλειά που γίνεται! :)</value>
-    <comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
-  </data>
-  <data name="UpdateFinished" xml:space="preserve">
-    <value>Η διαδικασία ενημέρωσης ολοκληρώθηκε!</value>
-  </data>
-  <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>Νέα έκδοση του ASF είναι διαθέσιμη! Σκεφτείτε να κάνετε χειροκίνητη ενημέρωση!</value>
-  </data>
-  <data name="UpdateVersionInfo" xml:space="preserve">
-    <value>Τοπική έκδοση: {0} | Απομακρυσμένη έκδοση: {1}</value>
-    <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
-  </data>
-  <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>Εισάγετε τον κωδικό από την εφαρμογή επαληθευτή Steam σας: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>Εισάγετε τον κωδικό Steam Guard που έχει αποσταλεί στο e-mail σας: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>Εισάγετε το όνομα χρήστη Steam σας: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamParentalCode" xml:space="preserve">
-    <value>Εισάγετε το κωδικό γονικού ελέγχου του Steam σας: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>Εισάγετε τον κωδικό πρόσβαση του Steam: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
-  <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
-    <value>Λήφθηκε άγνωστη τιμή για το {0}, παρακαλούμε αναφέρετέ το: {1}</value>
-    <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
-  </data>
-  <data name="IPCReady" xml:space="preserve">
-    <value>Ο διακομιστής IPC είναι έτοιμος!</value>
-  </data>
-  <data name="IPCStarting" xml:space="preserve">
-    <value>Έναρξη διακομιστή IPC...</value>
-  </data>
-  <data name="BotAlreadyStopped" xml:space="preserve">
-    <value>Το bot έχει ήδη σταματήσει!</value>
-  </data>
-  <data name="BotNotFound" xml:space="preserve">
-    <value>Αδυναμία εύρεσης bot με όνομα {0}!</value>
-    <comment>{0} will be replaced by bot's name query (string)</comment>
-  </data>
-  
-  
-  
-  <data name="CheckingFirstBadgePage" xml:space="preserve">
-    <value>Έλεγχος πρώτης σελίδας εμβλημάτων...</value>
-  </data>
-  <data name="CheckingOtherBadgePages" xml:space="preserve">
-    <value>Έλεγχος των άλλων σελίδων εμβλημάτων...</value>
-  </data>
-  
-  <data name="Done" xml:space="preserve">
-    <value>Ολοκληρώθηκε!</value>
-  </data>
-  
-  
-  
-  
-  
-  
-  <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
-    <value>Αγνοήθηκε το αίτημα, γιατί η μόνιμη παύση είναι ενεργοποιημένη!</value>
-  </data>
-  
-  
-  
-  <data name="PlayingNotAvailable" xml:space="preserve">
-    <value>Η λειτουργία παιχνιδιού είναι προσωρινά μη διαθέσιμη, θα δοκιμάσουμε ξανά αργότερα!</value>
-  </data>
-  
-  
-  
-  
-  <data name="UnknownCommand" xml:space="preserve">
-    <value>Άγνωστη εντολή!</value>
-  </data>
-  <data name="WarningCouldNotCheckBadges" xml:space="preserve">
-    <value>Αδυναμία λήψης πληροφοριών εμβλημάτων, θα ξαναγίνει προσπάθεια αργότερα!</value>
-  </data>
-  <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
-    <value>Αδυναμία ελέγχου καρτών για το: {0} ({1}). Θα δοκιμάσουμε ξανά αργότερα!</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
-  <data name="BotAcceptingGift" xml:space="preserve">
-    <value>Αποδοχή δώρου: {0}...</value>
-    <comment>{0} will be replaced by giftID (number)</comment>
-  </data>
-  
-  <data name="BotAddLicense" xml:space="preserve">
-    <value>ID: {0} | Κατάσταση: {1}</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
-  </data>
-  <data name="BotAddLicenseWithItems" xml:space="preserve">
-    <value>ID: {0} | Κατάσταση: {1} | Αντικείμενα: {2}</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string, {2} will be replaced by list of granted IDs (numbers), separated by a comma</comment>
-  </data>
-  <data name="BotAlreadyRunning" xml:space="preserve">
-    <value>Το bot εκτελείται ήδη!</value>
-  </data>
-  <data name="BotAuthenticatorConverting" xml:space="preserve">
-    <value>Μετατροπή .maFile σε μορφή ASF...</value>
-  </data>
-  <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>Η εισαγωγή του επαληθευτή κινητού ολοκληρώθηκε επιτυχώς!</value>
-  </data>
-  <data name="BotAuthenticatorToken" xml:space="preserve">
-    <value>2FA Token: {0}</value>
-    <comment>{0} will be replaced by generated 2FA token (string)</comment>
-  </data>
-  
-  
-  
-  
-  <data name="BotConnected" xml:space="preserve">
-    <value>Έγινε σύνδεση στο Steam!</value>
-  </data>
-  <data name="BotDisconnected" xml:space="preserve">
-    <value>Έγινε αποσύνδεση από το Steam!</value>
-  </data>
-  <data name="BotDisconnecting" xml:space="preserve">
-    <value>Αποσύνδεση...</value>
-  </data>
-  <data name="BotEncryptedPassword" xml:space="preserve">
-    <value>[{0}] κωδικός: {1}</value>
-    <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
-  </data>
-  <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
-    <value>Δεν γίνεται εκκίνηση αυτού του bot καθώς έχει απενεργοποιηθεί στο αρχείο διαμόρφωσης!</value>
-  </data>
-  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Λήφθηκε κωδικός σφάλματος TwoFactorCodeMismatch {0} φορές στην σειρά. Είτε τα 2FA στοιχεία εισόδου σας δεν είναι πλέον έγκυρα, είτε το ρολόι σας είναι ασυγχρόνιστο, γίνεται τερματισμός!</value>
-    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
-  </data>
-  <data name="BotLoggedOff" xml:space="preserve">
-    <value>Έγινε αποσύνδεση από το Steam: {0}</value>
-    <comment>{0} will be replaced by logging off reason (string)</comment>
-  </data>
-  <data name="BotLoggedOn" xml:space="preserve">
-    <value>Επιτυχής σύνδεση ως {0}.</value>
-    <comment>{0} will be replaced by steam ID (number)</comment>
-  </data>
-  <data name="BotLoggingIn" xml:space="preserve">
-    <value>Σύνδεση...</value>
-  </data>
-  <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>Αυτός ο λογαριασμός φαίνεται να χρησιμοποιείται σε άλλη συνεδρία ASF, το οποίο προκαλεί απρόσμενη συμπεριφορά. Θα γίνει τερματισμός!</value>
-  </data>
-  <data name="BotLootingFailed" xml:space="preserve">
-    <value>Η πρόταση ανταλλαγής απέτυχε!</value>
-  </data>
-  <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Η ανταλλαγή δεν μπορεί να αποσταλεί καθώς δεν υπάρχει κανένας χρήστης με ορισμένο το δικαίωμα «master»!</value>
-  </data>
-  <data name="BotLootingSuccess" xml:space="preserve">
-    <value>Η πρόταση ανταλλαγής στάλθηκε επιτυχώς!</value>
-  </data>
-  <data name="BotSendingTradeToYourself" xml:space="preserve">
-    <value>Δεν μπορείτε να κάνετε trade με τον εαυτό σας!</value>
-  </data>
-  <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>Αυτό το bot δεν έχει ενεργοποιημένο το ASF 2FA! Μήπως ξεχάσατε να εισάγετε τον επαληθευτή σας ως ASF 2FA;</value>
-  </data>
-  <data name="BotNotConnected" xml:space="preserve">
-    <value>Αυτό το bot δεν έχει συνδεθεί!</value>
-  </data>
-  <data name="BotNotOwnedYet" xml:space="preserve">
-    <value>Δεν κατέχετε ακόμη: {0}</value>
-    <comment>{0} will be replaced by query (string)</comment>
-  </data>
-  <data name="BotOwnedAlreadyWithName" xml:space="preserve">
-    <value>Κατέχετε ήδη: {0} | {1}</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
-  
-  <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>Ξεπεράστηκε το όριο προσπαθειών, θα ξαναγίνει προσπάθεια μετά από {0}...</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
-  </data>
-  <data name="BotReconnecting" xml:space="preserve">
-    <value>Επανασύνδεση...</value>
-  </data>
-  <data name="BotRedeem" xml:space="preserve">
-    <value>Κλειδί: {0} | Κατάσταση: {1}</value>
-    <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string</comment>
-  </data>
-  <data name="BotRedeemWithItems" xml:space="preserve">
-    <value>Κλειδί: {0} | Κατάσταση: {1} | Αντικείμενα: {2}</value>
-    <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string, {2} will be replaced by list of key-value pairs, separated by a comma</comment>
-  </data>
-  <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
-    <value>Αφαιρέθηκε κλειδί σύνδεσης που είχε λήξει!</value>
-  </data>
-  
-  
-  <data name="BotStatusConnecting" xml:space="preserve">
-    <value>Το bot συνδέεται στο δίκτυο του Steam.</value>
-  </data>
-  <data name="BotStatusNotRunning" xml:space="preserve">
-    <value>Το bot δεν εκτελείται.</value>
-  </data>
-  <data name="BotStatusPaused" xml:space="preserve">
-    <value>Το bot είναι σε παύση ή εκτελείται σε χειροκίνητη λειτουργία.</value>
-  </data>
-  <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
-    <value>Το bot χρησιμοποιείται αυτή τη στιγμή.</value>
-  </data>
-  <data name="BotUnableToLogin" xml:space="preserve">
-    <value>Αδυναμία σύνδεσης στο Steam: {0}/{1}</value>
-    <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
-  </data>
-  <data name="ErrorIsEmpty" xml:space="preserve">
-    <value>Το στοιχείο «{0}» είναι κενό!</value>
-    <comment>{0} will be replaced by object's name</comment>
-  </data>
-  <data name="UnusedKeys" xml:space="preserve">
-    <value>Μη χρησιμοποιημένα κλειδιά: {0}</value>
-    <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
-  </data>
-  <data name="WarningFailedWithError" xml:space="preserve">
-    <value>Αποτυχία λόγω σφάλματος: {0}</value>
-    <comment>{0} will be replaced by failure reason (string)</comment>
-  </data>
-  <data name="BotConnectionLost" xml:space="preserve">
-    <value>Η σύνδεση στο δίκτυο Steam χάθηκε. Γίνεται επανασύνδεση...</value>
-  </data>
-  
-  
-  <data name="BotConnecting" xml:space="preserve">
-    <value>Σύνδεση...</value>
-  </data>
-  <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>Αποτυχία αποσύνδεσης προγράμματος-πελάτη. Γίνεται εγκατάλειψη αυτού του bot!</value>
-  </data>
-  <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>Αδυναμία αρχικοποίησης SteamDirectory: η σύνδεση με το δίκτυο του Steam μπορεί να διαρκέσει πολύ περισσότερο από το συνηθισμένο!</value>
-  </data>
-  <data name="BotStopping" xml:space="preserve">
-    <value>Διακοπή...</value>
-  </data>
-  <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>Η διαμόρφωση του bot σας δεν είναι έγκυρη. Επαληθεύστε το περιεχόμενο του {0} και δοκιμάστε ξανά!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
-  <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>Αδυναμία φόρτωσης μόνιμης βάσης δεδομένων. Εάν το πρόβλημα παραμένει, αφαιρέστε το {0} για επαναδημιουργία της βάσης!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
-  <data name="Initializing" xml:space="preserve">
-    <value>Εκκίνηση {0}...</value>
-    <comment>{0} will be replaced by service name that is being initialized</comment>
-  </data>
-  <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>Παρακαλούμε διαβάστε το τμήμα πολιτικής απορρήτου μας στο wiki εάν ανησυχείτε για το τι πραγματικά κάνει το ASF!</value>
-  </data>
-  <data name="Welcome" xml:space="preserve">
-    <value>Φαίνεται ότι εκτελείτε για πρώτη φορά το πρόγραμμα. Καλώς ήρθατε!</value>
-  </data>
-  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-    <value>Η παρεχόμενη τιμή CurrentCulture είναι άκυρη, το ASF θα συνεχίσει να εκτελείται με την προεπιλεγμένη τιμή!</value>
-  </data>
-  
-  
-  <data name="WarningIdlingGameMismatch" xml:space="preserve">
-    <value>Το ASF εντόπισε ασυμφωνία ID για το {0} ({1}) και θα χρησιμοποιηθεί το ID του {2} στη θέση του.</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
-  </data>
-  <data name="BotVersion" xml:space="preserve">
-    <value>{0} Εκδ.{1}</value>
-    <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
-  </data>
-  
-  
-  <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
-    <value>Αυτή η λειτουργία είναι διαθέσιμη μόνο σε σιωπηλή λειτουργία!</value>
-  </data>
-  <data name="BotOwnedAlready" xml:space="preserve">
-    <value>Κατέχετε ήδη: {0}</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
-  <data name="ErrorAccessDenied" xml:space="preserve">
-    <value>Δεν επιτρέπεται η πρόσβαση!</value>
-  </data>
-  
-  
-  <data name="ClearingDiscoveryQueue" xml:space="preserve">
-    <value>Εκκαθάριση σειράς ανακαλύψεων Steam #{0}...</value>
-    <comment>{0} will be replaced by queue number</comment>
-  </data>
-  <data name="DoneClearingDiscoveryQueue" xml:space="preserve">
-    <value>Ολοκληρώθηκε η εκκαθάριση σειράς ανακαλύψεων Steam #{0}.</value>
-    <comment>{0} will be replaced by queue number</comment>
-  </data>
-  <data name="BotOwnsOverviewPerGame" xml:space="preserve">
-    <value>{0}/{1} bot κατέχουν ήδη το παιχνίδι {2}.</value>
-    <comment>{0} will be replaced by number of bots that already own particular game being checked, {1} will be replaced by total number of bots that were checked during the process, {2} will be replaced by game's ID (number)</comment>
-  </data>
-  <data name="BotRefreshingPackagesData" xml:space="preserve">
-    <value>Ανανέωση δεδομένων πακέτων...</value>
-  </data>
-  <data name="WarningDeprecated" xml:space="preserve">
-    <value>Η χρήση του {0} είναι υπό απόσυρση και θα αφαιρεθεί σε μελλοντικές εκδόσεις του προγράμματος. Παρακαλώ χρησιμοποιήστε το {1}.</value>
-    <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
-  </data>
-  
-  
-  
-  
-  
-  <data name="BotLevel" xml:space="preserve">
-    <value>Το bot βρίσκεται στο επίπεδο {0}.</value>
-    <comment>{0} will be replaced by bot's level</comment>
-  </data>
-  
-  
-  <data name="ErrorAborted" xml:space="preserve">
-    <value>Ακυρώθηκε!</value>
-  </data>
-  
-  
-  <data name="PluginLoaded" xml:space="preserve">
-    <value>{0} φορτώθηκε με επιτυχία!</value>
-    <comment>{0} will be replaced by the name of the custom ASF plugin</comment>
-  </data>
-  <data name="PluginLoading" xml:space="preserve">
-    <value>Φόρτωση του {0} Εκδ.{1}...</value>
-    <comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
-  </data>
-  <data name="NothingFound" xml:space="preserve">
-    <value>Δεν βρέθηκε τίποτα!</value>
-  </data>
-  
-  <data name="PleaseWait" xml:space="preserve">
-    <value>Παρακαλώ περιμένετε...</value>
-  </data>
-  <data name="EnterCommand" xml:space="preserve">
-    <value>Εισαγωγή εντολής: </value>
-  </data>
-  <data name="Executing" xml:space="preserve">
-    <value>Εκτέλεση...</value>
-  </data>
-  <data name="InteractiveConsoleEnabled" xml:space="preserve">
-    <value>Η διαδραστική κονσόλα είναι ενεργή, πατήστε 'c' για να εισάγετε εντολή.</value>
-  </data>
-  <data name="InteractiveConsoleNotAvailable" xml:space="preserve">
-    <value>Η διαδραστική κονσόλα δεν είναι διαθέσιμη διότι λείπει η ιδιότητα {0} από το αρχείο διαμόρφωσης.</value>
-    <comment>{0} will be replaced by the name of the missing config property (string)</comment>
-  </data>
-  <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
-    <value>Το bot έχει {0} παιχνίδια που απομένουν στην ουρά.</value>
-    <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
-  </data>
-  <data name="ErrorSingleInstanceRequired" xml:space="preserve">
-    <value>Η διαδικασία ASF εκτελείται ήδη για αυτόν τον κατάλογο εργασίας, ματαίωση!</value>
-  </data>
-  <data name="BotHandledConfirmations" xml:space="preserve">
-    <value>Επεξεργάστηκαν {0} επιβεβαιώσεις με επιτυχία!</value>
-    <comment>{0} will be replaced by number of confirmations</comment>
-  </data>
-  
-  <data name="UpdateCleanup" xml:space="preserve">
-    <value>Εκκαθάριση παλιών αρχείων μετά την ενημέρωση...</value>
-  </data>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
+	</data>
+	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+		<value>Έξοδος με μη μηδενικό κωδικό σφάλματος!</value>
+	</data>
+	<data name="ErrorFailingRequest" xml:space="preserve">
+		<value>Αποτυχία αιτήματος: {0}</value>
+		<comment>{0} will be replaced by URL of the request</comment>
+	</data>
+	<data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
+		<value>Αδυναμία φόρτωσης γενικής διαμόρφωσης. Βεβαιωθείτε ότι το {0} υπάρχει και είναι έγκυρο! Ακολουθήστε τον οδηγό ρύθμισης στο wiki εάν έχετε μπερδευτεί.</value>
+		<comment>{0} will be replaced by file's path</comment>
+	</data>
+	<data name="ErrorIsInvalid" xml:space="preserve">
+		<value>Το {0} δεν είναι έγκυρο!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	<data name="ErrorNoBotsDefined" xml:space="preserve">
+		<value>Δεν έχουν οριστεί bots. Μήπως ξεχάσατε να ρυθμίσετε το ASF σας;</value>
+	</data>
+	<data name="ErrorObjectIsNull" xml:space="preserve">
+		<value>Το {0} είναι null!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	<data name="ErrorParsingObject" xml:space="preserve">
+		<value>Η ανάλυση του {0} απέτυχε!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	<data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
+		<value>Το αίτημα απέτυχε έπειτα από {0} προσπάθειες!</value>
+		<comment>{0} will be replaced by maximum number of tries</comment>
+	</data>
+	<data name="ErrorUpdateCheckFailed" xml:space="preserve">
+		<value>Αδυναμία ελέγχου για την τελευταία έκδοση!</value>
+	</data>
+	<data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
+		<value>Αδυναμία συνέχειας με την ενημέρωση καθώς δεν υπάρχουν τα απαραίτητα αρχεία που σχετίζονται με την τρέχουσα έκδοση. Η αυτόματη ενημέρωση σε αυτή την έκδοση δεν είναι δυνατή.</value>
+	</data>
+	<data name="ErrorUpdateNoAssets" xml:space="preserve">
+		<value>Αδυναμία συνέχειας με την ενημέρωση γιατί η συγκεκριμένη έκδοση δεν περιέχει καθόλου αρχεία!</value>
+	</data>
+	<data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
+		<value>Λήφθηκε αίτημα για είσοδο από τον χρήστη, αλλά η διεργασία εκτελείται σε σιωπηλή λειτουργία!</value>
+	</data>
+	<data name="Exiting" xml:space="preserve">
+		<value>Έξοδος...</value>
+	</data>
+	<data name="WarningFailed" xml:space="preserve">
+		<value>Αποτυχία!</value>
+	</data>
+	<data name="GlobalConfigChanged" xml:space="preserve">
+		<value>Το αρχείο γενικής διαμόρφωσης έχει αλλάξει!</value>
+	</data>
+	<data name="ErrorGlobalConfigRemoved" xml:space="preserve">
+		<value>Το αρχείο γενικής διαμόρφωσης έχει αφαιρεθεί!</value>
+	</data>
+	<data name="IgnoringTrade" xml:space="preserve">
+		<value>Αγνόηση ανταλλαγής: {0}</value>
+		<comment>{0} will be replaced by trade number</comment>
+	</data>
+	<data name="LoggingIn" xml:space="preserve">
+		<value>Σύνδεση στο {0}...</value>
+		<comment>{0} will be replaced by service's name</comment>
+	</data>
+	<data name="NoBotsAreRunning" xml:space="preserve">
+		<value>Δεν εκτελούνται bot, γίνεται έξοδος...</value>
+	</data>
+	<data name="RefreshingOurSession" xml:space="preserve">
+		<value>Ανανέωση της συνεδρίας!</value>
+	</data>
+	<data name="RejectingTrade" xml:space="preserve">
+		<value>Απόρριψη ανταλλαγής: {0}</value>
+		<comment>{0} will be replaced by trade number</comment>
+	</data>
+	<data name="Restarting" xml:space="preserve">
+		<value>Επανεκκίνηση...</value>
+	</data>
+	<data name="Starting" xml:space="preserve">
+		<value>Εκκίνηση...</value>
+	</data>
+	<data name="Success" xml:space="preserve">
+		<value>Επιτυχία!</value>
+	</data>
+	<data name="UnlockingParentalAccount" xml:space="preserve">
+		<value>Ξεκλείδωμα γονικού λογαριασμού...</value>
+	</data>
+	<data name="UpdateCheckingNewVersion" xml:space="preserve">
+		<value>Έλεγχος για νέα έκδοση...</value>
+	</data>
+	<data name="UpdateDownloadingNewVersion" xml:space="preserve">
+		<value>Λήψη νέας έκδοσης: {0} ({1} MB)... Όσο περιμένετε, σκεφτείτε να κάνετε μια δωρεά εάν εκτιμάτε τη δουλειά που γίνεται! :)</value>
+		<comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
+	</data>
+	<data name="UpdateFinished" xml:space="preserve">
+		<value>Η διαδικασία ενημέρωσης ολοκληρώθηκε!</value>
+	</data>
+	<data name="UpdateNewVersionAvailable" xml:space="preserve">
+		<value>Νέα έκδοση του ASF είναι διαθέσιμη! Σκεφτείτε να κάνετε χειροκίνητη ενημέρωση!</value>
+	</data>
+	<data name="UpdateVersionInfo" xml:space="preserve">
+		<value>Τοπική έκδοση: {0} | Απομακρυσμένη έκδοση: {1}</value>
+		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
+	</data>
+	<data name="UserInputSteam2FA" xml:space="preserve">
+		<value>Εισάγετε τον κωδικό από την εφαρμογή επαληθευτή Steam σας: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="UserInputSteamGuard" xml:space="preserve">
+		<value>Εισάγετε τον κωδικό Steam Guard που έχει αποσταλεί στο e-mail σας: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="UserInputSteamLogin" xml:space="preserve">
+		<value>Εισάγετε το όνομα χρήστη Steam σας: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="UserInputSteamParentalCode" xml:space="preserve">
+		<value>Εισάγετε το κωδικό γονικού ελέγχου του Steam σας: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="UserInputSteamPassword" xml:space="preserve">
+		<value>Εισάγετε τον κωδικό πρόσβαση του Steam: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="WarningUnknownValuePleaseReport" xml:space="preserve">
+		<value>Λήφθηκε άγνωστη τιμή για το {0}, παρακαλούμε αναφέρετέ το: {1}</value>
+		<comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
+	</data>
+	<data name="IPCReady" xml:space="preserve">
+		<value>Ο διακομιστής IPC είναι έτοιμος!</value>
+	</data>
+	<data name="IPCStarting" xml:space="preserve">
+		<value>Έναρξη διακομιστή IPC...</value>
+	</data>
+	<data name="BotAlreadyStopped" xml:space="preserve">
+		<value>Το bot έχει ήδη σταματήσει!</value>
+	</data>
+	<data name="BotNotFound" xml:space="preserve">
+		<value>Αδυναμία εύρεσης bot με όνομα {0}!</value>
+		<comment>{0} will be replaced by bot's name query (string)</comment>
+	</data>
+	
+	
+	
+	<data name="CheckingFirstBadgePage" xml:space="preserve">
+		<value>Έλεγχος πρώτης σελίδας εμβλημάτων...</value>
+	</data>
+	<data name="CheckingOtherBadgePages" xml:space="preserve">
+		<value>Έλεγχος των άλλων σελίδων εμβλημάτων...</value>
+	</data>
+	
+	<data name="Done" xml:space="preserve">
+		<value>Ολοκληρώθηκε!</value>
+	</data>
+	
+	
+	
+	
+	
+	
+	<data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
+		<value>Αγνοήθηκε το αίτημα, γιατί η μόνιμη παύση είναι ενεργοποιημένη!</value>
+	</data>
+	
+	
+	
+	<data name="PlayingNotAvailable" xml:space="preserve">
+		<value>Η λειτουργία παιχνιδιού είναι προσωρινά μη διαθέσιμη, θα δοκιμάσουμε ξανά αργότερα!</value>
+	</data>
+	
+	
+	
+	
+	<data name="UnknownCommand" xml:space="preserve">
+		<value>Άγνωστη εντολή!</value>
+	</data>
+	<data name="WarningCouldNotCheckBadges" xml:space="preserve">
+		<value>Αδυναμία λήψης πληροφοριών εμβλημάτων, θα ξαναγίνει προσπάθεια αργότερα!</value>
+	</data>
+	<data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
+		<value>Αδυναμία ελέγχου καρτών για το: {0} ({1}). Θα δοκιμάσουμε ξανά αργότερα!</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="BotAcceptingGift" xml:space="preserve">
+		<value>Αποδοχή δώρου: {0}...</value>
+		<comment>{0} will be replaced by giftID (number)</comment>
+	</data>
+	
+	<data name="BotAddLicense" xml:space="preserve">
+		<value>ID: {0} | Κατάσταση: {1}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
+	</data>
+	<data name="BotAddLicenseWithItems" xml:space="preserve">
+		<value>ID: {0} | Κατάσταση: {1} | Αντικείμενα: {2}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string, {2} will be replaced by list of granted IDs (numbers), separated by a comma</comment>
+	</data>
+	<data name="BotAlreadyRunning" xml:space="preserve">
+		<value>Το bot εκτελείται ήδη!</value>
+	</data>
+	<data name="BotAuthenticatorConverting" xml:space="preserve">
+		<value>Μετατροπή .maFile σε μορφή ASF...</value>
+	</data>
+	<data name="BotAuthenticatorImportFinished" xml:space="preserve">
+		<value>Η εισαγωγή του επαληθευτή κινητού ολοκληρώθηκε επιτυχώς!</value>
+	</data>
+	<data name="BotAuthenticatorToken" xml:space="preserve">
+		<value>2FA Token: {0}</value>
+		<comment>{0} will be replaced by generated 2FA token (string)</comment>
+	</data>
+	
+	
+	
+	
+	<data name="BotConnected" xml:space="preserve">
+		<value>Έγινε σύνδεση στο Steam!</value>
+	</data>
+	<data name="BotDisconnected" xml:space="preserve">
+		<value>Έγινε αποσύνδεση από το Steam!</value>
+	</data>
+	<data name="BotDisconnecting" xml:space="preserve">
+		<value>Αποσύνδεση...</value>
+	</data>
+	<data name="BotEncryptedPassword" xml:space="preserve">
+		<value>[{0}] κωδικός: {1}</value>
+		<comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
+	</data>
+	<data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
+		<value>Δεν γίνεται εκκίνηση αυτού του bot καθώς έχει απενεργοποιηθεί στο αρχείο διαμόρφωσης!</value>
+	</data>
+	<data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+		<value>Λήφθηκε κωδικός σφάλματος TwoFactorCodeMismatch {0} φορές στην σειρά. Είτε τα 2FA στοιχεία εισόδου σας δεν είναι πλέον έγκυρα, είτε το ρολόι σας είναι ασυγχρόνιστο, γίνεται τερματισμός!</value>
+		<comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+	</data>
+	<data name="BotLoggedOff" xml:space="preserve">
+		<value>Έγινε αποσύνδεση από το Steam: {0}</value>
+		<comment>{0} will be replaced by logging off reason (string)</comment>
+	</data>
+	<data name="BotLoggedOn" xml:space="preserve">
+		<value>Επιτυχής σύνδεση ως {0}.</value>
+		<comment>{0} will be replaced by steam ID (number)</comment>
+	</data>
+	<data name="BotLoggingIn" xml:space="preserve">
+		<value>Σύνδεση...</value>
+	</data>
+	<data name="BotLogonSessionReplaced" xml:space="preserve">
+		<value>Αυτός ο λογαριασμός φαίνεται να χρησιμοποιείται σε άλλη συνεδρία ASF, το οποίο προκαλεί απρόσμενη συμπεριφορά. Θα γίνει τερματισμός!</value>
+	</data>
+	<data name="BotLootingFailed" xml:space="preserve">
+		<value>Η πρόταση ανταλλαγής απέτυχε!</value>
+	</data>
+	<data name="BotLootingMasterNotDefined" xml:space="preserve">
+		<value>Η ανταλλαγή δεν μπορεί να αποσταλεί καθώς δεν υπάρχει κανένας χρήστης με ορισμένο το δικαίωμα «master»!</value>
+	</data>
+	<data name="BotLootingSuccess" xml:space="preserve">
+		<value>Η πρόταση ανταλλαγής στάλθηκε επιτυχώς!</value>
+	</data>
+	<data name="BotSendingTradeToYourself" xml:space="preserve">
+		<value>Δεν μπορείτε να κάνετε trade με τον εαυτό σας!</value>
+	</data>
+	<data name="BotNoASFAuthenticator" xml:space="preserve">
+		<value>Αυτό το bot δεν έχει ενεργοποιημένο το ASF 2FA! Μήπως ξεχάσατε να εισάγετε τον επαληθευτή σας ως ASF 2FA;</value>
+	</data>
+	<data name="BotNotConnected" xml:space="preserve">
+		<value>Αυτό το bot δεν έχει συνδεθεί!</value>
+	</data>
+	<data name="BotNotOwnedYet" xml:space="preserve">
+		<value>Δεν κατέχετε ακόμη: {0}</value>
+		<comment>{0} will be replaced by query (string)</comment>
+	</data>
+	<data name="BotOwnedAlreadyWithName" xml:space="preserve">
+		<value>Κατέχετε ήδη: {0} | {1}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	
+	<data name="BotRateLimitExceeded" xml:space="preserve">
+		<value>Ξεπεράστηκε το όριο προσπαθειών, θα ξαναγίνει προσπάθεια μετά από {0}...</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
+	</data>
+	<data name="BotReconnecting" xml:space="preserve">
+		<value>Επανασύνδεση...</value>
+	</data>
+	<data name="BotRedeem" xml:space="preserve">
+		<value>Κλειδί: {0} | Κατάσταση: {1}</value>
+		<comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string</comment>
+	</data>
+	<data name="BotRedeemWithItems" xml:space="preserve">
+		<value>Κλειδί: {0} | Κατάσταση: {1} | Αντικείμενα: {2}</value>
+		<comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string, {2} will be replaced by list of key-value pairs, separated by a comma</comment>
+	</data>
+	<data name="BotRemovedExpiredLoginKey" xml:space="preserve">
+		<value>Αφαιρέθηκε κλειδί σύνδεσης που είχε λήξει!</value>
+	</data>
+	
+	
+	<data name="BotStatusConnecting" xml:space="preserve">
+		<value>Το bot συνδέεται στο δίκτυο του Steam.</value>
+	</data>
+	<data name="BotStatusNotRunning" xml:space="preserve">
+		<value>Το bot δεν εκτελείται.</value>
+	</data>
+	<data name="BotStatusPaused" xml:space="preserve">
+		<value>Το bot είναι σε παύση ή εκτελείται σε χειροκίνητη λειτουργία.</value>
+	</data>
+	<data name="BotStatusPlayingNotAvailable" xml:space="preserve">
+		<value>Το bot χρησιμοποιείται αυτή τη στιγμή.</value>
+	</data>
+	<data name="BotUnableToLogin" xml:space="preserve">
+		<value>Αδυναμία σύνδεσης στο Steam: {0}/{1}</value>
+		<comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
+	</data>
+	<data name="ErrorIsEmpty" xml:space="preserve">
+		<value>Το στοιχείο «{0}» είναι κενό!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	<data name="UnusedKeys" xml:space="preserve">
+		<value>Μη χρησιμοποιημένα κλειδιά: {0}</value>
+		<comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
+	</data>
+	<data name="WarningFailedWithError" xml:space="preserve">
+		<value>Αποτυχία λόγω σφάλματος: {0}</value>
+		<comment>{0} will be replaced by failure reason (string)</comment>
+	</data>
+	<data name="BotConnectionLost" xml:space="preserve">
+		<value>Η σύνδεση στο δίκτυο Steam χάθηκε. Γίνεται επανασύνδεση...</value>
+	</data>
+	
+	
+	<data name="BotConnecting" xml:space="preserve">
+		<value>Σύνδεση...</value>
+	</data>
+	<data name="BotHeartBeatFailed" xml:space="preserve">
+		<value>Αποτυχία αποσύνδεσης προγράμματος-πελάτη. Γίνεται εγκατάλειψη αυτού του bot!</value>
+	</data>
+	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
+		<value>Αδυναμία αρχικοποίησης SteamDirectory: η σύνδεση με το δίκτυο του Steam μπορεί να διαρκέσει πολύ περισσότερο από το συνηθισμένο!</value>
+	</data>
+	<data name="BotStopping" xml:space="preserve">
+		<value>Διακοπή...</value>
+	</data>
+	<data name="ErrorBotConfigInvalid" xml:space="preserve">
+		<value>Η διαμόρφωση του bot σας δεν είναι έγκυρη. Επαληθεύστε το περιεχόμενο του {0} και δοκιμάστε ξανά!</value>
+		<comment>{0} will be replaced by file's path</comment>
+	</data>
+	<data name="ErrorDatabaseInvalid" xml:space="preserve">
+		<value>Αδυναμία φόρτωσης μόνιμης βάσης δεδομένων. Εάν το πρόβλημα παραμένει, αφαιρέστε το {0} για επαναδημιουργία της βάσης!</value>
+		<comment>{0} will be replaced by file's path</comment>
+	</data>
+	<data name="Initializing" xml:space="preserve">
+		<value>Εκκίνηση {0}...</value>
+		<comment>{0} will be replaced by service name that is being initialized</comment>
+	</data>
+	<data name="WarningPrivacyPolicy" xml:space="preserve">
+		<value>Παρακαλούμε διαβάστε το τμήμα πολιτικής απορρήτου μας στο wiki εάν ανησυχείτε για το τι πραγματικά κάνει το ASF!</value>
+	</data>
+	<data name="Welcome" xml:space="preserve">
+		<value>Φαίνεται ότι εκτελείτε για πρώτη φορά το πρόγραμμα. Καλώς ήρθατε!</value>
+	</data>
+	<data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+		<value>Η παρεχόμενη τιμή CurrentCulture είναι άκυρη, το ASF θα συνεχίσει να εκτελείται με την προεπιλεγμένη τιμή!</value>
+	</data>
+	
+	
+	<data name="WarningIdlingGameMismatch" xml:space="preserve">
+		<value>Το ASF εντόπισε ασυμφωνία ID για το {0} ({1}) και θα χρησιμοποιηθεί το ID του {2} στη θέση του.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
+	</data>
+	<data name="BotVersion" xml:space="preserve">
+		<value>{0} Εκδ.{1}</value>
+		<comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
+	</data>
+	
+	
+	<data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
+		<value>Αυτή η λειτουργία είναι διαθέσιμη μόνο σε σιωπηλή λειτουργία!</value>
+	</data>
+	<data name="BotOwnedAlready" xml:space="preserve">
+		<value>Κατέχετε ήδη: {0}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="ErrorAccessDenied" xml:space="preserve">
+		<value>Δεν επιτρέπεται η πρόσβαση!</value>
+	</data>
+	
+	
+	<data name="ClearingDiscoveryQueue" xml:space="preserve">
+		<value>Εκκαθάριση σειράς ανακαλύψεων Steam #{0}...</value>
+		<comment>{0} will be replaced by queue number</comment>
+	</data>
+	<data name="DoneClearingDiscoveryQueue" xml:space="preserve">
+		<value>Ολοκληρώθηκε η εκκαθάριση σειράς ανακαλύψεων Steam #{0}.</value>
+		<comment>{0} will be replaced by queue number</comment>
+	</data>
+	<data name="BotOwnsOverviewPerGame" xml:space="preserve">
+		<value>{0}/{1} bot κατέχουν ήδη το παιχνίδι {2}.</value>
+		<comment>{0} will be replaced by number of bots that already own particular game being checked, {1} will be replaced by total number of bots that were checked during the process, {2} will be replaced by game's ID (number)</comment>
+	</data>
+	<data name="BotRefreshingPackagesData" xml:space="preserve">
+		<value>Ανανέωση δεδομένων πακέτων...</value>
+	</data>
+	<data name="WarningDeprecated" xml:space="preserve">
+		<value>Η χρήση του {0} είναι υπό απόσυρση και θα αφαιρεθεί σε μελλοντικές εκδόσεις του προγράμματος. Παρακαλώ χρησιμοποιήστε το {1}.</value>
+		<comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
+	</data>
+	
+	
+	
+	
+	
+	<data name="BotLevel" xml:space="preserve">
+		<value>Το bot βρίσκεται στο επίπεδο {0}.</value>
+		<comment>{0} will be replaced by bot's level</comment>
+	</data>
+	
+	
+	<data name="ErrorAborted" xml:space="preserve">
+		<value>Ακυρώθηκε!</value>
+	</data>
+	
+	
+	<data name="PluginLoaded" xml:space="preserve">
+		<value>{0} φορτώθηκε με επιτυχία!</value>
+		<comment>{0} will be replaced by the name of the custom ASF plugin</comment>
+	</data>
+	<data name="PluginLoading" xml:space="preserve">
+		<value>Φόρτωση του {0} Εκδ.{1}...</value>
+		<comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
+	</data>
+	<data name="NothingFound" xml:space="preserve">
+		<value>Δεν βρέθηκε τίποτα!</value>
+	</data>
+	
+	<data name="PleaseWait" xml:space="preserve">
+		<value>Παρακαλώ περιμένετε...</value>
+	</data>
+	<data name="EnterCommand" xml:space="preserve">
+		<value>Εισαγωγή εντολής: </value>
+	</data>
+	<data name="Executing" xml:space="preserve">
+		<value>Εκτέλεση...</value>
+	</data>
+	<data name="InteractiveConsoleEnabled" xml:space="preserve">
+		<value>Η διαδραστική κονσόλα είναι ενεργή, πατήστε 'c' για να εισάγετε εντολή.</value>
+	</data>
+	<data name="InteractiveConsoleNotAvailable" xml:space="preserve">
+		<value>Η διαδραστική κονσόλα δεν είναι διαθέσιμη διότι λείπει η ιδιότητα {0} από το αρχείο διαμόρφωσης.</value>
+		<comment>{0} will be replaced by the name of the missing config property (string)</comment>
+	</data>
+	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
+		<value>Το bot έχει {0} παιχνίδια που απομένουν στην ουρά.</value>
+		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
+	</data>
+	<data name="ErrorSingleInstanceRequired" xml:space="preserve">
+		<value>Η διαδικασία ASF εκτελείται ήδη για αυτόν τον κατάλογο εργασίας, ματαίωση!</value>
+	</data>
+	<data name="BotHandledConfirmations" xml:space="preserve">
+		<value>Επεξεργάστηκαν {0} επιβεβαιώσεις με επιτυχία!</value>
+		<comment>{0} will be replaced by number of confirmations</comment>
+	</data>
+	
+	<data name="UpdateCleanup" xml:space="preserve">
+		<value>Εκκαθάριση παλιών αρχείων μετά την ενημέρωση...</value>
+	</data>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 </root>

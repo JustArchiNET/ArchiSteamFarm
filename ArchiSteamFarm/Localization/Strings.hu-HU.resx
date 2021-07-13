@@ -1,669 +1,614 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
-    Microsoft ResX Schema
-
-    Version 2.0
-
-    The primary goals of this format is to allow a simple XML format
-    that is mostly human readable. The generation and parsing of the
-    various data types are done through the TypeConverter classes
-    associated with the data types.
-
-    Example:
-
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-
-    There are any number of "resheader" rows that contain simple
-    name/value pairs.
-
-    Each data row contains a name, and value. The row also contains a
-    type or mimetype. Type corresponds to a .NET class that support
-    text/value conversion through the TypeConverter architecture.
-    Classes that don't support this are serialized and stored with the
-    mimetype set.
-
-    The mimetype is used for serialized objects, and tells the
-    ResXResourceReader how to depersist the object. This is currently not
-    extensible. For a given mimetype the value must be set accordingly:
-
-    Note - application/x-microsoft.net.object.binary.base64 is the format
-    that the ResXResourceWriter will generate, however the reader can
-    read any of the formats listed below.
-
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
-  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string"/>
-              <xsd:attribute name="type" type="xsd:string"/>
-              <xsd:attribute name="mimetype" type="xsd:string"/>
-              <xsd:attribute ref="xml:space"/>
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string"/>
-              <xsd:attribute name="name" type="xsd:string"/>
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-              <xsd:attribute ref="xml:space"/>
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required"/>
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="AcceptingTrade" xml:space="preserve">
-    <value>Csereajánlat elfogadása: {0}</value>
-    <comment>{0} will be replaced by trade number</comment>
-  </data>
-  <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>Az ASF automatikusan keresni fog új verziót minden {0} elteltével.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
-  </data>
-  <data name="Content" xml:space="preserve">
-    <value>Tartalom: {0}</value>
-    <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
-  </data>
-  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>A beállított {0} tulajdonság érvénytelen: {1}</value>
-    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
-  </data>
-  <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} végzetes hibába ütközött, mielőtt az alapvető naplózási modul inicializálása megtörtént volna!</value>
-    <comment>{0} will be replaced by version number</comment>
-  </data>
-  <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
-    <value>Kivétel: {0}() {1}
+	<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns="" id="root">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="metadata">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0"/>
+							</xsd:sequence>
+							<xsd:attribute name="name" use="required" type="xsd:string"/>
+							<xsd:attribute name="type" type="xsd:string"/>
+							<xsd:attribute name="mimetype" type="xsd:string"/>
+							<xsd:attribute ref="xml:space"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="assembly">
+						<xsd:complexType>
+							<xsd:attribute name="alias" type="xsd:string"/>
+							<xsd:attribute name="name" type="xsd:string"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+							<xsd:attribute ref="xml:space"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required"/>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+			PublicKeyToken=b77a5c561934e089
+		</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+			PublicKeyToken=b77a5c561934e089
+		</value>
+	</resheader>
+	<data name="AcceptingTrade" xml:space="preserve">
+		<value>Csereajánlat elfogadása: {0}</value>
+		<comment>{0} will be replaced by trade number</comment>
+	</data>
+	<data name="AutoUpdateCheckInfo" xml:space="preserve">
+		<value>Az ASF automatikusan keresni fog új verziót minden {0} elteltével.</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
+	</data>
+	<data name="Content" xml:space="preserve">
+		<value>Tartalom: {0}</value>
+		<comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
+	</data>
+	<data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+		<value>A beállított {0} tulajdonság érvénytelen: {1}</value>
+		<comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+	</data>
+	<data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
+		<value>ASF V{0} végzetes hibába ütközött, mielőtt az alapvető naplózási modul inicializálása megtörtént volna!</value>
+		<comment>{0} will be replaced by version number</comment>
+	</data>
+	<data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
+		<value>Kivétel: {0}() {1}
 StackTrace: {2}</value>
-    <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
-  </data>
-  <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>Kilépés nem nulla hibakóddal!</value>
-  </data>
-  <data name="ErrorFailingRequest" xml:space="preserve">
-    <value>Kérés sikertelen: {0}</value>
-    <comment>{0} will be replaced by URL of the request</comment>
-  </data>
-  <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Nem lehetett betölteni a globális konfigurációt. Bizonyosodj meg róla, hogy {0} létezik és érvényes! Ha bizonytalan vagy, olvasd át a telepítési segédletet a wikin.</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
-  <data name="ErrorIsInvalid" xml:space="preserve">
-    <value>Érvénytelen {0}!</value>
-    <comment>{0} will be replaced by object's name</comment>
-  </data>
-  <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>Nincsenek definiált botok. Elfelejtetted bekonfigurálni az ASF-et?</value>
-  </data>
-  <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} értéke nulla!</value>
-    <comment>{0} will be replaced by object's name</comment>
-  </data>
-  <data name="ErrorParsingObject" xml:space="preserve">
-    <value>{0} feldolgozása sikertelen!</value>
-    <comment>{0} will be replaced by object's name</comment>
-  </data>
-  <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>A kérés sikertelen volt {0} próbálkozás után!</value>
-    <comment>{0} will be replaced by maximum number of tries</comment>
-  </data>
-  <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>Nem lehet lekérni a legújabb verziót!</value>
-  </data>
-  <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
-    <value>Nem lehetséges a frissítés, mert nincs a jelenleg futó verzióhoz kapcsolódó eszköz! Az automatikus frissítés erre a verzióra nem lehetséges.</value>
-  </data>
-  <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>Nem lehet folytatni a frissítést, mivel ez a verzió nem tartalmaz egyetlen fájlt sem!</value>
-  </data>
-  <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Felhasználói kérelem érkezett, de a folyamat headless módban fut!</value>
-  </data>
-  <data name="Exiting" xml:space="preserve">
-    <value>Kilépés...</value>
-  </data>
-  <data name="WarningFailed" xml:space="preserve">
-    <value>Sikertelen!</value>
-  </data>
-  <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>A globális konfigurációs fájl megváltozott!</value>
-  </data>
-  <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>A globális konfigurációs fájl törölve lett!</value>
-  </data>
-  <data name="IgnoringTrade" xml:space="preserve">
-    <value>Csereajánlat figyelmen kívül hagyása: {0}</value>
-    <comment>{0} will be replaced by trade number</comment>
-  </data>
-  <data name="LoggingIn" xml:space="preserve">
-    <value>Belépés {0} szolgáltatásba...</value>
-    <comment>{0} will be replaced by service's name</comment>
-  </data>
-  <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>Egyetlen bot sem fut, kilépés...</value>
-  </data>
-  <data name="RefreshingOurSession" xml:space="preserve">
-    <value>Munkamenet frissítése!</value>
-  </data>
-  <data name="RejectingTrade" xml:space="preserve">
-    <value>Csereajánlat elutasítása: {0}</value>
-    <comment>{0} will be replaced by trade number</comment>
-  </data>
-  <data name="Restarting" xml:space="preserve">
-    <value>Újraindítás...</value>
-  </data>
-  <data name="Starting" xml:space="preserve">
-    <value>Indítás...</value>
-  </data>
-  <data name="Success" xml:space="preserve">
-    <value>Kész!</value>
-  </data>
-  <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Szülői felhasználó feloldása...</value>
-  </data>
-  <data name="UpdateCheckingNewVersion" xml:space="preserve">
-    <value>Új verzió keresése...</value>
-  </data>
-  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Az új verzió letöltése: {0} ({1} MB)... Mialatt várakozol, fontold meg, hogy támogasd a munkámat :)</value>
-    <comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
-  </data>
-  <data name="UpdateFinished" xml:space="preserve">
-    <value>Frissítés kész!</value>
-  </data>
-  <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>Új ASF verzió elérhető! Fontold meg a manuális frissítést!</value>
-  </data>
-  <data name="UpdateVersionInfo" xml:space="preserve">
-    <value>Lokális verzió: {0} | Távoli verzió: {1}</value>
-    <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
-  </data>
-  <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>Add meg a 2FA kódot a Steam hitelesítő alkalmazásból: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>Add meg a SteamGuard hitelesítő kódot amit e-mailben kaptál: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>Add meg a Steames felhasználó neved: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamParentalCode" xml:space="preserve">
-    <value>Add meg a Steam Családi Nézet kódot: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>Add meg a Steames felhasználód jelszavát: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
-  <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
-    <value>{0} ismeretlen értéket kapott, kérlek, jelentsd ezt: {1}</value>
-    <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
-  </data>
-  <data name="IPCReady" xml:space="preserve">
-    <value>IPC szerver készen áll!</value>
-  </data>
-  <data name="IPCStarting" xml:space="preserve">
-    <value>Az IPC-szerver indítása...</value>
-  </data>
-  <data name="BotAlreadyStopped" xml:space="preserve">
-    <value>Ez a bor már leállt!</value>
-  </data>
-  <data name="BotNotFound" xml:space="preserve">
-    <value>Egyetlen bot sem található {0} névvel!</value>
-    <comment>{0} will be replaced by bot's name query (string)</comment>
-  </data>
-  
-  
-  
-  <data name="CheckingFirstBadgePage" xml:space="preserve">
-    <value>A kitűzők első oldalának ellenőrzése...</value>
-  </data>
-  <data name="CheckingOtherBadgePages" xml:space="preserve">
-    <value>A többi kitűző oldal ellenőrzése...</value>
-  </data>
-  
-  <data name="Done" xml:space="preserve">
-    <value>Kész!</value>
-  </data>
-  
-  
-  
-  
-  
-  
-  <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
-    <value>Kérés figyelmen kívül hagyása, mivel az állandó szünet aktív!</value>
-  </data>
-  
-  
-  
-  <data name="PlayingNotAvailable" xml:space="preserve">
-    <value>A játék jelenleg nem nem lehetséges, később megpróbáljuk!</value>
-  </data>
-  
-  
-  
-  
-  <data name="UnknownCommand" xml:space="preserve">
-    <value>Ismeretlen parancs!</value>
-  </data>
-  <data name="WarningCouldNotCheckBadges" xml:space="preserve">
-    <value>Nem lehetett lekérni a kitűző információkat, később újra próbáljuk!</value>
-  </data>
-  <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
-    <value>A kártyák állapota nem elérhető ehhez: {0} ({1}), később újra lesz próbálva!</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
-  <data name="BotAcceptingGift" xml:space="preserve">
-    <value>Ajándék elfogadása: {0}...</value>
-    <comment>{0} will be replaced by giftID (number)</comment>
-  </data>
-  
-  <data name="BotAddLicense" xml:space="preserve">
-    <value>Azonosító: {0} | Állapot: {1}</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
-  </data>
-  <data name="BotAddLicenseWithItems" xml:space="preserve">
-    <value>Azonosító: {0} | Állapot: {1} | Tárgyak: {2}</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string, {2} will be replaced by list of granted IDs (numbers), separated by a comma</comment>
-  </data>
-  <data name="BotAlreadyRunning" xml:space="preserve">
-    <value>Ez a bot már fut!</value>
-  </data>
-  <data name="BotAuthenticatorConverting" xml:space="preserve">
-    <value>.maFile konvertálása ASF formátumba...</value>
-  </data>
-  <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>A mobil hitelesítő importálása sikeres!</value>
-  </data>
-  <data name="BotAuthenticatorToken" xml:space="preserve">
-    <value>2FA Token: {0}</value>
-    <comment>{0} will be replaced by generated 2FA token (string)</comment>
-  </data>
-  
-  
-  
-  
-  <data name="BotConnected" xml:space="preserve">
-    <value>Csatlakozva a Steamhez!</value>
-  </data>
-  <data name="BotDisconnected" xml:space="preserve">
-    <value>Lecsatlakozva a Steamről!</value>
-  </data>
-  <data name="BotDisconnecting" xml:space="preserve">
-    <value>Kapcsolat bontása...</value>
-  </data>
-  <data name="BotEncryptedPassword" xml:space="preserve">
-    <value>[{0}] jelszó: {1}</value>
-    <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
-  </data>
-  <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
-    <value>Ezt a bot példányt nem lehet elindítani, mert a konfigurációs fájlban ki van kapcsolva!</value>
-  </data>
-  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>A kapott TwoFactorCodeMismatch hibakód: {0} alkalommal egymás után. 2FA hitelesítő adatait már nem érvényesek!</value>
-    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
-  </data>
-  <data name="BotLoggedOff" xml:space="preserve">
-    <value>Kijelentkezve a Steamből: {0}</value>
-    <comment>{0} will be replaced by logging off reason (string)</comment>
-  </data>
-  <data name="BotLoggedOn" xml:space="preserve">
-    <value>Sikeres bejelentkezés mint {0}.</value>
-    <comment>{0} will be replaced by steam ID (number)</comment>
-  </data>
-  <data name="BotLoggingIn" xml:space="preserve">
-    <value>Bejelentkezés...</value>
-  </data>
-  <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>Ezt az accountot egy másik ASF példány már használja, ami nem várt viselkedést eredményez. A további futás megtagadva!</value>
-  </data>
-  <data name="BotLootingFailed" xml:space="preserve">
-    <value>Csereajánlat nem sikerült!</value>
-  </data>
-  <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>A cserét nem sikerült elküldeni, mert nincs definiált felhasználó a mester engedélyével!</value>
-  </data>
-  <data name="BotLootingSuccess" xml:space="preserve">
-    <value>Csereajánlat sikeresen elküldve!</value>
-  </data>
-  <data name="BotSendingTradeToYourself" xml:space="preserve">
-    <value>Nem tudsz cserét küldeni magadnak!</value>
-  </data>
-  <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>Ennél a botnál nincs bekapcsolva az ASF 2FA! Elfelejtetted ASF 2FA-ként importálni a hitelesítődet?</value>
-  </data>
-  <data name="BotNotConnected" xml:space="preserve">
-    <value>Ez a bot példány nincs csatlakozva!</value>
-  </data>
-  <data name="BotNotOwnedYet" xml:space="preserve">
-    <value>Még nem birtokolt: {0}</value>
-    <comment>{0} will be replaced by query (string)</comment>
-  </data>
-  <data name="BotOwnedAlreadyWithName" xml:space="preserve">
-    <value>Már birtokolt: {0} | {1}</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
-  <data name="BotPointsBalance" xml:space="preserve">
-    <value>Pont egyenleg: {0}</value>
-    <comment>{0} will be replaced by the points balance value (integer)</comment>
-  </data>
-  <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>Mennyiség túllépve, újrapróbáljuk {0} idő után.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
-  </data>
-  <data name="BotReconnecting" xml:space="preserve">
-    <value>Újracsatlakozás...</value>
-  </data>
-  <data name="BotRedeem" xml:space="preserve">
-    <value>Kulcs: {0} | Állapot: {1}</value>
-    <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string</comment>
-  </data>
-  <data name="BotRedeemWithItems" xml:space="preserve">
-    <value>Kulcs: {0} | Állapot: {1} | Tárgyak: {2}</value>
-    <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string, {2} will be replaced by list of key-value pairs, separated by a comma</comment>
-  </data>
-  <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
-    <value>A lejárt belépési kulcs törölve!</value>
-  </data>
-  
-  
-  <data name="BotStatusConnecting" xml:space="preserve">
-    <value>A Bot a Steam hálózathoz csatlakozik.</value>
-  </data>
-  <data name="BotStatusNotRunning" xml:space="preserve">
-    <value>A bot nem fut.</value>
-  </data>
-  <data name="BotStatusPaused" xml:space="preserve">
-    <value>A bot le van állítva, vagy manuális módban fut.</value>
-  </data>
-  <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
-    <value>A bot jelenleg használatban van.</value>
-  </data>
-  <data name="BotUnableToLogin" xml:space="preserve">
-    <value>Nem lehet belépni a Steamre: {0}/{1}</value>
-    <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
-  </data>
-  <data name="ErrorIsEmpty" xml:space="preserve">
-    <value>Üres {0}!</value>
-    <comment>{0} will be replaced by object's name</comment>
-  </data>
-  <data name="UnusedKeys" xml:space="preserve">
-    <value>Fel nem használt kulcsok: {0}</value>
-    <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
-  </data>
-  <data name="WarningFailedWithError" xml:space="preserve">
-    <value>Hiba miatt nem sikerült: {0}</value>
-    <comment>{0} will be replaced by failure reason (string)</comment>
-  </data>
-  <data name="BotConnectionLost" xml:space="preserve">
-    <value>Megszakadt a kapcsolat a Steam hálózattal. Újrakapcsolódás...</value>
-  </data>
-  
-  
-  <data name="BotConnecting" xml:space="preserve">
-    <value>Kapcsolódás...</value>
-  </data>
-  <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>Sikertelen volt a kliensről való lecsatlakozás. Elhagyjuk ezt a bot példányt!</value>
-  </data>
-  <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>A Steam Könyvtárat nem sikerült inicializálni: a Steam hálózathoz való csatlakozás a szokásosnál tovább is eltarthat!</value>
-  </data>
-  <data name="BotStopping" xml:space="preserve">
-    <value>Leállás...</value>
-  </data>
-  <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>A bot konfigurációd érvénytelen. Kérlek, ellenőrizd {0} tartalmát, majd próbáld meg újból!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
-  <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>A perzisztens adatbázist nem lehet betölteni! Ha a hiba továbbra is fennáll, kérlek, töröld {0}-t, hogy az adatbázis újra elkészülhessen!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
-  <data name="Initializing" xml:space="preserve">
-    <value>{0} inicializálása...</value>
-    <comment>{0} will be replaced by service name that is being initialized</comment>
-  </data>
-  <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>Kérlek, olvasd el az adatvédelmi szabályzatunkat a wiki-n, ha szeretnéd tudni, mit is csinál valójában az ASF!</value>
-  </data>
-  <data name="Welcome" xml:space="preserve">
-    <value>Úgy tűnik, most indítottad el első alkalommal a programot, üdvözöllek!</value>
-  </data>
-  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-    <value>A CurrentCulture változód érvénytelen, az ASF az alapértelmezettet fogja használni!</value>
-  </data>
-  <data name="TranslationIncomplete" xml:space="preserve">
-    <value>Az ASF megpróbálja az anyanyelved ({0}) használni, de a fordítás azon a nyelven csak {1}-ban/ben készült el eddig. Segíthetnél lefordítani az ASF a saját nyelvedre!</value>
-    <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
-  </data>
-  
-  <data name="WarningIdlingGameMismatch" xml:space="preserve">
-    <value>Az ASF azonosító eltérést észlelt {0} ({1}) esetében, és inkább a {2} azonosítót használja majd.</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
-  </data>
-  <data name="BotVersion" xml:space="preserve">
-    <value>{0} verziószám: {1}</value>
-    <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
-  </data>
-  
-  
-  <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
-    <value>Ez a funkció csak headless módban elérhető!</value>
-  </data>
-  <data name="BotOwnedAlready" xml:space="preserve">
-    <value>Már birtokolt: {0}</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
-  <data name="ErrorAccessDenied" xml:space="preserve">
-    <value>Hozzáférés megtagadva!</value>
-  </data>
-  <data name="WarningPreReleaseVersion" xml:space="preserve">
-    <value>Egy olyan verziót használsz, ami újabb, mint a legfrissebb verzió a frissítési csatornádban. Kérlek vedd figyelembe, hogy a teszt verziók olyan felhasználóknak vannak, akik tudnak hibákat bejelenteni, meg tudják oldani a problémákat, és visszajelzéseket küldenek - nem fogsz kapni technikai segítséget, ha problémád akad a teszt verzióban.</value>
-  </data>
-  <data name="BotStats" xml:space="preserve">
-    <value>Jelenlegi memória használat: {0} MB.
+		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
+	</data>
+	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+		<value>Kilépés nem nulla hibakóddal!</value>
+	</data>
+	<data name="ErrorFailingRequest" xml:space="preserve">
+		<value>Kérés sikertelen: {0}</value>
+		<comment>{0} will be replaced by URL of the request</comment>
+	</data>
+	<data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
+		<value>Nem lehetett betölteni a globális konfigurációt. Bizonyosodj meg róla, hogy {0} létezik és érvényes! Ha bizonytalan vagy, olvasd át a telepítési segédletet a wikin.</value>
+		<comment>{0} will be replaced by file's path</comment>
+	</data>
+	<data name="ErrorIsInvalid" xml:space="preserve">
+		<value>Érvénytelen {0}!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	<data name="ErrorNoBotsDefined" xml:space="preserve">
+		<value>Nincsenek definiált botok. Elfelejtetted bekonfigurálni az ASF-et?</value>
+	</data>
+	<data name="ErrorObjectIsNull" xml:space="preserve">
+		<value>{0} értéke nulla!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	<data name="ErrorParsingObject" xml:space="preserve">
+		<value>{0} feldolgozása sikertelen!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	<data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
+		<value>A kérés sikertelen volt {0} próbálkozás után!</value>
+		<comment>{0} will be replaced by maximum number of tries</comment>
+	</data>
+	<data name="ErrorUpdateCheckFailed" xml:space="preserve">
+		<value>Nem lehet lekérni a legújabb verziót!</value>
+	</data>
+	<data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
+		<value>Nem lehetséges a frissítés, mert nincs a jelenleg futó verzióhoz kapcsolódó eszköz! Az automatikus frissítés erre a verzióra nem lehetséges.</value>
+	</data>
+	<data name="ErrorUpdateNoAssets" xml:space="preserve">
+		<value>Nem lehet folytatni a frissítést, mivel ez a verzió nem tartalmaz egyetlen fájlt sem!</value>
+	</data>
+	<data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
+		<value>Felhasználói kérelem érkezett, de a folyamat headless módban fut!</value>
+	</data>
+	<data name="Exiting" xml:space="preserve">
+		<value>Kilépés...</value>
+	</data>
+	<data name="WarningFailed" xml:space="preserve">
+		<value>Sikertelen!</value>
+	</data>
+	<data name="GlobalConfigChanged" xml:space="preserve">
+		<value>A globális konfigurációs fájl megváltozott!</value>
+	</data>
+	<data name="ErrorGlobalConfigRemoved" xml:space="preserve">
+		<value>A globális konfigurációs fájl törölve lett!</value>
+	</data>
+	<data name="IgnoringTrade" xml:space="preserve">
+		<value>Csereajánlat figyelmen kívül hagyása: {0}</value>
+		<comment>{0} will be replaced by trade number</comment>
+	</data>
+	<data name="LoggingIn" xml:space="preserve">
+		<value>Belépés {0} szolgáltatásba...</value>
+		<comment>{0} will be replaced by service's name</comment>
+	</data>
+	<data name="NoBotsAreRunning" xml:space="preserve">
+		<value>Egyetlen bot sem fut, kilépés...</value>
+	</data>
+	<data name="RefreshingOurSession" xml:space="preserve">
+		<value>Munkamenet frissítése!</value>
+	</data>
+	<data name="RejectingTrade" xml:space="preserve">
+		<value>Csereajánlat elutasítása: {0}</value>
+		<comment>{0} will be replaced by trade number</comment>
+	</data>
+	<data name="Restarting" xml:space="preserve">
+		<value>Újraindítás...</value>
+	</data>
+	<data name="Starting" xml:space="preserve">
+		<value>Indítás...</value>
+	</data>
+	<data name="Success" xml:space="preserve">
+		<value>Kész!</value>
+	</data>
+	<data name="UnlockingParentalAccount" xml:space="preserve">
+		<value>Szülői felhasználó feloldása...</value>
+	</data>
+	<data name="UpdateCheckingNewVersion" xml:space="preserve">
+		<value>Új verzió keresése...</value>
+	</data>
+	<data name="UpdateDownloadingNewVersion" xml:space="preserve">
+		<value>Az új verzió letöltése: {0} ({1} MB)... Mialatt várakozol, fontold meg, hogy támogasd a munkámat :)</value>
+		<comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
+	</data>
+	<data name="UpdateFinished" xml:space="preserve">
+		<value>Frissítés kész!</value>
+	</data>
+	<data name="UpdateNewVersionAvailable" xml:space="preserve">
+		<value>Új ASF verzió elérhető! Fontold meg a manuális frissítést!</value>
+	</data>
+	<data name="UpdateVersionInfo" xml:space="preserve">
+		<value>Lokális verzió: {0} | Távoli verzió: {1}</value>
+		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
+	</data>
+	<data name="UserInputSteam2FA" xml:space="preserve">
+		<value>Add meg a 2FA kódot a Steam hitelesítő alkalmazásból: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="UserInputSteamGuard" xml:space="preserve">
+		<value>Add meg a SteamGuard hitelesítő kódot amit e-mailben kaptál: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="UserInputSteamLogin" xml:space="preserve">
+		<value>Add meg a Steames felhasználó neved: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="UserInputSteamParentalCode" xml:space="preserve">
+		<value>Add meg a Steam Családi Nézet kódot: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="UserInputSteamPassword" xml:space="preserve">
+		<value>Add meg a Steames felhasználód jelszavát: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="WarningUnknownValuePleaseReport" xml:space="preserve">
+		<value>{0} ismeretlen értéket kapott, kérlek, jelentsd ezt: {1}</value>
+		<comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
+	</data>
+	<data name="IPCReady" xml:space="preserve">
+		<value>IPC szerver készen áll!</value>
+	</data>
+	<data name="IPCStarting" xml:space="preserve">
+		<value>Az IPC-szerver indítása...</value>
+	</data>
+	<data name="BotAlreadyStopped" xml:space="preserve">
+		<value>Ez a bor már leállt!</value>
+	</data>
+	<data name="BotNotFound" xml:space="preserve">
+		<value>Egyetlen bot sem található {0} névvel!</value>
+		<comment>{0} will be replaced by bot's name query (string)</comment>
+	</data>
+	
+	
+	
+	<data name="CheckingFirstBadgePage" xml:space="preserve">
+		<value>A kitűzők első oldalának ellenőrzése...</value>
+	</data>
+	<data name="CheckingOtherBadgePages" xml:space="preserve">
+		<value>A többi kitűző oldal ellenőrzése...</value>
+	</data>
+	
+	<data name="Done" xml:space="preserve">
+		<value>Kész!</value>
+	</data>
+	
+	
+	
+	
+	
+	
+	<data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
+		<value>Kérés figyelmen kívül hagyása, mivel az állandó szünet aktív!</value>
+	</data>
+	
+	
+	
+	<data name="PlayingNotAvailable" xml:space="preserve">
+		<value>A játék jelenleg nem nem lehetséges, később megpróbáljuk!</value>
+	</data>
+	
+	
+	
+	
+	<data name="UnknownCommand" xml:space="preserve">
+		<value>Ismeretlen parancs!</value>
+	</data>
+	<data name="WarningCouldNotCheckBadges" xml:space="preserve">
+		<value>Nem lehetett lekérni a kitűző információkat, később újra próbáljuk!</value>
+	</data>
+	<data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
+		<value>A kártyák állapota nem elérhető ehhez: {0} ({1}), később újra lesz próbálva!</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="BotAcceptingGift" xml:space="preserve">
+		<value>Ajándék elfogadása: {0}...</value>
+		<comment>{0} will be replaced by giftID (number)</comment>
+	</data>
+	
+	<data name="BotAddLicense" xml:space="preserve">
+		<value>Azonosító: {0} | Állapot: {1}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
+	</data>
+	<data name="BotAddLicenseWithItems" xml:space="preserve">
+		<value>Azonosító: {0} | Állapot: {1} | Tárgyak: {2}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string, {2} will be replaced by list of granted IDs (numbers), separated by a comma</comment>
+	</data>
+	<data name="BotAlreadyRunning" xml:space="preserve">
+		<value>Ez a bot már fut!</value>
+	</data>
+	<data name="BotAuthenticatorConverting" xml:space="preserve">
+		<value>.maFile konvertálása ASF formátumba...</value>
+	</data>
+	<data name="BotAuthenticatorImportFinished" xml:space="preserve">
+		<value>A mobil hitelesítő importálása sikeres!</value>
+	</data>
+	<data name="BotAuthenticatorToken" xml:space="preserve">
+		<value>2FA Token: {0}</value>
+		<comment>{0} will be replaced by generated 2FA token (string)</comment>
+	</data>
+	
+	
+	
+	
+	<data name="BotConnected" xml:space="preserve">
+		<value>Csatlakozva a Steamhez!</value>
+	</data>
+	<data name="BotDisconnected" xml:space="preserve">
+		<value>Lecsatlakozva a Steamről!</value>
+	</data>
+	<data name="BotDisconnecting" xml:space="preserve">
+		<value>Kapcsolat bontása...</value>
+	</data>
+	<data name="BotEncryptedPassword" xml:space="preserve">
+		<value>[{0}] jelszó: {1}</value>
+		<comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
+	</data>
+	<data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
+		<value>Ezt a bot példányt nem lehet elindítani, mert a konfigurációs fájlban ki van kapcsolva!</value>
+	</data>
+	<data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+		<value>A kapott TwoFactorCodeMismatch hibakód: {0} alkalommal egymás után. 2FA hitelesítő adatait már nem érvényesek!</value>
+		<comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+	</data>
+	<data name="BotLoggedOff" xml:space="preserve">
+		<value>Kijelentkezve a Steamből: {0}</value>
+		<comment>{0} will be replaced by logging off reason (string)</comment>
+	</data>
+	<data name="BotLoggedOn" xml:space="preserve">
+		<value>Sikeres bejelentkezés mint {0}.</value>
+		<comment>{0} will be replaced by steam ID (number)</comment>
+	</data>
+	<data name="BotLoggingIn" xml:space="preserve">
+		<value>Bejelentkezés...</value>
+	</data>
+	<data name="BotLogonSessionReplaced" xml:space="preserve">
+		<value>Ezt az accountot egy másik ASF példány már használja, ami nem várt viselkedést eredményez. A további futás megtagadva!</value>
+	</data>
+	<data name="BotLootingFailed" xml:space="preserve">
+		<value>Csereajánlat nem sikerült!</value>
+	</data>
+	<data name="BotLootingMasterNotDefined" xml:space="preserve">
+		<value>A cserét nem sikerült elküldeni, mert nincs definiált felhasználó a mester engedélyével!</value>
+	</data>
+	<data name="BotLootingSuccess" xml:space="preserve">
+		<value>Csereajánlat sikeresen elküldve!</value>
+	</data>
+	<data name="BotSendingTradeToYourself" xml:space="preserve">
+		<value>Nem tudsz cserét küldeni magadnak!</value>
+	</data>
+	<data name="BotNoASFAuthenticator" xml:space="preserve">
+		<value>Ennél a botnál nincs bekapcsolva az ASF 2FA! Elfelejtetted ASF 2FA-ként importálni a hitelesítődet?</value>
+	</data>
+	<data name="BotNotConnected" xml:space="preserve">
+		<value>Ez a bot példány nincs csatlakozva!</value>
+	</data>
+	<data name="BotNotOwnedYet" xml:space="preserve">
+		<value>Még nem birtokolt: {0}</value>
+		<comment>{0} will be replaced by query (string)</comment>
+	</data>
+	<data name="BotOwnedAlreadyWithName" xml:space="preserve">
+		<value>Már birtokolt: {0} | {1}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="BotPointsBalance" xml:space="preserve">
+		<value>Pont egyenleg: {0}</value>
+		<comment>{0} will be replaced by the points balance value (integer)</comment>
+	</data>
+	<data name="BotRateLimitExceeded" xml:space="preserve">
+		<value>Mennyiség túllépve, újrapróbáljuk {0} idő után.</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
+	</data>
+	<data name="BotReconnecting" xml:space="preserve">
+		<value>Újracsatlakozás...</value>
+	</data>
+	<data name="BotRedeem" xml:space="preserve">
+		<value>Kulcs: {0} | Állapot: {1}</value>
+		<comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string</comment>
+	</data>
+	<data name="BotRedeemWithItems" xml:space="preserve">
+		<value>Kulcs: {0} | Állapot: {1} | Tárgyak: {2}</value>
+		<comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string, {2} will be replaced by list of key-value pairs, separated by a comma</comment>
+	</data>
+	<data name="BotRemovedExpiredLoginKey" xml:space="preserve">
+		<value>A lejárt belépési kulcs törölve!</value>
+	</data>
+	
+	
+	<data name="BotStatusConnecting" xml:space="preserve">
+		<value>A Bot a Steam hálózathoz csatlakozik.</value>
+	</data>
+	<data name="BotStatusNotRunning" xml:space="preserve">
+		<value>A bot nem fut.</value>
+	</data>
+	<data name="BotStatusPaused" xml:space="preserve">
+		<value>A bot le van állítva, vagy manuális módban fut.</value>
+	</data>
+	<data name="BotStatusPlayingNotAvailable" xml:space="preserve">
+		<value>A bot jelenleg használatban van.</value>
+	</data>
+	<data name="BotUnableToLogin" xml:space="preserve">
+		<value>Nem lehet belépni a Steamre: {0}/{1}</value>
+		<comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
+	</data>
+	<data name="ErrorIsEmpty" xml:space="preserve">
+		<value>Üres {0}!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	<data name="UnusedKeys" xml:space="preserve">
+		<value>Fel nem használt kulcsok: {0}</value>
+		<comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
+	</data>
+	<data name="WarningFailedWithError" xml:space="preserve">
+		<value>Hiba miatt nem sikerült: {0}</value>
+		<comment>{0} will be replaced by failure reason (string)</comment>
+	</data>
+	<data name="BotConnectionLost" xml:space="preserve">
+		<value>Megszakadt a kapcsolat a Steam hálózattal. Újrakapcsolódás...</value>
+	</data>
+	
+	
+	<data name="BotConnecting" xml:space="preserve">
+		<value>Kapcsolódás...</value>
+	</data>
+	<data name="BotHeartBeatFailed" xml:space="preserve">
+		<value>Sikertelen volt a kliensről való lecsatlakozás. Elhagyjuk ezt a bot példányt!</value>
+	</data>
+	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
+		<value>A Steam Könyvtárat nem sikerült inicializálni: a Steam hálózathoz való csatlakozás a szokásosnál tovább is eltarthat!</value>
+	</data>
+	<data name="BotStopping" xml:space="preserve">
+		<value>Leállás...</value>
+	</data>
+	<data name="ErrorBotConfigInvalid" xml:space="preserve">
+		<value>A bot konfigurációd érvénytelen. Kérlek, ellenőrizd {0} tartalmát, majd próbáld meg újból!</value>
+		<comment>{0} will be replaced by file's path</comment>
+	</data>
+	<data name="ErrorDatabaseInvalid" xml:space="preserve">
+		<value>A perzisztens adatbázist nem lehet betölteni! Ha a hiba továbbra is fennáll, kérlek, töröld {0}-t, hogy az adatbázis újra elkészülhessen!</value>
+		<comment>{0} will be replaced by file's path</comment>
+	</data>
+	<data name="Initializing" xml:space="preserve">
+		<value>{0} inicializálása...</value>
+		<comment>{0} will be replaced by service name that is being initialized</comment>
+	</data>
+	<data name="WarningPrivacyPolicy" xml:space="preserve">
+		<value>Kérlek, olvasd el az adatvédelmi szabályzatunkat a wiki-n, ha szeretnéd tudni, mit is csinál valójában az ASF!</value>
+	</data>
+	<data name="Welcome" xml:space="preserve">
+		<value>Úgy tűnik, most indítottad el első alkalommal a programot, üdvözöllek!</value>
+	</data>
+	<data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+		<value>A CurrentCulture változód érvénytelen, az ASF az alapértelmezettet fogja használni!</value>
+	</data>
+	<data name="TranslationIncomplete" xml:space="preserve">
+		<value>Az ASF megpróbálja az anyanyelved ({0}) használni, de a fordítás azon a nyelven csak {1}-ban/ben készült el eddig. Segíthetnél lefordítani az ASF a saját nyelvedre!</value>
+		<comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
+	</data>
+	
+	<data name="WarningIdlingGameMismatch" xml:space="preserve">
+		<value>Az ASF azonosító eltérést észlelt {0} ({1}) esetében, és inkább a {2} azonosítót használja majd.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
+	</data>
+	<data name="BotVersion" xml:space="preserve">
+		<value>{0} verziószám: {1}</value>
+		<comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
+	</data>
+	
+	
+	<data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
+		<value>Ez a funkció csak headless módban elérhető!</value>
+	</data>
+	<data name="BotOwnedAlready" xml:space="preserve">
+		<value>Már birtokolt: {0}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="ErrorAccessDenied" xml:space="preserve">
+		<value>Hozzáférés megtagadva!</value>
+	</data>
+	<data name="WarningPreReleaseVersion" xml:space="preserve">
+		<value>Egy olyan verziót használsz, ami újabb, mint a legfrissebb verzió a frissítési csatornádban. Kérlek vedd figyelembe, hogy a teszt verziók olyan felhasználóknak vannak, akik tudnak hibákat bejelenteni, meg tudják oldani a problémákat, és visszajelzéseket küldenek - nem fogsz kapni technikai segítséget, ha problémád akad a teszt verzióban.</value>
+	</data>
+	<data name="BotStats" xml:space="preserve">
+		<value>Jelenlegi memória használat: {0} MB.
 Ennyi ideje fut: {1}</value>
-    <comment>{0} will be replaced by number (in megabytes) of memory being used, {1} will be replaced by translated TimeSpan string (such as "25 minutes"). Please note that this string should include newlines for formatting.</comment>
-  </data>
-  <data name="ClearingDiscoveryQueue" xml:space="preserve">
-    <value>{0}-s számú Steam Felfedezési Várólista tisztítása...</value>
-    <comment>{0} will be replaced by queue number</comment>
-  </data>
-  <data name="DoneClearingDiscoveryQueue" xml:space="preserve">
-    <value>{0}-s számú Steam Felfedezési Várólista kitsztítva.</value>
-    <comment>{0} will be replaced by queue number</comment>
-  </data>
-  <data name="BotOwnsOverviewPerGame" xml:space="preserve">
-    <value>{0}/{1} bot már birtokolja a(z) {2} játékot.</value>
-    <comment>{0} will be replaced by number of bots that already own particular game being checked, {1} will be replaced by total number of bots that were checked during the process, {2} will be replaced by game's ID (number)</comment>
-  </data>
-  <data name="BotRefreshingPackagesData" xml:space="preserve">
-    <value>Játékadatok frissítése...</value>
-  </data>
-  <data name="WarningDeprecated" xml:space="preserve">
-    <value>{0} használata elavult, kérlek így használd: {1}</value>
-    <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
-  </data>
-  <data name="BotAcceptedDonationTrade" xml:space="preserve">
-    <value>Adomány elfogadva: {0}</value>
-    <comment>{0} will be replaced by trade's ID (number)</comment>
-  </data>
-  <data name="WarningWorkaroundTriggered" xml:space="preserve">
-    <value>Megoldásra került: {0} hiba.</value>
-    <comment>{0} will be replaced by the bug's name provided by ASF</comment>
-  </data>
-  <data name="TargetBotNotConnected" xml:space="preserve">
-    <value>A kiválasztott bot nincs csatlakoztatva!</value>
-  </data>
-  <data name="BotWalletBalance" xml:space="preserve">
-    <value>Egyenleg: {0} {1}</value>
-    <comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
-  </data>
-  <data name="BotHasNoWallet" xml:space="preserve">
-    <value>A botnak nincs pénztárcája.</value>
-  </data>
-  <data name="BotLevel" xml:space="preserve">
-    <value>A bot szintje: {0}.</value>
-    <comment>{0} will be replaced by bot's level</comment>
-  </data>
-  <data name="ActivelyMatchingItems" xml:space="preserve">
-    <value>Steam tárgyak egyeztetése #{0}...</value>
-    <comment>{0} will be replaced by round number</comment>
-  </data>
-  <data name="DoneActivelyMatchingItems" xml:space="preserve">
-    <value>Sikeres Steam tárgy egyeztetés. #{0}.</value>
-    <comment>{0} will be replaced by round number</comment>
-  </data>
-  <data name="ErrorAborted" xml:space="preserve">
-    <value>Megszakítva!</value>
-  </data>
-  <data name="ActivelyMatchingItemsRound" xml:space="preserve">
-    <value>Összesen {0} szett cserélve.</value>
-    <comment>{0} will be replaced by number of sets traded</comment>
-  </data>
-  <data name="WarningExcessiveBotsCount" xml:space="preserve">
-    <value>Több bot accountot használsz, mint a mi ajánlott felső limitünk ({0}). Tudatnunk kell veled, hogy ez nem támogatott és sokféle Steammel kapcsolatos hibát okozhat, vagy akár az accountjaidat is letilthatják. Nézd meg a gyakori kérdéseket, ha több információt szeretnél erről.</value>
-    <comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
-  </data>
-  <data name="PluginLoaded" xml:space="preserve">
-    <value>{0} sikeresen betöltött!</value>
-    <comment>{0} will be replaced by the name of the custom ASF plugin</comment>
-  </data>
-  <data name="PluginLoading" xml:space="preserve">
-    <value>{0} V{1} betöltése...</value>
-    <comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
-  </data>
-  <data name="NothingFound" xml:space="preserve">
-    <value>Nincs találat!</value>
-  </data>
-  <data name="PluginsWarning" xml:space="preserve">
-    <value>Egy, vagy több egyedi plugint töltöttél be. Mivel mi nem tudunk támogatást nyújtani a módosított konfigurációkhoz, ezért kérünk, hogy a plugin(ok) fejlesztőjével vedd fel a kapcsolatot, ha bármi gondod adódna.</value>
-  </data>
-  <data name="PleaseWait" xml:space="preserve">
-    <value>Kérjük, várjon...</value>
-  </data>
-  <data name="EnterCommand" xml:space="preserve">
-    <value>Írd be a parancsot: </value>
-  </data>
-  <data name="Executing" xml:space="preserve">
-    <value>Végrehajtás...</value>
-  </data>
-  <data name="InteractiveConsoleEnabled" xml:space="preserve">
-    <value>Az interaktív konzol aktív, nyomd meg a 'c' billentyűt, hogy a parancs módba lépj.</value>
-  </data>
-  <data name="InteractiveConsoleNotAvailable" xml:space="preserve">
-    <value>Az interaktív konzol nem elérhető mivel a(z) {0} tulajdonság hiányzik a konfigurációból.</value>
-    <comment>{0} will be replaced by the name of the missing config property (string)</comment>
-  </data>
-  <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
-    <value>A botnak {0} játéka maradt a várólistán.</value>
-    <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
-  </data>
-  <data name="ErrorSingleInstanceRequired" xml:space="preserve">
-    <value>Egy ASF processz már fut ebben a munka könyvtárban, leállítás!</value>
-  </data>
-  <data name="BotHandledConfirmations" xml:space="preserve">
-    <value>{0} megerősítés sikeresen lekezelve!</value>
-    <comment>{0} will be replaced by number of confirmations</comment>
-  </data>
-  
-  <data name="UpdateCleanup" xml:space="preserve">
-    <value>Régi fájlok törlése a frissítés után...</value>
-  </data>
-  <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
-    <value>Steam szülői felügyelet kód generálása folyamatban, ez eltarthat egy darabig, fontold meg, hogy inkább a konfigurációs fájlba rakod...</value>
-  </data>
-  <data name="IPCConfigChanged" xml:space="preserve">
-    <value>Az IPC konfig megváltozott!</value>
-  </data>
-  <data name="BotTradeOfferResult" xml:space="preserve">
-    <value>A {0} csereajánlat megtörtént {1}, {2} okánál fogva.</value>
-    <comment>{0} will be replaced by trade offer ID (number), {1} will be replaced by internal ASF enum name, {2} will be replaced by technical reason why the trade was determined to be in this state</comment>
-  </data>
-  <data name="BotInvalidPasswordDuringLogin" xml:space="preserve">
-    <value>A megadott jelszó {0} alkalommal el lett utasítva. Ez a jelszó feltételezhetően nem helyes, a művelet megszakításra került!</value>
-    <comment>{0} will be replaced by maximum allowed number of failed login attempts</comment>
-  </data>
-  <data name="Result" xml:space="preserve">
-    <value>Eredmény: {0}</value>
-    <comment>{0} will be replaced by generic result of various functions that use this string</comment>
-  </data>
-  
-  <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
-    <value>Ismeretlen parancssor: {0}</value>
-    <comment>{0} will be replaced by unrecognized command that has been provided</comment>
-  </data>
-  
-  
-  
+		<comment>{0} will be replaced by number (in megabytes) of memory being used, {1} will be replaced by translated TimeSpan string (such as "25 minutes"). Please note that this string should include newlines for formatting.</comment>
+	</data>
+	<data name="ClearingDiscoveryQueue" xml:space="preserve">
+		<value>{0}-s számú Steam Felfedezési Várólista tisztítása...</value>
+		<comment>{0} will be replaced by queue number</comment>
+	</data>
+	<data name="DoneClearingDiscoveryQueue" xml:space="preserve">
+		<value>{0}-s számú Steam Felfedezési Várólista kitsztítva.</value>
+		<comment>{0} will be replaced by queue number</comment>
+	</data>
+	<data name="BotOwnsOverviewPerGame" xml:space="preserve">
+		<value>{0}/{1} bot már birtokolja a(z) {2} játékot.</value>
+		<comment>{0} will be replaced by number of bots that already own particular game being checked, {1} will be replaced by total number of bots that were checked during the process, {2} will be replaced by game's ID (number)</comment>
+	</data>
+	<data name="BotRefreshingPackagesData" xml:space="preserve">
+		<value>Játékadatok frissítése...</value>
+	</data>
+	<data name="WarningDeprecated" xml:space="preserve">
+		<value>{0} használata elavult, kérlek így használd: {1}</value>
+		<comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
+	</data>
+	<data name="BotAcceptedDonationTrade" xml:space="preserve">
+		<value>Adomány elfogadva: {0}</value>
+		<comment>{0} will be replaced by trade's ID (number)</comment>
+	</data>
+	<data name="WarningWorkaroundTriggered" xml:space="preserve">
+		<value>Megoldásra került: {0} hiba.</value>
+		<comment>{0} will be replaced by the bug's name provided by ASF</comment>
+	</data>
+	<data name="TargetBotNotConnected" xml:space="preserve">
+		<value>A kiválasztott bot nincs csatlakoztatva!</value>
+	</data>
+	<data name="BotWalletBalance" xml:space="preserve">
+		<value>Egyenleg: {0} {1}</value>
+		<comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
+	</data>
+	<data name="BotHasNoWallet" xml:space="preserve">
+		<value>A botnak nincs pénztárcája.</value>
+	</data>
+	<data name="BotLevel" xml:space="preserve">
+		<value>A bot szintje: {0}.</value>
+		<comment>{0} will be replaced by bot's level</comment>
+	</data>
+	<data name="ActivelyMatchingItems" xml:space="preserve">
+		<value>Steam tárgyak egyeztetése #{0}...</value>
+		<comment>{0} will be replaced by round number</comment>
+	</data>
+	<data name="DoneActivelyMatchingItems" xml:space="preserve">
+		<value>Sikeres Steam tárgy egyeztetés. #{0}.</value>
+		<comment>{0} will be replaced by round number</comment>
+	</data>
+	<data name="ErrorAborted" xml:space="preserve">
+		<value>Megszakítva!</value>
+	</data>
+	<data name="ActivelyMatchingItemsRound" xml:space="preserve">
+		<value>Összesen {0} szett cserélve.</value>
+		<comment>{0} will be replaced by number of sets traded</comment>
+	</data>
+	<data name="WarningExcessiveBotsCount" xml:space="preserve">
+		<value>Több bot accountot használsz, mint a mi ajánlott felső limitünk ({0}). Tudatnunk kell veled, hogy ez nem támogatott és sokféle Steammel kapcsolatos hibát okozhat, vagy akár az accountjaidat is letilthatják. Nézd meg a gyakori kérdéseket, ha több információt szeretnél erről.</value>
+		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
+	</data>
+	<data name="PluginLoaded" xml:space="preserve">
+		<value>{0} sikeresen betöltött!</value>
+		<comment>{0} will be replaced by the name of the custom ASF plugin</comment>
+	</data>
+	<data name="PluginLoading" xml:space="preserve">
+		<value>{0} V{1} betöltése...</value>
+		<comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
+	</data>
+	<data name="NothingFound" xml:space="preserve">
+		<value>Nincs találat!</value>
+	</data>
+	<data name="PluginsWarning" xml:space="preserve">
+		<value>Egy, vagy több egyedi plugint töltöttél be. Mivel mi nem tudunk támogatást nyújtani a módosított konfigurációkhoz, ezért kérünk, hogy a plugin(ok) fejlesztőjével vedd fel a kapcsolatot, ha bármi gondod adódna.</value>
+	</data>
+	<data name="PleaseWait" xml:space="preserve">
+		<value>Kérjük, várjon...</value>
+	</data>
+	<data name="EnterCommand" xml:space="preserve">
+		<value>Írd be a parancsot: </value>
+	</data>
+	<data name="Executing" xml:space="preserve">
+		<value>Végrehajtás...</value>
+	</data>
+	<data name="InteractiveConsoleEnabled" xml:space="preserve">
+		<value>Az interaktív konzol aktív, nyomd meg a 'c' billentyűt, hogy a parancs módba lépj.</value>
+	</data>
+	<data name="InteractiveConsoleNotAvailable" xml:space="preserve">
+		<value>Az interaktív konzol nem elérhető mivel a(z) {0} tulajdonság hiányzik a konfigurációból.</value>
+		<comment>{0} will be replaced by the name of the missing config property (string)</comment>
+	</data>
+	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
+		<value>A botnak {0} játéka maradt a várólistán.</value>
+		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
+	</data>
+	<data name="ErrorSingleInstanceRequired" xml:space="preserve">
+		<value>Egy ASF processz már fut ebben a munka könyvtárban, leállítás!</value>
+	</data>
+	<data name="BotHandledConfirmations" xml:space="preserve">
+		<value>{0} megerősítés sikeresen lekezelve!</value>
+		<comment>{0} will be replaced by number of confirmations</comment>
+	</data>
+	
+	<data name="UpdateCleanup" xml:space="preserve">
+		<value>Régi fájlok törlése a frissítés után...</value>
+	</data>
+	<data name="BotGeneratingSteamParentalCode" xml:space="preserve">
+		<value>Steam szülői felügyelet kód generálása folyamatban, ez eltarthat egy darabig, fontold meg, hogy inkább a konfigurációs fájlba rakod...</value>
+	</data>
+	<data name="IPCConfigChanged" xml:space="preserve">
+		<value>Az IPC konfig megváltozott!</value>
+	</data>
+	<data name="BotTradeOfferResult" xml:space="preserve">
+		<value>A {0} csereajánlat megtörtént {1}, {2} okánál fogva.</value>
+		<comment>{0} will be replaced by trade offer ID (number), {1} will be replaced by internal ASF enum name, {2} will be replaced by technical reason why the trade was determined to be in this state</comment>
+	</data>
+	<data name="BotInvalidPasswordDuringLogin" xml:space="preserve">
+		<value>A megadott jelszó {0} alkalommal el lett utasítva. Ez a jelszó feltételezhetően nem helyes, a művelet megszakításra került!</value>
+		<comment>{0} will be replaced by maximum allowed number of failed login attempts</comment>
+	</data>
+	<data name="Result" xml:space="preserve">
+		<value>Eredmény: {0}</value>
+		<comment>{0} will be replaced by generic result of various functions that use this string</comment>
+	</data>
+	
+	<data name="WarningUnknownCommandLineArgument" xml:space="preserve">
+		<value>Ismeretlen parancssor: {0}</value>
+		<comment>{0} will be replaced by unrecognized command that has been provided</comment>
+	</data>
+	
+	
+	
 </root>

@@ -1,678 +1,623 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
-    Microsoft ResX Schema
-
-    Version 2.0
-
-    The primary goals of this format is to allow a simple XML format
-    that is mostly human readable. The generation and parsing of the
-    various data types are done through the TypeConverter classes
-    associated with the data types.
-
-    Example:
-
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-
-    There are any number of "resheader" rows that contain simple
-    name/value pairs.
-
-    Each data row contains a name, and value. The row also contains a
-    type or mimetype. Type corresponds to a .NET class that support
-    text/value conversion through the TypeConverter architecture.
-    Classes that don't support this are serialized and stored with the
-    mimetype set.
-
-    The mimetype is used for serialized objects, and tells the
-    ResXResourceReader how to depersist the object. This is currently not
-    extensible. For a given mimetype the value must be set accordingly:
-
-    Note - application/x-microsoft.net.object.binary.base64 is the format
-    that the ResXResourceWriter will generate, however the reader can
-    read any of the formats listed below.
-
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
-  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string"/>
-              <xsd:attribute name="type" type="xsd:string"/>
-              <xsd:attribute name="mimetype" type="xsd:string"/>
-              <xsd:attribute ref="xml:space"/>
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string"/>
-              <xsd:attribute name="name" type="xsd:string"/>
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-              <xsd:attribute ref="xml:space"/>
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required"/>
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="AcceptingTrade" xml:space="preserve">
-    <value>Chấp nhận giao dịch: {0}</value>
-    <comment>{0} will be replaced by trade number</comment>
-  </data>
-  <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF sẽ tự động kiểm tra phiên bản mới mỗi {0}.</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
-  </data>
-  <data name="Content" xml:space="preserve">
-    <value>Nội dung:
+	<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns="" id="root">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="metadata">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0"/>
+							</xsd:sequence>
+							<xsd:attribute name="name" use="required" type="xsd:string"/>
+							<xsd:attribute name="type" type="xsd:string"/>
+							<xsd:attribute name="mimetype" type="xsd:string"/>
+							<xsd:attribute ref="xml:space"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="assembly">
+						<xsd:complexType>
+							<xsd:attribute name="alias" type="xsd:string"/>
+							<xsd:attribute name="name" type="xsd:string"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+							<xsd:attribute ref="xml:space"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required"/>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+			PublicKeyToken=b77a5c561934e089
+		</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
+			PublicKeyToken=b77a5c561934e089
+		</value>
+	</resheader>
+	<data name="AcceptingTrade" xml:space="preserve">
+		<value>Chấp nhận giao dịch: {0}</value>
+		<comment>{0} will be replaced by trade number</comment>
+	</data>
+	<data name="AutoUpdateCheckInfo" xml:space="preserve">
+		<value>ASF sẽ tự động kiểm tra phiên bản mới mỗi {0}.</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
+	</data>
+	<data name="Content" xml:space="preserve">
+		<value>Nội dung:
 {0}</value>
-    <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
-  </data>
-  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Cấu hình {0} không hợp lệ: {1}</value>
-    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
-  </data>
-  <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} đã bị lỗi nghiêm trọng trước cả khi mô-đun ghi lại có thể được khởi tạo!</value>
-    <comment>{0} will be replaced by version number</comment>
-  </data>
-  <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
-    <value>Ngoại lệ: {0}() {1}
+		<comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
+	</data>
+	<data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+		<value>Cấu hình {0} không hợp lệ: {1}</value>
+		<comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+	</data>
+	<data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
+		<value>ASF V{0} đã bị lỗi nghiêm trọng trước cả khi mô-đun ghi lại có thể được khởi tạo!</value>
+		<comment>{0} will be replaced by version number</comment>
+	</data>
+	<data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
+		<value>Ngoại lệ: {0}() {1}
 StackTrace:
 {2}</value>
-    <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
-  </data>
-  <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>Đang thoát với mã lỗi khác 0!</value>
-  </data>
-  <data name="ErrorFailingRequest" xml:space="preserve">
-    <value>Yêu cầu thất bại: {0}</value>
-    <comment>{0} will be replaced by URL of the request</comment>
-  </data>
-  <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Không thể nạp cấu hình chung. Hãy chắc chắn rằng {0} có tồn tại và hợp lệ! Làm theo hướng dẫn 'thiết lập' trên wiki nếu bạn đang bối rối.</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
-  <data name="ErrorIsInvalid" xml:space="preserve">
-    <value>{0} không hợp lệ!</value>
-    <comment>{0} will be replaced by object's name</comment>
-  </data>
-  <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>Không có bot nào được tìm thấy. Bạn có quên thiết lập ASF?</value>
-  </data>
-  <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} không tồn tại!</value>
-    <comment>{0} will be replaced by object's name</comment>
-  </data>
-  <data name="ErrorParsingObject" xml:space="preserve">
-    <value>Phân tách {0} không thành công!</value>
-    <comment>{0} will be replaced by object's name</comment>
-  </data>
-  <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>Yêu cầu thất bại sau {0} lần thử!</value>
-    <comment>{0} will be replaced by maximum number of tries</comment>
-  </data>
-  <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>Không thể kiểm tra phiên bản mới nhất!</value>
-  </data>
-  <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
-    <value>Không thể tiếp tục việc cập nhật vì không có tập tin nào liên quan đến phiên bản đang chạy! Không thể tự động cập nhật lên phiên bản đó.</value>
-  </data>
-  <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>Không thể tiến hành với bản cập nhật vì phiên bản đó không gồm bất cứ tập tin nào!</value>
-  </data>
-  <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Nhận được yêu cầu cần được người dùng nhập vào, nhưng quá trình đang chạy trong chế độ không kiểm soát!</value>
-  </data>
-  <data name="Exiting" xml:space="preserve">
-    <value>Đang thoát...</value>
-  </data>
-  <data name="WarningFailed" xml:space="preserve">
-    <value>Thất bại!</value>
-  </data>
-  <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>Tập tin cấu hình chung đã bị thay đổi!</value>
-  </data>
-  <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>Tập tin cấu hình chung đã được gỡ bỏ!</value>
-  </data>
-  <data name="IgnoringTrade" xml:space="preserve">
-    <value>Bỏ qua giao dịch: {0}</value>
-    <comment>{0} will be replaced by trade number</comment>
-  </data>
-  <data name="LoggingIn" xml:space="preserve">
-    <value>Đăng nhập vào {0}...</value>
-    <comment>{0} will be replaced by service's name</comment>
-  </data>
-  <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>Không có bot nào đang chạy, đang thoát...</value>
-  </data>
-  <data name="RefreshingOurSession" xml:space="preserve">
-    <value>Làm mới phiên làm việc!</value>
-  </data>
-  <data name="RejectingTrade" xml:space="preserve">
-    <value>Từ chối trao đổi: {0}</value>
-    <comment>{0} will be replaced by trade number</comment>
-  </data>
-  <data name="Restarting" xml:space="preserve">
-    <value>Đang khởi động lại...</value>
-  </data>
-  <data name="Starting" xml:space="preserve">
-    <value>Bắt đầu...</value>
-  </data>
-  <data name="Success" xml:space="preserve">
-    <value>Hoàn tất!</value>
-  </data>
-  <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Đang mở khóa tài khoản phụ huynh...</value>
-  </data>
-  <data name="UpdateCheckingNewVersion" xml:space="preserve">
-    <value>Đang kiểm tra phiên bản mới...</value>
-  </data>
-  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Đang tải phiên bản mới: {0} ({1} MB)... Trong khi chờ, hãy xem xét quyên góp nếu bạn đánh giá cao sản phẩm được thực hiện! :)</value>
-    <comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
-  </data>
-  <data name="UpdateFinished" xml:space="preserve">
-    <value>Quá trình cập nhật hoàn tất!</value>
-  </data>
-  <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>Hiện đang có bản cập nhật mới của ASF! Hãy xem xét việc cập nhật!</value>
-  </data>
-  <data name="UpdateVersionInfo" xml:space="preserve">
-    <value>Phiên bản đang chạy: {0} | Phiên bản ngoài: {1}</value>
-    <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
-  </data>
-  <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>Xin vui lòng nhập mã 2FA từ ứng dụng Steam Authenticator của bạn: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>Xin vui lòng nhập mã SteamGuard đã được gửi vào email của bạn: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>Xin vui lòng nhập tài khoản Steam của bạn: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamParentalCode" xml:space="preserve">
-    <value>Xin vui lòng nhập mã Steam Parental: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>Xin vui lòng nhập mật khẩu Steam của bạn: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
-  <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
-    <value>Nhận được giá trị không rõ cho {0}, xin vui lòng báo cáo điều này: {1}</value>
-    <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
-  </data>
-  <data name="IPCReady" xml:space="preserve">
-    <value>Máy chủ IPC đã sẵn sàng!</value>
-  </data>
-  <data name="IPCStarting" xml:space="preserve">
-    <value>Đang khởi động máy chủ IPC...</value>
-  </data>
-  <data name="BotAlreadyStopped" xml:space="preserve">
-    <value>Bot này đã dừng lại sẵn rồi!</value>
-  </data>
-  <data name="BotNotFound" xml:space="preserve">
-    <value>Không thể tìm thấy bất kỳ bot nào với tên {0}!</value>
-    <comment>{0} will be replaced by bot's name query (string)</comment>
-  </data>
-  
-  
-  
-  <data name="CheckingFirstBadgePage" xml:space="preserve">
-    <value>Đang kiểm tra trang huy hiệu đầu tiên...</value>
-  </data>
-  <data name="CheckingOtherBadgePages" xml:space="preserve">
-    <value>Đang kiểm tra trang huy hiệu khác...</value>
-  </data>
-  
-  <data name="Done" xml:space="preserve">
-    <value>Xong!</value>
-  </data>
-  
-  
-  
-  
-  
-  
-  <data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
-    <value>Đang bỏ qua yêu cầu này, vì tạm dừng vĩnh viễn được kích hoạt!</value>
-  </data>
-  
-  
-  
-  <data name="PlayingNotAvailable" xml:space="preserve">
-    <value>Chơi trò chơi hiện tại không khả dụng, chúng tôi sẽ thử lại sau!</value>
-  </data>
-  
-  
-  
-  
-  <data name="UnknownCommand" xml:space="preserve">
-    <value>Không rõ lệnh!</value>
-  </data>
-  <data name="WarningCouldNotCheckBadges" xml:space="preserve">
-    <value>Không lấy được thông tin huy hiệu, chúng tôi sẽ thử lại sau!</value>
-  </data>
-  <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
-    <value>Không thể kiểm tra trạng thái thẻ: {0} ({1}), chúng tôi sẽ thử lại sau!</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
-  <data name="BotAcceptingGift" xml:space="preserve">
-    <value>Chấp nhận quà tặng: {0}...</value>
-    <comment>{0} will be replaced by giftID (number)</comment>
-  </data>
-  
-  <data name="BotAddLicense" xml:space="preserve">
-    <value>ID: {0} | Trạng thái: {1}</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
-  </data>
-  <data name="BotAddLicenseWithItems" xml:space="preserve">
-    <value>ID: {0} | Trạng thái: {1} | Vật phẩm: {2}</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string, {2} will be replaced by list of granted IDs (numbers), separated by a comma</comment>
-  </data>
-  <data name="BotAlreadyRunning" xml:space="preserve">
-    <value>Bot này đang được chạy!</value>
-  </data>
-  <data name="BotAuthenticatorConverting" xml:space="preserve">
-    <value>Chuyển đổi .maFile thành định dạng ASF...</value>
-  </data>
-  <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>Hoàn thành thành công nhập xác thực điện thoại di động!</value>
-  </data>
-  <data name="BotAuthenticatorToken" xml:space="preserve">
-    <value>Mã 2FA: {0}</value>
-    <comment>{0} will be replaced by generated 2FA token (string)</comment>
-  </data>
-  
-  
-  
-  
-  <data name="BotConnected" xml:space="preserve">
-    <value>Đã kết nối với Steam!</value>
-  </data>
-  <data name="BotDisconnected" xml:space="preserve">
-    <value>Đã bị ngắt kết nối khỏi Steam!</value>
-  </data>
-  <data name="BotDisconnecting" xml:space="preserve">
-    <value>Đang ngắt kết nối...</value>
-  </data>
-  <data name="BotEncryptedPassword" xml:space="preserve">
-    <value>[{0}] mật khẩu: {1}</value>
-    <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
-  </data>
-  <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
-    <value>Không chạy bot này bởi vì nó đã bị vô hiệu hóa trong tập tin cấu hình!</value>
-  </data>
-  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Nhận được lỗi mã TwoFactorCodeMismatch {0} lần liên tiếp. Thông tin đăng nhập 2FA của bạn không còn hợp lệ hoặc đồng hồ của bạn không đồng bộ, tiến hành hủy!</value>
-    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
-  </data>
-  <data name="BotLoggedOff" xml:space="preserve">
-    <value>Đã đăng xuất khỏi Steam: {0}</value>
-    <comment>{0} will be replaced by logging off reason (string)</comment>
-  </data>
-  <data name="BotLoggedOn" xml:space="preserve">
-    <value>Đăng nhập thành công vào {0}.</value>
-    <comment>{0} will be replaced by steam ID (number)</comment>
-  </data>
-  <data name="BotLoggingIn" xml:space="preserve">
-    <value>Đang đăng nhập...</value>
-  </data>
-  <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>Tài khoản này dường như đang được sử dụng trong một ASF khác, là hành vi không xác định, đang từ chối để tiếp tục chạy!</value>
-  </data>
-  <data name="BotLootingFailed" xml:space="preserve">
-    <value>Đề nghị trao đổi thất bại!</value>
-  </data>
-  <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Giao dịch không thể gửi do không có ai có quyền hạn chủ được thiết lập!</value>
-  </data>
-  <data name="BotLootingSuccess" xml:space="preserve">
-    <value>Đề nghị trao đổi đã gửi thành công!</value>
-  </data>
-  <data name="BotSendingTradeToYourself" xml:space="preserve">
-    <value>Bạn không thể gửi lời mời giao dịch cho chính mình!</value>
-  </data>
-  <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>Bot này không có ASF 2FA đang hoạt động! Bạn quên nhập xác thực của bạn như là ASF 2FA?</value>
-  </data>
-  <data name="BotNotConnected" xml:space="preserve">
-    <value>Bot này không được kết nối!</value>
-  </data>
-  <data name="BotNotOwnedYet" xml:space="preserve">
-    <value>Chưa sở hữu: {0}</value>
-    <comment>{0} will be replaced by query (string)</comment>
-  </data>
-  <data name="BotOwnedAlreadyWithName" xml:space="preserve">
-    <value>Đã sở hữu: {0} | {1}</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
-  <data name="BotPointsBalance" xml:space="preserve">
-    <value>Tổng điểm tích lũy: {0}</value>
-    <comment>{0} will be replaced by the points balance value (integer)</comment>
-  </data>
-  <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>Vượt quá số lượng giới hạn, chúng tôi sẽ thử lại sau {0} đếm ngược...</value>
-    <comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
-  </data>
-  <data name="BotReconnecting" xml:space="preserve">
-    <value>Đang kết nối lại...</value>
-  </data>
-  <data name="BotRedeem" xml:space="preserve">
-    <value>Mã khóa: {0} | Trạng thái: {1}</value>
-    <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string</comment>
-  </data>
-  <data name="BotRedeemWithItems" xml:space="preserve">
-    <value>Mã khóa: {0} | Trạng thái: {1} | Danh sách các vật phẩm: {2}</value>
-    <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string, {2} will be replaced by list of key-value pairs, separated by a comma</comment>
-  </data>
-  <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
-    <value>Đã bỏ mã khóa đăng nhập đã hết hạn!</value>
-  </data>
-  
-  
-  <data name="BotStatusConnecting" xml:space="preserve">
-    <value>Bot đang kết nối với mạng Steam.</value>
-  </data>
-  <data name="BotStatusNotRunning" xml:space="preserve">
-    <value>Bot không chạy.</value>
-  </data>
-  <data name="BotStatusPaused" xml:space="preserve">
-    <value>Bot tạm dừng hoặc đang chạy trong chế độ thủ công.</value>
-  </data>
-  <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
-    <value>Bot hiện đang được sử dụng.</value>
-  </data>
-  <data name="BotUnableToLogin" xml:space="preserve">
-    <value>Không thể đăng nhập vào Steam: {0}/{1}</value>
-    <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
-  </data>
-  <data name="ErrorIsEmpty" xml:space="preserve">
-    <value>{0} trống rỗng!</value>
-    <comment>{0} will be replaced by object's name</comment>
-  </data>
-  <data name="UnusedKeys" xml:space="preserve">
-    <value>Key chưa được sử dụng: {0}</value>
-    <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
-  </data>
-  <data name="WarningFailedWithError" xml:space="preserve">
-    <value>Thất bại do lỗi: {0}</value>
-    <comment>{0} will be replaced by failure reason (string)</comment>
-  </data>
-  <data name="BotConnectionLost" xml:space="preserve">
-    <value>Mất kết nối đến mạng Steam. Đang kết nối lại...</value>
-  </data>
-  
-  
-  <data name="BotConnecting" xml:space="preserve">
-    <value>Đang kết nối...</value>
-  </data>
-  <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>Thất bại trong việc ngắt kết nối với client. Đang bỏ con bot này!</value>
-  </data>
-  <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>Không thể khởi tạo SteamDirectory: kết nối với mạng Steam có thể lâu hơn so với bình thường!</value>
-  </data>
-  <data name="BotStopping" xml:space="preserve">
-    <value>Đang dừng...</value>
-  </data>
-  <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>Cấu hình bot của bạn không hợp lệ. Vui lòng xác minh nội dung của {0} và thử lại lần nữa!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
-  <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>Cơ sở dữ liệu liên tục không được nạp, nếu vấn đề vẫn còn, hãy loại bỏ {0} để tạo lại cơ sở dữ liệu!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
-  <data name="Initializing" xml:space="preserve">
-    <value>Đang khởi chạy {0}...</value>
-    <comment>{0} will be replaced by service name that is being initialized</comment>
-  </data>
-  <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>Vui lòng xem lại phần chính sách bảo mật của chúng tôi trên wiki nếu bạn lo ngại về việc ASF thực tế đang làm gì!</value>
-  </data>
-  <data name="Welcome" xml:space="preserve">
-    <value>Có vẻ như đây là lần đầu tiên khởi động chương trình của bạn, chào mừng!</value>
-  </data>
-  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-    <value>CurrentCulture bạn cung cấp không hợp lệ, ASF sẽ tiếp tục chạy với thiết lập mặc định!</value>
-  </data>
-  <data name="TranslationIncomplete" xml:space="preserve">
-    <value>ASF sẽ cố gắng sử dụng mã ngôn ngữ {0} ưa thích của bạn, nhưng bản dịch ngôn ngữ đó hoàn thiện chỉ được {1}. Có lẽ bạn có thể giúp chúng tôi cải thiện bản dịch ASF cho ngôn ngữ của bạn?</value>
-    <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
-  </data>
-  
-  <data name="WarningIdlingGameMismatch" xml:space="preserve">
-    <value>ASF phát hiện ID không khớp với {0} ({1}) và sẽ sử dụng ID {2} thay thế.</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
-  </data>
-  <data name="BotVersion" xml:space="preserve">
-    <value>{0} V{1}</value>
-    <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
-  </data>
-  
-  
-  <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
-    <value>Chức năng này chỉ có sẵn trong chế độ tự chủ!</value>
-  </data>
-  <data name="BotOwnedAlready" xml:space="preserve">
-    <value>Đã sở hữu: {0}</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
-  </data>
-  <data name="ErrorAccessDenied" xml:space="preserve">
-    <value>Truy cập bị từ chối!</value>
-  </data>
-  <data name="WarningPreReleaseVersion" xml:space="preserve">
-    <value>Bạn đang dùng phiên bản mới hơn phiên bản chính thức mới nhất. Hãy chú ý rằng các phiên bản phát hành sớm là dành cho người dùng có thể báo lỗi, xử lý vấn đề và gửi phản hồi - sẽ không có sự hỗ trợ kỹ thuật nào được đưa ra.</value>
-  </data>
-  <data name="BotStats" xml:space="preserve">
-    <value>Bộ nhớ đang sử dụng: {0} MB.
+		<comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
+	</data>
+	<data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+		<value>Đang thoát với mã lỗi khác 0!</value>
+	</data>
+	<data name="ErrorFailingRequest" xml:space="preserve">
+		<value>Yêu cầu thất bại: {0}</value>
+		<comment>{0} will be replaced by URL of the request</comment>
+	</data>
+	<data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
+		<value>Không thể nạp cấu hình chung. Hãy chắc chắn rằng {0} có tồn tại và hợp lệ! Làm theo hướng dẫn 'thiết lập' trên wiki nếu bạn đang bối rối.</value>
+		<comment>{0} will be replaced by file's path</comment>
+	</data>
+	<data name="ErrorIsInvalid" xml:space="preserve">
+		<value>{0} không hợp lệ!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	<data name="ErrorNoBotsDefined" xml:space="preserve">
+		<value>Không có bot nào được tìm thấy. Bạn có quên thiết lập ASF?</value>
+	</data>
+	<data name="ErrorObjectIsNull" xml:space="preserve">
+		<value>{0} không tồn tại!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	<data name="ErrorParsingObject" xml:space="preserve">
+		<value>Phân tách {0} không thành công!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	<data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
+		<value>Yêu cầu thất bại sau {0} lần thử!</value>
+		<comment>{0} will be replaced by maximum number of tries</comment>
+	</data>
+	<data name="ErrorUpdateCheckFailed" xml:space="preserve">
+		<value>Không thể kiểm tra phiên bản mới nhất!</value>
+	</data>
+	<data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
+		<value>Không thể tiếp tục việc cập nhật vì không có tập tin nào liên quan đến phiên bản đang chạy! Không thể tự động cập nhật lên phiên bản đó.</value>
+	</data>
+	<data name="ErrorUpdateNoAssets" xml:space="preserve">
+		<value>Không thể tiến hành với bản cập nhật vì phiên bản đó không gồm bất cứ tập tin nào!</value>
+	</data>
+	<data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
+		<value>Nhận được yêu cầu cần được người dùng nhập vào, nhưng quá trình đang chạy trong chế độ không kiểm soát!</value>
+	</data>
+	<data name="Exiting" xml:space="preserve">
+		<value>Đang thoát...</value>
+	</data>
+	<data name="WarningFailed" xml:space="preserve">
+		<value>Thất bại!</value>
+	</data>
+	<data name="GlobalConfigChanged" xml:space="preserve">
+		<value>Tập tin cấu hình chung đã bị thay đổi!</value>
+	</data>
+	<data name="ErrorGlobalConfigRemoved" xml:space="preserve">
+		<value>Tập tin cấu hình chung đã được gỡ bỏ!</value>
+	</data>
+	<data name="IgnoringTrade" xml:space="preserve">
+		<value>Bỏ qua giao dịch: {0}</value>
+		<comment>{0} will be replaced by trade number</comment>
+	</data>
+	<data name="LoggingIn" xml:space="preserve">
+		<value>Đăng nhập vào {0}...</value>
+		<comment>{0} will be replaced by service's name</comment>
+	</data>
+	<data name="NoBotsAreRunning" xml:space="preserve">
+		<value>Không có bot nào đang chạy, đang thoát...</value>
+	</data>
+	<data name="RefreshingOurSession" xml:space="preserve">
+		<value>Làm mới phiên làm việc!</value>
+	</data>
+	<data name="RejectingTrade" xml:space="preserve">
+		<value>Từ chối trao đổi: {0}</value>
+		<comment>{0} will be replaced by trade number</comment>
+	</data>
+	<data name="Restarting" xml:space="preserve">
+		<value>Đang khởi động lại...</value>
+	</data>
+	<data name="Starting" xml:space="preserve">
+		<value>Bắt đầu...</value>
+	</data>
+	<data name="Success" xml:space="preserve">
+		<value>Hoàn tất!</value>
+	</data>
+	<data name="UnlockingParentalAccount" xml:space="preserve">
+		<value>Đang mở khóa tài khoản phụ huynh...</value>
+	</data>
+	<data name="UpdateCheckingNewVersion" xml:space="preserve">
+		<value>Đang kiểm tra phiên bản mới...</value>
+	</data>
+	<data name="UpdateDownloadingNewVersion" xml:space="preserve">
+		<value>Đang tải phiên bản mới: {0} ({1} MB)... Trong khi chờ, hãy xem xét quyên góp nếu bạn đánh giá cao sản phẩm được thực hiện! :)</value>
+		<comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
+	</data>
+	<data name="UpdateFinished" xml:space="preserve">
+		<value>Quá trình cập nhật hoàn tất!</value>
+	</data>
+	<data name="UpdateNewVersionAvailable" xml:space="preserve">
+		<value>Hiện đang có bản cập nhật mới của ASF! Hãy xem xét việc cập nhật!</value>
+	</data>
+	<data name="UpdateVersionInfo" xml:space="preserve">
+		<value>Phiên bản đang chạy: {0} | Phiên bản ngoài: {1}</value>
+		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
+	</data>
+	<data name="UserInputSteam2FA" xml:space="preserve">
+		<value>Xin vui lòng nhập mã 2FA từ ứng dụng Steam Authenticator của bạn: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="UserInputSteamGuard" xml:space="preserve">
+		<value>Xin vui lòng nhập mã SteamGuard đã được gửi vào email của bạn: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="UserInputSteamLogin" xml:space="preserve">
+		<value>Xin vui lòng nhập tài khoản Steam của bạn: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="UserInputSteamParentalCode" xml:space="preserve">
+		<value>Xin vui lòng nhập mã Steam Parental: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="UserInputSteamPassword" xml:space="preserve">
+		<value>Xin vui lòng nhập mật khẩu Steam của bạn: </value>
+		<comment>Please note that this translation should end with space</comment>
+	</data>
+	<data name="WarningUnknownValuePleaseReport" xml:space="preserve">
+		<value>Nhận được giá trị không rõ cho {0}, xin vui lòng báo cáo điều này: {1}</value>
+		<comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
+	</data>
+	<data name="IPCReady" xml:space="preserve">
+		<value>Máy chủ IPC đã sẵn sàng!</value>
+	</data>
+	<data name="IPCStarting" xml:space="preserve">
+		<value>Đang khởi động máy chủ IPC...</value>
+	</data>
+	<data name="BotAlreadyStopped" xml:space="preserve">
+		<value>Bot này đã dừng lại sẵn rồi!</value>
+	</data>
+	<data name="BotNotFound" xml:space="preserve">
+		<value>Không thể tìm thấy bất kỳ bot nào với tên {0}!</value>
+		<comment>{0} will be replaced by bot's name query (string)</comment>
+	</data>
+	
+	
+	
+	<data name="CheckingFirstBadgePage" xml:space="preserve">
+		<value>Đang kiểm tra trang huy hiệu đầu tiên...</value>
+	</data>
+	<data name="CheckingOtherBadgePages" xml:space="preserve">
+		<value>Đang kiểm tra trang huy hiệu khác...</value>
+	</data>
+	
+	<data name="Done" xml:space="preserve">
+		<value>Xong!</value>
+	</data>
+	
+	
+	
+	
+	
+	
+	<data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
+		<value>Đang bỏ qua yêu cầu này, vì tạm dừng vĩnh viễn được kích hoạt!</value>
+	</data>
+	
+	
+	
+	<data name="PlayingNotAvailable" xml:space="preserve">
+		<value>Chơi trò chơi hiện tại không khả dụng, chúng tôi sẽ thử lại sau!</value>
+	</data>
+	
+	
+	
+	
+	<data name="UnknownCommand" xml:space="preserve">
+		<value>Không rõ lệnh!</value>
+	</data>
+	<data name="WarningCouldNotCheckBadges" xml:space="preserve">
+		<value>Không lấy được thông tin huy hiệu, chúng tôi sẽ thử lại sau!</value>
+	</data>
+	<data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
+		<value>Không thể kiểm tra trạng thái thẻ: {0} ({1}), chúng tôi sẽ thử lại sau!</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="BotAcceptingGift" xml:space="preserve">
+		<value>Chấp nhận quà tặng: {0}...</value>
+		<comment>{0} will be replaced by giftID (number)</comment>
+	</data>
+	
+	<data name="BotAddLicense" xml:space="preserve">
+		<value>ID: {0} | Trạng thái: {1}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
+	</data>
+	<data name="BotAddLicenseWithItems" xml:space="preserve">
+		<value>ID: {0} | Trạng thái: {1} | Vật phẩm: {2}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string, {2} will be replaced by list of granted IDs (numbers), separated by a comma</comment>
+	</data>
+	<data name="BotAlreadyRunning" xml:space="preserve">
+		<value>Bot này đang được chạy!</value>
+	</data>
+	<data name="BotAuthenticatorConverting" xml:space="preserve">
+		<value>Chuyển đổi .maFile thành định dạng ASF...</value>
+	</data>
+	<data name="BotAuthenticatorImportFinished" xml:space="preserve">
+		<value>Hoàn thành thành công nhập xác thực điện thoại di động!</value>
+	</data>
+	<data name="BotAuthenticatorToken" xml:space="preserve">
+		<value>Mã 2FA: {0}</value>
+		<comment>{0} will be replaced by generated 2FA token (string)</comment>
+	</data>
+	
+	
+	
+	
+	<data name="BotConnected" xml:space="preserve">
+		<value>Đã kết nối với Steam!</value>
+	</data>
+	<data name="BotDisconnected" xml:space="preserve">
+		<value>Đã bị ngắt kết nối khỏi Steam!</value>
+	</data>
+	<data name="BotDisconnecting" xml:space="preserve">
+		<value>Đang ngắt kết nối...</value>
+	</data>
+	<data name="BotEncryptedPassword" xml:space="preserve">
+		<value>[{0}] mật khẩu: {1}</value>
+		<comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
+	</data>
+	<data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
+		<value>Không chạy bot này bởi vì nó đã bị vô hiệu hóa trong tập tin cấu hình!</value>
+	</data>
+	<data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+		<value>Nhận được lỗi mã TwoFactorCodeMismatch {0} lần liên tiếp. Thông tin đăng nhập 2FA của bạn không còn hợp lệ hoặc đồng hồ của bạn không đồng bộ, tiến hành hủy!</value>
+		<comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+	</data>
+	<data name="BotLoggedOff" xml:space="preserve">
+		<value>Đã đăng xuất khỏi Steam: {0}</value>
+		<comment>{0} will be replaced by logging off reason (string)</comment>
+	</data>
+	<data name="BotLoggedOn" xml:space="preserve">
+		<value>Đăng nhập thành công vào {0}.</value>
+		<comment>{0} will be replaced by steam ID (number)</comment>
+	</data>
+	<data name="BotLoggingIn" xml:space="preserve">
+		<value>Đang đăng nhập...</value>
+	</data>
+	<data name="BotLogonSessionReplaced" xml:space="preserve">
+		<value>Tài khoản này dường như đang được sử dụng trong một ASF khác, là hành vi không xác định, đang từ chối để tiếp tục chạy!</value>
+	</data>
+	<data name="BotLootingFailed" xml:space="preserve">
+		<value>Đề nghị trao đổi thất bại!</value>
+	</data>
+	<data name="BotLootingMasterNotDefined" xml:space="preserve">
+		<value>Giao dịch không thể gửi do không có ai có quyền hạn chủ được thiết lập!</value>
+	</data>
+	<data name="BotLootingSuccess" xml:space="preserve">
+		<value>Đề nghị trao đổi đã gửi thành công!</value>
+	</data>
+	<data name="BotSendingTradeToYourself" xml:space="preserve">
+		<value>Bạn không thể gửi lời mời giao dịch cho chính mình!</value>
+	</data>
+	<data name="BotNoASFAuthenticator" xml:space="preserve">
+		<value>Bot này không có ASF 2FA đang hoạt động! Bạn quên nhập xác thực của bạn như là ASF 2FA?</value>
+	</data>
+	<data name="BotNotConnected" xml:space="preserve">
+		<value>Bot này không được kết nối!</value>
+	</data>
+	<data name="BotNotOwnedYet" xml:space="preserve">
+		<value>Chưa sở hữu: {0}</value>
+		<comment>{0} will be replaced by query (string)</comment>
+	</data>
+	<data name="BotOwnedAlreadyWithName" xml:space="preserve">
+		<value>Đã sở hữu: {0} | {1}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="BotPointsBalance" xml:space="preserve">
+		<value>Tổng điểm tích lũy: {0}</value>
+		<comment>{0} will be replaced by the points balance value (integer)</comment>
+	</data>
+	<data name="BotRateLimitExceeded" xml:space="preserve">
+		<value>Vượt quá số lượng giới hạn, chúng tôi sẽ thử lại sau {0} đếm ngược...</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
+	</data>
+	<data name="BotReconnecting" xml:space="preserve">
+		<value>Đang kết nối lại...</value>
+	</data>
+	<data name="BotRedeem" xml:space="preserve">
+		<value>Mã khóa: {0} | Trạng thái: {1}</value>
+		<comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string</comment>
+	</data>
+	<data name="BotRedeemWithItems" xml:space="preserve">
+		<value>Mã khóa: {0} | Trạng thái: {1} | Danh sách các vật phẩm: {2}</value>
+		<comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string, {2} will be replaced by list of key-value pairs, separated by a comma</comment>
+	</data>
+	<data name="BotRemovedExpiredLoginKey" xml:space="preserve">
+		<value>Đã bỏ mã khóa đăng nhập đã hết hạn!</value>
+	</data>
+	
+	
+	<data name="BotStatusConnecting" xml:space="preserve">
+		<value>Bot đang kết nối với mạng Steam.</value>
+	</data>
+	<data name="BotStatusNotRunning" xml:space="preserve">
+		<value>Bot không chạy.</value>
+	</data>
+	<data name="BotStatusPaused" xml:space="preserve">
+		<value>Bot tạm dừng hoặc đang chạy trong chế độ thủ công.</value>
+	</data>
+	<data name="BotStatusPlayingNotAvailable" xml:space="preserve">
+		<value>Bot hiện đang được sử dụng.</value>
+	</data>
+	<data name="BotUnableToLogin" xml:space="preserve">
+		<value>Không thể đăng nhập vào Steam: {0}/{1}</value>
+		<comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
+	</data>
+	<data name="ErrorIsEmpty" xml:space="preserve">
+		<value>{0} trống rỗng!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	<data name="UnusedKeys" xml:space="preserve">
+		<value>Key chưa được sử dụng: {0}</value>
+		<comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
+	</data>
+	<data name="WarningFailedWithError" xml:space="preserve">
+		<value>Thất bại do lỗi: {0}</value>
+		<comment>{0} will be replaced by failure reason (string)</comment>
+	</data>
+	<data name="BotConnectionLost" xml:space="preserve">
+		<value>Mất kết nối đến mạng Steam. Đang kết nối lại...</value>
+	</data>
+	
+	
+	<data name="BotConnecting" xml:space="preserve">
+		<value>Đang kết nối...</value>
+	</data>
+	<data name="BotHeartBeatFailed" xml:space="preserve">
+		<value>Thất bại trong việc ngắt kết nối với client. Đang bỏ con bot này!</value>
+	</data>
+	<data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
+		<value>Không thể khởi tạo SteamDirectory: kết nối với mạng Steam có thể lâu hơn so với bình thường!</value>
+	</data>
+	<data name="BotStopping" xml:space="preserve">
+		<value>Đang dừng...</value>
+	</data>
+	<data name="ErrorBotConfigInvalid" xml:space="preserve">
+		<value>Cấu hình bot của bạn không hợp lệ. Vui lòng xác minh nội dung của {0} và thử lại lần nữa!</value>
+		<comment>{0} will be replaced by file's path</comment>
+	</data>
+	<data name="ErrorDatabaseInvalid" xml:space="preserve">
+		<value>Cơ sở dữ liệu liên tục không được nạp, nếu vấn đề vẫn còn, hãy loại bỏ {0} để tạo lại cơ sở dữ liệu!</value>
+		<comment>{0} will be replaced by file's path</comment>
+	</data>
+	<data name="Initializing" xml:space="preserve">
+		<value>Đang khởi chạy {0}...</value>
+		<comment>{0} will be replaced by service name that is being initialized</comment>
+	</data>
+	<data name="WarningPrivacyPolicy" xml:space="preserve">
+		<value>Vui lòng xem lại phần chính sách bảo mật của chúng tôi trên wiki nếu bạn lo ngại về việc ASF thực tế đang làm gì!</value>
+	</data>
+	<data name="Welcome" xml:space="preserve">
+		<value>Có vẻ như đây là lần đầu tiên khởi động chương trình của bạn, chào mừng!</value>
+	</data>
+	<data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+		<value>CurrentCulture bạn cung cấp không hợp lệ, ASF sẽ tiếp tục chạy với thiết lập mặc định!</value>
+	</data>
+	<data name="TranslationIncomplete" xml:space="preserve">
+		<value>ASF sẽ cố gắng sử dụng mã ngôn ngữ {0} ưa thích của bạn, nhưng bản dịch ngôn ngữ đó hoàn thiện chỉ được {1}. Có lẽ bạn có thể giúp chúng tôi cải thiện bản dịch ASF cho ngôn ngữ của bạn?</value>
+		<comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
+	</data>
+	
+	<data name="WarningIdlingGameMismatch" xml:space="preserve">
+		<value>ASF phát hiện ID không khớp với {0} ({1}) và sẽ sử dụng ID {2} thay thế.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
+	</data>
+	<data name="BotVersion" xml:space="preserve">
+		<value>{0} V{1}</value>
+		<comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
+	</data>
+	
+	
+	<data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
+		<value>Chức năng này chỉ có sẵn trong chế độ tự chủ!</value>
+	</data>
+	<data name="BotOwnedAlready" xml:space="preserve">
+		<value>Đã sở hữu: {0}</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="ErrorAccessDenied" xml:space="preserve">
+		<value>Truy cập bị từ chối!</value>
+	</data>
+	<data name="WarningPreReleaseVersion" xml:space="preserve">
+		<value>Bạn đang dùng phiên bản mới hơn phiên bản chính thức mới nhất. Hãy chú ý rằng các phiên bản phát hành sớm là dành cho người dùng có thể báo lỗi, xử lý vấn đề và gửi phản hồi - sẽ không có sự hỗ trợ kỹ thuật nào được đưa ra.</value>
+	</data>
+	<data name="BotStats" xml:space="preserve">
+		<value>Bộ nhớ đang sử dụng: {0} MB.
 Thời gian hoạt động: {1}</value>
-    <comment>{0} will be replaced by number (in megabytes) of memory being used, {1} will be replaced by translated TimeSpan string (such as "25 minutes"). Please note that this string should include newlines for formatting.</comment>
-  </data>
-  <data name="ClearingDiscoveryQueue" xml:space="preserve">
-    <value>Đã quét hàng đợi khám phá Steam số #{0}...</value>
-    <comment>{0} will be replaced by queue number</comment>
-  </data>
-  <data name="DoneClearingDiscoveryQueue" xml:space="preserve">
-    <value>Đã hoàn thành hàng khám phá Steam #{0}.</value>
-    <comment>{0} will be replaced by queue number</comment>
-  </data>
-  <data name="BotOwnsOverviewPerGame" xml:space="preserve">
-    <value>{0}/{1} bot đã sở hữu trò chơi {2}.</value>
-    <comment>{0} will be replaced by number of bots that already own particular game being checked, {1} will be replaced by total number of bots that were checked during the process, {2} will be replaced by game's ID (number)</comment>
-  </data>
-  <data name="BotRefreshingPackagesData" xml:space="preserve">
-    <value>Đang làm mới các gói dữ liệu...</value>
-  </data>
-  <data name="WarningDeprecated" xml:space="preserve">
-    <value>Việc sử dụng {0} bị vô hiệu hoá và sẽ bị loại bỏ trong các phiên bản tương lai của chương trình. Xin vui lòng sử dụng {1} thay thế.</value>
-    <comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
-  </data>
-  <data name="BotAcceptedDonationTrade" xml:space="preserve">
-    <value>Chấp nhận đề nghị trao đổi được ủng hộ: {0}</value>
-    <comment>{0} will be replaced by trade's ID (number)</comment>
-  </data>
-  <data name="WarningWorkaroundTriggered" xml:space="preserve">
-    <value>Giải pháp cho lỗi {0} đã được kích hoạt.</value>
-    <comment>{0} will be replaced by the bug's name provided by ASF</comment>
-  </data>
-  <data name="TargetBotNotConnected" xml:space="preserve">
-    <value>Bot này không được kết nối!</value>
-  </data>
-  <data name="BotWalletBalance" xml:space="preserve">
-    <value>Số dư ví: {0} {1}</value>
-    <comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
-  </data>
-  <data name="BotHasNoWallet" xml:space="preserve">
-    <value>Bot không đủ số dư.</value>
-  </data>
-  <data name="BotLevel" xml:space="preserve">
-    <value>Bot cấp {0}.</value>
-    <comment>{0} will be replaced by bot's level</comment>
-  </data>
-  <data name="ActivelyMatchingItems" xml:space="preserve">
-    <value>Đang soát vật phẩm Steam, lần #{0}...</value>
-    <comment>{0} will be replaced by round number</comment>
-  </data>
-  <data name="DoneActivelyMatchingItems" xml:space="preserve">
-    <value>Đã hoàn thành soát vật phẩm Steam, lần #{0}.</value>
-    <comment>{0} will be replaced by round number</comment>
-  </data>
-  <data name="ErrorAborted" xml:space="preserve">
-    <value>Đã huỷ bỏ!</value>
-  </data>
-  <data name="ActivelyMatchingItemsRound" xml:space="preserve">
-    <value>Đã soát tổng cộng {0} bộ trong vòng này.</value>
-    <comment>{0} will be replaced by number of sets traded</comment>
-  </data>
-  <data name="WarningExcessiveBotsCount" xml:space="preserve">
-    <value>Bạn đang chạy nhiều tài khoản bot cá nhân hơn giới hạn được đề xuất ({0}). Xin lưu ý rằng thiết lập này không được hỗ trợ và có thể gây ra nhiều sự cố liên quan đến Steam, bao gồm cả việc đình chỉ tài khoản. Kiểm tra FAQ để biết thêm chi tiết.</value>
-    <comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
-  </data>
-  <data name="PluginLoaded" xml:space="preserve">
-    <value>{0} đã được tải thành công!</value>
-    <comment>{0} will be replaced by the name of the custom ASF plugin</comment>
-  </data>
-  <data name="PluginLoading" xml:space="preserve">
-    <value>Đang tải {0} V{1}...</value>
-    <comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
-  </data>
-  <data name="NothingFound" xml:space="preserve">
-    <value>Không có kết quả!</value>
-  </data>
-  <data name="PluginsWarning" xml:space="preserve">
-    <value>Bạn đã tải một hoặc nhiều plugin tùy chỉnh vào ASF. Vì chúng tôi không thể cung cấp sự hỗ trợ cho các thiết lập đã được sửa đổi, bạn hãy vui lòng liên hệ với các nhà phát triển của các plugin mà bạn quyết định sử dụng, trong trường hợp có bất kỳ vấn đề nào.</value>
-  </data>
-  <data name="PleaseWait" xml:space="preserve">
-    <value>Vui lòng chờ...</value>
-  </data>
-  <data name="EnterCommand" xml:space="preserve">
-    <value>Nhập lệnh: </value>
-  </data>
-  <data name="Executing" xml:space="preserve">
-    <value>Đang thực thi...</value>
-  </data>
-  <data name="InteractiveConsoleEnabled" xml:space="preserve">
-    <value>Bảng điều khiển tương tác hiện đang hoạt động, ấn 'c' để vào chế độ lệnh.</value>
-  </data>
-  <data name="InteractiveConsoleNotAvailable" xml:space="preserve">
-    <value>Bảng điều khiển tương tác không khả dụng do thiếu thuộc tính cấu hình {0}.</value>
-    <comment>{0} will be replaced by the name of the missing config property (string)</comment>
-  </data>
-  <data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
-    <value>Bot có {0} trò chơi còn lại trong hàng chờ.</value>
-    <comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
-  </data>
-  <data name="ErrorSingleInstanceRequired" xml:space="preserve">
-    <value>Tiến trình ASF đã đang chạy trong địa chỉ thư mục này, đang huỷ bỏ!</value>
-  </data>
-  <data name="BotHandledConfirmations" xml:space="preserve">
-    <value>Xử lý thành công {0} xác nhận!</value>
-    <comment>{0} will be replaced by number of confirmations</comment>
-  </data>
-  
-  <data name="UpdateCleanup" xml:space="preserve">
-    <value>Đang dọn dẹp tệp tin cũ sau khi cập nhật...</value>
-  </data>
-  <data name="BotGeneratingSteamParentalCode" xml:space="preserve">
-    <value>Khởi tạo mã quản lý phụ huynh Steam, điều này có thể mất một lúc, thay vào đó hãy xem xét đưa nó vào cấu hình...</value>
-  </data>
-  <data name="IPCConfigChanged" xml:space="preserve">
-    <value>Cấu hình IPC đã được thay đổi!</value>
-  </data>
-  <data name="BotTradeOfferResult" xml:space="preserve">
-    <value>Đề nghị trao đổi {0} được quyết định là {1} do {2}.</value>
-    <comment>{0} will be replaced by trade offer ID (number), {1} will be replaced by internal ASF enum name, {2} will be replaced by technical reason why the trade was determined to be in this state</comment>
-  </data>
-  <data name="BotInvalidPasswordDuringLogin" xml:space="preserve">
-    <value>Nhận được mã lỗi InvalidPassword {0} lần liên tục. Mật khẩu của bạn cho tài khoản này nhiều khả năng là sai, đang hủy bỏ!</value>
-    <comment>{0} will be replaced by maximum allowed number of failed login attempts</comment>
-  </data>
-  <data name="Result" xml:space="preserve">
-    <value>Kết quả: {0}</value>
-    <comment>{0} will be replaced by generic result of various functions that use this string</comment>
-  </data>
-  <data name="WarningUnsupportedEnvironment" xml:space="preserve">
-    <value>Bạn đang cố gắng chạy {0} một phiên bản ASF trong môi trường không được hỗ trợ: {1}. Cung cấp thêm dòng lệnh khởi chạy --ignore-unsupported-environment nếu bạn thực sự biết mình đang làm gì.</value>
-  </data>
-  <data name="WarningUnknownCommandLineArgument" xml:space="preserve">
-    <value>Dòng lệnh không xác định: {0}</value>
-    <comment>{0} will be replaced by unrecognized command that has been provided</comment>
-  </data>
-  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
-    <value>Không tìm thấy thư mục cấu hình, đang hủy bỏ!</value>
-  </data>
-  
-  <data name="AutomaticFileMigration" xml:space="preserve">
-    <value>{0} tập tin cấu hình sẽ được di chuyển tới cú pháp mới nhất...</value>
-    <comment>{0} will be replaced with the relative path to the affected config file</comment>
-  </data>
+		<comment>{0} will be replaced by number (in megabytes) of memory being used, {1} will be replaced by translated TimeSpan string (such as "25 minutes"). Please note that this string should include newlines for formatting.</comment>
+	</data>
+	<data name="ClearingDiscoveryQueue" xml:space="preserve">
+		<value>Đã quét hàng đợi khám phá Steam số #{0}...</value>
+		<comment>{0} will be replaced by queue number</comment>
+	</data>
+	<data name="DoneClearingDiscoveryQueue" xml:space="preserve">
+		<value>Đã hoàn thành hàng khám phá Steam #{0}.</value>
+		<comment>{0} will be replaced by queue number</comment>
+	</data>
+	<data name="BotOwnsOverviewPerGame" xml:space="preserve">
+		<value>{0}/{1} bot đã sở hữu trò chơi {2}.</value>
+		<comment>{0} will be replaced by number of bots that already own particular game being checked, {1} will be replaced by total number of bots that were checked during the process, {2} will be replaced by game's ID (number)</comment>
+	</data>
+	<data name="BotRefreshingPackagesData" xml:space="preserve">
+		<value>Đang làm mới các gói dữ liệu...</value>
+	</data>
+	<data name="WarningDeprecated" xml:space="preserve">
+		<value>Việc sử dụng {0} bị vô hiệu hoá và sẽ bị loại bỏ trong các phiên bản tương lai của chương trình. Xin vui lòng sử dụng {1} thay thế.</value>
+		<comment>{0} will be replaced by the name of deprecated property (such as argument, config property or likewise), {1} will be replaced by the name of valid replacement (such as another argument or config property)</comment>
+	</data>
+	<data name="BotAcceptedDonationTrade" xml:space="preserve">
+		<value>Chấp nhận đề nghị trao đổi được ủng hộ: {0}</value>
+		<comment>{0} will be replaced by trade's ID (number)</comment>
+	</data>
+	<data name="WarningWorkaroundTriggered" xml:space="preserve">
+		<value>Giải pháp cho lỗi {0} đã được kích hoạt.</value>
+		<comment>{0} will be replaced by the bug's name provided by ASF</comment>
+	</data>
+	<data name="TargetBotNotConnected" xml:space="preserve">
+		<value>Bot này không được kết nối!</value>
+	</data>
+	<data name="BotWalletBalance" xml:space="preserve">
+		<value>Số dư ví: {0} {1}</value>
+		<comment>{0} will be replaced by wallet balance value, {1} will be replaced by currency name</comment>
+	</data>
+	<data name="BotHasNoWallet" xml:space="preserve">
+		<value>Bot không đủ số dư.</value>
+	</data>
+	<data name="BotLevel" xml:space="preserve">
+		<value>Bot cấp {0}.</value>
+		<comment>{0} will be replaced by bot's level</comment>
+	</data>
+	<data name="ActivelyMatchingItems" xml:space="preserve">
+		<value>Đang soát vật phẩm Steam, lần #{0}...</value>
+		<comment>{0} will be replaced by round number</comment>
+	</data>
+	<data name="DoneActivelyMatchingItems" xml:space="preserve">
+		<value>Đã hoàn thành soát vật phẩm Steam, lần #{0}.</value>
+		<comment>{0} will be replaced by round number</comment>
+	</data>
+	<data name="ErrorAborted" xml:space="preserve">
+		<value>Đã huỷ bỏ!</value>
+	</data>
+	<data name="ActivelyMatchingItemsRound" xml:space="preserve">
+		<value>Đã soát tổng cộng {0} bộ trong vòng này.</value>
+		<comment>{0} will be replaced by number of sets traded</comment>
+	</data>
+	<data name="WarningExcessiveBotsCount" xml:space="preserve">
+		<value>Bạn đang chạy nhiều tài khoản bot cá nhân hơn giới hạn được đề xuất ({0}). Xin lưu ý rằng thiết lập này không được hỗ trợ và có thể gây ra nhiều sự cố liên quan đến Steam, bao gồm cả việc đình chỉ tài khoản. Kiểm tra FAQ để biết thêm chi tiết.</value>
+		<comment>{0} will be replaced by our maximum recommended bots count (number)</comment>
+	</data>
+	<data name="PluginLoaded" xml:space="preserve">
+		<value>{0} đã được tải thành công!</value>
+		<comment>{0} will be replaced by the name of the custom ASF plugin</comment>
+	</data>
+	<data name="PluginLoading" xml:space="preserve">
+		<value>Đang tải {0} V{1}...</value>
+		<comment>{0} will be replaced by the name of the custom ASF plugin, {1} will be replaced by its version</comment>
+	</data>
+	<data name="NothingFound" xml:space="preserve">
+		<value>Không có kết quả!</value>
+	</data>
+	<data name="PluginsWarning" xml:space="preserve">
+		<value>Bạn đã tải một hoặc nhiều plugin tùy chỉnh vào ASF. Vì chúng tôi không thể cung cấp sự hỗ trợ cho các thiết lập đã được sửa đổi, bạn hãy vui lòng liên hệ với các nhà phát triển của các plugin mà bạn quyết định sử dụng, trong trường hợp có bất kỳ vấn đề nào.</value>
+	</data>
+	<data name="PleaseWait" xml:space="preserve">
+		<value>Vui lòng chờ...</value>
+	</data>
+	<data name="EnterCommand" xml:space="preserve">
+		<value>Nhập lệnh: </value>
+	</data>
+	<data name="Executing" xml:space="preserve">
+		<value>Đang thực thi...</value>
+	</data>
+	<data name="InteractiveConsoleEnabled" xml:space="preserve">
+		<value>Bảng điều khiển tương tác hiện đang hoạt động, ấn 'c' để vào chế độ lệnh.</value>
+	</data>
+	<data name="InteractiveConsoleNotAvailable" xml:space="preserve">
+		<value>Bảng điều khiển tương tác không khả dụng do thiếu thuộc tính cấu hình {0}.</value>
+		<comment>{0} will be replaced by the name of the missing config property (string)</comment>
+	</data>
+	<data name="BotGamesToRedeemInBackgroundCount" xml:space="preserve">
+		<value>Bot có {0} trò chơi còn lại trong hàng chờ.</value>
+		<comment>{0} will be replaced by remaining number of games in BGR's queue</comment>
+	</data>
+	<data name="ErrorSingleInstanceRequired" xml:space="preserve">
+		<value>Tiến trình ASF đã đang chạy trong địa chỉ thư mục này, đang huỷ bỏ!</value>
+	</data>
+	<data name="BotHandledConfirmations" xml:space="preserve">
+		<value>Xử lý thành công {0} xác nhận!</value>
+		<comment>{0} will be replaced by number of confirmations</comment>
+	</data>
+	
+	<data name="UpdateCleanup" xml:space="preserve">
+		<value>Đang dọn dẹp tệp tin cũ sau khi cập nhật...</value>
+	</data>
+	<data name="BotGeneratingSteamParentalCode" xml:space="preserve">
+		<value>Khởi tạo mã quản lý phụ huynh Steam, điều này có thể mất một lúc, thay vào đó hãy xem xét đưa nó vào cấu hình...</value>
+	</data>
+	<data name="IPCConfigChanged" xml:space="preserve">
+		<value>Cấu hình IPC đã được thay đổi!</value>
+	</data>
+	<data name="BotTradeOfferResult" xml:space="preserve">
+		<value>Đề nghị trao đổi {0} được quyết định là {1} do {2}.</value>
+		<comment>{0} will be replaced by trade offer ID (number), {1} will be replaced by internal ASF enum name, {2} will be replaced by technical reason why the trade was determined to be in this state</comment>
+	</data>
+	<data name="BotInvalidPasswordDuringLogin" xml:space="preserve">
+		<value>Nhận được mã lỗi InvalidPassword {0} lần liên tục. Mật khẩu của bạn cho tài khoản này nhiều khả năng là sai, đang hủy bỏ!</value>
+		<comment>{0} will be replaced by maximum allowed number of failed login attempts</comment>
+	</data>
+	<data name="Result" xml:space="preserve">
+		<value>Kết quả: {0}</value>
+		<comment>{0} will be replaced by generic result of various functions that use this string</comment>
+	</data>
+	<data name="WarningUnsupportedEnvironment" xml:space="preserve">
+		<value>Bạn đang cố gắng chạy {0} một phiên bản ASF trong môi trường không được hỗ trợ: {1}. Cung cấp thêm dòng lệnh khởi chạy --ignore-unsupported-environment nếu bạn thực sự biết mình đang làm gì.</value>
+	</data>
+	<data name="WarningUnknownCommandLineArgument" xml:space="preserve">
+		<value>Dòng lệnh không xác định: {0}</value>
+		<comment>{0} will be replaced by unrecognized command that has been provided</comment>
+	</data>
+	<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+		<value>Không tìm thấy thư mục cấu hình, đang hủy bỏ!</value>
+	</data>
+	
+	<data name="AutomaticFileMigration" xml:space="preserve">
+		<value>{0} tập tin cấu hình sẽ được di chuyển tới cú pháp mới nhất...</value>
+		<comment>{0} will be replaced with the relative path to the affected config file</comment>
+	</data>
 </root>
