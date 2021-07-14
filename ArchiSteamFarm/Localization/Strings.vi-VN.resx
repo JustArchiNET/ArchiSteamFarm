@@ -227,38 +227,86 @@ StackTrace:
 		<value>Không thể tìm thấy bất kỳ bot nào với tên {0}!</value>
 		<comment>{0} will be replaced by bot's name query (string)</comment>
 	</data>
-	
-	
-	
+	<data name="BotStatusOverview" xml:space="preserve">
+		<value>Đang có {0}/{1} bot đang chạy, với tổng số {2} game ({3} thẻ) còn lại để thu hoạch.</value>
+		<comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to farm, {3} will be replaced by total number of cards left to farm</comment>
+	</data>
+	<data name="BotStatusIdling" xml:space="preserve">
+		<value>Bot đang cày game: {0} ({1}, {2} thẻ còn lại) từ tổng cộng {3} game ({4} thẻ) còn lại để cày (~{5} còn lại).</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to farm, {3} will be replaced by total number of games to farm, {4} will be replaced by total number of cards to farm, {5} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
+	<data name="BotStatusIdlingList" xml:space="preserve">
+		<value>Bot đang cày game: {0} từ tổng cộng {1} game ({2} thẻ) còn lại để cày (~{3} còn lại).</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to farm, {2} will be replaced by total number of cards to farm, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
 	<data name="CheckingFirstBadgePage" xml:space="preserve">
 		<value>Đang kiểm tra trang huy hiệu đầu tiên...</value>
 	</data>
 	<data name="CheckingOtherBadgePages" xml:space="preserve">
 		<value>Đang kiểm tra trang huy hiệu khác...</value>
 	</data>
-	
+	<data name="ChosenFarmingAlgorithm" xml:space="preserve">
+		<value>Đã lựa chọn phương thức thu hoạch: {0}</value>
+		<comment>{0} will be replaced by the name of chosen farming algorithm</comment>
+	</data>
 	<data name="Done" xml:space="preserve">
 		<value>Xong!</value>
 	</data>
-	
-	
-	
-	
-	
-	
+	<data name="GamesToIdle" xml:space="preserve">
+		<value>Chúng ta có tổng cộng {0} trò chơi ({1} thẻ) còn lại để thu hoạch (còn lại ~{2})...</value>
+		<comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
+	<data name="IdlingFinished" xml:space="preserve">
+		<value>Đã hoàn thành thu hoạch!</value>
+	</data>
+	<data name="IdlingFinishedForGame" xml:space="preserve">
+		<value>Kết thúc thu hoạch: {0} ({1}) sau {2} thời gian chơi!</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
+	<data name="IdlingFinishedForGames" xml:space="preserve">
+		<value>Hoàn thành thu hoạch trò chơi: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="IdlingStatusForGame" xml:space="preserve">
+		<value>Trạng thái thu hoạch cho {0} ({1}): {2} thẻ còn lại</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to farm</comment>
+	</data>
+	<data name="IdlingStopped" xml:space="preserve">
+		<value>Dừng thu hoạch!</value>
+	</data>
 	<data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
 		<value>Đang bỏ qua yêu cầu này, vì tạm dừng vĩnh viễn được kích hoạt!</value>
 	</data>
-	
-	
-	
+	<data name="NothingToIdle" xml:space="preserve">
+		<value>Chúng tôi không có gì để thu hoạch trên tài khoản này!</value>
+	</data>
+	<data name="NowIdling" xml:space="preserve">
+		<value>Đang thu hoạch: {0} ({1})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="NowIdlingList" xml:space="preserve">
+		<value>Đang chạy không: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
 	<data name="PlayingNotAvailable" xml:space="preserve">
 		<value>Chơi trò chơi hiện tại không khả dụng, chúng tôi sẽ thử lại sau!</value>
 	</data>
-	
-	
-	
-	
+	<data name="StillIdling" xml:space="preserve">
+		<value>Vẫn đang thu hoạch: {0} ({1})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="StillIdlingList" xml:space="preserve">
+		<value>Vẫn đang chạy không: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="StoppedIdling" xml:space="preserve">
+		<value>Ngừng thu hoạch: {0} ({1})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="StoppedIdlingList" xml:space="preserve">
+		<value>Ngừng chạy không: {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
 	<data name="UnknownCommand" xml:space="preserve">
 		<value>Không rõ lệnh!</value>
 	</data>
@@ -273,7 +321,9 @@ StackTrace:
 		<value>Chấp nhận quà tặng: {0}...</value>
 		<comment>{0} will be replaced by giftID (number)</comment>
 	</data>
-	
+	<data name="BotAccountLimited" xml:space="preserve">
+		<value>Tài khoản này bị giới hạn, quá trình thu hoạch sẽ không khả dụng cho đến khi những hạn chế được gỡ bỏ!</value>
+	</data>
 	<data name="BotAddLicense" xml:space="preserve">
 		<value>ID: {0} | Trạng thái: {1}</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
@@ -295,10 +345,18 @@ StackTrace:
 		<value>Mã 2FA: {0}</value>
 		<comment>{0} will be replaced by generated 2FA token (string)</comment>
 	</data>
-	
-	
-	
-	
+	<data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+		<value>Tự động thu hoạch đã tạm dừng!</value>
+	</data>
+	<data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+		<value>Tự động thu hoạch đã tiếp tục trở lại!</value>
+	</data>
+	<data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
+		<value>Tự động thu hoạch đang được thực hiện!</value>
+	</data>
+	<data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
+		<value>Tự động thu hoạch đã tiếp tục từ trước!</value>
+	</data>
 	<data name="BotConnected" xml:space="preserve">
 		<value>Đã kết nối với Steam!</value>
 	</data>
@@ -381,8 +439,12 @@ StackTrace:
 	<data name="BotRemovedExpiredLoginKey" xml:space="preserve">
 		<value>Đã bỏ mã khóa đăng nhập đã hết hạn!</value>
 	</data>
-	
-	
+	<data name="BotStatusNotIdling" xml:space="preserve">
+		<value>Bot đang không đang thu hoạch gì.</value>
+	</data>
+	<data name="BotStatusLimited" xml:space="preserve">
+		<value>Bot bị hạn chế và không thể rơi bất kỳ thẻ nào thông qua việc thu hoạch.</value>
+	</data>
 	<data name="BotStatusConnecting" xml:space="preserve">
 		<value>Bot đang kết nối với mạng Steam.</value>
 	</data>
@@ -414,8 +476,12 @@ StackTrace:
 	<data name="BotConnectionLost" xml:space="preserve">
 		<value>Mất kết nối đến mạng Steam. Đang kết nối lại...</value>
 	</data>
-	
-	
+	<data name="BotAccountFree" xml:space="preserve">
+		<value>Tài khoản không còn được người dùng sử dụng: quá trình thu hoạch tiếp tục trở lại!</value>
+	</data>
+	<data name="BotAccountOccupied" xml:space="preserve">
+		<value>Tài khoản hiện tại đang được sử dụng: ASF sẽ tiếp tục việc thu hoạch khi nó rảnh...</value>
+	</data>
 	<data name="BotConnecting" xml:space="preserve">
 		<value>Đang kết nối...</value>
 	</data>
@@ -453,7 +519,10 @@ StackTrace:
 		<value>ASF sẽ cố gắng sử dụng mã ngôn ngữ {0} ưa thích của bạn, nhưng bản dịch ngôn ngữ đó hoàn thiện chỉ được {1}. Có lẽ bạn có thể giúp chúng tôi cải thiện bản dịch ASF cho ngôn ngữ của bạn?</value>
 		<comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
 	</data>
-	
+	<data name="IdlingGameNotPossible" xml:space="preserve">
+		<value>Việc thu hoạch {0} ({1}) tạm thời bị vô hiệu hóa, ASF không thể mở game đó lúc này.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
 	<data name="WarningIdlingGameMismatch" xml:space="preserve">
 		<value>ASF phát hiện ID không khớp với {0} ({1}) và sẽ sử dụng ID {2} thay thế.</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
@@ -462,8 +531,12 @@ StackTrace:
 		<value>{0} V{1}</value>
 		<comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
 	</data>
-	
-	
+	<data name="BotAccountLocked" xml:space="preserve">
+		<value>Tài khoản này bị khóa, quá trình thu hoạch sẽ không chạy!</value>
+	</data>
+	<data name="BotStatusLocked" xml:space="preserve">
+		<value>Bot bị khóa và không thể rớt bất kỳ thẻ nào thông qua thu hoạch.</value>
+	</data>
 	<data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
 		<value>Chức năng này chỉ có sẵn trong chế độ tự chủ!</value>
 	</data>
@@ -583,7 +656,10 @@ Thời gian hoạt động: {1}</value>
 		<value>Xử lý thành công {0} xác nhận!</value>
 		<comment>{0} will be replaced by number of confirmations</comment>
 	</data>
-	
+	<data name="BotExtraIdlingCooldown" xml:space="preserve">
+		<value>Chờ đến {0} để đảm bảo rằng chúng tôi có thể bắt đầu thu hoạch...</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+	</data>
 	<data name="UpdateCleanup" xml:space="preserve">
 		<value>Đang dọn dẹp tệp tin cũ sau khi cập nhật...</value>
 	</data>
@@ -615,7 +691,10 @@ Thời gian hoạt động: {1}</value>
 	<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
 		<value>Không tìm thấy thư mục cấu hình, đang hủy bỏ!</value>
 	</data>
-	
+	<data name="BotIdlingSelectedGames" xml:space="preserve">
+		<value>Đang chạy theo lựa chọn {0}: {1}</value>
+		<comment>{0} will be replaced by internal name of the config property (e.g. "GamesPlayedWhileIdle"), {1} will be replaced by comma-separated list of appIDs that user has chosen</comment>
+	</data>
 	<data name="AutomaticFileMigration" xml:space="preserve">
 		<value>{0} tập tin cấu hình sẽ được di chuyển tới cú pháp mới nhất...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
