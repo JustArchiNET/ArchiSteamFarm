@@ -36,7 +36,7 @@
 		<DebugSymbols>false</DebugSymbols>
 		<DebugType>none</DebugType>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-		<WarningsAsErrors/>
+		<WarningsAsErrors />
 	</PropertyGroup>
 
 	<!-- Trimming features as specified on https://docs.microsoft.com/dotnet/core/deploying/trimming-options#trimming-framework-library-features and https://github.com/dotnet/runtime/blob/master/docs/workflow/trimming/feature-switches.md -->
