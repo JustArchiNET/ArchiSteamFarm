@@ -245,7 +245,7 @@ StackTrace:
 		<value>Comprobando otras páginas de insignias...</value>
 	</data>
 	<data name="ChosenFarmingAlgorithm" xml:space="preserve">
-		<value>Algoritmo de farmeo elegido: {0}</value>
+		<value>Algoritmo de recolección elegido: {0}</value>
 		<comment>{0} will be replaced by the name of chosen farming algorithm</comment>
 	</data>
 	<data name="Done" xml:space="preserve">
