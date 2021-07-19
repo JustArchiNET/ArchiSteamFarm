@@ -208,7 +208,7 @@ namespace ArchiSteamFarm {
 
 			if (!IgnoreUnsupportedEnvironment) {
 				if (!OS.VerifyEnvironment()) {
-					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnsupportedEnvironment, SharedInfo.BuildInfo.Variant, OS.Variant));
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnsupportedEnvironment, SharedInfo.BuildInfo.Variant, OS.Version));
 					await Task.Delay(10000).ConfigureAwait(false);
 
 					return false;

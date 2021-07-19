@@ -27,6 +27,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -105,7 +106,8 @@ namespace ArchiSteamFarm.Web {
 
 			// Most web services expect that UserAgent is set, so we declare it globally
 			// If you by any chance came here with a very "clever" idea of hiding your ass by changing default ASF user-agent then here is a very good advice from me: don't, for your own safety - you've been warned
-			result.DefaultRequestHeaders.UserAgent.ParseAdd(SharedInfo.PublicIdentifier + "/" + SharedInfo.Version + " (+" + SharedInfo.ProjectURL + ")");
+			result.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(SharedInfo.PublicIdentifier, SharedInfo.Version.ToString()));
+			result.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("(" + SharedInfo.BuildInfo.Variant + "; " + OS.Version.Replace("(", "", StringComparison.Ordinal).Replace(")", "", StringComparison.Ordinal) + "; +" + SharedInfo.ProjectURL + ")"));
 
 			return result;
 		}
