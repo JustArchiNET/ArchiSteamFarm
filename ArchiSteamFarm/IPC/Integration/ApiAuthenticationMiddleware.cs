@@ -72,7 +72,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 			}
 		}
 
-		[PublicAPI]
+		[UsedImplicitly]
 #if NETFRAMEWORK
 		public async Task InvokeAsync(HttpContext context, IOptions<MvcJsonOptions> jsonOptions) {
 #else

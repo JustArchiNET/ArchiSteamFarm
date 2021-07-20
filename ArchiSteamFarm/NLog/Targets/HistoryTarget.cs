@@ -39,7 +39,7 @@ namespace ArchiSteamFarm.NLog.Targets {
 		private readonly FixedSizeConcurrentQueue<string> HistoryQueue = new(DefaultMaxCount);
 
 		// This is NLog config property, it must have public get() and set() capabilities
-		[PublicAPI]
+		[UsedImplicitly]
 		public byte MaxCount {
 			get => HistoryQueue.MaxCount;
 
@@ -56,7 +56,7 @@ namespace ArchiSteamFarm.NLog.Targets {
 
 		// This parameter-less constructor is intentionally public, as NLog uses it for creating targets
 		// It must stay like this as we want to have our targets defined in our NLog.config
-		[PublicAPI]
+		[UsedImplicitly]
 		public HistoryTarget() { }
 
 		internal HistoryTarget(string name) : this() => Name = name;
