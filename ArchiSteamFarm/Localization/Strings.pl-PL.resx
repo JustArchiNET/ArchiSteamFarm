@@ -105,7 +105,7 @@ StackTrace:
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>Żadne boty nie zostały zdefiniowane. Czy zapomniałeś o konfiguracji ASF?</value>
+		<value>Żadne boty nie są zdefiniowane. Czy ASF został skonfigurowany? Postępuj zgodnie z przewodnikiem konfiguracji na wiki, jeśli odczuwasz zdezorientowanie.</value>
 	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} jest puste!</value>

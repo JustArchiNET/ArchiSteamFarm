@@ -101,9 +101,7 @@
 		<value>{0} は無効です！</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
-	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>bot が定義されていません。ASF の設定を忘れていませんか？</value>
-	</data>
+	
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} は空(null) です！</value>
 		<comment>{0} will be replaced by object's name</comment>

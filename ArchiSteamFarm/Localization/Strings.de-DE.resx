@@ -105,7 +105,7 @@ StackTrace:
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>Es sind keine Bots definiert. Haben Sie ASF zu richtig konfiguriert?</value>
+		<value>Es sind keine Bots definiert. Haben Sie vergessen, ASF zu konfigurieren? Folgen Sie der Anleitung "Installation" im Wiki, wenn Sie unsicher sind.</value>
 	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} ist null!</value>

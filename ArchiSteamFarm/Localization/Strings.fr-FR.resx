@@ -105,7 +105,7 @@ StackTrace :
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>Aucun bot de défini. Avez-vous omis de configurer ASF ?</value>
+		<value>Aucun bot n'est défini. Avez-vous oublié de configurer votre ASF ? Suivez le guide de configuration sur le wiki en cas de confusion.</value>
 	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} est invalide !</value>
@@ -227,7 +227,10 @@ StackTrace :
 		<value>Aucun bot nommé {0} n'a été trouvé !</value>
 		<comment>{0} will be replaced by bot's name query (string)</comment>
 	</data>
-	
+	<data name="BotStatusOverview" xml:space="preserve">
+		<value>Il y a {0}/{1} bots en cours d'exécution, avec un total de {2} jeu ({3} cartes) à farmer.</value>
+		<comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to farm, {3} will be replaced by total number of cards left to farm</comment>
+	</data>
 	
 	
 	<data name="CheckingFirstBadgePage" xml:space="preserve">

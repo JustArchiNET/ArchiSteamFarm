@@ -101,9 +101,7 @@
 		<value>{0} е невалиден!</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
-	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>Няма настроени ботове. Да не би да сте забравили да настроите ASF?</value>
-	</data>
+	
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} е нулев!</value>
 		<comment>{0} will be replaced by object's name</comment>

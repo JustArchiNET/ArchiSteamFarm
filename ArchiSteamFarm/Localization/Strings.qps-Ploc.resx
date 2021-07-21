@@ -105,7 +105,7 @@ STACKTRACE:
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>NO BOTS R DEFIND. DID U FORGET 2 CONFIGURE UR ASF?</value>
+		<value>NO BOTS R DEFIND. DID U FORGET 2 CONFIGURE UR ASF? FOLLOW 'SETTIN UP' GUIDE ON TEH WIKI IF URE CONFUSD.</value>
 	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} IZ NULL!</value>

@@ -101,9 +101,7 @@
 		<value>{0} tidak valid!</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
-	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>Bot tidak didefinisikan, Apakah Anda lupa untuk mengkonfigurasi ASF Anda?</value>
-	</data>
+	
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} masih kosong!</value>
 		<comment>{0} will be replaced by object's name</comment>

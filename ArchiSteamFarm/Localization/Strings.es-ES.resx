@@ -96,7 +96,7 @@ StackTrace:
 		<comment>{0} will be replaced by URL of the request</comment>
 	</data>
 	<data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-		<value>La configuración global no pudo ser cargada. ¡Asegúrate de que {0} existe y es válido! Sigue la guía de 'configuración' en la wiki si tienes dudas.</value>
+		<value>La configuración global no pudo ser cargada. ¡Asegúrate de que {0} existe y es válido! Sigue la guía de 'instalación' en la wiki si tienes dudas.</value>
 		<comment>{0} will be replaced by file's path</comment>
 	</data>
 	<data name="ErrorIsInvalid" xml:space="preserve">
@@ -104,7 +104,7 @@ StackTrace:
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>No hay bots definidos. ¿Olvidaste configurar ASF?</value>
+		<value>No hay bots definidos. ¿Olvidaste configurar ASF? Sigue la guía de 'instalación' en la wiki si tienes dudas.</value>
 	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>¡{0} es nulo!</value>

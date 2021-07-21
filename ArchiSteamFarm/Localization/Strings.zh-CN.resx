@@ -105,7 +105,7 @@
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>没有配置任何机器人，您是否忘记配置 ASF 了？</value>
+		<value>没有配置任何机器人，您是否忘记配置 ASF 了？如果您不明白发生了什么，请阅读 Wiki 上的“安装指南”。</value>
 	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} 为 null！</value>

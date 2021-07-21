@@ -104,9 +104,7 @@ StackTrace:
 		<value>{0} je netačan!</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
-	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>Botovi nisu definisani, da li ste zaboravili da konfigurisete vaš ASF?</value>
-	</data>
+	
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} je null!</value>
 		<comment>{0} will be replaced by object's name</comment>

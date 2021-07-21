@@ -104,9 +104,7 @@ StackTrace:
 		<value>{0} on virheellinen!</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
-	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>Botteja ei ole määritelty. Unohditko tehdä asetukset ASF varten?</value>
-	</data>
+	
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} on ei mitään!</value>
 		<comment>{0} will be replaced by object's name</comment>

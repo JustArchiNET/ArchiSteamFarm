@@ -104,9 +104,7 @@ StackTrace:
 		<value>Το {0} δεν είναι έγκυρο!</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
-	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>Δεν έχουν οριστεί bots. Μήπως ξεχάσατε να ρυθμίσετε το ASF σας;</value>
-	</data>
+	
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>Το {0} είναι null!</value>
 		<comment>{0} will be replaced by object's name</comment>

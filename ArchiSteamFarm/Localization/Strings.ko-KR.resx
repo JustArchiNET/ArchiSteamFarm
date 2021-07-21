@@ -104,9 +104,7 @@ StackTrace:
 		<value>{0} 값이 유효하지 않습니다!</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
-	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>봇이 정의되지 않았습니다. ASF를 설정하는 걸 잊으셨나요?</value>
-	</data>
+	
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} 값이 없습니다!</value>
 		<comment>{0} will be replaced by object's name</comment>

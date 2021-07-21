@@ -104,9 +104,7 @@
 		<value>{0} 無效！</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
-	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>沒有設定任何機械人。您是否忘記配置 ASF？</value>
-	</data>
+	
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} 為空！</value>
 		<comment>{0} will be replaced by object's name</comment>

@@ -103,7 +103,7 @@
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>Nessun bot è definito. Hai dimenticato di configurare il tuo ASF?</value>
+		<value>Nessun bot definito. Hai dimenticato di configurare il tuo ASF? Segui la guida di 'configurazione' sulla wiki se sei confuso.</value>
 	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} è nullo!</value>

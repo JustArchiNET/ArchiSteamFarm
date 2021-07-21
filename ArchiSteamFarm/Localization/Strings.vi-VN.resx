@@ -105,7 +105,7 @@ StackTrace:
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>Không có bot nào được tìm thấy. Bạn có quên thiết lập ASF?</value>
+		<value>Không có bot nào được xác định. Có phải bạn đã quên đặt cấu hình ASF? Hãy làm theo hướng dẫn thiết lập 'Setting up' trên wiki nếu bạn thấy khó hiểu.</value>
 	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} không tồn tại!</value>
