@@ -163,14 +163,14 @@ namespace ArchiSteamFarm.IPC.Integration {
 			await AuthorizationSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				if (FailedAuthorizations.TryGetValue(clientIP, out attempts)) {
-					if (attempts >= MaxFailedAuthorizationAttempts) {
-						return (HttpStatusCode.Forbidden, false);
-					}
+				bool hasFailedAuthorizations = FailedAuthorizations.TryGetValue(clientIP, out attempts);
+
+				if (hasFailedAuthorizations && (attempts >= MaxFailedAuthorizationAttempts)) {
+					return (HttpStatusCode.Forbidden, false);
 				}
 
 				if (!authorized) {
-					FailedAuthorizations[clientIP] = FailedAuthorizations.TryGetValue(clientIP, out attempts) ? ++attempts : (byte) 1;
+					FailedAuthorizations[clientIP] = hasFailedAuthorizations ? ++attempts : (byte) 1;
 				}
 			} finally {
 				AuthorizationSemaphore.Release();
