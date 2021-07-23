@@ -65,4 +65,4 @@ WORKDIR /app
 COPY --from=build-dotnet /app/out/result .
 VOLUME ["/app/config", "/app/logs"]
 HEALTHCHECK CMD ["pidof", "-q", "dotnet"]
-ENTRYPOINT ["./ArchiSteamFarm.sh", "--no-restart", "--process-required", "--system-required"]
+ENTRYPOINT ["sh", "ArchiSteamFarm.sh", "--no-restart", "--process-required", "--system-required"]
