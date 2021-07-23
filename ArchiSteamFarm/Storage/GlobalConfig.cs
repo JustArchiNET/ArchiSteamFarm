@@ -221,6 +221,16 @@ namespace ArchiSteamFarm.Storage {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool IPC { get; private set; } = DefaultIPC;
 
+		[JsonProperty]
+		public string? IPCPassword {
+			get => BackingIPCPassword;
+
+			set {
+				IsIPCPasswordSet = true;
+				BackingIPCPassword = value;
+			}
+		}
+
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ArchiCryptoHelper.EHashingMethod IPCPasswordFormat { get; private set; } = DefaultIPCPasswordFormat;
 
@@ -278,18 +288,7 @@ namespace ArchiSteamFarm.Storage {
 			set;
 		}
 
-		[JsonProperty]
-		public string? IPCPassword {
-			get => BackingIPCPassword;
-
-			set {
-				IsIPCPasswordSet = true;
-				BackingIPCPassword = value;
-			}
-		}
-
 		internal bool IsIPCPasswordSet { get; private set; }
-
 		internal bool IsWebProxyPasswordSet { get; private set; }
 
 		internal bool Saving { get; set; }
@@ -305,7 +304,6 @@ namespace ArchiSteamFarm.Storage {
 		}
 
 		private string? BackingIPCPassword = DefaultIPCPassword;
-
 		private WebProxy? BackingWebProxy;
 		private string? BackingWebProxyPassword = DefaultWebProxyPassword;
 
@@ -464,7 +462,7 @@ namespace ArchiSteamFarm.Storage {
 		public bool ShouldSerializeIdleFarmingPeriod() => !Saving || (IdleFarmingPeriod != DefaultIdleFarmingPeriod);
 		public bool ShouldSerializeInventoryLimiterDelay() => !Saving || (InventoryLimiterDelay != DefaultInventoryLimiterDelay);
 		public bool ShouldSerializeIPC() => !Saving || (IPC != DefaultIPC);
-		public bool ShouldSerializeIPCPassword() => Saving && (IPCPassword != DefaultIPCPassword);
+		public bool ShouldSerializeIPCPassword() => Saving && IsIPCPasswordSet && (IPCPassword != DefaultIPCPassword);
 		public bool ShouldSerializeIPCPasswordFormat() => !Saving || (IPCPasswordFormat != DefaultIPCPasswordFormat);
 		public bool ShouldSerializeLoginLimiterDelay() => !Saving || (LoginLimiterDelay != DefaultLoginLimiterDelay);
 		public bool ShouldSerializeMaxFarmingTime() => !Saving || (MaxFarmingTime != DefaultMaxFarmingTime);
