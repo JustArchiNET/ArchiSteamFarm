@@ -221,9 +221,6 @@ namespace ArchiSteamFarm.Storage {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool IPC { get; private set; } = DefaultIPC;
 
-		[JsonProperty]
-		public string? IPCPassword { get; private set; } = DefaultIPCPassword;
-
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ArchiCryptoHelper.EHashingMethod IPCPasswordFormat { get; private set; } = DefaultIPCPasswordFormat;
 
@@ -281,7 +278,20 @@ namespace ArchiSteamFarm.Storage {
 			set;
 		}
 
+		[JsonProperty]
+		public string? IPCPassword {
+			get => BackingIPCPassword;
+
+			set {
+				IsIPCPasswordSet = true;
+				BackingIPCPassword = value;
+			}
+		}
+
+		internal bool IsIPCPasswordSet { get; private set; }
+
 		internal bool IsWebProxyPasswordSet { get; private set; }
+
 		internal bool Saving { get; set; }
 
 		[JsonProperty]
@@ -293,6 +303,8 @@ namespace ArchiSteamFarm.Storage {
 				BackingWebProxyPassword = value;
 			}
 		}
+
+		private string? BackingIPCPassword = DefaultIPCPassword;
 
 		private WebProxy? BackingWebProxy;
 		private string? BackingWebProxyPassword = DefaultWebProxyPassword;
