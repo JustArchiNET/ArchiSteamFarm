@@ -59,6 +59,7 @@ namespace ArchiSteamFarm {
 		internal const string MobileAuthenticatorExtension = ".maFile";
 		internal const string PluginsDirectory = "plugins";
 		internal const string ProjectURL = "https://github.com/" + GithubRepo;
+		internal const string ShellServiceName = AssemblyName + "-Service.sh";
 		internal const string SentryHashExtension = ".bin";
 		internal const string StatisticsServer = "asf.justarchi.net";
 		internal const string UlongCompatibilityStringPrefix = "s_";

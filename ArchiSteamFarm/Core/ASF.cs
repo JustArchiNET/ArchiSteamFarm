@@ -324,6 +324,12 @@ namespace ArchiSteamFarm.Core {
 					if (File.Exists(executable)) {
 						OS.UnixSetFileAccess(executable, OS.EUnixPermission.Combined755);
 					}
+					
+					string shellScript = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.ShellServiceName);
+
+					if (File.Exists(shellScript)) {
+						OS.UnixSetFileAccess(shellScript, OS.EUnixPermission.Combined755);
+					}
 				}
 
 				ArchiLogger.LogGenericInfo(Strings.UpdateFinished);
