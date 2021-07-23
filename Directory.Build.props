@@ -8,7 +8,7 @@
 		<ApplicationIcon>../resources/ASF.ico</ApplicationIcon>
 		<Authors>JustArchi</Authors>
 		<Company>JustArchiNET</Company>
-		<Copyright>Copyright © 2015-2021 JustArchiNET</Copyright>
+		<Copyright>Copyright © 2015-$([System.DateTime]::UtcNow.Year) JustArchiNET</Copyright>
 		<Description>ASF is a C# application with primary purpose of idling Steam cards from multiple accounts simultaneously.</Description>
 		<Deterministic>true</Deterministic>
 		<ErrorReport>none</ErrorReport>
