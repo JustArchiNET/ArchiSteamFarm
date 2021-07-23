@@ -225,7 +225,7 @@ namespace ArchiSteamFarm.Storage {
 		public string? IPCPassword {
 			get => BackingIPCPassword;
 
-			set {
+			internal set {
 				IsIPCPasswordSet = true;
 				BackingIPCPassword = value;
 			}
