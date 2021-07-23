@@ -121,6 +121,10 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 
 			request.GlobalConfig.Saving = true;
 
+			if (!request.GlobalConfig.IsIPCPasswordSet && ASF.GlobalConfig.IsIPCPasswordSet) {
+				request.GlobalConfig.IPCPassword = ASF.GlobalConfig.IPCPassword;
+			}
+
 			if (!request.GlobalConfig.IsWebProxyPasswordSet && ASF.GlobalConfig.IsWebProxyPasswordSet) {
 				request.GlobalConfig.WebProxyPassword = ASF.GlobalConfig.WebProxyPassword;
 			}
