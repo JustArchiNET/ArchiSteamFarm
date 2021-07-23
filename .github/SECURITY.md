@@ -8,6 +8,12 @@ We support **[the latest stable](https://github.com/JustArchiNET/ArchiSteamFarm/
 
 ---
 
+## Security advisories
+
+We announce security advisories for our program on **[GitHub[(https://github.com/JustArchiNET/ArchiSteamFarm/security/advisories)**. Every entry includes detailed information about the security vulnerability it describes, especially affected versions, attack vectors, fixed versions as well as possible workarounds (if any).
+
+---
+
 ## Reporting a vulnerability
 
 We're doing our best to protect our community from all harm, therefore we take security vulnerabilities very seriously.
