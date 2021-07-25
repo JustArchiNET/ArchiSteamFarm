@@ -178,8 +178,11 @@ namespace ArchiSteamFarm {
 				}
 			}
 
+			// Parse environment variables
+			ParseEnvironmentVariables();
+
 			// Parse args
-			if (args != null) {
+			if (args?.Count > 0) {
 				ParseArgs(args);
 			}
 
@@ -431,9 +434,13 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		private static async Task<int> Main(string[]? args) {
+		private static async Task<int> Main(string[] args) {
+			if (args == null) {
+				throw new ArgumentNullException(nameof(args));
+			}
+
 			// Initialize
-			await Init(args).ConfigureAwait(false);
+			await Init(args.Length > 0 ? args : null).ConfigureAwait(false);
 
 			// Wait for shutdown event
 			return await ShutdownResetEvent.Task.ConfigureAwait(false);
@@ -471,30 +478,8 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void ParseArgs(IReadOnlyCollection<string> args) {
-			if (args == null) {
+			if ((args == null) || (args.Count == 0)) {
 				throw new ArgumentNullException(nameof(args));
-			}
-
-			try {
-				string? envCryptKey = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableCryptKey);
-
-				if (!string.IsNullOrEmpty(envCryptKey)) {
-					HandleCryptKeyArgument(envCryptKey);
-				}
-
-				string? envNetworkGroup = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableNetworkGroup);
-
-				if (!string.IsNullOrEmpty(envNetworkGroup)) {
-					HandleNetworkGroupArgument(envNetworkGroup);
-				}
-
-				string? envPath = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariablePath);
-
-				if (!string.IsNullOrEmpty(envPath)) {
-					HandlePathArgument(envPath);
-				}
-			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericException(e);
 			}
 
 			bool cryptKeyNext = false;
@@ -572,6 +557,31 @@ namespace ArchiSteamFarm {
 
 						break;
 				}
+			}
+		}
+
+		private static void ParseEnvironmentVariables() {
+			// We're using a single try-catch block here, as a failure for getting one variable will result in the same failure for all other ones
+			try {
+				string? envCryptKey = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableCryptKey);
+
+				if (!string.IsNullOrEmpty(envCryptKey)) {
+					HandleCryptKeyArgument(envCryptKey);
+				}
+
+				string? envNetworkGroup = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableNetworkGroup);
+
+				if (!string.IsNullOrEmpty(envNetworkGroup)) {
+					HandleNetworkGroupArgument(envNetworkGroup);
+				}
+
+				string? envPath = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariablePath);
+
+				if (!string.IsNullOrEmpty(envPath)) {
+					HandlePathArgument(envPath);
+				}
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
 			}
 		}
 
