@@ -74,24 +74,68 @@
 		<value>{0} đã được khởi tạo thành công, cảm ơn bạn rất nhiều vì sự giúp đỡ. Lần gửi đầu tiên sẽ xảy ra trong khoảng {1} kể từ bây giờ.</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
+		<value>Không thể tải {0}, một trạng thái mới sẽ được khởi tạo...</value>
+		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>
+	</data>
+	<data name="BotNoAppsToRefresh" xml:space="preserve">
+		<value>Không có ứng dụng nào yêu cầu làm mới cho trạng thái của bot này.</value>
+	</data>
+	<data name="BotRetrievingTotalAppAccessTokens" xml:space="preserve">
+		<value>Đang thu nhận tổng số {0} mã truy cập ứng dụng...</value>
+		<comment>{0} will be replaced by the number (total count) of app access tokens being retrieved</comment>
+	</data>
+	<data name="BotRetrievingAppAccessTokens" xml:space="preserve">
+		<value>Đang thu nhận {0} mã truy cập ứng dụng...</value>
+		<comment>{0} will be replaced by the number (count this batch) of app access tokens being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingAppAccessTokens" xml:space="preserve">
+		<value>Đã hoàn tất thu nhận {0} mã truy cập ứng dụng.</value>
+		<comment>{0} will be replaced by the number (count this batch) of app access tokens retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingTotalAppAccessTokens" xml:space="preserve">
+		<value>Đã hoàn tất thu nhận tổng số {0} mã truy cập ứng dụng.</value>
+		<comment>{0} will be replaced by the number (total count) of app access tokens retrieved</comment>
+	</data>
+	<data name="BotRetrievingTotalDepots" xml:space="preserve">
+		<value>Đang thu nhận tất cả kho của tổng số {0} ứng dụng...</value>
+		<comment>{0} will be replaced by the number (total count) of apps being retrieved</comment>
+	</data>
+	<data name="BotRetrievingAppInfos" xml:space="preserve">
+		<value>Đang thu nhận thông tin của {0} ứng dụng...</value>
+		<comment>{0} will be replaced by the number (count this batch) of app infos being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingAppInfos" xml:space="preserve">
+		<value>Đã hoàn tất thu nhận thông tin của {0} ứng dụng.</value>
+		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
+	</data>
+	<data name="BotRetrievingDepotKeys" xml:space="preserve">
+		<value>Đang thu nhận {0} khóa kho...</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot keys being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
+		<value>Đã hoàn tất thu nhận {0} khóa kho.</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot keys retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
+		<value>Đã hoàn tất thu nhận tất cả khóa kho của tổng số {0} ứng dụng.</value>
+		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>
+	</data>
 	<data name="SubmissionNoNewData" xml:space="preserve">
 		<value>Không có dữ liệu mới để gửi, mọi thứ đều đã được cập nhật.</value>
 	</data>
-	
-	
-	
+	<data name="SubmissionNoContributorSet" xml:space="preserve">
+		<value>Không thể gửi dữ liệu vì không có bộ SteamID hợp lệ mà chúng tôi có thể phân loại là người đóng góp. Hãy xem xét thiết lập thuộc tính {0}.</value>
+		<comment>{0} will be replaced by the name of the config property (e.g. "SteamOwnerID") that the user is expected to set</comment>
+	</data>
+	<data name="SubmissionInProgress" xml:space="preserve">
+		<value>Đang gửi tổng số các ứng dụng/gói/kho đã đăng ký: {0}/{1}/{2}...</value>
+		<comment>{0} will be replaced by the number of app access tokens being submitted, {1} will be replaced by the number of package access tokens being submitted, {2} will be replaced by the number of depot keys being submitted</comment>
+	</data>
+	<data name="SubmissionFailedTooManyRequests" xml:space="preserve">
+		<value>Việc gửi đã thất bại do có quá nhiều yêu cầu được gửi, chúng tôi sẽ thử lại sau khoảng {0} kể từ bây giờ.</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
 	<data name="SubmissionSuccessful" xml:space="preserve">
 		<value>Dữ liệu đã được gửi thành công. Máy chủ đã đăng ký tổng số ứng dụng/gói/kho mới: {0} ({1} đã xác thực)/{2} ({3} đã xác thực)/{4} ({5} đã xác thực).</value>
 		<comment>{0} will be replaced by the number of new app access tokens that the server has registered, {1} will be replaced by the number of verified app access tokens that the server has registered, {2} will be replaced by the number of new package access tokens that the server has registered, {3} will be replaced by the number of verified package access tokens that the server has registered, {4} will be replaced by the number of new depot keys that the server has registered, {5} will be replaced by the number of verified depot keys that the server has registered</comment>
@@ -120,5 +164,8 @@
 		<value>Kho đã xác thực: {0}</value>
 		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
 	</data>
-	
+	<data name="PluginSecretListInitialized" xml:space="preserve">
+		<value>{0} đã được khởi tạo, plugin sẽ không can thiệp với những thứ sau: {1}.</value>
+		<comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
+	</data>
 </root>
