@@ -502,40 +502,40 @@ namespace ArchiSteamFarm {
 			bool pathNext = false;
 
 			foreach (string arg in args) {
-				switch (arg) {
-					case "--cryptkey" when !cryptKeyNext && !networkGroupNext && !pathNext:
+				switch (arg.ToUpperInvariant()) {
+					case "--CRYPTKEY" when !cryptKeyNext && !networkGroupNext && !pathNext:
 						cryptKeyNext = true;
 
 						break;
-					case "--ignore-unsupported-environment" when !cryptKeyNext && !networkGroupNext && !pathNext:
+					case "--IGNORE-UNSUPPORTED-ENVIRONMENT" when !cryptKeyNext && !networkGroupNext && !pathNext:
 						IgnoreUnsupportedEnvironment = true;
 
 						break;
-					case "--network-group" when !cryptKeyNext && !networkGroupNext && !pathNext:
+					case "--NETWORK-GROUP" when !cryptKeyNext && !networkGroupNext && !pathNext:
 						networkGroupNext = true;
 
 						break;
-					case "--no-config-migrate" when !cryptKeyNext && !networkGroupNext && !pathNext:
+					case "--NO-CONFIG-MIGRATE" when !cryptKeyNext && !networkGroupNext && !pathNext:
 						ConfigMigrate = false;
 
 						break;
-					case "--no-config-watch" when !cryptKeyNext && !networkGroupNext && !pathNext:
+					case "--NO-CONFIG-WATCH" when !cryptKeyNext && !networkGroupNext && !pathNext:
 						ConfigWatch = false;
 
 						break;
-					case "--no-restart" when !cryptKeyNext && !networkGroupNext && !pathNext:
+					case "--NO-RESTART" when !cryptKeyNext && !networkGroupNext && !pathNext:
 						RestartAllowed = false;
 
 						break;
-					case "--process-required" when !cryptKeyNext && !networkGroupNext && !pathNext:
+					case "--PROCESS-REQUIRED" when !cryptKeyNext && !networkGroupNext && !pathNext:
 						ProcessRequired = true;
 
 						break;
-					case "--path" when !cryptKeyNext && !networkGroupNext && !pathNext:
+					case "--PATH" when !cryptKeyNext && !networkGroupNext && !pathNext:
 						pathNext = true;
 
 						break;
-					case "--system-required" when !cryptKeyNext && !networkGroupNext && !pathNext:
+					case "--SYSTEM-REQUIRED" when !cryptKeyNext && !networkGroupNext && !pathNext:
 						SystemRequired = true;
 
 						break;
@@ -551,15 +551,15 @@ namespace ArchiSteamFarm {
 							HandlePathArgument(arg);
 						} else {
 							switch (arg.Length) {
-								case > 16 when arg.StartsWith("--network-group=", StringComparison.Ordinal):
+								case > 16 when arg.StartsWith("--NETWORK-GROUP=", StringComparison.OrdinalIgnoreCase):
 									HandleNetworkGroupArgument(arg[16..]);
 
 									break;
-								case > 11 when arg.StartsWith("--cryptkey=", StringComparison.Ordinal):
+								case > 11 when arg.StartsWith("--CRYPTKEY=", StringComparison.OrdinalIgnoreCase):
 									HandleCryptKeyArgument(arg[11..]);
 
 									break;
-								case > 7 when arg.StartsWith("--path=", StringComparison.Ordinal):
+								case > 7 when arg.StartsWith("--PATH=", StringComparison.OrdinalIgnoreCase):
 									HandlePathArgument(arg[7..]);
 
 									break;
