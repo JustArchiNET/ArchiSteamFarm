@@ -248,6 +248,10 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 		[PublicAPI]
 		public static (bool Success, string Message) Restart() {
+			if (!Program.RestartAllowed) {
+				return (false, "!" + nameof(Program.RestartAllowed));
+			}
+
 			// Schedule the task after some time so user can receive response
 			Utilities.InBackground(
 				async () => {
