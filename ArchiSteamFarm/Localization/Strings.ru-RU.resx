@@ -104,7 +104,9 @@
 		<value>{0} неверен!</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
-	
+	<data name="ErrorNoBotsDefined" xml:space="preserve">
+		<value>Не определено ни одного бота. Вы забыли настроить ваш ASF? Следуйте инструкциям «настройка» в wiki, если вы запутались.</value>
+	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} равен null!</value>
 		<comment>{0} will be replaced by object's name</comment>

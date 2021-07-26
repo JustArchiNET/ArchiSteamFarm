@@ -81,8 +81,14 @@
 	<data name="BotNoAppsToRefresh" xml:space="preserve">
 		<value>Нет приложений, которые требуют обновления для этого бота.</value>
 	</data>
-	
-	
+	<data name="BotRetrievingTotalAppAccessTokens" xml:space="preserve">
+		<value>Получение в общей сложности {0} маркеров доступа к приложениям...</value>
+		<comment>{0} will be replaced by the number (total count) of app access tokens being retrieved</comment>
+	</data>
+	<data name="BotRetrievingAppAccessTokens" xml:space="preserve">
+		<value>Получение в общей сложности {0} маркеров доступа к приложениям...</value>
+		<comment>{0} will be replaced by the number (count this batch) of app access tokens being retrieved</comment>
+	</data>
 	
 	
 	
@@ -114,7 +120,10 @@
 		<value>Проверенные пакеты: {0}</value>
 		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
 	</data>
-	
+	<data name="SubmissionSuccessfulNewDepots" xml:space="preserve">
+		<value>Новые хранилища: {0}</value>
+		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
+	</data>
 	
 	
 </root>
