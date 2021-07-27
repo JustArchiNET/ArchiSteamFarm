@@ -39,14 +39,16 @@
 		<WarningsAsErrors />
 	</PropertyGroup>
 
-	<!-- Trimming features as specified on https://docs.microsoft.com/dotnet/core/deploying/trimming-options#trimming-framework-library-features and https://github.com/dotnet/runtime/blob/master/docs/workflow/trimming/feature-switches.md -->
+	<!-- Trimming functionality as described on https://docs.microsoft.com/dotnet/core/deploying/trim-self-contained -->
 	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
 		<DebuggerSupport>false</DebuggerSupport>
 		<EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
 		<EnableUnsafeUTF7Encoding>false</EnableUnsafeUTF7Encoding>
 		<EventSourceSupport>false</EventSourceSupport>
 		<HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
+		<MetadataUpdaterSupport>false</MetadataUpdaterSupport>
 		<TrimMode>link</TrimMode>
+		<WarningsNotAsErrors>IL2026,IL2057,IL2072,IL2075,IL2104</WarningsNotAsErrors>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(OS)' == 'Windows_NT' OR '$(ASFNetFramework)' != ''">
