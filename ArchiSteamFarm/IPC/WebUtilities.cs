@@ -23,24 +23,15 @@
 using ArchiSteamFarm.Compatibility;
 #endif
 using System;
+using System.IO;
 using System.Linq;
-using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC {
 	internal static class WebUtilities {
-		internal static async Task Generate(this HttpResponse httpResponse, HttpStatusCode statusCode) {
-			if (httpResponse == null) {
-				throw new ArgumentNullException(nameof(httpResponse));
-			}
-
-			ushort statusCodeNumber = (ushort) statusCode;
-
-			httpResponse.StatusCode = statusCodeNumber;
-			await httpResponse.WriteAsync(statusCodeNumber + " - " + statusCode).ConfigureAwait(false);
-		}
-
 		internal static string? GetUnifiedName(this Type type) {
 			if (type == null) {
 				throw new ArgumentNullException(nameof(type));
@@ -68,6 +59,26 @@ namespace ArchiSteamFarm.IPC {
 			}
 
 			return Type.GetType(typeText + "," + typeText[..index]);
+		}
+
+		internal static async Task WriteJsonAsync<TValue>(this HttpResponse response, TValue? value, JsonSerializerSettings? jsonSerializerSettings = null) {
+			if (response == null) {
+				throw new ArgumentNullException(nameof(response));
+			}
+
+			response.ContentType = "application/json; charset=utf-8";
+
+			StreamWriter streamWriter = new(response.Body, Encoding.UTF8);
+
+			await using (streamWriter.ConfigureAwait(false)) {
+				using JsonTextWriter jsonWriter = new(streamWriter);
+
+				JsonSerializer serializer = JsonSerializer.CreateDefault(jsonSerializerSettings);
+
+				serializer.Serialize(jsonWriter, value);
+
+				await jsonWriter.FlushAsync().ConfigureAwait(false);
+			}
 		}
 	}
 }

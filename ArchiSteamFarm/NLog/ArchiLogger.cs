@@ -149,12 +149,15 @@ namespace ArchiSteamFarm.NLog {
 				loggedMessage.Append(steamID);
 			}
 
-			LogEventInfo logEventInfo = new(LogLevel.Trace, Logger.Name, loggedMessage.ToString());
-			logEventInfo.Properties["Echo"] = echo;
-			logEventInfo.Properties["Message"] = message;
-			logEventInfo.Properties["ChatGroupID"] = chatGroupID;
-			logEventInfo.Properties["ChatID"] = chatID;
-			logEventInfo.Properties["SteamID"] = steamID;
+			LogEventInfo logEventInfo = new(LogLevel.Trace, Logger.Name, loggedMessage.ToString()) {
+				Properties = {
+					["Echo"] = echo,
+					["Message"] = message,
+					["ChatGroupID"] = chatGroupID,
+					["ChatID"] = chatID,
+					["SteamID"] = steamID
+				}
+			};
 
 			Logger.Log(logEventInfo);
 		}
@@ -220,11 +223,13 @@ namespace ArchiSteamFarm.NLog {
 
 			string loggedMessage = previousMethodName + "() " + steamID.AccountType + " " + steamID64 + (handled.HasValue ? " = " + handled.Value : "");
 
-			LogEventInfo logEventInfo = new(LogLevel.Trace, Logger.Name, loggedMessage);
-
-			logEventInfo.Properties["AccountType"] = steamID.AccountType;
-			logEventInfo.Properties["Handled"] = handled;
-			logEventInfo.Properties["SteamID"] = steamID64;
+			LogEventInfo logEventInfo = new(LogLevel.Trace, Logger.Name, loggedMessage) {
+				Properties = {
+					["AccountType"] = steamID.AccountType,
+					["Handled"] = handled,
+					["SteamID"] = steamID64
+				}
+			};
 
 			Logger.Log(logEventInfo);
 		}

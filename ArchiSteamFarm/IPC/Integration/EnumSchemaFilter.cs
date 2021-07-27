@@ -65,6 +65,11 @@ namespace ArchiSteamFarm.IPC.Integration {
 					}
 				}
 
+				if (definition.ContainsKey(enumName)) {
+					// This is possible if we have multiple names for the same enum value, we'll ignore additional ones
+					continue;
+				}
+
 				IOpenApiAny enumObject;
 
 				if (TryCast(enumValue, out int intValue)) {
@@ -78,7 +83,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 					throw new InvalidOperationException(nameof(enumValue));
 				}
 
-				definition.Add(enumName!, enumObject);
+				definition.Add(enumName, enumObject);
 			}
 
 			schema.AddExtension("x-definition", definition);

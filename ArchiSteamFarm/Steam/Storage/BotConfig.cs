@@ -301,6 +301,7 @@ namespace ArchiSteamFarm.Steam.Storage {
 
 			set {
 				if (!string.IsNullOrEmpty(value) && (PasswordFormat != ArchiCryptoHelper.ECryptoMethod.PlainText)) {
+					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 					value = ArchiCryptoHelper.Encrypt(PasswordFormat, value!);
 				}
 
@@ -496,6 +497,7 @@ namespace ArchiSteamFarm.Steam.Storage {
 
 			if (!valid) {
 				if (!string.IsNullOrEmpty(errorMessage)) {
+					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 					ASF.ArchiLogger.LogGenericError(errorMessage!);
 				}
 

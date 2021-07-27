@@ -51,6 +51,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 			if (!string.IsNullOrEmpty(steamMessagePrefix)) {
 				// We must escape our message prefix if needed
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 				steamMessagePrefix = Escape(steamMessagePrefix!);
 
 				prefixBytes = GetMessagePrefixBytes(steamMessagePrefix);

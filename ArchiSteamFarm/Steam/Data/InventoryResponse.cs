@@ -107,7 +107,7 @@ namespace ArchiSteamFarm.Steam.Data {
 					foreach (Tag tag in Tags) {
 						switch (tag.Identifier) {
 							case "Game":
-								if (string.IsNullOrEmpty(tag.Value) || (tag.Value!.Length <= 4) || !tag.Value.StartsWith("app_", StringComparison.Ordinal)) {
+								if (string.IsNullOrEmpty(tag.Value) || (tag.Value.Length <= 4) || !tag.Value.StartsWith("app_", StringComparison.Ordinal)) {
 									ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(tag.Value), tag.Value));
 
 									break;

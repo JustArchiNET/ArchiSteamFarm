@@ -67,16 +67,18 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, Strings.ErrorNoBotsDefined));
 			}
 
-			string command = request.Command!;
+			string command = request.Command;
 			string? commandPrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.CommandPrefix : GlobalConfig.DefaultCommandPrefix;
 
+			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 			if (!string.IsNullOrEmpty(commandPrefix) && command.StartsWith(commandPrefix!, StringComparison.Ordinal)) {
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 				if (command.Length == commandPrefix!.Length) {
 					// If the message starts with command prefix and is of the same length as command prefix, then it's just empty command trigger, useless
 					return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(command))));
 				}
 
-				command = command[commandPrefix!.Length..];
+				command = command[commandPrefix.Length..];
 			}
 
 			string? response = await targetBot.Commands.Response(steamOwnerID, command).ConfigureAwait(false);

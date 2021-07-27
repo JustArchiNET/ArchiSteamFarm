@@ -4,7 +4,7 @@
     <PackageVersion Include="ConfigureAwaitChecker.Analyzer" Version="5.0.0" />
     <PackageVersion Include="CryptSharpStandard" Version="1.0.0" />
     <PackageVersion Include="Humanizer" Version="2.11.10" />
-    <PackageVersion Include="JetBrains.Annotations" Version="2021.1.0" />
+    <PackageVersion Include="JetBrains.Annotations" Version="2021.2.0" />
     <PackageVersion Include="Markdig.Signed" Version="0.25.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="16.10.0" />
     <PackageVersion Include="MSTest.TestAdapter" Version="2.2.4" />
@@ -12,8 +12,8 @@
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageVersion Include="Nito.AsyncEx.Coordination" Version="5.1.0" />
     <PackageVersion Include="NLog" Version="4.7.10" />
-    <PackageVersion Include="NLog.Web.AspNetCore" Version="4.12.0" />
-    <PackageVersion Include="SteamKit2" Version="2.3.0" />
+    <PackageVersion Include="NLog.Web.AspNetCore" Version="4.13.0" />
+    <PackageVersion Include="SteamKit2" Version="2.4.0-Alpha.2" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.1.4" />
     <PackageVersion Include="Swashbuckle.AspNetCore.Annotations" Version="6.1.4" />
     <PackageVersion Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.1.4" />
@@ -33,6 +33,7 @@
     <PackageVersion Include="Microsoft.AspNetCore.Diagnostics" Version="2.2.0" />
     <PackageVersion Include="Microsoft.AspNetCore.HttpOverrides" Version="2.2.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    <PackageVersion Include="Microsoft.AspNetCore.ResponseCaching" Version="2.2.0" />
     <PackageVersion Include="Microsoft.AspNetCore.ResponseCompression" Version="2.2.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.2.0" />
     <PackageVersion Include="Microsoft.AspNetCore.WebSockets" Version="2.2.1" />

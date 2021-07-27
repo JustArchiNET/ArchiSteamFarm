@@ -111,7 +111,10 @@ namespace ArchiSteamFarm.Steam.Security {
 
 			await LimitConfirmationsRequestsAsync().ConfigureAwait(false);
 
+			// ReSharper disable RedundantSuppressNullableWarningExpression - required for .NET Framework
 			using IDocument? htmlDocument = await Bot.ArchiWebHandler.GetConfirmationsPage(deviceID!, confirmationHash!, time).ConfigureAwait(false);
+
+			// ReSharper restore RedundantSuppressNullableWarningExpression - required for .NET Framework
 
 			if (htmlDocument == null) {
 				return null;
@@ -221,7 +224,10 @@ namespace ArchiSteamFarm.Steam.Security {
 				return false;
 			}
 
+			// ReSharper disable RedundantSuppressNullableWarningExpression - required for .NET Framework
 			bool? result = await Bot.ArchiWebHandler.HandleConfirmations(deviceID!, confirmationHash!, time, confirmations, accept).ConfigureAwait(false);
+
+			// ReSharper restore RedundantSuppressNullableWarningExpression - required for .NET Framework
 
 			if (!result.HasValue) {
 				// Request timed out
@@ -237,7 +243,10 @@ namespace ArchiSteamFarm.Steam.Security {
 			// In this case, we'll accept all pending confirmations one-by-one, synchronously (as Steam can't handle them in parallel)
 			// We totally ignore actual result returned by those calls, abort only if request timed out
 			foreach (Confirmation confirmation in confirmations) {
+				// ReSharper disable RedundantSuppressNullableWarningExpression - required for .NET Framework
 				bool? confirmationResult = await Bot.ArchiWebHandler.HandleConfirmation(deviceID!, confirmationHash!, time, confirmation.ID, confirmation.Key, accept).ConfigureAwait(false);
+
+				// ReSharper restore RedundantSuppressNullableWarningExpression - required for .NET Framework
 
 				if (!confirmationResult.HasValue) {
 					return false;
@@ -287,7 +296,7 @@ namespace ArchiSteamFarm.Steam.Security {
 			byte[] identitySecret;
 
 			try {
-				identitySecret = Convert.FromBase64String(IdentitySecret!);
+				identitySecret = Convert.FromBase64String(IdentitySecret);
 			} catch (FormatException e) {
 				Bot.ArchiLogger.LogGenericException(e);
 				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(IdentitySecret)));
@@ -298,6 +307,7 @@ namespace ArchiSteamFarm.Steam.Security {
 			byte bufferSize = 8;
 
 			if (!string.IsNullOrEmpty(tag)) {
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 				bufferSize += (byte) Math.Min(32, tag!.Length);
 			}
 
@@ -312,6 +322,7 @@ namespace ArchiSteamFarm.Steam.Security {
 			Array.Copy(timeArray, buffer, 8);
 
 			if (!string.IsNullOrEmpty(tag)) {
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 				Array.Copy(Encoding.UTF8.GetBytes(tag!), 0, buffer, 8, bufferSize - 8);
 			}
 
@@ -342,7 +353,7 @@ namespace ArchiSteamFarm.Steam.Security {
 			byte[] sharedSecret;
 
 			try {
-				sharedSecret = Convert.FromBase64String(SharedSecret!);
+				sharedSecret = Convert.FromBase64String(SharedSecret);
 			} catch (FormatException e) {
 				Bot.ArchiLogger.LogGenericException(e);
 				Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(SharedSecret)));

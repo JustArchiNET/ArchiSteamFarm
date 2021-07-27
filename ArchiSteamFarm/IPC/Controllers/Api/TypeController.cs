@@ -68,6 +68,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 						string? unifiedName = field.FieldType.GetUnifiedName();
 
 						if (!string.IsNullOrEmpty(unifiedName)) {
+							// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 							body[jsonProperty.PropertyName ?? field.Name] = unifiedName!;
 						}
 					}
@@ -80,6 +81,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 						string? unifiedName = property.PropertyType.GetUnifiedName();
 
 						if (!string.IsNullOrEmpty(unifiedName)) {
+							// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 							body[jsonProperty.PropertyName ?? property.Name] = unifiedName!;
 						}
 					}
@@ -103,7 +105,10 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 						continue;
 					}
 
+					// ReSharper disable RedundantSuppressNullableWarningExpression - required for .NET Framework
 					body[valueText!] = valueObjText!;
+
+					// ReSharper restore RedundantSuppressNullableWarningExpression - required for .NET Framework
 				}
 			}
 

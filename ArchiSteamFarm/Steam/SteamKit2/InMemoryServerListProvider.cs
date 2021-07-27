@@ -32,7 +32,7 @@ namespace ArchiSteamFarm.Steam.SteamKit2 {
 		[JsonProperty(Required = Required.DisallowNull)]
 		private readonly ConcurrentHashSet<ServerRecordEndPoint> ServerRecords = new();
 
-		public Task<IEnumerable<ServerRecord>> FetchServerListAsync() => Task.FromResult(ServerRecords.Where(server => !string.IsNullOrEmpty(server.Host) && (server.Port > 0) && (server.ProtocolTypes > 0)).Select(server => ServerRecord.CreateServer(server.Host!, server.Port, server.ProtocolTypes)));
+		public Task<IEnumerable<ServerRecord>> FetchServerListAsync() => Task.FromResult(ServerRecords.Where(server => !string.IsNullOrEmpty(server.Host) && (server.Port > 0) && (server.ProtocolTypes > 0)).Select(server => ServerRecord.CreateServer(server.Host, server.Port, server.ProtocolTypes)));
 
 		public Task UpdateServerListAsync(IEnumerable<ServerRecord> endpoints) {
 			if (endpoints == null) {

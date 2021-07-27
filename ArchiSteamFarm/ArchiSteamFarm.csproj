@@ -1,81 +1,87 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <DefaultItemExcludes>$(DefaultItemExcludes);config/**;debug/**;logs/**;overlay/**</DefaultItemExcludes>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <OpenApiGenerateDocuments>false</OpenApiGenerateDocuments>
-    <OutputType>Exe</OutputType>
-  </PropertyGroup>
+	<PropertyGroup>
+		<DefaultItemExcludes>$(DefaultItemExcludes);config/**;debug/**;logs/**;overlay/**</DefaultItemExcludes>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<OpenApiGenerateDocuments>false</OpenApiGenerateDocuments>
+		<OutputType>Exe</OutputType>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AngleSharp.XPath" />
-    <PackageReference Include="ConfigureAwaitChecker.Analyzer" PrivateAssets="all" />
-    <PackageReference Include="CryptSharpStandard" />
-    <PackageReference Include="Humanizer" />
-    <PackageReference Include="JetBrains.Annotations" />
-    <PackageReference Include="Markdig.Signed" />
-    <PackageReference Include="Newtonsoft.Json" />
-    <PackageReference Include="Nito.AsyncEx.Coordination" />
-    <PackageReference Include="NLog" />
-    <PackageReference Include="NLog.Web.AspNetCore" />
-    <PackageReference Include="SteamKit2" />
-    <PackageReference Include="Swashbuckle.AspNetCore" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" />
-    <PackageReference Include="System.Composition" />
-    <PackageReference Include="System.Linq.Async" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="AngleSharp.XPath" />
+		<PackageReference Include="ConfigureAwaitChecker.Analyzer" PrivateAssets="all" />
+		<PackageReference Include="CryptSharpStandard" />
+		<PackageReference Include="Humanizer" />
+		<PackageReference Include="JetBrains.Annotations" />
+		<PackageReference Include="Markdig.Signed" />
+		<PackageReference Include="Newtonsoft.Json" />
+		<PackageReference Include="Nito.AsyncEx.Coordination" />
+		<PackageReference Include="NLog" />
+		<PackageReference Include="NLog.Web.AspNetCore" />
+		<PackageReference Include="SteamKit2" />
+		<PackageReference Include="Swashbuckle.AspNetCore" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Annotations" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" />
+		<PackageReference Include="System.Composition" />
+		<PackageReference Include="System.Linq.Async" />
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' != 'net48'">
-    <PackageReference Include="System.IO.FileSystem.AccessControl" />
-    <PackageReference Include="System.Security.Cryptography.ProtectedData" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' != 'net48'">
+		<PackageReference Include="System.IO.FileSystem.AccessControl" />
+		<PackageReference Include="System.Security.Cryptography.ProtectedData" />
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
-    <PackageReference Include="IndexRange" />
-    <PackageReference Include="Microsoft.AspNetCore.Cors" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics" />
-    <PackageReference Include="Microsoft.AspNetCore.HttpOverrides" />
-    <PackageReference Include="Microsoft.AspNetCore.ResponseCompression" />
-    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" />
-    <PackageReference Include="Microsoft.AspNetCore.WebSockets" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" />
-    <Reference Include="System.Net.Http" HintPath="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Net.Http.dll" />
-    <Reference Include="System.Security" HintPath="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Security.dll" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+		<PackageReference Include="IndexRange" />
+		<PackageReference Include="Microsoft.AspNetCore.Cors" />
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics" />
+		<PackageReference Include="Microsoft.AspNetCore.HttpOverrides" />
+		<PackageReference Include="Microsoft.AspNetCore.ResponseCaching" />
+		<PackageReference Include="Microsoft.AspNetCore.ResponseCompression" />
+		<PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" />
+		<PackageReference Include="Microsoft.AspNetCore.WebSockets" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Configuration" />
+		<Reference Include="System.Net.Http" HintPath="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Net.Http.dll" />
+		<Reference Include="System.Security" HintPath="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Security.dll" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <TrimmerRootDescriptor Include="TrimmerRoots.xml" />
-  </ItemGroup>
+	<ItemGroup>
+		<TrimmerRootDescriptor Include="TrimmerRoots.xml" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Update="Localization\Strings.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Update="Localization\Strings.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>Strings.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Localization\Strings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Strings.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Update="Localization\Strings.Designer.cs">
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Strings.resx</DependentUpon>
+			<DesignTime>True</DesignTime>
+		</Compile>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Content Include="overlay\all\**\*.*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
-    </Content>
-    <Content Include="..\ASF-ui\dist\**\*.*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>www\%(RecursiveDir)%(Filename)%(Extension)</Link>
-    </Content>
-  </ItemGroup>
+	<ItemGroup>
+		<Content Include="..\LICENSE-2.0.txt">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+		</Content>
+		<Content Include="overlay\all\**\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+		</Content>
+		<Content Include="..\ASF-ui\dist\**\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>www\%(RecursiveDir)%(Filename)%(Extension)</Link>
+		</Content>
+	</ItemGroup>
 </Project>

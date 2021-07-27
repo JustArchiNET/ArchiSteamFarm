@@ -20,9 +20,9 @@
 // limitations under the License.
 
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using ArchiSteamFarm.Compatibility;
 using ArchiSteamFarm.Core;
 using Newtonsoft.Json;
 
@@ -85,20 +85,20 @@ namespace ArchiSteamFarm.Helpers {
 				// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
 				string newFilePath = FilePath + ".new";
 
-				if (System.IO.File.Exists(FilePath)) {
-					string currentJson = await File.ReadAllTextAsync(FilePath!).ConfigureAwait(false);
+				if (File.Exists(FilePath)) {
+					string currentJson = await Compatibility.File.ReadAllTextAsync(FilePath!).ConfigureAwait(false);
 
 					if (json == currentJson) {
 						return;
 					}
 
-					await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+					await Compatibility.File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
-					System.IO.File.Replace(newFilePath, FilePath, null);
+					File.Replace(newFilePath, FilePath!, null);
 				} else {
-					await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+					await Compatibility.File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
-					System.IO.File.Move(newFilePath, FilePath);
+					File.Move(newFilePath, FilePath!);
 				}
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
@@ -140,20 +140,20 @@ namespace ArchiSteamFarm.Helpers {
 
 			try {
 				// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
-				if (System.IO.File.Exists(filePath)) {
-					string currentJson = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+				if (File.Exists(filePath)) {
+					string currentJson = await Compatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false);
 
 					if (json == currentJson) {
 						return true;
 					}
 
-					await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+					await Compatibility.File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
-					System.IO.File.Replace(newFilePath, filePath, null);
+					File.Replace(newFilePath, filePath, null);
 				} else {
-					await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+					await Compatibility.File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
-					System.IO.File.Move(newFilePath, filePath);
+					File.Move(newFilePath, filePath);
 				}
 
 				return true;

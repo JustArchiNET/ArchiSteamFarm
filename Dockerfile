@@ -25,6 +25,7 @@ COPY resources resources
 COPY .editorconfig .editorconfig
 COPY Directory.Build.props Directory.Build.props
 COPY Directory.Packages.props Directory.Packages.props
+COPY LICENSE-2.0.txt LICENSE-2.0.txt
 RUN dotnet --info && \
     case "$TARGETOS" in \
       "linux") ;; \
@@ -64,4 +65,4 @@ WORKDIR /app
 COPY --from=build-dotnet /app/out/result .
 VOLUME ["/app/config", "/app/logs"]
 HEALTHCHECK CMD ["pidof", "-q", "dotnet"]
-ENTRYPOINT ["./ArchiSteamFarm.sh", "--no-restart", "--process-required", "--system-required"]
+ENTRYPOINT ["sh", "ArchiSteamFarm.sh", "--no-restart", "--process-required", "--system-required"]

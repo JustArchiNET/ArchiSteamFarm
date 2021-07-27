@@ -222,7 +222,14 @@ namespace ArchiSteamFarm.Storage {
 		public bool IPC { get; private set; } = DefaultIPC;
 
 		[JsonProperty]
-		public string? IPCPassword { get; private set; } = DefaultIPCPassword;
+		public string? IPCPassword {
+			get => BackingIPCPassword;
+
+			internal set {
+				IsIPCPasswordSet = true;
+				BackingIPCPassword = value;
+			}
+		}
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ArchiCryptoHelper.EHashingMethod IPCPasswordFormat { get; private set; } = DefaultIPCPasswordFormat;
@@ -281,7 +288,9 @@ namespace ArchiSteamFarm.Storage {
 			set;
 		}
 
+		internal bool IsIPCPasswordSet { get; private set; }
 		internal bool IsWebProxyPasswordSet { get; private set; }
+
 		internal bool Saving { get; set; }
 
 		[JsonProperty]
@@ -294,6 +303,7 @@ namespace ArchiSteamFarm.Storage {
 			}
 		}
 
+		private string? BackingIPCPassword = DefaultIPCPassword;
 		private WebProxy? BackingWebProxy;
 		private string? BackingWebProxyPassword = DefaultWebProxyPassword;
 
@@ -393,6 +403,7 @@ namespace ArchiSteamFarm.Storage {
 
 			if (!valid) {
 				if (!string.IsNullOrEmpty(errorMessage)) {
+					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 					ASF.ArchiLogger.LogGenericError(errorMessage!);
 				}
 
@@ -451,7 +462,7 @@ namespace ArchiSteamFarm.Storage {
 		public bool ShouldSerializeIdleFarmingPeriod() => !Saving || (IdleFarmingPeriod != DefaultIdleFarmingPeriod);
 		public bool ShouldSerializeInventoryLimiterDelay() => !Saving || (InventoryLimiterDelay != DefaultInventoryLimiterDelay);
 		public bool ShouldSerializeIPC() => !Saving || (IPC != DefaultIPC);
-		public bool ShouldSerializeIPCPassword() => Saving && (IPCPassword != DefaultIPCPassword);
+		public bool ShouldSerializeIPCPassword() => Saving && IsIPCPasswordSet && (IPCPassword != DefaultIPCPassword);
 		public bool ShouldSerializeIPCPasswordFormat() => !Saving || (IPCPasswordFormat != DefaultIPCPasswordFormat);
 		public bool ShouldSerializeLoginLimiterDelay() => !Saving || (LoginLimiterDelay != DefaultLoginLimiterDelay);
 		public bool ShouldSerializeMaxFarmingTime() => !Saving || (MaxFarmingTime != DefaultMaxFarmingTime);

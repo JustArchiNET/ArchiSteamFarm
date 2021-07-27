@@ -41,10 +41,12 @@ using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -70,61 +72,107 @@ namespace ArchiSteamFarm.IPC {
 				throw new ArgumentNullException(nameof(env));
 			}
 
+			// The order of dependency injection is super important, doing things in wrong order will break everything
+			// https://docs.microsoft.com/aspnet/core/fundamentals/middleware
+
+			// This one is easy, it's always in the beginning
 			if (Debugging.IsUserDebugging) {
 				app.UseDeveloperExceptionPage();
 			}
 
-			// The order of dependency injection matters, pay attention to it
+			// Add support for proxies, this one comes usually after developer exception page, but could be before
+			app.UseForwardedHeaders();
 
-			// TODO: Try to get rid of this workaround for missing PathBase feature, https://github.com/aspnet/AspNetCore/issues/5898
+			if (ASF.GlobalConfig?.OptimizationMode != GlobalConfig.EOptimizationMode.MinMemoryUsage) {
+				// Add support for response caching - must be called before static files as we want to cache those as well
+				app.UseResponseCaching();
+			}
+
+			// Add support for response compression - must be called before static files as we want to compress those as well
+			app.UseResponseCompression();
+
+			// It's not apparent when UsePathBase() should be called, but definitely before we get down to static files
+			// TODO: Maybe eventually we can get rid of this, https://github.com/aspnet/AspNetCore/issues/5898
 			PathString pathBase = Configuration.GetSection("Kestrel").GetValue<PathString>("PathBase");
 
 			if (!string.IsNullOrEmpty(pathBase) && (pathBase != "/")) {
 				app.UsePathBase(pathBase);
 			}
 
-			// Add support for proxies
-			app.UseForwardedHeaders();
-
-			// Add support for response compression
-			app.UseResponseCompression();
-
-			// Add support for websockets used in /Api/NLog
-			app.UseWebSockets();
-
-			// We're using index for URL routing in our static files so re-execute all non-API calls on /
+			// The default HTML file (usually index.html) is responsible for IPC GUI routing, so re-execute all non-API calls on /
+			// This must be called before default files, because we don't know the exact file name that will be used for index page
 			app.UseWhen(context => !context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), appBuilder => appBuilder.UseStatusCodePagesWithReExecute("/"));
 
-			// We need static files support for IPC GUI
+			// Add support for default root path redirection (GET / -> GET /index.html), must come before static files
 			app.UseDefaultFiles();
-			app.UseStaticFiles();
 
+			// Add support for static files (e.g. HTML, CSS and JS from IPC GUI)
+			app.UseStaticFiles(
+				new StaticFileOptions {
+					OnPrepareResponse = context => {
+						if (context.File.Exists && !context.File.IsDirectory && !string.IsNullOrEmpty(context.File.Name)) {
+							string extension = Path.GetExtension(context.File.Name);
+
+							CacheControlHeaderValue cacheControl = new();
+
+							switch (extension.ToUpperInvariant()) {
+								case ".CSS":
+								case ".JS":
+									// Add support for SRI-protected static files
+									// SRI requires from us to notify the caller (especially proxy) to avoid modifying the data
+									cacheControl.NoTransform = true;
+
+									goto default;
+								default:
+									// Instruct the caller to always ask us first about every file it requests
+									// Contrary to the name, this doesn't prevent client from caching, but rather informs it that it must verify with us first that his cache is still up-to-date
+									// This is used to handle ASF and user updates to WWW root, we don't want from the client to ever use outdated scripts
+									cacheControl.NoCache = true;
+
+									// All static files are public by definition, we don't have any authorization here
+									cacheControl.Public = true;
+
+									break;
+							}
+
+							ResponseHeaders headers = context.Context.Response.GetTypedHeaders();
+
+							headers.CacheControl = cacheControl;
+						}
+					}
+				}
+			);
+
+			// Use routing for our API controllers, this should be called once we're done with all the static files mess
 #if !NETFRAMEWORK
 			app.UseRouting();
 #endif
 
+			// We want to protect our API with IPCPassword and additional security, this should be called after routing, so the middleware won't have to deal with API endpoints that do not exist
+			app.UseWhen(context => context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), appBuilder => appBuilder.UseMiddleware<ApiAuthenticationMiddleware>());
+
 			string? ipcPassword = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPassword : GlobalConfig.DefaultIPCPassword;
 
 			if (!string.IsNullOrEmpty(ipcPassword)) {
-				// We need ApiAuthenticationMiddleware for IPCPassword
-				app.UseWhen(context => context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), appBuilder => appBuilder.UseMiddleware<ApiAuthenticationMiddleware>());
-
-				// We want to apply CORS policy in order to allow userscripts and other third-party integrations to communicate with ASF API
-				// We apply CORS policy only with IPCPassword set as extra authentication measure
+				// We want to apply CORS policy in order to allow userscripts and other third-party integrations to communicate with ASF API, this should be called before response compression, but can't be due to how our flow works
+				// We apply CORS policy only with IPCPassword set as an extra authentication measure
 				app.UseCors();
 			}
 
-			// Add support for mapping controllers
+			// Add support for websockets that we use e.g. in /Api/NLog
+			app.UseWebSockets();
+
+			// Finally register proper API endpoints once we're done with routing
 #if NETFRAMEWORK
 			app.UseMvcWithDefaultRoute();
 #else
 			app.UseEndpoints(endpoints => endpoints.MapControllers());
 #endif
 
-			// Use swagger for automatic API documentation generation
+			// Add support for swagger, responsible for automatic API documentation generation, this should be on the end, once we're done with API
 			app.UseSwagger();
 
-			// Use friendly swagger UI
+			// Add support for swagger UI, this should be after swagger, obviously
 			app.UseSwaggerUI(
 				options => {
 					options.DisplayRequestDuration();
@@ -140,15 +188,17 @@ namespace ArchiSteamFarm.IPC {
 				throw new ArgumentNullException(nameof(services));
 			}
 
-			// The order of dependency injection matters, pay attention to it
+			// The order of dependency injection is super important, doing things in wrong order will break everything
+			// Order in Configure() method is a good start
 
-			// Add support for custom reverse proxy endpoints
+			// Prepare knownNetworks that we'll use in a second
 			HashSet<string>? knownNetworksTexts = Configuration.GetSection("Kestrel:KnownNetworks").Get<HashSet<string>>();
 
 			HashSet<IPNetwork>? knownNetworks = null;
 
 			if (knownNetworksTexts?.Count > 0) {
-				knownNetworks = new HashSet<IPNetwork>(knownNetworksTexts.Count);
+				// Use specified known networks
+				knownNetworks = new HashSet<IPNetwork>();
 
 				foreach (string knownNetworkText in knownNetworksTexts) {
 					string[] addressParts = knownNetworkText.Split('/', StringSplitOptions.RemoveEmptyEntries);
@@ -177,17 +227,23 @@ namespace ArchiSteamFarm.IPC {
 				}
 			);
 
+			if (ASF.GlobalConfig?.OptimizationMode != GlobalConfig.EOptimizationMode.MinMemoryUsage) {
+				// Add support for response caching
+				services.AddResponseCaching();
+			}
+
 			// Add support for response compression
 			services.AddResponseCompression();
 
 			string? ipcPassword = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPassword : GlobalConfig.DefaultIPCPassword;
 
-			// Add CORS to allow userscripts and third-party apps
 			if (!string.IsNullOrEmpty(ipcPassword)) {
+				// We want to apply CORS policy in order to allow userscripts and other third-party integrations to communicate with ASF API
+				// We apply CORS policy only with IPCPassword set as an extra authentication measure
 				services.AddCors(options => options.AddDefaultPolicy(policyBuilder => policyBuilder.AllowAnyOrigin()));
 			}
 
-			// Add swagger documentation generation
+			// Add support for swagger, responsible for automatic API documentation generation
 			services.AddSwaggerGen(
 				options => {
 					options.AddSecurityDefinition(
@@ -244,7 +300,7 @@ namespace ArchiSteamFarm.IPC {
 				}
 			);
 
-			// Add Newtonsoft.Json support for SwaggerGen, this one must be executed after AddSwaggerGen()
+			// Add support for Newtonsoft.Json in swagger, this one must be executed after AddSwaggerGen()
 			services.AddSwaggerGenNewtonsoftSupport();
 
 			// We need MVC for /Api, but we're going to use only a small subset of all available features

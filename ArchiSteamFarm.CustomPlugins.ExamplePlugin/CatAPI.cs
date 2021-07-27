@@ -50,7 +50,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 				throw new InvalidOperationException(nameof(response.Content.Link));
 			}
 
-			return Uri.EscapeUriString(response.Content!.Link!);
+			return Uri.EscapeUriString(response.Content.Link);
 		}
 
 #pragma warning disable CA1812 // False positive, the class is used during json deserialization

@@ -333,10 +333,12 @@ namespace ArchiSteamFarm.Steam.Interaction {
 			string? commandPrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.CommandPrefix : GlobalConfig.DefaultCommandPrefix;
 
 			if (!string.IsNullOrEmpty(commandPrefix)) {
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 				if (!message.StartsWith(commandPrefix!, StringComparison.Ordinal)) {
 					string? pluginsResponse = await PluginsCore.OnBotMessage(Bot, steamID, message).ConfigureAwait(false);
 
 					if (!string.IsNullOrEmpty(pluginsResponse)) {
+						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 						if (!await Bot.SendMessage(steamID, pluginsResponse!).ConfigureAwait(false)) {
 							Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
 							Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, pluginsResponse));
@@ -346,6 +348,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 					return;
 				}
 
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 				if (message.Length == commandPrefix!.Length) {
 					// If the message starts with command prefix and is of the same length as command prefix, then it's just empty command trigger, useless
 					return;
@@ -381,6 +384,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				response = FormatBotResponse(Strings.UnknownCommand);
 			}
 
+			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 			if (!await Bot.SendMessage(steamID, response!).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
 				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, response));
@@ -407,10 +411,12 @@ namespace ArchiSteamFarm.Steam.Interaction {
 			string? commandPrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.CommandPrefix : GlobalConfig.DefaultCommandPrefix;
 
 			if (!string.IsNullOrEmpty(commandPrefix)) {
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 				if (!message.StartsWith(commandPrefix!, StringComparison.Ordinal)) {
 					string? pluginsResponse = await PluginsCore.OnBotMessage(Bot, steamID, message).ConfigureAwait(false);
 
 					if (!string.IsNullOrEmpty(pluginsResponse)) {
+						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 						if (!await Bot.SendMessage(chatGroupID, chatID, pluginsResponse!).ConfigureAwait(false)) {
 							Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
 							Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, pluginsResponse));
@@ -420,6 +426,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 					return;
 				}
 
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 				if (message.Length == commandPrefix!.Length) {
 					// If the message starts with command prefix and is of the same length as command prefix, then it's just empty command trigger, useless
 					return;
@@ -457,6 +464,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				response = FormatBotResponse(Strings.UnknownCommand);
 			}
 
+			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 			if (!await Bot.SendMessage(chatGroupID, chatID, response!).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
 				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, response));
@@ -481,9 +489,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				return null;
 			}
 
-			bool? hasValidApiKey = await Bot.ArchiWebHandler.HasValidApiKey().ConfigureAwait(false);
-
-			Dictionary<uint, string>? gamesOwned = hasValidApiKey.GetValueOrDefault() ? await Bot.ArchiWebHandler.GetOwnedGames(Bot.SteamID).ConfigureAwait(false) : await Bot.ArchiWebHandler.GetMyOwnedGames().ConfigureAwait(false);
+			Dictionary<uint, string>? gamesOwned = await Bot.ArchiHandler.GetOwnedGames(Bot.SteamID).ConfigureAwait(false);
 
 			if (gamesOwned?.Count > 0) {
 				lock (CachedGamesOwned) {
@@ -2661,6 +2667,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				string? previousKey = key;
 
 				while (!string.IsNullOrEmpty(key)) {
+					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 					string startingKey = key!;
 
 					using (IEnumerator<Bot> botsEnumerator = Bot.Bots.Where(bot => (bot.Value != Bot) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.HasAccess(steamID, BotConfig.EAccess.Operator)).OrderByDescending(bot => Bot.BotsComparer?.Compare(bot.Key, Bot.BotName) > 0).ThenBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value).GetEnumerator()) {
@@ -2672,6 +2679,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 								previousKey = key;
 							}
 
+							// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 							if (redeemFlags.HasFlag(ERedeemFlags.Validate) && !Utilities.IsValidCdKey(key!)) {
 								// Next key
 								key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null;
@@ -2686,6 +2694,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 							} else {
 								bool skipRequest = triedBots.Contains(currentBot) || rateLimitedBots.Contains(currentBot);
 
+								// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 								PurchaseResponseCallback? result = skipRequest ? new PurchaseResponseCallback(EResult.Fail, EPurchaseResultDetail.CancelledByUser) : await currentBot.Actions.RedeemKey(key!).ConfigureAwait(false);
 
 								if (result == null) {
@@ -2699,6 +2708,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 									if ((result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) || ((result.PurchaseResultDetail == EPurchaseResultDetail.BadActivationCode) && assumeWalletKeyOnBadActivationCode)) {
 										if (Bot.WalletCurrency != ECurrencyCode.Invalid) {
 											// If it's a wallet code, we try to redeem it first, then handle the inner result as our primary one
+											// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 											(EResult Result, EPurchaseResultDetail? PurchaseResult)? walletResult = await currentBot.ArchiWebHandler.RedeemWalletKey(key!).ConfigureAwait(false);
 
 											if (walletResult != null) {
@@ -2727,6 +2737,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 										case EPurchaseResultDetail.NoDetail: // OK
 										case EPurchaseResultDetail.Timeout:
 											if ((result.Result != EResult.Timeout) && (result.PurchaseResultDetail != EPurchaseResultDetail.Timeout)) {
+												// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 												unusedKeys.Remove(key!);
 											}
 
@@ -2763,6 +2774,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 											bool alreadyHandled = false;
 
 											foreach (Bot innerBot in Bot.Bots.Where(bot => (bot.Value != currentBot) && (!redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || (bot.Value != Bot)) && !triedBots.Contains(bot.Value) && !rateLimitedBots.Contains(bot.Value) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.HasAccess(steamID, BotConfig.EAccess.Operator) && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.ContainsKey(packageID)))).OrderBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value)) {
+												// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 												PurchaseResponseCallback? otherResult = await innerBot.Actions.RedeemKey(key!).ConfigureAwait(false);
 
 												if (otherResult == null) {
@@ -2779,6 +2791,8 @@ namespace ArchiSteamFarm.Steam.Interaction {
 													case EPurchaseResultDetail.NoDetail: // OK
 														// This key is already handled, as we either redeemed it or we're sure it's dupe/invalid
 														alreadyHandled = true;
+
+														// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 														unusedKeys.Remove(key!);
 
 														break;
@@ -2815,6 +2829,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 										default:
 											ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(result.PurchaseResultDetail), result.PurchaseResultDetail));
 
+											// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 											unusedKeys.Remove(key!);
 
 											// Next key

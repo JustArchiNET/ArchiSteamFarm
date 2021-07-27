@@ -178,8 +178,11 @@ namespace ArchiSteamFarm {
 				}
 			}
 
+			// Parse environment variables
+			ParseEnvironmentVariables();
+
 			// Parse args
-			if (args != null) {
+			if (args?.Count > 0) {
 				ParseArgs(args);
 			}
 
@@ -202,12 +205,13 @@ namespace ArchiSteamFarm {
 			string? copyright = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyCopyrightAttribute>()?.Copyright;
 
 			if (!string.IsNullOrEmpty(copyright)) {
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 				ASF.ArchiLogger.LogGenericInfo(copyright!);
 			}
 
 			if (!IgnoreUnsupportedEnvironment) {
 				if (!OS.VerifyEnvironment()) {
-					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnsupportedEnvironment, SharedInfo.BuildInfo.Variant, OS.Variant));
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnsupportedEnvironment, SharedInfo.BuildInfo.Variant, OS.Version));
 					await Task.Delay(10000).ConfigureAwait(false);
 
 					return false;
@@ -277,7 +281,10 @@ namespace ArchiSteamFarm {
 
 			if (!string.IsNullOrEmpty(latestJson)) {
 				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.AutomaticFileMigration, globalConfigFile));
+
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 				await SerializableFile.Write(globalConfigFile, latestJson!).ConfigureAwait(false);
+
 				ASF.ArchiLogger.LogGenericInfo(Strings.Done);
 			}
 
@@ -427,9 +434,13 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		private static async Task<int> Main(string[]? args) {
+		private static async Task<int> Main(string[] args) {
+			if (args == null) {
+				throw new ArgumentNullException(nameof(args));
+			}
+
 			// Initialize
-			await Init(args).ConfigureAwait(false);
+			await Init(args.Length > 0 ? args : null).ConfigureAwait(false);
 
 			// Wait for shutdown event
 			return await ShutdownResetEvent.Task.ConfigureAwait(false);
@@ -467,30 +478,8 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void ParseArgs(IReadOnlyCollection<string> args) {
-			if (args == null) {
+			if ((args == null) || (args.Count == 0)) {
 				throw new ArgumentNullException(nameof(args));
-			}
-
-			try {
-				string? envCryptKey = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableCryptKey);
-
-				if (!string.IsNullOrEmpty(envCryptKey)) {
-					HandleCryptKeyArgument(envCryptKey!);
-				}
-
-				string? envNetworkGroup = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableNetworkGroup);
-
-				if (!string.IsNullOrEmpty(envNetworkGroup)) {
-					HandleNetworkGroupArgument(envNetworkGroup!);
-				}
-
-				string? envPath = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariablePath);
-
-				if (!string.IsNullOrEmpty(envPath)) {
-					HandlePathArgument(envPath!);
-				}
-			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericException(e);
 			}
 
 			bool cryptKeyNext = false;
@@ -498,40 +487,40 @@ namespace ArchiSteamFarm {
 			bool pathNext = false;
 
 			foreach (string arg in args) {
-				switch (arg) {
-					case "--cryptkey" when !cryptKeyNext && !networkGroupNext && !pathNext:
+				switch (arg.ToUpperInvariant()) {
+					case "--CRYPTKEY" when !cryptKeyNext && !networkGroupNext && !pathNext:
 						cryptKeyNext = true;
 
 						break;
-					case "--ignore-unsupported-environment" when !cryptKeyNext && !networkGroupNext && !pathNext:
+					case "--IGNORE-UNSUPPORTED-ENVIRONMENT" when !cryptKeyNext && !networkGroupNext && !pathNext:
 						IgnoreUnsupportedEnvironment = true;
 
 						break;
-					case "--network-group" when !cryptKeyNext && !networkGroupNext && !pathNext:
+					case "--NETWORK-GROUP" when !cryptKeyNext && !networkGroupNext && !pathNext:
 						networkGroupNext = true;
 
 						break;
-					case "--no-config-migrate" when !cryptKeyNext && !networkGroupNext && !pathNext:
+					case "--NO-CONFIG-MIGRATE" when !cryptKeyNext && !networkGroupNext && !pathNext:
 						ConfigMigrate = false;
 
 						break;
-					case "--no-config-watch" when !cryptKeyNext && !networkGroupNext && !pathNext:
+					case "--NO-CONFIG-WATCH" when !cryptKeyNext && !networkGroupNext && !pathNext:
 						ConfigWatch = false;
 
 						break;
-					case "--no-restart" when !cryptKeyNext && !networkGroupNext && !pathNext:
+					case "--NO-RESTART" when !cryptKeyNext && !networkGroupNext && !pathNext:
 						RestartAllowed = false;
 
 						break;
-					case "--process-required" when !cryptKeyNext && !networkGroupNext && !pathNext:
+					case "--PROCESS-REQUIRED" when !cryptKeyNext && !networkGroupNext && !pathNext:
 						ProcessRequired = true;
 
 						break;
-					case "--path" when !cryptKeyNext && !networkGroupNext && !pathNext:
+					case "--PATH" when !cryptKeyNext && !networkGroupNext && !pathNext:
 						pathNext = true;
 
 						break;
-					case "--system-required" when !cryptKeyNext && !networkGroupNext && !pathNext:
+					case "--SYSTEM-REQUIRED" when !cryptKeyNext && !networkGroupNext && !pathNext:
 						SystemRequired = true;
 
 						break;
@@ -547,15 +536,15 @@ namespace ArchiSteamFarm {
 							HandlePathArgument(arg);
 						} else {
 							switch (arg.Length) {
-								case > 16 when arg.StartsWith("--network-group=", StringComparison.Ordinal):
+								case > 16 when arg.StartsWith("--NETWORK-GROUP=", StringComparison.OrdinalIgnoreCase):
 									HandleNetworkGroupArgument(arg[16..]);
 
 									break;
-								case > 11 when arg.StartsWith("--cryptkey=", StringComparison.Ordinal):
+								case > 11 when arg.StartsWith("--CRYPTKEY=", StringComparison.OrdinalIgnoreCase):
 									HandleCryptKeyArgument(arg[11..]);
 
 									break;
-								case > 7 when arg.StartsWith("--path=", StringComparison.Ordinal):
+								case > 7 when arg.StartsWith("--PATH=", StringComparison.OrdinalIgnoreCase):
 									HandlePathArgument(arg[7..]);
 
 									break;
@@ -568,6 +557,31 @@ namespace ArchiSteamFarm {
 
 						break;
 				}
+			}
+		}
+
+		private static void ParseEnvironmentVariables() {
+			// We're using a single try-catch block here, as a failure for getting one variable will result in the same failure for all other ones
+			try {
+				string? envCryptKey = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableCryptKey);
+
+				if (!string.IsNullOrEmpty(envCryptKey)) {
+					HandleCryptKeyArgument(envCryptKey);
+				}
+
+				string? envNetworkGroup = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableNetworkGroup);
+
+				if (!string.IsNullOrEmpty(envNetworkGroup)) {
+					HandleNetworkGroupArgument(envNetworkGroup);
+				}
+
+				string? envPath = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariablePath);
+
+				if (!string.IsNullOrEmpty(envPath)) {
+					HandlePathArgument(envPath);
+				}
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
 			}
 		}
 

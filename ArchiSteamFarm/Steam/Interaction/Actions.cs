@@ -248,6 +248,10 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 		[PublicAPI]
 		public static (bool Success, string Message) Restart() {
+			if (!Program.RestartAllowed) {
+				return (false, "!" + nameof(Program.RestartAllowed));
+			}
+
 			// Schedule the task after some time so user can receive response
 			Utilities.InBackground(
 				async () => {
@@ -500,7 +504,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 		internal void OnDisconnected() => HandledGifts.Clear();
 
 		private ulong GetFirstSteamMasterID() {
-			ulong steamMasterID = Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key > 0) && (kv.Key != Bot.SteamID) && new SteamID(kv.Key).IsIndividualAccount && (kv.Value == BotConfig.EAccess.Master)).Select(kv => kv.Key).OrderBy(steamID => steamID).FirstOrDefault()!;
+			ulong steamMasterID = Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key > 0) && (kv.Key != Bot.SteamID) && new SteamID(kv.Key).IsIndividualAccount && (kv.Value == BotConfig.EAccess.Master)).Select(kv => kv.Key).OrderBy(steamID => steamID).FirstOrDefault();
 
 			if (steamMasterID > 0) {
 				return steamMasterID;

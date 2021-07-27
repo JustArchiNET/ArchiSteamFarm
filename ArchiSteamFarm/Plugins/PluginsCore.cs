@@ -218,7 +218,7 @@ namespace ArchiSteamFarm.Plugins {
 
 			string customPluginsPath = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.PluginsDirectory);
 
-			if (Directory.Exists(customPluginsPath)) {
+			if ((pluginsPath != customPluginsPath) && Directory.Exists(customPluginsPath)) {
 				HashSet<Assembly>? loadedAssemblies = LoadAssembliesFrom(customPluginsPath);
 
 				if (loadedAssemblies?.Count > 0) {
