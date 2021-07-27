@@ -50,6 +50,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<TrimmerRootDescriptor Include="TrimmerRoots.xml" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<EmbeddedResource Update="Localization\Strings.resx">
 			<Generator>PublicResXFileCodeGenerator</Generator>
 			<LastGenOutput>Strings.Designer.cs</LastGenOutput>
