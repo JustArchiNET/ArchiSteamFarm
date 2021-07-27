@@ -87,6 +87,7 @@ namespace ArchiSteamFarm.Steam {
 		[PublicAPI]
 		public Actions Actions { get; }
 
+		[JsonIgnore]
 		[PublicAPI]
 		public ArchiHandler ArchiHandler { get; }
 
