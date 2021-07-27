@@ -27,6 +27,7 @@ jobs:
       uses: actions/setup-dotnet@v1.8.1
       with:
         dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
+        include-prerelease: true
 
     - name: Verify .NET Core
       run: dotnet --info
