@@ -1960,7 +1960,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				appIDs.Add(appID);
 			}
 
-			return FormatBotResponse(Bot.BotDatabase.IdlingBlacklistedAppIDs.RemoveRange(appIDs) ? Strings.Done : Strings.NothingFound);
+			return FormatBotResponse(Bot.BotDatabase.MatchActivelyBlacklistedAppIDs.RemoveRange(appIDs) ? Strings.Done : Strings.NothingFound);
 		}
 
 		private static async Task<string?> ResponseMatchActivelyBlacklistRemove(ulong steamID, string botNames, string targetAppIDs) {
