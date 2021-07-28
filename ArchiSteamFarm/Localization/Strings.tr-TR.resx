@@ -104,7 +104,9 @@ Yığın izleme:
 		<value>{0} geçersiz!</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
-	
+	<data name="ErrorNoBotsDefined" xml:space="preserve">
+		<value>Tanımlı bot yok. ASF'ni yapılandırmayı mı unuttun? Ne olduğunu anlayamadıysan, viki'de 'setting up' rehberine bak.</value>
+	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} boş!</value>
 		<comment>{0} will be replaced by object's name</comment>
