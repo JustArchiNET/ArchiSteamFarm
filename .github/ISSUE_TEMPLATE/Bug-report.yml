@@ -1,0 +1,137 @@
+name: 🐛 Bug report
+description: Unexpected program behaviour that requires code correction
+labels: ["🐛 Bug", "👀 Evaluation"]
+body:
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: Ensure that our bug report form is appropriate for you.
+      options:
+        - label: I read and understood ASF's **[Contributing Guidelines](https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/.github/CONTRIBUTING.md)**
+          required: true
+        - label: I also read **[Setting-up](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Setting-up)** and **[FAQ](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/FAQ)**, I don't need **[help](https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/.github/SUPPORT.md)**, this is a bug report
+          required: true
+        - label: I don't have more than **[10 accounts in total](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/FAQ#how-many-bots-can-i-run-with-asf)**
+          required: true
+        - label: I'm not using **[custom plugins](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Plugins)**
+          required: true
+        - label: This is not a **[question](https://github.com/JustArchiNET/ArchiSteamFarm/discussions)**
+          required: true
+        - label: This is not a **[technical issue](https://github.com/JustArchiNET/ArchiSteamFarm/discussions)**
+          required: true
+        - label: This is not **[ASF-ui problem](https://github.com/JustArchiNET/ASF-ui/issues/new/choose)**
+          required: true
+  - type: dropdown
+    id: version
+    attributes:
+      label: ASF version
+      description: If you're using different version than current **[stable](https://github.com/JustArchiNET/ArchiSteamFarm/releases/latest)** and **[pre-release](https://github.com/JustArchiNET/ArchiSteamFarm/releases)**, ensure that your bug report is reproducible on one of the below.
+      options:
+        - Latest stable release
+        - Latest pre-release
+    validations:
+      required: true
+  - type: dropdown
+    id: variant
+    attributes:
+      label: ASF variant
+      description: If you're using a different variant, ensure that your bug report is reproducible on one of the below.
+      options:
+        - generic (with latest .NET runtime)
+        - generic-netf (with latest Mono runtime)
+        - linux-arm
+        - linux-arm64
+        - linux-x64
+        - osx-x64
+        - win-x64
+    validations:
+      required: true
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Bug description
+      description: Short explanation of what you were going to do, what did you want to accomplish?
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual behavior
+      description: What happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Every command or action that happened after launching ASF, which leads to the bug.
+      placeholder: |
+        If launching ASF with provided configs (below) is everything that is needed, then this section is not mandatory.
+  - type: textarea
+    id: possible-solution
+    attributes:
+      label: Possible reason/solution
+      description: Not mandatory, but you can suggest a fix/reason for the bug, if known to you.
+      placeholder: If you observed something peculiar about your issue that could help us locate and fix the culprit, this is the right place.
+  - type: textarea
+    id: asf-log
+    attributes:
+      label: Full log.txt recorded during reproducing the problem
+      description: You can find `log.txt` file directly in ASF directory. If the bug report doesn't come from the last run of the program, you can find logs from previous runs of the program in the `logs` directory instead.
+      placeholder: |
+        If no log.txt was recorded due to crash at the very early stage, console output should be pasted instead.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: global-config
+    attributes:
+      label: Global ASF.json config file
+      description: The config can be found in `config` directory under `ASF.json` name. You can leave this field empty if not using one.
+      placeholder: |
+        Paste the file content here, no need for triple backtick tags
+
+        Ensure that your config has redacted (but NOT removed) potentially-sensitive properties, such as:
+        - IPCPassword (recommended)
+        - SteamOwnerID (optionally)
+        - WebProxy (optionally, if exposing private details)
+        - WebProxyPassword (optionally, if exposing private details)
+        - WebProxyUsername (optionally, if exposing private details)
+
+        Redacting involves replacing sensitive details, for example with stars (***). You should refrain from removing config lines entirely, as their pure existence may be relevant and should be preserved.
+      render: json
+  - type: textarea
+    id: bot-config
+    attributes:
+      label: BotName.json config of all affected bot instances
+      description: Bot config files can be found in `config` directory, ending with `json` extension. You can leave this field empty if you don't have any defined.
+      placeholder: |
+        Paste the file content here, no need for triple backtick tags
+
+        Ensure that your config has redacted (but NOT removed) potentially-sensitive properties, such as:
+        - SteamLogin (mandatory)
+        - SteamPassword (mandatory)
+        - SteamMasterClanID (optionally)
+        - SteamParentalCode (optionally)
+        - SteamTradeToken (optionally)
+        - SteamUserPermissions (optionally, only SteamIDs)
+
+        Redacting involves replacing sensitive details, for example with stars (***). You should refrain from removing config lines entirely, as their pure existence may be relevant and should be preserved.
+      render: json
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional info
+      description: Everything else you consider worthy that we didn't ask for.
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to fill out this bug report.
