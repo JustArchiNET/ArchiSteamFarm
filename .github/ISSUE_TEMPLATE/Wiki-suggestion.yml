@@ -1,0 +1,86 @@
+name: 📕 Wiki suggestion
+description: All issues related to our wiki documentation, mainly corrections and ideas
+labels: ["📕 Wiki", "👀 Evaluation"]
+body:
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: Ensure that our wiki suggestion form is appropriate for you.
+      options:
+        - label: I read and understood ASF's **[Contributing Guidelines](https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/.github/CONTRIBUTING.md)**
+          required: true
+        - label: I also read **[Setting-up](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Setting-up)** and **[FAQ](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/FAQ)**, I don't need **[help](https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/.github/SUPPORT.md)**, this is a wiki suggestion
+          required: true
+        - label: This is not a **[translation issue](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Localization)**
+          required: true
+        - label: This is not **[ASF-ui wiki suggestion](https://github.com/JustArchiNET/ASF-ui/issues/new/choose)**
+          required: true
+  - type: input
+    id: wiki-page
+    attributes:
+      label: Wiki page
+      description: If this is a suggestion regarding an existing wiki page, please link it for reference. If the wiki page doesn't exist, suggest its title.
+      placeholder: https://github.com/JustArchiNET/ArchiSteamFarm/wiki/???
+    validations:
+      required: true
+  - type: textarea
+    id: issue
+    attributes:
+      label: The issue
+      description: Please specify your issue in regards to our wiki documentation.
+      placeholder: |
+        If you're reporting a mistake/correction, state what is wrong.
+
+        If you're suggesting an idea, explain the details.
+    validations:
+      required: true
+  - type: textarea
+    id: wrong-text
+    attributes:
+      label: Wrong text
+      description: The existing text on the wiki which you classify as wrong.
+      placeholder: |
+        If you're suggesting a new page, paragraph or other addition to the wiki, then this section is not mandatory.
+      render: markdown
+  - type: textarea
+    id: suggested-improvement
+    attributes:
+      label: Suggested improvement
+      description: The new or corrected text that would satisfy your issue stated above. You may use **[markdown](https://guides.github.com/features/mastering-markdown)** for formatting.
+      placeholder: |
+        # Never Gonna Give You Up by Rick Astley
+
+        ## Verse 1
+        We're no strangers to love
+        You know the rules and so do I
+        A full commitment's what I'm thinking of
+        You wouldn't get this from any other guy
+
+        ## Pre-Chorus
+        I just wanna tell you how I'm feeling
+        Gotta make you understand
+
+        ## Chorus
+        Never gonna give you up
+        Never gonna let you down
+        Never gonna run around and desert you
+        Never gonna make you cry
+        Never gonna say goodbye
+        Never gonna tell a lie and hurt you
+
+        ## More
+        See **[full version](https://www.youtube.com/watch?v=dQw4w9WgXcQ)**.
+      render: markdown
+    validations:
+      required: true
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional info
+      description: Everything else you consider worthy that we didn't ask for.
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        #### Thank you for taking the time to fill out this wiki suggestion.
