@@ -81,6 +81,15 @@ body:
       label: Possible reason/solution
       description: Not mandatory, but you can suggest a fix/reason for the bug, if known to you.
       placeholder: If you observed something peculiar about your issue that could help us locate and fix the culprit, this is the right place.
+  - type: dropdown
+    id: help
+    attributes:
+      label: Can you help us with this bug report?
+      description: ASF is offered for free and our resources are limited. Helping us increases the chance of fixing the problem.
+      options:
+        - Yes, I can code the solution myself and send a pull request
+        - Somehow, I can test and offer feedback, but can't code
+        - No, I don't have time, skills or willings for any of that
   - type: textarea
     id: asf-log
     attributes:
