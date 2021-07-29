@@ -1,0 +1,72 @@
+name: ✨ Enhancement idea
+description: General idea for improving the project
+labels: ["✨ Enhancement", "👀 Evaluation"]
+body:
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: Ensure that our enhancement idea form is appropriate for you.
+      options:
+        - label: I read and understood ASF's **[Contributing Guidelines](https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/.github/CONTRIBUTING.md)**
+          required: true
+        - label: I also read **[Setting-up](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Setting-up)** and **[FAQ](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/FAQ)**, I don't need **[help](https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/.github/SUPPORT.md)**, this is an enhancement idea
+          required: true
+        - label: My idea doesn't duplicate existing ASF functionality described on the **[wiki](https://github.com/JustArchiNET/ArchiSteamFarm/wiki)**
+          required: true
+        - label: I believe that my idea falls into ASF's scope and should be offered as part of ASF built-in functionality
+          required: true
+        - label: My idea doesn't violate the **[Steam Subscriber Agreement](https://store.steampowered.com/subscriber_agreement)**
+          required: true
+        - label: My idea doesn't violate the **[Steam Online Conduct](https://store.steampowered.com/online_conduct)**
+          required: true
+        - label: This is not **[ASF-ui suggestion](https://github.com/JustArchiNET/ASF-ui/issues/new/choose)**
+          required: true
+  - type: textarea
+    id: enhancement-purpose
+    attributes:
+      label: Enhancement purpose
+      description: Purpose of the enhancement - if it solves some problem, precise in particular which. If it benefits the program in some other way, precise in particular why.
+      placeholder: Present the underlying reason why this enhancement makes sense, and what is the context of it.
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solution
+      description: What would you like to see as a solution to the purpose specified by you above?
+      placeholder: What would work for you?
+    validations:
+      required: true
+  - type: textarea
+    id: why-existing-not-sufficient
+    attributes:
+      label: Why currently available solutions are not sufficient?
+      description: Evaluate the existing solutions in regards to your requirements.
+      placeholder: |
+        If something you're suggesting is already possible, then explain to us why the currently available solutions are not sufficient.
+
+        If it's not possible yet, then explain to us why it should be.
+    validations:
+      required: true
+  - type: dropdown
+    id: help
+    attributes:
+      label: Can you help us with this enhancement idea?
+      description: ASF is offered for free and our resources are limited. Helping us increases the chance of making it happen.
+      options:
+        - Yes, I can code the solution myself and send a pull request
+        - Somehow, I can test and offer feedback, but can't code
+        - No, I don't have time, skills or willings for any of that
+    validations:
+      required: true
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional info
+      description: Everything else you consider worthy that we didn't ask for.
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        #### Thank you for taking the time to fill out this enhancement idea.

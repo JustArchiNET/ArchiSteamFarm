@@ -12,7 +12,7 @@ body:
           required: true
         - label: I also read **[Setting-up](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Setting-up)** and **[FAQ](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/FAQ)**, I don't need **[help](https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/.github/SUPPORT.md)**, this is a bug report
           required: true
-        - label: I don't have more than **[10 accounts in total](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/FAQ#how-many-bots-can-i-run-with-asf)**
+        - label: I don't own more than **[10 accounts in total](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/FAQ#how-many-bots-can-i-run-with-asf)**
           required: true
         - label: I'm not using **[custom plugins](https://github.com/JustArchiNET/ArchiSteamFarm/wiki/Plugins)**
           required: true
@@ -26,7 +26,7 @@ body:
     id: version
     attributes:
       label: ASF version
-      description: If you're using different version than current **[stable](https://github.com/JustArchiNET/ArchiSteamFarm/releases/latest)** and **[pre-release](https://github.com/JustArchiNET/ArchiSteamFarm/releases)**, ensure that your bug report is reproducible on one of the below.
+      description: If you're using a different version than the current **[stable](https://github.com/JustArchiNET/ArchiSteamFarm/releases/latest)** or **[pre-release](https://github.com/JustArchiNET/ArchiSteamFarm/releases)**, ensure that your bug report is reproducible on one of the below.
       options:
         - Latest stable release
         - Latest pre-release
@@ -134,4 +134,5 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thank you for taking the time to fill out this bug report.
+        ---
+        #### Thank you for taking the time to fill out this bug report.
