@@ -6,6 +6,7 @@
 	<PropertyGroup>
 		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
 		<ApplicationIcon>../resources/ASF.ico</ApplicationIcon>
+		<AssemblyOriginatorKeyFile>../resources/ArchiSteamFarm.snk.pub</AssemblyOriginatorKeyFile>
 		<Authors>JustArchi</Authors>
 		<Company>JustArchiNET</Company>
 		<Copyright>Copyright © 2015-$([System.DateTime]::UtcNow.Year) JustArchiNET</Copyright>
@@ -20,10 +21,12 @@
 		<PackageIcon>../resources/ASF.ico</PackageIcon>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/JustArchiNET/ArchiSteamFarm</PackageProjectUrl>
+		<PublicSign>true</PublicSign>
 		<RepositoryType>Git</RepositoryType>
 		<RepositoryUrl>https://github.com/JustArchiNET/ArchiSteamFarm.git</RepositoryUrl>
 		<RollForward>LatestMajor</RollForward>
 		<RuntimeIdentifiers>linux-arm;linux-arm64;linux-x64;osx-x64;win-x64</RuntimeIdentifiers>
+		<SignAssembly>true</SignAssembly>
 		<TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
 	</PropertyGroup>
 
@@ -37,6 +40,7 @@
 		<DebugType>none</DebugType>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<WarningsAsErrors />
+		<WarningsNotAsErrors>CS8002</WarningsNotAsErrors>
 	</PropertyGroup>
 
 	<!-- Trimming features as specified on https://docs.microsoft.com/dotnet/core/deploying/trimming-options#trimming-framework-library-features and https://github.com/dotnet/runtime/blob/master/docs/workflow/trimming/feature-switches.md -->
