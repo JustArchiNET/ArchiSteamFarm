@@ -66,18 +66,18 @@ namespace ArchiSteamFarm.IPC {
 				throw new ArgumentNullException(nameof(response));
 			}
 
+			JsonSerializer serializer = JsonSerializer.CreateDefault(jsonSerializerSettings);
+
 			response.ContentType = "application/json; charset=utf-8";
 
 			StreamWriter streamWriter = new(response.Body, Encoding.UTF8);
 
 			await using (streamWriter.ConfigureAwait(false)) {
-				using JsonTextWriter jsonWriter = new(streamWriter);
-
-				JsonSerializer serializer = JsonSerializer.CreateDefault(jsonSerializerSettings);
+				using JsonTextWriter jsonWriter = new(streamWriter) {
+					CloseOutput = false
+				};
 
 				serializer.Serialize(jsonWriter, value);
-
-				await jsonWriter.FlushAsync().ConfigureAwait(false);
 			}
 		}
 	}
