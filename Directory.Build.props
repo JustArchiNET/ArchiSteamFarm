@@ -40,7 +40,7 @@
 		<DebugType>none</DebugType>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<WarningsAsErrors />
-		<WarningsNotAsErrors>CS8002</WarningsNotAsErrors>
+		<WarningsNotAsErrors>CS8002,IL2026,IL2057,IL2072,IL2075,IL2104</WarningsNotAsErrors>
 	</PropertyGroup>
 
 	<!-- Trimming functionality as described on https://docs.microsoft.com/dotnet/core/deploying/trim-self-contained -->
@@ -52,7 +52,6 @@
 		<HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
 		<MetadataUpdaterSupport>false</MetadataUpdaterSupport>
 		<TrimMode>link</TrimMode>
-		<WarningsNotAsErrors>IL2026,IL2057,IL2072,IL2075,IL2104</WarningsNotAsErrors>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(OS)' == 'Windows_NT' OR '$(ASFNetFramework)' != ''">
