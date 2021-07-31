@@ -89,8 +89,14 @@
 		<value>Получение в общей сложности {0} маркеров доступа к приложениям...</value>
 		<comment>{0} will be replaced by the number (count this batch) of app access tokens being retrieved</comment>
 	</data>
-	
-	
+	<data name="BotFinishedRetrievingAppAccessTokens" xml:space="preserve">
+		<value>Закончено получение {0} токенов доступа приложения.</value>
+		<comment>{0} will be replaced by the number (count this batch) of app access tokens retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingTotalAppAccessTokens" xml:space="preserve">
+		<value>Закончено получение суммарно {0} токенов доступа приложения.</value>
+		<comment>{0} will be replaced by the number (total count) of app access tokens retrieved</comment>
+	</data>
 	
 	
 	

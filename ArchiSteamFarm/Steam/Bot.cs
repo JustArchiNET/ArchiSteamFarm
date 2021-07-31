@@ -1020,7 +1020,7 @@ namespace ArchiSteamFarm.Steam {
 				return (optimisticDiscovery ? appID : 0, DateTime.MinValue, true);
 			}
 
-			SteamApps.PICSRequest request = new(appID, tokenCallback.AppTokens.TryGetValue(appID, out ulong accessToken) ? accessToken : 0, false);
+			SteamApps.PICSRequest request = new(appID, tokenCallback.AppTokens.TryGetValue(appID, out ulong accessToken) ? accessToken : 0);
 
 			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet? productInfoResultSet = null;
 
@@ -1157,7 +1157,7 @@ namespace ArchiSteamFarm.Steam {
 					continue;
 				}
 
-				packageRequests.Add(new SteamApps.PICSRequest(packageID, packageAccessToken, false));
+				packageRequests.Add(new SteamApps.PICSRequest(packageID, packageAccessToken));
 			}
 
 			if (packageRequests.Count == 0) {
