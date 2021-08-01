@@ -420,6 +420,37 @@ jobs:
         name: windows-latest_ASF-win-x64
         path: out
 
+    - name: Import GPG key for signing
+      uses: crazy-max/ghaction-import-gpg@v3.1.0
+      with:
+        gpg-private-key: ${{ secrets.ARCHIBOT_GPG_PRIVATE_KEY }}
+
+    - name: Generate SHA-512 checksums and signature
+      shell: sh
+      run: |
+        set -eu
+
+        (
+            cd "out"
+
+            sha512sum *.zip > SHA512SUMS
+            gpg -a -b -o SHA512SUMS.sign SHA512SUMS
+        )
+
+    - name: Upload SHA512SUMS
+      continue-on-error: true
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: SHA512SUMS
+        path: out/SHA512SUMS
+
+    - name: Upload SHA512SUMS.sign
+      continue-on-error: true
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: SHA512SUMS.sign
+        path: out/SHA512SUMS.sign
+
     - name: Create ArchiSteamFarm GitHub release
       id: github_release
       uses: actions/create-release@v1.1.4
@@ -500,3 +531,23 @@ jobs:
         asset_path: out/ASF-win-x64.zip
         asset_name: ASF-win-x64.zip
         asset_content_type: application/zip
+
+    - name: Upload SHA512SUMS to GitHub release
+      uses: actions/upload-release-asset@v1.0.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.github_release.outputs.upload_url }}
+        asset_path: out/SHA512SUMS
+        asset_name: SHA512SUMS
+        asset_content_type: text/plain
+
+    - name: Upload SHA512SUMS.sign to GitHub release
+      uses: actions/upload-release-asset@v1.0.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.github_release.outputs.upload_url }}
+        asset_path: out/SHA512SUMS.sign
+        asset_name: SHA512SUMS.sign
+        asset_content_type: text/plain
