@@ -3,6 +3,7 @@ name: ASF-publish
 on: [push, pull_request]
 
 env:
+  ASF_PRIVATE_SNK: ${{ secrets.ASF_PRIVATE_SNK }}
   CONFIGURATION: Release
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
   DOTNET_NOLOGO: 1
@@ -54,6 +55,28 @@ jobs:
     - name: Publish ASF-ui
       run: npm run-script deploy --no-progress --prefix ASF-ui
 
+    - name: Prepare private key for signing on Unix
+      if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
+      shell: sh
+      run: |
+          if [ -n "${ASF_PRIVATE_SNK-}" ]; then
+              echo "$ASF_PRIVATE_SNK" | base64 -d > "resources/ArchiSteamFarm.snk"
+          fi
+
+    - name: Prepare private key for signing on Windows
+      if: startsWith(matrix.os, 'windows-')
+      shell: pwsh
+      run: |
+          if (Test-Path env:ASF_PRIVATE_SNK) {
+              echo "$env:ASF_PRIVATE_SNK" > "resources\ArchiSteamFarm.snk"
+
+              certutil -f -decode "resources\ArchiSteamFarm.snk" "resources\ArchiSteamFarm.snk"
+
+              if ($LastExitCode -ne 0) {
+                  throw "Last command failed."
+              }
+          }
+
     - name: Prepare ArchiSteamFarm.OfficialPlugins.SteamTokenDumper on Unix
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
       shell: sh
@@ -83,7 +106,7 @@ jobs:
       run: dotnet publish "${{ env.STEAM_TOKEN_DUMPER_NAME }}" -c "${{ env.CONFIGURATION }}" -f "${{ env.NET_FRAMEWORK_VERSION }}" -o "out/${{ env.STEAM_TOKEN_DUMPER_NAME }}/${{ env.NET_FRAMEWORK_VERSION }}" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
 
     - name: Restore packages in preparation for ArchiSteamFarm publishing
-      run: dotnet restore ArchiSteamFarm -p:ContinuousIntegrationBuild=true
+      run: dotnet restore ArchiSteamFarm -p:ContinuousIntegrationBuild=true --nologo
 
     - name: Publish ArchiSteamFarm on Unix
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')

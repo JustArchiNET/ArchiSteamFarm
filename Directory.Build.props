@@ -43,6 +43,12 @@
 		<WarningsNotAsErrors>CS8002</WarningsNotAsErrors>
 	</PropertyGroup>
 
+	<!-- Private SNK signing -->
+	<PropertyGroup Condition="'$(Configuration)' == 'Release' AND EXISTS('resources/ArchiSteamFarm.snk')">
+		<AssemblyOriginatorKeyFile>../resources/ArchiSteamFarm.snk</AssemblyOriginatorKeyFile>
+		<PublicSign>false</PublicSign>
+	</PropertyGroup>
+
 	<!-- Trimming features as specified on https://docs.microsoft.com/dotnet/core/deploying/trimming-options#trimming-framework-library-features and https://github.com/dotnet/runtime/blob/master/docs/workflow/trimming/feature-switches.md -->
 	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
 		<DebuggerSupport>false</DebuggerSupport>
