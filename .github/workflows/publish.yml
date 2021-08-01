@@ -169,17 +169,35 @@ jobs:
             esac
 
             # Create the final zip file
-            if command -v 7z >/dev/null; then
-                7z a -bd -slp -tzip -mm=Deflate $seven_zip_args "out/ASF-${1}.zip" "${GITHUB_WORKSPACE}/out/${1}/*"
-            elif command -v zip >/dev/null; then
-                (
-                    cd "${GITHUB_WORKSPACE}/out/${1}"
-                    zip -q -r $zip_args "../ASF-${1}.zip" .
-                )
-            else
-                echo "ERROR: No supported zip tool!"
-                return 1
-            fi
+            case "$(uname -s)" in
+                "Darwin")
+                    # We prefer to use zip on OS X as 7z implementation on that OS doesn't handle file permissions (chmod +x)
+                    if command -v zip >/dev/null; then
+                        (
+                            cd "${GITHUB_WORKSPACE}/out/${1}"
+                            zip -q -r $zip_args "../ASF-${1}.zip" .
+                        )
+                    elif command -v 7z >/dev/null; then
+                        7z a -bd -slp -tzip -mm=Deflate $seven_zip_args "out/ASF-${1}.zip" "${GITHUB_WORKSPACE}/out/${1}/*"
+                    else
+                        echo "ERROR: No supported zip tool!"
+                        return 1
+                    fi
+                    ;;
+                *)
+                    if command -v 7z >/dev/null; then
+                        7z a -bd -slp -tzip -mm=Deflate $seven_zip_args "out/ASF-${1}.zip" "${GITHUB_WORKSPACE}/out/${1}/*"
+                    elif command -v zip >/dev/null; then
+                        (
+                            cd "${GITHUB_WORKSPACE}/out/${1}"
+                            zip -q -r $zip_args "../ASF-${1}.zip" .
+                        )
+                    else
+                        echo "ERROR: No supported zip tool!"
+                        return 1
+                    fi
+                    ;;
+            esac
         }
 
         jobs=""
@@ -390,11 +408,10 @@ jobs:
         name: ubuntu-latest_ASF-linux-x64
         path: out
 
-    # This should use macos-latest but OS X doesn't preserve the chmod +x permission in the zip file
-    - name: Download ASF-osx-x64 artifact from ubuntu-latest
+    - name: Download ASF-osx-x64 artifact from macos-latest
       uses: actions/download-artifact@v2.0.10
       with:
-        name: ubuntu-latest_ASF-osx-x64
+        name: macos-latest_ASF-osx-x64
         path: out
 
     - name: Download ASF-win-x64 artifact from windows-latest
