@@ -158,7 +158,7 @@ after_test:
     $ProgressPreference = 'SilentlyContinue'
 
 
-    if (Test-Path env:ASF_PRIVATE_SNK) {
+    if ((Test-Path env:ASF_PRIVATE_SNK) -and ($env:ASF_PRIVATE_SNK)) {
         echo "$env:ASF_PRIVATE_SNK" > "resources\ArchiSteamFarm.snk"
 
         certutil -f -decode "resources\ArchiSteamFarm.snk" "resources\ArchiSteamFarm.snk"
@@ -169,7 +169,7 @@ after_test:
     }
 
 
-    if ((Test-Path env:STEAM_TOKEN_DUMPER_TOKEN) -and (Test-Path "$env:STEAM_TOKEN_DUMPER_NAME\SharedInfo.cs" -PathType Leaf)) {
+    if ((Test-Path env:STEAM_TOKEN_DUMPER_TOKEN) -and ($env:STEAM_TOKEN_DUMPER_TOKEN) -and (Test-Path "$env:STEAM_TOKEN_DUMPER_NAME\SharedInfo.cs" -PathType Leaf)) {
         (Get-Content "$env:STEAM_TOKEN_DUMPER_NAME\SharedInfo.cs").Replace('STEAM_TOKEN_DUMPER_TOKEN', "$env:STEAM_TOKEN_DUMPER_TOKEN") | Set-Content "$env:STEAM_TOKEN_DUMPER_NAME\SharedInfo.cs"
     }
 
