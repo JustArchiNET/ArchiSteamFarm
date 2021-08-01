@@ -248,6 +248,26 @@ jobs:
             if ($LastExitCode -ne 0) {
                 throw "Last command failed."
             }
+
+            # We can aid non-windows users by adding chmod +x flag to appropriate executables directly in the zip file
+            # This is ALMOST a hack, but works reliably enough
+            if (Test-Path "tools\zip_exec\zip_exec.exe" -PathType Leaf) {
+                $executableFiles = @()
+
+                if ($variant -like 'generic*') {
+                    $executableFiles += 'ArchiSteamFarm.sh', 'ArchiSteamFarm-Service.sh'
+                } elseif (($variant -like 'linux*') -or ($variant -like 'osx*')) {
+                    $executableFiles += 'ArchiSteamFarm', 'ArchiSteamFarm-Service.sh'
+                }
+
+                foreach ($executableFile in $executableFiles) {
+                    tools\zip_exec\zip_exec.exe "out\ASF-$variant.zip" "$executableFile"
+
+                    if ($LastExitCode -ne 0) {
+                        throw "Last command failed."
+                    }
+                }
+            }
         }
 
         foreach ($variant in $env:VARIANTS.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
