@@ -9,10 +9,10 @@ RUN echo "node: $(node --version)" && \
     npm run deploy --no-progress
 
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:5.0${IMAGESUFFIX} AS build-dotnet
+ARG CONFIGURATION=Release
 ARG STEAM_TOKEN_DUMPER_TOKEN
 ARG TARGETARCH
 ARG TARGETOS
-ENV CONFIGURATION Release
 ENV DOTNET_CLI_TELEMETRY_OPTOUT 1
 ENV DOTNET_NOLOGO 1
 ENV NET_CORE_VERSION net5.0
