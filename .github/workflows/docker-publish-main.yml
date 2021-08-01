@@ -39,9 +39,11 @@ jobs:
     - name: Prepare private key for signing
       shell: sh
       run: |
-          if [ -n "${ASF_PRIVATE_SNK-}" ]; then
-              echo "$ASF_PRIVATE_SNK" | base64 -d > "resources/ArchiSteamFarm.snk"
-          fi
+        set -eu
+
+        if [ -n "${ASF_PRIVATE_SNK-}" ]; then
+            echo "$ASF_PRIVATE_SNK" | base64 -d > "resources/ArchiSteamFarm.snk"
+        fi
 
     - name: Prepare environment outputs
       shell: sh

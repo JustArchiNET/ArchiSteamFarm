@@ -59,32 +59,40 @@ jobs:
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
       shell: sh
       run: |
-          if [ -n "${ASF_PRIVATE_SNK-}" ]; then
-              echo "$ASF_PRIVATE_SNK" | base64 -d > "resources/ArchiSteamFarm.snk"
-          fi
+        set -eu
+
+        if [ -n "${ASF_PRIVATE_SNK-}" ]; then
+            echo "$ASF_PRIVATE_SNK" | base64 -d > "resources/ArchiSteamFarm.snk"
+        fi
 
     - name: Prepare private key for signing on Windows
       if: startsWith(matrix.os, 'windows-')
       shell: pwsh
       run: |
-          if (Test-Path env:ASF_PRIVATE_SNK) {
-              echo "$env:ASF_PRIVATE_SNK" > "resources\ArchiSteamFarm.snk"
+        Set-StrictMode -Version Latest
+        $ErrorActionPreference = 'Stop'
+        $ProgressPreference = 'SilentlyContinue'
 
-              certutil -f -decode "resources\ArchiSteamFarm.snk" "resources\ArchiSteamFarm.snk"
+        if (Test-Path env:ASF_PRIVATE_SNK) {
+            echo "$env:ASF_PRIVATE_SNK" > "resources\ArchiSteamFarm.snk"
 
-              if ($LastExitCode -ne 0) {
-                  throw "Last command failed."
-              }
-          }
+            certutil -f -decode "resources\ArchiSteamFarm.snk" "resources\ArchiSteamFarm.snk"
+
+            if ($LastExitCode -ne 0) {
+                throw "Last command failed."
+            }
+        }
 
     - name: Prepare ArchiSteamFarm.OfficialPlugins.SteamTokenDumper on Unix
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
       shell: sh
       run: |
-          if [ -n "${STEAM_TOKEN_DUMPER_TOKEN-}" ] && [ -f "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs" ]; then
-              sed "s/STEAM_TOKEN_DUMPER_TOKEN/${STEAM_TOKEN_DUMPER_TOKEN}/g" "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs" > "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs.new"
-              mv "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs.new" "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs"
-          fi
+        set -eu
+
+        if [ -n "${STEAM_TOKEN_DUMPER_TOKEN-}" ] && [ -f "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs" ]; then
+            sed "s/STEAM_TOKEN_DUMPER_TOKEN/${STEAM_TOKEN_DUMPER_TOKEN}/g" "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs" > "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs.new"
+            mv "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs.new" "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs"
+        fi
 
     - name: Prepare ArchiSteamFarm.OfficialPlugins.SteamTokenDumper on Windows
       if: startsWith(matrix.os, 'windows-')
