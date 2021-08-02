@@ -34,7 +34,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
 using AngleSharp.Dom;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
@@ -58,7 +57,6 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 		private const string EconService = "IEconService";
 		private const string LoyaltyRewardsService = "ILoyaltyRewardsService";
-		private const string PlayerService = "IPlayerService";
 		private const string SteamAppsService = "ISteamApps";
 		private const string SteamUserAuthService = "ISteamUserAuth";
 		private const string TwoFactorService = "ITwoFactorService";
@@ -252,140 +250,6 @@ namespace ArchiSteamFarm.Steam.Integration {
 					}
 				}
 			}
-		}
-
-		[Obsolete("Use " + nameof(ArchiHandler) + "." + nameof(ArchiHandler.GetOwnedGames) + " instead")]
-		[PublicAPI]
-		public async Task<Dictionary<uint, string>?> GetMyOwnedGames() {
-			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningDeprecated, nameof(GetMyOwnedGames), nameof(ArchiHandler) + "." + nameof(ArchiHandler.GetOwnedGames)));
-
-			Uri request = new(SteamCommunityURL, "/my/games?l=english&xml=1");
-
-			XmlDocumentResponse? response = await UrlGetToXmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
-
-			using XmlNodeList? xmlNodeList = response?.Content.SelectNodes("gamesList/games/game");
-
-			if ((xmlNodeList == null) || (xmlNodeList.Count == 0)) {
-				return null;
-			}
-
-			Dictionary<uint, string> result = new(xmlNodeList.Count);
-
-			foreach (XmlNode? xmlNode in xmlNodeList) {
-				if (xmlNode == null) {
-					ASF.ArchiLogger.LogNullError(nameof(xmlNode));
-
-					return null;
-				}
-
-				XmlNode? appNode = xmlNode.SelectSingleNode("appID");
-
-				if (appNode == null) {
-					Bot.ArchiLogger.LogNullError(nameof(appNode));
-
-					return null;
-				}
-
-				if (!uint.TryParse(appNode.InnerText, out uint appID) || (appID == 0)) {
-					Bot.ArchiLogger.LogNullError(nameof(appID));
-
-					return null;
-				}
-
-				XmlNode? nameNode = xmlNode.SelectSingleNode("name");
-
-				if (nameNode == null) {
-					Bot.ArchiLogger.LogNullError(nameof(nameNode));
-
-					return null;
-				}
-
-				result[appID] = nameNode.InnerText;
-			}
-
-			return result;
-		}
-
-		[Obsolete("Use " + nameof(ArchiHandler) + "." + nameof(ArchiHandler.GetOwnedGames) + " instead")]
-		[PublicAPI]
-		public async Task<Dictionary<uint, string>?> GetOwnedGames(ulong steamID) {
-			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-				throw new ArgumentOutOfRangeException(nameof(steamID));
-			}
-
-			ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningDeprecated, nameof(GetOwnedGames), nameof(ArchiHandler) + "." + nameof(ArchiHandler.GetOwnedGames)));
-
-			(bool success, string? steamApiKey) = await CachedApiKey.GetValue().ConfigureAwait(false);
-
-			if (!success || string.IsNullOrEmpty(steamApiKey)) {
-				return null;
-			}
-
-			// Extra entry for format
-			Dictionary<string, object> arguments = new(5, StringComparer.Ordinal) {
-				{ "include_appinfo", 1 },
-
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				{ "key", steamApiKey! },
-
-				{ "skip_unvetted_apps", "0" },
-				{ "steamid", steamID }
-			};
-
-			KeyValue? response = null;
-
-			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
-				using WebAPI.AsyncInterface playerService = Bot.SteamConfiguration.GetAsyncWebAPIInterface(PlayerService);
-
-				playerService.Timeout = WebBrowser.Timeout;
-
-				try {
-					response = await WebLimitRequest(
-						WebAPI.DefaultBaseAddress,
-
-						// TODO: Remove this ToDictionary() call after https://github.com/SteamRE/SteamKit/pull/992 is released
-						// ReSharper disable once AccessToDisposedClosure
-						async () => await playerService.CallAsync(HttpMethod.Get, "GetOwnedGames", args: arguments.ToDictionary(kv => kv.Key, kv => kv.Value)).ConfigureAwait(false)
-					).ConfigureAwait(false);
-				} catch (TaskCanceledException e) {
-					Bot.ArchiLogger.LogGenericDebuggingException(e);
-				} catch (Exception e) {
-					Bot.ArchiLogger.LogGenericWarningException(e);
-				}
-			}
-
-			if (response == null) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
-
-				return null;
-			}
-
-			List<KeyValue> games = response["games"].Children;
-
-			Dictionary<uint, string> result = new(games.Count);
-
-			foreach (KeyValue game in games) {
-				uint appID = game["appid"].AsUnsignedInteger();
-
-				if (appID == 0) {
-					Bot.ArchiLogger.LogNullError(nameof(appID));
-
-					return null;
-				}
-
-				string? gameName = game["name"].AsString();
-
-				if (string.IsNullOrEmpty(gameName)) {
-					Bot.ArchiLogger.LogNullError(nameof(gameName));
-
-					return null;
-				}
-
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				result[appID] = gameName!;
-			}
-
-			return result;
 		}
 
 		[PublicAPI]
