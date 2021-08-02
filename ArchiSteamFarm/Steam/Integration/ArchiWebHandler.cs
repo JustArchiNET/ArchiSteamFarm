@@ -595,6 +595,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 			return response;
 		}
 
+		[Obsolete("ASF no longer uses any XML-related functions, re-implement it yourself if needed.")]
 		[PublicAPI]
 		public async Task<XmlDocumentResponse?> UrlGetToXmlDocumentWithSession(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, WebBrowser.ERequestOptions requestOptions = WebBrowser.ERequestOptions.None, bool checkSessionPreemptively = true, byte maxTries = WebBrowser.MaxTries) {
 			if (request == null) {
