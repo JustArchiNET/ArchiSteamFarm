@@ -358,6 +358,7 @@ namespace ArchiSteamFarm.Web {
 			return null;
 		}
 
+		[Obsolete("ASF no longer uses this function, re-implement it yourself using " + nameof(UrlGetToStream) + " if needed.")]
 		[PublicAPI]
 		public async Task<StringResponse?> UrlGetToString(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
 			if (request == null) {
@@ -399,6 +400,7 @@ namespace ArchiSteamFarm.Web {
 			return null;
 		}
 
+		[Obsolete("ASF no longer uses any XML-related functions, re-implement it yourself using " + nameof(UrlGetToStream) + " if needed.")]
 		[PublicAPI]
 		public async Task<XmlDocumentResponse?> UrlGetToXmlDocument(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
 			if (request == null) {

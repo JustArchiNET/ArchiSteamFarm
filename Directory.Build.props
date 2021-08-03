@@ -1,12 +1,11 @@
 <Project>
 	<PropertyGroup>
-		<Version>5.1.3.1</Version>
+		<Version>5.1.3.4</Version>
 	</PropertyGroup>
 
 	<PropertyGroup>
 		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
 		<ApplicationIcon>../resources/ASF.ico</ApplicationIcon>
-		<AssemblyOriginatorKeyFile>../resources/ArchiSteamFarm.snk.pub</AssemblyOriginatorKeyFile>
 		<Authors>JustArchi</Authors>
 		<Company>JustArchiNET</Company>
 		<Copyright>Copyright © 2015-$([System.DateTime]::UtcNow.Year) JustArchiNET</Copyright>
@@ -21,12 +20,10 @@
 		<PackageIcon>../resources/ASF.ico</PackageIcon>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/JustArchiNET/ArchiSteamFarm</PackageProjectUrl>
-		<PublicSign>true</PublicSign>
 		<RepositoryType>Git</RepositoryType>
 		<RepositoryUrl>https://github.com/JustArchiNET/ArchiSteamFarm.git</RepositoryUrl>
 		<RollForward>LatestMajor</RollForward>
 		<RuntimeIdentifiers>linux-arm;linux-arm64;linux-x64;osx-x64;win-x64</RuntimeIdentifiers>
-		<SignAssembly>true</SignAssembly>
 		<TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
 	</PropertyGroup>
 
@@ -36,11 +33,20 @@
 
 	<!-- Default configuration for release builds -->
 	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+		<AssemblyOriginatorKeyFile>../resources/ArchiSteamFarm.snk.pub</AssemblyOriginatorKeyFile>
 		<DebugSymbols>false</DebugSymbols>
 		<DebugType>none</DebugType>
+		<PublicSign>true</PublicSign>
+		<SignAssembly>true</SignAssembly>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<WarningsAsErrors />
 		<WarningsNotAsErrors>CS8002,IL2026,IL2057,IL2072,IL2075,IL2104</WarningsNotAsErrors>
+	</PropertyGroup>
+
+	<!-- Private SNK signing -->
+	<PropertyGroup Condition="'$(Configuration)' == 'Release' AND EXISTS('resources/ArchiSteamFarm.snk')">
+		<AssemblyOriginatorKeyFile>../resources/ArchiSteamFarm.snk</AssemblyOriginatorKeyFile>
+		<PublicSign>false</PublicSign>
 	</PropertyGroup>
 
 	<!-- Trimming functionality as described on https://docs.microsoft.com/dotnet/core/deploying/trim-self-contained -->

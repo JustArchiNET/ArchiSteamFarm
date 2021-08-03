@@ -6,6 +6,7 @@ on:
     - '*'
 
 env:
+  ASF_PRIVATE_SNK: ${{ secrets.ASF_PRIVATE_SNK }}
   PLATFORMS: linux/amd64,linux/arm,linux/arm64
   TAG: released
 
@@ -34,6 +35,15 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Prepare private key for signing
+      shell: sh
+      run: |
+        set -eu
+
+        if [ -n "${ASF_PRIVATE_SNK-}" ]; then
+            echo "$ASF_PRIVATE_SNK" | base64 -d > "resources/ArchiSteamFarm.snk"
+        fi
 
     - name: Prepare environment outputs
       shell: sh

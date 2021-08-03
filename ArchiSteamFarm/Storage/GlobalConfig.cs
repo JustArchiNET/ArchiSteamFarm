@@ -435,16 +435,16 @@ namespace ArchiSteamFarm.Storage {
 			return await SerializableFile.Write(filePath, json).ConfigureAwait(false);
 		}
 
+		[PublicAPI]
 		public enum EOptimizationMode : byte {
 			MaxPerformance,
 			MinMemoryUsage
 		}
 
+		[PublicAPI]
 		public enum EUpdateChannel : byte {
 			None,
 			Stable,
-
-			[PublicAPI]
 			Experimental
 		}
 

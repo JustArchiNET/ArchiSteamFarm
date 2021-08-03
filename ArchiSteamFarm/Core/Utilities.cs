@@ -205,6 +205,7 @@ namespace ArchiSteamFarm.Core {
 			}
 		}
 
+		[Obsolete("ASF no longer uses this function, re-implement it yourself if needed.")]
 		[PublicAPI]
 		public static int RandomNext(int maxValue) {
 			switch (maxValue) {
@@ -238,6 +239,7 @@ namespace ArchiSteamFarm.Core {
 			}
 		}
 
+		[Obsolete("ASF no longer uses this function, re-implement it yourself if needed.")]
 		[PublicAPI]
 		public static IEnumerable<IElement> SelectElementNodes(this IElement element, string xpath) => element.SelectNodes(xpath).OfType<IElement>();
 

@@ -318,26 +318,6 @@ namespace ArchiSteamFarm.Steam.Storage {
 		private string? BackingSteamParentalCode = DefaultSteamParentalCode;
 		private string? BackingSteamPassword = DefaultSteamPassword;
 
-		[Obsolete]
-		[JsonProperty(Required = Required.DisallowNull)]
-		private bool IdlePriorityQueueOnly {
-			set {
-				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningDeprecated, nameof(IdlePriorityQueueOnly), nameof(FarmPriorityQueueOnly)));
-
-				FarmPriorityQueueOnly = value;
-			}
-		}
-
-		[Obsolete]
-		[JsonProperty(Required = Required.DisallowNull)]
-		private bool IdleRefundableGames {
-			set {
-				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningDeprecated, nameof(IdleRefundableGames), nameof(SkipRefundableGames)));
-
-				SkipRefundableGames = !value;
-			}
-		}
-
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamMasterClanID), Required = Required.DisallowNull)]
 		private string SSteamMasterClanID {
 			get => SteamMasterClanID.ToString(CultureInfo.InvariantCulture);

@@ -19,16 +19,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
 using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Compatibility {
 	[PublicAPI]
 	public static class HashCode {
-		public static int Combine<T1, T2, T3>(T1 value1, T2 value2, T3 value3) =>
-#if NETFRAMEWORK
-			(value1, value2, value3).GetHashCode();
-#else
-			System.HashCode.Combine(value1, value2, value3);
-#endif
+		public static int Combine<T1, T2, T3>(T1 value1, T2 value2, T3 value3) => (value1, value2, value3).GetHashCode();
 	}
 }
+#endif
