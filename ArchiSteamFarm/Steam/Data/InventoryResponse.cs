@@ -191,7 +191,7 @@ namespace ArchiSteamFarm.Steam.Data {
 				}
 			}
 
-			[JsonExtensionData]
+			[JsonExtensionData(WriteData = false)]
 			internal Dictionary<string, JToken>? AdditionalProperties {
 				get;
 				[UsedImplicitly]
