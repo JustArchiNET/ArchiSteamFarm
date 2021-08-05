@@ -19,10 +19,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using System.Runtime.InteropServices;
+#endif
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Threading;
 using System.Threading.Tasks;
@@ -163,7 +165,11 @@ namespace ArchiSteamFarm.Helpers {
 			if (!Directory.Exists(directoryPath)) {
 				Directory.CreateDirectory(directoryPath);
 
+#if NETFRAMEWORK
 				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+#else
+				if (OperatingSystem.IsWindows()) {
+#endif
 					DirectoryInfo directoryInfo = new(directoryPath);
 
 					try {
@@ -177,7 +183,7 @@ namespace ArchiSteamFarm.Helpers {
 #if NETFRAMEWORK
 				} else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
 #else
-				} else if (RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
+				} else if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
 #endif
 					OS.UnixSetFileAccess(directoryPath, OS.EUnixPermission.Combined777);
 				}
@@ -186,7 +192,11 @@ namespace ArchiSteamFarm.Helpers {
 			try {
 				new FileStream(FilePath, FileMode.CreateNew).Dispose();
 
+#if NETFRAMEWORK
 				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+#else
+				if (OperatingSystem.IsWindows()) {
+#endif
 					FileInfo fileInfo = new(FilePath);
 
 					try {
@@ -200,7 +210,7 @@ namespace ArchiSteamFarm.Helpers {
 #if NETFRAMEWORK
 				} else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
 #else
-				} else if (RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
+				} else if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
 #endif
 					OS.UnixSetFileAccess(FilePath, OS.EUnixPermission.Combined777);
 				}

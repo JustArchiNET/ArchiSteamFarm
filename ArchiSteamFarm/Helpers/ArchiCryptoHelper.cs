@@ -19,11 +19,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using System.Runtime.InteropServices;
+#endif
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using ArchiSteamFarm.Core;
@@ -187,7 +189,11 @@ namespace ArchiSteamFarm.Helpers {
 				throw new ArgumentNullException(nameof(encryptedString));
 			}
 
+#if NETFRAMEWORK
 			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+#else
+			if (!OperatingSystem.IsWindows()) {
+#endif
 				return null;
 			}
 
@@ -234,7 +240,11 @@ namespace ArchiSteamFarm.Helpers {
 				throw new ArgumentNullException(nameof(decryptedString));
 			}
 
+#if NETFRAMEWORK
 			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+#else
+			if (!OperatingSystem.IsWindows()) {
+#endif
 				return null;
 			}
 

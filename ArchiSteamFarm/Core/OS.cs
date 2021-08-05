@@ -22,6 +22,8 @@
 #if NETFRAMEWORK
 using ArchiSteamFarm.Compatibility;
 using File = System.IO.File;
+#else
+using System.Runtime.Versioning;
 #endif
 using System;
 using System.Diagnostics;
@@ -81,19 +83,25 @@ namespace ArchiSteamFarm.Core {
 		private static Mutex? SingleInstance;
 
 		internal static void CoreInit(bool systemRequired) {
+#if NETFRAMEWORK
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+#else
+			if (OperatingSystem.IsWindows()) {
+#endif
 				if (systemRequired) {
 					WindowsKeepSystemActive();
 				}
 
 				if (!Console.IsOutputRedirected) {
-					// Normally we should use UTF-8 encoding as it's the most correct one for our case, and we already use it on other OSes such as Linux
+					// Normally we should use UTF-8 console encoding as it's the most correct one for our case, and we already use it on other OSes such as Linux
 					// However, older Windows versions, mainly 7/8.1 can't into UTF-8 without appropriate console font, and expecting from users to change it manually is unwanted
 					// As irrational as it can sound, those versions actually can work with unicode encoding instead, as they magically map it into proper chars despite of incorrect font
-					// We could in theory conditionally use UTF-8 for Windows 10+ and unicode otherwise, but Windows version detection is simply not worth the hassle in this case
-					// Therefore, until we can drop support for Windows < 10, we'll stick with Unicode for all Windows boxes, unless there will be valid reasoning for conditional switch
 					// See https://github.com/JustArchiNET/ArchiSteamFarm/issues/1289 for more details
+#if NETFRAMEWORK
 					Console.OutputEncoding = Encoding.Unicode;
+#else
+					Console.OutputEncoding = OperatingSystem.IsWindowsVersionAtLeast(10) ? Encoding.UTF8 : Encoding.Unicode;
+#endif
 
 					// Quick edit mode will freeze when user start selecting something on the console until the selection is cancelled
 					// Users are very often doing it accidentally without any real purpose, and we want to avoid this common issue which causes the whole process to hang
@@ -170,6 +178,11 @@ namespace ArchiSteamFarm.Core {
 			return true;
 		}
 
+#if !NETFRAMEWORK
+		[SupportedOSPlatform("FreeBSD")]
+		[SupportedOSPlatform("Linux")]
+		[SupportedOSPlatform("OSX")]
+#endif
 		internal static void UnixSetFileAccess(string path, EUnixPermission permission) {
 			if (string.IsNullOrEmpty(path)) {
 				throw new ArgumentNullException(nameof(path));
@@ -178,7 +191,7 @@ namespace ArchiSteamFarm.Core {
 #if NETFRAMEWORK
 			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && !RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
 #else
-			if (!RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD) && !RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && !RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
+			if (!OperatingSystem.IsFreeBSD() && !OperatingSystem.IsLinux() && !OperatingSystem.IsMacOS()) {
 #endif
 				throw new PlatformNotSupportedException();
 			}
@@ -237,8 +250,15 @@ namespace ArchiSteamFarm.Core {
 #endif
 		}
 
+#if !NETFRAMEWORK
+		[SupportedOSPlatform("Windows")]
+#endif
 		private static void WindowsDisableQuickEditMode() {
+#if NETFRAMEWORK
 			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+#else
+			if (!OperatingSystem.IsWindows()) {
+#endif
 				throw new PlatformNotSupportedException();
 			}
 
@@ -257,8 +277,15 @@ namespace ArchiSteamFarm.Core {
 			}
 		}
 
+#if !NETFRAMEWORK
+		[SupportedOSPlatform("Windows")]
+#endif
 		private static void WindowsKeepSystemActive() {
+#if NETFRAMEWORK
 			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+#else
+			if (!OperatingSystem.IsWindows()) {
+#endif
 				throw new PlatformNotSupportedException();
 			}
 

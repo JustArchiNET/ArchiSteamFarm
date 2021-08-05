@@ -20,6 +20,7 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
+using System.Runtime.InteropServices;
 using ArchiSteamFarm.Compatibility;
 using File = System.IO.File;
 using Path = System.IO.Path;
@@ -34,7 +35,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -317,7 +317,7 @@ namespace ArchiSteamFarm.Core {
 #if NETFRAMEWORK
 				if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
 #else
-				if (RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
+				if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
 #endif
 					string executable = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.AssemblyName);
 
