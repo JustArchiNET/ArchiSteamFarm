@@ -301,6 +301,11 @@ namespace ArchiSteamFarm.Core {
 		}
 
 		[Flags]
+#if !NETFRAMEWORK
+		[SupportedOSPlatform("FreeBSD")]
+		[SupportedOSPlatform("Linux")]
+		[SupportedOSPlatform("OSX")]
+#endif
 		internal enum EUnixPermission : ushort {
 			OtherExecute = 0x1,
 			OtherWrite = 0x2,
@@ -316,33 +321,64 @@ namespace ArchiSteamFarm.Core {
 		}
 
 		private static class NativeMethods {
+#if !NETFRAMEWORK
+			[SupportedOSPlatform("Windows")]
+#endif
 			internal const EExecutionState AwakeExecutionState = EExecutionState.SystemRequired | EExecutionState.AwayModeRequired | EExecutionState.Continuous;
+
+#if !NETFRAMEWORK
+			[SupportedOSPlatform("Windows")]
+#endif
 			internal const uint EnableQuickEditMode = 0x0040;
+
+#if !NETFRAMEWORK
+			[SupportedOSPlatform("Windows")]
+#endif
 			internal const sbyte StandardInputHandle = -10;
 
 #pragma warning disable CA2101 // False positive, we can't use unicode charset on Unix, and it uses UTF-8 by default anyway
 			[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 			[DllImport("libc", EntryPoint = "chmod", SetLastError = true)]
+#if !NETFRAMEWORK
+			[SupportedOSPlatform("FreeBSD")]
+			[SupportedOSPlatform("Linux")]
+			[SupportedOSPlatform("OSX")]
+#endif
 			internal static extern int Chmod(string path, int mode);
 #pragma warning restore CA2101 // False positive, we can't use unicode charset on Unix, and it uses UTF-8 by default anyway
 
 			[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 			[DllImport("kernel32.dll")]
+#if !NETFRAMEWORK
+			[SupportedOSPlatform("Windows")]
+#endif
 			internal static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
 
 			[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 			[DllImport("kernel32.dll")]
+#if !NETFRAMEWORK
+			[SupportedOSPlatform("Windows")]
+#endif
 			internal static extern IntPtr GetStdHandle(int nStdHandle);
 
 			[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 			[DllImport("kernel32.dll")]
+#if !NETFRAMEWORK
+			[SupportedOSPlatform("Windows")]
+#endif
 			internal static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
 
 			[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 			[DllImport("kernel32.dll")]
+#if !NETFRAMEWORK
+			[SupportedOSPlatform("Windows")]
+#endif
 			internal static extern EExecutionState SetThreadExecutionState(EExecutionState executionState);
 
 			[Flags]
+#if !NETFRAMEWORK
+			[SupportedOSPlatform("Windows")]
+#endif
 			internal enum EExecutionState : uint {
 				None = 0,
 				SystemRequired = 0x00000001,
