@@ -49,7 +49,6 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
-using Formatting = Newtonsoft.Json.Formatting;
 
 namespace ArchiSteamFarm.Steam.Integration {
 	public sealed class ArchiWebHandler : IDisposable {
