@@ -20,7 +20,7 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using ArchiSteamFarm.Compatibility;
+using JustArchiNET.Madness;
 #endif
 using System;
 using System.Collections.Concurrent;
@@ -83,7 +83,11 @@ namespace ArchiSteamFarm.Steam.Cards {
 		private readonly SemaphoreSlim FarmingInitializationSemaphore = new(1, 1);
 		private readonly SemaphoreSlim FarmingResetSemaphore = new(0, 1);
 		private readonly ConcurrentList<Game> GamesToFarm = new();
+
+#pragma warning disable CA2213 // False positive, .NET Framework can't understand DisposeAsync()
 		private readonly Timer? IdleFarmingTimer;
+#pragma warning restore CA2213 // False positive, .NET Framework can't understand DisposeAsync()
+
 		private readonly ConcurrentDictionary<uint, DateTime> LocallyIgnoredAppIDs = new();
 
 		private IEnumerable<ConcurrentDictionary<uint, DateTime>> SourcesOfIgnoredAppIDs {

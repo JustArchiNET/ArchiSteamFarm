@@ -21,7 +21,7 @@
 
 #if NETFRAMEWORK
 using System.Runtime.InteropServices;
-using ArchiSteamFarm.Compatibility;
+using JustArchiNET.Madness;
 using File = System.IO.File;
 using Path = System.IO.Path;
 #endif
@@ -160,7 +160,11 @@ namespace ArchiSteamFarm.Core {
 				return false;
 			}
 
-			return Compatibility.Path.GetRelativePath(".", botName) == botName;
+#if NETFRAMEWORK
+			return JustArchiNET.Madness.Path.GetRelativePath(".", botName) == botName;
+#else
+			return Path.GetRelativePath(".", botName) == botName;
+#endif
 		}
 
 		internal static async Task RestartOrExit() {
@@ -941,7 +945,11 @@ namespace ArchiSteamFarm.Core {
 					return false;
 				}
 
-				string relativeFilePath = Compatibility.Path.GetRelativePath(targetDirectory, file);
+#if NETFRAMEWORK
+				string relativeFilePath = JustArchiNET.Madness.Path.GetRelativePath(targetDirectory, file);
+#else
+				string relativeFilePath = Path.GetRelativePath(targetDirectory, file);
+#endif
 
 				if (string.IsNullOrEmpty(relativeFilePath)) {
 					ArchiLogger.LogNullError(nameof(relativeFilePath));
@@ -986,7 +994,12 @@ namespace ArchiSteamFarm.Core {
 				Directory.CreateDirectory(targetBackupDirectory);
 
 				string targetBackupFile = Path.Combine(targetBackupDirectory, fileName);
-				Compatibility.File.Move(file, targetBackupFile, true);
+
+#if NETFRAMEWORK
+				JustArchiNET.Madness.File.Move(file, targetBackupFile, true);
+#else
+				File.Move(file, targetBackupFile, true);
+#endif
 			}
 
 			// We can now get rid of directories that are empty
@@ -1007,7 +1020,12 @@ namespace ArchiSteamFarm.Core {
 				if (File.Exists(file)) {
 					// This is possible only with files that we decided to leave in place during our backup function
 					string targetBackupFile = file + ".bak";
-					Compatibility.File.Move(file, targetBackupFile, true);
+
+#if NETFRAMEWORK
+					JustArchiNET.Madness.File.Move(file, targetBackupFile, true);
+#else
+					File.Move(file, targetBackupFile, true);
+#endif
 				}
 
 				// Check if this file requires its own folder

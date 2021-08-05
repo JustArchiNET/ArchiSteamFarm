@@ -20,7 +20,7 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using ArchiSteamFarm.Compatibility;
+using JustArchiNET.Madness;
 #endif
 using System;
 using System.Collections.Generic;
@@ -53,7 +53,10 @@ namespace ArchiSteamFarm.Steam.Interaction {
 		private readonly ConcurrentHashSet<ulong> HandledGifts = new();
 		private readonly SemaphoreSlim TradingSemaphore = new(1, 1);
 
+#pragma warning disable CA2213 // False positive, .NET Framework can't understand DisposeAsync()
 		private Timer? CardsFarmerResumeTimer;
+#pragma warning restore CA2213 // False positive, .NET Framework can't understand DisposeAsync()
+
 		private bool ProcessingGiftsScheduled;
 		private bool TradingScheduled;
 

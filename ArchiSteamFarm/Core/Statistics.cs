@@ -20,7 +20,7 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using ArchiSteamFarm.Compatibility;
+using JustArchiNET.Madness;
 #endif
 using System;
 using System.Collections.Generic;
@@ -64,7 +64,11 @@ namespace ArchiSteamFarm.Core {
 
 		private readonly Bot Bot;
 		private readonly SemaphoreSlim MatchActivelySemaphore = new(1, 1);
+
+#pragma warning disable CA2213 // False positive, .NET Framework can't understand DisposeAsync()
 		private readonly Timer MatchActivelyTimer;
+#pragma warning restore CA2213 // False positive, .NET Framework can't understand DisposeAsync()
+
 		private readonly SemaphoreSlim RequestsSemaphore = new(1, 1);
 
 		private DateTime LastAnnouncementCheck;

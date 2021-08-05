@@ -36,6 +36,7 @@
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
 		<PackageReference Include="IndexRange" />
+		<PackageReference Include="JustArchiNET.Madness" />
 		<PackageReference Include="Microsoft.AspNetCore.Cors" />
 		<PackageReference Include="Microsoft.AspNetCore.Diagnostics" />
 		<PackageReference Include="Microsoft.AspNetCore.HttpOverrides" />

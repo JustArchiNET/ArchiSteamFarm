@@ -20,7 +20,7 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using ArchiSteamFarm.Compatibility;
+using JustArchiNET.Madness;
 using File = System.IO.File;
 #else
 using System.Runtime.Versioning;
@@ -43,6 +43,19 @@ namespace ArchiSteamFarm.Core {
 	internal static class OS {
 		// We need to keep this one assigned and not calculated on-demand
 		internal static readonly string ProcessFileName = Process.GetCurrentProcess().MainModule?.FileName ?? throw new InvalidOperationException(nameof(ProcessFileName));
+
+		internal static DateTime ProcessStartTime {
+			get {
+#if NETFRAMEWORK
+				DateTime result = StaticHelpers.ProcessStartTime;
+#else
+				using Process process = Process.GetCurrentProcess();
+
+				DateTime result = process.StartTime;
+#endif
+				return result.ToUniversalTime();
+			}
+		}
 
 		internal static string Version {
 			get {

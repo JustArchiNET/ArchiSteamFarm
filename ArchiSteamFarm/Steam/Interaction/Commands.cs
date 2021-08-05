@@ -19,6 +19,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using JustArchiNET.Madness;
+#endif
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -27,7 +30,6 @@ using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using ArchiSteamFarm.Compatibility;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
@@ -3026,7 +3028,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 			}
 
 			ushort memoryInMegabytes = (ushort) (GC.GetTotalMemory(false) / 1024 / 1024);
-			TimeSpan uptime = DateTime.UtcNow.Subtract(StaticHelpers.ProcessStartTime.ToUniversalTime());
+			TimeSpan uptime = DateTime.UtcNow.Subtract(OS.ProcessStartTime);
 
 			return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotStats, memoryInMegabytes, uptime.ToHumanReadable()));
 		}

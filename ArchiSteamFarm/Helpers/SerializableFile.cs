@@ -19,8 +19,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+#if NETFRAMEWORK
+using File = System.IO.File;
+#else
 using System.IO;
+#endif
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -86,17 +90,29 @@ namespace ArchiSteamFarm.Helpers {
 				string newFilePath = FilePath + ".new";
 
 				if (File.Exists(FilePath)) {
-					string currentJson = await Compatibility.File.ReadAllTextAsync(FilePath!).ConfigureAwait(false);
+#if NETFRAMEWORK
+					string currentJson = await JustArchiNET.Madness.File.ReadAllTextAsync(FilePath!).ConfigureAwait(false);
+#else
+					string currentJson = await File.ReadAllTextAsync(FilePath!).ConfigureAwait(false);
+#endif
 
 					if (json == currentJson) {
 						return;
 					}
 
-					await Compatibility.File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+#if NETFRAMEWORK
+					await JustArchiNET.Madness.File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+#else
+					await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+#endif
 
 					File.Replace(newFilePath, FilePath!, null);
 				} else {
-					await Compatibility.File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+#if NETFRAMEWORK
+					await JustArchiNET.Madness.File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+#else
+					await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+#endif
 
 					File.Move(newFilePath, FilePath!);
 				}
@@ -141,17 +157,29 @@ namespace ArchiSteamFarm.Helpers {
 			try {
 				// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
 				if (File.Exists(filePath)) {
-					string currentJson = await Compatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+#if NETFRAMEWORK
+					string currentJson = await JustArchiNET.Madness.File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+#else
+					string currentJson = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+#endif
 
 					if (json == currentJson) {
 						return true;
 					}
 
-					await Compatibility.File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+#if NETFRAMEWORK
+					await JustArchiNET.Madness.File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+#else
+					await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+#endif
 
 					File.Replace(newFilePath, filePath, null);
 				} else {
-					await Compatibility.File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+#if NETFRAMEWORK
+					await JustArchiNET.Madness.File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+#else
+					await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+#endif
 
 					File.Move(newFilePath, filePath);
 				}

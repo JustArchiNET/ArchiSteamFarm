@@ -20,7 +20,7 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using ArchiSteamFarm.Compatibility;
+using JustArchiNET.Madness;
 using File = System.IO.File;
 #else
 using System.IO;
@@ -188,7 +188,11 @@ namespace ArchiSteamFarm.Storage {
 			GlobalDatabase? globalDatabase;
 
 			try {
-				string json = await Compatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+#if NETFRAMEWORK
+				string json = await JustArchiNET.Madness.File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+#else
+				string json = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+#endif
 
 				if (string.IsNullOrEmpty(json)) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));

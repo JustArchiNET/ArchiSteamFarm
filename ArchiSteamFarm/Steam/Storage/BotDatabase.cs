@@ -155,7 +155,11 @@ namespace ArchiSteamFarm.Steam.Storage {
 			BotDatabase? botDatabase;
 
 			try {
-				string json = await Compatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+#if NETFRAMEWORK
+				string json = await JustArchiNET.Madness.File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+#else
+				string json = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+#endif
 
 				if (string.IsNullOrEmpty(json)) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
