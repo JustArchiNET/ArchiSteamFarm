@@ -45,16 +45,15 @@ namespace ArchiSteamFarm.Core {
 		internal static readonly string ProcessFileName = Process.GetCurrentProcess().MainModule?.FileName ?? throw new InvalidOperationException(nameof(ProcessFileName));
 
 		internal static DateTime ProcessStartTime {
-			get {
 #if NETFRAMEWORK
-				DateTime result = StaticHelpers.ProcessStartTime;
+			get => StaticHelpers.ProcessStartTime.ToUniversalTime();
 #else
+			get {
 				using Process process = Process.GetCurrentProcess();
 
-				DateTime result = process.StartTime;
-#endif
-				return result.ToUniversalTime();
+				return process.StartTime.ToUniversalTime();
 			}
+#endif
 		}
 
 		internal static string Version {
