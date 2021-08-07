@@ -20,8 +20,7 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using ArchiSteamFarm.Compatibility;
-using File = System.IO.File;
+using JustArchiNET.Madness;
 #else
 using System.Runtime.Versioning;
 #endif
@@ -43,6 +42,18 @@ namespace ArchiSteamFarm.Core {
 	internal static class OS {
 		// We need to keep this one assigned and not calculated on-demand
 		internal static readonly string ProcessFileName = Process.GetCurrentProcess().MainModule?.FileName ?? throw new InvalidOperationException(nameof(ProcessFileName));
+
+		internal static DateTime ProcessStartTime {
+#if NETFRAMEWORK
+			get => RuntimeMadness.ProcessStartTime.ToUniversalTime();
+#else
+			get {
+				using Process process = Process.GetCurrentProcess();
+
+				return process.StartTime.ToUniversalTime();
+			}
+#endif
+		}
 
 		internal static string Version {
 			get {
@@ -227,7 +238,7 @@ namespace ArchiSteamFarm.Core {
 			}
 
 			// All windows variants have valid .NET Core build, and generic-netf is supported only on mono
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || !StaticHelpers.IsRunningOnMono) {
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || !RuntimeMadness.IsRunningOnMono) {
 				return false;
 			}
 

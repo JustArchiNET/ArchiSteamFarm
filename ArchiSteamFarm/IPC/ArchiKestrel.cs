@@ -20,9 +20,8 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using ArchiSteamFarm.Compatibility;
-using File = System.IO.File;
-using Path = System.IO.Path;
+using JustArchiNET.Madness;
+using File = JustArchiNET.Madness.FileMadness.File;
 #else
 using Microsoft.Extensions.Hosting;
 #endif
@@ -100,7 +99,7 @@ namespace ArchiSteamFarm.IPC {
 			if (customConfigExists) {
 				if (Debugging.IsDebugConfigured) {
 					try {
-						string json = await Compatibility.File.ReadAllTextAsync(customConfigPath).ConfigureAwait(false);
+						string json = await File.ReadAllTextAsync(customConfigPath).ConfigureAwait(false);
 
 						if (!string.IsNullOrEmpty(json)) {
 							JObject jObject = JObject.Parse(json);

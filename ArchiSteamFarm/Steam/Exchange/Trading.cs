@@ -20,7 +20,7 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using ArchiSteamFarm.Compatibility;
+using JustArchiNET.Madness;
 #endif
 using System;
 using System.Collections.Generic;
