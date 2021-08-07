@@ -28,7 +28,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
-		<PackageVersion Include="JustArchiNET.Madness" Version="0.3.0" />
+		<PackageVersion Include="JustArchiNET.Madness" Version="1.0.0" />
 		<PackageVersion Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
 		<PackageVersion Include="Microsoft.AspNetCore.Diagnostics" Version="2.2.0" />
 		<PackageVersion Include="Microsoft.AspNetCore.HttpOverrides" Version="2.2.0" />
