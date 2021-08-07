@@ -82,7 +82,7 @@ namespace ArchiSteamFarm.Web {
 			}
 
 #if NETFRAMEWORK
-			if (!StaticHelpers.IsRunningOnMono) {
+			if (!RuntimeMadness.IsRunningOnMono) {
 				HttpClientHandler.MaxConnectionsPerServer = MaxConnections;
 			}
 #else
@@ -721,7 +721,7 @@ namespace ArchiSteamFarm.Web {
 
 			// Reuse ports if possible
 #if NETFRAMEWORK
-			if (!StaticHelpers.IsRunningOnMono) {
+			if (!RuntimeMadness.IsRunningOnMono) {
 				ServicePointManager.ReusePort = true;
 			}
 #else

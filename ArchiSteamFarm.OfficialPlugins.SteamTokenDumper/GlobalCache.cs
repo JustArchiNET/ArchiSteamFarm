@@ -21,15 +21,13 @@
 
 #if NETFRAMEWORK
 using JustArchiNET.Madness;
-using File = System.IO.File;
-using Path = System.IO.Path;
-#else
-using System.IO;
+using File = JustArchiNET.Madness.FileMadness.File;
 #endif
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -86,11 +84,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			GlobalCache? globalCache;
 
 			try {
-#if NETFRAMEWORK
-				string json = await JustArchiNET.Madness.File.ReadAllTextAsync(SharedFilePath).ConfigureAwait(false);
-#else
 				string json = await File.ReadAllTextAsync(SharedFilePath).ConfigureAwait(false);
-#endif
 
 				if (string.IsNullOrEmpty(json)) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));

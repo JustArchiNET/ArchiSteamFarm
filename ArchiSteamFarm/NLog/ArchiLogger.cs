@@ -20,7 +20,7 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using JustArchiNET.Madness;
+using File = JustArchiNET.Madness.FileMadness.File;
 #else
 using File = System.IO.File;
 #endif

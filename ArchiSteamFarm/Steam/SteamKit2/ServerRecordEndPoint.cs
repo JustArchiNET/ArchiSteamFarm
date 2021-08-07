@@ -20,7 +20,7 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using HashCode = JustArchiNET.Madness.HashCode;
+using HashCode = JustArchiNET.Madness.HashCodeMadness.HashCode;
 #endif
 using System;
 using System.ComponentModel;

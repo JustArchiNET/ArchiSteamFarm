@@ -21,8 +21,8 @@
 
 #if NETFRAMEWORK
 using JustArchiNET.Madness;
-using File = System.IO.File;
-using Path = System.IO.Path;
+using File = JustArchiNET.Madness.FileMadness.File;
+using Path = JustArchiNET.Madness.PathMadness.Path;
 #endif
 using System;
 using System.Collections;
@@ -1926,11 +1926,7 @@ namespace ArchiSteamFarm.Steam {
 			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorConverting);
 
 			try {
-#if NETFRAMEWORK
-				string json = await JustArchiNET.Madness.File.ReadAllTextAsync(maFilePath).ConfigureAwait(false);
-#else
 				string json = await File.ReadAllTextAsync(maFilePath).ConfigureAwait(false);
-#endif
 
 				if (string.IsNullOrEmpty(json)) {
 					ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
@@ -2201,11 +2197,7 @@ namespace ArchiSteamFarm.Steam {
 
 			if (File.Exists(sentryFilePath)) {
 				try {
-#if NETFRAMEWORK
-					byte[] sentryFileContent = await JustArchiNET.Madness.File.ReadAllBytesAsync(sentryFilePath).ConfigureAwait(false);
-#else
 					byte[] sentryFileContent = await File.ReadAllBytesAsync(sentryFilePath).ConfigureAwait(false);
-#endif
 					sentryFileHash = CryptoHelper.SHAHash(sentryFileContent);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericException(e);
@@ -3238,11 +3230,7 @@ namespace ArchiSteamFarm.Steam {
 					}
 
 					try {
-#if NETFRAMEWORK
-						await JustArchiNET.Madness.File.AppendAllTextAsync(filePath, logEntry + Environment.NewLine).ConfigureAwait(false);
-#else
 						await File.AppendAllTextAsync(filePath, logEntry + Environment.NewLine).ConfigureAwait(false);
-#endif
 					} catch (Exception e) {
 						ArchiLogger.LogGenericException(e);
 						ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.Content, logEntry));

@@ -21,8 +21,7 @@
 
 #if NETFRAMEWORK
 using JustArchiNET.Madness;
-using File = System.IO.File;
-using Path = System.IO.Path;
+using File = JustArchiNET.Madness.FileMadness.File;
 #else
 using Microsoft.Extensions.Hosting;
 #endif
@@ -100,11 +99,7 @@ namespace ArchiSteamFarm.IPC {
 			if (customConfigExists) {
 				if (Debugging.IsDebugConfigured) {
 					try {
-#if NETFRAMEWORK
-						string json = await JustArchiNET.Madness.File.ReadAllTextAsync(customConfigPath).ConfigureAwait(false);
-#else
 						string json = await File.ReadAllTextAsync(customConfigPath).ConfigureAwait(false);
-#endif
 
 						if (!string.IsNullOrEmpty(json)) {
 							JObject jObject = JObject.Parse(json);

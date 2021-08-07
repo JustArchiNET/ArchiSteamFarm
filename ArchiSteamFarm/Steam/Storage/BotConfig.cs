@@ -21,7 +21,7 @@
 
 #if NETFRAMEWORK
 using JustArchiNET.Madness;
-using File = System.IO.File;
+using File = JustArchiNET.Madness.FileMadness.File;
 #else
 using System.IO;
 #endif
@@ -452,11 +452,7 @@ namespace ArchiSteamFarm.Steam.Storage {
 			BotConfig? botConfig;
 
 			try {
-#if NETFRAMEWORK
-				json = await JustArchiNET.Madness.File.ReadAllTextAsync(filePath).ConfigureAwait(false);
-#else
 				json = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
-#endif
 
 				if (string.IsNullOrEmpty(json)) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));

@@ -19,11 +19,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using File = JustArchiNET.Madness.FileMadness.File;
+#else
+using System.IO;
+#endif
 using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
@@ -155,11 +159,7 @@ namespace ArchiSteamFarm.Steam.Storage {
 			BotDatabase? botDatabase;
 
 			try {
-#if NETFRAMEWORK
-				string json = await JustArchiNET.Madness.File.ReadAllTextAsync(filePath).ConfigureAwait(false);
-#else
 				string json = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
-#endif
 
 				if (string.IsNullOrEmpty(json)) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));

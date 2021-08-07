@@ -21,7 +21,6 @@
 
 #if NETFRAMEWORK
 using JustArchiNET.Madness;
-using File = System.IO.File;
 #else
 using System.Runtime.Versioning;
 #endif
@@ -46,7 +45,7 @@ namespace ArchiSteamFarm.Core {
 
 		internal static DateTime ProcessStartTime {
 #if NETFRAMEWORK
-			get => StaticHelpers.ProcessStartTime.ToUniversalTime();
+			get => RuntimeMadness.ProcessStartTime.ToUniversalTime();
 #else
 			get {
 				using Process process = Process.GetCurrentProcess();
@@ -239,7 +238,7 @@ namespace ArchiSteamFarm.Core {
 			}
 
 			// All windows variants have valid .NET Core build, and generic-netf is supported only on mono
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || !StaticHelpers.IsRunningOnMono) {
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || !RuntimeMadness.IsRunningOnMono) {
 				return false;
 			}
 

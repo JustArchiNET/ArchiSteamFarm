@@ -22,8 +22,8 @@
 #if NETFRAMEWORK
 using System.Runtime.InteropServices;
 using JustArchiNET.Madness;
-using File = System.IO.File;
-using Path = System.IO.Path;
+using File = JustArchiNET.Madness.FileMadness.File;
+using Path = JustArchiNET.Madness.PathMadness.Path;
 #endif
 using System;
 using System.Collections.Concurrent;
@@ -160,11 +160,7 @@ namespace ArchiSteamFarm.Core {
 				return false;
 			}
 
-#if NETFRAMEWORK
-			return JustArchiNET.Madness.Path.GetRelativePath(".", botName) == botName;
-#else
 			return Path.GetRelativePath(".", botName) == botName;
-#endif
 		}
 
 		internal static async Task RestartOrExit() {
@@ -945,11 +941,7 @@ namespace ArchiSteamFarm.Core {
 					return false;
 				}
 
-#if NETFRAMEWORK
-				string relativeFilePath = JustArchiNET.Madness.Path.GetRelativePath(targetDirectory, file);
-#else
 				string relativeFilePath = Path.GetRelativePath(targetDirectory, file);
-#endif
 
 				if (string.IsNullOrEmpty(relativeFilePath)) {
 					ArchiLogger.LogNullError(nameof(relativeFilePath));
@@ -995,11 +987,7 @@ namespace ArchiSteamFarm.Core {
 
 				string targetBackupFile = Path.Combine(targetBackupDirectory, fileName);
 
-#if NETFRAMEWORK
-				JustArchiNET.Madness.File.Move(file, targetBackupFile, true);
-#else
 				File.Move(file, targetBackupFile, true);
-#endif
 			}
 
 			// We can now get rid of directories that are empty
@@ -1021,11 +1009,7 @@ namespace ArchiSteamFarm.Core {
 					// This is possible only with files that we decided to leave in place during our backup function
 					string targetBackupFile = file + ".bak";
 
-#if NETFRAMEWORK
-					JustArchiNET.Madness.File.Move(file, targetBackupFile, true);
-#else
 					File.Move(file, targetBackupFile, true);
-#endif
 				}
 
 				// Check if this file requires its own folder
@@ -1039,7 +1023,8 @@ namespace ArchiSteamFarm.Core {
 					}
 
 					if (!Directory.Exists(directory)) {
-						Directory.CreateDirectory(directory);
+						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+						Directory.CreateDirectory(directory!);
 					}
 
 					// We're not interested in extracting placeholder files (but we still want directories created for them, done above)
