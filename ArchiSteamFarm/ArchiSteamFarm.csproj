@@ -15,7 +15,7 @@
 		<PackageReference Include="ConfigureAwaitChecker.Analyzer" PrivateAssets="all" />
 		<PackageReference Include="CryptSharpStandard" />
 		<PackageReference Include="Humanizer" />
-		<PackageReference Include="JetBrains.Annotations" />
+		<PackageReference Include="JetBrains.Annotations" PrivateAssets="all" />
 		<PackageReference Include="Markdig.Signed" />
 		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="Nito.AsyncEx.Coordination" />
