@@ -30,6 +30,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' != 'net48'">
+		<PackageReference Include="Microsoft.Win32.SystemEvents" />
 		<PackageReference Include="System.IO.FileSystem.AccessControl" />
 		<PackageReference Include="System.Security.Cryptography.ProtectedData" />
 	</ItemGroup>
