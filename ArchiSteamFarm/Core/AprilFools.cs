@@ -25,6 +25,8 @@ using System.Threading;
 
 namespace ArchiSteamFarm.Core {
 	internal static class AprilFools {
+		private static readonly object LockObject = new();
+
 		// We don't care about CurrentCulture global config property, because April Fools are never initialized in this case
 		private static readonly CultureInfo OriginalCulture = CultureInfo.CurrentCulture;
 
@@ -44,7 +46,9 @@ namespace ArchiSteamFarm.Core {
 
 				TimeSpan aprilFoolsEnd = TimeSpan.FromDays(1) - now.TimeOfDay;
 
-				Timer.Change(aprilFoolsEnd, Timeout.InfiniteTimeSpan);
+				lock (LockObject) {
+					Timer.Change(aprilFoolsEnd, Timeout.InfiniteTimeSpan);
+				}
 
 				return;
 			}
@@ -62,16 +66,22 @@ namespace ArchiSteamFarm.Core {
 
 			TimeSpan aprilFoolsStart = nextAprilFools - now;
 
-			// Timer can accept only dueTimes up to 2^32 - 2
-			if (aprilFoolsStart.TotalMilliseconds >= uint.MaxValue) {
-				// Fire again in 49 days or so, when we get closer
-				Timer.Change(uint.MaxValue - 1, Timeout.Infinite);
-			} else {
-				// April 1st is soon!
-				Timer.Change(aprilFoolsStart, Timeout.InfiniteTimeSpan);
+			lock (LockObject) {
+				// Timer can accept only dueTimes up to 2^32 - 2
+				if (aprilFoolsStart.TotalMilliseconds >= uint.MaxValue) {
+					// Fire again in 49 days or so, when we get closer
+					Timer.Change(uint.MaxValue - 1, Timeout.Infinite);
+				} else {
+					// April 1st is soon!
+					Timer.Change(aprilFoolsStart, Timeout.InfiniteTimeSpan);
+				}
 			}
 		}
 
-		internal static void OnTimeChanged(object? sender, EventArgs e) => Timer.Change(TimeSpan.Zero, Timeout.InfiniteTimeSpan);
+		internal static void OnTimeChanged(object? sender, EventArgs e) {
+			lock (LockObject) {
+				Timer.Change(TimeSpan.Zero, Timeout.InfiniteTimeSpan);
+			}
+		}
 	}
 }
