@@ -52,6 +52,8 @@ body:
     attributes:
       label: Bug description
       description: Short explanation of what you were going to do, what did you want to accomplish?
+      placeholder: |
+        I tried to brew a coffee with ASF using `PUT /Api/Coffee` ASF API, but upon trying the program returned HTTP error: 418 I'm a teapot
     validations:
       required: true
   - type: textarea
@@ -59,6 +61,8 @@ body:
     attributes:
       label: Expected behavior
       description: What did you expect to happen?
+      placeholder: |
+        I expected my favourite latte macchiato in a cup put below the machine hosting ASF.
     validations:
       required: true
   - type: textarea
@@ -66,6 +70,8 @@ body:
     attributes:
       label: Actual behavior
       description: What happened instead?
+      placeholder: |
+        No coffee was brewed, and so I was forced to use a water dispenser instead :/
     validations:
       required: true
   - type: textarea
