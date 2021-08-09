@@ -66,15 +66,11 @@ namespace ArchiSteamFarm.Core {
 
 			TimeSpan aprilFoolsStart = nextAprilFools - now;
 
+			// Timer can accept only dueTimes up to 2^32 - 2
+			uint dueTime = (uint) Math.Min(uint.MaxValue - 1, (ulong) aprilFoolsStart.TotalMilliseconds);
+
 			lock (LockObject) {
-				// Timer can accept only dueTimes up to 2^32 - 2
-				if (aprilFoolsStart.TotalMilliseconds >= uint.MaxValue) {
-					// Fire again in 49 days or so, when we get closer
-					Timer.Change(uint.MaxValue - 1, Timeout.Infinite);
-				} else {
-					// April 1st is soon!
-					Timer.Change(aprilFoolsStart, Timeout.InfiniteTimeSpan);
-				}
+				Timer.Change(dueTime, Timeout.Infinite);
 			}
 		}
 
