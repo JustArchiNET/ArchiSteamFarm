@@ -188,7 +188,7 @@ namespace ArchiSteamFarm.Core {
 
 		[SupportedOSPlatform("FreeBSD")]
 		[SupportedOSPlatform("Linux")]
-		[SupportedOSPlatform("OSX")]
+		[SupportedOSPlatform("MacOS")]
 		internal static void UnixSetFileAccess(string path, EUnixPermission permission) {
 			if (string.IsNullOrEmpty(path)) {
 				throw new ArgumentNullException(nameof(path));
@@ -293,7 +293,7 @@ namespace ArchiSteamFarm.Core {
 		[Flags]
 		[SupportedOSPlatform("FreeBSD")]
 		[SupportedOSPlatform("Linux")]
-		[SupportedOSPlatform("OSX")]
+		[SupportedOSPlatform("MacOS")]
 		internal enum EUnixPermission : ushort {
 			OtherExecute = 0x1,
 			OtherWrite = 0x2,
@@ -323,7 +323,7 @@ namespace ArchiSteamFarm.Core {
 			[DllImport("libc", EntryPoint = "chmod", SetLastError = true)]
 			[SupportedOSPlatform("FreeBSD")]
 			[SupportedOSPlatform("Linux")]
-			[SupportedOSPlatform("OSX")]
+			[SupportedOSPlatform("MacOS")]
 			internal static extern int Chmod(string path, int mode);
 #pragma warning restore CA2101 // False positive, we can't use unicode charset on Unix, and it uses UTF-8 by default anyway
 
