@@ -19,6 +19,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using System.Runtime.InteropServices;
+#endif
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -39,6 +42,7 @@ using ArchiSteamFarm.NLog.Targets;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using NLog;
 using NLog.Targets;
@@ -267,15 +271,15 @@ namespace ArchiSteamFarm {
 					ASF.ArchiLogger.LogGenericError(Strings.ErrorInvalidCurrentCulture);
 				}
 			} else {
-				// April Fools easter egg
-				DateTime now = DateTime.Now;
+				// April Fools easter egg logic
+				AprilFools.Init();
 
-				if ((now.Month == 4) && (now.Day == 1)) {
-					try {
-						CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CreateSpecificCulture("qps-Ploc");
-					} catch (Exception e) {
-						ASF.ArchiLogger.LogGenericDebuggingException(e);
-					}
+#if NETFRAMEWORK
+				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+#else
+				if (OperatingSystem.IsWindows()) {
+#endif
+					SystemEvents.TimeChanged += AprilFools.OnTimeChanged;
 				}
 			}
 
