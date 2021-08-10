@@ -20,7 +20,7 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using System.Runtime.InteropServices;
+using OperatingSystem = JustArchiNET.Madness.OperatingSystemMadness.OperatingSystem;
 #endif
 using System;
 using System.Diagnostics;
@@ -165,11 +165,7 @@ namespace ArchiSteamFarm.Helpers {
 			if (!Directory.Exists(directoryPath)) {
 				Directory.CreateDirectory(directoryPath);
 
-#if NETFRAMEWORK
-				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-#else
 				if (OperatingSystem.IsWindows()) {
-#endif
 					DirectoryInfo directoryInfo = new(directoryPath);
 
 					try {
@@ -180,11 +176,7 @@ namespace ArchiSteamFarm.Helpers {
 						// Non-critical, user might have no rights to manage the resource
 						ASF.ArchiLogger.LogGenericDebuggingException(e);
 					}
-#if NETFRAMEWORK
-				} else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
-#else
 				} else if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
-#endif
 					OS.UnixSetFileAccess(directoryPath, OS.EUnixPermission.Combined777);
 				}
 			}
@@ -192,11 +184,7 @@ namespace ArchiSteamFarm.Helpers {
 			try {
 				new FileStream(FilePath, FileMode.CreateNew).Dispose();
 
-#if NETFRAMEWORK
-				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-#else
 				if (OperatingSystem.IsWindows()) {
-#endif
 					FileInfo fileInfo = new(FilePath);
 
 					try {
@@ -207,11 +195,7 @@ namespace ArchiSteamFarm.Helpers {
 						// Non-critical, user might have no rights to manage the resource
 						ASF.ArchiLogger.LogGenericDebuggingException(e);
 					}
-#if NETFRAMEWORK
-				} else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
-#else
 				} else if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
-#endif
 					OS.UnixSetFileAccess(FilePath, OS.EUnixPermission.Combined777);
 				}
 			} catch (IOException) {

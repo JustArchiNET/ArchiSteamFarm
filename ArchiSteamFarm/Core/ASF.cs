@@ -20,9 +20,9 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using System.Runtime.InteropServices;
 using JustArchiNET.Madness;
 using File = JustArchiNET.Madness.FileMadness.File;
+using OperatingSystem = JustArchiNET.Madness.OperatingSystemMadness.OperatingSystem;
 using Path = JustArchiNET.Madness.PathMadness.Path;
 #endif
 using System;
@@ -314,11 +314,7 @@ namespace ArchiSteamFarm.Core {
 					return null;
 				}
 
-#if NETFRAMEWORK
-				if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
-#else
 				if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
-#endif
 					string executable = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.AssemblyName);
 
 					if (File.Exists(executable)) {

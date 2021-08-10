@@ -21,6 +21,7 @@
 
 #if NETFRAMEWORK
 using JustArchiNET.Madness;
+using OperatingSystem = JustArchiNET.Madness.OperatingSystemMadness.OperatingSystem;
 #else
 using System.Runtime.Versioning;
 #endif
@@ -94,11 +95,7 @@ namespace ArchiSteamFarm.Core {
 		private static Mutex? SingleInstance;
 
 		internal static void CoreInit(bool systemRequired) {
-#if NETFRAMEWORK
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-#else
 			if (OperatingSystem.IsWindows()) {
-#endif
 				if (systemRequired) {
 					WindowsKeepSystemActive();
 				}
@@ -197,11 +194,7 @@ namespace ArchiSteamFarm.Core {
 				throw new ArgumentNullException(nameof(path));
 			}
 
-#if NETFRAMEWORK
-			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && !RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
-#else
 			if (!OperatingSystem.IsFreeBSD() && !OperatingSystem.IsLinux() && !OperatingSystem.IsMacOS()) {
-#endif
 				throw new PlatformNotSupportedException();
 			}
 
@@ -238,7 +231,7 @@ namespace ArchiSteamFarm.Core {
 			}
 
 			// All windows variants have valid .NET Core build, and generic-netf is supported only on mono
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || !RuntimeMadness.IsRunningOnMono) {
+			if (OperatingSystem.IsWindows() || !RuntimeMadness.IsRunningOnMono) {
 				return false;
 			}
 
@@ -261,11 +254,7 @@ namespace ArchiSteamFarm.Core {
 
 		[SupportedOSPlatform("Windows")]
 		private static void WindowsDisableQuickEditMode() {
-#if NETFRAMEWORK
-			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-#else
 			if (!OperatingSystem.IsWindows()) {
-#endif
 				throw new PlatformNotSupportedException();
 			}
 
@@ -286,11 +275,7 @@ namespace ArchiSteamFarm.Core {
 
 		[SupportedOSPlatform("Windows")]
 		private static void WindowsKeepSystemActive() {
-#if NETFRAMEWORK
-			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-#else
 			if (!OperatingSystem.IsWindows()) {
-#endif
 				throw new PlatformNotSupportedException();
 			}
 

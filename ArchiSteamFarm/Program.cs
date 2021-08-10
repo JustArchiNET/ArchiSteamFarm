@@ -20,7 +20,7 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using System.Runtime.InteropServices;
+using OperatingSystem = JustArchiNET.Madness.OperatingSystemMadness.OperatingSystem;
 #endif
 using System;
 using System.Collections;
@@ -274,11 +274,7 @@ namespace ArchiSteamFarm {
 				// April Fools easter egg logic
 				AprilFools.Init();
 
-#if NETFRAMEWORK
-				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-#else
 				if (OperatingSystem.IsWindows()) {
-#endif
 					SystemEvents.TimeChanged += AprilFools.OnTimeChanged;
 				}
 			}

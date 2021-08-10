@@ -20,7 +20,7 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using System.Runtime.InteropServices;
+using OperatingSystem = JustArchiNET.Madness.OperatingSystemMadness.OperatingSystem;
 #endif
 using System;
 using System.Collections.Generic;
@@ -189,11 +189,7 @@ namespace ArchiSteamFarm.Helpers {
 				throw new ArgumentNullException(nameof(encryptedString));
 			}
 
-#if NETFRAMEWORK
-			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-#else
 			if (!OperatingSystem.IsWindows()) {
-#endif
 				return null;
 			}
 
@@ -240,11 +236,7 @@ namespace ArchiSteamFarm.Helpers {
 				throw new ArgumentNullException(nameof(decryptedString));
 			}
 
-#if NETFRAMEWORK
-			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-#else
 			if (!OperatingSystem.IsWindows()) {
-#endif
 				return null;
 			}
 
