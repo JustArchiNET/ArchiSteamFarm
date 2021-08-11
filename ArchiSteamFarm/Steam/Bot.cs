@@ -3388,6 +3388,7 @@ namespace ArchiSteamFarm.Steam {
 					switch (result) {
 						case EResult.Busy:
 						case EResult.Fail:
+						case EResult.LimitExceeded:
 						case EResult.RateLimitExceeded:
 						case EResult.ServiceUnavailable:
 						case EResult.Timeout:
