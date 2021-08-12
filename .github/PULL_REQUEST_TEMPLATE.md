@@ -1,8 +1,6 @@
 ## Checklist
 
-<!---
-	Put an `x` in all the boxes that apply
--->
+<!-- Put an `x` in all the boxes that apply -->
 
 - [ ] I read and understood the **[Contributing Guidelines](https://github.com/JustArchiNET/ArchiSteamFarm/blob/main/.github/CONTRIBUTING.md)**.
 - [ ] This is not a **[duplicate](https://github.com/JustArchiNET/ArchiSteamFarm/pulls)** of an existing merge request.
@@ -15,19 +13,16 @@
 
 ### New functionality
 
-<!---
-	Please describe here, what new functionality was added.
--->
+<!-- Please describe here, what new functionality was added. -->
 
 ### Changed functionality
 
-<!---
-	Please describe here, what old functionality was changed.
--->
+<!-- Please describe here, what old functionality was changed. -->
 
 ### Removed functionality
 
-<!---
-	Please describe here, what old functionality was removed.
-	Make sure to mention what it was replaced with or how everything that was previously achievable still is.
--->
+<!-- Please describe here, what old functionality was removed. Make sure to mention what it was replaced with or how everything that was previously achievable still is. -->
+
+## Additional info
+
+<!-- Everything else you consider note-worthy that we didn't ask for. -->
