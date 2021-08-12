@@ -19,6 +19,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using JustArchiNET.Madness;
+#endif
 using System;
 using System.Buffers;
 using System.Collections.Generic;
@@ -31,7 +34,6 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using ArchiSteamFarm.Compatibility;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
@@ -79,9 +81,13 @@ namespace ArchiSteamFarm.Web {
 				HttpClientHandler.UseProxy = true;
 			}
 
-			if (!StaticHelpers.IsRunningOnMono) {
+#if NETFRAMEWORK
+			if (!RuntimeMadness.IsRunningOnMono) {
 				HttpClientHandler.MaxConnectionsPerServer = MaxConnections;
 			}
+#else
+			HttpClientHandler.MaxConnectionsPerServer = MaxConnections;
+#endif
 
 			HttpClient = GenerateDisposableHttpClient(extendedTimeout);
 		}
@@ -714,9 +720,13 @@ namespace ArchiSteamFarm.Web {
 			ServicePointManager.Expect100Continue = false;
 
 			// Reuse ports if possible
-			if (!StaticHelpers.IsRunningOnMono) {
+#if NETFRAMEWORK
+			if (!RuntimeMadness.IsRunningOnMono) {
 				ServicePointManager.ReusePort = true;
 			}
+#else
+			ServicePointManager.ReusePort = true;
+#endif
 		}
 
 		private async Task<HttpResponseMessage?> InternalGet(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead) {

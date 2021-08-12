@@ -19,10 +19,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using OperatingSystem = JustArchiNET.Madness.OperatingSystemMadness.OperatingSystem;
+#endif
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Threading;
 using System.Threading.Tasks;
@@ -163,7 +165,7 @@ namespace ArchiSteamFarm.Helpers {
 			if (!Directory.Exists(directoryPath)) {
 				Directory.CreateDirectory(directoryPath);
 
-				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+				if (OperatingSystem.IsWindows()) {
 					DirectoryInfo directoryInfo = new(directoryPath);
 
 					try {
@@ -174,11 +176,7 @@ namespace ArchiSteamFarm.Helpers {
 						// Non-critical, user might have no rights to manage the resource
 						ASF.ArchiLogger.LogGenericDebuggingException(e);
 					}
-#if NETFRAMEWORK
-				} else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
-#else
-				} else if (RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
-#endif
+				} else if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
 					OS.UnixSetFileAccess(directoryPath, OS.EUnixPermission.Combined777);
 				}
 			}
@@ -186,7 +184,7 @@ namespace ArchiSteamFarm.Helpers {
 			try {
 				new FileStream(FilePath, FileMode.CreateNew).Dispose();
 
-				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+				if (OperatingSystem.IsWindows()) {
 					FileInfo fileInfo = new(FilePath);
 
 					try {
@@ -197,11 +195,7 @@ namespace ArchiSteamFarm.Helpers {
 						// Non-critical, user might have no rights to manage the resource
 						ASF.ArchiLogger.LogGenericDebuggingException(e);
 					}
-#if NETFRAMEWORK
-				} else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
-#else
-				} else if (RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
-#endif
+				} else if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
 					OS.UnixSetFileAccess(FilePath, OS.EUnixPermission.Combined777);
 				}
 			} catch (IOException) {

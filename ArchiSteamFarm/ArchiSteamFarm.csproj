@@ -15,7 +15,7 @@
 		<PackageReference Include="ConfigureAwaitChecker.Analyzer" PrivateAssets="all" />
 		<PackageReference Include="CryptSharpStandard" />
 		<PackageReference Include="Humanizer" />
-		<PackageReference Include="JetBrains.Annotations" />
+		<PackageReference Include="JetBrains.Annotations" PrivateAssets="all" />
 		<PackageReference Include="Markdig.Signed" />
 		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="Nito.AsyncEx.Coordination" />
@@ -30,12 +30,13 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' != 'net48'">
+		<PackageReference Include="Microsoft.Win32.SystemEvents" />
 		<PackageReference Include="System.IO.FileSystem.AccessControl" />
 		<PackageReference Include="System.Security.Cryptography.ProtectedData" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
-		<PackageReference Include="IndexRange" />
+		<PackageReference Include="JustArchiNET.Madness" />
 		<PackageReference Include="Microsoft.AspNetCore.Cors" />
 		<PackageReference Include="Microsoft.AspNetCore.Diagnostics" />
 		<PackageReference Include="Microsoft.AspNetCore.HttpOverrides" />

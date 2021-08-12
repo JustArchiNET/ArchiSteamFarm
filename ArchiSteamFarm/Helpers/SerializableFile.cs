@@ -19,8 +19,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+#if NETFRAMEWORK
+using File = JustArchiNET.Madness.FileMadness.File;
+#else
 using System.IO;
+#endif
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -86,17 +90,17 @@ namespace ArchiSteamFarm.Helpers {
 				string newFilePath = FilePath + ".new";
 
 				if (File.Exists(FilePath)) {
-					string currentJson = await Compatibility.File.ReadAllTextAsync(FilePath!).ConfigureAwait(false);
+					string currentJson = await File.ReadAllTextAsync(FilePath!).ConfigureAwait(false);
 
 					if (json == currentJson) {
 						return;
 					}
 
-					await Compatibility.File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+					await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
 					File.Replace(newFilePath, FilePath!, null);
 				} else {
-					await Compatibility.File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+					await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
 					File.Move(newFilePath, FilePath!);
 				}
@@ -141,17 +145,17 @@ namespace ArchiSteamFarm.Helpers {
 			try {
 				// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
 				if (File.Exists(filePath)) {
-					string currentJson = await Compatibility.File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+					string currentJson = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
 
 					if (json == currentJson) {
 						return true;
 					}
 
-					await Compatibility.File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+					await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
 					File.Replace(newFilePath, filePath, null);
 				} else {
-					await Compatibility.File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+					await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
 					File.Move(newFilePath, filePath);
 				}

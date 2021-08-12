@@ -20,9 +20,10 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using ArchiSteamFarm.Compatibility;
-using File = System.IO.File;
-using Path = System.IO.Path;
+using JustArchiNET.Madness;
+using File = JustArchiNET.Madness.FileMadness.File;
+using OperatingSystem = JustArchiNET.Madness.OperatingSystemMadness.OperatingSystem;
+using Path = JustArchiNET.Madness.PathMadness.Path;
 #endif
 using System;
 using System.Collections.Concurrent;
@@ -34,7 +35,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -160,7 +160,7 @@ namespace ArchiSteamFarm.Core {
 				return false;
 			}
 
-			return Compatibility.Path.GetRelativePath(".", botName) == botName;
+			return Path.GetRelativePath(".", botName) == botName;
 		}
 
 		internal static async Task RestartOrExit() {
@@ -314,11 +314,7 @@ namespace ArchiSteamFarm.Core {
 					return null;
 				}
 
-#if NETFRAMEWORK
-				if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
-#else
-				if (RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
-#endif
+				if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
 					string executable = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.AssemblyName);
 
 					if (File.Exists(executable)) {
@@ -941,7 +937,7 @@ namespace ArchiSteamFarm.Core {
 					return false;
 				}
 
-				string relativeFilePath = Compatibility.Path.GetRelativePath(targetDirectory, file);
+				string relativeFilePath = Path.GetRelativePath(targetDirectory, file);
 
 				if (string.IsNullOrEmpty(relativeFilePath)) {
 					ArchiLogger.LogNullError(nameof(relativeFilePath));
@@ -986,7 +982,8 @@ namespace ArchiSteamFarm.Core {
 				Directory.CreateDirectory(targetBackupDirectory);
 
 				string targetBackupFile = Path.Combine(targetBackupDirectory, fileName);
-				Compatibility.File.Move(file, targetBackupFile, true);
+
+				File.Move(file, targetBackupFile, true);
 			}
 
 			// We can now get rid of directories that are empty
@@ -1007,7 +1004,8 @@ namespace ArchiSteamFarm.Core {
 				if (File.Exists(file)) {
 					// This is possible only with files that we decided to leave in place during our backup function
 					string targetBackupFile = file + ".bak";
-					Compatibility.File.Move(file, targetBackupFile, true);
+
+					File.Move(file, targetBackupFile, true);
 				}
 
 				// Check if this file requires its own folder
@@ -1021,7 +1019,8 @@ namespace ArchiSteamFarm.Core {
 					}
 
 					if (!Directory.Exists(directory)) {
-						Directory.CreateDirectory(directory);
+						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+						Directory.CreateDirectory(directory!);
 					}
 
 					// We're not interested in extracting placeholder files (but we still want directories created for them, done above)

@@ -88,7 +88,7 @@ namespace ArchiSteamFarm.Steam.Data {
 		[PublicAPI]
 		public EType Type { get; internal set; }
 
-		[JsonExtensionData]
+		[JsonExtensionData(WriteData = false)]
 		internal Dictionary<string, JToken>? AdditionalProperties { private get; set; }
 
 		[JsonProperty(PropertyName = "amount", Required = Required.Always)]

@@ -20,9 +20,9 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using ArchiSteamFarm.Compatibility;
-using File = System.IO.File;
-using Path = System.IO.Path;
+using JustArchiNET.Madness;
+using File = JustArchiNET.Madness.FileMadness.File;
+using Path = JustArchiNET.Madness.PathMadness.Path;
 #endif
 using System;
 using System.Collections;
@@ -148,7 +148,11 @@ namespace ArchiSteamFarm.Steam {
 		private readonly CallbackManager CallbackManager;
 		private readonly SemaphoreSlim CallbackSemaphore = new(1, 1);
 		private readonly SemaphoreSlim GamesRedeemerInBackgroundSemaphore = new(1, 1);
+
+#pragma warning disable CA2213 // False positive, .NET Framework can't understand DisposeAsync()
 		private readonly Timer HeartBeatTimer;
+#pragma warning restore CA2213 // False positive, .NET Framework can't understand DisposeAsync()
+
 		private readonly SemaphoreSlim InitializationSemaphore = new(1, 1);
 		private readonly SemaphoreSlim MessagingSemaphore = new(1, 1);
 		private readonly ConcurrentDictionary<UserNotificationsCallback.EUserNotification, uint> PastNotifications = new();
@@ -228,19 +232,34 @@ namespace ArchiSteamFarm.Steam {
 		[JsonProperty]
 		private string? AvatarHash;
 
+#pragma warning disable CA2213 // False positive, .NET Framework can't understand DisposeAsync()
 		private Timer? ConnectionFailureTimer;
+#pragma warning restore CA2213 // False positive, .NET Framework can't understand DisposeAsync()
+
 		private bool FirstTradeSent;
+
+#pragma warning disable CA2213 // False positive, .NET Framework can't understand DisposeAsync()
 		private Timer? GamesRedeemerInBackgroundTimer;
+#pragma warning restore CA2213 // False positive, .NET Framework can't understand DisposeAsync()
+
 		private byte HeartBeatFailures;
 		private byte InvalidPasswordFailures;
 		private EResult LastLogOnResult;
 		private DateTime LastLogonSessionReplaced;
 		private bool LibraryLocked;
 		private ulong MasterChatGroupID;
+
+#pragma warning disable CA2213 // False positive, .NET Framework can't understand DisposeAsync()
 		private Timer? PlayingWasBlockedTimer;
+#pragma warning restore CA2213 // False positive, .NET Framework can't understand DisposeAsync()
+
 		private bool ReconnectOnUserInitiated;
 		private bool SendCompleteTypesScheduled;
+
+#pragma warning disable CA2213 // False positive, .NET Framework can't understand DisposeAsync()
 		private Timer? SendItemsTimer;
+#pragma warning restore CA2213 // False positive, .NET Framework can't understand DisposeAsync()
+
 		private bool SteamParentalActive = true;
 		private SteamSaleEvent? SteamSaleEvent;
 		private string? TwoFactorCode;
@@ -1907,7 +1926,7 @@ namespace ArchiSteamFarm.Steam {
 			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorConverting);
 
 			try {
-				string json = await Compatibility.File.ReadAllTextAsync(maFilePath).ConfigureAwait(false);
+				string json = await File.ReadAllTextAsync(maFilePath).ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(json)) {
 					ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
@@ -2178,7 +2197,7 @@ namespace ArchiSteamFarm.Steam {
 
 			if (File.Exists(sentryFilePath)) {
 				try {
-					byte[] sentryFileContent = await Compatibility.File.ReadAllBytesAsync(sentryFilePath).ConfigureAwait(false);
+					byte[] sentryFileContent = await File.ReadAllBytesAsync(sentryFilePath).ConfigureAwait(false);
 					sentryFileHash = CryptoHelper.SHAHash(sentryFileContent);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericException(e);
@@ -3211,7 +3230,7 @@ namespace ArchiSteamFarm.Steam {
 					}
 
 					try {
-						await Compatibility.File.AppendAllTextAsync(filePath, logEntry + Environment.NewLine).ConfigureAwait(false);
+						await File.AppendAllTextAsync(filePath, logEntry + Environment.NewLine).ConfigureAwait(false);
 					} catch (Exception e) {
 						ArchiLogger.LogGenericException(e);
 						ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.Content, logEntry));
@@ -3369,6 +3388,7 @@ namespace ArchiSteamFarm.Steam {
 					switch (result) {
 						case EResult.Busy:
 						case EResult.Fail:
+						case EResult.LimitExceeded:
 						case EResult.RateLimitExceeded:
 						case EResult.ServiceUnavailable:
 						case EResult.Timeout:

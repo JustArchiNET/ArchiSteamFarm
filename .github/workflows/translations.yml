@@ -26,7 +26,7 @@ jobs:
         git reset --hard origin/master
 
     - name: Download latest translations from Crowdin
-      uses: crowdin/github-action@1.3.0
+      uses: crowdin/github-action@1.3.1
       with:
         upload_sources: false
         download_translations: true
@@ -37,13 +37,13 @@ jobs:
         project_id: ${{ secrets.ASF_CROWDIN_PROJECT_ID }}
         token: ${{ secrets.ASF_CROWDIN_API_TOKEN }}
 
-    - name: Import GPG key for wiki
-      uses: crazy-max/ghaction-import-gpg@v3.1.0
+    - name: Import GPG key for signing
+      uses: crazy-max/ghaction-import-gpg@v3.2.0
       with:
         gpg-private-key: ${{ secrets.ARCHIBOT_GPG_PRIVATE_KEY }}
+        git-config-global: true
         git-user-signingkey: true
         git-commit-gpgsign: true
-        workdir: wiki
 
     - name: Commit the changes to wiki
       shell: sh
@@ -65,13 +65,6 @@ jobs:
         branch: master
         directory: wiki
         repository: ${{ github.repository }}.wiki
-
-    - name: Import GPG key for ASF
-      uses: crazy-max/ghaction-import-gpg@v3.1.0
-      with:
-        gpg-private-key: ${{ secrets.ARCHIBOT_GPG_PRIVATE_KEY }}
-        git-user-signingkey: true
-        git-commit-gpgsign: true
 
     - name: Commit the changes to ASF
       shell: sh

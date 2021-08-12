@@ -20,17 +20,15 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using ArchiSteamFarm.Compatibility;
 using Microsoft.AspNetCore.Mvc;
+using ArchiSteamFarm.Compatibility;
+using JustArchiNET.Madness;
 using Newtonsoft.Json.Converters;
-using File = System.IO.File;
-using Path = System.IO.Path;
-#else
-using System.IO;
 #endif
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Net;
 using System.Reflection;
 using ArchiSteamFarm.Core;

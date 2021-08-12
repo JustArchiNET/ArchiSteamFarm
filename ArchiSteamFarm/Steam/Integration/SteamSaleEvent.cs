@@ -20,7 +20,7 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using ArchiSteamFarm.Compatibility;
+using JustArchiNET.Madness;
 #endif
 using System;
 using System.Collections.Immutable;
@@ -36,7 +36,10 @@ namespace ArchiSteamFarm.Steam.Integration {
 		private const byte MaxSingleQueuesDaily = 3; // This is only a failsafe for infinite queue clearing (in case IsDiscoveryQueueAvailable() would fail us)
 
 		private readonly Bot Bot;
+
+#pragma warning disable CA2213 // False positive, .NET Framework can't understand DisposeAsync()
 		private readonly Timer SaleEventTimer;
+#pragma warning restore CA2213 // False positive, .NET Framework can't understand DisposeAsync()
 
 		internal SteamSaleEvent(Bot bot) {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));

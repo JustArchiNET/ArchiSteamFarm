@@ -20,6 +20,9 @@
 		<PackageIcon>../resources/ASF.ico</PackageIcon>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/JustArchiNET/ArchiSteamFarm</PackageProjectUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageReleaseNotes>https://github.com/JustArchiNET/ArchiSteamFarm/releases</PackageReleaseNotes>
+		<RepositoryBranch>main</RepositoryBranch>
 		<RepositoryType>Git</RepositoryType>
 		<RepositoryUrl>https://github.com/JustArchiNET/ArchiSteamFarm.git</RepositoryUrl>
 		<RollForward>LatestMajor</RollForward>

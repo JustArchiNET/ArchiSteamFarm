@@ -20,8 +20,10 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using ArchiSteamFarm.Compatibility;
-using File = System.IO.File;
+using JustArchiNET.Madness;
+using OperatingSystem = JustArchiNET.Madness.OperatingSystemMadness.OperatingSystem;
+#else
+using System.Runtime.Versioning;
 #endif
 using System;
 using System.Diagnostics;
@@ -41,6 +43,18 @@ namespace ArchiSteamFarm.Core {
 	internal static class OS {
 		// We need to keep this one assigned and not calculated on-demand
 		internal static readonly string ProcessFileName = Process.GetCurrentProcess().MainModule?.FileName ?? throw new InvalidOperationException(nameof(ProcessFileName));
+
+		internal static DateTime ProcessStartTime {
+#if NETFRAMEWORK
+			get => RuntimeMadness.ProcessStartTime.ToUniversalTime();
+#else
+			get {
+				using Process process = Process.GetCurrentProcess();
+
+				return process.StartTime.ToUniversalTime();
+			}
+#endif
+		}
 
 		internal static string Version {
 			get {
@@ -81,19 +95,21 @@ namespace ArchiSteamFarm.Core {
 		private static Mutex? SingleInstance;
 
 		internal static void CoreInit(bool systemRequired) {
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+			if (OperatingSystem.IsWindows()) {
 				if (systemRequired) {
 					WindowsKeepSystemActive();
 				}
 
 				if (!Console.IsOutputRedirected) {
-					// Normally we should use UTF-8 encoding as it's the most correct one for our case, and we already use it on other OSes such as Linux
+					// Normally we should use UTF-8 console encoding as it's the most correct one for our case, and we already use it on other OSes such as Linux
 					// However, older Windows versions, mainly 7/8.1 can't into UTF-8 without appropriate console font, and expecting from users to change it manually is unwanted
 					// As irrational as it can sound, those versions actually can work with unicode encoding instead, as they magically map it into proper chars despite of incorrect font
-					// We could in theory conditionally use UTF-8 for Windows 10+ and unicode otherwise, but Windows version detection is simply not worth the hassle in this case
-					// Therefore, until we can drop support for Windows < 10, we'll stick with Unicode for all Windows boxes, unless there will be valid reasoning for conditional switch
 					// See https://github.com/JustArchiNET/ArchiSteamFarm/issues/1289 for more details
+#if NETFRAMEWORK
 					Console.OutputEncoding = Encoding.Unicode;
+#else
+					Console.OutputEncoding = OperatingSystem.IsWindowsVersionAtLeast(10) ? Encoding.UTF8 : Encoding.Unicode;
+#endif
 
 					// Quick edit mode will freeze when user start selecting something on the console until the selection is cancelled
 					// Users are very often doing it accidentally without any real purpose, and we want to avoid this common issue which causes the whole process to hang
@@ -170,16 +186,15 @@ namespace ArchiSteamFarm.Core {
 			return true;
 		}
 
+		[SupportedOSPlatform("FreeBSD")]
+		[SupportedOSPlatform("Linux")]
+		[SupportedOSPlatform("MacOS")]
 		internal static void UnixSetFileAccess(string path, EUnixPermission permission) {
 			if (string.IsNullOrEmpty(path)) {
 				throw new ArgumentNullException(nameof(path));
 			}
 
-#if NETFRAMEWORK
-			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && !RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
-#else
-			if (!RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD) && !RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && !RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
-#endif
+			if (!OperatingSystem.IsFreeBSD() && !OperatingSystem.IsLinux() && !OperatingSystem.IsMacOS()) {
 				throw new PlatformNotSupportedException();
 			}
 
@@ -216,7 +231,7 @@ namespace ArchiSteamFarm.Core {
 			}
 
 			// All windows variants have valid .NET Core build, and generic-netf is supported only on mono
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || !StaticHelpers.IsRunningOnMono) {
+			if (OperatingSystem.IsWindows() || !RuntimeMadness.IsRunningOnMono) {
 				return false;
 			}
 
@@ -237,8 +252,9 @@ namespace ArchiSteamFarm.Core {
 #endif
 		}
 
+		[SupportedOSPlatform("Windows")]
 		private static void WindowsDisableQuickEditMode() {
-			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+			if (!OperatingSystem.IsWindows()) {
 				throw new PlatformNotSupportedException();
 			}
 
@@ -257,8 +273,9 @@ namespace ArchiSteamFarm.Core {
 			}
 		}
 
+		[SupportedOSPlatform("Windows")]
 		private static void WindowsKeepSystemActive() {
-			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+			if (!OperatingSystem.IsWindows()) {
 				throw new PlatformNotSupportedException();
 			}
 
@@ -274,6 +291,9 @@ namespace ArchiSteamFarm.Core {
 		}
 
 		[Flags]
+		[SupportedOSPlatform("FreeBSD")]
+		[SupportedOSPlatform("Linux")]
+		[SupportedOSPlatform("MacOS")]
 		internal enum EUnixPermission : ushort {
 			OtherExecute = 0x1,
 			OtherWrite = 0x2,
@@ -289,33 +309,46 @@ namespace ArchiSteamFarm.Core {
 		}
 
 		private static class NativeMethods {
+			[SupportedOSPlatform("Windows")]
 			internal const EExecutionState AwakeExecutionState = EExecutionState.SystemRequired | EExecutionState.AwayModeRequired | EExecutionState.Continuous;
+
+			[SupportedOSPlatform("Windows")]
 			internal const uint EnableQuickEditMode = 0x0040;
+
+			[SupportedOSPlatform("Windows")]
 			internal const sbyte StandardInputHandle = -10;
 
 #pragma warning disable CA2101 // False positive, we can't use unicode charset on Unix, and it uses UTF-8 by default anyway
 			[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 			[DllImport("libc", EntryPoint = "chmod", SetLastError = true)]
+			[SupportedOSPlatform("FreeBSD")]
+			[SupportedOSPlatform("Linux")]
+			[SupportedOSPlatform("MacOS")]
 			internal static extern int Chmod(string path, int mode);
 #pragma warning restore CA2101 // False positive, we can't use unicode charset on Unix, and it uses UTF-8 by default anyway
 
 			[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 			[DllImport("kernel32.dll")]
+			[SupportedOSPlatform("Windows")]
 			internal static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
 
 			[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 			[DllImport("kernel32.dll")]
+			[SupportedOSPlatform("Windows")]
 			internal static extern IntPtr GetStdHandle(int nStdHandle);
 
 			[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 			[DllImport("kernel32.dll")]
+			[SupportedOSPlatform("Windows")]
 			internal static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
 
 			[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 			[DllImport("kernel32.dll")]
+			[SupportedOSPlatform("Windows")]
 			internal static extern EExecutionState SetThreadExecutionState(EExecutionState executionState);
 
 			[Flags]
+			[SupportedOSPlatform("Windows")]
 			internal enum EExecutionState : uint {
 				None = 0,
 				SystemRequired = 0x00000001,

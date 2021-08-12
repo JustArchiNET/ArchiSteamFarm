@@ -39,7 +39,7 @@ jobs:
       run: dotnet --info
 
     - name: Setup Node.js with npm
-      uses: actions/setup-node@v2.3.0
+      uses: actions/setup-node@v2.4.0
       with:
         check-latest: true
         node-version: ${{ env.NODE_JS_VERSION }}
@@ -422,7 +422,7 @@ jobs:
         path: out
 
     - name: Import GPG key for signing
-      uses: crazy-max/ghaction-import-gpg@v3.1.0
+      uses: crazy-max/ghaction-import-gpg@v3.2.0
       with:
         gpg-private-key: ${{ secrets.ARCHIBOT_GPG_PRIVATE_KEY }}
 
