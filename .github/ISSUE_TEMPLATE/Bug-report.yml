@@ -38,6 +38,9 @@ body:
       label: ASF variant
       description: If you're using a different variant, ensure that your bug report is reproducible on one of the below.
       options:
+        - docker-linux/amd64
+        - docker-linux/arm/v7
+        - docker-linux/arm64
         - generic (with latest .NET runtime)
         - generic-netf (with latest Mono runtime)
         - linux-arm
