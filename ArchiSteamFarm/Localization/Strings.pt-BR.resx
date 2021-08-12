@@ -104,7 +104,9 @@ StackTrace:
 		<value>{0} é inválido!</value>
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
-	
+	<data name="ErrorNoBotsDefined" xml:space="preserve">
+		<value>Nenhum bot definido. Você se esqueceu de configurar o ASF? Siga o guia 'configuração' na wiki se estiver confuso.</value>
+	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} é nulo!</value>
 		<comment>{0} will be replaced by object's name</comment>
