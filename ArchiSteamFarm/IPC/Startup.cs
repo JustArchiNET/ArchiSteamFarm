@@ -20,7 +20,6 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using ArchiSteamFarm.Compatibility;
 using Microsoft.AspNetCore.Mvc;
 using JustArchiNET.Madness;
 using Newtonsoft.Json.Converters;
