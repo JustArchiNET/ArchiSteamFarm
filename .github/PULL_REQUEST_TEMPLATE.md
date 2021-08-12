@@ -13,15 +13,15 @@
 
 ### New functionality
 
-<!-- Please describe here, what new functionality was added. -->
+<!-- Please describe below, what new functionality was added. -->
 
 ### Changed functionality
 
-<!-- Please describe here, what old functionality was changed. -->
+<!-- Please describe below, what old functionality was changed. -->
 
 ### Removed functionality
 
-<!-- Please describe here, what old functionality was removed. Make sure to mention what it was replaced with or how everything that was previously achievable still is. -->
+<!-- Please describe below, what old functionality was removed. Make sure to mention what it was replaced with or how everything that was previously achievable still is. -->
 
 ## Additional info
 
