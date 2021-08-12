@@ -20,8 +20,8 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using Microsoft.AspNetCore.Mvc;
 using JustArchiNET.Madness;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Converters;
 #endif
 using System;
