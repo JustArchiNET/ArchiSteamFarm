@@ -189,11 +189,11 @@ namespace ArchiSteamFarm.Helpers {
 				throw new ArgumentNullException(nameof(encryptedString));
 			}
 
+#if TARGET_GENERIC || TARGET_WINDOWS
 			if (!OperatingSystem.IsWindows()) {
 				return null;
 			}
 
-#if TARGET_GENERIC || TARGET_WINDOWS
 			try {
 				byte[] decryptedData = ProtectedData.Unprotect(
 					Convert.FromBase64String(encryptedString),
@@ -208,7 +208,7 @@ namespace ArchiSteamFarm.Helpers {
 				return null;
 			}
 #else
-			throw new InvalidOperationException();
+			return null;
 #endif
 		}
 
@@ -240,11 +240,11 @@ namespace ArchiSteamFarm.Helpers {
 				throw new ArgumentNullException(nameof(decryptedString));
 			}
 
+#if TARGET_GENERIC || TARGET_WINDOWS
 			if (!OperatingSystem.IsWindows()) {
 				return null;
 			}
 
-#if TARGET_GENERIC || TARGET_WINDOWS
 			try {
 				byte[] encryptedData = ProtectedData.Protect(
 					Encoding.UTF8.GetBytes(decryptedString),
@@ -259,7 +259,7 @@ namespace ArchiSteamFarm.Helpers {
 				return null;
 			}
 #else
-			throw new InvalidOperationException();
+			return null;
 #endif
 		}
 
