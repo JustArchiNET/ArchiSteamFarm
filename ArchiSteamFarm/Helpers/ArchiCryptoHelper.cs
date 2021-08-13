@@ -193,6 +193,7 @@ namespace ArchiSteamFarm.Helpers {
 				return null;
 			}
 
+#if TARGET_GENERIC || TARGET_WINDOWS
 			try {
 				byte[] decryptedData = ProtectedData.Unprotect(
 					Convert.FromBase64String(encryptedString),
@@ -206,6 +207,9 @@ namespace ArchiSteamFarm.Helpers {
 
 				return null;
 			}
+#else
+			throw new InvalidOperationException();
+#endif
 		}
 
 		private static string? EncryptAES(string decryptedString) {
@@ -240,6 +244,7 @@ namespace ArchiSteamFarm.Helpers {
 				return null;
 			}
 
+#if TARGET_GENERIC || TARGET_WINDOWS
 			try {
 				byte[] encryptedData = ProtectedData.Protect(
 					Encoding.UTF8.GetBytes(decryptedString),
@@ -253,6 +258,9 @@ namespace ArchiSteamFarm.Helpers {
 
 				return null;
 			}
+#else
+			throw new InvalidOperationException();
+#endif
 		}
 
 		public enum ECryptoMethod : byte {
