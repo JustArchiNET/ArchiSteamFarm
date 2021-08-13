@@ -22,6 +22,9 @@
 #if NETFRAMEWORK
 using OperatingSystem = JustArchiNET.Madness.OperatingSystemMadness.OperatingSystem;
 #endif
+#if TARGET_GENERIC || TARGET_WINDOWS
+using Microsoft.Win32;
+#endif
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -42,7 +45,6 @@ using ArchiSteamFarm.NLog.Targets;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
-using Microsoft.Win32;
 using Newtonsoft.Json;
 using NLog;
 using NLog.Targets;
@@ -274,9 +276,11 @@ namespace ArchiSteamFarm {
 				// April Fools easter egg logic
 				AprilFools.Init();
 
+#if TARGET_GENERIC || TARGET_WINDOWS
 				if (OperatingSystem.IsWindows()) {
 					SystemEvents.TimeChanged += AprilFools.OnTimeChanged;
 				}
+#endif
 			}
 
 			if (!string.IsNullOrEmpty(latestJson)) {
