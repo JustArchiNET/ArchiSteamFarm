@@ -385,7 +385,7 @@ namespace ArchiSteamFarm.Steam.Cards {
 			}
 		}
 
-		private async void CheckGamesForFarming(object? state) {
+		private async void CheckGamesForFarming(object? state = null) {
 			if (NowFarming || Paused || !Bot.IsConnectedAndLoggedOn) {
 				return;
 			}

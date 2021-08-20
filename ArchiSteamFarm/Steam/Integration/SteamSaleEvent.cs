@@ -54,7 +54,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 		public async ValueTask DisposeAsync() => await SaleEventTimer.DisposeAsync().ConfigureAwait(false);
 
-		private async void ExploreDiscoveryQueue(object? state) {
+		private async void ExploreDiscoveryQueue(object? state = null) {
 			if (!Bot.IsConnectedAndLoggedOn) {
 				return;
 			}

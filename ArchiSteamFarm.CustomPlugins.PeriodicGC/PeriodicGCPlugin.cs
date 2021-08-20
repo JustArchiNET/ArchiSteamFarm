@@ -50,7 +50,7 @@ namespace ArchiSteamFarm.CustomPlugins.PeriodicGC {
 			}
 		}
 
-		private static void PerformGC(object? state) {
+		private static void PerformGC(object? state = null) {
 			ASF.ArchiLogger.LogGenericWarning("Performing GC, current memory: " + (GC.GetTotalMemory(false) / 1024) + " KB.");
 
 			lock (LockObject) {
