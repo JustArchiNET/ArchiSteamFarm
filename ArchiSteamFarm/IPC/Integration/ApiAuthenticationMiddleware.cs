@@ -47,8 +47,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 
 		private static readonly SemaphoreSlim AuthorizationSemaphore = new(1, 1);
 		private static readonly ConcurrentDictionary<IPAddress, byte> FailedAuthorizations = new();
-
-		private static Timer? ClearFailedAuthorizationsTimer;
+		private static readonly Timer ClearFailedAuthorizationsTimer = new(ClearFailedAuthorizations);
 
 		private readonly ForwardedHeadersOptions ForwardedHeadersOptions;
 		private readonly RequestDelegate Next;
@@ -63,12 +62,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 			ForwardedHeadersOptions = forwardedHeadersOptions.Value ?? throw new InvalidOperationException(nameof(forwardedHeadersOptions));
 
 			lock (FailedAuthorizations) {
-				ClearFailedAuthorizationsTimer ??= new Timer(
-					_ => FailedAuthorizations.Clear(),
-					null,
-					TimeSpan.FromHours(FailedAuthorizationsCooldownInHours), // Delay
-					TimeSpan.FromHours(FailedAuthorizationsCooldownInHours) // Period
-				);
+				ClearFailedAuthorizationsTimer.Change(TimeSpan.FromHours(FailedAuthorizationsCooldownInHours), TimeSpan.FromHours(FailedAuthorizationsCooldownInHours));
 			}
 		}
 
@@ -101,19 +95,21 @@ namespace ArchiSteamFarm.IPC.Integration {
 			await context.Response.WriteJsonAsync(new GenericResponse<StatusCodeResponse>(false, statusCodeResponse), jsonOptions.Value.SerializerSettings).ConfigureAwait(false);
 		}
 
+		private static void ClearFailedAuthorizations(object? state = null) => FailedAuthorizations.Clear();
+
 		private async Task<(HttpStatusCode StatusCode, bool Permanent)> GetAuthenticationStatus(HttpContext context) {
 			if (context == null) {
 				throw new ArgumentNullException(nameof(context));
-			}
-
-			if (ClearFailedAuthorizationsTimer == null) {
-				throw new InvalidOperationException(nameof(ClearFailedAuthorizationsTimer));
 			}
 
 			IPAddress? clientIP = context.Connection.RemoteIpAddress;
 
 			if (clientIP == null) {
 				throw new InvalidOperationException(nameof(clientIP));
+			}
+
+			if (FailedAuthorizations.TryGetValue(clientIP, out byte attempts) && (attempts >= MaxFailedAuthorizationAttempts)) {
+				return (HttpStatusCode.Forbidden, false);
 			}
 
 			string? ipcPassword = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPassword : GlobalConfig.DefaultIPCPassword;
@@ -136,12 +132,6 @@ namespace ArchiSteamFarm.IPC.Integration {
 				}
 
 				return (ForwardedHeadersOptions.KnownNetworks.Any(network => network.Contains(clientIP)) ? HttpStatusCode.OK : HttpStatusCode.Forbidden, true);
-			}
-
-			if (FailedAuthorizations.TryGetValue(clientIP, out byte attempts)) {
-				if (attempts >= MaxFailedAuthorizationAttempts) {
-					return (HttpStatusCode.Forbidden, false);
-				}
 			}
 
 			if (!context.Request.Headers.TryGetValue(HeadersField, out StringValues passwords) && !context.Request.Query.TryGetValue("password", out passwords)) {
