@@ -71,15 +71,15 @@
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
 	</data>
 	<data name="PluginInitializedAndEnabled" xml:space="preserve">
-		<value>{0} wurde erfolgreich initialisiert, wir danken Ihnen im Voraus für Ihre Hilfe. Die erste Übermittlung wird in etwa {1} ab jetzt erfolgen.</value>
+		<value>{0} wurde erfolgreich initialisiert. Wir danken Ihnen im Voraus für Ihre Hilfe. Die erste Übermittlung wird in etwa {1} ab jetzt erfolgen.</value>
 		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
 	</data>
 	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
-		<value>{0} konnte nicht geladen werden. Eine frische Instanz wird initialisiert werden...</value>
+		<value>{0} konnte nicht geladen werden. Eine frische Instanz wird initialisiert...</value>
 		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>
 	</data>
 	<data name="BotNoAppsToRefresh" xml:space="preserve">
-		<value>Es gibt auf dieser Bot-Instanz keine Applikationen, die einer Auffrischung bedürfen.</value>
+		<value>Es gibt auf dieser Bot-Instanz keine Applikationen, die einer Aktualisierung bedürfen.</value>
 	</data>
 	<data name="BotRetrievingTotalAppAccessTokens" xml:space="preserve">
 		<value>Rufe insgesamt {0} Applikationszugriffstoken ab...</value>
@@ -90,15 +90,15 @@
 		<comment>{0} will be replaced by the number (count this batch) of app access tokens being retrieved</comment>
 	</data>
 	<data name="BotFinishedRetrievingAppAccessTokens" xml:space="preserve">
-		<value>Abruf von {0} Applikationszugrifsstoken fertiggestellt.</value>
+		<value>Abruf von {0} Applikationszugrifsstoken abgeschlossen.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app access tokens retrieved</comment>
 	</data>
 	<data name="BotFinishedRetrievingTotalAppAccessTokens" xml:space="preserve">
-		<value>Abruf von insgesamt {0} Applikationszugriffstoken fertiggestellt.</value>
+		<value>Abruf von insgesamt {0} Applikationszugriffstoken abgeschlossen.</value>
 		<comment>{0} will be replaced by the number (total count) of app access tokens retrieved</comment>
 	</data>
 	<data name="BotRetrievingTotalDepots" xml:space="preserve">
-		<value>Rufe alle Depots für insgesamt {0} Applikationen ab...</value>
+		<value>Abruf aller Depots für insgesamt {0} Applikationen...</value>
 		<comment>{0} will be replaced by the number (total count) of apps being retrieved</comment>
 	</data>
 	<data name="BotRetrievingAppInfos" xml:space="preserve">
@@ -106,7 +106,7 @@
 		<comment>{0} will be replaced by the number (count this batch) of app infos being retrieved</comment>
 	</data>
 	<data name="BotFinishedRetrievingAppInfos" xml:space="preserve">
-		<value>Abruf von {0} Applikationsinfos fertiggestellt.</value>
+		<value>Abruf von {0} Applikationsinfos abgeschlossen.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
 	<data name="BotRetrievingDepotKeys" xml:space="preserve">
@@ -114,11 +114,11 @@
 		<comment>{0} will be replaced by the number (count this batch) of depot keys being retrieved</comment>
 	</data>
 	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
-		<value>Abruf von {0} Depotschlüsseln fertiggestellt.</value>
+		<value>Abruf von {0} Depotschlüsseln abgeschlossen.</value>
 		<comment>{0} will be replaced by the number (count this batch) of depot keys retrieved</comment>
 	</data>
 	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
-		<value>Abruf aller Depotschlüssel für insgesamt {0} Applikationen fertiggestellt.</value>
+		<value>Abruf aller Depotschlüssel für insgesamt {0} Applikationen abgeschlossen.</value>
 		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>
 	</data>
 	<data name="SubmissionNoNewData" xml:space="preserve">
