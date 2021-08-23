@@ -46,8 +46,8 @@ namespace ArchiSteamFarm.IPC.Integration {
 		private const byte MaxFailedAuthorizationAttempts = 5;
 
 		private static readonly SemaphoreSlim AuthorizationSemaphore = new(1, 1);
-		private static readonly ConcurrentDictionary<IPAddress, byte> FailedAuthorizations = new();
 		private static readonly Timer ClearFailedAuthorizationsTimer = new(ClearFailedAuthorizations);
+		private static readonly ConcurrentDictionary<IPAddress, byte> FailedAuthorizations = new();
 
 		private readonly ForwardedHeadersOptions ForwardedHeadersOptions;
 		private readonly RequestDelegate Next;
