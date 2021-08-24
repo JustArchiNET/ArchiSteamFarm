@@ -67,7 +67,7 @@
 		<comment>{0} will be replaced by trade number</comment>
 	</data>
 	<data name="AutoUpdateCheckInfo" xml:space="preserve">
-		<value>ASF sucht automatisch nach einer aktuelleren Version. Konfiguriertes Intervall: {0}.</value>
+		<value>ASF sucht automatisch alle {0} nach einer aktuelleren Version.</value>
 		<comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
 	</data>
 	<data name="Content" xml:space="preserve">
@@ -97,7 +97,7 @@ StackTrace:
 		<comment>{0} will be replaced by URL of the request</comment>
 	</data>
 	<data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-		<value>Globale Konfiguration konnte nicht geladen werden. Stellen Sie sicher, dass {0} existiert und gültig ist und Folgen Sie der Installationsanleitung im Wiki, falls etwas unklar sein sollte.</value>
+		<value>Globale Konfiguration konnte nicht geladen werden. Stellen Sie sicher, dass {0} existiert und gültig ist und folgen Sie der Installationsanleitung im Wiki, falls etwas unklar sein sollte.</value>
 		<comment>{0} will be replaced by file's path</comment>
 	</data>
 	<data name="ErrorIsInvalid" xml:space="preserve">
@@ -152,7 +152,7 @@ StackTrace:
 		<comment>{0} will be replaced by service's name</comment>
 	</data>
 	<data name="NoBotsAreRunning" xml:space="preserve">
-		<value>Keine Bots laufen, beende...</value>
+		<value>Es werden keine Bots ausgeführt, beende...</value>
 	</data>
 	<data name="RefreshingOurSession" xml:space="preserve">
 		<value>Aktualisiere unsere Sitzung!</value>
@@ -184,18 +184,18 @@ StackTrace:
 		<value>Aktualisierung abgeschlossen!</value>
 	</data>
 	<data name="UpdateNewVersionAvailable" xml:space="preserve">
-		<value>Es ist eine neue ASF Version verfügbar! Sie können ein Update selbst starten.</value>
+		<value>Es ist eine neue ASF-Version verfügbar! Sie können ein Update selbst starten.</value>
 	</data>
 	<data name="UpdateVersionInfo" xml:space="preserve">
 		<value>Lokale Version: {0} | Verfügbare Version: {1}</value>
 		<comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
 	</data>
 	<data name="UserInputSteam2FA" xml:space="preserve">
-		<value>Bitte geben Sie Ihren 2FA-Code aus Ihrer Steam-Authentifizierungs-App ein: </value>
+		<value>Bitte geben Sie Ihren 2FA-Code aus Ihrer Steam-Authentifizierungsapp ein: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamGuard" xml:space="preserve">
-		<value>Bitte geben Sie den Steam Guard Authentifizierungs-Code ein, welcher Ihnen per E-Mail geschickt wurde: </value>
+		<value>Bitte geben Sie den Steam Guard Authentifizierungscode ein, welcher Ihnen per E-Mail geschickt wurde: </value>
 		<comment>Please note that this translation should end with space</comment>
 	</data>
 	<data name="UserInputSteamLogin" xml:space="preserve">
