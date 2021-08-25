@@ -1158,7 +1158,7 @@ namespace ArchiSteamFarm.Steam {
 			return ((productInfoResultSet.Complete && !productInfoResultSet.Failed) || optimisticDiscovery ? appID : 0, DateTime.MinValue, true);
 		}
 
-		internal async Task<HashSet<uint>?> GetMarketableAppIDs() => await ArchiWebHandler.GetAppList().ConfigureAwait(false);
+		internal Task<HashSet<uint>?> GetMarketableAppIDs() => ArchiWebHandler.GetAppList();
 
 		internal async Task<Dictionary<uint, (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs)>?> GetPackagesData(IReadOnlyCollection<uint> packageIDs) {
 			if ((packageIDs == null) || (packageIDs.Count == 0)) {
