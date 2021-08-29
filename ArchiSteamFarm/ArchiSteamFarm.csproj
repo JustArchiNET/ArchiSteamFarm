@@ -15,7 +15,6 @@
 		<PackageReference Include="Markdig.Signed" />
 		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="Nito.AsyncEx.Coordination" />
-		<PackageReference Include="NLog" />
 		<PackageReference Include="NLog.Web.AspNetCore" />
 		<PackageReference Include="SteamKit2" />
 		<PackageReference Include="Swashbuckle.AspNetCore" />
