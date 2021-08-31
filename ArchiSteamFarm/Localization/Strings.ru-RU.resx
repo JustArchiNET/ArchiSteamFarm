@@ -80,7 +80,7 @@
 		<comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
 	</data>
 	<data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-		<value>ASF V{0} столкнулся с фатальным исключением до того, как ядро модуля журналирования могло инициализироваться!</value>
+		<value>ASF V{0} столкнулся с фатальной ошибкой до того, как ядро модуля журналирования могло инициализироваться!</value>
 		<comment>{0} will be replaced by version number</comment>
 	</data>
 	<data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
@@ -97,7 +97,7 @@
 		<comment>{0} will be replaced by URL of the request</comment>
 	</data>
 	<data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-		<value>Невозможно загрузить файл глобальной конфигурации. Убедитесь, что {0} существует и верен! Если не понимаете что делать - прочтите статью "setting up" в wiki.</value>
+		<value>Невозможно загрузить файл глобальной конфигурации. Убедитесь, что {0} существует и верен! Если не понимаете что делать - прочтите статью "setting up (настройка)" в wiki.</value>
 		<comment>{0} will be replaced by file's path</comment>
 	</data>
 	<data name="ErrorIsInvalid" xml:space="preserve">
