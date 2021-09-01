@@ -105,11 +105,7 @@ namespace ArchiSteamFarm.Core {
 					// However, older Windows versions, mainly 7/8.1 can't into UTF-8 without appropriate console font, and expecting from users to change it manually is unwanted
 					// As irrational as it can sound, those versions actually can work with unicode encoding instead, as they magically map it into proper chars despite of incorrect font
 					// See https://github.com/JustArchiNET/ArchiSteamFarm/issues/1289 for more details
-#if NETFRAMEWORK
-					Console.OutputEncoding = Encoding.Unicode;
-#else
 					Console.OutputEncoding = OperatingSystem.IsWindowsVersionAtLeast(10) ? Encoding.UTF8 : Encoding.Unicode;
-#endif
 
 					// Quick edit mode will freeze when user start selecting something on the console until the selection is cancelled
 					// Users are very often doing it accidentally without any real purpose, and we want to avoid this common issue which causes the whole process to hang
