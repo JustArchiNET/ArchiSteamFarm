@@ -378,10 +378,13 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Download ASF-generic artifact from ubuntu-latest
+    # TODO: It'd be perfect if we could match final artifacts to the platform they target, so e.g. linux build comes from the linux machine
+    # However, that is currently impossible due to https://github.com/dotnet/msbuild/issues/3897
+    # Therefore, we'll (sadly) pull artifacts from Windows machine only for now
+    - name: Download ASF-generic artifact from windows-latest
       uses: actions/download-artifact@v2.0.10
       with:
-        name: ubuntu-latest_ASF-generic
+        name: windows-latest_ASF-generic
         path: out
 
     - name: Download ASF-generic-netf artifact from windows-latest
@@ -390,28 +393,28 @@ jobs:
         name: windows-latest_ASF-generic-netf
         path: out
 
-    - name: Download ASF-linux-arm artifact from ubuntu-latest
+    - name: Download ASF-linux-arm artifact from windows-latest
       uses: actions/download-artifact@v2.0.10
       with:
-        name: ubuntu-latest_ASF-linux-arm
+        name: windows-latest_ASF-linux-arm
         path: out
 
-    - name: Download ASF-linux-arm64 artifact from ubuntu-latest
+    - name: Download ASF-linux-arm64 artifact from windows-latest
       uses: actions/download-artifact@v2.0.10
       with:
-        name: ubuntu-latest_ASF-linux-arm64
+        name: windows-latest_ASF-linux-arm64
         path: out
 
-    - name: Download ASF-linux-x64 artifact from ubuntu-latest
+    - name: Download ASF-linux-x64 artifact from windows-latest
       uses: actions/download-artifact@v2.0.10
       with:
-        name: ubuntu-latest_ASF-linux-x64
+        name: windows-latest_ASF-linux-x64
         path: out
 
-    - name: Download ASF-osx-x64 artifact from macos-latest
+    - name: Download ASF-osx-x64 artifact from windows-latest
       uses: actions/download-artifact@v2.0.10
       with:
-        name: macos-latest_ASF-osx-x64
+        name: windows-latest_ASF-osx-x64
         path: out
 
     - name: Download ASF-win-x64 artifact from windows-latest
