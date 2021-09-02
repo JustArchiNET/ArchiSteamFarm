@@ -73,13 +73,5 @@ namespace ArchiSteamFarm.Core {
 				Timer.Change(dueTime, Timeout.Infinite);
 			}
 		}
-
-#if TARGET_GENERIC || TARGET_WINDOWS
-		internal static void OnTimeChanged(object? sender, EventArgs e) {
-			lock (LockObject) {
-				Timer.Change(TimeSpan.Zero, Timeout.InfiniteTimeSpan);
-			}
-		}
-#endif
 	}
 }

@@ -22,7 +22,6 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' != 'net48' AND ('$(TargetGeneric)' == 'true' OR '$(TargetWindows)' == 'true')">
-		<PackageVersion Include="Microsoft.Win32.SystemEvents" Version="5.0.0" />
 		<PackageVersion Include="System.IO.FileSystem.AccessControl" Version="5.0.0" />
 		<PackageVersion Include="System.Security.Cryptography.ProtectedData" Version="5.0.0" />
 	</ItemGroup>
