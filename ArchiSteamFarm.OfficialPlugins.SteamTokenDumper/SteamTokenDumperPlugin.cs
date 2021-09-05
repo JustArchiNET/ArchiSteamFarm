@@ -453,7 +453,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 			}
 		}
 
-		private static async void SubmitData(object? state) {
+		private static async void SubmitData(object? state = null) {
 			if (Bot.Bots == null) {
 				throw new InvalidOperationException(nameof(Bot.Bots));
 			}

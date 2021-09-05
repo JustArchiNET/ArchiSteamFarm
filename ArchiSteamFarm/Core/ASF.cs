@@ -438,7 +438,7 @@ namespace ArchiSteamFarm.Core {
 			}
 		}
 
-		private static async void OnAutoUpdatesTimer(object? state) => await UpdateAndRestart().ConfigureAwait(false);
+		private static async void OnAutoUpdatesTimer(object? state = null) => await UpdateAndRestart().ConfigureAwait(false);
 
 		private static async void OnChanged(object sender, FileSystemEventArgs e) {
 			if (sender == null) {

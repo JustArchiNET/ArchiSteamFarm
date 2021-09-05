@@ -1,3 +1,13 @@
+# zip_exec
+
+Source: https://sourceforge.net/p/galaxyv2/code/HEAD/tree/other/zip_exec/
+Last update: r1761
+
+Original readme further below.
+
+---
+
+## Readme
 
 A program to set the executable flag of a file within a zip archive.
 

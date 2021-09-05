@@ -318,7 +318,7 @@ namespace ArchiSteamFarm.Core {
 			return true;
 		}
 
-		private async void MatchActively(object? state) {
+		private async void MatchActively(object? state = null) {
 			if (!Bot.IsConnectedAndLoggedOn || Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchActively) || (await IsEligibleForMatching().ConfigureAwait(false) != true)) {
 				Bot.ArchiLogger.LogGenericTrace(Strings.ErrorAborted);
 

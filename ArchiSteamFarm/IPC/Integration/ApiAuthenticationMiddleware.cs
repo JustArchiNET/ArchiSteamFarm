@@ -19,6 +19,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using JustArchiNET.Madness;
+#endif
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
@@ -45,10 +48,9 @@ namespace ArchiSteamFarm.IPC.Integration {
 		private const byte FailedAuthorizationsCooldownInHours = 1;
 		private const byte MaxFailedAuthorizationAttempts = 5;
 
-		private static readonly SemaphoreSlim AuthorizationSemaphore = new(1, 1);
+		private static readonly ConcurrentDictionary<IPAddress, Task> AuthorizationTasks = new();
+		private static readonly Timer ClearFailedAuthorizationsTimer = new(ClearFailedAuthorizations);
 		private static readonly ConcurrentDictionary<IPAddress, byte> FailedAuthorizations = new();
-
-		private static Timer? ClearFailedAuthorizationsTimer;
 
 		private readonly ForwardedHeadersOptions ForwardedHeadersOptions;
 		private readonly RequestDelegate Next;
@@ -63,12 +65,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 			ForwardedHeadersOptions = forwardedHeadersOptions.Value ?? throw new InvalidOperationException(nameof(forwardedHeadersOptions));
 
 			lock (FailedAuthorizations) {
-				ClearFailedAuthorizationsTimer ??= new Timer(
-					_ => FailedAuthorizations.Clear(),
-					null,
-					TimeSpan.FromHours(FailedAuthorizationsCooldownInHours), // Delay
-					TimeSpan.FromHours(FailedAuthorizationsCooldownInHours) // Period
-				);
+				ClearFailedAuthorizationsTimer.Change(TimeSpan.FromHours(FailedAuthorizationsCooldownInHours), TimeSpan.FromHours(FailedAuthorizationsCooldownInHours));
 			}
 		}
 
@@ -101,19 +98,21 @@ namespace ArchiSteamFarm.IPC.Integration {
 			await context.Response.WriteJsonAsync(new GenericResponse<StatusCodeResponse>(false, statusCodeResponse), jsonOptions.Value.SerializerSettings).ConfigureAwait(false);
 		}
 
+		private static void ClearFailedAuthorizations(object? state = null) => FailedAuthorizations.Clear();
+
 		private async Task<(HttpStatusCode StatusCode, bool Permanent)> GetAuthenticationStatus(HttpContext context) {
 			if (context == null) {
 				throw new ArgumentNullException(nameof(context));
-			}
-
-			if (ClearFailedAuthorizationsTimer == null) {
-				throw new InvalidOperationException(nameof(ClearFailedAuthorizationsTimer));
 			}
 
 			IPAddress? clientIP = context.Connection.RemoteIpAddress;
 
 			if (clientIP == null) {
 				throw new InvalidOperationException(nameof(clientIP));
+			}
+
+			if (FailedAuthorizations.TryGetValue(clientIP, out byte attempts) && (attempts >= MaxFailedAuthorizationAttempts)) {
+				return (HttpStatusCode.Forbidden, false);
 			}
 
 			string? ipcPassword = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPassword : GlobalConfig.DefaultIPCPassword;
@@ -138,12 +137,6 @@ namespace ArchiSteamFarm.IPC.Integration {
 				return (ForwardedHeadersOptions.KnownNetworks.Any(network => network.Contains(clientIP)) ? HttpStatusCode.OK : HttpStatusCode.Forbidden, true);
 			}
 
-			if (FailedAuthorizations.TryGetValue(clientIP, out byte attempts)) {
-				if (attempts >= MaxFailedAuthorizationAttempts) {
-					return (HttpStatusCode.Forbidden, false);
-				}
-			}
-
 			if (!context.Request.Headers.TryGetValue(HeadersField, out StringValues passwords) && !context.Request.Query.TryGetValue("password", out passwords)) {
 				return (HttpStatusCode.Unauthorized, true);
 			}
@@ -160,23 +153,37 @@ namespace ArchiSteamFarm.IPC.Integration {
 
 			bool authorized = ipcPassword == inputHash;
 
-			await AuthorizationSemaphore.WaitAsync().ConfigureAwait(false);
+			while (true) {
+				if (AuthorizationTasks.TryGetValue(clientIP, out Task? task)) {
+					await task.ConfigureAwait(false);
 
-			try {
-				bool hasFailedAuthorizations = FailedAuthorizations.TryGetValue(clientIP, out attempts);
-
-				if (hasFailedAuthorizations && (attempts >= MaxFailedAuthorizationAttempts)) {
-					return (HttpStatusCode.Forbidden, false);
+					continue;
 				}
 
-				if (!authorized) {
-					FailedAuthorizations[clientIP] = hasFailedAuthorizations ? ++attempts : (byte) 1;
+				TaskCompletionSource taskCompletionSource = new();
+
+				if (!AuthorizationTasks.TryAdd(clientIP, taskCompletionSource.Task)) {
+					continue;
 				}
-			} finally {
-				AuthorizationSemaphore.Release();
+
+				try {
+					bool hasFailedAuthorizations = FailedAuthorizations.TryGetValue(clientIP, out attempts);
+
+					if (hasFailedAuthorizations && (attempts >= MaxFailedAuthorizationAttempts)) {
+						return (HttpStatusCode.Forbidden, false);
+					}
+
+					if (!authorized) {
+						FailedAuthorizations[clientIP] = hasFailedAuthorizations ? ++attempts : (byte) 1;
+					}
+				} finally {
+					AuthorizationTasks.TryRemove(clientIP, out _);
+
+					taskCompletionSource.SetResult();
+				}
+
+				return (authorized ? HttpStatusCode.OK : HttpStatusCode.Unauthorized, true);
 			}
-
-			return (authorized ? HttpStatusCode.OK : HttpStatusCode.Unauthorized, true);
 		}
 	}
 }

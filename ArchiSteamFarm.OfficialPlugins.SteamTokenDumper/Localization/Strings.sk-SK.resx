@@ -62,31 +62,110 @@
 			PublicKeyToken=b77a5c561934e089
 		</value>
 	</resheader>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="PluginDisabledMissingBuildToken" xml:space="preserve">
+		<value>{0} bol vypnutý kvôli chýbajúcemu build tokenu</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
+	</data>
+	<data name="PluginDisabledInConfig" xml:space="preserve">
+		<value>{0} bol na základe vašej konfigurácie vypnutý. Ak máte záujem pomôcť so zberom údajov pre SteamDB, navštívte našu wiki.</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
+	</data>
+	<data name="PluginInitializedAndEnabled" xml:space="preserve">
+		<value>{0} bol úspešne spustený. Týmto vám ďakujeme za vašu pomoc. Prvý zápis sa udej od teraz za {1}.</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
+	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
+		<value>{0} sa nedokázal načítať, bude načítaný nanovo...</value>
+		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>
+	</data>
+	<data name="BotNoAppsToRefresh" xml:space="preserve">
+		<value>Tento bot neobsahuje žiadne aplikácie na opätovné overenie.</value>
+	</data>
+	<data name="BotRetrievingTotalAppAccessTokens" xml:space="preserve">
+		<value>Celkovo získaných {0} označení aplikácií...</value>
+		<comment>{0} will be replaced by the number (total count) of app access tokens being retrieved</comment>
+	</data>
+	<data name="BotRetrievingAppAccessTokens" xml:space="preserve">
+		<value>Získaných {0} označení aplikácií...</value>
+		<comment>{0} will be replaced by the number (count this batch) of app access tokens being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingAppAccessTokens" xml:space="preserve">
+		<value>Získalo sa {0} označení aplikácií.</value>
+		<comment>{0} will be replaced by the number (count this batch) of app access tokens retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingTotalAppAccessTokens" xml:space="preserve">
+		<value>Celkovo sa získalo {0} označení aplikácií.</value>
+		<comment>{0} will be replaced by the number (total count) of app access tokens retrieved</comment>
+	</data>
+	<data name="BotRetrievingTotalDepots" xml:space="preserve">
+		<value>Získavanie všetkých {0} položiek pre aplikácie...</value>
+		<comment>{0} will be replaced by the number (total count) of apps being retrieved</comment>
+	</data>
+	<data name="BotRetrievingAppInfos" xml:space="preserve">
+		<value>Získavam informácie o {0} aplikáciách...</value>
+		<comment>{0} will be replaced by the number (count this batch) of app infos being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingAppInfos" xml:space="preserve">
+		<value>Dokončené získavanie informácií {0} aplikácií.</value>
+		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
+	</data>
+	<data name="BotRetrievingDepotKeys" xml:space="preserve">
+		<value>Získavam {0} kľúčov položiek...</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot keys being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
+		<value>Dokončené získavanie {0} kľúčov položiek.</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot keys retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
+		<value>Dokončené získanie všetkých kľúčov položiek {0} aplikácií.</value>
+		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>
+	</data>
+	<data name="SubmissionNoNewData" xml:space="preserve">
+		<value>Dáta sú aktuálne, nič nové na potvrdenie.</value>
+	</data>
+	<data name="SubmissionNoContributorSet" xml:space="preserve">
+		<value>Nemôžeme prijať žiadne záznamy, pretože ani jedno SteamID nezodpovedá definícii prispievateľa. Zvážte nastavenie {0} podľa pokynov.</value>
+		<comment>{0} will be replaced by the name of the config property (e.g. "SteamOwnerID") that the user is expected to set</comment>
+	</data>
+	<data name="SubmissionInProgress" xml:space="preserve">
+		<value>Prijali sme celkovo registrovaných aplikácií/balíčkov/položiek:{0}/{1}/{2}...</value>
+		<comment>{0} will be replaced by the number of app access tokens being submitted, {1} will be replaced by the number of package access tokens being submitted, {2} will be replaced by the number of depot keys being submitted</comment>
+	</data>
+	<data name="SubmissionFailedTooManyRequests" xml:space="preserve">
+		<value>Prijímanie bolo neúspešné kvôli veľkému počtu zaslaných požiadaviek. Pokus zopakujeme za približne {0} od teraz.</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
+	<data name="SubmissionSuccessful" xml:space="preserve">
+		<value>Dáta boli úspešne prijaté. Na serveri boli celkovo registrovaných nových aplikácií/balíčkov/položiek: {0} ({1} overených)/{2} ({3} overených)/{4} ({5} overených).</value>
+		<comment>{0} will be replaced by the number of new app access tokens that the server has registered, {1} will be replaced by the number of verified app access tokens that the server has registered, {2} will be replaced by the number of new package access tokens that the server has registered, {3} will be replaced by the number of verified package access tokens that the server has registered, {4} will be replaced by the number of new depot keys that the server has registered, {5} will be replaced by the number of verified depot keys that the server has registered</comment>
+	</data>
+	<data name="SubmissionSuccessfulNewApps" xml:space="preserve">
+		<value>Nové aplikácie: {0}</value>
+		<comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulVerifiedApps" xml:space="preserve">
+		<value>Overené aplikácie: {0}</value>
+		<comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulNewPackages" xml:space="preserve">
+		<value>Nové balíčky: {0}</value>
+		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulVerifiedPackages" xml:space="preserve">
+		<value>Overené balíčky: {0}</value>
+		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulNewDepots" xml:space="preserve">
+		<value>Nové položky: {0}</value>
+		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulVerifiedDepots" xml:space="preserve">
+		<value>Overené položky: {0}</value>
+		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="PluginSecretListInitialized" xml:space="preserve">
+		<value>{0} inicializovaných, modul nebude pracovať so žiadnym: {1}.</value>
+		<comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
+	</data>
 </root>

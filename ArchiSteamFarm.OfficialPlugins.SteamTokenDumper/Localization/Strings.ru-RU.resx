@@ -98,8 +98,14 @@
 		<comment>{0} will be replaced by the number (total count) of app access tokens retrieved</comment>
 	</data>
 	
-	
-	
+	<data name="BotRetrievingAppInfos" xml:space="preserve">
+		<value>Получение информации о {0} приложений...</value>
+		<comment>{0} will be replaced by the number (count this batch) of app infos being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingAppInfos" xml:space="preserve">
+		<value>Завершено получение информации о {0} приложений.</value>
+		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
+	</data>
 	
 	
 	
@@ -108,7 +114,10 @@
 	</data>
 	
 	
-	
+	<data name="SubmissionFailedTooManyRequests" xml:space="preserve">
+		<value>Отправка не удалась из-за слишком большого количества отправленных запросов, мы попытаемся повторить попытку примерно через {0}.</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
 	
 	<data name="SubmissionSuccessfulNewApps" xml:space="preserve">
 		<value>Новые приложения: {0}</value>

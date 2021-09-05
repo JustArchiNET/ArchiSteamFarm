@@ -911,7 +911,7 @@ namespace ArchiSteamFarm.Steam {
 			BotDatabase.AddGamesToRedeemInBackground(gamesToRedeemInBackground);
 
 			if ((GamesRedeemerInBackgroundTimer == null) && BotDatabase.HasGamesToRedeemInBackground && IsConnectedAndLoggedOn) {
-				Utilities.InBackground(() => RedeemGamesInBackground(this));
+				Utilities.InBackground(() => RedeemGamesInBackground());
 			}
 		}
 
@@ -1158,7 +1158,7 @@ namespace ArchiSteamFarm.Steam {
 			return ((productInfoResultSet.Complete && !productInfoResultSet.Failed) || optimisticDiscovery ? appID : 0, DateTime.MinValue, true);
 		}
 
-		internal async Task<HashSet<uint>?> GetMarketableAppIDs() => await ArchiWebHandler.GetAppList().ConfigureAwait(false);
+		internal Task<HashSet<uint>?> GetMarketableAppIDs() => ArchiWebHandler.GetAppList();
 
 		internal async Task<Dictionary<uint, (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs)>?> GetPackagesData(IReadOnlyCollection<uint> packageIDs) {
 			if ((packageIDs == null) || (packageIDs.Count == 0)) {
@@ -1884,7 +1884,7 @@ namespace ArchiSteamFarm.Steam {
 			}
 		}
 
-		private async void HeartBeat(object? state) {
+		private async void HeartBeat(object? state = null) {
 			if (ASF.GlobalConfig == null) {
 				throw new InvalidOperationException(nameof(ASF.GlobalConfig));
 			}
@@ -2052,7 +2052,7 @@ namespace ArchiSteamFarm.Steam {
 			await PluginsCore.OnBotInitModules(this, BotConfig.AdditionalProperties).ConfigureAwait(false);
 		}
 
-		private async void InitPermanentConnectionFailure(object? state) {
+		private async void InitPermanentConnectionFailure(object? state = null) {
 			if (!KeepRunning) {
 				return;
 			}
@@ -2808,7 +2808,7 @@ namespace ArchiSteamFarm.Steam {
 					Utilities.InBackground(ArchiWebHandler.HasValidApiKey);
 
 					if ((GamesRedeemerInBackgroundTimer == null) && BotDatabase.HasGamesToRedeemInBackground) {
-						Utilities.InBackground(() => RedeemGamesInBackground(this));
+						Utilities.InBackground(() => RedeemGamesInBackground());
 					}
 
 					ArchiHandler.SetCurrentMode(BotConfig.UserInterfaceMode);
@@ -3019,7 +3019,7 @@ namespace ArchiSteamFarm.Steam {
 			await CheckOccupationStatus().ConfigureAwait(false);
 		}
 
-		private async void OnSendItemsTimer(object? state) => await Actions.SendInventory(filterFunction: item => BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
+		private async void OnSendItemsTimer(object? state = null) => await Actions.SendInventory(filterFunction: item => BotConfig.LootableTypes.Contains(item.Type)).ConfigureAwait(false);
 
 		private async void OnServiceMethod(SteamUnifiedMessages.ServiceMethodNotification notification) {
 			if (notification == null) {
@@ -3131,7 +3131,7 @@ namespace ArchiSteamFarm.Steam {
 			WalletCurrency = callback.Currency;
 		}
 
-		private async void RedeemGamesInBackground(object? state) {
+		private async void RedeemGamesInBackground(object? state = null) {
 			if (!await GamesRedeemerInBackgroundSemaphore.WaitAsync(0).ConfigureAwait(false)) {
 				return;
 			}
@@ -3279,7 +3279,7 @@ namespace ArchiSteamFarm.Steam {
 			await ArchiHandler.PlayGames(BotConfig.GamesPlayedWhileIdle, BotConfig.CustomGamePlayedWhileIdle).ConfigureAwait(false);
 		}
 
-		private void ResetPlayingWasBlockedWithTimer(object? state) {
+		private void ResetPlayingWasBlockedWithTimer(object? state = null) {
 			PlayingWasBlocked = false;
 			StopPlayingWasBlockedTimer();
 		}

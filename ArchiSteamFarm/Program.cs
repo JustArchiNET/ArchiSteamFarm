@@ -19,9 +19,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if NETFRAMEWORK
-using OperatingSystem = JustArchiNET.Madness.OperatingSystemMadness.OperatingSystem;
-#endif
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -42,7 +39,6 @@ using ArchiSteamFarm.NLog.Targets;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
-using Microsoft.Win32;
 using Newtonsoft.Json;
 using NLog;
 using NLog.Targets;
@@ -273,10 +269,6 @@ namespace ArchiSteamFarm {
 			} else {
 				// April Fools easter egg logic
 				AprilFools.Init();
-
-				if (OperatingSystem.IsWindows()) {
-					SystemEvents.TimeChanged += AprilFools.OnTimeChanged;
-				}
 			}
 
 			if (!string.IsNullOrEmpty(latestJson)) {

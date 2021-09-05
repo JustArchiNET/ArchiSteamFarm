@@ -6,10 +6,6 @@
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<PackageReference Include="AngleSharp.XPath" />
 		<PackageReference Include="ConfigureAwaitChecker.Analyzer" PrivateAssets="all" />
@@ -19,7 +15,6 @@
 		<PackageReference Include="Markdig.Signed" />
 		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="Nito.AsyncEx.Coordination" />
-		<PackageReference Include="NLog" />
 		<PackageReference Include="NLog.Web.AspNetCore" />
 		<PackageReference Include="SteamKit2" />
 		<PackageReference Include="Swashbuckle.AspNetCore" />
@@ -29,8 +24,7 @@
 		<PackageReference Include="System.Linq.Async" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' != 'net48'">
-		<PackageReference Include="Microsoft.Win32.SystemEvents" />
+	<ItemGroup Condition="'$(TargetFramework)' != 'net48' AND ('$(TargetGeneric)' == 'true' OR '$(TargetWindows)' == 'true')">
 		<PackageReference Include="System.IO.FileSystem.AccessControl" />
 		<PackageReference Include="System.Security.Cryptography.ProtectedData" />
 	</ItemGroup>

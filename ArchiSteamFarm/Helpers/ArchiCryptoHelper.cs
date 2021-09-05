@@ -189,6 +189,7 @@ namespace ArchiSteamFarm.Helpers {
 				throw new ArgumentNullException(nameof(encryptedString));
 			}
 
+#if TARGET_GENERIC || TARGET_WINDOWS
 			if (!OperatingSystem.IsWindows()) {
 				return null;
 			}
@@ -206,6 +207,9 @@ namespace ArchiSteamFarm.Helpers {
 
 				return null;
 			}
+#else
+			return null;
+#endif
 		}
 
 		private static string? EncryptAES(string decryptedString) {
@@ -236,6 +240,7 @@ namespace ArchiSteamFarm.Helpers {
 				throw new ArgumentNullException(nameof(decryptedString));
 			}
 
+#if TARGET_GENERIC || TARGET_WINDOWS
 			if (!OperatingSystem.IsWindows()) {
 				return null;
 			}
@@ -253,6 +258,9 @@ namespace ArchiSteamFarm.Helpers {
 
 				return null;
 			}
+#else
+			return null;
+#endif
 		}
 
 		public enum ECryptoMethod : byte {

@@ -57,7 +57,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 			}
 		}
 
-		private static async void RefreshChanges(object? state) {
+		private static async void RefreshChanges(object? state = null) {
 			if (!await RefreshSemaphore.WaitAsync(0).ConfigureAwait(false)) {
 				return;
 			}

@@ -278,9 +278,8 @@ namespace ArchiSteamFarm.Steam.Integration {
 					response = await WebLimitRequest(
 						WebAPI.DefaultBaseAddress,
 
-						// TODO: Remove this ToDictionary() call after https://github.com/SteamRE/SteamKit/pull/992 is released
 						// ReSharper disable once AccessToDisposedClosure
-						async () => await loyaltyRewardsService.CallAsync(HttpMethod.Get, "GetSummary", args: arguments.ToDictionary(kv => kv.Key, kv => kv.Value)).ConfigureAwait(false)
+						async () => await loyaltyRewardsService.CallAsync(HttpMethod.Get, "GetSummary", args: arguments).ConfigureAwait(false)
 					).ConfigureAwait(false);
 				} catch (TaskCanceledException e) {
 					Bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -1393,9 +1392,8 @@ namespace ArchiSteamFarm.Steam.Integration {
 					response = await WebLimitRequest(
 						WebAPI.DefaultBaseAddress,
 
-						// TODO: Remove this ToDictionary() call after https://github.com/SteamRE/SteamKit/pull/992 is released
 						// ReSharper disable once AccessToDisposedClosure
-						async () => await econService.CallAsync(HttpMethod.Post, "DeclineTradeOffer", args: arguments.ToDictionary(kv => kv.Key, kv => kv.Value)).ConfigureAwait(false)
+						async () => await econService.CallAsync(HttpMethod.Post, "DeclineTradeOffer", args: arguments).ConfigureAwait(false)
 					).ConfigureAwait(false);
 				} catch (TaskCanceledException e) {
 					Bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -1456,9 +1454,8 @@ namespace ArchiSteamFarm.Steam.Integration {
 					response = await WebLimitRequest(
 						WebAPI.DefaultBaseAddress,
 
-						// TODO: Remove this ToDictionary() call after https://github.com/SteamRE/SteamKit/pull/992 is released
 						// ReSharper disable once AccessToDisposedClosure
-						async () => await econService.CallAsync(HttpMethod.Get, "GetTradeOffers", args: arguments.ToDictionary(kv => kv.Key, kv => kv.Value)).ConfigureAwait(false)
+						async () => await econService.CallAsync(HttpMethod.Get, "GetTradeOffers", args: arguments).ConfigureAwait(false)
 					).ConfigureAwait(false);
 				} catch (TaskCanceledException e) {
 					Bot.ArchiLogger.LogGenericDebuggingException(e);
@@ -1949,9 +1946,8 @@ namespace ArchiSteamFarm.Steam.Integration {
 					response = await WebLimitRequest(
 						WebAPI.DefaultBaseAddress,
 
-						// TODO: Remove this ToDictionary() call after https://github.com/SteamRE/SteamKit/pull/992 is released
 						// ReSharper disable once AccessToDisposedClosure
-						async () => await econService.CallAsync(HttpMethod.Get, "GetTradeHoldDurations", args: arguments.ToDictionary(kv => kv.Key, kv => kv.Value)).ConfigureAwait(false)
+						async () => await econService.CallAsync(HttpMethod.Get, "GetTradeHoldDurations", args: arguments).ConfigureAwait(false)
 					).ConfigureAwait(false);
 				} catch (TaskCanceledException e) {
 					Bot.ArchiLogger.LogGenericDebuggingException(e);
