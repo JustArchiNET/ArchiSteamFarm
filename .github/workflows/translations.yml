@@ -38,7 +38,7 @@ jobs:
         token: ${{ secrets.ASF_CROWDIN_API_TOKEN }}
 
     - name: Import GPG key for signing
-      uses: crazy-max/ghaction-import-gpg@v3.2.0
+      uses: crazy-max/ghaction-import-gpg@v4.0.0
       with:
         gpg-private-key: ${{ secrets.ARCHIBOT_GPG_PRIVATE_KEY }}
         git-config-global: true
