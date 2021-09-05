@@ -295,7 +295,8 @@ jobs:
             if (Test-Path "tools\zip_exec\zip_exec.exe" -PathType Leaf) {
                 $executableFiles = @()
 
-                if ($variant -like 'generic*') {
+                # We should cover generic-netf here as well, but latest Mono (as of 6.12) is unable to extract zip archives with extended attributes that we're applying here
+                if ($variant -eq 'generic') {
                     $executableFiles += 'ArchiSteamFarm.sh', 'ArchiSteamFarm-Service.sh'
                 } elseif (($variant -like 'linux*') -or ($variant -like 'osx*')) {
                     $executableFiles += 'ArchiSteamFarm', 'ArchiSteamFarm-Service.sh'
