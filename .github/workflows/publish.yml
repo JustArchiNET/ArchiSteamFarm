@@ -424,9 +424,9 @@ jobs:
         path: out
 
     - name: Import GPG key for signing
-      uses: crazy-max/ghaction-import-gpg@v3.2.0
+      uses: crazy-max/ghaction-import-gpg@v4.0.0
       with:
-        gpg-private-key: ${{ secrets.ARCHIBOT_GPG_PRIVATE_KEY }}
+        gpg_private_key: ${{ secrets.ARCHIBOT_GPG_PRIVATE_KEY }}
 
     - name: Generate SHA-512 checksums and signature
       shell: sh
