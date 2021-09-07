@@ -672,12 +672,17 @@
 		<value>交易提案 {0} 因 {2} 而決定 {1}。</value>
 		<comment>{0} will be replaced by trade offer ID (number), {1} will be replaced by internal ASF enum name, {2} will be replaced by technical reason why the trade was determined to be in this state</comment>
 	</data>
-	
+	<data name="BotInvalidPasswordDuringLogin" xml:space="preserve">
+		<value>連續收到 InvalidPassword 錯誤代碼 {0} 次。您的帳戶密碼大概是錯的，中止！</value>
+		<comment>{0} will be replaced by maximum allowed number of failed login attempts</comment>
+	</data>
 	<data name="Result" xml:space="preserve">
 		<value>結果：{0}</value>
 		<comment>{0} will be replaced by generic result of various functions that use this string</comment>
 	</data>
-	
+	<data name="WarningUnsupportedEnvironment" xml:space="preserve">
+		<value>你正嘗試執行 {0} 不同的 ASF 於不支援的環境中：{1}。如果你真的知道你在做什麼的話，請加上 --ignore-unsupported-environment 參數。</value>
+	</data>
 	<data name="WarningUnknownCommandLineArgument" xml:space="preserve">
 		<value>未知的命令列參數：{0}</value>
 		<comment>{0} will be replaced by unrecognized command that has been provided</comment>
@@ -685,6 +690,12 @@
 	<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
 		<value>無法找到設定檔所在目錄，正在中止！</value>
 	</data>
-	
-	
+	<data name="BotIdlingSelectedGames" xml:space="preserve">
+		<value>指定掛卡 {0}：{1}</value>
+		<comment>{0} will be replaced by internal name of the config property (e.g. "GamesPlayedWhileIdle"), {1} will be replaced by comma-separated list of appIDs that user has chosen</comment>
+	</data>
+	<data name="AutomaticFileMigration" xml:space="preserve">
+		<value>{0} 設定檔將會改版成最新的語法……</value>
+		<comment>{0} will be replaced with the relative path to the affected config file</comment>
+	</data>
 </root>
