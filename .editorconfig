@@ -90,7 +90,7 @@ csharp_style_prefer_switch_expression = true:warning
 
 csharp_style_throw_expression = true:warning
 
-csharp_style_unused_value_assignment_preference = discard_variable :warning
+csharp_style_unused_value_assignment_preference = discard_variable:warning
 csharp_style_unused_value_expression_statement_preference = discard_variable:warning
 
 csharp_style_var_elsewhere = false:warning
@@ -159,7 +159,7 @@ dotnet_naming_style.t_pascal_case.required_prefix = T
 
 # Symbol - almost everything
 dotnet_naming_symbols.almost_everything.applicable_accessibilities = *
-dotnet_naming_symbols.almost_everything.applicable_kinds = namespace,class,struct,property,method,field,event,delegate
+dotnet_naming_symbols.almost_everything.applicable_kinds = namespace, class, struct, property, method, field, event, delegate
 
 # Symbol - enums
 dotnet_naming_symbols.enums.applicable_accessibilities = *
@@ -171,7 +171,7 @@ dotnet_naming_symbols.interfaces.applicable_kinds = interface
 
 # Symbol - local parameters
 dotnet_naming_symbols.local_parameters.applicable_accessibilities = *
-dotnet_naming_symbols.local_parameters.applicable_kinds = parameter,local,local_function
+dotnet_naming_symbols.local_parameters.applicable_kinds = parameter, local, local_function
 
 # Symbol - type parameters
 dotnet_naming_symbols.type_parameters.applicable_accessibilities = *
