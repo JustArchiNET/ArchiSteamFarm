@@ -182,7 +182,7 @@ namespace ArchiSteamFarm.Core {
 					return;
 				}
 
-				HashSet<Asset.EType> acceptedMatchableTypes = Bot.BotConfig.MatchableTypes.Where(type => AcceptedMatchableTypes.Contains(type)).ToHashSet();
+				HashSet<Asset.EType> acceptedMatchableTypes = Bot.BotConfig.MatchableTypes.Where(AcceptedMatchableTypes.Contains).ToHashSet();
 
 				if (acceptedMatchableTypes.Count == 0) {
 					Bot.ArchiLogger.LogNullError(nameof(acceptedMatchableTypes));
