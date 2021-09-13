@@ -35,9 +35,9 @@ namespace ArchiSteamFarm.IPC.Responses {
 		public T? Result { get; private set; }
 
 		public GenericResponse(T? result) : base(result != null) => Result = result;
-		public GenericResponse(bool success, string message) : base(success, message) { }
+		public GenericResponse(bool success, string? message) : base(success, message) { }
 		public GenericResponse(bool success, T? result) : base(success) => Result = result;
-		public GenericResponse(bool success, string message, T? result) : base(success, message) => Result = result;
+		public GenericResponse(bool success, string? message, T? result) : base(success, message) => Result = result;
 	}
 
 	public class GenericResponse {
