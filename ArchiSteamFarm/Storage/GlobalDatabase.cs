@@ -159,6 +159,24 @@ namespace ArchiSteamFarm.Storage {
 			Utilities.InBackground(Save);
 		}
 
+		[UsedImplicitly]
+		public bool ShouldSerializeBackingCellID() => BackingCellID != 0;
+
+		[UsedImplicitly]
+		public bool ShouldSerializeBackingLastChangeNumber() => LastChangeNumber != 0;
+
+		[UsedImplicitly]
+		public bool ShouldSerializeKeyValueJsonStorage() => !KeyValueJsonStorage.IsEmpty;
+
+		[UsedImplicitly]
+		public bool ShouldSerializePackagesAccessTokens() => !PackagesAccessTokens.IsEmpty;
+
+		[UsedImplicitly]
+		public bool ShouldSerializePackagesData() => !PackagesData.IsEmpty;
+
+		[UsedImplicitly]
+		public bool ShouldSerializeServerListProvider() => ServerListProvider.ShouldSerializeServerRecords();
+
 		protected override void Dispose(bool disposing) {
 			if (disposing) {
 				// Events we registered
@@ -337,15 +355,5 @@ namespace ArchiSteamFarm.Storage {
 
 			await Save().ConfigureAwait(false);
 		}
-
-		// ReSharper disable UnusedMember.Global
-		public bool ShouldSerializeBackingCellID() => BackingCellID != 0;
-		public bool ShouldSerializeBackingLastChangeNumber() => LastChangeNumber != 0;
-		public bool ShouldSerializeKeyValueJsonStorage() => !KeyValueJsonStorage.IsEmpty;
-		public bool ShouldSerializePackagesAccessTokens() => !PackagesAccessTokens.IsEmpty;
-		public bool ShouldSerializePackagesData() => !PackagesData.IsEmpty;
-		public bool ShouldSerializeServerListProvider() => ServerListProvider.ShouldSerializeServerRecords();
-
-		// ReSharper restore UnusedMember.Global
 	}
 }

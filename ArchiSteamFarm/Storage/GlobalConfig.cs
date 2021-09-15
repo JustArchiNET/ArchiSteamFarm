@@ -329,6 +329,96 @@ namespace ArchiSteamFarm.Storage {
 		[JsonConstructor]
 		internal GlobalConfig() { }
 
+		[UsedImplicitly]
+		public bool ShouldSerializeAutoRestart() => !Saving || (AutoRestart != DefaultAutoRestart);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeBlacklist() => !Saving || ((Blacklist != DefaultBlacklist) && !Blacklist.SetEquals(DefaultBlacklist));
+
+		[UsedImplicitly]
+		public bool ShouldSerializeCommandPrefix() => !Saving || (CommandPrefix != DefaultCommandPrefix);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeConfirmationsLimiterDelay() => !Saving || (ConfirmationsLimiterDelay != DefaultConfirmationsLimiterDelay);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeConnectionTimeout() => !Saving || (ConnectionTimeout != DefaultConnectionTimeout);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeCurrentCulture() => !Saving || (CurrentCulture != DefaultCurrentCulture);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeDebug() => !Saving || (Debug != DefaultDebug);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeFarmingDelay() => !Saving || (FarmingDelay != DefaultFarmingDelay);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeGiftsLimiterDelay() => !Saving || (GiftsLimiterDelay != DefaultGiftsLimiterDelay);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeHeadless() => !Saving || (Headless != DefaultHeadless);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeIdleFarmingPeriod() => !Saving || (IdleFarmingPeriod != DefaultIdleFarmingPeriod);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeInventoryLimiterDelay() => !Saving || (InventoryLimiterDelay != DefaultInventoryLimiterDelay);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeIPC() => !Saving || (IPC != DefaultIPC);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeIPCPassword() => Saving && IsIPCPasswordSet && (IPCPassword != DefaultIPCPassword);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeIPCPasswordFormat() => !Saving || (IPCPasswordFormat != DefaultIPCPasswordFormat);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeLoginLimiterDelay() => !Saving || (LoginLimiterDelay != DefaultLoginLimiterDelay);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeMaxFarmingTime() => !Saving || (MaxFarmingTime != DefaultMaxFarmingTime);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeMaxTradeHoldDuration() => !Saving || (MaxTradeHoldDuration != DefaultMaxTradeHoldDuration);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeOptimizationMode() => !Saving || (OptimizationMode != DefaultOptimizationMode);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeSSteamOwnerID() => !Saving;
+
+		[UsedImplicitly]
+		public bool ShouldSerializeStatistics() => !Saving || (Statistics != DefaultStatistics);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeSteamMessagePrefix() => !Saving || (SteamMessagePrefix != DefaultSteamMessagePrefix);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeSteamOwnerID() => !Saving || (SteamOwnerID != DefaultSteamOwnerID);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeSteamProtocols() => !Saving || (SteamProtocols != DefaultSteamProtocols);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeUpdateChannel() => !Saving || (UpdateChannel != DefaultUpdateChannel);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeUpdatePeriod() => !Saving || (UpdatePeriod != DefaultUpdatePeriod);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeWebLimiterDelay() => !Saving || (WebLimiterDelay != DefaultWebLimiterDelay);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeWebProxyPassword() => Saving && IsWebProxyPasswordSet && (WebProxyPassword != DefaultWebProxyPassword);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeWebProxyText() => !Saving || (WebProxyText != DefaultWebProxyText);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeWebProxyUsername() => !Saving || (WebProxyUsername != DefaultWebProxyUsername);
+
 		internal (bool Valid, string? ErrorMessage) CheckValidation() {
 			if (Blacklist.Contains(0)) {
 				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(Blacklist), 0));
@@ -451,39 +541,5 @@ namespace ArchiSteamFarm.Storage {
 			Stable,
 			Experimental
 		}
-
-		// ReSharper disable UnusedMember.Global
-		public bool ShouldSerializeAutoRestart() => !Saving || (AutoRestart != DefaultAutoRestart);
-		public bool ShouldSerializeBlacklist() => !Saving || ((Blacklist != DefaultBlacklist) && !Blacklist.SetEquals(DefaultBlacklist));
-		public bool ShouldSerializeCommandPrefix() => !Saving || (CommandPrefix != DefaultCommandPrefix);
-		public bool ShouldSerializeConfirmationsLimiterDelay() => !Saving || (ConfirmationsLimiterDelay != DefaultConfirmationsLimiterDelay);
-		public bool ShouldSerializeConnectionTimeout() => !Saving || (ConnectionTimeout != DefaultConnectionTimeout);
-		public bool ShouldSerializeCurrentCulture() => !Saving || (CurrentCulture != DefaultCurrentCulture);
-		public bool ShouldSerializeDebug() => !Saving || (Debug != DefaultDebug);
-		public bool ShouldSerializeFarmingDelay() => !Saving || (FarmingDelay != DefaultFarmingDelay);
-		public bool ShouldSerializeGiftsLimiterDelay() => !Saving || (GiftsLimiterDelay != DefaultGiftsLimiterDelay);
-		public bool ShouldSerializeHeadless() => !Saving || (Headless != DefaultHeadless);
-		public bool ShouldSerializeIdleFarmingPeriod() => !Saving || (IdleFarmingPeriod != DefaultIdleFarmingPeriod);
-		public bool ShouldSerializeInventoryLimiterDelay() => !Saving || (InventoryLimiterDelay != DefaultInventoryLimiterDelay);
-		public bool ShouldSerializeIPC() => !Saving || (IPC != DefaultIPC);
-		public bool ShouldSerializeIPCPassword() => Saving && IsIPCPasswordSet && (IPCPassword != DefaultIPCPassword);
-		public bool ShouldSerializeIPCPasswordFormat() => !Saving || (IPCPasswordFormat != DefaultIPCPasswordFormat);
-		public bool ShouldSerializeLoginLimiterDelay() => !Saving || (LoginLimiterDelay != DefaultLoginLimiterDelay);
-		public bool ShouldSerializeMaxFarmingTime() => !Saving || (MaxFarmingTime != DefaultMaxFarmingTime);
-		public bool ShouldSerializeMaxTradeHoldDuration() => !Saving || (MaxTradeHoldDuration != DefaultMaxTradeHoldDuration);
-		public bool ShouldSerializeOptimizationMode() => !Saving || (OptimizationMode != DefaultOptimizationMode);
-		public bool ShouldSerializeSSteamOwnerID() => !Saving;
-		public bool ShouldSerializeStatistics() => !Saving || (Statistics != DefaultStatistics);
-		public bool ShouldSerializeSteamMessagePrefix() => !Saving || (SteamMessagePrefix != DefaultSteamMessagePrefix);
-		public bool ShouldSerializeSteamOwnerID() => !Saving || (SteamOwnerID != DefaultSteamOwnerID);
-		public bool ShouldSerializeSteamProtocols() => !Saving || (SteamProtocols != DefaultSteamProtocols);
-		public bool ShouldSerializeUpdateChannel() => !Saving || (UpdateChannel != DefaultUpdateChannel);
-		public bool ShouldSerializeUpdatePeriod() => !Saving || (UpdatePeriod != DefaultUpdatePeriod);
-		public bool ShouldSerializeWebLimiterDelay() => !Saving || (WebLimiterDelay != DefaultWebLimiterDelay);
-		public bool ShouldSerializeWebProxyPassword() => Saving && IsWebProxyPasswordSet && (WebProxyPassword != DefaultWebProxyPassword);
-		public bool ShouldSerializeWebProxyText() => !Saving || (WebProxyText != DefaultWebProxyText);
-		public bool ShouldSerializeWebProxyUsername() => !Saving || (WebProxyUsername != DefaultWebProxyUsername);
-
-		// ReSharper restore UnusedMember.Global
 	}
 }

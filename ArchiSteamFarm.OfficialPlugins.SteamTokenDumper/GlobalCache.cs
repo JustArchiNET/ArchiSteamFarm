@@ -33,6 +33,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SteamKit2;
 
@@ -65,6 +66,30 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 		internal uint LastChangeNumber { get; private set; }
 
 		internal GlobalCache() => FilePath = SharedFilePath;
+
+		[UsedImplicitly]
+		public bool ShouldSerializeAppChangeNumbers() => !AppChangeNumbers.IsEmpty;
+
+		[UsedImplicitly]
+		public bool ShouldSerializeAppTokens() => !AppTokens.IsEmpty;
+
+		[UsedImplicitly]
+		public bool ShouldSerializeDepotKeys() => !DepotKeys.IsEmpty;
+
+		[UsedImplicitly]
+		public bool ShouldSerializeLastChangeNumber() => LastChangeNumber > 0;
+
+		[UsedImplicitly]
+		public bool ShouldSerializePackageTokens() => !PackageTokens.IsEmpty;
+
+		[UsedImplicitly]
+		public bool ShouldSerializeSubmittedApps() => !SubmittedApps.IsEmpty;
+
+		[UsedImplicitly]
+		public bool ShouldSerializeSubmittedDepots() => !SubmittedDepots.IsEmpty;
+
+		[UsedImplicitly]
+		public bool ShouldSerializeSubmittedPackages() => !SubmittedPackages.IsEmpty;
 
 		internal ulong GetAppToken(uint appID) => AppTokens[appID];
 

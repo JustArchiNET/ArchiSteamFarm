@@ -35,6 +35,7 @@ using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam.Security;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Steam.Storage {
@@ -111,6 +112,27 @@ namespace ArchiSteamFarm.Steam.Storage {
 			IdlingPriorityAppIDs.OnModified += OnObjectModified;
 			MatchActivelyBlacklistedAppIDs.OnModified += OnObjectModified;
 		}
+
+		[UsedImplicitly]
+		public bool ShouldSerializeBackingLoginKey() => !string.IsNullOrEmpty(BackingLoginKey);
+
+		[UsedImplicitly]
+		public bool ShouldSerializeBackingMobileAuthenticator() => BackingMobileAuthenticator != null;
+
+		[UsedImplicitly]
+		public bool ShouldSerializeBlacklistedFromTradesSteamIDs() => BlacklistedFromTradesSteamIDs.Count > 0;
+
+		[UsedImplicitly]
+		public bool ShouldSerializeGamesToRedeemInBackground() => HasGamesToRedeemInBackground;
+
+		[UsedImplicitly]
+		public bool ShouldSerializeIdlingBlacklistedAppIDs() => IdlingBlacklistedAppIDs.Count > 0;
+
+		[UsedImplicitly]
+		public bool ShouldSerializeIdlingPriorityAppIDs() => IdlingPriorityAppIDs.Count > 0;
+
+		[UsedImplicitly]
+		public bool ShouldSerializeMatchActivelyBlacklistedAppIDs() => MatchActivelyBlacklistedAppIDs.Count > 0;
 
 		protected override void Dispose(bool disposing) {
 			if (disposing) {
@@ -218,16 +240,5 @@ namespace ArchiSteamFarm.Steam.Storage {
 
 			await Save().ConfigureAwait(false);
 		}
-
-		// ReSharper disable UnusedMember.Global
-		public bool ShouldSerializeBackingLoginKey() => !string.IsNullOrEmpty(BackingLoginKey);
-		public bool ShouldSerializeBackingMobileAuthenticator() => BackingMobileAuthenticator != null;
-		public bool ShouldSerializeBlacklistedFromTradesSteamIDs() => BlacklistedFromTradesSteamIDs.Count > 0;
-		public bool ShouldSerializeGamesToRedeemInBackground() => HasGamesToRedeemInBackground;
-		public bool ShouldSerializeIdlingBlacklistedAppIDs() => IdlingBlacklistedAppIDs.Count > 0;
-		public bool ShouldSerializeIdlingPriorityAppIDs() => IdlingPriorityAppIDs.Count > 0;
-		public bool ShouldSerializeMatchActivelyBlacklistedAppIDs() => MatchActivelyBlacklistedAppIDs.Count > 0;
-
-		// ReSharper restore UnusedMember.Global
 	}
 }
