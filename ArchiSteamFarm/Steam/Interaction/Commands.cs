@@ -1646,7 +1646,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				return null;
 			}
 
-			bool headless = ASF.GlobalConfig?.Headless ?? GlobalConfig.DefaultHeadless;
+			bool headless = Program.Service || (ASF.GlobalConfig?.Headless ?? GlobalConfig.DefaultHeadless);
 
 			if (!headless) {
 				return FormatBotResponse(Strings.ErrorFunctionOnlyInHeadlessMode);

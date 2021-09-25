@@ -80,7 +80,7 @@ namespace ArchiSteamFarm.NLog {
 				throw new ArgumentNullException(nameof(botName));
 			}
 
-			if (ASF.GlobalConfig?.Headless ?? GlobalConfig.DefaultHeadless) {
+			if (Program.Service || (ASF.GlobalConfig?.Headless ?? GlobalConfig.DefaultHeadless)) {
 				ASF.ArchiLogger.LogGenericWarning(Strings.ErrorUserInputRunningInHeadlessMode);
 
 				return null;

@@ -51,6 +51,7 @@ namespace ArchiSteamFarm {
 		internal static string? NetworkGroup { get; private set; }
 		internal static bool ProcessRequired { get; private set; }
 		internal static bool RestartAllowed { get; private set; } = true;
+		internal static bool Service { get; private set; }
 		internal static bool ShutdownSequenceInitialized { get; private set; }
 
 		private static readonly TaskCompletionSource<byte> ShutdownResetEvent = new();
@@ -510,6 +511,10 @@ namespace ArchiSteamFarm {
 						break;
 					case "--PATH" when !cryptKeyNext && !networkGroupNext && !pathNext:
 						pathNext = true;
+
+						break;
+					case "--SERVICE" when !cryptKeyNext && !networkGroupNext && !pathNext:
+						Service = true;
 
 						break;
 					case "--SYSTEM-REQUIRED" when !cryptKeyNext && !networkGroupNext && !pathNext:
