@@ -412,7 +412,7 @@ namespace ArchiSteamFarm {
 			// Stop all the active bots so they can disconnect cleanly
 			if (Bot.Bots?.Count > 0) {
 				// Stop() function can block due to SK2 sockets, don't forget a maximum delay
-				await Task.WhenAny(Utilities.InParallel(Bot.Bots.Values.Select(bot => Task.Run(() => bot.Stop(true)))), Task.Delay(Bot.Bots.Count * WebBrowser.MaxTries * 1000)).ConfigureAwait(false);
+				await Task.WhenAny(Utilities.InParallel(Bot.Bots.Values.Select(static bot => Task.Run(() => bot.Stop(true)))), Task.Delay(Bot.Bots.Count * WebBrowser.MaxTries * 1000)).ConfigureAwait(false);
 
 				// Extra second for Steam requests to go through
 				await Task.Delay(1000).ConfigureAwait(false);

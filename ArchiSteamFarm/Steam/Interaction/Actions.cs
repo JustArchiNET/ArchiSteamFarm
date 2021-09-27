@@ -89,7 +89,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 		public static (bool Success, string Message) Exit() {
 			// Schedule the task after some time so user can receive response
 			Utilities.InBackground(
-				async () => {
+				static async () => {
 					await Task.Delay(1000).ConfigureAwait(false);
 					await Program.Exit().ConfigureAwait(false);
 				}
@@ -257,7 +257,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			// Schedule the task after some time so user can receive response
 			Utilities.InBackground(
-				async () => {
+				static async () => {
 					await Task.Delay(1000).ConfigureAwait(false);
 					await Program.Restart().ConfigureAwait(false);
 				}
@@ -348,7 +348,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				return (false, Strings.BotNotConnected);
 			}
 
-			filterFunction ??= _ => true;
+			filterFunction ??= static _ => true;
 
 			HashSet<Asset> inventory;
 
@@ -507,7 +507,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 		internal void OnDisconnected() => HandledGifts.Clear();
 
 		private ulong GetFirstSteamMasterID() {
-			ulong steamMasterID = Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key > 0) && (kv.Key != Bot.SteamID) && new SteamID(kv.Key).IsIndividualAccount && (kv.Value == BotConfig.EAccess.Master)).Select(kv => kv.Key).OrderBy(steamID => steamID).FirstOrDefault();
+			ulong steamMasterID = Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key > 0) && (kv.Key != Bot.SteamID) && new SteamID(kv.Key).IsIndividualAccount && (kv.Value == BotConfig.EAccess.Master)).Select(static kv => kv.Key).OrderBy(static steamID => steamID).FirstOrDefault();
 
 			if (steamMasterID > 0) {
 				return steamMasterID;

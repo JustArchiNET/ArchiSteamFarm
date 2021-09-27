@@ -428,7 +428,7 @@ namespace ArchiSteamFarm.Core {
 				Assembly[] loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
 
 				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				loadedAssembliesNames = loadedAssemblies.Select(loadedAssembly => loadedAssembly.FullName).Where(name => !string.IsNullOrEmpty(name)).ToHashSet()!;
+				loadedAssembliesNames = loadedAssemblies.Select(static loadedAssembly => loadedAssembly.FullName).Where(static name => !string.IsNullOrEmpty(name)).ToHashSet()!;
 			}
 
 			foreach (AssemblyName assemblyName in assembly.GetReferencedAssemblies().Where(assemblyName => !loadedAssembliesNames.Contains(assemblyName.FullName))) {
@@ -832,7 +832,7 @@ namespace ArchiSteamFarm.Core {
 			if (!servers.Any()) {
 				ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.Initializing, nameof(SteamDirectory)));
 
-				SteamConfiguration steamConfiguration = SteamConfiguration.Create(builder => builder.WithProtocolTypes(GlobalConfig.SteamProtocols).WithCellID(GlobalDatabase.CellID).WithServerListProvider(GlobalDatabase.ServerListProvider).WithHttpClientFactory(() => WebBrowser.GenerateDisposableHttpClient()));
+				SteamConfiguration steamConfiguration = SteamConfiguration.Create(static builder => builder.WithProtocolTypes(GlobalConfig.SteamProtocols).WithCellID(GlobalDatabase.CellID).WithServerListProvider(GlobalDatabase.ServerListProvider).WithHttpClientFactory(static () => WebBrowser.GenerateDisposableHttpClient()));
 
 				try {
 					await SteamDirectory.LoadAsync(steamConfiguration).ConfigureAwait(false);
@@ -848,7 +848,7 @@ namespace ArchiSteamFarm.Core {
 			HashSet<string> botNames;
 
 			try {
-				botNames = Directory.EnumerateFiles(SharedInfo.ConfigDirectory, $"*{SharedInfo.JsonConfigExtension}").Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).ToHashSet(Bot.BotsComparer)!;
+				botNames = Directory.EnumerateFiles(SharedInfo.ConfigDirectory, $"*{SharedInfo.JsonConfigExtension}").Select(Path.GetFileNameWithoutExtension).Where(static botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).ToHashSet(Bot.BotsComparer)!;
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 
@@ -867,7 +867,7 @@ namespace ArchiSteamFarm.Core {
 					break;
 			}
 
-			await Utilities.InParallel(botNames.OrderBy(botName => botName, Bot.BotsComparer).Select(Bot.RegisterBot)).ConfigureAwait(false);
+			await Utilities.InParallel(botNames.OrderBy(static botName => botName, Bot.BotsComparer).Select(Bot.RegisterBot)).ConfigureAwait(false);
 		}
 
 		private static async Task UpdateAndRestart() {
@@ -994,7 +994,7 @@ namespace ArchiSteamFarm.Core {
 			}
 
 			// Now enumerate over files in the zip archive, skip directory entries that we're not interested in (we can create them ourselves if needed)
-			foreach (ZipArchiveEntry zipFile in archive.Entries.Where(zipFile => !string.IsNullOrEmpty(zipFile.Name))) {
+			foreach (ZipArchiveEntry zipFile in archive.Entries.Where(static zipFile => !string.IsNullOrEmpty(zipFile.Name))) {
 				string file = Path.GetFullPath(Path.Combine(targetDirectory, zipFile.FullName));
 
 				if (!file.StartsWith(targetDirectory, StringComparison.Ordinal)) {

@@ -243,7 +243,7 @@ namespace ArchiSteamFarm.Storage {
 
 			HashSet<uint> result = new();
 
-			foreach (uint packageID in packageIDs.Where(packageID => packageID != 0)) {
+			foreach (uint packageID in packageIDs.Where(static packageID => packageID != 0)) {
 				if (!PackagesData.TryGetValue(packageID, out (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs) packagesData) || (packagesData.AppIDs?.Contains(appID) != true)) {
 					continue;
 				}
@@ -269,7 +269,7 @@ namespace ArchiSteamFarm.Storage {
 
 			LastChangeNumber = currentChangeNumber;
 
-			Bot? refreshBot = Bot.Bots.Values.FirstOrDefault(bot => bot.IsConnectedAndLoggedOn);
+			Bot? refreshBot = Bot.Bots.Values.FirstOrDefault(static bot => bot.IsConnectedAndLoggedOn);
 
 			if (refreshBot == null) {
 				return;
@@ -279,7 +279,7 @@ namespace ArchiSteamFarm.Storage {
 				return;
 			}
 
-			Dictionary<uint, uint> packageIDs = PackagesData.Keys.ToDictionary(packageID => packageID, _ => currentChangeNumber);
+			Dictionary<uint, uint> packageIDs = PackagesData.Keys.ToDictionary(static packageID => packageID, _ => currentChangeNumber);
 
 			await RefreshPackages(refreshBot, packageIDs).ConfigureAwait(false);
 		}
@@ -315,7 +315,7 @@ namespace ArchiSteamFarm.Storage {
 			await PackagesRefreshSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				HashSet<uint> packageIDs = packages.Where(package => (package.Key != 0) && (!PackagesData.TryGetValue(package.Key, out (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs) previousData) || (previousData.ChangeNumber < package.Value))).Select(package => package.Key).ToHashSet();
+				HashSet<uint> packageIDs = packages.Where(package => (package.Key != 0) && (!PackagesData.TryGetValue(package.Key, out (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs) previousData) || (previousData.ChangeNumber < package.Value))).Select(static package => package.Key).ToHashSet();
 
 				if (packageIDs.Count == 0) {
 					return;

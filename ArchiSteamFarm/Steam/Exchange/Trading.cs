@@ -63,7 +63,7 @@ namespace ArchiSteamFarm.Steam.Exchange {
 
 			Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> sets = GetInventoryState(inventory);
 
-			return sets.ToDictionary(set => set.Key, set => set.Value.Values.OrderBy(amount => amount).ToList());
+			return sets.ToDictionary(static set => set.Key, static set => set.Value.Values.OrderBy(static amount => amount).ToList());
 		}
 
 		[PublicAPI]
@@ -248,7 +248,7 @@ namespace ArchiSteamFarm.Steam.Exchange {
 
 			Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, uint>> tradableState = new();
 
-			foreach (Asset item in inventory.Where(item => item.Tradable)) {
+			foreach (Asset item in inventory.Where(static item => item.Tradable)) {
 				(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) key = (item.RealAppID, item.Type, item.Rarity);
 
 				if (tradableState.TryGetValue(key, out Dictionary<ulong, uint>? tradableSet)) {
@@ -272,7 +272,7 @@ namespace ArchiSteamFarm.Steam.Exchange {
 
 			HashSet<Asset> result = new();
 
-			foreach (Asset item in inventory.Where(item => item.Tradable)) {
+			foreach (Asset item in inventory.Where(static item => item.Tradable)) {
 				if (!classIDs.TryGetValue(item.ClassID, out uint amount)) {
 					continue;
 				}
@@ -415,14 +415,14 @@ namespace ArchiSteamFarm.Steam.Exchange {
 			}
 
 			if (HandledTradeOfferIDs.Count > 0) {
-				HandledTradeOfferIDs.IntersectWith(tradeOffers.Select(tradeOffer => tradeOffer.TradeOfferID));
+				HandledTradeOfferIDs.IntersectWith(tradeOffers.Select(static tradeOffer => tradeOffer.TradeOfferID));
 			}
 
 			IEnumerable<Task<(ParseTradeResult? TradeResult, bool RequiresMobileConfirmation)>> tasks = tradeOffers.Where(tradeOffer => !HandledTradeOfferIDs.Contains(tradeOffer.TradeOfferID)).Select(ParseTrade);
 			IList<(ParseTradeResult? TradeResult, bool RequiresMobileConfirmation)> results = await Utilities.InParallel(tasks).ConfigureAwait(false);
 
 			if (Bot.HasMobileAuthenticator) {
-				HashSet<ulong> mobileTradeOfferIDs = results.Where(result => (result.TradeResult?.Result == ParseTradeResult.EResult.Accepted) && result.RequiresMobileConfirmation).Select(result => result.TradeResult!.TradeOfferID).ToHashSet();
+				HashSet<ulong> mobileTradeOfferIDs = results.Where(static result => (result.TradeResult?.Result == ParseTradeResult.EResult.Accepted) && result.RequiresMobileConfirmation).Select(static result => result.TradeResult!.TradeOfferID).ToHashSet();
 
 				if (mobileTradeOfferIDs.Count > 0) {
 					(bool twoFactorSuccess, _, _) = await Bot.Actions.HandleTwoFactorAuthenticationConfirmations(true, Confirmation.EType.Trade, mobileTradeOfferIDs, true).ConfigureAwait(false);
@@ -435,7 +435,7 @@ namespace ArchiSteamFarm.Steam.Exchange {
 				}
 			}
 
-			HashSet<ParseTradeResult> validTradeResults = results.Where(result => result.TradeResult != null).Select(result => result.TradeResult!).ToHashSet();
+			HashSet<ParseTradeResult> validTradeResults = results.Where(static result => result.TradeResult != null).Select(static result => result.TradeResult!).ToHashSet();
 
 			if (validTradeResults.Count > 0) {
 				await PluginsCore.OnBotTradeOfferResults(Bot, validTradeResults).ConfigureAwait(false);
@@ -489,7 +489,7 @@ namespace ArchiSteamFarm.Steam.Exchange {
 						goto case ParseTradeResult.EResult.TryAgain;
 					}
 
-					if (tradeOffer.ItemsToReceive.Sum(item => item.Amount) > tradeOffer.ItemsToGive.Sum(item => item.Amount)) {
+					if (tradeOffer.ItemsToReceive.Sum(static item => item.Amount) > tradeOffer.ItemsToGive.Sum(static item => item.Amount)) {
 						Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.BotAcceptedDonationTrade, tradeOffer.TradeOfferID));
 					}
 
@@ -625,7 +625,7 @@ namespace ArchiSteamFarm.Steam.Exchange {
 
 				// If user has a trade hold, we add extra logic
 				// If trade hold duration exceeds our max, or user asks for cards with short lifespan, reject the trade
-				case > 0 when (holdDuration.Value > ASF.GlobalConfig.MaxTradeHoldDuration) || tradeOffer.ItemsToGive.Any(item => item.Type is Asset.EType.FoilTradingCard or Asset.EType.TradingCard && CardsFarmer.SalesBlacklist.Contains(item.RealAppID)):
+				case > 0 when (holdDuration.Value > ASF.GlobalConfig.MaxTradeHoldDuration) || tradeOffer.ItemsToGive.Any(static item => item.Type is Asset.EType.FoilTradingCard or Asset.EType.TradingCard && CardsFarmer.SalesBlacklist.Contains(item.RealAppID)):
 					Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.BotTradeOfferResult, tradeOffer.TradeOfferID, ParseTradeResult.EResult.Rejected, $"{nameof(holdDuration)} > 0: {holdDuration.Value}"));
 
 					return ParseTradeResult.EResult.Rejected;
@@ -672,7 +672,7 @@ namespace ArchiSteamFarm.Steam.Exchange {
 				return ParseTradeResult.EResult.TryAgain;
 			}
 
-			bool accept = IsTradeNeutralOrBetter(inventory, tradeOffer.ItemsToGive.Select(item => item.CreateShallowCopy()).ToHashSet(), tradeOffer.ItemsToReceive.Select(item => item.CreateShallowCopy()).ToHashSet());
+			bool accept = IsTradeNeutralOrBetter(inventory, tradeOffer.ItemsToGive.Select(static item => item.CreateShallowCopy()).ToHashSet(), tradeOffer.ItemsToReceive.Select(static item => item.CreateShallowCopy()).ToHashSet());
 
 			// We're now sure whether the trade is neutral+ for us or not
 			ParseTradeResult.EResult acceptResult = accept ? ParseTradeResult.EResult.Accepted : ParseTradeResult.EResult.Rejected;

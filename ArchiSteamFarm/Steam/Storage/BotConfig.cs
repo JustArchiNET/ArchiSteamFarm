@@ -452,7 +452,7 @@ namespace ArchiSteamFarm.Steam.Storage {
 				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(BotBehaviour), BotBehaviour));
 			}
 
-			foreach (EFarmingOrder farmingOrder in FarmingOrders.Where(farmingOrder => !Enum.IsDefined(typeof(EFarmingOrder), farmingOrder))) {
+			foreach (EFarmingOrder farmingOrder in FarmingOrders.Where(static farmingOrder => !Enum.IsDefined(typeof(EFarmingOrder), farmingOrder))) {
 				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(FarmingOrders), farmingOrder));
 			}
 
@@ -464,7 +464,7 @@ namespace ArchiSteamFarm.Steam.Storage {
 				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(GamesPlayedWhileIdle), $"{nameof(GamesPlayedWhileIdle.Count)} {GamesPlayedWhileIdle.Count} > {ArchiHandler.MaxGamesPlayedConcurrently}"));
 			}
 
-			foreach (Asset.EType lootableType in LootableTypes.Where(lootableType => !Enum.IsDefined(typeof(Asset.EType), lootableType))) {
+			foreach (Asset.EType lootableType in LootableTypes.Where(static lootableType => !Enum.IsDefined(typeof(Asset.EType), lootableType))) {
 				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(LootableTypes), lootableType));
 			}
 
@@ -482,7 +482,7 @@ namespace ArchiSteamFarm.Steam.Storage {
 						throw new InvalidOperationException(nameof(completeTypesToSendValidValues));
 					}
 
-					completeTypesToSendValidTypes = completeTypesToSendValidValues.ValidIntValues.Select(value => (Asset.EType) value).ToHashSet();
+					completeTypesToSendValidTypes = completeTypesToSendValidValues.ValidIntValues.Select(static value => (Asset.EType) value).ToHashSet();
 				}
 
 				if (!completeTypesToSendValidTypes.Contains(completableType)) {
@@ -490,7 +490,7 @@ namespace ArchiSteamFarm.Steam.Storage {
 				}
 			}
 
-			foreach (Asset.EType matchableType in MatchableTypes.Where(matchableType => !Enum.IsDefined(typeof(Asset.EType), matchableType))) {
+			foreach (Asset.EType matchableType in MatchableTypes.Where(static matchableType => !Enum.IsDefined(typeof(Asset.EType), matchableType))) {
 				return (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(MatchableTypes), matchableType));
 			}
 

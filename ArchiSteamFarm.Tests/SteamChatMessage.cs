@@ -267,7 +267,7 @@ namespace ArchiSteamFarm.Tests {
 
 				string[] lines = messagePart.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
 
-				int bytes = lines.Where(line => line.Length > 0).Sum(Encoding.UTF8.GetByteCount) + ((lines.Length - 1) * NewlineWeight);
+				int bytes = lines.Where(static line => line.Length > 0).Sum(Encoding.UTF8.GetByteCount) + ((lines.Length - 1) * NewlineWeight);
 
 				if (bytes > MaxMessageBytesForUnlimitedAccounts) {
 					Assert.Fail();

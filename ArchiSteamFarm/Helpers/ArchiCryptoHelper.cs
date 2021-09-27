@@ -39,7 +39,7 @@ namespace ArchiSteamFarm.Helpers {
 		private const byte SteamParentalSCryptBlocksCount = 8;
 		private const ushort SteamParentalSCryptIterations = 8192;
 
-		private static IEnumerable<byte> SteamParentalCharacters => Enumerable.Range('0', 10).Select(character => (byte) character);
+		private static IEnumerable<byte> SteamParentalCharacters => Enumerable.Range('0', 10).Select(static character => (byte) character);
 
 		private static IEnumerable<byte[]> SteamParentalCodes {
 			get {

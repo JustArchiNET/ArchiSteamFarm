@@ -84,7 +84,7 @@ namespace ArchiSteamFarm.IPC {
 
 			// Firstly initialize settings that user is free to override
 			builder.ConfigureLogging(
-				logging => {
+				static logging => {
 					logging.ClearProviders();
 					logging.SetMinimumLevel(Debugging.IsUserDebugging ? LogLevel.Trace : LogLevel.Warning);
 				}
@@ -112,7 +112,7 @@ namespace ArchiSteamFarm.IPC {
 				}
 
 				// Use custom config for logging configuration
-				builder.ConfigureLogging((hostingContext, logging) => logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging")));
+				builder.ConfigureLogging(static (hostingContext, logging) => logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging")));
 			}
 
 			// Enable NLog integration for logging
@@ -129,10 +129,10 @@ namespace ArchiSteamFarm.IPC {
 						webBuilder.UseConfiguration(new ConfigurationBuilder().SetBasePath(absoluteConfigDirectory).AddJsonFile(SharedInfo.IPCConfigFile, false, Program.ConfigWatch).Build());
 
 						// Use custom config for Kestrel configuration
-						webBuilder.UseKestrel((builderContext, options) => options.Configure(builderContext.Configuration.GetSection("Kestrel")));
+						webBuilder.UseKestrel(static (builderContext, options) => options.Configure(builderContext.Configuration.GetSection("Kestrel")));
 					} else {
 						// Use ASF defaults for Kestrel
-						webBuilder.UseKestrel(options => options.ListenLocalhost(1242));
+						webBuilder.UseKestrel(static options => options.ListenLocalhost(1242));
 					}
 
 					// Specify Startup class for IPC

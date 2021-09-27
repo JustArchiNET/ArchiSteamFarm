@@ -73,7 +73,7 @@ namespace ArchiSteamFarm.Steam.Cards {
 		public TimeSpan TimeRemaining =>
 			new(
 				Bot.BotConfig.HoursUntilCardDrops > 0 ? (ushort) Math.Ceiling(GamesToFarm.Count / (float) ArchiHandler.MaxGamesPlayedConcurrently) * Bot.BotConfig.HoursUntilCardDrops : 0,
-				30 * GamesToFarm.Sum(game => game.CardsRemaining),
+				30 * GamesToFarm.Sum(static game => game.CardsRemaining),
 				0
 			);
 
@@ -176,7 +176,7 @@ namespace ArchiSteamFarm.Steam.Cards {
 				// We should restart the farming if the order or efficiency of the farming could be affected by the newly-activated product
 				// The order is affected when user uses farming order that isn't independent of the game data (it could alter the order in deterministic way if the game was considered in current queue)
 				// The efficiency is affected only in complex algorithm (entirely), as it depends on hours order that is not independent (as specified above)
-				if ((Bot.BotConfig.HoursUntilCardDrops > 0) || ((Bot.BotConfig.FarmingOrders.Count > 0) && Bot.BotConfig.FarmingOrders.Any(farmingOrder => (farmingOrder != BotConfig.EFarmingOrder.Unordered) && (farmingOrder != BotConfig.EFarmingOrder.Random)))) {
+				if ((Bot.BotConfig.HoursUntilCardDrops > 0) || ((Bot.BotConfig.FarmingOrders.Count > 0) && Bot.BotConfig.FarmingOrders.Any(static farmingOrder => (farmingOrder != BotConfig.EFarmingOrder.Unordered) && (farmingOrder != BotConfig.EFarmingOrder.Random)))) {
 					await StopFarming().ConfigureAwait(false);
 					await StartFarming().ConfigureAwait(false);
 				}
@@ -731,7 +731,7 @@ namespace ArchiSteamFarm.Steam.Cards {
 
 		private async Task Farm() {
 			do {
-				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.GamesToIdle, GamesToFarm.Count, GamesToFarm.Sum(game => game.CardsRemaining), TimeRemaining.ToHumanReadable()));
+				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.GamesToIdle, GamesToFarm.Count, GamesToFarm.Sum(static game => game.CardsRemaining), TimeRemaining.ToHumanReadable()));
 
 				// Now the algorithm used for farming depends on whether account is restricted or not
 				if (Bot.BotConfig.HoursUntilCardDrops > 0) {
@@ -768,7 +768,7 @@ namespace ArchiSteamFarm.Steam.Cards {
 						// In order to maximize efficiency, we'll take games that are closest to our HoursPlayed first
 
 						// We must call ToList() here as we can't remove items while enumerating
-						foreach (Game game in GamesToFarm.OrderByDescending(game => game.HoursPlayed).ToList()) {
+						foreach (Game game in GamesToFarm.OrderByDescending(static game => game.HoursPlayed).ToList()) {
 							if (!await IsPlayableGame(game).ConfigureAwait(false)) {
 								GamesToFarm.Remove(game);
 
@@ -790,7 +790,7 @@ namespace ArchiSteamFarm.Steam.Cards {
 
 						// Otherwise, we farm our innerGamesToFarm batch until any game hits HoursUntilCardDrops
 						if (await FarmMultiple(innerGamesToFarm).ConfigureAwait(false)) {
-							Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.IdlingFinishedForGames, string.Join(", ", innerGamesToFarm.Select(game => game.AppID))));
+							Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.IdlingFinishedForGames, string.Join(", ", innerGamesToFarm.Select(static game => game.AppID))));
 						} else {
 							NowFarming = false;
 
@@ -869,7 +869,7 @@ namespace ArchiSteamFarm.Steam.Cards {
 				throw new ArgumentNullException(nameof(games));
 			}
 
-			float maxHour = games.Max(game => game.HoursPlayed);
+			float maxHour = games.Max(static game => game.HoursPlayed);
 
 			if (maxHour < 0) {
 				Bot.ArchiLogger.LogNullError(nameof(maxHour));
@@ -888,7 +888,7 @@ namespace ArchiSteamFarm.Steam.Cards {
 			bool success = true;
 
 			while (maxHour < Bot.BotConfig.HoursUntilCardDrops) {
-				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.StillIdlingList, string.Join(", ", games.Select(game => game.AppID))));
+				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.StillIdlingList, string.Join(", ", games.Select(static game => game.AppID))));
 
 				DateTime startFarmingPeriod = DateTime.UtcNow;
 
@@ -910,7 +910,7 @@ namespace ArchiSteamFarm.Steam.Cards {
 				maxHour += timePlayed;
 			}
 
-			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.StoppedIdlingList, string.Join(", ", games.Select(game => game.AppID))));
+			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.StoppedIdlingList, string.Join(", ", games.Select(static game => game.AppID))));
 
 			return success;
 		}
@@ -926,7 +926,7 @@ namespace ArchiSteamFarm.Steam.Cards {
 				Game game = games.First();
 				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.NowIdling, game.AppID, game.GameName));
 			} else {
-				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.NowIdlingList, string.Join(", ", games.Select(game => game.AppID))));
+				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.NowIdlingList, string.Join(", ", games.Select(static game => game.AppID))));
 			}
 
 			bool result = await FarmHours(games).ConfigureAwait(false);
@@ -1125,27 +1125,27 @@ namespace ArchiSteamFarm.Steam.Cards {
 					case BotConfig.EFarmingOrder.Unordered:
 						break;
 					case BotConfig.EFarmingOrder.AppIDsAscending:
-						orderedGamesToFarm = orderedGamesToFarm.ThenBy(game => game.AppID);
+						orderedGamesToFarm = orderedGamesToFarm.ThenBy(static game => game.AppID);
 
 						break;
 					case BotConfig.EFarmingOrder.AppIDsDescending:
-						orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(game => game.AppID);
+						orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(static game => game.AppID);
 
 						break;
 					case BotConfig.EFarmingOrder.BadgeLevelsAscending:
-						orderedGamesToFarm = orderedGamesToFarm.ThenBy(game => game.BadgeLevel);
+						orderedGamesToFarm = orderedGamesToFarm.ThenBy(static game => game.BadgeLevel);
 
 						break;
 					case BotConfig.EFarmingOrder.BadgeLevelsDescending:
-						orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(game => game.BadgeLevel);
+						orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(static game => game.BadgeLevel);
 
 						break;
 					case BotConfig.EFarmingOrder.CardDropsAscending:
-						orderedGamesToFarm = orderedGamesToFarm.ThenBy(game => game.CardsRemaining);
+						orderedGamesToFarm = orderedGamesToFarm.ThenBy(static game => game.CardsRemaining);
 
 						break;
 					case BotConfig.EFarmingOrder.CardDropsDescending:
-						orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(game => game.CardsRemaining);
+						orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(static game => game.CardsRemaining);
 
 						break;
 					case BotConfig.EFarmingOrder.MarketableAscending:
@@ -1173,23 +1173,23 @@ namespace ArchiSteamFarm.Steam.Cards {
 
 						break;
 					case BotConfig.EFarmingOrder.HoursAscending:
-						orderedGamesToFarm = orderedGamesToFarm.ThenBy(game => game.HoursPlayed);
+						orderedGamesToFarm = orderedGamesToFarm.ThenBy(static game => game.HoursPlayed);
 
 						break;
 					case BotConfig.EFarmingOrder.HoursDescending:
-						orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(game => game.HoursPlayed);
+						orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(static game => game.HoursPlayed);
 
 						break;
 					case BotConfig.EFarmingOrder.NamesAscending:
-						orderedGamesToFarm = orderedGamesToFarm.ThenBy(game => game.GameName);
+						orderedGamesToFarm = orderedGamesToFarm.ThenBy(static game => game.GameName);
 
 						break;
 					case BotConfig.EFarmingOrder.NamesDescending:
-						orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(game => game.GameName);
+						orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(static game => game.GameName);
 
 						break;
 					case BotConfig.EFarmingOrder.Random:
-						orderedGamesToFarm = orderedGamesToFarm.ThenBy(_ => Utilities.RandomNext());
+						orderedGamesToFarm = orderedGamesToFarm.ThenBy(static _ => Utilities.RandomNext());
 
 						break;
 					case BotConfig.EFarmingOrder.RedeemDateTimesAscending:

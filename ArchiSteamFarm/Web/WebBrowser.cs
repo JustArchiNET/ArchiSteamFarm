@@ -785,7 +785,7 @@ namespace ArchiSteamFarm.Web {
 							try {
 								requestMessage.Content = new FormUrlEncodedContent(nameValueCollection);
 							} catch (UriFormatException) {
-								requestMessage.Content = new StringContent(string.Join("&", nameValueCollection.Select(kv => $"{WebUtility.UrlEncode(kv.Key)}={WebUtility.UrlEncode(kv.Value)}")), null, "application/x-www-form-urlencoded");
+								requestMessage.Content = new StringContent(string.Join("&", nameValueCollection.Select(static kv => $"{WebUtility.UrlEncode(kv.Key)}={WebUtility.UrlEncode(kv.Value)}")), null, "application/x-www-form-urlencoded");
 							}
 
 							break;

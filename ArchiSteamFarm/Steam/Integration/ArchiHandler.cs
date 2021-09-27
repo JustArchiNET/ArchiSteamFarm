@@ -127,7 +127,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 			CPlayer_GetOwnedGames_Response body = response.GetDeserializedResponse<CPlayer_GetOwnedGames_Response>();
 
-			return body.games.ToDictionary(game => (uint) game.appid, game => game.name);
+			return body.games.ToDictionary(static game => (uint) game.appid, static game => game.name);
 		}
 
 		public override void HandleMsg(IPacketMsg packetMsg) {
@@ -385,7 +385,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 			CChatRoom_GetMyChatRoomGroups_Response body = response.GetDeserializedResponse<CChatRoom_GetMyChatRoomGroups_Response>();
 
-			return body.chat_room_groups.Select(chatRoom => chatRoom.group_summary.chat_group_id).ToHashSet();
+			return body.chat_room_groups.Select(static chatRoom => chatRoom.group_summary.chat_group_id).ToHashSet();
 		}
 
 		internal async Task<CPrivacySettings?> GetPrivacySettings() {
@@ -555,7 +555,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 			if (gameIDs.Count > 0) {
 #pragma warning disable CA1508 // False positive, not every IReadOnlyCollection is ISet
-				IEnumerable<uint> uniqueValidGameIDs = (gameIDs as ISet<uint> ?? gameIDs.Distinct()).Where(gameID => gameID > 0);
+				IEnumerable<uint> uniqueValidGameIDs = (gameIDs as ISet<uint> ?? gameIDs.Distinct()).Where(static gameID => gameID > 0);
 #pragma warning restore CA1508 // False positive, not every IReadOnlyCollection is ISet
 
 				foreach (uint gameID in uniqueValidGameIDs) {

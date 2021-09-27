@@ -55,13 +55,13 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			string? baseType = targetType.BaseType?.GetUnifiedName();
-			HashSet<string> customAttributes = targetType.CustomAttributes.Select(attribute => attribute.AttributeType.GetUnifiedName()).Where(customAttribute => !string.IsNullOrEmpty(customAttribute)).ToHashSet(StringComparer.Ordinal)!;
+			HashSet<string> customAttributes = targetType.CustomAttributes.Select(static attribute => attribute.AttributeType.GetUnifiedName()).Where(static customAttribute => !string.IsNullOrEmpty(customAttribute)).ToHashSet(StringComparer.Ordinal)!;
 			string? underlyingType = null;
 
 			Dictionary<string, string> body = new(StringComparer.Ordinal);
 
 			if (targetType.IsClass) {
-				foreach (FieldInfo field in targetType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(field => !field.IsPrivate)) {
+				foreach (FieldInfo field in targetType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(static field => !field.IsPrivate)) {
 					JsonPropertyAttribute? jsonProperty = field.GetCustomAttribute<JsonPropertyAttribute>();
 
 					if (jsonProperty != null) {
@@ -74,7 +74,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 					}
 				}
 
-				foreach (PropertyInfo property in targetType.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(property => property.CanRead && (property.GetMethod?.IsPrivate == false))) {
+				foreach (PropertyInfo property in targetType.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(static property => property.CanRead && (property.GetMethod?.IsPrivate == false))) {
 					JsonPropertyAttribute? jsonProperty = property.GetCustomAttribute<JsonPropertyAttribute>();
 
 					if (jsonProperty != null) {

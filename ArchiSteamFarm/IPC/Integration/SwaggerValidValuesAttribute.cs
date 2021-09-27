@@ -40,11 +40,11 @@ namespace ArchiSteamFarm.IPC.Integration {
 			OpenApiArray validValues = new();
 
 			if (ValidIntValues != null) {
-				validValues.AddRange(ValidIntValues.Select(type => new OpenApiInteger(type)));
+				validValues.AddRange(ValidIntValues.Select(static type => new OpenApiInteger(type)));
 			}
 
 			if (ValidStringValues != null) {
-				validValues.AddRange(ValidStringValues.Select(type => new OpenApiString(type)));
+				validValues.AddRange(ValidStringValues.Select(static type => new OpenApiString(type)));
 			}
 
 			if (schema.Items is { Reference: null }) {

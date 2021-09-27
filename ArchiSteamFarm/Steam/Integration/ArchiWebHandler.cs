@@ -1662,7 +1662,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 			HashSet<uint> result = new(apps.Count);
 
-			foreach (uint appID in apps.Select(app => app["appid"].AsUnsignedInteger())) {
+			foreach (uint appID in apps.Select(static app => app["appid"].AsUnsignedInteger())) {
 				if (appID == 0) {
 					Bot.ArchiLogger.LogNullError(nameof(appID));
 
@@ -1766,7 +1766,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 			HashSet<ulong> results = new();
 
-			foreach (string? giftCardIDText in htmlNodes.Select(node => node.GetAttribute("id"))) {
+			foreach (string? giftCardIDText in htmlNodes.Select(static node => node.GetAttribute("id"))) {
 				if (string.IsNullOrEmpty(giftCardIDText)) {
 					Bot.ArchiLogger.LogNullError(nameof(giftCardIDText));
 
@@ -1812,7 +1812,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 			HashSet<ulong> result = new();
 
-			foreach (string? miniProfile in htmlNodes.Select(htmlNode => htmlNode.GetAttribute("data-miniprofile"))) {
+			foreach (string? miniProfile in htmlNodes.Select(static htmlNode => htmlNode.GetAttribute("data-miniprofile"))) {
 				if (string.IsNullOrEmpty(miniProfile)) {
 					Bot.ArchiLogger.LogNullError(nameof(miniProfile));
 
@@ -2681,7 +2681,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 			bool[] results = await Task.WhenAll(UnlockParentalAccountForService(SteamCommunityURL, parentalCode), UnlockParentalAccountForService(SteamStoreURL, parentalCode)).ConfigureAwait(false);
 
-			if (results.Any(result => !result)) {
+			if (results.Any(static result => !result)) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 
 				return false;

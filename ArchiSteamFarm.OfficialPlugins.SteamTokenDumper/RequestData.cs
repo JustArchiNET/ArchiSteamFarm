@@ -71,9 +71,9 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 			SteamID = steamID;
 
-			Apps = apps.ToImmutableDictionary(app => app.Key.ToString(CultureInfo.InvariantCulture), app => app.Value.ToString(CultureInfo.InvariantCulture));
-			Subs = accessTokens.ToImmutableDictionary(package => package.Key.ToString(CultureInfo.InvariantCulture), package => package.Value.ToString(CultureInfo.InvariantCulture));
-			Depots = depots.ToImmutableDictionary(depot => depot.Key.ToString(CultureInfo.InvariantCulture), depot => depot.Value);
+			Apps = apps.ToImmutableDictionary(static app => app.Key.ToString(CultureInfo.InvariantCulture), static app => app.Value.ToString(CultureInfo.InvariantCulture));
+			Subs = accessTokens.ToImmutableDictionary(static package => package.Key.ToString(CultureInfo.InvariantCulture), static package => package.Value.ToString(CultureInfo.InvariantCulture));
+			Depots = depots.ToImmutableDictionary(static depot => depot.Key.ToString(CultureInfo.InvariantCulture), static depot => depot.Value);
 		}
 	}
 }

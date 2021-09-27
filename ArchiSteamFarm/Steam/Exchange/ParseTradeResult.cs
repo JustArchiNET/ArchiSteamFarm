@@ -50,7 +50,7 @@ namespace ArchiSteamFarm.Steam.Exchange {
 			Result = result;
 
 			if (itemsToReceive?.Count > 0) {
-				ReceivedItemTypes = itemsToReceive.Select(item => item.Type).ToImmutableHashSet();
+				ReceivedItemTypes = itemsToReceive.Select(static item => item.Type).ToImmutableHashSet();
 			}
 		}
 

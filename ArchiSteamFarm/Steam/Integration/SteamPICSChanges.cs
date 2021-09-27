@@ -67,7 +67,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 				SteamApps.PICSChangesCallback? picsChanges = null;
 
 				for (byte i = 0; (i < WebBrowser.MaxTries) && (picsChanges == null); i++) {
-					refreshBot = Bot.Bots?.Values.FirstOrDefault(bot => bot.IsConnectedAndLoggedOn);
+					refreshBot = Bot.Bots?.Values.FirstOrDefault(static bot => bot.IsConnectedAndLoggedOn);
 
 					if (refreshBot == null) {
 						LiveUpdate = false;
@@ -115,7 +115,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 					ASF.GlobalDatabase.LastChangeNumber = picsChanges.CurrentChangeNumber;
 
 					if (picsChanges.PackageChanges.Count > 0) {
-						await ASF.GlobalDatabase.RefreshPackages(refreshBot, picsChanges.PackageChanges.ToDictionary(package => package.Key, package => package.Value.ChangeNumber)).ConfigureAwait(false);
+						await ASF.GlobalDatabase.RefreshPackages(refreshBot, picsChanges.PackageChanges.ToDictionary(static package => package.Key, static package => package.Value.ChangeNumber)).ConfigureAwait(false);
 					}
 				}
 

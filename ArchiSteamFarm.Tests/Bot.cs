@@ -51,9 +51,7 @@ namespace ArchiSteamFarm.Tests {
 
 			HashSet<Asset> itemsToSend = GetItemsForFullBadge(items, itemsPerSet, MinCardsPerBadge);
 
-			Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult = items.Where(item => item.RealAppID == relevantAppID)
-				.GroupBy(item => (item.RealAppID, item.ContextID, item.ClassID))
-				.ToDictionary(grouping => grouping.Key, grouping => (uint) grouping.Sum(item => item.Amount));
+			Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), uint> expectedResult = items.Where(static item => item.RealAppID == relevantAppID).GroupBy(static item => (item.RealAppID, item.ContextID, item.ClassID)).ToDictionary(static group => group.Key, static group => (uint) group.Sum(static item => item.Amount));
 
 			AssertResultMatchesExpectation(expectedResult, itemsToSend);
 		}
@@ -497,7 +495,7 @@ namespace ArchiSteamFarm.Tests {
 				throw new ArgumentNullException(nameof(itemsToSend));
 			}
 
-			Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), long> realResult = itemsToSend.GroupBy(asset => (asset.RealAppID, asset.ContextID, asset.ClassID)).ToDictionary(group => group.Key, group => group.Sum(asset => asset.Amount));
+			Dictionary<(uint RealAppID, ulong ContextID, ulong ClassID), long> realResult = itemsToSend.GroupBy(static asset => (asset.RealAppID, asset.ContextID, asset.ClassID)).ToDictionary(static group => group.Key, static group => group.Sum(static asset => asset.Amount));
 			Assert.AreEqual(expectedResult.Count, realResult.Count);
 			Assert.IsTrue(expectedResult.All(expectation => realResult.TryGetValue(expectation.Key, out long reality) && (expectation.Value == reality)));
 		}
@@ -509,7 +507,7 @@ namespace ArchiSteamFarm.Tests {
 		private static HashSet<Asset> GetItemsForFullBadge(IReadOnlyCollection<Asset> inventory, IDictionary<uint, byte> cardsPerSet, ushort maxItems = Steam.Exchange.Trading.MaxItemsPerTrade) {
 			Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), List<uint>> inventorySets = Steam.Exchange.Trading.GetInventorySets(inventory);
 
-			return GetItemsForFullSets(inventory, inventorySets.ToDictionary(kv => kv.Key, kv => (SetsToExtract: inventorySets[kv.Key][0], cardsPerSet[kv.Key.RealAppID])), maxItems).ToHashSet();
+			return GetItemsForFullSets(inventory, inventorySets.ToDictionary(static kv => kv.Key, kv => (SetsToExtract: inventorySets[kv.Key][0], cardsPerSet[kv.Key.RealAppID])), maxItems).ToHashSet();
 		}
 	}
 }

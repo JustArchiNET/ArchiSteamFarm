@@ -61,7 +61,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(ASF.GlobalConfig.SteamOwnerID))));
 			}
 
-			Bot? targetBot = Bot.Bots?.OrderBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value).FirstOrDefault();
+			Bot? targetBot = Bot.Bots?.OrderBy(static bot => bot.Key, Bot.BotsComparer).Select(static bot => bot.Value).FirstOrDefault();
 
 			if (targetBot == null) {
 				return BadRequest(new GenericResponse(false, Strings.ErrorNoBotsDefined));

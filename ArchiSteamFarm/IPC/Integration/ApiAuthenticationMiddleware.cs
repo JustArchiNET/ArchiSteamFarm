@@ -141,7 +141,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 				return (HttpStatusCode.Unauthorized, true);
 			}
 
-			string? inputPassword = passwords.FirstOrDefault(password => !string.IsNullOrEmpty(password));
+			string? inputPassword = passwords.FirstOrDefault(static password => !string.IsNullOrEmpty(password));
 
 			if (string.IsNullOrEmpty(inputPassword)) {
 				return (HttpStatusCode.Unauthorized, true);

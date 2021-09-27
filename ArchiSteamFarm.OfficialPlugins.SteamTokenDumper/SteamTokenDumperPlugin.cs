@@ -271,7 +271,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 				throw new InvalidOperationException(nameof(GlobalCache));
 			}
 
-			Dictionary<uint, ulong> packageTokens = callback.LicenseList.Where(license => !Config.SecretPackageIDs.Contains(license.PackageID) && ((license.PaymentMethod != EPaymentMethod.AutoGrant) || !Config.SkipAutoGrantPackages)).GroupBy(license => license.PackageID).ToDictionary(group => group.Key, group => group.OrderByDescending(license => license.TimeCreated).First().AccessToken);
+			Dictionary<uint, ulong> packageTokens = callback.LicenseList.Where(static license => !Config.SecretPackageIDs.Contains(license.PackageID) && ((license.PaymentMethod != EPaymentMethod.AutoGrant) || !Config.SkipAutoGrantPackages)).GroupBy(static license => license.PackageID).ToDictionary(static group => group.Key, static group => group.OrderByDescending(static license => license.TimeCreated).First().AccessToken);
 
 			GlobalCache.UpdatePackageTokens(packageTokens);
 
@@ -308,17 +308,17 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 					return;
 				}
 
-				packageIDs ??= bot.OwnedPackageIDs.Where(package => !Config.SecretPackageIDs.Contains(package.Key) && ((package.Value.PaymentMethod != EPaymentMethod.AutoGrant) || !Config.SkipAutoGrantPackages)).Select(package => package.Key).ToHashSet();
+				packageIDs ??= bot.OwnedPackageIDs.Where(static package => !Config.SecretPackageIDs.Contains(package.Key) && ((package.Value.PaymentMethod != EPaymentMethod.AutoGrant) || !Config.SkipAutoGrantPackages)).Select(static package => package.Key).ToHashSet();
 
 				HashSet<uint> appIDsToRefresh = new();
 
-				foreach (uint packageID in packageIDs.Where(packageID => !Config.SecretPackageIDs.Contains(packageID))) {
+				foreach (uint packageID in packageIDs.Where(static packageID => !Config.SecretPackageIDs.Contains(packageID))) {
 					if (!ASF.GlobalDatabase.PackagesDataReadOnly.TryGetValue(packageID, out (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs) packageData) || (packageData.AppIDs == null)) {
 						// ASF might not have the package info for us at the moment, we'll retry later
 						continue;
 					}
 
-					appIDsToRefresh.UnionWith(packageData.AppIDs.Where(appID => !Config.SecretAppIDs.Contains(appID) && GlobalCache.ShouldRefreshAppInfo(appID)));
+					appIDsToRefresh.UnionWith(packageData.AppIDs.Where(static appID => !Config.SecretAppIDs.Contains(appID) && GlobalCache.ShouldRefreshAppInfo(appID)));
 				}
 
 				if (appIDsToRefresh.Count == 0) {
@@ -387,7 +387,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 						AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet response;
 
 						try {
-							response = await bot.SteamApps.PICSGetProductInfo(appIDsThisRound.Select(appID => new SteamApps.PICSRequest(appID, GlobalCache.GetAppToken(appID))), Enumerable.Empty<SteamApps.PICSRequest>()).ToLongRunningTask().ConfigureAwait(false);
+							response = await bot.SteamApps.PICSGetProductInfo(appIDsThisRound.Select(static appID => new SteamApps.PICSRequest(appID, GlobalCache.GetAppToken(appID))), Enumerable.Empty<SteamApps.PICSRequest>()).ToLongRunningTask().ConfigureAwait(false);
 						} catch (Exception e) {
 							bot.ArchiLogger.LogGenericWarningException(e);
 
@@ -408,7 +408,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 						HashSet<Task<SteamApps.DepotKeyCallback>> depotTasks = new();
 
-						foreach (SteamApps.PICSProductInfoCallback.PICSProductInfo app in response.Results.SelectMany(result => result.Apps.Values)) {
+						foreach (SteamApps.PICSProductInfoCallback.PICSProductInfo app in response.Results.SelectMany(static result => result.Apps.Values)) {
 							appChangeNumbers[app.ID] = app.ChangeNumber;
 
 							if (GlobalCache.ShouldRefreshDepotKey(app.ID)) {
@@ -489,7 +489,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 					return;
 				}
 
-				ulong contributorSteamID = (ASF.GlobalConfig.SteamOwnerID > 0) && new SteamID(ASF.GlobalConfig.SteamOwnerID).IsIndividualAccount ? ASF.GlobalConfig.SteamOwnerID : Bot.Bots.Values.Where(bot => bot.SteamID > 0).OrderByDescending(bot => bot.OwnedPackageIDs.Count).FirstOrDefault()?.SteamID ?? 0;
+				ulong contributorSteamID = (ASF.GlobalConfig.SteamOwnerID > 0) && new SteamID(ASF.GlobalConfig.SteamOwnerID).IsIndividualAccount ? ASF.GlobalConfig.SteamOwnerID : Bot.Bots.Values.Where(static bot => bot.SteamID > 0).OrderByDescending(static bot => bot.OwnedPackageIDs.Count).FirstOrDefault()?.SteamID ?? 0;
 
 				if (contributorSteamID == 0) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.SubmissionNoContributorSet, nameof(ASF.GlobalConfig.SteamOwnerID)));
