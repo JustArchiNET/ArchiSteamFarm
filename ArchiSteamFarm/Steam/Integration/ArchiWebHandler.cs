@@ -1295,22 +1295,49 @@ namespace ArchiSteamFarm.Steam.Integration {
 			return response != null ? (true, response.Content.RequiresMobileConfirmation) : (false, false);
 		}
 
-		internal async Task<bool> AddFreeLicense(uint subID) {
+		internal async Task<(EResult Result, EPurchaseResultDetail PurchaseResult)> AddFreeLicense(uint subID) {
 			if (subID == 0) {
 				throw new ArgumentOutOfRangeException(nameof(subID));
 			}
 
-			Uri request = new(SteamStoreURL, "/checkout/addfreelicense");
+			Uri request = new(SteamStoreURL, $"/checkout/addfreelicense/{subID}");
 
 			// Extra entry for sessionID
-			Dictionary<string, string> data = new(3, StringComparer.Ordinal) {
-				{ "action", "add_to_cart" },
-				{ "subid", subID.ToString(CultureInfo.InvariantCulture) }
+			Dictionary<string, string> data = new(2, StringComparer.Ordinal) {
+				{ "ajax", "true" }
 			};
 
-			using HtmlDocumentResponse? response = await UrlPostToHtmlDocumentWithSession(request, data: data).ConfigureAwait(false);
+			ObjectResponse<JToken>? response = await UrlPostToJsonObjectWithSession<JToken>(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors | WebBrowser.ERequestOptions.ReturnServerErrors).ConfigureAwait(false);
 
-			return response?.Content.SelectSingleNode("//div[@class='add_free_content_success_area']") != null;
+			if (response == null) {
+				return (EResult.Fail, EPurchaseResultDetail.Timeout);
+			}
+
+			switch (response.StatusCode) {
+				case HttpStatusCode.Forbidden:
+					// Let's convert this into something reasonable
+					return (EResult.AccessDenied, EPurchaseResultDetail.InvalidPackage);
+				case HttpStatusCode.InternalServerError:
+				case HttpStatusCode.OK:
+					// This API is total nuts, it returns sometimes [ ], sometimes { "purchaseresultdetail": int } and sometimes null because f**k you, that's why, I wouldn't be surprised if it returned XML one day
+					// There is not much we can do apart from trying to extract the result and returning it along with the OK and non-OK response, it's also why it doesn't make any sense to strong-type it
+					EPurchaseResultDetail purchaseResult = EPurchaseResultDetail.NoDetail;
+
+					if (response.Content is JObject jObject) {
+						byte? numberResult = jObject["purchaseresultdetail"]?.Value<byte>();
+
+						if (numberResult.HasValue) {
+							purchaseResult = (EPurchaseResultDetail) numberResult.Value;
+						}
+					}
+
+					return (response.StatusCode.IsSuccessCode() ? EResult.OK : EResult.Fail, purchaseResult);
+				default:
+					// We should handle all expected status codes above, this is a generic fallback for those that we don't
+					Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(response.StatusCode), response.StatusCode));
+
+					return (response.StatusCode.IsSuccessCode() ? EResult.OK : EResult.Fail, EPurchaseResultDetail.ContactSupport);
+			}
 		}
 
 		internal async Task<bool> ChangePrivacySettings(UserPrivacy userPrivacy) {

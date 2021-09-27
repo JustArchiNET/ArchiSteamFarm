@@ -647,13 +647,9 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 						break;
 					default:
-						if (!await Bot.ArchiWebHandler.AddFreeLicense(gameID).ConfigureAwait(false)) {
-							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicense, "sub/" + gameID, EResult.Fail)));
+						(EResult result, EPurchaseResultDetail purchaseResult) = await Bot.ArchiWebHandler.AddFreeLicense(gameID).ConfigureAwait(false);
 
-							continue;
-						}
-
-						response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicenseWithItems, gameID, EResult.OK, "sub/" + gameID)));
+						response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicense, "sub/" + gameID, result + "/" + purchaseResult)));
 
 						break;
 				}

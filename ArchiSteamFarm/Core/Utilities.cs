@@ -179,6 +179,9 @@ namespace ArchiSteamFarm.Core {
 		public static bool IsServerErrorCode(this HttpStatusCode statusCode) => statusCode is >= HttpStatusCode.InternalServerError and < (HttpStatusCode) 600;
 
 		[PublicAPI]
+		public static bool IsSuccessCode(this HttpStatusCode statusCode) => statusCode is >= HttpStatusCode.OK and < HttpStatusCode.Ambiguous;
+
+		[PublicAPI]
 		public static bool IsValidCdKey(string key) {
 			if (string.IsNullOrEmpty(key)) {
 				throw new ArgumentNullException(nameof(key));
