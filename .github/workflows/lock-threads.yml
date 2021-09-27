@@ -11,5 +11,5 @@ jobs:
       - name: Lock inactive threads
         uses: dessant/lock-threads@v3.0.0
         with:
-          issue-lock-inactive-days: 30
-          pr-lock-inactive-days: 30
+          issue-inactive-days: 30
+          pr-inactive-days: 30
