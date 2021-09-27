@@ -87,7 +87,7 @@ namespace ArchiSteamFarm.Helpers {
 				}
 
 				// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
-				string newFilePath = FilePath + ".new";
+				string newFilePath = $"{FilePath}.new";
 
 				if (File.Exists(FilePath)) {
 					string currentJson = await File.ReadAllTextAsync(FilePath!).ConfigureAwait(false);
@@ -138,7 +138,7 @@ namespace ArchiSteamFarm.Helpers {
 				throw new ArgumentNullException(nameof(json));
 			}
 
-			string newFilePath = filePath + ".new";
+			string newFilePath = $"{filePath}.new";
 
 			await GlobalFileSemaphore.WaitAsync().ConfigureAwait(false);
 

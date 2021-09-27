@@ -271,7 +271,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			if ((request.Type == ASF.EUserInputType.None) || !Enum.IsDefined(typeof(ASF.EUserInputType), request.Type) || string.IsNullOrEmpty(request.Value)) {
-				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(request.Type) + " || " + nameof(request.Value))));
+				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, $"{nameof(request.Type)} || {nameof(request.Value)}")));
 			}
 
 			HashSet<Bot>? bots = Bot.GetBots(botNames);

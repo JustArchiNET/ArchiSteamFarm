@@ -112,7 +112,7 @@ namespace ArchiSteamFarm.Core {
 					return;
 				}
 
-				Uri request = new(URL + "/Api/HeartBeat");
+				Uri request = new($"{URL}/Api/HeartBeat");
 
 				Dictionary<string, string> data = new(2, StringComparer.Ordinal) {
 					{ "Guid", (ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid()).ToString("N") },
@@ -221,7 +221,7 @@ namespace ArchiSteamFarm.Core {
 					return;
 				}
 
-				Uri request = new(URL + "/Api/Announce");
+				Uri request = new($"{URL}/Api/Announce");
 
 				Dictionary<string, string> data = new(9, StringComparer.Ordinal) {
 					{ "AvatarHash", avatarHash ?? "" },
@@ -258,7 +258,7 @@ namespace ArchiSteamFarm.Core {
 		}
 
 		private async Task<ImmutableHashSet<ListedUser>?> GetListedUsers() {
-			Uri request = new(URL + "/Api/Bots");
+			Uri request = new($"{URL}/Api/Bots");
 
 			ObjectResponse<ImmutableHashSet<ListedUser>>? response = await Bot.ArchiWebHandler.WebBrowser.UrlGetToJsonObject<ImmutableHashSet<ListedUser>>(request).ConfigureAwait(false);
 
@@ -276,7 +276,7 @@ namespace ArchiSteamFarm.Core {
 			bool? hasPublicInventory = await Bot.HasPublicInventory().ConfigureAwait(false);
 
 			if (hasPublicInventory != true) {
-				Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.HasPublicInventory) + ": " + (hasPublicInventory?.ToString() ?? "null")));
+				Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(Bot.HasPublicInventory)}: {hasPublicInventory?.ToString() ?? "null"}"));
 
 				return hasPublicInventory;
 			}
@@ -287,21 +287,21 @@ namespace ArchiSteamFarm.Core {
 		private async Task<bool?> IsEligibleForMatching() {
 			// Bot must have ASF 2FA
 			if (!Bot.HasMobileAuthenticator) {
-				Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.HasMobileAuthenticator) + ": " + Bot.HasMobileAuthenticator));
+				Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(Bot.HasMobileAuthenticator)}: {Bot.HasMobileAuthenticator}"));
 
 				return false;
 			}
 
 			// Bot must have STM enable in TradingPreferences
 			if (!Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher)) {
-				Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.BotConfig.TradingPreferences) + ": " + Bot.BotConfig.TradingPreferences));
+				Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(Bot.BotConfig.TradingPreferences)}: {Bot.BotConfig.TradingPreferences}"));
 
 				return false;
 			}
 
 			// Bot must have at least one accepted matchable type set
 			if ((Bot.BotConfig.MatchableTypes.Count == 0) || Bot.BotConfig.MatchableTypes.All(type => !AcceptedMatchableTypes.Contains(type))) {
-				Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.BotConfig.MatchableTypes) + ": " + string.Join(", ", Bot.BotConfig.MatchableTypes)));
+				Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(Bot.BotConfig.MatchableTypes)}: {string.Join(", ", Bot.BotConfig.MatchableTypes)}"));
 
 				return false;
 			}
@@ -310,7 +310,7 @@ namespace ArchiSteamFarm.Core {
 			bool? hasValidApiKey = await Bot.ArchiWebHandler.HasValidApiKey().ConfigureAwait(false);
 
 			if (hasValidApiKey != true) {
-				Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.ArchiWebHandler.HasValidApiKey) + ": " + (hasValidApiKey?.ToString() ?? "null")));
+				Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(Bot.ArchiWebHandler.HasValidApiKey)}: {hasValidApiKey?.ToString() ?? "null"}"));
 
 				return hasValidApiKey;
 			}
@@ -407,7 +407,7 @@ namespace ArchiSteamFarm.Core {
 
 			if (Trading.IsEmptyForMatching(ourFullState, ourTradableState)) {
 				// User doesn't have any more dupes in the inventory
-				Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(ourFullState) + " || " + nameof(ourTradableState)));
+				Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, $"{nameof(ourFullState)} || {nameof(ourTradableState)}"));
 
 				return (false, false);
 			}
@@ -436,7 +436,7 @@ namespace ArchiSteamFarm.Core {
 					break;
 				}
 
-				Bot.ArchiLogger.LogGenericTrace(listedUser.SteamID + "...");
+				Bot.ArchiLogger.LogGenericTrace($"{listedUser.SteamID}...");
 
 				byte? holdDuration = await Bot.ArchiWebHandler.GetTradeHoldDurationForUser(listedUser.SteamID, listedUser.TradeToken).ConfigureAwait(false);
 
@@ -446,7 +446,7 @@ namespace ArchiSteamFarm.Core {
 
 						continue;
 					case > 0 when holdDuration.Value > maxTradeHoldDuration:
-						Bot.ArchiLogger.LogGenericTrace(holdDuration.Value + " > " + maxTradeHoldDuration);
+						Bot.ArchiLogger.LogGenericTrace($"{holdDuration.Value} > {maxTradeHoldDuration}");
 
 						continue;
 				}
@@ -662,7 +662,7 @@ namespace ArchiSteamFarm.Core {
 
 					triedSteamIDs[listedUser.SteamID] = (++previousAttempt.Tries, previousAttempt.GivenAssetIDs, previousAttempt.ReceivedAssetIDs);
 
-					Bot.ArchiLogger.LogGenericTrace(Bot.SteamID + " <- " + string.Join(", ", itemsToReceive.Select(item => item.RealAppID + "/" + item.Type + "-" + item.ClassID + " #" + item.Amount)) + " | " + string.Join(", ", itemsToGive.Select(item => item.RealAppID + "/" + item.Type + "-" + item.ClassID + " #" + item.Amount)) + " -> " + listedUser.SteamID);
+					Bot.ArchiLogger.LogGenericTrace($"{Bot.SteamID} <- {string.Join(", ", itemsToReceive.Select(item => $"{item.RealAppID}/{item.Type}-{item.ClassID} #{item.Amount}"))} | {string.Join(", ", itemsToGive.Select(item => $"{item.RealAppID}/{item.Type}-{item.ClassID} #{item.Amount}"))} -> {listedUser.SteamID}");
 
 					(bool success, HashSet<ulong>? mobileTradeOfferIDs) = await Bot.ArchiWebHandler.SendTradeOffer(listedUser.SteamID, itemsToGive, itemsToReceive, listedUser.TradeToken, true).ConfigureAwait(false);
 

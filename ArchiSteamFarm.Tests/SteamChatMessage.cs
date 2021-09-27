@@ -52,7 +52,7 @@ namespace ArchiSteamFarm.Tests {
 
 		[TestMethod]
 		public async Task DoesntSkipEmptyNewlines() {
-			string message = "asdf" + Environment.NewLine + Environment.NewLine + "asdf";
+			string message = $"asdf{Environment.NewLine}{Environment.NewLine}asdf";
 
 			List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
 
@@ -99,12 +99,12 @@ namespace ArchiSteamFarm.Tests {
 			int longLineLength = maxMessageBytes - ReservedContinuationMessageBytes;
 
 			string longLine = new('a', longLineLength - 2);
-			string message = longLine + @"\";
+			string message = $@"{longLine}\";
 
 			List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync().ConfigureAwait(false);
 
 			Assert.AreEqual(1, output.Count);
-			Assert.AreEqual(message + @"\", output.First());
+			Assert.AreEqual($@"{message}\", output.First());
 		}
 
 		[DataRow(false)]
@@ -115,19 +115,19 @@ namespace ArchiSteamFarm.Tests {
 			int longLineLength = maxMessageBytes - ReservedContinuationMessageBytes;
 
 			string longLine = new('a', longLineLength - 1);
-			string message = longLine + "[";
+			string message = $"{longLine}[";
 
 			List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync().ConfigureAwait(false);
 
 			Assert.AreEqual(2, output.Count);
 
 			Assert.AreEqual(longLine + ContinuationCharacter, output[0]);
-			Assert.AreEqual(ContinuationCharacter + @"\[", output[1]);
+			Assert.AreEqual($@"{ContinuationCharacter}\[", output[1]);
 		}
 
 		[TestMethod]
 		public async Task NoNeedForAnySplittingWithNewlines() {
-			string message = "abcdef" + Environment.NewLine + "ghijkl" + Environment.NewLine + "mnopqr";
+			string message = $"abcdef{Environment.NewLine}ghijkl{Environment.NewLine}mnopqr";
 
 			List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
 

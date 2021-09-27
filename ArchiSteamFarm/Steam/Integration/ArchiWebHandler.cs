@@ -121,7 +121,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 				}
 			}
 
-			return string.IsNullOrEmpty(VanityURL) ? "/profiles/" + Bot.SteamID : "/id/" + VanityURL;
+			return string.IsNullOrEmpty(VanityURL) ? $"/profiles/{Bot.SteamID}" : $"/id/{VanityURL}";
 		}
 
 		[PublicAPI]
@@ -165,7 +165,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 				await ASF.InventorySemaphore.WaitAsync().ConfigureAwait(false);
 
 				try {
-					Uri request = new(SteamCommunityURL, "/inventory/" + steamID + "/" + appID + "/" + contextID + "?count=" + MaxItemsInSingleInventoryRequest + "&l=english" + (startAssetID > 0 ? "&start_assetid=" + startAssetID : ""));
+					Uri request = new(SteamCommunityURL, $"/inventory/{steamID}/{appID}/{contextID}?count={MaxItemsInSingleInventoryRequest}&l=english{(startAssetID > 0 ? $"&start_assetid={startAssetID}" : "")}");
 
 					ObjectResponse<InventoryResponse>? response = await UrlGetToJsonObjectWithSession<InventoryResponse>(request).ConfigureAwait(false);
 
@@ -185,7 +185,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 					assetIDs ??= new HashSet<ulong>((int) response.Content.TotalInventoryCount);
 
 					if ((response.Content.Assets.Count == 0) || (response.Content.Descriptions.Count == 0)) {
-						throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nameof(response.Content.Assets) + " || " + nameof(response.Content.Descriptions)));
+						throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, $"{nameof(response.Content.Assets)} || {nameof(response.Content.Descriptions)}"));
 					}
 
 					Dictionary<(ulong ClassID, ulong InstanceID), InventoryResponse.Description> descriptions = new();
@@ -326,7 +326,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 				throw new ArgumentOutOfRangeException(nameof(groupID));
 			}
 
-			Uri request = new(SteamCommunityURL, "/gid/" + groupID);
+			Uri request = new(SteamCommunityURL, $"/gid/{groupID}");
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new(2, StringComparer.Ordinal) { { "action", "join" } };
@@ -341,7 +341,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 			}
 
 			if (((itemsToGive == null) || (itemsToGive.Count == 0)) && ((itemsToReceive == null) || (itemsToReceive.Count == 0))) {
-				throw new ArgumentException(nameof(itemsToGive) + " && " + nameof(itemsToReceive));
+				throw new ArgumentException($"{nameof(itemsToGive)} && {nameof(itemsToReceive)}");
 			}
 
 			if (itemsPerTrade <= 2) {
@@ -389,7 +389,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 				{ "partner", steamID.ToString(CultureInfo.InvariantCulture) },
 				{ "serverid", "1" },
 				{ "trade_offer_create_params", !string.IsNullOrEmpty(token) ? new JObject { { "trade_offer_access_token", token } }.ToString(Formatting.None) : "" },
-				{ "tradeoffermessage", "Sent by " + SharedInfo.PublicIdentifier + "/" + SharedInfo.Version }
+				{ "tradeoffermessage", $"Sent by {SharedInfo.PublicIdentifier}/{SharedInfo.Version}" }
 			};
 
 			HashSet<ulong> mobileTradeOfferIDs = new();
@@ -1259,8 +1259,8 @@ namespace ArchiSteamFarm.Steam.Integration {
 				throw new ArgumentOutOfRangeException(nameof(tradeID));
 			}
 
-			Uri request = new(SteamCommunityURL, "/tradeoffer/" + tradeID + "/accept");
-			Uri referer = new(SteamCommunityURL, "/tradeoffer/" + tradeID);
+			Uri request = new(SteamCommunityURL, $"/tradeoffer/{tradeID}/accept");
+			Uri referer = new(SteamCommunityURL, $"/tradeoffer/{tradeID}");
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new(3, StringComparer.Ordinal) {
@@ -1353,7 +1353,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 				return false;
 			}
 
-			Uri request = new(SteamCommunityURL, profileURL + "/ajaxsetprivacy");
+			Uri request = new(SteamCommunityURL, $"{profileURL}/ajaxsetprivacy");
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new(3, StringComparer.Ordinal) {
@@ -1381,7 +1381,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 				throw new ArgumentOutOfRangeException(nameof(appID));
 			}
 
-			Uri request = new(SteamStoreURL, "/app/" + appID);
+			Uri request = new(SteamStoreURL, $"/app/{appID}");
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new(2, StringComparer.Ordinal) { { "appid_to_clear_from_queue", appID.ToString(CultureInfo.InvariantCulture) } };
@@ -1680,7 +1680,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 				throw new ArgumentOutOfRangeException(nameof(page));
 			}
 
-			Uri request = new(SteamCommunityURL, "/my/badges?l=english&p=" + page);
+			Uri request = new(SteamCommunityURL, $"/my/badges?l=english&p={page}");
 
 			HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
 
@@ -1746,7 +1746,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 				}
 			}
 
-			Uri request = new(SteamCommunityURL, "/mobileconf/conf?a=" + Bot.SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&l=english&m=android&p=" + WebUtility.UrlEncode(deviceID) + "&t=" + time + "&tag=conf");
+			Uri request = new(SteamCommunityURL, $"/mobileconf/conf?a={Bot.SteamID}&k={WebUtility.UrlEncode(confirmationHash)}&l=english&m=android&p={WebUtility.UrlEncode(deviceID)}&t={time}&tag=conf");
 
 			HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request).ConfigureAwait(false);
 
@@ -1837,7 +1837,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 				throw new ArgumentOutOfRangeException(nameof(appID));
 			}
 
-			Uri request = new(SteamCommunityURL, "/my/gamecards/" + appID + "?l=english");
+			Uri request = new(SteamCommunityURL, $"/my/gamecards/{appID}?l=english");
 
 			HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request, checkSessionPreemptively: false).ConfigureAwait(false);
 
@@ -1888,7 +1888,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 				throw new ArgumentOutOfRangeException(nameof(tradeID));
 			}
 
-			Uri request = new(SteamCommunityURL, "/tradeoffer/" + tradeID + "?l=english");
+			Uri request = new(SteamCommunityURL, $"/tradeoffer/{tradeID}?l=english");
 
 			using HtmlDocumentResponse? response = await UrlGetToHtmlDocumentWithSession(request).ConfigureAwait(false);
 
@@ -2035,7 +2035,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 				}
 			}
 
-			Uri request = new(SteamCommunityURL, "/mobileconf/ajaxop?a=" + Bot.SteamID + "&cid=" + confirmationID + "&ck=" + confirmationKey + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&l=english&m=android&op=" + (accept ? "allow" : "cancel") + "&p=" + WebUtility.UrlEncode(deviceID) + "&t=" + time + "&tag=conf");
+			Uri request = new(SteamCommunityURL, $"/mobileconf/ajaxop?a={Bot.SteamID}&cid={confirmationID}&ck={confirmationKey}&k={WebUtility.UrlEncode(confirmationHash)}&l=english&m=android&op={(accept ? "allow" : "cancel")}&p={WebUtility.UrlEncode(deviceID)}&t={time}&tag=conf");
 
 			ObjectResponse<BooleanResponse>? response = await UrlGetToJsonObjectWithSession<BooleanResponse>(request).ConfigureAwait(false);
 
@@ -2187,24 +2187,24 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 			string sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(steamID.ToString(CultureInfo.InvariantCulture)));
 
-			WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", "." + SteamCommunityURL.Host));
-			WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", "." + SteamHelpURL.Host));
-			WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", "." + SteamStoreURL.Host));
+			WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", $".{SteamCommunityURL.Host}"));
+			WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", $".{SteamHelpURL.Host}"));
+			WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", $".{SteamStoreURL.Host}"));
 
-			WebBrowser.CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", "." + SteamCommunityURL.Host));
-			WebBrowser.CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", "." + SteamHelpURL.Host));
-			WebBrowser.CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", "." + SteamStoreURL.Host));
+			WebBrowser.CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", $".{SteamCommunityURL.Host}"));
+			WebBrowser.CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", $".{SteamHelpURL.Host}"));
+			WebBrowser.CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", $".{SteamStoreURL.Host}"));
 
-			WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", "." + SteamCommunityURL.Host));
-			WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", "." + SteamHelpURL.Host));
-			WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", "." + SteamStoreURL.Host));
+			WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", $".{SteamCommunityURL.Host}"));
+			WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", $".{SteamHelpURL.Host}"));
+			WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", $".{SteamStoreURL.Host}"));
 
 			// Report proper time when doing timezone-based calculations, see setTimezoneCookies() from https://steamcommunity-a.akamaihd.net/public/shared/javascript/shared_global.js
-			string timeZoneOffset = DateTimeOffset.Now.Offset.TotalSeconds + WebUtility.UrlEncode(",") + "0";
+			string timeZoneOffset = $"{DateTimeOffset.Now.Offset.TotalSeconds}{WebUtility.UrlEncode(",")}0";
 
-			WebBrowser.CookieContainer.Add(new Cookie("timezoneOffset", timeZoneOffset, "/", "." + SteamCommunityURL.Host));
-			WebBrowser.CookieContainer.Add(new Cookie("timezoneOffset", timeZoneOffset, "/", "." + SteamHelpURL.Host));
-			WebBrowser.CookieContainer.Add(new Cookie("timezoneOffset", timeZoneOffset, "/", "." + SteamStoreURL.Host));
+			WebBrowser.CookieContainer.Add(new Cookie("timezoneOffset", timeZoneOffset, "/", $".{SteamCommunityURL.Host}"));
+			WebBrowser.CookieContainer.Add(new Cookie("timezoneOffset", timeZoneOffset, "/", $".{SteamHelpURL.Host}"));
+			WebBrowser.CookieContainer.Add(new Cookie("timezoneOffset", timeZoneOffset, "/", $".{SteamStoreURL.Host}"));
 
 			Bot.ArchiLogger.LogGenericInfo(Strings.Success);
 
@@ -2323,7 +2323,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 				return false;
 			}
 
-			Uri request = new(SteamCommunityURL, profileURL + "/ajaxunpackbooster");
+			Uri request = new(SteamCommunityURL, $"{profileURL}/ajaxunpackbooster");
 
 			// Extra entry for sessionID
 			Dictionary<string, string> data = new(3, StringComparer.Ordinal) {
@@ -2605,7 +2605,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 			Dictionary<string, string> data = new(4, StringComparer.Ordinal) {
 				{ "agreeToTerms", "agreed" },
 #pragma warning disable CA1308 // False positive, we're intentionally converting this part to lowercase and it's not used for any security decisions based on the result of the normalization
-				{ "domain", "generated.by." + SharedInfo.AssemblyName.ToLowerInvariant() + ".localhost" },
+				{ "domain", $"generated.by.{SharedInfo.AssemblyName.ToLowerInvariant()}.localhost" },
 #pragma warning restore CA1308 // False positive, we're intentionally converting this part to lowercase and it's not used for any security decisions based on the result of the normalization
 				{ "Submit", "Register" }
 			};

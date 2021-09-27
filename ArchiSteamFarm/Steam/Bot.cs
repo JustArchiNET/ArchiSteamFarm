@@ -568,7 +568,7 @@ namespace ArchiSteamFarm.Steam {
 				}
 
 				if (itemsPerSet < itemsPerClassID.Count) {
-					throw new InvalidOperationException(nameof(inventory) + " && " + nameof(amountsToExtract));
+					throw new InvalidOperationException($"{nameof(inventory)} && {nameof(amountsToExtract)}");
 				}
 
 				if (itemsPerSet > itemsPerClassID.Count) {
@@ -985,7 +985,7 @@ namespace ArchiSteamFarm.Steam {
 				throw new ArgumentNullException(nameof(botName));
 			}
 
-			return Environment.NewLine + "<" + botName + "> " + response;
+			return $"{Environment.NewLine}<{botName}> {response}";
 		}
 
 		internal async Task<(uint PlayableAppID, DateTime IgnoredUntil, bool IgnoredGlobally)> GetAppDataForIdling(uint appID, float hoursPlayed, bool allowRecursiveDiscovery = true, bool optimisticDiscovery = true) {
@@ -1495,7 +1495,7 @@ namespace ArchiSteamFarm.Steam {
 			}
 
 			if (Debugging.IsDebugConfigured) {
-				ASF.ArchiLogger.LogGenericDebug(configFilePath + ": " + JsonConvert.SerializeObject(botConfig, Formatting.Indented));
+				ASF.ArchiLogger.LogGenericDebug($"{configFilePath}: {JsonConvert.SerializeObject(botConfig, Formatting.Indented)}");
 			}
 
 			if (!string.IsNullOrEmpty(latestJson)) {
@@ -1524,7 +1524,7 @@ namespace ArchiSteamFarm.Steam {
 			}
 
 			if (Debugging.IsDebugConfigured) {
-				ASF.ArchiLogger.LogGenericDebug(databaseFilePath + ": " + JsonConvert.SerializeObject(botDatabase, Formatting.Indented));
+				ASF.ArchiLogger.LogGenericDebug($"{databaseFilePath}: {JsonConvert.SerializeObject(botDatabase, Formatting.Indented)}");
 			}
 
 			Bot bot;
@@ -2138,7 +2138,7 @@ namespace ArchiSteamFarm.Steam {
 
 		private static async Task LimitLoginRequestsAsync() {
 			if ((ASF.LoginSemaphore == null) || (ASF.LoginRateLimitingSemaphore == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(ASF.LoginSemaphore) + " || " + nameof(ASF.LoginRateLimitingSemaphore));
+				ASF.ArchiLogger.LogNullError($"{nameof(ASF.LoginSemaphore)} || {nameof(ASF.LoginRateLimitingSemaphore)}");
 
 				return;
 			}
@@ -2476,7 +2476,7 @@ namespace ArchiSteamFarm.Steam {
 			}
 
 			if ((notification.chat_group_id == 0) || (notification.chat_id == 0) || (notification.steamid_sender == 0)) {
-				ArchiLogger.LogNullError(nameof(notification.chat_group_id) + " || " + nameof(notification.chat_id) + " || " + nameof(notification.steamid_sender));
+				ArchiLogger.LogNullError($"{nameof(notification.chat_group_id)} || {nameof(notification.chat_id)} || {nameof(notification.steamid_sender)}");
 
 				return;
 			}
@@ -2716,7 +2716,7 @@ namespace ArchiSteamFarm.Steam {
 					AccountFlags = callback.AccountFlags;
 					SteamID = callback.ClientSteamID ?? throw new InvalidOperationException(nameof(callback.ClientSteamID));
 
-					ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotLoggedOn, SteamID + (!string.IsNullOrEmpty(callback.VanityURL) ? "/" + callback.VanityURL : "")));
+					ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotLoggedOn, SteamID + (!string.IsNullOrEmpty(callback.VanityURL) ? $"/{callback.VanityURL}" : "")));
 
 					// Old status for these doesn't matter, we'll update them if needed
 					InvalidPasswordFailures = TwoFactorCodeFailures = 0;
@@ -3091,7 +3091,7 @@ namespace ArchiSteamFarm.Steam {
 					PastNotifications.TryRemove(notification, out _);
 				}
 
-				ArchiLogger.LogGenericTrace(notification + " = " + count);
+				ArchiLogger.LogGenericTrace($"{notification} = {count}");
 
 				switch (notification) {
 					case UserNotificationsCallback.EUserNotification.Gifts when newNotification && BotConfig.AcceptGifts:
@@ -3151,7 +3151,7 @@ namespace ArchiSteamFarm.Steam {
 					(string? key, string? name) = BotDatabase.GetGameToRedeemInBackground();
 
 					if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(name)) {
-						ArchiLogger.LogNullError(nameof(key) + " || " + nameof(name));
+						ArchiLogger.LogNullError($"{nameof(key)} || {nameof(name)}");
 
 						break;
 					}
@@ -3177,7 +3177,7 @@ namespace ArchiSteamFarm.Steam {
 						}
 					}
 
-					ArchiLogger.LogGenericDebug(result.Items?.Count > 0 ? string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, result.Result + "/" + result.PurchaseResultDetail, string.Join(", ", result.Items)) : string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail));
+					ArchiLogger.LogGenericDebug(result.Items?.Count > 0 ? string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, $"{result.Result}/{result.PurchaseResultDetail}", string.Join(", ", result.Items)) : string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{result.Result}/{result.PurchaseResultDetail}"));
 
 					bool rateLimited = false;
 					bool redeemed = false;
@@ -3219,7 +3219,7 @@ namespace ArchiSteamFarm.Steam {
 						name = string.Join(", ", result.Items.Values);
 					}
 
-					string logEntry = name + DefaultBackgroundKeysRedeemerSeparator + "[" + result.PurchaseResultDetail + "]" + (result.Items?.Count > 0 ? DefaultBackgroundKeysRedeemerSeparator + string.Join(", ", result.Items) : "") + DefaultBackgroundKeysRedeemerSeparator + key;
+					string logEntry = $"{name}{DefaultBackgroundKeysRedeemerSeparator}[{result.PurchaseResultDetail}]{(result.Items?.Count > 0 ? DefaultBackgroundKeysRedeemerSeparator + string.Join(", ", result.Items) : "")}{DefaultBackgroundKeysRedeemerSeparator}{key}";
 
 					string filePath = GetFilePath(redeemed ? EFileType.KeysToRedeemUsed : EFileType.KeysToRedeemUnused);
 

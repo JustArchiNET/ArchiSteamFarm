@@ -56,7 +56,7 @@ namespace ArchiSteamFarm.Web {
 				throw new ArgumentNullException(nameof(version));
 			}
 
-			Uri request = new(SharedInfo.GithubReleaseURL + "/tags/" + version);
+			Uri request = new($"{SharedInfo.GithubReleaseURL}/tags/{version}");
 
 			return await GetReleaseFromURL(request).ConfigureAwait(false);
 		}
@@ -70,7 +70,7 @@ namespace ArchiSteamFarm.Web {
 				throw new InvalidOperationException(nameof(ASF.WebBrowser));
 			}
 
-			Uri request = new(SharedInfo.ProjectURL + "/wiki/" + page + "/_history");
+			Uri request = new($"{SharedInfo.ProjectURL}/wiki/{page}/_history");
 
 			using HtmlDocumentResponse? response = await ASF.WebBrowser.UrlGetToHtmlDocument(request, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
 
@@ -143,7 +143,7 @@ namespace ArchiSteamFarm.Web {
 				throw new InvalidOperationException(nameof(ASF.WebBrowser));
 			}
 
-			Uri request = new(SharedInfo.ProjectURL + "/wiki/" + page + (!string.IsNullOrEmpty(revision) ? "/" + revision : ""));
+			Uri request = new($"{SharedInfo.ProjectURL}/wiki/{page}{(!string.IsNullOrEmpty(revision) ? $"/{revision}" : "")}");
 
 			using HtmlDocumentResponse? response = await ASF.WebBrowser.UrlGetToHtmlDocument(request).ConfigureAwait(false);
 

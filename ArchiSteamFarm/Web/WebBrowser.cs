@@ -113,7 +113,7 @@ namespace ArchiSteamFarm.Web {
 			// Most web services expect that UserAgent is set, so we declare it globally
 			// If you by any chance came here with a very "clever" idea of hiding your ass by changing default ASF user-agent then here is a very good advice from me: don't, for your own safety - you've been warned
 			result.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(SharedInfo.PublicIdentifier, SharedInfo.Version.ToString()));
-			result.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("(" + SharedInfo.BuildInfo.Variant + "; " + OS.Version.Replace("(", "", StringComparison.Ordinal).Replace(")", "", StringComparison.Ordinal) + "; +" + SharedInfo.ProjectURL + ")"));
+			result.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue($"({SharedInfo.BuildInfo.Variant}; {OS.Version.Replace("(", "", StringComparison.Ordinal).Replace(")", "", StringComparison.Ordinal)}; +{SharedInfo.ProjectURL})"));
 
 			return result;
 		}
@@ -785,7 +785,7 @@ namespace ArchiSteamFarm.Web {
 							try {
 								requestMessage.Content = new FormUrlEncodedContent(nameValueCollection);
 							} catch (UriFormatException) {
-								requestMessage.Content = new StringContent(string.Join("&", nameValueCollection.Select(kv => WebUtility.UrlEncode(kv.Key) + "=" + WebUtility.UrlEncode(kv.Value))), null, "application/x-www-form-urlencoded");
+								requestMessage.Content = new StringContent(string.Join("&", nameValueCollection.Select(kv => $"{WebUtility.UrlEncode(kv.Key)}={WebUtility.UrlEncode(kv.Value)}")), null, "application/x-www-form-urlencoded");
 							}
 
 							break;
@@ -805,7 +805,7 @@ namespace ArchiSteamFarm.Web {
 				}
 
 				if (Debugging.IsUserDebugging) {
-					ArchiLogger.LogGenericDebug(httpMethod + " " + request);
+					ArchiLogger.LogGenericDebug($"{httpMethod} {request}");
 				}
 
 				try {
@@ -823,7 +823,7 @@ namespace ArchiSteamFarm.Web {
 			}
 
 			if (Debugging.IsUserDebugging) {
-				ArchiLogger.LogGenericDebug(response.StatusCode + " <- " + httpMethod + " " + request);
+				ArchiLogger.LogGenericDebug($"{response.StatusCode} <- {httpMethod} {request}");
 			}
 
 			if (response.IsSuccessStatusCode) {
@@ -883,7 +883,7 @@ namespace ArchiSteamFarm.Web {
 			}
 
 			if (!Debugging.IsUserDebugging) {
-				ArchiLogger.LogGenericDebug(response.StatusCode + " <- " + httpMethod + " " + request);
+				ArchiLogger.LogGenericDebug($"{response.StatusCode} <- {httpMethod} {request}");
 			}
 
 			if (response.StatusCode.IsClientErrorCode()) {

@@ -322,7 +322,7 @@ namespace ArchiSteamFarm.NLog {
 						OnUserInputStart();
 
 						try {
-							Console.Write(@">> " + Strings.EnterCommand);
+							Console.Write($@">> {Strings.EnterCommand}");
 							string? command = ConsoleReadLine();
 
 							if (string.IsNullOrEmpty(command)) {
@@ -347,12 +347,12 @@ namespace ArchiSteamFarm.NLog {
 							Bot? targetBot = Bot.Bots?.OrderBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value).FirstOrDefault();
 
 							if (targetBot == null) {
-								Console.WriteLine(@"<< " + Strings.ErrorNoBotsDefined);
+								Console.WriteLine($@"<< {Strings.ErrorNoBotsDefined}");
 
 								continue;
 							}
 
-							Console.WriteLine(@"<> " + Strings.Executing);
+							Console.WriteLine($@"<> {Strings.Executing}");
 
 							ulong steamOwnerID = ASF.GlobalConfig?.SteamOwnerID ?? GlobalConfig.DefaultSteamOwnerID;
 
@@ -365,7 +365,7 @@ namespace ArchiSteamFarm.NLog {
 								continue;
 							}
 
-							Console.WriteLine(@"<< " + response);
+							Console.WriteLine($@"<< {response}");
 						} finally {
 							OnUserInputEnd();
 						}

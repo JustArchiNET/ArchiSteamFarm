@@ -104,7 +104,7 @@ namespace ArchiSteamFarm.IPC {
 						if (!string.IsNullOrEmpty(json)) {
 							JObject jObject = JObject.Parse(json);
 
-							ASF.ArchiLogger.LogGenericDebug(SharedInfo.IPCConfigFile + ": " + jObject.ToString(Formatting.Indented));
+							ASF.ArchiLogger.LogGenericDebug($"{SharedInfo.IPCConfigFile}: {jObject.ToString(Formatting.Indented)}");
 						}
 					} catch (Exception e) {
 						ASF.ArchiLogger.LogGenericException(e);

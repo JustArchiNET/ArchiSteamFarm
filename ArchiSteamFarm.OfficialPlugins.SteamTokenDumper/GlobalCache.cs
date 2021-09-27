@@ -39,7 +39,7 @@ using SteamKit2;
 
 namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 	internal sealed class GlobalCache : SerializableFile {
-		private static string SharedFilePath => Path.Combine(ArchiSteamFarm.SharedInfo.ConfigDirectory, nameof(SteamTokenDumper) + ".cache");
+		private static string SharedFilePath => Path.Combine(ArchiSteamFarm.SharedInfo.ConfigDirectory, $"{nameof(SteamTokenDumper)}.cache");
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		private readonly ConcurrentDictionary<uint, uint> AppChangeNumbers = new();

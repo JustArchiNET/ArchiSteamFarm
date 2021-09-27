@@ -497,7 +497,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 					return;
 				}
 
-				Uri request = new(SharedInfo.ServerURL + "/submit");
+				Uri request = new($"{SharedInfo.ServerURL}/submit");
 				RequestData requestData = new(contributorSteamID, appTokens, packageTokens, depotKeys);
 
 				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.SubmissionInProgress, appTokens.Count, packageTokens.Count, depotKeys.Count));

@@ -85,7 +85,7 @@ namespace ArchiSteamFarm.Core {
 					description = "Unknown OS";
 				}
 
-				BackingVersion = framework + "; " + runtime + "; " + description;
+				BackingVersion = $"{framework}; {runtime}; {description}";
 
 				return BackingVersion;
 			}
@@ -120,7 +120,7 @@ namespace ArchiSteamFarm.Core {
 				throw new ArgumentNullException(nameof(objectName));
 			}
 
-			return SharedInfo.AssemblyName + "-" + objectName;
+			return $"{SharedInfo.AssemblyName}-{objectName}";
 		}
 
 		internal static void Init(GlobalConfig.EOptimizationMode optimizationMode) {
@@ -153,7 +153,7 @@ namespace ArchiSteamFarm.Core {
 			// At the same time it'd be the best if we avoided all special characters, such as '/' found e.g. in base64, as we can't be sure that it's not a prohibited character in regards to native OS implementation
 			// Because of that, SHA256 is sufficient for our case, as it generates alphanumeric characters only, and is barely 256-bit long. We don't need any kind of complex cryptography or collision detection here, any hashing algorithm will do, and the shorter the better
 			using (SHA256 hashingAlgorithm = SHA256.Create()) {
-				uniqueName = "Global\\" + GetOsResourceName(nameof(SingleInstance)) + "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(Directory.GetCurrentDirectory()))).Replace("-", "", StringComparison.Ordinal);
+				uniqueName = $"Global\\{GetOsResourceName(nameof(SingleInstance))}-{BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(Directory.GetCurrentDirectory()))).Replace("-", "", StringComparison.Ordinal)}";
 			}
 
 			Mutex? singleInstance = null;
@@ -195,7 +195,7 @@ namespace ArchiSteamFarm.Core {
 			}
 
 			if (!File.Exists(path) && !Directory.Exists(path)) {
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, "!" + nameof(path)));
+				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"!{nameof(path)}"));
 
 				return;
 			}

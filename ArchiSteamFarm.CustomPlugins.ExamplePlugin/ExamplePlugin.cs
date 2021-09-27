@@ -70,7 +70,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 				switch (configProperty) {
 					case nameof(ExamplePlugin) + "TestProperty" when configValue.Type == JTokenType.Boolean:
 						bool exampleBooleanValue = configValue.Value<bool>();
-						ASF.ArchiLogger.LogGenericInfo(nameof(ExamplePlugin) + "TestProperty boolean property has been found with a value of: " + exampleBooleanValue);
+						ASF.ArchiLogger.LogGenericInfo($"{nameof(ExamplePlugin)}TestProperty boolean property has been found with a value of: {exampleBooleanValue}");
 
 						break;
 				}
@@ -121,7 +121,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 		// In general you should do that only when you have a particular need of custom modules or alike, since ASF's plugin system will always provide bot to you as a function argument
 		public void OnBotInit(Bot bot) {
 			// Apart of those two that are already provided by ASF, you can also initialize your own logger with your plugin's name, if needed
-			bot.ArchiLogger.LogGenericInfo("Our bot named " + bot.BotName + " has been initialized, and we're letting you know about it from our " + nameof(ExamplePlugin) + "!");
+			bot.ArchiLogger.LogGenericInfo($"Our bot named {bot.BotName} has been initialized, and we're letting you know about it from our {nameof(ExamplePlugin)}!");
 			ASF.ArchiLogger.LogGenericWarning("In case we won't have a bot reference or have something process-wide to log, we can also use ASF's logger!");
 		}
 
@@ -177,7 +177,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 		// At this point you can access core ASF's functionality, such as logging, but more advanced structures (like ASF's WebBrowser) will be available in OnASFInit(), which itself takes place after every plugin gets OnLoaded()
 		// Typically you should use this function only for preparing core structures of your plugin, and optionally also sending a message to the user (e.g. support link, welcome message or similar), ASF-specific things should usually happen in OnASFInit()
 		public void OnLoaded() {
-			ASF.ArchiLogger.LogGenericInfo("Hey! Thanks for checking if our example plugin works fine, this is a confirmation that indeed " + nameof(OnLoaded) + "() method was called!");
+			ASF.ArchiLogger.LogGenericInfo($"Hey! Thanks for checking if our example plugin works fine, this is a confirmation that indeed {nameof(OnLoaded)}() method was called!");
 			ASF.ArchiLogger.LogGenericInfo("Good luck in whatever you're doing!");
 		}
 	}

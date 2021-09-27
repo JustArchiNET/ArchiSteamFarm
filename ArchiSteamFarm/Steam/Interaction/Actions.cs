@@ -252,7 +252,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 		[PublicAPI]
 		public static (bool Success, string Message) Restart() {
 			if (!Program.RestartAllowed) {
-				return (false, "!" + nameof(Program.RestartAllowed));
+				return (false, $"!{nameof(Program.RestartAllowed)}");
 			}
 
 			// Schedule the task after some time so user can receive response
@@ -418,7 +418,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 			}
 
 			if (SharedInfo.Version >= version) {
-				return (false, "V" + SharedInfo.Version + " ≥ V" + version, version);
+				return (false, $"V{SharedInfo.Version} ≥ V{version}", version);
 			}
 
 			Utilities.InBackground(ASF.RestartOrExit);

@@ -62,7 +62,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				throw new ArgumentNullException(nameof(botName));
 			}
 
-			return Environment.NewLine + "<" + botName + "> " + response;
+			return $"{Environment.NewLine}<{botName}> {response}";
 		}
 
 		[PublicAPI]
@@ -71,7 +71,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				throw new ArgumentNullException(nameof(response));
 			}
 
-			return "<" + Bot.BotName + "> " + response;
+			return $"<{Bot.BotName}> {response}";
 		}
 
 		[PublicAPI]
@@ -80,7 +80,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				throw new ArgumentNullException(nameof(response));
 			}
 
-			return "<" + SharedInfo.ASF + "> " + response;
+			return $"<{SharedInfo.ASF}> {response}";
 		}
 
 		[PublicAPI]
@@ -638,18 +638,18 @@ namespace ArchiSteamFarm.Steam.Interaction {
 							callback = await Bot.SteamApps.RequestFreeLicense(gameID).ToLongRunningTask().ConfigureAwait(false);
 						} catch (Exception e) {
 							Bot.ArchiLogger.LogGenericWarningException(e);
-							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicense, "app/" + gameID, EResult.Timeout)));
+							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicense, $"app/{gameID}", EResult.Timeout)));
 
 							break;
 						}
 
-						response.AppendLine(FormatBotResponse((callback.GrantedApps.Count > 0) || (callback.GrantedPackages.Count > 0) ? string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicenseWithItems, "app/" + gameID, callback.Result, string.Join(", ", callback.GrantedApps.Select(appID => "app/" + appID).Union(callback.GrantedPackages.Select(subID => "sub/" + subID)))) : string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicense, "app/" + gameID, callback.Result)));
+						response.AppendLine(FormatBotResponse((callback.GrantedApps.Count > 0) || (callback.GrantedPackages.Count > 0) ? string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicenseWithItems, $"app/{gameID}", callback.Result, string.Join(", ", callback.GrantedApps.Select(appID => $"app/{appID}").Union(callback.GrantedPackages.Select(subID => $"sub/{subID}")))) : string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicense, $"app/{gameID}", callback.Result)));
 
 						break;
 					default:
 						(EResult result, EPurchaseResultDetail purchaseResult) = await Bot.ArchiWebHandler.AddFreeLicense(gameID).ConfigureAwait(false);
 
-						response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicense, "sub/" + gameID, result + "/" + purchaseResult)));
+						response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicense, $"sub/{gameID}", $"{result}/{purchaseResult}")));
 
 						break;
 				}
@@ -1276,7 +1276,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				throw new ArgumentOutOfRangeException(nameof(steamID));
 			}
 
-			return Bot.HasAccess(steamID, BotConfig.EAccess.FamilySharing) ? FormatBotResponse(SharedInfo.ProjectURL + "/wiki/Commands") : null;
+			return Bot.HasAccess(steamID, BotConfig.EAccess.FamilySharing) ? FormatBotResponse($"{SharedInfo.ProjectURL}/wiki/Commands") : null;
 		}
 
 		private string? ResponseIdleBlacklist(ulong steamID) {
@@ -2081,11 +2081,11 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 						if (packageIDs?.Count > 0) {
 							if ((gamesOwned != null) && gamesOwned.TryGetValue(appID, out string? cachedGameName)) {
-								result["app/" + appID] = cachedGameName;
-								response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlreadyWithName, "app/" + appID, cachedGameName)));
+								result[$"app/{appID}"] = cachedGameName;
+								response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlreadyWithName, $"app/{appID}", cachedGameName)));
 							} else {
-								result["app/" + appID] = appID.ToString(CultureInfo.InvariantCulture);
-								response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlready, "app/" + appID)));
+								result[$"app/{appID}"] = appID.ToString(CultureInfo.InvariantCulture);
+								response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlready, $"app/{appID}")));
 							}
 						} else {
 							if (gamesOwned == null) {
@@ -2099,10 +2099,10 @@ namespace ArchiSteamFarm.Steam.Interaction {
 							}
 
 							if (gamesOwned.TryGetValue(appID, out string? gameName)) {
-								result["app/" + appID] = gameName;
-								response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlreadyWithName, "app/" + appID, gameName)));
+								result[$"app/{appID}"] = gameName;
+								response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlreadyWithName, $"app/{appID}", gameName)));
 							} else {
-								response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotOwnedYet, "app/" + appID)));
+								response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotOwnedYet, $"app/{appID}")));
 							}
 						}
 
@@ -2135,8 +2135,8 @@ namespace ArchiSteamFarm.Steam.Interaction {
 						foreach ((uint appID, string gameName) in gamesOwned.Where(gameOwned => regex.IsMatch(gameOwned.Value))) {
 							foundWithRegex = true;
 
-							result["app/" + appID] = gameName;
-							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlreadyWithName, "app/" + appID, gameName)));
+							result[$"app/{appID}"] = gameName;
+							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlreadyWithName, $"app/{appID}", gameName)));
 						}
 
 						if (!foundWithRegex) {
@@ -2147,10 +2147,10 @@ namespace ArchiSteamFarm.Steam.Interaction {
 					case "S" when uint.TryParse(game, out uint packageID) && (packageID > 0):
 					case "SUB" when uint.TryParse(game, out packageID) && (packageID > 0):
 						if (Bot.OwnedPackageIDs.ContainsKey(packageID)) {
-							result["sub/" + packageID] = packageID.ToString(CultureInfo.InvariantCulture);
-							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlready, "sub/" + packageID)));
+							result[$"sub/{packageID}"] = packageID.ToString(CultureInfo.InvariantCulture);
+							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlready, $"sub/{packageID}")));
 						} else {
-							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotOwnedYet, "sub/" + packageID)));
+							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotOwnedYet, $"sub/{packageID}")));
 						}
 
 						break;
@@ -2170,8 +2170,8 @@ namespace ArchiSteamFarm.Steam.Interaction {
 						foreach ((uint appID, string gameName) in gamesOwned.Where(gameOwned => gameOwned.Value.Contains(game, StringComparison.OrdinalIgnoreCase))) {
 							foundWithName = true;
 
-							result["app/" + appID] = gameName;
-							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlreadyWithName, "app/" + appID, gameName)));
+							result[$"app/{appID}"] = gameName;
+							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlreadyWithName, $"app/{appID}", gameName)));
 						}
 
 						if (!foundWithName) {
@@ -2228,7 +2228,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				ownedGamesStats[gameID] = ownedGameStats;
 			}
 
-			IEnumerable<string> extraResponses = ownedGamesStats.Select(kv => FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnsOverviewPerGame, kv.Value.Count, validResults.Count, kv.Key + (!string.IsNullOrEmpty(kv.Value.GameName) ? " | " + kv.Value.GameName : ""))));
+			IEnumerable<string> extraResponses = ownedGamesStats.Select(kv => FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnsOverviewPerGame, kv.Value.Count, validResults.Count, kv.Key + (!string.IsNullOrEmpty(kv.Value.GameName) ? $" | {kv.Value.GameName}" : ""))));
 
 			return string.Join(Environment.NewLine, validResults.Select(result => result.Response).Concat(extraResponses));
 		}
@@ -2382,7 +2382,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				}
 
 				if (gamesToPlay.Count >= ArchiHandler.MaxGamesPlayedConcurrently) {
-					return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(gamesToPlay) + " > " + ArchiHandler.MaxGamesPlayedConcurrently));
+					return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(gamesToPlay)} > {ArchiHandler.MaxGamesPlayedConcurrently}"));
 				}
 
 				gamesToPlay.Add(gameID);
@@ -2721,9 +2721,9 @@ namespace ArchiSteamFarm.Steam.Interaction {
 									}
 
 									if (result.Items?.Count > 0) {
-										response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, result.Result + "/" + result.PurchaseResultDetail, string.Join(", ", result.Items)), currentBot.BotName));
+										response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, $"{result.Result}/{result.PurchaseResultDetail}", string.Join(", ", result.Items)), currentBot.BotName));
 									} else if (!skipRequest) {
-										response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail), currentBot.BotName));
+										response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{result.Result}/{result.PurchaseResultDetail}"), currentBot.BotName));
 									}
 
 									switch (result.PurchaseResultDetail) {
@@ -2774,7 +2774,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 												PurchaseResponseCallback? otherResult = await innerBot.Actions.RedeemKey(key!).ConfigureAwait(false);
 
 												if (otherResult == null) {
-													response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, EResult.Timeout + "/" + EPurchaseResultDetail.Timeout), innerBot.BotName));
+													response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{EResult.Timeout}/{EPurchaseResultDetail.Timeout}"), innerBot.BotName));
 
 													continue;
 												}
@@ -2798,7 +2798,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 														break;
 												}
 
-												response.AppendLine(FormatBotResponse(otherResult.Items?.Count > 0 ? string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, otherResult.Result + "/" + otherResult.PurchaseResultDetail, string.Join(", ", otherResult.Items)) : string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, otherResult.Result + "/" + otherResult.PurchaseResultDetail), innerBot.BotName));
+												response.AppendLine(FormatBotResponse(otherResult.Items?.Count > 0 ? string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, $"{otherResult.Result}/{otherResult.PurchaseResultDetail}", string.Join(", ", otherResult.Items)) : string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{otherResult.Result}/{otherResult.PurchaseResultDetail}"), innerBot.BotName));
 
 												if (alreadyHandled) {
 													break;
@@ -3061,7 +3061,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 			}
 
 			if (Bot.CardsFarmer.CurrentGamesFarmingReadOnly.Count > 1) {
-				return (FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotStatusIdlingList, string.Join(", ", Bot.CardsFarmer.CurrentGamesFarmingReadOnly.Select(game => game.AppID + " (" + game.GameName + ")")), Bot.CardsFarmer.GamesToFarmReadOnly.Count, Bot.CardsFarmer.GamesToFarmReadOnly.Sum(game => game.CardsRemaining), Bot.CardsFarmer.TimeRemaining.ToHumanReadable())), Bot);
+				return (FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotStatusIdlingList, string.Join(", ", Bot.CardsFarmer.CurrentGamesFarmingReadOnly.Select(game => $"{game.AppID} ({game.GameName})")), Bot.CardsFarmer.GamesToFarmReadOnly.Count, Bot.CardsFarmer.GamesToFarmReadOnly.Sum(game => game.CardsRemaining), Bot.CardsFarmer.TimeRemaining.ToHumanReadable())), Bot);
 			}
 
 			Game soloGame = Bot.CardsFarmer.CurrentGamesFarmingReadOnly.First();
@@ -3410,7 +3410,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			(bool success, string? message, Version? version) = await Actions.Update().ConfigureAwait(false);
 
-			return FormatStaticResponse((success ? Strings.Success : Strings.WarningFailed) + (!string.IsNullOrEmpty(message) ? " " + message : version != null ? " " + version : ""));
+			return FormatStaticResponse((success ? Strings.Success : Strings.WarningFailed) + (!string.IsNullOrEmpty(message) ? $" {message}" : version != null ? $" {version}" : ""));
 		}
 
 		private string? ResponseVersion(ulong steamID) {

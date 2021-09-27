@@ -49,7 +49,7 @@ namespace ArchiSteamFarm.Core {
 			}
 
 			if (args.Length <= argsToSkip) {
-				throw new InvalidOperationException(nameof(args.Length) + " && " + nameof(argsToSkip));
+				throw new InvalidOperationException($"{nameof(args.Length)} && {nameof(argsToSkip)}");
 			}
 
 			if (string.IsNullOrEmpty(delimiter)) {
@@ -228,7 +228,7 @@ namespace ArchiSteamFarm.Core {
 		[PublicAPI]
 		public static int RandomNext(int minValue, int maxValue) {
 			if (minValue > maxValue) {
-				throw new InvalidOperationException(nameof(minValue) + " && " + nameof(maxValue));
+				throw new InvalidOperationException($"{nameof(minValue)} && {nameof(maxValue)}");
 			}
 
 			if (minValue >= maxValue - 1) {
