@@ -332,7 +332,7 @@ namespace ArchiSteamFarm.Steam.Exchange {
 						throw new InvalidOperationException(nameof(amount));
 					case 1:
 						// Single tradable item, can be matchable or not depending on the rest of the inventory
-						if (!fullSet.TryGetValue(classID, out uint fullAmount) || (fullAmount == 0) || (fullAmount < amount)) {
+						if (!fullSet.TryGetValue(classID, out uint fullAmount) || (fullAmount == 0)) {
 							throw new InvalidOperationException(nameof(fullAmount));
 						}
 
@@ -358,6 +358,8 @@ namespace ArchiSteamFarm.Steam.Exchange {
 		internal async Task OnNewTrade() {
 			// We aim to have a maximum of 2 tasks, one already working, and one waiting in the queue
 			// This way we can call this function as many times as needed e.g. because of Steam events
+
+			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 			lock (TradesSemaphore) {
 				if (ParsingScheduled) {
 					return;
@@ -372,6 +374,7 @@ namespace ArchiSteamFarm.Steam.Exchange {
 				bool lootableTypesReceived;
 
 				using (await Bot.Actions.GetTradingLock().ConfigureAwait(false)) {
+					// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 					lock (TradesSemaphore) {
 						ParsingScheduled = false;
 					}

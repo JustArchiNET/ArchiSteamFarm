@@ -136,6 +136,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 			TimeSpan startIn = TimeSpan.FromMinutes(Utilities.RandomNext(SharedInfo.MinimumMinutesBeforeFirstUpload, SharedInfo.MaximumMinutesBeforeFirstUpload));
 
+			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 			lock (SubmissionSemaphore) {
 				SubmissionTimer.Change(startIn, TimeSpan.FromHours(SharedInfo.MinimumHoursBetweenUploads));
 			}
@@ -520,6 +521,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 #endif
 						TimeSpan startIn = TimeSpan.FromMinutes(Utilities.RandomNext(SharedInfo.MinimumMinutesBeforeFirstUpload, SharedInfo.MaximumMinutesBeforeFirstUpload));
 
+						// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 						lock (SubmissionSemaphore) {
 							SubmissionTimer.Change(startIn, TimeSpan.FromHours(SharedInfo.MinimumHoursBetweenUploads));
 						}

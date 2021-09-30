@@ -352,6 +352,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			HashSet<Asset> inventory;
 
+			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 			lock (TradingSemaphore) {
 				if (TradingScheduled) {
 					return (false, Strings.ErrorAborted);
@@ -363,6 +364,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 			await TradingSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
+				// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 				lock (TradingSemaphore) {
 					TradingScheduled = false;
 				}
@@ -431,6 +433,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				return;
 			}
 
+			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 			lock (GiftCardsSemaphore) {
 				if (ProcessingGiftsScheduled) {
 					return;
@@ -442,6 +445,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 			await GiftCardsSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
+				// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 				lock (GiftCardsSemaphore) {
 					ProcessingGiftsScheduled = false;
 				}

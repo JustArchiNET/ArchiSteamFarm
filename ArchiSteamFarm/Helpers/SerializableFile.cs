@@ -61,6 +61,7 @@ namespace ArchiSteamFarm.Helpers {
 				return;
 			}
 
+			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 			lock (FileSemaphore) {
 				if (SavingScheduled) {
 					return;
@@ -72,6 +73,7 @@ namespace ArchiSteamFarm.Helpers {
 			await FileSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
+				// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 				lock (FileSemaphore) {
 					SavingScheduled = false;
 				}

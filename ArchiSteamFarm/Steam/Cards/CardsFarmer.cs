@@ -147,10 +147,11 @@ namespace ArchiSteamFarm.Steam.Cards {
 			// This update has a potential to modify local ignores, therefore we need to purge our cache
 			LocallyIgnoredAppIDs.Clear();
 
-			ShouldResumeFarming = true;
-
 			// We aim to have a maximum of 2 tasks, one already parsing, and one waiting in the queue
 			// This way we can call this function as many times as needed e.g. because of Steam events
+			ShouldResumeFarming = true;
+
+			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 			lock (EventSemaphore) {
 				if (ParsingScheduled) {
 					return;
@@ -162,6 +163,7 @@ namespace ArchiSteamFarm.Steam.Cards {
 			await EventSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
+				// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 				lock (EventSemaphore) {
 					ParsingScheduled = false;
 				}
@@ -1155,20 +1157,11 @@ namespace ArchiSteamFarm.Steam.Cards {
 						if (marketableAppIDs?.Count > 0) {
 							ImmutableHashSet<uint> immutableMarketableAppIDs = marketableAppIDs.ToImmutableHashSet();
 
-							switch (farmingOrder) {
-								case BotConfig.EFarmingOrder.MarketableAscending:
-									orderedGamesToFarm = orderedGamesToFarm.ThenBy(game => immutableMarketableAppIDs.Contains(game.AppID));
-
-									break;
-								case BotConfig.EFarmingOrder.MarketableDescending:
-									orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(game => immutableMarketableAppIDs.Contains(game.AppID));
-
-									break;
-								default:
-									Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(farmingOrder), farmingOrder));
-
-									return;
-							}
+							orderedGamesToFarm = farmingOrder switch {
+								BotConfig.EFarmingOrder.MarketableAscending => orderedGamesToFarm.ThenBy(game => immutableMarketableAppIDs.Contains(game.AppID)),
+								BotConfig.EFarmingOrder.MarketableDescending => orderedGamesToFarm.ThenByDescending(game => immutableMarketableAppIDs.Contains(game.AppID)),
+								_ => throw new InvalidOperationException(nameof(farmingOrder))
+							};
 						}
 
 						break;
@@ -1219,22 +1212,15 @@ namespace ArchiSteamFarm.Steam.Cards {
 
 						ImmutableDictionary<uint, DateTime> immutableRedeemDates = redeemDates.ToImmutableDictionary();
 
-						switch (farmingOrder) {
-							case BotConfig.EFarmingOrder.RedeemDateTimesAscending:
-								// ReSharper disable once AccessToModifiedClosure - you're wrong
-								orderedGamesToFarm = orderedGamesToFarm.ThenBy(game => immutableRedeemDates[game.AppID]);
+						orderedGamesToFarm = farmingOrder switch {
+							// ReSharper disable once AccessToModifiedClosure - you're wrong
+							BotConfig.EFarmingOrder.RedeemDateTimesAscending => orderedGamesToFarm.ThenBy(game => immutableRedeemDates[game.AppID]),
 
-								break;
-							case BotConfig.EFarmingOrder.RedeemDateTimesDescending:
-								// ReSharper disable once AccessToModifiedClosure - you're wrong
-								orderedGamesToFarm = orderedGamesToFarm.ThenByDescending(game => immutableRedeemDates[game.AppID]);
+							// ReSharper disable once AccessToModifiedClosure - you're wrong
+							BotConfig.EFarmingOrder.RedeemDateTimesDescending => orderedGamesToFarm.ThenByDescending(game => immutableRedeemDates[game.AppID]),
 
-								break;
-							default:
-								Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(farmingOrder), farmingOrder));
-
-								return;
-						}
+							_ => throw new InvalidOperationException(nameof(farmingOrder))
+						};
 
 						break;
 					default:
