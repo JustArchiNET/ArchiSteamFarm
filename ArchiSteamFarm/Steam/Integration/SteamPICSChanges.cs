@@ -47,6 +47,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 				return;
 			}
 
+			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 			lock (RefreshSemaphore) {
 				if (TimerAlreadySet) {
 					return;

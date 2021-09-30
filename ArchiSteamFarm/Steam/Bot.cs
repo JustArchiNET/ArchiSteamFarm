@@ -3285,6 +3285,7 @@ namespace ArchiSteamFarm.Steam {
 		}
 
 		private async Task SendCompletedSets() {
+			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 			lock (SendCompleteTypesSemaphore) {
 				if (SendCompleteTypesScheduled) {
 					return;
@@ -3297,6 +3298,7 @@ namespace ArchiSteamFarm.Steam {
 
 			try {
 				using (await Actions.GetTradingLock().ConfigureAwait(false)) {
+					// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 					lock (SendCompleteTypesSemaphore) {
 						SendCompleteTypesScheduled = false;
 					}
