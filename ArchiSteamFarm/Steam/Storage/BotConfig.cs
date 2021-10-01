@@ -581,7 +581,7 @@ namespace ArchiSteamFarm.Steam.Storage {
 			}
 
 			if (botConfig.IsSteamPasswordSet && botConfig.DecryptedSteamPassword != null) {
-				HashSet<string> disallowedValues = new() { "account" };
+				HashSet<string> disallowedValues = new(StringComparer.InvariantCultureIgnoreCase) { "account" };
 
 				if (botConfig.IsSteamLoginSet) {
 					disallowedValues.Add(botConfig.SteamLogin!);

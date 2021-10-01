@@ -43,7 +43,7 @@ namespace ArchiSteamFarm.Core {
 	public static class Utilities {
 		private const byte TimeoutForLongRunningTasksInSeconds = 60;
 
-		private static readonly ImmutableHashSet<string> ForbiddenPasswordPhrases = ImmutableHashSet.Create(StringComparer.InvariantCultureIgnoreCase, "asf", "archi", "steam", "archisteamfarm", "password", "ipc", "api", "gui", "asf-ui");
+		private static readonly ImmutableHashSet<string> ForbiddenPasswordPhrases = ImmutableHashSet.Create(StringComparer.InvariantCultureIgnoreCase, "asf", "archi", "steam", "farm", "password", "ipc", "api", "gui", "asf-ui");
 
 		// Normally we wouldn't need to use this singleton, but we want to ensure decent randomness across entire program's lifetime
 		private static readonly Random Random = new();
@@ -325,24 +325,29 @@ namespace ArchiSteamFarm.Core {
 			}
 		}
 
-		internal static bool IsWeakPassword(string password, ISet<string>? additionallyForbiddenWords = null) {
+		internal static bool IsWeakPassword(string password, ISet<string>? additionallyForbiddenPhrases = null) {
 			if (string.IsNullOrEmpty(password)) {
 				throw new ArgumentNullException(nameof(password));
 			}
 
-			if (password.Length < 10) {
-				return true;
+			HashSet<string> forbiddenPhrases = ForbiddenPasswordPhrases.ToHashSet();
+
+			if (additionallyForbiddenPhrases?.Any() == true) {
+				forbiddenPhrases.UnionWith(additionallyForbiddenPhrases);
 			}
 
-			if (ForbiddenPasswordPhrases.Any(word => password.Contains(word, StringComparison.InvariantCultureIgnoreCase))) {
-				return true;
+			int remainingCharacters = password.Length;
+
+			foreach (string forbiddenPhrase in forbiddenPhrases.Where(static phrase => !string.IsNullOrEmpty(phrase))) {
+				for (int index = password.IndexOf(forbiddenPhrase, StringComparison.InvariantCultureIgnoreCase); index >= 0; index = password.IndexOf(forbiddenPhrase, index, StringComparison.InvariantCultureIgnoreCase)) {
+					remainingCharacters -= forbiddenPhrase.Length - 1;
+				}
+
+				if (remainingCharacters < 10) {
+					return true;
+				}
 			}
 
-			if ((additionallyForbiddenWords?.Count ?? 0) > 0 && additionallyForbiddenWords!.Any(word => password.Contains(word, StringComparison.InvariantCultureIgnoreCase))) {
-				return true;
-			}
-
-			// we disallow repetitive or sequential character groups of 3 or more letters
 			for (int i = 2; i < password.Length; ++i) {
 				ushort ch0 = password[i - 2];
 				ushort ch1 = password[i - 1];
