@@ -504,6 +504,16 @@ namespace ArchiSteamFarm.Storage {
 				return (null, null);
 			}
 
+			if (globalConfig.IPCPasswordFormat == ArchiCryptoHelper.EHashingMethod.PlainText) {
+				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningPasswordSavedAsPlaintext, nameof(IPC)));
+
+				if (globalConfig.IsIPCPasswordSet && globalConfig.IPCPassword != null) {
+					if (Utilities.IsWeakPassword(globalConfig.IPCPassword, "ipc", "api", "gui", "asf-ui")) {
+						ASF.ArchiLogger.LogGenericWarning(Strings.WarningWeakIPCPassword);
+					}
+				}
+			}
+
 			if (!Program.ConfigMigrate) {
 				return (globalConfig, null);
 			}

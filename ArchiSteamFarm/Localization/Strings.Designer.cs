@@ -992,7 +992,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No bots are defined. Did you forget to configure your ASF?.
+        ///   Looks up a localized string similar to No bots are defined. Did you forget to configure your ASF? Follow &apos;setting up&apos; guide on the wiki if you&apos;re confused..
         /// </summary>
         public static string ErrorNoBotsDefined {
             get {
@@ -1631,6 +1631,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your {0} password is saved in plaintext. Please consider encrypting it!.
+        /// </summary>
+        public static string WarningPasswordSavedAsPlaintext {
+            get {
+                return ResourceManager.GetString("WarningPasswordSavedAsPlaintext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You&apos;re using a version that is newer than the latest released version for your update channel. Please note that pre-release versions are meant for users who know how to report bugs, deal with issues and give feedback - no technical support will be given..
         /// </summary>
         public static string WarningPreReleaseVersion {
@@ -1672,6 +1681,24 @@ namespace ArchiSteamFarm.Localization {
         public static string WarningUnsupportedEnvironment {
             get {
                 return ResourceManager.GetString("WarningUnsupportedEnvironment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your IPC password is weak. Please consider choosing a stronger one! You can find guidelines on strong passwords in our wiki!.
+        /// </summary>
+        public static string WarningWeakIPCPassword {
+            get {
+                return ResourceManager.GetString("WarningWeakIPCPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your Steam password for &apos;{0}&apos; is weak. Please consider changing it to a stronger one! You can find guidelines on strong passwords in our wiki!.
+        /// </summary>
+        public static string WarningWeakSteamPassword {
+            get {
+                return ResourceManager.GetString("WarningWeakSteamPassword", resourceCulture);
             }
         }
         

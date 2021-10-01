@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -34,10 +35,15 @@ using Humanizer;
 using Humanizer.Localisation;
 using JetBrains.Annotations;
 using SteamKit2;
+#if NETFRAMEWORK
+using JustArchiNET.Madness;
+#endif
 
 namespace ArchiSteamFarm.Core {
 	public static class Utilities {
 		private const byte TimeoutForLongRunningTasksInSeconds = 60;
+
+		private static readonly ImmutableHashSet<string> ForbiddenPasswordWords = ImmutableHashSet.Create("asf", "archi", "steam", "archisteamfarm", "password");
 
 		// Normally we wouldn't need to use this singleton, but we want to ensure decent randomness across entire program's lifetime
 		private static readonly Random Random = new();
@@ -317,6 +323,37 @@ namespace ArchiSteamFarm.Core {
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 			}
+		}
+
+		internal static bool IsWeakPassword(string password, params string[] additionallyForbiddenWords) {
+			if (string.IsNullOrEmpty(password)) {
+				throw new ArgumentNullException(nameof(password));
+			}
+
+			if (password.Length < 10) {
+				return true;
+			}
+
+			if (ForbiddenPasswordWords.Any(word => password.Contains(word, StringComparison.InvariantCultureIgnoreCase))) {
+				return true;
+			}
+
+			if (additionallyForbiddenWords.Length > 0 && additionallyForbiddenWords.Any(word => password.Contains(word, StringComparison.InvariantCultureIgnoreCase))) {
+				return true;
+			}
+
+			// we disallow repetitive or sequential character groups of 3 or more letters
+			for (int i = 2; i < password.Length; ++i) {
+				ushort ch0 = password[i - 2];
+				ushort ch1 = password[i - 1];
+				ushort ch2 = password[i];
+
+				if (ch0 == ch2 && ch1 == ch2 || ch0 == ch2 - 2 && ch1 == ch2 - 1 || ch0 == ch2 + 2 && ch1 == ch2 + 1) {
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		internal static bool RelativeDirectoryStartsWith(string directory, params string[] prefixes) {

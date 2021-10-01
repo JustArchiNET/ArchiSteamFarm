@@ -580,6 +580,21 @@ namespace ArchiSteamFarm.Steam.Storage {
 				return (null, null);
 			}
 
+			if (botConfig.PasswordFormat == ArchiCryptoHelper.ECryptoMethod.PlainText) {
+				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningPasswordSavedAsPlaintext, nameof(Steam)));
+
+				if (botConfig.IsSteamPasswordSet && botConfig.SteamPassword != null) {
+					string[] disallowedValues = botConfig.IsSteamLoginSet switch {
+						true => new[] { "account", botConfig.SteamLogin! },
+						false => new[] { "account" }
+					};
+
+					if (Utilities.IsWeakPassword(botConfig.SteamPassword, disallowedValues)) {
+						ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningWeakSteamPassword, botConfig.IsSteamLoginSet ? botConfig.SteamLogin! : filePath));
+					}
+				}
+			}
+
 			if (!Program.ConfigMigrate) {
 				return (botConfig, null);
 			}
