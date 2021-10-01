@@ -341,10 +341,10 @@ namespace ArchiSteamFarm.Core {
 			foreach (string forbiddenPhrase in forbiddenPhrases.Where(static phrase => !string.IsNullOrEmpty(phrase))) {
 				for (int index = password.IndexOf(forbiddenPhrase, StringComparison.InvariantCultureIgnoreCase); index >= 0; index = password.IndexOf(forbiddenPhrase, index, StringComparison.InvariantCultureIgnoreCase)) {
 					remainingCharacters -= forbiddenPhrase.Length - 1;
-				}
 
-				if (remainingCharacters < 10) {
-					return true;
+					if (remainingCharacters < 10) {
+						return true;
+					}
 				}
 			}
 
