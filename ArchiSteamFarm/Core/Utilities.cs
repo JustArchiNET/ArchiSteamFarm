@@ -350,7 +350,7 @@ namespace ArchiSteamFarm.Core {
 				}
 			}
 
-			for (int i = 2; i < password.Length; ++i) {
+			for (int i = 2; i < password.Length; i++) {
 				ushort ch0 = password[i - 2];
 				ushort ch1 = password[i - 1];
 				ushort ch2 = password[i];
