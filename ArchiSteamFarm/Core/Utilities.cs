@@ -41,6 +41,8 @@ using JustArchiNET.Madness;
 
 namespace ArchiSteamFarm.Core {
 	public static class Utilities {
+		private const byte MinimumRecommendedPasswordCharacters = 10;
+
 		private const byte TimeoutForLongRunningTasksInSeconds = 60;
 
 		private static readonly ImmutableHashSet<string> ForbiddenPasswordPhrases = ImmutableHashSet.Create(StringComparer.InvariantCultureIgnoreCase, "asf", "archi", "steam", "farm", "password", "ipc", "api", "gui", "asf-ui");
@@ -342,7 +344,7 @@ namespace ArchiSteamFarm.Core {
 				for (int index = password.IndexOf(forbiddenPhrase, StringComparison.InvariantCultureIgnoreCase); index >= 0; index = password.IndexOf(forbiddenPhrase, index, StringComparison.InvariantCultureIgnoreCase)) {
 					remainingCharacters -= forbiddenPhrase.Length - 1;
 
-					if (remainingCharacters < 10) {
+					if (remainingCharacters < MinimumRecommendedPasswordCharacters) {
 						return true;
 					}
 				}
