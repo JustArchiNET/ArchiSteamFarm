@@ -504,12 +504,8 @@ namespace ArchiSteamFarm.Storage {
 				return (null, null);
 			}
 
-			if (globalConfig.IPCPasswordFormat == ArchiCryptoHelper.EHashingMethod.PlainText) {
-				if (globalConfig.IsIPCPasswordSet && globalConfig.IPCPassword != null) {
-					if (Utilities.IsWeakPassword(globalConfig.IPCPassword)) {
-						ASF.ArchiLogger.LogGenericWarning(Strings.WarningWeakIPCPassword);
-					}
-				}
+			if (globalConfig.IPCPasswordFormat == ArchiCryptoHelper.EHashingMethod.PlainText && !string.IsNullOrEmpty(globalConfig.IPCPassword) && Utilities.IsWeakPassword(globalConfig.IPCPassword!)) {
+				ASF.ArchiLogger.LogGenericWarning(Strings.WarningWeakIPCPassword);
 			}
 
 			if (!Program.ConfigMigrate) {

@@ -580,15 +580,15 @@ namespace ArchiSteamFarm.Steam.Storage {
 				return (null, null);
 			}
 
-			if (botConfig.IsSteamPasswordSet && botConfig.DecryptedSteamPassword != null) {
+			if (!string.IsNullOrEmpty(botConfig.DecryptedSteamPassword)) {
 				HashSet<string> disallowedValues = new(StringComparer.InvariantCultureIgnoreCase) { "account" };
 
-				if (botConfig.IsSteamLoginSet) {
+				if (!string.IsNullOrEmpty(botConfig.SteamLogin)) {
 					disallowedValues.Add(botConfig.SteamLogin!);
 				}
 
 				if (Utilities.IsWeakPassword(botConfig.DecryptedSteamPassword, disallowedValues)) {
-					ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningWeakSteamPassword, botConfig.IsSteamLoginSet ? botConfig.SteamLogin! : filePath));
+					ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningWeakSteamPassword, !string.IsNullOrEmpty(botConfig.SteamLogin) ? botConfig.SteamLogin! : filePath));
 				}
 			}
 

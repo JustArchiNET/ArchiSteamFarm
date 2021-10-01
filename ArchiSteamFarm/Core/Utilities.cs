@@ -330,9 +330,9 @@ namespace ArchiSteamFarm.Core {
 				throw new ArgumentNullException(nameof(password));
 			}
 
-			HashSet<string> forbiddenPhrases = ForbiddenPasswordPhrases.ToHashSet();
+			HashSet<string> forbiddenPhrases = ForbiddenPasswordPhrases.ToHashSet(StringComparer.InvariantCultureIgnoreCase);
 
-			if (additionallyForbiddenPhrases?.Any() == true) {
+			if (additionallyForbiddenPhrases != null) {
 				forbiddenPhrases.UnionWith(additionallyForbiddenPhrases);
 			}
 
