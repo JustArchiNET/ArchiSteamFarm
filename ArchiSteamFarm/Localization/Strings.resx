@@ -699,9 +699,6 @@ Process uptime: {1}</value>
 		<value>{0} config file will be migrated to the latest syntax...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-    <data name="WarningPasswordSavedAsPlaintext" xml:space="preserve">
-        <value>Your {0} password is saved in plaintext. Please consider encrypting it!</value>
-    </data>
 	<data name="WarningWeakIPCPassword" xml:space="preserve">
 		<value>Your IPC password is weak. Please consider choosing a stronger one! You can find guidelines on strong passwords in our wiki!</value>
 	</data>

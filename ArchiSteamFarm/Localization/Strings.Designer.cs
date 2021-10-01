@@ -1631,15 +1631,6 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your {0} password is saved in plaintext. Please consider encrypting it!.
-        /// </summary>
-        public static string WarningPasswordSavedAsPlaintext {
-            get {
-                return ResourceManager.GetString("WarningPasswordSavedAsPlaintext", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to You&apos;re using a version that is newer than the latest released version for your update channel. Please note that pre-release versions are meant for users who know how to report bugs, deal with issues and give feedback - no technical support will be given..
         /// </summary>
         public static string WarningPreReleaseVersion {

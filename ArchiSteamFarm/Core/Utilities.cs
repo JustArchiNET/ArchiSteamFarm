@@ -43,7 +43,7 @@ namespace ArchiSteamFarm.Core {
 	public static class Utilities {
 		private const byte TimeoutForLongRunningTasksInSeconds = 60;
 
-		private static readonly ImmutableHashSet<string> ForbiddenPasswordWords = ImmutableHashSet.Create("asf", "archi", "steam", "archisteamfarm", "password");
+		private static readonly ImmutableHashSet<string> ForbiddenPasswordPhrases = ImmutableHashSet.Create(StringComparer.InvariantCultureIgnoreCase, "asf", "archi", "steam", "archisteamfarm", "password", "ipc", "api", "gui", "asf-ui");
 
 		// Normally we wouldn't need to use this singleton, but we want to ensure decent randomness across entire program's lifetime
 		private static readonly Random Random = new();
@@ -325,7 +325,7 @@ namespace ArchiSteamFarm.Core {
 			}
 		}
 
-		internal static bool IsWeakPassword(string password, params string[] additionallyForbiddenWords) {
+		internal static bool IsWeakPassword(string password, ISet<string>? additionallyForbiddenWords = null) {
 			if (string.IsNullOrEmpty(password)) {
 				throw new ArgumentNullException(nameof(password));
 			}
@@ -334,11 +334,11 @@ namespace ArchiSteamFarm.Core {
 				return true;
 			}
 
-			if (ForbiddenPasswordWords.Any(word => password.Contains(word, StringComparison.InvariantCultureIgnoreCase))) {
+			if (ForbiddenPasswordPhrases.Any(word => password.Contains(word, StringComparison.InvariantCultureIgnoreCase))) {
 				return true;
 			}
 
-			if (additionallyForbiddenWords.Length > 0 && additionallyForbiddenWords.Any(word => password.Contains(word, StringComparison.InvariantCultureIgnoreCase))) {
+			if ((additionallyForbiddenWords?.Count ?? 0) > 0 && additionallyForbiddenWords!.Any(word => password.Contains(word, StringComparison.InvariantCultureIgnoreCase))) {
 				return true;
 			}
 
