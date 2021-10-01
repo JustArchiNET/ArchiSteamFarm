@@ -1676,7 +1676,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your IPC password is weak. Please consider choosing a stronger one! You can find guidelines on strong passwords in our wiki!.
+        ///   Looks up a localized string similar to Your IPC password seems to be weak. Consider choosing a stronger one for increased security..
         /// </summary>
         public static string WarningWeakIPCPassword {
             get {
@@ -1685,7 +1685,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your Steam password for &apos;{0}&apos; is weak. Please consider changing it to a stronger one! You can find guidelines on strong passwords in our wiki!.
+        ///   Looks up a localized string similar to Your Steam password for &apos;{0}&apos; seems to be weak. Consider choosing a stronger one for increased security..
         /// </summary>
         public static string WarningWeakSteamPassword {
             get {
