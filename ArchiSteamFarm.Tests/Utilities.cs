@@ -24,7 +24,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ArchiSteamFarm.Tests {
 	[TestClass]
+#pragma warning disable CA1724
 	public sealed class Utilities {
+#pragma warning restore CA1724
 		[TestMethod]
 		public void LongPassphraseIsNotWeak() => Assert.IsFalse(Core.Utilities.IsWeakPassword("10chars<!>"));
 
