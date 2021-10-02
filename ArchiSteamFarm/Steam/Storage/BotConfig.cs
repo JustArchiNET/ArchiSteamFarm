@@ -587,8 +587,8 @@ namespace ArchiSteamFarm.Steam.Storage {
 					disallowedValues.Add(botConfig.SteamLogin!);
 				}
 
-				if (Utilities.IsWeakPassword(botConfig.DecryptedSteamPassword!, disallowedValues)) {
-					ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningWeakSteamPassword, !string.IsNullOrEmpty(botConfig.SteamLogin) ? botConfig.SteamLogin! : filePath));
+				if (Utilities.IsWeakPassword(botConfig.DecryptedSteamPassword!, out string? reason, disallowedValues)) {
+					ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningWeakSteamPassword, !string.IsNullOrEmpty(botConfig.SteamLogin) ? botConfig.SteamLogin! : filePath, reason));
 				}
 			}
 

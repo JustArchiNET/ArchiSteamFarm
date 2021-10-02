@@ -28,24 +28,24 @@ namespace ArchiSteamFarm.Tests {
 	public sealed class Utilities {
 #pragma warning restore CA1724
 		[TestMethod]
-		public void LongPassphraseIsNotWeak() => Assert.IsFalse(Core.Utilities.IsWeakPassword("10chars<!>"));
+		public void LongPassphraseIsNotWeak() => Assert.IsFalse(Core.Utilities.IsWeakPassword("10chars<!>", out _));
 
 		[TestMethod]
-		public void ShortPassphraseIsWeak() => Assert.IsTrue(Core.Utilities.IsWeakPassword("four"));
+		public void ShortPassphraseIsWeak() => Assert.IsTrue(Core.Utilities.IsWeakPassword("four", out _));
 
 		[TestMethod]
-		public void RepetitiveCharactersWeakenPassphrases() => Assert.IsTrue(Core.Utilities.IsWeakPassword("testaaaatest"));
+		public void RepetitiveCharactersWeakenPassphrases() => Assert.IsTrue(Core.Utilities.IsWeakPassword("testaaaatest", out _));
 
 		[TestMethod]
-		public void SequentialCharactersWeakenPassphrases() => Assert.IsTrue(Core.Utilities.IsWeakPassword("testabcdtest"));
+		public void SequentialCharactersWeakenPassphrases() => Assert.IsTrue(Core.Utilities.IsWeakPassword("testabcdtest", out _));
 
 		[TestMethod]
-		public void SequentialDescendingCharactersWeakenPassphrases() => Assert.IsTrue(Core.Utilities.IsWeakPassword("testdcbatest"));
+		public void SequentialDescendingCharactersWeakenPassphrases() => Assert.IsTrue(Core.Utilities.IsWeakPassword("testdcbatest", out _));
 
 		[TestMethod]
-		public void ContextSpecificWordsWeakenPassphrases() => Assert.IsTrue(Core.Utilities.IsWeakPassword("asfarchisteamfarmpasswordipcapigui"));
+		public void ContextSpecificWordsWeakenPassphrases() => Assert.IsTrue(Core.Utilities.IsWeakPassword("asfarchisteamfarmpasswordipcapigui", out _));
 
 		[TestMethod]
-		public void AdditionallyForbiddenWordsWeakenPassphrases() => Assert.IsTrue(Core.Utilities.IsWeakPassword("10chars<!>", new HashSet<string> { "<!>" }));
+		public void AdditionallyForbiddenWordsWeakenPassphrases() => Assert.IsTrue(Core.Utilities.IsWeakPassword("10chars<!>", out _, new HashSet<string> { "<!>" }));
 	}
 }

@@ -699,10 +699,22 @@ Process uptime: {1}</value>
 		<value>{0} config file will be migrated to the latest syntax...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	<data name="WarningWeakIPCPassword" xml:space="preserve">
-		<value>Your IPC password seems to be weak. Consider choosing a stronger one for increased security.</value>
-	</data>
-	<data name="WarningWeakSteamPassword" xml:space="preserve">
-		<value>Your Steam password for '{0}' seems to be weak. Consider choosing a stronger one for increased security.</value>
-	</data>
+    <data name="WarningWeakIPCPassword" xml:space="preserve">
+        <value>Your IPC password seems to be weak. Consider choosing a stronger one for increased security. Reason: {0}</value>
+    </data>
+    <data name="WarningWeakSteamPassword" xml:space="preserve">
+        <value>Your Steam password for '{0}' seems to be weak. Consider choosing a stronger one for increased security. Reason: {1}</value>
+    </data>
+    <data name="PasswordReasonContextualPhrase" xml:space="preserve">
+        <value>Too many of the following context-specific phrases: {0}</value>
+    </data>
+    <data name="PasswordReasonTooShort" xml:space="preserve">
+        <value>Less than {0} characters</value>
+    </data>
+    <data name="PasswordReasonRepetitiveCharacters" xml:space="preserve">
+        <value>Repeating the same character {0} or more times</value>
+    </data>
+    <data name="PasswordReasonSequentialCharacters" xml:space="preserve">
+        <value>{0} or more sequential characters. e.g. {1}</value>
+    </data>
 </root>

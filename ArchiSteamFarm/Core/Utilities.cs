@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -30,6 +31,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
 using AngleSharp.XPath;
+using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Storage;
 using Humanizer;
 using Humanizer.Localisation;
@@ -327,7 +329,7 @@ namespace ArchiSteamFarm.Core {
 			}
 		}
 
-		internal static bool IsWeakPassword(string password, ISet<string>? additionallyForbiddenPhrases = null) {
+		internal static bool IsWeakPassword(string password, out string? reason, ISet<string>? additionallyForbiddenPhrases = null) {
 			if (string.IsNullOrEmpty(password)) {
 				throw new ArgumentNullException(nameof(password));
 			}
@@ -341,6 +343,8 @@ namespace ArchiSteamFarm.Core {
 			int remainingCharacters = password.Length;
 
 			if (remainingCharacters < MinimumRecommendedPasswordCharacters) {
+				reason = string.Format(CultureInfo.CurrentCulture, Strings.PasswordReasonTooShort, MinimumRecommendedPasswordCharacters);
+
 				return true;
 			}
 
@@ -349,6 +353,8 @@ namespace ArchiSteamFarm.Core {
 					remainingCharacters -= forbiddenPhrase.Length - 1;
 
 					if (remainingCharacters < MinimumRecommendedPasswordCharacters) {
+						reason = string.Format(CultureInfo.CurrentCulture, Strings.PasswordReasonContextualPhrase, string.Join(", ", forbiddenPhrases));
+
 						return true;
 					}
 				}
@@ -359,10 +365,26 @@ namespace ArchiSteamFarm.Core {
 				ushort ch1 = password[i - 1];
 				ushort ch2 = password[i];
 
-				if (ch0 == ch2 && ch1 == ch2 || ch0 == ch2 - 2 && ch1 == ch2 - 1 || ch0 == ch2 + 2 && ch1 == ch2 + 1) {
+				if (ch0 == ch2 && ch1 == ch2) {
+					reason = string.Format(CultureInfo.CurrentCulture, Strings.PasswordReasonRepetitiveCharacters, 3);
+
+					return true;
+				}
+
+				if (ch0 == ch2 - 2 && ch1 == ch2 - 1) {
+					reason = string.Format(CultureInfo.CurrentCulture, Strings.PasswordReasonSequentialCharacters, 3, "abc");
+
+					return true;
+				}
+
+				if (ch0 == ch2 + 2 && ch1 == ch2 + 1) {
+					reason = string.Format(CultureInfo.CurrentCulture, Strings.PasswordReasonSequentialCharacters, 3, "cba");
+
 					return true;
 				}
 			}
+
+			reason = null;
 
 			return false;
 		}
