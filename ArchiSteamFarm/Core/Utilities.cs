@@ -329,7 +329,7 @@ namespace ArchiSteamFarm.Core {
 			}
 		}
 
-		internal static (bool IsWeak, string? reason) TestPasswordStrength(string password, ISet<string>? additionallyForbiddenPhrases = null) {
+		internal static (bool IsWeak, string? Reason) TestPasswordStrength(string password, ISet<string>? additionallyForbiddenPhrases = null) {
 			if (string.IsNullOrEmpty(password)) {
 				throw new ArgumentNullException(nameof(password));
 			}

@@ -21,6 +21,7 @@
 
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static ArchiSteamFarm.Core.Utilities;
 
 namespace ArchiSteamFarm.Tests {
 	[TestClass]
@@ -28,24 +29,24 @@ namespace ArchiSteamFarm.Tests {
 	public sealed class Utilities {
 #pragma warning restore CA1724
 		[TestMethod]
-		public void LongPassphraseIsNotWeak() => Assert.IsFalse(Core.Utilities.TestPasswordStrength("10chars<!>").IsWeak);
+		public void LongPassphraseIsNotWeak() => Assert.IsFalse(TestPasswordStrength("10chars<!>").IsWeak);
 
 		[TestMethod]
-		public void ShortPassphraseIsWeak() => Assert.IsTrue(Core.Utilities.TestPasswordStrength("four").IsWeak);
+		public void ShortPassphraseIsWeak() => Assert.IsTrue(TestPasswordStrength("four").IsWeak);
 
 		[TestMethod]
-		public void RepetitiveCharactersWeakenPassphrases() => Assert.IsTrue(Core.Utilities.TestPasswordStrength("testaaaatest").IsWeak);
+		public void RepetitiveCharactersWeakenPassphrases() => Assert.IsTrue(TestPasswordStrength("testaaaatest").IsWeak);
 
 		[TestMethod]
-		public void SequentialCharactersWeakenPassphrases() => Assert.IsTrue(Core.Utilities.TestPasswordStrength("testabcdtest").IsWeak);
+		public void SequentialCharactersWeakenPassphrases() => Assert.IsTrue(TestPasswordStrength("testabcdtest").IsWeak);
 
 		[TestMethod]
-		public void SequentialDescendingCharactersWeakenPassphrases() => Assert.IsTrue(Core.Utilities.TestPasswordStrength("testdcbatest").IsWeak);
+		public void SequentialDescendingCharactersWeakenPassphrases() => Assert.IsTrue(TestPasswordStrength("testdcbatest").IsWeak);
 
 		[TestMethod]
-		public void ContextSpecificWordsWeakenPassphrases() => Assert.IsTrue(Core.Utilities.TestPasswordStrength("asfarchisteamfarmpasswordipcapigui").IsWeak);
+		public void ContextSpecificWordsWeakenPassphrases() => Assert.IsTrue(TestPasswordStrength("asfarchisteamfarmpasswordipcapigui").IsWeak);
 
 		[TestMethod]
-		public void AdditionallyForbiddenWordsWeakenPassphrases() => Assert.IsTrue(Core.Utilities.TestPasswordStrength("10chars<!>", new HashSet<string> { "<!>" }).IsWeak);
+		public void AdditionallyForbiddenWordsWeakenPassphrases() => Assert.IsTrue(TestPasswordStrength("10chars<!>", new HashSet<string> { "<!>" }).IsWeak);
 	}
 }
