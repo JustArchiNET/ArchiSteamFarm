@@ -340,6 +340,10 @@ namespace ArchiSteamFarm.Core {
 
 			int remainingCharacters = password.Length;
 
+			if (remainingCharacters < MinimumRecommendedPasswordCharacters) {
+				return true;
+			}
+
 			foreach (string forbiddenPhrase in forbiddenPhrases.Where(static phrase => !string.IsNullOrEmpty(phrase))) {
 				for (int index = password.IndexOf(forbiddenPhrase, StringComparison.InvariantCultureIgnoreCase); index >= 0; index = password.IndexOf(forbiddenPhrase, index, StringComparison.InvariantCultureIgnoreCase)) {
 					remainingCharacters -= forbiddenPhrase.Length - 1;
