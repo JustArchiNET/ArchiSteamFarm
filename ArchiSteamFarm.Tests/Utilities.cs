@@ -28,24 +28,24 @@ namespace ArchiSteamFarm.Tests {
 	public sealed class Utilities {
 #pragma warning restore CA1724
 		[TestMethod]
-		public void LongPassphraseIsNotWeak() => Assert.IsFalse(Core.Utilities.IsWeakPassword("10chars<!>", out _));
+		public void LongPassphraseIsNotWeak() => Assert.IsFalse(Core.Utilities.TestPasswordStrength("10chars<!>").IsWeak);
 
 		[TestMethod]
-		public void ShortPassphraseIsWeak() => Assert.IsTrue(Core.Utilities.IsWeakPassword("four", out _));
+		public void ShortPassphraseIsWeak() => Assert.IsTrue(Core.Utilities.TestPasswordStrength("four").IsWeak);
 
 		[TestMethod]
-		public void RepetitiveCharactersWeakenPassphrases() => Assert.IsTrue(Core.Utilities.IsWeakPassword("testaaaatest", out _));
+		public void RepetitiveCharactersWeakenPassphrases() => Assert.IsTrue(Core.Utilities.TestPasswordStrength("testaaaatest").IsWeak);
 
 		[TestMethod]
-		public void SequentialCharactersWeakenPassphrases() => Assert.IsTrue(Core.Utilities.IsWeakPassword("testabcdtest", out _));
+		public void SequentialCharactersWeakenPassphrases() => Assert.IsTrue(Core.Utilities.TestPasswordStrength("testabcdtest").IsWeak);
 
 		[TestMethod]
-		public void SequentialDescendingCharactersWeakenPassphrases() => Assert.IsTrue(Core.Utilities.IsWeakPassword("testdcbatest", out _));
+		public void SequentialDescendingCharactersWeakenPassphrases() => Assert.IsTrue(Core.Utilities.TestPasswordStrength("testdcbatest").IsWeak);
 
 		[TestMethod]
-		public void ContextSpecificWordsWeakenPassphrases() => Assert.IsTrue(Core.Utilities.IsWeakPassword("asfarchisteamfarmpasswordipcapigui", out _));
+		public void ContextSpecificWordsWeakenPassphrases() => Assert.IsTrue(Core.Utilities.TestPasswordStrength("asfarchisteamfarmpasswordipcapigui").IsWeak);
 
 		[TestMethod]
-		public void AdditionallyForbiddenWordsWeakenPassphrases() => Assert.IsTrue(Core.Utilities.IsWeakPassword("10chars<!>", out _, new HashSet<string> { "<!>" }));
+		public void AdditionallyForbiddenWordsWeakenPassphrases() => Assert.IsTrue(Core.Utilities.TestPasswordStrength("10chars<!>", new HashSet<string> { "<!>" }).IsWeak);
 	}
 }

@@ -699,22 +699,30 @@ Process uptime: {1}</value>
 		<value>{0} config file will be migrated to the latest syntax...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-    <data name="WarningWeakIPCPassword" xml:space="preserve">
-        <value>Your IPC password seems to be weak. Consider choosing a stronger one for increased security. Reason: {0}</value>
-    </data>
-    <data name="WarningWeakSteamPassword" xml:space="preserve">
-        <value>Your Steam password for '{0}' seems to be weak. Consider choosing a stronger one for increased security. Reason: {1}</value>
-    </data>
-    <data name="PasswordReasonContextualPhrase" xml:space="preserve">
-        <value>Too many of the following context-specific phrases: {0}</value>
-    </data>
-    <data name="PasswordReasonTooShort" xml:space="preserve">
-        <value>Less than {0} characters</value>
-    </data>
-    <data name="PasswordReasonRepetitiveCharacters" xml:space="preserve">
-        <value>Repeating the same character {0} or more times</value>
-    </data>
-    <data name="PasswordReasonSequentialCharacters" xml:space="preserve">
-        <value>{0} or more sequential characters. e.g. {1}</value>
-    </data>
+	<data name="WarningWeakIPCPassword" xml:space="preserve">
+		<value>Your IPC password seems to be weak. Consider choosing a stronger one for increased security. Reason: {0}</value>
+		<comment>{0} will be replaced by the reason for the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakSteamPassword" xml:space="preserve">
+		<value>Your Steam password for '{0}' seems to be weak. Consider choosing a stronger one for increased security. Reason: {1}</value>
+		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file</comment>
+		<comment>{1} will be replaced by the reason for the password being considered weak</comment>
+	</data>
+	<data name="PasswordReasonContextualPhrase" xml:space="preserve">
+		<value>Too many of the following context-specific phrases: {0}</value>
+		<comment>{0} will be replaced by a list of words or phrases that we consider weakening for a password</comment>
+	</data>
+	<data name="PasswordReasonTooShort" xml:space="preserve">
+		<value>Less than {0} characters</value>
+		<comment>{0} will be replaced by the amount of characters that a strong password requires</comment>
+	</data>
+	<data name="PasswordReasonRepetitiveCharacters" xml:space="preserve">
+		<value>Repeating the same character {0} or more times</value>
+		<comment>{0} will be replaced by the amount of repetitions, that we consider the limit</comment>
+	</data>
+	<data name="PasswordReasonSequentialCharacters" xml:space="preserve">
+		<value>{0} or more sequential characters. e.g. {1}</value>
+		<comment>{0} will be replaced by the amount of characters, that we consider the limit</comment>
+		<comment>{1} will be replaced by an example of sequential characters</comment>
+	</data>
 </root>

@@ -329,7 +329,7 @@ namespace ArchiSteamFarm.Core {
 			}
 		}
 
-		internal static bool IsWeakPassword(string password, out string? reason, ISet<string>? additionallyForbiddenPhrases = null) {
+		internal static (bool IsWeak, string? reason) TestPasswordStrength(string password, ISet<string>? additionallyForbiddenPhrases = null) {
 			if (string.IsNullOrEmpty(password)) {
 				throw new ArgumentNullException(nameof(password));
 			}
@@ -343,9 +343,7 @@ namespace ArchiSteamFarm.Core {
 			int remainingCharacters = password.Length;
 
 			if (remainingCharacters < MinimumRecommendedPasswordCharacters) {
-				reason = string.Format(CultureInfo.CurrentCulture, Strings.PasswordReasonTooShort, MinimumRecommendedPasswordCharacters);
-
-				return true;
+				return (true, string.Format(CultureInfo.CurrentCulture, Strings.PasswordReasonTooShort, MinimumRecommendedPasswordCharacters));
 			}
 
 			foreach (string forbiddenPhrase in forbiddenPhrases.Where(static phrase => !string.IsNullOrEmpty(phrase))) {
@@ -353,9 +351,7 @@ namespace ArchiSteamFarm.Core {
 					remainingCharacters -= forbiddenPhrase.Length - 1;
 
 					if (remainingCharacters < MinimumRecommendedPasswordCharacters) {
-						reason = string.Format(CultureInfo.CurrentCulture, Strings.PasswordReasonContextualPhrase, string.Join(", ", forbiddenPhrases));
-
-						return true;
+						return (true, string.Format(CultureInfo.CurrentCulture, Strings.PasswordReasonContextualPhrase, string.Join(", ", forbiddenPhrases)));
 					}
 				}
 			}
@@ -366,27 +362,19 @@ namespace ArchiSteamFarm.Core {
 				ushort ch2 = password[i];
 
 				if (ch0 == ch2 && ch1 == ch2) {
-					reason = string.Format(CultureInfo.CurrentCulture, Strings.PasswordReasonRepetitiveCharacters, 3);
-
-					return true;
+					return (true, string.Format(CultureInfo.CurrentCulture, Strings.PasswordReasonRepetitiveCharacters, 3));
 				}
 
 				if (ch0 == ch2 - 2 && ch1 == ch2 - 1) {
-					reason = string.Format(CultureInfo.CurrentCulture, Strings.PasswordReasonSequentialCharacters, 3, "abc");
-
-					return true;
+					return (true, string.Format(CultureInfo.CurrentCulture, Strings.PasswordReasonSequentialCharacters, 3, "abc"));
 				}
 
 				if (ch0 == ch2 + 2 && ch1 == ch2 + 1) {
-					reason = string.Format(CultureInfo.CurrentCulture, Strings.PasswordReasonSequentialCharacters, 3, "cba");
-
-					return true;
+					return (true, string.Format(CultureInfo.CurrentCulture, Strings.PasswordReasonSequentialCharacters, 3, "cba"));
 				}
 			}
 
-			reason = null;
-
-			return false;
+			return (false, null);
 		}
 
 		internal static bool RelativeDirectoryStartsWith(string directory, params string[] prefixes) {
