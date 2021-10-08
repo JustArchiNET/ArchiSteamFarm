@@ -9,7 +9,7 @@ RestartSec=5s
 SyslogIdentifier=asf-%i
 User=%i
 
-# ASF security hardening
+# ASF security hardening, all of the below entries are optional, but their existence improves security of your system
 LockPersonality=yes
 PrivateDevices=yes
 PrivateMounts=yes
@@ -21,7 +21,8 @@ ProtectHostname=yes
 ProtectKernelLogs=yes
 ProtectKernelModules=yes
 ProtectKernelTunables=yes
-ProtectSystem=full
+ProtectProc=invisible
+ProtectSystem=strict
 ReadWritePaths=/home/%i/ArchiSteamFarm /tmp
 RemoveIPC=yes
 RestrictAddressFamilies=AF_INET AF_INET6
@@ -29,11 +30,8 @@ RestrictNamespaces=yes
 RestrictRealtime=yes
 RestrictSUIDSGID=yes
 
-# Not tested
+# Not tested, waiting for systemd 248+ in Debian
 #PrivateIPC=yes
-
-# This list is incomplete, will likely crash your ASF, not to mention only a total madman would enable that
-#SystemCallFilter=accept4 access arch_prctl bind chdir chmod clone close connect epoll_create1 epoll_ctl epoll_wait fadvise64 fcntl flock fstat fsync ftruncate getcwd getdents64 getpeername getrusage getsockname getsockopt inotify_add_watch inotify_init ioctl listen lseek lstat madvise mkdir mknod mprotect openat pipe pipe2 poll pread64 read readlink recvfrom recvmsg rename rmdir rt_sigaction rt_sigprocmask sched_get_priority_max sched_get_priority_min sched_getparam sched_getscheduler sched_setaffinity sched_setscheduler sendmmsg sendmsg sendto setsockopt shutdown sigaltstack socket stat statfs sysinfo uname unlink utimensat write
 
 [Unit]
 After=network.target network-online.target
