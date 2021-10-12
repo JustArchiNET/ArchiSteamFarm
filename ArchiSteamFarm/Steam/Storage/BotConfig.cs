@@ -587,11 +587,15 @@ namespace ArchiSteamFarm.Steam.Storage {
 					disallowedValues.Add(botConfig.SteamLogin!);
 				}
 
-				(bool isWeak, string? reason) = Utilities.TestPasswordStrength(botConfig.DecryptedSteamPassword!, disallowedValues);
+				Utilities.InBackground(
+					() => {
+						(bool isWeak, string? reason) = Utilities.TestPasswordStrength(botConfig.DecryptedSteamPassword!, disallowedValues);
 
-				if (isWeak) {
-					ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningWeakSteamPassword, !string.IsNullOrEmpty(botConfig.SteamLogin) ? botConfig.SteamLogin! : filePath, reason));
-				}
+						if (isWeak) {
+							ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningWeakSteamPassword, !string.IsNullOrEmpty(botConfig.SteamLogin) ? botConfig.SteamLogin! : filePath, reason));
+						}
+					}
+				);
 			}
 
 			if (!Program.ConfigMigrate) {

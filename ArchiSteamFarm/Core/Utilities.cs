@@ -37,17 +37,17 @@ using Humanizer;
 using Humanizer.Localisation;
 using JetBrains.Annotations;
 using SteamKit2;
+using Zxcvbn;
 #if NETFRAMEWORK
 using JustArchiNET.Madness;
 #endif
 
 namespace ArchiSteamFarm.Core {
 	public static class Utilities {
-		private const byte MinimumRecommendedPasswordCharacters = 10;
-
 		private const byte TimeoutForLongRunningTasksInSeconds = 60;
 
-		private static readonly ImmutableHashSet<string> ForbiddenPasswordPhrases = ImmutableHashSet.Create(StringComparer.InvariantCultureIgnoreCase, "asf", "archi", "steam", "farm", "password", "ipc", "api", "gui", "asf-ui");
+		// normally we'd just use words like "steam" and "farm", but the library we're currently using is a bit iffy about banned words, so we need to also add combinations such as "steamfarm"
+		private static readonly ImmutableHashSet<string> ForbiddenPasswordPhrases = ImmutableHashSet.Create(StringComparer.InvariantCultureIgnoreCase, "archisteamfarm", "archi", "steam", "farm", "archisteam", "archifarm", "steamfarm", "asf", "asffarm", "password", "ipc", "api", "gui", "asf-ui");
 
 		// Normally we wouldn't need to use this singleton, but we want to ensure decent randomness across entire program's lifetime
 		private static readonly Random Random = new();
@@ -340,41 +340,10 @@ namespace ArchiSteamFarm.Core {
 				forbiddenPhrases.UnionWith(additionallyForbiddenPhrases);
 			}
 
-			int remainingCharacters = password.Length;
+			Result result = Zxcvbn.Core.EvaluatePassword(password, forbiddenPhrases);
+			FeedbackItem feedback = result.Feedback;
 
-			if (remainingCharacters < MinimumRecommendedPasswordCharacters) {
-				return (true, string.Format(CultureInfo.CurrentCulture, Strings.PasswordReasonTooShort, MinimumRecommendedPasswordCharacters));
-			}
-
-			foreach (string forbiddenPhrase in forbiddenPhrases.Where(static phrase => !string.IsNullOrEmpty(phrase))) {
-				for (int index = password.IndexOf(forbiddenPhrase, StringComparison.InvariantCultureIgnoreCase); index >= 0; index = password.IndexOf(forbiddenPhrase, index, StringComparison.InvariantCultureIgnoreCase)) {
-					remainingCharacters -= forbiddenPhrase.Length - 1;
-
-					if (remainingCharacters < MinimumRecommendedPasswordCharacters) {
-						return (true, string.Format(CultureInfo.CurrentCulture, Strings.PasswordReasonContextualPhrase, string.Join(", ", forbiddenPhrases)));
-					}
-				}
-			}
-
-			for (int i = 2; i < password.Length; i++) {
-				ushort ch0 = password[i - 2];
-				ushort ch1 = password[i - 1];
-				ushort ch2 = password[i];
-
-				if (ch0 == ch2 && ch1 == ch2) {
-					return (true, string.Format(CultureInfo.CurrentCulture, Strings.PasswordReasonRepetitiveCharacters, 3));
-				}
-
-				if (ch0 == ch2 - 2 && ch1 == ch2 - 1) {
-					return (true, string.Format(CultureInfo.CurrentCulture, Strings.PasswordReasonSequentialCharacters, 3, "abc"));
-				}
-
-				if (ch0 == ch2 + 2 && ch1 == ch2 + 1) {
-					return (true, string.Format(CultureInfo.CurrentCulture, Strings.PasswordReasonSequentialCharacters, 3, "cba"));
-				}
-			}
-
-			return (false, null);
+			return (result.Score < 4, string.IsNullOrEmpty(feedback.Warning) ? feedback.Suggestions.FirstOrDefault() : feedback.Warning);
 		}
 
 		internal static bool RelativeDirectoryStartsWith(string directory, params string[] prefixes) {

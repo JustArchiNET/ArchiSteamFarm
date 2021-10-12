@@ -29,7 +29,7 @@ namespace ArchiSteamFarm.Tests {
 	public sealed class Utilities {
 #pragma warning restore CA1724
 		[TestMethod]
-		public void LongPassphraseIsNotWeak() => Assert.IsFalse(TestPasswordStrength("10chars<!>").IsWeak);
+		public void LongPassphraseIsNotWeak() => Assert.IsFalse(TestPasswordStrength("10chars<!>asdf").IsWeak);
 
 		[TestMethod]
 		public void ShortPassphraseIsWeak() => Assert.IsTrue(TestPasswordStrength("four").IsWeak);
@@ -44,9 +44,9 @@ namespace ArchiSteamFarm.Tests {
 		public void SequentialDescendingCharactersWeakenPassphrases() => Assert.IsTrue(TestPasswordStrength("testdcbatest").IsWeak);
 
 		[TestMethod]
-		public void ContextSpecificWordsWeakenPassphrases() => Assert.IsTrue(TestPasswordStrength("asfarchisteamfarmpasswordipcapigui").IsWeak);
+		public void ContextSpecificWordsWeakenPassphrases() => Assert.IsTrue(TestPasswordStrength("archisteamfarmpassword").IsWeak);
 
 		[TestMethod]
-		public void AdditionallyForbiddenWordsWeakenPassphrases() => Assert.IsTrue(TestPasswordStrength("10chars<!>", new HashSet<string> { "<!>" }).IsWeak);
+		public void AdditionallyForbiddenWordsWeakenPassphrases() => Assert.IsTrue(TestPasswordStrength("10chars<!>asdf", new HashSet<string> { "chars<!>" }).IsWeak);
 	}
 }

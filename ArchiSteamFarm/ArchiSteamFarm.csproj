@@ -22,6 +22,7 @@
 		<PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" />
 		<PackageReference Include="System.Composition" />
 		<PackageReference Include="System.Linq.Async" />
+		<PackageReference Include="zxcvbn-core" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' != 'net48' AND ('$(TargetGeneric)' == 'true' OR '$(TargetWindows)' == 'true')">
