@@ -45,6 +45,8 @@ using SteamKit2;
 namespace ArchiSteamFarm.Storage {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	public sealed class GlobalConfig {
+		private static readonly ImmutableHashSet<string> ForbiddenIPCPasswordPhrases = ImmutableHashSet.Create(StringComparer.InvariantCultureIgnoreCase, "ipc", "api", "gui", "asf-ui", "asf-gui");
+
 		[PublicAPI]
 		public const bool DefaultAutoRestart = true;
 
@@ -507,7 +509,7 @@ namespace ArchiSteamFarm.Storage {
 			if (globalConfig.IPCPasswordFormat == ArchiCryptoHelper.EHashingMethod.PlainText && !string.IsNullOrEmpty(globalConfig.IPCPassword)) {
 				Utilities.InBackground(
 					() => {
-						(bool isWeak, string? reason) = Utilities.TestPasswordStrength(globalConfig.IPCPassword!);
+						(bool isWeak, string? reason) = Utilities.TestPasswordStrength(globalConfig.IPCPassword!, ForbiddenIPCPasswordPhrases);
 
 						if (isWeak) {
 							ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningWeakIPCPassword, reason));
