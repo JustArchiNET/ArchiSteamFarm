@@ -1289,42 +1289,6 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Too many of the following context-specific phrases: {0}.
-        /// </summary>
-        public static string PasswordReasonContextualPhrase {
-            get {
-                return ResourceManager.GetString("PasswordReasonContextualPhrase", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Repeating the same character {0} or more times.
-        /// </summary>
-        public static string PasswordReasonRepetitiveCharacters {
-            get {
-                return ResourceManager.GetString("PasswordReasonRepetitiveCharacters", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} or more sequential characters. e.g. {1}.
-        /// </summary>
-        public static string PasswordReasonSequentialCharacters {
-            get {
-                return ResourceManager.GetString("PasswordReasonSequentialCharacters", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Less than {0} characters.
-        /// </summary>
-        public static string PasswordReasonTooShort {
-            get {
-                return ResourceManager.GetString("PasswordReasonTooShort", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Playing is currently unavailable, we&apos;ll try again later!.
         /// </summary>
         public static string PlayingNotAvailable {
