@@ -1647,7 +1647,7 @@ namespace ArchiSteamFarm.Steam {
 				}
 
 				if (File.Exists(mobileAuthenticatorFilePath)) {
-					await ImportAuthenticator(mobileAuthenticatorFilePath).ConfigureAwait(false);
+					await ImportAuthenticatorFromFile(mobileAuthenticatorFilePath).ConfigureAwait(false);
 				}
 			}
 
@@ -1918,7 +1918,7 @@ namespace ArchiSteamFarm.Steam {
 			}
 		}
 
-		private async Task ImportAuthenticator(string maFilePath) {
+		private async Task ImportAuthenticatorFromFile(string maFilePath) {
 			if (HasMobileAuthenticator || !File.Exists(maFilePath)) {
 				return;
 			}
@@ -1928,22 +1928,9 @@ namespace ArchiSteamFarm.Steam {
 			try {
 				string json = await File.ReadAllTextAsync(maFilePath).ConfigureAwait(false);
 
-				if (string.IsNullOrEmpty(json)) {
-					ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
-
+				if (!TryImportAuthenticatorFromJson(json)) {
 					return;
 				}
-
-				MobileAuthenticator? authenticator = JsonConvert.DeserializeObject<MobileAuthenticator>(json);
-
-				if (authenticator == null) {
-					ArchiLogger.LogNullError(nameof(authenticator));
-
-					return;
-				}
-
-				authenticator.Init(this);
-				BotDatabase.MobileAuthenticator = authenticator;
 
 				File.Delete(maFilePath);
 			} catch (Exception e) {
@@ -1953,6 +1940,49 @@ namespace ArchiSteamFarm.Steam {
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorImportFinished);
+		}
+
+		internal bool TryImportAuthenticatorFromJson(string json) {
+			if (HasMobileAuthenticator) {
+				return false;
+			}
+
+			if (string.IsNullOrEmpty(json)) {
+				return false;
+			}
+
+			try {
+				MobileAuthenticator? authenticator = JsonConvert.DeserializeObject<MobileAuthenticator>(json);
+
+				if (authenticator == null) {
+					ArchiLogger.LogNullError(nameof(authenticator));
+
+					return false;
+				}
+
+				authenticator.Init(this);
+				BotDatabase.MobileAuthenticator = authenticator;
+			} catch (Exception e) {
+				ArchiLogger.LogGenericException(e);
+
+				return false;
+			}
+
+			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorImportFinished);
+
+			return true;
+		}
+
+		internal (bool Success, string? Message) RemoveAuthenticator() {
+			if (!HasMobileAuthenticator) {
+				return (false, Strings.BotNoASFAuthenticator);
+			}
+
+			MobileAuthenticator authenticator = BotDatabase.MobileAuthenticator!;
+			BotDatabase.MobileAuthenticator = null;
+			authenticator.Dispose();
+
+			return (true, null);
 		}
 
 		private void InitConnectionFailureTimer() {
@@ -2743,7 +2773,7 @@ namespace ArchiSteamFarm.Steam {
 						string maFilePath = Path.Combine(SharedInfo.ConfigDirectory, SteamID + SharedInfo.MobileAuthenticatorExtension);
 
 						if (File.Exists(maFilePath)) {
-							await ImportAuthenticator(maFilePath).ConfigureAwait(false);
+							await ImportAuthenticatorFromFile(maFilePath).ConfigureAwait(false);
 						}
 					}
 

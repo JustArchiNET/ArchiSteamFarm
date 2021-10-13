@@ -29,6 +29,7 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Reflection;
+using System.Threading;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.IPC.Integration;
 using ArchiSteamFarm.Localization;
@@ -40,6 +41,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -54,11 +56,10 @@ namespace ArchiSteamFarm.IPC {
 
 		public Startup(IConfiguration configuration) => Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 
-#if NETFRAMEWORK
 		[UsedImplicitly]
+#if NETFRAMEWORK
 		public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
 #else
-		[UsedImplicitly]
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
 #endif
 			if (app == null) {
@@ -140,6 +141,8 @@ namespace ArchiSteamFarm.IPC {
 				}
 			);
 
+			app.UseRequestLocalization();
+
 			// Use routing for our API controllers, this should be called once we're done with all the static files mess
 #if !NETFRAMEWORK
 			app.UseRouting();
@@ -210,6 +213,20 @@ namespace ArchiSteamFarm.IPC {
 					knownNetworks.Add(new IPNetwork(ipAddress, prefixLength));
 				}
 			}
+
+			services.AddLocalization();
+
+#if NETFRAMEWORK
+			services.Configure<RequestLocalizationOptions>(
+#else
+			services.AddRequestLocalization(
+#endif
+				static options => {
+					// We do not set the DefaultRequestCulture here, because it will default to Thread.CurrentThread.CurrentCulture in this case, which is set when loading GlobalConfig
+					options.SupportedUICultures = options.SupportedCultures = CultureInfo.GetCultures(CultureTypes.AllCultures);
+					options.RequestCultureProviders = new List<IRequestCultureProvider> { new AcceptLanguageHeaderRequestCultureProvider() };
+				}
+			);
 
 			// Add support for proxies
 			services.Configure<ForwardedHeadersOptions>(
