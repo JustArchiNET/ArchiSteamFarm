@@ -22,6 +22,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -46,6 +47,8 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	internal static class Program {
+		private static readonly ImmutableHashSet<string> ForbiddenCryptKeyPhrases = ImmutableHashSet.Create(StringComparer.InvariantCultureIgnoreCase, "crypt", "key", "cryptkey");
+
 		internal static bool ConfigMigrate { get; private set; } = true;
 		internal static bool ConfigWatch { get; private set; } = true;
 		internal static string? NetworkGroup { get; private set; }
@@ -98,6 +101,16 @@ namespace ArchiSteamFarm {
 			if (string.IsNullOrEmpty(cryptKey)) {
 				throw new ArgumentNullException(nameof(cryptKey));
 			}
+
+			Utilities.InBackground(
+				() => {
+					(bool isWeak, string? reason) = Utilities.TestPasswordStrength(cryptKey, ForbiddenCryptKeyPhrases);
+
+					if (isWeak) {
+						ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningWeakCryptKey, reason));
+					}
+				}
+			);
 
 			ArchiCryptoHelper.SetEncryptionKey(cryptKey);
 		}

@@ -21,6 +21,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -29,15 +31,23 @@ using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
 using AngleSharp.XPath;
+using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Storage;
 using Humanizer;
 using Humanizer.Localisation;
 using JetBrains.Annotations;
 using SteamKit2;
+using Zxcvbn;
+#if NETFRAMEWORK
+using JustArchiNET.Madness;
+#endif
 
 namespace ArchiSteamFarm.Core {
 	public static class Utilities {
 		private const byte TimeoutForLongRunningTasksInSeconds = 60;
+
+		// normally we'd just use words like "steam" and "farm", but the library we're currently using is a bit iffy about banned words, so we need to also add combinations such as "steamfarm"
+		private static readonly ImmutableHashSet<string> ForbiddenPasswordPhrases = ImmutableHashSet.Create(StringComparer.InvariantCultureIgnoreCase, "archisteamfarm", "archi", "steam", "farm", "archisteam", "archifarm", "steamfarm", "asf", "asffarm", "password");
 
 		// Normally we wouldn't need to use this singleton, but we want to ensure decent randomness across entire program's lifetime
 		private static readonly Random Random = new();
@@ -317,6 +327,23 @@ namespace ArchiSteamFarm.Core {
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 			}
+		}
+
+		internal static (bool IsWeak, string? Reason) TestPasswordStrength(string password, ISet<string>? additionallyForbiddenPhrases = null) {
+			if (string.IsNullOrEmpty(password)) {
+				throw new ArgumentNullException(nameof(password));
+			}
+
+			HashSet<string> forbiddenPhrases = ForbiddenPasswordPhrases.ToHashSet(StringComparer.InvariantCultureIgnoreCase);
+
+			if (additionallyForbiddenPhrases != null) {
+				forbiddenPhrases.UnionWith(additionallyForbiddenPhrases);
+			}
+
+			Result result = Zxcvbn.Core.EvaluatePassword(password, forbiddenPhrases);
+			FeedbackItem feedback = result.Feedback;
+
+			return (result.Score < 4, string.IsNullOrEmpty(feedback.Warning) ? feedback.Suggestions.FirstOrDefault() : feedback.Warning);
 		}
 
 		internal static bool RelativeDirectoryStartsWith(string directory, params string[] prefixes) {

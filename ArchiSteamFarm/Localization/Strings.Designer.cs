@@ -992,7 +992,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No bots are defined. Did you forget to configure your ASF?.
+        ///   Looks up a localized string similar to No bots are defined. Did you forget to configure your ASF? Follow &apos;setting up&apos; guide on the wiki if you&apos;re confused..
         /// </summary>
         public static string ErrorNoBotsDefined {
             get {
@@ -1672,6 +1672,33 @@ namespace ArchiSteamFarm.Localization {
         public static string WarningUnsupportedEnvironment {
             get {
                 return ResourceManager.GetString("WarningUnsupportedEnvironment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your encryption key seems to be weak. Consider choosing a stronger one for increased security. Reason: {0}.
+        /// </summary>
+        public static string WarningWeakCryptKey {
+            get {
+                return ResourceManager.GetString("WarningWeakCryptKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your IPC password seems to be weak. Consider choosing a stronger one for increased security. Reason: {0}.
+        /// </summary>
+        public static string WarningWeakIPCPassword {
+            get {
+                return ResourceManager.GetString("WarningWeakIPCPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your Steam password for &apos;{0}&apos; seems to be weak. Consider choosing a stronger one for increased security. Reason: {1}.
+        /// </summary>
+        public static string WarningWeakSteamPassword {
+            get {
+                return ResourceManager.GetString("WarningWeakSteamPassword", resourceCulture);
             }
         }
         
