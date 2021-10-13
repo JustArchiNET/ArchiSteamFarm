@@ -105,13 +105,11 @@ namespace ArchiSteamFarm.Core {
 				return;
 			}
 
-			await RequestsSemaphore.WaitAsync().ConfigureAwait(false);
+			if (!await RequestsSemaphore.WaitAsync(0).ConfigureAwait(false)) {
+				return;
+			}
 
 			try {
-				if (!ShouldSendHeartBeats || (DateTime.UtcNow < LastHeartBeat.AddMinutes(MinHeartBeatTTL))) {
-					return;
-				}
-
 				Uri request = new($"{URL}/Api/HeartBeat");
 
 				Dictionary<string, string> data = new(2, StringComparer.Ordinal) {
