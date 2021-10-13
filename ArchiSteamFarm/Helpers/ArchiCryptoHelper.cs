@@ -166,6 +166,12 @@ namespace ArchiSteamFarm.Helpers {
 				throw new ArgumentNullException(nameof(key));
 			}
 
+			if (!HasDefaultCryptKey) {
+				ASF.ArchiLogger.LogGenericError(Strings.ErrorAborted);
+
+				return;
+			}
+
 			Utilities.InBackground(
 				() => {
 					(bool isWeak, string? reason) = Utilities.TestPasswordStrength(key, ForbiddenCryptKeyPhrases);
@@ -176,12 +182,14 @@ namespace ArchiSteamFarm.Helpers {
 				}
 			);
 
-			EncryptionKey = Encoding.UTF8.GetBytes(key);
-			HasDefaultCryptKey = false;
+			byte[] encryptionKey = Encoding.UTF8.GetBytes(key);
 
-			if (EncryptionKey.Length < MinimumRecommendedCryptKeyBytes) {
+			if (encryptionKey.Length < MinimumRecommendedCryptKeyBytes) {
 				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningTooShortCryptKey, MinimumRecommendedCryptKeyBytes));
 			}
+
+			HasDefaultCryptKey = encryptionKey.SequenceEqual(EncryptionKey);
+			EncryptionKey = encryptionKey;
 		}
 
 		private static string? DecryptAES(string encryptedString) {
