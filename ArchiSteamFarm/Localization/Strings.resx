@@ -709,5 +709,6 @@ Process uptime: {1}</value>
 	</data>
 	<data name="WarningWeakCryptKey" xml:space="preserve">
 		<value>Your encryption key seems to be weak. Consider choosing a stronger one for increased security. Reason: {0}</value>
+		<comment>{0} will be replaced by the reason for the encryption key being considered weak</comment>
 	</data>
 </root>
