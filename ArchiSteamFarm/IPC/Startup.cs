@@ -29,7 +29,6 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Reflection;
-using System.Threading;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.IPC.Integration;
 using ArchiSteamFarm.Localization;
@@ -224,6 +223,8 @@ namespace ArchiSteamFarm.IPC {
 				static options => {
 					// We do not set the DefaultRequestCulture here, because it will default to Thread.CurrentThread.CurrentCulture in this case, which is set when loading GlobalConfig
 					options.SupportedUICultures = options.SupportedCultures = CultureInfo.GetCultures(CultureTypes.AllCultures);
+
+					// The default checks the URI and cookies and only then for headers; ASFs IPC does not use either of the higher priority mechanisms anywhere else and we don't want to start here.
 					options.RequestCultureProviders = new List<IRequestCultureProvider> { new AcceptLanguageHeaderRequestCultureProvider() };
 				}
 			);
