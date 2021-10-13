@@ -598,6 +598,17 @@ namespace ArchiSteamFarm.Steam.Storage {
 				);
 			}
 
+			switch (botConfig.PasswordFormat) {
+				case ArchiCryptoHelper.ECryptoMethod.AES when ArchiCryptoHelper.HasDefaultCryptKey:
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningDefaultCryptKeyUsedForEncryption, botConfig.PasswordFormat, nameof(SteamPassword)));
+
+					break;
+				case ArchiCryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser when ArchiCryptoHelper.HasDefaultCryptKey:
+					ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningDefaultCryptKeyUsedForHashing, botConfig.PasswordFormat, nameof(SteamPassword)));
+
+					break;
+			}
+
 			if (!Program.ConfigMigrate) {
 				return (botConfig, null);
 			}

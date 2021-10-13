@@ -19,10 +19,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using JustArchiNET.Madness;
+#endif
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -31,16 +33,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
 using AngleSharp.XPath;
-using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Storage;
 using Humanizer;
 using Humanizer.Localisation;
 using JetBrains.Annotations;
 using SteamKit2;
 using Zxcvbn;
-#if NETFRAMEWORK
-using JustArchiNET.Madness;
-#endif
 
 namespace ArchiSteamFarm.Core {
 	public static class Utilities {
@@ -329,6 +327,20 @@ namespace ArchiSteamFarm.Core {
 			}
 		}
 
+		internal static bool RelativeDirectoryStartsWith(string directory, params string[] prefixes) {
+			if (string.IsNullOrEmpty(directory)) {
+				throw new ArgumentNullException(nameof(directory));
+			}
+
+#pragma warning disable CA1508 // False positive, params could be null when explicitly set
+			if ((prefixes == null) || (prefixes.Length == 0)) {
+#pragma warning restore CA1508 // False positive, params could be null when explicitly set
+				throw new ArgumentNullException(nameof(prefixes));
+			}
+
+			return (from prefix in prefixes where directory.Length > prefix.Length let pathSeparator = directory[prefix.Length] where (pathSeparator == Path.DirectorySeparatorChar) || (pathSeparator == Path.AltDirectorySeparatorChar) select prefix).Any(prefix => directory.StartsWith(prefix, StringComparison.Ordinal));
+		}
+
 		internal static (bool IsWeak, string? Reason) TestPasswordStrength(string password, ISet<string>? additionallyForbiddenPhrases = null) {
 			if (string.IsNullOrEmpty(password)) {
 				throw new ArgumentNullException(nameof(password));
@@ -344,20 +356,6 @@ namespace ArchiSteamFarm.Core {
 			FeedbackItem feedback = result.Feedback;
 
 			return (result.Score < 4, string.IsNullOrEmpty(feedback.Warning) ? feedback.Suggestions.FirstOrDefault() : feedback.Warning);
-		}
-
-		internal static bool RelativeDirectoryStartsWith(string directory, params string[] prefixes) {
-			if (string.IsNullOrEmpty(directory)) {
-				throw new ArgumentNullException(nameof(directory));
-			}
-
-#pragma warning disable CA1508 // False positive, params could be null when explicitly set
-			if ((prefixes == null) || (prefixes.Length == 0)) {
-#pragma warning restore CA1508 // False positive, params could be null when explicitly set
-				throw new ArgumentNullException(nameof(prefixes));
-			}
-
-			return (from prefix in prefixes where directory.Length > prefix.Length let pathSeparator = directory[prefix.Length] where (pathSeparator == Path.DirectorySeparatorChar) || (pathSeparator == Path.AltDirectorySeparatorChar) select prefix).Any(prefix => directory.StartsWith(prefix, StringComparison.Ordinal));
 		}
 	}
 }

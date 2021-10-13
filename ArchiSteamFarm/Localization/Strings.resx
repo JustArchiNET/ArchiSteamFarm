@@ -711,4 +711,16 @@ Process uptime: {1}</value>
 		<value>Your encryption key seems to be weak. Consider choosing a stronger one for increased security. Reason: {0}</value>
 		<comment>{0} will be replaced by the reason for the encryption key being considered weak</comment>
 	</data>
+	<data name="WarningTooShortCryptKey" xml:space="preserve">
+		<value>Your encryption key is too short. We recommend to use one that is at least {0} bytes (characters) long.</value>
+		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>You're using {0} setting of {1} property, but you didn't provide a custom --cryptkey. You should provide a custom --cryptkey for increased security.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
+		<value>You're using {0} setting of {1} property, but you didn't provide a custom --cryptkey. This entirely defeats the protection, as ASF is forced to use its own (known) key. You should provide a custom --cryptkey for making use of the security benefit offered by this setting.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
+	</data>
 </root>

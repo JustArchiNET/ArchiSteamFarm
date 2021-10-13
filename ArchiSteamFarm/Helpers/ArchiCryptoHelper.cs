@@ -24,20 +24,28 @@ using OperatingSystem = JustArchiNET.Madness.OperatingSystemMadness.OperatingSys
 #endif
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Localization;
 using CryptSharp.Utility;
 using SteamKit2;
 
 namespace ArchiSteamFarm.Helpers {
 	public static class ArchiCryptoHelper {
 		private const byte DefaultHashLength = 32;
+		private const byte MinimumRecommendedCryptKeyBytes = 32;
 		private const ushort SteamParentalPbkdf2Iterations = 10000;
 		private const byte SteamParentalSCryptBlocksCount = 8;
 		private const ushort SteamParentalSCryptIterations = 8192;
+
+		internal static bool HasDefaultCryptKey { get; private set; } = true;
+
+		private static readonly ImmutableHashSet<string> ForbiddenCryptKeyPhrases = ImmutableHashSet.Create(StringComparer.InvariantCultureIgnoreCase, "crypt", "key", "cryptkey");
 
 		private static IEnumerable<byte> SteamParentalCharacters => Enumerable.Range('0', 10).Select(static character => (byte) character);
 
@@ -158,7 +166,22 @@ namespace ArchiSteamFarm.Helpers {
 				throw new ArgumentNullException(nameof(key));
 			}
 
+			Utilities.InBackground(
+				() => {
+					(bool isWeak, string? reason) = Utilities.TestPasswordStrength(key, ForbiddenCryptKeyPhrases);
+
+					if (isWeak) {
+						ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningWeakCryptKey, reason));
+					}
+				}
+			);
+
 			EncryptionKey = Encoding.UTF8.GetBytes(key);
+			HasDefaultCryptKey = false;
+
+			if (EncryptionKey.Length < MinimumRecommendedCryptKeyBytes) {
+				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningTooShortCryptKey, MinimumRecommendedCryptKeyBytes));
+			}
 		}
 
 		private static string? DecryptAES(string encryptedString) {
