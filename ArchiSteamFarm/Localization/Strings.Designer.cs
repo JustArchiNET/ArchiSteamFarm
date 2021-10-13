@@ -1676,6 +1676,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your encryption key seems to be weak. Consider choosing a stronger one for increased security. Reason: {0}.
+        /// </summary>
+        public static string WarningWeakCryptKey {
+            get {
+                return ResourceManager.GetString("WarningWeakCryptKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Your IPC password seems to be weak. Consider choosing a stronger one for increased security. Reason: {0}.
         /// </summary>
         public static string WarningWeakIPCPassword {

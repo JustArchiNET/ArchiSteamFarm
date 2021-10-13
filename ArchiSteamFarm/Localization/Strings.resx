@@ -707,4 +707,7 @@ Process uptime: {1}</value>
 		<value>Your Steam password for '{0}' seems to be weak. Consider choosing a stronger one for increased security. Reason: {1}</value>
 		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by the reason for the password being considered weak</comment>
 	</data>
+	<data name="WarningWeakCryptKey" xml:space="preserve">
+		<value>Your encryption key seems to be weak. Consider choosing a stronger one for increased security. Reason: {0}</value>
+	</data>
 </root>
