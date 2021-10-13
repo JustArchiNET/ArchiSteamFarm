@@ -25,7 +25,7 @@ using static ArchiSteamFarm.Core.Utilities;
 
 namespace ArchiSteamFarm.Tests {
 	[TestClass]
-#pragma warning disable CA1724
+#pragma warning disable CA1724 // We don't care about the potential conflict, as ASF class name has a priority
 	public sealed class Utilities {
 		[TestMethod]
 		public void AdditionallyForbiddenWordsWeakenPassphrases() => Assert.IsTrue(TestPasswordStrength("10chars<!>asdf", new HashSet<string> { "chars<!>" }).IsWeak);
@@ -48,5 +48,5 @@ namespace ArchiSteamFarm.Tests {
 		[TestMethod]
 		public void ShortPassphraseIsWeak() => Assert.IsTrue(TestPasswordStrength("four").IsWeak);
 	}
-#pragma warning restore CA1724
+#pragma warning restore CA1724 // We don't care about the potential conflict, as ASF class name has a priority
 }
