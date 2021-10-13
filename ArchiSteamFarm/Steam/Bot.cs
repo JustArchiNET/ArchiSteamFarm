@@ -487,7 +487,9 @@ namespace ArchiSteamFarm.Steam {
 					Regex regex;
 
 					try {
+#pragma warning disable CA3012
 						regex = new Regex(botsPattern, botsRegex);
+#pragma warning restore CA3012
 					} catch (ArgumentException e) {
 						ASF.ArchiLogger.LogGenericWarningException(e);
 
@@ -1928,7 +1930,21 @@ namespace ArchiSteamFarm.Steam {
 			try {
 				string json = await File.ReadAllTextAsync(maFilePath).ConfigureAwait(false);
 
-				if (!TryImportAuthenticatorFromJson(json)) {
+				if (string.IsNullOrEmpty(json)) {
+					ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
+
+					return;
+				}
+
+				MobileAuthenticator? authenticator = JsonConvert.DeserializeObject<MobileAuthenticator>(json);
+
+				if (authenticator == null) {
+					ArchiLogger.LogNullError(nameof(authenticator));
+
+					return;
+				}
+
+				if (!TryImportAuthenticator(authenticator)) {
 					return;
 				}
 
@@ -1942,24 +1958,16 @@ namespace ArchiSteamFarm.Steam {
 			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorImportFinished);
 		}
 
-		internal bool TryImportAuthenticatorFromJson(string json) {
+		internal bool TryImportAuthenticator(MobileAuthenticator? authenticator) {
+			if (authenticator == null) {
+				return false;
+			}
+
 			if (HasMobileAuthenticator) {
 				return false;
 			}
 
-			if (string.IsNullOrEmpty(json)) {
-				return false;
-			}
-
 			try {
-				MobileAuthenticator? authenticator = JsonConvert.DeserializeObject<MobileAuthenticator>(json);
-
-				if (authenticator == null) {
-					ArchiLogger.LogNullError(nameof(authenticator));
-
-					return false;
-				}
-
 				authenticator.Init(this);
 				BotDatabase.MobileAuthenticator = authenticator;
 			} catch (Exception e) {

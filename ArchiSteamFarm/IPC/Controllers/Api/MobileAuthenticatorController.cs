@@ -76,7 +76,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
 		[HttpPost]
-		public async Task<ActionResult<GenericResponse>> MobileAuthenticatorPost(string botNames, [FromForm] IFormFile maFile) {
+		public ActionResult<GenericResponse> MobileAuthenticatorPost(string botNames, [FromBody] MobileAuthenticator authenticator) {
 			if (string.IsNullOrEmpty(botNames)) {
 				throw new ArgumentNullException(nameof(botNames));
 			}
@@ -87,25 +87,11 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>(false, string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)));
 			}
 
-			if (maFile == null) {
-				throw new ArgumentNullException(nameof(maFile));
+			if (authenticator == null) {
+				throw new ArgumentNullException(nameof(authenticator));
 			}
 
-			string? json;
-
-			Stream fileStream = maFile.OpenReadStream();
-
-			await using (fileStream.ConfigureAwait(false)) {
-				using (StreamReader streamReader = new (fileStream)) {
-					json = await streamReader.ReadToEndAsync().ConfigureAwait(false);
-				}
-			}
-
-			if (string.IsNullOrEmpty(json)) {
-				throw new ArgumentNullException(nameof(maFile));
-			}
-
-			if (bot.TryImportAuthenticatorFromJson(json)) {
+			if (bot.TryImportAuthenticator(authenticator)) {
 				return Ok(new GenericResponse(true));
 			}
 
