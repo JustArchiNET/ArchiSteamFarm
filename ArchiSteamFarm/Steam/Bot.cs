@@ -1958,9 +1958,9 @@ namespace ArchiSteamFarm.Steam {
 			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorImportFinished);
 		}
 
-		internal bool TryImportAuthenticator(MobileAuthenticator? authenticator) {
+		internal bool TryImportAuthenticator(MobileAuthenticator authenticator) {
 			if (authenticator == null) {
-				return false;
+				throw new ArgumentNullException(nameof(authenticator));
 			}
 
 			if (HasMobileAuthenticator) {
@@ -1982,11 +1982,12 @@ namespace ArchiSteamFarm.Steam {
 		}
 
 		internal (bool Success, string? Message) RemoveAuthenticator() {
-			if (!HasMobileAuthenticator) {
+			MobileAuthenticator? authenticator = BotDatabase.MobileAuthenticator;
+
+			if (authenticator == null) {
 				return (false, Strings.BotNoASFAuthenticator);
 			}
 
-			MobileAuthenticator authenticator = BotDatabase.MobileAuthenticator!;
 			BotDatabase.MobileAuthenticator = null;
 			authenticator.Dispose();
 

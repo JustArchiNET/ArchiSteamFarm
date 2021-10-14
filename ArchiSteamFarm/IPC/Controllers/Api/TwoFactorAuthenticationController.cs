@@ -25,7 +25,6 @@ using JustArchiNET.Madness;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -35,19 +34,18 @@ using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Security;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[Route("Api/Bot/{botNames:required}/TwoFactorAuthentication")]
-	public sealed class MobileAuthenticatorController : ArchiController {
+	public sealed class TwoFactorAuthenticationController : ArchiController {
 		/// <summary>
 		///		Deletes the MobileAuthenticator of given bots if an ASF 2FA module is active on them.
 		/// </summary>
 		[HttpDelete]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-		public async Task<ActionResult<GenericResponse>> MobileAuthenticatorDelete(string botNames) {
+		public async Task<ActionResult<GenericResponse>> AuthenticatorDelete(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				throw new ArgumentNullException(nameof(botNames));
 			}
@@ -77,7 +75,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[HttpPost]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-		public ActionResult<GenericResponse> MobileAuthenticatorPost(string botNames, [FromBody] MobileAuthenticator authenticator) {
+		public ActionResult<GenericResponse> AuthenticatorPost(string botNames, [FromBody] MobileAuthenticator authenticator) {
 			if (string.IsNullOrEmpty(botNames)) {
 				throw new ArgumentNullException(nameof(botNames));
 			}
@@ -106,7 +104,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[HttpPost("Confirmations")]
 		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse<IReadOnlyCollection<Confirmation>>>>), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-		public async Task<ActionResult<GenericResponse>> TwoFactorAuthenticationConfirmationsPost(string botNames, [FromBody] TwoFactorAuthenticationConfirmationsRequest request) {
+		public async Task<ActionResult<GenericResponse>> ConfirmationsPost(string botNames, [FromBody] TwoFactorAuthenticationConfirmationsRequest request) {
 			if (string.IsNullOrEmpty(botNames)) {
 				throw new ArgumentNullException(nameof(botNames));
 			}
@@ -143,7 +141,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		[HttpGet("Token")]
 		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-		public async Task<ActionResult<GenericResponse>> TwoFactorAuthenticationTokenGet(string botNames) {
+		public async Task<ActionResult<GenericResponse>> TokenGet(string botNames) {
 			if (string.IsNullOrEmpty(botNames)) {
 				throw new ArgumentNullException(nameof(botNames));
 			}
