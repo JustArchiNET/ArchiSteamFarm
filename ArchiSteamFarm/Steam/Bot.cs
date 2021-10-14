@@ -487,7 +487,9 @@ namespace ArchiSteamFarm.Steam {
 					Regex regex;
 
 					try {
+#pragma warning disable CA3012
 						regex = new Regex(botsPattern, botsRegex);
+#pragma warning restore CA3012
 					} catch (ArgumentException e) {
 						ASF.ArchiLogger.LogGenericWarningException(e);
 
@@ -1647,7 +1649,7 @@ namespace ArchiSteamFarm.Steam {
 				}
 
 				if (File.Exists(mobileAuthenticatorFilePath)) {
-					await ImportAuthenticator(mobileAuthenticatorFilePath).ConfigureAwait(false);
+					await ImportAuthenticatorFromFile(mobileAuthenticatorFilePath).ConfigureAwait(false);
 				}
 			}
 
@@ -1918,7 +1920,7 @@ namespace ArchiSteamFarm.Steam {
 			}
 		}
 
-		private async Task ImportAuthenticator(string maFilePath) {
+		private async Task ImportAuthenticatorFromFile(string maFilePath) {
 			if (HasMobileAuthenticator || !File.Exists(maFilePath)) {
 				return;
 			}
@@ -1942,8 +1944,9 @@ namespace ArchiSteamFarm.Steam {
 					return;
 				}
 
-				authenticator.Init(this);
-				BotDatabase.MobileAuthenticator = authenticator;
+				if (!TryImportAuthenticator(authenticator)) {
+					return;
+				}
 
 				File.Delete(maFilePath);
 			} catch (Exception e) {
@@ -1953,6 +1956,42 @@ namespace ArchiSteamFarm.Steam {
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorImportFinished);
+		}
+
+		internal bool TryImportAuthenticator(MobileAuthenticator authenticator) {
+			if (authenticator == null) {
+				throw new ArgumentNullException(nameof(authenticator));
+			}
+
+			if (HasMobileAuthenticator) {
+				return false;
+			}
+
+			try {
+				authenticator.Init(this);
+				BotDatabase.MobileAuthenticator = authenticator;
+			} catch (Exception e) {
+				ArchiLogger.LogGenericException(e);
+
+				return false;
+			}
+
+			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorImportFinished);
+
+			return true;
+		}
+
+		internal (bool Success, string? Message) RemoveAuthenticator() {
+			MobileAuthenticator? authenticator = BotDatabase.MobileAuthenticator;
+
+			if (authenticator == null) {
+				return (false, Strings.BotNoASFAuthenticator);
+			}
+
+			BotDatabase.MobileAuthenticator = null;
+			authenticator.Dispose();
+
+			return (true, null);
 		}
 
 		private void InitConnectionFailureTimer() {
@@ -2743,7 +2782,7 @@ namespace ArchiSteamFarm.Steam {
 						string maFilePath = Path.Combine(SharedInfo.ConfigDirectory, SteamID + SharedInfo.MobileAuthenticatorExtension);
 
 						if (File.Exists(maFilePath)) {
-							await ImportAuthenticator(maFilePath).ConfigureAwait(false);
+							await ImportAuthenticatorFromFile(maFilePath).ConfigureAwait(false);
 						}
 					}
 
