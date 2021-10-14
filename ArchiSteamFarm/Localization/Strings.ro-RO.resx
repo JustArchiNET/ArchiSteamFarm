@@ -699,4 +699,10 @@ Proces: {1}</value>
 		<value>Fișierul de configurare {0} va fi migrat la cea mai recentă sintaxă...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
+	
+	
+	
+	
+	
+	
 </root>

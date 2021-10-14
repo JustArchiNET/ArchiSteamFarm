@@ -699,4 +699,19 @@ Czas procesu: {1}</value>
 		<value>{0} plik konfiguracyjny zostanie przeniesiony do najnowszej składni...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
+	<data name="WarningWeakIPCPassword" xml:space="preserve">
+		<value>Twoje hasło IPC wydaje się słabe. Rozważ wybór silniejszego dla zwiększenia bezpieczeństwa. Powód: {0}</value>
+		<comment>{0} will be replaced by the reason for the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakSteamPassword" xml:space="preserve">
+		<value>Twoje hasło Steam dla '{0}' wydaje się słabe. Rozważ wybór silniejszego dla zwiększenia bezpieczeństwa. Powód: {1}</value>
+		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by the reason for the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakCryptKey" xml:space="preserve">
+		<value>Twój klucz szyfrowania wydaje się słaby. Rozważ wybór silniejszego dla zwiększenia bezpieczeństwa. Powód: {0}</value>
+		<comment>{0} will be replaced by the reason for the encryption key being considered weak</comment>
+	</data>
+	
+	
+	
 </root>

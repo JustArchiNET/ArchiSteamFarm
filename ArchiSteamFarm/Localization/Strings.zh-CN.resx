@@ -699,4 +699,10 @@
 		<value>配置文件 {0} 将会迁移到最新格式……</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
+	
+	
+	
+	
+	
+	
 </root>

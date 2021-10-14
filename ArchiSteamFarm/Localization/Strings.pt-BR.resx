@@ -699,4 +699,10 @@ Tempo de execução: {1}</value>
 		<value>O arquivo de configuração {0} será migrado para a última sintaxe...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
+	
+	
+	
+	
+	
+	
 </root>
