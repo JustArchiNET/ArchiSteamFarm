@@ -462,24 +462,5 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 
 			return Ok(new GenericResponse(results.All(static result => result.Success), string.Join(Environment.NewLine, results.Select(static result => result.Message))));
 		}
-
-		/// <summary>
-		///     Handles 2FA confirmations of given bots, requires ASF 2FA module to be active on them.
-		/// </summary>
-		[Consumes("application/json")]
-		[HttpPost("{botNames:required}/TwoFactorAuthentication/Confirmations")]
-		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse<IReadOnlyCollection<Confirmation>>>>), (int) HttpStatusCode.OK)]
-		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-		[Obsolete]
-		public Task<ActionResult<GenericResponse>> TwoFactorAuthenticationConfirmationsPost(string botNames, [FromBody] TwoFactorAuthenticationConfirmationsRequest request) => MobileAuthenticatorController.TwoFactorAuthenticationConfirmationsPost(botNames, request);
-
-		/// <summary>
-		///     Fetches 2FA tokens of given bots, requires ASF 2FA module to be active on them.
-		/// </summary>
-		[HttpGet("{botNames:required}/TwoFactorAuthentication/Token")]
-		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>), (int) HttpStatusCode.OK)]
-		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-		[Obsolete]
-		public Task<ActionResult<GenericResponse>> TwoFactorAuthenticationTokenGet(string botNames) => MobileAuthenticatorController.TwoFactorAuthenticationTokenGet(botNames);
 	}
 }
