@@ -35,7 +35,7 @@ using System.Threading.Tasks;
 using AngleSharp.Dom;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Core;
-using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.Localization.Logging;
 using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Steam.Integration;
 using ArchiSteamFarm.Steam.Storage;

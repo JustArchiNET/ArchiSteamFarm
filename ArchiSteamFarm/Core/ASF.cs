@@ -41,7 +41,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.IPC;
-using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.Localization.Logging;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Steam;

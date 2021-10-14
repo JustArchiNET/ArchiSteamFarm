@@ -23,7 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using ArchiSteamFarm.Core;
-using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.Localization.Logging;
 using JetBrains.Annotations;
 using SteamKit2;
 using SteamKit2.Internal;

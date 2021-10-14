@@ -23,6 +23,7 @@
 		<PackageReference Include="System.Composition" />
 		<PackageReference Include="System.Linq.Async" />
 		<PackageReference Include="zxcvbn-core" />
+		<PackageReference Include="VocaDb.ResXFileCodeGenerator" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' != 'net48' AND ('$(TargetGeneric)' == 'true' OR '$(TargetWindows)' == 'true')">
@@ -54,6 +55,7 @@
 		<EmbeddedResource Update="Localization\Strings.resx">
 			<Generator>PublicResXFileCodeGenerator</Generator>
 			<LastGenOutput>Strings.Designer.cs</LastGenOutput>
+			<CustomToolNamespace>ArchiSteamFarm.Localization.Logging</CustomToolNamespace>
 		</EmbeddedResource>
 	</ItemGroup>
 

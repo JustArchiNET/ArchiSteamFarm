@@ -31,7 +31,7 @@ using System.Threading.Tasks;
 using AngleSharp.Dom;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
-using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.Localization.Logging;
 using ArchiSteamFarm.Storage;
 using Newtonsoft.Json;
 

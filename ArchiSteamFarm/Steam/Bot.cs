@@ -43,7 +43,7 @@ using AngleSharp.Dom;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
-using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.Localization.Logging;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Steam.Cards;

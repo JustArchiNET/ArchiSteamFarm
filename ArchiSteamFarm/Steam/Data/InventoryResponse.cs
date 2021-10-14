@@ -25,7 +25,7 @@ using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using ArchiSteamFarm.Core;
-using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.Localization.Logging;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

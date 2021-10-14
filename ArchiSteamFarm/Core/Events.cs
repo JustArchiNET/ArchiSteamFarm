@@ -21,7 +21,7 @@
 
 using System.Linq;
 using System.Threading.Tasks;
-using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.Localization.Logging;
 using ArchiSteamFarm.Steam;
 
 namespace ArchiSteamFarm.Core {

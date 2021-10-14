@@ -30,7 +30,7 @@ using System.IO;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.IPC.Controllers.Api;
-using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.Localization.Logging;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.NLog.Targets;
 using Microsoft.AspNetCore.Hosting;

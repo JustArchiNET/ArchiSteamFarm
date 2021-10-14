@@ -44,6 +44,7 @@ using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
 using JetBrains.Annotations;
 using SteamKit2;
+using LogStrings = ArchiSteamFarm.Localization.Logging.Strings;
 
 namespace ArchiSteamFarm.Steam.Interaction {
 	public sealed class Actions : IAsyncDisposable {
@@ -463,13 +464,13 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				foreach (ulong giftCardID in giftCardIDs.Where(gid => !HandledGifts.Contains(gid))) {
 					HandledGifts.Add(giftCardID);
 
-					Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotAcceptingGift, giftCardID));
+					Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, LogStrings.BotAcceptingGift, giftCardID));
 					await LimitGiftsRequestsAsync().ConfigureAwait(false);
 
 					bool result = await Bot.ArchiWebHandler.AcceptDigitalGiftCard(giftCardID).ConfigureAwait(false);
 
 					if (result) {
-						Bot.ArchiLogger.LogGenericInfo(Strings.Success);
+						Bot.ArchiLogger.LogGenericInfo(LogStrings.Success);
 					} else {
 						Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 					}
@@ -491,7 +492,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 			foreach (ulong guestPassID in guestPassIDs.Where(guestPassID => !HandledGifts.Contains(guestPassID))) {
 				HandledGifts.Add(guestPassID);
 
-				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotAcceptingGift, guestPassID));
+				Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, LogStrings.BotAcceptingGift, guestPassID));
 				await LimitGiftsRequestsAsync().ConfigureAwait(false);
 
 				ArchiHandler.RedeemGuestPassResponseCallback? response = await Bot.ArchiHandler.RedeemGuestPass(guestPassID).ConfigureAwait(false);
@@ -500,7 +501,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 					if (response.Result == EResult.OK) {
 						Bot.ArchiLogger.LogGenericInfo(Strings.Success);
 					} else {
-						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, response.Result));
+						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, LogStrings.WarningFailedWithError, response.Result));
 					}
 				} else {
 					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);

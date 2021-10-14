@@ -37,7 +37,7 @@ namespace ArchiSteamFarm.Core {
 
 			if ((now.Month == 4) && (now.Day == 1)) {
 				try {
-					CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CreateSpecificCulture("qps-Ploc");
+					Localization.Logging.Strings.CultureInfo = CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CreateSpecificCulture("qps-Ploc");
 				} catch (Exception e) {
 					ASF.ArchiLogger.LogGenericDebuggingException(e);
 
@@ -54,7 +54,7 @@ namespace ArchiSteamFarm.Core {
 			}
 
 			try {
-				CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = OriginalCulture;
+				Localization.Logging.Strings.CultureInfo = CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = OriginalCulture;
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericDebuggingException(e);
 

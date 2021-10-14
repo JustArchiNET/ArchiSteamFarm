@@ -30,7 +30,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
-using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.Localization.Logging;
 using JetBrains.Annotations;
 using NLog;
 using SteamKit2;

@@ -23,7 +23,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using ArchiSteamFarm.Core;
-using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.Localization.Logging;
 using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Web;
 using SteamKit2;

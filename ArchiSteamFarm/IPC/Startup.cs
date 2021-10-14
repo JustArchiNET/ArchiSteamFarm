@@ -31,7 +31,7 @@ using System.Net;
 using System.Reflection;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.IPC.Integration;
-using ArchiSteamFarm.Localization;
+using ArchiSteamFarm.Localization.Logging;
 using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Storage;
 using JetBrains.Annotations;

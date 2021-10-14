@@ -42,6 +42,7 @@ using ArchiSteamFarm.Steam.Storage;
 using ArchiSteamFarm.Storage;
 using JetBrains.Annotations;
 using SteamKit2;
+using LogStrings = ArchiSteamFarm.Localization.Logging.Strings;
 
 namespace ArchiSteamFarm.Steam.Interaction {
 	public sealed class Commands {
@@ -342,8 +343,8 @@ namespace ArchiSteamFarm.Steam.Interaction {
 					if (!string.IsNullOrEmpty(pluginsResponse)) {
 						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 						if (!await Bot.SendMessage(steamID, pluginsResponse!).ConfigureAwait(false)) {
-							Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
-							Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, pluginsResponse));
+							Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, LogStrings.WarningFailedWithError, nameof(Bot.SendMessage)));
+							Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, LogStrings.Content, pluginsResponse));
 						}
 					}
 
@@ -365,12 +366,12 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			if (feedback && !responseTask.IsCompleted) {
 				if (!await Bot.SendTypingMessage(steamID).ConfigureAwait(false)) {
-					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendTypingMessage)));
+					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, LogStrings.WarningFailedWithError, nameof(Bot.SendTypingMessage)));
 				}
 
 				while (!responseTask.IsCompleted && (await Task.WhenAny(responseTask, Task.Delay(SteamTypingStatusDelay)).ConfigureAwait(false) != responseTask)) {
 					if (!await Bot.SendTypingMessage(steamID).ConfigureAwait(false)) {
-						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendTypingMessage)));
+						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, LogStrings.WarningFailedWithError, nameof(Bot.SendTypingMessage)));
 					}
 				}
 			}
@@ -387,8 +388,8 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 			if (!await Bot.SendMessage(steamID, response!).ConfigureAwait(false)) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, response));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, LogStrings.WarningFailedWithError, nameof(Bot.SendMessage)));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, LogStrings.Content, response));
 			}
 		}
 
@@ -419,8 +420,8 @@ namespace ArchiSteamFarm.Steam.Interaction {
 					if (!string.IsNullOrEmpty(pluginsResponse)) {
 						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 						if (!await Bot.SendMessage(chatGroupID, chatID, pluginsResponse!).ConfigureAwait(false)) {
-							Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
-							Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, pluginsResponse));
+							Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, LogStrings.WarningFailedWithError, nameof(Bot.SendMessage)));
+							Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, LogStrings.Content, pluginsResponse));
 						}
 					}
 
@@ -444,12 +445,12 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				string pleaseWaitMessage = FormatBotResponse(Strings.PleaseWait);
 
 				if (!await Bot.SendMessage(chatGroupID, chatID, pleaseWaitMessage).ConfigureAwait(false)) {
-					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
+					Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, LogStrings.WarningFailedWithError, nameof(Bot.SendMessage)));
 				}
 
 				while (!responseTask.IsCompleted && (await Task.WhenAny(responseTask, Task.Delay(SteamTypingStatusDelay)).ConfigureAwait(false) != responseTask)) {
 					if (!await Bot.SendMessage(chatGroupID, chatID, pleaseWaitMessage).ConfigureAwait(false)) {
-						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
+						Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, LogStrings.WarningFailedWithError, nameof(Bot.SendMessage)));
 					}
 				}
 			}
@@ -466,8 +467,8 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 			if (!await Bot.SendMessage(chatGroupID, chatID, response!).ConfigureAwait(false)) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
-				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.Content, response));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, LogStrings.WarningFailedWithError, nameof(Bot.SendMessage)));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, LogStrings.Content, response));
 			}
 		}
 
@@ -2573,14 +2574,14 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 								break;
 							default:
-								Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(privacySetting), privacySetting));
+								Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, LogStrings.WarningUnknownValuePleaseReport, nameof(privacySetting), privacySetting));
 
 								return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(privacySetting)));
 						}
 
 						break;
 					default:
-						Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(index), index));
+						Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, LogStrings.WarningUnknownValuePleaseReport, nameof(index), index));
 
 						return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(index)));
 				}
@@ -2823,7 +2824,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 											goto case EPurchaseResultDetail.CancelledByUser;
 										default:
-											ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(result.PurchaseResultDetail), result.PurchaseResultDetail));
+											ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, LogStrings.WarningUnknownValuePleaseReport, nameof(result.PurchaseResultDetail), result.PurchaseResultDetail));
 
 											// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 											unusedKeys.Remove(key!);
