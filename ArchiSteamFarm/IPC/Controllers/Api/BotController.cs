@@ -43,10 +43,6 @@ using Newtonsoft.Json.Linq;
 namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[Route("Api/Bot")]
 	public sealed class BotController : ArchiController {
-		private readonly MobileAuthenticatorController MobileAuthenticatorController;
-
-		public BotController(MobileAuthenticatorController mobileAuthenticatorController) => MobileAuthenticatorController = mobileAuthenticatorController ?? throw new ArgumentNullException(nameof(mobileAuthenticatorController));
-
 		/// <summary>
 		///     Deletes all files related to given bots.
 		/// </summary>
