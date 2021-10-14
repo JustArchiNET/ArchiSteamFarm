@@ -39,7 +39,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ArchiSteamFarm.IPC.Controllers.Api {
-	[Route("Api/Bot/{botNames:required}/MobileAuthenticator")]
+	[Route("Api/Bot/{botNames:required}/TwoFactorAuthentication")]
 	public sealed class MobileAuthenticatorController : ArchiController {
 		/// <summary>
 		///		Deletes the MobileAuthenticator of given bots if an ASF 2FA module is active on them.
