@@ -1707,14 +1707,8 @@ namespace ArchiSteamFarm.Steam {
 				return false;
 			}
 
-			try {
-				authenticator.Init(this);
-				BotDatabase.MobileAuthenticator = authenticator;
-			} catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
-
-				return false;
-			}
+			authenticator.Init(this);
+			BotDatabase.MobileAuthenticator = authenticator;
 
 			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorImportFinished);
 
@@ -1987,11 +1981,7 @@ namespace ArchiSteamFarm.Steam {
 				File.Delete(maFilePath);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
-
-				return;
 			}
-
-			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorImportFinished);
 		}
 
 		private void InitConnectionFailureTimer() {
