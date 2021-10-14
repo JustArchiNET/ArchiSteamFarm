@@ -39,6 +39,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.ResponseCompression" />
 		<PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" />
 		<PackageReference Include="Microsoft.AspNetCore.WebSockets" />
+		<PackageReference Include="Microsoft.AspNetCore.Localization" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Configuration" />
 		<Reference Include="System.Net.Http" HintPath="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Net.Http.dll" />
