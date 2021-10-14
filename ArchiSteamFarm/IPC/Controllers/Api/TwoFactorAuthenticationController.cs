@@ -40,64 +40,6 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 	[Route("Api/Bot/{botNames:required}/TwoFactorAuthentication")]
 	public sealed class TwoFactorAuthenticationController : ArchiController {
 		/// <summary>
-		///		Deletes the MobileAuthenticator of given bots if an ASF 2FA module is active on them.
-		/// </summary>
-		[HttpDelete]
-		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
-		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-		public async Task<ActionResult<GenericResponse>> AuthenticatorDelete(string botNames) {
-			if (string.IsNullOrEmpty(botNames)) {
-				throw new ArgumentNullException(nameof(botNames));
-			}
-
-			HashSet<Bot>? bots = Bot.GetBots(botNames);
-
-			if ((bots == null) || (bots.Count == 0)) {
-				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>(false, string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)));
-			}
-
-			IList<(bool Success, string? Message)> results = await Utilities.InParallel(bots.Select(static bot => Task.Run(bot.RemoveAuthenticator))).ConfigureAwait(false);
-
-			Dictionary<string, GenericResponse<string>> result = new (bots.Count, Bot.BotsComparer);
-
-			foreach (Bot bot in bots) {
-				(bool success, string? message) = results[result.Count];
-				result[bot.BotName] = new GenericResponse<string>(success, message);
-			}
-
-			return Ok(new GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>(result));
-		}
-
-		/// <summary>
-		///		Imports a MobileAuthenticator into the ASF 2FA module of a given bot.
-		/// </summary>
-		[Consumes("application/json")]
-		[HttpPost]
-		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
-		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-		public ActionResult<GenericResponse> AuthenticatorPost(string botNames, [FromBody] MobileAuthenticator authenticator) {
-			if (string.IsNullOrEmpty(botNames)) {
-				throw new ArgumentNullException(nameof(botNames));
-			}
-
-			Bot? bot = Bot.GetBot(botNames);
-
-			if (bot == null) {
-				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>(false, string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)));
-			}
-
-			if (authenticator == null) {
-				throw new ArgumentNullException(nameof(authenticator));
-			}
-
-			if (bot.TryImportAuthenticator(authenticator)) {
-				return Ok(new GenericResponse(true));
-			}
-
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.WarningFailed)));
-		}
-
-		/// <summary>
 		///     Handles 2FA confirmations of given bots, requires ASF 2FA module to be active on them.
 		/// </summary>
 		[Consumes("application/json")]
@@ -136,6 +78,69 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		}
 
 		/// <summary>
+		///     Deletes the MobileAuthenticator of given bots if an ASF 2FA module is active on them.
+		/// </summary>
+		[HttpDelete]
+		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>), (int) HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+		public async Task<ActionResult<GenericResponse>> Delete(string botNames) {
+			if (string.IsNullOrEmpty(botNames)) {
+				throw new ArgumentNullException(nameof(botNames));
+			}
+
+			HashSet<Bot>? bots = Bot.GetBots(botNames);
+
+			if ((bots == null) || (bots.Count == 0)) {
+				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)));
+			}
+
+			IList<(bool Success, string? Message)> results = await Utilities.InParallel(bots.Select(static bot => Task.Run(bot.RemoveAuthenticator))).ConfigureAwait(false);
+
+			Dictionary<string, GenericResponse<string>> result = new(bots.Count, Bot.BotsComparer);
+
+			foreach (Bot bot in bots) {
+				(bool success, string? message) = results[result.Count];
+				result[bot.BotName] = new GenericResponse<string>(success, message);
+			}
+
+			return Ok(new GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>(result));
+		}
+
+		/// <summary>
+		///     Imports a MobileAuthenticator into the ASF 2FA module of a given bot.
+		/// </summary>
+		[Consumes("application/json")]
+		[HttpPost]
+		[ProducesResponseType(typeof(GenericResponse<IReadOnlyDictionary<string, GenericResponse>>), (int) HttpStatusCode.OK)]
+		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+		public async Task<ActionResult<GenericResponse>> Post(string botNames, [FromBody] MobileAuthenticator authenticator) {
+			if (string.IsNullOrEmpty(botNames)) {
+				throw new ArgumentNullException(nameof(botNames));
+			}
+
+			if (authenticator == null) {
+				throw new ArgumentNullException(nameof(authenticator));
+			}
+
+			HashSet<Bot>? bots = Bot.GetBots(botNames);
+
+			if ((bots == null) || (bots.Count == 0)) {
+				return BadRequest(new GenericResponse<IReadOnlyDictionary<string, GenericResponse<string>>>(false, string.Format(CultureInfo.CurrentCulture, Strings.BotNotFound, botNames)));
+			}
+
+			IList<bool> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.TryImportAuthenticator(authenticator)))).ConfigureAwait(false);
+
+			Dictionary<string, GenericResponse> result = new(bots.Count, Bot.BotsComparer);
+
+			foreach (Bot bot in bots) {
+				bool success = results[result.Count];
+				result[bot.BotName] = new GenericResponse(success);
+			}
+
+			return Ok(new GenericResponse<IReadOnlyDictionary<string, GenericResponse>>(result));
+		}
+
+		/// <summary>
 		///     Fetches 2FA tokens of given bots, requires ASF 2FA module to be active on them.
 		/// </summary>
 		[HttpGet("Token")]
@@ -154,7 +159,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 
 			IList<(bool Success, string? Token, string Message)> results = await Utilities.InParallel(bots.Select(static bot => bot.Actions.GenerateTwoFactorAuthenticationToken())).ConfigureAwait(false);
 
-			Dictionary<string, GenericResponse<string>> result = new (bots.Count, Bot.BotsComparer);
+			Dictionary<string, GenericResponse<string>> result = new(bots.Count, Bot.BotsComparer);
 
 			foreach (Bot bot in bots) {
 				(bool success, string? token, string message) = results[result.Count];

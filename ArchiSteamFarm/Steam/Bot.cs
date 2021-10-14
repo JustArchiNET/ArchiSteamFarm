@@ -1568,6 +1568,19 @@ namespace ArchiSteamFarm.Steam {
 			bot.InitStart();
 		}
 
+		internal (bool Success, string? Message) RemoveAuthenticator() {
+			MobileAuthenticator? authenticator = BotDatabase.MobileAuthenticator;
+
+			if (authenticator == null) {
+				return (false, Strings.BotNoASFAuthenticator);
+			}
+
+			BotDatabase.MobileAuthenticator = null;
+			authenticator.Dispose();
+
+			return (true, null);
+		}
+
 		internal async Task<bool> Rename(string newBotName) {
 			if (string.IsNullOrEmpty(newBotName)) {
 				throw new ArgumentNullException(nameof(newBotName));
@@ -1683,6 +1696,29 @@ namespace ArchiSteamFarm.Steam {
 			if (!skipShutdownEvent) {
 				Utilities.InBackground(Events.OnBotShutdown);
 			}
+		}
+
+		internal bool TryImportAuthenticator(MobileAuthenticator authenticator) {
+			if (authenticator == null) {
+				throw new ArgumentNullException(nameof(authenticator));
+			}
+
+			if (HasMobileAuthenticator) {
+				return false;
+			}
+
+			try {
+				authenticator.Init(this);
+				BotDatabase.MobileAuthenticator = authenticator;
+			} catch (Exception e) {
+				ArchiLogger.LogGenericException(e);
+
+				return false;
+			}
+
+			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorImportFinished);
+
+			return true;
 		}
 
 		internal static IOrderedDictionary ValidateGamesToRedeemInBackground(IOrderedDictionary gamesToRedeemInBackground) {
@@ -1956,42 +1992,6 @@ namespace ArchiSteamFarm.Steam {
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorImportFinished);
-		}
-
-		internal bool TryImportAuthenticator(MobileAuthenticator authenticator) {
-			if (authenticator == null) {
-				throw new ArgumentNullException(nameof(authenticator));
-			}
-
-			if (HasMobileAuthenticator) {
-				return false;
-			}
-
-			try {
-				authenticator.Init(this);
-				BotDatabase.MobileAuthenticator = authenticator;
-			} catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
-
-				return false;
-			}
-
-			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorImportFinished);
-
-			return true;
-		}
-
-		internal (bool Success, string? Message) RemoveAuthenticator() {
-			MobileAuthenticator? authenticator = BotDatabase.MobileAuthenticator;
-
-			if (authenticator == null) {
-				return (false, Strings.BotNoASFAuthenticator);
-			}
-
-			BotDatabase.MobileAuthenticator = null;
-			authenticator.Dispose();
-
-			return (true, null);
 		}
 
 		private void InitConnectionFailureTimer() {
