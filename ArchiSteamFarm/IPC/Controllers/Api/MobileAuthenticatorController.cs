@@ -73,9 +73,10 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 		/// <summary>
 		///		Imports a MobileAuthenticator into the ASF 2FA module of a given bot.
 		/// </summary>
+		[Consumes("application/json")]
+		[HttpPost]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
 		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-		[HttpPost]
 		public ActionResult<GenericResponse> MobileAuthenticatorPost(string botNames, [FromBody] MobileAuthenticator authenticator) {
 			if (string.IsNullOrEmpty(botNames)) {
 				throw new ArgumentNullException(nameof(botNames));
