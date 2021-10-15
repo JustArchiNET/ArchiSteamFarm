@@ -723,4 +723,10 @@ Process uptime: {1}</value>
 		<value>You're using {0} setting of {1} property, but you didn't provide a custom --cryptkey. This entirely defeats the protection, as ASF is forced to use its own (known) key. You should provide a custom --cryptkey for making use of the security benefit offered by this setting.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
 	</data>
+	<data name="WarningRunningAsRoot" xml:space="preserve">
+		<value>You're attempting to run ASF as the administrator (root). This causes a significant security risk to your machine, and as ASF does not require root access for its operation, we do not support this scenario. Supply --ignore-unsupported-environment argument if you really know what you're doing.</value>
+	</data>
+	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
+		<value>You're running ASF in unsupported environment, supplying --ignore-unsupported-environment argument. Please note that we do not offer any kind of support for this scenario and you're doing it entirely at your own risk. You've been warned.</value>
+	</data>
 </root>

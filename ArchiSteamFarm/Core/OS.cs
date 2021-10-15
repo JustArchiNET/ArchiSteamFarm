@@ -31,6 +31,7 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Security.Principal;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -141,6 +142,23 @@ namespace ArchiSteamFarm.Core {
 					throw new ArgumentOutOfRangeException(nameof(optimizationMode));
 			}
 		}
+
+		internal static bool IsRunningAsRoot() {
+			if (OperatingSystem.IsWindows()) {
+				using WindowsIdentity identity = WindowsIdentity.GetCurrent();
+
+				return new WindowsPrincipal(identity).IsInRole(WindowsBuiltInRole.Administrator);
+			}
+
+			if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
+				return NativeMethods.GetEUID() == 0;
+			}
+
+			// We can't determine whether user is running as root or not, so fallback to that not happening
+			return false;
+		}
+
+		internal static bool IsRunningInDocker() => (SharedInfo.BuildInfo.Variant == SharedInfo.DockerVariant) || (Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true");
 
 		internal static async Task<bool> RegisterProcess() {
 			if (SingleInstance != null) {
@@ -327,6 +345,13 @@ namespace ArchiSteamFarm.Core {
 			[DllImport("kernel32.dll")]
 			[SupportedOSPlatform("Windows")]
 			internal static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
+
+			[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+			[DllImport("libc", EntryPoint = "geteuid", SetLastError = true)]
+			[SupportedOSPlatform("FreeBSD")]
+			[SupportedOSPlatform("Linux")]
+			[SupportedOSPlatform("MacOS")]
+			internal static extern uint GetEUID();
 
 			[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 			[DllImport("kernel32.dll")]

@@ -210,9 +210,18 @@ namespace ArchiSteamFarm {
 				ASF.ArchiLogger.LogGenericInfo(copyright!);
 			}
 
-			if (!IgnoreUnsupportedEnvironment) {
+			if (IgnoreUnsupportedEnvironment) {
+				ASF.ArchiLogger.LogGenericWarning(Strings.WarningRunningInUnsupportedEnvironment);
+			} else {
 				if (!OS.VerifyEnvironment()) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnsupportedEnvironment, SharedInfo.BuildInfo.Variant, OS.Version));
+					await Task.Delay(10000).ConfigureAwait(false);
+
+					return false;
+				}
+
+				if (!OS.IsRunningInDocker() && OS.IsRunningAsRoot()) {
+					ASF.ArchiLogger.LogGenericError(Strings.WarningRunningAsRoot);
 					await Task.Delay(10000).ConfigureAwait(false);
 
 					return false;
