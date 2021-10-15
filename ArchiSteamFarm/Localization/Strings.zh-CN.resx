@@ -699,10 +699,28 @@
 		<value>配置文件 {0} 将会迁移到最新格式……</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	
-	
-	
-	
-	
-	
+	<data name="WarningWeakIPCPassword" xml:space="preserve">
+		<value>您的 IPC 密码似乎很弱。请考虑选择更强的密码来增强安全性。原因：{0}</value>
+		<comment>{0} will be replaced by the reason for the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakSteamPassword" xml:space="preserve">
+		<value>您 '{0}' 的 Steam 密码似乎很弱。请考虑选择更强的密码来增强安全性。原因：{1}</value>
+		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by the reason for the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakCryptKey" xml:space="preserve">
+		<value>您的加密密钥似乎很弱。请考虑选择更强的密钥来增强安全性。原因：{0}</value>
+		<comment>{0} will be replaced by the reason for the encryption key being considered weak</comment>
+	</data>
+	<data name="WarningTooShortCryptKey" xml:space="preserve">
+		<value>您的加密密钥太短。我们建议您使用至少 {0} 字节长度的密钥。</value>
+		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>您正在为 {1} 属性使用 {0} 设置，但未提供自定义密钥 --cryptkey。您应该提供自定义 --cryptkey 参数来增强安全性。</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
+		<value>您正在为 {1} 属性使用 {0} 设置，但未提供自定义密钥 --cryptkey。这完全破坏了保护措施，因为 ASF 将使用默认的公开密钥。您应该提供自定义 --cryptkey 参数，来保证此设置提供的安全措施生效。</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
+	</data>
 </root>
