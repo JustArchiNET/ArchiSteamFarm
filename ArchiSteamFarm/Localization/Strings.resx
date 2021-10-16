@@ -700,16 +700,16 @@ Process uptime: {1}</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
 	<data name="WarningWeakIPCPassword" xml:space="preserve">
-		<value>Your IPC password seems to be weak. Consider choosing a stronger one for increased security. Reason: {0}</value>
-		<comment>{0} will be replaced by the reason for the password being considered weak</comment>
+		<value>Your IPC password seems to be weak. Consider choosing a stronger one for increased security. Details: {0}</value>
+		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
 	</data>
 	<data name="WarningWeakSteamPassword" xml:space="preserve">
-		<value>Your Steam password for '{0}' seems to be weak. Consider choosing a stronger one for increased security. Reason: {1}</value>
-		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by the reason for the password being considered weak</comment>
+		<value>Your Steam password for '{0}' seems to be weak. Consider choosing a stronger one for increased security. Details: {1}</value>
+		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by additional details about the password being considered weak</comment>
 	</data>
 	<data name="WarningWeakCryptKey" xml:space="preserve">
-		<value>Your encryption key seems to be weak. Consider choosing a stronger one for increased security. Reason: {0}</value>
-		<comment>{0} will be replaced by the reason for the encryption key being considered weak</comment>
+		<value>Your encryption key seems to be weak. Consider choosing a stronger one for increased security. Details: {0}</value>
+		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
 	</data>
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
 		<value>Your encryption key is too short. We recommend to use one that is at least {0} bytes (characters) long.</value>
