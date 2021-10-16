@@ -96,6 +96,7 @@ namespace ArchiSteamFarm.Core {
 		private static Mutex? SingleInstance;
 
 		internal static void CoreInit(bool systemRequired) {
+#if TARGET_GENERIC || TARGET_WINDOWS
 			if (OperatingSystem.IsWindows()) {
 				if (systemRequired) {
 					WindowsKeepSystemActive();
@@ -114,6 +115,7 @@ namespace ArchiSteamFarm.Core {
 					WindowsDisableQuickEditMode();
 				}
 			}
+#endif
 		}
 
 		internal static string GetOsResourceName(string objectName) {
@@ -209,6 +211,7 @@ namespace ArchiSteamFarm.Core {
 			return true;
 		}
 
+#if TARGET_GENERIC || !TARGET_WINDOWS
 		[SupportedOSPlatform("FreeBSD")]
 		[SupportedOSPlatform("Linux")]
 		[SupportedOSPlatform("MacOS")]
@@ -232,6 +235,7 @@ namespace ArchiSteamFarm.Core {
 				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, Marshal.GetLastWin32Error()));
 			}
 		}
+#endif
 
 		internal static void UnregisterProcess() {
 			if (SingleInstance == null) {
@@ -275,6 +279,7 @@ namespace ArchiSteamFarm.Core {
 #endif
 		}
 
+#if TARGET_GENERIC || TARGET_WINDOWS
 		[SupportedOSPlatform("Windows")]
 		private static void WindowsDisableQuickEditMode() {
 			if (!OperatingSystem.IsWindows()) {
@@ -312,7 +317,9 @@ namespace ArchiSteamFarm.Core {
 				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, result));
 			}
 		}
+#endif
 
+#if TARGET_GENERIC || !TARGET_WINDOWS
 		[Flags]
 		[SupportedOSPlatform("FreeBSD")]
 		[SupportedOSPlatform("Linux")]
@@ -330,8 +337,10 @@ namespace ArchiSteamFarm.Core {
 			Combined755 = UserRead | UserWrite | UserExecute | GroupRead | GroupExecute | OtherRead | OtherExecute,
 			Combined777 = UserRead | UserWrite | UserExecute | GroupRead | GroupWrite | GroupExecute | OtherRead | OtherWrite | OtherExecute
 		}
+#endif
 
 		private static class NativeMethods {
+#if TARGET_GENERIC || TARGET_WINDOWS
 			[SupportedOSPlatform("Windows")]
 			internal const EExecutionState AwakeExecutionState = EExecutionState.SystemRequired | EExecutionState.AwayModeRequired | EExecutionState.Continuous;
 
@@ -340,7 +349,9 @@ namespace ArchiSteamFarm.Core {
 
 			[SupportedOSPlatform("Windows")]
 			internal const sbyte StandardInputHandle = -10;
+#endif
 
+#if TARGET_GENERIC || !TARGET_WINDOWS
 #pragma warning disable CA2101 // False positive, we can't use unicode charset on Unix, and it uses UTF-8 by default anyway
 			[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 			[DllImport("libc", EntryPoint = "chmod", SetLastError = true)]
@@ -349,19 +360,25 @@ namespace ArchiSteamFarm.Core {
 			[SupportedOSPlatform("MacOS")]
 			internal static extern int Chmod(string path, int mode);
 #pragma warning restore CA2101 // False positive, we can't use unicode charset on Unix, and it uses UTF-8 by default anyway
+#endif
 
+#if TARGET_GENERIC || TARGET_WINDOWS
 			[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 			[DllImport("kernel32.dll")]
 			[SupportedOSPlatform("Windows")]
 			internal static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
+#endif
 
+#if TARGET_GENERIC || !TARGET_WINDOWS
 			[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 			[DllImport("libc", EntryPoint = "geteuid", SetLastError = true)]
 			[SupportedOSPlatform("FreeBSD")]
 			[SupportedOSPlatform("Linux")]
 			[SupportedOSPlatform("MacOS")]
 			internal static extern uint GetEUID();
+#endif
 
+#if TARGET_GENERIC || TARGET_WINDOWS
 			[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 			[DllImport("kernel32.dll")]
 			[SupportedOSPlatform("Windows")]
@@ -385,6 +402,7 @@ namespace ArchiSteamFarm.Core {
 				AwayModeRequired = 0x00000040,
 				Continuous = 0x80000000
 			}
+#endif
 		}
 	}
 }
