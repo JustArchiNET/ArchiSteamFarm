@@ -193,7 +193,7 @@ namespace ArchiSteamFarm {
 
 			if (!uniqueInstance) {
 				ASF.ArchiLogger.LogGenericError(Strings.ErrorSingleInstanceRequired);
-				await Task.Delay(10000).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 
 				return false;
 			}
@@ -215,14 +215,14 @@ namespace ArchiSteamFarm {
 			} else {
 				if (!OS.VerifyEnvironment()) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnsupportedEnvironment, SharedInfo.BuildInfo.Variant, OS.Version));
-					await Task.Delay(10000).ConfigureAwait(false);
+					await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 
 					return false;
 				}
 
 				if (!OS.IsRunningInDocker() && OS.IsRunningAsRoot()) {
 					ASF.ArchiLogger.LogGenericError(Strings.WarningRunningAsRoot);
-					await Task.Delay(10000).ConfigureAwait(false);
+					await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 
 					return false;
 				}
@@ -230,7 +230,7 @@ namespace ArchiSteamFarm {
 
 			if (!Directory.Exists(SharedInfo.ConfigDirectory)) {
 				ASF.ArchiLogger.LogGenericError(Strings.ErrorConfigDirectoryNotFound);
-				await Task.Delay(10000).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 
 				return false;
 			}
@@ -254,7 +254,7 @@ namespace ArchiSteamFarm {
 
 				if (globalConfig == null) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorGlobalConfigNotLoaded, globalConfigFile));
-					await Task.Delay(5000).ConfigureAwait(false);
+					await Task.Delay(SharedInfo.InformationDelay / 2).ConfigureAwait(false);
 
 					return false;
 				}
@@ -357,16 +357,16 @@ namespace ArchiSteamFarm {
 
 			if (!File.Exists(globalDatabaseFile)) {
 				ASF.ArchiLogger.LogGenericInfo(Strings.Welcome);
-				await Task.Delay(10000).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 				ASF.ArchiLogger.LogGenericWarning(Strings.WarningPrivacyPolicy);
-				await Task.Delay(5000).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.InformationDelay / 2).ConfigureAwait(false);
 			}
 
 			GlobalDatabase? globalDatabase = await GlobalDatabase.CreateOrLoad(globalDatabaseFile).ConfigureAwait(false);
 
 			if (globalDatabase == null) {
 				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorDatabaseInvalid, globalDatabaseFile));
-				await Task.Delay(5000).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.InformationDelay / 2).ConfigureAwait(false);
 
 				return false;
 			}

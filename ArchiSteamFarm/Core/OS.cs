@@ -144,15 +144,19 @@ namespace ArchiSteamFarm.Core {
 		}
 
 		internal static bool IsRunningAsRoot() {
+#if TARGET_GENERIC || TARGET_WINDOWS
 			if (OperatingSystem.IsWindows()) {
 				using WindowsIdentity identity = WindowsIdentity.GetCurrent();
 
 				return new WindowsPrincipal(identity).IsInRole(WindowsBuiltInRole.Administrator);
 			}
+#endif
 
+#if TARGET_GENERIC || !TARGET_WINDOWS
 			if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
 				return NativeMethods.GetEUID() == 0;
 			}
+#endif
 
 			// We can't determine whether user is running as root or not, so fallback to that not happening
 			return false;

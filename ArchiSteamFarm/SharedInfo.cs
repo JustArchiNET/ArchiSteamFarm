@@ -48,6 +48,7 @@ namespace ArchiSteamFarm {
 		internal const string GithubRepo = "JustArchiNET/" + AssemblyName;
 		internal const string GlobalConfigFileName = ASF + JsonConfigExtension;
 		internal const string GlobalDatabaseFileName = ASF + DatabaseExtension;
+		internal const ushort InformationDelay = 10000;
 		internal const string IPCConfigExtension = ".config";
 		internal const string IPCConfigFile = nameof(IPC) + IPCConfigExtension;
 		internal const string JsonConfigExtension = ".json";
