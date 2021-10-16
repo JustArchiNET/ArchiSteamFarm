@@ -40,7 +40,6 @@ namespace ArchiSteamFarm {
 		internal const string AssemblyName = nameof(ArchiSteamFarm);
 		internal const string DatabaseExtension = ".db";
 		internal const string DebugDirectory = "debug";
-		internal const string DockerVariant = "docker";
 		internal const string EnvironmentVariableCryptKey = ASF + "_CRYPTKEY";
 		internal const string EnvironmentVariableNetworkGroup = ASF + "_NETWORK_GROUP";
 		internal const string EnvironmentVariablePath = ASF + "_PATH";
@@ -96,7 +95,7 @@ namespace ArchiSteamFarm {
 		internal static class BuildInfo {
 #if ASF_VARIANT_DOCKER
 			internal static bool CanUpdate => false;
-			internal static string Variant => DockerVariant;
+			internal static string Variant => "docker";
 #elif ASF_VARIANT_GENERIC
 			internal static bool CanUpdate => true;
 			internal static string Variant => "generic";

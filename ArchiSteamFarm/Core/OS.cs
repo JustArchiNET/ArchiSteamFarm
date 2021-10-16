@@ -162,7 +162,12 @@ namespace ArchiSteamFarm.Core {
 			return false;
 		}
 
-		internal static bool IsRunningInDocker() => (SharedInfo.BuildInfo.Variant == SharedInfo.DockerVariant) || (Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true");
+		internal static bool IsRunningInDocker() =>
+#if ASF_VARIANT_DOCKER
+			true;
+#else
+			Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+#endif
 
 		internal static async Task<bool> RegisterProcess() {
 			if (SingleInstance != null) {
