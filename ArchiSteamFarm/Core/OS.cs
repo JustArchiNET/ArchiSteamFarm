@@ -95,8 +95,8 @@ namespace ArchiSteamFarm.Core {
 		private static string? BackingVersion;
 		private static Mutex? SingleInstance;
 
-		internal static void CoreInit(bool systemRequired) {
 #if TARGET_GENERIC || TARGET_WINDOWS
+		internal static void CoreInit(bool systemRequired) {
 			if (OperatingSystem.IsWindows()) {
 				if (systemRequired) {
 					WindowsKeepSystemActive();
@@ -115,8 +115,10 @@ namespace ArchiSteamFarm.Core {
 					WindowsDisableQuickEditMode();
 				}
 			}
-#endif
 		}
+#else
+		internal static void CoreInit(bool _) { }
+#endif
 
 		internal static string GetOsResourceName(string objectName) {
 			if (string.IsNullOrEmpty(objectName)) {
