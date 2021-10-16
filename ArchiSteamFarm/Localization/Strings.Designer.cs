@@ -1166,5 +1166,17 @@ namespace ArchiSteamFarm.Localization {
                 return ResourceManager.GetString("WarningDefaultCryptKeyUsedForEncryption", resourceCulture);
             }
         }
+        
+        public static string WarningRunningAsRoot {
+            get {
+                return ResourceManager.GetString("WarningRunningAsRoot", resourceCulture);
+            }
+        }
+        
+        public static string WarningRunningInUnsupportedEnvironment {
+            get {
+                return ResourceManager.GetString("WarningRunningInUnsupportedEnvironment", resourceCulture);
+            }
+        }
     }
 }
