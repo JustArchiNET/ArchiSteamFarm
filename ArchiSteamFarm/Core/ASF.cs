@@ -170,11 +170,11 @@ namespace ArchiSteamFarm.Core {
 
 			if (Program.RestartAllowed && GlobalConfig.AutoRestart) {
 				ArchiLogger.LogGenericInfo(Strings.Restarting);
-				await Task.Delay(SharedInfo.InformationDelay / 2).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
 				await Program.Restart().ConfigureAwait(false);
 			} else {
 				ArchiLogger.LogGenericInfo(Strings.Exiting);
-				await Task.Delay(SharedInfo.InformationDelay / 2).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
 				await Program.Exit().ConfigureAwait(false);
 			}
 		}
@@ -241,7 +241,7 @@ namespace ArchiSteamFarm.Core {
 
 				if (!updateOverride && (GlobalConfig.UpdatePeriod == 0)) {
 					ArchiLogger.LogGenericInfo(Strings.UpdateNewVersionAvailable);
-					await Task.Delay(SharedInfo.InformationDelay / 2).ConfigureAwait(false);
+					await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
 
 					return null;
 				}
@@ -314,6 +314,7 @@ namespace ArchiSteamFarm.Core {
 					return null;
 				}
 
+#if TARGET_GENERIC || !TARGET_WINDOWS
 				if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
 					string executable = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.AssemblyName);
 
@@ -321,6 +322,7 @@ namespace ArchiSteamFarm.Core {
 						OS.UnixSetFileAccess(executable, OS.EUnixPermission.Combined755);
 					}
 				}
+#endif
 
 				ArchiLogger.LogGenericInfo(Strings.UpdateFinished);
 

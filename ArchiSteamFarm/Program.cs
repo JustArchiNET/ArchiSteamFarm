@@ -254,7 +254,7 @@ namespace ArchiSteamFarm {
 
 				if (globalConfig == null) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorGlobalConfigNotLoaded, globalConfigFile));
-					await Task.Delay(SharedInfo.InformationDelay / 2).ConfigureAwait(false);
+					await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
 
 					return false;
 				}
@@ -359,14 +359,14 @@ namespace ArchiSteamFarm {
 				ASF.ArchiLogger.LogGenericInfo(Strings.Welcome);
 				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 				ASF.ArchiLogger.LogGenericWarning(Strings.WarningPrivacyPolicy);
-				await Task.Delay(SharedInfo.InformationDelay / 2).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
 			}
 
 			GlobalDatabase? globalDatabase = await GlobalDatabase.CreateOrLoad(globalDatabaseFile).ConfigureAwait(false);
 
 			if (globalDatabase == null) {
 				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorDatabaseInvalid, globalDatabaseFile));
-				await Task.Delay(SharedInfo.InformationDelay / 2).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
 
 				return false;
 			}
