@@ -220,7 +220,7 @@ namespace ArchiSteamFarm {
 					return false;
 				}
 
-				if (!OS.IsRunningInDocker() && OS.IsRunningAsRoot()) {
+				if (OS.IsRunningAsRoot()) {
 					ASF.ArchiLogger.LogGenericError(Strings.WarningRunningAsRoot);
 					await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 

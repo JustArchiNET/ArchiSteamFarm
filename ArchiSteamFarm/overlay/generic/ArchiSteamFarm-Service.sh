@@ -63,6 +63,15 @@ for ARG in "$@"; do
 	fi
 done
 
+BINARY_PREFIX=""
+
+if [ -n "${ASF_USER-}" ] && [ "$(id -u)" -eq 0 ] && id -u "$ASF_USER" >/dev/null 2>&1; then
+	# Fix permissions first to ensure ASF has read/write access to the directory specified by --path and its own
+	chown -hR "${ASF_USER}:${ASF_USER}" . "$SCRIPT_DIR"
+
+	BINARY_PREFIX="su ${ASF_USER} -c"
+fi
+
 CONFIG_PATH="$(pwd)/${CONFIG_PATH}"
 
 # Kill underlying ASF process on shell process exit
@@ -78,11 +87,23 @@ dotnet --info
 while :; do
 	if [ -f "$CONFIG_PATH" ] && grep -Eq '"Headless":\s+?true' "$CONFIG_PATH"; then
 		# We're running ASF in headless mode so we don't need STDIN
-		dotnet ${DOTNET_ARGS-} "$BINARY" $BINARY_ARGS & # Start ASF in the background, trap will work properly due to non-blocking call
-		wait $! # This will forward dotnet error code, set -e will abort the script if it's non-zero
+		# Start ASF in the background, trap will work properly due to non-blocking call
+		if [ -n "$BINARY_PREFIX" ]; then
+			$BINARY_PREFIX "dotnet ${DOTNET_ARGS-} $BINARY $BINARY_ARGS" &
+		else
+			dotnet ${DOTNET_ARGS-} "$BINARY" $BINARY_ARGS &
+		fi
+
+		# This will forward dotnet error code, set -e will abort the script if it's non-zero
+		wait $!
 	else
 		# We're running ASF in non-headless mode, so we need STDIN to be operative
-		dotnet ${DOTNET_ARGS-} "$BINARY" $BINARY_ARGS # Start ASF in the foreground, trap sadly won't work until process exit
+		# Start ASF in the foreground, trap won't work until process exit
+		if [ -n "$BINARY_PREFIX" ]; then
+			$BINARY_PREFIX "dotnet ${DOTNET_ARGS-} $BINARY $BINARY_ARGS"
+		else
+			dotnet ${DOTNET_ARGS-} "$BINARY" $BINARY_ARGS
+		fi
 	fi
 
 	chmod +x "$SCRIPT_PATH" # If ASF exited by itself, we need to ensure that our script is still set to +x after auto-update

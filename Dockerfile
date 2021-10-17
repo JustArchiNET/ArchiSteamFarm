@@ -46,6 +46,7 @@ RUN dotnet --info && \
     if [ -d "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}" ]; then mkdir -p "out/result/plugins/${STEAM_TOKEN_DUMPER_NAME}"; cp -pR "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}/"* "out/result/plugins/${STEAM_TOKEN_DUMPER_NAME}"; fi
 
 FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/aspnet:5.0${IMAGESUFFIX} AS runtime
+ENV ASF_USER asf
 ENV ASPNETCORE_URLS=
 ENV DOTNET_CLI_TELEMETRY_OPTOUT 1
 ENV DOTNET_NOLOGO 1
@@ -63,6 +64,11 @@ LABEL maintainer="JustArchi <JustArchi@JustArchi.net>" \
 EXPOSE 1242
 WORKDIR /app
 COPY --from=build-dotnet /app/out/result .
+
+RUN groupadd -r -g 1000 asf && \
+    useradd -r -d /app -g 1000 -u 1000 asf && \
+    chown -hR asf:asf /app
+
 VOLUME ["/app/config", "/app/logs"]
 HEALTHCHECK CMD ["pidof", "-q", "dotnet"]
 ENTRYPOINT ["sh", "ArchiSteamFarm.sh", "--no-restart", "--process-required", "--system-required"]
