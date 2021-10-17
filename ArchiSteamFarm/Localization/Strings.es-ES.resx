@@ -698,18 +698,9 @@ Tiempo de actividad del proceso: {1}</value>
 		<value>El archivo de configuración {0} será migrado a la sintaxis más reciente...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	<data name="WarningWeakIPCPassword" xml:space="preserve">
-		<value>Parece que tu contraseña IPC es débil. Considera elegir una más fuerte para mayor seguridad. Razón: {0}</value>
-		<comment>{0} will be replaced by the reason for the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakSteamPassword" xml:space="preserve">
-		<value>Parece que tu contraseña de Steam para '{0}' es débil. Considera elegir una más fuerte para mayor seguridad. Razón: {1}</value>
-		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by the reason for the password being considered weak</comment>
-	</data>
-	<data name="WarningWeakCryptKey" xml:space="preserve">
-		<value>Parece que tu clave de cifrado es débil. Considera elegir una más fuerte para mayor seguridad. Razón: {0}</value>
-		<comment>{0} will be replaced by the reason for the encryption key being considered weak</comment>
-	</data>
+	
+	
+	
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
 		<value>Tu clave de cifrado es muy corta. Recomendamos usar una que tenga al menos {0} bytes (caracteres) de largo.</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
@@ -722,4 +713,6 @@ Tiempo de actividad del proceso: {1}</value>
 		<value>Estás usando el ajuste {0} de la propiedad {1}, pero no proporcionaste una --cryptkey personalizada. Esto arruina completamente la protección, ya que ASF se ve obligado a usar su propia clave (conocida). Deberías proporcionar una --cryptkey personalizada para usar el beneficio de seguridad que ofrece este ajuste.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
 	</data>
+	
+	
 </root>
