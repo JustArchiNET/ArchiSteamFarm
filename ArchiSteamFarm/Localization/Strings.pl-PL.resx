@@ -699,9 +699,18 @@ Czas procesu: {1}</value>
 		<value>{0} plik konfiguracyjny zostanie przeniesiony do najnowszej składni...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	
-	
-	
+	<data name="WarningWeakIPCPassword" xml:space="preserve">
+		<value>Twoje hasło IPC wydaje się słabe. Rozważ wybór silniejszego dla zwiększenia bezpieczeństwa. Szczegóły: {0}</value>
+		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakSteamPassword" xml:space="preserve">
+		<value>Twoje hasło Steam dla '{0}' wydaje się słabe. Rozważ wybór silniejszego dla zwiększenia bezpieczeństwa. Szczegóły: {1}</value>
+		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakCryptKey" xml:space="preserve">
+		<value>Twój klucz szyfrowania wydaje się słaby. Rozważ wybór silniejszego dla zwiększenia bezpieczeństwa. Szczegóły: {0}</value>
+		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
+	</data>
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
 		<value>Twój klucz szyfrowania jest zbyt krótki. Zalecamy użyć takiego, który ma co najmniej {0} bajtów (znaków).</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
@@ -714,6 +723,10 @@ Czas procesu: {1}</value>
 		<value>Używasz {0} ustawienia właściwości {1}, ale nie podałeś niestandardowego --cryptkey. To całkowicie niweczy ochronę, ponieważ ASF jest zmuszony do użycia własnego (znanego) klucza. Powinieneś podać niestandardowy --cryptkey, aby skorzystać z zalet bezpieczeństwa oferowanych przez to ustawienie.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
 	</data>
-	
-	
+	<data name="WarningRunningAsRoot" xml:space="preserve">
+		<value>Próbujesz uruchomić ASF jako administrator (root). Powoduje to znaczne ryzyko dla bezpieczeństwa urządzenia, ponieważ ASF nie wymaga dostępu roota do swojego działania, a my nie obsługujemy tego scenariusza. Podaj argument --ignore-unsupported-environment, jeśli naprawdę wiesz, co robisz.</value>
+	</data>
+	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
+		<value>Używasz ASF w nieobsługiwanym środowisku, podając argument --ignore-unsupported-environment. Pamiętaj, że nie oferujemy żadnego wsparcia dla tego scenariusza i robisz to całkowicie na własne ryzyko. Zostałeś ostrzeżony.</value>
+	</data>
 </root>
