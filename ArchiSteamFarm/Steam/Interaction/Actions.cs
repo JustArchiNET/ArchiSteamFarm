@@ -106,7 +106,9 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			string? token = await Bot.BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
 
-			return (true, token, Strings.Success);
+			bool success = !string.IsNullOrEmpty(token);
+
+			return (success, token, success ? Strings.Success : Strings.WarningFailed);
 		}
 
 		[PublicAPI]
