@@ -390,14 +390,14 @@ namespace ArchiSteamFarm.Steam.Security {
 			uint fullCode = BitConverter.ToUInt32(bytes, 0) & 0x7fffffff;
 
 			// Build the alphanumeric code
-			char[] code = new char[CodeDigits];
-
-			for (byte i = 0; i < CodeDigits; i++) {
-				code[i] = CodeCharacters[(byte) (fullCode % CodeCharacters.Count)];
-				fullCode /= (byte) CodeCharacters.Count;
-			}
-
-			return new string(code);
+			return string.Create(
+				CodeDigits, fullCode, static (buffer, state) => {
+					for (byte i = 0; i < CodeDigits; i++) {
+						buffer[i] = CodeCharacters[(byte) (state % CodeCharacters.Count)];
+						state /= (byte) CodeCharacters.Count;
+					}
+				}
+			);
 		}
 
 		private async Task<uint> GetSteamTime() {
