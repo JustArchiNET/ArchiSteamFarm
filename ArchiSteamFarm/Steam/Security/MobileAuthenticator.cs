@@ -19,6 +19,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using String = JustArchiNET.Madness.StringMadness.String;
+#endif
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -390,7 +393,7 @@ namespace ArchiSteamFarm.Steam.Security {
 			uint fullCode = BitConverter.ToUInt32(bytes, 0) & 0x7fffffff;
 
 			// Build the alphanumeric code
-			return string.Create(
+			return String.Create(
 				CodeDigits, fullCode, static (buffer, state) => {
 					for (byte i = 0; i < CodeDigits; i++) {
 						buffer[i] = CodeCharacters[(byte) (state % CodeCharacters.Count)];
