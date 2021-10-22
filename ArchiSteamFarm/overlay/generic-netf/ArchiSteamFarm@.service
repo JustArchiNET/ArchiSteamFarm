@@ -32,7 +32,6 @@ RestrictRealtime=yes
 RestrictSUIDSGID=yes
 
 [Unit]
-After=network.target network-online.target
+After=network.target
 Description=ArchiSteamFarm Service (on %I)
 Documentation=https://github.com/JustArchiNET/ArchiSteamFarm/wiki
-Wants=network.target network-online.target
