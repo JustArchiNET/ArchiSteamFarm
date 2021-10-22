@@ -19,6 +19,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using String = JustArchiNET.Madness.StringMadness.String;
+#endif
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -390,14 +393,14 @@ namespace ArchiSteamFarm.Steam.Security {
 			uint fullCode = BitConverter.ToUInt32(bytes, 0) & 0x7fffffff;
 
 			// Build the alphanumeric code
-			char[] code = new char[CodeDigits];
-
-			for (byte i = 0; i < CodeDigits; i++) {
-				code[i] = CodeCharacters[(byte) (fullCode % CodeCharacters.Count)];
-				fullCode /= (byte) CodeCharacters.Count;
-			}
-
-			return new string(code);
+			return String.Create(
+				CodeDigits, fullCode, static (buffer, state) => {
+					for (byte i = 0; i < CodeDigits; i++) {
+						buffer[i] = CodeCharacters[(byte) (state % CodeCharacters.Count)];
+						state /= (byte) CodeCharacters.Count;
+					}
+				}
+			);
 		}
 
 		private async Task<uint> GetSteamTime() {
