@@ -390,9 +390,10 @@ namespace ArchiSteamFarm.Steam.Security {
 				Array.Reverse(bytes);
 			}
 
+			// Build the alphanumeric code
 			uint fullCode = BitConverter.ToUInt32(bytes, 0) & 0x7fffffff;
 
-			// Build the alphanumeric code
+			// ReSharper disable once BuiltInTypeReferenceStyleForMemberAccess - required for .NET Framework
 			return String.Create(
 				CodeDigits, fullCode, static (buffer, state) => {
 					for (byte i = 0; i < CodeDigits; i++) {
