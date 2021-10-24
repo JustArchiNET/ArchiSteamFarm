@@ -97,7 +97,10 @@
 		<value>Закончено получение суммарно {0} токенов доступа приложения.</value>
 		<comment>{0} will be replaced by the number (total count) of app access tokens retrieved</comment>
 	</data>
-	
+	<data name="BotRetrievingTotalDepots" xml:space="preserve">
+		<value>Получение всех хранилищ {0} приложений...</value>
+		<comment>{0} will be replaced by the number (total count) of apps being retrieved</comment>
+	</data>
 	<data name="BotRetrievingAppInfos" xml:space="preserve">
 		<value>Получение информации {0} приложений...</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos being retrieved</comment>
@@ -106,19 +109,37 @@
 		<value>Завершено получение информации {0} приложений.</value>
 		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
 	</data>
-	
-	
-	
+	<data name="BotRetrievingDepotKeys" xml:space="preserve">
+		<value>Получение {0} ключей хранилища...</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot keys being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
+		<value>Получение {0} ключей хранилища завершено.</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot keys retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
+		<value>Получение всех ключей хранилища {0} приложений завершено.</value>
+		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>
+	</data>
 	<data name="SubmissionNoNewData" xml:space="preserve">
 		<value>Нет новых данных для отправки, всё актуально.</value>
 	</data>
-	
-	
+	<data name="SubmissionNoContributorSet" xml:space="preserve">
+		<value>Ошибка отправки данных: корректный SteamID не был предоставлен. Проверьте правильность настройки {0}.</value>
+		<comment>{0} will be replaced by the name of the config property (e.g. "SteamOwnerID") that the user is expected to set</comment>
+	</data>
+	<data name="SubmissionInProgress" xml:space="preserve">
+		<value>Отправка зарегистрированных приложений/пакетов/хранилищ: {0}/{1}/{2}...</value>
+		<comment>{0} will be replaced by the number of app access tokens being submitted, {1} will be replaced by the number of package access tokens being submitted, {2} will be replaced by the number of depot keys being submitted</comment>
+	</data>
 	<data name="SubmissionFailedTooManyRequests" xml:space="preserve">
 		<value>Отправка не удалась из-за слишком большого количества отправленных запросов, мы попытаемся повторить попытку примерно через {0}.</value>
 		<comment>{0} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
 	</data>
-	
+	<data name="SubmissionSuccessful" xml:space="preserve">
+		<value>Данные успешно отправлены. Общее количество зарегистрированных сервером приложений/пакетов/хранилищ: {0} ({1} из их - подтверждены)/{2} ({3} из них - подтверждены)/{4} ({5} из них - подтверждены).</value>
+		<comment>{0} will be replaced by the number of new app access tokens that the server has registered, {1} will be replaced by the number of verified app access tokens that the server has registered, {2} will be replaced by the number of new package access tokens that the server has registered, {3} will be replaced by the number of verified package access tokens that the server has registered, {4} will be replaced by the number of new depot keys that the server has registered, {5} will be replaced by the number of verified depot keys that the server has registered</comment>
+	</data>
 	<data name="SubmissionSuccessfulNewApps" xml:space="preserve">
 		<value>Новых приложений: {0}</value>
 		<comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
@@ -139,6 +160,9 @@
 		<value>Новые хранилища: {0}</value>
 		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
 	</data>
-	
+	<data name="SubmissionSuccessfulVerifiedDepots" xml:space="preserve">
+		<value>Количество подтвержденных хранилищ: {0}</value>
+		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
+	</data>
 	
 </root>
