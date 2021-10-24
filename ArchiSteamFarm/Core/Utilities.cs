@@ -19,13 +19,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using JustArchiNET.Madness;
+#endif
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Resources;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,9 +43,6 @@ using Humanizer.Localisation;
 using JetBrains.Annotations;
 using SteamKit2;
 using Zxcvbn;
-#if NETFRAMEWORK
-using JustArchiNET.Madness;
-#endif
 
 namespace ArchiSteamFarm.Core {
 	public static class Utilities {
@@ -329,6 +331,20 @@ namespace ArchiSteamFarm.Core {
 			}
 		}
 
+		internal static bool RelativeDirectoryStartsWith(string directory, params string[] prefixes) {
+			if (string.IsNullOrEmpty(directory)) {
+				throw new ArgumentNullException(nameof(directory));
+			}
+
+#pragma warning disable CA1508 // False positive, params could be null when explicitly set
+			if ((prefixes == null) || (prefixes.Length == 0)) {
+#pragma warning restore CA1508 // False positive, params could be null when explicitly set
+				throw new ArgumentNullException(nameof(prefixes));
+			}
+
+			return (from prefix in prefixes where directory.Length > prefix.Length let pathSeparator = directory[prefix.Length] where (pathSeparator == Path.DirectorySeparatorChar) || (pathSeparator == Path.AltDirectorySeparatorChar) select prefix).Any(prefix => directory.StartsWith(prefix, StringComparison.Ordinal));
+		}
+
 		internal static (bool IsWeak, string? Reason) TestPasswordStrength(string password, ISet<string>? additionallyForbiddenPhrases = null) {
 			if (string.IsNullOrEmpty(password)) {
 				throw new ArgumentNullException(nameof(password));
@@ -346,18 +362,63 @@ namespace ArchiSteamFarm.Core {
 			return (result.Score < 4, string.IsNullOrEmpty(feedback.Warning) ? feedback.Suggestions.FirstOrDefault() : feedback.Warning);
 		}
 
-		internal static bool RelativeDirectoryStartsWith(string directory, params string[] prefixes) {
-			if (string.IsNullOrEmpty(directory)) {
-				throw new ArgumentNullException(nameof(directory));
+		internal static void WarnAboutIncompleteTranslation(ResourceManager resourceManager) {
+			if (resourceManager == null) {
+				throw new ArgumentNullException(nameof(resourceManager));
 			}
 
-#pragma warning disable CA1508 // False positive, params could be null when explicitly set
-			if ((prefixes == null) || (prefixes.Length == 0)) {
-#pragma warning restore CA1508 // False positive, params could be null when explicitly set
-				throw new ArgumentNullException(nameof(prefixes));
+			// Skip translation progress for English and invariant (such as "C") cultures
+			switch (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName) {
+				case "en":
+				case "iv":
+				case "qps":
+					return;
 			}
 
-			return (from prefix in prefixes where directory.Length > prefix.Length let pathSeparator = directory[prefix.Length] where (pathSeparator == Path.DirectorySeparatorChar) || (pathSeparator == Path.AltDirectorySeparatorChar) select prefix).Any(prefix => directory.StartsWith(prefix, StringComparison.Ordinal));
+			// We can't dispose this resource set, as we can't be sure if it isn't used somewhere else, rely on GC in this case
+			ResourceSet? defaultResourceSet = resourceManager.GetResourceSet(CultureInfo.GetCultureInfo("en-US"), true, true);
+
+			if (defaultResourceSet == null) {
+				ASF.ArchiLogger.LogNullError(nameof(defaultResourceSet));
+
+				return;
+			}
+
+			HashSet<DictionaryEntry> defaultStringObjects = defaultResourceSet.Cast<DictionaryEntry>().ToHashSet();
+
+			if (defaultStringObjects.Count == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(defaultStringObjects));
+
+				return;
+			}
+
+			// We can't dispose this resource set, as we can't be sure if it isn't used somewhere else, rely on GC in this case
+			ResourceSet? currentResourceSet = resourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+
+			if (currentResourceSet == null) {
+				ASF.ArchiLogger.LogNullError(nameof(currentResourceSet));
+
+				return;
+			}
+
+			HashSet<DictionaryEntry> currentStringObjects = currentResourceSet.Cast<DictionaryEntry>().ToHashSet();
+
+			if (currentStringObjects.Count >= defaultStringObjects.Count) {
+				// Either we have 100% finished translation, or we're missing it entirely and using en-US
+				HashSet<DictionaryEntry> testStringObjects = currentStringObjects.ToHashSet();
+				testStringObjects.ExceptWith(defaultStringObjects);
+
+				// If we got 0 as final result, this is the missing language
+				// Otherwise it's just a small amount of strings that happen to be the same
+				if (testStringObjects.Count == 0) {
+					currentStringObjects = testStringObjects;
+				}
+			}
+
+			if (currentStringObjects.Count < defaultStringObjects.Count) {
+				float translationCompleteness = currentStringObjects.Count / (float) defaultStringObjects.Count;
+				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.TranslationIncomplete, $"{CultureInfo.CurrentUICulture.Name} ({CultureInfo.CurrentUICulture.EnglishName})", translationCompleteness.ToString("P1", CultureInfo.CurrentCulture)));
+			}
 		}
 	}
 }

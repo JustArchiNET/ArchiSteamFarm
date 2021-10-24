@@ -699,4 +699,12 @@ Prozesslaufzeit: {1}</value>
 		<value>Die Konfigurationsdatei {0} wird zur neuesten Version migriert...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
+	
+	
+	
+	
+	
+	
+	
+	
 </root>

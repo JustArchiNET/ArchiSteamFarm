@@ -12,6 +12,7 @@ User=%i
 # ASF security hardening, all of the below entries are optional, but their existence improves security of your system
 LockPersonality=yes
 PrivateDevices=yes
+PrivateIPC=yes
 PrivateMounts=yes
 PrivateUsers=yes
 ProtectClock=yes
@@ -30,11 +31,7 @@ RestrictNamespaces=yes
 RestrictRealtime=yes
 RestrictSUIDSGID=yes
 
-# Not tested, waiting for systemd 248+ in Debian
-#PrivateIPC=yes
-
 [Unit]
-After=network.target network-online.target
+After=network.target
 Description=ArchiSteamFarm Service (on %I)
 Documentation=https://github.com/JustArchiNET/ArchiSteamFarm/wiki
-Wants=network.target network-online.target

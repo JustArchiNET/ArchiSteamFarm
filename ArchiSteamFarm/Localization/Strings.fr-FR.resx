@@ -623,4 +623,12 @@ Durée de fonctionnement : {1}</value>
 		<value>Le fichier de configuration de {0} sera migré vers la dernière syntaxe...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
+	
+	
+	
+	
+	
+	
+	
+	
 </root>

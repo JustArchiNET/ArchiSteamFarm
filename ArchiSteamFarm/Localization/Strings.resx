@@ -700,15 +700,33 @@ Process uptime: {1}</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
 	<data name="WarningWeakIPCPassword" xml:space="preserve">
-		<value>Your IPC password seems to be weak. Consider choosing a stronger one for increased security. Reason: {0}</value>
-		<comment>{0} will be replaced by the reason for the password being considered weak</comment>
+		<value>Your IPC password seems to be weak. Consider choosing a stronger one for increased security. Details: {0}</value>
+		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
 	</data>
 	<data name="WarningWeakSteamPassword" xml:space="preserve">
-		<value>Your Steam password for '{0}' seems to be weak. Consider choosing a stronger one for increased security. Reason: {1}</value>
-		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by the reason for the password being considered weak</comment>
+		<value>Your Steam password for '{0}' seems to be weak. Consider choosing a stronger one for increased security. Details: {1}</value>
+		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by additional details about the password being considered weak</comment>
 	</data>
 	<data name="WarningWeakCryptKey" xml:space="preserve">
-		<value>Your encryption key seems to be weak. Consider choosing a stronger one for increased security. Reason: {0}</value>
-		<comment>{0} will be replaced by the reason for the encryption key being considered weak</comment>
+		<value>Your encryption key seems to be weak. Consider choosing a stronger one for increased security. Details: {0}</value>
+		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
+	</data>
+	<data name="WarningTooShortCryptKey" xml:space="preserve">
+		<value>Your encryption key is too short. We recommend to use one that is at least {0} bytes (characters) long.</value>
+		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>You're using {0} setting of {1} property, but you didn't provide a custom --cryptkey. You should provide a custom --cryptkey for increased security.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
+		<value>You're using {0} setting of {1} property, but you didn't provide a custom --cryptkey. This entirely defeats the protection, as ASF is forced to use its own (known) key. You should provide a custom --cryptkey for making use of the security benefit offered by this setting.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
+	</data>
+	<data name="WarningRunningAsRoot" xml:space="preserve">
+		<value>You're attempting to run ASF as the administrator (root). This causes a significant security risk to your machine, and as ASF does not require root access for its operation, we do not support this scenario. Supply --ignore-unsupported-environment argument if you really know what you're doing.</value>
+	</data>
+	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
+		<value>You're running ASF in unsupported environment, supplying --ignore-unsupported-environment argument. Please note that we do not offer any kind of support for this scenario and you're doing it entirely at your own risk. You've been warned.</value>
 	</data>
 </root>

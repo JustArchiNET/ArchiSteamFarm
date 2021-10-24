@@ -20,15 +20,12 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -47,8 +44,6 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	internal static class Program {
-		private static readonly ImmutableHashSet<string> ForbiddenCryptKeyPhrases = ImmutableHashSet.Create(StringComparer.InvariantCultureIgnoreCase, "crypt", "key", "cryptkey");
-
 		internal static bool ConfigMigrate { get; private set; } = true;
 		internal static bool ConfigWatch { get; private set; } = true;
 		internal static string? NetworkGroup { get; private set; }
@@ -101,16 +96,6 @@ namespace ArchiSteamFarm {
 			if (string.IsNullOrEmpty(cryptKey)) {
 				throw new ArgumentNullException(nameof(cryptKey));
 			}
-
-			Utilities.InBackground(
-				() => {
-					(bool isWeak, string? reason) = Utilities.TestPasswordStrength(cryptKey, ForbiddenCryptKeyPhrases);
-
-					if (isWeak) {
-						ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningWeakCryptKey, reason));
-					}
-				}
-			);
 
 			ArchiCryptoHelper.SetEncryptionKey(cryptKey);
 		}
@@ -206,7 +191,7 @@ namespace ArchiSteamFarm {
 
 			if (!uniqueInstance) {
 				ASF.ArchiLogger.LogGenericError(Strings.ErrorSingleInstanceRequired);
-				await Task.Delay(10000).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 
 				return false;
 			}
@@ -223,18 +208,28 @@ namespace ArchiSteamFarm {
 				ASF.ArchiLogger.LogGenericInfo(copyright!);
 			}
 
-			if (!IgnoreUnsupportedEnvironment) {
+			if (IgnoreUnsupportedEnvironment) {
+				ASF.ArchiLogger.LogGenericWarning(Strings.WarningRunningInUnsupportedEnvironment);
+			} else {
 				if (!OS.VerifyEnvironment()) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnsupportedEnvironment, SharedInfo.BuildInfo.Variant, OS.Version));
-					await Task.Delay(10000).ConfigureAwait(false);
+					await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 
 					return false;
+				}
+
+				if (OS.IsRunningAsRoot()) {
+					ASF.ArchiLogger.LogGenericError(Strings.WarningRunningAsRoot);
+					await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+
+					// TODO: Enable return false as a breaking change of ASF V5.2.0.0+
+					//return false;
 				}
 			}
 
 			if (!Directory.Exists(SharedInfo.ConfigDirectory)) {
 				ASF.ArchiLogger.LogGenericError(Strings.ErrorConfigDirectoryNotFound);
-				await Task.Delay(10000).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 
 				return false;
 			}
@@ -258,7 +253,7 @@ namespace ArchiSteamFarm {
 
 				if (globalConfig == null) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorGlobalConfigNotLoaded, globalConfigFile));
-					await Task.Delay(5000).ConfigureAwait(false);
+					await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
 
 					return false;
 				}
@@ -299,58 +294,7 @@ namespace ArchiSteamFarm {
 
 			ASF.GlobalConfig = globalConfig;
 
-			// Skip translation progress for English and invariant (such as "C") cultures
-			switch (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName) {
-				case "en":
-				case "iv":
-				case "qps":
-					return true;
-			}
-
-			// We can't dispose this resource set, as we can't be sure if it isn't used somewhere else, rely on GC in this case
-			ResourceSet? defaultResourceSet = Localization.Strings.ResourceManager.GetResourceSet(CultureInfo.GetCultureInfo("en-US"), true, true);
-
-			if (defaultResourceSet == null) {
-				ASF.ArchiLogger.LogNullError(nameof(defaultResourceSet));
-
-				return true;
-			}
-
-			HashSet<DictionaryEntry> defaultStringObjects = defaultResourceSet.Cast<DictionaryEntry>().ToHashSet();
-
-			if (defaultStringObjects.Count == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(defaultStringObjects));
-
-				return true;
-			}
-
-			// We can't dispose this resource set, as we can't be sure if it isn't used somewhere else, rely on GC in this case
-			ResourceSet? currentResourceSet = Localization.Strings.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-
-			if (currentResourceSet == null) {
-				ASF.ArchiLogger.LogNullError(nameof(currentResourceSet));
-
-				return true;
-			}
-
-			HashSet<DictionaryEntry> currentStringObjects = currentResourceSet.Cast<DictionaryEntry>().ToHashSet();
-
-			if (currentStringObjects.Count >= defaultStringObjects.Count) {
-				// Either we have 100% finished translation, or we're missing it entirely and using en-US
-				HashSet<DictionaryEntry> testStringObjects = currentStringObjects.ToHashSet();
-				testStringObjects.ExceptWith(defaultStringObjects);
-
-				// If we got 0 as final result, this is the missing language
-				// Otherwise it's just a small amount of strings that happen to be the same
-				if (testStringObjects.Count == 0) {
-					currentStringObjects = testStringObjects;
-				}
-			}
-
-			if (currentStringObjects.Count < defaultStringObjects.Count) {
-				float translationCompleteness = currentStringObjects.Count / (float) defaultStringObjects.Count;
-				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.TranslationIncomplete, $"{CultureInfo.CurrentUICulture.Name} ({CultureInfo.CurrentUICulture.EnglishName})", translationCompleteness.ToString("P1", CultureInfo.CurrentCulture)));
-			}
+			Utilities.WarnAboutIncompleteTranslation(Strings.ResourceManager);
 
 			return true;
 		}
@@ -364,16 +308,16 @@ namespace ArchiSteamFarm {
 
 			if (!File.Exists(globalDatabaseFile)) {
 				ASF.ArchiLogger.LogGenericInfo(Strings.Welcome);
-				await Task.Delay(10000).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 				ASF.ArchiLogger.LogGenericWarning(Strings.WarningPrivacyPolicy);
-				await Task.Delay(5000).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
 			}
 
 			GlobalDatabase? globalDatabase = await GlobalDatabase.CreateOrLoad(globalDatabaseFile).ConfigureAwait(false);
 
 			if (globalDatabase == null) {
 				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorDatabaseInvalid, globalDatabaseFile));
-				await Task.Delay(5000).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
 
 				return false;
 			}

@@ -46,8 +46,6 @@ using LogStrings = ArchiSteamFarm.Localization.Logging.Strings;
 namespace ArchiSteamFarm.Storage {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	public sealed class GlobalConfig {
-		private static readonly ImmutableHashSet<string> ForbiddenIPCPasswordPhrases = ImmutableHashSet.Create(StringComparer.InvariantCultureIgnoreCase, "ipc", "api", "gui", "asf-ui", "asf-gui");
-
 		[PublicAPI]
 		public const bool DefaultAutoRestart = true;
 
@@ -134,6 +132,8 @@ namespace ArchiSteamFarm.Storage {
 
 		[PublicAPI]
 		public static readonly ImmutableHashSet<uint> DefaultBlacklist = ImmutableHashSet<uint>.Empty;
+
+		private static readonly ImmutableHashSet<string> ForbiddenIPCPasswordPhrases = ImmutableHashSet.Create(StringComparer.InvariantCultureIgnoreCase, "ipc", "api", "gui", "asf-ui", "asf-gui");
 
 		[JsonIgnore]
 		[PublicAPI]
@@ -507,16 +507,24 @@ namespace ArchiSteamFarm.Storage {
 				return (null, null);
 			}
 
-			if (globalConfig.IPCPasswordFormat == ArchiCryptoHelper.EHashingMethod.PlainText && !string.IsNullOrEmpty(globalConfig.IPCPassword)) {
-				Utilities.InBackground(
-					() => {
-						(bool isWeak, string? reason) = Utilities.TestPasswordStrength(globalConfig.IPCPassword!, ForbiddenIPCPasswordPhrases);
+			switch (globalConfig.IPCPasswordFormat) {
+				case ArchiCryptoHelper.EHashingMethod.PlainText when !string.IsNullOrEmpty(globalConfig.IPCPassword):
+					Utilities.InBackground(
+						() => {
+							(bool isWeak, string? reason) = Utilities.TestPasswordStrength(globalConfig.IPCPassword!, ForbiddenIPCPasswordPhrases);
 
-						if (isWeak) {
-							ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, LogStrings.WarningWeakIPCPassword, reason));
+							if (isWeak) {
+								ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, LogStrings.WarningWeakIPCPassword, reason));
+							}
 						}
-					}
-				);
+					);
+
+					break;
+				case ArchiCryptoHelper.EHashingMethod.Pbkdf2 when ArchiCryptoHelper.HasDefaultCryptKey:
+				case ArchiCryptoHelper.EHashingMethod.SCrypt when ArchiCryptoHelper.HasDefaultCryptKey:
+					ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, LogStrings.WarningDefaultCryptKeyUsedForHashing, globalConfig.IPCPasswordFormat, nameof(IPCPassword)));
+
+					break;
 			}
 
 			if (!Program.ConfigMigrate) {

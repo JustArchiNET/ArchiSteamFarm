@@ -205,7 +205,7 @@ namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
 
 		public IReadOnlyCollection<ClientMsgHandler>? OnBotSteamHandlersInit(Bot bot) => null;
 
-		public override void OnLoaded() { }
+		public override void OnLoaded() => Utilities.WarnAboutIncompleteTranslation(Strings.ResourceManager);
 
 		public void OnPICSChanges(uint currentChangeNumber, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> appChanges, IReadOnlyDictionary<uint, SteamApps.PICSChangesCallback.PICSChangeData> packageChanges) {
 			if (currentChangeNumber == 0) {

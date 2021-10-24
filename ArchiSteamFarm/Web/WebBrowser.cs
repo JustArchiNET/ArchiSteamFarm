@@ -764,122 +764,129 @@ namespace ArchiSteamFarm.Web {
 
 			HttpResponseMessage response;
 
-			using (HttpRequestMessage requestMessage = new(httpMethod, request)) {
+			while (true) {
+				using (HttpRequestMessage requestMessage = new(httpMethod, request)) {
 #if !NETFRAMEWORK
-				requestMessage.Version = HttpClient.DefaultRequestVersion;
+					requestMessage.Version = HttpClient.DefaultRequestVersion;
 #endif
 
-				if (headers != null) {
-					foreach ((string header, string value) in headers) {
-						requestMessage.Headers.Add(header, value);
+					if (headers != null) {
+						foreach ((string header, string value) in headers) {
+							requestMessage.Headers.Add(header, value);
+						}
 					}
-				}
 
-				if (data != null) {
-					switch (data) {
-						case HttpContent content:
-							requestMessage.Content = content;
+					if (data != null) {
+						switch (data) {
+							case HttpContent content:
+								requestMessage.Content = content;
 
-							break;
-						case IReadOnlyCollection<KeyValuePair<string?, string?>> nameValueCollection:
-							try {
-								requestMessage.Content = new FormUrlEncodedContent(nameValueCollection);
-							} catch (UriFormatException) {
-								requestMessage.Content = new StringContent(string.Join("&", nameValueCollection.Select(static kv => $"{WebUtility.UrlEncode(kv.Key)}={WebUtility.UrlEncode(kv.Value)}")), null, "application/x-www-form-urlencoded");
-							}
+								break;
+							case IReadOnlyCollection<KeyValuePair<string?, string?>> nameValueCollection:
+								try {
+									requestMessage.Content = new FormUrlEncodedContent(nameValueCollection);
+								} catch (UriFormatException) {
+									requestMessage.Content = new StringContent(string.Join("&", nameValueCollection.Select(static kv => $"{WebUtility.UrlEncode(kv.Key)}={WebUtility.UrlEncode(kv.Value)}")), null, "application/x-www-form-urlencoded");
+								}
 
-							break;
-						case string text:
-							requestMessage.Content = new StringContent(text);
+								break;
+							case string text:
+								requestMessage.Content = new StringContent(text);
 
-							break;
-						default:
-							requestMessage.Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
+								break;
+							default:
+								requestMessage.Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json");
 
-							break;
+								break;
+						}
 					}
-				}
 
-				if (referer != null) {
-					requestMessage.Headers.Referrer = referer;
+					if (referer != null) {
+						requestMessage.Headers.Referrer = referer;
+					}
+
+					if (Debugging.IsUserDebugging) {
+						ArchiLogger.LogGenericDebug($"{httpMethod} {request}");
+					}
+
+					try {
+						response = await HttpClient.SendAsync(requestMessage, httpCompletionOption).ConfigureAwait(false);
+					} catch (Exception e) {
+						ArchiLogger.LogGenericDebuggingException(e);
+
+						return null;
+					} finally {
+						if (data is HttpContent) {
+							// We reset the request content to null, as our http content will get disposed otherwise, and we still need it for subsequent calls, such as redirections or retries
+							requestMessage.Content = null;
+						}
+					}
 				}
 
 				if (Debugging.IsUserDebugging) {
-					ArchiLogger.LogGenericDebug($"{httpMethod} {request}");
+					ArchiLogger.LogGenericDebug($"{response.StatusCode} <- {httpMethod} {request}");
 				}
 
-				try {
-					response = await HttpClient.SendAsync(requestMessage, httpCompletionOption).ConfigureAwait(false);
-				} catch (Exception e) {
-					ArchiLogger.LogGenericDebuggingException(e);
+				if (response.IsSuccessStatusCode) {
+					return response;
+				}
 
-					return null;
-				} finally {
-					if (data is HttpContent) {
-						// We reset the request content to null, as our http content will get disposed otherwise, and we still need it for subsequent calls, such as redirections or retries
-						requestMessage.Content = null;
+				// WARNING: We still have not disposed response by now, make sure to dispose it ASAP if we're not returning it!
+				if (response.StatusCode is >= HttpStatusCode.Ambiguous and < HttpStatusCode.BadRequest && (maxRedirections > 0)) {
+					Uri? redirectUri = response.Headers.Location;
+
+					if (redirectUri == null) {
+						ArchiLogger.LogNullError(nameof(redirectUri));
+
+						return null;
 					}
-				}
-			}
 
-			if (Debugging.IsUserDebugging) {
-				ArchiLogger.LogGenericDebug($"{response.StatusCode} <- {httpMethod} {request}");
-			}
+					if (redirectUri.IsAbsoluteUri) {
+						switch (redirectUri.Scheme) {
+							case "http":
+							case "https":
+								break;
+							case "steammobile":
+								// Those redirections are invalid, but we're aware of that and we have extra logic for them
+								return response;
+							default:
+								// We have no clue about those, but maybe HttpClient can handle them for us
+								ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(redirectUri.Scheme), redirectUri.Scheme));
 
-			if (response.IsSuccessStatusCode) {
-				return response;
-			}
-
-			// WARNING: We still have not disposed response by now, make sure to dispose it ASAP if we're not returning it!
-			if (response.StatusCode is >= HttpStatusCode.Ambiguous and < HttpStatusCode.BadRequest && (maxRedirections > 0)) {
-				Uri? redirectUri = response.Headers.Location;
-
-				if (redirectUri == null) {
-					ArchiLogger.LogNullError(nameof(redirectUri));
-
-					return null;
-				}
-
-				if (redirectUri.IsAbsoluteUri) {
-					switch (redirectUri.Scheme) {
-						case "http":
-						case "https":
-							break;
-						case "steammobile":
-							// Those redirections are invalid, but we're aware of that and we have extra logic for them
-							return response;
-						default:
-							// We have no clue about those, but maybe HttpClient can handle them for us
-							ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(redirectUri.Scheme), redirectUri.Scheme));
-
-							break;
-					}
-				} else {
-					redirectUri = new Uri(request, redirectUri);
-				}
-
-				switch (response.StatusCode) {
-					case HttpStatusCode.MovedPermanently: // Per https://tools.ietf.org/html/rfc7231#section-6.4.2, a 301 redirect may be performed using a GET request
-					case HttpStatusCode.Redirect: // Per https://tools.ietf.org/html/rfc7231#section-6.4.3, a 302 redirect may be performed using a GET request
-					case HttpStatusCode.SeeOther: // Per https://tools.ietf.org/html/rfc7231#section-6.4.4, a 303 redirect should be performed using a GET request
-						if (httpMethod != HttpMethod.Head) {
-							httpMethod = HttpMethod.Get;
+								break;
 						}
+					} else {
+						redirectUri = new Uri(request, redirectUri);
+					}
 
-						// Data doesn't make any sense for a fetch request, clear it in case it's being used
-						data = null;
+					switch (response.StatusCode) {
+						case HttpStatusCode.MovedPermanently: // Per https://tools.ietf.org/html/rfc7231#section-6.4.2, a 301 redirect may be performed using a GET request
+						case HttpStatusCode.Redirect: // Per https://tools.ietf.org/html/rfc7231#section-6.4.3, a 302 redirect may be performed using a GET request
+						case HttpStatusCode.SeeOther: // Per https://tools.ietf.org/html/rfc7231#section-6.4.4, a 303 redirect should be performed using a GET request
+							if (httpMethod != HttpMethod.Head) {
+								httpMethod = HttpMethod.Get;
+							}
 
-						break;
+							// Data doesn't make any sense for a fetch request, clear it in case it's being used
+							data = null;
+
+							break;
+					}
+
+					response.Dispose();
+
+					// Per https://tools.ietf.org/html/rfc7231#section-7.1.2, a redirect location without a fragment should inherit the fragment from the original URI
+					if (!string.IsNullOrEmpty(request.Fragment) && string.IsNullOrEmpty(redirectUri.Fragment)) {
+						redirectUri = new UriBuilder(redirectUri) { Fragment = request.Fragment }.Uri;
+					}
+
+					request = redirectUri;
+					maxRedirections--;
+
+					continue;
 				}
 
-				response.Dispose();
-
-				// Per https://tools.ietf.org/html/rfc7231#section-7.1.2, a redirect location without a fragment should inherit the fragment from the original URI
-				if (!string.IsNullOrEmpty(request.Fragment) && string.IsNullOrEmpty(redirectUri.Fragment)) {
-					redirectUri = new UriBuilder(redirectUri) { Fragment = request.Fragment }.Uri;
-				}
-
-				return await InternalRequest(redirectUri, httpMethod, headers, data, referer, requestOptions, httpCompletionOption, --maxRedirections).ConfigureAwait(false);
+				break;
 			}
 
 			if (!Debugging.IsUserDebugging) {
