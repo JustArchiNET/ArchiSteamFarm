@@ -29,7 +29,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
 using ArchiSteamFarm.Core;
-using ArchiSteamFarm.Localization.Logging;
+using ArchiSteamFarm.Localization;
 
 namespace ArchiSteamFarm.Steam.Integration {
 	internal sealed class SteamSaleEvent : IAsyncDisposable {

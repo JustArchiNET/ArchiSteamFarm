@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.IPC;
-using ArchiSteamFarm.Localization.Logging;
+using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog.Targets;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Storage;

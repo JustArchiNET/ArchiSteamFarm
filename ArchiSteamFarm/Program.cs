@@ -31,7 +31,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.IPC;
-using ArchiSteamFarm.Localization.Logging;
+using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.NLog.Targets;
 using ArchiSteamFarm.Steam;
@@ -270,15 +270,12 @@ namespace ArchiSteamFarm {
 					// GetCultureInfo() would be better but we can't use it for specifying neutral cultures such as "en"
 					CultureInfo culture = CultureInfo.CreateSpecificCulture(globalConfig.CurrentCulture!);
 					CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = culture;
-					Strings.CultureInfo = culture;
 				} catch (Exception e) {
 					ASF.ArchiLogger.LogGenericWarningException(e);
 
 					ASF.ArchiLogger.LogGenericError(Strings.ErrorInvalidCurrentCulture);
 				}
 			} else {
-				Strings.CultureInfo = CultureInfo.CurrentCulture;
-
 				// April Fools easter egg logic
 				AprilFools.Init();
 			}

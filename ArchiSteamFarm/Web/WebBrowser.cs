@@ -35,7 +35,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using ArchiSteamFarm.Core;
-using ArchiSteamFarm.Localization.Logging;
+using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.Web.Responses;
 using JetBrains.Annotations;

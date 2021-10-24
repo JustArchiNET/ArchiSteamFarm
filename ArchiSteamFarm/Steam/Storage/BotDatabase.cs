@@ -33,7 +33,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Collections;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Helpers;
-using ArchiSteamFarm.Localization.Logging;
+using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam.Security;
 using JetBrains.Annotations;
 using Newtonsoft.Json;

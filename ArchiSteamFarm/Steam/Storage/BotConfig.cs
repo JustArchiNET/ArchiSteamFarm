@@ -44,7 +44,6 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
-using LogStrings = ArchiSteamFarm.Localization.Logging.Strings;
 
 namespace ArchiSteamFarm.Steam.Storage {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
@@ -292,7 +291,7 @@ namespace ArchiSteamFarm.Steam.Storage {
 				string? result = ArchiCryptoHelper.Decrypt(PasswordFormat, SteamPassword!);
 
 				if (string.IsNullOrEmpty(result)) {
-					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, LogStrings.ErrorIsInvalid, nameof(SteamPassword)));
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(SteamPassword)));
 
 					return null;
 				}
@@ -325,7 +324,7 @@ namespace ArchiSteamFarm.Steam.Storage {
 
 			set {
 				if (string.IsNullOrEmpty(value) || !ulong.TryParse(value, out ulong result)) {
-					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, LogStrings.ErrorIsInvalid, nameof(SSteamMasterClanID)));
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(SSteamMasterClanID)));
 
 					return;
 				}
@@ -552,7 +551,7 @@ namespace ArchiSteamFarm.Steam.Storage {
 				json = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
 
 				if (string.IsNullOrEmpty(json)) {
-					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, LogStrings.ErrorIsEmpty, nameof(json)));
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
 
 					return (null, null);
 				}
@@ -593,7 +592,7 @@ namespace ArchiSteamFarm.Steam.Storage {
 						(bool isWeak, string? reason) = Utilities.TestPasswordStrength(botConfig.DecryptedSteamPassword!, disallowedValues);
 
 						if (isWeak) {
-							ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, LogStrings.WarningWeakSteamPassword, !string.IsNullOrEmpty(botConfig.SteamLogin) ? botConfig.SteamLogin! : filePath, reason));
+							ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningWeakSteamPassword, !string.IsNullOrEmpty(botConfig.SteamLogin) ? botConfig.SteamLogin! : filePath, reason));
 						}
 					}
 				);
