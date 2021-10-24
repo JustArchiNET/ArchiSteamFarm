@@ -20,14 +20,12 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -293,58 +291,7 @@ namespace ArchiSteamFarm {
 
 			ASF.GlobalConfig = globalConfig;
 
-			// Skip translation progress for English and invariant (such as "C") cultures
-			switch (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName) {
-				case "en":
-				case "iv":
-				case "qps":
-					return true;
-			}
-
-			// We can't dispose this resource set, as we can't be sure if it isn't used somewhere else, rely on GC in this case
-			ResourceSet? defaultResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.GetCultureInfo("en-US"), true, true);
-
-			if (defaultResourceSet == null) {
-				ASF.ArchiLogger.LogNullError(nameof(defaultResourceSet));
-
-				return true;
-			}
-
-			HashSet<DictionaryEntry> defaultStringObjects = defaultResourceSet.Cast<DictionaryEntry>().ToHashSet();
-
-			if (defaultStringObjects.Count == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(defaultStringObjects));
-
-				return true;
-			}
-
-			// We can't dispose this resource set, as we can't be sure if it isn't used somewhere else, rely on GC in this case
-			ResourceSet? currentResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-
-			if (currentResourceSet == null) {
-				ASF.ArchiLogger.LogNullError(nameof(currentResourceSet));
-
-				return true;
-			}
-
-			HashSet<DictionaryEntry> currentStringObjects = currentResourceSet.Cast<DictionaryEntry>().ToHashSet();
-
-			if (currentStringObjects.Count >= defaultStringObjects.Count) {
-				// Either we have 100% finished translation, or we're missing it entirely and using en-US
-				HashSet<DictionaryEntry> testStringObjects = currentStringObjects.ToHashSet();
-				testStringObjects.ExceptWith(defaultStringObjects);
-
-				// If we got 0 as final result, this is the missing language
-				// Otherwise it's just a small amount of strings that happen to be the same
-				if (testStringObjects.Count == 0) {
-					currentStringObjects = testStringObjects;
-				}
-			}
-
-			if (currentStringObjects.Count < defaultStringObjects.Count) {
-				float translationCompleteness = currentStringObjects.Count / (float) defaultStringObjects.Count;
-				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.TranslationIncomplete, $"{CultureInfo.CurrentUICulture.Name} ({CultureInfo.CurrentUICulture.EnglishName})", translationCompleteness.ToString("P1", CultureInfo.CurrentCulture)));
-			}
+			Utilities.WarnAboutIncompleteTranslation(Strings.ResourceManager);
 
 			return true;
 		}
