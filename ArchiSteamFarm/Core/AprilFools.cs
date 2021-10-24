@@ -22,6 +22,7 @@
 using System;
 using System.Globalization;
 using System.Threading;
+using ArchiSteamFarm.Localization.Logging;
 
 namespace ArchiSteamFarm.Core {
 	internal static class AprilFools {
@@ -37,7 +38,7 @@ namespace ArchiSteamFarm.Core {
 
 			if ((now.Month == 4) && (now.Day == 1)) {
 				try {
-					Localization.Logging.Strings.CultureInfo = CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CreateSpecificCulture("qps-Ploc");
+					Strings.CultureInfo = CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CreateSpecificCulture("qps-Ploc");
 				} catch (Exception e) {
 					ASF.ArchiLogger.LogGenericDebuggingException(e);
 
@@ -54,7 +55,7 @@ namespace ArchiSteamFarm.Core {
 			}
 
 			try {
-				Localization.Logging.Strings.CultureInfo = CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = OriginalCulture;
+				Strings.CultureInfo = CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = OriginalCulture;
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericDebuggingException(e);
 
