@@ -32,12 +32,12 @@
 		<PackageVersion Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
 		<PackageVersion Include="Microsoft.AspNetCore.Diagnostics" Version="2.2.0" />
 		<PackageVersion Include="Microsoft.AspNetCore.HttpOverrides" Version="2.2.0" />
+		<PackageVersion Include="Microsoft.AspNetCore.Localization" Version="2.2.0"/>
 		<PackageVersion Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
 		<PackageVersion Include="Microsoft.AspNetCore.ResponseCaching" Version="2.2.0" />
 		<PackageVersion Include="Microsoft.AspNetCore.ResponseCompression" Version="2.2.0" />
 		<PackageVersion Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.2.0" />
 		<PackageVersion Include="Microsoft.AspNetCore.WebSockets" Version="2.2.1" />
-		<PackageVersion Include="Microsoft.AspNetCore.Localization" Version="2.2.0"/>
 		<PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="3.1.20" />
 		<PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="3.1.20" />
 	</ItemGroup>
