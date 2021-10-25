@@ -367,7 +367,7 @@ StackTrace:
 		<value>Trenne Verbindung...</value>
 	</data>
 	<data name="BotEncryptedPassword" xml:space="preserve">
-		<value>[{0}]-Passwort: {1}</value>
+		<value>[{0}] Passwort: {1}</value>
 		<comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
 	</data>
 	<data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
@@ -699,12 +699,34 @@ Prozesslaufzeit: {1}</value>
 		<value>Die Konfigurationsdatei {0} wird zur neuesten Version migriert...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="WarningWeakIPCPassword" xml:space="preserve">
+		<value>Dein IPC-Passwort scheint schwach zu sein. Für erhöhte Sicherheit solltest du überlegen, ein Stärkeres auszusuchen. Details: {0}</value>
+		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakSteamPassword" xml:space="preserve">
+		<value>Dein Steam-Passwort für '{0}' scheint schwach zu sein. Für erhöhte Sicherheit solltest du überlegen, ein Stärkeres auszusuchen. Details: {1}</value>
+		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakCryptKey" xml:space="preserve">
+		<value>Dein kryptografischer Schlüssel scheint schwach zu sein. Für erhöhte Sicherheit solltest du überlegen, einen Stärkeren auszusuchen. Details: {0}</value>
+		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
+	</data>
+	<data name="WarningTooShortCryptKey" xml:space="preserve">
+		<value>Dein kryptografischer Schlüssel ist zu kurz. Wir empfehlen einen zu verwenden, der mindestens {0} Bytes (Zeichen) lang ist.</value>
+		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>Du verwendest {0} für {1}, hast aber keinen eigenen kryptografischen Schlüssel mit --cryptkey spezifiziert. Für erhöhte Sicherheit solltest du einen eigenen kryptografischen Schlüssel verwenden.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
+		<value>Du verwendest {0} für {1}, hast aber keinen eigenen kryptografischen Schlüssel mit --cryptkey spezifiziert. Dies umgeht den Schutz komplett, da ASF gezwungen ist den internen (öffentlich bekannten) Schlüssel zu verwenden. Du solltest einen eigenen kryptografischen Schlüssel verwenden, um Nutzen von dieser Einstellung zu haben.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
+	</data>
+	<data name="WarningRunningAsRoot" xml:space="preserve">
+		<value>Du versuchst ASF als Administrator (root) auszuführen. Dies stellt ein signifikantes Sicherheitsrisiko für dein Gerät dar und da ASF diese Rechte nicht benötigt, um zu funktionieren, unterstützen wir dieses Szenario nicht. Verwende das Kommandozeilenargument --ignore-unsupported-environment, wenn du wirklich weißt, was du tust.</value>
+	</data>
+	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
+		<value>Du verwendest ASF in einer nicht unterstützten Umgebung und verwendest das Argument --ignore-unsupported-environment. Bitte beachte, dass wir für dieses Szenario keinerlei Unterstützung anbieten und du das Risiko vollständig auf dich selber nehmen musst. Du wurdest gewarnt.</value>
+	</data>
 </root>
