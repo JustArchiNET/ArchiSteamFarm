@@ -35,6 +35,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.Cors" />
 		<PackageReference Include="Microsoft.AspNetCore.Diagnostics" />
 		<PackageReference Include="Microsoft.AspNetCore.HttpOverrides" />
+		<PackageReference Include="Microsoft.AspNetCore.Localization" />
 		<PackageReference Include="Microsoft.AspNetCore.ResponseCaching" />
 		<PackageReference Include="Microsoft.AspNetCore.ResponseCompression" />
 		<PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" />
