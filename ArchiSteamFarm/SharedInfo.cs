@@ -31,9 +31,6 @@ namespace ArchiSteamFarm {
 		[PublicAPI]
 		public const string ConfigDirectory = "config";
 
-		[PublicAPI]
-		public const string LolcatCultureName = Lolcat2LetterLanguageName + "-ploc";
-
 		internal const ulong ArchiSteamID = 76561198006963719;
 		internal const string ArchivalLogFile = "log.{#}.txt";
 		internal const string ArchivalLogsDirectory = "logs";
@@ -61,6 +58,7 @@ namespace ArchiSteamFarm {
 		internal const string LicenseURL = "https://www.apache.org/licenses/LICENSE-2.0";
 		internal const string LogFile = "log.txt";
 		internal const string Lolcat2LetterLanguageName = "qps";
+		internal const string LolcatCultureName = Lolcat2LetterLanguageName + "-ploc";
 		internal const string MobileAuthenticatorExtension = ".maFile";
 		internal const string PluginsDirectory = "plugins";
 		internal const string ProjectURL = "https://github.com/" + GithubRepo;

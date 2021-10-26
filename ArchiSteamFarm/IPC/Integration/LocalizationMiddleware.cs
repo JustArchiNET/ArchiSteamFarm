@@ -34,11 +34,11 @@ using Microsoft.Net.Http.Headers;
 namespace ArchiSteamFarm.IPC.Integration {
 	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 	internal sealed class LocalizationMiddleware {
+		internal static readonly ImmutableDictionary<string, string> CultureConversions = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) { { "lol-US", SharedInfo.LolcatCultureName }, { "sr-CS", "sr-Latn" } }.ToImmutableDictionary();
+
 		private readonly RequestDelegate Next;
 
 		public LocalizationMiddleware(RequestDelegate next) => Next = next ?? throw new ArgumentNullException(nameof(next));
-
-		private static readonly ImmutableDictionary<string, string> CultureConversions = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) { { "lol-US", SharedInfo.LolcatCultureName }, { "sr-CS", "sr-Latn" } }.ToImmutableDictionary();
 
 		[UsedImplicitly]
 		public async Task InvokeAsync(HttpContext context) {
