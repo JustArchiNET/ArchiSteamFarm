@@ -10,7 +10,7 @@
 [![ConfigGenerator status](https://img.shields.io/website-up-down-green-red/https/justarchinet.github.io/ASF-WebConfigGenerator.svg?label=ConfigGenerator&logo=html5&cacheSeconds=3600)](https://justarchinet.github.io/ASF-WebConfigGenerator)
 [![Statistics](https://img.shields.io/badge/Statistics-online-green.svg?logo=html5)](https://asf.justarchi.net)
 [![Steam group](https://img.shields.io/badge/Steam-group-yellowgreen.svg?logo=steam)](https://steamcommunity.com/groups/archiasf)
-[![Discord](https://img.shields.io/discord/267292556709068800.svg?label=Discord&logo=discord&cacheSeconds=3600)](https://discord.gg/hSQgt8j)
+[![Discord](https://img.shields.io/discord/267292556709068800.svg?color=7289da&label=Discord&logo=discord&logoColor=white&cacheSeconds=3600)](https://discord.gg/hSQgt8j)
 [![Wiki](https://img.shields.io/badge/Read-wiki-cc5490.svg?logo=github)](https://github.com/JustArchiNET/ArchiSteamFarm/wiki)
 
 [![GitHub stable release version](https://img.shields.io/github/v/release/JustArchiNET/ArchiSteamFarm.svg?label=Stable&logo=github&cacheSeconds=600)](https://github.com/JustArchiNET/ArchiSteamFarm/releases/latest)
