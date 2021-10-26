@@ -56,21 +56,21 @@ namespace ArchiSteamFarm.IPC.Integration {
 				return;
 			}
 
-			headers.AcceptLanguage = acceptLanguageHeader.Select(
-				static headerValue => {
-					StringSegment language = headerValue.Value;
+			for (int i = 0; i < acceptLanguageHeader.Count; i++) {
+				StringSegment language = acceptLanguageHeader[i].Value;
 
-					if (!language.HasValue || string.IsNullOrEmpty(language.Value)) {
-						return headerValue;
-					}
-
-					if (!CultureConversions.TryGetValue(language.Value, out string? replacement) || string.IsNullOrEmpty(replacement)) {
-						return headerValue;
-					}
-
-					return StringWithQualityHeaderValue.Parse(replacement);
+				if (!language.HasValue || string.IsNullOrEmpty(language.Value)) {
+					continue;
 				}
-			).ToList();
+
+				if (!CultureConversions.TryGetValue(language.Value, out string? replacement) || string.IsNullOrEmpty(replacement)) {
+					continue;
+				}
+
+				acceptLanguageHeader[i] = StringWithQualityHeaderValue.Parse(replacement);
+			}
+
+			headers.AcceptLanguage = acceptLanguageHeader;
 
 			await Next(context).ConfigureAwait(false);
 		}
