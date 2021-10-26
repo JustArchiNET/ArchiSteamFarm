@@ -27,6 +27,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
 
@@ -37,19 +38,17 @@ namespace ArchiSteamFarm.IPC.Integration {
 
 		public LocalizationMiddleware(RequestDelegate next) => Next = next ?? throw new ArgumentNullException(nameof(next));
 
-		private static readonly ImmutableDictionary<string, string> CultureConversions = ImmutableDictionary.CreateRange(StringComparer.OrdinalIgnoreCase, new KeyValuePair<string, string>[] { new("lol-US", SharedInfo.LolcatCultureName), new("sr-CS", "sr-Latn") });
+		private static readonly ImmutableDictionary<string, string> CultureConversions = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) { { "lol-US", SharedInfo.LolcatCultureName }, { "sr-CS", "sr-Latn" } }.ToImmutableDictionary();
 
 		[UsedImplicitly]
-#if NETFRAMEWORK
 		public async Task InvokeAsync(HttpContext context) {
-#else
-		public async Task InvokeAsync(HttpContext context) {
-#endif
 			if (context == null) {
 				throw new ArgumentNullException(nameof(context));
 			}
 
-			IList<StringWithQualityHeaderValue>? acceptLanguageHeader = context.Request.GetTypedHeaders().AcceptLanguage;
+			RequestHeaders headers = context.Request.GetTypedHeaders();
+
+			IList<StringWithQualityHeaderValue>? acceptLanguageHeader = headers.AcceptLanguage;
 
 			if ((acceptLanguageHeader == null) || (acceptLanguageHeader.Count == 0)) {
 				await Next(context).ConfigureAwait(false);
@@ -57,7 +56,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 				return;
 			}
 
-			context.Request.GetTypedHeaders().AcceptLanguage = acceptLanguageHeader.Select(
+			headers.AcceptLanguage = acceptLanguageHeader.Select(
 				static headerValue => {
 					StringSegment language = headerValue.Value;
 
