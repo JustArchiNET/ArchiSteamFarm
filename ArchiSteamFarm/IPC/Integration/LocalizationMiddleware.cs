@@ -74,6 +74,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 			}
 
 			if (valuesChanged) {
+				// The getter returns a temporary collection; To make sure our changes are persisted, we need to assign it back
 				headers.AcceptLanguage = acceptLanguageHeader;
 			}
 
