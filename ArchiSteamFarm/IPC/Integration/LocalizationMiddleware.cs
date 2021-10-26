@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,6 +36,8 @@ namespace ArchiSteamFarm.IPC.Integration {
 		private readonly RequestDelegate Next;
 
 		public LocalizationMiddleware(RequestDelegate next) => Next = next ?? throw new ArgumentNullException(nameof(next));
+
+		private static readonly ImmutableDictionary<string, string> CultureConversions = ImmutableDictionary.CreateRange(StringComparer.OrdinalIgnoreCase, new KeyValuePair<string, string>[] { new("lol-US", SharedInfo.LolcatCultureName), new("sr-CS", "sr-Latn") });
 
 		[UsedImplicitly]
 #if NETFRAMEWORK
@@ -62,7 +65,11 @@ namespace ArchiSteamFarm.IPC.Integration {
 						return headerValue;
 					}
 
-					return string.Equals(language.Value, "lol-US", StringComparison.OrdinalIgnoreCase) ? StringWithQualityHeaderValue.Parse(SharedInfo.LolcatCultureName) : headerValue;
+					if (!CultureConversions.TryGetValue(language.Value, out string? replacement) || string.IsNullOrEmpty(replacement)) {
+						return headerValue;
+					}
+
+					return StringWithQualityHeaderValue.Parse(replacement);
 				}
 			).ToList();
 
