@@ -56,6 +56,8 @@ namespace ArchiSteamFarm.IPC.Integration {
 				return;
 			}
 
+			bool valuesChanged = false;
+
 			for (int i = 0; i < acceptLanguageHeader.Count; i++) {
 				StringSegment language = acceptLanguageHeader[i].Value;
 
@@ -68,9 +70,12 @@ namespace ArchiSteamFarm.IPC.Integration {
 				}
 
 				acceptLanguageHeader[i] = StringWithQualityHeaderValue.Parse(replacement);
+				valuesChanged = true;
 			}
 
-			headers.AcceptLanguage = acceptLanguageHeader;
+			if (valuesChanged) {
+				headers.AcceptLanguage = acceptLanguageHeader;
+			}
 
 			await Next(context).ConfigureAwait(false);
 		}

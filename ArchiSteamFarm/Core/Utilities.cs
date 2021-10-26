@@ -371,7 +371,7 @@ namespace ArchiSteamFarm.Core {
 			switch (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName) {
 				case "en":
 				case "iv":
-				case SharedInfo.Lolcat2LetterLanguageName:
+				case "qps":
 					return;
 			}
 

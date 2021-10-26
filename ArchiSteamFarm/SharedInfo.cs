@@ -57,8 +57,7 @@ namespace ArchiSteamFarm {
 		internal const string LicenseName = "Apache 2.0";
 		internal const string LicenseURL = "https://www.apache.org/licenses/LICENSE-2.0";
 		internal const string LogFile = "log.txt";
-		internal const string Lolcat2LetterLanguageName = "qps";
-		internal const string LolcatCultureName = Lolcat2LetterLanguageName + "-ploc";
+		internal const string LolcatCultureName = "qps-ploc";
 		internal const string MobileAuthenticatorExtension = ".maFile";
 		internal const string PluginsDirectory = "plugins";
 		internal const string ProjectURL = "https://github.com/" + GithubRepo;
