@@ -225,7 +225,7 @@ namespace ArchiSteamFarm.IPC {
 				static options => {
 					// We do not set the DefaultRequestCulture here, because it will default to Thread.CurrentThread.CurrentCulture in this case, which is set when loading GlobalConfig
 
-					List<CultureInfo> supportedCultures = CultureInfo.GetCultures(CultureTypes.AllCultures).Concat(LocalizationMiddleware.CultureConversions.Values.Select(CultureInfo.CreateSpecificCulture)).ToList();
+					List<CultureInfo> supportedCultures = CultureInfo.GetCultures(CultureTypes.AllCultures).Append(CultureInfo.CreateSpecificCulture(SharedInfo.LolcatCultureName)).ToList();
 					options.SupportedUICultures = options.SupportedCultures = supportedCultures;
 
 					// The default checks the URI and cookies and only then for headers; ASFs IPC does not use either of the higher priority mechanisms anywhere else and we don't want to start here.
