@@ -141,7 +141,10 @@ namespace ArchiSteamFarm.IPC {
 				}
 			);
 
+			// Add support for additional localization mappings
 			app.UseMiddleware<LocalizationMiddleware>();
+
+			// Add support for localization
 			app.UseRequestLocalization();
 
 			// Use routing for our API controllers, this should be called once we're done with all the static files mess
@@ -215,24 +218,6 @@ namespace ArchiSteamFarm.IPC {
 				}
 			}
 
-			services.AddLocalization();
-
-#if NETFRAMEWORK
-			services.Configure<RequestLocalizationOptions>(
-#else
-			services.AddRequestLocalization(
-#endif
-				static options => {
-					// We do not set the DefaultRequestCulture here, because it will default to Thread.CurrentThread.CurrentCulture in this case, which is set when loading GlobalConfig
-
-					List<CultureInfo> supportedCultures = CultureInfo.GetCultures(CultureTypes.AllCultures).Append(CultureInfo.CreateSpecificCulture(SharedInfo.LolcatCultureName)).ToList();
-					options.SupportedUICultures = options.SupportedCultures = supportedCultures;
-
-					// The default checks the URI and cookies and only then for headers; ASFs IPC does not use either of the higher priority mechanisms anywhere else and we don't want to start here.
-					options.RequestCultureProviders = new List<IRequestCultureProvider> { new AcceptLanguageHeaderRequestCultureProvider() };
-				}
-			);
-
 			// Add support for proxies
 			services.Configure<ForwardedHeadersOptions>(
 				options => {
@@ -253,6 +238,23 @@ namespace ArchiSteamFarm.IPC {
 
 			// Add support for response compression
 			services.AddResponseCompression();
+
+			// Add support for localization
+			services.AddLocalization();
+
+#if NETFRAMEWORK
+			services.Configure<RequestLocalizationOptions>(
+#else
+			services.AddRequestLocalization(
+#endif
+				static options => {
+					// We do not set the DefaultRequestCulture here, because it will default to Thread.CurrentThread.CurrentCulture in this case, which is set when loading GlobalConfig
+					options.SupportedCultures = options.SupportedUICultures = CultureInfo.GetCultures(CultureTypes.AllCultures).Append(CultureInfo.CreateSpecificCulture(SharedInfo.LolcatCultureName)).ToList();
+
+					// The default checks the URI and cookies and only then for headers; ASFs IPC does not use either of the higher priority mechanisms anywhere else and we don't want to start here.
+					options.RequestCultureProviders = new List<IRequestCultureProvider>(1) { new AcceptLanguageHeaderRequestCultureProvider() };
+				}
+			);
 
 			string? ipcPassword = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPassword : GlobalConfig.DefaultIPCPassword;
 

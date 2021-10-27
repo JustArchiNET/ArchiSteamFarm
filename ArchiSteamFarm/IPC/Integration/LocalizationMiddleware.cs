@@ -23,7 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Http;
@@ -34,7 +33,10 @@ using Microsoft.Net.Http.Headers;
 namespace ArchiSteamFarm.IPC.Integration {
 	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 	internal sealed class LocalizationMiddleware {
-		internal static readonly ImmutableDictionary<string, string> CultureConversions = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) { { "lol-US", SharedInfo.LolcatCultureName }, { "sr-CS", "sr-Latn" } }.ToImmutableDictionary();
+		private static readonly ImmutableDictionary<string, string> CultureConversions = new Dictionary<string, string>(2, StringComparer.OrdinalIgnoreCase) {
+			{ "lol-US", SharedInfo.LolcatCultureName },
+			{ "sr-CS", "sr-Latn" }
+		}.ToImmutableDictionary(StringComparer.OrdinalIgnoreCase);
 
 		private readonly RequestDelegate Next;
 
