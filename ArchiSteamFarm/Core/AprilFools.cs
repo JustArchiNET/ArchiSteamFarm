@@ -37,7 +37,7 @@ namespace ArchiSteamFarm.Core {
 
 			if ((now.Month == 4) && (now.Day == 1)) {
 				try {
-					CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CreateSpecificCulture("qps-Ploc");
+					CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CreateSpecificCulture(SharedInfo.LolcatCultureName);
 				} catch (Exception e) {
 					ASF.ArchiLogger.LogGenericDebuggingException(e);
 
