@@ -699,12 +699,34 @@ Süreç çalışma zamanı: {1}</value>
 		<value>{0} yapılandırma dosyası en sondaki söz dizimine taşınacak...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="WarningWeakIPCPassword" xml:space="preserve">
+		<value>IPC parolanız zayıf görünüyor. Daha fazla güvenlik için daha güçlü bir tane seçmeyi düşünün. Ayrıntılar: {0}</value>
+		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakSteamPassword" xml:space="preserve">
+		<value>'{0}' için Steam parolanız zayıf görünüyor. Daha fazla güvenlik için daha güçlü bir tane seçmeyi düşünün. Ayrıntılar: {1}</value>
+		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakCryptKey" xml:space="preserve">
+		<value>Şifreleme anahtarınız zayıf görünüyor. Daha fazla güvenlik için daha güçlü bir tane seçmeyi düşünün. Ayrıntılar: {0}</value>
+		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
+	</data>
+	<data name="WarningTooShortCryptKey" xml:space="preserve">
+		<value>Şifreleme anahtarınız çok kısa. En az {0} bayt (karakter) uzunluğunda bir tane kullanmanızı öneririz.</value>
+		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>{1} özelliğinin {0} ayarını kullanıyorsunuz, ancak özel bir --cryptkey sağlamadınız. Artırılmış güvenlik için özel bir --cryptkey sağlamalısınız.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
+		<value>{1} özelliğinin {0} ayarını kullanıyorsunuz, ancak özel bir --cryptkey sağlamadınız. Bu, ASF'nin kendi (bilinen) anahtarını kullanmak zorunda kalması nedeniyle korumayı tamamen ortadan kaldırır. Bu ayarın sunduğu güvenlik avantajından yararlanmak için özel bir --cryptkey sağlamalısınız.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
+	</data>
+	<data name="WarningRunningAsRoot" xml:space="preserve">
+		<value>ASF'yi yönetici (root) olarak çalıştırmaya çalışıyorsunuz. Bu, makineniz için önemli bir güvenlik riskine neden olur ve ASF'nin çalışması için kök erişimi gerektirmediğinden bu senaryoyu desteklemiyoruz. Ne yaptığınızı gerçekten biliyorsanız, --ignore-unsupported-environment argümanını sağlayın.</value>
+	</data>
+	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
+		<value>ASF'yi desteklenmeyen ortamda çalıştırıyorsunuz ve --ignore-unsupported-environment argümanı sağlıyorsunuz. Lütfen bu senaryo için herhangi bir destek sağlamadığımızı ve bunu tamamen kendi sorumluluğunuzda yaptığınızı unutmayın. Uyarıldınız.</value>
+	</data>
 </root>
