@@ -699,12 +699,34 @@ PROCES UPTIME: {1}</value>
 		<value>{0} CONFIG FILE WILL BE MIGRATD 2 TEH LATEST SYNTAX...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="WarningWeakIPCPassword" xml:space="preserve">
+		<value>UR IPC PASWORD SEEMS 2 BE WEAK. CONSIDR CHOOSIN STRONGR WAN 4 INCREASD SECURITY. DETAILS: {0}</value>
+		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakSteamPassword" xml:space="preserve">
+		<value>UR STEAM PASWORD 4 '{0}' SEEMS 2 BE WEAK. CONSIDR CHOOSIN STRONGR WAN 4 INCREASD SECURITY. DETAILS: {1}</value>
+		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakCryptKey" xml:space="preserve">
+		<value>UR ENCRYPSHUN KEY SEEMS 2 BE WEAK. CONSIDR CHOOSIN STRONGR WAN 4 INCREASD SECURITY. DETAILS: {0}</value>
+		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
+	</data>
+	<data name="WarningTooShortCryptKey" xml:space="preserve">
+		<value>UR ENCRYPSHUN KEY IZ 2 SHORT. WE RECOMMEND 2 USE WAN DAT IZ AT LEAST {0} BYTEZ (CHARACTERS) LONG.</value>
+		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>URE USIN {0} SETTIN OV {1} PROPERTY, BUT U DIDNT PROVIDE CUSTOM --cryptkey. U SHUD PROVIDE CUSTOM --cryptkey 4 INCREASD SECURITY.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
+		<value>URE USIN {0} SETTIN OV {1} PROPERTY, BUT U DIDNT PROVIDE CUSTOM --cryptkey. DIS ENTIRELY DEFEATS TEH PROTECSHUN, AS ASF IZ FORCD 2 USE ITZ OWN (KNOWN) KEY. U SHUD PROVIDE CUSTOM --cryptkey 4 MAKIN USE OV TEH SECURITY BENEFIT OFFERD BY DIS SETTIN.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
+	</data>
+	<data name="WarningRunningAsRoot" xml:space="preserve">
+		<value>URE ATTEMPTIN 2 RUN ASF AS TEH ADMINISTRATOR (ROOT). DIS CAUSEZ SIGNIFICANT SECURITY RISK 2 UR MACHINE, AN AS ASF DOEZ NOT REQUIRE ROOT ACCES 4 ITZ OPERASHUN, WE DO NOT SUPPORT DIS SCENARIO. SUPPLY --ignore-unsupported-environment ARGUMENT IF U RLY KNOE WUT URE DOIN.</value>
+	</data>
+	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
+		<value>URE RUNNIN ASF IN UNSUPPORTD ENVIRONMENT, SUPPLYIN --ignore-unsupported-environment  ARGUMENT. PLZ NOWT DAT WE DO NOT OFFR ANY KIND OV SUPPORT 4 DIS SCENARIO AN URE DOIN IT ENTIRELY AT UR OWN RISK. UVE BEEN WARND.</value>
+	</data>
 </root>
