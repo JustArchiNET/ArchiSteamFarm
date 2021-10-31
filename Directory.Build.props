@@ -44,6 +44,12 @@
 		<TargetWindows>true</TargetWindows>
 	</PropertyGroup>
 
+	<!-- Default configuration for fast-debugging builds -->
+	<PropertyGroup Condition="'$(Configuration)' == 'DebugFast'">
+		<AnalysisMode>AllDisabledByDefault</AnalysisMode>
+		<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+	</PropertyGroup>
+
 	<!-- Default configuration for release builds -->
 	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
 		<AssemblyOriginatorKeyFile>../resources/ArchiSteamFarm.snk.pub</AssemblyOriginatorKeyFile>
