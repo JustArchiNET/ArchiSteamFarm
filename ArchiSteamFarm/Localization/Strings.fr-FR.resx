@@ -231,37 +231,82 @@ StackTrace :
 		<value>Il y a {0}/{1} bots en cours d'exécution, avec un total de {2} jeu ({3} cartes) à farmer.</value>
 		<comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to farm, {3} will be replaced by total number of cards left to farm</comment>
 	</data>
-	
-	
+	<data name="BotStatusIdling" xml:space="preserve">
+		<value>Le bot collecte les cartes du jeu : {0} ({1}, {2} cartes restantes à obtenir) sur un total de {3} jeux ({4} cartes) à faire tourner (~{5} restantes).</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to farm, {3} will be replaced by total number of games to farm, {4} will be replaced by total number of cards to farm, {5} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
+	<data name="BotStatusIdlingList" xml:space="preserve">
+		<value>Le bot collecte les cartes des jeux : {0} sur un total de {1} jeux ({2} cartes) restants à traiter (~{3} restantes).</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to farm, {2} will be replaced by total number of cards to farm, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
 	<data name="CheckingFirstBadgePage" xml:space="preserve">
 		<value>Vérification de la première page des badges...</value>
 	</data>
 	<data name="CheckingOtherBadgePages" xml:space="preserve">
 		<value>Vérification des autres pages de badges...</value>
 	</data>
-	
+	<data name="ChosenFarmingAlgorithm" xml:space="preserve">
+		<value>Algorithme de collecte choisi : {0}</value>
+		<comment>{0} will be replaced by the name of chosen farming algorithm</comment>
+	</data>
 	<data name="Done" xml:space="preserve">
 		<value>Fait !</value>
 	</data>
-	
-	
-	
-	
-	
-	
+	<data name="GamesToIdle" xml:space="preserve">
+		<value>Nous avons un total de {0} jeux ({1} cartes) restants à traiter (~{2} restants)...</value>
+		<comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
+	<data name="IdlingFinished" xml:space="preserve">
+		<value>Collecte terminée !</value>
+	</data>
+	<data name="IdlingFinishedForGame" xml:space="preserve">
+		<value>Collecte terminée : {0} ({1}) après {2} de temps de jeu !</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+	</data>
+	<data name="IdlingFinishedForGames" xml:space="preserve">
+		<value>Collecte terminée : {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="IdlingStatusForGame" xml:space="preserve">
+		<value>Progression de la collecte pour {0} ({1}) : {2} cartes restantes</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to farm</comment>
+	</data>
+	<data name="IdlingStopped" xml:space="preserve">
+		<value>Collecte interrompue !</value>
+	</data>
 	<data name="IgnoredPermanentPauseEnabled" xml:space="preserve">
 		<value>Requête ignorée car la pause permanente est active !</value>
 	</data>
-	
-	
-	
+	<data name="NothingToIdle" xml:space="preserve">
+		<value>Nous n’avons rien à collecter sur ce compte !</value>
+	</data>
+	<data name="NowIdling" xml:space="preserve">
+		<value>Collecte en cours : {0} ({1})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="NowIdlingList" xml:space="preserve">
+		<value>Collecte en cours : {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
 	<data name="PlayingNotAvailable" xml:space="preserve">
 		<value>Le jeu est actuellement indisponible, nous réessayerons plus tard !</value>
 	</data>
-	
-	
-	
-	
+	<data name="StillIdling" xml:space="preserve">
+		<value>Collecte toujours en cours : {0} ({1})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="StillIdlingList" xml:space="preserve">
+		<value>Collecte toujours en cours : {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="StoppedIdling" xml:space="preserve">
+		<value>Collecte arrêtée : {0} ({1})</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
+	<data name="StoppedIdlingList" xml:space="preserve">
+		<value>Collecte arrêtée : {0}</value>
+		<comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+	</data>
 	<data name="UnknownCommand" xml:space="preserve">
 		<value>Commande inconnue !</value>
 	</data>
@@ -276,7 +321,9 @@ StackTrace :
 		<value>Acceptation du cadeau : {0}...</value>
 		<comment>{0} will be replaced by giftID (number)</comment>
 	</data>
-	
+	<data name="BotAccountLimited" xml:space="preserve">
+		<value>Ce compte est restreint, impossible de collecter tant que la restriction n'a pas été levée !</value>
+	</data>
 	<data name="BotAddLicense" xml:space="preserve">
 		<value>ID : {0} | Statut : {1}</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
@@ -298,10 +345,18 @@ StackTrace :
 		<value>Code 2FA : {0}</value>
 		<comment>{0} will be replaced by generated 2FA token (string)</comment>
 	</data>
-	
-	
-	
-	
+	<data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+		<value>La collecte automatique est maintenant suspendue !</value>
+	</data>
+	<data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+		<value>La collecte automatique a maintenant repris !</value>
+	</data>
+	<data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
+		<value>La collecte automatique est déjà en pause !</value>
+	</data>
+	<data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
+		<value>La collecte automatique a déjà repris !</value>
+	</data>
 	<data name="BotConnected" xml:space="preserve">
 		<value>Connecté à Steam !</value>
 	</data>
@@ -384,8 +439,12 @@ StackTrace :
 	<data name="BotRemovedExpiredLoginKey" xml:space="preserve">
 		<value>La clé expirée a été supprimée !</value>
 	</data>
-	
-	
+	<data name="BotStatusNotIdling" xml:space="preserve">
+		<value>Le bot n'est pas en train de collecter.</value>
+	</data>
+	<data name="BotStatusLimited" xml:space="preserve">
+		<value>Le compte Steam utilisé par le bot est limité et ne peut pas être utilisé pour la collecte de nouvelles cartes.</value>
+	</data>
 	<data name="BotStatusConnecting" xml:space="preserve">
 		<value>Le bot se connecte au réseau Steam.</value>
 	</data>
@@ -417,8 +476,12 @@ StackTrace :
 	<data name="BotConnectionLost" xml:space="preserve">
 		<value>Connexion au réseau Steam perdue. Reconnexion...</value>
 	</data>
-	
-	
+	<data name="BotAccountFree" xml:space="preserve">
+		<value>Le compte n'est plus occupé : reprise du processus de collecte !</value>
+	</data>
+	<data name="BotAccountOccupied" xml:space="preserve">
+		<value>Ce compte est actuellement utilisé : ASF reprendra la collecte quand celui-ci sera libre...</value>
+	</data>
 	<data name="BotConnecting" xml:space="preserve">
 		<value>Connexion...</value>
 	</data>
@@ -456,7 +519,10 @@ StackTrace :
 		<value>ASF tentera d’utiliser votre langue préférée {0}, mais la traduction dans cette langue n’est complète qu'à {1} . Peut-être pourriez-vous nous aider à améliorer la traduction d'ASF dans votre langue?</value>
 		<comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
 	</data>
-	
+	<data name="IdlingGameNotPossible" xml:space="preserve">
+		<value>La collecte de {0} ({1}) est désactivée temporairement, car ASF est incapable de lancer ce jeu actuellement.</value>
+		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+	</data>
 	<data name="WarningIdlingGameMismatch" xml:space="preserve">
 		<value>ASF a détecté une erreur dans l'appID courant {0} ({1}) et utilisera donc l'appID {2} à la place.</value>
 		<comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
@@ -465,8 +531,12 @@ StackTrace :
 		<value>{0} V{1}</value>
 		<comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
 	</data>
-	
-	
+	<data name="BotAccountLocked" xml:space="preserve">
+		<value>Ce compte est verrouillé, le processus de collecte est définitivement indisponible !</value>
+	</data>
+	<data name="BotStatusLocked" xml:space="preserve">
+		<value>Le bot est verrouillé et ne permet pas la collecte de carte.</value>
+	</data>
 	<data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
 		<value>Cette fonction est disponible uniquement en mode non interactif !</value>
 	</data>
@@ -586,7 +656,10 @@ Durée de fonctionnement : {1}</value>
 		<value>{0} confirmations gérées avec succès !</value>
 		<comment>{0} will be replaced by number of confirmations</comment>
 	</data>
-	
+	<data name="BotExtraIdlingCooldown" xml:space="preserve">
+		<value>En attente de {0} pour s'assurer que nous pouvons commencer à récolter les cartes...</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "1 minute")</comment>
+	</data>
 	<data name="UpdateCleanup" xml:space="preserve">
 		<value>Nettoyage des anciens fichiers après mise à jour...</value>
 	</data>
@@ -618,17 +691,42 @@ Durée de fonctionnement : {1}</value>
 	<data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
 		<value>Le répertoire de configuration n'a pas été trouvé, abandon!</value>
 	</data>
-	
+	<data name="BotIdlingSelectedGames" xml:space="preserve">
+		<value>Traitement de la sélection {0}: {1}</value>
+		<comment>{0} will be replaced by internal name of the config property (e.g. "GamesPlayedWhileIdle"), {1} will be replaced by comma-separated list of appIDs that user has chosen</comment>
+	</data>
 	<data name="AutomaticFileMigration" xml:space="preserve">
 		<value>Le fichier de configuration de {0} sera migré vers la dernière syntaxe...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="WarningWeakIPCPassword" xml:space="preserve">
+		<value>Votre mot de passe IPC semble faible. Pensez à en choisir un plus fort pour plus de sécurité. Détails: {0}</value>
+		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakSteamPassword" xml:space="preserve">
+		<value>Votre mot de passe Steam pour '{0}' semble faible. Pensez à choisir un mot de passe plus fort pour plus de sécurité. Détails: {1}</value>
+		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakCryptKey" xml:space="preserve">
+		<value>Votre clé de chiffrement semble faible. Pensez à en choisir une plus forte pour plus sécurité. Détails: {0}</value>
+		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
+	</data>
+	<data name="WarningTooShortCryptKey" xml:space="preserve">
+		<value>Votre clé de chiffrement est trop courte. Nous vous recommandons d'en utiliser une longue d'au moins {0} octets (caractères).</value>
+		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>Vous utilisez le paramètre {0} de la propriété {1} , mais vous n'avez pas fourni de --cryptkey personnalisé. Vous devriez fournir une --cryptkey personnalisée pour plus de sécurité.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
+		<value>Vous utilisez le paramètre {0} de la propriété {1} , mais vous n'avez pas fourni de --cryptkey personnalisé. Cela casse complètement la protection, car ASF est forcé d’utiliser sa propre clé (connue). Vous devez fournir une --cryptkey personnalisée pour utiliser les avantages de sécurité offerts par ce paramètre.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
+	</data>
+	<data name="WarningRunningAsRoot" xml:space="preserve">
+		<value>Vous essayez d'exécuter ASF en tant qu'administrateur (root). Cela entraîne un risque important pour la sécurité de votre machine, et comme ASF ne nécessite pas l'accès root pour son fonctionnement, nous ne prenons pas en charge ce scénario. Utilisez l'argument --ignore-unsupported-environment si vous savez vraiment ce que vous faites.</value>
+	</data>
+	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
+		<value>Vous utilisez ASF dans un environnement non pris en charge, en utilisant --ignore-unsupported-environment comme argument. Veuillez noter que nous n'offrons aucun support pour ce scénario et que vous le faites risques et périls. Vous avez été prévenu.</value>
+	</data>
 </root>

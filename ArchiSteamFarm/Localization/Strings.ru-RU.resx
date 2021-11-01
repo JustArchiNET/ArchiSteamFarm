@@ -699,9 +699,18 @@
 		<value>{0} файл конфигурации будет переведет на последнюю версию синтаксиса...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	
-	
-	
+	<data name="WarningWeakIPCPassword" xml:space="preserve">
+		<value>Ваш пароль IPC кажется ненадежным.  Подумайте о том, чтобы использовать более надежный вариант для повышения безопасности.  Подробности: {0}</value>
+		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakSteamPassword" xml:space="preserve">
+		<value>Ваш пароль Steam для '{0}' кажется ненадежным.  Подумайте о том, чтобы использовать более надежный пароль для повышения безопасности.  Подробности: {1}</value>
+		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakCryptKey" xml:space="preserve">
+		<value>Ваш ключ шифрования кажется слабым.  Подумайте о том, чтобы использовать более надежный вариант для повышения безопасности.  Подробности: {0}</value>
+		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
+	</data>
 	<data name="WarningTooShortCryptKey" xml:space="preserve">
 		<value>Ваш ключ шифрования слишком короткий. Мы рекомендуем использовать тот, который имеет длину не менее {0} байт (символов).</value>
 		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
@@ -714,6 +723,10 @@
 		<value>Вы используете настройку {0} свойства {1}, но не указали специальный ключ --cryptkey. Это полностью снимает защиту, поскольку ASF вынужден использовать свой собственный (общедоступный) ключ. Вы должны предоставить собственный ключ --cryptkey, чтобы использовать преимущества безопасности, предлагаемые этим параметром.</value>
 		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
 	</data>
-	
-	
+	<data name="WarningRunningAsRoot" xml:space="preserve">
+		<value>Вы пытаетесь запустить ASF от имени администратора (root).  Это создает значительный риск для безопасности вашего компьютера, и, поскольку ASF не требует root-доступа для своей работы, мы не поддерживаем этот сценарий.  Укажите аргумент --ignore-unsupported-environment, если вы действительно знаете, что делаете.</value>
+	</data>
+	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
+		<value>Вы запускаете ASF в неподдерживаемой среде с аргументом --ignore-unsupported-environment.  Обратите внимание, что мы не оказываем никакой поддержки в этом случае, и вы делаете это исключительно на свой страх и риск.  Вас предупредили.</value>
+	</data>
 </root>
