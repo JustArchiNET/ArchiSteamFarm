@@ -8,7 +8,7 @@ RUN echo "node: $(node --version)" && \
     npm ci --no-progress && \
     npm run deploy --no-progress
 
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:5.0${IMAGESUFFIX} AS build-dotnet
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:6.0 AS build-dotnet
 ARG CONFIGURATION=Release
 ARG STEAM_TOKEN_DUMPER_TOKEN
 ARG TARGETARCH
