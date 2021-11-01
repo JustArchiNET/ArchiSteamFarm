@@ -125,6 +125,8 @@ namespace ArchiSteamFarm {
 			AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 			TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
 
+			Console.CancelKeyPress += OnCancelKeyPress;
+
 			// Add support for custom encodings
 			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
@@ -395,6 +397,8 @@ namespace ArchiSteamFarm {
 			// Wait for shutdown event
 			return await ShutdownResetEvent.Task.ConfigureAwait(false);
 		}
+
+		private static async void OnCancelKeyPress(object? sender, ConsoleCancelEventArgs e) => await Exit(130).ConfigureAwait(false);
 
 		private static async void OnProcessExit(object? sender, EventArgs e) => await Shutdown().ConfigureAwait(false);
 
