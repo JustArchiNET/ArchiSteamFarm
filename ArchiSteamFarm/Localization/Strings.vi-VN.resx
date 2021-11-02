@@ -699,12 +699,34 @@ Thời gian hoạt động: {1}</value>
 		<value>{0} tập tin cấu hình sẽ được di chuyển tới cú pháp mới nhất...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="WarningWeakIPCPassword" xml:space="preserve">
+		<value>Mật khẩu IPC của bạn có vẻ yếu. Hãy cân nhắc việc chọn mật khẩu mạnh hơn để tăng tính bảo mật. Chi tiết: {0}</value>
+		<comment>{0} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakSteamPassword" xml:space="preserve">
+		<value>Mật khẩu Steam cho '{0}' của bạn có vẻ yếu. Hãy cân nhắc việc chọn mật khẩu mạnh hơn để tăng tính bảo mật. Chi tiết: {1}</value>
+		<comment>{0} will be replaced by either the affected bot name or the path to the bots configuration file, {1} will be replaced by additional details about the password being considered weak</comment>
+	</data>
+	<data name="WarningWeakCryptKey" xml:space="preserve">
+		<value>Khóa mã hóa của bạn có vẻ yếu. Hãy cân nhắc việc chọn một cái mạnh hơn để tăng tính bảo mật. Chi tiết: {0}</value>
+		<comment>{0} will be replaced by additional details about the encryption key being considered weak</comment>
+	</data>
+	<data name="WarningTooShortCryptKey" xml:space="preserve">
+		<value>Khóa mã hóa của bạn quá ngắn. Chúng tôi đề xuất dùng một cái dài ít nhất {0} byte (kí tự).</value>
+		<comment>{0} will be replaced by the number of bytes (characters) recommended</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForHashing" xml:space="preserve">
+		<value>Bạn đang sử dụng cài đặt {0} của thuộc tính {1}, nhưng bạn đã không cung cấp một --cryptkey tùy chỉnh. Bạn nên cung cấp một --cryptkey tùy chỉnh để tăng tính bảo mật.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "SCrypt"), {1} will be replaced by the name of the property (e.g. "IPCPassword")</comment>
+	</data>
+	<data name="WarningDefaultCryptKeyUsedForEncryption" xml:space="preserve">
+		<value>Bạn đang sử dụng cài đặt {0} của thuộc tính {1}, nhưng bạn đã không cung cấp một --cryptkey tùy chỉnh. Điều này hoàn toàn tự hủy sự bảo vệ, vì ASF buộc phải sử dụng khóa (đã biết) của nó. Bạn nên cung cấp một --cryptkey tùy chỉnh để nhận được lợi ích bảo mật được cung cấp bởi cài đặt này.</value>
+		<comment>{0} will be replaced by the name of a particular setting (e.g. "AES"), {1} will be replaced by the name of the property (e.g. "SteamPassword")</comment>
+	</data>
+	<data name="WarningRunningAsRoot" xml:space="preserve">
+		<value>Bạn đang cố chạy ASF với tư cách là quản trị viên (admin/root). Điều này gây ra rủi ro bảo mật đáng kể cho máy của bạn, và vì ASF không yêu cầu quyền truy cập root cho hoạt động của nó, chúng tôi không hỗ trợ cho hoàn cảnh này. Cung cấp lệnh --ignore-unsupported-environment nếu bạn thực sự biết mình đang làm gì.</value>
+	</data>
+	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
+		<value>Bạn đang chạy ASF trong môi trường không được hỗ trợ, bằng việc cung cấp lệnh --ignore-unsupported-environment. Xin lưu ý rằng chúng tôi không cung cấp bất cứ sự hỗ trợ nào cho hoàn cảnh này và bạn hoàn toàn tự chịu trách nhiệm. Bạn đã được cảnh báo.</value>
+	</data>
 </root>

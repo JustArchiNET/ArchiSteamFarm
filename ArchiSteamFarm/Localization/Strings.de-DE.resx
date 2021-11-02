@@ -389,7 +389,7 @@ StackTrace:
 		<value>Anmelden...</value>
 	</data>
 	<data name="BotLogonSessionReplaced" xml:space="preserve">
-		<value>Dieses Konto scheint in einer anderen ASF-Instanz verwendet zu werden, was ein undefiniertes Verhalten darstellt. Ich weigere mich, es am Laufen zu halten!</value>
+		<value>Dieses Konto scheint in einer anderen ASF-Instanz verwendet zu werden, was ein undefiniertes Verhalten darstellt. Wir weigeren uns, es am Laufen zu halten!</value>
 	</data>
 	<data name="BotLootingFailed" xml:space="preserve">
 		<value>Senden des Handelsangebots fehlgeschlagen!</value>
