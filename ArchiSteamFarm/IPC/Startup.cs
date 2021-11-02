@@ -249,7 +249,6 @@ namespace ArchiSteamFarm.IPC {
 #endif
 				static options => {
 					// We do not set the DefaultRequestCulture here, because it will default to Thread.CurrentThread.CurrentCulture in this case, which is set when loading GlobalConfig
-
 					CultureInfo? lolcatCulture = null;
 
 					try {
