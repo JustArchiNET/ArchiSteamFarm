@@ -506,24 +506,26 @@ namespace ArchiSteamFarm.Storage {
 				return (null, null);
 			}
 
-			switch (globalConfig.IPCPasswordFormat) {
-				case ArchiCryptoHelper.EHashingMethod.PlainText when !string.IsNullOrEmpty(globalConfig.IPCPassword):
-					Utilities.InBackground(
-						() => {
-							(bool isWeak, string? reason) = Utilities.TestPasswordStrength(globalConfig.IPCPassword!, ForbiddenIPCPasswordPhrases);
+			if (globalConfig.IPC) {
+				switch (globalConfig.IPCPasswordFormat) {
+					case ArchiCryptoHelper.EHashingMethod.PlainText when !string.IsNullOrEmpty(globalConfig.IPCPassword):
+						Utilities.InBackground(
+							() => {
+								(bool isWeak, string? reason) = Utilities.TestPasswordStrength(globalConfig.IPCPassword!, ForbiddenIPCPasswordPhrases);
 
-							if (isWeak) {
-								ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningWeakIPCPassword, reason));
+								if (isWeak) {
+									ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningWeakIPCPassword, reason));
+								}
 							}
-						}
-					);
+						);
 
-					break;
-				case ArchiCryptoHelper.EHashingMethod.Pbkdf2 when ArchiCryptoHelper.HasDefaultCryptKey:
-				case ArchiCryptoHelper.EHashingMethod.SCrypt when ArchiCryptoHelper.HasDefaultCryptKey:
-					ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningDefaultCryptKeyUsedForHashing, globalConfig.IPCPasswordFormat, nameof(IPCPassword)));
+						break;
+					case ArchiCryptoHelper.EHashingMethod.Pbkdf2 when ArchiCryptoHelper.HasDefaultCryptKey:
+					case ArchiCryptoHelper.EHashingMethod.SCrypt when ArchiCryptoHelper.HasDefaultCryptKey:
+						ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningDefaultCryptKeyUsedForHashing, globalConfig.IPCPasswordFormat, nameof(IPCPassword)));
 
-					break;
+						break;
+				}
 			}
 
 			if (!Program.ConfigMigrate) {
