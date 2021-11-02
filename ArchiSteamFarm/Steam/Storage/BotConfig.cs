@@ -604,7 +604,7 @@ namespace ArchiSteamFarm.Steam.Storage {
 
 					break;
 				case ArchiCryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser when ArchiCryptoHelper.HasDefaultCryptKey:
-					ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningDefaultCryptKeyUsedForHashing, botConfig.PasswordFormat, nameof(SteamPassword)));
+					ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.WarningDefaultCryptKeyUsedForHashing, botConfig.PasswordFormat, nameof(SteamPassword)));
 
 					break;
 			}
