@@ -249,18 +249,16 @@ namespace ArchiSteamFarm.IPC {
 #endif
 				static options => {
 					// We do not set the DefaultRequestCulture here, because it will default to Thread.CurrentThread.CurrentCulture in this case, which is set when loading GlobalConfig
-					CultureInfo? lolcatCulture = null;
 
 					try {
-						lolcatCulture = CultureInfo.CreateSpecificCulture(SharedInfo.LolcatCultureName);
-					} catch (Exception e) {
-						ASF.ArchiLogger.LogGenericDebuggingException(e);
-					}
+						CultureInfo lolcatCulture = CultureInfo.CreateSpecificCulture(SharedInfo.LolcatCultureName);
 
-					if (lolcatCulture == null) {
-						options.SupportedCultures = options.SupportedUICultures = CultureInfo.GetCultures(CultureTypes.AllCultures);
-					} else {
 						options.SupportedCultures = options.SupportedUICultures = CultureInfo.GetCultures(CultureTypes.AllCultures).Append(lolcatCulture).ToList();
+					} catch (Exception e) {
+						// Fallback for platforms that do not support qps-Ploc culture
+						ASF.ArchiLogger.LogGenericDebuggingException(e);
+
+						options.SupportedCultures = options.SupportedUICultures = CultureInfo.GetCultures(CultureTypes.AllCultures);
 					}
 
 					// The default checks the URI and cookies and only then for headers; ASFs IPC does not use either of the higher priority mechanisms anywhere else and we don't want to start here.
