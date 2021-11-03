@@ -25,7 +25,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2.3.5
+      uses: actions/checkout@v2.4.0
       with:
         submodules: recursive
 
@@ -386,7 +386,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2.3.5
+      uses: actions/checkout@v2.4.0
 
     # TODO: It'd be perfect if we could match final artifacts to the platform they target, so e.g. linux build comes from the linux machine
     # However, that is currently impossible due to https://github.com/dotnet/msbuild/issues/3897
