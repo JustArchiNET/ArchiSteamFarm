@@ -286,13 +286,59 @@ StackTrace:
 	
 	
 	
+	<data name="BotReconnecting" xml:space="preserve">
+		<value>กำลังเชื่อมต่อใหม่...</value>
+	</data>
 	
 	
+	<data name="BotRemovedExpiredLoginKey" xml:space="preserve">
+		<value>ลบรหัสเข้าสู่ระบบที่หมดอายุแล้ว!</value>
+	</data>
+	<data name="BotStatusNotIdling" xml:space="preserve">
+		<value>บอตไม่ได้กำลังฟาร์มอะไร</value>
+	</data>
+	<data name="BotStatusLimited" xml:space="preserve">
+		<value>บอทถูกจำกัด และไม่สามารถดรอปการ์ดใด ๆ ผ่านการฟาร์มได้</value>
+	</data>
+	<data name="BotStatusConnecting" xml:space="preserve">
+		<value>บอตกำลังเชื่อมต่อกับเครือข่าย Steam</value>
+	</data>
+	<data name="BotStatusNotRunning" xml:space="preserve">
+		<value>บอตไม่ทำงาน</value>
+	</data>
+	<data name="BotStatusPaused" xml:space="preserve">
+		<value>บอตถูกหยุดชั่วคราว หรือทำงานในโหมดกำหนดเอง</value>
+	</data>
+	<data name="BotStatusPlayingNotAvailable" xml:space="preserve">
+		<value>บอตกำลังถูกใช้งานอยู่</value>
+	</data>
+	<data name="BotUnableToLogin" xml:space="preserve">
+		<value>ไม่สามารถเข้าสู่ระบบ Steam: {0}/{1}</value>
+		<comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
+	</data>
+	<data name="ErrorIsEmpty" xml:space="preserve">
+		<value>{0} ว่างเปล่า!</value>
+		<comment>{0} will be replaced by object's name</comment>
+	</data>
+	<data name="UnusedKeys" xml:space="preserve">
+		<value>คีย์ที่ยังไม่ได้ใช้: {0}</value>
+		<comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
+	</data>
+	<data name="WarningFailedWithError" xml:space="preserve">
+		<value>ล้มเหลวเนื่องจากข้อผิดพลาด: {0}</value>
+		<comment>{0} will be replaced by failure reason (string)</comment>
+	</data>
 	
 	
 	
+	<data name="BotConnecting" xml:space="preserve">
+		<value>กำลังเชื่อมต่อ...</value>
+	</data>
 	
 	
+	<data name="BotStopping" xml:space="preserve">
+		<value>กำลังหยุด...</value>
+	</data>
 	
 	
 	
@@ -307,6 +353,9 @@ StackTrace:
 	
 	
 	
+	<data name="ErrorAccessDenied" xml:space="preserve">
+		<value>ปฏิเสธการเข้าถึง!</value>
+	</data>
 	
 	
 	
@@ -329,6 +378,15 @@ StackTrace:
 	
 	
 	
+	<data name="PleaseWait" xml:space="preserve">
+		<value>กรุณารอ...</value>
+	</data>
+	<data name="EnterCommand" xml:space="preserve">
+		<value>ป้อนคำสั่ง: </value>
+	</data>
+	<data name="Executing" xml:space="preserve">
+		<value>กำลังดำเนินการ...</value>
+	</data>
 	
 	
 	
@@ -340,25 +398,10 @@ StackTrace:
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="Result" xml:space="preserve">
+		<value>ผลลัพธ์: {0}</value>
+		<comment>{0} will be replaced by generic result of various functions that use this string</comment>
+	</data>
 	
 	
 	
