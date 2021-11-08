@@ -21,6 +21,7 @@
 
 #if NETFRAMEWORK
 using JustArchiNET.Madness;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Converters;
 #endif
 using System;
@@ -42,7 +43,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
@@ -354,10 +354,10 @@ namespace ArchiSteamFarm.IPC {
 
 			mvc.AddControllersAsServices();
 
+#if NETFRAMEWORK
 			// Use latest compatibility version for MVC
 			mvc.SetCompatibilityVersion(CompatibilityVersion.Latest);
 
-#if NETFRAMEWORK
 			// Add standard formatters
 			mvc.AddFormatterMappings();
 

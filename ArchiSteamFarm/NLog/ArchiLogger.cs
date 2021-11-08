@@ -20,6 +20,7 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
+using JustArchiNET.Madness;
 using File = JustArchiNET.Madness.FileMadness.File;
 #else
 using File = System.IO.File;
@@ -144,10 +145,10 @@ namespace ArchiSteamFarm.NLog {
 			StringBuilder loggedMessage = new($"{previousMethodName}() {message} {(echo ? "->" : "<-")} ");
 
 			if ((chatGroupID != 0) && (chatID != 0)) {
-				loggedMessage.Append($"{chatGroupID}-{chatID}");
+				loggedMessage.Append(CultureInfo.InvariantCulture, $"{chatGroupID}-{chatID}");
 
 				if (steamID != 0) {
-					loggedMessage.Append($"/{steamID}");
+					loggedMessage.Append(CultureInfo.InvariantCulture, $"/{steamID}");
 				}
 			} else if (steamID != 0) {
 				loggedMessage.Append(steamID);
