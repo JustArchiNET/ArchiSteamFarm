@@ -61,7 +61,7 @@ namespace ArchiSteamFarm.NLog {
 
 			bool reload = false;
 
-			foreach (LoggingRule rule in LogManager.Configuration.LoggingRules.Where(rule => rule.IsLoggingEnabledForLevel(LogLevel.Debug) && !rule.IsLoggingEnabledForLevel(LogLevel.Trace))) {
+			foreach (LoggingRule rule in LogManager.Configuration.LoggingRules.Where(static rule => rule.IsLoggingEnabledForLevel(LogLevel.Debug) && !rule.IsLoggingEnabledForLevel(LogLevel.Trace))) {
 				rule.EnableLoggingForLevel(LogLevel.Trace);
 				reload = true;
 			}
@@ -80,7 +80,7 @@ namespace ArchiSteamFarm.NLog {
 				throw new ArgumentNullException(nameof(botName));
 			}
 
-			if (ASF.GlobalConfig?.Headless ?? GlobalConfig.DefaultHeadless) {
+			if (Program.Service || (ASF.GlobalConfig?.Headless ?? GlobalConfig.DefaultHeadless)) {
 				ASF.ArchiLogger.LogGenericWarning(Strings.ErrorUserInputRunningInHeadlessMode);
 
 				return null;
@@ -322,7 +322,7 @@ namespace ArchiSteamFarm.NLog {
 						OnUserInputStart();
 
 						try {
-							Console.Write(@">> " + Strings.EnterCommand);
+							Console.Write($@">> {Strings.EnterCommand}");
 							string? command = ConsoleReadLine();
 
 							if (string.IsNullOrEmpty(command)) {
@@ -344,15 +344,15 @@ namespace ArchiSteamFarm.NLog {
 								command = command[commandPrefix.Length..];
 							}
 
-							Bot? targetBot = Bot.Bots?.OrderBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value).FirstOrDefault();
+							Bot? targetBot = Bot.Bots?.OrderBy(static bot => bot.Key, Bot.BotsComparer).Select(static bot => bot.Value).FirstOrDefault();
 
 							if (targetBot == null) {
-								Console.WriteLine(@"<< " + Strings.ErrorNoBotsDefined);
+								Console.WriteLine($@"<< {Strings.ErrorNoBotsDefined}");
 
 								continue;
 							}
 
-							Console.WriteLine(@"<> " + Strings.Executing);
+							Console.WriteLine($@"<> {Strings.Executing}");
 
 							ulong steamOwnerID = ASF.GlobalConfig?.SteamOwnerID ?? GlobalConfig.DefaultSteamOwnerID;
 
@@ -365,7 +365,7 @@ namespace ArchiSteamFarm.NLog {
 								continue;
 							}
 
-							Console.WriteLine(@"<< " + response);
+							Console.WriteLine($@"<< {response}");
 						} finally {
 							OnUserInputEnd();
 						}
@@ -385,7 +385,7 @@ namespace ArchiSteamFarm.NLog {
 		private static void InitConsoleLoggers() {
 			ConsoleLoggingRules.Clear();
 
-			foreach (LoggingRule loggingRule in LogManager.Configuration.LoggingRules.Where(loggingRule => loggingRule.Targets.Any(target => target is ColoredConsoleTarget or ConsoleTarget))) {
+			foreach (LoggingRule loggingRule in LogManager.Configuration.LoggingRules.Where(static loggingRule => loggingRule.Targets.Any(static target => target is ColoredConsoleTarget or ConsoleTarget))) {
 				ConsoleLoggingRules.Add(loggingRule);
 			}
 		}
@@ -414,7 +414,7 @@ namespace ArchiSteamFarm.NLog {
 
 			bool reconfigure = false;
 
-			foreach (LoggingRule consoleLoggingRule in ConsoleLoggingRules.Where(consoleLoggingRule => !LogManager.Configuration.LoggingRules.Contains(consoleLoggingRule))) {
+			foreach (LoggingRule consoleLoggingRule in ConsoleLoggingRules.Where(static consoleLoggingRule => !LogManager.Configuration.LoggingRules.Contains(consoleLoggingRule))) {
 				LogManager.Configuration.LoggingRules.Add(consoleLoggingRule);
 				reconfigure = true;
 			}
@@ -433,7 +433,7 @@ namespace ArchiSteamFarm.NLog {
 
 			bool reconfigure = false;
 
-			foreach (LoggingRule _ in ConsoleLoggingRules.Where(consoleLoggingRule => LogManager.Configuration.LoggingRules.Remove(consoleLoggingRule))) {
+			foreach (LoggingRule _ in ConsoleLoggingRules.Where(static consoleLoggingRule => LogManager.Configuration.LoggingRules.Remove(consoleLoggingRule))) {
 				reconfigure = true;
 			}
 

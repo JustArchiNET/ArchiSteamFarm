@@ -19,25 +19,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using JustArchiNET.Madness;
+#endif
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Resources;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Dom;
 using AngleSharp.XPath;
+using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Storage;
 using Humanizer;
 using Humanizer.Localisation;
 using JetBrains.Annotations;
 using SteamKit2;
+using Zxcvbn;
 
 namespace ArchiSteamFarm.Core {
 	public static class Utilities {
 		private const byte TimeoutForLongRunningTasksInSeconds = 60;
+
+		// normally we'd just use words like "steam" and "farm", but the library we're currently using is a bit iffy about banned words, so we need to also add combinations such as "steamfarm"
+		private static readonly ImmutableHashSet<string> ForbiddenPasswordPhrases = ImmutableHashSet.Create(StringComparer.InvariantCultureIgnoreCase, "archisteamfarm", "archi", "steam", "farm", "archisteam", "archifarm", "steamfarm", "asf", "asffarm", "password");
 
 		// Normally we wouldn't need to use this singleton, but we want to ensure decent randomness across entire program's lifetime
 		private static readonly Random Random = new();
@@ -49,7 +61,7 @@ namespace ArchiSteamFarm.Core {
 			}
 
 			if (args.Length <= argsToSkip) {
-				throw new InvalidOperationException(nameof(args.Length) + " && " + nameof(argsToSkip));
+				throw new InvalidOperationException($"{nameof(args.Length)} && {nameof(argsToSkip)}");
 			}
 
 			if (string.IsNullOrEmpty(delimiter)) {
@@ -179,6 +191,9 @@ namespace ArchiSteamFarm.Core {
 		public static bool IsServerErrorCode(this HttpStatusCode statusCode) => statusCode is >= HttpStatusCode.InternalServerError and < (HttpStatusCode) 600;
 
 		[PublicAPI]
+		public static bool IsSuccessCode(this HttpStatusCode statusCode) => statusCode is >= HttpStatusCode.OK and < HttpStatusCode.Ambiguous;
+
+		[PublicAPI]
 		public static bool IsValidCdKey(string key) {
 			if (string.IsNullOrEmpty(key)) {
 				throw new ArgumentNullException(nameof(key));
@@ -225,7 +240,7 @@ namespace ArchiSteamFarm.Core {
 		[PublicAPI]
 		public static int RandomNext(int minValue, int maxValue) {
 			if (minValue > maxValue) {
-				throw new InvalidOperationException(nameof(minValue) + " && " + nameof(maxValue));
+				throw new InvalidOperationException($"{nameof(minValue)} && {nameof(maxValue)}");
 			}
 
 			if (minValue >= maxValue - 1) {
@@ -328,6 +343,82 @@ namespace ArchiSteamFarm.Core {
 			}
 
 			return (from prefix in prefixes where directory.Length > prefix.Length let pathSeparator = directory[prefix.Length] where (pathSeparator == Path.DirectorySeparatorChar) || (pathSeparator == Path.AltDirectorySeparatorChar) select prefix).Any(prefix => directory.StartsWith(prefix, StringComparison.Ordinal));
+		}
+
+		internal static (bool IsWeak, string? Reason) TestPasswordStrength(string password, ISet<string>? additionallyForbiddenPhrases = null) {
+			if (string.IsNullOrEmpty(password)) {
+				throw new ArgumentNullException(nameof(password));
+			}
+
+			HashSet<string> forbiddenPhrases = ForbiddenPasswordPhrases.ToHashSet(StringComparer.InvariantCultureIgnoreCase);
+
+			if (additionallyForbiddenPhrases != null) {
+				forbiddenPhrases.UnionWith(additionallyForbiddenPhrases);
+			}
+
+			Result result = Zxcvbn.Core.EvaluatePassword(password, forbiddenPhrases);
+			FeedbackItem feedback = result.Feedback;
+
+			return (result.Score < 4, string.IsNullOrEmpty(feedback.Warning) ? feedback.Suggestions.FirstOrDefault() : feedback.Warning);
+		}
+
+		internal static void WarnAboutIncompleteTranslation(ResourceManager resourceManager) {
+			if (resourceManager == null) {
+				throw new ArgumentNullException(nameof(resourceManager));
+			}
+
+			// Skip translation progress for English and invariant (such as "C") cultures
+			switch (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName) {
+				case "en":
+				case "iv":
+				case "qps":
+					return;
+			}
+
+			// We can't dispose this resource set, as we can't be sure if it isn't used somewhere else, rely on GC in this case
+			ResourceSet? defaultResourceSet = resourceManager.GetResourceSet(CultureInfo.GetCultureInfo("en-US"), true, true);
+
+			if (defaultResourceSet == null) {
+				ASF.ArchiLogger.LogNullError(nameof(defaultResourceSet));
+
+				return;
+			}
+
+			HashSet<DictionaryEntry> defaultStringObjects = defaultResourceSet.Cast<DictionaryEntry>().ToHashSet();
+
+			if (defaultStringObjects.Count == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(defaultStringObjects));
+
+				return;
+			}
+
+			// We can't dispose this resource set, as we can't be sure if it isn't used somewhere else, rely on GC in this case
+			ResourceSet? currentResourceSet = resourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+
+			if (currentResourceSet == null) {
+				ASF.ArchiLogger.LogNullError(nameof(currentResourceSet));
+
+				return;
+			}
+
+			HashSet<DictionaryEntry> currentStringObjects = currentResourceSet.Cast<DictionaryEntry>().ToHashSet();
+
+			if (currentStringObjects.Count >= defaultStringObjects.Count) {
+				// Either we have 100% finished translation, or we're missing it entirely and using en-US
+				HashSet<DictionaryEntry> testStringObjects = currentStringObjects.ToHashSet();
+				testStringObjects.ExceptWith(defaultStringObjects);
+
+				// If we got 0 as final result, this is the missing language
+				// Otherwise it's just a small amount of strings that happen to be the same
+				if (testStringObjects.Count == 0) {
+					currentStringObjects = testStringObjects;
+				}
+			}
+
+			if (currentStringObjects.Count < defaultStringObjects.Count) {
+				float translationCompleteness = currentStringObjects.Count / (float) defaultStringObjects.Count;
+				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.TranslationIncomplete, $"{CultureInfo.CurrentUICulture.Name} ({CultureInfo.CurrentUICulture.EnglishName})", translationCompleteness.ToString("P1", CultureInfo.CurrentCulture)));
+			}
 		}
 	}
 }

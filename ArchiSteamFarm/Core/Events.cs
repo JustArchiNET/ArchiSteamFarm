@@ -27,7 +27,7 @@ using ArchiSteamFarm.Steam;
 namespace ArchiSteamFarm.Core {
 	internal static class Events {
 		internal static async Task OnBotShutdown() {
-			if (Program.ProcessRequired || ((Bot.Bots != null) && Bot.Bots.Values.Any(bot => bot.KeepRunning))) {
+			if (Program.ProcessRequired || ((Bot.Bots != null) && Bot.Bots.Values.Any(static bot => bot.KeepRunning))) {
 				return;
 			}
 
@@ -36,7 +36,7 @@ namespace ArchiSteamFarm.Core {
 			// We give user extra 5 seconds for eventual config changes
 			await Task.Delay(5000).ConfigureAwait(false);
 
-			if (Program.ProcessRequired || ((Bot.Bots != null) && Bot.Bots.Values.Any(bot => bot.KeepRunning))) {
+			if (Program.ProcessRequired || ((Bot.Bots != null) && Bot.Bots.Values.Any(static bot => bot.KeepRunning))) {
 				return;
 			}
 

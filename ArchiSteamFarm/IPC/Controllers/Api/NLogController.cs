@@ -60,7 +60,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 			}
 
 			if (!HttpContext.WebSockets.IsWebSocketRequest) {
-				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError!, nameof(HttpContext.WebSockets.IsWebSocketRequest) + ": " + HttpContext.WebSockets.IsWebSocketRequest)));
+				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError!, $"{nameof(HttpContext.WebSockets.IsWebSocketRequest)}: {HttpContext.WebSockets.IsWebSocketRequest}")));
 			}
 
 			// From now on we can return only EmptyResult as the response stream is already being used by existing websocket connection
@@ -124,7 +124,7 @@ namespace ArchiSteamFarm.IPC.Controllers.Api {
 
 			string json = JsonConvert.SerializeObject(new GenericResponse<string>(newHistoryEntryArgs.Message));
 
-			await Task.WhenAll(ActiveLogWebSockets.Where(kv => kv.Key.State == WebSocketState.Open).Select(kv => PostLoggedJsonUpdate(kv.Key, json, kv.Value.Semaphore, kv.Value.CancellationToken))).ConfigureAwait(false);
+			await Task.WhenAll(ActiveLogWebSockets.Where(static kv => kv.Key.State == WebSocketState.Open).Select(kv => PostLoggedJsonUpdate(kv.Key, json, kv.Value.Semaphore, kv.Value.CancellationToken))).ConfigureAwait(false);
 		}
 
 		private static async Task PostLoggedJsonUpdate(WebSocket webSocket, string json, SemaphoreSlim sendSemaphore, CancellationToken cancellationToken) {

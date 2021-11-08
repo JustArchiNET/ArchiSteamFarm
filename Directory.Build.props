@@ -1,6 +1,6 @@
 <Project>
 	<PropertyGroup>
-		<Version>5.1.4.0</Version>
+		<Version>5.1.5.4</Version>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -8,7 +8,7 @@
 		<ApplicationIcon>../resources/ASF.ico</ApplicationIcon>
 		<Authors>JustArchi</Authors>
 		<Company>JustArchiNET</Company>
-		<Copyright>Copyright © 2015-$([System.DateTime]::UtcNow.Year) JustArchiNET</Copyright>
+		<Copyright>Copyright © 2015-$([System.DateTime]::UtcNow.Year) $(Company)</Copyright>
 		<Description>ASF is a C# application with primary purpose of idling Steam cards from multiple accounts simultaneously.</Description>
 		<Deterministic>true</Deterministic>
 		<ErrorReport>none</ErrorReport>
@@ -19,12 +19,12 @@
 		<Nullable>enable</Nullable>
 		<PackageIcon>../resources/ASF.ico</PackageIcon>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-		<PackageProjectUrl>https://github.com/JustArchiNET/ArchiSteamFarm</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/$(Company)/ArchiSteamFarm</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<PackageReleaseNotes>https://github.com/JustArchiNET/ArchiSteamFarm/releases</PackageReleaseNotes>
+		<PackageReleaseNotes>$(PackageProjectUrl)/releases</PackageReleaseNotes>
 		<RepositoryBranch>main</RepositoryBranch>
 		<RepositoryType>Git</RepositoryType>
-		<RepositoryUrl>https://github.com/JustArchiNET/ArchiSteamFarm.git</RepositoryUrl>
+		<RepositoryUrl>$(PackageProjectUrl).git</RepositoryUrl>
 		<RollForward>LatestMajor</RollForward>
 		<RuntimeIdentifiers>linux-arm;linux-arm64;linux-x64;osx-x64;win-x64</RuntimeIdentifiers>
 		<TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
@@ -42,6 +42,12 @@
 	<PropertyGroup Condition="'$(TargetFramework)' != 'net48' AND ($(RuntimeIdentifier.StartsWith('win-')) OR $(RuntimeIdentifier.EndsWith('-windows')))">
 		<DefineConstants>$(DefineConstants);TARGET_WINDOWS</DefineConstants>
 		<TargetWindows>true</TargetWindows>
+	</PropertyGroup>
+
+	<!-- Default configuration for fast-debugging builds -->
+	<PropertyGroup Condition="'$(Configuration)' == 'DebugFast'">
+		<AnalysisMode>AllDisabledByDefault</AnalysisMode>
+		<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
 	</PropertyGroup>
 
 	<!-- Default configuration for release builds -->

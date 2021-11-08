@@ -37,7 +37,7 @@ namespace ArchiSteamFarm.IPC {
 				throw new ArgumentNullException(nameof(type));
 			}
 
-			return type.GenericTypeArguments.Length == 0 ? type.FullName : type.Namespace + "." + type.Name + string.Join("", type.GenericTypeArguments.Select(innerType => '[' + innerType.GetUnifiedName() + ']'));
+			return type.GenericTypeArguments.Length == 0 ? type.FullName : $"{type.Namespace}.{type.Name}{string.Join("", type.GenericTypeArguments.Select(static innerType => $"[{innerType.GetUnifiedName()}]"))}";
 		}
 
 		internal static Type? ParseType(string typeText) {
@@ -58,7 +58,7 @@ namespace ArchiSteamFarm.IPC {
 				return null;
 			}
 
-			return Type.GetType(typeText + "," + typeText[..index]);
+			return Type.GetType($"{typeText},{typeText[..index]}");
 		}
 
 		internal static async Task WriteJsonAsync<TValue>(this HttpResponse response, TValue? value, JsonSerializerSettings? jsonSerializerSettings = null) {

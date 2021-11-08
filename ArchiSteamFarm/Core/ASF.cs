@@ -114,7 +114,7 @@ namespace ArchiSteamFarm.Core {
 			}
 
 			if (!PluginsCore.InitPlugins()) {
-				await Task.Delay(10000).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 			}
 
 			WebBrowser = new WebBrowser(ArchiLogger, GlobalConfig.WebProxy, true);
@@ -128,7 +128,7 @@ namespace ArchiSteamFarm.Core {
 
 			InitBotsComparer(botsComparer);
 
-			if (!GlobalConfig.Headless && !Console.IsInputRedirected) {
+			if (!Program.Service && !GlobalConfig.Headless && !Console.IsInputRedirected) {
 				Logging.StartInteractiveConsole();
 			}
 
@@ -170,11 +170,11 @@ namespace ArchiSteamFarm.Core {
 
 			if (Program.RestartAllowed && GlobalConfig.AutoRestart) {
 				ArchiLogger.LogGenericInfo(Strings.Restarting);
-				await Task.Delay(5000).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
 				await Program.Restart().ConfigureAwait(false);
 			} else {
 				ArchiLogger.LogGenericInfo(Strings.Exiting);
-				await Task.Delay(5000).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
 				await Program.Exit().ConfigureAwait(false);
 			}
 		}
@@ -241,7 +241,7 @@ namespace ArchiSteamFarm.Core {
 
 				if (!updateOverride && (GlobalConfig.UpdatePeriod == 0)) {
 					ArchiLogger.LogGenericInfo(Strings.UpdateNewVersionAvailable);
-					await Task.Delay(5000).ConfigureAwait(false);
+					await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
 
 					return null;
 				}
@@ -253,7 +253,7 @@ namespace ArchiSteamFarm.Core {
 					return null;
 				}
 
-				string targetFile = SharedInfo.ASF + "-" + SharedInfo.BuildInfo.Variant + ".zip";
+				string targetFile = $"{SharedInfo.ASF}-{SharedInfo.BuildInfo.Variant}.zip";
 				GitHub.ReleaseResponse.Asset? binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => !string.IsNullOrEmpty(asset.Name) && asset.Name!.Equals(targetFile, StringComparison.OrdinalIgnoreCase));
 
 				if (binaryAsset == null) {
@@ -314,6 +314,7 @@ namespace ArchiSteamFarm.Core {
 					return null;
 				}
 
+#if TARGET_GENERIC || !TARGET_WINDOWS
 				if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
 					string executable = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.AssemblyName);
 
@@ -321,6 +322,7 @@ namespace ArchiSteamFarm.Core {
 						OS.UnixSetFileAccess(executable, OS.EUnixPermission.Combined755);
 					}
 				}
+#endif
 
 				ArchiLogger.LogGenericInfo(Strings.UpdateFinished);
 
@@ -397,11 +399,11 @@ namespace ArchiSteamFarm.Core {
 				using SHA256 hashingAlgorithm = SHA256.Create();
 
 				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				networkGroupText = "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(Program.NetworkGroup!))).Replace("-", "", StringComparison.Ordinal);
+				networkGroupText = $"-{BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(Program.NetworkGroup!))).Replace("-", "", StringComparison.Ordinal)}";
 			} else if (!string.IsNullOrEmpty(GlobalConfig.WebProxyText)) {
 				using SHA256 hashingAlgorithm = SHA256.Create();
 
-				networkGroupText = "-" + BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(GlobalConfig.WebProxyText!))).Replace("-", "", StringComparison.Ordinal);
+				networkGroupText = $"-{BitConverter.ToString(hashingAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(GlobalConfig.WebProxyText!))).Replace("-", "", StringComparison.Ordinal)}";
 			}
 
 			ConfirmationsSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(ConfirmationsSemaphore) + networkGroupText).ConfigureAwait(false);
@@ -412,10 +414,10 @@ namespace ArchiSteamFarm.Core {
 			RateLimitingSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(RateLimitingSemaphore) + networkGroupText).ConfigureAwait(false);
 
 			WebLimitingSemaphores ??= new Dictionary<Uri, (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)>(4) {
-				{ ArchiWebHandler.SteamCommunityURL, (await PluginsCore.GetCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(ArchiWebHandler.SteamCommunityURL)).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
-				{ ArchiWebHandler.SteamHelpURL, (await PluginsCore.GetCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(ArchiWebHandler.SteamHelpURL)).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
-				{ ArchiWebHandler.SteamStoreURL, (await PluginsCore.GetCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(ArchiWebHandler.SteamStoreURL)).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
-				{ WebAPI.DefaultBaseAddress, (await PluginsCore.GetCrossProcessSemaphore(nameof(ArchiWebHandler) + networkGroupText + "-" + nameof(WebAPI)).ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) }
+				{ ArchiWebHandler.SteamCommunityURL, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}{networkGroupText}-{nameof(ArchiWebHandler.SteamCommunityURL)}").ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+				{ ArchiWebHandler.SteamHelpURL, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}{networkGroupText}-{nameof(ArchiWebHandler.SteamHelpURL)}").ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+				{ ArchiWebHandler.SteamStoreURL, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}{networkGroupText}-{nameof(ArchiWebHandler.SteamStoreURL)}").ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },
+				{ WebAPI.DefaultBaseAddress, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}{networkGroupText}-{nameof(WebAPI)}").ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) }
 			}.ToImmutableDictionary();
 		}
 
@@ -428,7 +430,7 @@ namespace ArchiSteamFarm.Core {
 				Assembly[] loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
 
 				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				loadedAssembliesNames = loadedAssemblies.Select(loadedAssembly => loadedAssembly.FullName).Where(name => !string.IsNullOrEmpty(name)).ToHashSet()!;
+				loadedAssembliesNames = loadedAssemblies.Select(static loadedAssembly => loadedAssembly.FullName).Where(static name => !string.IsNullOrEmpty(name)).ToHashSet()!;
 			}
 
 			foreach (AssemblyName assemblyName in assembly.GetReferencedAssemblies().Where(assemblyName => !loadedAssembliesNames.Contains(assemblyName.FullName))) {
@@ -823,7 +825,7 @@ namespace ArchiSteamFarm.Core {
 
 		private static async Task RegisterBots() {
 			if ((GlobalConfig == null) || (GlobalDatabase == null) || (WebBrowser == null)) {
-				throw new ArgumentNullException(nameof(GlobalConfig) + " || " + nameof(GlobalDatabase) + " || " + nameof(WebBrowser));
+				throw new ArgumentNullException($"{nameof(GlobalConfig)} || {nameof(GlobalDatabase)} || {nameof(WebBrowser)}");
 			}
 
 			// Ensure that we ask for a list of servers if we don't have any saved servers available
@@ -832,7 +834,7 @@ namespace ArchiSteamFarm.Core {
 			if (!servers.Any()) {
 				ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.Initializing, nameof(SteamDirectory)));
 
-				SteamConfiguration steamConfiguration = SteamConfiguration.Create(builder => builder.WithProtocolTypes(GlobalConfig.SteamProtocols).WithCellID(GlobalDatabase.CellID).WithServerListProvider(GlobalDatabase.ServerListProvider).WithHttpClientFactory(() => WebBrowser.GenerateDisposableHttpClient()));
+				SteamConfiguration steamConfiguration = SteamConfiguration.Create(static builder => builder.WithProtocolTypes(GlobalConfig.SteamProtocols).WithCellID(GlobalDatabase.CellID).WithServerListProvider(GlobalDatabase.ServerListProvider).WithHttpClientFactory(static () => WebBrowser.GenerateDisposableHttpClient()));
 
 				try {
 					await SteamDirectory.LoadAsync(steamConfiguration).ConfigureAwait(false);
@@ -840,15 +842,13 @@ namespace ArchiSteamFarm.Core {
 				} catch (Exception e) {
 					ArchiLogger.LogGenericWarningException(e);
 					ArchiLogger.LogGenericWarning(Strings.BotSteamDirectoryInitializationFailed);
-
-					await Task.Delay(5000).ConfigureAwait(false);
 				}
 			}
 
 			HashSet<string> botNames;
 
 			try {
-				botNames = Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*" + SharedInfo.JsonConfigExtension).Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).ToHashSet(Bot.BotsComparer)!;
+				botNames = Directory.EnumerateFiles(SharedInfo.ConfigDirectory, $"*{SharedInfo.JsonConfigExtension}").Select(Path.GetFileNameWithoutExtension).Where(static botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).ToHashSet(Bot.BotsComparer)!;
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 
@@ -862,12 +862,12 @@ namespace ArchiSteamFarm.Core {
 					return;
 				case > MaximumRecommendedBotsCount:
 					ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningExcessiveBotsCount, MaximumRecommendedBotsCount));
-					await Task.Delay(10000).ConfigureAwait(false);
+					await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 
 					break;
 			}
 
-			await Utilities.InParallel(botNames.OrderBy(botName => botName, Bot.BotsComparer).Select(Bot.RegisterBot)).ConfigureAwait(false);
+			await Utilities.InParallel(botNames.OrderBy(static botName => botName, Bot.BotsComparer).Select(Bot.RegisterBot)).ConfigureAwait(false);
 		}
 
 		private static async Task UpdateAndRestart() {
@@ -901,7 +901,7 @@ namespace ArchiSteamFarm.Core {
 			if (SharedInfo.Version >= newVersion) {
 				if (SharedInfo.Version > newVersion) {
 					ArchiLogger.LogGenericWarning(Strings.WarningPreReleaseVersion);
-					await Task.Delay(15 * 1000).ConfigureAwait(false);
+					await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 				}
 
 				return;
@@ -994,7 +994,7 @@ namespace ArchiSteamFarm.Core {
 			}
 
 			// Now enumerate over files in the zip archive, skip directory entries that we're not interested in (we can create them ourselves if needed)
-			foreach (ZipArchiveEntry zipFile in archive.Entries.Where(zipFile => !string.IsNullOrEmpty(zipFile.Name))) {
+			foreach (ZipArchiveEntry zipFile in archive.Entries.Where(static zipFile => !string.IsNullOrEmpty(zipFile.Name))) {
 				string file = Path.GetFullPath(Path.Combine(targetDirectory, zipFile.FullName));
 
 				if (!file.StartsWith(targetDirectory, StringComparison.Ordinal)) {
@@ -1003,7 +1003,7 @@ namespace ArchiSteamFarm.Core {
 
 				if (File.Exists(file)) {
 					// This is possible only with files that we decided to leave in place during our backup function
-					string targetBackupFile = file + ".bak";
+					string targetBackupFile = $"{file}.bak";
 
 					File.Move(file, targetBackupFile, true);
 				}

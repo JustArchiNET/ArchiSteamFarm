@@ -138,16 +138,16 @@ namespace ArchiSteamFarm.NLog {
 			}
 
 			if (((chatGroupID == 0) || (chatID == 0)) && (steamID == 0)) {
-				throw new InvalidOperationException("((" + nameof(chatGroupID) + " || " + nameof(chatID) + ") && " + nameof(steamID) + ")");
+				throw new InvalidOperationException($"(({nameof(chatGroupID)} || {nameof(chatID)}) && {nameof(steamID)})");
 			}
 
-			StringBuilder loggedMessage = new(previousMethodName + "() " + message + " " + (echo ? "->" : "<-") + " ");
+			StringBuilder loggedMessage = new($"{previousMethodName}() {message} {(echo ? "->" : "<-")} ");
 
 			if ((chatGroupID != 0) && (chatID != 0)) {
-				loggedMessage.Append(chatGroupID + "-" + chatID);
+				loggedMessage.Append($"{chatGroupID}-{chatID}");
 
 				if (steamID != 0) {
-					loggedMessage.Append("/" + steamID);
+					loggedMessage.Append($"/{steamID}");
 				}
 			} else if (steamID != 0) {
 				loggedMessage.Append(steamID);
@@ -225,7 +225,7 @@ namespace ArchiSteamFarm.NLog {
 
 			ulong steamID64 = steamID;
 
-			string loggedMessage = previousMethodName + "() " + steamID.AccountType + " " + steamID64 + (handled.HasValue ? " = " + handled.Value : "");
+			string loggedMessage = $"{previousMethodName}() {steamID.AccountType} {steamID64}{(handled.HasValue ? $" = {handled.Value}" : "")}";
 
 			LogEventInfo logEventInfo = new(LogLevel.Trace, Logger.Name, loggedMessage) {
 				Properties = {

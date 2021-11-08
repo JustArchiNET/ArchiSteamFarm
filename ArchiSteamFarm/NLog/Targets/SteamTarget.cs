@@ -106,7 +106,7 @@ namespace ArchiSteamFarm.NLog.Targets {
 			}
 
 			if (bot == null) {
-				bot = Bot.Bots?.Values.FirstOrDefault(targetBot => targetBot.IsConnectedAndLoggedOn);
+				bot = Bot.Bots?.Values.FirstOrDefault(static targetBot => targetBot.IsConnectedAndLoggedOn);
 
 				if (bot == null) {
 					return;

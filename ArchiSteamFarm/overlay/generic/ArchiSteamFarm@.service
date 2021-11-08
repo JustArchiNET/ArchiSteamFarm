@@ -1,0 +1,37 @@
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+EnvironmentFile=-/etc/asf/%i
+ExecStart=dotnet /home/%i/ArchiSteamFarm/ArchiSteamFarm.dll --no-restart --process-required --service --system-required
+Restart=on-success
+RestartSec=5s
+SyslogIdentifier=asf-%i
+User=%i
+
+# ASF security hardening, all of the below entries are optional, but their existence improves security of your system
+LockPersonality=yes
+PrivateDevices=yes
+PrivateIPC=yes
+PrivateMounts=yes
+PrivateUsers=yes
+ProtectClock=yes
+ProtectControlGroups=yes
+ProtectHome=read-only
+ProtectHostname=yes
+ProtectKernelLogs=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+ProtectProc=invisible
+ProtectSystem=strict
+ReadWritePaths=/home/%i/ArchiSteamFarm /tmp
+RemoveIPC=yes
+RestrictAddressFamilies=AF_INET AF_INET6
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+
+[Unit]
+After=network.target
+Description=ArchiSteamFarm Service (on %I)
+Documentation=https://github.com/JustArchiNET/ArchiSteamFarm/wiki

@@ -20,7 +20,7 @@
 			"matchPackageNames": [ "Microsoft.Extensions.Configuration.Json", "Microsoft.Extensions.Logging.Configuration" ]
 		},
 		{
-			// TODO: <= 2.2.4 due to https://github.com/microsoft/testfx/issues/906
+			// TODO: <= 2.2.4 due to https://github.com/microsoft/testfx/issues/906, should be resolved with v2.2.8+ (?)
 			"allowedVersions": "<= 2.2.4",
 			"groupName": "MSTest packages",
 			"matchPackagePatterns": ["^MSTest\\..+"]

@@ -20,14 +20,12 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -51,6 +49,7 @@ namespace ArchiSteamFarm {
 		internal static string? NetworkGroup { get; private set; }
 		internal static bool ProcessRequired { get; private set; }
 		internal static bool RestartAllowed { get; private set; } = true;
+		internal static bool Service { get; private set; }
 		internal static bool ShutdownSequenceInitialized { get; private set; }
 
 		private static readonly TaskCompletionSource<byte> ShutdownResetEvent = new();
@@ -126,6 +125,8 @@ namespace ArchiSteamFarm {
 			AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 			TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
 
+			Console.CancelKeyPress += OnCancelKeyPress;
+
 			// Add support for custom encodings
 			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
@@ -192,7 +193,7 @@ namespace ArchiSteamFarm {
 
 			if (!uniqueInstance) {
 				ASF.ArchiLogger.LogGenericError(Strings.ErrorSingleInstanceRequired);
-				await Task.Delay(10000).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 
 				return false;
 			}
@@ -209,18 +210,28 @@ namespace ArchiSteamFarm {
 				ASF.ArchiLogger.LogGenericInfo(copyright!);
 			}
 
-			if (!IgnoreUnsupportedEnvironment) {
+			if (IgnoreUnsupportedEnvironment) {
+				ASF.ArchiLogger.LogGenericWarning(Strings.WarningRunningInUnsupportedEnvironment);
+			} else {
 				if (!OS.VerifyEnvironment()) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnsupportedEnvironment, SharedInfo.BuildInfo.Variant, OS.Version));
-					await Task.Delay(10000).ConfigureAwait(false);
+					await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 
 					return false;
+				}
+
+				if (OS.IsRunningAsRoot()) {
+					ASF.ArchiLogger.LogGenericError(Strings.WarningRunningAsRoot);
+					await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
+
+					// TODO: Enable return false as a breaking change of ASF V5.2.0.0+
+					//return false;
 				}
 			}
 
 			if (!Directory.Exists(SharedInfo.ConfigDirectory)) {
 				ASF.ArchiLogger.LogGenericError(Strings.ErrorConfigDirectoryNotFound);
-				await Task.Delay(10000).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 
 				return false;
 			}
@@ -244,7 +255,7 @@ namespace ArchiSteamFarm {
 
 				if (globalConfig == null) {
 					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorGlobalConfigNotLoaded, globalConfigFile));
-					await Task.Delay(5000).ConfigureAwait(false);
+					await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
 
 					return false;
 				}
@@ -253,7 +264,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (globalConfig.Debug) {
-				ASF.ArchiLogger.LogGenericDebug(globalConfigFile + ": " + JsonConvert.SerializeObject(globalConfig, Formatting.Indented));
+				ASF.ArchiLogger.LogGenericDebug($"{globalConfigFile}: {JsonConvert.SerializeObject(globalConfig, Formatting.Indented)}");
 			}
 
 			if (!string.IsNullOrEmpty(globalConfig.CurrentCulture)) {
@@ -282,58 +293,7 @@ namespace ArchiSteamFarm {
 
 			ASF.GlobalConfig = globalConfig;
 
-			// Skip translation progress for English and invariant (such as "C") cultures
-			switch (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName) {
-				case "en":
-				case "iv":
-				case "qps":
-					return true;
-			}
-
-			// We can't dispose this resource set, as we can't be sure if it isn't used somewhere else, rely on GC in this case
-			ResourceSet? defaultResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.GetCultureInfo("en-US"), true, true);
-
-			if (defaultResourceSet == null) {
-				ASF.ArchiLogger.LogNullError(nameof(defaultResourceSet));
-
-				return true;
-			}
-
-			HashSet<DictionaryEntry> defaultStringObjects = defaultResourceSet.Cast<DictionaryEntry>().ToHashSet();
-
-			if (defaultStringObjects.Count == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(defaultStringObjects));
-
-				return true;
-			}
-
-			// We can't dispose this resource set, as we can't be sure if it isn't used somewhere else, rely on GC in this case
-			ResourceSet? currentResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-
-			if (currentResourceSet == null) {
-				ASF.ArchiLogger.LogNullError(nameof(currentResourceSet));
-
-				return true;
-			}
-
-			HashSet<DictionaryEntry> currentStringObjects = currentResourceSet.Cast<DictionaryEntry>().ToHashSet();
-
-			if (currentStringObjects.Count >= defaultStringObjects.Count) {
-				// Either we have 100% finished translation, or we're missing it entirely and using en-US
-				HashSet<DictionaryEntry> testStringObjects = currentStringObjects.ToHashSet();
-				testStringObjects.ExceptWith(defaultStringObjects);
-
-				// If we got 0 as final result, this is the missing language
-				// Otherwise it's just a small amount of strings that happen to be the same
-				if (testStringObjects.Count == 0) {
-					currentStringObjects = testStringObjects;
-				}
-			}
-
-			if (currentStringObjects.Count < defaultStringObjects.Count) {
-				float translationCompleteness = currentStringObjects.Count / (float) defaultStringObjects.Count;
-				ASF.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.TranslationIncomplete, CultureInfo.CurrentUICulture.Name + " (" + CultureInfo.CurrentUICulture.EnglishName + ")", translationCompleteness.ToString("P1", CultureInfo.CurrentCulture)));
-			}
+			Utilities.WarnAboutIncompleteTranslation(Strings.ResourceManager);
 
 			return true;
 		}
@@ -347,16 +307,16 @@ namespace ArchiSteamFarm {
 
 			if (!File.Exists(globalDatabaseFile)) {
 				ASF.ArchiLogger.LogGenericInfo(Strings.Welcome);
-				await Task.Delay(10000).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 				ASF.ArchiLogger.LogGenericWarning(Strings.WarningPrivacyPolicy);
-				await Task.Delay(5000).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
 			}
 
 			GlobalDatabase? globalDatabase = await GlobalDatabase.CreateOrLoad(globalDatabaseFile).ConfigureAwait(false);
 
 			if (globalDatabase == null) {
 				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorDatabaseInvalid, globalDatabaseFile));
-				await Task.Delay(5000).ConfigureAwait(false);
+				await Task.Delay(SharedInfo.ShortInformationDelay).ConfigureAwait(false);
 
 				return false;
 			}
@@ -366,7 +326,7 @@ namespace ArchiSteamFarm {
 			// If debugging is on, we prepare debug directory prior to running
 			if (Debugging.IsUserDebugging) {
 				if (Debugging.IsDebugConfigured) {
-					ASF.ArchiLogger.LogGenericDebug(globalDatabaseFile + ": " + JsonConvert.SerializeObject(ASF.GlobalDatabase, Formatting.Indented));
+					ASF.ArchiLogger.LogGenericDebug($"{globalDatabaseFile}: {JsonConvert.SerializeObject(ASF.GlobalDatabase, Formatting.Indented)}");
 				}
 
 				Logging.EnableTraceLogging();
@@ -411,7 +371,7 @@ namespace ArchiSteamFarm {
 			// Stop all the active bots so they can disconnect cleanly
 			if (Bot.Bots?.Count > 0) {
 				// Stop() function can block due to SK2 sockets, don't forget a maximum delay
-				await Task.WhenAny(Utilities.InParallel(Bot.Bots.Values.Select(bot => Task.Run(() => bot.Stop(true)))), Task.Delay(Bot.Bots.Count * WebBrowser.MaxTries * 1000)).ConfigureAwait(false);
+				await Task.WhenAny(Utilities.InParallel(Bot.Bots.Values.Select(static bot => Task.Run(() => bot.Stop(true)))), Task.Delay(Bot.Bots.Count * WebBrowser.MaxTries * 1000)).ConfigureAwait(false);
 
 				// Extra second for Steam requests to go through
 				await Task.Delay(1000).ConfigureAwait(false);
@@ -437,6 +397,8 @@ namespace ArchiSteamFarm {
 			// Wait for shutdown event
 			return await ShutdownResetEvent.Task.ConfigureAwait(false);
 		}
+
+		private static async void OnCancelKeyPress(object? sender, ConsoleCancelEventArgs e) => await Exit(130).ConfigureAwait(false);
 
 		private static async void OnProcessExit(object? sender, EventArgs e) => await Shutdown().ConfigureAwait(false);
 
@@ -510,6 +472,10 @@ namespace ArchiSteamFarm {
 						break;
 					case "--PATH" when !cryptKeyNext && !networkGroupNext && !pathNext:
 						pathNext = true;
+
+						break;
+					case "--SERVICE" when !cryptKeyNext && !networkGroupNext && !pathNext:
+						Service = true;
 
 						break;
 					case "--SYSTEM-REQUIRED" when !cryptKeyNext && !networkGroupNext && !pathNext:

@@ -105,7 +105,7 @@ StackTrace:
 		<comment>{0} will be replaced by object's name</comment>
 	</data>
 	<data name="ErrorNoBotsDefined" xml:space="preserve">
-		<value>Nenhum bot definido. Você se esqueceu de configurar o ASF? Siga o guia 'configuração' na wiki se estiver confuso.</value>
+		<value>Nenhum bots é definido. Você esqueceu de configurar seu ASF? Siga o guia de "configuração" no wiki se você estiver confuso.</value>
 	</data>
 	<data name="ErrorObjectIsNull" xml:space="preserve">
 		<value>{0} é nulo!</value>
@@ -699,4 +699,12 @@ Tempo de execução: {1}</value>
 		<value>O arquivo de configuração {0} será migrado para a última sintaxe...</value>
 		<comment>{0} will be replaced with the relative path to the affected config file</comment>
 	</data>
+	
+	
+	
+	
+	
+	
+	
+	
 </root>

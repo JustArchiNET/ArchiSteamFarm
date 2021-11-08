@@ -70,7 +70,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 					continue;
 				}
 
-				IOpenApiAny enumObject;
+				IOpenApiPrimitive enumObject;
 
 				if (TryCast(enumValue, out int intValue)) {
 					enumObject = new OpenApiInteger(intValue);

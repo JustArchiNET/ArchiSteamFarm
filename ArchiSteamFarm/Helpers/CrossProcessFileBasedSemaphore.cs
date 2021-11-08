@@ -58,6 +58,7 @@ namespace ArchiSteamFarm.Helpers {
 		}
 
 		void ICrossProcessSemaphore.Release() {
+			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 			lock (LocalSemaphore) {
 				if (FileLock == null) {
 					throw new InvalidOperationException(nameof(FileLock));
@@ -78,6 +79,7 @@ namespace ArchiSteamFarm.Helpers {
 			try {
 				while (true) {
 					try {
+						// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 						lock (LocalSemaphore) {
 							if (FileLock != null) {
 								throw new InvalidOperationException(nameof(FileLock));
@@ -123,6 +125,7 @@ namespace ArchiSteamFarm.Helpers {
 
 				while (true) {
 					try {
+						// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 						lock (LocalSemaphore) {
 							if (FileLock != null) {
 								throw new InvalidOperationException(nameof(FileLock));

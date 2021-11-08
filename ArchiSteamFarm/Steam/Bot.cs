@@ -393,7 +393,7 @@ namespace ArchiSteamFarm.Steam {
 		public async Task<bool> DeleteAllRelatedFiles() {
 			await BotDatabase.MakeReadOnly().ConfigureAwait(false);
 
-			foreach (string filePath in RelatedFiles.Select(file => file.FilePath).Where(File.Exists)) {
+			foreach (string filePath in RelatedFiles.Select(static file => file.FilePath).Where(File.Exists)) {
 				try {
 					File.Delete(filePath);
 				} catch (Exception e) {
@@ -443,7 +443,7 @@ namespace ArchiSteamFarm.Steam {
 
 			foreach (string botName in botNames) {
 				if (botName.Equals(SharedInfo.ASF, StringComparison.OrdinalIgnoreCase)) {
-					IEnumerable<Bot> allBots = Bots.OrderBy(bot => bot.Key, BotsComparer).Select(bot => bot.Value);
+					IEnumerable<Bot> allBots = Bots.OrderBy(static bot => bot.Key, BotsComparer).Select(static bot => bot.Value);
 					result.UnionWith(allBots);
 
 					return result;
@@ -459,7 +459,7 @@ namespace ArchiSteamFarm.Steam {
 							Bot? lastBot = GetBot(botRange[1]);
 
 							if (lastBot != null) {
-								foreach (Bot bot in Bots.OrderBy(bot => bot.Key, BotsComparer).Select(bot => bot.Value).SkipWhile(bot => bot != firstBot)) {
+								foreach (Bot bot in Bots.OrderBy(static bot => bot.Key, BotsComparer).Select(static bot => bot.Value).SkipWhile(bot => bot != firstBot)) {
 									result.Add(bot);
 
 									if (bot == lastBot) {
@@ -487,14 +487,16 @@ namespace ArchiSteamFarm.Steam {
 					Regex regex;
 
 					try {
+#pragma warning disable CA3012
 						regex = new Regex(botsPattern, botsRegex);
+#pragma warning restore CA3012
 					} catch (ArgumentException e) {
 						ASF.ArchiLogger.LogGenericWarningException(e);
 
 						return null;
 					}
 
-					IEnumerable<Bot> regexMatches = Bots.Where(kvp => regex.IsMatch(kvp.Key)).Select(kvp => kvp.Value);
+					IEnumerable<Bot> regexMatches = Bots.Where(kvp => regex.IsMatch(kvp.Key)).Select(static kvp => kvp.Value);
 					result.UnionWith(regexMatches);
 
 					continue;
@@ -560,15 +562,15 @@ namespace ArchiSteamFarm.Steam {
 			}
 
 			HashSet<Asset> result = new();
-			Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, HashSet<Asset>>> itemsPerClassIDPerSet = inventory.GroupBy(item => (item.RealAppID, item.Type, item.Rarity)).ToDictionary(grouping => grouping.Key, grouping => grouping.GroupBy(item => item.ClassID).ToDictionary(group => group.Key, group => group.ToHashSet()));
+			Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), Dictionary<ulong, HashSet<Asset>>> itemsPerClassIDPerSet = inventory.GroupBy(static item => (item.RealAppID, item.Type, item.Rarity)).ToDictionary(static grouping => grouping.Key, static grouping => grouping.GroupBy(static item => item.ClassID).ToDictionary(static group => group.Key, static group => group.ToHashSet()));
 
-			foreach (((uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) set, (uint setsToExtract, byte itemsPerSet)) in amountsToExtract.OrderBy(kv => kv.Value.ItemsPerSet)) {
+			foreach (((uint RealAppID, Asset.EType Type, Asset.ERarity Rarity) set, (uint setsToExtract, byte itemsPerSet)) in amountsToExtract.OrderBy(static kv => kv.Value.ItemsPerSet)) {
 				if (!itemsPerClassIDPerSet.TryGetValue(set, out Dictionary<ulong, HashSet<Asset>>? itemsPerClassID)) {
 					continue;
 				}
 
 				if (itemsPerSet < itemsPerClassID.Count) {
-					throw new InvalidOperationException(nameof(inventory) + " && " + nameof(amountsToExtract));
+					throw new InvalidOperationException($"{nameof(inventory)} && {nameof(amountsToExtract)}");
 				}
 
 				if (itemsPerSet > itemsPerClassID.Count) {
@@ -769,7 +771,7 @@ namespace ArchiSteamFarm.Steam {
 					IEnumerable<Task<(uint AppID, byte Cards)>> tasks = uniqueAppIDs.Select(async appID => (AppID: appID, Cards: await ArchiWebHandler.GetCardCountForGame(appID).ConfigureAwait(false)));
 					IList<(uint AppID, byte Cards)> results = await Utilities.InParallel(tasks).ConfigureAwait(false);
 
-					return results.All(tuple => tuple.Cards > 0) ? results.ToDictionary(res => res.AppID, res => res.Cards) : null;
+					return results.All(static tuple => tuple.Cards > 0) ? results.ToDictionary(static res => res.AppID, static res => res.Cards) : null;
 			}
 		}
 
@@ -885,7 +887,7 @@ namespace ArchiSteamFarm.Steam {
 
 					inputValue = inputValue.ToUpperInvariant();
 
-					if (inputValue.Any(character => !MobileAuthenticator.CodeCharacters.Contains(character))) {
+					if (inputValue.Any(static character => !MobileAuthenticator.CodeCharacters.Contains(character))) {
 						return false;
 					}
 
@@ -985,7 +987,7 @@ namespace ArchiSteamFarm.Steam {
 				throw new ArgumentNullException(nameof(botName));
 			}
 
-			return Environment.NewLine + "<" + botName + "> " + response;
+			return $"{Environment.NewLine}<{botName}> {response}";
 		}
 
 		internal async Task<(uint PlayableAppID, DateTime IgnoredUntil, bool IgnoredGlobally)> GetAppDataForIdling(uint appID, float hoursPlayed, bool allowRecursiveDiscovery = true, bool optimisticDiscovery = true) {
@@ -1055,7 +1057,7 @@ namespace ArchiSteamFarm.Steam {
 				return (optimisticDiscovery ? appID : 0, DateTime.MinValue, true);
 			}
 
-			foreach (Dictionary<uint, SteamApps.PICSProductInfoCallback.PICSProductInfo> productInfoApps in productInfoResultSet.Results.Select(result => result.Apps)) {
+			foreach (Dictionary<uint, SteamApps.PICSProductInfoCallback.PICSProductInfo> productInfoApps in productInfoResultSet.Results.Select(static result => result.Apps)) {
 				if (!productInfoApps.TryGetValue(appID, out SteamApps.PICSProductInfoCallback.PICSProductInfo? productInfoApp)) {
 					continue;
 				}
@@ -1199,7 +1201,7 @@ namespace ArchiSteamFarm.Steam {
 
 			Dictionary<uint, (uint ChangeNumber, ImmutableHashSet<uint>? AppIDs)> result = new();
 
-			foreach (SteamApps.PICSProductInfoCallback.PICSProductInfo productInfo in productInfoResultSet.Results.SelectMany(productInfoResult => productInfoResult.Packages).Where(productInfoPackages => productInfoPackages.Key != 0).Select(productInfoPackages => productInfoPackages.Value)) {
+			foreach (SteamApps.PICSProductInfoCallback.PICSProductInfo productInfo in productInfoResultSet.Results.SelectMany(static productInfoResult => productInfoResult.Packages).Where(static productInfoPackages => productInfoPackages.Key != 0).Select(static productInfoPackages => productInfoPackages.Value)) {
 				if (productInfo.KeyValues == KeyValue.Invalid) {
 					ArchiLogger.LogNullError(nameof(productInfo));
 
@@ -1218,7 +1220,7 @@ namespace ArchiSteamFarm.Steam {
 
 					appIDs = new HashSet<uint>(appIDsKv.Children.Count);
 
-					foreach (string? appIDText in appIDsKv.Children.Select(app => app.Value)) {
+					foreach (string? appIDText in appIDsKv.Children.Select(static app => app.Value)) {
 						if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
 							ArchiLogger.LogNullError(nameof(appID));
 
@@ -1281,10 +1283,10 @@ namespace ArchiSteamFarm.Steam {
 			string? gameName = null;
 
 			if (!string.IsNullOrEmpty(BotConfig.CustomGamePlayedWhileFarming)) {
-				gameName = string.Format(CultureInfo.CurrentCulture, BotConfig.CustomGamePlayedWhileFarming!, string.Join(", ", games.Select(game => game.AppID)), string.Join(", ", games.Select(game => game.GameName)));
+				gameName = string.Format(CultureInfo.CurrentCulture, BotConfig.CustomGamePlayedWhileFarming!, string.Join(", ", games.Select(static game => game.AppID)), string.Join(", ", games.Select(static game => game.GameName)));
 			}
 
-			await ArchiHandler.PlayGames(games.Select(game => game.PlayableAppID).ToHashSet(), gameName).ConfigureAwait(false);
+			await ArchiHandler.PlayGames(games.Select(static game => game.PlayableAppID).ToHashSet(), gameName).ConfigureAwait(false);
 		}
 
 		internal async Task ImportKeysToRedeem(string filePath) {
@@ -1495,7 +1497,7 @@ namespace ArchiSteamFarm.Steam {
 			}
 
 			if (Debugging.IsDebugConfigured) {
-				ASF.ArchiLogger.LogGenericDebug(configFilePath + ": " + JsonConvert.SerializeObject(botConfig, Formatting.Indented));
+				ASF.ArchiLogger.LogGenericDebug($"{configFilePath}: {JsonConvert.SerializeObject(botConfig, Formatting.Indented)}");
 			}
 
 			if (!string.IsNullOrEmpty(latestJson)) {
@@ -1524,7 +1526,7 @@ namespace ArchiSteamFarm.Steam {
 			}
 
 			if (Debugging.IsDebugConfigured) {
-				ASF.ArchiLogger.LogGenericDebug(databaseFilePath + ": " + JsonConvert.SerializeObject(botDatabase, Formatting.Indented));
+				ASF.ArchiLogger.LogGenericDebug($"{databaseFilePath}: {JsonConvert.SerializeObject(botDatabase, Formatting.Indented)}");
 			}
 
 			Bot bot;
@@ -1566,6 +1568,19 @@ namespace ArchiSteamFarm.Steam {
 			bot.InitStart();
 		}
 
+		internal (bool Success, string? Message) RemoveAuthenticator() {
+			MobileAuthenticator? authenticator = BotDatabase.MobileAuthenticator;
+
+			if (authenticator == null) {
+				return (false, Strings.BotNoASFAuthenticator);
+			}
+
+			BotDatabase.MobileAuthenticator = null;
+			authenticator.Dispose();
+
+			return (true, null);
+		}
+
 		internal async Task<bool> Rename(string newBotName) {
 			if (string.IsNullOrEmpty(newBotName)) {
 				throw new ArgumentNullException(nameof(newBotName));
@@ -1586,7 +1601,7 @@ namespace ArchiSteamFarm.Steam {
 			await BotDatabase.MakeReadOnly().ConfigureAwait(false);
 
 			// We handle the config file last as it'll trigger new bot creation
-			foreach ((string filePath, EFileType fileType) in RelatedFiles.Where(file => File.Exists(file.FilePath)).OrderByDescending(file => file.FileType != EFileType.Config)) {
+			foreach ((string filePath, EFileType fileType) in RelatedFiles.Where(static file => File.Exists(file.FilePath)).OrderByDescending(static file => file.FileType != EFileType.Config)) {
 				string newFilePath = GetFilePath(newBotName, fileType);
 
 				if (string.IsNullOrEmpty(newFilePath)) {
@@ -1647,7 +1662,7 @@ namespace ArchiSteamFarm.Steam {
 				}
 
 				if (File.Exists(mobileAuthenticatorFilePath)) {
-					await ImportAuthenticator(mobileAuthenticatorFilePath).ConfigureAwait(false);
+					await ImportAuthenticatorFromFile(mobileAuthenticatorFilePath).ConfigureAwait(false);
 				}
 			}
 
@@ -1681,6 +1696,23 @@ namespace ArchiSteamFarm.Steam {
 			if (!skipShutdownEvent) {
 				Utilities.InBackground(Events.OnBotShutdown);
 			}
+		}
+
+		internal bool TryImportAuthenticator(MobileAuthenticator authenticator) {
+			if (authenticator == null) {
+				throw new ArgumentNullException(nameof(authenticator));
+			}
+
+			if (HasMobileAuthenticator) {
+				return false;
+			}
+
+			authenticator.Init(this);
+			BotDatabase.MobileAuthenticator = authenticator;
+
+			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorImportFinished);
+
+			return true;
 		}
 
 		internal static IOrderedDictionary ValidateGamesToRedeemInBackground(IOrderedDictionary gamesToRedeemInBackground) {
@@ -1840,7 +1872,7 @@ namespace ArchiSteamFarm.Steam {
 
 			HashSet<uint> result = new();
 
-			foreach (string? badgeUri in linkElements.Select(htmlNode => htmlNode.GetAttribute("href"))) {
+			foreach (string? badgeUri in linkElements.Select(static htmlNode => htmlNode.GetAttribute("href"))) {
 				if (string.IsNullOrEmpty(badgeUri)) {
 					ArchiLogger.LogNullError(nameof(badgeUri));
 
@@ -1918,7 +1950,7 @@ namespace ArchiSteamFarm.Steam {
 			}
 		}
 
-		private async Task ImportAuthenticator(string maFilePath) {
+		private async Task ImportAuthenticatorFromFile(string maFilePath) {
 			if (HasMobileAuthenticator || !File.Exists(maFilePath)) {
 				return;
 			}
@@ -1942,17 +1974,14 @@ namespace ArchiSteamFarm.Steam {
 					return;
 				}
 
-				authenticator.Init(this);
-				BotDatabase.MobileAuthenticator = authenticator;
+				if (!TryImportAuthenticator(authenticator)) {
+					return;
+				}
 
 				File.Delete(maFilePath);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
-
-				return;
 			}
-
-			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorImportFinished);
 		}
 
 		private void InitConnectionFailureTimer() {
@@ -2030,7 +2059,7 @@ namespace ArchiSteamFarm.Steam {
 				SendItemsTimer = null;
 			}
 
-			if ((BotConfig.SendTradePeriod > 0) && (BotConfig.LootableTypes.Count > 0) && BotConfig.SteamUserPermissions.Values.Any(permission => permission >= BotConfig.EAccess.Master)) {
+			if ((BotConfig.SendTradePeriod > 0) && (BotConfig.LootableTypes.Count > 0) && BotConfig.SteamUserPermissions.Values.Any(static permission => permission >= BotConfig.EAccess.Master)) {
 				SendItemsTimer = new Timer(
 					OnSendItemsTimer,
 					null,
@@ -2138,7 +2167,7 @@ namespace ArchiSteamFarm.Steam {
 
 		private static async Task LimitLoginRequestsAsync() {
 			if ((ASF.LoginSemaphore == null) || (ASF.LoginRateLimitingSemaphore == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(ASF.LoginSemaphore) + " || " + nameof(ASF.LoginRateLimitingSemaphore));
+				ASF.ArchiLogger.LogNullError($"{nameof(ASF.LoginSemaphore)} || {nameof(ASF.LoginRateLimitingSemaphore)}");
 
 				return;
 			}
@@ -2376,7 +2405,7 @@ namespace ArchiSteamFarm.Steam {
 				throw new ArgumentNullException(nameof(callback));
 			}
 
-			foreach (SteamFriends.FriendsListCallback.Friend friend in callback.FriendList.Where(friend => friend.Relationship == EFriendRelationship.RequestRecipient)) {
+			foreach (SteamFriends.FriendsListCallback.Friend friend in callback.FriendList.Where(static friend => friend.Relationship == EFriendRelationship.RequestRecipient)) {
 				switch (friend.SteamID.AccountType) {
 					case EAccountType.Clan when IsMasterClanID(friend.SteamID):
 						ArchiLogger.LogInvite(friend.SteamID, true);
@@ -2461,7 +2490,7 @@ namespace ArchiSteamFarm.Steam {
 				return;
 			}
 
-			HashSet<ulong> guestPassIDs = callback.GuestPasses.Select(guestPass => guestPass["gid"].AsUnsignedLong()).Where(gid => gid != 0).ToHashSet();
+			HashSet<ulong> guestPassIDs = callback.GuestPasses.Select(static guestPass => guestPass["gid"].AsUnsignedLong()).Where(static gid => gid != 0).ToHashSet();
 
 			if (guestPassIDs.Count == 0) {
 				return;
@@ -2476,7 +2505,7 @@ namespace ArchiSteamFarm.Steam {
 			}
 
 			if ((notification.chat_group_id == 0) || (notification.chat_id == 0) || (notification.steamid_sender == 0)) {
-				ArchiLogger.LogNullError(nameof(notification.chat_group_id) + " || " + nameof(notification.chat_id) + " || " + nameof(notification.steamid_sender));
+				ArchiLogger.LogNullError($"{nameof(notification.chat_group_id)} || {nameof(notification.chat_id)} || {nameof(notification.steamid_sender)}");
 
 				return;
 			}
@@ -2601,7 +2630,7 @@ namespace ArchiSteamFarm.Steam {
 			Dictionary<uint, ulong> packageAccessTokens = new();
 			Dictionary<uint, uint> packagesToRefresh = new();
 
-			foreach (SteamApps.LicenseListCallback.License license in callback.LicenseList.GroupBy(license => license.PackageID, (_, licenses) => licenses.OrderByDescending(license => license.TimeCreated).First())) {
+			foreach (SteamApps.LicenseListCallback.License license in callback.LicenseList.GroupBy(static license => license.PackageID, static (_, licenses) => licenses.OrderByDescending(static license => license.TimeCreated).First())) {
 				ownedPackageIDs[license.PackageID] = (license.PaymentMethod, license.TimeCreated);
 
 				if (!ASF.GlobalDatabase.PackageAccessTokensReadOnly.TryGetValue(license.PackageID, out ulong packageAccessToken) || (packageAccessToken != license.AccessToken)) {
@@ -2716,7 +2745,7 @@ namespace ArchiSteamFarm.Steam {
 					AccountFlags = callback.AccountFlags;
 					SteamID = callback.ClientSteamID ?? throw new InvalidOperationException(nameof(callback.ClientSteamID));
 
-					ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotLoggedOn, SteamID + (!string.IsNullOrEmpty(callback.VanityURL) ? "/" + callback.VanityURL : "")));
+					ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotLoggedOn, SteamID + (!string.IsNullOrEmpty(callback.VanityURL) ? $"/{callback.VanityURL}" : "")));
 
 					// Old status for these doesn't matter, we'll update them if needed
 					InvalidPasswordFailures = TwoFactorCodeFailures = 0;
@@ -2743,7 +2772,7 @@ namespace ArchiSteamFarm.Steam {
 						string maFilePath = Path.Combine(SharedInfo.ConfigDirectory, SteamID + SharedInfo.MobileAuthenticatorExtension);
 
 						if (File.Exists(maFilePath)) {
-							await ImportAuthenticator(maFilePath).ConfigureAwait(false);
+							await ImportAuthenticatorFromFile(maFilePath).ConfigureAwait(false);
 						}
 					}
 
@@ -2988,12 +3017,12 @@ namespace ArchiSteamFarm.Steam {
 
 			string? avatarHash = null;
 
-			if ((callback.AvatarHash.Length > 0) && callback.AvatarHash.Any(singleByte => singleByte != 0)) {
+			if ((callback.AvatarHash.Length > 0) && callback.AvatarHash.Any(static singleByte => singleByte != 0)) {
 #pragma warning disable CA1308 // False positive, we're intentionally converting this part to lowercase and it's not used for any security decisions based on the result of the normalization
 				avatarHash = BitConverter.ToString(callback.AvatarHash).Replace("-", "", StringComparison.Ordinal).ToLowerInvariant();
 #pragma warning restore CA1308 // False positive, we're intentionally converting this part to lowercase and it's not used for any security decisions based on the result of the normalization
 
-				if (string.IsNullOrEmpty(avatarHash) || avatarHash.All(singleChar => singleChar == '0')) {
+				if (string.IsNullOrEmpty(avatarHash) || avatarHash.All(static singleChar => singleChar == '0')) {
 					avatarHash = null;
 				}
 			}
@@ -3091,7 +3120,7 @@ namespace ArchiSteamFarm.Steam {
 					PastNotifications.TryRemove(notification, out _);
 				}
 
-				ArchiLogger.LogGenericTrace(notification + " = " + count);
+				ArchiLogger.LogGenericTrace($"{notification} = {count}");
 
 				switch (notification) {
 					case UserNotificationsCallback.EUserNotification.Gifts when newNotification && BotConfig.AcceptGifts:
@@ -3151,7 +3180,7 @@ namespace ArchiSteamFarm.Steam {
 					(string? key, string? name) = BotDatabase.GetGameToRedeemInBackground();
 
 					if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(name)) {
-						ArchiLogger.LogNullError(nameof(key) + " || " + nameof(name));
+						ArchiLogger.LogNullError($"{nameof(key)} || {nameof(name)}");
 
 						break;
 					}
@@ -3177,7 +3206,7 @@ namespace ArchiSteamFarm.Steam {
 						}
 					}
 
-					ArchiLogger.LogGenericDebug(result.Items?.Count > 0 ? string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, result.Result + "/" + result.PurchaseResultDetail, string.Join(", ", result.Items)) : string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail));
+					ArchiLogger.LogGenericDebug(result.Items?.Count > 0 ? string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, $"{result.Result}/{result.PurchaseResultDetail}", string.Join(", ", result.Items)) : string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{result.Result}/{result.PurchaseResultDetail}"));
 
 					bool rateLimited = false;
 					bool redeemed = false;
@@ -3219,7 +3248,7 @@ namespace ArchiSteamFarm.Steam {
 						name = string.Join(", ", result.Items.Values);
 					}
 
-					string logEntry = name + DefaultBackgroundKeysRedeemerSeparator + "[" + result.PurchaseResultDetail + "]" + (result.Items?.Count > 0 ? DefaultBackgroundKeysRedeemerSeparator + string.Join(", ", result.Items) : "") + DefaultBackgroundKeysRedeemerSeparator + key;
+					string logEntry = $"{name}{DefaultBackgroundKeysRedeemerSeparator}[{result.PurchaseResultDetail}]{(result.Items?.Count > 0 ? DefaultBackgroundKeysRedeemerSeparator + string.Join(", ", result.Items) : "")}{DefaultBackgroundKeysRedeemerSeparator}{key}";
 
 					string filePath = GetFilePath(redeemed ? EFileType.KeysToRedeemUsed : EFileType.KeysToRedeemUnused);
 
@@ -3285,6 +3314,7 @@ namespace ArchiSteamFarm.Steam {
 		}
 
 		private async Task SendCompletedSets() {
+			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 			lock (SendCompleteTypesSemaphore) {
 				if (SendCompleteTypesScheduled) {
 					return;
@@ -3297,6 +3327,7 @@ namespace ArchiSteamFarm.Steam {
 
 			try {
 				using (await Actions.GetTradingLock().ConfigureAwait(false)) {
+					// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 					lock (SendCompleteTypesSemaphore) {
 						SendCompleteTypesScheduled = false;
 					}
@@ -3331,7 +3362,7 @@ namespace ArchiSteamFarm.Steam {
 					}
 
 					Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), List<uint>> inventorySets = Trading.GetInventorySets(inventory);
-					appIDs.IntersectWith(inventorySets.Where(kv => kv.Value.Count >= MinCardsPerBadge).Select(kv => kv.Key.RealAppID));
+					appIDs.IntersectWith(inventorySets.Where(static kv => kv.Value.Count >= MinCardsPerBadge).Select(static kv => kv.Key.RealAppID));
 
 					if (appIDs.Count == 0) {
 						return;
@@ -3343,9 +3374,9 @@ namespace ArchiSteamFarm.Steam {
 						return;
 					}
 
-					Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), (uint Sets, byte CardsPerSet)> itemsToTakePerInventorySet = inventorySets.Where(kv => appIDs.Contains(kv.Key.RealAppID)).ToDictionary(kv => kv.Key, kv => (kv.Value[0], cardCountPerAppID[kv.Key.RealAppID]));
+					Dictionary<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity), (uint Sets, byte CardsPerSet)> itemsToTakePerInventorySet = inventorySets.Where(kv => appIDs.Contains(kv.Key.RealAppID)).ToDictionary(static kv => kv.Key, kv => (kv.Value[0], cardCountPerAppID[kv.Key.RealAppID]));
 
-					if (itemsToTakePerInventorySet.Values.All(value => value.Sets == 0)) {
+					if (itemsToTakePerInventorySet.Values.All(static value => value.Sets == 0)) {
 						return;
 					}
 
@@ -3474,7 +3505,7 @@ namespace ArchiSteamFarm.Steam {
 				byte i = 0;
 				byte[] password = new byte[steamParentalCode.Length];
 
-				foreach (char character in steamParentalCode.TakeWhile(character => character is >= '0' and <= '9')) {
+				foreach (char character in steamParentalCode.TakeWhile(static character => character is >= '0' and <= '9')) {
 					password[i++] = (byte) character;
 				}
 

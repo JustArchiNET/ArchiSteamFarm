@@ -62,7 +62,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				throw new ArgumentNullException(nameof(botName));
 			}
 
-			return Environment.NewLine + "<" + botName + "> " + response;
+			return $"{Environment.NewLine}<{botName}> {response}";
 		}
 
 		[PublicAPI]
@@ -71,7 +71,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				throw new ArgumentNullException(nameof(response));
 			}
 
-			return "<" + Bot.BotName + "> " + response;
+			return $"<{Bot.BotName}> {response}";
 		}
 
 		[PublicAPI]
@@ -80,7 +80,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				throw new ArgumentNullException(nameof(response));
 			}
 
-			return "<" + SharedInfo.ASF + "> " + response;
+			return $"<{SharedInfo.ASF}> {response}";
 		}
 
 		[PublicAPI]
@@ -382,8 +382,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 					return;
 				}
 
-				Bot.ArchiLogger.LogNullError(nameof(response));
-				response = FormatBotResponse(Strings.UnknownCommand);
+				response = FormatBotResponse(Strings.ErrorAccessDenied);
 			}
 
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
@@ -462,8 +461,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 					return;
 				}
 
-				Bot.ArchiLogger.LogNullError(nameof(response));
-				response = FormatBotResponse(Strings.UnknownCommand);
+				response = FormatBotResponse(Strings.ErrorAccessDenied);
 			}
 
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
@@ -539,7 +537,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.Response2FA(steamID))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -583,7 +581,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.Response2FAConfirm(steamID, confirm))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -640,22 +638,18 @@ namespace ArchiSteamFarm.Steam.Interaction {
 							callback = await Bot.SteamApps.RequestFreeLicense(gameID).ToLongRunningTask().ConfigureAwait(false);
 						} catch (Exception e) {
 							Bot.ArchiLogger.LogGenericWarningException(e);
-							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicense, "app/" + gameID, EResult.Timeout)));
+							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicense, $"app/{gameID}", EResult.Timeout)));
 
 							break;
 						}
 
-						response.AppendLine(FormatBotResponse((callback.GrantedApps.Count > 0) || (callback.GrantedPackages.Count > 0) ? string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicenseWithItems, "app/" + gameID, callback.Result, string.Join(", ", callback.GrantedApps.Select(appID => "app/" + appID).Union(callback.GrantedPackages.Select(subID => "sub/" + subID)))) : string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicense, "app/" + gameID, callback.Result)));
+						response.AppendLine(FormatBotResponse((callback.GrantedApps.Count > 0) || (callback.GrantedPackages.Count > 0) ? string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicenseWithItems, $"app/{gameID}", callback.Result, string.Join(", ", callback.GrantedApps.Select(static appID => $"app/{appID}").Union(callback.GrantedPackages.Select(static subID => $"sub/{subID}")))) : string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicense, $"app/{gameID}", callback.Result)));
 
 						break;
 					default:
-						if (!await Bot.ArchiWebHandler.AddFreeLicense(gameID).ConfigureAwait(false)) {
-							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicense, "sub/" + gameID, EResult.Fail)));
+						(EResult result, EPurchaseResultDetail purchaseResult) = await Bot.ArchiWebHandler.AddFreeLicense(gameID).ConfigureAwait(false);
 
-							continue;
-						}
-
-						response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicenseWithItems, gameID, EResult.OK, "sub/" + gameID)));
+						response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotAddLicense, $"sub/{gameID}", $"{result}/{purchaseResult}")));
 
 						break;
 				}
@@ -685,7 +679,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAddLicense(steamID, query))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -749,7 +743,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAdvancedLoot(steamID, appID, contextID))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -864,7 +858,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAdvancedRedeem(steamID, options, keys))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -980,7 +974,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseAdvancedTransfer(steamID, appID, contextID, targetBot))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -1016,7 +1010,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseBackgroundGamesRedeemer(steamID)))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -1046,7 +1040,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseBlacklist(steamID)))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -1104,7 +1098,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseBlacklistAdd(steamID, targetSteamIDs)))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -1162,7 +1156,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseBlacklistRemove(steamID, targetSteamIDs)))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -1246,7 +1240,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseFarm(steamID))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -1282,7 +1276,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				throw new ArgumentOutOfRangeException(nameof(steamID));
 			}
 
-			return Bot.HasAccess(steamID, BotConfig.EAccess.FamilySharing) ? FormatBotResponse(SharedInfo.ProjectURL + "/wiki/Commands") : null;
+			return Bot.HasAccess(steamID, BotConfig.EAccess.FamilySharing) ? FormatBotResponse($"{SharedInfo.ProjectURL}/wiki/Commands") : null;
 		}
 
 		private string? ResponseIdleBlacklist(ulong steamID) {
@@ -1310,7 +1304,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseIdleBlacklist(steamID)))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -1381,7 +1375,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseIdleBlacklistAdd(steamID, targetAppIDs)))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -1447,7 +1441,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseIdleBlacklistRemove(steamID, targetAppIDs)))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -1477,7 +1471,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseIdleQueue(steamID)))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -1555,7 +1549,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseIdleQueueAdd(steamID, targetAppIDs)))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -1626,7 +1620,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseIdleQueueRemove(steamID, targetAppIDs)))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -1648,7 +1642,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				return null;
 			}
 
-			bool headless = ASF.GlobalConfig?.Headless ?? GlobalConfig.DefaultHeadless;
+			bool headless = Program.Service || (ASF.GlobalConfig?.Headless ?? GlobalConfig.DefaultHeadless);
 
 			if (!headless) {
 				return FormatBotResponse(Strings.ErrorFunctionOnlyInHeadlessMode);
@@ -1688,7 +1682,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseInput(steamID, propertyName, inputValue)))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -1728,7 +1722,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseLevel(steamID))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -1772,7 +1766,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseLoot(steamID))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -1840,7 +1834,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseLootByRealAppIDs(steamID, realAppIDsText, exclude))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -1870,7 +1864,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseMatchActivelyBlacklist(steamID)))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -1928,7 +1922,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseMatchActivelyBlacklistAdd(steamID, targetAppIDs)))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -1986,7 +1980,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseMatchActivelyBlacklistRemove(steamID, targetAppIDs)))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -2034,7 +2028,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseNickname(steamID, nickname)))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -2087,11 +2081,11 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 						if (packageIDs?.Count > 0) {
 							if ((gamesOwned != null) && gamesOwned.TryGetValue(appID, out string? cachedGameName)) {
-								result["app/" + appID] = cachedGameName;
-								response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlreadyWithName, "app/" + appID, cachedGameName)));
+								result[$"app/{appID}"] = cachedGameName;
+								response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlreadyWithName, $"app/{appID}", cachedGameName)));
 							} else {
-								result["app/" + appID] = appID.ToString(CultureInfo.InvariantCulture);
-								response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlready, "app/" + appID)));
+								result[$"app/{appID}"] = appID.ToString(CultureInfo.InvariantCulture);
+								response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlready, $"app/{appID}")));
 							}
 						} else {
 							if (gamesOwned == null) {
@@ -2105,10 +2099,10 @@ namespace ArchiSteamFarm.Steam.Interaction {
 							}
 
 							if (gamesOwned.TryGetValue(appID, out string? gameName)) {
-								result["app/" + appID] = gameName;
-								response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlreadyWithName, "app/" + appID, gameName)));
+								result[$"app/{appID}"] = gameName;
+								response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlreadyWithName, $"app/{appID}", gameName)));
 							} else {
-								response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotOwnedYet, "app/" + appID)));
+								response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotOwnedYet, $"app/{appID}")));
 							}
 						}
 
@@ -2141,8 +2135,8 @@ namespace ArchiSteamFarm.Steam.Interaction {
 						foreach ((uint appID, string gameName) in gamesOwned.Where(gameOwned => regex.IsMatch(gameOwned.Value))) {
 							foundWithRegex = true;
 
-							result["app/" + appID] = gameName;
-							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlreadyWithName, "app/" + appID, gameName)));
+							result[$"app/{appID}"] = gameName;
+							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlreadyWithName, $"app/{appID}", gameName)));
 						}
 
 						if (!foundWithRegex) {
@@ -2153,10 +2147,10 @@ namespace ArchiSteamFarm.Steam.Interaction {
 					case "S" when uint.TryParse(game, out uint packageID) && (packageID > 0):
 					case "SUB" when uint.TryParse(game, out packageID) && (packageID > 0):
 						if (Bot.OwnedPackageIDs.ContainsKey(packageID)) {
-							result["sub/" + packageID] = packageID.ToString(CultureInfo.InvariantCulture);
-							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlready, "sub/" + packageID)));
+							result[$"sub/{packageID}"] = packageID.ToString(CultureInfo.InvariantCulture);
+							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlready, $"sub/{packageID}")));
 						} else {
-							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotOwnedYet, "sub/" + packageID)));
+							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotNotOwnedYet, $"sub/{packageID}")));
 						}
 
 						break;
@@ -2176,8 +2170,8 @@ namespace ArchiSteamFarm.Steam.Interaction {
 						foreach ((uint appID, string gameName) in gamesOwned.Where(gameOwned => gameOwned.Value.Contains(game, StringComparison.OrdinalIgnoreCase))) {
 							foundWithName = true;
 
-							result["app/" + appID] = gameName;
-							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlreadyWithName, "app/" + appID, gameName)));
+							result[$"app/{appID}"] = gameName;
+							response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnedAlreadyWithName, $"app/{appID}", gameName)));
 						}
 
 						if (!foundWithName) {
@@ -2212,7 +2206,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<(string? Response, Dictionary<string, string>? OwnedGames)> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseOwns(steamID, query))).ConfigureAwait(false);
 
-			List<(string Response, Dictionary<string, string> OwnedGames)> validResults = new(results.Where(result => !string.IsNullOrEmpty(result.Response) && (result.OwnedGames != null))!);
+			List<(string Response, Dictionary<string, string> OwnedGames)> validResults = new(results.Where(static result => !string.IsNullOrEmpty(result.Response) && (result.OwnedGames != null))!);
 
 			if (validResults.Count == 0) {
 				return null;
@@ -2220,7 +2214,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			Dictionary<string, (ushort Count, string GameName)> ownedGamesStats = new(StringComparer.Ordinal);
 
-			foreach ((string gameID, string gameName) in validResults.Where(validResult => validResult.OwnedGames.Count > 0).SelectMany(validResult => validResult.OwnedGames)) {
+			foreach ((string gameID, string gameName) in validResults.Where(static validResult => validResult.OwnedGames.Count > 0).SelectMany(static validResult => validResult.OwnedGames)) {
 				if (ownedGamesStats.TryGetValue(gameID, out (ushort Count, string GameName) ownedGameStats)) {
 					ownedGameStats.Count++;
 				} else {
@@ -2234,9 +2228,9 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				ownedGamesStats[gameID] = ownedGameStats;
 			}
 
-			IEnumerable<string> extraResponses = ownedGamesStats.Select(kv => FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnsOverviewPerGame, kv.Value.Count, validResults.Count, kv.Key + (!string.IsNullOrEmpty(kv.Value.GameName) ? " | " + kv.Value.GameName : ""))));
+			IEnumerable<string> extraResponses = ownedGamesStats.Select(kv => FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnsOverviewPerGame, kv.Value.Count, validResults.Count, kv.Key + (!string.IsNullOrEmpty(kv.Value.GameName) ? $" | {kv.Value.GameName}" : ""))));
 
-			return string.Join(Environment.NewLine, validResults.Select(result => result.Response).Concat(extraResponses));
+			return string.Join(Environment.NewLine, validResults.Select(static result => result.Response).Concat(extraResponses));
 		}
 
 		private string? ResponsePassword(ulong steamID) {
@@ -2257,7 +2251,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				{ ArchiCryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser, ArchiCryptoHelper.Encrypt(ArchiCryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser, Bot.BotConfig.DecryptedSteamPassword!) ?? "" }
 			};
 
-			return FormatBotResponse(string.Join(", ", encryptedPasswords.Where(kv => !string.IsNullOrEmpty(kv.Value)).Select(kv => string.Format(CultureInfo.CurrentCulture, Strings.BotEncryptedPassword, kv.Key, kv.Value))));
+			return FormatBotResponse(string.Join(", ", encryptedPasswords.Where(static kv => !string.IsNullOrEmpty(kv.Value)).Select(static kv => string.Format(CultureInfo.CurrentCulture, Strings.BotEncryptedPassword, kv.Key, kv.Value))));
 		}
 
 		private static async Task<string?> ResponsePassword(ulong steamID, string botNames) {
@@ -2277,7 +2271,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponsePassword(steamID)))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -2323,7 +2317,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePause(steamID, permanent, resumeInSecondsText))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -2388,7 +2382,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				}
 
 				if (gamesToPlay.Count >= ArchiHandler.MaxGamesPlayedConcurrently) {
-					return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(gamesToPlay) + " > " + ArchiHandler.MaxGamesPlayedConcurrently));
+					return FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, $"{nameof(gamesToPlay)} > {ArchiHandler.MaxGamesPlayedConcurrently}"));
 				}
 
 				gamesToPlay.Add(gameID);
@@ -2418,7 +2412,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePlay(steamID, targetGameIDs))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -2458,7 +2452,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePointsBalance(steamID))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -2618,7 +2612,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponsePrivacy(steamID, privacySettingsText))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -2672,7 +2666,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 					string startingKey = key!;
 
-					using (IEnumerator<Bot> botsEnumerator = Bot.Bots.Where(bot => (bot.Value != Bot) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.HasAccess(steamID, BotConfig.EAccess.Operator)).OrderByDescending(bot => Bot.BotsComparer?.Compare(bot.Key, Bot.BotName) > 0).ThenBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value).GetEnumerator()) {
+					using (IEnumerator<Bot> botsEnumerator = Bot.Bots.Where(bot => (bot.Value != Bot) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.HasAccess(steamID, BotConfig.EAccess.Operator)).OrderByDescending(bot => Bot.BotsComparer?.Compare(bot.Key, Bot.BotName) > 0).ThenBy(static bot => bot.Key, Bot.BotsComparer).Select(static bot => bot.Value).GetEnumerator()) {
 						Bot? currentBot = Bot;
 
 						while (!string.IsNullOrEmpty(key) && (currentBot != null)) {
@@ -2727,9 +2721,9 @@ namespace ArchiSteamFarm.Steam.Interaction {
 									}
 
 									if (result.Items?.Count > 0) {
-										response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, result.Result + "/" + result.PurchaseResultDetail, string.Join(", ", result.Items)), currentBot.BotName));
+										response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, $"{result.Result}/{result.PurchaseResultDetail}", string.Join(", ", result.Items)), currentBot.BotName));
 									} else if (!skipRequest) {
-										response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail), currentBot.BotName));
+										response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{result.Result}/{result.PurchaseResultDetail}"), currentBot.BotName));
 									}
 
 									switch (result.PurchaseResultDetail) {
@@ -2775,12 +2769,12 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 											bool alreadyHandled = false;
 
-											foreach (Bot innerBot in Bot.Bots.Where(bot => (bot.Value != currentBot) && (!redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || (bot.Value != Bot)) && !triedBots.Contains(bot.Value) && !rateLimitedBots.Contains(bot.Value) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.HasAccess(steamID, BotConfig.EAccess.Operator) && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.ContainsKey(packageID)))).OrderBy(bot => bot.Key, Bot.BotsComparer).Select(bot => bot.Value)) {
+											foreach (Bot innerBot in Bot.Bots.Where(bot => (bot.Value != currentBot) && (!redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || (bot.Value != Bot)) && !triedBots.Contains(bot.Value) && !rateLimitedBots.Contains(bot.Value) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.HasAccess(steamID, BotConfig.EAccess.Operator) && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.ContainsKey(packageID)))).OrderBy(static bot => bot.Key, Bot.BotsComparer).Select(static bot => bot.Value)) {
 												// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 												PurchaseResponseCallback? otherResult = await innerBot.Actions.RedeemKey(key!).ConfigureAwait(false);
 
 												if (otherResult == null) {
-													response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, EResult.Timeout + "/" + EPurchaseResultDetail.Timeout), innerBot.BotName));
+													response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{EResult.Timeout}/{EPurchaseResultDetail.Timeout}"), innerBot.BotName));
 
 													continue;
 												}
@@ -2804,7 +2798,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 														break;
 												}
 
-												response.AppendLine(FormatBotResponse(otherResult.Items?.Count > 0 ? string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, otherResult.Result + "/" + otherResult.PurchaseResultDetail, string.Join(", ", otherResult.Items)) : string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, otherResult.Result + "/" + otherResult.PurchaseResultDetail), innerBot.BotName));
+												response.AppendLine(FormatBotResponse(otherResult.Items?.Count > 0 ? string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, $"{otherResult.Result}/{otherResult.PurchaseResultDetail}", string.Join(", ", otherResult.Items)) : string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{otherResult.Result}/{otherResult.PurchaseResultDetail}"), innerBot.BotName));
 
 												if (alreadyHandled) {
 													break;
@@ -2887,7 +2881,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseRedeem(steamID, keysText, redeemFlags))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -2927,7 +2921,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseReset(steamID))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -2977,7 +2971,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseResume(steamID)))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -3013,7 +3007,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseStart(steamID)))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -3067,12 +3061,12 @@ namespace ArchiSteamFarm.Steam.Interaction {
 			}
 
 			if (Bot.CardsFarmer.CurrentGamesFarmingReadOnly.Count > 1) {
-				return (FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotStatusIdlingList, string.Join(", ", Bot.CardsFarmer.CurrentGamesFarmingReadOnly.Select(game => game.AppID + " (" + game.GameName + ")")), Bot.CardsFarmer.GamesToFarmReadOnly.Count, Bot.CardsFarmer.GamesToFarmReadOnly.Sum(game => game.CardsRemaining), Bot.CardsFarmer.TimeRemaining.ToHumanReadable())), Bot);
+				return (FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotStatusIdlingList, string.Join(", ", Bot.CardsFarmer.CurrentGamesFarmingReadOnly.Select(static game => $"{game.AppID} ({game.GameName})")), Bot.CardsFarmer.GamesToFarmReadOnly.Count, Bot.CardsFarmer.GamesToFarmReadOnly.Sum(static game => game.CardsRemaining), Bot.CardsFarmer.TimeRemaining.ToHumanReadable())), Bot);
 			}
 
 			Game soloGame = Bot.CardsFarmer.CurrentGamesFarmingReadOnly.First();
 
-			return (FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotStatusIdling, soloGame.AppID, soloGame.GameName, soloGame.CardsRemaining, Bot.CardsFarmer.GamesToFarmReadOnly.Count, Bot.CardsFarmer.GamesToFarmReadOnly.Sum(game => game.CardsRemaining), Bot.CardsFarmer.TimeRemaining.ToHumanReadable())), Bot);
+			return (FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotStatusIdling, soloGame.AppID, soloGame.GameName, soloGame.CardsRemaining, Bot.CardsFarmer.GamesToFarmReadOnly.Count, Bot.CardsFarmer.GamesToFarmReadOnly.Sum(static game => game.CardsRemaining), Bot.CardsFarmer.TimeRemaining.ToHumanReadable())), Bot);
 		}
 
 		private static async Task<string?> ResponseStatus(ulong steamID, string botNames) {
@@ -3092,17 +3086,17 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<(string? Response, Bot Bot)> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseStatus(steamID)))).ConfigureAwait(false);
 
-			List<(string Response, Bot Bot)> validResults = new(results.Where(result => !string.IsNullOrEmpty(result.Response))!);
+			List<(string Response, Bot Bot)> validResults = new(results.Where(static result => !string.IsNullOrEmpty(result.Response))!);
 
 			if (validResults.Count == 0) {
 				return null;
 			}
 
-			HashSet<Bot> botsRunning = validResults.Where(result => result.Bot.KeepRunning).Select(result => result.Bot).ToHashSet();
+			HashSet<Bot> botsRunning = validResults.Where(static result => result.Bot.KeepRunning).Select(static result => result.Bot).ToHashSet();
 
-			string extraResponse = string.Format(CultureInfo.CurrentCulture, Strings.BotStatusOverview, botsRunning.Count, validResults.Count, botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarmReadOnly.Count), botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarmReadOnly.Sum(game => game.CardsRemaining)));
+			string extraResponse = string.Format(CultureInfo.CurrentCulture, Strings.BotStatusOverview, botsRunning.Count, validResults.Count, botsRunning.Sum(static bot => bot.CardsFarmer.GamesToFarmReadOnly.Count), botsRunning.Sum(static bot => bot.CardsFarmer.GamesToFarmReadOnly.Sum(static game => game.CardsRemaining)));
 
-			return string.Join(Environment.NewLine, validResults.Select(result => result.Response).Union(extraResponse.ToEnumerable()));
+			return string.Join(Environment.NewLine, validResults.Select(static result => result.Response).Union(extraResponse.ToEnumerable()));
 		}
 
 		private string? ResponseStop(ulong steamID) {
@@ -3136,7 +3130,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseStop(steamID)))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -3202,7 +3196,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseTransfer(steamID, botNameTo))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -3334,7 +3328,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseTransferByRealAppIDs(steamID, realAppIDs, targetBot, exclude))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -3365,7 +3359,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			// It'd also make sense to run all of this in parallel, but it seems that Steam has a lot of problems with inventory-related parallel requests | https://steamcommunity.com/groups/archiasf/discussions/1/3559414588264550284/
 			try {
-				await foreach (Asset item in Bot.ArchiWebHandler.GetInventoryAsync().Where(item => item.Type == Asset.EType.BoosterPack).ConfigureAwait(false)) {
+				await foreach (Asset item in Bot.ArchiWebHandler.GetInventoryAsync().Where(static item => item.Type == Asset.EType.BoosterPack).ConfigureAwait(false)) {
 					if (!await Bot.ArchiWebHandler.UnpackBooster(item.RealAppID, item.AssetID).ConfigureAwait(false)) {
 						completeSuccess = false;
 					}
@@ -3400,7 +3394,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => bot.Commands.ResponseUnpackBoosters(steamID))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}
@@ -3416,7 +3410,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			(bool success, string? message, Version? version) = await Actions.Update().ConfigureAwait(false);
 
-			return FormatStaticResponse((success ? Strings.Success : Strings.WarningFailed) + (!string.IsNullOrEmpty(message) ? " " + message : version != null ? " " + version : ""));
+			return FormatStaticResponse((success ? Strings.Success : Strings.WarningFailed) + (!string.IsNullOrEmpty(message) ? $" {message}" : version != null ? $" {version}" : ""));
 		}
 
 		private string? ResponseVersion(ulong steamID) {
@@ -3456,7 +3450,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			IList<string?> results = await Utilities.InParallel(bots.Select(bot => Task.Run(() => bot.Commands.ResponseWalletBalance(steamID)))).ConfigureAwait(false);
 
-			List<string> responses = new(results.Where(result => !string.IsNullOrEmpty(result))!);
+			List<string> responses = new(results.Where(static result => !string.IsNullOrEmpty(result))!);
 
 			return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
 		}

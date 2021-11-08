@@ -25,12 +25,12 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2.3.4
+      uses: actions/checkout@v2.4.0
       with:
         submodules: recursive
 
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1.8.1
+      uses: actions/setup-dotnet@v1.8.2
       with:
         dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
         include-prerelease: true
@@ -39,7 +39,7 @@ jobs:
       run: dotnet --info
 
     - name: Setup Node.js with npm
-      uses: actions/setup-node@v2.4.0
+      uses: actions/setup-node@v2.4.1
       with:
         check-latest: true
         node-version: ${{ env.NODE_JS_VERSION }}
@@ -127,15 +127,21 @@ jobs:
 
         publish() {
             if [ "$1" = 'generic' ]; then
-                local variantArgs="-p:TargetLatestRuntimePatch=false -p:UseAppHost=false"
+                variantArgs="-p:TargetLatestRuntimePatch=false -p:UseAppHost=false"
             else
-                local variantArgs="-p:PublishSingleFile=true -p:PublishTrimmed=true -r $1"
+                variantArgs="-p:PublishSingleFile=true -p:PublishTrimmed=true -r $1"
             fi
 
             dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" "-p:ASFVariant=$1" -p:ContinuousIntegrationBuild=true --no-restore --nologo $variantArgs
 
             # If we're including any overlay for this variant, copy it to output directory
-            if [ -d "ArchiSteamFarm/overlay/${1}" ]; then
+            variant_os="$(echo "$1" | cut -d '-' -f 1)"
+
+            if [ -d "ArchiSteamFarm/overlay/${variant_os}" ]; then
+                cp -pR "ArchiSteamFarm/overlay/${variant_os}/"* "out/${1}"
+            fi
+
+            if [ "$1" != "$variant_os" ] && [ -d "ArchiSteamFarm/overlay/${1}" ]; then
                 cp -pR "ArchiSteamFarm/overlay/${1}/"* "out/${1}"
             fi
 
@@ -250,7 +256,13 @@ jobs:
             }
 
             # If we're including any overlay for this variant, copy it to output directory
-            if (Test-Path "ArchiSteamFarm\overlay\$variant" -PathType Container) {
+            $variant_os = $variant.Split('-', 2)[0];
+
+            if (Test-Path "ArchiSteamFarm\overlay\$variant_os" -PathType Container) {
+                Copy-Item "ArchiSteamFarm\overlay\$variant_os\*" "out\$variant" -Recurse
+            }
+
+            if (($variant -ne $variant_os) -and (Test-Path "ArchiSteamFarm\overlay\$variant" -PathType Container)) {
                 Copy-Item "ArchiSteamFarm\overlay\$variant\*" "out\$variant" -Recurse
             }
 
@@ -375,9 +387,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2.3.4
-      with:
-        submodules: recursive
+      uses: actions/checkout@v2.4.0
 
     # TODO: It'd be perfect if we could match final artifacts to the platform they target, so e.g. linux build comes from the linux machine
     # However, that is currently impossible due to https://github.com/dotnet/msbuild/issues/3897
@@ -425,7 +435,7 @@ jobs:
         path: out
 
     - name: Import GPG key for signing
-      uses: crazy-max/ghaction-import-gpg@v4.0.0
+      uses: crazy-max/ghaction-import-gpg@v4.1.0
       with:
         gpg_private_key: ${{ secrets.ARCHIBOT_GPG_PRIVATE_KEY }}
 
@@ -459,7 +469,7 @@ jobs:
       id: github_release
       uses: actions/create-release@v1.1.4
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.ARCHIBOT_GITHUB_TOKEN }}
       with:
         tag_name: ${{ github.ref }}
         release_name: ArchiSteamFarm V${{ github.ref }}

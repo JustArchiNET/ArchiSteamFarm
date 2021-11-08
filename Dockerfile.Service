@@ -42,10 +42,12 @@ RUN dotnet --info && \
     if [ -f "ArchiSteamFarm/Localization/Strings.zh-TW.resx" ]; then ln -s "Strings.zh-TW.resx" "ArchiSteamFarm/Localization/Strings.zh-Hant.resx"; fi && \
     if [ -n "${STEAM_TOKEN_DUMPER_TOKEN-}" ] && [ -f "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs" ]; then sed -i "s/STEAM_TOKEN_DUMPER_TOKEN/${STEAM_TOKEN_DUMPER_TOKEN}/g" "${STEAM_TOKEN_DUMPER_NAME}/SharedInfo.cs"; dotnet publish "${STEAM_TOKEN_DUMPER_NAME}" -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}" -p:ASFVariant=docker -p:ContinuousIntegrationBuild=true -p:SelfContained=false -p:UseAppHost=false -r "$asf_variant" --nologo; fi && \
     dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/result" "-p:ASFVariant=${asf_variant}" -p:ContinuousIntegrationBuild=true -p:PublishSingleFile=true -p:PublishTrimmed=true -r "$asf_variant" --nologo && \
+    if [ -d "ArchiSteamFarm/overlay/${TARGETOS}" ]; then cp -pR "ArchiSteamFarm/overlay/${TARGETOS}/"* "out/result"; fi && \
     if [ -d "ArchiSteamFarm/overlay/${asf_variant}" ]; then cp -pR "ArchiSteamFarm/overlay/${asf_variant}/"* "out/result"; fi && \
     if [ -d "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}" ]; then mkdir -p "out/result/plugins/${STEAM_TOKEN_DUMPER_NAME}"; cp -pR "out/${STEAM_TOKEN_DUMPER_NAME}/${NET_CORE_VERSION}/"* "out/result/plugins/${STEAM_TOKEN_DUMPER_NAME}"; fi
 
 FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/runtime-deps:6.0${IMAGESUFFIX} AS runtime
+ENV ASF_USER asf
 ENV ASPNETCORE_URLS=
 ENV DOTNET_CLI_TELEMETRY_OPTOUT 1
 ENV DOTNET_NOLOGO 1
@@ -63,6 +65,11 @@ LABEL maintainer="JustArchi <JustArchi@JustArchi.net>" \
 EXPOSE 1242
 WORKDIR /app
 COPY --from=build-dotnet /app/out/result .
+
+RUN groupadd -r -g 1000 asf && \
+    useradd -r -d /app -g 1000 -u 1000 asf && \
+    chown -hR asf:asf /app
+
 VOLUME ["/app/config", "/app/logs"]
 HEALTHCHECK CMD ["pidof", "-q", "ArchiSteamFarm"]
 ENTRYPOINT ["sh", "ArchiSteamFarm-Service.sh", "--no-restart", "--process-required", "--system-required"]

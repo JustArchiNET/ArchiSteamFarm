@@ -38,7 +38,7 @@ namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
 				throw new ArgumentNullException(nameof(webBrowser));
 			}
 
-			Uri request = new(URL + "/meow");
+			Uri request = new($"{URL}/meow");
 
 			ObjectResponse<MeowResponse>? response = await webBrowser.UrlGetToJsonObject<MeowResponse>(request).ConfigureAwait(false);
 

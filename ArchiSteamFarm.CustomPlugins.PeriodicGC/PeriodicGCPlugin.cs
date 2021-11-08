@@ -43,7 +43,7 @@ namespace ArchiSteamFarm.CustomPlugins.PeriodicGC {
 		public void OnLoaded() {
 			TimeSpan timeSpan = TimeSpan.FromSeconds(GCPeriod);
 
-			ASF.ArchiLogger.LogGenericWarning("Periodic GC will occur every " + timeSpan.ToHumanReadable() + ". Please keep in mind that this plugin should be used for debugging tests only.");
+			ASF.ArchiLogger.LogGenericWarning($"Periodic GC will occur every {timeSpan.ToHumanReadable()}. Please keep in mind that this plugin should be used for debugging tests only.");
 
 			lock (LockObject) {
 				PeriodicGCTimer.Change(timeSpan, timeSpan);
@@ -51,14 +51,14 @@ namespace ArchiSteamFarm.CustomPlugins.PeriodicGC {
 		}
 
 		private static void PerformGC(object? state = null) {
-			ASF.ArchiLogger.LogGenericWarning("Performing GC, current memory: " + (GC.GetTotalMemory(false) / 1024) + " KB.");
+			ASF.ArchiLogger.LogGenericWarning($"Performing GC, current memory: {GC.GetTotalMemory(false) / 1024} KB.");
 
 			lock (LockObject) {
 				GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
 				GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
 			}
 
-			ASF.ArchiLogger.LogGenericWarning("GC finished, current memory: " + (GC.GetTotalMemory(false) / 1024) + " KB.");
+			ASF.ArchiLogger.LogGenericWarning($"GC finished, current memory: {GC.GetTotalMemory(false) / 1024} KB.");
 		}
 	}
 }

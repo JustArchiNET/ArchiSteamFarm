@@ -89,7 +89,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 		public static (bool Success, string Message) Exit() {
 			// Schedule the task after some time so user can receive response
 			Utilities.InBackground(
-				async () => {
+				static async () => {
 					await Task.Delay(1000).ConfigureAwait(false);
 					await Program.Exit().ConfigureAwait(false);
 				}
@@ -106,7 +106,9 @@ namespace ArchiSteamFarm.Steam.Interaction {
 
 			string? token = await Bot.BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
 
-			return (true, token, Strings.Success);
+			bool success = !string.IsNullOrEmpty(token);
+
+			return (success, token, success ? Strings.Success : Strings.WarningFailed);
 		}
 
 		[PublicAPI]
@@ -252,12 +254,12 @@ namespace ArchiSteamFarm.Steam.Interaction {
 		[PublicAPI]
 		public static (bool Success, string Message) Restart() {
 			if (!Program.RestartAllowed) {
-				return (false, "!" + nameof(Program.RestartAllowed));
+				return (false, $"!{nameof(Program.RestartAllowed)}");
 			}
 
 			// Schedule the task after some time so user can receive response
 			Utilities.InBackground(
-				async () => {
+				static async () => {
 					await Task.Delay(1000).ConfigureAwait(false);
 					await Program.Restart().ConfigureAwait(false);
 				}
@@ -348,10 +350,11 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				return (false, Strings.BotNotConnected);
 			}
 
-			filterFunction ??= _ => true;
+			filterFunction ??= static _ => true;
 
 			HashSet<Asset> inventory;
 
+			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 			lock (TradingSemaphore) {
 				if (TradingScheduled) {
 					return (false, Strings.ErrorAborted);
@@ -363,6 +366,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 			await TradingSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
+				// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 				lock (TradingSemaphore) {
 					TradingScheduled = false;
 				}
@@ -418,7 +422,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 			}
 
 			if (SharedInfo.Version >= version) {
-				return (false, "V" + SharedInfo.Version + " ≥ V" + version, version);
+				return (false, $"V{SharedInfo.Version} ≥ V{version}", version);
 			}
 
 			Utilities.InBackground(ASF.RestartOrExit);
@@ -431,6 +435,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 				return;
 			}
 
+			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 			lock (GiftCardsSemaphore) {
 				if (ProcessingGiftsScheduled) {
 					return;
@@ -442,6 +447,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 			await GiftCardsSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
+				// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 				lock (GiftCardsSemaphore) {
 					ProcessingGiftsScheduled = false;
 				}
@@ -507,7 +513,7 @@ namespace ArchiSteamFarm.Steam.Interaction {
 		internal void OnDisconnected() => HandledGifts.Clear();
 
 		private ulong GetFirstSteamMasterID() {
-			ulong steamMasterID = Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key > 0) && (kv.Key != Bot.SteamID) && new SteamID(kv.Key).IsIndividualAccount && (kv.Value == BotConfig.EAccess.Master)).Select(kv => kv.Key).OrderBy(steamID => steamID).FirstOrDefault();
+			ulong steamMasterID = Bot.BotConfig.SteamUserPermissions.Where(kv => (kv.Key > 0) && (kv.Key != Bot.SteamID) && new SteamID(kv.Key).IsIndividualAccount && (kv.Value == BotConfig.EAccess.Master)).Select(static kv => kv.Key).OrderBy(static steamID => steamID).FirstOrDefault();
 
 			if (steamMasterID > 0) {
 				return steamMasterID;

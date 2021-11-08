@@ -62,31 +62,110 @@
 			PublicKeyToken=b77a5c561934e089
 		</value>
 	</resheader>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<data name="PluginDisabledMissingBuildToken" xml:space="preserve">
+		<value>Το {0} έχει απενεργοποιηθεί λόγω ενός διακριτικού κατασκευής που λείπει</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
+	</data>
+	<data name="PluginDisabledInConfig" xml:space="preserve">
+		<value>{0} είναι απενεργοποιημένο σύμφωνα με τις ρυθμίσεις σας. Αν θέλετε να βοηθήσετε το SteamDB στην υποβολή δεδομένων, παρακαλώ ελέγξτε το wiki μας.</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin")</comment>
+	</data>
+	<data name="PluginInitializedAndEnabled" xml:space="preserve">
+		<value>{0} έχει αρχικοποιηθεί με επιτυχία, σας ευχαριστώ εκ των προτέρων για τη βοήθειά σας. Η πρώτη υποβολή θα γίνει σε περίπου {1} από τώρα.</value>
+		<comment>{0} will be replaced by the name of the plugin (e.g. "SteamTokenDumperPlugin"), {1} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
+	<data name="FileCouldNotBeLoadedFreshInit" xml:space="preserve">
+		<value>{0} δεν μπόρεσε να φορτωθεί, μια νέα παρουσία θα αρχικοποιηθεί...</value>
+		<comment>{0} will be replaced by the name of the file (e.g. "GlobalCache")</comment>
+	</data>
+	<data name="BotNoAppsToRefresh" xml:space="preserve">
+		<value>Δεν υπάρχουν εφαρμογές που να απαιτούν ανανέωση σε αυτό το bot instance.</value>
+	</data>
+	<data name="BotRetrievingTotalAppAccessTokens" xml:space="preserve">
+		<value>Ανάκτηση συνολικά {0} διακριτικών πρόσβασης εφαρμογής...</value>
+		<comment>{0} will be replaced by the number (total count) of app access tokens being retrieved</comment>
+	</data>
+	<data name="BotRetrievingAppAccessTokens" xml:space="preserve">
+		<value>Ανάκτηση {0} διακριτικών πρόσβασης εφαρμογής...</value>
+		<comment>{0} will be replaced by the number (count this batch) of app access tokens being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingAppAccessTokens" xml:space="preserve">
+		<value>Ολοκληρώθηκε η ανάκτηση {0} διακριτικών πρόσβασης εφαρμογών.</value>
+		<comment>{0} will be replaced by the number (count this batch) of app access tokens retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingTotalAppAccessTokens" xml:space="preserve">
+		<value>Ολοκληρώθηκε η ανάκτηση {0} διακριτικών πρόσβασης εφαρμογών.</value>
+		<comment>{0} will be replaced by the number (total count) of app access tokens retrieved</comment>
+	</data>
+	<data name="BotRetrievingTotalDepots" xml:space="preserve">
+		<value>Ανάκτηση όλων των αποθηκών για συνολικά {0} εφαρμογές...</value>
+		<comment>{0} will be replaced by the number (total count) of apps being retrieved</comment>
+	</data>
+	<data name="BotRetrievingAppInfos" xml:space="preserve">
+		<value>Ανάκτηση {0} πληροφοριών εφαρμογής...</value>
+		<comment>{0} will be replaced by the number (count this batch) of app infos being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingAppInfos" xml:space="preserve">
+		<value>Ολοκληρώθηκε η ανάκτηση {0} πληροφοριών εφαρμογών.</value>
+		<comment>{0} will be replaced by the number (count this batch) of app infos retrieved</comment>
+	</data>
+	<data name="BotRetrievingDepotKeys" xml:space="preserve">
+		<value>Ανάκτηση {0} κλειδιών αποθήκης...</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot keys being retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingDepotKeys" xml:space="preserve">
+		<value>Ολοκληρώθηκε η ανάκτηση {0} κλειδιών αποθήκευσης.</value>
+		<comment>{0} will be replaced by the number (count this batch) of depot keys retrieved</comment>
+	</data>
+	<data name="BotFinishedRetrievingTotalDepots" xml:space="preserve">
+		<value>Ολοκληρώθηκε η ανάκτηση όλων των κλειδιών αποθηκών για συνολικά {0} εφαρμογές.</value>
+		<comment>{0} will be replaced by the number (total count) of apps retrieved</comment>
+	</data>
+	<data name="SubmissionNoNewData" xml:space="preserve">
+		<value>Δεν υπάρχουν νέα δεδομένα για να υποβάλετε, όλα είναι ενημερωμένα.</value>
+	</data>
+	<data name="SubmissionNoContributorSet" xml:space="preserve">
+		<value>Δεν ήταν δυνατή η υποβολή των δεδομένων επειδή δεν υπάρχει έγκυρο σύνολο SteamID που θα μπορούσαμε να ταξινομήσουμε ως συνεισφέροντα. Εξετάστε το ενδεχόμενο δημιουργίας {0} ιδιότητας.</value>
+		<comment>{0} will be replaced by the name of the config property (e.g. "SteamOwnerID") that the user is expected to set</comment>
+	</data>
+	<data name="SubmissionInProgress" xml:space="preserve">
+		<value>Υποβολή ενός συνόλου καταχωρημένων εφαρμογών/πακέτων/αποθηκών χρημάτων: {0}/{1}/{2}...</value>
+		<comment>{0} will be replaced by the number of app access tokens being submitted, {1} will be replaced by the number of package access tokens being submitted, {2} will be replaced by the number of depot keys being submitted</comment>
+	</data>
+	<data name="SubmissionFailedTooManyRequests" xml:space="preserve">
+		<value>Η υποβολή απέτυχε λόγω πάρα πολλών αιτήσεων που στάλθηκαν, θα προσπαθήσουμε ξανά σε περίπου {0} από τώρα.</value>
+		<comment>{0} will be replaced by translated TimeSpan string (such as "53 minutes")</comment>
+	</data>
+	<data name="SubmissionSuccessful" xml:space="preserve">
+		<value>Τα δεδομένα έχουν υποβληθεί με επιτυχία. Ο διακομιστής έχει καταχωρήσει συνολικά νέες εφαρμογές/πακέτα/depots: {0} ({1} επαληθευμένο)/{2} ({3} επαληθεύτηκε)/{4} ({5} επιβεβαιωμένο).</value>
+		<comment>{0} will be replaced by the number of new app access tokens that the server has registered, {1} will be replaced by the number of verified app access tokens that the server has registered, {2} will be replaced by the number of new package access tokens that the server has registered, {3} will be replaced by the number of verified package access tokens that the server has registered, {4} will be replaced by the number of new depot keys that the server has registered, {5} will be replaced by the number of verified depot keys that the server has registered</comment>
+	</data>
+	<data name="SubmissionSuccessfulNewApps" xml:space="preserve">
+		<value>Νέες εφαρμογές: {0}</value>
+		<comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulVerifiedApps" xml:space="preserve">
+		<value>Επαληθευμένες εφαρμογές: {0}</value>
+		<comment>{0} will be replaced by list of the apps (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulNewPackages" xml:space="preserve">
+		<value>Νέα πακέτα: {0}</value>
+		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulVerifiedPackages" xml:space="preserve">
+		<value>Επαληθευμένα πακέτα: {0}</value>
+		<comment>{0} will be replaced by list of the packages (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulNewDepots" xml:space="preserve">
+		<value>Νέες αποθήκες: {0}</value>
+		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="SubmissionSuccessfulVerifiedDepots" xml:space="preserve">
+		<value>Επαληθευμένες αποθήκες: {0}</value>
+		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
+	</data>
+	<data name="PluginSecretListInitialized" xml:space="preserve">
+		<value>{0} αρχικοποιήθηκε, το plugin δεν θα επιλύσει κανένα από αυτά: {1}.</value>
+		<comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
+	</data>
 </root>

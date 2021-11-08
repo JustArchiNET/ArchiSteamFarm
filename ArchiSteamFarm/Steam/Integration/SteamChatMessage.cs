@@ -222,7 +222,7 @@ namespace ArchiSteamFarm.Steam.Integration {
 
 			string[] prefixLines = escapedSteamMessagePrefix.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
 
-			return prefixLines.Where(prefixLine => prefixLine.Length > 0).Sum(Encoding.UTF8.GetByteCount) + ((prefixLines.Length - 1) * NewlineWeight);
+			return prefixLines.Where(static prefixLine => prefixLine.Length > 0).Sum(Encoding.UTF8.GetByteCount) + ((prefixLines.Length - 1) * NewlineWeight);
 		}
 	}
 }
