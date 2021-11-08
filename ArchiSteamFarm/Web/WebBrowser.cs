@@ -105,7 +105,7 @@ namespace ArchiSteamFarm.Web {
 
 			HttpClient result = new(HttpClientHandler, false) {
 #if !NETFRAMEWORK
-				DefaultRequestVersion = HttpVersion.Version20,
+				DefaultRequestVersion = HttpVersion.Version30,
 #endif
 				Timeout = TimeSpan.FromSeconds(extendedTimeout ? ExtendedTimeoutMultiplier * ASF.GlobalConfig.ConnectionTimeout : ASF.GlobalConfig.ConnectionTimeout)
 			};
