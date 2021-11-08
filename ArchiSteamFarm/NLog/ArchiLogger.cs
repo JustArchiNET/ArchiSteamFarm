@@ -144,10 +144,10 @@ namespace ArchiSteamFarm.NLog {
 			StringBuilder loggedMessage = new($"{previousMethodName}() {message} {(echo ? "->" : "<-")} ");
 
 			if ((chatGroupID != 0) && (chatID != 0)) {
-				loggedMessage.Append($"{chatGroupID}-{chatID}");
+				loggedMessage.Append(CultureInfo.InvariantCulture, $"{chatGroupID}-{chatID}");
 
 				if (steamID != 0) {
-					loggedMessage.Append($"/{steamID}");
+					loggedMessage.Append(CultureInfo.InvariantCulture, $"/{steamID}");
 				}
 			} else if (steamID != 0) {
 				loggedMessage.Append(steamID);
