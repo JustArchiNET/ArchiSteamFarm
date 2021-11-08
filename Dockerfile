@@ -13,8 +13,8 @@ ARG CONFIGURATION=Release
 ARG STEAM_TOKEN_DUMPER_TOKEN
 ARG TARGETARCH
 ARG TARGETOS
-ENV DOTNET_CLI_TELEMETRY_OPTOUT 1
-ENV DOTNET_NOLOGO 1
+ENV DOTNET_CLI_TELEMETRY_OPTOUT true
+ENV DOTNET_NOLOGO true
 ENV NET_CORE_VERSION net6.0
 ENV STEAM_TOKEN_DUMPER_NAME ArchiSteamFarm.OfficialPlugins.SteamTokenDumper
 WORKDIR /app
@@ -48,8 +48,8 @@ RUN dotnet --info && \
 FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/aspnet:6.0${IMAGESUFFIX} AS runtime
 ENV ASF_USER asf
 ENV ASPNETCORE_URLS=
-ENV DOTNET_CLI_TELEMETRY_OPTOUT 1
-ENV DOTNET_NOLOGO 1
+ENV DOTNET_CLI_TELEMETRY_OPTOUT true
+ENV DOTNET_NOLOGO true
 
 LABEL maintainer="JustArchi <JustArchi@JustArchi.net>" \
     org.opencontainers.image.authors="JustArchi <JustArchi@JustArchi.net>" \
