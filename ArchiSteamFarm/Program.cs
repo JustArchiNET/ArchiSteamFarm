@@ -385,11 +385,11 @@ namespace ArchiSteamFarm {
 #if !NETFRAMEWORK && (TARGET_GENERIC || !TARGET_WINDOWS)
 			if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
 				// Unregister from registered signals
-				foreach (PosixSignal signal in SupportedPosixSignals) {
-					if (RegisteredPosixSignals.Remove(signal, out PosixSignalRegistration? registration)) {
-						registration.Dispose();
-					}
+				foreach (PosixSignalRegistration registration in RegisteredPosixSignals.Values) {
+					registration.Dispose();
 				}
+
+				RegisteredPosixSignals.Clear();
 			}
 #endif
 
