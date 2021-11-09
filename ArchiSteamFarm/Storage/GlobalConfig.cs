@@ -19,17 +19,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if NETFRAMEWORK
-using File = JustArchiNET.Madness.FileMadness.File;
-#else
-using System.IO;
-#endif
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;

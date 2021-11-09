@@ -20,7 +20,8 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using JustArchiNET.Madness;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 #endif
 using System;
 using System.IO;
@@ -32,6 +33,23 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.IPC {
 	internal static class WebUtilities {
+#if NETFRAMEWORK
+		internal static IMvcCoreBuilder AddControllers(this IServiceCollection services) {
+			if (services == null) {
+				throw new ArgumentNullException(nameof(services));
+			}
+
+			return services.AddMvcCore();
+		}
+
+		internal static IServiceCollection AddRequestLocalization(this IServiceCollection services, Action<RequestLocalizationOptions> action) {
+			if (services == null) {
+				throw new ArgumentNullException(nameof(services));
+			}
+
+			return services.Configure(action);
+		}
+#endif
 		internal static string? GetUnifiedName(this Type type) {
 			if (type == null) {
 				throw new ArgumentNullException(nameof(type));

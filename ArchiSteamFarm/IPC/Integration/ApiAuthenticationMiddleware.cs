@@ -20,7 +20,7 @@
 // limitations under the License.
 
 #if NETFRAMEWORK
-using JustArchiNET.Madness;
+using MvcNewtonsoftJsonOptions = Microsoft.AspNetCore.Mvc.MvcJsonOptions;
 #endif
 using System;
 using System.Collections.Concurrent;
@@ -70,11 +70,7 @@ namespace ArchiSteamFarm.IPC.Integration {
 		}
 
 		[UsedImplicitly]
-#if NETFRAMEWORK
-		public async Task InvokeAsync(HttpContext context, IOptions<MvcJsonOptions> jsonOptions) {
-#else
 		public async Task InvokeAsync(HttpContext context, IOptions<MvcNewtonsoftJsonOptions> jsonOptions) {
-#endif
 			if (context == null) {
 				throw new ArgumentNullException(nameof(context));
 			}
