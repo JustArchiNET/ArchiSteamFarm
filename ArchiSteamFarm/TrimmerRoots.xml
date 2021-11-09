@@ -1,6 +1,5 @@
 <linker>
-	<assembly fullname="System.Collections.Immutable">
-		<type fullname="System.Collections.Immutable.ImmutableDictionary" />
-		<type fullname="System.Collections.Immutable.ImmutableHashSet" />
+	<assembly fullname="System.Composition.AttributedModel">
+		<type fullname="System.Composition.ExportAttribute" />
 	</assembly>
 </linker>
