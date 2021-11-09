@@ -184,7 +184,7 @@ namespace ArchiSteamFarm.Helpers {
 
 #if TARGET_GENERIC || !TARGET_WINDOWS
 				if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
-					OS.UnixSetFileAccess(directoryPath, OS.EUnixPermission.Combined777);
+					OS.UnixSetFileAccess(directoryPath!, OS.EUnixPermission.Combined777);
 				}
 #endif
 			}
