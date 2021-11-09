@@ -21,11 +21,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -52,7 +54,11 @@ namespace ArchiSteamFarm {
 		internal static bool Service { get; private set; }
 		internal static bool ShutdownSequenceInitialized { get; private set; }
 
+		private static readonly Dictionary<PosixSignal, PosixSignalRegistration> RegisteredPosixSignals = new();
+
 		private static readonly TaskCompletionSource<byte> ShutdownResetEvent = new();
+
+		private static readonly ImmutableHashSet<PosixSignal> SupportedPosixSignals = ImmutableHashSet.Create(PosixSignal.SIGINT, PosixSignal.SIGTERM);
 
 		private static bool IgnoreUnsupportedEnvironment;
 		private static bool SystemRequired;
@@ -124,6 +130,10 @@ namespace ArchiSteamFarm {
 			AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
 			AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 			TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
+
+			foreach (PosixSignal signal in SupportedPosixSignals) {
+				RegisteredPosixSignals[signal] = PosixSignalRegistration.Create(signal, OnPosixSignal);
+			}
 
 			Console.CancelKeyPress += OnCancelKeyPress;
 
@@ -364,6 +374,13 @@ namespace ArchiSteamFarm {
 
 			ShutdownSequenceInitialized = true;
 
+			// Unregister from registered signals
+			foreach (PosixSignal signal in SupportedPosixSignals) {
+				if (RegisteredPosixSignals.Remove(signal, out PosixSignalRegistration? registration)) {
+					registration.Dispose();
+				}
+			}
+
 			// Sockets created by IPC might still be running for a short while after complete app shutdown
 			// Ensure that IPC is stopped before we finalize shutdown sequence
 			await ArchiKestrel.Stop().ConfigureAwait(false);
@@ -399,6 +416,23 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async void OnCancelKeyPress(object? sender, ConsoleCancelEventArgs e) => await Exit(130).ConfigureAwait(false);
+
+		private static async void OnPosixSignal(PosixSignalContext signal) {
+			if (signal == null) {
+				throw new ArgumentNullException(nameof(signal));
+			}
+
+			switch (signal.Signal) {
+				case PosixSignal.SIGINT:
+					await Exit(130).ConfigureAwait(false);
+
+					break;
+				case PosixSignal.SIGTERM:
+					await Exit().ConfigureAwait(false);
+
+					break;
+			}
+		}
 
 		private static async void OnProcessExit(object? sender, EventArgs e) => await Shutdown().ConfigureAwait(false);
 
