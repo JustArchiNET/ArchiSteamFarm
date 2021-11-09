@@ -30,16 +30,6 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
-		<Using Include="Microsoft.AspNetCore.Hosting.IHostingEnvironment" Alias="IWebHostEnvironment" />
-		<Using Include="Microsoft.AspNetCore.Hosting.IWebHost" Alias="IHost" />
-		<Using Include="Microsoft.AspNetCore.Hosting.WebHostBuilder" Alias="HostBuilder" />
-		<Using Include="Microsoft.AspNetCore.Mvc" />
-		<Using Include="Microsoft.AspNetCore.Mvc.MvcJsonOptions" Alias="MvcNewtonsoftJsonOptions" />
-		<Using Include="Microsoft.Extensions.DependencyInjection.IMvcCoreBuilder" Alias="IMvcBuilder" />
-		<Using Include="Newtonsoft.Json.Converters" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
 		<PackageReference Include="Microsoft.AspNetCore.Cors" />
 		<PackageReference Include="Microsoft.AspNetCore.Diagnostics" />
 		<PackageReference Include="Microsoft.AspNetCore.HttpOverrides" />

@@ -19,6 +19,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#if NETFRAMEWORK
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Converters;
+using IWebHostEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
+using IMvcBuilder = Microsoft.Extensions.DependencyInjection.IMvcCoreBuilder;
+#endif
 using System;
 using System.Collections.Generic;
 using System.Globalization;

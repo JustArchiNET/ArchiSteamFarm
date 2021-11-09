@@ -34,7 +34,7 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm.IPC {
 	internal static class WebUtilities {
 #if NETFRAMEWORK
-		internal static IMvcBuilder AddControllers(this IServiceCollection services) {
+		internal static IMvcCoreBuilder AddControllers(this IServiceCollection services) {
 			if (services == null) {
 				throw new ArgumentNullException(nameof(services));
 			}
