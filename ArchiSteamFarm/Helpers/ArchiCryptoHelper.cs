@@ -19,9 +19,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if NETFRAMEWORK
-using OperatingSystem = JustArchiNET.Madness.OperatingSystemMadness.OperatingSystem;
-#endif
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;

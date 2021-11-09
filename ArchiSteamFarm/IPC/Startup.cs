@@ -19,11 +19,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if NETFRAMEWORK
-using JustArchiNET.Madness;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Converters;
-#endif
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -57,11 +52,7 @@ namespace ArchiSteamFarm.IPC {
 		public Startup(IConfiguration configuration) => Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 
 		[UsedImplicitly]
-#if NETFRAMEWORK
-		public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
-#else
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
-#endif
 			if (app == null) {
 				throw new ArgumentNullException(nameof(app));
 			}
@@ -242,11 +233,7 @@ namespace ArchiSteamFarm.IPC {
 			// Add support for localization
 			services.AddLocalization();
 
-#if NETFRAMEWORK
-			services.Configure<RequestLocalizationOptions>(
-#else
 			services.AddRequestLocalization(
-#endif
 				static options => {
 					// We do not set the DefaultRequestCulture here, because it will default to Thread.CurrentThread.CurrentCulture in this case, which is set when loading GlobalConfig
 
@@ -335,11 +322,7 @@ namespace ArchiSteamFarm.IPC {
 			services.AddSwaggerGenNewtonsoftSupport();
 
 			// We need MVC for /Api, but we're going to use only a small subset of all available features
-#if NETFRAMEWORK
-			IMvcCoreBuilder mvc = services.AddMvcCore();
-#else
 			IMvcBuilder mvc = services.AddControllers();
-#endif
 
 			// Add support for controllers declared in custom plugins
 			if (PluginsCore.ActivePlugins?.Count > 0) {

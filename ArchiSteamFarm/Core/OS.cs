@@ -19,17 +19,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if NETFRAMEWORK
-using JustArchiNET.Madness;
-using OperatingSystem = JustArchiNET.Madness.OperatingSystemMadness.OperatingSystem;
-#else
-using System.Runtime.Versioning;
-#endif
 using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;

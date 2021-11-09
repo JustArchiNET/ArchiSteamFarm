@@ -19,9 +19,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if NETFRAMEWORK
-using HashCode = JustArchiNET.Madness.HashCodeMadness.HashCode;
-#endif
 using System;
 using System.ComponentModel;
 using Newtonsoft.Json;

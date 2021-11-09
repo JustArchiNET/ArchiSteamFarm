@@ -19,12 +19,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if NETFRAMEWORK
-using JustArchiNET.Madness;
-using File = JustArchiNET.Madness.FileMadness.File;
-#else
-using Microsoft.Extensions.Hosting;
-#endif
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -35,6 +29,7 @@ using ArchiSteamFarm.NLog;
 using ArchiSteamFarm.NLog.Targets;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -44,11 +39,7 @@ namespace ArchiSteamFarm.IPC {
 	internal static class ArchiKestrel {
 		internal static HistoryTarget? HistoryTarget { get; private set; }
 
-#if NETFRAMEWORK
-		private static IWebHost? KestrelWebHost;
-#else
 		private static IHost? KestrelWebHost;
-#endif
 
 		internal static void OnNewHistoryTarget(HistoryTarget? historyTarget = null) {
 			if (HistoryTarget != null) {
@@ -70,11 +61,7 @@ namespace ArchiSteamFarm.IPC {
 			ASF.ArchiLogger.LogGenericInfo(Strings.IPCStarting);
 
 			// The order of dependency injection matters, pay attention to it
-#if NETFRAMEWORK
-			WebHostBuilder builder = new();
-#else
 			HostBuilder builder = new();
-#endif
 
 			string customDirectory = Path.Combine(Directory.GetCurrentDirectory(), SharedInfo.WebsiteDirectory);
 			string websiteDirectory = Directory.Exists(customDirectory) ? customDirectory : Path.Combine(AppContext.BaseDirectory, SharedInfo.WebsiteDirectory);
@@ -144,11 +131,7 @@ namespace ArchiSteamFarm.IPC {
 			Logging.InitHistoryLogger();
 
 			// Start the server
-#if NETFRAMEWORK
-			IWebHost? kestrelWebHost = null;
-#else
 			IHost? kestrelWebHost = null;
-#endif
 
 			try {
 				kestrelWebHost = builder.Build();
