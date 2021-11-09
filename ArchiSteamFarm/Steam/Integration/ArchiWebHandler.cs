@@ -1329,6 +1329,9 @@ namespace ArchiSteamFarm.Steam.Integration {
 					}
 
 					return (response.StatusCode.IsSuccessCode() ? EResult.OK : EResult.Fail, purchaseResult);
+				case HttpStatusCode.Unauthorized:
+					// Let's convert this into something reasonable
+					return (EResult.AccessDenied, EPurchaseResultDetail.NoDetail);
 				default:
 					// We should handle all expected status codes above, this is a generic fallback for those that we don't
 					Bot.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(response.StatusCode), response.StatusCode));
