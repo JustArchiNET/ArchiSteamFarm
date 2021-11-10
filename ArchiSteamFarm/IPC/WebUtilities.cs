@@ -21,6 +21,7 @@
 
 #if NETFRAMEWORK
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 #endif
 using System;
@@ -40,6 +41,23 @@ namespace ArchiSteamFarm.IPC {
 			}
 
 			return services.AddMvcCore();
+		}
+
+		internal static IMvcCoreBuilder AddNewtonsoftJson(this IMvcCoreBuilder mvc, Action<MvcJsonOptions> setupAction) {
+			if (mvc == null) {
+				throw new ArgumentNullException(nameof(mvc));
+			}
+
+			if (setupAction == null) {
+				throw new ArgumentNullException(nameof(setupAction));
+			}
+
+			// Add JSON formatters that will be used as default ones if no specific formatters are asked for
+			mvc.AddJsonFormatters();
+
+			mvc.AddJsonOptions(setupAction);
+
+			return mvc;
 		}
 
 		internal static IServiceCollection AddRequestLocalization(this IServiceCollection services, Action<RequestLocalizationOptions> action) {
