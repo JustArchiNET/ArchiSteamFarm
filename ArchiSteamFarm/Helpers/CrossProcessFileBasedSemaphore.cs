@@ -178,7 +178,7 @@ internal sealed class CrossProcessFileBasedSemaphore : ICrossProcessSemaphore, I
 					ASF.ArchiLogger.LogGenericDebuggingException(e);
 				}
 			} else if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
-				OS.UnixSetFileAccess(directoryPath!, OS.EUnixPermission.Combined777);
+				OS.UnixSetFileAccess(directoryPath, OS.EUnixPermission.Combined777);
 			}
 		}
 

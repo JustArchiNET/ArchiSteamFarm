@@ -357,7 +357,7 @@ internal static class Logging {
 
 						ulong steamOwnerID = ASF.GlobalConfig?.SteamOwnerID ?? GlobalConfig.DefaultSteamOwnerID;
 
-						string? response = await targetBot.Commands.Response(steamOwnerID, command!).ConfigureAwait(false);
+						string? response = await targetBot.Commands.Response(steamOwnerID, command).ConfigureAwait(false);
 
 						if (string.IsNullOrEmpty(response)) {
 							ASF.ArchiLogger.LogNullError(nameof(response));

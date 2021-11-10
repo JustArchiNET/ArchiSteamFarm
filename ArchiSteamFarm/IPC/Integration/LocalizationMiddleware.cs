@@ -51,9 +51,9 @@ internal sealed class LocalizationMiddleware {
 
 		RequestHeaders headers = context.Request.GetTypedHeaders();
 
-		IList<StringWithQualityHeaderValue>? acceptLanguageHeader = headers.AcceptLanguage;
+		IList<StringWithQualityHeaderValue> acceptLanguageHeader = headers.AcceptLanguage;
 
-		if ((acceptLanguageHeader == null) || (acceptLanguageHeader.Count == 0)) {
+		if (acceptLanguageHeader.Count == 0) {
 			await Next(context).ConfigureAwait(false);
 
 			return;

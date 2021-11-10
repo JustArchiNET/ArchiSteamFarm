@@ -165,7 +165,7 @@ internal static class GitHub {
 		MarkdownDocument markdownDocument = Markdown.Parse(markdownText);
 		MarkdownDocument result = new();
 
-		foreach (Block block in markdownDocument.SkipWhile(static block => block is not HeadingBlock { Inline: { FirstChild: LiteralInline literalInline } } || !literalInline.Content.ToString().Equals("Changelog", StringComparison.OrdinalIgnoreCase)).Skip(1).TakeWhile(static block => block is not ThematicBreakBlock).ToList()) {
+		foreach (Block block in markdownDocument.SkipWhile(static block => block is not HeadingBlock { Inline.FirstChild: LiteralInline literalInline } || !literalInline.Content.ToString().Equals("Changelog", StringComparison.OrdinalIgnoreCase)).Skip(1).TakeWhile(static block => block is not ThematicBreakBlock).ToList()) {
 			// All blocks that we're interested in must be removed from original markdownDocument firstly
 			markdownDocument.Remove(block);
 			result.Add(block);
