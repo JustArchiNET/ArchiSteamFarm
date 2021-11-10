@@ -23,38 +23,38 @@ using System;
 using JetBrains.Annotations;
 using Microsoft.OpenApi.Models;
 
-namespace ArchiSteamFarm.IPC.Integration {
-	[PublicAPI]
-	public sealed class SwaggerItemsMinMaxAttribute : CustomSwaggerAttribute {
-		public uint MaximumUint {
-			get => BackingMaximum.HasValue ? decimal.ToUInt32(BackingMaximum.Value) : default(uint);
-			set => BackingMaximum = value;
+namespace ArchiSteamFarm.IPC.Integration;
+
+[PublicAPI]
+public sealed class SwaggerItemsMinMaxAttribute : CustomSwaggerAttribute {
+	public uint MaximumUint {
+		get => BackingMaximum.HasValue ? decimal.ToUInt32(BackingMaximum.Value) : default(uint);
+		set => BackingMaximum = value;
+	}
+
+	public uint MinimumUint {
+		get => BackingMinimum.HasValue ? decimal.ToUInt32(BackingMinimum.Value) : default(uint);
+		set => BackingMinimum = value;
+	}
+
+	private decimal? BackingMaximum;
+	private decimal? BackingMinimum;
+
+	public override void Apply(OpenApiSchema schema) {
+		if (schema == null) {
+			throw new ArgumentNullException(nameof(schema));
 		}
 
-		public uint MinimumUint {
-			get => BackingMinimum.HasValue ? decimal.ToUInt32(BackingMinimum.Value) : default(uint);
-			set => BackingMinimum = value;
+		if (schema.Items == null) {
+			throw new InvalidOperationException(nameof(schema.Items));
 		}
 
-		private decimal? BackingMaximum;
-		private decimal? BackingMinimum;
+		if (BackingMinimum.HasValue) {
+			schema.Items.Minimum = BackingMinimum.Value;
+		}
 
-		public override void Apply(OpenApiSchema schema) {
-			if (schema == null) {
-				throw new ArgumentNullException(nameof(schema));
-			}
-
-			if (schema.Items == null) {
-				throw new InvalidOperationException(nameof(schema.Items));
-			}
-
-			if (BackingMinimum.HasValue) {
-				schema.Items.Minimum = BackingMinimum.Value;
-			}
-
-			if (BackingMaximum.HasValue) {
-				schema.Items.Maximum = BackingMaximum.Value;
-			}
+		if (BackingMaximum.HasValue) {
+			schema.Items.Maximum = BackingMaximum.Value;
 		}
 	}
 }

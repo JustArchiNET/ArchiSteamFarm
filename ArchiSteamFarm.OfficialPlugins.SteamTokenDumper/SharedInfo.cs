@@ -19,17 +19,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
-	internal static class SharedInfo {
-		internal const byte ApiVersion = 2;
-		internal const byte AppInfosPerSingleRequest = byte.MaxValue;
-		internal const byte MaximumHoursBetweenRefresh = 8; // Per single bot account, makes sense to be 2 or 3 times less than MinimumHoursBetweenUploads
-		internal const byte MaximumMinutesBeforeFirstUpload = 60; // Must be greater or equal to MinimumMinutesBeforeFirstUpload
-		internal const byte MinimumHoursBetweenUploads = 24;
-		internal const byte MinimumMinutesBeforeFirstUpload = 10; // Must be less or equal to MaximumMinutesBeforeFirstUpload
-		internal const string ServerURL = "https://asf-token-dumper.xpaw.me";
-		internal const string Token = "STEAM_TOKEN_DUMPER_TOKEN"; // This is filled automatically during our CI build with API key provided by xPaw for ASF project
+namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
 
-		internal static bool HasValidToken => Token.Length == 128;
-	}
+internal static class SharedInfo {
+	internal const byte ApiVersion = 2;
+	internal const byte AppInfosPerSingleRequest = byte.MaxValue;
+	internal const byte MaximumHoursBetweenRefresh = 8; // Per single bot account, makes sense to be 2 or 3 times less than MinimumHoursBetweenUploads
+	internal const byte MaximumMinutesBeforeFirstUpload = 60; // Must be greater or equal to MinimumMinutesBeforeFirstUpload
+	internal const byte MinimumHoursBetweenUploads = 24;
+	internal const byte MinimumMinutesBeforeFirstUpload = 10; // Must be less or equal to MaximumMinutesBeforeFirstUpload
+	internal const string ServerURL = "https://asf-token-dumper.xpaw.me";
+	internal const string Token = "STEAM_TOKEN_DUMPER_TOKEN"; // This is filled automatically during our CI build with API key provided by xPaw for ASF project
+
+	internal static bool HasValidToken => Token.Length == 128;
 }

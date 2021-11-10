@@ -37,157 +37,157 @@ using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.IPC.Controllers.Api {
-	[Route("Api/NLog")]
-	public sealed class NLogController : ArchiController {
-		private static readonly ConcurrentDictionary<WebSocket, (SemaphoreSlim Semaphore, CancellationToken CancellationToken)> ActiveLogWebSockets = new();
+namespace ArchiSteamFarm.IPC.Controllers.Api;
 
-		/// <summary>
-		///     Fetches ASF log in realtime.
-		/// </summary>
-		/// <remarks>
-		///     This API endpoint requires a websocket connection.
-		/// </remarks>
-		[HttpGet]
-		[ProducesResponseType(typeof(IEnumerable<GenericResponse<string>>), (int) HttpStatusCode.OK)]
-		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-		public async Task<ActionResult> NLogGet(CancellationToken cancellationToken) {
-			if (HttpContext == null) {
-				throw new InvalidOperationException(nameof(HttpContext));
+[Route("Api/NLog")]
+public sealed class NLogController : ArchiController {
+	private static readonly ConcurrentDictionary<WebSocket, (SemaphoreSlim Semaphore, CancellationToken CancellationToken)> ActiveLogWebSockets = new();
+
+	/// <summary>
+	///     Fetches ASF log in realtime.
+	/// </summary>
+	/// <remarks>
+	///     This API endpoint requires a websocket connection.
+	/// </remarks>
+	[HttpGet]
+	[ProducesResponseType(typeof(IEnumerable<GenericResponse<string>>), (int) HttpStatusCode.OK)]
+	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+	public async Task<ActionResult> NLogGet(CancellationToken cancellationToken) {
+		if (HttpContext == null) {
+			throw new InvalidOperationException(nameof(HttpContext));
+		}
+
+		if (!HttpContext.WebSockets.IsWebSocketRequest) {
+			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError!, $"{nameof(HttpContext.WebSockets.IsWebSocketRequest)}: {HttpContext.WebSockets.IsWebSocketRequest}")));
+		}
+
+		// From now on we can return only EmptyResult as the response stream is already being used by existing websocket connection
+
+		try {
+			using WebSocket webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync().ConfigureAwait(false);
+
+			SemaphoreSlim sendSemaphore = new(1, 1);
+
+			if (!ActiveLogWebSockets.TryAdd(webSocket, (sendSemaphore, cancellationToken))) {
+				sendSemaphore.Dispose();
+
+				return new EmptyResult();
 			}
-
-			if (!HttpContext.WebSockets.IsWebSocketRequest) {
-				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError!, $"{nameof(HttpContext.WebSockets.IsWebSocketRequest)}: {HttpContext.WebSockets.IsWebSocketRequest}")));
-			}
-
-			// From now on we can return only EmptyResult as the response stream is already being used by existing websocket connection
 
 			try {
-				using WebSocket webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync().ConfigureAwait(false);
-
-				SemaphoreSlim sendSemaphore = new(1, 1);
-
-				if (!ActiveLogWebSockets.TryAdd(webSocket, (sendSemaphore, cancellationToken))) {
-					sendSemaphore.Dispose();
-
-					return new EmptyResult();
+				// Push initial history if available
+				if (ArchiKestrel.HistoryTarget != null) {
+					// ReSharper disable once AccessToDisposedClosure - we're waiting for completion with Task.WhenAll(), we're not going to exit using block
+					await Task.WhenAll(ArchiKestrel.HistoryTarget.ArchivedMessages.Select(archivedMessage => PostLoggedMessageUpdate(webSocket, archivedMessage, sendSemaphore, cancellationToken))).ConfigureAwait(false);
 				}
 
-				try {
-					// Push initial history if available
-					if (ArchiKestrel.HistoryTarget != null) {
-						// ReSharper disable once AccessToDisposedClosure - we're waiting for completion with Task.WhenAll(), we're not going to exit using block
-						await Task.WhenAll(ArchiKestrel.HistoryTarget.ArchivedMessages.Select(archivedMessage => PostLoggedMessageUpdate(webSocket, archivedMessage, sendSemaphore, cancellationToken))).ConfigureAwait(false);
-					}
+				while (webSocket.State == WebSocketState.Open) {
+					WebSocketReceiveResult result = await webSocket.ReceiveAsync(Array.Empty<byte>(), cancellationToken).ConfigureAwait(false);
 
-					while (webSocket.State == WebSocketState.Open) {
-						WebSocketReceiveResult result = await webSocket.ReceiveAsync(Array.Empty<byte>(), cancellationToken).ConfigureAwait(false);
-
-						if (result.MessageType != WebSocketMessageType.Close) {
-							await webSocket.CloseAsync(WebSocketCloseStatus.InvalidMessageType, "You're not supposed to be sending any message but Close!", cancellationToken).ConfigureAwait(false);
-
-							break;
-						}
-
-						await webSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "", cancellationToken).ConfigureAwait(false);
+					if (result.MessageType != WebSocketMessageType.Close) {
+						await webSocket.CloseAsync(WebSocketCloseStatus.InvalidMessageType, "You're not supposed to be sending any message but Close!", cancellationToken).ConfigureAwait(false);
 
 						break;
 					}
-				} finally {
-					if (ActiveLogWebSockets.TryRemove(webSocket, out (SemaphoreSlim Semaphore, CancellationToken CancellationToken) entry)) {
-						await entry.Semaphore.WaitAsync(CancellationToken.None).ConfigureAwait(false); // Ensure that our semaphore is truly closed by now
-						entry.Semaphore.Dispose();
-					}
+
+					await webSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "", cancellationToken).ConfigureAwait(false);
+
+					break;
 				}
-			} catch (ConnectionAbortedException e) {
-				ASF.ArchiLogger.LogGenericDebuggingException(e);
-			} catch (OperationCanceledException e) {
-				ASF.ArchiLogger.LogGenericDebuggingException(e);
-			} catch (WebSocketException e) {
-				ASF.ArchiLogger.LogGenericDebuggingException(e);
-			}
-
-			return new EmptyResult();
-		}
-
-		internal static async void OnNewHistoryEntry(object? sender, HistoryTarget.NewHistoryEntryArgs newHistoryEntryArgs) {
-			if (newHistoryEntryArgs == null) {
-				throw new ArgumentNullException(nameof(newHistoryEntryArgs));
-			}
-
-			if (ActiveLogWebSockets.IsEmpty) {
-				return;
-			}
-
-			string json = JsonConvert.SerializeObject(new GenericResponse<string>(newHistoryEntryArgs.Message));
-
-			await Task.WhenAll(ActiveLogWebSockets.Where(static kv => kv.Key.State == WebSocketState.Open).Select(kv => PostLoggedJsonUpdate(kv.Key, json, kv.Value.Semaphore, kv.Value.CancellationToken))).ConfigureAwait(false);
-		}
-
-		private static async Task PostLoggedJsonUpdate(WebSocket webSocket, string json, SemaphoreSlim sendSemaphore, CancellationToken cancellationToken) {
-			if (webSocket == null) {
-				throw new ArgumentNullException(nameof(webSocket));
-			}
-
-			if (string.IsNullOrEmpty(json)) {
-				throw new ArgumentNullException(nameof(json));
-			}
-
-			if (sendSemaphore == null) {
-				throw new ArgumentNullException(nameof(sendSemaphore));
-			}
-
-			if (cancellationToken.IsCancellationRequested || (webSocket.State != WebSocketState.Open)) {
-				return;
-			}
-
-			try {
-				await sendSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
-			} catch (OperationCanceledException e) {
-				ASF.ArchiLogger.LogGenericDebuggingException(e);
-
-				return;
-			}
-
-			try {
-#pragma warning disable CA1508 // False positive, webSocket state could change between our previous check and this one due to semaphore wait
-				if (cancellationToken.IsCancellationRequested || (webSocket.State != WebSocketState.Open)) {
-#pragma warning restore CA1508 // False positive, webSocket state could change between our previous check and this one due to semaphore wait
-					return;
-				}
-
-				await webSocket.SendAsync(Encoding.UTF8.GetBytes(json), WebSocketMessageType.Text, true, cancellationToken).ConfigureAwait(false);
-			} catch (ConnectionAbortedException e) {
-				ASF.ArchiLogger.LogGenericDebuggingException(e);
-			} catch (OperationCanceledException e) {
-				ASF.ArchiLogger.LogGenericDebuggingException(e);
-			} catch (WebSocketException e) {
-				ASF.ArchiLogger.LogGenericDebuggingException(e);
 			} finally {
-				sendSemaphore.Release();
+				if (ActiveLogWebSockets.TryRemove(webSocket, out (SemaphoreSlim Semaphore, CancellationToken CancellationToken) entry)) {
+					await entry.Semaphore.WaitAsync(CancellationToken.None).ConfigureAwait(false); // Ensure that our semaphore is truly closed by now
+					entry.Semaphore.Dispose();
+				}
 			}
+		} catch (ConnectionAbortedException e) {
+			ASF.ArchiLogger.LogGenericDebuggingException(e);
+		} catch (OperationCanceledException e) {
+			ASF.ArchiLogger.LogGenericDebuggingException(e);
+		} catch (WebSocketException e) {
+			ASF.ArchiLogger.LogGenericDebuggingException(e);
 		}
 
-		private static async Task PostLoggedMessageUpdate(WebSocket webSocket, string loggedMessage, SemaphoreSlim sendSemaphore, CancellationToken cancellationToken) {
-			if (webSocket == null) {
-				throw new ArgumentNullException(nameof(webSocket));
-			}
+		return new EmptyResult();
+	}
 
-			if (string.IsNullOrEmpty(loggedMessage)) {
-				throw new ArgumentNullException(nameof(loggedMessage));
-			}
+	internal static async void OnNewHistoryEntry(object? sender, HistoryTarget.NewHistoryEntryArgs newHistoryEntryArgs) {
+		if (newHistoryEntryArgs == null) {
+			throw new ArgumentNullException(nameof(newHistoryEntryArgs));
+		}
 
-			if (sendSemaphore == null) {
-				throw new ArgumentNullException(nameof(sendSemaphore));
-			}
+		if (ActiveLogWebSockets.IsEmpty) {
+			return;
+		}
 
+		string json = JsonConvert.SerializeObject(new GenericResponse<string>(newHistoryEntryArgs.Message));
+
+		await Task.WhenAll(ActiveLogWebSockets.Where(static kv => kv.Key.State == WebSocketState.Open).Select(kv => PostLoggedJsonUpdate(kv.Key, json, kv.Value.Semaphore, kv.Value.CancellationToken))).ConfigureAwait(false);
+	}
+
+	private static async Task PostLoggedJsonUpdate(WebSocket webSocket, string json, SemaphoreSlim sendSemaphore, CancellationToken cancellationToken) {
+		if (webSocket == null) {
+			throw new ArgumentNullException(nameof(webSocket));
+		}
+
+		if (string.IsNullOrEmpty(json)) {
+			throw new ArgumentNullException(nameof(json));
+		}
+
+		if (sendSemaphore == null) {
+			throw new ArgumentNullException(nameof(sendSemaphore));
+		}
+
+		if (cancellationToken.IsCancellationRequested || (webSocket.State != WebSocketState.Open)) {
+			return;
+		}
+
+		try {
+			await sendSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+		} catch (OperationCanceledException e) {
+			ASF.ArchiLogger.LogGenericDebuggingException(e);
+
+			return;
+		}
+
+		try {
+#pragma warning disable CA1508 // False positive, webSocket state could change between our previous check and this one due to semaphore wait
 			if (cancellationToken.IsCancellationRequested || (webSocket.State != WebSocketState.Open)) {
+#pragma warning restore CA1508 // False positive, webSocket state could change between our previous check and this one due to semaphore wait
 				return;
 			}
 
-			string response = JsonConvert.SerializeObject(new GenericResponse<string>(loggedMessage));
-
-			await PostLoggedJsonUpdate(webSocket, response, sendSemaphore, cancellationToken).ConfigureAwait(false);
+			await webSocket.SendAsync(Encoding.UTF8.GetBytes(json), WebSocketMessageType.Text, true, cancellationToken).ConfigureAwait(false);
+		} catch (ConnectionAbortedException e) {
+			ASF.ArchiLogger.LogGenericDebuggingException(e);
+		} catch (OperationCanceledException e) {
+			ASF.ArchiLogger.LogGenericDebuggingException(e);
+		} catch (WebSocketException e) {
+			ASF.ArchiLogger.LogGenericDebuggingException(e);
+		} finally {
+			sendSemaphore.Release();
 		}
+	}
+
+	private static async Task PostLoggedMessageUpdate(WebSocket webSocket, string loggedMessage, SemaphoreSlim sendSemaphore, CancellationToken cancellationToken) {
+		if (webSocket == null) {
+			throw new ArgumentNullException(nameof(webSocket));
+		}
+
+		if (string.IsNullOrEmpty(loggedMessage)) {
+			throw new ArgumentNullException(nameof(loggedMessage));
+		}
+
+		if (sendSemaphore == null) {
+			throw new ArgumentNullException(nameof(sendSemaphore));
+		}
+
+		if (cancellationToken.IsCancellationRequested || (webSocket.State != WebSocketState.Open)) {
+			return;
+		}
+
+		string response = JsonConvert.SerializeObject(new GenericResponse<string>(loggedMessage));
+
+		await PostLoggedJsonUpdate(webSocket, response, sendSemaphore, cancellationToken).ConfigureAwait(false);
 	}
 }

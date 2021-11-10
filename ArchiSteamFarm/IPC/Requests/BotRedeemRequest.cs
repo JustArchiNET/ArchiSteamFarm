@@ -24,17 +24,17 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.IPC.Requests {
-	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	public sealed class BotRedeemRequest {
-		/// <summary>
-		///     A collection (set) of keys to redeem.
-		/// </summary>
-		[JsonProperty(Required = Required.Always)]
-		[Required]
-		public ImmutableHashSet<string> KeysToRedeem { get; private set; } = ImmutableHashSet<string>.Empty;
+namespace ArchiSteamFarm.IPC.Requests;
 
-		[JsonConstructor]
-		private BotRedeemRequest() { }
-	}
+[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+public sealed class BotRedeemRequest {
+	/// <summary>
+	///     A collection (set) of keys to redeem.
+	/// </summary>
+	[JsonProperty(Required = Required.Always)]
+	[Required]
+	public ImmutableHashSet<string> KeysToRedeem { get; private set; } = ImmutableHashSet<string>.Empty;
+
+	[JsonConstructor]
+	private BotRedeemRequest() { }
 }

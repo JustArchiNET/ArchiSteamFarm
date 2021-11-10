@@ -32,8 +32,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.IPC {
-	internal static class WebUtilities {
+namespace ArchiSteamFarm.IPC;
+
+internal static class WebUtilities {
 #if NETFRAMEWORK
 		internal static IMvcCoreBuilder AddControllers(this IServiceCollection services) {
 			if (services == null) {
@@ -69,53 +70,52 @@ namespace ArchiSteamFarm.IPC {
 		}
 #endif
 
-		internal static string? GetUnifiedName(this Type type) {
-			if (type == null) {
-				throw new ArgumentNullException(nameof(type));
-			}
-
-			return type.GenericTypeArguments.Length == 0 ? type.FullName : $"{type.Namespace}.{type.Name}{string.Join("", type.GenericTypeArguments.Select(static innerType => $"[{innerType.GetUnifiedName()}]"))}";
+	internal static string? GetUnifiedName(this Type type) {
+		if (type == null) {
+			throw new ArgumentNullException(nameof(type));
 		}
 
-		internal static Type? ParseType(string typeText) {
-			if (string.IsNullOrEmpty(typeText)) {
-				throw new ArgumentNullException(nameof(typeText));
-			}
+		return type.GenericTypeArguments.Length == 0 ? type.FullName : $"{type.Namespace}.{type.Name}{string.Join("", type.GenericTypeArguments.Select(static innerType => $"[{innerType.GetUnifiedName()}]"))}";
+	}
 
-			Type? targetType = Type.GetType(typeText);
-
-			if (targetType != null) {
-				return targetType;
-			}
-
-			// We can try one more time by trying to smartly guess the assembly name from the namespace, this will work for custom libraries like SteamKit2
-			int index = typeText.IndexOf('.', StringComparison.Ordinal);
-
-			if ((index <= 0) || (index >= typeText.Length - 1)) {
-				return null;
-			}
-
-			return Type.GetType($"{typeText},{typeText[..index]}");
+	internal static Type? ParseType(string typeText) {
+		if (string.IsNullOrEmpty(typeText)) {
+			throw new ArgumentNullException(nameof(typeText));
 		}
 
-		internal static async Task WriteJsonAsync<TValue>(this HttpResponse response, TValue? value, JsonSerializerSettings? jsonSerializerSettings = null) {
-			if (response == null) {
-				throw new ArgumentNullException(nameof(response));
-			}
+		Type? targetType = Type.GetType(typeText);
 
-			JsonSerializer serializer = JsonSerializer.CreateDefault(jsonSerializerSettings);
+		if (targetType != null) {
+			return targetType;
+		}
 
-			response.ContentType = "application/json; charset=utf-8";
+		// We can try one more time by trying to smartly guess the assembly name from the namespace, this will work for custom libraries like SteamKit2
+		int index = typeText.IndexOf('.', StringComparison.Ordinal);
 
-			StreamWriter streamWriter = new(response.Body, Encoding.UTF8);
+		if ((index <= 0) || (index >= typeText.Length - 1)) {
+			return null;
+		}
 
-			await using (streamWriter.ConfigureAwait(false)) {
-				using JsonTextWriter jsonWriter = new(streamWriter) {
-					CloseOutput = false
-				};
+		return Type.GetType($"{typeText},{typeText[..index]}");
+	}
 
-				serializer.Serialize(jsonWriter, value);
-			}
+	internal static async Task WriteJsonAsync<TValue>(this HttpResponse response, TValue? value, JsonSerializerSettings? jsonSerializerSettings = null) {
+		if (response == null) {
+			throw new ArgumentNullException(nameof(response));
+		}
+
+		JsonSerializer serializer = JsonSerializer.CreateDefault(jsonSerializerSettings);
+
+		response.ContentType = "application/json; charset=utf-8";
+
+		StreamWriter streamWriter = new(response.Body, Encoding.UTF8);
+
+		await using (streamWriter.ConfigureAwait(false)) {
+			using JsonTextWriter jsonWriter = new(streamWriter) {
+				CloseOutput = false
+			};
+
+			serializer.Serialize(jsonWriter, value);
 		}
 	}
 }

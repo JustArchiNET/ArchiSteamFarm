@@ -34,207 +34,207 @@ using ArchiSteamFarm.Steam.Security;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.Steam.Storage {
-	internal sealed class BotDatabase : SerializableFile {
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ConcurrentHashSet<ulong> BlacklistedFromTradesSteamIDs = new();
+namespace ArchiSteamFarm.Steam.Storage;
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ConcurrentHashSet<uint> IdlingBlacklistedAppIDs = new();
+internal sealed class BotDatabase : SerializableFile {
+	[JsonProperty(Required = Required.DisallowNull)]
+	internal readonly ConcurrentHashSet<ulong> BlacklistedFromTradesSteamIDs = new();
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ConcurrentHashSet<uint> IdlingPriorityAppIDs = new();
+	[JsonProperty(Required = Required.DisallowNull)]
+	internal readonly ConcurrentHashSet<uint> IdlingBlacklistedAppIDs = new();
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ConcurrentHashSet<uint> MatchActivelyBlacklistedAppIDs = new();
+	[JsonProperty(Required = Required.DisallowNull)]
+	internal readonly ConcurrentHashSet<uint> IdlingPriorityAppIDs = new();
 
-		internal uint GamesToRedeemInBackgroundCount {
-			get {
-				lock (GamesToRedeemInBackground) {
-					return (uint) GamesToRedeemInBackground.Count;
-				}
-			}
-		}
+	[JsonProperty(Required = Required.DisallowNull)]
+	internal readonly ConcurrentHashSet<uint> MatchActivelyBlacklistedAppIDs = new();
 
-		internal bool HasGamesToRedeemInBackground => GamesToRedeemInBackgroundCount > 0;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly OrderedDictionary GamesToRedeemInBackground = new();
-
-		internal string? LoginKey {
-			get => BackingLoginKey;
-
-			set {
-				if (BackingLoginKey == value) {
-					return;
-				}
-
-				BackingLoginKey = value;
-				Utilities.InBackground(Save);
-			}
-		}
-
-		internal MobileAuthenticator? MobileAuthenticator {
-			get => BackingMobileAuthenticator;
-
-			set {
-				if (BackingMobileAuthenticator == value) {
-					return;
-				}
-
-				BackingMobileAuthenticator = value;
-				Utilities.InBackground(Save);
-			}
-		}
-
-		[JsonProperty(PropertyName = "_" + nameof(LoginKey))]
-		private string? BackingLoginKey;
-
-		[JsonProperty(PropertyName = "_" + nameof(MobileAuthenticator))]
-		private MobileAuthenticator? BackingMobileAuthenticator;
-
-		private BotDatabase(string filePath) {
-			if (string.IsNullOrEmpty(filePath)) {
-				throw new ArgumentNullException(nameof(filePath));
-			}
-
-			FilePath = filePath;
-		}
-
-		[JsonConstructor]
-		private BotDatabase() {
-			BlacklistedFromTradesSteamIDs.OnModified += OnObjectModified;
-			IdlingBlacklistedAppIDs.OnModified += OnObjectModified;
-			IdlingPriorityAppIDs.OnModified += OnObjectModified;
-			MatchActivelyBlacklistedAppIDs.OnModified += OnObjectModified;
-		}
-
-		[UsedImplicitly]
-		public bool ShouldSerializeBackingLoginKey() => !string.IsNullOrEmpty(BackingLoginKey);
-
-		[UsedImplicitly]
-		public bool ShouldSerializeBackingMobileAuthenticator() => BackingMobileAuthenticator != null;
-
-		[UsedImplicitly]
-		public bool ShouldSerializeBlacklistedFromTradesSteamIDs() => BlacklistedFromTradesSteamIDs.Count > 0;
-
-		[UsedImplicitly]
-		public bool ShouldSerializeGamesToRedeemInBackground() => HasGamesToRedeemInBackground;
-
-		[UsedImplicitly]
-		public bool ShouldSerializeIdlingBlacklistedAppIDs() => IdlingBlacklistedAppIDs.Count > 0;
-
-		[UsedImplicitly]
-		public bool ShouldSerializeIdlingPriorityAppIDs() => IdlingPriorityAppIDs.Count > 0;
-
-		[UsedImplicitly]
-		public bool ShouldSerializeMatchActivelyBlacklistedAppIDs() => MatchActivelyBlacklistedAppIDs.Count > 0;
-
-		protected override void Dispose(bool disposing) {
-			if (disposing) {
-				// Events we registered
-				BlacklistedFromTradesSteamIDs.OnModified -= OnObjectModified;
-				IdlingBlacklistedAppIDs.OnModified -= OnObjectModified;
-				IdlingPriorityAppIDs.OnModified -= OnObjectModified;
-				MatchActivelyBlacklistedAppIDs.OnModified -= OnObjectModified;
-
-				// Those are objects that might be null and the check should be in-place
-				BackingMobileAuthenticator?.Dispose();
-			}
-
-			// Base dispose
-			base.Dispose(disposing);
-		}
-
-		internal void AddGamesToRedeemInBackground(IOrderedDictionary games) {
-			if ((games == null) || (games.Count == 0)) {
-				throw new ArgumentNullException(nameof(games));
-			}
-
-			bool save = false;
-
+	internal uint GamesToRedeemInBackgroundCount {
+		get {
 			lock (GamesToRedeemInBackground) {
-				foreach (DictionaryEntry game in games.OfType<DictionaryEntry>().Where(game => !GamesToRedeemInBackground.Contains(game.Key))) {
-					GamesToRedeemInBackground.Add(game.Key, game.Value);
-					save = true;
-				}
-			}
-
-			if (save) {
-				Utilities.InBackground(Save);
+				return (uint) GamesToRedeemInBackground.Count;
 			}
 		}
+	}
 
-		internal static async Task<BotDatabase?> CreateOrLoad(string filePath) {
-			if (string.IsNullOrEmpty(filePath)) {
-				throw new ArgumentNullException(nameof(filePath));
-			}
+	internal bool HasGamesToRedeemInBackground => GamesToRedeemInBackgroundCount > 0;
 
-			if (!File.Exists(filePath)) {
-				return new BotDatabase(filePath);
-			}
+	[JsonProperty(Required = Required.DisallowNull)]
+	private readonly OrderedDictionary GamesToRedeemInBackground = new();
 
-			BotDatabase? botDatabase;
+	internal string? LoginKey {
+		get => BackingLoginKey;
 
-			try {
-				string json = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
-
-				if (string.IsNullOrEmpty(json)) {
-					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
-
-					return null;
-				}
-
-				botDatabase = JsonConvert.DeserializeObject<BotDatabase>(json);
-			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericException(e);
-
-				return null;
-			}
-
-			if (botDatabase == null) {
-				ASF.ArchiLogger.LogNullError(nameof(botDatabase));
-
-				return null;
-			}
-
-			botDatabase.FilePath = filePath;
-
-			return botDatabase;
-		}
-
-		internal (string? Key, string? Name) GetGameToRedeemInBackground() {
-			lock (GamesToRedeemInBackground) {
-				foreach (DictionaryEntry game in GamesToRedeemInBackground) {
-					return (game.Key as string, game.Value as string);
-				}
-			}
-
-			return (null, null);
-		}
-
-		internal void RemoveGameToRedeemInBackground(string key) {
-			if (string.IsNullOrEmpty(key)) {
-				throw new ArgumentNullException(nameof(key));
-			}
-
-			lock (GamesToRedeemInBackground) {
-				if (!GamesToRedeemInBackground.Contains(key)) {
-					return;
-				}
-
-				GamesToRedeemInBackground.Remove(key);
-			}
-
-			Utilities.InBackground(Save);
-		}
-
-		private async void OnObjectModified(object? sender, EventArgs e) {
-			if (string.IsNullOrEmpty(FilePath)) {
+		set {
+			if (BackingLoginKey == value) {
 				return;
 			}
 
-			await Save().ConfigureAwait(false);
+			BackingLoginKey = value;
+			Utilities.InBackground(Save);
 		}
+	}
+
+	internal MobileAuthenticator? MobileAuthenticator {
+		get => BackingMobileAuthenticator;
+
+		set {
+			if (BackingMobileAuthenticator == value) {
+				return;
+			}
+
+			BackingMobileAuthenticator = value;
+			Utilities.InBackground(Save);
+		}
+	}
+
+	[JsonProperty(PropertyName = "_" + nameof(LoginKey))]
+	private string? BackingLoginKey;
+
+	[JsonProperty(PropertyName = "_" + nameof(MobileAuthenticator))]
+	private MobileAuthenticator? BackingMobileAuthenticator;
+
+	private BotDatabase(string filePath) {
+		if (string.IsNullOrEmpty(filePath)) {
+			throw new ArgumentNullException(nameof(filePath));
+		}
+
+		FilePath = filePath;
+	}
+
+	[JsonConstructor]
+	private BotDatabase() {
+		BlacklistedFromTradesSteamIDs.OnModified += OnObjectModified;
+		IdlingBlacklistedAppIDs.OnModified += OnObjectModified;
+		IdlingPriorityAppIDs.OnModified += OnObjectModified;
+		MatchActivelyBlacklistedAppIDs.OnModified += OnObjectModified;
+	}
+
+	[UsedImplicitly]
+	public bool ShouldSerializeBackingLoginKey() => !string.IsNullOrEmpty(BackingLoginKey);
+
+	[UsedImplicitly]
+	public bool ShouldSerializeBackingMobileAuthenticator() => BackingMobileAuthenticator != null;
+
+	[UsedImplicitly]
+	public bool ShouldSerializeBlacklistedFromTradesSteamIDs() => BlacklistedFromTradesSteamIDs.Count > 0;
+
+	[UsedImplicitly]
+	public bool ShouldSerializeGamesToRedeemInBackground() => HasGamesToRedeemInBackground;
+
+	[UsedImplicitly]
+	public bool ShouldSerializeIdlingBlacklistedAppIDs() => IdlingBlacklistedAppIDs.Count > 0;
+
+	[UsedImplicitly]
+	public bool ShouldSerializeIdlingPriorityAppIDs() => IdlingPriorityAppIDs.Count > 0;
+
+	[UsedImplicitly]
+	public bool ShouldSerializeMatchActivelyBlacklistedAppIDs() => MatchActivelyBlacklistedAppIDs.Count > 0;
+
+	protected override void Dispose(bool disposing) {
+		if (disposing) {
+			// Events we registered
+			BlacklistedFromTradesSteamIDs.OnModified -= OnObjectModified;
+			IdlingBlacklistedAppIDs.OnModified -= OnObjectModified;
+			IdlingPriorityAppIDs.OnModified -= OnObjectModified;
+			MatchActivelyBlacklistedAppIDs.OnModified -= OnObjectModified;
+
+			// Those are objects that might be null and the check should be in-place
+			BackingMobileAuthenticator?.Dispose();
+		}
+
+		// Base dispose
+		base.Dispose(disposing);
+	}
+
+	internal void AddGamesToRedeemInBackground(IOrderedDictionary games) {
+		if ((games == null) || (games.Count == 0)) {
+			throw new ArgumentNullException(nameof(games));
+		}
+
+		bool save = false;
+
+		lock (GamesToRedeemInBackground) {
+			foreach (DictionaryEntry game in games.OfType<DictionaryEntry>().Where(game => !GamesToRedeemInBackground.Contains(game.Key))) {
+				GamesToRedeemInBackground.Add(game.Key, game.Value);
+				save = true;
+			}
+		}
+
+		if (save) {
+			Utilities.InBackground(Save);
+		}
+	}
+
+	internal static async Task<BotDatabase?> CreateOrLoad(string filePath) {
+		if (string.IsNullOrEmpty(filePath)) {
+			throw new ArgumentNullException(nameof(filePath));
+		}
+
+		if (!File.Exists(filePath)) {
+			return new BotDatabase(filePath);
+		}
+
+		BotDatabase? botDatabase;
+
+		try {
+			string json = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+
+			if (string.IsNullOrEmpty(json)) {
+				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
+
+				return null;
+			}
+
+			botDatabase = JsonConvert.DeserializeObject<BotDatabase>(json);
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericException(e);
+
+			return null;
+		}
+
+		if (botDatabase == null) {
+			ASF.ArchiLogger.LogNullError(nameof(botDatabase));
+
+			return null;
+		}
+
+		botDatabase.FilePath = filePath;
+
+		return botDatabase;
+	}
+
+	internal (string? Key, string? Name) GetGameToRedeemInBackground() {
+		lock (GamesToRedeemInBackground) {
+			foreach (DictionaryEntry game in GamesToRedeemInBackground) {
+				return (game.Key as string, game.Value as string);
+			}
+		}
+
+		return (null, null);
+	}
+
+	internal void RemoveGameToRedeemInBackground(string key) {
+		if (string.IsNullOrEmpty(key)) {
+			throw new ArgumentNullException(nameof(key));
+		}
+
+		lock (GamesToRedeemInBackground) {
+			if (!GamesToRedeemInBackground.Contains(key)) {
+				return;
+			}
+
+			GamesToRedeemInBackground.Remove(key);
+		}
+
+		Utilities.InBackground(Save);
+	}
+
+	private async void OnObjectModified(object? sender, EventArgs e) {
+		if (string.IsNullOrEmpty(FilePath)) {
+			return;
+		}
+
+		await Save().ConfigureAwait(false);
 	}
 }

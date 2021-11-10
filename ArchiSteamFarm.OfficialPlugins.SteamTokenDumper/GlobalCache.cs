@@ -33,275 +33,275 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SteamKit2;
 
-namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
-	internal sealed class GlobalCache : SerializableFile {
-		private static string SharedFilePath => Path.Combine(ArchiSteamFarm.SharedInfo.ConfigDirectory, $"{nameof(SteamTokenDumper)}.cache");
+namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentDictionary<uint, uint> AppChangeNumbers = new();
+internal sealed class GlobalCache : SerializableFile {
+	private static string SharedFilePath => Path.Combine(ArchiSteamFarm.SharedInfo.ConfigDirectory, $"{nameof(SteamTokenDumper)}.cache");
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentDictionary<uint, ulong> AppTokens = new();
+	[JsonProperty(Required = Required.DisallowNull)]
+	private readonly ConcurrentDictionary<uint, uint> AppChangeNumbers = new();
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentDictionary<uint, string> DepotKeys = new();
+	[JsonProperty(Required = Required.DisallowNull)]
+	private readonly ConcurrentDictionary<uint, ulong> AppTokens = new();
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentDictionary<uint, ulong> PackageTokens = new();
+	[JsonProperty(Required = Required.DisallowNull)]
+	private readonly ConcurrentDictionary<uint, string> DepotKeys = new();
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentDictionary<uint, ulong> SubmittedApps = new();
+	[JsonProperty(Required = Required.DisallowNull)]
+	private readonly ConcurrentDictionary<uint, ulong> PackageTokens = new();
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentDictionary<uint, string> SubmittedDepots = new();
+	[JsonProperty(Required = Required.DisallowNull)]
+	private readonly ConcurrentDictionary<uint, ulong> SubmittedApps = new();
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentDictionary<uint, ulong> SubmittedPackages = new();
+	[JsonProperty(Required = Required.DisallowNull)]
+	private readonly ConcurrentDictionary<uint, string> SubmittedDepots = new();
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal uint LastChangeNumber { get; private set; }
+	[JsonProperty(Required = Required.DisallowNull)]
+	private readonly ConcurrentDictionary<uint, ulong> SubmittedPackages = new();
 
-		internal GlobalCache() => FilePath = SharedFilePath;
+	[JsonProperty(Required = Required.DisallowNull)]
+	internal uint LastChangeNumber { get; private set; }
 
-		[UsedImplicitly]
-		public bool ShouldSerializeAppChangeNumbers() => !AppChangeNumbers.IsEmpty;
+	internal GlobalCache() => FilePath = SharedFilePath;
 
-		[UsedImplicitly]
-		public bool ShouldSerializeAppTokens() => !AppTokens.IsEmpty;
+	[UsedImplicitly]
+	public bool ShouldSerializeAppChangeNumbers() => !AppChangeNumbers.IsEmpty;
 
-		[UsedImplicitly]
-		public bool ShouldSerializeDepotKeys() => !DepotKeys.IsEmpty;
+	[UsedImplicitly]
+	public bool ShouldSerializeAppTokens() => !AppTokens.IsEmpty;
 
-		[UsedImplicitly]
-		public bool ShouldSerializeLastChangeNumber() => LastChangeNumber > 0;
+	[UsedImplicitly]
+	public bool ShouldSerializeDepotKeys() => !DepotKeys.IsEmpty;
 
-		[UsedImplicitly]
-		public bool ShouldSerializePackageTokens() => !PackageTokens.IsEmpty;
+	[UsedImplicitly]
+	public bool ShouldSerializeLastChangeNumber() => LastChangeNumber > 0;
 
-		[UsedImplicitly]
-		public bool ShouldSerializeSubmittedApps() => !SubmittedApps.IsEmpty;
+	[UsedImplicitly]
+	public bool ShouldSerializePackageTokens() => !PackageTokens.IsEmpty;
 
-		[UsedImplicitly]
-		public bool ShouldSerializeSubmittedDepots() => !SubmittedDepots.IsEmpty;
+	[UsedImplicitly]
+	public bool ShouldSerializeSubmittedApps() => !SubmittedApps.IsEmpty;
 
-		[UsedImplicitly]
-		public bool ShouldSerializeSubmittedPackages() => !SubmittedPackages.IsEmpty;
+	[UsedImplicitly]
+	public bool ShouldSerializeSubmittedDepots() => !SubmittedDepots.IsEmpty;
 
-		internal ulong GetAppToken(uint appID) => AppTokens[appID];
+	[UsedImplicitly]
+	public bool ShouldSerializeSubmittedPackages() => !SubmittedPackages.IsEmpty;
 
-		internal Dictionary<uint, ulong> GetAppTokensForSubmission() => AppTokens.Where(appToken => (SteamTokenDumperPlugin.Config?.SecretAppIDs.Contains(appToken.Key) == false) && (appToken.Value > 0) && (!SubmittedApps.TryGetValue(appToken.Key, out ulong token) || (appToken.Value != token))).ToDictionary(static appToken => appToken.Key, static appToken => appToken.Value);
-		internal Dictionary<uint, string> GetDepotKeysForSubmission() => DepotKeys.Where(depotKey => (SteamTokenDumperPlugin.Config?.SecretDepotIDs.Contains(depotKey.Key) == false) && !string.IsNullOrEmpty(depotKey.Value) && (!SubmittedDepots.TryGetValue(depotKey.Key, out string? key) || (depotKey.Value != key))).ToDictionary(static depotKey => depotKey.Key, static depotKey => depotKey.Value);
-		internal Dictionary<uint, ulong> GetPackageTokensForSubmission() => PackageTokens.Where(packageToken => (SteamTokenDumperPlugin.Config?.SecretPackageIDs.Contains(packageToken.Key) == false) && (packageToken.Value > 0) && (!SubmittedPackages.TryGetValue(packageToken.Key, out ulong token) || (packageToken.Value != token))).ToDictionary(static packageToken => packageToken.Key, static packageToken => packageToken.Value);
+	internal ulong GetAppToken(uint appID) => AppTokens[appID];
 
-		internal static async Task<GlobalCache?> Load() {
-			if (!File.Exists(SharedFilePath)) {
-				GlobalCache result = new();
+	internal Dictionary<uint, ulong> GetAppTokensForSubmission() => AppTokens.Where(appToken => (SteamTokenDumperPlugin.Config?.SecretAppIDs.Contains(appToken.Key) == false) && (appToken.Value > 0) && (!SubmittedApps.TryGetValue(appToken.Key, out ulong token) || (appToken.Value != token))).ToDictionary(static appToken => appToken.Key, static appToken => appToken.Value);
+	internal Dictionary<uint, string> GetDepotKeysForSubmission() => DepotKeys.Where(depotKey => (SteamTokenDumperPlugin.Config?.SecretDepotIDs.Contains(depotKey.Key) == false) && !string.IsNullOrEmpty(depotKey.Value) && (!SubmittedDepots.TryGetValue(depotKey.Key, out string? key) || (depotKey.Value != key))).ToDictionary(static depotKey => depotKey.Key, static depotKey => depotKey.Value);
+	internal Dictionary<uint, ulong> GetPackageTokensForSubmission() => PackageTokens.Where(packageToken => (SteamTokenDumperPlugin.Config?.SecretPackageIDs.Contains(packageToken.Key) == false) && (packageToken.Value > 0) && (!SubmittedPackages.TryGetValue(packageToken.Key, out ulong token) || (packageToken.Value != token))).ToDictionary(static packageToken => packageToken.Key, static packageToken => packageToken.Value);
 
-				Utilities.InBackground(result.Save);
+	internal static async Task<GlobalCache?> Load() {
+		if (!File.Exists(SharedFilePath)) {
+			GlobalCache result = new();
 
-				return result;
-			}
+			Utilities.InBackground(result.Save);
 
-			GlobalCache? globalCache;
+			return result;
+		}
 
-			try {
-				string json = await File.ReadAllTextAsync(SharedFilePath).ConfigureAwait(false);
+		GlobalCache? globalCache;
 
-				if (string.IsNullOrEmpty(json)) {
-					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
+		try {
+			string json = await File.ReadAllTextAsync(SharedFilePath).ConfigureAwait(false);
 
-					return null;
-				}
-
-				globalCache = JsonConvert.DeserializeObject<GlobalCache>(json);
-			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericException(e);
+			if (string.IsNullOrEmpty(json)) {
+				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(json)));
 
 				return null;
 			}
 
-			if (globalCache == null) {
-				ASF.ArchiLogger.LogNullError(nameof(globalCache));
+			globalCache = JsonConvert.DeserializeObject<GlobalCache>(json);
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericException(e);
 
-				return null;
-			}
-
-			return globalCache;
+			return null;
 		}
 
-		internal void OnPICSChanges(uint currentChangeNumber, IReadOnlyCollection<KeyValuePair<uint, SteamApps.PICSChangesCallback.PICSChangeData>> appChanges) {
-			if (currentChangeNumber == 0) {
-				throw new ArgumentOutOfRangeException(nameof(currentChangeNumber));
+		if (globalCache == null) {
+			ASF.ArchiLogger.LogNullError(nameof(globalCache));
+
+			return null;
+		}
+
+		return globalCache;
+	}
+
+	internal void OnPICSChanges(uint currentChangeNumber, IReadOnlyCollection<KeyValuePair<uint, SteamApps.PICSChangesCallback.PICSChangeData>> appChanges) {
+		if (currentChangeNumber == 0) {
+			throw new ArgumentOutOfRangeException(nameof(currentChangeNumber));
+		}
+
+		if (appChanges == null) {
+			throw new ArgumentNullException(nameof(appChanges));
+		}
+
+		if (currentChangeNumber <= LastChangeNumber) {
+			return;
+		}
+
+		LastChangeNumber = currentChangeNumber;
+
+		foreach ((uint appID, SteamApps.PICSChangesCallback.PICSChangeData appData) in appChanges) {
+			if (!AppChangeNumbers.TryGetValue(appID, out uint previousChangeNumber) || (appData.ChangeNumber <= previousChangeNumber)) {
+				continue;
 			}
 
-			if (appChanges == null) {
-				throw new ArgumentNullException(nameof(appChanges));
+			AppChangeNumbers.TryRemove(appID, out _);
+		}
+
+		Utilities.InBackground(Save);
+	}
+
+	internal void OnPICSChangesRestart(uint currentChangeNumber) {
+		if (currentChangeNumber == 0) {
+			throw new ArgumentOutOfRangeException(nameof(currentChangeNumber));
+		}
+
+		if (currentChangeNumber <= LastChangeNumber) {
+			return;
+		}
+
+		LastChangeNumber = currentChangeNumber;
+		AppChangeNumbers.Clear();
+
+		Utilities.InBackground(Save);
+	}
+
+	internal bool ShouldRefreshAppInfo(uint appID) => !AppChangeNumbers.ContainsKey(appID);
+	internal bool ShouldRefreshDepotKey(uint depotID) => !DepotKeys.ContainsKey(depotID);
+
+	internal void UpdateAppChangeNumbers(IReadOnlyCollection<KeyValuePair<uint, uint>> appChangeNumbers) {
+		if (appChangeNumbers == null) {
+			throw new ArgumentNullException(nameof(appChangeNumbers));
+		}
+
+		bool save = false;
+
+		foreach ((uint appID, uint changeNumber) in appChangeNumbers) {
+			if (AppChangeNumbers.TryGetValue(appID, out uint previousChangeNumber) && (previousChangeNumber == changeNumber)) {
+				continue;
 			}
 
-			if (currentChangeNumber <= LastChangeNumber) {
-				return;
-			}
+			AppChangeNumbers[appID] = changeNumber;
+			save = true;
+		}
 
-			LastChangeNumber = currentChangeNumber;
-
-			foreach ((uint appID, SteamApps.PICSChangesCallback.PICSChangeData appData) in appChanges) {
-				if (!AppChangeNumbers.TryGetValue(appID, out uint previousChangeNumber) || (appData.ChangeNumber <= previousChangeNumber)) {
-					continue;
-				}
-
-				AppChangeNumbers.TryRemove(appID, out _);
-			}
-
+		if (save) {
 			Utilities.InBackground(Save);
 		}
+	}
 
-		internal void OnPICSChangesRestart(uint currentChangeNumber) {
-			if (currentChangeNumber == 0) {
-				throw new ArgumentOutOfRangeException(nameof(currentChangeNumber));
+	internal void UpdateAppTokens(IReadOnlyCollection<KeyValuePair<uint, ulong>> appTokens, IReadOnlyCollection<uint> publicAppIDs) {
+		if (appTokens == null) {
+			throw new ArgumentNullException(nameof(appTokens));
+		}
+
+		if (publicAppIDs == null) {
+			throw new ArgumentNullException(nameof(publicAppIDs));
+		}
+
+		bool save = false;
+
+		foreach ((uint appID, ulong appToken) in appTokens) {
+			if (AppTokens.TryGetValue(appID, out ulong previousAppToken) && (previousAppToken == appToken)) {
+				continue;
 			}
 
-			if (currentChangeNumber <= LastChangeNumber) {
-				return;
+			AppTokens[appID] = appToken;
+			save = true;
+		}
+
+		foreach (uint appID in publicAppIDs) {
+			if (AppTokens.TryGetValue(appID, out ulong previousAppToken) && (previousAppToken == 0)) {
+				continue;
 			}
 
-			LastChangeNumber = currentChangeNumber;
-			AppChangeNumbers.Clear();
+			AppTokens[appID] = 0;
+			save = true;
+		}
 
+		if (save) {
 			Utilities.InBackground(Save);
 		}
+	}
 
-		internal bool ShouldRefreshAppInfo(uint appID) => !AppChangeNumbers.ContainsKey(appID);
-		internal bool ShouldRefreshDepotKey(uint depotID) => !DepotKeys.ContainsKey(depotID);
-
-		internal void UpdateAppChangeNumbers(IReadOnlyCollection<KeyValuePair<uint, uint>> appChangeNumbers) {
-			if (appChangeNumbers == null) {
-				throw new ArgumentNullException(nameof(appChangeNumbers));
-			}
-
-			bool save = false;
-
-			foreach ((uint appID, uint changeNumber) in appChangeNumbers) {
-				if (AppChangeNumbers.TryGetValue(appID, out uint previousChangeNumber) && (previousChangeNumber == changeNumber)) {
-					continue;
-				}
-
-				AppChangeNumbers[appID] = changeNumber;
-				save = true;
-			}
-
-			if (save) {
-				Utilities.InBackground(Save);
-			}
+	internal void UpdateDepotKeys(ICollection<SteamApps.DepotKeyCallback> depotKeyResults) {
+		if (depotKeyResults == null) {
+			throw new ArgumentNullException(nameof(depotKeyResults));
 		}
 
-		internal void UpdateAppTokens(IReadOnlyCollection<KeyValuePair<uint, ulong>> appTokens, IReadOnlyCollection<uint> publicAppIDs) {
-			if (appTokens == null) {
-				throw new ArgumentNullException(nameof(appTokens));
+		bool save = false;
+
+		foreach (SteamApps.DepotKeyCallback depotKeyResult in depotKeyResults) {
+			if (depotKeyResult.Result != EResult.OK) {
+				continue;
 			}
 
-			if (publicAppIDs == null) {
-				throw new ArgumentNullException(nameof(publicAppIDs));
+			string depotKey = BitConverter.ToString(depotKeyResult.DepotKey).Replace("-", "", StringComparison.Ordinal);
+
+			if (DepotKeys.TryGetValue(depotKeyResult.DepotID, out string? previousDepotKey) && (previousDepotKey == depotKey)) {
+				continue;
 			}
 
-			bool save = false;
-
-			foreach ((uint appID, ulong appToken) in appTokens) {
-				if (AppTokens.TryGetValue(appID, out ulong previousAppToken) && (previousAppToken == appToken)) {
-					continue;
-				}
-
-				AppTokens[appID] = appToken;
-				save = true;
-			}
-
-			foreach (uint appID in publicAppIDs) {
-				if (AppTokens.TryGetValue(appID, out ulong previousAppToken) && (previousAppToken == 0)) {
-					continue;
-				}
-
-				AppTokens[appID] = 0;
-				save = true;
-			}
-
-			if (save) {
-				Utilities.InBackground(Save);
-			}
+			DepotKeys[depotKeyResult.DepotID] = depotKey;
+			save = true;
 		}
 
-		internal void UpdateDepotKeys(ICollection<SteamApps.DepotKeyCallback> depotKeyResults) {
-			if (depotKeyResults == null) {
-				throw new ArgumentNullException(nameof(depotKeyResults));
-			}
-
-			bool save = false;
-
-			foreach (SteamApps.DepotKeyCallback depotKeyResult in depotKeyResults) {
-				if (depotKeyResult.Result != EResult.OK) {
-					continue;
-				}
-
-				string depotKey = BitConverter.ToString(depotKeyResult.DepotKey).Replace("-", "", StringComparison.Ordinal);
-
-				if (DepotKeys.TryGetValue(depotKeyResult.DepotID, out string? previousDepotKey) && (previousDepotKey == depotKey)) {
-					continue;
-				}
-
-				DepotKeys[depotKeyResult.DepotID] = depotKey;
-				save = true;
-			}
-
-			if (save) {
-				Utilities.InBackground(Save);
-			}
-		}
-
-		internal void UpdatePackageTokens(IReadOnlyCollection<KeyValuePair<uint, ulong>> packageTokens) {
-			if (packageTokens == null) {
-				throw new ArgumentNullException(nameof(packageTokens));
-			}
-
-			bool save = false;
-
-			foreach ((uint packageID, ulong packageToken) in packageTokens) {
-				if (PackageTokens.TryGetValue(packageID, out ulong previousPackageToken) && (previousPackageToken == packageToken)) {
-					continue;
-				}
-
-				PackageTokens[packageID] = packageToken;
-				save = true;
-			}
-
-			if (save) {
-				Utilities.InBackground(Save);
-			}
-		}
-
-		internal void UpdateSubmittedData(IReadOnlyDictionary<uint, ulong> apps, IReadOnlyDictionary<uint, ulong> packages, IReadOnlyDictionary<uint, string> depots) {
-			if (apps == null) {
-				throw new ArgumentNullException(nameof(apps));
-			}
-
-			if (packages == null) {
-				throw new ArgumentNullException(nameof(packages));
-			}
-
-			if (depots == null) {
-				throw new ArgumentNullException(nameof(depots));
-			}
-
-			foreach ((uint appID, ulong token) in apps) {
-				SubmittedApps[appID] = token;
-			}
-
-			foreach ((uint packageID, ulong token) in packages) {
-				SubmittedPackages[packageID] = token;
-			}
-
-			foreach ((uint depotID, string key) in depots) {
-				SubmittedDepots[depotID] = key;
-			}
-
+		if (save) {
 			Utilities.InBackground(Save);
 		}
+	}
+
+	internal void UpdatePackageTokens(IReadOnlyCollection<KeyValuePair<uint, ulong>> packageTokens) {
+		if (packageTokens == null) {
+			throw new ArgumentNullException(nameof(packageTokens));
+		}
+
+		bool save = false;
+
+		foreach ((uint packageID, ulong packageToken) in packageTokens) {
+			if (PackageTokens.TryGetValue(packageID, out ulong previousPackageToken) && (previousPackageToken == packageToken)) {
+				continue;
+			}
+
+			PackageTokens[packageID] = packageToken;
+			save = true;
+		}
+
+		if (save) {
+			Utilities.InBackground(Save);
+		}
+	}
+
+	internal void UpdateSubmittedData(IReadOnlyDictionary<uint, ulong> apps, IReadOnlyDictionary<uint, ulong> packages, IReadOnlyDictionary<uint, string> depots) {
+		if (apps == null) {
+			throw new ArgumentNullException(nameof(apps));
+		}
+
+		if (packages == null) {
+			throw new ArgumentNullException(nameof(packages));
+		}
+
+		if (depots == null) {
+			throw new ArgumentNullException(nameof(depots));
+		}
+
+		foreach ((uint appID, ulong token) in apps) {
+			SubmittedApps[appID] = token;
+		}
+
+		foreach ((uint packageID, ulong token) in packages) {
+			SubmittedPackages[packageID] = token;
+		}
+
+		foreach ((uint depotID, string key) in depots) {
+			SubmittedDepots[depotID] = key;
+		}
+
+		Utilities.InBackground(Save);
 	}
 }

@@ -24,21 +24,21 @@ using ArchiSteamFarm.Steam;
 using JetBrains.Annotations;
 using SteamKit2;
 
-namespace ArchiSteamFarm.Plugins.Interfaces {
-	[PublicAPI]
-	public interface IBotSteamClient : IPlugin {
-		/// <summary>
-		///     ASF will call this method right after custom SK2 client handler initialization in order to allow you listening for callbacks in your own code.
-		/// </summary>
-		/// <param name="bot">Bot object related to this callback.</param>
-		/// <param name="callbackManager">Callback manager object which can be used for establishing subscriptions to standard and custom callbacks.</param>
-		void OnBotSteamCallbacksInit(Bot bot, CallbackManager callbackManager);
+namespace ArchiSteamFarm.Plugins.Interfaces;
 
-		/// <summary>
-		///     ASF will call this method right after bot initialization in order to allow you hooking custom SK2 client handlers into the SteamClient.
-		/// </summary>
-		/// <param name="bot">Bot object related to this callback.</param>
-		/// <returns>Collection of custom client handlers that are supposed to be hooked into the SteamClient by ASF. If you do not require any, just return null or empty collection.</returns>
-		IReadOnlyCollection<ClientMsgHandler>? OnBotSteamHandlersInit(Bot bot);
-	}
+[PublicAPI]
+public interface IBotSteamClient : IPlugin {
+	/// <summary>
+	///     ASF will call this method right after custom SK2 client handler initialization in order to allow you listening for callbacks in your own code.
+	/// </summary>
+	/// <param name="bot">Bot object related to this callback.</param>
+	/// <param name="callbackManager">Callback manager object which can be used for establishing subscriptions to standard and custom callbacks.</param>
+	void OnBotSteamCallbacksInit(Bot bot, CallbackManager callbackManager);
+
+	/// <summary>
+	///     ASF will call this method right after bot initialization in order to allow you hooking custom SK2 client handlers into the SteamClient.
+	/// </summary>
+	/// <param name="bot">Bot object related to this callback.</param>
+	/// <returns>Collection of custom client handlers that are supposed to be hooked into the SteamClient by ASF. If you do not require any, just return null or empty collection.</returns>
+	IReadOnlyCollection<ClientMsgHandler>? OnBotSteamHandlersInit(Bot bot);
 }

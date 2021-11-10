@@ -22,23 +22,23 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.IPC.Responses {
-	public sealed class GamesToRedeemInBackgroundResponse {
-		/// <summary>
-		///     Keys that were redeemed and not used during the process, if available.
-		/// </summary>
-		[JsonProperty]
-		public Dictionary<string, string>? UnusedKeys { get; private set; }
+namespace ArchiSteamFarm.IPC.Responses;
 
-		/// <summary>
-		///     Keys that were redeemed and used during the process, if available.
-		/// </summary>
-		[JsonProperty]
-		public Dictionary<string, string>? UsedKeys { get; private set; }
+public sealed class GamesToRedeemInBackgroundResponse {
+	/// <summary>
+	///     Keys that were redeemed and not used during the process, if available.
+	/// </summary>
+	[JsonProperty]
+	public Dictionary<string, string>? UnusedKeys { get; private set; }
 
-		internal GamesToRedeemInBackgroundResponse(Dictionary<string, string>? unusedKeys = null, Dictionary<string, string>? usedKeys = null) {
-			UnusedKeys = unusedKeys;
-			UsedKeys = usedKeys;
-		}
+	/// <summary>
+	///     Keys that were redeemed and used during the process, if available.
+	/// </summary>
+	[JsonProperty]
+	public Dictionary<string, string>? UsedKeys { get; private set; }
+
+	internal GamesToRedeemInBackgroundResponse(Dictionary<string, string>? unusedKeys = null, Dictionary<string, string>? usedKeys = null) {
+		UnusedKeys = unusedKeys;
+		UsedKeys = usedKeys;
 	}
 }

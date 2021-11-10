@@ -22,16 +22,16 @@
 using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.Steam.Data {
-	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	internal sealed class TradeOfferAcceptResponse {
-		[JsonProperty(PropertyName = "strError", Required = Required.DisallowNull)]
-		internal readonly string ErrorText = "";
+namespace ArchiSteamFarm.Steam.Data;
 
-		[JsonProperty(PropertyName = "needs_mobile_confirmation", Required = Required.DisallowNull)]
-		internal readonly bool RequiresMobileConfirmation;
+[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+internal sealed class TradeOfferAcceptResponse {
+	[JsonProperty(PropertyName = "strError", Required = Required.DisallowNull)]
+	internal readonly string ErrorText = "";
 
-		[JsonConstructor]
-		private TradeOfferAcceptResponse() { }
-	}
+	[JsonProperty(PropertyName = "needs_mobile_confirmation", Required = Required.DisallowNull)]
+	internal readonly bool RequiresMobileConfirmation;
+
+	[JsonConstructor]
+	private TradeOfferAcceptResponse() { }
 }

@@ -24,29 +24,29 @@ using System.Net;
 using System.Net.Http;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Web.Responses {
-	public class BasicResponse {
-		[PublicAPI]
-		public HttpStatusCode StatusCode { get; }
+namespace ArchiSteamFarm.Web.Responses;
 
-		internal readonly Uri FinalUri;
+public class BasicResponse {
+	[PublicAPI]
+	public HttpStatusCode StatusCode { get; }
 
-		internal BasicResponse(HttpResponseMessage httpResponseMessage) {
-			if (httpResponseMessage == null) {
-				throw new ArgumentNullException(nameof(httpResponseMessage));
-			}
+	internal readonly Uri FinalUri;
 
-			FinalUri = httpResponseMessage.Headers.Location ?? httpResponseMessage.RequestMessage?.RequestUri ?? throw new InvalidOperationException();
-			StatusCode = httpResponseMessage.StatusCode;
+	internal BasicResponse(HttpResponseMessage httpResponseMessage) {
+		if (httpResponseMessage == null) {
+			throw new ArgumentNullException(nameof(httpResponseMessage));
 		}
 
-		internal BasicResponse(BasicResponse basicResponse) {
-			if (basicResponse == null) {
-				throw new ArgumentNullException(nameof(basicResponse));
-			}
+		FinalUri = httpResponseMessage.Headers.Location ?? httpResponseMessage.RequestMessage?.RequestUri ?? throw new InvalidOperationException();
+		StatusCode = httpResponseMessage.StatusCode;
+	}
 
-			FinalUri = basicResponse.FinalUri;
-			StatusCode = basicResponse.StatusCode;
+	internal BasicResponse(BasicResponse basicResponse) {
+		if (basicResponse == null) {
+			throw new ArgumentNullException(nameof(basicResponse));
 		}
+
+		FinalUri = basicResponse.FinalUri;
+		StatusCode = basicResponse.StatusCode;
 	}
 }

@@ -30,61 +30,61 @@ using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam.Security;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.IPC.Requests {
-	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	public sealed class TwoFactorAuthenticationConfirmationsRequest {
-		/// <summary>
-		///     Specifies the target action, whether we should accept the confirmations (true), or decline them (false).
-		/// </summary>
-		[JsonProperty(Required = Required.Always)]
-		public bool Accept { get; private set; }
+namespace ArchiSteamFarm.IPC.Requests;
 
-		/// <summary>
-		///     Specifies IDs of the confirmations that we're supposed to handle. CreatorID of the confirmation is equal to ID of the object that triggered it - e.g. ID of the trade offer, or ID of the market listing. If not provided, or empty array, all confirmation IDs are considered for an action.
-		/// </summary>
-		[JsonProperty(Required = Required.DisallowNull)]
-		public ImmutableHashSet<ulong> AcceptedCreatorIDs { get; private set; } = ImmutableHashSet<ulong>.Empty;
+[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+public sealed class TwoFactorAuthenticationConfirmationsRequest {
+	/// <summary>
+	///     Specifies the target action, whether we should accept the confirmations (true), or decline them (false).
+	/// </summary>
+	[JsonProperty(Required = Required.Always)]
+	public bool Accept { get; private set; }
 
-		/// <summary>
-		///     Specifies the type of confirmations to handle. If not provided, all confirmation types are considered for an action.
-		/// </summary>
-		[JsonProperty]
-		public Confirmation.EType? AcceptedType { get; private set; }
+	/// <summary>
+	///     Specifies IDs of the confirmations that we're supposed to handle. CreatorID of the confirmation is equal to ID of the object that triggered it - e.g. ID of the trade offer, or ID of the market listing. If not provided, or empty array, all confirmation IDs are considered for an action.
+	/// </summary>
+	[JsonProperty(Required = Required.DisallowNull)]
+	public ImmutableHashSet<ulong> AcceptedCreatorIDs { get; private set; } = ImmutableHashSet<ulong>.Empty;
 
-		/// <summary>
-		///     A helper property which works the same as <see cref="AcceptedCreatorIDs" /> but with values written as strings - for javascript compatibility purposes. Use either this one, or <see cref="AcceptedCreatorIDs" />, not both.
-		/// </summary>
-		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(AcceptedCreatorIDs), Required = Required.DisallowNull)]
-		public ImmutableHashSet<string> SAcceptedCreatorIDs {
-			get => AcceptedCreatorIDs.Select(static creatorID => creatorID.ToString(CultureInfo.InvariantCulture)).ToImmutableHashSet();
-			set {
-				if (value == null) {
-					throw new ArgumentNullException(nameof(value));
-				}
+	/// <summary>
+	///     Specifies the type of confirmations to handle. If not provided, all confirmation types are considered for an action.
+	/// </summary>
+	[JsonProperty]
+	public Confirmation.EType? AcceptedType { get; private set; }
 
-				HashSet<ulong> acceptedCreatorIDs = new();
-
-				foreach (string creatorIDText in value) {
-					if (!ulong.TryParse(creatorIDText, out ulong creatorID) || (creatorID == 0)) {
-						ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(SAcceptedCreatorIDs)));
-
-						return;
-					}
-
-					acceptedCreatorIDs.Add(creatorID);
-				}
-
-				AcceptedCreatorIDs = acceptedCreatorIDs.ToImmutableHashSet();
+	/// <summary>
+	///     A helper property which works the same as <see cref="AcceptedCreatorIDs" /> but with values written as strings - for javascript compatibility purposes. Use either this one, or <see cref="AcceptedCreatorIDs" />, not both.
+	/// </summary>
+	[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(AcceptedCreatorIDs), Required = Required.DisallowNull)]
+	public ImmutableHashSet<string> SAcceptedCreatorIDs {
+		get => AcceptedCreatorIDs.Select(static creatorID => creatorID.ToString(CultureInfo.InvariantCulture)).ToImmutableHashSet();
+		set {
+			if (value == null) {
+				throw new ArgumentNullException(nameof(value));
 			}
+
+			HashSet<ulong> acceptedCreatorIDs = new();
+
+			foreach (string creatorIDText in value) {
+				if (!ulong.TryParse(creatorIDText, out ulong creatorID) || (creatorID == 0)) {
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(SAcceptedCreatorIDs)));
+
+					return;
+				}
+
+				acceptedCreatorIDs.Add(creatorID);
+			}
+
+			AcceptedCreatorIDs = acceptedCreatorIDs.ToImmutableHashSet();
 		}
-
-		/// <summary>
-		///     Specifies whether we should wait for the confirmations to arrive, in case they're not available immediately. This option makes sense only if <see cref="AcceptedCreatorIDs" /> is specified as well, and in this case ASF will add a few more tries if needed to ensure that all specified IDs are handled. Useful if confirmations are generated with a delay on Steam network side, which happens fairly often.
-		/// </summary>
-		[JsonProperty(Required = Required.DisallowNull)]
-		public bool WaitIfNeeded { get; private set; }
-
-		[JsonConstructor]
-		private TwoFactorAuthenticationConfirmationsRequest() { }
 	}
+
+	/// <summary>
+	///     Specifies whether we should wait for the confirmations to arrive, in case they're not available immediately. This option makes sense only if <see cref="AcceptedCreatorIDs" /> is specified as well, and in this case ASF will add a few more tries if needed to ensure that all specified IDs are handled. Useful if confirmations are generated with a delay on Steam network side, which happens fairly often.
+	/// </summary>
+	[JsonProperty(Required = Required.DisallowNull)]
+	public bool WaitIfNeeded { get; private set; }
+
+	[JsonConstructor]
+	private TwoFactorAuthenticationConfirmationsRequest() { }
 }

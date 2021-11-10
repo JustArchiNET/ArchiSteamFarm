@@ -25,31 +25,31 @@ using JetBrains.Annotations;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace ArchiSteamFarm.IPC.Integration {
-	[UsedImplicitly]
-	internal sealed class CustomAttributesSchemaFilter : ISchemaFilter {
-		public void Apply(OpenApiSchema schema, SchemaFilterContext context) {
-			if (schema == null) {
-				throw new ArgumentNullException(nameof(schema));
-			}
+namespace ArchiSteamFarm.IPC.Integration;
 
-			if (context == null) {
-				throw new ArgumentNullException(nameof(context));
-			}
+[UsedImplicitly]
+internal sealed class CustomAttributesSchemaFilter : ISchemaFilter {
+	public void Apply(OpenApiSchema schema, SchemaFilterContext context) {
+		if (schema == null) {
+			throw new ArgumentNullException(nameof(schema));
+		}
 
-			ICustomAttributeProvider attributesProvider;
+		if (context == null) {
+			throw new ArgumentNullException(nameof(context));
+		}
 
-			if (context.MemberInfo != null) {
-				attributesProvider = context.MemberInfo;
-			} else if (context.ParameterInfo != null) {
-				attributesProvider = context.ParameterInfo;
-			} else {
-				return;
-			}
+		ICustomAttributeProvider attributesProvider;
 
-			foreach (CustomSwaggerAttribute customSwaggerAttribute in attributesProvider.GetCustomAttributes(typeof(CustomSwaggerAttribute), true)) {
-				customSwaggerAttribute.Apply(schema);
-			}
+		if (context.MemberInfo != null) {
+			attributesProvider = context.MemberInfo;
+		} else if (context.ParameterInfo != null) {
+			attributesProvider = context.ParameterInfo;
+		} else {
+			return;
+		}
+
+		foreach (CustomSwaggerAttribute customSwaggerAttribute in attributesProvider.GetCustomAttributes(typeof(CustomSwaggerAttribute), true)) {
+			customSwaggerAttribute.Apply(schema);
 		}
 	}
 }

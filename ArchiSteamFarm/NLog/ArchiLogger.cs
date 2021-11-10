@@ -31,154 +31,170 @@ using JetBrains.Annotations;
 using NLog;
 using SteamKit2;
 
-namespace ArchiSteamFarm.NLog {
-	public sealed class ArchiLogger {
-		private readonly Logger Logger;
+namespace ArchiSteamFarm.NLog;
 
-		public ArchiLogger(string name) {
-			if (string.IsNullOrEmpty(name)) {
-				throw new ArgumentNullException(nameof(name));
-			}
+public sealed class ArchiLogger {
+	private readonly Logger Logger;
 
-			Logger = LogManager.GetLogger(name);
+	public ArchiLogger(string name) {
+		if (string.IsNullOrEmpty(name)) {
+			throw new ArgumentNullException(nameof(name));
 		}
 
-		[PublicAPI]
-		public void LogGenericDebug(string message, [CallerMemberName] string? previousMethodName = null) {
-			if (string.IsNullOrEmpty(message)) {
-				throw new ArgumentNullException(nameof(message));
-			}
+		Logger = LogManager.GetLogger(name);
+	}
 
-			Logger.Debug($"{previousMethodName}() {message}");
+	[PublicAPI]
+	public void LogGenericDebug(string message, [CallerMemberName] string? previousMethodName = null) {
+		if (string.IsNullOrEmpty(message)) {
+			throw new ArgumentNullException(nameof(message));
 		}
 
-		[PublicAPI]
-		public void LogGenericDebuggingException(Exception exception, [CallerMemberName] string? previousMethodName = null) {
-			if (exception == null) {
-				throw new ArgumentNullException(nameof(exception));
-			}
+		Logger.Debug($"{previousMethodName}() {message}");
+	}
 
-			if (!Debugging.IsUserDebugging) {
-				return;
-			}
-
-			Logger.Debug(exception, $"{previousMethodName}()");
+	[PublicAPI]
+	public void LogGenericDebuggingException(Exception exception, [CallerMemberName] string? previousMethodName = null) {
+		if (exception == null) {
+			throw new ArgumentNullException(nameof(exception));
 		}
 
-		[PublicAPI]
-		public void LogGenericError(string message, [CallerMemberName] string? previousMethodName = null) {
-			if (string.IsNullOrEmpty(message)) {
-				throw new ArgumentNullException(nameof(message));
-			}
-
-			Logger.Error($"{previousMethodName}() {message}");
+		if (!Debugging.IsUserDebugging) {
+			return;
 		}
 
-		[PublicAPI]
-		public void LogGenericException(Exception exception, [CallerMemberName] string? previousMethodName = null) {
-			if (exception == null) {
-				throw new ArgumentNullException(nameof(exception));
-			}
+		Logger.Debug(exception, $"{previousMethodName}()");
+	}
 
-			Logger.Error(exception, $"{previousMethodName}()");
+	[PublicAPI]
+	public void LogGenericError(string message, [CallerMemberName] string? previousMethodName = null) {
+		if (string.IsNullOrEmpty(message)) {
+			throw new ArgumentNullException(nameof(message));
 		}
 
-		[PublicAPI]
-		public void LogGenericInfo(string message, [CallerMemberName] string? previousMethodName = null) {
-			if (string.IsNullOrEmpty(message)) {
-				throw new ArgumentNullException(nameof(message));
-			}
+		Logger.Error($"{previousMethodName}() {message}");
+	}
 
-			Logger.Info($"{previousMethodName}() {message}");
+	[PublicAPI]
+	public void LogGenericException(Exception exception, [CallerMemberName] string? previousMethodName = null) {
+		if (exception == null) {
+			throw new ArgumentNullException(nameof(exception));
 		}
 
-		[PublicAPI]
-		public void LogGenericTrace(string message, [CallerMemberName] string? previousMethodName = null) {
-			if (string.IsNullOrEmpty(message)) {
-				throw new ArgumentNullException(nameof(message));
-			}
+		Logger.Error(exception, $"{previousMethodName}()");
+	}
 
-			Logger.Trace($"{previousMethodName}() {message}");
+	[PublicAPI]
+	public void LogGenericInfo(string message, [CallerMemberName] string? previousMethodName = null) {
+		if (string.IsNullOrEmpty(message)) {
+			throw new ArgumentNullException(nameof(message));
 		}
 
-		[PublicAPI]
-		public void LogGenericWarning(string message, [CallerMemberName] string? previousMethodName = null) {
-			if (string.IsNullOrEmpty(message)) {
-				throw new ArgumentNullException(nameof(message));
-			}
+		Logger.Info($"{previousMethodName}() {message}");
+	}
 
-			Logger.Warn($"{previousMethodName}() {message}");
+	[PublicAPI]
+	public void LogGenericTrace(string message, [CallerMemberName] string? previousMethodName = null) {
+		if (string.IsNullOrEmpty(message)) {
+			throw new ArgumentNullException(nameof(message));
 		}
 
-		[PublicAPI]
-		public void LogGenericWarningException(Exception exception, [CallerMemberName] string? previousMethodName = null) {
-			if (exception == null) {
-				throw new ArgumentNullException(nameof(exception));
-			}
+		Logger.Trace($"{previousMethodName}() {message}");
+	}
 
-			Logger.Warn(exception, $"{previousMethodName}()");
+	[PublicAPI]
+	public void LogGenericWarning(string message, [CallerMemberName] string? previousMethodName = null) {
+		if (string.IsNullOrEmpty(message)) {
+			throw new ArgumentNullException(nameof(message));
 		}
 
-		[PublicAPI]
-		public void LogNullError(string nullObjectName, [CallerMemberName] string? previousMethodName = null) {
-			if (string.IsNullOrEmpty(nullObjectName)) {
-				throw new ArgumentNullException(nameof(nullObjectName));
-			}
+		Logger.Warn($"{previousMethodName}() {message}");
+	}
 
-			LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nullObjectName), previousMethodName);
+	[PublicAPI]
+	public void LogGenericWarningException(Exception exception, [CallerMemberName] string? previousMethodName = null) {
+		if (exception == null) {
+			throw new ArgumentNullException(nameof(exception));
 		}
 
-		internal void LogChatMessage(bool echo, string message, ulong chatGroupID = 0, ulong chatID = 0, ulong steamID = 0, [CallerMemberName] string? previousMethodName = null) {
-			if (string.IsNullOrEmpty(message)) {
-				throw new ArgumentNullException(nameof(message));
-			}
+		Logger.Warn(exception, $"{previousMethodName}()");
+	}
 
-			if (((chatGroupID == 0) || (chatID == 0)) && (steamID == 0)) {
-				throw new InvalidOperationException($"(({nameof(chatGroupID)} || {nameof(chatID)}) && {nameof(steamID)})");
-			}
-
-			StringBuilder loggedMessage = new($"{previousMethodName}() {message} {(echo ? "->" : "<-")} ");
-
-			if ((chatGroupID != 0) && (chatID != 0)) {
-				loggedMessage.Append(CultureInfo.InvariantCulture, $"{chatGroupID}-{chatID}");
-
-				if (steamID != 0) {
-					loggedMessage.Append(CultureInfo.InvariantCulture, $"/{steamID}");
-				}
-			} else if (steamID != 0) {
-				loggedMessage.Append(steamID);
-			}
-
-			LogEventInfo logEventInfo = new(LogLevel.Trace, Logger.Name, loggedMessage.ToString()) {
-				Properties = {
-					["Echo"] = echo,
-					["Message"] = message,
-					["ChatGroupID"] = chatGroupID,
-					["ChatID"] = chatID,
-					["SteamID"] = steamID
-				}
-			};
-
-			Logger.Log(logEventInfo);
+	[PublicAPI]
+	public void LogNullError(string nullObjectName, [CallerMemberName] string? previousMethodName = null) {
+		if (string.IsNullOrEmpty(nullObjectName)) {
+			throw new ArgumentNullException(nameof(nullObjectName));
 		}
 
-		internal async Task LogFatalException(Exception exception, [CallerMemberName] string? previousMethodName = null) {
-			if (exception == null) {
-				throw new ArgumentNullException(nameof(exception));
+		LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorObjectIsNull, nullObjectName), previousMethodName);
+	}
+
+	internal void LogChatMessage(bool echo, string message, ulong chatGroupID = 0, ulong chatID = 0, ulong steamID = 0, [CallerMemberName] string? previousMethodName = null) {
+		if (string.IsNullOrEmpty(message)) {
+			throw new ArgumentNullException(nameof(message));
+		}
+
+		if (((chatGroupID == 0) || (chatID == 0)) && (steamID == 0)) {
+			throw new InvalidOperationException($"(({nameof(chatGroupID)} || {nameof(chatID)}) && {nameof(steamID)})");
+		}
+
+		StringBuilder loggedMessage = new($"{previousMethodName}() {message} {(echo ? "->" : "<-")} ");
+
+		if ((chatGroupID != 0) && (chatID != 0)) {
+			loggedMessage.Append(CultureInfo.InvariantCulture, $"{chatGroupID}-{chatID}");
+
+			if (steamID != 0) {
+				loggedMessage.Append(CultureInfo.InvariantCulture, $"/{steamID}");
 			}
+		} else if (steamID != 0) {
+			loggedMessage.Append(steamID);
+		}
 
-			Logger.Fatal(exception, $"{previousMethodName}()");
-
-			// If LogManager has been initialized already, don't do anything else
-			if (LogManager.Configuration != null) {
-				return;
+		LogEventInfo logEventInfo = new(LogLevel.Trace, Logger.Name, loggedMessage.ToString()) {
+			Properties = {
+				["Echo"] = echo,
+				["Message"] = message,
+				["ChatGroupID"] = chatGroupID,
+				["ChatID"] = chatID,
+				["SteamID"] = steamID
 			}
+		};
 
-			// Otherwise, we ran into fatal exception before logging module could even get initialized, so activate fallback logging that involves file and console
-			string message = string.Format(CultureInfo.CurrentCulture, DateTime.Now + " " + Strings.ErrorEarlyFatalExceptionInfo, SharedInfo.Version) + Environment.NewLine;
+		Logger.Log(logEventInfo);
+	}
+
+	internal async Task LogFatalException(Exception exception, [CallerMemberName] string? previousMethodName = null) {
+		if (exception == null) {
+			throw new ArgumentNullException(nameof(exception));
+		}
+
+		Logger.Fatal(exception, $"{previousMethodName}()");
+
+		// If LogManager has been initialized already, don't do anything else
+		if (LogManager.Configuration != null) {
+			return;
+		}
+
+		// Otherwise, we ran into fatal exception before logging module could even get initialized, so activate fallback logging that involves file and console
+		string message = string.Format(CultureInfo.CurrentCulture, DateTime.Now + " " + Strings.ErrorEarlyFatalExceptionInfo, SharedInfo.Version) + Environment.NewLine;
+
+		try {
+			await File.WriteAllTextAsync(SharedInfo.LogFile, message).ConfigureAwait(false);
+		} catch {
+			// Ignored, we can't do anything about this
+		}
+
+		try {
+			Console.Write(message);
+		} catch {
+			// Ignored, we can't do anything about this
+		}
+
+		while (true) {
+			message = string.Format(CultureInfo.CurrentCulture, Strings.ErrorEarlyFatalExceptionPrint, previousMethodName, exception.Message, exception.StackTrace) + Environment.NewLine;
 
 			try {
-				await File.WriteAllTextAsync(SharedInfo.LogFile, message).ConfigureAwait(false);
+				await File.AppendAllTextAsync(SharedInfo.LogFile, message).ConfigureAwait(false);
 			} catch {
 				// Ignored, we can't do anything about this
 			}
@@ -189,49 +205,33 @@ namespace ArchiSteamFarm.NLog {
 				// Ignored, we can't do anything about this
 			}
 
-			while (true) {
-				message = string.Format(CultureInfo.CurrentCulture, Strings.ErrorEarlyFatalExceptionPrint, previousMethodName, exception.Message, exception.StackTrace) + Environment.NewLine;
+			if (exception.InnerException != null) {
+				exception = exception.InnerException;
 
-				try {
-					await File.AppendAllTextAsync(SharedInfo.LogFile, message).ConfigureAwait(false);
-				} catch {
-					// Ignored, we can't do anything about this
-				}
-
-				try {
-					Console.Write(message);
-				} catch {
-					// Ignored, we can't do anything about this
-				}
-
-				if (exception.InnerException != null) {
-					exception = exception.InnerException;
-
-					continue;
-				}
-
-				break;
-			}
-		}
-
-		internal void LogInvite(SteamID steamID, bool? handled = null, [CallerMemberName] string? previousMethodName = null) {
-			if ((steamID == null) || (steamID.AccountType == EAccountType.Invalid)) {
-				throw new ArgumentNullException(nameof(steamID));
+				continue;
 			}
 
-			ulong steamID64 = steamID;
-
-			string loggedMessage = $"{previousMethodName}() {steamID.AccountType} {steamID64}{(handled.HasValue ? $" = {handled.Value}" : "")}";
-
-			LogEventInfo logEventInfo = new(LogLevel.Trace, Logger.Name, loggedMessage) {
-				Properties = {
-					["AccountType"] = steamID.AccountType,
-					["Handled"] = handled,
-					["SteamID"] = steamID64
-				}
-			};
-
-			Logger.Log(logEventInfo);
+			break;
 		}
+	}
+
+	internal void LogInvite(SteamID steamID, bool? handled = null, [CallerMemberName] string? previousMethodName = null) {
+		if ((steamID == null) || (steamID.AccountType == EAccountType.Invalid)) {
+			throw new ArgumentNullException(nameof(steamID));
+		}
+
+		ulong steamID64 = steamID;
+
+		string loggedMessage = $"{previousMethodName}() {steamID.AccountType} {steamID64}{(handled.HasValue ? $" = {handled.Value}" : "")}";
+
+		LogEventInfo logEventInfo = new(LogLevel.Trace, Logger.Name, loggedMessage) {
+			Properties = {
+				["AccountType"] = steamID.AccountType,
+				["Handled"] = handled,
+				["SteamID"] = steamID64
+			}
+		};
+
+		Logger.Log(logEventInfo);
 	}
 }

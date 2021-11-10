@@ -24,21 +24,21 @@ using JetBrains.Annotations;
 using Microsoft.OpenApi.Models;
 using SteamKit2;
 
-namespace ArchiSteamFarm.IPC.Integration {
-	[PublicAPI]
-	public sealed class SwaggerSteamIdentifierAttribute : CustomSwaggerAttribute {
-		public EAccountType AccountType { get; set; } = EAccountType.Individual;
-		public uint MaximumAccountID { get; set; } = uint.MaxValue;
-		public uint MinimumAccountID { get; set; } = 1;
-		public EUniverse Universe { get; set; } = EUniverse.Public;
+namespace ArchiSteamFarm.IPC.Integration;
 
-		public override void Apply(OpenApiSchema schema) {
-			if (schema == null) {
-				throw new ArgumentNullException(nameof(schema));
-			}
+[PublicAPI]
+public sealed class SwaggerSteamIdentifierAttribute : CustomSwaggerAttribute {
+	public EAccountType AccountType { get; set; } = EAccountType.Individual;
+	public uint MaximumAccountID { get; set; } = uint.MaxValue;
+	public uint MinimumAccountID { get; set; } = 1;
+	public EUniverse Universe { get; set; } = EUniverse.Public;
 
-			schema.Minimum = new SteamID(MinimumAccountID, Universe, AccountType);
-			schema.Maximum = new SteamID(MaximumAccountID, Universe, AccountType);
+	public override void Apply(OpenApiSchema schema) {
+		if (schema == null) {
+			throw new ArgumentNullException(nameof(schema));
 		}
+
+		schema.Minimum = new SteamID(MinimumAccountID, Universe, AccountType);
+		schema.Maximum = new SteamID(MaximumAccountID, Universe, AccountType);
 	}
 }

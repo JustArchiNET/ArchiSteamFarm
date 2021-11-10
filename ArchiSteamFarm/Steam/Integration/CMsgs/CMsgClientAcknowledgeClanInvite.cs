@@ -25,33 +25,33 @@ using System.Text;
 using SteamKit2;
 using SteamKit2.Internal;
 
-namespace ArchiSteamFarm.Steam.Integration.CMsgs {
-	internal sealed class CMsgClientAcknowledgeClanInvite : ISteamSerializableMessage {
-		internal bool AcceptInvite { private get; set; }
-		internal ulong ClanID { private get; set; }
+namespace ArchiSteamFarm.Steam.Integration.CMsgs;
 
-		void ISteamSerializable.Deserialize(Stream stream) {
-			if (stream == null) {
-				throw new ArgumentNullException(nameof(stream));
-			}
+internal sealed class CMsgClientAcknowledgeClanInvite : ISteamSerializableMessage {
+	internal bool AcceptInvite { private get; set; }
+	internal ulong ClanID { private get; set; }
 
-			using BinaryReader binaryReader = new(stream, Encoding.UTF8, true);
-
-			ClanID = binaryReader.ReadUInt64();
-			AcceptInvite = binaryReader.ReadBoolean();
+	void ISteamSerializable.Deserialize(Stream stream) {
+		if (stream == null) {
+			throw new ArgumentNullException(nameof(stream));
 		}
 
-		EMsg ISteamSerializableMessage.GetEMsg() => EMsg.ClientAcknowledgeClanInvite;
+		using BinaryReader binaryReader = new(stream, Encoding.UTF8, true);
 
-		void ISteamSerializable.Serialize(Stream stream) {
-			if (stream == null) {
-				throw new ArgumentNullException(nameof(stream));
-			}
+		ClanID = binaryReader.ReadUInt64();
+		AcceptInvite = binaryReader.ReadBoolean();
+	}
 
-			using BinaryWriter binaryWriter = new(stream, Encoding.UTF8, true);
+	EMsg ISteamSerializableMessage.GetEMsg() => EMsg.ClientAcknowledgeClanInvite;
 
-			binaryWriter.Write(ClanID);
-			binaryWriter.Write(AcceptInvite);
+	void ISteamSerializable.Serialize(Stream stream) {
+		if (stream == null) {
+			throw new ArgumentNullException(nameof(stream));
 		}
+
+		using BinaryWriter binaryWriter = new(stream, Encoding.UTF8, true);
+
+		binaryWriter.Write(ClanID);
+		binaryWriter.Write(AcceptInvite);
 	}
 }

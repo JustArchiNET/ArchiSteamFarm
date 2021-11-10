@@ -51,297 +51,298 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace ArchiSteamFarm.IPC {
-	internal sealed class Startup {
-		private readonly IConfiguration Configuration;
+namespace ArchiSteamFarm.IPC;
 
-		public Startup(IConfiguration configuration) => Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+internal sealed class Startup {
+	private readonly IConfiguration Configuration;
 
-		[UsedImplicitly]
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
-			if (app == null) {
-				throw new ArgumentNullException(nameof(app));
-			}
+	public Startup(IConfiguration configuration) => Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 
-			if (env == null) {
-				throw new ArgumentNullException(nameof(env));
-			}
+	[UsedImplicitly]
+	public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+		if (app == null) {
+			throw new ArgumentNullException(nameof(app));
+		}
 
-			// The order of dependency injection is super important, doing things in wrong order will break everything
-			// https://docs.microsoft.com/aspnet/core/fundamentals/middleware
+		if (env == null) {
+			throw new ArgumentNullException(nameof(env));
+		}
 
-			// This one is easy, it's always in the beginning
-			if (Debugging.IsUserDebugging) {
-				app.UseDeveloperExceptionPage();
-			}
+		// The order of dependency injection is super important, doing things in wrong order will break everything
+		// https://docs.microsoft.com/aspnet/core/fundamentals/middleware
 
-			// Add support for proxies, this one comes usually after developer exception page, but could be before
-			app.UseForwardedHeaders();
+		// This one is easy, it's always in the beginning
+		if (Debugging.IsUserDebugging) {
+			app.UseDeveloperExceptionPage();
+		}
 
-			if (ASF.GlobalConfig?.OptimizationMode != GlobalConfig.EOptimizationMode.MinMemoryUsage) {
-				// Add support for response caching - must be called before static files as we want to cache those as well
-				app.UseResponseCaching();
-			}
+		// Add support for proxies, this one comes usually after developer exception page, but could be before
+		app.UseForwardedHeaders();
 
-			// Add support for response compression - must be called before static files as we want to compress those as well
-			app.UseResponseCompression();
+		if (ASF.GlobalConfig?.OptimizationMode != GlobalConfig.EOptimizationMode.MinMemoryUsage) {
+			// Add support for response caching - must be called before static files as we want to cache those as well
+			app.UseResponseCaching();
+		}
 
-			// It's not apparent when UsePathBase() should be called, but definitely before we get down to static files
-			// TODO: Maybe eventually we can get rid of this, https://github.com/aspnet/AspNetCore/issues/5898
-			PathString pathBase = Configuration.GetSection("Kestrel").GetValue<PathString>("PathBase");
+		// Add support for response compression - must be called before static files as we want to compress those as well
+		app.UseResponseCompression();
 
-			if (!string.IsNullOrEmpty(pathBase) && (pathBase != "/")) {
-				app.UsePathBase(pathBase);
-			}
+		// It's not apparent when UsePathBase() should be called, but definitely before we get down to static files
+		// TODO: Maybe eventually we can get rid of this, https://github.com/aspnet/AspNetCore/issues/5898
+		PathString pathBase = Configuration.GetSection("Kestrel").GetValue<PathString>("PathBase");
 
-			// The default HTML file (usually index.html) is responsible for IPC GUI routing, so re-execute all non-API calls on /
-			// This must be called before default files, because we don't know the exact file name that will be used for index page
-			app.UseWhen(static context => !context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), static appBuilder => appBuilder.UseStatusCodePagesWithReExecute("/"));
+		if (!string.IsNullOrEmpty(pathBase) && (pathBase != "/")) {
+			app.UsePathBase(pathBase);
+		}
 
-			// Add support for default root path redirection (GET / -> GET /index.html), must come before static files
-			app.UseDefaultFiles();
+		// The default HTML file (usually index.html) is responsible for IPC GUI routing, so re-execute all non-API calls on /
+		// This must be called before default files, because we don't know the exact file name that will be used for index page
+		app.UseWhen(static context => !context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), static appBuilder => appBuilder.UseStatusCodePagesWithReExecute("/"));
 
-			// Add support for static files (e.g. HTML, CSS and JS from IPC GUI)
-			app.UseStaticFiles(
-				new StaticFileOptions {
-					OnPrepareResponse = static context => {
-						if (context.File.Exists && !context.File.IsDirectory && !string.IsNullOrEmpty(context.File.Name)) {
-							string extension = Path.GetExtension(context.File.Name);
+		// Add support for default root path redirection (GET / -> GET /index.html), must come before static files
+		app.UseDefaultFiles();
 
-							CacheControlHeaderValue cacheControl = new();
+		// Add support for static files (e.g. HTML, CSS and JS from IPC GUI)
+		app.UseStaticFiles(
+			new StaticFileOptions {
+				OnPrepareResponse = static context => {
+					if (context.File.Exists && !context.File.IsDirectory && !string.IsNullOrEmpty(context.File.Name)) {
+						string extension = Path.GetExtension(context.File.Name);
 
-							switch (extension.ToUpperInvariant()) {
-								case ".CSS":
-								case ".JS":
-									// Add support for SRI-protected static files
-									// SRI requires from us to notify the caller (especially proxy) to avoid modifying the data
-									cacheControl.NoTransform = true;
+						CacheControlHeaderValue cacheControl = new();
 
-									goto default;
-								default:
-									// Instruct the caller to always ask us first about every file it requests
-									// Contrary to the name, this doesn't prevent client from caching, but rather informs it that it must verify with us first that his cache is still up-to-date
-									// This is used to handle ASF and user updates to WWW root, we don't want from the client to ever use outdated scripts
-									cacheControl.NoCache = true;
+						switch (extension.ToUpperInvariant()) {
+							case ".CSS":
+							case ".JS":
+								// Add support for SRI-protected static files
+								// SRI requires from us to notify the caller (especially proxy) to avoid modifying the data
+								cacheControl.NoTransform = true;
 
-									// All static files are public by definition, we don't have any authorization here
-									cacheControl.Public = true;
+								goto default;
+							default:
+								// Instruct the caller to always ask us first about every file it requests
+								// Contrary to the name, this doesn't prevent client from caching, but rather informs it that it must verify with us first that his cache is still up-to-date
+								// This is used to handle ASF and user updates to WWW root, we don't want from the client to ever use outdated scripts
+								cacheControl.NoCache = true;
 
-									break;
-							}
+								// All static files are public by definition, we don't have any authorization here
+								cacheControl.Public = true;
 
-							ResponseHeaders headers = context.Context.Response.GetTypedHeaders();
-
-							headers.CacheControl = cacheControl;
+								break;
 						}
+
+						ResponseHeaders headers = context.Context.Response.GetTypedHeaders();
+
+						headers.CacheControl = cacheControl;
 					}
 				}
-			);
+			}
+		);
 
-			// Add support for additional localization mappings
-			app.UseMiddleware<LocalizationMiddleware>();
+		// Add support for additional localization mappings
+		app.UseMiddleware<LocalizationMiddleware>();
 
-			// Add support for localization
-			app.UseRequestLocalization();
+		// Add support for localization
+		app.UseRequestLocalization();
 
-			// Use routing for our API controllers, this should be called once we're done with all the static files mess
+		// Use routing for our API controllers, this should be called once we're done with all the static files mess
 #if !NETFRAMEWORK
-			app.UseRouting();
+		app.UseRouting();
 #endif
 
-			// We want to protect our API with IPCPassword and additional security, this should be called after routing, so the middleware won't have to deal with API endpoints that do not exist
-			app.UseWhen(static context => context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), static appBuilder => appBuilder.UseMiddleware<ApiAuthenticationMiddleware>());
+		// We want to protect our API with IPCPassword and additional security, this should be called after routing, so the middleware won't have to deal with API endpoints that do not exist
+		app.UseWhen(static context => context.Request.Path.StartsWithSegments("/Api", StringComparison.OrdinalIgnoreCase), static appBuilder => appBuilder.UseMiddleware<ApiAuthenticationMiddleware>());
 
-			string? ipcPassword = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPassword : GlobalConfig.DefaultIPCPassword;
+		string? ipcPassword = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPassword : GlobalConfig.DefaultIPCPassword;
 
-			if (!string.IsNullOrEmpty(ipcPassword)) {
-				// We want to apply CORS policy in order to allow userscripts and other third-party integrations to communicate with ASF API, this should be called before response compression, but can't be due to how our flow works
-				// We apply CORS policy only with IPCPassword set as an extra authentication measure
-				app.UseCors();
-			}
+		if (!string.IsNullOrEmpty(ipcPassword)) {
+			// We want to apply CORS policy in order to allow userscripts and other third-party integrations to communicate with ASF API, this should be called before response compression, but can't be due to how our flow works
+			// We apply CORS policy only with IPCPassword set as an extra authentication measure
+			app.UseCors();
+		}
 
-			// Add support for websockets that we use e.g. in /Api/NLog
-			app.UseWebSockets();
+		// Add support for websockets that we use e.g. in /Api/NLog
+		app.UseWebSockets();
 
-			// Finally register proper API endpoints once we're done with routing
+		// Finally register proper API endpoints once we're done with routing
 #if NETFRAMEWORK
 			app.UseMvcWithDefaultRoute();
 #else
-			app.UseEndpoints(static endpoints => endpoints.MapControllers());
+		app.UseEndpoints(static endpoints => endpoints.MapControllers());
 #endif
 
-			// Add support for swagger, responsible for automatic API documentation generation, this should be on the end, once we're done with API
-			app.UseSwagger();
+		// Add support for swagger, responsible for automatic API documentation generation, this should be on the end, once we're done with API
+		app.UseSwagger();
 
-			// Add support for swagger UI, this should be after swagger, obviously
-			app.UseSwaggerUI(
-				static options => {
-					options.DisplayRequestDuration();
-					options.EnableDeepLinking();
-					options.ShowExtensions();
-					options.SwaggerEndpoint($"{SharedInfo.ASF}/swagger.json", $"{SharedInfo.ASF} API");
-				}
-			);
+		// Add support for swagger UI, this should be after swagger, obviously
+		app.UseSwaggerUI(
+			static options => {
+				options.DisplayRequestDuration();
+				options.EnableDeepLinking();
+				options.ShowExtensions();
+				options.SwaggerEndpoint($"{SharedInfo.ASF}/swagger.json", $"{SharedInfo.ASF} API");
+			}
+		);
+	}
+
+	public void ConfigureServices(IServiceCollection services) {
+		if (services == null) {
+			throw new ArgumentNullException(nameof(services));
 		}
 
-		public void ConfigureServices(IServiceCollection services) {
-			if (services == null) {
-				throw new ArgumentNullException(nameof(services));
-			}
+		// The order of dependency injection is super important, doing things in wrong order will break everything
+		// Order in Configure() method is a good start
 
-			// The order of dependency injection is super important, doing things in wrong order will break everything
-			// Order in Configure() method is a good start
+		// Prepare knownNetworks that we'll use in a second
+		HashSet<string>? knownNetworksTexts = Configuration.GetSection("Kestrel:KnownNetworks").Get<HashSet<string>>();
 
-			// Prepare knownNetworks that we'll use in a second
-			HashSet<string>? knownNetworksTexts = Configuration.GetSection("Kestrel:KnownNetworks").Get<HashSet<string>>();
+		HashSet<IPNetwork>? knownNetworks = null;
 
-			HashSet<IPNetwork>? knownNetworks = null;
+		if (knownNetworksTexts?.Count > 0) {
+			// Use specified known networks
+			knownNetworks = new HashSet<IPNetwork>();
 
-			if (knownNetworksTexts?.Count > 0) {
-				// Use specified known networks
-				knownNetworks = new HashSet<IPNetwork>();
+			foreach (string knownNetworkText in knownNetworksTexts) {
+				string[] addressParts = knownNetworkText.Split('/', StringSplitOptions.RemoveEmptyEntries);
 
-				foreach (string knownNetworkText in knownNetworksTexts) {
-					string[] addressParts = knownNetworkText.Split('/', StringSplitOptions.RemoveEmptyEntries);
+				if ((addressParts.Length != 2) || !IPAddress.TryParse(addressParts[0], out IPAddress? ipAddress) || !byte.TryParse(addressParts[1], out byte prefixLength)) {
+					ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(knownNetworkText)));
+					ASF.ArchiLogger.LogGenericDebug($"{nameof(knownNetworkText)}: {knownNetworkText}");
 
-					if ((addressParts.Length != 2) || !IPAddress.TryParse(addressParts[0], out IPAddress? ipAddress) || !byte.TryParse(addressParts[1], out byte prefixLength)) {
-						ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(knownNetworkText)));
-						ASF.ArchiLogger.LogGenericDebug($"{nameof(knownNetworkText)}: {knownNetworkText}");
-
-						continue;
-					}
-
-					knownNetworks.Add(new IPNetwork(ipAddress, prefixLength));
+					continue;
 				}
+
+				knownNetworks.Add(new IPNetwork(ipAddress, prefixLength));
 			}
+		}
 
-			// Add support for proxies
-			services.Configure<ForwardedHeadersOptions>(
-				options => {
-					options.ForwardedHeaders = ForwardedHeaders.All;
+		// Add support for proxies
+		services.Configure<ForwardedHeadersOptions>(
+			options => {
+				options.ForwardedHeaders = ForwardedHeaders.All;
 
-					if (knownNetworks != null) {
-						foreach (IPNetwork knownNetwork in knownNetworks) {
-							options.KnownNetworks.Add(knownNetwork);
-						}
+				if (knownNetworks != null) {
+					foreach (IPNetwork knownNetwork in knownNetworks) {
+						options.KnownNetworks.Add(knownNetwork);
 					}
 				}
-			);
-
-			if (ASF.GlobalConfig?.OptimizationMode != GlobalConfig.EOptimizationMode.MinMemoryUsage) {
-				// Add support for response caching
-				services.AddResponseCaching();
 			}
+		);
 
-			// Add support for response compression
-			services.AddResponseCompression();
+		if (ASF.GlobalConfig?.OptimizationMode != GlobalConfig.EOptimizationMode.MinMemoryUsage) {
+			// Add support for response caching
+			services.AddResponseCaching();
+		}
 
-			// Add support for localization
-			services.AddLocalization();
+		// Add support for response compression
+		services.AddResponseCompression();
 
-			services.AddRequestLocalization(
-				static options => {
-					// We do not set the DefaultRequestCulture here, because it will default to Thread.CurrentThread.CurrentCulture in this case, which is set when loading GlobalConfig
+		// Add support for localization
+		services.AddLocalization();
 
-					try {
-						CultureInfo lolcatCulture = CultureInfo.CreateSpecificCulture(SharedInfo.LolcatCultureName);
+		services.AddRequestLocalization(
+			static options => {
+				// We do not set the DefaultRequestCulture here, because it will default to Thread.CurrentThread.CurrentCulture in this case, which is set when loading GlobalConfig
 
-						options.SupportedCultures = options.SupportedUICultures = CultureInfo.GetCultures(CultureTypes.AllCultures).Append(lolcatCulture).ToList();
-					} catch (Exception e) {
-						// Fallback for platforms that do not support qps-Ploc culture
-						ASF.ArchiLogger.LogGenericDebuggingException(e);
+				try {
+					CultureInfo lolcatCulture = CultureInfo.CreateSpecificCulture(SharedInfo.LolcatCultureName);
 
-						options.SupportedCultures = options.SupportedUICultures = CultureInfo.GetCultures(CultureTypes.AllCultures);
-					}
+					options.SupportedCultures = options.SupportedUICultures = CultureInfo.GetCultures(CultureTypes.AllCultures).Append(lolcatCulture).ToList();
+				} catch (Exception e) {
+					// Fallback for platforms that do not support qps-Ploc culture
+					ASF.ArchiLogger.LogGenericDebuggingException(e);
 
-					// The default checks the URI and cookies and only then for headers; ASFs IPC does not use either of the higher priority mechanisms anywhere else and we don't want to start here.
-					options.RequestCultureProviders = new List<IRequestCultureProvider>(1) { new AcceptLanguageHeaderRequestCultureProvider() };
+					options.SupportedCultures = options.SupportedUICultures = CultureInfo.GetCultures(CultureTypes.AllCultures);
 				}
-			);
 
-			string? ipcPassword = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPassword : GlobalConfig.DefaultIPCPassword;
-
-			if (!string.IsNullOrEmpty(ipcPassword)) {
-				// We want to apply CORS policy in order to allow userscripts and other third-party integrations to communicate with ASF API
-				// We apply CORS policy only with IPCPassword set as an extra authentication measure
-				services.AddCors(static options => options.AddDefaultPolicy(static policyBuilder => policyBuilder.AllowAnyOrigin()));
+				// The default checks the URI and cookies and only then for headers; ASFs IPC does not use either of the higher priority mechanisms anywhere else and we don't want to start here.
+				options.RequestCultureProviders = new List<IRequestCultureProvider>(1) { new AcceptLanguageHeaderRequestCultureProvider() };
 			}
+		);
 
-			// Add support for swagger, responsible for automatic API documentation generation
-			services.AddSwaggerGen(
-				static options => {
-					options.AddSecurityDefinition(
-						nameof(GlobalConfig.IPCPassword), new OpenApiSecurityScheme {
-							Description = $"{nameof(GlobalConfig.IPCPassword)} authentication using request headers. Check {SharedInfo.ProjectURL}/wiki/IPC#authentication for more info.",
-							In = ParameterLocation.Header,
-							Name = ApiAuthenticationMiddleware.HeadersField,
-							Type = SecuritySchemeType.ApiKey
-						}
-					);
+		string? ipcPassword = ASF.GlobalConfig != null ? ASF.GlobalConfig.IPCPassword : GlobalConfig.DefaultIPCPassword;
 
-					options.AddSecurityRequirement(
-						new OpenApiSecurityRequirement {
-							{
-								new OpenApiSecurityScheme {
-									Reference = new OpenApiReference {
-										Id = nameof(GlobalConfig.IPCPassword),
-										Type = ReferenceType.SecurityScheme
-									}
-								},
+		if (!string.IsNullOrEmpty(ipcPassword)) {
+			// We want to apply CORS policy in order to allow userscripts and other third-party integrations to communicate with ASF API
+			// We apply CORS policy only with IPCPassword set as an extra authentication measure
+			services.AddCors(static options => options.AddDefaultPolicy(static policyBuilder => policyBuilder.AllowAnyOrigin()));
+		}
 
-								Array.Empty<string>()
-							}
-						}
-					);
+		// Add support for swagger, responsible for automatic API documentation generation
+		services.AddSwaggerGen(
+			static options => {
+				options.AddSecurityDefinition(
+					nameof(GlobalConfig.IPCPassword), new OpenApiSecurityScheme {
+						Description = $"{nameof(GlobalConfig.IPCPassword)} authentication using request headers. Check {SharedInfo.ProjectURL}/wiki/IPC#authentication for more info.",
+						In = ParameterLocation.Header,
+						Name = ApiAuthenticationMiddleware.HeadersField,
+						Type = SecuritySchemeType.ApiKey
+					}
+				);
 
-					options.CustomSchemaIds(static type => type.GetUnifiedName());
-					options.EnableAnnotations(true, true);
-
-					options.SchemaFilter<CustomAttributesSchemaFilter>();
-					options.SchemaFilter<EnumSchemaFilter>();
-
-					options.SwaggerDoc(
-						SharedInfo.ASF, new OpenApiInfo {
-							Contact = new OpenApiContact {
-								Name = SharedInfo.GithubRepo,
-								Url = new Uri(SharedInfo.ProjectURL)
+				options.AddSecurityRequirement(
+					new OpenApiSecurityRequirement {
+						{
+							new OpenApiSecurityScheme {
+								Reference = new OpenApiReference {
+									Id = nameof(GlobalConfig.IPCPassword),
+									Type = ReferenceType.SecurityScheme
+								}
 							},
 
-							License = new OpenApiLicense {
-								Name = SharedInfo.LicenseName,
-								Url = new Uri(SharedInfo.LicenseURL)
-							},
-
-							Title = $"{SharedInfo.ASF} API"
+							Array.Empty<string>()
 						}
-					);
-
-					string xmlDocumentationFile = Path.Combine(AppContext.BaseDirectory, SharedInfo.AssemblyDocumentation);
-
-					if (File.Exists(xmlDocumentationFile)) {
-						options.IncludeXmlComments(xmlDocumentationFile);
 					}
-				}
-			);
+				);
 
-			// Add support for Newtonsoft.Json in swagger, this one must be executed after AddSwaggerGen()
-			services.AddSwaggerGenNewtonsoftSupport();
+				options.CustomSchemaIds(static type => type.GetUnifiedName());
+				options.EnableAnnotations(true, true);
 
-			// We need MVC for /Api, but we're going to use only a small subset of all available features
-			IMvcBuilder mvc = services.AddControllers();
+				options.SchemaFilter<CustomAttributesSchemaFilter>();
+				options.SchemaFilter<EnumSchemaFilter>();
 
-			// Add support for controllers declared in custom plugins
-			if (PluginsCore.ActivePlugins?.Count > 0) {
-				HashSet<Assembly>? assemblies = PluginsCore.LoadAssemblies();
+				options.SwaggerDoc(
+					SharedInfo.ASF, new OpenApiInfo {
+						Contact = new OpenApiContact {
+							Name = SharedInfo.GithubRepo,
+							Url = new Uri(SharedInfo.ProjectURL)
+						},
 
-				if (assemblies != null) {
-					foreach (Assembly assembly in assemblies) {
-						mvc.AddApplicationPart(assembly);
+						License = new OpenApiLicense {
+							Name = SharedInfo.LicenseName,
+							Url = new Uri(SharedInfo.LicenseURL)
+						},
+
+						Title = $"{SharedInfo.ASF} API"
 					}
+				);
+
+				string xmlDocumentationFile = Path.Combine(AppContext.BaseDirectory, SharedInfo.AssemblyDocumentation);
+
+				if (File.Exists(xmlDocumentationFile)) {
+					options.IncludeXmlComments(xmlDocumentationFile);
 				}
 			}
+		);
 
-			mvc.AddControllersAsServices();
+		// Add support for Newtonsoft.Json in swagger, this one must be executed after AddSwaggerGen()
+		services.AddSwaggerGenNewtonsoftSupport();
+
+		// We need MVC for /Api, but we're going to use only a small subset of all available features
+		IMvcBuilder mvc = services.AddControllers();
+
+		// Add support for controllers declared in custom plugins
+		if (PluginsCore.ActivePlugins?.Count > 0) {
+			HashSet<Assembly>? assemblies = PluginsCore.LoadAssemblies();
+
+			if (assemblies != null) {
+				foreach (Assembly assembly in assemblies) {
+					mvc.AddApplicationPart(assembly);
+				}
+			}
+		}
+
+		mvc.AddControllersAsServices();
 
 #if NETFRAMEWORK
 			// Use latest compatibility version for MVC
@@ -354,21 +355,20 @@ namespace ArchiSteamFarm.IPC {
 			mvc.AddApiExplorer();
 #endif
 
-			mvc.AddNewtonsoftJson(
-				static options => {
-					// Fix default contract resolver to use original names and not a camel case
-					options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+		mvc.AddNewtonsoftJson(
+			static options => {
+				// Fix default contract resolver to use original names and not a camel case
+				options.SerializerSettings.ContractResolver = new DefaultContractResolver();
 
-					if (Debugging.IsUserDebugging) {
-						options.SerializerSettings.Formatting = Formatting.Indented;
-					}
+				if (Debugging.IsUserDebugging) {
+					options.SerializerSettings.Formatting = Formatting.Indented;
+				}
 
 #if NETFRAMEWORK
 					// .NET Framework serializes Version as object by default, serialize it as string just like .NET Core
 					options.SerializerSettings.Converters.Add(new VersionConverter());
 #endif
-				}
-			);
-		}
+			}
+		);
 	}
 }

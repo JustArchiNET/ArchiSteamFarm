@@ -27,53 +27,53 @@ using ArchiSteamFarm.Core;
 using Newtonsoft.Json;
 using SteamKit2;
 
-namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
-	internal sealed class RequestData {
-		[JsonProperty(PropertyName = "guid", Required = Required.Always)]
-		private static string Guid => ASF.GlobalDatabase?.Identifier.ToString("N") ?? throw new InvalidOperationException(nameof(ASF.GlobalDatabase.Identifier));
+namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
 
-		[JsonProperty(PropertyName = "token", Required = Required.Always)]
-		private static string Token => SharedInfo.Token;
+internal sealed class RequestData {
+	[JsonProperty(PropertyName = "guid", Required = Required.Always)]
+	private static string Guid => ASF.GlobalDatabase?.Identifier.ToString("N") ?? throw new InvalidOperationException(nameof(ASF.GlobalDatabase.Identifier));
 
-		[JsonProperty(PropertyName = "v", Required = Required.Always)]
-		private static byte Version => SharedInfo.ApiVersion;
+	[JsonProperty(PropertyName = "token", Required = Required.Always)]
+	private static string Token => SharedInfo.Token;
 
-		[JsonProperty(PropertyName = "apps", Required = Required.Always)]
-		private readonly ImmutableDictionary<string, string> Apps;
+	[JsonProperty(PropertyName = "v", Required = Required.Always)]
+	private static byte Version => SharedInfo.ApiVersion;
 
-		[JsonProperty(PropertyName = "depots", Required = Required.Always)]
-		private readonly ImmutableDictionary<string, string> Depots;
+	[JsonProperty(PropertyName = "apps", Required = Required.Always)]
+	private readonly ImmutableDictionary<string, string> Apps;
 
-		private readonly ulong SteamID;
+	[JsonProperty(PropertyName = "depots", Required = Required.Always)]
+	private readonly ImmutableDictionary<string, string> Depots;
 
-		[JsonProperty(PropertyName = "subs", Required = Required.Always)]
-		private readonly ImmutableDictionary<string, string> Subs;
+	private readonly ulong SteamID;
 
-		[JsonProperty(PropertyName = "steamid", Required = Required.Always)]
-		private string SteamIDText => new SteamID(SteamID).Render();
+	[JsonProperty(PropertyName = "subs", Required = Required.Always)]
+	private readonly ImmutableDictionary<string, string> Subs;
 
-		internal RequestData(ulong steamID, IReadOnlyCollection<KeyValuePair<uint, ulong>> apps, IReadOnlyCollection<KeyValuePair<uint, ulong>> accessTokens, IReadOnlyCollection<KeyValuePair<uint, string>> depots) {
-			if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
-				throw new ArgumentOutOfRangeException(nameof(steamID));
-			}
+	[JsonProperty(PropertyName = "steamid", Required = Required.Always)]
+	private string SteamIDText => new SteamID(SteamID).Render();
 
-			if (apps == null) {
-				throw new ArgumentNullException(nameof(apps));
-			}
-
-			if (accessTokens == null) {
-				throw new ArgumentNullException(nameof(accessTokens));
-			}
-
-			if (depots == null) {
-				throw new ArgumentNullException(nameof(depots));
-			}
-
-			SteamID = steamID;
-
-			Apps = apps.ToImmutableDictionary(static app => app.Key.ToString(CultureInfo.InvariantCulture), static app => app.Value.ToString(CultureInfo.InvariantCulture));
-			Subs = accessTokens.ToImmutableDictionary(static package => package.Key.ToString(CultureInfo.InvariantCulture), static package => package.Value.ToString(CultureInfo.InvariantCulture));
-			Depots = depots.ToImmutableDictionary(static depot => depot.Key.ToString(CultureInfo.InvariantCulture), static depot => depot.Value);
+	internal RequestData(ulong steamID, IReadOnlyCollection<KeyValuePair<uint, ulong>> apps, IReadOnlyCollection<KeyValuePair<uint, ulong>> accessTokens, IReadOnlyCollection<KeyValuePair<uint, string>> depots) {
+		if ((steamID == 0) || !new SteamID(steamID).IsIndividualAccount) {
+			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
+
+		if (apps == null) {
+			throw new ArgumentNullException(nameof(apps));
+		}
+
+		if (accessTokens == null) {
+			throw new ArgumentNullException(nameof(accessTokens));
+		}
+
+		if (depots == null) {
+			throw new ArgumentNullException(nameof(depots));
+		}
+
+		SteamID = steamID;
+
+		Apps = apps.ToImmutableDictionary(static app => app.Key.ToString(CultureInfo.InvariantCulture), static app => app.Value.ToString(CultureInfo.InvariantCulture));
+		Subs = accessTokens.ToImmutableDictionary(static package => package.Key.ToString(CultureInfo.InvariantCulture), static package => package.Value.ToString(CultureInfo.InvariantCulture));
+		Depots = depots.ToImmutableDictionary(static depot => depot.Key.ToString(CultureInfo.InvariantCulture), static depot => depot.Value);
 	}
 }

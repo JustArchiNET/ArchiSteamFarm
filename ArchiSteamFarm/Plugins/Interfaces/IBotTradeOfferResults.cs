@@ -24,14 +24,14 @@ using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Exchange;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Plugins.Interfaces {
-	[PublicAPI]
-	public interface IBotTradeOfferResults : IPlugin {
-		/// <summary>
-		///     ASF will call this method for notifying you about the result of each received trade offer being handled. The method is executed for each batch that can contain 1 or more trade offers.
-		/// </summary>
-		/// <param name="bot">Bot object related to this callback.</param>
-		/// <param name="tradeResults">Trade results related to this callback.</param>
-		void OnBotTradeOfferResults(Bot bot, IReadOnlyCollection<ParseTradeResult> tradeResults);
-	}
+namespace ArchiSteamFarm.Plugins.Interfaces;
+
+[PublicAPI]
+public interface IBotTradeOfferResults : IPlugin {
+	/// <summary>
+	///     ASF will call this method for notifying you about the result of each received trade offer being handled. The method is executed for each batch that can contain 1 or more trade offers.
+	/// </summary>
+	/// <param name="bot">Bot object related to this callback.</param>
+	/// <param name="tradeResults">Trade results related to this callback.</param>
+	void OnBotTradeOfferResults(Bot bot, IReadOnlyCollection<ParseTradeResult> tradeResults);
 }

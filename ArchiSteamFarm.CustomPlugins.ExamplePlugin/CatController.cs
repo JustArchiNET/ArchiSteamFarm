@@ -27,26 +27,26 @@ using ArchiSteamFarm.IPC.Controllers.Api;
 using ArchiSteamFarm.IPC.Responses;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin {
-	// This is an example class which shows you how you can extend ASF's API with your own custom API routes and controllers
-	// You're free to decide whether you want to integrate with existing ASF concepts (such as ArchiController/GenericResponse), or roll out your own
-	// All API controllers will be discovered during our Kestrel initialization using attributes mapping, you're also getting usual ASF goodies such as swagger documentation out of the box
-	[Route("/Api/Cat")]
-	public sealed class CatController : ArchiController {
-		/// <summary>
-		///     Fetches URL of a random cat picture.
-		/// </summary>
-		[HttpGet]
-		[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
-		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
-		public async Task<ActionResult<GenericResponse>> CatGet() {
-			if (ASF.WebBrowser == null) {
-				throw new InvalidOperationException(nameof(ASF.WebBrowser));
-			}
+namespace ArchiSteamFarm.CustomPlugins.ExamplePlugin;
 
-			string? link = await CatAPI.GetRandomCatURL(ASF.WebBrowser).ConfigureAwait(false);
-
-			return !string.IsNullOrEmpty(link) ? Ok(new GenericResponse<string>(link)) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false));
+// This is an example class which shows you how you can extend ASF's API with your own custom API routes and controllers
+// You're free to decide whether you want to integrate with existing ASF concepts (such as ArchiController/GenericResponse), or roll out your own
+// All API controllers will be discovered during our Kestrel initialization using attributes mapping, you're also getting usual ASF goodies such as swagger documentation out of the box
+[Route("/Api/Cat")]
+public sealed class CatController : ArchiController {
+	/// <summary>
+	///     Fetches URL of a random cat picture.
+	/// </summary>
+	[HttpGet]
+	[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
+	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.ServiceUnavailable)]
+	public async Task<ActionResult<GenericResponse>> CatGet() {
+		if (ASF.WebBrowser == null) {
+			throw new InvalidOperationException(nameof(ASF.WebBrowser));
 		}
+
+		string? link = await CatAPI.GetRandomCatURL(ASF.WebBrowser).ConfigureAwait(false);
+
+		return !string.IsNullOrEmpty(link) ? Ok(new GenericResponse<string>(link)) : StatusCode((int) HttpStatusCode.ServiceUnavailable, new GenericResponse(false));
 	}
 }

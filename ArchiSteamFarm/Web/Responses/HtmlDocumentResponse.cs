@@ -26,38 +26,38 @@ using AngleSharp.Dom;
 using ArchiSteamFarm.Core;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Web.Responses {
-	public sealed class HtmlDocumentResponse : BasicResponse, IDisposable {
-		[PublicAPI]
-		public IDocument Content { get; }
+namespace ArchiSteamFarm.Web.Responses;
 
-		private HtmlDocumentResponse(BasicResponse basicResponse, IDocument content) : base(basicResponse) {
-			if (basicResponse == null) {
-				throw new ArgumentNullException(nameof(basicResponse));
-			}
+public sealed class HtmlDocumentResponse : BasicResponse, IDisposable {
+	[PublicAPI]
+	public IDocument Content { get; }
 
-			Content = content ?? throw new ArgumentNullException(nameof(content));
+	private HtmlDocumentResponse(BasicResponse basicResponse, IDocument content) : base(basicResponse) {
+		if (basicResponse == null) {
+			throw new ArgumentNullException(nameof(basicResponse));
 		}
 
-		public void Dispose() => Content.Dispose();
+		Content = content ?? throw new ArgumentNullException(nameof(content));
+	}
 
-		[PublicAPI]
-		public static async Task<HtmlDocumentResponse?> Create(StreamResponse streamResponse) {
-			if (streamResponse == null) {
-				throw new ArgumentNullException(nameof(streamResponse));
-			}
+	public void Dispose() => Content.Dispose();
 
-			IBrowsingContext context = BrowsingContext.New();
+	[PublicAPI]
+	public static async Task<HtmlDocumentResponse?> Create(StreamResponse streamResponse) {
+		if (streamResponse == null) {
+			throw new ArgumentNullException(nameof(streamResponse));
+		}
 
-			try {
-				IDocument document = await context.OpenAsync(req => req.Content(streamResponse.Content, true)).ConfigureAwait(false);
+		IBrowsingContext context = BrowsingContext.New();
 
-				return new HtmlDocumentResponse(streamResponse, document);
-			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericWarningException(e);
+		try {
+			IDocument document = await context.OpenAsync(req => req.Content(streamResponse.Content, true)).ConfigureAwait(false);
 
-				return null;
-			}
+			return new HtmlDocumentResponse(streamResponse, document);
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericWarningException(e);
+
+			return null;
 		}
 	}
 }

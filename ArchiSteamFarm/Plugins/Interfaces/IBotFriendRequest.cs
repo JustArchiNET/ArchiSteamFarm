@@ -23,15 +23,15 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Steam;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Plugins.Interfaces {
-	[PublicAPI]
-	public interface IBotFriendRequest : IPlugin {
-		/// <summary>
-		///     ASF will call this method for unhandled (ignored and rejected) friend requests and Steam group invites received by the bot.
-		/// </summary>
-		/// <param name="bot">Bot object related to this callback.</param>
-		/// <param name="steamID">64-bit Steam identificator of the user that sent a friend request, or a group that the bot has been invited to.</param>
-		/// <returns>True if the request should be accepted as part of this plugin, false otherwise.</returns>
-		Task<bool> OnBotFriendRequest(Bot bot, ulong steamID);
-	}
+namespace ArchiSteamFarm.Plugins.Interfaces;
+
+[PublicAPI]
+public interface IBotFriendRequest : IPlugin {
+	/// <summary>
+	///     ASF will call this method for unhandled (ignored and rejected) friend requests and Steam group invites received by the bot.
+	/// </summary>
+	/// <param name="bot">Bot object related to this callback.</param>
+	/// <param name="steamID">64-bit Steam identificator of the user that sent a friend request, or a group that the bot has been invited to.</param>
+	/// <returns>True if the request should be accepted as part of this plugin, false otherwise.</returns>
+	Task<bool> OnBotFriendRequest(Bot bot, ulong steamID);
 }

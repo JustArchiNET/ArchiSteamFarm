@@ -33,107 +33,107 @@ using NLog.Config;
 using NLog.Layouts;
 using NLog.Targets;
 
-namespace ArchiSteamFarm.NLog.Targets {
-	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
-	[Target(TargetName)]
-	internal sealed class SteamTarget : AsyncTaskTarget {
-		internal const string TargetName = "Steam";
+namespace ArchiSteamFarm.NLog.Targets;
 
-		// This is NLog config property, it must have public get() and set() capabilities
-		[UsedImplicitly]
-		public Layout? BotName { get; set; }
+[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+[Target(TargetName)]
+internal sealed class SteamTarget : AsyncTaskTarget {
+	internal const string TargetName = "Steam";
 
-		// This is NLog config property, it must have public get() and set() capabilities
-		[UsedImplicitly]
-		public ulong ChatGroupID { get; set; }
+	// This is NLog config property, it must have public get() and set() capabilities
+	[UsedImplicitly]
+	public Layout? BotName { get; set; }
 
-		// This is NLog config property, it must have public get() and set() capabilities
-		[RequiredParameter]
-		[UsedImplicitly]
-		public ulong SteamID { get; set; }
+	// This is NLog config property, it must have public get() and set() capabilities
+	[UsedImplicitly]
+	public ulong ChatGroupID { get; set; }
 
-		// This parameter-less constructor is intentionally public, as NLog uses it for creating targets
-		// It must stay like this as we want to have our targets defined in our NLog.config
-		// Keeping date in default layout also doesn't make much sense (Steam offers that), so we remove it by default
-		public SteamTarget() => Layout = "${level:uppercase=true}|${logger}|${message}";
+	// This is NLog config property, it must have public get() and set() capabilities
+	[RequiredParameter]
+	[UsedImplicitly]
+	public ulong SteamID { get; set; }
 
-		protected override async Task WriteAsyncTask(LogEventInfo logEvent, CancellationToken cancellationToken) {
-			if (logEvent == null) {
-				throw new ArgumentNullException(nameof(logEvent));
-			}
+	// This parameter-less constructor is intentionally public, as NLog uses it for creating targets
+	// It must stay like this as we want to have our targets defined in our NLog.config
+	// Keeping date in default layout also doesn't make much sense (Steam offers that), so we remove it by default
+	public SteamTarget() => Layout = "${level:uppercase=true}|${logger}|${message}";
 
-			base.Write(logEvent);
-
-			if ((SteamID == 0) || (Bot.Bots == null) || Bot.Bots.IsEmpty) {
-				return;
-			}
-
-			string message = Layout.Render(logEvent);
-
-			if (string.IsNullOrEmpty(message)) {
-				return;
-			}
-
-			Bot? bot = null;
-
-			string? botName = BotName?.Render(logEvent);
-
-			if (!string.IsNullOrEmpty(botName)) {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				bot = Bot.GetBot(botName!);
-
-				if (bot?.IsConnectedAndLoggedOn != true) {
-					return;
-				}
-			}
-
-			Task task;
-
-			if (ChatGroupID != 0) {
-				task = SendGroupMessage(message, bot);
-			} else if (bot?.SteamID != SteamID) {
-				task = SendPrivateMessage(message, bot);
-			} else {
-				return;
-			}
-
-			await task.ConfigureAwait(false);
+	protected override async Task WriteAsyncTask(LogEventInfo logEvent, CancellationToken cancellationToken) {
+		if (logEvent == null) {
+			throw new ArgumentNullException(nameof(logEvent));
 		}
 
-		private async Task SendGroupMessage(string message, Bot? bot = null) {
-			if (string.IsNullOrEmpty(message)) {
-				throw new ArgumentNullException(nameof(message));
-			}
+		base.Write(logEvent);
 
-			if (bot == null) {
-				bot = Bot.Bots?.Values.FirstOrDefault(static targetBot => targetBot.IsConnectedAndLoggedOn);
+		if ((SteamID == 0) || (Bot.Bots == null) || Bot.Bots.IsEmpty) {
+			return;
+		}
 
-				if (bot == null) {
-					return;
-				}
-			}
+		string message = Layout.Render(logEvent);
 
-			if (!await bot.SendMessage(ChatGroupID, SteamID, message).ConfigureAwait(false)) {
-				bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
+		if (string.IsNullOrEmpty(message)) {
+			return;
+		}
+
+		Bot? bot = null;
+
+		string? botName = BotName?.Render(logEvent);
+
+		if (!string.IsNullOrEmpty(botName)) {
+			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+			bot = Bot.GetBot(botName!);
+
+			if (bot?.IsConnectedAndLoggedOn != true) {
+				return;
 			}
 		}
 
-		private async Task SendPrivateMessage(string message, Bot? bot = null) {
-			if (string.IsNullOrEmpty(message)) {
-				throw new ArgumentNullException(nameof(message));
-			}
+		Task task;
+
+		if (ChatGroupID != 0) {
+			task = SendGroupMessage(message, bot);
+		} else if (bot?.SteamID != SteamID) {
+			task = SendPrivateMessage(message, bot);
+		} else {
+			return;
+		}
+
+		await task.ConfigureAwait(false);
+	}
+
+	private async Task SendGroupMessage(string message, Bot? bot = null) {
+		if (string.IsNullOrEmpty(message)) {
+			throw new ArgumentNullException(nameof(message));
+		}
+
+		if (bot == null) {
+			bot = Bot.Bots?.Values.FirstOrDefault(static targetBot => targetBot.IsConnectedAndLoggedOn);
 
 			if (bot == null) {
-				bot = Bot.Bots?.Values.FirstOrDefault(targetBot => targetBot.IsConnectedAndLoggedOn && (targetBot.SteamID != SteamID));
-
-				if (bot == null) {
-					return;
-				}
+				return;
 			}
+		}
 
-			if (!await bot.SendMessage(SteamID, message).ConfigureAwait(false)) {
-				bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
+		if (!await bot.SendMessage(ChatGroupID, SteamID, message).ConfigureAwait(false)) {
+			bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
+		}
+	}
+
+	private async Task SendPrivateMessage(string message, Bot? bot = null) {
+		if (string.IsNullOrEmpty(message)) {
+			throw new ArgumentNullException(nameof(message));
+		}
+
+		if (bot == null) {
+			bot = Bot.Bots?.Values.FirstOrDefault(targetBot => targetBot.IsConnectedAndLoggedOn && (targetBot.SteamID != SteamID));
+
+			if (bot == null) {
+				return;
 			}
+		}
+
+		if (!await bot.SendMessage(SteamID, message).ConfigureAwait(false)) {
+			bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.WarningFailedWithError, nameof(Bot.SendMessage)));
 		}
 	}
 }

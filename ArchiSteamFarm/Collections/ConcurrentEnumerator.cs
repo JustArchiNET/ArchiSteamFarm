@@ -23,30 +23,30 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace ArchiSteamFarm.Collections {
-	internal sealed class ConcurrentEnumerator<T> : IEnumerator<T> {
-		public T Current => Enumerator.Current;
+namespace ArchiSteamFarm.Collections;
 
-		private readonly IEnumerator<T> Enumerator;
-		private readonly IDisposable LockObject;
+internal sealed class ConcurrentEnumerator<T> : IEnumerator<T> {
+	public T Current => Enumerator.Current;
 
-		object? IEnumerator.Current => Current;
+	private readonly IEnumerator<T> Enumerator;
+	private readonly IDisposable LockObject;
 
-		internal ConcurrentEnumerator(IReadOnlyCollection<T> collection, IDisposable lockObject) {
-			if (collection == null) {
-				throw new ArgumentNullException(nameof(collection));
-			}
+	object? IEnumerator.Current => Current;
 
-			LockObject = lockObject ?? throw new ArgumentNullException(nameof(lockObject));
-			Enumerator = collection.GetEnumerator();
+	internal ConcurrentEnumerator(IReadOnlyCollection<T> collection, IDisposable lockObject) {
+		if (collection == null) {
+			throw new ArgumentNullException(nameof(collection));
 		}
 
-		public void Dispose() {
-			Enumerator.Dispose();
-			LockObject.Dispose();
-		}
-
-		public bool MoveNext() => Enumerator.MoveNext();
-		public void Reset() => Enumerator.Reset();
+		LockObject = lockObject ?? throw new ArgumentNullException(nameof(lockObject));
+		Enumerator = collection.GetEnumerator();
 	}
+
+	public void Dispose() {
+		Enumerator.Dispose();
+		LockObject.Dispose();
+	}
+
+	public bool MoveNext() => Enumerator.MoveNext();
+	public void Reset() => Enumerator.Reset();
 }

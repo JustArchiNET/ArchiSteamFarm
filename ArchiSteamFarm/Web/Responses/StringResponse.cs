@@ -23,18 +23,18 @@ using System;
 using System.Net.Http;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Web.Responses {
-	[Obsolete("ASF no longer uses this class, re-implement it yourself using " + nameof(BasicResponse) + " if needed.")]
-	public sealed class StringResponse : BasicResponse {
-		[PublicAPI]
-		public string Content { get; }
+namespace ArchiSteamFarm.Web.Responses;
 
-		internal StringResponse(HttpResponseMessage httpResponseMessage, string content) : base(httpResponseMessage) {
-			if (httpResponseMessage == null) {
-				throw new ArgumentNullException(nameof(httpResponseMessage));
-			}
+[Obsolete("ASF no longer uses this class, re-implement it yourself using " + nameof(BasicResponse) + " if needed.")]
+public sealed class StringResponse : BasicResponse {
+	[PublicAPI]
+	public string Content { get; }
 
-			Content = content ?? throw new ArgumentNullException(nameof(content));
+	internal StringResponse(HttpResponseMessage httpResponseMessage, string content) : base(httpResponseMessage) {
+		if (httpResponseMessage == null) {
+			throw new ArgumentNullException(nameof(httpResponseMessage));
 		}
+
+		Content = content ?? throw new ArgumentNullException(nameof(content));
 	}
 }

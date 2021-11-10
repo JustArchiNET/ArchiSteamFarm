@@ -30,57 +30,57 @@ using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
 
-namespace ArchiSteamFarm.IPC.Integration {
-	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
-	internal sealed class LocalizationMiddleware {
-		private static readonly ImmutableDictionary<string, string> CultureConversions = new Dictionary<string, string>(2, StringComparer.OrdinalIgnoreCase) {
-			{ "lol-US", SharedInfo.LolcatCultureName },
-			{ "sr-CS", "sr-Latn" }
-		}.ToImmutableDictionary(StringComparer.OrdinalIgnoreCase);
+namespace ArchiSteamFarm.IPC.Integration;
 
-		private readonly RequestDelegate Next;
+[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+internal sealed class LocalizationMiddleware {
+	private static readonly ImmutableDictionary<string, string> CultureConversions = new Dictionary<string, string>(2, StringComparer.OrdinalIgnoreCase) {
+		{ "lol-US", SharedInfo.LolcatCultureName },
+		{ "sr-CS", "sr-Latn" }
+	}.ToImmutableDictionary(StringComparer.OrdinalIgnoreCase);
 
-		public LocalizationMiddleware(RequestDelegate next) => Next = next ?? throw new ArgumentNullException(nameof(next));
+	private readonly RequestDelegate Next;
 
-		[UsedImplicitly]
-		public async Task InvokeAsync(HttpContext context) {
-			if (context == null) {
-				throw new ArgumentNullException(nameof(context));
-			}
+	public LocalizationMiddleware(RequestDelegate next) => Next = next ?? throw new ArgumentNullException(nameof(next));
 
-			RequestHeaders headers = context.Request.GetTypedHeaders();
-
-			IList<StringWithQualityHeaderValue>? acceptLanguageHeader = headers.AcceptLanguage;
-
-			if ((acceptLanguageHeader == null) || (acceptLanguageHeader.Count == 0)) {
-				await Next(context).ConfigureAwait(false);
-
-				return;
-			}
-
-			bool valuesChanged = false;
-
-			for (int i = 0; i < acceptLanguageHeader.Count; i++) {
-				StringSegment language = acceptLanguageHeader[i].Value;
-
-				if (!language.HasValue || string.IsNullOrEmpty(language.Value)) {
-					continue;
-				}
-
-				if (!CultureConversions.TryGetValue(language.Value, out string? replacement) || string.IsNullOrEmpty(replacement)) {
-					continue;
-				}
-
-				acceptLanguageHeader[i] = StringWithQualityHeaderValue.Parse(replacement);
-				valuesChanged = true;
-			}
-
-			if (valuesChanged) {
-				// The getter returns a temporary collection; To make sure our changes are persisted, we need to assign it back
-				headers.AcceptLanguage = acceptLanguageHeader;
-			}
-
-			await Next(context).ConfigureAwait(false);
+	[UsedImplicitly]
+	public async Task InvokeAsync(HttpContext context) {
+		if (context == null) {
+			throw new ArgumentNullException(nameof(context));
 		}
+
+		RequestHeaders headers = context.Request.GetTypedHeaders();
+
+		IList<StringWithQualityHeaderValue>? acceptLanguageHeader = headers.AcceptLanguage;
+
+		if ((acceptLanguageHeader == null) || (acceptLanguageHeader.Count == 0)) {
+			await Next(context).ConfigureAwait(false);
+
+			return;
+		}
+
+		bool valuesChanged = false;
+
+		for (int i = 0; i < acceptLanguageHeader.Count; i++) {
+			StringSegment language = acceptLanguageHeader[i].Value;
+
+			if (!language.HasValue || string.IsNullOrEmpty(language.Value)) {
+				continue;
+			}
+
+			if (!CultureConversions.TryGetValue(language.Value, out string? replacement) || string.IsNullOrEmpty(replacement)) {
+				continue;
+			}
+
+			acceptLanguageHeader[i] = StringWithQualityHeaderValue.Parse(replacement);
+			valuesChanged = true;
+		}
+
+		if (valuesChanged) {
+			// The getter returns a temporary collection; To make sure our changes are persisted, we need to assign it back
+			headers.AcceptLanguage = acceptLanguageHeader;
+		}
+
+		await Next(context).ConfigureAwait(false);
 	}
 }

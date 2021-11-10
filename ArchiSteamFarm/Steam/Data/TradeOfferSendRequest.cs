@@ -22,17 +22,17 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.Steam.Data {
-	internal sealed class TradeOfferSendRequest {
-		[JsonProperty(PropertyName = "me", Required = Required.Always)]
-		internal readonly ItemList ItemsToGive = new();
+namespace ArchiSteamFarm.Steam.Data;
 
-		[JsonProperty(PropertyName = "them", Required = Required.Always)]
-		internal readonly ItemList ItemsToReceive = new();
+internal sealed class TradeOfferSendRequest {
+	[JsonProperty(PropertyName = "me", Required = Required.Always)]
+	internal readonly ItemList ItemsToGive = new();
 
-		internal sealed class ItemList {
-			[JsonProperty(PropertyName = "assets", Required = Required.Always)]
-			internal readonly HashSet<Asset> Assets = new();
-		}
+	[JsonProperty(PropertyName = "them", Required = Required.Always)]
+	internal readonly ItemList ItemsToReceive = new();
+
+	internal sealed class ItemList {
+		[JsonProperty(PropertyName = "assets", Required = Required.Always)]
+		internal readonly HashSet<Asset> Assets = new();
 	}
 }

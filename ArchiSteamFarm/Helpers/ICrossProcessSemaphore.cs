@@ -22,11 +22,11 @@
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Helpers {
-	[PublicAPI]
-	public interface ICrossProcessSemaphore {
-		void Release();
-		Task WaitAsync();
-		Task<bool> WaitAsync(int millisecondsTimeout);
-	}
+namespace ArchiSteamFarm.Helpers;
+
+[PublicAPI]
+public interface ICrossProcessSemaphore {
+	void Release();
+	Task WaitAsync();
+	Task<bool> WaitAsync(int millisecondsTimeout);
 }

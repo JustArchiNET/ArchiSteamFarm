@@ -24,25 +24,25 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.IPC.Requests {
-	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	public sealed class CommandRequest {
-		/// <summary>
-		///     Specifies the command that will be executed by ASF.
-		/// </summary>
-		[JsonProperty(Required = Required.Always)]
-		[Required]
-		public string Command { get; private set; } = "";
+namespace ArchiSteamFarm.IPC.Requests;
 
-		internal CommandRequest(string command) {
-			if (string.IsNullOrEmpty(command)) {
-				throw new ArgumentNullException(nameof(command));
-			}
+[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+public sealed class CommandRequest {
+	/// <summary>
+	///     Specifies the command that will be executed by ASF.
+	/// </summary>
+	[JsonProperty(Required = Required.Always)]
+	[Required]
+	public string Command { get; private set; } = "";
 
-			Command = command;
+	internal CommandRequest(string command) {
+		if (string.IsNullOrEmpty(command)) {
+			throw new ArgumentNullException(nameof(command));
 		}
 
-		[JsonConstructor]
-		private CommandRequest() { }
+		Command = command;
 	}
+
+	[JsonConstructor]
+	private CommandRequest() { }
 }

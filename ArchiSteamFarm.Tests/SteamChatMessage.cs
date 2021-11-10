@@ -27,179 +27,180 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static ArchiSteamFarm.Steam.Integration.SteamChatMessage;
 
-namespace ArchiSteamFarm.Tests {
-	[TestClass]
-	public sealed class SteamChatMessage {
-		[TestMethod]
-		public async Task CanSplitEvenWithStupidlyLongPrefix() {
-			string prefix = new('x', MaxMessagePrefixBytes);
+namespace ArchiSteamFarm.Tests;
 
-			const string emoji = "😎";
-			const string message = emoji + emoji + emoji + emoji;
+[TestClass]
+public sealed class SteamChatMessage {
+	[TestMethod]
+	public async Task CanSplitEvenWithStupidlyLongPrefix() {
+		string prefix = new('x', MaxMessagePrefixBytes);
 
-			List<string> output = await GetMessageParts(message, prefix, true).ToListAsync().ConfigureAwait(false);
+		const string emoji = "😎";
+		const string message = emoji + emoji + emoji + emoji;
 
-			Assert.AreEqual(4, output.Count);
+		List<string> output = await GetMessageParts(message, prefix, true).ToListAsync().ConfigureAwait(false);
 
-			Assert.AreEqual(prefix + emoji + ContinuationCharacter, output[0]);
-			Assert.AreEqual(prefix + ContinuationCharacter + emoji + ContinuationCharacter, output[1]);
-			Assert.AreEqual(prefix + ContinuationCharacter + emoji + ContinuationCharacter, output[2]);
-			Assert.AreEqual(prefix + ContinuationCharacter + emoji, output[3]);
-		}
+		Assert.AreEqual(4, output.Count);
 
-		[TestMethod]
-		public void ContinuationCharacterSizeIsProperlyCalculated() => Assert.AreEqual(ContinuationCharacterBytes, Encoding.UTF8.GetByteCount(ContinuationCharacter.ToString()));
+		Assert.AreEqual(prefix + emoji + ContinuationCharacter, output[0]);
+		Assert.AreEqual(prefix + ContinuationCharacter + emoji + ContinuationCharacter, output[1]);
+		Assert.AreEqual(prefix + ContinuationCharacter + emoji + ContinuationCharacter, output[2]);
+		Assert.AreEqual(prefix + ContinuationCharacter + emoji, output[3]);
+	}
 
-		[TestMethod]
-		public async Task DoesntSkipEmptyNewlines() {
-			string message = $"asdf{Environment.NewLine}{Environment.NewLine}asdf";
+	[TestMethod]
+	public void ContinuationCharacterSizeIsProperlyCalculated() => Assert.AreEqual(ContinuationCharacterBytes, Encoding.UTF8.GetByteCount(ContinuationCharacter.ToString()));
 
-			List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
+	[TestMethod]
+	public async Task DoesntSkipEmptyNewlines() {
+		string message = $"asdf{Environment.NewLine}{Environment.NewLine}asdf";
 
-			Assert.AreEqual(1, output.Count);
-			Assert.AreEqual(message, output.First());
-		}
+		List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
 
-		[DataRow(false)]
-		[DataRow(true)]
-		[DataTestMethod]
-		public async Task DoesntSplitInTheMiddleOfMultiByteChar(bool isAccountLimited) {
-			int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
-			int longLineLength = maxMessageBytes - ReservedContinuationMessageBytes;
+		Assert.AreEqual(1, output.Count);
+		Assert.AreEqual(message, output.First());
+	}
 
-			const string emoji = "😎";
+	[DataRow(false)]
+	[DataRow(true)]
+	[DataTestMethod]
+	public async Task DoesntSplitInTheMiddleOfMultiByteChar(bool isAccountLimited) {
+		int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
+		int longLineLength = maxMessageBytes - ReservedContinuationMessageBytes;
 
-			string longSequence = new('a', longLineLength - 1);
-			string message = longSequence + emoji;
+		const string emoji = "😎";
 
-			List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync().ConfigureAwait(false);
+		string longSequence = new('a', longLineLength - 1);
+		string message = longSequence + emoji;
 
-			Assert.AreEqual(2, output.Count);
+		List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync().ConfigureAwait(false);
 
-			Assert.AreEqual(longSequence + ContinuationCharacter, output[0]);
-			Assert.AreEqual(ContinuationCharacter + emoji, output[1]);
-		}
+		Assert.AreEqual(2, output.Count);
 
-		[TestMethod]
-		public async Task DoesntSplitJustBecauseOfLastEscapableCharacter() {
-			const string message = "abcdef[";
-			const string escapedMessage = @"abcdef\[";
+		Assert.AreEqual(longSequence + ContinuationCharacter, output[0]);
+		Assert.AreEqual(ContinuationCharacter + emoji, output[1]);
+	}
 
-			List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
+	[TestMethod]
+	public async Task DoesntSplitJustBecauseOfLastEscapableCharacter() {
+		const string message = "abcdef[";
+		const string escapedMessage = @"abcdef\[";
 
-			Assert.AreEqual(1, output.Count);
-			Assert.AreEqual(escapedMessage, output.First());
-		}
+		List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
 
-		[DataRow(false)]
-		[DataRow(true)]
-		[DataTestMethod]
-		public async Task DoesntSplitOnBackslashNotUsedForEscaping(bool isAccountLimited) {
-			int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
-			int longLineLength = maxMessageBytes - ReservedContinuationMessageBytes;
+		Assert.AreEqual(1, output.Count);
+		Assert.AreEqual(escapedMessage, output.First());
+	}
 
-			string longLine = new('a', longLineLength - 2);
-			string message = $@"{longLine}\";
+	[DataRow(false)]
+	[DataRow(true)]
+	[DataTestMethod]
+	public async Task DoesntSplitOnBackslashNotUsedForEscaping(bool isAccountLimited) {
+		int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
+		int longLineLength = maxMessageBytes - ReservedContinuationMessageBytes;
 
-			List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync().ConfigureAwait(false);
+		string longLine = new('a', longLineLength - 2);
+		string message = $@"{longLine}\";
 
-			Assert.AreEqual(1, output.Count);
-			Assert.AreEqual($@"{message}\", output.First());
-		}
+		List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync().ConfigureAwait(false);
 
-		[DataRow(false)]
-		[DataRow(true)]
-		[DataTestMethod]
-		public async Task DoesntSplitOnEscapeCharacter(bool isAccountLimited) {
-			int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
-			int longLineLength = maxMessageBytes - ReservedContinuationMessageBytes;
+		Assert.AreEqual(1, output.Count);
+		Assert.AreEqual($@"{message}\", output.First());
+	}
 
-			string longLine = new('a', longLineLength - 1);
-			string message = $"{longLine}[";
+	[DataRow(false)]
+	[DataRow(true)]
+	[DataTestMethod]
+	public async Task DoesntSplitOnEscapeCharacter(bool isAccountLimited) {
+		int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
+		int longLineLength = maxMessageBytes - ReservedContinuationMessageBytes;
 
-			List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync().ConfigureAwait(false);
+		string longLine = new('a', longLineLength - 1);
+		string message = $"{longLine}[";
 
-			Assert.AreEqual(2, output.Count);
+		List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync().ConfigureAwait(false);
 
-			Assert.AreEqual(longLine + ContinuationCharacter, output[0]);
-			Assert.AreEqual($@"{ContinuationCharacter}\[", output[1]);
-		}
+		Assert.AreEqual(2, output.Count);
 
-		[TestMethod]
-		public async Task NoNeedForAnySplittingWithNewlines() {
-			string message = $"abcdef{Environment.NewLine}ghijkl{Environment.NewLine}mnopqr";
+		Assert.AreEqual(longLine + ContinuationCharacter, output[0]);
+		Assert.AreEqual($@"{ContinuationCharacter}\[", output[1]);
+	}
 
-			List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
+	[TestMethod]
+	public async Task NoNeedForAnySplittingWithNewlines() {
+		string message = $"abcdef{Environment.NewLine}ghijkl{Environment.NewLine}mnopqr";
 
-			Assert.AreEqual(1, output.Count);
-			Assert.AreEqual(message, output.First());
-		}
+		List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
 
-		[TestMethod]
-		public async Task NoNeedForAnySplittingWithoutNewlines() {
-			const string message = "abcdef";
+		Assert.AreEqual(1, output.Count);
+		Assert.AreEqual(message, output.First());
+	}
 
-			List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
+	[TestMethod]
+	public async Task NoNeedForAnySplittingWithoutNewlines() {
+		const string message = "abcdef";
 
-			Assert.AreEqual(1, output.Count);
-			Assert.AreEqual(message, output.First());
-		}
+		List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
 
-		[TestMethod]
-		public void ParagraphCharacterSizeIsLessOrEqualToContinuationCharacterSize() => Assert.IsTrue(ContinuationCharacterBytes >= Encoding.UTF8.GetByteCount(ParagraphCharacter.ToString()));
+		Assert.AreEqual(1, output.Count);
+		Assert.AreEqual(message, output.First());
+	}
 
-		[TestMethod]
-		public async Task ProperlyEscapesCharacters() {
-			const string message = @"[b]bold[/b] \n";
-			const string escapedMessage = @"\[b]bold\[/b] \\n";
+	[TestMethod]
+	public void ParagraphCharacterSizeIsLessOrEqualToContinuationCharacterSize() => Assert.IsTrue(ContinuationCharacterBytes >= Encoding.UTF8.GetByteCount(ParagraphCharacter.ToString()));
 
-			List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
+	[TestMethod]
+	public async Task ProperlyEscapesCharacters() {
+		const string message = @"[b]bold[/b] \n";
+		const string escapedMessage = @"\[b]bold\[/b] \\n";
 
-			Assert.AreEqual(1, output.Count);
-			Assert.AreEqual(escapedMessage, output.First());
-		}
+		List<string> output = await GetMessageParts(message).ToListAsync().ConfigureAwait(false);
 
-		[TestMethod]
-		public async Task ProperlyEscapesSteamMessagePrefix() {
-			const string prefix = "/pre []";
-			const string escapedPrefix = @"/pre \[]";
+		Assert.AreEqual(1, output.Count);
+		Assert.AreEqual(escapedMessage, output.First());
+	}
 
-			const string message = "asdf";
+	[TestMethod]
+	public async Task ProperlyEscapesSteamMessagePrefix() {
+		const string prefix = "/pre []";
+		const string escapedPrefix = @"/pre \[]";
 
-			List<string> output = await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false);
+		const string message = "asdf";
 
-			Assert.AreEqual(1, output.Count);
-			Assert.AreEqual(escapedPrefix + message, output.First());
-		}
+		List<string> output = await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false);
 
-		[DataRow(false)]
-		[DataRow(true)]
-		[DataTestMethod]
-		public async Task ProperlySplitsLongSingleLine(bool isAccountLimited) {
-			int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
-			int longLineLength = maxMessageBytes - ReservedContinuationMessageBytes;
+		Assert.AreEqual(1, output.Count);
+		Assert.AreEqual(escapedPrefix + message, output.First());
+	}
 
-			string longLine = new('a', longLineLength);
-			string message = longLine + longLine + longLine + longLine;
+	[DataRow(false)]
+	[DataRow(true)]
+	[DataTestMethod]
+	public async Task ProperlySplitsLongSingleLine(bool isAccountLimited) {
+		int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
+		int longLineLength = maxMessageBytes - ReservedContinuationMessageBytes;
 
-			List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync().ConfigureAwait(false);
+		string longLine = new('a', longLineLength);
+		string message = longLine + longLine + longLine + longLine;
 
-			Assert.AreEqual(4, output.Count);
+		List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync().ConfigureAwait(false);
 
-			Assert.AreEqual(longLine + ContinuationCharacter, output[0]);
-			Assert.AreEqual(ContinuationCharacter + longLine + ContinuationCharacter, output[1]);
-			Assert.AreEqual(ContinuationCharacter + longLine + ContinuationCharacter, output[2]);
-			Assert.AreEqual(ContinuationCharacter + longLine, output[3]);
-		}
+		Assert.AreEqual(4, output.Count);
 
-		[TestMethod]
-		public void ReservedSizeForEscapingIsProperlyCalculated() => Assert.AreEqual(ReservedEscapeMessageBytes, Encoding.UTF8.GetByteCount(@"\") + 4); // Maximum amount of bytes per single UTF-8 character is 4, not 6 as from Encoding.UTF8.GetMaxByteCount(1)
+		Assert.AreEqual(longLine + ContinuationCharacter, output[0]);
+		Assert.AreEqual(ContinuationCharacter + longLine + ContinuationCharacter, output[1]);
+		Assert.AreEqual(ContinuationCharacter + longLine + ContinuationCharacter, output[2]);
+		Assert.AreEqual(ContinuationCharacter + longLine, output[3]);
+	}
 
-		[TestMethod]
-		public async Task RyzhehvostInitialTestForSplitting() {
-			const string prefix = "/me ";
+	[TestMethod]
+	public void ReservedSizeForEscapingIsProperlyCalculated() => Assert.AreEqual(ReservedEscapeMessageBytes, Encoding.UTF8.GetByteCount(@"\") + 4); // Maximum amount of bytes per single UTF-8 character is 4, not 6 as from Encoding.UTF8.GetMaxByteCount(1)
 
-			const string message = @"<XLimited5> Уже имеет: app/1493800 | Aircraft Carrier Survival: Prolouge
+	[TestMethod]
+	public async Task RyzhehvostInitialTestForSplitting() {
+		const string prefix = "/me ";
+
+		const string message = @"<XLimited5> Уже имеет: app/1493800 | Aircraft Carrier Survival: Prolouge
 <XLimited5> Уже имеет: app/349520 | Armillo
 <XLimited5> Уже имеет: app/346330 | BrainBread 2
 <XLimited5> Уже имеет: app/1086690 | C-War 2
@@ -254,82 +255,81 @@ namespace ArchiSteamFarm.Tests {
 <ASF> 1/1 ботов уже имеют игру app/269710 | Tumblestone.
 <ASF> 1/1 ботов уже имеют игру app/304930 | Unturned.";
 
-			List<string> output = await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false);
+		List<string> output = await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false);
 
-			Assert.AreEqual(2, output.Count);
+		Assert.AreEqual(2, output.Count);
 
-			foreach (string messagePart in output) {
-				if ((messagePart.Length <= prefix.Length) || !messagePart.StartsWith(prefix, StringComparison.Ordinal)) {
-					Assert.Fail();
+		foreach (string messagePart in output) {
+			if ((messagePart.Length <= prefix.Length) || !messagePart.StartsWith(prefix, StringComparison.Ordinal)) {
+				Assert.Fail();
 
-					return;
-				}
-
-				string[] lines = messagePart.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
-
-				int bytes = lines.Where(static line => line.Length > 0).Sum(Encoding.UTF8.GetByteCount) + ((lines.Length - 1) * NewlineWeight);
-
-				if (bytes > MaxMessageBytesForUnlimitedAccounts) {
-					Assert.Fail();
-
-					return;
-				}
-			}
-		}
-
-		[DataRow(false)]
-		[DataRow(true)]
-		[DataTestMethod]
-		public async Task SplitsOnNewlinesWithParagraphCharacter(bool isAccountLimited) {
-			int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
-
-			StringBuilder newlinePartBuilder = new();
-
-			for (ushort bytes = 0; bytes < maxMessageBytes - ReservedContinuationMessageBytes - NewlineWeight;) {
-				if (newlinePartBuilder.Length > 0) {
-					bytes += NewlineWeight;
-					newlinePartBuilder.Append(Environment.NewLine);
-				}
-
-				bytes++;
-				newlinePartBuilder.Append('a');
+				return;
 			}
 
-			string newlinePart = newlinePartBuilder.ToString();
-			string message = newlinePart + Environment.NewLine + newlinePart + Environment.NewLine + newlinePart + Environment.NewLine + newlinePart;
+			string[] lines = messagePart.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
 
-			List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync().ConfigureAwait(false);
+			int bytes = lines.Where(static line => line.Length > 0).Sum(Encoding.UTF8.GetByteCount) + ((lines.Length - 1) * NewlineWeight);
 
-			Assert.AreEqual(4, output.Count);
+			if (bytes > MaxMessageBytesForUnlimitedAccounts) {
+				Assert.Fail();
 
-			Assert.AreEqual(newlinePart + ParagraphCharacter, output[0]);
-			Assert.AreEqual(newlinePart + ParagraphCharacter, output[1]);
-			Assert.AreEqual(newlinePart + ParagraphCharacter, output[2]);
-			Assert.AreEqual(newlinePart, output[3]);
+				return;
+			}
+		}
+	}
+
+	[DataRow(false)]
+	[DataRow(true)]
+	[DataTestMethod]
+	public async Task SplitsOnNewlinesWithParagraphCharacter(bool isAccountLimited) {
+		int maxMessageBytes = isAccountLimited ? MaxMessageBytesForLimitedAccounts : MaxMessageBytesForUnlimitedAccounts;
+
+		StringBuilder newlinePartBuilder = new();
+
+		for (ushort bytes = 0; bytes < maxMessageBytes - ReservedContinuationMessageBytes - NewlineWeight;) {
+			if (newlinePartBuilder.Length > 0) {
+				bytes += NewlineWeight;
+				newlinePartBuilder.Append(Environment.NewLine);
+			}
+
+			bytes++;
+			newlinePartBuilder.Append('a');
 		}
 
-		[ExpectedException(typeof(ArgumentOutOfRangeException))]
-		[TestMethod]
-		public async Task ThrowsOnTooLongNewlinesPrefix() {
-			string prefix = new('\n', (MaxMessagePrefixBytes / NewlineWeight) + 1);
+		string newlinePart = newlinePartBuilder.ToString();
+		string message = newlinePart + Environment.NewLine + newlinePart + Environment.NewLine + newlinePart + Environment.NewLine + newlinePart;
 
-			const string message = "asdf";
+		List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync().ConfigureAwait(false);
 
-			await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false);
+		Assert.AreEqual(4, output.Count);
 
-			Assert.Fail();
-		}
+		Assert.AreEqual(newlinePart + ParagraphCharacter, output[0]);
+		Assert.AreEqual(newlinePart + ParagraphCharacter, output[1]);
+		Assert.AreEqual(newlinePart + ParagraphCharacter, output[2]);
+		Assert.AreEqual(newlinePart, output[3]);
+	}
 
-		[ExpectedException(typeof(ArgumentOutOfRangeException))]
-		[TestMethod]
-		public async Task ThrowsOnTooLongPrefix() {
-			string prefix = new('x', MaxMessagePrefixBytes + 1);
+	[ExpectedException(typeof(ArgumentOutOfRangeException))]
+	[TestMethod]
+	public async Task ThrowsOnTooLongNewlinesPrefix() {
+		string prefix = new('\n', (MaxMessagePrefixBytes / NewlineWeight) + 1);
 
-			const string message = "asdf";
+		const string message = "asdf";
 
-			await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false);
+		await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false);
 
-			Assert.Fail();
-		}
+		Assert.Fail();
+	}
+
+	[ExpectedException(typeof(ArgumentOutOfRangeException))]
+	[TestMethod]
+	public async Task ThrowsOnTooLongPrefix() {
+		string prefix = new('x', MaxMessagePrefixBytes + 1);
+
+		const string message = "asdf";
+
+		await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false);
+
+		Assert.Fail();
 	}
 }

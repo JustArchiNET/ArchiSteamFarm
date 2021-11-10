@@ -27,180 +27,180 @@ using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 
-namespace ArchiSteamFarm.Helpers {
-	internal sealed class CrossProcessFileBasedSemaphore : ICrossProcessSemaphore, IDisposable {
-		private const ushort SpinLockDelay = 1000; // In milliseconds
+namespace ArchiSteamFarm.Helpers;
 
-		private readonly string FilePath;
-		private readonly SemaphoreSlim LocalSemaphore = new(1, 1);
+internal sealed class CrossProcessFileBasedSemaphore : ICrossProcessSemaphore, IDisposable {
+	private const ushort SpinLockDelay = 1000; // In milliseconds
 
-		private FileStream? FileLock;
+	private readonly string FilePath;
+	private readonly SemaphoreSlim LocalSemaphore = new(1, 1);
 
-		internal CrossProcessFileBasedSemaphore(string name) {
-			if (string.IsNullOrEmpty(name)) {
-				throw new ArgumentNullException(nameof(name));
+	private FileStream? FileLock;
+
+	internal CrossProcessFileBasedSemaphore(string name) {
+		if (string.IsNullOrEmpty(name)) {
+			throw new ArgumentNullException(nameof(name));
+		}
+
+		FilePath = Path.Combine(Path.GetTempPath(), SharedInfo.ASF, name);
+
+		EnsureFileExists();
+	}
+
+	public void Dispose() {
+		LocalSemaphore.Dispose();
+
+		FileLock?.Dispose();
+	}
+
+	void ICrossProcessSemaphore.Release() {
+		// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
+		lock (LocalSemaphore) {
+			if (FileLock == null) {
+				throw new InvalidOperationException(nameof(FileLock));
 			}
 
-			FilePath = Path.Combine(Path.GetTempPath(), SharedInfo.ASF, name);
-
-			EnsureFileExists();
+			FileLock.Dispose();
+			FileLock = null;
 		}
 
-		public void Dispose() {
-			LocalSemaphore.Dispose();
+		LocalSemaphore.Release();
+	}
 
-			FileLock?.Dispose();
-		}
+	async Task ICrossProcessSemaphore.WaitAsync() {
+		await LocalSemaphore.WaitAsync().ConfigureAwait(false);
 
-		void ICrossProcessSemaphore.Release() {
-			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
-			lock (LocalSemaphore) {
-				if (FileLock == null) {
-					throw new InvalidOperationException(nameof(FileLock));
-				}
+		bool success = false;
 
-				FileLock.Dispose();
-				FileLock = null;
-			}
-
-			LocalSemaphore.Release();
-		}
-
-		async Task ICrossProcessSemaphore.WaitAsync() {
-			await LocalSemaphore.WaitAsync().ConfigureAwait(false);
-
-			bool success = false;
-
-			try {
-				while (true) {
-					try {
-						// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
-						lock (LocalSemaphore) {
-							if (FileLock != null) {
-								throw new InvalidOperationException(nameof(FileLock));
-							}
-
-							EnsureFileExists();
-
-							FileLock = new FileStream(FilePath, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None);
-							success = true;
-
-							return;
+		try {
+			while (true) {
+				try {
+					// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
+					lock (LocalSemaphore) {
+						if (FileLock != null) {
+							throw new InvalidOperationException(nameof(FileLock));
 						}
-					} catch (IOException) {
-						await Task.Delay(SpinLockDelay).ConfigureAwait(false);
+
+						EnsureFileExists();
+
+						FileLock = new FileStream(FilePath, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None);
+						success = true;
+
+						return;
 					}
-				}
-			} finally {
-				if (!success) {
-					LocalSemaphore.Release();
+				} catch (IOException) {
+					await Task.Delay(SpinLockDelay).ConfigureAwait(false);
 				}
 			}
+		} finally {
+			if (!success) {
+				LocalSemaphore.Release();
+			}
+		}
+	}
+
+	async Task<bool> ICrossProcessSemaphore.WaitAsync(int millisecondsTimeout) {
+		Stopwatch stopwatch = Stopwatch.StartNew();
+
+		if (!await LocalSemaphore.WaitAsync(millisecondsTimeout).ConfigureAwait(false)) {
+			stopwatch.Stop();
+
+			return false;
 		}
 
-		async Task<bool> ICrossProcessSemaphore.WaitAsync(int millisecondsTimeout) {
-			Stopwatch stopwatch = Stopwatch.StartNew();
+		bool success = false;
 
-			if (!await LocalSemaphore.WaitAsync(millisecondsTimeout).ConfigureAwait(false)) {
-				stopwatch.Stop();
+		try {
+			stopwatch.Stop();
 
+			millisecondsTimeout -= (int) stopwatch.ElapsedMilliseconds;
+
+			if (millisecondsTimeout <= 0) {
 				return false;
 			}
 
-			bool success = false;
-
-			try {
-				stopwatch.Stop();
-
-				millisecondsTimeout -= (int) stopwatch.ElapsedMilliseconds;
-
-				if (millisecondsTimeout <= 0) {
-					return false;
-				}
-
-				while (true) {
-					try {
-						// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
-						lock (LocalSemaphore) {
-							if (FileLock != null) {
-								throw new InvalidOperationException(nameof(FileLock));
-							}
-
-							EnsureFileExists();
-
-							FileLock = new FileStream(FilePath, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None);
-							success = true;
-
-							return true;
-						}
-					} catch (IOException) {
-						if (millisecondsTimeout <= SpinLockDelay) {
-							return false;
+			while (true) {
+				try {
+					// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
+					lock (LocalSemaphore) {
+						if (FileLock != null) {
+							throw new InvalidOperationException(nameof(FileLock));
 						}
 
-						await Task.Delay(SpinLockDelay).ConfigureAwait(false);
-						millisecondsTimeout -= SpinLockDelay;
+						EnsureFileExists();
+
+						FileLock = new FileStream(FilePath, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None);
+						success = true;
+
+						return true;
 					}
+				} catch (IOException) {
+					if (millisecondsTimeout <= SpinLockDelay) {
+						return false;
+					}
+
+					await Task.Delay(SpinLockDelay).ConfigureAwait(false);
+					millisecondsTimeout -= SpinLockDelay;
 				}
-			} finally {
-				if (!success) {
-					LocalSemaphore.Release();
+			}
+		} finally {
+			if (!success) {
+				LocalSemaphore.Release();
+			}
+		}
+	}
+
+	private void EnsureFileExists() {
+		if (File.Exists(FilePath)) {
+			return;
+		}
+
+		string? directoryPath = Path.GetDirectoryName(FilePath);
+
+		if (string.IsNullOrEmpty(directoryPath)) {
+			ASF.ArchiLogger.LogNullError(nameof(directoryPath));
+
+			return;
+		}
+
+		if (!Directory.Exists(directoryPath)) {
+			Directory.CreateDirectory(directoryPath);
+
+			if (OperatingSystem.IsWindows()) {
+				DirectoryInfo directoryInfo = new(directoryPath);
+
+				try {
+					DirectorySecurity directorySecurity = new(directoryPath, AccessControlSections.All);
+
+					directoryInfo.SetAccessControl(directorySecurity);
+				} catch (PrivilegeNotHeldException e) {
+					// Non-critical, user might have no rights to manage the resource
+					ASF.ArchiLogger.LogGenericDebuggingException(e);
 				}
+			} else if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
+				OS.UnixSetFileAccess(directoryPath!, OS.EUnixPermission.Combined777);
 			}
 		}
 
-		private void EnsureFileExists() {
-			if (File.Exists(FilePath)) {
-				return;
-			}
+		try {
+			new FileStream(FilePath, FileMode.CreateNew).Dispose();
 
-			string? directoryPath = Path.GetDirectoryName(FilePath);
+			if (OperatingSystem.IsWindows()) {
+				FileInfo fileInfo = new(FilePath);
 
-			if (string.IsNullOrEmpty(directoryPath)) {
-				ASF.ArchiLogger.LogNullError(nameof(directoryPath));
+				try {
+					FileSecurity fileSecurity = new(FilePath, AccessControlSections.All);
 
-				return;
-			}
-
-			if (!Directory.Exists(directoryPath)) {
-				Directory.CreateDirectory(directoryPath);
-
-				if (OperatingSystem.IsWindows()) {
-					DirectoryInfo directoryInfo = new(directoryPath);
-
-					try {
-						DirectorySecurity directorySecurity = new(directoryPath, AccessControlSections.All);
-
-						directoryInfo.SetAccessControl(directorySecurity);
-					} catch (PrivilegeNotHeldException e) {
-						// Non-critical, user might have no rights to manage the resource
-						ASF.ArchiLogger.LogGenericDebuggingException(e);
-					}
-				} else if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
-					OS.UnixSetFileAccess(directoryPath!, OS.EUnixPermission.Combined777);
+					fileInfo.SetAccessControl(fileSecurity);
+				} catch (PrivilegeNotHeldException e) {
+					// Non-critical, user might have no rights to manage the resource
+					ASF.ArchiLogger.LogGenericDebuggingException(e);
 				}
+			} else if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
+				OS.UnixSetFileAccess(FilePath, OS.EUnixPermission.Combined777);
 			}
-
-			try {
-				new FileStream(FilePath, FileMode.CreateNew).Dispose();
-
-				if (OperatingSystem.IsWindows()) {
-					FileInfo fileInfo = new(FilePath);
-
-					try {
-						FileSecurity fileSecurity = new(FilePath, AccessControlSections.All);
-
-						fileInfo.SetAccessControl(fileSecurity);
-					} catch (PrivilegeNotHeldException e) {
-						// Non-critical, user might have no rights to manage the resource
-						ASF.ArchiLogger.LogGenericDebuggingException(e);
-					}
-				} else if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
-					OS.UnixSetFileAccess(FilePath, OS.EUnixPermission.Combined777);
-				}
-			} catch (IOException) {
-				// Ignored, if the file was already created in the meantime by another instance, this is fine
-			}
+		} catch (IOException) {
+			// Ignored, if the file was already created in the meantime by another instance, this is fine
 		}
 	}
 }

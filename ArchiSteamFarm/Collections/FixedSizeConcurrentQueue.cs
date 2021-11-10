@@ -25,53 +25,53 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using ArchiSteamFarm.Core;
 
-namespace ArchiSteamFarm.Collections {
-	internal sealed class FixedSizeConcurrentQueue<T> : IEnumerable<T> {
-		private readonly ConcurrentQueue<T> BackingQueue = new();
+namespace ArchiSteamFarm.Collections;
 
-		internal byte MaxCount {
-			get => BackingMaxCount;
+internal sealed class FixedSizeConcurrentQueue<T> : IEnumerable<T> {
+	private readonly ConcurrentQueue<T> BackingQueue = new();
 
-			set {
-				if (value == 0) {
-					ASF.ArchiLogger.LogNullError(nameof(value));
+	internal byte MaxCount {
+		get => BackingMaxCount;
 
-					return;
-				}
+		set {
+			if (value == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(value));
 
-				BackingMaxCount = value;
-
-				Resize();
-			}
-		}
-
-		private byte BackingMaxCount;
-
-		internal FixedSizeConcurrentQueue(byte maxCount) {
-			if (maxCount == 0) {
-				throw new ArgumentNullException(nameof(maxCount));
-			}
-
-			MaxCount = maxCount;
-		}
-
-		public IEnumerator<T> GetEnumerator() => BackingQueue.GetEnumerator();
-		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-		internal void Enqueue(T obj) {
-			BackingQueue.Enqueue(obj);
-
-			Resize();
-		}
-
-		private void Resize() {
-			if (BackingQueue.Count <= MaxCount) {
 				return;
 			}
 
-			lock (BackingQueue) {
-				while ((BackingQueue.Count > MaxCount) && BackingQueue.TryDequeue(out _)) { }
-			}
+			BackingMaxCount = value;
+
+			Resize();
+		}
+	}
+
+	private byte BackingMaxCount;
+
+	internal FixedSizeConcurrentQueue(byte maxCount) {
+		if (maxCount == 0) {
+			throw new ArgumentNullException(nameof(maxCount));
+		}
+
+		MaxCount = maxCount;
+	}
+
+	public IEnumerator<T> GetEnumerator() => BackingQueue.GetEnumerator();
+	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+	internal void Enqueue(T obj) {
+		BackingQueue.Enqueue(obj);
+
+		Resize();
+	}
+
+	private void Resize() {
+		if (BackingQueue.Count <= MaxCount) {
+			return;
+		}
+
+		lock (BackingQueue) {
+			while ((BackingQueue.Count > MaxCount) && BackingQueue.TryDequeue(out _)) { }
 		}
 	}
 }

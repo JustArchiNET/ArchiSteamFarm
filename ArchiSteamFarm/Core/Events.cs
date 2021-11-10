@@ -24,23 +24,23 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
 
-namespace ArchiSteamFarm.Core {
-	internal static class Events {
-		internal static async Task OnBotShutdown() {
-			if (Program.ProcessRequired || ((Bot.Bots != null) && Bot.Bots.Values.Any(static bot => bot.KeepRunning))) {
-				return;
-			}
+namespace ArchiSteamFarm.Core;
 
-			ASF.ArchiLogger.LogGenericInfo(Strings.NoBotsAreRunning);
-
-			// We give user extra 5 seconds for eventual config changes
-			await Task.Delay(5000).ConfigureAwait(false);
-
-			if (Program.ProcessRequired || ((Bot.Bots != null) && Bot.Bots.Values.Any(static bot => bot.KeepRunning))) {
-				return;
-			}
-
-			await Program.Exit().ConfigureAwait(false);
+internal static class Events {
+	internal static async Task OnBotShutdown() {
+		if (Program.ProcessRequired || ((Bot.Bots != null) && Bot.Bots.Values.Any(static bot => bot.KeepRunning))) {
+			return;
 		}
+
+		ASF.ArchiLogger.LogGenericInfo(Strings.NoBotsAreRunning);
+
+		// We give user extra 5 seconds for eventual config changes
+		await Task.Delay(5000).ConfigureAwait(false);
+
+		if (Program.ProcessRequired || ((Bot.Bots != null) && Bot.Bots.Values.Any(static bot => bot.KeepRunning))) {
+			return;
+		}
+
+		await Program.Exit().ConfigureAwait(false);
 	}
 }

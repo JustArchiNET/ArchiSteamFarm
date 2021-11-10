@@ -23,14 +23,14 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Helpers;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Plugins.Interfaces {
-	[PublicAPI]
-	public interface ICrossProcessSemaphoreProvider : IPlugin {
-		/// <summary>
-		///     ASF will call this method when initializing instance of <see cref="ICrossProcessSemaphore" /> for its internal limiters.
-		/// </summary>
-		/// <param name="resourceName">Unique resource name provided by ASF for identification purposes.</param>
-		/// <returns>Concrete implementation of <see cref="ICrossProcessSemaphore" /> providing required functionality. It's allowed to return null if you want to use ASF's default implementation for specified resource instead.</returns>
-		Task<ICrossProcessSemaphore?> GetCrossProcessSemaphore(string resourceName);
-	}
+namespace ArchiSteamFarm.Plugins.Interfaces;
+
+[PublicAPI]
+public interface ICrossProcessSemaphoreProvider : IPlugin {
+	/// <summary>
+	///     ASF will call this method when initializing instance of <see cref="ICrossProcessSemaphore" /> for its internal limiters.
+	/// </summary>
+	/// <param name="resourceName">Unique resource name provided by ASF for identification purposes.</param>
+	/// <returns>Concrete implementation of <see cref="ICrossProcessSemaphore" /> providing required functionality. It's allowed to return null if you want to use ASF's default implementation for specified resource instead.</returns>
+	Task<ICrossProcessSemaphore?> GetCrossProcessSemaphore(string resourceName);
 }

@@ -23,13 +23,13 @@ using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 using SteamKit2;
 
-namespace ArchiSteamFarm.Steam.Data {
-	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	internal sealed class RedeemWalletResponse : ResultResponse {
-		[JsonProperty(PropertyName = "detail", Required = Required.DisallowNull)]
-		internal readonly EPurchaseResultDetail PurchaseResultDetail;
+namespace ArchiSteamFarm.Steam.Data;
 
-		[JsonConstructor]
-		private RedeemWalletResponse() { }
-	}
+[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+internal sealed class RedeemWalletResponse : ResultResponse {
+	[JsonProperty(PropertyName = "detail", Required = Required.DisallowNull)]
+	internal readonly EPurchaseResultDetail PurchaseResultDetail;
+
+	[JsonConstructor]
+	private RedeemWalletResponse() { }
 }

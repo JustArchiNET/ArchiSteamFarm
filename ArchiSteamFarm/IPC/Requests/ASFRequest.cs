@@ -24,17 +24,17 @@ using System.Diagnostics.CodeAnalysis;
 using ArchiSteamFarm.Storage;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.IPC.Requests {
-	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	public sealed class ASFRequest {
-		/// <summary>
-		///     ASF's global config structure.
-		/// </summary>
-		[JsonProperty(Required = Required.Always)]
-		[Required]
-		public GlobalConfig GlobalConfig { get; private set; } = new();
+namespace ArchiSteamFarm.IPC.Requests;
 
-		[JsonConstructor]
-		private ASFRequest() { }
-	}
+[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+public sealed class ASFRequest {
+	/// <summary>
+	///     ASF's global config structure.
+	/// </summary>
+	[JsonProperty(Required = Required.Always)]
+	[Required]
+	public GlobalConfig GlobalConfig { get; private set; } = new();
+
+	[JsonConstructor]
+	private ASFRequest() { }
 }

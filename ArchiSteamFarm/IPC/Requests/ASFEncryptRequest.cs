@@ -24,24 +24,24 @@ using System.Diagnostics.CodeAnalysis;
 using ArchiSteamFarm.Helpers;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.IPC.Requests {
-	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	public sealed class ASFEncryptRequest {
-		/// <summary>
-		///     Encryption method used for encrypting this string.
-		/// </summary>
-		[JsonProperty(Required = Required.Always)]
-		[Required]
-		public ArchiCryptoHelper.ECryptoMethod CryptoMethod { get; private set; }
+namespace ArchiSteamFarm.IPC.Requests;
 
-		/// <summary>
-		///     String to encrypt with provided <see cref="CryptoMethod" />.
-		/// </summary>
-		[JsonProperty(Required = Required.Always)]
-		[Required]
-		public string StringToEncrypt { get; private set; } = "";
+[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+public sealed class ASFEncryptRequest {
+	/// <summary>
+	///     Encryption method used for encrypting this string.
+	/// </summary>
+	[JsonProperty(Required = Required.Always)]
+	[Required]
+	public ArchiCryptoHelper.ECryptoMethod CryptoMethod { get; private set; }
 
-		[JsonConstructor]
-		private ASFEncryptRequest() { }
-	}
+	/// <summary>
+	///     String to encrypt with provided <see cref="CryptoMethod" />.
+	/// </summary>
+	[JsonProperty(Required = Required.Always)]
+	[Required]
+	public string StringToEncrypt { get; private set; } = "";
+
+	[JsonConstructor]
+	private ASFEncryptRequest() { }
 }

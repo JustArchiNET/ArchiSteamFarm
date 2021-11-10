@@ -26,180 +26,180 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Collections {
-	public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ISet<T> where T : notnull {
-		public event EventHandler? OnModified;
+namespace ArchiSteamFarm.Collections;
 
-		public int Count => BackingCollection.Count;
-		public bool IsReadOnly => false;
+public sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ISet<T> where T : notnull {
+	public event EventHandler? OnModified;
 
-		private readonly ConcurrentDictionary<T, bool> BackingCollection;
+	public int Count => BackingCollection.Count;
+	public bool IsReadOnly => false;
 
-		public ConcurrentHashSet() => BackingCollection = new ConcurrentDictionary<T, bool>();
+	private readonly ConcurrentDictionary<T, bool> BackingCollection;
 
-		public ConcurrentHashSet(IEqualityComparer<T> comparer) {
-			if (comparer == null) {
-				throw new ArgumentNullException(nameof(comparer));
-			}
+	public ConcurrentHashSet() => BackingCollection = new ConcurrentDictionary<T, bool>();
 
-			BackingCollection = new ConcurrentDictionary<T, bool>(comparer);
+	public ConcurrentHashSet(IEqualityComparer<T> comparer) {
+		if (comparer == null) {
+			throw new ArgumentNullException(nameof(comparer));
 		}
 
-		public bool Add(T item) {
-			if (!BackingCollection.TryAdd(item, true)) {
-				return false;
-			}
+		BackingCollection = new ConcurrentDictionary<T, bool>(comparer);
+	}
 
-			OnModified?.Invoke(this, EventArgs.Empty);
-
-			return true;
+	public bool Add(T item) {
+		if (!BackingCollection.TryAdd(item, true)) {
+			return false;
 		}
 
-		public void Clear() {
-			if (BackingCollection.IsEmpty) {
-				return;
-			}
+		OnModified?.Invoke(this, EventArgs.Empty);
 
-			BackingCollection.Clear();
+		return true;
+	}
 
-			OnModified?.Invoke(this, EventArgs.Empty);
+	public void Clear() {
+		if (BackingCollection.IsEmpty) {
+			return;
 		}
 
-		public bool Contains(T item) => BackingCollection.ContainsKey(item);
+		BackingCollection.Clear();
 
-		public void CopyTo(T[] array, int arrayIndex) => BackingCollection.Keys.CopyTo(array, arrayIndex);
+		OnModified?.Invoke(this, EventArgs.Empty);
+	}
 
-		public void ExceptWith(IEnumerable<T> other) {
-			if (other == null) {
-				throw new ArgumentNullException(nameof(other));
-			}
+	public bool Contains(T item) => BackingCollection.ContainsKey(item);
 
-			foreach (T item in other) {
-				Remove(item);
-			}
+	public void CopyTo(T[] array, int arrayIndex) => BackingCollection.Keys.CopyTo(array, arrayIndex);
+
+	public void ExceptWith(IEnumerable<T> other) {
+		if (other == null) {
+			throw new ArgumentNullException(nameof(other));
 		}
 
-		public IEnumerator<T> GetEnumerator() => BackingCollection.Keys.GetEnumerator();
+		foreach (T item in other) {
+			Remove(item);
+		}
+	}
 
-		public void IntersectWith(IEnumerable<T> other) {
-			ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
+	public IEnumerator<T> GetEnumerator() => BackingCollection.Keys.GetEnumerator();
 
-			foreach (T item in this.Where(item => !otherSet.Contains(item))) {
-				Remove(item);
-			}
+	public void IntersectWith(IEnumerable<T> other) {
+		ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
+
+		foreach (T item in this.Where(item => !otherSet.Contains(item))) {
+			Remove(item);
+		}
+	}
+
+	public bool IsProperSubsetOf(IEnumerable<T> other) {
+		ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
+
+		return (otherSet.Count > Count) && IsSubsetOf(otherSet);
+	}
+
+	public bool IsProperSupersetOf(IEnumerable<T> other) {
+		ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
+
+		return (otherSet.Count < Count) && IsSupersetOf(otherSet);
+	}
+
+	public bool IsSubsetOf(IEnumerable<T> other) {
+		ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
+
+		return this.All(otherSet.Contains);
+	}
+
+	public bool IsSupersetOf(IEnumerable<T> other) {
+		ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
+
+		return otherSet.All(Contains);
+	}
+
+	public bool Overlaps(IEnumerable<T> other) {
+		ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
+
+		return otherSet.Any(Contains);
+	}
+
+	public bool Remove(T item) {
+		if (!BackingCollection.TryRemove(item, out _)) {
+			return false;
 		}
 
-		public bool IsProperSubsetOf(IEnumerable<T> other) {
-			ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
+		OnModified?.Invoke(this, EventArgs.Empty);
 
-			return (otherSet.Count > Count) && IsSubsetOf(otherSet);
+		return true;
+	}
+
+	public bool SetEquals(IEnumerable<T> other) {
+		ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
+
+		return (otherSet.Count == Count) && otherSet.All(Contains);
+	}
+
+	public void SymmetricExceptWith(IEnumerable<T> other) {
+		ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
+		HashSet<T> removed = new();
+
+		foreach (T item in otherSet.Where(Contains)) {
+			removed.Add(item);
+			Remove(item);
 		}
 
-		public bool IsProperSupersetOf(IEnumerable<T> other) {
-			ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
+		foreach (T item in otherSet.Where(item => !removed.Contains(item))) {
+			Add(item);
+		}
+	}
 
-			return (otherSet.Count < Count) && IsSupersetOf(otherSet);
+	public void UnionWith(IEnumerable<T> other) {
+		if (other == null) {
+			throw new ArgumentNullException(nameof(other));
 		}
 
-		public bool IsSubsetOf(IEnumerable<T> other) {
-			ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
+		foreach (T otherElement in other) {
+			Add(otherElement);
+		}
+	}
 
-			return this.All(otherSet.Contains);
+	void ICollection<T>.Add(T item) => Add(item);
+
+	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+	[PublicAPI]
+	public bool AddRange(IEnumerable<T> items) {
+		bool result = false;
+
+		foreach (T _ in items.Where(Add)) {
+			result = true;
 		}
 
-		public bool IsSupersetOf(IEnumerable<T> other) {
-			ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
+		return result;
+	}
 
-			return otherSet.All(Contains);
+	[PublicAPI]
+	public bool RemoveRange(IEnumerable<T> items) {
+		bool result = false;
+
+		foreach (T _ in items.Where(Remove)) {
+			result = true;
 		}
 
-		public bool Overlaps(IEnumerable<T> other) {
-			ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
+		return result;
+	}
 
-			return otherSet.Any(Contains);
+	[PublicAPI]
+	public bool ReplaceIfNeededWith(IReadOnlyCollection<T> other) {
+		if (SetEquals(other)) {
+			return false;
 		}
 
-		public bool Remove(T item) {
-			if (!BackingCollection.TryRemove(item, out _)) {
-				return false;
-			}
+		ReplaceWith(other);
 
-			OnModified?.Invoke(this, EventArgs.Empty);
+		return true;
+	}
 
-			return true;
-		}
-
-		public bool SetEquals(IEnumerable<T> other) {
-			ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
-
-			return (otherSet.Count == Count) && otherSet.All(Contains);
-		}
-
-		public void SymmetricExceptWith(IEnumerable<T> other) {
-			ISet<T> otherSet = other as ISet<T> ?? other.ToHashSet();
-			HashSet<T> removed = new();
-
-			foreach (T item in otherSet.Where(Contains)) {
-				removed.Add(item);
-				Remove(item);
-			}
-
-			foreach (T item in otherSet.Where(item => !removed.Contains(item))) {
-				Add(item);
-			}
-		}
-
-		public void UnionWith(IEnumerable<T> other) {
-			if (other == null) {
-				throw new ArgumentNullException(nameof(other));
-			}
-
-			foreach (T otherElement in other) {
-				Add(otherElement);
-			}
-		}
-
-		void ICollection<T>.Add(T item) => Add(item);
-
-		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-		[PublicAPI]
-		public bool AddRange(IEnumerable<T> items) {
-			bool result = false;
-
-			foreach (T _ in items.Where(Add)) {
-				result = true;
-			}
-
-			return result;
-		}
-
-		[PublicAPI]
-		public bool RemoveRange(IEnumerable<T> items) {
-			bool result = false;
-
-			foreach (T _ in items.Where(Remove)) {
-				result = true;
-			}
-
-			return result;
-		}
-
-		[PublicAPI]
-		public bool ReplaceIfNeededWith(IReadOnlyCollection<T> other) {
-			if (SetEquals(other)) {
-				return false;
-			}
-
-			ReplaceWith(other);
-
-			return true;
-		}
-
-		[PublicAPI]
-		public void ReplaceWith(IEnumerable<T> other) {
-			Clear();
-			UnionWith(other);
-		}
+	[PublicAPI]
+	public void ReplaceWith(IEnumerable<T> other) {
+		Clear();
+		UnionWith(other);
 	}
 }

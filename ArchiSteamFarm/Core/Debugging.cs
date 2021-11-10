@@ -22,26 +22,26 @@
 using System;
 using SteamKit2;
 
-namespace ArchiSteamFarm.Core {
-	internal static class Debugging {
+namespace ArchiSteamFarm.Core;
+
+internal static class Debugging {
 #if DEBUG
-		internal static bool IsDebugBuild => true;
+	internal static bool IsDebugBuild => true;
 #else
 		internal static bool IsDebugBuild => false;
 #endif
 
-		internal static bool IsDebugConfigured => ASF.GlobalConfig?.Debug ?? throw new InvalidOperationException(nameof(ASF.GlobalConfig));
+	internal static bool IsDebugConfigured => ASF.GlobalConfig?.Debug ?? throw new InvalidOperationException(nameof(ASF.GlobalConfig));
 
-		internal static bool IsUserDebugging => IsDebugBuild || IsDebugConfigured;
+	internal static bool IsUserDebugging => IsDebugBuild || IsDebugConfigured;
 
-		internal sealed class DebugListener : IDebugListener {
-			public void WriteLine(string category, string msg) {
-				if (string.IsNullOrEmpty(category) && string.IsNullOrEmpty(msg)) {
-					throw new InvalidOperationException($"{nameof(category)} && {nameof(msg)}");
-				}
-
-				ASF.ArchiLogger.LogGenericDebug($"{category} | {msg}");
+	internal sealed class DebugListener : IDebugListener {
+		public void WriteLine(string category, string msg) {
+			if (string.IsNullOrEmpty(category) && string.IsNullOrEmpty(msg)) {
+				throw new InvalidOperationException($"{nameof(category)} && {nameof(msg)}");
 			}
+
+			ASF.ArchiLogger.LogGenericDebug($"{category} | {msg}");
 		}
 	}
 }

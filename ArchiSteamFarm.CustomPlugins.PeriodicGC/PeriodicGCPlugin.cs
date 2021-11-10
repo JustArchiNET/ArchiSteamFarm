@@ -27,38 +27,38 @@ using System.Threading;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Plugins.Interfaces;
 
-namespace ArchiSteamFarm.CustomPlugins.PeriodicGC {
-	[Export(typeof(IPlugin))]
-	[SuppressMessage("ReSharper", "UnusedType.Global")]
-	internal sealed class PeriodicGCPlugin : IPlugin {
-		private const byte GCPeriod = 60; // In seconds
+namespace ArchiSteamFarm.CustomPlugins.PeriodicGC;
 
-		private static readonly object LockObject = new();
-		private static readonly Timer PeriodicGCTimer = new(PerformGC);
+[Export(typeof(IPlugin))]
+[SuppressMessage("ReSharper", "UnusedType.Global")]
+internal sealed class PeriodicGCPlugin : IPlugin {
+	private const byte GCPeriod = 60; // In seconds
 
-		public string Name => nameof(PeriodicGCPlugin);
+	private static readonly object LockObject = new();
+	private static readonly Timer PeriodicGCTimer = new(PerformGC);
 
-		public Version Version => typeof(PeriodicGCPlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
+	public string Name => nameof(PeriodicGCPlugin);
 
-		public void OnLoaded() {
-			TimeSpan timeSpan = TimeSpan.FromSeconds(GCPeriod);
+	public Version Version => typeof(PeriodicGCPlugin).Assembly.GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
-			ASF.ArchiLogger.LogGenericWarning($"Periodic GC will occur every {timeSpan.ToHumanReadable()}. Please keep in mind that this plugin should be used for debugging tests only.");
+	public void OnLoaded() {
+		TimeSpan timeSpan = TimeSpan.FromSeconds(GCPeriod);
 
-			lock (LockObject) {
-				PeriodicGCTimer.Change(timeSpan, timeSpan);
-			}
+		ASF.ArchiLogger.LogGenericWarning($"Periodic GC will occur every {timeSpan.ToHumanReadable()}. Please keep in mind that this plugin should be used for debugging tests only.");
+
+		lock (LockObject) {
+			PeriodicGCTimer.Change(timeSpan, timeSpan);
+		}
+	}
+
+	private static void PerformGC(object? state = null) {
+		ASF.ArchiLogger.LogGenericWarning($"Performing GC, current memory: {GC.GetTotalMemory(false) / 1024} KB.");
+
+		lock (LockObject) {
+			GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
+			GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
 		}
 
-		private static void PerformGC(object? state = null) {
-			ASF.ArchiLogger.LogGenericWarning($"Performing GC, current memory: {GC.GetTotalMemory(false) / 1024} KB.");
-
-			lock (LockObject) {
-				GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
-				GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
-			}
-
-			ASF.ArchiLogger.LogGenericWarning($"GC finished, current memory: {GC.GetTotalMemory(false) / 1024} KB.");
-		}
+		ASF.ArchiLogger.LogGenericWarning($"GC finished, current memory: {GC.GetTotalMemory(false) / 1024} KB.");
 	}
 }

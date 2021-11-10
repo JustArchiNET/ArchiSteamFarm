@@ -32,58 +32,58 @@ using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Storage;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ArchiSteamFarm.IPC.Controllers.Api {
-	[Route("Api/Command")]
-	public sealed class CommandController : ArchiController {
-		/// <summary>
-		///     Executes a command.
-		/// </summary>
-		/// <remarks>
-		///     This API endpoint is supposed to be entirely replaced by ASF actions available under /Api/ASF/{action} and /Api/Bot/{bot}/{action}.
-		///     You should use "given bot" commands when executing this endpoint, omitting targets of the command will cause the command to be executed on first defined bot
-		/// </remarks>
-		[Consumes("application/json")]
-		[HttpPost]
-		[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
-		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-		public async Task<ActionResult<GenericResponse>> CommandPost([FromBody] CommandRequest request) {
-			if (request == null) {
-				throw new ArgumentNullException(nameof(request));
-			}
+namespace ArchiSteamFarm.IPC.Controllers.Api;
 
-			if (string.IsNullOrEmpty(request.Command)) {
-				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(request.Command))));
-			}
-
-			ulong steamOwnerID = ASF.GlobalConfig?.SteamOwnerID ?? GlobalConfig.DefaultSteamOwnerID;
-
-			if (steamOwnerID == 0) {
-				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(ASF.GlobalConfig.SteamOwnerID))));
-			}
-
-			Bot? targetBot = Bot.Bots?.OrderBy(static bot => bot.Key, Bot.BotsComparer).Select(static bot => bot.Value).FirstOrDefault();
-
-			if (targetBot == null) {
-				return BadRequest(new GenericResponse(false, Strings.ErrorNoBotsDefined));
-			}
-
-			string command = request.Command;
-			string? commandPrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.CommandPrefix : GlobalConfig.DefaultCommandPrefix;
-
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			if (!string.IsNullOrEmpty(commandPrefix) && command.StartsWith(commandPrefix!, StringComparison.Ordinal)) {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				if (command.Length == commandPrefix!.Length) {
-					// If the message starts with command prefix and is of the same length as command prefix, then it's just empty command trigger, useless
-					return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(command))));
-				}
-
-				command = command[commandPrefix.Length..];
-			}
-
-			string? response = await targetBot.Commands.Response(steamOwnerID, command).ConfigureAwait(false);
-
-			return Ok(new GenericResponse<string>(response));
+[Route("Api/Command")]
+public sealed class CommandController : ArchiController {
+	/// <summary>
+	///     Executes a command.
+	/// </summary>
+	/// <remarks>
+	///     This API endpoint is supposed to be entirely replaced by ASF actions available under /Api/ASF/{action} and /Api/Bot/{bot}/{action}.
+	///     You should use "given bot" commands when executing this endpoint, omitting targets of the command will cause the command to be executed on first defined bot
+	/// </remarks>
+	[Consumes("application/json")]
+	[HttpPost]
+	[ProducesResponseType(typeof(GenericResponse<string>), (int) HttpStatusCode.OK)]
+	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+	public async Task<ActionResult<GenericResponse>> CommandPost([FromBody] CommandRequest request) {
+		if (request == null) {
+			throw new ArgumentNullException(nameof(request));
 		}
+
+		if (string.IsNullOrEmpty(request.Command)) {
+			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(request.Command))));
+		}
+
+		ulong steamOwnerID = ASF.GlobalConfig?.SteamOwnerID ?? GlobalConfig.DefaultSteamOwnerID;
+
+		if (steamOwnerID == 0) {
+			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(ASF.GlobalConfig.SteamOwnerID))));
+		}
+
+		Bot? targetBot = Bot.Bots?.OrderBy(static bot => bot.Key, Bot.BotsComparer).Select(static bot => bot.Value).FirstOrDefault();
+
+		if (targetBot == null) {
+			return BadRequest(new GenericResponse(false, Strings.ErrorNoBotsDefined));
+		}
+
+		string command = request.Command;
+		string? commandPrefix = ASF.GlobalConfig != null ? ASF.GlobalConfig.CommandPrefix : GlobalConfig.DefaultCommandPrefix;
+
+		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+		if (!string.IsNullOrEmpty(commandPrefix) && command.StartsWith(commandPrefix!, StringComparison.Ordinal)) {
+			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+			if (command.Length == commandPrefix!.Length) {
+				// If the message starts with command prefix and is of the same length as command prefix, then it's just empty command trigger, useless
+				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(command))));
+			}
+
+			command = command[commandPrefix.Length..];
+		}
+
+		string? response = await targetBot.Commands.Response(steamOwnerID, command).ConfigureAwait(false);
+
+		return Ok(new GenericResponse<string>(response));
 	}
 }

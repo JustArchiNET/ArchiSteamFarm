@@ -22,26 +22,26 @@
 using ArchiSteamFarm.Steam;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Plugins.Interfaces {
-	[PublicAPI]
-	public interface IBotCardsFarmerInfo : IPlugin {
-		/// <summary>
-		///     ASF will call this method when cards farming module is finished on given bot instance. This method will also be called when there is nothing to idle or idling is unavailable, you can use provided boolean value for determining that.
-		/// </summary>
-		/// <param name="bot">Bot object related to this callback.</param>
-		/// <param name="farmedSomething">Bool value indicating whether the module has finished successfully, so when there was at least one card to drop, and nothing has interrupted us in the meantime.</param>
-		void OnBotFarmingFinished(Bot bot, bool farmedSomething);
+namespace ArchiSteamFarm.Plugins.Interfaces;
 
-		/// <summary>
-		///     ASF will call this method when cards farming module is started on given bot instance. The module is started only when there are valid cards to drop, so this method won't be called when there is nothing to idle.
-		/// </summary>
-		/// <param name="bot">Bot object related to this callback.</param>
-		void OnBotFarmingStarted(Bot bot);
+[PublicAPI]
+public interface IBotCardsFarmerInfo : IPlugin {
+	/// <summary>
+	///     ASF will call this method when cards farming module is finished on given bot instance. This method will also be called when there is nothing to idle or idling is unavailable, you can use provided boolean value for determining that.
+	/// </summary>
+	/// <param name="bot">Bot object related to this callback.</param>
+	/// <param name="farmedSomething">Bool value indicating whether the module has finished successfully, so when there was at least one card to drop, and nothing has interrupted us in the meantime.</param>
+	void OnBotFarmingFinished(Bot bot, bool farmedSomething);
 
-		/// <summary>
-		///     ASF will call this method when cards farming module is stopped on given bot instance. The stop could be a result of a natural finish, or other situations (e.g. Steam networking issues, user commands).
-		/// </summary>
-		/// <param name="bot">Bot object related to this callback.</param>
-		void OnBotFarmingStopped(Bot bot);
-	}
+	/// <summary>
+	///     ASF will call this method when cards farming module is started on given bot instance. The module is started only when there are valid cards to drop, so this method won't be called when there is nothing to idle.
+	/// </summary>
+	/// <param name="bot">Bot object related to this callback.</param>
+	void OnBotFarmingStarted(Bot bot);
+
+	/// <summary>
+	///     ASF will call this method when cards farming module is stopped on given bot instance. The stop could be a result of a natural finish, or other situations (e.g. Steam networking issues, user commands).
+	/// </summary>
+	/// <param name="bot">Bot object related to this callback.</param>
+	void OnBotFarmingStopped(Bot bot);
 }

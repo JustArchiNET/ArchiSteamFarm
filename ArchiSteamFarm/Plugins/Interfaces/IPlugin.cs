@@ -23,27 +23,27 @@ using System;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.Plugins.Interfaces {
-	[PublicAPI]
-	public interface IPlugin {
-		/// <summary>
-		///     ASF will use this property as general plugin identifier for the user.
-		/// </summary>
-		/// <returns>String that will be used as the name of this plugin.</returns>
-		[JsonProperty]
-		string Name { get; }
+namespace ArchiSteamFarm.Plugins.Interfaces;
 
-		/// <summary>
-		///     ASF will use this property as version indicator of your plugin to the user.
-		///     You have a freedom in deciding what versioning you want to use, this is for identification purposes only.
-		/// </summary>
-		/// <returns>Version that will be shown to the user when plugin is loaded.</returns>
-		[JsonProperty]
-		Version Version { get; }
+[PublicAPI]
+public interface IPlugin {
+	/// <summary>
+	///     ASF will use this property as general plugin identifier for the user.
+	/// </summary>
+	/// <returns>String that will be used as the name of this plugin.</returns>
+	[JsonProperty]
+	string Name { get; }
 
-		/// <summary>
-		///     ASF will call this method right after plugin initialization.
-		/// </summary>
-		void OnLoaded();
-	}
+	/// <summary>
+	///     ASF will use this property as version indicator of your plugin to the user.
+	///     You have a freedom in deciding what versioning you want to use, this is for identification purposes only.
+	/// </summary>
+	/// <returns>Version that will be shown to the user when plugin is loaded.</returns>
+	[JsonProperty]
+	Version Version { get; }
+
+	/// <summary>
+	///     ASF will call this method right after plugin initialization.
+	/// </summary>
+	void OnLoaded();
 }

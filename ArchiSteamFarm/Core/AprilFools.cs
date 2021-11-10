@@ -23,55 +23,55 @@ using System;
 using System.Globalization;
 using System.Threading;
 
-namespace ArchiSteamFarm.Core {
-	internal static class AprilFools {
-		private static readonly object LockObject = new();
+namespace ArchiSteamFarm.Core;
 
-		// We don't care about CurrentCulture global config property, because April Fools are never initialized in this case
-		private static readonly CultureInfo OriginalCulture = CultureInfo.CurrentCulture;
+internal static class AprilFools {
+	private static readonly object LockObject = new();
 
-		private static readonly Timer Timer = new(Init);
+	// We don't care about CurrentCulture global config property, because April Fools are never initialized in this case
+	private static readonly CultureInfo OriginalCulture = CultureInfo.CurrentCulture;
 
-		internal static void Init(object? state = null) {
-			DateTime now = DateTime.Now;
+	private static readonly Timer Timer = new(Init);
 
-			if ((now.Month == 4) && (now.Day == 1)) {
-				try {
-					CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CreateSpecificCulture(SharedInfo.LolcatCultureName);
-				} catch (Exception e) {
-					ASF.ArchiLogger.LogGenericDebuggingException(e);
+	internal static void Init(object? state = null) {
+		DateTime now = DateTime.Now;
 
-					return;
-				}
-
-				TimeSpan aprilFoolsEnd = TimeSpan.FromDays(1) - now.TimeOfDay;
-
-				lock (LockObject) {
-					Timer.Change(aprilFoolsEnd + TimeSpan.FromMilliseconds(100), Timeout.InfiniteTimeSpan);
-				}
-
-				return;
-			}
-
+		if ((now.Month == 4) && (now.Day == 1)) {
 			try {
-				CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = OriginalCulture;
+				CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CreateSpecificCulture(SharedInfo.LolcatCultureName);
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericDebuggingException(e);
 
 				return;
 			}
 
-			// Since we already verified that it's not April Fools right now, either we're in months 1-3 before 1st April this year, or 4-12 already after the 1st April
-			DateTime nextAprilFools = new(now.Month >= 4 ? now.Year + 1 : now.Year, 4, 1, 0, 0, 0, DateTimeKind.Local);
-
-			TimeSpan aprilFoolsStart = nextAprilFools - now;
-
-			// Timer can accept only dueTimes up to 2^32 - 2
-			uint dueTime = (uint) Math.Min(uint.MaxValue - 1, (ulong) aprilFoolsStart.TotalMilliseconds + 100);
+			TimeSpan aprilFoolsEnd = TimeSpan.FromDays(1) - now.TimeOfDay;
 
 			lock (LockObject) {
-				Timer.Change(dueTime, Timeout.Infinite);
+				Timer.Change(aprilFoolsEnd + TimeSpan.FromMilliseconds(100), Timeout.InfiniteTimeSpan);
 			}
+
+			return;
+		}
+
+		try {
+			CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = OriginalCulture;
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericDebuggingException(e);
+
+			return;
+		}
+
+		// Since we already verified that it's not April Fools right now, either we're in months 1-3 before 1st April this year, or 4-12 already after the 1st April
+		DateTime nextAprilFools = new(now.Month >= 4 ? now.Year + 1 : now.Year, 4, 1, 0, 0, 0, DateTimeKind.Local);
+
+		TimeSpan aprilFoolsStart = nextAprilFools - now;
+
+		// Timer can accept only dueTimes up to 2^32 - 2
+		uint dueTime = (uint) Math.Min(uint.MaxValue - 1, (ulong) aprilFoolsStart.TotalMilliseconds + 100);
+
+		lock (LockObject) {
+			Timer.Change(dueTime, Timeout.Infinite);
 		}
 	}
 }

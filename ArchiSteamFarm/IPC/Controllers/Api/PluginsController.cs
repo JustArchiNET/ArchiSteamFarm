@@ -27,15 +27,15 @@ using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Plugins.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ArchiSteamFarm.IPC.Controllers.Api {
-	[Route("Api/Plugins")]
-	public sealed class PluginsController : ArchiController {
-		[HttpGet]
-		[ProducesResponseType(typeof(GenericResponse<IReadOnlyCollection<IPlugin>>), (int) HttpStatusCode.OK)]
-		public ActionResult<GenericResponse<IReadOnlyCollection<IPlugin>>> PluginsGet() {
-			IReadOnlyCollection<IPlugin> activePlugins = PluginsCore.ActivePlugins ?? (IReadOnlyCollection<IPlugin>) Array.Empty<IPlugin>();
+namespace ArchiSteamFarm.IPC.Controllers.Api;
 
-			return Ok(new GenericResponse<IReadOnlyCollection<IPlugin>>(activePlugins));
-		}
+[Route("Api/Plugins")]
+public sealed class PluginsController : ArchiController {
+	[HttpGet]
+	[ProducesResponseType(typeof(GenericResponse<IReadOnlyCollection<IPlugin>>), (int) HttpStatusCode.OK)]
+	public ActionResult<GenericResponse<IReadOnlyCollection<IPlugin>>> PluginsGet() {
+		IReadOnlyCollection<IPlugin> activePlugins = PluginsCore.ActivePlugins ?? (IReadOnlyCollection<IPlugin>) Array.Empty<IPlugin>();
+
+		return Ok(new GenericResponse<IReadOnlyCollection<IPlugin>>(activePlugins));
 	}
 }

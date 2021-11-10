@@ -23,95 +23,95 @@ using System.Collections;
 using System.Collections.Generic;
 using Nito.AsyncEx;
 
-namespace ArchiSteamFarm.Collections {
-	internal sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
-		public bool IsReadOnly => false;
+namespace ArchiSteamFarm.Collections;
 
-		internal int Count {
-			get {
-				using (Lock.ReaderLock()) {
-					return BackingCollection.Count;
-				}
-			}
-		}
+internal sealed class ConcurrentList<T> : IList<T>, IReadOnlyList<T> {
+	public bool IsReadOnly => false;
 
-		private readonly List<T> BackingCollection = new();
-		private readonly AsyncReaderWriterLock Lock = new();
-
-		int ICollection<T>.Count => Count;
-		int IReadOnlyCollection<T>.Count => Count;
-
-		public T this[int index] {
-			get {
-				using (Lock.ReaderLock()) {
-					return BackingCollection[index];
-				}
-			}
-
-			set {
-				using (Lock.WriterLock()) {
-					BackingCollection[index] = value;
-				}
-			}
-		}
-
-		public void Add(T item) {
-			using (Lock.WriterLock()) {
-				BackingCollection.Add(item);
-			}
-		}
-
-		public void Clear() {
-			using (Lock.WriterLock()) {
-				BackingCollection.Clear();
-			}
-		}
-
-		public bool Contains(T item) {
+	internal int Count {
+		get {
 			using (Lock.ReaderLock()) {
-				return BackingCollection.Contains(item);
+				return BackingCollection.Count;
 			}
 		}
+	}
 
-		public void CopyTo(T[] array, int arrayIndex) {
+	private readonly List<T> BackingCollection = new();
+	private readonly AsyncReaderWriterLock Lock = new();
+
+	int ICollection<T>.Count => Count;
+	int IReadOnlyCollection<T>.Count => Count;
+
+	public T this[int index] {
+		get {
 			using (Lock.ReaderLock()) {
-				BackingCollection.CopyTo(array, arrayIndex);
+				return BackingCollection[index];
 			}
 		}
 
-		public IEnumerator<T> GetEnumerator() => new ConcurrentEnumerator<T>(BackingCollection, Lock.ReaderLock());
-
-		public int IndexOf(T item) {
-			using (Lock.ReaderLock()) {
-				return BackingCollection.IndexOf(item);
-			}
-		}
-
-		public void Insert(int index, T item) {
+		set {
 			using (Lock.WriterLock()) {
-				BackingCollection.Insert(index, item);
+				BackingCollection[index] = value;
 			}
 		}
+	}
 
-		public bool Remove(T item) {
-			using (Lock.WriterLock()) {
-				return BackingCollection.Remove(item);
-			}
+	public void Add(T item) {
+		using (Lock.WriterLock()) {
+			BackingCollection.Add(item);
 		}
+	}
 
-		public void RemoveAt(int index) {
-			using (Lock.WriterLock()) {
-				BackingCollection.RemoveAt(index);
-			}
+	public void Clear() {
+		using (Lock.WriterLock()) {
+			BackingCollection.Clear();
 		}
+	}
 
-		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+	public bool Contains(T item) {
+		using (Lock.ReaderLock()) {
+			return BackingCollection.Contains(item);
+		}
+	}
 
-		internal void ReplaceWith(IEnumerable<T> collection) {
-			using (Lock.WriterLock()) {
-				BackingCollection.Clear();
-				BackingCollection.AddRange(collection);
-			}
+	public void CopyTo(T[] array, int arrayIndex) {
+		using (Lock.ReaderLock()) {
+			BackingCollection.CopyTo(array, arrayIndex);
+		}
+	}
+
+	public IEnumerator<T> GetEnumerator() => new ConcurrentEnumerator<T>(BackingCollection, Lock.ReaderLock());
+
+	public int IndexOf(T item) {
+		using (Lock.ReaderLock()) {
+			return BackingCollection.IndexOf(item);
+		}
+	}
+
+	public void Insert(int index, T item) {
+		using (Lock.WriterLock()) {
+			BackingCollection.Insert(index, item);
+		}
+	}
+
+	public bool Remove(T item) {
+		using (Lock.WriterLock()) {
+			return BackingCollection.Remove(item);
+		}
+	}
+
+	public void RemoveAt(int index) {
+		using (Lock.WriterLock()) {
+			BackingCollection.RemoveAt(index);
+		}
+	}
+
+	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+	internal void ReplaceWith(IEnumerable<T> collection) {
+		using (Lock.WriterLock()) {
+			BackingCollection.Clear();
+			BackingCollection.AddRange(collection);
 		}
 	}
 }

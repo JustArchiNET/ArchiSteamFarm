@@ -26,146 +26,146 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.Helpers {
-	public abstract class SerializableFile : IDisposable {
-		private static readonly SemaphoreSlim GlobalFileSemaphore = new(1, 1);
+namespace ArchiSteamFarm.Helpers;
 
-		private readonly SemaphoreSlim FileSemaphore = new(1, 1);
+public abstract class SerializableFile : IDisposable {
+	private static readonly SemaphoreSlim GlobalFileSemaphore = new(1, 1);
 
-		protected string? FilePath { get; set; }
+	private readonly SemaphoreSlim FileSemaphore = new(1, 1);
 
-		private bool ReadOnly;
-		private bool SavingScheduled;
+	protected string? FilePath { get; set; }
 
-		public void Dispose() {
-			Dispose(true);
-			GC.SuppressFinalize(this);
+	private bool ReadOnly;
+	private bool SavingScheduled;
+
+	public void Dispose() {
+		Dispose(true);
+		GC.SuppressFinalize(this);
+	}
+
+	protected virtual void Dispose(bool disposing) {
+		if (disposing) {
+			FileSemaphore.Dispose();
+		}
+	}
+
+	protected async Task Save() {
+		if (string.IsNullOrEmpty(FilePath)) {
+			throw new InvalidOperationException(nameof(FilePath));
 		}
 
-		protected virtual void Dispose(bool disposing) {
-			if (disposing) {
-				FileSemaphore.Dispose();
-			}
+		if (ReadOnly) {
+			return;
 		}
 
-		protected async Task Save() {
-			if (string.IsNullOrEmpty(FilePath)) {
-				throw new InvalidOperationException(nameof(FilePath));
-			}
-
-			if (ReadOnly) {
+		// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
+		lock (FileSemaphore) {
+			if (SavingScheduled) {
 				return;
 			}
 
+			SavingScheduled = true;
+		}
+
+		await FileSemaphore.WaitAsync().ConfigureAwait(false);
+
+		try {
 			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 			lock (FileSemaphore) {
-				if (SavingScheduled) {
-					return;
-				}
-
-				SavingScheduled = true;
+				SavingScheduled = false;
 			}
 
-			await FileSemaphore.WaitAsync().ConfigureAwait(false);
-
-			try {
-				// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
-				lock (FileSemaphore) {
-					SavingScheduled = false;
-				}
-
-				if (ReadOnly) {
-					return;
-				}
-
-				string json = JsonConvert.SerializeObject(this, Debugging.IsUserDebugging ? Formatting.Indented : Formatting.None);
-
-				if (string.IsNullOrEmpty(json)) {
-					throw new InvalidOperationException(nameof(json));
-				}
-
-				// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
-				string newFilePath = $"{FilePath}.new";
-
-				if (File.Exists(FilePath)) {
-					string currentJson = await File.ReadAllTextAsync(FilePath!).ConfigureAwait(false);
-
-					if (json == currentJson) {
-						return;
-					}
-
-					await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
-
-					File.Replace(newFilePath, FilePath!, null);
-				} else {
-					await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
-
-					File.Move(newFilePath, FilePath!);
-				}
-			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericException(e);
-			} finally {
-				FileSemaphore.Release();
-			}
-		}
-
-		internal async Task MakeReadOnly() {
 			if (ReadOnly) {
 				return;
 			}
 
-			await FileSemaphore.WaitAsync().ConfigureAwait(false);
+			string json = JsonConvert.SerializeObject(this, Debugging.IsUserDebugging ? Formatting.Indented : Formatting.None);
 
-			try {
-				if (ReadOnly) {
+			if (string.IsNullOrEmpty(json)) {
+				throw new InvalidOperationException(nameof(json));
+			}
+
+			// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
+			string newFilePath = $"{FilePath}.new";
+
+			if (File.Exists(FilePath)) {
+				string currentJson = await File.ReadAllTextAsync(FilePath!).ConfigureAwait(false);
+
+				if (json == currentJson) {
 					return;
 				}
 
-				ReadOnly = true;
-			} finally {
-				FileSemaphore.Release();
+				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+
+				File.Replace(newFilePath, FilePath!, null);
+			} else {
+				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+
+				File.Move(newFilePath, FilePath!);
 			}
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericException(e);
+		} finally {
+			FileSemaphore.Release();
+		}
+	}
+
+	internal async Task MakeReadOnly() {
+		if (ReadOnly) {
+			return;
 		}
 
-		internal static async Task<bool> Write(string filePath, string json) {
-			if (string.IsNullOrEmpty(filePath)) {
-				throw new ArgumentNullException(nameof(filePath));
+		await FileSemaphore.WaitAsync().ConfigureAwait(false);
+
+		try {
+			if (ReadOnly) {
+				return;
 			}
 
-			if (string.IsNullOrEmpty(json)) {
-				throw new ArgumentNullException(nameof(json));
-			}
+			ReadOnly = true;
+		} finally {
+			FileSemaphore.Release();
+		}
+	}
 
-			string newFilePath = $"{filePath}.new";
+	internal static async Task<bool> Write(string filePath, string json) {
+		if (string.IsNullOrEmpty(filePath)) {
+			throw new ArgumentNullException(nameof(filePath));
+		}
 
-			await GlobalFileSemaphore.WaitAsync().ConfigureAwait(false);
+		if (string.IsNullOrEmpty(json)) {
+			throw new ArgumentNullException(nameof(json));
+		}
 
-			try {
-				// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
-				if (File.Exists(filePath)) {
-					string currentJson = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+		string newFilePath = $"{filePath}.new";
 
-					if (json == currentJson) {
-						return true;
-					}
+		await GlobalFileSemaphore.WaitAsync().ConfigureAwait(false);
 
-					await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+		try {
+			// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
+			if (File.Exists(filePath)) {
+				string currentJson = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
 
-					File.Replace(newFilePath, filePath, null);
-				} else {
-					await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
-
-					File.Move(newFilePath, filePath);
+				if (json == currentJson) {
+					return true;
 				}
 
-				return true;
-			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericException(e);
+				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
-				return false;
-			} finally {
-				GlobalFileSemaphore.Release();
+				File.Replace(newFilePath, filePath, null);
+			} else {
+				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+
+				File.Move(newFilePath, filePath);
 			}
+
+			return true;
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericException(e);
+
+			return false;
+		} finally {
+			GlobalFileSemaphore.Release();
 		}
 	}
 }

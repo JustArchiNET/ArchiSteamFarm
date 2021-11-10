@@ -24,16 +24,16 @@ using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Storage;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Plugins.Interfaces {
-	[PublicAPI]
-	public interface IBotMessage : IPlugin {
-		/// <summary>
-		///     ASF will call this method for messages that are not commands, so ones that do not start from <see cref="GlobalConfig.CommandPrefix" />.
-		/// </summary>
-		/// <param name="bot">Bot object related to this callback.</param>
-		/// <param name="steamID">64-bit long unsigned integer of steamID executing the command.</param>
-		/// <param name="message">Message in its raw format.</param>
-		/// <returns>Response to the message, or null/empty (as the task value) for silence.</returns>
-		Task<string?> OnBotMessage(Bot bot, ulong steamID, string message);
-	}
+namespace ArchiSteamFarm.Plugins.Interfaces;
+
+[PublicAPI]
+public interface IBotMessage : IPlugin {
+	/// <summary>
+	///     ASF will call this method for messages that are not commands, so ones that do not start from <see cref="GlobalConfig.CommandPrefix" />.
+	/// </summary>
+	/// <param name="bot">Bot object related to this callback.</param>
+	/// <param name="steamID">64-bit long unsigned integer of steamID executing the command.</param>
+	/// <param name="message">Message in its raw format.</param>
+	/// <returns>Response to the message, or null/empty (as the task value) for silence.</returns>
+	Task<string?> OnBotMessage(Bot bot, ulong steamID, string message);
 }

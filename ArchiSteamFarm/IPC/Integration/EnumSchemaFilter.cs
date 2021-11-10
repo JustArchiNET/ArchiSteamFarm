@@ -27,86 +27,86 @@ using Microsoft.OpenApi.Extensions;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace ArchiSteamFarm.IPC.Integration {
-	[UsedImplicitly]
-	internal sealed class EnumSchemaFilter : ISchemaFilter {
-		public void Apply(OpenApiSchema schema, SchemaFilterContext context) {
-			if (schema == null) {
-				throw new ArgumentNullException(nameof(schema));
-			}
+namespace ArchiSteamFarm.IPC.Integration;
 
-			if (context == null) {
-				throw new ArgumentNullException(nameof(context));
-			}
-
-			if (context.Type is not { IsEnum: true }) {
-				return;
-			}
-
-			if (context.Type.IsDefined(typeof(FlagsAttribute), false)) {
-				schema.Format = "flags";
-			}
-
-			OpenApiObject definition = new();
-
-			foreach (object? enumValue in context.Type.GetEnumValues()) {
-				if (enumValue == null) {
-					throw new InvalidOperationException(nameof(enumValue));
-				}
-
-				string? enumName = Enum.GetName(context.Type, enumValue);
-
-				if (string.IsNullOrEmpty(enumName)) {
-					// Fallback
-					enumName = enumValue.ToString();
-
-					if (string.IsNullOrEmpty(enumName)) {
-						throw new InvalidOperationException(nameof(enumName));
-					}
-				}
-
-				if (definition.ContainsKey(enumName)) {
-					// This is possible if we have multiple names for the same enum value, we'll ignore additional ones
-					continue;
-				}
-
-				IOpenApiPrimitive enumObject;
-
-				if (TryCast(enumValue, out int intValue)) {
-					enumObject = new OpenApiInteger(intValue);
-				} else if (TryCast(enumValue, out long longValue)) {
-					enumObject = new OpenApiLong(longValue);
-				} else if (TryCast(enumValue, out ulong ulongValue)) {
-					// OpenApi spec doesn't support ulongs as of now
-					enumObject = new OpenApiString(ulongValue.ToString(CultureInfo.InvariantCulture));
-				} else {
-					throw new InvalidOperationException(nameof(enumValue));
-				}
-
-				definition.Add(enumName, enumObject);
-			}
-
-			schema.AddExtension("x-definition", definition);
+[UsedImplicitly]
+internal sealed class EnumSchemaFilter : ISchemaFilter {
+	public void Apply(OpenApiSchema schema, SchemaFilterContext context) {
+		if (schema == null) {
+			throw new ArgumentNullException(nameof(schema));
 		}
 
-		private static bool TryCast<T>(object value, out T typedValue) where T : struct {
-			if (value == null) {
-				throw new ArgumentNullException(nameof(value));
+		if (context == null) {
+			throw new ArgumentNullException(nameof(context));
+		}
+
+		if (context.Type is not { IsEnum: true }) {
+			return;
+		}
+
+		if (context.Type.IsDefined(typeof(FlagsAttribute), false)) {
+			schema.Format = "flags";
+		}
+
+		OpenApiObject definition = new();
+
+		foreach (object? enumValue in context.Type.GetEnumValues()) {
+			if (enumValue == null) {
+				throw new InvalidOperationException(nameof(enumValue));
 			}
 
-			try {
-				typedValue = (T) Convert.ChangeType(value, typeof(T), CultureInfo.InvariantCulture);
+			string? enumName = Enum.GetName(context.Type, enumValue);
 
-				return true;
-			} catch (InvalidCastException) {
-				typedValue = default(T);
+			if (string.IsNullOrEmpty(enumName)) {
+				// Fallback
+				enumName = enumValue.ToString();
 
-				return false;
-			} catch (OverflowException) {
-				typedValue = default(T);
-
-				return false;
+				if (string.IsNullOrEmpty(enumName)) {
+					throw new InvalidOperationException(nameof(enumName));
+				}
 			}
+
+			if (definition.ContainsKey(enumName)) {
+				// This is possible if we have multiple names for the same enum value, we'll ignore additional ones
+				continue;
+			}
+
+			IOpenApiPrimitive enumObject;
+
+			if (TryCast(enumValue, out int intValue)) {
+				enumObject = new OpenApiInteger(intValue);
+			} else if (TryCast(enumValue, out long longValue)) {
+				enumObject = new OpenApiLong(longValue);
+			} else if (TryCast(enumValue, out ulong ulongValue)) {
+				// OpenApi spec doesn't support ulongs as of now
+				enumObject = new OpenApiString(ulongValue.ToString(CultureInfo.InvariantCulture));
+			} else {
+				throw new InvalidOperationException(nameof(enumValue));
+			}
+
+			definition.Add(enumName, enumObject);
+		}
+
+		schema.AddExtension("x-definition", definition);
+	}
+
+	private static bool TryCast<T>(object value, out T typedValue) where T : struct {
+		if (value == null) {
+			throw new ArgumentNullException(nameof(value));
+		}
+
+		try {
+			typedValue = (T) Convert.ChangeType(value, typeof(T), CultureInfo.InvariantCulture);
+
+			return true;
+		} catch (InvalidCastException) {
+			typedValue = default(T);
+
+			return false;
+		} catch (OverflowException) {
+			typedValue = default(T);
+
+			return false;
 		}
 	}
 }

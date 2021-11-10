@@ -23,39 +23,39 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.IPC.Responses {
-	public sealed class TypeProperties {
-		/// <summary>
-		///     Base type of given type, if available.
-		/// </summary>
-		/// <remarks>
-		///     This can be used for determining how the body of the response should be interpreted.
-		/// </remarks>
-		[JsonProperty]
-		public string? BaseType { get; private set; }
+namespace ArchiSteamFarm.IPC.Responses;
 
-		/// <summary>
-		///     Custom attributes of given type, if available.
-		/// </summary>
-		/// <remarks>
-		///     This can be used for determining main enum type if <see cref="BaseType" /> is <see cref="Enum" />.
-		/// </remarks>
-		[JsonProperty]
-		public HashSet<string>? CustomAttributes { get; private set; }
+public sealed class TypeProperties {
+	/// <summary>
+	///     Base type of given type, if available.
+	/// </summary>
+	/// <remarks>
+	///     This can be used for determining how the body of the response should be interpreted.
+	/// </remarks>
+	[JsonProperty]
+	public string? BaseType { get; private set; }
 
-		/// <summary>
-		///     Underlying type of given type, if available.
-		/// </summary>
-		/// <remarks>
-		///     This can be used for determining underlying enum type if <see cref="BaseType" /> is <see cref="Enum" />.
-		/// </remarks>
-		[JsonProperty]
-		public string? UnderlyingType { get; private set; }
+	/// <summary>
+	///     Custom attributes of given type, if available.
+	/// </summary>
+	/// <remarks>
+	///     This can be used for determining main enum type if <see cref="BaseType" /> is <see cref="Enum" />.
+	/// </remarks>
+	[JsonProperty]
+	public HashSet<string>? CustomAttributes { get; private set; }
 
-		internal TypeProperties(string? baseType = null, HashSet<string>? customAttributes = null, string? underlyingType = null) {
-			BaseType = baseType;
-			CustomAttributes = customAttributes;
-			UnderlyingType = underlyingType;
-		}
+	/// <summary>
+	///     Underlying type of given type, if available.
+	/// </summary>
+	/// <remarks>
+	///     This can be used for determining underlying enum type if <see cref="BaseType" /> is <see cref="Enum" />.
+	/// </remarks>
+	[JsonProperty]
+	public string? UnderlyingType { get; private set; }
+
+	internal TypeProperties(string? baseType = null, HashSet<string>? customAttributes = null, string? underlyingType = null) {
+		BaseType = baseType;
+		CustomAttributes = customAttributes;
+		UnderlyingType = underlyingType;
 	}
 }

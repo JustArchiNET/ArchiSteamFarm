@@ -25,27 +25,27 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Web.Responses {
-	public sealed class StreamResponse : BasicResponse, IAsyncDisposable {
-		[PublicAPI]
-		public Stream Content { get; }
+namespace ArchiSteamFarm.Web.Responses;
 
-		[PublicAPI]
-		public long Length { get; }
+public sealed class StreamResponse : BasicResponse, IAsyncDisposable {
+	[PublicAPI]
+	public Stream Content { get; }
 
-		private readonly HttpResponseMessage ResponseMessage;
+	[PublicAPI]
+	public long Length { get; }
 
-		internal StreamResponse(HttpResponseMessage httpResponseMessage, Stream content) : base(httpResponseMessage) {
-			ResponseMessage = httpResponseMessage ?? throw new ArgumentNullException(nameof(httpResponseMessage));
-			Content = content ?? throw new ArgumentNullException(nameof(content));
+	private readonly HttpResponseMessage ResponseMessage;
 
-			Length = httpResponseMessage.Content.Headers.ContentLength.GetValueOrDefault();
-		}
+	internal StreamResponse(HttpResponseMessage httpResponseMessage, Stream content) : base(httpResponseMessage) {
+		ResponseMessage = httpResponseMessage ?? throw new ArgumentNullException(nameof(httpResponseMessage));
+		Content = content ?? throw new ArgumentNullException(nameof(content));
 
-		public async ValueTask DisposeAsync() {
-			await Content.DisposeAsync().ConfigureAwait(false);
+		Length = httpResponseMessage.Content.Headers.ContentLength.GetValueOrDefault();
+	}
 
-			ResponseMessage.Dispose();
-		}
+	public async ValueTask DisposeAsync() {
+		await Content.DisposeAsync().ConfigureAwait(false);
+
+		ResponseMessage.Dispose();
 	}
 }

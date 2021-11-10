@@ -22,12 +22,12 @@
 using System;
 using System.Threading;
 
-namespace ArchiSteamFarm.Helpers {
-	internal sealed class SemaphoreLock : IDisposable {
-		private readonly SemaphoreSlim Semaphore;
+namespace ArchiSteamFarm.Helpers;
 
-		internal SemaphoreLock(SemaphoreSlim semaphore) => Semaphore = semaphore ?? throw new ArgumentNullException(nameof(semaphore));
+internal sealed class SemaphoreLock : IDisposable {
+	private readonly SemaphoreSlim Semaphore;
 
-		public void Dispose() => Semaphore.Release();
-	}
+	internal SemaphoreLock(SemaphoreSlim semaphore) => Semaphore = semaphore ?? throw new ArgumentNullException(nameof(semaphore));
+
+	public void Dispose() => Semaphore.Release();
 }

@@ -26,53 +26,53 @@ using System.Linq;
 using JetBrains.Annotations;
 using SteamKit2;
 
-namespace ArchiSteamFarm.Steam.Data {
-	// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer
-	public sealed class TradeOffer {
-		[PublicAPI]
-		public IReadOnlyCollection<Asset> ItemsToGiveReadOnly => ItemsToGive;
+namespace ArchiSteamFarm.Steam.Data;
 
-		[PublicAPI]
-		public IReadOnlyCollection<Asset> ItemsToReceiveReadOnly => ItemsToReceive;
+// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer
+public sealed class TradeOffer {
+	[PublicAPI]
+	public IReadOnlyCollection<Asset> ItemsToGiveReadOnly => ItemsToGive;
 
-		internal readonly HashSet<Asset> ItemsToGive = new();
-		internal readonly HashSet<Asset> ItemsToReceive = new();
+	[PublicAPI]
+	public IReadOnlyCollection<Asset> ItemsToReceiveReadOnly => ItemsToReceive;
 
-		[PublicAPI]
-		public ulong OtherSteamID64 { get; private set; }
+	internal readonly HashSet<Asset> ItemsToGive = new();
+	internal readonly HashSet<Asset> ItemsToReceive = new();
 
-		[PublicAPI]
-		public ETradeOfferState State { get; private set; }
+	[PublicAPI]
+	public ulong OtherSteamID64 { get; private set; }
 
-		[PublicAPI]
-		public ulong TradeOfferID { get; private set; }
+	[PublicAPI]
+	public ETradeOfferState State { get; private set; }
 
-		// Constructed from trades being received
-		internal TradeOffer(ulong tradeOfferID, uint otherSteamID3, ETradeOfferState state) {
-			if (tradeOfferID == 0) {
-				throw new ArgumentOutOfRangeException(nameof(tradeOfferID));
-			}
+	[PublicAPI]
+	public ulong TradeOfferID { get; private set; }
 
-			if (otherSteamID3 == 0) {
-				throw new ArgumentOutOfRangeException(nameof(otherSteamID3));
-			}
-
-			if (!Enum.IsDefined(typeof(ETradeOfferState), state)) {
-				throw new InvalidEnumArgumentException(nameof(state), (int) state, typeof(ETradeOfferState));
-			}
-
-			TradeOfferID = tradeOfferID;
-			OtherSteamID64 = new SteamID(otherSteamID3, EUniverse.Public, EAccountType.Individual);
-			State = state;
+	// Constructed from trades being received
+	internal TradeOffer(ulong tradeOfferID, uint otherSteamID3, ETradeOfferState state) {
+		if (tradeOfferID == 0) {
+			throw new ArgumentOutOfRangeException(nameof(tradeOfferID));
 		}
 
-		[PublicAPI]
-		public bool IsValidSteamItemsRequest(IReadOnlyCollection<Asset.EType> acceptedTypes) {
-			if ((acceptedTypes == null) || (acceptedTypes.Count == 0)) {
-				throw new ArgumentNullException(nameof(acceptedTypes));
-			}
-
-			return ItemsToGive.All(item => (item.AppID == Asset.SteamAppID) && (item.ContextID == Asset.SteamCommunityContextID) && acceptedTypes.Contains(item.Type));
+		if (otherSteamID3 == 0) {
+			throw new ArgumentOutOfRangeException(nameof(otherSteamID3));
 		}
+
+		if (!Enum.IsDefined(typeof(ETradeOfferState), state)) {
+			throw new InvalidEnumArgumentException(nameof(state), (int) state, typeof(ETradeOfferState));
+		}
+
+		TradeOfferID = tradeOfferID;
+		OtherSteamID64 = new SteamID(otherSteamID3, EUniverse.Public, EAccountType.Individual);
+		State = state;
+	}
+
+	[PublicAPI]
+	public bool IsValidSteamItemsRequest(IReadOnlyCollection<Asset.EType> acceptedTypes) {
+		if ((acceptedTypes == null) || (acceptedTypes.Count == 0)) {
+			throw new ArgumentNullException(nameof(acceptedTypes));
+		}
+
+		return ItemsToGive.All(item => (item.AppID == Asset.SteamAppID) && (item.ContextID == Asset.SteamCommunityContextID) && acceptedTypes.Contains(item.Type));
 	}
 }

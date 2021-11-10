@@ -25,14 +25,14 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace ArchiSteamFarm.Plugins.Interfaces {
-	[PublicAPI]
-	public interface IBotModules : IPlugin {
-		/// <summary>
-		///     ASF will call this method right after bot config initialization.
-		/// </summary>
-		/// <param name="bot">Bot object related to this callback.</param>
-		/// <param name="additionalConfigProperties">Extra config properties made out of <see cref="JsonExtensionDataAttribute" />. Can be null if no extra properties are found.</param>
-		void OnBotInitModules(Bot bot, IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null);
-	}
+namespace ArchiSteamFarm.Plugins.Interfaces;
+
+[PublicAPI]
+public interface IBotModules : IPlugin {
+	/// <summary>
+	///     ASF will call this method right after bot config initialization.
+	/// </summary>
+	/// <param name="bot">Bot object related to this callback.</param>
+	/// <param name="additionalConfigProperties">Extra config properties made out of <see cref="JsonExtensionDataAttribute" />. Can be null if no extra properties are found.</param>
+	void OnBotInitModules(Bot bot, IReadOnlyDictionary<string, JToken>? additionalConfigProperties = null);
 }

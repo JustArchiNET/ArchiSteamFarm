@@ -24,40 +24,40 @@ using System.ComponentModel;
 using Newtonsoft.Json;
 using SteamKit2;
 
-namespace ArchiSteamFarm.Steam.SteamKit2 {
-	internal sealed class ServerRecordEndPoint : IEquatable<ServerRecordEndPoint> {
-		[JsonProperty(Required = Required.Always)]
-		internal readonly string Host = "";
+namespace ArchiSteamFarm.Steam.SteamKit2;
 
-		[JsonProperty(Required = Required.Always)]
-		internal readonly ushort Port;
+internal sealed class ServerRecordEndPoint : IEquatable<ServerRecordEndPoint> {
+	[JsonProperty(Required = Required.Always)]
+	internal readonly string Host = "";
 
-		[JsonProperty(Required = Required.Always)]
-		internal readonly ProtocolTypes ProtocolTypes;
+	[JsonProperty(Required = Required.Always)]
+	internal readonly ushort Port;
 
-		internal ServerRecordEndPoint(string host, ushort port, ProtocolTypes protocolTypes) {
-			if (string.IsNullOrEmpty(host)) {
-				throw new ArgumentNullException(nameof(host));
-			}
+	[JsonProperty(Required = Required.Always)]
+	internal readonly ProtocolTypes ProtocolTypes;
 
-			if (port == 0) {
-				throw new ArgumentOutOfRangeException(nameof(port));
-			}
-
-			if (protocolTypes == 0) {
-				throw new InvalidEnumArgumentException(nameof(protocolTypes), (int) protocolTypes, typeof(ProtocolTypes));
-			}
-
-			Host = host;
-			Port = port;
-			ProtocolTypes = protocolTypes;
+	internal ServerRecordEndPoint(string host, ushort port, ProtocolTypes protocolTypes) {
+		if (string.IsNullOrEmpty(host)) {
+			throw new ArgumentNullException(nameof(host));
 		}
 
-		[JsonConstructor]
-		private ServerRecordEndPoint() { }
+		if (port == 0) {
+			throw new ArgumentOutOfRangeException(nameof(port));
+		}
 
-		public bool Equals(ServerRecordEndPoint? other) => (other != null) && (ReferenceEquals(other, this) || ((Host == other.Host) && (Port == other.Port) && (ProtocolTypes == other.ProtocolTypes)));
-		public override bool Equals(object? obj) => (obj != null) && ((obj == this) || (obj is ServerRecordEndPoint serverRecord && Equals(serverRecord)));
-		public override int GetHashCode() => HashCode.Combine(Host, Port, ProtocolTypes);
+		if (protocolTypes == 0) {
+			throw new InvalidEnumArgumentException(nameof(protocolTypes), (int) protocolTypes, typeof(ProtocolTypes));
+		}
+
+		Host = host;
+		Port = port;
+		ProtocolTypes = protocolTypes;
 	}
+
+	[JsonConstructor]
+	private ServerRecordEndPoint() { }
+
+	public bool Equals(ServerRecordEndPoint? other) => (other != null) && (ReferenceEquals(other, this) || ((Host == other.Host) && (Port == other.Port) && (ProtocolTypes == other.ProtocolTypes)));
+	public override bool Equals(object? obj) => (obj != null) && ((obj == this) || (obj is ServerRecordEndPoint serverRecord && Equals(serverRecord)));
+	public override int GetHashCode() => HashCode.Combine(Host, Port, ProtocolTypes);
 }

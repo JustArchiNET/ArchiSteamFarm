@@ -22,22 +22,22 @@
 using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.Steam.Data {
+namespace ArchiSteamFarm.Steam.Data;
+
+[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+internal sealed class AccessTokenResponse : ResultResponse {
+	[JsonProperty(PropertyName = "data", Required = Required.Always)]
+	internal readonly AccessTokenData Data = new();
+
+	[JsonConstructor]
+	private AccessTokenResponse() { }
+
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	internal sealed class AccessTokenResponse : ResultResponse {
-		[JsonProperty(PropertyName = "data", Required = Required.Always)]
-		internal readonly AccessTokenData Data = new();
+	internal sealed class AccessTokenData {
+		[JsonProperty(PropertyName = "webapi_token", Required = Required.Always)]
+		internal readonly string WebAPIToken = "";
 
 		[JsonConstructor]
-		private AccessTokenResponse() { }
-
-		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		internal sealed class AccessTokenData {
-			[JsonProperty(PropertyName = "webapi_token", Required = Required.Always)]
-			internal readonly string WebAPIToken = "";
-
-			[JsonConstructor]
-			internal AccessTokenData() { }
-		}
+		internal AccessTokenData() { }
 	}
 }

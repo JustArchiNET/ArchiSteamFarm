@@ -23,19 +23,19 @@ using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Web.Responses {
-	public sealed class BinaryResponse : BasicResponse {
-		[PublicAPI]
-		public IReadOnlyCollection<byte> Content => Bytes;
+namespace ArchiSteamFarm.Web.Responses;
 
-		private readonly byte[] Bytes;
+public sealed class BinaryResponse : BasicResponse {
+	[PublicAPI]
+	public IReadOnlyCollection<byte> Content => Bytes;
 
-		public BinaryResponse(BasicResponse basicResponse, byte[] bytes) : base(basicResponse) {
-			if (basicResponse == null) {
-				throw new ArgumentNullException(nameof(basicResponse));
-			}
+	private readonly byte[] Bytes;
 
-			Bytes = bytes ?? throw new ArgumentNullException(nameof(bytes));
+	public BinaryResponse(BasicResponse basicResponse, byte[] bytes) : base(basicResponse) {
+		if (basicResponse == null) {
+			throw new ArgumentNullException(nameof(basicResponse));
 		}
+
+		Bytes = bytes ?? throw new ArgumentNullException(nameof(bytes));
 	}
 }

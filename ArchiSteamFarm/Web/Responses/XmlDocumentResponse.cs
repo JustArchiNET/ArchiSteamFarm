@@ -23,18 +23,18 @@ using System;
 using System.Xml;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Web.Responses {
-	[Obsolete("ASF no longer uses any XML-related functions, re-implement it yourself using " + nameof(BasicResponse) + " if needed.")]
-	public sealed class XmlDocumentResponse : BasicResponse {
-		[PublicAPI]
-		public XmlDocument Content { get; }
+namespace ArchiSteamFarm.Web.Responses;
 
-		public XmlDocumentResponse(BasicResponse basicResponse, XmlDocument content) : base(basicResponse) {
-			if (basicResponse == null) {
-				throw new ArgumentNullException(nameof(basicResponse));
-			}
+[Obsolete("ASF no longer uses any XML-related functions, re-implement it yourself using " + nameof(BasicResponse) + " if needed.")]
+public sealed class XmlDocumentResponse : BasicResponse {
+	[PublicAPI]
+	public XmlDocument Content { get; }
 
-			Content = content ?? throw new ArgumentNullException(nameof(content));
+	public XmlDocumentResponse(BasicResponse basicResponse, XmlDocument content) : base(basicResponse) {
+		if (basicResponse == null) {
+			throw new ArgumentNullException(nameof(basicResponse));
 		}
+
+		Content = content ?? throw new ArgumentNullException(nameof(content));
 	}
 }

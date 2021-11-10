@@ -23,22 +23,22 @@ using System.Diagnostics.CodeAnalysis;
 using ArchiSteamFarm.Core;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.IPC.Requests {
-	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	public sealed class BotInputRequest {
-		/// <summary>
-		///     Specifies the type of the input.
-		/// </summary>
-		[JsonProperty(Required = Required.Always)]
-		public ASF.EUserInputType Type { get; private set; }
+namespace ArchiSteamFarm.IPC.Requests;
 
-		/// <summary>
-		///     Specifies the value for given input type (declared in <see cref="Type" />)
-		/// </summary>
-		[JsonProperty(Required = Required.Always)]
-		public string Value { get; private set; } = "";
+[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+public sealed class BotInputRequest {
+	/// <summary>
+	///     Specifies the type of the input.
+	/// </summary>
+	[JsonProperty(Required = Required.Always)]
+	public ASF.EUserInputType Type { get; private set; }
 
-		[JsonConstructor]
-		private BotInputRequest() { }
-	}
+	/// <summary>
+	///     Specifies the value for given input type (declared in <see cref="Type" />)
+	/// </summary>
+	[JsonProperty(Required = Required.Always)]
+	public string Value { get; private set; } = "";
+
+	[JsonConstructor]
+	private BotInputRequest() { }
 }

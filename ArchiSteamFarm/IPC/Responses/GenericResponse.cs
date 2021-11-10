@@ -23,45 +23,45 @@ using System.ComponentModel.DataAnnotations;
 using ArchiSteamFarm.Localization;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.IPC.Responses {
-	public sealed class GenericResponse<T> : GenericResponse where T : class {
-		/// <summary>
-		///     The actual result of the request, if available.
-		/// </summary>
-		/// <remarks>
-		///     The type of the result depends on the API endpoint that you've called.
-		/// </remarks>
-		[JsonProperty]
-		public T? Result { get; private set; }
+namespace ArchiSteamFarm.IPC.Responses;
 
-		public GenericResponse(T? result) : base(result != null) => Result = result;
-		public GenericResponse(bool success, string? message) : base(success, message) { }
-		public GenericResponse(bool success, T? result) : base(success) => Result = result;
-		public GenericResponse(bool success, string? message, T? result) : base(success, message) => Result = result;
-	}
+public sealed class GenericResponse<T> : GenericResponse where T : class {
+	/// <summary>
+	///     The actual result of the request, if available.
+	/// </summary>
+	/// <remarks>
+	///     The type of the result depends on the API endpoint that you've called.
+	/// </remarks>
+	[JsonProperty]
+	public T? Result { get; private set; }
 
-	public class GenericResponse {
-		/// <summary>
-		///     A message that describes what happened with the request, if available.
-		/// </summary>
-		/// <remarks>
-		///     This property will provide exact reason for majority of expected failures.
-		/// </remarks>
-		[JsonProperty]
-		public string Message { get; private set; }
+	public GenericResponse(T? result) : base(result != null) => Result = result;
+	public GenericResponse(bool success, string? message) : base(success, message) { }
+	public GenericResponse(bool success, T? result) : base(success) => Result = result;
+	public GenericResponse(bool success, string? message, T? result) : base(success, message) => Result = result;
+}
 
-		/// <summary>
-		///     Boolean type that specifies if the request has succeeded.
-		/// </summary>
-		[JsonProperty(Required = Required.Always)]
-		[Required]
-		public bool Success { get; private set; }
+public class GenericResponse {
+	/// <summary>
+	///     A message that describes what happened with the request, if available.
+	/// </summary>
+	/// <remarks>
+	///     This property will provide exact reason for majority of expected failures.
+	/// </remarks>
+	[JsonProperty]
+	public string Message { get; private set; }
 
-		public GenericResponse(bool success, string? message = null) {
-			Success = success;
+	/// <summary>
+	///     Boolean type that specifies if the request has succeeded.
+	/// </summary>
+	[JsonProperty(Required = Required.Always)]
+	[Required]
+	public bool Success { get; private set; }
 
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			Message = !string.IsNullOrEmpty(message) ? message! : success ? "OK" : Strings.WarningFailed;
-		}
+	public GenericResponse(bool success, string? message = null) {
+		Success = success;
+
+		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+		Message = !string.IsNullOrEmpty(message) ? message! : success ? "OK" : Strings.WarningFailed;
 	}
 }

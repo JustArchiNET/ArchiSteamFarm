@@ -24,14 +24,14 @@ using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Integration.Callbacks;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Plugins.Interfaces {
-	[PublicAPI]
-	public interface IBotUserNotifications : IPlugin {
-		/// <summary>
-		///     ASF will call this method when number of notifications for one or more notification types changes.
-		/// </summary>
-		/// <param name="bot">Bot object related to this callback.</param>
-		/// <param name="newNotifications">Collection containing those notification types that are new (that is, when new count > previous count of that notification type).</param>
-		void OnBotUserNotifications(Bot bot, IReadOnlyCollection<UserNotificationsCallback.EUserNotification> newNotifications);
-	}
+namespace ArchiSteamFarm.Plugins.Interfaces;
+
+[PublicAPI]
+public interface IBotUserNotifications : IPlugin {
+	/// <summary>
+	///     ASF will call this method when number of notifications for one or more notification types changes.
+	/// </summary>
+	/// <param name="bot">Bot object related to this callback.</param>
+	/// <param name="newNotifications">Collection containing those notification types that are new (that is, when new count > previous count of that notification type).</param>
+	void OnBotUserNotifications(Bot bot, IReadOnlyCollection<UserNotificationsCallback.EUserNotification> newNotifications);
 }

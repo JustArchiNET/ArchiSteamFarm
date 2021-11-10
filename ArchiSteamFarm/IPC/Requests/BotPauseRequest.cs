@@ -22,22 +22,22 @@
 using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.IPC.Requests {
-	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	public sealed class BotPauseRequest {
-		/// <summary>
-		///     Specifies if pause is permanent or temporary (default).
-		/// </summary>
-		[JsonProperty(Required = Required.DisallowNull)]
-		public bool Permanent { get; private set; }
+namespace ArchiSteamFarm.IPC.Requests;
 
-		/// <summary>
-		///     Specifies automatic resume action in given seconds. Default value of 0 disables automatic resume.
-		/// </summary>
-		[JsonProperty(Required = Required.DisallowNull)]
-		public ushort ResumeInSeconds { get; private set; }
+[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+public sealed class BotPauseRequest {
+	/// <summary>
+	///     Specifies if pause is permanent or temporary (default).
+	/// </summary>
+	[JsonProperty(Required = Required.DisallowNull)]
+	public bool Permanent { get; private set; }
 
-		[JsonConstructor]
-		private BotPauseRequest() { }
-	}
+	/// <summary>
+	///     Specifies automatic resume action in given seconds. Default value of 0 disables automatic resume.
+	/// </summary>
+	[JsonProperty(Required = Required.DisallowNull)]
+	public ushort ResumeInSeconds { get; private set; }
+
+	[JsonConstructor]
+	private BotPauseRequest() { }
 }

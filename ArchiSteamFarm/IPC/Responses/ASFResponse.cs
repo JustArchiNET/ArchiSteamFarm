@@ -24,57 +24,57 @@ using System.ComponentModel.DataAnnotations;
 using ArchiSteamFarm.Storage;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.IPC.Responses {
-	public sealed class ASFResponse {
-		/// <summary>
-		///     ASF's build variant.
-		/// </summary>
-		[JsonProperty(Required = Required.Always)]
-		[Required]
-		public string BuildVariant { get; private set; }
+namespace ArchiSteamFarm.IPC.Responses;
 
-		/// <summary>
-		///     A value specifying whether this variant of ASF is capable of auto-update.
-		/// </summary>
-		[JsonProperty(Required = Required.Always)]
-		[Required]
-		public bool CanUpdate { get; private set; }
+public sealed class ASFResponse {
+	/// <summary>
+	///     ASF's build variant.
+	/// </summary>
+	[JsonProperty(Required = Required.Always)]
+	[Required]
+	public string BuildVariant { get; private set; }
 
-		/// <summary>
-		///     Currently loaded ASF's global config.
-		/// </summary>
-		[JsonProperty(Required = Required.Always)]
-		[Required]
-		public GlobalConfig GlobalConfig { get; private set; }
+	/// <summary>
+	///     A value specifying whether this variant of ASF is capable of auto-update.
+	/// </summary>
+	[JsonProperty(Required = Required.Always)]
+	[Required]
+	public bool CanUpdate { get; private set; }
 
-		/// <summary>
-		///     Current amount of managed memory being used by the process, in kilobytes.
-		/// </summary>
-		[JsonProperty(Required = Required.Always)]
-		[Required]
-		public uint MemoryUsage { get; private set; }
+	/// <summary>
+	///     Currently loaded ASF's global config.
+	/// </summary>
+	[JsonProperty(Required = Required.Always)]
+	[Required]
+	public GlobalConfig GlobalConfig { get; private set; }
 
-		/// <summary>
-		///     Start date of the process.
-		/// </summary>
-		[JsonProperty(Required = Required.Always)]
-		[Required]
-		public DateTime ProcessStartTime { get; private set; }
+	/// <summary>
+	///     Current amount of managed memory being used by the process, in kilobytes.
+	/// </summary>
+	[JsonProperty(Required = Required.Always)]
+	[Required]
+	public uint MemoryUsage { get; private set; }
 
-		/// <summary>
-		///     ASF version of currently running binary.
-		/// </summary>
-		[JsonProperty(Required = Required.Always)]
-		[Required]
-		public Version Version { get; private set; }
+	/// <summary>
+	///     Start date of the process.
+	/// </summary>
+	[JsonProperty(Required = Required.Always)]
+	[Required]
+	public DateTime ProcessStartTime { get; private set; }
 
-		internal ASFResponse(string buildVariant, bool canUpdate, GlobalConfig globalConfig, uint memoryUsage, DateTime processStartTime, Version version) {
-			BuildVariant = !string.IsNullOrEmpty(buildVariant) ? buildVariant : throw new ArgumentNullException(nameof(buildVariant));
-			CanUpdate = canUpdate;
-			GlobalConfig = globalConfig ?? throw new ArgumentNullException(nameof(globalConfig));
-			MemoryUsage = memoryUsage > 0 ? memoryUsage : throw new ArgumentOutOfRangeException(nameof(memoryUsage));
-			ProcessStartTime = processStartTime > DateTime.MinValue ? processStartTime : throw new ArgumentOutOfRangeException(nameof(processStartTime));
-			Version = version ?? throw new ArgumentNullException(nameof(version));
-		}
+	/// <summary>
+	///     ASF version of currently running binary.
+	/// </summary>
+	[JsonProperty(Required = Required.Always)]
+	[Required]
+	public Version Version { get; private set; }
+
+	internal ASFResponse(string buildVariant, bool canUpdate, GlobalConfig globalConfig, uint memoryUsage, DateTime processStartTime, Version version) {
+		BuildVariant = !string.IsNullOrEmpty(buildVariant) ? buildVariant : throw new ArgumentNullException(nameof(buildVariant));
+		CanUpdate = canUpdate;
+		GlobalConfig = globalConfig ?? throw new ArgumentNullException(nameof(globalConfig));
+		MemoryUsage = memoryUsage > 0 ? memoryUsage : throw new ArgumentOutOfRangeException(nameof(memoryUsage));
+		ProcessStartTime = processStartTime > DateTime.MinValue ? processStartTime : throw new ArgumentOutOfRangeException(nameof(processStartTime));
+		Version = version ?? throw new ArgumentNullException(nameof(version));
 	}
 }

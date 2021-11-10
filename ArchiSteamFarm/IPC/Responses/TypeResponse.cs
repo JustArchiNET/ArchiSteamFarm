@@ -24,30 +24,30 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.IPC.Responses {
-	public sealed class TypeResponse {
-		/// <summary>
-		///     A string-string map representing a decomposition of given type.
-		/// </summary>
-		/// <remarks>
-		///     The actual structure of this field depends on the type that was requested. You can determine that type based on <see cref="Properties" /> metadata.
-		///     For enums, keys are friendly names while values are underlying values of those names.
-		///     For objects, keys are non-private fields and properties, while values are underlying types of those.
-		/// </remarks>
-		[JsonProperty(Required = Required.Always)]
-		[Required]
-		public Dictionary<string, string> Body { get; private set; }
+namespace ArchiSteamFarm.IPC.Responses;
 
-		/// <summary>
-		///     Metadata of given type.
-		/// </summary>
-		[JsonProperty(Required = Required.Always)]
-		[Required]
-		public TypeProperties Properties { get; private set; }
+public sealed class TypeResponse {
+	/// <summary>
+	///     A string-string map representing a decomposition of given type.
+	/// </summary>
+	/// <remarks>
+	///     The actual structure of this field depends on the type that was requested. You can determine that type based on <see cref="Properties" /> metadata.
+	///     For enums, keys are friendly names while values are underlying values of those names.
+	///     For objects, keys are non-private fields and properties, while values are underlying types of those.
+	/// </remarks>
+	[JsonProperty(Required = Required.Always)]
+	[Required]
+	public Dictionary<string, string> Body { get; private set; }
 
-		internal TypeResponse(Dictionary<string, string> body, TypeProperties properties) {
-			Body = body ?? throw new ArgumentNullException(nameof(body));
-			Properties = properties ?? throw new ArgumentNullException(nameof(properties));
-		}
+	/// <summary>
+	///     Metadata of given type.
+	/// </summary>
+	[JsonProperty(Required = Required.Always)]
+	[Required]
+	public TypeProperties Properties { get; private set; }
+
+	internal TypeResponse(Dictionary<string, string> body, TypeProperties properties) {
+		Body = body ?? throw new ArgumentNullException(nameof(body));
+		Properties = properties ?? throw new ArgumentNullException(nameof(properties));
 	}
 }

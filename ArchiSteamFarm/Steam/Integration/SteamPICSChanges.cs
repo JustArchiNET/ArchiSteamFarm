@@ -28,102 +28,102 @@ using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Web;
 using SteamKit2;
 
-namespace ArchiSteamFarm.Steam.Integration {
-	internal static class SteamPICSChanges {
-		private const byte RefreshTimerInMinutes = 5;
+namespace ArchiSteamFarm.Steam.Integration;
 
-		internal static bool LiveUpdate { get; private set; }
+internal static class SteamPICSChanges {
+	private const byte RefreshTimerInMinutes = 5;
 
-		private static readonly SemaphoreSlim RefreshSemaphore = new(1, 1);
-		private static readonly Timer RefreshTimer = new(RefreshChanges);
+	internal static bool LiveUpdate { get; private set; }
 
-		private static uint LastChangeNumber;
-		private static bool TimerAlreadySet;
+	private static readonly SemaphoreSlim RefreshSemaphore = new(1, 1);
+	private static readonly Timer RefreshTimer = new(RefreshChanges);
 
-		internal static void Init(uint changeNumberToStartFrom) => LastChangeNumber = changeNumberToStartFrom;
+	private static uint LastChangeNumber;
+	private static bool TimerAlreadySet;
 
-		internal static void OnBotLoggedOn() {
+	internal static void Init(uint changeNumberToStartFrom) => LastChangeNumber = changeNumberToStartFrom;
+
+	internal static void OnBotLoggedOn() {
+		if (TimerAlreadySet) {
+			return;
+		}
+
+		// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
+		lock (RefreshSemaphore) {
 			if (TimerAlreadySet) {
 				return;
 			}
 
-			// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
-			lock (RefreshSemaphore) {
-				if (TimerAlreadySet) {
+			TimerAlreadySet = true;
+			RefreshTimer.Change(TimeSpan.Zero, TimeSpan.FromMinutes(RefreshTimerInMinutes));
+		}
+	}
+
+	private static async void RefreshChanges(object? state = null) {
+		if (!await RefreshSemaphore.WaitAsync(0).ConfigureAwait(false)) {
+			return;
+		}
+
+		try {
+			Bot? refreshBot = null;
+			SteamApps.PICSChangesCallback? picsChanges = null;
+
+			for (byte i = 0; (i < WebBrowser.MaxTries) && (picsChanges == null); i++) {
+				refreshBot = Bot.Bots?.Values.FirstOrDefault(static bot => bot.IsConnectedAndLoggedOn);
+
+				if (refreshBot == null) {
+					LiveUpdate = false;
+
 					return;
 				}
 
-				TimerAlreadySet = true;
-				RefreshTimer.Change(TimeSpan.Zero, TimeSpan.FromMinutes(RefreshTimerInMinutes));
+				try {
+					picsChanges = await refreshBot.SteamApps.PICSGetChangesSince(LastChangeNumber, true, true).ToLongRunningTask().ConfigureAwait(false);
+				} catch (Exception e) {
+					refreshBot.ArchiLogger.LogGenericWarningException(e);
+				}
 			}
-		}
 
-		private static async void RefreshChanges(object? state = null) {
-			if (!await RefreshSemaphore.WaitAsync(0).ConfigureAwait(false)) {
+			if ((refreshBot == null) || (picsChanges == null)) {
+				LiveUpdate = false;
+				ASF.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+
 				return;
 			}
 
-			try {
-				Bot? refreshBot = null;
-				SteamApps.PICSChangesCallback? picsChanges = null;
+			if (picsChanges.CurrentChangeNumber == picsChanges.LastChangeNumber) {
+				LiveUpdate = true;
 
-				for (byte i = 0; (i < WebBrowser.MaxTries) && (picsChanges == null); i++) {
-					refreshBot = Bot.Bots?.Values.FirstOrDefault(static bot => bot.IsConnectedAndLoggedOn);
+				return;
+			}
 
-					if (refreshBot == null) {
-						LiveUpdate = false;
+			LastChangeNumber = picsChanges.CurrentChangeNumber;
 
-						return;
-					}
-
-					try {
-						picsChanges = await refreshBot.SteamApps.PICSGetChangesSince(LastChangeNumber, true, true).ToLongRunningTask().ConfigureAwait(false);
-					} catch (Exception e) {
-						refreshBot.ArchiLogger.LogGenericWarningException(e);
-					}
-				}
-
-				if ((refreshBot == null) || (picsChanges == null)) {
-					LiveUpdate = false;
-					ASF.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-
-					return;
-				}
-
-				if (picsChanges.CurrentChangeNumber == picsChanges.LastChangeNumber) {
-					LiveUpdate = true;
-
-					return;
-				}
-
-				LastChangeNumber = picsChanges.CurrentChangeNumber;
-
-				if (picsChanges.RequiresFullAppUpdate || picsChanges.RequiresFullPackageUpdate) {
-					if (ASF.GlobalDatabase != null) {
-						await ASF.GlobalDatabase.OnPICSChangesRestart(picsChanges.CurrentChangeNumber).ConfigureAwait(false);
-					}
-
-					LiveUpdate = true;
-
-					await PluginsCore.OnPICSChangesRestart(picsChanges.CurrentChangeNumber).ConfigureAwait(false);
-
-					return;
+			if (picsChanges.RequiresFullAppUpdate || picsChanges.RequiresFullPackageUpdate) {
+				if (ASF.GlobalDatabase != null) {
+					await ASF.GlobalDatabase.OnPICSChangesRestart(picsChanges.CurrentChangeNumber).ConfigureAwait(false);
 				}
 
 				LiveUpdate = true;
 
-				if (ASF.GlobalDatabase != null) {
-					ASF.GlobalDatabase.LastChangeNumber = picsChanges.CurrentChangeNumber;
+				await PluginsCore.OnPICSChangesRestart(picsChanges.CurrentChangeNumber).ConfigureAwait(false);
 
-					if (picsChanges.PackageChanges.Count > 0) {
-						await ASF.GlobalDatabase.RefreshPackages(refreshBot, picsChanges.PackageChanges.ToDictionary(static package => package.Key, static package => package.Value.ChangeNumber)).ConfigureAwait(false);
-					}
-				}
-
-				await PluginsCore.OnPICSChanges(picsChanges.CurrentChangeNumber, picsChanges.AppChanges, picsChanges.PackageChanges).ConfigureAwait(false);
-			} finally {
-				RefreshSemaphore.Release();
+				return;
 			}
+
+			LiveUpdate = true;
+
+			if (ASF.GlobalDatabase != null) {
+				ASF.GlobalDatabase.LastChangeNumber = picsChanges.CurrentChangeNumber;
+
+				if (picsChanges.PackageChanges.Count > 0) {
+					await ASF.GlobalDatabase.RefreshPackages(refreshBot, picsChanges.PackageChanges.ToDictionary(static package => package.Key, static package => package.Value.ChangeNumber)).ConfigureAwait(false);
+				}
+			}
+
+			await PluginsCore.OnPICSChanges(picsChanges.CurrentChangeNumber, picsChanges.AppChanges, picsChanges.PackageChanges).ConfigureAwait(false);
+		} finally {
+			RefreshSemaphore.Release();
 		}
 	}
 }

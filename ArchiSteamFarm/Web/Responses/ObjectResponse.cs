@@ -22,17 +22,17 @@
 using System;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Web.Responses {
-	public sealed class ObjectResponse<T> : BasicResponse {
-		[PublicAPI]
-		public T Content { get; }
+namespace ArchiSteamFarm.Web.Responses;
 
-		public ObjectResponse(BasicResponse basicResponse, T content) : base(basicResponse) {
-			if (basicResponse == null) {
-				throw new ArgumentNullException(nameof(basicResponse));
-			}
+public sealed class ObjectResponse<T> : BasicResponse {
+	[PublicAPI]
+	public T Content { get; }
 
-			Content = content ?? throw new ArgumentNullException(nameof(content));
+	public ObjectResponse(BasicResponse basicResponse, T content) : base(basicResponse) {
+		if (basicResponse == null) {
+			throw new ArgumentNullException(nameof(basicResponse));
 		}
+
+		Content = content ?? throw new ArgumentNullException(nameof(content));
 	}
 }

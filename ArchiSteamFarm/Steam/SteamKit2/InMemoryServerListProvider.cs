@@ -27,29 +27,29 @@ using ArchiSteamFarm.Collections;
 using Newtonsoft.Json;
 using SteamKit2.Discovery;
 
-namespace ArchiSteamFarm.Steam.SteamKit2 {
-	internal sealed class InMemoryServerListProvider : IServerListProvider {
-		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentHashSet<ServerRecordEndPoint> ServerRecords = new();
+namespace ArchiSteamFarm.Steam.SteamKit2;
 
-		public Task<IEnumerable<ServerRecord>> FetchServerListAsync() => Task.FromResult(ServerRecords.Where(static server => !string.IsNullOrEmpty(server.Host) && (server.Port > 0) && (server.ProtocolTypes > 0)).Select(static server => ServerRecord.CreateServer(server.Host, server.Port, server.ProtocolTypes)));
+internal sealed class InMemoryServerListProvider : IServerListProvider {
+	[JsonProperty(Required = Required.DisallowNull)]
+	private readonly ConcurrentHashSet<ServerRecordEndPoint> ServerRecords = new();
 
-		public Task UpdateServerListAsync(IEnumerable<ServerRecord> endpoints) {
-			if (endpoints == null) {
-				throw new ArgumentNullException(nameof(endpoints));
-			}
+	public Task<IEnumerable<ServerRecord>> FetchServerListAsync() => Task.FromResult(ServerRecords.Where(static server => !string.IsNullOrEmpty(server.Host) && (server.Port > 0) && (server.ProtocolTypes > 0)).Select(static server => ServerRecord.CreateServer(server.Host, server.Port, server.ProtocolTypes)));
 
-			HashSet<ServerRecordEndPoint> newServerRecords = endpoints.Select(static endpoint => new ServerRecordEndPoint(endpoint.GetHost(), (ushort) endpoint.GetPort(), endpoint.ProtocolTypes)).ToHashSet();
-
-			if (ServerRecords.ReplaceIfNeededWith(newServerRecords)) {
-				ServerListUpdated?.Invoke(this, EventArgs.Empty);
-			}
-
-			return Task.CompletedTask;
+	public Task UpdateServerListAsync(IEnumerable<ServerRecord> endpoints) {
+		if (endpoints == null) {
+			throw new ArgumentNullException(nameof(endpoints));
 		}
 
-		public bool ShouldSerializeServerRecords() => ServerRecords.Count > 0;
+		HashSet<ServerRecordEndPoint> newServerRecords = endpoints.Select(static endpoint => new ServerRecordEndPoint(endpoint.GetHost(), (ushort) endpoint.GetPort(), endpoint.ProtocolTypes)).ToHashSet();
 
-		internal event EventHandler? ServerListUpdated;
+		if (ServerRecords.ReplaceIfNeededWith(newServerRecords)) {
+			ServerListUpdated?.Invoke(this, EventArgs.Empty);
+		}
+
+		return Task.CompletedTask;
 	}
+
+	public bool ShouldSerializeServerRecords() => ServerRecords.Count > 0;
+
+	internal event EventHandler? ServerListUpdated;
 }

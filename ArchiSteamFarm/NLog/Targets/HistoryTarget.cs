@@ -27,59 +27,59 @@ using JetBrains.Annotations;
 using NLog;
 using NLog.Targets;
 
-namespace ArchiSteamFarm.NLog.Targets {
-	[Target(TargetName)]
-	internal sealed class HistoryTarget : TargetWithLayout {
-		internal const string TargetName = "History";
+namespace ArchiSteamFarm.NLog.Targets;
 
-		private const byte DefaultMaxCount = 20;
+[Target(TargetName)]
+internal sealed class HistoryTarget : TargetWithLayout {
+	internal const string TargetName = "History";
 
-		internal IEnumerable<string> ArchivedMessages => HistoryQueue;
+	private const byte DefaultMaxCount = 20;
 
-		private readonly FixedSizeConcurrentQueue<string> HistoryQueue = new(DefaultMaxCount);
+	internal IEnumerable<string> ArchivedMessages => HistoryQueue;
 
-		// This is NLog config property, it must have public get() and set() capabilities
-		[UsedImplicitly]
-		public byte MaxCount {
-			get => HistoryQueue.MaxCount;
+	private readonly FixedSizeConcurrentQueue<string> HistoryQueue = new(DefaultMaxCount);
 
-			set {
-				if (value == 0) {
-					ASF.ArchiLogger.LogNullError(nameof(value));
+	// This is NLog config property, it must have public get() and set() capabilities
+	[UsedImplicitly]
+	public byte MaxCount {
+		get => HistoryQueue.MaxCount;
 
-					return;
-				}
+		set {
+			if (value == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(value));
 
-				HistoryQueue.MaxCount = value;
-			}
-		}
-
-		// This parameter-less constructor is intentionally public, as NLog uses it for creating targets
-		// It must stay like this as we want to have our targets defined in our NLog.config
-		[UsedImplicitly]
-		public HistoryTarget() { }
-
-		internal HistoryTarget(string name) : this() => Name = name;
-
-		protected override void Write(LogEventInfo logEvent) {
-			if (logEvent == null) {
-				throw new ArgumentNullException(nameof(logEvent));
+				return;
 			}
 
-			base.Write(logEvent);
+			HistoryQueue.MaxCount = value;
+		}
+	}
 
-			string message = Layout.Render(logEvent);
+	// This parameter-less constructor is intentionally public, as NLog uses it for creating targets
+	// It must stay like this as we want to have our targets defined in our NLog.config
+	[UsedImplicitly]
+	public HistoryTarget() { }
 
-			HistoryQueue.Enqueue(message);
-			NewHistoryEntry?.Invoke(this, new NewHistoryEntryArgs(message));
+	internal HistoryTarget(string name) : this() => Name = name;
+
+	protected override void Write(LogEventInfo logEvent) {
+		if (logEvent == null) {
+			throw new ArgumentNullException(nameof(logEvent));
 		}
 
-		internal event EventHandler<NewHistoryEntryArgs>? NewHistoryEntry;
+		base.Write(logEvent);
 
-		internal sealed class NewHistoryEntryArgs : EventArgs {
-			internal readonly string Message;
+		string message = Layout.Render(logEvent);
 
-			internal NewHistoryEntryArgs(string message) => Message = message ?? throw new ArgumentNullException(nameof(message));
-		}
+		HistoryQueue.Enqueue(message);
+		NewHistoryEntry?.Invoke(this, new NewHistoryEntryArgs(message));
+	}
+
+	internal event EventHandler<NewHistoryEntryArgs>? NewHistoryEntry;
+
+	internal sealed class NewHistoryEntryArgs : EventArgs {
+		internal readonly string Message;
+
+		internal NewHistoryEntryArgs(string message) => Message = message ?? throw new ArgumentNullException(nameof(message));
 	}
 }

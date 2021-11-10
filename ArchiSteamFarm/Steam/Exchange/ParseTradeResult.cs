@@ -27,40 +27,40 @@ using System.Linq;
 using ArchiSteamFarm.Steam.Data;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Steam.Exchange {
-	public sealed class ParseTradeResult {
-		[PublicAPI]
-		public EResult Result { get; }
+namespace ArchiSteamFarm.Steam.Exchange;
 
-		[PublicAPI]
-		public ulong TradeOfferID { get; }
+public sealed class ParseTradeResult {
+	[PublicAPI]
+	public EResult Result { get; }
 
-		internal readonly ImmutableHashSet<Asset.EType>? ReceivedItemTypes;
+	[PublicAPI]
+	public ulong TradeOfferID { get; }
 
-		internal ParseTradeResult(ulong tradeOfferID, EResult result, IReadOnlyCollection<Asset>? itemsToReceive = null) {
-			if (tradeOfferID == 0) {
-				throw new ArgumentOutOfRangeException(nameof(tradeOfferID));
-			}
+	internal readonly ImmutableHashSet<Asset.EType>? ReceivedItemTypes;
 
-			if ((result == EResult.Unknown) || !Enum.IsDefined(typeof(EResult), result)) {
-				throw new InvalidEnumArgumentException(nameof(result), (int) result, typeof(EResult));
-			}
-
-			TradeOfferID = tradeOfferID;
-			Result = result;
-
-			if (itemsToReceive?.Count > 0) {
-				ReceivedItemTypes = itemsToReceive.Select(static item => item.Type).ToImmutableHashSet();
-			}
+	internal ParseTradeResult(ulong tradeOfferID, EResult result, IReadOnlyCollection<Asset>? itemsToReceive = null) {
+		if (tradeOfferID == 0) {
+			throw new ArgumentOutOfRangeException(nameof(tradeOfferID));
 		}
 
-		public enum EResult : byte {
-			Unknown,
-			Accepted,
-			Blacklisted,
-			Ignored,
-			Rejected,
-			TryAgain
+		if ((result == EResult.Unknown) || !Enum.IsDefined(typeof(EResult), result)) {
+			throw new InvalidEnumArgumentException(nameof(result), (int) result, typeof(EResult));
 		}
+
+		TradeOfferID = tradeOfferID;
+		Result = result;
+
+		if (itemsToReceive?.Count > 0) {
+			ReceivedItemTypes = itemsToReceive.Select(static item => item.Type).ToImmutableHashSet();
+		}
+	}
+
+	public enum EResult : byte {
+		Unknown,
+		Accepted,
+		Blacklisted,
+		Ignored,
+		Rejected,
+		TryAgain
 	}
 }

@@ -24,15 +24,15 @@ using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Steam.Data;
 using JetBrains.Annotations;
 
-namespace ArchiSteamFarm.Plugins.Interfaces {
-	[PublicAPI]
-	public interface IBotTradeOffer : IPlugin {
-		/// <summary>
-		///     ASF will call this method for unhandled (ignored and rejected) trade offers received by the bot.
-		/// </summary>
-		/// <param name="bot">Bot object related to this callback.</param>
-		/// <param name="tradeOffer">Trade offer related to this callback.</param>
-		/// <returns>True if the trade offer should be accepted as part of this plugin, false otherwise.</returns>
-		Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer);
-	}
+namespace ArchiSteamFarm.Plugins.Interfaces;
+
+[PublicAPI]
+public interface IBotTradeOffer : IPlugin {
+	/// <summary>
+	///     ASF will call this method for unhandled (ignored and rejected) trade offers received by the bot.
+	/// </summary>
+	/// <param name="bot">Bot object related to this callback.</param>
+	/// <param name="tradeOffer">Trade offer related to this callback.</param>
+	/// <returns>True if the trade offer should be accepted as part of this plugin, false otherwise.</returns>
+	Task<bool> OnBotTradeOffer(Bot bot, TradeOffer tradeOffer);
 }

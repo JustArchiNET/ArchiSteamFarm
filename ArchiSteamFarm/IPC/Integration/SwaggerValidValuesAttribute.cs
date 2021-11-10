@@ -26,32 +26,32 @@ using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Extensions;
 using Microsoft.OpenApi.Models;
 
-namespace ArchiSteamFarm.IPC.Integration {
-	[PublicAPI]
-	public sealed class SwaggerValidValuesAttribute : CustomSwaggerAttribute {
-		public int[]? ValidIntValues { get; set; }
-		public string[]? ValidStringValues { get; set; }
+namespace ArchiSteamFarm.IPC.Integration;
 
-		public override void Apply(OpenApiSchema schema) {
-			if (schema == null) {
-				throw new ArgumentNullException(nameof(schema));
-			}
+[PublicAPI]
+public sealed class SwaggerValidValuesAttribute : CustomSwaggerAttribute {
+	public int[]? ValidIntValues { get; set; }
+	public string[]? ValidStringValues { get; set; }
 
-			OpenApiArray validValues = new();
+	public override void Apply(OpenApiSchema schema) {
+		if (schema == null) {
+			throw new ArgumentNullException(nameof(schema));
+		}
 
-			if (ValidIntValues != null) {
-				validValues.AddRange(ValidIntValues.Select(static type => new OpenApiInteger(type)));
-			}
+		OpenApiArray validValues = new();
 
-			if (ValidStringValues != null) {
-				validValues.AddRange(ValidStringValues.Select(static type => new OpenApiString(type)));
-			}
+		if (ValidIntValues != null) {
+			validValues.AddRange(ValidIntValues.Select(static type => new OpenApiInteger(type)));
+		}
 
-			if (schema.Items is { Reference: null }) {
-				schema.Items.AddExtension("x-valid-values", validValues);
-			} else {
-				schema.AddExtension("x-valid-values", validValues);
-			}
+		if (ValidStringValues != null) {
+			validValues.AddRange(ValidStringValues.Select(static type => new OpenApiString(type)));
+		}
+
+		if (schema.Items is { Reference: null }) {
+			schema.Items.AddExtension("x-valid-values", validValues);
+		} else {
+			schema.AddExtension("x-valid-values", validValues);
 		}
 	}
 }

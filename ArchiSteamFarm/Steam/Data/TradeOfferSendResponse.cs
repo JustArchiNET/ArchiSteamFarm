@@ -23,37 +23,37 @@ using System.Diagnostics.CodeAnalysis;
 using ArchiSteamFarm.Core;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.Steam.Data {
-	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	internal sealed class TradeOfferSendResponse {
-		[JsonProperty(PropertyName = "strError", Required = Required.DisallowNull)]
-		internal readonly string ErrorText = "";
+namespace ArchiSteamFarm.Steam.Data;
 
-		[JsonProperty(PropertyName = "needs_mobile_confirmation", Required = Required.DisallowNull)]
-		internal readonly bool RequiresMobileConfirmation;
+[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+internal sealed class TradeOfferSendResponse {
+	[JsonProperty(PropertyName = "strError", Required = Required.DisallowNull)]
+	internal readonly string ErrorText = "";
 
-		internal ulong TradeOfferID { get; private set; }
+	[JsonProperty(PropertyName = "needs_mobile_confirmation", Required = Required.DisallowNull)]
+	internal readonly bool RequiresMobileConfirmation;
 
-		[JsonProperty(PropertyName = "tradeofferid", Required = Required.DisallowNull)]
-		private string TradeOfferIDText {
-			set {
-				if (string.IsNullOrEmpty(value)) {
-					ASF.ArchiLogger.LogNullError(nameof(value));
+	internal ulong TradeOfferID { get; private set; }
 
-					return;
-				}
+	[JsonProperty(PropertyName = "tradeofferid", Required = Required.DisallowNull)]
+	private string TradeOfferIDText {
+		set {
+			if (string.IsNullOrEmpty(value)) {
+				ASF.ArchiLogger.LogNullError(nameof(value));
 
-				if (!ulong.TryParse(value, out ulong tradeOfferID) || (tradeOfferID == 0)) {
-					ASF.ArchiLogger.LogNullError(nameof(tradeOfferID));
-
-					return;
-				}
-
-				TradeOfferID = tradeOfferID;
+				return;
 			}
-		}
 
-		[JsonConstructor]
-		private TradeOfferSendResponse() { }
+			if (!ulong.TryParse(value, out ulong tradeOfferID) || (tradeOfferID == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(tradeOfferID));
+
+				return;
+			}
+
+			TradeOfferID = tradeOfferID;
+		}
 	}
+
+	[JsonConstructor]
+	private TradeOfferSendResponse() { }
 }

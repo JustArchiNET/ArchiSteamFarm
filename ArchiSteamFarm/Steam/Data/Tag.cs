@@ -23,22 +23,22 @@ using System;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.Steam.Data {
-	public sealed class Tag {
-		[JsonProperty(PropertyName = "category", Required = Required.Always)]
-		[PublicAPI]
-		public string Identifier { get; private set; } = "";
+namespace ArchiSteamFarm.Steam.Data;
 
-		[JsonProperty(PropertyName = "internal_name", Required = Required.Always)]
-		[PublicAPI]
-		public string Value { get; private set; } = "";
+public sealed class Tag {
+	[JsonProperty(PropertyName = "category", Required = Required.Always)]
+	[PublicAPI]
+	public string Identifier { get; private set; } = "";
 
-		internal Tag(string identifier, string value) {
-			Identifier = !string.IsNullOrEmpty(identifier) ? identifier : throw new ArgumentNullException(nameof(identifier));
-			Value = value ?? throw new ArgumentNullException(nameof(value));
-		}
+	[JsonProperty(PropertyName = "internal_name", Required = Required.Always)]
+	[PublicAPI]
+	public string Value { get; private set; } = "";
 
-		[JsonConstructor]
-		private Tag() { }
+	internal Tag(string identifier, string value) {
+		Identifier = !string.IsNullOrEmpty(identifier) ? identifier : throw new ArgumentNullException(nameof(identifier));
+		Value = value ?? throw new ArgumentNullException(nameof(value));
 	}
+
+	[JsonConstructor]
+	private Tag() { }
 }

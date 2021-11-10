@@ -22,12 +22,12 @@
 using System;
 using ArchiSteamFarm.Plugins.Interfaces;
 
-namespace ArchiSteamFarm.Plugins {
-	internal abstract class OfficialPlugin : IPlugin {
-		public abstract string Name { get; }
-		public abstract Version Version { get; }
-		public abstract void OnLoaded();
+namespace ArchiSteamFarm.Plugins;
 
-		internal bool HasSameVersion() => Version == SharedInfo.Version;
-	}
+internal abstract class OfficialPlugin : IPlugin {
+	public abstract string Name { get; }
+	public abstract Version Version { get; }
+	public abstract void OnLoaded();
+
+	internal bool HasSameVersion() => Version == SharedInfo.Version;
 }

@@ -21,15 +21,15 @@
 
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
-	public sealed class GlobalConfigExtension {
-		[JsonProperty(Required = Required.DisallowNull)]
-		public SteamTokenDumperConfig? SteamTokenDumperPlugin { get; private set; }
+namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		public bool SteamTokenDumperPluginEnabled { get; private set; }
+public sealed class GlobalConfigExtension {
+	[JsonProperty(Required = Required.DisallowNull)]
+	public SteamTokenDumperConfig? SteamTokenDumperPlugin { get; private set; }
 
-		[JsonConstructor]
-		internal GlobalConfigExtension() { }
-	}
+	[JsonProperty(Required = Required.DisallowNull)]
+	public bool SteamTokenDumperPluginEnabled { get; private set; }
+
+	[JsonConstructor]
+	internal GlobalConfigExtension() { }
 }

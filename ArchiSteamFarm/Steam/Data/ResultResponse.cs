@@ -24,14 +24,14 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SteamKit2;
 
-namespace ArchiSteamFarm.Steam.Data {
-	[PublicAPI]
-	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	public class ResultResponse {
-		[JsonProperty(PropertyName = "success", Required = Required.Always)]
-		public EResult Result { get; private set; }
+namespace ArchiSteamFarm.Steam.Data;
 
-		[JsonConstructor]
-		protected ResultResponse() { }
-	}
+[PublicAPI]
+[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+public class ResultResponse {
+	[JsonProperty(PropertyName = "success", Required = Required.Always)]
+	public EResult Result { get; private set; }
+
+	[JsonConstructor]
+	protected ResultResponse() { }
 }

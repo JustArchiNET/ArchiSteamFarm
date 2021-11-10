@@ -26,38 +26,38 @@ using ArchiSteamFarm.IPC.Responses;
 using ArchiSteamFarm.Localization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ArchiSteamFarm.IPC.Controllers.Api {
-	[Route("Api/Structure")]
-	public sealed class StructureController : ArchiController {
-		/// <summary>
-		///     Fetches structure of given type.
-		/// </summary>
-		/// <remarks>
-		///     Structure is defined as a representation of given object in its default state.
-		/// </remarks>
-		[HttpGet("{structure:required}")]
-		[ProducesResponseType(typeof(GenericResponse<object>), (int) HttpStatusCode.OK)]
-		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
-		public ActionResult<GenericResponse> StructureGet(string structure) {
-			if (string.IsNullOrEmpty(structure)) {
-				throw new ArgumentNullException(nameof(structure));
-			}
+namespace ArchiSteamFarm.IPC.Controllers.Api;
 
-			Type? targetType = WebUtilities.ParseType(structure);
-
-			if (targetType == null) {
-				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, structure)));
-			}
-
-			object? obj;
-
-			try {
-				obj = Activator.CreateInstance(targetType, true);
-			} catch (Exception e) {
-				return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorParsingObject, nameof(targetType)) + Environment.NewLine + e));
-			}
-
-			return Ok(new GenericResponse<object>(obj));
+[Route("Api/Structure")]
+public sealed class StructureController : ArchiController {
+	/// <summary>
+	///     Fetches structure of given type.
+	/// </summary>
+	/// <remarks>
+	///     Structure is defined as a representation of given object in its default state.
+	/// </remarks>
+	[HttpGet("{structure:required}")]
+	[ProducesResponseType(typeof(GenericResponse<object>), (int) HttpStatusCode.OK)]
+	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.BadRequest)]
+	public ActionResult<GenericResponse> StructureGet(string structure) {
+		if (string.IsNullOrEmpty(structure)) {
+			throw new ArgumentNullException(nameof(structure));
 		}
+
+		Type? targetType = WebUtilities.ParseType(structure);
+
+		if (targetType == null) {
+			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, structure)));
+		}
+
+		object? obj;
+
+		try {
+			obj = Activator.CreateInstance(targetType, true);
+		} catch (Exception e) {
+			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorParsingObject, nameof(targetType)) + Environment.NewLine + e));
+		}
+
+		return Ok(new GenericResponse<object>(obj));
 	}
 }

@@ -23,30 +23,30 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static ArchiSteamFarm.Core.Utilities;
 
-namespace ArchiSteamFarm.Tests {
-	[TestClass]
+namespace ArchiSteamFarm.Tests;
+
+[TestClass]
 #pragma warning disable CA1724 // We don't care about the potential conflict, as ASF class name has a priority
-	public sealed class Utilities {
-		[TestMethod]
-		public void AdditionallyForbiddenWordsWeakenPassphrases() => Assert.IsTrue(TestPasswordStrength("10chars<!>asdf", new HashSet<string> { "chars<!>" }).IsWeak);
+public sealed class Utilities {
+	[TestMethod]
+	public void AdditionallyForbiddenWordsWeakenPassphrases() => Assert.IsTrue(TestPasswordStrength("10chars<!>asdf", new HashSet<string> { "chars<!>" }).IsWeak);
 
-		[TestMethod]
-		public void ContextSpecificWordsWeakenPassphrases() => Assert.IsTrue(TestPasswordStrength("archisteamfarmpassword").IsWeak);
+	[TestMethod]
+	public void ContextSpecificWordsWeakenPassphrases() => Assert.IsTrue(TestPasswordStrength("archisteamfarmpassword").IsWeak);
 
-		[TestMethod]
-		public void LongPassphraseIsNotWeak() => Assert.IsFalse(TestPasswordStrength("10chars<!>asdf").IsWeak);
+	[TestMethod]
+	public void LongPassphraseIsNotWeak() => Assert.IsFalse(TestPasswordStrength("10chars<!>asdf").IsWeak);
 
-		[TestMethod]
-		public void RepetitiveCharactersWeakenPassphrases() => Assert.IsTrue(TestPasswordStrength("testaaaatest").IsWeak);
+	[TestMethod]
+	public void RepetitiveCharactersWeakenPassphrases() => Assert.IsTrue(TestPasswordStrength("testaaaatest").IsWeak);
 
-		[TestMethod]
-		public void SequentialCharactersWeakenPassphrases() => Assert.IsTrue(TestPasswordStrength("testabcdtest").IsWeak);
+	[TestMethod]
+	public void SequentialCharactersWeakenPassphrases() => Assert.IsTrue(TestPasswordStrength("testabcdtest").IsWeak);
 
-		[TestMethod]
-		public void SequentialDescendingCharactersWeakenPassphrases() => Assert.IsTrue(TestPasswordStrength("testdcbatest").IsWeak);
+	[TestMethod]
+	public void SequentialDescendingCharactersWeakenPassphrases() => Assert.IsTrue(TestPasswordStrength("testdcbatest").IsWeak);
 
-		[TestMethod]
-		public void ShortPassphraseIsWeak() => Assert.IsTrue(TestPasswordStrength("four").IsWeak);
-	}
-#pragma warning restore CA1724 // We don't care about the potential conflict, as ASF class name has a priority
+	[TestMethod]
+	public void ShortPassphraseIsWeak() => Assert.IsTrue(TestPasswordStrength("four").IsWeak);
 }
+#pragma warning restore CA1724 // We don't care about the potential conflict, as ASF class name has a priority

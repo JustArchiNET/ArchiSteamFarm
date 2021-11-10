@@ -23,14 +23,14 @@ using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.Steam.Data {
-	[PublicAPI]
-	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	public class BooleanResponse {
-		[JsonProperty(PropertyName = "success", Required = Required.Always)]
-		public bool Success { get; private set; }
+namespace ArchiSteamFarm.Steam.Data;
 
-		[JsonConstructor]
-		protected BooleanResponse() { }
-	}
+[PublicAPI]
+[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+public class BooleanResponse {
+	[JsonProperty(PropertyName = "success", Required = Required.Always)]
+	public bool Success { get; private set; }
+
+	[JsonConstructor]
+	protected BooleanResponse() { }
 }

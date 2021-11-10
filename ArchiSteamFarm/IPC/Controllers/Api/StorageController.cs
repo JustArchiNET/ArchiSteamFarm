@@ -26,73 +26,73 @@ using ArchiSteamFarm.IPC.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 
-namespace ArchiSteamFarm.IPC.Controllers.Api {
-	[Route("Api/Storage/{key:required}")]
-	public sealed class StorageController : ArchiController {
-		/// <summary>
-		///     Deletes entry under specified key from ASF's persistent KeyValue JSON storage.
-		/// </summary>
-		[HttpDelete]
-		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
-		public ActionResult<GenericResponse> StorageDelete(string key) {
-			if (string.IsNullOrEmpty(key)) {
-				throw new ArgumentNullException(nameof(key));
-			}
+namespace ArchiSteamFarm.IPC.Controllers.Api;
 
-			if (ASF.GlobalDatabase == null) {
-				throw new InvalidOperationException(nameof(ASF.GlobalDatabase));
-			}
+[Route("Api/Storage/{key:required}")]
+public sealed class StorageController : ArchiController {
+	/// <summary>
+	///     Deletes entry under specified key from ASF's persistent KeyValue JSON storage.
+	/// </summary>
+	[HttpDelete]
+	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
+	public ActionResult<GenericResponse> StorageDelete(string key) {
+		if (string.IsNullOrEmpty(key)) {
+			throw new ArgumentNullException(nameof(key));
+		}
 
+		if (ASF.GlobalDatabase == null) {
+			throw new InvalidOperationException(nameof(ASF.GlobalDatabase));
+		}
+
+		ASF.GlobalDatabase.DeleteFromJsonStorage(key);
+
+		return Ok(new GenericResponse(true));
+	}
+
+	/// <summary>
+	///     Loads entry under specified key from ASF's persistent KeyValue JSON storage.
+	/// </summary>
+	[HttpGet]
+	[ProducesResponseType(typeof(GenericResponse<JToken>), (int) HttpStatusCode.OK)]
+	public ActionResult<GenericResponse> StorageGet(string key) {
+		if (string.IsNullOrEmpty(key)) {
+			throw new ArgumentNullException(nameof(key));
+		}
+
+		if (ASF.GlobalDatabase == null) {
+			throw new InvalidOperationException(nameof(ASF.GlobalDatabase));
+		}
+
+		JToken? value = ASF.GlobalDatabase.LoadFromJsonStorage(key);
+
+		return Ok(new GenericResponse<JToken>(true, value));
+	}
+
+	/// <summary>
+	///     Saves entry under specified key in ASF's persistent KeyValue JSON storage.
+	/// </summary>
+	[Consumes("application/json")]
+	[HttpPost]
+	[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
+	public ActionResult<GenericResponse> StoragePost(string key, [FromBody] JToken value) {
+		if (string.IsNullOrEmpty(key)) {
+			throw new ArgumentNullException(nameof(key));
+		}
+
+		if (value == null) {
+			throw new ArgumentNullException(nameof(value));
+		}
+
+		if (ASF.GlobalDatabase == null) {
+			throw new InvalidOperationException(nameof(ASF.GlobalDatabase));
+		}
+
+		if (value.Type == JTokenType.Null) {
 			ASF.GlobalDatabase.DeleteFromJsonStorage(key);
-
-			return Ok(new GenericResponse(true));
+		} else {
+			ASF.GlobalDatabase.SaveToJsonStorage(key, value);
 		}
 
-		/// <summary>
-		///     Loads entry under specified key from ASF's persistent KeyValue JSON storage.
-		/// </summary>
-		[HttpGet]
-		[ProducesResponseType(typeof(GenericResponse<JToken>), (int) HttpStatusCode.OK)]
-		public ActionResult<GenericResponse> StorageGet(string key) {
-			if (string.IsNullOrEmpty(key)) {
-				throw new ArgumentNullException(nameof(key));
-			}
-
-			if (ASF.GlobalDatabase == null) {
-				throw new InvalidOperationException(nameof(ASF.GlobalDatabase));
-			}
-
-			JToken? value = ASF.GlobalDatabase.LoadFromJsonStorage(key);
-
-			return Ok(new GenericResponse<JToken>(true, value));
-		}
-
-		/// <summary>
-		///     Saves entry under specified key in ASF's persistent KeyValue JSON storage.
-		/// </summary>
-		[Consumes("application/json")]
-		[HttpPost]
-		[ProducesResponseType(typeof(GenericResponse), (int) HttpStatusCode.OK)]
-		public ActionResult<GenericResponse> StoragePost(string key, [FromBody] JToken value) {
-			if (string.IsNullOrEmpty(key)) {
-				throw new ArgumentNullException(nameof(key));
-			}
-
-			if (value == null) {
-				throw new ArgumentNullException(nameof(value));
-			}
-
-			if (ASF.GlobalDatabase == null) {
-				throw new InvalidOperationException(nameof(ASF.GlobalDatabase));
-			}
-
-			if (value.Type == JTokenType.Null) {
-				ASF.GlobalDatabase.DeleteFromJsonStorage(key);
-			} else {
-				ASF.GlobalDatabase.SaveToJsonStorage(key, value);
-			}
-
-			return Ok(new GenericResponse(true));
-		}
+		return Ok(new GenericResponse(true));
 	}
 }

@@ -24,24 +24,24 @@ using System.Diagnostics.CodeAnalysis;
 using ArchiSteamFarm.Helpers;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.IPC.Requests {
-	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	public sealed class ASFHashRequest {
-		/// <summary>
-		///     Hashing method used for hashing this string.
-		/// </summary>
-		[JsonProperty(Required = Required.Always)]
-		[Required]
-		public ArchiCryptoHelper.EHashingMethod HashingMethod { get; private set; }
+namespace ArchiSteamFarm.IPC.Requests;
 
-		/// <summary>
-		///     String to hash with provided <see cref="HashingMethod" />.
-		/// </summary>
-		[JsonProperty(Required = Required.Always)]
-		[Required]
-		public string StringToHash { get; private set; } = "";
+[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+public sealed class ASFHashRequest {
+	/// <summary>
+	///     Hashing method used for hashing this string.
+	/// </summary>
+	[JsonProperty(Required = Required.Always)]
+	[Required]
+	public ArchiCryptoHelper.EHashingMethod HashingMethod { get; private set; }
 
-		[JsonConstructor]
-		private ASFHashRequest() { }
-	}
+	/// <summary>
+	///     String to hash with provided <see cref="HashingMethod" />.
+	/// </summary>
+	[JsonProperty(Required = Required.Always)]
+	[Required]
+	public string StringToHash { get; private set; } = "";
+
+	[JsonConstructor]
+	private ASFHashRequest() { }
 }

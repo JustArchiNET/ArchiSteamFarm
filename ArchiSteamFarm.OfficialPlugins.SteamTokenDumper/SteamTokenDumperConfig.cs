@@ -24,28 +24,28 @@ using System.Diagnostics.CodeAnalysis;
 using ArchiSteamFarm.IPC.Integration;
 using Newtonsoft.Json;
 
-namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper {
-	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	public sealed class SteamTokenDumperConfig {
-		[JsonProperty(Required = Required.DisallowNull)]
-		public bool Enabled { get; internal set; }
+namespace ArchiSteamFarm.OfficialPlugins.SteamTokenDumper;
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
-		public ImmutableHashSet<uint> SecretAppIDs { get; private set; } = ImmutableHashSet<uint>.Empty;
+[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+public sealed class SteamTokenDumperConfig {
+	[JsonProperty(Required = Required.DisallowNull)]
+	public bool Enabled { get; internal set; }
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
-		public ImmutableHashSet<uint> SecretDepotIDs { get; private set; } = ImmutableHashSet<uint>.Empty;
+	[JsonProperty(Required = Required.DisallowNull)]
+	[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
+	public ImmutableHashSet<uint> SecretAppIDs { get; private set; } = ImmutableHashSet<uint>.Empty;
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
-		public ImmutableHashSet<uint> SecretPackageIDs { get; private set; } = ImmutableHashSet<uint>.Empty;
+	[JsonProperty(Required = Required.DisallowNull)]
+	[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
+	public ImmutableHashSet<uint> SecretDepotIDs { get; private set; } = ImmutableHashSet<uint>.Empty;
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		public bool SkipAutoGrantPackages { get; private set; }
+	[JsonProperty(Required = Required.DisallowNull)]
+	[SwaggerItemsMinMax(MinimumUint = 1, MaximumUint = uint.MaxValue)]
+	public ImmutableHashSet<uint> SecretPackageIDs { get; private set; } = ImmutableHashSet<uint>.Empty;
 
-		[JsonConstructor]
-		internal SteamTokenDumperConfig() { }
-	}
+	[JsonProperty(Required = Required.DisallowNull)]
+	public bool SkipAutoGrantPackages { get; private set; }
+
+	[JsonConstructor]
+	internal SteamTokenDumperConfig() { }
 }

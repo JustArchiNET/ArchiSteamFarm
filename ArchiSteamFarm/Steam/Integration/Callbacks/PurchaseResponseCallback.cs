@@ -29,93 +29,93 @@ using JetBrains.Annotations;
 using SteamKit2;
 using SteamKit2.Internal;
 
-namespace ArchiSteamFarm.Steam.Integration.Callbacks {
-	public sealed class PurchaseResponseCallback : CallbackMsg {
-		[PublicAPI]
-		public Dictionary<uint, string>? Items { get; }
+namespace ArchiSteamFarm.Steam.Integration.Callbacks;
 
-		public EPurchaseResultDetail PurchaseResultDetail { get; internal set; }
+public sealed class PurchaseResponseCallback : CallbackMsg {
+	[PublicAPI]
+	public Dictionary<uint, string>? Items { get; }
 
-		[PublicAPI]
-		public EResult Result { get; internal set; }
+	public EPurchaseResultDetail PurchaseResultDetail { get; internal set; }
 
-		internal PurchaseResponseCallback(EResult result, EPurchaseResultDetail purchaseResult) {
-			if (!Enum.IsDefined(typeof(EResult), result)) {
-				throw new InvalidEnumArgumentException(nameof(result), (int) result, typeof(EResult));
-			}
+	[PublicAPI]
+	public EResult Result { get; internal set; }
 
-			if (!Enum.IsDefined(typeof(EPurchaseResultDetail), purchaseResult)) {
-				throw new InvalidEnumArgumentException(nameof(purchaseResult), (int) purchaseResult, typeof(EPurchaseResultDetail));
-			}
-
-			Result = result;
-			PurchaseResultDetail = purchaseResult;
+	internal PurchaseResponseCallback(EResult result, EPurchaseResultDetail purchaseResult) {
+		if (!Enum.IsDefined(typeof(EResult), result)) {
+			throw new InvalidEnumArgumentException(nameof(result), (int) result, typeof(EResult));
 		}
 
-		internal PurchaseResponseCallback(JobID jobID, CMsgClientPurchaseResponse msg) {
-			if (jobID == null) {
-				throw new ArgumentNullException(nameof(jobID));
-			}
+		if (!Enum.IsDefined(typeof(EPurchaseResultDetail), purchaseResult)) {
+			throw new InvalidEnumArgumentException(nameof(purchaseResult), (int) purchaseResult, typeof(EPurchaseResultDetail));
+		}
 
-			if (msg == null) {
-				throw new ArgumentNullException(nameof(msg));
-			}
+		Result = result;
+		PurchaseResultDetail = purchaseResult;
+	}
 
-			JobID = jobID;
-			PurchaseResultDetail = (EPurchaseResultDetail) msg.purchase_result_details;
-			Result = (EResult) msg.eresult;
+	internal PurchaseResponseCallback(JobID jobID, CMsgClientPurchaseResponse msg) {
+		if (jobID == null) {
+			throw new ArgumentNullException(nameof(jobID));
+		}
 
-			if (msg.purchase_receipt_info == null) {
-				ASF.ArchiLogger.LogNullError(nameof(msg.purchase_receipt_info));
+		if (msg == null) {
+			throw new ArgumentNullException(nameof(msg));
+		}
+
+		JobID = jobID;
+		PurchaseResultDetail = (EPurchaseResultDetail) msg.purchase_result_details;
+		Result = (EResult) msg.eresult;
+
+		if (msg.purchase_receipt_info == null) {
+			ASF.ArchiLogger.LogNullError(nameof(msg.purchase_receipt_info));
+
+			return;
+		}
+
+		KeyValue receiptInfo = new();
+
+		using (MemoryStream ms = new(msg.purchase_receipt_info)) {
+			if (!receiptInfo.TryReadAsBinary(ms)) {
+				ASF.ArchiLogger.LogNullError(nameof(ms));
 
 				return;
 			}
+		}
 
-			KeyValue receiptInfo = new();
+		List<KeyValue> lineItems = receiptInfo["lineitems"].Children;
 
-			using (MemoryStream ms = new(msg.purchase_receipt_info)) {
-				if (!receiptInfo.TryReadAsBinary(ms)) {
-					ASF.ArchiLogger.LogNullError(nameof(ms));
+		if (lineItems.Count == 0) {
+			return;
+		}
 
-					return;
-				}
-			}
+		Items = new Dictionary<uint, string>(lineItems.Count);
 
-			List<KeyValue> lineItems = receiptInfo["lineitems"].Children;
+		foreach (KeyValue lineItem in lineItems) {
+			uint packageID = lineItem["PackageID"].AsUnsignedInteger();
 
-			if (lineItems.Count == 0) {
-				return;
-			}
-
-			Items = new Dictionary<uint, string>(lineItems.Count);
-
-			foreach (KeyValue lineItem in lineItems) {
-				uint packageID = lineItem["PackageID"].AsUnsignedInteger();
+			if (packageID == 0) {
+				// Coupons have PackageID of -1 (don't ask me why)
+				// We'll use ItemAppID in this case
+				packageID = lineItem["ItemAppID"].AsUnsignedInteger();
 
 				if (packageID == 0) {
-					// Coupons have PackageID of -1 (don't ask me why)
-					// We'll use ItemAppID in this case
-					packageID = lineItem["ItemAppID"].AsUnsignedInteger();
-
-					if (packageID == 0) {
-						ASF.ArchiLogger.LogNullError(nameof(packageID));
-
-						return;
-					}
-				}
-
-				string? gameName = lineItem["ItemDescription"].AsString();
-
-				if (string.IsNullOrEmpty(gameName)) {
-					ASF.ArchiLogger.LogNullError(nameof(gameName));
+					ASF.ArchiLogger.LogNullError(nameof(packageID));
 
 					return;
 				}
-
-				// Apparently steam expects client to decode sent HTML
-				gameName = WebUtility.HtmlDecode(gameName);
-				Items[packageID] = gameName;
 			}
+
+			string? gameName = lineItem["ItemDescription"].AsString();
+
+			if (string.IsNullOrEmpty(gameName)) {
+				ASF.ArchiLogger.LogNullError(nameof(gameName));
+
+				return;
+			}
+
+			// Apparently steam expects client to decode sent HTML
+			gameName = WebUtility.HtmlDecode(gameName);
+			Items[packageID] = gameName;
 		}
 	}
 }
