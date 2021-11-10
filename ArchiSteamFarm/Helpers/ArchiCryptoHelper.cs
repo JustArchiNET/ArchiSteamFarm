@@ -133,8 +133,8 @@ public static class ArchiCryptoHelper {
 			case EHashingMethod.SCrypt:
 				return SCrypt.ComputeDerivedKey(password, salt, SteamParentalSCryptIterations, SteamParentalSCryptBlocksCount, 1, null, hashLength);
 			case EHashingMethod.Pbkdf2:
-				using (HMACSHA256 hmacAlgorithm = new(password)) {
-					return Pbkdf2.ComputeDerivedKey(hmacAlgorithm, salt, SteamParentalPbkdf2Iterations, hashLength);
+				using (HMACSHA256 hashAlgorithm = new(password)) {
+					return Pbkdf2.ComputeDerivedKey(hashAlgorithm, salt, SteamParentalPbkdf2Iterations, hashLength);
 				}
 			default:
 				throw new ArgumentOutOfRangeException(nameof(hashingMethod));
@@ -196,11 +196,7 @@ public static class ArchiCryptoHelper {
 		}
 
 		try {
-			byte[] key;
-
-			using (SHA256 sha256 = SHA256.Create()) {
-				key = sha256.ComputeHash(EncryptionKey);
-			}
+			byte[] key = SHA256.HashData(EncryptionKey);
 
 			byte[] decryptedData = Convert.FromBase64String(encryptedString);
 			decryptedData = CryptoHelper.SymmetricDecrypt(decryptedData, key);
@@ -243,11 +239,7 @@ public static class ArchiCryptoHelper {
 		}
 
 		try {
-			byte[] key;
-
-			using (SHA256 sha256 = SHA256.Create()) {
-				key = sha256.ComputeHash(EncryptionKey);
-			}
+			byte[] key = SHA256.HashData(EncryptionKey);
 
 			byte[] encryptedData = Encoding.UTF8.GetBytes(decryptedString);
 			encryptedData = CryptoHelper.SymmetricEncrypt(encryptedData, key);

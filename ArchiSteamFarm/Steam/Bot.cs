@@ -2969,9 +2969,9 @@ public sealed class Bot : IAsyncDisposable {
 				fileStream.Seek(0, SeekOrigin.Begin);
 
 #pragma warning disable CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
-				using SHA1 hashingAlgorithm = SHA1.Create();
+				using SHA1 hashAlgorithm = SHA1.Create();
 
-				sentryHash = await hashingAlgorithm.ComputeHashAsync(fileStream).ConfigureAwait(false);
+				sentryHash = await hashAlgorithm.ComputeHashAsync(fileStream).ConfigureAwait(false);
 #pragma warning restore CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
 			}
 		} catch (Exception e) {

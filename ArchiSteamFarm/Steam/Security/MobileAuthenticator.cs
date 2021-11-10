@@ -327,12 +327,8 @@ public sealed class MobileAuthenticator : IDisposable {
 			Array.Copy(Encoding.UTF8.GetBytes(tag!), 0, buffer, 8, bufferSize - 8);
 		}
 
-		byte[] hash;
-
 #pragma warning disable CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
-		using (HMACSHA1 hmac = new(identitySecret)) {
-			hash = hmac.ComputeHash(buffer);
-		}
+		byte[] hash = HMACSHA1.HashData(identitySecret, buffer);
 #pragma warning restore CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
 
 		return Convert.ToBase64String(hash);
@@ -368,12 +364,8 @@ public sealed class MobileAuthenticator : IDisposable {
 			Array.Reverse(timeArray);
 		}
 
-		byte[] hash;
-
 #pragma warning disable CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
-		using (HMACSHA1 hmac = new(sharedSecret)) {
-			hash = hmac.ComputeHash(timeArray);
-		}
+		byte[] hash = HMACSHA1.HashData(sharedSecret, timeArray);
 #pragma warning restore CA5350 // This is actually a fair warning, but there is nothing we can do about Steam using weak cryptographic algorithms
 
 		// The last 4 bits of the mac say where the code starts
