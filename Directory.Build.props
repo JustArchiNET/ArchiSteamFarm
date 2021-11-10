@@ -76,7 +76,6 @@
 		<EventSourceSupport>false</EventSourceSupport>
 		<HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
 		<MetadataUpdaterSupport>false</MetadataUpdaterSupport>
-		<TrimMode>link</TrimMode>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(OS)' == 'Windows_NT' OR '$(ASFNetFramework)' != ''">
