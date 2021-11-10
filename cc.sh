@@ -111,7 +111,7 @@ if [ "$ASF_UI" -eq 1 ]; then
 	fi
 fi
 
-DOTNET_FLAGS="-c $CONFIGURATION -f $TARGET_FRAMEWORK -p:ContinuousIntegrationBuild=true -p:SelfContained=false -p:UseAppHost=false -r ${os_type}-${cpu_architecture} --nologo"
+DOTNET_FLAGS="-c $CONFIGURATION -f $TARGET_FRAMEWORK -p:ContinuousIntegrationBuild=true -p:UseAppHost=false -r ${os_type}-${cpu_architecture} --nologo --no-self-contained"
 
 if [ "$ANALYSIS" -eq 0 ]; then
 	DOTNET_FLAGS="$DOTNET_FLAGS -p:AnalysisMode=AllDisabledByDefault"

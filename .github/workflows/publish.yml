@@ -128,7 +128,7 @@ jobs:
             if [ "$1" = 'generic' ]; then
                 variantArgs="-p:TargetLatestRuntimePatch=false -p:UseAppHost=false"
             else
-                variantArgs="-p:PublishSingleFile=true -p:PublishTrimmed=true -r $1"
+                variantArgs="-p:PublishSingleFile=true -p:PublishTrimmed=true -r $1 --self-contained"
             fi
 
             dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -f "$NET_CORE_VERSION" -o "out/${1}" "-p:ASFVariant=$1" -p:ContinuousIntegrationBuild=true --no-restore --nologo $variantArgs
@@ -245,7 +245,7 @@ jobs:
             if ($variant -like 'generic*') {
                 $variantArgs = '-p:TargetLatestRuntimePatch=false', '-p:UseAppHost=false'
             } else {
-                $variantArgs = '-p:PublishSingleFile=true', '-p:PublishTrimmed=true', '-r', "$variant"
+                $variantArgs = '-p:PublishSingleFile=true', '-p:PublishTrimmed=true', '-r', "$variant", '--self-contained'
             }
 
             dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -f "$targetFramework" -o "out\$variant" "-p:ASFVariant=$variant" -p:ContinuousIntegrationBuild=true --no-restore --nologo $variantArgs
