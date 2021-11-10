@@ -214,7 +214,7 @@ dotnet_style_readonly_field = true:warning
 dotnet_style_require_accessibility_modifiers = always:warning
 
 ###############################
-# Jetbrains / IntelliJ        #
+# JetBrains, IntelliJ/Rider   #
 ###############################
 
 [*.{csproj,props,xml}]
