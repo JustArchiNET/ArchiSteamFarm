@@ -513,7 +513,7 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 				ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, response.StatusCode));
 
 #if NETFRAMEWORK
-					if (response.StatusCode == (HttpStatusCode) 429) {
+				if (response.StatusCode == (HttpStatusCode) 429) {
 #else
 				if (response.StatusCode == HttpStatusCode.TooManyRequests) {
 #endif

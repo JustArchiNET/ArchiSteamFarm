@@ -36,38 +36,42 @@ namespace ArchiSteamFarm.IPC;
 
 internal static class WebUtilities {
 #if NETFRAMEWORK
-		internal static IMvcCoreBuilder AddControllers(this IServiceCollection services) {
-			if (services == null) {
-				throw new ArgumentNullException(nameof(services));
-			}
-
-			return services.AddMvcCore();
+	internal static IMvcCoreBuilder AddControllers(this IServiceCollection services) {
+		if (services == null) {
+			throw new ArgumentNullException(nameof(services));
 		}
 
-		internal static IMvcCoreBuilder AddNewtonsoftJson(this IMvcCoreBuilder mvc, Action<MvcJsonOptions> setupAction) {
-			if (mvc == null) {
-				throw new ArgumentNullException(nameof(mvc));
-			}
+		return services.AddMvcCore();
+	}
 
-			if (setupAction == null) {
-				throw new ArgumentNullException(nameof(setupAction));
-			}
-
-			// Add JSON formatters that will be used as default ones if no specific formatters are asked for
-			mvc.AddJsonFormatters();
-
-			mvc.AddJsonOptions(setupAction);
-
-			return mvc;
+	internal static IMvcCoreBuilder AddNewtonsoftJson(this IMvcCoreBuilder mvc, Action<MvcJsonOptions> setupAction) {
+		if (mvc == null) {
+			throw new ArgumentNullException(nameof(mvc));
 		}
 
-		internal static IServiceCollection AddRequestLocalization(this IServiceCollection services, Action<RequestLocalizationOptions> action) {
-			if (services == null) {
-				throw new ArgumentNullException(nameof(services));
-			}
-
-			return services.Configure(action);
+		if (setupAction == null) {
+			throw new ArgumentNullException(nameof(setupAction));
 		}
+
+		// Add JSON formatters that will be used as default ones if no specific formatters are asked for
+		mvc.AddJsonFormatters();
+
+		mvc.AddJsonOptions(setupAction);
+
+		return mvc;
+	}
+
+	internal static IServiceCollection AddRequestLocalization(this IServiceCollection services, Action<RequestLocalizationOptions> action) {
+		if (services == null) {
+			throw new ArgumentNullException(nameof(services));
+		}
+
+		if (action == null) {
+			throw new ArgumentNullException(nameof(action));
+		}
+
+		return services.Configure(action);
+	}
 #endif
 
 	internal static string? GetUnifiedName(this Type type) {

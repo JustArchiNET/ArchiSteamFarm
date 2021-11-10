@@ -43,7 +43,7 @@ internal static class OS {
 
 	internal static DateTime ProcessStartTime {
 #if NETFRAMEWORK
-			get => RuntimeMadness.ProcessStartTime.ToUniversalTime();
+		get => RuntimeMadness.ProcessStartTime.ToUniversalTime();
 #else
 		get {
 			using Process process = Process.GetCurrentProcess();
@@ -67,7 +67,7 @@ internal static class OS {
 			}
 
 #if NETFRAMEWORK
-				string runtime = RuntimeInformation.OSArchitecture.ToString();
+			string runtime = RuntimeInformation.OSArchitecture.ToString();
 #else
 			string runtime = RuntimeInformation.RuntimeIdentifier.Trim();
 
@@ -231,28 +231,28 @@ internal static class OS {
 
 	internal static bool VerifyEnvironment() {
 #if NETFRAMEWORK
-			// This is .NET Framework build, we support that one only on mono for platforms not supported by .NET Core
+		// This is .NET Framework build, we support that one only on mono for platforms not supported by .NET Core
 
-			// We're not going to analyze source builds, as we don't know what changes the author has made, assume they have a point
-			if (SharedInfo.BuildInfo.IsCustomBuild) {
-				return true;
-			}
+		// We're not going to analyze source builds, as we don't know what changes the author has made, assume they have a point
+		if (SharedInfo.BuildInfo.IsCustomBuild) {
+			return true;
+		}
 
-			// All windows variants have valid .NET Core build, and generic-netf is supported only on mono
-			if (OperatingSystem.IsWindows() || !RuntimeMadness.IsRunningOnMono) {
-				return false;
-			}
+		// All windows variants have valid .NET Core build, and generic-netf is supported only on mono
+		if (OperatingSystem.IsWindows() || !RuntimeMadness.IsRunningOnMono) {
+			return false;
+		}
 
-			return RuntimeInformation.OSArchitecture switch {
-				// Sadly we can't tell a difference between ARMv6 and ARMv7 reliably, we'll believe that this linux-arm user knows what he's doing and he's indeed in need of generic-netf on ARMv6
-				Architecture.Arm => true,
+		return RuntimeInformation.OSArchitecture switch {
+			// Sadly we can't tell a difference between ARMv6 and ARMv7 reliably, we'll believe that this linux-arm user knows what he's doing and he's indeed in need of generic-netf on ARMv6
+			Architecture.Arm => true,
 
-				// Apart from real x86, this also covers all unknown architectures, such as sparc, ppc64, and anything else Mono might support, we're fine with that
-				Architecture.X86 => true,
+			// Apart from real x86, this also covers all unknown architectures, such as sparc, ppc64, and anything else Mono might support, we're fine with that
+			Architecture.X86 => true,
 
-				// Everything else is covered by .NET Core
-				_ => false
-			};
+			// Everything else is covered by .NET Core
+			_ => false
+		};
 #else
 
 		// This is .NET Core build, we support all scenarios

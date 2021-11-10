@@ -28,7 +28,7 @@ internal static class Debugging {
 #if DEBUG
 	internal static bool IsDebugBuild => true;
 #else
-		internal static bool IsDebugBuild => false;
+	internal static bool IsDebugBuild => false;
 #endif
 
 	internal static bool IsDebugConfigured => ASF.GlobalConfig?.Debug ?? throw new InvalidOperationException(nameof(ASF.GlobalConfig));

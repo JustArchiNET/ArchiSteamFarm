@@ -166,7 +166,7 @@ internal sealed class Startup {
 
 		// Finally register proper API endpoints once we're done with routing
 #if NETFRAMEWORK
-			app.UseMvcWithDefaultRoute();
+		app.UseMvcWithDefaultRoute();
 #else
 		app.UseEndpoints(static endpoints => endpoints.MapControllers());
 #endif
@@ -345,14 +345,14 @@ internal sealed class Startup {
 		mvc.AddControllersAsServices();
 
 #if NETFRAMEWORK
-			// Use latest compatibility version for MVC
-			mvc.SetCompatibilityVersion(CompatibilityVersion.Latest);
+		// Use latest compatibility version for MVC
+		mvc.SetCompatibilityVersion(CompatibilityVersion.Latest);
 
-			// Add standard formatters
-			mvc.AddFormatterMappings();
+		// Add standard formatters
+		mvc.AddFormatterMappings();
 
-			// Add API explorer for swagger
-			mvc.AddApiExplorer();
+		// Add API explorer for swagger
+		mvc.AddApiExplorer();
 #endif
 
 		mvc.AddNewtonsoftJson(
@@ -365,8 +365,8 @@ internal sealed class Startup {
 				}
 
 #if NETFRAMEWORK
-					// .NET Framework serializes Version as object by default, serialize it as string just like .NET Core
-					options.SerializerSettings.Converters.Add(new VersionConverter());
+				// .NET Framework serializes Version as object by default, serialize it as string just like .NET Core
+				options.SerializerSettings.Converters.Add(new VersionConverter());
 #endif
 			}
 		);

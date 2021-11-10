@@ -66,7 +66,7 @@ public sealed class WebBrowser : IDisposable {
 			AllowAutoRedirect = false, // This must be false if we want to handle custom redirection schemes such as "steammobile://"
 
 #if NETFRAMEWORK
-				AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
+			AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
 #else
 			AutomaticDecompression = DecompressionMethods.All,
 #endif
@@ -80,9 +80,9 @@ public sealed class WebBrowser : IDisposable {
 		}
 
 #if NETFRAMEWORK
-			if (!RuntimeMadness.IsRunningOnMono) {
-				HttpClientHandler.MaxConnectionsPerServer = MaxConnections;
-			}
+		if (!RuntimeMadness.IsRunningOnMono) {
+			HttpClientHandler.MaxConnectionsPerServer = MaxConnections;
+		}
 #else
 		HttpClientHandler.MaxConnectionsPerServer = MaxConnections;
 #endif
@@ -719,9 +719,9 @@ public sealed class WebBrowser : IDisposable {
 
 		// Reuse ports if possible
 #if NETFRAMEWORK
-			if (!RuntimeMadness.IsRunningOnMono) {
-				ServicePointManager.ReusePort = true;
-			}
+		if (!RuntimeMadness.IsRunningOnMono) {
+			ServicePointManager.ReusePort = true;
+		}
 #else
 		ServicePointManager.ReusePort = true;
 #endif

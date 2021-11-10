@@ -212,3 +212,16 @@ dotnet_style_qualification_for_property = false:warning
 
 dotnet_style_readonly_field = true:warning
 dotnet_style_require_accessibility_modifiers = always:warning
+
+###############################
+# Jetbrains / IntelliJ        #
+###############################
+
+[*.{csproj,props,xml}]
+ij_xml_keep_blank_lines = 1
+ij_xml_keep_line_breaks = false
+ij_xml_keep_line_breaks_in_text = false
+ij_xml_space_inside_empty_tag = true
+
+[*.{json,json5}]
+ij_json_keep_line_breaks = false

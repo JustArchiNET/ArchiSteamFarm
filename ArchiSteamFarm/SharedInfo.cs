@@ -97,32 +97,32 @@ public static class SharedInfo {
 
 	internal static class BuildInfo {
 #if ASF_VARIANT_DOCKER
-			internal static bool CanUpdate => false;
-			internal static string Variant => "docker";
+		internal static bool CanUpdate => false;
+		internal static string Variant => "docker";
 #elif ASF_VARIANT_GENERIC
-			internal static bool CanUpdate => true;
-			internal static string Variant => "generic";
+		internal static bool CanUpdate => true;
+		internal static string Variant => "generic";
 #elif ASF_VARIANT_GENERIC_NETF
-			internal static bool CanUpdate => true;
-			internal static string Variant => "generic-netf";
+		internal static bool CanUpdate => true;
+		internal static string Variant => "generic-netf";
 #elif ASF_VARIANT_LINUX_ARM
-			internal static bool CanUpdate => true;
-			internal static string Variant => "linux-arm";
+		internal static bool CanUpdate => true;
+		internal static string Variant => "linux-arm";
 #elif ASF_VARIANT_LINUX_ARM64
-			internal static bool CanUpdate => true;
-			internal static string Variant => "linux-arm64";
+		internal static bool CanUpdate => true;
+		internal static string Variant => "linux-arm64";
 #elif ASF_VARIANT_LINUX_X64
-			internal static bool CanUpdate => true;
-			internal static string Variant => "linux-x64";
+		internal static bool CanUpdate => true;
+		internal static string Variant => "linux-x64";
 #elif ASF_VARIANT_OSX_ARM64
-			internal static bool CanUpdate => true;
-			internal static string Variant => "osx-arm64";
+		internal static bool CanUpdate => true;
+		internal static string Variant => "osx-arm64";
 #elif ASF_VARIANT_OSX_X64
-			internal static bool CanUpdate => true;
-			internal static string Variant => "osx-x64";
+		internal static bool CanUpdate => true;
+		internal static string Variant => "osx-x64";
 #elif ASF_VARIANT_WIN_X64
-			internal static bool CanUpdate => true;
-			internal static string Variant => "win-x64";
+		internal static bool CanUpdate => true;
+		internal static string Variant => "win-x64";
 #else
 		internal static bool CanUpdate => false;
 		internal static string Variant => SourceVariant;
