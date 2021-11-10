@@ -354,7 +354,6 @@ namespace ArchiSteamFarm.IPC {
 			mvc.AddApiExplorer();
 #endif
 
-			// Add JSON formatters that will be used as default ones if no specific formatters are asked for
 			mvc.AddNewtonsoftJson(
 				static options => {
 					// Fix default contract resolver to use original names and not a camel case
