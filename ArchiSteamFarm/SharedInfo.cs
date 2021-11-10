@@ -113,6 +113,9 @@ namespace ArchiSteamFarm {
 #elif ASF_VARIANT_LINUX_X64
 			internal static bool CanUpdate => true;
 			internal static string Variant => "linux-x64";
+#elif ASF_VARIANT_OSX_ARM64
+			internal static bool CanUpdate => true;
+			internal static string Variant => "osx-arm64";
 #elif ASF_VARIANT_OSX_X64
 			internal static bool CanUpdate => true;
 			internal static string Variant => "osx-x64";

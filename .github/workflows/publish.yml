@@ -119,7 +119,7 @@ jobs:
     - name: Publish ArchiSteamFarm on Unix
       if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
       env:
-        VARIANTS: generic linux-arm linux-arm64 linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
+        VARIANTS: generic linux-arm linux-arm64 linux-x64 osx-arm64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
       shell: sh
       run: |
         set -eu
@@ -220,7 +220,7 @@ jobs:
     - name: Publish ArchiSteamFarm on Windows
       if: startsWith(matrix.os, 'windows-')
       env:
-        VARIANTS: generic generic-netf linux-arm linux-arm64 linux-x64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
+        VARIANTS: generic generic-netf linux-arm linux-arm64 linux-x64 osx-arm64 osx-x64 win-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
       shell: pwsh
       run: |
         Set-StrictMode -Version Latest
@@ -365,6 +365,13 @@ jobs:
         name: ${{ matrix.os }}_ASF-linux-x64
         path: out/ASF-linux-x64.zip
 
+    - name: Upload ASF-osx-arm64
+      continue-on-error: true
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: ${{ matrix.os }}_ASF-osx-arm64
+        path: out/ASF-osx-arm64.zip
+
     - name: Upload ASF-osx-x64
       continue-on-error: true
       uses: actions/upload-artifact@v2.2.4
@@ -419,6 +426,12 @@ jobs:
       uses: actions/download-artifact@v2.0.10
       with:
         name: windows-latest_ASF-linux-x64
+        path: out
+
+    - name: Download ASF-osx-arm64 artifact from windows-latest
+      uses: actions/download-artifact@v2.0.10
+      with:
+        name: windows-latest_ASF-osx-arm64
         path: out
 
     - name: Download ASF-osx-x64 artifact from windows-latest
@@ -523,6 +536,16 @@ jobs:
         upload_url: ${{ steps.github_release.outputs.upload_url }}
         asset_path: out/ASF-linux-x64.zip
         asset_name: ASF-linux-x64.zip
+        asset_content_type: application/zip
+
+    - name: Upload ASF-osx-arm64 to GitHub release
+      uses: actions/upload-release-asset@v1.0.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.github_release.outputs.upload_url }}
+        asset_path: out/ASF-osx-arm64.zip
+        asset_name: ASF-osx-arm64.zip
         asset_content_type: application/zip
 
     - name: Upload ASF-osx-x64 to GitHub release
