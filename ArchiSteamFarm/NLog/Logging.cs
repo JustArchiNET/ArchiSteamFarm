@@ -357,7 +357,8 @@ internal static class Logging {
 
 						ulong steamOwnerID = ASF.GlobalConfig?.SteamOwnerID ?? GlobalConfig.DefaultSteamOwnerID;
 
-						string? response = await targetBot.Commands.Response(steamOwnerID, command).ConfigureAwait(false);
+						// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+						string? response = await targetBot.Commands.Response(steamOwnerID, command!).ConfigureAwait(false);
 
 						if (string.IsNullOrEmpty(response)) {
 							ASF.ArchiLogger.LogNullError(nameof(response));
