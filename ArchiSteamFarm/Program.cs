@@ -242,8 +242,7 @@ namespace ArchiSteamFarm {
 					ASF.ArchiLogger.LogGenericError(Strings.WarningRunningAsRoot);
 					await Task.Delay(SharedInfo.InformationDelay).ConfigureAwait(false);
 
-					// TODO: Enable return false as a breaking change of ASF V5.2.0.0+
-					//return false;
+					return false;
 				}
 			}
 
