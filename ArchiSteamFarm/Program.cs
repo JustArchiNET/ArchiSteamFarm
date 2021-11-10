@@ -54,13 +54,13 @@ namespace ArchiSteamFarm {
 		internal static bool Service { get; private set; }
 		internal static bool ShutdownSequenceInitialized { get; private set; }
 
-#if !NETFRAMEWORK && (TARGET_GENERIC || !TARGET_WINDOWS)
+#if !NETFRAMEWORK
 		private static readonly Dictionary<PosixSignal, PosixSignalRegistration> RegisteredPosixSignals = new();
 #endif
 
 		private static readonly TaskCompletionSource<byte> ShutdownResetEvent = new();
 
-#if !NETFRAMEWORK && (TARGET_GENERIC || !TARGET_WINDOWS)
+#if !NETFRAMEWORK
 		private static readonly ImmutableHashSet<PosixSignal> SupportedPosixSignals = ImmutableHashSet.Create(PosixSignal.SIGINT, PosixSignal.SIGTERM);
 #endif
 
@@ -135,7 +135,7 @@ namespace ArchiSteamFarm {
 			AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 			TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
 
-#if !NETFRAMEWORK && (TARGET_GENERIC || !TARGET_WINDOWS)
+#if !NETFRAMEWORK
 			if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
 				foreach (PosixSignal signal in SupportedPosixSignals) {
 					RegisteredPosixSignals[signal] = PosixSignalRegistration.Create(signal, OnPosixSignal);
@@ -382,7 +382,7 @@ namespace ArchiSteamFarm {
 
 			ShutdownSequenceInitialized = true;
 
-#if !NETFRAMEWORK && (TARGET_GENERIC || !TARGET_WINDOWS)
+#if !NETFRAMEWORK
 			if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
 				// Unregister from registered signals
 				foreach (PosixSignalRegistration registration in RegisteredPosixSignals.Values) {
@@ -429,7 +429,7 @@ namespace ArchiSteamFarm {
 
 		private static async void OnCancelKeyPress(object? sender, ConsoleCancelEventArgs e) => await Exit(130).ConfigureAwait(false);
 
-#if !NETFRAMEWORK && (TARGET_GENERIC || !TARGET_WINDOWS)
+#if !NETFRAMEWORK
 		private static async void OnPosixSignal(PosixSignalContext signal) {
 			if (signal == null) {
 				throw new ArgumentNullException(nameof(signal));

@@ -308,7 +308,6 @@ namespace ArchiSteamFarm.Core {
 					return null;
 				}
 
-#if TARGET_GENERIC || !TARGET_WINDOWS
 				if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
 					string executable = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.AssemblyName);
 
@@ -316,7 +315,6 @@ namespace ArchiSteamFarm.Core {
 						OS.UnixSetFileAccess(executable, OS.EUnixPermission.Combined755);
 					}
 				}
-#endif
 
 				ArchiLogger.LogGenericInfo(Strings.UpdateFinished);
 

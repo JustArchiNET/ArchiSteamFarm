@@ -19,12 +19,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if TARGET_GENERIC || TARGET_WINDOWS
-using System.Security.AccessControl;
-#endif
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Security.AccessControl;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -167,7 +165,6 @@ namespace ArchiSteamFarm.Helpers {
 			if (!Directory.Exists(directoryPath)) {
 				Directory.CreateDirectory(directoryPath);
 
-#if TARGET_GENERIC || TARGET_WINDOWS
 				if (OperatingSystem.IsWindows()) {
 					DirectoryInfo directoryInfo = new(directoryPath);
 
@@ -179,20 +176,14 @@ namespace ArchiSteamFarm.Helpers {
 						// Non-critical, user might have no rights to manage the resource
 						ASF.ArchiLogger.LogGenericDebuggingException(e);
 					}
-				}
-#endif
-
-#if TARGET_GENERIC || !TARGET_WINDOWS
-				if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
+				} else if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
 					OS.UnixSetFileAccess(directoryPath!, OS.EUnixPermission.Combined777);
 				}
-#endif
 			}
 
 			try {
 				new FileStream(FilePath, FileMode.CreateNew).Dispose();
 
-#if TARGET_GENERIC || TARGET_WINDOWS
 				if (OperatingSystem.IsWindows()) {
 					FileInfo fileInfo = new(FilePath);
 
@@ -204,14 +195,9 @@ namespace ArchiSteamFarm.Helpers {
 						// Non-critical, user might have no rights to manage the resource
 						ASF.ArchiLogger.LogGenericDebuggingException(e);
 					}
-				}
-#endif
-
-#if TARGET_GENERIC || !TARGET_WINDOWS
-				if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
+				} else if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
 					OS.UnixSetFileAccess(FilePath, OS.EUnixPermission.Combined777);
 				}
-#endif
 			} catch (IOException) {
 				// Ignored, if the file was already created in the meantime by another instance, this is fine
 			}

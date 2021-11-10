@@ -25,7 +25,7 @@
 		<PackageReference Include="zxcvbn-core" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' != 'net48' AND ('$(TargetGeneric)' == 'true' OR '$(TargetWindows)' == 'true')">
+	<ItemGroup Condition="'$(TargetFramework)' != 'net48'">
 		<PackageReference Include="System.Security.Cryptography.ProtectedData" />
 	</ItemGroup>
 

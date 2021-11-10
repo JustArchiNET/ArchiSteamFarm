@@ -50,6 +50,7 @@ namespace ArchiSteamFarm.IPC {
 			return services.Configure(action);
 		}
 #endif
+
 		internal static string? GetUnifiedName(this Type type) {
 			if (type == null) {
 				throw new ArgumentNullException(nameof(type));

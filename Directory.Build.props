@@ -44,16 +44,6 @@
 		<DefineConstants>$(DefineConstants);ASF_VARIANT_$(ASFVariant.Replace('-', '_').ToUpperInvariant())</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)' == 'net48' OR '$(RuntimeIdentifier)' == ''">
-		<DefineConstants>$(DefineConstants);TARGET_GENERIC</DefineConstants>
-		<TargetGeneric>true</TargetGeneric>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(TargetFramework)' != 'net48' AND ($(RuntimeIdentifier.StartsWith('win-')) OR $(RuntimeIdentifier.EndsWith('-windows')))">
-		<DefineConstants>$(DefineConstants);TARGET_WINDOWS</DefineConstants>
-		<TargetWindows>true</TargetWindows>
-	</PropertyGroup>
-
 	<!-- Default configuration for fast-debugging builds -->
 	<PropertyGroup Condition="'$(Configuration)' == 'DebugFast'">
 		<AnalysisMode>AllDisabledByDefault</AnalysisMode>
