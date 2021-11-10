@@ -21,11 +21,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
@@ -52,7 +54,15 @@ namespace ArchiSteamFarm {
 		internal static bool Service { get; private set; }
 		internal static bool ShutdownSequenceInitialized { get; private set; }
 
+#if !NETFRAMEWORK && (TARGET_GENERIC || !TARGET_WINDOWS)
+		private static readonly Dictionary<PosixSignal, PosixSignalRegistration> RegisteredPosixSignals = new();
+#endif
+
 		private static readonly TaskCompletionSource<byte> ShutdownResetEvent = new();
+
+#if !NETFRAMEWORK && (TARGET_GENERIC || !TARGET_WINDOWS)
+		private static readonly ImmutableHashSet<PosixSignal> SupportedPosixSignals = ImmutableHashSet.Create(PosixSignal.SIGINT, PosixSignal.SIGTERM);
+#endif
 
 		private static bool IgnoreUnsupportedEnvironment;
 		private static bool SystemRequired;
@@ -124,6 +134,14 @@ namespace ArchiSteamFarm {
 			AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
 			AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 			TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
+
+#if !NETFRAMEWORK && (TARGET_GENERIC || !TARGET_WINDOWS)
+			if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
+				foreach (PosixSignal signal in SupportedPosixSignals) {
+					RegisteredPosixSignals[signal] = PosixSignalRegistration.Create(signal, OnPosixSignal);
+				}
+			}
+#endif
 
 			Console.CancelKeyPress += OnCancelKeyPress;
 
@@ -364,6 +382,17 @@ namespace ArchiSteamFarm {
 
 			ShutdownSequenceInitialized = true;
 
+#if !NETFRAMEWORK && (TARGET_GENERIC || !TARGET_WINDOWS)
+			if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
+				// Unregister from registered signals
+				foreach (PosixSignalRegistration registration in RegisteredPosixSignals.Values) {
+					registration.Dispose();
+				}
+
+				RegisteredPosixSignals.Clear();
+			}
+#endif
+
 			// Sockets created by IPC might still be running for a short while after complete app shutdown
 			// Ensure that IPC is stopped before we finalize shutdown sequence
 			await ArchiKestrel.Stop().ConfigureAwait(false);
@@ -399,6 +428,25 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async void OnCancelKeyPress(object? sender, ConsoleCancelEventArgs e) => await Exit(130).ConfigureAwait(false);
+
+#if !NETFRAMEWORK && (TARGET_GENERIC || !TARGET_WINDOWS)
+		private static async void OnPosixSignal(PosixSignalContext signal) {
+			if (signal == null) {
+				throw new ArgumentNullException(nameof(signal));
+			}
+
+			switch (signal.Signal) {
+				case PosixSignal.SIGINT:
+					await Exit(130).ConfigureAwait(false);
+
+					break;
+				case PosixSignal.SIGTERM:
+					await Exit().ConfigureAwait(false);
+
+					break;
+			}
+		}
+#endif
 
 		private static async void OnProcessExit(object? sender, EventArgs e) => await Shutdown().ConfigureAwait(false);
 
