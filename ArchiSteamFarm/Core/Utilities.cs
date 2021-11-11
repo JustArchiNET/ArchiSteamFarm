@@ -218,23 +218,6 @@ public static class Utilities {
 		}
 	}
 
-	[Obsolete("ASF no longer uses this function, re-implement it yourself if needed.")]
-	[PublicAPI]
-	public static int RandomNext(int maxValue) {
-		switch (maxValue) {
-			case < 0:
-				throw new ArgumentOutOfRangeException(nameof(maxValue));
-			case <= 1:
-				return 0;
-			default:
-				lock (Random) {
-#pragma warning disable CA5394 // This call isn't used in a security-sensitive manner
-					return Random.Next(maxValue);
-#pragma warning restore CA5394 // This call isn't used in a security-sensitive manner
-				}
-		}
-	}
-
 	[PublicAPI]
 	public static int RandomNext(int minValue, int maxValue) {
 		if (minValue > maxValue) {
@@ -251,10 +234,6 @@ public static class Utilities {
 #pragma warning restore CA5394 // This call isn't used in a security-sensitive manner
 		}
 	}
-
-	[Obsolete("ASF no longer uses this function, re-implement it yourself if needed.")]
-	[PublicAPI]
-	public static IEnumerable<IElement> SelectElementNodes(this IElement element, string xpath) => element.SelectNodes(xpath).OfType<IElement>();
 
 	[PublicAPI]
 	public static IEnumerable<IElement> SelectNodes(this IDocument document, string xpath) {

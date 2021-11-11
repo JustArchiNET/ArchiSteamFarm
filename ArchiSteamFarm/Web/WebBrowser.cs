@@ -30,7 +30,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.NLog;
@@ -352,105 +351,6 @@ public sealed class WebBrowser : IDisposable {
 			}
 
 			return new StreamResponse(response, await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
-		}
-
-		if (maxTries > 1) {
-			ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
-			ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
-		}
-
-		return null;
-	}
-
-	[Obsolete($"ASF no longer uses this function, re-implement it yourself using {nameof(UrlGetToStream)} if needed.")]
-	[PublicAPI]
-	public async Task<StringResponse?> UrlGetToString(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
-		if (request == null) {
-			throw new ArgumentNullException(nameof(request));
-		}
-
-		if (maxTries == 0) {
-			throw new ArgumentOutOfRangeException(nameof(maxTries));
-		}
-
-		for (byte i = 0; i < maxTries; i++) {
-			using HttpResponseMessage? response = await InternalGet(request, headers, referer, requestOptions).ConfigureAwait(false);
-
-			if (response == null) {
-				// Request timed out, try again
-				continue;
-			}
-
-			if (response.StatusCode.IsClientErrorCode()) {
-				if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-					// We're not handling this error, do not try again
-					break;
-				}
-			} else if (response.StatusCode.IsServerErrorCode()) {
-				if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-					// We're not handling this error, try again
-					continue;
-				}
-			}
-
-			return new StringResponse(response, await response.Content.ReadAsStringAsync().ConfigureAwait(false));
-		}
-
-		if (maxTries > 1) {
-			ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.ErrorRequestFailedTooManyTimes, maxTries));
-			ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
-		}
-
-		return null;
-	}
-
-	[Obsolete($"ASF no longer uses any XML-related functions, re-implement it yourself using {nameof(UrlGetToStream)} if needed.")]
-	[PublicAPI]
-	public async Task<XmlDocumentResponse?> UrlGetToXmlDocument(Uri request, IReadOnlyCollection<KeyValuePair<string, string>>? headers = null, Uri? referer = null, ERequestOptions requestOptions = ERequestOptions.None, byte maxTries = MaxTries) {
-		if (request == null) {
-			throw new ArgumentNullException(nameof(request));
-		}
-
-		if (maxTries == 0) {
-			throw new ArgumentOutOfRangeException(nameof(maxTries));
-		}
-
-		for (byte i = 0; i < maxTries; i++) {
-			StreamResponse? response = await UrlGetToStream(request, headers, referer, requestOptions | ERequestOptions.ReturnClientErrors, 1).ConfigureAwait(false);
-
-			if (response == null) {
-				// Request timed out, try again
-				continue;
-			}
-
-			await using (response.ConfigureAwait(false)) {
-				if (response.StatusCode.IsClientErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnClientErrors)) {
-						// We're not handling this error, do not try again
-						break;
-					}
-				} else if (response.StatusCode.IsServerErrorCode()) {
-					if (!requestOptions.HasFlag(ERequestOptions.ReturnServerErrors)) {
-						// We're not handling this error, try again
-						continue;
-					}
-				}
-
-				XmlDocument xmlDocument = new();
-
-				try {
-					using XmlReader xmlReader = XmlReader.Create(response.Content, new XmlReaderSettings { XmlResolver = null });
-
-					xmlDocument.Load(xmlReader);
-				} catch (Exception e) {
-					ArchiLogger.LogGenericWarningException(e);
-					ArchiLogger.LogGenericDebug(string.Format(CultureInfo.CurrentCulture, Strings.ErrorFailingRequest, request));
-
-					continue;
-				}
-
-				return new XmlDocumentResponse(response, xmlDocument);
-			}
 		}
 
 		if (maxTries > 1) {
