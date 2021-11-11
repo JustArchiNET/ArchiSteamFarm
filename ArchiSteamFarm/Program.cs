@@ -572,19 +572,22 @@ internal static class Program {
 			string? envCryptKey = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableCryptKey);
 
 			if (!string.IsNullOrEmpty(envCryptKey)) {
-				HandleCryptKeyArgument(envCryptKey);
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+				HandleCryptKeyArgument(envCryptKey!);
 			}
 
 			string? envNetworkGroup = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariableNetworkGroup);
 
 			if (!string.IsNullOrEmpty(envNetworkGroup)) {
-				HandleNetworkGroupArgument(envNetworkGroup);
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+				HandleNetworkGroupArgument(envNetworkGroup!);
 			}
 
 			string? envPath = Environment.GetEnvironmentVariable(SharedInfo.EnvironmentVariablePath);
 
 			if (!string.IsNullOrEmpty(envPath)) {
-				HandlePathArgument(envPath);
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+				HandlePathArgument(envPath!);
 			}
 		} catch (Exception e) {
 			ASF.ArchiLogger.LogGenericException(e);
