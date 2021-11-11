@@ -124,7 +124,7 @@ public sealed class BotConfig {
 	public static readonly ImmutableHashSet<Asset.EType> DefaultCompleteTypesToSend = ImmutableHashSet<Asset.EType>.Empty;
 
 	[PublicAPI]
-	public static readonly ImmutableList<EFarmingOrder> DefaultFarmingOrders = ImmutableList<EFarmingOrder>.Empty;
+	public static readonly ImmutableList<EFarmingOrder> DefaultFarmingOrders = ImmutableList.Create(EFarmingOrder.HoursAscending);
 
 	[PublicAPI]
 	public static readonly ImmutableHashSet<uint> DefaultGamesPlayedWhileIdle = ImmutableHashSet<uint>.Empty;
