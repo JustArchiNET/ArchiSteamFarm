@@ -78,6 +78,5 @@ while :; do
 		"$BINARY" $BINARY_ARGS # Start ASF in the foreground, trap sadly won't work until process exit
 	fi
 
-	chmod +x "$SCRIPT_PATH" # If ASF exited by itself, we need to ensure that our script is still set to +x after auto-update
 	sleep 1
 done

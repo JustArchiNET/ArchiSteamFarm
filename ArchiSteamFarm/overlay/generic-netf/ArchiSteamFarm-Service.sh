@@ -106,6 +106,5 @@ while :; do
 		fi
 	fi
 
-	chmod +x "$SCRIPT_PATH" # If ASF exited by itself, we need to ensure that our script is still set to +x after auto-update
 	sleep 1
 done

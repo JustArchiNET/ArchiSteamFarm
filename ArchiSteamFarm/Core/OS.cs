@@ -308,7 +308,6 @@ internal static class OS {
 		UserExecute = 0x40,
 		UserWrite = 0x80,
 		UserRead = 0x100,
-		Combined755 = UserRead | UserWrite | UserExecute | GroupRead | GroupExecute | OtherRead | OtherExecute,
 		Combined777 = UserRead | UserWrite | UserExecute | GroupRead | GroupWrite | GroupExecute | OtherRead | OtherWrite | OtherExecute
 	}
 

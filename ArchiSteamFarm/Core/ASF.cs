@@ -309,14 +309,6 @@ public static class ASF {
 				return null;
 			}
 
-			if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
-				string executable = Path.Combine(SharedInfo.HomeDirectory, SharedInfo.AssemblyName);
-
-				if (File.Exists(executable)) {
-					OS.UnixSetFileAccess(executable, OS.EUnixPermission.Combined755);
-				}
-			}
-
 			ArchiLogger.LogGenericInfo(Strings.UpdateFinished);
 
 			return newVersion;

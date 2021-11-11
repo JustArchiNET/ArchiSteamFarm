@@ -5,7 +5,7 @@ WantedBy=multi-user.target
 EnvironmentFile=-/etc/asf/%i
 ExecStart=/home/%i/ArchiSteamFarm/ArchiSteamFarm --no-restart --process-required --service --system-required
 Restart=on-success
-RestartSec=5s
+RestartSec=1s
 SyslogIdentifier=asf-%i
 User=%i
 
