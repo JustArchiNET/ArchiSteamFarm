@@ -37,16 +37,16 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm.Steam.Storage;
 
 internal sealed class BotDatabase : SerializableFile {
-	[JsonProperty("IdlingBlacklistedAppIDs", Required = Required.DisallowNull)]
+	[JsonProperty(Required = Required.DisallowNull)]
 	internal readonly ConcurrentHashSet<uint> FarmingBlacklistAppIDs = new();
 
-	[JsonProperty("IdlingPriorityAppIDs", Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<uint> FarmingPriorityAppIDs = new();
+	[JsonProperty(Required = Required.DisallowNull)]
+	internal readonly ConcurrentHashSet<uint> FarmingPriorityQueueAppIDs = new();
 
-	[JsonProperty("MatchActivelyBlacklistedAppIDs", Required = Required.DisallowNull)]
+	[JsonProperty(Required = Required.DisallowNull)]
 	internal readonly ConcurrentHashSet<uint> MatchActivelyBlacklistAppIDs = new();
 
-	[JsonProperty("BlacklistedFromTradesSteamIDs", Required = Required.DisallowNull)]
+	[JsonProperty(Required = Required.DisallowNull)]
 	internal readonly ConcurrentHashSet<ulong> TradingBlacklistSteamIDs = new();
 
 	internal uint GamesToRedeemInBackgroundCount {
@@ -94,6 +94,48 @@ internal sealed class BotDatabase : SerializableFile {
 	[JsonProperty(PropertyName = $"_{nameof(MobileAuthenticator)}")]
 	private MobileAuthenticator? BackingMobileAuthenticator;
 
+	private bool SaveNeededDueToMigration;
+
+	[JsonProperty(Required = Required.DisallowNull)]
+	[Obsolete("Available for limited time and only to migrate existing databases")]
+	private ConcurrentHashSet<ulong> BlacklistedFromTradesSteamIDs {
+		set {
+			if (TradingBlacklistSteamIDs.AddRange(value) && string.IsNullOrEmpty(FilePath)) {
+				SaveNeededDueToMigration = true;
+			}
+		}
+	}
+
+	[JsonProperty(Required = Required.DisallowNull)]
+	[Obsolete("Available for limited time and only to migrate existing databases")]
+	private ConcurrentHashSet<uint> IdlingBlacklistedAppIDs {
+		set {
+			if (FarmingBlacklistAppIDs.AddRange(value) && string.IsNullOrEmpty(FilePath)) {
+				SaveNeededDueToMigration = true;
+			}
+		}
+	}
+
+	[JsonProperty(Required = Required.DisallowNull)]
+	[Obsolete("Available for limited time and only to migrate existing databases")]
+	private ConcurrentHashSet<uint> IdlingPriorityAppIDs {
+		set {
+			if (FarmingPriorityQueueAppIDs.AddRange(value) && string.IsNullOrEmpty(FilePath)) {
+				SaveNeededDueToMigration = true;
+			}
+		}
+	}
+
+	[JsonProperty(Required = Required.DisallowNull)]
+	[Obsolete("Available for limited time and only to migrate existing databases")]
+	private ConcurrentHashSet<uint> MatchActivelyBlacklistedAppIDs {
+		set {
+			if (MatchActivelyBlacklistAppIDs.AddRange(value) && string.IsNullOrEmpty(FilePath)) {
+				SaveNeededDueToMigration = true;
+			}
+		}
+	}
+
 	private BotDatabase(string filePath) {
 		if (string.IsNullOrEmpty(filePath)) {
 			throw new ArgumentNullException(nameof(filePath));
@@ -105,7 +147,7 @@ internal sealed class BotDatabase : SerializableFile {
 	[JsonConstructor]
 	private BotDatabase() {
 		FarmingBlacklistAppIDs.OnModified += OnObjectModified;
-		FarmingPriorityAppIDs.OnModified += OnObjectModified;
+		FarmingPriorityQueueAppIDs.OnModified += OnObjectModified;
 		MatchActivelyBlacklistAppIDs.OnModified += OnObjectModified;
 		TradingBlacklistSteamIDs.OnModified += OnObjectModified;
 	}
@@ -120,7 +162,7 @@ internal sealed class BotDatabase : SerializableFile {
 	public bool ShouldSerializeFarmingBlacklistAppIDs() => FarmingBlacklistAppIDs.Count > 0;
 
 	[UsedImplicitly]
-	public bool ShouldSerializeFarmingPriorityAppIDs() => FarmingPriorityAppIDs.Count > 0;
+	public bool ShouldSerializeFarmingPriorityQueueAppIDs() => FarmingPriorityQueueAppIDs.Count > 0;
 
 	[UsedImplicitly]
 	public bool ShouldSerializeGamesToRedeemInBackground() => HasGamesToRedeemInBackground;
@@ -135,7 +177,7 @@ internal sealed class BotDatabase : SerializableFile {
 		if (disposing) {
 			// Events we registered
 			FarmingBlacklistAppIDs.OnModified -= OnObjectModified;
-			FarmingPriorityAppIDs.OnModified -= OnObjectModified;
+			FarmingPriorityQueueAppIDs.OnModified -= OnObjectModified;
 			MatchActivelyBlacklistAppIDs.OnModified -= OnObjectModified;
 			TradingBlacklistSteamIDs.OnModified -= OnObjectModified;
 
@@ -200,6 +242,12 @@ internal sealed class BotDatabase : SerializableFile {
 		}
 
 		botDatabase.FilePath = filePath;
+
+		if (botDatabase.SaveNeededDueToMigration) {
+			botDatabase.SaveNeededDueToMigration = false;
+
+			Utilities.InBackground(botDatabase.Save);
+		}
 
 		return botDatabase;
 	}

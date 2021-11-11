@@ -1269,7 +1269,7 @@ public sealed class Commands {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		return !Bot.HasAccess(steamID, BotConfig.EAccess.Master) ? null : FormatBotResponse(Bot.BotDatabase.FarmingPriorityAppIDs.Count == 0 ? string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(Bot.BotDatabase.FarmingPriorityAppIDs)) : string.Join(", ", Bot.BotDatabase.FarmingPriorityAppIDs));
+		return !Bot.HasAccess(steamID, BotConfig.EAccess.Master) ? null : FormatBotResponse(Bot.BotDatabase.FarmingPriorityQueueAppIDs.Count == 0 ? string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(Bot.BotDatabase.FarmingPriorityQueueAppIDs)) : string.Join(", ", Bot.BotDatabase.FarmingPriorityQueueAppIDs));
 	}
 
 	private static async Task<string?> ResponseFarmingQueue(ulong steamID, string botNames) {
@@ -1323,7 +1323,7 @@ public sealed class Commands {
 			appIDs.Add(appID);
 		}
 
-		if (!Bot.BotDatabase.FarmingPriorityAppIDs.AddRange(appIDs)) {
+		if (!Bot.BotDatabase.FarmingPriorityQueueAppIDs.AddRange(appIDs)) {
 			return FormatBotResponse(Strings.NothingFound);
 		}
 
@@ -1401,7 +1401,7 @@ public sealed class Commands {
 			appIDs.Add(appID);
 		}
 
-		if (!Bot.BotDatabase.FarmingPriorityAppIDs.RemoveRange(appIDs)) {
+		if (!Bot.BotDatabase.FarmingPriorityQueueAppIDs.RemoveRange(appIDs)) {
 			return FormatBotResponse(Strings.NothingFound);
 		}
 

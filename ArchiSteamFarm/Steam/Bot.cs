@@ -1363,7 +1363,7 @@ public sealed class Bot : IAsyncDisposable {
 			throw new ArgumentOutOfRangeException(nameof(appID));
 		}
 
-		return BotDatabase.FarmingPriorityAppIDs.Contains(appID);
+		return BotDatabase.FarmingPriorityQueueAppIDs.Contains(appID);
 	}
 
 	internal async Task OnConfigChanged(bool deleted) {
