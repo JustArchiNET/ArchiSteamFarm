@@ -1347,7 +1347,7 @@ public sealed class Bot : IAsyncDisposable {
 			throw new ArgumentOutOfRangeException(nameof(appID));
 		}
 
-		return BotDatabase.IdlingBlacklistedAppIDs.Contains(appID);
+		return BotDatabase.FarmingBlacklistAppIDs.Contains(appID);
 	}
 
 	internal bool IsBlacklistedFromTrades(ulong steamID) {
@@ -1355,7 +1355,7 @@ public sealed class Bot : IAsyncDisposable {
 			throw new ArgumentOutOfRangeException(nameof(steamID));
 		}
 
-		return BotDatabase.BlacklistedFromTradesSteamIDs.Contains(steamID);
+		return BotDatabase.TradingBlacklistSteamIDs.Contains(steamID);
 	}
 
 	internal bool IsPriorityIdling(uint appID) {
@@ -1363,7 +1363,7 @@ public sealed class Bot : IAsyncDisposable {
 			throw new ArgumentOutOfRangeException(nameof(appID));
 		}
 
-		return BotDatabase.IdlingPriorityAppIDs.Contains(appID);
+		return BotDatabase.FarmingPriorityAppIDs.Contains(appID);
 	}
 
 	internal async Task OnConfigChanged(bool deleted) {

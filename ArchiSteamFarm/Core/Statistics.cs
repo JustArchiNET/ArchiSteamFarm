@@ -382,7 +382,7 @@ internal sealed class Statistics : IAsyncDisposable {
 		HashSet<Asset> ourInventory;
 
 		try {
-			ourInventory = await Bot.ArchiWebHandler.GetInventoryAsync().Where(item => acceptedMatchableTypes.Contains(item.Type) && !Bot.BotDatabase.MatchActivelyBlacklistedAppIDs.Contains(item.RealAppID)).ToHashSetAsync().ConfigureAwait(false);
+			ourInventory = await Bot.ArchiWebHandler.GetInventoryAsync().Where(item => acceptedMatchableTypes.Contains(item.Type) && !Bot.BotDatabase.MatchActivelyBlacklistAppIDs.Contains(item.RealAppID)).ToHashSetAsync().ConfigureAwait(false);
 		} catch (HttpRequestException e) {
 			Bot.ArchiLogger.LogGenericWarningException(e);
 

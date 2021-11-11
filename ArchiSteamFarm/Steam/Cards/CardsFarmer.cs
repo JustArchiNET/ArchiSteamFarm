@@ -259,7 +259,7 @@ public sealed class CardsFarmer : IAsyncDisposable {
 			return;
 		}
 
-		if (!Bot.CanReceiveSteamCards || (Bot.BotConfig.FarmPriorityQueueOnly && (Bot.BotDatabase.IdlingPriorityAppIDs.Count == 0))) {
+		if (!Bot.CanReceiveSteamCards || (Bot.BotConfig.FarmPriorityQueueOnly && (Bot.BotDatabase.FarmingPriorityAppIDs.Count == 0))) {
 			Bot.ArchiLogger.LogGenericInfo(Strings.NothingToIdle);
 			await Bot.OnFarmingFinished(false).ConfigureAwait(false);
 

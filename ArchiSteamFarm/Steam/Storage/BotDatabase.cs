@@ -37,17 +37,17 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm.Steam.Storage;
 
 internal sealed class BotDatabase : SerializableFile {
-	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<ulong> BlacklistedFromTradesSteamIDs = new();
+	[JsonProperty("IdlingBlacklistedAppIDs", Required = Required.DisallowNull)]
+	internal readonly ConcurrentHashSet<uint> FarmingBlacklistAppIDs = new();
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<uint> IdlingBlacklistedAppIDs = new();
+	[JsonProperty("IdlingPriorityAppIDs", Required = Required.DisallowNull)]
+	internal readonly ConcurrentHashSet<uint> FarmingPriorityAppIDs = new();
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<uint> IdlingPriorityAppIDs = new();
+	[JsonProperty("MatchActivelyBlacklistedAppIDs", Required = Required.DisallowNull)]
+	internal readonly ConcurrentHashSet<uint> MatchActivelyBlacklistAppIDs = new();
 
-	[JsonProperty(Required = Required.DisallowNull)]
-	internal readonly ConcurrentHashSet<uint> MatchActivelyBlacklistedAppIDs = new();
+	[JsonProperty("BlacklistedFromTradesSteamIDs", Required = Required.DisallowNull)]
+	internal readonly ConcurrentHashSet<ulong> TradingBlacklistSteamIDs = new();
 
 	internal uint GamesToRedeemInBackgroundCount {
 		get {
@@ -104,10 +104,10 @@ internal sealed class BotDatabase : SerializableFile {
 
 	[JsonConstructor]
 	private BotDatabase() {
-		BlacklistedFromTradesSteamIDs.OnModified += OnObjectModified;
-		IdlingBlacklistedAppIDs.OnModified += OnObjectModified;
-		IdlingPriorityAppIDs.OnModified += OnObjectModified;
-		MatchActivelyBlacklistedAppIDs.OnModified += OnObjectModified;
+		FarmingBlacklistAppIDs.OnModified += OnObjectModified;
+		FarmingPriorityAppIDs.OnModified += OnObjectModified;
+		MatchActivelyBlacklistAppIDs.OnModified += OnObjectModified;
+		TradingBlacklistSteamIDs.OnModified += OnObjectModified;
 	}
 
 	[UsedImplicitly]
@@ -117,27 +117,27 @@ internal sealed class BotDatabase : SerializableFile {
 	public bool ShouldSerializeBackingMobileAuthenticator() => BackingMobileAuthenticator != null;
 
 	[UsedImplicitly]
-	public bool ShouldSerializeBlacklistedFromTradesSteamIDs() => BlacklistedFromTradesSteamIDs.Count > 0;
+	public bool ShouldSerializeFarmingBlacklistAppIDs() => FarmingBlacklistAppIDs.Count > 0;
+
+	[UsedImplicitly]
+	public bool ShouldSerializeFarmingPriorityAppIDs() => FarmingPriorityAppIDs.Count > 0;
 
 	[UsedImplicitly]
 	public bool ShouldSerializeGamesToRedeemInBackground() => HasGamesToRedeemInBackground;
 
 	[UsedImplicitly]
-	public bool ShouldSerializeIdlingBlacklistedAppIDs() => IdlingBlacklistedAppIDs.Count > 0;
+	public bool ShouldSerializeMatchActivelyBlacklistAppIDs() => MatchActivelyBlacklistAppIDs.Count > 0;
 
 	[UsedImplicitly]
-	public bool ShouldSerializeIdlingPriorityAppIDs() => IdlingPriorityAppIDs.Count > 0;
-
-	[UsedImplicitly]
-	public bool ShouldSerializeMatchActivelyBlacklistedAppIDs() => MatchActivelyBlacklistedAppIDs.Count > 0;
+	public bool ShouldSerializeTradingBlacklistSteamIDs() => TradingBlacklistSteamIDs.Count > 0;
 
 	protected override void Dispose(bool disposing) {
 		if (disposing) {
 			// Events we registered
-			BlacklistedFromTradesSteamIDs.OnModified -= OnObjectModified;
-			IdlingBlacklistedAppIDs.OnModified -= OnObjectModified;
-			IdlingPriorityAppIDs.OnModified -= OnObjectModified;
-			MatchActivelyBlacklistedAppIDs.OnModified -= OnObjectModified;
+			FarmingBlacklistAppIDs.OnModified -= OnObjectModified;
+			FarmingPriorityAppIDs.OnModified -= OnObjectModified;
+			MatchActivelyBlacklistAppIDs.OnModified -= OnObjectModified;
+			TradingBlacklistSteamIDs.OnModified -= OnObjectModified;
 
 			// Those are objects that might be null and the check should be in-place
 			BackingMobileAuthenticator?.Dispose();
