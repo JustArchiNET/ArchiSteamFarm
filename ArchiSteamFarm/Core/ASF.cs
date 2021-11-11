@@ -395,12 +395,12 @@ public static class ASF {
 			networkGroupText = $"-{BitConverter.ToString(SHA256.HashData(Encoding.UTF8.GetBytes(GlobalConfig.WebProxyText!))).Replace("-", "", StringComparison.Ordinal)}";
 		}
 
-		ConfirmationsSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(ConfirmationsSemaphore) + networkGroupText).ConfigureAwait(false);
-		GiftsSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(GiftsSemaphore) + networkGroupText).ConfigureAwait(false);
-		InventorySemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(InventorySemaphore) + networkGroupText).ConfigureAwait(false);
-		LoginRateLimitingSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(LoginRateLimitingSemaphore) + networkGroupText).ConfigureAwait(false);
-		LoginSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(LoginSemaphore) + networkGroupText).ConfigureAwait(false);
-		RateLimitingSemaphore ??= await PluginsCore.GetCrossProcessSemaphore(nameof(RateLimitingSemaphore) + networkGroupText).ConfigureAwait(false);
+		ConfirmationsSemaphore ??= await PluginsCore.GetCrossProcessSemaphore($"{nameof(ConfirmationsSemaphore)}{networkGroupText}").ConfigureAwait(false);
+		GiftsSemaphore ??= await PluginsCore.GetCrossProcessSemaphore($"{nameof(GiftsSemaphore)}{networkGroupText}").ConfigureAwait(false);
+		InventorySemaphore ??= await PluginsCore.GetCrossProcessSemaphore($"{nameof(InventorySemaphore)}{networkGroupText}").ConfigureAwait(false);
+		LoginRateLimitingSemaphore ??= await PluginsCore.GetCrossProcessSemaphore($"{nameof(LoginRateLimitingSemaphore)}{networkGroupText}").ConfigureAwait(false);
+		LoginSemaphore ??= await PluginsCore.GetCrossProcessSemaphore($"{nameof(LoginSemaphore)}{networkGroupText}").ConfigureAwait(false);
+		RateLimitingSemaphore ??= await PluginsCore.GetCrossProcessSemaphore($"{nameof(RateLimitingSemaphore)}{networkGroupText}").ConfigureAwait(false);
 
 		WebLimitingSemaphores ??= new Dictionary<Uri, (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)>(4) {
 			{ ArchiWebHandler.SteamCommunityURL, (await PluginsCore.GetCrossProcessSemaphore($"{nameof(ArchiWebHandler)}{networkGroupText}-{nameof(ArchiWebHandler.SteamCommunityURL)}").ConfigureAwait(false), new SemaphoreSlim(WebBrowser.MaxConnections, WebBrowser.MaxConnections)) },

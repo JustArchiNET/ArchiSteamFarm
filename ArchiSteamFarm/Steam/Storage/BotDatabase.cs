@@ -88,10 +88,10 @@ internal sealed class BotDatabase : SerializableFile {
 		}
 	}
 
-	[JsonProperty(PropertyName = "_" + nameof(LoginKey))]
+	[JsonProperty(PropertyName = $"_{nameof(LoginKey)}")]
 	private string? BackingLoginKey;
 
-	[JsonProperty(PropertyName = "_" + nameof(MobileAuthenticator))]
+	[JsonProperty(PropertyName = $"_{nameof(MobileAuthenticator)}")]
 	private MobileAuthenticator? BackingMobileAuthenticator;
 
 	private BotDatabase(string filePath) {

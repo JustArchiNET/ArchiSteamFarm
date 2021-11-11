@@ -314,7 +314,7 @@ public sealed class BotConfig {
 	private string? BackingSteamParentalCode = DefaultSteamParentalCode;
 	private string? BackingSteamPassword = DefaultSteamPassword;
 
-	[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamMasterClanID), Required = Required.DisallowNull)]
+	[JsonProperty(PropertyName = $"{SharedInfo.UlongCompatibilityStringPrefix}{nameof(SteamMasterClanID)}", Required = Required.DisallowNull)]
 	private string SSteamMasterClanID {
 		get => SteamMasterClanID.ToString(CultureInfo.InvariantCulture);
 

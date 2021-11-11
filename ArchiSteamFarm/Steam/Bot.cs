@@ -180,8 +180,7 @@ public sealed class Bot : IAsyncDisposable {
 	/// </remarks>
 	private bool ShouldUseLoginKeys => BotConfig.UseLoginKeys && (!BotConfig.IsSteamPasswordSet || string.IsNullOrEmpty(BotConfig.DecryptedSteamPassword) || !HasMobileAuthenticator);
 
-	[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamID))]
-
+	[JsonProperty(PropertyName = $"{SharedInfo.UlongCompatibilityStringPrefix}{nameof(SteamID)}")]
 	private string SSteamID => SteamID.ToString(CultureInfo.InvariantCulture);
 
 	[JsonProperty]
@@ -523,13 +522,13 @@ public sealed class Bot : IAsyncDisposable {
 		string botPath = Path.Combine(SharedInfo.ConfigDirectory, botName);
 
 		return fileType switch {
-			EFileType.Config => botPath + SharedInfo.JsonConfigExtension,
-			EFileType.Database => botPath + SharedInfo.DatabaseExtension,
-			EFileType.KeysToRedeem => botPath + SharedInfo.KeysExtension,
-			EFileType.KeysToRedeemUnused => botPath + SharedInfo.KeysExtension + SharedInfo.KeysUnusedExtension,
-			EFileType.KeysToRedeemUsed => botPath + SharedInfo.KeysExtension + SharedInfo.KeysUsedExtension,
-			EFileType.MobileAuthenticator => botPath + SharedInfo.MobileAuthenticatorExtension,
-			EFileType.SentryFile => botPath + SharedInfo.SentryHashExtension,
+			EFileType.Config => $"{botPath}{SharedInfo.JsonConfigExtension}",
+			EFileType.Database => $"{botPath}{SharedInfo.DatabaseExtension}",
+			EFileType.KeysToRedeem => $"{botPath}{SharedInfo.KeysExtension}",
+			EFileType.KeysToRedeemUnused => $"{botPath}{SharedInfo.KeysExtension}{SharedInfo.KeysUnusedExtension}",
+			EFileType.KeysToRedeemUsed => $"{botPath}{SharedInfo.KeysExtension}{SharedInfo.KeysUsedExtension}",
+			EFileType.MobileAuthenticator => $"{botPath}{SharedInfo.MobileAuthenticatorExtension}",
+			EFileType.SentryFile => $"{botPath}{SharedInfo.SentryHashExtension}",
 			_ => throw new ArgumentOutOfRangeException(nameof(fileType))
 		};
 	}
@@ -2741,7 +2740,7 @@ public sealed class Bot : IAsyncDisposable {
 				AccountFlags = callback.AccountFlags;
 				SteamID = callback.ClientSteamID ?? throw new InvalidOperationException(nameof(callback.ClientSteamID));
 
-				ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotLoggedOn, SteamID + (!string.IsNullOrEmpty(callback.VanityURL) ? $"/{callback.VanityURL}" : "")));
+				ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotLoggedOn, $"{SteamID}{(!string.IsNullOrEmpty(callback.VanityURL) ? $"/{callback.VanityURL}" : "")}"));
 
 				// Old status for these doesn't matter, we'll update them if needed
 				InvalidPasswordFailures = TwoFactorCodeFailures = 0;
@@ -2765,7 +2764,7 @@ public sealed class Bot : IAsyncDisposable {
 
 				// Handle steamID-based maFile
 				if (!HasMobileAuthenticator) {
-					string maFilePath = Path.Combine(SharedInfo.ConfigDirectory, SteamID + SharedInfo.MobileAuthenticatorExtension);
+					string maFilePath = Path.Combine(SharedInfo.ConfigDirectory, $"{SteamID}{SharedInfo.MobileAuthenticatorExtension}");
 
 					if (File.Exists(maFilePath)) {
 						await ImportAuthenticatorFromFile(maFilePath).ConfigureAwait(false);
@@ -3244,7 +3243,7 @@ public sealed class Bot : IAsyncDisposable {
 					name = string.Join(", ", result.Items.Values);
 				}
 
-				string logEntry = $"{name}{DefaultBackgroundKeysRedeemerSeparator}[{result.PurchaseResultDetail}]{(result.Items?.Count > 0 ? DefaultBackgroundKeysRedeemerSeparator + string.Join(", ", result.Items) : "")}{DefaultBackgroundKeysRedeemerSeparator}{key}";
+				string logEntry = $"{name}{DefaultBackgroundKeysRedeemerSeparator}[{result.PurchaseResultDetail}]{(result.Items?.Count > 0 ? $"{DefaultBackgroundKeysRedeemerSeparator}{string.Join(", ", result.Items)}" : "")}{DefaultBackgroundKeysRedeemerSeparator}{key}";
 
 				string filePath = GetFilePath(redeemed ? EFileType.KeysToRedeemUsed : EFileType.KeysToRedeemUnused);
 
@@ -3255,7 +3254,7 @@ public sealed class Bot : IAsyncDisposable {
 				}
 
 				try {
-					await File.AppendAllTextAsync(filePath, logEntry + Environment.NewLine).ConfigureAwait(false);
+					await File.AppendAllTextAsync(filePath, $"{logEntry}{Environment.NewLine}").ConfigureAwait(false);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericException(e);
 					ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.Content, logEntry));

@@ -92,10 +92,10 @@ public sealed class GlobalDatabase : SerializableFile {
 		}
 	}
 
-	[JsonProperty(PropertyName = "_" + nameof(CellID), Required = Required.DisallowNull)]
+	[JsonProperty(PropertyName = $"_{nameof(CellID)}", Required = Required.DisallowNull)]
 	private uint BackingCellID;
 
-	[JsonProperty(PropertyName = "_" + nameof(LastChangeNumber), Required = Required.DisallowNull)]
+	[JsonProperty(PropertyName = $"_{nameof(LastChangeNumber)}", Required = Required.DisallowNull)]
 	private uint BackingLastChangeNumber;
 
 	private GlobalDatabase(string filePath) : this() {

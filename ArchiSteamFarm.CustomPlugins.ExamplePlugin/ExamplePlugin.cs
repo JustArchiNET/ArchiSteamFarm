@@ -66,7 +66,7 @@ internal sealed class ExamplePlugin : IASF, IBot, IBotCommand, IBotConnection, I
 		foreach ((string configProperty, JToken configValue) in additionalConfigProperties) {
 			// It's a good idea to prefix your custom properties with the name of your plugin, so there will be no possible conflict of ASF or other plugins using the same name, neither now or in the future
 			switch (configProperty) {
-				case nameof(ExamplePlugin) + "TestProperty" when configValue.Type == JTokenType.Boolean:
+				case $"{nameof(ExamplePlugin)}TestProperty" when configValue.Type == JTokenType.Boolean:
 					bool exampleBooleanValue = configValue.Value<bool>();
 					ASF.ArchiLogger.LogGenericInfo($"{nameof(ExamplePlugin)}TestProperty boolean property has been found with a value of: {exampleBooleanValue}");
 

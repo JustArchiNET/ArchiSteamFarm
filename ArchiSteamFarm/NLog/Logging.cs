@@ -44,7 +44,7 @@ internal static class Logging {
 	internal const string NLogConfigurationFile = "NLog.config";
 
 	private const byte ConsoleResponsivenessDelay = 250; // In milliseconds
-	private const string GeneralLayout = @"${date:format=yyyy-MM-dd HH\:mm\:ss}|${processname}-${processid}|${level:uppercase=true}|" + LayoutMessage;
+	private const string GeneralLayout = $@"${{date:format=yyyy-MM-dd HH\:mm\:ss}}|${{processname}}-${{processid}}|${{level:uppercase=true}}|{LayoutMessage}";
 	private const string LayoutMessage = @"${logger}|${message}${onexception:inner= ${exception:format=toString,Data}}";
 
 	private static readonly ConcurrentHashSet<LoggingRule> ConsoleLoggingRules = new();

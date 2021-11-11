@@ -41,7 +41,7 @@ namespace ArchiSteamFarm.Web;
 
 internal static class GitHub {
 	internal static async Task<ReleaseResponse?> GetLatestRelease(bool stable = true) {
-		Uri request = new(SharedInfo.GithubReleaseURL + (stable ? "/latest" : "?per_page=1"));
+		Uri request = new($"{SharedInfo.GithubReleaseURL}{(stable ? "/latest" : "?per_page=1")}");
 
 		if (stable) {
 			return await GetReleaseFromURL(request).ConfigureAwait(false);

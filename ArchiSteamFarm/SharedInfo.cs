@@ -37,20 +37,20 @@ public static class SharedInfo {
 	internal const string ArchivalLogsDirectory = "logs";
 	internal const string ASF = nameof(ASF);
 	internal const ulong ASFGroupSteamID = 103582791440160998;
-	internal const string AssemblyDocumentation = AssemblyName + ".xml";
+	internal const string AssemblyDocumentation = $"{AssemblyName}.xml";
 	internal const string AssemblyName = nameof(ArchiSteamFarm);
 	internal const string DatabaseExtension = ".db";
 	internal const string DebugDirectory = "debug";
-	internal const string EnvironmentVariableCryptKey = ASF + "_CRYPTKEY";
-	internal const string EnvironmentVariableNetworkGroup = ASF + "_NETWORK_GROUP";
-	internal const string EnvironmentVariablePath = ASF + "_PATH";
-	internal const string GithubReleaseURL = "https://api.github.com/repos/" + GithubRepo + "/releases";
-	internal const string GithubRepo = "JustArchiNET/" + AssemblyName;
-	internal const string GlobalConfigFileName = ASF + JsonConfigExtension;
-	internal const string GlobalDatabaseFileName = ASF + DatabaseExtension;
+	internal const string EnvironmentVariableCryptKey = $"{ASF}_CRYPTKEY";
+	internal const string EnvironmentVariableNetworkGroup = $"{ASF}_NETWORK_GROUP";
+	internal const string EnvironmentVariablePath = $"{ASF}_PATH";
+	internal const string GithubReleaseURL = $"https://api.github.com/repos/{GithubRepo}/releases";
+	internal const string GithubRepo = $"JustArchiNET/{AssemblyName}";
+	internal const string GlobalConfigFileName = $"{ASF}{JsonConfigExtension}";
+	internal const string GlobalDatabaseFileName = $"{ASF}{DatabaseExtension}";
 	internal const ushort InformationDelay = 10000;
 	internal const string IPCConfigExtension = ".config";
-	internal const string IPCConfigFile = nameof(IPC) + IPCConfigExtension;
+	internal const string IPCConfigFile = $"{nameof(IPC)}{IPCConfigExtension}";
 	internal const string JsonConfigExtension = ".json";
 	internal const string KeysExtension = ".keys";
 	internal const string KeysUnusedExtension = ".unused";
@@ -61,7 +61,7 @@ public static class SharedInfo {
 	internal const string LolcatCultureName = "qps-Ploc";
 	internal const string MobileAuthenticatorExtension = ".maFile";
 	internal const string PluginsDirectory = "plugins";
-	internal const string ProjectURL = "https://github.com/" + GithubRepo;
+	internal const string ProjectURL = $"https://github.com/{GithubRepo}";
 	internal const string SentryHashExtension = ".bin";
 	internal const ushort ShortInformationDelay = InformationDelay / 2;
 	internal const string StatisticsServer = "asf.justarchi.net";
@@ -88,7 +88,7 @@ public static class SharedInfo {
 	}
 
 	internal static string ProgramIdentifier => $"{PublicIdentifier} V{Version} ({BuildInfo.Variant}/{ModuleVersion} | {OS.Version})";
-	internal static string PublicIdentifier => AssemblyName + (BuildInfo.IsCustomBuild ? "-custom" : PluginsCore.HasCustomPluginsLoaded ? "-modded" : "");
+	internal static string PublicIdentifier => $"{AssemblyName}{(BuildInfo.IsCustomBuild ? "-custom" : PluginsCore.HasCustomPluginsLoaded ? "-modded" : "")}";
 	internal static Version Version => Assembly.GetExecutingAssembly().GetName().Version ?? throw new InvalidOperationException(nameof(Version));
 
 	private static Guid ModuleVersion => Assembly.GetExecutingAssembly().ManifestModule.ModuleVersionId;

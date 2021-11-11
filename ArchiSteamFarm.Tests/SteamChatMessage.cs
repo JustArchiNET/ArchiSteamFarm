@@ -36,16 +36,16 @@ public sealed class SteamChatMessage {
 		string prefix = new('x', MaxMessagePrefixBytes);
 
 		const string emoji = "😎";
-		const string message = emoji + emoji + emoji + emoji;
+		const string message = $"{emoji}{emoji}{emoji}{emoji}";
 
 		List<string> output = await GetMessageParts(message, prefix, true).ToListAsync().ConfigureAwait(false);
 
 		Assert.AreEqual(4, output.Count);
 
-		Assert.AreEqual(prefix + emoji + ContinuationCharacter, output[0]);
-		Assert.AreEqual(prefix + ContinuationCharacter + emoji + ContinuationCharacter, output[1]);
-		Assert.AreEqual(prefix + ContinuationCharacter + emoji + ContinuationCharacter, output[2]);
-		Assert.AreEqual(prefix + ContinuationCharacter + emoji, output[3]);
+		Assert.AreEqual($"{prefix}{emoji}{ContinuationCharacter}", output[0]);
+		Assert.AreEqual($"{prefix}{ContinuationCharacter}{emoji}{ContinuationCharacter}", output[1]);
+		Assert.AreEqual($"{prefix}{ContinuationCharacter}{emoji}{ContinuationCharacter}", output[2]);
+		Assert.AreEqual($"{prefix}{ContinuationCharacter}{emoji}", output[3]);
 	}
 
 	[TestMethod]
@@ -71,14 +71,14 @@ public sealed class SteamChatMessage {
 		const string emoji = "😎";
 
 		string longSequence = new('a', longLineLength - 1);
-		string message = longSequence + emoji;
+		string message = $"{longSequence}{emoji}";
 
 		List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync().ConfigureAwait(false);
 
 		Assert.AreEqual(2, output.Count);
 
-		Assert.AreEqual(longSequence + ContinuationCharacter, output[0]);
-		Assert.AreEqual(ContinuationCharacter + emoji, output[1]);
+		Assert.AreEqual($"{longSequence}{ContinuationCharacter}", output[0]);
+		Assert.AreEqual($"{ContinuationCharacter}{emoji}", output[1]);
 	}
 
 	[TestMethod]
@@ -122,7 +122,7 @@ public sealed class SteamChatMessage {
 
 		Assert.AreEqual(2, output.Count);
 
-		Assert.AreEqual(longLine + ContinuationCharacter, output[0]);
+		Assert.AreEqual($"{longLine}{ContinuationCharacter}", output[0]);
 		Assert.AreEqual($@"{ContinuationCharacter}\[", output[1]);
 	}
 
@@ -170,7 +170,7 @@ public sealed class SteamChatMessage {
 		List<string> output = await GetMessageParts(message, prefix).ToListAsync().ConfigureAwait(false);
 
 		Assert.AreEqual(1, output.Count);
-		Assert.AreEqual(escapedPrefix + message, output.First());
+		Assert.AreEqual($"{escapedPrefix}{message}", output.First());
 	}
 
 	[DataRow(false)]
@@ -181,16 +181,16 @@ public sealed class SteamChatMessage {
 		int longLineLength = maxMessageBytes - ReservedContinuationMessageBytes;
 
 		string longLine = new('a', longLineLength);
-		string message = longLine + longLine + longLine + longLine;
+		string message = $"{longLine}{longLine}{longLine}{longLine}";
 
 		List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync().ConfigureAwait(false);
 
 		Assert.AreEqual(4, output.Count);
 
-		Assert.AreEqual(longLine + ContinuationCharacter, output[0]);
-		Assert.AreEqual(ContinuationCharacter + longLine + ContinuationCharacter, output[1]);
-		Assert.AreEqual(ContinuationCharacter + longLine + ContinuationCharacter, output[2]);
-		Assert.AreEqual(ContinuationCharacter + longLine, output[3]);
+		Assert.AreEqual($"{longLine}{ContinuationCharacter}", output[0]);
+		Assert.AreEqual($"{ContinuationCharacter}{longLine}{ContinuationCharacter}", output[1]);
+		Assert.AreEqual($"{ContinuationCharacter}{longLine}{ContinuationCharacter}", output[2]);
+		Assert.AreEqual($"{ContinuationCharacter}{longLine}", output[3]);
 	}
 
 	[TestMethod]
@@ -297,15 +297,15 @@ public sealed class SteamChatMessage {
 		}
 
 		string newlinePart = newlinePartBuilder.ToString();
-		string message = newlinePart + Environment.NewLine + newlinePart + Environment.NewLine + newlinePart + Environment.NewLine + newlinePart;
+		string message = $"{newlinePart}{Environment.NewLine}{newlinePart}{Environment.NewLine}{newlinePart}{Environment.NewLine}{newlinePart}";
 
 		List<string> output = await GetMessageParts(message, isAccountLimited: isAccountLimited).ToListAsync().ConfigureAwait(false);
 
 		Assert.AreEqual(4, output.Count);
 
-		Assert.AreEqual(newlinePart + ParagraphCharacter, output[0]);
-		Assert.AreEqual(newlinePart + ParagraphCharacter, output[1]);
-		Assert.AreEqual(newlinePart + ParagraphCharacter, output[2]);
+		Assert.AreEqual($"{newlinePart}{ParagraphCharacter}", output[0]);
+		Assert.AreEqual($"{newlinePart}{ParagraphCharacter}", output[1]);
+		Assert.AreEqual($"{newlinePart}{ParagraphCharacter}", output[2]);
 		Assert.AreEqual(newlinePart, output[3]);
 	}
 

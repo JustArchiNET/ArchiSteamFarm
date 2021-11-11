@@ -2226,7 +2226,7 @@ public sealed class Commands {
 			ownedGamesStats[gameID] = ownedGameStats;
 		}
 
-		IEnumerable<string> extraResponses = ownedGamesStats.Select(kv => FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnsOverviewPerGame, kv.Value.Count, validResults.Count, kv.Key + (!string.IsNullOrEmpty(kv.Value.GameName) ? $" | {kv.Value.GameName}" : ""))));
+		IEnumerable<string> extraResponses = ownedGamesStats.Select(kv => FormatStaticResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotOwnsOverviewPerGame, kv.Value.Count, validResults.Count, $"{kv.Key}{(!string.IsNullOrEmpty(kv.Value.GameName) ? $" | {kv.Value.GameName}" : "")}")));
 
 		return string.Join(Environment.NewLine, validResults.Select(static result => result.Response).Concat(extraResponses));
 	}
@@ -2374,7 +2374,11 @@ public sealed class Commands {
 
 		foreach (string game in games) {
 			if (!uint.TryParse(game, out uint gameID) || (gameID == 0)) {
-				gameName.Append((gameName.Length > 0 ? " " : "") + game);
+				if (gameName.Length > 0) {
+					gameName.Append(' ');
+				}
+
+				gameName.Append(game);
 
 				continue;
 			}
@@ -3408,7 +3412,7 @@ public sealed class Commands {
 
 		(bool success, string? message, Version? version) = await Actions.Update().ConfigureAwait(false);
 
-		return FormatStaticResponse((success ? Strings.Success : Strings.WarningFailed) + (!string.IsNullOrEmpty(message) ? $" {message}" : version != null ? $" {version}" : ""));
+		return FormatStaticResponse($"{(success ? Strings.Success : Strings.WarningFailed)}{(!string.IsNullOrEmpty(message) ? $" {message}" : version != null ? $" {version}" : "")}");
 	}
 
 	private string? ResponseVersion(ulong steamID) {

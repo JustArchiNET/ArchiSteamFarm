@@ -55,7 +55,7 @@ public sealed class StructureController : ArchiController {
 		try {
 			obj = Activator.CreateInstance(targetType, true);
 		} catch (Exception e) {
-			return BadRequest(new GenericResponse(false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorParsingObject, nameof(targetType)) + Environment.NewLine + e));
+			return BadRequest(new GenericResponse(false, $"{string.Format(CultureInfo.CurrentCulture, Strings.ErrorParsingObject, nameof(targetType))}{Environment.NewLine}{e}"));
 		}
 
 		return Ok(new GenericResponse<object>(obj));

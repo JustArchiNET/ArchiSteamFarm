@@ -25,7 +25,7 @@ using JetBrains.Annotations;
 
 namespace ArchiSteamFarm.Web.Responses;
 
-[Obsolete("ASF no longer uses any XML-related functions, re-implement it yourself using " + nameof(BasicResponse) + " if needed.")]
+[Obsolete($"ASF no longer uses any XML-related functions, re-implement it yourself using {nameof(BasicResponse)} if needed.")]
 public sealed class XmlDocumentResponse : BasicResponse {
 	[PublicAPI]
 	public XmlDocument Content { get; }

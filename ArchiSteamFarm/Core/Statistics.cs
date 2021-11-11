@@ -51,7 +51,7 @@ internal sealed class Statistics : IAsyncDisposable {
 	private const byte MinHeartBeatTTL = 10; // Minimum amount of minutes we must wait before sending next HeartBeat
 	private const byte MinItemsCount = 100; // Minimum amount of items to be eligible for public listing
 	private const byte MinPersonaStateTTL = 8; // Minimum amount of hours we must wait before requesting persona state update
-	private const string URL = "https://" + SharedInfo.StatisticsServer;
+	private const string URL = $"https://{SharedInfo.StatisticsServer}";
 
 	private static readonly ImmutableHashSet<Asset.EType> AcceptedMatchableTypes = ImmutableHashSet.Create(
 		Asset.EType.Emoticon,

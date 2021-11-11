@@ -310,7 +310,7 @@ public sealed class GlobalConfig {
 	private WebProxy? BackingWebProxy;
 	private string? BackingWebProxyPassword = DefaultWebProxyPassword;
 
-	[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamOwnerID), Required = Required.DisallowNull)]
+	[JsonProperty(PropertyName = $"{SharedInfo.UlongCompatibilityStringPrefix}{nameof(SteamOwnerID)}", Required = Required.DisallowNull)]
 	private string SSteamOwnerID {
 		get => SteamOwnerID.ToString(CultureInfo.InvariantCulture);
 

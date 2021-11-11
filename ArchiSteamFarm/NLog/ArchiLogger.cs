@@ -176,7 +176,7 @@ public sealed class ArchiLogger {
 		}
 
 		// Otherwise, we ran into fatal exception before logging module could even get initialized, so activate fallback logging that involves file and console
-		string message = string.Format(CultureInfo.CurrentCulture, DateTime.Now + " " + Strings.ErrorEarlyFatalExceptionInfo, SharedInfo.Version) + Environment.NewLine;
+		string message = $"{DateTime.Now} {string.Format(CultureInfo.CurrentCulture, Strings.ErrorEarlyFatalExceptionInfo, SharedInfo.Version)}{Environment.NewLine}";
 
 		try {
 			await File.WriteAllTextAsync(SharedInfo.LogFile, message).ConfigureAwait(false);
@@ -191,7 +191,7 @@ public sealed class ArchiLogger {
 		}
 
 		while (true) {
-			message = string.Format(CultureInfo.CurrentCulture, Strings.ErrorEarlyFatalExceptionPrint, previousMethodName, exception.Message, exception.StackTrace) + Environment.NewLine;
+			message = $"{string.Format(CultureInfo.CurrentCulture, Strings.ErrorEarlyFatalExceptionPrint, previousMethodName, exception.Message, exception.StackTrace)}{Environment.NewLine}";
 
 			try {
 				await File.AppendAllTextAsync(SharedInfo.LogFile, message).ConfigureAwait(false);
