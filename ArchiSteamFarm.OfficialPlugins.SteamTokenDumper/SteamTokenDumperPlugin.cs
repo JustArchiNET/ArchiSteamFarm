@@ -132,7 +132,9 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 			}
 		}
 
-		TimeSpan startIn = TimeSpan.FromMinutes(Utilities.RandomNext(SharedInfo.MinimumMinutesBeforeFirstUpload, SharedInfo.MaximumMinutesBeforeFirstUpload));
+#pragma warning disable CA5394 // This call isn't used in a security-sensitive manner
+		TimeSpan startIn = TimeSpan.FromMinutes(Random.Shared.Next(SharedInfo.MinimumMinutesBeforeFirstUpload, SharedInfo.MaximumMinutesBeforeFirstUpload));
+#pragma warning restore CA5394 // This call isn't used in a security-sensitive manner
 
 		// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 		lock (SubmissionSemaphore) {
@@ -517,7 +519,9 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 #else
 				if (response.StatusCode == HttpStatusCode.TooManyRequests) {
 #endif
-					TimeSpan startIn = TimeSpan.FromMinutes(Utilities.RandomNext(SharedInfo.MinimumMinutesBeforeFirstUpload, SharedInfo.MaximumMinutesBeforeFirstUpload));
+#pragma warning disable CA5394 // This call isn't used in a security-sensitive manner
+					TimeSpan startIn = TimeSpan.FromMinutes(Random.Shared.Next(SharedInfo.MinimumMinutesBeforeFirstUpload, SharedInfo.MaximumMinutesBeforeFirstUpload));
+#pragma warning restore CA5394 // This call isn't used in a security-sensitive manner
 
 					// ReSharper disable once SuspiciousLockOverSynchronizationPrimitive - this is not a mistake, we need extra synchronization, and we can re-use the semaphore object for that
 					lock (SubmissionSemaphore) {

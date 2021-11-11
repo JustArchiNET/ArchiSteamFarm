@@ -1180,7 +1180,9 @@ public sealed class CardsFarmer : IAsyncDisposable {
 
 					break;
 				case BotConfig.EFarmingOrder.Random:
-					orderedGamesToFarm = orderedGamesToFarm.ThenBy(static _ => Utilities.RandomNext());
+#pragma warning disable CA5394 // This call isn't used in a security-sensitive manner
+					orderedGamesToFarm = orderedGamesToFarm.ThenBy(static _ => Random.Shared.Next());
+#pragma warning restore CA5394 // This call isn't used in a security-sensitive manner
 
 					break;
 				case BotConfig.EFarmingOrder.RedeemDateTimesAscending:

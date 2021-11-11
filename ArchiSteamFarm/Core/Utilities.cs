@@ -49,9 +49,6 @@ public static class Utilities {
 	// normally we'd just use words like "steam" and "farm", but the library we're currently using is a bit iffy about banned words, so we need to also add combinations such as "steamfarm"
 	private static readonly ImmutableHashSet<string> ForbiddenPasswordPhrases = ImmutableHashSet.Create(StringComparer.InvariantCultureIgnoreCase, "archisteamfarm", "archi", "steam", "farm", "archisteam", "archifarm", "steamfarm", "asf", "asffarm", "password");
 
-	// Normally we wouldn't need to use this singleton, but we want to ensure decent randomness across entire program's lifetime
-	private static readonly Random Random = new();
-
 	[PublicAPI]
 	public static string GetArgsAsText(string[] args, byte argsToSkip, string delimiter) {
 		if (args == null) {
@@ -207,32 +204,6 @@ public static class Utilities {
 		}
 
 		return (text.Length % 2 == 0) && text.All(Uri.IsHexDigit);
-	}
-
-	[PublicAPI]
-	public static int RandomNext() {
-		lock (Random) {
-#pragma warning disable CA5394 // This call isn't used in a security-sensitive manner
-			return Random.Next();
-#pragma warning restore CA5394 // This call isn't used in a security-sensitive manner
-		}
-	}
-
-	[PublicAPI]
-	public static int RandomNext(int minValue, int maxValue) {
-		if (minValue > maxValue) {
-			throw new InvalidOperationException($"{nameof(minValue)} && {nameof(maxValue)}");
-		}
-
-		if (minValue >= maxValue - 1) {
-			return minValue;
-		}
-
-		lock (Random) {
-#pragma warning disable CA5394 // This call isn't used in a security-sensitive manner
-			return Random.Next(minValue, maxValue);
-#pragma warning restore CA5394 // This call isn't used in a security-sensitive manner
-		}
 	}
 
 	[PublicAPI]
