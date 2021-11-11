@@ -37,6 +37,8 @@
 		<Using Include="JustArchiNET.Madness.FileMadness.File" Alias="File" />
 		<Using Include="JustArchiNET.Madness.PathMadness.Path" Alias="Path" />
 		<Using Include="JustArchiNET.Madness.HashCodeMadness.HashCode" Alias="HashCode" />
+		<Using Include="JustArchiNET.Madness.HMACSHA1Madness.HMACSHA1" Alias="HMACSHA1" />
+		<Using Include="JustArchiNET.Madness.SHA256Madness.SHA256" Alias="SHA256" />
 		<Using Include="JustArchiNET.Madness.StringMadness.String" Alias="String" />
 	</ItemGroup>
 
