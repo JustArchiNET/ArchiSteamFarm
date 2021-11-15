@@ -423,8 +423,6 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 						}
 					}
 
-					GlobalCache.UpdateAppChangeNumbers(appChangeNumbers);
-
 					if (depotTasks.Count > 0) {
 						bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotRetrievingDepotKeys, depotTasks.Count));
 
@@ -442,6 +440,8 @@ internal sealed class SteamTokenDumperPlugin : OfficialPlugin, IASF, IBot, IBotS
 
 						GlobalCache.UpdateDepotKeys(results);
 					}
+
+					GlobalCache.UpdateAppChangeNumbers(appChangeNumbers);
 				}
 			}
 
