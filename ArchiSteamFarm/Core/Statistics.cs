@@ -51,7 +51,6 @@ internal sealed class Statistics : IAsyncDisposable {
 	private const byte MinHeartBeatTTL = 10; // Minimum amount of minutes we must wait before sending next HeartBeat
 	private const byte MinItemsCount = 100; // Minimum amount of items to be eligible for public listing
 	private const byte MinPersonaStateTTL = 8; // Minimum amount of hours we must wait before requesting persona state update
-	private const string URL = $"https://{SharedInfo.StatisticsServer}";
 
 	private static readonly ImmutableHashSet<Asset.EType> AcceptedMatchableTypes = ImmutableHashSet.Create(
 		Asset.EType.Emoticon,
@@ -108,7 +107,7 @@ internal sealed class Statistics : IAsyncDisposable {
 		}
 
 		try {
-			Uri request = new($"{URL}/Api/HeartBeat");
+			Uri request = new(ASFServer.URL, "/Api/HeartBeat");
 
 			Dictionary<string, string> data = new(2, StringComparer.Ordinal) {
 				{ "Guid", (ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid()).ToString("N") },
@@ -217,7 +216,7 @@ internal sealed class Statistics : IAsyncDisposable {
 				return;
 			}
 
-			Uri request = new($"{URL}/Api/Announce");
+			Uri request = new(ASFServer.URL, "/Api/Announce");
 
 			Dictionary<string, string> data = new(9, StringComparer.Ordinal) {
 				{ "AvatarHash", avatarHash ?? "" },
@@ -254,7 +253,7 @@ internal sealed class Statistics : IAsyncDisposable {
 	}
 
 	private async Task<ImmutableHashSet<ListedUser>?> GetListedUsers() {
-		Uri request = new($"{URL}/Api/Bots");
+		Uri request = new(ASFServer.URL, "/Api/Bots");
 
 		ObjectResponse<ImmutableHashSet<ListedUser>>? response = await Bot.ArchiWebHandler.WebBrowser.UrlGetToJsonObject<ImmutableHashSet<ListedUser>>(request).ConfigureAwait(false);
 
