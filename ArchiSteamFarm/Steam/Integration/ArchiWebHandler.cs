@@ -257,8 +257,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			return null;
 		}
 
-		// Extra entry for format
-		Dictionary<string, object> arguments = new(3, StringComparer.Ordinal) {
+		Dictionary<string, object?> arguments = new(2, StringComparer.Ordinal) {
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 			{ "access_token", accessToken! },
 
@@ -1323,8 +1322,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			return false;
 		}
 
-		// Extra entry for format
-		Dictionary<string, object> arguments = new(3, StringComparer.Ordinal) {
+		Dictionary<string, object?> arguments = new(2, StringComparer.Ordinal) {
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 			{ "key", steamApiKey! },
 
@@ -1381,8 +1379,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			return null;
 		}
 
-		// Extra entry for format
-		Dictionary<string, object> arguments = new(6, StringComparer.Ordinal) {
+		Dictionary<string, object?> arguments = new(5, StringComparer.Ordinal) {
 			{ "active_only", 1 },
 			{ "get_descriptions", 1 },
 			{ "get_received_offers", 1 },
@@ -1872,8 +1869,7 @@ public sealed class ArchiWebHandler : IDisposable {
 			return null;
 		}
 
-		// Extra entry for format
-		Dictionary<string, object> arguments = new(!string.IsNullOrEmpty(tradeToken) ? 4 : 3, StringComparer.Ordinal) {
+		Dictionary<string, object?> arguments = new(!string.IsNullOrEmpty(tradeToken) ? 3 : 2, StringComparer.Ordinal) {
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 			{ "key", steamApiKey! },
 
@@ -2056,8 +2052,7 @@ public sealed class ArchiWebHandler : IDisposable {
 		// AES encrypt our login key with our session key
 		byte[] encryptedLoginKey = CryptoHelper.SymmetricEncrypt(loginKey, sessionKey);
 
-		// Extra entry for format
-		Dictionary<string, object> arguments = new(4, StringComparer.Ordinal) {
+		Dictionary<string, object?> arguments = new(3, StringComparer.Ordinal) {
 			{ "encrypted_loginkey", encryptedLoginKey },
 			{ "sessionkey", encryptedSessionKey },
 			{ "steamid", steamID }
