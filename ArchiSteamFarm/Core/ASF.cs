@@ -302,7 +302,7 @@ public static class ASF {
 
 			byte[] responseBytes = response.Content as byte[] ?? response.Content.ToArray();
 
-			string checksum = BitConverter.ToString(SHA512.HashData(responseBytes)).Replace("-", "", StringComparison.Ordinal);
+			string checksum = Convert.ToHexString(SHA512.HashData(responseBytes));
 
 			if (!checksum.Equals(remoteChecksum, StringComparison.OrdinalIgnoreCase)) {
 				ArchiLogger.LogGenericError(Strings.ChecksumWrong);
@@ -409,9 +409,9 @@ public static class ASF {
 
 		if (!string.IsNullOrEmpty(Program.NetworkGroup)) {
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			networkGroupText = $"-{BitConverter.ToString(SHA256.HashData(Encoding.UTF8.GetBytes(Program.NetworkGroup!))).Replace("-", "", StringComparison.Ordinal)}";
+			networkGroupText = $"-{Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(Program.NetworkGroup!)))}";
 		} else if (!string.IsNullOrEmpty(GlobalConfig.WebProxyText)) {
-			networkGroupText = $"-{BitConverter.ToString(SHA256.HashData(Encoding.UTF8.GetBytes(GlobalConfig.WebProxyText!))).Replace("-", "", StringComparison.Ordinal)}";
+			networkGroupText = $"-{Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(GlobalConfig.WebProxyText!)))}";
 		}
 
 		ConfirmationsSemaphore ??= await PluginsCore.GetCrossProcessSemaphore($"{nameof(ConfirmationsSemaphore)}{networkGroupText}").ConfigureAwait(false);

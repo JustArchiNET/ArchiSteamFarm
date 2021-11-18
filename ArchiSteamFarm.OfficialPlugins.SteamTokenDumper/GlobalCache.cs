@@ -241,7 +241,7 @@ internal sealed class GlobalCache : SerializableFile {
 				continue;
 			}
 
-			string depotKey = BitConverter.ToString(depotKeyResult.DepotKey).Replace("-", "", StringComparison.Ordinal);
+			string depotKey = Convert.ToHexString(depotKeyResult.DepotKey);
 
 			if (DepotKeys.TryGetValue(depotKeyResult.DepotID, out string? previousDepotKey) && (previousDepotKey == depotKey)) {
 				continue;
