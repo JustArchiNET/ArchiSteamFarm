@@ -57,6 +57,10 @@ internal static class ArchiNet {
 			throw new ArgumentNullException(nameof(tradeToken));
 		}
 
+		if (tradeToken.Length != BotConfig.SteamTradeTokenLength) {
+			throw new ArgumentOutOfRangeException(nameof(tradeToken));
+		}
+
 		Uri request = new(URL, "/Api/Announce");
 
 		Dictionary<string, string> data = new(9, StringComparer.Ordinal) {

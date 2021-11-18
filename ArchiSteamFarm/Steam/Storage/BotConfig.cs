@@ -117,8 +117,7 @@ public sealed class BotConfig {
 	public const ArchiHandler.EUserInterfaceMode DefaultUserInterfaceMode = ArchiHandler.EUserInterfaceMode.Default;
 
 	internal const byte SteamParentalCodeLength = 4;
-
-	private const byte SteamTradeTokenLength = 8;
+	internal const byte SteamTradeTokenLength = 8;
 
 	[PublicAPI]
 	public static readonly ImmutableHashSet<Asset.EType> DefaultCompleteTypesToSend = ImmutableHashSet<Asset.EType>.Empty;
