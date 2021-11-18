@@ -375,7 +375,7 @@ internal sealed class Statistics : IAsyncDisposable {
 			return (false, false);
 		}
 
-		ImmutableHashSet<ArchiNet.ListedUser>? listedUsers = await ArchiNet.GetListedUsers(Bot.ArchiWebHandler.WebBrowser).ConfigureAwait(false);
+		ImmutableHashSet<ArchiNet.ListedUser>? listedUsers = await ArchiNet.GetListedUsers(Bot).ConfigureAwait(false);
 
 		if ((listedUsers == null) || (listedUsers.Count == 0)) {
 			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(listedUsers)));

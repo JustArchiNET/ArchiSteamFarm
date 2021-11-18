@@ -104,14 +104,14 @@ internal static class ArchiNet {
 		return response.Content.Checksum ?? "";
 	}
 
-	internal static async Task<ImmutableHashSet<ListedUser>?> GetListedUsers(WebBrowser webBrowser) {
-		if (webBrowser == null) {
-			throw new ArgumentNullException(nameof(webBrowser));
+	internal static async Task<ImmutableHashSet<ListedUser>?> GetListedUsers(Bot bot) {
+		if (bot == null) {
+			throw new ArgumentNullException(nameof(bot));
 		}
 
 		Uri request = new(URL, "/Api/Bots");
 
-		ObjectResponse<ImmutableHashSet<ListedUser>>? response = await webBrowser.UrlGetToJsonObject<ImmutableHashSet<ListedUser>>(request).ConfigureAwait(false);
+		ObjectResponse<ImmutableHashSet<ListedUser>>? response = await bot.ArchiWebHandler.WebBrowser.UrlGetToJsonObject<ImmutableHashSet<ListedUser>>(request).ConfigureAwait(false);
 
 		return response?.Content;
 	}
