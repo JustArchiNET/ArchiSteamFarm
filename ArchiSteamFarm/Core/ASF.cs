@@ -120,8 +120,9 @@ public static class ASF {
 		await InitRateLimiters().ConfigureAwait(false);
 
 		StringComparer botsComparer = await PluginsCore.GetBotsComparer().ConfigureAwait(false);
+		IMachineInfoProvider? customMachineInfoProvider = await PluginsCore.GetCustomMachineInfoProvider().ConfigureAwait(false);
 
-		InitBotsComparer(botsComparer);
+		Bot.Init(botsComparer, customMachineInfoProvider);
 
 		if (!Program.Service && !GlobalConfig.Headless && !Console.IsInputRedirected) {
 			Logging.StartInteractiveConsole();
@@ -362,18 +363,6 @@ public static class ASF {
 
 		// We're allowed to handle this event if the one that is saved after full second is our event and we succeed in clearing it (we don't care what we're clearing anymore, it doesn't have to be atomic operation)
 		return LastWriteEvents.TryGetValue(filePath, out object? savedWriteEvent) && (currentWriteEvent == savedWriteEvent) && LastWriteEvents.TryRemove(filePath, out _);
-	}
-
-	private static void InitBotsComparer(StringComparer botsComparer) {
-		if (botsComparer == null) {
-			throw new ArgumentNullException(nameof(botsComparer));
-		}
-
-		if (Bot.Bots != null) {
-			return;
-		}
-
-		Bot.Init(botsComparer);
 	}
 
 	private static void InitConfigWatchEvents() {

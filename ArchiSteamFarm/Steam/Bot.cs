@@ -79,6 +79,8 @@ public sealed class Bot : IAsyncDisposable {
 
 	private static readonly SemaphoreSlim BotsSemaphore = new(1, 1);
 
+	private static IMachineInfoProvider? CustomMachineInfoProvider;
+
 	[JsonIgnore]
 	[PublicAPI]
 	public Actions Actions { get; }
@@ -279,7 +281,18 @@ public sealed class Bot : IAsyncDisposable {
 
 		ArchiWebHandler = new ArchiWebHandler(this);
 
-		SteamConfiguration = SteamConfiguration.Create(builder => builder.WithProtocolTypes(ASF.GlobalConfig.SteamProtocols).WithCellID(ASF.GlobalDatabase.CellID).WithServerListProvider(ASF.GlobalDatabase.ServerListProvider).WithHttpClientFactory(ArchiWebHandler.GenerateDisposableHttpClient));
+		SteamConfiguration = SteamConfiguration.Create(
+			builder => {
+				builder.WithCellID(ASF.GlobalDatabase.CellID);
+				builder.WithHttpClientFactory(ArchiWebHandler.GenerateDisposableHttpClient);
+				builder.WithProtocolTypes(ASF.GlobalConfig.SteamProtocols);
+				builder.WithServerListProvider(ASF.GlobalDatabase.ServerListProvider);
+
+				if (CustomMachineInfoProvider != null) {
+					builder.WithMachineInfoProvider(CustomMachineInfoProvider);
+				}
+			}
+		);
 
 		// Initialize
 		SteamClient = new SteamClient(SteamConfiguration, botName);
@@ -1333,12 +1346,14 @@ public sealed class Bot : IAsyncDisposable {
 		}
 	}
 
-	internal static void Init(StringComparer botsComparer) {
+	internal static void Init(StringComparer botsComparer, IMachineInfoProvider? customMachineInfoProvider = null) {
 		if (Bots != null) {
 			throw new InvalidOperationException(nameof(Bots));
 		}
 
 		BotsComparer = botsComparer ?? throw new ArgumentNullException(nameof(botsComparer));
+
+		CustomMachineInfoProvider = customMachineInfoProvider;
 		Bots = new ConcurrentDictionary<string, Bot>(botsComparer);
 	}
 

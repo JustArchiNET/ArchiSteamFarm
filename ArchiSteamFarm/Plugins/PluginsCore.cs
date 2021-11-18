@@ -117,6 +117,24 @@ internal static class PluginsCore {
 		return responses.FirstOrDefault(static response => response != null) ?? new CrossProcessFileBasedSemaphore(resourceName);
 	}
 
+	internal static async Task<IMachineInfoProvider?> GetCustomMachineInfoProvider() {
+		if (ActivePlugins == null) {
+			return null;
+		}
+
+		IList<IMachineInfoProvider> results;
+
+		try {
+			results = await Utilities.InParallel(ActivePlugins.OfType<ICustomMachineInfoProvider>().Select(static plugin => Task.Run(() => plugin.MachineInfoProvider))).ConfigureAwait(false);
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericException(e);
+
+			return null;
+		}
+
+		return results.FirstOrDefault();
+	}
+
 	internal static bool InitPlugins() {
 		if (ActivePlugins != null) {
 			return false;
