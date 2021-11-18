@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,7 +38,6 @@ using ArchiSteamFarm.Steam.Security;
 using ArchiSteamFarm.Steam.Storage;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
-using ArchiSteamFarm.Web.Responses;
 
 namespace ArchiSteamFarm.Core;
 
@@ -105,13 +105,13 @@ internal sealed class Statistics : IAsyncDisposable {
 		}
 
 		try {
-			BasicResponse? response = await ArchiNet.HeartBeatForListing(Bot).ConfigureAwait(false);
+			HttpStatusCode? response = await ArchiNet.HeartBeatForListing(Bot).ConfigureAwait(false);
 
-			if (response == null) {
+			if (!response.HasValue) {
 				return;
 			}
 
-			if (response.StatusCode.IsClientErrorCode()) {
+			if (response.Value.IsClientErrorCode()) {
 				LastHeartBeat = DateTime.MinValue;
 				ShouldSendHeartBeats = false;
 
@@ -207,13 +207,14 @@ internal sealed class Statistics : IAsyncDisposable {
 				return;
 			}
 
-			BasicResponse? response = await ArchiNet.AnnounceForListing(Bot, inventory, acceptedMatchableTypes, tradeToken, nickname, avatarHash).ConfigureAwait(false);
+			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+			HttpStatusCode? response = await ArchiNet.AnnounceForListing(Bot, inventory, acceptedMatchableTypes, tradeToken!, nickname, avatarHash).ConfigureAwait(false);
 
-			if (response == null) {
+			if (!response.HasValue) {
 				return;
 			}
 
-			if (response.StatusCode.IsClientErrorCode()) {
+			if (response.Value.IsClientErrorCode()) {
 				LastHeartBeat = DateTime.MinValue;
 				ShouldSendHeartBeats = false;
 

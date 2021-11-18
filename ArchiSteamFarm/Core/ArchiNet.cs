@@ -25,6 +25,7 @@ using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam;
@@ -39,7 +40,7 @@ namespace ArchiSteamFarm.Core;
 internal static class ArchiNet {
 	private static Uri URL => new("https://asf.JustArchi.net");
 
-	internal static async Task<BasicResponse?> AnnounceForListing(Bot bot, IReadOnlyCollection<Asset> inventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes, string tradeToken, string? nickname = null, string? avatarHash = null) {
+	internal static async Task<HttpStatusCode?> AnnounceForListing(Bot bot, IReadOnlyCollection<Asset> inventory, IReadOnlyCollection<Asset.EType> acceptedMatchableTypes, string tradeToken, string? nickname = null, string? avatarHash = null) {
 		if (bot == null) {
 			throw new ArgumentNullException(nameof(bot));
 		}
@@ -70,7 +71,9 @@ internal static class ArchiNet {
 			{ "TradeToken", tradeToken }
 		};
 
-		return await bot.ArchiWebHandler.WebBrowser.UrlPost(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
+		BasicResponse? response = await bot.ArchiWebHandler.WebBrowser.UrlPost(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
+
+		return response?.StatusCode;
 	}
 
 	internal static async Task<string?> FetchBuildChecksum(Version version, string variant) {
@@ -109,7 +112,7 @@ internal static class ArchiNet {
 		return response?.Content;
 	}
 
-	internal static async Task<BasicResponse?> HeartBeatForListing(Bot bot) {
+	internal static async Task<HttpStatusCode?> HeartBeatForListing(Bot bot) {
 		if (bot == null) {
 			throw new ArgumentNullException(nameof(bot));
 		}
@@ -121,7 +124,9 @@ internal static class ArchiNet {
 			{ "SteamID", bot.SteamID.ToString(CultureInfo.InvariantCulture) }
 		};
 
-		return await bot.ArchiWebHandler.WebBrowser.UrlPost(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
+		BasicResponse? response = await bot.ArchiWebHandler.WebBrowser.UrlPost(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
+
+		return response?.StatusCode;
 	}
 
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
