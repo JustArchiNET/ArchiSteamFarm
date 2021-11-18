@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
@@ -39,7 +38,6 @@ using ArchiSteamFarm.Steam.Storage;
 using ArchiSteamFarm.Storage;
 using ArchiSteamFarm.Web;
 using ArchiSteamFarm.Web.Responses;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.Core;
 
@@ -107,14 +105,7 @@ internal sealed class Statistics : IAsyncDisposable {
 		}
 
 		try {
-			Uri request = new(ASFServer.URL, "/Api/HeartBeat");
-
-			Dictionary<string, string> data = new(2, StringComparer.Ordinal) {
-				{ "Guid", (ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid()).ToString("N") },
-				{ "SteamID", Bot.SteamID.ToString(CultureInfo.InvariantCulture) }
-			};
-
-			BasicResponse? response = await Bot.ArchiWebHandler.WebBrowser.UrlPost(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
+			BasicResponse? response = await ArchiNet.HeartBeatForListing(Bot).ConfigureAwait(false);
 
 			if (response == null) {
 				return;
@@ -216,23 +207,7 @@ internal sealed class Statistics : IAsyncDisposable {
 				return;
 			}
 
-			Uri request = new(ASFServer.URL, "/Api/Announce");
-
-			Dictionary<string, string> data = new(9, StringComparer.Ordinal) {
-				{ "AvatarHash", avatarHash ?? "" },
-				{ "GamesCount", inventory.Select(static item => item.RealAppID).Distinct().Count().ToString(CultureInfo.InvariantCulture) },
-				{ "Guid", (ASF.GlobalDatabase?.Identifier ?? Guid.NewGuid()).ToString("N") },
-				{ "ItemsCount", inventory.Count.ToString(CultureInfo.InvariantCulture) },
-				{ "MatchableTypes", JsonConvert.SerializeObject(acceptedMatchableTypes) },
-				{ "MatchEverything", Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) ? "1" : "0" },
-				{ "Nickname", nickname ?? "" },
-				{ "SteamID", Bot.SteamID.ToString(CultureInfo.InvariantCulture) },
-
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				{ "TradeToken", tradeToken! }
-			};
-
-			BasicResponse? response = await Bot.ArchiWebHandler.WebBrowser.UrlPost(request, data: data, requestOptions: WebBrowser.ERequestOptions.ReturnClientErrors).ConfigureAwait(false);
+			BasicResponse? response = await ArchiNet.AnnounceForListing(Bot, inventory, acceptedMatchableTypes, tradeToken, nickname, avatarHash).ConfigureAwait(false);
 
 			if (response == null) {
 				return;
@@ -250,14 +225,6 @@ internal sealed class Statistics : IAsyncDisposable {
 		} finally {
 			RequestsSemaphore.Release();
 		}
-	}
-
-	private async Task<ImmutableHashSet<ListedUser>?> GetListedUsers() {
-		Uri request = new(ASFServer.URL, "/Api/Bots");
-
-		ObjectResponse<ImmutableHashSet<ListedUser>>? response = await Bot.ArchiWebHandler.WebBrowser.UrlGetToJsonObject<ImmutableHashSet<ListedUser>>(request).ConfigureAwait(false);
-
-		return response?.Content;
 	}
 
 	private async Task<bool?> IsEligibleForListing() {
@@ -407,7 +374,7 @@ internal sealed class Statistics : IAsyncDisposable {
 			return (false, false);
 		}
 
-		ImmutableHashSet<ListedUser>? listedUsers = await GetListedUsers().ConfigureAwait(false);
+		ImmutableHashSet<ArchiNet.ListedUser>? listedUsers = await ArchiNet.GetListedUsers(Bot.ArchiWebHandler.WebBrowser).ConfigureAwait(false);
 
 		if ((listedUsers == null) || (listedUsers.Count == 0)) {
 			Bot.ArchiLogger.LogGenericTrace(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsEmpty, nameof(listedUsers)));
@@ -420,7 +387,7 @@ internal sealed class Statistics : IAsyncDisposable {
 
 		HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> skippedSetsThisRound = new();
 
-		foreach (ListedUser listedUser in listedUsers.Where(listedUser => (listedUser.SteamID != Bot.SteamID) && acceptedMatchableTypes.Any(listedUser.MatchableTypes.Contains) && (!triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong>? GivenAssetIDs, ISet<ulong>? ReceivedAssetIDs) attempt) || (attempt.Tries < byte.MaxValue)) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderBy(listedUser => triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong>? GivenAssetIDs, ISet<ulong>? ReceivedAssetIDs) attempt) ? attempt.Tries : 0).ThenByDescending(static listedUser => listedUser.MatchEverything).ThenByDescending(static listedUser => listedUser.MatchEverything || (listedUser.ItemsCount < MaxItemsForFairBots)).ThenByDescending(static listedUser => listedUser.Score)) {
+		foreach (ArchiNet.ListedUser? listedUser in listedUsers.Where(listedUser => (listedUser.SteamID != Bot.SteamID) && acceptedMatchableTypes.Any(listedUser.MatchableTypes.Contains) && (!triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong>? GivenAssetIDs, ISet<ulong>? ReceivedAssetIDs) attempt) || (attempt.Tries < byte.MaxValue)) && !Bot.IsBlacklistedFromTrades(listedUser.SteamID)).OrderBy(listedUser => triedSteamIDs.TryGetValue(listedUser.SteamID, out (byte Tries, ISet<ulong>? GivenAssetIDs, ISet<ulong>? ReceivedAssetIDs) attempt) ? attempt.Tries : 0).ThenByDescending(static listedUser => listedUser.MatchEverything).ThenByDescending(static listedUser => listedUser.MatchEverything || (listedUser.ItemsCount < MaxItemsForFairBots)).ThenByDescending(static listedUser => listedUser.Score)) {
 			HashSet<(uint RealAppID, Asset.EType Type, Asset.ERarity Rarity)> wantedSets = ourTradableState.Keys.Where(set => !skippedSetsThisRound.Contains(set) && listedUser.MatchableTypes.Contains(set.Type)).ToHashSet();
 
 			if (wantedSets.Count == 0) {
@@ -713,135 +680,5 @@ internal sealed class Statistics : IAsyncDisposable {
 
 		// Keep matching when we either traded something this round (so it makes sense for a refresh) or if we didn't try all available bots yet (so it makes sense to keep going)
 		return ((totalMatches > 0) && ((skippedSetsThisRound.Count > 0) || triedSteamIDs.Values.All(static data => data.Tries < 2)), skippedSetsThisRound.Count > 0);
-	}
-
-	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	private sealed class ListedUser {
-#pragma warning disable CS0649 // False positive, it's a field set during json deserialization
-		[JsonProperty(PropertyName = "items_count", Required = Required.Always)]
-		internal readonly ushort ItemsCount;
-#pragma warning restore CS0649 // False positive, it's a field set during json deserialization
-
-		internal readonly HashSet<Asset.EType> MatchableTypes = new();
-
-#pragma warning disable CS0649 // False positive, it's a field set during json deserialization
-		[JsonProperty(PropertyName = "steam_id", Required = Required.Always)]
-		internal readonly ulong SteamID;
-#pragma warning restore CS0649 // False positive, it's a field set during json deserialization
-
-		[JsonProperty(PropertyName = "trade_token", Required = Required.Always)]
-		internal readonly string TradeToken = "";
-
-		internal float Score => GamesCount / (float) ItemsCount;
-
-#pragma warning disable CS0649 // False positive, it's a field set during json deserialization
-		[JsonProperty(PropertyName = "games_count", Required = Required.Always)]
-		private readonly ushort GamesCount;
-#pragma warning restore CS0649 // False positive, it's a field set during json deserialization
-
-		internal bool MatchEverything { get; private set; }
-
-		[JsonProperty(PropertyName = "matchable_backgrounds", Required = Required.Always)]
-		private byte MatchableBackgroundsNumber {
-			set {
-				switch (value) {
-					case 0:
-						MatchableTypes.Remove(Asset.EType.ProfileBackground);
-
-						break;
-					case 1:
-						MatchableTypes.Add(Asset.EType.ProfileBackground);
-
-						break;
-					default:
-						ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(value), value));
-
-						return;
-				}
-			}
-		}
-
-		[JsonProperty(PropertyName = "matchable_cards", Required = Required.Always)]
-		private byte MatchableCardsNumber {
-			set {
-				switch (value) {
-					case 0:
-						MatchableTypes.Remove(Asset.EType.TradingCard);
-
-						break;
-					case 1:
-						MatchableTypes.Add(Asset.EType.TradingCard);
-
-						break;
-					default:
-						ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(value), value));
-
-						return;
-				}
-			}
-		}
-
-		[JsonProperty(PropertyName = "matchable_emoticons", Required = Required.Always)]
-		private byte MatchableEmoticonsNumber {
-			set {
-				switch (value) {
-					case 0:
-						MatchableTypes.Remove(Asset.EType.Emoticon);
-
-						break;
-					case 1:
-						MatchableTypes.Add(Asset.EType.Emoticon);
-
-						break;
-					default:
-						ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(value), value));
-
-						return;
-				}
-			}
-		}
-
-		[JsonProperty(PropertyName = "matchable_foil_cards", Required = Required.Always)]
-		private byte MatchableFoilCardsNumber {
-			set {
-				switch (value) {
-					case 0:
-						MatchableTypes.Remove(Asset.EType.FoilTradingCard);
-
-						break;
-					case 1:
-						MatchableTypes.Add(Asset.EType.FoilTradingCard);
-
-						break;
-					default:
-						ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(value), value));
-
-						return;
-				}
-			}
-		}
-
-		[JsonProperty(PropertyName = "match_everything", Required = Required.Always)]
-		private byte MatchEverythingNumber {
-			set {
-				switch (value) {
-					case 0:
-						MatchEverything = false;
-
-						break;
-					case 1:
-						MatchEverything = true;
-
-						break;
-					default:
-						ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(value), value));
-
-						return;
-				}
-			}
-		}
-
-		[JsonConstructor]
-		private ListedUser() { }
 	}
 }

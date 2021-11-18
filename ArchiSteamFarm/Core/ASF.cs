@@ -287,7 +287,7 @@ public static class ASF {
 
 			ArchiLogger.LogGenericInfo(Strings.VerifyingChecksumWithRemoteServer);
 
-			string? remoteChecksum = await ASFServer.FetchChecksum(newVersion, SharedInfo.BuildInfo.Variant).ConfigureAwait(false);
+			string? remoteChecksum = await ArchiNet.FetchBuildChecksum(newVersion, SharedInfo.BuildInfo.Variant).ConfigureAwait(false);
 
 			switch (remoteChecksum) {
 				case null:
