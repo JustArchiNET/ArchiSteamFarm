@@ -285,6 +285,31 @@ public static class ASF {
 				return null;
 			}
 
+			ArchiLogger.LogGenericInfo(Strings.VerifyingChecksumWithRemoteServer);
+
+			string? remoteChecksum = await ArchiNet.FetchBuildChecksum(newVersion, SharedInfo.BuildInfo.Variant).ConfigureAwait(false);
+
+			switch (remoteChecksum) {
+				case null:
+					// Timeout or error, refuse to update as a security measure
+					return null;
+				case "":
+					// Unknown checksum, release too new or actual malicious build published, no need to scare the user as it's 99.99% the first
+					ArchiLogger.LogGenericWarning(Strings.ChecksumMissing);
+
+					return SharedInfo.Version;
+			}
+
+			byte[] responseBytes = response.Content as byte[] ?? response.Content.ToArray();
+
+			string checksum = Convert.ToHexString(SHA512.HashData(responseBytes));
+
+			if (!checksum.Equals(remoteChecksum, StringComparison.OrdinalIgnoreCase)) {
+				ArchiLogger.LogGenericError(Strings.ChecksumWrong);
+
+				return SharedInfo.Version;
+			}
+
 			try {
 				// We disable ArchiKestrel here as the update process moves the core files and might result in IPC crash
 				// TODO: It might fail if the update was triggered from the API, this should be something to improve in the future, by changing the structure into request -> return response -> finish update
@@ -293,7 +318,9 @@ public static class ASF {
 				ArchiLogger.LogGenericWarningException(e);
 			}
 
-			MemoryStream ms = new(response.Content as byte[] ?? response.Content.ToArray());
+			ArchiLogger.LogGenericInfo(Strings.PatchingFiles);
+
+			MemoryStream ms = new(responseBytes);
 
 			try {
 				await using (ms.ConfigureAwait(false)) {
@@ -382,9 +409,9 @@ public static class ASF {
 
 		if (!string.IsNullOrEmpty(Program.NetworkGroup)) {
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			networkGroupText = $"-{BitConverter.ToString(SHA256.HashData(Encoding.UTF8.GetBytes(Program.NetworkGroup!))).Replace("-", "", StringComparison.Ordinal)}";
+			networkGroupText = $"-{Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(Program.NetworkGroup!)))}";
 		} else if (!string.IsNullOrEmpty(GlobalConfig.WebProxyText)) {
-			networkGroupText = $"-{BitConverter.ToString(SHA256.HashData(Encoding.UTF8.GetBytes(GlobalConfig.WebProxyText!))).Replace("-", "", StringComparison.Ordinal)}";
+			networkGroupText = $"-{Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(GlobalConfig.WebProxyText!)))}";
 		}
 
 		ConfirmationsSemaphore ??= await PluginsCore.GetCrossProcessSemaphore($"{nameof(ConfirmationsSemaphore)}{networkGroupText}").ConfigureAwait(false);

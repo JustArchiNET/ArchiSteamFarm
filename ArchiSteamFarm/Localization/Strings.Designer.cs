@@ -1178,5 +1178,29 @@ namespace ArchiSteamFarm.Localization {
                 return ResourceManager.GetString("WarningRunningInUnsupportedEnvironment", resourceCulture);
             }
         }
+        
+        public static string VerifyingChecksumWithRemoteServer {
+            get {
+                return ResourceManager.GetString("VerifyingChecksumWithRemoteServer", resourceCulture);
+            }
+        }
+        
+        public static string ChecksumMissing {
+            get {
+                return ResourceManager.GetString("ChecksumMissing", resourceCulture);
+            }
+        }
+        
+        public static string ChecksumWrong {
+            get {
+                return ResourceManager.GetString("ChecksumWrong", resourceCulture);
+            }
+        }
+        
+        public static string PatchingFiles {
+            get {
+                return ResourceManager.GetString("PatchingFiles", resourceCulture);
+            }
+        }
     }
 }
