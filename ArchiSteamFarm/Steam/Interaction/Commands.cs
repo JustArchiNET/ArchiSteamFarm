@@ -34,7 +34,6 @@ using ArchiSteamFarm.Plugins;
 using ArchiSteamFarm.Steam.Cards;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Integration;
-using ArchiSteamFarm.Steam.Integration.Callbacks;
 using ArchiSteamFarm.Steam.Storage;
 using ArchiSteamFarm.Storage;
 using JetBrains.Annotations;
@@ -2546,49 +2545,59 @@ public sealed class Commands {
 						} else {
 							bool skipRequest = triedBots.Contains(currentBot) || rateLimitedBots.Contains(currentBot);
 
-							// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-							PurchaseResponseCallback? result = skipRequest ? new PurchaseResponseCallback(EResult.Fail, EPurchaseResultDetail.CancelledByUser) : await currentBot.Actions.RedeemKey(key!).ConfigureAwait(false);
+							EResult result = EResult.Fail;
+							EPurchaseResultDetail purchaseResultDetail = EPurchaseResultDetail.CancelledByUser;
+							Dictionary<uint, string>? items = null;
 
-							if (result == null) {
-								response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, EPurchaseResultDetail.Timeout), currentBot.BotName));
+							if (!skipRequest) {
+								// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+								SteamApps.PurchaseResponseCallback? redeemResult = await currentBot.Actions.RedeemKey(key!).ConfigureAwait(false);
+
+								result = redeemResult?.Result ?? EResult.Timeout;
+								purchaseResultDetail = redeemResult?.PurchaseResultDetail ?? EPurchaseResultDetail.Timeout;
+								items = redeemResult?.ParseItems();
+							}
+
+							if ((result == EResult.Timeout) || (purchaseResultDetail == EPurchaseResultDetail.Timeout)) {
+								response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{result}/{purchaseResultDetail}"), currentBot.BotName));
 
 								// Either bot will be changed, or loop aborted
 								currentBot = null;
 							} else {
 								triedBots.Add(currentBot);
 
-								if ((result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) || ((result.PurchaseResultDetail == EPurchaseResultDetail.BadActivationCode) && assumeWalletKeyOnBadActivationCode)) {
+								if ((purchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) || ((purchaseResultDetail == EPurchaseResultDetail.BadActivationCode) && assumeWalletKeyOnBadActivationCode)) {
 									if (Bot.WalletCurrency != ECurrencyCode.Invalid) {
 										// If it's a wallet code, we try to redeem it first, then handle the inner result as our primary one
 										// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 										(EResult Result, EPurchaseResultDetail? PurchaseResult)? walletResult = await currentBot.ArchiWebHandler.RedeemWalletKey(key!).ConfigureAwait(false);
 
 										if (walletResult != null) {
-											result.Result = walletResult.Value.Result;
-											result.PurchaseResultDetail = walletResult.Value.PurchaseResult.GetValueOrDefault(walletResult.Value.Result == EResult.OK ? EPurchaseResultDetail.NoDetail : EPurchaseResultDetail.CannotRedeemCodeFromClient);
+											result = walletResult.Value.Result;
+											purchaseResultDetail = walletResult.Value.PurchaseResult.GetValueOrDefault(walletResult.Value.Result == EResult.OK ? EPurchaseResultDetail.NoDetail : EPurchaseResultDetail.CannotRedeemCodeFromClient);
 										} else {
-											result.Result = EResult.Timeout;
-											result.PurchaseResultDetail = EPurchaseResultDetail.Timeout;
+											result = EResult.Timeout;
+											purchaseResultDetail = EPurchaseResultDetail.Timeout;
 										}
 									} else {
 										// We're unable to redeem this code from the client due to missing currency information
-										result.PurchaseResultDetail = EPurchaseResultDetail.CannotRedeemCodeFromClient;
+										purchaseResultDetail = EPurchaseResultDetail.CannotRedeemCodeFromClient;
 									}
 								}
 
-								if (result.Items?.Count > 0) {
-									response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, $"{result.Result}/{result.PurchaseResultDetail}", string.Join(", ", result.Items)), currentBot.BotName));
+								if (items?.Count > 0) {
+									response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, $"{result}/{purchaseResultDetail}", string.Join(", ", items)), currentBot.BotName));
 								} else if (!skipRequest) {
-									response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{result.Result}/{result.PurchaseResultDetail}"), currentBot.BotName));
+									response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{result}/{purchaseResultDetail}"), currentBot.BotName));
 								}
 
-								switch (result.PurchaseResultDetail) {
+								switch (purchaseResultDetail) {
 									case EPurchaseResultDetail.BadActivationCode:
 									case EPurchaseResultDetail.CannotRedeemCodeFromClient:
 									case EPurchaseResultDetail.DuplicateActivationCode:
 									case EPurchaseResultDetail.NoDetail: // OK
 									case EPurchaseResultDetail.Timeout:
-										if ((result.Result != EResult.Timeout) && (result.PurchaseResultDetail != EPurchaseResultDetail.Timeout)) {
+										if ((result != EResult.Timeout) && (purchaseResultDetail != EPurchaseResultDetail.Timeout)) {
 											// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 											unusedKeys.Remove(key!);
 										}
@@ -2596,7 +2605,7 @@ public sealed class Commands {
 										// Next key
 										key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null;
 
-										if (result.PurchaseResultDetail == EPurchaseResultDetail.NoDetail) {
+										if (purchaseResultDetail == EPurchaseResultDetail.NoDetail) {
 											// Next bot (if needed)
 											break;
 										}
@@ -2608,7 +2617,7 @@ public sealed class Commands {
 									case EPurchaseResultDetail.CancelledByUser:
 									case EPurchaseResultDetail.DoesNotOwnRequiredApp:
 									case EPurchaseResultDetail.RestrictedCountry:
-										if (!forward || (keepMissingGames && (result.PurchaseResultDetail != EPurchaseResultDetail.AlreadyPurchased))) {
+										if (!forward || (keepMissingGames && (purchaseResultDetail != EPurchaseResultDetail.AlreadyPurchased))) {
 											// Next key
 											key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null;
 
@@ -2621,15 +2630,15 @@ public sealed class Commands {
 											break;
 										}
 
-										Dictionary<uint, string> items = result.Items ?? new Dictionary<uint, string>();
+										items ??= new Dictionary<uint, string>();
 
 										bool alreadyHandled = false;
 
 										foreach (Bot innerBot in Bot.Bots.Where(bot => (bot.Value != currentBot) && (!redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || (bot.Value != Bot)) && !triedBots.Contains(bot.Value) && !rateLimitedBots.Contains(bot.Value) && bot.Value.IsConnectedAndLoggedOn && bot.Value.Commands.Bot.HasAccess(steamID, BotConfig.EAccess.Operator) && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.ContainsKey(packageID)))).OrderBy(static bot => bot.Key, Bot.BotsComparer).Select(static bot => bot.Value)) {
 											// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-											PurchaseResponseCallback? otherResult = await innerBot.Actions.RedeemKey(key!).ConfigureAwait(false);
+											SteamApps.PurchaseResponseCallback? redeemResult = await innerBot.Actions.RedeemKey(key!).ConfigureAwait(false);
 
-											if (otherResult == null) {
+											if (redeemResult == null) {
 												response.AppendLine(FormatBotResponse(string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{EResult.Timeout}/{EPurchaseResultDetail.Timeout}"), innerBot.BotName));
 
 												continue;
@@ -2637,7 +2646,7 @@ public sealed class Commands {
 
 											triedBots.Add(innerBot);
 
-											switch (otherResult.PurchaseResultDetail) {
+											switch (redeemResult.PurchaseResultDetail) {
 												case EPurchaseResultDetail.BadActivationCode:
 												case EPurchaseResultDetail.DuplicateActivationCode:
 												case EPurchaseResultDetail.NoDetail: // OK
@@ -2654,17 +2663,19 @@ public sealed class Commands {
 													break;
 											}
 
-											response.AppendLine(FormatBotResponse(otherResult.Items?.Count > 0 ? string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, $"{otherResult.Result}/{otherResult.PurchaseResultDetail}", string.Join(", ", otherResult.Items)) : string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{otherResult.Result}/{otherResult.PurchaseResultDetail}"), innerBot.BotName));
+											Dictionary<uint, string>? redeemItems = redeemResult.ParseItems();
+
+											response.AppendLine(FormatBotResponse(redeemItems?.Count > 0 ? string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, $"{redeemResult.Result}/{redeemResult.PurchaseResultDetail}", string.Join(", ", redeemItems)) : string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{redeemResult.Result}/{redeemResult.PurchaseResultDetail}"), innerBot.BotName));
 
 											if (alreadyHandled) {
 												break;
 											}
 
-											if (otherResult.Items == null) {
+											if (redeemItems == null) {
 												continue;
 											}
 
-											foreach ((uint packageID, string packageName) in otherResult.Items.Where(item => !items.ContainsKey(item.Key))) {
+											foreach ((uint packageID, string packageName) in redeemItems.Where(item => !items.ContainsKey(item.Key))) {
 												items[packageID] = packageName;
 											}
 										}
@@ -2679,7 +2690,7 @@ public sealed class Commands {
 
 										goto case EPurchaseResultDetail.CancelledByUser;
 									default:
-										ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(result.PurchaseResultDetail), result.PurchaseResultDetail));
+										ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.WarningUnknownValuePleaseReport, nameof(purchaseResultDetail), purchaseResultDetail));
 
 										// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
 										unusedKeys.Remove(key!);

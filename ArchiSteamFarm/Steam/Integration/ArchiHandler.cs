@@ -158,16 +158,6 @@ public sealed class ArchiHandler : ClientMsgHandler {
 				Client.PostCallback(new PlayingSessionStateCallback(packetMsg.TargetJobID, playingSessionState.Body));
 
 				break;
-			case EMsg.ClientPurchaseResponse:
-				ClientMsgProtobuf<CMsgClientPurchaseResponse> purchaseResponse = new(packetMsg);
-				Client.PostCallback(new PurchaseResponseCallback(packetMsg.TargetJobID, purchaseResponse.Body));
-
-				break;
-			case EMsg.ClientRedeemGuestPassResponse:
-				ClientMsgProtobuf<CMsgClientRedeemGuestPassResponse> redeemGuestPassResponse = new(packetMsg);
-				Client.PostCallback(new RedeemGuestPassResponseCallback(packetMsg.TargetJobID, redeemGuestPassResponse.Body));
-
-				break;
 			case EMsg.ClientSharedLibraryLockStatus:
 				ClientMsgProtobuf<CMsgClientSharedLibraryLockStatus> sharedLibraryLockStatus = new(packetMsg);
 				Client.PostCallback(new SharedLibraryLockStatusCallback(packetMsg.TargetJobID, sharedLibraryLockStatus.Body));
@@ -566,7 +556,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		Client.Send(request);
 	}
 
-	internal async Task<RedeemGuestPassResponseCallback?> RedeemGuestPass(ulong guestPassID) {
+	internal async Task<SteamApps.RedeemGuestPassResponseCallback?> RedeemGuestPass(ulong guestPassID) {
 		if (guestPassID == 0) {
 			throw new ArgumentOutOfRangeException(nameof(guestPassID));
 		}
@@ -587,7 +577,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		Client.Send(request);
 
 		try {
-			return await new AsyncJob<RedeemGuestPassResponseCallback>(Client, request.SourceJobID).ToLongRunningTask().ConfigureAwait(false);
+			return await new AsyncJob<SteamApps.RedeemGuestPassResponseCallback>(Client, request.SourceJobID).ToLongRunningTask().ConfigureAwait(false);
 		} catch (Exception e) {
 			ArchiLogger.LogGenericException(e);
 
@@ -595,7 +585,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		}
 	}
 
-	internal async Task<PurchaseResponseCallback?> RedeemKey(string key) {
+	internal async Task<SteamApps.PurchaseResponseCallback?> RedeemKey(string key) {
 		if (string.IsNullOrEmpty(key)) {
 			throw new ArgumentNullException(nameof(key));
 		}
@@ -616,7 +606,7 @@ public sealed class ArchiHandler : ClientMsgHandler {
 		Client.Send(request);
 
 		try {
-			return await new AsyncJob<PurchaseResponseCallback>(Client, request.SourceJobID).ToLongRunningTask().ConfigureAwait(false);
+			return await new AsyncJob<SteamApps.PurchaseResponseCallback>(Client, request.SourceJobID).ToLongRunningTask().ConfigureAwait(false);
 		} catch (Exception e) {
 			ArchiLogger.LogGenericException(e);
 
@@ -793,23 +783,6 @@ public sealed class ArchiHandler : ClientMsgHandler {
 
 			JobID = jobID;
 			PlayingBlocked = msg.playing_blocked;
-		}
-	}
-
-	internal sealed class RedeemGuestPassResponseCallback : CallbackMsg {
-		internal readonly EResult Result;
-
-		internal RedeemGuestPassResponseCallback(JobID jobID, CMsgClientRedeemGuestPassResponse msg) {
-			if (jobID == null) {
-				throw new ArgumentNullException(nameof(jobID));
-			}
-
-			if (msg == null) {
-				throw new ArgumentNullException(nameof(msg));
-			}
-
-			JobID = jobID;
-			Result = (EResult) msg.eresult;
 		}
 	}
 

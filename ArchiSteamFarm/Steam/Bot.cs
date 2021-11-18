@@ -3181,7 +3181,7 @@ public sealed class Bot : IAsyncDisposable {
 				}
 
 				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				PurchaseResponseCallback? result = await Actions.RedeemKey(key!).ConfigureAwait(false);
+				SteamApps.PurchaseResponseCallback? result = await Actions.RedeemKey(key!).ConfigureAwait(false);
 
 				if (result == null) {
 					continue;
@@ -3201,7 +3201,9 @@ public sealed class Bot : IAsyncDisposable {
 					}
 				}
 
-				ArchiLogger.LogGenericDebug(result.Items?.Count > 0 ? string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, $"{result.Result}/{result.PurchaseResultDetail}", string.Join(", ", result.Items)) : string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{result.Result}/{result.PurchaseResultDetail}"));
+				Dictionary<uint, string>? items = result.ParseItems();
+
+				ArchiLogger.LogGenericDebug(items?.Count > 0 ? string.Format(CultureInfo.CurrentCulture, Strings.BotRedeemWithItems, key, $"{result.Result}/{result.PurchaseResultDetail}", string.Join(", ", items)) : string.Format(CultureInfo.CurrentCulture, Strings.BotRedeem, key, $"{result.Result}/{result.PurchaseResultDetail}"));
 
 				bool rateLimited = false;
 				bool redeemed = false;
@@ -3239,11 +3241,11 @@ public sealed class Bot : IAsyncDisposable {
 
 				// If user omitted the name or intentionally provided the same name as key, replace it with the Steam result
 				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				if (name!.Equals(key, StringComparison.OrdinalIgnoreCase) && (result.Items?.Count > 0)) {
-					name = string.Join(", ", result.Items.Values);
+				if (name!.Equals(key, StringComparison.OrdinalIgnoreCase) && (items?.Count > 0)) {
+					name = string.Join(", ", items.Values);
 				}
 
-				string logEntry = $"{name}{DefaultBackgroundKeysRedeemerSeparator}[{result.PurchaseResultDetail}]{(result.Items?.Count > 0 ? $"{DefaultBackgroundKeysRedeemerSeparator}{string.Join(", ", result.Items)}" : "")}{DefaultBackgroundKeysRedeemerSeparator}{key}";
+				string logEntry = $"{name}{DefaultBackgroundKeysRedeemerSeparator}[{result.PurchaseResultDetail}]{(items?.Count > 0 ? $"{DefaultBackgroundKeysRedeemerSeparator}{string.Join(", ", items)}" : "")}{DefaultBackgroundKeysRedeemerSeparator}{key}";
 
 				string filePath = GetFilePath(redeemed ? EFileType.KeysToRedeemUsed : EFileType.KeysToRedeemUnused);
 

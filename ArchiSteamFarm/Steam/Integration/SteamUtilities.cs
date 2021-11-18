@@ -21,74 +21,25 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
 using System.Net;
 using ArchiSteamFarm.Core;
-using JetBrains.Annotations;
 using SteamKit2;
-using SteamKit2.Internal;
 
-namespace ArchiSteamFarm.Steam.Integration.Callbacks;
+namespace ArchiSteamFarm.Steam.Integration;
 
-public sealed class PurchaseResponseCallback : CallbackMsg {
-	[PublicAPI]
-	public Dictionary<uint, string>? Items { get; }
-
-	public EPurchaseResultDetail PurchaseResultDetail { get; internal set; }
-
-	[PublicAPI]
-	public EResult Result { get; internal set; }
-
-	internal PurchaseResponseCallback(EResult result, EPurchaseResultDetail purchaseResult) {
-		if (!Enum.IsDefined(typeof(EResult), result)) {
-			throw new InvalidEnumArgumentException(nameof(result), (int) result, typeof(EResult));
+internal static class SteamUtilities {
+	internal static Dictionary<uint, string>? ParseItems(this SteamApps.PurchaseResponseCallback callback) {
+		if (callback == null) {
+			throw new ArgumentNullException(nameof(callback));
 		}
 
-		if (!Enum.IsDefined(typeof(EPurchaseResultDetail), purchaseResult)) {
-			throw new InvalidEnumArgumentException(nameof(purchaseResult), (int) purchaseResult, typeof(EPurchaseResultDetail));
-		}
-
-		Result = result;
-		PurchaseResultDetail = purchaseResult;
-	}
-
-	internal PurchaseResponseCallback(JobID jobID, CMsgClientPurchaseResponse msg) {
-		if (jobID == null) {
-			throw new ArgumentNullException(nameof(jobID));
-		}
-
-		if (msg == null) {
-			throw new ArgumentNullException(nameof(msg));
-		}
-
-		JobID = jobID;
-		PurchaseResultDetail = (EPurchaseResultDetail) msg.purchase_result_details;
-		Result = (EResult) msg.eresult;
-
-		if (msg.purchase_receipt_info == null) {
-			ASF.ArchiLogger.LogNullError(nameof(msg.purchase_receipt_info));
-
-			return;
-		}
-
-		KeyValue receiptInfo = new();
-
-		using (MemoryStream ms = new(msg.purchase_receipt_info)) {
-			if (!receiptInfo.TryReadAsBinary(ms)) {
-				ASF.ArchiLogger.LogNullError(nameof(ms));
-
-				return;
-			}
-		}
-
-		List<KeyValue> lineItems = receiptInfo["lineitems"].Children;
+		List<KeyValue> lineItems = callback.PurchaseReceiptInfo["lineitems"].Children;
 
 		if (lineItems.Count == 0) {
-			return;
+			return null;
 		}
 
-		Items = new Dictionary<uint, string>(lineItems.Count);
+		Dictionary<uint, string> result = new(lineItems.Count);
 
 		foreach (KeyValue lineItem in lineItems) {
 			uint packageID = lineItem["PackageID"].AsUnsignedInteger();
@@ -101,7 +52,7 @@ public sealed class PurchaseResponseCallback : CallbackMsg {
 				if (packageID == 0) {
 					ASF.ArchiLogger.LogNullError(nameof(packageID));
 
-					return;
+					return null;
 				}
 			}
 
@@ -110,12 +61,14 @@ public sealed class PurchaseResponseCallback : CallbackMsg {
 			if (string.IsNullOrEmpty(gameName)) {
 				ASF.ArchiLogger.LogNullError(nameof(gameName));
 
-				return;
+				return null;
 			}
 
 			// Apparently steam expects client to decode sent HTML
 			gameName = WebUtility.HtmlDecode(gameName);
-			Items[packageID] = gameName;
+			result[packageID] = gameName;
 		}
+
+		return result;
 	}
 }

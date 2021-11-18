@@ -33,8 +33,6 @@ using ArchiSteamFarm.Helpers;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Steam.Data;
 using ArchiSteamFarm.Steam.Exchange;
-using ArchiSteamFarm.Steam.Integration;
-using ArchiSteamFarm.Steam.Integration.Callbacks;
 using ArchiSteamFarm.Steam.Security;
 using ArchiSteamFarm.Steam.Storage;
 using ArchiSteamFarm.Storage;
@@ -243,7 +241,7 @@ public sealed class Actions : IAsyncDisposable {
 	}
 
 	[PublicAPI]
-	public async Task<PurchaseResponseCallback?> RedeemKey(string key) {
+	public async Task<SteamApps.PurchaseResponseCallback?> RedeemKey(string key) {
 		await LimitGiftsRequestsAsync().ConfigureAwait(false);
 
 		return await Bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
@@ -494,7 +492,7 @@ public sealed class Actions : IAsyncDisposable {
 			Bot.ArchiLogger.LogGenericInfo(string.Format(CultureInfo.CurrentCulture, Strings.BotAcceptingGift, guestPassID));
 			await LimitGiftsRequestsAsync().ConfigureAwait(false);
 
-			ArchiHandler.RedeemGuestPassResponseCallback? response = await Bot.ArchiHandler.RedeemGuestPass(guestPassID).ConfigureAwait(false);
+			SteamApps.RedeemGuestPassResponseCallback? response = await Bot.ArchiHandler.RedeemGuestPass(guestPassID).ConfigureAwait(false);
 
 			if (response != null) {
 				if (response.Result == EResult.OK) {
