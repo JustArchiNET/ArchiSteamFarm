@@ -319,12 +319,12 @@ public sealed class Bot : IAsyncDisposable {
 		CallbackManager.Subscribe<SteamUser.LoggedOnCallback>(OnLoggedOn);
 		CallbackManager.Subscribe<SteamUser.LoginKeyCallback>(OnLoginKey);
 		CallbackManager.Subscribe<SteamUser.UpdateMachineAuthCallback>(OnMachineAuth);
+		CallbackManager.Subscribe<SteamUser.VanityURLChangedCallback>(OnVanityURLChangedCallback);
 		CallbackManager.Subscribe<SteamUser.WalletInfoCallback>(OnWalletUpdate);
 
 		CallbackManager.Subscribe<ArchiHandler.PlayingSessionStateCallback>(OnPlayingSessionState);
 		CallbackManager.Subscribe<ArchiHandler.SharedLibraryLockStatusCallback>(OnSharedLibraryLockStatus);
 		CallbackManager.Subscribe<UserNotificationsCallback>(OnUserNotifications);
-		CallbackManager.Subscribe<ArchiHandler.VanityURLChangedCallback>(OnVanityURLChangedCallback);
 
 		Actions = new Actions(this);
 		CardsFarmer = new CardsFarmer(this);
@@ -3138,7 +3138,7 @@ public sealed class Bot : IAsyncDisposable {
 		}
 	}
 
-	private void OnVanityURLChangedCallback(ArchiHandler.VanityURLChangedCallback callback) {
+	private void OnVanityURLChangedCallback(SteamUser.VanityURLChangedCallback callback) {
 		if (callback == null) {
 			throw new ArgumentNullException(nameof(callback));
 		}

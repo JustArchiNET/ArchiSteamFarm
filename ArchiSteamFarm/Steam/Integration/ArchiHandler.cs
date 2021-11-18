@@ -178,11 +178,6 @@ public sealed class ArchiHandler : ClientMsgHandler {
 				Client.PostCallback(new UserNotificationsCallback(packetMsg.TargetJobID, userNotifications.Body));
 
 				break;
-			case EMsg.ClientVanityURLChangedNotification:
-				ClientMsgProtobuf<CMsgClientVanityURLChangedNotification> vanityURLChangedNotification = new(packetMsg);
-				Client.PostCallback(new VanityURLChangedCallback(packetMsg.TargetJobID, vanityURLChangedNotification.Body));
-
-				break;
 		}
 	}
 
@@ -837,23 +832,6 @@ public sealed class ArchiHandler : ClientMsgHandler {
 			}
 
 			LibraryLockedBySteamID = new SteamID(msg.own_library_locked_by, EUniverse.Public, EAccountType.Individual);
-		}
-	}
-
-	internal sealed class VanityURLChangedCallback : CallbackMsg {
-		internal readonly string VanityURL;
-
-		internal VanityURLChangedCallback(JobID jobID, CMsgClientVanityURLChangedNotification msg) {
-			if (jobID == null) {
-				throw new ArgumentNullException(nameof(jobID));
-			}
-
-			if (msg == null) {
-				throw new ArgumentNullException(nameof(msg));
-			}
-
-			JobID = jobID;
-			VanityURL = msg.vanity_url;
 		}
 	}
 
