@@ -729,4 +729,8 @@ Thời gian hoạt động: {1}</value>
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
 		<value>Bạn đang chạy ASF trong môi trường không được hỗ trợ, bằng việc cung cấp lệnh --ignore-unsupported-environment. Xin lưu ý rằng chúng tôi không cung cấp bất cứ sự hỗ trợ nào cho hoàn cảnh này và bạn hoàn toàn tự chịu trách nhiệm. Bạn đã được cảnh báo.</value>
 	</data>
+	
+	
+	
+	
 </root>

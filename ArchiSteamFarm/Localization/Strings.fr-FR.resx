@@ -729,4 +729,8 @@ Durée de fonctionnement : {1}</value>
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
 		<value>Vous utilisez ASF dans un environnement non pris en charge, en utilisant --ignore-unsupported-environment comme argument. Veuillez noter que nous n'offrons aucun support pour ce scénario et que vous le faites risques et périls. Vous avez été prévenu.</value>
 	</data>
+	
+	
+	
+	
 </root>

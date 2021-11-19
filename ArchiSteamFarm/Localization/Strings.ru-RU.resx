@@ -729,4 +729,8 @@
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
 		<value>Вы запускаете ASF в неподдерживаемой среде с аргументом --ignore-unsupported-environment.  Обратите внимание, что мы не оказываем никакой поддержки в этом случае, и вы делаете это исключительно на свой страх и риск.  Вас предупредили.</value>
 	</data>
+	
+	
+	
+	
 </root>

@@ -729,4 +729,8 @@ Prozesslaufzeit: {1}</value>
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
 		<value>Du verwendest ASF in einer nicht unterstützten Umgebung und verwendest das Argument --ignore-unsupported-environment. Bitte beachte, dass wir für dieses Szenario keinerlei Unterstützung anbieten und du das Risiko vollständig auf dich selber nehmen musst. Du wurdest gewarnt.</value>
 	</data>
+	
+	
+	
+	
 </root>
