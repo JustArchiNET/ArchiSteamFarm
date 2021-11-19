@@ -25,6 +25,7 @@ using System.Collections.Immutable;
 using System.Composition;
 using System.Composition.Convention;
 using System.Composition.Hosting;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -135,6 +136,7 @@ internal static class PluginsCore {
 		return results.FirstOrDefault();
 	}
 
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	internal static bool InitPlugins() {
 		if (ActivePlugins != null) {
 			return false;
@@ -630,6 +632,7 @@ internal static class PluginsCore {
 		}
 	}
 
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	private static HashSet<Assembly>? LoadAssembliesFrom(string path) {
 		if (string.IsNullOrEmpty(path)) {
 			throw new ArgumentNullException(nameof(path));

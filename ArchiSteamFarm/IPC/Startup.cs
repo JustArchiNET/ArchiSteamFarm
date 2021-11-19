@@ -27,6 +27,7 @@ using IMvcBuilder = Microsoft.Extensions.DependencyInjection.IMvcCoreBuilder;
 #endif
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -58,6 +59,7 @@ internal sealed class Startup {
 
 	public Startup(IConfiguration configuration) => Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "PathString is a primitive, it's unlikely to be trimmed to the best of our knowledge")]
 	[UsedImplicitly]
 	public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
 		if (app == null) {
@@ -185,6 +187,7 @@ internal sealed class Startup {
 		);
 	}
 
+	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "HashSet<string> isn't a primitive, but we widely use the required features everywhere and it's unlikely to be trimmed to the best of our knowledge")]
 	public void ConfigureServices(IServiceCollection services) {
 		if (services == null) {
 			throw new ArgumentNullException(nameof(services));
