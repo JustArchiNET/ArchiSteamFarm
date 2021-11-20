@@ -143,7 +143,7 @@ internal static class OS {
 		if (OperatingSystem.IsWindows()) {
 			using WindowsIdentity identity = WindowsIdentity.GetCurrent();
 
-			return new WindowsPrincipal(identity).IsInRole(WindowsBuiltInRole.Administrator);
+			return identity.IsSystem || new WindowsPrincipal(identity).IsInRole(WindowsBuiltInRole.Administrator);
 		}
 
 		if (OperatingSystem.IsFreeBSD() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) {
