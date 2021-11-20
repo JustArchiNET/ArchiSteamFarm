@@ -729,8 +729,16 @@
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
 		<value>您提供了 --ignore-unsupported-environment 参数，使 ASF 在不受支持的环境中运行。请注意我们不会为此场景提供任何类型的支持。如果您一定要这样做，必须自己承担一切责任。</value>
 	</data>
-	
-	
-	
-	
+	<data name="VerifyingChecksumWithRemoteServer" xml:space="preserve">
+		<value>正在通过 ASF 远程服务器验证下载的二进制文件校验和……</value>
+	</data>
+	<data name="ChecksumMissing" xml:space="preserve">
+		<value>远程服务器不知道我们要更新到的版本信息。这种情况可能是因为版本刚刚发布——作为额外的安全措施，已延后更新过程。</value>
+	</data>
+	<data name="ChecksumWrong" xml:space="preserve">
+		<value>远程服务器响应了不同的校验和，这可能表示下载损坏或者中间人攻击，已拒绝执行更新过程！</value>
+	</data>
+	<data name="PatchingFiles" xml:space="preserve">
+		<value>修补 ASF 文件……</value>
+	</data>
 </root>
