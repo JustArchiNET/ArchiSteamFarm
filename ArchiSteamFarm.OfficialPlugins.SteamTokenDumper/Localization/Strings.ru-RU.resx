@@ -164,5 +164,8 @@
 		<value>Количество подтвержденных хранилищ: {0}</value>
 		<comment>{0} will be replaced by list of the depots (IDs, numbers), separated by a comma</comment>
 	</data>
-	
+	<data name="PluginSecretListInitialized" xml:space="preserve">
+		<value>{0} инициализирован, плагин не взаимодействует ни с одним из их: {1}.</value>
+		<comment>{0} will be replaced by the name of the config property (e.g. "SecretPackageIDs"), {1} will be replaced by list of the objects (IDs, numbers), separated by a comma</comment>
+	</data>
 </root>
