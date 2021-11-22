@@ -77,6 +77,7 @@ public static class ASF {
 	internal static ICrossProcessSemaphore? RateLimitingSemaphore { get; private set; }
 	internal static ImmutableDictionary<Uri, (ICrossProcessSemaphore RateLimitingSemaphore, SemaphoreSlim OpenConnectionsSemaphore)>? WebLimitingSemaphores { get; private set; }
 
+	private static readonly ImmutableHashSet<string> AssembliesNeededBeforeUpdate = ImmutableHashSet.Create("System.IO.Pipes");
 	private static readonly SemaphoreSlim UpdateSemaphore = new(1, 1);
 
 	private static Timer? AutoUpdatesTimer;
@@ -419,17 +420,31 @@ public static class ASF {
 		}.ToImmutableDictionary();
 	}
 
+	private static void LoadAssembliesNeededBeforeUpdate() {
+		HashSet<string> loadedAssembliesNames = new();
+
+		foreach (Assembly assembly in AssembliesNeededBeforeUpdate.Select(Assembly.Load)) {
+			LoadAssembliesRecursively(assembly, loadedAssembliesNames);
+		}
+	}
+
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
 	private static void LoadAssembliesRecursively(Assembly assembly, HashSet<string>? loadedAssembliesNames = null) {
 		if (assembly == null) {
 			throw new ArgumentNullException(nameof(assembly));
 		}
 
-		if (loadedAssembliesNames == null) {
+		if ((loadedAssembliesNames == null) || (loadedAssembliesNames.Count == 0)) {
 			Assembly[] loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
 
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			loadedAssembliesNames = loadedAssemblies.Select(static loadedAssembly => loadedAssembly.FullName).Where(static name => !string.IsNullOrEmpty(name)).ToHashSet()!;
+			IEnumerable<string> loadedAssembliesEnumerable = loadedAssemblies.Select(static loadedAssembly => loadedAssembly.FullName).Where(static name => !string.IsNullOrEmpty(name))!;
+
+			if (loadedAssembliesNames == null) {
+				loadedAssembliesNames = loadedAssembliesEnumerable.ToHashSet();
+			} else {
+				loadedAssembliesNames.UnionWith(loadedAssembliesEnumerable);
+			}
 		}
 
 		foreach (AssemblyName assemblyName in assembly.GetReferencedAssemblies().Where(assemblyName => !loadedAssembliesNames.Contains(assemblyName.FullName))) {
@@ -923,6 +938,11 @@ public static class ASF {
 			// Before actually moving files in update procedure, let's minimize the risk of some assembly not being loaded that we may need in the process
 			LoadAssembliesRecursively(Assembly.GetExecutingAssembly());
 		}
+
+		// This is a tricky one, for some reason we might need to preload some selected assemblies even in OS-specific builds that normally should be self-contained...
+		// It's as if the executable file was directly mapped to memory and moving it out of the original path caused the whole thing to crash
+		// TODO: This is a total hack, I wish we could get to the bottom of this hole and find out what is really going on there in regards to the above
+		LoadAssembliesNeededBeforeUpdate();
 
 		// Firstly we'll move all our existing files to a backup directory
 		string backupDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectory);
