@@ -367,6 +367,13 @@ public static class ASF {
 		return LastWriteEvents.TryGetValue(filePath, out object? savedWriteEvent) && (currentWriteEvent == savedWriteEvent) && LastWriteEvents.TryRemove(filePath, out _);
 	}
 
+	private static HashSet<string> GetLoadedAssembliesNames() {
+		Assembly[] loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+		// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+		return loadedAssemblies.Select(static loadedAssembly => loadedAssembly.FullName).Where(static name => !string.IsNullOrEmpty(name)).ToHashSet(StringComparer.Ordinal)!;
+	}
+
 	private static void InitConfigWatchEvents() {
 		if ((FileSystemWatcher != null) || (LastWriteEvents != null)) {
 			return;
@@ -420,31 +427,28 @@ public static class ASF {
 		}.ToImmutableDictionary();
 	}
 
-	private static void LoadAssembliesNeededBeforeUpdate() {
-		HashSet<string> loadedAssembliesNames = new();
+	private static void LoadAllAssemblies() {
+		HashSet<string> loadedAssembliesNames = GetLoadedAssembliesNames();
 
-		foreach (Assembly assembly in AssembliesNeededBeforeUpdate.Select(Assembly.Load)) {
+		LoadAssembliesRecursively(Assembly.GetExecutingAssembly(), loadedAssembliesNames);
+	}
+
+	private static void LoadAssembliesNeededBeforeUpdate() {
+		HashSet<string> loadedAssembliesNames = GetLoadedAssembliesNames();
+
+		foreach (Assembly assembly in AssembliesNeededBeforeUpdate.Where(assemblyName => !loadedAssembliesNames.Contains(assemblyName)).Select(Assembly.Load)) {
 			LoadAssembliesRecursively(assembly, loadedAssembliesNames);
 		}
 	}
 
 	[UnconditionalSuppressMessage("AssemblyLoadTrimming", "IL2026:RequiresUnreferencedCode", Justification = "We don't care about trimmed assemblies, as we need it to work only with the known (used) ones")]
-	private static void LoadAssembliesRecursively(Assembly assembly, HashSet<string>? loadedAssembliesNames = null) {
+	private static void LoadAssembliesRecursively(Assembly assembly, ICollection<string> loadedAssembliesNames) {
 		if (assembly == null) {
 			throw new ArgumentNullException(nameof(assembly));
 		}
 
 		if ((loadedAssembliesNames == null) || (loadedAssembliesNames.Count == 0)) {
-			Assembly[] loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
-
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			IEnumerable<string> loadedAssembliesEnumerable = loadedAssemblies.Select(static loadedAssembly => loadedAssembly.FullName).Where(static name => !string.IsNullOrEmpty(name))!;
-
-			if (loadedAssembliesNames == null) {
-				loadedAssembliesNames = loadedAssembliesEnumerable.ToHashSet();
-			} else {
-				loadedAssembliesNames.UnionWith(loadedAssembliesEnumerable);
-			}
+			throw new ArgumentNullException(nameof(loadedAssembliesNames));
 		}
 
 		foreach (AssemblyName assemblyName in assembly.GetReferencedAssemblies().Where(assemblyName => !loadedAssembliesNames.Contains(assemblyName.FullName))) {
@@ -936,7 +940,7 @@ public static class ASF {
 		if (SharedInfo.HomeDirectory == AppContext.BaseDirectory) {
 			// We're running a build that includes our dependencies in ASF's home
 			// Before actually moving files in update procedure, let's minimize the risk of some assembly not being loaded that we may need in the process
-			LoadAssembliesRecursively(Assembly.GetExecutingAssembly());
+			LoadAllAssemblies();
 		}
 
 		// This is a tricky one, for some reason we might need to preload some selected assemblies even in OS-specific builds that normally should be self-contained...
