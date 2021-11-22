@@ -941,12 +941,12 @@ public static class ASF {
 			// We're running a build that includes our dependencies in ASF's home
 			// Before actually moving files in update procedure, let's minimize the risk of some assembly not being loaded that we may need in the process
 			LoadAllAssemblies();
+		} else {
+			// This is a tricky one, for some reason we might need to preload some selected assemblies even in OS-specific builds that normally should be self-contained...
+			// It's as if the executable file was directly mapped to memory and moving it out of the original path caused the whole thing to crash
+			// TODO: This is a total hack, I wish we could get to the bottom of this hole and find out what is really going on there in regards to the above
+			LoadAssembliesNeededBeforeUpdate();
 		}
-
-		// This is a tricky one, for some reason we might need to preload some selected assemblies even in OS-specific builds that normally should be self-contained...
-		// It's as if the executable file was directly mapped to memory and moving it out of the original path caused the whole thing to crash
-		// TODO: This is a total hack, I wish we could get to the bottom of this hole and find out what is really going on there in regards to the above
-		LoadAssembliesNeededBeforeUpdate();
 
 		// Firstly we'll move all our existing files to a backup directory
 		string backupDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectory);
