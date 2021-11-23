@@ -733,7 +733,7 @@ Process uptime: {1}</value>
 		<value>Verifying checksum of the downloaded binary with ASF's remote server...</value>
 	</data>
 	<data name="ChecksumMissing" xml:space="preserve">
-		<value>Remote server doesn't know anything about the release we're updating to. This situation is possible if the release was published recently - holding off with the update procedure until a bit later as an additional security measure.</value>
+		<value>Remote server doesn't know anything about the release we're updating to. This situation is possible if the release was published recently - refusing to proceed with the update procedure right now as an additional security measure.</value>
 	</data>
 	<data name="ChecksumWrong" xml:space="preserve">
 		<value>Remote server has replied with a different checksum, this might indicate corrupted download or MITM attack, refusing to proceed with the update procedure!</value>
