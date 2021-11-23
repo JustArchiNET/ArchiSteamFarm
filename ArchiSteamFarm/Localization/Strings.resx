@@ -729,8 +729,11 @@ Process uptime: {1}</value>
 	<data name="WarningRunningInUnsupportedEnvironment" xml:space="preserve">
 		<value>You're running ASF in unsupported environment, supplying --ignore-unsupported-environment argument. Please note that we do not offer any kind of support for this scenario and you're doing it entirely at your own risk. You've been warned.</value>
 	</data>
+	<data name="FetchingChecksumFromRemoteServer" xml:space="preserve">
+		<value>Fetching checksum from the remote server...</value>
+	</data>
 	<data name="VerifyingChecksumWithRemoteServer" xml:space="preserve">
-		<value>Verifying checksum of the downloaded binary with ASF's remote server...</value>
+		<value>Verifying checksum of the downloaded binary against the one from the remote server...</value>
 	</data>
 	<data name="ChecksumMissing" xml:space="preserve">
 		<value>Remote server doesn't know anything about the release we're updating to. This situation is possible if the release was published recently - refusing to proceed with the update procedure right away as an additional security measure.</value>

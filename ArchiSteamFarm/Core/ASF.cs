@@ -266,6 +266,21 @@ public static class ASF {
 				return null;
 			}
 
+			ArchiLogger.LogGenericInfo(Strings.FetchingChecksumFromRemoteServer);
+
+			string? remoteChecksum = await ArchiNet.FetchBuildChecksum(newVersion, SharedInfo.BuildInfo.Variant).ConfigureAwait(false);
+
+			switch (remoteChecksum) {
+				case null:
+					// Timeout or error, refuse to update as a security measure
+					return null;
+				case "":
+					// Unknown checksum, release too new or actual malicious build published, no need to scare the user as it's 99.99% the first
+					ArchiLogger.LogGenericWarning(Strings.ChecksumMissing);
+
+					return SharedInfo.Version;
+			}
+
 			if (!string.IsNullOrEmpty(releaseResponse.ChangelogPlainText)) {
 				ArchiLogger.LogGenericInfo(releaseResponse.ChangelogPlainText!);
 			}
@@ -289,19 +304,6 @@ public static class ASF {
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.VerifyingChecksumWithRemoteServer);
-
-			string? remoteChecksum = await ArchiNet.FetchBuildChecksum(newVersion, SharedInfo.BuildInfo.Variant).ConfigureAwait(false);
-
-			switch (remoteChecksum) {
-				case null:
-					// Timeout or error, refuse to update as a security measure
-					return null;
-				case "":
-					// Unknown checksum, release too new or actual malicious build published, no need to scare the user as it's 99.99% the first
-					ArchiLogger.LogGenericWarning(Strings.ChecksumMissing);
-
-					return SharedInfo.Version;
-			}
 
 			byte[] responseBytes = response.Content as byte[] ?? response.Content.ToArray();
 

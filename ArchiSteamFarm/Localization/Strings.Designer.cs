@@ -1179,6 +1179,12 @@ namespace ArchiSteamFarm.Localization {
             }
         }
         
+        public static string FetchingChecksumFromRemoteServer {
+            get {
+                return ResourceManager.GetString("FetchingChecksumFromRemoteServer", resourceCulture);
+            }
+        }
+        
         public static string VerifyingChecksumWithRemoteServer {
             get {
                 return ResourceManager.GetString("VerifyingChecksumWithRemoteServer", resourceCulture);
