@@ -24,9 +24,11 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using CryptSharp.Utility;
@@ -57,7 +59,7 @@ public static class ArchiCryptoHelper {
 
 	private static byte[] EncryptionKey = Encoding.UTF8.GetBytes(nameof(ArchiSteamFarm));
 
-	internal static string? Decrypt(ECryptoMethod cryptoMethod, string encryptedString) {
+	internal static async Task<string?> Decrypt(ECryptoMethod cryptoMethod, string encryptedString) {
 		if (!Enum.IsDefined(typeof(ECryptoMethod), cryptoMethod)) {
 			throw new InvalidEnumArgumentException(nameof(cryptoMethod), (int) cryptoMethod, typeof(ECryptoMethod));
 		}
@@ -67,8 +69,10 @@ public static class ArchiCryptoHelper {
 		}
 
 		return cryptoMethod switch {
-			ECryptoMethod.PlainText => encryptedString,
 			ECryptoMethod.AES => DecryptAES(encryptedString),
+			ECryptoMethod.EnvironmentVariable => Environment.GetEnvironmentVariable(encryptedString)?.Trim(),
+			ECryptoMethod.File => await ReadFromFile(encryptedString).ConfigureAwait(false),
+			ECryptoMethod.PlainText => encryptedString,
 			ECryptoMethod.ProtectedDataForCurrentUser => DecryptProtectedDataForCurrentUser(encryptedString),
 			_ => throw new ArgumentOutOfRangeException(nameof(cryptoMethod))
 		};
@@ -84,8 +88,10 @@ public static class ArchiCryptoHelper {
 		}
 
 		return cryptoMethod switch {
-			ECryptoMethod.PlainText => decryptedString,
 			ECryptoMethod.AES => EncryptAES(decryptedString),
+			ECryptoMethod.EnvironmentVariable => decryptedString,
+			ECryptoMethod.File => decryptedString,
+			ECryptoMethod.PlainText => decryptedString,
 			ECryptoMethod.ProtectedDataForCurrentUser => EncryptProtectedDataForCurrentUser(decryptedString),
 			_ => throw new ArgumentOutOfRangeException(nameof(cryptoMethod))
 		};
@@ -140,6 +146,13 @@ public static class ArchiCryptoHelper {
 				throw new ArgumentOutOfRangeException(nameof(hashingMethod));
 		}
 	}
+
+	internal static bool HasTransformation(this ECryptoMethod cryptoMethod) =>
+		cryptoMethod switch {
+			ECryptoMethod.AES => true,
+			ECryptoMethod.ProtectedDataForCurrentUser => true,
+			_ => false
+		};
 
 	internal static string? RecoverSteamParentalCode(byte[] passwordHash, byte[] salt, EHashingMethod hashingMethod) {
 		if ((passwordHash == null) || (passwordHash.Length == 0)) {
@@ -276,10 +289,34 @@ public static class ArchiCryptoHelper {
 		}
 	}
 
+	private static async Task<string?> ReadFromFile(string filePath) {
+		if (string.IsNullOrEmpty(filePath)) {
+			throw new ArgumentNullException(nameof(filePath));
+		}
+
+		if (!File.Exists(filePath)) {
+			return null;
+		}
+
+		string text;
+
+		try {
+			text = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+		} catch (Exception e) {
+			ASF.ArchiLogger.LogGenericException(e);
+
+			return null;
+		}
+
+		return text.Trim();
+	}
+
 	public enum ECryptoMethod : byte {
 		PlainText,
 		AES,
-		ProtectedDataForCurrentUser
+		ProtectedDataForCurrentUser,
+		EnvironmentVariable,
+		File
 	}
 
 	public enum EHashingMethod : byte {

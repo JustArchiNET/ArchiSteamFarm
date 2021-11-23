@@ -273,37 +273,6 @@ public sealed class BotConfig {
 		set;
 	}
 
-	internal string? DecryptedSteamPassword {
-		get {
-			if (string.IsNullOrEmpty(SteamPassword)) {
-				return null;
-			}
-
-			if (PasswordFormat == ArchiCryptoHelper.ECryptoMethod.PlainText) {
-				return SteamPassword;
-			}
-
-			string? result = ArchiCryptoHelper.Decrypt(PasswordFormat, SteamPassword!);
-
-			if (string.IsNullOrEmpty(result)) {
-				ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(SteamPassword)));
-
-				return null;
-			}
-
-			return result;
-		}
-
-		set {
-			if (!string.IsNullOrEmpty(value) && (PasswordFormat != ArchiCryptoHelper.ECryptoMethod.PlainText)) {
-				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-				value = ArchiCryptoHelper.Encrypt(PasswordFormat, value!);
-			}
-
-			SteamPassword = value;
-		}
-	}
-
 	internal bool IsSteamLoginSet { get; set; }
 	internal bool IsSteamParentalCodeSet { get; set; }
 	internal bool IsSteamPasswordSet { get; set; }
@@ -530,6 +499,26 @@ public sealed class BotConfig {
 		return !Enum.IsDefined(typeof(ArchiHandler.EUserInterfaceMode), UserInterfaceMode) ? (false, string.Format(CultureInfo.CurrentCulture, Strings.ErrorConfigPropertyInvalid, nameof(UserInterfaceMode), UserInterfaceMode)) : (true, null);
 	}
 
+	internal async Task<string?> GetDecryptedSteamPassword() {
+		if (string.IsNullOrEmpty(SteamPassword)) {
+			return null;
+		}
+
+		if (PasswordFormat == ArchiCryptoHelper.ECryptoMethod.PlainText) {
+			return SteamPassword;
+		}
+
+		string? result = await ArchiCryptoHelper.Decrypt(PasswordFormat, SteamPassword!).ConfigureAwait(false);
+
+		if (string.IsNullOrEmpty(result)) {
+			ASF.ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(SteamPassword)));
+
+			return null;
+		}
+
+		return result;
+	}
+
 	internal static async Task<(BotConfig? BotConfig, string? LatestJson)> Load(string filePath) {
 		if (string.IsNullOrEmpty(filePath)) {
 			throw new ArgumentNullException(nameof(filePath));
@@ -575,7 +564,9 @@ public sealed class BotConfig {
 			return (null, null);
 		}
 
-		if (!string.IsNullOrEmpty(botConfig.DecryptedSteamPassword)) {
+		string? decryptedSteamPassword = await botConfig.GetDecryptedSteamPassword().ConfigureAwait(false);
+
+		if (!string.IsNullOrEmpty(decryptedSteamPassword)) {
 			HashSet<string> disallowedValues = new(StringComparer.InvariantCultureIgnoreCase) { "account" };
 
 			if (!string.IsNullOrEmpty(botConfig.SteamLogin)) {
@@ -584,7 +575,8 @@ public sealed class BotConfig {
 
 			Utilities.InBackground(
 				() => {
-					(bool isWeak, string? reason) = Utilities.TestPasswordStrength(botConfig.DecryptedSteamPassword!, disallowedValues);
+					// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+					(bool isWeak, string? reason) = Utilities.TestPasswordStrength(decryptedSteamPassword!, disallowedValues);
 
 					if (isWeak) {
 						ASF.ArchiLogger.LogGenericWarning(string.Format(CultureInfo.CurrentCulture, Strings.WarningWeakSteamPassword, !string.IsNullOrEmpty(botConfig.SteamLogin) ? botConfig.SteamLogin! : filePath, reason));
@@ -613,6 +605,20 @@ public sealed class BotConfig {
 		botConfig.Saving = false;
 
 		return (botConfig, json != latestJson ? latestJson : null);
+	}
+
+	internal void SetDecryptedSteamPassword(string? decryptedSteamPassword, bool fromUser = false) {
+		if (!string.IsNullOrEmpty(decryptedSteamPassword) && PasswordFormat.HasTransformation()) {
+			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+			decryptedSteamPassword = ArchiCryptoHelper.Encrypt(PasswordFormat, decryptedSteamPassword!);
+		}
+
+		SteamPassword = decryptedSteamPassword;
+
+		if (fromUser) {
+			// Reset steam password set flag, it actually isn't set in the config
+			IsSteamPasswordSet = false;
+		}
 	}
 
 	public enum EAccess : byte {

@@ -180,7 +180,7 @@ public sealed class Bot : IAsyncDisposable {
 	/// <remarks>
 	///     Login keys are not guaranteed to be valid, we should use them only if we don't have full details available from the user
 	/// </remarks>
-	private bool ShouldUseLoginKeys => BotConfig.UseLoginKeys && (!BotConfig.IsSteamPasswordSet || string.IsNullOrEmpty(BotConfig.DecryptedSteamPassword) || !HasMobileAuthenticator);
+	private bool ShouldUseLoginKeys => BotConfig.UseLoginKeys && (!BotConfig.IsSteamPasswordSet || !HasMobileAuthenticator);
 
 	[JsonProperty(PropertyName = $"{SharedInfo.UlongCompatibilityStringPrefix}{nameof(SteamID)}")]
 	private string SSteamID => SteamID.ToString(CultureInfo.InvariantCulture);
@@ -863,7 +863,7 @@ public sealed class Bot : IAsyncDisposable {
 
 				break;
 			case ASF.EUserInputType.Password:
-				BotConfig.DecryptedSteamPassword = inputValue;
+				BotConfig.SetDecryptedSteamPassword(inputValue, true);
 				BotConfig.IsSteamPasswordSet = false;
 
 				break;
@@ -2033,16 +2033,20 @@ public sealed class Bot : IAsyncDisposable {
 			}
 		}
 
-		if (requiresPassword && string.IsNullOrEmpty(BotConfig.DecryptedSteamPassword)) {
-			RequiredInput = ASF.EUserInputType.Password;
+		if (requiresPassword) {
+			string? decryptedSteamPassword = await BotConfig.GetDecryptedSteamPassword().ConfigureAwait(false);
 
-			string? steamPassword = await Logging.GetUserInput(ASF.EUserInputType.Password, BotName).ConfigureAwait(false);
+			if (string.IsNullOrEmpty(decryptedSteamPassword)) {
+				RequiredInput = ASF.EUserInputType.Password;
 
-			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			if (string.IsNullOrEmpty(steamPassword) || !SetUserInput(ASF.EUserInputType.Password, steamPassword!)) {
-				ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(steamPassword)));
+				string? steamPassword = await Logging.GetUserInput(ASF.EUserInputType.Password, BotName).ConfigureAwait(false);
 
-				return false;
+				// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
+				if (string.IsNullOrEmpty(steamPassword) || !SetUserInput(ASF.EUserInputType.Password, steamPassword!)) {
+					ArchiLogger.LogGenericError(string.Format(CultureInfo.CurrentCulture, Strings.ErrorIsInvalid, nameof(steamPassword)));
+
+					return false;
+				}
 			}
 		}
 
@@ -2256,8 +2260,8 @@ public sealed class Bot : IAsyncDisposable {
 
 			// Decrypt login key if needed
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework
-			if (!string.IsNullOrEmpty(loginKey) && (loginKey!.Length > 19) && (BotConfig.PasswordFormat != ArchiCryptoHelper.ECryptoMethod.PlainText)) {
-				loginKey = ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, loginKey);
+			if (!string.IsNullOrEmpty(loginKey) && (loginKey!.Length > 19) && BotConfig.PasswordFormat.HasTransformation()) {
+				loginKey = await ArchiCryptoHelper.Decrypt(BotConfig.PasswordFormat, loginKey).ConfigureAwait(false);
 			}
 		} else {
 			// If we're not using login keys, ensure we don't have any saved
@@ -2287,7 +2291,7 @@ public sealed class Bot : IAsyncDisposable {
 			return;
 		}
 
-		string? password = BotConfig.DecryptedSteamPassword;
+		string? password = await BotConfig.GetDecryptedSteamPassword().ConfigureAwait(false);
 
 		if (!string.IsNullOrEmpty(password)) {
 			// ReSharper disable once RedundantSuppressNullableWarningExpression - required for .NET Framework

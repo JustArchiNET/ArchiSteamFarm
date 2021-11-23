@@ -125,7 +125,7 @@ public sealed class BotController : ArchiController {
 				}
 
 				if (!request.BotConfig.IsSteamPasswordSet && bot.BotConfig.IsSteamPasswordSet) {
-					request.BotConfig.DecryptedSteamPassword = bot.BotConfig.DecryptedSteamPassword;
+					request.BotConfig.SetDecryptedSteamPassword(await bot.BotConfig.GetDecryptedSteamPassword().ConfigureAwait(false));
 				}
 
 				if (!request.BotConfig.IsSteamParentalCodeSet && bot.BotConfig.IsSteamParentalCodeSet) {
